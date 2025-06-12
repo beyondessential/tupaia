@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import styled from 'styled-components';
 
 import { PageContainer } from '../../components';
+import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../constants';
 import { MobileSelectList, useGroupedSurveyList } from '../../features';
 import {
   CountrySelector,
@@ -15,15 +16,14 @@ const MobileContainer = styled.div`
   background-color: ${({ theme }) => theme.palette.background.default};
   block-size: 100%;
   inline-size: 100%;
-  max-block-size: 100%;
 
   div:has(> &),
   ${PageContainer}:has(&) {
     padding: 0;
 
-    block-size: 100dvb;
+    block-size: calc(100dvb - ${BOTTOM_NAVIGATION_HEIGHT_DYNAMIC});
     @supports not (block-size: 100dvb) {
-      block-size: 100vb;
+      block-size: calc(100vb - ${BOTTOM_NAVIGATION_HEIGHT_DYNAMIC});
     }
   }
 `;

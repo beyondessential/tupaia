@@ -11,8 +11,8 @@ import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../constants';
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.default};
   block-size: calc(100% - ${BOTTOM_NAVIGATION_HEIGHT_DYNAMIC});
-  padding-block-end: calc(1.25rem + ${BOTTOM_NAVIGATION_HEIGHT_DYNAMIC});
-  padding-block-start: 1.25rem;
+  overflow-y: auto;
+  padding-block: 1.25rem 2.5rem;
   padding-inline: 1.25rem;
 
   ${CountrySelectWrapper} {
