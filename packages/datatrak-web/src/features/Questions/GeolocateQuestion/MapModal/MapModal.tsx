@@ -35,10 +35,7 @@ const ButtonGroup = styled.div`
   inline-size: 100%;
 `;
 
-type Geolocation = {
-  latitude?: LatLngLiteral['lat'];
-  longitude?: LatLngLiteral['lng'];
-};
+type Geolocation = Partial<Pick<GeolocationCoordinates, 'latitude' | 'longitude' | 'accuracy'>>;
 
 interface MapModalProps {
   geolocation: Geolocation;
