@@ -3,13 +3,10 @@ import styled from 'styled-components';
 import { TextInput } from '../../../components';
 
 const Wrapper = styled.div`
-  display: flex;
-  .MuiFormControlLabel-root {
-    width: 6.3rem;
-    &:first-child {
-      margin-right: 1.125rem;
-    }
-  }
+  display: grid;
+  grid-template-columns: repeat(2, 7.5em);
+  grid-template-rows: repeat(2, auto);
+  column-gap: 1.125rem;
 `;
 interface LatLongFieldsProps {
   setGeolocation: any;
