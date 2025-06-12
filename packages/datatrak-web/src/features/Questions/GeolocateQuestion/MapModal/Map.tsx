@@ -72,11 +72,11 @@ interface MapProps {
 export const Map = ({ lat, lng, setCoordinates, tileSet, onChangeTileSet }: MapProps) => {
   const coordinatesInvalid = [lat, lng].some(coordinate => !coordinate && coordinate !== 0);
 
-  // round coordinates to 4 decimal places before setting them - any less and the coordinates are not very accurate
   const onUpdateCoordinates = ({ lat, lng }: LatLngLiteral) => {
+    // Round, preserving approx. 1.11 metres’ precision
     setCoordinates({
-      lat: Number.parseFloat(lat.toFixed(4)),
-      lng: Number.parseFloat(lng.toFixed(4)),
+      lat: Number.parseFloat(lat.toFixed(5)),
+      lng: Number.parseFloat(lng.toFixed(5)),
     });
   };
   return (

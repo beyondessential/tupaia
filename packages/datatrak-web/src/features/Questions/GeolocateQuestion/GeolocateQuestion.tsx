@@ -89,7 +89,13 @@ export const GeolocateQuestion = ({
 
     setErrorFeedback(null);
     const { latitude, longitude, accuracy } = position.coords;
-    onChange({ latitude, longitude, accuracy });
+
+    // Round, preserving approx. 1.11 metres’ precision
+    onChange({
+      latitude: latitude.toFixed(5),
+      longitude: longitude.toFixed(5),
+      accuracy,
+    });
   };
 
   const displayMapModalButton = !isReviewScreen && !isResponseScreen;
