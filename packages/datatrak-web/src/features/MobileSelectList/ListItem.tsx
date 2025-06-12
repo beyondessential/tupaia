@@ -35,8 +35,10 @@ export const BaseListItem = styled(MuiListItem).attrs({ button: true })`
   }
 `;
 
-const IconWrapper = styled.div`
-  padding-right: 0.5rem;
+const IconWrapper = styled.div.attrs({
+  'aria-hidden': true,
+})`
+  padding-inline-end: 0.5rem;
   display: flex;
   align-items: center;
   width: 2rem;
