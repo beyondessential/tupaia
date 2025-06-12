@@ -1,6 +1,5 @@
 import { FormHelperText, Typography } from '@material-ui/core';
-import MapIcon from '@material-ui/icons/Map';
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
+import { Locate as LocateIcon, Map as MapIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
@@ -66,7 +65,7 @@ export const GeolocateQuestion = ({
   const [errorFeedback, setErrorFeedback] = useState<string | null>(null);
 
   const isMobile = useIsMobile();
-  const shouldUseDetectPosition = !window.navigator.onLine && 'geolocation' in navigator;
+  const shouldUseDetectPosition = (!window.navigator.onLine && 'geolocation' in navigator) || true;
 
   const [position, error] = useCurrentPosition({ enabled: shouldUseDetectPosition });
 
@@ -114,7 +113,7 @@ export const GeolocateQuestion = ({
               onClick={shouldUseDetectPosition ? populateFromCurrentPosition : toggleMapModal}
               fullWidth={isMobile}
               variant={isMobile ? 'contained' : 'text'}
-              startIcon={shouldUseDetectPosition ? <LocationSearchingIcon /> : <MapIcon />}
+              startIcon={shouldUseDetectPosition ? <LocateIcon /> : <MapIcon />}
             >
               {shouldUseDetectPosition ? 'Detect current location' : 'Drop pin on map'}
             </StyledButton>
