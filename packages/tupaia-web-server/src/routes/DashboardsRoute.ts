@@ -139,9 +139,13 @@ entityCode: ${entityCode}`);
         pageSize: DEFAULT_PAGE_SIZE,
       },
     );
-    winston.debug(
-      `[DashboardsRoute] ${dashboardItems.length} dashboardItems: ${dashboardItems.map(di => di.code).join(' ')}`,
-    );
+    if (Array.isArray(dashboardItems)) {
+      winston.debug(
+        `[DashboardsRoute] ${dashboardItems.length} dashboardItems: ${dashboardItems.map(di => di.code).join(' ')}`,
+      );
+    } else {
+      winston.debug(`[DashboardsRoute] dashboardItems is not an array: ${dashboardItems}`);
+    }
 
     // Merged and sorted to make mapping easier
     const mergedItemRelations = orderBy(
