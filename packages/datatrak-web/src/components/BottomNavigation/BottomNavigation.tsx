@@ -3,15 +3,17 @@ import {
   BottomNavigationProps,
   BottomNavigation as MuiBottomNavigation,
 } from '@material-ui/core';
-import MoreIcon from '@material-ui/icons/MoreHorizRounded';
+import {
+  House as HomeIcon,
+  Ellipsis as MoreIcon,
+  ClipboardList as SurveysIcon,
+  ListChecks as TasksIcon,
+} from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { Description as DescriptionIcon, Home as HomeIcon } from '@tupaia/ui-components';
-
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, ROUTES } from '../../constants';
-import { TaskIcon } from '../Icons';
 import { useBottomNavigationActiveTab } from './useBottomNavigationActiveTab';
 
 export type TabValue = 'home' | 'surveys' | 'tasks' | 'more';
@@ -41,12 +43,11 @@ const BottomNavigationRoot = styled(MuiBottomNavigation).attrs({
 
   .MuiBottomNavigationAction-label {
     font-size: 0.75rem;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0.02em;
 
     &.Mui-selected {
       color: ${props => props.theme.palette.text.primary};
-      font-weight: 500;
     }
   }
 `;
@@ -62,21 +63,9 @@ export const BottomNavigation = (props: BottomNavigationProps) => {
 
   return (
     <BottomNavigationRoot onChange={onChange} showLabels value={activeTab} {...props}>
-      <BottomNavigationAction
-        icon={<HomeIcon variant={activeTab === 'home' ? 'filled' : 'outlined'} />}
-        label="Home"
-        value="home"
-      />
-      <BottomNavigationAction
-        icon={<DescriptionIcon variant={activeTab === 'surveys' ? 'filled' : 'outlined'} />}
-        label="Surveys"
-        value="surveys"
-      />
-      <BottomNavigationAction
-        icon={<TaskIcon variant={activeTab === 'tasks' ? 'filled' : 'outlined'} />}
-        label="Tasks"
-        value="tasks"
-      />
+      <BottomNavigationAction icon={<HomeIcon />} label="Home" value="home" />
+      <BottomNavigationAction icon={<SurveysIcon />} label="Surveys" value="surveys" />
+      <BottomNavigationAction icon={<TasksIcon />} label="Tasks" value="tasks" />
       <BottomNavigationAction icon={<MoreIcon />} label="More" value="more" />
     </BottomNavigationRoot>
   );
