@@ -1,4 +1,5 @@
 import { PermissionsError } from '@tupaia/utils';
+import winston from '../log';
 
 const assertPermissions = async (req, assertion) => {
   const { accessPolicy, flagPermissionsChecked } = req;
@@ -9,6 +10,7 @@ const assertPermissions = async (req, assertion) => {
     try {
       await assertion(accessPolicy);
     } catch (e) {
+      winston.info(`Asserting ${assertion.name} failed. Throwing PermissionsError...`);
       throw new PermissionsError(e.message);
     }
   }
