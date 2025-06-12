@@ -59,7 +59,7 @@ export const SurveyPaginator = () => {
 
   const getNextButtonText = () => {
     if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
-    if (isLast) 'Review & submit';
+    if (isLast) return 'Review & submit';
     return 'Next';
   };
 
