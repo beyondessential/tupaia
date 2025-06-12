@@ -54,6 +54,7 @@ export function getTokenClaims(jwtToken) {
     if (error.name === 'TokenExpiredError') {
       throw new UnauthenticatedError('Authorization token has expired, please log in again');
     } else {
+      console.debug('[getTokenClaims] Failed to verity JWT:', jwtToken);
       throw error;
     }
   }
