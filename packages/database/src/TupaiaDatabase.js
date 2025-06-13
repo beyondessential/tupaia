@@ -367,7 +367,12 @@ export class TupaiaDatabase {
         { cancel: true },
       );
     } catch (error) {
-      if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
+      if (error instanceof KnexTimeoutError) {
+        winston.debug(
+          `[TupaiaDatabase#countFast] Counting ${recordType} records timed out. Returning infinity.`,
+        );
+        return Number.POSITIVE_INFINITY;
+      }
       throw error;
     }
 
