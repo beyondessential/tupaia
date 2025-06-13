@@ -1,11 +1,12 @@
 import { respond } from '@tupaia/utils';
+import winston from '../../log';
 import { CRUDHandler } from '../CRUDHandler';
 import {
+  generateLinkHeader,
   getQueryOptionsForColumns,
   processColumns,
   processColumnSelector,
   processColumnSelectorKeys,
-  generateLinkHeader,
 } from './helpers';
 
 const MAX_RECORDS_PER_PAGE = 100;
@@ -112,7 +113,9 @@ export class GETHandler extends CRUDHandler {
   }
 
   async buildResponse() {
+    winston.debug(`[GETHandler#buildResponse]`);
     let options = await this.getDbQueryOptions();
+    winston.debug(`[GETHandler#buildResponse] options: ${JSON.stringify(options, null, 2)}`);
 
     // handle request for a single record
     const { recordId } = this;
@@ -123,6 +126,7 @@ export class GETHandler extends CRUDHandler {
 
     // handle request for multiple records, including pagination headers
     let criteria = this.getDbQueryCriteria();
+    winston.debug(`[GETHandler#buildResponse] criteria: ${JSON.stringify(criteria, null, 2)}`);
     if (this.permissionsFilteredInternally) {
       ({ dbConditions: criteria, dbOptions: options } = await this.applyPermissionsFilter(
         criteria,
@@ -134,10 +138,14 @@ export class GETHandler extends CRUDHandler {
       this.findRecords(criteria, options),
       this.countRecords(criteria, options),
     ]);
+    winston.debug(`[GETHandler#buildResponse] ${totalNumberOfRecords} records. `);
 
     const { limit, page } = this.getPaginationParameters();
     const lastPage = Math.ceil(totalNumberOfRecords / limit);
     const linkHeader = generateLinkHeader(this.resource, page, lastPage, this.req.query);
+    winston.debug(
+      `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length}: ${JSON.stringify(pageOfRecords, null, 2)}`,
+    );
     return {
       headers: {
         Link: linkHeader,

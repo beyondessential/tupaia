@@ -144,7 +144,9 @@ entityCode: ${entityCode}`);
         `[DashboardsRoute] ${dashboardItems.length} dashboardItems: ${dashboardItems.map(di => di.code).join(' ')}`,
       );
     } else {
-      winston.debug(`[DashboardsRoute] dashboardItems is not an array: ${dashboardItems}`);
+      winston.debug(
+        `[DashboardsRoute] dashboardItems is not an array: ${JSON.stringify(dashboardItems)}`,
+      );
     }
 
     // Merged and sorted to make mapping easier

@@ -2,6 +2,7 @@ import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertDashboardItemGetPermissions } from './assertDashboardItemsPermissions';
 import { createDashboardItemsDBFilter } from './createDashboardItemsDBFilter';
+import winston from '../../log';
 /**
  * Handles endpoints:
  * - /dashboardItems
@@ -24,10 +25,16 @@ export class GETDashboardItems extends GETHandler {
   }
 
   async getPermissionsFilter(criteria, options) {
+    winston.debug(
+      `[GETDashboardItems#getPermissionsFilter] criteria: ${JSON.stringify(criteria)}}]`,
+    );
     const dbConditions = await createDashboardItemsDBFilter(
       this.accessPolicy,
       this.models,
       criteria,
+    );
+    winston.debug(
+      `[GETDashboardItems#getPermissionsFilter] returning: ${JSON.stringify({ dbConditions, dbOptions: options })}}]`,
     );
 
     return { dbConditions, dbOptions: options };
