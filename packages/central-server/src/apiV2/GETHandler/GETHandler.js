@@ -146,7 +146,11 @@ export class GETHandler extends CRUDHandler {
     const lastPage = isLastPageKnown ? Math.ceil(totalNumberOfRecords / limit) : null;
     const linkHeader = generateLinkHeader(this.resource, page, lastPage, this.req.query);
     winston.debug(
-      `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length}: ${JSON.stringify(pageOfRecords, null, 2)}`,
+      `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length}: ${JSON.stringify(
+        pageOfRecords.map(r => ({ id: r.id, code: r.code })),
+        null,
+        2,
+      )}`,
     );
     return {
       headers: {
