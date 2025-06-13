@@ -113,7 +113,7 @@ export class GETHandler extends CRUDHandler {
   }
 
   async buildResponse() {
-    winston.debug(`[GETHandler#buildResponse]`);
+    winston.debug(`[GETHandler#buildResponse] ${this.recordType}`);
     let options = await this.getDbQueryOptions();
     winston.debug(`[GETHandler#buildResponse] options: ${JSON.stringify(options, null, 2)}`);
 
@@ -140,7 +140,7 @@ export class GETHandler extends CRUDHandler {
     ]);
     const isLastPageKnown = totalNumberOfRecords !== Number.POSITIVE_INFINITY;
 
-    winston.debug(`[GETHandler#buildResponse] ${totalNumberOfRecords} records.`);
+    winston.debug(`[GETHandler#buildResponse] ${totalNumberOfRecords} ${this.recordType} records.`);
 
     const { limit, page } = this.getPaginationParameters();
     const lastPage = isLastPageKnown ? Math.ceil(totalNumberOfRecords / limit) : null;
