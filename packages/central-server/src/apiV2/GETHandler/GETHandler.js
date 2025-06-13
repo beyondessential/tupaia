@@ -138,10 +138,13 @@ export class GETHandler extends CRUDHandler {
       this.findRecords(criteria, options),
       this.countRecords(criteria, options),
     ]);
-    winston.debug(`[GETHandler#buildResponse] ${totalNumberOfRecords} records. `);
+    winston.debug(`[GETHandler#buildResponse] ${totalNumberOfRecords} records.`);
 
     const { limit, page } = this.getPaginationParameters();
-    const lastPage = Math.ceil(totalNumberOfRecords / limit);
+    const lastPage =
+      totalNumberOfRecords === Number.POSITIVE_INFINITY
+        ? null
+        : Math.ceil(totalNumberOfRecords / limit);
     const linkHeader = generateLinkHeader(this.resource, page, lastPage, this.req.query);
     winston.debug(
       `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length}: ${JSON.stringify(pageOfRecords, null, 2)}`,
@@ -150,7 +153,7 @@ export class GETHandler extends CRUDHandler {
       headers: {
         Link: linkHeader,
         'Access-Control-Expose-Headers': 'Link, X-Total-Count', // to get around CORS
-        'X-Total-Count': totalNumberOfRecords,
+        ...(totalNumberOfRecords !== null && { 'X-Total-Count': totalNumberOfRecords }),
       },
       body: pageOfRecords,
     };
