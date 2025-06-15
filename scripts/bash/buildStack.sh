@@ -4,6 +4,8 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 root_dir=$(realpath -- "$script_dir"/../..)
 . "$script_dir"/ansiControlSequences.sh
 
+"$script_dir"/requireCommands.sh jq node yarn
+
 stack_definitions=$root_dir/packages/devops/configs/server-stacks.json
 readarray -t available_stacks < <(
 	jq --raw-output 'keys[]' "$stack_definitions"
@@ -30,7 +32,8 @@ while getopts h opt; do
 		echo '    Builds all packages required to run the entire Admin Panel and Tupaia Web server stacks.'
 
 		echo -e "\n${BOLD}SEE ALSO${RESET}"
-		echo -e "  ${DIM}$script_dir/${RESET}buildPackagesByGlob.sh"
+		echo -e "  • ${DIM}$root_dir/scripts/node/getServerStacks.js"
+		echo -e "  • ${DIM}$script_dir/${RESET}buildPackagesByGlob.sh"
 
 		exit 0
 		;;
@@ -40,17 +43,11 @@ while getopts h opt; do
 	esac
 done
 
-# ["foo", "bar"] → (foo bar)
-readarray -t packages < <(
-	jq --raw-output --arg stack_name "$1" '.[$stack_name][]' "$stack_definitions"
-)
-echo "${packages[@]}"
+for package in "$@"; do
+	# TODO: Assert package is valid
+	stacks+=(package)
+done
 
-# (foo bar) → foo,bar
-pattern=$(
-	IFS=,
-	echo "${packages[*]}"
-)
+package_names_glob=$(node "$root_dir/scripts/node/getServerStacks" --as-glob "${stacks[@]}")
 
-# foo,bar → @tupaia/{foo,bar}
-yarn run build:from "@tupaia/{$pattern}"
+yarn run build:from "$package_names_glob"
