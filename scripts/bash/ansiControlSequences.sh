@@ -28,8 +28,9 @@ export CLEAR_LINE="\033[2K${CURSOR_START_OF_LINE}"
 
 # Select graphic rendition (SGR) parameters
 
-# Print colour only if outputting to a terminal, and NO_COLOR is unset (see https://no-color.org)
-if [[ ! -t 1 || $NO_COLOR != '' ]]; then
+# Print colour only if outputting to an interactive terminal that supports it, and NO_COLOR is unset
+# See https://clig.dev/#output and https://no-color.org
+if [[ ! -t 1 || $TERM = dumb || -n $NO_COLOR ]]; then
 	export RESET=''
 	export BOLD=''
 	export DIM=''

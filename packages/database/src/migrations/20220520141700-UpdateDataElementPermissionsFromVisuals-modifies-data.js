@@ -104,8 +104,7 @@ exports.up = async function (db) {
     );
 
     const jointPermissionGroups = dashboardRelations
-      .map(rel => rel.permission_groups)
-      .flat()
+      .flatMap(rel => rel.permission_groups)
       .concat(mapOverlays.map(map => map.permission_group));
 
     if (jointPermissionGroups.length <= 0) {

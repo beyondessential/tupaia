@@ -22,7 +22,7 @@ const gatherColumns = (table: TransformTable, params: GatherColumnsParams) => {
 
   const newRowData = table
     .getRows()
-    .map(row => {
+    .flatMap(row => {
       const keptData: Row = Object.fromEntries(
         columnsToKeep.map(columnName => [columnName, row[columnName]]),
       );
@@ -32,8 +32,7 @@ const gatherColumns = (table: TransformTable, params: GatherColumnsParams) => {
         value: row[columnName],
         columnName,
       }));
-    })
-    .flat();
+    });
 
   return new TransformTable(newColumnNames, newRowData);
 };

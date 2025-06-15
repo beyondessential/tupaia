@@ -172,7 +172,7 @@ describe('fetchData', () => {
       ];
 
       const resultTable = existingTable
-        .map(row => {
+        .flatMap(row => {
           const matchingAnalytics = fetchedAnalytics.filter(
             analytic =>
               analytic.dataElement === row.question_code &&
@@ -184,8 +184,7 @@ describe('fetchData', () => {
           }
 
           return matchingAnalytics.map(analytic => ({ ...row, ...analytic }));
-        })
-        .flat();
+        });
 
       const received = await transform(TransformTable.fromRows(existingTable));
       expect(received).toStrictEqual(TransformTable.fromRows(resultTable));
