@@ -130,7 +130,7 @@ jobs:
       - run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
 
   run_tests:
-    name: Run tests
+    name: Test
     needs: package_list
     timeout-minutes: 15 # Sometimes Jest doesn’t exit properly for meditrak-app-server tests
     runs-on: ubuntu-latest
