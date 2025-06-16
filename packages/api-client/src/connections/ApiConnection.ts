@@ -77,7 +77,7 @@ export class ApiConnection {
     console.debug(`[ApiConnection#request] fetched ${decodeURI(queryUrl).substring(0, 60)}...`);
 
     const contentType = response.headers.get('content-type');
-    if (contentType?.includes('text/')) {
+    if (contentType?.startsWith('text/')) {
       // TODO: Put this inside verifyResponse and throw RespondingError
       const toc = performance.now();
       console.debug(
@@ -90,7 +90,7 @@ export class ApiConnection {
 
     await this.verifyResponse(response);
     console.debug(`[ApiConnection#request] response verified`);
-    if (contentType?.includes('application/json')) {
+    if (contentType?.startsWith('application/json')) {
       const toc = performance.now();
       console.debug(`[ApiConnection#request] responding with JSON after ${toc - tic} ms`);
       return response.json();
