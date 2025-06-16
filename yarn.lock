@@ -31298,7 +31298,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pm2@npm:latest":
+"pm2@npm:^6.0.8":
   version: 6.0.8
   resolution: "pm2@npm:6.0.8"
   dependencies:
@@ -37596,7 +37596,7 @@ __metadata:
     jest-when: ^3.6.0
     nodemon: ^2.0.4
     npm-package-json-lint: 5.1.0
-    pm2: latest
+    pm2: ^6.0.8
     prettier: ^3.5.1
     react-docgen-typescript-plugin: ^1.0.8
     storybook: ^8.2.9
