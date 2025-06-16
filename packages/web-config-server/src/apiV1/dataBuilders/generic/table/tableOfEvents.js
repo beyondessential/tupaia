@@ -56,8 +56,7 @@ class TableOfEventsBuilder extends DataBuilder {
     }
     return Object.entries(columns)
       .filter(([key]) => !isMetadataKey(key))
-      .map(([key, config]) => [key, ...(config?.additionalData || [])])
-      .flat();
+      .flatMap(([key, config]) => [key, ...(config?.additionalData || [])]);
   }
 
   async fetchEvents() {
