@@ -65,7 +65,7 @@ export const GeolocateQuestion = ({
   const [errorFeedback, setErrorFeedback] = useState<string | null>(null);
 
   const isMobile = useIsMobile();
-  const shouldUseDetectPosition = (!window.navigator.onLine && 'geolocation' in navigator) || true;
+  const shouldUseDetectPosition = !window.navigator.onLine && 'geolocation' in navigator;
 
   const [position, error] = useCurrentPosition({ enabled: shouldUseDetectPosition });
 
