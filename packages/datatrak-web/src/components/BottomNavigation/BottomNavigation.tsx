@@ -32,6 +32,10 @@ const BottomNavigationRoot = styled(MuiBottomNavigation).attrs({
   height: unset; // MUI hard-codes to 55px and ignores safe area insets
   min-height: ${BOTTOM_NAVIGATION_HEIGHT_SMALL};
 
+  .lucide {
+    font-size: 1.5rem;
+  }
+
   .MuiBottomNavigationAction-root {
     padding-bottom: max(env(safe-area-inset-bottom, 0), 0.5rem);
     padding-top: 0.5rem;
