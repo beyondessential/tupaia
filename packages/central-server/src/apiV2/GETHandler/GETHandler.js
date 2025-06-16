@@ -119,7 +119,6 @@ export class GETHandler extends CRUDHandler {
   async buildResponse() {
     this.#debugLog(`[GETHandler#buildResponse] ${this.recordType}`);
     let options = await this.getDbQueryOptions();
-    this.#debugLog(`[GETHandler#buildResponse] options: ${JSON.stringify(options, null, 2)}`);
 
     // handle request for a single record
     const { recordId } = this;
@@ -130,7 +129,6 @@ export class GETHandler extends CRUDHandler {
 
     // handle request for multiple records, including pagination headers
     let criteria = this.getDbQueryCriteria();
-    this.#debugLog(`[GETHandler#buildResponse] criteria: ${JSON.stringify(criteria, null, 2)}`);
     if (this.permissionsFilteredInternally) {
       ({ dbConditions: criteria, dbOptions: options } = await this.applyPermissionsFilter(
         criteria,
@@ -156,6 +154,8 @@ export class GETHandler extends CRUDHandler {
       'Access-Control-Expose-Headers': 'Link, X-Total-Count', // to get around CORS
     };
     if (isLastPageKnown) headers['X-Total-Count'] = totalNumberOfRecords;
+
+    this.#debugLog(`[GETHandler#buildResponse] headers ${JSON.stringify(headers, null)}`);
 
     return {
       headers,

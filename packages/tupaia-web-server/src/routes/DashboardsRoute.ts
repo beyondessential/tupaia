@@ -114,9 +114,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         rootEntity.code,
         projectCode,
       );
-    winston.debug(
-      `[DashboardsRoute] ${dashboardRelations.length} dashboardRelations: ${dashboardRelations.map(dr => dr.id).join(' ')}`,
-    );
+    winston.debug(`[DashboardsRoute] ${dashboardRelations.length} dashboardRelations`);
 
     // The dashboards themselves are fetched from central to ensure permission checking
     const dashboardItems: DashboardItem[] = await ctx.services.central.fetchResources(
