@@ -28,7 +28,7 @@ interface ModalProps extends DialogProps {
 export const Modal = ({ open, onClose, children, ...props }: ModalProps) => {
   return (
     <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal {...props}>
-      <ModalCloseButton onClick={onClose}>
+      <ModalCloseButton aria-label="Dismiss modal" onClick={onClose}>
         <CloseIcon style={{ fontSize: '2rem' }} />
       </ModalCloseButton>
       <ModalBody>{children}</ModalBody>
