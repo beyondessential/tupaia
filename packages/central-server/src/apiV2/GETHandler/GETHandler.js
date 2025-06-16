@@ -150,12 +150,15 @@ export class GETHandler extends CRUDHandler {
     this.#debugLog(
       `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length} ${this.recordType} records (total ${totalNumberOfRecords})`,
     );
+
+    const headers = {
+      Link: linkHeader,
+      'Access-Control-Expose-Headers': 'Link, X-Total-Count', // to get around CORS
+    };
+    if (isLastPageKnown) headers['X-Total-Count'] = totalNumberOfRecords;
+
     return {
-      headers: {
-        Link: linkHeader,
-        'Access-Control-Expose-Headers': 'Link, X-Total-Count', // to get around CORS
-        ...(isLastPageKnown && { 'X-Total-Count': totalNumberOfRecords }),
-      },
+      headers,
       body: pageOfRecords,
     };
   }
