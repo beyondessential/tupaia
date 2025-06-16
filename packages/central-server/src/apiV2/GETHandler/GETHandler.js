@@ -155,7 +155,7 @@ export class GETHandler extends CRUDHandler {
     };
     if (isLastPageKnown) headers['X-Total-Count'] = totalNumberOfRecords;
 
-    this.#debugLog(`[GETHandler#buildResponse] headers ${JSON.stringify(headers, null)}`);
+    this.#debugLog(`[GETHandler#buildResponse] headers: ${JSON.stringify(headers, null, 2)}`);
 
     return {
       headers,

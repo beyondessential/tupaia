@@ -87,12 +87,10 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     const rootEntityPermissions = rootEntity.country_code
       ? accessPolicy.getPermissionGroups([rootEntity.country_code])
       : accessPolicy.getPermissionGroups(); // country_code is null for project level
-    winston.debug(
-      `[DashboardsRoute] ${rootEntityPermissions.length} rootEntityPermissions: ${rootEntityPermissions.join(', ')}`,
-    );
+    winston.debug(`[DashboardsRoute] ${rootEntityPermissions.length} rootEntityPermissions`);
 
     const entityCodes = entities.map(e => e.code);
-    winston.debug(`[DashboardsRoute] ${entityCodes.length} entityCodes: ${entityCodes.join(' ')}`);
+    winston.debug(`[DashboardsRoute] ${entityCodes.length} entityCodes`);
     const dashboards = await models.dashboard.find(
       { root_entity_code: entityCodes },
       { sort: ['sort_order ASC', 'name ASC'] },
