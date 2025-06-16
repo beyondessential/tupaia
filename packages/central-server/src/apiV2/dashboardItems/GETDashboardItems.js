@@ -12,8 +12,6 @@ export class GETDashboardItems extends GETHandler {
   permissionsFilteredInternally = true;
 
   async findSingleRecord(dashboardItemId, options) {
-    const dashboardItem = await super.findSingleRecord(dashboardItemId, options);
-
     const dashboardItemChecker = accessPolicy =>
       assertDashboardItemGetPermissions(accessPolicy, this.models, dashboardItemId);
 
@@ -21,6 +19,7 @@ export class GETDashboardItems extends GETHandler {
       assertAnyPermissions([assertBESAdminAccess, dashboardItemChecker]),
     );
 
+    const dashboardItem = await super.findSingleRecord(dashboardItemId, options);
     return dashboardItem;
   }
 
