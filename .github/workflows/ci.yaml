@@ -82,6 +82,32 @@ jobs:
       - run: yarn run build:from '{database,types}'
       - run: ./packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh
 
+  validate_lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - run: corepack enable yarn
+      - run: yarn install --immutable
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      CI: false # react-scripts build treats warnings as errors if this is true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - run: corepack enable yarn
+      - run: yarn install
+      - run: yarn run build
+
   run_tests:
     name: Run tests
     timeout-minutes: 15 # Sometimes Jest doesn’t exit properly for meditrak-app-server tests
@@ -189,21 +215,6 @@ jobs:
         run: yarn run build:from ${{ matrix.package }}
       - run: yarn workspace @tupaia/${{ matrix.package }} setup-test || echo "No setup needed"
       - run: yarn workspace @tupaia/${{ matrix.package }} test
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    env:
-      CI: false # react-scripts build treats warnings as errors if this is true
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: corepack enable yarn
-      - run: yarn install --immutable
-      - run: yarn build
 
   allgreen:
     name: All Green
