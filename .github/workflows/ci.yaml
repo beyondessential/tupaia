@@ -198,9 +198,9 @@ jobs:
       - run: yarn install
       - name: Build subtree
         run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
-      - name: Run `setup-test` (if script exists)
-        run: yarn workspaces foreach --include @tupaia/${{ matrix.package }} setup-test
-      - name: Run `test` (if script exists)
+      - name: Set up tests (if script exists)
+        run: yarn workspaces foreach --include @tupaia/${{ matrix.package }} run setup-test
+      - name: Run tests (if script exists)
         run: yarn workspaces foreach --include ${{ matrix.package }} run test
 
   allgreen:
