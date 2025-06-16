@@ -98,7 +98,8 @@ export const GeolocateQuestion = ({
     });
   };
 
-  const displayMapModalButton = !isReviewScreen && !isResponseScreen;
+  const isReadOnly = isReviewScreen || isResponseScreen;
+
   return (
     <fieldset>
       {text && <Typography component="legend">{text}</Typography>}
@@ -112,7 +113,7 @@ export const GeolocateQuestion = ({
           required={required}
         />
 
-        {displayMapModalButton && (
+        {!isReadOnly && (
           <>
             <OrDivider />
             <StyledButton
