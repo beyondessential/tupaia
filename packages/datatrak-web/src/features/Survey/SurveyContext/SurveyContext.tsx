@@ -1,19 +1,21 @@
-import React, { createContext, Dispatch, useContext, useReducer, useState, useMemo } from 'react';
-import { useMatch, useParams, useSearchParams } from 'react-router-dom';
-import { QuestionType } from '@tupaia/types';
+import React, { createContext, Dispatch, useContext, useMemo, useReducer, useState } from 'react';
+import { To, useMatch, useParams, useSearchParams } from 'react-router-dom';
+
+import { Country, QuestionType, Survey } from '@tupaia/types';
+
+import { useSurvey } from '../../../api';
 import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
-import { useSurvey } from '../../../api';
 import { getAllSurveyComponents, getPrimaryEntityParentQuestionIds } from '../utils';
+import { usePrimaryEntityQuestionAutoFill } from '../utils/usePrimaryEntityQuestionAutoFill';
+import { ACTION_TYPES, SurveyFormAction } from './actions';
+import { SurveyFormContextType, surveyReducer } from './reducer';
 import {
   generateCodeForCodeGeneratorQuestions,
   getDisplayQuestions,
   getIsQuestionVisible,
   getUpdatedFormData,
 } from './utils';
-import { SurveyFormContextType, surveyReducer } from './reducer';
-import { ACTION_TYPES, SurveyFormAction } from './actions';
-import { usePrimaryEntityQuestionAutoFill } from '../utils/usePrimaryEntityQuestionAutoFill';
 
 const defaultContext = {
   startTime: new Date().toISOString(),
@@ -33,7 +35,6 @@ const defaultContext = {
   cancelModalConfirmLink: '/',
   countryCode: '',
   primaryEntityQuestion: null,
-  isResubmitScreen: false,
   isResubmitReviewScreen: false,
   isResubmit: false,
 } as SurveyFormContextType;
@@ -42,21 +43,34 @@ const SurveyFormContext = createContext(defaultContext);
 
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
-export const SurveyContext = ({ children, surveyCode, countryCode }) => {
+export const SurveyContext = ({
+  children,
+  surveyCode,
+  countryCode,
+}: {
+  children: React.ReactNode;
+  countryCode: Country['code'] | undefined;
+  surveyCode: Survey['code'] | undefined;
+}) => {
   const [urlSearchParams] = useSearchParams();
   const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
   const primaryEntityCodeParam = urlSearchParams.get(PRIMARY_ENTITY_CODE_PARAM) || undefined;
   const [primaryEntityCode] = useState(primaryEntityCodeParam);
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const params = useParams<SurveyParams>();
-  const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
+  const screenNumber = params.screenNumber ? Number.parseInt(params.screenNumber, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
+
+  const _isInitialSubmitReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
+  const _isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
+  const isReviewScreen = _isInitialSubmitReviewScreen || _isResubmitReviewScreen;
+
+  const _isInitialSubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const _isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
+  const isSuccessScreen = _isInitialSubmitSuccessScreen || _isResubmitSuccessScreen;
+
+  const isResubmit = !!useMatch(`${ROUTES.SURVEY_RESUBMIT}/*`);
   const isResponseScreen = !!urlSearchParams.get('responseId');
-  const isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
-  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW) || isResubmitReviewScreen;
-  const isResubmitScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SCREEN);
-  const isResubmit =
-    !!useMatch(ROUTES.SURVEY_RESUBMIT) || isResubmitScreen || isResubmitReviewScreen;
 
   let { formData } = state;
 
@@ -150,9 +164,8 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
         countryCode,
         surveyCode,
         primaryEntityQuestion,
-        isResubmitScreen,
-        isResubmitReviewScreen,
         isResubmit,
+        isSuccessScreen,
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
@@ -168,10 +181,21 @@ export const useSurveyForm = () => {
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
   const dispatch = useContext(SurveyFormDispatchContext)!;
 
-  const numberOfScreens = visibleScreens?.length || 0;
+  const numberOfScreens = visibleScreens?.length ?? 0;
   const isLast = screenNumber === numberOfScreens;
-  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
+
+  const _isInitialSubmitReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
+  const _isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
+  const isReviewScreen = _isInitialSubmitReviewScreen || _isResubmitReviewScreen;
+
+  const _isInitialSubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const _isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
+  const isSuccessScreen = _isInitialSubmitSuccessScreen || _isResubmitSuccessScreen;
+
+  const isResubmit = !!useMatch(`${ROUTES.SURVEY_RESUBMIT}/*`);
+
+  const [urlSearchParams] = useSearchParams();
+  const isResponseScreen = !!urlSearchParams.get('responseId');
 
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
@@ -195,7 +219,7 @@ export const useSurveyForm = () => {
     return surveyFormContext.formData[questionId];
   };
 
-  const openCancelConfirmation = ({ confirmPath }: { confirmPath?: string | number }) => {
+  const openCancelConfirmation = ({ confirmPath }: { confirmPath?: To | number }) => {
     dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION, payload: confirmPath });
   };
 
@@ -206,8 +230,10 @@ export const useSurveyForm = () => {
   return {
     ...surveyFormContext,
     isLast,
+    isResponseScreen,
+    isResubmit,
+    isReviewScreen,
     isSuccessScreen,
-    isResubmitSuccessScreen,
     numberOfScreens,
     toggleSideMenu,
     updateFormData,

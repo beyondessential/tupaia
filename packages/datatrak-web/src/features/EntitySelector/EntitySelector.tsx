@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useFormContext } from 'react-hook-form';
 import { FormHelperText, FormLabel, FormLabelProps, TypographyProps } from '@material-ui/core';
-import { Country, SurveyScreenComponentConfig } from '@tupaia/types';
+import React, { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import styled from 'styled-components';
+
+import { Country, Project, SurveyScreenComponentConfig } from '@tupaia/types';
 import { SpinningLoader, useDebounce } from '@tupaia/ui-components';
+
 import { useEntityById, useProjectEntities } from '../../api';
-import { ResultsList } from './ResultsList';
+import { useSurveyForm } from '../Survey';
+import { QrCodeScanner, QrCodeScannerProps } from './QrCodeScanner';
+import { ResultsList, ResultsListProps } from './ResultsList';
 import { SearchField } from './SearchField';
 import { useEntityBaseFilters } from './useEntityBaseFilters';
 
@@ -23,8 +27,32 @@ const Label = styled(FormLabel)`
   cursor: pointer;
 `;
 
-const useSearchResults = (searchValue, filter, projectCode, disableSearch = false) => {
-  const debouncedSearch = useDebounce(searchValue!, 200);
+const OrDivider = styled.p.attrs({ children: 'or' })`
+  align-items: center;
+  column-gap: 1em;
+  display: grid;
+  font-size: inherit;
+  font-weight: 500;
+  grid-template-columns: minmax(0, 1fr) min-content minmax(0, 1fr);
+  inline-size: 100%;
+  margin-block-start: 1em;
+  text-box-edge: ex alphabetic; // Specific to the word “or”, which has no ascenders
+
+  &::before,
+  &::after {
+    block-size: 0;
+    border-block-end: max(0.0625rem, 1px) solid currentcolor;
+    content: '';
+  }
+`;
+
+const useSearchResults = (
+  searchValue: string,
+  filter,
+  projectCode: Project['code'] | undefined,
+  disableSearch = false,
+) => {
+  const debouncedSearch = useDebounce(searchValue, 200);
   return useProjectEntities(
     projectCode,
     {
@@ -39,21 +67,20 @@ const useSearchResults = (searchValue, filter, projectCode, disableSearch = fals
 
 interface EntitySelectorProps {
   id: string;
-  label?: string | null;
-  detailLabel?: string | null;
   name?: string | null;
-  required?: boolean | null;
+  label?: string | null;
+  required?: boolean;
   controllerProps: {
     onChange: (value: string) => void;
     value: string;
     ref: any;
     invalid?: boolean;
   };
-  showLegend: boolean;
+  showLegend?: boolean;
   projectCode?: string;
   showRecentEntities?: boolean;
   config?: SurveyScreenComponentConfig | null;
-  data?: Record<string, any>;
+  data?: Record<string, string>;
   countryCode?: Country['code'];
   disableSearch?: boolean;
   isLoading?: boolean;
@@ -68,9 +95,8 @@ interface EntitySelectorProps {
 
 export const EntitySelector = ({
   id,
-  label,
-  detailLabel,
   name,
+  label,
   required,
   controllerProps: { onChange, value, ref, invalid },
   projectCode,
@@ -91,7 +117,7 @@ export const EntitySelector = ({
   const [searchValue, setSearchValue] = useState('');
 
   // Display a previously selected value
-  useEntityById(value, {
+  void useEntityById(value, {
     staleTime: 0, // Needs to be 0 to make sure the entity is fetched on first render
     enabled: !!value && !searchValue,
     onSuccess: entityData => {
@@ -100,23 +126,36 @@ export const EntitySelector = ({
       }
     },
   });
-  const onChangeSearch = newValue => {
+
+  const onChangeSearch = (newValue: string) => {
     setIsDirty(true);
     setSearchValue(newValue);
   };
 
-  const onSelect = entity => {
+  const onSelect: ResultsListProps['onSelect'] = entity => {
     setIsDirty(true);
     onChange(entity.value);
   };
 
-  const filters = useEntityBaseFilters(config, data, countryCode);
+  const onQrCodeScannerResult: QrCodeScannerProps['onSuccess'] = entity => {
+    setIsDirty(true);
+    setSearchValue(entity.name); // Unnecessary, but ensures selected entity is visible
+    onChange(entity.id);
+  };
 
+  const filters = useEntityBaseFilters(config, data, countryCode);
+  const { data: validEntities } = useProjectEntities(projectCode, {
+    fields: ['id', 'name'], // Only these are used by `onQrCodeScannerResult`
+    filter: filters,
+  });
   const {
     data: searchResults,
-    isLoading: isLoadingSearchResults,
+    isFetching: isFetchingSearchResults,
     isFetched,
   } = useSearchResults(searchValue, filters, projectCode, disableSearch);
+
+  const { isResponseScreen, isReviewScreen } = useSurveyForm();
+  const showQrCodeScanner = config?.entity?.allowScanQrCode && !isResponseScreen && !isReviewScreen;
 
   const displayResults = searchResults?.filter(({ name: entityName }) => {
     if (isDirty || !value) {
@@ -125,7 +164,7 @@ export const EntitySelector = ({
     return entityName === searchValue;
   });
 
-  const showLoader = isLoading || ((isLoadingSearchResults || !isFetched) && !disableSearch);
+  const showLoader = isLoading || ((isFetchingSearchResults || !isFetched) && !disableSearch);
 
   return (
     <>
@@ -136,12 +175,17 @@ export const EntitySelector = ({
           </Label>
         )}
         <div className="entity-selector-content">
+          {showQrCodeScanner && (
+            <>
+              <QrCodeScanner onSuccess={onQrCodeScannerResult} validEntities={validEntities} />
+              <OrDivider />
+            </>
+          )}
+
           {showSearchInput && (
             <SearchField
               id={id}
               isDirty={isDirty}
-              label={label}
-              detailLabel={detailLabel}
               name={name!}
               ref={ref}
               onChangeSearch={onChangeSearch}
@@ -167,7 +211,7 @@ export const EntitySelector = ({
           )}
         </div>
       </Container>
-      {errors && errors[name!] && <FormHelperText error>{errors[name!].message}</FormHelperText>}
+      {errors?.[name!] && <FormHelperText error>{errors[name!].message}</FormHelperText>}
     </>
   );
 };

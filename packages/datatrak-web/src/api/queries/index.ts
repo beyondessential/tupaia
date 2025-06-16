@@ -19,6 +19,8 @@ export { useProjectSurveys } from './useProjectSurveys';
 export { useEntities } from './useEntities';
 export { useTaskMetrics } from './useTaskMetrics';
 export { useTasks } from './useTasks';
+export type { UseTasksQueryParams } from './useTasks';
 export { useTask } from './useTask';
 export { useSurveyUsers } from './useSurveyUsers';
 export { usePermissionGroupUsers } from './usePermissionGroupUsers';
+export { useProjectUsersQuery } from './useProjectUsersQuery';

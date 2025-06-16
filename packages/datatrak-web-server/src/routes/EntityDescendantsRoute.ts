@@ -14,6 +14,8 @@ export type EntityDescendantsRequest = Request<
 
 const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'];
 
+const DEFAULT_PAGE_SIZE = 100;
+
 async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
   const response = await services.central.fetchResources('entities', {
     filter: { id },
@@ -58,7 +60,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       filter: { countryCode, projectCode, grandparentId, parentId, type, ...restOfFilter },
       searchString,
       fields = DEFAULT_FIELDS,
-      pageSize,
+      pageSize = DEFAULT_PAGE_SIZE,
     } = query;
 
     if (isLoggedIn) {
@@ -123,7 +125,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
               };
             })
             .filter(Boolean),
-          ...entities.sort((a: any, b: any) => a.name.localeCompare(b.name)),
+          ...entities.sort((a: any, b: any) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
         ];
 
     return camelcaseKeys(sortedEntities, { deep: true });
