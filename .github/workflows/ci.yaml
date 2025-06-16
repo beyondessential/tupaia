@@ -93,11 +93,31 @@ jobs:
       - run: corepack enable yarn
       - run: yarn install --immutable
 
+  package_list:
+    name: Generate package list
+    runs-on: ubuntu-latest
+    outputs:
+      PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: set-matrix
+        run: |
+          echo PACKAGES=$(
+            yarn workspaces list --json |
+              jq --compact-output --raw-output --slurp \
+                '[.[] | .name] | map(select(. != "tupaia" and . != "@tupaia/devops" and . != "@tupaia/e2e"))'
+          ) >>"$GITHUB_OUTPUT"
+
   build:
     name: Build
+    needs: package_list
     runs-on: ubuntu-latest
     env:
       CI: false # react-scripts build treats warnings as errors if this is true
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.package_list.outputs.PACKAGES) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -105,11 +125,12 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: corepack enable yarn
-      - run: yarn install
-      - run: yarn run build
+      - run: yarn workspaces focus tupaia ${{ matrix.package }}
+      - run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
 
   run_tests:
     name: Run tests
+    needs: package_list
     timeout-minutes: 15 # Sometimes Jest doesn’t exit properly for meditrak-app-server tests
     runs-on: ubuntu-latest
     env:
@@ -149,44 +170,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package:
-          - admin-panel
-          - admin-panel-server
-          - aggregator
-          - api-client
-          - auth
-          - central-server
-          - data-api
-          - data-broker
-          - data-lake-api
-          - data-table-server
-          - database
-          - datatrak-web
-          - datatrak-web-server
-          - dhis-api
-          - entity-server
-          - expression-parser
-          - indicators
-          - kobo-api
-          - lesmis
-          - lesmis-server
-          - meditrak-app-server
-          - psss
-          - psss-server
-          - report-server
-          - server-boilerplate
-          - server-utils
-          - superset-api
-          - tsutils
-          - tupaia-web
-          - tupaia-web-server
-          - ui-chart-components
-          - ui-components
-          - ui-map-components
-          - utils
-          - viz-test-tool
-          - weather-api
-          - web-config-server
+        package: ${{ fromJSON(needs.package_list.outputs.PACKAGES) }}
 
     services:
       postgres:
@@ -212,15 +196,18 @@ jobs:
       - run: corepack enable yarn
       - run: yarn install
       - name: Build subtree
-        run: yarn run build:from ${{ matrix.package }}
-      - run: yarn workspace @tupaia/${{ matrix.package }} setup-test || echo "No setup needed"
-      - run: yarn workspace @tupaia/${{ matrix.package }} test
+        run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
+      - name: Run `setup-test` (if script exists)
+        run: yarn workspaces foreach --include @tupaia/${{ matrix.package }} setup-test
+      - name: Run `test` (if script exists)
+        run: yarn workspaces foreach --include ${{ matrix.package }} run test
 
   allgreen:
     name: All Green
     if: always()
     needs:
       - validate_branch_name
+      - validate_lockfile
       - validate_migration
       - validate_tests
       - validate_types
