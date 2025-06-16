@@ -65,6 +65,10 @@ export const GeolocateQuestion = ({
   const [errorFeedback, setErrorFeedback] = useState<string | null>(null);
 
   const isMobile = useIsMobile();
+
+  // This may in future be worth extracting into a `useIsOnline` hook. For now, it’s reasonable to
+  // only get this status when this component is rendered due to some other trigger; no need to
+  // cause a re-render when `online` or `offline` event fires between renders.
   const shouldUseDetectPosition = !window.navigator.onLine && 'geolocation' in navigator;
 
   const [position, error] = useCurrentPosition({ enabled: shouldUseDetectPosition });
