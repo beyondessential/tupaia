@@ -4,7 +4,6 @@ export { CopyIcon } from './CopyIcon';
 export { DotIcon } from './Dot';
 export type { DotIconProps } from './Dot';
 export { DownloadIcon } from './DownloadIcon';
-export { FiltersIcon } from './FiltersIcon';
 export { Pig } from './Pig';
 export { PinIcon } from './PinIcon';
 export { RadioIcon } from './RadioIcon';

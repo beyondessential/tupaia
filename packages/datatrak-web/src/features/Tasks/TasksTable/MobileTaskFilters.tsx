@@ -1,6 +1,7 @@
 import { Fab, Slide, Tab, Tabs, TabsProps, Typography } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { UseQueryResult } from '@tanstack/react-query';
+import { ListFilter as FilterIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
@@ -13,7 +14,7 @@ import {
   useProjectSurveys,
   useProjectUsersQuery,
 } from '../../../api';
-import { Button, FiltersIcon } from '../../../components';
+import { Button } from '../../../components';
 import { Modal, ModalBody, ModalCloseButton } from '../../../components/Modal';
 import { MobileAutocomplete, MobileAutocompleteProps } from './MobileAutocomplete';
 import { useDisableDesktopTaskFiltersWhileMounted } from './useDisableDesktopTaskFiltersWhileMounted';
@@ -281,7 +282,7 @@ export const MobileTaskFilters = ({
   return (
     <>
       <FilterButton onClick={() => void setIsOpen(true)}>
-        <FiltersIcon />
+        <FilterIcon aria-hidden style={{ fontSize: '1.5rem' }} />
         {filters.length > 0 && <FilterIndicator />}
       </FilterButton>
       <StyledModal open={isOpen} onClose={() => void setIsOpen(false)}>
