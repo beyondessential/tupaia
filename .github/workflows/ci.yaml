@@ -125,7 +125,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: corepack enable yarn
-      - run: yarn workspaces focus tupaia ${{ matrix.package }}
+      - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
       - run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
 
   run_tests:
