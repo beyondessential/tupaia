@@ -83,6 +83,7 @@ jobs:
       - run: ./packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh
 
   validate_lockfile:
+    name: Validate lockfile
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
