@@ -61,7 +61,6 @@ const StyledModal = styled(Modal).attrs({
     > .MuiPaper-root {
       border-start-end-radius: 0.625rem;
       border-start-start-radius: 0.625rem;
-      margin-block-start: 2rem;
       max-block-size: 50rem;
       padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);
       padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
