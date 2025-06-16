@@ -65,8 +65,6 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
   };
 
   public async buildResponse() {
-    winston.debug('[DashboardsRoute] start');
-    const tic = performance.now();
     const {
       accessPolicy,
       ctx,
@@ -74,9 +72,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       params: { projectCode, entityCode },
       session,
     } = this.req;
-    winston.debug(`[DashboardsRoute] params
-projectCode: ${projectCode}
-entityCode: ${entityCode}`);
+    winston.debug(`[DashboardsRoute] params projectCode=${projectCode} entityCode=${entityCode}`);
 
     // We're including the root entity in this request, so we don't need to double up fetching it
     const entities: Entity[] = await ctx.services.entity.getAncestorsOfEntity(
@@ -106,9 +102,6 @@ entityCode: ${entityCode}`);
     );
 
     if (dashboards.length === 0) {
-      winston.debug(
-        `[DashboardsRoute] No dashboards. Returning no-data dashboard ${NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE}`,
-      );
       return this.getNoDataDashboard(rootEntity.code, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
     }
 
@@ -191,9 +184,6 @@ entityCode: ${entityCode}`);
           pageSize: DEFAULT_PAGE_SIZE,
         })
       : [];
-    winston.debug(
-      `[DashboardsRoute] dashboardMailingListEntries: ${dashboardMailingListEntries.map(e => e.id).join(' ')}`,
-    );
 
     const mailingLists = dashboardMailingLists.map(list => ({
       dashboardId: list.dashboard_id,
@@ -212,7 +202,6 @@ entityCode: ${entityCode}`);
           )
         : false,
     }));
-    winston.debug(`[DashboardsRoute] ${mailingLists.length} mailingLists`);
 
     const dashboardsWithMetadata = dashboards.map(rawDashboard => {
       // but we can't strip it because typescript doesn't know about it
@@ -246,14 +235,9 @@ ${response.map(r => `  ${r.code} (${r.items.length} items)`).join('\n')}`,
         dashboardRelations.length > 0
           ? NO_ACCESS_DASHBOARD_ITEM_CODE
           : NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE;
-      winston.debug(
-        `[DashboardsRoute] Empty response. Returning no-data dashboard ${dashboardCode}`,
-      );
       return this.getNoDataDashboard(rootEntity.code, dashboardCode);
     }
 
-    const toc = performance.now();
-    winston.debug(`[DashboardsRoute] returning response after ${toc - tic} ms`);
     return camelcaseKeys(response, {
       deep: true,
       stopPaths: [

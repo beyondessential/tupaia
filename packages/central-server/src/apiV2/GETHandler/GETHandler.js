@@ -29,6 +29,10 @@ const MAX_RECORDS_PER_PAGE = 100;
  *       Get the fourth page of 100 answers for a given survey response
  */
 export class GETHandler extends CRUDHandler {
+  #debugLog = ['dashboard', 'dashboard_item', 'dashboard_relation'].includes(this.recordType)
+    ? winston.debug
+    : winston.silly;
+
   async handleRequest() {
     const { headers = {}, body } = await this.buildResponse();
     Object.entries(headers).forEach(([key, value]) => this.res.set(key, value));
@@ -113,9 +117,9 @@ export class GETHandler extends CRUDHandler {
   }
 
   async buildResponse() {
-    winston.debug(`[GETHandler#buildResponse] ${this.recordType}`);
+    this.#debugLog(`[GETHandler#buildResponse] ${this.recordType}`);
     let options = await this.getDbQueryOptions();
-    winston.debug(`[GETHandler#buildResponse] options: ${JSON.stringify(options, null, 2)}`);
+    this.#debugLog(`[GETHandler#buildResponse] options: ${JSON.stringify(options, null, 2)}`);
 
     // handle request for a single record
     const { recordId } = this;
@@ -126,7 +130,7 @@ export class GETHandler extends CRUDHandler {
 
     // handle request for multiple records, including pagination headers
     let criteria = this.getDbQueryCriteria();
-    winston.debug(`[GETHandler#buildResponse] criteria: ${JSON.stringify(criteria, null, 2)}`);
+    this.#debugLog(`[GETHandler#buildResponse] criteria: ${JSON.stringify(criteria, null, 2)}`);
     if (this.permissionsFilteredInternally) {
       ({ dbConditions: criteria, dbOptions: options } = await this.applyPermissionsFilter(
         criteria,
@@ -140,15 +144,11 @@ export class GETHandler extends CRUDHandler {
     ]);
     const isLastPageKnown = totalNumberOfRecords !== Number.POSITIVE_INFINITY;
 
-    winston.debug(`[GETHandler#buildResponse] ${totalNumberOfRecords} ${this.recordType} records.`);
-
     const { limit, page } = this.getPaginationParameters();
     const lastPage = isLastPageKnown ? Math.ceil(totalNumberOfRecords / limit) : null;
     const linkHeader = generateLinkHeader(this.resource, page, lastPage, this.req.query);
-    winston.debug(
-      `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length}: ${JSON.stringify(
-        pageOfRecords.map(r => ({ id: r.id, code: r.code })),
-      )}`,
+    this.#debugLog(
+      `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length} ${this.recordType} records (total ${totalNumberOfRecords})`,
     );
     return {
       headers: {
