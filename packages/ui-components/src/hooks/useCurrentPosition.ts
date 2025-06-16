@@ -57,7 +57,7 @@ export function useCurrentPosition({
     return () => {
       aborted = true;
     };
-  }, [enableHighAccuracy, timeout, maximumAge]);
+  }, [enabled, enableHighAccuracy, timeout, maximumAge]);
 
   return [position, error];
 }
