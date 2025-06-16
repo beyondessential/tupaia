@@ -139,15 +139,12 @@ entityCode: ${entityCode}`);
         pageSize: DEFAULT_PAGE_SIZE,
       },
     );
-    if (Array.isArray(dashboardItems)) {
-      winston.debug(
-        `[DashboardsRoute] ${dashboardItems.length} dashboardItems: ${dashboardItems.map(di => di.code).join(' ')}`,
-      );
-    } else {
-      winston.debug(
-        `[DashboardsRoute] dashboardItems is not an array: ${JSON.stringify(dashboardItems)}`,
-      );
-    }
+
+    winston.debug(
+      Array.isArray(dashboardItems)
+        ? `[DashboardsRoute] ${dashboardItems.length} dashboardItems: ${dashboardItems.map(di => di.code).join(' ')}`
+        : `[DashboardsRoute] dashboardItems is not an array: ${JSON.stringify(dashboardItems)}`,
+    );
 
     // Merged and sorted to make mapping easier
     const mergedItemRelations = orderBy(

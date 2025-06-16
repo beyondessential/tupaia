@@ -148,8 +148,6 @@ export class GETHandler extends CRUDHandler {
     winston.debug(
       `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length}: ${JSON.stringify(
         pageOfRecords.map(r => ({ id: r.id, code: r.code })),
-        null,
-        2,
       )}`,
     );
     return {
