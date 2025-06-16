@@ -102,7 +102,7 @@ export const TasksSection = () => {
     <SectionContainer>
       <FlexSpaceBetween as="header">
         <SectionHeading>My tasks</SectionHeading>
-        {hasTasks && isMobile && (
+        {hasTasks && !isMobile && (
           <ViewMoreButton component={Link} to={ROUTES.TASKS}>
             View more
           </ViewMoreButton>
