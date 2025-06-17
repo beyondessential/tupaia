@@ -199,7 +199,7 @@ jobs:
       - name: Build subtree
         run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
       - name: Set up tests (if script exists)
-        run: yarn workspaces foreach --include @tupaia/${{ matrix.package }} run setup-test
+        run: yarn workspaces foreach --include ${{ matrix.package }} run setup-test
       - name: Run tests (if script exists)
         run: yarn workspaces foreach --include ${{ matrix.package }} run test
 
