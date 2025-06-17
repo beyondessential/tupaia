@@ -13,6 +13,6 @@ NODE_ENV=production \
     --topological \
     --verbose \
     --jobs unlimited \
-    --include "$package_names_glob" \
+    --include "@tupaia/$package_names_glob" \
     run build-dev \
     "$@" # Forward arguments (mostly for --watch flag)
