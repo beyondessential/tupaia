@@ -100,7 +100,7 @@ jobs:
     outputs:
       PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: set-matrix
         run: |
           echo PACKAGES=$(
