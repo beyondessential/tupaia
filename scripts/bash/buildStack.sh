@@ -32,7 +32,7 @@ while getopts h opt; do
 		echo '    Builds all packages required to run the entire Admin Panel and Tupaia Web server stacks.'
 
 		echo -e "\n${BOLD}SEE ALSO${RESET}"
-		echo -e "  • ${DIM}$root_dir/scripts/node/getServerStacks.js"
+		echo -e "  • ${DIM}$root_dir/scripts/node/${RESET}getServerStacks.js"
 		echo -e "  • ${DIM}$script_dir/${RESET}buildPackagesByGlob.sh"
 
 		exit 0
