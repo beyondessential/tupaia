@@ -13,20 +13,20 @@ import { configureEnv } from './configureEnv';
 configureEnv();
 
 (async () => {
-  /**
-   * Set up database
-   */
-
-  const database = new TupaiaDatabase();
-
   if (!isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
     throw new Error('Feature MEDITRAK_SYNC_QUEUE is disabled, cannot build permissions based view');
   }
 
+  /**
+   * Set up database
+   */
+  const database = new TupaiaDatabase();
+
   await database.waitForChangeChannel();
-  const start = Date.now();
+  const profiler = winston.startTimer();
   await createPermissionsBasedMeditrakSyncQueue(database);
-  const end = Date.now();
-  winston.info(`Created permissions_based_meditrak_sync_queue, took: ${end - start}ms`);
+  profiler.done({
+    message: 'Created permissions_based_meditrak_sync_queue',
+  });
   await database.closeConnections();
 })();

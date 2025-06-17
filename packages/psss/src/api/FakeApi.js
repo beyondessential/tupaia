@@ -16,7 +16,6 @@ export const FakeAPI = {
   },
 
   async get(endpoint, options) {
-    // console.log('OPTIONS', options);
     const data = [];
 
     // Create users
@@ -66,8 +65,6 @@ export const FakeAPI = {
     }
 
     await this.sleep(500);
-
-    // console.log('DATA', data);
 
     return {
       data,

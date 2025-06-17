@@ -33,38 +33,37 @@ const OFF_WHITE = '#B8B8B8';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.9rem 0 0;
-  padding-left: 3.125rem;
-  padding-right: 3.125rem;
-  width: 65rem;
-  max-width: 100%;
-  text-align: left;
+  inline-size: 65rem;
+  max-inline-size: 100%;
+  padding-block-start: 0.9rem;
+  padding-inline: 3.125rem;
+  text-align: start;
   @media (max-width: ${MOBILE_BREAKPOINT}) {
-    padding: 0.9rem 0;
+    padding-block-end: 0.9rem;
   }
 `;
 
 const TagLine = styled.p`
-  margin: 0.5rem 0.4rem 1.5rem;
-  max-width: 26rem;
   font-size: 0.875rem;
   font-weight: 400;
+  margin-block: 0.5rem 1.5rem;
+  margin-inline: 0.4rem;
+  max-width: 26rem;
 `;
 
 const ProjectsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.8125rem;
-  margin: 1.4rem 0;
+  margin-block: 1.4rem;
 
   @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
-    padding-left: 0.675rem;
-    padding-right: 0.675rem;
+    padding-inline: 0.675rem;
   }
 `;
 
@@ -73,25 +72,24 @@ const ExploreButton = styled(RouterButton).attrs({
   color: 'default',
   to: DEFAULT_URL,
 })`
-  margin-top: 0.3rem;
-  margin-bottom: 1rem;
-  margin-left: 0.3rem;
-  width: 10.5rem;
-  height: 2.5rem;
-  line-height: 1.125rem;
-  border-radius: 3px;
+  block-size: 2.5rem;
+  border-color: ${({ theme }) => theme.palette.text.primary};
+  border-radius: 0.1875rem;
   font-size: 0.875rem;
-  font-weight: 500;
   font-style: normal;
+  font-weight: 500;
+  inline-size: 10.5rem;
+  line-height: 1.3;
+  margin-block: 0.3rem 1rem;
+  margin-inline-start: 0.3rem;
   text-align: center;
   text-transform: none;
-  border-color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const Line = styled.div`
   background-color: ${({ theme }) => theme.palette.text.secondary};
   height: 1px;
-  margin-top: 0.7rem;
+  margin-block-start: 0.7rem;
 `;
 
 const ProjectsTitle = styled(Typography).attrs({
@@ -127,7 +125,7 @@ const AutoCompleteWrapper = styled.div`
   margin-inline-start: 0.9rem;
   padding-inline-start: 1.3rem;
   width: 100%;
-  max-width: 19rem;
+  max-inline-size: 19rem;
 `;
 
 const SearchAutocomplete = styled(Autocomplete<CountryAutocompleteOption>)`
