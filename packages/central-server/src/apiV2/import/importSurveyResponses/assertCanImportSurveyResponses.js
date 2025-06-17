@@ -1,6 +1,7 @@
-import { flattenDeep, groupBy, keyBy } from 'lodash';
 import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
-import winston from '../../../log';
+import { flattenDeep, groupBy, keyBy } from 'lodash';
+
+import { InsufficientPermissionsError } from '../../../permissions';
 
 export const assertCanImportSurveyResponses = async (
   accessPolicy,
@@ -56,7 +57,7 @@ export const assertCanImportSurveyResponses = async (
         // Now check if users have permission group access to the survey response's country
         const permissionGroup = idToPermissionGroupName[survey.permission_group_id];
         if (!accessPolicy.allows(surveyResponseCountry.code, permissionGroup)) {
-          throw new Error(
+          throw new InsufficientPermissionsError(
             `Need ${permissionGroup} access to ${surveyResponseCountry.name} to import the survey response(s)`,
           );
         }
