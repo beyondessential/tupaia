@@ -11,6 +11,11 @@ readarray -t available_stacks < <(
 	jq --raw-output 'keys[]' "$stack_definitions"
 )
 
+print_available_stacks() {
+	echo -e "\n${BOLD}AVAILABLE STACKS${RESET}"
+	printf "  • %s\n" "${available_stacks[@]}"
+}
+
 while getopts h opt; do
 	case $opt in
 	h)
@@ -18,8 +23,7 @@ while getopts h opt; do
 		echo -e "\n${BOLD}USAGE${RESET}"
 		echo -e "  ${BOLD}yarn run ${GREEN}build:stack${RESET} [${BOLD}-h${RESET}] [${UNDERLINE}${BLUE}stack${RESET} ${BLUE}...${RESET}]"
 
-		echo -e "\n${BOLD}AVAILABLE STACKS${RESET}"
-		printf "  • %s\n" "${available_stacks[@]}"
+		print_available_stacks
 
 		echo -e "\n${BOLD}EXAMPLES${RESET}"
 		echo -e "  ${DIM}>${RESET} yarn run ${GREEN}build:stack ${CYAN}-h${RESET}"
@@ -43,11 +47,32 @@ while getopts h opt; do
 	esac
 done
 
+is_valid() {
+	for available in "${available_stacks[@]}"; do
+		if [[ "$available" = "$1" ]]; then
+			return 0
+		fi
+	done
+	return 1
+}
+
+valid_stacks=()
+invalid_stacks=()
 for stack in "$@"; do
-	# TODO: Assert package is valid
-	stacks+=(stack)
+	if is_valid "$stack"; then
+		valid_stacks+=("$stack")
+	else
+		invalid_stacks+=("$stack")
+	fi
 done
 
-package_names_glob=$(node "$root_dir/scripts/node/getServerStacks" --as-glob "${stacks[@]}")
+if ((${#invalid_stacks[@]} > 0)); then
+	echo -e "${BOLD}${RED}Usage error.${RESET} The following stacks aren’t available. Please check for typos."
+	printf "  • %s\n" "${invalid_stacks[@]}"
+	print_available_stacks
+	exit 1
+fi
+
+package_names_glob=$(node "$root_dir"/scripts/node/getServerStacks --as-glob "${valid_stacks[@]}")
 
 yarn run build:from "$package_names_glob"
