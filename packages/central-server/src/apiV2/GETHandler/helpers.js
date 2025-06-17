@@ -2,33 +2,22 @@ import formatLinkHeader from 'format-link-header';
 import { ValidationError } from '@tupaia/utils';
 import { getApiUrl, resourceToRecordType } from '../../utilities';
 
-/**
- * @param {*} resource
- * @param {string} pageString
- * @param {(number|null)} lastPage
- * @param {*} originalQueryParameters
- * @returns
- */
 export const generateLinkHeader = (resource, pageString, lastPage, originalQueryParameters) => {
-  const currentPage = Number.parseInt(pageString, 10);
-  const isLastPageKnown = typeof lastPage === 'number' && lastPage !== Number.POSITIVE_INFINITY;
+  const currentPage = parseInt(pageString, 10);
 
   const getUrlForPage = page => getApiUrl(resource, { ...originalQueryParameters, page });
 
-  // We can always send through first, so start with that in the link header
+  // We can always send through first and last, so start with that in the link header
   const linkHeader = {
     first: {
       url: getUrlForPage(0),
       rel: 'first',
     },
-  };
-
-  if (isLastPageKnown) {
-    linkHeader.last = {
+    last: {
       url: getUrlForPage(lastPage),
       rel: 'last',
-    };
-  }
+    },
+  };
 
   // If not the first page, generate a 'prev' link to the page before
   if (currentPage > 0) {
@@ -39,8 +28,7 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
   }
 
   // If not the last page, generate a 'next' link to the next page
-  // If we don’t know the last page, include it anyway
-  if (!isLastPageKnown || currentPage < lastPage) {
+  if (currentPage < lastPage) {
     linkHeader.next = {
       url: getUrlForPage(currentPage + 1),
       rel: 'next',
