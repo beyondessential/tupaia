@@ -33,8 +33,8 @@ if [[ $1 = --as-glob ]]; then
     IFS=,
     echo "${internal_deps[*]}"
   )
-  # 'foo,bar,baz' → '@tupaia/{foo,bar,baz}'
-  echo "@tupaia/{$pattern}"
+  # 'foo,bar,baz' → '{foo,bar,baz}'
+  echo "{$pattern}"
 else
   echo "${internal_deps[@]}"
 fi
