@@ -46,12 +46,11 @@ const Button = styled(UIButton).attrs({
 `;
 
 export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
-  const { toggleSideMenu, isLast, isReviewScreen, isResubmitReviewScreen } = useSurveyForm();
+  const { toggleSideMenu, isLast, isResubmit, isReviewScreen } = useSurveyForm();
   const share = useShare();
 
   const getNextButtonText = () => {
-    if (isReviewScreen) return 'Submit';
-    if (isResubmitReviewScreen) return 'Resubmit';
+    if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
     if (isLast) return 'Review';
     return 'Next';
   };

@@ -1,7 +1,10 @@
-import { Request, RequestHandler } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { IncomingMessage, ServerResponse } from 'http';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
+import winston from 'winston';
+
 import { AuthHandler } from '@tupaia/api-client';
+
 import { RequiresSessionAuthHandler } from '../orchestrator';
 
 type AuthHandlerProvider = (req: Request) => AuthHandler;
@@ -38,8 +41,8 @@ export const forwardRequest = (
   };
 
   const proxyMiddleware = createProxyMiddleware(proxyOptions);
-  return async (req, res, next) => {
-    console.log(`forwarding ${req.originalUrl} to ${target}`);
+  return async (req: Request, res: Response, next: NextFunction) => {
+    winston.info(`Forwarding ${req.originalUrl} to ${target}`);
     try {
       const authHandler = authHandlerProvider(req);
       req.headers.authorization = await authHandler.getAuthHeader();
