@@ -5,10 +5,7 @@ HOME_DIR=/home/ubuntu
 TUPAIA_DIR=$HOME_DIR/tupaia
 LOGS_DIR=$HOME_DIR/logs
 
-SCRIPT_DIR=$(
-    cd "$(dirname "${BASH_SOURCE[0]}")"
-    pwd -P
-)
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 cd "$SCRIPT_DIR"
 
 ./checkRequiredEnvVars.sh

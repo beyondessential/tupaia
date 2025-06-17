@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -le
 
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 TUPAIA_DIR=$DIR/../../../..
 DEPLOYMENT_NAME=$1
 
-echo "Building deployable packages"
+echo 'Building deployable packages'
 PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)

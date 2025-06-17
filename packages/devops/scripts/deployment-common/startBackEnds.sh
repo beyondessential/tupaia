@@ -1,6 +1,6 @@
 #!/bin/bash -le
 
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 TUPAIA_DIR=$DIR/../../../..
 PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
@@ -9,13 +9,13 @@ PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Start back end server packages
 for PACKAGE in ${PACKAGES[@]}; do
-    if [[ $PACKAGE == *server ]]; then
-        if [[ $PACKAGE == 'central-server' ]]; then
+    if [[ $PACKAGE = *server ]]; then
+        if [[ $PACKAGE = central-server ]]; then
             # reset cwd back to `/tupaia`
             cd ${TUPAIA_DIR}
 
             # ensure that the analytics table is fully built
-            echo "Building analytics table"
+            echo 'Building analytics table'
             yarn workspace @tupaia/data-api install-mv-refresh
             yarn workspace @tupaia/data-api patch-mv-refresh up
             yarn workspace @tupaia/data-api build-analytics-table
@@ -28,7 +28,7 @@ for PACKAGE in ${PACKAGES[@]}; do
         echo "Starting ${PACKAGE}"
         cd ${TUPAIA_DIR}/packages/$PACKAGE
         REPLICATION_PM2_CONFIG=''
-        if [ $PACKAGE == "web-config-server" ] || [ $PACKAGE == "report-server" ] ; then
+        if [[ $PACKAGE = web-config-server || $PACKAGE = report-server ]]; then
             # as many replicas as cpu cores - 1
             REPLICATION_PM2_CONFIG='-i -1'
         fi
@@ -44,4 +44,4 @@ pm2 save
 # Log dump file
 grep status /home/ubuntu/.pm2/dump.pm2
 
-echo "Finished deploying latest"
+echo 'Finished deploying latest'

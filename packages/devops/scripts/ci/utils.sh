@@ -8,19 +8,19 @@ function ansi_color() {
 }
 
 function log_with_color() {
-    echo -e "$(ansi_color $2)$1$(ansi_color $COLOR_RESET)"
+    echo -e "$(ansi_color "$2")$1$(ansi_color "$COLOR_RESET")"
 }
 
 function log_error() {
-    log_with_color "$1" $COLOR_RED
+    log_with_color "$1" "$COLOR_RED"
 }
 
 function log_warn() {
-    log_with_color "$1" $COLOR_YELLOW
+    log_with_color "$1" "$COLOR_YELLOW"
 }
 
 function log_success() {
-    log_with_color "$1" $COLOR_GREEN
+    log_with_color "$1" "$COLOR_GREEN"
 }
 
 function get_max_length() {
@@ -29,20 +29,20 @@ function get_max_length() {
 
     for item in "${array[@]}"; do
         length=${#item}
-        if [[ $length -gt $max ]]; then
+        if (( length > max )); then
             max=$length
         fi
     done
 
-    echo $max
+    echo "$max"
 }
 
 function get_branch_name() {
     local branch_name="$CI_BRANCH"
-    if [[ $branch_name == "" ]]; then
+    if [[ $branch_name = '' ]]; then
         # Get currently checked out branch
-        branch_name=$(git rev-parse --abbrev-ref HEAD)
+        branch_name=$(git branch --show-current)
     fi
 
-    echo $branch_name
+    echo "$branch_name"
 }
