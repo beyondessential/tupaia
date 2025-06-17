@@ -40,7 +40,7 @@ jobs:
           cache: yarn
       - run: corepack enable yarn
       - run: yarn install
-      - run: yarn workspace @tupaia/utils build # /scripts/node/validateTests.js uses utils package
+      - run: yarn workspace @tupaia/utils run build # /scripts/node/validateTests.js uses utils package
       - name: Validate unit tests
         run: packages/devops/scripts/ci/validateTests.sh
 
