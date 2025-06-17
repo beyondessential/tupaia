@@ -39,6 +39,7 @@ cleanup() {
     echo
     echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
     bw logout
+    echo
 
     # Clean up detritus on macOS
     # macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a
