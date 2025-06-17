@@ -111,15 +111,19 @@ if ! command -v node &>/dev/null; then
 fi
 echo "nvm $(nvm --version) is installed"
 
-# install pm2
+# Install PM2, ensuring same version as root package.json
 if ! command -v pm2 &>/dev/null; then
   echo 'PM2 not installed. Installing...'
-  npm install --global pm2
-  pm2 install pm2-logrotate
+  npm install --global pm2@^6.0.8
+elif (($(yarn pm2 --version | cut -d . -f 1) != 6)); then
+  echo "PM2 $(pm2 --version) is installed. Replacing with ^6.0.8..."
+  npm install --global pm2@^6.0.8
 fi
 echo "PM2 $(pm2 --version) is installed"
 
-# install bitwarden
+pm2 install pm2-logrotate
+
+# Install Bitwarden
 if ! command -v bw &>/dev/null; then
   echo 'Bitwarden CLI not installed. Installing...'
   # Avoid 2025.5.0, which has a known issue. See https://github.com/bitwarden/clients/issues/14995
