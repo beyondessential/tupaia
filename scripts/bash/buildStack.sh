@@ -14,7 +14,7 @@ readarray -t available_stacks < <(
 while getopts h opt; do
 	case $opt in
 	h)
-		echo -e "${BOLD}build:stack${RESET} builds the subtree of dependencies required to run the given server stack(s)."
+		echo -e "${BOLD}build:stack${RESET} builds the subtree(s) of dependencies required to run the given server stack(s)."
 		echo -e "\n${BOLD}USAGE${RESET}"
 		echo -e "  ${BOLD}yarn run ${GREEN}build:stack${RESET} [${BOLD}-h${RESET}] [${UNDERLINE}${BLUE}stack${RESET} ${BLUE}...${RESET}]"
 
