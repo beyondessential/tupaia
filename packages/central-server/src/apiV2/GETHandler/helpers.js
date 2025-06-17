@@ -2,8 +2,28 @@ import formatLinkHeader from 'format-link-header';
 import { ValidationError } from '@tupaia/utils';
 import { getApiUrl, resourceToRecordType } from '../../utilities';
 
-export const generateLinkHeader = (resource, pageString, lastPage, originalQueryParameters) => {
-  const currentPage = parseInt(pageString, 10);
+export const generateLinkHeader = (
+  resource,
+  pageString,
+  lastPage,
+  originalQueryParameters,
+  debugLog,
+) => {
+  debugLog(
+    `[generateLinkHeader] ${JSON.stringify(
+      {
+        resource,
+        pageString,
+        lastPage,
+        originalQueryParameters,
+      },
+      null,
+      2,
+    )}`,
+  );
+
+  const currentPage = Number.parseInt(pageString, 10);
+  debugLog(`[generateLinkHeader] currentPage:  ${currentPage}`);
 
   const getUrlForPage = page => getApiUrl(resource, { ...originalQueryParameters, page });
 
@@ -35,7 +55,12 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
     };
   }
 
-  return formatLinkHeader(linkHeader);
+  debugLog(`[generateLinkHeader] formatting linkHeader:  ${JSON.stringify(linkHeader, null, 2)}`);
+
+  const rv = formatLinkHeader(linkHeader);
+  debugLog(`[generateLinkHeader] formatted:  ${rv}`);
+
+  return rv;
 };
 
 export const fullyQualifyColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {

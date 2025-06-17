@@ -143,21 +143,25 @@ export class GETHandler extends CRUDHandler {
 
     const { limit, page } = this.getPaginationParameters();
     const lastPage = Math.ceil(totalNumberOfRecords / limit);
-    const linkHeader = generateLinkHeader(this.resource, page, lastPage, this.req.query);
+    const linkHeader = generateLinkHeader(
+      this.resource,
+      page,
+      lastPage,
+      this.req.query,
+      this.#debugLog,
+    );
+
     this.#debugLog(
       `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length} ${this.recordType} records (total ${totalNumberOfRecords})`,
     );
-
-    const headers = {
-      Link: linkHeader,
-      'Access-Control-Expose-Headers': 'Link, X-Total-Count', // to get around CORS
-      'X-Total-Count': totalNumberOfRecords,
-    };
-
-    this.#debugLog(`[GETHandler#buildResponse] headers: ${JSON.stringify(headers, null, 2)}`);
+    this.#debugLog(`[GETHandler#buildResponse] Link header: ${linkHeader}`);
 
     return {
-      headers,
+      headers: {
+        Link: linkHeader,
+        'Access-Control-Expose-Headers': 'Link, X-Total-Count', // to get around CORS
+        'X-Total-Count': totalNumberOfRecords,
+      },
       body: pageOfRecords,
     };
   }
