@@ -5,7 +5,7 @@ import {
   findOrCreateDummyCountryEntity,
   findOrCreateDummyRecord,
 } from '@tupaia/database';
-import { getModels, } from '../testUtilities';
+import { getModels } from '../testUtilities';
 import { DhisChangeValidator } from '../../dhis/DhisChangeValidator';
 
 const models = getModels();
