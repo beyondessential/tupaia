@@ -24,22 +24,19 @@
     "build-storybook": "yarn package:storybook:build"
   },
   "dependencies": {
-    "@material-ui/core": "^4.9.8",
+    "@material-ui/core": "^4.12.0",
     "@tupaia/types": "workspace:*",
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "lodash.get": "^4.4.2",
     "moment": "^2.24.0",
-    "prop-types": "^15.7.2",
     "react": "^16.14.0",
     "react-dom": "^16.13.1",
     "react-is": "^16.13.1",
-    "react-table": "^7.7.0",
     "recharts": "^1.8.5",
     "styled-components": "^5.0.1"
   },
   "devDependencies": {
-    "@material-ui/styles": "^4.9.10",
     "@types/jest": "^29.5.14",
     "@types/lodash.get": "^4.4.7",
     "@types/recharts": "^1.8.24",

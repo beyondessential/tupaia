@@ -12,9 +12,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
+    "build": "rimraf dist && yarn run package:build:ts",
     "build-dev": "yarn run build",
-    "build-watch": "rimraf dist && npm run --prefix ../../ package:build:ts-watch",
+    "build-watch": "rimraf dist && yarn run package:build:ts-watch",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --passWithNoTests",
