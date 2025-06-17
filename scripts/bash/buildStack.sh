@@ -43,9 +43,9 @@ while getopts h opt; do
 	esac
 done
 
-for package in "$@"; do
+for stack in "$@"; do
 	# TODO: Assert package is valid
-	stacks+=(package)
+	stacks+=(stack)
 done
 
 package_names_glob=$(node "$root_dir/scripts/node/getServerStacks" --as-glob "${stacks[@]}")
