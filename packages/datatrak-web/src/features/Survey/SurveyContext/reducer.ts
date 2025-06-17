@@ -1,7 +1,7 @@
 import { SurveyScreen, SurveyScreenComponent } from '../../../types';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 
-export type SurveyFormContextType = {
+export interface SurveyFormContextType {
   startTime: string;
   surveyCode?: string;
   surveyProjectCode?: string;
@@ -22,12 +22,10 @@ export type SurveyFormContextType = {
   isSuccessScreen?: boolean;
   cancelModalOpen: boolean;
   cancelModalConfirmLink: string;
-  countryCode: string;
+  countryCode: string | undefined;
   primaryEntityQuestion?: SurveyScreenComponent | null;
-  isResubmitScreen: boolean;
-  isResubmitReviewScreen: boolean;
   isResubmit: boolean;
-};
+}
 
 export const surveyReducer = (
   state: SurveyFormContextType,
