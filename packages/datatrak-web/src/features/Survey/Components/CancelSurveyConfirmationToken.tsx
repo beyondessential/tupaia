@@ -6,17 +6,12 @@ import { useBeforeUnload } from '../../../utils';
 import { useSurveyForm } from '../SurveyContext';
 
 export const CancelSurveyConfirmationToken = () => {
-  const {
-    cancelModalConfirmLink,
-    cancelModalOpen,
-    closeCancelConfirmation,
-    isResubmitSuccessScreen,
-    isSuccessScreen,
-  } = useSurveyForm();
+  const { cancelModalConfirmLink, cancelModalOpen, closeCancelConfirmation, isSuccessScreen } =
+    useSurveyForm();
 
   const { formState } = useFormContext();
 
-  useBeforeUnload(formState.isDirty && !isSuccessScreen && !isResubmitSuccessScreen);
+  useBeforeUnload(formState.isDirty && !isSuccessScreen);
 
   return (
     <CancelConfirmModal
