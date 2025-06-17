@@ -5,7 +5,7 @@ import React, { Fragment, useState } from 'react';
 import { generatePath, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { Tooltip } from '@tupaia/ui-components';
+import { Tooltip, useIsMounted, VisuallyHidden } from '@tupaia/ui-components';
 
 import { CopyIcon } from '../../../components';
 import { ROUTES } from '../../../constants';
@@ -44,12 +44,16 @@ const useCopyUrl = () => {
   const link = `${window.location.origin}${path}`;
 
   const [didJustCopy, setDidJustCopy] = useState(false);
+  const isMounted = useIsMounted();
 
   const copyPageUrl = async () => {
     try {
       await navigator.clipboard.writeText(link);
-      setDidJustCopy(true);
-      setTimeout(() => setDidJustCopy(false), 2000);
+
+      if (isMounted()) setDidJustCopy(true);
+      setTimeout(() => {
+        if (isMounted()) setDidJustCopy(false);
+      }, 2000);
 
       // Android 12 (and newer) notifies the user when the clipboard is accessed
       // https://developer.android.com/privacy-and-security/risks/secure-clipboard-handling
@@ -79,8 +83,9 @@ export const CopyUrlButton = ({ noTooltip = false, ...props }: CopyUrlButtonProp
 
   return (
     <MaybeTooltip>
-      <StyledIconButton aria-label="Copy URL to clipboard" onClick={copyPageUrl} {...props}>
+      <StyledIconButton onClick={copyPageUrl} {...props}>
         {didJustCopy ? <DoneIcon htmlColor={successColor} /> : <StyledCopyIcon />}
+        <VisuallyHidden>Copy URL to clipboard</VisuallyHidden>
       </StyledIconButton>
     </MaybeTooltip>
   );
