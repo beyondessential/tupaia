@@ -24,7 +24,7 @@
     "build-storybook": "yarn package:storybook:build"
   },
   "dependencies": {
-    "@material-ui/core": "^4.9.8",
+    "@material-ui/core": "^4.12.0",
     "@material-ui/icons": "^4.9.1",
     "@tupaia/types": "workspace:*",
     "@tupaia/ui-components": "workspace:*",
@@ -36,16 +36,14 @@
     "react-dom": "^16.13.1",
     "react-is": "^16.13.1",
     "react-leaflet": "^3.2.1",
-    "react-table": "^7.7.0",
     "styled-components": "^5.0.1"
   },
   "devDependencies": {
-    "@material-ui/styles": "^4.9.10",
-    "@mui/types": "^7.2.4",
-    "@types/jest": "^29.5.1",
+    "@types/jest": "^29.5.14",
     "@types/leaflet": "^1.7.1",
     "@types/react-dom": "^16.9.18",
     "@types/styled-components": "^5.1.26",
+    "jest": "^29.7.0",
     "rimraf": "^6.0.1"
   }
 }

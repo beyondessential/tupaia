@@ -9,7 +9,6 @@
 ##
 USAGE="Usage: backendStartDev babel_port_inspector [-i --include-internal] [-ts --typescript]"
 DIR=$(dirname "$0")
-CONCURRENTLY_BIN="${DIR}/../../node_modules/.bin/concurrently"
 watch_flags=""
 include_internal=false
 type_script=false
@@ -55,7 +54,7 @@ if [[ ${include_internal} == true ]]; then
     # add the watch flags to the server start process, as well as a 1 second delay to debounce the
     # many restarts that otherwise happen during the initial build of internal dependencies
     start_server="${start_server} --delay 1 ${watch_flags}"
- 
+
 else
     echo "Starting server without internal dependency build and watch. To include internal dependencies, add the -i flag - it's much faster than it used to be!"
 

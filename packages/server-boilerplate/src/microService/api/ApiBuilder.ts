@@ -51,6 +51,9 @@ export class ApiBuilder {
         credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
       }),
     );
+    // @ts-ignore
+    // We were previously missing a dev dependency so this TS error never cropped up. This should be
+    // tidied up eventually, but leaving for now. (It hasn’t been an issue, yet, for 4+ years)
     this.app.use(bodyParser.json({ limit: '50mb' }));
     this.app.use(errorHandler());
 

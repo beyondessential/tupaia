@@ -2,7 +2,7 @@
 module.exports = {
   // Don't extend standard eslint-js because we use mocha not jest
   extends: '@beyondessential/js',
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   rules: {
     'import/no-extraneous-dependencies': 'error',
   },
@@ -10,22 +10,18 @@ module.exports = {
     {
       files: ['src/tests/**/*.js'],
       env: {
-        mocha: true
+        mocha: true,
       },
       rules: {
         'import/no-extraneous-dependencies': [
           'error',
           {
-            devDependencies: true // allow importing from devDependencies for tests
-          }
+            devDependencies: true, // allow importing from devDependencies for tests
+          },
         ],
-        'no-unused-expressions': 'off' // not chai friendly
-      }
-    }
+        'no-unused-expressions': 'off', // not chai friendly
+      },
+    },
   ],
-  ignorePatterns: [
-    'dist/',
-    'node_modules/',
-    '.eslintrc.js'
-  ]
+  ignorePatterns: ['dist/', 'node_modules/', '.eslintrc.js'],
 };

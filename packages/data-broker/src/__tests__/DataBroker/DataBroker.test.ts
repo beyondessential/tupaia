@@ -18,10 +18,6 @@ jest.mock('@tupaia/database', () => ({
   RECORDS: jest.requireActual('@tupaia/database').RECORDS, // don't mock needed type
 }));
 
-jest.mock('@tupaia/server-boilerplate', () => ({
-  ApiConnection: jest.fn().mockImplementation(() => {}),
-}));
-
 jest.mock('../../DataBroker/fetchDataSources', () => ({
   fetchDataElements: async (models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);

@@ -13,8 +13,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rimraf dist && run-p \"build:* {@}\" --",
-    "build:src": "npm run --prefix ../../ package:build:js",
-    "build:types": "npm run --prefix ../../ package:build:types",
+    "build:src": "yarn run package:build:js",
+    "build:types": "yarn run package:build:types",
     "build-dev": "yarn run build",
     "test": "yarn package:test",
     "test:coverage": "yarn test --coverage"
