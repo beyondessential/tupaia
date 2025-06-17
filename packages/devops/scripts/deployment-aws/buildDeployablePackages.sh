@@ -18,13 +18,6 @@ chmod 755 node_modules/@babel/cli/bin/babel.js
 # Suppress output of secrets
 set +x
 
-if ! bw --version; then
-    echo "Bad Bitwarden CLI version installed (probably 2025.5). Replacing with 2025.4..."
-    npm uninstall --global @bitwarden/cli
-    npm install --global @bitwarden/cli@2025.4.0
-    echo "Bitwarden CLI $(bw --version) is installed"
-fi
-
 # Inject environment variables from Bitwarden
 BW_CLIENTID="$("$script_dir/fetchParameterStoreValue.sh" BW_CLIENTID)"
 BW_CLIENTSECRET="$("$script_dir/fetchParameterStoreValue.sh" BW_CLIENTSECRET)"
