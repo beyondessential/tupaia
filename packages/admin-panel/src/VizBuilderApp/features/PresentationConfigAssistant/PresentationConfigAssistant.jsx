@@ -18,12 +18,11 @@ const Wrapper = styled.article`
 export const PresentationConfigAssistant = ({
   visualisationCode,
   dataStructure,
-  setPresentationValue,
+  onAssistantResponse,
 }) => {
   const [currentMessage, setCurrentMessage] = useState(null);
   const { getVisualisationMessages, addVisualisationMessage } =
     usePresentationConfigAssistantContext();
-  const { setFetchEnabled, setShowData } = usePreviewDataContext();
 
   const messages = getVisualisationMessages(visualisationCode);
   const { data: completion } = usePromptMessageQuery(currentMessage, dataStructure, {
@@ -32,16 +31,7 @@ export const PresentationConfigAssistant = ({
 
   useEffect(() => {
     if (completion) {
-      if (completion.status_code === 'success') {
-        setPresentationValue(completion.presentationConfig);
-        setFetchEnabled(true);
-        setShowData(true);
-      }
-      addVisualisationMessage(visualisationCode, {
-        id: Date.now(),
-        text: completion.message,
-        isOwn: false,
-      });
+      onAssistantResponse(completion);
       setCurrentMessage(null);
     }
   }, [completion]);

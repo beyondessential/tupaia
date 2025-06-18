@@ -161,7 +161,7 @@ export const Chat = ({ messages = [], onSendMessage, height = 600, width = 310 }
         id="userMessage"
         name="userMessage"
         onChange={e => setInput(e.target.value)}
-        placeholder="Type any changes you’d like to make to the chart here…"
+        placeholder={messages.length === 0 ? `Type any changes you'd like to make to the chart here…` : 'Reply here'}
         value={input}
         disableUnderline={true}
         onKeyDown={e => {

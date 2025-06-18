@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
@@ -23,6 +23,7 @@ import {
 } from '../constants';
 import { PresentationConfigAssistant } from '../features/PresentationConfigAssistant/PresentationConfigAssistant';
 import { PresentationJsonToggle } from './JsonToggleButton';
+import { usePresentationConfigAssistantContext } from '../context/PresentationConfigAssistant';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -88,7 +89,7 @@ const EditorActionBar = styled.header`
 const EditorContainer = styled.div`
   width: 330px;
   min-height: 500px;
-  display: flex;
+  display: ${props => (props.showPresentationAsJson ? 'flex' : 'none')};
   flex-direction: column;
 
   > div {
@@ -99,6 +100,10 @@ const EditorContainer = styled.div`
   .jsoneditor {
     border: none;
   }
+`;
+
+const PresentationConfigAssistantContainer = styled.div`
+  ${props => (props.showPresentationAsJson ? 'display: none' : '')};
 `;
 
 const TABS = {
@@ -116,11 +121,15 @@ const TABS = {
 
 const getTab = index => Object.values(TABS).find(tab => tab.index === index);
 
+const ASSISTANT_ERROR_MESSAGE =
+  'Sorry, I’m having trouble with that now. Please edit the chart presentation using JSON mode';
+
 export const PreviewSection = () => {
   const [tab, setTab] = useState(0);
+  const editorRef = useRef(null);
 
   const { dashboardItemOrMapOverlay } = useParams();
-  const { fetchEnabled, setFetchEnabled, showData, showPresentationAsJson } =
+  const { fetchEnabled, setFetchEnabled, setShowData, showData, showPresentationAsJson } =
     usePreviewDataContext();
   const { hasPresentationError, setPresentationError } = useVizConfigErrorContext();
 
@@ -136,7 +145,7 @@ export const PreviewSection = () => {
       : MAP_OVERLAY_VIZ_TYPES[vizType]?.schema;
 
   const [config, setConfig] = useState(null);
-
+  const [isAssistantError, setIsAssistantError] = useState(false);
   const runReportPreview = previewMode =>
     useReportPreview({
       visualisation: visualisationForFetchingData,
@@ -183,6 +192,36 @@ export const PreviewSection = () => {
     setPresentationError(null);
   };
 
+  const { addVisualisationMessage } = usePresentationConfigAssistantContext();
+
+  const handleAssistantResponse = async completion => {
+    let assistantReply = null;
+    if (completion.status_code === 'error') {
+      setIsAssistantError(true);
+      assistantReply = ASSISTANT_ERROR_MESSAGE;
+    }
+
+    if (completion.status_code === 'success') {
+      editorRef.current.set(completion.presentationConfig);
+      const validationError = await editorRef.current.validate();
+      if (validationError.length > 0) {
+        setIsAssistantError(true);
+        assistantReply = ASSISTANT_ERROR_MESSAGE;
+      } else {
+        assistantReply = completion.message;
+      }
+    }
+
+    addVisualisationMessage(visualisationForFetchingData.code, {
+      id: Date.now(),
+      text: assistantReply,
+      isOwn: false,
+    });
+    setPresentation(completion.presentationConfig);
+    setFetchEnabled(true);
+    setShowData(true);
+  };
+
   const { columns: transformedColumns = [] } = tableData;
   const columns = useMemo(() => (tab === 0 ? getColumns(tableData) : []), [tableData]);
   const rows = useMemo(() => (tab === 0 ? getRows(tableData) || [] : []), [tableData]);
@@ -195,6 +234,16 @@ export const PreviewSection = () => {
   useEffect(() => {
     setConfig(visualisation.presentation);
   }, [fetchEnabled]);
+
+  const getVisualisationError = () => {
+    if (isVisualisationError) {
+      return visualisationError;
+    }
+    if (isAssistantError) {
+      return { message: 'Unable to generate visual' };
+    }
+    return null;
+  };
 
   return (
     <>
@@ -231,8 +280,8 @@ export const PreviewSection = () => {
             {showData ? (
               <FetchLoader
                 isLoading={isVisualisationLoading || isVisualisationFetching}
-                isError={isVisualisationError}
-                error={visualisationError}
+                isError={isVisualisationError || isAssistantError}
+                error={getVisualisationError()}
               >
                 <Chart report={report} config={config} />
               </FetchLoader>
@@ -244,24 +293,28 @@ export const PreviewSection = () => {
             <EditorActionBar>
               <PresentationJsonToggle />
             </EditorActionBar>
-            {!showPresentationAsJson && presentationSchema ? (
+            <PresentationConfigAssistantContainer
+              showPresentationAsJson={showPresentationAsJson && presentationSchema}
+            >
               <PresentationConfigAssistant
                 visualisationCode={visualisationForFetchingData.code}
                 dataStructure={{ columns: transformedColumns }}
-                setPresentationValue={setPresentationValue}
+                onAssistantResponse={handleAssistantResponse}
               />
-            ) : (
-              <EditorContainer>
-                <JsonEditor
-                  value={visualisation.presentation}
-                  onChange={setPresentationValue}
-                  onInvalidChange={handleInvalidPresentationChange}
-                  mode="code"
-                  mainMenuBar={false}
-                  schema={presentationSchema}
-                />
-              </EditorContainer>
-            )}
+            </PresentationConfigAssistantContainer>
+            <EditorContainer showPresentationAsJson={showPresentationAsJson}>
+              <JsonEditor
+                value={visualisation.presentation}
+                onChange={setPresentationValue}
+                onInvalidChange={handleInvalidPresentationChange}
+                mode="code"
+                mainMenuBar={false}
+                schema={presentationSchema}
+                editorRef={ref => {
+                  editorRef.current = ref;
+                }}
+              />
+            </EditorContainer>
           </ChartPreviewSidebar>
         </Container>
       </TabPanel>
