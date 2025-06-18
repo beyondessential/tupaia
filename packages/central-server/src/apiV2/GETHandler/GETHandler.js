@@ -147,7 +147,7 @@ export class GETHandler extends CRUDHandler {
     const { limit, page } = this.getPaginationParameters();
     const lastPage = Math.ceil((typeof limit === 'number' ? limit : totalNumberOfRecords) / limit);
     this.#debugLog(
-      `[GETHandler#buildResponse] pagination parameters: limit=${limit} page=${page} lastPage=${lastPage}`,
+      `[GETHandler#buildResponse] pagination parameters: limit=${limit} (${typeof limit}) page=${page} (${typeof page}) lastPage=${lastPage} (${typeof lastPage})`,
     );
 
     const linkHeader = generateLinkHeader(
