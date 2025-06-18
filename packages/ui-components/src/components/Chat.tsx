@@ -17,6 +17,7 @@ interface ChatProps {
   onSendMessage?: (message: Message) => void;
   height?: number;
   width?: number;
+  isProcessingMessage?: boolean;
 }
 
 interface StyledProps {
@@ -26,6 +27,11 @@ interface StyledProps {
 
 interface MessageProps {
   isOwn: boolean;
+}
+
+interface MessageContentProps {
+  isOwn: boolean;
+  isFirst: boolean;
 }
 
 interface ThemeProps {
@@ -53,6 +59,44 @@ const fadeIn = keyframes`
     opacity: 1; 
     transform: translateY(0); 
   }
+`;
+
+const pulse = keyframes`
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.4;
+  }
+`;
+
+const TypingIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: ${fadeIn} 0.3s ease-in;
+  margin-left: 10px
+`;
+
+const TypingBubble = styled.div`
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+const TypingDot = styled.div<{ delay?: number }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #999;
+  animation: ${pulse} 1.4s ease-in-out infinite;
+  animation-delay: ${props => props.delay || 0}s;
 `;
 
 // Styled Components
@@ -83,11 +127,11 @@ const Message = styled.div<MessageProps>`
   flex-direction: ${props => (props.isOwn ? 'row-reverse' : 'row')};
 `;
 
-const MessageContent = styled.div<MessageProps>`
-  max-width: 70%;
+const MessageContent = styled.div<MessageContentProps>`
   display: flex;
   flex-direction: column;
   align-items: ${props => (props.isOwn ? 'flex-end' : 'flex-start')};
+  ${props => (props.isFirst ? 'font-weight: 600;' : '')};
 `;
 
 const MessageBubble = styled.div<MessageProps>`
@@ -167,6 +211,7 @@ export const Chat: React.FC<ChatProps> = ({
   onSendMessage,
   height = 600,
   width = 310,
+  isProcessingMessage = false,
 }) => {
   const [input, setInput] = useState<string>('');
 
@@ -200,15 +245,24 @@ export const Chat: React.FC<ChatProps> = ({
   return (
     <ChatContainer width={width} height={height}>
       <MessagesArea>
-        {messages.map((message: Message) => (
+        {messages.map((message: Message, index: number) => (
           <Message key={message.id} isOwn={message.isOwn}>
-            <MessageContent isOwn={message.isOwn}>
+            <MessageContent isOwn={message.isOwn} isFirst={index === 0}>
               <MessageBubble isOwn={message.isOwn}>
                 <p>{message.text}</p>
               </MessageBubble>
             </MessageContent>
           </Message>
         ))}
+        {isProcessingMessage && (
+        <TypingIndicator>
+          <TypingBubble>
+            <TypingDot />
+            <TypingDot delay={0.2} />
+              <TypingDot delay={0.4} />
+            </TypingBubble>
+          </TypingIndicator>
+        )}
       </MessagesArea>
 
       <Textarea

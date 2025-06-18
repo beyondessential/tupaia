@@ -213,7 +213,7 @@ export const PreviewSection = () => {
       }
     }
 
-    addVisualisationMessage(visualisationForFetchingData.code, {
+    addVisualisationMessage({
       id: Date.now(),
       text: assistantReply,
       isOwn: false,
@@ -298,7 +298,6 @@ export const PreviewSection = () => {
               showPresentationAsJson={showPresentationAsJson && presentationSchema}
             >
               <PresentationConfigAssistant
-                visualisationCode={visualisationForFetchingData.code}
                 dataStructure={{ columns: transformedColumns }}
                 onAssistantResponse={handleAssistantResponse}
               />

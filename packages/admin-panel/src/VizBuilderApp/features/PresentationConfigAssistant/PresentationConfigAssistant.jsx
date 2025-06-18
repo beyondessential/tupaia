@@ -15,16 +15,14 @@ const Wrapper = styled.article`
 `;
 
 export const PresentationConfigAssistant = ({
-  visualisationCode,
   dataStructure,
   onAssistantResponse,
 }) => {
   const [currentMessage, setCurrentMessage] = useState(null);
-  const { getVisualisationMessages, addVisualisationMessage } =
+  const { messages, addVisualisationMessage } =
     usePresentationConfigAssistantContext();
 
-  const messages = getVisualisationMessages(visualisationCode);
-  const { data: completion } = usePromptMessageQuery(currentMessage, dataStructure, {
+  const { data: completion, isFetching } = usePromptMessageQuery(currentMessage, dataStructure, {
     enabled: !!currentMessage,
   });
 
@@ -38,13 +36,13 @@ export const PresentationConfigAssistant = ({
   const onSubmit = userMessage => {
     if (userMessage) {
       setCurrentMessage(userMessage.text);
-      addVisualisationMessage(visualisationCode, userMessage);
+      addVisualisationMessage(userMessage);
     }
   };
 
   return (
     <Wrapper>
-      <Chat messages={messages} onSendMessage={onSubmit} />
+      <Chat messages={messages} onSendMessage={onSubmit} isProcessingMessage={isFetching} />
     </Wrapper>
   );
 };

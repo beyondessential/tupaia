@@ -4,20 +4,22 @@ import React, { createContext, useContext, useState } from 'react';
 const PresentationConfigAssistantContext = createContext(null);
 
 export const PresentationConfigAssistantProvider = ({ children }) => {
-  const [messages, setMessages] = useState({});
+  const [messages, setMessages] = useState([
+    {
+      id: Date.now(),
+      text: `Are there any chart presentation changes you'd like to make?`,
+      isOwn: false,
+    },
+  ]);
 
-  const addVisualisationMessage = (code, message) => {
-    setMessages(prev => ({ ...prev, [code]: { messages: [...(prev[code]?.messages || []), message] } }));
-  };
-
-  const getVisualisationMessages = code => {
-    return messages[code]?.messages || [];
+  const addVisualisationMessage = message => {
+    setMessages([...messages, message]);
   };
 
   return (
     <PresentationConfigAssistantContext.Provider
       value={{
-        getVisualisationMessages,
+        messages,
         addVisualisationMessage,
       }}
     >
