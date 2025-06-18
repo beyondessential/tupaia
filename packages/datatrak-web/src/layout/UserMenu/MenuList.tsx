@@ -133,7 +133,7 @@ export const MenuList = ({
       icon: chevronRight,
     },
     {
-      label: 'Help centre',
+      label: 'Support centre',
       component: Link,
       href: 'https://bes-support.zendesk.com',
       isExternal: true,
