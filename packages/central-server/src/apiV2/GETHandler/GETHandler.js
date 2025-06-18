@@ -74,11 +74,14 @@ export class GETHandler extends CRUDHandler {
     );
 
     const { limit, page } = this.getPaginationParameters();
-    const offset = limit * page;
 
-    const dbQueryOptions = { multiJoin, columns, sort, rawSort, distinct, limit, offset };
+    const dbQueryOptions = { multiJoin, columns, sort, rawSort, distinct, limit };
 
-    // add any user requested sorting to the start of the sort clause
+    if (Number.isInteger(limit) && Number.isInteger(page)) {
+      dbQueryOptions.offset = limit * page;
+    }
+
+    // add any user requested sorting to the strt of the sort clause
     if (sortString) {
       const sortKeys = JSON.parse(sortString);
       const processedSortKeys = sortKeys.map(sortKey =>
