@@ -1,9 +1,47 @@
 import React, { useState } from 'react';
 import { Typography, Input } from '@material-ui/core';
 import styled, { keyframes } from 'styled-components';
-import { IconButton } from '@tupaia/ui-components';
 import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
 import UndoRoundedIcon from '@mui/icons-material/UndoRounded';
+import { IconButton } from './IconButton';
+
+// Types
+interface Message {
+  id: number;
+  text: string;
+  isOwn: boolean;
+}
+
+interface ChatProps {
+  messages?: Message[];
+  onSendMessage?: (message: Message) => void;
+  height?: number;
+  width?: number;
+}
+
+interface StyledProps {
+  width: number;
+  height: number;
+}
+
+interface MessageProps {
+  isOwn: boolean;
+}
+
+interface ThemeProps {
+  theme: {
+    palette: {
+      background: {
+        grey: string;
+      };
+      primary: {
+        white: string;
+        blue: string;
+      };
+      primaryDark: string;
+    };
+  };
+}
 
 // Keyframe animations
 const fadeIn = keyframes`
@@ -18,7 +56,7 @@ const fadeIn = keyframes`
 `;
 
 // Styled Components
-const ChatContainer = styled.div`
+const ChatContainer = styled.div<StyledProps>`
   width: ${props => props.width}px;
   height: ${props => props.height}px;
   display: flex;
@@ -27,7 +65,7 @@ const ChatContainer = styled.div`
   font-family: 'Roboto', 'Arial', sans-serif;
 `;
 
-const MessagesArea = styled.div`
+const MessagesArea = styled.div<ThemeProps>`
   flex: 1;
   overflow-y: auto;
   padding: 10px;
@@ -37,7 +75,7 @@ const MessagesArea = styled.div`
   gap: 16px;
 `;
 
-const Message = styled.div`
+const Message = styled.div<MessageProps>`
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -45,14 +83,14 @@ const Message = styled.div`
   flex-direction: ${props => (props.isOwn ? 'row-reverse' : 'row')};
 `;
 
-const MessageContent = styled.div`
+const MessageContent = styled.div<MessageProps>`
   max-width: 70%;
   display: flex;
   flex-direction: column;
   align-items: ${props => (props.isOwn ? 'flex-end' : 'flex-start')};
 `;
 
-const MessageBubble = styled.div`
+const MessageBubble = styled.div<MessageProps>`
   ${props => (props.isOwn ? 'background: white;' : '')};
   color: ${props => (props.isOwn ? 'inherit' : 'inherit')};
   padding: 12px 16px;
@@ -99,7 +137,7 @@ const ButtonBar = styled.div`
 
 const UndoButton = styled(IconButton)``;
 
-const SubmitButton = styled(IconButton).attrs({ type: 'submit' })`
+const SubmitButton = styled(IconButton).attrs({ type: 'submit' })<ThemeProps>`
   width: 40px;
   height: 35px;
   border: none;
@@ -124,12 +162,17 @@ const SubmitButton = styled(IconButton).attrs({ type: 'submit' })`
 `;
 
 // Main Chat Component
-export const Chat = ({ messages = [], onSendMessage, height = 600, width = 310 }) => {
-  const [input, setInput] = useState('');
+export const Chat: React.FC<ChatProps> = ({
+  messages = [],
+  onSendMessage,
+  height = 600,
+  width = 310,
+}) => {
+  const [input, setInput] = useState<string>('');
 
-  const handleSend = () => {
+  const handleSend = (): void => {
     if (input.trim()) {
-      const newMessage = {
+      const newMessage: Message = {
         id: Date.now(),
         text: input,
         isOwn: true,
@@ -143,10 +186,21 @@ export const Chat = ({ messages = [], onSendMessage, height = 600, width = 310 }
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setInput(e.target.value);
+  };
+
   return (
     <ChatContainer width={width} height={height}>
       <MessagesArea>
-        {messages.map(message => (
+        {messages.map((message: Message) => (
           <Message key={message.id} isOwn={message.isOwn}>
             <MessageContent isOwn={message.isOwn}>
               <MessageBubble isOwn={message.isOwn}>
@@ -160,16 +214,15 @@ export const Chat = ({ messages = [], onSendMessage, height = 600, width = 310 }
       <Textarea
         id="userMessage"
         name="userMessage"
-        onChange={e => setInput(e.target.value)}
-        placeholder={messages.length === 0 ? `Type any changes you'd like to make to the chart here…` : 'Reply here'}
+        onChange={handleInputChange}
+        placeholder={
+          messages.length === 0
+            ? `Type any changes you'd like to make to the chart here…`
+            : 'Reply here'
+        }
         value={input}
         disableUnderline={true}
-        onKeyDown={e => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
-          }
-        }}
+        onKeyDown={handleKeyDown}
       />
       <ButtonBar>
         <UndoButton disabled>

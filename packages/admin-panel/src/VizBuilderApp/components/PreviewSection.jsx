@@ -67,6 +67,7 @@ const ChartContainer = styled.div`
   max-height: 550px;
   min-height: 450px;
   min-width: 540px;
+  overflow: auto;
   flex: 2;
   border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
 `;

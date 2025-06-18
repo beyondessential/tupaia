@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Chat } from '@tupaia/ui-components';
 
 import { usePromptMessageQuery } from '../../api';
-import { Chat } from '../../components/Chat';
-import { usePreviewDataContext } from '../../context';
 import { usePresentationConfigAssistantContext } from '../../context/PresentationConfigAssistant';
 
 const Wrapper = styled.article`
