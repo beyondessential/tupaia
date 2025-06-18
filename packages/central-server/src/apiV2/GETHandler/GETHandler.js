@@ -40,7 +40,7 @@ export class GETHandler extends CRUDHandler {
   }
 
   /**
-   * @returns {{limit: number|'ALL'|undefined, page: number}}
+   * @returns {{limit: number|'ALL'|undefined, page: number|undefined}}
    */
   getPaginationParameters() {
     const { pageSize: limit = MAX_RECORDS_PER_PAGE, page } = this.req.query;
@@ -143,6 +143,9 @@ export class GETHandler extends CRUDHandler {
       this.findRecords(criteria, options),
       this.countRecords(criteria, options),
     ]);
+    this.#debugLog(
+      `[GETHandler#buildResponse] totalNumberOfRecords=${totalNumberOfRecords} (${typeof totalNumberOfRecords})`,
+    );
 
     const { limit, page } = this.getPaginationParameters();
     const lastPage = Math.ceil((typeof limit === 'number' ? limit : totalNumberOfRecords) / limit);
