@@ -2,9 +2,11 @@
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 root_dir=$(realpath -- "$script_dir"/../..)
-. "$script_dir"/ansiControlSequences.sh
+. "$root_dir"/scripts/bash/ansiControlSequences.sh
 
-"$script_dir"/requireCommands.sh jq node yarn
+if ! "$root_dir"/scripts/bash/requireCommands.sh jq node yarn; then
+	exit 1
+fi
 
 stack_definitions=$root_dir/packages/devops/configs/server-stacks.json
 readarray -t available_stacks < <(
@@ -36,7 +38,7 @@ while getopts h opt; do
 		echo '    Builds all packages required to run the entire Admin Panel and Tupaia Web server stacks.'
 
 		echo -e "\n${BOLD}SEE ALSO${RESET}"
-		echo -e "  • ${DIM}$root_dir/scripts/node/${RESET}getServerStacks.js"
+		echo -e "  • ${DIM}$root_dir/scripts/stack-utils/${RESET}stack-list.js"
 		echo -e "  • ${DIM}$script_dir/${RESET}buildPackagesByGlob.sh"
 
 		exit 0
@@ -46,6 +48,8 @@ while getopts h opt; do
 		;;
 	esac
 done
+
+# TODO: Assert has arguments
 
 is_valid() {
 	for available in "${available_stacks[@]}"; do
@@ -73,6 +77,6 @@ if ((${#invalid_stacks[@]} > 0)); then
 	exit 1
 fi
 
-package_names_glob=$(node "$root_dir"/scripts/node/getServerStacks --as-glob "${valid_stacks[@]}")
+package_names_glob=$(node "$root_dir"/scripts/stack-utils/stack-list --as-glob "${valid_stacks[@]}")
 
 yarn run build:from "$package_names_glob"

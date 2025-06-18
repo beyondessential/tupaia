@@ -24,22 +24,24 @@ function mergeStacks(stackNames) {
  */
 function main() {
   const args = process.argv.slice(2);
-  const shouldPrettyPrint = args.includes('--pretty');
-  const shouldPrintJson = shouldPrettyPrint || args.includes('--json');
-  const shouldPrintGlob = args.includes('--as-glob');
+  const flags = {
+    prettyPrint: args.includes('--pretty'),
+    printJson: this.prettyPrint || args.includes('--json'),
+    printGlob: args.includes('--as-glob'),
+  };
 
   const stackNames = args.filter(s => !s.startsWith('--'));
   const packages = mergeStacks(stackNames);
 
-  if (shouldPrettyPrint) {
+  if (flags.prettyPrint) {
     console.log(JSON.stringify(packages, null, 2));
     return;
   }
-  if (shouldPrintJson) {
+  if (flags.printJson) {
     console.log(JSON.stringify(packages));
     return;
   }
-  if (shouldPrintGlob) {
+  if (flags.printGlob) {
     console.log(`{${packages.join(',')}}`);
     return;
   }
