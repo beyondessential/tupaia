@@ -23,7 +23,7 @@
     "build:only": "./scripts/bash/buildPackagesByGlob.sh --only",
     "build:internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
     "build:non-internal-dependencies": "./scripts/bash/buildNonInternalDependencies.sh",
-    "build:stack": "./scripts/bash/buildStack.sh",
+    "stack": "./scripts/stack-utils/stack.sh",
     "start-dev": "echo Starting default stack tupaia-web && scripts/bash/pm2startInline.sh tupaia-web",
     "start-stack": "scripts/bash/pm2startInline.sh",
     "download-env-vars": "./scripts/bash/downloadEnvironmentVariables.sh",

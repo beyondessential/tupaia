@@ -1,22 +1,54 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+root_dir=$(realpath -- "$script_dir"/../..)
 
-if [ -z "$1" ]; then
-  echo -e "Usage: \033[1myarn start-stack\033[0m \033[4mstack\033[0m"
-  echo    ""
-  echo -e "All \033[4mstack\033[0ms:"
-  ls -1 ../../packages/devops/configs/pm2/ | sed 's|.config.js||g' | grep -v 'base' | awk '$0="  "$0'
-  echo    ""
-  echo    "Tips:"
-  echo -e "  - Normal PM2 commands work e.g. \033[1myarn pm2 status\033[0m"
-  echo    "  - Start multiple stacks by calling this command multiple times"
-  exit 1
-fi
+. "$script_dir/ansiControlSequences.sh"
 
-yarn pm2 start "../../packages/devops/configs/pm2/$1.config.js"
+print_help_message() {
+  readarray -t available_stacks < <(
+    jq --raw-output 'keys[]' "$root_dir"/packages/devops/configs/server-stacks.json
+  )
 
-# When user quits logs, stop everything
-trap "echo -e '\n\033[1;41;97m  Stopping...  \033[0m' && yarn pm2 delete all" EXIT
+  echo -e "Usage: ${BOLD}yarn run ${GREEN}start-stack ${BLUE}[stack]${RESET}"
+
+  echo -e "\n${BOLD}AVAILABLE STACKS${RESET}"
+  printf "  • %s\n" "${available_stacks[@]}"
+
+  echo -e "\n${BOLD}TIPS${RESET}"
+  echo -e "  • Normal PM2 commands work e.g. ${BOLD}yarn pm2 status${RESET}"
+  echo '  • Start multiple stacks by calling this command multiple times'
+}
+
+suppress_logs=0
+
+while [ "$1" != "" ]; do
+  case $1 in
+  --)
+    shift
+    break
+    ;;
+  -h | --help)
+    print_help_message
+    exit
+    ;;
+  -q | --quiet)
+    shift
+    suppress_logs=1
+    ;;
+  esac
+done
+
+# TODO: Actually adapt behaviour to --quiet flag
+
+yarn pm2 start "$root_dir/packages/devops/configs/pm2/$1.config.js"
+
+cleanup() {
+  echo -e "\n${BOLD}${WHITE}${ON_RED}  Stopping...  ${RESET}"
+  yarn pm2 delete all
+}
+
+trap cleanup EXIT
 
 yarn pm2 logs --lines 0
