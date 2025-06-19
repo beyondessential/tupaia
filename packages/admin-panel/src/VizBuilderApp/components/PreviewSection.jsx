@@ -66,7 +66,6 @@ const ChartContainer = styled.div`
   padding: 4rem 2rem 2rem;
   max-height: 550px;
   min-height: 450px;
-  min-width: 540px;
   overflow: auto;
   flex: 2;
   border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
@@ -146,7 +145,6 @@ export const PreviewSection = () => {
       : MAP_OVERLAY_VIZ_TYPES[vizType]?.schema;
 
   const [config, setConfig] = useState(null);
-  const [isAssistantError, setIsAssistantError] = useState(false);
   const runReportPreview = previewMode =>
     useReportPreview({
       visualisation: visualisationForFetchingData,
@@ -197,30 +195,39 @@ export const PreviewSection = () => {
 
   const handleAssistantResponse = async completion => {
     let assistantReply = null;
+
+    // If the assistant is unable to generate a valid presentation, set the error state
     if (completion.status_code === 'error') {
-      setIsAssistantError(true);
-      assistantReply = ASSISTANT_ERROR_MESSAGE;
+      assistantReply = completion.message;
+      // We don't need to set the presentation error here because
+      // presentation error is only when the value is already set to the JSONEditor,
+      // we will show the error message in the chat instead
     }
 
+    // If the assistant is able to generate a presentation option,
+    // it's still not guaranteed that the presentation option is valid,
+    // so we need to validate it using the JSONEditor ref
     if (completion.status_code === 'success') {
       editorRef.current.set(completion.presentationConfig);
       const validationError = await editorRef.current.validate();
       if (validationError.length > 0) {
-        setIsAssistantError(true);
+        setPresentationError(validationError[0].message);
         assistantReply = ASSISTANT_ERROR_MESSAGE;
       } else {
+        // if the presentation option is valid, set the presentation value
         assistantReply = completion.message;
+        setPresentation(completion.presentationConfig);
+        setFetchEnabled(true);
+        setShowData(true);
       }
     }
 
+    // add the assistant reply to the messages array
     addVisualisationMessage({
       id: Date.now(),
       text: assistantReply,
       isOwn: false,
     });
-    setPresentation(completion.presentationConfig);
-    setFetchEnabled(true);
-    setShowData(true);
   };
 
   const { columns: transformedColumns = [] } = tableData;
@@ -235,16 +242,6 @@ export const PreviewSection = () => {
   useEffect(() => {
     setConfig(visualisation.presentation);
   }, [fetchEnabled]);
-
-  const getVisualisationError = () => {
-    if (isVisualisationError) {
-      return visualisationError;
-    }
-    if (isAssistantError) {
-      return { message: 'Unable to generate visual' };
-    }
-    return null;
-  };
 
   return (
     <>
@@ -281,8 +278,8 @@ export const PreviewSection = () => {
             {showData ? (
               <FetchLoader
                 isLoading={isVisualisationLoading || isVisualisationFetching}
-                isError={isVisualisationError || isAssistantError}
-                error={getVisualisationError()}
+                isError={isVisualisationError}
+                error={visualisationError}
               >
                 <Chart report={report} config={config} />
               </FetchLoader>
