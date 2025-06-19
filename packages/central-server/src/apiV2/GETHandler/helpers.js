@@ -1,6 +1,18 @@
 import formatLinkHeader from 'format-link-header';
 import { ValidationError } from '@tupaia/utils';
 import { getApiUrl, resourceToRecordType } from '../../utilities';
+import winston from '../../log';
+import { isNullish } from '@tupaia/tsutils';
+import { DEFAULT_PAGE_SIZE } from './GETHandler';
+
+export const parsePageSizeQueryParam = pageSize => {
+  if (Number.isInteger(pageSize) && pageSize > 0) return pageSize;
+  if (pageSize === 'ALL' || isNullish(pageSize)) return null;
+  winston.warn(
+    `Received invalid pageSize query parameter: ${pageSize}. If provided, should be a positive integer, 'ALL' or null. Using default limit of ${DEFAULT_PAGE_SIZE}.`,
+  );
+  return DEFAULT_PAGE_SIZE;
+};
 
 /**
  * @param {string} resource
@@ -29,21 +41,26 @@ export const generateLinkHeader = (
   );
 
   const currentPage = Number.parseInt(pageString, 10);
-  debugLog(`[generateLinkHeader] currentPage:  ${currentPage}`);
+  debugLog(`[generateLinkHeader] currentPage: ${currentPage}`);
 
   const getUrlForPage = page => getApiUrl(resource, { ...originalQueryParameters, page });
 
-  // We can always send through first and last, so start with that in the link header
+  // We can always send through first, so start with that in the link header
   const linkHeader = {
     first: {
       url: getUrlForPage(0),
       rel: 'first',
     },
-    last: {
+  };
+
+  const lastPageIsKnown =
+    Number.isInteger(lastPage) && lastPage > 0 && lastPage !== Number.POSITIVE_INFINITY;
+  if (lastPageIsKnown) {
+    linkHeader.last = {
       url: getUrlForPage(lastPage),
       rel: 'last',
-    },
-  };
+    };
+  }
 
   // If not the first page, generate a 'prev' link to the page before
   if (currentPage > 0) {
@@ -54,17 +71,18 @@ export const generateLinkHeader = (
   }
 
   // If not the last page, generate a 'next' link to the next page
-  if (currentPage < lastPage) {
+  // If last page is unknown, include it anyway
+  if (currentPage < lastPage || !lastPageIsKnown) {
     linkHeader.next = {
       url: getUrlForPage(currentPage + 1),
       rel: 'next',
     };
   }
 
-  debugLog(`[generateLinkHeader] formatting linkHeader:  ${JSON.stringify(linkHeader, null, 2)}`);
+  debugLog(`[generateLinkHeader] formatting linkHeader: ${JSON.stringify(linkHeader, null, 2)}`);
 
   const rv = formatLinkHeader(linkHeader);
-  debugLog(`[generateLinkHeader] formatted:  ${rv}`);
+  debugLog(`[generateLinkHeader] formatted: ${rv}`);
 
   return rv;
 };

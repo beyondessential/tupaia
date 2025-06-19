@@ -4,12 +4,14 @@ import { CRUDHandler } from '../CRUDHandler';
 import {
   generateLinkHeader,
   getQueryOptionsForColumns,
+  parsePageSizeQueryParam,
   processColumns,
   processColumnSelector,
   processColumnSelectorKeys,
 } from './helpers';
+import { isNotNullish, isNullish } from '@tupaia/tsutils';
 
-const MAX_RECORDS_PER_PAGE = 100;
+export const DEFAULT_PAGE_SIZE = 100;
 
 /**
  * Responds to GET requests for a resource.
@@ -40,11 +42,15 @@ export class GETHandler extends CRUDHandler {
   }
 
   /**
-   * @returns {{limit: number|'ALL'|undefined, page: number|undefined}}
+   * @returns {{limit: number|'ALL'|null|undefined, page: number|undefined}}
    */
   getPaginationParameters() {
-    const { pageSize: limit = MAX_RECORDS_PER_PAGE, page } = this.req.query;
-    return { limit, page };
+    const { pageSize = DEFAULT_PAGE_SIZE, page } = this.req.query;
+    const limit = parsePageSizeQueryParam(pageSize);
+
+    return isNullish(limit)
+      ? { limit } // Pagination doesn’t make sense when LIMIT ALL
+      : { limit, page };
   }
 
   async getProcessedColumns() {
@@ -151,10 +157,22 @@ export class GETHandler extends CRUDHandler {
     );
 
     const { limit, page } = this.getPaginationParameters();
-    const lastPage = Math.ceil((typeof limit === 'number' ? limit : totalNumberOfRecords) / limit);
     this.#debugLog(
-      `[GETHandler#buildResponse] pagination parameters: limit=${limit} (${typeof limit}) page=${page} (${typeof page}) lastPage=${lastPage} (${typeof lastPage})`,
+      `[GETHandler#buildResponse] pagination parameters: limit=${limit} (${typeof limit}) page=${page} (${typeof page})`,
     );
+
+    const hasLimit = isNotNullish(limit);
+
+    if (!hasLimit) {
+      this.#debugLog(
+        `[GETHandler#buildResponse] No limit. Returning ${totalNumberOfRecords} ${this.recordType}`,
+      );
+      return { body: pageOfRecords };
+    }
+
+    const lastPage =
+      totalNumberOfRecords === Number.POSITIVE_INFINITY ? null : totalNumberOfRecords / limit;
+    this.#debugLog(`[GETHandler#buildResponse] lastPage=${lastPage}`);
 
     const linkHeader = generateLinkHeader(
       this.resource,
@@ -163,11 +181,11 @@ export class GETHandler extends CRUDHandler {
       this.req.query,
       this.#debugLog,
     );
+    this.#debugLog(`[GETHandler#buildResponse] Link header: ${linkHeader}`);
 
     this.#debugLog(
       `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length} ${this.recordType} records (total ${totalNumberOfRecords})`,
     );
-    this.#debugLog(`[GETHandler#buildResponse] Link header: ${linkHeader}`);
 
     return {
       headers: {
