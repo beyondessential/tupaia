@@ -2,6 +2,12 @@ import formatLinkHeader from 'format-link-header';
 import { ValidationError } from '@tupaia/utils';
 import { getApiUrl, resourceToRecordType } from '../../utilities';
 
+/**
+ * @param {string} resource
+ * @param {*|number|string} pageString
+ * @param {number|null} lastPage
+ * @param {object} originalQueryParameters
+ */
 export const generateLinkHeader = (
   resource,
   pageString,
