@@ -22,6 +22,7 @@ export {
   DatatrakWebTaskChangeRequest,
 } from './datatrak-web-server';
 export {
+  TupaiaWebCountriesRequest,
   TupaiaWebChangePasswordRequest,
   TupaiaWebDashboardsRequest,
   TupaiaWebEmailDashboardRequest,

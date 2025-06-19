@@ -181,7 +181,7 @@ const migrateLinkedDashboardReports = async db => {
         organisationUnitLevelOrder.indexOf(d2.organisationLevel),
     );
     const combinedDashboardReports = [
-      ...new Set(sortedDashboardGroups.map(d => d.dashboardReports).flat()),
+      ...new Set(sortedDashboardGroups.flatMap(d => d.dashboardReports)),
     ];
 
     for (let i = 0; i < combinedDashboardReports.length; i++) {
@@ -224,8 +224,7 @@ const migrateLinkedDashboardReports = async db => {
         ...new Set(
           sortedDashboardGroups
             .filter(d => d.dashboardReports.includes(dashboardReportId))
-            .map(d => d.projectCodes)
-            .flat(),
+            .flatMap(d => d.projectCodes),
         ),
       ];
       const userGroups = [

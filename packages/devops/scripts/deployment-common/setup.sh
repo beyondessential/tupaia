@@ -1,7 +1,24 @@
-#!/bin/bash -le
+#!/usr/bin/env bash
+# This script is invoked by setupGoldMaster.sh, which is used by EC2 Image Builder to pre-bake a
+# Tupaia AMI.
+#
+# DEPLOYING CHANGES
+#   Unlike setupGoldMaster.sh, the “live” version of this file lives in version control, and doesn’t
+#   need to be uploaded to Amazon S3. To deploy changes:
+#
+#   1. Merge changes into the default branch.
+#   2. Optionally, go to EC2 Image Builder → Image pipelines → Tupaia Gold Master and run the
+#      pipeline. Left alone, this will happen automatically according to the image pipeline’s build
+#      schedule. Do this step if you need changes to take effect immediately.
+#
+# REMARK
+#   The EC2 Image Builder image pipeline always invokes the version of this script from the default
+#   branch, regardless of whether you’ll be deploying from a feature branch.
+#
+# SEE ALSO
+#   packages/devops/scripts/deployment-aws/setupGoldMaster.sh
 
-# This script is used by Amazon Image Builder to pre-bake a Tupaia AMI
-# To deploy changes, upload the latest to the S3 bucket "tupaia_devops"
+set -e
 
 HOME_DIR=/home/ubuntu
 TUPAIA_DIR=$HOME_DIR/tupaia
@@ -11,21 +28,18 @@ cd $HOME_DIR
 sudo apt-get update
 
 # install nginx and add h5bp config
-if ! command -v nginx &> /dev/null
-then
+if ! command -v nginx &>/dev/null; then
+  echo 'nginx not installed. Installing...'
   sudo apt-get install -yqq nginx
-  git clone https://github.com/h5bp/server-configs-nginx.git
-  cd ./server-configs-nginx
-  git checkout tags/2.0.0
-  cd ..
+
+  git clone --branch 2.0.0 --depth 1 https://github.com/h5bp/server-configs-nginx.git
   sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
   rm -rf server-configs-nginx
 
   # Add the nginx user (www-data) to the ubuntu group to give it access to the tupaia code
   sudo usermod -a -G ubuntu www-data
-else
-  echo "nginx already installed, skipping"
 fi
+nginx -v
 
 # install psql for use when installing mv refresh in the db
 sudo apt-get install -yqq postgresql-client
@@ -35,11 +49,11 @@ sudo apt-get --no-install-recommends -yqq install \
   bash-completion \
   build-essential \
   cmake \
-  libcurl4  \
-  libcurl4-openssl-dev  \
-  libssl-dev  \
+  libcurl4 \
+  libcurl4-openssl-dev \
+  libssl-dev \
   libxml2 \
-  libxml2-dev  \
+  libxml2-dev \
   libssl3 \
   pkg-config \
   ca-certificates \
@@ -86,38 +100,36 @@ sudo apt-get -yqq install \
   wget \
   xdg-utils
 
-
 # install node and yarn
-if ! command -v node &> /dev/null
-then
-  echo "Installing nvm"
+if ! command -v node &>/dev/null; then
+  echo 'nvm not installed. Installing...'
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
   export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
   nvm install $(sudo cat "$TUPAIA_DIR/.nvmrc")
   npm install --global yarn
-else
-  echo "nvm already installed, skipping"
 fi
+echo "nvm $(nvm --version) is installed"
 
 # install pm2
-if ! command -v pm2 &> /dev/null
-then
-  echo "Installing pm2"
+if ! command -v pm2 &>/dev/null; then
+  echo 'PM2 not installed. Installing...'
   npm install --global pm2
   pm2 install pm2-logrotate
-else
-  echo "pm2 already installed, skipping"
 fi
+echo "PM2 $(pm2 --version) is installed"
 
 # install bitwarden
-if ! command -v bw &> /dev/null
-then
-  echo "Installing bitwarden-cli"
-  npm install --global @bitwarden/cli
-else
-  echo "bitwarden-cli already installed, skipping"
+if ! command -v bw &>/dev/null; then
+  echo 'Bitwarden CLI not installed. Installing...'
+  # Avoid 2025.5.0, which has a known issue. See https://github.com/bitwarden/clients/issues/14995
+  npm install --global '@bitwarden/cli@<2025.5.0 || >2025.5.0'
+elif ! bw --version &>/dev/null; then
+  echo "Bad Bitwarden CLI version installed (probably 2025.5.0). Replacing with '<2025.5.0 || >2025.5.0'..."
+  npm uninstall --global @bitwarden/cli
+  npm install --global '@bitwarden/cli@<2025.5.0 || >2025.5.0'
 fi
+echo "Bitwarden CLI $(bw --version) is installed"
 
 LOGS_DIR=$HOME_DIR/logs
 # Create a directory for logs to go

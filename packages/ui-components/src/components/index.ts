@@ -41,4 +41,5 @@ export * from './UserMessage';
 export * from './TooltipIconButton';
 export * from './Pagination';
 export * from './SelectList';
+export { VisuallyHidden } from './VisuallyHidden';
 export * from './Chat';

@@ -22,6 +22,7 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
       const assertion = assertions[i];
       await assertion(accessPolicy);
     }
+    return true;
   } catch (e) {
     throw new Error(errorMessage || e.message);
   }
