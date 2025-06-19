@@ -15,6 +15,7 @@ interface Message {
 }
 
 interface ChatProps {
+  startingMessageText?: string;
   messages?: Message[];
   onSendMessage?: (message: Message) => void;
   height?: number;
@@ -27,13 +28,17 @@ interface StyledProps {
   height: number;
 }
 
-interface MessageProps {
+interface MessageWrapperProps {
+  isOwn: boolean;
+}
+
+interface MessageBubbleProps {
   isOwn: boolean;
 }
 
 interface MessageContentProps {
   isOwn: boolean;
-  isFirst: boolean;
+  bold: boolean;
 }
 
 interface ThemeProps {
@@ -76,14 +81,13 @@ const ChatContainer = styled.div<StyledProps>`
 const MessagesArea = styled.div<ThemeProps>`
   flex: 1;
   overflow-y: auto;
-  padding: 10px;
   background: ${props => props.theme.palette.background.grey};
   display: flex;
   flex-direction: column;
   gap: 16px;
 `;
 
-const Message = styled.div<MessageProps>`
+const MessageWrapper = styled.div<MessageWrapperProps>`
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -95,10 +99,10 @@ const MessageContent = styled.div<MessageContentProps>`
   display: flex;
   flex-direction: column;
   align-items: ${props => (props.isOwn ? 'flex-end' : 'flex-start')};
-  ${props => (props.isFirst ? 'font-weight: 600;' : '')};
+  ${props => (props.bold ? 'font-weight: 600;' : '')};
 `;
 
-const MessageBubble = styled.div<MessageProps>`
+const MessageBubble = styled.div<MessageBubbleProps>`
   ${props => (props.isOwn ? 'background: white;' : '')};
   color: ${props => (props.isOwn ? 'inherit' : 'inherit')};
   padding: 12px 16px;
@@ -146,8 +150,8 @@ const ButtonBar = styled.div`
 const UndoButton = styled(IconButton)``;
 
 const SubmitButton = styled(IconButton).attrs({ type: 'submit' })<ThemeProps>`
-  width: 40px;
-  height: 35px;
+  width: 36px;
+  height: 32px;
   border: none;
   background: ${props => props.theme.palette.primary.white};
   cursor: pointer;
@@ -169,8 +173,24 @@ const SubmitButton = styled(IconButton).attrs({ type: 'submit' })<ThemeProps>`
   }
 `;
 
+interface MessageProps {
+  message: Message;
+  bold?: boolean;
+}
+
+const Message = ({ message, bold = false }: MessageProps) => (
+  <MessageWrapper key={message.id} isOwn={message.isOwn}>
+    <MessageContent isOwn={message.isOwn} bold={bold}>
+      <MessageBubble isOwn={message.isOwn}>
+        <p>{message.text}</p>
+      </MessageBubble>
+    </MessageContent>
+  </MessageWrapper>
+);
+
 // Main Chat Component
 export const Chat: React.FC<ChatProps> = ({
+  startingMessageText,
   messages = [],
   onSendMessage,
   height = 600,
@@ -206,17 +226,21 @@ export const Chat: React.FC<ChatProps> = ({
     setInput(e.target.value);
   };
 
+  let startingMessage: Message | null = null;
+  if (startingMessageText) {
+    startingMessage = {
+      id: Date.now(),
+      text: startingMessageText,
+      isOwn: false,
+    };
+  }
+
   return (
     <ChatContainer width={width} height={height}>
       <MessagesArea>
-        {messages.map((message: Message, index: number) => (
-          <Message key={message.id} isOwn={message.isOwn}>
-            <MessageContent isOwn={message.isOwn} isFirst={index === 0}>
-              <MessageBubble isOwn={message.isOwn}>
-                <p>{message.text}</p>
-              </MessageBubble>
-            </MessageContent>
-          </Message>
+        {startingMessage && <Message message={startingMessage} bold={true} />}
+        {messages.map((message: Message) => (
+          <Message message={message} />
         ))}
         {isProcessingMessage && <TypingIndicator />}
       </MessagesArea>

@@ -14,13 +14,9 @@ const Wrapper = styled.article`
   padding: 0.625rem;
 `;
 
-export const PresentationConfigAssistant = ({
-  dataStructure,
-  onAssistantResponse,
-}) => {
+export const PresentationConfigAssistant = ({ dataStructure, onAssistantResponse }) => {
   const [currentMessage, setCurrentMessage] = useState(null);
-  const { messages, addVisualisationMessage } =
-    usePresentationConfigAssistantContext();
+  const { messages, addVisualisationMessage } = usePresentationConfigAssistantContext();
 
   const { data: completion, isFetching } = usePromptMessageQuery(currentMessage, dataStructure, {
     enabled: !!currentMessage,
@@ -42,7 +38,12 @@ export const PresentationConfigAssistant = ({
 
   return (
     <Wrapper>
-      <Chat messages={messages} onSendMessage={onSubmit} isProcessingMessage={isFetching} />
+      <Chat
+        messages={messages}
+        onSendMessage={onSubmit}
+        isProcessingMessage={isFetching}
+        startingMessageText="Are there any chart presentation changes you'd like to make?"
+      />
     </Wrapper>
   );
 };
