@@ -1,15 +1,15 @@
+import { isNotNullish, isNullish } from '@tupaia/tsutils';
 import { respond } from '@tupaia/utils';
-import winston from '../../log';
+
 import { CRUDHandler } from '../CRUDHandler';
 import {
   generateLinkHeader,
   getQueryOptionsForColumns,
   parsePageSizeQueryParam,
-  processColumns,
   processColumnSelector,
   processColumnSelectorKeys,
+  processColumns,
 } from './helpers';
-import { isNotNullish, isNullish } from '@tupaia/tsutils';
 
 export const DEFAULT_PAGE_SIZE = 100;
 
@@ -31,10 +31,6 @@ export const DEFAULT_PAGE_SIZE = 100;
  *       Get the fourth page of 100 answers for a given survey response
  */
 export class GETHandler extends CRUDHandler {
-  #debugLog = ['dashboard', 'dashboard_item', 'dashboard_relation'].includes(this.recordType)
-    ? winston.debug
-    : winston.silly;
-
   async handleRequest() {
     const { headers = {}, body } = await this.buildResponse();
     Object.entries(headers).forEach(([key, value]) => this.res.set(key, value));
@@ -152,32 +148,22 @@ export class GETHandler extends CRUDHandler {
       this.countRecords(criteria, options),
     ]);
 
+    const headers = {
+      'Access-Control-Expose-Headers': 'X-Total-Count', // to get around CORS
+      'X-Total-Count': totalNumberOfRecords,
+    };
+
     const { limit, page } = this.getPaginationParameters();
+    if (isNotNullish(limit)) {
+      const lastPage =
+        totalNumberOfRecords === Number.POSITIVE_INFINITY ? null : totalNumberOfRecords / limit;
 
-    const hasLimit = isNotNullish(limit);
-
-    if (!hasLimit) {
-      return { body: pageOfRecords };
+      headers['Access-Control-Expose-Headers'] = 'Link, X-Total-Count';
+      headers.Link = generateLinkHeader(this.resource, page, lastPage, this.req.query);
     }
 
-    const lastPage =
-      totalNumberOfRecords === Number.POSITIVE_INFINITY ? null : totalNumberOfRecords / limit;
-
-    const linkHeader = generateLinkHeader(
-      this.resource,
-      page,
-      lastPage,
-      this.req.query,
-      this.#debugLog,
-    );
-
-
     return {
-      headers: {
-        Link: linkHeader,
-        'Access-Control-Expose-Headers': 'Link, X-Total-Count', // to get around CORS
-        'X-Total-Count': totalNumberOfRecords,
-      },
+      headers,
       body: pageOfRecords,
     };
   }
