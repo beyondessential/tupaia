@@ -72,27 +72,21 @@ export class ApiConnection {
     }
 
     const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
-    console.debug(`[ApiConnection#request] fetched ${decodeURI(queryUrl)}`);
 
     const contentType = response.headers.get('content-type');
     if (contentType?.startsWith('text/')) {
       // TODO: Put this inside verifyResponse and throw RespondingError
-      console.debug(
-        `[ApiConnection#request] Expected application/json response but received ${contentType}`,
-        decodeURI(queryUrl),
-      );
-      console.debug(`[ApiConnection#request] responding with ${contentType}`);
+
       return response;
     }
 
     await this.verifyResponse(response);
 
     if (contentType?.startsWith('application/json')) {
-      console.debug(`[ApiConnection#request] responding with JSON`);
       return response.json();
     }
     // If the content isn't json we expect the receiving code to parse it
-    console.debug(`[ApiConnection#request] responding with ${contentType}`);
+
     return response;
   }
 
@@ -107,7 +101,6 @@ export class ApiConnection {
   private async verifyResponse(response: Response): Promise<void> {
     if (response.ok) return;
 
-    console.debug(`[ApiConnection#verifyResponse] ${response.status} ${response.statusText}`);
     const contentType = response.headers.get('content-type');
     if (contentType?.startsWith('application/json')) {
       const responseJson = await response.json();
