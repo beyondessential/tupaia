@@ -5,7 +5,7 @@ export * from './useLocations';
 export * from './useMapOverlays';
 export * from './useProject';
 export * from './useProjects';
-export { usePromptMessageQuery } from './usePromptMessageQuery';
+export { usePresentationOptionsPromptQuery } from './usePresentationOptionsPromptQuery';
 export * from './useReportPreview';
 export * from './useSearchPermissionGroups';
 export * from './useSearchTransformSchemas';

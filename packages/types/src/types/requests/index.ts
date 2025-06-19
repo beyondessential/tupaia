@@ -43,4 +43,4 @@ export {
   TupaiaWebExportSurveyDataRequest,
 } from './tupaia-web-server';
 export { ProjectResponse, WebServerEntityRequest, WebServerProjectRequest } from './web-server';
-export { PromptMessageRequest } from './admin-panel-server';
+export { PresentationOptionsPromptRequest } from './admin-panel-server';

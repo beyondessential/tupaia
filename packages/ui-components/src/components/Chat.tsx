@@ -9,7 +9,7 @@ import { TypingIndicator } from './TypingIndicator';
 
 // Types
 interface Message {
-  id: number;
+  id: number | string;
   text: string;
   isOwn: boolean;
 }
@@ -229,7 +229,7 @@ export const Chat: React.FC<ChatProps> = ({
   let startingMessage: Message | null = null;
   if (startingMessageText) {
     startingMessage = {
-      id: Date.now(),
+      id: 'starting-message',
       text: startingMessageText,
       isOwn: false,
     };

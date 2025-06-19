@@ -297,6 +297,12 @@ export class ApiBuilder {
     return this.addRoute('delete', path, ...handlers);
   }
 
+  // To add a custom middleware without a path
+  public useMiddleware<T extends ExpressRequest<T> = Request>(middleware: RequestHandler) {
+    this.app.use(middleware);
+    return this;
+  }
+
   public build() {
     this.app.post(
       this.formatPath('login'),

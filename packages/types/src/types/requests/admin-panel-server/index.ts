@@ -1,1 +1,1 @@
-export * as PromptMessageRequest from './PromptMessageRequest';
+export * as PresentationOptionsPromptRequest from './PresentationOptionsPromptRequest';

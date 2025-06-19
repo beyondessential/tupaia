@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Chat } from '@tupaia/ui-components';
 
-import { usePromptMessageQuery } from '../../api';
+import { usePresentationOptionsPromptQuery } from '../../api';
 import { usePresentationConfigAssistantContext } from '../../context/PresentationConfigAssistant';
 
 const Wrapper = styled.article`
@@ -18,7 +18,7 @@ export const PresentationConfigAssistant = ({ dataStructure, onAssistantResponse
   const [currentMessage, setCurrentMessage] = useState(null);
   const { messages, addVisualisationMessage } = usePresentationConfigAssistantContext();
 
-  const { data: completion, isFetching } = usePromptMessageQuery(currentMessage, dataStructure, {
+  const { data: completion, isFetching } = usePresentationOptionsPromptQuery(currentMessage, dataStructure, {
     enabled: !!currentMessage,
   });
 

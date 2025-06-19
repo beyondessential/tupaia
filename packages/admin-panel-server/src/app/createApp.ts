@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
@@ -46,15 +46,22 @@ import {
   FetchDataTableBuiltInParamsRoute,
   ExportEntityHierarchiesRequest,
   ExportEntityHierarchiesRoute,
-  PromptMessageRequest,
-  PromptMessageRoute,
+  PresentationOptionsPromptRequest,
+  PresentationOptionsPromptRoute,
 } from '../routes';
+import { PromptManager } from '../viz-builder/prompts/PromptManager';
+
+export const addPromptManagerToContext =
+  (promptManager: PromptManager) => (req: Request, _res: Response, next: NextFunction) => {
+    req.ctx.promptManager = promptManager;
+    next();
+  };
 
 const authHandlerProvider = (req: Request) => new RequiresSessionAuthHandler(req);
 /**
  * Set up express server with middleware,
  */
-export async function createApp() {
+export async function createApp(promptManager: PromptManager) {
   const CENTRAL_API_URL = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
   const ENTITY_API_URL = getEnvVarOrDefault('ENTITY_API_URL', 'http://localhost:8050/v1');
   const forwardToEntityApi = forwardRequest(ENTITY_API_URL);
@@ -63,6 +70,7 @@ export async function createApp() {
     .attachApiClientToContext(authHandlerProvider)
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
+    .useMiddleware(addPromptManagerToContext(promptManager))
     .get('user', handleWith(UserRoute))
     .get<FetchHierarchyEntitiesRequest>(
       'hierarchy/:hierarchyName/:entityCode',
@@ -151,7 +159,10 @@ export async function createApp() {
     )
 
     // AI Chat
-    .post<PromptMessageRequest>('prompt-message', handleWith(PromptMessageRoute))
+    .post<PresentationOptionsPromptRequest>(
+      'presentationOptionsPrompt',
+      handleWith(PresentationOptionsPromptRoute),
+    )
     .use('hierarchy', forwardToEntityApi)
     .use('hierarchies', forwardToEntityApi)
     .use('surveyResponses', forwardToCentralApi)
