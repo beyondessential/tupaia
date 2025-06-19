@@ -16,7 +16,7 @@ export const useReportPreview = ({
   previewMode,
 }) =>
   useQuery(
-    ['fetchReportPreviewData', visualisation],
+    ['fetchReportPreviewData', visualisation, previewMode],
     async () => {
       const today = moment().format('YYYY-MM-DD');
       const endDateToUse = endDate ?? today; // default to today if no end date is provided, so that we are getting data in the user's timezone, not UTC
