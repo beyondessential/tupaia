@@ -1,8 +1,10 @@
+import type { HeadersInit, RequestInit, Response } from 'node-fetch';
 import nodeFetch from 'node-fetch';
-import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
+
 import { CustomError } from '@tupaia/utils';
-import { QueryParameters, AuthHandler } from '../types';
+
+import { AuthHandler, QueryParameters } from '../types';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
@@ -70,12 +72,21 @@ export class ApiConnection {
     }
 
     const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
-    await this.verifyResponse(response);
+
     const contentType = response.headers.get('content-type');
-    if (contentType && contentType.indexOf('application/json') !== -1) {
+    if (contentType?.startsWith('text/')) {
+      // TODO: Put this inside verifyResponse and throw RespondingError
+
+      return response;
+    }
+
+    await this.verifyResponse(response);
+
+    if (contentType?.startsWith('application/json')) {
       return response.json();
     }
     // If the content isn't json we expect the receiving code to parse it
+
     return response;
   }
 
@@ -88,7 +99,10 @@ export class ApiConnection {
   }
 
   private async verifyResponse(response: Response): Promise<void> {
-    if (!response.ok) {
+    if (response.ok) return;
+
+    const contentType = response.headers.get('content-type');
+    if (contentType?.startsWith('application/json')) {
       const responseJson = await response.json();
       throw new CustomError(
         {
