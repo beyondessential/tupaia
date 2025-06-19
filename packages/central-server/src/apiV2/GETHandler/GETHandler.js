@@ -129,7 +129,6 @@ export class GETHandler extends CRUDHandler {
   }
 
   async buildResponse() {
-    this.#debugLog(`[GETHandler#buildResponse] ${this.recordType}`);
     let options = await this.getDbQueryOptions();
 
     // handle request for a single record
@@ -152,27 +151,17 @@ export class GETHandler extends CRUDHandler {
       this.findRecords(criteria, options),
       this.countRecords(criteria, options),
     ]);
-    this.#debugLog(
-      `[GETHandler#buildResponse] totalNumberOfRecords=${totalNumberOfRecords} (${typeof totalNumberOfRecords})`,
-    );
 
     const { limit, page } = this.getPaginationParameters();
-    this.#debugLog(
-      `[GETHandler#buildResponse] pagination parameters: limit=${limit} (${typeof limit}) page=${page} (${typeof page})`,
-    );
 
     const hasLimit = isNotNullish(limit);
 
     if (!hasLimit) {
-      this.#debugLog(
-        `[GETHandler#buildResponse] No limit. Returning ${totalNumberOfRecords} ${this.recordType}`,
-      );
       return { body: pageOfRecords };
     }
 
     const lastPage =
       totalNumberOfRecords === Number.POSITIVE_INFINITY ? null : totalNumberOfRecords / limit;
-    this.#debugLog(`[GETHandler#buildResponse] lastPage=${lastPage}`);
 
     const linkHeader = generateLinkHeader(
       this.resource,
@@ -181,11 +170,7 @@ export class GETHandler extends CRUDHandler {
       this.req.query,
       this.#debugLog,
     );
-    this.#debugLog(`[GETHandler#buildResponse] Link header: ${linkHeader}`);
 
-    this.#debugLog(
-      `[GETHandler#buildResponse] Returning page of ${pageOfRecords.length} ${this.recordType} records (total ${totalNumberOfRecords})`,
-    );
 
     return {
       headers: {

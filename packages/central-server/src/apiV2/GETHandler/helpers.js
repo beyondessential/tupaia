@@ -20,13 +20,11 @@ export const parsePageSizeQueryParam = pageSize => {
  * @param {number|null} lastPage
  * @param {object} originalQueryParameters
  */
-export const generateLinkHeader = (
-  resource,
-  pageString,
-  lastPage,
-  originalQueryParameters,
-  debugLog,
-) => {
+export const generateLinkHeader = (resource, pageString, lastPage, originalQueryParameters) => {
+  const debugLog = ['dashboard', 'dashboard_item', 'dashboard_relation'].includes(resource)
+    ? winston.debug
+    : winston.silly;
+
   debugLog(
     `[generateLinkHeader] ${JSON.stringify(
       {
