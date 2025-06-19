@@ -23,6 +23,7 @@ export type PullAnalyticsOptions = {
 export class AnalyticsPuller {
   private readonly models;
   private readonly translator;
+  // @ts-ignore
   private readonly dataElementsMetadataPuller;
 
   public constructor(

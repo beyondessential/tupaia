@@ -14,7 +14,7 @@ import { MeditrakAppServerModelRegistry } from '../../../types';
  * */
 
 export const addSurveyFile = async (
-  models: MeditrakAppServerModelRegistry,
+  _models: MeditrakAppServerModelRegistry,
   uniqueFileName: string,
   data: string,
 ) => {

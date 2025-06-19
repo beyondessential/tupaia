@@ -1,6 +1,5 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import { fetchCountryCodesByPermissionGroupId } from '../utilities';
 
 const getUserSurveys = async (models, accessPolicy, projectId) => {
   const query = {};

@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { RequestHandler } from 'express';
 import { attachSession as baseAttachSession } from '@tupaia/server-boilerplate';
 
-export const attachSession = async (req: Request, res: Response, next: NextFunction) => {
+export const attachSession: RequestHandler = async (req, res, next) => {
   await baseAttachSession(req, res, () => {
     // baseAttachSession might call next(err), we ignore it
 

@@ -4,7 +4,6 @@ import {
   insertObject,
   generateId,
   codeToId,
-  arrayToDbString,
   findSingleRecord,
   findSingleRecordBySql,
 } from '../utilities';

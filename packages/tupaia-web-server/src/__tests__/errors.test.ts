@@ -1,6 +1,5 @@
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { PermissionsError } from '@tupaia/utils';
-import { setupTestApp } from './testUtilities';
 
 jest.mock('@tupaia/api-client', () => {
   const { MockTupaiaApiClient } = jest.requireActual('@tupaia/api-client');
