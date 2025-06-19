@@ -2,12 +2,11 @@ import { Typography, useTheme } from '@material-ui/core';
 import { ChevronLeft } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
-import { Button, TaskIcon } from '../../components';
-import { useFromLocation } from '../../utils';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { useIsMobile } from '../../utils';
+import { Button, TaskIcon } from '../../components';
+import { useFromLocation, useIsMobile } from '../../utils';
 
 const BackButton = styled(Button).attrs({
   title: 'Back',
