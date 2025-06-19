@@ -8,11 +8,13 @@ import {
 } from '@langchain/core/prompts';
 import { Runnable } from '@langchain/core/runnables';
 
+interface Chains {
+  presentationOptions: Runnable;
+}
+
 export class PromptManager {
   private model: ChatAnthropic;
-  private chains: {
-    presentationOptions: Runnable;
-  };
+  private chains: Chains;
 
   constructor() {
     this.model = new ChatAnthropic({
@@ -22,21 +24,21 @@ export class PromptManager {
     this.chains = this.initializeChains();
   }
 
-  initializeChains() {
+  initializeChains(): Chains {
     return {
       presentationOptions: this.createPresentationOptionsChain(),
     };
   }
 
-  createPresentationOptionsChain() {
-    const presentationConfigContextPath = path.join(
+  createPresentationOptionsChain(): Runnable {
+    const presentationOptionsContextPath = path.join(
       __dirname,
-      'presentationConfigContext.txt',
+      'context/presentationOptionsContext.txt',
     );
-    const presentationConfigContext = fs.readFileSync(presentationConfigContextPath, 'utf8');
+    const presentationOptionsContext = fs.readFileSync(presentationOptionsContextPath, 'utf8');
 
     const prompt = ChatPromptTemplate.fromMessages([
-      SystemMessagePromptTemplate.fromTemplate(presentationConfigContext),
+      SystemMessagePromptTemplate.fromTemplate(presentationOptionsContext),
       HumanMessagePromptTemplate.fromTemplate(
         'My chart description is: {chartDescription}. My data structure is: {dataStructure}',
       ),
