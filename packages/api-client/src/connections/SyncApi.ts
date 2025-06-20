@@ -42,8 +42,8 @@ export class SyncApi extends BaseApi {
   }
 
   async initiatePull(sessionId: string, since: number, projectIds: string[], deviceId: string) {
-    // first, set the pull filter on the central server,
-    // which will kick of a snapshot of changes to pull
+    // first, set the pull filter on the central server, 
+    // which will kick off a snapshot of changes to pull
     const data = { since, projectIds, deviceId };
     await this.connection.post(`sync/${sessionId}/pull`, {}, data);
 

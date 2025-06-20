@@ -2,8 +2,8 @@ import { TupaiaDatabase } from '@tupaia/database';
 
 const SCHEMA = 'sync_snapshots';
 
-const assertIfSessionIdIsSafe = (sessionId: string) => {
-  const safeIdRegex = /^[A-Za-z0-9-]+$/;
+const assertSessionIdIsSafe = (sessionId: string) => {
+  const safeIdRegex = /^[A-Za-z0-9-]{24}$/;
   if (!safeIdRegex.test(sessionId)) {
     throw new Error(
       `${sessionId} does not match the expected format of a session id - be careful of SQL injection!`,
@@ -13,13 +13,13 @@ const assertIfSessionIdIsSafe = (sessionId: string) => {
 
 // includes a safety check for using in raw sql rather than via sequelize query building
 export const getSnapshotTableName = (sessionId: string) => {
-  assertIfSessionIdIsSafe(sessionId);
+  assertSessionIdIsSafe(sessionId);
 
   return `"${SCHEMA}"."${sessionId}"`;
 };
 
 export const getSnapshotTableCursorName = (sessionId: string) => {
-  assertIfSessionIdIsSafe(sessionId);
+  assertSessionIdIsSafe(sessionId);
 
   return `"${sessionId}_snapshot_cursor"`;
 };

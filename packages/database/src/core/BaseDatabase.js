@@ -10,6 +10,7 @@ import {
   MAX_BINDINGS_PER_QUERY,
   runDatabaseFunctionInBatches,
 } from './utilities/runDatabaseFunctionInBatches';
+import { SCHEMA_NAMES } from './constants';
 
 const QUERY_METHODS = {
   COUNT: 'count',
@@ -299,7 +300,7 @@ export class BaseDatabase {
     return record;
   }
 
-  async createMany(recordType, records, schemaName) {
+  async createMany(recordType, records, schemaName = SCHEMA_NAMES.PUBLIC) {
     // generate ids for any records that don't have them
     const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
     await runDatabaseFunctionInBatches(sanitizedRecords, async batchOfRecords =>

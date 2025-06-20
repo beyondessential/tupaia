@@ -65,8 +65,9 @@ export const snapshotOutgoingChanges = async (
         LIMIT ?
         RETURNING sync_lookup_id
       )
-      SELECT MAX(sync_lookup_id) as "maxId",
-        count(*) as "count"
+      SELECT  
+        MAX(sync_lookup_id) as maxId,
+        COUNT(*) as count
       FROM inserted;
     `,
       [
@@ -79,7 +80,7 @@ export const snapshotOutgoingChanges = async (
       ],
     )) as SnapshotOutgoingChangesResult[];
 
-    const chunkCount = parseInt(count, 10); // count should always be default to '0'
+    const chunkCount = parseInt(count, 10); // count should always default to '0'
 
     fromId = maxId;
     totalCount += chunkCount;
