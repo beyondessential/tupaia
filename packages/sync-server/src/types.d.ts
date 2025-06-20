@@ -76,8 +76,3 @@ export interface PullInitiationResult {
 }
 
 export type UnmarkSessionAsProcessingFunction = () => Promise<void>;
-
-export interface SyncSnapshotData {
-  id: number;
-  [key: string]: any;
-}
