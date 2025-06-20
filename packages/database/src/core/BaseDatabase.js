@@ -125,7 +125,7 @@ export class BaseDatabase {
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {(models: BaseDatabase) => Promise<void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */

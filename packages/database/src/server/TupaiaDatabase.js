@@ -121,6 +121,16 @@ export class TupaiaDatabase extends BaseDatabase {
     );
   }
 
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise<TupaiaDatabase>} TupaiaDatabase instance
+   */
+  async createTransaction(transactionConfig = {}) {
+    const transaction = await this.connection.transaction(transactionConfig);
+    return new TupaiaDatabase(transaction, this.changeChannel);
+  }
+
   async markRecordsAsChanged(recordType, records) {
     await this.getOrCreateChangeChannel().publishRecordUpdates(recordType, records);
   }

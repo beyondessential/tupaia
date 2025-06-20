@@ -36,3 +36,7 @@ export {
   ExportSurveyResponseRequest,
   ExportSurveyResponseRoute,
 } from './ExportSurveyResponseRoute';
+export { SyncStartSessionRequest, SyncStartSessionRoute } from './SyncStartSessionRoute';
+export { SyncInitiatePullRequest, SyncInitiatePullRoute } from './SyncInitiatePullRoute';
+export { SyncPullRequest, SyncPullRoute } from './SyncPullRoute';
+export { SyncEndSessionRequest, SyncEndSessionRoute } from './SyncEndSessionRoute';
