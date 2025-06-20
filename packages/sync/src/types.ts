@@ -16,7 +16,7 @@ export type RecordType = string;
 
 export interface SyncSnapshotData {
   id: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface SyncSnapshotAttributes {
