@@ -9,10 +9,13 @@ import { getDependencyOrder } from './getDependencyOrder';
 
 const asyncPipeline = promisify(pipeline);
 
-async function* streamSnapshotCursor(database: TupaiaDatabase, cursorName: string, fetchSize: number) {
+// TODO: Move this to a config model RN-1668
+const FETCH_SIZE = 10000;
+
+async function* streamSnapshotCursor(database: TupaiaDatabase, cursorName: string) {
   try {
     while (true) {
-      const rows: any = await database.executeSql(`FETCH FORWARD ${fetchSize} FROM ${cursorName}`);
+      const rows: any = await database.executeSql(`FETCH FORWARD ${FETCH_SIZE} FROM ${cursorName}`);
       if (rows.length === 0) break;
 
       for (const row of rows) {
@@ -55,13 +58,8 @@ export const streamSnapshotData = async (
     },
   );
 
-  const fetchSize = 10000;
-
   try {
-    await asyncPipeline(
-      Readable.from(streamSnapshotCursor(database, cursorName, fetchSize)),
-      res,
-    );
+    await asyncPipeline(Readable.from(streamSnapshotCursor(database, cursorName)), res);
   } catch (error) {
     console.error('Streaming failed:', error);
     res.status(500).end('Internal Server Error');

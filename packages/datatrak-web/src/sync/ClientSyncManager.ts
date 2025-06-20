@@ -144,30 +144,33 @@ export class ClientSyncManager {
         pullIncomingChanges(models, sessionId, processStreamedDataFunction);
 
       if (pullVolumeType === PullVolumeType.Initial) {
-        await this.models.wrapInTransaction(async models => {
-          await runPull(models);
+        return this.models.wrapInTransaction(async transactingModels => {
+          await runPull(transactingModels);
 
           // update the last successful sync in the same save transaction - if updating the cursor fails,
           // we want to roll back the rest of the saves so that we don't end up detecting them as
           // needing a sync up to the central server when we attempt to resync from the same old cursor
           console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-          await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
-        });
-      } else {
-        const { totalObjects } = await runPull(this.models);
-        await this.models.wrapInTransaction(async models => {
-          const incomingModels = getModelsForDirection(models, SyncDirections.PULL_FROM_CENTRAL);
-          if (pullVolumeType === PullVolumeType.IncrementalLow) {
-            saveIncomingInMemoryChanges(models, totalObjects);
-          } else if (pullVolumeType === PullVolumeType.IncrementalHigh) {
-            saveIncomingSnapshotChanges(incomingModels, sessionId);
-          }
-
-          // same reason for wrapping in transaction as in initial sync
-          console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-          await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+          return this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
         });
       }
+
+      const { totalObjects } = await runPull(this.models);
+      return this.models.wrapInTransaction(async transactingModels => {
+        const incomingModels = getModelsForDirection(
+          transactingModels,
+          SyncDirections.PULL_FROM_CENTRAL,
+        );
+        if (pullVolumeType === PullVolumeType.IncrementalLow) {
+          saveIncomingInMemoryChanges(transactingModels, totalObjects);
+        } else if (pullVolumeType === PullVolumeType.IncrementalHigh) {
+          saveIncomingSnapshotChanges(incomingModels, sessionId);
+        }
+
+        // same reason for wrapping in transaction as in initial sync
+        console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+        return this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+      });
     } catch (error) {
       console.error('ClientSyncManager.pullChanges', {
         sessionId,
