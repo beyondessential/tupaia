@@ -2,29 +2,29 @@ import { SurveyScreen, SurveyScreenComponent } from '../../../types';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 
 export interface SurveyFormContextType {
+  activeScreen: SurveyScreenComponent[];
+  cancelModalConfirmLink: string;
+  cancelModalOpen: boolean;
+  countryCode: string | undefined;
+  displayQuestions: SurveyScreenComponent[];
+  formData: Record<string, any>;
+  isLast: boolean;
+  isResponseScreen: boolean;
+  isResubmit: boolean;
+  isReviewScreen: boolean;
+  isSuccessScreen?: boolean;
+  numberOfScreens: number;
+  primaryEntityQuestion?: SurveyScreenComponent | null;
+  screenDetail?: string | null;
+  screenHeader?: string;
+  screenNumber: number | null;
+  sideMenuOpen?: boolean;
   startTime: string;
   surveyCode?: string;
   surveyProjectCode?: string;
-  formData: Record<string, any>;
-  activeScreen: SurveyScreenComponent[];
-  isLast: boolean;
-  numberOfScreens: number;
-  screenNumber: number | null;
-  screenHeader?: string;
-  screenDetail?: string | null;
-  displayQuestions: SurveyScreenComponent[];
-  sideMenuOpen?: boolean;
-  isReviewScreen: boolean;
-  isResponseScreen: boolean;
   surveyScreens?: SurveyScreen[];
-  visibleScreens?: SurveyScreen[];
   surveyStartTime?: string;
-  isSuccessScreen?: boolean;
-  cancelModalOpen: boolean;
-  cancelModalConfirmLink: string;
-  countryCode: string | undefined;
-  primaryEntityQuestion?: SurveyScreenComponent | null;
-  isResubmit: boolean;
+  visibleScreens?: SurveyScreen[];
 }
 
 export const surveyReducer = (
