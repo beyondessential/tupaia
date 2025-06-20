@@ -1,4 +1,4 @@
-import { camel } from 'case';
+import { camelcaseKeys } from '@tupaia/tsutils';
 import { BaseDatabase } from '@tupaia/database';
 
 import { getSnapshotTableName } from './manageSnapshotTable';
@@ -33,7 +33,5 @@ export const findSyncSnapshotRecords = async (
     },
   )) as SyncSnapshotAttributes[];
 
-  return records.map(r =>
-    Object.fromEntries(Object.entries(r).map(([key, value]) => [camel(key), value])),
-  ) as SyncSnapshotAttributes[];
+  return camelcaseKeys(records) as SyncSnapshotAttributes[];
 };

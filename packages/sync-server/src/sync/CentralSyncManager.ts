@@ -96,7 +96,7 @@ export class CentralSyncManager {
 
     // no await as prepare session (especially the tickTockGlobalClock action) might get blocked
     // and take a while if the central server is concurrently persisting records from another client.
-    // Client should poll for the result later.
+    // client should poll for the result later.
     this.prepareSession(syncSession).finally(unmarkSessionAsProcessing);
 
     log.info('CentralSyncManager.startSession', {
@@ -247,7 +247,7 @@ export class CentralSyncManager {
 
       // get a sync tick that we can safely consider the snapshot to be up to (because we use the
       // "tick" of the tick-tock, so we know any more changes on the server, even while the snapshot
-      // process is ongoing, will have a later updated_at_sync_tick)
+      // process is ongoing, will have a later updated_at_sync_tick, i.e. the "tock")
       const { tick } = await this.tickTockGlobalClock();
 
       await this.waitForPendingEdits(tick);
@@ -356,7 +356,7 @@ export class CentralSyncManager {
     try {
       // get a sync tick that we can safely consider the snapshot to be up to (because we use the
       // "tick" of the tick-tock, so we know any more changes on the server, even while the snapshot
-      // process is ongoing, will have a later updated_at_sync_tick)
+      // process is ongoing, will have a later updated_at_sync_tick, i.e. the "tock")
       const { tick: currentTick } = await this.tickTockGlobalClock();
 
       await this.waitForPendingEdits(currentTick);
