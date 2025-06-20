@@ -1,5 +1,6 @@
+import { Response as ExpressResponse } from 'express';
+
 import { sleep } from '@tupaia/utils';
-import { ExpressResponse } from '@tupaia/server-boilerplate';
 
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
@@ -52,6 +53,10 @@ export class SyncApi extends BaseApi {
 
     // finally, fetch the metadata for the changes we're about to pull
     return this.connection.get(`sync/${sessionId}/pull/metadata`);
+  }
+
+  async pull(response: ExpressResponse, sessionId: string) {
+    return this.connection.pipeStream(response, `sync/${sessionId}/pull`);
   }
 }
 

@@ -15,6 +15,10 @@ export class SyncReadyRoute extends Route<SyncReadyRequest> {
     const { ctx } = this.req;
     const { sessionId } = this.req.params;
     const ready = await ctx.centralSyncManager.checkSessionReady(sessionId);
-    return { status: ready ? 'ready' : 'pending' };
+    return {
+      status: ready
+        ? SyncServerSyncReadyRequest.SyncReadyStatus.READY
+        : SyncServerSyncReadyRequest.SyncReadyStatus.PENDING,
+    };
   }
 }
