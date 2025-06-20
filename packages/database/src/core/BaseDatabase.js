@@ -1,4 +1,4 @@
-import knex, { Knex, KnexTimeoutError } from 'knex';
+import knex, { Knex } from 'knex';
 import autobind from 'react-autobind';
 import winston from 'winston';
 
@@ -10,6 +10,7 @@ import {
   MAX_BINDINGS_PER_QUERY,
   runDatabaseFunctionInBatches,
 } from './utilities/runDatabaseFunctionInBatches';
+import { SCHEMA_NAMES } from './constants';
 
 const QUERY_METHODS = {
   COUNT: 'count',
@@ -67,8 +68,6 @@ const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
 export class BaseDatabase {
-  static IS_CHANGE_HANDLER_SUPPORTED = false;
-
   /**
    * @privateRemarks No special maths for the default value here, just hand-tuned with a remote dev database to
    * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
@@ -81,6 +80,8 @@ export class BaseDatabase {
    * @type {boolean}
    */
   #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
+
+  static IS_CHANGE_HANDLER_SUPPORTED = false;
 
   constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {
@@ -275,7 +276,7 @@ export class BaseDatabase {
         { cancel: true },
       );
     } catch (error) {
-      if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
+      if (error.name === 'KnexTimeoutError') return Number.POSITIVE_INFINITY;
       throw error;
     }
 
@@ -299,15 +300,19 @@ export class BaseDatabase {
     return record;
   }
 
-  async createMany(recordType, records) {
+  async createMany(recordType, records, schemaName = SCHEMA_NAMES.PUBLIC) {
     // generate ids for any records that don't have them
     const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
     await runDatabaseFunctionInBatches(sanitizedRecords, async batchOfRecords =>
-      this.query({
-        recordType,
-        queryMethod: QUERY_METHODS.INSERT,
-        queryMethodParameter: batchOfRecords,
-      }),
+      this.query(
+        {
+          recordType,
+          queryMethod: QUERY_METHODS.INSERT,
+          queryMethodParameter: batchOfRecords,
+        },
+        {},
+        { schemaName },
+      ),
     );
     return sanitizedRecords;
   }
@@ -454,6 +459,10 @@ export class BaseDatabase {
 
   wrapInTransaction(wrappedFunction) {
     throw new Error('wrapInTransaction should be implemented by the child class');
+  }
+
+  commitTransaction() {
+    return this.connection.commit();
   }
 }
 
