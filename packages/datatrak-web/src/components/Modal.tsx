@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Dialog, Paper, DialogProps } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { X as CloseIcon } from 'lucide-react';
 import { IconButton } from '@tupaia/ui-components';
 
 const Wrapper = styled(Paper)`
@@ -28,8 +28,8 @@ interface ModalProps extends DialogProps {
 export const Modal = ({ open, onClose, children, ...props }: ModalProps) => {
   return (
     <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal {...props}>
-      <ModalCloseButton onClick={onClose}>
-        <CloseIcon color="inherit" style={{ fontSize: '2rem' }} />
+      <ModalCloseButton aria-label="Dismiss modal" onClick={onClose}>
+        <CloseIcon style={{ fontSize: '2rem' }} />
       </ModalCloseButton>
       <ModalBody>{children}</ModalBody>
     </Dialog>
