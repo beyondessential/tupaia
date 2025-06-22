@@ -103,7 +103,7 @@ const overrides = {
       legend: {
         paddingInline: 0,
       },
-      ":is(ol, ul)[role='list']": {
+      ":where(ol, ul)[role='list']": {
         listStyleType: 'none',
         marginBlock: 0,
         paddingInlineStart: 0,
@@ -114,11 +114,12 @@ const overrides = {
       source: {
         display: 'none',
       },
-      table: {
+      'table, time': {
         fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
       },
-      time: {
-        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      '.lucide': {
+        height: 'auto', // Use width to set both dimensions
+        width: '1em', // Sensible default, mirrors MUI Icon behaviour
       },
     },
   },

@@ -4,6 +4,7 @@ export { Modal } from './Modal';
 export { PageContainer } from './PageContainer';
 
 export { Autocomplete, QuestionAutocomplete } from './Autocomplete';
+export { BottomNavigation } from './BottomNavigation';
 export { Button } from './Button';
 export { ButtonAnchor, ButtonLink } from './ButtonLink';
 export { CancelConfirmModal } from './CancelConfirmModal';
