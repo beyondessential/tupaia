@@ -29,6 +29,7 @@
     "leaflet": "^1.7.1",
     "lodash.keyby": "^4.6.0",
     "lodash.throttle": "^4.1.1",
+    "lucide-react": "^0.514.0",
     "markdown-to-jsx": "^6.4.1",
     "nanoid": "^2.0.3",
     "notistack": "^3.0.1",
