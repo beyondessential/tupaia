@@ -12195,6 +12195,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/sync@workspace:packages/sync"
   dependencies:
+    "@tupaia/constants": "workspace:*"
     "@tupaia/database": "workspace:*"
     rimraf: ^6.0.1
   languageName: unknown

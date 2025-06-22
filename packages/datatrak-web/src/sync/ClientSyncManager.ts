@@ -1,13 +1,16 @@
 import { ModelRegistry } from '@tupaia/database';
-import { SyncDirections } from '@tupaia/constants';
 import {
+  FACT_CURRENT_SYNC_TICK,
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
+  FACT_LAST_SUCCESSFUL_SYNC_PUSH,
   createClientSnapshotTable,
   dropAllSnapshotTables,
   dropSnapshotTable,
-  getModelsForDirection,
   saveIncomingInMemoryChanges,
   saveIncomingSnapshotChanges,
+  waitForPendingEditsUsingSyncTick,
+  getModelsForPush,
+  getModelsForPull,
 } from '@tupaia/sync';
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
@@ -18,6 +21,8 @@ import {
 } from './processStreamedData';
 import { post, remove } from '../api';
 import { DatatrakWebModelRegistry } from '../types/model';
+import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
+import { pushOutgoingChanges } from './pushOutgoingChanges';
 
 export interface SyncResult {
   hasRun: boolean;
@@ -75,7 +80,7 @@ export class ClientSyncManager {
       startedAtTick,
     });
 
-    await this.pushChanges();
+    await this.pushChanges(sessionId, startedAtTick);
 
     await this.pullChanges(sessionId);
 
@@ -100,8 +105,35 @@ export class ClientSyncManager {
     return remove(`sync/${sessionId}`);
   }
 
-  async pushChanges() {
-    // TODO: Implement
+  async pushChanges(sessionId: string, newSyncClockTime: number) {
+    // get the sync tick we're up to locally, so that we can store it as the successful push cursor
+    const currentSyncClockTime = await this.models.localSystemFact.get(FACT_CURRENT_SYNC_TICK);
+
+    // use the new unique sync tick for any changes from now on so that any records that are created
+    // or updated even mid way through this sync, are marked using the new tick and will be captured
+    // in the next push
+    await this.models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, newSyncClockTime);
+    console.log('ClientSyncManager.updatedLocalSyncClockTime', { newSyncClockTime });
+
+    await waitForPendingEditsUsingSyncTick(this.database, currentSyncClockTime);
+
+    // syncing outgoing changes happens in two phases: taking a point-in-time copy of all records
+    // to be pushed, and then pushing those up in batches
+    // this avoids any of the records to be pushed being changed during the push period and
+    // causing data that isn't internally coherent from ending up on the central server
+    const pushSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
+    console.log('ClientSyncManager.snapshottingOutgoingChanges', { pushSince });
+    const modelsForPush = getModelsForPush(this.models);
+    const outgoingChanges = await snapshotOutgoingChanges(modelsForPush, pushSince);
+    if (outgoingChanges.length > 0) {
+      console.log('ClientSyncManager.pushingOutgoingChanges', {
+        totalPushing: outgoingChanges.length,
+      });
+      await pushOutgoingChanges(sessionId, outgoingChanges);
+    }
+
+    await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, currentSyncClockTime);
+    console.log('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
   }
 
   async pullChanges(sessionId: string) {
@@ -157,10 +189,7 @@ export class ClientSyncManager {
 
       const { totalObjects } = await runPull(this.models);
       return this.models.wrapInTransaction(async transactingModels => {
-        const incomingModels = getModelsForDirection(
-          transactingModels,
-          SyncDirections.PULL_FROM_CENTRAL,
-        );
+        const incomingModels = getModelsForPull(transactingModels);
         if (pullVolumeType === PullVolumeType.IncrementalLow) {
           saveIncomingInMemoryChanges(transactingModels, totalObjects);
         } else if (pullVolumeType === PullVolumeType.IncrementalHigh) {
