@@ -1,6 +1,7 @@
 import { Fab, Slide, Tab, Tabs, TabsProps, Typography } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { UseQueryResult } from '@tanstack/react-query';
+import { ListFilter as FilterIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
@@ -13,7 +14,7 @@ import {
   useProjectSurveys,
   useProjectUsersQuery,
 } from '../../../api';
-import { Button, FiltersIcon } from '../../../components';
+import { Button } from '../../../components';
 import { Modal, ModalBody, ModalCloseButton } from '../../../components/Modal';
 import { MobileAutocomplete, MobileAutocompleteProps } from './MobileAutocomplete';
 import { useDisableDesktopTaskFiltersWhileMounted } from './useDisableDesktopTaskFiltersWhileMounted';
@@ -60,7 +61,6 @@ const StyledModal = styled(Modal).attrs({
     > .MuiPaper-root {
       border-start-end-radius: 0.625rem;
       border-start-start-radius: 0.625rem;
-      margin-block-start: 2rem;
       max-block-size: 50rem;
       padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);
       padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
@@ -281,7 +281,7 @@ export const MobileTaskFilters = ({
   return (
     <>
       <FilterButton onClick={() => void setIsOpen(true)}>
-        <FiltersIcon />
+        <FilterIcon aria-hidden style={{ fontSize: '1.5rem' }} />
         {filters.length > 0 && <FilterIndicator />}
       </FilterButton>
       <StyledModal open={isOpen} onClose={() => void setIsOpen(false)}>

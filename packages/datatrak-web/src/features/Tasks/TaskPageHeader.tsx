@@ -1,10 +1,11 @@
-import { Typography } from '@material-ui/core';
+import { Typography, useTheme } from '@material-ui/core';
+import { ChevronLeft } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { ArrowLeftIcon, Button, TaskIcon } from '../../components';
+import { Button, TaskIcon } from '../../components';
 import { useFromLocation, useIsMobile } from '../../utils';
 
 const BackButton = styled(Button).attrs({
@@ -66,15 +67,16 @@ interface TaskPageHeaderProps extends React.ComponentPropsWithoutRef<typeof Wrap
 export const TaskPageHeader = ({ backTo, children, title, ...props }: TaskPageHeaderProps) => {
   const from = useFromLocation();
   const isMobile = useIsMobile();
+  const primaryColor = useTheme().palette.primary.main;
   return (
     <Wrapper {...props}>
       {!isMobile && (
         <Container>
           <BackButton to={from || backTo}>
-            <ArrowLeftIcon />
+            <ChevronLeft />
           </BackButton>
           <HeadingContainer>
-            <TaskIcon aria-hidden />
+            <TaskIcon aria-hidden htmlColor={primaryColor} />
             <Title>{title}</Title>
           </HeadingContainer>
         </Container>
