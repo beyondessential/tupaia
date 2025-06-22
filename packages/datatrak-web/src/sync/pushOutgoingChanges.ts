@@ -1,25 +1,23 @@
-import { SyncSnapshotAttributes } from '@tupaia/sync';
+import { calculatePageLimit, SyncSnapshotAttributes } from '@tupaia/sync';
 import { post } from '../api';
 
 export const pushOutgoingChanges = async (
   sessionId: string,
   changes: SyncSnapshotAttributes[],
-) => {
-  const PAGE_LIMIT = 100;
+): Promise<void> => {
   let startOfPage = 0;
-  let limit = PAGE_LIMIT; // TODO: Fix
+  let limit = calculatePageLimit();
   while (startOfPage < changes.length) {
     const endOfPage = Math.min(startOfPage + limit, changes.length);
     const page = changes.slice(startOfPage, endOfPage);
 
-    // const startTime = Date.now();
+    const startTime = Date.now();
     await post(sessionId, { page });
-    // const endTime = Date.now();
+    const endTime = Date.now();
 
     startOfPage = endOfPage;
 
-    // TODO: Fix
-    // limit = calculatePageLimit(limit, endTime - startTime);
+    limit = calculatePageLimit(limit, endTime - startTime);
   }
   await post(sessionId, { complete: true });
 };
