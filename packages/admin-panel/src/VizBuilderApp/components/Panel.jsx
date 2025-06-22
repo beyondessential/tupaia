@@ -4,7 +4,6 @@ import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import { JsonEditor } from '../../widgets';
 import { TabPanel } from './TabPanel';
 import { PlayButton } from './PlayButton';
-import { JsonToggleButton } from './JsonToggleButton';
 import {
   usePreviewDataContext,
   useVisualisationContext,
@@ -12,6 +11,7 @@ import {
   useVizConfigErrorContext,
 } from '../context';
 import { TransformDataLibrary } from './DataLibrary';
+import { TransformJsonToggle } from './JsonToggleButton';
 
 const Container = styled(FlexColumn)`
   position: relative;
@@ -44,7 +44,7 @@ const PanelTabPanel = styled.div`
 
 export const Panel = () => {
   const { setDataError } = useVizConfigErrorContext();
-  const { jsonToggleEnabled } = usePreviewDataContext();
+  const { showTransformStepAsJson } = usePreviewDataContext();
   const [
     {
       visualisation: { data: dataWithConfig },
@@ -86,11 +86,11 @@ export const Panel = () => {
   return (
     <Container>
       <PanelNav>
-        <JsonToggleButton />
+        <TransformJsonToggle />
         <PlayButton />
       </PanelNav>
       <TabPanel isSelected Panel={PanelTabPanel}>
-        {jsonToggleEnabled ? (
+        {showTransformStepAsJson ? (
           <JsonEditor
             value={vizData.transform}
             onChange={value => setTabValue('transform', value)}

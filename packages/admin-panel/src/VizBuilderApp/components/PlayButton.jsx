@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 import MuiIconButton from '@material-ui/core/IconButton';
 import PlayIcon from '@material-ui/icons/PlayCircleFilled';
 
@@ -29,6 +30,7 @@ export const PlayButton = () => {
   return (
     <IconButton disabled={vizConfigHasError} onClick={handleClick}>
       <PlayIcon />
+      <Typography variant="srOnly">Preview visualisation</Typography>
     </IconButton>
   );
 };
