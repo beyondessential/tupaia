@@ -30,6 +30,10 @@ function main() {
     printGlob: args.includes('--as-glob'),
   };
 
+  if (args.length === 0) {
+    // TODO: print available stacks
+  }
+
   const stackNames = args.filter(s => !s.startsWith('--'));
   const packages = mergeStacks(stackNames);
 
