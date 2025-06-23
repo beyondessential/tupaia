@@ -1,7 +1,12 @@
 import { FormHelperText, FormHelperTextProps } from '@material-ui/core';
 import React from 'react';
+import styled from 'styled-components';
 
 const RECOMMENDED_ACCURACY_METERS = 20;
+
+const StyledHelperText = styled(FormHelperText)`
+  color: oklch(54% 0 0);
+`;
 
 interface GeolocationAccuracyFeedbackProps extends FormHelperTextProps {
   /** Non-negative real number. In Metres. */
@@ -19,7 +24,7 @@ export const GeolocationAccuracyFeedback = ({
   const verbose = !quiet || accuracy > RECOMMENDED_ACCURACY_METERS;
 
   return (
-    <FormHelperText {...props}>
+    <StyledHelperText {...props}>
       {rounded}&nbsp;m accuracy
       {verbose && (
         <>
@@ -27,6 +32,6 @@ export const GeolocationAccuracyFeedback = ({
           trying again when you have stronger GPS signal.
         </>
       )}
-    </FormHelperText>
+    </StyledHelperText>
   );
 };
