@@ -1,3 +1,4 @@
+const parseArgs = require('minimist');
 const stacks = require('../../packages/devops/configs/server-stacks.json');
 
 /**
@@ -24,33 +25,37 @@ function mergeStacks(stackNames) {
  */
 function main() {
   const args = process.argv.slice(2);
-  const flags = {
-    prettyPrint: args.includes('--pretty'),
-    printJson: this.prettyPrint || args.includes('--json'),
-    printGlob: args.includes('--as-glob'),
-  };
 
   if (args.length === 0) {
     // TODO: print available stacks
   }
 
-  const stackNames = args.filter(s => !s.startsWith('--'));
+  const {
+    _: stackNames,
+    pretty,
+    json,
+    'as-glob': glob,
+  } = parseArgs(args, {
+    alias: { h: 'help' },
+    boolean: ['as-glob', 'help', 'join', 'json', 'pretty'],
+  });
+
   const packages = mergeStacks(stackNames);
 
-  if (flags.prettyPrint) {
+  if (pretty) {
     console.log(JSON.stringify(packages, null, 2));
     return;
   }
-  if (flags.printJson) {
+  if (json) {
     console.log(JSON.stringify(packages));
     return;
   }
-  if (flags.printGlob) {
+  if (glob) {
     console.log(`{${packages.join(',')}}`);
     return;
   }
 
-  console.log(packages.join(' '));
+  console.log(packages.join('\n'));
 }
 
 main();
