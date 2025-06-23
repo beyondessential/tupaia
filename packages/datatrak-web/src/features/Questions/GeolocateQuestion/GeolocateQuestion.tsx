@@ -11,6 +11,7 @@ import { Button, InputHelperText } from '../../../components';
 import { OrDivider } from '../../../components/OrDivider';
 import { SurveyQuestionInputProps } from '../../../types';
 import { useIsMobile } from '../../../utils';
+import { GeolocationAccuracyFeedback } from './GeolocationAccuracyFeedback';
 import { LatLongFields } from './LatLongFields';
 import { MapModal } from './MapModal';
 
@@ -52,22 +53,6 @@ const StyledButton = styled(Button)`
     }
   }
 `;
-
-const RECOMMENDED_ACCURACY_METERS = 20;
-
-const AccuracyFeedback = ({ accuracy }: { accuracy: number }) => {
-  const isLowAccuracy = accuracy >= RECOMMENDED_ACCURACY_METERS;
-  const rounded = accuracy.toFixed(2);
-
-  return isLowAccuracy ? (
-    <FormHelperText error>
-      {rounded}&nbsp;m accuracy. This doesn’t meet the recommended &lt;
-      {RECOMMENDED_ACCURACY_METERS}&nbsp;m. Consider trying again when you have stronger GPS signal.
-    </FormHelperText>
-  ) : (
-    <FormHelperText>{rounded}&nbsp;m accuracy</FormHelperText>
-  );
-};
 
 export const GeolocateQuestion = ({
   text,
@@ -155,7 +140,9 @@ export const GeolocateQuestion = ({
         )}
       </Container>
 
-      {typeof value?.accuracy === 'number' && <AccuracyFeedback accuracy={value.accuracy} />}
+      {typeof value?.accuracy === 'number' && (
+        <GeolocationAccuracyFeedback accuracy={value.accuracy} quiet={isReadOnly} />
+      )}
       {errorFeedback && <FormHelperText error>{errorFeedback}</FormHelperText>}
     </fieldset>
   );
