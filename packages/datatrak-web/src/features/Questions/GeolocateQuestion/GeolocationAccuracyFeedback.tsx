@@ -4,8 +4,8 @@ import React from 'react';
 const RECOMMENDED_ACCURACY_METERS = 20;
 
 interface GeolocationAccuracyFeedbackProps extends FormHelperTextProps {
-  /** Metres */
-  accuracy: number;
+  /** Non-negative real number. In Metres. */
+  accuracy: GeolocationCoordinates['accuracy'];
   /** If true, suppresses the prompt to retry and merely states the accuracy. */
   quiet?: boolean;
 }
