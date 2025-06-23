@@ -155,8 +155,7 @@ export class GETHandler extends CRUDHandler {
 
     const { limit, page } = this.getPaginationParameters();
     if (isNotNullish(limit)) {
-      const lastPage =
-        totalNumberOfRecords === Number.POSITIVE_INFINITY ? null : totalNumberOfRecords / limit;
+      const lastPage = Number.isFinite(totalNumberOfRecords) ? totalNumberOfRecords / limit : null;
 
       headers['Access-Control-Expose-Headers'] = 'Link, X-Total-Count';
       headers.Link = generateLinkHeader(this.resource, page, lastPage, this.req.query);

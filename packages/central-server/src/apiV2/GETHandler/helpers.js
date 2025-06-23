@@ -51,8 +51,7 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
     },
   };
 
-  const lastPageIsKnown =
-    Number.isInteger(lastPage) && lastPage > 0 && lastPage !== Number.POSITIVE_INFINITY;
+  const lastPageIsKnown = Number.isInteger(lastPage) && lastPage > 0 && Number.isFinite(lastPage);
   if (lastPageIsKnown) {
     linkHeader.last = {
       url: getUrlForPage(lastPage),
