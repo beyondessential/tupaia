@@ -143,26 +143,13 @@ export class GETHandler extends CRUDHandler {
       ));
     }
 
-    const [pageOfRecords, totalNumberOfRecords] = await Promise.all([
+    const [pageOfRecords, totalRecordCount] = await Promise.all([
       this.findRecords(criteria, options),
       this.countRecords(criteria, options),
     ]);
 
-    const headers = {
-      'Access-Control-Expose-Headers': 'X-Total-Count', // to get around CORS
-      'X-Total-Count': totalNumberOfRecords,
-    };
-
-    const { limit, page } = this.getPaginationParameters();
-    if (isNotNullish(limit)) {
-      const lastPage = Number.isFinite(totalNumberOfRecords) ? totalNumberOfRecords / limit : null;
-
-      headers['Access-Control-Expose-Headers'] = 'Link, X-Total-Count';
-      headers.Link = generateLinkHeader(this.resource, page, lastPage, this.req.query);
-    }
-
     return {
-      headers,
+      headers: this.#buildHeaders(totalRecordCount),
       body: pageOfRecords,
     };
   }
@@ -183,5 +170,22 @@ export class GETHandler extends CRUDHandler {
       options,
     );
     return record;
+  }
+
+  /** @param {number} totalRecordCount */
+  #buildHeaders(totalRecordCount) {
+    const headers = {
+      'Access-Control-Expose-Headers': 'X-Total-Count', // to get around CORS
+      'X-Total-Count': totalRecordCount,
+    };
+
+    const { limit, page } = this.getPaginationParameters();
+    if (isNotNullish(limit)) {
+      const lastPage = Number.isFinite(totalRecordCount) ? totalRecordCount / limit : null;
+      headers['Access-Control-Expose-Headers'] = 'Link, X-Total-Count';
+      headers.Link = generateLinkHeader(this.resource, page, lastPage, this.req.query);
+    }
+
+    return headers;
   }
 }
