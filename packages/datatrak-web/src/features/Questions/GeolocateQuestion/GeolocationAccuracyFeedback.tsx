@@ -8,7 +8,7 @@ const StyledHelperText = styled(FormHelperText)`
   color: oklch(54% 0 0);
 `;
 
-interface GeolocationAccuracyFeedbackProps extends FormHelperTextProps {
+interface GeolocationAccuracyFeedbackProps extends Omit<FormHelperTextProps, 'children'> {
   /** Non-negative real number. In Metres. */
   accuracy: GeolocationCoordinates['accuracy'];
   /** If true, suppresses the prompt to retry and merely states the accuracy. */
