@@ -6,10 +6,13 @@ import { isNullish } from '@tupaia/tsutils';
 import { DEFAULT_PAGE_SIZE } from './GETHandler';
 
 export const parsePageSizeQueryParam = pageSize => {
-  if (Number.isInteger(pageSize) && pageSize > 0) return pageSize;
   if (pageSize === 'ALL' || isNullish(pageSize)) return null;
+
+  const parsed = Number.parseInt(pageSize);
+  if (Number.isInteger(parsed) && parsed > 0) return parsed;
+
   winston.warn(
-    `Received invalid pageSize query parameter: ${pageSize}. If provided, should be a positive integer, 'ALL' or null. Using default limit of ${DEFAULT_PAGE_SIZE}.`,
+    `Received invalid pageSize query parameter: ${JSON.stringify(pageSize)}. If provided, should be a positive integer, 'ALL' or null. Using default limit of ${DEFAULT_PAGE_SIZE}.`,
   );
   return DEFAULT_PAGE_SIZE;
 };
