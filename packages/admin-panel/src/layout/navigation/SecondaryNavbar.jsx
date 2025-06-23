@@ -48,7 +48,7 @@ const RouteLink = styled(Link)`
   }
   /**
    * The following is a workaround to stop the bold text on hover from shifting the layout of the navbar
-   * 
+   *
    **/
 
   display: inline-flex;
@@ -94,7 +94,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
       observer.observe(firstLink.current);
     }
 
-    const lastLink = navLinkRefs.current[navLinkRefs.current.length - 1];
+    const lastLink = navLinkRefs.current.at(-1);
     if (lastLink.current) {
       observer.observe(lastLink.current);
     }
@@ -203,7 +203,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
 export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
   const containerRef = useRef(null);
   const location = useLocation();
-  const navLinkRefs = useRef(linkInput.map(() => React.createRef()));
+  const navLinkRefs = useRef(linkInput.map(React.createRef));
 
   const getIsActive = link => {
     const matchResult = matchPath(link.target, location.pathname);
