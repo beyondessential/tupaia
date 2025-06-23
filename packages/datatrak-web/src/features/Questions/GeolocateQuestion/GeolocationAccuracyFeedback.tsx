@@ -13,15 +13,20 @@ interface GeolocationAccuracyFeedbackProps extends FormHelperTextProps {
 export const GeolocationAccuracyFeedback = ({
   accuracy,
   quiet,
+  ...props
 }: GeolocationAccuracyFeedbackProps) => {
   const rounded = accuracy.toFixed(2);
+  const verbose = !quiet || accuracy > RECOMMENDED_ACCURACY_METERS;
 
-  return quiet || accuracy < RECOMMENDED_ACCURACY_METERS ? (
-    <FormHelperText>{rounded}&nbsp;m accuracy</FormHelperText>
-  ) : (
-    <FormHelperText>
-      {rounded}&nbsp;m accuracy. This doesn’t meet the recommended &lt;
-      {RECOMMENDED_ACCURACY_METERS}&nbsp;m. Consider trying again when you have stronger GPS signal.
+  return (
+    <FormHelperText {...props}>
+      {rounded}&nbsp;m accuracy
+      {verbose && (
+        <>
+          . This doesn’t meet the recommended &lt;{RECOMMENDED_ACCURACY_METERS}&nbsp;m. Consider
+          trying again when you have stronger GPS signal.
+        </>
+      )}
     </FormHelperText>
   );
 };
