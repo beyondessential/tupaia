@@ -53,6 +53,22 @@ const StyledButton = styled(Button)`
   }
 `;
 
+const RECOMMENDED_ACCURACY_METERS = 20;
+
+const AccuracyFeedback = ({ accuracy }: { accuracy: number }) => {
+  const isLowAccuracy = accuracy >= RECOMMENDED_ACCURACY_METERS;
+  const rounded = accuracy.toFixed(2);
+
+  return isLowAccuracy ? (
+    <FormHelperText error>
+      {rounded}&nbsp;m accuracy. This doesn’t meet the recommended &lt;
+      {RECOMMENDED_ACCURACY_METERS}&nbsp;m. Consider trying again when you have stronger GPS signal.
+    </FormHelperText>
+  ) : (
+    <FormHelperText>{rounded}&nbsp;m accuracy</FormHelperText>
+  );
+};
+
 export const GeolocateQuestion = ({
   text,
   required,
@@ -60,10 +76,12 @@ export const GeolocateQuestion = ({
   controllerProps: { value, onChange, name, invalid },
 }: SurveyQuestionInputProps) => {
   const { isReviewScreen, isResponseScreen } = useSurveyForm();
-  const [mapModalOpen, setMapModalOpen] = useState(false);
-  // GeolocateQuestion is semantically one field; manually emulate normal helper text behaviour
-  const [errorFeedback, setErrorFeedback] = useState<string | null>(null);
 
+  const [mapModalOpen, setMapModalOpen] = useState(false);
+  const toggleMapModal = () => setMapModalOpen(!mapModalOpen);
+
+  // GeolocateQuestion is semantically one field; manually emulate normal helper text behaviour
+  const [errorFeedback, setErrorFeedback] = useState<React.ReactNode | null>(null);
   const isMobile = useIsMobile();
 
   // This may in future be worth extracting into a `useIsOnline` hook. For now, it’s reasonable to
@@ -72,10 +90,6 @@ export const GeolocateQuestion = ({
   const shouldUseDetectPosition = !window.navigator.onLine && 'geolocation' in navigator;
 
   const [position, error] = useCurrentPosition({ enabled: shouldUseDetectPosition });
-
-  const toggleMapModal = () => {
-    setMapModalOpen(!mapModalOpen);
-  };
 
   const populateFromCurrentPosition = () => {
     if (error !== null) {
@@ -140,6 +154,8 @@ export const GeolocateQuestion = ({
           />
         )}
       </Container>
+
+      {typeof value?.accuracy === 'number' && <AccuracyFeedback accuracy={value.accuracy} />}
       {errorFeedback && <FormHelperText error>{errorFeedback}</FormHelperText>}
     </fieldset>
   );
