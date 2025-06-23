@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
@@ -66,7 +62,7 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
       >
         <Container>
           <TaskSummary task={task} />
-          <TaskForm onSubmit={handleSubmit(editTask)}>
+          <TaskForm formContext={formContext} onSubmit={editTask}>
             <Controller
               name="assignee"
               control={control}

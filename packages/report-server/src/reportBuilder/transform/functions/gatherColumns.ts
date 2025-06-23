@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { yup } from '@tupaia/utils';
 import { TransformTable } from '../table';
 import { Row } from '../../types';
@@ -27,7 +22,7 @@ const gatherColumns = (table: TransformTable, params: GatherColumnsParams) => {
 
   const newRowData = table
     .getRows()
-    .map(row => {
+    .flatMap(row => {
       const keptData: Row = Object.fromEntries(
         columnsToKeep.map(columnName => [columnName, row[columnName]]),
       );
@@ -37,8 +32,7 @@ const gatherColumns = (table: TransformTable, params: GatherColumnsParams) => {
         value: row[columnName],
         columnName,
       }));
-    })
-    .flat();
+    });
 
   return new TransformTable(newColumnNames, newRowData);
 };

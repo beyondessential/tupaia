@@ -1,9 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { generateId } from '@tupaia/database';
+import { VIZ_BUILDER_PERMISSION_GROUP } from '../../../permissions';
 
 const permissionGroupId = generateId();
 const testPermissionGroupId = generateId();
@@ -27,7 +23,7 @@ const MAP_OVERLAYS = [
 const PERMISSION_GROUPS = [
   {
     id: permissionGroupId,
-    name: 'Viz_Permissions',
+    name: VIZ_BUILDER_PERMISSION_GROUP,
   },
   {
     id: testPermissionGroupId,

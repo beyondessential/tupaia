@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -30,11 +25,10 @@ export class MapOverlayModel extends DatabaseModel {
       },
     );
     const measureCodes = overlays
-      .map(({ code: overlayCode, linked_measures: linkedMeasures }) => [
+      .flatMap(({ code: overlayCode, linked_measures: linkedMeasures }) => [
         overlayCode,
         ...(linkedMeasures !== null ? linkedMeasures : []),
-      ])
-      .flat();
+      ]);
 
     const measureResults = await this.findMeasuresWithLegacyInfo({
       'map_overlay.code': measureCodes,

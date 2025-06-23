@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { TextInput } from '../../../components';
@@ -33,7 +29,7 @@ export const LatLongFields = ({
   const handleChange = (e: ChangeEvent<{}>, field: string) => {
     setGeolocation({
       ...geolocation,
-      [field]: parseFloat((e.target as HTMLInputElement).value),
+      [field]: Number.parseFloat((e.target as HTMLInputElement).value),
       accuracy: 'N/A',
     });
   };

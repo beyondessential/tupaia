@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 const RESOURCE_NAME = { singular: 'map overlay group relation' };
 
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
@@ -17,6 +12,7 @@ export const FIELDS = {
       optionLabelKey: 'map_overlay_group.code',
       optionValueKey: 'map_overlay_group.id',
       sourceKey: 'map_overlay_group_id',
+      accessor: record => record['map_overlay_group.code'],
     },
   },
   CHILD_TYPE: {
@@ -51,6 +47,7 @@ export const FIELDS = {
       optionValueKey: 'mapOverlay.id',
       sourceKey: 'child_id',
       visibilityCriteria: { child_type: 'mapOverlay' },
+      accessor: record => record['child_code'],
     },
   },
   CHILD_MAP_OVERLAY_GROUP_CODE: {
@@ -64,6 +61,7 @@ export const FIELDS = {
       optionValueKey: 'mapOverlayGroups.id',
       sourceKey: 'child_id',
       visibilityCriteria: { child_type: 'mapOverlayGroup' },
+      accessor: record => record['map_overlay_group.code'],
     },
   },
   SORT_ORDER: {
@@ -117,4 +115,5 @@ export const mapOverlayGroupRelations = {
   endpoint: RELATION_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
+  needsVizBuilderAccess: ['create'],
 };

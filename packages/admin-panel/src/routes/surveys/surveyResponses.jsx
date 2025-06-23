@@ -1,12 +1,11 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
-import { getBrowserTimeZone } from '@tupaia/utils';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+
+import { FilterableTableCellContent } from '@tupaia/ui-components';
+import { getBrowserTimeZone } from '@tupaia/utils';
+
 import { SurveyResponsesExportModal } from '../../importExport';
 import { getPluralForm } from '../../pages/resources/resourceName';
 import { OutdatedFilter } from '../../table/columnTypes/columnFilters';
@@ -23,7 +22,7 @@ const Pill = styled.span`
   border-radius: 1.5rem;
   padding: 0.3rem 0.9rem;
   color: ${({ $color }) => $color};
-  .cell-content:has(&) > div {
+  ${FilterableTableCellContent}:has(&) > div {
     overflow: visible;
   }
 `;

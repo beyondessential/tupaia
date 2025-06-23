@@ -1,22 +1,17 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { KeysToCamelCase } from '../../../utils/casing';
 import { Entity, Survey, Task, TaskStatus } from '../../models';
 
 export type Params = Record<string, never>;
 
-type Assignee = {
+export interface TaskAssignee {
   id?: string | null;
   name?: string | null;
-};
+}
 
 export type TaskResponse = KeysToCamelCase<
   Partial<Omit<Task, 'entity_id' | 'survey_id' | 'created_at' | 'repeat_schedule' | 'due_date'>>
 > & {
-  assignee?: Assignee;
+  assignee?: TaskAssignee;
   taskStatus: TaskStatus | 'overdue' | 'repeating';
   survey: {
     name: Survey['name'];

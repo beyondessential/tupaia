@@ -1,29 +1,30 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { useQuery } from '@tanstack/react-query';
 import { DatatrakWebSurveyRequest, Project } from '@tupaia/types';
 import { get } from '../api';
 import { Entity } from '../../types';
 
+interface QueryOptions {
+  countryCode?: Entity['code'];
+  searchTerm?: string;
+}
+
 export const useProjectSurveys = (
   projectId?: Project['id'],
-  selectedCountryCode?: Entity['code'],
+  { countryCode, searchTerm }: QueryOptions = {},
 ) => {
-  return useQuery(
-    ['surveys', projectId, selectedCountryCode],
-    (): Promise<DatatrakWebSurveyRequest.ResBody[]> =>
-      get('surveys', {
-        params: {
-          fields: ['name', 'code', 'id', 'survey_group.name'],
-          projectId,
-          countryCode: selectedCountryCode,
-        },
-      }),
-    {
-      enabled: !!projectId && !!selectedCountryCode,
-    },
+  const getSurveys = () =>
+    get('surveys', {
+      params: {
+        fields: ['name', 'code', 'id', 'survey_group.name'],
+        projectId,
+        ...(searchTerm && { searchTerm }),
+        ...(countryCode && { countryCode }),
+      },
+    });
+
+  return useQuery<DatatrakWebSurveyRequest.ResBody[]>(
+    ['surveys', projectId, countryCode, searchTerm],
+    getSurveys,
+    { enabled: !!projectId },
   );
 };

@@ -1,8 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
+export * as TupaiaWebCountriesRequest from './CountriesRequest';
 export * as TupaiaWebChangePasswordRequest from './ChangePasswordRequest';
 export * as TupaiaWebDashboardsRequest from './DashboardsRequest';
 export * as TupaiaWebEmailDashboardRequest from './EmailDashboardRequest';

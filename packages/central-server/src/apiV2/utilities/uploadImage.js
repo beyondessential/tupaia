@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { S3Client, S3 } from '@tupaia/server-utils';
 import { getStandardisedImageName } from '../../utilities';
 

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { useQuery } from '@tanstack/react-query';
 import { Country, DatatrakWebUsersRequest } from '@tupaia/types';
 import { get } from '../api';
@@ -13,9 +8,9 @@ export const useSurveyUsers = (
   countryCode?: Country['code'],
   searchTerm?: string,
 ) => {
-  return useQuery(
+  return useQuery<DatatrakWebUsersRequest.ResBody>(
     ['surveyUsers', surveyCode, countryCode, searchTerm],
-    (): Promise<DatatrakWebUsersRequest.ResBody> =>
+    () =>
       get(`users/${surveyCode}/${countryCode}`, {
         params: {
           searchTerm,

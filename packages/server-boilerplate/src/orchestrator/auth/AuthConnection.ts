@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { createBasicHeader, requireEnv } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
 import { Credentials, OneTimeCredentials, RequestResetPasswordCredentials } from '../types';
@@ -39,11 +33,15 @@ export class AuthConnection extends ApiConnection {
   public async login(
     { emailAddress, password, deviceName, timezone }: Credentials,
     serverName: string = DEFAULT_NAME,
+    ip: string,
   ) {
     const response = await this.post(
       'auth',
       { grantType: 'password' },
       { emailAddress, password, deviceName: `${serverName}: ${deviceName}`, timezone },
+      // forward the client's IP address to the auth server
+      { 'x-forwarded-for': ip },
+
     );
     return this.parseAuthResponse(response);
   }

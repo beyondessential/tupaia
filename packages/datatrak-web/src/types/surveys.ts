@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { ControllerRenderProps } from 'react-hook-form';
 import { DatatrakWebSurveyRequest } from '@tupaia/types';
 
@@ -20,15 +16,13 @@ export type SurveyParams = {
   screenNumber: string;
 };
 
-export type SurveyQuestionFieldProps = Omit<
-  SurveyScreenComponent,
-  'componentNumber' | 'questionId'
-> & {
+export interface SurveyQuestionFieldProps
+  extends Omit<SurveyScreenComponent, 'componentNumber' | 'questionId'> {
   name: SurveyScreenComponent['code'];
   id: SurveyScreenComponent['questionId'];
-};
+}
 
-export type SurveyQuestionInputProps = Omit<SurveyQuestionFieldProps, 'type' | 'text'> & {
+export interface SurveyQuestionInputProps extends Omit<SurveyQuestionFieldProps, 'type' | 'text'> {
   controllerProps: ControllerRenderProps & {
     invalid?: boolean;
   };
@@ -37,4 +31,4 @@ export type SurveyQuestionInputProps = Omit<SurveyQuestionFieldProps, 'type' | '
   max?: number;
   type?: SurveyQuestionFieldProps['type'];
   text?: SurveyQuestionFieldProps['text'];
-};
+}

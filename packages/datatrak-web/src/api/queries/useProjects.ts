@@ -1,19 +1,17 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { useQuery } from '@tanstack/react-query';
 import { DatatrakWebProjectsRequest } from '@tupaia/types';
 import { get } from '../api';
 
 export const useProjects = (sortByAccess = true) => {
-  const { data, ...query } = useQuery(
-    ['projects'],
-    (): Promise<DatatrakWebProjectsRequest.ResBody> => get('projects'),
+  const useQueryResult = useQuery<DatatrakWebProjectsRequest.ResBody>(['projects'], () =>
+    get('projects'),
   );
 
-  if (data && sortByAccess) {
+  // Short-circuit if still fetching data
+  if (!useQueryResult.data) return useQueryResult;
+
+  const { data, ...query } = useQueryResult;
+  if (sortByAccess) {
     data.sort((a, b) => {
       // Sort by hasAccess = true first
       if (a.hasAccess !== b.hasAccess) {

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppPageLayout, AuthLayout, Footer } from './layout';
@@ -12,7 +8,7 @@ import { LoginPage } from './pages/LoginPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 import { TabPageLayout } from './layout/TabPageLayout';
 import { useUser } from './api/queries';
-import { getHasBESAdminAccess } from './utilities/getHasBESAdminAccess';
+import { getHasBESAdminAccess } from './utilities';
 import { ForgotPasswordPage, ResetPasswordPage } from './pages';
 
 export const getFlattenedChildViews = (route, basePath = '') => {

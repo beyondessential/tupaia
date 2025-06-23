@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Note: this file includes data that are referenced or used in import spreadsheets
  */
 
@@ -177,15 +172,14 @@ export const createSurveyResponses = async (models, responsesBySurvey) => {
   const surveyCodeToId = reduceToDictionary(surveys, 'code', 'id');
 
   const responseRecords = Object.entries(responsesBySurvey)
-    .map(([surveyCode, responses]) =>
+    .flatMap(([surveyCode, responses]) =>
       responses.map(({ id, entityCode }) => ({
         id,
         survey_id: surveyCodeToId[surveyCode],
         user_id: user.id,
         entity_id: entityCodeToId[entityCode],
       })),
-    )
-    .flat();
+    );
 
   await findOrCreateRecords(models, { surveyResponse: responseRecords });
 };

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React, { forwardRef } from 'react';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import styled from 'styled-components';

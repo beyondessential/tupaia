@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router';
@@ -16,7 +11,7 @@ import {
   URL_SEARCH_PARAMS,
   MOBILE_BREAKPOINT,
 } from '../constants';
-import { useCountries, useProjects, useUser } from '../api/queries';
+import { useCountriesQuery, useProjects, useUser } from '../api/queries';
 import {
   ProjectAllowedLink,
   ProjectCardList,
@@ -27,6 +22,11 @@ import {
 import { Modal, RouterButton } from '../components';
 import { SingleProject } from '../types';
 import { useModal } from '../utils';
+
+interface CountryAutocompleteOption {
+  label: string;
+  value: string;
+}
 
 const OFF_WHITE = '#B8B8B8';
 
@@ -130,7 +130,7 @@ const AutoCompleteWrapper = styled.div`
   max-width: 19rem;
 `;
 
-const SearchAutocomplete = styled(Autocomplete)`
+const SearchAutocomplete = styled(Autocomplete<CountryAutocompleteOption>)`
   .MuiInputBase-root {
     background-color: ${({ theme }) => theme.palette.background.paper};
   }
@@ -164,15 +164,12 @@ const Option = styled.span`
  */
 export const ProjectsModal = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState<{
-    label: string;
-    value: string;
-  } | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<CountryAutocompleteOption | null>(null);
   const { closeModal } = useModal();
   const { data: projects = [], isFetching } = useProjects();
   const { isLoggedIn } = useUser();
   const location = useLocation();
-  const { data: countries, isLoading } = useCountries();
+  const { data: countries, isLoading } = useCountriesQuery();
 
   return (
     <Modal isOpen onClose={closeModal}>
@@ -192,7 +189,7 @@ export const ProjectsModal = () => {
               <SearchAutocomplete
                 options={countries?.map(({ name }) => ({ label: name, value: name })) ?? []}
                 loading={isLoading}
-                placeholder="Search country..."
+                placeholder="Search country…"
                 onInputChange={(_, newValue) => setSearchTerm(newValue)}
                 getOptionLabel={option => option.label}
                 value={selectedCountry}
@@ -234,7 +231,7 @@ export const ProjectsModal = () => {
                       }`}
                     />
                   ),
-                  [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
+                  [PROJECT_ACCESS_TYPES.PENDING]: ProjectPendingLink,
                   [PROJECT_ACCESS_TYPES.DENIED]: ({
                     project: { code },
                   }: {

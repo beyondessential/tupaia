@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -67,7 +62,7 @@ export const UserInfo = () => {
       {isLoggedIn ? (
         <UserDetails>
           <UserName>{fullName}</UserName>
-          {projectId && <ChangeProjectButton />}
+          {projectId && <ChangeProjectButton leadingBorder />}
         </UserDetails>
       ) : (
         <AuthButtons>

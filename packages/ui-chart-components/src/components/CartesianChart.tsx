@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useEffect, useState } from 'react';
 import get from 'lodash.get';
 import {
@@ -23,7 +19,8 @@ import {
   LineChart as LineChartComponent,
   AreaChart as AreaChartComponent,
 } from './Charts';
-import { getCartesianLegend, ReferenceLines, ChartTooltip as CustomTooltip } from './Reference';
+import { ReferenceLines, ChartTooltip as CustomTooltip } from './Reference';
+import { getCartesianChartLegend } from './Legend';
 import { XAxis as XAxisComponent, YAxes } from './Axes';
 
 const { Area, Bar, Composed, Line } = ChartType;
@@ -74,9 +71,9 @@ const getRealDataKeys = (chartConfig: CartesianChartConfig['chartConfig'] | {}) 
 const getLegendAlignment = (
   legendPosition: LegendPosition,
   isExporting: boolean,
-): Pick<LegendProps, 'align' | 'verticalAlign' | 'layout'> => {
+): Pick<LegendProps, 'align' | 'verticalAlign'> => {
   if (isExporting) {
-    return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
+    return { verticalAlign: 'top', align: 'right' };
   }
   if (legendPosition === 'bottom') {
     return { verticalAlign: 'bottom', align: 'center' };
@@ -218,7 +215,7 @@ export const CartesianChart = ({
   const aspect = !isEnlarged && !isMobileSize && !isExporting ? 1.6 : undefined;
   const height = getHeight(isExporting, isEnlarged, hasLegend, isMobileSize);
 
-  const { verticalAlign, align, layout } = getLegendAlignment(legendPosition, isExporting);
+  const { verticalAlign, align } = getLegendAlignment(legendPosition, isExporting);
 
   const presentationOptions = 'presentationOptions' in config ? config.presentationOptions : {};
 
@@ -252,8 +249,7 @@ export const CartesianChart = ({
           <Legend
             verticalAlign={verticalAlign}
             align={align}
-            layout={layout}
-            content={getCartesianLegend({
+            content={getCartesianChartLegend({
               chartConfig,
               getIsActiveKey,
               isExporting,

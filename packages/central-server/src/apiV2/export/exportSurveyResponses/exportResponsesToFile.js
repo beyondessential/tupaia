@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import xlsx from 'xlsx';
 import moment from 'moment';
 import keyBy from 'lodash.keyby';
@@ -15,11 +10,11 @@ import {
   truncateString,
   toFilename,
 } from '@tupaia/utils';
+import { getExportPathForUser } from '@tupaia/server-utils';
 import { RECORDS } from '@tupaia/database';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dataAccessors';
 import { hasBESAdminAccess } from '../../../permissions';
-import { getExportPathForUser } from '../getExportPathForUser';
 import { zipMultipleFiles } from '../../utilities';
 
 const FILE_PREFIX = 'survey_response_export';
@@ -248,7 +243,7 @@ export async function exportResponsesToFile(
     );
 
     // Add any questions that are in survey responses but no longer in the survey
-    const allQuestionIds = getUniqueEntries(answers.map(a => a['question.id']).flat());
+    const allQuestionIds = getUniqueEntries(answers.flatMap(a => a['question.id']));
     const validQuestionIds = questions.map(q => q.id);
     const outdatedQuestionIds = allQuestionIds.filter(id => !validQuestionIds.includes(id));
     const outdatedQuestions = await models.question.find({ id: outdatedQuestionIds });

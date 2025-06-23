@@ -1,13 +1,8 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
-import React, { ReactNode } from 'react';
-import styled from 'styled-components';
 import { TableCell as MuiTableCell } from '@material-ui/core';
+import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { TableResizerProps } from 'react-table';
+import styled from 'styled-components';
 
 const Cell = styled(MuiTableCell)<{
   $maxWidth?: number;
@@ -25,7 +20,7 @@ const Cell = styled(MuiTableCell)<{
   }
 `;
 
-const CellContentWrapper = styled.div`
+export const FilterableTableCellContent = styled.div`
   padding: 0.7rem;
   height: 100%;
   display: flex;
@@ -128,9 +123,9 @@ export const TableCell = ({ children, width, row, maxWidth, column, ...props }: 
   const { to, state } = getRowUrl();
   return (
     <Cell {...props} $maxWidth={maxWidth}>
-      <CellContentWrapper className="cell-content" as={to ? CellLink : 'div'} to={to} state={state}>
+      <FilterableTableCellContent as={to ? CellLink : 'div'} to={to} state={state}>
         <CellContentContainer>{children}</CellContentContainer>
-      </CellContentWrapper>
+      </FilterableTableCellContent>
     </Cell>
   );
 };

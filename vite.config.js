@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { defineConfig, loadEnv } from 'vite';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import viteCompression from 'vite-plugin-compression';
@@ -37,7 +32,6 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
-
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
@@ -50,6 +44,10 @@ export default defineConfig(({ command, mode }) => {
     },
     server: {
       open: true,
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+      },
     },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {

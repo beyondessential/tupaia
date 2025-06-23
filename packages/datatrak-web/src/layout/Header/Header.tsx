@@ -1,39 +1,33 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-import React from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
-import { PageContainer } from '../../components';
+
+import { SafeAreaColumn } from '@tupaia/ui-components';
+
 import { HEADER_HEIGHT } from '../../constants';
 import { UserMenu } from '../UserMenu';
-import { LogoButton } from './LogoButton';
+import { HeaderLeft } from './HeaderLeft';
 
-const Wrapper = styled.div`
-  background: ${({ theme }) => theme.palette.background.paper};
-  width: 100%;
-  box-shadow: inset 0 0 1px #333;
+export const HeaderRoot = styled(SafeAreaColumn).attrs({
+  as: 'header',
+})`
+  align-items: center;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  block-size: ${HEADER_HEIGHT};
+  border-block-end: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  display: flex;
+  justify-content: space-between;
+  max-block-size: ${HEADER_HEIGHT};
+  padding-top: env(safe-area-inset-top, 0);
+  position: relative;
+  inline-size: 100%;
   z-index: 10;
 `;
 
-const Container = styled(PageContainer).attrs({
-  maxWidth: false,
-})`
-  position: relative;
-  z-index: 1;
-  height: ${HEADER_HEIGHT};
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-export const Header = () => {
+export const Header = (props: ComponentPropsWithoutRef<typeof HeaderRoot>) => {
   return (
-    <Wrapper>
-      <Container>
-        <LogoButton />
-        <UserMenu />
-      </Container>
-    </Wrapper>
+    <HeaderRoot {...props}>
+      <HeaderLeft />
+      <UserMenu />
+    </HeaderRoot>
   );
 };

@@ -13,8 +13,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && yarn package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && yarn package:build:ts",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --env=jsdom",
@@ -31,8 +31,9 @@
     "lodash.get": "^4.4.2",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
-    "react": "^16.13.1",
+    "react": "^16.14.0",
     "react-dom": "^16.13.1",
+    "react-is": "^16.13.1",
     "react-table": "^7.7.0",
     "recharts": "^1.8.5",
     "styled-components": "^5.0.1"
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
     "@types/lodash.get": "^4.4.7",
-    "@types/recharts": "^1.8.24"
+    "@types/recharts": "^1.8.24",
+    "rimraf": "^6.0.1"
   }
 }

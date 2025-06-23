@@ -1,21 +1,21 @@
 import { ValidationError } from '@tupaia/utils';
-import type { WeatherApi } from '@tupaia/weather-api';
-import { DataServiceMapping } from '../DataServiceMapping';
+import type { WeatherApi, WeatherResult, WeatherSnapshot } from '@tupaia/weather-api';
 import {
-  RawAnalyticResults,
   DataBrokerModelRegistry,
   DataGroup,
   DataSource,
   DataSourceType,
   EntityRecord,
   EventResults,
+  RawAnalyticResults,
 } from '../../types';
 import { EMPTY_ANALYTICS_RESULTS } from '../../utils';
-import { Service } from '../Service';
-import { ApiResultTranslator } from './ApiResultTranslator';
-import { DateSanitiser } from './DateSanitiser';
-import { DataElement, WeatherResult } from './types';
+import { DataServiceMapping } from '../DataServiceMapping';
 import type { PullMetadataOptions as BasePullMetadataOptions } from '../Service';
+import { Service } from '../Service';
+import { ApiResultTranslator, WeatherDataElementCode } from './ApiResultTranslator';
+import { DateSanitiser } from './DateSanitiser';
+import { DataElement } from './types';
 
 export type PullOptions = {
   dataServiceMapping: DataServiceMapping;
@@ -91,7 +91,7 @@ export class WeatherService extends Service {
       const apiResultTranslator = new ApiResultTranslator(
         entities,
         resultFormat,
-        forecastDataElementCodes,
+        forecastDataElementCodes as WeatherDataElementCode[],
       );
 
       return this.getForecastWeather(entities, startDate, endDate, apiResultTranslator);
@@ -100,7 +100,7 @@ export class WeatherService extends Service {
       const apiResultTranslator = new ApiResultTranslator(
         entities,
         resultFormat,
-        historicDataElementCodes,
+        historicDataElementCodes as WeatherDataElementCode[],
       );
 
       return this.getHistoricWeather(entities, startDate, endDate, apiResultTranslator);
@@ -109,8 +109,6 @@ export class WeatherService extends Service {
     return resultFormat === 'analytics' ? EMPTY_ANALYTICS_RESULTS : ([] as EventResults);
   }
 
-  /**
-   */
   public async pullMetadata(
     /* eslint-disable @typescript-eslint/no-unused-vars */
     dataSources: DataElement[],
@@ -214,7 +212,7 @@ export class WeatherService extends Service {
      */
     const filterApiResultForDates = (apiResult: WeatherResult) => {
       const filteredData = apiResult.data.filter(
-        entry => entry.datetime >= startDate && entry.datetime <= endDate,
+        (entry: WeatherSnapshot) => entry.datetime >= startDate && entry.datetime <= endDate,
       );
       return {
         ...apiResult,

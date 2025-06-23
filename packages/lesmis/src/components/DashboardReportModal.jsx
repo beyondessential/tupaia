@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { utcMoment } from '@tupaia/utils';

@@ -1,16 +1,12 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-export { Authenticator } from './Authenticator';
 export { AccessPolicyBuilder } from './AccessPolicyBuilder';
-export { encryptPassword, verifyPassword, sha256EncryptPassword } from './passwordEncryption';
-export { getJwtToken, extractRefreshTokenFromReq, generateSecretKey } from './security';
+export { Authenticator } from './Authenticator';
+export { mergeAccessPolicies } from './mergeAccessPolicies';
+export { encryptPassword, sha256EncryptPassword, verifyPassword } from './passwordEncryption';
+export { extractRefreshTokenFromReq, generateSecretKey, getJwtToken } from './security';
 export {
-  getTokenClaimsFromBearerAuth,
-  getTokenClaims,
-  getUserAndPassFromBasicAuth,
   constructAccessToken,
   getAuthorizationObject,
+  getTokenClaims,
+  getTokenClaimsFromBearerAuth,
+  getUserAndPassFromBasicAuth,
 } from './userAuth';
-export { mergeAccessPolicies } from './mergeAccessPolicies';

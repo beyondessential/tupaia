@@ -1,10 +1,6 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-import React from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
-import { CircularProgress, BoxProps } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 import { FlexCenter } from '../Layout';
 
 const Container = styled(FlexCenter)`
@@ -13,7 +9,7 @@ const Container = styled(FlexCenter)`
   align-self: center;
 `;
 
-interface SpinningLoaderProps extends BoxProps {
+interface SpinningLoaderProps extends ComponentPropsWithoutRef<typeof Container> {
   spinnerSize?: number | string;
 }
 

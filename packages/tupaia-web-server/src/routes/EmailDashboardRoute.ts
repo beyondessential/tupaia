@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { generateUnsubscribeToken, sendEmail } from '@tupaia/server-utils';
@@ -123,7 +117,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       });
       return sendEmail(email, {
         subject,
-        attachments: [{ filename, content: buffer }],
+        attachments: [{ filename, content: Buffer.from(buffer) }],
         templateName: 'dashboardSubscription',
         templateContext: {
           title: 'Your Tupaia Dashboard Export is ready',

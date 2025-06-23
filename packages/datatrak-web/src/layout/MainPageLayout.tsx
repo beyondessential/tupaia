@@ -1,31 +1,73 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, matchPath, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { HEADER_HEIGHT } from '../constants';
-import { Header } from '.';
-import { MobileAppPrompt, SurveyResponseModal } from '../features';
+
+import { HEADER_HEIGHT, ROUTES } from '../constants';
+import { SurveyResponseModal } from '../features';
+import { useBottomNavigationVisibility, useIsMobile } from '../utils';
+import { Header, HeaderRoot } from './Header/Header';
+import { MobileHeaderRoot } from './StickyMobileHeader';
+import { BottomNavigation } from '../components/BottomNavigation/BottomNavigation';
 
 const PageWrapper = styled.div`
+  background-color: ${props => props.theme.palette.background.default};
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.palette.background.default};
-  min-height: 100vh;
+  min-block-size: 100dvb;
+
   + .notistack-SnackbarContainer {
-    top: calc(1rem + ${HEADER_HEIGHT});
+    align-items: stretch;
+    inline-size: 26rem;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    max-inline-size: 100%;
+    padding-block-start: calc(1rem + max(0.0625rem, 1px));
+    padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
+    padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+      inset-block-end: 3.5rem;
+    }
+  }
+
+  #root:has(${HeaderRoot}, ${MobileHeaderRoot}) & + .notistack-SnackbarContainer {
+    inset-block-start: ${HEADER_HEIGHT};
   }
 `;
 
+const mobileHeaderlessRoutes = [
+  `${ROUTES.SURVEY}/*`,
+  ROUTES.ACCOUNT_SETTINGS,
+  ROUTES.MOBILE_USER_MENU,
+  ROUTES.SURVEY_SELECT,
+  ROUTES.SYNC,
+  ROUTES.TASK_DETAILS,
+  ROUTES.TASKS,
+  ROUTES.WELCOME,
+];
+const desktopHeaderlessRoutes = [ROUTES.WELCOME];
+
+const Nav = styled(BottomNavigation)`
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  position: fixed;
+`;
+
+const useHeaderVisibility = () => {
+  const { pathname } = useLocation();
+  const headerlessRoutes = useIsMobile() ? mobileHeaderlessRoutes : desktopHeaderlessRoutes;
+  return !headerlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
+};
+
 export const MainPageLayout = () => {
+  const showHeader = useHeaderVisibility();
+  const showBottomNavigation = useBottomNavigationVisibility();
   return (
     <PageWrapper>
-      <Header />
+      {showHeader && <Header />}
       <Outlet />
-      <MobileAppPrompt />
+      {showBottomNavigation && <Nav />}
       <SurveyResponseModal />
     </PageWrapper>
   );

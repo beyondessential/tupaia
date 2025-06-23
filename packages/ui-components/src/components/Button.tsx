@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React, { forwardRef, ReactNode, Ref } from 'react';
 import styled from 'styled-components';
 import MuiButton, { ButtonProps as MuiButtonProps } from '@material-ui/core/Button';
@@ -61,7 +57,7 @@ export const Button = forwardRef(
         disabled={isLoading || disabled}
         ref={ref}
       >
-        {isLoading ? `${loadingText}...` : children}
+        {isLoading ? `${loadingText}…` : children}
       </StyledButton>
     );
   },

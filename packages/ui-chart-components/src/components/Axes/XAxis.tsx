@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import {
   LabelProps,
@@ -41,13 +36,13 @@ const renderXAxisLabel = (
   label: string | undefined,
   fillColor: string | undefined,
   isEnlarged: boolean,
-  isExporting: boolean,
+  isExporting: boolean
 ): LabelProps | undefined => {
-  if (label && isEnlarged && !isExporting) {
+  if (label && isEnlarged) {
     return {
       value: label,
       fill: fillColor,
-      offset: -5,
+      offset: isExporting ? -50 : -5,
       position: 'insideBottom',
     };
   }
@@ -76,6 +71,7 @@ interface XAxisProps {
 
 export const XAxis = ({ config, report, isExporting = false, isEnlarged = false }: XAxisProps) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
+  const tickMargin = isExporting ? 20 : 0;
   const { Bar, Composed } = ChartType;
   const { chartType, chartConfig } = config;
   const { data = [] } = report;
@@ -154,6 +150,7 @@ export const XAxis = ({ config, report, isExporting = false, isEnlarged = false 
     return { left: 0, right: 10 };
   };
 
+
   const renderVerticalTick = (tickProps: TickProps & { x: number; y: number }) => {
     const { payload, x, y } = tickProps;
 
@@ -177,7 +174,7 @@ export const XAxis = ({ config, report, isExporting = false, isEnlarged = false 
       tick={getXAxisTickMethod()}
       tickFormatter={formatXAxisTick}
       padding={getXAxisPadding()}
-      tickSize={6}
+      tickMargin={tickMargin}
       {...(isTimeSeries ? AXIS_TIME_PROPS : { dataKey: 'name' })}
     />
   );

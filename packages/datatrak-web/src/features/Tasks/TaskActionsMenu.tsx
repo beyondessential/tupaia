@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import { IconButton } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
@@ -15,7 +10,7 @@ import { CancelTaskModal } from './CancelTaskModal';
 const MenuButton = styled(IconButton)`
   &.MuiIconButton-root {
     padding: 0.4rem;
-    margin-left: 0;
+    margin-left: unset;
   }
 `;
 
@@ -43,7 +38,11 @@ export const TaskActionsMenu = ({ task }: { task: SingleTaskResponse }) => {
 
   return (
     <>
-      <ActionsMenu options={actions} IconButton={MenuButton} />
+      <ActionsMenu
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        options={actions}
+        IconButton={MenuButton}
+      />
       <CancelTaskModal
         isOpen={isOpen}
         onClose={onClose}

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ComponentType } from 'react';
 import { InfoOutlined } from '@material-ui/icons';
 import styled from 'styled-components';
@@ -23,8 +18,10 @@ const TooltipWrapper = styled.span`
   }
   &:hover,
   &:focus {
-    svg {
-      fill: ${props => props.theme.palette.primary.main};
+    ${({ theme }) => theme.breakpoints.up('md')} {
+      svg {
+        fill: ${props => props.theme.palette.primary.main};
+      }
     }
   }
 `;
@@ -48,7 +45,7 @@ interface TooltipIconButtonProps {
 
 export const TooltipIconButton = ({ tooltip, Icon = InfoOutlined }: TooltipIconButtonProps) => {
   return (
-    <Tooltip title={tooltip} placement="top">
+    <Tooltip title={tooltip} placement="top" enterTouchDelay={500}>
       <TooltipWrapper tabIndex={0} className="tooltip-icon">
         <Icon />
       </TooltipWrapper>

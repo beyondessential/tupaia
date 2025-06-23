@@ -1,9 +1,7 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { verify } from '@node-rs/argon2';
-import { encryptPassword, verifyPassword, sha256EncryptPassword } from '@tupaia/auth';
+
+import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -13,7 +11,7 @@ export class UserRecord extends DatabaseRecord {
 
   get fullName() {
     let userFullName = this.first_name;
-    if (this.last_name && this.last_name.length > 0) {
+    if (this.last_name && this.last_name?.length > 0) {
       userFullName += ` ${this.last_name}`;
     }
     return userFullName;
@@ -80,9 +78,9 @@ export class UserModel extends DatabaseModel {
 
   customColumnSelectors = {
     full_name: () =>
-      `CASE 
-        WHEN last_name IS NULL THEN first_name 
-        ELSE first_name || ' ' || last_name 
+      `CASE
+        WHEN last_name IS NULL THEN first_name
+        ELSE first_name || ' ' || last_name
       END`,
   };
 

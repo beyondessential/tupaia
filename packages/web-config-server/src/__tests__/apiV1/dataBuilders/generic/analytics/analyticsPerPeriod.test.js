@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { createJestMockInstance } from '@tupaia/utils';
 import { analyticsPerPeriod } from '/apiV1/dataBuilders/generic/analytics/analyticsPerPeriod';
 

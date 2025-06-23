@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 };
 
 const sumSchoolCounts = (level, types) => {
-  const dataElements = types.map(x => [`nosch_type${x}_public`, `nosch_type${x}_private`]).flat();
+  const dataElements = types.flatMap(x => [`nosch_type${x}_public`, `nosch_type${x}_private`]);
 
   return {
     id: generateId(),

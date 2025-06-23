@@ -1,20 +1,18 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { sub } from 'date-fns';
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
-import { parse } from 'cookie';
-import { DatatrakWebTasksRequest, TaskCommentType, TaskStatus } from '@tupaia/types';
+import { DatatrakWebTasksRequest, TaskCommentType } from '@tupaia/types';
+
 import { TaskT, formatTaskResponse } from '../utils';
 
-export type TasksRequest = Request<
-  DatatrakWebTasksRequest.Params,
-  DatatrakWebTasksRequest.ResBody,
-  DatatrakWebTasksRequest.ReqBody,
-  DatatrakWebTasksRequest.ReqQuery
->;
+export interface TasksRequest
+  extends Request<
+    DatatrakWebTasksRequest.Params,
+    DatatrakWebTasksRequest.ResBody,
+    DatatrakWebTasksRequest.ReqBody,
+    DatatrakWebTasksRequest.ReqQuery
+  > {}
 
 const FIELDS = [
   'id',
@@ -35,91 +33,50 @@ const FIELDS = [
 
 const DEFAULT_PAGE_SIZE = 20;
 
-type FormattedFilters = Record<string, any>;
+interface FormattedFilters {
+  [key: string]:
+    | string
+    | {
+        comparator: string;
+        comparisonValue: unknown;
+      };
+}
 
-const EQUALITY_FILTERS = ['survey.project_id', 'task_status'];
-
-const getFilterSettings = (cookieString: string) => {
-  const cookies = parse(cookieString);
-  return {
-    allAssignees: cookies['all_assignees_tasks'] === 'true',
-    allCompleted: cookies['show_completed_tasks'] === 'true',
-    allCancelled: cookies['show_cancelled_tasks'] === 'true',
-  };
-};
+const EQUALITY_FILTERS = ['assignee_id', 'survey.project_id', 'task_status'];
 
 export class TasksRoute extends Route<TasksRequest> {
   private filters: FormattedFilters = {};
   private formatFilters() {
-    const { query } = this.req;
-    const { filters = [] } = query;
+    const { filters = [] } = this.req.query;
 
-    filters.forEach(({ id, value }) => {
-      if (value === '' || value === undefined || value === null) return;
+    for (const { id, value } of filters) {
+      if (value === '' || value === undefined || value === null) continue;
+
       if (id === 'due_date') {
         // set the time to the end of the day to get the full range of the day, and apply milliseconds to ensure the range is inclusive
-        const endDateObj = new Date(value);
+        const end = new Date(value);
         // subtract 23 hours, 59 minutes, 59 seconds to get the start of the day. This is because the filters always send the end of the day, and we need a range to handle the values being saved in the database as unix timestamps based on the user's timezone.
-        const startDate = sub(endDateObj, { hours: 23, minutes: 59, seconds: 59 }).getTime();
-        const endDate = endDateObj.getTime();
+        const start = sub(end, { hours: 23, minutes: 59, seconds: 59 });
         this.filters[id] = {
           comparator: 'BETWEEN',
-          comparisonValue: [startDate, endDate],
+          comparisonValue: [start.getTime(), end.getTime()],
         };
-
-        return;
+        continue;
       }
 
       if (EQUALITY_FILTERS.includes(id)) {
         this.filters[id] = value;
-        return;
+        continue;
       }
 
       if (id === 'repeat_schedule') {
-        this.filters[`repeat_schedule->freq`] = value;
-        return;
+        this.filters['repeat_schedule->freq'] = value;
+        continue;
       }
+
       this.filters[id] = {
         comparator: 'ilike',
         comparisonValue: `${value}%`,
-      };
-    });
-  }
-  private async processFilterSettings() {
-    const cookieString = this.req.headers.cookie;
-    if (!cookieString) {
-      return;
-    }
-    const cookies = getFilterSettings(cookieString);
-
-    if (!cookies.allAssignees) {
-      const { id: userId } = await this.req.ctx.services.central.getUser();
-      this.filters['assignee_id'] = userId;
-    }
-
-    // If the task status filter is already present, don't need to worry about allCompleted and allCancelled filters
-    if ('task_status' in this.filters) {
-      return;
-    }
-
-    if (!cookies.allCompleted) {
-      this.filters['task_status'] = {
-        comparator: 'NOT IN',
-        comparisonValue: [TaskStatus.completed],
-      };
-    }
-
-    if (!cookies.allCancelled) {
-      this.filters['task_status'] = {
-        comparator: 'NOT IN',
-        comparisonValue: [TaskStatus.cancelled],
-      };
-    }
-
-    if (!cookies.allCompleted && !cookies.allCancelled) {
-      this.filters['task_status'] = {
-        comparator: 'NOT IN',
-        comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
       };
     }
   }
@@ -146,11 +103,13 @@ export class TasksRoute extends Route<TasksRequest> {
   }
 
   public async buildResponse() {
-    const { ctx, query = {}, models } = this.req;
-    const { pageSize = DEFAULT_PAGE_SIZE, sort, page = 0, filters } = query;
+    const {
+      ctx,
+      query: { pageSize = DEFAULT_PAGE_SIZE, sort, page = 0, filters },
+      models,
+    } = this.req;
 
     this.formatFilters();
-    await this.processFilterSettings();
 
     const nonProjectFilters = filters?.filter(({ id }) => id !== 'survey.project_id') ?? [];
 
@@ -177,16 +136,17 @@ export class TasksRoute extends Route<TasksRequest> {
       params.rawSort = 'due_date ASC';
     }
 
-    const tasks = await ctx.services.central.fetchResources('tasks', params);
+    const _tasks = await ctx.services.central.fetchResources('tasks', params);
+    const tasks = (await Promise.all(
+      _tasks.map(async (task: TaskT) => {
+        const [formattedTask, commentsCount] = await Promise.all([
+          formatTaskResponse(models, task),
+          models.taskComment.count({
+            task_id: task.id,
+            type: TaskCommentType.user,
+          }),
+        ]);
 
-    const formattedTasks = (await Promise.all(
-      tasks.map(async (task: TaskT) => {
-        const formattedTask = await formatTaskResponse(models, task);
-        // Get comment count for each task
-        const commentsCount = await models.taskComment.count({
-          task_id: task.id,
-          type: TaskCommentType.user,
-        });
         return {
           ...formattedTask,
           commentsCount,
@@ -199,7 +159,7 @@ export class TasksRoute extends Route<TasksRequest> {
     const numberOfPages = Math.ceil(count / pageSize);
 
     return {
-      tasks: formattedTasks,
+      tasks,
       count,
       numberOfPages,
     };

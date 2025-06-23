@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { DataTableType } from '@tupaia/types';
 import { DataTableEditFields } from '../../dataTables/DataTableEditFields';
 import { onProcessDataForSave } from '../../dataTables/onProcessDataForSave';
@@ -67,7 +62,7 @@ const COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'dataTable',
-      fileName: '{code}',
+      fileName: '{code}.json',
     },
   },
   {

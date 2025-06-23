@@ -1,9 +1,4 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 import { getAllSurveyComponents } from '../utils';
 import { useSurveyForm } from '../SurveyContext';
@@ -20,15 +15,15 @@ const Fieldset = styled.fieldset.attrs({
     pointer-events: none;
   }
 `;
-export const SurveyReviewSection = () => {
+export const SurveyReviewSection = (props: ComponentPropsWithoutRef<typeof Fieldset>) => {
   const { visibleScreens } = useSurveyForm();
 
-  if (!visibleScreens || !visibleScreens.length) {
+  if (!visibleScreens || visibleScreens.length === 0) {
     return null;
   }
   const questions = getAllSurveyComponents(visibleScreens);
   return (
-    <Fieldset>
+    <Fieldset {...props}>
       <SurveyQuestionGroup questions={questions} />
     </Fieldset>
   );

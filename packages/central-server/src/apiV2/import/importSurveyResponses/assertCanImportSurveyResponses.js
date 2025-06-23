@@ -1,10 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { flattenDeep, groupBy, keyBy } from 'lodash';
 import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
+import winston from '../../../log';
 
 export const assertCanImportSurveyResponses = async (
   accessPolicy,
@@ -13,50 +9,60 @@ export const assertCanImportSurveyResponses = async (
 ) => {
   const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyCode));
   const surveyCodes = Object.keys(entitiesBySurveyCode);
-  const allEntities = await models.entity.findManyByColumn('code', allEntityCodes);
-  const surveys = await models.survey.findManyByColumn('code', surveyCodes);
-  const codeToSurvey = keyBy(surveys, 'code');
-  const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
-  const surveyPermissionGroups = await models.permissionGroup.findManyById(
-    surveyPermissionGroupIds,
-  );
-  const idToPermissionGroupName = reduceToDictionary(surveyPermissionGroups, 'id', 'name');
 
-  for (const entry of Object.entries(entitiesBySurveyCode)) {
-    const [surveyCode, entityCodes] = entry;
-    const survey = codeToSurvey[surveyCode];
-    const responseEntities = allEntities.filter(e => entityCodes.includes(e.code));
-    const surveyResponseCountryCodes = [...new Set(responseEntities.map(e => e.country_code))];
-    const surveyResponseCountries = await models.country.findManyByColumn(
-      'code',
-      surveyResponseCountryCodes,
-    );
-    if (surveyResponseCountries.length !== surveyResponseCountryCodes.length) {
-      throw new Error(`Could not find all countries`, surveyResponseCountryCodes);
-    }
-    const entitiesByCountryCode = groupBy(responseEntities, 'country_code');
+  await models.wrapInReadOnlyTransaction(async transactingModels => {
+    const [allEntities, surveys] = await Promise.all([
+      transactingModels.entity.findManyByColumn('code', allEntityCodes),
+      transactingModels.survey.findManyByColumn('code', surveyCodes),
+    ]);
 
-    for (const surveyResponseCountry of surveyResponseCountries) {
-      // Check if the country of the submitted survey response(s) matches with the survey countries.
-      if (survey.country_ids?.length && !survey.country_ids.includes(surveyResponseCountry.id)) {
-        const surveyCountries = await models.country.findManyById(survey.country_ids);
-        const entities = entitiesByCountryCode[surveyResponseCountry.code];
-        const entityCodesString = entities.map(e => e.code).join(', ');
-        const surveyCountryNamesString = surveyCountries.map(s => s.name).join(', ');
+    const codeToSurvey = keyBy(surveys, 'code');
+    const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
+    const surveyPermissionGroups =
+      await transactingModels.permissionGroup.findManyById(surveyPermissionGroupIds);
+    const idToPermissionGroupName = reduceToDictionary(surveyPermissionGroups, 'id', 'name');
+
+    for (const [surveyCode, entityCodes] of Object.entries(entitiesBySurveyCode)) {
+      const survey = codeToSurvey[surveyCode];
+      const responseEntities = allEntities.filter(e => entityCodes.includes(e.code));
+      const surveyResponseCountryCodes = [...new Set(responseEntities.map(e => e.country_code))];
+      const surveyResponseCountries = await transactingModels.country.findManyByColumn(
+        'code',
+        surveyResponseCountryCodes,
+      );
+      if (surveyResponseCountries.length !== surveyResponseCountryCodes.length) {
+        const expected = surveyResponseCountryCodes;
+        const actual = surveyResponseCountries.map(c => c.code);
+        const difference = actual.filter(c => !expected.includes(c));
         throw new Error(
-          `Some survey response(s) are submitted against entity code(s) (${entityCodesString}) that do not belong to the countries (${surveyCountryNamesString}) of the survey '${survey.name}' (${survey.code})`,
+          `Couldn’t find the following countries: ${difference.join(', ')}`,
+          surveyResponseCountryCodes,
         );
       }
+      const entitiesByCountryCode = groupBy(responseEntities, 'country_code');
 
-      // Now check if users have permission group access to the survey response's country
-      const permissionGroup = idToPermissionGroupName[survey.permission_group_id];
-      if (!accessPolicy.allows(surveyResponseCountry.code, permissionGroup)) {
-        throw new Error(
-          `Need ${permissionGroup} access to ${surveyResponseCountry.name} to import the survey response(s)`,
-        );
+      for (const surveyResponseCountry of surveyResponseCountries) {
+        // Check if the country of the submitted survey response(s) matches with the survey countries.
+        if (survey.country_ids?.length && !survey.country_ids.includes(surveyResponseCountry.id)) {
+          const surveyCountries = await transactingModels.country.findManyById(survey.country_ids);
+          const entities = entitiesByCountryCode[surveyResponseCountry.code];
+          const entityCodesString = entities.map(e => e.code).join(', ');
+          const surveyCountryNamesString = surveyCountries.map(s => s.name).join(', ');
+          throw new Error(
+            `Some survey response(s) are submitted against entity code(s) (${entityCodesString}) that do not belong to the countries (${surveyCountryNamesString}) of the survey '${survey.name}' (${survey.code})`,
+          );
+        }
+
+        // Now check if users have permission group access to the survey response's country
+        const permissionGroup = idToPermissionGroupName[survey.permission_group_id];
+        if (!accessPolicy.allows(surveyResponseCountry.code, permissionGroup)) {
+          throw new Error(
+            `Need ${permissionGroup} access to ${surveyResponseCountry.name} to import the survey response(s)`,
+          );
+        }
       }
     }
-  }
+  });
 
   return true;
 };
@@ -73,7 +79,7 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
     const newEntity = entitiesUpserted.find(e => e.id === surveyResponse.entity_id);
     if (newEntity) {
       const parentEntity = await models.entity.findById(newEntity.parent_id);
-      return parentEntity.code;
+      return parentEntity?.code;
     }
     const entity = await models.entity.findById(surveyResponse.entity_id);
     return entity.code;
@@ -92,27 +98,25 @@ export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surve
 
   // Pre-fetch unique surveys
   const surveyIds = getUniqueEntries(surveyResponses.map(sr => sr.survey_id));
-  const surveys = await models.survey.findManyById(surveyIds);
-  const surveyCodesById = reduceToDictionary(surveys, 'id', 'code');
 
-  const entitiesUpserted = surveyResponses
-    .filter(sr => !!sr.entities_upserted)
-    .map(sr => sr.entities_upserted)
-    .flat();
+  await models.wrapInReadOnlyTransaction(async transactingModels => {
+    const surveys = await transactingModels.survey.findManyById(surveyIds);
+    const surveyCodesById = reduceToDictionary(surveys, 'id', 'code');
 
-  for (const response of surveyResponses) {
-    const entityCode = await getEntityCodeFromSurveyResponseChange(
-      models,
-      response,
-      entitiesUpserted,
-    );
-    const surveyCode = surveyCodesById[response.survey_id];
+    const entitiesUpserted = surveyResponses
+      .filter(sr => !!sr.entities_upserted)
+      .flatMap(sr => sr.entities_upserted);
 
-    if (!entitiesBySurveyCode[surveyCode]) {
-      entitiesBySurveyCode[surveyCode] = [];
+    for (const response of surveyResponses) {
+      const entityCode = await getEntityCodeFromSurveyResponseChange(
+        transactingModels,
+        response,
+        entitiesUpserted,
+      );
+      const surveyCode = surveyCodesById[response.survey_id];
+      (entitiesBySurveyCode[surveyCode] ??= []).push(entityCode);
     }
-    entitiesBySurveyCode[surveyCode].push(entityCode);
-  }
+  });
 
   return assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode);
 };

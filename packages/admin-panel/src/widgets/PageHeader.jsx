@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -20,6 +15,14 @@ const Wrapper = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
 `;
 
+const CreateButtonComponent = ({ resourceName, createConfig }) => {
+  const label = resourceName ? `Add ${resourceName}` : 'New';
+  if (createConfig.bulkCreate) {
+    return <BulkCreateButton {...createConfig} label={label} />;
+  }
+  return <SingleCreateButton {...createConfig} label={label} />;
+};
+
 export const PageHeader = ({
   importConfig,
   createConfig,
@@ -28,17 +31,6 @@ export const PageHeader = ({
   LinksComponent,
   resourceName,
 }) => {
-  const generateCreateButtonLabel = () => {
-    if (resourceName) {
-      return `Add ${resourceName}`;
-    }
-
-    return 'New';
-  };
-  const createButtonLabel = generateCreateButtonLabel();
-  const CreateButton =
-    createConfig && createConfig.bulkCreate ? BulkCreateButton : SingleCreateButton;
-
   if (!importConfig && !createConfig && !ExportModalComponent && !LinksComponent) {
     return null;
   }
@@ -47,7 +39,9 @@ export const PageHeader = ({
     <Wrapper>
       <Container>
         {importConfig && <ImportModal {...importConfig} />}
-        {createConfig && <CreateButton label={createButtonLabel} {...createConfig} />}
+        {createConfig && (
+          <CreateButtonComponent resourceName={resourceName} createConfig={createConfig} />
+        )}
         {ExportModalComponent && <ExportModalComponent {...exportConfig} />}
         {LinksComponent && <LinksComponent />}
       </Container>

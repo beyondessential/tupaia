@@ -1,13 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { FormLabel, Typography, FormLabelProps } from '@material-ui/core';
 import { ListItemType } from './types';
-import { List } from './List';
+import { List, ListSkeleton } from './List';
 
 const Wrapper = styled.div`
   padding: 0;
@@ -18,32 +13,30 @@ const Wrapper = styled.div`
   flex: 1;
 `;
 
-const FullBorder = css`
-  border: 1px solid ${({ theme }) => theme.palette.divider};
-  border-radius: 3px;
-  padding: 0 1rem;
-`;
-
-const TopBorder = css`
-  border-top: 1px solid ${({ theme }) => theme.palette.divider};
-  border-radius: 0;
-  padding: 0.5rem 0;
-`;
-
 const ListWrapper = styled.div<{
-  $variant: string;
+  $variant: 'borderless' | 'fullBorder';
 }>`
-  overflow-y: auto;
-  max-height: 100%;
-  ${({ $variant }) => ($variant === 'fullPage' ? TopBorder : FullBorder)};
+  block-size: 100%;
   flex: 1;
-  height: 100%;
+  max-block-size: 100%;
+  overflow-y: auto;
+  padding-block: 0.5rem;
+
+  ${props =>
+    props.$variant === 'fullBorder'
+      ? css`
+          border: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
+          padding-inline: 1rem;
+          border-radius: 0.1875rem;
+        `
+      : null}
 `;
 
 const NoResultsMessage = styled(Typography)`
-  padding: 0.8rem 0.5rem;
-  font-size: 0.875rem;
   color: ${({ theme }) => theme.palette.text.secondary};
+  font-size: 0.875rem;
+  padding-block: 0.8rem;
+  padding-inline: 0.5rem;
 `;
 
 const Label = styled(FormLabel)<{
@@ -55,16 +48,35 @@ const Label = styled(FormLabel)<{
   font-weight: 400;
 `;
 
+const Subtitle = styled(Typography)`
+  font-size: 0.875rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
+  font-weight: 400;
+  margin-block: 0 0.5rem;
+  margin-inline: 0 0.9rem;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    color: ${({ theme }) => theme.palette.text.primary};
+    border-block-end: max(0.0265rem, 1px) solid ${({ theme }) => theme.palette.divider};
+    margin-block: 0 0.5rem;
+    margin-inline: 0;
+    padding-block-end: 0.2rem;
+    font-weight: 500;
+  }
+`;
+
 interface SelectListProps {
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
   label?: string;
   ListItem?: React.ElementType;
-  variant?: 'fullPage' | 'inline';
+  variant?: 'fullBorder' | 'borderless';
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
   };
   noResultsMessage?: string;
+  showLoader?: boolean;
+  subTitle?: string | null;
 }
 
 export const SelectList = ({
@@ -72,10 +84,18 @@ export const SelectList = ({
   onSelect,
   label,
   ListItem,
-  variant = 'inline',
-  labelProps = {},
+  variant = 'fullBorder',
+  labelProps,
   noResultsMessage = 'No items to display',
+  showLoader = false,
+  subTitle,
 }: SelectListProps) => {
+  const renderList = () => {
+    if (showLoader) return <ListSkeleton />;
+    if (items.length === 0) return <NoResultsMessage>{noResultsMessage}</NoResultsMessage>;
+    return <List items={items} onSelect={onSelect} ListItem={ListItem} />;
+  };
+
   return (
     <Wrapper>
       {label && (
@@ -84,11 +104,8 @@ export const SelectList = ({
         </Label>
       )}
       <ListWrapper $variant={variant} className="list-wrapper">
-        {items.length === 0 ? (
-          <NoResultsMessage>{noResultsMessage}</NoResultsMessage>
-        ) : (
-          <List items={items} onSelect={onSelect} ListItem={ListItem} />
-        )}
+        {subTitle && <Subtitle>{subTitle}</Subtitle>}
+        {renderList()}
       </ListWrapper>
     </Wrapper>
   );

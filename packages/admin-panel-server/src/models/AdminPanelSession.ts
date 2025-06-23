@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { SessionRecord, SessionModel } from '@tupaia/server-boilerplate';
 
 export class AdminPanelSessionRecord extends SessionRecord {

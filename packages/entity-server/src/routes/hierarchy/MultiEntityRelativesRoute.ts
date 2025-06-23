@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { Route } from '@tupaia/server-boilerplate';
 import { formatEntitiesForResponse } from './format';
 import { MultiEntityRequest, MultiEntityRequestParams, EntityResponse } from './types';

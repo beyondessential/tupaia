@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
@@ -16,6 +11,7 @@ import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurvey
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
 import { ArchiveSurveyResponseModal } from '../../surveyResponse';
+import { useUser } from '../../api/queries';
 
 const useEndpoint = (endpoint, details, params) => {
   if (!details && !params) return endpoint;
@@ -57,9 +53,11 @@ export const ResourcePage = ({
   basePath,
   hasBESAdminAccess,
   needsBESAdminAccess,
+  needsVizBuilderAccess,
   actionLabel,
   resourceName,
 }) => {
+  const { hasVizBuilderAccess } = useUser();
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
 
@@ -70,8 +68,12 @@ export const ResourcePage = ({
   const isDetailsPage = !!parent;
 
   const getHasPermission = actionType => {
-    if (!needsBESAdminAccess) return true;
-    if (needsBESAdminAccess.includes(actionType)) return !!hasBESAdminAccess;
+    if (needsBESAdminAccess && needsBESAdminAccess.includes(actionType)) {
+      return !!hasBESAdminAccess;
+    }
+    if (needsVizBuilderAccess && needsVizBuilderAccess.includes(actionType)) {
+      return !!hasVizBuilderAccess;
+    }
     return true;
   };
 
@@ -100,7 +102,8 @@ export const ResourcePage = ({
         exportConfig={canExport && exportConfig}
         createConfig={canCreate && createConfig}
         ExportModalComponent={canExport && ExportModalComponent}
-        LinksComponent={LinksComponent}
+        /* Links component is only used for adding viz builder button */
+        LinksComponent={hasVizBuilderAccess && LinksComponent}
         resourceName={resourceName?.singular}
       />
       <DataFetchingTable

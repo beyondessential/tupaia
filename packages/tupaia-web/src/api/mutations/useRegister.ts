@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { useMutation } from '@tanstack/react-query';
 import { post } from '../api';
 
@@ -19,6 +14,6 @@ type RegisterUserBody = {
 };
 export const useRegister = () => {
   return useMutation<any, Error, RegisterUserBody, unknown>((data: RegisterUserBody) => {
-    return post('signup', { data });
+    return post('user', { data });
   });
 };

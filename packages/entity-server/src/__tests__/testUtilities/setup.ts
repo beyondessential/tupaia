@@ -1,22 +1,17 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { encryptPassword } from '@tupaia/auth';
-import { TestableServer } from '@tupaia/server-boilerplate';
 import {
-  findOrCreateDummyRecord,
   buildAndInsertProjectsAndHierarchies,
-  getTestModels,
   EntityHierarchyCacher,
+  findOrCreateDummyRecord,
   getTestDatabase,
+  getTestModels,
 } from '@tupaia/database';
+import { TestableServer } from '@tupaia/server-boilerplate';
 import { createBasicHeader } from '@tupaia/utils';
 
-import { TestModelRegistry } from '../types';
-import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from '../__integration__/fixtures';
 import { createApp } from '../../app';
+import { ENTITIES, ENTITY_RELATIONS, PROJECTS } from '../__integration__/fixtures';
+import { TestModelRegistry } from '../types';
 
 const models = getTestModels() as TestModelRegistry;
 const hierarchyCacher = new EntityHierarchyCacher(models);

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React, { lazy, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -16,6 +12,7 @@ import { StoreProvider } from './utilities/StoreProvider';
 import { Footer } from './widgets';
 import { TupaiaApi } from './api';
 import { theme } from './theme';
+import { VizBuilderPrivateRoute } from './authentication';
 
 const Wrapper = styled.div`
   display: flex;
@@ -72,7 +69,9 @@ renderReactApp(
                 <ThemeProvider theme={theme}>
                   <CssBaseline />
                   <Routes>
-                    <Route path="/viz-builder/*" element={<VizBuilder Footer={Footer} />} />
+                    <Route path="/viz-builder/*" element={<VizBuilderPrivateRoute />}>
+                      <Route path="*" element={<VizBuilder Footer={Footer} />} />
+                    </Route>
                     <Route path="*" default element={<AdminPanelRoute />} />
                   </Routes>
                 </ThemeProvider>

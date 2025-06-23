@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
 export { useProjectCountryAccessList } from './useProjectCountryAccessList';
 export { useLandingPage } from './useLandingPage';
 export { useProject } from './useProject';
@@ -16,4 +11,4 @@ export { useReport } from './useReport';
 export { useMapOverlayReport } from './useMapOverlayReport';
 export { useMapOverlays } from './useMapOverlays';
 export { useEntitySearch } from './useEntitySearch';
-export { useCountries } from './useCountries';
+export { useCountriesQuery } from './useCountriesQuery';

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 export * from './ActionsMenu';
 export * from './Alert';
 export * from './Avatar';
@@ -37,6 +32,7 @@ export * from './PasswordStrengthBar';
 export * from './ProfileButton';
 export * from './QrCode';
 export * from './ReferenceTooltip';
+export * from './SafeArea';
 export * from './SplitButton';
 export * from './Table';
 export * from './Toast';
@@ -45,3 +41,4 @@ export * from './UserMessage';
 export * from './TooltipIconButton';
 export * from './Pagination';
 export * from './SelectList';
+export { VisuallyHidden } from './VisuallyHidden';

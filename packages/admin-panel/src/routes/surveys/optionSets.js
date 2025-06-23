@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { capitalizeFirst, getPluralForm } from '../../pages/resources/resourceName';
 
 const RESOURCE_NAME = { singular: 'option set' };
@@ -22,7 +17,7 @@ const OPTION_SET_COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'optionSets',
-      fileName: '{name}',
+      fileName: '{name}.xlsx',
     },
   },
   {

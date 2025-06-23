@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import winston from 'winston';
 import { S3Client, S3 } from '@tupaia/server-utils';
 import { MeditrakAppServerModelRegistry } from '../../../types';

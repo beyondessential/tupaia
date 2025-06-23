@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 export { AuthApiMock } from './AuthApiMock';
 export { CentralApiMock } from './CentralApiMock';
 export { grantUserAccess, revokeAccess } from './grantUserAccess';

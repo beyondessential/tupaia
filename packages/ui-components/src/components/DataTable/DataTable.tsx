@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { useTable, useSortBy } from 'react-table';
 import {
@@ -15,26 +11,6 @@ import {
 import { FlexStart } from '../Layout';
 import { StyledTable } from './StyledTable';
 import { DataTableCell } from './DataTableCell';
-
-const getColumnId = ({
-  id,
-  accessor,
-  Header,
-}: {
-  id: string;
-  accessor?: string | ((row: any) => any);
-  Header: string;
-}) => {
-  if (id) {
-    return id;
-  }
-
-  if (typeof accessor === 'string') {
-    return accessor;
-  }
-
-  return Header;
-};
 
 interface DataTableProps {
   columns: any[];
@@ -57,13 +33,6 @@ export const DataTable = ({
     {
       columns,
       data,
-      initialState: {
-        sortBy: [
-          {
-            id: getColumnId(columns[0]),
-          },
-        ],
-      },
     },
     useSortBy,
   );

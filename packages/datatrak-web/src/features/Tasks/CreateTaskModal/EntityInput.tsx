@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Country, EntityTypeEnum, QuestionType } from '@tupaia/types';
 import { EntitySelector } from '../../EntitySelector';
@@ -67,7 +62,7 @@ export const EntityInput = ({
       disableSearch={!survey || !primaryEntityQuestionConfig}
       isLoading={isLoadingSurvey}
       showSearchInput
-      legend="Select entity"
+      legend="Entity"
       legendProps={{
         required: true,
         color: 'primary',

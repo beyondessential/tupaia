@@ -1,12 +1,10 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { expect } from 'chai';
+
 import { encryptPassword } from '@tupaia/auth';
 import { randomEmail } from '@tupaia/utils';
-import { getAuthorizationHeader, TestableApp } from '../testUtilities';
+
 import { configureEnv } from '../../configureEnv';
+import { getAuthorizationHeader, TestableApp } from '../testUtilities';
 
 configureEnv();
 describe('Verify Email', () => {

@@ -13,8 +13,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && yarn package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && yarn package:build:ts",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --env=jsdom",
@@ -32,8 +32,9 @@
     "leaflet": "^1.7.1",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
-    "react": "^16.13.1",
+    "react": "^16.14.0",
     "react-dom": "^16.13.1",
+    "react-is": "^16.13.1",
     "react-leaflet": "^3.2.1",
     "react-table": "^7.7.0",
     "styled-components": "^5.0.1"
@@ -44,6 +45,7 @@
     "@types/jest": "^29.5.1",
     "@types/leaflet": "^1.7.1",
     "@types/react-dom": "^16.9.18",
-    "@types/styled-components": "^5.1.26"
+    "@types/styled-components": "^5.1.26",
+    "rimraf": "^6.0.1"
   }
 }

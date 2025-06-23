@@ -15,8 +15,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test",
@@ -41,13 +41,15 @@
     "http-proxy-middleware": "^2.0.1",
     "i18n": "^0.13.3",
     "morgan": "^1.9.0",
-    "winston": "^3.3.3"
+    "public-ip": "4.0.4",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/api-error-handler": "^1.0.32",
     "@types/client-sessions": "^0.8.0",
     "@types/cors": "^2.8.8",
     "@types/express": "^4.17.8",
-    "@types/supertest": "^2.0.11"
+    "@types/supertest": "^2.0.11",
+    "rimraf": "^6.0.1"
   }
 }

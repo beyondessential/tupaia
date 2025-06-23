@@ -13,8 +13,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && yarn package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && yarn package:build:ts",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --env=jsdom",
@@ -33,6 +33,7 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "ace-builds": "^1.10.1",
+    "csstype": "^3.1.3",
     "date-fns": "^2.12.0",
     "downloadjs": "^1.4.7",
     "js-sql-parser": "^1.4.1",
@@ -42,11 +43,12 @@
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "qrcode": "^1.5.3",
-    "react": "^16.13.1",
+    "react": "^16.14.0",
     "react-ace": "^10.1.0",
     "react-dom": "^16.13.1",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^6.15.1",
+    "react-is": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-router-dom-v6": "npm:react-router-dom@6.3.0",
     "react-table": "^7.7.0",
@@ -56,6 +58,7 @@
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
     "@mui/types": "^7.2.4",
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.2.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/downloadjs": "^1.4.3",
@@ -69,6 +72,7 @@
     "@types/styled-components": "^5.0.0",
     "faker": "^4.1.0",
     "fast-glob": "^3.2.5",
-    "react-password-strength-bar": "^0.3.3"
+    "react-password-strength-bar": "^0.4.1",
+    "rimraf": "^6.0.1"
   }
 }

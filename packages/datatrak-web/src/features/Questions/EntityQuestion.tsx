@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import { SurveyQuestionInputProps } from '../../types';
@@ -12,21 +7,20 @@ import { EntitySelector } from '../EntitySelector';
 export const EntityQuestion = ({
   id,
   label,
-  detailLabel,
   name,
   required,
   controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
-  const { isReviewScreen, isResponseScreen, formData, countryCode } = useSurveyForm();
+  const { countryCode, formData, isResponseScreen, isReviewScreen, surveyProjectCode } =
+    useSurveyForm();
 
-  const { surveyProjectCode } = useSurveyForm();
+  const isReadOnly = isReviewScreen || isResponseScreen;
 
   return (
     <EntitySelector
       id={id}
       label={label}
-      detailLabel={detailLabel}
       name={name}
       required={required}
       controllerProps={{
@@ -35,22 +29,20 @@ export const EntityQuestion = ({
         ref,
         invalid,
       }}
-      showLegend={isReviewScreen || isResponseScreen}
-      disableSearch={(isReviewScreen || isResponseScreen) && !value}
+      showLegend={isReadOnly}
+      disableSearch={isReadOnly && !value}
       projectCode={surveyProjectCode}
       config={config}
       data={formData}
       countryCode={countryCode}
-      showRecentEntities={!isReviewScreen && !isResponseScreen}
-      showSearchInput={!isReviewScreen && !isResponseScreen}
+      showRecentEntities={!isReadOnly}
+      showSearchInput={!isReadOnly}
       legend={label}
       legendProps={{
         component: Typography,
         variant: 'h4',
       }}
-      noResultsMessage={
-        isReviewScreen || isResponseScreen ? 'No entity selected' : 'No entities to display'
-      }
+      noResultsMessage={isReadOnly ? 'No entity selected' : 'No entities to display'}
     />
   );
 };

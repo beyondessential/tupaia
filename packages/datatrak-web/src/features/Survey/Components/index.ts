@@ -1,12 +1,10 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
+export { CancelSurveyConfirmationToken } from './CancelSurveyConfirmationToken';
+export { DesktopSurveyHeader } from './DesktopSurveyHeader';
+export { MobileSurveyHeader } from './MobileSurveyHeader';
+export { MobileSurveyMenu } from './MobileSurveyMenu.tsx';
+export { SurveyPaginator } from './SurveyPaginator';
 export { SurveyQuestion } from './SurveyQuestion';
 export { SurveyQuestionGroup } from './SurveyQuestionGroup';
-export { SurveyToolbar } from './SurveyToolbar';
-export * from './SurveySideMenu';
 export { SurveyReviewSection } from './SurveyReviewSection';
-export { SurveyPaginator } from './SurveyPaginator';
+export * from './SurveySideMenu';
 export { SurveySuccess } from './SurveySuccess';

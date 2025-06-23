@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { generatePath, Link } from 'react-router-dom';
@@ -18,39 +13,37 @@ const TileContainer = styled(Link)`
   justify-content: space-between;
   text-decoration: none;
   border-radius: 10px;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
-  width: 100%;
-  padding: 0.4rem 0.7rem;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+
+  inline-size: 100%;
   margin-block-end: 0.5rem;
+  padding-block: 0.4rem;
+  padding-inline: 0.7rem;
 
   .MuiButton-root {
-    padding: 0.2rem 1.2rem;
+    padding-block: 0.2rem;
+    padding-inline: 1.2rem;
   }
 
   .MuiButton-label {
     font-size: 0.75rem;
   }
 
-  @media screen and (max-width: 30rem) {
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    border: 1px solid ${({ theme }) => theme.palette.divider};
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
     .MuiButtonBase-root {
+      margin-block-end: 0.8rem 0.4rem;
       padding-inline: 0.8rem;
     }
   }
 
-  @media screen and (max-width: 24rem) {
-    flex-direction: column;
-    .MuiButtonBase-root {
-      margin-block-end: 0.4rem;
-      margin-block-start: 0.8rem;
-    }
-  }
-
+  &:focus-visible,
+  &:focus-within,
   &:hover {
     background-color: ${({ theme }) => theme.palette.primaryHover};
-    border-color: ${({ theme }) => theme.palette.primary.main};
-  }
-  &:focus-within {
-    border-color: ${({ theme }) => theme.palette.primary.main};
   }
 `;
 
@@ -71,7 +64,9 @@ const TileLeft = styled.div`
 
 const TileContent = styled.div`
   display: flex;
+  flex-wrap: wrap;
   font-size: 0.75rem;
+  gap: 0.25rem;
   color: ${({ theme }) => theme.palette.text.secondary};
   align-items: center;
 
@@ -114,9 +109,7 @@ export const TaskTile = ({ task }) => {
         </TileContent>
       </TileLeft>
       <TileRight>
-        <ButtonLink to={surveyLink} component={Link}>
-          Complete task
-        </ButtonLink>
+        <ButtonLink to={surveyLink}>Complete</ButtonLink>
       </TileRight>
     </TileContainer>
   );

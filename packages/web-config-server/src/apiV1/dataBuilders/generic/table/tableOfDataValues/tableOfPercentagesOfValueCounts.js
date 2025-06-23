@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { getPercentageCountOfValuesByCell } from './helpers/getValuesByCell';
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
@@ -11,8 +6,7 @@ class TableOfPercentagesOfValueCountsBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = this.config.cells
       .flat()
-      .map(cell => cell.numerator.dataValues.concat(cell.denominator.dataValues))
-      .flat();
+      .flatMap(cell => cell.numerator.dataValues.concat(cell.denominator.dataValues));
     return [...new Set(dataElementCodes)];
   }
 

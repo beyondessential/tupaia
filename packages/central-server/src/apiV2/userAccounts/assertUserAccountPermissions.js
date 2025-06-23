@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
@@ -99,8 +94,7 @@ ${accessibleCountryCodes
   const parameters = [
     ...accessibleCountryCodes,
     ...accessibleCountryCodes
-      .map(countryCode => [countryCode, ...permissionsByCountryCode[countryCode]])
-      .flat(),
+      .flatMap(countryCode => [countryCode, ...permissionsByCountryCode[countryCode]]),
   ];
   return { sql, parameters };
 };

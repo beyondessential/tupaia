@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 const RECORDS_PER_BULK_BATCH = 5000; // number of records (survey responses + answers) processed per bulk insert/delete
 
 export const CREATE = 'create';
@@ -109,15 +104,14 @@ export class SurveyResponseUpdatePersistor {
             ({ newSurveyResponse }) => newSurveyResponse,
           );
           const newAnswers = batchOfCreates
-            .map(({ answers }) =>
+            .flatMap(({ answers }) =>
               answers.upserts.map(({ surveyResponseId, questionId, type, text }) => ({
                 survey_response_id: surveyResponseId,
                 question_id: questionId,
                 type,
                 text,
               })),
-            )
-            .flat();
+            );
           await transactingModels.surveyResponse.createMany(newSurveyResponses);
           await transactingModels.answer.createMany(newAnswers);
         });

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { constructIsOneOf, hasContent, isNumber } from '@tupaia/utils';
 import { ANSWER_TYPES } from '../../../database/models/Answer';
 import { splitStringOnComma, splitOnNewLinesOrCommas } from '../../utilities';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -26,8 +21,14 @@ const CommentCountText = styled(Typography)`
 
 export const CommentsCount = ({ commentsCount }: { commentsCount: number }) => {
   if (!commentsCount) return null;
+  const unit = commentsCount === 1 ? 'comment' : 'comments';
+  const title = (
+    <>
+      {commentsCount}&nbsp;{unit}
+    </>
+  );
   return (
-    <Tooltip title="Number of user generated comments on this task">
+    <Tooltip title={title}>
       <CommentsCountWrapper>
         <CommentIcon />
         <CommentCountText>{commentsCount}</CommentCountText>

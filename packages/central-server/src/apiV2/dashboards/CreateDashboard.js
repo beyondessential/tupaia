@@ -1,13 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { CreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
-  assertAdminPanelAccess,
   assertBESAdminAccess,
+  assertVizBuilderAccess,
 } from '../../permissions';
 import { assertDashboardCreatePermissions } from './assertDashboardsPermissions';
 
@@ -15,8 +10,8 @@ export class CreateDashboard extends CreateHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You need either BES Admin or Tupaia Admin Panel access to create a dashboard',
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to create a dashboard.',
       ),
     );
   }

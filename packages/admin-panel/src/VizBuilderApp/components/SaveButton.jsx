@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useCallback, useState } from 'react';
 import { Button } from '@tupaia/ui-components';
 import { useVizConfigErrorContext } from '../context';

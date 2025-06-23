@@ -1,10 +1,5 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
-import { DatabaseError } from '@tupaia/utils';
 import { encryptPassword, generateSecretKey } from '@tupaia/auth';
+import { DatabaseError } from '@tupaia/utils';
 
 export const createUser = async (
   models,

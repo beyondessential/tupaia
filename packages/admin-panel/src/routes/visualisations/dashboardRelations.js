@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
@@ -20,6 +15,7 @@ export const FIELDS = {
       optionLabelKey: 'dashboard.code',
       optionValueKey: 'dashboard.id',
       sourceKey: 'dashboard_id',
+      accessor: record => record['dashboard.code'],
     },
   },
   DASHBOARD_ITEM_CODE: {
@@ -31,6 +27,7 @@ export const FIELDS = {
       optionLabelKey: 'dashboard_item.code',
       optionValueKey: 'dashboard_item.id',
       sourceKey: 'child_id',
+      accessor: record => record['dashboard_item.code'],
     },
   },
   PERMISSION_GROUPS: {
@@ -140,4 +137,5 @@ export const dashboardRelations = {
   endpoint: DASHBOARD_RELATION_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
+  needsVizBuilderAccess: ['create'],
 };

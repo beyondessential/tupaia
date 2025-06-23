@@ -1,73 +1,90 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-import React from 'react';
+import React, { ChangeEventHandler, ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
+
 import { Select as BaseSelect } from '@tupaia/ui-components';
-import { Country } from '@tupaia/types';
-import { Entity } from '../../types';
+
+import { FullScreenSelect } from '../../components/FullScreenSelect';
+import { useIsMobile } from '../../utils';
+import type { UserCountriesType } from './useUserCountries';
 
 const Select = styled(BaseSelect)`
-  width: 10rem;
+  inline-size: 10rem;
 
   &.MuiFormControl-root {
-    margin-bottom: 0;
+    margin-block-end: 0;
   }
   .MuiInputBase-input.MuiSelect-selectMenu {
     font-size: 0.875rem;
-    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    padding-block: 0.5rem;
+    padding-inline: 1rem 2.5rem;
   }
   .MuiSvgIcon-root {
-    right: 0.5rem;
+    inset-inline-end: 0.5rem;
   }
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: ${({ theme }) => theme.palette.grey['400']};
+    border-color: ${props => props.theme.palette.grey[400]};
     box-shadow: none;
   }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    width: 100%;
-  }
 `;
-const Pin = styled.img.attrs({
-  src: '/tupaia-pin.svg',
-  ['aria-hidden']: true, // this pin is not of any use to the screen reader, so hide from the screen reader
-})`
-  width: 1rem;
-  height: auto;
-  margin-right: 0.5rem;
-`;
-const CountrySelectWrapper = styled.div`
+
+export const CountrySelectWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
 
-interface CountrySelectorProps {
-  countries: Entity[];
-  selectedCountry?: Country | null;
-  onChangeCountry: (country: Entity | null) => void;
+const Picture = styled.picture`
+  aspect-ratio: 1;
+  block-size: 1.5rem;
+  object-fit: contain;
+  object-position: center;
+`;
+const Img = styled.img`
+  block-size: 1.5rem;
+  inline-size: auto;
+`;
+
+/** @privateRemarks Forwards props to <img> because <picture> is set to `display: contents`. */
+const Pin = (props: ComponentPropsWithoutRef<typeof Img>) => (
+  <Picture aria-hidden>
+    <source src="/datatrak-pin.svg" type="image/svg+xml" />
+    <Img aria-hidden src="/datatrak-pin.svg" width={24} height={24} {...props} />
+  </Picture>
+);
+
+export interface CountrySelectorProps
+  extends Pick<UserCountriesType, 'countries' | 'selectedCountry'>,
+    Omit<ComponentPropsWithoutRef<typeof CountrySelectWrapper>, 'onChange'> {
+  onChange: ChangeEventHandler<HTMLSelectElement>;
 }
 
-export const CountrySelector = ({
-  countries,
-  selectedCountry,
-  onChangeCountry,
-}: CountrySelectorProps) => {
-  const updateSelectedCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChangeCountry(countries.find(country => country.code === e.target.value) || null);
+export const CountrySelector = ({ countries, selectedCountry, onChange }: CountrySelectorProps) => {
+  const options = countries.map(country => ({
+    value: country.code,
+    label: country.name,
+  }));
+
+  const commonProps = {
+    onChange,
+    options,
+    value: selectedCountry?.code,
   };
+
   return (
     <CountrySelectWrapper>
-      <Pin />
-      <Select
-        options={countries?.map(country => ({ value: country.code, label: country.name })) || []}
-        value={selectedCountry?.code}
-        onChange={updateSelectedCountry}
-        placeholder="Select a country"
-        SelectProps={{
-          'aria-label': 'Select a country',
-        }}
-      />
+      {useIsMobile() ? (
+        <FullScreenSelect {...commonProps} icon={<Pin />} label="Select country" />
+      ) : (
+        <>
+          <Pin style={{ marginInlineEnd: '0.25rem' }} />
+          <Select
+            {...commonProps}
+            placeholder="Select a country"
+            SelectProps={{
+              'aria-label': 'Select a country',
+            }}
+          />
+        </>
+      )}
     </CountrySelectWrapper>
   );
 };

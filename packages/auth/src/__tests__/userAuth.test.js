@@ -1,13 +1,11 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import jwt from 'jsonwebtoken';
-import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
+
+import { createBasicHeader, createBearerHeader, requireEnv } from '@tupaia/utils';
+
 import {
-  getUserAndPassFromBasicAuth,
-  getTokenClaimsFromBearerAuth,
   constructAccessToken,
+  getTokenClaimsFromBearerAuth,
+  getUserAndPassFromBasicAuth,
 } from '../userAuth';
 
 describe('userAuth', () => {
@@ -52,9 +50,7 @@ describe('userAuth', () => {
     });
 
     it('throws error when decrypting expired token', async () => {
-      const accessToken = jwt.sign({ test: 'test' }, process.env.JWT_SECRET, {
-        expiresIn: 0,
-      });
+      const accessToken = jwt.sign({ test: 'test' }, requireEnv('JWT_SECRET'), { expiresIn: 0 });
       const authHeader = createBearerHeader(accessToken);
 
       return expect(() => getTokenClaimsFromBearerAuth(authHeader)).toThrow(

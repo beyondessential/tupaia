@@ -1,7 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
 import moment from 'moment';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
@@ -64,7 +60,7 @@ export class ValueAndPercentageByDataValueByFlightDate extends DataBuilder {
     const { rows: rowsConfig, cells } = this.config;
     const useDynamicRows = rowsConfig === '$allValues';
     const rowHeaders = useDynamicRows
-      ? this.getDataValueSet(flights.map(f => f.events).flat(), cells[0])
+      ? this.getDataValueSet(flights.flatMap(f => f.events), cells[0])
       : rowsConfig;
     const dataValues = useDynamicRows ? rowHeaders.map(rowheader => [cells[0], rowheader]) : cells;
     const rows = rowHeaders.map((rowHeader, rowIndex) => {

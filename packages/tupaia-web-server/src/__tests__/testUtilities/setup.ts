@@ -1,23 +1,17 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { encryptPassword } from '@tupaia/auth';
-import { createBasicHeader, requireEnv } from '@tupaia/utils';
-import { TestableServer } from '@tupaia/server-boilerplate';
-
 import {
-  findOrCreateDummyRecord,
   buildAndInsertProjectsAndHierarchies,
-  getTestModels,
   EntityHierarchyCacher,
+  findOrCreateDummyRecord,
   getTestDatabase,
+  getTestModels,
 } from '@tupaia/database';
+import { TestableServer } from '@tupaia/server-boilerplate';
+import { createBasicHeader, requireEnv } from '@tupaia/utils';
 
 import { createApp } from '../../app';
+import { ENTITIES, ENTITY_RELATIONS, PROJECTS } from './fixtures';
 import { TestModelRegistry } from './testModelRegistry';
-import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from './fixtures';
 
 // Don't generate the proxy middlewares while we're testing
 jest.mock('http-proxy-middleware');

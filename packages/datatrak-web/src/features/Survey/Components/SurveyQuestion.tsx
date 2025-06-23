@@ -1,14 +1,12 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 // @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { useFormContext, Controller } from 'react-hook-form';
 import { FormHelperText } from '@material-ui/core';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 import {
   BinaryQuestion,
+  CodeGeneratorQuestion,
   DateQuestion,
   RadioQuestion,
   TextQuestion,
@@ -22,6 +20,7 @@ import {
   PhotoQuestion,
   FileQuestion,
   UserQuestion,
+  ArithmeticQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
@@ -44,6 +43,7 @@ const QuestionWrapper = styled.div`
 export enum QUESTION_TYPES {
   Binary = BinaryQuestion,
   Checkbox = CheckboxQuestion,
+  CodeGenerator = CodeGeneratorQuestion,
   Date = DateQuestion,
   DateTime = DateTimeQuestion,
   FreeText = TextQuestion,
@@ -57,8 +57,7 @@ export enum QUESTION_TYPES {
   SubmissionDate = DateQuestion,
   DateOfData = DateQuestion,
   PrimaryEntity = EntityQuestion,
-  CodeGenerator = ReadOnlyQuestion,
-  Arithmetic = ReadOnlyQuestion,
+  Arithmetic = ArithmeticQuestion,
   Condition = ReadOnlyQuestion,
   File = FileQuestion,
   User = UserQuestion,
@@ -92,7 +91,9 @@ export const SurveyQuestion = ({
   const getDefaultValue = () => {
     if (formData[name] !== undefined) return formData[name];
     // This is so that the default value gets carried through to the component, and dates that have a visible value of 'today' have that value recognised when validating
-    if (type?.includes('Date')) return isResubmit ? null : new Date();
+    if (type?.includes('Date')) {
+      return isResubmit ? null : stripTimezoneFromDate(new Date());
+    }
     return undefined;
   };
 

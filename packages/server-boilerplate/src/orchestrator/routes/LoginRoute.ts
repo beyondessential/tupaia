@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { Request, Response, NextFunction } from 'express';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { AuthConnection, AuthResponse } from '../auth';
@@ -30,8 +24,8 @@ export class LoginRoute extends Route<LoginRequest> {
   public async buildResponse() {
     const { apiName } = this.req.ctx;
     const credentials = this.req.body;
-
-    const response = await this.authConnection.login(credentials, apiName);
+    const clientIp = this.req.ip;
+    const response = await this.authConnection.login(credentials, apiName, clientIp);
 
     if (this.req.ctx.verifyLogin) {
       this.req.ctx.verifyLogin(new AccessPolicy(response.accessPolicy));

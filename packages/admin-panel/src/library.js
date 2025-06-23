@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 export {
   surveys,
   questions,
@@ -28,7 +24,7 @@ export {
 } from './routes';
 export { LoginPage } from './pages';
 export { PrivateRoute } from './authentication';
-export { getHasBESAdminAccess } from './utilities/getHasBESAdminAccess';
+export { getHasBESAdminAccess } from './utilities';
 export * from './pages/resources';
 export { ReduxAutocomplete } from './autocomplete';
 export { IconButton } from './widgets';

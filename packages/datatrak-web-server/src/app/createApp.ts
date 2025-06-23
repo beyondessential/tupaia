@@ -1,9 +1,5 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
+
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   attachSessionIfAvailable,
@@ -13,6 +9,8 @@ import {
   SessionSwitchingAuthHandler,
 } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
+
+import { API_CLIENT_PERMISSIONS } from '../constants';
 import { DataTrakSessionModel } from '../models';
 import {
   ActivityFeedRequest,
@@ -23,10 +21,12 @@ import {
   EditTaskRoute,
   EntitiesRequest,
   EntitiesRoute,
-  EntityDescendantsRequest,
-  EntityDescendantsRoute,
   EntityAncestorsRequest,
   EntityAncestorsRoute,
+  EntityDescendantsRequest,
+  EntityDescendantsRoute,
+  ExportSurveyResponseRequest,
+  ExportSurveyResponseRoute,
   GenerateLoginTokenRequest,
   GenerateLoginTokenRoute,
   LeaderboardRequest,
@@ -37,8 +37,12 @@ import {
   ProjectRoute,
   ProjectsRequest,
   ProjectsRoute,
+  ProjectUsersRequest,
+  ProjectUsersRoute,
   RecentSurveysRequest,
   RecentSurveysRoute,
+  ResubmitSurveyResponseRequest,
+  ResubmitSurveyResponseRoute,
   SingleEntityRequest,
   SingleEntityRoute,
   SingleSurveyResponseRequest,
@@ -61,11 +65,8 @@ import {
   TasksRoute,
   UserRequest,
   UserRoute,
-  ResubmitSurveyResponseRequest,
-  ResubmitSurveyResponseRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
-import { API_CLIENT_PERMISSIONS } from '../constants';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
@@ -95,6 +96,7 @@ export async function createApp() {
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<LeaderboardRequest>('leaderboard', handleWith(LeaderboardRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
+    .get<ProjectUsersRequest>('project/:projectCode/users', handleWith(ProjectUsersRoute))
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TaskMetricsRequest>('taskMetrics/:projectId', handleWith(TaskMetricsRoute))
@@ -115,8 +117,11 @@ export async function createApp() {
       handleWith(ResubmitSurveyResponseRoute),
     )
     .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
+    .post<ExportSurveyResponseRequest>(
+      'export/:surveyResponseId',
+      handleWith(ExportSurveyResponseRoute),
+    )
     // Forward auth requests to web-config
-    .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('verifyEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     // Forward everything else to central server

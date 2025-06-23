@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import { Aggregator } from '@tupaia/aggregator';
 import { Route } from '@tupaia/server-boilerplate';
@@ -82,7 +77,6 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     };
 
     const reportBuilder = new ReportBuilder(reqContext).setConfig(report.config);
-
     const reportResponse = await reportBuilder.build();
 
     const { results } = reportResponse;

@@ -1,10 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import express from 'express';
 import multer from 'multer';
+import { getTempDirectory } from '@tupaia/server-utils';
 import { emailAfterTimeout } from '@tupaia/server-boilerplate';
 import { catchAsyncErrors } from '../middleware';
 
@@ -13,7 +9,6 @@ import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importUsers } from './importUsers';
 import { importSurveyResponses, constructImportEmail } from './importSurveyResponses';
-import { getTempDirectory } from '../../utilities';
 import { importDataElements } from './importDataElements';
 import { importDataElementDataServices } from './importDataElementDataServices';
 import { importUserPermissions } from './importUserPermissions';

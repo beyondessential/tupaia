@@ -1,22 +1,18 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
 describe('EditDashboardItems', async () => {
   const DEFAULT_POLICY = {
-    DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-    SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    DL: ['Public', TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
+    KI: ['Admin', VIZ_BUILDER_PERMISSION_GROUP],
+    SB: ['Royal Australasian College of Surgeons'],
+    VU: ['Admin'],
     LA: ['Admin'],
     TO: ['Admin'],
   };
@@ -211,7 +207,7 @@ describe('EditDashboardItems', async () => {
     });
 
     describe('Sufficient permissions', async () => {
-      it('Allow editing of dashboard items if we have admin panel access to all the countries the user we are editing has access to', async () => {
+      it('Allow editing of dashboard items if we have access to all the countries the user we are editing has access to', async () => {
         const newName = 'My all time favourite pokemon';
         await app.grantAccess(DEFAULT_POLICY);
         await app.put(`dashboardItems/${dashboardItemKIAdmin.id}`, {

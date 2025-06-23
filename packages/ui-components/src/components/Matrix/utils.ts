@@ -1,7 +1,4 @@
 /*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- *
  * This file contains any utils that useful for the matrix component. This is mainly used for
  * presentation options.
  */
@@ -27,7 +24,7 @@ export const findByKey = (
   caseSensitive = true,
 ) =>
   (isString(key) || isNumber(key)) &&
-  find(collection, (value, valueKey) => areStringsEqual(key, valueKey, caseSensitive));
+  find(collection, (_value, valueKey) => areStringsEqual(key, valueKey, caseSensitive));
 
 /** Functions used to get matrix chart dot colors from presentation options */
 

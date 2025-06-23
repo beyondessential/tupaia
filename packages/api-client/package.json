@@ -4,11 +4,11 @@
   "description": "API client for connecting to Tupaia APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "GPL-3.0-or-later",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
-    "build-watch": "rm -rf dist && npm run --prefix ../../ package:build:ts-watch",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "yarn run build",
+    "build-watch": "rimraf dist && npm run --prefix ../../ package:build:ts-watch",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test",
@@ -30,6 +30,7 @@
     "qs": "^6.12.0"
   },
   "devDependencies": {
-    "@types/node-fetch": "^2.6.11"
+    "@types/node-fetch": "^2.6.11",
+    "rimraf": "^6.0.1"
   }
 }

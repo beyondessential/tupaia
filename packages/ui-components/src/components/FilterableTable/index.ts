@@ -1,6 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
+export { FilterableTableCellContent } from './Cells';
 export { FilterableTable } from './FilterableTable';
+export type { FilterableTableProps } from './FilterableTable';

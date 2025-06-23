@@ -1,7 +1,3 @@
-/**
- ** Tupaia MediTrak
- ** Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
 import winston from 'winston';
 import { ANSWER_TYPES } from '../database/models/Answer';
 
@@ -12,8 +8,7 @@ let isRunning = false;
 export const startFeedScraper = models => {
   // Start recursive sync loop (enabled by default)
   if (process.env.FEED_SCRAPER_DISABLE === 'true') {
-    // eslint-disable-next-line no-console
-    console.log('Feed scraper is disabled');
+    winston.info('Feed scraper is disabled');
     return;
   }
 

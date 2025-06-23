@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
@@ -19,9 +14,10 @@ import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
 import { Preview } from './Preview';
+import { ExportDescriptionInput } from '../../ExportSettings/ExportDescriptionInput';
 
 const ButtonGroup = styled.div`
-  padding-top: 2.5rem;
+  padding: 1rem 0;
   width: 100%;
   display: flex;
   justify-content: flex-end;
@@ -31,7 +27,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  width 100%;
+  width: 100%;
   align-items: start;
   section + section {
     margin-top: 1.5rem;
@@ -104,9 +100,9 @@ const ExportSettingsInstructionsContainer = styled.div`
 `;
 
 const ExportSettingsWrapper = styled.div`
-  padding-block-end: 2rem;
+  padding-block-end: 0.8rem;
   & + & {
-    padding-block-start: 1.5rem;
+    padding-block-start: 1rem;
     border-top: 0.1rem solid ${({ theme }) => theme.palette.text.secondary};
   }
   &:last-child {
@@ -124,7 +120,8 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboard();
-  const { exportWithLabels, exportWithTable, separatePagePerItem } = useExportSettings();
+  const { exportWithLabels, exportWithTable, exportDescription, separatePagePerItem } =
+    useExportSettings();
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
 
@@ -139,6 +136,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
       settings: {
         exportWithLabels,
         exportWithTable,
+        exportDescription,
         separatePagePerItem,
       },
     });
@@ -165,6 +163,9 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
             <ExportSetting>
               <section>
                 <ExportSettingsWrapper>
+                  <ExportDescriptionInput />
+                </ExportSettingsWrapper>
+                <ExportSettingsWrapper>
                   <DisplayFormatSettings />
                 </ExportSettingsWrapper>
                 {hasChartItems && (
@@ -178,6 +179,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
                 settings={{
                   exportWithTable,
                   exportWithLabels,
+                  exportDescription,
                   separatePagePerItem,
                 }}
               />

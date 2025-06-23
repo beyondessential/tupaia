@@ -1,12 +1,8 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
+import debounce from 'lodash.debounce';
 import parseLinkHeader from 'parse-link-header';
 import generateId from 'uuid/v1';
-import debounce from 'lodash.debounce';
 
+import { convertSearchTermToFilter } from '../utilities';
 import {
   ACTION_CANCEL,
   ACTION_CONFIRM,
@@ -23,7 +19,6 @@ import {
   SORTING_CHANGE,
 } from './constants';
 import { getTableState } from './selectors';
-import { convertSearchTermToFilter } from '../utilities';
 
 export const changePage = (reduxId, pageIndex) => ({
   type: PAGE_INDEX_CHANGE,
@@ -78,7 +73,9 @@ const refreshDataWithDebounce = debounce(
     const sortString = JSON.stringify(sortObjects);
 
     // Set up columns
-    const columnSources = columns.map(column => column.source).filter(source => source);
+    const columnSources = columns
+      .filter(column => Boolean(column.source))
+      .map(column => column.source);
     const columnsString = JSON.stringify(columnSources);
 
     // Prepare for request
@@ -98,9 +95,18 @@ const refreshDataWithDebounce = debounce(
         sort: sortString.length > 0 ? sortString : undefined,
       };
       const response = await api.get(endpoint, queryParameters);
+
       const linkHeader = parseLinkHeader(response.headers.get('Link'));
-      const totalRecords = parseInt(response.headers.get('X-Total-Count'), 10);
-      const lastPageNumber = parseInt(linkHeader.last.page, 10);
+
+      const _totalCountNaive = Number.parseInt(response.headers.get('X-Total-Count'), 10);
+      const totalRecords = Number.isNaN(_totalCountNaive)
+        ? Number.POSITIVE_INFINITY
+        : _totalCountNaive;
+
+      const _lastPageNumberNaive = Number.parseInt(linkHeader.last.page, 10);
+      const lastPageNumber = Number.isNaN(_lastPageNumberNaive)
+        ? Number.POSITIVE_INFINITY
+        : _lastPageNumberNaive;
 
       dispatch({
         type: DATA_FETCH_SUCCESS,

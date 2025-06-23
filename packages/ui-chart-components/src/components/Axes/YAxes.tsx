@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { VALUE_TYPES, formatDataValueByType } from '@tupaia/utils';
 import { CartesianChartConfig, ChartReport, ValueType } from '@tupaia/types';
@@ -96,7 +91,7 @@ const renderYAxisLabel = (
 
 const flattenValues = (data?: any[], dataKeys?: string[]) => {
   if (!data) return [];
-  return data?.map(item => dataKeys?.map(key => item[key])).flat();
+  return data?.flatMap(item => dataKeys?.map(key => item[key]));
 };
 
 /**

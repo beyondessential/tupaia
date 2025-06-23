@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * @template Result
  * Class for building custom SQL queries for directly querying a database
  */

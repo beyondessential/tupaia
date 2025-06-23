@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { MapOverlay } from '../../models';
 
 export interface Params {
@@ -11,7 +6,7 @@ export interface Params {
   mapOverlayCode: MapOverlay['code'];
 }
 export interface ResBody {
-  contents: Buffer;
+  contents: Uint8Array;
   filePath?: string;
   type: string;
 }

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { useMutation } from '@tanstack/react-query';
 import { post } from '../api';
 
@@ -20,7 +15,7 @@ type RegisterUserBody = {
 export const useRegister = () => {
   return useMutation<any, Error, RegisterUserBody, unknown>(
     (data: RegisterUserBody) => {
-      return post('signup', {
+      return post('user', {
         data: {
           ...data,
           primaryPlatform: 'datatrak', // tells the backend to send verification email with datatrak link

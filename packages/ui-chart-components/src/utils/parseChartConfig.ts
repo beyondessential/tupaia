@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
 import {
   BaseChartConfig,
   ChartConfigObject,
@@ -150,7 +145,7 @@ const createDynamicConfig = (
   data: ChartData[],
 ) => {
   // Just find keys. Doesn't include keys which end in _metadata.
-  const dataKeys = data.map(dataKey => Object.keys(dataKey).filter(isDataKey)).flat();
+  const dataKeys = data.flatMap(dataKey => Object.keys(dataKey).filter(isDataKey));
   const keys = new Set(dataKeys);
 
   // Add config to each key

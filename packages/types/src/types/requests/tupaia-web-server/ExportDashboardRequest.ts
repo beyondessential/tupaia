@@ -1,15 +1,10 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 export interface Params {
   projectCode: string;
   entityCode: string;
   dashboardCode: string;
 }
 export interface ResBody {
-  contents: Buffer;
+  contents: Uint8Array;
   filePath?: string;
   type: string;
 }
@@ -20,6 +15,7 @@ export type ReqBody = {
   settings?: {
     exportWithTable: boolean;
     exportWithLabels: boolean;
+    exportDescription: string | null;
     separatePagePerItem: boolean;
   };
 };

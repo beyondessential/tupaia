@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 const SURVEY_URL = '/survey/:countryCode/:surveyCode';
 
 const SURVEY_RESUBMIT_BASE_URL = `${SURVEY_URL}/resubmit/:surveyResponseId`;
@@ -10,6 +5,7 @@ const SURVEY_RESUBMIT_BASE_URL = `${SURVEY_URL}/resubmit/:surveyResponseId`;
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
+  OFFLINE: '/offline',
   REGISTER: '/register',
   REQUEST_ACCESS: '/request-access',
   FORGOT_PASSWORD: '/forgot-password',
@@ -30,9 +26,13 @@ export const ROUTES = {
   VERIFY_EMAIL: '/verify-email',
   VERIFY_EMAIL_RESEND: '/verify-email-resend',
   REPORTS: '/reports',
+  SYNC: '/sync',
   TASKS: '/tasks',
   TASK_DETAILS: '/tasks/:taskId',
   NOT_AUTHORISED: '/not-authorised',
+  WELCOME: '/welcome',
+  EXPORT_SURVEY_RESPONSE: 'export/:surveyResponseId',
+  MOBILE_USER_MENU: '/more',
 };
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';

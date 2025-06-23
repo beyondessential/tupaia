@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 
@@ -19,6 +15,10 @@ const ProgressBar = styled.div<{
   align-items: flex-start;
   height: 0.75rem;
   width: ${({ $progress }) => `${$progress}`}%;
+
+  ${({ theme }) => theme.breakpoints.down('xs')} {
+    height: 0.4rem;
+  }
 `;
 
 interface ProgressPercentage {

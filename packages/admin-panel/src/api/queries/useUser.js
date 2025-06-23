@@ -1,10 +1,6 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { useQuery } from '@tanstack/react-query';
 import { get } from '../../VizBuilderApp/api';
+import { getHasVizBuilderAccess } from '../../utilities';
 
 export const useUser = () => {
   const query = useQuery(['user'], () => get('user'), {
@@ -14,8 +10,11 @@ export const useUser = () => {
 
   const isLoggedIn = !query.isError && !!query.data && !!query.data.id;
 
+  const hasVizBuilderAccess = getHasVizBuilderAccess(query?.data);
+
   return {
     ...query,
     isLoggedIn,
+    hasVizBuilderAccess,
   };
 };

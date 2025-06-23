@@ -11,8 +11,8 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test"
@@ -21,9 +21,10 @@
     "@tupaia/utils": "workspace:*",
     "https-proxy-agent": "^5.0.1",
     "node-fetch": "^1.7.3",
-    "winston": "^3.3.3"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
-    "@types/needle": "^2.5.3"
+    "@types/needle": "^2.5.3",
+    "rimraf": "^6.0.1"
   }
 }

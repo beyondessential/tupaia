@@ -1,11 +1,7 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CreateActionButton } from '../../editor';
+import { useUser } from '../../api/queries';
 
 const RESOURCE_NAME = { singular: 'dashboard item' };
 
@@ -52,6 +48,7 @@ const extraEditFields = [
         path: '/viz-builder/dashboard-item/:id',
         parameters: { id: 'id' },
       },
+      needsVizBuilderAccess: true,
       visibilityCriteria: {
         legacy: false,
       },
@@ -66,7 +63,7 @@ const COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'dashboardVisualisation',
-      fileName: '{code}',
+      fileName: '{code}.json',
     },
   },
   {
@@ -111,11 +108,18 @@ const IMPORT_CONFIG = {
   ),
 };
 
-const LinksComponent = () => (
-  <CreateActionButton to="/viz-builder/dashboard-item/new" component={Link}>
-    Add dashboard item
-  </CreateActionButton>
-);
+const LinksComponent = () => {
+  const { hasVizBuilderAccess } = useUser();
+  if (!hasVizBuilderAccess) {
+    return null;
+  }
+
+  return (
+    <CreateActionButton to="/viz-builder/dashboard-item/new" component={Link}>
+      Add dashboard item
+    </CreateActionButton>
+  );
+};
 
 export const dashboardItems = {
   resourceName: RESOURCE_NAME,
@@ -126,4 +130,5 @@ export const dashboardItems = {
   columns: COLUMNS,
   LinksComponent,
   needsBESAdminAccess: ['delete'],
+  needsVizBuilderAccess: ['import'],
 };

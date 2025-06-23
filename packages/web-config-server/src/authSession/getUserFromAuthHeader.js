@@ -1,10 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import {
-  getUserAndPassFromBasicAuth,
   getTokenClaimsFromBearerAuth,
+  getUserAndPassFromBasicAuth,
   verifyPassword,
 } from '@tupaia/auth';
 

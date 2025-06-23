@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { SumPerOrgUnitBuilder } from './sumPerOrgUnit';
 import { mapMeasureValuesToGroups } from './helpers';
 

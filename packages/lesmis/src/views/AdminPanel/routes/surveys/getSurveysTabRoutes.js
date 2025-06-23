@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { surveysTabRoutes } from '@tupaia/admin-panel';
 import { getSurveysPageConfig } from './getSurveysPageConfig';
 import { getQuestionPageConfig } from './getQuestionPageConfig';

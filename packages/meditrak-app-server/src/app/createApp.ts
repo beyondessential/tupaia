@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { TupaiaDatabase } from '@tupaia/database';
 import { handleWith, MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
 import {

@@ -1,16 +1,12 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { encryptPassword, generateSecretKey } from '@tupaia/auth';
-import { CreateHandler } from '../CreateHandler';
+
 import {
   assertAdminPanelAccess,
   assertAdminPanelAccessToCountry,
   assertAnyPermissions,
   assertBESAdminAccess,
 } from '../../permissions';
+import { CreateHandler } from '../CreateHandler';
 
 /**
  * Handles POST endpoints:

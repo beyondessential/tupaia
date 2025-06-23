@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -49,10 +44,7 @@ const PreviewContainer = styled.div`
   overflow-x: hidden;
   ${A4Page} {
     // simulate the margins of the printed page
-    padding-block-start: 5rem;
-    &:last-child {
-      padding-block-end: 5rem;
-    }
+    padding: 1cm 2.5cm 2cm;
   }
 `;
 
@@ -92,7 +84,11 @@ export const Preview = ({
         )}
       </PreviewHeaderContainer>
       <PreviewContainer>
-        <DashboardPDFExport selectedDashboardItems={visualisationToPreview} isPreview={true} />
+        <DashboardPDFExport
+          selectedDashboardItems={visualisationToPreview}
+          isPreview={true}
+          pageIndex={page}
+        />
       </PreviewContainer>
     </PreviewPanelContainer>
   );

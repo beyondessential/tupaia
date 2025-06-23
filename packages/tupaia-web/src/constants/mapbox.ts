@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 const makeMapboxStyleUrl = ({
   styleId,
   accessKey = import.meta.env.REACT_APP_MAPBOX_TOKEN,

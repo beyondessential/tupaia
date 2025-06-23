@@ -1,28 +1,25 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
+import { Typography } from '@material-ui/core';
+import { format, parseISO } from 'date-fns';
 import React from 'react';
-import { format } from 'date-fns';
-import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
-import { Typography } from '@material-ui/core';
+import styled from 'styled-components';
+
 import {
-  TaskCommentType,
   SystemCommentSubType,
-  TaskCommentTemplateVariables,
   TaskComment,
+  TaskCommentTemplateVariables,
+  TaskCommentType,
 } from '@tupaia/types';
-import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TextField } from '@tupaia/ui-components';
-import { displayDateTime } from '../../../utils';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
+
+import { useCreateTaskComment } from '../../../api';
+import { Button } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { TaskForm } from '../TaskForm';
-import { Button } from '../../../components';
-import { useCreateTaskComment } from '../../../api';
 import { capsToSentenceCase } from '../utils';
+import { displayDateTime } from '../../../utils';
 
 const TaskCommentsDisplayContainer = styled.div`
   width: 100%;
@@ -36,9 +33,10 @@ const TaskCommentsDisplayContainer = styled.div`
 `;
 
 const CommentContainer = styled.div`
-  padding-block: 0.4rem;
-  &:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+  & + & {
+    border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+    margin-block-start: 1em;
+    padding-block-start: 0.5em;
   }
 `;
 
@@ -103,7 +101,7 @@ const formatValue = (field, value) => {
     }
     case 'repeat_schedule': {
       if (value === null || value === undefined) {
-        return "Doesn't repeat";
+        return 'Doesn’t repeat';
       }
 
       const frequency = Object.keys(RRULE_FREQUENCIES).find(
@@ -111,7 +109,7 @@ const formatValue = (field, value) => {
       );
 
       if (!frequency) {
-        return "Doesn't repeat";
+        return 'Doesn’t repeat';
       }
 
       // format the frequency to be more human-readable
@@ -174,11 +172,13 @@ const UserComment = ({ message }: { message: Comments[0]['message'] }) => {
 
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {
   const { createdAt, type, userName, message, templateVariables, userId } = comment;
+  const createdAtDate = parseISO(createdAt);
 
   return (
     <CommentContainer>
       <CommentDetails>
-        {displayDateTime(createdAt)} - {userName} {!userId ? '(user deleted)' : ''}
+        <time dateTime={createdAtDate.toISOString()}>{displayDateTime(createdAt)}</time> &ndash;{' '}
+        {userName} {!userId ? '(user deleted)' : ''}
       </CommentDetails>
 
       {type === TaskCommentType.system ? (
@@ -193,16 +193,16 @@ const SingleComment = ({ comment }: { comment: Comments[0] }) => {
 export const TaskComments = ({ comments }: { comments: Comments }) => {
   const { taskId } = useParams();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isDirty },
-  } = useForm({
+  const formContext = useForm({
     defaultValues: {
       comment: '',
     },
   });
+  const {
+    register,
+    reset,
+    formState: { isDirty },
+  } = formContext;
 
   const { mutate: createTaskComment, isLoading: isSaving } = useCreateTaskComment(taskId, reset);
 
@@ -211,15 +211,15 @@ export const TaskComments = ({ comments }: { comments: Comments }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form formContext={formContext} onSubmit={onSubmit}>
       <TaskCommentsDisplayContainer>
-        {comments.map((comment, index) => (
-          <SingleComment key={index} comment={comment} />
+        {comments.map(comment => (
+          <SingleComment key={comment.id} comment={comment} />
         ))}
       </TaskCommentsDisplayContainer>
       <CommentsInput label="Add comment" name="comment" inputRef={register} />
       <Button type="submit" disabled={!isDirty || isSaving}>
-        {isSaving ? 'Saving...' : 'Add comment'}
+        {isSaving ? 'Saving…' : 'Add comment'}
       </Button>
     </Form>
   );

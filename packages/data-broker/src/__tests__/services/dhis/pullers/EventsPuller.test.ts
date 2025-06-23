@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import type { DhisApi } from '@tupaia/dhis-api';
 import { createMockDhisApi, createModelsStub } from '../DhisService.stubs';
 import { DATA_GROUPS } from '../DhisService.fixtures';

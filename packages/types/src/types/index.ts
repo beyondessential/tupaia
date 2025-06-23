@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 export * from './models';
 export {
   isBarChartConfig,
@@ -23,6 +18,8 @@ export {
   CartesianChartConfig,
   ValueType,
   MatrixConfig,
+  MatrixVizBuilderConfig,
+  MatrixEntityCell,
   PresentationOptionCondition,
   MatrixPresentationOptions,
   ConditionsObject,

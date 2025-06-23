@@ -1,9 +1,5 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { useQuery } from '@tanstack/react-query';
 import { get } from '../VizBuilderApp/api/api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../VizBuilderApp/api/constants';

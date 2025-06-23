@@ -1,15 +1,12 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-import { encryptPassword } from '@tupaia/auth';
-import { TestableServer } from '@tupaia/server-boilerplate';
-import { getTestModels, getTestDatabase, findOrCreateDummyRecord } from '@tupaia/database';
-import { createBasicHeader } from '@tupaia/utils';
 import { MockDataTableApi, MockTupaiaApiClient } from '@tupaia/api-client';
-import { TestModelRegistry } from '../../types';
+import { encryptPassword } from '@tupaia/auth';
+import { findOrCreateDummyRecord, getTestDatabase, getTestModels } from '@tupaia/database';
+import { TestableServer } from '@tupaia/server-boilerplate';
+import { createBasicHeader } from '@tupaia/utils';
+
 import { createApp } from '../../../app';
 import { eventsDataTable } from '../../fixtures';
+import { TestModelRegistry } from '../../types';
 import { PUBLIC_PERMISSION_GROUP, REPORT } from './integration.fixtures';
 
 export const models = getTestModels() as TestModelRegistry;

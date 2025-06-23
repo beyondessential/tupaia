@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -10,7 +5,6 @@ import { Button as BaseButton } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { ROUTES } from '../../../constants';
 import { useSurvey } from '../../../api/queries';
-import { useFromLocation } from '../../../utils';
 import { SurveySuccess } from '../Components';
 
 const ButtonGroup = styled.div`
@@ -19,23 +13,25 @@ const ButtonGroup = styled.div`
 `;
 
 const Button = styled(BaseButton)`
+  text-align: center;
+
   & + & {
-    margin: 1.25rem 0 0 0;
+    margin-block: 1.25rem 0;
+    margin-inline: 0;
+  }
+
+  &.MuiButton-outlined {
+    ${props => props.theme.breakpoints.down('sm')} {
+      background: white;
+    }
   }
 `;
 
-const ReturnButton = () => {
-  const from = useFromLocation();
-  return from === ROUTES.TASKS ? (
-    <Button to={ROUTES.TASKS} fullWidth>
-      Return to tasks
-    </Button>
-  ) : (
-    <Button to="/" fullWidth>
-      Return to dashboard
-    </Button>
-  );
-};
+const returnButton = (
+  <Button to="/" fullWidth>
+    Return to dashboard
+  </Button>
+);
 
 export const SurveySuccessScreen = () => {
   const params = useParams();
@@ -53,7 +49,7 @@ export const SurveySuccessScreen = () => {
 
   const getText = () => {
     if (survey?.canRepeat) {
-      return "To repeat the same survey again click the button below, otherwise 'Close' to return to your dashboard";
+      return 'To repeat the same survey again click the button below, otherwise return to your dashboard';
     }
 
     return 'To return to your dashboard, click the button below';
@@ -62,14 +58,14 @@ export const SurveySuccessScreen = () => {
   const text = getText();
 
   return (
-    <SurveySuccess text={text} title="Survey submitted!" showQrCode>
+    <SurveySuccess text={text} title="Survey submitted!">
       <ButtonGroup>
         {survey?.canRepeat && (
           <Button onClick={repeatSurvey} fullWidth variant="outlined">
-            Repeat Survey
+            Repeat survey
           </Button>
         )}
-        <ReturnButton />
+        {returnButton}
       </ButtonGroup>
     </SurveySuccess>
   );

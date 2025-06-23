@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { respond } from '@tupaia/utils';
 import { CRUDHandler } from '../CRUDHandler';
 import {
@@ -134,8 +129,12 @@ export class GETHandler extends CRUDHandler {
         options,
       ));
     }
-    const pageOfRecords = await this.findRecords(criteria, options);
-    const totalNumberOfRecords = await this.countRecords(criteria, options);
+
+    const [pageOfRecords, totalNumberOfRecords] = await Promise.all([
+      this.findRecords(criteria, options),
+      this.countRecords(criteria, options),
+    ]);
+
     const { limit, page } = this.getPaginationParameters();
     const lastPage = Math.ceil(totalNumberOfRecords / limit);
     const linkHeader = generateLinkHeader(this.resource, page, lastPage, this.req.query);
@@ -151,7 +150,7 @@ export class GETHandler extends CRUDHandler {
 
   async countRecords(criteria, { multiJoin }) {
     const options = { multiJoin }; // only the join option is required for count
-    return this.database.count(this.recordType, criteria, options);
+    return this.database.countFast(this.recordType, criteria, options);
   }
 
   async findRecords(criteria, options) {

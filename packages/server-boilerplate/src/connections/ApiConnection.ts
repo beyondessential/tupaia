@@ -1,12 +1,11 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
 import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 
 import { QueryParameters, RequestBody } from '../types';
 import { AuthHandler } from './types';
+
+type CustomHeaders = {
+  'x-forwarded-for'?: string;
+};
 
 /**
  * @deprecated use @tupaia/api-client
@@ -23,8 +22,13 @@ export class ApiConnection {
     return this.request('GET', endpoint, queryParameters);
   }
 
-  protected async post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
-    return this.request('POST', endpoint, queryParameters, body);
+  protected async post(
+    endpoint: string,
+    queryParameters: QueryParameters,
+    body: RequestBody,
+    headers: CustomHeaders = {},
+  ) {
+    return this.request('POST', endpoint, queryParameters, body, headers);
   }
 
   protected async put(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
@@ -40,6 +44,7 @@ export class ApiConnection {
     endpoint: string,
     queryParameters: QueryParameters = {},
     body?: RequestBody,
+    headers: CustomHeaders = {},
   ) {
     const queryUrl = stringifyQuery(this.baseUrl, endpoint, queryParameters);
     const fetchConfig: RequestInit = {
@@ -47,6 +52,7 @@ export class ApiConnection {
       headers: {
         Authorization: await this.authHandler.getAuthHeader(),
         'Content-Type': 'application/json',
+        ...headers,
       },
     };
     if (body) {

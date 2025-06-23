@@ -1,32 +1,37 @@
-#!/bin/bash -le
+#!/usr/bin/env bash
+set -e
 
-DIR=$(dirname "$0")
-TUPAIA_DIR=$DIR/../../../..
-DEPLOYMENT_NAME=$1
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+root_dir=$script_dir/../../../..
+deployment_name=$1
 
 echo "Building deployable packages"
-PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
-. $HOME/.nvm/nvm.sh
+source "$HOME/.nvm/nvm.sh"
 
-# Install external dependencies and build internal dependencies
-cd ${TUPAIA_DIR}
+# Install external dependencies
+cd "$root_dir"
 yarn install --immutable
 chmod 755 node_modules/@babel/cli/bin/babel.js
 
-# "postinstall" hook may only fire if the dependency tree changes. This may not happen on feature branches based off dev,
-# because our AMI performs a yarn install already. In this case we can end up in a situation where "internal-depenednecies"
-# packages' dists are not rebuilt. This will be fixed by changing to a single yarn:build command in a future PR.
-yarn build:internal-dependencies
+# Suppress output of secrets
+set +x
 
 # Inject environment variables from Bitwarden
-BITWARDEN_EMAIL=$($DIR/fetchParameterStoreValue.sh BITWARDEN_EMAIL)
-BITWARDEN_PASSWORD=$($DIR/fetchParameterStoreValue.sh BITWARDEN_PASSWORD)
-BITWARDEN_EMAIL=$BITWARDEN_EMAIL BITWARDEN_PASSWORD=$BITWARDEN_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME
+BW_CLIENTID="$("$script_dir/fetchParameterStoreValue.sh" BW_CLIENTID)"
+BW_CLIENTSECRET="$("$script_dir/fetchParameterStoreValue.sh" BW_CLIENTSECRET)"
+BW_PASSWORD="$("$script_dir/fetchParameterStoreValue.sh" BW_PASSWORD)"
 
-# Build each package
-for PACKAGE in ${PACKAGES[@]}; do
-    echo "Building ${PACKAGE}"
-    REACT_APP_DEPLOYMENT_NAME=${DEPLOYMENT_NAME} yarn workspace @tupaia/${PACKAGE} build
-done
+BW_CLIENTID="$BW_CLIENTID" \
+    BW_CLIENTSECRET="$BW_CLIENTSECRET" \
+    BW_PASSWORD="$BW_PASSWORD" \
+    yarn run download-env-vars "$deployment_name"
+
+# Build packages and their dependencies
+package_names_glob=$("$root_dir/scripts/bash/getDeployablePackages.sh" --as-glob)
+
+set -x
+REACT_APP_DEPLOYMENT_NAME="$deployment_name" \
+    yarn run build:from "$package_names_glob"
+set +x

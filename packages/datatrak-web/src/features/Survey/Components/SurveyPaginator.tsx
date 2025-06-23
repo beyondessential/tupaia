@@ -1,15 +1,10 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
-import styled from 'styled-components';
-import { useOutletContext } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { useSurveyForm } from '../SurveyContext';
+import React from 'react';
+import { useOutletContext } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { Button } from '../../../components';
-import { useIsMobile } from '../../../utils';
+import { useSurveyForm } from '../SurveyContext';
 
 const FormActions = styled.div<{
   $hasBackButton: boolean;
@@ -17,10 +12,11 @@ const FormActions = styled.div<{
   display: flex;
   justify-content: ${({ $hasBackButton }) => ($hasBackButton ? 'space-between' : 'flex-end')};
   align-items: center;
-  padding: 1rem 0.5rem;
-  border-top: 1px solid ${props => props.theme.palette.divider};
+  padding-block: 1rem;
+  padding-inline: 0.5rem;
+  border-top: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   button:last-child {
-    margin-left: auto;
+    margin-inline-start: auto;
   }
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 1rem;
@@ -58,21 +54,14 @@ type SurveyLayoutContextT = {
 };
 
 export const SurveyPaginator = () => {
-  const { isLast, isReviewScreen, openCancelConfirmation, isResubmitReviewScreen } =
-    useSurveyForm();
-  const isMobile = useIsMobile();
+  const { isLast, isResubmit, isReviewScreen, openCancelConfirmation } = useSurveyForm();
   const { isLoading, onStepPrevious, hasBackButton } = useOutletContext<SurveyLayoutContextT>();
 
   const getNextButtonText = () => {
-    if (isReviewScreen) return 'Submit';
-    if (isResubmitReviewScreen) return 'Resubmit';
-    if (isLast) {
-      return isMobile ? 'Review' : 'Review and submit';
-    }
+    if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
+    if (isLast) return 'Review & submit';
     return 'Next';
   };
-
-  const nextButtonText = getNextButtonText();
 
   return (
     <FormActions $hasBackButton={hasBackButton}>
@@ -86,7 +75,7 @@ export const SurveyPaginator = () => {
           Cancel
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {nextButtonText}
+          {getNextButtonText()}
         </Button>
       </ButtonGroup>
     </FormActions>

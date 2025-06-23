@@ -15,8 +15,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "node dist",
@@ -37,6 +37,9 @@
     "camelcase-keys": "^6.2.2",
     "express": "^4.19.2",
     "lodash.uniqby": "^4.7.0",
-    "winston": "^3.3.3"
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
   }
 }

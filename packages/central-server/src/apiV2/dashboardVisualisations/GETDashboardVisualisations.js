@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 
 import { RECORDS } from '@tupaia/database';
@@ -127,7 +122,7 @@ export class GETDashboardVisualisations extends GETHandler {
   }
 
   async countRecords(inputCriteria) {
-    return this.database.count(RECORDS.DASHBOARD_ITEM, parseCriteria(inputCriteria), {
+    return this.database.countFast(RECORDS.DASHBOARD_ITEM, parseCriteria(inputCriteria), {
       joinWith: 'report',
       joinCondition: ['dashboard_item.report_code', 'report.code'],
     });

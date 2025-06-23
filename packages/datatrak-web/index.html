@@ -4,14 +4,25 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no maximum-scale=1"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, viewport-fit=cover"
     />
     <meta
       name="description"
       content="Data collection and visualisation for the most remote settings in the world"
     />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#ffffff" />
     <title>Tupaia DataTrak</title>
+
+    <% if ( process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
+    <link rel="preconnect" href="https://datatrak-web-api.tupaia.org" crossorigin />
+    <% } else if (process.env.NODE_ENV === 'production') { %>
+    <link
+      rel="preconnect"
+      href="https://%REACT_APP_DEPLOYMENT_NAME%-datatrak-web-api.tupaia.org"
+      crossorigin
+    />
+    <% } %>
+
     <!-- Open Graph for shared links -->
     <meta property="og:title" content="Tupaia DataTrak" />
     <meta property="og:type" content="website" />
@@ -26,9 +37,6 @@
       content="Data collection and visualisation for the most remote settings in the world"
     />
 
-    <!-- Smart App Banner on iOS -->
-    <meta name="apple-itunes-app" content="app-id=1245053537" />
-
     <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'master' ||
     process.env.REACT_APP_DEPLOYMENT_NAME === 'main' || process.env.REACT_APP_DEPLOYMENT_NAME ===
     'production') { %>
@@ -40,7 +48,6 @@
         dataLayer.push(arguments);
       }
       gtag('js', new Date());
-
       gtag('config', 'G-P5KF6SLGKR');
     </script>
     <!-- End Google Analytics -->
@@ -65,7 +72,11 @@
     <!-- End of bes-support Zendesk Widget script -->
     <% } %>
 
-    <link rel="icon" type="image/png" href="/favicon.ico" />
+    <link rel="manifest" id="manifest" href="/manifest.json" />
+
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <!-- Add media='print' and onload="this.media='all'" to stop the resource being render-blocking on load: see https://pagespeedchecklist.com/asynchronous-google-fonts -->
     <link
       rel="stylesheet"
@@ -87,13 +98,13 @@
       <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
-        crossorigin="anonymous"
+        crossorigin
       />
       <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin=""
+        crossorigin
       />
     </noscript>
   </head>

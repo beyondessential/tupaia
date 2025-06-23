@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 export const getColumnsForMeditrakApp = async model => {
   const fields = await model.fetchFieldNames();
   const { meditrakConfig = {} } = model;

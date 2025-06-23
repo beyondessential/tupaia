@@ -1,16 +1,14 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-import React, { memo, useEffect, useMemo } from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { Alert, FilterableTable } from '@tupaia/ui-components';
-import { generateConfigForColumnType } from '../columnTypes';
-import { getIsFetchingData, getTableState } from '../selectors';
+import React, { memo, useEffect, useMemo } from 'react';
+import { connect } from 'react-redux';
+import styled from 'styled-components';
+
+import { Alert, FilterableTable, FilterableTableCellContent } from '@tupaia/ui-components';
+
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
+import { getEditorState } from '../../editor/selectors';
+import { ConfirmDeleteModal } from '../../widgets';
 import {
   cancelAction,
   changePage,
@@ -19,10 +17,10 @@ import {
   confirmAction,
   refreshData,
 } from '../actions';
-import { ConfirmDeleteModal } from '../../widgets';
-import { useColumnFilters } from './useColumnFilters';
+import { generateConfigForColumnType } from '../columnTypes';
+import { getIsFetchingData, getTableState } from '../selectors';
 import { DisplayCell } from './Cells';
-import { getEditorState } from '../../editor/selectors';
+import { useColumnFilters } from './useColumnFilters';
 
 const ErrorAlert = styled(Alert).attrs({
   severity: 'error',
@@ -59,7 +57,7 @@ const ButtonCell = styled.div`
 
 const SingleButtonWrapper = styled.div`
   width: ${({ $width }) => $width}px;
-  .cell-content:has(&) {
+  ${FilterableTableCellContent}:has(&) {
     padding-block: 0;
     padding-inline-end: 0;
   }
@@ -213,21 +211,18 @@ const DataFetchingTableComponent = memo(
             <Typography variant="body2">Loading</Typography>
           </MessageWrapper>
         )}
-        {data.length === 0 && !isLoading && (
-          <MessageWrapper>
-            <Typography variant="body2">No data to display</Typography>
-          </MessageWrapper>
-        )}
 
         <FilterableTable
           columns={formattedColumns}
           data={data}
+          filters={filters}
+          noDataMessage="No data to display"
           pageIndex={pageIndex}
           pageSize={pageSize}
           sorting={sortingToUse}
           numberOfPages={numberOfPages}
           onChangeFilters={onChangeFilters}
-          filters={filters}
+          isLoading={isLoading}
           hiddenColumns={columns
             .filter(column => column.show === false)
             .map(column => column.source ?? column.type)}

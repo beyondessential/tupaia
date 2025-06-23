@@ -1,11 +1,6 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { List as MuiList } from '@material-ui/core';
-import { ListItem as Item } from './ListItem';
+import { ListItem as Item, ListItemSkeleton } from './ListItem';
 import { ListItemType } from './types';
 
 interface SelectListProps {
@@ -24,4 +19,9 @@ export const List = ({ items, onSelect, ListItem = Item }: SelectListProps) => {
       ))}
     </MuiList>
   );
+};
+
+export const ListSkeleton = ({ length = 6 }: { length?: number }) => {
+  const listItem = <ListItemSkeleton />;
+  return <MuiList disablePadding>{Array.from({ length }).map(() => listItem)}</MuiList>;
 };

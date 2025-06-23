@@ -1,14 +1,10 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { encryptPassword } from '@tupaia/auth';
 import { generateId } from '@tupaia/database';
-import { createUser as createUserAccessor } from '../../../dataAccessors';
+
 import { configureEnv } from '../../../configureEnv';
-import { getModels } from './getModels';
+import { createUser as createUserAccessor } from '../../../dataAccessors';
 import { TEST_API_USER_EMAIL, TEST_API_USER_PASSWORD, TEST_USER_EMAIL } from '../constants';
+import { getModels } from './getModels';
 
 const models = getModels();
 

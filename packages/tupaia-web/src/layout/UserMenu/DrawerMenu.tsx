@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Drawer as MuiDrawer } from '@material-ui/core';
@@ -61,8 +56,6 @@ const MenuHeader = styled.div<{
   border-bottom: 1px solid ${({ $secondaryColor }) => $secondaryColor};
   color: ${({ $secondaryColor }) => $secondaryColor};
 `;
-
-const MenuHeaderContainer = styled.div``;
 
 const MenuCloseIcon = styled(CloseIcon)<{
   $secondaryColor?: string;
@@ -131,7 +124,7 @@ export const DrawerMenu = ({
     >
       <MenuWrapper>
         <MenuHeader $secondaryColor={secondaryColor}>
-          <MenuHeaderContainer>
+          <div>
             {currentUserUsername && (
               <Username $secondaryColor={secondaryColor}>{currentUserUsername}</Username>
             )}
@@ -145,7 +138,7 @@ export const DrawerMenu = ({
                 {userProjectName}
               </ProjectButton>
             )}
-          </MenuHeaderContainer>
+          </div>
           <MenuCloseButton onClick={onCloseMenu} aria-label="Close menu">
             <MenuCloseIcon $secondaryColor={secondaryColor} />
           </MenuCloseButton>

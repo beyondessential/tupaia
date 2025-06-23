@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import moment from 'moment';
 import sinon from 'sinon';
 import { expect } from 'chai';

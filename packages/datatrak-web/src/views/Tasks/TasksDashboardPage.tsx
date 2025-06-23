@@ -1,28 +1,17 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
+import { Plus } from 'lucide-react';
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Add } from '@material-ui/icons';
-import { Button } from '../../components';
-import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
-import { TasksContentWrapper } from '../../layout';
-import { TaskMetrics } from '../../components/TaskMetrics';
+import styled, { css } from 'styled-components';
 
-const ButtonContainer = styled.div`
-  padding-block-end: 0.5rem;
-  margin-block-start: 1rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    margin-inline-start: auto;
-    margin-block-start: 0;
-    padding-block-end: 0;
-  }
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    align-self: self-end;
-  }
-`;
+import { isFeatureEnabled } from '@tupaia/utils';
+
+import { Button } from '../../components';
+import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../constants';
+import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
+import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
+import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
+import { useBottomNavigationVisibility, useIsMobile } from '../../utils';
+
+const canCreateTaskOnMobile = isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK');
 
 const CreateButton = styled(Button).attrs({
   color: 'primary',
@@ -34,29 +23,35 @@ const CreateButton = styled(Button).attrs({
   padding-inline-start: 0.9rem;
 `;
 
-const AddIcon = styled(Add)`
-  font-size: 1.2rem;
-  margin-inline-end: 0.2rem;
-`;
-
-const ContentWrapper = styled(TasksContentWrapper)`
+const ContentWrapper = styled(TasksContentWrapper)<{ $isBottomNavVisible?: boolean }>`
   overflow: hidden;
+  ${props =>
+    props.$isBottomNavVisible &&
+    css`
+      padding-bottom: ${BOTTOM_NAVIGATION_HEIGHT_DYNAMIC};
+    `}
 `;
 
 export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const isMobile = useIsMobile();
+  const isBottomNavVisible = useBottomNavigationVisibility();
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
+
   return (
     <>
+      {isMobile && <StickyMobileHeader>Tasks</StickyMobileHeader>}
       <TaskPageHeader title="Tasks" backTo="/">
-        <TaskMetrics />
-        <ButtonContainer>
-          <CreateButton onClick={toggleCreateModal}>
-            <AddIcon /> Create task
-          </CreateButton>
-        </ButtonContainer>
+        {(!isMobile || canCreateTaskOnMobile) && (
+          <>
+            {!isMobile && <TaskMetrics style={{ marginInlineEnd: 'auto' }} />}
+            <CreateButton onClick={toggleCreateModal} startIcon={<Plus />}>
+              Create task
+            </CreateButton>
+          </>
+        )}
       </TaskPageHeader>
-      <ContentWrapper>
+      <ContentWrapper $isBottomNavVisible={isBottomNavVisible}>
         <TasksTable />
         {createModalOpen && <CreateTaskModal onClose={toggleCreateModal} />}
       </ContentWrapper>

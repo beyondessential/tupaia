@@ -1,17 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebUsersRequest } from '@tupaia/types';
-import { getFilteredUsers } from '../utils';
+import { getFilteredUsersForPermissionGroup } from '../utils';
 
 export type PermissionGroupUsersRequest = Request<
   DatatrakWebUsersRequest.Params,
@@ -38,6 +28,6 @@ export class PermissionGroupUsersRoute extends Route<PermissionGroupUsersRequest
       throw new Error(`Permission group with id '${permissionGroupId}' not found`);
     }
 
-    return getFilteredUsers(models, countryCode, permissionGroup, searchTerm);
+    return getFilteredUsersForPermissionGroup(models, countryCode, permissionGroup, searchTerm);
   }
 }

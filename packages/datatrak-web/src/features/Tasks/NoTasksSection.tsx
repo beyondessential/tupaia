@@ -1,28 +1,27 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-import React from 'react';
-import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Button as UIButton } from '@tupaia/ui-components';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { Button as UIButton } from '@tupaia/ui-components';
+
 import { ROUTES } from '../../constants';
+import { useIsMobile } from '../../utils';
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
+const Section = styled.section`
   align-items: center;
-  height: 100%;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
+  display: flex;
+  text-wrap: balance;
 `;
 
-const Image = styled.img.attrs({
+const DesktopWrapper = styled(Section)`
+  block-size: 100%;
+  flex-direction: column;
+`;
+
+const DecorativeImage = styled.img.attrs({
+  'aria-hidden': true,
   src: '/tupaia-high-five.svg',
-  alt: 'Illustration of two hands giving a high five',
 })`
   flex: 1;
   height: auto;
@@ -39,7 +38,8 @@ const Text = styled(Typography)`
 `;
 
 const Button = styled(UIButton)`
-  padding: 0.25rem 1rem;
+  padding-block: 0.25rem;
+  padding-inline: 1rem;
   margin-block-end: 0.5rem;
 
   .MuiButton-label {
@@ -48,8 +48,8 @@ const Button = styled(UIButton)`
 `;
 
 const Desktop = () => (
-  <Container>
-    <Image />
+  <DesktopWrapper>
+    <DecorativeImage />
     <Text>
       Congratulations, you have no tasks to complete! You can view all other tasks for your project
       using the button below.
@@ -57,38 +57,38 @@ const Desktop = () => (
     <Button to={ROUTES.TASKS} component={Link}>
       View all tasks
     </Button>
-  </Container>
+  </DesktopWrapper>
 );
 
-const MobileContainer = styled.div`
-  display: flex;
+const MobileWrapper = styled(Section)`
   justify-content: space-between;
-  align-items: center;
 
   p {
     flex: 1;
-    text-align: left;
+    text-align: start;
     margin-inline-end: 1rem;
     margin-block-end: 0;
+    font-size: 0.75rem;
   }
 
   a.MuiButtonBase-root {
     display: inline-block;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    display: none;
+    margin-block-end: 0;
   }
 `;
+
 const Mobile = () => (
-  <MobileContainer>
-    <Text>You have no tasks to complete.</Text>
-  </MobileContainer>
+  <MobileWrapper>
+    <Text>You have no tasks to complete</Text>
+    <Button
+      to={ROUTES.TASKS}
+      component={Link}
+      // Hand-tuned to avoid text wrapping down to 360px (at default font size and zoom level)
+      style={{ paddingInline: '0.65rem' }}
+    >
+      View all tasks
+    </Button>
+  </MobileWrapper>
 );
 
-export const NoTasksSection = () => (
-  <>
-    <Desktop />
-    <Mobile />
-  </>
-);
+export const NoTasksSection = () => (useIsMobile() ? <Mobile /> : <Desktop />);

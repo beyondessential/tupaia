@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import MockDate from 'mockdate';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
@@ -87,7 +82,7 @@ const fetchFakeEvents = (
 const fetchFakeDataGroup = (dataGroupCode: string) => {
   const eventsForDataGroup = TEST_EVENTS[dataGroupCode] || [];
   const dataElements = Array.from(
-    new Set(eventsForDataGroup.map(({ dataValues }) => Object.keys(dataValues)).flat()),
+    new Set(eventsForDataGroup.flatMap(({ dataValues }) => Object.keys(dataValues))),
   ).map(dataElement => ({ code: dataElement, name: dataElement }));
   return { code: dataGroupCode, name: dataGroupCode, dataElements };
 };

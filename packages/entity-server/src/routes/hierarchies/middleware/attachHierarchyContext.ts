@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { NextFunction, Request, Response } from 'express';
 import { HierarchyContext } from '../types';
 import { extractHierarchyFieldsFromQuery, extractHierarchyFieldFromQuery } from './fields';

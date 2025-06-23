@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { Ref } from 'react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
@@ -62,7 +58,10 @@ const entitiesData = [
       color: 'blue',
     },
   },
-];
+].sort(
+  // EntityDescendantsRoute returns entities in this order
+  (a, b) => a.name.localeCompare(b.name),
+);
 
 const userData = { project: { code: 'explore' }, country: { code: 'DL' } };
 

@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 import pick from 'lodash.pick';
@@ -61,8 +56,7 @@ class TableOfEventsBuilder extends DataBuilder {
     }
     return Object.entries(columns)
       .filter(([key]) => !isMetadataKey(key))
-      .map(([key, config]) => [key, ...(config?.additionalData || [])])
-      .flat();
+      .flatMap(([key, config]) => [key, ...(config?.additionalData || [])]);
   }
 
   async fetchEvents() {

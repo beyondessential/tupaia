@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 export { ProjectCountryAccessListRequest, MeditrakSurveyResponseRequest } from './central-server';
 export { DataTablePreviewRequest } from './data-table-server/DataTablePreviewRequest';
 export {
@@ -27,6 +22,7 @@ export {
   DatatrakWebTaskChangeRequest,
 } from './datatrak-web-server';
 export {
+  TupaiaWebCountriesRequest,
   TupaiaWebChangePasswordRequest,
   TupaiaWebDashboardsRequest,
   TupaiaWebEmailDashboardRequest,

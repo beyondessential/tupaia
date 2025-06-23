@@ -1,16 +1,11 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { PermissionGroup } from '../../models';
 
 export type Params = Record<string, string>;
 
-type UserResponse = {
+export interface UserResponse {
   id: string;
   name: string;
-};
+}
 
 export type ResBody = UserResponse[];
 export type ReqBody = Record<string, never>;

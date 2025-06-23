@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 export { useLogin } from './useLogin';
 export { useLogout } from './useLogout';
 export { useRegister } from './useRegister';
@@ -20,3 +15,4 @@ export * from './useExportSurveyResponses';
 export { useTupaiaRedirect } from './useTupaiaRedirect';
 export { useCreateTask } from './useCreateTask';
 export { useCreateTaskComment } from './useCreateTaskComment';
+export { useExportSurveyResponse } from './useExportSurveyResponse';

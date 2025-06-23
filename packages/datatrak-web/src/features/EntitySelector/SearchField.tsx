@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { TextField } from '@tupaia/ui-components';
 import styled from 'styled-components';
@@ -41,9 +36,16 @@ const StyledField = styled(TextField)<TextFieldProps>`
     font-size: 1.2em;
   }
 
-  &&&& {
-    .MuiInputBase-input::placeholder {
-      color: ${({ theme }) => theme.palette.text.tertiary};
+  .MuiInputAdornment-positionStart {
+    margin-right: 0.2rem;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    .MuiOutlinedInput-notchedOutline {
+      border: none;
+    }
+    .MuiInputBase-root {
+      border-radius: 6.25rem;
     }
   }
 `;
@@ -66,15 +68,14 @@ type SearchFieldProps = TextFieldProps & {
 export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((props, ref) => {
   const {
     name,
-    label,
     id,
     searchValue,
     onChangeSearch,
     isDirty,
     invalid,
-    detailLabel,
     required,
     inputProps,
+    detailLabel,
   } = props;
 
   const displayValue = isDirty ? searchValue : '';
@@ -90,7 +91,6 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((p
   return (
     <StyledField
       id={id}
-      label={label}
       name={name}
       inputRef={ref}
       required={required}

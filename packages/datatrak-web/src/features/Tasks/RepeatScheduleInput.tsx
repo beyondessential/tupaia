@@ -1,20 +1,13 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-import React, { useEffect } from 'react';
 import { FormControl } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { Frequency } from 'rrule';
+
 import { Autocomplete } from '../../components';
-import { getRepeatScheduleOptions } from './utils';
+import { RepeatScheduleOption, getRepeatScheduleOptions } from './utils';
 
 interface RepeatScheduleInputProps {
   value: string | null;
-  onChange: (
-    value: React.ChangeEvent<{
-      name?: string | undefined;
-      value: string | null;
-    }> | null,
-  ) => void;
+  onChange: (value: Frequency | null) => void;
   disabled?: boolean;
   dueDate?: string | null;
 }
@@ -38,15 +31,15 @@ export const RepeatScheduleInput = ({
 
   return (
     <FormControl fullWidth disabled={disabled}>
-      <Autocomplete
+      <Autocomplete<RepeatScheduleOption>
         id="repeatFrequency"
         value={selectedOption}
-        onChange={(_, newValue) => {
-          return onChange(newValue?.value ?? null);
-        }}
+        onChange={(_event: React.ChangeEvent<{}>, newValue: RepeatScheduleOption | null) =>
+          void onChange(newValue?.value ?? null)
+        }
         disabled={!dueDate || disabled}
         options={repeatScheduleOptions}
-        getOptionLabel={option => option.label}
+        getOptionLabel={(option: RepeatScheduleOption) => option.label}
         label="Repeating task"
         muiProps={{
           disableClearable: !value,

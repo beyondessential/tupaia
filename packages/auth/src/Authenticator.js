@@ -1,11 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import randomToken from 'rand-token';
 import compareVersions from 'semver-compare';
 
-import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
+import { DatabaseError, requireEnv, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
 import { verifyPassword } from './passwordEncryption';
@@ -15,6 +11,8 @@ const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
 
 export class Authenticator {
+  #apiClientSalt = requireEnv('API_CLIENT_SALT');
+
   constructor(models, AccessPolicyBuilderClass = AccessPolicyBuilder) {
     this.models = models;
     this.accessPolicyBuilder = new AccessPolicyBuilderClass(models);
@@ -68,8 +66,10 @@ export class Authenticator {
     const user = await this.getAuthenticatedUser({ emailAddress, password, deviceName });
     const meditrakDevice =
       meditrakDeviceDetails && (await this.saveMeditrakDevice(user, meditrakDeviceDetails));
-    const refreshToken = await this.upsertRefreshToken(user.id, deviceName, meditrakDevice);
-    const accessPolicy = await this.getAccessPolicyForUser(user.id, meditrakDevice);
+    const [refreshToken, accessPolicy] = await Promise.all([
+      this.upsertRefreshToken(user.id, deviceName, meditrakDevice),
+      this.getAccessPolicyForUser(user.id, meditrakDevice),
+    ]);
 
     return { refreshToken: refreshToken.token, user, accessPolicy };
   }
@@ -94,8 +94,10 @@ export class Authenticator {
 
     // There was a valid refresh token, find the user and respond
     const userId = refreshToken.user_id;
-    const user = await this.models.user.findById(userId);
-    const meditrakDevice = await refreshToken.meditrakDevice();
+    const [user, meditrakDevice] = await Promise.all([
+      this.models.user.findById(userId),
+      refreshToken.meditrakDevice(),
+    ]);
     const accessPolicy = await this.getAccessPolicyForUser(user.id, meditrakDevice);
 
     return { refreshToken: refreshToken.token, user, accessPolicy };
@@ -111,8 +113,10 @@ export class Authenticator {
     foundToken.save();
 
     const user = await this.models.user.findById(foundToken.user_id);
-    const refreshToken = await this.upsertRefreshToken(user.id, deviceName);
-    const accessPolicy = await this.getAccessPolicyForUser(user.id);
+    const [refreshToken, accessPolicy] = await Promise.all([
+      this.upsertRefreshToken(user.id, deviceName),
+      this.getAccessPolicyForUser(user.id),
+    ]);
 
     return { refreshToken: refreshToken.token, user, accessPolicy };
   }

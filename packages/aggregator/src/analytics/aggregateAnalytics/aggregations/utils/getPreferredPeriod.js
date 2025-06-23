@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { findCoarsestPeriodType } from '@tupaia/utils';
 import { periodToType } from '@tupaia/tsutils';
 

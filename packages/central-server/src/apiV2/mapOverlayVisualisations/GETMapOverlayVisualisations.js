@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 
 import { RECORDS } from '@tupaia/database';
@@ -126,7 +121,7 @@ export class GETMapOverlayVisualisations extends GETHandler {
   }
 
   async countRecords(inputCriteria) {
-    return this.database.count(RECORDS.MAP_OVERLAY, parseCriteria(inputCriteria), {
+    return this.database.countFast(RECORDS.MAP_OVERLAY, parseCriteria(inputCriteria), {
       joinWith: 'report',
       joinCondition: ['map_overlay.report_code', 'report.code'],
     });

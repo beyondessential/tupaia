@@ -1,12 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { encryptPassword } from '@tupaia/auth';
 import { findOrCreateDummyRecord, getTestModels } from '@tupaia/database';
-import { TestModelRegistry } from '../types';
+
 import { CAT_USER } from '../__integration__/fixtures';
+import { TestModelRegistry } from '../types';
 
 const models = getTestModels() as TestModelRegistry;
 

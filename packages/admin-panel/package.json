@@ -14,8 +14,8 @@
     "build": "run-s -c \"build:* {@}\" --",
     "build:src": "npm run --prefix ../../ package:build:vite",
     "preview": "vite preview",
-    "build:library": "rm -rf lib && npm run --prefix ../../ package:build:lib",
-    "build-dev": "npm run build:library",
+    "build:library": "rimraf lib && npm run --prefix ../../ package:build:lib",
+    "build-dev": "yarn run build:library",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "yarn package:start:vite --port 3000",
@@ -57,7 +57,7 @@
     "prop-types": "^15.6.0",
     "qrcode": "^1.5.3",
     "query-string": "^5.1.1",
-    "react": "^16.13.1",
+    "react": "^16.14.0",
     "react-autobind": "^1.0.6",
     "react-beautiful-dnd": "^13.1.0",
     "react-beforeunload": "^2.5.1",
@@ -65,7 +65,8 @@
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.8.3",
     "react-icons": "^2.2.7",
-    "react-password-strength-bar": "^0.3.2",
+    "react-is": "^16.13.1",
+    "react-password-strength-bar": "^0.4.1",
     "react-redux": "^5.0.6",
     "react-router": "6.3.0",
     "react-router-dom": "6.3.0",
@@ -81,6 +82,7 @@
     "vite": "^4.5.3"
   },
   "devDependencies": {
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^6.0.1"
   }
 }

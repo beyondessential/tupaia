@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { useIsFetching } from '@tanstack/react-query';
 import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
@@ -13,7 +8,7 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { ROUTES } from '../../constants';
 import { useResubmitSurveyResponse, useSubmitSurveyResponse } from '../../api/mutations';
 import { SurveyParams } from '../../types';
-import { useFromLocation } from '../../utils';
+import { useFromLocation, useIsDesktop } from '../../utils';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { getErrorsByScreen } from './utils';
@@ -35,7 +30,6 @@ const ScrollableLayout = styled.div<{
 `;
 
 const Paper = styled(MuiPaper).attrs({
-  variant: 'outlined',
   elevation: 0,
 })`
   flex: 1;
@@ -45,8 +39,13 @@ const Paper = styled(MuiPaper).attrs({
   position: relative;
   display: flex;
   flex-direction: column;
+  background-color: ${({ theme }) => theme.palette.background.default};
+  border: none;
   border-radius: 0;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
+    border: 1px solid ${({ theme }) => theme.palette.divider};
+    background-color: ${({ theme }) => theme.palette.background.paper};
     margin-left: 1rem;
     border-radius: 4px;
   }
@@ -78,17 +77,20 @@ export const SurveyLayout = () => {
   const params = useParams<SurveyParams>();
   const isFetchingEntities = useIsFetching({ queryKey: ['entityAncestors'] });
 
+  const isDesktop = useIsDesktop();
+
   const {
-    updateFormData,
     formData,
     isLast,
+    isResponseScreen,
+    isResubmit,
+    isReviewScreen,
+    isSuccessScreen,
+    numberOfScreens,
     screenNumber,
     sideMenuOpen,
-    numberOfScreens,
-    isReviewScreen,
-    isResponseScreen,
+    updateFormData,
     visibleScreens,
-    isResubmitReviewScreen,
   } = useSurveyForm();
 
   const { handleSubmit, getValues } = useFormContext();
@@ -145,8 +147,10 @@ export const SurveyLayout = () => {
   };
 
   const onSubmit = data => {
-    const submitAction = isResubmitReviewScreen ? resubmitSurveyResponse : submitSurveyResponse;
-    if (isReviewScreen || isResubmitReviewScreen) return submitAction({ ...formData, ...data });
+    if (isReviewScreen) {
+      return (isResubmit ? resubmitSurveyResponse : submitSurveyResponse)({ ...formData, ...data });
+    }
+
     return navigateNext(data);
   };
 
@@ -154,10 +158,11 @@ export const SurveyLayout = () => {
 
   const showLoader =
     isSubmittingSurveyResponse || isResubmittingSurveyResponse || !!isFetchingEntities;
+  const isDesktopReviewScreen = isDesktop && isReviewScreen;
 
   return (
     <>
-      <SurveySideMenu />
+      {!(isDesktopReviewScreen || isSuccessScreen || isResponseScreen) && <SurveySideMenu />}
       <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
         <Paper>
           <Form onSubmit={handleClickSubmit} noValidate>

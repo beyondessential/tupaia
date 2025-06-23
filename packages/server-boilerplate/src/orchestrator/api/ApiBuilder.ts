@@ -1,12 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import express, { Express, Request, Response, NextFunction, RequestHandler } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
+import publicIp from 'public-ip';
 import {
   AuthHandler,
   getBaseUrlsForHost,
@@ -32,6 +28,8 @@ import { AccessPolicyBuilder } from '@tupaia/auth';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const i18n = require('i18n');
+
+const TRUSTED_PROXIES_INTERVAL = 60000; // 1 minute
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -62,6 +60,12 @@ export class ApiBuilder {
     this.attachVerifyLogin = emptyMiddleware;
     this.verifyAuthMiddleware = emptyMiddleware; // Do nothing by default
     this.attachAccessPolicy = buildAttachAccessPolicy(new AccessPolicyBuilder(this.models));
+
+    /**
+     * Set trusted proxies
+     */
+    this.startTrustedProxiesInterval();
+
     /**
      * Access logs
      */
@@ -200,6 +204,33 @@ export class ApiBuilder {
     await initialiseApiClient(this.models, permissions);
     return this;
   }
+
+  /**
+   * Call the setTrustedProxies function periodically to update the trusted proxies
+   * because it's possible for the server's IP address to change while server is running
+   */
+  private startTrustedProxiesInterval = () => {
+    this.setTrustedProxies(); // Call it once immediately
+    setInterval(this.setTrustedProxies, TRUSTED_PROXIES_INTERVAL);
+  };
+
+  /**
+   * Dynamically set trusted proxy so that we can trust the IP address of the client
+   */
+  private setTrustedProxies = () => {
+    const trustedProxyIPs = process.env.TRUSTED_PROXY_IPS
+      ? process.env.TRUSTED_PROXY_IPS.split(',').map(ip => ip.trim())
+      : [];
+
+    publicIp
+      .v4()
+      .then(publicIp => {
+        this.app.set('trust proxy', ['loopback', ...trustedProxyIPs, publicIp]);
+      })
+      .catch(err => {
+        console.error('Error fetching public IP:', err);
+      });
+  };
 
   public use(path: string, ...middleware: RequestHandler[]) {
     this.handlers.push({

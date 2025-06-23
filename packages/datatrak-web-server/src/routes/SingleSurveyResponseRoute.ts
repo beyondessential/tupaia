@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
@@ -25,6 +20,7 @@ const DEFAULT_FIELDS = [
   'assessor_name',
   'country.name',
   'data_time',
+  'end_time',
   'entity.name',
   'entity.id',
   'id',

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import {
   DASHBOARD_RELATION_ENDPOINT,
   FIELDS as DASHBOARD_RELATION_FIELDS,
@@ -117,4 +112,5 @@ export const dashboards = {
     },
   ],
   needsBESAdminAccess: ['delete'],
+  needsVizBuilderAccess: ['create'],
 };

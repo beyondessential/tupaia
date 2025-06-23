@@ -1,16 +1,11 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { encryptPassword } from '@tupaia/auth';
-import { S3Client, S3 } from '@tupaia/server-utils';
-import { EditHandler } from '../EditHandler';
+import { S3, S3Client } from '@tupaia/server-utils';
 import {
+  assertAdminPanelAccess,
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
 } from '../../permissions';
+import { EditHandler } from '../EditHandler';
 import { assertUserAccountPermissions } from './assertUserAccountPermissions';
 
 /**
@@ -23,6 +18,7 @@ const USER_PREFERENCES_FIELDS = [
   'country_id',
   'delete_account_requested',
   'recent_entities',
+  'hide_welcome_screen',
 ];
 
 export class EditUserAccounts extends EditHandler {

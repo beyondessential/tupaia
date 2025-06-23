@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import {
@@ -49,8 +45,8 @@ export const ActionsMenu = () => {
         label: 'Subscribed',
         ActionIcon: StyledCheckCircleIcon,
         color: 'primary',
-        toolTipTitle: 'Remove yourself from email updates',
         action: toggleSubscribeModal,
+        toolTipTitle: 'Unsubscribe from email updates',
       });
     } else {
       menuOptions.push({

@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
 import { complement } from 'set-manipulator';
 
 export const updateListOfStrings = (database, currentRealmStrings, newStrings, addString) => {

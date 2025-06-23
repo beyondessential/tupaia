@@ -1,37 +1,30 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
+import {
+  Checkbox as MuiCheckbox,
+  CheckboxProps as MuiCheckboxProps,
+  FormControlLabel as MuiFormControlLabel,
+  FormGroup as MuiFormGroup,
+} from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { useQueryClient } from '@tanstack/react-query';
-import {
-  FormGroup as MuiFormGroup,
-  FormControlLabel as MuiFormControlLabel,
-  Checkbox as MuiCheckbox,
-} from '@material-ui/core';
-import { getTaskFilterSetting, setTaskFilterSetting } from '../../../utils';
 import { TaskFilterType } from '../../../types';
-import { useTasksTable } from './TasksTable';
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 0.1rem 0 0;
-  border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
-`;
+import { useResetTasksTableFiltersOnUnmount } from './useResetTasksTableFiltersOnUnmount';
+import { useTasksTable } from './useTasksTable';
 
 const FormGroup = styled(MuiFormGroup)`
+  align-items: center;
+  border-bottom: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   display: flex;
   flex-direction: row;
+  justify-content: flex-end;
+  padding-block: 0.125rem;
 `;
 
 const FormControlLabel = styled(MuiFormControlLabel)`
-  margin-left: 0;
+  margin-inline-start: 0;
   .MuiFormControlLabel-label {
-    font-size: 0.625rem;
-    color: ${({ theme }) => theme.palette.text.secondary};
+    color: ${props => props.theme.palette.text.secondary};
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
     padding-inline-end: 0.5rem;
   }
 
@@ -44,24 +37,40 @@ const FormControlLabel = styled(MuiFormControlLabel)`
   }
 `;
 
-const FilterCheckbox = ({ name, label }) => {
-  const queryClient = useQueryClient();
-  const { onChangePage } = useTasksTable();
+const FilterCheckbox = ({ name, label }: { name: TaskFilterType; label: React.ReactNode }) => {
+  const {
+    onChangePage,
+    showAllAssignees,
+    setShowAllAssignees,
+    showCancelled,
+    setShowCancelled,
+    showCompleted,
+    setShowCompleted,
+  } = useTasksTable();
 
-  const onChange = (event: React.ChangeEvent<{ name: string; checked: boolean }>) => {
+  const toggleGetter = {
+    all_assignees_tasks: showAllAssignees,
+    show_completed_tasks: showCompleted,
+    show_cancelled_tasks: showCancelled,
+  } as const;
+  const toggleSetter = {
+    all_assignees_tasks: setShowAllAssignees,
+    show_completed_tasks: setShowCompleted,
+    show_cancelled_tasks: setShowCancelled,
+  } as const;
+
+  const onChange: MuiCheckboxProps['onChange'] = event => {
     const { name: taskFilterName, checked: value } = event.target;
-    setTaskFilterSetting(taskFilterName as TaskFilterType, value);
+    toggleSetter[taskFilterName as TaskFilterType](value);
     // reset the page to 0 when the filter changes
     onChangePage(0);
-    // Clear the cache so that the task data is re-fetched
-    queryClient.invalidateQueries(['tasks']);
   };
 
   return (
     <FormControlLabel
       control={
         <MuiCheckbox
-          checked={getTaskFilterSetting(name)}
+          checked={toggleGetter[name]}
           onChange={onChange}
           name={name}
           color="primary"
@@ -73,12 +82,14 @@ const FilterCheckbox = ({ name, label }) => {
   );
 };
 
-export const FilterToolbar = () => (
-  <Container>
+export const FilterToolbar = () => {
+  useResetTasksTableFiltersOnUnmount();
+
+  return (
     <FormGroup>
       <FilterCheckbox name="all_assignees_tasks" label="Show all assignees" />
       <FilterCheckbox name="show_completed_tasks" label="Show completed tasks" />
       <FilterCheckbox name="show_cancelled_tasks" label="Show cancelled tasks" />
     </FormGroup>
-  </Container>
-);
+  );
+};

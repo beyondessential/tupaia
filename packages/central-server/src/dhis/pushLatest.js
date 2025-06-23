@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { pushChange } from './pushChange';
 import { getDhisApiInstanceForChange } from './api';
 

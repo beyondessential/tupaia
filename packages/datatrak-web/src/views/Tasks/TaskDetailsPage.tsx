@@ -1,34 +1,20 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import { generatePath, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
+import { useNavigate } from 'react-router';
 import { Modal, ModalCenteredContent, SpinningLoader } from '@tupaia/ui-components';
 import { Button } from '../../components';
 import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
 import { useTask } from '../../api';
 import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../constants';
-import { useFromLocation } from '../../utils';
+import { useFromLocation, useIsMobile } from '../../utils';
 import { SingleTaskResponse } from '../../types';
-import { TasksContentWrapper } from '../../layout';
+import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
 
 const ContentWrapper = styled(TasksContentWrapper)`
   padding-block-end: 2rem;
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex: 1;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    width: 100%;
-    margin-block-start: 1rem;
-  }
 `;
 
 const ErrorModal = ({ isOpen, onClose }) => {
@@ -55,6 +41,12 @@ const ErrorModal = ({ isOpen, onClose }) => {
   );
 };
 
+const StyledButton = styled(Button)`
+  ${props => props.theme.breakpoints.up('md')} {
+    margin-inline-end: auto;
+  }
+`;
+
 const ButtonComponent = ({
   task,
   openErrorModal,
@@ -68,6 +60,8 @@ const ButtonComponent = ({
 
   const { entity, survey, surveyResponseId, taskStatus } = task;
 
+  if (taskStatus === TaskStatus.cancelled) return null;
+
   const surveyUrl = generatePath(ROUTES.SURVEY_SCREEN, {
     countryCode: entity?.countryCode,
     surveyCode: survey?.code,
@@ -75,24 +69,23 @@ const ButtonComponent = ({
   });
   const surveyLink = `${surveyUrl}?${PRIMARY_ENTITY_CODE_PARAM}=${entity?.code}`;
 
-  if (taskStatus === TaskStatus.cancelled) return null;
   if (taskStatus === TaskStatus.completed) {
     if (!surveyResponseId)
       return (
-        <Button onClick={openErrorModal} variant="outlined">
+        <StyledButton onClick={openErrorModal} variant="outlined">
           View completed survey
-        </Button>
+        </StyledButton>
       );
     return (
-      <Button to={`?responseId=${surveyResponseId}`} variant="outlined">
+      <StyledButton to={`?responseId=${surveyResponseId}`} variant="outlined">
         View completed survey
-      </Button>
+      </StyledButton>
     );
   }
   return (
-    <Button to={surveyLink} state={{ from }}>
-      Complete task
-    </Button>
+    <StyledButton to={surveyLink} state={{ from }}>
+      Complete
+    </StyledButton>
   );
 };
 
@@ -100,14 +93,22 @@ export const TaskDetailsPage = () => {
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const { taskId } = useParams();
   const { data: task, isLoading } = useTask(taskId);
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   return (
     <>
+      {isMobile && (
+        <StickyMobileHeader onBack={() => navigate(ROUTES.TASKS)}>
+          <Typography variant="h1">Task details</Typography>
+          <Typography color="textSecondary" noWrap variant="body2">
+            {task?.survey?.name}
+          </Typography>
+        </StickyMobileHeader>
+      )}
       <TaskPageHeader title="Task details" backTo={ROUTES.TASKS}>
-        <ButtonWrapper>
-          <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
-          {task && <TaskActionsMenu task={task} />}
-        </ButtonWrapper>
+        <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
+        {task && <TaskActionsMenu task={task} />}
       </TaskPageHeader>
       <ContentWrapper>
         {isLoading && <SpinningLoader />}

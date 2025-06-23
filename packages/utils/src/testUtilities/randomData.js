@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 export function randomEmail() {
   return `${Math.random().toString(36).substring(7)}@tupaia.org`;
 }

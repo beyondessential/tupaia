@@ -1,25 +1,19 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
+import React, { ReactNode } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { LeafletMap, TileLayer, getAutoTileSet } from '@tupaia/ui-map-components';
-import { A4_PAGE_HEIGHT_PX, A4_PAGE_WIDTH_PX } from '@tupaia/ui-components';
 import { MapOverlaysLayer, Legend } from '../features/Map';
 import { useMapOverlays, useProject } from '../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../constants';
 import { useDateRanges } from '../utils';
 
 const Parent = styled.div`
-  // reverse the width and height to make the map landscape
-  height: ${A4_PAGE_WIDTH_PX - 2}px;
-  width: ${A4_PAGE_HEIGHT_PX}px;
+  font-size: 10pt;
+  height: 210mm;
+  width: 297mm;
   position: relative;
   overflow: hidden;
 `;
@@ -35,8 +29,6 @@ const MapContainer = styled.div`
 
   .leaflet-container {
     min-height: 15rem;
-    // This is to compensate for the pdf resolution scaling the map down to look smaller than what the screen was displaying. We cannot always do this via map zoom, because the map zoom is limited to the tile set zoom levels.
-    zoom: 1.5;
   }
 `;
 
@@ -57,59 +49,54 @@ const StyledMap = styled(LeafletMap)`
 `;
 
 const LegendWrapper = styled.div`
+  inset-block-end: 20pt;
+  inset-inline-start: 28pt;
   position: absolute;
-  bottom: 2.8rem;
-  left: 2.8rem;
+
+  &,
+  * {
+    font-size: inherit;
+  }
 `;
 
 const MapOverlayInfoContainer = styled.div`
-  position: absolute;
-  top: 1.3rem;
-  left: 2.1rem;
-  background-color: white;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
-  max-width: 27rem;
-  min-width: 20rem;
-  padding-inline: 1.3rem;
-  padding-block: 1rem;
-  display: flex;
   align-items: center;
+  background-color: white;
+  border: 1pt solid ${props => props.theme.palette.divider};
+  column-gap: 0.8em;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  inset-block-start: 20pt;
+  inset-inline-start: 28pt;
+  max-inline-size: 27em;
+  min-inline-size: 20em;
+  padding: 1em;
+  position: absolute;
 `;
 
-const MapOverlayInfoText = styled(Typography)`
-  font-size: 0.875rem;
-  font-weight: 500;
-`;
-
-const MapOverlayName = styled(MapOverlayInfoText).attrs({
+const MapOverlayName = styled(Typography).attrs({
   variant: 'h2',
 })`
   color: black;
-  font-size: 1rem;
+  font-size: inherit;
+  font-weight: 500;
+  text-wrap: balance;
 `;
 
-const LatestDataText = styled(MapOverlayInfoText)`
-  color: ${({ theme }) => theme.palette.divider};
-  margin-block-start: 0.4rem;
+const LatestDataText = styled(Typography)`
+  color: ${props => props.theme.palette.text.secondary};
+  font-size: inherit;
+  font-weight: 500;
+  margin-block-start: 0.5em;
 `;
 
-const LogoWrapper = styled.div`
-  width: 5rem;
-  height: 5rem;
-  border-right: 1px solid ${({ theme }) => theme.palette.divider};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-inline-end: 0.8rem;
-`;
 const ProjectLogo = styled.img`
-  max-width: 100%;
-  height: auto;
-`;
-
-const TextWrapper = styled.div`
-  margin-inline-start: 0.8rem;
-  width: calc(100% - 5rem);
+  border-inline-end: 1pt solid ${props => props.theme.palette.divider};
+  height: 5em;
+  object-fit: contain;
+  object-position: center;
+  padding-inline-end: 0.8em;
+  width: 5em;
 `;
 
 const useExportParams = () => {
@@ -119,7 +106,7 @@ const useExportParams = () => {
   const tileset = urlSearchParams.get('tileset') ?? initialTileSet.url;
   const urlCenter = urlSearchParams.get('center');
   const urlZoom = urlSearchParams.get('zoom');
-  const zoom = urlZoom ? parseInt(urlZoom) : 5;
+  const zoom = urlZoom ? Number.parseInt(urlZoom) : 5;
   const center = urlCenter ? JSON.parse(urlCenter) : undefined;
   const urlHiddenValues = urlSearchParams.get('hiddenValues');
   const hiddenValues = urlHiddenValues ? JSON.parse(urlHiddenValues) : undefined;
@@ -147,13 +134,17 @@ export const MapOverlayPDFExport = () => {
     selectedOverlay,
   );
 
-  const getDateRangeString = () => {
+  const getDateRangeString = (): ReactNode => {
     if (startDate && endDate) {
       const startDateString = moment(startDate).toDate().toLocaleDateString(locale);
       const endDateString = moment(endDate).toDate().toLocaleDateString(locale);
-      return `${startDateString} - ${endDateString}`;
+      return (
+        <>
+          {startDateString}&nbsp;&ndash; {endDateString}
+        </>
+      );
     }
-    return '';
+    return null;
   };
 
   const dateRangeString = getDateRangeString();
@@ -167,13 +158,11 @@ export const MapOverlayPDFExport = () => {
         </StyledMap>
       </MapContainer>
       <MapOverlayInfoContainer>
-        <LogoWrapper>
-          <ProjectLogo src={project?.logoUrl || '/tupaia-logo-dark.svg'} alt={project?.name} />
-        </LogoWrapper>
-        <TextWrapper>
+        <ProjectLogo src={project?.logoUrl || '/tupaia-logo-dark.svg'} alt={project?.name} />
+        <div>
           <MapOverlayName>{selectedOverlay?.name}</MapOverlayName>
           {dateRangeString && <LatestDataText>Date of data: {dateRangeString}</LatestDataText>}
-        </TextWrapper>
+        </div>
       </MapOverlayInfoContainer>
       <LegendWrapper>
         <Legend hiddenValues={hiddenValues} setValueHidden={() => {}} isExport />

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -32,7 +27,7 @@ const ButtonColumn = styled(FullWidthColumn)`
   justify-content: center;
 `;
 
-const StyledForm = styled(Form)`
+const StyledForm = styled(Form<RegisterFormFields>)`
   margin-top: 4.3rem;
   width: 42rem;
   max-width: 100%;

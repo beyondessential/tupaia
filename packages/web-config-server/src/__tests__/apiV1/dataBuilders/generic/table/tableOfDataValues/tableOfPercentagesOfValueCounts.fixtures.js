@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 export const DATA_VALUES = [
   // Nukunuku
   { dataElement: 'COV10', value: 1, organisationUnit: 'TO_Nukuhc' },

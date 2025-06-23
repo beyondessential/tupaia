@@ -1,10 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { MeasureType } from '@tupaia/types';
 import { LegendProps as BaseLegendProps, Series, SpectrumSeries } from '../../types';
 import { MarkerLegend } from './MarkerLegend';
@@ -25,18 +20,24 @@ const LegendFrame = styled.div<{
     theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(43, 45, 56, 0.85)'};
   border-radius: 3px;
   opacity: ${props => (props.isDisplayed ? '100%' : '20%')};
-  margin: 0.6rem auto;
+  margin-block: 0.6rem;
+  margin-inline: auto;
 
   ${({ $isExport, theme }) =>
-    !$isExport &&
-    ` 
-    ${theme.breakpoints.down('sm')} {
-      margin: 0.6rem 0.6rem 0.6rem 0;
-    }`}
+    $isExport
+      ? css`
+          margin: 0;
+        `
+      : css`
+          ${theme.breakpoints.down('sm')} {
+            margin-inline: 0 0.6rem;
+          }
+        `}
 `;
 
 const LegendName = styled.div`
-  margin: auto 0.6rem;
+  margin-block: auto;
+  margin-inline: 0.6rem;
 `;
 
 // This is a workaround for type errors we get when trying to use Array.includes with a subset of a union type. This solution comes from https://github.com/microsoft/TypeScript/issues/51881
@@ -74,37 +75,39 @@ export const Legend = React.memo(
       return null;
     }
 
-    const measureInfo = currentMapOverlayCodes.reduce((results, mapOverlayCode) => {
-      // measure info for mapOverlayCode may not exist when location changes.
-      const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
-      const serieses = baseSerieses.filter((series: Series) => {
-        const { type, hideFromLegend, values = [] } = series;
+    const measureInfo = currentMapOverlayCodes.reduce(
+      (results, mapOverlayCode) => {
+        // measure info for mapOverlayCode may not exist when location changes.
+        const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
+        const serieses = baseSerieses.filter((series: Series) => {
+          const { type, hideFromLegend, values = [] } = series;
 
-        // if type is radius or popup-only, don't create a legend
-        if (checkMeasureType(type, [MeasureType.RADIUS, 'popup-only'])) return false;
+          // if type is radius or popup-only, don't create a legend
+          if (checkMeasureType(type, [MeasureType.RADIUS, 'popup-only'])) return false;
 
-        // if hideFromLegend is true, don't create a legend
-        if (hideFromLegend) return false;
+          // if hideFromLegend is true, don't create a legend
+          if (hideFromLegend) return false;
 
-        // if type is spectrum or shaded-spectrum, only create a legend if min and max are set OR noDataColour is set. If noDataColour is not set, that means hideNullFromLegend has been set as true in the map overlay config. Spectrum legends 'values' property will always be []
-        if (checkMeasureType(type, [MeasureType.SPECTRUM, MeasureType.SHADED_SPECTRUM])) {
-          const { min, max, noDataColour } = series as SpectrumSeries;
-          return noDataColour
-            ? true
-            : !(min === null || min === undefined || max === null || max === undefined);
-        }
-        return values.filter(value => !value?.hideFromLegend).length > 0;
-      });
-      return { ...results, [mapOverlayCode]: { serieses } };
-    }, {}) as {
-      [mapOverlayCode: string]: {
-        serieses: Series[];
-      };
-    };
+          // if type is spectrum or shaded-spectrum, only create a legend if min and max are set OR noDataColour is set. If noDataColour is not set, that means hideNullFromLegend has been set as true in the map overlay config. Spectrum legends 'values' property will always be []
+          if (checkMeasureType(type, [MeasureType.SPECTRUM, MeasureType.SHADED_SPECTRUM])) {
+            const { min, max, noDataColour } = series as SpectrumSeries;
+            return noDataColour
+              ? true
+              : !(min === null || min === undefined || max === null || max === undefined);
+          }
+          return values.filter(value => !value?.hideFromLegend).length > 0;
+        });
+
+        results[mapOverlayCode] = { serieses };
+        return results;
+      },
+      {} as {
+        [mapOverlayCode: string]: { serieses: Series[] };
+      },
+    );
 
     const legendTypes = currentMapOverlayCodes
-      .map(mapOverlayCode => measureInfo[mapOverlayCode].serieses)
-      .flat()
+      .flatMap(mapOverlayCode => measureInfo[mapOverlayCode].serieses)
       .map(({ type }) => type);
     const legendsHaveSameType = legendTypes.length > 1 && new Set(legendTypes).size === 1;
 

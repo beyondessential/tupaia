@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 export const HIERARCHY = 'test_hierarchy';
 export const ENTITIES = [
   { code: 'TO', name: 'Tonga', type: 'country' },

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
@@ -62,7 +57,7 @@ describe('Permissions checker for GETSurveyScreenComponents', async () => {
     ]);
 
     surveyIds = surveyModels.map(sm => sm.survey.id);
-    const screenComponents = surveyModels.map(sm => sm.surveyScreenComponents).flat(1);
+    const screenComponents = surveyModels.flatMap(sm => sm.surveyScreenComponents);
     screenComponentIds = screenComponents.map(sc => sc.id);
     filterString = `filter={"id":{"comparator":"in","comparisonValue":["${screenComponentIds.join(
       '","',

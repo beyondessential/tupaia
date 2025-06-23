@@ -1,11 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import styled from 'styled-components';
+import { Form } from '@tupaia/ui-components';
 
-export const TaskForm = styled.form`
+export const TaskForm = styled(Form)`
   .MuiFormLabel-root {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
     margin-block-end: 0.2rem;

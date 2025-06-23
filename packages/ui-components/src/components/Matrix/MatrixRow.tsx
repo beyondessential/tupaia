@@ -1,12 +1,8 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useContext } from 'react';
 import { ButtonProps, TableRow as MuiTableRow } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
+import { Link as RouterLink } from 'react-router-dom-v6';
 import { MatrixRowType } from '../../types';
 import { Button } from '../Button';
 import { MatrixCell } from './MatrixCell';
@@ -170,6 +166,7 @@ interface MatrixRowProps {
 
 type MatrixRowHeaderProps = {
   depth: number;
+  entityLink?: string;
   isExpanded: boolean;
   rowTitle: string;
   hasChildren: boolean;
@@ -215,12 +212,22 @@ const ClickableRowHeaderCell = ({
   );
 };
 
+const RowLink = styled(RouterLink)`
+  color: ${({ theme }) => theme.palette.text.primary};
+  text-decoration: none;
+  &:hover {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+`;
+
 /**
  * This component renders the first cell of a row. It renders a button to expand/collapse the row if
  * it has children, otherwise it renders a regular cell.
  */
 const RowHeaderCell = ({
   rowTitle,
+  entityLink,
   depth,
   isExpanded,
   hasChildren,
@@ -236,6 +243,17 @@ const RowHeaderCell = ({
       dispatch({ type: ACTION_TYPES.EXPAND_ROW, payload: rowTitle });
     }
   };
+
+  if (entityLink) {
+    return (
+      <HeaderCell
+        $characterLength={typeof children === 'string' ? rowTitle?.length : 0}
+        $depth={depth}
+      >
+        <RowLink to={entityLink}>{rowTitle}</RowLink>
+      </HeaderCell>
+    );
+  }
 
   if (hasChildren)
     return (
@@ -270,7 +288,7 @@ const RowHeaderCell = ({
  * This is a recursive component that renders a row in the matrix. It renders a MatrixRowGroup component if the row has children, otherwise it renders a regular row.
  */
 export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
-  const { children, title, onClick } = row;
+  const { children, title, entityLink, onClick } = row;
   const { columns, expandedRows, disableExpand = false, searchFilters } = useContext(MatrixContext);
   const flattenedColumns = getFlattenedColumns(columns);
 
@@ -307,6 +325,7 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
           isExpanded={isExpanded}
           depth={depth}
           rowTitle={title}
+          entityLink={entityLink}
           hasChildren={isCategory}
           disableExpandButton={disableExpand}
           onClick={onClick}

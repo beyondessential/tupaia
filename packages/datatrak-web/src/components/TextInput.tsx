@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import {
   FormControlLabel,
@@ -27,6 +22,7 @@ const LabelWrapper = styled(FormControlLabel)`
 
 interface TextInputProps
   extends Pick<FormControlLabelProps, 'label' | 'name' | 'onChange' | 'value'> {
+  disabled?: boolean;
   id?: string;
   required?: boolean;
   invalid?: boolean;
@@ -37,7 +33,7 @@ interface TextInputProps
   };
 }
 export const TextInput = React.forwardRef<HTMLDivElement, TextInputProps>((props, ref) => {
-  const { value, label, name, onChange, id, textInputProps, required, invalid } = props;
+  const { value, label, name, onChange, id, textInputProps, required, invalid, disabled } = props;
   return (
     <LabelWrapper
       label={
@@ -47,11 +43,18 @@ export const TextInput = React.forwardRef<HTMLDivElement, TextInputProps>((props
       }
       name={name}
       inputRef={ref}
-      labelPlacement={'top'}
+      labelPlacement="top"
       onChange={onChange}
       value={value}
       control={
-        <TextField id={id} required={required} error={invalid} {...textInputProps} fullWidth />
+        <TextField
+          disabled={disabled}
+          error={invalid}
+          fullWidth
+          id={id}
+          required={required}
+          {...textInputProps}
+        />
       }
     />
   );

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { EARLIEST_DATA_DATE_STRING, yup } from '@tupaia/utils';
 
 export const CURRENT_DATE_STUB = '2020-12-15T00:00:00Z';

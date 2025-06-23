@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
 import { useUrlParams } from './useUrlParams';
 import { useProjectEntitiesData } from '../api';
 import { makeEntityLink } from './makeEntityLink';

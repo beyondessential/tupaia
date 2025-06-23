@@ -1,48 +1,39 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography, useMediaQuery, useTheme } from '@material-ui/core';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
+
+import { VisuallyHidden } from '@tupaia/ui-components';
+
+import { ButtonLink as BaseButtonLink, ButtonAnchor } from '../../components';
 import { ROUTES } from '../../constants';
-import { Button, ButtonLink as BaseButtonLink } from '../../components';
+import { useIsMobile } from '../../utils';
 
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
 
 const SectionContainer = styled.section`
-  grid-area: surveySelect;
+  align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
-  padding: 1rem;
+  column-gap: 1rem;
   display: flex;
-  position: relative;
-  align-items: flex-start;
+  font-size: 1rem;
+  grid-area: --surveySelect;
   justify-content: space-between;
   overflow: visible !important;
-  height: max-content;
+  padding: 1rem;
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 3rem 1rem 2.2rem;
-    margin-block-start: 2.1rem !important;
-  }
-`;
+  // HACK: Parent’s grid-template-rows currently defined in a way that causes horizontal track to
+  // sometimes shrink smaller than this element. The 4lh is just empirically hand-tuned. 2em is the
+  // block padding.
+  min-block-size: calc(4lh + 2rem);
 
-const SectionContent = styled.div`
-  display: flex;
-  flex-direction: column-reverse;
-  width: 70%;
-  padding-inline-end: 2rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    flex-direction: row;
-    width: 100%;
-    align-items: center;
+    margin-block-start: 1.9375rem;
   }
 `;
 
 const ButtonLink = styled(BaseButtonLink)`
-  font-size: 1rem;
+  font-size: inherit;
   padding-inline: 0.5rem;
   & ~ .MuiButtonBase-root {
     margin-inline-start: 0; // override default margin from ui-components
@@ -55,93 +46,92 @@ const ButtonLink = styled(BaseButtonLink)`
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  max-inline-size: 20rem;
+  min-inline-size: 8rem;
+  row-gap: 0.5rem;
   text-align: center;
-  width: 100%;
-  max-width: 20rem;
+
+  inline-size: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 11rem;
+    inline-size: 11rem;
   }
+
   .MuiButton-root {
     line-height: 1.1;
     padding: 0.75rem;
-    &:last-child {
-      margin-block-start: 0.625rem;
-    }
-  }
-`;
-
-const TextWrapper = styled.div`
-  margin-block-end: 1rem;
-  display: flex;
-  flex-direction: column;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-block-end: 0;
-    max-width: 75%;
-    padding-inline: 2rem 4rem;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-inline-end: 1rem;
-    max-width: 80%;
   }
 `;
 
 const Text = styled(Typography)`
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
+  font-size: inherit;
+  line-height: 1.5;
+  max-inline-size: 38rem;
 `;
 
-const DesktopText = styled.span`
-  ${({ theme }) => theme.breakpoints.down('xs')} {
+/**
+ * Semantically meaningless, but using this to let `SurveysImage` overflow without the containing
+ * flexbox without increasing its height.
+ */
+const ImageWrapper = styled.div.attrs({ 'aria-hidden': true })`
+  // Center children, even if overflowing
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+
+  height: 0; // Let siblings alone determine height of parent...
+  width: fit-content; // ...but accommodate entire image width.
+
+  flex: 1;
+
+  @media (max-width: 20rem) {
     display: none;
   }
 `;
 
-const SurveysImage = styled.img`
-  position: absolute;
+const SurveysImage = styled.img.attrs({
+  'aria-hidden': true,
+  src: '/surveys.svg',
+  width: 108,
+  height: 207,
+})`
+  height: 12rem;
   width: auto;
-  display: flex;
-  align-items: center;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 1rem;
-  height: 100%;
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    right: -1rem;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    height: 160%;
-  }
 `;
 
 export const SurveySelectSection = () => {
+  const isMobile = useIsMobile();
+  const verbose = useMediaQuery(useTheme().breakpoints.up('lg'));
+  const SupplementalText = verbose ? Fragment : VisuallyHidden;
+
   return (
     <SectionContainer>
-      <SectionContent>
+      {!isMobile && (
         <ButtonWrapper>
           <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
-          <Button variant="outlined" onClick={() => window.open(TUPAIA_REDIRECT_URL)}>
+          <ButtonAnchor
+            fullWidth
+            variant="outlined"
+            href={TUPAIA_REDIRECT_URL}
+            rel="noreferrer"
+            target="_blank"
+          >
             Explore data
-          </Button>
+          </ButtonAnchor>
         </ButtonWrapper>
-        <TextWrapper>
-          <Text>
-            Tupaia DataTrak makes data collection easy!
-            <DesktopText>
-              {' '}
-              You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
-              stories and information with the Tupaia community. To collect data offline, please
-              download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
-            </DesktopText>
-          </Text>
-        </TextWrapper>
-      </SectionContent>
-      <SurveysImage src="/surveys.svg" alt="Illustration of woman holding a tablet" />
+      )}
+      <Text>
+        Tupaia DataTrak makes data collection easy!
+        <SupplementalText>
+          {' '}
+          You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
+          stories and information with the Tupaia community. To collect data offline, please
+          download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
+        </SupplementalText>
+      </Text>
+      <ImageWrapper>
+        <SurveysImage />
+      </ImageWrapper>
     </SectionContainer>
   );
 };

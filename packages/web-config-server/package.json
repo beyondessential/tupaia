@@ -11,7 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:js",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:js",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "node dist",
@@ -66,11 +66,12 @@
     "react-autobind": "^1.0.6",
     "request": "^2.81.0",
     "urlencode": "^1.1.0",
-    "winston": "^3.3.3",
+    "winston": "^3.17.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^4.0.0",
-    "csvtojson": "^1.1.5"
+    "csvtojson": "^1.1.5",
+    "rimraf": "^6.0.1"
   }
 }
