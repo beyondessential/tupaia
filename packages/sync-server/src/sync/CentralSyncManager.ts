@@ -1,7 +1,7 @@
 import log from 'winston';
 
 import {
-  getModelsForDirection,
+  getModelsForPull,
   getSyncTicksOfPendingEdits,
   waitForPendingEditsUsingSyncTick,
   createSnapshotTable,
@@ -120,7 +120,9 @@ export class CentralSyncManager {
       !session.errors &&
       session.updatedAt - session.createdAt > syncSessionTimeoutMs
     ) {
-      await session.markErrored(`Sync session ${sessionId} timed out after ${syncSessionTimeoutMs} ms`);
+      await session.markErrored(
+        `Sync session ${sessionId} timed out after ${syncSessionTimeoutMs} ms`,
+      );
     }
 
     if (session.errors) {
@@ -380,7 +382,7 @@ export class CentralSyncManager {
           : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
 
         void (await updateLookupTable(
-          getModelsForDirection(this.models, SyncDirections.PULL_FROM_CENTRAL),
+          getModelsForPull(this.models),
           previouslyUpToTick,
           this.config,
           syncLookupTick,
