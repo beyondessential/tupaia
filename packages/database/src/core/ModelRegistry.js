@@ -81,7 +81,7 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: ModelRegistry) => Promise<unknown>} wrappedFunction
+   * @param {(models: TupaiaDatabase) => Promise<void | unknown>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
