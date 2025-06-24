@@ -24,7 +24,7 @@ configureDotEnv([
    * Start the server
    */
   const port = process.env.PORT || 8100;
-  http.createServer({ maxHeaderSize: 32_768 }, app).listen(port);
+  http.createServer({ maxHeaderSize: 65_536 }, app).listen(port);
   winston.info(`Running on port ${port}`);
 
   /**
