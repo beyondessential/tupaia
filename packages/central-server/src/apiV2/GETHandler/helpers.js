@@ -12,7 +12,7 @@ export const parsePageSizeQueryParam = pageSize => {
   if (Number.isInteger(parsed) && parsed > 0) return parsed;
 
   winston.warn(
-    `Received invalid pageSize query parameter: ${JSON.stringify(pageSize)}. If provided, should be a positive integer, 'ALL' or null. Using default limit of ${DEFAULT_PAGE_SIZE}.`,
+    `Received invalid pageSize query parameter: ${JSON.stringify(pageSize)}. If provided, should be 'ALL', null or parsable as a positive integer. Using default of ${DEFAULT_PAGE_SIZE}.`,
   );
   return DEFAULT_PAGE_SIZE;
 };
