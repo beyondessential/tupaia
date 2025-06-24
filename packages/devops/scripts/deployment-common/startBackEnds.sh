@@ -5,14 +5,14 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 tupaia_dir=$(realpath -- "$script_dir"/../../../..)
 
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
-. $HOME/.nvm/nvm.sh
+. "$HOME"/.nvm/nvm.sh
 
 get_backend_packages() {
     readarray -t deployable_packages < <("$tupaia_dir"/scripts/bash/getDeployablePackages.sh)
     local filtered=()
     for package in "${deployable_packages[@]}"; do
         if [[ $package = *-server ]]; then
-            filtered+=($package)
+            filtered+=("$package")
         fi
     done
     printf '%s\n' "${filtered[@]}"
@@ -42,7 +42,7 @@ for package in "${backend_packages[@]}"; do
     echo "Starting $package..."
     set -x
     pm2 start \
-        --name $package \
+        --name "$package" \
         --wait-ready \
         --listen-timeout 15000 \
         "${instances_flag[@]}" \
