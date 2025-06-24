@@ -83,7 +83,7 @@ export class GETHandler extends CRUDHandler {
       dbQueryOptions.offset = limit * page;
     }
 
-    // add any user requested sorting to the strt of the sort clause
+    // add any user requested sorting to the start of the sort clause
     if (sortString) {
       const sortKeys = JSON.parse(sortString);
       const processedSortKeys = sortKeys.map(sortKey =>
