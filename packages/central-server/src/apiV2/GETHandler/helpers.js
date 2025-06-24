@@ -24,25 +24,7 @@ export const parsePageSizeQueryParam = pageSize => {
  * @param {object} originalQueryParameters
  */
 export const generateLinkHeader = (resource, pageString, lastPage, originalQueryParameters) => {
-  const debugLog = ['dashboard', 'dashboard_item', 'dashboard_relation'].includes(resource)
-    ? winston.debug
-    : winston.silly;
-
-  debugLog(
-    `[generateLinkHeader] ${JSON.stringify(
-      {
-        resource,
-        pageString,
-        lastPage,
-        originalQueryParameters,
-      },
-      null,
-      2,
-    )}`,
-  );
-
   const currentPage = Number.parseInt(pageString, 10);
-  debugLog(`[generateLinkHeader] currentPage: ${currentPage}`);
 
   const getUrlForPage = page => getApiUrl(resource, { ...originalQueryParameters, page });
 
@@ -79,12 +61,7 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
     };
   }
 
-  debugLog(`[generateLinkHeader] formatting linkHeader: ${JSON.stringify(linkHeader, null, 2)}`);
-
-  const rv = formatLinkHeader(linkHeader);
-  debugLog(`[generateLinkHeader] formatted: ${rv}`);
-
-  return rv;
+  return formatLinkHeader(linkHeader);
 };
 
 export const fullyQualifyColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
