@@ -71,7 +71,7 @@ export const buildBasicBearerAuthMiddleware =
         accessPolicyObject = accessPolicy;
       } else {
         throw new UnauthenticatedError(
-          'Authorization header must use basic or bearer authentication, but got neither.',
+          'Authorization header must use basic or bearer authentication, but got neither',
         );
       }
 
