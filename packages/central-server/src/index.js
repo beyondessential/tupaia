@@ -91,7 +91,7 @@ configureEnv();
   const port = process.env.PORT || 8090;
   http.createServer(app).listen(port);
   winston.info(`Running on port ${port}`);
-  winston.debug('Logging at DEBUG level');
+  winston.info(`Logging at ${winston.level} level`);
   const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
   winston.info(`Connected to ${aggregationDescription} aggregation`);
 

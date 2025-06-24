@@ -20,7 +20,7 @@ async function start() {
     const port = process.env.PORT || 8000;
     app.server.listen(port);
     winston.info(`Running on port ${port}`);
-    winston.debug('Logging at DEBUG level');
+    winston.info(`Logging at ${winston.level} level`);
     const aggregationDescription = getEnvVarOrDefault('AGGREGATION_URL_PREFIX', 'production');
     winston.info(`Connected to ${aggregationDescription} aggregation`);
 
