@@ -38,7 +38,7 @@ export class GETHandler extends CRUDHandler {
   }
 
   /**
-   * @returns {{limit: number|'ALL'|null|undefined, page: number|undefined}}
+   * @returns {{limit: number|null, page: number|undefined}}
    */
   getPaginationParameters() {
     const { pageSize = DEFAULT_PAGE_SIZE, page } = this.req.query;

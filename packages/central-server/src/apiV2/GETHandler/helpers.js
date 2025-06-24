@@ -5,6 +5,10 @@ import winston from '../../log';
 import { isNullish } from '@tupaia/tsutils';
 import { DEFAULT_PAGE_SIZE } from './GETHandler';
 
+/**
+ * @param {number|'ALL'|null|undefined} pageSize
+ * @returns {number|null} If non-null, guaranteed to be a positive integer.
+ */
 export const parsePageSizeQueryParam = pageSize => {
   if (pageSize === 'ALL' || isNullish(pageSize)) return null;
 
