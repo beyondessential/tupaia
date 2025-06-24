@@ -36,8 +36,8 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
     },
   };
 
-  const lastPageIsKnown = Number.isInteger(lastPage) && lastPage > 0 && Number.isFinite(lastPage);
-  if (lastPageIsKnown) {
+  const isLastPageKnown = Number.isInteger(lastPage) && lastPage > 0 && Number.isFinite(lastPage);
+  if (isLastPageKnown) {
     linkHeader.last = {
       url: getUrlForPage(lastPage),
       rel: 'last',
@@ -54,7 +54,7 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
 
   // If not the last page, generate a 'next' link to the next page
   // If last page is unknown, include it anyway
-  if (currentPage < lastPage || !lastPageIsKnown) {
+  if (currentPage < lastPage || !isLastPageKnown) {
     linkHeader.next = {
       url: getUrlForPage(currentPage + 1),
       rel: 'next',
