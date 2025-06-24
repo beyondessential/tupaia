@@ -52,7 +52,7 @@ export const configureWinston = () => {
           winston.format.colorize(),
           winston.format.simple(),
         ),
-        level: getEnvVarOrDefault('LOG_LEVEL', 'debug'),
+        level: getEnvVarOrDefault('LOG_LEVEL', 'info'),
       }),
     ],
   });
