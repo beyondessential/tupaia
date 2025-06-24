@@ -39,11 +39,6 @@ for package in "${backend_packages[@]}"; do
         instances_flag=(--instances -1)
     fi
 
-    node_args_flag=()
-    if [[ $package = tupaia-web-server ]]; then
-        node_args_flag=(--node-args='--max-http-header-size=32768')
-    fi
-
     echo "Starting $package..."
     set -x
     pm2 start \
