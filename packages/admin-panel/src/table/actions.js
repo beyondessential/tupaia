@@ -107,7 +107,6 @@ const refreshDataWithDebounce = debounce(
 
       const linkHeader = parseLinkHeader(response.headers.get('Link'));
       const lastPageNumber = parseIntOrInfinity(linkHeader?.last?.page);
-      console.log('linkHeader', linkHeader);
 
       dispatch({
         type: DATA_FETCH_SUCCESS,
