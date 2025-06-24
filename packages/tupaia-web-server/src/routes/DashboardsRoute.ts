@@ -85,9 +85,10 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ? accessPolicy.getPermissionGroups([rootEntity.country_code])
       : accessPolicy.getPermissionGroups(); // country_code is null for project level
 
-    const entityCodes = entities.map(e => e.code);
     const dashboards = await models.dashboard.find(
-      { root_entity_code: entityCodes },
+      {
+        root_entity_code: entities.map(e => e.code),
+      },
       { sort: ['sort_order ASC', 'name ASC'] },
     );
 
