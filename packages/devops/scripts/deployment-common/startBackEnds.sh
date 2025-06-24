@@ -34,9 +34,14 @@ for package in "${backend_packages[@]}"; do
     fi
 
     instances_flag=()
-    if [[ $package = web-config-server ]] || [[ $package = report-server ]]; then
+    if [[ $package = web-config-server || $package = report-server ]]; then
         # as many replicas as cpu cores - 1
         instances_flag=(--instances -1)
+    fi
+
+    node_args_flag=()
+    if [[ $package = central-server || $package = tupaia-web-server ]]; then
+        node_args_flag=(--node-args='--max-http-header-size=32768')
     fi
 
     echo "Starting $package..."
@@ -46,6 +51,7 @@ for package in "${backend_packages[@]}"; do
         --wait-ready \
         --listen-timeout 15000 \
         "${instances_flag[@]}" \
+        "${node_args_flag[@]}" \
         --time \
         "$tupaia_dir/packages/$package/dist"
     set +x
