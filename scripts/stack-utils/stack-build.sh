@@ -47,11 +47,6 @@ print_help() {
 	echo -e "  • ${DIM}$script_dir/${RESET}buildPackagesByGlob.sh"
 }
 
-if (($# == 0)); then
-	print_help --concise
-	exit 2
-fi
-
 while :; do
 	case $1 in
 	--)
@@ -80,7 +75,10 @@ while :; do
 	esac
 done
 
-# TODO: Assert has arguments
+if (($# == 0)); then
+	print_help --concise
+	exit 2
+fi
 
 is_valid() {
 	for available in "${available_stacks[@]}"; do
