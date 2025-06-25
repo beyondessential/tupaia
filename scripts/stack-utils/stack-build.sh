@@ -13,39 +13,53 @@ readarray -t available_stacks < <(
 	jq --raw-output 'keys[]' "$root_dir"/packages/devops/configs/server-stacks.json
 )
 
+print_usage() {
+	echo -e "\n${BOLD}USAGE${RESET}"
+	echo -e "  ${BOLD}yarn run ${GREEN}stack ${MAGENTA}build${RESET} [${BOLD}-h${RESET}|${BOLD}--help${RESET}] [${BOLD}-a${RESET}|${BOLD}--all${RESET}] [${BOLD}-n${RESET}|${BOLD}--dry-run${RESET}] [${BOLD}--${RESET}] [${UNDERLINE}${BLUE}stack${RESET} ${UNDERLINE}${BLUE}...${RESET}]"
+}
+
 print_available_stacks() {
 	echo -e "\n${BOLD}AVAILABLE STACKS${RESET}"
 	printf "  • %s\n" "${available_stacks[@]}"
 }
 
-while [[ $1 != '' ]]; do
+print_examples() {
+	echo -e "\n${BOLD}EXAMPLES${RESET}"
+	echo -e "  ${DIM}>${RESET} yarn run ${GREEN}stack ${MAGENTA}build ${BLUE}admin-panel tupaia-web${RESET}"
+	echo '    Builds all packages required to run the entire Admin Panel and Tupaia Web server stacks.'
+	echo
+	echo -e "  ${DIM}>${RESET} yarn run ${GREEN}stack ${MAGENTA}build ${BLUE}--dry-run datatrak${RESET}"
+	echo '    Print the command that would be run to build the packages in the Tupaia DataTrak server stack.'
+}
+
+print_help() {
+	echo -e "${BOLD}stack build${RESET} builds the subtree(s) of dependencies required to run the given server stack(s)."
+	print_usage
+	print_available_stacks
+	print_examples
+
+	if [[ $1 = --concise ]]; then
+		return
+	fi
+
+	echo -e "\n${BOLD}SEE ALSO${RESET}"
+	echo -e "  • ${DIM}$root_dir/scripts/stack-utils/${RESET}stack-list.js"
+	echo -e "  • ${DIM}$script_dir/${RESET}buildPackagesByGlob.sh"
+}
+
+if (($# == 0)); then
+	print_help --concise
+	exit 2
+fi
+
+while :; do
 	case $1 in
 	--)
 		shift
 		break
 		;;
 	-h | --help)
-		echo -e "${BOLD}build:stack${RESET} builds the subtree(s) of dependencies required to run the given server stack(s)."
-
-		echo -e "\n${BOLD}USAGE${RESET}"
-		echo -e "  ${BOLD}yarn run ${GREEN}build:stack${RESET} [${BOLD}-h${RESET}] [${UNDERLINE}${BLUE}stack${RESET} ${BLUE}...${RESET}]"
-
-		print_available_stacks
-
-		echo -e "\n${BOLD}EXAMPLES${RESET}"
-		echo -e "  ${DIM}>${RESET} yarn run ${GREEN}build:stack ${CYAN}-h${RESET}"
-		echo '    Prints this help message.'
-		echo
-		echo -e "  ${DIM}>${RESET} yarn run ${GREEN}build:stack ${BLUE}datatrak${RESET}"
-		echo '    Builds all packages required for the entire Tupaia DataTrak server stack.'
-		echo
-		echo -e "  ${DIM}>${RESET} yarn run ${GREEN}build:stack ${BLUE}admin-panel tupaia-web${RESET}"
-		echo '    Builds all packages required to run the entire Admin Panel and Tupaia Web server stacks.'
-
-		echo -e "\n${BOLD}SEE ALSO${RESET}"
-		echo -e "  • ${DIM}$root_dir/scripts/stack-utils/${RESET}stack-list.js"
-		echo -e "  • ${DIM}$script_dir/${RESET}buildPackagesByGlob.sh"
-
+		print_help
 		exit 0
 		;;
 	-n | --dry-run)
@@ -57,8 +71,7 @@ while [[ $1 != '' ]]; do
 		exit 1
 		;;
 	*)
-		positional_args+=("$1")
-		shift
+		break
 		;;
 	esac
 done
@@ -76,7 +89,7 @@ is_valid() {
 
 valid_stacks=()
 invalid_stacks=()
-for stack in "${positional_args[@]}"; do
+for stack in "$@"; do
 	if is_valid "$stack"; then
 		valid_stacks+=("$stack")
 	else
@@ -94,7 +107,9 @@ fi
 package_names_glob=$(node "$root_dir"/scripts/stack-utils/stack-list --as-glob "${valid_stacks[@]}")
 
 if ((dry_run == 1)); then
-	echo "yarn run build:from '$package_names_glob'"
+	# ${parameter@operator} Bash expansion with Q operator
+	# See https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
+	echo "yarn run build:from ${package_names_glob@Q}"
 	exit
 fi
 
