@@ -21,7 +21,7 @@ export const GeolocationAccuracyFeedback = ({
   ...props
 }: GeolocationAccuracyFeedbackProps) => {
   const rounded = accuracy.toFixed(2);
-  const verbose = !quiet || accuracy > RECOMMENDED_ACCURACY_METERS;
+  const verbose = !quiet && accuracy > RECOMMENDED_ACCURACY_METERS;
 
   return (
     <StyledHelperText {...props}>
