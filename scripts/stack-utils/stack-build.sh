@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 root_dir=$(realpath -- "$script_dir"/../..)
@@ -8,9 +9,8 @@ if ! "$root_dir"/scripts/bash/requireCommands.sh jq node yarn; then
 	exit 1
 fi
 
-stack_definitions=$root_dir/packages/devops/configs/server-stacks.json
 readarray -t available_stacks < <(
-	jq --raw-output 'keys[]' "$stack_definitions"
+	jq --raw-output 'keys[]' "$root_dir"/packages/devops/configs/server-stacks.json
 )
 
 print_available_stacks() {
@@ -18,10 +18,15 @@ print_available_stacks() {
 	printf "  • %s\n" "${available_stacks[@]}"
 }
 
-while getopts h opt; do
-	case $opt in
-	h)
+while [[ $1 != '' ]]; do
+	case $1 in
+	--)
+		shift
+		break
+		;;
+	-h | --help)
 		echo -e "${BOLD}build:stack${RESET} builds the subtree(s) of dependencies required to run the given server stack(s)."
+
 		echo -e "\n${BOLD}USAGE${RESET}"
 		echo -e "  ${BOLD}yarn run ${GREEN}build:stack${RESET} [${BOLD}-h${RESET}] [${UNDERLINE}${BLUE}stack${RESET} ${BLUE}...${RESET}]"
 
@@ -43,8 +48,17 @@ while getopts h opt; do
 
 		exit 0
 		;;
-	?)
+	-n | --dry-run)
+		dry_run=1
+		shift
+		;;
+	-* | --*)
+		echo -e "${BOLD}${RED}Unknown option:${RESET} $1"
 		exit 1
+		;;
+	*)
+		positional_args+=("$1")
+		shift
 		;;
 	esac
 done
@@ -62,7 +76,7 @@ is_valid() {
 
 valid_stacks=()
 invalid_stacks=()
-for stack in "$@"; do
+for stack in "${positional_args[@]}"; do
 	if is_valid "$stack"; then
 		valid_stacks+=("$stack")
 	else
@@ -78,5 +92,10 @@ if ((${#invalid_stacks[@]} > 0)); then
 fi
 
 package_names_glob=$(node "$root_dir"/scripts/stack-utils/stack-list --as-glob "${valid_stacks[@]}")
+
+if ((dry_run == 1)); then
+	echo "yarn run build:from '$package_names_glob'"
+	exit
+fi
 
 yarn run build:from "$package_names_glob"
