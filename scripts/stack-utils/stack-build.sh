@@ -47,6 +47,11 @@ print_help() {
 	echo -e "  • ${DIM}$script_dir/${RESET}buildPackagesByGlob.sh"
 }
 
+if (($# == 0)); then
+	print_help --concise
+	exit 2
+fi
+
 while [[ $1 != '' ]]; do
 	case $1 in
 	--)
@@ -78,7 +83,9 @@ while [[ $1 != '' ]]; do
 done
 
 if ((${#positional_args[@]} == 0)); then
-	print_help --concise
+	echo -e "${BOLD}${RED}Missing positional arguments.${RESET} What stack(s) would you like to build?"
+	print_available_stacks
+	print_examples
 	exit 2
 fi
 
