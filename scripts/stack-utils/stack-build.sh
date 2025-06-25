@@ -62,9 +62,13 @@ while :; do
 		print_help
 		exit 0
 		;;
-	-n | --dry-run)
-		dry_run=1
+	-a | -all)
 		shift
+		all_stacks=1
+		;;
+	-n | --dry-run)
+		shift
+		dry_run=1
 		;;
 	-* | --*)
 		echo -e "${BOLD}${RED}Unknown option:${RESET} $1"
