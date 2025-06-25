@@ -25,12 +25,13 @@ export const GeolocationAccuracyFeedback = ({
 
   return (
     <StyledHelperText {...props}>
-      {rounded}&nbsp;m accuracy
-      {verbose && (
+      {verbose ? (
         <>
-          . This doesn’t meet the recommended &lt;{RECOMMENDED_ACCURACY_METERS}&nbsp;m. Consider
-          trying again when you have stronger GPS signal.
+          Accuracy is low. The recommended accuracy for GPS tags is ≤{RECOMMENDED_ACCURACY_METERS}
+          &nbsp;m. The current accuracy is {rounded}&nbsp;m.
         </>
+      ) : (
+        <>{rounded}&nbsp;m accuracy</>
       )}
     </StyledHelperText>
   );
