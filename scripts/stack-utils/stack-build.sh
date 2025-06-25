@@ -15,7 +15,7 @@ readarray -t available_stacks < <(
 
 print_usage() {
 	echo -e "\n${BOLD}USAGE${RESET}"
-	echo -e "  ${BOLD}yarn run ${GREEN}stack ${MAGENTA}build${RESET} [${BOLD}-h${RESET}|${BOLD}--help${RESET}] [${BOLD}-a${RESET}|${BOLD}--all${RESET}] [${BOLD}-n${RESET}|${BOLD}--dry-run${RESET}] [${BOLD}--${RESET}] [${UNDERLINE}${BLUE}stack${RESET} ${UNDERLINE}${BLUE}...${RESET}]"
+	echo -e "  ${BOLD}yarn run ${GREEN}stack ${MAGENTA}build${RESET} [${BOLD}${YELLOW}-h${RESET}|${BOLD}${YELLOW}--help${RESET}] [${BOLD}${YELLOW}-a${RESET}|${BOLD}${YELLOW}--all${RESET}] [${BOLD}${YELLOW}-n${RESET}|${BOLD}${YELLOW}--dry-run${RESET}] [${BOLD}${YELLOW}--${RESET}] [${UNDERLINE}${BLUE}stack${RESET} ${UNDERLINE}${BLUE}...${RESET}]"
 }
 
 print_available_stacks() {
@@ -28,7 +28,7 @@ print_examples() {
 	echo -e "  ${DIM}>${RESET} yarn run ${GREEN}stack ${MAGENTA}build ${BLUE}admin-panel tupaia-web${RESET}"
 	echo '    Builds all packages required to run the entire Admin Panel and Tupaia Web server stacks.'
 	echo
-	echo -e "  ${DIM}>${RESET} yarn run ${GREEN}stack ${MAGENTA}build ${BLUE}--dry-run datatrak${RESET}"
+	echo -e "  ${DIM}>${RESET} yarn run ${GREEN}stack ${MAGENTA}build ${YELLOW}--dry-run ${BLUE}datatrak${RESET}"
 	echo '    Print the command that would be run to build the packages in the Tupaia DataTrak server stack.'
 }
 
