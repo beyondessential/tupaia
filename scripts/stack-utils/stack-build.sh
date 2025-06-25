@@ -47,10 +47,11 @@ print_help() {
 	echo -e "  • ${DIM}$script_dir/${RESET}buildPackagesByGlob.sh"
 }
 
-while :; do
+while [[ $1 != '' ]]; do
 	case $1 in
 	--)
 		shift
+		positional_args+=("$@")
 		break
 		;;
 	-h | --help)
@@ -70,12 +71,13 @@ while :; do
 		exit 1
 		;;
 	*)
-		break
+		positional_args+=($1)
+		shift
 		;;
 	esac
 done
 
-if (($# == 0)); then
+if ((${#positional_args[@]} == 0)); then
 	print_help --concise
 	exit 2
 fi
@@ -91,7 +93,7 @@ is_valid() {
 
 valid_stacks=()
 invalid_stacks=()
-for stack in "$@"; do
+for stack in "${positional_args[@]}"; do
 	if is_valid "$stack"; then
 		valid_stacks+=("$stack")
 	else
