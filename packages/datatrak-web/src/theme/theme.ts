@@ -185,7 +185,7 @@ const overrides = {
 } as const;
 
 const transitions = {
-  /* These custom CSS properties defined immediately above in `overrides.MuiCssBaseline['root']` */
+  /* These custom CSS properties defined immediately above in `overrides.MuiCssBaseline[':root']` */
   easing: {
     easeIn: 'var(--ease-in-quart)',
     easeInOut: 'var(--ease-in-out-quart)',
