@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { expect } from 'chai';
 import sinon from 'sinon';
 
 import {
@@ -8,12 +7,12 @@ import {
   sha256EncryptPassword,
   verifyPassword,
 } from '@tupaia/auth';
-import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
-import { encryptPassword, getTokenClaims, hashAndSaltPassword } from '@tupaia/auth';
 import { findOrCreateDummyCountryEntity, findOrCreateDummyRecord } from '@tupaia/database';
-import { createBasicHeader } from '@tupaia/utils';
 
-import { BruteForceRateLimiter } from '../../../apiV2/authenticate/BruteForceRateLimiter';
+import {
+  BruteForceRateLimiter,
+  createBasicHeader,
+} from '../../../apiV2/authenticate/BruteForceRateLimiter';
 import { ConsecutiveFailsRateLimiter } from '../../../apiV2/authenticate/ConsecutiveFailsRateLimiter';
 import { configureEnv } from '../../../configureEnv';
 import { TestableApp, resetTestData } from '../../testUtilities';
