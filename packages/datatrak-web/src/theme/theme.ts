@@ -93,6 +93,7 @@ const overrides = {
         '--ease-in-out-quart': 'cubic-bezier(0.76, 0, 0.24, 1)',
         accentColor: palette.primary.main,
         interpolateSize: 'allow-keywords',
+        textWrap: 'pretty',
       },
       'button, figcaption, h1, h2, h3, h4, h5, h6, input, label': {
         textWrap: 'balance',
