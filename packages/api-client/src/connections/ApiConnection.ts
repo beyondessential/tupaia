@@ -73,15 +73,9 @@ export class ApiConnection {
 
     const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
 
-    const contentType = response.headers.get('content-type');
-    if (contentType?.startsWith('text/')) {
-      // TODO: Put this inside verifyResponse and throw RespondingError
-
-      return response;
-    }
-
     await this.verifyResponse(response);
 
+    const contentType = response.headers.get('content-type');
     if (contentType?.startsWith('application/json')) {
       return response.json();
     }
@@ -112,6 +106,15 @@ export class ApiConnection {
           responseStatus: response.status,
         },
         {},
+      );
+    }
+    if (contentType?.startsWith('text/html')) {
+      throw new CustomError(
+        {
+          responseStatus: response.status,
+          responseText: `${response.statusText}: Expected application/json but got ${contentType}`,
+        },
+        { responseBody: await response.text() },
       );
     }
   }
