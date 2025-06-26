@@ -1,5 +1,6 @@
-import { getEnvVarOrDefault } from '@tupaia/utils';
 import winston from 'winston';
+
+import { getEnvVarOrDefault } from '@tupaia/utils';
 
 // Custom formatter for Errors
 // -- see https://github.com/winstonjs/winston/issues/1338

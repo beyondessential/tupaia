@@ -1,8 +1,10 @@
 import formatLinkHeader from 'format-link-header';
-import { ValidationError } from '@tupaia/utils';
-import { getApiUrl, resourceToRecordType } from '../../utilities';
-import winston from '../../log';
+
 import { isNullish } from '@tupaia/tsutils';
+import { ValidationError } from '@tupaia/utils';
+
+import winston from '../../log';
+import { getApiUrl, resourceToRecordType } from '../../utilities';
 import { DEFAULT_PAGE_SIZE } from './GETHandler';
 
 /**
