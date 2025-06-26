@@ -1,4 +1,4 @@
-import { FormHelperText, Typography } from '@material-ui/core';
+import { FormHelperText, FormLabel, Typography } from '@material-ui/core';
 import { Locate as LocateIcon, Map as MapIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -105,7 +105,11 @@ export const GeolocateQuestion = ({
 
   return (
     <fieldset>
-      {text && <Typography component="legend">{text}</Typography>}
+      {text && (
+        <FormLabel component="legend" error={invalid} required={required}>
+          {text}
+        </FormLabel>
+      )}
       {detailLabel && <InputHelperText>{detailLabel}</InputHelperText>}
       <Container>
         <LatLongFields
