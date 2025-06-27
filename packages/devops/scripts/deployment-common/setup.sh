@@ -130,9 +130,12 @@ if ! command -v node &>/dev/null; then
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
   nvm install $(sudo cat "$TUPAIA_DIR/.nvmrc")
-  npm install --global yarn
 fi
 echo "nvm $(nvm --version) is installed"
+
+# Enable Yarn
+corepack enable yarn
+echo "Using Yarn $(yarn --version) ($(which yarn))"
 
 # Install PM2, ensuring same version as root package.json
 if ! command -v pm2 &>/dev/null; then
