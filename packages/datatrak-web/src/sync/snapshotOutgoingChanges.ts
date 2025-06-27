@@ -32,7 +32,7 @@ export const snapshotOutgoingChanges = async (models: DatabaseModel[], since: nu
 
   if (invalidModelNames.length) {
     throw new Error(
-      `Invalid sync direction(s) when pushing these models from facility: ${invalidModelNames}`,
+      `Invalid sync direction(s) when pushing these models from client: ${invalidModelNames}`,
     );
   }
 
