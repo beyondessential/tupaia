@@ -18,19 +18,23 @@ get_backend_packages() {
     printf '%s\n' "${filtered[@]}"
 }
 
+set_up_central_server() {
+    # Ensure the analytics table is fully built
+    echo "Building analytics table"
+    yarn workspace @tupaia/data-api install-mv-refresh
+    yarn workspace @tupaia/data-api patch-mv-refresh up
+    yarn workspace @tupaia/data-api build-analytics-table
+
+    # ensure that the latest permissions based meditrak sync queue has been built
+    yarn workspace @tupaia/central-server create-meditrak-sync-view
+}
+
 readarray -t backend_packages < <(get_backend_packages)
 
 # Start back end server packages
 for package in "${backend_packages[@]}"; do
     if [[ $package = central-server ]]; then
-        # ensure that the analytics table is fully built
-        echo "Building analytics table"
-        yarn workspace @tupaia/data-api install-mv-refresh
-        yarn workspace @tupaia/data-api patch-mv-refresh up
-        yarn workspace @tupaia/data-api build-analytics-table
-
-        # ensure that the latest permissions based meditrak sync queue has been built
-        yarn workspace @tupaia/central-server create-meditrak-sync-view
+        set_up_central_server
     fi
 
     instances_flag=()
