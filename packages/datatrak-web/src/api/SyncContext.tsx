@@ -33,8 +33,7 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
         const clientSyncManager = new ClientSyncManager(models, projectIds, deviceId);
         setClientSyncManager(clientSyncManager);
 
-        const intervalId = setInterval(async () => {
-          await testLocalSync(models);
+        const intervalId = setInterval(() => {
           clientSyncManager.runSync();
         }, SYNC_INTERVAL);
 
