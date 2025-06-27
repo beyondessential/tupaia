@@ -1,4 +1,4 @@
-import { FormHelperText, FormLabel, Typography } from '@material-ui/core';
+import { FormHelperText, FormLabel } from '@material-ui/core';
 import { Locate as LocateIcon, Map as MapIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import styled from 'styled-components';
