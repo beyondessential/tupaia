@@ -11221,7 +11221,7 @@ __metadata:
     rimraf: ^6.0.1
     styled-components: ^5.1.0
     uuid: ^3.2.1
-    vite: ^4.5.3
+    vite: ^4.5.14
   languageName: unknown
   linkType: soft
 
@@ -11546,7 +11546,7 @@ __metadata:
     react-swipeable-views: ^0.14.0
     rrule: ^2.8.1
     styled-components: ^5.1.0
-    vite: ^4.5.3
+    vite: ^4.5.14
     workbox-cli: ^7.1.0
     workbox-precaching: ^7.1.0
     workbox-sw: ^7.1.0
@@ -11722,7 +11722,7 @@ __metadata:
     react-router-dom: 6.3.0
     redux: ^4.2.1
     styled-components: ^5.1.0
-    vite: ^4.5.3
+    vite: ^4.5.14
   languageName: unknown
   linkType: soft
 
@@ -11889,7 +11889,7 @@ __metadata:
     redux-thunk: ^2.3.0
     reselect: ^4.0.0
     styled-components: ^5.1.0
-    vite: ^4.5.3
+    vite: ^4.5.14
   languageName: unknown
   linkType: soft
 
@@ -12090,7 +12090,7 @@ __metadata:
     react-slick: ^0.30.2
     slick-carousel: ^1.8.1
     styled-components: ^5.1.0
-    vite: ^4.5.3
+    vite: ^4.5.14
     vite-plugin-html: ^3.2.0
   languageName: unknown
   linkType: soft
@@ -16301,17 +16301,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001254, caniuse-lite@npm:^1.0.30001503, caniuse-lite@npm:^1.0.30001541, caniuse-lite@npm:^1.0.30001565, caniuse-lite@npm:^1.0.30001646":
-  version: 1.0.30001690
-  resolution: "caniuse-lite@npm:1.0.30001690"
-  checksum: f2c1b595f15d8de4d9ccd155d61ac9f00ac62f1515870505a0186266fd52aef169fcddc90d8a4814e52b77107244806466fadc2c216662f23f1022a430e735ee
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001669":
-  version: 1.0.30001677
-  resolution: "caniuse-lite@npm:1.0.30001677"
-  checksum: 34099726620baf4f14fbbe88fec38517208cbe9a47009350b59c7cbbbbd45fcf355afe25d5fa277179660eb0f35f103e68806a07bb33d38bbddb7fde0a4302e4
+"caniuse-lite@npm:^1.0.30001254, caniuse-lite@npm:^1.0.30001503, caniuse-lite@npm:^1.0.30001541, caniuse-lite@npm:^1.0.30001565, caniuse-lite@npm:^1.0.30001646, caniuse-lite@npm:^1.0.30001669":
+  version: 1.0.30001724
+  resolution: "caniuse-lite@npm:1.0.30001724"
+  checksum: 3285f9c56898ffd9f5fce8f6cff9deb832c5897da8046474f8961a5848771cac293b80200c6311c8a97822dd25b8af699af35042a2033d5ec54017fe4dc6c5e3
   languageName: node
   linkType: hard
 
@@ -36752,7 +36745,7 @@ __metadata:
     ts-jest: ^29.1.2
     ts-node: ^10.9.2
     typescript: ^5.2.2
-    vite: ^4.5.3
+    vite: ^4.5.14
     vite-plugin-compression: ^0.5.1
     vite-plugin-ejs: ^1.6.4
   languageName: unknown
@@ -37812,9 +37805,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^4.5.3":
-  version: 4.5.3
-  resolution: "vite@npm:4.5.3"
+"vite@npm:^4.5.14":
+  version: 4.5.14
+  resolution: "vite@npm:4.5.14"
   dependencies:
     esbuild: ^0.18.10
     fsevents: ~2.3.2
@@ -37848,7 +37841,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: fd3f512ce48ca2a1fe60ad0376283b832de9272725fdbc65064ae9248f792de87b0f27a89573115e23e26784800daca329f8a9234d298ba6f60e808a9c63883c
+  checksum: ed61e2bc284968c5f514eae1f0b040ad6aa1b6591575c102d4967da5e34f8e52cd1a7048800bc3154ece0c11b4f11e1be1d0ef382c92993fd2dc6f7feca110ba
   languageName: node
   linkType: hard
 
