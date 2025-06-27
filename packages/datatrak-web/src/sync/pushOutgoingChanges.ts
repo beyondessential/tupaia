@@ -1,9 +1,10 @@
 import { calculatePageLimit, SyncSnapshotAttributes } from '@tupaia/sync';
-import { post } from '../api';
+import { post, put } from '../api';
 
 export const pushOutgoingChanges = async (
   sessionId: string,
   changes: SyncSnapshotAttributes[],
+  deviceId: string,
 ): Promise<void> => {
   let startOfPage = 0;
   let limit = calculatePageLimit();
@@ -11,13 +12,14 @@ export const pushOutgoingChanges = async (
     const endOfPage = Math.min(startOfPage + limit, changes.length);
     const page = changes.slice(startOfPage, endOfPage);
 
+    console.log('pushing page', page);
     const startTime = Date.now();
-    await post(sessionId, { page });
+    await post(`sync/${sessionId}/push`, { data: { changes: page } });
     const endTime = Date.now();
 
     startOfPage = endOfPage;
 
     limit = calculatePageLimit(limit, endTime - startTime);
   }
-  await post(sessionId, { complete: true });
+  await put(`sync/${sessionId}/push/complete`, { data: { deviceId } });
 };

@@ -5,6 +5,7 @@ import { useDatabase } from './DatabaseContext';
 import { generateId } from '@tupaia/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useAccessibleProjects } from './queries/useProjects';
+import { testLocalSync } from '../sync/testLocalSync';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
   clientSyncManager: ClientSyncManager | null;
@@ -32,7 +33,8 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
         const clientSyncManager = new ClientSyncManager(models, projectIds, deviceId);
         setClientSyncManager(clientSyncManager);
 
-        const intervalId = setInterval(() => {
+        const intervalId = setInterval(async () => {
+          await testLocalSync(models);
           clientSyncManager.runSync();
         }, SYNC_INTERVAL);
 

@@ -1,19 +1,17 @@
-import type { ModelRegistry } from '@tupaia/database';
 import { SyncDirections } from '@tupaia/constants';
 
-import { FilteredModelRegistry, SyncSessionDirectionValues } from '../types';
+import { SyncSessionDirectionValues } from '../types';
+import { DatabaseModel } from '@tupaia/database';
 
-export const getModelsForDirections = <T extends ModelRegistry>(
-  models: T,
+export const getModelsForDirections = (
+  models: DatabaseModel[],
   directions: SyncSessionDirectionValues[],
-): FilteredModelRegistry => {
-  return Object.fromEntries(
-    Object.entries(models).filter(([, model]) => directions.includes(model.syncDirection)),
-  ) as FilteredModelRegistry;
+): DatabaseModel[] => {
+  return models.filter(model => directions.includes(model.syncDirection));
 };
 
-export const getModelsForPull = <T extends ModelRegistry>(models: T) =>
+export const getModelsForPull = (models: DatabaseModel[]) =>
   getModelsForDirections(models, [SyncDirections.PULL_FROM_CENTRAL, SyncDirections.BIDIRECTIONAL]);
 
-export const getModelsForPush = <T extends ModelRegistry>(models: T) =>
+export const getModelsForPush = (models: DatabaseModel[]) =>
   getModelsForDirections(models, [SyncDirections.PUSH_TO_CENTRAL, SyncDirections.BIDIRECTIONAL]);

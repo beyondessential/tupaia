@@ -157,25 +157,27 @@ exports.up = async function (db) {
   // Create question_type enum
   await db.runSql(`
       CREATE TYPE question_type AS ENUM (
-        'Arithmetic',
-        'Autocomplete',
-        'Binary',
-        'Checkbox',
-        'CodeGenerator',
-        'Condition',
-        'Date',
-        'DateOfData',
-        'DateTime',
-        'Entity',
-        'FreeText',
-        'Geolocate',
-        'Instruction',
-        'Number',
-        'Photo',
-        'PrimaryEntity',
-        'Radio',
         'SubmissionDate',
-        'File'
+        'DateTime',
+        'PrimaryEntity',
+        'Task',
+        'CodeGenerator',
+        'FreeText',
+        'Checkbox',
+        'Geolocate',
+        'Date',
+        'File',
+        'User',
+        'Condition',
+        'Binary',
+        'Radio',
+        'Arithmetic',
+        'Number',
+        'Autocomplete',
+        'Entity',
+        'Instruction',
+        'DateOfData',
+        'Photo'
       );
     `);
 

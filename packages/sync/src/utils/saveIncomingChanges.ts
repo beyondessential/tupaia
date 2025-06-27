@@ -3,7 +3,7 @@ import { groupBy } from 'lodash';
 import { DatabaseModel, ModelRegistry } from '@tupaia/database';
 
 import { saveCreates, saveUpdates } from './saveChanges';
-import { FilteredModelRegistry, ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
+import { ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 import { sleep } from '@tupaia/utils';
 
@@ -95,8 +95,8 @@ const saveChangesForModelInBatches = async (
   }
 };
 
-export const saveIncomingSnapshotChanges = async (models: FilteredModelRegistry, sessionId: string) => {
-  for (const model of Object.values(models)) {
+export const saveIncomingSnapshotChanges = async (models: DatabaseModel[], sessionId: string) => {
+  for (const model of models) {
     await saveChangesForModelInBatches(model, sessionId, model.databaseRecord);
   }
 };

@@ -300,9 +300,13 @@ export class BaseDatabase {
     return record;
   }
 
-  async createMany(recordType, records, schemaName = SCHEMA_NAMES.PUBLIC) {
+  async createMany(recordType, records, schemaName = SCHEMA_NAMES.PUBLIC, options = {}) {
+    const { shouldGenerateId = true } = options;
+
     // generate ids for any records that don't have them
-    const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
+    const sanitizedRecords = shouldGenerateId
+      ? records.map(r => (r.id ? r : { id: this.generateId(), ...r }))
+      : records;
     await runDatabaseFunctionInBatches(sanitizedRecords, async batchOfRecords =>
       this.query(
         {

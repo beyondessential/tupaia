@@ -24,6 +24,8 @@ export {
   DatatrakWebSyncInitiatePullRequest,
   DatatrakWebSyncPullRequest,
   DatatrakWebSyncEndSessionRequest,
+  DatatrakWebSyncPushRequest,
+  DatatrakWebSyncPushCompleteRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebChangePasswordRequest,
@@ -55,5 +57,8 @@ export {
   SyncServerPullReadyRequest,
   SyncServerPullMetadataRequest,
   SyncServerPullRequest,
+  SyncServerPushRequest,
+  SyncServerPushStatusRequest,
+  SyncServerPushCompleteRequest,
   SyncServerEndSessionRequest,
 } from './sync-server';

@@ -66,11 +66,14 @@ import {
   SyncInitiatePullRoute,
   SyncPullRequest,
   SyncPullRoute,
+  SyncPushRequest,
+  SyncPushRoute,
   SyncEndSessionRequest,
   SyncEndSessionRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 import { API_CLIENT_PERMISSIONS } from '../constants';
+import { SyncPushCompleteRequest, SyncPushCompleteRoute } from '../routes/SyncPushCompleteRoute';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
@@ -129,6 +132,8 @@ export async function createApp() {
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
     .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
+    .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
+    .put<SyncPushCompleteRequest>('sync/:sessionId/push/complete', handleWith(SyncPushCompleteRoute))
     .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
 
     // Forward auth requests to web-config

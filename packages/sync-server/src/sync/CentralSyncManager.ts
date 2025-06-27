@@ -11,10 +11,15 @@ import {
   FACT_LOOKUP_UP_TO_TICK,
   DEBUG_LOG_TYPES,
   SYNC_SESSION_DIRECTION,
+  getModelsForPush,
+  saveIncomingSnapshotChanges,
+  insertSnapshotRecords,
+  updateSnapshotRecords,
+  SyncSnapshotAttributes,
 } from '@tupaia/sync';
 
 import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
-import { generateId, SyncSessionRecord, TupaiaDatabase } from '@tupaia/database';
+import { generateId, ModelRegistry, SyncSessionRecord, TupaiaDatabase } from '@tupaia/database';
 
 import { updateLookupTable, updateSyncLookupPendingRecords } from './updateLookupTable';
 import {
@@ -78,7 +83,7 @@ export class CentralSyncManager {
     return activeSyncs.length >= maxConcurrentSessions;
   }
 
-  async startSession(debugInfo = {}): Promise<StartSessionResult> {
+  async startSession(info = {}): Promise<StartSessionResult> {
     // as a side effect of starting a new session, cause a tick on the global sync clock
     // this is a convenient way to tick the clock, as it means that no two sync sessions will
     // happen at the same global sync time, meaning there's no ambiguity when resolving conflicts
@@ -89,9 +94,9 @@ export class CentralSyncManager {
     const unmarkSessionAsProcessing = await this.markSessionAsProcessing(sessionId);
     const syncSession = await this.models.syncSession.create({
       id: sessionId,
-      startTime,
-      lastConnectionTime: startTime,
-      debugInfo,
+      start_time: startTime,
+      last_connection_time: startTime,
+      info,
     });
 
     // no await as prepare session (especially the tickTockGlobalClock action) might get blocked
@@ -101,7 +106,7 @@ export class CentralSyncManager {
 
     log.info('CentralSyncManager.startSession', {
       sessionId: syncSession.id,
-      ...debugInfo,
+      ...info,
     });
 
     return { sessionId: syncSession.id };
@@ -131,7 +136,7 @@ export class CentralSyncManager {
     if (session.completedAt) {
       throw new Error(`Sync session '${sessionId}' is already completed`);
     }
-    session.lastConnectionTime = Date.now();
+    session.last_connection_time = new Date();
     await session.save();
 
     return session;
@@ -228,7 +233,7 @@ export class CentralSyncManager {
       sessionId,
       SYNC_SESSION_DIRECTION.OUTGOING,
     );
-    await this.models.syncSession.addDebugInfo(sessionId, { totalToPull });
+    await this.models.syncSession.addInfo(sessionId, { totalToPull });
     const { pull_until: pullUntil } = session;
     return { totalToPull, pullUntil };
   }
@@ -275,7 +280,7 @@ export class CentralSyncManager {
         // full changes
         await snapshotOutgoingChanges(
           database,
-          this.models,
+          getModelsForPull(this.models.getModels()),
           since,
           sessionId,
           deviceId,
@@ -382,7 +387,7 @@ export class CentralSyncManager {
           : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
 
         void (await updateLookupTable(
-          getModelsForPull(this.models),
+          getModelsForPull(this.models.getModels()),
           previouslyUpToTick,
           this.config,
           syncLookupTick,
@@ -438,16 +443,127 @@ export class CentralSyncManager {
     }
   }
 
+  async persistIncomingChanges(sessionId: string, deviceId: string) {
+    const totalPushed = await countSyncSnapshotRecords(
+      this.database,
+      sessionId,
+      SYNC_SESSION_DIRECTION.INCOMING,
+    );
+    await this.models.syncSession.addInfo(sessionId, {
+      beganPersistAt: new Date(),
+      totalPushed,
+    });
+
+
+    try {
+      // commit the changes to the db
+      const persistedAtSyncTick = await this.models.wrapInTransaction(
+        async (transactingModels: ModelRegistry) => {
+          const modelsToInclude = getModelsForPush(transactingModels.getModels());
+
+          // we tick-tock the global clock to make sure there is a unique tick for these changes
+          // n.b. this used to also be used for concurrency control, but that is now handled by
+          // shared advisory locks taken using the current sync tick as the id, which are waited on
+          // by an exclusive lock taken prior to starting a snapshot - so this is now purely for
+          // saving with a unique tick
+          const { tock } = await this.tickTockGlobalClock();
+
+          // // run any side effects for each model
+          // // eg: resolving duplicated patient display IDs
+          // await incomingSyncHook(database, modelsToInclude, sessionId);
+
+          await saveIncomingSnapshotChanges(modelsToInclude, sessionId);
+
+          // store the sync tick on save with the incoming changes, so they can be compared for
+          // edits with the outgoing changes
+          await updateSnapshotRecords(
+            transactingModels.database,
+            sessionId,
+            { saved_at_sync_tick: tock },
+            { direction: SYNC_SESSION_DIRECTION.INCOMING },
+          );
+
+          return tock;
+        },
+      );
+
+      await this.models.syncDeviceTick.create({
+        device_id: deviceId,
+        persisted_at_sync_tick: persistedAtSyncTick,
+      });
+      // tick tock global clock so that if records are modified by adjustDataPostSyncPush(),
+      // they will be picked up for pulling in the same session (specifically won't be removed by removeEchoedChanges())
+      await this.tickTockGlobalClock();
+
+      // mark persisted so that client polling "completePush" can stop
+      await this.models.syncSession.update({ id: sessionId }, { persist_completed_at: new Date() });
+
+      // WARNING: if you are adding another db call here, you need to either move the
+      // persistCompletedAt lower down, or change the check in checkPushComplete
+    } catch (error: any) {
+      log.error('CentralSyncManager.persistIncomingChanges encountered an error', error);
+      await this.models.syncSession.markSessionErrored(sessionId, error.message);
+    }
+  }
+
+  async addIncomingChanges(sessionId: string, changes: SyncSnapshotAttributes[]) {
+    console.log('changesss', changes);
+    await this.connectToSession(sessionId);
+    const incomingSnapshotRecords = changes.map(c => ({
+      ...c,
+      direction: SYNC_SESSION_DIRECTION.INCOMING,
+    }));
+
+    log.debug('CentralSyncManager.addIncomingChanges', {
+      incomingSnapshotRecordsCount: incomingSnapshotRecords.length,
+      sessionId,
+    });
+    console.log('incomingSnapshotRecords', incomingSnapshotRecords);
+    await insertSnapshotRecords(this.database, sessionId, incomingSnapshotRecords);
+  }
+
+  async completePush(sessionId: string, deviceId: string) {
+    await this.connectToSession(sessionId);
+
+    // don't await persisting, the client should asynchronously poll as it may take longer than
+    // the http request timeout
+    const unmarkSessionAsProcessing = await this.markSessionAsProcessing(sessionId);
+    this.persistIncomingChanges(sessionId, deviceId).finally(
+      unmarkSessionAsProcessing,
+    );
+  }
+
+  async checkPushComplete(sessionId: string) {
+    // if the push is still persisting, return false to tell the client to keep waiting
+    const persistIsProcessing = await this.checkSessionIsProcessing(sessionId);
+    if (persistIsProcessing) {
+      return false;
+    }
+
+    // if this session is not marked as processing, but also never set persistCompletedAt, record an error
+    const session = await this.connectToSession(sessionId);
+    if (session.persist_completed_at === null) {
+      await session.markErrored(
+        'Push persist incomplete, likely because the central server restarted during the process',
+      );
+      throw new Error(errorMessageFromSession(session));
+    }
+
+    // push complete!
+    return true;
+  }
+
   async endSession(sessionId: string): Promise<void> {
     const session = await this.connectToSession(sessionId);
-    const durationMs = Date.now() - session.startTime;
+    console.log('sessionnn', session);
+    const durationMs = Date.now() - session.start_time;
     log.debug('CentralSyncManager.completingSession', { sessionId, durationMs });
     await completeSyncSession(this.models.syncSession, this.database, sessionId);
     log.info('CentralSyncManager.completedSession', {
       sessionId,
       durationMs,
-      projectIds: session.debugInfo.projectIds,
-      deviceId: session.debugInfo.deviceId,
+      projectIds: session.info.projectIds,
+      deviceId: session.info.deviceId,
     });
   }
 }

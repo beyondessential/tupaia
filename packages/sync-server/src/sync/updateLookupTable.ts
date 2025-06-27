@@ -1,6 +1,5 @@
 import log from 'winston';
 
-import { FilteredModelRegistry } from '@tupaia/sync';
 import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
 import {
   DatabaseModel,
@@ -97,18 +96,18 @@ const updateLookupTableForModel = async (
 };
 
 export const updateLookupTable = async (
-  outgoingModels: FilteredModelRegistry,
+  outgoingModels: DatabaseModel[],
   since: number,
   config: SyncServerConfig,
   syncLookupTick: number | null,
   debugObject: DebugLogRecord,
 ) => {
-  const invalidModelNames = Object.values(outgoingModels)
+  const invalidModelNames = outgoingModels
     .filter(
       m =>
         ![SyncDirections.BIDIRECTIONAL, SyncDirections.PULL_FROM_CENTRAL].includes(m.syncDirection),
     )
-    .map(m => m.tableName);
+    .map(m => m.databaseRecord);
 
   if (invalidModelNames.length) {
     throw new Error(
@@ -118,7 +117,7 @@ export const updateLookupTable = async (
 
   let changesCount = 0;
 
-  for (const model of Object.values(outgoingModels)) {
+  for (const model of outgoingModels) {
     try {
       const modelChangesCount = await updateLookupTableForModel(
         model,

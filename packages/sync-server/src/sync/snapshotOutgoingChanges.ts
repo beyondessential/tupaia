@@ -1,7 +1,11 @@
 import log from 'winston';
 
-import { getSnapshotTableName, NON_SYNCING_TABLES, SYNC_SESSION_DIRECTION } from '@tupaia/sync';
-import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
+import {
+  getSnapshotTableName,
+  NON_SYNCING_TABLES,
+  SYNC_SESSION_DIRECTION,
+} from '@tupaia/sync';
+import { DatabaseModel, TupaiaDatabase } from '@tupaia/database';
 import { SyncServerConfig } from '../types';
 
 type SnapshotOutgoingChangesResult = {
@@ -11,7 +15,7 @@ type SnapshotOutgoingChangesResult = {
 
 export const snapshotOutgoingChanges = async (
   database: TupaiaDatabase,
-  models: ModelRegistry,
+  models: DatabaseModel[],
   since: number,
   sessionId: string,
   deviceId: string,
@@ -48,12 +52,12 @@ export const snapshotOutgoingChanges = async (
           data
         FROM
           sync_lookup
-        WHERE updated_at_sync_tick > ?
+        WHERE true
         ${fromId ? `AND id > ?` : ''}
         AND (
           project_ids IS NULL
           OR
-          project_ids::text[] @> ARRAY[${projectIds.map(p => `?`).join(',')}]
+          project_ids::text[] && ARRAY[${projectIds.map(p => `?`).join(',')}]
         )
         AND record_type IN (${recordTypes.map(r => `?`).join(',')})
         ${
@@ -66,12 +70,11 @@ export const snapshotOutgoingChanges = async (
         RETURNING sync_lookup_id
       )
       SELECT  
-        MAX(sync_lookup_id) as maxId,
-        COUNT(*) as count
+        MAX(sync_lookup_id) as "maxId",
+        COUNT(*) as "count"
       FROM inserted;
     `,
       [
-        since,
         ...(fromId ? [fromId] : []),
         ...projectIds,
         ...recordTypes,

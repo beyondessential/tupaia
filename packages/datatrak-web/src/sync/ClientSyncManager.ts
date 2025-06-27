@@ -82,7 +82,7 @@ export class ClientSyncManager {
 
     await this.pushChanges(sessionId, startedAtTick);
 
-    await this.pullChanges(sessionId);
+    // await this.pullChanges(sessionId);
 
     await this.endSyncSession(sessionId);
 
@@ -122,14 +122,18 @@ export class ClientSyncManager {
     // this avoids any of the records to be pushed being changed during the push period and
     // causing data that isn't internally coherent from ending up on the central server
     const pushSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
-    console.log('ClientSyncManager.snapshottingOutgoingChanges', { pushSince });
-    const modelsForPush = getModelsForPush(this.models);
-    const outgoingChanges = await snapshotOutgoingChanges(modelsForPush, pushSince);
+    console.log('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
+
+    const outgoingChanges = await this.models.wrapInTransaction(async transactingModels => {
+      const modelsForPush = getModelsForPush(transactingModels.getModels());
+      return snapshotOutgoingChanges(modelsForPush, pushSince);
+    }, { isolationLevel: 'repeatable_read' });
+
     if (outgoingChanges.length > 0) {
       console.log('ClientSyncManager.pushingOutgoingChanges', {
         totalPushing: outgoingChanges.length,
       });
-      await pushOutgoingChanges(sessionId, outgoingChanges);
+      await pushOutgoingChanges(sessionId, outgoingChanges, this.deviceId);
     }
 
     await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, currentSyncClockTime);
@@ -189,7 +193,7 @@ export class ClientSyncManager {
 
       const { totalObjects } = await runPull(this.models);
       return this.models.wrapInTransaction(async transactingModels => {
-        const incomingModels = getModelsForPull(transactingModels);
+        const incomingModels = getModelsForPull(transactingModels.getModels());
         if (pullVolumeType === PullVolumeType.IncrementalLow) {
           saveIncomingInMemoryChanges(transactingModels, totalObjects);
         } else if (pullVolumeType === PullVolumeType.IncrementalHigh) {

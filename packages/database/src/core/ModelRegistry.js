@@ -8,7 +8,7 @@ const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelNam
 export class ModelRegistry {
   /**
    * @param {import('./BaseDatabase').TupaiaDatabase} database
-   * @param {import('./DatabaseModel').DatabaseModel[]} [extraModelClasses]
+   * @param {import('./DatabaseModel').Record<string, DatabaseModel>} [extraModelClasses]
    */
   constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {
     this.database = database;
@@ -59,6 +59,13 @@ export class ModelRegistry {
    */
   getModelForDatabaseRecord(databaseRecord) {
     return Object.values(this).find(model => model.databaseRecord === databaseRecord);
+  }
+
+  /**
+   * @returns {import('./DatabaseModel').DatabaseModel[]}
+   */
+  getModels() {
+    return Object.values(this).filter(model => Boolean(model.databaseRecord));
   }
 
   /**
