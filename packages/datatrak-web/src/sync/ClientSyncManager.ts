@@ -82,7 +82,7 @@ export class ClientSyncManager {
 
     await this.pushChanges(sessionId, startedAtTick);
 
-    // await this.pullChanges(sessionId);
+    await this.pullChanges(sessionId);
 
     await this.endSyncSession(sessionId);
 
