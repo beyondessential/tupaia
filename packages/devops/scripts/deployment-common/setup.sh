@@ -126,7 +126,7 @@ install_tailscale
 # install node and yarn
 if ! command -v node &>/dev/null; then
   echo 'nvm not installed. Installing...'
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
   nvm install $(sudo cat "$TUPAIA_DIR/.nvmrc")
