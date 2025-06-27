@@ -11273,7 +11273,7 @@ __metadata:
     rimraf: ^6.0.1
     styled-components: ^5.1.0
     uuid: ^3.2.1
-    vite: ^4.5.3
+    vite: ^4.5.14
   languageName: unknown
   linkType: soft
 
@@ -11602,7 +11602,7 @@ __metadata:
     react-swipeable-views: ^0.14.0
     react-table: ^7.8.0
     styled-components: ^5.1.0
-    vite: ^4.5.3
+    vite: ^4.5.14
     workbox-cli: ^7.1.0
     workbox-precaching: ^7.1.0
     workbox-sw: ^7.1.0
@@ -11780,7 +11780,7 @@ __metadata:
     react-router-dom: 6.3.0
     redux: ^4.2.1
     styled-components: ^5.1.0
-    vite: ^4.5.3
+    vite: ^4.5.14
   languageName: unknown
   linkType: soft
 
@@ -11944,7 +11944,7 @@ __metadata:
     redux-thunk: ^2.3.0
     reselect: ^4.0.0
     styled-components: ^5.1.0
-    vite: ^4.5.3
+    vite: ^4.5.14
     whatwg-fetch: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -12137,7 +12137,7 @@ __metadata:
     react-slick: ^0.30.2
     slick-carousel: ^1.8.1
     styled-components: ^5.1.0
-    vite: ^4.5.3
+    vite: ^4.5.14
     vite-plugin-ejs: ^1.6.4
     vite-plugin-env-compatible: ^1.1.1
     vite-plugin-html: ^3.2.0
@@ -37613,7 +37613,7 @@ __metadata:
     ts-jest: ^29.1.2
     ts-node: ^10.7.0
     typescript: ^5.2.2
-    vite: ^4.5.3
+    vite: ^4.5.14
     vite-plugin-compression: ^0.5.1
     vite-plugin-ejs: ^1.6.4
     yargs: 15.4.1
@@ -38714,9 +38714,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^4.5.3":
-  version: 4.5.3
-  resolution: "vite@npm:4.5.3"
+"vite@npm:^4.5.14":
+  version: 4.5.14
+  resolution: "vite@npm:4.5.14"
   dependencies:
     esbuild: ^0.18.10
     fsevents: ~2.3.2
@@ -38750,7 +38750,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: fd3f512ce48ca2a1fe60ad0376283b832de9272725fdbc65064ae9248f792de87b0f27a89573115e23e26784800daca329f8a9234d298ba6f60e808a9c63883c
+  checksum: ed61e2bc284968c5f514eae1f0b040ad6aa1b6591575c102d4967da5e34f8e52cd1a7048800bc3154ece0c11b4f11e1be1d0ef382c92993fd2dc6f7feca110ba
   languageName: node
   linkType: hard
 
