@@ -12,7 +12,6 @@ export const pushOutgoingChanges = async (
     const endOfPage = Math.min(startOfPage + limit, changes.length);
     const page = changes.slice(startOfPage, endOfPage);
 
-    console.log('pushing page', page);
     const startTime = Date.now();
     await post(`sync/${sessionId}/push`, { data: { changes: page } });
     const endTime = Date.now();

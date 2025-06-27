@@ -14,7 +14,6 @@ export class SyncPushStatusRoute extends Route<SyncPushStatusRequest> {
   public async buildResponse() {
     const { ctx } = this.req;
     const { sessionId } = this.req.params;
-    console.log('kakakkakaka');
     const ready = await ctx.centralSyncManager.checkPushComplete(sessionId);
     return {
       status: ready

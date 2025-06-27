@@ -507,7 +507,6 @@ export class CentralSyncManager {
   }
 
   async addIncomingChanges(sessionId: string, changes: SyncSnapshotAttributes[]) {
-    console.log('changesss', changes);
     await this.connectToSession(sessionId);
     const incomingSnapshotRecords = changes.map(c => ({
       ...c,
@@ -555,7 +554,6 @@ export class CentralSyncManager {
 
   async endSession(sessionId: string): Promise<void> {
     const session = await this.connectToSession(sessionId);
-    console.log('sessionnn', session);
     const durationMs = Date.now() - session.start_time;
     log.debug('CentralSyncManager.completingSession', { sessionId, durationMs });
     await completeSyncSession(this.models.syncSession, this.database, sessionId);
