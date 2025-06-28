@@ -7,3 +7,4 @@ export * from './streamSnapshotData';
 export * from './getDependencyOrder';
 export * from './saveIncomingChanges';
 export * from './completeSyncSession';
+export * from './startSnapshotWhenCapacityAvailable';

@@ -20,7 +20,8 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "@tupaia/database": "workspace:*"
+    "@tupaia/database": "workspace:*",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "rimraf": "^6.0.1"
