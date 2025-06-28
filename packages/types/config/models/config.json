@@ -16,7 +16,7 @@
     "public.sync_lookup",
     "public.sync_device_tick"
   ],
-  "schemas": ["public", "log"],
+  "schemas": ["public", "logs"],
   "enumNameCasing": "pascal",
   "typeOverrides": {
     "public.report.config": "ReportConfig",
