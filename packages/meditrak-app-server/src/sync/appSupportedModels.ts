@@ -55,13 +55,12 @@ export const getUnsupportedModelFields = (modelName: string) => {
     throw new Error(`Model ${modelName} is not supported by meditrak`);
   }
 
-  const generalUnsuportedFields = ['updated_at_sync_tick'];
   const modelConfig = appSupportedModels[modelName];
   if ('unsupportedFields' in modelConfig) {
-    return [...generalUnsuportedFields, ...modelConfig.unsupportedFields];
+    return modelConfig.unsupportedFields;
   }
 
-  return generalUnsuportedFields;
+  return [];
 };
 
 export const getSyncRecordTranslator = (modelName: string) => {

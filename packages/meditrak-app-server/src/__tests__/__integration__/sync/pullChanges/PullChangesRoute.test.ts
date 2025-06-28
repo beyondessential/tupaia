@@ -96,7 +96,7 @@ describe('changes (GET)', () => {
     }
 
     const fields = await (record.model as DatabaseModel).fetchFieldNames();
-    const unsupportedFields = getUnsupportedModelFields(modelName);
+    const unsupportedFields = [...getUnsupportedModelFields(modelName), 'updated_at_sync_tick'];
 
     // Supported fields with non-null values
     const cleanedRecordForSync = Object.fromEntries(
