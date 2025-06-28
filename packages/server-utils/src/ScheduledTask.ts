@@ -1,5 +1,6 @@
 import { scheduleJob, Job } from 'node-schedule';
 import winston from 'winston';
+import { Knex } from 'knex';
 
 export interface DatabaseInterface {
   /**
@@ -9,7 +10,7 @@ export interface DatabaseInterface {
    */
   wrapInTransaction<T>(
     callback: (transactingModels: DatabaseInterface) => Promise<T | void>,
-    transactionConfig?: object,
+    transactionConfig?: Knex.TransactionConfig,
   ): Promise<T | void>;
 
   /**
