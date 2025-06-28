@@ -14,6 +14,11 @@ export class SyncPullReadyRoute extends Route<SyncPullReadyRequest> {
   public async buildResponse() {
     const { ctx } = this.req;
     const { sessionId } = this.req.params;
-    return ctx.centralSyncManager.checkPullReady(sessionId);
+    const ready = await ctx.centralSyncManager.checkPullReady(sessionId);
+    return {
+      status: ready
+        ? SyncServerPullReadyRequest.SyncPullReadyStatus.READY
+        : SyncServerPullReadyRequest.SyncPullReadyStatus.PENDING,
+    };
   }
 }
