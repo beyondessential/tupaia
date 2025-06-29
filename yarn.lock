@@ -12196,6 +12196,7 @@ __metadata:
   resolution: "@tupaia/sync@workspace:packages/sync"
   dependencies:
     "@tupaia/database": "workspace:*"
+    lodash: ^4.17.4
     rimraf: ^6.0.1
   languageName: unknown
   linkType: soft

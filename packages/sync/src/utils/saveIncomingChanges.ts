@@ -1,11 +1,11 @@
 import { groupBy } from 'lodash';
 
 import { DatabaseModel, ModelRegistry } from '@tupaia/database';
+import { sleep } from '@tupaia/utils';
 
 import { saveCreates, saveUpdates } from './saveChanges';
 import { FilteredModelRegistry, ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
-import { sleep } from '@tupaia/utils';
 
 // TODO: Move this to a config model RN-1668
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
