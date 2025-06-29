@@ -20,7 +20,7 @@
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "start": "node dist",
-    "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts -i",
+    "start-dev": "yarn package:start:backend-start-dev 9998 -ts -i",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
     "test": "yarn package:test"
   },

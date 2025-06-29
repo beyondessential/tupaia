@@ -50,7 +50,7 @@ export const buildBasicBearerAuthMiddleware =
 
       if (!authHeader) {
         throw new UnauthenticatedError(
-          'No authorization header provided - must be Basic or Bearer Auth Header',
+          'No Authorization header provided. Must use basic or bearer authentication.',
         );
       }
 
@@ -70,7 +70,9 @@ export const buildBasicBearerAuthMiddleware =
         userObject = user;
         accessPolicyObject = accessPolicy;
       } else {
-        throw new UnauthenticatedError('Could not authenticate');
+        throw new UnauthenticatedError(
+          'Authorization header must use basic or bearer authentication, but got neither',
+        );
       }
 
       req.user = userObject;

@@ -1,14 +1,17 @@
+import { isNotNullish, isNullish } from '@tupaia/tsutils';
 import { respond } from '@tupaia/utils';
+
 import { CRUDHandler } from '../CRUDHandler';
 import {
+  generateLinkHeader,
   getQueryOptionsForColumns,
-  processColumns,
+  parsePageSizeQueryParam,
   processColumnSelector,
   processColumnSelectorKeys,
-  generateLinkHeader,
+  processColumns,
 } from './helpers';
 
-const MAX_RECORDS_PER_PAGE = 100;
+export const DEFAULT_PAGE_SIZE = 100;
 
 /**
  * Responds to GET requests for a resource.
@@ -34,9 +37,16 @@ export class GETHandler extends CRUDHandler {
     respond(this.res, body);
   }
 
+  /**
+   * @returns {{limit: number|null, page: number|undefined}}
+   */
   getPaginationParameters() {
-    const { pageSize: limit = MAX_RECORDS_PER_PAGE, page } = this.req.query;
-    return { limit, page };
+    const { pageSize = DEFAULT_PAGE_SIZE, page } = this.req.query;
+    const limit = parsePageSizeQueryParam(pageSize);
+
+    return isNullish(limit)
+      ? { limit } // Pagination doesn’t make sense when LIMIT ALL
+      : { limit, page };
   }
 
   async getProcessedColumns() {
@@ -66,9 +76,12 @@ export class GETHandler extends CRUDHandler {
     );
 
     const { limit, page } = this.getPaginationParameters();
-    const offset = limit * page;
 
-    const dbQueryOptions = { multiJoin, columns, sort, rawSort, distinct, limit, offset };
+    const dbQueryOptions = { multiJoin, columns, sort, rawSort, distinct, limit };
+
+    if (Number.isInteger(limit) && Number.isInteger(page)) {
+      dbQueryOptions.offset = limit * page;
+    }
 
     // add any user requested sorting to the start of the sort clause
     if (sortString) {
@@ -130,20 +143,13 @@ export class GETHandler extends CRUDHandler {
       ));
     }
 
-    const [pageOfRecords, totalNumberOfRecords] = await Promise.all([
+    const [pageOfRecords, totalRecordCount] = await Promise.all([
       this.findRecords(criteria, options),
       this.countRecords(criteria, options),
     ]);
 
-    const { limit, page } = this.getPaginationParameters();
-    const lastPage = Math.ceil(totalNumberOfRecords / limit);
-    const linkHeader = generateLinkHeader(this.resource, page, lastPage, this.req.query);
     return {
-      headers: {
-        Link: linkHeader,
-        'Access-Control-Expose-Headers': 'Link, X-Total-Count', // to get around CORS
-        'X-Total-Count': totalNumberOfRecords,
-      },
+      headers: this.#buildHeaders(totalRecordCount),
       body: pageOfRecords,
     };
   }
@@ -164,5 +170,22 @@ export class GETHandler extends CRUDHandler {
       options,
     );
     return record;
+  }
+
+  /** @param {number} totalRecordCount */
+  #buildHeaders(totalRecordCount) {
+    const headers = {
+      'Access-Control-Expose-Headers': 'X-Total-Count', // to get around CORS
+      'X-Total-Count': totalRecordCount,
+    };
+
+    const { limit, page } = this.getPaginationParameters();
+    if (isNotNullish(limit)) {
+      const lastPage = Number.isFinite(totalRecordCount) ? totalRecordCount / limit : null;
+      headers['Access-Control-Expose-Headers'] = 'Link, X-Total-Count';
+      headers.Link = generateLinkHeader(this.resource, page, lastPage, this.req.query);
+    }
+
+    return headers;
   }
 }

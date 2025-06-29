@@ -40,7 +40,6 @@ const RouteLink = styled(Link)`
   }
 
   &:hover,
-  &:focus,
   &:focus-visible {
     color: ${({ theme }) => theme.palette.text.primary};
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
@@ -48,7 +47,6 @@ const RouteLink = styled(Link)`
   }
   /**
    * The following is a workaround to stop the bold text on hover from shifting the layout of the navbar
-   * 
    **/
 
   display: inline-flex;
@@ -94,7 +92,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
       observer.observe(firstLink.current);
     }
 
-    const lastLink = navLinkRefs.current[navLinkRefs.current.length - 1];
+    const lastLink = navLinkRefs.current.at(-1);
     if (lastLink.current) {
       observer.observe(lastLink.current);
     }
@@ -113,10 +111,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
     if (entries.length === 0) return;
 
     const leftEntry = entries.find(entry => entry.target === navLinkRefs.current[0].current);
-
-    const rightEntry = entries.find(
-      entry => entry.target === navLinkRefs.current[navLinkRefs.current.length - 1].current,
-    );
+    const rightEntry = entries.find(entry => entry.target === navLinkRefs.current.at(-1).current);
 
     const isLeftVisible = leftEntry?.isIntersecting;
     const isRightVisible = rightEntry?.isIntersecting;
@@ -134,9 +129,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
 
     // check if the first and last elements are visible, and set the overflows accordingly
     const leftOverflow = !getIsElementVisible(navLinkRefs.current[0].current);
-    const rightOverflow = !getIsElementVisible(
-      navLinkRefs.current[navLinkRefs.current.length - 1].current,
-    );
+    const rightOverflow = !getIsElementVisible(navLinkRefs.current.at(-1).current);
 
     setOverflows({
       left: leftOverflow,
@@ -169,9 +162,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
     const visibleElements = navLinkRefs.current.filter(ref => getIsElementVisible(ref.current));
 
     // get the index of the last visible element
-    const lastVisibleElementIndex = navLinkRefs.current.indexOf(
-      visibleElements[visibleElements.length - 1],
-    );
+    const lastVisibleElementIndex = navLinkRefs.current.indexOf(visibleElements.at(-1));
 
     // the next item to scroll to is the one after the last visible element
     const nextIndex = lastVisibleElementIndex + 1;
@@ -203,7 +194,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
 export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
   const containerRef = useRef(null);
   const location = useLocation();
-  const navLinkRefs = useRef(linkInput.map(() => React.createRef()));
+  const navLinkRefs = useRef(linkInput.map(React.createRef));
 
   const getIsActive = link => {
     const matchResult = matchPath(link.target, location.pathname);

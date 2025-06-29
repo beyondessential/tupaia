@@ -19,6 +19,7 @@ configureEnv();
   const port = process.env.PORT || 8050;
   http.createServer(app).listen(port);
   winston.info(`Running on port ${port}`);
+  winston.info(`Logging at ${winston.level} level`);
 
   /**
    * Notify PM2 that we are ready

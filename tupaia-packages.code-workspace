@@ -225,6 +225,7 @@
       "oucode",
       "outdater",
       "parameterise",
+      "parsable",
       "Persistor",
       "popover",
       "postgresql",
