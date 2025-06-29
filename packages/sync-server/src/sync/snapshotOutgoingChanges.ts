@@ -52,7 +52,7 @@ export const snapshotOutgoingChanges = async (
           data
         FROM
           sync_lookup
-        WHERE true
+        WHERE updated_at_sync_tick > ?
         ${fromId ? `AND id > ?` : ''}
         AND (
           project_ids IS NULL
@@ -75,6 +75,7 @@ export const snapshotOutgoingChanges = async (
       FROM inserted;
     `,
       [
+        since,
         ...(fromId ? [fromId] : []),
         ...projectIds,
         ...recordTypes,

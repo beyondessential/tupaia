@@ -5,7 +5,6 @@ import { useDatabase } from './DatabaseContext';
 import { generateId } from '@tupaia/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useAccessibleProjects } from './queries/useProjects';
-import { testLocalSync } from '../sync/testLocalSync';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
   clientSyncManager: ClientSyncManager | null;
