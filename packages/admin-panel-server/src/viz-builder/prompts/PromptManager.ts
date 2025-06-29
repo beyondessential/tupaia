@@ -8,6 +8,8 @@ import {
 } from '@langchain/core/prompts';
 import { Runnable } from '@langchain/core/runnables';
 
+import { requireEnv } from '@tupaia/utils';
+
 interface Chains {
   presentationOptions: Runnable;
 }
@@ -18,8 +20,8 @@ export class PromptManager {
 
   constructor() {
     this.model = new ChatAnthropic({
-      anthropicApiKey: process.env.ANTHROPIC_API_KEY,
-      model: process.env.ANTHROPIC_MODEL,
+      anthropicApiKey: requireEnv('ANTHROPIC_API_KEY'),
+      model: requireEnv('ANTHROPIC_MODEL'),
     });
     this.chains = this.initializeChains();
   }

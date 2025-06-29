@@ -42,7 +42,7 @@ export const PresentationConfigAssistant = ({ dataStructure, onAssistantResponse
         messages={messages}
         onSendMessage={onSubmit}
         isProcessingMessage={isFetching}
-        startingMessageText="Are there any chart presentation changes you'd like to make?"
+        startingMessageText="Are there any chart presentation changes you’d like to make?"
       />
     </Wrapper>
   );
