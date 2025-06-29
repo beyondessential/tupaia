@@ -43,6 +43,9 @@ for package in "${backend_packages[@]}"; do
         instances_flag=(--instances -1)
     fi
 
+    # Some `Link` headers for from GET requests can be huge (over 24KiB) if they include a large
+    # `filter` query parameter, which can be repeated several times over with different `page`s.
+    # See `generateLinkHeader` from /packages/central-server/src/apiV2/GETHandler/helpers.js
     node_args_flag=()
     if [[ $package = central-server || $package = tupaia-web-server ]]; then
         node_args_flag=(--node-args '--max-http-header-size=32768')
