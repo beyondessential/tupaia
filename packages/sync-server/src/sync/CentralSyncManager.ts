@@ -270,25 +270,28 @@ export class CentralSyncManager {
       // the child in the snapshot and its parent missing)
       // as the snapshot only contains read queries plus writes to the specific sync snapshot table
       // that it controls, there should be no concurrent update issues :)
-      await this.database.wrapInTransaction(async (database: TupaiaDatabase) => {
-        const { snapshotTransactionTimeoutMs } = this.config;
-        if (snapshotTransactionTimeoutMs) {
-          transactionTimeout = setTimeout(() => {
-            throw new Error(`Snapshot for session ${sessionId} timed out`);
-          }, snapshotTransactionTimeoutMs);
-        }
+      await this.models.wrapInTransaction(
+        async (transactingModels: SyncServerModelRegistry) => {
+          const { snapshotTransactionTimeoutMs } = this.config;
+          if (snapshotTransactionTimeoutMs) {
+            transactionTimeout = setTimeout(() => {
+              throw new Error(`Snapshot for session ${sessionId} timed out`);
+            }, snapshotTransactionTimeoutMs);
+          }
 
-        // full changes
-        await snapshotOutgoingChanges(
-          database,
-          getModelsForPull(this.models.getModels()),
-          since,
-          sessionId,
-          deviceId,
-          projectIds,
-          this.config,
-        );
-      });
+          // full changes
+          await snapshotOutgoingChanges(
+            transactingModels.database,
+            getModelsForPull(transactingModels.getModels()),
+            since,
+            sessionId,
+            deviceId,
+            projectIds,
+            this.config,
+          );
+        },
+        { isolationLevel: 'repeatable read' },
+      );
       // this update to the session needs to happen outside of the transaction, as the repeatable
       // read isolation level can suffer serialization failures if a record is updated inside and
       // outside the transaction, and the session is being updated to show the last connection
@@ -376,33 +379,36 @@ export class CentralSyncManager {
 
       const isInitialBuildOfLookupTable = Number.parseInt(previouslyUpToTick, 10) === -1;
 
-      await this.database.wrapInTransaction(async (database: TupaiaDatabase) => {
-        // When it is initial build of sync lookup table, by setting it to null,
-        // it will get the updated_at_sync_tick from the actual tables.
-        // Otherwise, update it to SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER so that
-        // it can update the flagged ones post transaction commit to the latest sync tick,
-        // avoiding sync sessions missing records while sync lookup is being refreshed
-        // See more details in the 'await updateSyncLookupPendingRecords' call
-        const syncLookupTick = isInitialBuildOfLookupTable
-          ? null
-          : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
+      await this.models.wrapInTransaction(
+        async (transactingModels: SyncServerModelRegistry) => {
+          // When it is initial build of sync lookup table, by setting it to null,
+          // it will get the updated_at_sync_tick from the actual tables.
+          // Otherwise, update it to SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER so that
+          // it can update the flagged ones post transaction commit to the latest sync tick,
+          // avoiding sync sessions missing records while sync lookup is being refreshed
+          // See more details in the 'await updateSyncLookupPendingRecords' call
+          const syncLookupTick = isInitialBuildOfLookupTable
+            ? null
+            : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
 
-        void (await updateLookupTable(
-          getModelsForPull(this.models.getModels()),
-          previouslyUpToTick,
-          this.config,
-          syncLookupTick,
-          debugObject,
-        ));
+          void (await updateLookupTable(
+            getModelsForPull(transactingModels.getModels()),
+            previouslyUpToTick,
+            this.config,
+            syncLookupTick,
+            debugObject,
+          ));
 
-        // update the last successful lookup table in the same transaction - if updating the cursor fails,
-        // we want to roll back the rest of the saves so that the next update can still detect the records that failed
-        // to be updated last time
-        log.debug('CentralSyncManager.updateLookupTable()', {
-          lastSuccessfulLookupTableUpdate: currentTick,
-        });
-        await this.models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, currentTick);
-      });
+          // update the last successful lookup table in the same transaction - if updating the cursor fails,
+          // we want to roll back the rest of the saves so that the next update can still detect the records that failed
+          // to be updated last time
+          log.debug('CentralSyncManager.updateLookupTable()', {
+            lastSuccessfulLookupTableUpdate: currentTick,
+          });
+          await transactingModels.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, currentTick);
+        },
+        { isolationLevel: 'repeatable read' },
+      );
 
       // If we used the current sync tick to record against each update to the sync lookup table, we would hit an edge case:
       // 1. Current sync tick is = 1, encounter A is updated
@@ -415,17 +421,21 @@ export class CentralSyncManager {
       //
       // Hence, to fix this, we:
       // 1. When starting updating lookup table, use fixed -1 as the tick and treat them as pending updates (SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER)
-      // 2. After updating lookup table is finished, update all the records with tick = -1 to the latest sync tick
+      // 2. After updating lookup table IS FINISHED AND COMMITED (hence we wrap in a new transaction), 
+      // update all the records with tick = -1 to the latest sync tick
       // => That way, sync sessions will never miss any records due to timing issue.
       // Note: We do not need to update pending records when it is the initial build
       // because it uses ticks from the actual tables for updated_at_sync_tick
       if (!isInitialBuildOfLookupTable) {
-        await this.database.wrapInTransaction(async (database: TupaiaDatabase) => {
-          // Wrap inside transaction so that any writes to currentSyncTick
-          // will have to wait until this transaction is committed
-          const { tick: currentTick } = await this.tickTockGlobalClock();
-          await updateSyncLookupPendingRecords(database, currentTick);
-        });
+        await this.database.wrapInTransaction(
+          async (database: TupaiaDatabase) => {
+            // Wrap inside transaction so that any writes to currentSyncTick
+            // will have to wait until this transaction is committed
+            const { tick: currentTick } = await this.tickTockGlobalClock();
+            await updateSyncLookupPendingRecords(database, currentTick);
+          },
+          { isolationLevel: 'repeatable read' },
+        );
       }
     } catch (error: any) {
       log.error('CentralSyncManager.updateLookupTable encountered an error', {
@@ -454,7 +464,6 @@ export class CentralSyncManager {
       beganPersistAt: new Date(),
       totalPushed,
     });
-
 
     try {
       // commit the changes to the db
@@ -528,9 +537,7 @@ export class CentralSyncManager {
     // don't await persisting, the client should asynchronously poll as it may take longer than
     // the http request timeout
     const unmarkSessionAsProcessing = await this.markSessionAsProcessing(sessionId);
-    this.persistIncomingChanges(sessionId, deviceId).finally(
-      unmarkSessionAsProcessing,
-    );
+    this.persistIncomingChanges(sessionId, deviceId).finally(unmarkSessionAsProcessing);
   }
 
   async checkPushComplete(sessionId: string) {
