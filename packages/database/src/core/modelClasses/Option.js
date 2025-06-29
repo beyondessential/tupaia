@@ -1,4 +1,6 @@
 import { hasContent } from '@tupaia/utils';
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -48,6 +50,8 @@ export class OptionRecord extends DatabaseRecord {
 }
 
 export class OptionModel extends DatabaseModel {
+  syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+
   get DatabaseRecordClass() {
     return OptionRecord;
   }
@@ -56,6 +60,11 @@ export class OptionModel extends DatabaseModel {
     const options = await this.find({ option_set_id: optionSetId });
     const sorOrders = options.map(option => option.sort_order); // sort_order should not be null;
     return Math.max(...sorOrders);
+  }
+
+  // TODO: should filter this
+  async buildSyncLookupQueryDetails() {
+    return null;
   }
 }
 

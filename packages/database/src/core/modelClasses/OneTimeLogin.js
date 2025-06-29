@@ -1,11 +1,16 @@
 import randomToken from 'rand-token';
 import moment from 'moment';
+
 import { UnauthenticatedError } from '@tupaia/utils';
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
 export class OneTimeLoginRecord extends DatabaseRecord {
+  syncDirection = SyncDirections.DO_NOT_SYNC;
+
   static databaseRecord = RECORDS.ONE_TIME_LOGIN;
 
   isExpired() {

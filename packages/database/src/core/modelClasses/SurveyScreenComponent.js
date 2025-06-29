@@ -27,7 +27,7 @@ export class SurveyScreenComponentRecord extends DatabaseRecord {
 }
 
 export class SurveyScreenComponentModel extends DatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return SurveyScreenComponentRecord;

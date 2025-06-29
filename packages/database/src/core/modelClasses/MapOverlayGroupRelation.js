@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -11,6 +13,8 @@ const RELATION_CHILD_TYPES = {
 };
 
 export class MapOverlayGroupRelationRecord extends DatabaseRecord {
+  syncDirection = SyncDirections.DO_NOT_SYNC;
+
   static databaseRecord = RECORDS.MAP_OVERLAY_GROUP_RELATION;
 
   static joins = [

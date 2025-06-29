@@ -1,6 +1,8 @@
 import keyBy from 'lodash.keyby';
 
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
+import { SyncDirections } from '@tupaia/constants';
+
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -306,6 +308,8 @@ export class EntityRecord extends DatabaseRecord {
 }
 
 export class EntityModel extends MaterializedViewLogDatabaseModel {
+  syncDirection = SyncDirections.DO_NOT_SYNC; // TODO: in another ticket
+
   get DatabaseRecordClass() {
     return EntityRecord;
   }

@@ -2,6 +2,7 @@ import { DatabaseError } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { SyncDirections } from '@tupaia/constants';
 
 export class ApiClientRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.API_CLIENT;
@@ -25,6 +26,8 @@ export class ApiClientRecord extends DatabaseRecord {
 }
 
 export class ApiClientModel extends DatabaseModel {
+  syncDirection = SyncDirections.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return ApiClientRecord;
   }
