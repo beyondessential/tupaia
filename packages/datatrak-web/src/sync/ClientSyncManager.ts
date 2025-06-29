@@ -121,10 +121,13 @@ export class ClientSyncManager {
     const pushSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
     console.log('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
-    const outgoingChanges = await this.models.wrapInTransaction(async transactingModels => {
-      const modelsForPush = getModelsForPush(transactingModels.getModels());
-      return snapshotOutgoingChanges(modelsForPush, pushSince);
-    });
+    const outgoingChanges = await this.models.wrapInTransaction(
+      async transactingModels => {
+        const modelsForPush = getModelsForPush(transactingModels.getModels());
+        return snapshotOutgoingChanges(modelsForPush, pushSince);
+      },
+      { isolationLevel: 'repeatable read' },
+    );
 
     if (outgoingChanges.length > 0) {
       console.log('ClientSyncManager.pushingOutgoingChanges', {
