@@ -99419,6 +99419,14 @@ export const QuerySchema = {
 	]
 } 
 
+export const SyncPullReadyStatusSchema = {
+	"enum": [
+		"pending",
+		"ready"
+	],
+	"type": "string"
+} 
+
 export const SyncReadyStatusSchema = {
 	"enum": [
 		"pending",
