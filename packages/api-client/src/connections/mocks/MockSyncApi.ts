@@ -8,7 +8,7 @@ export class MockSyncApi implements SyncApiInterface {
   public endSyncSession(sessionId: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
-  public pollStatusUntilReady(endpoint: string): Promise<any> {
+  public pollStatusUntil(endpoint: string, status: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
   public initiatePull(
