@@ -1,4 +1,4 @@
-import { sleepAsync } from '@tamanu/utils/sleepAsync';
+import { sleep } from '@tupaia/utils';
 import { TupaiaDatabase } from '@tupaia/database';
 
 // TODO: Move to config model RN-1668
@@ -37,6 +37,6 @@ export const startSnapshotWhenCapacityAvailable = async (
 ) => {
   // wait for there to be enough capacity to start a snapshot
   while (!(await startSnapshotIfCapacityAvailable(database, sessionId))) {
-    await sleepAsync(500); // wait for half a second
+    await sleep(500); // wait for half a second
   }
 };
