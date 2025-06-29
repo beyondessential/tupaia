@@ -124,29 +124,19 @@ export class ClientSyncManager {
         this.deviceId,
       );
 
-      // Get the pull volume type to determine how to proces the stream data.
+      const isInitialPull = pullSince === -1;
+
       // 1. If the pull is initial, we wrap the whole pull in a transaction and persist the stream data straight to the actual tables
       //    When leaving a long running transaction open, any user trying to update those same records in Tamanu will be blocked until the sync finishes.
       //    This is not a problem for initial sync because there is no local data, so it is fine to leave a long running transaction open.
-      // 2. If the pull is incremental, but higher than a set threshold, we save the stream data to a temporary table and then use a transaction to persist the data to the actual tables
+      // 2. If the pull is incremental, we save the stream data to a temporary snapshot table and then use a transaction to persist the data to the actual tables
       //    This is because we don't want to block the user from updating the records in Tamanu while a long sync is running.
       //    Also, we don't want to cause memory issues by saving all the data to memory.
-      // 3. If the pull is incremental, but lower than a set threshold, we store the stream data in memory and then use a transaction to persist the data to the actual tables
-      //    This is because we don't want to block the user from updating the records in Tamanu while a long sync is running.
-      //    And since it has low volume of records, it is fine to store all the data in memory.
-      const isInitialPull = pullSince === -1;
-
       if (isInitialPull) {
-        await this.pullInitialSync(sessionId);
+        await this.pullInitialSync(sessionId, pullUntil);
       } else {
-        await this.pullIncrementalSync(sessionId);
+        await this.pullIncrementalSync(sessionId, pullUntil);
       }
-
-      // update the last successful sync in the same save transaction - if updating the cursor fails,
-      // we want to roll back the rest of the saves so that we don't end up detecting them as
-      // needing a sync up to the central server when we attempt to resync from the same old cursor
-      console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
     } catch (error) {
       console.error('ClientSyncManager.pullChanges', {
         sessionId,
@@ -156,17 +146,23 @@ export class ClientSyncManager {
     }
   }
 
-  async pullInitialSync(sessionId: string) {
+  async pullInitialSync(sessionId: string, pullUntil: number) {
     await this.models.wrapInTransaction(async transactingModels => {
       const processStreamedDataFunction = async ({ models, records }: ProcessStreamDataParams) => {
         await saveIncomingInMemoryChanges(models, records);
       };
 
       await pullIncomingChanges(transactingModels, sessionId, processStreamedDataFunction);
+
+      // update the last successful sync in the same save transaction - if updating the cursor fails,
+      // we want to roll back the rest of the saves so that we don't end up detecting them as
+      // needing a sync up to the central server when we attempt to resync from the same old cursor
+      console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+      return this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
     });
   }
 
-  async pullIncrementalSync(sessionId: string) {
+  async pullIncrementalSync(sessionId: string, pullUntil: number) {
     const processStreamedDataFunction = async ({
       models,
       sessionId,
@@ -183,6 +179,12 @@ export class ClientSyncManager {
         SyncDirections.PULL_FROM_CENTRAL,
       );
       await saveIncomingSnapshotChanges(incomingModels, sessionId);
+
+      // update the last successful sync in the same save transaction - if updating the cursor fails,
+      // we want to roll back the rest of the saves so that we don't end up detecting them as
+      // needing a sync up to the central server when we attempt to resync from the same old cursor
+      console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+      return this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
     });
   }
 }
