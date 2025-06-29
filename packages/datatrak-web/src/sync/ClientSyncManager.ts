@@ -51,7 +51,8 @@ export class ClientSyncManager {
 
     // make sure sync promise gets cleared when finished, even if there's an error
     try {
-      return this.currentSyncPromise;
+      const result = await this.currentSyncPromise;
+      return result;
     } finally {
       this.currentSyncPromise = null;
     }
