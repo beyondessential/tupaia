@@ -18,9 +18,9 @@ import {
   updateSnapshotRecords,
   SyncSnapshotAttributes,
 } from '@tupaia/sync';
-
-import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
-import { generateId, ModelRegistry, SyncSessionRecord, TupaiaDatabase } from '@tupaia/database';
+import { objectIdToTimestamp } from '@tupaia/server-utils';
+import { SyncTickFlags } from '@tupaia/constants';
+import { generateId, SyncSessionRecord } from '@tupaia/database';
 
 import { updateLookupTable, updateSyncLookupPendingRecords } from './updateLookupTable';
 import {
@@ -36,21 +36,17 @@ import {
   SyncSessionMetadata,
   UnmarkSessionAsProcessingFunction,
 } from '../types';
-import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 
 const errorMessageFromSession = (session: SyncSessionRecord) =>
   `Sync session '${session.id}' encountered an error: ${session.errors.at(-1)}`;
 
 export class CentralSyncManager {
-  database: TupaiaDatabase;
-
   models: SyncServerModelRegistry;
 
   config: SyncServerConfig;
 
   constructor(models: SyncServerModelRegistry) {
-    this.database = models.database;
     this.models = models;
 
     // TODO: Move this to a config model RN-1668
@@ -66,12 +62,12 @@ export class CentralSyncManager {
     };
   }
 
-  async tickTockGlobalClock(): Promise<GlobalClockResult> {
+  async tickTockGlobalClock(models: SyncServerModelRegistry): Promise<GlobalClockResult> {
     // rather than just incrementing by one tick, we "tick, tock" the clock so we guarantee the
     // "tick" part to be unique to the requesting client, and any changes made directly on the
     // central server will be recorded as updated at the "tock", avoiding any direct changes
     // (e.g. imports) being missed by a client that is at the same sync tick
-    const tock = await this.models.localSystemFact.incrementValue(FACT_CURRENT_SYNC_TICK, 2);
+    const tock = await models.localSystemFact.incrementValue(FACT_CURRENT_SYNC_TICK, 2);
     return { tick: tock - 1, tock };
   }
 
@@ -151,8 +147,8 @@ export class CentralSyncManager {
 
   async prepareSession(syncSession: SyncSessionRecord): Promise<PrepareSessionResult | void> {
     try {
-      await createSnapshotTable(this.database, syncSession.id);
-      const { tick } = await this.tickTockGlobalClock();
+      await createSnapshotTable(this.models.database, syncSession.id);
+      const { tick } = await this.tickTockGlobalClock(this.models);
       await syncSession.markAsStartedAt(tick);
 
       return { sessionId: syncSession.id, tick };
@@ -230,7 +226,7 @@ export class CentralSyncManager {
   async fetchPullMetadata(sessionId: string): Promise<PullMetadata> {
     const session = await this.connectToSession(sessionId);
     const totalToPull = await countSyncSnapshotRecords(
-      this.database,
+      this.models.database,
       sessionId,
       SYNC_SESSION_DIRECTION.OUTGOING,
     );
@@ -251,12 +247,12 @@ export class CentralSyncManager {
 
       // will wait for concurrent snapshots to complete if we are currently at capacity, then
       // set the snapshot_started_at timestamp before we proceed with the heavy work below
-      await startSnapshotWhenCapacityAvailable(this.database, sessionId);
+      await startSnapshotWhenCapacityAvailable(this.models.database, sessionId);
 
       // get a sync tick that we can safely consider the snapshot to be up to (because we use the
       // "tick" of the tick-tock, so we know any more changes on the server, even while the snapshot
       // process is ongoing, will have a later updated_at_sync_tick, i.e. the "tock")
-      const { tick } = await this.tickTockGlobalClock();
+      const { tick } = await this.tickTockGlobalClock(this.models);
 
       await this.waitForPendingEdits(tick);
 
@@ -319,8 +315,8 @@ export class CentralSyncManager {
     // A transaction level advisory lock fulfils both of these criteria, as it sits at the database
     // level (independent of an individual node process), but will be unlocked if the transaction is
     // rolled back for any reason (e.g. the server restarts)
-    const transactionDatabase = await this.database.createTransaction();
-    const result = await transactionDatabase.executeSql(
+    const transactionDatabase = await this.models.database.createTransaction();
+    await transactionDatabase.executeSql(
       'SELECT pg_advisory_xact_lock(:sessionLockId);',
       {
         sessionLockId: objectIdToTimestamp(sessionId),
@@ -333,7 +329,7 @@ export class CentralSyncManager {
   }
 
   async checkSessionIsProcessing(sessionId: string): Promise<boolean> {
-    const [{ session_is_processing: sessionIsProcessing }] = (await this.database.executeSql(
+    const [{ session_is_processing: sessionIsProcessing }] = (await this.models.database.executeSql(
       'SELECT NOT(pg_try_advisory_xact_lock(:sessionLockId)) AS session_is_processing;',
       {
         sessionLockId: objectIdToTimestamp(sessionId),
@@ -345,14 +341,14 @@ export class CentralSyncManager {
 
   async waitForPendingEdits(tick: number): Promise<void> {
     // get all the ticks (ie: keys of in-flight transaction advisory locks) of previously pending edits
-    const pendingSyncTicks = (await getSyncTicksOfPendingEdits(this.database)).filter(
+    const pendingSyncTicks = (await getSyncTicksOfPendingEdits(this.models.database)).filter(
       (t: number) => t < tick,
     );
 
     // wait for any in-flight transactions of pending edits
     // so that we don't miss any changes that are in progress
     await Promise.all(
-      pendingSyncTicks.map((t: number) => waitForPendingEditsUsingSyncTick(this.database, t)),
+      pendingSyncTicks.map((t: number) => waitForPendingEditsUsingSyncTick(this.models.database, t)),
     );
   }
 
@@ -368,7 +364,7 @@ export class CentralSyncManager {
       // get a sync tick that we can safely consider the snapshot to be up to (because we use the
       // "tick" of the tick-tock, so we know any more changes on the server, even while the snapshot
       // process is ongoing, will have a later updated_at_sync_tick, i.e. the "tock")
-      const { tick: currentTick } = await this.tickTockGlobalClock();
+      const { tick: currentTick } = await this.tickTockGlobalClock(this.models);
 
       await this.waitForPendingEdits(currentTick);
 
@@ -421,18 +417,18 @@ export class CentralSyncManager {
       //
       // Hence, to fix this, we:
       // 1. When starting updating lookup table, use fixed -1 as the tick and treat them as pending updates (SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER)
-      // 2. After updating lookup table IS FINISHED AND COMMITED (hence we wrap in a new transaction), 
+      // 2. After updating lookup table IS FINISHED AND COMMITED (hence we wrap in a new transaction),
       // update all the records with tick = -1 to the latest sync tick
       // => That way, sync sessions will never miss any records due to timing issue.
       // Note: We do not need to update pending records when it is the initial build
       // because it uses ticks from the actual tables for updated_at_sync_tick
       if (!isInitialBuildOfLookupTable) {
-        await this.database.wrapInTransaction(
-          async (database: TupaiaDatabase) => {
+        await this.models.wrapInTransaction(
+          async (transactingModels: SyncServerModelRegistry) => {
             // Wrap inside transaction so that any writes to currentSyncTick
             // will have to wait until this transaction is committed
-            const { tick: currentTick } = await this.tickTockGlobalClock();
-            await updateSyncLookupPendingRecords(database, currentTick);
+            const { tick: currentTick } = await this.tickTockGlobalClock(transactingModels);
+            await updateSyncLookupPendingRecords(transactingModels.database, currentTick);
           },
           { isolationLevel: 'repeatable read' },
         );
@@ -456,7 +452,7 @@ export class CentralSyncManager {
 
   async persistIncomingChanges(sessionId: string, deviceId: string) {
     const totalPushed = await countSyncSnapshotRecords(
-      this.database,
+      this.models.database,
       sessionId,
       SYNC_SESSION_DIRECTION.INCOMING,
     );
@@ -468,7 +464,7 @@ export class CentralSyncManager {
     try {
       // commit the changes to the db
       const persistedAtSyncTick = await this.models.wrapInTransaction(
-        async (transactingModels: ModelRegistry) => {
+        async (transactingModels: SyncServerModelRegistry) => {
           const modelsToInclude = getModelsForPush(transactingModels.getModels());
 
           // we tick-tock the global clock to make sure there is a unique tick for these changes
@@ -476,7 +472,7 @@ export class CentralSyncManager {
           // shared advisory locks taken using the current sync tick as the id, which are waited on
           // by an exclusive lock taken prior to starting a snapshot - so this is now purely for
           // saving with a unique tick
-          const { tock } = await this.tickTockGlobalClock();
+          const { tock } = await this.tickTockGlobalClock(transactingModels);
 
           // // run any side effects for each model
           // // eg: resolving duplicated patient display IDs
@@ -503,7 +499,7 @@ export class CentralSyncManager {
       });
       // tick tock global clock so that if records are modified by adjustDataPostSyncPush(),
       // they will be picked up for pulling in the same session (specifically won't be removed by removeEchoedChanges())
-      await this.tickTockGlobalClock();
+      await this.tickTockGlobalClock(this.models);
 
       // mark persisted so that client polling "completePush" can stop
       await this.models.syncSession.update({ id: sessionId }, { persist_completed_at: new Date() });
@@ -528,7 +524,7 @@ export class CentralSyncManager {
       sessionId,
     });
     console.log('incomingSnapshotRecords', incomingSnapshotRecords);
-    await insertSnapshotRecords(this.database, sessionId, incomingSnapshotRecords);
+    await insertSnapshotRecords(this.models.database, sessionId, incomingSnapshotRecords);
   }
 
   async completePush(sessionId: string, deviceId: string) {
@@ -564,7 +560,7 @@ export class CentralSyncManager {
     const session = await this.connectToSession(sessionId);
     const durationMs = Date.now() - session.start_time;
     log.debug('CentralSyncManager.completingSession', { sessionId, durationMs });
-    await completeSyncSession(this.models.syncSession, this.database, sessionId);
+    await completeSyncSession(this.models.syncSession, this.models.database, sessionId);
     log.info('CentralSyncManager.completedSession', {
       sessionId,
       durationMs,
