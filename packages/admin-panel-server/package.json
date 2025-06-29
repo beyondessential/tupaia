@@ -36,7 +36,7 @@
     "camelcase-keys": "^7.0.0",
     "express": "^4.19.2",
     "lodash": "^4.17.4",
-    "multer": "^1.4.3",
+    "multer": "^2.0.1",
     "winston": "^3.17.0",
     "xlsx": "^0.18.5"
   },
