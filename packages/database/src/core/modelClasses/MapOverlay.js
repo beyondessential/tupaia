@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -8,6 +10,8 @@ export class MapOverlayRecord extends DatabaseRecord {
 }
 
 export class MapOverlayModel extends DatabaseModel {
+  syncDirection = SyncDirections.DO_NOT_SYNC;
+
   notifiers = [onChangeDeleteRelation];
 
   get DatabaseRecordClass() {

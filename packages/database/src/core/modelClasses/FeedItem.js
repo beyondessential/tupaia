@@ -1,7 +1,10 @@
 import moment from 'moment';
+
 import { AccessPolicy } from '@tupaia/access-policy';
 import { FeedItemTypes } from '@tupaia/types';
 import { reduceToDictionary } from '@tupaia/utils';
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -22,6 +25,8 @@ export class FeedItemRecord extends DatabaseRecord {
 }
 
 export class FeedItemModel extends DatabaseModel {
+  syncDirection = SyncDirections.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return FeedItemRecord;
   }

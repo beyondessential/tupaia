@@ -50,10 +50,9 @@ export class DatabaseModel {
       });
     }
 
-    // TODO: Remove this once we have a sync direction for all models
-    // if (!this.syncDirection) {
-    //   throw new Error('syncDirection must be set by the model');
-    // }
+    if (!this.syncDirection) {
+      throw new Error('syncDirection must be set by the model');
+    }
   }
 
   // cache disabled by default. If enabling remember to update the TABLES_REQUIRING_TRIGGER_CREATION to include this table in @tupaia/database/src/runPostMigration.js.

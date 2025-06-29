@@ -1,4 +1,7 @@
 import winston from 'winston';
+
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -78,6 +81,8 @@ export class DataServiceSyncGroupRecord extends DatabaseRecord {
 }
 
 export class DataServiceSyncGroupModel extends DatabaseModel {
+  syncDirection = SyncDirections.DO_NOT_SYNC;
+
   SERVICE_TYPES = SERVICE_TYPES;
 
   get DatabaseRecordClass() {

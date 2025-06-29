@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -63,6 +65,8 @@ export class DataGroupRecord extends DatabaseRecord {
 }
 
 export class DataGroupModel extends MaterializedViewLogDatabaseModel {
+  syncDirection = SyncDirections.BIDIRECTIONAL;
+
   get DatabaseRecordClass() {
     return DataGroupRecord;
   }
@@ -100,4 +104,8 @@ export class DataGroupModel extends MaterializedViewLogDatabaseModel {
       },
     );
   };
+
+  async buildSyncLookupQueryDetails() {
+    return null;
+  }
 }

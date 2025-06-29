@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -39,6 +41,8 @@ export class UserEntityPermissionRecord extends DatabaseRecord {
 }
 
 export class UserEntityPermissionModel extends DatabaseModel {
+  syncDirection = SyncDirections.DO_NOT_SYNC; // TODO: Might need this
+
   get DatabaseRecordClass() {
     return UserEntityPermissionRecord;
   }

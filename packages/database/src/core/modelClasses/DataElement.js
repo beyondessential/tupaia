@@ -1,6 +1,9 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { buildSyncLookupSelect } from '../sync';
 
 const SERVICE_TYPES = {
   DHIS: 'dhis',
@@ -72,6 +75,8 @@ export class DataElementRecord extends DatabaseRecord {
 }
 
 export class DataElementModel extends MaterializedViewLogDatabaseModel {
+  syncDirection = SyncDirections.BIDIRECTIONAL;
+
   SERVICE_TYPES = SERVICE_TYPES;
 
   get DatabaseRecordClass() {
@@ -79,4 +84,19 @@ export class DataElementModel extends MaterializedViewLogDatabaseModel {
   }
 
   getDhisDataTypes = () => DHIS_DATA_TYPES;
+
+  async buildSyncLookupQueryDetails() {
+    return {
+      select: await buildSyncLookupSelect(this, {
+        projectIds: `ARRAY_AGG(survey.project_id)`,
+      }),
+      joins: `
+        LEFT JOIN question ON question.data_element_id = data_element.id
+        LEFT JOIN survey_screen_component ON survey_screen_component.question_id = question.id
+        LEFT JOIN survey_screen ON survey_screen.id = survey_screen_component.screen_id
+        LEFT JOIN survey ON survey.id = survey_screen.survey_id
+      `,
+      groupBy: ['data_element.id'],
+    };
+  }
 }

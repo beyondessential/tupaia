@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -7,6 +9,8 @@ class UserSessionRecord extends DatabaseRecord {
 }
 
 export class UserSessionModel extends DatabaseModel {
+  syncDirection = SyncDirections.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return UserSessionRecord;
   }

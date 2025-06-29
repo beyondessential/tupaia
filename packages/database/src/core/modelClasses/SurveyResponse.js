@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseRecord } from '../DatabaseRecord';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { RECORDS } from '../records';
@@ -58,8 +60,21 @@ export class SurveyResponseRecord extends DatabaseRecord {
 }
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
+  syncDirection = SyncDirections.BIDIRECTIONAL;
+
   get DatabaseRecordClass() {
     return SurveyResponseRecord;
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return {
+      select: await buildSyncLookupSelect(this, {
+        projectIds: `ARRAY[survey.project_id]`,
+      }),
+      joins: `
+        LEFT JOIN survey ON survey.id = survey_response.survey_id
+      `,
+    };
   }
 
   async getLeaderboard(projectId = '', rowCount = 10) {

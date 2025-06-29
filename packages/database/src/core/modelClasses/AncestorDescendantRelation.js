@@ -1,4 +1,6 @@
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -23,6 +25,8 @@ export class AncestorDescendantRelationRecord extends DatabaseRecord {
 }
 
 export class AncestorDescendantRelationModel extends DatabaseModel {
+  syncDirection = SyncDirections.DO_NOT_SYNC; // TODO: in another ticket
+
   get DatabaseRecordClass() {
     return AncestorDescendantRelationRecord;
   }

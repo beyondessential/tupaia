@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -19,6 +21,8 @@ class DataElementDataGroupRecord extends DatabaseRecord {
 }
 
 export class DataElementDataGroupModel extends DatabaseModel {
+  syncDirection = SyncDirections.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return DataElementDataGroupRecord;
   }

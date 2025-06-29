@@ -1,4 +1,6 @@
 import { reduceToDictionary } from '@tupaia/utils';
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -12,6 +14,12 @@ export class CountryRecord extends DatabaseRecord {
 }
 
 export class CountryModel extends DatabaseModel {
+  syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+
+  async buildSyncLookupQueryDetails() {
+    return null;
+  }
+
   get DatabaseRecordClass() {
     return CountryRecord;
   }
