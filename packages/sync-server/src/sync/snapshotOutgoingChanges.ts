@@ -53,7 +53,7 @@ export const snapshotOutgoingChanges = async (
         AND (
           project_ids IS NULL
           OR
-          project_ids::text[] @> ARRAY[${projectIds.map(p => `?`).join(',')}]
+          project_ids::text[] && ARRAY[${projectIds.map(p => `?`).join(',')}]
         )
         AND record_type IN (${recordTypes.map(r => `?`).join(',')})
         ${
@@ -66,8 +66,8 @@ export const snapshotOutgoingChanges = async (
         RETURNING sync_lookup_id
       )
       SELECT  
-        MAX(sync_lookup_id) as maxId,
-        COUNT(*) as count
+        MAX(sync_lookup_id) as "maxId",
+        COUNT(*) as "count"
       FROM inserted;
     `,
       [
