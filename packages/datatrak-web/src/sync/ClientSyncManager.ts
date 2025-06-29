@@ -13,7 +13,7 @@ import { DatatrakDatabase } from '../database/DatatrakDatabase';
 import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
 import { post, remove } from '../api';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
-import { DatatrakWebModelRegistry, ProcessStreamDataParams } from './types';
+import { DatatrakWebModelRegistry, ProcessStreamDataParams } from '../types';
 
 export interface SyncResult {
   hasRun: boolean;

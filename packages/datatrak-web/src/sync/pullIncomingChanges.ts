@@ -2,7 +2,7 @@ import { ModelRegistry } from '@tupaia/database';
 import { SyncSnapshotAttributes } from '@tupaia/sync';
 
 import { post, stream } from '../api';
-import { ProcessStreamDataParams } from './types';
+import { ProcessStreamDataParams } from '../types';
 
 export const initiatePull = async (
   sessionId: string,
