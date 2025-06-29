@@ -523,7 +523,6 @@ export class CentralSyncManager {
       incomingSnapshotRecordsCount: incomingSnapshotRecords.length,
       sessionId,
     });
-    console.log('incomingSnapshotRecords', incomingSnapshotRecords);
     await insertSnapshotRecords(this.models.database, sessionId, incomingSnapshotRecords);
   }
 
