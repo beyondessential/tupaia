@@ -15,7 +15,7 @@ import {
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
 import { post, remove } from '../api';
-import { DatatrakWebModelRegistry, ProcessStreamDataParams } from './types';
+import { DatatrakWebModelRegistry, ProcessStreamDataParams } from '../types';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
