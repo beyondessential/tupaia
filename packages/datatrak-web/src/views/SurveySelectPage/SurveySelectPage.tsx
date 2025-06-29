@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 
-import { Country } from '@tupaia/types';
+import { Country, KeysToCamelCase } from '@tupaia/types';
 
 import { useCurrentUserContext, useProjectSurveys } from '../../api';
 import { useEditUser } from '../../api/mutations';
@@ -18,7 +18,10 @@ const useNavigateToSurvey = () => {
   const user = useCurrentUserContext();
   const { mutate: updateUser } = useEditUser();
 
-  return (country: Country | null | undefined, surveyCode: Survey['code'] | null) => {
+  return (
+    country: KeysToCamelCase<Country> | null | undefined,
+    surveyCode: Survey['code'] | null,
+  ) => {
     if (country?.code === user.country?.code) {
       return navigate(`/survey/${country?.code}/${surveyCode}`);
     }
