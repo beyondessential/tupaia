@@ -1,4 +1,5 @@
 export { ensurePermissionCheck } from './permissions';
 
-export * from './constants';
 export * from './assertions';
+export * from './constants';
+export { InsufficientPermissionsError } from './errors';
