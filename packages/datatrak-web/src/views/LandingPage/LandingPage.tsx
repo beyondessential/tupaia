@@ -1,9 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
+import { SafeAreaColumn } from '@tupaia/ui-components';
+
 import { useCurrentUserRecentSurveys } from '../../api';
-import { PageContainer as BasePageContainer } from '../../components';
-import { HEADER_HEIGHT } from '../../constants';
+import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { LeaderboardSection } from './LeaderboardSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
@@ -11,7 +12,7 @@ import { SurveyResponsesSection } from './SurveyResponsesSection';
 import { SurveySelectSection } from './SurveySelectSection';
 import { TasksSection } from './TasksSection';
 
-const PageContainer = styled(BasePageContainer).attrs({ component: 'main' })`
+const PageContainer = styled(SafeAreaColumn).attrs({ component: 'main' })`
   --body-block-size: calc(100dvb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
   //                                                 ^~~~~~~~~~~~~~~~~~~ Header’s border-block-end-width
   block-size: 100%;
@@ -50,15 +51,16 @@ const PageBody = styled.div`
   display: flex;
   flex-direction: column;
   inline-size: 100%;
-  margin-block: 0;
+  margin-block-end: ${BOTTOM_NAVIGATION_HEIGHT_SMALL}; // Padding accounts for safe area insets
   margin-inline: auto;
-  max-inline-size: 85rem;
+  max-inline-size: 88rem;
   padding-block-start: 1rem;
   padding-bottom: max(env(safe-area-inset-bottom), 1rem);
 
   // make the body fixed height on large screens
   ${({ theme }) => theme.breakpoints.up('md')} {
     block-size: var(--body-block-size);
+    margin-block-end: 0;
   }
 `;
 
@@ -84,7 +86,7 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
     return css`
       ${up('md')} {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 23.33333333%)) minmax(min-content, 30%);
+        grid-template-columns: repeat(3, minmax(0, 3fr)) minmax(0, 4fr);
         padding-block: 1rem;
         margin-block: 0;
       }
@@ -96,7 +98,7 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
               '--surveySelect    --surveySelect  --surveySelect  --tasks'
               '--recentSurveys   --recentSurveys --recentSurveys --tasks'
               '--recentResponses --activityFeed  --activityFeed  --leaderboard';
-            grid-template-rows: repeat(3, auto);
+            grid-template-rows: repeat(3, minmax(0, auto));
           `
         : css`
             grid-template-areas:

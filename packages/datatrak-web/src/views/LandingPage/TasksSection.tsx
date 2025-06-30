@@ -5,19 +5,16 @@ import styled, { css } from 'styled-components';
 import { FlexSpaceBetween, Button as UIButton } from '@tupaia/ui-components';
 
 import { useCurrentUserContext, useTasks } from '../../api';
+import { TileSkeletons } from '../../components';
 import { ROUTES } from '../../constants';
 import { NoTasksSection, TaskTile } from '../../features/Tasks';
 import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
-import { TileSkeletons } from '../../components';
 
 const SectionContainer = styled.section`
   grid-area: --tasks;
   display: flex;
   flex-direction: column;
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    max-height: 21.5rem;
-  }
 `;
 
 const Paper = styled.div<{ $hasTasks?: boolean }>`
@@ -27,7 +24,7 @@ const Paper = styled.div<{ $hasTasks?: boolean }>`
   background: ${({ theme }) => theme.palette.background.paper};
   padding-block: 1rem;
   padding-inline: 1.25rem;
-  border-radius: 10px;
+  border-radius: 0.625rem;
 
   ${({ theme, $hasTasks }) =>
     $hasTasks &&
@@ -76,14 +73,22 @@ export const TasksSection = () => {
   const isMobile = useIsMobile();
   const {
     data = { tasks: [], numberOfPages: 0 },
-    isLoading,
+    isFetching,
     isSuccess,
-  } = useTasks({ projectId, filters, pageSize: isMobile ? 3 : 15 });
-  const tasks = data.tasks;
+  } = useTasks({
+    projectId,
+    filters,
+    pageSize: isMobile ? 3 : 15,
+  });
+
+  const tasks = data.tasks ?? [];
   const hasTasks = isSuccess && tasks?.length > 0;
 
+  // Tasks view accessible via bottom navigation bar in mobile
+  if (isMobile && !hasTasks) return null;
+
   const renderContents = () => {
-    if (isLoading) {
+    if (isFetching) {
       return <TileSkeletons count={4} tileSkeletonProps={{ lineCount: 1 }} />;
     }
     if (!hasTasks) {
@@ -97,7 +102,7 @@ export const TasksSection = () => {
     <SectionContainer>
       <FlexSpaceBetween as="header">
         <SectionHeading>My tasks</SectionHeading>
-        {hasTasks && (
+        {hasTasks && !isMobile && (
           <ViewMoreButton component={Link} to={ROUTES.TASKS}>
             View more
           </ViewMoreButton>
