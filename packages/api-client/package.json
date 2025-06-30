@@ -21,10 +21,10 @@
     "directory": "packages/api-client"
   },
   "dependencies": {
-    "@tupaia/server-boilerplate": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "express": "^4.19.2",
     "lodash.isequal": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "node-fetch": "^1.7.3",

@@ -87070,6 +87070,23 @@ export const UserResponseSchema = {
 	]
 } 
 
+export const SyncSessionStartedResBodySchema = {
+	"type": "object",
+	"properties": {
+		"sessionId": {
+			"type": "string"
+		},
+		"startedAtTick": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"sessionId",
+		"startedAtTick"
+	]
+} 
+
 export const MailingListSchema = {
 	"type": "object",
 	"properties": {
@@ -99404,5 +99421,21 @@ export const QuerySchema = {
 		"email",
 		"token"
 	]
+} 
+
+export const SyncPullReadyStatusSchema = {
+	"enum": [
+		"pending",
+		"ready"
+	],
+	"type": "string"
+} 
+
+export const SyncReadyStatusSchema = {
+	"enum": [
+		"pending",
+		"ready"
+	],
+	"type": "string"
 } 
 

@@ -1,4 +1,4 @@
-import { LocalSystemFactModel, ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, LocalSystemFactModel } from '@tupaia/database';
 
 export interface DatatrakWebModelRegistry extends ModelRegistry {
   readonly localSystemFact: LocalSystemFactModel;

@@ -11400,6 +11400,7 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/node-fetch": ^2.6.11
+    express: ^4.19.2
     lodash.isequal: ^4.5.0
     lodash.pick: ^4.4.0
     node-fetch: ^1.7.3
@@ -11681,8 +11682,10 @@ __metadata:
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": ^8.0.1
     "@testing-library/user-event": ^13.5.0
+    "@tupaia/constants": "workspace:*"
     "@tupaia/database": "workspace:*"
     "@tupaia/expression-parser": "workspace:*"
+    "@tupaia/sync": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/ui-map-components": "workspace:*"
@@ -12194,6 +12197,7 @@ __metadata:
   resolution: "@tupaia/sync@workspace:packages/sync"
   dependencies:
     "@tupaia/database": "workspace:*"
+    lodash: ^4.17.4
     rimraf: ^6.0.1
   languageName: unknown
   linkType: soft

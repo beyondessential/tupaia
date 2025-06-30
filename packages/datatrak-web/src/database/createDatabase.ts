@@ -1,7 +1,7 @@
 import { ModelRegistry, migrate } from '@tupaia/database';
 
 import { DatatrakDatabase } from './DatatrakDatabase';
-import { DatatrakWebModelRegistry } from '../types/model';
+import { DatatrakWebModelRegistry } from '../types';
 
 export const createDatabase = async (): Promise<{
   database: DatatrakDatabase;

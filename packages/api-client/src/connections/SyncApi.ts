@@ -1,5 +1,6 @@
+import { Response as ExpressResponse } from 'express';
+
 import { sleep } from '@tupaia/utils';
-import { ExpressResponse } from '@tupaia/server-boilerplate';
 
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
@@ -14,7 +15,7 @@ export class SyncApi extends BaseApi {
     // then, poll the sync/:sessionId/status endpoint until we get a valid response
     // this is because POST /sync (especially the tickTockGlobalClock action) might get blocked
     // and take a while if the central server is concurrently persist records from another client
-    await this.pollStatusUntilReady(`sync/${sessionId}/status`);
+    await this.pollStatusUntil(`sync/${sessionId}/status`, 'ready');
 
     // finally, fetch the new tick from starting the session
     const { startedAtTick } = await this.connection.get(`sync/${sessionId}/metadata`, {});
@@ -26,13 +27,13 @@ export class SyncApi extends BaseApi {
     return this.connection.delete(`sync/${sessionId}`);
   }
 
-  async pollStatusUntilReady(endpoint: string): Promise<void> {
+  async pollStatusUntil(endpoint: string, status: string): Promise<void> {
     // poll the provided endpoint until we get a valid response
     const waitTime = 1000; // retry once per second
     const maxAttempts = 60 * 60 * 12; // for a maximum of 12 hours
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       const response = await this.connection.get(endpoint, {});
-      if (response.status === 'ready') {
+      if (response.status === status) {
         return response;
       }
       await sleep(waitTime);
@@ -41,17 +42,21 @@ export class SyncApi extends BaseApi {
   }
 
   async initiatePull(sessionId: string, since: number, projectIds: string[], deviceId: string) {
-    // first, set the pull filter on the central server, 
+    // first, set the pull filter on the central server,
     // which will kick off a snapshot of changes to pull
     const data = { since, projectIds, deviceId };
     await this.connection.post(`sync/${sessionId}/pull`, {}, data);
 
     // then, poll the pull/status endpoint until we get a valid response - it takes a while for
     // pull/status to finish populating the snapshot of changes
-    await this.pollStatusUntilReady(`sync/${sessionId}/pull/status`);
+    await this.pollStatusUntil(`sync/${sessionId}/pull/status`, 'ready');
 
     // finally, fetch the metadata for the changes we're about to pull
     return this.connection.get(`sync/${sessionId}/pull/metadata`);
+  }
+
+  async pull(response: ExpressResponse, sessionId: string) {
+    return this.connection.pipeStream(response, `sync/${sessionId}/pull`);
   }
 }
 

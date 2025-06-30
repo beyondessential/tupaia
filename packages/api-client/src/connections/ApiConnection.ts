@@ -1,9 +1,10 @@
 import nodeFetch from 'node-fetch';
 import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
+import { Response as ExpressResponse} from 'express';
+
 import { CustomError } from '@tupaia/utils';
 import { QueryParameters, AuthHandler } from '../types';
-import { ExpressResponse } from '@tupaia/server-boilerplate';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
@@ -53,7 +54,7 @@ export class ApiConnection {
   }
 
   public async pipeStream(
-    response: ExpressResponse<Request>,
+    response: ExpressResponse,
     endpoint: string,
     queryParameters?: QueryParameters | null,
   ) {
