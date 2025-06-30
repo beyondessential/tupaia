@@ -19,7 +19,7 @@ type DownloadResBody = {
   type?: string;
 };
 
-type RouteType = 'default' | 'download';
+type RouteType = 'default' | 'download' | 'stream' | 'pipe';
 
 export class Route<
   Req extends ExpressRequest<Req> = Request,
@@ -44,11 +44,34 @@ export class Route<
     respond(this.res, responseBody, statusCode);
   }
 
+  protected stream() {
+    if (this.type === 'stream') {
+      throw new Error('Any StreamRoute must implement "buildStream"');
+    }
+  }
+
+  protected pipe() {
+    if (this.type === 'pipe') {
+      throw new Error('Any PipeRoute must implement "pipe"');
+    }
+  }
+
   public async handle() {
     // All routes will be wrapped with an error catcher that simply passes the error to the next()
     // function, causing error handling middleware to be fired. Otherwise, async errors will be
     // swallowed.
     try {
+      if (this.type === 'stream') {
+        await this.stream();
+        this.res.end();
+        return;
+      }
+      
+      if (this.type === 'pipe') {
+        await this.pipe();
+        return;
+      }
+
       const response = await this.buildResponse();
       if (this.type === 'download' && (response as DownloadResBody).contents) {
         // @ts-ignore

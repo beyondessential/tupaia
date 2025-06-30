@@ -57,6 +57,14 @@ import {
   SurveysRoute,
   SurveyUsersRequest,
   SurveyUsersRoute,
+  SyncStartSessionRequest,
+  SyncStartSessionRoute,
+  SyncInitiatePullRequest,
+  SyncInitiatePullRoute,
+  SyncPullRequest,
+  SyncPullRoute,
+  SyncEndSessionRequest,
+  SyncEndSessionRoute,
   TaskMetricsRequest,
   TaskMetricsRoute,
   TaskRequest,
@@ -121,6 +129,13 @@ export async function createApp() {
       'export/:surveyResponseId',
       handleWith(ExportSurveyResponseRoute),
     )
+
+    // Sync routes
+    .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
+    .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
+    .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
+    .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
+
     // Forward auth requests to web-config
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('verifyEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
@@ -130,6 +145,5 @@ export async function createApp() {
   await builder.initialiseApiClient(API_CLIENT_PERMISSIONS);
 
   const app = builder.build();
-
   return app;
 }

@@ -1,4 +1,4 @@
-import { DataGroupModel, DataGroupRecord } from '../../modelClasses/DataGroup';
+import { DataGroupModel, DataGroupRecord } from '../../core/modelClasses/DataGroup';
 
 describe('DataGroup', () => {
   describe('sanitizeConfig()', () => {
