@@ -7,6 +7,7 @@ import {
   createSnapshotTable,
   countSyncSnapshotRecords,
   completeSyncSession,
+  startSnapshotWhenCapacityAvailable,
   FACT_CURRENT_SYNC_TICK,
   FACT_LOOKUP_UP_TO_TICK,
   DEBUG_LOG_TYPES,
@@ -69,6 +70,15 @@ export class CentralSyncManager {
     return { tick: tock - 1, tock };
   }
 
+  async getIsSyncCapacityFull() {
+    const { maxConcurrentSessions } = this.config;
+    const activeSyncs = await this.models.syncSession.find({
+      completed_at: null,
+      errors: null,
+    });
+    return activeSyncs.length >= maxConcurrentSessions;
+  }
+
   async startSession(debugInfo = {}): Promise<StartSessionResult> {
     // as a side effect of starting a new session, cause a tick on the global sync clock
     // this is a convenient way to tick the clock, as it means that no two sync sessions will
@@ -77,12 +87,18 @@ export class CentralSyncManager {
     const sessionId = generateId();
     const startTime = new Date();
 
+    const unmarkSessionAsProcessing = await this.markSessionAsProcessing(sessionId);
     const syncSession = await this.models.syncSession.create({
       id: sessionId,
       startTime,
       lastConnectionTime: startTime,
       debugInfo,
     });
+
+    // no await as prepare session (especially the tickTockGlobalClock action) might get blocked
+    // and take a while if the central server is concurrently persisting records from another client.
+    // client should poll for the result later.
+    this.prepareSession(syncSession).finally(unmarkSessionAsProcessing);
 
     log.info('CentralSyncManager.startSession', {
       sessionId: syncSession.id,
@@ -126,6 +142,42 @@ export class CentralSyncManager {
     return { startedAtTick: session.started_at_tick };
   }
 
+  async prepareSession(syncSession: SyncSessionRecord): Promise<PrepareSessionResult | void> {
+    try {
+      await createSnapshotTable(this.database, syncSession.id);
+      const { tick } = await this.tickTockGlobalClock();
+      await syncSession.markAsStartedAt(tick);
+
+      return { sessionId: syncSession.id, tick };
+    } catch (error: any) {
+      log.error('CentralSyncManager.prepareSession encountered an error', error);
+      await this.models.syncSession.markSessionErrored(syncSession.id, error.message);
+    }
+  }
+
+  // set pull filter begins creating a snapshot of changes to pull at this point in time
+  async initiatePull(
+    sessionId: string,
+    params: SnapshotParams,
+  ): Promise<PullInitiationResult | void> {
+    try {
+      await this.connectToSession(sessionId);
+
+      // first check if the snapshot is already being processed, to throw a sane error if (for some
+      // reason) the client managed to kick off the pull twice
+      const isAlreadyProcessing = await this.checkSessionIsProcessing(sessionId);
+      if (isAlreadyProcessing) {
+        throw new Error(`Snapshot for session ${sessionId} is already being processed`);
+      }
+
+      const unmarkSessionAsProcessing = await this.markSessionAsProcessing(sessionId);
+      this.setupSnapshotForPull(sessionId, params, unmarkSessionAsProcessing); // don't await, as it takes a while - the sync client will poll for it to finish
+    } catch (error: any) {
+      log.error('CentralSyncManager.initiatePull encountered an error', error);
+      await this.models.syncSession.markSessionErrored(sessionId, error.message);
+    }
+  }
+
   async checkSessionReady(sessionId: string): Promise<boolean> {
     // if this session is still initiating, return false to tell the client to keep waiting
     const sessionIsInitiating = await this.checkSessionIsProcessing(sessionId);
@@ -144,6 +196,110 @@ export class CentralSyncManager {
 
     // session ready!
     return true;
+  }
+
+  async checkPullReady(sessionId: string): Promise<boolean> {
+    await this.connectToSession(sessionId);
+
+    // if this snapshot still processing, return false to tell the client to keep waiting
+    const snapshotIsProcessing = await this.checkSessionIsProcessing(sessionId);
+    if (snapshotIsProcessing) {
+      return false;
+    }
+
+    // if this snapshot is not marked as processing, but also never completed, record an error
+    const session = await this.connectToSession(sessionId);
+    if (session.snapshot_completed_at === null) {
+      await session.markErrored(
+        'Snapshot processing incomplete, likely because the central server restarted during the snapshot',
+      );
+      throw new Error(errorMessageFromSession(session));
+    }
+
+    // snapshot processing complete!
+    return true;
+  }
+
+  async fetchPullMetadata(sessionId: string): Promise<PullMetadata> {
+    const session = await this.connectToSession(sessionId);
+    const totalToPull = await countSyncSnapshotRecords(
+      this.database,
+      sessionId,
+      SYNC_SESSION_DIRECTION.OUTGOING,
+    );
+    await this.models.syncSession.addDebugInfo(sessionId, { totalToPull });
+    const { pull_until: pullUntil } = session;
+    return { totalToPull, pullUntil };
+  }
+
+  async setupSnapshotForPull(
+    sessionId: string,
+    snapshotParams: SnapshotParams,
+    unmarkSessionAsProcessing: () => Promise<void>,
+  ): Promise<void> {
+    const { since, projectIds, deviceId } = snapshotParams;
+    let transactionTimeout;
+    try {
+      const session = await this.connectToSession(sessionId);
+
+      // will wait for concurrent snapshots to complete if we are currently at capacity, then
+      // set the snapshot_started_at timestamp before we proceed with the heavy work below
+      await startSnapshotWhenCapacityAvailable(this.database, sessionId);
+
+      // get a sync tick that we can safely consider the snapshot to be up to (because we use the
+      // "tick" of the tick-tock, so we know any more changes on the server, even while the snapshot
+      // process is ongoing, will have a later updated_at_sync_tick, i.e. the "tock")
+      const { tick } = await this.tickTockGlobalClock();
+
+      await this.waitForPendingEdits(tick);
+
+      await this.models.syncSession.update(
+        { id: sessionId },
+        { pull_since: since, pull_until: tick },
+      );
+
+      // snapshot inside a "repeatable read" transaction, so that other changes made while this
+      // snapshot is underway aren't included (as this could lead to a pair of foreign records with
+      // the child in the snapshot and its parent missing)
+      // as the snapshot only contains read queries plus writes to the specific sync snapshot table
+      // that it controls, there should be no concurrent update issues :)
+      await this.database.wrapInTransaction(async (database: TupaiaDatabase) => {
+        const { snapshotTransactionTimeoutMs } = this.config;
+        if (snapshotTransactionTimeoutMs) {
+          transactionTimeout = setTimeout(() => {
+            throw new Error(`Snapshot for session ${sessionId} timed out`);
+          }, snapshotTransactionTimeoutMs);
+        }
+
+        // full changes
+        await snapshotOutgoingChanges(
+          database,
+          this.models,
+          since,
+          sessionId,
+          deviceId,
+          projectIds,
+          this.config,
+        );
+      });
+      // this update to the session needs to happen outside of the transaction, as the repeatable
+      // read isolation level can suffer serialization failures if a record is updated inside and
+      // outside the transaction, and the session is being updated to show the last connection
+      // time throughout the snapshot process
+      session.snapshot_completed_at = new Date();
+      await session.save();
+    } catch (error: any) {
+      log.error('CentralSyncManager.setupSnapshotForPull encountered an error', {
+        sessionId,
+        error: error.message,
+      });
+      await this.models.syncSession.markSessionErrored(sessionId, error.message);
+    } finally {
+      if (transactionTimeout) {
+        clearTimeout(transactionTimeout);
+      }
+      await unmarkSessionAsProcessing();
+    }
   }
 
   async markSessionAsProcessing(sessionId: string): Promise<UnmarkSessionAsProcessingFunction> {
@@ -201,7 +357,7 @@ export class CentralSyncManager {
     try {
       // get a sync tick that we can safely consider the snapshot to be up to (because we use the
       // "tick" of the tick-tock, so we know any more changes on the server, even while the snapshot
-      // process is ongoing, will have a later updated_at_sync_tick)
+      // process is ongoing, will have a later updated_at_sync_tick, i.e. the "tock")
       const { tick: currentTick } = await this.tickTockGlobalClock();
 
       await this.waitForPendingEdits(currentTick);
