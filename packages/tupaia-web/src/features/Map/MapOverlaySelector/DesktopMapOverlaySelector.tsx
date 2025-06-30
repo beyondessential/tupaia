@@ -98,12 +98,16 @@ const OverlayLibraryAccordion = styled(Accordion)`
   &:before {
     display: none;
   }
-  &.MuiPaper-root.Mui-expanded {
-    height: 100%;
+  &.MuiAccordion-root.Mui-expanded {
+    block-size: 100%;
+    margin-block: 0;
+    max-block-size: 100%;
     overflow: hidden; // make the accordion conform to the max-height of the parent container, regardless of how much content is present
-    > .MuiCollapse-container.MuiCollapse-entered {
-      max-height: 100%;
-      overflow-y: auto; // scrollable content when accordion is expanded;
+
+    /* scrollable content when accordion is expanded */
+    > .MuiCollapse-entered {
+      overflow-y: auto;
+      overflow-block: auto;
     }
   }
 `;
