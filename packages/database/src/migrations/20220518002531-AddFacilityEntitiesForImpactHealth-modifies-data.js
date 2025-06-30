@@ -1,6 +1,6 @@
 'use strict';
 
-import { generateId, codeToId, insertObject, nameToId, } from '../utilities';
+import { generateId, codeToId, insertObject, nameToId } from '../utilities';
 import Entities from './migrationData/20220518002531-AddFacilityEntitiesForImpactHealth-modifies-data.js/entities.json';
 
 var dbm;
@@ -39,7 +39,7 @@ const insertEntity = async (db, entity) => {
 const updatePoint = async (db, entity) => {
   const point = JSON.stringify({ type: 'Point', coordinates: [entity.longitude, entity.latitude] });
   return db.runSql(`
-    update entity 
+    update entity
     set point = ST_Force2D(ST_GeomFromGeoJSON('${point}')),
     bounds = ST_Expand(ST_Envelope(ST_GeomFromGeoJSON('${point}')::geometry), 1)
     where id = '${entity.id}';
