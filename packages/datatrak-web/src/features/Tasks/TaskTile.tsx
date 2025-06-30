@@ -40,12 +40,10 @@ const TileContainer = styled(Link)`
     }
   }
 
+  &:focus-visible,
+  &:focus-within,
   &:hover {
     background-color: ${({ theme }) => theme.palette.primaryHover};
-    border-color: ${({ theme }) => theme.palette.primary.main};
-  }
-  &:focus-within {
-    border-color: ${({ theme }) => theme.palette.primary.main};
   }
 `;
 

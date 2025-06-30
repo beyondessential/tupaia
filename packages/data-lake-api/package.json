@@ -27,15 +27,13 @@
     "@tupaia/database": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "db-migrate": "^0.11.5",
-    "db-migrate-pg": "^1.2.2",
-    "deep-equal-in-any-order": "^1.0.27",
     "knex": "^3.1.0",
     "lodash.groupby": "^4.6.0",
     "moment": "^2.24.0",
     "pg": "8.5.1"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
     "rimraf": "^6.0.1"
   }

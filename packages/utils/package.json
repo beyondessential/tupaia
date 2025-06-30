@@ -24,18 +24,15 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "@aws-sdk/abort-controller": "^3.341.0",
-    "@aws-sdk/client-s3": "^3.341.0",
-    "@aws-sdk/credential-providers": "^3.341.0",
-    "@aws-sdk/lib-storage": "^3.348.0",
     "bson-objectid": "^1.2.2",
-    "case": "^1.5.5",
+    "case": "^1.6.3",
     "countrynames": "^0.1.1",
     "date-fns": "^2.29.2",
     "date-fns-tz": "^2.0.1",
     "fast-memoize": "^2.5.2",
     "jsonwebtoken": "^9.0.0",
     "lodash.get": "^4.4.2",
+    "lodash.isplainobject": "^4.0.6",
     "lodash.pickby": "^4.6.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.45",
@@ -50,7 +47,11 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
+    "mockdate": "^3.0.5",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "sinon": "^9.0.2",
+    "yargs": "15.4.1"
   }
 }
