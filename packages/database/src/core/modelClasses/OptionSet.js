@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -28,7 +30,13 @@ export class OptionSetRecord extends DatabaseRecord {
 }
 
 export class OptionSetModel extends DatabaseModel {
+  syncDirection = SyncDirections.BIDIRECTIONAL;
+
   get DatabaseRecordClass() {
     return OptionSetRecord;
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return null;
   }
 }

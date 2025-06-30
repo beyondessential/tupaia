@@ -2,7 +2,12 @@ import log from 'winston';
 
 import { FilteredModelRegistry } from '@tupaia/sync';
 import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
-import { DatabaseModel, TupaiaDatabase, DebugLogRecord, buildSyncLookupSelect } from '@tupaia/database';
+import {
+  DatabaseModel,
+  TupaiaDatabase,
+  DebugLogRecord,
+  buildSyncLookupSelect,
+} from '@tupaia/database';
 
 import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
 
@@ -26,7 +31,7 @@ const updateLookupTableForModel = async (
     ? await (model.buildSyncLookupQueryDetails as Function)()
     : {};
 
-  const { select, joins, where } = result;
+  const { select, joins, where, groupBy } = result || {};
 
   while (fromId != null) {
     const [{ maxId, count }] = await model.database.executeSql(
@@ -54,6 +59,7 @@ const updateLookupTableForModel = async (
           WHERE
           (${where || `${table}.updated_at_sync_tick > :since`})
           ${fromId ? `AND ${table}.id > :fromId` : ''}
+          ${groupBy ? `GROUP BY sync_device_tick.device_id, ${groupBy.join(', ')}` : ''}
           ORDER BY ${table}.id
           LIMIT :limit
           ON CONFLICT (record_id, record_type)
@@ -100,9 +106,7 @@ export const updateLookupTable = async (
   const invalidModelNames = Object.values(outgoingModels)
     .filter(
       m =>
-        ![SyncDirections.BIDIRECTIONAL, SyncDirections.PULL_FROM_CENTRAL].includes(
-          m.syncDirection,
-        ),
+        ![SyncDirections.BIDIRECTIONAL, SyncDirections.PULL_FROM_CENTRAL].includes(m.syncDirection),
     )
     .map(m => m.tableName);
 
@@ -125,9 +129,9 @@ export const updateLookupTable = async (
 
       changesCount += modelChangesCount || 0;
     } catch (e: any) {
-      log.error(`Failed to update ${model.name} for lookup table`);
+      log.error(`Failed to update ${model.databaseRecord} for lookup table`);
       log.debug(e);
-      throw new Error(`Failed to update ${model.name} for lookup table: ${e.message}`);
+      throw new Error(`Failed to update ${model.databaseRecord} for lookup table: ${e.message}`);
     }
   }
 
