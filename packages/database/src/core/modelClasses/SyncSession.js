@@ -46,9 +46,9 @@ export class SyncSessionModel extends DatabaseModel {
    * @param {*} id 
    * @param {*} info 
    */
-  async addDebugInfo(id, info) {
+  async addInfo(id, info) {
     const session = await this.findById(id);
-    session.debugInfo = { ...session.debugInfo, ...info };
+    session.info = { ...session.info, ...info };
     await session.save();
   }
 }

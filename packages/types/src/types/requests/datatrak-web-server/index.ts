@@ -21,3 +21,5 @@ export * as DatatrakWebSyncStartSessionRequest from './DatatrakSyncStartSessionR
 export * as DatatrakWebSyncInitiatePullRequest from './DatatrakSyncInitiatePullRequest';
 export * as DatatrakWebSyncPullRequest from './DatatrakSyncPullRequest';
 export * as DatatrakWebSyncEndSessionRequest from './DatatrakSyncEndSessionRequest';
+export * as DatatrakWebSyncPushRequest from './DatatrakSyncPushRequest';
+export * as DatatrakWebSyncPushCompleteRequest from './DatatrakSyncPushCompleteRequest';

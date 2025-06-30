@@ -1,7 +1,11 @@
 import log from 'winston';
 
-import { getSnapshotTableName, NON_SYNCING_TABLES, SYNC_SESSION_DIRECTION } from '@tupaia/sync';
-import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
+import {
+  getSnapshotTableName,
+  NON_SYNCING_TABLES,
+  SYNC_SESSION_DIRECTION,
+} from '@tupaia/sync';
+import { DatabaseModel, TupaiaDatabase } from '@tupaia/database';
 import { SyncServerConfig } from '../types';
 
 type SnapshotOutgoingChangesResult = {
@@ -11,7 +15,7 @@ type SnapshotOutgoingChangesResult = {
 
 export const snapshotOutgoingChanges = async (
   database: TupaiaDatabase,
-  models: ModelRegistry,
+  models: DatabaseModel[],
   since: number,
   sessionId: string,
   deviceId: string,
