@@ -1,14 +1,14 @@
 import React from 'react';
-import { EntityTypeEnum, QuestionType } from '@tupaia/types';
+import { EntityTypeEnum, QuestionType, DatatrakWebEntitiesRequest } from '@tupaia/types';
+
 import { EntitySelector } from '../../EntitySelector';
 import { useCurrentUserContext, useSurvey } from '../../../api';
 import { getAllSurveyComponents } from '../../Survey';
-import { CountryResponse } from '../../CountrySelector/useUserCountries';
 
 interface EntityInputProps {
   onChange: (value: string) => void;
   value: string;
-  selectedCountry?: CountryResponse | null;
+  selectedCountry?: DatatrakWebEntitiesRequest.EntitiesResponseItem | null;
   inputRef?: React.Ref<any>;
   name: string;
   invalid?: boolean;
