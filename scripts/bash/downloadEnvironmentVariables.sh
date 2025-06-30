@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e +x # Do not output commands in this script, as some would show credentials in plain text
 
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 "$DIR/requireCommands.sh" bw jq
 
 . "$DIR/ansiControlSequences.sh"
