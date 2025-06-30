@@ -25,13 +25,13 @@ export interface UseTasksQueryParams {
 
 export const useTasks = (
   {
-    projectId,
     allAssignees = false,
+    filters = [],
     includeCancelled = false,
     includeCompleted = false,
-    pageSize,
     page,
-    filters = [],
+    pageSize,
+    projectId,
     sortBy,
   }: UseTasksQueryParams,
   useQueryOptions?: UseQueryOptions<DatatrakWebTasksRequest.ResBody>,
@@ -81,8 +81,6 @@ export const useTasks = (
     return augmented;
   };
 
-  const consolidatedFilters = consolidateFilters();
-
   return useQuery<DatatrakWebTasksRequest.ResBody>(
     [
       'tasks',
@@ -100,7 +98,7 @@ export const useTasks = (
         params: {
           pageSize,
           page,
-          filters: consolidatedFilters,
+          filters: consolidateFilters(),
           sort: sortBy?.map(({ id, desc }) => `${id} ${desc ? 'DESC' : 'ASC'}`) ?? [],
         },
       }),
@@ -109,6 +107,11 @@ export const useTasks = (
       enabled: !!projectId && !!userId && (useQueryOptions?.enabled ?? true),
       // This needs to be true so that when changing the page number, the total number of records is not reset
       keepPreviousData: true,
+      placeholderData: {
+        count: 0,
+        numberOfPages: 0,
+        tasks: [],
+      },
     },
   );
 };
