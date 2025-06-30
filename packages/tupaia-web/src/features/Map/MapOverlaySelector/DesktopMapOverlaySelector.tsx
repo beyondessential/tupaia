@@ -48,6 +48,7 @@ const MaxHeightContainer = styled.div`
 `;
 
 const Wrapper = styled(MaxHeightContainer)`
+  border-radius: 0.3125rem;
   flex: 1;
   max-width: 21.25rem;
   margin: 0.625rem;
@@ -60,9 +61,9 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.8rem 1rem;
+  padding-block: 0.8rem;
+  padding-inline: 1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
-  border-radius: 5px 5px 0 0;
   pointer-events: auto;
 `;
 
@@ -75,7 +76,8 @@ const Heading = styled(Typography).attrs({
 `;
 
 const Container = styled(MaxHeightContainer)`
-  border-radius: 0 0 5px 5px;
+  border-end-end-radius: inherit;
+  border-end-start-radius: inherit;
   // Set pointer events on the container rather than higher up so that it only applies to the open menu
   pointer-events: auto;
 `;
@@ -85,16 +87,15 @@ const TitleWrapper = styled.div`
   background-color: ${({ theme }) => theme.palette.overlaySelector.overlayNameBackground};
   // Add padding between the title and the date picker when both are present
   div + div {
-    padding-top: 0.5rem;
+    padding-block-start: 0.5rem;
   }
 `;
 
 const OverlayLibraryAccordion = styled(Accordion)`
   display: flex;
   flex-direction: column;
-  margin: 0 !important;
   background-color: ${({ theme }) => theme.palette.overlaySelector.menuBackground};
-  border-radius: 0 0 5px 5px;
+
   &:before {
     display: none;
   }
@@ -113,8 +114,8 @@ const OverlayLibraryAccordion = styled(Accordion)`
 `;
 
 const OverlayLibraryIcon = styled(Layers)`
-  margin-right: 0.5rem;
-  width: 1.2rem;
+  margin-inline-end: 0.5rem;
+  inline-size: 1.2rem;
   .Mui-expanded & {
     fill: ${({ theme }) => theme.palette.secondary.main};
   }
@@ -143,20 +144,22 @@ const OverlayLibraryHeader = styled(AccordionSummary)`
 `;
 
 const OverlayLibraryContentWrapper = styled(AccordionDetails)`
-  padding: 0 1rem 1rem;
+  padding-block: 0 1rem;
+  padding-inline: 1rem;
 `;
 
 const OverlayLibraryContentContainer = styled.div`
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  width: 100%;
-  padding-top: 1rem;
+  border-block-start: max(0.0625rem, 1px) solid oklch(1 0 0 / 12%);
+  inline-size: 100%;
+  padding-block-start: 1rem;
 `;
 
 const LatestDataContainer = styled.div`
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
-  padding: 0.3rem 0.5rem 0.2rem;
-  margin-top: 0.5rem;
+  background-color: oklch(0 0 0 / 30%);
+  border-radius: 0.3125rem;
+  padding-block: 0.3rem 0.2rem;
+  padding-inline: 0.5rem;
+  margin-block-start: 0.5rem;
 `;
 
 const LatestDataText = styled(Typography)`
@@ -183,8 +186,8 @@ const ErrorAlert = styled(SmallAlert)`
 
 const ErrorCloseButton = styled(IconButton)`
   position: absolute;
-  top: 0;
-  right: 0;
+  inset-block-start: 0;
+  inset-inline-end: 0;
   padding: 0.2rem;
   color: ${({ theme }) => theme.palette.text.primary};
 `;
