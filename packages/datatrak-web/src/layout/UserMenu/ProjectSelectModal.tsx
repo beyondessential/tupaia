@@ -1,11 +1,11 @@
 import { Paper, Typography } from '@material-ui/core';
+import { ChevronLeft } from 'lucide-react';
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { IconButton, ListItemRoot, ProjectSelectForm } from '@tupaia/ui-components';
+import { IconButton, ListItemRoot, ProjectSelectForm, VisuallyHidden } from '@tupaia/ui-components';
 
 import { useCurrentUserContext, useEditUser, useProjects } from '../../api';
-import { ArrowLeftIcon } from '../../components';
 import { Modal } from '../../components/Modal';
 import { SlideTransition } from '../../components/SlideTransition';
 import { RequestProjectAccess } from '../../features';
@@ -164,7 +164,8 @@ export const ProjectSelectModal = ({ onBack }: ModalProps) => {
         <>
           <Header>
             <BackButton onClick={onBack}>
-              <ArrowLeftIcon />
+              <ChevronLeft />
+              <VisuallyHidden>Back</VisuallyHidden>
             </BackButton>
             <Title>Select project</Title>
           </Header>

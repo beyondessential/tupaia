@@ -1,15 +1,16 @@
 import { IconButton, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import { ChevronLeft } from 'lucide-react';
 import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
-import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
 export const MobileHeaderRoot = styled.header`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   block-size: ${HEADER_HEIGHT};
+  border-block-end: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   display: grid;
   gap: 1rem;
   grid-template-areas: '--leading --title --trailing';
@@ -37,11 +38,6 @@ const LeadingIconButton = styled(Button)`
 `;
 const TrailingIconButton = styled(Button)`
   grid-area: --trailing;
-`;
-
-const BackIcon = styled(ArrowLeftIcon)`
-  width: 1rem;
-  height: 1rem;
 `;
 
 const Title = styled(Typography).attrs({ variant: 'h2' })`
@@ -74,12 +70,12 @@ export const StickyMobileHeader = ({
     >
       {onBack && (
         <LeadingIconButton onClick={onBack}>
-          <BackIcon />
+          <ChevronLeft />
         </LeadingIconButton>
       )}
       <Title>{children}</Title>
       {onClose && (
-        <TrailingIconButton aria-label="Close sync view" onClick={onClose}>
+        <TrailingIconButton aria-label="Close" onClick={onClose}>
           <Close />
         </TrailingIconButton>
       )}
