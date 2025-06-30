@@ -21,7 +21,7 @@ const db = Knex({
     port: (process.env.DB_PORT as any) || 5432,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: 'tupaia_test',
+    database: process.env.DB_NAME,
   },
 });
 
