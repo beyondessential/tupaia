@@ -270,7 +270,7 @@ export class CentralSyncManager {
       // the child in the snapshot and its parent missing)
       // as the snapshot only contains read queries plus writes to the specific sync snapshot table
       // that it controls, there should be no concurrent update issues :)
-      await this.models.wrapInTransaction(
+      await this.models.wrapInRepeatableReadTransaction(
         async (transactingModels: SyncServerModelRegistry) => {
           const { snapshotTransactionTimeoutMs } = this.config;
           if (snapshotTransactionTimeoutMs) {
@@ -290,7 +290,6 @@ export class CentralSyncManager {
             this.config,
           );
         },
-        { isolationLevel: 'repeatable read' },
       );
       // this update to the session needs to happen outside of the transaction, as the repeatable
       // read isolation level can suffer serialization failures if a record is updated inside and
@@ -378,7 +377,7 @@ export class CentralSyncManager {
 
       const isInitialBuildOfLookupTable = Number.parseInt(previouslyUpToTick, 10) === -1;
 
-      await this.models.wrapInTransaction(
+      await this.models.wrapInRepeatableReadTransaction(
         async (transactingModels: SyncServerModelRegistry) => {
           // When it is initial build of sync lookup table, by setting it to null,
           // it will get the updated_at_sync_tick from the actual tables.
@@ -406,7 +405,6 @@ export class CentralSyncManager {
           });
           await transactingModels.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, currentTick);
         },
-        { isolationLevel: 'repeatable read' },
       );
 
       // If we used the current sync tick to record against each update to the sync lookup table, we would hit an edge case:
@@ -426,14 +424,13 @@ export class CentralSyncManager {
       // Note: We do not need to update pending records when it is the initial build
       // because it uses ticks from the actual tables for updated_at_sync_tick
       if (!isInitialBuildOfLookupTable) {
-        await this.models.wrapInTransaction(
+        await this.models.wrapInRepeatableReadTransaction(
           async (transactingModels: SyncServerModelRegistry) => {
             // Wrap inside transaction so that any writes to currentSyncTick
             // will have to wait until this transaction is committed
             const { tick: currentTick } = await this.tickTockGlobalClock(transactingModels);
             await updateSyncLookupPendingRecords(transactingModels.database, currentTick);
           },
-          { isolationLevel: 'repeatable read' },
         );
       }
     } catch (error: any) {

@@ -120,6 +120,18 @@ export class ModelRegistry {
     return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
   }
 
+  /**
+   * @param {(models: BaseDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInRepeatableReadTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.wrapInTransaction(wrappedFunction, {
+      ...transactionConfig,
+      isolationLevel: 'repeatable read',
+    });
+  }
+
   getTypesToSyncWithMeditrak() {
     return Object.values(this)
       .filter(({ meditrakConfig }) => meditrakConfig)

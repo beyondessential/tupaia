@@ -121,12 +121,15 @@ export class ClientSyncManager {
     const pushSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
     console.log('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
-    const outgoingChanges = await this.models.wrapInTransaction(
+    // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
+    // is underway aren't included (as this could lead to a pair of foreign records with the child in
+    // the snapshot and its parent missing)
+    // as the snapshot only contains read queries, there will be no concurrent update issues :)
+    const outgoingChanges = await this.models.wrapInRepeatableReadTransaction(
       async transactingModels => {
         const modelsForPush = getModelsForPush(transactingModels.getModels());
         return snapshotOutgoingChanges(modelsForPush, pushSince);
       },
-      { isolationLevel: 'repeatable read' },
     );
 
     if (outgoingChanges.length > 0) {

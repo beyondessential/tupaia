@@ -36,10 +36,6 @@ export const snapshotOutgoingChanges = async (models: DatabaseModel[], since: nu
     );
   }
 
-  // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
-  // is underway aren't included (as this could lead to a pair of foreign records with the child in
-  // the snapshot and its parent missing)
-  // as the snapshot only contains read queries, there will be no concurrent update issues :)
   let outgoingChanges: SyncSnapshotAttributes[] = [];
   for (const model of Object.values(models)) {
     const changesForModel = await snapshotChangesForModel(model, since);
