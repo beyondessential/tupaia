@@ -12,7 +12,6 @@ module.exports = {
       '<rootDir>/jestFileMock.js',
     '^file-loader': '<rootDir>/jestFileMock.js',
   },
-  setupFilesAfterEnv: ['./jest.setup.ts'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.js$': ['babel-jest', { configFile: './babel.test.js' }],
