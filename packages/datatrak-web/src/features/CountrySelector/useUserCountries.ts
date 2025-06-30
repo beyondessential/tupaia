@@ -1,20 +1,23 @@
 import { ChangeEvent, ChangeEventHandler, useState } from 'react';
 
-import { Country } from '@tupaia/types';
+import { camelKeys } from '@tupaia/utils';
+import { DatatrakWebEntitiesRequest } from '@tupaia/types';
+
 import {
   UseProjectEntitiesQueryOptions,
   useCurrentUserContext,
   useProjectEntities,
 } from '../../api';
+import { Entity } from '../../types';
 import { UseProjectEntitiesQueryResult } from '../../api/queries/useProjectEntities';
 
 export type UserCountriesType = Omit<UseProjectEntitiesQueryResult, 'data'> & {
-  countries: Country[];
+  countries: Exclude<UseProjectEntitiesQueryResult['data'], undefined>;
   /**
    * @privateRemarks The internal {@link useState} only ever explicitly stores `Country | null`, but
    * `selectedCountry` may be undefined if the {@link useProjectEntities} query is still loading.
    */
-  selectedCountry: Country | null | undefined;
+  selectedCountry: DatatrakWebEntitiesRequest.EntitiesResponseItem | null | undefined;
   updateSelectedCountry: ChangeEventHandler;
 };
 
@@ -22,13 +25,14 @@ export const useUserCountries = (
   useProjectEntitiesQueryOptions?: UseProjectEntitiesQueryOptions,
 ): UserCountriesType => {
   const user = useCurrentUserContext();
-  const [newSelectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const [newSelectedCountry, setSelectedCountry] =
+    useState<DatatrakWebEntitiesRequest.EntitiesResponseItem | null>(null);
 
   const projectCode = user.project?.code;
   const entityRequestParams = {
     filter: { type: 'country' },
   };
-  const { data: countries = [] as Country[], ...projectEntitiesQuery } = useProjectEntities(
+  const { data: countries = [], ...projectEntitiesQuery } = useProjectEntities(
     projectCode,
     entityRequestParams,
     useProjectEntitiesQueryOptions,
@@ -40,7 +44,7 @@ export const useUserCountries = (
 
     // if the user has a country, return that country if it can be found
     if (user.country && countries?.find(({ code }) => code === user.country?.code)) {
-      return user.country;
+      return camelKeys(user.country);
     }
 
     // if the selected project is 'explore', return demo land
@@ -55,13 +59,13 @@ export const useUserCountries = (
   const selectedCountry = getSelectedCountry();
 
   return {
-    countries: countries as Country[],
+    countries,
     ...projectEntitiesQuery,
 
-    selectedCountry: selectedCountry as Country,
+    selectedCountry,
     updateSelectedCountry: (e: ChangeEvent<HTMLSelectElement>) => {
       const countryCode = e.target.value;
-      const newCountry = countries?.find((country) => country.code === countryCode) as Country;
+      const newCountry = countries?.find((country: Entity) => country.code === countryCode);
       setSelectedCountry(newCountry ?? null);
     },
   };

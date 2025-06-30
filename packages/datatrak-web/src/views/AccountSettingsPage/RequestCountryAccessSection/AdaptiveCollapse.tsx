@@ -1,8 +1,7 @@
 import { Button, useMediaQuery, useTheme } from '@material-ui/core';
-import React, { useState, HTMLAttributes, ReactNode } from 'react';
+import { ChevronLeft } from 'lucide-react';
+import React, { HTMLAttributes, ReactNode, useState } from 'react';
 import styled from 'styled-components';
-
-import { ArrowLeftIcon } from '../../../components';
 
 const AdaptiveSubgrid = styled.div`
   ${props => props.theme.breakpoints.up('sm')} {
@@ -27,7 +26,7 @@ const ExpandButton = styled(Button).attrs({
   }
 `;
 
-const ExpandIcon = styled(ArrowLeftIcon)`
+const ExpandIcon = styled(ChevronLeft)`
   font-size: 1rem;
   transition: transform 350ms var(--ease-in-out-quart);
 

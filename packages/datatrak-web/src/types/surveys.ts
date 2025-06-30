@@ -16,18 +16,14 @@ export type SurveyParams = {
   screenNumber: string;
 };
 
-export type SurveyQuestionFieldProps = Omit<
-  SurveyScreenComponent,
-  'componentNumber' | 'questionId' | 'updatedAtSyncTick'
-> & {
+export interface SurveyQuestionFieldProps
+  extends Omit<SurveyScreenComponent, 'componentNumber' | 'questionId' | 'updatedAtSyncTick'> {
   name: SurveyScreenComponent['code'];
   id: SurveyScreenComponent['questionId'];
-};
+}
 
-export type SurveyQuestionInputProps = Omit<
-  SurveyQuestionFieldProps,
-  'type' | 'text' | 'updatedAtSyncTick'
-> & {
+export interface SurveyQuestionInputProps
+  extends Omit<SurveyQuestionFieldProps, 'type' | 'text' | 'updatedAtSyncTick'> {
   controllerProps: ControllerRenderProps & {
     invalid?: boolean;
   };
@@ -36,4 +32,4 @@ export type SurveyQuestionInputProps = Omit<
   max?: number;
   type?: SurveyQuestionFieldProps['type'];
   text?: SurveyQuestionFieldProps['text'];
-};
+}

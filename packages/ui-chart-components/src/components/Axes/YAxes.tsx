@@ -91,7 +91,7 @@ const renderYAxisLabel = (
 
 const flattenValues = (data?: any[], dataKeys?: string[]) => {
   if (!data) return [];
-  return data?.map(item => dataKeys?.map(key => item[key])).flat();
+  return data?.flatMap(item => dataKeys?.map(key => item[key]));
 };
 
 /**
