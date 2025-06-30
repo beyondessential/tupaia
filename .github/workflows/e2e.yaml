@@ -24,6 +24,6 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: corepack enable yarn
-      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+      - run: yarn install
       - run: yarn workspace @tupaia/utils build
       - run: yarn workspace "@tupaia/e2e" test-e2e --ciBuildId $GITHUB_RUN_ID
