@@ -24,13 +24,15 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       sort,
     });
 
-    return camelcaseKeys(entities.map(({ code, id, name, parent_id, type, updated_at_sync_tick }) => ({
-      code,
-      id,
-      name,
-      parent_id,
-      type,
-      updated_at_sync_tick
-    })));
+    return camelcaseKeys(
+      entities.map(({ code, id, name, parent_id, type, updated_at_sync_tick }) => ({
+        code,
+        id,
+        name,
+        parent_id,
+        type,
+        updated_at_sync_tick,
+      })),
+    );
   }
 }

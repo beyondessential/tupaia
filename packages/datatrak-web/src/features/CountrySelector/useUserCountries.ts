@@ -1,6 +1,6 @@
 import { ChangeEvent, ChangeEventHandler, useState } from 'react';
 
-import { camelKeys } from '@tupaia/utils';
+import { camelcaseKeys } from '@tupaia/tsutils';
 import { DatatrakWebEntitiesRequest } from '@tupaia/types';
 
 import {
@@ -44,7 +44,7 @@ export const useUserCountries = (
 
     // if the user has a country, return that country if it can be found
     if (user.country && countries?.find(({ code }) => code === user.country?.code)) {
-      return camelKeys(user.country);
+      return camelcaseKeys(user.country) as DatatrakWebEntitiesRequest.EntitiesResponseItem;
     }
 
     // if the selected project is 'explore', return demo land

@@ -57,18 +57,6 @@ import {
   SurveysRoute,
   SurveyUsersRequest,
   SurveyUsersRoute,
-  TaskMetricsRequest,
-  TaskMetricsRoute,
-  TaskRequest,
-  TaskRoute,
-  TasksRequest,
-  TasksRoute,
-  UserRequest,
-  UserRoute,
-  ResubmitSurveyResponseRequest,
-  ResubmitSurveyResponseRoute,
-  ExportSurveyResponseRequest,
-  ExportSurveyResponseRoute,
   SyncStartSessionRequest,
   SyncStartSessionRoute,
   SyncInitiatePullRequest,
@@ -77,10 +65,18 @@ import {
   SyncPullRoute,
   SyncPushRequest,
   SyncPushRoute,
-  SyncEndSessionRequest,
-  SyncEndSessionRoute,
   SyncPushCompleteRequest,
   SyncPushCompleteRoute,
+  SyncEndSessionRequest,
+  SyncEndSessionRoute,
+  TaskMetricsRequest,
+  TaskMetricsRoute,
+  TaskRequest,
+  TaskRoute,
+  TasksRequest,
+  TasksRoute,
+  UserRequest,
+  UserRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 
@@ -143,7 +139,10 @@ export async function createApp() {
     .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
     .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
-    .put<SyncPushCompleteRequest>('sync/:sessionId/push/complete', handleWith(SyncPushCompleteRoute))
+    .put<SyncPushCompleteRequest>(
+      'sync/:sessionId/push/complete',
+      handleWith(SyncPushCompleteRoute),
+    )
     .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
 
     // Forward auth requests to web-config
