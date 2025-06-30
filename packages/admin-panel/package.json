@@ -14,7 +14,7 @@
     "build": "yarn run clean:build && run-s -c \"build:* {@}\" --",
     "build:src": "yarn run package:build:vite",
     "preview": "vite preview",
-    "build:library": "rimraf lib && yarn run package:build:lib",
+    "build:library": "yarn run clean:build && yarn run package:build:lib",
     "build-dev": "yarn run build:library",
     "clean:build": "rimraf -- lib",
     "lint": "yarn package:lint",
