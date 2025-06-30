@@ -93,12 +93,16 @@ const overrides = {
         '--ease-in-out-quart': 'cubic-bezier(0.76, 0, 0.24, 1)',
         accentColor: palette.primary.main,
         interpolateSize: 'allow-keywords',
+        textWrap: 'pretty',
       },
       'button, figcaption, h1, h2, h3, h4, h5, h6, input, label': {
         textWrap: 'balance',
       },
       'button, input, textarea, select': {
         touchAction: 'manipulation',
+      },
+      legend: {
+        paddingInline: 0,
       },
       ":where(ol, ul)[role='list']": {
         listStyleType: 'none',
@@ -111,10 +115,7 @@ const overrides = {
       source: {
         display: 'none',
       },
-      table: {
-        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
-      },
-      time: {
+      'table, time': {
         fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
       },
       '.lucide': {
@@ -184,7 +185,7 @@ const overrides = {
 } as const;
 
 const transitions = {
-  /* These custom CSS properties defined immediately above in `overrides.MuiCssBaseline['root']` */
+  /* These custom CSS properties defined immediately above in `overrides.MuiCssBaseline[':root']` */
   easing: {
     easeIn: 'var(--ease-in-quart)',
     easeInOut: 'var(--ease-in-out-quart)',

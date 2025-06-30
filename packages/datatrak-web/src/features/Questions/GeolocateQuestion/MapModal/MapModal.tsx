@@ -1,9 +1,10 @@
+import { Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { LatLngLiteral } from 'leaflet';
-import { Typography } from '@material-ui/core';
+
 import { OutlinedButton } from '@tupaia/ui-components';
-import { getAutoTileSet, DEFAULT_TILESETS } from '@tupaia/ui-map-components';
+import { DEFAULT_TILESETS, getAutoTileSet } from '@tupaia/ui-map-components';
+
 import { Button, Modal } from '../../../../components';
 import { Map } from './Map';
 
@@ -35,10 +36,7 @@ const ButtonGroup = styled.div`
   inline-size: 100%;
 `;
 
-type Geolocation = {
-  latitude?: LatLngLiteral['lat'];
-  longitude?: LatLngLiteral['lng'];
-};
+type Geolocation = Partial<Pick<GeolocationCoordinates, 'latitude' | 'longitude' | 'accuracy'>>;
 
 interface MapModalProps {
   geolocation: Geolocation;
@@ -79,7 +77,7 @@ export const MapModal = ({
       <Container>
         <Heading>Drop pin on map</Heading>
         <Typography color="textSecondary">
-          Click to drop the pin in a new position on the map and click 'Confirm'
+          Click to drop the pin in a new position on the map and click &lsquo;Confirm&rsquo;
         </Typography>
         <Map
           lng={currentLongitude}

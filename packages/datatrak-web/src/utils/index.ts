@@ -1,4 +1,3 @@
-export { useBottomNavigationVisibility } from '../components/BottomNavigation/useBottomNavigationVisibility';
 export * from './date';
 export * from './detectDevice';
 export { isWebApp } from './displayMode';
