@@ -15,13 +15,33 @@ import { GeolocationAccuracyFeedback } from './GeolocationAccuracyFeedback';
 import { LatLongFields } from './LatLongFields';
 import { MapModal } from './MapModal';
 
-const geolocationPositionErrorMessages = {
+/**
+ * @privateRemarks A bit of a hack to avoid {@link ReferenceError} when
+ * {@link GeolocationPositionError} isn’t available, most pertinently in the JSDOM test environment.
+ * Resultant object is always identical. (Proper solution would define the interface in
+ * [`setupFiles`](https://jestjs.io/docs/configuration#setupfiles-array) or
+ * [`setupFilesAfterEnv`](https://jestjs.io/docs/configuration#setupfilesafterenv-array).)
+ */
+const EnvAgnosticGeolocationPositionError =
+  'geolocation' in navigator
+    ? ({
+        PERMISSION_DENIED: GeolocationPositionError.PERMISSION_DENIED,
+        POSITION_UNAVAILABLE: GeolocationPositionError.POSITION_UNAVAILABLE,
+        TIMEOUT: GeolocationPositionError.TIMEOUT,
+      } as const)
+    : ({
+        PERMISSION_DENIED: 1,
+        POSITION_UNAVAILABLE: 2,
+        TIMEOUT: 3,
+      } as const);
+
+const errorMessages = {
   [GEOLOCATION_UNSUPPORTED_ERROR.code]: GEOLOCATION_UNSUPPORTED_ERROR.message,
-  [GeolocationPositionError.PERMISSION_DENIED]:
+  [EnvAgnosticGeolocationPositionError.PERMISSION_DENIED]:
     'Please allow Tupaia DataTrak to access your location. You may need to check your browser or system settings.',
-  [GeolocationPositionError.POSITION_UNAVAILABLE]:
+  [EnvAgnosticGeolocationPositionError.POSITION_UNAVAILABLE]:
     'Couldn’t detect your location. Try again when you have stronger GPS, cellular or Wi-Fi reception.',
-  [GeolocationPositionError.TIMEOUT]:
+  [EnvAgnosticGeolocationPositionError.TIMEOUT]:
     'Couldn’t determine your location within a reasonable time. Try again when you have stronger GPS, cellular or Wi-Fi reception.',
 } as const;
 
@@ -78,15 +98,13 @@ export const GeolocateQuestion = ({
 
   const populateFromCurrentPosition = () => {
     if (error !== null) {
-      setErrorFeedback(geolocationPositionErrorMessages[error.code]);
+      setErrorFeedback(errorMessages[error.code]);
       return;
     }
 
     if (position === null) {
       // `position` and `error` shouldn’t both be null, so this will probably never happen
-      setErrorFeedback(
-        geolocationPositionErrorMessages[GeolocationPositionError.POSITION_UNAVAILABLE],
-      );
+      setErrorFeedback(errorMessages[EnvAgnosticGeolocationPositionError.POSITION_UNAVAILABLE]);
       return;
     }
 
