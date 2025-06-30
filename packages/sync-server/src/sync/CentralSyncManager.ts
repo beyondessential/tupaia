@@ -62,6 +62,10 @@ export class CentralSyncManager {
     };
   }
 
+  /**
+   * @param models - Either this.models or a transaction-wrapped version of this.models.
+   * @returns The tick and tock values.
+   */
   async tickTockGlobalClock(models: SyncServerModelRegistry): Promise<GlobalClockResult> {
     // rather than just incrementing by one tick, we "tick, tock" the clock so we guarantee the
     // "tick" part to be unique to the requesting client, and any changes made directly on the
@@ -316,12 +320,9 @@ export class CentralSyncManager {
     // level (independent of an individual node process), but will be unlocked if the transaction is
     // rolled back for any reason (e.g. the server restarts)
     const transactionDatabase = await this.models.database.createTransaction();
-    await transactionDatabase.executeSql(
-      'SELECT pg_advisory_xact_lock(:sessionLockId);',
-      {
-        sessionLockId: objectIdToTimestamp(sessionId),
-      },
-    );
+    await transactionDatabase.executeSql('SELECT pg_advisory_xact_lock(:sessionLockId);', {
+      sessionLockId: objectIdToTimestamp(sessionId),
+    });
     const unmarkSessionAsProcessing = async () => {
       await transactionDatabase.commitTransaction();
     };
@@ -348,7 +349,9 @@ export class CentralSyncManager {
     // wait for any in-flight transactions of pending edits
     // so that we don't miss any changes that are in progress
     await Promise.all(
-      pendingSyncTicks.map((t: number) => waitForPendingEditsUsingSyncTick(this.models.database, t)),
+      pendingSyncTicks.map((t: number) =>
+        waitForPendingEditsUsingSyncTick(this.models.database, t),
+      ),
     );
   }
 
@@ -473,10 +476,6 @@ export class CentralSyncManager {
           // by an exclusive lock taken prior to starting a snapshot - so this is now purely for
           // saving with a unique tick
           const { tock } = await this.tickTockGlobalClock(transactingModels);
-
-          // // run any side effects for each model
-          // // eg: resolving duplicated patient display IDs
-          // await incomingSyncHook(database, modelsToInclude, sessionId);
 
           await saveIncomingSnapshotChanges(modelsToInclude, sessionId);
 
