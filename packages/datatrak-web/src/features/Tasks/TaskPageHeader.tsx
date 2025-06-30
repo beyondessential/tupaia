@@ -1,10 +1,17 @@
-import { Typography } from '@material-ui/core';
-import React, { ReactNode } from 'react';
+import { Typography, useTheme } from '@material-ui/core';
+import { ChevronLeft } from 'lucide-react';
+import React from 'react';
 import styled from 'styled-components';
-import { ArrowLeftIcon, Button, TaskIcon } from '../../components';
-import { useFromLocation } from '../../utils';
 
-const BackButton = styled(Button)`
+import { SafeAreaColumn } from '@tupaia/ui-components';
+
+import { Button, TaskIcon } from '../../components';
+import { useFromLocation, useIsMobile } from '../../utils';
+
+const BackButton = styled(Button).attrs({
+  title: 'Back',
+  variant: 'text',
+})`
   min-width: 0;
   color: ${({ theme }) => theme.palette.text.primary};
   padding: 0.7rem;
@@ -14,25 +21,18 @@ const BackButton = styled(Button)`
   }
 `;
 
-const Wrapper = styled.div`
-  padding-block: 0.7rem;
-  display: flex;
+const Wrapper = styled(SafeAreaColumn)`
   align-items: self-start;
-  padding-inline-end: 2.7rem;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    flex-direction: column;
-    align-items: flex-start;
-    padding-inline-end: 0;
-  }
+  display: flex;
+  flex: initial;
+  gap: 1rem;
+  padding-block: 0.7rem;
 `;
 
 const HeadingContainer = styled.div`
   display: flex;
   align-items: center;
   margin-inline-end: 1.2rem;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    margin-inline-end: 0;
-  }
 `;
 
 const Title = styled(Typography).attrs({
@@ -51,40 +51,36 @@ const Container = styled.div`
 `;
 
 const ContentWrapper = styled.div`
-  flex: 1;
-  display: flex;
   align-items: center;
-  justify-content: flex-end;
-  width: 100%;
+  display: flex;
   flex: 1;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline-start: 1rem;
-    flex-direction: column;
-    padding-inline-end: 0.6rem;
-  }
+  gap: 1rem;
+  inline-size: 100%;
+  justify-content: flex-end;
 `;
 
-export const TaskPageHeader = ({
-  title,
-  children,
-  backTo,
-}: {
+interface TaskPageHeaderProps extends React.ComponentPropsWithoutRef<typeof Wrapper> {
   title: string;
-  children?: ReactNode;
   backTo?: string;
-}) => {
+}
+
+export const TaskPageHeader = ({ backTo, children, title, ...props }: TaskPageHeaderProps) => {
   const from = useFromLocation();
+  const isMobile = useIsMobile();
+  const primaryColor = useTheme().palette.primary.main;
   return (
-    <Wrapper>
-      <Container>
-        <BackButton to={from || backTo} variant="text" title="Back">
-          <ArrowLeftIcon />
-        </BackButton>
-        <HeadingContainer>
-          <TaskIcon />
-          <Title>{title}</Title>
-        </HeadingContainer>
-      </Container>
+    <Wrapper {...props}>
+      {!isMobile && (
+        <Container>
+          <BackButton to={from || backTo}>
+            <ChevronLeft />
+          </BackButton>
+          <HeadingContainer>
+            <TaskIcon aria-hidden htmlColor={primaryColor} />
+            <Title>{title}</Title>
+          </HeadingContainer>
+        </Container>
+      )}
       <ContentWrapper>{children}</ContentWrapper>
     </Wrapper>
   );

@@ -94,8 +94,7 @@ ${accessibleCountryCodes
   const parameters = [
     ...accessibleCountryCodes,
     ...accessibleCountryCodes
-      .map(countryCode => [countryCode, ...permissionsByCountryCode[countryCode]])
-      .flat(),
+      .flatMap(countryCode => [countryCode, ...permissionsByCountryCode[countryCode]]),
   ];
   return { sql, parameters };
 };

@@ -120,14 +120,13 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  const codes = CONDITION_CODES.map(condition => [
+  const codes = CONDITION_CODES.flatMap(condition => [
     psssCode('Total_Cases', condition),
     psssCode('Site_Average', condition, true),
     psssCode('Site_Average', condition, false),
     psssCode('WoW_Increase', condition, true),
     psssCode('WoW_Increase', condition, false),
   ])
-    .flat()
     .concat(psssCode('Total_Sites_Reported'));
 
   await db.runSql(`DELETE FROM indicator WHERE code IN (${arrayToDbString(codes)})`);

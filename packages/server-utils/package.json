@@ -13,7 +13,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "copy-templates": "copyfiles -u 1 src/email/templates/**/**/* ./dist",
-    "build": "rimraf dist && npm run --prefix ../../ package:build:ts && yarn run copy-templates",
+    "build": "rimraf dist && yarn run package:build:ts && yarn run copy-templates",
     "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -38,9 +38,11 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
+    "@types/jest": "^29.5.14",
     "@types/node-schedule": "^2.1.7",
     "@types/nodemailer": "^6.4.15",
     "@types/sha256": "^0.2.2",
+    "jest": "^29.7.0",
     "knex": "^3.1.0",
     "rimraf": "^6.0.1"
   }

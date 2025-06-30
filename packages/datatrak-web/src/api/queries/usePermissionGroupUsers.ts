@@ -7,9 +7,9 @@ export const usePermissionGroupUsers = (
   permissionGroupId?: PermissionGroup['id'],
   searchTerm?: string,
 ) => {
-  return useQuery(
+  return useQuery<DatatrakWebUsersRequest.ResBody>(
     ['users', permissionGroupId, countryCode, searchTerm],
-    (): Promise<DatatrakWebUsersRequest.ResBody> =>
+    () =>
       get(`users/${countryCode}`, {
         params: {
           searchTerm,

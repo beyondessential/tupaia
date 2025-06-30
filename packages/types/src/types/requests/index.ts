@@ -26,6 +26,7 @@ export {
   DatatrakWebSyncEndSessionRequest,
 } from './datatrak-web-server';
 export {
+  TupaiaWebCountriesRequest,
   TupaiaWebChangePasswordRequest,
   TupaiaWebDashboardsRequest,
   TupaiaWebEmailDashboardRequest,

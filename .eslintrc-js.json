@@ -1,20 +1,13 @@
 {
   "extends": "@beyondessential/js",
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "rules": {
     "import/no-extraneous-dependencies": "error"
   },
-  "ignorePatterns": [
-    "dist/",
-    "build/",
-    "node_modules/",
-    ".eslintrc.js"
-  ],
+  "ignorePatterns": ["dist/", "build/", "node_modules/", ".eslintrc.js"],
   "overrides": [
     {
-      "files": [
-        "src/__tests__/**/*.js"
-      ],
+      "files": ["src/__tests__/**/*.js"],
       "extends": "@beyondessential/jest",
       "rules": {
         "jest/valid-expect": [
@@ -34,10 +27,7 @@
       }
     },
     {
-      "files": [
-        "jest.setup.js",
-        "jest.config.js"
-      ],
+      "files": ["jest.setup.js", "jest.config.js"],
       "env": {
         "jest": true
       }
