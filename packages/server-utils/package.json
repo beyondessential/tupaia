@@ -41,6 +41,7 @@
     "@types/node-schedule": "^2.1.7",
     "@types/nodemailer": "^6.4.15",
     "@types/sha256": "^0.2.2",
+    "knex": "^3.1.0",
     "rimraf": "^6.0.1"
   }
 }

@@ -1,5 +1,6 @@
 import { scheduleJob, Job } from 'node-schedule';
 import winston from 'winston';
+import { Knex } from 'knex';
 
 export interface DatabaseInterface {
   /**
@@ -7,7 +8,10 @@ export interface DatabaseInterface {
    * @param callback Function to execute within the transaction
    * @returns Promise that resolves when the transaction is complete
    */
-  wrapInTransaction<T>(callback: (transactingModels: DatabaseInterface) => Promise<T>): Promise<T>;
+  wrapInTransaction<T>(
+    callback: (transactingModels: DatabaseInterface) => Promise<T | void>,
+    transactionConfig?: Knex.TransactionConfig,
+  ): Promise<T | void>;
 
   /**
    * Database instance with advisory lock functionality

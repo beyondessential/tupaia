@@ -6,7 +6,7 @@ import {
   MarkdownTemplateVariables,
 } from '../../models-extra';
 
-type FeedItem = Omit<BaseFeedItem, 'template_variables'> & {
+type FeedItem = Omit<BaseFeedItem, 'template_variables' | 'updated_at_sync_tick'> & {
   template_variables?: FeedItemTemplateVariables;
 };
 type CamelCaseFeedItem = KeysToCamelCase<FeedItem>;

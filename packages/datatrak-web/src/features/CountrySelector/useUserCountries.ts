@@ -1,6 +1,8 @@
 import { ChangeEvent, ChangeEventHandler, useState } from 'react';
 
-import { Country } from '@tupaia/types';
+import { camelKeys } from '@tupaia/utils';
+import { DatatrakWebEntitiesRequest } from '@tupaia/types';
+
 import {
   UseProjectEntitiesQueryOptions,
   useCurrentUserContext,
@@ -15,7 +17,7 @@ export type UserCountriesType = Omit<UseProjectEntitiesQueryResult, 'data'> & {
    * @privateRemarks The internal {@link useState} only ever explicitly stores `Country | null`, but
    * `selectedCountry` may be undefined if the {@link useProjectEntities} query is still loading.
    */
-  selectedCountry: Country | null | undefined;
+  selectedCountry: DatatrakWebEntitiesRequest.EntitiesResponseItem | null | undefined;
   updateSelectedCountry: ChangeEventHandler;
 };
 
@@ -23,7 +25,8 @@ export const useUserCountries = (
   useProjectEntitiesQueryOptions?: UseProjectEntitiesQueryOptions,
 ): UserCountriesType => {
   const user = useCurrentUserContext();
-  const [newSelectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const [newSelectedCountry, setSelectedCountry] =
+    useState<DatatrakWebEntitiesRequest.EntitiesResponseItem | null>(null);
 
   const projectCode = user.project?.code;
   const entityRequestParams = {
@@ -41,7 +44,7 @@ export const useUserCountries = (
 
     // if the user has a country, return that country if it can be found
     if (user.country && countries?.find(({ code }) => code === user.country?.code)) {
-      return user.country;
+      return camelKeys(user.country);
     }
 
     // if the selected project is 'explore', return demo land
