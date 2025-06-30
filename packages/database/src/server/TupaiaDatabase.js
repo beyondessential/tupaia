@@ -130,6 +130,15 @@ export class TupaiaDatabase extends BaseDatabase {
   /**
    * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
+  }
+
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise<TupaiaDatabase>} TupaiaDatabase instance
    */
   async createTransaction(transactionConfig = {}) {
