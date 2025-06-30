@@ -13,8 +13,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "copy-templates": "copyfiles -u 1 src/email/templates/**/**/* ./dist",
-    "build": "rimraf dist && yarn run package:build:ts && yarn run copy-templates",
+    "build": "yarn run clean:build && yarn run package:build:ts && yarn run copy-templates",
     "build-dev": "yarn run build",
+    "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --passWithNoTests",

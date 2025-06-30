@@ -11,7 +11,8 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "scripts": {
     "preview": "vite preview",
-    "build": "yarn run package:build:vite",
+    "build": "yarn run clean:build && yarn run package:build:vite",
+    "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start-stack": "yarn package:start-stack psss",
@@ -60,6 +61,7 @@
     "@testing-library/react": "12.1.2",
     "jest": "^29.7.0",
     "mockdate": "^3.0.5",
+    "rimraf": "^6.0.1",
     "vite": "^4.5.14"
   }
 }

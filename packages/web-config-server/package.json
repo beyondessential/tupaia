@@ -11,7 +11,8 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rimraf dist && yarn run package:build:js",
+    "build": "yarn run clean:build && yarn run package:build:js",
+    "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "node dist",

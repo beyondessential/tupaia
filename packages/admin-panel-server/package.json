@@ -15,8 +15,9 @@
   "types": "dist/index.d.ts",
   "private": true,
   "scripts": {
-    "build": "rimraf dist && yarn run package:build:ts",
+    "build": "yarn run clean:build && yarn run package:build:ts",
     "build-dev": "yarn run build",
+    "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "node dist",

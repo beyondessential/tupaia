@@ -11,6 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "scripts": {
     "build": "yarn package:build:types && yarn package:build:vite",
+    "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "preview": "vite preview",
@@ -60,6 +61,7 @@
     "@types/mapbox__polyline": "^1.0.2",
     "@types/react": "16.8.6",
     "msw": "^2.0.9",
+    "rimraf": "^6.0.1",
     "vite": "^4.5.14",
     "vite-plugin-html": "^3.2.0"
   },
