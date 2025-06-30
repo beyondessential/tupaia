@@ -86103,6 +86103,9 @@ export const EntitiesResponseItemSchema = {
 		},
 		"id": {
 			"type": "string"
+		},
+		"updatedAtSyncTick": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -86110,7 +86113,8 @@ export const EntitiesResponseItemSchema = {
 		"code",
 		"id",
 		"name",
-		"type"
+		"type",
+		"updatedAtSyncTick"
 	]
 } 
 
