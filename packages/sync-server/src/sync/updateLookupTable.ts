@@ -1,13 +1,9 @@
 import log from 'winston';
 
-import {
-  SYNC_DIRECTIONS,
-  SYNC_TICK_FLAGS,
-  FilteredModelRegistry,
-} from '@tupaia/sync';
-import { DatabaseModel, TupaiaDatabase, DebugLogRecord } from '@tupaia/database';
+import { FilteredModelRegistry } from '@tupaia/sync';
+import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
+import { DatabaseModel, TupaiaDatabase, DebugLogRecord, buildSyncLookupSelect } from '@tupaia/database';
 
-import { buildSyncLookupSelect } from './buildSyncLookupSelect';
 import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
 
 const updateLookupTableForModel = async (
@@ -52,7 +48,7 @@ const updateLookupTableForModel = async (
             avoidRepull
               ? `LEFT JOIN sync_device_tick
                   ON persisted_at_sync_tick = ${table}.updated_at_sync_tick`
-              : 'LEFT JOIN (select NULL as device_id) AS sync_device_ticks ON 1 = 1'
+              : 'LEFT JOIN (select NULL as device_id) AS sync_device_tick ON 1 = 1'
           }
           ${joins || ''}
           WHERE
@@ -104,7 +100,7 @@ export const updateLookupTable = async (
   const invalidModelNames = Object.values(outgoingModels)
     .filter(
       m =>
-        ![SYNC_DIRECTIONS.BIDIRECTIONAL, SYNC_DIRECTIONS.PULL_FROM_CENTRAL].includes(
+        ![SyncDirections.BIDIRECTIONAL, SyncDirections.PULL_FROM_CENTRAL].includes(
           m.syncDirection,
         ),
     )
@@ -151,6 +147,6 @@ export const updateSyncLookupPendingRecords = async (
       SET updated_at_sync_tick = :currentTick
       WHERE updated_at_sync_tick = :pendingUpdateSyncTick;
     `,
-    { currentTick, pendingUpdateSyncTick: SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER },
+    { currentTick, pendingUpdateSyncTick: SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER },
   );
 };
