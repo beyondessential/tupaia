@@ -11,7 +11,7 @@ export const attachCommonEntityContext = async (
   req: Request<{ hierarchyName: string }, any, any, { field?: string; fields?: string }> & {
     ctx: CommonContext;
   },
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {

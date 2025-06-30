@@ -54,7 +54,7 @@ const getSubContext = (
 
 export const attachRelationshipsContext = async (
   req: RelationshipsRequest | MultiEntityRelationshipsRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {

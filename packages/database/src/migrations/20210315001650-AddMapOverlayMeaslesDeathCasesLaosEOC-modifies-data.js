@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, generateId, deleteObject } from '../utilities';
+import { insertObject, generateId } from '../utilities';
 
 var dbm;
 var type;
@@ -108,7 +108,7 @@ const measlesDeathMapOverlayByFacility = {
 const getMeaslesMapOverlayGroupId = async db => {
   const { rows } = await db.runSql(
     `
-    SELECT id from map_overlay_group 
+    SELECT id from map_overlay_group
     WHERE code = 'LAOS_EOC_Measles'
     `,
   );

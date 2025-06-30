@@ -4,7 +4,7 @@ import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurveyReponse/processSurveyResponse';
 import { DatatrakWebServerModelRegistry } from '../types';
 
-const mockFindEntityById = async (id: string) => ({
+const mockFindEntityById = async (_id: string) => ({
   id: 'theEntityId',
   code: 'theEntityCode',
   name: 'The Entity Name',
@@ -483,7 +483,7 @@ describe('processSurveyResponse', () => {
 
   it('throw an error when type is primary entity question and is not filled in', async () => {
     try {
-      const result = await processSurveyResponse(mockModels, {
+      void (await processSurveyResponse(mockModels, {
         ...responseData,
         questions: [
           {
@@ -496,7 +496,7 @@ describe('processSurveyResponse', () => {
           },
         ],
         answers: {},
-      });
+      }));
     } catch (error: any) {
       expect(error.message).toBe('Primary Entity Question is a required field');
     }

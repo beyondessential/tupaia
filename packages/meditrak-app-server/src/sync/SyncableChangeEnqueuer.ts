@@ -1,4 +1,3 @@
-import winston from 'winston';
 import { ChangeHandler, TupaiaDatabase } from '@tupaia/database';
 import { MeditrakAppServerModelRegistry } from '../types';
 import { getSupportedModels } from './appSupportedModels';

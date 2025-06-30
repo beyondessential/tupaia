@@ -1,7 +1,9 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
+import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
+
 import { formatTaskChanges } from '../utils';
-import { DatatrakWebTaskChangeRequest, TaskCommentType } from '@tupaia/types';
 
 export type EditTaskRequest = Request<
   { taskId: string },

@@ -129,7 +129,7 @@ export class ApiBuilder {
 
   public useSessionModel(SessionModelClass: new (database: TupaiaDatabase) => SessionModel) {
     const sessionModel = new SessionModelClass(this.database);
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
+    this.app.use((req: Request, _res: Response, next: NextFunction) => {
       req.sessionModel = sessionModel;
       next();
     });
@@ -159,7 +159,7 @@ export class ApiBuilder {
   }
 
   public verifyAuth(verify: (accessPolicy: AccessPolicy) => void) {
-    this.verifyAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    this.verifyAuthMiddleware = (req: Request, _res: Response, next: NextFunction) => {
       try {
         const { session } = req;
         if (!session) {
@@ -177,7 +177,7 @@ export class ApiBuilder {
   }
 
   public verifyLogin(verify: (accessPolicy: AccessPolicy) => void) {
-    this.attachVerifyLogin = (req: Request, res: Response, next: NextFunction) => {
+    this.attachVerifyLogin = (req: Request, _res: Response, next: NextFunction) => {
       req.ctx.verifyLogin = verify;
       next();
     };

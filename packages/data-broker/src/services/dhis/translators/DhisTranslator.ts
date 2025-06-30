@@ -45,6 +45,7 @@ export class DhisTranslator {
     this.inboundAnalyticsTranslator = new InboundAnalyticsTranslator();
   }
 
+  // @ts-ignore
   private get dataSourceTypes() {
     return DATA_SOURCE_TYPES;
   }

@@ -129,7 +129,7 @@ export const PieChart = ({
     }, 50);
   }, []);
 
-  const handleMouseEnter = (event: MouseEvent, index: number) => setActiveIndex(index);
+  const handleMouseEnter = (_event: MouseEvent, index: number) => setActiveIndex(index);
   const handleMouseOut = () => setActiveIndex(-1);
 
   const getSegmentConfig = (

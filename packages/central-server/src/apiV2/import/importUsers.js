@@ -12,7 +12,6 @@ import {
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { VerifiedEmail } from '@tupaia/types';
 import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   assertAdminPanelAccessToCountry,
   assertAnyPermissions,
   assertBESAdminAccess,
