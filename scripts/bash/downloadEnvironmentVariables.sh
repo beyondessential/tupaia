@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 set -e +x # Do not output commands in this script, as some would show credentials in plain text
 
-DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
-REPO_ROOT=$(realpath "$DIR/../..")
+"$DIR/requireCommands.sh" bw jq
+
 . "$DIR/ansiControlSequences.sh"
+DEPLOYMENT_NAME=$1
+REPO_ROOT=$(realpath "$DIR/../..")
 
 # Log into Bitwarden
-if [[ ! $(bw login --check) ]]; then
-    if [[ -v BW_CLIENTID && -v BW_CLIENTSECRET ]]; then
+if ! bw login --check &>/dev/null; then
+    if [[ -v BW_CLIENTID && -v BW_CLIENTSECRET && -v BW_PASSWORD ]]; then
         # See https://bitwarden.com/help/personal-api-key
         echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using API key${RESET}"
         bw login --apikey
@@ -27,11 +29,28 @@ if [[ ! $(bw login --check) ]]; then
 
     else
         # Automated environment
-        echo -e "${BOLD}${RED}Login credentials for Bitwarden are missing.${RESET} Please ensure BW_CLIENTID and BW_CLIENTSECRET environment variables are set."
-        echo -e "See ${MAGENTA}https://bitwarden.com/help/personal-api-key${RESET}"
+        echo -e "${BOLD}${RED}Login credentials for Bitwarden are missing.${RESET} Ensure BW_CLIENTID, BW_CLIENTSECRET and BW_PASSWORD environment variables are set." >&2
+        echo -e "See ${MAGENTA}https://bitwarden.com/help/personal-api-key${RESET}" >&2
         exit 1
     fi
 fi
+
+cleanup() {
+    echo
+    echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
+    bw logout
+    echo
+
+    # Clean up detritus on macOS
+    # macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a
+    # way that’s compatible to both (by not supplying a suffix for the -i flag), but this causes
+    # macOS to generate backup files which we don’t need.
+    if [[ $(uname) = 'Darwin' ]]; then
+        rm -f "$REPO_ROOT"/env/*.env-e "$REPO_ROOT"/packages/*/.env-e
+    fi
+}
+
+trap cleanup EXIT
 
 # Unlock Bitwarden vault
 if [[ ! -t 1 && ! -v BW_PASSWORD ]]; then
@@ -114,16 +133,3 @@ for file_name in "$REPO_ROOT"/env/*.env.example; do
     package_name=$(basename "$file_name" '.env.example')
     load_env_file_from_bw "$package_name" "$REPO_ROOT/env" "$package_name"
 done
-
-# Log out of Bitwarden
-echo
-echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
-bw logout
-
-# Clean up detritus on macOS
-# macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a way
-# that’s compatible to both (by not supplying a suffix for the -i flag), but this causes macOS to
-# generate backup files which we don’t need.
-if [[ $(uname) = 'Darwin' ]]; then
-    rm -f "$DIR"/../../env/*.env-e "$DIR"/../../packages/*/.env-e
-fi

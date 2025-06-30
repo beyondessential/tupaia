@@ -6,7 +6,7 @@ import { SafeArea } from '@tupaia/ui-components';
 
 import { HEADER_HEIGHT } from '../constants';
 
-const Wrapper = styled(SafeArea).attrs({
+export const CenteredLayoutRoot = styled(SafeArea).attrs({
   bottom: true,
   left: true,
   right: true,
@@ -37,8 +37,8 @@ const Wrapper = styled(SafeArea).attrs({
 
 export const CentredLayout = () => {
   return (
-    <Wrapper>
+    <CenteredLayoutRoot>
       <Outlet />
-    </Wrapper>
+    </CenteredLayoutRoot>
   );
 };

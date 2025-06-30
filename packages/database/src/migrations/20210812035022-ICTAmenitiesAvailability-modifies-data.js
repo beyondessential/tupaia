@@ -28,9 +28,9 @@ const ENTITY_LEVEL_MAP = {
 const REPORT_CONFIG = entityLevel => ({
   fetch: {
     dataElements: [
-      ...EDUCATION_LEVELS.map(educationLevel =>
+      ...EDUCATION_LEVELS.flatMap(educationLevel =>
         AMENITIES.map(amenity => `amenity_${entityLevel}_${educationLevel}_${amenity}`),
-      ).flat(),
+      ),
       'nosch_ece',
       'nosch_pe',
       'nosch_se',

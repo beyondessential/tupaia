@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import randomize from 'randomatic';
 
+import { requireEnv } from '@tupaia/utils';
+
 export function generateSecretKey() {
   return randomize('*', 20);
 }
@@ -32,5 +34,5 @@ export const extractRefreshTokenFromReq = req => {
   }
 
   const jwtToken = getJwtToken(authHeader);
-  return jwt.verify(jwtToken, process.env.JWT_SECRET).refreshToken;
+  return jwt.verify(jwtToken, requireEnv('JWT_SECRET')).refreshToken;
 };
