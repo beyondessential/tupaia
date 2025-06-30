@@ -2,30 +2,30 @@
 set -e +x # Do not output commands in this script, as some would show credentials in plain text
 
 DIR=$(dirname "$0")
-"$DIR/requireCommands.sh" bw jq
+"$DIR/requireCommands.sh" yarn jq
 
 . "$DIR/ansiControlSequences.sh"
 DEPLOYMENT_NAME=$1
 REPO_ROOT=$(realpath "$DIR/../..")
 
 # Log into Bitwarden
-if ! bw login --check &>/dev/null; then
+if ! yarn bw login --check &>/dev/null; then
     if [[ -v BW_CLIENTID && -v BW_CLIENTSECRET && -v BW_PASSWORD ]]; then
         # See https://bitwarden.com/help/personal-api-key
         echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using API key${RESET}"
-        bw login --apikey
+        yarn bw login --apikey
 
     elif [[ -v BW_EMAIL && -v BW_PASSWORD ]]; then
         # Legacy behaviour, kept for backward compatibility
         # On new devices, requires OTP which is emailed to Bitwarden account holder
         # See https://bitwarden.com/help/cli/#using-email-and-password
         echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using email ($BW_EMAIL) and password${RESET}"
-        bw login "$BW_EMAIL" "$BW_PASSWORD"
+        yarn bw login "$BW_EMAIL" "$BW_PASSWORD"
 
     elif [[ -t 1 ]]; then
         # Requires manual intervention. Bitwarden will prompt for email & password
         # Recommended for interactive sessions
-        bw login
+        yarn bw login
 
     else
         # Automated environment
@@ -38,7 +38,7 @@ fi
 cleanup() {
     echo
     echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
-    bw logout
+    yarn bw logout
     echo
 
     # Clean up detritus on macOS
@@ -57,11 +57,11 @@ if [[ ! -t 1 && ! -v BW_PASSWORD ]]; then
     echo -e "${BOLD}${RED}Bitwarden password is missing.${RESET} BW_PASSWORD environment variable must be set to unlock the vault."
     exit 1
 fi
-eval "$(bw unlock --passwordenv BW_PASSWORD | grep -o -m 1 'export BW_SESSION=.*$')"
+eval "$(yarn bw unlock --passwordenv BW_PASSWORD | grep -o -m 1 'export BW_SESSION=.*$')"
 
 # Collection in BitWarden where .env vars are kept
 COLLECTION_PATH='Engineering/Tupaia General/Environment Variables'
-COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
+COLLECTION_ID=$(yarn bw get collection "$COLLECTION_PATH" | jq .id)
 
 echo
 
@@ -83,12 +83,18 @@ load_env_file_from_bw() {
     echo -en "${YELLOW}🚚 Fetching variables for ${BOLD}${FILE_NAME}...${RESET}"
 
     # checkout deployment specific env vars, or dev as fallback
-    DEPLOYMENT_ENV_VARS=$(bw list items --search "$FILE_NAME.$DEPLOYMENT_NAME.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+    DEPLOYMENT_ENV_VARS=$(
+        yarn bw list items --search "$FILE_NAME.$DEPLOYMENT_NAME.env" |
+            jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes"
+    )
 
     if [[ -n $DEPLOYMENT_ENV_VARS ]]; then
         echo "$DEPLOYMENT_ENV_VARS" >"$ENV_FILE_PATH"
     else
-        DEV_ENV_VARS=$(bw list items --search "$FILE_NAME.dev.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+        DEV_ENV_VARS=$(
+            yarn bw list items --search "$FILE_NAME.dev.env" |
+                jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes"
+        )
         echo "$DEV_ENV_VARS" >"$ENV_FILE_PATH"
     fi
 

@@ -40,16 +40,6 @@ jobs:
       - name: Build dependencies
         run: yarn run build:from meditrak-app
 
-      # The next two steps could be refactored to use Bitwarden’s GitHub Action. That approach is
-      # technically preferable, but for now we use the Bitwarden CLI as a cost savings. (The GitHub
-      # action requires a Machine Account, which requires a different subscription.)
-      # https://bitwarden.com/help/github-actions-integration
-      - name: Install Bitwarden CLI
-        run: |
-          if ! command -v bw &>/dev/null; then
-            npm install --global @bitwarden/cli
-          fi
-
       - name: Write .env file
         run: yarn run download-env-vars '${{ github.head_ref }}' meditrak-app
 
