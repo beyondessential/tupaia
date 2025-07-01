@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { hash, verify } from '@node-rs/argon2';
 import sha256 from 'sha256';
 
