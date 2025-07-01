@@ -11631,6 +11631,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.26.10
     "@babel/node": ^7.10.5
+    "@node-rs/argon2": ^2.0.2
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/auth": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
