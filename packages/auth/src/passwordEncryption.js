@@ -6,7 +6,7 @@ import sha256 from 'sha256';
  * @param password {string}
  * @returns {Promise<string>}
  */
-export function encryptPassword(password) {
+export async function encryptPassword(password) {
   return hash(password);
 }
 
