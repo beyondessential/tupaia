@@ -29,13 +29,13 @@ const TypingIndicatorContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  animation: ${fadeIn} 0.3s ease-in;
+  animation: ${fadeIn} 0.3s --ease-out-quad;
   margin-left: 20px;
 `;
 
 const TypingBubble = styled.div`
   background: ${props => props.theme.palette.common.white};
-  border-radius: 100px;
+  border-radius: calc(infinity * 1px);
   padding: 10px 16px;
   display: flex;
   align-items: center;

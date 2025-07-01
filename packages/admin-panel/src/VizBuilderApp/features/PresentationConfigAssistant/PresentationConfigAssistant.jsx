@@ -18,16 +18,20 @@ export const PresentationConfigAssistant = ({ dataStructure, onAssistantResponse
   const [currentMessage, setCurrentMessage] = useState(null);
   const { messages, addVisualisationMessage } = usePresentationConfigAssistantContext();
 
-  const { data: completion, isFetching } = usePresentationOptionsPromptQuery(currentMessage, dataStructure, {
-    enabled: !!currentMessage,
-  });
+  const { data: completion, isFetching } = usePresentationOptionsPromptQuery(
+    currentMessage,
+    dataStructure,
+    {
+      enabled: !!currentMessage,
+    },
+  );
 
   useEffect(() => {
     if (completion) {
       onAssistantResponse(completion);
       setCurrentMessage(null);
     }
-  }, [completion]);
+  }, [completion, onAssistantResponse]);
 
   const onSubmit = userMessage => {
     if (userMessage) {

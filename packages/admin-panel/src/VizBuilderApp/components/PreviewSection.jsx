@@ -259,7 +259,7 @@ export const PreviewSection = () => {
         <TableContainer>
           {showData ? (
             <FetchLoader
-              isLoading={isTableLoading || isTableFetching}
+              isLoading={isTableFetching}
               isError={isTableError}
               error={tableError}
               isNoData={!rows.length}
@@ -277,7 +277,7 @@ export const PreviewSection = () => {
           <ChartContainer>
             {showData ? (
               <FetchLoader
-                isLoading={isVisualisationLoading || isVisualisationFetching}
+                isLoading={isVisualisationFetching}
                 isError={isVisualisationError}
                 error={visualisationError}
               >

@@ -23,16 +23,7 @@ interface ChatProps {
   isProcessingMessage?: boolean;
 }
 
-interface StyledProps {
-  width: number;
-  height: number;
-}
-
 interface MessageWrapperProps {
-  isOwn: boolean;
-}
-
-interface MessageBubbleProps {
   isOwn: boolean;
 }
 
@@ -69,9 +60,7 @@ const fadeIn = keyframes`
 `;
 
 // Styled Components
-const ChatContainer = styled.div<StyledProps>`
-  width: ${props => props.width}px;
-  height: ${props => props.height}px;
+const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -91,7 +80,7 @@ const MessageWrapper = styled.div<MessageWrapperProps>`
   display: flex;
   align-items: flex-end;
   gap: 8px;
-  animation: ${fadeIn} 0.3s ease-in;
+  animation: ${fadeIn} 0.3s --ease-out-quad;
   flex-direction: ${props => (props.isOwn ? 'row-reverse' : 'row')};
 `;
 
@@ -102,19 +91,25 @@ const MessageContent = styled.div<MessageContentProps>`
   ${props => (props.bold ? 'font-weight: 600;' : '')};
 `;
 
-const MessageBubble = styled.div<MessageBubbleProps>`
-  ${props => (props.isOwn ? 'background: white;' : '')};
-  color: ${props => (props.isOwn ? 'inherit' : 'inherit')};
+const BaseMessageBubble = styled.p`
+  color: inherit;
   padding: 12px 16px;
-  ${props => (props.isOwn ? 'border-radius: 8px;' : '')};
-  ${props => (props.isOwn ? 'box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)' : '')};
   word-wrap: break-word;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.4;
 
   p {
     margin: 0;
   }
+`;
+
+// Exactly similar to BaseMessageBubble but just to make it clear that it's a system message
+const SystemMessageBubble = styled(BaseMessageBubble)``;
+
+const UserMessageBubble = styled(BaseMessageBubble)`
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Textarea = styled(Input).attrs({
@@ -152,13 +147,12 @@ const UndoButton = styled(IconButton)``;
 const SubmitButton = styled(IconButton).attrs({ type: 'submit' })<ThemeProps>`
   width: 36px;
   height: 32px;
-  border: none;
   background: ${props => props.theme.palette.primary.white};
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
   border-radius: 3px;
   border: 1px solid ${props => props.theme.palette.primary.blue};
   margin: 10px;
@@ -181,9 +175,11 @@ interface MessageProps {
 const Message = ({ message, bold = false }: MessageProps) => (
   <MessageWrapper key={message.id} isOwn={message.isOwn}>
     <MessageContent isOwn={message.isOwn} bold={bold}>
-      <MessageBubble isOwn={message.isOwn}>
-        <p>{message.text}</p>
-      </MessageBubble>
+      {message.isOwn ? (
+        <UserMessageBubble>{message.text}</UserMessageBubble>
+      ) : (
+        <SystemMessageBubble>{message.text}</SystemMessageBubble>
+      )}
     </MessageContent>
   </MessageWrapper>
 );
@@ -236,7 +232,7 @@ export const Chat: React.FC<ChatProps> = ({
   }
 
   return (
-    <ChatContainer width={width} height={height}>
+    <ChatContainer style={{ width, height }}>
       <MessagesArea>
         {startingMessage && <Message message={startingMessage} bold={true} />}
         {messages.map((message: Message) => (
@@ -251,7 +247,7 @@ export const Chat: React.FC<ChatProps> = ({
         onChange={handleInputChange}
         placeholder={
           messages.length === 0
-            ? `Type any changes you'd like to make to the chart here…`
+            ? 'Type any changes you’d like to make to the chart here…'
             : 'Reply here'
         }
         value={input}
