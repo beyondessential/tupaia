@@ -68,10 +68,10 @@ export const ResourcePage = ({
   const isDetailsPage = !!parent;
 
   const getHasPermission = actionType => {
-    if (needsBESAdminAccess && needsBESAdminAccess.includes(actionType)) {
+    if (needsBESAdminAccess?.includes(actionType)) {
       return !!hasBESAdminAccess;
     }
-    if (needsVizBuilderAccess && needsVizBuilderAccess.includes(actionType)) {
+    if (needsVizBuilderAccess?.includes(actionType)) {
       return !!hasVizBuilderAccess;
     }
     return true;
