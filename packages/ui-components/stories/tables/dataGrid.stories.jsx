@@ -41,31 +41,26 @@ const columnsWithFlex = [
   { field: 'col2', headerName: 'Column 2', minWidth: 150, flex: 1 },
 ];
 
-
 export const Default = () => {
-
   return (
     <Container>
-      <DataGrid columns={columns} rows={rows}/>
+      <DataGrid columns={columns} rows={rows} />
     </Container>
   );
 };
 
 export const AutoPageSize = () => {
-
   return (
     <Container>
-      <DataGrid columns={columns} rows={rows} autoPageSize={true}/>
+      <DataGrid columns={columns} rows={rows} autoPageSize={true} />
     </Container>
   );
 };
 
 export const FlexColumns = () => {
-
   return (
     <Container>
-      <DataGrid columns={columnsWithFlex} rows={rows}/>
+      <DataGrid columns={columnsWithFlex} rows={rows} />
     </Container>
   );
 };
-
