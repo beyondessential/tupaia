@@ -1,4 +1,6 @@
-import { encryptPassword } from '@tupaia/auth';
+import { verify } from '@node-rs/argon2';
+
+import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -9,15 +11,40 @@ export class UserRecord extends DatabaseRecord {
 
   get fullName() {
     let userFullName = this.first_name;
-    if (this.last_name && this.last_name.length > 0) {
+    if (this.last_name && this.last_name?.length > 0) {
       userFullName += ` ${this.last_name}`;
     }
     return userFullName;
   }
 
-  // Checks if the provided non-encrypted password corresponds to this user
-  checkPassword(password) {
-    return encryptPassword(password, this.password_salt) === this.password_hash;
+  /**
+   * Attempts to verify the password using argon2, if that fails, it tries to verify the password
+   * using sha256 plus argon2. If the password is verified using sha256, the password is moved to
+   * argon2.
+   * @param password {string}
+   * @returns {Promise<boolean>}
+   */
+  async checkPassword(password) {
+    const salt = this.password_salt;
+    const hash = this.password_hash;
+
+    // Try to verify password using argon2 directly
+    const isVerified = await verifyPassword(password, this.password_hash);
+    if (isVerified) {
+      return true;
+    }
+
+    // Try to verify password using sha256 plus argon2
+    const hashedUserInput = sha256EncryptPassword(password, salt);
+    const isVerifiedSha256 = await verify(hash, hashedUserInput);
+    if (isVerifiedSha256) {
+      // Move password to argon2
+      const encryptedPassword = await encryptPassword(password);
+      await this.model.updateById(this.id, { password_hash: encryptedPassword });
+      return true;
+    }
+
+    return false;
   }
 
   checkIsEmailUnverified() {
@@ -51,9 +78,9 @@ export class UserModel extends DatabaseModel {
 
   customColumnSelectors = {
     full_name: () =>
-      `CASE 
-        WHEN last_name IS NULL THEN first_name 
-        ELSE first_name || ' ' || last_name 
+      `CASE
+        WHEN last_name IS NULL THEN first_name
+        ELSE first_name || ' ' || last_name
       END`,
   };
 

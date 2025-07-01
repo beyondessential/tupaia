@@ -1,11 +1,18 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { encryptPassword, getTokenClaims, hashAndSaltPassword } from '@tupaia/auth';
+import {
+  encryptPassword,
+  getTokenClaims,
+  sha256EncryptPassword,
+  verifyPassword,
+} from '@tupaia/auth';
 import { findOrCreateDummyCountryEntity, findOrCreateDummyRecord } from '@tupaia/database';
-import { createBasicHeader } from '@tupaia/utils';
 
-import { BruteForceRateLimiter } from '../../../apiV2/authenticate/BruteForceRateLimiter';
+import {
+  BruteForceRateLimiter,
+  createBasicHeader,
+} from '../../../apiV2/authenticate/BruteForceRateLimiter';
 import { ConsecutiveFailsRateLimiter } from '../../../apiV2/authenticate/ConsecutiveFailsRateLimiter';
 import { configureEnv } from '../../../configureEnv';
 import { TestableApp, resetTestData } from '../../testUtilities';
@@ -47,11 +54,13 @@ describe('Authenticate', function () {
     });
 
     // Create test users
+    const passwordHash = await encryptPassword(userAccountPassword);
+
     userAccount = await findOrCreateDummyRecord(models.user, {
       first_name: 'Ash',
       last_name: 'Ketchum',
       email: 'ash-ketchum@pokemon.org',
-      ...hashAndSaltPassword(userAccountPassword),
+      password_hash: passwordHash,
       verified_email: VERIFIED,
     });
 
@@ -64,7 +73,7 @@ describe('Authenticate', function () {
     await findOrCreateDummyRecord(models.apiClient, {
       username: apiClientUserAccount.email,
       user_account_id: apiClientUserAccount.id,
-      secret_key_hash: encryptPassword(apiClientSecret, process.env.API_CLIENT_SALT),
+      secret_key_hash: await encryptPassword(apiClientSecret),
     });
 
     // Public Demo Land Permission
@@ -126,7 +135,76 @@ describe('Authenticate', function () {
     expect(apiClientUserId).to.equal(apiClientUserAccount.id);
   });
 
-  it.skip('should add a new entry to the user_country_access_attempts table if one does not already exist', async () => {
+  it('Should authenticate user who has been migrated to argon2 password hashing', async () => {
+    const email = 'peeka@pokemon.org';
+    const password = 'oldPassword123!';
+    const salt = 'xyz123^';
+    const sha256Hash = await sha256EncryptPassword(password, salt);
+    const argon2Hash = await encryptPassword(sha256Hash);
+    const migratedUser = await findOrCreateDummyRecord(models.user, {
+      first_name: 'Peeka',
+      last_name: 'Chu',
+      email: email,
+      password_hash: argon2Hash,
+      verified_email: VERIFIED,
+    });
+
+    const authResponse = await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: email,
+        password: password,
+        deviceName: 'test_device',
+      },
+    });
+
+    expect(authResponse.status).to.equal(200);
+    const { accessToken, refreshToken, user: userDetails } = authResponse.body;
+    expect(accessToken).to.be.a('string');
+    expect(refreshToken).to.be.a('string');
+    expect(userDetails.id).to.equal(migratedUser.id);
+    expect(userDetails.email).to.equal(migratedUser.email);
+  });
+
+  it("Should migrate user's password to argon2 after successful login", async () => {
+    const email = 'squirtle@pokemon.org';
+    const password = 'oldPassword123!';
+    const salt = 'xyz123^';
+    const sha256Hash = await sha256EncryptPassword(password, salt);
+    const argon2Hash = await encryptPassword(sha256Hash, salt);
+    const migratedUser = await findOrCreateDummyRecord(models.user, {
+      first_name: 'Peeka',
+      last_name: 'Chu',
+      email: email,
+      password_hash: argon2Hash,
+      password_salt: salt,
+      verified_email: VERIFIED,
+    });
+
+    const isVerifiedBefore = await verifyPassword(password, migratedUser.password_hash);
+    expect(isVerifiedBefore).to.be.false;
+
+    const authResponse = await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: email,
+        password: password,
+        deviceName: 'test_device',
+      },
+    });
+
+    expect(authResponse.status).to.equal(200);
+
+    const userDetails = await models.user.findById(migratedUser.id);
+    const isVerifiedAfter = await verifyPassword(password, userDetails.password_hash);
+    expect(isVerifiedAfter).to.be.true;
+  });
+
+  it('should add a new entry to the user_country_access_attempts table if one does not already exist', async () => {
     await app.post('auth?grantType=password', {
       headers: {
         authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),

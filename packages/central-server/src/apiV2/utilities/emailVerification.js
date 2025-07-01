@@ -1,4 +1,4 @@
-import { encryptPassword } from '@tupaia/auth';
+import { encryptPassword, verifyPassword } from '@tupaia/auth';
 import { sendEmail } from '@tupaia/server-utils';
 import { requireEnv } from '@tupaia/utils';
 
@@ -8,7 +8,7 @@ const EMAILS = {
     platformName: 'tupaia.org',
   },
   datatrak: {
-    subject: 'Tupaia Datatrak email verification',
+    subject: 'Tupaia DataTrak email verification',
     platformName: 'datatrak.tupaia.org',
   },
   lesmis: {
@@ -18,21 +18,22 @@ const EMAILS = {
   },
 };
 
+const HOSTS = {
+  tupaia: requireEnv('TUPAIA_FRONT_END_URL'),
+  lesmis: requireEnv('LESMIS_FRONT_END_URL'),
+  datatrak: requireEnv('DATATRAK_FRONT_END_URL'),
+};
+
+const getEmailVerificationToken = user => `${user.email}${user.password_hash}`;
+
 export const sendEmailVerification = async user => {
-  const token = encryptPassword(user.email + user.password_hash, user.password_salt);
+  const token = await encryptPassword(getEmailVerificationToken(user));
   const platform = user.primary_platform ? user.primary_platform : 'tupaia';
   const { subject, signOff, platformName } = EMAILS[platform];
-  const TUPAIA_FRONT_END_URL = requireEnv('TUPAIA_FRONT_END_URL');
-  const LESMIS_FRONT_END_URL = requireEnv('LESMIS_FRONT_END_URL');
-  const DATATRAK_FRONT_END_URL = requireEnv('DATATRAK_FRONT_END_URL');
 
-  const url = {
-    tupaia: TUPAIA_FRONT_END_URL,
-    datatrak: DATATRAK_FRONT_END_URL,
-    lesmis: `${LESMIS_FRONT_END_URL}/en`,
-  }[platform];
+  const host = HOSTS[platform];
 
-  const fullUrl = `${url}/verify-email?verifyEmailToken=${token}`;
+  const fullUrl = `${host}/verify-email?verifyEmailToken=${token}`;
 
   return sendEmail(user.email, {
     subject,
@@ -54,5 +55,12 @@ export const verifyEmailHelper = async (models, searchCondition, token) => {
     verified_email: searchCondition,
   });
 
-  return users.find(x => encryptPassword(x.email + x.password_hash, x.password_salt) === token);
+  for (const user of users) {
+    const verified = await verifyPassword(getEmailVerificationToken(user), token);
+
+    if (verified) {
+      return user;
+    }
+  }
+  return null;
 };

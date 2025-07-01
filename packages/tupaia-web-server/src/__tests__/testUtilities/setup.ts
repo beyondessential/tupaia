@@ -1,19 +1,17 @@
-import { hashAndSaltPassword } from '@tupaia/auth';
-import { createBasicHeader, requireEnv } from '@tupaia/utils';
-import { TestableServer } from '@tupaia/server-boilerplate';
-
+import { encryptPassword } from '@tupaia/auth';
 import {
-  findOrCreateDummyRecord,
   buildAndInsertProjectsAndHierarchies,
-  getTestModels,
   EntityHierarchyCacher,
+  findOrCreateDummyRecord,
   getTestDatabase,
-  findOrCreateDummyCountryEntity,
+  getTestModels,
 } from '@tupaia/database';
+import { TestableServer } from '@tupaia/server-boilerplate';
+import { createBasicHeader, requireEnv } from '@tupaia/utils';
 
 import { createApp } from '../../app';
+import { ENTITIES, ENTITY_RELATIONS, PROJECTS } from './fixtures';
 import { TestModelRegistry } from './testModelRegistry';
-import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from './fixtures';
 
 // Don't generate the proxy middlewares while we're testing
 jest.mock('http-proxy-middleware');
@@ -43,6 +41,7 @@ export const setupTestData = async () => {
   hierarchyCacher.stopListeningForChanges();
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;
+  const newPasswordHash = await encryptPassword(userAccountPassword);
 
   await findOrCreateDummyRecord(
     models.user,
@@ -52,13 +51,15 @@ export const setupTestData = async () => {
     {
       first_name: 'Ash',
       last_name: 'Ketchum',
-      ...hashAndSaltPassword(userAccountPassword),
+      password_hash: newPasswordHash,
       verified_email: VERIFIED,
     },
   );
 
   const apiClientEmail = requireEnv('API_CLIENT_NAME');
   const apiClientPassword = requireEnv('API_CLIENT_PASSWORD');
+  const newApiClientPassword = await encryptPassword(apiClientPassword);
+
   const apiClient = await findOrCreateDummyRecord(
     models.user,
     {
@@ -67,7 +68,7 @@ export const setupTestData = async () => {
     {
       first_name: 'API',
       last_name: 'Client',
-      ...hashAndSaltPassword(apiClientPassword),
+      password_hash: newApiClientPassword,
       verified_email: VERIFIED,
     },
   );
