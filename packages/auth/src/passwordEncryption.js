@@ -12,7 +12,7 @@ export function encryptPassword(password) {
 
 /**
  * Helper function to verify passwords using argon2
- * @param password
+ * @param password {string}
  * @param hash {string}
  * @returns {Promise<boolean>}
  */
