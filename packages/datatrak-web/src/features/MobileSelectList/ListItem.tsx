@@ -1,11 +1,11 @@
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Skeleton } from '@material-ui/lab';
-import React, { useState, ReactNode } from 'react';
+import { ChevronRight } from 'lucide-react';
+import React, { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Dialog, ListItem as MuiListItem, Slide } from '@material-ui/core';
-import { ArrowLeftIcon } from '../../components';
 import { ROUTES } from '../../constants';
 import { StickyMobileHeader } from '../../layout';
 import { ListItemType } from '../useGroupedSurveyList';
@@ -14,10 +14,9 @@ const Content = styled.div`
   flex: 1;
 `;
 
-const Arrow = styled(ArrowLeftIcon)`
+const Arrow = styled(ChevronRight)`
   font-size: 1rem;
   color: ${({ theme }) => theme.palette.primary.main};
-  transform: rotate(180deg);
 `;
 
 export const BaseListItem = styled(MuiListItem).attrs({ button: true })`
@@ -36,8 +35,10 @@ export const BaseListItem = styled(MuiListItem).attrs({ button: true })`
   }
 `;
 
-const IconWrapper = styled.div`
-  padding-right: 0.5rem;
+const IconWrapper = styled.div.attrs({
+  'aria-hidden': true,
+})`
+  padding-inline-end: 0.5rem;
   display: flex;
   align-items: center;
   width: 2rem;
@@ -99,9 +100,7 @@ export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
           onClose={onClose}
           fullScreen
         >
-          <StickyMobileHeader onBack={onBack} onClose={onClose}>
-            Select a survey
-          </StickyMobileHeader>
+          <StickyMobileHeader onBack={onBack}>Select a survey</StickyMobileHeader>
           {children}
         </Dialog>
       )}

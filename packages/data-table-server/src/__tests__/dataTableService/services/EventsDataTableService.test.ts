@@ -82,7 +82,7 @@ const fetchFakeEvents = (
 const fetchFakeDataGroup = (dataGroupCode: string) => {
   const eventsForDataGroup = TEST_EVENTS[dataGroupCode] || [];
   const dataElements = Array.from(
-    new Set(eventsForDataGroup.map(({ dataValues }) => Object.keys(dataValues)).flat()),
+    new Set(eventsForDataGroup.flatMap(({ dataValues }) => Object.keys(dataValues))),
   ).map(dataElement => ({ code: dataElement, name: dataElement }));
   return { code: dataGroupCode, name: dataGroupCode, dataElements };
 };

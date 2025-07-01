@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@material-ui/core';
 import { DESKTOP_BREAKPOINT } from '../constants';
 
 const overMobileBreakpoint = `@media (min-width: ${DESKTOP_BREAKPOINT})`;
@@ -100,7 +100,7 @@ const overrides = {
       'button, input, textarea, select': {
         touchAction: 'manipulation',
       },
-      ":is(ol, ul)[role='list']": {
+      ":where(ol, ul)[role='list']": {
         listStyleType: 'none',
         marginBlock: 0,
         paddingInlineStart: 0,
@@ -116,6 +116,10 @@ const overrides = {
       },
       time: {
         fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      },
+      '.lucide': {
+        height: 'auto', // Use width to set both dimensions
+        width: '1em', // Sensible default, mirrors MUI Icon behaviour
       },
     },
   },
@@ -188,7 +192,7 @@ const transitions = {
   },
 };
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   overrides,
   palette,
   transitions,

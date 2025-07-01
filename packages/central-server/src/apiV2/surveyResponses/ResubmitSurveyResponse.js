@@ -28,26 +28,34 @@ export class ResubmitSurveyResponse extends RouteHandler {
   }
 
   async assertUserHasAccess() {
-    // Check the user has either:
-    // - BES admin access
-    // - Tupaia Admin Panel access AND permission to view the surveyResponse AND permission to submit the new survey response
-    const originalSurveyResponsePermissionChecker = accessPolicy =>
-      assertSurveyResponsePermissions(accessPolicy, this.models, this.originalSurveyResponseId);
+    await this.models.wrapInReadOnlyTransaction(async transactingModels => {
+      // Check the user has either:
+      // - BES admin access
+      // - Tupaia Admin Panel access AND permission to view the surveyResponse AND permission to submit the new survey response
+      const originalSurveyResponsePermissionChecker = accessPolicy =>
+        assertSurveyResponsePermissions(
+          accessPolicy,
+          transactingModels,
+          this.originalSurveyResponseId,
+        );
 
-    const newSurveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanSubmitSurveyResponses(accessPolicy, this.models, [this.newSurveyResponse]);
-    };
+      const newSurveyResponsePermissionsChecker = async accessPolicy => {
+        await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, [
+          this.newSurveyResponse,
+        ]);
+      };
 
-    await this.assertPermissions(
-      assertAnyPermissions([
-        assertBESAdminAccess,
-        assertAllPermissions([
-          assertAdminPanelAccess,
-          originalSurveyResponsePermissionChecker,
-          newSurveyResponsePermissionsChecker,
+      await this.assertPermissions(
+        assertAnyPermissions([
+          assertBESAdminAccess,
+          assertAllPermissions([
+            assertAdminPanelAccess,
+            originalSurveyResponsePermissionChecker,
+            newSurveyResponsePermissionsChecker,
+          ]),
         ]),
-      ]),
-    );
+      );
+    });
   }
 
   async handleRequest() {
