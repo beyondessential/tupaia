@@ -6,8 +6,11 @@ import ReactDOMServer from 'react-dom/server';
 import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
+// Additional Material UI icons for dynamic usage
+// Note: Add more icons here as needed for your map overlays
+// For now, we'll add them as they're needed to avoid import errors
 import { PointExpression } from 'leaflet';
-import { CssColor, IconKey } from '@tupaia/types';
+import { CssColor, IconKey, IconKeyOrString } from '@tupaia/types';
 import { BREWER_PALETTE, WHITE } from '../../constants';
 import { Color, ColorKey } from '../../types';
 import { ICON_BASE_SIZE } from './constants';
@@ -20,6 +23,46 @@ const wrapMaterialIcon =
   (Base: ElementType) =>
   ({ color }: { color?: Color }) =>
     <Base htmlColor={color} viewBox="-3 -3 29 29" />;
+
+// Map of Material UI icon names to their components
+const materialIcons: { [key: string]: ElementType } = {
+  // Animals
+  'Pets': Pets,
+  
+  // Places and locations
+  'Home': Home,
+  'School': School,
+  'LocalHospital': LocalHospital,
+  'Restaurant': Restaurant,
+  'ShoppingCart': ShoppingCart,
+  'Work': Work,
+  'Business': Business,
+  'LocalGroceryStore': LocalGroceryStore,
+  
+  // Transportation
+  'DirectionsCar': DirectionsCar,
+  'Flight': Flight,
+  'Train': Train,
+  
+  // General
+  'Star': Star,
+  'Favorite': Favorite,
+  'LocationOn': LocationOn,
+  'Phone': Phone,
+  'Email': Email,
+  'Person': Person,
+  'Group': Group,
+  'Event': Event,
+};
+
+// Get a Material UI icon component by name
+const getMaterialIcon = (iconName: string): ElementType | null => {
+  const IconComponent = materialIcons[iconName];
+  if (IconComponent) {
+    return wrapMaterialIcon(IconComponent);
+  }
+  return null;
+};
 
 interface ScaleIconProps {
   scale?: number;
@@ -336,20 +379,52 @@ function toLeaflet(icon: IconType, color?: string, scale = 1): L.DivIcon {
   });
 }
 
+// Helper function to get icon configuration
+const getIconConfig = (iconKey: string): IconType => {
+  // Check if it's a predefined icon first
+  const predefinedIcon = icons[iconKey as IconKey];
+  if (predefinedIcon) {
+    return predefinedIcon;
+  }
+
+  // Try to get a Material UI icon
+  const materialIcon = getMaterialIcon(iconKey);
+  if (materialIcon) {
+    return {
+      Component: materialIcon,
+      // Default Material UI icon configuration
+      iconAnchor: [12, 12], // center for square icons
+      popupAnchor: [0, -15],
+    };
+  }
+
+  // Fallback to default icon
+  console.warn(`Icon "${iconKey}" not found, falling back to default icon`);
+  return icons[DEFAULT_ICON];
+};
+
 // Returns jsx version of marker (for Legend rendering)
 export function getMarkerForOption(
-  iconKey: IconKey | undefined,
+  iconKey: IconKey | string | undefined,
   colorName?: Color,
   stroke?: CssColor,
 ) {
-  const icon = icons[iconKey as IconKey] || icons.pin;
+  if (!iconKey) {
+    iconKey = DEFAULT_ICON;
+  }
+  
+  const iconConfig = getIconConfig(iconKey);
   const color = BREWER_PALETTE[colorName as ColorKey] || colorName;
-  return <icon.Component color={color} stroke={stroke} />;
+  return <iconConfig.Component color={color} stroke={stroke} />;
 }
 
 // Return html version of marker (for Map rendering)
-export function getMarkerForValue(iconKey: IconKey | undefined, colorName?: Color, scale = 1) {
-  const icon = icons[iconKey as IconKey] || icons.pin;
+export function getMarkerForValue(iconKey: IconKey | string | undefined, colorName?: Color, scale = 1) {
+  if (!iconKey) {
+    iconKey = DEFAULT_ICON;
+  }
+  
+  const iconConfig = getIconConfig(iconKey);
   const color = BREWER_PALETTE[colorName as ColorKey] || colorName;
-  return toLeaflet(icon, color, scale);
+  return toLeaflet(iconConfig, color, scale);
 }
