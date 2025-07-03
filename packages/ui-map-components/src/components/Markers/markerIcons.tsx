@@ -6,9 +6,6 @@ import ReactDOMServer from 'react-dom/server';
 import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
-// Additional Material UI icons for dynamic usage
-// Note: Add more icons here as needed for your map overlays
-// For now, we'll add them as they're needed to avoid import errors
 import { PointExpression } from 'leaflet';
 import { CssColor, IconKey, IconKeyOrString } from '@tupaia/types';
 import { BREWER_PALETTE, WHITE } from '../../constants';
@@ -24,44 +21,34 @@ const wrapMaterialIcon =
   ({ color }: { color?: Color }) =>
     <Base htmlColor={color} viewBox="-3 -3 29 29" />;
 
-// Map of Material UI icon names to their components
-const materialIcons: { [key: string]: ElementType } = {
-  // Animals
-  'Pets': Pets,
+// Dynamic Material UI icon loader using dynamic imports
+// This approach allows using ANY Material UI icon without individual imports
+const getMaterialIcon = async (iconName: string): Promise<ElementType | null> => {
+  try {
+    // Dynamic import of any Material UI icon
+    const iconModule = await import(`@material-ui/icons/${iconName}`);
+    const IconComponent = iconModule.default;
+    
+    if (IconComponent) {
+      return wrapMaterialIcon(IconComponent);
+    }
+  } catch (error) {
+    // Icon doesn't exist or failed to load
+    console.warn(`Material UI icon "${iconName}" not found`);
+  }
   
-  // Places and locations
-  'Home': Home,
-  'School': School,
-  'LocalHospital': LocalHospital,
-  'Restaurant': Restaurant,
-  'ShoppingCart': ShoppingCart,
-  'Work': Work,
-  'Business': Business,
-  'LocalGroceryStore': LocalGroceryStore,
-  
-  // Transportation
-  'DirectionsCar': DirectionsCar,
-  'Flight': Flight,
-  'Train': Train,
-  
-  // General
-  'Star': Star,
-  'Favorite': Favorite,
-  'LocationOn': LocationOn,
-  'Phone': Phone,
-  'Email': Email,
-  'Person': Person,
-  'Group': Group,
-  'Event': Event,
+  return null;
 };
 
-// Get a Material UI icon component by name
-const getMaterialIcon = (iconName: string): ElementType | null => {
-  const IconComponent = materialIcons[iconName];
-  if (IconComponent) {
-    return wrapMaterialIcon(IconComponent);
+// Cache for Material UI icons to avoid repeated imports
+const materialIconCache: { [key: string]: Promise<ElementType | null> } = {};
+
+// Get Material UI icon with caching
+const getCachedMaterialIcon = (iconName: string): Promise<ElementType | null> => {
+  if (!materialIconCache[iconName]) {
+    materialIconCache[iconName] = getMaterialIcon(iconName);
   }
-  return null;
+  return materialIconCache[iconName];
 };
 
 interface ScaleIconProps {
