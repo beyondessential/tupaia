@@ -7,7 +7,7 @@ import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
 import { PointExpression } from 'leaflet';
-import { CssColor, IconKey } from '@tupaia/types';
+import { CssColor, IconKey, IconKeyOrString } from '@tupaia/types';
 import { BREWER_PALETTE, WHITE } from '../../constants';
 import { Color, ColorKey } from '../../types';
 import { ICON_BASE_SIZE } from './constants';
@@ -20,6 +20,36 @@ const wrapMaterialIcon =
   (Base: ElementType) =>
   ({ color }: { color?: Color }) =>
     <Base htmlColor={color} viewBox="-3 -3 29 29" />;
+
+// Dynamic Material UI icon loader using dynamic imports
+// This approach allows using ANY Material UI icon without individual imports
+const getMaterialIcon = async (iconName: string): Promise<ElementType | null> => {
+  try {
+    // Dynamic import of any Material UI icon
+    const iconModule = await import(`@material-ui/icons/${iconName}`);
+    const IconComponent = iconModule.default;
+    
+    if (IconComponent) {
+      return wrapMaterialIcon(IconComponent);
+    }
+  } catch (error) {
+    // Icon doesn't exist or failed to load
+    console.warn(`Material UI icon "${iconName}" not found`);
+  }
+  
+  return null;
+};
+
+// Cache for Material UI icons to avoid repeated imports
+const materialIconCache: { [key: string]: Promise<ElementType | null> } = {};
+
+// Get Material UI icon with caching
+const getCachedMaterialIcon = (iconName: string): Promise<ElementType | null> => {
+  if (!materialIconCache[iconName]) {
+    materialIconCache[iconName] = getMaterialIcon(iconName);
+  }
+  return materialIconCache[iconName];
+};
 
 interface ScaleIconProps {
   scale?: number;
@@ -336,20 +366,52 @@ function toLeaflet(icon: IconType, color?: string, scale = 1): L.DivIcon {
   });
 }
 
+// Helper function to get icon configuration
+const getIconConfig = (iconKey: string): IconType => {
+  // Check if it's a predefined icon first
+  const predefinedIcon = icons[iconKey as IconKey];
+  if (predefinedIcon) {
+    return predefinedIcon;
+  }
+
+  // Try to get a Material UI icon
+  const materialIcon = getMaterialIcon(iconKey);
+  if (materialIcon) {
+    return {
+      Component: materialIcon,
+      // Default Material UI icon configuration
+      iconAnchor: [12, 12], // center for square icons
+      popupAnchor: [0, -15],
+    };
+  }
+
+  // Fallback to default icon
+  console.warn(`Icon "${iconKey}" not found, falling back to default icon`);
+  return icons[DEFAULT_ICON];
+};
+
 // Returns jsx version of marker (for Legend rendering)
 export function getMarkerForOption(
-  iconKey: IconKey | undefined,
+  iconKey: IconKey | string | undefined,
   colorName?: Color,
   stroke?: CssColor,
 ) {
-  const icon = icons[iconKey as IconKey] || icons.pin;
+  if (!iconKey) {
+    iconKey = DEFAULT_ICON;
+  }
+  
+  const iconConfig = getIconConfig(iconKey);
   const color = BREWER_PALETTE[colorName as ColorKey] || colorName;
-  return <icon.Component color={color} stroke={stroke} />;
+  return <iconConfig.Component color={color} stroke={stroke} />;
 }
 
 // Return html version of marker (for Map rendering)
-export function getMarkerForValue(iconKey: IconKey | undefined, colorName?: Color, scale = 1) {
-  const icon = icons[iconKey as IconKey] || icons.pin;
+export function getMarkerForValue(iconKey: IconKey | string | undefined, colorName?: Color, scale = 1) {
+  if (!iconKey) {
+    iconKey = DEFAULT_ICON;
+  }
+  
+  const iconConfig = getIconConfig(iconKey);
   const color = BREWER_PALETTE[colorName as ColorKey] || colorName;
-  return toLeaflet(icon, color, scale);
+  return toLeaflet(iconConfig, color, scale);
 }
