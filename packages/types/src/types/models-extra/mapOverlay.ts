@@ -105,6 +105,10 @@ export enum IconKey {
   HIDDEN = 'hidden',
 }
 
+// Extended type that allows both predefined IconKey values and arbitrary strings
+// This enables the use of any Material UI icon key while maintaining type safety for predefined icons
+export type IconKeyOrString = IconKey | string;
+
 export enum ScaleType {
   PERFORMANCE = 'performance',
   PERFORMANCE_DESC = 'performanceDesc',
@@ -321,8 +325,10 @@ export type IconMapOverlayConfig = BaseMapOverlayConfig & {
 
   /**
    * @description Which icon to display for this map overlay
+   * Can be one of the predefined IconKey values or any valid Material UI icon name
+   * Examples: IconKey.PIN, 'Pets', 'Home', 'LocalHospital', etc.
    */
-  icon: IconKey;
+  icon: IconKeyOrString;
 };
 
 export type RadiusMapOverlayConfig = BaseMapOverlayConfig & {
