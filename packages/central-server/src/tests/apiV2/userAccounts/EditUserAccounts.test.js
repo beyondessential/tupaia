@@ -26,59 +26,50 @@ describe('Permissions checker for EditUserAccounts', async () => {
   let userAccount2;
 
   before(async () => {
-    const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
-      name: 'Public',
-    });
-
-    const { entity: kiribatiEntity } = await findOrCreateDummyCountryEntity(models, {
-      code: 'KI',
-    });
-
-    const { entity: laosEntity } = await findOrCreateDummyCountryEntity(models, {
-      code: 'LA',
-    });
-
-    const { entity: demoEntity } = await findOrCreateDummyCountryEntity(models, {
-      code: 'DL',
-    });
-
-    // Create test users
-    userAccount1 = await findOrCreateDummyRecord(models.user, {
-      first_name: 'Barry',
-      last_name: 'EditUserAccounts',
-    });
-    userAccount2 = await findOrCreateDummyRecord(models.user, {
-      first_name: 'Hal',
-      last_name: 'EditUserAccounts',
-    });
+    const [
+      publicPermissionGroup,
+      { entity: kiribatiEntity },
+      { entity: laosEntity },
+      { entity: demoEntity },
+      userAccount1,
+      userAccount2,
+    ] = await Promise.all([
+      findOrCreateDummyRecord(models.permissionGroup, { name: 'Public' }),
+      findOrCreateDummyCountryEntity(models, { code: 'KI' }),
+      findOrCreateDummyCountryEntity(models, { code: 'LA' }),
+      findOrCreateDummyCountryEntity(models, { code: 'DL' }),
+      findOrCreateDummyRecord(models.user, { first_name: 'Barry', last_name: 'EditUserAccounts' }),
+      findOrCreateDummyRecord(models.user, { first_name: 'Hal', last_name: 'EditUserAccounts' }),
+    ]);
 
     // Give the test users some permissions
-    await findOrCreateDummyRecord(models.userEntityPermission, {
-      user_id: userAccount1.id,
-      entity_id: demoEntity.id,
-      permission_group_id: publicPermissionGroup.id,
-    });
-    await findOrCreateDummyRecord(models.userEntityPermission, {
-      user_id: userAccount1.id,
-      entity_id: kiribatiEntity.id,
-      permission_group_id: publicPermissionGroup.id,
-    });
-
-    await findOrCreateDummyRecord(models.userEntityPermission, {
-      user_id: userAccount2.id,
-      entity_id: demoEntity.id,
-      permission_group_id: publicPermissionGroup.id,
-    });
-    await findOrCreateDummyRecord(models.userEntityPermission, {
-      user_id: userAccount2.id,
-      entity_id: kiribatiEntity.id,
-      permission_group_id: publicPermissionGroup.id,
-    });
-    await findOrCreateDummyRecord(models.userEntityPermission, {
-      user_id: userAccount2.id,
-      entity_id: laosEntity.id,
-      permission_group_id: publicPermissionGroup.id,
-    });
+    await Promise.all([
+      findOrCreateDummyRecord(models.userEntityPermission, {
+        user_id: userAccount1.id,
+        entity_id: demoEntity.id,
+        permission_group_id: publicPermissionGroup.id,
+      }),
+      findOrCreateDummyRecord(models.userEntityPermission, {
+        user_id: userAccount1.id,
+        entity_id: kiribatiEntity.id,
+        permission_group_id: publicPermissionGroup.id,
+      }),
+      findOrCreateDummyRecord(models.userEntityPermission, {
+        user_id: userAccount2.id,
+        entity_id: demoEntity.id,
+        permission_group_id: publicPermissionGroup.id,
+      }),
+      findOrCreateDummyRecord(models.userEntityPermission, {
+        user_id: userAccount2.id,
+        entity_id: kiribatiEntity.id,
+        permission_group_id: publicPermissionGroup.id,
+      }),
+      findOrCreateDummyRecord(models.userEntityPermission, {
+        user_id: userAccount2.id,
+        entity_id: laosEntity.id,
+        permission_group_id: publicPermissionGroup.id,
+      }),
+    ]);
   });
 
   afterEach(() => {
