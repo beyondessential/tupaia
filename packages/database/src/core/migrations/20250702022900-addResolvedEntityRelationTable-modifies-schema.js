@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 exports.up = function (db) {
   return db.runSql(
     `
-      CREATE TABLE entity_parent_child_relations
+      CREATE TABLE entity_parent_child_relation
       (
           id                   TEXT             NOT NULL PRIMARY KEY,
           parent_id            TEXT             NOT NULL REFERENCES entity,

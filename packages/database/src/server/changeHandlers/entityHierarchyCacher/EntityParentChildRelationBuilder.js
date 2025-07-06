@@ -35,6 +35,10 @@ export class EntityParentChildRelationBuilder {
   }
 
   async updateResolvedEntityRelation({ hierarchyId, affectedEntityId }) {
+    if (!affectedEntityId) {
+      return;
+    }
+    console.log('hierarchyId', hierarchyId);
     await this.models.entityParentChildRelation.delete({
       entity_hierarchy_id: hierarchyId,
       child_id: affectedEntityId,
@@ -46,11 +50,14 @@ export class EntityParentChildRelationBuilder {
     const record = entityRelation
       ? entityRelation
       : await this.models.entity.findOne({ id: affectedEntityId });
-    await this.models.entityParentChildRelation.create({
-      parent_id: record.parent_id,
-      child_id: affectedEntityId,
-      entity_hierarchy_id: hierarchyId,
-    });
+
+    if (record) {
+      await this.models.entityParentChildRelation.create({
+        parent_id: record.parent_id,
+        child_id: affectedEntityId,
+        entity_hierarchy_id: hierarchyId,
+      });
+    }
   }
 
   async fetchAndCacheDescendants(hierarchyId, parentIds) {
@@ -76,7 +83,7 @@ export class EntityParentChildRelationBuilder {
       parentIds,
       batchOfParentIds => [
         `
-          INSERT INTO entity_parent_child_relations (parent_id, child_id, entity_hierarchy_id)
+          INSERT INTO entity_parent_child_relation (parent_id, child_id, entity_hierarchy_id)
           SELECT parent_id, child_id, entity_hierarchy_id
           FROM entity_relation
           WHERE
@@ -100,7 +107,7 @@ export class EntityParentChildRelationBuilder {
       parentIds,
       batchOfParentIds => [
         `
-        INSERT INTO entity_parent_child_relations (parent_id, child_id)
+        INSERT INTO entity_parent_child_relation (parent_id, child_id)
         SELECT parent_id, id
         FROM entity
         WHERE
