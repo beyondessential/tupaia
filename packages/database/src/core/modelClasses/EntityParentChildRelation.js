@@ -3,7 +3,7 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
 export class EntityParentChildRelationRecord extends DatabaseRecord {
-  static databaseRecord = RECORDS.RESOLVED_ENTITY_RELATION;
+  static databaseRecord = RECORDS.ENTITY_PARENT_CHILD_RELATION;
 }
 
 export class EntityParentChildRelationModel extends DatabaseModel {
