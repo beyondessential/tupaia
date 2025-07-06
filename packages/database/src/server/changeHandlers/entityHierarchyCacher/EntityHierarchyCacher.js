@@ -1,7 +1,7 @@
-import winston from 'winston';
 import { generateId } from '../../../core/utilities';
 import { ChangeHandler } from '../ChangeHandler';
 import { EntityHierarchySubtreeRebuilder } from './EntityHierarchySubtreeRebuilder';
+import { EntityParentChildRelationBuilder } from './EntityParentChildRelationBuilder';
 import { RECORDS } from '../../../core/records';
 
 export class EntityHierarchyCacher extends ChangeHandler {
@@ -22,6 +22,7 @@ export class EntityHierarchyCacher extends ChangeHandler {
     const jobs = hierarchies.map(({ id: hierarchyId }) => ({
       hierarchyId,
       rootEntityId: entityId,
+      affectedEntityId: entityId,
     }));
     return jobs;
   }
@@ -31,7 +32,11 @@ export class EntityHierarchyCacher extends ChangeHandler {
     // have changed
     const jobs = [oldRecord, newRecord]
       .filter(r => r)
-      .map(r => ({ hierarchyId: r.entity_hierarchy_id, rootEntityId: r.parent_id }));
+      .map(r => ({
+        hierarchyId: r.entity_hierarchy_id,
+        rootEntityId: r.parent_id,
+        affectedEntityId: r.child_id,
+      }));
     return jobs;
   }
 
@@ -54,6 +59,13 @@ export class EntityHierarchyCacher extends ChangeHandler {
   }
 
   async handleChanges(transactingModels, rebuildJobs) {
+    console.log('yeyeye');
+    // const entityParentChildRelationRebuilder = new EntityParentChildRelationBuilder(
+    //   transactingModels,
+    // );
+    // await entityParentChildRelationRebuilder.updateResolvedEntityRelations(rebuildJobs);
+
+    console.log('yayaya');
     // get the subtrees to delete, then run the delete
     const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
     await subtreeRebuilder.rebuildSubtrees(rebuildJobs);

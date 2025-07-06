@@ -30,6 +30,7 @@ const TABLES_TO_CLEAR = [
   'indicator',
   'comment',
   'entity_hierarchy',
+  'entity_parent_child_relations',
   'geographical_area',
   'country',
   'feed_item',
