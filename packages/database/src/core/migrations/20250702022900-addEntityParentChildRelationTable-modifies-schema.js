@@ -20,9 +20,12 @@ exports.up = function (db) {
       CREATE TABLE entity_parent_child_relation
       (
           id                   TEXT             NOT NULL PRIMARY KEY,
-          parent_id            TEXT             NOT NULL REFERENCES entity,
-          child_id             TEXT             NOT NULL REFERENCES entity,
+          parent_id            TEXT             NOT NULL REFERENCES entity
+            on update cascade on delete cascade,
+          child_id             TEXT             NOT NULL REFERENCES entity
+            on update cascade on delete cascade,
           entity_hierarchy_id  TEXT             NOT NULL REFERENCES entity_hierarchy
+            on update cascade on delete cascade
       );
     `,
   );
