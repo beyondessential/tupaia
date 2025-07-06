@@ -11,7 +11,11 @@ export class EntityParentChildRelationBuilder {
    */
   async rebuildRelations(rebuildJobs) {
     // projects are the root entities of every full tree, so start with them
-    for (const { hierarchyId, affectedEntityId, rebuildEntityParentChildRelations } of rebuildJobs) {
+    for (const {
+      hierarchyId,
+      affectedEntityId,
+      rebuildEntityParentChildRelations,
+    } of rebuildJobs) {
       if (rebuildEntityParentChildRelations) {
         await this.models.entityParentChildRelation.delete({
           entity_hierarchy_id: hierarchyId,
@@ -19,10 +23,9 @@ export class EntityParentChildRelationBuilder {
         const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
         await this.rebuildRelationsForProject(project);
       } else {
-        await this.rebuildRelationsForEntity({ hierarchyId, affectedEntityId });  
+        await this.rebuildRelationsForEntity({ hierarchyId, affectedEntityId });
       }
     }
-   
   }
 
   /**
@@ -108,6 +111,10 @@ export class EntityParentChildRelationBuilder {
   async generateCanonicalChildren(hierarchyId, parentIds) {
     const entityHierarchy = await this.models.entityHierarchy.findById(hierarchyId);
     const { canonical_types: customCanonicalTypes } = entityHierarchy;
+    const canonicalTypes =
+      customCanonicalTypes && customCanonicalTypes.length > 0
+        ? customCanonicalTypes
+        : Object.values(ORG_UNIT_ENTITY_TYPES);
 
     const insertedResults = await this.models.database.executeSqlInBatches(
       parentIds,
@@ -117,12 +124,12 @@ export class EntityParentChildRelationBuilder {
         SELECT parent_id, id
         FROM entity
         WHERE
-          type IN (${customCanonicalTypes.map(() => '?').join(',')})
+          type IN (${canonicalTypes.map(() => '?').join(',')})
         AND
           parent_id IN (${batchOfParentIds.map(() => '?').join(',')});
         RETURNING child_id;
       `,
-        [...customCanonicalTypes, ...batchOfParentIds],
+        [...canonicalTypes, ...batchOfParentIds],
       ],
     );
 
