@@ -30,7 +30,7 @@ export class EntityParentChildRelationBuilder {
    */
   async rebuildRelationsForProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
-    return this.fetchAndCacheChildren(hierarchyId, { [projectEntityId]: [] });
+    return this.fetchAndCacheChildren(hierarchyId, [projectEntityId]);
   }
 
   async updateResolvedEntityRelations(rebuildJobs) {
