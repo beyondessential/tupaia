@@ -68,7 +68,7 @@ export class EntityHierarchySubtreeRebuilder {
    */
   async buildAndCacheProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
-    return this.fetchAndCacheDescendants(hierarchyId, { [projectEntityId]: [] });
+    return this.fetchAndCacheChildren(hierarchyId, { [projectEntityId]: [] });
   }
 
   /**
@@ -80,7 +80,7 @@ export class EntityHierarchySubtreeRebuilder {
    * @param {string} parentIdsToAncestorIds  Keys are parent ids to fetch descendants of, values are
    *                                         all ancestor ids above each parent
    */
-  async fetchAndCacheDescendants(hierarchyId, parentIdsToAncestorIds) {
+  async fetchAndCacheChildren(hierarchyId, parentIdsToAncestorIds) {
     const parentIds = Object.keys(parentIdsToAncestorIds);
 
     // check whether next generation uses entity relation links, or should fall back to parent_id
@@ -103,7 +103,7 @@ export class EntityHierarchySubtreeRebuilder {
     await this.cacheGeneration(hierarchyId, childIdToAncestorIds);
 
     // if there is another generation, keep recursing through the hierarchy
-    await this.fetchAndCacheDescendants(hierarchyId, childIdToAncestorIds);
+    await this.fetchAndCacheChildren(hierarchyId, childIdToAncestorIds);
   }
 
   /**

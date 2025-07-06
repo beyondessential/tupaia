@@ -40,7 +40,7 @@ describe('EntityHierarchyCacher', () => {
   const buildAndCacheProject = async projectCode => {
     const project = await models.project.findOne({ code: projectCode });
     await subtreeRebuilder.buildAndCacheProject(project);
-    await entityParentChildRelationBuilder.buildResolvedEntityRelationsForProject(project);
+    await entityParentChildRelationBuilder.rebuildRelationsForProject(project);
   };
   const assertRelationsMatch = async (projectCode, relations) => {
     await models.database.waitForAllChangeHandlers();

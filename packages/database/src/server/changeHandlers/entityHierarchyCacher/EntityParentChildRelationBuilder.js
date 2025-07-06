@@ -9,32 +9,35 @@ export class EntityParentChildRelationBuilder {
    * @public
    * @param {string[]} hierarchyIds The specific hierarchies to cache (defaults to all)
    */
-  async buildResolvedEntityRelations(hierarchyIds) {
+  async rebuildRelations(rebuildJobs) {
     // projects are the root entities of every full tree, so start with them
-    const projectCriteria = hierarchyIds ? { entity_hierarchy_id: hierarchyIds } : {};
-    const projects = await this.models.project.find(projectCriteria);
-    const projectTasks = projects.map(async project =>
-      this.buildResolvedEntityRelationsForProject(project),
-    );
-    await Promise.all(projectTasks);
+    for (const { hierarchyId, affectedEntityId, rebuildEntityParentChildRelations } of rebuildJobs) {
+      if (rebuildEntityParentChildRelations) {
+        await this.rebuildRelationsForEntity({ hierarchyId, affectedEntityId });
+      } else {
+        const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
+        await this.rebuildRelationsForProject(project);
+      }
+    }
+   
   }
 
   /**
    * @public
    */
-  async buildResolvedEntityRelationsForProject(project) {
+  async rebuildRelationsForProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
-    return this.fetchAndCacheDescendants(hierarchyId, { [projectEntityId]: [] });
+    return this.fetchAndCacheChildren(hierarchyId, { [projectEntityId]: [] });
   }
 
   async updateResolvedEntityRelations(rebuildJobs) {
     const tasks = rebuildJobs.map(async ({ hierarchyId, affectedEntityId }) =>
-      this.updateResolvedEntityRelation({ hierarchyId, affectedEntityId }),
+      this.rebuildRelationsForEntity({ hierarchyId, affectedEntityId }),
     );
     await Promise.all(tasks);
   }
 
-  async updateResolvedEntityRelation({ hierarchyId, affectedEntityId }) {
+  async rebuildRelationsForEntity({ hierarchyId, affectedEntityId }) {
     if (!affectedEntityId) {
       return;
     }
@@ -60,7 +63,7 @@ export class EntityParentChildRelationBuilder {
     }
   }
 
-  async fetchAndCacheDescendants(hierarchyId, parentIds) {
+  async fetchAndCacheChildren(hierarchyId, parentIds) {
     const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, parentIds);
     const useEntityRelationLinks = entityRelationChildCount > 0;
     const childCount = useEntityRelationLinks
@@ -75,7 +78,7 @@ export class EntityParentChildRelationBuilder {
       ? await this.generateEntityRelationChildren(hierarchyId, parentIds)
       : await this.generateCanonicalChildren(hierarchyId, parentIds);
 
-    return this.fetchAndCacheDescendants(hierarchyId, childIds);
+    return this.fetchAndCacheChildren(hierarchyId, childIds);
   }
 
   async generateEntityRelationChildren(hierarchyId, parentIds) {
