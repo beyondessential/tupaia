@@ -13,6 +13,9 @@ export class EntityParentChildRelationBuilder {
     // projects are the root entities of every full tree, so start with them
     for (const { hierarchyId, affectedEntityId, rebuildEntityParentChildRelations } of rebuildJobs) {
       if (rebuildEntityParentChildRelations) {
+        await this.models.entityParentChildRelation.delete({
+          entity_hierarchy_id: hierarchyId,
+        });
         const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
         await this.rebuildRelationsForProject(project);
       } else {
