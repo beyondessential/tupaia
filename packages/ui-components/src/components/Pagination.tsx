@@ -102,7 +102,7 @@ interface PageSelectComponentProps {
 }
 
 const PageSelectComponent = ({ onChangePage, page, pageCount }: PageSelectComponentProps) => {
-  const pageDisplay = page + 1;
+  const isPageCountKnown = Number.isFinite(pageCount);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPage = e.target.value ? Number(e.target.value) - 1 : 0;
@@ -116,16 +116,14 @@ const PageSelectComponent = ({ onChangePage, page, pageCount }: PageSelectCompon
         </Text>
         <ManualPageInput
           type="number"
-          value={pageDisplay}
+          value={page + 1 /* Make 1-indexed */}
           onChange={onChange}
-          inputProps={{ min: 1, max: pageCount }}
+          inputProps={{ min: 1, max: isPageCountKnown ? pageCount : undefined }}
           aria-describedby="page-count"
           id="page"
           disableUnderline
         />
-        <Text id="page-count">
-          of {Number.isFinite(pageCount) ? pageCount.toLocaleString() : 'many'}
-        </Text>
+        <Text id="page-count">of {isPageCountKnown ? pageCount.toLocaleString() : 'many'}</Text>
       </ManualPageInputContainer>
       <Button
         onClick={() => onChangePage(page - 1)}
