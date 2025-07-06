@@ -98,7 +98,7 @@ export class EntityParentChildRelationBuilder {
           WHERE
             entity_hierarchy_id = ?
           AND
-            parent_id IN (${batchOfParentIds.map(() => '?').join(',')});
+            parent_id IN (${batchOfParentIds.map(() => '?').join(',')})
           RETURNING child_id;
         `,
         [hierarchyId, ...batchOfParentIds],
@@ -126,7 +126,7 @@ export class EntityParentChildRelationBuilder {
         WHERE
           type IN (${canonicalTypes.map(() => '?').join(',')})
         AND
-          parent_id IN (${batchOfParentIds.map(() => '?').join(',')});
+          parent_id IN (${batchOfParentIds.map(() => '?').join(',')})
         RETURNING child_id;
       `,
         [...canonicalTypes, ...batchOfParentIds],
