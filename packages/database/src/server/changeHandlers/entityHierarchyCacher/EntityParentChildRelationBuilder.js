@@ -1,3 +1,4 @@
+import { generateId } from '../../../core';
 import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
 
 export class EntityParentChildRelationBuilder {
@@ -88,24 +89,18 @@ export class EntityParentChildRelationBuilder {
   }
 
   async generateEntityRelationChildren(hierarchyId, parentIds) {
-    const insertedResults = await this.models.database.executeSqlInBatches(
-      parentIds,
-      batchOfParentIds => [
-        `
-          INSERT INTO entity_parent_child_relation (parent_id, child_id, entity_hierarchy_id)
-          SELECT parent_id, child_id, entity_hierarchy_id
-          FROM entity_relation
-          WHERE
-            entity_hierarchy_id = ?
-          AND
-            parent_id IN (${batchOfParentIds.map(() => '?').join(',')})
-          RETURNING child_id;
-        `,
-        [hierarchyId, ...batchOfParentIds],
-      ],
-    );
+    const entityRelations = await this.models.entityRelation.find({
+      parent_id: parentIds,
+      entity_hierarchy_id: hierarchyId,
+    });
+    const entityParentChildRelations = entityRelations.map(relation => ({
+      parent_id: relation.parent_id,
+      child_id: relation.child_id,
+      entity_hierarchy_id: hierarchyId,
+    }));
+    await this.models.entityParentChildRelation.createMany(entityParentChildRelations);
 
-    return insertedResults.map(result => result.child_id);
+    return entityParentChildRelations.map(e => e.child_id);
   }
 
   async generateCanonicalChildren(hierarchyId, parentIds) {
@@ -116,24 +111,18 @@ export class EntityParentChildRelationBuilder {
         ? customCanonicalTypes
         : Object.values(ORG_UNIT_ENTITY_TYPES);
 
-    const insertedResults = await this.models.database.executeSqlInBatches(
-      parentIds,
-      batchOfParentIds => [
-        `
-        INSERT INTO entity_parent_child_relation (parent_id, child_id)
-        SELECT parent_id, id
-        FROM entity
-        WHERE
-          type IN (${canonicalTypes.map(() => '?').join(',')})
-        AND
-          parent_id IN (${batchOfParentIds.map(() => '?').join(',')})
-        RETURNING child_id;
-      `,
-        [...canonicalTypes, ...batchOfParentIds],
-      ],
-    );
+    const entities = await this.models.entity.find({
+      parent_id: parentIds,
+      type: canonicalTypes,
+    });
+    const entityParentChildRelations = entities.map(e => ({
+      parent_id: e.parent_id,
+      child_id: e.id,
+      entity_hierarchy_id: hierarchyId,
+    }));
+    await this.models.entityParentChildRelation.createMany(entityParentChildRelations);
 
-    return insertedResults.map(result => result.child_id);
+    return entityParentChildRelations.map(e => e.child_id);
   }
 
   /**
