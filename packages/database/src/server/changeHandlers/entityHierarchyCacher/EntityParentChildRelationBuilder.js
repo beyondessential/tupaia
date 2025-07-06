@@ -122,7 +122,7 @@ export class EntityParentChildRelationBuilder {
           parent_id IN (${batchOfParentIds.map(() => '?').join(',')});
         RETURNING child_id;
       `,
-        [hierarchyId, ...customCanonicalTypes, ...batchOfParentIds],
+        [...customCanonicalTypes, ...batchOfParentIds],
       ],
     );
 
