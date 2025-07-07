@@ -8,6 +8,7 @@ import { RECORDS } from '../records';
 
 export class UserRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ACCOUNT;
+  static #legacyHashPrefix = '$sha256+argon2id$';
 
   get fullName() {
     let userFullName = this.first_name;
@@ -18,33 +19,47 @@ export class UserRecord extends DatabaseRecord {
   }
 
   /**
-   * Attempts to verify the password using argon2, if that fails, it tries to verify the password
-   * using sha256 plus argon2. If the password is verified using sha256, the password is moved to
-   * argon2.
+   * A legacy hash is:
+   * - A SHA-256 hash…
+   * - …further hashed with Argon2…
+   * - …prefixed with `$sha256+argon2id$` instead of `$argon2id$`.
+   *
+   * @see @tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js
+   */
+  get hasLegacyPasswordHash() {
+    return this.password_hash.startsWith(UserRecord.#legacyHashPrefix);
+  }
+
+  /**
+   * If the user account has been migrated to use only Argon2, verifies the password directly using
+   * Argon2. Otherwise, uses SHA-256 plus Argon2 (see migration referenced below), then migrates the
+   * user to Argon2 upon success.
+   *
+   * @see @tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js
+   * @see {@link hasLegacyPasswordHash}
+   *
    * @param password {string}
    * @returns {Promise<boolean>}
    */
   async checkPassword(password) {
-    const salt = this.password_salt;
-    const hash = this.password_hash;
+    if (this.hasLegacyPasswordHash) {
+      const hash = this.password_hash.replace(UserRecord.#legacyHashPrefix, '$argon2id$');
+      const salt = this.password_salt;
 
-    // Try to verify password using argon2 directly
-    const isVerified = await verifyPassword(password, this.password_hash);
-    if (isVerified) {
-      return true;
+      const hashedUserInput = sha256EncryptPassword(password, salt);
+      const isVerifiedSha256 = await verify(hash, hashedUserInput);
+
+      if (isVerifiedSha256) {
+        // Migrate to Argon2
+        const argon2Hash = await encryptPassword(password);
+        await this.model.updateById(this.id, { password_hash: argon2Hash });
+      }
+
+      return isVerifiedSha256;
     }
 
-    // Try to verify password using sha256 plus argon2
-    const hashedUserInput = sha256EncryptPassword(password, salt);
-    const isVerifiedSha256 = await verify(hash, hashedUserInput);
-    if (isVerifiedSha256) {
-      // Move password to argon2
-      const encryptedPassword = await encryptPassword(password);
-      await this.model.updateById(this.id, { password_hash: encryptedPassword });
-      return true;
-    }
-
-    return false;
+    // Verify password using Argon2 directly
+    return await verifyPassword(password, this.password_hash);
   }
 
   checkIsEmailUnverified() {

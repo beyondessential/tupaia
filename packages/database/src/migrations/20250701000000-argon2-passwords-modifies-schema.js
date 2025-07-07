@@ -28,10 +28,15 @@ exports.up = async function (db) {
   `);
   const users = await db.runSql('SELECT id, password_hash_old FROM user_account');
 
+  // Use Argon2 to hash existing SHA-256 hash, replacing standard '$argon2id$' prefix with
+  // '$sha256+argon2id$' to track which users have truly migrated to Argon2
   await Promise.all(
     users.rows.map(async user => {
       const { id, password_hash_old } = user;
-      const hashedValue = await hash(password_hash_old);
+      const hashedValue = (await hash(password_hash_old)).replace(
+        '$argon2id$',
+        '$sha256+argon2id$',
+      );
       await db.runSql('UPDATE user_account SET password_hash = $1 WHERE id = $2', [
         hashedValue,
         id,
@@ -48,7 +53,7 @@ exports.down = function (db) {
   return db.runSql(`
     ALTER TABLE user_account
     DROP COLUMN password_hash;
-    
+
     ALTER TABLE user_account
     RENAME COLUMN password_hash_old TO password_hash;
   `);
