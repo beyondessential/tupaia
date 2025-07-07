@@ -5,11 +5,12 @@ import styled, { css } from 'styled-components';
 import { isFeatureEnabled } from '@tupaia/utils';
 
 import { Button } from '../../components';
+import { useBottomNavigationVisibility } from '../../components/BottomNavigation';
 import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../constants';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
 import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
-import { useBottomNavigationVisibility, useIsMobile } from '../../utils';
+import { useIsMobile } from '../../utils';
 
 const canCreateTaskOnMobile = isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK');
 
