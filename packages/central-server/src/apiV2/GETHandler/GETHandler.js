@@ -46,7 +46,7 @@ export class GETHandler extends CRUDHandler {
 
     return isNullish(limit)
       ? { limit } // Pagination doesn’t make sense when LIMIT ALL
-      : { limit, page };
+      : { limit, page: Number.parseInt(page, 10) };
   }
 
   async getProcessedColumns() {
@@ -180,7 +180,7 @@ export class GETHandler extends CRUDHandler {
     };
 
     const { limit, page } = this.getPaginationParameters();
-    if (isNotNullish(limit)) {
+    if (isNotNullish(limit) && isNotNullish(page)) {
       const lastPage = Number.isFinite(totalRecordCount) ? totalRecordCount / limit : null;
       headers['Access-Control-Expose-Headers'] = 'Link, X-Total-Count';
       headers.Link = generateLinkHeader(this.resource, page, lastPage, this.req.query);
