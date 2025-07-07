@@ -11,7 +11,7 @@ const EditorPanel = styled.div`
   width: 100%;
 
   > div {
-    width: 100%;
+    display: contents;
   }
 
   .jsoneditor {
