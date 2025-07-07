@@ -66,7 +66,7 @@ export class EntityParentChildRelationBuilder {
       entity_hierarchy_id: hierarchyId,
     });
 
-    return this.fetchAndCacheChildren(hierarchyId, currentChildIds);
+    return this.fetchAndCacheChildren(hierarchyId, existingChildIds);
   }
 
   async generateEntityRelationChildren(hierarchyId, parentIds) {
