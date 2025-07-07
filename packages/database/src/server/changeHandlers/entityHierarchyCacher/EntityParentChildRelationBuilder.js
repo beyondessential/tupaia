@@ -18,9 +18,6 @@ export class EntityParentChildRelationBuilder {
       rebuildEntityParentChildRelations,
     } of rebuildJobs) {
       if (rebuildEntityParentChildRelations) {
-        await this.models.entityParentChildRelation.delete({
-          entity_hierarchy_id: hierarchyId,
-        });
         const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
         await this.rebuildRelationsForProject(project);
       } else {
@@ -34,6 +31,9 @@ export class EntityParentChildRelationBuilder {
    */
   async rebuildRelationsForProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
+    await this.models.entityParentChildRelation.delete({
+      entity_hierarchy_id: hierarchyId,
+    });
     return this.fetchAndCacheChildren(hierarchyId, [projectEntityId]);
   }
 
