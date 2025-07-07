@@ -66,6 +66,7 @@ export class EntityHierarchyCacher extends ChangeHandler {
     );
     await entityParentChildRelationRebuilder.rebuildRelations(rebuildJobs);
 
+    console.log('yeyeye2');
     // get the subtrees to delete, then run the delete
     const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
     await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
