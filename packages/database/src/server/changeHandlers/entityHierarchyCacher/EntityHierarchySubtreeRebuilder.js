@@ -68,7 +68,7 @@ export class EntityHierarchySubtreeRebuilder {
    */
   async buildAndCacheProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
-    return this.fetchAndCacheChildren(hierarchyId, { [projectEntityId]: [] });
+    return this.fetchAndCacheDescendants(hierarchyId, { [projectEntityId]: [] });
   }
 
   /**
@@ -80,15 +80,9 @@ export class EntityHierarchySubtreeRebuilder {
    * @param {string} parentIdsToAncestorIds  Keys are parent ids to fetch descendants of, values are
    *                                         all ancestor ids above each parent
    */
-  async fetchAndCacheChildren(hierarchyId, parentIdsToAncestorIds) {
+  async fetchAndCacheDescendants(hierarchyId, parentIdsToAncestorIds) {
     const parentIds = Object.keys(parentIdsToAncestorIds);
-
-    // check whether next generation uses entity relation links, or should fall back to parent_id
-    const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, parentIds);
-    const useEntityRelationLinks = entityRelationChildCount > 0;
-    const childCount = useEntityRelationLinks
-      ? entityRelationChildCount
-      : await this.countCanonicalChildren(hierarchyId, parentIds);
+    const childCount = await this.countChildren(hierarchyId, parentIds);
 
     if (childCount === 0) {
       return; // at a leaf node generation, no need to go any further
@@ -97,23 +91,20 @@ export class EntityHierarchySubtreeRebuilder {
     const childIdToAncestorIds = await this.fetchChildIdToAncestorIds(
       hierarchyId,
       parentIdsToAncestorIds,
-      useEntityRelationLinks,
     );
 
     await this.cacheGeneration(hierarchyId, childIdToAncestorIds);
 
     // if there is another generation, keep recursing through the hierarchy
-    await this.fetchAndCacheChildren(hierarchyId, childIdToAncestorIds);
+    await this.fetchAndCacheDescendants(hierarchyId, childIdToAncestorIds);
   }
 
   /**
    * @private
    */
-  async fetchChildIdToAncestorIds(hierarchyId, parentIdsToAncestorIds, useEntityRelationLinks) {
+  async fetchChildIdToAncestorIds(hierarchyId, parentIdsToAncestorIds) {
     const parentIds = Object.keys(parentIdsToAncestorIds);
-    const relations = useEntityRelationLinks
-      ? await this.getRelationsViaEntityRelation(hierarchyId, parentIds)
-      : await this.getRelationsCanonically(hierarchyId, parentIds);
+    const relations = await this.getChildRelations(hierarchyId, parentIds);
     const childIdToParentId = reduceToDictionary(relations, 'child_id', 'parent_id');
     const childIdToAncestorIds = Object.fromEntries(
       Object.entries(childIdToParentId).map(([childId, parentId]) => [
@@ -127,7 +118,15 @@ export class EntityHierarchySubtreeRebuilder {
   /**
    * @private
    */
-  getEntityRelationChildrenCriteria(hierarchyId, parentIds) {
+  async countChildren(hierarchyId, parentIds) {
+    const criteria = this.getChildRelationsCriteria(hierarchyId, parentIds);
+    return this.models.entityParentChildRelation.count(criteria);
+  }
+
+  /**
+   * @private
+   */
+  getChildRelationsCriteria(hierarchyId, parentIds) {
     return {
       parent_id: parentIds,
       entity_hierarchy_id: hierarchyId,
@@ -137,55 +136,10 @@ export class EntityHierarchySubtreeRebuilder {
   /**
    * @private
    */
-  async countEntityRelationChildren(hierarchyId, parentIds) {
-    const criteria = this.getEntityRelationChildrenCriteria(hierarchyId, parentIds);
-    return this.models.entityRelation.count(criteria);
-  }
-
-  /**
-   * @private
-   */
-  async getRelationsViaEntityRelation(hierarchyId, parentIds) {
+  async getChildRelations(hierarchyId, parentIds) {
     // get any matching alternative hierarchy relationships leading out of these parents
-    const criteria = this.getEntityRelationChildrenCriteria(hierarchyId, parentIds);
-    return this.models.entityRelation.find(criteria);
-  }
-
-  /**
-   * @private
-   */
-  async getCanonicalChildrenCriteria(hierarchyId, parentIds) {
-    // Only include entities of types that are considered canonical, either using a custom set of
-    // canonical types defined by the hierarchy, or the default, which is org unit types.
-    const entityHierarchy = await this.models.entityHierarchy.findById(hierarchyId);
-    const { canonical_types: customCanonicalTypes } = entityHierarchy;
-    const canonicalTypes =
-      customCanonicalTypes && customCanonicalTypes.length > 0
-        ? customCanonicalTypes
-        : Object.values(ORG_UNIT_ENTITY_TYPES);
-    return {
-      parent_id: parentIds,
-      type: canonicalTypes,
-    };
-  }
-
-  /**
-   * @private
-   */
-  async countCanonicalChildren(hierarchyId, parentIds) {
-    const criteria = await this.getCanonicalChildrenCriteria(hierarchyId, parentIds);
-    return this.models.entity.count(criteria);
-  }
-
-  /**
-   * @private
-   */
-  async getRelationsCanonically(hierarchyId, parentIds) {
-    const criteria = await this.getCanonicalChildrenCriteria(hierarchyId, parentIds);
-    const children = await this.models.entity.find(criteria, {
-      columns: ['id', 'parent_id'],
-    });
-    return children.map(c => ({ child_id: c.id, parent_id: c.parent_id }));
+    const criteria = this.getChildRelationsCriteria(hierarchyId, parentIds);
+    return this.models.entityParentChildRelation.find(criteria);
   }
 
   /**
