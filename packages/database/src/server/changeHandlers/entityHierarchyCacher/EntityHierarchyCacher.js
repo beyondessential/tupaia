@@ -52,10 +52,13 @@ export class EntityHierarchyCacher extends ChangeHandler {
     }
     const projectsUsingHierarchy = await this.models.project.find({
       entity_hierarchy_id: hierarchyId,
-      rebuildEntityParentChildRelations: true,
     });
     // delete and rebuild full hierarchy of any project using this entity
-    const jobs = projectsUsingHierarchy.map(p => ({ hierarchyId, rootEntityId: p.entity_id }));
+    const jobs = projectsUsingHierarchy.map(p => ({
+      hierarchyId,
+      rootEntityId: p.entity_id,
+      rebuildEntityParentChildRelations: true,
+    }));
     return jobs;
   }
 
