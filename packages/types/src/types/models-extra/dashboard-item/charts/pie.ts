@@ -2,24 +2,24 @@ import { CssColor } from '../../../css';
 import { ExportPresentationOptions } from '../common';
 import { BaseChartConfig, ChartType } from './common';
 
-type PieOption = {
+interface PieOption {
   color?: CssColor;
   label?: string;
-};
+}
 
-export type PieChartSegmentConfig = {
+export interface PieChartSegmentConfig {
   [x: string]: {
     color?: CssColor;
     label?: string;
   };
-};
+}
 
 export type PieChartPresentationOptions = ExportPresentationOptions & Record<string, PieOption>;
 
 /**
  * @description Pie Chart
  */
-export type PieChartConfig = BaseChartConfig & {
+export interface PieChartConfig extends BaseChartConfig {
   chartType: ChartType.Pie;
 
   /**
@@ -41,7 +41,7 @@ export type PieChartConfig = BaseChartConfig & {
    * }
    */
   segmentConfig?: PieChartSegmentConfig;
-};
+}
 
 export const isPieChartConfig = (config: BaseChartConfig): config is PieChartConfig =>
   config.chartType === ChartType.Pie;
