@@ -12,8 +12,8 @@ export class EntityParentChildRelationBuilder {
   async rebuildRelations(rebuildJobs) {
     // projects are the root entities of every full tree, so start with them
     for (const { hierarchyId, rootEntityId, rebuildEntityParentChildRelations } of rebuildJobs) {
+      const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
       if (rebuildEntityParentChildRelations) {
-        const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
         await this.rebuildRelationsForProject(project);
       } else {
         await this.rebuildRelationsForEntity({ hierarchyId, rootEntityId, project });
