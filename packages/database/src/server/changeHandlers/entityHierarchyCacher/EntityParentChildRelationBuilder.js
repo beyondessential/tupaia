@@ -14,14 +14,15 @@ export class EntityParentChildRelationBuilder {
     // projects are the root entities of every full tree, so start with them
     for (const {
       hierarchyId,
-      affectedEntityId,
+      parentId,
+      childId,
       rebuildEntityParentChildRelations,
     } of rebuildJobs) {
       if (rebuildEntityParentChildRelations) {
         const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
         await this.rebuildRelationsForProject(project);
       } else {
-        await this.rebuildRelationsForEntity({ hierarchyId, affectedEntityId });
+        await this.rebuildRelationsForEntity({ hierarchyId, parentId, childId });
       }
     }
   }
@@ -37,33 +38,31 @@ export class EntityParentChildRelationBuilder {
     return this.fetchAndCacheChildren(hierarchyId, [projectEntityId]);
   }
 
-  async updateResolvedEntityRelations(rebuildJobs) {
-    const tasks = rebuildJobs.map(async ({ hierarchyId, affectedEntityId }) =>
-      this.rebuildRelationsForEntity({ hierarchyId, affectedEntityId }),
-    );
-    await Promise.all(tasks);
-  }
-
-  async rebuildRelationsForEntity({ hierarchyId, affectedEntityId }) {
-    if (!affectedEntityId) {
+  async rebuildRelationsForEntity({ hierarchyId, parentId, childId }) {
+    if (!childId) {
       return;
     }
     await this.models.entityParentChildRelation.delete({
       entity_hierarchy_id: hierarchyId,
-      child_id: affectedEntityId,
+      child_id: childId,
     });
-    const entityRelation = await this.models.entityRelation.findOne({
-      child_id: affectedEntityId,
-      entity_hierarchy_id: hierarchyId,
-    });
-    const record = entityRelation
-      ? entityRelation
-      : await this.models.entity.findOne({ id: affectedEntityId });
+    const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, [
+      parentId,
+    ]);
+    const useEntityRelationLinks = entityRelationChildCount > 0;
+
+    const record = useEntityRelationLinks
+      ? await this.models.entityRelation.findOne({
+          parent_id: parentId,
+          child_id: childId,
+          entity_hierarchy_id: hierarchyId,
+        })
+      : await this.getEntityViaCanonicalTypes(hierarchyId, childId);
 
     if (record) {
       await this.models.entityParentChildRelation.create({
         parent_id: record.parent_id,
-        child_id: affectedEntityId,
+        child_id: childId,
         entity_hierarchy_id: hierarchyId,
       });
     }
@@ -142,18 +141,32 @@ export class EntityParentChildRelationBuilder {
     return this.models.entity.count(criteria);
   }
 
-  /**
-   * @private
-   */
-  async getCanonicalChildrenCriteria(hierarchyId, parentIds) {
-    // Only include entities of types that are considered canonical, either using a custom set of
-    // canonical types defined by the hierarchy, or the default, which is org unit types.
+  async getEntityViaCanonicalTypes(hierarchyId, entityId) {
+    const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
+    return this.models.entity.findOne({
+      id: entityId,
+      type: canonicalTypes,
+    });
+  }
+
+  async getCanonicalTypes(hierarchyId) {
     const entityHierarchy = await this.models.entityHierarchy.findById(hierarchyId);
     const { canonical_types: customCanonicalTypes } = entityHierarchy;
     const canonicalTypes =
       customCanonicalTypes && customCanonicalTypes.length > 0
         ? customCanonicalTypes
         : Object.values(ORG_UNIT_ENTITY_TYPES);
+
+    return canonicalTypes;
+  }
+
+  /**
+   * @private
+   */
+  async getCanonicalChildrenCriteria(hierarchyId, parentIds) {
+    // Only include entities of types that are considered canonical, either using a custom set of
+    // canonical types defined by the hierarchy, or the default, which is org unit types.
+    const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
     return {
       parent_id: parentIds,
       type: canonicalTypes,

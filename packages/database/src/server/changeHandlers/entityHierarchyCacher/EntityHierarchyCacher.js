@@ -15,14 +15,15 @@ export class EntityHierarchyCacher extends ChangeHandler {
     };
   }
 
-  async translateEntityChangeToRebuildJobs({ record_id: entityId }) {
+  async translateEntityChangeToRebuildJobs({ record_id: entityId, new_record: newRecord }) {
     // if entity was deleted or created, or parent_id has changed, we need to delete subtrees and
     // rebuild all hierarchies
     const hierarchies = await this.models.entityHierarchy.all();
     const jobs = hierarchies.map(({ id: hierarchyId }) => ({
       hierarchyId,
       rootEntityId: entityId,
-      affectedEntityId: entityId,
+      parentId: newRecord.parent_id,
+      childId: entityId,
     }));
     return jobs;
   }
@@ -35,7 +36,8 @@ export class EntityHierarchyCacher extends ChangeHandler {
       .map(r => ({
         hierarchyId: r.entity_hierarchy_id,
         rootEntityId: r.parent_id,
-        affectedEntityId: r.child_id,
+        parentId: r.parent_id,
+        childId: r.child_id,
       }));
     return jobs;
   }
@@ -63,7 +65,7 @@ export class EntityHierarchyCacher extends ChangeHandler {
   }
 
   async handleChanges(transactingModels, rebuildJobs) {
-    console.log('yeyeye');
+    console.log('yeyeye', rebuildJobs);
     const entityParentChildRelationRebuilder = new EntityParentChildRelationBuilder(
       transactingModels,
     );
