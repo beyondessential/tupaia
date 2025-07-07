@@ -16,7 +16,7 @@ export class EntityParentChildRelationBuilder {
         const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
         await this.rebuildRelationsForProject(project);
       } else {
-        await this.rebuildRelationsForEntity({ hierarchyId, rootEntityId });
+        await this.rebuildRelationsForEntity({ hierarchyId, rootEntityId, project });
       }
     }
   }
@@ -29,11 +29,14 @@ export class EntityParentChildRelationBuilder {
     await this.models.entityParentChildRelation.delete({
       entity_hierarchy_id: hierarchyId,
     });
-    return this.fetchAndCacheChildren(hierarchyId, [projectEntityId]);
+    await this.fetchAndCacheChildren(hierarchyId, [projectEntityId]);
+    await this.deleteStaleRelations(hierarchyId, projectEntityId);
   }
 
-  async rebuildRelationsForEntity({ hierarchyId, rootEntityId }) {
+  async rebuildRelationsForEntity({ hierarchyId, rootEntityId, project }) {
+    const { entity_id: projectEntityId } = project;
     await this.fetchAndCacheChildren(hierarchyId, [rootEntityId]);
+    await this.deleteStaleRelations(hierarchyId, projectEntityId);
   }
 
   async fetchAndCacheChildren(hierarchyId, parentIds) {
@@ -144,5 +147,78 @@ export class EntityParentChildRelationBuilder {
       parent_id: parentIds,
       type: canonicalTypes,
     };
+  }
+
+  async deleteStaleRelations(hierarchyId, projectEntityId) {
+    console.log('projectEntityId', projectEntityId);
+    console.log('hierarchyId', hierarchyId);
+    console.log(
+      'entityParentChildRelations',
+      (await this.models.entityParentChildRelation.find({
+        entity_hierarchy_id: hierarchyId,
+      })).map(e => ({
+        parent_id: e.parent_id,
+        child_id: e.child_id,
+      })),
+    );
+    await this.models.database.executeSql(
+      `
+      WITH RECURSIVE connected_nodes AS (
+        -- Start with root nodes (entities that exist but aren't children)
+        -- Start with the known root node
+        SELECT '${projectEntityId}' as node_id 
+                
+        UNION ALL
+        
+        -- Recursively find all descendants
+        SELECT er.child_id
+        FROM entity_parent_child_relation er
+        INNER JOIN connected_nodes cn ON er.parent_id = cn.node_id
+          AND er.entity_hierarchy_id = ?
+      ),
+      -- Find orphaned relations (not connected to any root)
+      orphaned_relations AS (
+        SELECT er.*
+        FROM entity_parent_child_relation er
+        WHERE er.parent_id NOT IN (SELECT node_id FROM connected_nodes)
+          AND er.entity_hierarchy_id = ?
+      )
+      -- Delete the orphaned relations
+      DELETE FROM entity_parent_child_relation 
+      WHERE id IN (SELECT id FROM orphaned_relations);
+      `,
+      [hierarchyId, hierarchyId],
+    );
+
+    // const orphanedRelations = await this.models.database.executeSql(
+    //   `
+    //   WITH RECURSIVE connected_nodes AS (
+    //     -- Start with root nodes (entities that exist but aren't children)
+    //     -- Start with the known root node
+    //     SELECT '${projectEntityId}' as node_id 
+                
+    //     UNION ALL
+        
+    //     -- Recursively find all descendants
+    //     SELECT er.child_id
+    //     FROM entity_parent_child_relation er
+    //     INNER JOIN connected_nodes cn ON er.parent_id = cn.node_id
+    //       AND er.entity_hierarchy_id = ?
+    //   ),
+    //   -- Find orphaned relations (not connected to any root)
+    //   orphaned_relations AS (
+    //     SELECT er.*
+    //     FROM entity_parent_child_relation er
+    //     WHERE er.parent_id NOT IN (SELECT node_id FROM connected_nodes)
+    //       AND er.entity_hierarchy_id = ?
+    //   )
+    //   -- Delete the orphaned relations
+    //   SELECT * FROM orphaned_relations;
+    //   `,
+    //   [hierarchyId, hierarchyId],
+    // );
+
+    // console.log('connectedNodes', connectedNodes);
+    // console.log('orphanedRelations', orphanedRelations);
   }
 }
