@@ -6,7 +6,7 @@ import {
   TableRow,
   TableSortLabel,
 } from '@material-ui/core';
-import { KeyboardArrowDown } from '@material-ui/icons';
+import { ChevronUp } from 'lucide-react';
 import React, { useMemo } from 'react';
 import { Column, SortingRule, useFlexLayout, useResizeColumns, useTable } from 'react-table';
 import styled from 'styled-components';
@@ -187,7 +187,7 @@ export const FilterableTable = ({
                           <TableSortLabel
                             active={!!sortedConfig}
                             direction={sortedConfig?.desc ? 'asc' : 'desc'}
-                            IconComponent={KeyboardArrowDown}
+                            IconComponent={ChevronUp}
                             onClick={() => updateSorting(id, sortedConfig?.desc)}
                           />
                         )}

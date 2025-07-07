@@ -1,7 +1,8 @@
-import React from 'react';
 import { IconButton, Input, Typography } from '@material-ui/core';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react';
 import styled from 'styled-components';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+
 import { Select } from './Inputs';
 
 export const PaginationRoot = styled.div`
@@ -48,10 +49,9 @@ const RowWrapper = styled(ActionsWrapper)`
 
 const Button = styled(IconButton)`
   border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  font-size: 1.2rem;
   padding: 0.4rem;
-  .MuiSvgIcon-root {
-    font-size: 1.2rem;
-  }
+
   & + & {
     margin-inline-start: 0.7rem;
   }
@@ -130,14 +130,14 @@ const PageSelectComponent = ({ onChangePage, page, pageCount }: PageSelectCompon
         disabled={page === 0}
         aria-label="Previous page"
       >
-        <KeyboardArrowLeft />
+        <ChevronLeft />
       </Button>
       <Button
         onClick={() => onChangePage(page + 1)}
         disabled={page === pageCount - 1}
         aria-label="Next page"
       >
-        <KeyboardArrowRight />
+        <ChevronRight />
       </Button>
     </ActionsWrapper>
   );
