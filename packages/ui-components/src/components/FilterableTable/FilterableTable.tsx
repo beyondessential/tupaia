@@ -16,13 +16,6 @@ import { HeaderDisplayCell, TableCell } from './Cells';
 import { FilterCell, FilterCellProps, Filters } from './FilterCell';
 import { Pagination } from './Pagination';
 
-/*
- * TODO: Move to @tupaia/frontend-utils or @tupaia/react-utils once that exists
- */
-function isReactText(val: unknown): val is string | number {
-  return typeof val === 'string' || typeof val === 'number';
-}
-
 const TableContainer = styled(MuiTableContainer)`
   position: relative;
   flex: 1;
@@ -47,10 +40,7 @@ const TableContainer = styled(MuiTableContainer)`
   }
 `;
 
-const EmptyStateWrapper = styled.div.attrs(
-  // If empty state message renders as a string, use semantic paragraph element
-  props => isReactText(props.children) && { as: 'p' },
-)`
+const EmptyStateWrapper = styled.div`
   // Make this, and its two immediate ancestors, fill available space
   .MuiTableContainer-root:has(&) :is(.MuiTable-root, .MuiTableBody-root, &) {
     block-size: 100%;
