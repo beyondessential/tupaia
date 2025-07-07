@@ -21,8 +21,8 @@ export class EntityHierarchyCacher extends ChangeHandler {
     const hierarchies = await this.models.entityHierarchy.all();
     const jobs = hierarchies.map(({ id: hierarchyId }) => ({
       hierarchyId,
-      rootEntityId: entityId,
-      parentId: newRecord.parent_id,
+      rootEntityId: newRecord.parent_id,
+      rootParentId: newRecord.parent_id,
     }));
     return jobs;
   }
@@ -35,7 +35,7 @@ export class EntityHierarchyCacher extends ChangeHandler {
       .map(r => ({
         hierarchyId: r.entity_hierarchy_id,
         rootEntityId: r.parent_id,
-        parentId: r.parent_id,
+        parentEntityId: r.parent_id,
       }));
     return jobs;
   }
