@@ -55,19 +55,44 @@ export class EntityParentChildRelationBuilder {
       return; // at a leaf node generation, no need to go any further
     }
 
-    const existingChildIds = useEntityRelationLinks
+    const parentChildIdPairs = useEntityRelationLinks
       ? await this.generateEntityRelationChildren(hierarchyId, parentIds)
       : await this.generateCanonicalChildren(hierarchyId, parentIds);
 
-    // Invalidate the cache for the children that are no longer valid
-    await this.models.entityParentChildRelation.delete({
-      parent_id: parentIds,
-      child_id: {
-        comparator: 'NOT IN',
-        comparisonValue: existingChildIds,
-      },
-      entity_hierarchy_id: hierarchyId,
-    });
+    // const existingRelations = await this.models.entityParentChildRelation.find({
+    //   parent_id: parentIds,
+    //   entity_hierarchy_id: hierarchyId,
+    // });
+    // const existingRelationIds = existingRelations.map(e => e.id);
+
+    // console.log('existingRelationIds', existingRelationIds);
+    // // Invalidate the cache for the children that are no longer valid
+    // await this.models.entityParentChildRelation.delete({
+    //   parent_id: parentIds,
+    //   id: {
+    //     comparator: 'NOT IN',
+    //     comparisonValue: existingRelationIds,
+    //   },
+    //   entity_hierarchy_id: hierarchyId,
+    // });
+
+    const existingChildIds = parentChildIdPairs.map(pair => pair[1]);
+    const valuesList = parentChildIdPairs.map(() => '(?, ?)').join(', ');
+  
+    console.log('valuesList', valuesList);
+    // Flatten the pairs into a single array of values
+    const values = parentChildIdPairs.flatMap(pair => pair);
+    console.log('values', values);
+    await this.models.database.executeSql(
+      `
+      DELETE FROM entity_parent_child_relation 
+      WHERE entity_hierarchy_id = ? 
+        AND parent_id IN (${parentIds.map(() => '?').join(', ')})
+        AND (parent_id, child_id) NOT IN (
+          SELECT * FROM (VALUES ${valuesList}) AS pairs(parent_id, child_id)
+        )
+      RETURNING parent_id, child_id
+  `, [hierarchyId, ...parentIds, ...values]);
 
     return this.fetchAndCacheChildren(hierarchyId, existingChildIds);
   }
@@ -86,7 +111,7 @@ export class EntityParentChildRelationBuilder {
       onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
     });
 
-    return entityParentChildRelations.map(e => e.child_id);
+    return entityParentChildRelations.map(e => [e.parent_id, e.child_id]);
   }
 
   async generateCanonicalChildren(hierarchyId, parentIds) {
@@ -104,7 +129,7 @@ export class EntityParentChildRelationBuilder {
       onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
     });
 
-    return entityParentChildRelations.map(e => e.child_id);
+    return entityParentChildRelations.map(e => [e.parent_id, e.child_id]);
   }
 
   /**
@@ -154,9 +179,11 @@ export class EntityParentChildRelationBuilder {
     console.log('hierarchyId', hierarchyId);
     console.log(
       'entityParentChildRelations',
-      (await this.models.entityParentChildRelation.find({
-        entity_hierarchy_id: hierarchyId,
-      })).map(e => ({
+      (
+        await this.models.entityParentChildRelation.find({
+          entity_hierarchy_id: hierarchyId,
+        })
+      ).map(e => ({
         parent_id: e.parent_id,
         child_id: e.child_id,
       })),
@@ -195,10 +222,10 @@ export class EntityParentChildRelationBuilder {
     //   WITH RECURSIVE connected_nodes AS (
     //     -- Start with root nodes (entities that exist but aren't children)
     //     -- Start with the known root node
-    //     SELECT '${projectEntityId}' as node_id 
-                
+    //     SELECT '${projectEntityId}' as node_id
+
     //     UNION ALL
-        
+
     //     -- Recursively find all descendants
     //     SELECT er.child_id
     //     FROM entity_parent_child_relation er
