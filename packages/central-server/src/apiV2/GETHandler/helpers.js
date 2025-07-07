@@ -14,7 +14,7 @@ import { DEFAULT_PAGE_SIZE } from './GETHandler';
 export const parsePageSizeQueryParam = pageSize => {
   if (pageSize === 'ALL' || isNullish(pageSize)) return null;
 
-  const parsed = Number.parseInt(pageSize);
+  const parsed = Number.parseInt(pageSize, 10);
   if (Number.isInteger(parsed) && parsed > 0) return parsed;
 
   winston.warn(
