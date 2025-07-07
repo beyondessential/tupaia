@@ -23,7 +23,6 @@ export class EntityHierarchyCacher extends ChangeHandler {
       hierarchyId,
       rootEntityId: entityId,
       parentId: newRecord.parent_id,
-      childId: entityId,
     }));
     return jobs;
   }
@@ -37,7 +36,6 @@ export class EntityHierarchyCacher extends ChangeHandler {
         hierarchyId: r.entity_hierarchy_id,
         rootEntityId: r.parent_id,
         parentId: r.parent_id,
-        childId: r.child_id,
       }));
     return jobs;
   }

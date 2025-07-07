@@ -11,17 +11,12 @@ export class EntityParentChildRelationBuilder {
    */
   async rebuildRelations(rebuildJobs) {
     // projects are the root entities of every full tree, so start with them
-    for (const {
-      hierarchyId,
-      parentId,
-      childId,
-      rebuildEntityParentChildRelations,
-    } of rebuildJobs) {
+    for (const { hierarchyId, rootEntityId, rebuildEntityParentChildRelations } of rebuildJobs) {
       if (rebuildEntityParentChildRelations) {
         const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
         await this.rebuildRelationsForProject(project);
       } else {
-        await this.rebuildRelationsForEntity({ hierarchyId, parentId, childId });
+        await this.rebuildRelationsForEntity({ hierarchyId, rootEntityId });
       }
     }
   }
@@ -37,8 +32,8 @@ export class EntityParentChildRelationBuilder {
     return this.fetchAndCacheChildren(hierarchyId, [projectEntityId]);
   }
 
-  async rebuildRelationsForEntity({ hierarchyId, parentId }) {
-    await this.fetchAndCacheChildren(hierarchyId, [parentId]);
+  async rebuildRelationsForEntity({ hierarchyId, rootEntityId }) {
+    await this.fetchAndCacheChildren(hierarchyId, [rootEntityId]);
   }
 
   async fetchAndCacheChildren(hierarchyId, parentIds) {
@@ -49,6 +44,7 @@ export class EntityParentChildRelationBuilder {
       : await this.countCanonicalChildren(hierarchyId, parentIds);
 
     if (childCount === 0) {
+      // When reaching a leaf node, there still might be some stale relations in the cache that need to be deleted
       await this.models.entityParentChildRelation.delete({
         parent_id: parentIds,
         entity_hierarchy_id: hierarchyId,
@@ -56,15 +52,16 @@ export class EntityParentChildRelationBuilder {
       return; // at a leaf node generation, no need to go any further
     }
 
-    const currentChildIds = useEntityRelationLinks
+    const existingChildIds = useEntityRelationLinks
       ? await this.generateEntityRelationChildren(hierarchyId, parentIds)
       : await this.generateCanonicalChildren(hierarchyId, parentIds);
 
+    // Invalidate the cache for the children that are no longer valid
     await this.models.entityParentChildRelation.delete({
       parent_id: parentIds,
       child_id: {
         comparator: 'NOT IN',
-        comparisonValue: currentChildIds,
+        comparisonValue: existingChildIds,
       },
       entity_hierarchy_id: hierarchyId,
     });
