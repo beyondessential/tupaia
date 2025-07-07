@@ -67,7 +67,7 @@ export class GETHandler extends CRUDHandler {
 
     // set up db query options
     const columns = await this.getProcessedColumns();
-    const columnNames = columns.map(c => Object.keys(c)[0]); // [{ a: 'e' }, { b: 'f' }] => ['a', 'b']
+    const columnNames = columns.flatMap(Object.keys); // [{ a: 'e' }, { b: 'f' }] => ['a', 'b']
     const { sort, multiJoin } = getQueryOptionsForColumns(
       columnNames,
       this.recordType,
