@@ -30,13 +30,13 @@ export class EntityParentChildRelationBuilder {
       entity_hierarchy_id: hierarchyId,
     });
     await this.fetchAndCacheChildren(hierarchyId, [projectEntityId]);
-    await this.deleteStaleRelations(hierarchyId, projectEntityId);
+    // await this.deleteStaleRelations(hierarchyId, projectEntityId);
   }
 
   async rebuildRelationsForEntity({ hierarchyId, rootEntityId, project }) {
     const { entity_id: projectEntityId } = project;
     await this.fetchAndCacheChildren(hierarchyId, [rootEntityId]);
-    await this.deleteStaleRelations(hierarchyId, projectEntityId);
+    // await this.deleteStaleRelations(hierarchyId, projectEntityId);
   }
 
   async fetchAndCacheChildren(hierarchyId, parentIds) {
