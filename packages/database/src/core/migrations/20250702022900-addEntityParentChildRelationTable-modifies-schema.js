@@ -25,7 +25,8 @@ exports.up = function (db) {
           child_id             TEXT             NOT NULL REFERENCES entity
             on update cascade on delete cascade,
           entity_hierarchy_id  TEXT             NOT NULL REFERENCES entity_hierarchy
-            on update cascade on delete cascade
+            on update cascade on delete cascade,
+          UNIQUE(entity_hierarchy_id, parent_id, child_id)
       );
     `,
   );

@@ -309,7 +309,7 @@ export class BaseDatabase {
     return record;
   }
 
-  async createMany(recordType, records, schemaName = SCHEMA_NAMES.PUBLIC) {
+  async createMany(recordType, records, schemaName = SCHEMA_NAMES.PUBLIC, options = {}) {
     // generate ids for any records that don't have them
     const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
     await runDatabaseFunctionInBatches(sanitizedRecords, async batchOfRecords =>
@@ -320,7 +320,7 @@ export class BaseDatabase {
           queryMethodParameter: batchOfRecords,
         },
         {},
-        { schemaName },
+        { ...options, schemaName },
       ),
     );
     return sanitizedRecords;
@@ -568,6 +568,11 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   // Alias the query result (for use in nested queries) if name provided
   if (options.name) {
     query = query.as(options.name);
+  }
+
+  if (options.onConflictIgnore) {
+    console.log('onConflictIgnore', options.onConflictIgnore);
+    query = query.onConflict(options.onConflictIgnore).ignore();
   }
 
   if (queryMethod === QUERY_METHODS.UPDATE) {

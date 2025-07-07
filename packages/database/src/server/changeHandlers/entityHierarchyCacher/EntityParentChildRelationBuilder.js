@@ -46,26 +46,28 @@ export class EntityParentChildRelationBuilder {
       entity_hierarchy_id: hierarchyId,
       child_id: childId,
     });
-    const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, [
-      parentId,
-    ]);
-    const useEntityRelationLinks = entityRelationChildCount > 0;
+    // const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, [
+    //   parentId,
+    // ]);
+    // const useEntityRelationLinks = entityRelationChildCount > 0;
 
-    const record = useEntityRelationLinks
-      ? await this.models.entityRelation.findOne({
-          parent_id: parentId,
-          child_id: childId,
-          entity_hierarchy_id: hierarchyId,
-        })
-      : await this.getEntityViaCanonicalTypes(hierarchyId, childId);
+    // const record = useEntityRelationLinks
+    //   ? await this.models.entityRelation.findOne({
+    //       parent_id: parentId,
+    //       child_id: childId,
+    //       entity_hierarchy_id: hierarchyId,
+    //     })
+    //   : await this.getEntityViaCanonicalTypes(hierarchyId, childId);
 
-    if (record) {
-      await this.models.entityParentChildRelation.create({
-        parent_id: record.parent_id,
-        child_id: childId,
-        entity_hierarchy_id: hierarchyId,
-      });
-    }
+    // if (record) {
+    //   await this.models.entityParentChildRelation.create({
+    //     parent_id: record.parent_id,
+    //     child_id: childId,
+    //     entity_hierarchy_id: hierarchyId,
+    //   });
+    // }
+
+    await this.fetchAndCacheChildren(hierarchyId, [parentId]);
   }
 
   async fetchAndCacheChildren(hierarchyId, parentIds) {
@@ -76,14 +78,27 @@ export class EntityParentChildRelationBuilder {
       : await this.countCanonicalChildren(hierarchyId, parentIds);
 
     if (childCount === 0) {
+      await this.models.entityParentChildRelation.delete({
+        parent_id: parentIds,
+        entity_hierarchy_id: hierarchyId,
+      });
       return; // at a leaf node generation, no need to go any further
     }
 
-    const childIds = useEntityRelationLinks
+    const currentChildIds = useEntityRelationLinks
       ? await this.generateEntityRelationChildren(hierarchyId, parentIds)
       : await this.generateCanonicalChildren(hierarchyId, parentIds);
 
-    return this.fetchAndCacheChildren(hierarchyId, childIds);
+    await this.models.entityParentChildRelation.delete({
+      parent_id: parentIds,
+      child_id: {
+        comparator: 'NOT IN',
+        comparisonValue: currentChildIds,
+      },
+      entity_hierarchy_id: hierarchyId,
+    });
+
+    return this.fetchAndCacheChildren(hierarchyId, currentChildIds);
   }
 
   async generateEntityRelationChildren(hierarchyId, parentIds) {
@@ -96,7 +111,9 @@ export class EntityParentChildRelationBuilder {
       child_id: relation.child_id,
       entity_hierarchy_id: hierarchyId,
     }));
-    await this.models.entityParentChildRelation.createMany(entityParentChildRelations);
+    await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
+      onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
+    });
 
     return entityParentChildRelations.map(e => e.child_id);
   }
@@ -118,7 +135,9 @@ export class EntityParentChildRelationBuilder {
       child_id: e.id,
       entity_hierarchy_id: hierarchyId,
     }));
-    await this.models.entityParentChildRelation.createMany(entityParentChildRelations);
+    await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
+      onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
+    });
 
     return entityParentChildRelations.map(e => e.child_id);
   }
