@@ -130,13 +130,10 @@ const sortChartConfigByLegendOrder = (chartConfig: LooseObject) => {
       if (Number.isNaN(cfg2.legendOrder)) return -1;
       return cfg1.legendOrder - cfg2.legendOrder;
     })
-    .reduce(
-      (newChartConfig, [key, val]) => ({
-        ...newChartConfig,
-        [key]: val,
-      }),
-      {},
-    );
+    .reduce((newChartConfig, [key, val]) => {
+      newChartConfig[key] = val;
+      return newChartConfig;
+    }, {} as LooseObject);
 };
 
 const createDynamicConfig = (
