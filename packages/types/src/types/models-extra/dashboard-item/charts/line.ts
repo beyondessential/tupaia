@@ -1,6 +1,6 @@
 import { BaseChartConfig, CartesianChartConfig, ChartConfigObject, ChartType } from './common';
 
-export type LineChartChartConfig = ChartConfigObject & {
+export interface LineChartChartConfig extends ChartConfigObject {
   /**
    * @description Whether the line should show a dot at each data point
    */
@@ -15,12 +15,12 @@ export type LineChartChartConfig = ChartConfigObject & {
    * @description The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray
    */
   strokeDasharray?: string;
-};
+}
 
 /**
  * @description Line Chart
  */
-export type LineChartConfig = Omit<CartesianChartConfig, 'chartConfig'> & {
+export interface LineChartConfig extends Omit<CartesianChartConfig, 'chartConfig'> {
   chartType: ChartType.Line;
 
   /**
@@ -44,7 +44,7 @@ export type LineChartConfig = Omit<CartesianChartConfig, 'chartConfig'> & {
   chartConfig?: {
     [key: string]: LineChartChartConfig;
   };
-};
+}
 
 export const isLineChartConfig = (config: BaseChartConfig): config is LineChartConfig =>
   config.chartType === ChartType.Line;

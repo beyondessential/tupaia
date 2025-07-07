@@ -6,25 +6,25 @@ import {
   ChartType,
 } from './common';
 
-export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
+export interface BarChartPresentationOptions extends CartesianChartPresentationOptions {
   color?: CssColor;
   /**
    * @description This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}
    */
   valueFormat?: string;
-};
+}
 
 /**
  * @description Bar Chart
  */
-export type BarChartConfig = CartesianChartConfig & {
+export interface BarChartConfig extends CartesianChartConfig {
   chartType: ChartType.Bar;
 
   /**
    * @description Common options for configuring the chart presentation
    */
   presentationOptions?: BarChartPresentationOptions;
-};
+}
 
 export const isBarChartConfig = (config: BaseChartConfig): config is BarChartConfig =>
   config.chartType === ChartType.Bar;
