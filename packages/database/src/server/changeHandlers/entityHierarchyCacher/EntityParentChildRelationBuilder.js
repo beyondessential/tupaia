@@ -48,7 +48,6 @@ export class EntityParentChildRelationBuilder {
     if (!affectedEntityId) {
       return;
     }
-    console.log('hierarchyId', hierarchyId);
     await this.models.entityParentChildRelation.delete({
       entity_hierarchy_id: hierarchyId,
       child_id: affectedEntityId,
@@ -150,7 +149,6 @@ export class EntityParentChildRelationBuilder {
     // Only include entities of types that are considered canonical, either using a custom set of
     // canonical types defined by the hierarchy, or the default, which is org unit types.
     const entityHierarchy = await this.models.entityHierarchy.findById(hierarchyId);
-    console.log('hierarchyId', hierarchyId);
     const { canonical_types: customCanonicalTypes } = entityHierarchy;
     const canonicalTypes =
       customCanonicalTypes && customCanonicalTypes.length > 0
