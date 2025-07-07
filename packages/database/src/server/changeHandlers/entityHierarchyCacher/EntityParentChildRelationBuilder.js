@@ -90,13 +90,7 @@ export class EntityParentChildRelationBuilder {
   }
 
   async generateCanonicalChildren(hierarchyId, parentIds) {
-    const entityHierarchy = await this.models.entityHierarchy.findById(hierarchyId);
-    const { canonical_types: customCanonicalTypes } = entityHierarchy;
-    const canonicalTypes =
-      customCanonicalTypes && customCanonicalTypes.length > 0
-        ? customCanonicalTypes
-        : Object.values(ORG_UNIT_ENTITY_TYPES);
-
+    const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
     const entities = await this.models.entity.find({
       parent_id: parentIds,
       type: canonicalTypes,
@@ -129,14 +123,6 @@ export class EntityParentChildRelationBuilder {
   async countCanonicalChildren(hierarchyId, parentIds) {
     const criteria = await this.getCanonicalChildrenCriteria(hierarchyId, parentIds);
     return this.models.entity.count(criteria);
-  }
-
-  async getEntityViaCanonicalTypes(hierarchyId, entityId) {
-    const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
-    return this.models.entity.findOne({
-      id: entityId,
-      type: canonicalTypes,
-    });
   }
 
   async getCanonicalTypes(hierarchyId) {
