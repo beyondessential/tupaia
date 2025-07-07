@@ -1,4 +1,3 @@
-import { generateId } from '../../../core';
 import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
 
 export class EntityParentChildRelationBuilder {
@@ -38,35 +37,7 @@ export class EntityParentChildRelationBuilder {
     return this.fetchAndCacheChildren(hierarchyId, [projectEntityId]);
   }
 
-  async rebuildRelationsForEntity({ hierarchyId, parentId, childId }) {
-    if (!childId) {
-      return;
-    }
-    await this.models.entityParentChildRelation.delete({
-      entity_hierarchy_id: hierarchyId,
-      child_id: childId,
-    });
-    // const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, [
-    //   parentId,
-    // ]);
-    // const useEntityRelationLinks = entityRelationChildCount > 0;
-
-    // const record = useEntityRelationLinks
-    //   ? await this.models.entityRelation.findOne({
-    //       parent_id: parentId,
-    //       child_id: childId,
-    //       entity_hierarchy_id: hierarchyId,
-    //     })
-    //   : await this.getEntityViaCanonicalTypes(hierarchyId, childId);
-
-    // if (record) {
-    //   await this.models.entityParentChildRelation.create({
-    //     parent_id: record.parent_id,
-    //     child_id: childId,
-    //     entity_hierarchy_id: hierarchyId,
-    //   });
-    // }
-
+  async rebuildRelationsForEntity({ hierarchyId, parentId }) {
     await this.fetchAndCacheChildren(hierarchyId, [parentId]);
   }
 
