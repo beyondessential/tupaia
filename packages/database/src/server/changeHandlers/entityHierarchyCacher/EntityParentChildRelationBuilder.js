@@ -39,46 +39,42 @@ export class EntityParentChildRelationBuilder {
     await this.deleteStaleRelations(hierarchyId, projectEntityId);
   }
 
-  async fetchAndCacheChildren(hierarchyId, parentIds) {
-    const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, parentIds);
-    const useEntityRelationLinks = entityRelationChildCount > 0;
-    const childCount = useEntityRelationLinks
-      ? entityRelationChildCount
-      : await this.countCanonicalChildren(hierarchyId, parentIds);
+  async fetchAndCacheChildren(hierarchyId, parentIds, processedChildIds = new Set()) {
+    console.log('parentIds', parentIds);
+    console.log('processedChildIds', Array.from(processedChildIds));
+    const parentIdsToProcess = parentIds;
 
-    if (childCount === 0) {
+    const entityRelationChildCount = await this.countEntityRelationChildren(
+      hierarchyId,
+      parentIdsToProcess,
+    );
+    const useEntityRelationLinks = entityRelationChildCount > 0;
+    // const childCount = useEntityRelationLinks
+    //   ? entityRelationChildCount
+    //   : await this.countCanonicalChildren(hierarchyId, parentIdsToProcess);
+
+    // console.log('childCount', childCount);
+
+    const parentChildIdPairs = useEntityRelationLinks
+      ? await this.generateEntityRelationChildren(
+          hierarchyId,
+          parentIdsToProcess,
+          processedChildIds,
+        )
+      : await this.generateCanonicalChildren(hierarchyId, parentIdsToProcess, processedChildIds);
+
+    if (parentChildIdPairs.length === 0) {
       // When reaching a leaf node, there still might be some stale relations in the cache that need to be deleted
       await this.models.entityParentChildRelation.delete({
-        parent_id: parentIds,
+        parent_id: parentIdsToProcess,
         entity_hierarchy_id: hierarchyId,
       });
       return; // at a leaf node generation, no need to go any further
     }
-
-    const parentChildIdPairs = useEntityRelationLinks
-      ? await this.generateEntityRelationChildren(hierarchyId, parentIds)
-      : await this.generateCanonicalChildren(hierarchyId, parentIds);
-
-    // const existingRelations = await this.models.entityParentChildRelation.find({
-    //   parent_id: parentIds,
-    //   entity_hierarchy_id: hierarchyId,
-    // });
-    // const existingRelationIds = existingRelations.map(e => e.id);
-
-    // console.log('existingRelationIds', existingRelationIds);
-    // // Invalidate the cache for the children that are no longer valid
-    // await this.models.entityParentChildRelation.delete({
-    //   parent_id: parentIds,
-    //   id: {
-    //     comparator: 'NOT IN',
-    //     comparisonValue: existingRelationIds,
-    //   },
-    //   entity_hierarchy_id: hierarchyId,
-    // });
-
+    console.log('parentChildIdPairs', parentChildIdPairs);
     const existingChildIds = parentChildIdPairs.map(pair => pair[1]);
     const valuesList = parentChildIdPairs.map(() => '(?, ?)').join(', ');
-  
+
     console.log('valuesList', valuesList);
     // Flatten the pairs into a single array of values
     const values = parentChildIdPairs.flatMap(pair => pair);
@@ -87,26 +83,32 @@ export class EntityParentChildRelationBuilder {
       `
       DELETE FROM entity_parent_child_relation 
       WHERE entity_hierarchy_id = ? 
-        AND parent_id IN (${parentIds.map(() => '?').join(', ')})
+        AND parent_id IN (${parentIdsToProcess.map(() => '?').join(', ')})
         AND (parent_id, child_id) NOT IN (
           SELECT * FROM (VALUES ${valuesList}) AS pairs(parent_id, child_id)
         )
       RETURNING parent_id, child_id
-  `, [hierarchyId, ...parentIds, ...values]);
+  `,
+      [hierarchyId, ...parentIdsToProcess, ...values],
+    );
 
-    return this.fetchAndCacheChildren(hierarchyId, existingChildIds);
+    const newProcessedChildIds = new Set([...processedChildIds, ...existingChildIds]);
+    newProcessedChildIds.add('1');
+    return this.fetchAndCacheChildren(hierarchyId, existingChildIds, newProcessedChildIds);
   }
 
-  async generateEntityRelationChildren(hierarchyId, parentIds) {
+  async generateEntityRelationChildren(hierarchyId, parentIds, processedChildIds = new Set()) {
     const entityRelations = await this.models.entityRelation.find({
       parent_id: parentIds,
       entity_hierarchy_id: hierarchyId,
     });
-    const entityParentChildRelations = entityRelations.map(relation => ({
-      parent_id: relation.parent_id,
-      child_id: relation.child_id,
-      entity_hierarchy_id: hierarchyId,
-    }));
+    const entityParentChildRelations = entityRelations
+      .map(relation => ({
+        parent_id: relation.parent_id,
+        child_id: relation.child_id,
+        entity_hierarchy_id: hierarchyId,
+      }))
+      .filter(relation => !processedChildIds.has(relation.child_id));
     await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
       onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
     });
@@ -114,17 +116,19 @@ export class EntityParentChildRelationBuilder {
     return entityParentChildRelations.map(e => [e.parent_id, e.child_id]);
   }
 
-  async generateCanonicalChildren(hierarchyId, parentIds) {
+  async generateCanonicalChildren(hierarchyId, parentIds, processedChildIds = new Set()) {
     const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
     const entities = await this.models.entity.find({
       parent_id: parentIds,
       type: canonicalTypes,
     });
-    const entityParentChildRelations = entities.map(e => ({
-      parent_id: e.parent_id,
-      child_id: e.id,
-      entity_hierarchy_id: hierarchyId,
-    }));
+    const entityParentChildRelations = entities
+      .map(e => ({
+        parent_id: e.parent_id,
+        child_id: e.id,
+        entity_hierarchy_id: hierarchyId,
+      }))
+      .filter(relation => !processedChildIds.has(relation.child_id));
     await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
       onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
     });
