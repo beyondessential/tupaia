@@ -493,9 +493,6 @@ export class CentralSyncManager {
         device_id: deviceId,
         persisted_at_sync_tick: persistedAtSyncTick,
       });
-      // tick tock global clock so that if records are modified by adjustDataPostSyncPush(),
-      // they will be picked up for pulling in the same session (specifically won't be removed by removeEchoedChanges())
-      await this.tickTockGlobalClock(this.models);
 
       // mark persisted so that client polling "completePush" can stop
       await this.models.syncSession.update({ id: sessionId }, { persist_completed_at: new Date() });

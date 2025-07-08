@@ -8,5 +8,4 @@ export * from './getDependencyOrder';
 export * from './saveIncomingChanges';
 export * from './completeSyncSession';
 export * from './sanitizeRecord';
-export * from './calculatePageLimit';
 export * from './startSnapshotWhenCapacityAvailable';
