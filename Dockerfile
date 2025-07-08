@@ -17,8 +17,7 @@ WORKDIR /tupaia
 COPY --from=yarnprep /pre/package.json /pre/yarn.lock /pre/.yarnrc.yml ./
 COPY .yarn ./.yarn
 COPY --from=yarnprep /pre/packages/ ./packages
-# Run yarn without building, so we can cache node_modules without code changes invalidating this layer
-RUN yarn workspaces focus -A
+RUN yarn install
 
 ## Add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/access-policy/. ./packages/access-policy
