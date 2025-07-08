@@ -8,7 +8,7 @@ const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelNam
 export class ModelRegistry {
   /**
    * @param {import('./BaseDatabase').TupaiaDatabase} database
-   * @param {import('./DatabaseModel').DatabaseModel[]} [extraModelClasses]
+   * @param {import('./DatabaseModel').Record<string, DatabaseModel>} [extraModelClasses]
    */
   constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {
     this.database = database;
@@ -62,6 +62,13 @@ export class ModelRegistry {
   }
 
   /**
+   * @returns {import('./DatabaseModel').DatabaseModel[]}
+   */
+  getModels() {
+    return Object.values(this).filter(model => Boolean(model.databaseRecord));
+  }
+
+  /**
    * @param {string} databaseRecord
    * @returns {string | undefined} modelName
    */
@@ -81,7 +88,7 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {(models: TupaiaDatabase) => Promise<void | unknown>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
@@ -111,6 +118,18 @@ export class ModelRegistry {
    */
   wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
     return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
+  }
+
+  /**
+   * @param {(models: BaseDatabase) => Promise<void | unknown>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInRepeatableReadTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.wrapInTransaction(wrappedFunction, {
+      ...transactionConfig,
+      isolationLevel: 'repeatable read',
+    });
   }
 
   getTypesToSyncWithMeditrak() {

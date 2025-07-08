@@ -22,4 +22,10 @@ export class MockSyncApi implements SyncApiInterface {
   public pull(response: ExpressResponse, sessionId: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
+  public push(sessionId: string, changes: any[]): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+  public completePush(sessionId: string, deviceId: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }

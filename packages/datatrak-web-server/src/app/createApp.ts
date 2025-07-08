@@ -63,6 +63,10 @@ import {
   SyncInitiatePullRoute,
   SyncPullRequest,
   SyncPullRoute,
+  SyncPushRequest,
+  SyncPushRoute,
+  SyncPushCompleteRequest,
+  SyncPushCompleteRoute,
   SyncEndSessionRequest,
   SyncEndSessionRoute,
   TaskMetricsRequest,
@@ -134,6 +138,11 @@ export async function createApp() {
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
     .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
+    .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
+    .put<SyncPushCompleteRequest>(
+      'sync/:sessionId/push/complete',
+      handleWith(SyncPushCompleteRoute),
+    )
     .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
 
     // Forward auth requests to web-config

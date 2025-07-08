@@ -13,7 +13,7 @@ export class DatatrakDatabase extends BaseDatabase {
     super(transactingConnection, undefined, ClientPgLite, getConnectionConfig);
   }
 
-  wrapInTransaction(wrappedFunction: (db: DatatrakDatabase) => Promise<void>) {
+  wrapInTransaction(wrappedFunction: (db: DatatrakDatabase) => Promise<void | unknown>) {
     return this.connection.transaction(transaction =>
       wrappedFunction(new DatatrakDatabase(transaction)),
     );

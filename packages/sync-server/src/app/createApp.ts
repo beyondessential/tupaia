@@ -13,6 +13,9 @@ import { SyncInitiatePullRequest, SyncInitiatePullRoute } from '../routes/SyncIn
 import { SyncPullMetadataRequest, SyncPullMetadataRoute } from '../routes/SyncPullMetadataRoute';
 import { SyncPullRequest, SyncPullRoute } from '../routes/SyncPullRoute';
 import { SyncEndSessionRequest, SyncEndSessionRoute } from '../routes/SyncEndSessionRoute';
+import { SyncPushRequest, SyncPushRoute } from '../routes/SyncPushRoute';
+import { SyncPushStatusRequest, SyncPushStatusRoute } from '../routes/SyncPushStatusRoute';
+import { SyncPushCompleteRequest, SyncPushCompleteRoute } from '../routes/SyncPushCompleteRoute';
 
 export const addCentralSyncManagerToContext =
   (centralSyncManager: CentralSyncManager) =>
@@ -41,6 +44,9 @@ export function createApp(database = new TupaiaDatabase(), syncManager: CentralS
       handleWith(SyncPullMetadataRoute),
     )
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
+    .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
+    .put<SyncPushCompleteRequest>('sync/:sessionId/push/complete', handleWith(SyncPushCompleteRoute))
+    .get<SyncPushStatusRequest>('sync/:sessionId/push/status', handleWith(SyncPushStatusRoute))
     .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
 
     .useBasicBearerAuth()

@@ -1,7 +1,7 @@
 import log from 'winston';
 
 import {
-  getModelsForDirection,
+  getModelsForPull,
   getSyncTicksOfPendingEdits,
   waitForPendingEditsUsingSyncTick,
   createSnapshotTable,
@@ -12,10 +12,15 @@ import {
   FACT_LOOKUP_UP_TO_TICK,
   DEBUG_LOG_TYPES,
   SYNC_SESSION_DIRECTION,
+  getModelsForPush,
+  saveIncomingSnapshotChanges,
+  insertSnapshotRecords,
+  updateSnapshotRecords,
+  SyncSnapshotAttributes,
 } from '@tupaia/sync';
-
-import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
-import { generateId, SyncSessionRecord, TupaiaDatabase } from '@tupaia/database';
+import { objectIdToTimestamp } from '@tupaia/server-utils';
+import { SyncTickFlags } from '@tupaia/constants';
+import { generateId, SyncSessionRecord } from '@tupaia/database';
 
 import { updateLookupTable, updateSyncLookupPendingRecords } from './updateLookupTable';
 import {
@@ -31,21 +36,17 @@ import {
   SyncSessionMetadata,
   UnmarkSessionAsProcessingFunction,
 } from '../types';
-import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 
 const errorMessageFromSession = (session: SyncSessionRecord) =>
   `Sync session '${session.id}' encountered an error: ${session.errors.at(-1)}`;
 
 export class CentralSyncManager {
-  database: TupaiaDatabase;
-
   models: SyncServerModelRegistry;
 
   config: SyncServerConfig;
 
   constructor(models: SyncServerModelRegistry) {
-    this.database = models.database;
     this.models = models;
 
     // TODO: Move this to a config model RN-1668
@@ -61,12 +62,16 @@ export class CentralSyncManager {
     };
   }
 
-  async tickTockGlobalClock(): Promise<GlobalClockResult> {
+  /**
+   * @param models - Either this.models or a transaction-wrapped version of this.models.
+   * @returns The tick and tock values.
+   */
+  async tickTockGlobalClock(models: SyncServerModelRegistry): Promise<GlobalClockResult> {
     // rather than just incrementing by one tick, we "tick, tock" the clock so we guarantee the
     // "tick" part to be unique to the requesting client, and any changes made directly on the
     // central server will be recorded as updated at the "tock", avoiding any direct changes
     // (e.g. imports) being missed by a client that is at the same sync tick
-    const tock = await this.models.localSystemFact.incrementValue(FACT_CURRENT_SYNC_TICK, 2);
+    const tock = await models.localSystemFact.incrementValue(FACT_CURRENT_SYNC_TICK, 2);
     return { tick: tock - 1, tock };
   }
 
@@ -79,7 +84,7 @@ export class CentralSyncManager {
     return activeSyncs.length >= maxConcurrentSessions;
   }
 
-  async startSession(debugInfo = {}): Promise<StartSessionResult> {
+  async startSession(info = {}): Promise<StartSessionResult> {
     // as a side effect of starting a new session, cause a tick on the global sync clock
     // this is a convenient way to tick the clock, as it means that no two sync sessions will
     // happen at the same global sync time, meaning there's no ambiguity when resolving conflicts
@@ -90,9 +95,9 @@ export class CentralSyncManager {
     const unmarkSessionAsProcessing = await this.markSessionAsProcessing(sessionId);
     const syncSession = await this.models.syncSession.create({
       id: sessionId,
-      startTime,
-      lastConnectionTime: startTime,
-      debugInfo,
+      start_time: startTime,
+      last_connection_time: startTime,
+      info,
     });
 
     // no await as prepare session (especially the tickTockGlobalClock action) might get blocked
@@ -102,7 +107,7 @@ export class CentralSyncManager {
 
     log.info('CentralSyncManager.startSession', {
       sessionId: syncSession.id,
-      ...debugInfo,
+      ...info,
     });
 
     return { sessionId: syncSession.id };
@@ -121,7 +126,9 @@ export class CentralSyncManager {
       !session.errors &&
       session.updatedAt - session.createdAt > syncSessionTimeoutMs
     ) {
-      await session.markErrored(`Sync session ${sessionId} timed out after ${syncSessionTimeoutMs} ms`);
+      await session.markErrored(
+        `Sync session ${sessionId} timed out after ${syncSessionTimeoutMs} ms`,
+      );
     }
 
     if (session.errors) {
@@ -130,7 +137,7 @@ export class CentralSyncManager {
     if (session.completedAt) {
       throw new Error(`Sync session '${sessionId}' is already completed`);
     }
-    session.lastConnectionTime = Date.now();
+    session.last_connection_time = new Date();
     await session.save();
 
     return session;
@@ -144,8 +151,8 @@ export class CentralSyncManager {
 
   async prepareSession(syncSession: SyncSessionRecord): Promise<PrepareSessionResult | void> {
     try {
-      await createSnapshotTable(this.database, syncSession.id);
-      const { tick } = await this.tickTockGlobalClock();
+      await createSnapshotTable(this.models.database, syncSession.id);
+      const { tick } = await this.tickTockGlobalClock(this.models);
       await syncSession.markAsStartedAt(tick);
 
       return { sessionId: syncSession.id, tick };
@@ -223,11 +230,11 @@ export class CentralSyncManager {
   async fetchPullMetadata(sessionId: string): Promise<PullMetadata> {
     const session = await this.connectToSession(sessionId);
     const totalToPull = await countSyncSnapshotRecords(
-      this.database,
+      this.models.database,
       sessionId,
       SYNC_SESSION_DIRECTION.OUTGOING,
     );
-    await this.models.syncSession.addDebugInfo(sessionId, { totalToPull });
+    await this.models.syncSession.addInfo(sessionId, { totalToPull });
     const { pull_until: pullUntil } = session;
     return { totalToPull, pullUntil };
   }
@@ -244,12 +251,12 @@ export class CentralSyncManager {
 
       // will wait for concurrent snapshots to complete if we are currently at capacity, then
       // set the snapshot_started_at timestamp before we proceed with the heavy work below
-      await startSnapshotWhenCapacityAvailable(this.database, sessionId);
+      await startSnapshotWhenCapacityAvailable(this.models.database, sessionId);
 
       // get a sync tick that we can safely consider the snapshot to be up to (because we use the
       // "tick" of the tick-tock, so we know any more changes on the server, even while the snapshot
       // process is ongoing, will have a later updated_at_sync_tick, i.e. the "tock")
-      const { tick } = await this.tickTockGlobalClock();
+      const { tick } = await this.tickTockGlobalClock(this.models);
 
       await this.waitForPendingEdits(tick);
 
@@ -263,25 +270,27 @@ export class CentralSyncManager {
       // the child in the snapshot and its parent missing)
       // as the snapshot only contains read queries plus writes to the specific sync snapshot table
       // that it controls, there should be no concurrent update issues :)
-      await this.database.wrapInTransaction(async (database: TupaiaDatabase) => {
-        const { snapshotTransactionTimeoutMs } = this.config;
-        if (snapshotTransactionTimeoutMs) {
-          transactionTimeout = setTimeout(() => {
-            throw new Error(`Snapshot for session ${sessionId} timed out`);
-          }, snapshotTransactionTimeoutMs);
-        }
+      await this.models.wrapInRepeatableReadTransaction(
+        async (transactingModels: SyncServerModelRegistry) => {
+          const { snapshotTransactionTimeoutMs } = this.config;
+          if (snapshotTransactionTimeoutMs) {
+            transactionTimeout = setTimeout(() => {
+              throw new Error(`Snapshot for session ${sessionId} timed out`);
+            }, snapshotTransactionTimeoutMs);
+          }
 
-        // full changes
-        await snapshotOutgoingChanges(
-          database,
-          this.models,
-          since,
-          sessionId,
-          deviceId,
-          projectIds,
-          this.config,
-        );
-      });
+          // full changes
+          await snapshotOutgoingChanges(
+            transactingModels.database,
+            getModelsForPull(transactingModels.getModels()),
+            since,
+            sessionId,
+            deviceId,
+            projectIds,
+            this.config,
+          );
+        },
+      );
       // this update to the session needs to happen outside of the transaction, as the repeatable
       // read isolation level can suffer serialization failures if a record is updated inside and
       // outside the transaction, and the session is being updated to show the last connection
@@ -309,13 +318,10 @@ export class CentralSyncManager {
     // A transaction level advisory lock fulfils both of these criteria, as it sits at the database
     // level (independent of an individual node process), but will be unlocked if the transaction is
     // rolled back for any reason (e.g. the server restarts)
-    const transactionDatabase = await this.database.createTransaction();
-    const result = await transactionDatabase.executeSql(
-      'SELECT pg_advisory_xact_lock(:sessionLockId);',
-      {
-        sessionLockId: objectIdToTimestamp(sessionId),
-      },
-    );
+    const transactionDatabase = await this.models.database.createTransaction();
+    await transactionDatabase.executeSql('SELECT pg_advisory_xact_lock(:sessionLockId);', {
+      sessionLockId: objectIdToTimestamp(sessionId),
+    });
     const unmarkSessionAsProcessing = async () => {
       await transactionDatabase.commitTransaction();
     };
@@ -323,7 +329,7 @@ export class CentralSyncManager {
   }
 
   async checkSessionIsProcessing(sessionId: string): Promise<boolean> {
-    const [{ session_is_processing: sessionIsProcessing }] = (await this.database.executeSql(
+    const [{ session_is_processing: sessionIsProcessing }] = (await this.models.database.executeSql(
       'SELECT NOT(pg_try_advisory_xact_lock(:sessionLockId)) AS session_is_processing;',
       {
         sessionLockId: objectIdToTimestamp(sessionId),
@@ -335,14 +341,16 @@ export class CentralSyncManager {
 
   async waitForPendingEdits(tick: number): Promise<void> {
     // get all the ticks (ie: keys of in-flight transaction advisory locks) of previously pending edits
-    const pendingSyncTicks = (await getSyncTicksOfPendingEdits(this.database)).filter(
+    const pendingSyncTicks = (await getSyncTicksOfPendingEdits(this.models.database)).filter(
       (t: number) => t < tick,
     );
 
     // wait for any in-flight transactions of pending edits
     // so that we don't miss any changes that are in progress
     await Promise.all(
-      pendingSyncTicks.map((t: number) => waitForPendingEditsUsingSyncTick(this.database, t)),
+      pendingSyncTicks.map((t: number) =>
+        waitForPendingEditsUsingSyncTick(this.models.database, t),
+      ),
     );
   }
 
@@ -358,7 +366,7 @@ export class CentralSyncManager {
       // get a sync tick that we can safely consider the snapshot to be up to (because we use the
       // "tick" of the tick-tock, so we know any more changes on the server, even while the snapshot
       // process is ongoing, will have a later updated_at_sync_tick, i.e. the "tock")
-      const { tick: currentTick } = await this.tickTockGlobalClock();
+      const { tick: currentTick } = await this.tickTockGlobalClock(this.models);
 
       await this.waitForPendingEdits(currentTick);
 
@@ -369,33 +377,35 @@ export class CentralSyncManager {
 
       const isInitialBuildOfLookupTable = Number.parseInt(previouslyUpToTick, 10) === -1;
 
-      await this.database.wrapInTransaction(async (database: TupaiaDatabase) => {
-        // When it is initial build of sync lookup table, by setting it to null,
-        // it will get the updated_at_sync_tick from the actual tables.
-        // Otherwise, update it to SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER so that
-        // it can update the flagged ones post transaction commit to the latest sync tick,
-        // avoiding sync sessions missing records while sync lookup is being refreshed
-        // See more details in the 'await updateSyncLookupPendingRecords' call
-        const syncLookupTick = isInitialBuildOfLookupTable
-          ? null
-          : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
+      await this.models.wrapInRepeatableReadTransaction(
+        async (transactingModels: SyncServerModelRegistry) => {
+          // When it is initial build of sync lookup table, by setting it to null,
+          // it will get the updated_at_sync_tick from the actual tables.
+          // Otherwise, update it to SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER so that
+          // it can update the flagged ones post transaction commit to the latest sync tick,
+          // avoiding sync sessions missing records while sync lookup is being refreshed
+          // See more details in the 'await updateSyncLookupPendingRecords' call
+          const syncLookupTick = isInitialBuildOfLookupTable
+            ? null
+            : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
 
-        void (await updateLookupTable(
-          getModelsForDirection(this.models, SyncDirections.PULL_FROM_CENTRAL),
-          previouslyUpToTick,
-          this.config,
-          syncLookupTick,
-          debugObject,
-        ));
+          void (await updateLookupTable(
+            getModelsForPull(transactingModels.getModels()),
+            previouslyUpToTick,
+            this.config,
+            syncLookupTick,
+            debugObject,
+          ));
 
-        // update the last successful lookup table in the same transaction - if updating the cursor fails,
-        // we want to roll back the rest of the saves so that the next update can still detect the records that failed
-        // to be updated last time
-        log.debug('CentralSyncManager.updateLookupTable()', {
-          lastSuccessfulLookupTableUpdate: currentTick,
-        });
-        await this.models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, currentTick);
-      });
+          // update the last successful lookup table in the same transaction - if updating the cursor fails,
+          // we want to roll back the rest of the saves so that the next update can still detect the records that failed
+          // to be updated last time
+          log.debug('CentralSyncManager.updateLookupTable()', {
+            lastSuccessfulLookupTableUpdate: currentTick,
+          });
+          await transactingModels.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, currentTick);
+        },
+      );
 
       // If we used the current sync tick to record against each update to the sync lookup table, we would hit an edge case:
       // 1. Current sync tick is = 1, encounter A is updated
@@ -408,17 +418,20 @@ export class CentralSyncManager {
       //
       // Hence, to fix this, we:
       // 1. When starting updating lookup table, use fixed -1 as the tick and treat them as pending updates (SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER)
-      // 2. After updating lookup table is finished, update all the records with tick = -1 to the latest sync tick
+      // 2. After updating lookup table IS FINISHED AND COMMITED (hence we wrap in a new transaction),
+      // update all the records with tick = -1 to the latest sync tick
       // => That way, sync sessions will never miss any records due to timing issue.
       // Note: We do not need to update pending records when it is the initial build
       // because it uses ticks from the actual tables for updated_at_sync_tick
       if (!isInitialBuildOfLookupTable) {
-        await this.database.wrapInTransaction(async (database: TupaiaDatabase) => {
-          // Wrap inside transaction so that any writes to currentSyncTick
-          // will have to wait until this transaction is committed
-          const { tick: currentTick } = await this.tickTockGlobalClock();
-          await updateSyncLookupPendingRecords(database, currentTick);
-        });
+        await this.models.wrapInRepeatableReadTransaction(
+          async (transactingModels: SyncServerModelRegistry) => {
+            // Wrap inside transaction so that any writes to currentSyncTick
+            // will have to wait until this transaction is committed
+            const { tick: currentTick } = await this.tickTockGlobalClock(transactingModels);
+            await updateSyncLookupPendingRecords(transactingModels.database, currentTick);
+          },
+        );
       }
     } catch (error: any) {
       log.error('CentralSyncManager.updateLookupTable encountered an error', {
@@ -437,16 +450,114 @@ export class CentralSyncManager {
     }
   }
 
+  async persistIncomingChanges(sessionId: string, deviceId: string) {
+    const totalPushed = await countSyncSnapshotRecords(
+      this.models.database,
+      sessionId,
+      SYNC_SESSION_DIRECTION.INCOMING,
+    );
+    await this.models.syncSession.addInfo(sessionId, {
+      beganPersistAt: new Date(),
+      totalPushed,
+    });
+
+    try {
+      // commit the changes to the db
+      const persistedAtSyncTick = await this.models.wrapInTransaction(
+        async (transactingModels: SyncServerModelRegistry) => {
+          const modelsToInclude = getModelsForPush(transactingModels.getModels());
+
+          // we tick-tock the global clock to make sure there is a unique tick for these changes
+          // n.b. this used to also be used for concurrency control, but that is now handled by
+          // shared advisory locks taken using the current sync tick as the id, which are waited on
+          // by an exclusive lock taken prior to starting a snapshot - so this is now purely for
+          // saving with a unique tick
+          const { tock } = await this.tickTockGlobalClock(transactingModels);
+
+          await saveIncomingSnapshotChanges(modelsToInclude, sessionId);
+
+          // store the sync tick on save with the incoming changes, so they can be compared for
+          // edits with the outgoing changes
+          await updateSnapshotRecords(
+            transactingModels.database,
+            sessionId,
+            { saved_at_sync_tick: tock },
+            { direction: SYNC_SESSION_DIRECTION.INCOMING },
+          );
+
+          return tock;
+        },
+      );
+
+      await this.models.syncDeviceTick.create({
+        device_id: deviceId,
+        persisted_at_sync_tick: persistedAtSyncTick,
+      });
+
+      // mark persisted so that client polling "completePush" can stop
+      await this.models.syncSession.update({ id: sessionId }, { persist_completed_at: new Date() });
+
+      // WARNING: if you are adding another db call here, you need to either move the
+      // persistCompletedAt lower down, or change the check in checkPushComplete
+    } catch (error: any) {
+      log.error('CentralSyncManager.persistIncomingChanges encountered an error', error);
+      await this.models.syncSession.markSessionErrored(sessionId, error.message);
+    }
+  }
+
+  async addIncomingChanges(sessionId: string, changes: SyncSnapshotAttributes[]) {
+    await this.connectToSession(sessionId);
+    const incomingSnapshotRecords = changes.map(c => ({
+      ...c,
+      direction: SYNC_SESSION_DIRECTION.INCOMING,
+    }));
+
+    log.debug('CentralSyncManager.addIncomingChanges', {
+      incomingSnapshotRecordsCount: incomingSnapshotRecords.length,
+      sessionId,
+    });
+    await insertSnapshotRecords(this.models.database, sessionId, incomingSnapshotRecords);
+  }
+
+  async completePush(sessionId: string, deviceId: string) {
+    await this.connectToSession(sessionId);
+
+    // don't await persisting, the client should asynchronously poll as it may take longer than
+    // the http request timeout
+    const unmarkSessionAsProcessing = await this.markSessionAsProcessing(sessionId);
+    this.persistIncomingChanges(sessionId, deviceId).finally(unmarkSessionAsProcessing);
+  }
+
+  async checkPushComplete(sessionId: string) {
+    // if the push is still persisting, return false to tell the client to keep waiting
+    const persistIsProcessing = await this.checkSessionIsProcessing(sessionId);
+    if (persistIsProcessing) {
+      return false;
+    }
+
+    // if this session is not marked as processing, but also never set persistCompletedAt, record an error
+    const session = await this.connectToSession(sessionId);
+    if (session.persist_completed_at === null) {
+      await session.markErrored(
+        'Push persist incomplete, likely because the central server restarted during the process',
+      );
+      throw new Error(errorMessageFromSession(session));
+    }
+
+    // push complete!
+    return true;
+  }
+
   async endSession(sessionId: string): Promise<void> {
     const session = await this.connectToSession(sessionId);
-    const durationMs = Date.now() - session.startTime;
+    const durationMs = Date.now() - session.start_time;
     log.debug('CentralSyncManager.completingSession', { sessionId, durationMs });
-    await completeSyncSession(this.models.syncSession, this.database, sessionId);
+    await completeSyncSession(this.models.syncSession, this.models.database, sessionId);
     log.info('CentralSyncManager.completedSession', {
       sessionId,
       durationMs,
-      projectIds: session.debugInfo.projectIds,
-      deviceId: session.debugInfo.deviceId,
+      projectIds: session.info.projectIds,
+      deviceId: session.info.deviceId,
     });
   }
 }

@@ -125,27 +125,6 @@ export class BaseDatabase {
     await this.connectionPromise;
   }
 
-  /**
-   * @param {(models: BaseDatabase) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
-   */
-  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.connection.transaction(
-      transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
-      transactionConfig,
-    );
-  }
-
-  /**
-   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
-   */
-  wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
-  }
-
   async fetchSchemaForTable(databaseRecord, schemaName) {
     await this.waitUntilConnected();
     return this.connection(databaseRecord).withSchema(schemaName).columnInfo();
@@ -309,9 +288,13 @@ export class BaseDatabase {
     return record;
   }
 
-  async createMany(recordType, records, schemaName = SCHEMA_NAMES.PUBLIC) {
+  async createMany(recordType, records, schemaName = SCHEMA_NAMES.PUBLIC, options = {}) {
+    const { shouldGenerateId = true } = options;
+
     // generate ids for any records that don't have them
-    const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
+    const sanitizedRecords = shouldGenerateId
+      ? records.map(r => (r.id ? r : { id: this.generateId(), ...r }))
+      : records;
     await runDatabaseFunctionInBatches(sanitizedRecords, async batchOfRecords =>
       this.query(
         {
@@ -466,7 +449,7 @@ export class BaseDatabase {
     );
   }
 
-  wrapInTransaction(wrappedFunction) {
+  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
     throw new Error('wrapInTransaction should be implemented by the child class');
   }
 
