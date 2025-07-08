@@ -28,9 +28,6 @@ export class EntityParentChildRelationBuilder {
    */
   async rebuildRelationsForProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
-    await this.models.entityParentChildRelation.delete({
-      entity_hierarchy_id: hierarchyId,
-    });
     await this.rebuildRelationsForEntity(hierarchyId, projectEntityId, project);
   }
 
