@@ -571,7 +571,6 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   }
 
   if (options.onConflictIgnore) {
-    console.log('onConflictIgnore', options.onConflictIgnore);
     query = query.onConflict(options.onConflictIgnore).ignore();
   }
 

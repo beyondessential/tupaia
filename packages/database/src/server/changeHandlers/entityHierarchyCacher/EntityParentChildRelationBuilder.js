@@ -11,13 +11,9 @@ export class EntityParentChildRelationBuilder {
    */
   async rebuildRelations(rebuildJobs) {
     // projects are the root entities of every full tree, so start with them
-    for (const { hierarchyId, rootEntityId, rebuildEntityParentChildRelations } of rebuildJobs) {
+    for (const { hierarchyId, rootEntityId } of rebuildJobs) {
       const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
-      if (rebuildEntityParentChildRelations) {
-        await this.rebuildRelationsForProject(project);
-      } else {
-        await this.rebuildRelationsForEntity({ hierarchyId, rootEntityId, project });
-      }
+      await this.rebuildRelationsForEntity(hierarchyId, rootEntityId, project);
     }
   }
 
@@ -29,14 +25,13 @@ export class EntityParentChildRelationBuilder {
     await this.models.entityParentChildRelation.delete({
       entity_hierarchy_id: hierarchyId,
     });
-    await this.fetchAndCacheChildren(hierarchyId, [projectEntityId]);
-    await this.deleteStaleRelations(hierarchyId, projectEntityId);
+    await this.rebuildRelationsForEntity(hierarchyId, projectEntityId, project);
   }
 
-  async rebuildRelationsForEntity({ hierarchyId, rootEntityId, project }) {
+  async rebuildRelationsForEntity(hierarchyId, rootEntityId, project) {
     const { entity_id: projectEntityId } = project;
     await this.fetchAndCacheChildren(hierarchyId, [rootEntityId]);
-    await this.deleteStaleRelations(hierarchyId, projectEntityId);
+    await this.deleteOrphanedRelations(hierarchyId, projectEntityId);
   }
 
   async fetchAndCacheChildren(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
@@ -152,7 +147,7 @@ export class EntityParentChildRelationBuilder {
     );
   }
 
-  async deleteStaleRelations(hierarchyId, projectEntityId) {
+  async deleteOrphanedRelations(hierarchyId, projectEntityId) {
     await this.models.database.executeSql(
       `
       WITH RECURSIVE connected_nodes AS (

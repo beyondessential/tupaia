@@ -52,6 +52,9 @@ describe('EntityHierarchyCacher', () => {
     const parentChildRelationsForProject = await models.entityParentChildRelation.find({
       entity_hierarchy_id: hierarchyId,
     });
+
+    // Get the expected entity_parent_child_relation
+    // ie: the expected ancestor descendant relations that have a generational distance of 1
     const expectedParentChildRelations = expectedAncestorDescendantRelations
       .filter(({ generational_distance }) => generational_distance === 1)
       .map(({ ancestor_id, descendant_id }) => ({
@@ -59,15 +62,6 @@ describe('EntityHierarchyCacher', () => {
         child_id: descendant_id,
       }));
 
-    console.log('projectCode', projectCode);
-    console.log(
-      'parentChildRelationsForProject',
-      parentChildRelationsForProject.map(r => ({
-        parent_id: r.parent_id,
-        child_id: r.child_id,
-      })),
-    );
-    console.log('expectedParentChildRelations', expectedParentChildRelations);
     expect(
       parentChildRelationsForProject.map(r => ({
         parent_id: r.parent_id,
@@ -293,12 +287,6 @@ describe('EntityHierarchyCacher', () => {
     await models.entityHierarchy.updateById('hierarchy_wind_test', {
       canonical_types: ['project', 'country', 'facility'],
     });
-
-    await entityParentChildRelationBuilder.rebuildRelations([{
-      hierarchyId: 'hierarchy_wind_test',
-      rebuildEntityParentChildRelations: true,
-    }]);
-
     await assertRelationsMatch('project_wind_test', HIERARCHY_WIND_AFTER_CANONICAL_TYPES_CHANGED);
   });
 });
