@@ -23,9 +23,7 @@ const executeCommand = async command => {
 
 const findTestDirs = () => {
   const packageNames = fs.readdirSync(`${PACKAGE_ROOT}`);
-  return packageNames
-    .flatMap(packageName => findPossibleTestDirsForPackage(packageName))
-    .filter(fs.existsSync);
+  return packageNames.flatMap(findPossibleTestDirsForPackage).filter(fs.existsSync);
 };
 
 const findPossibleTestDirsForPackage = packageName =>
