@@ -24,6 +24,8 @@ export {
   DatatrakWebSyncInitiatePullRequest,
   DatatrakWebSyncPullRequest,
   DatatrakWebSyncEndSessionRequest,
+  DatatrakWebSyncPushRequest,
+  DatatrakWebSyncPushCompleteRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebCountriesRequest,
@@ -56,5 +58,8 @@ export {
   SyncServerPullReadyRequest,
   SyncServerPullMetadataRequest,
   SyncServerPullRequest,
+  SyncServerPushRequest,
+  SyncServerPushStatusRequest,
+  SyncServerPushCompleteRequest,
   SyncServerEndSessionRequest,
 } from './sync-server';

@@ -1,0 +1,21 @@
+import { Request } from 'express';
+
+import { Route } from '@tupaia/server-boilerplate';
+import { DatatrakWebSyncPushCompleteRequest } from '@tupaia/types';
+
+export type SyncPushCompleteRequest = Request<
+  DatatrakWebSyncPushCompleteRequest.Params,
+  DatatrakWebSyncPushCompleteRequest.ResBody,
+  DatatrakWebSyncPushCompleteRequest.ReqBody,
+  DatatrakWebSyncPushCompleteRequest.ReqQuery
+>;
+
+export class SyncPushCompleteRoute extends Route<SyncPushCompleteRequest> {
+  public async buildResponse() {
+    const { params, body, ctx } = this.req;
+    const { sessionId } = params;
+    const { deviceId } = body;
+    await ctx.services.sync.completePush(sessionId, deviceId);
+    return {};
+  }
+}

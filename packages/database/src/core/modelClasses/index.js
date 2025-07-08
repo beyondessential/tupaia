@@ -61,6 +61,7 @@ import { TaskModel } from './Task';
 import { UserCountryAccessAttemptModel } from './UserCountryAccessAttempt';
 import { TaskCommentModel } from './TaskComment';
 import { SyncSessionModel } from './SyncSession';
+import { SyncDeviceTickModel } from './SyncDeviceTick';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -127,6 +128,7 @@ export const modelClasses = {
   UserSession: UserSessionModel,
   UserCountryAccessAttempt: UserCountryAccessAttemptModel,
   SyncSession: SyncSessionModel,
+  SyncDeviceTick: SyncDeviceTickModel,
 };
 
 // export any models and types that are extended in other packages
@@ -203,3 +205,4 @@ export {
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
 export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';
 export { SyncSessionModel, SyncSessionRecord } from './SyncSession';
+export { SyncDeviceTickModel, SyncDeviceTickRecord } from './SyncDeviceTick';

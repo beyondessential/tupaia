@@ -99643,3 +99643,11 @@ export const SyncReadyStatusSchema = {
 	"type": "string"
 } 
 
+export const SyncPushStatusSchema = {
+	"enum": [
+		"complete",
+		"pending"
+	],
+	"type": "string"
+} 
+
