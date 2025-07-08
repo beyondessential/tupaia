@@ -39,65 +39,33 @@ export class EntityParentChildRelationBuilder {
     await this.deleteStaleRelations(hierarchyId, projectEntityId);
   }
 
-  async fetchAndCacheChildren(hierarchyId, parentIds, processedChildIds = new Set()) {
-    console.log('parentIds', parentIds);
-    console.log('processedChildIds', Array.from(processedChildIds));
-    const parentIdsToProcess = parentIds;
-
-    const entityRelationChildCount = await this.countEntityRelationChildren(
-      hierarchyId,
-      parentIdsToProcess,
-    );
+  async fetchAndCacheChildren(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
+    const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, parentIds);
     const useEntityRelationLinks = entityRelationChildCount > 0;
-    // const childCount = useEntityRelationLinks
-    //   ? entityRelationChildCount
-    //   : await this.countCanonicalChildren(hierarchyId, parentIdsToProcess);
 
-    // console.log('childCount', childCount);
+    const validParentChildIdPairs = useEntityRelationLinks
+      ? await this.generateEntityRelationChildren(hierarchyId, parentIds, childrenAlreadyCached)
+      : await this.generateCanonicalChildren(hierarchyId, parentIds, childrenAlreadyCached);
 
-    const parentChildIdPairs = useEntityRelationLinks
-      ? await this.generateEntityRelationChildren(
-          hierarchyId,
-          parentIdsToProcess,
-          processedChildIds,
-        )
-      : await this.generateCanonicalChildren(hierarchyId, parentIdsToProcess, processedChildIds);
-
-    if (parentChildIdPairs.length === 0) {
+    if (validParentChildIdPairs.length === 0) {
       // When reaching a leaf node, there still might be some stale relations in the cache that need to be deleted
       await this.models.entityParentChildRelation.delete({
-        parent_id: parentIdsToProcess,
+        parent_id: parentIds,
         entity_hierarchy_id: hierarchyId,
       });
       return; // at a leaf node generation, no need to go any further
     }
-    console.log('parentChildIdPairs', parentChildIdPairs);
-    const existingChildIds = parentChildIdPairs.map(pair => pair[1]);
-    const valuesList = parentChildIdPairs.map(() => '(?, ?)').join(', ');
 
-    console.log('valuesList', valuesList);
+    const validChildIds = validParentChildIdPairs.map(pair => pair[1]);
+
     // Flatten the pairs into a single array of values
-    const values = parentChildIdPairs.flatMap(pair => pair);
-    console.log('values', values);
-    await this.models.database.executeSql(
-      `
-      DELETE FROM entity_parent_child_relation 
-      WHERE entity_hierarchy_id = ? 
-        AND parent_id IN (${parentIdsToProcess.map(() => '?').join(', ')})
-        AND (parent_id, child_id) NOT IN (
-          SELECT * FROM (VALUES ${valuesList}) AS pairs(parent_id, child_id)
-        )
-      RETURNING parent_id, child_id
-  `,
-      [hierarchyId, ...parentIdsToProcess, ...values],
-    );
+    await this.deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs);
 
-    const newProcessedChildIds = new Set([...processedChildIds, ...existingChildIds]);
-    newProcessedChildIds.add('1');
-    return this.fetchAndCacheChildren(hierarchyId, existingChildIds, newProcessedChildIds);
+    const newChildrenAlreadyCached = new Set([...childrenAlreadyCached, ...validChildIds]);
+    return this.fetchAndCacheChildren(hierarchyId, validChildIds, newChildrenAlreadyCached);
   }
 
-  async generateEntityRelationChildren(hierarchyId, parentIds, processedChildIds = new Set()) {
+  async generateEntityRelationChildren(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
     const entityRelations = await this.models.entityRelation.find({
       parent_id: parentIds,
       entity_hierarchy_id: hierarchyId,
@@ -108,7 +76,12 @@ export class EntityParentChildRelationBuilder {
         child_id: relation.child_id,
         entity_hierarchy_id: hierarchyId,
       }))
-      .filter(relation => !processedChildIds.has(relation.child_id));
+      .filter(relation => !childrenAlreadyCached.has(relation.child_id));
+
+    if (entityParentChildRelations.length === 0) {
+      return [];
+    }
+
     await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
       onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
     });
@@ -116,7 +89,7 @@ export class EntityParentChildRelationBuilder {
     return entityParentChildRelations.map(e => [e.parent_id, e.child_id]);
   }
 
-  async generateCanonicalChildren(hierarchyId, parentIds, processedChildIds = new Set()) {
+  async generateCanonicalChildren(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
     const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
     const entities = await this.models.entity.find({
       parent_id: parentIds,
@@ -128,7 +101,12 @@ export class EntityParentChildRelationBuilder {
         child_id: e.id,
         entity_hierarchy_id: hierarchyId,
       }))
-      .filter(relation => !processedChildIds.has(relation.child_id));
+      .filter(relation => !childrenAlreadyCached.has(relation.child_id));
+
+    if (entityParentChildRelations.length === 0) {
+      return [];
+    }
+
     await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
       onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
     });
@@ -146,14 +124,6 @@ export class EntityParentChildRelationBuilder {
     });
   }
 
-  /**
-   * @private
-   */
-  async countCanonicalChildren(hierarchyId, parentIds) {
-    const criteria = await this.getCanonicalChildrenCriteria(hierarchyId, parentIds);
-    return this.models.entity.count(criteria);
-  }
-
   async getCanonicalTypes(hierarchyId) {
     const entityHierarchy = await this.models.entityHierarchy.findById(hierarchyId);
     const { canonical_types: customCanonicalTypes } = entityHierarchy;
@@ -165,33 +135,24 @@ export class EntityParentChildRelationBuilder {
     return canonicalTypes;
   }
 
-  /**
-   * @private
-   */
-  async getCanonicalChildrenCriteria(hierarchyId, parentIds) {
-    // Only include entities of types that are considered canonical, either using a custom set of
-    // canonical types defined by the hierarchy, or the default, which is org unit types.
-    const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
-    return {
-      parent_id: parentIds,
-      type: canonicalTypes,
-    };
+  async deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs) {
+    const valuesList = validParentChildIdPairs.map(() => '(?, ?)').join(', ');
+    const values = validParentChildIdPairs.flatMap(pair => pair);
+    await this.models.database.executeSql(
+      `
+      DELETE FROM entity_parent_child_relation 
+      WHERE entity_hierarchy_id = ? 
+        AND parent_id IN (${parentIds.map(() => '?').join(', ')})
+        AND (parent_id, child_id) NOT IN (
+          SELECT * FROM (VALUES ${valuesList}) AS pairs(parent_id, child_id)
+        )
+      RETURNING parent_id, child_id
+    `,
+      [hierarchyId, ...parentIds, ...values],
+    );
   }
 
   async deleteStaleRelations(hierarchyId, projectEntityId) {
-    console.log('projectEntityId', projectEntityId);
-    console.log('hierarchyId', hierarchyId);
-    console.log(
-      'entityParentChildRelations',
-      (
-        await this.models.entityParentChildRelation.find({
-          entity_hierarchy_id: hierarchyId,
-        })
-      ).map(e => ({
-        parent_id: e.parent_id,
-        child_id: e.child_id,
-      })),
-    );
     await this.models.database.executeSql(
       `
       WITH RECURSIVE connected_nodes AS (
@@ -220,36 +181,5 @@ export class EntityParentChildRelationBuilder {
       `,
       [hierarchyId, hierarchyId],
     );
-
-    // const orphanedRelations = await this.models.database.executeSql(
-    //   `
-    //   WITH RECURSIVE connected_nodes AS (
-    //     -- Start with root nodes (entities that exist but aren't children)
-    //     -- Start with the known root node
-    //     SELECT '${projectEntityId}' as node_id
-
-    //     UNION ALL
-
-    //     -- Recursively find all descendants
-    //     SELECT er.child_id
-    //     FROM entity_parent_child_relation er
-    //     INNER JOIN connected_nodes cn ON er.parent_id = cn.node_id
-    //       AND er.entity_hierarchy_id = ?
-    //   ),
-    //   -- Find orphaned relations (not connected to any root)
-    //   orphaned_relations AS (
-    //     SELECT er.*
-    //     FROM entity_parent_child_relation er
-    //     WHERE er.parent_id NOT IN (SELECT node_id FROM connected_nodes)
-    //       AND er.entity_hierarchy_id = ?
-    //   )
-    //   -- Delete the orphaned relations
-    //   SELECT * FROM orphaned_relations;
-    //   `,
-    //   [hierarchyId, hierarchyId],
-    // );
-
-    // console.log('connectedNodes', connectedNodes);
-    // console.log('orphanedRelations', orphanedRelations);
   }
 }
