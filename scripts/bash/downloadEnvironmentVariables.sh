@@ -125,7 +125,7 @@ load_env_file_from_bw() {
     echo -e "${GREEN}✅ Downloaded variables for ${BOLD}${FILE_NAME}${RESET} → $ENV_FILE_PATH"
 }
 
-for PACKAGE in $PACKAGES; do
+for PACKAGE in "${PACKAGES[@]}"; do
     # Only download the env file if there is an example file in the package. If there isn’t, this
     # means it is a package that doesn’t need env vars
     if [[ -f $REPO_ROOT/packages/$PACKAGE/.env.example ]]; then
