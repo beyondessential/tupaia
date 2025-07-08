@@ -1,7 +1,6 @@
 import { generateId } from '../../../core/utilities';
 import { ChangeHandler } from '../ChangeHandler';
 import { EntityHierarchySubtreeRebuilder } from './EntityHierarchySubtreeRebuilder';
-import { EntityParentChildRelationBuilder } from './EntityParentChildRelationBuilder';
 import { RECORDS } from '../../../core/records';
 
 export class EntityHierarchyCacher extends ChangeHandler {
@@ -22,7 +21,6 @@ export class EntityHierarchyCacher extends ChangeHandler {
     const jobs = hierarchies.map(({ id: hierarchyId }) => ({
       hierarchyId,
       rootEntityId: newRecord.parent_id,
-      rootParentId: newRecord.parent_id,
     }));
     return jobs;
   }
@@ -35,7 +33,6 @@ export class EntityHierarchyCacher extends ChangeHandler {
       .map(r => ({
         hierarchyId: r.entity_hierarchy_id,
         rootEntityId: r.parent_id,
-        parentEntityId: r.parent_id,
       }));
     return jobs;
   }
@@ -57,19 +54,11 @@ export class EntityHierarchyCacher extends ChangeHandler {
     const jobs = projectsUsingHierarchy.map(p => ({
       hierarchyId,
       rootEntityId: p.entity_id,
-      rebuildEntityParentChildRelations: true,
     }));
     return jobs;
   }
 
   async handleChanges(transactingModels, rebuildJobs) {
-    console.log('yeyeye', rebuildJobs);
-    const entityParentChildRelationRebuilder = new EntityParentChildRelationBuilder(
-      transactingModels,
-    );
-    await entityParentChildRelationRebuilder.rebuildRelations(rebuildJobs);
-
-    console.log('yeyeye2');
     // get the subtrees to delete, then run the delete
     const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
     await subtreeRebuilder.rebuildSubtrees(rebuildJobs);

@@ -26,7 +26,6 @@ import {
   HIERARCHY_STORM_AFTER_ENTITIES_CREATED,
   HIERARCHY_WIND_AFTER_CANONICAL_TYPES_CHANGED,
 } from './EntityHierarchyCacher.fixtures';
-import { EntityParentChildRelationBuilder } from '../../server/changeHandlers/entityHierarchyCacher/EntityParentChildRelationBuilder';
 
 const TEST_DEBOUNCE_TIME = 50; // short debounce time so tests run more quickly
 
@@ -34,12 +33,10 @@ describe('EntityHierarchyCacher', () => {
   const models = getTestModels();
   const hierarchyCacher = new EntityHierarchyCacher(models);
   const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(models);
-  const entityParentChildRelationBuilder = new EntityParentChildRelationBuilder(models);
   hierarchyCacher.setDebounceTime(TEST_DEBOUNCE_TIME); // short debounce time so tests run more quickly
 
   const buildAndCacheProject = async projectCode => {
     const project = await models.project.findOne({ code: projectCode });
-    await entityParentChildRelationBuilder.rebuildRelationsForProject(project);
     await subtreeRebuilder.buildAndCacheProject(project);
   };
   const assertRelationsMatch = async (projectCode, expectedAncestorDescendantRelations) => {

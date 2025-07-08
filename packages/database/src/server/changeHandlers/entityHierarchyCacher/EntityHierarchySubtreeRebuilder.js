@@ -1,9 +1,10 @@
 import { reduceToDictionary } from '@tupaia/utils';
-import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
+import { EntityParentChildRelationBuilder } from './EntityParentChildRelationBuilder';
 
 export class EntityHierarchySubtreeRebuilder {
   constructor(models) {
     this.models = models;
+    this.entityParentChildRelationBuilder = new EntityParentChildRelationBuilder(models);
   }
 
   /**
@@ -12,6 +13,10 @@ export class EntityHierarchySubtreeRebuilder {
    * @param {{hierarchyId: string; rootEntityId: string}[]} rebuildJobs
    */
   async rebuildSubtrees(rebuildJobs) {
+    // rebuild the entity parent child relations first so 
+    // that the subtree rebuilds are based on the most up to date relations
+    await this.entityParentChildRelationBuilder.rebuildRelations(rebuildJobs);
+
     // get the subtrees to delete, then run the delete
     const subtreesForDelete = {};
     rebuildJobs.forEach(({ hierarchyId, rootEntityId }) => {
@@ -67,6 +72,7 @@ export class EntityHierarchySubtreeRebuilder {
    * @public
    */
   async buildAndCacheProject(project) {
+    await this.entityParentChildRelationBuilder.rebuildRelationsForProject(project);
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
     return this.fetchAndCacheDescendants(hierarchyId, { [projectEntityId]: [] });
   }
