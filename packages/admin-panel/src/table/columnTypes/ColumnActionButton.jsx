@@ -23,6 +23,6 @@ ColumnActionButton.defaultProps = {
 };
 
 ColumnActionButton.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.node,
   children: PropTypes.node,
 };
