@@ -33,7 +33,7 @@ export const sendEmailVerification = async user => {
 
   const host = HOSTS[platform];
 
-  const fullUrl = `${host}/verify-email?verifyEmailToken=${token}`;
+  const fullUrl = `${host}/verify-email?verifyEmailToken=${encodeURIComponent(token)}`;
 
   return sendEmail(user.email, {
     subject,
