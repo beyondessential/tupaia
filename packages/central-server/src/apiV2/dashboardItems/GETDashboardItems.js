@@ -1,5 +1,5 @@
-import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { GETHandler } from '../GETHandler';
 import { assertDashboardItemGetPermissions } from './assertDashboardItemsPermissions';
 import { createDashboardItemsDBFilter } from './createDashboardItemsDBFilter';
 /**
@@ -11,8 +11,6 @@ export class GETDashboardItems extends GETHandler {
   permissionsFilteredInternally = true;
 
   async findSingleRecord(dashboardItemId, options) {
-    const dashboardItem = await super.findSingleRecord(dashboardItemId, options);
-
     const dashboardItemChecker = accessPolicy =>
       assertDashboardItemGetPermissions(accessPolicy, this.models, dashboardItemId);
 
@@ -20,7 +18,7 @@ export class GETDashboardItems extends GETHandler {
       assertAnyPermissions([assertBESAdminAccess, dashboardItemChecker]),
     );
 
-    return dashboardItem;
+    return await super.findSingleRecord(dashboardItemId, options);
   }
 
   async getPermissionsFilter(criteria, options) {
