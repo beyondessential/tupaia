@@ -13,10 +13,10 @@ const assertSessionIdIsSafe = (sessionId: string) => {
 };
 
 // includes a safety check for using in raw sql rather than via sequelize query building
-export const getSnapshotTableName = (sessionId: string, includeSchema = true) => {
+export const getSnapshotTableName = (sessionId: string) => {
   assertSessionIdIsSafe(sessionId);
 
-  return includeSchema ? `"${SCHEMA}"."${sessionId}"` : `"${sessionId}"`;
+  return `"${SCHEMA}"."${sessionId}"`;
 };
 
 export const getSnapshotTableCursorName = (sessionId: string) => {

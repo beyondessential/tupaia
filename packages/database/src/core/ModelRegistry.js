@@ -121,7 +121,7 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: BaseDatabase) => Promise<void>} wrappedFunction
+   * @param {(models: BaseDatabase) => Promise<void | unknown>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
