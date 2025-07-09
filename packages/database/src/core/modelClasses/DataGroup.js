@@ -65,7 +65,7 @@ export class DataGroupRecord extends DatabaseRecord {
 }
 
 export class DataGroupModel extends MaterializedViewLogDatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return DataGroupRecord;

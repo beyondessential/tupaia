@@ -3,13 +3,14 @@ import { SyncDirections } from '@tupaia/constants';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { buildSyncLookupSelect } from '../sync';
 
 export class TaskCommentRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK_COMMENT;
 }
 
 export class TaskCommentModel extends DatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get DatabaseRecordClass() {
     return TaskCommentRecord;

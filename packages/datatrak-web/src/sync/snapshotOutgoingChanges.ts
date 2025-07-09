@@ -26,7 +26,9 @@ export const snapshotOutgoingChanges = async (models: DatabaseModel[], since: nu
   const invalidModelNames = Object.values(models)
     .filter(
       m =>
-        ![SyncDirections.BIDIRECTIONAL, SyncDirections.PUSH_TO_CENTRAL].includes(m.syncDirection),
+        ![SyncDirections.BIDIRECTIONAL, SyncDirections.PUSH_TO_CENTRAL].includes(
+          (m.constructor as typeof DatabaseModel).syncDirection,
+        ),
     )
     .map(m => m.databaseRecord);
 

@@ -31,7 +31,7 @@ export class GeographicalAreaRecord extends DatabaseRecord {
 }
 
 export class GeographicalAreaModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return GeographicalAreaRecord;

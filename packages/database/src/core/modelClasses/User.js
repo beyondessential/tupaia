@@ -33,7 +33,7 @@ export class UserRecord extends DatabaseRecord {
 const PUBLIC_USER_EMAIL = 'public@tupaia.org';
 
 export class UserModel extends DatabaseModel {
-  syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return UserRecord;

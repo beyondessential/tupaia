@@ -309,7 +309,7 @@ export class EntityRecord extends DatabaseRecord {
 }
 
 export class EntityModel extends MaterializedViewLogDatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get DatabaseRecordClass() {
     return EntityRecord;

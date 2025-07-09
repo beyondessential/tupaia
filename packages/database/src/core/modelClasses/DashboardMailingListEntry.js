@@ -28,7 +28,7 @@ export class DashboardMailingListEntryRecord extends DatabaseRecord {
 }
 
 export class DashboardMailingListEntryModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return DashboardMailingListEntryRecord;

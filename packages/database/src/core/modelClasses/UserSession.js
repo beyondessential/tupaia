@@ -9,7 +9,7 @@ class UserSessionRecord extends DatabaseRecord {
 }
 
 export class UserSessionModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return UserSessionRecord;

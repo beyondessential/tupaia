@@ -75,7 +75,7 @@ export class DataElementRecord extends DatabaseRecord {
 }
 
 export class DataElementModel extends MaterializedViewLogDatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   SERVICE_TYPES = SERVICE_TYPES;
 

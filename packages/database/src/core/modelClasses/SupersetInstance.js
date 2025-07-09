@@ -9,7 +9,7 @@ export class SupersetInstanceRecord extends DatabaseRecord {
 }
 
 export class SupersetInstanceModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return SupersetInstanceRecord;

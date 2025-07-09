@@ -9,7 +9,7 @@ class SyncGroupLogRecord extends DatabaseRecord {
 }
 
 export class SyncGroupLogModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return SyncGroupLogRecord;

@@ -9,8 +9,6 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
 export class OneTimeLoginRecord extends DatabaseRecord {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
-
   static databaseRecord = RECORDS.ONE_TIME_LOGIN;
 
   isExpired() {
@@ -23,6 +21,8 @@ export class OneTimeLoginRecord extends DatabaseRecord {
 }
 
 export class OneTimeLoginModel extends DatabaseModel {
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return OneTimeLoginRecord;
   }

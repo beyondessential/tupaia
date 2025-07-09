@@ -25,7 +25,7 @@ export class UserCountryAccessAttemptRecord extends DatabaseRecord {
 }
 
 export class UserCountryAccessAttemptModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return UserCountryAccessAttemptRecord;

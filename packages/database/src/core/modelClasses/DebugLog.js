@@ -14,7 +14,7 @@ export class DebugLogRecord extends DatabaseRecord {
 }
 
 export class DebugLogModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get schemaName() {
     return SCHEMA_NAMES.LOG;

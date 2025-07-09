@@ -50,7 +50,7 @@ export class OptionRecord extends DatabaseRecord {
 }
 
 export class OptionModel extends DatabaseModel {
-  syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return OptionRecord;

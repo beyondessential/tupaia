@@ -13,7 +13,7 @@ export class DataTableRecord extends DatabaseRecord {
 }
 
 export class DataTableModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   static DATA_TABLE_TYPES = DATA_TABLE_TYPES;
 

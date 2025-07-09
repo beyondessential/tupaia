@@ -9,7 +9,7 @@ export class SurveyGroupRecord extends DatabaseRecord {
 }
 
 export class SurveyGroupModel extends DatabaseModel {
-  syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return SurveyGroupRecord;

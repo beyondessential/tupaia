@@ -6,7 +6,7 @@ import { SCHEMA_NAMES } from './constants';
 export class DatabaseModel {
   otherModels = {};
 
-  syncDirection = null;
+  static syncDirection = null;
 
   constructor(database, schema = null) {
     this.database = database;
@@ -50,8 +50,8 @@ export class DatabaseModel {
       });
     }
 
-    if (!this.syncDirection) {
-      throw new Error('syncDirection must be set by the model');
+    if (!this.constructor.syncDirection) {
+      throw new Error(`syncDirection must be set by the model: ${this.databaseRecord}`);
     }
   }
 

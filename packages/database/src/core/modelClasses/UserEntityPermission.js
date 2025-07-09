@@ -41,7 +41,7 @@ export class UserEntityPermissionRecord extends DatabaseRecord {
 }
 
 export class UserEntityPermissionModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC; // TODO: Might need this
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return UserEntityPermissionRecord;

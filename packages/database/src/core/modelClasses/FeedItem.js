@@ -25,7 +25,7 @@ export class FeedItemRecord extends DatabaseRecord {
 }
 
 export class FeedItemModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return FeedItemRecord;

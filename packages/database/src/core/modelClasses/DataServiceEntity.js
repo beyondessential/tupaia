@@ -9,7 +9,7 @@ export class DataServiceEntityRecord extends DatabaseRecord {
 }
 
 export class DataServiceEntityModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return DataServiceEntityRecord;

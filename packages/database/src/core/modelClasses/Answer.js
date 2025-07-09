@@ -3,13 +3,14 @@ import { SyncDirections } from '@tupaia/constants';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { buildSyncLookupSelect } from '../sync';
 
 export class AnswerRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ANSWER;
 }
 
 export class AnswerModel extends MaterializedViewLogDatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   async buildSyncLookupQueryDetails() {
     return {

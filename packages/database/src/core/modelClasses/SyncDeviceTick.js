@@ -9,7 +9,7 @@ export class SyncDeviceTickRecord extends DatabaseRecord {
 }
 
 export class SyncDeviceTickModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return SyncDeviceTickRecord;

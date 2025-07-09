@@ -1,4 +1,5 @@
 import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -8,7 +9,7 @@ export class ApiRequestLogRecord extends DatabaseRecord {
 }
 
 export class ApiRequestLogModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return ApiRequestLogRecord;

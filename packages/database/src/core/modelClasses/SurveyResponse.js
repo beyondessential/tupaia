@@ -3,6 +3,7 @@ import { SyncDirections } from '@tupaia/constants';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { RECORDS } from '../records';
+import { buildSyncLookupSelect } from '../sync';
 
 const USERS_EXCLUDED_FROM_LEADER_BOARD = [
   "'edmofro@gmail.com'", // Edwin
@@ -60,7 +61,7 @@ export class SurveyResponseRecord extends DatabaseRecord {
 }
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get DatabaseRecordClass() {
     return SurveyResponseRecord;

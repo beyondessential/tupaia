@@ -13,8 +13,6 @@ const RELATION_CHILD_TYPES = {
 };
 
 export class MapOverlayGroupRelationRecord extends DatabaseRecord {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
-
   static databaseRecord = RECORDS.MAP_OVERLAY_GROUP_RELATION;
 
   static joins = [
@@ -43,6 +41,8 @@ export class MapOverlayGroupRelationRecord extends DatabaseRecord {
 }
 
 export class MapOverlayGroupRelationModel extends DatabaseModel {
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return MapOverlayGroupRelationRecord;
   }

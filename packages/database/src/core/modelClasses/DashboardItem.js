@@ -9,7 +9,7 @@ export class DashboardItemRecord extends DatabaseRecord {
 }
 
 export class DashboardItemModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return DashboardItemRecord;

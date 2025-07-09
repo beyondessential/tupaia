@@ -25,7 +25,7 @@ export class ExternalDatabaseConnectionRecord extends DatabaseRecord {
 }
 
 export class ExternalDatabaseConnectionModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
 
   // Map of active external connections that have been established
   // Using singleton pattern to avoid individual instances overwhelming the external
