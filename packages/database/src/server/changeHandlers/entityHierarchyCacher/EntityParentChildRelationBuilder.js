@@ -23,6 +23,18 @@ export class EntityParentChildRelationBuilder {
   }
 
   /**
+   * @public
+   * @param {string[]} hierarchyIds The specific hierarchies to cache (defaults to all)
+   */
+  async buildAndCacheHierarchies(hierarchyIds) {
+    // projects are the root entities of every full tree, so start with them
+    const projectCriteria = hierarchyIds ? { entity_hierarchy_id: hierarchyIds } : {};
+    const projects = await this.models.project.find(projectCriteria);
+    const projectTasks = projects.map(async project => this.rebuildRelationsForProject(project));
+    await Promise.all(projectTasks);
+  }
+
+  /**
    * Rebuilds the entity parent child relations for a given project
    * @param {import('../../../core/modelClasses/Project').Project} project
    */
@@ -168,24 +180,49 @@ export class EntityParentChildRelationBuilder {
    * @param {*} validParentChildIdPairs
    */
   async deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs) {
-    const valuesList = validParentChildIdPairs.map(() => '(?, ?)').join(', ');
-    const values = validParentChildIdPairs.flatMap(pair => pair);
+    const tempValidPairsTableName = `temp_valid_pairs_${hierarchyId}`;
+    try {
+      await this.models.database.executeSql(`
+        DROP TABLE IF EXISTS ${tempValidPairsTableName};
+      `);
 
-    // Delete any relations that:
-    // - Belong to the parentIds
-    // - Are not in the validParentChildIdPairs - which are the latest valid relations for this level
-    await this.models.database.executeSql(
-      `
-      DELETE FROM entity_parent_child_relation 
-      WHERE entity_hierarchy_id = ? 
-        AND parent_id IN (${parentIds.map(() => '?').join(', ')})
-        AND (parent_id, child_id) NOT IN (
-          SELECT * FROM (VALUES ${valuesList}) AS pairs(parent_id, child_id)
+      await this.models.database.executeSql(`
+        CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
+          parent_id TEXT,
+          child_id TEXT
         )
-      RETURNING parent_id, child_id
-    `,
-      [hierarchyId, ...parentIds, ...values],
-    );
+      `);
+
+      await this.models.database.executeSqlInBatches(
+        validParentChildIdPairs,
+        batchOfValidParentChildIdPairs => {
+          const values = batchOfValidParentChildIdPairs.map(pair => pair);
+          return [
+            `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
+            VALUES ${values.map(() => '(?, ?)').join(', ')}`,
+            values,
+          ];
+        },
+      );
+
+      await this.models.database.executeSqlInBatches(
+        parentIds,
+        batchOfParentIds => `
+          DELETE FROM entity_parent_child_relation 
+          WHERE entity_hierarchy_id = ? 
+            AND parent_id IN (${batchOfParentIds.map(() => '?').join(', ')})
+            AND (parent_id, child_id) NOT IN (
+              SELECT parent_id, child_id FROM ${tempValidPairsTableName}
+            )
+          RETURNING parent_id, child_id
+        `,
+        [hierarchyId, ...parentIds],
+      );
+    } finally {
+      await this.models.database.executeSql(`
+        DROP TABLE IF EXISTS ${tempValidPairsTableName}
+      `);
+    }
   }
 
   /**
