@@ -45,9 +45,9 @@ export class EditUserAccounts extends EditHandler {
       ...restOfUpdatedFields
     } = this.updatedFields;
     let updatedFields = restOfUpdatedFields;
-    const passwordAndSalt = await encryptPassword(password);
 
     if (password) {
+      const passwordAndSalt = await encryptPassword(password);
       updatedFields = {
         ...updatedFields,
         ...passwordAndSalt,
