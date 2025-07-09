@@ -356,11 +356,16 @@ export class DatabaseModel {
    * Bulk creates database records and returns DatabaseRecord instances representing them
    * @param {Array.<Object>} recordsToCreate
    */
-  async createMany(recordsToCreate) {
+  async createMany(recordsToCreate, options = {}) {
     const data = await Promise.all(recordsToCreate.map(this.getDatabaseSafeData));
     const instances = await Promise.all(data.map(this.generateInstance));
     await Promise.all(instances.map(i => i.assertValid()));
-    const records = await this.database.createMany(this.databaseRecord, data);
+    const records = await this.database.createMany(
+      this.databaseRecord,
+      data,
+      this.schemaName,
+      options,
+    );
     return Promise.all(records.map(this.generateInstance));
   }
 

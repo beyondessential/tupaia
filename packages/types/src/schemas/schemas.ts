@@ -71007,6 +71007,78 @@ export const EntityHierarchyUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const EntityParentChildRelationSchema = {
+	"type": "object",
+	"properties": {
+		"child_id": {
+			"type": "string"
+		},
+		"entity_hierarchy_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"child_id",
+		"entity_hierarchy_id",
+		"id",
+		"parent_id",
+		"updated_at_sync_tick"
+	]
+} 
+
+export const EntityParentChildRelationCreateSchema = {
+	"type": "object",
+	"properties": {
+		"child_id": {
+			"type": "string"
+		},
+		"entity_hierarchy_id": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"child_id",
+		"entity_hierarchy_id",
+		"parent_id"
+	]
+} 
+
+export const EntityParentChildRelationUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"child_id": {
+			"type": "string"
+		},
+		"entity_hierarchy_id": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const EntityRelationSchema = {
 	"type": "object",
 	"properties": {
@@ -85495,6 +85567,7 @@ export const EntityTypeEnumSchema = {
 		"pacmossi_insecticide_test",
 		"pacmossi_spraying_site",
 		"pacmossi_village",
+		"pharmacy",
 		"postcode",
 		"project",
 		"repair_request",
@@ -85502,12 +85575,14 @@ export const EntityTypeEnumSchema = {
 		"sub_catchment",
 		"sub_district",
 		"sub_facility",
+		"supermarket",
 		"transfer",
 		"trap",
 		"vehicle",
 		"village",
 		"visiting_specialist",
 		"water_sample",
+		"wholesaler",
 		"wish_sub_district",
 		"world"
 	],
@@ -86103,6 +86178,9 @@ export const EntitiesResponseItemSchema = {
 		},
 		"id": {
 			"type": "string"
+		},
+		"updatedAtSyncTick": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -86110,7 +86188,8 @@ export const EntitiesResponseItemSchema = {
 		"code",
 		"id",
 		"name",
-		"type"
+		"type",
+		"updatedAtSyncTick"
 	]
 } 
 
@@ -86693,7 +86772,7 @@ export const EntityResponseSchema = {
 	]
 } 
 
-export const AssigneeSchema = {
+export const TaskAssigneeSchema = {
 	"type": "object",
 	"properties": {
 		"id": {
@@ -87049,6 +87128,118 @@ export const TaskResponseSchema = {
 	]
 } 
 
+export const TaskResponseItemSchema = {
+	"type": "object",
+	"properties": {
+		"createdAt": {
+			"description": "ISO 8601 format (e.g. '2025-04-21T21:30:48.344Z')",
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"taskId": {
+			"type": "string"
+		},
+		"templateVariables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
+		"updatedAtSyncTick": {
+			"type": "string"
+		},
+		"userId": {
+			"type": "string"
+		},
+		"userName": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"createdAt",
+		"id",
+		"taskId",
+		"templateVariables",
+		"type",
+		"updatedAtSyncTick",
+		"userName"
+	]
+} 
+
 export const UserResponseSchema = {
 	"type": "object",
 	"properties": {
@@ -87080,6 +87271,23 @@ export const SyncSessionStartedResBodySchema = {
 	"required": [
 		"sessionId",
 		"startedAtTick"
+	]
+} 
+
+export const CountriesResponseItemSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"name"
 	]
 } 
 

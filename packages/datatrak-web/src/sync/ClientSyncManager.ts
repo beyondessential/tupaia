@@ -121,10 +121,16 @@ export class ClientSyncManager {
     const pushSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
     console.log('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
-    const outgoingChanges = await this.models.wrapInTransaction(async transactingModels => {
-      const modelsForPush = getModelsForPush(transactingModels.getModels());
-      return snapshotOutgoingChanges(modelsForPush, pushSince);
-    });
+    // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
+    // is underway aren't included (as this could lead to a pair of foreign records with the child in
+    // the snapshot and its parent missing)
+    // as the snapshot only contains read queries, there will be no concurrent update issues :)
+    const outgoingChanges = await this.models.wrapInRepeatableReadTransaction(
+      async transactingModels => {
+        const modelsForPush = getModelsForPush(transactingModels.getModels());
+        return snapshotOutgoingChanges(modelsForPush, pushSince);
+      },
+    );
 
     if (outgoingChanges.length > 0) {
       console.log('ClientSyncManager.pushingOutgoingChanges', {
@@ -194,7 +200,7 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+      return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
     });
   }
 
@@ -217,7 +223,7 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+      return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
     });
   }
 }

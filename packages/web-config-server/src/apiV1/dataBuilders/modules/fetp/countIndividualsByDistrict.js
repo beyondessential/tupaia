@@ -1,7 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
  * count entities of type 'individual' by district and sub_district grouping by district
  */
 export const countIndividualsByDistrict = async ({
@@ -33,7 +30,7 @@ export const countIndividualsByDistrict = async ({
 
   const rows = districts
     .sort(compare)
-    .map(district => {
+    .flatMap(district => {
       const districtCount = individuals.filter(i => i.parent_id == district.id).length;
       const childDistricts = subDistricts.filter(
         subDistrict => subDistrict.parent_id == district.id,
@@ -55,8 +52,7 @@ export const countIndividualsByDistrict = async ({
       };
       const category = { category: district.name, CountColumn: totalCount };
       return [districtCountRow, ...childRows, category];
-    })
-    .flat();
+    });
   const returnData = {
     columns: [{ key: 'CountColumn', title: dataBuilderConfig.columns[0] }],
     rows,

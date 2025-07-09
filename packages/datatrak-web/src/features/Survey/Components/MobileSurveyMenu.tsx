@@ -5,28 +5,37 @@ import styled from 'styled-components';
 import { FormatListBulleted, KeyboardArrowRight } from '@material-ui/icons';
 
 import { ShareIcon, Button as UIButton } from '../../../components';
+import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useShare } from '../utils/useShare';
 import { CopyUrlButton } from './CopyUrlButton';
 
-const Container = styled.div`
+const Container = styled.nav`
   align-items: stretch;
   background: white;
-  block-size: calc(env(safe-area-inset-bottom, 0) + 3.5rem);
   border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   display: grid;
   grid-template-columns: repeat(3, minmax(3.5rem, 1fr)) minmax(min-content, 1.5fr);
   inline-size: 100%;
   inset-block-end: 0;
   justify-content: space-between;
-  padding-bottom: env(safe-area-inset-bottom, 0);
-  padding-left: env(safe-area-inset-left, 0);
-  padding-right: env(safe-area-inset-right, 0);
+  min-block-size: 3.5rem;
   position: fixed;
   touch-action: pan-x pinch-zoom;
 
-  & > button {
+  & > .MuiButtonBase-root {
+    --min-padding: 0.75rem;
+    block-size: ${BOTTOM_NAVIGATION_HEIGHT_DYNAMIC};
     border-radius: 0;
+    height: 100%;
+    padding: var(--min-padding);
+    padding-bottom: max(env(safe-area-inset-bottom, 0), var(--min-padding));
+  }
+  & > .MuiButtonBase-root:first-of-type {
+    padding-left: max(env(safe-area-inset-left, 0), var(--min-padding));
+  }
+  & > .MuiButtonBase-root:last-of-type {
+    padding-right: max(env(safe-area-inset-right, 0), var(--min-padding));
   }
 `;
 
@@ -42,16 +51,14 @@ const Button = styled(UIButton).attrs({
 })`
   border-inline-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   border-radius: 0;
-  padding-block: 1.2rem;
 `;
 
 export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
-  const { toggleSideMenu, isLast, isReviewScreen, isResubmitReviewScreen } = useSurveyForm();
+  const { toggleSideMenu, isLast, isResubmit, isReviewScreen } = useSurveyForm();
   const share = useShare();
 
   const getNextButtonText = () => {
-    if (isReviewScreen) return 'Submit';
-    if (isResubmitReviewScreen) return 'Resubmit';
+    if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
     if (isLast) return 'Review';
     return 'Next';
   };

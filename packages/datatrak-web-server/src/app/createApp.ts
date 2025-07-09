@@ -1,4 +1,5 @@
 import { Request } from 'express';
+
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   attachSessionIfAvailable,
@@ -8,6 +9,8 @@ import {
   SessionSwitchingAuthHandler,
 } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
+
+import { API_CLIENT_PERMISSIONS } from '../constants';
 import { DataTrakSessionModel } from '../models';
 import {
   ActivityFeedRequest,
@@ -18,10 +21,12 @@ import {
   EditTaskRoute,
   EntitiesRequest,
   EntitiesRoute,
-  EntityDescendantsRequest,
-  EntityDescendantsRoute,
   EntityAncestorsRequest,
   EntityAncestorsRoute,
+  EntityDescendantsRequest,
+  EntityDescendantsRoute,
+  ExportSurveyResponseRequest,
+  ExportSurveyResponseRoute,
   GenerateLoginTokenRequest,
   GenerateLoginTokenRoute,
   LeaderboardRequest,
@@ -32,8 +37,12 @@ import {
   ProjectRoute,
   ProjectsRequest,
   ProjectsRoute,
+  ProjectUsersRequest,
+  ProjectUsersRoute,
   RecentSurveysRequest,
   RecentSurveysRoute,
+  ResubmitSurveyResponseRequest,
+  ResubmitSurveyResponseRoute,
   SingleEntityRequest,
   SingleEntityRoute,
   SingleSurveyResponseRequest,
@@ -48,18 +57,6 @@ import {
   SurveysRoute,
   SurveyUsersRequest,
   SurveyUsersRoute,
-  TaskMetricsRequest,
-  TaskMetricsRoute,
-  TaskRequest,
-  TaskRoute,
-  TasksRequest,
-  TasksRoute,
-  UserRequest,
-  UserRoute,
-  ResubmitSurveyResponseRequest,
-  ResubmitSurveyResponseRoute,
-  ExportSurveyResponseRequest,
-  ExportSurveyResponseRoute,
   SyncStartSessionRequest,
   SyncStartSessionRoute,
   SyncInitiatePullRequest,
@@ -68,12 +65,20 @@ import {
   SyncPullRoute,
   SyncPushRequest,
   SyncPushRoute,
+  SyncPushCompleteRequest,
+  SyncPushCompleteRoute,
   SyncEndSessionRequest,
   SyncEndSessionRoute,
+  TaskMetricsRequest,
+  TaskMetricsRoute,
+  TaskRequest,
+  TaskRoute,
+  TasksRequest,
+  TasksRoute,
+  UserRequest,
+  UserRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
-import { API_CLIENT_PERMISSIONS } from '../constants';
-import { SyncPushCompleteRequest, SyncPushCompleteRoute } from '../routes/SyncPushCompleteRoute';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
@@ -103,6 +108,7 @@ export async function createApp() {
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<LeaderboardRequest>('leaderboard', handleWith(LeaderboardRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
+    .get<ProjectUsersRequest>('project/:projectCode/users', handleWith(ProjectUsersRoute))
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TaskMetricsRequest>('taskMetrics/:projectId', handleWith(TaskMetricsRoute))
@@ -133,7 +139,10 @@ export async function createApp() {
     .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
     .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
-    .put<SyncPushCompleteRequest>('sync/:sessionId/push/complete', handleWith(SyncPushCompleteRoute))
+    .put<SyncPushCompleteRequest>(
+      'sync/:sessionId/push/complete',
+      handleWith(SyncPushCompleteRoute),
+    )
     .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
 
     // Forward auth requests to web-config

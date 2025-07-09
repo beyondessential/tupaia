@@ -1,7 +1,9 @@
 import React from 'react';
-import MuiAutocomplete from '@material-ui/lab/Autocomplete';
+import MuiAutocomplete, {
+  AutocompleteProps as MuiAutocompleteProps,
+} from '@material-ui/lab/Autocomplete';
 import { TextFieldProps } from '@material-ui/core';
-import MuiPaper, { PaperProps } from '@material-ui/core/Paper';
+import Paper from '@material-ui/core/Paper';
 import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
@@ -11,11 +13,14 @@ const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   font-size: 1.5rem;
 `;
 
-const Paper = (props: PaperProps) => <MuiPaper {...props} variant="outlined" elevation={0} />;
-
-const StyledPaper = styled(Paper)`
+const StyledPaper = styled(Paper).attrs({ elevation: 0, variant: 'outlined' })`
   .MuiAutocomplete-option {
-    padding: 0.6rem 1.2rem;
+    padding-block: 0.6rem;
+    padding-inline: 1.2rem;
+
+    &[data-focus='true'] {
+      background-color: ${props => props.theme.palette.primaryHover};
+    }
   }
 `;
 
@@ -31,84 +36,91 @@ const StyledAutocomplete = styled(MuiAutocomplete)`
   .MuiAutocomplete-inputRoot .MuiAutocomplete-endAdornment {
     right: 0.9rem;
   }
+
   .MuiInputBase-root.Mui-error {
     background-color: transparent;
-    border-color: ${props => props.theme.palette.error.main};
+
+    &,
     &.Mui-focused {
       border-color: ${props => props.theme.palette.error.main};
     }
   }
 `;
 
-export interface BaseAutocompleteProps {
-  label?: string;
-  value?: any;
-  id?: string;
-  required?: boolean;
+export interface BaseAutocompleteProps<
+  T,
+  Multiple extends boolean | undefined,
+  DisableClearable extends boolean | undefined,
+  FreeSolo extends boolean | undefined,
+> extends MuiAutocompleteProps<T, Multiple, DisableClearable, FreeSolo> {
   error?: boolean;
-  disabled?: boolean;
+  getOptionSelected?: (option: T, value: any) => boolean;
   helperText?: string;
-  onChange?: (event: Event, newValue: any) => void;
-  getOptionSelected?: (option: any, value: any) => boolean;
-  getOptionLabel?: (option: any) => string;
-  renderOption?: (option: any) => JSX.Element;
-  placeholder?: string;
+  id?: string;
+  label?: React.ReactNode;
+  placeholder?: TextFieldProps['placeholder'];
+  required?: boolean;
+  value?: any;
+
+  /**
+   * @deprecated
+   * Prefer supplying props directly.
+   *
+   * @privateRemarks
+   * Should actually `Partial<MuiAutocompleteProps<T, Multiple, DisableClearable, FreeSolo>>`, but
+   * this breaks existing usages.
+   */
   muiProps?: any;
 }
 
-interface AutocompleteProps extends BaseAutocompleteProps {
-  options: any[];
-  loading?: boolean;
-  onInputChange?: (event: any, newValue: any) => void;
+/** Extends BaseAutocompleteProps but `renderInput` is optional. Forwards all type arguments. */
+export interface AutocompleteProps<
+  T,
+  Multiple extends boolean | undefined,
+  DisableClearable extends boolean | undefined,
+  FreeSolo extends boolean | undefined,
+> extends Omit<BaseAutocompleteProps<T, Multiple, DisableClearable, FreeSolo>, 'renderInput'>,
+    Partial<Pick<BaseAutocompleteProps<T, Multiple, DisableClearable, FreeSolo>, 'renderInput'>> {
+  options: T[];
+  onInputChange?: (event: React.ChangeEvent<{}>, newValue: any) => void;
   inputValue?: any;
   className?: string;
-  inputRef?: any;
+  inputRef?: React.Ref<HTMLInputElement>;
   name?: string;
   defaultValue?: any;
   tooltip?: string;
   textFieldProps?: TextFieldProps;
 }
 
-export const Autocomplete = ({
-  options,
-  id,
-  label = '',
-  getOptionSelected,
-  getOptionLabel,
-  renderOption,
-  value,
-  onChange,
-  loading = false,
-  placeholder = '',
+export const Autocomplete = <
+  T = unknown,
+  Multiple extends boolean | undefined = false,
+  DisableClearable extends boolean | undefined = false,
+  FreeSolo extends boolean | undefined = false,
+>({
   error = false,
-  disabled = false,
-  required = false,
+  getOptionLabel,
+  getOptionSelected,
   helperText,
-  onInputChange,
-  inputValue,
-  muiProps,
-  className,
   inputRef,
+  inputValue,
+  label = '',
+  loading,
+  muiProps,
   name,
-  defaultValue,
-  tooltip,
+  placeholder = 'Search…',
+  required = false,
   textFieldProps,
-}: AutocompleteProps) => (
+  tooltip,
+  ...props
+}: AutocompleteProps<T, Multiple, DisableClearable, FreeSolo>) => (
   <StyledAutocomplete
-    id={id}
-    className={className}
-    options={options}
-    value={value}
-    disabled={disabled}
-    onChange={onChange}
-    loading={loading}
-    defaultValue={defaultValue}
-    disableClearable={loading}
-    onInputChange={onInputChange}
+    // Ideally would just use `StyledAutocomplete<T, Multiple, DisableClearable, FreeSolo>` in the
+    // line above, but styled-components struggles with generic components
+    as={MuiAutocomplete<T, Multiple, DisableClearable, FreeSolo>}
     inputValue={inputValue}
     getOptionSelected={getOptionSelected}
     getOptionLabel={getOptionLabel}
-    renderOption={renderOption}
     popupIcon={<KeyboardArrowDown />}
     PaperComponent={StyledPaper}
     blurOnSelect
@@ -136,5 +148,6 @@ export const Autocomplete = ({
       />
     )}
     {...muiProps}
+    {...props}
   />
 );

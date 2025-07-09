@@ -1,5 +1,8 @@
-import { calculatePageLimit, SyncSnapshotAttributes } from '@tupaia/sync';
+import { SyncSnapshotAttributes } from '@tupaia/sync';
 import { post, put } from '../api';
+
+// TODO: Move to config model RN-1668
+const LIMIT = 10000;
 
 export const pushOutgoingChanges = async (
   sessionId: string,
@@ -7,18 +10,13 @@ export const pushOutgoingChanges = async (
   deviceId: string,
 ): Promise<void> => {
   let startOfPage = 0;
-  let limit = calculatePageLimit();
   while (startOfPage < changes.length) {
-    const endOfPage = Math.min(startOfPage + limit, changes.length);
+    const endOfPage = Math.min(startOfPage + LIMIT, changes.length);
     const page = changes.slice(startOfPage, endOfPage);
 
-    const startTime = Date.now();
     await post(`sync/${sessionId}/push`, { data: { changes: page } });
-    const endTime = Date.now();
 
     startOfPage = endOfPage;
-
-    limit = calculatePageLimit(limit, endTime - startTime);
   }
   await put(`sync/${sessionId}/push/complete`, { data: { deviceId } });
 };

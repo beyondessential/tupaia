@@ -1,4 +1,3 @@
-import winston from 'winston';
 import { generateId } from '../../../core/utilities';
 import { ChangeHandler } from '../ChangeHandler';
 import { EntityHierarchySubtreeRebuilder } from './EntityHierarchySubtreeRebuilder';
@@ -15,13 +14,13 @@ export class EntityHierarchyCacher extends ChangeHandler {
     };
   }
 
-  async translateEntityChangeToRebuildJobs({ record_id: entityId }) {
+  async translateEntityChangeToRebuildJobs({ record_id: entityId, new_record: newRecord }) {
     // if entity was deleted or created, or parent_id has changed, we need to delete subtrees and
     // rebuild all hierarchies
     const hierarchies = await this.models.entityHierarchy.all();
     const jobs = hierarchies.map(({ id: hierarchyId }) => ({
       hierarchyId,
-      rootEntityId: entityId,
+      rootEntityId: newRecord.parent_id,
     }));
     return jobs;
   }
@@ -31,7 +30,10 @@ export class EntityHierarchyCacher extends ChangeHandler {
     // have changed
     const jobs = [oldRecord, newRecord]
       .filter(r => r)
-      .map(r => ({ hierarchyId: r.entity_hierarchy_id, rootEntityId: r.parent_id }));
+      .map(r => ({
+        hierarchyId: r.entity_hierarchy_id,
+        rootEntityId: r.parent_id,
+      }));
     return jobs;
   }
 
@@ -49,7 +51,10 @@ export class EntityHierarchyCacher extends ChangeHandler {
       entity_hierarchy_id: hierarchyId,
     });
     // delete and rebuild full hierarchy of any project using this entity
-    const jobs = projectsUsingHierarchy.map(p => ({ hierarchyId, rootEntityId: p.entity_id }));
+    const jobs = projectsUsingHierarchy.map(p => ({
+      hierarchyId,
+      rootEntityId: p.entity_id,
+    }));
     return jobs;
   }
 

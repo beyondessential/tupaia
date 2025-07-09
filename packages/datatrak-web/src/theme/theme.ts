@@ -100,7 +100,7 @@ const overrides = {
       'button, input, textarea, select': {
         touchAction: 'manipulation',
       },
-      ":is(ol, ul)[role='list']": {
+      ":where(ol, ul)[role='list']": {
         listStyleType: 'none',
         marginBlock: 0,
         paddingInlineStart: 0,
@@ -111,8 +111,15 @@ const overrides = {
       source: {
         display: 'none',
       },
+      table: {
+        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      },
       time: {
         fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      },
+      '.lucide': {
+        height: 'auto', // Use width to set both dimensions
+        width: '1em', // Sensible default, mirrors MUI Icon behaviour
       },
     },
   },
@@ -176,8 +183,18 @@ const overrides = {
   },
 } as const;
 
+const transitions = {
+  /* These custom CSS properties defined immediately above in `overrides.MuiCssBaseline['root']` */
+  easing: {
+    easeIn: 'var(--ease-in-quart)',
+    easeInOut: 'var(--ease-in-out-quart)',
+    easeOut: 'var(--ease-out-quart)',
+  },
+};
+
 export const theme = createMuiTheme({
-  palette,
-  typography,
   overrides,
+  palette,
+  transitions,
+  typography,
 });

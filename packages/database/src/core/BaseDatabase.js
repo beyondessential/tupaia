@@ -125,18 +125,6 @@ export class BaseDatabase {
     await this.connectionPromise;
   }
 
-  /**
-   * @param {(models: BaseDatabase) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
-   */
-  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.connection.transaction(
-      transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
-      transactionConfig,
-    );
-  }
-
   async fetchSchemaForTable(databaseRecord, schemaName) {
     await this.waitUntilConnected();
     return this.connection(databaseRecord).withSchema(schemaName).columnInfo();
@@ -315,7 +303,7 @@ export class BaseDatabase {
           queryMethodParameter: batchOfRecords,
         },
         {},
-        { schemaName },
+        { ...options, schemaName },
       ),
     );
     return sanitizedRecords;
@@ -461,7 +449,7 @@ export class BaseDatabase {
     );
   }
 
-  wrapInTransaction(wrappedFunction) {
+  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
     throw new Error('wrapInTransaction should be implemented by the child class');
   }
 
@@ -563,6 +551,10 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   // Alias the query result (for use in nested queries) if name provided
   if (options.name) {
     query = query.as(options.name);
+  }
+
+  if (options.onConflictIgnore) {
+    query = query.onConflict(options.onConflictIgnore).ignore();
   }
 
   if (queryMethod === QUERY_METHODS.UPDATE) {

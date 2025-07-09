@@ -106,7 +106,7 @@ exports.up = async function (db) {
     };
 
     let newTransform = transform
-      .map(t => {
+      .flatMap(t => {
         if (JSON.stringify(t).includes('dataElementCodeToName(')) {
           if (report.code === PALAU_MATRIX_REPORT_CODE) {
             return [
@@ -127,8 +127,7 @@ exports.up = async function (db) {
           ];
         }
         return [t];
-      })
-      .flat();
+      });
 
     if (report.code === PALAU_MATRIX_REPORT_CODE) {
       newTransform = newTransform.concat([orderColumnsByDate]);

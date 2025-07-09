@@ -1,6 +1,8 @@
-import { Typography } from '@material-ui/core';
+import { Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
+
+import { VisuallyHidden } from '@tupaia/ui-components';
 
 import { ButtonLink as BaseButtonLink, ButtonAnchor } from '../../components';
 import { ROUTES } from '../../constants';
@@ -14,29 +16,24 @@ const SectionContainer = styled.section`
   border-radius: 0.625rem;
   column-gap: 1rem;
   display: flex;
+  font-size: 1rem;
   grid-area: --surveySelect;
   justify-content: space-between;
   overflow: visible !important;
   padding: 1rem;
-  position: relative;
+
+  // HACK: Parent’s grid-template-rows currently defined in a way that causes horizontal track to
+  // sometimes shrink smaller than this element. The 4lh is just empirically hand-tuned. 2em is the
+  // block padding.
+  min-block-size: calc(4lh + 2rem);
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-block-start: 1.9375rem;
   }
 `;
 
-const SectionContent = styled.div`
-  align-items: center;
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 1rem 1.25rem;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    flex-direction: row;
-  }
-`;
-
 const ButtonLink = styled(BaseButtonLink)`
-  font-size: 1rem;
+  font-size: inherit;
   padding-inline: 0.5rem;
   & ~ .MuiButtonBase-root {
     margin-inline-start: 0; // override default margin from ui-components
@@ -66,23 +63,9 @@ const ButtonWrapper = styled.div`
 `;
 
 const Text = styled(Typography)`
-  font-size: 1rem;
+  font-size: inherit;
   line-height: 1.5;
   max-inline-size: 38rem;
-`;
-
-const VisuallyHidden = styled.span`
-  &:not(:focus):not(:active) {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: auto;
-    margin: 0;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
 `;
 
 /**
@@ -112,16 +95,18 @@ const SurveysImage = styled.img.attrs({
   width: 108,
   height: 207,
 })`
-  height: 13rem;
+  height: 12rem;
   width: auto;
 `;
 
 export const SurveySelectSection = () => {
-  const SupplementalText = useIsMobile() ? VisuallyHidden : Fragment;
+  const isMobile = useIsMobile();
+  const verbose = useMediaQuery(useTheme().breakpoints.up('lg'));
+  const SupplementalText = verbose ? Fragment : VisuallyHidden;
 
   return (
     <SectionContainer>
-      <SectionContent>
+      {!isMobile && (
         <ButtonWrapper>
           <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
           <ButtonAnchor
@@ -134,16 +119,16 @@ export const SurveySelectSection = () => {
             Explore data
           </ButtonAnchor>
         </ButtonWrapper>
-        <Text>
-          Tupaia DataTrak makes data collection easy!
-          <SupplementalText>
-            {' '}
-            You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
-            stories and information with the Tupaia community. To collect data offline, please
-            download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
-          </SupplementalText>
-        </Text>
-      </SectionContent>
+      )}
+      <Text>
+        Tupaia DataTrak makes data collection easy!
+        <SupplementalText>
+          {' '}
+          You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
+          stories and information with the Tupaia community. To collect data offline, please
+          download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
+        </SupplementalText>
+      </Text>
       <ImageWrapper>
         <SurveysImage />
       </ImageWrapper>

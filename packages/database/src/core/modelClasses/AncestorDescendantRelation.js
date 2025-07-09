@@ -25,7 +25,7 @@ export class AncestorDescendantRelationRecord extends DatabaseRecord {
 }
 
 export class AncestorDescendantRelationModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC; // TODO: in another ticket
+  syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return AncestorDescendantRelationRecord;

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Country, EntityTypeEnum, QuestionType } from '@tupaia/types';
+import { EntityTypeEnum, QuestionType, DatatrakWebEntitiesRequest } from '@tupaia/types';
+
 import { EntitySelector } from '../../EntitySelector';
 import { useCurrentUserContext, useSurvey } from '../../../api';
 import { getAllSurveyComponents } from '../../Survey';
@@ -7,7 +8,7 @@ import { getAllSurveyComponents } from '../../Survey';
 interface EntityInputProps {
   onChange: (value: string) => void;
   value: string;
-  selectedCountry?: Country | null;
+  selectedCountry?: DatatrakWebEntitiesRequest.EntitiesResponseItem | null;
   inputRef?: React.Ref<any>;
   name: string;
   invalid?: boolean;
@@ -62,7 +63,7 @@ export const EntityInput = ({
       disableSearch={!survey || !primaryEntityQuestionConfig}
       isLoading={isLoadingSurvey}
       showSearchInput
-      legend="Select entity"
+      legend="Entity"
       legendProps={{
         required: true,
         color: 'primary',

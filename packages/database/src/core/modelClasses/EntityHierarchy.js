@@ -9,9 +9,13 @@ export class EntityHierarchyRecord extends DatabaseRecord {
 }
 
 export class EntityHierarchyModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC; // TODO: in another ticket
+  syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return EntityHierarchyRecord;
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return null;
   }
 }

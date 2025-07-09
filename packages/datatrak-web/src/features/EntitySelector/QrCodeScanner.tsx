@@ -7,7 +7,7 @@ import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { QrCodeScannerIcon } from '@tupaia/ui-components';
 
 import { Button } from '../../components';
-import { CloseButton, Modal, ModalContent } from '../../components/Modal';
+import { ModalCloseButton, Modal, ModalBody } from '../../components/Modal';
 import { isNullish, useHasVideoInput, useIsMobile } from '../../utils';
 
 const StyledButton = styled(Button).attrs({
@@ -22,7 +22,7 @@ const ModalRoot = styled(Paper)`
   block-size: 100dvb;
   inline-size: 100dvi;
 
-  ${CloseButton} {
+  ${ModalCloseButton} {
     &.MuiIconButton-root:hover {
       background-color: oklch(100% 0 0 / 15%);
     }
@@ -31,7 +31,7 @@ const ModalRoot = styled(Paper)`
     }
   }
 
-  ${ModalContent} {
+  ${ModalBody} {
     block-size: 100%;
     color: white;
     display: grid;
@@ -46,7 +46,7 @@ const ModalRoot = styled(Paper)`
   }
 
   ${props => props.theme.breakpoints.down('sm')} {
-    ${CloseButton} {
+    ${ModalCloseButton} {
       top: max(env(safe-area-inset-top, 0), 1rem);
       right: max(env(safe-area-inset-right, 0), 1.25rem);
       .MuiSvgIcon-root {

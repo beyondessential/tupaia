@@ -9,7 +9,7 @@ export class EntityRelationRecord extends DatabaseRecord {
 }
 
 export class EntityRelationModel extends DatabaseModel {
-  syncDirection = SyncDirections.DO_NOT_SYNC; // TODO: in another ticket
+  syncDirection = SyncDirections.DO_NOT_SYNC;
 
   get DatabaseRecordClass() {
     return EntityRelationRecord;

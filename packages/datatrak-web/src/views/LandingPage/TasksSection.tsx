@@ -5,19 +5,16 @@ import styled, { css } from 'styled-components';
 import { FlexSpaceBetween, Button as UIButton } from '@tupaia/ui-components';
 
 import { useCurrentUserContext, useTasks } from '../../api';
+import { TileSkeletons } from '../../components';
 import { ROUTES } from '../../constants';
 import { NoTasksSection, TaskTile } from '../../features/Tasks';
 import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
-import { TileSkeletons } from '../../components';
 
 const SectionContainer = styled.section`
   grid-area: --tasks;
   display: flex;
   flex-direction: column;
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    max-height: 21.5rem;
-  }
 `;
 
 const Paper = styled.div<{ $hasTasks?: boolean }>`
@@ -27,7 +24,7 @@ const Paper = styled.div<{ $hasTasks?: boolean }>`
   background: ${({ theme }) => theme.palette.background.paper};
   padding-block: 1rem;
   padding-inline: 1.25rem;
-  border-radius: 10px;
+  border-radius: 0.625rem;
 
   ${({ theme, $hasTasks }) =>
     $hasTasks &&
@@ -54,44 +51,11 @@ const ViewMoreButton = styled(Button).attrs({ variant: 'text', color: 'default' 
   margin-block-end: 0.75rem;
   margin-inline: 0;
 
-  .MuiButton-label {
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    color: #4e3838;
-    font-size: 0.75rem;
-  }
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    .MuiButton-label {
-      font-size: 0.875rem;
-    }
-  }
-
   &:hover {
     text-decoration: underline;
-    background-color: initial;
+    background-color: unset;
   }
 `;
-
-const TopViewMoreButton = styled(ViewMoreButton)`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
-`;
-
-const DesktopButton = Button;
-const MobileButton = styled(ViewMoreButton)`
-  float: right;
-`;
-
-const ViewMoreTasksButton = ({ numberOfPages }) => {
-  if (numberOfPages <= 1) return null;
-  const Button = useIsMobile() ? MobileButton : DesktopButton;
-  return (
-    <Button component={Link} to={ROUTES.TASKS}>
-      View more
-    </Button>
-  );
-};
 
 export const TasksSection = () => {
   const { id: userId, projectId } = useCurrentUserContext();
@@ -109,38 +73,39 @@ export const TasksSection = () => {
   const isMobile = useIsMobile();
   const {
     data = { tasks: [], numberOfPages: 0 },
-    isLoading,
+    isFetching,
     isSuccess,
-  } = useTasks({ projectId, filters, pageSize: isMobile ? 3 : 15 });
-  const tasks = data.tasks;
+  } = useTasks({
+    projectId,
+    filters,
+    pageSize: isMobile ? 3 : 15,
+  });
+
+  const tasks = data.tasks ?? [];
   const hasTasks = isSuccess && tasks?.length > 0;
 
+  // Tasks view accessible via bottom navigation bar in mobile
+  if (isMobile && !hasTasks) return null;
+
   const renderContents = () => {
-    if (isLoading) {
+    if (isFetching) {
       return <TileSkeletons count={4} tileSkeletonProps={{ lineCount: 1 }} />;
     }
     if (!hasTasks) {
       return <NoTasksSection />;
     }
 
-    return (
-      <>
-        {tasks.map(task => (
-          <TaskTile key={task.id} task={task} />
-        ))}
-        <ViewMoreTasksButton numberOfPages={data.numberOfPages} />
-      </>
-    );
+    return tasks.map(task => <TaskTile key={task.id} task={task} />);
   };
 
   return (
     <SectionContainer>
       <FlexSpaceBetween as="header">
         <SectionHeading>My tasks</SectionHeading>
-        {hasTasks && (
-          <TopViewMoreButton component={Link} to={ROUTES.TASKS}>
+        {hasTasks && !isMobile && (
+          <ViewMoreButton component={Link} to={ROUTES.TASKS}>
             View more
-          </TopViewMoreButton>
+          </ViewMoreButton>
         )}
       </FlexSpaceBetween>
       <Paper $hasTasks={hasTasks}>{renderContents()}</Paper>
