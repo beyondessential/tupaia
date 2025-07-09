@@ -31,6 +31,7 @@ export type SyncServerConfig = {
 };
 
 export interface SyncLookupQueryDetails {
+  ctes?: string[];
   select?: string[];
   joins?: string[];
   where?: any;
