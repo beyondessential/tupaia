@@ -26,20 +26,21 @@ describe('Permissions checker for EditUserAccounts', async () => {
   let userAccount2;
 
   before(async () => {
+    [userAccount1, userAccount2] = await Promise.all([
+      findOrCreateDummyRecord(models.user, { first_name: 'Barry', last_name: 'EditUserAccounts' }),
+      findOrCreateDummyRecord(models.user, { first_name: 'Hal', last_name: 'EditUserAccounts' }),
+    ]);
+
     const [
       publicPermissionGroup,
       { entity: kiribatiEntity },
       { entity: laosEntity },
       { entity: demoEntity },
-      userAccount1,
-      userAccount2,
     ] = await Promise.all([
       findOrCreateDummyRecord(models.permissionGroup, { name: 'Public' }),
       findOrCreateDummyCountryEntity(models, { code: 'KI' }),
       findOrCreateDummyCountryEntity(models, { code: 'LA' }),
       findOrCreateDummyCountryEntity(models, { code: 'DL' }),
-      findOrCreateDummyRecord(models.user, { first_name: 'Barry', last_name: 'EditUserAccounts' }),
-      findOrCreateDummyRecord(models.user, { first_name: 'Hal', last_name: 'EditUserAccounts' }),
     ]);
 
     // Give the test users some permissions
