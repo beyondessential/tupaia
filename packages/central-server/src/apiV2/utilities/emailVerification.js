@@ -32,13 +32,21 @@ const getEmailVerificationToken = user => `${user.email}${user.password_hash}`;
  */
 const isLegacyToken = token => /^[0-9a-f]{64}$/.test(token);
 
-export const sendEmailVerification = async user => {
+const generateVerificationLink = async user => {
   const token = await encryptPassword(getEmailVerificationToken(user));
-  const platform = user.primary_platform ? user.primary_platform : 'tupaia';
-  const { subject, signOff, platformName } = EMAILS[platform];
 
+  const platform = user.primary_platform || 'tupaia';
   const origin = ORIGINS[platform];
-  const fullUrl = `${origin}/verify-email?verifyEmailToken=${encodeURIComponent(token)}`;
+  const params = new URLSearchParams({ verifyEmailToken: token });
+  const url = new URL(`/verify-email?${params}`, origin);
+
+  return url.toString();
+};
+
+export const sendEmailVerification = async user => {
+  const platform = user.primary_platform || 'tupaia';
+  const { subject, signOff, platformName } = EMAILS[platform];
+  const url = await generateVerificationLink(user);
 
   return sendEmail(user.email, {
     subject,
@@ -49,7 +57,7 @@ export const sendEmailVerification = async user => {
       platform: platformName,
       cta: {
         text: 'Verify email',
-        url: fullUrl,
+        url,
       },
     },
   });
