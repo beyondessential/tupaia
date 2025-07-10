@@ -70,12 +70,26 @@ export const verifyEmailHelper = async (models, searchCondition, token) => {
     return (await legacyVerifyEmailHelper(models, searchCondition, token)) ?? null;
   }
 
+  if (!token.startsWith('$argon2id$')) throw new InvalidVerificationTokenError();
+
   const users = await models.user.find({ verified_email: searchCondition });
 
-  for (const user of users) {
-    const verified = await verifyPassword(getEmailVerificationToken(user), token);
-    if (verified) return user;
+  try {
+    for (const user of users) {
+      const verified = await verifyPassword(getEmailVerificationToken(user), token);
+      if (verified) return user;
+    }
+  } catch (e) {
+    if (e.code === 'InvalidArg') throw new InvalidVerificationTokenError();
+    throw e;
   }
 
   return null;
 };
+
+export class InvalidVerificationTokenError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'InvalidVerificationTokenError';
+  }
+}
