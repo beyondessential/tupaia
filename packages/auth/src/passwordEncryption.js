@@ -22,9 +22,11 @@ export async function verifyPassword(password, hash) {
 
 /**
  * Helper function to encrypt passwords using sha256
+ *
  * @param password {string}
  * @param salt {string}
  * @returns {string}
+ * @deprecated Use Argon2 instead.
  */
 export function sha256EncryptPassword(password, salt) {
   return sha256(`${password}${salt}`);
