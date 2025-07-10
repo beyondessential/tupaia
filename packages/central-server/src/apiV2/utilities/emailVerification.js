@@ -18,7 +18,7 @@ const EMAILS = {
   },
 };
 
-const HOSTS = {
+const ORIGINS = {
   tupaia: requireEnv('TUPAIA_FRONT_END_URL'),
   lesmis: requireEnv('LESMIS_FRONT_END_URL'),
   datatrak: requireEnv('DATATRAK_FRONT_END_URL'),
@@ -31,9 +31,8 @@ export const sendEmailVerification = async user => {
   const platform = user.primary_platform ? user.primary_platform : 'tupaia';
   const { subject, signOff, platformName } = EMAILS[platform];
 
-  const host = HOSTS[platform];
-
-  const fullUrl = `${host}/verify-email?verifyEmailToken=${encodeURIComponent(token)}`;
+  const origin = ORIGINS[platform];
+  const fullUrl = `${origin}/verify-email?verifyEmailToken=${encodeURIComponent(token)}`;
 
   return sendEmail(user.email, {
     subject,
