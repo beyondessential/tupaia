@@ -137,8 +137,8 @@ describe('Authenticate', function () {
     const email = 'peeka@pokemon.org';
     const password = 'oldPassword123!';
     const salt = 'xyz123^';
-    const sha256Hash = await sha256EncryptPassword(password, salt);
     const argon2Hash = await encryptPassword(sha256Hash);
+    const sha256Hash = sha256EncryptPassword(password, salt);
     const migratedUser = await findOrCreateDummyRecord(models.user, {
       first_name: 'Peeka',
       last_name: 'Chu',
@@ -170,8 +170,8 @@ describe('Authenticate', function () {
     const email = 'squirtle@pokemon.org';
     const password = 'oldPassword123!';
     const salt = 'xyz123^';
-    const sha256Hash = await sha256EncryptPassword(password, salt);
     const argon2Hash = await encryptPassword(sha256Hash, salt);
+    const sha256Hash = sha256EncryptPassword(password, salt);
     const migratedUser = await findOrCreateDummyRecord(models.user, {
       first_name: 'Peeka',
       last_name: 'Chu',
