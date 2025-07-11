@@ -24,7 +24,7 @@ export class UserRecord extends DatabaseRecord {
    * - …further hashed with Argon2…
    * - …prefixed with `$sha256+argon2id$` instead of `$argon2id$`.
    *
-   * @see @tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js
+   * @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js`
    */
   get hasLegacyPasswordHash() {
     return this.password_hash.startsWith(UserRecord.#legacyHashPrefix);
@@ -35,7 +35,7 @@ export class UserRecord extends DatabaseRecord {
    * Argon2. Otherwise, uses SHA-256 plus Argon2 (see migration referenced below), then migrates the
    * user to Argon2 upon success.
    *
-   * @see @tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js
+   * @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js`
    * @see {@link hasLegacyPasswordHash}
    *
    * @param password {string}
