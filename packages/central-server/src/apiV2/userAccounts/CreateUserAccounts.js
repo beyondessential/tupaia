@@ -1,12 +1,10 @@
 import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
 import { CreateHandler } from '../CreateHandler';
 import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   assertAdminPanelAccess,
   assertAdminPanelAccessToCountry,
   assertAnyPermissions,
   assertBESAdminAccess,
-  hasTupaiaAdminPanelAccessToCountry,
 } from '../../permissions';
 
 /**
