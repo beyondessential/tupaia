@@ -103,7 +103,7 @@ export const attachSingleEntityContext = async (
   req: Request<{ hierarchyName: string; entityCode: string }, any, any, { filter?: string }> & {
     ctx: { entities: EntityRecord[]; allowedCountries: string[]; filter: EntityFilter };
   },
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
@@ -125,7 +125,7 @@ export const attachMultiEntityContext = async (
   req: Request<{ hierarchyName: string }, any, { entities: string[] }, { filter?: string }> & {
     ctx: { entities: EntityRecord[]; allowedCountries: string[]; filter: EntityFilter };
   },
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
@@ -153,7 +153,7 @@ export const attachEntityFilterContext = async (
   req: Request<{ hierarchyName: string }, any, any, { filter?: string }> & {
     ctx: { allowedCountries: string[]; filter: EntityFilter };
   },
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   const rootEntity = await req.models.entity.findOne({
