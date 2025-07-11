@@ -11187,7 +11187,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
     ace-builds: ^1.10.1
-    axios: ^1.6.8
+    axios: ^1.8.2
     content-disposition-header: ^0.6.0
     date-fns: ^2.29.2
     file-saver: ^1.3.3
@@ -11521,7 +11521,7 @@ __metadata:
     "@types/lodash.keyby": ^4.6.9
     "@types/react": 16.8.6
     "@types/react-table": ^7.7.14
-    axios: ^1.6.8
+    axios: ^1.8.2
     bson-objectid: ^1.2.2
     csstype: ^3.1.3
     date-fns: ^2.29.2
@@ -11709,7 +11709,7 @@ __metadata:
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/ui-map-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    axios: ^1.6.8
+    axios: ^1.8.2
     camelcase: ^6.2.0
     dom-to-image: ^2.6.0
     downloadjs: ^1.4.7
@@ -11870,7 +11870,7 @@ __metadata:
     "@testing-library/react": 12.1.2
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    axios: ^1.6.8
+    axios: ^1.8.2
     date-fns: ^2.16.1
     faker: ^4.1.0
     history: ^5.0.0
@@ -12076,7 +12076,7 @@ __metadata:
     "@types/leaflet": ^1.7.1
     "@types/mapbox__polyline": ^1.0.2
     "@types/react": 16.8.6
-    axios: ^1.6.8
+    axios: ^1.8.2
     csstype: ^3.1.3
     dom-to-image: 2.6.0
     downloadjs: 1.4.7
@@ -14967,7 +14967,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.5, axios@npm:^1.6.8":
+"axios@npm:^1.6.5":
   version: 1.6.8
   resolution: "axios@npm:1.6.8"
   dependencies:
@@ -14975,6 +14975,17 @@ __metadata:
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
   checksum: bf007fa4b207d102459300698620b3b0873503c6d47bf5a8f6e43c0c64c90035a4f698b55027ca1958f61ab43723df2781c38a99711848d232cad7accbcdfcdd
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.8.2":
+  version: 1.10.0
+  resolution: "axios@npm:1.10.0"
+  dependencies:
+    follow-redirects: ^1.15.6
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: b5fd840d499469bf968e44b8ac96f4b363c6aa4c791a50834c086a7cffbc2d77fe24f27af1aba46c3e1f4840aaf991461fc27537990596b93dea0f4df3245a86
   languageName: node
   linkType: hard
 
