@@ -143,7 +143,7 @@ export class EntityHierarchySubtreeRebuilder {
    * @private
    */
   async getChildRelations(hierarchyId, parentIds) {
-    // get any matching alternative hierarchy relationships leading out of these parents
+    // get any matching relationships leading out of these parents for the hierarchy
     const criteria = this.getChildRelationsCriteria(hierarchyId, parentIds);
     return this.models.entityParentChildRelation.find(criteria);
   }

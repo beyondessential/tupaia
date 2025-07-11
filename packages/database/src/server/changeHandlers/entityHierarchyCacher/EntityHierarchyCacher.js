@@ -28,12 +28,10 @@ export class EntityHierarchyCacher extends ChangeHandler {
   translateEntityRelationChangeToRebuildJobs({ old_record: oldRecord, new_record: newRecord }) {
     // delete and rebuild subtree from both old and new record, in case hierarchy and/or parent_id
     // have changed
-    const jobs = [oldRecord, newRecord]
-      .filter(r => r)
-      .map(r => ({
-        hierarchyId: r.entity_hierarchy_id,
-        rootEntityId: r.parent_id,
-      }));
+    const jobs = [oldRecord, newRecord].filter(Boolean).map(r => ({
+      hierarchyId: r.entity_hierarchy_id,
+      rootEntityId: r.parent_id,
+    }));
     return jobs;
   }
 
