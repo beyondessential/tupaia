@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import * as COLORS from '.../helpers/theme/colors';
 import { DataGrid } from '../../src/components';
+import { LIGHTGREY } from '../story-utils/theme/colors';
 
 export default {
   title: 'Tables/DataGrid',
@@ -10,7 +10,7 @@ export default {
 const Container = styled.div`
   width: 100%;
   padding: 3rem;
-  background: ${COLORS.LIGHTGREY};
+  background: ${LIGHTGREY};
   height: 600px;
 
   > div {
