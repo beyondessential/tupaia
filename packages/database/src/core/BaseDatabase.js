@@ -303,7 +303,7 @@ export class BaseDatabase {
           queryMethodParameter: batchOfRecords,
         },
         {},
-        { schemaName },
+        { ...options, schemaName },
       ),
     );
     return sanitizedRecords;
@@ -551,6 +551,11 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   // Alias the query result (for use in nested queries) if name provided
   if (options.name) {
     query = query.as(options.name);
+  }
+
+  if (options.onConflictIgnore) {
+    // onConflictIgnore is an array of columns to ignore conflicts for
+    query = query.onConflict(options.onConflictIgnore).ignore();
   }
 
   if (queryMethod === QUERY_METHODS.UPDATE) {

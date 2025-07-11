@@ -1,3 +1,4 @@
+import winston from 'winston';
 import { types as pgTypes } from 'pg';
 
 import { BaseDatabase } from '../core';

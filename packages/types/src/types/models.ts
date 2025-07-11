@@ -735,6 +735,25 @@ export interface EntityHierarchyUpdate {
   'name'?: string;
   'updated_at_sync_tick'?: string;
 }
+export interface EntityParentChildRelation {
+  'child_id': string;
+  'entity_hierarchy_id': string;
+  'id': string;
+  'parent_id': string;
+  'updated_at_sync_tick': string;
+}
+export interface EntityParentChildRelationCreate {
+  'child_id': string;
+  'entity_hierarchy_id': string;
+  'parent_id': string;
+  'updated_at_sync_tick'?: string;
+}
+export interface EntityParentChildRelationUpdate {
+  'child_id'?: string;
+  'entity_hierarchy_id'?: string;
+  'parent_id'?: string;
+  'updated_at_sync_tick'?: string;
+}
 export interface EntityRelation {
   'child_id': string;
   'entity_hierarchy_id': string;
