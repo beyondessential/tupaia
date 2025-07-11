@@ -139,7 +139,7 @@ export class Authenticator {
     }
 
     // Check password hash matches that in db
-    if (!user.checkPassword(password)) {
+    if (!(await user.checkPassword(password))) {
       throw new UnauthenticatedError('Incorrect email or password');
     }
 
