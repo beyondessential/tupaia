@@ -39,6 +39,13 @@ export const changeSorting = (reduxId, sorting) => ({
   reduxId,
 });
 
+const parseIntOrInfinity = val => {
+  if (typeof val === 'number' && Number.isFinite(val)) return val;
+
+  const naive = Number.parseInt(val, 10);
+  return Number.isNaN(naive) || !Number.isFinite(naive) ? Number.POSITIVE_INFINITY : naive;
+};
+
 const refreshDataWithDebounce = debounce(
   async (
     reduxId,
@@ -96,17 +103,10 @@ const refreshDataWithDebounce = debounce(
       };
       const response = await api.get(endpoint, queryParameters);
 
+      const totalRecords = parseIntOrInfinity(response.headers.get('X-Total-Count'));
+
       const linkHeader = parseLinkHeader(response.headers.get('Link'));
-
-      const _totalCountNaive = Number.parseInt(response.headers.get('X-Total-Count'), 10);
-      const totalRecords = Number.isNaN(_totalCountNaive)
-        ? Number.POSITIVE_INFINITY
-        : _totalCountNaive;
-
-      const _lastPageNumberNaive = Number.parseInt(linkHeader.last.page, 10);
-      const lastPageNumber = Number.isNaN(_lastPageNumberNaive)
-        ? Number.POSITIVE_INFINITY
-        : _lastPageNumberNaive;
+      const lastPageNumber = parseIntOrInfinity(linkHeader?.last?.page);
 
       dispatch({
         type: DATA_FETCH_SUCCESS,

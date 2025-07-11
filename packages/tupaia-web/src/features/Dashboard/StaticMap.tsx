@@ -1,10 +1,11 @@
-import React from 'react';
 import polyline from '@mapbox/polyline';
-import { Position } from 'geojson';
-import styled from 'styled-components';
+import type { Position } from 'geojson';
 import { LatLngBoundsLiteral } from 'leaflet';
-import { Entity } from '../../types';
+import React from 'react';
+import styled from 'styled-components';
+
 import { DEFAULT_BOUNDS, MOBILE_BREAKPOINT } from '../../constants';
+import { Entity } from '../../types';
 import { Media } from './Media';
 
 type EntityBounds = Entity['bounds'];

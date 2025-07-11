@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString, generateId, insertObject } from '../utilities';
+import { arrayToDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -66,11 +66,11 @@ exports.up = async function (db) {
   await db.runSql(`
     INSERT INTO entity_relation (id, child_id, parent_id, entity_hierarchy_id)
     SELECT
-      generate_object_id() as id, 
-      entity.id as child_id, 
-      entity.parent_id as parent_id, 
-      '${hierarchyId}' as entity_hierarchy_id 
-    FROM entity 
+      generate_object_id() as id,
+      entity.id as child_id,
+      entity.parent_id as parent_id,
+      '${hierarchyId}' as entity_hierarchy_id
+    FROM entity
     WHERE id IN (${arrayToDbString(facilityIdsToInsert)});
   `);
 
@@ -145,8 +145,8 @@ exports.down = async function (db) {
   const entityIdPG = await getEntityIdByCode(db, 'PG');
   const entityIdStrive = await getEntityIdByCode(db, 'strive');
   await db.runSql(`
-    DELETE FROM entity_relation 
-    WHERE entity_hierarchy_id = '${hierarchyId}' 
+    DELETE FROM entity_relation
+    WHERE entity_hierarchy_id = '${hierarchyId}'
     AND parent_id <> '${entityIdStrive}'
     AND parent_id <> '${entityIdPG}'
   `);
