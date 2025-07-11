@@ -4,7 +4,7 @@ import { DatabaseModel, ModelRegistry } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 
 import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
-import { ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
+import { RecordType, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 
 // TODO: Move this to a config model RN-1668
@@ -15,8 +15,6 @@ export const saveChangesForModel = async (
   model: DatabaseModel,
   changes: SyncSnapshotAttributes[],
 ) => {
-  const sanitizeData = (d: ModelSanitizeArgs) => d;
-
   // split changes into create, update
   const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
   const idsForIncomingRecords = incomingRecords.map(r => r.id);
@@ -49,21 +47,11 @@ export const saveChangesForModel = async (
 
   const recordsForCreate = changes
     .filter(c => idToExistingRecord[c.data.id] === undefined)
-    .map(({ data }) => {
-      return sanitizeData(data);
-    });
   const recordsForUpdate = changes
     .filter(r => idsForUpdate.has(r.data.id))
-    .map(({ data }) => {
-      return sanitizeData(data);
-    });
+    .map(({ data }) => data);
 
-  const recordsForDelete = changes
-    .filter(r => idsForDelete.has(r.data.id))
-    .map(({ data }) => {
-      // validateRecord(data, null); TODO add in validation
-      return sanitizeData(data);
-    });
+  const recordsForDelete = changes.filter(r => idsForDelete.has(r.data.id));
 
   // run each import process
   console.log('Sync: saveIncomingChanges: Creating new records', {
