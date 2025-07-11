@@ -4,6 +4,7 @@ import { DataBrokerModelRegistry, SupersetInstance } from '../../types';
 const instances: Record<string, SupersetApi> = {};
 
 export const getSupersetApiInstance = async (
+  // @ts-ignore
   models: DataBrokerModelRegistry,
   supersetInstance: SupersetInstance,
 ) => {
