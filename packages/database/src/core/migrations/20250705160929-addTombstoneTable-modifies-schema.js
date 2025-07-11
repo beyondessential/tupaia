@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 exports.up = function (db) {
   return db.runSql(
     `
-      CREATE TABLE tomestone
+      CREATE TABLE tombstone
       (
           id                    VARCHAR(24) PRIMARY KEY,
           record_id             VARCHAR(24) NOT NULL,
