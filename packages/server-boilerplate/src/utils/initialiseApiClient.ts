@@ -55,11 +55,10 @@ const upsertApiClient = async ({
   username: string;
   password: string;
 }) => {
-  const secretKeyHash = await encryptPassword(password);
-
-  const existingApiClient = await models.apiClient.findOne({
-    username: username,
-  });
+  const [existingApiClient, secretKeyHash] = await Promise.all([
+    models.apiClient.findOne({ username }),
+    encryptPassword(password),
+  ]);
 
   if (existingApiClient) {
     await models.apiClient.update(
