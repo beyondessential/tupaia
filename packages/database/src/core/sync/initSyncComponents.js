@@ -99,7 +99,6 @@ const getTablesQuery = (withTrigger = false) => `
     t.table_name NOT IN (${NON_SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
-// Usage
 const TABLES_WITHOUT_TRIGGER_FOR_DELETE_QUERY = getTablesQuery(false);
 export const TABLES_WITH_TRIGGER_FOR_DELETE_QUERY = getTablesQuery(true);
 

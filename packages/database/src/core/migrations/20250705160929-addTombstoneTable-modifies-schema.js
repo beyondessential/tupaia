@@ -35,5 +35,5 @@ exports.down = function (db) {
 
 exports._meta = {
   version: 1,
-  targets: ['server'],
+  targets: ['browser', 'server'],
 };
