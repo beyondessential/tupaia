@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
 
 exports.up = function (db) {
   return db.runSql(`
-    CREATE OR REPLACE FUNCTION set_updated_at_sync_tick_for_delete()
+    CREATE OR REPLACE FUNCTION add_to_tombstone_on_delete()
       RETURNS trigger
       LANGUAGE plpgsql AS
       $func$

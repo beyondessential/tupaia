@@ -456,6 +456,10 @@ export class BaseDatabase {
   commitTransaction() {
     return this.connection.commit();
   }
+
+  isWithinTransaction() {
+    return this.connection.isTransaction;
+  }
 }
 
 /**

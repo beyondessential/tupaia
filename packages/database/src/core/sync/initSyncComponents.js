@@ -71,7 +71,7 @@ const TABLES_WITHOUT_TRIGGER_QUERY = `
     t.table_name NOT IN (${NON_SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
-const TABLES_WITHOUT_TRIGGER_FOR_DELETE_QUERY = `
+const getTablesQuery = (withTrigger = false) => `
   SELECT
     t.table_name as table
   FROM
@@ -81,13 +81,13 @@ const TABLES_WITHOUT_TRIGGER_FOR_DELETE_QUERY = `
   ON
     t.table_name = privileges.table_name AND privileges.table_schema = 'public'
   WHERE
-    NOT EXISTS (
+    ${withTrigger ? 'EXISTS' : 'NOT EXISTS'} (
       SELECT
         *
       FROM
         pg_trigger p
       WHERE
-        p.tgname = substring(concat('set_', lower(t.table_name), '_updated_at_sync_tick_for_delete'), 0, 64)
+        p.tgname = substring(concat('add_', lower(t.table_name), '_tombstone_on_delete'), 0, 64)
     )
   AND
     privileges.privilege_type = 'TRIGGER'
@@ -98,6 +98,10 @@ const TABLES_WITHOUT_TRIGGER_FOR_DELETE_QUERY = `
   AND
     t.table_name NOT IN (${NON_SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
+
+// Usage
+const TABLES_WITHOUT_TRIGGER_FOR_DELETE_QUERY = getTablesQuery(false);
+export const TABLES_WITH_TRIGGER_FOR_DELETE_QUERY = getTablesQuery(true);
 
 export async function initSyncComponents(driver, isClient = false) {
   // add column: holds last update tick, default to -999 (not modified locally) on client,
@@ -132,12 +136,12 @@ export async function initSyncComponents(driver, isClient = false) {
     TABLES_WITHOUT_TRIGGER_FOR_DELETE_QUERY,
   );
   for (const { table } of tablesWithoutTriggerForDelete) {
-    console.log(`Adding updated_at_sync_tick trigger for delete to ${table}`);
+    console.log(`Adding add_to_tombstone_on_delete trigger for delete to ${table}`);
     await driver.runSql(`
-      CREATE TRIGGER set_${table}_updated_at_sync_tick_for_delete
+      CREATE TRIGGER add_${table}_tombstone_on_delete
       BEFORE DELETE ON "${table}"
       FOR EACH ROW
-      EXECUTE FUNCTION set_updated_at_sync_tick_for_delete();
+      EXECUTE FUNCTION add_to_tombstone_on_delete();
     `);
   }
 

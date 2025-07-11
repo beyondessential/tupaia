@@ -1,6 +1,11 @@
 import { groupBy } from 'lodash';
 
-import { DatabaseModel, ModelRegistry } from '@tupaia/database';
+import {
+  BaseDatabase,
+  DatabaseModel,
+  ModelRegistry,
+  TABLES_WITH_TRIGGER_FOR_DELETE_QUERY,
+} from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 
 import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
@@ -11,10 +16,32 @@ import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
 const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
+const assertIsWithinTransaction = (database: BaseDatabase) => {
+  if (!database?.isWithinTransaction()) {
+    throw new Error('saveIncomingChanges must be called within a transaction');
+  }
+};
+
+const switchTombstoneTrigger = async (database: BaseDatabase, enabled: boolean) => {
+  const tablesWithTrigger: { table: string }[] = await database.executeSql(
+    TABLES_WITH_TRIGGER_FOR_DELETE_QUERY,
+  );
+
+  const action = enabled ? 'ENABLE' : 'DISABLE';
+  for (const { table } of tablesWithTrigger) {
+    console.log(`${action} tombstone trigger for ${table}`);
+    await database.executeSql(`
+      ALTER TABLE "${table}" ${action} TRIGGER add_${table}_tombstone_on_delete;
+    `);
+  }
+};
+
 export const saveChangesForModel = async (
   model: DatabaseModel,
   changes: SyncSnapshotAttributes[],
 ) => {
+  assertIsWithinTransaction(model.database);
+
   // split changes into create, update
   const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
   const idsForIncomingRecords = incomingRecords.map(r => r.id);
@@ -45,11 +72,8 @@ export const saveChangesForModel = async (
     }
   });
 
-  const recordsForCreate = changes
-    .filter(c => idToExistingRecord[c.data.id] === undefined)
-  const recordsForUpdate = changes
-    .filter(r => idsForUpdate.has(r.data.id))
-    .map(({ data }) => data);
+  const recordsForCreate = changes.filter(c => idToExistingRecord[c.data.id] === undefined);
+  const recordsForUpdate = changes.filter(r => idsForUpdate.has(r.data.id)).map(({ data }) => data);
 
   const recordsForDelete = changes.filter(r => idsForDelete.has(r.data.id));
 
@@ -109,18 +133,38 @@ const saveChangesForModelInBatches = async (
 };
 
 export const saveIncomingSnapshotChanges = async (models: DatabaseModel[], sessionId: string) => {
+  if (models.length === 0) {
+    return;
+  }
+
+  assertIsWithinTransaction(models[0].database);
+
+  await switchTombstoneTrigger(models[0].database, false);
+
   for (const model of models) {
     await saveChangesForModelInBatches(model, sessionId, model.databaseRecord);
   }
+
+  await switchTombstoneTrigger(models[0].database, true);
 };
 
 export const saveIncomingInMemoryChanges = async (
   models: ModelRegistry,
   changes: SyncSnapshotAttributes[],
 ) => {
+  if (changes.length === 0) {
+    return;
+  }
+
+  assertIsWithinTransaction(models.database);
+
+  await switchTombstoneTrigger(models.database, false);
+
   const groupedChanges = groupBy(changes, 'record_type');
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
     await saveChangesForModel(model, modelChanges);
   }
+
+  await switchTombstoneTrigger(models.database, true);
 };
