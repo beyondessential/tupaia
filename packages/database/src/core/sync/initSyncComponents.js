@@ -134,7 +134,7 @@ export async function initSyncComponents(driver, isClient = false) {
   for (const { table } of tablesWithoutTriggerForDelete) {
     console.log(`Adding updated_at_sync_tick trigger for delete to ${table}`);
     await driver.runSql(`
-      CREATE TRIGGER set_${table}_updated_at_sync_tick
+      CREATE TRIGGER set_${table}_updated_at_sync_tick_for_delete
       BEFORE DELETE ON "${table}"
       FOR EACH ROW
       EXECUTE FUNCTION set_updated_at_sync_tick_for_delete();

@@ -38,10 +38,12 @@ export const saveChangesForModel = async (
   existingRecords.forEach(existing => {
     // compares incoming and existing records by id
     const incoming = idToIncomingRecord[existing.id];
-    idsForUpdate.add(existing.id);
-
-    if (existing && incoming?.isDeleted) {
-      idsForDelete.add(existing.id);
+    if (existing) {
+      if (incoming.isDeleted) {
+        idsForDelete.add(existing.id);
+      } else {
+        idsForUpdate.add(existing.id);
+      }
     }
   });
 
@@ -78,7 +80,7 @@ export const saveChangesForModel = async (
     await saveUpdates(model, recordsForUpdate);
   }
 
-  console.log('Sync: saveIncomingChanges: Restoring deleted records', {
+  console.log('Sync: saveIncomingChanges: Deleting existingrecords', {
     count: recordsForDelete.length,
   });
   if (recordsForDelete.length > 0) {

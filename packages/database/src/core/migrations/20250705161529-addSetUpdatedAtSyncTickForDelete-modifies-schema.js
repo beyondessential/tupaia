@@ -25,10 +25,12 @@ exports.up = function (db) {
 
         INSERT INTO tombstone (
           record_id,
+          record_type,
           deleted_at,
           updated_at_sync_tick
         ) VALUES (
           OLD.id,
+          OLD.type,
           NOW(),
           (SELECT value FROM local_system_fact WHERE key = 'currentSyncTick')
         );
