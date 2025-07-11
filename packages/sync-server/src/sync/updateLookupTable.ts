@@ -47,7 +47,7 @@ const updateLookupTableForModel = async (
             updated_at_sync_tick,
             pushed_by_device_id,
             data,
-
+            is_deleted,
             project_ids
           )
           ${select || (await buildSyncLookupSelect(model))}
@@ -59,6 +59,9 @@ const updateLookupTableForModel = async (
                   ON persisted_at_sync_tick = ${table}.updated_at_sync_tick`
               : 'LEFT JOIN (select NULL as device_id) AS sync_device_tick ON 1 = 1'
           }
+          LEFT JOIN tombstone
+            ON tombstone.record_id = ${table}.id
+            AND tombstone.record_type = ${model.databaseRecord}
           ${joins || ''}
           WHERE
           (${where || `${table}.updated_at_sync_tick > :since`})

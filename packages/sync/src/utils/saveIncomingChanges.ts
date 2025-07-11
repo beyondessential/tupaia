@@ -3,7 +3,7 @@ import { groupBy } from 'lodash';
 import { DatabaseModel, ModelRegistry } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 
-import { saveCreates, saveUpdates } from './saveChanges';
+import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 import { ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 
@@ -32,7 +32,18 @@ export const saveChangesForModel = async (
     changes.filter(c => c.data.id).map(e => [e.data.id, e]),
   );
 
-  const idsForUpdate = new Set(existingRecords.map((existing: any) => existing.id));
+  const idsForUpdate = new Set();
+  const idsForDelete = new Set();
+
+  existingRecords.forEach(existing => {
+    // compares incoming and existing records by id
+    const incoming = idToIncomingRecord[existing.id];
+    idsForUpdate.add(existing.id);
+
+    if (existing && incoming?.isDeleted) {
+      idsForDelete.add(existing.id);
+    }
+  });
 
   const recordsForCreate = changes
     .filter(c => idToExistingRecord[c.data.id] === undefined)
@@ -42,6 +53,13 @@ export const saveChangesForModel = async (
   const recordsForUpdate = changes
     .filter(r => idsForUpdate.has(r.data.id))
     .map(({ data }) => {
+      return sanitizeData(data);
+    });
+
+  const recordsForDelete = changes
+    .filter(r => idsForDelete.has(r.data.id))
+    .map(({ data }) => {
+      // validateRecord(data, null); TODO add in validation
       return sanitizeData(data);
     });
 
@@ -60,7 +78,12 @@ export const saveChangesForModel = async (
     await saveUpdates(model, recordsForUpdate);
   }
 
-  // TODO: Implement deletion
+  console.log('Sync: saveIncomingChanges: Restoring deleted records', {
+    count: recordsForDelete.length,
+  });
+  if (recordsForDelete.length > 0) {
+    await saveDeletes(model, recordsForDelete);
+  }
 };
 
 const saveChangesForModelInBatches = async (

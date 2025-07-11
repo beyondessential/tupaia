@@ -198,6 +198,7 @@ export { DashboardRelationRecord, DashboardRelationModel } from './DashboardRela
 export { OneTimeLoginRecord, OneTimeLoginModel } from './OneTimeLogin';
 export { AnswerModel, AnswerRecord } from './Answer';
 export { TaskModel, TaskRecord } from './Task';
+export { TombstoneModel, TombstoneRecord } from './Tombstone';
 export {
   UserCountryAccessAttemptModel,
   UserCountryAccessAttemptRecord,

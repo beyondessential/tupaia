@@ -36,7 +36,8 @@ export const createSnapshotTable = async (database: TupaiaDatabase, sessionId: s
       data json NOT NULL,
       saved_at_sync_tick bigint, -- saved_at_sync_tick is used to check whether record has been updated between incoming and outgoing phase of a single session
       sync_lookup_id bigint,
-      requires_repull boolean DEFAULT false
+      requires_repull boolean DEFAULT false,
+      is_deleted boolean DEFAULT false
     ) WITH (
       autovacuum_enabled = off
     );

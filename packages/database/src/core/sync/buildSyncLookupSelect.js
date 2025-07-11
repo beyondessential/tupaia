@@ -16,6 +16,7 @@ export async function buildSyncLookupSelect(model, columns = {}) {
           .filter(a => !COLUMNS_EXCLUDED_FROM_SYNC.includes(a))
           .map(a => `'${a}', ${table}.${a}`)}
       ),
-      ${projectIds || 'NULL'}
+      ${projectIds || 'NULL'},
+      tombstone.deleted_at IS NOT NULL
   `;
 }
