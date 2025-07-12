@@ -46,8 +46,8 @@ export class EntityParentChildRelationBuilder {
   /**
    * Rebuilds the entity parent child relations for a given entity
    * It traverses the hierarchy from the root entity to the leaves, and caches new relations + deletes obsolete ones
-   * @param {string} hierarchyId
-   * @param {string} rootEntityId
+   * @param {string} hierarchyId hierarchy to rebuild relations for
+   * @param {string} rootEntityId root/starting entity id to rebuild relations from
    * @param {import('../../../core/modelClasses/Project').Project} project
    */
   async rebuildRelationsForEntity(hierarchyId, rootEntityId, project) {
@@ -58,10 +58,10 @@ export class EntityParentChildRelationBuilder {
 
   async fetchAndCacheChildren(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
     const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, parentIds);
-    const useEntityRelationLinks = entityRelationChildCount > 0;
+    const hasEntityRelationLinks = entityRelationChildCount > 0;
 
     // Generate the new relations for this level
-    const validParentChildIdPairs = useEntityRelationLinks
+    const validParentChildIdPairs = hasEntityRelationLinks
       ? await this.generateViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached)
       : await this.generateViaCanonical(hierarchyId, parentIds, childrenAlreadyCached);
 
@@ -86,9 +86,9 @@ export class EntityParentChildRelationBuilder {
 
   /**
    * Cache the current level via entity relations
-   * @param {*} hierarchyId
-   * @param {*} parentIds
-   * @param {*} childrenAlreadyCached
+   * @param {*} hierarchyId hierarchy to generate entity relation relations for
+   * @param {*} parentIds parent ids of a single level to generate entity relation relations for
+   * @param {*} childrenAlreadyCached children already cached to avoid duplicates
    * @returns
    */
   async generateViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
@@ -115,9 +115,9 @@ export class EntityParentChildRelationBuilder {
 
   /**
    * Cache the current level via canonical types
-   * @param {*} hierarchyId
-   * @param {*} parentIds
-   * @param {*} childrenAlreadyCached
+   * @param {*} hierarchyId hierarchy to generate canonical relations for
+   * @param {*} parentIds parent ids of a single level to generate canonical relations for
+   * @param {*} childrenAlreadyCached children already cached to avoid duplicates
    * @returns
    */
   async generateViaCanonical(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
@@ -166,7 +166,7 @@ export class EntityParentChildRelationBuilder {
     const entityHierarchy = await this.models.entityHierarchy.findById(hierarchyId);
     const { canonical_types: customCanonicalTypes } = entityHierarchy;
     const canonicalTypes =
-      customCanonicalTypes && customCanonicalTypes.length > 0
+      customCanonicalTypes?.length > 0
         ? customCanonicalTypes
         : Object.values(ORG_UNIT_ENTITY_TYPES);
 
@@ -174,10 +174,13 @@ export class EntityParentChildRelationBuilder {
   }
 
   /**
-   * Delete the obsolete relations for a level of the hierarchy
-   * @param {*} hierarchyId
-   * @param {*} parentIds
-   * @param {*} validParentChildIdPairs
+   * Delete the obsolete relations for a level of the hierarchy.
+   * We delete the obsolete relations that:
+   * - at the current level (by checking parent_ids)
+   * - not the valid parent child id pairs to keep in a level
+   * @param {*} hierarchyId hierarchy to delete obsolete relations for
+   * @param {*} parentIds parent ids of a single level to delete obsolete relations for
+   * @param {*} validParentChildIdPairs valid parent child id pairs to keep
    */
   async deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs) {
     const tempValidPairsTableName = `temp_valid_pairs_${hierarchyId}`;
@@ -227,8 +230,8 @@ export class EntityParentChildRelationBuilder {
 
   /**
    * Delete the orphaned relations for a level of the hierarchy
-   * @param {*} hierarchyId
-   * @param {*} projectEntityId
+   * @param {*} hierarchyId hierarchy to delete orphaned relations for
+   * @param {*} projectEntityId project entity id (root entity) to delete orphaned relations for
    */
   async deleteOrphanedRelations(hierarchyId, projectEntityId) {
     await this.models.database.executeSql(
@@ -236,7 +239,7 @@ export class EntityParentChildRelationBuilder {
       WITH RECURSIVE connected_nodes AS (
         -- Start with root nodes (entities that exist but aren't children)
         -- Start with the known root node
-        SELECT '${projectEntityId}' as node_id 
+        SELECT ? as node_id 
                 
         UNION ALL
         
@@ -257,7 +260,7 @@ export class EntityParentChildRelationBuilder {
       DELETE FROM entity_parent_child_relation 
       WHERE id IN (SELECT id FROM orphaned_relations);
       `,
-      [hierarchyId, hierarchyId],
+      [projectEntityId, hierarchyId, hierarchyId],
     );
   }
 }
