@@ -554,6 +554,7 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   }
 
   if (options.onConflictIgnore) {
+    // onConflictIgnore is an array of columns to ignore conflicts for
     query = query.onConflict(options.onConflictIgnore).ignore();
   }
 
