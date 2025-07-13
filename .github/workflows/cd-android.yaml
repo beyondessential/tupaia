@@ -35,7 +35,7 @@ jobs:
         run: corepack enable yarn
 
       - name: Install dependencies
-        run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus tupaia @tupaia/meditrak-app
+        run: yarn workspaces focus tupaia @tupaia/meditrak-app
 
       - name: Build dependencies
         run: yarn run build:from meditrak-app

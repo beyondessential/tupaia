@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { AccessPolicyBuilder, mergeAccessPolicies } from '@tupaia/auth';
 import { requireEnv } from '@tupaia/utils';
 
 export const buildAttachAccessPolicy =
-  (accessPolicyBuilder: AccessPolicyBuilder) =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  (accessPolicyBuilder: AccessPolicyBuilder): RequestHandler =>
+  async (req, _res, next) => {
     const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
 
     const apiUser = await req.models.user.findOne({ email: API_CLIENT_NAME });

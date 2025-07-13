@@ -1,7 +1,8 @@
-import React from 'react';
 import { IconButton, Input, Typography } from '@material-ui/core';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react';
 import styled from 'styled-components';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+
 import { Select } from './Inputs';
 
 export const PaginationRoot = styled.div`
@@ -48,10 +49,9 @@ const RowWrapper = styled(ActionsWrapper)`
 
 const Button = styled(IconButton)`
   border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  font-size: 1.2rem;
   padding: 0.4rem;
-  .MuiSvgIcon-root {
-    font-size: 1.2rem;
-  }
+
   & + & {
     margin-inline-start: 0.7rem;
   }
@@ -102,7 +102,7 @@ interface PageSelectComponentProps {
 }
 
 const PageSelectComponent = ({ onChangePage, page, pageCount }: PageSelectComponentProps) => {
-  const pageDisplay = page + 1;
+  const isPageCountKnown = Number.isFinite(pageCount);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPage = e.target.value ? Number(e.target.value) - 1 : 0;
@@ -116,30 +116,28 @@ const PageSelectComponent = ({ onChangePage, page, pageCount }: PageSelectCompon
         </Text>
         <ManualPageInput
           type="number"
-          value={pageDisplay}
+          value={page + 1 /* Make 1-indexed */}
           onChange={onChange}
-          inputProps={{ min: 1, max: pageCount }}
+          inputProps={{ min: 1, max: isPageCountKnown ? pageCount : undefined }}
           aria-describedby="page-count"
           id="page"
           disableUnderline
         />
-        <Text id="page-count">
-          of {Number.isFinite(pageCount) ? pageCount.toLocaleString() : 'many'}
-        </Text>
+        <Text id="page-count">of {isPageCountKnown ? pageCount.toLocaleString() : 'many'}</Text>
       </ManualPageInputContainer>
       <Button
         onClick={() => onChangePage(page - 1)}
         disabled={page === 0}
         aria-label="Previous page"
       >
-        <KeyboardArrowLeft />
+        <ChevronLeft />
       </Button>
       <Button
         onClick={() => onChangePage(page + 1)}
         disabled={page === pageCount - 1}
         aria-label="Next page"
       >
-        <KeyboardArrowRight />
+        <ChevronRight />
       </Button>
     </ActionsWrapper>
   );
