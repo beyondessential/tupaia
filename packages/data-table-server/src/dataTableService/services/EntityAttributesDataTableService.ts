@@ -44,7 +44,7 @@ export class EntityAttributesDataTableService extends DataTableService<
         rows.push({
           entityCode: entity.code,
           ...Object.fromEntries(
-            Object.entries(entity.attributes).filter(([key, value]) => attributes.includes(key)),
+            Object.entries(entity.attributes).filter(([key]) => attributes.includes(key)),
           ),
         });
       }

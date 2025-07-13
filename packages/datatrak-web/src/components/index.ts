@@ -4,6 +4,7 @@ export { Modal } from './Modal';
 export { PageContainer } from './PageContainer';
 
 export { Autocomplete, QuestionAutocomplete } from './Autocomplete';
+export { BottomNavigation } from './BottomNavigation';
 export { Button } from './Button';
 export { ButtonAnchor, ButtonLink } from './ButtonLink';
 export { CancelConfirmModal } from './CancelConfirmModal';
@@ -13,6 +14,7 @@ export { DateTimeDisplay } from './DateTimeDisplay';
 export { ErrorDisplay } from './ErrorDisplay';
 export { HomeLink } from './HomeLink';
 export { InputHelperText } from './InputHelperText';
+export { OrDivider } from './OrDivider';
 export { PageTitleBar } from './PageTitleBar';
 export { BlockScrollView, InlineScrollView } from './ScrollView';
 export { SmallModal } from './SmallModal';

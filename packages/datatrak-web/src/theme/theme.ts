@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@material-ui/core';
 import { DESKTOP_BREAKPOINT } from '../constants';
 
 const overMobileBreakpoint = `@media (min-width: ${DESKTOP_BREAKPOINT})`;
@@ -93,6 +93,7 @@ const overrides = {
         '--ease-in-out-quart': 'cubic-bezier(0.76, 0, 0.24, 1)',
         accentColor: palette.primary.main,
         interpolateSize: 'allow-keywords',
+        textWrap: 'pretty',
       },
       'button, figcaption, h1, h2, h3, h4, h5, h6, input, label': {
         textWrap: 'balance',
@@ -100,7 +101,10 @@ const overrides = {
       'button, input, textarea, select': {
         touchAction: 'manipulation',
       },
-      ":is(ol, ul)[role='list']": {
+      legend: {
+        paddingInline: 0,
+      },
+      ":where(ol, ul)[role='list']": {
         listStyleType: 'none',
         marginBlock: 0,
         paddingInlineStart: 0,
@@ -111,11 +115,12 @@ const overrides = {
       source: {
         display: 'none',
       },
-      table: {
+      'table, time': {
         fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
       },
-      time: {
-        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      '.lucide': {
+        height: 'auto', // Use width to set both dimensions
+        width: '1em', // Sensible default, mirrors MUI Icon behaviour
       },
     },
   },
@@ -180,7 +185,7 @@ const overrides = {
 } as const;
 
 const transitions = {
-  /* These custom CSS properties defined immediately above in `overrides.MuiCssBaseline['root']` */
+  /* These custom CSS properties defined immediately above in `overrides.MuiCssBaseline[':root']` */
   easing: {
     easeIn: 'var(--ease-in-quart)',
     easeInOut: 'var(--ease-in-out-quart)',
@@ -188,7 +193,7 @@ const transitions = {
   },
 };
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   overrides,
   palette,
   transitions,
