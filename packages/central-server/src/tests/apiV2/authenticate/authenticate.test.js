@@ -231,7 +231,12 @@ describe('Authenticate', function () {
     expect(isVerifiedAfter).to.be.true;
   });
 
-  it('should add a new entry to the user_country_access_attempts table if one does not already exist', async () => {
+  /**
+   * Temporarily disabled until we have a more reliable heuristics for determining the originating
+   * country for a given login request. TODO: Restore with RN-1526
+   * @see https://github.com/beyondessential/tupaia/pull/6072/files
+   */
+  it.skip('should add a new entry to the user_country_access_attempts table if one does not already exist', async () => {
     await app.post('auth?grantType=password', {
       headers: {
         authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
@@ -250,6 +255,11 @@ describe('Authenticate', function () {
     expect(entries).to.have.length(1);
   });
 
+  /**
+   * Temporarily disabled until we have a more reliable heuristics for determining the originating
+   * country for a given login request. TODO: Restore with RN-1526
+   * @see https://github.com/beyondessential/tupaia/pull/6072/files
+   */
   it.skip('should not add a new entry to the user_country_access_attempts table if one does already exist', async () => {
     await models.userCountryAccessAttempt.create({
       user_id: userAccount.id,
