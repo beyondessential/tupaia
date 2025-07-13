@@ -5,7 +5,7 @@ import React, { Fragment, useState } from 'react';
 import { generatePath, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { Tooltip, useIsMounted, VisuallyHidden } from '@tupaia/ui-components';
+import { Tooltip, useIsMounted } from '@tupaia/ui-components';
 
 import { CopyIcon } from '../../../components';
 import { ROUTES } from '../../../constants';
@@ -83,9 +83,8 @@ export const CopyUrlButton = ({ noTooltip = false, ...props }: CopyUrlButtonProp
 
   return (
     <MaybeTooltip>
-      <StyledIconButton onClick={copyPageUrl} {...props}>
+      <StyledIconButton aria-label="Copy URL to clipboard" onClick={copyPageUrl} {...props}>
         {didJustCopy ? <DoneIcon htmlColor={successColor} /> : <StyledCopyIcon />}
-        <VisuallyHidden>Copy URL to clipboard</VisuallyHidden>
       </StyledIconButton>
     </MaybeTooltip>
   );
