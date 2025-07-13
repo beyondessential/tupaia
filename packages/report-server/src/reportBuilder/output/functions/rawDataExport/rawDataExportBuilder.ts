@@ -5,7 +5,9 @@ import { RawDataExport } from './types';
 export class RawDataExportBuilder {
   private table: TransformTable;
   private matrixData: RawDataExport;
+  // @ts-ignore
   private params: unknown;
+  // @ts-ignore
   private aggregator: ReportServerAggregator;
 
   public constructor(table: TransformTable, params: unknown, aggregator: ReportServerAggregator) {

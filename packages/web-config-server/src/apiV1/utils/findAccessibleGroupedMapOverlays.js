@@ -4,7 +4,7 @@ import isEqual from 'lodash.isequal';
 import orderBy from 'lodash.orderby';
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { reduceToDictionary, getSortByKey } from '@tupaia/utils';
+import { reduceToDictionary } from '@tupaia/utils';
 
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 const INFO = 'info';
@@ -215,11 +215,11 @@ export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOver
   const mapOverlayGroups = await models.mapOverlayGroup.findTopLevelMapOverlayGroups();
   const mapOverlayGroupIdToName = reduceToDictionary(mapOverlayGroups, 'id', 'name');
   const mapOverlayGroupIds = mapOverlayGroups.map(mapOverlayGroup => mapOverlayGroup.id);
-  const mapOverlayGroupRelations = await models.mapOverlayGroupRelation.findGroupRelations(
-    mapOverlayGroupIds,
-  );
+  const mapOverlayGroupRelations =
+    await models.mapOverlayGroupRelation.findGroupRelations(mapOverlayGroupIds);
   const relationsByGroupId = groupBy(mapOverlayGroupRelations, 'map_overlay_group_id');
-  const worldToTopLevelGroupRelations = await models.mapOverlayGroupRelation.findTopLevelMapOverlayGroupRelations();
+  const worldToTopLevelGroupRelations =
+    await models.mapOverlayGroupRelation.findTopLevelMapOverlayGroupRelations();
   const worldRelationById = keyBy(worldToTopLevelGroupRelations, 'child_id'); // child_id should be unique because these are top level overlay groups
   const groupIds = Object.keys(relationsByGroupId);
   const accessibleOverlayGroups = [];

@@ -18,7 +18,7 @@ npm install -g yarn
 set -x
 
 # Install meditrak-app and root (for shared scripts)
-SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus tupaia @tupaia/meditrak-app
+yarn workspaces focus tupaia @tupaia/meditrak-app
 
 # Build meditrak-app deps
 yarn workspace @tupaia/access-policy build-dev

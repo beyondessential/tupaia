@@ -1,5 +1,5 @@
 import cookie from 'cookie';
-import puppeteer, { Browser } from 'puppeteer';
+import puppeteer, { Browser, CookieParam } from 'puppeteer';
 
 const verifyPDFPageUrl = (pdfPageUrl: string): string => {
   const { VALID_DOMAINS = 'tupaia.org' } = process.env;
@@ -23,13 +23,16 @@ const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: strin
   const cookies = cookie.parse(userCookie || '');
   const verifiedPDFPageUrl = verifyPDFPageUrl(pdfPageUrl);
   const location = new URL(verifiedPDFPageUrl);
-  const finalisedCookieObjects = Object.keys(cookies).map(name => ({
-    name,
-    domain: cookieDomain,
-    url: location.origin,
-    httpOnly: true,
-    value: cookies[name],
-  }));
+  const finalisedCookieObjects = Object.keys(cookies).map(
+    name =>
+      ({
+        name,
+        domain: cookieDomain,
+        url: location.origin,
+        httpOnly: true,
+        value: cookies[name],
+      }) as CookieParam,
+  );
   return { verifiedPDFPageUrl, cookies: finalisedCookieObjects };
 };
 
