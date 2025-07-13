@@ -1,5 +1,4 @@
 import { reduceToDictionary } from '@tupaia/utils';
-import { AccessPolicy } from '@tupaia/access-policy';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';

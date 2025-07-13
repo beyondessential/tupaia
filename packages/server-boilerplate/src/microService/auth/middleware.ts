@@ -1,4 +1,4 @@
-import { Request, NextFunction, Response } from 'express';
+import { RequestHandler } from 'express';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { Authenticator, getUserAndPassFromBasicAuth, getJwtToken } from '@tupaia/auth';
@@ -43,8 +43,8 @@ const getBasicAccessPolicy = async (
 };
 
 export const buildBasicBearerAuthMiddleware =
-  (apiName: string, authenticator: Authenticator) =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  (apiName: string, authenticator: Authenticator): RequestHandler =>
+  async (req, _res, next) => {
     try {
       const authHeader = req.headers.authorization;
 

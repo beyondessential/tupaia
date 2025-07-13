@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import { RequestHandler } from 'express';
 
-export const checkAppVersion = async (req: Request, res: Response, next: NextFunction) => {
+export const checkAppVersion: RequestHandler = async (req, _res, next) => {
   try {
     const { appVersion } = req.query;
     if (!appVersion) {
