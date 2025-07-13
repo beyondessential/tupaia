@@ -24,7 +24,7 @@ const migrationInstance = DBMigrate.getInstance(
       },
     },
   },
-  async (migrator: any, internals: any, originalError: Error, migrationError: Error) => {
+  async (migrator: any, _internals: any, originalError: Error, migrationError: Error) => {
     if (originalError) {
       exitWithError(new Error(`db-migrate error: ${migrationError.message}`));
     }
