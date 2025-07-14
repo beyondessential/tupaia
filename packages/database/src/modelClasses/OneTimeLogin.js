@@ -63,7 +63,8 @@ export class OneTimeLoginModel extends DatabaseModel {
       }
       return true;
     } catch (e) {
-      return false;
+      if (e.name === 'UnauthenticatedError') return false;
+      throw e;
     }
   }
 }
