@@ -8,11 +8,11 @@ import { RECORDS } from '../records';
 export class OneTimeLoginRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ONE_TIME_LOGIN;
 
-  isExpired() {
+  get isExpired() {
     return moment().subtract(1, 'h').isAfter(moment(this.creation_date));
   }
 
-  isUsed() {
+  get isUsed() {
     return !!this.use_date;
   }
 }
@@ -35,11 +35,11 @@ export class OneTimeLoginModel extends DatabaseModel {
       throw new UnauthenticatedError('No one time login found');
     }
 
-    if (!shouldAllowUsed && oneTimeLogin.isUsed()) {
+    if (!shouldAllowUsed && oneTimeLogin.isUsed) {
       throw new UnauthenticatedError('One time login is used');
     }
 
-    if (!shouldAllowExpired && oneTimeLogin.isExpired()) {
+    if (!shouldAllowExpired && oneTimeLogin.isExpired) {
       throw new UnauthenticatedError('One time login is expired');
     }
 
