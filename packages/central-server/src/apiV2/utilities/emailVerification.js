@@ -1,6 +1,7 @@
 import { encryptPassword, sha256EncryptPassword as sha256, verifyPassword } from '@tupaia/auth';
 import { sendEmail } from '@tupaia/server-utils';
 import { requireEnv } from '@tupaia/utils';
+import winston from '../../log';
 
 const EMAILS = {
   tupaia: {
@@ -36,10 +37,15 @@ const generateVerificationLink = async user => {
   const token = await encryptPassword(getEmailVerificationToken(user));
 
   const platform = user.primary_platform || 'tupaia';
-  const url = new URL(`/verify-email`, ORIGINS[platform]);
-  url.searchParams.set('verifyEmailToken', token);
-
-  return url.toString();
+  const origin = ORIGINS[platform];
+  try {
+    const url = new URL(`/verify-email`, origin);
+    url.searchParams.set('verifyEmailToken', token);
+    return url.toString();
+  } catch (e) {
+    winston.error(`Couldn’t create email verification link. Is ‘${origin}’ a valid URL origin?`);
+    throw e;
+  }
 };
 
 export const sendEmailVerification = async user => {
