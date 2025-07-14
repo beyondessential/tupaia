@@ -268,16 +268,6 @@ export const DesktopMapOverlaySelector = ({
     });
   };
 
-  const getExportTooltip = () => {
-    if (isExporting) {
-      return '';
-    }
-
-    return 'Export map overlay as PDF';
-  };
-
-  const exportTooltip = getExportTooltip();
-
   const friendlyEntityType = getFriendlyEntityType(entity?.type);
 
   return (
@@ -293,7 +283,11 @@ export const DesktopMapOverlaySelector = ({
                   {isExporting ? (
                     <LoadingSpinner />
                   ) : (
-                    <Tooltip arrow placement="top" title={exportTooltip}>
+                    <Tooltip
+                      arrow
+                      placement="top"
+                      title={isExporting ? '' : 'Export map overlay as PDF'}
+                    >
                       <GetApp />
                     </Tooltip>
                   )}
