@@ -223,8 +223,10 @@ export class DatabaseModel {
   }
 
   async findOne(dbConditions, customQueryOptions = {}) {
-    const queryOptions = await this.getQueryOptions(customQueryOptions);
-    const processedDbConditions = await this.getDbConditions(dbConditions);
+    const [queryOptions, processedDbConditions] = await Promise.all([
+      this.getQueryOptions(customQueryOptions),
+      this.getDbConditions(dbConditions),
+    ]);
     const result = await this.database.findOne(
       this.databaseRecord,
       processedDbConditions,
