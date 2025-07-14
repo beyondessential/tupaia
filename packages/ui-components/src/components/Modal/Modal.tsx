@@ -52,7 +52,7 @@ export const Modal = ({
   return (
     <Dialog onClose={onClose} open={isOpen} fullWidth {...muiDialogProps}>
       <ModalHeader onClose={onClose} title={modalTitle} />
-      <ModalContentProvider error={error} isLoading={isLoading}>
+      <ModalContentProvider aria-busy={isLoading} error={error} isLoading={isLoading}>
         {children}
       </ModalContentProvider>
       {buttons?.length > 0 && (
