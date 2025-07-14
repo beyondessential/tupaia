@@ -36,9 +36,8 @@ const generateVerificationLink = async user => {
   const token = await encryptPassword(getEmailVerificationToken(user));
 
   const platform = user.primary_platform || 'tupaia';
-  const origin = ORIGINS[platform];
-  const params = new URLSearchParams({ verifyEmailToken: token });
-  const url = new URL(`/verify-email?${params}`, origin);
+  const url = new URL(`/verify-email`, ORIGINS[platform]);
+  url.searchParams.set('verifyEmailToken', token);
 
   return url.toString();
 };
