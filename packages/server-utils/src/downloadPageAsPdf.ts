@@ -1,9 +1,14 @@
 import * as cookie from 'cookie';
 import puppeteer, { Browser, CookieParam } from 'puppeteer';
 
+import { getEnvVarOrDefault } from '@tupaia/utils';
+
 function isValidHostname(hostname: string): boolean {
-  const { VALID_DOMAINS = 'tupaia.org' } = process.env;
-  const validDomains = VALID_DOMAINS.split(' ');
+  const validDomains = (getEnvVarOrDefault('VALID_DOMAINS', 'tupaia.org') as string)
+    .split(' ')
+    .map(domain => domain.trim())
+    .filter(Boolean);
+
   return (
     hostname.endsWith('.tupaia.org') ||
     validDomains.includes(hostname) ||
