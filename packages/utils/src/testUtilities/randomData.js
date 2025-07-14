@@ -1,11 +1,15 @@
+import Chance from 'chance';
+
+const chance = new Chance();
+
 export function randomEmail() {
-  return `${Math.random().toString(36).substring(7)}@tupaia.org`;
+  return chance.email({ domain: 'tupaia.org' });
 }
 
 export function randomString() {
-  return `string${Math.random().toString(36).substring(7)}`;
+  return chance.string({ length: 7 });
 }
 
 export function randomIntBetween(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  return chance.integer({ min, max });
 }
