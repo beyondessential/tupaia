@@ -57,7 +57,7 @@ export const Modal = ({
       </ModalContentProvider>
       {buttons?.length > 0 && (
         <ModalFooter>
-          {buttons?.map(
+          {buttons.map(
             ({
               onClick,
               color = 'primary',
