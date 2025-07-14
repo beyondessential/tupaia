@@ -80,10 +80,10 @@ export const hasNoAlphaLetters = value => {
 };
 
 export const isEmail = value => {
-  if (!validator.isEmail(value.toString())) {
-    // Coerce to string before checking with validator
-    throw new ValidationError('Not a valid email address');
-  }
+  // if (!validator.isEmail(value.toString())) {
+  //   // Coerce to string before checking with validator
+  //   throw new ValidationError('Not a valid email address');
+  // }
 };
 
 export const isHexColor = value => {

@@ -8,10 +8,10 @@ export const PROJECT_ACCESS_TYPES = {
 
 export const FORM_FIELD_VALIDATION = {
   EMAIL: {
-    pattern: {
-      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, // Case-insensitive regex for email validation
-      message: 'Invalid email address',
-    },
+    // pattern: {
+    //   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, // Case-insensitive regex for email validation
+    //   message: 'Invalid email address',
+    // },
   },
   PASSWORD: {
     minLength: { value: 8, message: 'Must be at least 8 characters long' },

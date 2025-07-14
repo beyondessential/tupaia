@@ -26,7 +26,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
     const fieldValidators = {
       firstName: [fieldHasContent],
       lastName: [fieldHasContent],
-      emailAddress: [fieldHasContent, isEmail],
+      emailAddress: [fieldHasContent], // , isEmail
       password: [fieldHasContent],
       passwordConfirm: [fieldHasContent],
       contactNumber: contactNumber ? [hasNoAlphaLetters] : [],
