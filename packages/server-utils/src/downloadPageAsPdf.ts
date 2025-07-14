@@ -1,4 +1,4 @@
-import cookie from 'cookie';
+import * as cookie from 'cookie';
 import puppeteer, { Browser, CookieParam } from 'puppeteer';
 
 function isValidHostname(hostname: string): boolean {
