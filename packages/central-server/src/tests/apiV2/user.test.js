@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { randomEmail } from '@tupaia/utils';
 import { getAuthorizationHeader, TestableApp } from '../testUtilities';
 
-describe('/user', () => {
+describe.only('/user', () => {
   const app = new TestableApp();
   const { models } = app;
   const { VERIFIED } = models.user.emailVerifiedStatuses;
@@ -33,6 +33,7 @@ describe('/user', () => {
         },
       });
       userId = userResponse.body.userId;
+      console.log('before', { userId });
 
       await models.user.updateById(userId, {
         verified_email: VERIFIED,
@@ -40,6 +41,7 @@ describe('/user', () => {
     });
 
     it('should have created the user', async () => {
+      console.log('it', { userId });
       const user = await models.user.findById(userId);
       expect(user).to.exist;
       return expect(user.getData()).to.eventually.include({

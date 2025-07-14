@@ -7,7 +7,7 @@ import { configureEnv } from '../../../configureEnv';
 
 configureEnv();
 
-describe('One Time Login', function () {
+describe.only('One Time Login', function () {
   const app = new TestableApp();
   const { models } = app;
   const { VERIFIED } = models.user.emailVerifiedStatuses;
@@ -79,6 +79,7 @@ describe('One Time Login', function () {
       },
     });
     const { userId } = userResponse.body;
+    console.log({ userId });
 
     await models.user.updateById(userId, { verified_email: VERIFIED });
 

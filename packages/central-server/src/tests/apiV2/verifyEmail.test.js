@@ -7,7 +7,7 @@ import { configureEnv } from '../../configureEnv';
 import { getAuthorizationHeader, TestableApp } from '../testUtilities';
 
 configureEnv();
-describe('Verify Email', () => {
+describe.only('Verify Email', () => {
   const app = new TestableApp();
   const { models } = app;
   const { VERIFIED, NEW_USER, UNVERIFIED } = models.user.emailVerifiedStatuses;
