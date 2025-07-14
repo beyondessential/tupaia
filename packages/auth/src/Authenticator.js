@@ -1,7 +1,7 @@
 import randomToken from 'rand-token';
 import compareVersions from 'semver-compare';
 
-import { DatabaseError, requireEnv, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
+import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
 import { verifyPassword } from './passwordEncryption';
@@ -11,8 +11,6 @@ const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
 
 export class Authenticator {
-  #apiClientSalt = requireEnv('API_CLIENT_SALT');
-
   constructor(models, AccessPolicyBuilderClass = AccessPolicyBuilder) {
     this.models = models;
     this.accessPolicyBuilder = new AccessPolicyBuilderClass(models);
