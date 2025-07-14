@@ -253,7 +253,7 @@ export class DatabaseModel {
       processedDbConditions,
       queryOptions,
     );
-    return Promise.all(dbResults.map(result => this.generateInstance(result)));
+    return Promise.all(dbResults.map(this.generateInstance));
   }
 
   async findOrCreate(where, extraFieldsIfCreating = {}) {
