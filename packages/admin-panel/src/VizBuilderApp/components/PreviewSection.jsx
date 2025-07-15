@@ -122,7 +122,6 @@ export const PreviewSection = () => {
 
   const {
     data: reportData = { columns: [], rows: [] },
-    isLoading,
     isFetching,
     isError,
     error,
@@ -186,7 +185,7 @@ export const PreviewSection = () => {
         <TableContainer>
           {showData ? (
             <FetchLoader
-              isLoading={isLoading || isFetching}
+              isLoading={isFetching}
               isError={isError}
               error={error}
               isNoData={!rows.length}
@@ -203,7 +202,7 @@ export const PreviewSection = () => {
         <Container>
           <ChartContainer>
             {showData ? (
-              <FetchLoader isLoading={isLoading || isFetching} isError={isError} error={error}>
+              <FetchLoader isLoading={isFetching} isError={isError} error={error}>
                 <Chart report={report} config={config} />
               </FetchLoader>
             ) : (
