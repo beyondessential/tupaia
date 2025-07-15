@@ -66,7 +66,6 @@ const formatColumnForReactTable = originalColumn => {
     id,
     accessor: id?.includes('.') ? originalRow => originalRow[source] : id, // react-table doesn't like .'s
     actionConfig,
-    reduxId: undefined,
     type,
     disableSortBy: !source, // disable action columns from being sortable
     filterable: filterable !== false,
