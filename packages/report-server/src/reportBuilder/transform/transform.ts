@@ -85,4 +85,9 @@ export const buildTransform = (params: unknown, context: Context) => {
 /**
  * A signal to exit the transform steps early
  */
-export class ExitWithNoDataSignal extends Error {}
+export class ExitWithNoDataSignal extends Error {
+  constructor() {
+    super();
+    this.name = 'ExitWithNoDataSignal';
+  }
+}
