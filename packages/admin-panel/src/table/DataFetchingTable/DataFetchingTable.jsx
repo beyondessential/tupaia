@@ -59,18 +59,17 @@ const SingleButtonWrapper = styled.div`
   }
 `;
 
-const formatColumnForReactTable = (originalColumn, reduxId) => {
+const formatColumnForReactTable = originalColumn => {
   const { source, type, actionConfig, filterable, ...restOfColumn } = originalColumn;
   const id = source || type;
   return {
     id,
     accessor: id?.includes('.') ? originalRow => originalRow[source] : id, // react-table doesn't like .'s
     actionConfig,
-    reduxId,
     type,
     disableSortBy: !source, // disable action columns from being sortable
     filterable: filterable !== false,
-    ...generateConfigForColumnType(type, actionConfig, reduxId), // Add custom Cell/width/etc.
+    ...generateConfigForColumnType(type, actionConfig), // Add custom Cell/width/etc.
     ...restOfColumn,
   };
 };
