@@ -3,6 +3,7 @@ import alasql from 'alasql';
 
 import { TransformTable } from '../table';
 import { Row } from '../../types';
+import { TransformBuilder } from '.';
 
 type SqlParams = {
   sql: string;
@@ -14,8 +15,6 @@ export const paramsValidator = yup.object().shape({
 
 const sqlTransform = (table: TransformTable, params: SqlParams) => {
   const { sql } = params;
-
-  // console.log('alasql', alasql);
 
   // Insert the table
   alasql('DROP TABLE IF EXISTS transform_table');
@@ -29,7 +28,7 @@ const sqlTransform = (table: TransformTable, params: SqlParams) => {
   return new TransformTable(Array.from(columns), response);
 };
 
-export const buildSql = (params: unknown) => {
+export const buildSql: TransformBuilder = (params, _context) => {
   const builtSqlParams = paramsValidator.validateSync(params);
-  return (table: TransformTable) => sqlTransform(table, builtSqlParams);
+  return table => sqlTransform(table, builtSqlParams);
 };
