@@ -11,9 +11,20 @@ export async function getAPIClientUser(authHeader, models) {
   const apiClient = await models.apiClient.findOne({
     username,
   });
-  const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
-  if (!verified) {
-    throw new UnauthenticatedError('Incorrect client username or secret');
+  if (!apiClient) throw new UnauthenticatedError('Couldn’t find API client');
+
+  try {
+    const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
+    if (!verified) {
+      throw new UnauthenticatedError('Incorrect client username or secret');
+    }
+    return await apiClient.getUser();
+  } catch (e) {
+    if (e.code === 'InvalidArg') {
+      throw new UnauthenticatedError(
+        `Malformed secret key for API client ${apiClient.username}. Must be in PHC String Format.`,
+      );
+    }
+    throw e;
   }
-  return apiClient.getUser();
 }

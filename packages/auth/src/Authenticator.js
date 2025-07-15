@@ -46,13 +46,27 @@ export class Authenticator {
     const apiClient = await this.models.apiClient.findOne({
       username,
     });
-    const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
-    if (!verified) {
-      throw new UnauthenticatedError('Could not authenticate Api Client');
+    if (!apiClient) throw new UnauthenticatedError('Couldn’t find API client');
+
+    try {
+      const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
+      if (!verified) {
+        throw new UnauthenticatedError(
+          `Incorrect username or secret for API client ${apiClient.username}`,
+        );
+      }
+
+      const user = await apiClient.getUser();
+      const accessPolicy = await this.getAccessPolicyForUser(user.id);
+      return { user, accessPolicy };
+    } catch (e) {
+      if (e.code === 'InvalidArg') {
+        throw new UnauthenticatedError(
+          `Malformed secret key for API client ${apiClient.username}. Must be in PHC String Format.`,
+        );
+      }
+      throw e;
     }
-    const user = await apiClient.getUser();
-    const accessPolicy = await this.getAccessPolicyForUser(user.id);
-    return { user, accessPolicy };
   }
 
   /**
