@@ -14,6 +14,12 @@ import { SignUpComplete } from './SignUpComplete';
 
 const Wrapper = styled(AuthViewWrapper)`
   width: 49rem;
+  max-width: 100%;
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    width: 100%;
+    margin: 0 auto;
+  }
 `;
 
 const FullWidthColumn = styled.div`
@@ -31,6 +37,12 @@ const StyledForm = styled(Form<RegisterFormFields>)`
   margin-top: 4.3rem;
   width: 42rem;
   max-width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.values.sm - 1}px) {
+    width: 100%;
+    padding: 0 1rem;
+  }
 
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     display: grid;

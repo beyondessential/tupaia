@@ -7,7 +7,9 @@ const Wrapper = styled(Paper)`
   flex-direction: column;
   align-items: center;
   max-width: 100%;
+  width: 100%;
   box-shadow: none;
+  box-sizing: border-box;
   &.MuiPaper-rounded.MuiPaper-root {
     padding: 2.5rem 1rem 4.2rem 1rem;
   }
