@@ -1,7 +1,9 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
-import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
+import type { SortingRule } from 'react-table';
 import { get } from '../api';
-import { SortingRule } from 'react-table';
+
+import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
+
 import { useCurrentUserContext } from '../CurrentUserContext';
 
 interface Filter {

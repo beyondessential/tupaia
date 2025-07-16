@@ -1,25 +1,27 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
+import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import {
-  Entity,
   DashboardItem,
-  TupaiaWebDashboardsRequest,
   DashboardMailingList,
   DashboardMailingListEntry,
+  Entity,
+  TupaiaWebDashboardsRequest,
 } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
-import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 
 interface DashboardMailingListWithEntityCode extends DashboardMailingList {
   'entity.code': string;
 }
 
-export type DashboardsRequest = Request<
-  TupaiaWebDashboardsRequest.Params,
-  TupaiaWebDashboardsRequest.ResBody,
-  TupaiaWebDashboardsRequest.ReqBody,
-  TupaiaWebDashboardsRequest.ReqQuery
->;
+export interface DashboardsRequest
+  extends Request<
+    TupaiaWebDashboardsRequest.Params,
+    TupaiaWebDashboardsRequest.ResBody,
+    TupaiaWebDashboardsRequest.ReqBody,
+    TupaiaWebDashboardsRequest.ReqQuery
+  > {}
 
 const NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE = 'no_data_at_level';
 const NO_ACCESS_DASHBOARD_ITEM_CODE = 'no_access';
@@ -60,9 +62,15 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       },
     );
   };
+
   public async buildResponse() {
-    const { params, ctx, accessPolicy, session } = this.req;
-    const { projectCode, entityCode } = params;
+    const {
+      accessPolicy,
+      ctx,
+      models,
+      params: { projectCode, entityCode },
+      session,
+    } = this.req;
 
     // We're including the root entity in this request, so we don't need to double up fetching it
     const entities: Entity[] = await ctx.services.entity.getAncestorsOfEntity(
@@ -77,14 +85,14 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ? accessPolicy.getPermissionGroups([rootEntity.country_code])
       : accessPolicy.getPermissionGroups(); // country_code is null for project level
 
-    const dashboards = await this.req.models.dashboard.find(
+    const dashboards = await models.dashboard.find(
       {
         root_entity_code: entities.map(e => e.code),
       },
       { sort: ['sort_order ASC', 'name ASC'] },
     );
 
-    if (!dashboards.length) {
+    if (dashboards.length === 0) {
       return this.getNoDataDashboard(rootEntity.code, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
     }
 
@@ -92,7 +100,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
 
     const dashboardIds = dashboards.map(d => d.id);
     const dashboardRelations =
-      await this.req.models.dashboardRelation.findDashboardRelationsForEntityAndProject(
+      await models.dashboardRelation.findDashboardRelationsForEntityAndProject(
         dashboardIds,
         rootEntity.code,
         projectCode,
@@ -199,10 +207,11 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
 
     const response = dashboardsWithMetadata.filter(dashboard => dashboard.items.length > 0);
 
-    if (!response.length) {
-      const dashboardCode = dashboardRelations.length
-        ? NO_ACCESS_DASHBOARD_ITEM_CODE
-        : NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE;
+    if (response.length === 0) {
+      const dashboardCode =
+        dashboardRelations.length > 0
+          ? NO_ACCESS_DASHBOARD_ITEM_CODE
+          : NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE;
       return this.getNoDataDashboard(rootEntity.code, dashboardCode);
     }
 

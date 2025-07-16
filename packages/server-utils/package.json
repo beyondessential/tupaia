@@ -27,7 +27,7 @@
     "@aws-sdk/credential-providers": "^3.341.0",
     "@aws-sdk/lib-storage": "^3.348.0",
     "@tupaia/utils": "workspace:*",
-    "cookie": "^0.5.0",
+    "cookie": "^1.0.2",
     "copyfiles": "^2.4.1",
     "dotenv": "^16.4.5",
     "handlebars": "^4.7.8",

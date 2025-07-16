@@ -153,7 +153,7 @@ export class DhisService extends Service {
 
   private async validatePushData(
     dataSources: DataSource[],
-    dataValues: DataValue[],
+    _dataValues: DataValue[],
     dataServiceMapping: DataServiceMapping,
   ) {
     const { serverName } = await getApiForDataSource(

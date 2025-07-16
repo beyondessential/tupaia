@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import * as COLORS from './colors';
 
 const themeName = 'Tupaia';
@@ -198,6 +198,10 @@ const overrides = {
       label: {
         fontWeight: 500,
       },
+      '.lucide': {
+        height: 'auto', // Use width to set both dimensions
+        width: '1em', // Sensible default, mirrors MUI Icon behaviour
+      },
     },
   },
   MuiSvgIcon: {
@@ -217,4 +221,4 @@ const overrides = {
   },
 };
 
-export const theme = createMuiTheme({ palette, themeName, typography, shape, overrides });
+export const theme = createTheme({ palette, themeName, typography, shape, overrides });

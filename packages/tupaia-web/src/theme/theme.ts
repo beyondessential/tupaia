@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@material-ui/core';
 import { MOBILE_BREAKPOINT } from '../constants';
 
 // MUI v4 doesn't support callbacks for theme overrides, so since these shades get used in multiple places, we need to define them here
@@ -9,7 +9,7 @@ const ERROR_ORANGE = '#f76853';
 
 const overMobileBreakpoint = `@media (min-width: ${MOBILE_BREAKPOINT})`;
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   typography: {
     fontSize: 16, // this needs to be 16 to correctly calculate the axis labels in recharts
     h1: {
