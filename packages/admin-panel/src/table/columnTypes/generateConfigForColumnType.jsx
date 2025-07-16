@@ -70,15 +70,13 @@ export const generateConfigForColumnType = (type = 'tooltip', actionConfig) => {
       ...BUTTON_COLUMN_OPTIONS,
     };
   }
-  let config = {
+  const config = {
     Cell,
     minWidth: 120, // so that the filter input is not too small
   };
   if (type === 'boolean') {
-    config = {
-      ...config,
-      Filter: BooleanSelectFilter,
-    };
+    config.Filter = BooleanSelectFilter;
   }
+
   return config;
 };

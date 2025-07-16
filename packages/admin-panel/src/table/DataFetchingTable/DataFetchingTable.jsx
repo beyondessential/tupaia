@@ -69,7 +69,7 @@ const formatColumnForReactTable = originalColumn => {
     type,
     disableSortBy: !source, // disable action columns from being sortable
     filterable: filterable !== false,
-    ...generateConfigForColumnType(type, actionConfig), // Add custom Cell/width/etc.
+    ...generateConfigForColumnType(type, actionConfig, undefined), // Add custom Cell/width/etc.
     ...restOfColumn,
   };
 };
@@ -145,8 +145,8 @@ const DataFetchingTableComponent = memo(
             <ButtonCell>
               {buttonColumns.map(({ Cell, accessor, ...col }) => {
                 return (
-                  <SingleButtonWrapper style={{ width: col.width }}>
-                    <Cell key={`${col.id}`} {...col} row={row} />
+                  <SingleButtonWrapper key={col.id} style={{ width: col.width }}>
+                    <Cell {...col} row={row} />
                   </SingleButtonWrapper>
                 );
               })}
