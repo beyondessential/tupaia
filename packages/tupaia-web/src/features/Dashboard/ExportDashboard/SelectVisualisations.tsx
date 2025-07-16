@@ -94,11 +94,11 @@ export const SelectVisualisation = ({
     <Container>
       <PrimaryContext>
         <Instructions>
-          Select the visualisations you would like to export and click 'Next'.
+          Select the visualisations you would like to export and click ‘Next’.
         </Instructions>
         <CheckboxListContainer>
           <CheckboxList
-            title="Select Visualisations"
+            title="Select visualisations"
             list={list}
             selectedItems={selectedItems}
             setSelectedItems={onChange}

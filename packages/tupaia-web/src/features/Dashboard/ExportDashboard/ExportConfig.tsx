@@ -158,7 +158,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
         <Container>
           <ExportSettingsContainer>
             <ExportSettingsInstructionsContainer>
-              <ExportSubtitle>Edit export settings and click 'Download'.</ExportSubtitle>
+              <ExportSubtitle>Edit export settings and click ‘Download’.</ExportSubtitle>
             </ExportSettingsInstructionsContainer>
             <ExportSetting>
               <section>
