@@ -19,9 +19,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  ${HomeLink} {
-    width: 100%;
-  }
   * {
     color: ${WHITE};
   }
@@ -123,7 +120,7 @@ export const NavPanel = ({ links, logo, homeLink, profileLink, basePath, isOpen 
     <Drawer variant="permanent" anchor="left" open={isOpen}>
       <Wrapper>
         <HeaderContainer>
-          <HomeLink logo={logo} homeLink={homeLink} />
+          <HomeLink logo={logo} homeLink={homeLink} style={{ width: '100%' }} />
         </HeaderContainer>
 
         <Container>

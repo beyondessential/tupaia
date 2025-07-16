@@ -1,15 +1,4 @@
-import {
-  BarChartConfig,
-  ChartData,
-  ComposedChartConfig,
-  DashboardItemConfig,
-  GaugeChartConfig,
-  LineChartConfig,
-  PieChartConfig,
-  PresentationOptions,
-  ViewConfig,
-  ViewDataItem,
-} from '@tupaia/types';
+import { BarChartConfig, ComposedChartConfig, LineChartConfig } from '@tupaia/types';
 
 export type TableAccessor = Function | string;
 

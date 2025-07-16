@@ -6,7 +6,7 @@ import { EntityCode, ProjectCode } from '../../types';
 import { API_URL, post } from '../api';
 import { downloadPDF } from '../../utils';
 
-type ExportDashboardBody = {
+interface ExportDashboardBody {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
   mapOverlayCode?: MapOverlay['code'];
@@ -15,7 +15,7 @@ type ExportDashboardBody = {
   hiddenValues: LegendProps['hiddenValues'];
   tileset: string;
   mapOverlayPeriod?: string;
-};
+}
 
 // Requests a map overlay PDF export from the server, and returns the response
 export const useExportMapOverlay = (fileName: string) => {
