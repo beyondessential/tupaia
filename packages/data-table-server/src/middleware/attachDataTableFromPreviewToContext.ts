@@ -12,7 +12,7 @@ import { validatePermissions } from './helpers';
  */
 export const attachDataTableFromPreviewToContext = async (
   req: Request<any, any, any, any>,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {

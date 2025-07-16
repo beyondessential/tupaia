@@ -198,6 +198,10 @@ const overrides = {
       label: {
         fontWeight: 500,
       },
+      '.lucide': {
+        height: 'auto', // Use width to set both dimensions
+        width: '1em', // Sensible default, mirrors MUI Icon behaviour
+      },
     },
   },
   MuiSvgIcon: {

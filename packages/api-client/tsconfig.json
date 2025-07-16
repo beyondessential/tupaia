@@ -1,7 +1,9 @@
 {
   "extends": "../../tsconfig-ts.json",
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    // We expect unused params in abstract class definitions
+    "noUnusedParameters": false
   },
   "include": ["src/**/*", "jest.config.ts"]
 }
