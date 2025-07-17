@@ -120,7 +120,7 @@ export const Dashboard = () => {
   const { activeDashboard } = useDashboard();
   const {
     data: dashboards,
-    isLoading: isLoadingDashboards,
+    isFetching: isFetchingDashboards,
     isError,
     isFetched,
   } = useDashboards(projectCode, entityCode);
@@ -133,7 +133,7 @@ export const Dashboard = () => {
   const defaultDashboardName = getDefaultDashboard(
     project,
     dashboards,
-    isLoadingDashboards,
+    isFetchingDashboards,
     isError,
   );
 
@@ -146,7 +146,7 @@ export const Dashboard = () => {
   const dashboardNotFound =
     isFetched &&
     !isError &&
-    !isLoadingDashboards &&
+    !isFetchingDashboards &&
     !isLoadingProject &&
     project?.code === projectCode &&
     !activeDashboard;
@@ -205,7 +205,7 @@ export const Dashboard = () => {
               <DashboardMenu />
             </StickyBar>
             <DashboardItemsWrapper $isExpanded={isExpanded}>
-              {isLoadingDashboards && <SpinningLoader mt={5} />}
+              {isFetchingDashboards && <SpinningLoader mt={5} />}
               {visibleDashboards?.map(item => (
                 <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
               ))}
