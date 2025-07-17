@@ -79,11 +79,27 @@ theme.overrides = {
   },
   MuiCssBaseline: {
     '@global': {
+      ':root': {
+        textWrap: 'pretty',
+      },
       fieldset: {
         border: 0,
         margin: 0,
         minWidth: 0,
         padding: 0,
+      },
+      'button, figcaption, h1, h2, h3, h4, h5, h6, input, label': {
+        textWrap: 'balance',
+      },
+      'button, input, textarea, select': {
+        touchAction: 'manipulation',
+      },
+      'table, time': {
+        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      },
+      '.lucide': {
+        height: 'auto', // Use width to set both dimensions
+        width: '1em', // Sensible default, mirrors MUI Icon behaviour
       },
     },
   },
