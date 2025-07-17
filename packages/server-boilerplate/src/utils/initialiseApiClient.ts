@@ -146,9 +146,9 @@ export const initialiseApiClient = async (
     });
     await upsertPermissions({
       models: transactingModels,
-      userAccountId: userAccountId,
+      userAccountId,
       permissions,
     });
-    winston.info(`Initialised API Client: ${API_CLIENT_NAME}`);
+    winston.info(`Initialised API client: ${API_CLIENT_NAME}`);
   });
 };
