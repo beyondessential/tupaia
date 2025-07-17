@@ -380,7 +380,6 @@ export class TaskModel extends DatabaseModel {
       if (!fieldsToCreateCommentsFor.includes(field)) continue;
       const originalValue = originalTask[field];
       // If the field hasn't actually changed, don't add a comment
-      // If the field hasn't actually changed, don't add a comment
       if (originalValue === newValue) continue;
       // Don't add a comment when repeat schedule is updated and the frequency is the same
       if (field === 'repeat_schedule' && originalValue?.freq === newValue?.freq) continue;
