@@ -168,23 +168,14 @@ export const Dashboard = () => {
 
   // Filter out drill down items from the dashboard items
   const visibleDashboards =
-    (activeDashboard?.items as DashboardItemType[])?.reduce(
-      (items: DashboardItemType[], item: DashboardItemType) => {
-        const isDrillDown = activeDashboard?.items?.some(dashboardItem => {
-          const { config } = dashboardItem as {
-            config: MatrixConfig;
-          };
-          if (config?.drillDown && config?.drillDown?.itemCode === item.code) return true;
-          return false;
-        });
+    activeDashboard?.items?.filter(item => {
+      const isDrillDown = activeDashboard?.items?.some(dashboardItem => {
+        const config = dashboardItem.config as MatrixConfig;
+        return config?.drillDown?.itemCode === item.code;
+      });
+      return !isDrillDown;
+    }) ?? [];
 
-        if (isDrillDown) return items;
-
-        items.push(item);
-        return items;
-      },
-      [],
-    ) ?? [];
   const title =
     entity?.type === 'project' && project?.config?.projectDashboardHeader
       ? project?.config?.projectDashboardHeader
