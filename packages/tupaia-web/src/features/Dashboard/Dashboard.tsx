@@ -130,7 +130,6 @@ export const Dashboard = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { data: entity } = useEntity(projectCode, entityCode);
-  const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
   // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
 
@@ -172,7 +171,7 @@ export const Dashboard = () => {
               {entity?.imageUrl ? (
                 <Photo title={title} photoUrl={entity?.imageUrl} />
               ) : (
-                <StaticMap bounds={bounds} title={title} />
+                <StaticMap bounds={entity?.bounds || DEFAULT_BOUNDS} title={title} />
               )}
             </div>
             <StickyBar $isExpanded={isExpanded}>
