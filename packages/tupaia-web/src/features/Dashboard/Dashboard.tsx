@@ -32,12 +32,14 @@ const Panel = styled.div<{
 }>`
   position: relative;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  transition:
-    width 0.3s ease,
-    max-width 0.3s ease;
   width: 100%;
   overflow: visible;
   min-height: 100%;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: 300ms var(--ease-out-quad);
+    transition-property: width, max-width;
+  }
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: ${({ $isExpanded }) => ($isExpanded ? 60 : 25)}%;
@@ -101,7 +103,7 @@ const DashboardItemsWrapper = styled.div<{
       ? 'grid'
       : 'block'}; // when in a column, the items should be stacked vertically. Setting to display: block fixes and issue with the chart not contracting to the correct width
   background-color: ${({ theme }) => theme.palette.background.paper};
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 0.8rem;
 `;
 
