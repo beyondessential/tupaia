@@ -66,6 +66,7 @@ const upsertApiClient = async ({
       {
         secret_key_hash: secretKeyHash,
         user_account_id: userAccountId,
+        secret_key_hash_old: null,
       },
     );
     return;
@@ -145,9 +146,9 @@ export const initialiseApiClient = async (
     });
     await upsertPermissions({
       models: transactingModels,
-      userAccountId: userAccountId,
+      userAccountId,
       permissions,
     });
-    winston.info(`Initialised API Client: ${API_CLIENT_NAME}`);
+    winston.info(`Initialised API client: ${API_CLIENT_NAME}`);
   });
 };

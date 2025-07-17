@@ -41614,6 +41614,9 @@ export const ApiClientSchema = {
 		"secret_key_hash": {
 			"type": "string"
 		},
+		"secret_key_hash_old": {
+			"type": "string"
+		},
 		"user_account_id": {
 			"type": "string"
 		},
@@ -41633,6 +41636,9 @@ export const ApiClientCreateSchema = {
 	"type": "object",
 	"properties": {
 		"secret_key_hash": {
+			"type": "string"
+		},
+		"secret_key_hash_old": {
 			"type": "string"
 		},
 		"user_account_id": {
@@ -41656,6 +41662,9 @@ export const ApiClientUpdateSchema = {
 			"type": "string"
 		},
 		"secret_key_hash": {
+			"type": "string"
+		},
+		"secret_key_hash_old": {
 			"type": "string"
 		},
 		"user_account_id": {
