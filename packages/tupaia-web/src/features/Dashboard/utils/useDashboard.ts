@@ -21,8 +21,9 @@ export const useDashboard = () => {
     setSubscribeModalOpen(!subscribeModalOpen);
   };
   // trim dashboard name to avoid issues with trailing or leading spaces
-  const activeDashboard =
-    dashboards?.find(dashboard => dashboard.name.trim() === dashboardName?.trim()) ?? undefined;
+  const activeDashboard = dashboards?.find(
+    dashboard => dashboard.name.trim() === dashboardName?.trim(),
+  );
 
   useGAEffect('Dashboard', 'Change Tab', activeDashboard?.name);
 
