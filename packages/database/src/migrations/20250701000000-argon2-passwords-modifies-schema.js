@@ -37,32 +37,35 @@ exports.up = async function (db) {
     ALTER TABLE api_client ADD COLUMN secret_key_hash text;
   `);
 
-  const [users, apiClients] = await Promise.all([
-    db.runSql('SELECT id, password_hash_old FROM user_account'),
-    db.runSql('SELECT id, secret_key_hash_old FROM api_client'),
-  ]);
+  async function migrateUserAccounts() {
+    const users = await db.runSql('SELECT id, password_hash_old FROM user_account');
+    await Promise.all(
+      users.rows.map(async user => {
+        const { id, password_hash_old } = user;
+        const migratedHash = await flaggedHash(password_hash_old);
+        await db.runSql('UPDATE user_account SET password_hash = $1 WHERE id = $2', [
+          migratedHash,
+          id,
+        ]);
+      }),
+    );
+  }
 
-  await Promise.all(
-    users.rows.map(async user => {
-      const { id, password_hash_old } = user;
-      const migratedHash = await flaggedHash(password_hash_old);
-      await db.runSql('UPDATE user_account SET password_hash = $1 WHERE id = $2', [
-        migratedHash,
-        id,
-      ]);
-    }),
-  );
+  async function migrateApiClients() {
+    const apiClients = await db.runSql('SELECT id, secret_key_hash_old FROM api_client');
+    await Promise.all(
+      apiClients.rows.map(async apiClient => {
+        const { id, secret_key_hash_old } = apiClient;
+        const migratedHash = await flaggedHash(secret_key_hash_old);
+        await db.runSql('UPDATE api_client SET secret_key_hash = $1 WHERE id = $2', [
+          migratedHash,
+          id,
+        ]);
+      }),
+    );
+  }
 
-  await Promise.all(
-    apiClients.rows.map(async apiClient => {
-      const { id, secret_key_hash_old } = apiClient;
-      const migratedHash = await flaggedHash(secret_key_hash_old);
-      await db.runSql('UPDATE api_client SET secret_key_hash = $1 WHERE id = $2', [
-        migratedHash,
-        id,
-      ]);
-    }),
-  );
+  await Promise.all([migrateUserAccounts(), migrateApiClients()]);
 
   await db.runSql(`
     ALTER TABLE user_account ALTER COLUMN password_hash SET NOT NULL;
