@@ -158,17 +158,20 @@ export interface AnswerUpdate {
 export interface ApiClient {
   'id': string;
   'secret_key_hash': string;
+  'secret_key_hash_old'?: string | null;
   'user_account_id'?: string | null;
   'username': string;
 }
 export interface ApiClientCreate {
   'secret_key_hash': string;
+  'secret_key_hash_old'?: string | null;
   'user_account_id'?: string | null;
   'username': string;
 }
 export interface ApiClientUpdate {
   'id'?: string;
   'secret_key_hash'?: string;
+  'secret_key_hash_old'?: string | null;
   'user_account_id'?: string | null;
   'username'?: string;
 }

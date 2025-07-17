@@ -1,16 +1,20 @@
+import { verify } from '@node-rs/argon2';
 import randomToken from 'rand-token';
 import compareVersions from 'semver-compare';
 
-import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
+import { DatabaseError, requireEnv, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
-import { verifyPassword } from './passwordEncryption';
+import { encryptPassword, sha256EncryptPassword, verifyPassword } from './passwordEncryption';
 import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
 
 export class Authenticator {
+  /** @deprecated */
+  #apiClientSalt = requireEnv('API_CLIENT_SALT');
+
   constructor(models, AccessPolicyBuilderClass = AccessPolicyBuilder) {
     this.models = models;
     this.accessPolicyBuilder = new AccessPolicyBuilderClass(models);
@@ -49,8 +53,11 @@ export class Authenticator {
     if (!apiClient) throw new UnauthenticatedError('Couldn’t find API client');
 
     try {
-      const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
-      if (!verified) {
+      const isVerified = apiClient.hasLegacySecretKeyHash
+        ? await this.#verifyApiClientWithSha256(apiClient, secretKey)
+        : await verifyPassword(secretKey, apiClient.secret_key_hash);
+
+      if (!isVerified) {
         throw new UnauthenticatedError(
           `Incorrect username or secret for API client ${apiClient.username}`,
         );
@@ -67,6 +74,34 @@ export class Authenticator {
       }
       throw e;
     }
+  }
+
+  /**
+   * Attempts authenticating an API client using SHA-256 plus Argon2, then migrates the client to
+   * Argon2 upon success.
+   *
+   * @returns {Promise<boolean>} `true` if and only if the client is authenticated and migrated to
+   * Argon2.
+   * @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js`
+   * @privateRemarks This method should be called no more than once per API client. Once all API
+   * clients have been migrated to Argon2, remove this method (and drop the `secret_key_hash_old`
+   * column).
+   */
+  async #verifyApiClientWithSha256(apiClient, secretKey) {
+    const hash = apiClient.secret_key_hash.replace('$sha256+argon2id$', '$argon2id$');
+    const hashedInput = sha256EncryptPassword(secretKey, this.#apiClientSalt); // Expected legacy hash value
+    const isVerified = await verify(hash, hashedInput);
+
+    if (isVerified) {
+      // Migrate to Argon2
+      const argon2Hash = await encryptPassword(secretKey);
+      await apiClient.model.updateById(apiClient.id, {
+        secret_key_hash: argon2Hash,
+        secret_key_hash_old: null,
+      });
+    }
+
+    return isVerified;
   }
 
   /**

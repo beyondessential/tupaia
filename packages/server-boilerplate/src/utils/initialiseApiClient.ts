@@ -66,6 +66,7 @@ const upsertApiClient = async ({
       {
         secret_key_hash: secretKeyHash,
         user_account_id: userAccountId,
+        secret_key_hash_old: null,
       },
     );
     return;
