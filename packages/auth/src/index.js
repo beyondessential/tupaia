@@ -1,12 +1,12 @@
-export { Authenticator } from './Authenticator';
 export { AccessPolicyBuilder } from './AccessPolicyBuilder';
-export * from './utils';
-export { getJwtToken, extractRefreshTokenFromReq, generateSecretKey } from './security';
+export { Authenticator } from './Authenticator';
+export { mergeAccessPolicies } from './mergeAccessPolicies';
+export { encryptPassword, sha256EncryptPassword, verifyPassword } from './passwordEncryption';
+export { extractRefreshTokenFromReq, generateSecretKey, getJwtToken } from './security';
 export {
-  getTokenClaimsFromBearerAuth,
-  getTokenClaims,
-  getUserAndPassFromBasicAuth,
   constructAccessToken,
   getAuthorizationObject,
+  getTokenClaims,
+  getTokenClaimsFromBearerAuth,
+  getUserAndPassFromBasicAuth,
 } from './userAuth';
-export { mergeAccessPolicies } from './mergeAccessPolicies';

@@ -1,18 +1,16 @@
 import randomToken from 'rand-token';
 import compareVersions from 'semver-compare';
 
-import { DatabaseError, requireEnv, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
+import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
-import { encryptPassword } from './utils';
+import { verifyPassword } from './passwordEncryption';
 import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
 
 export class Authenticator {
-  #apiClientSalt = requireEnv('API_CLIENT_SALT');
-
   constructor(models, AccessPolicyBuilderClass = AccessPolicyBuilder) {
     this.models = models;
     this.accessPolicyBuilder = new AccessPolicyBuilderClass(models);
@@ -45,17 +43,30 @@ export class Authenticator {
    * @param {{ username: string, secretKey: string }} apiClientCredentials
    */
   async authenticateApiClient({ username, secretKey }) {
-    const secretKeyHash = encryptPassword(secretKey, this.#apiClientSalt);
     const apiClient = await this.models.apiClient.findOne({
       username,
-      secret_key_hash: secretKeyHash,
     });
-    if (!apiClient) {
-      throw new UnauthenticatedError('Could not authenticate Api Client');
+    if (!apiClient) throw new UnauthenticatedError('Couldn’t find API client');
+
+    try {
+      const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
+      if (!verified) {
+        throw new UnauthenticatedError(
+          `Incorrect username or secret for API client ${apiClient.username}`,
+        );
+      }
+
+      const user = await apiClient.getUser();
+      const accessPolicy = await this.getAccessPolicyForUser(user.id);
+      return { user, accessPolicy };
+    } catch (e) {
+      if (e.code === 'InvalidArg') {
+        throw new UnauthenticatedError(
+          `Malformed secret key for API client ${apiClient.username}. Must be in PHC String Format.`,
+        );
+      }
+      throw e;
     }
-    const user = await apiClient.getUser();
-    const accessPolicy = await this.getAccessPolicyForUser(user.id);
-    return { user, accessPolicy };
   }
 
   /**
@@ -140,7 +151,7 @@ export class Authenticator {
     }
 
     // Check password hash matches that in db
-    if (!user.checkPassword(password)) {
+    if (!(await user.checkPassword(password))) {
       throw new UnauthenticatedError('Incorrect email or password');
     }
 

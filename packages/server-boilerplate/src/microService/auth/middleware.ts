@@ -23,7 +23,7 @@ const getBasicAccessPolicy = async (
 
   const apiClient = await models.apiClient.findOne({ username });
   if (apiClient) {
-    return authenticator.authenticateApiClient({
+    return await authenticator.authenticateApiClient({
       username,
       secretKey: password,
     });
