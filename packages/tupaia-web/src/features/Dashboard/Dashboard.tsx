@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { MatrixConfig } from '@tupaia/types';
@@ -11,7 +11,7 @@ import { useEditUser } from '../../api/mutations';
 import { useDashboards, useEntity, useProject, useUser } from '../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { DashboardItem as DashboardItemType, ProjectCode } from '../../types';
-import { gaEvent, getDefaultDashboard } from '../../utils';
+import { gaEvent, useDefaultDashboardName } from '../../utils';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { Breadcrumbs } from './Breadcrumbs';
@@ -116,55 +116,35 @@ const useUpdateUserProjectOnSettled = (projectCode?: ProjectCode) => {
 };
 
 export const Dashboard = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const { projectCode, entityCode } = useParams();
   const { data: project, isSuccess: isProjectSuccess } = useProject(projectCode);
-
+  const defaultDashboardName = useDefaultDashboardName(projectCode, entityCode);
   useUpdateUserProjectOnSettled(projectCode);
 
   const { activeDashboard } = useDashboard();
-  const {
-    data: dashboards,
-    isFetching: isFetchingDashboards,
-    isError,
-    isFetched,
-  } = useDashboards(projectCode, entityCode);
+  const { isFetching: isFetchingDashboards, isSuccess: isDashboardsSuccess } = useDashboards(
+    projectCode,
+    entityCode,
+  );
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
-  // we don't want useEntityLink to take care of this because useEntityLink gets called for all child entities on the map, meaning lots of extra queries when we don't need them. Instead the redirect will be taken care of in the useEffect below, as needed
-  const defaultDashboardName = getDefaultDashboard(
-    project,
-    dashboards,
-    isFetchingDashboards,
-    isError,
-  );
+  // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
+
+  const dashboardNotFound =
+    isProjectSuccess && isDashboardsSuccess && project?.code === projectCode && !activeDashboard;
+  if (dashboardNotFound && defaultDashboardName) {
+    const to = `/${projectCode}/${entityCode}/${encodeURIComponent(defaultDashboardName)}`;
+    return <Navigate {...location} to={to} />;
+  }
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
     gaEvent('Pages', 'Toggle Info Panel');
   };
-
-  // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
-  const dashboardNotFound =
-    isFetched &&
-    !isError &&
-    !isFetchingDashboards &&
-    !isLoadingProject &&
-    project?.code === projectCode &&
-    !activeDashboard;
-
-  useEffect(() => {
-    if (dashboardNotFound) {
-      navigate({
-        ...location,
-        pathname: `/${projectCode}/${entityCode}/${defaultDashboardName}`,
-      });
-    }
-  }, [dashboardNotFound, defaultDashboardName]);
 
   // Filter out drill down items from the dashboard items
   const visibleDashboards =
