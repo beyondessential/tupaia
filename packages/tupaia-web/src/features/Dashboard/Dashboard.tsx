@@ -20,7 +20,7 @@ import { ExpandButton } from './ExpandButton';
 import { ExportDashboard } from './ExportDashboard';
 import { Photo } from './Photo';
 import { StaticMap } from './StaticMap';
-import { DashboardContextProvider, useDashboard } from './utils';
+import { DashboardContextProvider, useDashboardContext } from './utils';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
@@ -124,7 +124,7 @@ export const Dashboard = () => {
   const defaultDashboardName = useDefaultDashboardName(projectCode, entityCode);
   useUpdateUserProjectOnSettled(projectCode);
 
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
   const { isFetching: isFetchingDashboards, isSuccess: isDashboardsSuccess } = useDashboards(
     projectCode,
     entityCode,
