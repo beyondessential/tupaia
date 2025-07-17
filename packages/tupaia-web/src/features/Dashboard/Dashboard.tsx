@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
-import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
-import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { MatrixConfig } from '@tupaia/types';
-import { MOBILE_BREAKPOINT } from '../../constants';
+import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
+import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
+
+import { useEditUser } from '../../api/mutations';
 import { useDashboards, useEntity, useProject, useUser } from '../../api/queries';
-import { DashboardItem as DashboardItemType } from '../../types';
+import { MOBILE_BREAKPOINT } from '../../constants';
+import { DashboardItem as DashboardItemType, ProjectCode } from '../../types';
 import { gaEvent, getDefaultDashboard } from '../../utils';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
-import { ExpandButton } from './ExpandButton';
-import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
-import { StaticMap } from './StaticMap';
+import { DashboardMenu, SubscribeModal } from './DashboardMenu';
+import { ExpandButton } from './ExpandButton';
 import { ExportDashboard } from './ExportDashboard';
+import { Photo } from './Photo';
+import { StaticMap } from './StaticMap';
 import { DashboardContextProvider, useDashboard } from './utils';
-import { SubscribeModal, DashboardMenu } from './DashboardMenu';
-import { useEditUser } from '../../api/mutations';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
@@ -103,19 +105,23 @@ const DashboardItemsWrapper = styled.div<{
   column-gap: 0.8rem;
 `;
 
+const useUpdateUserProjectOnSettled = (projectCode?: ProjectCode) => {
+  const { data: project, isSuccess: isProjectSuccess } = useProject(projectCode);
+  const { data: user, isSuccess: isUserSuccess } = useUser();
+  const { mutate: mutateUser } = useEditUser();
+  const shouldUpdate = isUserSuccess && isProjectSuccess && project?.code !== user?.project?.code;
+  useEffect(() => {
+    if (shouldUpdate) mutateUser({ projectId: project?.id });
+  }, [mutateUser, project?.id, shouldUpdate]);
+};
+
 export const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { projectCode, entityCode } = useParams();
-  const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
-  const { data: user } = useUser();
-  const { mutate: updateUser } = useEditUser();
+  const { data: project, isSuccess: isProjectSuccess } = useProject(projectCode);
 
-  useEffect(() => {
-    if (project?.code !== user?.project?.code) {
-      updateUser({ projectId: project?.id });
-    }
-  }, [project?.code, user?.project?.code]);
+  useUpdateUserProjectOnSettled(projectCode);
 
   const { activeDashboard } = useDashboard();
   const {
