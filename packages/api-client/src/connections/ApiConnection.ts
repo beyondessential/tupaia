@@ -74,11 +74,10 @@ export class ApiConnection {
     const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
 
     if (response.status === 414) {
-      // URI Too Long
       throw new CustomError(
         {
           responseStatus: response.status,
-          responseText: response.statusText,
+          responseText: response.statusText, // URI Too Long
         },
         {
           uriLength: queryUrl.length,
