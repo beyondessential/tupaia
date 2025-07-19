@@ -1,9 +1,14 @@
 import { groupBy } from 'lodash';
 
-import { DatabaseModel, ModelRegistry } from '@tupaia/database';
+import {
+  BaseDatabase,
+  DatabaseModel,
+  ModelRegistry,
+  TABLES_WITH_TRIGGER_FOR_DELETE_QUERY,
+} from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 
-import { saveCreates, saveUpdates } from './saveChanges';
+import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 import { ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 
@@ -11,11 +16,19 @@ import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
 const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
+const assertIsWithinTransaction = (database: BaseDatabase) => {
+  if (!database?.isWithinTransaction()) {
+    throw new Error('saveIncomingChanges must be called within a transaction');
+  }
+};
+
 export const saveChangesForModel = async (
   model: DatabaseModel,
   changes: SyncSnapshotAttributes[],
+  isCentralServer: boolean,
 ) => {
-  const sanitizeData = (d: ModelSanitizeArgs) => d;
+  const sanitizeData = (d: ModelSanitizeArgs) =>
+    isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
 
   // split changes into create, update
   const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
@@ -32,41 +45,58 @@ export const saveChangesForModel = async (
     changes.filter(c => c.data.id).map(e => [e.data.id, e]),
   );
 
-  const idsForUpdate = new Set(existingRecords.map((existing: any) => existing.id));
+  const idsForUpdate = new Set();
+  const idsForDelete = new Set();
+
+  existingRecords.forEach(existing => {
+    // compares incoming and existing records by id
+    const incoming = idToIncomingRecord[existing.id];
+    if (existing) {
+      if (incoming.isDeleted) {
+        idsForDelete.add(existing.id);
+      } else {
+        idsForUpdate.add(existing.id);
+      }
+    }
+  });
 
   const recordsForCreate = changes
     .filter(c => idToExistingRecord[c.data.id] === undefined)
-    .map(({ data }) => {
-      return sanitizeData(data);
-    });
+    .map(({ data }) => sanitizeData(data));
   const recordsForUpdate = changes
     .filter(r => idsForUpdate.has(r.data.id))
-    .map(({ data }) => {
-      return sanitizeData(data);
-    });
+    .map(({ data }) => sanitizeData(data));
+
+  const recordsForDelete = changes.filter(r => idsForDelete.has(r.data.id));
 
   // run each import process
-  console.log('Sync: saveIncomingChanges: Creating new records', {
+  console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Creating new records`, {
     count: recordsForCreate.length,
   });
   if (recordsForCreate.length > 0) {
     await saveCreates(model, recordsForCreate);
   }
 
-  console.log('Sync: saveIncomingChanges: Updating existing records', {
+  console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Updating existing records`, {
     count: recordsForUpdate.length,
   });
   if (recordsForUpdate.length > 0) {
     await saveUpdates(model, recordsForUpdate);
   }
 
-  // TODO: Implement deletion
+  console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`, {
+    count: recordsForDelete.length,
+  });
+  if (recordsForDelete.length > 0) {
+    await saveDeletes(model, recordsForDelete);
+  }
 };
 
 const saveChangesForModelInBatches = async (
   model: DatabaseModel,
   sessionId: string,
   recordType: RecordType,
+  isCentralServer: boolean,
 ) => {
   let fromId;
   let batchRecords: SyncSnapshotAttributes[] | null = null;
@@ -85,7 +115,7 @@ const saveChangesForModelInBatches = async (
         count: batchRecords.length,
       });
 
-      await saveChangesForModel(model, batchRecords);
+      await saveChangesForModel(model, batchRecords, isCentralServer);
 
       await sleep(PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS);
     } catch (error) {
@@ -95,19 +125,33 @@ const saveChangesForModelInBatches = async (
   }
 };
 
-export const saveIncomingSnapshotChanges = async (models: DatabaseModel[], sessionId: string) => {
+export const saveIncomingSnapshotChanges = async (
+  models: DatabaseModel[],
+  sessionId: string,
+  isCentralServer: boolean,
+) => {
+  if (models.length === 0) {
+    return;
+  }
   for (const model of models) {
-    await saveChangesForModelInBatches(model, sessionId, model.databaseRecord);
+    await saveChangesForModelInBatches(model, sessionId, model.databaseRecord, isCentralServer);
   }
 };
 
 export const saveIncomingInMemoryChanges = async (
   models: ModelRegistry,
   changes: SyncSnapshotAttributes[],
+  isCentralServer: boolean,
 ) => {
+  if (changes.length === 0) {
+    return;
+  }
+
+  assertIsWithinTransaction(models.database);
+
   const groupedChanges = groupBy(changes, 'record_type');
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
-    await saveChangesForModel(model, modelChanges);
+    await saveChangesForModel(model, modelChanges, isCentralServer);
   }
 };

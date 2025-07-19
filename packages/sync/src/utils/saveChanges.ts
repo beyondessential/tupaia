@@ -1,7 +1,10 @@
 import { DatabaseModel } from '@tupaia/database';
 
-export const saveCreates = async (model: DatabaseModel, records: Record<string, any>[]) => {
-  return model.createMany(records);
+export const saveCreates = async (model: DatabaseModel, records: Record<string, any>[], batchSize = 1000) => {
+  for (let i = 0; i < records.length; i += batchSize) {
+    const batch = records.slice(i, i + batchSize);
+    await model.createMany(batch);
+  }
 };
 
 export const saveUpdates = async (

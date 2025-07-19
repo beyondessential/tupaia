@@ -25,6 +25,7 @@ exports.up = async function (db) {
       updated_at_sync_tick    BIGINT       NOT NULL,
       project_ids             VARCHAR(255)[],
       pushed_by_device_id     VARCHAR(255),
+      is_deleted              BOOLEAN      DEFAULT FALSE,
       CONSTRAINT sync_lookup_record_id_record_type_unique UNIQUE (record_id, record_type)
     );
 

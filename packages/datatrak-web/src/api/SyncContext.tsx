@@ -17,24 +17,38 @@ const SYNC_INTERVAL = 1000 * 30;
 
 export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
   const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
+  const [isSyncScheduled, setIsSyncScheduled] = useState(false);
   const { models } = useDatabase();
   const { data: projects } = useAccessibleProjects();
+
   useEffect(() => {
-    const init = async () => {
-      if (models && projects?.length) {
+    const initSyncManager = async () => {
+
+      if (models) {
         let deviceId = await models.localSystemFact.get('deviceId');
         if (!deviceId) {
           deviceId = `datatrak-web-${generateId()}`;
           await models.localSystemFact.set('deviceId', deviceId);
         }
 
-        const projectIds = projects?.map(project => project.id);
-        const clientSyncManager = new ClientSyncManager(models, projectIds, deviceId);
+        const clientSyncManager = new ClientSyncManager(models, deviceId);
         setClientSyncManager(clientSyncManager);
+      }
+    };
 
+    initSyncManager();
+  }, [models]);
+
+  useEffect(() => {
+    const initSyncScheduler = async () => {
+      if (!isSyncScheduled && clientSyncManager && projects?.length) {
+        const projectIds = [projects[0].id];
         const intervalId = setInterval(() => {
-          clientSyncManager.runSync();
+          console.log('Starting regular sync');
+          clientSyncManager.triggerSync(projectIds);
         }, SYNC_INTERVAL);
+
+        setIsSyncScheduled(true);
 
         return () => {
           clearInterval(intervalId);
@@ -42,8 +56,8 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    init();
-  }, [models, projects?.length]);
+    initSyncScheduler();
+  }, [clientSyncManager, projects?.length]);
 
   return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;
 };
