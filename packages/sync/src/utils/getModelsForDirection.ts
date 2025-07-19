@@ -7,7 +7,9 @@ export const getModelsForDirections = (
   models: DatabaseModel[],
   directions: SyncSessionDirectionValues[],
 ): DatabaseModel[] => {
-  return models.filter(model => directions.includes(model.syncDirection));
+  return models.filter(model =>
+    directions.includes((model.constructor as typeof DatabaseModel).syncDirection),
+  );
 };
 
 export const getModelsForPull = (models: DatabaseModel[]) =>

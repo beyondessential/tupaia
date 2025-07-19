@@ -9,7 +9,7 @@ export class EntityHierarchyRecord extends DatabaseRecord {
 }
 
 export class EntityHierarchyModel extends DatabaseModel {
-  syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return EntityHierarchyRecord;

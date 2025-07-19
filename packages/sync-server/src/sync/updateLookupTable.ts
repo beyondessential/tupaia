@@ -115,7 +115,9 @@ export const updateLookupTable = async (
   const invalidModelNames = outgoingModels
     .filter(
       m =>
-        ![SyncDirections.BIDIRECTIONAL, SyncDirections.PULL_FROM_CENTRAL].includes(m.syncDirection),
+        ![SyncDirections.BIDIRECTIONAL, SyncDirections.PULL_FROM_CENTRAL].includes(
+          (m.constructor as typeof DatabaseModel).syncDirection,
+        ),
     )
     .map(m => m.databaseRecord);
 

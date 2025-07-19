@@ -1,5 +1,7 @@
-import { getEnvVarOrDefault, requireEnv } from '@tupaia/utils';
 import knex from 'knex';
+
+import { getEnvVarOrDefault, requireEnv } from '@tupaia/utils';
+import { SyncDirections } from '@tupaia/constants';
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -23,6 +25,8 @@ export class ExternalDatabaseConnectionRecord extends DatabaseRecord {
 }
 
 export class ExternalDatabaseConnectionModel extends DatabaseModel {
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
+
   // Map of active external connections that have been established
   // Using singleton pattern to avoid individual instances overwhelming the external
   // databases with requests

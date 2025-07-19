@@ -123,7 +123,7 @@ export class SurveyRecord extends DatabaseRecord {
 }
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return SurveyRecord;
