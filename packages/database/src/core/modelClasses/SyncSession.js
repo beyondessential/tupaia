@@ -13,7 +13,8 @@ export class SyncSessionRecord extends DatabaseRecord {
    * @returns 
    */
   async markAsStartedAt(tick) {
-    return this.model.update({ id: this.id }, { started_at_tick: tick });
+    this.started_at_tick = tick;
+    await this.save();
   }
 
   /**
