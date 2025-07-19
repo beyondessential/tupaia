@@ -10,7 +10,6 @@ import {
   waitForPendingEditsUsingSyncTick,
   getModelsForPush,
   getModelsForPull,
-  switchTombstoneTrigger,
   withDeferredSyncSafeguards,
 } from '@tupaia/sync';
 

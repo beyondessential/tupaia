@@ -1,6 +1,6 @@
 import { BaseDatabase } from '@tupaia/database';
 
-import { switchTombstoneTrigger } from './saveIncomingChanges';
+import { switchTombstoneTriggers } from './switchTombstoneTriggers';
 
 export const withDeferredSyncSafeguards = async <T>(
   database: BaseDatabase,
@@ -10,16 +10,15 @@ export const withDeferredSyncSafeguards = async <T>(
   await database.executeSql(`
       SET CONSTRAINTS ALL DEFERRED;
     `);
-  await switchTombstoneTrigger(database, false);
+  await switchTombstoneTriggers(database, false);
 
   try {
     return operation();
-
   } finally {
     // cleanup
     await database.executeSql(`
       SET CONSTRAINTS ALL IMMEDIATE;
     `);
-    await switchTombstoneTrigger(database, true);
+    await switchTombstoneTriggers(database, true);
   }
 };
