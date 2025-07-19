@@ -30,6 +30,8 @@ exports.up = async function (db) {
         'disaster',
         'district',
         'district_operational',
+        'document',
+        'document_group',
         'enumeration_area',
         'facility',
         'facility_building',
@@ -40,6 +42,7 @@ exports.up = async function (db) {
         'field_station',
         'fiji_aspen_facility',
         'health_clinic_boundary',
+        'hospital_area',
         'hospital_ward',
         'household',
         'incident',
@@ -53,6 +56,15 @@ exports.up = async function (db) {
         'medical_area',
         'msupply_store',
         'nursing_zone',
+        'pacmossi_asset',
+        'pacmossi_asset_facility',
+        'pacmossi_asset_sub_facility',
+        'pacmossi_consumable',
+        'pacmossi_district',
+        'pacmossi_insecticide_test',
+        'pacmossi_spraying_site',
+        'pacmossi_village',
+        'pharmacy',
         'postcode',
         'project',
         'repair_request',
@@ -60,21 +72,37 @@ exports.up = async function (db) {
         'sub_catchment',
         'sub_district',
         'sub_facility',
+        'supermarket',
         'transfer',
         'trap',
+        'vehicle',
         'village',
+        'visiting_specialist',
         'water_sample',
+        'wholesaler',
         'wish_sub_district',
         'world'
       );
     `);
+
+  await db.runSql(`
+    create table country
+    (
+          id                   text             not null
+              primary key,
+          name                 text             not null
+              unique,
+          code                 text             not null
+              unique
+    );
+  `);
 
   // Create entity table
   await db.runSql(`
       CREATE TABLE entity (
         id            TEXT PRIMARY KEY,
         code          TEXT NOT NULL UNIQUE,
-        parent_id     TEXT NOT NULL REFERENCES entity,
+        parent_id     TEXT REFERENCES entity DEFERRABLE INITIALLY IMMEDIATE,
         name          VARCHAR(128)                     NOT NULL,
         type          entity_type                      NOT NULL,
         image_url     TEXT,
@@ -118,7 +146,7 @@ exports.up = async function (db) {
 
   // Create service_type enum
   await db.runSql(`
-      CREATE TYPE public.service_type AS ENUM (
+      CREATE TYPE service_type AS ENUM (
         'dhis',
         'tupaia',
         'indicator',
@@ -189,6 +217,25 @@ exports.up = async function (db) {
       );
     `);
 
+  await db.runSql(`
+    create table option
+    (
+        id                   text             not null
+            primary key,
+        value                text             not null,
+        label                text,
+        sort_order           integer,
+        option_set_id        text             not null
+            constraint option_option_set_id_fk
+                references option_set
+                on update cascade on delete cascade,
+        attributes           jsonb  default '{}'::jsonb,
+        constraint option_option_set_id_value_unique
+            unique (option_set_id, value)
+    );
+
+  `);
+
   // Create question table
   await db.runSql(`
       CREATE TABLE question (
@@ -215,8 +262,10 @@ exports.up = async function (db) {
       CREATE TABLE permission_group (
         id        TEXT NOT NULL PRIMARY KEY,
         name      TEXT NOT NULL UNIQUE,
-        parent_id TEXT REFERENCES permission_group
-          ON UPDATE CASCADE ON DELETE RESTRICT
+        parent_id TEXT REFERENCES permission_group 
+          ON UPDATE CASCADE ON DELETE RESTRICT 
+          DEFERRABLE INITIALLY IMMEDIATE
+          
       );
     `);
 
@@ -482,7 +531,125 @@ exports.up = async function (db) {
         CONSTRAINT answer_survey_response_id_question_id_unique
           UNIQUE (survey_response_id, question_id)
       );
-    `);
+  `);
+
+  await db.runSql(`
+    CREATE INDEX answer_question_id_idx ON answer (question_id);
+  `);
+
+  await db.runSql(`
+    CREATE TYPE task_status AS ENUM (
+      'to_do',
+      'cancelled',
+      'completed'
+    );
+  `);
+
+  await db.runSql(`
+    CREATE TYPE task_comment_type AS ENUM (
+      'user',
+      'system'
+    );
+  `);
+
+  await db.runSql(`
+    create table task
+    (
+        id                   text                    not null
+            primary key,
+        survey_id            text                    not null
+            constraint task_survey_id_fk
+                references survey
+                on update cascade on delete cascade,
+        entity_id            text                    not null
+            constraint task_entity_id_fk
+                references entity
+                on update cascade on delete cascade,
+        assignee_id          text
+            constraint task_assignee_id_fk
+                references user_account,
+        repeat_schedule      jsonb,
+        status               task_status,
+        created_at           timestamp default now() not null,
+        survey_response_id   text
+            constraint task_survey_response_id_fk
+                references survey_response
+                on update cascade on delete set null,
+        initial_request_id   text
+            constraint task_initial_request_id_fk
+                references survey_response
+                on update cascade on delete set null,
+        due_date             double precision,
+        parent_task_id       text
+            constraint task_parent_task_id_fk
+                references task
+                on update cascade on delete set null,
+        overdue_email_sent   timestamp with time zone,
+        updated_at_sync_tick bigint    default 0     not null
+    );
+  `);
+
+  await db.runSql(`
+    create index task_survey_id_idx
+        on task (survey_id);
+  `);
+
+  await db.runSql(`
+    create index task_entity_id_idx
+        on task (entity_id);
+  `);
+
+  await db.runSql(`
+    create index task_assignee_id_idx
+        on task (assignee_id);
+  `);
+
+  await db.runSql(`
+    create index task_survey_response_id_idx
+        on task (survey_response_id);
+  `);
+
+  await db.runSql(`
+    create index task_initial_request_id_fk
+        on task (survey_response_id);
+  `);
+
+  await db.runSql(`
+    create index task_parent_task_id_fk
+        on task (parent_task_id);
+  `);
+
+  await db.runSql(`
+    create table task_comment
+    (
+        id                   text                                                       not null
+            primary key,
+        task_id              text                                                       not null
+            constraint task_task_id_fk
+                references task
+                on update cascade on delete cascade,
+        user_id              text
+            constraint task_user_id_fk
+                references user_account
+                on update set null on delete set null,
+        user_name            text                                                       not null,
+        message              text,
+        type                 task_comment_type        default 'user'::task_comment_type not null,
+        created_at           timestamp with time zone default now()                     not null,
+        template_variables   jsonb                    default '{}'::jsonb               not null,
+        updated_at_sync_tick bigint                   default 0                         not null
+    );
+  `);
+
+  await db.runSql(`
+    create index task_comment_task_id_idx
+      on task_comment (task_id);
+  `);
+
+  await db.runSql(`
+    create index task_comment_user_id_idx
+      on task_comment (user_id);
+  `);
 };
 
 exports.down = function (db) {
