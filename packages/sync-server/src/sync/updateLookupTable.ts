@@ -31,6 +31,9 @@ const refreshExistingRecordsInLookupTable = async (
     : {};
 
   const { ctes, select, joins, where, groupBy } = result || {};
+  const allGroupBy = groupBy
+    ? [...groupBy, 'sync_device_tick.device_id']
+    : ['sync_device_tick.device_id'];
 
   log.info('updateLookupTable.updateLookupTableForModel starting', {
     model: model.databaseRecord,
@@ -48,8 +51,7 @@ const refreshExistingRecordsInLookupTable = async (
             updated_at_sync_tick,
             pushed_by_device_id,
             data,
-            project_ids,
-            is_deleted
+            project_ids
           )
           ${select || (await buildSyncLookupSelect(model))}
           FROM
@@ -60,21 +62,12 @@ const refreshExistingRecordsInLookupTable = async (
                   ON persisted_at_sync_tick = ${table}.updated_at_sync_tick`
               : 'LEFT JOIN (select NULL as device_id) AS sync_device_tick ON 1 = 1'
           }
-          LEFT JOIN tombstone
-            ON tombstone.record_id = ${table}.id
-            AND tombstone.record_type = '${model.databaseRecord}'
           ${joins || ''}
           WHERE
           (${where || `${table}.updated_at_sync_tick > :since`})
           ${fromIdInserted ? `AND ${table}.id > :fromIdInserted` : ''}
-          ${
-            groupBy
-              ? `GROUP BY 
-              sync_device_tick.device_id, 
-              tombstone.record_id,
-              ${groupBy.join(', ')}`
-              : ''
-          }
+          ${`GROUP BY 
+              ${allGroupBy.join(', ')}`}
           ORDER BY ${table}.id
           LIMIT :limit
           ON CONFLICT (record_id, record_type)
