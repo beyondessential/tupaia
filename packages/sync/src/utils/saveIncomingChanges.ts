@@ -146,23 +146,9 @@ export const saveIncomingSnapshotChanges = async (
   if (models.length === 0) {
     return;
   }
-
-  const transactingDatabase = models[0].database;
-  assertIsWithinTransaction(transactingDatabase);
-
-  await transactingDatabase.executeSql(`
-    SET CONSTRAINTS ALL DEFERRED;
-  `);
-  await switchTombstoneTrigger(transactingDatabase, false);
-
   for (const model of models) {
     await saveChangesForModelInBatches(model, sessionId, model.databaseRecord, isCentralServer);
   }
-
-  await transactingDatabase.executeSql(`
-    SET CONSTRAINTS ALL IMMEDIATE;
-  `);
-  await switchTombstoneTrigger(transactingDatabase, true);
 };
 
 export const saveIncomingInMemoryChanges = async (
@@ -176,13 +162,9 @@ export const saveIncomingInMemoryChanges = async (
 
   assertIsWithinTransaction(models.database);
 
-  // await switchTombstoneTrigger(models.database, false);
-
   const groupedChanges = groupBy(changes, 'record_type');
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
     await saveChangesForModel(model, modelChanges, isCentralServer);
   }
-
-  // await switchTombstoneTrigger(models.database, true);
 };
