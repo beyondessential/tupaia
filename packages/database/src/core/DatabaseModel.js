@@ -429,4 +429,12 @@ export class DatabaseModel {
     }
     return this.cache[cacheKey];
   }
+
+  sanitizeForCentralServer = (data) => {
+    return data;
+  }
+
+  sanitizeForClient = (data) => {
+    return data;
+  }
 }

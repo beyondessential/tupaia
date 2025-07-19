@@ -9,7 +9,7 @@ import {
 import { sleep } from '@tupaia/utils';
 
 import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
-import { RecordType, SyncSnapshotAttributes } from '../types';
+import { ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 
 // TODO: Move this to a config model RN-1668
@@ -22,14 +22,13 @@ const assertIsWithinTransaction = (database: BaseDatabase) => {
   }
 };
 
-const switchTombstoneTrigger = async (database: BaseDatabase, enabled: boolean) => {
+export const switchTombstoneTrigger = async (database: BaseDatabase, enabled: boolean) => {
   const tablesWithTrigger: { table: string }[] = await database.executeSql(
     TABLES_WITH_TRIGGER_FOR_DELETE_QUERY,
   );
 
   const action = enabled ? 'ENABLE' : 'DISABLE';
   for (const { table } of tablesWithTrigger) {
-    console.log(`${action} tombstone trigger for ${table}`);
     await database.executeSql(`
       ALTER TABLE "${table}" ${action} TRIGGER add_${table}_tombstone_on_delete;
     `);
@@ -39,8 +38,10 @@ const switchTombstoneTrigger = async (database: BaseDatabase, enabled: boolean) 
 export const saveChangesForModel = async (
   model: DatabaseModel,
   changes: SyncSnapshotAttributes[],
+  isCentralServer: boolean,
 ) => {
-  assertIsWithinTransaction(model.database);
+  const sanitizeData = (d: ModelSanitizeArgs) =>
+    isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
 
   // split changes into create, update
   const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
@@ -72,27 +73,31 @@ export const saveChangesForModel = async (
     }
   });
 
-  const recordsForCreate = changes.filter(c => idToExistingRecord[c.data.id] === undefined);
-  const recordsForUpdate = changes.filter(r => idsForUpdate.has(r.data.id)).map(({ data }) => data);
+  const recordsForCreate = changes
+    .filter(c => idToExistingRecord[c.data.id] === undefined)
+    .map(({ data }) => sanitizeData(data));
+  const recordsForUpdate = changes
+    .filter(r => idsForUpdate.has(r.data.id))
+    .map(({ data }) => sanitizeData(data));
 
   const recordsForDelete = changes.filter(r => idsForDelete.has(r.data.id));
 
   // run each import process
-  console.log('Sync: saveIncomingChanges: Creating new records', {
+  console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Creating new records`, {
     count: recordsForCreate.length,
   });
   if (recordsForCreate.length > 0) {
     await saveCreates(model, recordsForCreate);
   }
 
-  console.log('Sync: saveIncomingChanges: Updating existing records', {
+  console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Updating existing records`, {
     count: recordsForUpdate.length,
   });
   if (recordsForUpdate.length > 0) {
     await saveUpdates(model, recordsForUpdate);
   }
 
-  console.log('Sync: saveIncomingChanges: Deleting existingrecords', {
+  console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`, {
     count: recordsForDelete.length,
   });
   if (recordsForDelete.length > 0) {
@@ -104,6 +109,7 @@ const saveChangesForModelInBatches = async (
   model: DatabaseModel,
   sessionId: string,
   recordType: RecordType,
+  isCentralServer: boolean,
 ) => {
   let fromId;
   let batchRecords: SyncSnapshotAttributes[] | null = null;
@@ -122,7 +128,7 @@ const saveChangesForModelInBatches = async (
         count: batchRecords.length,
       });
 
-      await saveChangesForModel(model, batchRecords);
+      await saveChangesForModel(model, batchRecords, isCentralServer);
 
       await sleep(PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS);
     } catch (error) {
@@ -132,25 +138,37 @@ const saveChangesForModelInBatches = async (
   }
 };
 
-export const saveIncomingSnapshotChanges = async (models: DatabaseModel[], sessionId: string) => {
+export const saveIncomingSnapshotChanges = async (
+  models: DatabaseModel[],
+  sessionId: string,
+  isCentralServer: boolean,
+) => {
   if (models.length === 0) {
     return;
   }
 
-  assertIsWithinTransaction(models[0].database);
+  const transactingDatabase = models[0].database;
+  assertIsWithinTransaction(transactingDatabase);
 
-  await switchTombstoneTrigger(models[0].database, false);
+  await transactingDatabase.executeSql(`
+    SET CONSTRAINTS ALL DEFERRED;
+  `);
+  await switchTombstoneTrigger(transactingDatabase, false);
 
   for (const model of models) {
-    await saveChangesForModelInBatches(model, sessionId, model.databaseRecord);
+    await saveChangesForModelInBatches(model, sessionId, model.databaseRecord, isCentralServer);
   }
 
-  await switchTombstoneTrigger(models[0].database, true);
+  await transactingDatabase.executeSql(`
+    SET CONSTRAINTS ALL IMMEDIATE;
+  `);
+  await switchTombstoneTrigger(transactingDatabase, true);
 };
 
 export const saveIncomingInMemoryChanges = async (
   models: ModelRegistry,
   changes: SyncSnapshotAttributes[],
+  isCentralServer: boolean,
 ) => {
   if (changes.length === 0) {
     return;
@@ -158,13 +176,13 @@ export const saveIncomingInMemoryChanges = async (
 
   assertIsWithinTransaction(models.database);
 
-  await switchTombstoneTrigger(models.database, false);
+  // await switchTombstoneTrigger(models.database, false);
 
   const groupedChanges = groupBy(changes, 'record_type');
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
-    await saveChangesForModel(model, modelChanges);
+    await saveChangesForModel(model, modelChanges, isCentralServer);
   }
 
-  await switchTombstoneTrigger(models.database, true);
+  // await switchTombstoneTrigger(models.database, true);
 };

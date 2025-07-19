@@ -30,9 +30,9 @@ exports.up = function (db) {
           updated_at_sync_tick
         ) VALUES (
           OLD.id,
-          OLD.type,
+          TG_TABLE_NAME,
           NOW(),
-          (SELECT value FROM local_system_fact WHERE key = 'currentSyncTick')
+          (SELECT value FROM local_system_fact WHERE key = 'currentSyncTick')::BIGINT
         );
         RETURN OLD;
       END

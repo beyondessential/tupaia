@@ -19,11 +19,12 @@ exports.up = function (db) {
     `
       CREATE TABLE tombstone
       (
-          id                    VARCHAR(24) PRIMARY KEY,
-          record_id             VARCHAR(24) NOT NULL,
-          record_type           VARCHAR(24) NOT NULL,
+          id                    BIGSERIAL PRIMARY KEY,
+          record_id             TEXT NOT NULL,
+          record_type           TEXT NOT NULL,
           deleted_at            TIMESTAMPTZ NOT NULL,
-          updated_at_sync_tick  BIGINT NOT NULL
+          updated_at_sync_tick  BIGINT NOT NULL,
+          UNIQUE(record_id, record_type)
       );
     `,
   );

@@ -2,19 +2,31 @@ import { SyncDirections } from '@tupaia/constants';
 import { DatabaseModel } from '@tupaia/database';
 import { sanitizeRecord, SYNC_SESSION_DIRECTION, SyncSnapshotAttributes } from '@tupaia/sync';
 
-const snapshotChangesForModel = async (model: DatabaseModel, since: number) => {
-  const recordsChanged = await model.find({
+const snapshotChangesForModel = async (
+  model: DatabaseModel,
+  tombstoneModel: DatabaseModel,
+  since: number,
+) => {
+  const changedRecords = await model.find({
+    updated_at_sync_tick: {
+      comparator: '>',
+      comparisonValue: since,
+    },
+  });
+  const deletedRecords = await tombstoneModel.find({
+    record_type: model.databaseRecord,
     updated_at_sync_tick: {
       comparator: '>',
       comparisonValue: since,
     },
   });
 
+  const recordsChanged = [...changedRecords, ...deletedRecords];
   console.log(
     `snapshotChangesForModel: Found ${recordsChanged.length} for model ${model.databaseRecord} since ${since}`,
   );
 
-  return recordsChanged.map(r => ({
+  return deletedRecords.map(r => ({
     direction: SYNC_SESSION_DIRECTION.OUTGOING,
     recordType: model.databaseRecord,
     recordId: r.id,
@@ -22,7 +34,11 @@ const snapshotChangesForModel = async (model: DatabaseModel, since: number) => {
   })) as SyncSnapshotAttributes[];
 };
 
-export const snapshotOutgoingChanges = async (models: DatabaseModel[], since: number) => {
+export const snapshotOutgoingChanges = async (
+  models: DatabaseModel[],
+  tombstoneModel: DatabaseModel,
+  since: number,
+) => {
   const invalidModelNames = Object.values(models)
     .filter(
       m =>
@@ -40,7 +56,7 @@ export const snapshotOutgoingChanges = async (models: DatabaseModel[], since: nu
 
   let outgoingChanges: SyncSnapshotAttributes[] = [];
   for (const model of Object.values(models)) {
-    const changesForModel = await snapshotChangesForModel(model, since);
+    const changesForModel = await snapshotChangesForModel(model, tombstoneModel, since);
     outgoingChanges = [...outgoingChanges, ...changesForModel];
   }
   return outgoingChanges;

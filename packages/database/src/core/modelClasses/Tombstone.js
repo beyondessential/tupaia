@@ -1,4 +1,5 @@
-import { DatabaseModel } from '../DatabaseModel';
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
@@ -7,6 +8,8 @@ export class TombstoneRecord extends DatabaseRecord {
 }
 
 export class TombstoneModel extends DatabaseModel {
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return TombstoneRecord;
   }
