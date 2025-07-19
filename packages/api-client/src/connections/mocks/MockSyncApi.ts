@@ -5,6 +5,12 @@ export class MockSyncApi implements SyncApiInterface {
   public startSyncSession(): Promise<any> {
     throw new Error('Method not implemented.');
   }
+  public checkSessionReady(sessionId: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+  public getSessionMetadata(sessionId: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
   public endSyncSession(sessionId: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
@@ -18,7 +24,13 @@ export class MockSyncApi implements SyncApiInterface {
     deviceId: string,
   ): Promise<any> {
     throw new Error('Method not implemented.');
-  } 
+  }
+  public checkPullStatus(sessionId: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+  public getPullMetadata(sessionId: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
   public pull(response: ExpressResponse, sessionId: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
@@ -26,6 +38,9 @@ export class MockSyncApi implements SyncApiInterface {
     throw new Error('Method not implemented.');
   }
   public completePush(sessionId: string, deviceId: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+  public checkPushStatus(sessionId: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
 }

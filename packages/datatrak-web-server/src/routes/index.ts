@@ -39,6 +39,10 @@ export {
 } from './ExportSurveyResponseRoute';
 export { SyncStartSessionRequest, SyncStartSessionRoute } from './SyncStartSessionRoute';
 export { SyncInitiatePullRequest, SyncInitiatePullRoute } from './SyncInitiatePullRoute';
+export { SyncPullMetadataRequest, SyncPullMetadataRoute } from './SyncPullMetadataRoute';
+export { SyncReadyRequest, SyncReadyRoute } from './SyncReadyRoute';
+export { SyncMetadataRequest, SyncMetadataRoute } from './SyncMetadataRoute';
+export { SyncPushStatusRequest, SyncPushStatusRoute } from './SyncPushStatusRoute';
 export { SyncPullRequest, SyncPullRoute } from './SyncPullRoute';
 export { SyncPushRequest, SyncPushRoute } from './SyncPushRoute';
 export { SyncPushCompleteRequest, SyncPushCompleteRoute } from './SyncPushCompleteRoute';
