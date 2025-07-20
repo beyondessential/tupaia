@@ -6,7 +6,6 @@ export class BrowserChangeChannel {
 
   constructor() {
     this.pg = getPGliteInstance();
-    console.log('this.pg', this.pg);
   }
 
   async close() {
