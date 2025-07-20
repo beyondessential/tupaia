@@ -10,7 +10,7 @@ import {
 
 import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
 
-const refreshExistingRecordsInLookupTable = async (
+const updateExistingRecordsIntoLookupTable = async (
   model: DatabaseModel,
   config: SyncServerConfig,
   since: number,
@@ -95,7 +95,7 @@ const refreshExistingRecordsInLookupTable = async (
     fromIdInserted = maxIdInserted;
     totalCount += chunkCount;
 
-    log.info('updateLookupTable.updateLookupTableForModel inserted or updated', {
+    log.info('updateLookupTable.updateExistingRecordsIntoLookupTable inserted or updated', {
       model: model.databaseRecord,
       chunkCount,
     });
@@ -104,7 +104,7 @@ const refreshExistingRecordsInLookupTable = async (
   return totalCount;
 };
 
-const refreshDeletedRecordsInLookupTable = async (
+const updateDeletedRecordsInLookupTable = async (
   model: DatabaseModel,
   config: SyncServerConfig,
   since: number,
@@ -147,7 +147,7 @@ const refreshDeletedRecordsInLookupTable = async (
     fromIdDeleted = maxIdDeleted;
     totalCount += chunkCount;
 
-    log.info('updateLookupTable.updateLookupTableForModel deleted', {
+    log.info('updateLookupTable.updateDeletedRecordsInLookupTable deleted', {
       model: model.databaseRecord,
       chunkCount,
     });
@@ -162,14 +162,14 @@ const updateLookupTableForModel = async (
   since: number,
   syncLookupTick: number | null,
 ) => {
-  const changedCount = await refreshExistingRecordsInLookupTable(
+  const changedCount = await updateExistingRecordsIntoLookupTable(
     model,
     config,
     since,
     syncLookupTick,
   );
 
-  const deletedCount = await refreshDeletedRecordsInLookupTable(
+  const deletedCount = await updateDeletedRecordsInLookupTable(
     model,
     config,
     since,

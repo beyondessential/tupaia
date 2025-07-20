@@ -23,8 +23,8 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const initSyncManager = async () => {
-
-      if (models) {
+      // Only initialize the sync manager if it doesn't exist yet
+      if (!clientSyncManager && models) {
         let deviceId = await models.localSystemFact.get('deviceId');
         if (!deviceId) {
           deviceId = `datatrak-web-${generateId()}`;
@@ -41,8 +41,9 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const initSyncScheduler = async () => {
+      // Only schedule the sync if it's not already scheduled and the client sync manager exists
       if (!isSyncScheduled && clientSyncManager && projects?.length) {
-        const projectIds = [projects[0].id];
+        const projectIds = projects.map(project => project.id);
         const intervalId = setInterval(() => {
           console.log('Starting regular sync');
           clientSyncManager.triggerSync(projectIds);

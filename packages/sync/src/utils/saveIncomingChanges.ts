@@ -133,6 +133,9 @@ export const saveIncomingSnapshotChanges = async (
   if (models.length === 0) {
     return;
   }
+
+  assertIsWithinTransaction(models[0].database);
+
   for (const model of models) {
     await saveChangesForModelInBatches(model, sessionId, model.databaseRecord, isCentralServer);
   }
