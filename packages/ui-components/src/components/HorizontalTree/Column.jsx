@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { darken, fade } from '@material-ui/core';
+import { darken } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { ColumnFilter, useFilter } from './ColumnFilter';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { FetchLoader } from '../FetchLoader';
+import { ColumnFilter, useFilter } from './ColumnFilter';
 
 const CLASS_NAME = 'TupaiaHorizontalTreeColumn';
 
@@ -47,7 +47,7 @@ const ContentContainer = styled.div`
           return theme.palette.primary.main;
         }
         if (isExpanded) {
-          return fade(theme.palette.primary.main, 0.1);
+          return `oklch(from ${theme.palette.primary.main} l c h / 10%)`;
         }
         return 'transparent';
       }};
