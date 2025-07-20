@@ -127,6 +127,7 @@ const updateDeletedRecordsInLookupTable = async (
             WHERE record_type = '${model.databaseRecord}'
               AND updated_at_sync_tick > :since
               AND record_id > :fromIdDeleted
+              ORDER BY record_id
               LIMIT :limit
           )
           RETURNING record_id
