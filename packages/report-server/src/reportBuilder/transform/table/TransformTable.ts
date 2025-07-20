@@ -47,7 +47,7 @@ export class TransformTable {
   }
 
   public hasColumn(columnName: string) {
-    return this.indexOfColumn(columnName) > -1;
+    return this.columns.includes(columnName);
   }
 
   public hasIndex(index: number) {
