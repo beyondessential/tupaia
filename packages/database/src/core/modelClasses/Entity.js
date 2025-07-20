@@ -546,6 +546,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             UNION
             SELECT child_id as entity_id, entity_hierarchy_id 
             FROM entity_parent_child_relation
+            UNION
+            SELECT survey_response.entity_id, project.entity_hierarchy_id
+            FROM survey_response
+            JOIN survey ON survey.id = survey_response.survey_id
+            JOIN project ON project.id = survey.project_id
           )
         `,
       ],
@@ -560,5 +565,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       `,
       groupBy: ['entity.id'],
     };
+  }
+
+  sanitizeForClient = (data) => {
+    const { point, bounds, region, parent_id, ...sanitizedData } = data;
+    return sanitizedData;
   }
 }
