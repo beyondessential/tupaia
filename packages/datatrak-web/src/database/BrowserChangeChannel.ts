@@ -2,12 +2,15 @@ import { PGlite } from '@electric-sql/pglite';
 import { getPGliteInstance } from './getPGliteInstance';
 
 export class BrowserChangeChannel {
+  pg: PGlite;
+
   constructor() {
     this.pg = getPGliteInstance();
+    console.log('this.pg', this.pg);
   }
 
   async close() {
-    this.pg.close();
+    return this.pg.close();
   }
 
   addChannel(channel, handler) {
