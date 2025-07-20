@@ -1,6 +1,7 @@
 'use strict';
 
-import { DatabaseChangeChannel } from '../../server/DatabaseChangeChannel';
+import { TupaiaChangeChannel } from '../../server/TupaiaChangeChannel';
+import { DatabaseChangeChannel } from '../DatabaseChangeChannel';
 import { arrayToDbString, markRecordsForResync } from '../utilities';
 
 var dbm;
@@ -50,7 +51,7 @@ const updateSyncQueueForSurveyResponses = async (db, surveyResponseIds) =>
       record_id IN (${arrayToDbString(surveyResponseIds)})`);
 
 exports.up = async function (db) {
-  const changeChannel = new DatabaseChangeChannel();
+  const changeChannel = new DatabaseChangeChannel(new TupaiaChangeChannel());
 
   try {
     // n.b. this requires a central-server instance to be running and listening for the changes

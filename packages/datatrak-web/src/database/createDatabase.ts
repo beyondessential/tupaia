@@ -11,5 +11,6 @@ export const createDatabase = async (): Promise<{
   const models = new ModelRegistry(database) as DatatrakWebModelRegistry;
 
   await migrate(database);
+  await database.waitForChangeChannel();
   return { database, models };
 };

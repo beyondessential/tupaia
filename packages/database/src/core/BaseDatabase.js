@@ -67,6 +67,10 @@ const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
 
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
+// no math here, just hand-tuned to be as low as possible while
+// keeping all the tests passing
+const HANDLER_DEBOUNCE_DURATION = 250;
+
 export class BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = false;
 
@@ -119,10 +123,6 @@ export class BaseDatabase {
 
   async closeConnections() {
     return this.connection.destroy();
-  }
-
-  async waitUntilConnected() {
-    await this.connectionPromise;
   }
 
   async fetchSchemaForTable(databaseRecord, schemaName) {
@@ -459,6 +459,95 @@ export class BaseDatabase {
 
   isWithinTransaction() {
     return this.connection.isTransaction;
+  }
+
+  createChangeChannel() {
+    throw new Error('createChangeChannel should be implemented by the child class');
+  }
+
+  getHandlersForChange(change) {
+    const { handler_key: specificHandlerKey, record_type: recordType } = change;
+    const handlersForCollection = this.getChangeHandlersForCollection(recordType);
+    if (specificHandlerKey) {
+      return handlersForCollection[specificHandlerKey]
+        ? [handlersForCollection[specificHandlerKey]]
+        : [];
+    }
+    return Object.values(handlersForCollection);
+  }
+
+  notifyChangeHandlers = async (change) => {
+    const unlock = this.handlerLock.createLock(change.record_id);
+    const handlers = this.getHandlersForChange(change);
+    try {
+      for (let i = 0; i < handlers.length; i++) {
+        try {
+          await handlers[i](change);
+        } catch (e) {
+          winston.error(e);
+        }
+      }
+    } finally {
+      unlock();
+    }
+  }
+
+  async waitForAllChangeHandlers() {
+    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
+  }
+
+  getChangeHandlersForCollection(collectionName) {
+    // Instantiate the array if no change handlers currently exist for the collection
+    if (!this.changeHandlers[collectionName]) {
+      this.changeHandlers[collectionName] = {};
+    }
+    return this.changeHandlers[collectionName];
+  }
+
+  getOrCreateChangeChannel() {
+    if (!this.changeChannel) {
+      this.changeChannel = this.transactingChangeChannel || this.createChangeChannel();
+      this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
+      this.changeChannelPromise = this.changeChannel.ping(undefined, 0);
+    }
+    return this.changeChannel;
+  }
+
+  async waitUntilConnected() {
+    await this.connectionPromise;
+    if (this.changeChannel) {
+      await this.waitForChangeChannel();
+    }
+  }
+
+  async waitForChangeChannel() {
+    this.getOrCreateChangeChannel();
+    return this.changeChannelPromise;
+  }
+
+  addChangeHandlerForCollection(collectionName, changeHandler, key = this.generateId()) {
+    // if a change handler is being added, this db needs a change channel - make sure it's instantiated
+    this.getOrCreateChangeChannel();
+    this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
+    return () => {
+      delete this.getChangeHandlersForCollection(collectionName)[key];
+    };
+  }
+
+  async closeConnections() {
+    if (this.changeChannel) {
+      await this.changeChannel.close();
+    }
+    return super.closeConnections();
+  }
+
+  addSchemaChangeHandler(handler) {
+    const changeChannel = this.getOrCreateChangeChannel();
+    return changeChannel.addSchemaChangeHandler(handler);
+  }
+
+  async markRecordsAsChanged(recordType, records) {
+    await this.getOrCreateChangeChannel().publishRecordUpdates(recordType, records);
   }
 }
 

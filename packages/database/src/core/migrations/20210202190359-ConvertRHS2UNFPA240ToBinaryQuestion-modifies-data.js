@@ -1,8 +1,9 @@
 'use strict';
 
 import path from 'path';
-import { DatabaseChangeChannel } from '../../server/DatabaseChangeChannel';
+import { DatabaseChangeChannel } from '../DatabaseChangeChannel';
 import { arrayToDbString, markRecordsForResync } from '../utilities';
+import { TupaiaChangeChannel } from '../../server/TupaiaChangeChannel';
 
 var dbm;
 var type;
@@ -75,7 +76,7 @@ exports.up = async function (db) {
     where question_id = (select id from "question" where "question"."code" = '${questionCode}');
   `);
 
-  const changeChannel = new DatabaseChangeChannel();
+  const changeChannel = new DatabaseChangeChannel(new TupaiaChangeChannel());
 
   try {
     // n.b. this requires a central-server instance to be running and listening for the changes

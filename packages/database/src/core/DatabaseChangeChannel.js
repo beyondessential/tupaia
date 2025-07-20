@@ -1,18 +1,22 @@
-import PGPubSub from 'pg-pubsub';
-import winston from 'winston';
+import { generateId } from './utilities/generateId';
 
-import { generateId } from '../core/utilities/generateId';
-import { getConnectionConfig } from './getConnectionConfig';
-
-export class DatabaseChangeChannel extends PGPubSub {
-  constructor() {
-    super(getConnectionConfig(), { log: winston.info });
+export class DatabaseChangeChannel {
+  constructor(changeChannelAdapter) {
+    this.changeChannelAdapter = changeChannelAdapter;
     this.pingListeners = {};
     this.addChannel('ping', this.notifyPingListeners);
   }
 
+  addChannel(channel, handler) {
+    this.changeChannelAdapter.addChannel(channel, handler);
+  }
+
+  publish(channel, payload) {
+    this.changeChannelAdapter.publish(channel, payload);
+  }
+
   async close() {
-    return super.close();
+    return this.changeChannelAdapter.close();
   }
 
   addDataChangeHandler(handler) {
@@ -68,7 +72,7 @@ export class DatabaseChangeChannel extends PGPubSub {
     });
   }
 
-  notifyPingListeners(result) {
+  notifyPingListeners = (result) => {
     Object.values(this.pingListeners).forEach(listener => {
       listener(result);
     });
