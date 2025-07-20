@@ -66,8 +66,9 @@ export const saveChangesForModel = async (
   const recordsForUpdate = changes
     .filter(r => idsForUpdate.has(r.data.id))
     .map(({ data }) => sanitizeData(data));
-
-  const recordsForDelete = changes.filter(r => idsForDelete.has(r.data.id));
+  const recordsForDelete = changes
+    .filter(r => idsForDelete.has(r.data.id))
+    .map(({ data }) => sanitizeData(data));
 
   // run each import process
   console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Creating new records`, {
