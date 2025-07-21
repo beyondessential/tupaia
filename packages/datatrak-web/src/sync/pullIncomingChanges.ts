@@ -1,8 +1,9 @@
 import { ModelRegistry } from '@tupaia/database';
 import { SyncSnapshotAttributes } from '@tupaia/sync';
 
-import { post, stream } from '../api';
+import { stream } from '../api';
 import { ProcessStreamDataParams } from '../types';
+import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 
 export const initiatePull = async (
   sessionId: string,
@@ -12,7 +13,23 @@ export const initiatePull = async (
 ) => {
   console.log('ClientSyncManager.pull.waitingForCentral');
   const body = { since, projectIds, deviceId };
-  return post(`sync/${sessionId}/pull`, { data: body });
+
+  for await (const { kind, message } of stream(() => ({
+    endpoint: `sync/${sessionId}/pull`,
+    options: body,
+  }))) {
+    handler: switch (kind) {
+      case SYNC_STREAM_MESSAGE_KIND.PULL_WAITING:
+        // still waiting
+        break handler;
+      case SYNC_STREAM_MESSAGE_KIND.END:
+        // includes the new tick from starting the session
+        return { ...message };
+      default:
+        console.warn(`Unexpected message kind: ${kind}`);
+    }
+  }
+  throw new Error('Unexpected end of stream');
 };
 
 export const pullIncomingChanges = async (
@@ -20,34 +37,25 @@ export const pullIncomingChanges = async (
   sessionId: string,
   processStreamedDataFunction: (params: ProcessStreamDataParams) => Promise<void>,
 ) => {
-  const reader = await stream(`sync/${sessionId}/pull`);
-  const decoder = new TextDecoder();
-  let buffer = '';
+  stream: for await (const { kind, message } of stream(() => ({
+    endpoint: `sync/${sessionId}/pull/stream`,
+  }))) {
+    // if (records.length >= WRITE_BATCH_SIZE) {
+    //   // do writes in the background while we're continuing to stream data
+    //   writes.push(writeBatch(records));
+    //   records = [];
+    // }
 
-  while (true) {
-    const { done, value } = await reader.read();
-    const batch = decoder.decode(value, { stream: true });
-    buffer += batch;
-    const lines = buffer.split('\n');
-    buffer = lines.pop() || '';
-
-    const records: SyncSnapshotAttributes[] = [];
-
-    for (const line of lines) {
-      try {
-        const record = JSON.parse(line) as SyncSnapshotAttributes;
-        // mark updatedAtSyncTick as never updated, so we don't push it back
-        // to the central server until the next local update
-        records.push({ ...record, data: { ...record.data, updatedAtSyncTick: -1 } });
-      } catch (e) {
-        console.error('Failed to parse JSON when streaming incoming changes for pull:', e, line);
-      }
-    }
-
-    await processStreamedDataFunction({ models, sessionId, records });
-
-    if (done) {
-      break;
+    handler: switch (kind) {
+      case SYNC_STREAM_MESSAGE_KIND.PULL_CHANGE:
+        const records: SyncSnapshotAttributes[] = message;
+        await processStreamedDataFunction({ models, sessionId, records });
+        break handler;
+      case SYNC_STREAM_MESSAGE_KIND.END:
+        console.debug(`FacilitySyncManager.pull.noMoreChanges`);
+        break stream;
+      default:
+        console.warn('FacilitySyncManager.pull.unknownMessageKind', { kind });
     }
   }
 };

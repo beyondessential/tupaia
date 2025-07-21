@@ -1,85 +1,3 @@
-import axios from 'axios';
-import FetchError from './fetchError';
-import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
-
-// Needs to use process.env instead of import.meta.env for compatibility with jest
-export const API_URL = process.env.REACT_APP_DATATRAK_WEB_API_URL || 'http://localhost:8110/v1';
-
-// withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
-axios.defaults.withCredentials = true;
-
-export const timeout = 45 * 1000; // 45 seconds
-
-type RequestParameters = Record<string, any> & {
-  params?: Record<string, any>;
-};
-
-type RequestParametersWithMethod = RequestParameters & {
-  method: 'get' | 'post' | 'put' | 'delete';
-};
-const getRequestOptions = (options?: RequestParametersWithMethod) => {
-  return {
-    ...options,
-    timeout,
-  };
-};
-
-const request = async (endpoint: string, options?: RequestParametersWithMethod) => {
-  const requestOptions = getRequestOptions(options);
-
-  try {
-    const response = await axios(`${API_URL}/${endpoint}`, requestOptions);
-
-    return response.data;
-  } catch (error: any) {
-    // normalise errors using fetch error class
-    if (error.response) {
-      const { data } = error.response;
-
-      // Some of the endpoints return 'details' with the message instead of 'message' or 'error'
-      if (data.details) {
-        throw new FetchError(data.details, error.response.status, data);
-      }
-
-      if (data.error) {
-        throw new FetchError(data.error, error.response.status, data);
-      }
-
-      if (data.message) {
-        throw new FetchError(data.message, data.code, data);
-      }
-    }
-    throw new Error(error);
-  }
-};
-
-// export const stream = async (endpoint: string, options?: RequestParameters) => {
-//   try {
-//     const response = await fetch(`${API_URL}/${endpoint}`, {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(options),
-//     });
-
-//     return response.body!.getReader();
-//   } catch (error: any) {
-//     throw new Error(error);
-//   }
-// };
-
-export const get = (endpoint: string, options?: RequestParameters) =>
-  request(endpoint, { method: 'get', ...options });
-
-export const post = (endpoint: string, options?: RequestParameters) =>
-  request(endpoint, { method: 'post', ...options });
-
-export const put = (endpoint: string, options?: RequestParameters) =>
-  request(endpoint, { method: 'put', ...options });
-
-export const remove = (endpoint: string) => request(endpoint, { method: 'delete' });
-
 /** Connect to a streaming endpoint and async yield messages.
  *
  * ```js
@@ -163,7 +81,7 @@ export async function* stream(
     // we've got the full message, move it out of buffer
     buffer = buffer.subarray(8 + length);
 
-    console.debug('Stream: message', {
+    this.logger.debug('Stream: message', {
       // we try to show the actual name of the Kind when known instead of the raw value
       // we also display the raw value in hex as that's how they're defined in constants
       kind:
@@ -186,16 +104,12 @@ export async function* stream(
 
   let { endpoint, query, options } = endpointFn();
   for (let attempt = 1; attempt <= streamRetryAttempts; attempt++) {
-    console.debug(`Stream: attempt ${attempt} of ${streamRetryAttempts} for ${endpoint}`);
-    const response = await fetch(`${API_URL}/${endpoint}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(options),
+    this.logger.debug(`Stream: attempt ${attempt} of ${streamRetryAttempts} for ${endpoint}`);
+    const response = await this.fetch(endpoint, query, {
+      ...options,
+      returnResponse: true,
     });
-
-    const reader = response.body!.getReader();
+    const reader = response.body.getReader();
 
     // buffer used to accumulate the data received from the stream.
     // it's important to remember that there's no guarantee that a
@@ -235,13 +149,13 @@ export async function* stream(
         const { length, kind, message } = decodeOne(buffer);
 
         if (!kind) {
-          console.warn('Stream ended with incomplete data, will retry');
+          this.logger.warn('Stream ended with incomplete data, will retry');
           break reader;
         }
 
         if (length === undefined && kind === SYNC_STREAM_MESSAGE_KIND.END) {
           // if the data is not complete, don't interpret the END message as being truly the end
-          console.warn('END message received but with partial data, will retry');
+          this.logger.warn('END message received but with partial data, will retry');
           break reader;
         }
 
