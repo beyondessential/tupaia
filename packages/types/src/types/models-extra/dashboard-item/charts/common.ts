@@ -14,14 +14,13 @@ export enum ChartType {
   Gauge = 'gauge',
 }
 
-interface YAxisDomainEntry {
+type YAxisDomainEntry = {
   type: 'number' | 'scale' | 'clamp' | 'string';
   value?: number | string;
   min?: number;
   max?: number;
-}
-
-export interface YAxisDomain {
+};
+export type YAxisDomain = {
   /**
    * @description
    * Domain configuration for the maximum y axis value.
@@ -87,12 +86,12 @@ export interface YAxisDomain {
    * For more options see: https://recharts.org/en-US/api/YAxis#domain
    */
   min: YAxisDomainEntry;
-}
+};
 
 /**
  * @description The base chart config on all chart types
  */
-export interface BaseChartConfig extends BaseConfig {
+export type BaseChartConfig = BaseConfig & {
   type: `${DashboardItemType.Chart}`;
   chartType: ChartType;
 
@@ -130,7 +129,7 @@ export interface BaseChartConfig extends BaseConfig {
    * @description Set to true to display the legend even if there is just a single series of data
    */
   renderLegendForOneItem?: boolean;
-}
+};
 
 export const isChartConfig = (config?: BaseConfig): config is BaseChartConfig => {
   return (config && 'type' in config && config.type === 'chart') ?? false;
@@ -148,7 +147,7 @@ export type ReferenceLinesConfig = {
   referenceLabel?: string;
 };
 
-export interface CartesianChartPresentationOptions extends ExportPresentationOptions {
+export type CartesianChartPresentationOptions = ExportPresentationOptions & {
   /**
    * @description This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values
    */
@@ -163,14 +162,14 @@ export interface CartesianChartPresentationOptions extends ExportPresentationOpt
   referenceLines?: {
     targetLine?: ReferenceLinesConfig;
   };
-}
+};
 
 type Key = string | '$all';
 
 /**
  * @description The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns
  */
-export interface ChartConfigObject {
+export type ChartConfigObject = {
   color?: CssColor;
 
   /**
@@ -222,19 +221,19 @@ export interface ChartConfigObject {
   opacity?: 'ascending' | 'descending' | number;
 
   chartType?: ChartType | never;
-}
+};
 
-export interface ChartConfigT {
+export type ChartConfigT = {
   /**
    * @description key of column name or special marker '$all' for all columns
    */
   [key: Key]: ChartConfigObject;
-}
+};
 
 /**
  * @description A Cartesian chart has an area with axes e.g. bar, line. It extends the base chart config
  */
-export interface CartesianChartConfig extends BaseChartConfig {
+export type CartesianChartConfig = BaseChartConfig & {
   /**
    * @description The label on the x-axis
    */
@@ -274,4 +273,4 @@ export interface CartesianChartConfig extends BaseChartConfig {
    * @description Common options for configuring the chart presentation
    */
   presentationOptions?: CartesianChartPresentationOptions;
-}
+};
