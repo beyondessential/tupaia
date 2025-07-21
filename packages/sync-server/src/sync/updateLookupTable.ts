@@ -124,7 +124,7 @@ const updateDeletedRecordsInLookupTable = async (
           updated_at_sync_tick = :updatedAtSyncTick
           WHERE sync_lookup.record_id IN (
             SELECT record_id FROM tombstone
-            WHERE record_type = '${model.databaseRecord}'
+            WHERE record_type = :recordType
               AND updated_at_sync_tick > :since
               AND record_id > :fromIdDeleted
               ORDER BY record_id
@@ -141,6 +141,7 @@ const updateDeletedRecordsInLookupTable = async (
         limit: CHUNK_SIZE,
         fromIdDeleted,
         updatedAtSyncTick: syncLookupTick,
+        recordType: model.databaseRecord,
       },
     );
 
