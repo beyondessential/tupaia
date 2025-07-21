@@ -58,9 +58,7 @@ export class Authenticator {
         : await verifyPassword(secretKey, apiClient.secret_key_hash);
 
       if (!isVerified) {
-        throw new UnauthenticatedError(
-          `Incorrect username or secret for API client ${apiClient.username}`,
-        );
+        throw new UnauthenticatedError(`Couldn’t authenticate API client ${apiClient.username}`);
       }
 
       const user = await apiClient.getUser();
