@@ -267,6 +267,13 @@ apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
 apiV2.get('/tasks/:recordId?', useRouteHandler(GETTasks));
 apiV2.get('/tasks/:parentRecordId/taskComments', useRouteHandler(GETTaskComments));
+
+/**
+ * Semantically a GET, but mechanically a POST, to bypass `414 Request-URI Too Large` error by
+ * putting params in request body.
+ */
+apiV2.post('/dashboardItems', useRouteHandler(GETDashboardRelations));
+
 /**
  * POST routes
  */

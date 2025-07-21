@@ -1,9 +1,11 @@
 import { RECORDS } from '@tupaia/database';
-import { fullyQualifyColumnSelector } from '../GETHandler/helpers';
-import { GETHandler } from '../GETHandler';
+import { UnprocessableContentError } from '@tupaia/utils';
+
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { assertDashboardGetPermissions } from '../dashboards';
 import { assertDashboardItemGetPermissions } from '../dashboardItems';
+import { assertDashboardGetPermissions } from '../dashboards';
+import { GETHandler } from '../GETHandler';
+import { fullyQualifyColumnSelector } from '../GETHandler/helpers';
 import { assertDashboardRelationGetPermissions } from './assertDashboardRelationsPermissions';
 import {
   createDashboardRelationsDBFilter,
@@ -13,8 +15,9 @@ import {
 
 /**
  * Handles endpoints:
- * - /dashboardRelations
- * - /dashboardRelations/:dashboardRelationId
+ * - GET /dashboardRelations
+ * - GET /dashboardRelations/:dashboardRelationId
+ * - POST /dashboardRelations (Read-only, no creates or updates. Using POST to avoid 414 error.)
  */
 export class GETDashboardRelations extends GETHandler {
   permissionsFilteredInternally = true;
@@ -31,8 +34,19 @@ export class GETDashboardRelations extends GETHandler {
   };
 
   getDbQueryCriteria() {
-    const { filter: filterString } = this.req.query;
-    const filter = filterString ? JSON.parse(filterString) : {};
+    /** @type {string | undefined} */
+    const filterFromQuery = this.req.query.filter; // Handling a GET
+    /** @type {object | undefined} */
+    const filterFromBody = this.req.body.filter; // Handling a POST
+
+    if (filterFromQuery && filterFromBody) {
+      throw new UnprocessableContentError(
+        'Must provide `filter` either as a query parameter or in request body, but not both.',
+        422,
+      );
+    }
+
+    const filter = filterFromBody ?? JSON.parse(filterFromQuery);
     const processedObject = {};
     Object.entries(filter).forEach(([columnSelector, value]) => {
       // We don't want to use the customColumnSelectors for dashboard relations since they are not
@@ -68,7 +82,9 @@ export class GETDashboardRelations extends GETHandler {
       case RECORDS.DASHBOARD_ITEM:
         return this.getPermissionsViaParentDashboardItemFilter(criteria, options);
       default:
-        throw new Error(`Cannot get dashboard relations for ${this.parentRecordType}`);
+        throw new UnprocessableContentError(
+          `Cannot get dashboard relations for ${this.parentRecordType}`,
+        );
     }
   }
 
