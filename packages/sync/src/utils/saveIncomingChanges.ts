@@ -1,11 +1,6 @@
 import { groupBy } from 'lodash';
 
-import {
-  BaseDatabase,
-  DatabaseModel,
-  ModelRegistry,
-  TABLES_WITH_TRIGGER_FOR_DELETE_QUERY,
-} from '@tupaia/database';
+import { BaseDatabase, DatabaseModel, ModelRegistry } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 
 import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
@@ -39,35 +34,21 @@ export const saveChangesForModel = async (
   const idToExistingRecord: Record<number, (typeof existingRecords)[0]> = Object.fromEntries(
     existingRecords.map((e: any) => [e.id, e]),
   );
-  // follow the same pattern for incoming records
-  // https://github.com/beyondessential/tamanu/pull/4854#discussion_r1403828225
-  const idToIncomingRecord: { [key: number]: (typeof changes)[0] } = Object.fromEntries(
-    changes.filter(c => c.data.id).map(e => [e.data.id, e]),
-  );
+  const recordsForCreate = [];
+  const recordsForUpdate = [];
+  const recordsForDelete = [];
 
-  const idsForUpdate = new Set();
-  const idsForDelete = new Set();
+  for (const change of changes) {
+    const { data, isDeleted } = change;
 
-  existingRecords.forEach(existing => {
-    // compares incoming and existing records by id
-    const incoming = idToIncomingRecord[existing.id];
-    if (existing) {
-      if (incoming.isDeleted) {
-        idsForDelete.add(existing.id);
-      } else {
-        idsForUpdate.add(existing.id);
-      }
+    if (idToExistingRecord[data.id] === undefined) {
+      recordsForCreate.push(sanitizeData(data));
+    } else if (isDeleted) {
+      recordsForDelete.push(sanitizeData(data));
+    } else {
+      recordsForUpdate.push(sanitizeData(data));
     }
-  });
-
-  const recordsForCreate = changes
-    .filter(c => idToExistingRecord[c.data.id] === undefined)
-    .map(({ data }) => sanitizeData(data));
-  const recordsForUpdate = changes
-    .filter(r => idsForUpdate.has(r.data.id))
-    .map(({ data }) => sanitizeData(data));
-
-  const recordsForDelete = changes.filter(r => idsForDelete.has(r.data.id));
+  }
 
   // run each import process
   console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Creating new records`, {
@@ -133,6 +114,9 @@ export const saveIncomingSnapshotChanges = async (
   if (models.length === 0) {
     return;
   }
+
+  assertIsWithinTransaction(models[0].database);
+
   for (const model of models) {
     await saveChangesForModelInBatches(model, sessionId, model.databaseRecord, isCentralServer);
   }

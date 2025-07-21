@@ -26,7 +26,7 @@ const snapshotChangesForModel = async (
     `snapshotChangesForModel: Found ${recordsChanged.length} for model ${model.databaseRecord} since ${since}`,
   );
 
-  return deletedRecords.map(r => ({
+  return recordsChanged.map(r => ({
     direction: SYNC_SESSION_DIRECTION.OUTGOING,
     recordType: model.databaseRecord,
     recordId: r.id,

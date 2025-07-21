@@ -1,37 +1,85 @@
 import { Response as ExpressResponse } from 'express';
 
+import { sleep } from '@tupaia/utils';
+
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
+import { StreamMessage } from '@tupaia/server-utils';
 
 export class SyncApi extends BaseApi {
-  async startSyncSession() {
+  async startSyncSession(res: ExpressResponse) {
     // start a sync session
-    return this.connection.post('sync');
-  }
+    const { sessionId } = await this.connection.post('sync');
 
-  async checkSessionReady(sessionId: string) {
-    return this.connection.get(`sync/${sessionId}/status`);
-  }
+    // TODO: Implement sync queue RN-1667
 
-  async getSessionMetadata(sessionId: string) {
-    return this.connection.get(`sync/${sessionId}/metadata`, {});
+    // then, poll the sync/:sessionId/status endpoint until we get a valid response
+    // this is because POST /sync (especially the tickTockGlobalClock action) might get blocked
+    // and take a while if the central server is concurrently persist records from another client
+    await this.pollStatusUntil(
+      res,
+      `sync/${sessionId}/status`,
+      'ready',
+      StreamMessage.sessionWaiting,
+    );
+
+    // finally, fetch the new tick from starting the session
+    const { startedAtTick } = await this.connection.get(`sync/${sessionId}/metadata`, {});
+
+    res.write(StreamMessage.end({ sessionId, startedAtTick }));
+    res.end();
   }
 
   async endSyncSession(sessionId: string) {
     return this.connection.delete(`sync/${sessionId}`);
   }
 
-  async initiatePull(sessionId: string, since: number, projectIds: string[], deviceId: string) {
+  async pollStatusUntil(
+    res: ExpressResponse,
+    endpoint: string,
+    status: string,
+    getStreamMessage: () => Buffer,
+  ): Promise<void> {
+    // poll the provided endpoint until we get a valid response
+    const waitTime = 1000; // retry once per second
+    const maxAttempts = 60 * 60 * 12; // for a maximum of 12 hours
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const response = await this.connection.get(endpoint, {});
+      if (response.status !== status) {
+        res.write(getStreamMessage());
+      } else {
+        return;
+      }
+      await sleep(waitTime);
+    }
+    throw new Error(`Did not get a truthy response after ${maxAttempts} attempts for ${endpoint}`);
+  }
+
+  async initiatePull(
+    res: ExpressResponse,
+    sessionId: string,
+    since: number,
+    projectIds: string[],
+    deviceId: string,
+  ) {
+    // first, set the pull filter on the central server,
+    // which will kick off a snapshot of changes to pull
     const data = { since, projectIds, deviceId };
-    return this.connection.post(`sync/${sessionId}/pull`, {}, data);
-  }
+    await this.connection.post(`sync/${sessionId}/pull`, {}, data);
 
-  async checkPullStatus(sessionId: string) {
-    return this.connection.get(`sync/${sessionId}/pull/status`, {});
-  }
+    // then, poll the pull/status endpoint until we get a valid response - it takes a while for
+    // pull/status to finish populating the snapshot of changes
+    await this.pollStatusUntil(
+      res,
+      `sync/${sessionId}/pull/status`,
+      'ready',
+      StreamMessage.pullWaiting,
+    );
 
-  async getPullMetadata(sessionId: string) {
-    return this.connection.get(`sync/${sessionId}/pull/metadata`, {});
+    // finally, fetch the metadata for the changes we're about to pull
+    const { totalToPull, pullUntil } = await this.connection.get(`sync/${sessionId}/pull/metadata`);
+    res.write(StreamMessage.end({ totalToPull, pullUntil }));
+    res.end();
   }
 
   async pull(response: ExpressResponse, sessionId: string) {
@@ -42,12 +90,21 @@ export class SyncApi extends BaseApi {
     return this.connection.post(`sync/${sessionId}/push`, {}, { changes });
   }
 
-  async completePush(sessionId: string, deviceId: string) {
-    return this.connection.put(`sync/${sessionId}/push/complete`, {}, { deviceId });
-  }
+  async completePush(res: ExpressResponse, sessionId: string, deviceId: string) {
+    // first off, mark the push as complete on central
+    await this.connection.put(`sync/${sessionId}/push/complete`, {}, { deviceId });
 
-  async checkPushStatus(sessionId: string) {
-    return this.connection.get(`sync/${sessionId}/push/status`, {});
+    // now poll the complete check endpoint until we get a valid response - it takes a while for
+    // the pushed changes to finish persisting to the central database
+    await this.pollStatusUntil(
+      res,
+      `sync/${sessionId}/push/status`,
+      'complete',
+      StreamMessage.pushWaiting,
+    );
+
+    res.write(StreamMessage.end());
+    res.end();
   }
 }
 

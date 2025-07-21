@@ -43,3 +43,4 @@ export {
   stripUpdatedAtSyncTickFromObject,
   stripUpdatedAtSyncTickFromArray,
 } from './stripUpdatedAtSyncTick';
+export { stream } from './stream';
