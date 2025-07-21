@@ -11,9 +11,9 @@ import { LineChartConfig } from './line';
 /**
  * @description Gauge Chart
  */
-export interface GaugeChartConfig extends BaseChartConfig {
+export type GaugeChartConfig = BaseChartConfig & {
   chartType: ChartType.Gauge;
-}
+};
 
 export const isGaugeChartConfig = (config: BaseChartConfig): config is GaugeChartConfig =>
   config.chartType === ChartType.Gauge;
