@@ -86,14 +86,11 @@ exports.up = async function (db) {
     `);
 
   await db.runSql(`
-    create table country
+    CREATE TABLE country
     (
-          id                   text             not null
-              primary key,
-          name                 text             not null
-              unique,
-          code                 text             not null
-              unique
+      id                   TEXT PRIMARY KEY,
+      name                 TEXT NOT NULL UNIQUE,
+      code                 TEXT NOT NULL UNIQUE
     );
   `);
 
@@ -218,20 +215,17 @@ exports.up = async function (db) {
     `);
 
   await db.runSql(`
-    create table option
+    CREATE TABLE option
     (
-        id                   text             not null
-            primary key,
-        value                text             not null,
-        label                text,
-        sort_order           integer,
-        option_set_id        text             not null
-            constraint option_option_set_id_fk
-                references option_set
-                on update cascade on delete cascade,
-        attributes           jsonb  default '{}'::jsonb,
-        constraint option_option_set_id_value_unique
-            unique (option_set_id, value)
+      id                   TEXT PRIMARY KEY,
+      value                TEXT NOT NULL,
+      label                TEXT,
+      sort_order           INTEGER,
+      option_set_id        TEXT NOT NULL REFERENCES option_set
+                            ON UPDATE CASCADE ON DELETE CASCADE,
+      attributes           JSONB DEFAULT '{}'::JSONB,
+      CONSTRAINT option_option_set_id_value_unique
+        UNIQUE (option_set_id, value)
     );
 
   `);
@@ -553,102 +547,77 @@ exports.up = async function (db) {
   `);
 
   await db.runSql(`
-    create table task
+    CREATE TABLE task
     (
-        id                   text                    not null
-            primary key,
-        survey_id            text                    not null
-            constraint task_survey_id_fk
-                references survey
-                on update cascade on delete cascade,
-        entity_id            text                    not null
-            constraint task_entity_id_fk
-                references entity
-                on update cascade on delete cascade,
-        assignee_id          text
-            constraint task_assignee_id_fk
-                references user_account,
-        repeat_schedule      jsonb,
-        status               task_status,
-        created_at           timestamp default now() not null,
-        survey_response_id   text
-            constraint task_survey_response_id_fk
-                references survey_response
-                on update cascade on delete set null,
-        initial_request_id   text
-            constraint task_initial_request_id_fk
-                references survey_response
-                on update cascade on delete set null,
-        due_date             double precision,
-        parent_task_id       text
-            constraint task_parent_task_id_fk
-                references task
-                on update cascade on delete set null,
-        overdue_email_sent   timestamp with time zone,
-        updated_at_sync_tick bigint    default 0     not null
+      id                   TEXT PRIMARY KEY,
+      survey_id            TEXT NOT NULL REFERENCES survey
+        ON UPDATE CASCADE ON DELETE CASCADE,
+      entity_id            TEXT NOT NULL REFERENCES entity
+        ON UPDATE CASCADE ON DELETE CASCADE,
+      assignee_id          TEXT REFERENCES user_account
+        ON UPDATE CASCADE ON DELETE SET NULL,
+      repeat_schedule      JSONB,
+      status               task_status,
+      created_at           TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+      survey_response_id   TEXT REFERENCES survey_response
+        ON UPDATE CASCADE ON DELETE SET NULL,
+      initial_request_id   TEXT REFERENCES survey_response
+        ON UPDATE CASCADE ON DELETE SET NULL,
+      due_date             DOUBLE PRECISION,
+      parent_task_id       TEXT REFERENCES task
+        ON UPDATE CASCADE ON DELETE SET NULL,
+      overdue_email_sent   TIMESTAMP WITH TIME ZONE,
+      updated_at_sync_tick BIGINT DEFAULT 0 NOT NULL
     );
   `);
 
   await db.runSql(`
-    create index task_survey_id_idx
-        on task (survey_id);
+    CREATE INDEX task_survey_id_idx ON task (survey_id);
   `);
 
   await db.runSql(`
-    create index task_entity_id_idx
-        on task (entity_id);
+    CREATE INDEX task_entity_id_idx ON task (entity_id);
   `);
 
   await db.runSql(`
-    create index task_assignee_id_idx
-        on task (assignee_id);
+    CREATE INDEX task_assignee_id_idx ON task (assignee_id);
   `);
 
   await db.runSql(`
-    create index task_survey_response_id_idx
-        on task (survey_response_id);
+    CREATE INDEX task_survey_response_id_idx ON task (survey_response_id);
   `);
 
   await db.runSql(`
-    create index task_initial_request_id_fk
-        on task (survey_response_id);
+    CREATE INDEX task_initial_request_id_fk ON task (survey_response_id);
   `);
 
   await db.runSql(`
-    create index task_parent_task_id_fk
-        on task (parent_task_id);
+    CREATE INDEX task_parent_task_id_fk ON task (parent_task_id);
   `);
 
   await db.runSql(`
-    create table task_comment
+    CREATE TABLE task_comment
     (
-        id                   text                                                       not null
-            primary key,
-        task_id              text                                                       not null
-            constraint task_task_id_fk
-                references task
-                on update cascade on delete cascade,
-        user_id              text
-            constraint task_user_id_fk
-                references user_account
-                on update set null on delete set null,
-        user_name            text                                                       not null,
-        message              text,
-        type                 task_comment_type        default 'user'::task_comment_type not null,
-        created_at           timestamp with time zone default now()                     not null,
-        template_variables   jsonb                    default '{}'::jsonb               not null,
-        updated_at_sync_tick bigint                   default 0                         not null
+      id                   TEXT PRIMARY KEY,
+      task_id              TEXT NOT NULL REFERENCES task
+        ON UPDATE CASCADE ON DELETE CASCADE,
+      user_id              TEXT REFERENCES user_account
+        ON UPDATE CASCADE ON DELETE SET NULL,
+      user_name            TEXT NOT NULL,
+      message              TEXT,
+      type                 task_comment_type        default 'user'::task_comment_type not null,
+      created_at           TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+      template_variables   JSONB DEFAULT '{}'::JSONB NOT NULL,
+      updated_at_sync_tick BIGINT DEFAULT 0 NOT NULL
     );
   `);
 
   await db.runSql(`
-    create index task_comment_task_id_idx
-      on task_comment (task_id);
+    CREATE INDEX task_comment_task_id_idx ON task_comment (task_id);
   `);
 
   await db.runSql(`
-    create index task_comment_user_id_idx
-      on task_comment (user_id);
+    CREATE INDEX task_comment_user_id_idx ON task_comment (user_id);
   `);
 };
 
