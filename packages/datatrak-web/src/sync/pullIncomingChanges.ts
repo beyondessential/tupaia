@@ -1,26 +1,16 @@
 import { ModelRegistry } from '@tupaia/database';
 import { SyncSnapshotAttributes } from '@tupaia/sync';
 
-import { post, stream } from '../api';
 import { ProcessStreamDataParams } from '../types';
-
-export const initiatePull = async (
-  sessionId: string,
-  since: number,
-  projectIds: string[],
-  deviceId: string,
-) => {
-  console.log('ClientSyncManager.pull.waitingForCentral');
-  const body = { since, projectIds, deviceId };
-  return post(`sync/${sessionId}/pull`, { data: body });
-};
+import { CentralServerConnection } from './CentralServerConnection';
 
 export const pullIncomingChanges = async (
   models: ModelRegistry,
   sessionId: string,
+  connection: CentralServerConnection,
   processStreamedDataFunction: (params: ProcessStreamDataParams) => Promise<void>,
 ) => {
-  const reader = await stream(`sync/${sessionId}/pull`);
+  const reader = await connection.pull(sessionId);
   const decoder = new TextDecoder();
   let buffer = '';
 
@@ -38,7 +28,7 @@ export const pullIncomingChanges = async (
         const record = JSON.parse(line) as SyncSnapshotAttributes;
         // mark updatedAtSyncTick as never updated, so we don't push it back
         // to the central server until the next local update
-        records.push({ ...record, data: { ...record.data, updatedAtSyncTick: -1 } });
+        records.push({ ...record, data: { ...record.data, updated_at_sync_tick: -1 } });
       } catch (e) {
         console.error('Failed to parse JSON when streaming incoming changes for pull:', e, line);
       }
