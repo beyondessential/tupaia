@@ -3316,78 +3316,9 @@ export const YAxisDomainSchema = {
 
 export const BaseChartConfigSchema = {
 	"description": "The base chart config on all chart types",
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
-		"chartType": {
-			"description": "These are the common chart config options that are shared between several chart types",
-			"enum": [
-				"area",
-				"bar",
-				"composed",
-				"gauge",
-				"line",
-				"pie"
-			],
-			"type": "string"
-		},
-		"ticks": {
-			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-			"type": "array",
-			"items": {}
-		},
-		"startDate": {
-			"type": "string"
-		},
-		"endDate": {
-			"type": "string"
-		},
-		"valueType": {
-			"description": "Data type for this viz",
-			"enum": [
-				"boolean",
-				"color",
-				"currency",
-				"fraction",
-				"fractionAndPercentage",
-				"number",
-				"oneDecimalPlace",
-				"percentage",
-				"text",
-				"view"
-			],
-			"type": "string"
-		},
-		"showPeriodRange": {
-			"description": "Set to 'all' to show the 'Latest available data:' message",
-			"type": "string",
-			"enum": [
-				"all"
-			]
-		},
-		"color": {
-			"description": "Some chart types take 'color' as an option",
-			"type": "string"
-		},
-		"label": {},
-		"labelType": {
-			"description": "Some charts can have their label customised",
-			"enum": [
-				"fraction",
-				"fractionAndPercentage",
-				"number"
-			],
-			"type": "string"
-		},
-		"renderLegendForOneItem": {
-			"description": "Set to true to display the legend even if there is just a single series of data",
-			"type": "boolean"
-		},
 		"name": {
 			"description": "The title of the viz",
 			"type": "string"
@@ -3785,9 +3716,78 @@ export const BaseChartConfigSchema = {
 		"dateRangeDelimiter": {
 			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
+		"chartType": {
+			"description": "These are the common chart config options that are shared between several chart types",
+			"enum": [
+				"area",
+				"bar",
+				"composed",
+				"gauge",
+				"line",
+				"pie"
+			],
+			"type": "string"
+		},
+		"ticks": {
+			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+			"type": "array",
+			"items": {}
+		},
+		"startDate": {
+			"type": "string"
+		},
+		"endDate": {
+			"type": "string"
+		},
+		"valueType": {
+			"description": "Data type for this viz",
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"showPeriodRange": {
+			"description": "Set to 'all' to show the 'Latest available data:' message",
+			"type": "string",
+			"enum": [
+				"all"
+			]
+		},
+		"color": {
+			"description": "Some chart types take 'color' as an option",
+			"type": "string"
+		},
+		"label": {},
+		"labelType": {
+			"description": "Some charts can have their label customised",
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
+		"renderLegendForOneItem": {
+			"description": "Set to true to display the legend even if there is just a single series of data",
+			"type": "boolean"
 		}
 	},
-	"additionalProperties": false,
 	"required": [
 		"chartType",
 		"name",
@@ -3814,8 +3814,21 @@ export const ReferenceLinesConfigSchema = {
 } 
 
 export const CartesianChartPresentationOptionsSchema = {
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
+		"exportWithLabels": {
+			"description": "Include labels for each point of data in exports",
+			"type": "boolean"
+		},
+		"exportWithTable": {
+			"description": "Include the data table below the viz in exports",
+			"type": "boolean"
+		},
+		"exportWithTableDisabled": {
+			"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+			"type": "boolean"
+		},
 		"periodTickFormat": {
 			"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 			"type": "string"
@@ -3847,21 +3860,8 @@ export const CartesianChartPresentationOptionsSchema = {
 				}
 			},
 			"additionalProperties": false
-		},
-		"exportWithLabels": {
-			"description": "Include labels for each point of data in exports",
-			"type": "boolean"
-		},
-		"exportWithTable": {
-			"description": "Include the data table below the viz in exports",
-			"type": "boolean"
-		},
-		"exportWithTableDisabled": {
-			"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-			"type": "boolean"
 		}
-	},
-	"additionalProperties": false
+	}
 } 
 
 export const KeySchema = {
@@ -4201,377 +4201,9 @@ export const ChartConfigTSchema = {
 
 export const CartesianChartConfigSchema = {
 	"description": "A Cartesian chart has an area with axes e.g. bar, line. It extends the base chart config",
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"xName": {
-			"description": "The label on the x-axis",
-			"type": "string"
-		},
-		"yName": {
-			"description": "The label on the y-axis",
-			"type": "string"
-		},
-		"yAxisDomain": {
-			"description": "Configuration options for the y-axis",
-			"type": "object",
-			"properties": {
-				"max": {
-					"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-					"type": "object",
-					"properties": {
-						"type": {
-							"enum": [
-								"clamp",
-								"number",
-								"scale",
-								"string"
-							],
-							"type": "string"
-						},
-						"value": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"min": {
-							"type": "number"
-						},
-						"max": {
-							"type": "number"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				"min": {
-					"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-					"type": "object",
-					"properties": {
-						"type": {
-							"enum": [
-								"clamp",
-								"number",
-								"scale",
-								"string"
-							],
-							"type": "string"
-						},
-						"value": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"min": {
-							"type": "number"
-						},
-						"max": {
-							"type": "number"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"max",
-				"min"
-			]
-		},
-		"chartConfig": {
-			"description": "Configuration for each series of data within this chart.\nNote: use $all for configuration that applies to all series.\n\neg.\n {\n   In Stock: {\n     color: green\n   }\n   Out of Stock: {\n     color: red\n   }\n   $all: {\n     hideFromLegend: true\n   }\n }",
-			"type": "object",
-			"additionalProperties": {
-				"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-				"type": "object",
-				"properties": {
-					"color": {
-						"description": "A CSS color string e.g. green or #abc123",
-						"type": "string"
-					},
-					"stackId": {
-						"description": "For a bar chart, series which share the same stackId will be stacked atop one another",
-						"type": "number"
-					},
-					"legendOrder": {
-						"description": "What order in the legend should this series be shown",
-						"type": "number"
-					},
-					"yAxisDomain": {
-						"description": "Minimum and maximum ranges for the y axis",
-						"type": "object",
-						"properties": {
-							"max": {
-								"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-								"type": "object",
-								"properties": {
-									"type": {
-										"enum": [
-											"clamp",
-											"number",
-											"scale",
-											"string"
-										],
-										"type": "string"
-									},
-									"value": {
-										"type": [
-											"string",
-											"number"
-										]
-									},
-									"min": {
-										"type": "number"
-									},
-									"max": {
-										"type": "number"
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"type"
-								]
-							},
-							"min": {
-								"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-								"type": "object",
-								"properties": {
-									"type": {
-										"enum": [
-											"clamp",
-											"number",
-											"scale",
-											"string"
-										],
-										"type": "string"
-									},
-									"value": {
-										"type": [
-											"string",
-											"number"
-										]
-									},
-									"min": {
-										"type": "number"
-									},
-									"max": {
-										"type": "number"
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"type"
-								]
-							}
-						},
-						"additionalProperties": false,
-						"required": [
-							"max",
-							"min"
-						]
-					},
-					"yAxisOrientation": {
-						"description": "Which axis this the values in this series are compared against",
-						"enum": [
-							"left",
-							"right"
-						],
-						"type": "string"
-					},
-					"hideFromLegend": {
-						"description": "Whether or not this series is shown in the legend",
-						"type": "boolean"
-					},
-					"yName": {
-						"description": "The title of the Y axis",
-						"type": "string"
-					},
-					"valueType": {
-						"description": "Format of the data for this series",
-						"enum": [
-							"boolean",
-							"color",
-							"currency",
-							"fraction",
-							"fractionAndPercentage",
-							"number",
-							"oneDecimalPlace",
-							"percentage",
-							"text",
-							"view"
-						],
-						"type": "string"
-					},
-					"label": {
-						"type": "string"
-					},
-					"labelType": {
-						"description": "Format of the label shown on hover",
-						"enum": [
-							"fraction",
-							"fractionAndPercentage",
-							"number"
-						],
-						"type": "string"
-					},
-					"opacity": {
-						"description": "Opacity for this series of data on the chart. Can be ascending, descending, or a number between 0 and 1",
-						"anyOf": [
-							{
-								"enum": [
-									"ascending",
-									"descending"
-								],
-								"type": "string"
-							},
-							{
-								"type": "number"
-							}
-						]
-					},
-					"chartType": {
-						"description": "These are the common chart config options that are shared between several chart types",
-						"enum": [
-							"area",
-							"bar",
-							"composed",
-							"gauge",
-							"line",
-							"pie"
-						],
-						"type": "string"
-					}
-				},
-				"additionalProperties": false
-			}
-		},
-		"presentationOptions": {
-			"description": "Common options for configuring the chart presentation",
-			"type": "object",
-			"properties": {
-				"periodTickFormat": {
-					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-					"type": "string"
-				},
-				"hideAverage": {
-					"description": "Hides the data average line",
-					"type": "boolean"
-				},
-				"referenceLines": {
-					"description": "Configure reference lines to appear in on the viz",
-					"type": "object",
-					"properties": {
-						"targetLine": {
-							"type": "object",
-							"properties": {
-								"referenceValue": {
-									"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-									"type": "number"
-								},
-								"referenceLabel": {
-									"description": "Label shown on the reference line",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"referenceValue"
-							]
-						}
-					},
-					"additionalProperties": false
-				},
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
-		"chartType": {
-			"description": "These are the common chart config options that are shared between several chart types",
-			"enum": [
-				"area",
-				"bar",
-				"composed",
-				"gauge",
-				"line",
-				"pie"
-			],
-			"type": "string"
-		},
-		"ticks": {
-			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-			"type": "array",
-			"items": {}
-		},
-		"startDate": {
-			"type": "string"
-		},
-		"endDate": {
-			"type": "string"
-		},
-		"valueType": {
-			"description": "Data type for this viz",
-			"enum": [
-				"boolean",
-				"color",
-				"currency",
-				"fraction",
-				"fractionAndPercentage",
-				"number",
-				"oneDecimalPlace",
-				"percentage",
-				"text",
-				"view"
-			],
-			"type": "string"
-		},
-		"showPeriodRange": {
-			"description": "Set to 'all' to show the 'Latest available data:' message",
-			"type": "string",
-			"enum": [
-				"all"
-			]
-		},
-		"color": {
-			"description": "Some chart types take 'color' as an option",
-			"type": "string"
-		},
-		"label": {},
-		"labelType": {
-			"description": "Some charts can have their label customised",
-			"enum": [
-				"fraction",
-				"fractionAndPercentage",
-				"number"
-			],
-			"type": "string"
-		},
-		"renderLegendForOneItem": {
-			"description": "Set to true to display the legend even if there is just a single series of data",
-			"type": "boolean"
-		},
 		"name": {
 			"description": "The title of the viz",
 			"type": "string"
@@ -4969,9 +4601,377 @@ export const CartesianChartConfigSchema = {
 		"dateRangeDelimiter": {
 			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
+		"chartType": {
+			"description": "These are the common chart config options that are shared between several chart types",
+			"enum": [
+				"area",
+				"bar",
+				"composed",
+				"gauge",
+				"line",
+				"pie"
+			],
+			"type": "string"
+		},
+		"ticks": {
+			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+			"type": "array",
+			"items": {}
+		},
+		"startDate": {
+			"type": "string"
+		},
+		"endDate": {
+			"type": "string"
+		},
+		"valueType": {
+			"description": "Data type for this viz",
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"showPeriodRange": {
+			"description": "Set to 'all' to show the 'Latest available data:' message",
+			"type": "string",
+			"enum": [
+				"all"
+			]
+		},
+		"color": {
+			"description": "Some chart types take 'color' as an option",
+			"type": "string"
+		},
+		"label": {},
+		"labelType": {
+			"description": "Some charts can have their label customised",
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
+		"renderLegendForOneItem": {
+			"description": "Set to true to display the legend even if there is just a single series of data",
+			"type": "boolean"
+		},
+		"xName": {
+			"description": "The label on the x-axis",
+			"type": "string"
+		},
+		"yName": {
+			"description": "The label on the y-axis",
+			"type": "string"
+		},
+		"yAxisDomain": {
+			"description": "Configuration options for the y-axis",
+			"type": "object",
+			"properties": {
+				"max": {
+					"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				"min": {
+					"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"max",
+				"min"
+			]
+		},
+		"chartConfig": {
+			"description": "Configuration for each series of data within this chart.\nNote: use $all for configuration that applies to all series.\n\neg.\n {\n   In Stock: {\n     color: green\n   }\n   Out of Stock: {\n     color: red\n   }\n   $all: {\n     hideFromLegend: true\n   }\n }",
+			"type": "object",
+			"additionalProperties": {
+				"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
+				"type": "object",
+				"properties": {
+					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
+						"type": "string"
+					},
+					"stackId": {
+						"description": "For a bar chart, series which share the same stackId will be stacked atop one another",
+						"type": "number"
+					},
+					"legendOrder": {
+						"description": "What order in the legend should this series be shown",
+						"type": "number"
+					},
+					"yAxisDomain": {
+						"description": "Minimum and maximum ranges for the y axis",
+						"type": "object",
+						"properties": {
+							"max": {
+								"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"clamp",
+											"number",
+											"scale",
+											"string"
+										],
+										"type": "string"
+									},
+									"value": {
+										"type": [
+											"string",
+											"number"
+										]
+									},
+									"min": {
+										"type": "number"
+									},
+									"max": {
+										"type": "number"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							},
+							"min": {
+								"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"clamp",
+											"number",
+											"scale",
+											"string"
+										],
+										"type": "string"
+									},
+									"value": {
+										"type": [
+											"string",
+											"number"
+										]
+									},
+									"min": {
+										"type": "number"
+									},
+									"max": {
+										"type": "number"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"max",
+							"min"
+						]
+					},
+					"yAxisOrientation": {
+						"description": "Which axis this the values in this series are compared against",
+						"enum": [
+							"left",
+							"right"
+						],
+						"type": "string"
+					},
+					"hideFromLegend": {
+						"description": "Whether or not this series is shown in the legend",
+						"type": "boolean"
+					},
+					"yName": {
+						"description": "The title of the Y axis",
+						"type": "string"
+					},
+					"valueType": {
+						"description": "Format of the data for this series",
+						"enum": [
+							"boolean",
+							"color",
+							"currency",
+							"fraction",
+							"fractionAndPercentage",
+							"number",
+							"oneDecimalPlace",
+							"percentage",
+							"text",
+							"view"
+						],
+						"type": "string"
+					},
+					"label": {
+						"type": "string"
+					},
+					"labelType": {
+						"description": "Format of the label shown on hover",
+						"enum": [
+							"fraction",
+							"fractionAndPercentage",
+							"number"
+						],
+						"type": "string"
+					},
+					"opacity": {
+						"description": "Opacity for this series of data on the chart. Can be ascending, descending, or a number between 0 and 1",
+						"anyOf": [
+							{
+								"enum": [
+									"ascending",
+									"descending"
+								],
+								"type": "string"
+							},
+							{
+								"type": "number"
+							}
+						]
+					},
+					"chartType": {
+						"description": "These are the common chart config options that are shared between several chart types",
+						"enum": [
+							"area",
+							"bar",
+							"composed",
+							"gauge",
+							"line",
+							"pie"
+						],
+						"type": "string"
+					}
+				},
+				"additionalProperties": false
+			}
+		},
+		"presentationOptions": {
+			"description": "Common options for configuring the chart presentation",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
+				},
+				"periodTickFormat": {
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
+				"hideAverage": {
+					"description": "Hides the data average line",
+					"type": "boolean"
+				},
+				"referenceLines": {
+					"description": "Configure reference lines to appear in on the viz",
+					"type": "object",
+					"properties": {
+						"targetLine": {
+							"type": "object",
+							"properties": {
+								"referenceValue": {
+									"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+									"type": "number"
+								},
+								"referenceLabel": {
+									"description": "Label shown on the reference line",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
+						}
+					},
+					"additionalProperties": false
+				}
+			}
 		}
 	},
-	"additionalProperties": false,
 	"required": [
 		"chartType",
 		"name",
@@ -5031,108 +5031,9 @@ export const PieChartPresentationOptionsSchema = {
 
 export const PieChartConfigSchema = {
 	"description": "Pie Chart",
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"chartType": {
-			"type": "string",
-			"enum": [
-				"pie"
-			]
-		},
-		"presentationOptions": {
-			"description": "Common options for configuring the chart presentation",
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
-				}
-			}
-		},
-		"segmentConfig": {
-			"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
-			"type": "object",
-			"additionalProperties": {
-				"type": "object",
-				"properties": {
-					"color": {
-						"description": "A CSS color string e.g. green or #abc123",
-						"type": "string"
-					},
-					"label": {
-						"type": "string"
-					}
-				},
-				"additionalProperties": false
-			}
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
-		"ticks": {
-			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-			"type": "array",
-			"items": {}
-		},
-		"startDate": {
-			"type": "string"
-		},
-		"endDate": {
-			"type": "string"
-		},
-		"valueType": {
-			"description": "Data type for this viz",
-			"enum": [
-				"boolean",
-				"color",
-				"currency",
-				"fraction",
-				"fractionAndPercentage",
-				"number",
-				"oneDecimalPlace",
-				"percentage",
-				"text",
-				"view"
-			],
-			"type": "string"
-		},
-		"showPeriodRange": {
-			"description": "Set to 'all' to show the 'Latest available data:' message",
-			"type": "string",
-			"enum": [
-				"all"
-			]
-		},
-		"color": {
-			"description": "Some chart types take 'color' as an option",
-			"type": "string"
-		},
-		"label": {},
-		"labelType": {
-			"description": "Some charts can have their label customised",
-			"enum": [
-				"fraction",
-				"fractionAndPercentage",
-				"number"
-			],
-			"type": "string"
-		},
-		"renderLegendForOneItem": {
-			"description": "Set to true to display the legend even if there is just a single series of data",
-			"type": "boolean"
-		},
 		"name": {
 			"description": "The title of the viz",
 			"type": "string"
@@ -5530,9 +5431,108 @@ export const PieChartConfigSchema = {
 		"dateRangeDelimiter": {
 			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
+		"chartType": {
+			"type": "string",
+			"enum": [
+				"pie"
+			]
+		},
+		"ticks": {
+			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+			"type": "array",
+			"items": {}
+		},
+		"startDate": {
+			"type": "string"
+		},
+		"endDate": {
+			"type": "string"
+		},
+		"valueType": {
+			"description": "Data type for this viz",
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"showPeriodRange": {
+			"description": "Set to 'all' to show the 'Latest available data:' message",
+			"type": "string",
+			"enum": [
+				"all"
+			]
+		},
+		"color": {
+			"description": "Some chart types take 'color' as an option",
+			"type": "string"
+		},
+		"label": {},
+		"labelType": {
+			"description": "Some charts can have their label customised",
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
+		"renderLegendForOneItem": {
+			"description": "Set to true to display the legend even if there is just a single series of data",
+			"type": "boolean"
+		},
+		"presentationOptions": {
+			"description": "Common options for configuring the chart presentation",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
+				}
+			}
+		},
+		"segmentConfig": {
+			"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
+						"type": "string"
+					},
+					"label": {
+						"type": "string"
+					}
+				},
+				"additionalProperties": false
+			}
 		}
 	},
-	"additionalProperties": false,
 	"required": [
 		"chartType",
 		"name",
@@ -5541,15 +5541,20 @@ export const PieChartConfigSchema = {
 } 
 
 export const BarChartPresentationOptionsSchema = {
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"color": {
-			"description": "A CSS color string e.g. green or #abc123",
-			"type": "string"
+		"exportWithLabels": {
+			"description": "Include labels for each point of data in exports",
+			"type": "boolean"
 		},
-		"valueFormat": {
-			"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-			"type": "string"
+		"exportWithTable": {
+			"description": "Include the data table below the viz in exports",
+			"type": "boolean"
+		},
+		"exportWithTableDisabled": {
+			"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+			"type": "boolean"
 		},
 		"periodTickFormat": {
 			"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
@@ -5583,90 +5588,483 @@ export const BarChartPresentationOptionsSchema = {
 			},
 			"additionalProperties": false
 		},
-		"exportWithLabels": {
-			"description": "Include labels for each point of data in exports",
-			"type": "boolean"
+		"color": {
+			"description": "A CSS color string e.g. green or #abc123",
+			"type": "string"
 		},
-		"exportWithTable": {
-			"description": "Include the data table below the viz in exports",
-			"type": "boolean"
-		},
-		"exportWithTableDisabled": {
-			"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-			"type": "boolean"
+		"valueFormat": {
+			"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+			"type": "string"
 		}
-	},
-	"additionalProperties": false
+	}
 } 
 
 export const BarChartConfigSchema = {
 	"description": "Bar Chart",
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
+		"name": {
+			"description": "The title of the viz",
+			"type": "string"
+		},
+		"description": {
+			"description": "A short description that appears above a viz",
+			"type": "string"
+		},
+		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+			"enum": [
+				"day",
+				"month",
+				"one_day_at_a_time",
+				"one_month_at_a_time",
+				"one_quarter_at_a_time",
+				"one_week_at_a_time",
+				"one_year_at_a_time",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
+		"defaultTimePeriod": {
+			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"unit"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"start": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"end": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						}
+					},
+					"additionalProperties": false
+				}
+			]
+		},
+		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
+			"type": "object",
+			"properties": {
+				"start": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"unit"
+					]
+				},
+				"end": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"unit"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"exportConfig": {
+			"description": "Extra config options for exporting",
+			"type": "object",
+			"properties": {
+				"dataElementHeader": {
+					"description": "Sets the header for the data element in xls exports",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"noDataMessage": {
+			"description": "Message which shows if no data is found",
+			"type": "string"
+		},
+		"noDataFetch": {
+			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+			"default": false,
+			"type": "boolean"
+		},
+		"drillDown": {
+			"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+			"type": "object",
+			"properties": {
+				"itemCode": {
+					"description": "The code of the dashboard item that drilling down through this viz should take you to",
+					"type": "string"
+				},
+				"keyLink": {
+					"type": "string"
+				},
+				"parameterLink": {
+					"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+					"type": "string"
+				},
+				"itemCodeByEntry": {
+					"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"entityHeader": {
+			"description": "",
+			"type": "string"
+		},
+		"reference": {
+			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
+				},
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
+				}
+			]
+		},
+		"source": {
+			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+			"type": "string"
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
 		"chartType": {
 			"type": "string",
 			"enum": [
 				"bar"
 			]
 		},
-		"presentationOptions": {
-			"description": "Common options for configuring the chart presentation",
-			"type": "object",
-			"properties": {
-				"color": {
-					"description": "A CSS color string e.g. green or #abc123",
-					"type": "string"
-				},
-				"valueFormat": {
-					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-					"type": "string"
-				},
-				"periodTickFormat": {
-					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-					"type": "string"
-				},
-				"hideAverage": {
-					"description": "Hides the data average line",
-					"type": "boolean"
-				},
-				"referenceLines": {
-					"description": "Configure reference lines to appear in on the viz",
-					"type": "object",
-					"properties": {
-						"targetLine": {
-							"type": "object",
-							"properties": {
-								"referenceValue": {
-									"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-									"type": "number"
-								},
-								"referenceLabel": {
-									"description": "Label shown on the reference line",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"referenceValue"
-							]
-						}
-					},
-					"additionalProperties": false
-				},
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false
+		"ticks": {
+			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+			"type": "array",
+			"items": {}
+		},
+		"startDate": {
+			"type": "string"
+		},
+		"endDate": {
+			"type": "string"
+		},
+		"valueType": {
+			"description": "Data type for this viz",
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"showPeriodRange": {
+			"description": "Set to 'all' to show the 'Latest available data:' message",
+			"type": "string",
+			"enum": [
+				"all"
+			]
+		},
+		"color": {
+			"description": "Some chart types take 'color' as an option",
+			"type": "string"
+		},
+		"label": {},
+		"labelType": {
+			"description": "Some charts can have their label customised",
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
+		"renderLegendForOneItem": {
+			"description": "Set to true to display the legend even if there is just a single series of data",
+			"type": "boolean"
 		},
 		"xName": {
 			"description": "The label on the x-axis",
@@ -5916,464 +6314,66 @@ export const BarChartConfigSchema = {
 				"additionalProperties": false
 			}
 		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
-		"ticks": {
-			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-			"type": "array",
-			"items": {}
-		},
-		"startDate": {
-			"type": "string"
-		},
-		"endDate": {
-			"type": "string"
-		},
-		"valueType": {
-			"description": "Data type for this viz",
-			"enum": [
-				"boolean",
-				"color",
-				"currency",
-				"fraction",
-				"fractionAndPercentage",
-				"number",
-				"oneDecimalPlace",
-				"percentage",
-				"text",
-				"view"
-			],
-			"type": "string"
-		},
-		"showPeriodRange": {
-			"description": "Set to 'all' to show the 'Latest available data:' message",
-			"type": "string",
-			"enum": [
-				"all"
-			]
-		},
-		"color": {
-			"description": "Some chart types take 'color' as an option",
-			"type": "string"
-		},
-		"label": {},
-		"labelType": {
-			"description": "Some charts can have their label customised",
-			"enum": [
-				"fraction",
-				"fractionAndPercentage",
-				"number"
-			],
-			"type": "string"
-		},
-		"renderLegendForOneItem": {
-			"description": "Set to true to display the legend even if there is just a single series of data",
-			"type": "boolean"
-		},
-		"name": {
-			"description": "The title of the viz",
-			"type": "string"
-		},
-		"description": {
-			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"periodGranularity": {
-			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
-			"enum": [
-				"day",
-				"month",
-				"one_day_at_a_time",
-				"one_month_at_a_time",
-				"one_quarter_at_a_time",
-				"one_week_at_a_time",
-				"one_year_at_a_time",
-				"quarter",
-				"week",
-				"year"
-			],
-			"type": "string"
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+		"presentationOptions": {
+			"description": "Common options for configuring the chart presentation",
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
-				"unit": {
-					"enum": [
-						"month",
-						"quarter"
-					],
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
+				},
+				"periodTickFormat": {
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
 				},
-				"offset": {
-					"type": "number"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
-			]
-		},
-		"defaultTimePeriod": {
-			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"unit"
-					]
+				"hideAverage": {
+					"description": "Hides the data average line",
+					"type": "boolean"
 				},
-				{
+				"referenceLines": {
+					"description": "Configure reference lines to appear in on the viz",
 					"type": "object",
 					"properties": {
-						"start": {
-							"description": "Either an ISO Date string, or an offset object",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
+						"targetLine": {
+							"type": "object",
+							"properties": {
+								"referenceValue": {
+									"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+									"type": "number"
 								},
-								{
+								"referenceLabel": {
+									"description": "Label shown on the reference line",
 									"type": "string"
 								}
-							]
-						},
-						"end": {
-							"description": "Either an ISO Date string, or an offset object",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								{
-									"type": "string"
-								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
 							]
 						}
 					},
 					"additionalProperties": false
-				}
-			]
-		},
-		"datePickerLimits": {
-			"description": "Maximum date ranges that the date picker can be used to choose from",
-			"type": "object",
-			"properties": {
-				"start": {
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"unit"
-					]
 				},
-				"end": {
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"unit"
-					]
-				}
-			},
-			"additionalProperties": false
-		},
-		"exportConfig": {
-			"description": "Extra config options for exporting",
-			"type": "object",
-			"properties": {
-				"dataElementHeader": {
-					"description": "Sets the header for the data element in xls exports",
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
-		"noDataMessage": {
-			"description": "Message which shows if no data is found",
-			"type": "string"
-		},
-		"noDataFetch": {
-			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-			"default": false,
-			"type": "boolean"
-		},
-		"drillDown": {
-			"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
-			"type": "object",
-			"properties": {
-				"itemCode": {
-					"description": "The code of the dashboard item that drilling down through this viz should take you to",
+				"color": {
+					"description": "A CSS color string e.g. green or #abc123",
 					"type": "string"
 				},
-				"keyLink": {
+				"valueFormat": {
+					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
 					"type": "string"
-				},
-				"parameterLink": {
-					"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
-					"type": "string"
-				},
-				"itemCodeByEntry": {
-					"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
-					"type": "object",
-					"additionalProperties": {
-						"type": "string"
-					}
 				}
-			},
-			"additionalProperties": false
-		},
-		"entityHeader": {
-			"description": "",
-			"type": "string"
-		},
-		"reference": {
-			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"anyOf": [
-				{
-					"description": "One of the two shapes which {@link ReferenceProps} can take.",
-					"type": "object",
-					"properties": {
-						"text": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"text"
-					]
-				},
-				{
-					"description": "One of the two shapes which {@link ReferenceProps} can take.",
-					"type": "object",
-					"properties": {
-						"name": {
-							"type": "string"
-						},
-						"link": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
-					]
-				}
-			]
-		},
-		"source": {
-			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-			"type": "string"
-		},
-		"weekDisplayFormat": {
-			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-			"default": "'WEEK_COMMENCING_ABBR'",
-			"enum": [
-				"ISO_WEEK_NUMBER",
-				"WEEK_COMMENCING",
-				"WEEK_COMMENCING_ABBR",
-				"WEEK_ENDING",
-				"WEEK_ENDING_ABBR"
-			],
-			"type": "string"
-		},
-		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
-			"type": "string"
+			}
 		}
 	},
-	"additionalProperties": false,
 	"required": [
 		"chartType",
 		"name",
@@ -6382,20 +6382,9 @@ export const BarChartConfigSchema = {
 } 
 
 export const LineChartChartConfigSchema = {
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"dot": {
-			"description": "Whether the line should show a dot at each data point",
-			"type": "boolean"
-		},
-		"connectNulls": {
-			"description": "Whether to draw a connecting line between gaps in the data",
-			"type": "boolean"
-		},
-		"strokeDasharray": {
-			"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
-			"type": "string"
-		},
 		"color": {
 			"description": "A CSS color string e.g. green or #abc123",
 			"type": "string"
@@ -6551,39 +6540,628 @@ export const LineChartChartConfigSchema = {
 				"pie"
 			],
 			"type": "string"
+		},
+		"dot": {
+			"description": "Whether the line should show a dot at each data point",
+			"type": "boolean"
+		},
+		"connectNulls": {
+			"description": "Whether to draw a connecting line between gaps in the data",
+			"type": "boolean"
+		},
+		"strokeDasharray": {
+			"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
+			"type": "string"
 		}
-	},
-	"additionalProperties": false
+	}
 } 
 
 export const LineChartConfigSchema = {
 	"description": "Line Chart",
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
+		"label": {},
+		"source": {
+			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+			"type": "string"
+		},
+		"color": {
+			"description": "Some chart types take 'color' as an option",
+			"type": "string"
+		},
+		"name": {
+			"description": "The title of the viz",
+			"type": "string"
+		},
+		"description": {
+			"description": "A short description that appears above a viz",
+			"type": "string"
+		},
+		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+			"enum": [
+				"day",
+				"month",
+				"one_day_at_a_time",
+				"one_month_at_a_time",
+				"one_quarter_at_a_time",
+				"one_week_at_a_time",
+				"one_year_at_a_time",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
+		"defaultTimePeriod": {
+			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"unit"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"start": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"end": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						}
+					},
+					"additionalProperties": false
+				}
+			]
+		},
+		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
+			"type": "object",
+			"properties": {
+				"start": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"unit"
+					]
+				},
+				"end": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"unit"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"exportConfig": {
+			"description": "Extra config options for exporting",
+			"type": "object",
+			"properties": {
+				"dataElementHeader": {
+					"description": "Sets the header for the data element in xls exports",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"noDataMessage": {
+			"description": "Message which shows if no data is found",
+			"type": "string"
+		},
+		"noDataFetch": {
+			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+			"default": false,
+			"type": "boolean"
+		},
+		"drillDown": {
+			"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+			"type": "object",
+			"properties": {
+				"itemCode": {
+					"description": "The code of the dashboard item that drilling down through this viz should take you to",
+					"type": "string"
+				},
+				"keyLink": {
+					"type": "string"
+				},
+				"parameterLink": {
+					"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+					"type": "string"
+				},
+				"itemCodeByEntry": {
+					"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"entityHeader": {
+			"description": "",
+			"type": "string"
+		},
+		"reference": {
+			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
+				},
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
+				}
+			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
 		"chartType": {
 			"type": "string",
 			"enum": [
 				"line"
 			]
 		},
+		"ticks": {
+			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+			"type": "array",
+			"items": {}
+		},
+		"startDate": {
+			"type": "string"
+		},
+		"endDate": {
+			"type": "string"
+		},
+		"valueType": {
+			"description": "Data type for this viz",
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"showPeriodRange": {
+			"description": "Set to 'all' to show the 'Latest available data:' message",
+			"type": "string",
+			"enum": [
+				"all"
+			]
+		},
+		"labelType": {
+			"description": "Some charts can have their label customised",
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
+		"renderLegendForOneItem": {
+			"description": "Set to true to display the legend even if there is just a single series of data",
+			"type": "boolean"
+		},
+		"xName": {
+			"description": "The label on the x-axis",
+			"type": "string"
+		},
+		"yName": {
+			"description": "The label on the y-axis",
+			"type": "string"
+		},
+		"yAxisDomain": {
+			"description": "Configuration options for the y-axis",
+			"type": "object",
+			"properties": {
+				"max": {
+					"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				"min": {
+					"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"max",
+				"min"
+			]
+		},
+		"presentationOptions": {
+			"description": "Common options for configuring the chart presentation",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
+				},
+				"periodTickFormat": {
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
+				"hideAverage": {
+					"description": "Hides the data average line",
+					"type": "boolean"
+				},
+				"referenceLines": {
+					"description": "Configure reference lines to appear in on the viz",
+					"type": "object",
+					"properties": {
+						"targetLine": {
+							"type": "object",
+							"properties": {
+								"referenceValue": {
+									"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+									"type": "number"
+								},
+								"referenceLabel": {
+									"description": "Label shown on the reference line",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
+						}
+					},
+					"additionalProperties": false
+				}
+			}
+		},
 		"chartConfig": {
 			"description": "Configuration for each series of data within this chart.\nNote: use $all for configuration that applies to all series.\n\neg.\n {\n   In Stock: {\n     color: green\n   }\n   Out of Stock: {\n     color: red\n   }\n   $all: {\n     hideFromLegend: true\n   }\n }",
 			"type": "object",
 			"additionalProperties": {
+				"additionalProperties": false,
 				"type": "object",
 				"properties": {
-					"dot": {
-						"description": "Whether the line should show a dot at each data point",
-						"type": "boolean"
-					},
-					"connectNulls": {
-						"description": "Whether to draw a connecting line between gaps in the data",
-						"type": "boolean"
-					},
-					"strokeDasharray": {
-						"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
-						"type": "string"
-					},
 					"color": {
 						"description": "A CSS color string e.g. green or #abc123",
 						"type": "string"
@@ -6739,601 +7317,23 @@ export const LineChartConfigSchema = {
 							"pie"
 						],
 						"type": "string"
-					}
-				},
-				"additionalProperties": false
-			}
-		},
-		"label": {},
-		"source": {
-			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-			"type": "string"
-		},
-		"color": {
-			"description": "Some chart types take 'color' as an option",
-			"type": "string"
-		},
-		"name": {
-			"description": "The title of the viz",
-			"type": "string"
-		},
-		"xName": {
-			"description": "The label on the x-axis",
-			"type": "string"
-		},
-		"yName": {
-			"description": "The label on the y-axis",
-			"type": "string"
-		},
-		"yAxisDomain": {
-			"description": "Configuration options for the y-axis",
-			"type": "object",
-			"properties": {
-				"max": {
-					"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-					"type": "object",
-					"properties": {
-						"type": {
-							"enum": [
-								"clamp",
-								"number",
-								"scale",
-								"string"
-							],
-							"type": "string"
-						},
-						"value": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"min": {
-							"type": "number"
-						},
-						"max": {
-							"type": "number"
-						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				"min": {
-					"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-					"type": "object",
-					"properties": {
-						"type": {
-							"enum": [
-								"clamp",
-								"number",
-								"scale",
-								"string"
-							],
-							"type": "string"
-						},
-						"value": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"min": {
-							"type": "number"
-						},
-						"max": {
-							"type": "number"
-						}
+					"dot": {
+						"description": "Whether the line should show a dot at each data point",
+						"type": "boolean"
 					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"max",
-				"min"
-			]
-		},
-		"presentationOptions": {
-			"description": "Common options for configuring the chart presentation",
-			"type": "object",
-			"properties": {
-				"periodTickFormat": {
-					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-					"type": "string"
-				},
-				"hideAverage": {
-					"description": "Hides the data average line",
-					"type": "boolean"
-				},
-				"referenceLines": {
-					"description": "Configure reference lines to appear in on the viz",
-					"type": "object",
-					"properties": {
-						"targetLine": {
-							"type": "object",
-							"properties": {
-								"referenceValue": {
-									"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-									"type": "number"
-								},
-								"referenceLabel": {
-									"description": "Label shown on the reference line",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"referenceValue"
-							]
-						}
+					"connectNulls": {
+						"description": "Whether to draw a connecting line between gaps in the data",
+						"type": "boolean"
 					},
-					"additionalProperties": false
-				},
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
-		"ticks": {
-			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-			"type": "array",
-			"items": {}
-		},
-		"startDate": {
-			"type": "string"
-		},
-		"endDate": {
-			"type": "string"
-		},
-		"valueType": {
-			"description": "Data type for this viz",
-			"enum": [
-				"boolean",
-				"color",
-				"currency",
-				"fraction",
-				"fractionAndPercentage",
-				"number",
-				"oneDecimalPlace",
-				"percentage",
-				"text",
-				"view"
-			],
-			"type": "string"
-		},
-		"showPeriodRange": {
-			"description": "Set to 'all' to show the 'Latest available data:' message",
-			"type": "string",
-			"enum": [
-				"all"
-			]
-		},
-		"labelType": {
-			"description": "Some charts can have their label customised",
-			"enum": [
-				"fraction",
-				"fractionAndPercentage",
-				"number"
-			],
-			"type": "string"
-		},
-		"renderLegendForOneItem": {
-			"description": "Set to true to display the legend even if there is just a single series of data",
-			"type": "boolean"
-		},
-		"description": {
-			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"periodGranularity": {
-			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
-			"enum": [
-				"day",
-				"month",
-				"one_day_at_a_time",
-				"one_month_at_a_time",
-				"one_quarter_at_a_time",
-				"one_week_at_a_time",
-				"one_year_at_a_time",
-				"quarter",
-				"week",
-				"year"
-			],
-			"type": "string"
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"enum": [
-						"month",
-						"quarter"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"type": "number"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
-			]
-		},
-		"defaultTimePeriod": {
-			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"unit"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"start": {
-							"description": "Either an ISO Date string, or an offset object",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								{
-									"type": "string"
-								}
-							]
-						},
-						"end": {
-							"description": "Either an ISO Date string, or an offset object",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								{
-									"type": "string"
-								}
-							]
-						}
-					},
-					"additionalProperties": false
-				}
-			]
-		},
-		"datePickerLimits": {
-			"description": "Maximum date ranges that the date picker can be used to choose from",
-			"type": "object",
-			"properties": {
-				"start": {
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"unit"
-					]
-				},
-				"end": {
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"unit"
-					]
-				}
-			},
-			"additionalProperties": false
-		},
-		"exportConfig": {
-			"description": "Extra config options for exporting",
-			"type": "object",
-			"properties": {
-				"dataElementHeader": {
-					"description": "Sets the header for the data element in xls exports",
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
-		"noDataMessage": {
-			"description": "Message which shows if no data is found",
-			"type": "string"
-		},
-		"noDataFetch": {
-			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-			"default": false,
-			"type": "boolean"
-		},
-		"drillDown": {
-			"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
-			"type": "object",
-			"properties": {
-				"itemCode": {
-					"description": "The code of the dashboard item that drilling down through this viz should take you to",
-					"type": "string"
-				},
-				"keyLink": {
-					"type": "string"
-				},
-				"parameterLink": {
-					"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
-					"type": "string"
-				},
-				"itemCodeByEntry": {
-					"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
-					"type": "object",
-					"additionalProperties": {
+					"strokeDasharray": {
+						"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
 						"type": "string"
 					}
 				}
-			},
-			"additionalProperties": false
-		},
-		"entityHeader": {
-			"description": "",
-			"type": "string"
-		},
-		"reference": {
-			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"anyOf": [
-				{
-					"description": "One of the two shapes which {@link ReferenceProps} can take.",
-					"type": "object",
-					"properties": {
-						"text": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"text"
-					]
-				},
-				{
-					"description": "One of the two shapes which {@link ReferenceProps} can take.",
-					"type": "object",
-					"properties": {
-						"name": {
-							"type": "string"
-						},
-						"link": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
-					]
-				}
-			]
-		},
-		"weekDisplayFormat": {
-			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-			"default": "'WEEK_COMMENCING_ABBR'",
-			"enum": [
-				"ISO_WEEK_NUMBER",
-				"WEEK_COMMENCING",
-				"WEEK_COMMENCING_ABBR",
-				"WEEK_ENDING",
-				"WEEK_ENDING_ABBR"
-			],
-			"type": "string"
-		},
-		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
-			"type": "string"
+			}
 		}
 	},
-	"additionalProperties": false,
 	"required": [
 		"chartType",
 		"name",
@@ -7342,15 +7342,9 @@ export const LineChartConfigSchema = {
 } 
 
 export const ComposedChartConfigObjectSchema = {
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"chartType": {
-			"enum": [
-				"bar",
-				"line"
-			],
-			"type": "string"
-		},
 		"color": {
 			"description": "A CSS color string e.g. green or #abc123",
 			"type": "string"
@@ -7495,6 +7489,13 @@ export const ComposedChartConfigObjectSchema = {
 				}
 			]
 		},
+		"chartType": {
+			"enum": [
+				"bar",
+				"line"
+			],
+			"type": "string"
+		},
 		"dot": {
 			"description": "Whether the line should show a dot at each data point",
 			"type": "boolean"
@@ -7508,7 +7509,6 @@ export const ComposedChartConfigObjectSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
 	"required": [
 		"chartType"
 	]
@@ -7516,27 +7516,610 @@ export const ComposedChartConfigObjectSchema = {
 
 export const ComposedChartConfigSchema = {
 	"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
+		"label": {},
+		"source": {
+			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+			"type": "string"
+		},
+		"color": {
+			"description": "Some chart types take 'color' as an option",
+			"type": "string"
+		},
+		"name": {
+			"description": "The title of the viz",
+			"type": "string"
+		},
+		"description": {
+			"description": "A short description that appears above a viz",
+			"type": "string"
+		},
+		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+			"enum": [
+				"day",
+				"month",
+				"one_day_at_a_time",
+				"one_month_at_a_time",
+				"one_quarter_at_a_time",
+				"one_week_at_a_time",
+				"one_year_at_a_time",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
+		"defaultTimePeriod": {
+			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"unit"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"start": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"end": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						}
+					},
+					"additionalProperties": false
+				}
+			]
+		},
+		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
+			"type": "object",
+			"properties": {
+				"start": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"unit"
+					]
+				},
+				"end": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"unit"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"exportConfig": {
+			"description": "Extra config options for exporting",
+			"type": "object",
+			"properties": {
+				"dataElementHeader": {
+					"description": "Sets the header for the data element in xls exports",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"noDataMessage": {
+			"description": "Message which shows if no data is found",
+			"type": "string"
+		},
+		"noDataFetch": {
+			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+			"default": false,
+			"type": "boolean"
+		},
+		"drillDown": {
+			"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+			"type": "object",
+			"properties": {
+				"itemCode": {
+					"description": "The code of the dashboard item that drilling down through this viz should take you to",
+					"type": "string"
+				},
+				"keyLink": {
+					"type": "string"
+				},
+				"parameterLink": {
+					"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+					"type": "string"
+				},
+				"itemCodeByEntry": {
+					"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"entityHeader": {
+			"description": "",
+			"type": "string"
+		},
+		"reference": {
+			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
+				},
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
+				}
+			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
 		"chartType": {
 			"type": "string",
 			"enum": [
 				"composed"
 			]
 		},
+		"ticks": {
+			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+			"type": "array",
+			"items": {}
+		},
+		"startDate": {
+			"type": "string"
+		},
+		"endDate": {
+			"type": "string"
+		},
+		"valueType": {
+			"description": "Data type for this viz",
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"showPeriodRange": {
+			"description": "Set to 'all' to show the 'Latest available data:' message",
+			"type": "string",
+			"enum": [
+				"all"
+			]
+		},
+		"labelType": {
+			"description": "Some charts can have their label customised",
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
+		"renderLegendForOneItem": {
+			"description": "Set to true to display the legend even if there is just a single series of data",
+			"type": "boolean"
+		},
+		"xName": {
+			"description": "The label on the x-axis",
+			"type": "string"
+		},
+		"yName": {
+			"description": "The label on the y-axis",
+			"type": "string"
+		},
+		"yAxisDomain": {
+			"description": "Configuration options for the y-axis",
+			"type": "object",
+			"properties": {
+				"max": {
+					"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				"min": {
+					"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"max",
+				"min"
+			]
+		},
+		"presentationOptions": {
+			"description": "Common options for configuring the chart presentation",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
+				},
+				"periodTickFormat": {
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
+				"hideAverage": {
+					"description": "Hides the data average line",
+					"type": "boolean"
+				},
+				"referenceLines": {
+					"description": "Configure reference lines to appear in on the viz",
+					"type": "object",
+					"properties": {
+						"targetLine": {
+							"type": "object",
+							"properties": {
+								"referenceValue": {
+									"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+									"type": "number"
+								},
+								"referenceLabel": {
+									"description": "Label shown on the reference line",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
+						}
+					},
+					"additionalProperties": false
+				}
+			}
+		},
 		"chartConfig": {
 			"description": "Configuration for each individual chart within this composed chart\n\neg.\n {\n   avg_rainfall: {\n     chartType: line\n     color: green\n   }\n   num_cases: {\n     chartType: bar\n     color: red\n   }\n }",
 			"type": "object",
 			"additionalProperties": {
+				"additionalProperties": false,
 				"type": "object",
 				"properties": {
-					"chartType": {
-						"enum": [
-							"bar",
-							"line"
-						],
-						"type": "string"
-					},
 					"color": {
 						"description": "A CSS color string e.g. green or #abc123",
 						"type": "string"
@@ -7681,6 +8264,13 @@ export const ComposedChartConfigSchema = {
 							}
 						]
 					},
+					"chartType": {
+						"enum": [
+							"bar",
+							"line"
+						],
+						"type": "string"
+					},
 					"dot": {
 						"description": "Whether the line should show a dot at each data point",
 						"type": "boolean"
@@ -7694,602 +8284,12 @@ export const ComposedChartConfigSchema = {
 						"type": "string"
 					}
 				},
-				"additionalProperties": false,
 				"required": [
 					"chartType"
 				]
 			}
-		},
-		"label": {},
-		"source": {
-			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-			"type": "string"
-		},
-		"color": {
-			"description": "Some chart types take 'color' as an option",
-			"type": "string"
-		},
-		"name": {
-			"description": "The title of the viz",
-			"type": "string"
-		},
-		"xName": {
-			"description": "The label on the x-axis",
-			"type": "string"
-		},
-		"yName": {
-			"description": "The label on the y-axis",
-			"type": "string"
-		},
-		"yAxisDomain": {
-			"description": "Configuration options for the y-axis",
-			"type": "object",
-			"properties": {
-				"max": {
-					"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-					"type": "object",
-					"properties": {
-						"type": {
-							"enum": [
-								"clamp",
-								"number",
-								"scale",
-								"string"
-							],
-							"type": "string"
-						},
-						"value": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"min": {
-							"type": "number"
-						},
-						"max": {
-							"type": "number"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				"min": {
-					"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-					"type": "object",
-					"properties": {
-						"type": {
-							"enum": [
-								"clamp",
-								"number",
-								"scale",
-								"string"
-							],
-							"type": "string"
-						},
-						"value": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"min": {
-							"type": "number"
-						},
-						"max": {
-							"type": "number"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"max",
-				"min"
-			]
-		},
-		"presentationOptions": {
-			"description": "Common options for configuring the chart presentation",
-			"type": "object",
-			"properties": {
-				"periodTickFormat": {
-					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-					"type": "string"
-				},
-				"hideAverage": {
-					"description": "Hides the data average line",
-					"type": "boolean"
-				},
-				"referenceLines": {
-					"description": "Configure reference lines to appear in on the viz",
-					"type": "object",
-					"properties": {
-						"targetLine": {
-							"type": "object",
-							"properties": {
-								"referenceValue": {
-									"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-									"type": "number"
-								},
-								"referenceLabel": {
-									"description": "Label shown on the reference line",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"referenceValue"
-							]
-						}
-					},
-					"additionalProperties": false
-				},
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
-		"ticks": {
-			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-			"type": "array",
-			"items": {}
-		},
-		"startDate": {
-			"type": "string"
-		},
-		"endDate": {
-			"type": "string"
-		},
-		"valueType": {
-			"description": "Data type for this viz",
-			"enum": [
-				"boolean",
-				"color",
-				"currency",
-				"fraction",
-				"fractionAndPercentage",
-				"number",
-				"oneDecimalPlace",
-				"percentage",
-				"text",
-				"view"
-			],
-			"type": "string"
-		},
-		"showPeriodRange": {
-			"description": "Set to 'all' to show the 'Latest available data:' message",
-			"type": "string",
-			"enum": [
-				"all"
-			]
-		},
-		"labelType": {
-			"description": "Some charts can have their label customised",
-			"enum": [
-				"fraction",
-				"fractionAndPercentage",
-				"number"
-			],
-			"type": "string"
-		},
-		"renderLegendForOneItem": {
-			"description": "Set to true to display the legend even if there is just a single series of data",
-			"type": "boolean"
-		},
-		"description": {
-			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"periodGranularity": {
-			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
-			"enum": [
-				"day",
-				"month",
-				"one_day_at_a_time",
-				"one_month_at_a_time",
-				"one_quarter_at_a_time",
-				"one_week_at_a_time",
-				"one_year_at_a_time",
-				"quarter",
-				"week",
-				"year"
-			],
-			"type": "string"
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"enum": [
-						"month",
-						"quarter"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"type": "number"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
-			]
-		},
-		"defaultTimePeriod": {
-			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"unit"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"start": {
-							"description": "Either an ISO Date string, or an offset object",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								{
-									"type": "string"
-								}
-							]
-						},
-						"end": {
-							"description": "Either an ISO Date string, or an offset object",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								{
-									"type": "string"
-								}
-							]
-						}
-					},
-					"additionalProperties": false
-				}
-			]
-		},
-		"datePickerLimits": {
-			"description": "Maximum date ranges that the date picker can be used to choose from",
-			"type": "object",
-			"properties": {
-				"start": {
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"unit"
-					]
-				},
-				"end": {
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"unit"
-					]
-				}
-			},
-			"additionalProperties": false
-		},
-		"exportConfig": {
-			"description": "Extra config options for exporting",
-			"type": "object",
-			"properties": {
-				"dataElementHeader": {
-					"description": "Sets the header for the data element in xls exports",
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
-		"noDataMessage": {
-			"description": "Message which shows if no data is found",
-			"type": "string"
-		},
-		"noDataFetch": {
-			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-			"default": false,
-			"type": "boolean"
-		},
-		"drillDown": {
-			"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
-			"type": "object",
-			"properties": {
-				"itemCode": {
-					"description": "The code of the dashboard item that drilling down through this viz should take you to",
-					"type": "string"
-				},
-				"keyLink": {
-					"type": "string"
-				},
-				"parameterLink": {
-					"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
-					"type": "string"
-				},
-				"itemCodeByEntry": {
-					"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
-					"type": "object",
-					"additionalProperties": {
-						"type": "string"
-					}
-				}
-			},
-			"additionalProperties": false
-		},
-		"entityHeader": {
-			"description": "",
-			"type": "string"
-		},
-		"reference": {
-			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"anyOf": [
-				{
-					"description": "One of the two shapes which {@link ReferenceProps} can take.",
-					"type": "object",
-					"properties": {
-						"text": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"text"
-					]
-				},
-				{
-					"description": "One of the two shapes which {@link ReferenceProps} can take.",
-					"type": "object",
-					"properties": {
-						"name": {
-							"type": "string"
-						},
-						"link": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
-					]
-				}
-			]
-		},
-		"weekDisplayFormat": {
-			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-			"default": "'WEEK_COMMENCING_ABBR'",
-			"enum": [
-				"ISO_WEEK_NUMBER",
-				"WEEK_COMMENCING",
-				"WEEK_COMMENCING_ABBR",
-				"WEEK_ENDING",
-				"WEEK_ENDING_ABBR"
-			],
-			"type": "string"
-		},
-		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
-			"type": "string"
 		}
 	},
-	"additionalProperties": false,
 	"required": [
 		"chartType",
 		"name",
@@ -8299,72 +8299,9 @@ export const ComposedChartConfigSchema = {
 
 export const GaugeChartConfigSchema = {
 	"description": "Gauge Chart",
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"chartType": {
-			"type": "string",
-			"enum": [
-				"gauge"
-			]
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
-		"ticks": {
-			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-			"type": "array",
-			"items": {}
-		},
-		"startDate": {
-			"type": "string"
-		},
-		"endDate": {
-			"type": "string"
-		},
-		"valueType": {
-			"description": "Data type for this viz",
-			"enum": [
-				"boolean",
-				"color",
-				"currency",
-				"fraction",
-				"fractionAndPercentage",
-				"number",
-				"oneDecimalPlace",
-				"percentage",
-				"text",
-				"view"
-			],
-			"type": "string"
-		},
-		"showPeriodRange": {
-			"description": "Set to 'all' to show the 'Latest available data:' message",
-			"type": "string",
-			"enum": [
-				"all"
-			]
-		},
-		"color": {
-			"description": "Some chart types take 'color' as an option",
-			"type": "string"
-		},
-		"label": {},
-		"labelType": {
-			"description": "Some charts can have their label customised",
-			"enum": [
-				"fraction",
-				"fractionAndPercentage",
-				"number"
-			],
-			"type": "string"
-		},
-		"renderLegendForOneItem": {
-			"description": "Set to true to display the legend even if there is just a single series of data",
-			"type": "boolean"
-		},
 		"name": {
 			"description": "The title of the viz",
 			"type": "string"
@@ -8762,9 +8699,72 @@ export const GaugeChartConfigSchema = {
 		"dateRangeDelimiter": {
 			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
+		"chartType": {
+			"type": "string",
+			"enum": [
+				"gauge"
+			]
+		},
+		"ticks": {
+			"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+			"type": "array",
+			"items": {}
+		},
+		"startDate": {
+			"type": "string"
+		},
+		"endDate": {
+			"type": "string"
+		},
+		"valueType": {
+			"description": "Data type for this viz",
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"showPeriodRange": {
+			"description": "Set to 'all' to show the 'Latest available data:' message",
+			"type": "string",
+			"enum": [
+				"all"
+			]
+		},
+		"color": {
+			"description": "Some chart types take 'color' as an option",
+			"type": "string"
+		},
+		"label": {},
+		"labelType": {
+			"description": "Some charts can have their label customised",
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
+		"renderLegendForOneItem": {
+			"description": "Set to true to display the legend even if there is just a single series of data",
+			"type": "boolean"
 		}
 	},
-	"additionalProperties": false,
 	"required": [
 		"chartType",
 		"name",
@@ -8776,108 +8776,9 @@ export const ChartConfigSchema = {
 	"anyOf": [
 		{
 			"description": "Pie Chart",
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
-				"chartType": {
-					"type": "string",
-					"enum": [
-						"pie"
-					]
-				},
-				"presentationOptions": {
-					"description": "Common options for configuring the chart presentation",
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"exportWithLabels": {
-							"description": "Include labels for each point of data in exports",
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"description": "Include the data table below the viz in exports",
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-							"type": "boolean"
-						}
-					}
-				},
-				"segmentConfig": {
-					"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
-					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"color": {
-								"description": "A CSS color string e.g. green or #abc123",
-								"type": "string"
-							},
-							"label": {
-								"type": "string"
-							}
-						},
-						"additionalProperties": false
-					}
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"ticks": {
-					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-					"type": "array",
-					"items": {}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"description": "Data type for this viz",
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"description": "Set to 'all' to show the 'Latest available data:' message",
-					"type": "string",
-					"enum": [
-						"all"
-					]
-				},
-				"color": {
-					"description": "Some chart types take 'color' as an option",
-					"type": "string"
-				},
-				"label": {},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"renderLegendForOneItem": {
-					"description": "Set to true to display the legend even if there is just a single series of data",
-					"type": "boolean"
-				},
 				"name": {
 					"description": "The title of the viz",
 					"type": "string"
@@ -9275,69 +9176,76 @@ export const ChartConfigSchema = {
 				"dateRangeDelimiter": {
 					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"chartType",
-				"name",
-				"type"
-			]
-		},
-		{
-			"description": "Bar Chart",
-			"type": "object",
-			"properties": {
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"chartType": {
 					"type": "string",
 					"enum": [
-						"bar"
+						"pie"
 					]
+				},
+				"ticks": {
+					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+					"type": "array",
+					"items": {}
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data type for this viz",
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"description": "Set to 'all' to show the 'Latest available data:' message",
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"color": {
+					"description": "Some chart types take 'color' as an option",
+					"type": "string"
+				},
+				"label": {},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"renderLegendForOneItem": {
+					"description": "Set to true to display the legend even if there is just a single series of data",
+					"type": "boolean"
 				},
 				"presentationOptions": {
 					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
-						"color": {
-							"description": "A CSS color string e.g. green or #abc123",
-							"type": "string"
-						},
-						"valueFormat": {
-							"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-							"type": "string"
-						},
-						"periodTickFormat": {
-							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-							"type": "string"
-						},
-						"hideAverage": {
-							"description": "Hides the data average line",
-							"type": "boolean"
-						},
-						"referenceLines": {
-							"description": "Configure reference lines to appear in on the viz",
-							"type": "object",
-							"properties": {
-								"targetLine": {
-									"type": "object",
-									"properties": {
-										"referenceValue": {
-											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-											"type": "number"
-										},
-										"referenceLabel": {
-											"description": "Label shown on the reference line",
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"referenceValue"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
 						"exportWithLabels": {
 							"description": "Include labels for each point of data in exports",
 							"type": "boolean"
@@ -9350,8 +9258,498 @@ export const ChartConfigSchema = {
 							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 							"type": "boolean"
 						}
+					}
+				},
+				"segmentConfig": {
+					"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false
+					}
+				}
+			},
+			"required": [
+				"chartType",
+				"name",
+				"type"
+			]
+		},
+		{
+			"description": "Bar Chart",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"name": {
+					"description": "The title of the viz",
+					"type": "string"
+				},
+				"description": {
+					"description": "A short description that appears above a viz",
+					"type": "string"
+				},
+				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+					"enum": [
+						"day",
+						"month",
+						"one_day_at_a_time",
+						"one_month_at_a_time",
+						"one_quarter_at_a_time",
+						"one_week_at_a_time",
+						"one_year_at_a_time",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"defaultTimePeriod": {
+					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"unit"
+							]
+						},
+						{
+							"type": "object",
+							"properties": {
+								"start": {
+									"description": "Either an ISO Date string, or an offset object",
+									"anyOf": [
+										{
+											"type": "object",
+											"properties": {
+												"unit": {
+													"description": "Time unit to offset by",
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"description": "Offset distance (can be negative to offset to an earlier date)",
+													"type": "number"
+												},
+												"modifier": {
+													"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"description": "Time unit to modify the offset by",
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"unit"
+											]
+										},
+										{
+											"type": "string"
+										}
+									]
+								},
+								"end": {
+									"description": "Either an ISO Date string, or an offset object",
+									"anyOf": [
+										{
+											"type": "object",
+											"properties": {
+												"unit": {
+													"description": "Time unit to offset by",
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"description": "Offset distance (can be negative to offset to an earlier date)",
+													"type": "number"
+												},
+												"modifier": {
+													"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"description": "Time unit to modify the offset by",
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"unit"
+											]
+										},
+										{
+											"type": "string"
+										}
+									]
+								}
+							},
+							"additionalProperties": false
+						}
+					]
+				},
+				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
+					"type": "object",
+					"properties": {
+						"start": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"unit"
+							]
+						},
+						"end": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"unit"
+							]
+						}
 					},
 					"additionalProperties": false
+				},
+				"exportConfig": {
+					"description": "Extra config options for exporting",
+					"type": "object",
+					"properties": {
+						"dataElementHeader": {
+							"description": "Sets the header for the data element in xls exports",
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"noDataMessage": {
+					"description": "Message which shows if no data is found",
+					"type": "string"
+				},
+				"noDataFetch": {
+					"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+					"default": false,
+					"type": "boolean"
+				},
+				"drillDown": {
+					"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+					"type": "object",
+					"properties": {
+						"itemCode": {
+							"description": "The code of the dashboard item that drilling down through this viz should take you to",
+							"type": "string"
+						},
+						"keyLink": {
+							"type": "string"
+						},
+						"parameterLink": {
+							"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+							"type": "string"
+						},
+						"itemCodeByEntry": {
+							"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+							"type": "object",
+							"additionalProperties": {
+								"type": "string"
+							}
+						}
+					},
+					"additionalProperties": false
+				},
+				"entityHeader": {
+					"description": "",
+					"type": "string"
+				},
+				"reference": {
+					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
+						},
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						}
+					]
+				},
+				"source": {
+					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+					"type": "string"
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+					"type": "string"
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
+				"chartType": {
+					"type": "string",
+					"enum": [
+						"bar"
+					]
+				},
+				"ticks": {
+					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+					"type": "array",
+					"items": {}
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data type for this viz",
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"description": "Set to 'all' to show the 'Latest available data:' message",
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"color": {
+					"description": "Some chart types take 'color' as an option",
+					"type": "string"
+				},
+				"label": {},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"renderLegendForOneItem": {
+					"description": "Set to true to display the legend even if there is just a single series of data",
+					"type": "boolean"
 				},
 				"xName": {
 					"description": "The label on the x-axis",
@@ -9601,63 +9999,85 @@ export const ChartConfigSchema = {
 						"additionalProperties": false
 					}
 				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"ticks": {
-					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-					"type": "array",
-					"items": {}
-				},
-				"startDate": {
+				"presentationOptions": {
+					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"exportWithLabels": {
+							"description": "Include labels for each point of data in exports",
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"description": "Include the data table below the viz in exports",
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+							"type": "boolean"
+						},
+						"periodTickFormat": {
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
+						"hideAverage": {
+							"description": "Hides the data average line",
+							"type": "boolean"
+						},
+						"referenceLines": {
+							"description": "Configure reference lines to appear in on the viz",
+							"type": "object",
+							"properties": {
+								"targetLine": {
+									"type": "object",
+									"properties": {
+										"referenceValue": {
+											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+											"type": "number"
+										},
+										"referenceLabel": {
+											"description": "Label shown on the reference line",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"color": {
+							"description": "A CSS color string e.g. green or #abc123",
+							"type": "string"
+						},
+						"valueFormat": {
+							"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+							"type": "string"
+						}
+					}
+				}
+			},
+			"required": [
+				"chartType",
+				"name",
+				"type"
+			]
+		},
+		{
+			"description": "Line Chart",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"label": {},
+				"source": {
+					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"description": "Data type for this viz",
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"description": "Set to 'all' to show the 'Latest available data:' message",
-					"type": "string",
-					"enum": [
-						"all"
-					]
 				},
 				"color": {
 					"description": "Some chart types take 'color' as an option",
 					"type": "string"
-				},
-				"label": {},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"renderLegendForOneItem": {
-					"description": "Set to true to display the legend even if there is just a single series of data",
-					"type": "boolean"
 				},
 				"name": {
 					"description": "The title of the viz",
@@ -10037,10 +10457,6 @@ export const ChartConfigSchema = {
 						}
 					]
 				},
-				"source": {
-					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-					"type": "string"
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -10056,43 +10472,205 @@ export const ChartConfigSchema = {
 				"dateRangeDelimiter": {
 					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"chartType",
-				"name",
-				"type"
-			]
-		},
-		{
-			"description": "Line Chart",
-			"type": "object",
-			"properties": {
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"chartType": {
 					"type": "string",
 					"enum": [
 						"line"
 					]
 				},
+				"ticks": {
+					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+					"type": "array",
+					"items": {}
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data type for this viz",
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"description": "Set to 'all' to show the 'Latest available data:' message",
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"renderLegendForOneItem": {
+					"description": "Set to true to display the legend even if there is just a single series of data",
+					"type": "boolean"
+				},
+				"xName": {
+					"description": "The label on the x-axis",
+					"type": "string"
+				},
+				"yName": {
+					"description": "The label on the y-axis",
+					"type": "string"
+				},
+				"yAxisDomain": {
+					"description": "Configuration options for the y-axis",
+					"type": "object",
+					"properties": {
+						"max": {
+							"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						},
+						"min": {
+							"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				},
+				"presentationOptions": {
+					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"exportWithLabels": {
+							"description": "Include labels for each point of data in exports",
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"description": "Include the data table below the viz in exports",
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+							"type": "boolean"
+						},
+						"periodTickFormat": {
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
+						"hideAverage": {
+							"description": "Hides the data average line",
+							"type": "boolean"
+						},
+						"referenceLines": {
+							"description": "Configure reference lines to appear in on the viz",
+							"type": "object",
+							"properties": {
+								"targetLine": {
+									"type": "object",
+									"properties": {
+										"referenceValue": {
+											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+											"type": "number"
+										},
+										"referenceLabel": {
+											"description": "Label shown on the reference line",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
+								}
+							},
+							"additionalProperties": false
+						}
+					}
+				},
 				"chartConfig": {
 					"description": "Configuration for each series of data within this chart.\nNote: use $all for configuration that applies to all series.\n\neg.\n {\n   In Stock: {\n     color: green\n   }\n   Out of Stock: {\n     color: red\n   }\n   $all: {\n     hideFromLegend: true\n   }\n }",
 					"type": "object",
 					"additionalProperties": {
+						"additionalProperties": false,
 						"type": "object",
 						"properties": {
-							"dot": {
-								"description": "Whether the line should show a dot at each data point",
-								"type": "boolean"
-							},
-							"connectNulls": {
-								"description": "Whether to draw a connecting line between gaps in the data",
-								"type": "boolean"
-							},
-							"strokeDasharray": {
-								"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
-								"type": "string"
-							},
 							"color": {
 								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
@@ -10248,11 +10826,34 @@ export const ChartConfigSchema = {
 									"pie"
 								],
 								"type": "string"
+							},
+							"dot": {
+								"description": "Whether the line should show a dot at each data point",
+								"type": "boolean"
+							},
+							"connectNulls": {
+								"description": "Whether to draw a connecting line between gaps in the data",
+								"type": "boolean"
+							},
+							"strokeDasharray": {
+								"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
+								"type": "string"
 							}
-						},
-						"additionalProperties": false
+						}
 					}
-				},
+				}
+			},
+			"required": [
+				"chartType",
+				"name",
+				"type"
+			]
+		},
+		{
+			"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
 				"label": {},
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
@@ -10265,191 +10866,6 @@ export const ChartConfigSchema = {
 				"name": {
 					"description": "The title of the viz",
 					"type": "string"
-				},
-				"xName": {
-					"description": "The label on the x-axis",
-					"type": "string"
-				},
-				"yName": {
-					"description": "The label on the y-axis",
-					"type": "string"
-				},
-				"yAxisDomain": {
-					"description": "Configuration options for the y-axis",
-					"type": "object",
-					"properties": {
-						"max": {
-							"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						},
-						"min": {
-							"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"presentationOptions": {
-					"description": "Common options for configuring the chart presentation",
-					"type": "object",
-					"properties": {
-						"periodTickFormat": {
-							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-							"type": "string"
-						},
-						"hideAverage": {
-							"description": "Hides the data average line",
-							"type": "boolean"
-						},
-						"referenceLines": {
-							"description": "Configure reference lines to appear in on the viz",
-							"type": "object",
-							"properties": {
-								"targetLine": {
-									"type": "object",
-									"properties": {
-										"referenceValue": {
-											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-											"type": "number"
-										},
-										"referenceLabel": {
-											"description": "Label shown on the reference line",
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"referenceValue"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportWithLabels": {
-							"description": "Include labels for each point of data in exports",
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"description": "Include the data table below the viz in exports",
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-							"type": "boolean"
-						}
-					},
-					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"ticks": {
-					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-					"type": "array",
-					"items": {}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"description": "Data type for this viz",
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"description": "Set to 'all' to show the 'Latest available data:' message",
-					"type": "string",
-					"enum": [
-						"all"
-					]
-				},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"renderLegendForOneItem": {
-					"description": "Set to true to display the legend even if there is just a single series of data",
-					"type": "boolean"
 				},
 				"description": {
 					"description": "A short description that appears above a viz",
@@ -10840,38 +11256,205 @@ export const ChartConfigSchema = {
 				"dateRangeDelimiter": {
 					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"chartType",
-				"name",
-				"type"
-			]
-		},
-		{
-			"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
-			"type": "object",
-			"properties": {
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"chartType": {
 					"type": "string",
 					"enum": [
 						"composed"
 					]
 				},
+				"ticks": {
+					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+					"type": "array",
+					"items": {}
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data type for this viz",
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"description": "Set to 'all' to show the 'Latest available data:' message",
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"renderLegendForOneItem": {
+					"description": "Set to true to display the legend even if there is just a single series of data",
+					"type": "boolean"
+				},
+				"xName": {
+					"description": "The label on the x-axis",
+					"type": "string"
+				},
+				"yName": {
+					"description": "The label on the y-axis",
+					"type": "string"
+				},
+				"yAxisDomain": {
+					"description": "Configuration options for the y-axis",
+					"type": "object",
+					"properties": {
+						"max": {
+							"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						},
+						"min": {
+							"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				},
+				"presentationOptions": {
+					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"exportWithLabels": {
+							"description": "Include labels for each point of data in exports",
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"description": "Include the data table below the viz in exports",
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+							"type": "boolean"
+						},
+						"periodTickFormat": {
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
+						"hideAverage": {
+							"description": "Hides the data average line",
+							"type": "boolean"
+						},
+						"referenceLines": {
+							"description": "Configure reference lines to appear in on the viz",
+							"type": "object",
+							"properties": {
+								"targetLine": {
+									"type": "object",
+									"properties": {
+										"referenceValue": {
+											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+											"type": "number"
+										},
+										"referenceLabel": {
+											"description": "Label shown on the reference line",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
+								}
+							},
+							"additionalProperties": false
+						}
+					}
+				},
 				"chartConfig": {
 					"description": "Configuration for each individual chart within this composed chart\n\neg.\n {\n   avg_rainfall: {\n     chartType: line\n     color: green\n   }\n   num_cases: {\n     chartType: bar\n     color: red\n   }\n }",
 					"type": "object",
 					"additionalProperties": {
+						"additionalProperties": false,
 						"type": "object",
 						"properties": {
-							"chartType": {
-								"enum": [
-									"bar",
-									"line"
-								],
-								"type": "string"
-							},
 							"color": {
 								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
@@ -11016,6 +11599,13 @@ export const ChartConfigSchema = {
 									}
 								]
 							},
+							"chartType": {
+								"enum": [
+									"bar",
+									"line"
+								],
+								"type": "string"
+							},
 							"dot": {
 								"description": "Whether the line should show a dot at each data point",
 								"type": "boolean"
@@ -11029,602 +11619,12 @@ export const ChartConfigSchema = {
 								"type": "string"
 							}
 						},
-						"additionalProperties": false,
 						"required": [
 							"chartType"
 						]
 					}
-				},
-				"label": {},
-				"source": {
-					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-					"type": "string"
-				},
-				"color": {
-					"description": "Some chart types take 'color' as an option",
-					"type": "string"
-				},
-				"name": {
-					"description": "The title of the viz",
-					"type": "string"
-				},
-				"xName": {
-					"description": "The label on the x-axis",
-					"type": "string"
-				},
-				"yName": {
-					"description": "The label on the y-axis",
-					"type": "string"
-				},
-				"yAxisDomain": {
-					"description": "Configuration options for the y-axis",
-					"type": "object",
-					"properties": {
-						"max": {
-							"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						},
-						"min": {
-							"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"presentationOptions": {
-					"description": "Common options for configuring the chart presentation",
-					"type": "object",
-					"properties": {
-						"periodTickFormat": {
-							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-							"type": "string"
-						},
-						"hideAverage": {
-							"description": "Hides the data average line",
-							"type": "boolean"
-						},
-						"referenceLines": {
-							"description": "Configure reference lines to appear in on the viz",
-							"type": "object",
-							"properties": {
-								"targetLine": {
-									"type": "object",
-									"properties": {
-										"referenceValue": {
-											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-											"type": "number"
-										},
-										"referenceLabel": {
-											"description": "Label shown on the reference line",
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"referenceValue"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportWithLabels": {
-							"description": "Include labels for each point of data in exports",
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"description": "Include the data table below the viz in exports",
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-							"type": "boolean"
-						}
-					},
-					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"ticks": {
-					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-					"type": "array",
-					"items": {}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"description": "Data type for this viz",
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"description": "Set to 'all' to show the 'Latest available data:' message",
-					"type": "string",
-					"enum": [
-						"all"
-					]
-				},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"renderLegendForOneItem": {
-					"description": "Set to true to display the legend even if there is just a single series of data",
-					"type": "boolean"
-				},
-				"description": {
-					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"periodGranularity": {
-					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
-					"enum": [
-						"day",
-						"month",
-						"one_day_at_a_time",
-						"one_month_at_a_time",
-						"one_quarter_at_a_time",
-						"one_week_at_a_time",
-						"one_year_at_a_time",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"enum": [
-								"month",
-								"quarter"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"type": "number"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
-					]
-				},
-				"defaultTimePeriod": {
-					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"unit"
-							]
-						},
-						{
-							"type": "object",
-							"properties": {
-								"start": {
-									"description": "Either an ISO Date string, or an offset object",
-									"anyOf": [
-										{
-											"type": "object",
-											"properties": {
-												"unit": {
-													"description": "Time unit to offset by",
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"description": "Offset distance (can be negative to offset to an earlier date)",
-													"type": "number"
-												},
-												"modifier": {
-													"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"description": "Time unit to modify the offset by",
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"unit"
-											]
-										},
-										{
-											"type": "string"
-										}
-									]
-								},
-								"end": {
-									"description": "Either an ISO Date string, or an offset object",
-									"anyOf": [
-										{
-											"type": "object",
-											"properties": {
-												"unit": {
-													"description": "Time unit to offset by",
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"description": "Offset distance (can be negative to offset to an earlier date)",
-													"type": "number"
-												},
-												"modifier": {
-													"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"description": "Time unit to modify the offset by",
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"unit"
-											]
-										},
-										{
-											"type": "string"
-										}
-									]
-								}
-							},
-							"additionalProperties": false
-						}
-					]
-				},
-				"datePickerLimits": {
-					"description": "Maximum date ranges that the date picker can be used to choose from",
-					"type": "object",
-					"properties": {
-						"start": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"unit"
-							]
-						},
-						"end": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"unit"
-							]
-						}
-					},
-					"additionalProperties": false
-				},
-				"exportConfig": {
-					"description": "Extra config options for exporting",
-					"type": "object",
-					"properties": {
-						"dataElementHeader": {
-							"description": "Sets the header for the data element in xls exports",
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
-				"noDataMessage": {
-					"description": "Message which shows if no data is found",
-					"type": "string"
-				},
-				"noDataFetch": {
-					"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-					"default": false,
-					"type": "boolean"
-				},
-				"drillDown": {
-					"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
-					"type": "object",
-					"properties": {
-						"itemCode": {
-							"description": "The code of the dashboard item that drilling down through this viz should take you to",
-							"type": "string"
-						},
-						"keyLink": {
-							"type": "string"
-						},
-						"parameterLink": {
-							"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
-							"type": "string"
-						},
-						"itemCodeByEntry": {
-							"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
-							"type": "object",
-							"additionalProperties": {
-								"type": "string"
-							}
-						}
-					},
-					"additionalProperties": false
-				},
-				"entityHeader": {
-					"description": "",
-					"type": "string"
-				},
-				"reference": {
-					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"anyOf": [
-						{
-							"description": "One of the two shapes which {@link ReferenceProps} can take.",
-							"type": "object",
-							"properties": {
-								"text": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"text"
-							]
-						},
-						{
-							"description": "One of the two shapes which {@link ReferenceProps} can take.",
-							"type": "object",
-							"properties": {
-								"name": {
-									"type": "string"
-								},
-								"link": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
-							]
-						}
-					]
-				},
-				"weekDisplayFormat": {
-					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-					"default": "'WEEK_COMMENCING_ABBR'",
-					"enum": [
-						"ISO_WEEK_NUMBER",
-						"WEEK_COMMENCING",
-						"WEEK_COMMENCING_ABBR",
-						"WEEK_ENDING",
-						"WEEK_ENDING_ABBR"
-					],
-					"type": "string"
-				},
-				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
-					"type": "string"
 				}
 			},
-			"additionalProperties": false,
 			"required": [
 				"chartType",
 				"name",
@@ -11633,72 +11633,9 @@ export const ChartConfigSchema = {
 		},
 		{
 			"description": "Gauge Chart",
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
-				"chartType": {
-					"type": "string",
-					"enum": [
-						"gauge"
-					]
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"ticks": {
-					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-					"type": "array",
-					"items": {}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"description": "Data type for this viz",
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"description": "Set to 'all' to show the 'Latest available data:' message",
-					"type": "string",
-					"enum": [
-						"all"
-					]
-				},
-				"color": {
-					"description": "Some chart types take 'color' as an option",
-					"type": "string"
-				},
-				"label": {},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"renderLegendForOneItem": {
-					"description": "Set to true to display the legend even if there is just a single series of data",
-					"type": "boolean"
-				},
 				"name": {
 					"description": "The title of the viz",
 					"type": "string"
@@ -12096,9 +12033,72 @@ export const ChartConfigSchema = {
 				"dateRangeDelimiter": {
 					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
+				"chartType": {
+					"type": "string",
+					"enum": [
+						"gauge"
+					]
+				},
+				"ticks": {
+					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+					"type": "array",
+					"items": {}
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data type for this viz",
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"description": "Set to 'all' to show the 'Latest available data:' message",
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"color": {
+					"description": "Some chart types take 'color' as an option",
+					"type": "string"
+				},
+				"label": {},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"renderLegendForOneItem": {
+					"description": "Set to true to display the legend even if there is just a single series of data",
+					"type": "boolean"
 				}
 			},
-			"additionalProperties": false,
 			"required": [
 				"chartType",
 				"name",
@@ -12111,8 +12111,21 @@ export const ChartConfigSchema = {
 export const ChartPresentationOptionsSchema = {
 	"anyOf": [
 		{
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
+				},
 				"periodTickFormat": {
 					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
@@ -12144,21 +12157,8 @@ export const ChartPresentationOptionsSchema = {
 						}
 					},
 					"additionalProperties": false
-				},
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
 				}
-			},
-			"additionalProperties": false
+			}
 		},
 		{
 			"additionalProperties": false,
@@ -12179,15 +12179,20 @@ export const ChartPresentationOptionsSchema = {
 			}
 		},
 		{
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
-				"color": {
-					"description": "A CSS color string e.g. green or #abc123",
-					"type": "string"
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
 				},
-				"valueFormat": {
-					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-					"type": "string"
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
 				},
 				"periodTickFormat": {
 					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
@@ -12221,20 +12226,15 @@ export const ChartPresentationOptionsSchema = {
 					},
 					"additionalProperties": false
 				},
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
+				"color": {
+					"description": "A CSS color string e.g. green or #abc123",
+					"type": "string"
 				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
+				"valueFormat": {
+					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+					"type": "string"
 				}
-			},
-			"additionalProperties": false
+			}
 		}
 	]
 } 
@@ -23581,108 +23581,9 @@ export const DashboardItemConfigSchema = {
 		},
 		{
 			"description": "Pie Chart",
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
-				"chartType": {
-					"type": "string",
-					"enum": [
-						"pie"
-					]
-				},
-				"presentationOptions": {
-					"description": "Common options for configuring the chart presentation",
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"exportWithLabels": {
-							"description": "Include labels for each point of data in exports",
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"description": "Include the data table below the viz in exports",
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-							"type": "boolean"
-						}
-					}
-				},
-				"segmentConfig": {
-					"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
-					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"color": {
-								"description": "A CSS color string e.g. green or #abc123",
-								"type": "string"
-							},
-							"label": {
-								"type": "string"
-							}
-						},
-						"additionalProperties": false
-					}
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"ticks": {
-					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-					"type": "array",
-					"items": {}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"description": "Data type for this viz",
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"description": "Set to 'all' to show the 'Latest available data:' message",
-					"type": "string",
-					"enum": [
-						"all"
-					]
-				},
-				"color": {
-					"description": "Some chart types take 'color' as an option",
-					"type": "string"
-				},
-				"label": {},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"renderLegendForOneItem": {
-					"description": "Set to true to display the legend even if there is just a single series of data",
-					"type": "boolean"
-				},
 				"name": {
 					"description": "The title of the viz",
 					"type": "string"
@@ -24080,69 +23981,76 @@ export const DashboardItemConfigSchema = {
 				"dateRangeDelimiter": {
 					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"chartType",
-				"name",
-				"type"
-			]
-		},
-		{
-			"description": "Bar Chart",
-			"type": "object",
-			"properties": {
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"chartType": {
 					"type": "string",
 					"enum": [
-						"bar"
+						"pie"
 					]
+				},
+				"ticks": {
+					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+					"type": "array",
+					"items": {}
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data type for this viz",
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"description": "Set to 'all' to show the 'Latest available data:' message",
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"color": {
+					"description": "Some chart types take 'color' as an option",
+					"type": "string"
+				},
+				"label": {},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"renderLegendForOneItem": {
+					"description": "Set to true to display the legend even if there is just a single series of data",
+					"type": "boolean"
 				},
 				"presentationOptions": {
 					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
-						"color": {
-							"description": "A CSS color string e.g. green or #abc123",
-							"type": "string"
-						},
-						"valueFormat": {
-							"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-							"type": "string"
-						},
-						"periodTickFormat": {
-							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-							"type": "string"
-						},
-						"hideAverage": {
-							"description": "Hides the data average line",
-							"type": "boolean"
-						},
-						"referenceLines": {
-							"description": "Configure reference lines to appear in on the viz",
-							"type": "object",
-							"properties": {
-								"targetLine": {
-									"type": "object",
-									"properties": {
-										"referenceValue": {
-											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-											"type": "number"
-										},
-										"referenceLabel": {
-											"description": "Label shown on the reference line",
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"referenceValue"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
 						"exportWithLabels": {
 							"description": "Include labels for each point of data in exports",
 							"type": "boolean"
@@ -24155,8 +24063,498 @@ export const DashboardItemConfigSchema = {
 							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 							"type": "boolean"
 						}
+					}
+				},
+				"segmentConfig": {
+					"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false
+					}
+				}
+			},
+			"required": [
+				"chartType",
+				"name",
+				"type"
+			]
+		},
+		{
+			"description": "Bar Chart",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"name": {
+					"description": "The title of the viz",
+					"type": "string"
+				},
+				"description": {
+					"description": "A short description that appears above a viz",
+					"type": "string"
+				},
+				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+					"enum": [
+						"day",
+						"month",
+						"one_day_at_a_time",
+						"one_month_at_a_time",
+						"one_quarter_at_a_time",
+						"one_week_at_a_time",
+						"one_year_at_a_time",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"defaultTimePeriod": {
+					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"unit"
+							]
+						},
+						{
+							"type": "object",
+							"properties": {
+								"start": {
+									"description": "Either an ISO Date string, or an offset object",
+									"anyOf": [
+										{
+											"type": "object",
+											"properties": {
+												"unit": {
+													"description": "Time unit to offset by",
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"description": "Offset distance (can be negative to offset to an earlier date)",
+													"type": "number"
+												},
+												"modifier": {
+													"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"description": "Time unit to modify the offset by",
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"unit"
+											]
+										},
+										{
+											"type": "string"
+										}
+									]
+								},
+								"end": {
+									"description": "Either an ISO Date string, or an offset object",
+									"anyOf": [
+										{
+											"type": "object",
+											"properties": {
+												"unit": {
+													"description": "Time unit to offset by",
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"description": "Offset distance (can be negative to offset to an earlier date)",
+													"type": "number"
+												},
+												"modifier": {
+													"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"description": "Time unit to modify the offset by",
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"unit"
+											]
+										},
+										{
+											"type": "string"
+										}
+									]
+								}
+							},
+							"additionalProperties": false
+						}
+					]
+				},
+				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
+					"type": "object",
+					"properties": {
+						"start": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"unit"
+							]
+						},
+						"end": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"unit"
+							]
+						}
 					},
 					"additionalProperties": false
+				},
+				"exportConfig": {
+					"description": "Extra config options for exporting",
+					"type": "object",
+					"properties": {
+						"dataElementHeader": {
+							"description": "Sets the header for the data element in xls exports",
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"noDataMessage": {
+					"description": "Message which shows if no data is found",
+					"type": "string"
+				},
+				"noDataFetch": {
+					"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+					"default": false,
+					"type": "boolean"
+				},
+				"drillDown": {
+					"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+					"type": "object",
+					"properties": {
+						"itemCode": {
+							"description": "The code of the dashboard item that drilling down through this viz should take you to",
+							"type": "string"
+						},
+						"keyLink": {
+							"type": "string"
+						},
+						"parameterLink": {
+							"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+							"type": "string"
+						},
+						"itemCodeByEntry": {
+							"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+							"type": "object",
+							"additionalProperties": {
+								"type": "string"
+							}
+						}
+					},
+					"additionalProperties": false
+				},
+				"entityHeader": {
+					"description": "",
+					"type": "string"
+				},
+				"reference": {
+					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
+						},
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						}
+					]
+				},
+				"source": {
+					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+					"type": "string"
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+					"type": "string"
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
+				"chartType": {
+					"type": "string",
+					"enum": [
+						"bar"
+					]
+				},
+				"ticks": {
+					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+					"type": "array",
+					"items": {}
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data type for this viz",
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"description": "Set to 'all' to show the 'Latest available data:' message",
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"color": {
+					"description": "Some chart types take 'color' as an option",
+					"type": "string"
+				},
+				"label": {},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"renderLegendForOneItem": {
+					"description": "Set to true to display the legend even if there is just a single series of data",
+					"type": "boolean"
 				},
 				"xName": {
 					"description": "The label on the x-axis",
@@ -24406,63 +24804,85 @@ export const DashboardItemConfigSchema = {
 						"additionalProperties": false
 					}
 				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"ticks": {
-					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-					"type": "array",
-					"items": {}
-				},
-				"startDate": {
+				"presentationOptions": {
+					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"exportWithLabels": {
+							"description": "Include labels for each point of data in exports",
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"description": "Include the data table below the viz in exports",
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+							"type": "boolean"
+						},
+						"periodTickFormat": {
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
+						"hideAverage": {
+							"description": "Hides the data average line",
+							"type": "boolean"
+						},
+						"referenceLines": {
+							"description": "Configure reference lines to appear in on the viz",
+							"type": "object",
+							"properties": {
+								"targetLine": {
+									"type": "object",
+									"properties": {
+										"referenceValue": {
+											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+											"type": "number"
+										},
+										"referenceLabel": {
+											"description": "Label shown on the reference line",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"color": {
+							"description": "A CSS color string e.g. green or #abc123",
+							"type": "string"
+						},
+						"valueFormat": {
+							"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+							"type": "string"
+						}
+					}
+				}
+			},
+			"required": [
+				"chartType",
+				"name",
+				"type"
+			]
+		},
+		{
+			"description": "Line Chart",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"label": {},
+				"source": {
+					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"description": "Data type for this viz",
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"description": "Set to 'all' to show the 'Latest available data:' message",
-					"type": "string",
-					"enum": [
-						"all"
-					]
 				},
 				"color": {
 					"description": "Some chart types take 'color' as an option",
 					"type": "string"
-				},
-				"label": {},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"renderLegendForOneItem": {
-					"description": "Set to true to display the legend even if there is just a single series of data",
-					"type": "boolean"
 				},
 				"name": {
 					"description": "The title of the viz",
@@ -24842,10 +25262,6 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
-				"source": {
-					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-					"type": "string"
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -24861,43 +25277,205 @@ export const DashboardItemConfigSchema = {
 				"dateRangeDelimiter": {
 					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"chartType",
-				"name",
-				"type"
-			]
-		},
-		{
-			"description": "Line Chart",
-			"type": "object",
-			"properties": {
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"chartType": {
 					"type": "string",
 					"enum": [
 						"line"
 					]
 				},
+				"ticks": {
+					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+					"type": "array",
+					"items": {}
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data type for this viz",
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"description": "Set to 'all' to show the 'Latest available data:' message",
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"renderLegendForOneItem": {
+					"description": "Set to true to display the legend even if there is just a single series of data",
+					"type": "boolean"
+				},
+				"xName": {
+					"description": "The label on the x-axis",
+					"type": "string"
+				},
+				"yName": {
+					"description": "The label on the y-axis",
+					"type": "string"
+				},
+				"yAxisDomain": {
+					"description": "Configuration options for the y-axis",
+					"type": "object",
+					"properties": {
+						"max": {
+							"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						},
+						"min": {
+							"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				},
+				"presentationOptions": {
+					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"exportWithLabels": {
+							"description": "Include labels for each point of data in exports",
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"description": "Include the data table below the viz in exports",
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+							"type": "boolean"
+						},
+						"periodTickFormat": {
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
+						"hideAverage": {
+							"description": "Hides the data average line",
+							"type": "boolean"
+						},
+						"referenceLines": {
+							"description": "Configure reference lines to appear in on the viz",
+							"type": "object",
+							"properties": {
+								"targetLine": {
+									"type": "object",
+									"properties": {
+										"referenceValue": {
+											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+											"type": "number"
+										},
+										"referenceLabel": {
+											"description": "Label shown on the reference line",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
+								}
+							},
+							"additionalProperties": false
+						}
+					}
+				},
 				"chartConfig": {
 					"description": "Configuration for each series of data within this chart.\nNote: use $all for configuration that applies to all series.\n\neg.\n {\n   In Stock: {\n     color: green\n   }\n   Out of Stock: {\n     color: red\n   }\n   $all: {\n     hideFromLegend: true\n   }\n }",
 					"type": "object",
 					"additionalProperties": {
+						"additionalProperties": false,
 						"type": "object",
 						"properties": {
-							"dot": {
-								"description": "Whether the line should show a dot at each data point",
-								"type": "boolean"
-							},
-							"connectNulls": {
-								"description": "Whether to draw a connecting line between gaps in the data",
-								"type": "boolean"
-							},
-							"strokeDasharray": {
-								"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
-								"type": "string"
-							},
 							"color": {
 								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
@@ -25053,11 +25631,34 @@ export const DashboardItemConfigSchema = {
 									"pie"
 								],
 								"type": "string"
+							},
+							"dot": {
+								"description": "Whether the line should show a dot at each data point",
+								"type": "boolean"
+							},
+							"connectNulls": {
+								"description": "Whether to draw a connecting line between gaps in the data",
+								"type": "boolean"
+							},
+							"strokeDasharray": {
+								"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
+								"type": "string"
 							}
-						},
-						"additionalProperties": false
+						}
 					}
-				},
+				}
+			},
+			"required": [
+				"chartType",
+				"name",
+				"type"
+			]
+		},
+		{
+			"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
 				"label": {},
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
@@ -25070,191 +25671,6 @@ export const DashboardItemConfigSchema = {
 				"name": {
 					"description": "The title of the viz",
 					"type": "string"
-				},
-				"xName": {
-					"description": "The label on the x-axis",
-					"type": "string"
-				},
-				"yName": {
-					"description": "The label on the y-axis",
-					"type": "string"
-				},
-				"yAxisDomain": {
-					"description": "Configuration options for the y-axis",
-					"type": "object",
-					"properties": {
-						"max": {
-							"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						},
-						"min": {
-							"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"presentationOptions": {
-					"description": "Common options for configuring the chart presentation",
-					"type": "object",
-					"properties": {
-						"periodTickFormat": {
-							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-							"type": "string"
-						},
-						"hideAverage": {
-							"description": "Hides the data average line",
-							"type": "boolean"
-						},
-						"referenceLines": {
-							"description": "Configure reference lines to appear in on the viz",
-							"type": "object",
-							"properties": {
-								"targetLine": {
-									"type": "object",
-									"properties": {
-										"referenceValue": {
-											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-											"type": "number"
-										},
-										"referenceLabel": {
-											"description": "Label shown on the reference line",
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"referenceValue"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportWithLabels": {
-							"description": "Include labels for each point of data in exports",
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"description": "Include the data table below the viz in exports",
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-							"type": "boolean"
-						}
-					},
-					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"ticks": {
-					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-					"type": "array",
-					"items": {}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"description": "Data type for this viz",
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"description": "Set to 'all' to show the 'Latest available data:' message",
-					"type": "string",
-					"enum": [
-						"all"
-					]
-				},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"renderLegendForOneItem": {
-					"description": "Set to true to display the legend even if there is just a single series of data",
-					"type": "boolean"
 				},
 				"description": {
 					"description": "A short description that appears above a viz",
@@ -25645,38 +26061,205 @@ export const DashboardItemConfigSchema = {
 				"dateRangeDelimiter": {
 					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"chartType",
-				"name",
-				"type"
-			]
-		},
-		{
-			"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
-			"type": "object",
-			"properties": {
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"chartType": {
 					"type": "string",
 					"enum": [
 						"composed"
 					]
 				},
+				"ticks": {
+					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+					"type": "array",
+					"items": {}
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data type for this viz",
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"description": "Set to 'all' to show the 'Latest available data:' message",
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"renderLegendForOneItem": {
+					"description": "Set to true to display the legend even if there is just a single series of data",
+					"type": "boolean"
+				},
+				"xName": {
+					"description": "The label on the x-axis",
+					"type": "string"
+				},
+				"yName": {
+					"description": "The label on the y-axis",
+					"type": "string"
+				},
+				"yAxisDomain": {
+					"description": "Configuration options for the y-axis",
+					"type": "object",
+					"properties": {
+						"max": {
+							"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						},
+						"min": {
+							"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				},
+				"presentationOptions": {
+					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"exportWithLabels": {
+							"description": "Include labels for each point of data in exports",
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"description": "Include the data table below the viz in exports",
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+							"type": "boolean"
+						},
+						"periodTickFormat": {
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
+						"hideAverage": {
+							"description": "Hides the data average line",
+							"type": "boolean"
+						},
+						"referenceLines": {
+							"description": "Configure reference lines to appear in on the viz",
+							"type": "object",
+							"properties": {
+								"targetLine": {
+									"type": "object",
+									"properties": {
+										"referenceValue": {
+											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+											"type": "number"
+										},
+										"referenceLabel": {
+											"description": "Label shown on the reference line",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
+								}
+							},
+							"additionalProperties": false
+						}
+					}
+				},
 				"chartConfig": {
 					"description": "Configuration for each individual chart within this composed chart\n\neg.\n {\n   avg_rainfall: {\n     chartType: line\n     color: green\n   }\n   num_cases: {\n     chartType: bar\n     color: red\n   }\n }",
 					"type": "object",
 					"additionalProperties": {
+						"additionalProperties": false,
 						"type": "object",
 						"properties": {
-							"chartType": {
-								"enum": [
-									"bar",
-									"line"
-								],
-								"type": "string"
-							},
 							"color": {
 								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
@@ -25821,6 +26404,13 @@ export const DashboardItemConfigSchema = {
 									}
 								]
 							},
+							"chartType": {
+								"enum": [
+									"bar",
+									"line"
+								],
+								"type": "string"
+							},
 							"dot": {
 								"description": "Whether the line should show a dot at each data point",
 								"type": "boolean"
@@ -25834,602 +26424,12 @@ export const DashboardItemConfigSchema = {
 								"type": "string"
 							}
 						},
-						"additionalProperties": false,
 						"required": [
 							"chartType"
 						]
 					}
-				},
-				"label": {},
-				"source": {
-					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-					"type": "string"
-				},
-				"color": {
-					"description": "Some chart types take 'color' as an option",
-					"type": "string"
-				},
-				"name": {
-					"description": "The title of the viz",
-					"type": "string"
-				},
-				"xName": {
-					"description": "The label on the x-axis",
-					"type": "string"
-				},
-				"yName": {
-					"description": "The label on the y-axis",
-					"type": "string"
-				},
-				"yAxisDomain": {
-					"description": "Configuration options for the y-axis",
-					"type": "object",
-					"properties": {
-						"max": {
-							"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						},
-						"min": {
-							"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"presentationOptions": {
-					"description": "Common options for configuring the chart presentation",
-					"type": "object",
-					"properties": {
-						"periodTickFormat": {
-							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-							"type": "string"
-						},
-						"hideAverage": {
-							"description": "Hides the data average line",
-							"type": "boolean"
-						},
-						"referenceLines": {
-							"description": "Configure reference lines to appear in on the viz",
-							"type": "object",
-							"properties": {
-								"targetLine": {
-									"type": "object",
-									"properties": {
-										"referenceValue": {
-											"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-											"type": "number"
-										},
-										"referenceLabel": {
-											"description": "Label shown on the reference line",
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"referenceValue"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportWithLabels": {
-							"description": "Include labels for each point of data in exports",
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"description": "Include the data table below the viz in exports",
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-							"type": "boolean"
-						}
-					},
-					"additionalProperties": false
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"ticks": {
-					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-					"type": "array",
-					"items": {}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"description": "Data type for this viz",
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"description": "Set to 'all' to show the 'Latest available data:' message",
-					"type": "string",
-					"enum": [
-						"all"
-					]
-				},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"renderLegendForOneItem": {
-					"description": "Set to true to display the legend even if there is just a single series of data",
-					"type": "boolean"
-				},
-				"description": {
-					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"periodGranularity": {
-					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
-					"enum": [
-						"day",
-						"month",
-						"one_day_at_a_time",
-						"one_month_at_a_time",
-						"one_quarter_at_a_time",
-						"one_week_at_a_time",
-						"one_year_at_a_time",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"enum": [
-								"month",
-								"quarter"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"type": "number"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
-					]
-				},
-				"defaultTimePeriod": {
-					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"unit"
-							]
-						},
-						{
-							"type": "object",
-							"properties": {
-								"start": {
-									"description": "Either an ISO Date string, or an offset object",
-									"anyOf": [
-										{
-											"type": "object",
-											"properties": {
-												"unit": {
-													"description": "Time unit to offset by",
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"description": "Offset distance (can be negative to offset to an earlier date)",
-													"type": "number"
-												},
-												"modifier": {
-													"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"description": "Time unit to modify the offset by",
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"unit"
-											]
-										},
-										{
-											"type": "string"
-										}
-									]
-								},
-								"end": {
-									"description": "Either an ISO Date string, or an offset object",
-									"anyOf": [
-										{
-											"type": "object",
-											"properties": {
-												"unit": {
-													"description": "Time unit to offset by",
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"description": "Offset distance (can be negative to offset to an earlier date)",
-													"type": "number"
-												},
-												"modifier": {
-													"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"description": "Time unit to modify the offset by",
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"unit"
-											]
-										},
-										{
-											"type": "string"
-										}
-									]
-								}
-							},
-							"additionalProperties": false
-						}
-					]
-				},
-				"datePickerLimits": {
-					"description": "Maximum date ranges that the date picker can be used to choose from",
-					"type": "object",
-					"properties": {
-						"start": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"unit"
-							]
-						},
-						"end": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"unit"
-							]
-						}
-					},
-					"additionalProperties": false
-				},
-				"exportConfig": {
-					"description": "Extra config options for exporting",
-					"type": "object",
-					"properties": {
-						"dataElementHeader": {
-							"description": "Sets the header for the data element in xls exports",
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
-				"noDataMessage": {
-					"description": "Message which shows if no data is found",
-					"type": "string"
-				},
-				"noDataFetch": {
-					"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-					"default": false,
-					"type": "boolean"
-				},
-				"drillDown": {
-					"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
-					"type": "object",
-					"properties": {
-						"itemCode": {
-							"description": "The code of the dashboard item that drilling down through this viz should take you to",
-							"type": "string"
-						},
-						"keyLink": {
-							"type": "string"
-						},
-						"parameterLink": {
-							"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
-							"type": "string"
-						},
-						"itemCodeByEntry": {
-							"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
-							"type": "object",
-							"additionalProperties": {
-								"type": "string"
-							}
-						}
-					},
-					"additionalProperties": false
-				},
-				"entityHeader": {
-					"description": "",
-					"type": "string"
-				},
-				"reference": {
-					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"anyOf": [
-						{
-							"description": "One of the two shapes which {@link ReferenceProps} can take.",
-							"type": "object",
-							"properties": {
-								"text": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"text"
-							]
-						},
-						{
-							"description": "One of the two shapes which {@link ReferenceProps} can take.",
-							"type": "object",
-							"properties": {
-								"name": {
-									"type": "string"
-								},
-								"link": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
-							]
-						}
-					]
-				},
-				"weekDisplayFormat": {
-					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-					"default": "'WEEK_COMMENCING_ABBR'",
-					"enum": [
-						"ISO_WEEK_NUMBER",
-						"WEEK_COMMENCING",
-						"WEEK_COMMENCING_ABBR",
-						"WEEK_ENDING",
-						"WEEK_ENDING_ABBR"
-					],
-					"type": "string"
-				},
-				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
-					"type": "string"
 				}
 			},
-			"additionalProperties": false,
 			"required": [
 				"chartType",
 				"name",
@@ -26438,72 +26438,9 @@ export const DashboardItemConfigSchema = {
 		},
 		{
 			"description": "Gauge Chart",
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
-				"chartType": {
-					"type": "string",
-					"enum": [
-						"gauge"
-					]
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"ticks": {
-					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-					"type": "array",
-					"items": {}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"description": "Data type for this viz",
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"description": "Set to 'all' to show the 'Latest available data:' message",
-					"type": "string",
-					"enum": [
-						"all"
-					]
-				},
-				"color": {
-					"description": "Some chart types take 'color' as an option",
-					"type": "string"
-				},
-				"label": {},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"renderLegendForOneItem": {
-					"description": "Set to true to display the legend even if there is just a single series of data",
-					"type": "boolean"
-				},
 				"name": {
 					"description": "The title of the viz",
 					"type": "string"
@@ -26901,9 +26838,72 @@ export const DashboardItemConfigSchema = {
 				"dateRangeDelimiter": {
 					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
+				"chartType": {
+					"type": "string",
+					"enum": [
+						"gauge"
+					]
+				},
+				"ticks": {
+					"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+					"type": "array",
+					"items": {}
+				},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data type for this viz",
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"description": "Set to 'all' to show the 'Latest available data:' message",
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"color": {
+					"description": "Some chart types take 'color' as an option",
+					"type": "string"
+				},
+				"label": {},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"renderLegendForOneItem": {
+					"description": "Set to true to display the legend even if there is just a single series of data",
+					"type": "boolean"
 				}
 			},
-			"additionalProperties": false,
 			"required": [
 				"chartType",
 				"name",
@@ -31555,8 +31555,21 @@ export const PresentationOptionsSchema = {
 			]
 		},
 		{
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
+				},
 				"periodTickFormat": {
 					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
@@ -31588,21 +31601,8 @@ export const PresentationOptionsSchema = {
 						}
 					},
 					"additionalProperties": false
-				},
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
 				}
-			},
-			"additionalProperties": false
+			}
 		},
 		{
 			"additionalProperties": false,
@@ -31623,15 +31623,20 @@ export const PresentationOptionsSchema = {
 			}
 		},
 		{
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
-				"color": {
-					"description": "A CSS color string e.g. green or #abc123",
-					"type": "string"
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
 				},
-				"valueFormat": {
-					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-					"type": "string"
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
 				},
 				"periodTickFormat": {
 					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
@@ -31665,20 +31670,15 @@ export const PresentationOptionsSchema = {
 					},
 					"additionalProperties": false
 				},
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
+				"color": {
+					"description": "A CSS color string e.g. green or #abc123",
+					"type": "string"
 				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
+				"valueFormat": {
+					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+					"type": "string"
 				}
-			},
-			"additionalProperties": false
+			}
 		},
 		{
 			"additionalProperties": false,
@@ -41283,6 +41283,29 @@ export const AnalyticsSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate",
+				"Task",
+				"User"
+			],
 			"type": "string"
 		},
 		"value": {
@@ -41327,6 +41350,29 @@ export const AnalyticsCreateSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate",
+				"Task",
+				"User"
+			],
 			"type": "string"
 		},
 		"value": {
@@ -41371,6 +41417,29 @@ export const AnalyticsUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate",
+				"Task",
+				"User"
+			],
 			"type": "string"
 		},
 		"value": {
@@ -43192,108 +43261,9 @@ export const DashboardItemSchema = {
 				},
 				{
 					"description": "Pie Chart",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
-						"chartType": {
-							"type": "string",
-							"enum": [
-								"pie"
-							]
-						},
-						"presentationOptions": {
-							"description": "Common options for configuring the chart presentation",
-							"additionalProperties": false,
-							"type": "object",
-							"properties": {
-								"exportWithLabels": {
-									"description": "Include labels for each point of data in exports",
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"description": "Include the data table below the viz in exports",
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-									"type": "boolean"
-								}
-							}
-						},
-						"segmentConfig": {
-							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
-							"type": "object",
-							"additionalProperties": {
-								"type": "object",
-								"properties": {
-									"color": {
-										"description": "A CSS color string e.g. green or #abc123",
-										"type": "string"
-									},
-									"label": {
-										"type": "string"
-									}
-								},
-								"additionalProperties": false
-							}
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
-						},
 						"name": {
 							"description": "The title of the viz",
 							"type": "string"
@@ -43691,69 +43661,76 @@ export const DashboardItemSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "Bar Chart",
-					"type": "object",
-					"properties": {
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"chartType": {
 							"type": "string",
 							"enum": [
-								"bar"
+								"pie"
 							]
+						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
-								"color": {
-									"description": "A CSS color string e.g. green or #abc123",
-									"type": "string"
-								},
-								"valueFormat": {
-									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-									"type": "string"
-								},
-								"periodTickFormat": {
-									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"description": "Hides the data average line",
-									"type": "boolean"
-								},
-								"referenceLines": {
-									"description": "Configure reference lines to appear in on the viz",
-									"type": "object",
-									"properties": {
-										"targetLine": {
-											"type": "object",
-											"properties": {
-												"referenceValue": {
-													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-													"type": "number"
-												},
-												"referenceLabel": {
-													"description": "Label shown on the reference line",
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"referenceValue"
-											]
-										}
-									},
-									"additionalProperties": false
-								},
 								"exportWithLabels": {
 									"description": "Include labels for each point of data in exports",
 									"type": "boolean"
@@ -43766,8 +43743,498 @@ export const DashboardItemSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
+							}
+						},
+						"segmentConfig": {
+							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Bar Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"description": "The title of the viz",
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						"defaultTimePeriod": {
+							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "Either an ISO Date string, or an offset object",
+											"anyOf": [
+												{
+													"type": "object",
+													"properties": {
+														"unit": {
+															"description": "Time unit to offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														},
+														"offset": {
+															"description": "Offset distance (can be negative to offset to an earlier date)",
+															"type": "number"
+														},
+														"modifier": {
+															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+															"enum": [
+																"end_of",
+																"start_of"
+															],
+															"type": "string"
+														},
+														"modifierUnit": {
+															"description": "Time unit to modify the offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														}
+													},
+													"additionalProperties": false,
+													"required": [
+														"unit"
+													]
+												},
+												{
+													"type": "string"
+												}
+											]
+										},
+										"end": {
+											"description": "Either an ISO Date string, or an offset object",
+											"anyOf": [
+												{
+													"type": "object",
+													"properties": {
+														"unit": {
+															"description": "Time unit to offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														},
+														"offset": {
+															"description": "Offset distance (can be negative to offset to an earlier date)",
+															"type": "number"
+														},
+														"modifier": {
+															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+															"enum": [
+																"end_of",
+																"start_of"
+															],
+															"type": "string"
+														},
+														"modifierUnit": {
+															"description": "Time unit to modify the offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														}
+													},
+													"additionalProperties": false,
+													"required": [
+														"unit"
+													]
+												},
+												{
+													"type": "string"
+												}
+											]
+										}
+									},
+									"additionalProperties": false
+								}
+							]
+						},
+						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								}
 							},
 							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting",
+							"type": "object",
+							"properties": {
+								"dataElementHeader": {
+									"description": "Sets the header for the data element in xls exports",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+							"type": "object",
+							"properties": {
+								"itemCode": {
+									"description": "The code of the dashboard item that drilling down through this viz should take you to",
+									"type": "string"
+								},
+								"keyLink": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
+								},
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
+								}
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"bar"
+							]
+						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
 						},
 						"xName": {
 							"description": "The label on the x-axis",
@@ -44017,63 +44484,85 @@ export const DashboardItemSchema = {
 								"additionalProperties": false
 							}
 						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
+						"presentationOptions": {
+							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"description": "Include labels for each point of data in exports",
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"description": "Include the data table below the viz in exports",
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"description": "Hides the data average line",
+									"type": "boolean"
+								},
+								"referenceLines": {
+									"description": "Configure reference lines to appear in on the viz",
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+													"type": "number"
+												},
+												"referenceLabel": {
+													"description": "Label shown on the reference line",
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
+								},
+								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
+									"type": "string"
+								},
+								"valueFormat": {
+									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+									"type": "string"
+								}
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Line Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"label": {},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
 						},
 						"color": {
 							"description": "Some chart types take 'color' as an option",
 							"type": "string"
-						},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
 						},
 						"name": {
 							"description": "The title of the viz",
@@ -44453,10 +44942,6 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
-						"source": {
-							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-							"type": "string"
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -44472,43 +44957,205 @@ export const DashboardItemSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "Line Chart",
-					"type": "object",
-					"properties": {
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"chartType": {
 							"type": "string",
 							"enum": [
 								"line"
 							]
 						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {
+							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"description": "Include labels for each point of data in exports",
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"description": "Include the data table below the viz in exports",
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"description": "Hides the data average line",
+									"type": "boolean"
+								},
+								"referenceLines": {
+									"description": "Configure reference lines to appear in on the viz",
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+													"type": "number"
+												},
+												"referenceLabel": {
+													"description": "Label shown on the reference line",
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
+								}
+							}
+						},
 						"chartConfig": {
 							"description": "Configuration for each series of data within this chart.\nNote: use $all for configuration that applies to all series.\n\neg.\n {\n   In Stock: {\n     color: green\n   }\n   Out of Stock: {\n     color: red\n   }\n   $all: {\n     hideFromLegend: true\n   }\n }",
 							"type": "object",
 							"additionalProperties": {
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"dot": {
-										"description": "Whether the line should show a dot at each data point",
-										"type": "boolean"
-									},
-									"connectNulls": {
-										"description": "Whether to draw a connecting line between gaps in the data",
-										"type": "boolean"
-									},
-									"strokeDasharray": {
-										"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -44664,11 +45311,34 @@ export const DashboardItemSchema = {
 											"pie"
 										],
 										"type": "string"
+									},
+									"dot": {
+										"description": "Whether the line should show a dot at each data point",
+										"type": "boolean"
+									},
+									"connectNulls": {
+										"description": "Whether to draw a connecting line between gaps in the data",
+										"type": "boolean"
+									},
+									"strokeDasharray": {
+										"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
+										"type": "string"
 									}
-								},
-								"additionalProperties": false
+								}
 							}
-						},
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
 						"label": {},
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
@@ -44681,191 +45351,6 @@ export const DashboardItemSchema = {
 						"name": {
 							"description": "The title of the viz",
 							"type": "string"
-						},
-						"xName": {
-							"description": "The label on the x-axis",
-							"type": "string"
-						},
-						"yName": {
-							"description": "The label on the y-axis",
-							"type": "string"
-						},
-						"yAxisDomain": {
-							"description": "Configuration options for the y-axis",
-							"type": "object",
-							"properties": {
-								"max": {
-									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								},
-								"min": {
-									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"presentationOptions": {
-							"description": "Common options for configuring the chart presentation",
-							"type": "object",
-							"properties": {
-								"periodTickFormat": {
-									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"description": "Hides the data average line",
-									"type": "boolean"
-								},
-								"referenceLines": {
-									"description": "Configure reference lines to appear in on the viz",
-									"type": "object",
-									"properties": {
-										"targetLine": {
-											"type": "object",
-											"properties": {
-												"referenceValue": {
-													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-													"type": "number"
-												},
-												"referenceLabel": {
-													"description": "Label shown on the reference line",
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"referenceValue"
-											]
-										}
-									},
-									"additionalProperties": false
-								},
-								"exportWithLabels": {
-									"description": "Include labels for each point of data in exports",
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"description": "Include the data table below the viz in exports",
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-									"type": "boolean"
-								}
-							},
-							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
 						},
 						"description": {
 							"description": "A short description that appears above a viz",
@@ -45256,38 +45741,205 @@ export const DashboardItemSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
-					"type": "object",
-					"properties": {
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"chartType": {
 							"type": "string",
 							"enum": [
 								"composed"
 							]
 						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {
+							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"description": "Include labels for each point of data in exports",
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"description": "Include the data table below the viz in exports",
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"description": "Hides the data average line",
+									"type": "boolean"
+								},
+								"referenceLines": {
+									"description": "Configure reference lines to appear in on the viz",
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+													"type": "number"
+												},
+												"referenceLabel": {
+													"description": "Label shown on the reference line",
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
+								}
+							}
+						},
 						"chartConfig": {
 							"description": "Configuration for each individual chart within this composed chart\n\neg.\n {\n   avg_rainfall: {\n     chartType: line\n     color: green\n   }\n   num_cases: {\n     chartType: bar\n     color: red\n   }\n }",
 							"type": "object",
 							"additionalProperties": {
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"chartType": {
-										"enum": [
-											"bar",
-											"line"
-										],
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -45432,6 +46084,13 @@ export const DashboardItemSchema = {
 											}
 										]
 									},
+									"chartType": {
+										"enum": [
+											"bar",
+											"line"
+										],
+										"type": "string"
+									},
 									"dot": {
 										"description": "Whether the line should show a dot at each data point",
 										"type": "boolean"
@@ -45445,602 +46104,12 @@ export const DashboardItemSchema = {
 										"type": "string"
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"chartType"
 								]
 							}
-						},
-						"label": {},
-						"source": {
-							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-							"type": "string"
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"name": {
-							"description": "The title of the viz",
-							"type": "string"
-						},
-						"xName": {
-							"description": "The label on the x-axis",
-							"type": "string"
-						},
-						"yName": {
-							"description": "The label on the y-axis",
-							"type": "string"
-						},
-						"yAxisDomain": {
-							"description": "Configuration options for the y-axis",
-							"type": "object",
-							"properties": {
-								"max": {
-									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								},
-								"min": {
-									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"presentationOptions": {
-							"description": "Common options for configuring the chart presentation",
-							"type": "object",
-							"properties": {
-								"periodTickFormat": {
-									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"description": "Hides the data average line",
-									"type": "boolean"
-								},
-								"referenceLines": {
-									"description": "Configure reference lines to appear in on the viz",
-									"type": "object",
-									"properties": {
-										"targetLine": {
-											"type": "object",
-											"properties": {
-												"referenceValue": {
-													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-													"type": "number"
-												},
-												"referenceLabel": {
-													"description": "Label shown on the reference line",
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"referenceValue"
-											]
-										}
-									},
-									"additionalProperties": false
-								},
-								"exportWithLabels": {
-									"description": "Include labels for each point of data in exports",
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"description": "Include the data table below the viz in exports",
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-									"type": "boolean"
-								}
-							},
-							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
-						},
-						"description": {
-							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"periodGranularity": {
-							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
-							"enum": [
-								"day",
-								"month",
-								"one_day_at_a_time",
-								"one_month_at_a_time",
-								"one_quarter_at_a_time",
-								"one_week_at_a_time",
-								"one_year_at_a_time",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"month",
-										"quarter"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						},
-						"defaultTimePeriod": {
-							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"description": "Either an ISO Date string, or an offset object",
-											"anyOf": [
-												{
-													"type": "object",
-													"properties": {
-														"unit": {
-															"description": "Time unit to offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														},
-														"offset": {
-															"description": "Offset distance (can be negative to offset to an earlier date)",
-															"type": "number"
-														},
-														"modifier": {
-															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-															"enum": [
-																"end_of",
-																"start_of"
-															],
-															"type": "string"
-														},
-														"modifierUnit": {
-															"description": "Time unit to modify the offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														}
-													},
-													"additionalProperties": false,
-													"required": [
-														"unit"
-													]
-												},
-												{
-													"type": "string"
-												}
-											]
-										},
-										"end": {
-											"description": "Either an ISO Date string, or an offset object",
-											"anyOf": [
-												{
-													"type": "object",
-													"properties": {
-														"unit": {
-															"description": "Time unit to offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														},
-														"offset": {
-															"description": "Offset distance (can be negative to offset to an earlier date)",
-															"type": "number"
-														},
-														"modifier": {
-															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-															"enum": [
-																"end_of",
-																"start_of"
-															],
-															"type": "string"
-														},
-														"modifierUnit": {
-															"description": "Time unit to modify the offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														}
-													},
-													"additionalProperties": false,
-													"required": [
-														"unit"
-													]
-												},
-												{
-													"type": "string"
-												}
-											]
-										}
-									},
-									"additionalProperties": false
-								}
-							]
-						},
-						"datePickerLimits": {
-							"description": "Maximum date ranges that the date picker can be used to choose from",
-							"type": "object",
-							"properties": {
-								"start": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								"end": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportConfig": {
-							"description": "Extra config options for exporting",
-							"type": "object",
-							"properties": {
-								"dataElementHeader": {
-									"description": "Sets the header for the data element in xls exports",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false
-						},
-						"noDataMessage": {
-							"description": "Message which shows if no data is found",
-							"type": "string"
-						},
-						"noDataFetch": {
-							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-							"default": false,
-							"type": "boolean"
-						},
-						"drillDown": {
-							"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
-							"type": "object",
-							"properties": {
-								"itemCode": {
-									"description": "The code of the dashboard item that drilling down through this viz should take you to",
-									"type": "string"
-								},
-								"keyLink": {
-									"type": "string"
-								},
-								"parameterLink": {
-									"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
-									"type": "string"
-								},
-								"itemCodeByEntry": {
-									"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
-									"type": "object",
-									"additionalProperties": {
-										"type": "string"
-									}
-								}
-							},
-							"additionalProperties": false
-						},
-						"entityHeader": {
-							"description": "",
-							"type": "string"
-						},
-						"reference": {
-							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"anyOf": [
-								{
-									"description": "One of the two shapes which {@link ReferenceProps} can take.",
-									"type": "object",
-									"properties": {
-										"text": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"text"
-									]
-								},
-								{
-									"description": "One of the two shapes which {@link ReferenceProps} can take.",
-									"type": "object",
-									"properties": {
-										"name": {
-											"type": "string"
-										},
-										"link": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"link",
-										"name"
-									]
-								}
-							]
-						},
-						"weekDisplayFormat": {
-							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-							"default": "'WEEK_COMMENCING_ABBR'",
-							"enum": [
-								"ISO_WEEK_NUMBER",
-								"WEEK_COMMENCING",
-								"WEEK_COMMENCING_ABBR",
-								"WEEK_ENDING",
-								"WEEK_ENDING_ABBR"
-							],
-							"type": "string"
-						},
-						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
-							"type": "string"
 						}
 					},
-					"additionalProperties": false,
 					"required": [
 						"chartType",
 						"name",
@@ -46049,72 +46118,9 @@ export const DashboardItemSchema = {
 				},
 				{
 					"description": "Gauge Chart",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
-						"chartType": {
-							"type": "string",
-							"enum": [
-								"gauge"
-							]
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
-						},
 						"name": {
 							"description": "The title of the viz",
 							"type": "string"
@@ -46512,9 +46518,72 @@ export const DashboardItemSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"gauge"
+							]
+						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
 						}
 					},
-					"additionalProperties": false,
 					"required": [
 						"chartType",
 						"name",
@@ -52211,108 +52280,9 @@ export const DashboardItemCreateSchema = {
 				},
 				{
 					"description": "Pie Chart",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
-						"chartType": {
-							"type": "string",
-							"enum": [
-								"pie"
-							]
-						},
-						"presentationOptions": {
-							"description": "Common options for configuring the chart presentation",
-							"additionalProperties": false,
-							"type": "object",
-							"properties": {
-								"exportWithLabels": {
-									"description": "Include labels for each point of data in exports",
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"description": "Include the data table below the viz in exports",
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-									"type": "boolean"
-								}
-							}
-						},
-						"segmentConfig": {
-							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
-							"type": "object",
-							"additionalProperties": {
-								"type": "object",
-								"properties": {
-									"color": {
-										"description": "A CSS color string e.g. green or #abc123",
-										"type": "string"
-									},
-									"label": {
-										"type": "string"
-									}
-								},
-								"additionalProperties": false
-							}
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
-						},
 						"name": {
 							"description": "The title of the viz",
 							"type": "string"
@@ -52710,69 +52680,76 @@ export const DashboardItemCreateSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "Bar Chart",
-					"type": "object",
-					"properties": {
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"chartType": {
 							"type": "string",
 							"enum": [
-								"bar"
+								"pie"
 							]
+						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
-								"color": {
-									"description": "A CSS color string e.g. green or #abc123",
-									"type": "string"
-								},
-								"valueFormat": {
-									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-									"type": "string"
-								},
-								"periodTickFormat": {
-									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"description": "Hides the data average line",
-									"type": "boolean"
-								},
-								"referenceLines": {
-									"description": "Configure reference lines to appear in on the viz",
-									"type": "object",
-									"properties": {
-										"targetLine": {
-											"type": "object",
-											"properties": {
-												"referenceValue": {
-													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-													"type": "number"
-												},
-												"referenceLabel": {
-													"description": "Label shown on the reference line",
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"referenceValue"
-											]
-										}
-									},
-									"additionalProperties": false
-								},
 								"exportWithLabels": {
 									"description": "Include labels for each point of data in exports",
 									"type": "boolean"
@@ -52785,8 +52762,498 @@ export const DashboardItemCreateSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
+							}
+						},
+						"segmentConfig": {
+							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Bar Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"description": "The title of the viz",
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						"defaultTimePeriod": {
+							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "Either an ISO Date string, or an offset object",
+											"anyOf": [
+												{
+													"type": "object",
+													"properties": {
+														"unit": {
+															"description": "Time unit to offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														},
+														"offset": {
+															"description": "Offset distance (can be negative to offset to an earlier date)",
+															"type": "number"
+														},
+														"modifier": {
+															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+															"enum": [
+																"end_of",
+																"start_of"
+															],
+															"type": "string"
+														},
+														"modifierUnit": {
+															"description": "Time unit to modify the offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														}
+													},
+													"additionalProperties": false,
+													"required": [
+														"unit"
+													]
+												},
+												{
+													"type": "string"
+												}
+											]
+										},
+										"end": {
+											"description": "Either an ISO Date string, or an offset object",
+											"anyOf": [
+												{
+													"type": "object",
+													"properties": {
+														"unit": {
+															"description": "Time unit to offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														},
+														"offset": {
+															"description": "Offset distance (can be negative to offset to an earlier date)",
+															"type": "number"
+														},
+														"modifier": {
+															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+															"enum": [
+																"end_of",
+																"start_of"
+															],
+															"type": "string"
+														},
+														"modifierUnit": {
+															"description": "Time unit to modify the offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														}
+													},
+													"additionalProperties": false,
+													"required": [
+														"unit"
+													]
+												},
+												{
+													"type": "string"
+												}
+											]
+										}
+									},
+									"additionalProperties": false
+								}
+							]
+						},
+						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								}
 							},
 							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting",
+							"type": "object",
+							"properties": {
+								"dataElementHeader": {
+									"description": "Sets the header for the data element in xls exports",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+							"type": "object",
+							"properties": {
+								"itemCode": {
+									"description": "The code of the dashboard item that drilling down through this viz should take you to",
+									"type": "string"
+								},
+								"keyLink": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
+								},
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
+								}
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"bar"
+							]
+						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
 						},
 						"xName": {
 							"description": "The label on the x-axis",
@@ -53036,63 +53503,85 @@ export const DashboardItemCreateSchema = {
 								"additionalProperties": false
 							}
 						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
+						"presentationOptions": {
+							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"description": "Include labels for each point of data in exports",
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"description": "Include the data table below the viz in exports",
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"description": "Hides the data average line",
+									"type": "boolean"
+								},
+								"referenceLines": {
+									"description": "Configure reference lines to appear in on the viz",
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+													"type": "number"
+												},
+												"referenceLabel": {
+													"description": "Label shown on the reference line",
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
+								},
+								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
+									"type": "string"
+								},
+								"valueFormat": {
+									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+									"type": "string"
+								}
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Line Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"label": {},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
 						},
 						"color": {
 							"description": "Some chart types take 'color' as an option",
 							"type": "string"
-						},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
 						},
 						"name": {
 							"description": "The title of the viz",
@@ -53472,10 +53961,6 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
-						"source": {
-							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-							"type": "string"
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -53491,43 +53976,205 @@ export const DashboardItemCreateSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "Line Chart",
-					"type": "object",
-					"properties": {
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"chartType": {
 							"type": "string",
 							"enum": [
 								"line"
 							]
 						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {
+							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"description": "Include labels for each point of data in exports",
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"description": "Include the data table below the viz in exports",
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"description": "Hides the data average line",
+									"type": "boolean"
+								},
+								"referenceLines": {
+									"description": "Configure reference lines to appear in on the viz",
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+													"type": "number"
+												},
+												"referenceLabel": {
+													"description": "Label shown on the reference line",
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
+								}
+							}
+						},
 						"chartConfig": {
 							"description": "Configuration for each series of data within this chart.\nNote: use $all for configuration that applies to all series.\n\neg.\n {\n   In Stock: {\n     color: green\n   }\n   Out of Stock: {\n     color: red\n   }\n   $all: {\n     hideFromLegend: true\n   }\n }",
 							"type": "object",
 							"additionalProperties": {
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"dot": {
-										"description": "Whether the line should show a dot at each data point",
-										"type": "boolean"
-									},
-									"connectNulls": {
-										"description": "Whether to draw a connecting line between gaps in the data",
-										"type": "boolean"
-									},
-									"strokeDasharray": {
-										"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -53683,11 +54330,34 @@ export const DashboardItemCreateSchema = {
 											"pie"
 										],
 										"type": "string"
+									},
+									"dot": {
+										"description": "Whether the line should show a dot at each data point",
+										"type": "boolean"
+									},
+									"connectNulls": {
+										"description": "Whether to draw a connecting line between gaps in the data",
+										"type": "boolean"
+									},
+									"strokeDasharray": {
+										"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
+										"type": "string"
 									}
-								},
-								"additionalProperties": false
+								}
 							}
-						},
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
 						"label": {},
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
@@ -53700,191 +54370,6 @@ export const DashboardItemCreateSchema = {
 						"name": {
 							"description": "The title of the viz",
 							"type": "string"
-						},
-						"xName": {
-							"description": "The label on the x-axis",
-							"type": "string"
-						},
-						"yName": {
-							"description": "The label on the y-axis",
-							"type": "string"
-						},
-						"yAxisDomain": {
-							"description": "Configuration options for the y-axis",
-							"type": "object",
-							"properties": {
-								"max": {
-									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								},
-								"min": {
-									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"presentationOptions": {
-							"description": "Common options for configuring the chart presentation",
-							"type": "object",
-							"properties": {
-								"periodTickFormat": {
-									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"description": "Hides the data average line",
-									"type": "boolean"
-								},
-								"referenceLines": {
-									"description": "Configure reference lines to appear in on the viz",
-									"type": "object",
-									"properties": {
-										"targetLine": {
-											"type": "object",
-											"properties": {
-												"referenceValue": {
-													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-													"type": "number"
-												},
-												"referenceLabel": {
-													"description": "Label shown on the reference line",
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"referenceValue"
-											]
-										}
-									},
-									"additionalProperties": false
-								},
-								"exportWithLabels": {
-									"description": "Include labels for each point of data in exports",
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"description": "Include the data table below the viz in exports",
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-									"type": "boolean"
-								}
-							},
-							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
 						},
 						"description": {
 							"description": "A short description that appears above a viz",
@@ -54275,38 +54760,205 @@ export const DashboardItemCreateSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
-					"type": "object",
-					"properties": {
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"chartType": {
 							"type": "string",
 							"enum": [
 								"composed"
 							]
 						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {
+							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"description": "Include labels for each point of data in exports",
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"description": "Include the data table below the viz in exports",
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"description": "Hides the data average line",
+									"type": "boolean"
+								},
+								"referenceLines": {
+									"description": "Configure reference lines to appear in on the viz",
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+													"type": "number"
+												},
+												"referenceLabel": {
+													"description": "Label shown on the reference line",
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
+								}
+							}
+						},
 						"chartConfig": {
 							"description": "Configuration for each individual chart within this composed chart\n\neg.\n {\n   avg_rainfall: {\n     chartType: line\n     color: green\n   }\n   num_cases: {\n     chartType: bar\n     color: red\n   }\n }",
 							"type": "object",
 							"additionalProperties": {
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"chartType": {
-										"enum": [
-											"bar",
-											"line"
-										],
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -54451,6 +55103,13 @@ export const DashboardItemCreateSchema = {
 											}
 										]
 									},
+									"chartType": {
+										"enum": [
+											"bar",
+											"line"
+										],
+										"type": "string"
+									},
 									"dot": {
 										"description": "Whether the line should show a dot at each data point",
 										"type": "boolean"
@@ -54464,602 +55123,12 @@ export const DashboardItemCreateSchema = {
 										"type": "string"
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"chartType"
 								]
 							}
-						},
-						"label": {},
-						"source": {
-							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-							"type": "string"
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"name": {
-							"description": "The title of the viz",
-							"type": "string"
-						},
-						"xName": {
-							"description": "The label on the x-axis",
-							"type": "string"
-						},
-						"yName": {
-							"description": "The label on the y-axis",
-							"type": "string"
-						},
-						"yAxisDomain": {
-							"description": "Configuration options for the y-axis",
-							"type": "object",
-							"properties": {
-								"max": {
-									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								},
-								"min": {
-									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"presentationOptions": {
-							"description": "Common options for configuring the chart presentation",
-							"type": "object",
-							"properties": {
-								"periodTickFormat": {
-									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"description": "Hides the data average line",
-									"type": "boolean"
-								},
-								"referenceLines": {
-									"description": "Configure reference lines to appear in on the viz",
-									"type": "object",
-									"properties": {
-										"targetLine": {
-											"type": "object",
-											"properties": {
-												"referenceValue": {
-													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-													"type": "number"
-												},
-												"referenceLabel": {
-													"description": "Label shown on the reference line",
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"referenceValue"
-											]
-										}
-									},
-									"additionalProperties": false
-								},
-								"exportWithLabels": {
-									"description": "Include labels for each point of data in exports",
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"description": "Include the data table below the viz in exports",
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-									"type": "boolean"
-								}
-							},
-							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
-						},
-						"description": {
-							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"periodGranularity": {
-							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
-							"enum": [
-								"day",
-								"month",
-								"one_day_at_a_time",
-								"one_month_at_a_time",
-								"one_quarter_at_a_time",
-								"one_week_at_a_time",
-								"one_year_at_a_time",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"month",
-										"quarter"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						},
-						"defaultTimePeriod": {
-							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"description": "Either an ISO Date string, or an offset object",
-											"anyOf": [
-												{
-													"type": "object",
-													"properties": {
-														"unit": {
-															"description": "Time unit to offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														},
-														"offset": {
-															"description": "Offset distance (can be negative to offset to an earlier date)",
-															"type": "number"
-														},
-														"modifier": {
-															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-															"enum": [
-																"end_of",
-																"start_of"
-															],
-															"type": "string"
-														},
-														"modifierUnit": {
-															"description": "Time unit to modify the offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														}
-													},
-													"additionalProperties": false,
-													"required": [
-														"unit"
-													]
-												},
-												{
-													"type": "string"
-												}
-											]
-										},
-										"end": {
-											"description": "Either an ISO Date string, or an offset object",
-											"anyOf": [
-												{
-													"type": "object",
-													"properties": {
-														"unit": {
-															"description": "Time unit to offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														},
-														"offset": {
-															"description": "Offset distance (can be negative to offset to an earlier date)",
-															"type": "number"
-														},
-														"modifier": {
-															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-															"enum": [
-																"end_of",
-																"start_of"
-															],
-															"type": "string"
-														},
-														"modifierUnit": {
-															"description": "Time unit to modify the offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														}
-													},
-													"additionalProperties": false,
-													"required": [
-														"unit"
-													]
-												},
-												{
-													"type": "string"
-												}
-											]
-										}
-									},
-									"additionalProperties": false
-								}
-							]
-						},
-						"datePickerLimits": {
-							"description": "Maximum date ranges that the date picker can be used to choose from",
-							"type": "object",
-							"properties": {
-								"start": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								"end": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportConfig": {
-							"description": "Extra config options for exporting",
-							"type": "object",
-							"properties": {
-								"dataElementHeader": {
-									"description": "Sets the header for the data element in xls exports",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false
-						},
-						"noDataMessage": {
-							"description": "Message which shows if no data is found",
-							"type": "string"
-						},
-						"noDataFetch": {
-							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-							"default": false,
-							"type": "boolean"
-						},
-						"drillDown": {
-							"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
-							"type": "object",
-							"properties": {
-								"itemCode": {
-									"description": "The code of the dashboard item that drilling down through this viz should take you to",
-									"type": "string"
-								},
-								"keyLink": {
-									"type": "string"
-								},
-								"parameterLink": {
-									"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
-									"type": "string"
-								},
-								"itemCodeByEntry": {
-									"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
-									"type": "object",
-									"additionalProperties": {
-										"type": "string"
-									}
-								}
-							},
-							"additionalProperties": false
-						},
-						"entityHeader": {
-							"description": "",
-							"type": "string"
-						},
-						"reference": {
-							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"anyOf": [
-								{
-									"description": "One of the two shapes which {@link ReferenceProps} can take.",
-									"type": "object",
-									"properties": {
-										"text": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"text"
-									]
-								},
-								{
-									"description": "One of the two shapes which {@link ReferenceProps} can take.",
-									"type": "object",
-									"properties": {
-										"name": {
-											"type": "string"
-										},
-										"link": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"link",
-										"name"
-									]
-								}
-							]
-						},
-						"weekDisplayFormat": {
-							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-							"default": "'WEEK_COMMENCING_ABBR'",
-							"enum": [
-								"ISO_WEEK_NUMBER",
-								"WEEK_COMMENCING",
-								"WEEK_COMMENCING_ABBR",
-								"WEEK_ENDING",
-								"WEEK_ENDING_ABBR"
-							],
-							"type": "string"
-						},
-						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
-							"type": "string"
 						}
 					},
-					"additionalProperties": false,
 					"required": [
 						"chartType",
 						"name",
@@ -55068,72 +55137,9 @@ export const DashboardItemCreateSchema = {
 				},
 				{
 					"description": "Gauge Chart",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
-						"chartType": {
-							"type": "string",
-							"enum": [
-								"gauge"
-							]
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
-						},
 						"name": {
 							"description": "The title of the viz",
 							"type": "string"
@@ -55531,9 +55537,72 @@ export const DashboardItemCreateSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"gauge"
+							]
+						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
 						}
 					},
-					"additionalProperties": false,
 					"required": [
 						"chartType",
 						"name",
@@ -61224,108 +61293,9 @@ export const DashboardItemUpdateSchema = {
 				},
 				{
 					"description": "Pie Chart",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
-						"chartType": {
-							"type": "string",
-							"enum": [
-								"pie"
-							]
-						},
-						"presentationOptions": {
-							"description": "Common options for configuring the chart presentation",
-							"additionalProperties": false,
-							"type": "object",
-							"properties": {
-								"exportWithLabels": {
-									"description": "Include labels for each point of data in exports",
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"description": "Include the data table below the viz in exports",
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-									"type": "boolean"
-								}
-							}
-						},
-						"segmentConfig": {
-							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
-							"type": "object",
-							"additionalProperties": {
-								"type": "object",
-								"properties": {
-									"color": {
-										"description": "A CSS color string e.g. green or #abc123",
-										"type": "string"
-									},
-									"label": {
-										"type": "string"
-									}
-								},
-								"additionalProperties": false
-							}
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
-						},
 						"name": {
 							"description": "The title of the viz",
 							"type": "string"
@@ -61723,69 +61693,76 @@ export const DashboardItemUpdateSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "Bar Chart",
-					"type": "object",
-					"properties": {
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"chartType": {
 							"type": "string",
 							"enum": [
-								"bar"
+								"pie"
 							]
+						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
-								"color": {
-									"description": "A CSS color string e.g. green or #abc123",
-									"type": "string"
-								},
-								"valueFormat": {
-									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-									"type": "string"
-								},
-								"periodTickFormat": {
-									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"description": "Hides the data average line",
-									"type": "boolean"
-								},
-								"referenceLines": {
-									"description": "Configure reference lines to appear in on the viz",
-									"type": "object",
-									"properties": {
-										"targetLine": {
-											"type": "object",
-											"properties": {
-												"referenceValue": {
-													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-													"type": "number"
-												},
-												"referenceLabel": {
-													"description": "Label shown on the reference line",
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"referenceValue"
-											]
-										}
-									},
-									"additionalProperties": false
-								},
 								"exportWithLabels": {
 									"description": "Include labels for each point of data in exports",
 									"type": "boolean"
@@ -61798,8 +61775,498 @@ export const DashboardItemUpdateSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
+							}
+						},
+						"segmentConfig": {
+							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Bar Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"description": "The title of the viz",
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						"defaultTimePeriod": {
+							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "Either an ISO Date string, or an offset object",
+											"anyOf": [
+												{
+													"type": "object",
+													"properties": {
+														"unit": {
+															"description": "Time unit to offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														},
+														"offset": {
+															"description": "Offset distance (can be negative to offset to an earlier date)",
+															"type": "number"
+														},
+														"modifier": {
+															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+															"enum": [
+																"end_of",
+																"start_of"
+															],
+															"type": "string"
+														},
+														"modifierUnit": {
+															"description": "Time unit to modify the offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														}
+													},
+													"additionalProperties": false,
+													"required": [
+														"unit"
+													]
+												},
+												{
+													"type": "string"
+												}
+											]
+										},
+										"end": {
+											"description": "Either an ISO Date string, or an offset object",
+											"anyOf": [
+												{
+													"type": "object",
+													"properties": {
+														"unit": {
+															"description": "Time unit to offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														},
+														"offset": {
+															"description": "Offset distance (can be negative to offset to an earlier date)",
+															"type": "number"
+														},
+														"modifier": {
+															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+															"enum": [
+																"end_of",
+																"start_of"
+															],
+															"type": "string"
+														},
+														"modifierUnit": {
+															"description": "Time unit to modify the offset by",
+															"enum": [
+																"day",
+																"month",
+																"quarter",
+																"week",
+																"year"
+															],
+															"type": "string"
+														}
+													},
+													"additionalProperties": false,
+													"required": [
+														"unit"
+													]
+												},
+												{
+													"type": "string"
+												}
+											]
+										}
+									},
+									"additionalProperties": false
+								}
+							]
+						},
+						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"unit"
+									]
+								}
 							},
 							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting",
+							"type": "object",
+							"properties": {
+								"dataElementHeader": {
+									"description": "Sets the header for the data element in xls exports",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+							"type": "object",
+							"properties": {
+								"itemCode": {
+									"description": "The code of the dashboard item that drilling down through this viz should take you to",
+									"type": "string"
+								},
+								"keyLink": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
+								},
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
+								}
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"bar"
+							]
+						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
 						},
 						"xName": {
 							"description": "The label on the x-axis",
@@ -62049,63 +62516,85 @@ export const DashboardItemUpdateSchema = {
 								"additionalProperties": false
 							}
 						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
+						"presentationOptions": {
+							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"description": "Include labels for each point of data in exports",
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"description": "Include the data table below the viz in exports",
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"description": "Hides the data average line",
+									"type": "boolean"
+								},
+								"referenceLines": {
+									"description": "Configure reference lines to appear in on the viz",
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+													"type": "number"
+												},
+												"referenceLabel": {
+													"description": "Label shown on the reference line",
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
+								},
+								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
+									"type": "string"
+								},
+								"valueFormat": {
+									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+									"type": "string"
+								}
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Line Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"label": {},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
 						},
 						"color": {
 							"description": "Some chart types take 'color' as an option",
 							"type": "string"
-						},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
 						},
 						"name": {
 							"description": "The title of the viz",
@@ -62485,10 +62974,6 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
-						"source": {
-							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-							"type": "string"
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -62504,43 +62989,205 @@ export const DashboardItemUpdateSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "Line Chart",
-					"type": "object",
-					"properties": {
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"chartType": {
 							"type": "string",
 							"enum": [
 								"line"
 							]
 						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {
+							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"description": "Include labels for each point of data in exports",
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"description": "Include the data table below the viz in exports",
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"description": "Hides the data average line",
+									"type": "boolean"
+								},
+								"referenceLines": {
+									"description": "Configure reference lines to appear in on the viz",
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+													"type": "number"
+												},
+												"referenceLabel": {
+													"description": "Label shown on the reference line",
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
+								}
+							}
+						},
 						"chartConfig": {
 							"description": "Configuration for each series of data within this chart.\nNote: use $all for configuration that applies to all series.\n\neg.\n {\n   In Stock: {\n     color: green\n   }\n   Out of Stock: {\n     color: red\n   }\n   $all: {\n     hideFromLegend: true\n   }\n }",
 							"type": "object",
 							"additionalProperties": {
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"dot": {
-										"description": "Whether the line should show a dot at each data point",
-										"type": "boolean"
-									},
-									"connectNulls": {
-										"description": "Whether to draw a connecting line between gaps in the data",
-										"type": "boolean"
-									},
-									"strokeDasharray": {
-										"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -62696,11 +63343,34 @@ export const DashboardItemUpdateSchema = {
 											"pie"
 										],
 										"type": "string"
+									},
+									"dot": {
+										"description": "Whether the line should show a dot at each data point",
+										"type": "boolean"
+									},
+									"connectNulls": {
+										"description": "Whether to draw a connecting line between gaps in the data",
+										"type": "boolean"
+									},
+									"strokeDasharray": {
+										"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
+										"type": "string"
 									}
-								},
-								"additionalProperties": false
+								}
 							}
-						},
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
 						"label": {},
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
@@ -62713,191 +63383,6 @@ export const DashboardItemUpdateSchema = {
 						"name": {
 							"description": "The title of the viz",
 							"type": "string"
-						},
-						"xName": {
-							"description": "The label on the x-axis",
-							"type": "string"
-						},
-						"yName": {
-							"description": "The label on the y-axis",
-							"type": "string"
-						},
-						"yAxisDomain": {
-							"description": "Configuration options for the y-axis",
-							"type": "object",
-							"properties": {
-								"max": {
-									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								},
-								"min": {
-									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"presentationOptions": {
-							"description": "Common options for configuring the chart presentation",
-							"type": "object",
-							"properties": {
-								"periodTickFormat": {
-									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"description": "Hides the data average line",
-									"type": "boolean"
-								},
-								"referenceLines": {
-									"description": "Configure reference lines to appear in on the viz",
-									"type": "object",
-									"properties": {
-										"targetLine": {
-											"type": "object",
-											"properties": {
-												"referenceValue": {
-													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-													"type": "number"
-												},
-												"referenceLabel": {
-													"description": "Label shown on the reference line",
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"referenceValue"
-											]
-										}
-									},
-									"additionalProperties": false
-								},
-								"exportWithLabels": {
-									"description": "Include labels for each point of data in exports",
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"description": "Include the data table below the viz in exports",
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-									"type": "boolean"
-								}
-							},
-							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
 						},
 						"description": {
 							"description": "A short description that appears above a viz",
@@ -63288,38 +63773,205 @@ export const DashboardItemUpdateSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
-					"type": "object",
-					"properties": {
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"chartType": {
 							"type": "string",
 							"enum": [
 								"composed"
 							]
 						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {
+							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"description": "Include labels for each point of data in exports",
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"description": "Include the data table below the viz in exports",
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"description": "Hides the data average line",
+									"type": "boolean"
+								},
+								"referenceLines": {
+									"description": "Configure reference lines to appear in on the viz",
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+													"type": "number"
+												},
+												"referenceLabel": {
+													"description": "Label shown on the reference line",
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
+								}
+							}
+						},
 						"chartConfig": {
 							"description": "Configuration for each individual chart within this composed chart\n\neg.\n {\n   avg_rainfall: {\n     chartType: line\n     color: green\n   }\n   num_cases: {\n     chartType: bar\n     color: red\n   }\n }",
 							"type": "object",
 							"additionalProperties": {
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"chartType": {
-										"enum": [
-											"bar",
-											"line"
-										],
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -63464,6 +64116,13 @@ export const DashboardItemUpdateSchema = {
 											}
 										]
 									},
+									"chartType": {
+										"enum": [
+											"bar",
+											"line"
+										],
+										"type": "string"
+									},
 									"dot": {
 										"description": "Whether the line should show a dot at each data point",
 										"type": "boolean"
@@ -63477,602 +64136,12 @@ export const DashboardItemUpdateSchema = {
 										"type": "string"
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"chartType"
 								]
 							}
-						},
-						"label": {},
-						"source": {
-							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-							"type": "string"
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"name": {
-							"description": "The title of the viz",
-							"type": "string"
-						},
-						"xName": {
-							"description": "The label on the x-axis",
-							"type": "string"
-						},
-						"yName": {
-							"description": "The label on the y-axis",
-							"type": "string"
-						},
-						"yAxisDomain": {
-							"description": "Configuration options for the y-axis",
-							"type": "object",
-							"properties": {
-								"max": {
-									"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								},
-								"min": {
-									"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"presentationOptions": {
-							"description": "Common options for configuring the chart presentation",
-							"type": "object",
-							"properties": {
-								"periodTickFormat": {
-									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"description": "Hides the data average line",
-									"type": "boolean"
-								},
-								"referenceLines": {
-									"description": "Configure reference lines to appear in on the viz",
-									"type": "object",
-									"properties": {
-										"targetLine": {
-											"type": "object",
-											"properties": {
-												"referenceValue": {
-													"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-													"type": "number"
-												},
-												"referenceLabel": {
-													"description": "Label shown on the reference line",
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"referenceValue"
-											]
-										}
-									},
-									"additionalProperties": false
-								},
-								"exportWithLabels": {
-									"description": "Include labels for each point of data in exports",
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"description": "Include the data table below the viz in exports",
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-									"type": "boolean"
-								}
-							},
-							"additionalProperties": false
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
-						},
-						"description": {
-							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"periodGranularity": {
-							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
-							"enum": [
-								"day",
-								"month",
-								"one_day_at_a_time",
-								"one_month_at_a_time",
-								"one_quarter_at_a_time",
-								"one_week_at_a_time",
-								"one_year_at_a_time",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"month",
-										"quarter"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						},
-						"defaultTimePeriod": {
-							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"description": "Either an ISO Date string, or an offset object",
-											"anyOf": [
-												{
-													"type": "object",
-													"properties": {
-														"unit": {
-															"description": "Time unit to offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														},
-														"offset": {
-															"description": "Offset distance (can be negative to offset to an earlier date)",
-															"type": "number"
-														},
-														"modifier": {
-															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-															"enum": [
-																"end_of",
-																"start_of"
-															],
-															"type": "string"
-														},
-														"modifierUnit": {
-															"description": "Time unit to modify the offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														}
-													},
-													"additionalProperties": false,
-													"required": [
-														"unit"
-													]
-												},
-												{
-													"type": "string"
-												}
-											]
-										},
-										"end": {
-											"description": "Either an ISO Date string, or an offset object",
-											"anyOf": [
-												{
-													"type": "object",
-													"properties": {
-														"unit": {
-															"description": "Time unit to offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														},
-														"offset": {
-															"description": "Offset distance (can be negative to offset to an earlier date)",
-															"type": "number"
-														},
-														"modifier": {
-															"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-															"enum": [
-																"end_of",
-																"start_of"
-															],
-															"type": "string"
-														},
-														"modifierUnit": {
-															"description": "Time unit to modify the offset by",
-															"enum": [
-																"day",
-																"month",
-																"quarter",
-																"week",
-																"year"
-															],
-															"type": "string"
-														}
-													},
-													"additionalProperties": false,
-													"required": [
-														"unit"
-													]
-												},
-												{
-													"type": "string"
-												}
-											]
-										}
-									},
-									"additionalProperties": false
-								}
-							]
-						},
-						"datePickerLimits": {
-							"description": "Maximum date ranges that the date picker can be used to choose from",
-							"type": "object",
-							"properties": {
-								"start": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								},
-								"end": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"description": "Time unit to offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"description": "Offset distance (can be negative to offset to an earlier date)",
-											"type": "number"
-										},
-										"modifier": {
-											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"description": "Time unit to modify the offset by",
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"unit"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportConfig": {
-							"description": "Extra config options for exporting",
-							"type": "object",
-							"properties": {
-								"dataElementHeader": {
-									"description": "Sets the header for the data element in xls exports",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false
-						},
-						"noDataMessage": {
-							"description": "Message which shows if no data is found",
-							"type": "string"
-						},
-						"noDataFetch": {
-							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-							"default": false,
-							"type": "boolean"
-						},
-						"drillDown": {
-							"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
-							"type": "object",
-							"properties": {
-								"itemCode": {
-									"description": "The code of the dashboard item that drilling down through this viz should take you to",
-									"type": "string"
-								},
-								"keyLink": {
-									"type": "string"
-								},
-								"parameterLink": {
-									"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
-									"type": "string"
-								},
-								"itemCodeByEntry": {
-									"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
-									"type": "object",
-									"additionalProperties": {
-										"type": "string"
-									}
-								}
-							},
-							"additionalProperties": false
-						},
-						"entityHeader": {
-							"description": "",
-							"type": "string"
-						},
-						"reference": {
-							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"anyOf": [
-								{
-									"description": "One of the two shapes which {@link ReferenceProps} can take.",
-									"type": "object",
-									"properties": {
-										"text": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"text"
-									]
-								},
-								{
-									"description": "One of the two shapes which {@link ReferenceProps} can take.",
-									"type": "object",
-									"properties": {
-										"name": {
-											"type": "string"
-										},
-										"link": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"link",
-										"name"
-									]
-								}
-							]
-						},
-						"weekDisplayFormat": {
-							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-							"default": "'WEEK_COMMENCING_ABBR'",
-							"enum": [
-								"ISO_WEEK_NUMBER",
-								"WEEK_COMMENCING",
-								"WEEK_COMMENCING_ABBR",
-								"WEEK_ENDING",
-								"WEEK_ENDING_ABBR"
-							],
-							"type": "string"
-						},
-						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
-							"type": "string"
 						}
 					},
-					"additionalProperties": false,
 					"required": [
 						"chartType",
 						"name",
@@ -64081,72 +64150,9 @@ export const DashboardItemUpdateSchema = {
 				},
 				{
 					"description": "Gauge Chart",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
-						"chartType": {
-							"type": "string",
-							"enum": [
-								"gauge"
-							]
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"ticks": {
-							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-							"type": "array",
-							"items": {}
-						},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"description": "Data type for this viz",
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"description": "Set to 'all' to show the 'Latest available data:' message",
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"renderLegendForOneItem": {
-							"description": "Set to true to display the legend even if there is just a single series of data",
-							"type": "boolean"
-						},
 						"name": {
 							"description": "The title of the viz",
 							"type": "string"
@@ -64544,9 +64550,72 @@ export const DashboardItemUpdateSchema = {
 						"dateRangeDelimiter": {
 							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"gauge"
+							]
+						},
+						"ticks": {
+							"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+							"type": "array",
+							"items": {}
+						},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data type for this viz",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"description": "Set to 'all' to show the 'Latest available data:' message",
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"renderLegendForOneItem": {
+							"description": "Set to true to display the legend even if there is just a single series of data",
+							"type": "boolean"
 						}
 					},
-					"additionalProperties": false,
 					"required": [
 						"chartType",
 						"name",
@@ -85026,6 +85095,9 @@ export const DataTablePreviewRequestSchema = {
 		"code": {
 			"type": "string"
 		},
+		"description": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"analytics",
@@ -85038,9 +85110,6 @@ export const DataTablePreviewRequestSchema = {
 				"sql",
 				"survey_responses"
 			],
-			"type": "string"
-		},
-		"description": {
 			"type": "string"
 		},
 		"config": {
@@ -87457,108 +87526,9 @@ export const DashboardWithMetadataSchema = {
 							},
 							{
 								"description": "Pie Chart",
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"chartType": {
-										"type": "string",
-										"enum": [
-											"pie"
-										]
-									},
-									"presentationOptions": {
-										"description": "Common options for configuring the chart presentation",
-										"additionalProperties": false,
-										"type": "object",
-										"properties": {
-											"exportWithLabels": {
-												"description": "Include labels for each point of data in exports",
-												"type": "boolean"
-											},
-											"exportWithTable": {
-												"description": "Include the data table below the viz in exports",
-												"type": "boolean"
-											},
-											"exportWithTableDisabled": {
-												"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-												"type": "boolean"
-											}
-										}
-									},
-									"segmentConfig": {
-										"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
-										"type": "object",
-										"additionalProperties": {
-											"type": "object",
-											"properties": {
-												"color": {
-													"description": "A CSS color string e.g. green or #abc123",
-													"type": "string"
-												},
-												"label": {
-													"type": "string"
-												}
-											},
-											"additionalProperties": false
-										}
-									},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
-									},
-									"ticks": {
-										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-										"type": "array",
-										"items": {}
-									},
-									"startDate": {
-										"type": "string"
-									},
-									"endDate": {
-										"type": "string"
-									},
-									"valueType": {
-										"description": "Data type for this viz",
-										"enum": [
-											"boolean",
-											"color",
-											"currency",
-											"fraction",
-											"fractionAndPercentage",
-											"number",
-											"oneDecimalPlace",
-											"percentage",
-											"text",
-											"view"
-										],
-										"type": "string"
-									},
-									"showPeriodRange": {
-										"description": "Set to 'all' to show the 'Latest available data:' message",
-										"type": "string",
-										"enum": [
-											"all"
-										]
-									},
-									"color": {
-										"description": "Some chart types take 'color' as an option",
-										"type": "string"
-									},
-									"label": {},
-									"labelType": {
-										"description": "Some charts can have their label customised",
-										"enum": [
-											"fraction",
-											"fractionAndPercentage",
-											"number"
-										],
-										"type": "string"
-									},
-									"renderLegendForOneItem": {
-										"description": "Set to true to display the legend even if there is just a single series of data",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "The title of the viz",
 										"type": "string"
@@ -87956,69 +87926,76 @@ export const DashboardWithMetadataSchema = {
 									"dateRangeDelimiter": {
 										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"chartType",
-									"name",
-									"type"
-								]
-							},
-							{
-								"description": "Bar Chart",
-								"type": "object",
-								"properties": {
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
 									"chartType": {
 										"type": "string",
 										"enum": [
-											"bar"
+											"pie"
 										]
+									},
+									"ticks": {
+										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+										"type": "array",
+										"items": {}
+									},
+									"startDate": {
+										"type": "string"
+									},
+									"endDate": {
+										"type": "string"
+									},
+									"valueType": {
+										"description": "Data type for this viz",
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showPeriodRange": {
+										"description": "Set to 'all' to show the 'Latest available data:' message",
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"color": {
+										"description": "Some chart types take 'color' as an option",
+										"type": "string"
+									},
+									"label": {},
+									"labelType": {
+										"description": "Some charts can have their label customised",
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"renderLegendForOneItem": {
+										"description": "Set to true to display the legend even if there is just a single series of data",
+										"type": "boolean"
 									},
 									"presentationOptions": {
 										"description": "Common options for configuring the chart presentation",
+										"additionalProperties": false,
 										"type": "object",
 										"properties": {
-											"color": {
-												"description": "A CSS color string e.g. green or #abc123",
-												"type": "string"
-											},
-											"valueFormat": {
-												"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-												"type": "string"
-											},
-											"periodTickFormat": {
-												"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-												"type": "string"
-											},
-											"hideAverage": {
-												"description": "Hides the data average line",
-												"type": "boolean"
-											},
-											"referenceLines": {
-												"description": "Configure reference lines to appear in on the viz",
-												"type": "object",
-												"properties": {
-													"targetLine": {
-														"type": "object",
-														"properties": {
-															"referenceValue": {
-																"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-																"type": "number"
-															},
-															"referenceLabel": {
-																"description": "Label shown on the reference line",
-																"type": "string"
-															}
-														},
-														"additionalProperties": false,
-														"required": [
-															"referenceValue"
-														]
-													}
-												},
-												"additionalProperties": false
-											},
 											"exportWithLabels": {
 												"description": "Include labels for each point of data in exports",
 												"type": "boolean"
@@ -88031,8 +88008,498 @@ export const DashboardWithMetadataSchema = {
 												"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 												"type": "boolean"
 											}
+										}
+									},
+									"segmentConfig": {
+										"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+										"type": "object",
+										"additionalProperties": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"description": "A CSS color string e.g. green or #abc123",
+													"type": "string"
+												},
+												"label": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									}
+								},
+								"required": [
+									"chartType",
+									"name",
+									"type"
+								]
+							},
+							{
+								"description": "Bar Chart",
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"name": {
+										"description": "The title of the viz",
+										"type": "string"
+									},
+									"description": {
+										"description": "A short description that appears above a viz",
+										"type": "string"
+									},
+									"periodGranularity": {
+										"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
+									"defaultTimePeriod": {
+										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"unit": {
+														"description": "Time unit to offset by",
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"description": "Offset distance (can be negative to offset to an earlier date)",
+														"type": "number"
+													},
+													"modifier": {
+														"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierUnit": {
+														"description": "Time unit to modify the offset by",
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"description": "Either an ISO Date string, or an offset object",
+														"anyOf": [
+															{
+																"type": "object",
+																"properties": {
+																	"unit": {
+																		"description": "Time unit to offset by",
+																		"enum": [
+																			"day",
+																			"month",
+																			"quarter",
+																			"week",
+																			"year"
+																		],
+																		"type": "string"
+																	},
+																	"offset": {
+																		"description": "Offset distance (can be negative to offset to an earlier date)",
+																		"type": "number"
+																	},
+																	"modifier": {
+																		"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+																		"enum": [
+																			"end_of",
+																			"start_of"
+																		],
+																		"type": "string"
+																	},
+																	"modifierUnit": {
+																		"description": "Time unit to modify the offset by",
+																		"enum": [
+																			"day",
+																			"month",
+																			"quarter",
+																			"week",
+																			"year"
+																		],
+																		"type": "string"
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"unit"
+																]
+															},
+															{
+																"type": "string"
+															}
+														]
+													},
+													"end": {
+														"description": "Either an ISO Date string, or an offset object",
+														"anyOf": [
+															{
+																"type": "object",
+																"properties": {
+																	"unit": {
+																		"description": "Time unit to offset by",
+																		"enum": [
+																			"day",
+																			"month",
+																			"quarter",
+																			"week",
+																			"year"
+																		],
+																		"type": "string"
+																	},
+																	"offset": {
+																		"description": "Offset distance (can be negative to offset to an earlier date)",
+																		"type": "number"
+																	},
+																	"modifier": {
+																		"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+																		"enum": [
+																			"end_of",
+																			"start_of"
+																		],
+																		"type": "string"
+																	},
+																	"modifierUnit": {
+																		"description": "Time unit to modify the offset by",
+																		"enum": [
+																			"day",
+																			"month",
+																			"quarter",
+																			"week",
+																			"year"
+																		],
+																		"type": "string"
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"unit"
+																]
+															},
+															{
+																"type": "string"
+															}
+														]
+													}
+												},
+												"additionalProperties": false
+											}
+										]
+									},
+									"datePickerLimits": {
+										"description": "Maximum date ranges that the date picker can be used to choose from",
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"description": "Time unit to offset by",
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"description": "Offset distance (can be negative to offset to an earlier date)",
+														"type": "number"
+													},
+													"modifier": {
+														"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierUnit": {
+														"description": "Time unit to modify the offset by",
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"description": "Time unit to offset by",
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"description": "Offset distance (can be negative to offset to an earlier date)",
+														"type": "number"
+													},
+													"modifier": {
+														"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierUnit": {
+														"description": "Time unit to modify the offset by",
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"unit"
+												]
+											}
 										},
 										"additionalProperties": false
+									},
+									"exportConfig": {
+										"description": "Extra config options for exporting",
+										"type": "object",
+										"properties": {
+											"dataElementHeader": {
+												"description": "Sets the header for the data element in xls exports",
+												"type": "string"
+											}
+										},
+										"additionalProperties": false
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
+										"type": "string"
+									},
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
+										"type": "boolean"
+									},
+									"drillDown": {
+										"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+										"type": "object",
+										"properties": {
+											"itemCode": {
+												"description": "The code of the dashboard item that drilling down through this viz should take you to",
+												"type": "string"
+											},
+											"keyLink": {
+												"type": "string"
+											},
+											"parameterLink": {
+												"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+												"type": "string"
+											},
+											"itemCodeByEntry": {
+												"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+												"type": "object",
+												"additionalProperties": {
+													"type": "string"
+												}
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityHeader": {
+										"description": "",
+										"type": "string"
+									},
+									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
+											},
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
+											}
+										]
+									},
+									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+										"type": "string"
+									},
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
+									"chartType": {
+										"type": "string",
+										"enum": [
+											"bar"
+										]
+									},
+									"ticks": {
+										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+										"type": "array",
+										"items": {}
+									},
+									"startDate": {
+										"type": "string"
+									},
+									"endDate": {
+										"type": "string"
+									},
+									"valueType": {
+										"description": "Data type for this viz",
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showPeriodRange": {
+										"description": "Set to 'all' to show the 'Latest available data:' message",
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"color": {
+										"description": "Some chart types take 'color' as an option",
+										"type": "string"
+									},
+									"label": {},
+									"labelType": {
+										"description": "Some charts can have their label customised",
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"renderLegendForOneItem": {
+										"description": "Set to true to display the legend even if there is just a single series of data",
+										"type": "boolean"
 									},
 									"xName": {
 										"description": "The label on the x-axis",
@@ -88282,63 +88749,85 @@ export const DashboardWithMetadataSchema = {
 											"additionalProperties": false
 										}
 									},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
-									},
-									"ticks": {
-										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-										"type": "array",
-										"items": {}
-									},
-									"startDate": {
+									"presentationOptions": {
+										"description": "Common options for configuring the chart presentation",
+										"additionalProperties": false,
+										"type": "object",
+										"properties": {
+											"exportWithLabels": {
+												"description": "Include labels for each point of data in exports",
+												"type": "boolean"
+											},
+											"exportWithTable": {
+												"description": "Include the data table below the viz in exports",
+												"type": "boolean"
+											},
+											"exportWithTableDisabled": {
+												"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+												"type": "boolean"
+											},
+											"periodTickFormat": {
+												"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+												"type": "string"
+											},
+											"hideAverage": {
+												"description": "Hides the data average line",
+												"type": "boolean"
+											},
+											"referenceLines": {
+												"description": "Configure reference lines to appear in on the viz",
+												"type": "object",
+												"properties": {
+													"targetLine": {
+														"type": "object",
+														"properties": {
+															"referenceValue": {
+																"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+																"type": "number"
+															},
+															"referenceLabel": {
+																"description": "Label shown on the reference line",
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"referenceValue"
+														]
+													}
+												},
+												"additionalProperties": false
+											},
+											"color": {
+												"description": "A CSS color string e.g. green or #abc123",
+												"type": "string"
+											},
+											"valueFormat": {
+												"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+												"type": "string"
+											}
+										}
+									}
+								},
+								"required": [
+									"chartType",
+									"name",
+									"type"
+								]
+							},
+							{
+								"description": "Line Chart",
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"label": {},
+									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
-									},
-									"endDate": {
-										"type": "string"
-									},
-									"valueType": {
-										"description": "Data type for this viz",
-										"enum": [
-											"boolean",
-											"color",
-											"currency",
-											"fraction",
-											"fractionAndPercentage",
-											"number",
-											"oneDecimalPlace",
-											"percentage",
-											"text",
-											"view"
-										],
-										"type": "string"
-									},
-									"showPeriodRange": {
-										"description": "Set to 'all' to show the 'Latest available data:' message",
-										"type": "string",
-										"enum": [
-											"all"
-										]
 									},
 									"color": {
 										"description": "Some chart types take 'color' as an option",
 										"type": "string"
-									},
-									"label": {},
-									"labelType": {
-										"description": "Some charts can have their label customised",
-										"enum": [
-											"fraction",
-											"fractionAndPercentage",
-											"number"
-										],
-										"type": "string"
-									},
-									"renderLegendForOneItem": {
-										"description": "Set to true to display the legend even if there is just a single series of data",
-										"type": "boolean"
 									},
 									"name": {
 										"description": "The title of the viz",
@@ -88718,10 +89207,6 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
-									"source": {
-										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-										"type": "string"
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -88737,43 +89222,205 @@ export const DashboardWithMetadataSchema = {
 									"dateRangeDelimiter": {
 										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"chartType",
-									"name",
-									"type"
-								]
-							},
-							{
-								"description": "Line Chart",
-								"type": "object",
-								"properties": {
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
 									"chartType": {
 										"type": "string",
 										"enum": [
 											"line"
 										]
 									},
+									"ticks": {
+										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+										"type": "array",
+										"items": {}
+									},
+									"startDate": {
+										"type": "string"
+									},
+									"endDate": {
+										"type": "string"
+									},
+									"valueType": {
+										"description": "Data type for this viz",
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showPeriodRange": {
+										"description": "Set to 'all' to show the 'Latest available data:' message",
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"labelType": {
+										"description": "Some charts can have their label customised",
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"renderLegendForOneItem": {
+										"description": "Set to true to display the legend even if there is just a single series of data",
+										"type": "boolean"
+									},
+									"xName": {
+										"description": "The label on the x-axis",
+										"type": "string"
+									},
+									"yName": {
+										"description": "The label on the y-axis",
+										"type": "string"
+									},
+									"yAxisDomain": {
+										"description": "Configuration options for the y-axis",
+										"type": "object",
+										"properties": {
+											"max": {
+												"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
+									"presentationOptions": {
+										"description": "Common options for configuring the chart presentation",
+										"additionalProperties": false,
+										"type": "object",
+										"properties": {
+											"exportWithLabels": {
+												"description": "Include labels for each point of data in exports",
+												"type": "boolean"
+											},
+											"exportWithTable": {
+												"description": "Include the data table below the viz in exports",
+												"type": "boolean"
+											},
+											"exportWithTableDisabled": {
+												"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+												"type": "boolean"
+											},
+											"periodTickFormat": {
+												"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+												"type": "string"
+											},
+											"hideAverage": {
+												"description": "Hides the data average line",
+												"type": "boolean"
+											},
+											"referenceLines": {
+												"description": "Configure reference lines to appear in on the viz",
+												"type": "object",
+												"properties": {
+													"targetLine": {
+														"type": "object",
+														"properties": {
+															"referenceValue": {
+																"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+																"type": "number"
+															},
+															"referenceLabel": {
+																"description": "Label shown on the reference line",
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"referenceValue"
+														]
+													}
+												},
+												"additionalProperties": false
+											}
+										}
+									},
 									"chartConfig": {
 										"description": "Configuration for each series of data within this chart.\nNote: use $all for configuration that applies to all series.\n\neg.\n {\n   In Stock: {\n     color: green\n   }\n   Out of Stock: {\n     color: red\n   }\n   $all: {\n     hideFromLegend: true\n   }\n }",
 										"type": "object",
 										"additionalProperties": {
+											"additionalProperties": false,
 											"type": "object",
 											"properties": {
-												"dot": {
-													"description": "Whether the line should show a dot at each data point",
-													"type": "boolean"
-												},
-												"connectNulls": {
-													"description": "Whether to draw a connecting line between gaps in the data",
-													"type": "boolean"
-												},
-												"strokeDasharray": {
-													"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
-													"type": "string"
-												},
 												"color": {
 													"description": "A CSS color string e.g. green or #abc123",
 													"type": "string"
@@ -88929,11 +89576,34 @@ export const DashboardWithMetadataSchema = {
 														"pie"
 													],
 													"type": "string"
+												},
+												"dot": {
+													"description": "Whether the line should show a dot at each data point",
+													"type": "boolean"
+												},
+												"connectNulls": {
+													"description": "Whether to draw a connecting line between gaps in the data",
+													"type": "boolean"
+												},
+												"strokeDasharray": {
+													"description": "The pattern of dashes and gaps used to paint the line, see: https://recharts.org/en-US/api/Line#strokeDasharray",
+													"type": "string"
 												}
-											},
-											"additionalProperties": false
+											}
 										}
-									},
+									}
+								},
+								"required": [
+									"chartType",
+									"name",
+									"type"
+								]
+							},
+							{
+								"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
 									"label": {},
 									"source": {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
@@ -88946,191 +89616,6 @@ export const DashboardWithMetadataSchema = {
 									"name": {
 										"description": "The title of the viz",
 										"type": "string"
-									},
-									"xName": {
-										"description": "The label on the x-axis",
-										"type": "string"
-									},
-									"yName": {
-										"description": "The label on the y-axis",
-										"type": "string"
-									},
-									"yAxisDomain": {
-										"description": "Configuration options for the y-axis",
-										"type": "object",
-										"properties": {
-											"max": {
-												"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-												"type": "object",
-												"properties": {
-													"type": {
-														"enum": [
-															"clamp",
-															"number",
-															"scale",
-															"string"
-														],
-														"type": "string"
-													},
-													"value": {
-														"type": [
-															"string",
-															"number"
-														]
-													},
-													"min": {
-														"type": "number"
-													},
-													"max": {
-														"type": "number"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"type"
-												]
-											},
-											"min": {
-												"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-												"type": "object",
-												"properties": {
-													"type": {
-														"enum": [
-															"clamp",
-															"number",
-															"scale",
-															"string"
-														],
-														"type": "string"
-													},
-													"value": {
-														"type": [
-															"string",
-															"number"
-														]
-													},
-													"min": {
-														"type": "number"
-													},
-													"max": {
-														"type": "number"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"type"
-												]
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"max",
-											"min"
-										]
-									},
-									"presentationOptions": {
-										"description": "Common options for configuring the chart presentation",
-										"type": "object",
-										"properties": {
-											"periodTickFormat": {
-												"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-												"type": "string"
-											},
-											"hideAverage": {
-												"description": "Hides the data average line",
-												"type": "boolean"
-											},
-											"referenceLines": {
-												"description": "Configure reference lines to appear in on the viz",
-												"type": "object",
-												"properties": {
-													"targetLine": {
-														"type": "object",
-														"properties": {
-															"referenceValue": {
-																"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-																"type": "number"
-															},
-															"referenceLabel": {
-																"description": "Label shown on the reference line",
-																"type": "string"
-															}
-														},
-														"additionalProperties": false,
-														"required": [
-															"referenceValue"
-														]
-													}
-												},
-												"additionalProperties": false
-											},
-											"exportWithLabels": {
-												"description": "Include labels for each point of data in exports",
-												"type": "boolean"
-											},
-											"exportWithTable": {
-												"description": "Include the data table below the viz in exports",
-												"type": "boolean"
-											},
-											"exportWithTableDisabled": {
-												"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-												"type": "boolean"
-											}
-										},
-										"additionalProperties": false
-									},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
-									},
-									"ticks": {
-										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-										"type": "array",
-										"items": {}
-									},
-									"startDate": {
-										"type": "string"
-									},
-									"endDate": {
-										"type": "string"
-									},
-									"valueType": {
-										"description": "Data type for this viz",
-										"enum": [
-											"boolean",
-											"color",
-											"currency",
-											"fraction",
-											"fractionAndPercentage",
-											"number",
-											"oneDecimalPlace",
-											"percentage",
-											"text",
-											"view"
-										],
-										"type": "string"
-									},
-									"showPeriodRange": {
-										"description": "Set to 'all' to show the 'Latest available data:' message",
-										"type": "string",
-										"enum": [
-											"all"
-										]
-									},
-									"labelType": {
-										"description": "Some charts can have their label customised",
-										"enum": [
-											"fraction",
-											"fractionAndPercentage",
-											"number"
-										],
-										"type": "string"
-									},
-									"renderLegendForOneItem": {
-										"description": "Set to true to display the legend even if there is just a single series of data",
-										"type": "boolean"
 									},
 									"description": {
 										"description": "A short description that appears above a viz",
@@ -89521,38 +90006,205 @@ export const DashboardWithMetadataSchema = {
 									"dateRangeDelimiter": {
 										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"chartType",
-									"name",
-									"type"
-								]
-							},
-							{
-								"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
-								"type": "object",
-								"properties": {
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
 									"chartType": {
 										"type": "string",
 										"enum": [
 											"composed"
 										]
 									},
+									"ticks": {
+										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+										"type": "array",
+										"items": {}
+									},
+									"startDate": {
+										"type": "string"
+									},
+									"endDate": {
+										"type": "string"
+									},
+									"valueType": {
+										"description": "Data type for this viz",
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showPeriodRange": {
+										"description": "Set to 'all' to show the 'Latest available data:' message",
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"labelType": {
+										"description": "Some charts can have their label customised",
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"renderLegendForOneItem": {
+										"description": "Set to true to display the legend even if there is just a single series of data",
+										"type": "boolean"
+									},
+									"xName": {
+										"description": "The label on the x-axis",
+										"type": "string"
+									},
+									"yName": {
+										"description": "The label on the y-axis",
+										"type": "string"
+									},
+									"yAxisDomain": {
+										"description": "Configuration options for the y-axis",
+										"type": "object",
+										"properties": {
+											"max": {
+												"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
+									"presentationOptions": {
+										"description": "Common options for configuring the chart presentation",
+										"additionalProperties": false,
+										"type": "object",
+										"properties": {
+											"exportWithLabels": {
+												"description": "Include labels for each point of data in exports",
+												"type": "boolean"
+											},
+											"exportWithTable": {
+												"description": "Include the data table below the viz in exports",
+												"type": "boolean"
+											},
+											"exportWithTableDisabled": {
+												"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+												"type": "boolean"
+											},
+											"periodTickFormat": {
+												"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+												"type": "string"
+											},
+											"hideAverage": {
+												"description": "Hides the data average line",
+												"type": "boolean"
+											},
+											"referenceLines": {
+												"description": "Configure reference lines to appear in on the viz",
+												"type": "object",
+												"properties": {
+													"targetLine": {
+														"type": "object",
+														"properties": {
+															"referenceValue": {
+																"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
+																"type": "number"
+															},
+															"referenceLabel": {
+																"description": "Label shown on the reference line",
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"referenceValue"
+														]
+													}
+												},
+												"additionalProperties": false
+											}
+										}
+									},
 									"chartConfig": {
 										"description": "Configuration for each individual chart within this composed chart\n\neg.\n {\n   avg_rainfall: {\n     chartType: line\n     color: green\n   }\n   num_cases: {\n     chartType: bar\n     color: red\n   }\n }",
 										"type": "object",
 										"additionalProperties": {
+											"additionalProperties": false,
 											"type": "object",
 											"properties": {
-												"chartType": {
-													"enum": [
-														"bar",
-														"line"
-													],
-													"type": "string"
-												},
 												"color": {
 													"description": "A CSS color string e.g. green or #abc123",
 													"type": "string"
@@ -89697,6 +90349,13 @@ export const DashboardWithMetadataSchema = {
 														}
 													]
 												},
+												"chartType": {
+													"enum": [
+														"bar",
+														"line"
+													],
+													"type": "string"
+												},
 												"dot": {
 													"description": "Whether the line should show a dot at each data point",
 													"type": "boolean"
@@ -89710,602 +90369,12 @@ export const DashboardWithMetadataSchema = {
 													"type": "string"
 												}
 											},
-											"additionalProperties": false,
 											"required": [
 												"chartType"
 											]
 										}
-									},
-									"label": {},
-									"source": {
-										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-										"type": "string"
-									},
-									"color": {
-										"description": "Some chart types take 'color' as an option",
-										"type": "string"
-									},
-									"name": {
-										"description": "The title of the viz",
-										"type": "string"
-									},
-									"xName": {
-										"description": "The label on the x-axis",
-										"type": "string"
-									},
-									"yName": {
-										"description": "The label on the y-axis",
-										"type": "string"
-									},
-									"yAxisDomain": {
-										"description": "Configuration options for the y-axis",
-										"type": "object",
-										"properties": {
-											"max": {
-												"description": "Domain configuration for the maximum y axis value.\neg.\n// Cannot be higher than 100\n{\n  type: number\n  value: 100\n}\n\n// Clamp between 50, the maximum data value, and 100\n{\n  type: clamp\n  min: 50\n  max: 100\n}\n\n// Scale the y axis to always be 10% higher than the maximum data value\n{\n  type: scale\n  value: 1.1\n}\n\n// 20 greater than the maximum data value\n{\n  type: string\n  value: datamax + 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-												"type": "object",
-												"properties": {
-													"type": {
-														"enum": [
-															"clamp",
-															"number",
-															"scale",
-															"string"
-														],
-														"type": "string"
-													},
-													"value": {
-														"type": [
-															"string",
-															"number"
-														]
-													},
-													"min": {
-														"type": "number"
-													},
-													"max": {
-														"type": "number"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"type"
-												]
-											},
-											"min": {
-												"description": "Domain configuration for the minimum y axis value.\neg.\n// Cannot be lower than 0\n{\n  type: number\n  value: 0\n}\n\n// Clamp between 0, the minimum data value, and 10\n{\n  type: clamp\n  min: 0\n  max: 10\n}\n\n// Scale the y axis to always be 10% lower than the minimum data value\n{\n  type: scale\n  value: 0.9\n}\n\n// 20 less than the minimum data value\n{\n  type: string\n  value: datamin - 20\n}\n\nFor more options see: https://recharts.org/en-US/api/YAxis#domain",
-												"type": "object",
-												"properties": {
-													"type": {
-														"enum": [
-															"clamp",
-															"number",
-															"scale",
-															"string"
-														],
-														"type": "string"
-													},
-													"value": {
-														"type": [
-															"string",
-															"number"
-														]
-													},
-													"min": {
-														"type": "number"
-													},
-													"max": {
-														"type": "number"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"type"
-												]
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"max",
-											"min"
-										]
-									},
-									"presentationOptions": {
-										"description": "Common options for configuring the chart presentation",
-										"type": "object",
-										"properties": {
-											"periodTickFormat": {
-												"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-												"type": "string"
-											},
-											"hideAverage": {
-												"description": "Hides the data average line",
-												"type": "boolean"
-											},
-											"referenceLines": {
-												"description": "Configure reference lines to appear in on the viz",
-												"type": "object",
-												"properties": {
-													"targetLine": {
-														"type": "object",
-														"properties": {
-															"referenceValue": {
-																"description": "Value where the reference line is drawn (if not given no reference line will be drawn)",
-																"type": "number"
-															},
-															"referenceLabel": {
-																"description": "Label shown on the reference line",
-																"type": "string"
-															}
-														},
-														"additionalProperties": false,
-														"required": [
-															"referenceValue"
-														]
-													}
-												},
-												"additionalProperties": false
-											},
-											"exportWithLabels": {
-												"description": "Include labels for each point of data in exports",
-												"type": "boolean"
-											},
-											"exportWithTable": {
-												"description": "Include the data table below the viz in exports",
-												"type": "boolean"
-											},
-											"exportWithTableDisabled": {
-												"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-												"type": "boolean"
-											}
-										},
-										"additionalProperties": false
-									},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
-									},
-									"ticks": {
-										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-										"type": "array",
-										"items": {}
-									},
-									"startDate": {
-										"type": "string"
-									},
-									"endDate": {
-										"type": "string"
-									},
-									"valueType": {
-										"description": "Data type for this viz",
-										"enum": [
-											"boolean",
-											"color",
-											"currency",
-											"fraction",
-											"fractionAndPercentage",
-											"number",
-											"oneDecimalPlace",
-											"percentage",
-											"text",
-											"view"
-										],
-										"type": "string"
-									},
-									"showPeriodRange": {
-										"description": "Set to 'all' to show the 'Latest available data:' message",
-										"type": "string",
-										"enum": [
-											"all"
-										]
-									},
-									"labelType": {
-										"description": "Some charts can have their label customised",
-										"enum": [
-											"fraction",
-											"fractionAndPercentage",
-											"number"
-										],
-										"type": "string"
-									},
-									"renderLegendForOneItem": {
-										"description": "Set to true to display the legend even if there is just a single series of data",
-										"type": "boolean"
-									},
-									"description": {
-										"description": "A short description that appears above a viz",
-										"type": "string"
-									},
-									"periodGranularity": {
-										"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
-										"enum": [
-											"day",
-											"month",
-											"one_day_at_a_time",
-											"one_month_at_a_time",
-											"one_quarter_at_a_time",
-											"one_week_at_a_time",
-											"one_year_at_a_time",
-											"quarter",
-											"week",
-											"year"
-										],
-										"type": "string"
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"enum": [
-													"month",
-													"quarter"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"type": "number"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
-										]
-									},
-									"defaultTimePeriod": {
-										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"unit": {
-														"description": "Time unit to offset by",
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													},
-													"offset": {
-														"description": "Offset distance (can be negative to offset to an earlier date)",
-														"type": "number"
-													},
-													"modifier": {
-														"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-														"enum": [
-															"end_of",
-															"start_of"
-														],
-														"type": "string"
-													},
-													"modifierUnit": {
-														"description": "Time unit to modify the offset by",
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"unit"
-												]
-											},
-											{
-												"type": "object",
-												"properties": {
-													"start": {
-														"description": "Either an ISO Date string, or an offset object",
-														"anyOf": [
-															{
-																"type": "object",
-																"properties": {
-																	"unit": {
-																		"description": "Time unit to offset by",
-																		"enum": [
-																			"day",
-																			"month",
-																			"quarter",
-																			"week",
-																			"year"
-																		],
-																		"type": "string"
-																	},
-																	"offset": {
-																		"description": "Offset distance (can be negative to offset to an earlier date)",
-																		"type": "number"
-																	},
-																	"modifier": {
-																		"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-																		"enum": [
-																			"end_of",
-																			"start_of"
-																		],
-																		"type": "string"
-																	},
-																	"modifierUnit": {
-																		"description": "Time unit to modify the offset by",
-																		"enum": [
-																			"day",
-																			"month",
-																			"quarter",
-																			"week",
-																			"year"
-																		],
-																		"type": "string"
-																	}
-																},
-																"additionalProperties": false,
-																"required": [
-																	"unit"
-																]
-															},
-															{
-																"type": "string"
-															}
-														]
-													},
-													"end": {
-														"description": "Either an ISO Date string, or an offset object",
-														"anyOf": [
-															{
-																"type": "object",
-																"properties": {
-																	"unit": {
-																		"description": "Time unit to offset by",
-																		"enum": [
-																			"day",
-																			"month",
-																			"quarter",
-																			"week",
-																			"year"
-																		],
-																		"type": "string"
-																	},
-																	"offset": {
-																		"description": "Offset distance (can be negative to offset to an earlier date)",
-																		"type": "number"
-																	},
-																	"modifier": {
-																		"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-																		"enum": [
-																			"end_of",
-																			"start_of"
-																		],
-																		"type": "string"
-																	},
-																	"modifierUnit": {
-																		"description": "Time unit to modify the offset by",
-																		"enum": [
-																			"day",
-																			"month",
-																			"quarter",
-																			"week",
-																			"year"
-																		],
-																		"type": "string"
-																	}
-																},
-																"additionalProperties": false,
-																"required": [
-																	"unit"
-																]
-															},
-															{
-																"type": "string"
-															}
-														]
-													}
-												},
-												"additionalProperties": false
-											}
-										]
-									},
-									"datePickerLimits": {
-										"description": "Maximum date ranges that the date picker can be used to choose from",
-										"type": "object",
-										"properties": {
-											"start": {
-												"type": "object",
-												"properties": {
-													"unit": {
-														"description": "Time unit to offset by",
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													},
-													"offset": {
-														"description": "Offset distance (can be negative to offset to an earlier date)",
-														"type": "number"
-													},
-													"modifier": {
-														"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-														"enum": [
-															"end_of",
-															"start_of"
-														],
-														"type": "string"
-													},
-													"modifierUnit": {
-														"description": "Time unit to modify the offset by",
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"unit"
-												]
-											},
-											"end": {
-												"type": "object",
-												"properties": {
-													"unit": {
-														"description": "Time unit to offset by",
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													},
-													"offset": {
-														"description": "Offset distance (can be negative to offset to an earlier date)",
-														"type": "number"
-													},
-													"modifier": {
-														"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-														"enum": [
-															"end_of",
-															"start_of"
-														],
-														"type": "string"
-													},
-													"modifierUnit": {
-														"description": "Time unit to modify the offset by",
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"unit"
-												]
-											}
-										},
-										"additionalProperties": false
-									},
-									"exportConfig": {
-										"description": "Extra config options for exporting",
-										"type": "object",
-										"properties": {
-											"dataElementHeader": {
-												"description": "Sets the header for the data element in xls exports",
-												"type": "string"
-											}
-										},
-										"additionalProperties": false
-									},
-									"noDataMessage": {
-										"description": "Message which shows if no data is found",
-										"type": "string"
-									},
-									"noDataFetch": {
-										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-										"default": false,
-										"type": "boolean"
-									},
-									"drillDown": {
-										"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
-										"type": "object",
-										"properties": {
-											"itemCode": {
-												"description": "The code of the dashboard item that drilling down through this viz should take you to",
-												"type": "string"
-											},
-											"keyLink": {
-												"type": "string"
-											},
-											"parameterLink": {
-												"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
-												"type": "string"
-											},
-											"itemCodeByEntry": {
-												"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
-												"type": "object",
-												"additionalProperties": {
-													"type": "string"
-												}
-											}
-										},
-										"additionalProperties": false
-									},
-									"entityHeader": {
-										"description": "",
-										"type": "string"
-									},
-									"reference": {
-										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"anyOf": [
-											{
-												"description": "One of the two shapes which {@link ReferenceProps} can take.",
-												"type": "object",
-												"properties": {
-													"text": {
-														"type": "string"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"text"
-												]
-											},
-											{
-												"description": "One of the two shapes which {@link ReferenceProps} can take.",
-												"type": "object",
-												"properties": {
-													"name": {
-														"type": "string"
-													},
-													"link": {
-														"type": "string"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"link",
-													"name"
-												]
-											}
-										]
-									},
-									"weekDisplayFormat": {
-										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-										"default": "'WEEK_COMMENCING_ABBR'",
-										"enum": [
-											"ISO_WEEK_NUMBER",
-											"WEEK_COMMENCING",
-											"WEEK_COMMENCING_ABBR",
-											"WEEK_ENDING",
-											"WEEK_ENDING_ABBR"
-										],
-										"type": "string"
-									},
-									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
-										"type": "string"
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"chartType",
 									"name",
@@ -90314,72 +90383,9 @@ export const DashboardWithMetadataSchema = {
 							},
 							{
 								"description": "Gauge Chart",
+								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"chartType": {
-										"type": "string",
-										"enum": [
-											"gauge"
-										]
-									},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
-									},
-									"ticks": {
-										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
-										"type": "array",
-										"items": {}
-									},
-									"startDate": {
-										"type": "string"
-									},
-									"endDate": {
-										"type": "string"
-									},
-									"valueType": {
-										"description": "Data type for this viz",
-										"enum": [
-											"boolean",
-											"color",
-											"currency",
-											"fraction",
-											"fractionAndPercentage",
-											"number",
-											"oneDecimalPlace",
-											"percentage",
-											"text",
-											"view"
-										],
-										"type": "string"
-									},
-									"showPeriodRange": {
-										"description": "Set to 'all' to show the 'Latest available data:' message",
-										"type": "string",
-										"enum": [
-											"all"
-										]
-									},
-									"color": {
-										"description": "Some chart types take 'color' as an option",
-										"type": "string"
-									},
-									"label": {},
-									"labelType": {
-										"description": "Some charts can have their label customised",
-										"enum": [
-											"fraction",
-											"fractionAndPercentage",
-											"number"
-										],
-										"type": "string"
-									},
-									"renderLegendForOneItem": {
-										"description": "Set to true to display the legend even if there is just a single series of data",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "The title of the viz",
 										"type": "string"
@@ -90777,9 +90783,72 @@ export const DashboardWithMetadataSchema = {
 									"dateRangeDelimiter": {
 										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
+									"chartType": {
+										"type": "string",
+										"enum": [
+											"gauge"
+										]
+									},
+									"ticks": {
+										"description": "Array of values to show as ticks on the y axis. See: https://recharts.org/en-US/api/YAxis#ticks",
+										"type": "array",
+										"items": {}
+									},
+									"startDate": {
+										"type": "string"
+									},
+									"endDate": {
+										"type": "string"
+									},
+									"valueType": {
+										"description": "Data type for this viz",
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showPeriodRange": {
+										"description": "Set to 'all' to show the 'Latest available data:' message",
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"color": {
+										"description": "Some chart types take 'color' as an option",
+										"type": "string"
+									},
+									"label": {},
+									"labelType": {
+										"description": "Some charts can have their label customised",
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"renderLegendForOneItem": {
+										"description": "Set to true to display the legend even if there is just a single series of data",
+										"type": "boolean"
 									}
 								},
-								"additionalProperties": false,
 								"required": [
 									"chartType",
 									"name",
