@@ -107,17 +107,18 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       );
 
     // The dashboards themselves are fetched from central to ensure permission checking
-    const dashboardItems: DashboardItem[] = await ctx.services.central.fetchResources(
+
+    const dashboardItems: DashboardItem[] = await ctx.services.central.fetchResourcesWithPost(
       'dashboardItems',
+      { pageSize: DEFAULT_PAGE_SIZE }, // Override the default limit of 100 records
       {
+        // Potentially hundreds of dashboard items, hence POST method with body to avoid 414 error
         filter: {
           id: {
             comparator: 'IN',
             comparisonValue: dashboardRelations.map(dr => dr.child_id),
           },
         },
-        // Override the default limit of 100 records
-        pageSize: DEFAULT_PAGE_SIZE,
       },
     );
 
