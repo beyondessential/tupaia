@@ -1,4 +1,4 @@
-import { isNotNullish, isNullish } from '@tupaia/tsutils';
+import { isNullish } from '@tupaia/tsutils';
 import { respond } from '@tupaia/utils';
 
 import { CRUDHandler } from '../CRUDHandler';
