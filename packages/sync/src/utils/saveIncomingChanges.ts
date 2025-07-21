@@ -1,10 +1,6 @@
 import { groupBy } from 'lodash';
 
-import {
-  BaseDatabase,
-  DatabaseModel,
-  ModelRegistry,
-} from '@tupaia/database';
+import { BaseDatabase, DatabaseModel, ModelRegistry } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 
 import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
