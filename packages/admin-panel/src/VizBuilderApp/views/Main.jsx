@@ -37,7 +37,6 @@ const Progress = styled(CircularProgress)`
   margin: auto;
 `;
 
-// Todo: add warning on page unload https://github.com/jacobbuck/react-beforeunload#readme
 export const Main = () => {
   const { visualisationId, dashboardItemOrMapOverlay } = useParams();
 
