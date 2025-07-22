@@ -8,20 +8,19 @@ import { useProject } from '../api/queries';
 export const useEntityLink = (entityCode?: string): Partial<Path> | undefined => {
   const { hash, search } = useLocation();
   const { projectCode, entityCode: entityCodeParam } = useParams();
-  const { data: project } = useProject(projectCode);
+  const { data: project, isFetched } = useProject(projectCode);
 
   // If entityCode is not provided, use the one from the URL
   const newEntityCode = entityCode || entityCodeParam;
-  const dashboardGroupName = project?.dashboardGroupName
-    ? encodeURIComponent(project.dashboardGroupName)
-    : '';
+  const dashboardGroupName =
+    isFetched && project?.dashboardGroupName ? project.dashboardGroupName : '';
 
   return useMemo(() => {
-    if (!projectCode || !newEntityCode || !dashboardGroupName) return undefined;
+    if (!projectCode || !newEntityCode || !isFetched) return undefined;
     return {
       hash,
-      pathname: `/${projectCode}/${newEntityCode}/${dashboardGroupName}`,
+      pathname: `/${projectCode}/${newEntityCode}/${encodeURIComponent(dashboardGroupName)}`,
       search,
     };
-  }, [dashboardGroupName, hash, newEntityCode, projectCode, search]);
+  }, [dashboardGroupName, hash, isFetched, newEntityCode, projectCode, search]);
 };
