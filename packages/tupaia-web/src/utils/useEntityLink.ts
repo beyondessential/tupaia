@@ -1,6 +1,6 @@
+import { useMemo } from 'react';
 import { Path, useLocation, useParams } from 'react-router-dom';
 import { useProject } from '../api/queries';
-import { useMemo } from 'react';
 
 /**
  * @returns `undefined` if and only if the eventual return value is pending.
