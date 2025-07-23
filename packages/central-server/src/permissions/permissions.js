@@ -1,16 +1,39 @@
 import { PermissionsError } from '@tupaia/utils';
+import winston from '../log';
+
+const isPermissionAssertionValid = (flagPermissionsChecked, assertion) => {
+  const flaggerType = typeof flagPermissionsChecked;
+  const assertionType = typeof assertion;
+  const isFlaggerValid = flaggerType === 'function';
+  const isAssertionValid = assertionType === 'function';
+
+  if (!isFlaggerValid) {
+    // Differential for null vs “real” object
+    const suffix = flagPermissionsChecked === null ? `is null` : `has type '${flaggerType}'`;
+    winston.warn(`flagPermissionsChecked should be a function, but ${suffix}`);
+  }
+  if (!isAssertionValid) {
+    const suffix = assertion === null ? `is null` : `has type '${assertionType}'`;
+    winston.warn(`assertion should be a function, but ${suffix}`);
+  }
+
+  return isFlaggerValid && isAssertionValid;
+};
 
 const assertPermissions = async (req, assertion) => {
   const { accessPolicy, flagPermissionsChecked } = req;
-  // Need to pass in a real permission assertion function to be executed.
-  if (flagPermissionsChecked && assertion) {
-    flagPermissionsChecked();
 
-    try {
-      await assertion(accessPolicy);
-    } catch (e) {
-      throw new PermissionsError(e.message);
-    }
+  // Need to pass in a real permission assertion function to be executed.
+  if (!isPermissionAssertionValid(flagPermissionsChecked, assertion)) {
+    winston.warn('Skipping invalid permission assertion');
+    return;
+  }
+
+  flagPermissionsChecked();
+  try {
+    await assertion(accessPolicy);
+  } catch (e) {
+    throw new PermissionsError(e.message);
   }
 };
 
