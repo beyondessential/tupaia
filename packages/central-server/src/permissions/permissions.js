@@ -22,7 +22,6 @@ const isPermissionAssertionValid = (flagPermissionsChecked, assertion) => {
 
 const assertPermissions = async (req, assertion) => {
   const { accessPolicy, flagPermissionsChecked } = req;
-
   // Need to pass in a real permission assertion function to be executed.
   if (!isPermissionAssertionValid(flagPermissionsChecked, assertion)) {
     winston.warn('Skipping invalid permission assertion');
