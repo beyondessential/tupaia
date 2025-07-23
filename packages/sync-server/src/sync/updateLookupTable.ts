@@ -1,12 +1,7 @@
 import log from 'winston';
 
 import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
-import {
-  DatabaseModel,
-  TupaiaDatabase,
-  DebugLogRecord,
-  buildSyncLookupSelect,
-} from '@tupaia/database';
+import { DatabaseModel, TupaiaDatabase, buildSyncLookupSelect } from '@tupaia/database';
 
 import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
 
@@ -161,8 +156,6 @@ const updateLookupTableForModel = async (
   since: number,
   syncLookupTick: number | null,
 ) => {
-  console.log('isWithinTransaction', model.database.isWithinTransaction());
-
   const changedCount = await updateExistingRecordsIntoLookupTable(
     model,
     config,
@@ -192,7 +185,6 @@ export const updateLookupTable = async (
   since: number,
   config: SyncServerConfig,
   syncLookupTick: number | null,
-  debugObject: DebugLogRecord,
 ) => {
   const invalidModelNames = outgoingModels
     .filter(
@@ -228,7 +220,6 @@ export const updateLookupTable = async (
     }
   }
 
-  // await debugObject.addInfo({ changesCount });
   log.info('updateLookupTable.countedAll', { count: changesCount, since });
 
   return changesCount;
