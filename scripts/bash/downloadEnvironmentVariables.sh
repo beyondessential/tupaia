@@ -2,7 +2,10 @@
 set -e +x # Do not output commands in this script, as some would show credentials in plain text
 
 DIR=$(dirname "$0")
-"$DIR/requireCommands.sh" yarn jq
+
+if ! "$DIR"/requireCommands.sh yarn jq; then
+    exit 1
+fi
 
 . "$DIR/ansiControlSequences.sh"
 DEPLOYMENT_NAME=$1
