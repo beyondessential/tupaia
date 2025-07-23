@@ -5,6 +5,9 @@ import { stream } from '../api';
 import { ProcessStreamDataParams } from '../types';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 
+// TODO: Make this configurable
+const WRITE_BATCH_SIZE = 10000;
+
 export const initiatePull = async (
   sessionId: string,
   since: number,
@@ -24,7 +27,7 @@ export const initiatePull = async (
         // still waiting
         break handler;
       case SYNC_STREAM_MESSAGE_KIND.END:
-        // message includes pullUntil 
+        // message includes pullUntil
         return { ...message };
       default:
         console.warn(`Unexpected message kind: ${kind}`);
@@ -39,7 +42,6 @@ export const pullIncomingChanges = async (
   processStreamedDataFunction: (params: ProcessStreamDataParams) => Promise<void>,
 ) => {
   let records: SyncSnapshotAttributes[] = [];
-  const WRITE_BATCH_SIZE = 10000;
 
   stream: for await (const { kind, message } of stream(() => ({
     endpoint: `sync/${sessionId}/pull`,

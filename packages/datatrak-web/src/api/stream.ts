@@ -11,7 +11,7 @@ import { API_URL } from './api';
  *     case SYNC_STREAM_MESSAGE_KIND.SOMETHING:
  *       // do something
  *       break;
- *     case: SYNC_STREAM_MESSAGE_KIND.END:
+ *     case SYNC_STREAM_MESSAGE_KIND.END:
  *       // finalise
  *       break;
  *     default:
@@ -46,7 +46,7 @@ import { API_URL } from './api';
  * other reason, pass `decodeMessage: false`. This will be slightly faster as the framing allows
  * us to seek forward through the received data rather than read every byte.
  *
- * @param {() => ({ endpoint: string, query?: Record<string, string>, options?: Record<string, any> })} endpointFn
+ * @param {() => ({ endpoint: string, method?: 'GET' | 'POST' | 'PUT' | 'DELETE', options?: Record<string, any> })} endpointFn
  * @param {{ decodeMessage?: boolean, streamRetryAttempts?: number, streamRetryInterval?: number }} streamOptions
  * @returns
  */
@@ -113,7 +113,7 @@ export async function* stream(
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(options),
+      body: options ? JSON.stringify(options) : undefined,
     });
 
     const reader = response.body!.getReader();
