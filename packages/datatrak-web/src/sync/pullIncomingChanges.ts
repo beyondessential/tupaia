@@ -39,7 +39,9 @@ export const pullIncomingChanges = async (
   processStreamedDataFunction: (params: ProcessStreamDataParams) => Promise<void>,
 ) => {
   let records: SyncSnapshotAttributes[] = [];
-  const WRITE_BATCH_SIZE = 1000;
+
+  // TODO: Make this configurable
+  const WRITE_BATCH_SIZE = 10000;
 
   stream: for await (const { kind, message } of stream(() => ({
     endpoint: `sync/${sessionId}/pull`,

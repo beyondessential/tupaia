@@ -1,6 +1,4 @@
-import { Response } from 'express';
-import { Readable, pipeline } from 'stream';
-import { promisify } from 'util';
+import { Response } from 'express';;
 
 import { TupaiaDatabase } from '@tupaia/database';
 import {
@@ -10,8 +8,6 @@ import {
   SyncSessionDirectionValues,
 } from '@tupaia/sync';
 import { StreamMessage } from '@tupaia/server-utils';
-
-const asyncPipeline = promisify(pipeline);
 
 // TODO: Move this to a config model RN-1668
 const FETCH_SIZE = 10000;
