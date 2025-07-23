@@ -1,4 +1,4 @@
-import { Response } from 'express';;
+import { Response } from 'express';
 
 import { TupaiaDatabase } from '@tupaia/database';
 import {
@@ -8,6 +8,7 @@ import {
   SyncSessionDirectionValues,
 } from '@tupaia/sync';
 import { StreamMessage } from '@tupaia/server-utils';
+import { camelKeys } from '@tupaia/utils';
 
 // TODO: Move this to a config model RN-1668
 const FETCH_SIZE = 10000;
@@ -19,7 +20,7 @@ async function streamSnapshotCursor(res: Response, database: TupaiaDatabase, cur
     if (rows.length === 0) break;
 
     for (const row of rows) {
-      res.write(StreamMessage.pullChange(row));
+      res.write(StreamMessage.pullChange(camelKeys(row)));
     }
   }
 }
