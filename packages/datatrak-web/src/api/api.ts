@@ -8,7 +8,7 @@ export const API_URL = process.env.REACT_APP_DATATRAK_WEB_API_URL || 'http://loc
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
 
-export const timeout = 45 * 1000; // 45 seconds
+export const timeout = 180 * 1000; // 45 seconds
 
 type RequestParameters = Record<string, any> & {
   params?: Record<string, any>;
@@ -184,11 +184,11 @@ export async function* stream(
     }
   };
 
-  let { endpoint, query, options } = endpointFn();
+  let { method,endpoint, options } = endpointFn();
   for (let attempt = 1; attempt <= streamRetryAttempts; attempt++) {
     console.debug(`Stream: attempt ${attempt} of ${streamRetryAttempts} for ${endpoint}`);
     const response = await fetch(`${API_URL}/${endpoint}`, {
-      method: 'GET',
+      method: method || 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -261,7 +261,7 @@ export async function* stream(
       setTimeout(resolve, streamRetryInterval);
     });
 
-    ({ endpoint, query, options } = endpointFn());
+    ({ endpoint, options } = endpointFn());
     if (!endpoint) {
       // expected to only be a developer error
       throw new Error(`Stream: endpoint became undefined`);

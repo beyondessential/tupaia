@@ -14,12 +14,13 @@ import {
 } from '@tupaia/sync';
 
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
-import { pullIncomingChanges } from './pullIncomingChanges';
+import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
 import { DatatrakWebModelRegistry, ProcessStreamDataParams } from '../types';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
-import { CentralServerConnection } from './CentralServerConnection';
+import { post, remove, stream } from '../api';
+import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 
 export interface SyncResult {
   hasRun: boolean;
@@ -34,13 +35,10 @@ export class ClientSyncManager {
 
   private deviceId: string;
 
-  private connection: CentralServerConnection;
-
   constructor(models: DatatrakWebModelRegistry, deviceId: string) {
     this.models = models;
     this.database = models.database;
     this.deviceId = deviceId;
-    this.connection = new CentralServerConnection();
     console.log('ClientSyncManager.constructor', {
       deviceId,
     });
@@ -100,11 +98,26 @@ export class ClientSyncManager {
   }
 
   async startSyncSession() {
-    return this.connection.startSyncSession();
+    for await (const { kind, message } of stream(() => ({
+      method: 'POST',
+      endpoint: `sync`,
+    }))) {
+      handler: switch (kind) {
+        case SYNC_STREAM_MESSAGE_KIND.SESSION_WAITING:
+          // still waiting
+          break handler;
+        case SYNC_STREAM_MESSAGE_KIND.END:
+          // includes the new tick from starting the session
+          return { ...message };
+        default:
+          console.warn(`Unexpected message kind: ${kind}`);
+      }
+    }
+    throw new Error('Unexpected end of stream');
   }
 
   async endSyncSession(sessionId: string) {
-    return this.connection.endSyncSession(sessionId);
+    return remove(`sync/${sessionId}`);
   }
 
   async pushChanges(sessionId: string, newSyncClockTime: number) {
@@ -165,12 +178,7 @@ export class ClientSyncManager {
         sessionId,
         pullSince,
       });
-      const { pullUntil } = await this.connection.initiatePull(
-        sessionId,
-        pullSince,
-        projectIds,
-        this.deviceId,
-      );
+      const { pullUntil } = await initiatePull(sessionId, pullSince, projectIds, this.deviceId);
 
       const isInitialPull = pullSince === -1;
 
@@ -201,12 +209,7 @@ export class ClientSyncManager {
       };
 
       await withDeferredSyncSafeguards(transactingModels.database, () =>
-        pullIncomingChanges(
-          transactingModels,
-          sessionId,
-          this.connection,
-          processStreamedDataFunction,
-        ),
+        pullIncomingChanges(transactingModels, sessionId, processStreamedDataFunction),
       );
 
       // update the last successful sync in the same save transaction - if updating the cursor fails,
@@ -226,7 +229,7 @@ export class ClientSyncManager {
       await insertSnapshotRecords(models.database, sessionId, records);
     };
 
-    await pullIncomingChanges(this.models, sessionId, this.connection, processStreamedDataFunction);
+    await pullIncomingChanges(this.models, sessionId, processStreamedDataFunction);
 
     await this.models.wrapInTransaction(async transactingModels => {
       const incomingModels = getModelsForPull(transactingModels.getModels());

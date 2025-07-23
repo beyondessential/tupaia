@@ -15,6 +15,7 @@ export const initiatePull = async (
   const body = { since, projectIds, deviceId };
 
   for await (const { kind, message } of stream(() => ({
+    method: 'POST',
     endpoint: `sync/${sessionId}/pull`,
     options: body,
   }))) {
@@ -37,19 +38,21 @@ export const pullIncomingChanges = async (
   sessionId: string,
   processStreamedDataFunction: (params: ProcessStreamDataParams) => Promise<void>,
 ) => {
+  let records: SyncSnapshotAttributes[] = [];
+  const WRITE_BATCH_SIZE = 1000;
+
   stream: for await (const { kind, message } of stream(() => ({
-    endpoint: `sync/${sessionId}/pull/stream`,
+    endpoint: `sync/${sessionId}/pull`,
   }))) {
-    // if (records.length >= WRITE_BATCH_SIZE) {
-    //   // do writes in the background while we're continuing to stream data
-    //   writes.push(writeBatch(records));
-    //   records = [];
-    // }
+    if (records.length >= WRITE_BATCH_SIZE) {
+      // Process batch sequentially to maintain foreign key order
+      await processStreamedDataFunction({ models, sessionId, records });
+      records = [];
+    }
 
     handler: switch (kind) {
       case SYNC_STREAM_MESSAGE_KIND.PULL_CHANGE:
-        const records: SyncSnapshotAttributes[] = message;
-        await processStreamedDataFunction({ models, sessionId, records });
+        records.push(message);
         break handler;
       case SYNC_STREAM_MESSAGE_KIND.END:
         console.debug(`FacilitySyncManager.pull.noMoreChanges`);
@@ -57,5 +60,10 @@ export const pullIncomingChanges = async (
       default:
         console.warn('FacilitySyncManager.pull.unknownMessageKind', { kind });
     }
+  }
+
+  // Process any remaining records
+  if (records.length > 0) {
+    await processStreamedDataFunction({ models, sessionId, records });
   }
 };

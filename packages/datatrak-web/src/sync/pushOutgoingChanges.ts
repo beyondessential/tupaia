@@ -1,5 +1,5 @@
 import { SyncSnapshotAttributes } from '@tupaia/sync';
-import { post, put, stream } from '../api';
+import { post, stream } from '../api';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 
 // TODO: Move to config model RN-1668
