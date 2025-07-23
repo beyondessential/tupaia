@@ -1,10 +1,10 @@
 import { Response as ExpressResponse } from 'express';
 
 import { sleep } from '@tupaia/utils';
+import { StreamMessage } from '@tupaia/server-utils';
 
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
-import { StreamMessage } from '@tupaia/server-utils';
 
 export class SyncApi extends BaseApi {
   async startSyncSession(res: ExpressResponse) {
@@ -38,7 +38,7 @@ export class SyncApi extends BaseApi {
     res: ExpressResponse,
     endpoint: string,
     status: string,
-    getStreamMessage: () => Buffer,
+    getWaitingMessage: () => Buffer,
   ): Promise<void> {
     // poll the provided endpoint until we get a valid response
     const waitTime = 1000; // retry once per second
@@ -46,13 +46,13 @@ export class SyncApi extends BaseApi {
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       const response = await this.connection.get(endpoint, {});
       if (response.status !== status) {
-        res.write(getStreamMessage());
+        res.write(getWaitingMessage());
       } else {
         return;
       }
       await sleep(waitTime);
     }
-    throw new Error(`Did not get a truthy response after ${maxAttempts} attempts for ${endpoint}`);
+    throw new Error(`Did not get status ${status} after ${maxAttempts} attempts for ${endpoint}`);
   }
 
   async initiatePull(

@@ -19,6 +19,6 @@ export class SyncInitiatePullRoute extends Route<SyncInitiatePullRequest> {
     if (isNaN(since)) {
       throw new Error('Must provide "since" when creating a pull filter, even if it is 0');
     }
-    return ctx.services.sync.initiatePull(sessionId, since, projectIds, deviceId);
+    return ctx.services.sync.initiatePull(this.res, sessionId, since, projectIds, deviceId);
   }
 }

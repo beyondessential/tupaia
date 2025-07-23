@@ -13,6 +13,6 @@ export type SyncStartSessionRequest = Request<
 export class SyncStartSessionRoute extends Route<SyncStartSessionRequest> {
   public async buildResponse() {
     const { ctx } = this.req;
-    return ctx.services.sync.startSyncSession();
+    return ctx.services.sync.startSyncSession(this.res);
   }
 }

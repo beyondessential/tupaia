@@ -1,3 +1,6 @@
+import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
+import { API_URL } from './api';
+
 /** Connect to a streaming endpoint and async yield messages.
  *
  * ```js
@@ -81,7 +84,7 @@ export async function* stream(
     // we've got the full message, move it out of buffer
     buffer = buffer.subarray(8 + length);
 
-    this.logger.debug('Stream: message', {
+    console.debug('Stream: message', {
       // we try to show the actual name of the Kind when known instead of the raw value
       // we also display the raw value in hex as that's how they're defined in constants
       kind:
@@ -102,14 +105,18 @@ export async function* stream(
     }
   };
 
-  let { endpoint, query, options } = endpointFn();
+  let { method, endpoint, options } = endpointFn();
   for (let attempt = 1; attempt <= streamRetryAttempts; attempt++) {
-    this.logger.debug(`Stream: attempt ${attempt} of ${streamRetryAttempts} for ${endpoint}`);
-    const response = await this.fetch(endpoint, query, {
-      ...options,
-      returnResponse: true,
+    console.debug(`Stream: attempt ${attempt} of ${streamRetryAttempts} for ${endpoint}`);
+    const response = await fetch(`${API_URL}/${endpoint}`, {
+      method: method || 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(options),
     });
-    const reader = response.body.getReader();
+
+    const reader = response.body!.getReader();
 
     // buffer used to accumulate the data received from the stream.
     // it's important to remember that there's no guarantee that a
@@ -149,13 +156,13 @@ export async function* stream(
         const { length, kind, message } = decodeOne(buffer);
 
         if (!kind) {
-          this.logger.warn('Stream ended with incomplete data, will retry');
+          console.warn('Stream ended with incomplete data, will retry');
           break reader;
         }
 
         if (length === undefined && kind === SYNC_STREAM_MESSAGE_KIND.END) {
           // if the data is not complete, don't interpret the END message as being truly the end
-          this.logger.warn('END message received but with partial data, will retry');
+          console.warn('END message received but with partial data, will retry');
           break reader;
         }
 
@@ -175,7 +182,7 @@ export async function* stream(
       setTimeout(resolve, streamRetryInterval);
     });
 
-    ({ endpoint, query, options } = endpointFn());
+    ({ endpoint, options } = endpointFn());
     if (!endpoint) {
       // expected to only be a developer error
       throw new Error(`Stream: endpoint became undefined`);
