@@ -44,7 +44,7 @@ export async function postChanges(req, res) {
   const changes = req.body;
   const translatedChanges = [];
 
-  req.models.wrapInTransaction(async transactingModels => {
+  await req.models.wrapInTransaction(async transactingModels => {
     for (const { action, payload, ...rest } of changes) {
       if (!ACTION_HANDLERS[action]) {
         throw new ValidationError(`${action} is not a supported change action`);
