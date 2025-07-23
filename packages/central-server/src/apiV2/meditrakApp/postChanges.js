@@ -42,16 +42,15 @@ const ACTIONS = {
  */
 export async function postChanges(req, res) {
   const changes = req.body;
-  const { models } = req;
   const translatedChanges = [];
 
-  models.wrapInTransaction(async transactingModels => {
+  req.models.wrapInTransaction(async transactingModels => {
     for (const { action, payload, ...rest } of changes) {
       if (!ACTION_HANDLERS[action]) {
         throw new ValidationError(`${action} is not a supported change action`);
       }
-      const translatedPayload = await PAYLOAD_TRANSLATORS[action](models, payload);
-      await PAYLOAD_VALIDATORS[action](models, translatedPayload);
+      const translatedPayload = await PAYLOAD_TRANSLATORS[action](transactingModels, payload);
+      await PAYLOAD_VALIDATORS[action](transactingModels, translatedPayload);
       translatedChanges.push({ action, translatedPayload, ...rest });
     }
 
@@ -60,7 +59,7 @@ export async function postChanges(req, res) {
       .filter(c => c.action === ACTIONS.SubmitSurveyResponse)
       .map(c => c.translatedPayload.survey_response || c.translatedPayload);
     const surveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanSubmitSurveyResponses(accessPolicy, models, surveyResponsePayloads);
+      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, surveyResponsePayloads);
     };
     await req.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
