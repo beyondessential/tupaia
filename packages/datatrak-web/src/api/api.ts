@@ -53,22 +53,6 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
   }
 };
 
-// export const stream = async (endpoint: string, options?: RequestParameters) => {
-//   try {
-//     const response = await fetch(`${API_URL}/${endpoint}`, {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(options),
-//     });
-
-//     return response.body!.getReader();
-//   } catch (error: any) {
-//     throw new Error(error);
-//   }
-// };
-
 export const get = (endpoint: string, options?: RequestParameters) =>
   request(endpoint, { method: 'get', ...options });
 
