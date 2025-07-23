@@ -28,8 +28,8 @@ export async function getHookAnswerValues(surveyResponse, baseHookName, defaultF
 
 export function parseCoordinates(answerText) {
   const { latitude, longitude } = JSON.parse(answerText);
-  if (Number.isNaN(parseFloat(latitude)) || Number.isNaN(parseFloat(longitude))) {
-    throw new Error(`Invalid coordinate data: ${answer.text}`);
+  if (Number.isNaN(Number.parseFloat(latitude)) || Number.isNaN(Number.parseFloat(longitude))) {
+    throw new Error(`Invalid coordinate data: ${answerText}`);
   }
 
   return { latitude, longitude };
