@@ -12,6 +12,7 @@ import {
   getModelsForPull,
   withDeferredSyncSafeguards,
 } from '@tupaia/sync';
+import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
@@ -19,8 +20,7 @@ import { DatatrakWebModelRegistry, ProcessStreamDataParams } from '../types';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
-import { post, remove, stream } from '../api';
-import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
+import { remove, stream } from '../api';
 
 export interface SyncResult {
   hasRun: boolean;

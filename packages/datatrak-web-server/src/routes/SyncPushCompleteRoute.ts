@@ -15,7 +15,6 @@ export class SyncPushCompleteRoute extends Route<SyncPushCompleteRequest> {
     const { params, body, ctx } = this.req;
     const { sessionId } = params;
     const { deviceId } = body;
-    await ctx.services.sync.completePush(sessionId, deviceId);
-    return {};
+    return ctx.services.sync.completePush(this.res, sessionId, deviceId);
   }
 }
