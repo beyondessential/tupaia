@@ -24,7 +24,7 @@ export const initiatePull = async (
         // still waiting
         break handler;
       case SYNC_STREAM_MESSAGE_KIND.END:
-        // includes the new tick from starting the session
+        // message includes pullUntil 
         return { ...message };
       default:
         console.warn(`Unexpected message kind: ${kind}`);
@@ -52,7 +52,7 @@ export const pullIncomingChanges = async (
 
     handler: switch (kind) {
       case SYNC_STREAM_MESSAGE_KIND.PULL_CHANGE:
-        records.push(message);
+        records.push({ ...message, data: { ...message.data, updated_at_sync_tick: -1 } });
         break handler;
       case SYNC_STREAM_MESSAGE_KIND.END:
         console.debug(`FacilitySyncManager.pull.noMoreChanges`);

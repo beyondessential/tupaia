@@ -7,7 +7,7 @@ import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 // | 2 bytes | 2 bytes | 4 bytes | $length$ bytes |
 // +---------+---------+---------+----------------+
 //
-// See TamanuApi#stream for the full description
+// See datatrak-web/src/api/stream.ts for the full description
 
 export function startStream(res: Response) {
   res.writeHead(200, {

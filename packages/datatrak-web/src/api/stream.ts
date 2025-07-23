@@ -1,5 +1,5 @@
-import { SYNC_STREAM_MESSAGE_KIND } from "@tupaia/constants";
-import { API_URL } from "./api";
+import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
+import { API_URL } from './api';
 
 /** Connect to a streaming endpoint and async yield messages.
  *

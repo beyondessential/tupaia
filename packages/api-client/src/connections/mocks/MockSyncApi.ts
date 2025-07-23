@@ -8,7 +8,12 @@ export class MockSyncApi implements SyncApiInterface {
   public endSyncSession(sessionId: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
-  public pollStatusUntil(res: ExpressResponse, endpoint: string, status: string): Promise<any> {
+  public pollStatusUntil(
+    res: ExpressResponse,
+    endpoint: string,
+    status: string,
+    getWaitingMessage: () => Buffer,
+  ): Promise<any> {
     throw new Error('Method not implemented.');
   }
   public initiatePull(
@@ -19,7 +24,7 @@ export class MockSyncApi implements SyncApiInterface {
     deviceId: string,
   ): Promise<any> {
     throw new Error('Method not implemented.');
-  } 
+  }
   public pull(response: ExpressResponse, sessionId: string): Promise<any> {
     throw new Error('Method not implemented.');
   }

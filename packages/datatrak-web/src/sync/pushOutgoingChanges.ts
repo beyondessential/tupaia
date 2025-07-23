@@ -21,6 +21,7 @@ export const pushOutgoingChanges = async (
   }
 
   for await (const { kind } of stream(() => ({
+    method: 'PUT',
     endpoint: `sync/${sessionId}/push/complete`,
     options: { deviceId },
   }))) {

@@ -79,7 +79,6 @@ import {
   UserRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
-import { SyncPullReadyRequest, SyncPullReadyRoute } from '../routes/SyncPullReadyRoute';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
