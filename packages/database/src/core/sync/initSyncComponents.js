@@ -111,7 +111,7 @@ const TABLES_WITHOUT_TRIGGER_QUERY = `
     t.table_name NOT IN (${NON_SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
-const getTablesQuery = (withTrigger = false) => `
+const getTablesForTombstoneTriggerQuery = (withTrigger = false) => `
   SELECT
     t.table_name as table
   FROM
@@ -139,8 +139,8 @@ const getTablesQuery = (withTrigger = false) => `
     t.table_name NOT IN (${NON_SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
-const TABLES_WITHOUT_TRIGGER_FOR_DELETE_QUERY = getTablesQuery(false);
-export const TABLES_WITH_TRIGGER_FOR_DELETE_QUERY = getTablesQuery(true);
+const TABLES_WITHOUT_TOMBSTONE_TRIGGER_QUERY = getTablesForTombstoneTriggerQuery(false);
+export const TABLES_WITH_TOMBSTONE_TRIGGER_QUERY = getTablesForTombstoneTriggerQuery(true);
 
 export async function initSyncComponents(driver, isClient = false) {
   // add column: holds last update tick, default to -999 (not modified locally) on client,
@@ -172,7 +172,7 @@ export async function initSyncComponents(driver, isClient = false) {
   }
 
   const { rows: tablesWithoutTriggerForDelete } = await driver.runSql(
-    TABLES_WITHOUT_TRIGGER_FOR_DELETE_QUERY,
+    TABLES_WITHOUT_TOMBSTONE_TRIGGER_QUERY,
   );
   for (const { table } of tablesWithoutTriggerForDelete) {
     console.log(`Adding add_to_tombstone_on_delete trigger for delete to ${table}`);

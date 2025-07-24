@@ -22,7 +22,7 @@ exports.up = function (db) {
           id                    BIGSERIAL PRIMARY KEY,
           record_id             TEXT NOT NULL,
           record_type           TEXT NOT NULL,
-          deleted_at            TIMESTAMPTZ NOT NULL,
+          deleted_at            TIMESTAMP NOT NULL DEFAULT now(),
           updated_at_sync_tick  BIGINT NOT NULL,
           UNIQUE(record_id, record_type)
       );
