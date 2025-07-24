@@ -10,11 +10,7 @@ This directory contains the LLM agent rules and documentation for Tupaia.
 
 ## Usage
 
-LLM agents should start by loading:
-
-1. `llm/docs/initial-overview.md` - Project overview and foundational knowledge
-2. `llm/common-rules/onboard-agent.md` - Standard onboarding process
-3. `llm/project-rules/important-project-rules.md` - Project-specific rules (when created)
+LLM agents should start by loading `llm/common-rules/onboard-agent.md`. This will start a standard onboarding that in turn loads docs like the project overview and important rules.
 
 ## Rule Priority
 
