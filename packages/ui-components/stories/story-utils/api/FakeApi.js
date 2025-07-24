@@ -16,7 +16,6 @@ export class FakeAPI {
   }
 
   async get(endpoint, options) {
-    // console.log('OPTIONS', options);
     const data = [];
 
     // Create users
@@ -43,8 +42,6 @@ export class FakeAPI {
     }
 
     await this.sleep(500);
-
-    // console.log('DATA', data);
 
     return {
       data,

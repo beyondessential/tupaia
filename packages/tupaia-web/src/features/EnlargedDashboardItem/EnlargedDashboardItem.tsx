@@ -57,9 +57,9 @@ const ContentWrapper = ({ children }: { children: React.ReactNode }) => {
 
   const getIsExpanding = () => {
     if (!currentDashboardItem) return false;
-    if (currentDashboardItem?.config?.type === 'matrix') return true;
-    if (currentDashboardItem?.config?.type === 'view') {
-      const { viewType } = currentDashboardItem?.config;
+    if (currentDashboardItem.config?.type === 'matrix') return true;
+    if (currentDashboardItem.config?.type === 'view') {
+      const { viewType } = currentDashboardItem.config;
       return viewType === 'multiPhotograph';
     }
     return false;
