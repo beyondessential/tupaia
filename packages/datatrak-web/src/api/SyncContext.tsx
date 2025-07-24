@@ -17,33 +17,45 @@ const SYNC_INTERVAL = 1000 * 30;
 
 export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
   const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
+  const [isSyncScheduled, setIsSyncScheduled] = useState(false);
   const { models } = useDatabase();
   const { data: projects } = useAccessibleProjects();
+
   useEffect(() => {
-    const init = async () => {
-      if (models && projects?.length) {
+    const initSyncManager = async () => {
+      // Only initialize the sync manager if it doesn't exist yet
+      if (!clientSyncManager && models) {
         let deviceId = await models.localSystemFact.get('deviceId');
         if (!deviceId) {
           deviceId = `datatrak-web-${generateId()}`;
           await models.localSystemFact.set('deviceId', deviceId);
         }
 
-        const projectIds = projects?.map(project => project.id);
-        const clientSyncManager = new ClientSyncManager(models, projectIds, deviceId);
+        const clientSyncManager = new ClientSyncManager(models, deviceId);
         setClientSyncManager(clientSyncManager);
-
-        const intervalId = setInterval(() => {
-          clientSyncManager.runSync();
-        }, SYNC_INTERVAL);
-
-        return () => {
-          clearInterval(intervalId);
-        };
       }
     };
 
-    init();
-  }, [models, projects?.length]);
+    initSyncManager();
+  }, [models]);
+
+  useEffect(() => {
+    // Only schedule the sync if conditions are met
+    if (!isSyncScheduled && clientSyncManager && projects?.length) {
+      const projectIds = projects.map(project => project.id);
+      const intervalId = setInterval(() => {
+        console.log('Starting regular sync');
+        clientSyncManager.triggerSync(projectIds);
+      }, SYNC_INTERVAL);
+
+      setIsSyncScheduled(true);
+
+      return () => {
+        clearInterval(intervalId);
+        setIsSyncScheduled(false);
+      };
+    }
+  }, [clientSyncManager, projects?.length]);
 
   return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;
 };

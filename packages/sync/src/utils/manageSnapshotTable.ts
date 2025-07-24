@@ -30,13 +30,14 @@ export const createSnapshotTable = async (database: TupaiaDatabase, sessionId: s
   await database.executeSql(`
     CREATE TABLE ${tableName} (
       id BIGSERIAL PRIMARY KEY,
-      direction character varying(255) NOT NULL,
-      record_type character varying(255) NOT NULL,
-      record_id character varying(255) NOT NULL,
+      direction TEXT NOT NULL,
+      record_type TEXT NOT NULL,
+      record_id TEXT NOT NULL,
       data json NOT NULL,
-      saved_at_sync_tick bigint, -- saved_at_sync_tick is used to check whether record has been updated between incoming and outgoing phase of a single session
-      sync_lookup_id bigint,
-      requires_repull boolean DEFAULT false
+      saved_at_sync_tick BIGINT, -- saved_at_sync_tick is used to check whether record has been updated between incoming and outgoing phase of a single session
+      sync_lookup_id BIGINT,
+      requires_repull BOOLEAN DEFAULT false,
+      is_deleted BOOLEAN DEFAULT false
     ) WITH (
       autovacuum_enabled = off
     );
@@ -56,6 +57,7 @@ export const createClientSnapshotTable = async (database: TupaiaDatabase, sessio
     CREATE TABLE ${tableName} (
       id BIGSERIAL PRIMARY KEY,
       record_type character varying(255) NOT NULL,
+      is_deleted BOOLEAN DEFAULT false,
       data json NOT NULL
     ) WITH (
       autovacuum_enabled = off

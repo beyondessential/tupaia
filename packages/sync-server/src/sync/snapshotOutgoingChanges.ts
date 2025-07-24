@@ -41,7 +41,8 @@ export const snapshotOutgoingChanges = async (
           record_type,
           record_id,
           saved_at_sync_tick,
-          data
+          data,
+          is_deleted
         )
         SELECT
           id,
@@ -49,7 +50,8 @@ export const snapshotOutgoingChanges = async (
           record_type,
           record_id,
           updated_at_sync_tick,
-          data
+          data,
+          is_deleted
         FROM
           sync_lookup
         WHERE updated_at_sync_tick > ?

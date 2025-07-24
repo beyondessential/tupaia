@@ -9,3 +9,4 @@ export * from './saveIncomingChanges';
 export * from './completeSyncSession';
 export * from './sanitizeRecord';
 export * from './startSnapshotWhenCapacityAvailable';
+export * from './withDeferredSyncSafeguards';
