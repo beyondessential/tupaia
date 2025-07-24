@@ -1,3 +1,4 @@
+import { generateId } from '../../../core';
 import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
 
 /**
@@ -183,12 +184,8 @@ export class EntityParentChildRelationBuilder {
    * @param {*} validParentChildIdPairs valid parent child id pairs to keep
    */
   async deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs) {
-    const tempValidPairsTableName = `temp_valid_pairs_${hierarchyId}`;
+    const tempValidPairsTableName = `temp_valid_pairs_${generateId()}`;
     try {
-      await this.models.database.executeSql(`
-        DROP TABLE IF EXISTS ${tempValidPairsTableName};
-      `);
-
       await this.models.database.executeSql(`
         CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
           parent_id TEXT,
@@ -199,18 +196,17 @@ export class EntityParentChildRelationBuilder {
       await this.models.database.executeSqlInBatches(
         validParentChildIdPairs,
         batchOfValidParentChildIdPairs => {
-          const values = batchOfValidParentChildIdPairs.map(pair => pair);
+          const values = batchOfValidParentChildIdPairs.flat();
           return [
             `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
-            VALUES ${values.map(() => '(?, ?)').join(', ')}`,
+            VALUES ${batchOfValidParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
             values,
           ];
         },
       );
 
-      await this.models.database.executeSqlInBatches(
-        parentIds,
-        batchOfParentIds => `
+      await this.models.database.executeSqlInBatches(parentIds, batchOfParentIds => [
+        `
           DELETE FROM entity_parent_child_relation 
           WHERE entity_hierarchy_id = ? 
             AND parent_id IN (${batchOfParentIds.map(() => '?').join(', ')})
@@ -219,8 +215,8 @@ export class EntityParentChildRelationBuilder {
             )
           RETURNING parent_id, child_id
         `,
-        [hierarchyId, ...parentIds],
-      );
+        [hierarchyId, ...batchOfParentIds],
+      ]);
     } finally {
       await this.models.database.executeSql(`
         DROP TABLE IF EXISTS ${tempValidPairsTableName}
