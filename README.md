@@ -14,6 +14,10 @@
 
 The [Tupaia Contributing Guidelines](/.github/CONTRIBUTING.md) and [BES Contributor Code of Conduct](/.github/CODE_OF_CONDUCT.md) are published in this repo.
 
+## LLM Agent Usage
+
+For LLM agent setup and shared rules, see [llm/common-rules](https://github.com/beyondessential/llm-rules) for submodule usage instructions.
+
 ## Packages
 
 > [!NOTE]
