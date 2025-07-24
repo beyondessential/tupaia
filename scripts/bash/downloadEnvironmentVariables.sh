@@ -68,9 +68,16 @@ COLLECTION_ID=$(yarn bw get collection "$COLLECTION_PATH" | jq .id)
 
 echo
 
+get_packages_with_env_files() {
+    # Packages with .env files are (currently) all deployable, plus data-api and database
+    readarray -t packages_with_env_files < <("$DIR"/getDeployablePackages.sh)
+    packages_with_env_files+=('data-api' 'viz-test-tool')
+    printf '%s\n' "${packages_with_env_files[@]}"
+}
+
 # Can provide one or more packages as command line arguments, or will default to all
 if [[ -z $2 ]]; then
-    PACKAGES=$("$DIR/getPackagesWithEnvFiles.sh")
+    readarray -t PACKAGES < <(get_packages_with_env_files)
     echo -e "${BLUE}==>️${RESET} ${BOLD}Fetching environment variables for all packages${RESET}"
 else
     PACKAGES=("${@:2}")
