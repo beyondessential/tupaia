@@ -167,8 +167,7 @@ describe('Authenticate', function () {
       last_name: chance.last(),
       email: email,
       password_hash: combiHash,
-      password_hash_old: sha256Hash,
-      password_salt: salt,
+      legacy_password_salt: salt,
       verified_email: VERIFIED,
     });
 
@@ -202,8 +201,7 @@ describe('Authenticate', function () {
       last_name: chance.last(),
       email,
       password_hash: combiHash,
-      password_hash_old: sha256Hash,
-      password_salt: salt,
+      legacy_password_salt: salt,
       verified_email: VERIFIED,
     });
 

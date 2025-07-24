@@ -44,7 +44,7 @@ export class UserRecord extends DatabaseRecord {
   async checkPassword(password) {
     if (this.hasLegacyPasswordHash) {
       const hash = this.password_hash.replace(UserRecord.#legacyHashPrefix, '$argon2id$');
-      const salt = this.password_salt;
+      const salt = this.legacy_password_salt;
 
       const hashedUserInput = sha256EncryptPassword(password, salt);
       const isVerifiedSha256 = await verify(hash, hashedUserInput);
@@ -52,7 +52,10 @@ export class UserRecord extends DatabaseRecord {
       if (isVerifiedSha256) {
         // Migrate to Argon2
         const argon2Hash = await encryptPassword(password);
-        await this.model.updateById(this.id, { password_hash: argon2Hash });
+        await this.model.updateById(this.id, {
+          password_hash: argon2Hash,
+          legacy_password_salt: null,
+        });
       }
 
       return isVerifiedSha256;

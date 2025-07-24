@@ -81,9 +81,7 @@ export class Authenticator {
    * @returns {Promise<boolean>} `true` if and only if the client is authenticated and migrated to
    * Argon2.
    * @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js`
-   * @privateRemarks This method should be called no more than once per API client. Once all API
-   * clients have been migrated to Argon2, remove this method (and drop the `secret_key_hash_old`
-   * column).
+   * @privateRemarks This method should be called no more than once per API client.
    */
   async #verifyApiClientWithSha256(apiClient, secretKey) {
     const hash = apiClient.secret_key_hash.replace('$sha256+argon2id$', '$argon2id$');
@@ -93,10 +91,7 @@ export class Authenticator {
     if (isVerified) {
       // Migrate to Argon2
       const argon2Hash = await encryptPassword(secretKey);
-      await apiClient.model.updateById(apiClient.id, {
-        secret_key_hash: argon2Hash,
-        secret_key_hash_old: null,
-      });
+      await apiClient.model.updateById(apiClient.id, { secret_key_hash: argon2Hash });
     }
 
     return isVerified;
