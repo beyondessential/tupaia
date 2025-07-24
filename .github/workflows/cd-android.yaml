@@ -32,7 +32,10 @@ jobs:
           cache: yarn
 
       - name: Set up Yarn
-        run: corepack enable yarn
+        run: |
+          corepack enable yarn
+          corepack install
+          echo "Using Yarn $(yarn --version)"
 
       - name: Install dependencies
         run: yarn workspaces focus tupaia @tupaia/meditrak-app
