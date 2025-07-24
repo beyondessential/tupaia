@@ -18,7 +18,7 @@ exports.setup = function (options, seedLink) {
 
 /**
  * Use Argon2 to hash existing SHA-256 hash, replacing standard '$argon2id$' prefix with
- * '$sha256+argon2id$' to track which users have truly migrated to Argon2
+ * '$sha256+argon2id$' to track which users have truly migrated to Argon2.
  */
 async function flaggedHash(sha256Hash) {
   const argon2Hash = await hash(sha256Hash);
@@ -28,13 +28,10 @@ async function flaggedHash(sha256Hash) {
 exports.up = async function (db) {
   await db.runSql(`
     ALTER TABLE user_account RENAME COLUMN password_hash TO password_hash_old;
-    ALTER TABLE user_account ALTER COLUMN password_hash_old DROP NOT NULL;
-    ALTER TABLE user_account ALTER COLUMN password_salt DROP NOT NULL;
-    ALTER TABLE user_account ADD COLUMN password_hash text;
+    ALTER TABLE user_account ADD COLUMN password_hash TEXT;
 
     ALTER TABLE api_client RENAME COLUMN secret_key_hash TO secret_key_hash_old;
-    ALTER TABLE api_client ALTER COLUMN secret_key_hash_old DROP NOT NULL;
-    ALTER TABLE api_client ADD COLUMN secret_key_hash text;
+    ALTER TABLE api_client ADD COLUMN secret_key_hash TEXT;
   `);
 
   async function migrateUserAccounts() {
@@ -65,22 +62,24 @@ exports.up = async function (db) {
     );
   }
 
-  await Promise.all([migrateUserAccounts(), migrateApiClients()]);
+  await migrateUserAccounts();
+  await migrateApiClients();
 
   await db.runSql(`
     ALTER TABLE user_account ALTER COLUMN password_hash SET NOT NULL;
+    ALTER TABLE user_account DROP COLUMN password_hash_old;
+
+    -- Preserve legacy salt for a given user until they are migrated to Argon2
+    ALTER TABLE user_account RENAME COLUMN password_salt TO legacy_password_salt;
+    ALTER TABLE user_account ALTER COLUMN legacy_password_salt DROP NOT NULL;
+
     ALTER TABLE api_client ALTER COLUMN secret_key_hash SET NOT NULL;
+    ALTER TABLE api_client DROP COLUMN secret_key_hash_old;
   `);
 };
 
 exports.down = function (db) {
-  return db.runSql(`
-    ALTER TABLE user_account
-    DROP COLUMN password_hash;
-
-    ALTER TABLE user_account
-    RENAME COLUMN password_hash_old TO password_hash;
-  `);
+  return null;
 };
 
 exports._meta = {
