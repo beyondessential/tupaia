@@ -30,12 +30,17 @@ const updateLookupTableForModel = async (
     ? await (model.buildSyncLookupQueryDetails as Function)()
     : {};
 
-  const { select, joins, where, groupBy } = result || {};
+  const { ctes, select, joins, where, groupBy } = result || {};
 
+  log.info('updateLookupTable.updateLookupTableForModel starting', {
+    model: model.databaseRecord,
+  });
   while (fromId != null) {
     const [{ maxId, count }] = await model.database.executeSql(
       `
-        WITH inserted AS (
+        WITH
+        ${ctes ? `${ctes.join('\n')}, \n` : ''}
+        inserted AS (
           INSERT INTO sync_lookup (
             record_id,
             record_type,
@@ -85,6 +90,11 @@ const updateLookupTableForModel = async (
     const chunkCount = count; // count should always default to '0'
     fromId = maxId;
     totalCount += chunkCount;
+
+    log.info('updateLookupTable.updateLookupTableForModel', {
+      model: model.databaseRecord,
+      chunkCount,
+    });
   }
 
   log.info('updateLookupTable.updateLookupTableForModel', {

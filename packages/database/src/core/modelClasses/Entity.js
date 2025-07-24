@@ -1,10 +1,13 @@
 import keyBy from 'lodash.keyby';
 
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
+import { SyncDirections } from '@tupaia/constants';
+
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
+import { buildSyncLookupSelect } from '../sync';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -306,6 +309,8 @@ export class EntityRecord extends DatabaseRecord {
 }
 
 export class EntityModel extends MaterializedViewLogDatabaseModel {
+  syncDirection = SyncDirections.BIDIRECTIONAL;
+
   get DatabaseRecordClass() {
     return EntityRecord;
   }
@@ -529,5 +534,31 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       `SELECT UNNEST(enum_range(null::entity_type)) as type;`,
     );
     return entityTypes.map(({ type }) => type);
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return {
+      ctes: [
+        `
+          entity_parent_child_relation_union AS (
+            SELECT parent_id as entity_id, entity_hierarchy_id 
+            FROM entity_parent_child_relation
+            UNION
+            SELECT child_id as entity_id, entity_hierarchy_id 
+            FROM entity_parent_child_relation
+          )
+        `,
+      ],
+      select: await buildSyncLookupSelect(this, {
+        projectIds: `ARRAY_AGG(project.id)`,
+      }),
+      joins: `
+        LEFT JOIN entity_parent_child_relation_union 
+          ON entity_parent_child_relation_union.entity_id = entity.id 
+        LEFT JOIN project 
+          ON project.entity_hierarchy_id = entity_parent_child_relation_union.entity_hierarchy_id
+      `,
+      groupBy: ['entity.id'],
+    };
   }
 }
