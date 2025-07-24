@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useDashboards } from '../../../api/queries';
 import { TOP_BAR_HEIGHT } from '../../../constants';
 import { Dashboard } from '../../../types';
-import { useDashboard } from '../utils';
+import { useDashboardContext } from '../utils';
 import { ActionsMenu } from './ActionsMenu';
 
 const MenuButton = styled(ButtonBase)`
@@ -45,8 +45,8 @@ const StyledPaper = styled(Paper)`
   }
 
   .MuiListItem-root:hover {
-      background: #606368;
-    }
+    background: #606368;
+  }
 `;
 
 interface DashboardMenuItemProps {
@@ -74,7 +74,7 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
 
 export const DashboardMenu = () => {
   const { projectCode, entityCode } = useParams();
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
   const { data: dashboards = [] } = useDashboards(projectCode, entityCode);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 

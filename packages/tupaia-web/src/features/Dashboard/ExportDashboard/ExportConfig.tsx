@@ -10,7 +10,7 @@ import {
   DisplayOptionsSettings,
   useExportSettings,
 } from '../../ExportSettings';
-import { useDashboard } from '../utils';
+import { useDashboardContext } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
 import { Preview } from './Preview';
@@ -119,7 +119,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
   const { exportWithLabels, exportWithTable, exportDescription, separatePagePerItem } =
     useExportSettings();
 

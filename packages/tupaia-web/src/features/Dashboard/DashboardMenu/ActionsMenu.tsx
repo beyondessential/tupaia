@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ActionsMenu as BaseActionsMenu, ActionsMenuOptionType } from '@tupaia/ui-components';
 import { Upload as ExportIcon, MailPlus, MailCheck } from 'lucide-react';
-import { useDashboard, useDashboardMailingList } from '../utils';
+import { useDashboardContext, useDashboardMailingList } from '../utils';
 
 const StyledExportIcon = styled(ExportIcon)`
   font-size: 1.125rem;
@@ -17,7 +17,7 @@ const SubscribedIcon = styled(MailCheck)`
 `;
 
 export const ActionsMenu = () => {
-  const { toggleExportModal, toggleSubscribeModal, activeDashboard } = useDashboard();
+  const { toggleExportModal, toggleSubscribeModal, activeDashboard } = useDashboardContext();
   const mailingList = useDashboardMailingList();
 
   if (!activeDashboard) {

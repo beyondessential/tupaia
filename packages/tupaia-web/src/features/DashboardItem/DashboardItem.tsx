@@ -7,7 +7,7 @@ import { getDefaultDates } from '@tupaia/utils';
 import { DashboardItemConfig, DashboardItemType } from '@tupaia/types';
 import { DashboardItem as DashboardItemT } from '../../types';
 import { useReport } from '../../api/queries';
-import { useDashboard } from '../Dashboard';
+import { useDashboardContext } from '../Dashboard';
 import { DashboardItemContent } from './DashboardItemContent';
 import { DashboardItemContext } from './DashboardItemContext';
 
@@ -66,7 +66,7 @@ const getShowDashboardItemTitle = (config?: DashboardItemConfig, legacy?: boolea
  */
 export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT }) => {
   const { projectCode, entityCode } = useParams();
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
     dashboardItem?.config,
   ) as {
