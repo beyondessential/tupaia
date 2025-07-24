@@ -1,6 +1,4 @@
-import { BaseDatabase } from '@tupaia/database';
-
-import { switchTombstoneTriggers } from './switchTombstoneTriggers';
+import { BaseDatabase, switchTombstoneTriggers } from '@tupaia/database';
 
 export const withDeferredSyncSafeguards = async <T>(
   database: BaseDatabase,
