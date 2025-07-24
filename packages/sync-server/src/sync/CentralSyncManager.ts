@@ -377,7 +377,7 @@ export class CentralSyncManager {
 
       const isInitialBuildOfLookupTable = Number.parseInt(previouslyUpToTick, 10) === -1;
 
-      await this.models.wrapInRepeatableReadTransaction(
+      const changesCount = await this.models.wrapInRepeatableReadTransaction(
         async (transactingModels: SyncServerModelRegistry) => {
           // When it is initial build of sync lookup table, by setting it to null,
           // it will get the updated_at_sync_tick from the actual tables.
@@ -389,13 +389,12 @@ export class CentralSyncManager {
             ? null
             : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
 
-          void (await updateLookupTable(
+          const changesCount = await updateLookupTable(
             getModelsForPull(transactingModels.getModels()),
             previouslyUpToTick,
             this.config,
             syncLookupTick,
-            debugObject,
-          ));
+          );
 
           // update the last successful lookup table in the same transaction - if updating the cursor fails,
           // we want to roll back the rest of the saves so that the next update can still detect the records that failed
@@ -404,8 +403,12 @@ export class CentralSyncManager {
             lastSuccessfulLookupTableUpdate: currentTick,
           });
           await transactingModels.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, currentTick);
+
+          return changesCount;
         },
       );
+
+      await debugObject.addInfo({ changesCount });
 
       // If we used the current sync tick to record against each update to the sync lookup table, we would hit an edge case:
       // 1. Current sync tick is = 1, encounter A is updated

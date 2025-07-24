@@ -1,12 +1,7 @@
 import log from 'winston';
 
 import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
-import {
-  DatabaseModel,
-  TupaiaDatabase,
-  DebugLogRecord,
-  buildSyncLookupSelect,
-} from '@tupaia/database';
+import { DatabaseModel, TupaiaDatabase, buildSyncLookupSelect } from '@tupaia/database';
 
 import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
 
@@ -31,9 +26,7 @@ const updateExistingRecordsIntoLookupTable = async (
     : {};
 
   const { ctes, select, joins, where, groupBy } = result || {};
-  const allGroupBy = groupBy
-    ? [...groupBy, 'sync_device_tick.device_id']
-    : ['sync_device_tick.device_id'];
+  const allGroupBy = groupBy ? [...groupBy, 'sync_device_tick.device_id'] : null;
 
   log.info('updateLookupTable.updateLookupTableForModel starting', {
     model: model.databaseRecord,
@@ -66,8 +59,7 @@ const updateExistingRecordsIntoLookupTable = async (
           WHERE
           (${where || `${table}.updated_at_sync_tick > :since`})
           ${fromIdInserted ? `AND ${table}.id > :fromIdInserted` : ''}
-          ${`GROUP BY 
-              ${allGroupBy.join(', ')}`}
+          ${allGroupBy ? `GROUP BY ${allGroupBy.join(', ')}` : ''}
           ORDER BY ${table}.id
           LIMIT :limit
           ON CONFLICT (record_id, record_type)
@@ -193,7 +185,6 @@ export const updateLookupTable = async (
   since: number,
   config: SyncServerConfig,
   syncLookupTick: number | null,
-  debugObject: DebugLogRecord,
 ) => {
   const invalidModelNames = outgoingModels
     .filter(
@@ -229,7 +220,6 @@ export const updateLookupTable = async (
     }
   }
 
-  await debugObject.addInfo({ changesCount });
   log.info('updateLookupTable.countedAll', { count: changesCount, since });
 
   return changesCount;
