@@ -20,6 +20,8 @@ exports.up = function (db) {
       RETURNS trigger
       LANGUAGE plpgsql AS
       $func$
+      DECLARE
+        current_tick bigint;
       BEGIN
         IF ((SELECT value FROM local_system_fact WHERE key = 'syncTrigger') = 'disabled') THEN
             RETURN NEW;

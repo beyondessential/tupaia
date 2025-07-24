@@ -20,6 +20,8 @@ exports.up = function (db) {
       RETURNS trigger
       LANGUAGE plpgsql AS
       $func$
+      DECLARE
+        current_tick bigint;
       BEGIN
         -- First get the current sync tick
         SELECT value FROM local_system_fact WHERE key = 'currentSyncTick' INTO current_tick;
