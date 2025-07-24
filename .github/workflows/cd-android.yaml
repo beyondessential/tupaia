@@ -43,14 +43,18 @@ jobs:
       - name: Build dependencies
         run: yarn run build:from meditrak-app
 
-      # TODO: Replace with Bitwarden GitHub Actions: https://bitwarden.com/help/github-actions-integration
+      - name: Fetch environment variables
+        uses: bitwarden/sm-action@v2
+        with:
+          access_token: ${{ secrets.BW_ACCESS_TOKEN }}
+          secrets: d0855893-bf0e-4bb0-875e-b2dd017cc060 > MEDITRAK_APP_ENV
+
       - name: Write .env file
+        # Register the secret with ::add-mask:: so GitHub Actions masks it in the logs
+        # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#example-masking-an-environment-variable
         run: |
-          echo "BUGSNAG_API_KEY=\"${{ secrets.BUGSNAG_API_KEY }}\"
-          CLIENT_BASIC_AUTH_HEADER=\"${{ secrets.CLIENT_BASIC_AUTH_HEADER }}\"
-          MIXPANEL_ID=\"${{ secrets.MIXPANEL_ID }}\"
-          SECRET_SALT=\"${{ secrets.SECRET_SALT }}\"
-          " >packages/meditrak-app/.env
+          echo "::add-mask::$MEDITRAK_APP_ENV"
+          echo "$MEDITRAK_APP_ENV" >packages/meditrak-app/.env
 
       - name: Append BETA_BRANCH environment variable (if non-production branch)
         if: github.head_ref != 'master'
