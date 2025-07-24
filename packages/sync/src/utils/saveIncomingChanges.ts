@@ -12,7 +12,7 @@ const PERSISTED_CACHE_BATCH_SIZE = 10000;
 const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
 const assertIsWithinTransaction = (database: BaseDatabase) => {
-  if (!database?.isWithinTransaction()) {
+  if (!database?.isWithinTransaction) {
     throw new Error('saveIncomingChanges must be called within a transaction');
   }
 };
@@ -42,7 +42,10 @@ export const saveChangesForModel = async (
     const { data, isDeleted } = change;
 
     if (idToExistingRecord[data.id] === undefined) {
-      recordsForCreate.push(sanitizeData(data));
+      if (!isDeleted) {
+        recordsForCreate.push(sanitizeData(data));
+      }
+      // If it's a new record and it's deleted, ignore it
     } else if (isDeleted) {
       recordsForDelete.push(sanitizeData(data));
     } else {

@@ -40,24 +40,21 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
   }, [models]);
 
   useEffect(() => {
-    const initSyncScheduler = async () => {
-      // Only schedule the sync if it's not already scheduled and the client sync manager exists
-      if (!isSyncScheduled && clientSyncManager && projects?.length) {
-        const projectIds = projects.map(project => project.id);
-        const intervalId = setInterval(() => {
-          console.log('Starting regular sync');
-          clientSyncManager.triggerSync(projectIds);
-        }, SYNC_INTERVAL);
+    // Only schedule the sync if conditions are met
+    if (!isSyncScheduled && clientSyncManager && projects?.length) {
+      const projectIds = projects.map(project => project.id);
+      const intervalId = setInterval(() => {
+        console.log('Starting regular sync');
+        clientSyncManager.triggerSync(projectIds);
+      }, SYNC_INTERVAL);
 
-        setIsSyncScheduled(true);
+      setIsSyncScheduled(true);
 
-        return () => {
-          clearInterval(intervalId);
-        };
-      }
-    };
-
-    initSyncScheduler();
+      return () => {
+        clearInterval(intervalId);
+        setIsSyncScheduled(false);
+      };
+    }
   }, [clientSyncManager, projects?.length]);
 
   return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;
