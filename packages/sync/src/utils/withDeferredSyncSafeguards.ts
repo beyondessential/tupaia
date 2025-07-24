@@ -4,6 +4,10 @@ export const withDeferredSyncSafeguards = async <T>(
   database: BaseDatabase,
   operation: () => Promise<T>,
 ): Promise<T> => {
+  if (!database.isWithinTransaction) {
+    throw new Error('withDeferredSyncSafeguards must be called within a transaction');
+  }
+
   /**
    * Defer foreign key constraint assertions until the end of the transaction.
    *
