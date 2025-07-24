@@ -26,20 +26,12 @@ async function flaggedHash(sha256Hash) {
 }
 
 exports.up = async function (db) {
-  await db.runSql(`
-    ALTER TABLE user_account RENAME COLUMN password_hash TO password_hash_old;
-    ALTER TABLE user_account ADD COLUMN password_hash TEXT;
-
-    ALTER TABLE api_client RENAME COLUMN secret_key_hash TO secret_key_hash_old;
-    ALTER TABLE api_client ADD COLUMN secret_key_hash TEXT;
-  `);
-
   async function migrateUserAccounts() {
-    const users = await db.runSql('SELECT id, password_hash_old FROM user_account');
+    const users = await db.runSql('SELECT id, password_hash FROM user_account');
     await Promise.all(
       users.rows.map(async user => {
-        const { id, password_hash_old } = user;
-        const migratedHash = await flaggedHash(password_hash_old);
+        const { id, password_hash } = user;
+        const migratedHash = await flaggedHash(password_hash);
         await db.runSql('UPDATE user_account SET password_hash = $1 WHERE id = $2', [
           migratedHash,
           id,
@@ -49,11 +41,11 @@ exports.up = async function (db) {
   }
 
   async function migrateApiClients() {
-    const apiClients = await db.runSql('SELECT id, secret_key_hash_old FROM api_client');
+    const apiClients = await db.runSql('SELECT id, secret_key_hash FROM api_client');
     await Promise.all(
       apiClients.rows.map(async apiClient => {
-        const { id, secret_key_hash_old } = apiClient;
-        const migratedHash = await flaggedHash(secret_key_hash_old);
+        const { id, secret_key_hash } = apiClient;
+        const migratedHash = await flaggedHash(secret_key_hash);
         await db.runSql('UPDATE api_client SET secret_key_hash = $1 WHERE id = $2', [
           migratedHash,
           id,
@@ -65,16 +57,12 @@ exports.up = async function (db) {
   await migrateUserAccounts();
   await migrateApiClients();
 
+  // Preserve legacy salt for a given user so we can still authenticate them.
+  // Once a user is migrated to Argon2, we set their legacy salt to NULL.
+  // @see `@tupaia/database/src/modelClasses/User`
   await db.runSql(`
-    ALTER TABLE user_account ALTER COLUMN password_hash SET NOT NULL;
-    ALTER TABLE user_account DROP COLUMN password_hash_old;
-
-    -- Preserve legacy salt for a given user until they are migrated to Argon2
     ALTER TABLE user_account RENAME COLUMN password_salt TO legacy_password_salt;
     ALTER TABLE user_account ALTER COLUMN legacy_password_salt DROP NOT NULL;
-
-    ALTER TABLE api_client ALTER COLUMN secret_key_hash SET NOT NULL;
-    ALTER TABLE api_client DROP COLUMN secret_key_hash_old;
   `);
 };
 

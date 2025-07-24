@@ -158,20 +158,17 @@ export interface AnswerUpdate {
 export interface ApiClient {
   'id': string;
   'secret_key_hash': string;
-  'secret_key_hash_old'?: string | null;
   'user_account_id'?: string | null;
   'username': string;
 }
 export interface ApiClientCreate {
   'secret_key_hash': string;
-  'secret_key_hash_old'?: string | null;
   'user_account_id'?: string | null;
   'username': string;
 }
 export interface ApiClientUpdate {
   'id'?: string;
   'secret_key_hash'?: string;
-  'secret_key_hash_old'?: string | null;
   'user_account_id'?: string | null;
   'username'?: string;
 }
@@ -1653,10 +1650,9 @@ export interface UserAccount {
   'gender'?: string | null;
   'id': string;
   'last_name'?: string | null;
+  'legacy_password_salt'?: string | null;
   'mobile_number'?: string | null;
   'password_hash': string;
-  'password_hash_old'?: string | null;
-  'password_salt'?: string | null;
   'position'?: string | null;
   'preferences': UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
@@ -1670,10 +1666,9 @@ export interface UserAccountCreate {
   'first_name'?: string | null;
   'gender'?: string | null;
   'last_name'?: string | null;
+  'legacy_password_salt'?: string | null;
   'mobile_number'?: string | null;
   'password_hash': string;
-  'password_hash_old'?: string | null;
-  'password_salt'?: string | null;
   'position'?: string | null;
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
@@ -1688,10 +1683,9 @@ export interface UserAccountUpdate {
   'gender'?: string | null;
   'id'?: string;
   'last_name'?: string | null;
+  'legacy_password_salt'?: string | null;
   'mobile_number'?: string | null;
   'password_hash'?: string;
-  'password_hash_old'?: string | null;
-  'password_salt'?: string | null;
   'position'?: string | null;
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
