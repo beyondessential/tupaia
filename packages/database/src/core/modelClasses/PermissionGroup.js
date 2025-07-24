@@ -1,4 +1,6 @@
 import { reduceToDictionary } from '@tupaia/utils';
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -43,6 +45,8 @@ export class PermissionGroupRecord extends DatabaseRecord {
 }
 
 export class PermissionGroupModel extends DatabaseModel {
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+
   get DatabaseRecordClass() {
     return PermissionGroupRecord;
   }
@@ -50,5 +54,9 @@ export class PermissionGroupModel extends DatabaseModel {
   async getPermissionGroupNameById(permissionGroupIds) {
     const permissionGroups = await this.findManyById(permissionGroupIds);
     return reduceToDictionary(permissionGroups, 'id', 'name');
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return null;
   }
 }

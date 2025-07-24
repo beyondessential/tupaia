@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
@@ -58,6 +60,8 @@ export class ProjectRecord extends DatabaseRecord {
 }
 
 export class ProjectModel extends DatabaseModel {
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+
   get DatabaseRecordClass() {
     return ProjectRecord;
   }
@@ -115,5 +119,9 @@ export class ProjectModel extends DatabaseModel {
         joinCondition: ['entity.id', 'project.entity_id'],
       },
     );
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return null;
   }
 }

@@ -1,7 +1,7 @@
 import { COLUMNS_EXCLUDED_FROM_SYNC } from '@tupaia/constants';
 
 export async function buildSyncLookupSelect(model, columns = {}) {
-  const attributes = await model.fetchFieldNames();
+  const attributes = Object.keys(await model.fetchSchema());
   const { projectIds } = columns;
   const table = model.databaseRecord;
 

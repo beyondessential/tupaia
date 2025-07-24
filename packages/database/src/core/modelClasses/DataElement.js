@@ -1,6 +1,9 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { buildSyncLookupSelect } from '../sync';
 
 const SERVICE_TYPES = {
   DHIS: 'dhis',
@@ -72,6 +75,8 @@ export class DataElementRecord extends DatabaseRecord {
 }
 
 export class DataElementModel extends MaterializedViewLogDatabaseModel {
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+
   SERVICE_TYPES = SERVICE_TYPES;
 
   get DatabaseRecordClass() {
@@ -79,4 +84,8 @@ export class DataElementModel extends MaterializedViewLogDatabaseModel {
   }
 
   getDhisDataTypes = () => DHIS_DATA_TYPES;
+
+  async buildSyncLookupQueryDetails() {
+    return null;
+  }
 }

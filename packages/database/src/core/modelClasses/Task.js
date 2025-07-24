@@ -1,7 +1,10 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
+import { buildSyncLookupSelect } from '../sync';
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -278,6 +281,19 @@ export class TaskRecord extends DatabaseRecord {
 }
 
 export class TaskModel extends DatabaseModel {
+  static syncDirection = SyncDirections.BIDIRECTIONAL;
+
+  async buildSyncLookupQueryDetails() {
+    return {
+      select: await buildSyncLookupSelect(this, {
+        projectIds: `ARRAY[survey.project_id]`,
+      }),
+      joins: `
+        LEFT JOIN survey ON survey.id = task.survey_id
+      `,
+    };
+  }
+
   get DatabaseRecordClass() {
     return TaskRecord;
   }
