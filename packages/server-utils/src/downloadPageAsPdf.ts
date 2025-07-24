@@ -1,19 +1,28 @@
-import cookie from 'cookie';
+import * as cookie from 'cookie';
 import puppeteer, { Browser, CookieParam } from 'puppeteer';
 
+import { getEnvVarOrDefault } from '@tupaia/utils';
+
+function isValidHostname(hostname: string): boolean {
+  const validDomains = (getEnvVarOrDefault('VALID_DOMAINS', 'tupaia.org') as string)
+    .split(' ')
+    .map(domain => domain.trim())
+    .filter(Boolean);
+
+  return (
+    hostname.endsWith('.tupaia.org') ||
+    validDomains.includes(hostname) ||
+    hostname === 'localhost' ||
+    hostname.endsWith('.local')
+  );
+}
+
 const verifyPDFPageUrl = (pdfPageUrl: string): string => {
-  const { VALID_DOMAINS = 'tupaia.org' } = process.env;
-  const validDomains = VALID_DOMAINS.split(' ');
   if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
     throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
   }
   const { hostname } = new URL(pdfPageUrl);
-  if (
-    hostname.endsWith('.tupaia.org') &&
-    validDomains.includes(hostname) &&
-    hostname.endsWith('localhost') &&
-    hostname.endsWith('.local')
-  ) {
+  if (!isValidHostname(hostname)) {
     throw new Error(`'pdfPageUrl' is not valid, got: ${pdfPageUrl}`);
   }
   return pdfPageUrl;
