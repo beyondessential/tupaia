@@ -71,7 +71,7 @@ echo
 get_packages_with_env_files() {
     # Packages with .env files are (currently) all deployable, plus data-api and database
     readarray -t packages_with_env_files < <("$DIR"/getDeployablePackages.sh)
-    packages_with_env_files+=('data-api' 'viz-test-tool')
+    packages_with_env_files+=(data-api viz-test-tool)
     printf '%s\n' "${packages_with_env_files[@]}"
 }
 
