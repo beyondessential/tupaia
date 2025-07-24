@@ -1,5 +1,6 @@
 import { SyncSnapshotAttributes } from '@tupaia/sync';
-import { post, put } from '../api';
+import { post, stream } from '../api';
+import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 
 // TODO: Move to config model RN-1668
 const LIMIT = 10000;
@@ -18,5 +19,20 @@ export const pushOutgoingChanges = async (
 
     startOfPage = endOfPage;
   }
-  await put(`sync/${sessionId}/push/complete`, { data: { deviceId } });
+
+  for await (const { kind } of stream(() => ({
+    method: 'PUT',
+    endpoint: `sync/${sessionId}/push/complete`,
+    options: { deviceId },
+  }))) {
+    handler: switch (kind) {
+      case SYNC_STREAM_MESSAGE_KIND.PUSH_WAITING:
+        // still waiting
+        break handler;
+      case SYNC_STREAM_MESSAGE_KIND.END:
+        return;
+      default:
+        console.warn(`Unexpected message kind: ${kind}`);
+    }
+  }
 };

@@ -3,7 +3,6 @@ export * from './getModelsForDirection';
 export * from './getSyncTicksOfPendingEdits';
 export * from './manageSnapshotTable';
 export * from './countSyncSnapshotRecords';
-export * from './streamSnapshotData';
 export * from './getDependencyOrder';
 export * from './saveIncomingChanges';
 export * from './completeSyncSession';

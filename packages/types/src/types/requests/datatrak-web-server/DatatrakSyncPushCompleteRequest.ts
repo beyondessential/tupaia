@@ -2,7 +2,7 @@ export type Params = {
   sessionId: string;
 };
 
-export type ResBody = {};
+export type ResBody = void;
 export type ReqBody = {
   deviceId: string;
 };
