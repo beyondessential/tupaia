@@ -1,28 +1,17 @@
-# Tupaia Project-Specific Rules
+# Important Project Rules - Tupaia
+
+This file contains essential Tupaia-specific information for LLM agents.
 
 ## Current Status
 
-Most rules are handled by shared common rules. This file contains minimal Tupaia-specific guidance.
+No project-specific rules have been identified yet. All current guidance is handled by the shared common rules.
 
-## Essential Tupaia Patterns
+## Key File Locations
 
-### Package Development
+- `packages/` - All 30+ packages in the yarn workspace monorepo
+- `packages/database/src/migrations/` - Database schema migrations
+- `packages/ui-components/` - Shared React UI components
 
-- Use `@tupaia/` namespace for all packages
-- Follow established patterns in `packages/` directory
-- Include `.env.example` files for environment variables
+## Future Rule Loading
 
-### Database Changes
-
-- All schema changes go through `packages/database/` migration system
-- Consider analytics table impact when modifying data structures
-
-### API Development
-
-- Follow orchestration vs micro server patterns
-- Use `server-boilerplate` package for new servers
-- Integrate with `data-broker` for external data sources
-
----
-
-_Project-specific rules will be added here as Tupaia-specific requirements are identified._
+This section will be populated as Tupaia-specific patterns are identified that require special handling beyond the shared common rules.
