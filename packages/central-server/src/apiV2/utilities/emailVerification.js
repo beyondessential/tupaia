@@ -27,12 +27,6 @@ const ORIGINS = {
 
 const getEmailVerificationToken = user => `${user.email}${user.password_hash}`;
 
-/**
- * Verification tokens prior to our adoption of Argon2 were generated with
- * {@link sha256}.
- */
-const isLegacyToken = token => /^[0-9a-f]{64}$/.test(token);
-
 const generateVerificationLink = async user => {
   const token = await encryptPassword(getEmailVerificationToken(user));
 
@@ -68,22 +62,21 @@ export const sendEmailVerification = async user => {
   });
 };
 
-const legacyVerifyEmailHelper = async (models, searchCondition, token) => {
-  const users = await models.user.find({ verified_email: searchCondition });
-  return users.find(user => {
-    if (!user.password_hash_old || !user.password_salt) return false;
-    const legacyToken = sha256(`${user.email}${user.password_hash_old}`, user.password_salt);
-    return legacyToken === token;
-  });
-};
+/**
+ * Verification tokens prior to our adoption of Argon2 were generated with
+ * {@link sha256}.
+ */
+const isLegacyToken = token => /^[0-9a-f]{64}$/.test(token);
 
 export const verifyEmailHelper = async (models, searchCondition, token) => {
-  // Token may have been generated prior to adoption of Argon2. Fall back to legacy method.
   if (isLegacyToken(token)) {
-    return (await legacyVerifyEmailHelper(models, searchCondition, token)) ?? null;
+    // Token generated prior to adoption of Argon2. Report to end user as “expired”.
+    throw new VerificationTokenExpiredError(
+      'Email verification link expired. Please request a new one.',
+    );
   }
 
-  if (!token.startsWith('$argon2id$')) throw new InvalidVerificationTokenError();
+  if (!token.startsWith('$argon2id$')) throw new VerificationTokenInvalidError();
 
   const users = await models.user.find({ verified_email: searchCondition });
 
@@ -93,16 +86,23 @@ export const verifyEmailHelper = async (models, searchCondition, token) => {
       if (verified) return user;
     }
   } catch (e) {
-    if (e.code === 'InvalidArg') throw new InvalidVerificationTokenError();
+    if (e.code === 'InvalidArg') throw new VerificationTokenInvalidError();
     throw e;
   }
 
   return null;
 };
 
-export class InvalidVerificationTokenError extends Error {
+export class VerificationTokenExpiredError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'InvalidVerificationTokenError';
+    this.name = 'VerificationTokenExpiredError';
+  }
+}
+
+export class VerificationTokenInvalidError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'VerificationTokenInvalidError';
   }
 }
