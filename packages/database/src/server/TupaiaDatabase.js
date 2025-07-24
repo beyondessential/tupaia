@@ -115,10 +115,25 @@ export class TupaiaDatabase extends BaseDatabase {
     return changeChannel.addSchemaChangeHandler(handler);
   }
 
-  wrapInTransaction(wrappedFunction) {
-    return this.connection.transaction(transaction =>
-      wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.connection.transaction(
+      transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+      transactionConfig,
     );
+  }
+
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
   }
 
   /**

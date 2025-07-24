@@ -2075,6 +2075,9 @@ export enum EntityTypeEnum {
   'pacmossi_asset' = 'pacmossi_asset',
   'pacmossi_consumable' = 'pacmossi_consumable',
   'visiting_specialist' = 'visiting_specialist',
+  'wholesaler' = 'wholesaler',
+  'pharmacy' = 'pharmacy',
+  'supermarket' = 'supermarket',
 }
 export enum DataTableType {
   'analytics' = 'analytics',

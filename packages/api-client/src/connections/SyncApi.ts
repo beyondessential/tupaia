@@ -58,6 +58,19 @@ export class SyncApi extends BaseApi {
   async pull(response: ExpressResponse, sessionId: string) {
     return this.connection.pipeStream(response, `sync/${sessionId}/pull`);
   }
+
+  async push(sessionId: string, changes: any[]) {
+    return this.connection.post(`sync/${sessionId}/push`, {}, { changes });
+  }
+
+  async completePush(sessionId: string, deviceId: string) {
+    // first off, mark the push as complete on central
+    await this.connection.put(`sync/${sessionId}/push/complete`, {}, { deviceId });
+
+    // now poll the complete check endpoint until we get a valid response - it takes a while for
+    // the pushed changes to finish persisting to the central database
+    await this.pollStatusUntil(`sync/${sessionId}/push/status`, 'complete');
+  }
 }
 
 export interface SyncApiInterface extends PublicInterface<SyncApi> {}

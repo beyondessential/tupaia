@@ -1,4 +1,4 @@
-import { ModelRegistry, SyncSessionModel } from '@tupaia/database';
+import { ModelRegistry, SyncSessionModel, SyncDeviceTickModel } from '@tupaia/database';
 import {
   ProjectModel,
   EntityModel,
@@ -16,6 +16,7 @@ export interface SyncServerModelRegistry extends ModelRegistry {
   readonly localSystemFact: LocalSystemFactModel;
   readonly debugLog: DebugLogModel;
   readonly syncSession: SyncSessionModel;
+  readonly syncDeviceTick: SyncDeviceTickModel;
 }
 
 export type SyncServerConfig = {

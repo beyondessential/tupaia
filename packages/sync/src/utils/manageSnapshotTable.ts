@@ -1,4 +1,5 @@
 import { TupaiaDatabase } from '@tupaia/database';
+import { snakeKeys } from '@tupaia/utils';
 
 const SCHEMA = 'sync_snapshots';
 
@@ -34,7 +35,6 @@ export const createSnapshotTable = async (database: TupaiaDatabase, sessionId: s
       record_id character varying(255) NOT NULL,
       data json NOT NULL,
       saved_at_sync_tick bigint, -- saved_at_sync_tick is used to check whether record has been updated between incoming and outgoing phase of a single session
-      updated_at_by_field_sum bigint, -- updated_at_by_field_sum is used to check whether record has had changes to field during merge and save component of push phase
       sync_lookup_id bigint,
       requires_repull boolean DEFAULT false
     ) WITH (
@@ -70,7 +70,6 @@ export const dropSnapshotTable = async (database: TupaiaDatabase, sessionId: str
   `);
 };
 
-
 export const dropAllSnapshotTables = async (database: TupaiaDatabase) => {
   await database.executeSql(`
     DROP SCHEMA IF EXISTS ${SCHEMA} CASCADE;
@@ -78,4 +77,24 @@ export const dropAllSnapshotTables = async (database: TupaiaDatabase) => {
   await database.executeSql(`
     CREATE SCHEMA ${SCHEMA};
   `);
+};
+
+export const insertSnapshotRecords = async (
+  database: TupaiaDatabase,
+  sessionId: string,
+  records: object[],
+) => {
+  const sanitizedRecords = records
+    .map(r => snakeKeys(r))
+    .map(r => ({ ...r, data: JSON.stringify(r.data) }));
+  await database.createMany(sessionId, sanitizedRecords, SCHEMA, { shouldGenerateId: false });
+};
+
+export const updateSnapshotRecords = async (
+  database: TupaiaDatabase,
+  sessionId: string,
+  values: object,
+  where: object,
+) => {
+  await database.update(sessionId, where, values, SCHEMA);
 };
