@@ -66,7 +66,6 @@ Common packages used across the system:
 - **Framework**: Express.js
 - **Language**: TypeScript and JavaScript
 - **Database**: PostgreSQL with custom materialized views (mvrefresh)
-- **Package Manager**: Yarn 3
 - **Testing**: Jest (with coverage), Mocha for some packages
 
 ### Frontend
