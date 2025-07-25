@@ -1,11 +1,11 @@
-import { hashAndSaltPassword } from '@tupaia/auth';
-import { S3Client, S3 } from '@tupaia/server-utils';
-import { EditHandler } from '../EditHandler';
+import { encryptPassword } from '@tupaia/auth';
+import { S3, S3Client } from '@tupaia/server-utils';
 import {
+  assertAdminPanelAccess,
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
 } from '../../permissions';
+import { EditHandler } from '../EditHandler';
 import { assertUserAccountPermissions } from './assertUserAccountPermissions';
 
 /**
@@ -47,10 +47,7 @@ export class EditUserAccounts extends EditHandler {
     let updatedFields = restOfUpdatedFields;
 
     if (password) {
-      updatedFields = {
-        ...updatedFields,
-        ...hashAndSaltPassword(password),
-      };
+      updatedFields.password_hash = await encryptPassword(password);
     }
 
     if (preferenceField) {

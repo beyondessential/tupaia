@@ -1,19 +1,21 @@
 import {
-  encryptPassword,
-  getUserAndPassFromBasicAuth,
   getTokenClaimsFromBearerAuth,
+  getUserAndPassFromBasicAuth,
+  verifyPassword,
 } from '@tupaia/auth';
 
 const getApiClientUserFromBasicAuth = async (models, authHeader) => {
   const { username, password: secretKey } = getUserAndPassFromBasicAuth(authHeader);
 
   // first attempt to authenticate as an api client, in case a secret key was used in the auth header
-  const secretKeyHash = encryptPassword(secretKey, process.env.API_CLIENT_SALT);
   const apiClient = await models.apiClient.findOne({
     username,
-    secret_key_hash: secretKeyHash,
   });
-  return apiClient?.getUser();
+  if (!apiClient) {
+    return undefined;
+  }
+  const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
+  return verified ? apiClient?.getUser() : undefined;
 };
 
 const getUserFromBearerAuth = async (models, authHeader) => {

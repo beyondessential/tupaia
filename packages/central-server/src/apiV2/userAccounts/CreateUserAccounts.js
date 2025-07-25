@@ -1,11 +1,12 @@
-import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
-import { CreateHandler } from '../CreateHandler';
+import { encryptPassword, generateSecretKey } from '@tupaia/auth';
+
 import {
   assertAdminPanelAccess,
   assertAdminPanelAccessToCountry,
   assertAnyPermissions,
   assertBESAdminAccess,
 } from '../../permissions';
+import { CreateHandler } from '../CreateHandler';
 
 /**
  * Handles POST endpoints:
@@ -39,7 +40,7 @@ export class CreateUserAccounts extends CreateHandler {
         await transactingModels.apiClient.create({
           username: user.email,
           user_account_id: user.id,
-          secret_key_hash: encryptPassword(secretKey, process.env.API_CLIENT_SALT),
+          secret_key_hash: await encryptPassword(secretKey),
         });
       }
 
@@ -96,13 +97,15 @@ export class CreateUserAccounts extends CreateHandler {
       ...restOfUser
     },
   ) {
+    const passwordHash = await encryptPassword(password);
+
     return transactingModels.user.create({
       first_name: firstName,
       last_name: lastName,
       email: emailAddress,
       mobile_number: contactNumber,
       primary_platform: primaryPlatform,
-      ...hashAndSaltPassword(password),
+      password_hash: passwordHash,
       verified_email: verifiedEmail,
       ...restOfUser,
     });

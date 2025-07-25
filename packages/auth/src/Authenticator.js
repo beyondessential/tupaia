@@ -1,16 +1,18 @@
+import { verify } from '@node-rs/argon2';
 import randomToken from 'rand-token';
 import compareVersions from 'semver-compare';
 
 import { DatabaseError, requireEnv, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
-import { encryptPassword } from './utils';
+import { encryptPassword, sha256EncryptPassword, verifyPassword } from './passwordEncryption';
 import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
 
 export class Authenticator {
+  /** @deprecated */
   #apiClientSalt = requireEnv('API_CLIENT_SALT');
 
   constructor(models, AccessPolicyBuilderClass = AccessPolicyBuilder) {
@@ -45,17 +47,54 @@ export class Authenticator {
    * @param {{ username: string, secretKey: string }} apiClientCredentials
    */
   async authenticateApiClient({ username, secretKey }) {
-    const secretKeyHash = encryptPassword(secretKey, this.#apiClientSalt);
     const apiClient = await this.models.apiClient.findOne({
       username,
-      secret_key_hash: secretKeyHash,
     });
-    if (!apiClient) {
-      throw new UnauthenticatedError('Could not authenticate Api Client');
+    if (!apiClient) throw new UnauthenticatedError('Couldn’t find API client');
+
+    try {
+      const isVerified = apiClient.hasLegacySecretKeyHash
+        ? await this.#verifyApiClientWithSha256(apiClient, secretKey)
+        : await verifyPassword(secretKey, apiClient.secret_key_hash);
+
+      if (!isVerified) {
+        throw new UnauthenticatedError(`Couldn’t authenticate API client ${apiClient.username}`);
+      }
+
+      const user = await apiClient.getUser();
+      const accessPolicy = await this.getAccessPolicyForUser(user.id);
+      return { user, accessPolicy };
+    } catch (e) {
+      if (e.code === 'InvalidArg') {
+        throw new UnauthenticatedError(
+          `Malformed secret key for API client ${apiClient.username}. Must be in PHC String Format.`,
+        );
+      }
+      throw e;
     }
-    const user = await apiClient.getUser();
-    const accessPolicy = await this.getAccessPolicyForUser(user.id);
-    return { user, accessPolicy };
+  }
+
+  /**
+   * Attempts authenticating an API client using SHA-256 plus Argon2, then migrates the client to
+   * Argon2 upon success.
+   *
+   * @returns {Promise<boolean>} `true` if and only if the client is authenticated and migrated to
+   * Argon2.
+   * @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js`
+   * @privateRemarks This method should be called no more than once per API client.
+   */
+  async #verifyApiClientWithSha256(apiClient, secretKey) {
+    const hash = apiClient.secret_key_hash.replace('$sha256+argon2id$', '$argon2id$');
+    const hashedInput = sha256EncryptPassword(secretKey, this.#apiClientSalt); // Expected legacy hash value
+    const isVerified = await verify(hash, hashedInput);
+
+    if (isVerified) {
+      // Migrate to Argon2
+      const argon2Hash = await encryptPassword(secretKey);
+      await apiClient.model.updateById(apiClient.id, { secret_key_hash: argon2Hash });
+    }
+
+    return isVerified;
   }
 
   /**
@@ -140,7 +179,7 @@ export class Authenticator {
     }
 
     // Check password hash matches that in db
-    if (!user.checkPassword(password)) {
+    if (!(await user.checkPassword(password))) {
       throw new UnauthenticatedError('Incorrect email or password');
     }
 

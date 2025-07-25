@@ -1,24 +1,53 @@
 import { expect } from 'chai';
+import Chance from 'chance';
 import sinon from 'sinon';
 
-import { encryptPassword, getTokenClaims, hashAndSaltPassword } from '@tupaia/auth';
+import {
+  encryptPassword,
+  getTokenClaims,
+  sha256EncryptPassword,
+  verifyPassword,
+} from '@tupaia/auth';
 import { findOrCreateDummyCountryEntity, findOrCreateDummyRecord } from '@tupaia/database';
-import { createBasicHeader } from '@tupaia/utils';
+import { createBasicHeader, randomEmail, randomString } from '@tupaia/utils';
 
 import { BruteForceRateLimiter } from '../../../apiV2/authenticate/BruteForceRateLimiter';
 import { ConsecutiveFailsRateLimiter } from '../../../apiV2/authenticate/ConsecutiveFailsRateLimiter';
 import { configureEnv } from '../../../configureEnv';
 import { TestableApp, resetTestData } from '../../testUtilities';
 
+/**
+ * Standard Argon2 hash prefix
+ * @see https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md
+ */
+const hashPrefix = '$argon2id$';
+
+/**
+ * Prefix used with user accounts not yet migrated to using only Argon2.
+ * @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js`
+ */
+const legacyHashPrefix = '$sha256+argon2id$';
+
 configureEnv();
 const sandbox = sinon.createSandbox();
+
+const chance = new Chance();
+
+const randomSalt = () =>
+  `${chance.string({ length: 22, pool: 'abcdefghijklmnopqrstuvwxyz0123456789+/' })}==`;
+
+const randomCredentials = () => ({
+  email: randomEmail(),
+  password: randomString(),
+  salt: randomSalt(),
+});
 
 const app = new TestableApp();
 const { models } = app;
 const { VERIFIED } = models.user.emailVerifiedStatuses;
 
-const userAccountPassword = 'password';
-const apiClientSecret = 'api';
+const userAccountPassword = randomString();
+const apiClientSecret = randomString();
 
 let userAccount;
 let apiClientUserAccount;
@@ -47,24 +76,26 @@ describe('Authenticate', function () {
     });
 
     // Create test users
+
     userAccount = await findOrCreateDummyRecord(models.user, {
-      first_name: 'Ash',
-      last_name: 'Ketchum',
-      email: 'ash-ketchum@pokemon.org',
-      ...hashAndSaltPassword(userAccountPassword),
+      first_name: chance.first(),
+      last_name: chance.last(),
+      email: chance.email(),
+      mobile_number: chance.phone(),
+      password_hash: await encryptPassword(userAccountPassword),
       verified_email: VERIFIED,
     });
 
     apiClientUserAccount = await findOrCreateDummyRecord(models.user, {
-      first_name: 'api',
-      last_name: 'client',
-      email: 'api-client@pokemon.org',
+      first_name: 'API',
+      last_name: 'Client',
+      email: chance.email({ domain: 'api-client.dev' }),
       verified_email: VERIFIED,
     });
     await findOrCreateDummyRecord(models.apiClient, {
       username: apiClientUserAccount.email,
       user_account_id: apiClientUserAccount.id,
-      secret_key_hash: encryptPassword(apiClientSecret, process.env.API_CLIENT_SALT),
+      secret_key_hash: await encryptPassword(apiClientSecret),
     });
 
     // Public Demo Land Permission
@@ -126,6 +157,84 @@ describe('Authenticate', function () {
     expect(apiClientUserId).to.equal(apiClientUserAccount.id);
   });
 
+  it('Should authenticate user who has been migrated to Argon2 password hashing', async () => {
+    const { email, password, salt } = randomCredentials();
+    const sha256Hash = sha256EncryptPassword(password, salt);
+    const combiHash = (await encryptPassword(sha256Hash)).replace(hashPrefix, legacyHashPrefix);
+
+    /** @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js` */
+    const migratedUser = await findOrCreateDummyRecord(models.user, {
+      first_name: chance.first(),
+      last_name: chance.last(),
+      email: email,
+      password_hash: combiHash,
+      legacy_password_salt: salt,
+      verified_email: VERIFIED,
+    });
+
+    const authResponse = await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: email,
+        password: password,
+        deviceName: 'test_device',
+      },
+    });
+
+    expect(authResponse.status).to.equal(200);
+    const { accessToken, refreshToken, user: userDetails } = authResponse.body;
+    expect(accessToken).to.be.a('string');
+    expect(refreshToken).to.be.a('string');
+    expect(userDetails.id).to.equal(migratedUser.id);
+    expect(userDetails.email).to.equal(migratedUser.email);
+  });
+
+  it('Should migrate user’s password to Argon2 after successful login', async () => {
+    const { email, password, salt } = randomCredentials();
+    const sha256Hash = sha256EncryptPassword(password, salt);
+    const combiHash = (await encryptPassword(sha256Hash)).replace(hashPrefix, legacyHashPrefix);
+
+    /** @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js` */
+    const migratedUser = await findOrCreateDummyRecord(models.user, {
+      first_name: chance.first(),
+      last_name: chance.last(),
+      email,
+      password_hash: combiHash,
+      legacy_password_salt: salt,
+      verified_email: VERIFIED,
+    });
+
+    const isVerifiedBefore = await verifyPassword(
+      password,
+      migratedUser.password_hash.replace(legacyHashPrefix, hashPrefix),
+    );
+    expect(isVerifiedBefore).to.be.false;
+
+    const authResponse = await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: email,
+        password: password,
+        deviceName: 'test_device',
+      },
+    });
+
+    expect(authResponse.status).to.equal(200);
+
+    const userDetails = await models.user.findById(migratedUser.id);
+    const isVerifiedAfter = await verifyPassword(password, userDetails.password_hash);
+    expect(isVerifiedAfter).to.be.true;
+  });
+
+  /**
+   * Temporarily disabled until we have a more reliable heuristics for determining the originating
+   * country for a given login request. TODO: Restore with RN-1526
+   * @see https://github.com/beyondessential/tupaia/pull/6072/files
+   */
   it.skip('should add a new entry to the user_country_access_attempts table if one does not already exist', async () => {
     await app.post('auth?grantType=password', {
       headers: {
@@ -145,6 +254,11 @@ describe('Authenticate', function () {
     expect(entries).to.have.length(1);
   });
 
+  /**
+   * Temporarily disabled until we have a more reliable heuristics for determining the originating
+   * country for a given login request. TODO: Restore with RN-1526
+   * @see https://github.com/beyondessential/tupaia/pull/6072/files
+   */
   it.skip('should not add a new entry to the user_country_access_attempts table if one does already exist', async () => {
     await models.userCountryAccessAttempt.create({
       user_id: userAccount.id,
@@ -180,9 +294,9 @@ describe('Authenticate', function () {
       },
     });
 
+    expect(response.status).to.equal(401);
     expect(response.body).to.be.an('object').that.has.property('error');
     expect(response.body.error).to.include('Incorrect email or password');
-    expect(response.status).to.equal(401);
   });
 
   it('limit consecutive fails by username', async () => {
