@@ -32,7 +32,10 @@ jobs:
           cache: yarn
 
       - name: Set up Yarn
-        run: corepack enable yarn
+        run: |
+          corepack enable yarn
+          corepack install
+          echo "Using Yarn $(yarn --version)"
 
       - name: Install dependencies
         run: yarn workspaces focus tupaia @tupaia/meditrak-app
@@ -40,18 +43,24 @@ jobs:
       - name: Build dependencies
         run: yarn run build:from meditrak-app
 
-      # TODO: Replace with Bitwarden GitHub Actions: https://bitwarden.com/help/github-actions-integration
+      - name: Fetch environment variables
+        uses: bitwarden/sm-action@v2
+        with:
+          access_token: ${{ secrets.BW_ACCESS_TOKEN }}
+          # ID for ‘meditrak-app.production.env’ secret in Bitwarden Secrets Manager
+          # Access via https://vault.bitwarden.com/#/sm
+          secrets: 682237eb-edea-4dac-a4f7-b325003d2120 > MEDITRAK_APP_ENV
+
       - name: Write .env file
+        # Register the secret with ::add-mask:: so GitHub Actions masks it in the logs
+        # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#example-masking-an-environment-variable
         run: |
-          echo "BUGSNAG_API_KEY=\"${{ secrets.BUGSNAG_API_KEY }}\"
-          CLIENT_BASIC_AUTH_HEADER=\"${{ secrets.CLIENT_BASIC_AUTH_HEADER }}\"
-          MIXPANEL_ID=\"${{ secrets.MIXPANEL_ID }}\"
-          SECRET_SALT=\"${{ secrets.SECRET_SALT }}\"
-          " >packages/meditrak-app/.env
+          echo "::add-mask::$MEDITRAK_APP_ENV"
+          echo "$MEDITRAK_APP_ENV" >packages/meditrak-app/.env
 
       - name: Append BETA_BRANCH environment variable (if non-production branch)
         if: github.head_ref != 'master'
-        run: echo -e "\nBETA_BRANCH=\"${{ github.head_ref }}\"" >>packages/meditrak-app/.env
+        run: echo -e "BETA_BRANCH=\"${{ github.head_ref }}\"" >>packages/meditrak-app/.env
 
       - name: Build release
         working-directory: packages/meditrak-app/android
