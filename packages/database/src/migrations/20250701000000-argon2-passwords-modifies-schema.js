@@ -54,8 +54,7 @@ exports.up = async function (db) {
     );
   }
 
-  await migrateUserAccounts();
-  await migrateApiClients();
+  await Promise.all([migrateUserAccounts(), migrateApiClients()]);
 
   // Preserve legacy salt for a given user so we can still authenticate them.
   // Once a user is migrated to Argon2, we set their legacy salt to NULL.
