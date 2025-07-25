@@ -132,7 +132,7 @@ Centralized gateway supporting multiple external data sources:
 
 ### Git Workflow
 
-- **Conventional Commits**: Standard commit message format
+- **Conventional Commits**: Standard commit message format. This is enforced by by CI: [/.github/workflows/check-pr-title.yaml](/.github/workflows/check-pr-title.yaml)
 - **Feature Branches**: Develop on feature branches, merge to dev, then dev is merged to master fortnightly as a "release"
 - **Pull Requests**: Required for all changes with code review
 - **Issue Tracking**: GitHub Issues and Linear for project management
