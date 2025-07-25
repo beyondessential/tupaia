@@ -2,11 +2,11 @@
 
 ## Project Purpose
 
-Tupaia is an open-source health data platform focused on mapping and analyzing health data across the Pacific region. Developed by Beyond Essential Systems (BES), Tupaia's mission is to bridge cultural differences and empower decision-making within health systems worldwide, particularly in remote and underserved areas.
+Tupaia is an open-source health data platform focused on mapping and analysing health data across the Pacific region. Developed by Beyond Essential Systems (BES), Tupaia's mission is to bridge cultural differences and empower decision-making within health systems worldwide, particularly in remote and underserved areas.
 
 **Key Focus Areas:**
 
-- Health data aggregation, analysis, and visualization
+- Health data aggregation, analysis, and visualisation
 - Pacific region health systems (countries, districts, facilities)
 - Remote settings data collection and management
 - Multi-platform health information systems
@@ -14,14 +14,14 @@ Tupaia is an open-source health data platform focused on mapping and analyzing h
 
 ## Architecture Overview
 
-Tupaia follows a **microservices architecture** built as a **yarn workspaces monorepo** with 30+ packages organized into three main categories:
+Tupaia follows a **microservices architecture** built as a **yarn workspaces monorepo** with 30+ packages organised into three main categories:
 
 ### 1. Platform Interfaces (Frontend Applications)
 
 React-based web applications that users interact with:
 
-- **Tupaia Web** - Main data visualization platform (tupaia.org)
-- **Tupaia DataTrak** - Offline PWA for data collection
+- **Tupaia Web** - Main data visualisation platform (tupaia.org)
+- **Tupaia DataTrak** - Offline-first web app for data collection
 - **Admin Panel** - Administrative interface for system management
 - **MediTrak** - React Native mobile app for field data collection (maintenance only - replaced by DataTrak)
 - **LESMIS** - Lao PDR Education and Sports Management Information System (no longer maintained)
@@ -49,12 +49,12 @@ React-based web applications that users interact with:
 Common packages used across the system:
 
 - `database` - PostgreSQL database models and migrations
-- `data-broker` - Centralized gateway to external data sources
+- `data-broker` - Centralised gateway to external data sources
 - `data-api` - Analytics table and data fetching
 - `ui-components` - Shared React components
-- `ui-chart-components` - Chart visualization components
+- `ui-chart-components` - Chart visualisation components
 - `ui-map-components` - Map-related components
-- `auth` - Authentication and authorization
+- `auth` - Authentication and authorisation
 - `utils` - Common utilities
 - `types` - TypeScript type definitions
 
@@ -65,7 +65,7 @@ Common packages used across the system:
 - **Runtime**: Node.js
 - **Framework**: Express.js
 - **Language**: TypeScript and JavaScript
-- **Database**: PostgreSQL with custom materialized views (mvrefresh)
+- **Database**: PostgreSQL with custom materialised views (mvrefresh)
 - **Testing**: Jest (with coverage), Mocha for some packages
 
 ### Frontend
@@ -80,7 +80,7 @@ Common packages used across the system:
 ### Database & Data
 
 - **Primary Database**: PostgreSQL
-- **Analytics**: Custom materialized view system using pg-mv-fast-refresh
+- **Analytics**: Custom materialised view system using pg-mv-fast-refresh
 - **Migrations**: db-migrate for schema changes
 
 ### Development Tools
@@ -107,18 +107,18 @@ Core concept representing fixed geographical locations arranged in hierarchies:
 - **Data Group**: Grouped set of data elements (e.g., survey)
 - **Analytic**: Data point for a data element (e.g., answer to question)
 - **Event**: Set of data points for each data element in a group (e.g., survey response)
-- **Analytics Table**: Materialized view containing all non-outdated analytics for efficient reporting
+- **Analytics Table**: Materialised view containing all non-outdated analytics for efficient reporting
 
-### Reports & Visualizations
+### Reports & Visualisations
 
 - **Reports**: Config-driven data transformations using transformation functions
 - **Transformation Functions**: Operations like `insertColumns`, `excludeRows` for table manipulation
-- **Map Overlays**: Geographic data visualizations
-- **Dashboards**: Collections of reports and visualizations
+- **Map Overlays**: Geographic data visualisations
+- **Dashboards**: Collections of reports and visualisations
 
 ### Data Broker Services
 
-Centralized gateway supporting multiple external data sources:
+Centralised gateway supporting multiple external data sources:
 
 - `tupaia` - Internal Tupaia data
 - `dhis` - DHIS2 integration
@@ -135,7 +135,7 @@ Centralized gateway supporting multiple external data sources:
 - **Conventional Commits**: Standard commit message format. This is enforced by by CI: [/.github/workflows/check-pr-title.yaml](/.github/workflows/check-pr-title.yaml)
 - **Feature Branches**: Develop on feature branches, merge to dev, then dev is merged to master fortnightly as a "release"
 - **Pull Requests**: Required for all changes with code review
-- **Issue Tracking**: GitHub Issues and Linear for project management
+- **Issue Tracking**: Linear for project management
 
 ### Database Conventions
 
