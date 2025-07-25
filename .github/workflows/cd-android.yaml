@@ -47,6 +47,9 @@ jobs:
         uses: bitwarden/sm-action@v2
         with:
           access_token: ${{ secrets.BW_ACCESS_TOKEN }}
+          # Bitwarden item ID for:
+          # Engineering/Tupaia General/Environment Variables/meditrak-app.production.env
+          # https://vault.bitwarden.com/#/vault?itemId=d0855893-bf0e-4bb0-875e-b2dd017cc060&action=view
           secrets: d0855893-bf0e-4bb0-875e-b2dd017cc060 > MEDITRAK_APP_ENV
 
       - name: Write .env file
