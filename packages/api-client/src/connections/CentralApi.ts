@@ -82,6 +82,12 @@ export class CentralApi extends BaseApi {
     return this.connection.get(endpoint, stringifyParams(params));
   }
 
+  /**
+   * Use instead of {@link fetchResources} when the URI is unreasonably long to avoid
+   * `414 Request-URI Too Large`.
+   */
+  public fetchResourcesWithPost = this.createResource;
+
   public async createResource(
     endpoint: string,
     params: Record<string, unknown>,
