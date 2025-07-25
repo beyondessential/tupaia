@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { createBearerHeader, randomEmail } from '@tupaia/utils';
+import { createBearerHeader, randomEmail, randomString } from '@tupaia/utils';
 
 import { configureEnv } from '../../configureEnv';
 import { getAuthorizationHeader, TestableApp } from '../testUtilities';
@@ -83,7 +83,7 @@ describe('Reset Password', () => {
         'No user object returned by repeated one time login',
       );
 
-      const password = chance.string({ length: 12 });
+      const password = randomString();
       const changePassword = await app.post('me/changePassword', {
         headers: {
           Authorization: createBearerHeader(accessToken),
