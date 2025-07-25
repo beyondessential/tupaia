@@ -6,8 +6,8 @@ export function randomEmail() {
   return chance.email({ domain: 'tupaia.org' });
 }
 
-export function randomString() {
-  return chance.string({ length: 7 });
+export function randomString(length = 10) {
+  return chance.string({ length });
 }
 
 export function randomIntBetween(min, max) {

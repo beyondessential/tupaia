@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 import Chance from 'chance';
+import sinon from 'sinon';
 
 import {
   encryptPassword,
@@ -9,7 +9,7 @@ import {
   verifyPassword,
 } from '@tupaia/auth';
 import { findOrCreateDummyCountryEntity, findOrCreateDummyRecord } from '@tupaia/database';
-import { createBasicHeader } from '@tupaia/utils';
+import { createBasicHeader, randomEmail, randomString } from '@tupaia/utils';
 
 import { BruteForceRateLimiter } from '../../../apiV2/authenticate/BruteForceRateLimiter';
 import { ConsecutiveFailsRateLimiter } from '../../../apiV2/authenticate/ConsecutiveFailsRateLimiter';
@@ -32,12 +32,13 @@ configureEnv();
 const sandbox = sinon.createSandbox();
 
 const chance = new Chance();
-const randomPassword = () => chance.string({ length: 10 }); // We require min length of 8
+
 const randomSalt = () =>
   `${chance.string({ length: 22, pool: 'abcdefghijklmnopqrstuvwxyz0123456789+/' })}==`;
+
 const randomCredentials = () => ({
-  email: chance.email(),
-  password: randomPassword(),
+  email: randomEmail(),
+  password: randomString(),
   salt: randomSalt(),
 });
 
@@ -45,8 +46,8 @@ const app = new TestableApp();
 const { models } = app;
 const { VERIFIED } = models.user.emailVerifiedStatuses;
 
-const userAccountPassword = randomPassword();
-const apiClientSecret = randomPassword();
+const userAccountPassword = randomString();
+const apiClientSecret = randomString();
 
 let userAccount;
 let apiClientUserAccount;
