@@ -16,7 +16,7 @@ The [Tupaia Contributing Guidelines](/.github/CONTRIBUTING.md) and [BES Contribu
 
 ## LLM Agent Usage
 
-For LLM agent setup and shared rules, see [llm/common-rules](https://github.com/beyondessential/llm-rules) for submodule usage instructions.
+For LLM agent setup and usage, see the [LLM Agent System documentation](./llm/README.md).
 
 ## Packages
 
