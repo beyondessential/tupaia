@@ -1,6 +1,7 @@
 import '@babel/polyfill';
 import http from 'http';
 import nodeSchedule from 'node-schedule';
+
 import {
   AnalyticsRefresher,
   EntityHierarchyCacher,
@@ -12,8 +13,10 @@ import {
   getDbMigrator,
   TaskAssigneeEmailer,
   TaskUpdateHandler,
+  buildEntityParentChildRelationIfEmpty,
 } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
+
 import { createPermissionsBasedMeditrakSyncQueue, MeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
@@ -121,6 +124,9 @@ configureEnv();
       await dbMigrator.up();
       winston.info('Database migrations complete');
 
+      await buildEntityParentChildRelationIfEmpty(models);
+      winston.info('Entity parent child relation built');
+    
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
         winston.info('Creating permissions based meditrak sync queue');
         // don't await this as it's not critical, and will hold up the process if it fails
