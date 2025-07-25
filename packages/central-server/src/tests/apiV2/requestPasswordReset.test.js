@@ -2,8 +2,8 @@ import { expect } from 'chai';
 
 import { createBearerHeader, randomEmail, randomString } from '@tupaia/utils';
 
-import { getAuthorizationHeader, TestableApp } from '../testUtilities';
 import { configureEnv } from '../../configureEnv';
+import { getAuthorizationHeader, TestableApp } from '../testUtilities';
 
 configureEnv();
 

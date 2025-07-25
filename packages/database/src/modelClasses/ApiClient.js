@@ -5,6 +5,19 @@ import { RECORDS } from '../records';
 
 export class ApiClientRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.API_CLIENT;
+  static #legacyHashPrefix = '$sha256+argon2id$';
+
+  /**
+   * A legacy hash is:
+   * - A SHA-256 hash…
+   * - …further hashed with Argon2…
+   * - …prefixed with `$sha256+argon2id$` instead of `$argon2id$`.
+   *
+   * @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js`
+   */
+  get hasLegacySecretKeyHash() {
+    return this.secret_key_hash.startsWith(ApiClientRecord.#legacyHashPrefix);
+  }
 
   async getUser() {
     const userId = this.user_account_id;

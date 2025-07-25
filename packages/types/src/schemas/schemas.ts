@@ -84107,16 +84107,13 @@ export const UserAccountSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_hash_old": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84189,16 +84186,13 @@ export const UserAccountCreateSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_hash_old": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84272,16 +84266,13 @@ export const UserAccountUpdateSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_hash_old": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
