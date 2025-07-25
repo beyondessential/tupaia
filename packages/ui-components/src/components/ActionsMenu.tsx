@@ -6,7 +6,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { EllipsisVertical } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
 import { ActionsMenuOptionType } from '../types';
@@ -29,7 +29,8 @@ const StyledMenuItem = styled(MuiMenuItem)`
   }
 `;
 
-const StyledMenuIcon = styled(MoreVertIcon)`
+const StyledMenuIcon = styled(EllipsisVertical)`
+  font-size: 1.5rem;
   color: ${props => props.theme.palette.text.tertiary};
 
   &:hover {

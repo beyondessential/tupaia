@@ -1,24 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
-import {
-  ActionsMenu as BaseActionsMenu,
-  ExportIcon,
-  ActionsMenuOptionType,
-} from '@tupaia/ui-components';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { ActionsMenu as BaseActionsMenu, ActionsMenuOptionType } from '@tupaia/ui-components';
+import { Upload as ExportIcon, MailPlus, MailCheck } from 'lucide-react';
 import { useDashboard, useDashboardMailingList } from '../utils';
 
 const StyledExportIcon = styled(ExportIcon)`
-  height: 0.9rem;
+  font-size: 1.125rem;
 `;
 
-const StyledAddCircleOutlineIcon = styled(AddCircleOutlineIcon)`
-  height: 1.2rem;
+const SubscribeIcon = styled(MailPlus)`
+  font-size: 1.125rem;
 `;
 
-const StyledCheckCircleIcon = styled(CheckCircleIcon)`
-  height: 1.2rem;
+const SubscribedIcon = styled(MailCheck)`
+  font-size: 1.125rem;
 `;
 
 export const ActionsMenu = () => {
@@ -34,7 +29,7 @@ export const ActionsMenu = () => {
     label: 'Export',
     action: toggleExportModal,
     // eslint-disable-next-line react/display-name
-    ActionIcon: () => <StyledExportIcon fill="white" />,
+    ActionIcon: StyledExportIcon,
     toolTipTitle: 'Export dashboard',
   };
   menuOptions.push(exportOption);
@@ -43,7 +38,7 @@ export const ActionsMenu = () => {
     if (mailingList.isSubscribed) {
       menuOptions.push({
         label: 'Subscribed',
-        ActionIcon: StyledCheckCircleIcon,
+        ActionIcon: SubscribedIcon,
         color: 'primary',
         action: toggleSubscribeModal,
         toolTipTitle: 'Unsubscribe from email updates',
@@ -52,7 +47,7 @@ export const ActionsMenu = () => {
       menuOptions.push({
         label: 'Subscribe',
         action: toggleSubscribeModal,
-        ActionIcon: StyledAddCircleOutlineIcon,
+        ActionIcon: SubscribeIcon,
         toolTipTitle: 'Subscribe to receive dashboard email updates',
       });
     }
