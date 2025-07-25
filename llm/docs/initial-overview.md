@@ -72,7 +72,7 @@ Common packages used across the system:
 ### Frontend
 
 - **Framework**: React
-- **UI Library**: Material-UI v4
+- **UI Library**: Material UI v4, but beginning to adopt v7
 - **Styling**: styled-components
 - **State Management**: React Query (@tanstack/react-query), Redux (in some apps, moving off)
 - **Build Tool**: Vite
