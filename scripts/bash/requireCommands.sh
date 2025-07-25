@@ -4,7 +4,9 @@
 # their paths), and which commands couldn’t be found.
 #
 # EXAMPLE USAGE
-#   path/to/requireCommands.sh echo jq python3
+#   if ! path/to/requireCommands.sh echo jq python3; then
+#     exit 1
+#   fi
 #
 # EXAMPLE OUTPUT
 #   ✓  echo     shell builtin
