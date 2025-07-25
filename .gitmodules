@@ -1,3 +1,6 @@
 [submodule "packages/data-api/scripts/pg-mv-fast-refresh"]
 	path = packages/data-api/scripts/pg-mv-fast-refresh
 	url = ../pg-mv-fast-refresh.git
+[submodule "llm/common-rules"]
+	path = llm/common-rules
+	url = https://github.com/beyondessential/llm-rules.git

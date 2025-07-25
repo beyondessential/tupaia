@@ -1,5 +1,11 @@
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
+import { useUser } from './api/queries';
+import { LoadingScreen } from './components';
+import { DEFAULT_URL, MAP_OVERLAY_EXPORT_ROUTE, MODAL_ROUTES, ROUTE_STRUCTURE } from './constants';
+import { Dashboard } from './features';
+import { MainLayout } from './layout';
+import { gaEvent, useEntityLink } from './utils';
 import {
   DashboardPDFExport,
   LandingPage,
@@ -7,12 +13,6 @@ import {
   ProjectPage,
   Unsubscribe,
 } from './views';
-import { Dashboard } from './features';
-import { MODAL_ROUTES, DEFAULT_URL, ROUTE_STRUCTURE, MAP_OVERLAY_EXPORT_ROUTE } from './constants';
-import { useUser } from './api/queries';
-import { MainLayout } from './layout';
-import { LoadingScreen } from './components';
-import { gaEvent, useEntityLink } from './utils';
 
 const HomeRedirect = () => {
   const { isLoggedIn, data } = useUser();
@@ -35,8 +35,9 @@ const HomeRedirect = () => {
  * Redirect to the dashboardGroupName of the project if a dashboard name is not provided
  */
 const ProjectPageDashboardRedirect = () => {
-  const url = useEntityLink();
-  return <Navigate to={url} replace />;
+  const to = useEntityLink();
+  if (to === undefined) return null;
+  return <Navigate to={to} replace />;
 };
 
 const UserPageRedirect = ({ modal }: { modal: MODAL_ROUTES }) => {

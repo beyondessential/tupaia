@@ -69,7 +69,7 @@ const formatColumnForReactTable = originalColumn => {
     type,
     disableSortBy: !source, // disable action columns from being sortable
     filterable: filterable !== false,
-    ...generateConfigForColumnType(type, actionConfig, undefined), // Add custom Cell/width/etc.
+    ...generateConfigForColumnType(type, actionConfig), // Add custom Cell/width/etc.
     ...restOfColumn,
   };
 };
