@@ -86,7 +86,7 @@ export class EntityParentChildRelationBuilder {
     const validChildIds = validParentChildIdPairs.map(pair => pair[1]);
 
     // Delete the obsolete relations for this level
-    // await this.deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs);
+    await this.deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs);
 
     const latestChildrenAlreadyCached = new Set([...childrenAlreadyCached, ...validChildIds]);
     return this.fetchAndCacheChildren(hierarchyId, validChildIds, latestChildrenAlreadyCached);
@@ -184,58 +184,57 @@ export class EntityParentChildRelationBuilder {
     const tempValidPairsTableName = `temp_valid_pairs_${generateId()}`;
     const tempParentIdsTableName = `temp_parent_ids_${generateId()}`;
     const newValidParentChildIdPairs = [...validParentChildIdPairs];
-    await this.models.database.wrapInTransaction(async transactingDatabase => {
-      try {
-        await transactingDatabase.executeSql(`
+    try {
+      await this.models.database.executeSql(`
           SELECT 1
         `);
 
-        await transactingDatabase.executeSql(`
+      await this.models.database.executeSql(`
           SELECT 2
         `);
 
-        // await transactingDatabase.executeSql(
-        //   `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
-        //     VALUES ${newValidParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
-        //     newValidParentChildIdPairs.flat(),
-        // );
+      // await transactingDatabase.executeSql(
+      //   `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id)
+      //     VALUES ${newValidParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
+      //     newValidParentChildIdPairs.flat(),
+      // );
 
-        // await transactingDatabase.executeSql(
-        //   `
-        //   INSERT INTO ${tempParentIdsTableName} (parent_id) 
-        //     VALUES ${parentIds.map(() => '(?)').join(', ')}`,
-        //   parentIds,
-        // );
+      // await transactingDatabase.executeSql(
+      //   `
+      //   INSERT INTO ${tempParentIdsTableName} (parent_id)
+      //     VALUES ${parentIds.map(() => '(?)').join(', ')}`,
+      //   parentIds,
+      // );
 
-        // console.log('parentIds', parentIds);
-        // console.log('validParentChildIdPairs', validParentChildIdPairs);
-        // console.log(
-        //   'parentIdsSql',
-        //   await transactingDatabase.executeSql(`SELECT * FROM ${tempParentIdsTableName}`),
-        // );
-        // console.log(
-        //   'validParentChildIdPairsSql',
-        //   await transactingDatabase.executeSql(`SELECT * FROM ${tempValidPairsTableName}`),
-        // );
+      // console.log('parentIds', parentIds);
+      // console.log('validParentChildIdPairs', validParentChildIdPairs);
+      // console.log(
+      //   'parentIdsSql',
+      //   await transactingDatabase.executeSql(`SELECT * FROM ${tempParentIdsTableName}`),
+      // );
+      // console.log(
+      //   'validParentChildIdPairsSql',
+      //   await transactingDatabase.executeSql(`SELECT * FROM ${tempValidPairsTableName}`),
+      // );
 
-        // await transactingDatabase.executeSql(
-        //   `
-        //   DELETE FROM entity_parent_child_relation
-        //   WHERE entity_hierarchy_id = ?
-        //     AND parent_id IN (SELECT parent_id FROM ${tempParentIdsTableName})
-        //     AND (parent_id, child_id) NOT IN (
-        //       SELECT parent_id, child_id FROM ${tempValidPairsTableName}
-        //     )
-        // `,
-        //   [hierarchyId],
-        // );
+      // await transactingDatabase.executeSql(
+      //   `
+      //   DELETE FROM entity_parent_child_relation
+      //   WHERE entity_hierarchy_id = ?
+      //     AND parent_id IN (SELECT parent_id FROM ${tempParentIdsTableName})
+      //     AND (parent_id, child_id) NOT IN (
+      //       SELECT parent_id, child_id FROM ${tempValidPairsTableName}
+      //     )
+      // `,
+      //   [hierarchyId],
+      // );
 
-        const newValidParentChildIdPairsTwice = [...newValidParentChildIdPairs];
+      const newValidParentChildIdPairsTwice = [...newValidParentChildIdPairs];
 
-        const valuesList = newValidParentChildIdPairsTwice.map(() => '(?, ?)').join(', ');
-        const values = newValidParentChildIdPairsTwice.flatMap(pair => pair);
-        await transactingDatabase.executeSql(
-          `
+      const valuesList = newValidParentChildIdPairsTwice.map(() => '(?, ?)').join(', ');
+      const values = newValidParentChildIdPairsTwice.flatMap(pair => pair);
+      await this.models.database.executeSql(
+        `
           DELETE FROM entity_parent_child_relation 
           WHERE entity_hierarchy_id = ? 
             AND parent_id IN (${parentIds.map(() => '?').join(', ')})
@@ -244,17 +243,16 @@ export class EntityParentChildRelationBuilder {
             )
           RETURNING parent_id, child_id
         `,
-          [hierarchyId, ...parentIds, ...values],
-        );
-      } finally {
-        // await transactingDatabase.executeSql(`
-        //   DROP TABLE IF EXISTS ${tempValidPairsTableName}
-        // `);
-        // await transactingDatabase.executeSql(`
-        //   DROP TABLE IF EXISTS ${tempParentIdsTableName}
-        // `);
-      }
-    });
+        [hierarchyId, ...parentIds, ...values],
+      );
+    } finally {
+      // await transactingDatabase.executeSql(`
+      //   DROP TABLE IF EXISTS ${tempValidPairsTableName}
+      // `);
+      // await transactingDatabase.executeSql(`
+      //   DROP TABLE IF EXISTS ${tempParentIdsTableName}
+      // `);
+    }
   }
 
   /**
