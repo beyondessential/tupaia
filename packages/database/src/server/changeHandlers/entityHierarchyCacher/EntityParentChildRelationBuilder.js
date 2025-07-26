@@ -251,12 +251,12 @@ export class EntityParentChildRelationBuilder {
           [hierarchyId, ...parentIds, ...values],
         );
       } finally {
-        await transactingDatabase.executeSql(`
-          DROP TABLE IF EXISTS ${tempValidPairsTableName}
-        `);
-        await transactingDatabase.executeSql(`
-          DROP TABLE IF EXISTS ${tempParentIdsTableName}
-        `);
+        // await transactingDatabase.executeSql(`
+        //   DROP TABLE IF EXISTS ${tempValidPairsTableName}
+        // `);
+        // await transactingDatabase.executeSql(`
+        //   DROP TABLE IF EXISTS ${tempParentIdsTableName}
+        // `);
       }
     });
   }
