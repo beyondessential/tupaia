@@ -185,12 +185,12 @@ export class EntityParentChildRelationBuilder {
     const newValidParentChildIdPairs = [...validParentChildIdPairs];
     await this.models.database.wrapInTransaction(async transactingDatabase => {
       try {
-        // await transactingDatabase.executeSql(`
-        //   CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
-        //     parent_id TEXT,
-        //     child_id TEXT
-        //   )
-        // `);
+        await transactingDatabase.executeSql(`
+          CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
+            parent_id TEXT,
+            child_id TEXT
+          )
+        `);
 
         await transactingDatabase.executeSql(`
           CREATE TEMPORARY TABLE ${tempParentIdsTableName} (
@@ -204,12 +204,12 @@ export class EntityParentChildRelationBuilder {
         //     newValidParentChildIdPairs.flat(),
         // );
 
-        await transactingDatabase.executeSql(
-          `
-          INSERT INTO ${tempParentIdsTableName} (parent_id) 
-            VALUES ${parentIds.map(() => '(?)').join(', ')}`,
-          parentIds,
-        );
+        // await transactingDatabase.executeSql(
+        //   `
+        //   INSERT INTO ${tempParentIdsTableName} (parent_id) 
+        //     VALUES ${parentIds.map(() => '(?)').join(', ')}`,
+        //   parentIds,
+        // );
 
         // console.log('parentIds', parentIds);
         // console.log('validParentChildIdPairs', validParentChildIdPairs);
