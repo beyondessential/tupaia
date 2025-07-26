@@ -180,24 +180,64 @@ export class EntityParentChildRelationBuilder {
    * @param {*} validParentChildIdPairs valid parent child id pairs to keep
    */
   async deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs) {
-    const valuesList = validParentChildIdPairs.map(() => '(?, ?)').join(', ');
-    const values = validParentChildIdPairs.flatMap(pair => pair);
+    const tempValidPairsTableName = `temp_valid_pairs_${generateId()}`;
+    const tempParentIdsTableName = `temp_parent_ids_${generateId()}`;
+    try {
+      await this.models.database.wrapInTransaction(async transactingDatabase => {
+        await transactingDatabase.executeSql(`
+          CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
+            parent_id TEXT,
+            child_id TEXT
+          )
+        `);
 
-    // Delete any relations that:
-    // - Belong to the parentIds
-    // - Are not in the validParentChildIdPairs - which are the latest valid relations for this level
-    await this.models.database.executeSql(
-      `
-      DELETE FROM entity_parent_child_relation 
-      WHERE entity_hierarchy_id = ? 
-        AND parent_id IN (${parentIds.map(() => '?').join(', ')})
-        AND (parent_id, child_id) NOT IN (
-          SELECT * FROM (VALUES ${valuesList}) AS pairs(parent_id, child_id)
-        )
-      RETURNING parent_id, child_id
-    `,
-      [hierarchyId, ...parentIds, ...values],
-    );
+        await transactingDatabase.executeSql(`
+          CREATE TEMPORARY TABLE ${tempParentIdsTableName} (
+            parent_id TEXT
+          )
+        `);
+
+        await transactingDatabase.executeSql(
+          `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
+            VALUES ${validParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
+          validParentChildIdPairs.flat(),
+        );
+
+        await transactingDatabase.executeSql(
+          `
+          INSERT INTO ${tempParentIdsTableName} (parent_id) 
+            VALUES ${parentIds.map(() => '(?)').join(', ')}`,
+          parentIds,
+        );
+
+        console.log('parentIds', parentIds);
+        console.log('validParentChildIdPairs', validParentChildIdPairs);
+        console.log(
+          'parentIdsSql',
+          await transactingDatabase.executeSql(`SELECT * FROM ${tempParentIdsTableName}`),
+        );
+        console.log(
+          'validParentChildIdPairsSql',
+          await transactingDatabase.executeSql(`SELECT * FROM ${tempValidPairsTableName}`),
+        );
+
+        await transactingDatabase.executeSql(
+          `
+          DELETE FROM entity_parent_child_relation 
+          WHERE entity_hierarchy_id = ? 
+            AND parent_id IN (SELECT parent_id FROM ${tempParentIdsTableName})
+            AND (parent_id, child_id) NOT IN (
+              SELECT parent_id, child_id FROM ${tempValidPairsTableName}
+            )
+        `,
+          [hierarchyId],
+        );
+      });
+    } finally {
+      // await this.models.database.executeSql(`
+      //   DROP TABLE IF EXISTS ${tempValidPairsTableName}
+      // `);
+    }
   }
 
   /**
