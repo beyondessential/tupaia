@@ -191,6 +191,12 @@ export class EntityParentChildRelationBuilder {
           )
         `);
 
+        await transactingDatabase.executeSql(`
+          CREATE TEMPORARY TABLE ${tempParentIdsTableName} (
+            parent_id TEXT
+          )
+        `);
+
         await transactingDatabase.executeSql(
           `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
             VALUES ${validParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
