@@ -211,16 +211,16 @@ export class EntityParentChildRelationBuilder {
         //   parentIds,
         // );
 
-        console.log('parentIds', parentIds);
-        console.log('validParentChildIdPairs', validParentChildIdPairs);
-        console.log(
-          'parentIdsSql',
-          await transactingDatabase.executeSql(`SELECT * FROM ${tempParentIdsTableName}`),
-        );
-        console.log(
-          'validParentChildIdPairsSql',
-          await transactingDatabase.executeSql(`SELECT * FROM ${tempValidPairsTableName}`),
-        );
+        // console.log('parentIds', parentIds);
+        // console.log('validParentChildIdPairs', validParentChildIdPairs);
+        // console.log(
+        //   'parentIdsSql',
+        //   await transactingDatabase.executeSql(`SELECT * FROM ${tempParentIdsTableName}`),
+        // );
+        // console.log(
+        //   'validParentChildIdPairsSql',
+        //   await transactingDatabase.executeSql(`SELECT * FROM ${tempValidPairsTableName}`),
+        // );
 
         // await transactingDatabase.executeSql(
         //   `
