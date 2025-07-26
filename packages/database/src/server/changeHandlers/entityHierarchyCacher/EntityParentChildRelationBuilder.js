@@ -198,18 +198,18 @@ export class EntityParentChildRelationBuilder {
           )
         `);
 
-        await transactingDatabase.executeSql(
-          `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
-            VALUES ${newValidParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
-            newValidParentChildIdPairs.flat(),
-        );
+        // await transactingDatabase.executeSql(
+        //   `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
+        //     VALUES ${newValidParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
+        //     newValidParentChildIdPairs.flat(),
+        // );
 
-        await transactingDatabase.executeSql(
-          `
-          INSERT INTO ${tempParentIdsTableName} (parent_id) 
-            VALUES ${parentIds.map(() => '(?)').join(', ')}`,
-          parentIds,
-        );
+        // await transactingDatabase.executeSql(
+        //   `
+        //   INSERT INTO ${tempParentIdsTableName} (parent_id) 
+        //     VALUES ${parentIds.map(() => '(?)').join(', ')}`,
+        //   parentIds,
+        // );
 
         console.log('parentIds', parentIds);
         console.log('validParentChildIdPairs', validParentChildIdPairs);
