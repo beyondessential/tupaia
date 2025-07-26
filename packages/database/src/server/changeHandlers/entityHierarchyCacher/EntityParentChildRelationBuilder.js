@@ -31,8 +31,9 @@ export class EntityParentChildRelationBuilder {
     // projects are the root entities of every full tree, so start with them
     const projectCriteria = hierarchyIds ? { entity_hierarchy_id: hierarchyIds } : {};
     const projects = await this.models.project.find(projectCriteria);
-    const projectTasks = projects.map(async project => this.rebuildRelationsForProject(project));
-    await Promise.all(projectTasks);
+    for (const project of projects) {
+      await this.rebuildRelationsForProject(project);
+    }
   }
 
   /**
