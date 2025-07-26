@@ -182,8 +182,8 @@ export class EntityParentChildRelationBuilder {
   async deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs) {
     const tempValidPairsTableName = `temp_valid_pairs_${generateId()}`;
     const tempParentIdsTableName = `temp_parent_ids_${generateId()}`;
-    try {
-      await this.models.database.wrapInTransaction(async transactingDatabase => {
+    await this.models.database.wrapInTransaction(async transactingDatabase => {
+      try {
         await transactingDatabase.executeSql(`
           CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
             parent_id TEXT,
@@ -247,12 +247,15 @@ export class EntityParentChildRelationBuilder {
         `,
           [hierarchyId, ...parentIds, ...values],
         );
-      });
-    } finally {
-      // await this.models.database.executeSql(`
-      //   DROP TABLE IF EXISTS ${tempValidPairsTableName}
-      // `);
-    }
+      } finally {
+        await transactingDatabase.executeSql(`
+          DROP TABLE IF EXISTS ${tempValidPairsTableName}
+        `);
+        await transactingDatabase.executeSql(`
+          DROP TABLE IF EXISTS ${tempParentIdsTableName}
+        `);
+      }
+    });
   }
 
   /**
