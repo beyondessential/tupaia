@@ -185,13 +185,13 @@ export class EntityParentChildRelationBuilder {
     const newValidParentChildIdPairs = [...validParentChildIdPairs];
     await this.models.database.wrapInTransaction(async transactingDatabase => {
       try {
-        await transactingDatabase.executeSql(`
-          SELECT 1
-        `);
+        // await transactingDatabase.executeSql(`
+        //   SELECT 1
+        // `);
 
-        await transactingDatabase.executeSql(`
-          SELECT 2
-        `);
+        // await transactingDatabase.executeSql(`
+        //   SELECT 2
+        // `);
 
         // await transactingDatabase.executeSql(
         //   `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
