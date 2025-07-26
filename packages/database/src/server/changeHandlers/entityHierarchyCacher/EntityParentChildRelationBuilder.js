@@ -86,7 +86,7 @@ export class EntityParentChildRelationBuilder {
     const validChildIds = validParentChildIdPairs.map(pair => pair[1]);
 
     // Delete the obsolete relations for this level
-    await this.deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs);
+    // await this.deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs);
 
     const latestChildrenAlreadyCached = new Set([...childrenAlreadyCached, ...validChildIds]);
     return this.fetchAndCacheChildren(hierarchyId, validChildIds, latestChildrenAlreadyCached);
