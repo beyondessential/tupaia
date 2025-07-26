@@ -223,8 +223,8 @@ export class EntityParentChildRelationBuilder {
 
         // await transactingDatabase.executeSql(
         //   `
-        //   DELETE FROM entity_parent_child_relation 
-        //   WHERE entity_hierarchy_id = ? 
+        //   DELETE FROM entity_parent_child_relation
+        //   WHERE entity_hierarchy_id = ?
         //     AND parent_id IN (SELECT parent_id FROM ${tempParentIdsTableName})
         //     AND (parent_id, child_id) NOT IN (
         //       SELECT parent_id, child_id FROM ${tempValidPairsTableName}
@@ -233,7 +233,9 @@ export class EntityParentChildRelationBuilder {
         //   [hierarchyId],
         // );
 
-        await this.models.database.executeSql(
+        const valuesList = validParentChildIdPairs.map(() => '(?, ?)').join(', ');
+        const values = validParentChildIdPairs.flatMap(pair => pair);
+        await transactingDatabase.executeSql(
           `
           DELETE FROM entity_parent_child_relation 
           WHERE entity_hierarchy_id = ? 
