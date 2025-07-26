@@ -184,42 +184,42 @@ export class EntityParentChildRelationBuilder {
     const tempParentIdsTableName = `temp_parent_ids_${generateId()}`;
     try {
       await this.models.database.wrapInTransaction(async transactingDatabase => {
-        await transactingDatabase.executeSql(`
-          CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
-            parent_id TEXT,
-            child_id TEXT
-          )
-        `);
+        // await transactingDatabase.executeSql(`
+        //   CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
+        //     parent_id TEXT,
+        //     child_id TEXT
+        //   )
+        // `);
 
-        await transactingDatabase.executeSql(`
-          CREATE TEMPORARY TABLE ${tempParentIdsTableName} (
-            parent_id TEXT
-          )
-        `);
+        // await transactingDatabase.executeSql(`
+        //   CREATE TEMPORARY TABLE ${tempParentIdsTableName} (
+        //     parent_id TEXT
+        //   )
+        // `);
 
-        await transactingDatabase.executeSql(
-          `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
-            VALUES ${validParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
-          validParentChildIdPairs.flat(),
-        );
+        // await transactingDatabase.executeSql(
+        //   `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
+        //     VALUES ${validParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
+        //   validParentChildIdPairs.flat(),
+        // );
 
-        await transactingDatabase.executeSql(
-          `
-          INSERT INTO ${tempParentIdsTableName} (parent_id) 
-            VALUES ${parentIds.map(() => '(?)').join(', ')}`,
-          parentIds,
-        );
+        // await transactingDatabase.executeSql(
+        //   `
+        //   INSERT INTO ${tempParentIdsTableName} (parent_id) 
+        //     VALUES ${parentIds.map(() => '(?)').join(', ')}`,
+        //   parentIds,
+        // );
 
-        console.log('parentIds', parentIds);
-        console.log('validParentChildIdPairs', validParentChildIdPairs);
-        console.log(
-          'parentIdsSql',
-          await transactingDatabase.executeSql(`SELECT * FROM ${tempParentIdsTableName}`),
-        );
-        console.log(
-          'validParentChildIdPairsSql',
-          await transactingDatabase.executeSql(`SELECT * FROM ${tempValidPairsTableName}`),
-        );
+        // console.log('parentIds', parentIds);
+        // console.log('validParentChildIdPairs', validParentChildIdPairs);
+        // console.log(
+        //   'parentIdsSql',
+        //   await transactingDatabase.executeSql(`SELECT * FROM ${tempParentIdsTableName}`),
+        // );
+        // console.log(
+        //   'validParentChildIdPairsSql',
+        //   await transactingDatabase.executeSql(`SELECT * FROM ${tempValidPairsTableName}`),
+        // );
 
         // await transactingDatabase.executeSql(
         //   `
