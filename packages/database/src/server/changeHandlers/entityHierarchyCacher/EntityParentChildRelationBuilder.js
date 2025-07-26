@@ -182,6 +182,7 @@ export class EntityParentChildRelationBuilder {
   async deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs) {
     const tempValidPairsTableName = `temp_valid_pairs_${generateId()}`;
     const tempParentIdsTableName = `temp_parent_ids_${generateId()}`;
+    const newValidParentChildIdPairs = [...validParentChildIdPairs];
     await this.models.database.wrapInTransaction(async transactingDatabase => {
       try {
         await transactingDatabase.executeSql(`
@@ -199,8 +200,8 @@ export class EntityParentChildRelationBuilder {
 
         await transactingDatabase.executeSql(
           `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
-            VALUES ${validParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
-          validParentChildIdPairs.flat(),
+            VALUES ${newValidParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
+            newValidParentChildIdPairs.flat(),
         );
 
         await transactingDatabase.executeSql(
@@ -233,8 +234,10 @@ export class EntityParentChildRelationBuilder {
         //   [hierarchyId],
         // );
 
-        const valuesList = validParentChildIdPairs.map(() => '(?, ?)').join(', ');
-        const values = validParentChildIdPairs.flatMap(pair => pair);
+        const newValidParentChildIdPairsTwice = [...newValidParentChildIdPairs];
+
+        const valuesList = newValidParentChildIdPairsTwice.map(() => '(?, ?)').join(', ');
+        const values = newValidParentChildIdPairsTwice.flatMap(pair => pair);
         await transactingDatabase.executeSql(
           `
           DELETE FROM entity_parent_child_relation 
