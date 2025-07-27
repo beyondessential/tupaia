@@ -225,7 +225,7 @@ export class EntityParentChildRelationBuilder {
       //       parent_id TEXT
       //     )
       //   `);
-      await sleep(100);
+      await sleep(20);
 
       const end = Date.now();
       console.log('time taken', end - start);
