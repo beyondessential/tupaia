@@ -51,6 +51,7 @@ export class Multilock {
   createLock(debugLabel) {
     const key = Symbol(debugLabel);
     this.locks.add(key);
+    console.log('adding lock', Array.from(this.locks));
 
     const unlock = () => {
       this.locks.delete(key);
