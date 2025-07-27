@@ -55,6 +55,7 @@ export class TupaiaDatabase extends BaseDatabase {
     try {
       for (let i = 0; i < handlers.length; i++) {
         try {
+          console.log('calling handler', handlers[i]);
           await handlers[i](change);
         } catch (e) {
           winston.error(e);
