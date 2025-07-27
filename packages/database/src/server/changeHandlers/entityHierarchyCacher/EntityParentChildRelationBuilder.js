@@ -41,6 +41,19 @@ export class EntityParentChildRelationBuilder {
    */
   async rebuildRelationsForProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
+    await this.models.database.executeSql(`
+      CREATE TABLE IF NOT EXISTS temp_valid_pairs_${hierarchyId} (
+        parent_id TEXT,
+        child_id TEXT
+      )
+    `);
+
+    await this.models.database.executeSql(`
+      CREATE TABLE IF NOT EXISTS temp_parent_ids_${hierarchyId} (
+        parent_id TEXT
+      )
+    `);
+
     await this.rebuildRelationsForEntity(hierarchyId, projectEntityId, project);
   }
 
@@ -256,21 +269,18 @@ export class EntityParentChildRelationBuilder {
       const values = newValidParentChildIdPairsTwice.flatMap(pair => pair);
 
       // console.log('bindingss', [...parentIds, ...values]);
-      await this.models.database.executeSql(`
-        DELETE FROM entity_parent_child_relation 
-        WHERE entity_hierarchy_id = ?
-          AND parent_id = ANY(?::text[])
-          AND NOT EXISTS (
-            SELECT 1 FROM json_array_elements(?::json) AS pair
-            WHERE (pair->>'parent_id') = parent_id 
-              AND (pair->>'child_id') = child_id
-          )
-        RETURNING parent_id, child_id
-      `, [
-        hierarchyId,
-        parentIds,
-        JSON.stringify(newValidParentChildIdPairsTwice)
-      ]);
+      await this.models.database.executeSql(
+        `
+          DELETE FROM entity_parent_child_relation 
+          WHERE entity_hierarchy_id = ? 
+            AND parent_id IN (${parentIds.map(() => '?').join(', ')})
+            AND (parent_id, child_id) NOT IN (
+              SELECT * FROM (VALUES ${valuesList}) AS pairs(parent_id, child_id)
+            )
+          RETURNING parent_id, child_id
+        `,
+        [hierarchyId, ...parentIds, ...values],
+      );
 
       // console.log(
       //   'entity_parent_child_relation after delete',
