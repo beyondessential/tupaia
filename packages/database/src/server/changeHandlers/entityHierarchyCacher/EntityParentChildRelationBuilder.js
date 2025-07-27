@@ -66,6 +66,7 @@ export class EntityParentChildRelationBuilder {
       ? await this.getRelationsViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached)
       : await this.getRelationsViaCanonical(hierarchyId, parentIds, childrenAlreadyCached);
 
+    console.log('hasEntityRelationLinks', hasEntityRelationLinks);
     console.log('childrenAlreadyCached', childrenAlreadyCached);
     console.log('entityParentChildRelations', entityParentChildRelations);
     if (entityParentChildRelations.length) {
@@ -127,10 +128,14 @@ export class EntityParentChildRelationBuilder {
    */
   async getRelationsViaCanonical(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
     const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
+    console.log('canonicalTypes', canonicalTypes);
     const entities = await this.models.entity.find({
       parent_id: parentIds,
       type: canonicalTypes,
     });
+    console.log('entities', entities);
+
+    console.log('no canonical types', await this.models.entity.find({ parent_id: parentIds }));
     return (
       entities
         .map(e => ({
