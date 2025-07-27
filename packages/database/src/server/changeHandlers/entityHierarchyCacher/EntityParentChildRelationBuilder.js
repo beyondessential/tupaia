@@ -185,14 +185,14 @@ export class EntityParentChildRelationBuilder {
     const newValidParentChildIdPairs = [...validParentChildIdPairs];
     try {
       await this.models.database.executeSql(`
-          CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
+          CREATE TABLE ${tempValidPairsTableName} (
             parent_id TEXT,
             child_id TEXT
           )
         `);
 
       await this.models.database.executeSql(`
-          CREATE TEMPORARY TABLE ${tempParentIdsTableName} (
+          CREATE TABLE ${tempParentIdsTableName} (
             parent_id TEXT
           )
         `);
