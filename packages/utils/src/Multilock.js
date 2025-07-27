@@ -13,7 +13,7 @@ export class Multilock {
     // wait for an unlock directly
     await this.wait();
 
-    console.log('this.locks', this.locks);
+    console.log('this.locks', Array.from(this.locks));
     // then wait the debounce limit
     await new Promise(resolve => setTimeout(resolve, debounce));
 
