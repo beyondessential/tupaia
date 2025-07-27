@@ -47,6 +47,7 @@ export class TupaiaDatabase extends BaseDatabase {
   }
 
   async notifyChangeHandlers(change) {
+    if (change.record_id === 'entity_aaa_test') {
     console.log('createLock', change);
     const unlock = this.handlerLock.createLock(change.record_id);
     const handlers = this.getHandlersForChange(change);

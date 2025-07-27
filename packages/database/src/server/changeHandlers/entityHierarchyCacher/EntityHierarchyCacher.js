@@ -57,6 +57,7 @@ export class EntityHierarchyCacher extends ChangeHandler {
   }
 
   async handleChanges(transactingModels, rebuildJobs) {
+    console.log('starting to rebuild subtrees');
     // get the subtrees to delete, then run the delete
     const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
     await subtreeRebuilder.rebuildSubtrees(rebuildJobs);

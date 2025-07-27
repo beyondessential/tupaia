@@ -13,7 +13,6 @@ export class Multilock {
     // wait for an unlock directly
     await this.wait();
 
-    console.log('this.locks', Array.from(this.locks));
     // then wait the debounce limit
     await new Promise(resolve => setTimeout(resolve, debounce));
 
@@ -51,7 +50,6 @@ export class Multilock {
   createLock(debugLabel) {
     const key = Symbol(debugLabel);
     this.locks.add(key);
-    console.log('adding lock', Array.from(this.locks));
 
     const unlock = () => {
       this.locks.delete(key);

@@ -40,6 +40,7 @@ describe('EntityHierarchyCacher', () => {
     await subtreeRebuilder.buildAndCacheProject(project);
   };
   const assertRelationsMatch = async (projectCode, expectedAncestorDescendantRelations) => {
+    console.log('waiting for change handlers');
     await models.database.waitForAllChangeHandlers();
     console.log(
       'entity_parent_child_relation after delete in assertRelationsMatch',
