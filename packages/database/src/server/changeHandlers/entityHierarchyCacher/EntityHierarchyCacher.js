@@ -71,5 +71,7 @@ export class EntityHierarchyCacher extends ChangeHandler {
         rootEntityId,
       })),
     );
+
+    console.log("ok it's done");
   }
 }
