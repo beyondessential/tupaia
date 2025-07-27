@@ -88,7 +88,7 @@ export class EntityParentChildRelationBuilder {
     await this.deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs);
 
     const latestChildrenAlreadyCached = new Set([...childrenAlreadyCached, ...validChildIds]);
-    return this.fetchAndCacheChildren(hierarchyId, validChildIds, latestChildrenAlreadyCached);
+    return await this.fetchAndCacheChildren(hierarchyId, validChildIds, latestChildrenAlreadyCached);
   }
 
   /**
