@@ -185,11 +185,16 @@ export class EntityParentChildRelationBuilder {
     const newValidParentChildIdPairs = [...validParentChildIdPairs];
     try {
       await this.models.database.executeSql(`
-          SELECT 1
+          CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
+            parent_id TEXT,
+            child_id TEXT
+          )
         `);
 
       await this.models.database.executeSql(`
-          SELECT 2
+          CREATE TEMPORARY TABLE ${tempParentIdsTableName} (
+            parent_id TEXT
+          )
         `);
 
       // await transactingDatabase.executeSql(
@@ -244,6 +249,9 @@ export class EntityParentChildRelationBuilder {
         `,
         [hierarchyId, ...parentIds, ...values],
       );
+    } catch (error) {
+      console.error(error);
+      throw error;
     } finally {
       // await transactingDatabase.executeSql(`
       //   DROP TABLE IF EXISTS ${tempValidPairsTableName}
