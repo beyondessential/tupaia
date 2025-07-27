@@ -100,6 +100,7 @@ export class EntityParentChildRelationBuilder {
 
     const validChildIds = validParentChildIdPairs.map(pair => pair[1]);
 
+    console.log('validParentChildIdPairs', validParentChildIdPairs);
     // Delete the obsolete relations for this level
     await this.deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs);
 
@@ -208,8 +209,9 @@ export class EntityParentChildRelationBuilder {
     // console.log('tempParentIdsTableName', tempParentIdsTableName);
     try {
 
+      console.log('hierarchyId', hierarchyId);
       // console.log('withinTransaction', this.models.database.connection.isTransaction);
-      // const start = Date.now();
+      const start = Date.now();
       await this.models.database.executeSql(`
           CREATE TEMPORARY TABLE IF NOT EXISTS ${tempValidPairsTableName} (
             parent_id TEXT,
@@ -223,8 +225,8 @@ export class EntityParentChildRelationBuilder {
           )
         `);
 
-      // const end = Date.now();
-      // console.log('time taken', end - start);
+      const end = Date.now();
+      console.log('time taken', end - start);
         // console.log('ok broooo');
 
       // await transactingDatabase.executeSql(
