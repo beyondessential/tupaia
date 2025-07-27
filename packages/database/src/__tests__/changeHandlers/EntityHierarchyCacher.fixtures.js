@@ -258,6 +258,10 @@ export const HIERARCHY_STORM_AFTER_MULTIPLE_RELATIONS_DELETED = expandEntityRela
   ['aa', 'aab', 1],
 ]);
 
+// Hierarchy ocean is completely canonical, with the default canonical types
+//          a
+//    aa         ab
+// aaa  aab   aba  abb
 // within the canonical hierarchy, the parent_id changes move aaa up to directly below a, and abb
 // across to live underneath aaa
 //       a
