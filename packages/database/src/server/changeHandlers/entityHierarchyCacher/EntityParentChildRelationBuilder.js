@@ -253,7 +253,6 @@ export class EntityParentChildRelationBuilder {
       const values = newValidParentChildIdPairsTwice.flatMap(pair => pair);
 
       console.log('bindingss', [...parentIds, ...values]);
-      console.log('============');
       await this.models.database.executeSql(
         `
           DELETE FROM entity_parent_child_relation 
@@ -266,6 +265,15 @@ export class EntityParentChildRelationBuilder {
         `,
         [hierarchyId, ...parentIds, ...values],
       );
+
+      console.log(
+        'entity_parent_child_relation after delete',
+        await this.models.entityParentChildRelation.find({
+          entity_hierarchy_id: hierarchyId,
+          child_id: 'entity_aaa_test',
+        }),
+      );
+      console.log('============');
     } catch (error) {
       console.error(error);
       throw error;
