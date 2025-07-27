@@ -187,18 +187,20 @@ export class EntityParentChildRelationBuilder {
     console.log('tempValidPairsTableName', tempValidPairsTableName);
     console.log('tempParentIdsTableName', tempParentIdsTableName);
     try {
-      // await this.models.database.executeSql(`
-      //     CREATE TABLE ${tempValidPairsTableName} (
-      //       parent_id TEXT,
-      //       child_id TEXT
-      //     )
-      //   `);
 
-      // await this.models.database.executeSql(`
-      //     CREATE TABLE ${tempParentIdsTableName} (
-      //       parent_id TEXT
-      //     )
-      //   `);
+      console.log('withinTransaction', this.models.database.connection.isTransaction);
+      await this.models.database.executeSql(`
+          CREATE TABLE ${tempValidPairsTableName} (
+            parent_id TEXT,
+            child_id TEXT
+          )
+        `);
+
+      await this.models.database.executeSql(`
+          CREATE TABLE ${tempParentIdsTableName} (
+            parent_id TEXT
+          )
+        `);
 
       // await transactingDatabase.executeSql(
       //   `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id)
