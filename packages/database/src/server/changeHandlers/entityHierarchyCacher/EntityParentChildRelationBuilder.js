@@ -41,18 +41,18 @@ export class EntityParentChildRelationBuilder {
    */
   async rebuildRelationsForProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
-    await this.models.database.executeSql(`
-      CREATE TABLE IF NOT EXISTS temp_valid_pairs_${hierarchyId} (
-        parent_id TEXT,
-        child_id TEXT
-      )
-    `);
+    // await this.models.database.executeSql(`
+    //   CREATE TABLE IF NOT EXISTS temp_valid_pairs_${hierarchyId} (
+    //     parent_id TEXT,
+    //     child_id TEXT
+    //   )
+    // `);
 
-    await this.models.database.executeSql(`
-      CREATE TABLE IF NOT EXISTS temp_parent_ids_${hierarchyId} (
-        parent_id TEXT
-      )
-    `);
+    // await this.models.database.executeSql(`
+    //   CREATE TABLE IF NOT EXISTS temp_parent_ids_${hierarchyId} (
+    //     parent_id TEXT
+    //   )
+    // `);
 
     await this.rebuildRelationsForEntity(hierarchyId, projectEntityId, project);
   }
@@ -210,18 +210,18 @@ export class EntityParentChildRelationBuilder {
 
       // console.log('withinTransaction', this.models.database.connection.isTransaction);
       // const start = Date.now();
-      // await this.models.database.executeSql(`
-      //     CREATE TABLE ${tempValidPairsTableName} (
-      //       parent_id TEXT,
-      //       child_id TEXT
-      //     )
-      //   `);
+      await this.models.database.executeSql(`
+          CREATE TEMPORARY TABLE IF NOT EXISTS ${tempValidPairsTableName} (
+            parent_id TEXT,
+            child_id TEXT
+          )
+        `);
 
-      // await this.models.database.executeSql(`
-      //     CREATE TABLE ${tempParentIdsTableName} (
-      //       parent_id TEXT
-      //     )
-      //   `);
+      await this.models.database.executeSql(`
+          CREATE TEMPORARY TABLE IF NOT EXISTS ${tempParentIdsTableName} (
+            parent_id TEXT
+          )
+        `);
 
       // const end = Date.now();
       // console.log('time taken', end - start);
@@ -293,12 +293,12 @@ export class EntityParentChildRelationBuilder {
       console.error(error);
       throw error;
     } finally {
-      // await transactingDatabase.executeSql(`
-      //   DROP TABLE IF EXISTS ${tempValidPairsTableName}
-      // `);
-      // await transactingDatabase.executeSql(`
-      //   DROP TABLE IF EXISTS ${tempParentIdsTableName}
-      // `);
+      await this.models.database.executeSql(`
+        DROP TABLE IF EXISTS ${tempValidPairsTableName}
+      `);
+      await this.models.database.executeSql(`
+        DROP TABLE IF EXISTS ${tempParentIdsTableName}
+      `);
     }
   }
 
