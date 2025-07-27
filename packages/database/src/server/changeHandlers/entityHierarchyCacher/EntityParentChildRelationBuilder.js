@@ -258,7 +258,7 @@ export class EntityParentChildRelationBuilder {
       // console.log('bindingss', [...parentIds, ...values]);
       await this.models.database.executeSql(`
         DELETE FROM entity_parent_child_relation 
-        WHERE entity_hierarchy_id = 
+        WHERE entity_hierarchy_id = ?
           AND parent_id = ANY(?::text[])
           AND NOT EXISTS (
             SELECT 1 FROM json_array_elements(?::json) AS pair
