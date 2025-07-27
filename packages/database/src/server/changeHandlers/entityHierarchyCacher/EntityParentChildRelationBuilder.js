@@ -245,6 +245,8 @@ export class EntityParentChildRelationBuilder {
 
       const valuesList = newValidParentChildIdPairsTwice.map(() => '(?, ?)').join(', ');
       const values = newValidParentChildIdPairsTwice.flatMap(pair => pair);
+
+      console.log('bindingss', [...parentIds, ...values]);
       await this.models.database.executeSql(
         `
           DELETE FROM entity_parent_child_relation 
