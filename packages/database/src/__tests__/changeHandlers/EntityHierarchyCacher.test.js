@@ -32,14 +32,12 @@ const TEST_DEBOUNCE_TIME = 50; // short debounce time so tests run more quickly
 describe('EntityHierarchyCacher', () => {
   const models = getTestModels();
   const hierarchyCacher = new EntityHierarchyCacher(models);
+  const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(models);
   hierarchyCacher.setDebounceTime(TEST_DEBOUNCE_TIME); // short debounce time so tests run more quickly
 
   const buildAndCacheProject = async projectCode => {
     const project = await models.project.findOne({ code: projectCode });
-    await models.wrapInTransaction(async transactingModels => {
-      const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
-      await subtreeRebuilder.buildAndCacheProject(project);
-    });
+    await subtreeRebuilder.buildAndCacheProject(project);
   };
   const assertRelationsMatch = async (projectCode, expectedAncestorDescendantRelations) => {
     await models.database.waitForAllChangeHandlers();
