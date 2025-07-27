@@ -269,7 +269,6 @@ export class EntityParentChildRelationBuilder {
       console.log(
         'entity_parent_child_relation after delete',
         await this.models.entityParentChildRelation.find({
-          entity_hierarchy_id: hierarchyId,
           child_id: 'entity_aaa_test',
         }),
       );
