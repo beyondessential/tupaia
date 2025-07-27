@@ -66,9 +66,9 @@ export class EntityParentChildRelationBuilder {
       ? await this.getRelationsViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached)
       : await this.getRelationsViaCanonical(hierarchyId, parentIds, childrenAlreadyCached);
 
-    console.log('hasEntityRelationLinks', hasEntityRelationLinks);
-    console.log('childrenAlreadyCached', childrenAlreadyCached);
-    console.log('entityParentChildRelations', entityParentChildRelations);
+    // console.log('hasEntityRelationLinks', hasEntityRelationLinks);
+    // console.log('childrenAlreadyCached', childrenAlreadyCached);
+    // console.log('entityParentChildRelations', entityParentChildRelations);
     if (entityParentChildRelations.length) {
       await this.insertRelations(entityParentChildRelations);
     }
@@ -191,11 +191,11 @@ export class EntityParentChildRelationBuilder {
     const tempParentIdsTableName = `temp_parent_ids_${generateId()}`;
     const newValidParentChildIdPairs = [...validParentChildIdPairs];
 
-    console.log('tempValidPairsTableName', tempValidPairsTableName);
-    console.log('tempParentIdsTableName', tempParentIdsTableName);
+    // console.log('tempValidPairsTableName', tempValidPairsTableName);
+    // console.log('tempParentIdsTableName', tempParentIdsTableName);
     try {
 
-      console.log('withinTransaction', this.models.database.connection.isTransaction);
+      // console.log('withinTransaction', this.models.database.connection.isTransaction);
       await this.models.database.executeSql(`
           CREATE TABLE ${tempValidPairsTableName} (
             parent_id TEXT,
@@ -209,7 +209,7 @@ export class EntityParentChildRelationBuilder {
           )
         `);
 
-        console.log('ok broooo');
+        // console.log('ok broooo');
 
       // await transactingDatabase.executeSql(
       //   `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id)
@@ -224,8 +224,8 @@ export class EntityParentChildRelationBuilder {
       //   parentIds,
       // );
 
-      console.log('parentIds', parentIds);
-      console.log('validParentChildIdPairs', validParentChildIdPairs);
+      // console.log('parentIds', parentIds);
+      // console.log('validParentChildIdPairs', validParentChildIdPairs);
       // console.log(
       //   'parentIdsSql',
       //   await transactingDatabase.executeSql(`SELECT * FROM ${tempParentIdsTableName}`),
@@ -252,7 +252,7 @@ export class EntityParentChildRelationBuilder {
       const valuesList = newValidParentChildIdPairsTwice.map(() => '(?, ?)').join(', ');
       const values = newValidParentChildIdPairsTwice.flatMap(pair => pair);
 
-      console.log('bindingss', [...parentIds, ...values]);
+      // console.log('bindingss', [...parentIds, ...values]);
       await this.models.database.executeSql(
         `
           DELETE FROM entity_parent_child_relation 
@@ -266,13 +266,13 @@ export class EntityParentChildRelationBuilder {
         [hierarchyId, ...parentIds, ...values],
       );
 
-      console.log(
-        'entity_parent_child_relation after delete',
-        await this.models.entityParentChildRelation.find({
-          child_id: 'entity_aaa_test',
-        }),
-      );
-      console.log('============');
+      // console.log(
+      //   'entity_parent_child_relation after delete',
+      //   await this.models.entityParentChildRelation.find({
+      //     child_id: 'entity_aaa_test',
+      //   }),
+      // );
+      // console.log('============');
     } catch (error) {
       console.error(error);
       throw error;
