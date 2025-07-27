@@ -98,7 +98,9 @@ describe('EntityHierarchyCacher', () => {
   it('deletes and rebuilds subtrees across all hierarchies if a parent_id is changed', async () => {
     // update the parent_id of an entity, and make sure the subtree in the database is rebuilt
     await models.entity.updateById('entity_aaa_test', { parent_id: 'entity_a_test' });
+    await models.database.waitForAllChangeHandlers();
     await models.entity.updateById('entity_abb_test', { parent_id: 'entity_aaa_test' });
+    await models.database.waitForAllChangeHandlers();
     // console.log('check updateeee', await models.entity.find({ parent_id: 'entity_a_test' }));
     // console.log('yayaya', await models.entity.findById('entity_aaa_test'));
     await assertRelationsMatch('project_ocean_test', HIERARCHY_OCEAN_AFTER_PARENT_ID_CHANGES);
