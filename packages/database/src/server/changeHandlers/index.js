@@ -6,3 +6,4 @@ export { TaskCompletionHandler } from './TaskCompletionHandler';
 export { TaskCreationHandler } from './TaskCreationHandler';
 export { TaskAssigneeEmailer } from './TaskAssigneeEmailer';
 export { TaskUpdateHandler } from './TaskUpdateHandler';
+export { buildEntityParentChildRelationIfEmpty } from './entityHierarchyCacher';
