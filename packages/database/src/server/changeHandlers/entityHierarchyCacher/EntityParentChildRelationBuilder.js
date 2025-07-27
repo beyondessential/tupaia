@@ -183,6 +183,9 @@ export class EntityParentChildRelationBuilder {
     const tempValidPairsTableName = `temp_valid_pairs_${generateId()}`;
     const tempParentIdsTableName = `temp_parent_ids_${generateId()}`;
     const newValidParentChildIdPairs = [...validParentChildIdPairs];
+
+    console.log('tempValidPairsTableName', tempValidPairsTableName);
+    console.log('tempParentIdsTableName', tempParentIdsTableName);
     try {
       await this.models.database.executeSql(`
           CREATE TABLE ${tempValidPairsTableName} (
