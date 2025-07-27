@@ -43,6 +43,12 @@ describe('EntityHierarchyCacher', () => {
   };
   const assertRelationsMatch = async (projectCode, expectedAncestorDescendantRelations) => {
     await models.database.waitForAllChangeHandlers();
+    console.log(
+      'entity_parent_child_relation after delete in assertRelationsMatch',
+      await models.entityParentChildRelation.find({
+        child_id: 'entity_aaa_test',
+      }),
+    );
     const project = await models.project.findOne({ code: projectCode });
     const { entity_hierarchy_id: hierarchyId } = project;
     const ancestorDescendantRelationsForProject = await models.ancestorDescendantRelation.find({
