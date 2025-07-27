@@ -202,6 +202,8 @@ export class EntityParentChildRelationBuilder {
           )
         `);
 
+        console.log('ok broooo');
+
       // await transactingDatabase.executeSql(
       //   `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id)
       //     VALUES ${newValidParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
@@ -215,8 +217,8 @@ export class EntityParentChildRelationBuilder {
       //   parentIds,
       // );
 
-      // console.log('parentIds', parentIds);
-      // console.log('validParentChildIdPairs', validParentChildIdPairs);
+      console.log('parentIds', parentIds);
+      console.log('validParentChildIdPairs', validParentChildIdPairs);
       // console.log(
       //   'parentIdsSql',
       //   await transactingDatabase.executeSql(`SELECT * FROM ${tempParentIdsTableName}`),
