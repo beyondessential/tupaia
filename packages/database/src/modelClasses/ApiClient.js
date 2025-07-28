@@ -1,4 +1,5 @@
-import { DatabaseError } from '@tupaia/utils';
+import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
+import { DatabaseError, requireEnv } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -6,6 +7,12 @@ import { RECORDS } from '../records';
 export class ApiClientRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.API_CLIENT;
   static #legacyHashPrefix = '$sha256+argon2id$';
+
+  /**
+   * @privateRemarks Environment variable doesn’t exist at init time; could otherwise be static.
+   * @deprecated
+   */
+  #apiClientSalt = requireEnv('API_CLIENT_SALT');
 
   /**
    * A legacy hash is:
@@ -17,6 +24,42 @@ export class ApiClientRecord extends DatabaseRecord {
    */
   get hasLegacySecretKeyHash() {
     return this.secret_key_hash.startsWith(ApiClientRecord.#legacyHashPrefix);
+  }
+
+  /**
+   * Attempts authenticating an API client using SHA-256 plus Argon2, then migrates the client to
+   * Argon2 upon success.
+   *
+   * @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js`
+   *
+   * @param secretKey {string}
+   * @returns {Promise<boolean>} `true` if and only if the client is authenticated and migrated to
+   * Argon2.
+   */
+  async verifySecretKey(secretKey) {
+    if (this.hasLegacySecretKeyHash) {
+      const hash = this.secret_key_hash.replace(ApiClientRecord.#legacyHashPrefix, '$argon2id$');
+      const hashedInput = sha256EncryptPassword(secretKey, this.#apiClientSalt);
+      const isVerifiedSha256 = await verifyPassword(hash, hashedInput);
+
+      if (isVerifiedSha256) {
+        const argon2Hash = await encryptPassword(secretKey);
+        await this.model.updateById(this.id, { secret_key_hash: argon2Hash });
+      }
+
+      return isVerifiedSha256;
+    }
+
+    try {
+      return await verifyPassword(secretKey, this.secret_key_hash);
+    } catch (e) {
+      if (e.code === 'InvalidArg') {
+        throw new DatabaseError(
+          `Malformed secret key for API client ${this.username}. Must be in PHC String Format.`,
+        );
+      }
+      throw e;
+    }
   }
 
   async getUser() {

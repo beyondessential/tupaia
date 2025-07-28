@@ -1,8 +1,4 @@
-import {
-  getTokenClaimsFromBearerAuth,
-  getUserAndPassFromBasicAuth,
-  verifyPassword,
-} from '@tupaia/auth';
+import { getTokenClaimsFromBearerAuth, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 
 const getApiClientUserFromBasicAuth = async (models, authHeader) => {
   const { username, password: secretKey } = getUserAndPassFromBasicAuth(authHeader);
@@ -11,11 +7,10 @@ const getApiClientUserFromBasicAuth = async (models, authHeader) => {
   const apiClient = await models.apiClient.findOne({
     username,
   });
-  if (!apiClient) {
-    return undefined;
-  }
-  const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
-  return verified ? apiClient?.getUser() : undefined;
+  if (!apiClient) return undefined;
+
+  const verified = await apiClient.verifySecretKey(secretKey);
+  return verified ? await apiClient.getUser() : undefined;
 };
 
 const getUserFromBearerAuth = async (models, authHeader) => {
