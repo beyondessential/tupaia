@@ -49,7 +49,8 @@
     "package:start:vite": "cd \"$INIT_CWD\" && vite --config \"../../vite.config.js\"",
     "package:start-stack": "scripts/bash/pm2startInline.sh",
     "package:storybook:start": "cd \"$INIT_CWD\" && storybook dev -p 6006 -c ../../.storybook",
-    "package:storybook:build": "cd \"$INIT_CWD\" && storybook build -c .storybook"
+    "package:storybook:build": "cd \"$INIT_CWD\" && storybook build -c .storybook",
+    "preinstall": "npx only-allow yarn"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
