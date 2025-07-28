@@ -193,9 +193,6 @@ export class TupaiaDatabase {
           const { scheduledPromise } = await handlers[i](change);
           if (scheduledPromise) {
             scheduledPromises.push(scheduledPromise);
-            scheduledPromise.finally(() => {
-              this.activeHandlerPromises.delete(scheduledPromise);
-            });
           }
         } catch (e) {
           winston.error(e);
@@ -211,15 +208,7 @@ export class TupaiaDatabase {
   }
 
   async waitForAllChangeHandlersCompleted() {
-    console.log('this.changeHandlers', this.changeHandlers);
-    const changeHandlerPromises = Object.values(this.changeHandlers)
-      .map(collectionHandlers => Object.values(collectionHandlers))
-      .flat()
-      .map(changeHandler => changeHandler.waitForScheduledHandlerCompletion());
-
-    if (changeHandlerPromises.length > 0) {
-      await Promise.all(changeHandlerPromises);
-    }
+    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
   }
 
   getChangeHandlersForCollection(collectionName) {
