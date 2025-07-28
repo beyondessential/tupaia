@@ -204,9 +204,10 @@ export class TupaiaDatabase {
   }
 
   async waitForAllChangeHandlersCompleted() {
-    const changeHandlerPromises = Object.values(this.changeHandlers).map(changeHandler =>
-      changeHandler.waitForScheduledHandlerCompletion(),
-    );
+    const changeHandlerPromises = Object.values(this.changeHandlers)
+      .map(collectionHandlers => Object.values(collectionHandlers))
+      .flat()
+      .map(changeHandler => changeHandler.waitForScheduledHandlerCompletion());
 
     if (changeHandlerPromises.length > 0) {
       await Promise.all(changeHandlerPromises);
