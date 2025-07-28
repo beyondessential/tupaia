@@ -55,13 +55,18 @@ export class TupaiaDatabase extends BaseDatabase {
     try {
       for (let i = 0; i < handlers.length; i++) {
         try {
-          console.log('calling handler', handlers[i]);
+          if (change.record_id === 'entity_aaa_test') {
+            console.log('calling handler', handlers[i].name);
+          }
           await handlers[i](change);
         } catch (e) {
           winston.error(e);
         }
       }
     } finally {
+      if (change.record_id === 'entity_aaa_test') {
+        console.log('unlocking');
+      }
       unlock();
     }
   }

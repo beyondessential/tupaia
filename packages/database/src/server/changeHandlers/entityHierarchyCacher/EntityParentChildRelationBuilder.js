@@ -213,19 +213,19 @@ export class EntityParentChildRelationBuilder {
       console.log('hierarchyId', hierarchyId);
       // console.log('withinTransaction', this.models.database.connection.isTransaction);
       const start = Date.now();
-      // await this.models.database.executeSql(`
-      //     CREATE TEMPORARY TABLE IF NOT EXISTS ${tempValidPairsTableName} (
-      //       parent_id TEXT,
-      //       child_id TEXT
-      //     )
-      //   `);
+      await this.models.database.executeSql(`
+          CREATE TEMPORARY TABLE IF NOT EXISTS ${tempValidPairsTableName} (
+            parent_id TEXT,
+            child_id TEXT
+          )
+        `);
 
-      // await this.models.database.executeSql(`
-      //     CREATE TEMPORARY TABLE IF NOT EXISTS ${tempParentIdsTableName} (
-      //       parent_id TEXT
-      //     )
-      //   `);
-      await sleep(20);
+      await this.models.database.executeSql(`
+          CREATE TEMPORARY TABLE IF NOT EXISTS ${tempParentIdsTableName} (
+            parent_id TEXT
+          )
+        `);
+      // await sleep(20);
 
       const end = Date.now();
       console.log('time taken', end - start);
