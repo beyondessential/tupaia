@@ -204,6 +204,7 @@ export class TupaiaDatabase {
   }
 
   async waitForAllChangeHandlersCompleted() {
+    console.log('this.changeHandlers', this.changeHandlers);
     const changeHandlerPromises = Object.values(this.changeHandlers)
       .map(collectionHandlers => Object.values(collectionHandlers))
       .flat()
