@@ -1,5 +1,8 @@
+import { verify } from '@node-rs/argon2';
+
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
 import { DatabaseError, requireEnv } from '@tupaia/utils';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -40,7 +43,7 @@ export class ApiClientRecord extends DatabaseRecord {
     if (this.hasLegacySecretKeyHash) {
       const hash = this.secret_key_hash.replace(ApiClientRecord.#legacyHashPrefix, '$argon2id$');
       const hashedInput = sha256EncryptPassword(secretKey, this.#apiClientSalt);
-      const isVerifiedSha256 = await verifyPassword(hash, hashedInput);
+      const isVerifiedSha256 = await verify(hash, hashedInput);
 
       if (isVerifiedSha256) {
         const argon2Hash = await encryptPassword(secretKey);
