@@ -1,6 +1,7 @@
 import { verify } from '@node-rs/argon2';
 
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
+import { DatabaseError } from '@tupaia/utils';
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -61,8 +62,17 @@ export class UserRecord extends DatabaseRecord {
       return isVerifiedSha256;
     }
 
-    // Verify password using Argon2 directly
-    return await verifyPassword(password, this.password_hash);
+    try {
+      // Verify password using Argon2 directly
+      return await verifyPassword(password, this.password_hash);
+    } catch (e) {
+      if (e.code === 'InvalidArg') {
+        throw new DatabaseError(
+          `Malformed password for user ${this.email}. Must be in PHC String Format.`,
+        );
+      }
+      throw e;
+    }
   }
 
   checkIsEmailUnverified() {
