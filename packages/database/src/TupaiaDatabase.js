@@ -186,16 +186,20 @@ export class TupaiaDatabase {
   async notifyChangeHandlers(change) {
     const unlock = this.handlerLock.createLock(change.record_id);
     const handlers = this.getHandlersForChange(change);
+    const scheduledPromises = [];
     try {
       for (let i = 0; i < handlers.length; i++) {
         try {
-          await handlers[i](change);
+          const { scheduledPromise } = await handlers[i](change);
+          if (scheduledPromise) {
+            scheduledPromises.push(scheduledPromise);
+          }
         } catch (e) {
           winston.error(e);
         }
       }
     } finally {
-      unlock();
+      Promise.all(scheduledPromises).finally(() => unlock());
     }
   }
 
