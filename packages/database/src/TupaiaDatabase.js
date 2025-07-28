@@ -199,6 +199,7 @@ export class TupaiaDatabase {
         }
       }
     } finally {
+      // Don't await the scheduled promises, so that we don't block the change handler from completing
       Promise.all(scheduledPromises).finally(() => unlock());
     }
   }

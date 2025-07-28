@@ -114,22 +114,6 @@ export class ChangeHandler {
     return this.scheduledPromise;
   }
 
-  /**
-   * Wait for all currently queued changes to be processed
-   * @returns {Promise<void>}
-   */
-  async waitForScheduledHandlerCompletion() {
-    // Wait for any currently scheduled handler to complete
-    if (this.scheduledPromise) {
-      await this.scheduledPromise;
-    }
-
-    // Wait for any active handler to complete
-    if (this.activePromise) {
-      await this.activePromise;
-    }
-  }
-
   executeScheduledHandler = async () => {
     // remove timeout so any changes added now get scheduled anew
     this.scheduledTimeout = null;
