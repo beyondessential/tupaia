@@ -50,7 +50,9 @@ export class Authenticator {
     const apiClient = await this.models.apiClient.findOne({
       username,
     });
-    if (!apiClient) throw new UnauthenticatedError('Couldn’t find API client');
+    if (!apiClient) {
+      throw new UnauthenticatedError(`Couldn’t find API client with username ${username}`);
+    }
 
     try {
       const isVerified = apiClient.hasLegacySecretKeyHash
