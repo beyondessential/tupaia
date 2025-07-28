@@ -193,6 +193,13 @@ export class Dhis2Error extends RespondingError {
   }
 }
 
+export class UnprocessableContentError extends RespondingError {
+  constructor(message) {
+    super(message, 422);
+    this.name = 'UnprocessableContentError';
+  }
+}
+
 export class CustomError extends RespondingError {
   constructor(jsonFields, extraJsonFields) {
     const json = {
