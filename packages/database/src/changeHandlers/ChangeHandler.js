@@ -78,8 +78,8 @@ export class ChangeHandler {
           // Translate changes and schedule their handling as a batch at a later stage
           const translatedChanges = await translator(changeDetails);
           this.changeQueue.push(...translatedChanges);
-          this.scheduleChangeQueueHandler();
-          return null; // Don't return the scheduled promise, so that it doesn't block processing other changes
+          const scheduledPromise = this.scheduleChangeQueueHandler();
+          return { scheduledPromise };
         }),
     );
   }
