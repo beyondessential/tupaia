@@ -64,7 +64,7 @@ describe('SurveyResponseOutdater', () => {
   };
 
   const assertOutdatedStatuses = async expectedByResponseId => {
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     const surveyResponses = await models.surveyResponse.find({
       id: Object.keys(expectedByResponseId),
     });

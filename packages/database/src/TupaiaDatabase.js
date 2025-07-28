@@ -199,8 +199,18 @@ export class TupaiaDatabase {
     }
   }
 
-  async waitForAllChangeHandlers() {
+  async waitForAllChangeHandlersTriggered() {
     return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
+  }
+
+  async waitForAllChangeHandlersCompleted() {
+    const changeHandlerPromises = Object.values(this.changeHandlers).map(changeHandler =>
+      changeHandler.waitForScheduledHandlerCompletion(),
+    );
+
+    if (changeHandlerPromises.length > 0) {
+      await Promise.all(changeHandlerPromises);
+    }
   }
 
   getChangeHandlersForCollection(collectionName) {

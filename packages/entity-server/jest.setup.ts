@@ -10,8 +10,8 @@ beforeAll(async () => {
 
 afterAll(async () => {
   const database = getTestDatabase();
-  await database.waitForAllChangeHandlers();
+  await database.waitForAllChangeHandlersCompleted();
   await clearTestData(database);
-  await database.waitForAllChangeHandlers();
+  await database.waitForAllChangeHandlersCompleted();
   await database.closeConnections();
 });

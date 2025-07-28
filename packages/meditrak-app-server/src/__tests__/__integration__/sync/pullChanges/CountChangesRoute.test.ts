@@ -57,9 +57,9 @@ describe('changes/count', () => {
   it('should return the total number of update changes with no "since"', async () => {
     await upsertDummyQuestion(models);
     const questionCreateAndDeleted = await upsertDummyQuestion(models);
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     await models.question.deleteById(questionCreateAndDeleted.id);
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const response = await app.get('changes/count', {
       headers: {
@@ -78,7 +78,7 @@ describe('changes/count', () => {
     }
 
     // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     const response = await app.get('changes/count', {
       headers: {
         Authorization: authHeader,
@@ -110,7 +110,7 @@ describe('changes/count', () => {
     await oneSecondSleep();
 
     // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const timestampBeforeSecondUpdate = Date.now();
     await oneSecondSleep();
@@ -124,7 +124,7 @@ describe('changes/count', () => {
     await oneSecondSleep();
 
     // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const timestampBeforeFirstDelete = Date.now();
     await oneSecondSleep();
@@ -140,7 +140,7 @@ describe('changes/count', () => {
     await oneSecondSleep();
 
     // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const timestampBeforeSecondDelete = Date.now();
     await oneSecondSleep();
@@ -153,7 +153,7 @@ describe('changes/count', () => {
     }
 
     // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     // If syncing from before the first update, should only need to sync the number of records that
     // actually need to be added. No need to know about deletes of records we never integrated
@@ -227,7 +227,7 @@ describe('changes/count', () => {
     }
 
     // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     const entitySupportedResponse = await app.get('changes/count', {
       headers: {
         Authorization: authHeader,
@@ -266,7 +266,7 @@ describe('changes/count', () => {
     }
 
     // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     const entityChangesResponse = await app.get('changes/count', {
       headers: {
         Authorization: authHeader,

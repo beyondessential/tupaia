@@ -156,7 +156,7 @@ describe('TaskCreationHandler', () => {
     const { survey } = await buildTaskCreationSurvey(models, config);
     const response = await buildSurveyResponse(models, survey.code, answers);
 
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     const tasks = await models.task.find({ entity_id: entityId }, { sort: ['created_at DESC'] });
 
     const {
@@ -198,7 +198,7 @@ describe('TaskCreationHandler', () => {
       },
     });
     await buildSurveyResponse(models, survey.code, { TEST_CODE_01: 'No', TEST_CODE_00: entityId });
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     const afterTasks = await models.task.find({ survey_id: taskSurveyId });
     expect(beforeTasks.length).toEqual(afterTasks.length);
   });

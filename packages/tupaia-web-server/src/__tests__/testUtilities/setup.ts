@@ -38,7 +38,7 @@ export const setupTestData = async () => {
 
   hierarchyCacher.listenForChanges();
   await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
-  await models.database.waitForAllChangeHandlers();
+  await models.database.waitForAllChangeHandlersCompleted();
   hierarchyCacher.stopListeningForChanges();
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;

@@ -140,9 +140,9 @@ describe('changes (GET)', () => {
   it('should return the total number of update changes with no "since"', async () => {
     const questionCreated = await upsertDummyQuestion(models);
     const questionCreateAndDeleted = await upsertDummyQuestion(models);
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     await models.question.deleteById(questionCreateAndDeleted.id);
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const response = await app.get('changes', {
       headers: {
@@ -165,7 +165,7 @@ describe('changes (GET)', () => {
       newQuestions.push(await upsertDummyQuestion(models));
     }
 
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const response = await app.get('changes', {
       headers: {
@@ -202,7 +202,7 @@ describe('changes (GET)', () => {
     await oneSecondSleep();
 
     // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const timestampBeforeSecondUpdate = Date.now();
     await oneSecondSleep();
@@ -216,7 +216,7 @@ describe('changes (GET)', () => {
     await oneSecondSleep();
 
     // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const timestampBeforeFirstDelete = Date.now();
     await oneSecondSleep();
@@ -239,7 +239,7 @@ describe('changes (GET)', () => {
     await oneSecondSleep();
 
     // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const timestampBeforeSecondDelete = Date.now();
     await oneSecondSleep();
@@ -258,7 +258,7 @@ describe('changes (GET)', () => {
       await models.question.deleteById(questionsInSecondUpdate[i].id);
     }
 
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     // If syncing from before the first update, should only need to sync the number of records that
     // actually need to be added. No need to know about deletes of records we never integrated
@@ -350,7 +350,7 @@ describe('changes (GET)', () => {
       newEntities.push(await upsertDummyRecord(models.entity, {}));
     }
 
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const entitySupportedResponse = await app.get('changes', {
       headers: {
@@ -394,7 +394,7 @@ describe('changes (GET)', () => {
       newQuestions.push(await upsertDummyQuestion(models));
     }
 
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const entityChangesResponse = await app.get('changes', {
       headers: {
@@ -451,7 +451,7 @@ describe('changes (GET)', () => {
       newQuestions.push(await upsertDummyQuestion(models));
     }
 
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const expectedResults = await Promise.all(
       newQuestions.map(questionCreated => recordToChange('question', questionCreated, 'update')),
@@ -489,7 +489,7 @@ describe('changes (GET)', () => {
       app.setDefaultQueryParam('appVersion', PERMISSIONS_BASED_SYNC_MIN_APP_VERSION);
 
       testData = await insertPermissionsBasedSyncTestData(models);
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
     });
 
     describe('initial sync', () => {
@@ -549,7 +549,7 @@ describe('changes (GET)', () => {
 
       const { survey, questions, surveyScreen, surveyScreenComponents } =
         await buildAndInsertSurvey(models, LEGACY_SSC_SURVEY as any);
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
 
       const response = await app.get('changes', {
         headers: {

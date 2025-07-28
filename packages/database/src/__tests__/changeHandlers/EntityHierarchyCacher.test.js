@@ -41,7 +41,7 @@ describe('EntityHierarchyCacher', () => {
     await subtreeRebuilder.buildAndCacheProject(project);
   };
   const assertRelationsMatch = async (projectCode, relations) => {
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     const project = await models.project.findOne({ code: projectCode });
     const { entity_hierarchy_id: hierarchyId } = project;
     const relationsForProject = await models.ancestorDescendantRelation.find({

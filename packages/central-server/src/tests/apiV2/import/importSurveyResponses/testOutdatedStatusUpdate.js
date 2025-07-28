@@ -100,7 +100,7 @@ export const testOutdatedStatusUpdate = () => {
 
     expect(response.statusCode).to.equal(200, response.error.text);
 
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     // Statuses listed in the same order as the corresponding survey responses in the import spreadsheet
     await assertOutdatedStatuses('Test_Yearly', [true, true, false, false, false, false]);
     await assertOutdatedStatuses('Test_Monthly', [true, true, false, false, false, false]);

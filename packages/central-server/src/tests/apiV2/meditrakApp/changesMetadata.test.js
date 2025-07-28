@@ -35,7 +35,7 @@ describe('GET /changes/metadata', async () => {
     meditrakSyncQueue.listenForChanges();
 
     testData = await insertPermissionsBasedSyncTestData();
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     dataImportedTime = Date.now();
   });
 
@@ -172,7 +172,7 @@ describe('GET /changes/metadata', async () => {
         await survey4.save();
 
         await oneSecondSleep();
-        await models.database.waitForAllChangeHandlers();
+        await models.database.waitForAllChangeHandlersCompleted();
 
         app.revokeAccess();
         await app.grantAccess({
@@ -202,7 +202,7 @@ describe('GET /changes/metadata', async () => {
         await survey3.save();
 
         await oneSecondSleep();
-        await models.database.waitForAllChangeHandlers();
+        await models.database.waitForAllChangeHandlersCompleted();
 
         app.revokeAccess();
         await app.grantAccess({

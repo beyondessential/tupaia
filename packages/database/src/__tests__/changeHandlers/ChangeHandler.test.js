@@ -51,24 +51,24 @@ describe('ChangeHandler', () => {
 
   it('is not triggered if a record type with no translator is mutated', async () => {
     await upsertDummyRecord(models.indicator);
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     expect(changeHandler.handleChanges).toHaveBeenCalledTimes(0);
   });
 
   it('is triggered if a record type with a translator is mutated', async () => {
     await upsertDummyRecord(models.project);
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     expect(changeHandler.handleChanges).toHaveBeenCalledTimes(1);
 
     await upsertDummyRecord(models.user);
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     expect(changeHandler.handleChanges).toHaveBeenCalledTimes(2);
   });
 
   it('translates changes before handling them', async () => {
     const record = await upsertDummyRecord(models.project);
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     expect(changeHandler.handleChanges).toHaveBeenCalledOnceWith(expect.any(Object), [record.id]);
   });
 
@@ -92,7 +92,7 @@ describe('ChangeHandler', () => {
     await models.project.delete({ id: projectIds[1] });
     await sleep(sleepTime);
 
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     expect(changeHandler.handleChanges).toHaveBeenCalledTimes(1);
   });
 
@@ -107,12 +107,12 @@ describe('ChangeHandler', () => {
     };
 
     const projectIds1 = await submitProjectBatch();
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     expect(changeHandler.handleChanges).toHaveBeenCalledOnceWith(expect.any(Object), projectIds1);
     changeHandler.resetMocks();
 
     const projectIds2 = await submitProjectBatch();
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     expect(changeHandler.handleChanges).toHaveBeenCalledOnceWith(expect.any(Object), projectIds2);
   });
 
@@ -204,7 +204,7 @@ describe('ChangeHandler', () => {
 
     it('retries to handle a batch up to 3 times, then stops trying and logs an error', async () => {
       await upsertDummyRecord(models.project, { id: rejectedId });
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
 
       expect(changeHandler.handleChanges).toHaveBeenCalledTimes(3);
       expect(changeHandler.changeQueue).toHaveLength(0);
@@ -217,7 +217,7 @@ describe('ChangeHandler', () => {
     it('the whole batch fails if an error occurs', async () => {
       await upsertDummyRecord(models.project, { id: rejectedId });
       await upsertDummyRecord(models.project, { id: acceptedId });
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
 
       expect(changeHandler.handleChanges).toHaveBeenCalledTimes(3); // 3 retry attempts
       expect(changeHandler.changeQueue).toHaveLength(0);
@@ -231,7 +231,7 @@ describe('ChangeHandler', () => {
       await upsertDummyRecord(models.project, { id: rejectedId });
       await sleep(2 * DEBOUNCE_TIME);
       await upsertDummyRecord(models.project, { id: acceptedId });
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
 
       // 3 failed attempts for the rejected project + 1 successful for the accepted project
       expect(changeHandler.handleChanges).toHaveBeenCalledTimes(4);

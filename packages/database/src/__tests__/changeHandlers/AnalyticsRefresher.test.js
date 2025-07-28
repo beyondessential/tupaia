@@ -34,7 +34,7 @@ describe('AnalyticsRefresher', () => {
     expectedAnalytics,
     codesToFetch = TEST_DATA.question.map(q => q.code),
   ) => {
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     const analyticsInDb = await models.analytics.find({
       data_element_code: codesToFetch,
     });

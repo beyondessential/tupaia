@@ -49,7 +49,7 @@ describe('TaskCompletionHandler', () => {
   };
 
   const assertTaskStatus = async (taskId, expectedStatus, expectedSurveyResponseId) => {
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     const task = await models.task.findById(taskId);
 
     expect(task.status).toBe(expectedStatus);

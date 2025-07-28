@@ -144,7 +144,7 @@ describe('TaskUpdateHandler', () => {
 
   it('Updates a task entity_id when a survey response is updated with a new entity_id', async () => {
     await models.surveyResponse.updateById(surveyResponse.id, { entity_id: newEntityId });
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
 
     const afterTask = await models.task.findOne({ initial_request_id: surveyResponse.id });
     expect(afterTask.entity_id).toEqual(newEntityId);
@@ -165,7 +165,7 @@ describe('TaskUpdateHandler', () => {
         entity_id: newEntityId,
       },
     );
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     const afterTask = await models.task.findOne({ initial_request_id: surveyResponse.id });
     expect(afterTask.entity_id).toEqual(initialEntityId);
   });

@@ -55,7 +55,7 @@ describe('changes/metadata', () => {
     grantUserAccess(userId);
 
     testData = await insertPermissionsBasedSyncTestData(models);
-    await models.database.waitForAllChangeHandlers();
+    await models.database.waitForAllChangeHandlersCompleted();
     dataImportedTime = Date.now();
   });
 
@@ -211,7 +211,7 @@ describe('changes/metadata', () => {
         await survey4.save();
 
         await oneSecondSleep();
-        await models.database.waitForAllChangeHandlers();
+        await models.database.waitForAllChangeHandlersCompleted();
 
         revokeAccess();
         grantUserAccess(userId, {
@@ -245,7 +245,7 @@ describe('changes/metadata', () => {
         await survey3.save();
 
         await oneSecondSleep();
-        await models.database.waitForAllChangeHandlers();
+        await models.database.waitForAllChangeHandlersCompleted();
 
         revokeAccess();
         grantUserAccess(userId, {

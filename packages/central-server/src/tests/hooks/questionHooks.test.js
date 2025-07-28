@@ -111,7 +111,7 @@ describe('Question hooks', () => {
         },
       });
 
-      await database.waitForAllChangeHandlers();
+      await database.waitForAllChangeHandlersCompleted();
 
       // expect the hook to have been called
       expect(spy.called).to.be.true;
@@ -137,7 +137,7 @@ describe('Question hooks', () => {
         },
       });
 
-      await database.waitForAllChangeHandlers();
+      await database.waitForAllChangeHandlersCompleted();
 
       expect(answerValues.length).to.equal(2);
       expect(answerValues.some(x => x === 'Answer A')).to.be.true;
@@ -159,7 +159,7 @@ describe('Question hooks', () => {
           },
         });
 
-        await database.waitForAllChangeHandlers();
+        await database.waitForAllChangeHandlersCompleted();
 
         expect(spy.called).to.be.true;
 
@@ -176,7 +176,7 @@ describe('Question hooks', () => {
           },
         });
 
-        await database.waitForAllChangeHandlers();
+        await database.waitForAllChangeHandlersCompleted();
 
         expect(spy2.called).to.be.true;
       });
@@ -195,7 +195,7 @@ describe('Question hooks', () => {
           },
         });
 
-        await database.waitForAllChangeHandlers();
+        await database.waitForAllChangeHandlersCompleted();
 
         expect(spy.called).to.be.true;
 
@@ -212,7 +212,7 @@ describe('Question hooks', () => {
           },
         });
 
-        await database.waitForAllChangeHandlers();
+        await database.waitForAllChangeHandlersCompleted();
 
         expect(spy2.called).to.be.false;
       });
@@ -240,7 +240,7 @@ describe('Question hooks', () => {
         },
       });
 
-      await database.waitForAllChangeHandlers();
+      await database.waitForAllChangeHandlersCompleted();
 
       // expect the hook to have been called
       const entity = await models.entity.findById(ENTITY_ID);
@@ -266,7 +266,7 @@ describe('Question hooks', () => {
         },
       });
 
-      await database.waitForAllChangeHandlers();
+      await database.waitForAllChangeHandlersCompleted();
 
       const entity = await models.entity.findById(ENTITY_ID);
       expect(entity.image_url).to.equal(TEST_URL);
@@ -297,7 +297,7 @@ describe('Question hooks', () => {
         });
 
         const newValue = { banana_population: TEST_BANANA_POPULATION_VALUE };
-        await database.waitForAllChangeHandlers();
+        await database.waitForAllChangeHandlersCompleted();
 
         const entity = await models.entity.findById(ENTITY_ID);
         expect(entity.attributes).to.deep.equal(newValue);
@@ -329,7 +329,7 @@ describe('Question hooks', () => {
         const newValue = {
           banana_population: AFTER_BANANA_POPULATION_VALUE,
         };
-        await database.waitForAllChangeHandlers();
+        await database.waitForAllChangeHandlersCompleted();
 
         const entity = await models.entity.findById(ENTITY3_ID);
         expect(entity.attributes).to.deep.equal(newValue);
@@ -362,7 +362,7 @@ describe('Question hooks', () => {
           test_attribute: 'test_value',
           banana_population: TEST_BANANA_POPULATION_VALUE,
         };
-        await database.waitForAllChangeHandlers();
+        await database.waitForAllChangeHandlersCompleted();
 
         const entity = await models.entity.findById(ENTITY2_ID);
         expect(entity.attributes).to.deep.equal(newValue);
@@ -395,7 +395,7 @@ describe('Question hooks', () => {
           },
         });
 
-        await database.waitForAllChangeHandlers();
+        await database.waitForAllChangeHandlersCompleted();
 
         const entity = await models.entity.findOne({ code: 'test_code' });
         expect(entity).to.not.be.null;
@@ -426,7 +426,7 @@ describe('Question hooks', () => {
           },
         });
 
-        await database.waitForAllChangeHandlers();
+        await database.waitForAllChangeHandlersCompleted();
 
         const midEntity = await models.entity.findOne({ code: DUP_CODE });
         expect(midEntity).to.not.be.null;
@@ -448,7 +448,7 @@ describe('Question hooks', () => {
           },
         });
 
-        await database.waitForAllChangeHandlers();
+        await database.waitForAllChangeHandlersCompleted();
 
         const entity = await models.entity.findOne({ code: DUP_CODE });
         expect(entity).to.not.be.null;

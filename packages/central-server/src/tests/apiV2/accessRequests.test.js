@@ -62,7 +62,7 @@ describe('Access Requests', () => {
       expect(response2.statusCode).to.equal(200);
       expect(response2.body).to.deep.equal({ message: 'Successfully updated accessRequests' });
 
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
 
       const permission = await models.userEntityPermission.findOne({
         user_id: userId,
@@ -95,7 +95,7 @@ describe('Access Requests', () => {
       expect(response2.statusCode).to.equal(200);
       expect(response2.body).to.deep.equal({ message: 'Successfully updated accessRequests' });
 
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
 
       const permission = await models.userEntityPermission.findOne({
         user_id: userId,

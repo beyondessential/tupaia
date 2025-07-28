@@ -57,7 +57,7 @@ describe('GET /changes/*', async () => {
       // Wait one second for the triggers to have properly added the changes to the queue
       await oneSecondSleep();
       // Wait for the triggers to have properly added the changes to the queue
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
       const response = await app.get(`changes/count?since=${since}`);
       expect(response.body.changeCount).to.equal(numberOfQuestionsToAdd);
     });
@@ -83,7 +83,7 @@ describe('GET /changes/*', async () => {
       await oneSecondSleep();
 
       // Wait for the triggers to have properly added the changes to the queue
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
 
       const timestampBeforeSecondUpdate = Date.now();
       await oneSecondSleep();
@@ -97,7 +97,7 @@ describe('GET /changes/*', async () => {
       await oneSecondSleep();
 
       // Wait for the triggers to have properly added the changes to the queue
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
 
       const timestampBeforeFirstDelete = Date.now();
       await oneSecondSleep();
@@ -113,7 +113,7 @@ describe('GET /changes/*', async () => {
       await oneSecondSleep();
 
       // Wait for the triggers to have properly added the changes to the queue
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
 
       const timestampBeforeSecondDelete = Date.now();
       await oneSecondSleep();
@@ -127,7 +127,7 @@ describe('GET /changes/*', async () => {
 
       // Wait for the triggers to have properly added the changes to the queue
       await oneSecondSleep();
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
 
       // If syncing from before the first update, should only need to sync the number of records that
       // actually need to be added. No need to know about deletes of records we never integrated
@@ -171,7 +171,7 @@ describe('GET /changes/*', async () => {
 
       await oneSecondSleep();
       // Wait for the triggers to have properly added the changes to the queue
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
       let response = await app.get(`changes/count?since=${since}&appVersion=0.0.1`);
       expect(response.body.changeCount).to.equal(1);
 
@@ -212,7 +212,7 @@ describe('GET /changes/*', async () => {
 
       await oneSecondSleep();
       // Wait for the triggers to have properly added the changes to the queue
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
       const responseForLegacyVersion = await app.get(`changes?since=${since}&appVersion=1.12.124`);
 
       expect(JSON.parse(responseForLegacyVersion.body[5].record.config)).to.deep.equal({
@@ -242,7 +242,7 @@ describe('GET /changes/*', async () => {
 
       await oneSecondSleep();
       // Wait for the triggers to have properly added the changes to the queue
-      await models.database.waitForAllChangeHandlers();
+      await models.database.waitForAllChangeHandlersCompleted();
       const responseForLegacyVersion = await app.get(`changes?since=${since}&appVersion=1.13.129`);
       expect(JSON.parse(responseForLegacyVersion.body[4].record.config)).to.deep.equal(
         nonLegacyConfig,
