@@ -1,25 +1,8 @@
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { NotFoundError } from '@tupaia/utils';
 import { hasBESAdminAccess } from '../../permissions';
 import { getPermissionListWithWildcard } from '../utilities';
 
-export const assertDataTableGETPermissions = async (accessPolicy, models, dataTableId) => {
-  // User requires access to any permission group
-  const authorized = await hasDataTablePermissions(accessPolicy, models, dataTableId);
-  if (!authorized) {
-    throw new PermissionsError('You don’t have permission to view this data table');
-  }
-  return true;
-};
-
-export const assertDataTableEditPermissions = async (accessPolicy, models, dataTableId) => {
-  const authorized = await hasDataTablePermissions(accessPolicy, models, dataTableId);
-  if (!authorized) {
-    throw new PermissionsError('You don’t have permission to edit this data table');
-  }
-  return true;
-};
-
-const hasDataTablePermissions = async (accessPolicy, models, dataTableId) => {
+export const hasDataTablePermissions = async (accessPolicy, models, dataTableId) => {
   const dataTable = await models.dataTable.findById(dataTableId);
   if (!dataTable) {
     throw new NotFoundError(`No data table exists with ID ${dataTableId}`);
