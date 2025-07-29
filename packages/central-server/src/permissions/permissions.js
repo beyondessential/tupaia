@@ -32,7 +32,7 @@ const assertPermissions = async (req, assertion) => {
   try {
     await assertion(accessPolicy);
   } catch (e) {
-    winston.error(`Assertion ${assertion.name} failed`);
+    winston.error(`Assertion ${assertion.name || '(anonymous)'} failed`);
     throw new PermissionsError(e.message);
   }
 };
