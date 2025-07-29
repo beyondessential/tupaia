@@ -10,7 +10,7 @@ export class CreateDataTables extends CreateHandler {
     await this.assertPermissions(
       assertAnyPermissions(
         [assertBESAdminAccess, assertVizBuilderAccess],
-        'You need either BES Admin or Viz Builder User permission to create a data table',
+        'BES Admin or Viz Builder User permission required to create a data table',
       ),
     );
   }
