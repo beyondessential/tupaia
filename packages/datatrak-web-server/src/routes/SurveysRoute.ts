@@ -1,6 +1,6 @@
 import camelcaseKeys from 'camelcase-keys';
 import { Request } from 'express';
-import sortBy from 'lodash.sortby';
+import { sortBy } from 'es-toolkit/compat';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyRequest } from '@tupaia/types';

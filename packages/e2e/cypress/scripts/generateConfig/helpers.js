@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import { uniq } from 'es-toolkit/compat';
 import moment from 'moment';
 
 import { compareAsc, readJsonFile, yup, yupUtils } from '@tupaia/utils';

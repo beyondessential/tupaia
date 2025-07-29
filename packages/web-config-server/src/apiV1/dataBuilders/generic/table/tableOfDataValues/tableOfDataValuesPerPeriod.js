@@ -1,6 +1,6 @@
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { parsePeriodType, periodToDisplayString, getPeriodsInRange } from '@tupaia/utils';
-import flatten from 'lodash.flatten';
+import { flatten } from 'es-toolkit/compat';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {

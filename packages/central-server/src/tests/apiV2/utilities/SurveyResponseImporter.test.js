@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { flatten } from 'lodash';
+import { flatten } from 'es-toolkit/compat';
 import sinon from 'sinon';
 
 import { generateId, createModelsStub as baseCreateModelsStub } from '@tupaia/database';

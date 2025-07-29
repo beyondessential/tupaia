@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { usePaginatedReport } from './helpers';
 
 export const useConfirmedWeeklyReport = (period, orgUnitCodes) => {

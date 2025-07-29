@@ -1,5 +1,5 @@
 import React from 'react';
-import get from 'lodash.get';
+import { get } from 'es-toolkit/compat';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';

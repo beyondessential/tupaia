@@ -18,7 +18,6 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         output: {
           manualChunks: function manualChunks(id) {
-            if (id.includes('lodash')) return 'lodash';
             if (id.includes('ace-builds')) return 'ace';
             if (id.includes('react-ace')) return 'reactAce';
             if (id.includes('jsoneditor')) return 'jsonEditor';

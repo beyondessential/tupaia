@@ -1,4 +1,4 @@
-import flattenDeep from 'lodash.flattendeep';
+import { flattenDeep } from 'es-toolkit/compat';
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { calculateOperationForAnalytics } from '/apiV1/dataBuilders/helpers';

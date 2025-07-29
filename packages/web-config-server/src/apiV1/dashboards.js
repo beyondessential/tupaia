@@ -1,4 +1,4 @@
-import orderBy from 'lodash.orderby';
+import { orderBy } from 'es-toolkit/compat';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
 

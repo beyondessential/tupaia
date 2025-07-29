@@ -1,5 +1,5 @@
 import React from 'react';
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { screen, within, fireEvent, waitForElementToBeRemoved } from '@testing-library/react';
 import { Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';

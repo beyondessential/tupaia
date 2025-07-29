@@ -1,4 +1,4 @@
-import pickBy from 'lodash.pickby';
+import { pickBy } from 'es-toolkit/compat';
 import { reduceToDictionary } from '@tupaia/utils';
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import * as CreateService from '../../services/createService';

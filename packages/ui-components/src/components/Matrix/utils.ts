@@ -3,7 +3,7 @@
  * presentation options.
  */
 
-import { find, isNumber, isString } from 'lodash';
+import { find, isNumber, isString } from 'es-toolkit/compat';
 import {
   ConditionalPresentationOptions,
   ConditionValue,

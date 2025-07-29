@@ -31,9 +31,9 @@
     "cypress": "^6.9.1",
     "cypress-dotenv": "^1.2.2",
     "dotenv": "16.4.5",
+    "es-toolkit": "^1.39.8",
     "eslint-plugin-cypress": "^2.11.1",
     "js-beautify": "^1.13.0",
-    "lodash": "^4.17.4",
     "moment": "^2.24.0",
     "node-fetch": "^1.7.3",
     "react": "^16.14.0"

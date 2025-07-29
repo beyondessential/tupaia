@@ -1,5 +1,5 @@
 import { format, differenceInYears, addDays, isDate } from 'date-fns';
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { Event } from '../../types';
 import { ReqContext } from '../context';
 import SURVEYS from './data/tongaCovidRawData.json';
