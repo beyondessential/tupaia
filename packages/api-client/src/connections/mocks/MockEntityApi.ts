@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import pick from 'lodash.pick';
+import { pick } from 'es-toolkit/compat';
 import { isDefined } from '@tupaia/tsutils';
 import { EntityApiInterface } from '..';
 
@@ -221,10 +221,8 @@ export class MockEntityApi implements EntityApiInterface {
     descendantQueryOptions: { field?: string; filter?: { type: string } } = {},
   ) {
     const { field: queryField, ...restOfQueryOptions } = queryOptions;
-    const {
-      field: ancestorField = queryField || 'code',
-      ...restOfAncestorQueryOptions
-    } = ancestorQueryOptions;
+    const { field: ancestorField = queryField || 'code', ...restOfAncestorQueryOptions } =
+      ancestorQueryOptions;
     const ancestorOptions = {
       ...restOfQueryOptions,
       ...restOfAncestorQueryOptions,

@@ -1,4 +1,4 @@
-import isPlainObject from 'lodash.isplainobject';
+import { isPlainObject } from 'es-toolkit/compat';
 
 const OPERATOR_TO_VALUE_CHECK = {
   '=': (value, target) => value === target,

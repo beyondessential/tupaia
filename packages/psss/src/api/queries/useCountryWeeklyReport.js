@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { subtractWeeksFromPeriod, calculateWeekStatus } from '../../utils';
 import { REPORT_STATUSES } from '../../constants';
 import { usePaginatedReport } from './helpers';
@@ -60,15 +60,8 @@ export const useCountryWeeklyReport = (orgUnit, period, count) => {
   const upcomingReportSubmitted = upcomingReportPeriod === period;
   const lastPeriod = subtractWeeksFromPeriod(period, upcomingReportSubmitted ? 1 : 2);
 
-  const {
-    startWeek,
-    endWeek,
-    page,
-    setPage,
-    rowsPerPage,
-    setRowsPerPage,
-    rowsOnThisPage,
-  } = usePagination(lastPeriod, count);
+  const { startWeek, endWeek, page, setPage, rowsPerPage, setRowsPerPage, rowsOnThisPage } =
+    usePagination(lastPeriod, count);
 
   const confirmedQuery = usePaginatedReport(`confirmedWeeklyReport/${orgUnit}`, {
     params: { startWeek, endWeek },

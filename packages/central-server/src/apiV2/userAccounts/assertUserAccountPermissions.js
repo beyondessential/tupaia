@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 
 import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
