@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import xlsx from 'xlsx';
-import { keyBy } from 'lodash';
+import { keyBy } from 'es-toolkit/compat';
 import { Route } from '@tupaia/server-boilerplate';
 
 export type ExportEntityHierarchiesRequest = Request<

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import isEqual from 'lodash.isequal';
+import { isEqual } from 'es-toolkit/compat';
 import { ReportApiInterface } from '..';
 import { RequestBody } from '../ApiConnection';
 import { QueryParameters } from '../../types';

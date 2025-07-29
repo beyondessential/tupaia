@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import groupBy from 'lodash.groupby';
-import pick from 'lodash.pick';
+import { groupBy, pick } from 'es-toolkit/compat';
 import moment from 'moment';
 
 import {
@@ -12,8 +11,8 @@ import {
 import { resetTestData, TestableApp } from '../../../testUtilities';
 import { importValidFile } from './helpers';
 import {
-  createSurveyResponses,
   CLINIC_DATA_SURVEY,
+  createSurveyResponses,
   FACILITY_FUNDAMENTALS_SURVEY,
   NON_PERIODIC_RESPONSES_AFTER_UPDATES,
   PERIODIC_RESPONSES_AFTER_UPDATES,

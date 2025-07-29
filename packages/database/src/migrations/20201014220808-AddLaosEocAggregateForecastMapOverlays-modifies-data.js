@@ -1,6 +1,6 @@
 'use strict';
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'es-toolkit/compat';
 import { generateId, insertObject } from '../utilities';
 
 var dbm;

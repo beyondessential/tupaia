@@ -1,4 +1,4 @@
-import isPlainObject from 'lodash.isplainobject';
+import { isPlainObject } from 'es-toolkit/compat';
 
 import { getUniqueEntries } from '@tupaia/utils';
 
@@ -11,10 +11,9 @@ import { ContextDependency } from './types';
 
 const detectDependenciesFromExpressions = (expressions: string[]) => {
   const parser = new TransformParser();
-  const functions = expressions
-    .flatMap(calcExpression => {
-      return parser.getFunctions(calcExpression);
-    });
+  const functions = expressions.flatMap(calcExpression => {
+    return parser.getFunctions(calcExpression);
+  });
 
   const dependencies = Object.entries(contextFunctionDependencies)
     .filter(([fnName]) => functions.includes(fnName))

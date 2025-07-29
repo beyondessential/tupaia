@@ -1,4 +1,4 @@
-import orderBy from 'lodash.orderby';
+import { orderBy } from 'es-toolkit/compat';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { MIN_DATE, SYNDROMES } from '../../constants';
 import { getPeriodByDate } from '../../utils';

@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { combineQueries, getSyndromeData, useData, useReport } from './helpers';
 
 export const useSitesSingleWeeklyReport = (countryCode, period, pageQueryKey) => {

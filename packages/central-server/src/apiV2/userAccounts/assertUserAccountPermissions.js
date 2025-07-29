@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
@@ -52,18 +52,18 @@ const buildUserAccountRawSqlFilter = accessPolicy => {
   /**
    * Here we're building up an inner query to work out which user permissions exist that we don't
    * have access to. Once we know that, we just filter to find the users whose ids are not in that list
-   * 
+   *
    * eg. If my access policy is: { DL: ['Admin', 'Public'], TO: ['Donor'] }
    * The query is:
       user_account.id NOT IN (
-        SELECT uep.user_id FROM user_entity_permission uep 
-        JOIN entity e ON uep.entity_id = e.id 
-        JOIN permission_group pg ON uep.permission_group_id = pg.id 
+        SELECT uep.user_id FROM user_entity_permission uep
+        JOIN entity e ON uep.entity_id = e.id
+        JOIN permission_group pg ON uep.permission_group_id = pg.id
 
         WHERE
           -- Either we don't have access to a country they have access to
           e.code NOT IN ('DL', 'TO')
-        
+
           -- Or we have access to it, but not with the level of permissions they do
           OR (e.code = 'DL' AND pg.name NOT IN ('Admin', 'Public'))
           OR (e.code = 'TO' AND pg.name NOT IN ('Donor'))
@@ -72,11 +72,11 @@ const buildUserAccountRawSqlFilter = accessPolicy => {
   const sql = `
   user_account.id NOT IN (
     -- Inner query to detect which users have permissions that we do not
-    SELECT uep.user_id FROM user_entity_permission uep 
-    JOIN entity e ON uep.entity_id = e.id 
-    JOIN permission_group pg ON uep.permission_group_id = pg.id 
+    SELECT uep.user_id FROM user_entity_permission uep
+    JOIN entity e ON uep.entity_id = e.id
+    JOIN permission_group pg ON uep.permission_group_id = pg.id
 
-    WHERE 
+    WHERE
       -- Either we don't have access to a country they have access to
       e.code NOT IN ${SqlQuery.record(accessibleCountryCodes)}
 
@@ -93,8 +93,10 @@ ${accessibleCountryCodes
 
   const parameters = [
     ...accessibleCountryCodes,
-    ...accessibleCountryCodes
-      .flatMap(countryCode => [countryCode, ...permissionsByCountryCode[countryCode]]),
+    ...accessibleCountryCodes.flatMap(countryCode => [
+      countryCode,
+      ...permissionsByCountryCode[countryCode],
+    ]),
   ];
   return { sql, parameters };
 };

@@ -24,7 +24,7 @@
   "dependencies": {
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "lodash.groupby": "^4.6.0"
+    "es-toolkit": "^1.39.8"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.27.5",

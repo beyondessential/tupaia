@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import throttle from 'lodash.throttle';
+import { throttle } from 'es-toolkit/compat';
 import { Country, DatatrakWebUsersRequest } from '@tupaia/types';
 import { Autocomplete } from '../../components';
 import { useSurveyUsers } from '../../api';

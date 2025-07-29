@@ -1,7 +1,7 @@
 import { MultiBar } from 'cli-progress';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Report } from '@tupaia/types';
-import isEqual from 'lodash.isequal';
+import { isEqual } from 'es-toolkit/compat';
 import { TestResult } from './types';
 import { ReportFetchQueue } from './ReportFetchQueue';
 
