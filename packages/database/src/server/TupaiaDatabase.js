@@ -51,9 +51,9 @@ export class TupaiaDatabase extends BaseDatabase {
     const handlers = this.getHandlersForChange(change);
     const scheduledPromises = [];
     try {
-      for (let i = 0; i < handlers.length; i++) {
+      for (const handler of handlers) {
         try {
-          const { scheduledPromise } = await handlers[i](change);
+          const { scheduledPromise } = (await handler(change)) || {};
           if (scheduledPromise) {
             scheduledPromises.push(scheduledPromise);
           }
@@ -63,7 +63,7 @@ export class TupaiaDatabase extends BaseDatabase {
       }
     } finally {
       // Don't await the scheduled promises, so that we don't block the change handler from completing
-      Promise.all(scheduledPromises).finally(() => unlock());
+      Promise.all(scheduledPromises).finally(unlock);
     }
   }
 
