@@ -1,11 +1,10 @@
-import flatten from 'lodash.flatten';
-import groupBy from 'lodash.groupby';
+import { flatten, groupBy } from 'es-toolkit/compat';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
+  countAnalyticsGroupsThatSatisfyConditions,
+  countAnalyticsThatSatisfyConditions,
   divideValues,
   multiplyValues,
-  countAnalyticsThatSatisfyConditions,
-  countAnalyticsGroupsThatSatisfyConditions,
 } from '/apiV1/dataBuilders/helpers';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
@@ -111,10 +110,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
   async fetchResults() {
     const { numerator: numeratorCodes, denominator: denominatorCodes } = this.getDataElementCodes();
-    const {
-      numerator: numeratorAggregationType,
-      denominator: denominatorAggregationType,
-    } = this.getAggregationType();
+    const { numerator: numeratorAggregationType, denominator: denominatorAggregationType } =
+      this.getAggregationType();
 
     let numeratorResults = [];
     let denominatorResults = [];

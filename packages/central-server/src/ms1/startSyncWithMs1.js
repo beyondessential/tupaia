@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get } from 'es-toolkit/compat';
 
 import { HttpError } from '@tupaia/utils';
 

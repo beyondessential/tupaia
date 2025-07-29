@@ -1,17 +1,16 @@
-import groupBy from 'lodash.groupby';
+import { groupBy, keyBy, some } from 'es-toolkit/compat';
+
 import {
+  asyncEvery,
+  asyncFilter,
   checkValueSatisfiesCondition,
   comparePeriods,
   replaceValues,
-  asyncFilter,
-  asyncEvery,
 } from '@tupaia/utils';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
-import some from 'lodash.some';
-import keyBy from 'lodash.keyby';
 import { divideValues, fractionAndPercentage } from './divideValues';
 import { subtractValues } from './subtractValues';
+import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 const checkCondition = (value, config) =>
   valueToGroup(value, { groups: { Yes: config.condition }, defaultValue: 'No' });

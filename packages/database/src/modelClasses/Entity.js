@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';

@@ -1,4 +1,4 @@
-import pick from 'lodash.pick';
+import { pick } from 'es-toolkit/compat';
 import { MatrixEntityCell } from '@tupaia/types';
 import { TransformTable } from '../../../transform';
 import { Row } from '../../../types';

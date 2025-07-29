@@ -1,8 +1,6 @@
 import xlsx from 'xlsx';
 import moment from 'moment';
-import keyBy from 'lodash.keyby';
-import chunk from 'lodash.chunk';
-import groupBy from 'lodash.groupby';
+import { keyBy, chunk, groupBy } from 'es-toolkit/compat';
 import {
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,

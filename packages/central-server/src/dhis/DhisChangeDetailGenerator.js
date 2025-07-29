@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get } from 'es-toolkit/compat';
 
 import { RECORDS } from '@tupaia/database';
 import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';

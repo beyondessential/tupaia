@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 
 import { stripFields } from '@tupaia/utils';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
@@ -99,13 +99,12 @@ export class AnalyticArithmeticBuilder extends Builder {
     const analytics = await this.api.buildAnalyticsForBuilders(this.paramBuilders, fetchOptions);
     const analyticsByElement = groupBy(analytics, 'dataElement');
 
-    return Object.entries(analyticsByElement)
-      .flatMap(([element, analyticsForElement]) => {
-        const aggregationList = this.config.aggregation[element];
-        return this.api
-          .getAggregator()
-          .aggregateAnalytics(analyticsForElement, aggregationList, fetchOptions.period);
-      });
+    return Object.entries(analyticsByElement).flatMap(([element, analyticsForElement]) => {
+      const aggregationList = this.config.aggregation[element];
+      return this.api
+        .getAggregator()
+        .aggregateAnalytics(analyticsForElement, aggregationList, fetchOptions.period);
+    });
   };
 
   private buildAnalyticClusters = (analytics: Analytic[]) => {
