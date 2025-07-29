@@ -1888,6 +1888,8 @@ export enum EntityTypeEnum {
   'wholesaler' = 'wholesaler',
   'pharmacy' = 'pharmacy',
   'supermarket' = 'supermarket',
+  'bes_asset' = 'bes_asset',
+  'bes_office' = 'bes_office',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
