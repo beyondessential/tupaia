@@ -84684,6 +84684,7 @@ export const EntityTypeEnumSchema = {
 		"city",
 		"commune",
 		"complaint",
+		"consumable",
 		"country",
 		"disaster",
 		"district",
