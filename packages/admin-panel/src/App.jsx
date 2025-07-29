@@ -8,7 +8,7 @@ import { LoginPage } from './pages/LoginPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 import { TabPageLayout } from './layout/TabPageLayout';
 import { useUser } from './api/queries';
-import { getHasBESAdminAccess } from './utilities';
+import { getHasBESAdminAccess, useHasBesAdminAccess } from './utilities';
 import { ForgotPasswordPage, ResetPasswordPage } from './pages';
 
 export const getFlattenedChildViews = (route, basePath = '') => {
@@ -42,8 +42,7 @@ export const getFlattenedChildViews = (route, basePath = '') => {
 };
 
 const App = () => {
-  const { data: user } = useUser();
-  const hasBESAdminAccess = getHasBESAdminAccess(user);
+  const hasBESAdminAccess = useHasBesAdminAccess();
   const userHasAccessToTab = tab => {
     if (tab.isBESAdminOnly) {
       return !!hasBESAdminAccess;
