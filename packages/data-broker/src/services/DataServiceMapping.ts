@@ -1,4 +1,4 @@
-import isequal from 'lodash.isequal';
+import { isEqual } from 'es-toolkit/compat';
 import { DataSource, ServiceType } from '../types';
 
 export type DataServiceMappingEntry = {
@@ -77,14 +77,14 @@ export class DataServiceMapping {
       const mB = other.dataElementMapping[i];
       if (mA.dataSource.code !== mB.dataSource.code) return false;
       if (mA.service_type != mB.service_type) return false;
-      if (!isequal(mA.config, mB.config)) return false;
+      if (!isEqual(mA.config, mB.config)) return false;
     }
     for (let i = 0; i < this.dataGroupMapping.length; i++) {
       const mA = this.dataGroupMapping[i];
       const mB = other.dataGroupMapping[i];
       if (mA.dataSource.code !== mB.dataSource.code) return false;
       if (mA.service_type != mB.service_type) return false;
-      if (!isequal(mA.config, mB.config)) return false;
+      if (!isEqual(mA.config, mB.config)) return false;
     }
     for (let i = 0; i < this.syncGroupMapping.length; i++) {
       const mA = this.syncGroupMapping[i];

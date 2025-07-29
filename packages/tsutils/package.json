@@ -27,14 +27,13 @@
     "ajv-formats": "v3.0.0-rc.0",
     "better-ajv-errors": "^1.2.0",
     "camelcase-keys": "^6.2.2",
-    "lodash.get": "^4.4.2",
+    "es-toolkit": "^1.39.8",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.45",
     "yup": "^0.32.9"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
-    "@types/lodash.get": "^4.4.2",
     "jest": "^29.7.0",
     "rimraf": "^6.0.1"
   }

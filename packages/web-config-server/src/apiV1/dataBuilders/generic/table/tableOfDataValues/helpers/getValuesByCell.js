@@ -1,13 +1,12 @@
-import groupBy from 'lodash.groupby';
-import isEqual from 'lodash.isequal';
-import zipObject from 'lodash.zipobject';
+import { groupBy, isEqual, zipObject } from 'es-toolkit/compat';
 
 import { DEFAULT_BINARY_OPTIONS_OBJECT } from '@tupaia/utils';
+
 import { addPrefixToCell } from '/apiV1/dataBuilders/generic/table/tableOfDataValues/TableConfig';
 import {
+  calculateOperationForAnalytics,
   countAnalyticsThatSatisfyConditions,
   divideValues,
-  calculateOperationForAnalytics,
 } from '/apiV1/dataBuilders/helpers';
 
 const groupByMetadata = (groupedResults, metadataField) => {
