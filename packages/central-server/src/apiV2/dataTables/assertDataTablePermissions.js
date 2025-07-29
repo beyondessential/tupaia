@@ -3,13 +3,13 @@ import { getPermissionListWithWildcard } from '../utilities';
 
 export const assertDataTableGETPermissions = async (accessPolicy, models, dataTableId) => {
   // User requires access to any permission group
-  if (await assertDataTablePermissions(accessPolicy, models, dataTableId, 'some')) {
+  if (await assertDataTablePermissions(accessPolicy, models, dataTableId)) {
     return true;
   }
   throw new Error('You do not have permission to view this data-table');
 };
 
-const assertDataTablePermissions = async (accessPolicy, models, dataTableId, test) => {
+const assertDataTablePermissions = async (accessPolicy, models, dataTableId) => {
   const dataTable = await models.dataTable.findById(dataTableId);
   if (!dataTable) {
     throw new Error(`No data-table exists with id ${dataTableId}`);
@@ -18,7 +18,7 @@ const assertDataTablePermissions = async (accessPolicy, models, dataTableId, tes
   // Test if user has access to any or all permission groups against the data-table
   if (
     dataTable.permission_groups.length <= 0 ||
-    dataTable.permission_groups[test](code => userPermissions.includes(code))
+    dataTable.permission_groups.some(code => userPermissions.includes(code))
   ) {
     return true;
   }
