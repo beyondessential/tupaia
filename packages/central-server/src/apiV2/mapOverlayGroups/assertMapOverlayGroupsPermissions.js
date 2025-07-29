@@ -1,4 +1,4 @@
-import { keyBy, groupBy } from 'lodash';
+import { keyBy, groupBy } from 'es-toolkit/compat';
 import { JOIN_TYPES, QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import {

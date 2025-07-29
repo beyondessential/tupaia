@@ -36,17 +36,14 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "es-toolkit": "^1.39.8",
     "express": "^4.21.2",
-    "lodash.clonedeep": "^4.5.0",
-    "lodash.groupby": "^4.6.0",
-    "lodash.keyby": "^4.6.0",
     "moment-timezone": "^0.5.45",
     "semver-compare": "^1.0.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
-    "@types/lodash.clonedeep": "^4.5.0",
     "@types/semver-compare": "^1.0.1",
     "jest": "^29.7.0",
     "mockdate": "^3.0.5",

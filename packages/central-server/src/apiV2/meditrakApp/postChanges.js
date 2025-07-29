@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'es-toolkit/compat';
 import { AnalyticsRefresher } from '@tupaia/database';
 import {
   respond,

@@ -1,9 +1,8 @@
-import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
+import { groupBy, keyBy } from 'es-toolkit/compat';
 
 import { getUniqueEntries, haveSameFields } from '@tupaia/utils';
-import { ChangeHandler } from '../ChangeHandler';
 import { isMarkedChange } from '../../utilities';
+import { ChangeHandler } from '../ChangeHandler';
 import { OutdatedResponseFlagger } from './OutdatedResponseFlagger';
 
 /**
