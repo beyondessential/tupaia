@@ -191,7 +191,7 @@ export const ImportModalComponent = React.memo(
             )}
           </form>
         </Modal>
-        <ActionButton id="page-import-button" startIcon={<ImportIcon />} onClick={handleOpen}>
+        <ActionButton startIcon={<ImportIcon />} onClick={handleOpen}>
           {confirmButtonText}
         </ActionButton>
       </>
