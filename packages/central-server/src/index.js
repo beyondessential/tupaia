@@ -125,7 +125,6 @@ configureEnv();
       winston.info('Database migrations complete');
 
       await buildEntityParentChildRelationIfEmpty(models);
-      winston.info('Entity parent child relation built');
     
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
         winston.info('Creating permissions based meditrak sync queue');
