@@ -24,7 +24,7 @@ import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
-import { GETDataTables } from './dataTables';
+import { GETDataTables, CreateDataTables } from './dataTables';
 import { GETFeedItems, EditFeedItems, CreateFeedItems } from './feedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
@@ -298,7 +298,7 @@ apiV2.post(
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataElements', useRouteHandler(TupaiaAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/dataTables', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dataTables', useRouteHandler(CreateDataTables));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/dashboardMailingLists', useRouteHandler(CreateDashboardMailingList));
 apiV2.post('/dashboardMailingListEntries', useRouteHandler(CreateDashboardMailingListEntry));
