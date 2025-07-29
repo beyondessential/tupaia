@@ -2,9 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2025 Beyond Essential Systems Pty Ltd
  */
-
-import * as dotenv from 'dotenv';
-
 import http from 'http';
 
 import winston from 'winston';
