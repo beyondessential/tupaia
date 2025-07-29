@@ -1,4 +1,6 @@
+import { groupBy, isEqual, keyBy } from 'es-toolkit/compat';
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import {
   Entity,
@@ -8,9 +10,6 @@ import {
   TupaiaWebMapOverlaysRequest,
 } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
-import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
-import isEqual from 'lodash.isequal';
 
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,

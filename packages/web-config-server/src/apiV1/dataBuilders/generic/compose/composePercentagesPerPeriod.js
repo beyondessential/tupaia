@@ -1,4 +1,4 @@
-import set from 'lodash.set';
+import { set } from 'es-toolkit/compat';
 
 import { composeDataPerPeriod } from '/apiV1/dataBuilders/generic/compose/composeDataPerPeriod';
 import { divideValues } from '/apiV1/dataBuilders/helpers';

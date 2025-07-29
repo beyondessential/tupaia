@@ -1,6 +1,5 @@
 import assert from 'assert';
-import groupBy from 'lodash.groupby';
-import orderBy from 'lodash.orderby';
+import { groupBy, orderBy } from 'es-toolkit/compat';
 
 import {
   getDateRangeForGranularity,

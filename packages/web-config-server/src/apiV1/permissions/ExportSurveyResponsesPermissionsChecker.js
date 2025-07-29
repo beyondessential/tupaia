@@ -1,4 +1,4 @@
-import flatten from 'lodash.flatten';
+import { flatten } from 'es-toolkit/compat';
 import { PermissionsError } from '@tupaia/utils';
 import { DashboardItemPermissionsChecker } from './DashboardItemPermissionsChecker';
 

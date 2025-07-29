@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 
 import moment from 'moment';
 import { TupaiaDatabase, SqlQuery } from '@tupaia/database';

@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "date-fns": "^2.16.1",
-    "lodash.startcase": "^4.4.0",
+    "es-toolkit": "^1.39.8",
     "mathjs": "^11.11.0"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { QueryConjunctions, EntityFilter, EntityRecord } from '@tupaia/server-boilerplate';
