@@ -1,4 +1,4 @@
-import flatten from 'lodash.flatten';
+import { flatten } from 'es-toolkit/compat';
 import { stripFromString } from '@tupaia/utils';
 
 /**

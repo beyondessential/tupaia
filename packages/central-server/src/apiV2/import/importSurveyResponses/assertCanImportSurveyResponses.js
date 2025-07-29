@@ -1,4 +1,4 @@
-import { flattenDeep, groupBy, keyBy } from 'lodash';
+import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
 
 import { ensure, isNullish } from '@tupaia/tsutils';
 import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';

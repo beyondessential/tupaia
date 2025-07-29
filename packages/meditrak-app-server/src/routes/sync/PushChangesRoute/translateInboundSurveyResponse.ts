@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash.clonedeep';
+import { cloneDeep } from 'es-toolkit/compat';
 import { QuestionModel, SurveyModel } from '@tupaia/database';
 import { EntityModel, UserModel } from '@tupaia/server-boilerplate';
 import { ValidationError } from '@tupaia/utils';

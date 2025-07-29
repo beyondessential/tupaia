@@ -1,4 +1,4 @@
-import flattenDeep from 'lodash.flattendeep';
+import { flattenDeep } from 'es-toolkit/compat';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
 export const composePercentageInGroupByDataClass = async (

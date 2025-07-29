@@ -1,4 +1,4 @@
-import isequal from 'lodash.isequal';
+import { isEqual } from 'es-toolkit/compat';
 import { REPORT_STATUSES } from '../constants';
 
 const extractReportData = report => {
@@ -9,7 +9,7 @@ const extractReportData = report => {
 export const reportsAreEqual = (reportA, reportB) => {
   const a = extractReportData(reportA);
   const b = extractReportData(reportB);
-  return isequal(a, b);
+  return isEqual(a, b);
 };
 
 export const calculateWeekStatus = (report, confirmedReport) => {

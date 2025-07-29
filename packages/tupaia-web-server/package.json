@@ -35,17 +35,12 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "es-toolkit": "^1.39.8",
     "express": "^4.19.2",
-    "lodash.groupby": "^4.6.0",
-    "lodash.isequal": "^4.5.0",
-    "lodash.keyby": "^4.6.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
-    "@types/lodash.groupby": "^4.6.0",
-    "@types/lodash.isequal": "^4.5.0",
-    "@types/lodash.keyby": "^4.6.9",
     "jest": "^29.7.0",
     "rimraf": "^6.0.1"
   }

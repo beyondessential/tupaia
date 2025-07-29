@@ -1,4 +1,4 @@
-import throttle from 'lodash.throttle';
+import { throttle } from 'es-toolkit/compat';
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { Autocomplete, BaseAutocompleteProps } from './Autocomplete';

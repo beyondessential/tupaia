@@ -1,5 +1,5 @@
 import { when } from 'jest-when';
-import pickBy from 'lodash.pickby';
+import { pickBy } from 'es-toolkit/compat';
 
 import { createJestMockInstance } from '@tupaia/utils';
 import { DATA_ELEMENTS, ORG_UNITS } from './tableOfDataValues.fixtures';

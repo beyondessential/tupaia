@@ -1,4 +1,4 @@
-import pickBy from 'lodash.pickby';
+import { pickBy } from 'es-toolkit/compat';
 import xlsx from 'xlsx';
 
 export class WorkBookParser {

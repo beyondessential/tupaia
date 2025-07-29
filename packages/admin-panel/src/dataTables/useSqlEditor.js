@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import debounce from 'lodash.debounce';
+import { debounce } from 'es-toolkit/compat';
 
 export const useSqlEditor = ({ recordData, onEditField }) => {
   const { config = {} } = recordData;
