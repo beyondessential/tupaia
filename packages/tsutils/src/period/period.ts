@@ -1,5 +1,5 @@
 import { reduceToDictionary } from '@tupaia/utils';
-import get from 'lodash.get';
+import { get } from 'es-toolkit/compat';
 import { utcMoment } from '../datetime';
 
 type PeriodType = keyof typeof PERIOD_TYPES;
@@ -91,9 +91,10 @@ const createFieldToNumericPeriodType = (fieldName: keyof PeriodTypeConfig) =>
 
 const LENGTH_TO_NUMERIC_PERIOD_TYPE = createFieldToNumericPeriodType('length');
 
-const createAccessor = <T extends keyof PeriodTypeConfig>(field: T) => (
-  periodType: PeriodType,
-): PeriodTypeConfig[T] => get(PERIOD_TYPE_CONFIG, [periodType, field]);
+const createAccessor =
+  <T extends keyof PeriodTypeConfig>(field: T) =>
+  (periodType: PeriodType): PeriodTypeConfig[T] =>
+    get(PERIOD_TYPE_CONFIG, [periodType, field]);
 
 export const periodTypeToFormat = createAccessor('format');
 const periodTypeToLength = createAccessor('length');

@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { REPORT_STATUSES } from '../constants';
 import { reportsAreEqual, calculateWeekStatus } from '../utils';
 import unconfirmedData from './fixtures/unConfirmedReport.json';

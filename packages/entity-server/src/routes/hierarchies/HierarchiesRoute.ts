@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { isNotNullish } from '@tupaia/tsutils';
 import { Route } from '@tupaia/server-boilerplate';
 import { formatHierarchiesForResponse } from './format';

@@ -1,4 +1,4 @@
-import { isNil, omitBy } from 'lodash';
+import { isNil, omitBy } from 'es-toolkit/compat';
 
 import { snakeKeys, yup } from '@tupaia/utils';
 
