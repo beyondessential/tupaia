@@ -62,9 +62,15 @@ export class EntityParentChildRelationBuilder {
     const hasEntityRelationLinks = entityRelationChildCount > 0;
 
     // Generate the new relations for this level
-    const validParentChildIdPairs = hasEntityRelationLinks
-      ? await this.generateViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached)
-      : await this.generateViaCanonical(hierarchyId, parentIds, childrenAlreadyCached);
+    const entityParentChildRelations = hasEntityRelationLinks
+      ? await this.getRelationsViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached)
+      : await this.getRelationsViaCanonical(hierarchyId, parentIds, childrenAlreadyCached);
+
+    if (entityParentChildRelations.length) {
+      await this.insertRelations(entityParentChildRelations);
+    }
+
+    const validParentChildIdPairs = entityParentChildRelations.map(e => [e.parent_id, e.child_id]);
 
     if (validParentChildIdPairs.length === 0) {
       // When reaching a leaf node, there still might be some
@@ -82,7 +88,8 @@ export class EntityParentChildRelationBuilder {
     await this.deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs);
 
     const latestChildrenAlreadyCached = new Set([...childrenAlreadyCached, ...validChildIds]);
-    return this.fetchAndCacheChildren(hierarchyId, validChildIds, latestChildrenAlreadyCached);
+  
+    return await this.fetchAndCacheChildren(hierarchyId, validChildIds, latestChildrenAlreadyCached);
   }
 
   /**
@@ -92,26 +99,22 @@ export class EntityParentChildRelationBuilder {
    * @param {*} childrenAlreadyCached children already cached to avoid duplicates
    * @returns
    */
-  async generateViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
+  async getRelationsViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
     const entityRelations = await this.models.entityRelation.find({
       parent_id: parentIds,
       entity_hierarchy_id: hierarchyId,
     });
-    const entityParentChildRelations = entityRelations
-      .map(relation => ({
-        parent_id: relation.parent_id,
-        child_id: relation.child_id,
-        entity_hierarchy_id: hierarchyId,
-      }))
-      // If the relation is already generated (could be that it is already a child of another parent)
-      // it should be ignored
-      .filter(relation => !childrenAlreadyCached.has(relation.child_id));
-
-    if (entityParentChildRelations.length === 0) {
-      return [];
-    }
-
-    return this.insertRelations(entityParentChildRelations);
+    return (
+      entityRelations
+        .map(relation => ({
+          parent_id: relation.parent_id,
+          child_id: relation.child_id,
+          entity_hierarchy_id: hierarchyId,
+        }))
+        // If the relation is already generated (could be that it is already a child of another parent)
+        // it should be ignored
+        .filter(relation => !childrenAlreadyCached.has(relation.child_id))
+    );
   }
 
   /**
@@ -121,27 +124,23 @@ export class EntityParentChildRelationBuilder {
    * @param {*} childrenAlreadyCached children already cached to avoid duplicates
    * @returns
    */
-  async generateViaCanonical(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
+  async getRelationsViaCanonical(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
     const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
     const entities = await this.models.entity.find({
       parent_id: parentIds,
       type: canonicalTypes,
     });
-    const entityParentChildRelations = entities
-      .map(e => ({
-        parent_id: e.parent_id,
-        child_id: e.id,
-        entity_hierarchy_id: hierarchyId,
-      }))
-      // If the relation is already generated (could be that it is already a child of another parent)
-      // it should be ignored
-      .filter(relation => !childrenAlreadyCached.has(relation.child_id));
-
-    if (entityParentChildRelations.length === 0) {
-      return [];
-    }
-
-    return this.insertRelations(entityParentChildRelations);
+    return (
+      entities
+        .map(e => ({
+          parent_id: e.parent_id,
+          child_id: e.id,
+          entity_hierarchy_id: hierarchyId,
+        }))
+        // If the relation is already generated (could be that it is already a child of another parent)
+        // it should be ignored
+        .filter(relation => !childrenAlreadyCached.has(relation.child_id))
+    );
   }
 
   async insertRelations(entityParentChildRelations) {
@@ -149,8 +148,6 @@ export class EntityParentChildRelationBuilder {
     await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
       onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
     });
-
-    return entityParentChildRelations.map(e => [e.parent_id, e.child_id]);
   }
 
   /**
