@@ -17,13 +17,10 @@ const assertDataTablePermissions = async (accessPolicy, models, dataTableId) => 
   }
   const userPermissions = await getPermissionListWithWildcard(accessPolicy);
   // Test if user has access to any or all permission groups against the data-table
-  if (
-    dataTable.permission_groups.length <= 0 ||
+  return (
+    dataTable.permission_groups.length === 0 ||
     dataTable.permission_groups.some(code => userPermissions.includes(code))
-  ) {
-    return true;
-  }
-  return false;
+  );
 };
 
 export const createDataTableDBFilter = async (accessPolicy, models, criteria) => {
