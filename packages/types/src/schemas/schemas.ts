@@ -84673,6 +84673,8 @@ export const PeriodGranularitySchema = {
 export const EntityTypeEnumSchema = {
 	"enum": [
 		"asset",
+		"bes_asset",
+		"bes_office",
 		"business",
 		"case",
 		"case_contact",
