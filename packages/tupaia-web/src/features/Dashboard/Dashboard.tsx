@@ -118,7 +118,7 @@ const useUpdateUserProjectOnSettled = (projectCode?: ProjectCode) => {
 };
 
 export const Dashboard = () => {
-  const location = useLocation();
+  const { state: locationState } = useLocation();
   const { projectCode, entityCode } = useParams();
   const { data: project, isSuccess: isProjectSuccess } = useProject(projectCode);
   const defaultDashboardName = useDefaultDashboardName(projectCode, entityCode);
@@ -139,7 +139,7 @@ export const Dashboard = () => {
     isProjectSuccess && isDashboardsSuccess && project?.code === projectCode && !activeDashboard;
   if (dashboardNotFound && defaultDashboardName) {
     const to = `/${projectCode}/${entityCode}/${encodeURIComponent(defaultDashboardName)}`;
-    return <Navigate {...location} to={to} />;
+    return <Navigate replace state={locationState} to={to} />;
   }
 
   const toggleExpanded = () => {
