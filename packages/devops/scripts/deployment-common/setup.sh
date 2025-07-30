@@ -123,18 +123,6 @@ echo "PM2 $(pm2 --version) is installed"
 
 pm2 install pm2-logrotate
 
-# Install Bitwarden
-if ! command -v bw &>/dev/null; then
-  echo 'Bitwarden CLI not installed. Installing...'
-  # Avoid 2025.5.0, which has a known issue. See https://github.com/bitwarden/clients/issues/14995
-  npm install --global '@bitwarden/cli@2025.4.0'
-elif ! bw --version &>/dev/null; then
-  echo "Bad Bitwarden CLI version installed (probably 2025.5.0). Replacing with '2025.4.0'..."
-  npm uninstall --global @bitwarden/cli
-  npm install --global '@bitwarden/cli@2025.4.0'
-fi
-echo "Bitwarden CLI $(bw --version) is installed"
-
 LOGS_DIR=$HOME_DIR/logs
 # Create a directory for logs to go
 mkdir -m 777 -p $LOGS_DIR

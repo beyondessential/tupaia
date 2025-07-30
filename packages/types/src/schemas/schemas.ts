@@ -84675,6 +84675,8 @@ export const PeriodGranularitySchema = {
 export const EntityTypeEnumSchema = {
 	"enum": [
 		"asset",
+		"bes_asset",
+		"bes_office",
 		"business",
 		"case",
 		"case_contact",
@@ -84682,6 +84684,7 @@ export const EntityTypeEnumSchema = {
 		"city",
 		"commune",
 		"complaint",
+		"consumable",
 		"country",
 		"disaster",
 		"district",
