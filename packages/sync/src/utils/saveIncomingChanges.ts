@@ -105,7 +105,7 @@ export const saveIncomingInMemoryChanges = async (
   models: ModelRegistry,
   changes: SyncSnapshotAttributes[],
 ) => {
-  const groupedChanges = groupBy(changes, 'record_type');
+  const groupedChanges = groupBy(changes, 'recordType');
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
     await saveChangesForModel(model, modelChanges);
