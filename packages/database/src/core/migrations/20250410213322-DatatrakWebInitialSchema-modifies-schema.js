@@ -131,16 +131,6 @@ exports.up = async function (db) {
       );
     `);
 
-  // Create entity_relation table
-  await db.runSql(`
-      CREATE TABLE entity_relation (
-        id                  TEXT NOT NULL PRIMARY KEY,
-        parent_id           TEXT NOT NULL REFERENCES entity,
-        child_id            TEXT NOT NULL REFERENCES entity,
-        entity_hierarchy_id TEXT NOT NULL REFERENCES entity_hierarchy
-      );
-    `);
-
   // Create service_type enum
   await db.runSql(`
       CREATE TYPE service_type AS ENUM (
@@ -151,31 +141,6 @@ exports.up = async function (db) {
         'kobo',
         'data-lake',
         'superset'
-      );
-    `);
-
-  // Create data_element table
-  await db.runSql(`
-      CREATE TABLE data_element (
-        id                TEXT NOT NULL PRIMARY KEY,
-        code              TEXT NOT NULL,
-        service_type      service_type                      NOT NULL,
-        config            JSONB DEFAULT '{}'::JSONB         NOT NULL,
-        permission_groups TEXT[] DEFAULT '{}'::TEXT[]       NOT NULL,
-        constraint valid_data_service_config
-          check ((service_type <> 'dhis'::service_type) OR ((config ->> 'dhisInstanceCode'::text) IS NOT NULL))
-      );
-    `);
-
-  // Create data_group table
-  await db.runSql(`
-      CREATE TABLE data_group (
-        id           TEXT NOT NULL PRIMARY KEY,
-        code         TEXT NOT NULL,
-        service_type service_type                      NOT NULL,
-        config       JSONB DEFAULT '{}'::JSONB         NOT NULL,
-        constraint valid_data_service_config
-          check ((service_type <> 'dhis'::service_type) OR ((config ->> 'dhisInstanceCode'::text) IS NOT NULL))
       );
     `);
 
@@ -241,7 +206,6 @@ exports.up = async function (db) {
         detail          TEXT,
         option_set_id   TEXT REFERENCES option_set,
         hook            TEXT,
-        data_element_id TEXT REFERENCES data_element,
         type            question_type NOT NULL
       );
     `);
@@ -385,8 +349,6 @@ exports.up = async function (db) {
         integration_metadata JSONB DEFAULT '{}'::jsonb,
         period_granularity   period_granularity,
         requires_approval    BOOLEAN DEFAULT FALSE,
-        data_group_id        TEXT REFERENCES data_group
-          ON UPDATE CASCADE ON DELETE SET NULL,
         project_id           TEXT NOT NULL REFERENCES project
       );
     `);
@@ -618,6 +580,31 @@ exports.up = async function (db) {
 
   await db.runSql(`
     CREATE INDEX task_comment_user_id_idx ON task_comment (user_id);
+  `);
+
+  await db.runSql(`
+    CREATE TABLE user_entity_permission
+    (
+    id                   TEXT NOT NULL PRIMARY KEY,
+    user_id              TEXT NOT NULL REFERENCES user_account
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    entity_id            TEXT NOT NULL REFERENCES entity
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    permission_group_id  TEXT NOT NULL REFERENCES permission_group
+        ON UPDATE CASCADE ON DELETE CASCADE
+    );
+  `);
+
+  await db.runSql(`
+    CREATE INDEX user_entity_permission_entity_id_idx ON user_entity_permission (entity_id);
+  `);
+
+  await db.runSql(`
+    CREATE INDEX user_entity_permission_permission_group_id_idx ON user_entity_permission (permission_group_id);
+  `);
+
+  await db.runSql(`
+    CREATE INDEX user_entity_permission_user_id_idx ON user_entity_permission (user_id);
   `);
 };
 

@@ -35,10 +35,13 @@ export class ClientSyncManager {
 
   private deviceId: string;
 
-  constructor(models: DatatrakWebModelRegistry, deviceId: string) {
+  private userId: string;
+
+  constructor(models: DatatrakWebModelRegistry, deviceId: string, userId: string) {
     this.models = models;
     this.database = models.database;
     this.deviceId = deviceId;
+    this.userId = userId;
     console.log('ClientSyncManager.constructor', {
       deviceId,
     });
@@ -178,7 +181,13 @@ export class ClientSyncManager {
         sessionId,
         pullSince,
       });
-      const { pullUntil } = await initiatePull(sessionId, pullSince, projectIds, this.deviceId);
+      const { pullUntil } = await initiatePull(
+        sessionId,
+        pullSince,
+        this.userId,
+        projectIds,
+        this.deviceId,
+      );
 
       const isInitialPull = pullSince === -1;
 

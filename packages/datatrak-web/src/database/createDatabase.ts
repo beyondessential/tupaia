@@ -8,8 +8,10 @@ export const createDatabase = async (): Promise<{
   models: DatatrakWebModelRegistry;
 }> => {
   const database = new DatatrakDatabase();
-  const models = new ModelRegistry(database, browserModelClasses) as DatatrakWebModelRegistry;
 
   await migrate(database);
+
+  const models = new ModelRegistry(database, browserModelClasses) as DatatrakWebModelRegistry;
+
   return { database, models };
 };
