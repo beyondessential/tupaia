@@ -136,7 +136,7 @@ export const saveIncomingInMemoryChanges = async (
 
   assertIsWithinTransaction(models.database);
 
-  const groupedChanges = groupBy(changes, 'record_type');
+  const groupedChanges = groupBy(changes, 'recordType');
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
     await saveChangesForModel(model, modelChanges, isCentralServer);
