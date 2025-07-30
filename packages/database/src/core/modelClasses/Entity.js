@@ -540,7 +540,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return {
       ctes: [
         `
-          entities_union AS (
+          entities_to_sync AS (
             -- root project entities
             SELECT entity.id as entity_id, project.entity_hierarchy_id
             FROM entity join project on entity.id = project.entity_id
@@ -574,17 +574,17 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         projectIds: `CASE WHEN entity.type = 'country' THEN NULL ELSE ARRAY_AGG(project.id) END`,
       }),
       joins: `
-        LEFT JOIN entities_union 
-          ON entities_union.entity_id = entity.id 
+        LEFT JOIN entities_to_sync 
+          ON entities_to_sync.entity_id = entity.id 
         LEFT JOIN project 
-          ON project.entity_hierarchy_id = entities_union.entity_hierarchy_id
+          ON project.entity_hierarchy_id = entities_to_sync.entity_hierarchy_id
       `,
       groupBy: ['entity.id'],
     };
   }
 
-  sanitizeForClient = (data) => {
+  sanitizeForClient = data => {
     const { point, bounds, region, parent_id, ...sanitizedData } = data;
     return sanitizedData;
-  }
+  };
 }

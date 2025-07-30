@@ -3,7 +3,6 @@ import { SyncDirections } from '@tupaia/constants';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { buildSyncLookupSelect } from '../sync';
 
 const SERVICE_TYPES = {
   DHIS: 'dhis',
