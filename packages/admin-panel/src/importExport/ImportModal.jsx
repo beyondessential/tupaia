@@ -17,7 +17,7 @@ const STATUS = {
   ERROR: 'error',
 };
 
-const defaultFinishedMessage = () => <span>Your import has been successfully processed.</span>;
+const defaultFinishedMessage = () => 'Your import has been successfully processed';
 
 export const ImportModalComponent = React.memo(
   ({
@@ -220,7 +220,7 @@ ImportModalComponent.defaultProps = {
   queryParameters: [],
   actionConfig: {},
   subtitle: '',
-  getFinishedMessage: defaultFinishedMessage, // response => react element
+  getFinishedMessage: defaultFinishedMessage, // response => React.ReactNode
   confirmButtonText: 'Import',
   cancelButtonText: 'Cancel',
   uploadButtonText: 'Choose file',
