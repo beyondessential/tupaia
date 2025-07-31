@@ -31,22 +31,23 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
 
 /**
  * Returns true if any of the permissions assertions pass, or throws an error
- * @param {function[]} assertions  Each permissions assertion should return true or throw an error
+ * @param {function[]} assertions Each permissions assertion should return true or throw a
+ * {@link PermissionsError}
  * @param {string} errorMessage
  */
 export const assertAnyPermissions = (assertions, errorMessage) => async accessPolicy => {
-  let combinedErrorMessages = `One of the following conditions need to be satisfied:\n`;
+  const combinedErrorMessages = ['One of the following conditions need to be satisfied:'];
 
   for (const assertion of assertions) {
     try {
       await assertion(accessPolicy);
       return true;
     } catch (e) {
-      combinedErrorMessages += `${e.message}\n`;
+      combinedErrorMessages.push(e.message);
       // swallow specific errors, in case any assertion returns true
     }
   }
-  throw new Error(errorMessage || combinedErrorMessages);
+  throw new Error(errorMessage || combinedErrorMessages.join('\n'));
 };
 
 /**
