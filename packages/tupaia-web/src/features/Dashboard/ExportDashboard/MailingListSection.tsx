@@ -7,7 +7,7 @@ import { TupaiaWebEmailDashboardRequest } from '@tupaia/types';
 import { Button, SpinningLoader as BaseSpinningLoader } from '@tupaia/ui-components';
 import { useEmailDashboard } from '../../../api/mutations';
 import { ExportSettingLabel } from '../../ExportSettings';
-import { useDashboard, useDashboardMailingList } from '../utils';
+import { useDashboardContext, useDashboardMailingList } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 
 const Wrapper = styled.section`
@@ -75,7 +75,7 @@ export const MailingListSection = ({
   settings,
 }: Pick<TupaiaWebEmailDashboardRequest.ReqBody, 'selectedDashboardItems' | 'settings'>) => {
   const { projectCode, entityCode } = useParams();
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
   const mailingList = useDashboardMailingList();
   const showMailingList = mailingList && mailingList.isAdmin;
   const [responseMessage, setResponseMessage] = useState<string | null>(null);

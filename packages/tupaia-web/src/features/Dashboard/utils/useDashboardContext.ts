@@ -7,7 +7,7 @@ import { useDashboards } from '../../../api/queries';
 import { DashboardContext } from './DashboardContext';
 
 // Contains the dashboards, active dashboard, and export and subscribe state
-export const useDashboard = () => {
+export const useDashboardContext = () => {
   const { dashboardName, entityCode, projectCode } = useParams();
   const { data: dashboards = [] } = useDashboards(projectCode, entityCode);
   const { exportModalOpen, subscribeModalOpen, setExportModalOpen, setSubscribeModalOpen } =
