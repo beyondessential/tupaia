@@ -35,7 +35,7 @@ exports.up = function (db) {
           NEW.updated_at_sync_tick := -999;
         ELSE
            -- First get the current sync tick
-          SELECT value FROM local_system_facts WHERE key = 'currentSyncTick' INTO current_tick;
+          SELECT value FROM local_system_fact WHERE key = 'currentSyncTick' INTO current_tick;
           
           -- Then take an advisory lock on that sync tick value (if one doesn't already exist), to
           -- record that an active transaction is using this sync tick
