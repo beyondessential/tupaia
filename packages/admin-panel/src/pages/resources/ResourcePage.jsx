@@ -81,8 +81,6 @@ export const ResourcePage = ({
   const canExport = getHasPermission('export');
   const canCreate = getHasPermission('create');
 
-  console.log({ canImport, canExport, canCreate });
-
   // Explode columns to support nested fields, since the table doesn't want to nest these, and then filter out columns that the user doesn't have permission to see
   const accessibleColumns = getExplodedFields(columns).filter(
     column => (column.type ? getHasPermission(column.type) : true), // If column has no type, it's always accessible
