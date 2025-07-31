@@ -4,6 +4,7 @@ import { AnalyticsRefresher } from '../../server/changeHandlers';
 const TABLES_TO_CLEAR = [
   'api_request_log',
   'access_request',
+  'tombstone',
   'answer',
   'survey_response',
   'survey_response_comment',
