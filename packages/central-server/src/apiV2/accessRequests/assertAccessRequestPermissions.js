@@ -75,7 +75,7 @@ export const assertAccessRequestUpsertPermissions = async (
 
   const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
   if (!accessibleCountryCodes.includes(entity.country_code)) {
-    throw new Error('Need access to the newly edited entity');
+    throw new PermissionsError('Need access to the newly edited entity');
   }
 
   if (permissionGroupId) {
@@ -83,14 +83,18 @@ export const assertAccessRequestUpsertPermissions = async (
     // BES admin access
     // Access to an entity we don't have admin panel access
     const permissionGroup = await models.permissionGroup.findById(permissionGroupId);
-    if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
-      throw new Error('Need BES Admin access to make this change');
+    if (!permissionGroup) {
+      throw new NotFoundError(`No permission group exists with ID ${permissionGroupId}`);
     }
-
+    if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
+      throw new PermissionsError('Need BES Admin access to make this change');
+    }
     if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
-      throw new Error(`Need ${permissionGroup.name} access to ${entity.country_code}`);
+      throw new PermissionsError(`Need ${permissionGroup.name} access to ${entity.country_code}`);
     }
   }
+
+  return true;
 };
 
 /**

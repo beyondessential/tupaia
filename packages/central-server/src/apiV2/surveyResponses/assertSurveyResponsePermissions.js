@@ -1,18 +1,27 @@
 import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
-import { NotFoundError } from '@tupaia/utils';
+import { NotFoundError, PermissionsError } from '@tupaia/utils';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
 const assertSurveyEntityPairPermission = async (accessPolicy, models, surveyId, entityId) => {
-  const entity = await models.entity.findById(entityId);
-  const survey = await models.survey.findById(surveyId);
-  const permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
-
-  if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
-    throw new Error('You do not have permissions for this survey in this country');
+  const [entity, survey] = await Promise.all([
+    models.entity.findById(entityId),
+    models.survey.findById(surveyId),
+  ]);
+  if (!entity) {
+    throw new NotFoundError(`No entity exists with ID ${entityId}`);
   }
+  if (!survey) {
+    throw new NotFoundError(`No survey exists with ID ${surveyId}`);
+  }
+
+  const permissionGroup = await survey.getPermissionGroup();
+  if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
+    throw new PermissionsError('You do not have permissions for this survey in this country');
+  }
+
   return true;
 };
 

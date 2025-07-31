@@ -66,7 +66,7 @@ export const assertUserEntityPermissionEditPermissions = async (
   // Changing any of the pieces of data in a BES admin UEP is abusable, so completely forbid it
   const permissionGroup = await userEntityPermission.permissionGroup();
   if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
-    throw new Error('Need BES Admin access to make this change');
+    throw new PermissionsError('Need BES Admin access to make this change');
   }
 
   return true;
