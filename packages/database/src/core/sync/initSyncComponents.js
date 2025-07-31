@@ -51,7 +51,6 @@ export const NON_SYNCING_TABLES = [
   'sync_group_log',
   'sync_session',
   'user_country_access_attempt',
-  'user_entity_permission',
   'user_favourite_dashboard_item',
   'user_session',
   'tombstone',

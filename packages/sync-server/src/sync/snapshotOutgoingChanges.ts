@@ -2,7 +2,6 @@ import log from 'winston';
 
 import {
   getSnapshotTableName,
-  NON_SYNCING_TABLES,
   SYNC_SESSION_DIRECTION,
 } from '@tupaia/sync';
 import { DatabaseModel, TupaiaDatabase } from '@tupaia/database';
@@ -19,6 +18,7 @@ export const snapshotOutgoingChanges = async (
   since: number,
   sessionId: string,
   deviceId: string,
+  userId: string,
   projectIds: string[],
   config: SyncServerConfig,
 ): Promise<number> => {
@@ -27,9 +27,7 @@ export const snapshotOutgoingChanges = async (
   const snapshotTableName = getSnapshotTableName(sessionId);
   const CHUNK_SIZE = config.maxRecordsPerSnapshotChunk;
   const avoidRepull = config.lookupTable.avoidRepull;
-  const recordTypes = Object.values(models)
-    .filter(m => !NON_SYNCING_TABLES.includes(m.databaseRecord) && !!m.databaseRecord)
-    .map(m => m.databaseRecord);
+  const recordTypes = models.map(m => m.databaseRecord);
 
   while (fromId != null) {
     const [{ maxId, count }] = (await database.executeSql(
@@ -57,6 +55,11 @@ export const snapshotOutgoingChanges = async (
         WHERE updated_at_sync_tick > ?
         ${fromId ? `AND id > ?` : ''}
         AND (
+          user_ids IS NULL
+          OR
+          user_ids::text[] && ARRAY[?]
+        )
+        AND (
           project_ids IS NULL
           OR
           project_ids::text[] && ARRAY[${projectIds.map(p => `?`).join(',')}]
@@ -79,6 +82,7 @@ export const snapshotOutgoingChanges = async (
       [
         since,
         ...(fromId ? [fromId] : []),
+        userId,
         ...projectIds,
         ...recordTypes,
         ...(avoidRepull && deviceId ? [deviceId] : []),

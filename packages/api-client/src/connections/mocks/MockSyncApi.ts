@@ -20,6 +20,7 @@ export class MockSyncApi implements SyncApiInterface {
     res: ExpressResponse,
     sessionId: string,
     since: number,
+    userId: string,
     projectIds: string[],
     deviceId: string,
   ): Promise<any> {
