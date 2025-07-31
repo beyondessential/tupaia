@@ -30,7 +30,7 @@ export const assertSurveyScreenComponentEditPermissions = async (
   const surveyScreenComponent =
     await models.surveyScreenComponent.findById(surveyScreenComponentId);
   if (!surveyScreenComponent) {
-    throw new Error(`No surveyScreenComponent exists with id ${surveyScreenComponentId}`);
+    throw new NotFoundError(`No survey screen component exists with ID ${surveyScreenComponentId}`);
   }
   const surveyId = await surveyScreenComponent.surveyId();
   return assertSurveyEditPermissions(accessPolicy, models, surveyId);

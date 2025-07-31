@@ -18,20 +18,29 @@ export const assertUserEntityPermissionPermissions = async (
 ) => {
   const userEntityPermission = await models.userEntityPermission.findById(userEntityPermissionId);
   if (!userEntityPermission) {
-    throw new Error(`No user entity permission exists with ID ${userEntityPermissionId}`);
+    throw new NotFoundError(`No user entity permission exists with ID ${userEntityPermissionId}`);
   }
 
-  const entity = await models.entity.findById(userEntityPermission.entity_id);
-  const permissionGroup = await models.permissionGroup.findById(
-    userEntityPermission.permission_group_id,
-  );
+  const [entity, permissionGroup] = await Promise.all([
+    models.entity.findById(userEntityPermission.entity_id),
+    models.permissionGroup.findById(userEntityPermission.permission_group_id),
+  ]);
+  if (!entity) {
+    throw new NotFoundError(`No entity exists with ID ${userEntityPermission.entity_id}`);
+  }
+  if (!permissionGroup) {
+    throw new NotFoundError(
+      `No permission group exists with ID ${userEntityPermission.permission_group_id}`,
+    );
+  }
+
   const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
   if (!accessibleCountryCodes.includes(entity.country_code)) {
-    throw new Error(`Need Admin Panel access to ${entity.country_code}`);
+    throw new PermissionsError(`Need Admin Panel access to ${entity.country_code}`);
   }
 
   if (!accessPolicy.allows(entity.code, permissionGroup.name)) {
-    throw new Error(`Need ${permissionGroup.name} access to ${entity.code}`);
+    throw new PermissionsError(`Need ${permissionGroup.name} access to ${entity.code}`);
   }
 
   return true;

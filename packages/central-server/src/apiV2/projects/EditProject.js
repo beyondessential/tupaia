@@ -1,3 +1,4 @@
+import { NotFoundError, PermissionsError } from '@tupaia/utils';
 import {
   assertAdminPanelAccess,
   assertAnyPermissions,
@@ -10,10 +11,12 @@ const assertCanEditProject = async (accessPolicy, models, recordId) => {
   assertAdminPanelAccess(accessPolicy);
   const project = await models.project.findById(recordId);
   if (!project) {
-    throw new Error(`No project exists with ID ${recordId}`);
+    throw new NotFoundError(`No project exists with ID ${recordId}`);
   }
   const hasAdminAccess = await project.hasAdminAccess(accessPolicy);
-  if (!hasAdminAccess) throw new Error('Need Tupaia Admin Panel access to this project to edit');
+  if (!hasAdminAccess) {
+    throw new PermissionsError('Need Tupaia Admin Panel access to this project to edit');
+  }
   return true;
 };
 
