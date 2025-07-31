@@ -12067,6 +12067,7 @@ __metadata:
     "@aws-sdk/client-s3": ^3.341.0
     "@aws-sdk/credential-providers": ^3.341.0
     "@aws-sdk/lib-storage": ^3.348.0
+    "@tupaia/constants": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/fs-extra": ^11.0.4
     "@types/jest": ^29.5.14
