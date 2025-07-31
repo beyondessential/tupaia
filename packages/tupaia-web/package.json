@@ -39,6 +39,7 @@
     "jquery": "^3.7.1",
     "jszip": "^3.10.1",
     "leaflet": "^1.7.1",
+    "lucide-react": "^0.525.0",
     "moment": "^2.24.0",
     "react": "^16.14.0",
     "react-dom": "^16.13.1",

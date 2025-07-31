@@ -1,7 +1,8 @@
+import { Upload as ExportIcon, MailCheck, MailPlus } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
-import { ActionsMenu as BaseActionsMenu, ActionsMenuOptionType } from '@tupaia/ui-components';
-import { Upload as ExportIcon, MailPlus, MailCheck } from 'lucide-react';
+
+import { ActionsMenuOptionType, ActionsMenu as BaseActionsMenu } from '@tupaia/ui-components';
 import { useDashboardContext, useDashboardMailingList } from '../utils';
 
 const StyledExportIcon = styled(ExportIcon)`
