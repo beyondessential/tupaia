@@ -1,3 +1,4 @@
+import { NotFoundError, PermissionsError } from '@tupaia/utils';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -104,14 +105,14 @@ export const hasTupaiaAdminPanelAccessToCountry = (accessPolicy, countryCode) =>
 
 export const assertAdminPanelAccessToCountry = async (accessPolicy, models, recordId) => {
   const entity = await models.entity.findById(recordId);
-  if (!entity) throw new Error(`No entity found with id ${recordId}`);
+  if (!entity) throw new NotFoundError(`No entity exists with ID ${recordId}`);
 
   const userHasAdminAccessToCountry = accessPolicy.allows(
     entity.country_code,
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );
   if (!userHasAdminAccessToCountry) {
-    throw new Error(
+    throw new PermissionsError(
       `Need Tupaia Admin Panel access to country '${entity.country_code}' to edit entity`,
     );
   }
@@ -123,7 +124,7 @@ export const assertAdminPanelAccess = accessPolicy => {
     return true;
   }
 
-  throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
+  throw new PermissionsError(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
 };
 
 export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) => {
@@ -131,7 +132,7 @@ export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) =
     return true;
   }
 
-  throw new Error(`Need ${permissionGroupName} access`);
+  throw new PermissionsError(`Need ${permissionGroupName} access`);
 };
 
 export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames) => {

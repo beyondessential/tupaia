@@ -1,4 +1,5 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { NotFoundError, PermissionsError } from '@tupaia/utils';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 import { fetchCountryIdsByPermissionGroupId } from '../utilities';
 
@@ -9,7 +10,7 @@ const DEFAULT_SURVEY_ERROR_MESSAGE = 'Requires access to one of the countries th
 export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId) => {
   const survey = await models.survey.findById(surveyId);
   if (!survey) {
-    throw new Error(`No survey exists with id ${surveyId}`);
+    throw new NotFoundError(`No survey exists with ID ${surveyId}`);
   }
   const permissionGroup = await survey.getPermissionGroup();
   const countryCodes = await survey.getCountryCodes();
@@ -18,7 +19,7 @@ export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId)
     return true;
   }
 
-  throw new Error(DEFAULT_SURVEY_ERROR_MESSAGE);
+  throw new PermissionsError(DEFAULT_SURVEY_ERROR_MESSAGE);
 };
 
 // Used for edit and delete actions
@@ -42,7 +43,7 @@ export const assertSurveyEditPermissions = async (
     return true;
   }
 
-  throw new Error(errorMessage);
+  throw new PermissionsError(errorMessage);
 };
 
 export const createSurveyDBFilter = async (accessPolicy, models, criteria) => {

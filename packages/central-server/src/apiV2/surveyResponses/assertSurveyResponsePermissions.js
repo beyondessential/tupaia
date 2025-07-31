@@ -1,4 +1,5 @@
 import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
+import { NotFoundError } from '@tupaia/utils';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
 
@@ -18,7 +19,7 @@ const assertSurveyEntityPairPermission = async (accessPolicy, models, surveyId, 
 export const assertSurveyResponsePermissions = async (accessPolicy, models, surveyResponseId) => {
   const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
   if (!surveyResponse) {
-    throw new Error(`No survey response exists with id ${surveyResponseId}`);
+    throw new NotFoundError(`No survey response exists with ID ${surveyResponseId}`);
   }
 
   return assertSurveyEntityPairPermission(

@@ -10,7 +10,7 @@ const assertCanEditProject = async (accessPolicy, models, recordId) => {
   assertAdminPanelAccess(accessPolicy);
   const project = await models.project.findById(recordId);
   if (!project) {
-    throw new Error(`No project found with id ${recordId}`);
+    throw new Error(`No project exists with ID ${recordId}`);
   }
   const hasAdminAccess = await project.hasAdminAccess(accessPolicy);
   if (!hasAdminAccess) throw new Error('Need Tupaia Admin Panel access to this project to edit');

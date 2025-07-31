@@ -1,22 +1,22 @@
 import { RECORDS } from '@tupaia/database';
+import { NotFoundError } from '@tupaia/utils';
 import { hasBESAdminAccess } from '../../permissions';
-import { mergeFilter, mergeMultiJoin } from '../utilities';
 import {
   assertSurveyEditPermissions,
   assertSurveyGetPermissions,
   createSurveyDBFilter,
 } from '../surveys/assertSurveyPermissions';
+import { mergeFilter, mergeMultiJoin } from '../utilities';
 
 export const assertSurveyScreenComponentGetPermissions = async (
   accessPolicy,
   models,
   surveyScreenComponentId,
 ) => {
-  const surveyScreenComponent = await models.surveyScreenComponent.findById(
-    surveyScreenComponentId,
-  );
+  const surveyScreenComponent =
+    await models.surveyScreenComponent.findById(surveyScreenComponentId);
   if (!surveyScreenComponent) {
-    throw new Error(`No surveyScreenComponent exists with id ${surveyScreenComponentId}`);
+    throw new NotFoundError(`No survey screen component exists with ID ${surveyScreenComponentId}`);
   }
   const surveyId = await surveyScreenComponent.surveyId();
   return assertSurveyGetPermissions(accessPolicy, models, surveyId);
@@ -27,9 +27,8 @@ export const assertSurveyScreenComponentEditPermissions = async (
   models,
   surveyScreenComponentId,
 ) => {
-  const surveyScreenComponent = await models.surveyScreenComponent.findById(
-    surveyScreenComponentId,
-  );
+  const surveyScreenComponent =
+    await models.surveyScreenComponent.findById(surveyScreenComponentId);
   if (!surveyScreenComponent) {
     throw new Error(`No surveyScreenComponent exists with id ${surveyScreenComponentId}`);
   }
