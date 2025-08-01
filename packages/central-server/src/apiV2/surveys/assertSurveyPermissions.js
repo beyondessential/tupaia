@@ -31,10 +31,13 @@ export const assertSurveyEditPermissions = async (
 ) => {
   const survey = await models.survey.findById(surveyId);
   if (!survey) {
-    throw new Error(`No survey exists with id ${surveyId}`);
+    throw new NotFoundError(`No survey exists with ID ${surveyId}`);
   }
-  const permissionGroup = await survey.getPermissionGroup();
-  const countryCodes = await survey.getCountryCodes();
+
+  const [permissionGroup, countryCodes] = await Promise.all([
+    survey.getPermissionGroup(),
+    survey.getCountryCodes(),
+  ]);
 
   if (
     accessPolicy.allowsAll(countryCodes, permissionGroup.name) &&
