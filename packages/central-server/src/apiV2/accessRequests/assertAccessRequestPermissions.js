@@ -61,8 +61,16 @@ export const assertAccessRequestEditPermissions = async (
   }
 
   const permissionGroup = await models.permissionGroup.findById(accessRequest.permission_group_id);
+  if (!permissionGroup) {
+    throw new NotFoundError(
+      `No permission group exists with ID ${accessRequest.permission_group_id}`,
+    );
+  }
+
   if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
-    throw new PermissionsError('Need BES Admin access to the country this access request is for');
+    throw new PermissionsError(
+      `Need ${BES_ADMIN_PERMISSION_GROUP} access to the country this access request is for`,
+    );
   }
 
   return true;
