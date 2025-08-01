@@ -4,7 +4,8 @@ var dbm;
 var type;
 var seed;
 
-var _database = require('@tupaia/database');
+const { generateId } = require('../utilities/generateId');
+
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
@@ -29,7 +30,7 @@ exports.up = async function (db) {
   return db.runSql(`
     INSERT INTO project (id, code, entity_ids, name, description, sort_order, image_url, user_groups, logo_url)
     VALUES (
-      '${(0, _database.generateId)()}',
+      '${generateId()}',
       'covidau',
       '{${australia.rows[0].id}}',
       'COVID-19 Australia',
