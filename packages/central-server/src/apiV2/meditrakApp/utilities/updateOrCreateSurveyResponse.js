@@ -22,9 +22,8 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
   const newAndUpdatedEntities = surveyResponseObject.entities_upserted || [];
   const optionsCreated = surveyResponseObject.options_created || [];
 
-  models.wrapInTransaction(async transactingModels => {
-    let surveyResponse;
-    try {
+  try {
+    await models.wrapInTransaction(async transactingModels => {
       await upsertEntities(
         transactingModels,
         newAndUpdatedEntities,
@@ -47,7 +46,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
         ? transactingModels.surveyResponse.approvalStatusTypes.PENDING
         : transactingModels.surveyResponse.approvalStatusTypes.NOT_REQUIRED;
 
-      surveyResponse = await transactingModels.surveyResponse.updateOrCreate(
+      const surveyResponse = await transactingModels.surveyResponse.updateOrCreate(
         { id: surveyResponseId },
         {
           id: surveyResponseId,
@@ -55,14 +54,12 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
           ...surveyResponseProperties,
         },
       );
-    } catch (error) {
-      throw new DatabaseError(
-        `creating/updating survey response with id ${surveyResponseId}`,
-        error,
-      );
-    }
-    await upsertAnswers(transactingModels, answers, surveyResponse.id);
-  });
+
+      await upsertAnswers(transactingModels, answers, surveyResponse.id);
+    });
+  } catch (error) {
+    throw new DatabaseError(`creating/updating survey response with ID ${surveyResponseId}`, error);
+  }
 }
 
 const createOptions = async (models, optionsCreated) => {
