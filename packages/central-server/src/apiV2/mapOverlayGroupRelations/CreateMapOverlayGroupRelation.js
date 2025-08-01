@@ -17,7 +17,7 @@ export class CreateMapOverlayGroupRelation extends CreateHandler {
     await this.assertPermissions(
       assertAnyPermissions(
         [assertBESAdminAccess, assertVizBuilderAccess],
-        'You need either BES Admin or Viz Builder User access to create a map overlay group relation',
+        'BES Admin or Viz Builder User permission required to create a map overlay group relation',
       ),
     );
   }

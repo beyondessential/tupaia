@@ -8,7 +8,7 @@ export const useUser = () => {
     staleTime: 1000 * 60 * 60 * 1,
   });
 
-  const isLoggedIn = !query.isError && !!query.data && !!query.data.id;
+  const isLoggedIn = query.isSuccess && Boolean(query.data?.id);
 
   const hasVizBuilderAccess = getHasVizBuilderAccess(query?.data);
 

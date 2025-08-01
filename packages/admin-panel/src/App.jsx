@@ -1,15 +1,15 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AppPageLayout, AuthLayout, Footer } from './layout';
-import { AUTH_ROUTES, ROUTES } from './routes';
-import { PROFILE_ROUTES } from './profileRoutes';
+
 import { PrivateRoute } from './authentication';
+import { AppPageLayout, AuthLayout, Footer } from './layout';
+import { TabPageLayout } from './layout/TabPageLayout';
+import { ForgotPasswordPage, ResetPasswordPage } from './pages';
 import { LoginPage } from './pages/LoginPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
-import { TabPageLayout } from './layout/TabPageLayout';
-import { useUser } from './api/queries';
-import { getHasBESAdminAccess } from './utilities';
-import { ForgotPasswordPage, ResetPasswordPage } from './pages';
+import { PROFILE_ROUTES } from './profileRoutes';
+import { AUTH_ROUTES, ROUTES } from './routes';
+import { useHasBesAdminAccess } from './utilities';
 
 export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
@@ -22,28 +22,30 @@ export const getFlattenedChildViews = (route, basePath = '') => {
       to: `${basePath}${route.path}${childView.path}`, // this is an absolute route so that the breadcrumbs work
     };
 
-    if (!nestedViews) return [...acc, childViewWithRoute];
+    if (!nestedViews) {
+      acc.push(childViewWithRoute);
+      return acc;
+    }
+
     const updatedNestedViews = nestedViews.map(nestedView => ({
       ...nestedView,
       path: `${route.path}${childView.path}${nestedView.path}`,
-
       parent: childViewWithRoute,
     }));
 
-    return [
-      ...acc,
+    acc.push(
       {
         ...childViewWithRoute,
         nestedViews: updatedNestedViews,
       },
       ...updatedNestedViews,
-    ];
+    );
+    return acc;
   }, []);
 };
 
 const App = () => {
-  const { data: user } = useUser();
-  const hasBESAdminAccess = getHasBESAdminAccess(user);
+  const hasBESAdminAccess = useHasBesAdminAccess();
   const userHasAccessToTab = tab => {
     if (tab.isBESAdminOnly) {
       return !!hasBESAdminAccess;

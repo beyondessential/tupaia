@@ -6,7 +6,5 @@ export class TupaiaAdminCreateHandler extends CreateHandler {
     await this.assertPermissions(assertAdminPanelAccess);
   }
 
-  async createRecord() {
-    await this.insertRecord();
-  }
+  createRecord = this.insertRecord;
 }
