@@ -538,6 +538,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   async buildSyncLookupQueryDetails() {
     return {
+      // TODO: Remove survey response entities and task entities
+      // when MAUI-5722 is complete
       ctes: [
         `
           entities_to_sync AS (
