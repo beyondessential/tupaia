@@ -1,5 +1,3 @@
-import { Request } from 'express';
-
 import { DatabaseModel, DatabaseRecord } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { RespondingError, createBearerHeader, getTokenExpiry } from '@tupaia/utils';
@@ -107,7 +105,7 @@ export class SessionRecord extends DatabaseRecord {
 
 export class SessionModel extends DatabaseModel {
   public static syncDirection = SyncDirections.DO_NOT_SYNC;
-  
+
   public get DatabaseRecordClass() {
     return SessionRecord;
   }

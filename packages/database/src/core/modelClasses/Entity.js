@@ -552,27 +552,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             -- all child entities of root project entities
             SELECT child_id as entity_id, entity_hierarchy_id 
             FROM entity_parent_child_relation
-
-            UNION
-
-            -- survey response entities
-            SELECT survey_response.entity_id, project.entity_hierarchy_id
-            FROM survey_response
-            JOIN survey ON survey.id = survey_response.survey_id
-            JOIN project ON project.id = survey.project_id
-
-            UNION
-
-            -- task entities
-            SELECT task.entity_id, project.entity_hierarchy_id
-            FROM task
-            JOIN survey ON survey.id = task.survey_id
-            JOIN project ON project.id = survey.project_id
           )
         `,
       ],
       select: await buildSyncLookupSelect(this, {
-        // Sync country entities as they are needed for permission checks
+        // Sync all country entities as they are needed for permission checks
         projectIds: `CASE WHEN entity.type = 'country' THEN NULL ELSE ARRAY_AGG(project.id) END`,
       }),
       joins: `
