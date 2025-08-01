@@ -391,7 +391,7 @@ export class CentralSyncManager {
             ? null
             : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
 
-          const changesCount = await updateLookupTable(
+          const updatedCount = await updateLookupTable(
             getModelsForPull(transactingModels.getModels()),
             previouslyUpToTick,
             this.config,
@@ -406,7 +406,7 @@ export class CentralSyncManager {
           });
           await transactingModels.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, currentTick);
 
-          return changesCount;
+          return updatedCount;
         },
       );
 
