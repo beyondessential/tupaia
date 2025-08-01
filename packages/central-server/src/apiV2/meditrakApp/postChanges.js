@@ -42,41 +42,43 @@ const ACTIONS = {
  */
 export async function postChanges(req, res) {
   const changes = req.body;
-  const { models } = req;
   const translatedChanges = [];
-  for (const { action, payload, ...rest } of changes) {
-    if (!ACTION_HANDLERS[action]) {
-      throw new ValidationError(`${action} is not a supported change action`);
+
+  await req.models.wrapInTransaction(async transactingModels => {
+    for (const { action, payload, ...rest } of changes) {
+      if (!ACTION_HANDLERS[action]) {
+        throw new ValidationError(`${action} is not a supported change action`);
+      }
+      const translatedPayload = await PAYLOAD_TRANSLATORS[action](transactingModels, payload);
+      await PAYLOAD_VALIDATORS[action](transactingModels, translatedPayload);
+      translatedChanges.push({ action, translatedPayload, ...rest });
     }
-    const translatedPayload = await PAYLOAD_TRANSLATORS[action](models, payload);
-    await PAYLOAD_VALIDATORS[action](models, translatedPayload);
-    translatedChanges.push({ action, translatedPayload, ...rest });
-  }
 
-  // Check permissions for survey responses
-  const surveyResponsePayloads = translatedChanges
-    .filter(c => c.action === ACTIONS.SubmitSurveyResponse)
-    .map(c => c.translatedPayload.survey_response || c.translatedPayload);
-  const surveyResponsePermissionsChecker = async accessPolicy => {
-    await assertCanSubmitSurveyResponses(accessPolicy, models, surveyResponsePayloads);
-  };
-  await req.assertPermissions(
-    assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
-  );
+    // Check permissions for survey responses
+    const surveyResponsePayloads = translatedChanges
+      .filter(c => c.action === ACTIONS.SubmitSurveyResponse)
+      .map(c => c.translatedPayload.survey_response || c.translatedPayload);
+    const surveyResponsePermissionsChecker = async accessPolicy => {
+      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, surveyResponsePayloads);
+    };
+    await req.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
+    );
 
-  for (const { action, translatedPayload, ...rest } of translatedChanges) {
-    await ACTION_HANDLERS[action](models, translatedPayload);
+    for (const { action, translatedPayload, ...rest } of translatedChanges) {
+      await ACTION_HANDLERS[action](transactingModels, translatedPayload);
 
-    if (action === ACTIONS.SubmitSurveyResponse) {
-      // TODO: Rework this functionality, as directly calling an analytics refresh here is both inefficient
-      // and may create duplicate records in the analytics table
-      const { waitForAnalyticsRebuild } = rest;
-      if (waitForAnalyticsRebuild) {
-        const { database } = models;
-        await AnalyticsRefresher.refreshAnalytics(database);
+      if (action === ACTIONS.SubmitSurveyResponse) {
+        // TODO: Rework this functionality, as directly calling an analytics refresh here is both inefficient
+        // and may create duplicate records in the analytics table
+        const { waitForAnalyticsRebuild } = rest;
+        if (waitForAnalyticsRebuild) {
+          const { database } = transactingModels;
+          await AnalyticsRefresher.refreshAnalytics(database);
+        }
       }
     }
-  }
+  });
 
   respond(res, { message: 'Successfully integrated changes into server database' });
 }
