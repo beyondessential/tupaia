@@ -41,6 +41,7 @@ import { PermissionGroupModel } from './PermissionGroup';
 import { ProjectModel } from './Project';
 import { QuestionModel } from './Question';
 import { ReportModel } from './Report';
+import { EntityParentChildRelationModel } from './EntityParentChildRelation';
 import { RefreshTokenModel } from './RefreshToken';
 import { SurveyModel } from './Survey';
 import { SurveyGroupModel } from './SurveyGroup';
@@ -109,6 +110,7 @@ export const modelClasses = {
   Project: ProjectModel,
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
+  EntityParentChildRelation: EntityParentChildRelationModel,
   Report: ReportModel,
   SupersetInstance: SupersetInstanceModel,
   Survey: SurveyModel,
@@ -173,6 +175,10 @@ export { PermissionGroupModel, PermissionGroupRecord } from './PermissionGroup';
 export { ProjectModel, ProjectRecord } from './Project';
 export { QuestionModel, QuestionRecord } from './Question';
 export { ReportModel, ReportRecord } from './Report';
+export {
+  EntityParentChildRelationModel,
+  EntityParentChildRelationRecord,
+} from './EntityParentChildRelation';
 export { SurveyModel, SurveyRecord } from './Survey';
 export { SurveyGroupModel, SurveyGroupRecord } from './SurveyGroup';
 export { SurveyScreenComponentModel, SurveyScreenComponentRecord } from './SurveyScreenComponent';
