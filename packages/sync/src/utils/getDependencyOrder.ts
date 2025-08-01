@@ -1,13 +1,13 @@
 import { compact, groupBy, mapValues } from 'lodash';
 
-import { TupaiaDatabase } from '@tupaia/database';
+import { BaseDatabase } from '@tupaia/database';
 
 interface Dependency {
   table_name: string;
   depends_on: string;
 }
 
-export async function getDependencyOrder(database: TupaiaDatabase): Promise<string[]> {
+export async function getDependencyOrder(database: BaseDatabase): Promise<string[]> {
   const sorted: string[] = [];
   const dependencies = (await database.executeSql(`
     WITH all_tables AS (

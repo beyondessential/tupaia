@@ -17,6 +17,7 @@ import {
   insertSnapshotRecords,
   updateSnapshotRecords,
   SyncSnapshotAttributes,
+  withDeferredSyncSafeguards,
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { SyncTickFlags } from '@tupaia/constants';
@@ -260,10 +261,9 @@ export class CentralSyncManager {
 
       await this.waitForPendingEdits(tick);
 
-      await this.models.syncSession.update(
-        { id: sessionId },
-        { pull_since: since, pull_until: tick },
-      );
+      session.pull_since = since;
+      session.pull_until = tick;
+      await session.save();
 
       // snapshot inside a "repeatable read" transaction, so that other changes made while this
       // snapshot is underway aren't included (as this could lead to a pair of foreign records with
@@ -474,7 +474,9 @@ export class CentralSyncManager {
           // saving with a unique tick
           const { tock } = await this.tickTockGlobalClock(transactingModels);
 
-          await saveIncomingSnapshotChanges(modelsToInclude, sessionId);
+          await withDeferredSyncSafeguards(transactingModels.database, () =>
+            saveIncomingSnapshotChanges(modelsToInclude, sessionId, true),
+          );
 
           // store the sync tick on save with the incoming changes, so they can be compared for
           // edits with the outgoing changes

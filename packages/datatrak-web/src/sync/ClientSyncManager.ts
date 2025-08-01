@@ -10,15 +10,16 @@ import {
   waitForPendingEditsUsingSyncTick,
   getModelsForPush,
   getModelsForPull,
+  withDeferredSyncSafeguards,
 } from '@tupaia/sync';
 
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
-import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
-import { post, remove } from '../api';
+import { pullIncomingChanges } from './pullIncomingChanges';
 import { DatatrakWebModelRegistry, ProcessStreamDataParams } from '../types';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
+import { CentralServerConnection } from './CentralServerConnection';
 
 export interface SyncResult {
   hasRun: boolean;
@@ -31,24 +32,28 @@ export class ClientSyncManager {
 
   private currentSyncPromise: Promise<SyncResult> | null = null;
 
-  private projectIds: string[];
-
   private deviceId: string;
 
-  constructor(models: DatatrakWebModelRegistry, projectIds: string[], deviceId: string) {
+  private connection: CentralServerConnection;
+
+  constructor(models: DatatrakWebModelRegistry, deviceId: string) {
     this.models = models;
     this.database = models.database;
-    this.projectIds = projectIds;
     this.deviceId = deviceId;
+    this.connection = new CentralServerConnection();
+    console.log('ClientSyncManager.constructor', {
+      deviceId,
+    });
   }
 
-  async triggerSync() {
+  async triggerSync(projectIds: string[]) {
     if (this.currentSyncPromise) {
+      console.log('ClientSyncManager.triggerSync - already running');
       return this.currentSyncPromise;
     }
 
     // set up a common sync promise to avoid double sync
-    this.currentSyncPromise = this.runSync();
+    this.currentSyncPromise = this.runSync(projectIds);
 
     // make sure sync promise gets cleared when finished, even if there's an error
     try {
@@ -59,7 +64,7 @@ export class ClientSyncManager {
     }
   }
 
-  async runSync() {
+  async runSync(projectIds: string[]) {
     if (this.currentSyncPromise) {
       throw new Error(
         'It should not be possible to call "runSync" while an existing run is active',
@@ -79,7 +84,7 @@ export class ClientSyncManager {
 
     await this.pushChanges(sessionId, startedAtTick);
 
-    await this.pullChanges(sessionId);
+    await this.pullChanges(sessionId, projectIds);
 
     await this.endSyncSession(sessionId);
 
@@ -95,11 +100,11 @@ export class ClientSyncManager {
   }
 
   async startSyncSession() {
-    return post('sync');
+    return this.connection.startSyncSession();
   }
 
   async endSyncSession(sessionId: string) {
-    return remove(`sync/${sessionId}`);
+    return this.connection.endSyncSession(sessionId);
   }
 
   async pushChanges(sessionId: string, newSyncClockTime: number) {
@@ -128,7 +133,7 @@ export class ClientSyncManager {
     const outgoingChanges = await this.models.wrapInRepeatableReadTransaction(
       async transactingModels => {
         const modelsForPush = getModelsForPush(transactingModels.getModels());
-        return snapshotOutgoingChanges(modelsForPush, pushSince);
+        return snapshotOutgoingChanges(modelsForPush, transactingModels.tombstone, pushSince);
       },
     );
 
@@ -143,7 +148,7 @@ export class ClientSyncManager {
     console.log('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
   }
 
-  async pullChanges(sessionId: string) {
+  async pullChanges(sessionId: string, projectIds: string[]) {
     try {
       console.log('ClientSyncManager.pullChanges', {
         sessionId,
@@ -158,11 +163,12 @@ export class ClientSyncManager {
 
       console.log('ClientSyncManager.initiatePull', {
         sessionId,
+        pullSince,
       });
-      const { pullUntil } = await initiatePull(
+      const { pullUntil } = await this.connection.initiatePull(
         sessionId,
         pullSince,
-        this.projectIds,
+        projectIds,
         this.deviceId,
       );
 
@@ -191,10 +197,17 @@ export class ClientSyncManager {
   async pullInitialSync(sessionId: string, pullUntil: number) {
     await this.models.wrapInTransaction(async transactingModels => {
       const processStreamedDataFunction = async ({ models, records }: ProcessStreamDataParams) => {
-        await saveIncomingInMemoryChanges(models, records);
+        await saveIncomingInMemoryChanges(models, records, false);
       };
 
-      await pullIncomingChanges(transactingModels, sessionId, processStreamedDataFunction);
+      await withDeferredSyncSafeguards(transactingModels.database, () =>
+        pullIncomingChanges(
+          transactingModels,
+          sessionId,
+          this.connection,
+          processStreamedDataFunction,
+        ),
+      );
 
       // update the last successful sync in the same save transaction - if updating the cursor fails,
       // we want to roll back the rest of the saves so that we don't end up detecting them as
@@ -213,11 +226,13 @@ export class ClientSyncManager {
       await insertSnapshotRecords(models.database, sessionId, records);
     };
 
-    await pullIncomingChanges(this.models, sessionId, processStreamedDataFunction);
+    await pullIncomingChanges(this.models, sessionId, this.connection, processStreamedDataFunction);
 
     await this.models.wrapInTransaction(async transactingModels => {
       const incomingModels = getModelsForPull(transactingModels.getModels());
-      await saveIncomingSnapshotChanges(incomingModels, sessionId);
+      await withDeferredSyncSafeguards(transactingModels.database, () =>
+        saveIncomingSnapshotChanges(incomingModels, sessionId, false),
+      );
 
       // update the last successful sync in the same save transaction - if updating the cursor fails,
       // we want to roll back the rest of the saves so that we don't end up detecting them as
