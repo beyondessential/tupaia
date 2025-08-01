@@ -11,8 +11,10 @@ export type SyncStartSessionRequest = Request<
 >;
 
 export class SyncStartSessionRoute extends Route<SyncStartSessionRequest> {
-  public async buildResponse() {
+  protected readonly type = 'stream';
+
+  public async stream() {
     const { ctx } = this.req;
-    return ctx.services.sync.startSyncSession();
+    return ctx.services.sync.startSyncSession(this.res);
   }
 }
