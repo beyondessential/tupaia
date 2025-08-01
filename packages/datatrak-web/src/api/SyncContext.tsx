@@ -5,6 +5,7 @@ import { useDatabase } from './DatabaseContext';
 import { generateId } from '@tupaia/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useAccessibleProjects } from './queries/useProjects';
+import { useCurrentUserContext } from './CurrentUserContext';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
   clientSyncManager: ClientSyncManager | null;
@@ -20,24 +21,25 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
   const [isSyncScheduled, setIsSyncScheduled] = useState(false);
   const { models } = useDatabase();
   const { data: projects } = useAccessibleProjects();
+  const { id: userId } = useCurrentUserContext();
 
   useEffect(() => {
     const initSyncManager = async () => {
       // Only initialize the sync manager if it doesn't exist yet
-      if (!clientSyncManager && models) {
+      if (!clientSyncManager && models && userId) {
         let deviceId = await models.localSystemFact.get('deviceId');
         if (!deviceId) {
           deviceId = `datatrak-web-${generateId()}`;
           await models.localSystemFact.set('deviceId', deviceId);
         }
 
-        const clientSyncManager = new ClientSyncManager(models, deviceId);
+        const clientSyncManager = new ClientSyncManager(models, deviceId, userId);
         setClientSyncManager(clientSyncManager);
       }
     };
 
     initSyncManager();
-  }, [models]);
+  }, [models, userId]);
 
   useEffect(() => {
     // Only schedule the sync if conditions are met

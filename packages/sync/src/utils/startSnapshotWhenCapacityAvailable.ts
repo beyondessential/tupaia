@@ -9,13 +9,13 @@ const startSnapshotIfCapacityAvailable = async (database: TupaiaDatabase, sessio
   const rows = (await database.executeSql(
     `
     WITH in_flight_snapshots AS (
-      SELECT COUNT(*) AS count FROM sync_sessions
+      SELECT COUNT(*) AS count FROM sync_session
       WHERE snapshot_started_at IS NOT NULL
       AND snapshot_completed_at IS NULL
       AND errors IS NULL
       AND completed_at IS NULL
     )
-    UPDATE sync_sessions
+    UPDATE sync_session
     SET snapshot_started_at = NOW()
     FROM in_flight_snapshots
     WHERE id = :sessionId

@@ -59,12 +59,13 @@ export class SyncApi extends BaseApi {
     res: ExpressResponse,
     sessionId: string,
     since: number,
+    userId: string,
     projectIds: string[],
     deviceId: string,
   ) {
     // first, set the pull filter on the central server,
     // which will kick off a snapshot of changes to pull
-    const data = { since, projectIds, deviceId };
+    const data = { since, projectIds, userId, deviceId };
     await this.connection.post(`sync/${sessionId}/pull`, {}, data);
 
     // then, poll the pull/status endpoint until we get a valid response - it takes a while for

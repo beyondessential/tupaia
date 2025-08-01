@@ -6,6 +6,9 @@ import { TestableApp } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';
 
 const rollbackRecords = async (models, projectCode) => {
+  await models.database.executeSql(`
+    TRUNCATE TABLE tombstone;
+  `);
   await models.project.delete({ code: projectCode });
   await models.dashboard.delete({ root_entity_code: projectCode });
   const projectEntity = await models.entity.findOne({ code: projectCode, type: 'project' });

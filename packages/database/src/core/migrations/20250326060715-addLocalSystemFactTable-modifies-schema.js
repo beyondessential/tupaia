@@ -18,8 +18,8 @@ exports.up = async function (db) {
   await db.runSql(`
     CREATE TABLE local_system_fact
     (
-        id         VARCHAR(255) PRIMARY KEY,
-        key        VARCHAR(255) NOT NULL,
+        id         TEXT PRIMARY KEY,
+        key        TEXT NOT NULL,
         value      TEXT,
         CONSTRAINT local_system_fact_key_unique UNIQUE (key)
     );
