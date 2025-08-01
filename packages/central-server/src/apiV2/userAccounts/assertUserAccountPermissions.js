@@ -1,11 +1,13 @@
 import keyBy from 'lodash.keyby';
+
 import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
+import { NotFoundError, PermissionsError } from '@tupaia/utils';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
 export const assertUserAccountPermissions = async (accessPolicy, models, userAccountId) => {
   const userAccount = await models.user.findById(userAccountId);
   if (!userAccount) {
-    throw new Error(`No user account found with id ${userAccountId}`);
+    throw new NotFoundError(`No user account exists with ID ${userAccountId}`);
   }
 
   const entityPermissions = await models.userEntityPermission.find({ user_id: userAccount.id });
@@ -23,14 +25,14 @@ export const assertUserAccountPermissions = async (accessPolicy, models, userAcc
 
   // Must have Admin Panel access to all countries the user has access to
   if (!accessPolicy.allowsAll(countryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-    throw new Error('Need Admin Panel access to all countries this user has access to');
+    throw new PermissionsError('Need Admin Panel access to all countries this user has access to');
   }
   // Must have equal or higher permissions than the user has for each permission they have
   entityPermissions.forEach(({ entity_id: entityId, permission_group_id: permissionGroupId }) => {
     const countryCode = entitiesById[entityId].country_code;
     const permissionGroup = permissionsById[permissionGroupId].name;
     if (!accessPolicy.allows(countryCode, permissionGroup)) {
-      throw new Error(`Need ${permissionGroup} access to ${countryCode}`);
+      throw new PermissionsError(`Need ‘${permissionGroup}’ access to ${countryCode}`);
     }
   });
 
@@ -52,18 +54,18 @@ const buildUserAccountRawSqlFilter = accessPolicy => {
   /**
    * Here we're building up an inner query to work out which user permissions exist that we don't
    * have access to. Once we know that, we just filter to find the users whose ids are not in that list
-   * 
+   *
    * eg. If my access policy is: { DL: ['Admin', 'Public'], TO: ['Donor'] }
    * The query is:
       user_account.id NOT IN (
-        SELECT uep.user_id FROM user_entity_permission uep 
-        JOIN entity e ON uep.entity_id = e.id 
-        JOIN permission_group pg ON uep.permission_group_id = pg.id 
+        SELECT uep.user_id FROM user_entity_permission uep
+        JOIN entity e ON uep.entity_id = e.id
+        JOIN permission_group pg ON uep.permission_group_id = pg.id
 
         WHERE
           -- Either we don't have access to a country they have access to
           e.code NOT IN ('DL', 'TO')
-        
+
           -- Or we have access to it, but not with the level of permissions they do
           OR (e.code = 'DL' AND pg.name NOT IN ('Admin', 'Public'))
           OR (e.code = 'TO' AND pg.name NOT IN ('Donor'))
@@ -72,11 +74,11 @@ const buildUserAccountRawSqlFilter = accessPolicy => {
   const sql = `
   user_account.id NOT IN (
     -- Inner query to detect which users have permissions that we do not
-    SELECT uep.user_id FROM user_entity_permission uep 
-    JOIN entity e ON uep.entity_id = e.id 
-    JOIN permission_group pg ON uep.permission_group_id = pg.id 
+    SELECT uep.user_id FROM user_entity_permission uep
+    JOIN entity e ON uep.entity_id = e.id
+    JOIN permission_group pg ON uep.permission_group_id = pg.id
 
-    WHERE 
+    WHERE
       -- Either we don't have access to a country they have access to
       e.code NOT IN ${SqlQuery.record(accessibleCountryCodes)}
 
@@ -93,8 +95,10 @@ ${accessibleCountryCodes
 
   const parameters = [
     ...accessibleCountryCodes,
-    ...accessibleCountryCodes
-      .flatMap(countryCode => [countryCode, ...permissionsByCountryCode[countryCode]]),
+    ...accessibleCountryCodes.flatMap(countryCode => [
+      countryCode,
+      ...permissionsByCountryCode[countryCode],
+    ]),
   ];
   return { sql, parameters };
 };

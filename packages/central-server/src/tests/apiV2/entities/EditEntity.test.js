@@ -64,7 +64,8 @@ describe("Editing an entity's name", async () => {
       });
 
       expect(result).to.deep.equal({
-        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to country 'SB' to edit entity\n`,
+        error:
+          "One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to country 'SB' to edit entity",
       });
     });
   });

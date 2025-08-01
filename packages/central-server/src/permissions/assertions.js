@@ -1,3 +1,4 @@
+import { NotFoundError, PermissionsError } from '@tupaia/utils';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -30,22 +31,23 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
 
 /**
  * Returns true if any of the permissions assertions pass, or throws an error
- * @param {function[]} assertions  Each permissions assertion should return true or throw an error
+ * @param {function[]} assertions Each permissions assertion should return true or throw a
+ * {@link PermissionsError}
  * @param {string} errorMessage
  */
 export const assertAnyPermissions = (assertions, errorMessage) => async accessPolicy => {
-  let combinedErrorMessages = `One of the following conditions need to be satisfied:\n`;
+  const combinedErrorMessages = ['One of the following conditions need to be satisfied:'];
 
   for (const assertion of assertions) {
     try {
       await assertion(accessPolicy);
       return true;
     } catch (e) {
-      combinedErrorMessages += `${e.message}\n`;
+      combinedErrorMessages.push(e.message);
       // swallow specific errors, in case any assertion returns true
     }
   }
-  throw new Error(errorMessage || combinedErrorMessages);
+  throw new Error(errorMessage || combinedErrorMessages.join('\n'));
 };
 
 /**
@@ -104,14 +106,14 @@ export const hasTupaiaAdminPanelAccessToCountry = (accessPolicy, countryCode) =>
 
 export const assertAdminPanelAccessToCountry = async (accessPolicy, models, recordId) => {
   const entity = await models.entity.findById(recordId);
-  if (!entity) throw new Error(`No entity found with id ${recordId}`);
+  if (!entity) throw new NotFoundError(`No entity exists with ID ${recordId}`);
 
   const userHasAdminAccessToCountry = accessPolicy.allows(
     entity.country_code,
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );
   if (!userHasAdminAccessToCountry) {
-    throw new Error(
+    throw new PermissionsError(
       `Need Tupaia Admin Panel access to country '${entity.country_code}' to edit entity`,
     );
   }
@@ -123,7 +125,7 @@ export const assertAdminPanelAccess = accessPolicy => {
     return true;
   }
 
-  throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
+  throw new PermissionsError(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
 };
 
 export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) => {
@@ -131,7 +133,7 @@ export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) =
     return true;
   }
 
-  throw new Error(`Need ${permissionGroupName} access`);
+  throw new PermissionsError(`Need ${permissionGroupName} access`);
 };
 
 export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames) => {

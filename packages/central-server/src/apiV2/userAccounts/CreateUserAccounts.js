@@ -1,11 +1,12 @@
-import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
-import { CreateHandler } from '../CreateHandler';
+import { encryptPassword, generateSecretKey, hashAndSaltPassword } from '@tupaia/auth';
+import { PermissionsError, ValidationError } from '@tupaia/utils';
 import {
   assertAdminPanelAccess,
   assertAdminPanelAccessToCountry,
   assertAnyPermissions,
   assertBESAdminAccess,
 } from '../../permissions';
+import { CreateHandler } from '../CreateHandler';
 
 /**
  * Handles POST endpoints:
@@ -48,27 +49,22 @@ export class CreateUserAccounts extends CreateHandler {
   }
 
   async createUserPermission(transactingModels, { userId, countryName, permissionGroupName }) {
-    const permissionGroup = await transactingModels.permissionGroup.findOne({
-      name: permissionGroupName,
-    });
-    const country = await transactingModels.entity.findOne({
-      name: countryName,
-      type: 'country',
-    });
+    const [permissionGroup, country] = await Promise.all([
+      transactingModels.permissionGroup.findOne({ name: permissionGroupName }),
+      transactingModels.entity.findOne({ name: countryName, type: 'country' }),
+    ]);
 
     if (!permissionGroup) {
-      throw new Error(`No such permission group: ${permissionGroupName}`);
+      throw new ValidationError(`No such permission group: ${permissionGroupName}`);
     }
-
     if (!country) {
-      throw new Error(`No such country: ${countryName}`);
+      throw new ValidationError(`No such country: ${countryName}`);
     }
 
     const countryPermissionChecker = async accessPolicy => {
       await assertAdminPanelAccessToCountry(accessPolicy, transactingModels, country.id);
-
       if (!accessPolicy.allows(country.code, permissionGroup.name)) {
-        throw new Error(`Need ${permissionGroup.name} access to ${country.name}`);
+        throw new PermissionsError(`Need ${permissionGroup.name} access to ${country.name}`);
       }
     };
 

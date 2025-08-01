@@ -1,3 +1,4 @@
+import { PermissionsError } from '@tupaia/utils';
 import {
   hasDashboardRelationGetPermissions,
   hasDashboardRelationEditPermissions,
@@ -47,8 +48,10 @@ export const hasDashboardItemEditPermissions = async (accessPolicy, models, dash
 
   // If the user doesn't have viz builder access to the entity code of the dashboards,
   // they can't edit the dashboard item
-  if (!vizBuilderUserPermissionChecks.every(result => result)) {
-    throw new Error('Requires Viz builder access for all the dashboards this dashboard item is in');
+  if (!vizBuilderUserPermissionChecks.every(Boolean)) {
+    throw new PermissionsError(
+      'Requires Viz Builder access for all the dashboards this dashboard item is in',
+    );
   }
 
   // To edit a dashboard item, the user has to have access to the relation between the
@@ -77,14 +80,14 @@ export const assertDashboardItemGetPermissions = async (accessPolicy, models, da
     return true;
   }
 
-  throw new Error(
+  throw new PermissionsError(
     'Requires access to the dashboard item in one of the dashboards this dashboard item is in',
   );
 };
 
 export const assertDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
   if (!(await hasDashboardItemEditPermissions(accessPolicy, models, dashboardItemId))) {
-    throw new Error(
+    throw new PermissionsError(
       `Access to the dashboard item in all of the dashboards this dashboard item is in is required`,
     );
   }
