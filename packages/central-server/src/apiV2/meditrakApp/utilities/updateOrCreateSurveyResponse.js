@@ -22,7 +22,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
   const newAndUpdatedEntities = surveyResponseObject.entities_upserted || [];
   const optionsCreated = surveyResponseObject.options_created || [];
 
-  models.wrapInTransaction(async transactingModels => {
+  await models.wrapInTransaction(async transactingModels => {
     let surveyResponse;
     try {
       await upsertEntities(
