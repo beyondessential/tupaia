@@ -162,9 +162,9 @@ jobs:
       API_CLIENT_SALT: abc132
       JWT_SECRET: abc132
       TUPAIA_ADMIN_EMAIL_ADDRESS: test@tupaia.org
-      TUPAIA_FRONT_END_URL: dev.tupaia.org
-      LESMIS_FRONT_END_URL: dev-lesmis.tupaia.org
-      DATATRAK_FRONT_END_URL: dev-datatrak.tupaia.org
+      TUPAIA_FRONT_END_URL: https://dev.tupaia.org
+      LESMIS_FRONT_END_URL: https://dev-lesmis.tupaia.org
+      DATATRAK_FRONT_END_URL: https://dev-datatrak.tupaia.org
 
       # test database
       DB_PG_USER: postgres
