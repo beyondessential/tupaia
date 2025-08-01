@@ -4,8 +4,9 @@ export enum SyncTickFlags {
   SYNC_LOOKUP_PLACEHOLDER = -1,
 }
 
+// Important! Syncing tables should also be added to SYNCING_TABLES in @tupaia/database/initSyncComponents.js
 export enum SyncDirections {
-  DO_NOT_SYNC = 'do_not_sync', // Important! Non-syncing tables should also be added to NON_SYNCING_TABLES in @tupaia/database/initSyncComponents.js
+  DO_NOT_SYNC = 'do_not_sync',
   PUSH_TO_CENTRAL = 'push_to_central',
   PULL_FROM_CENTRAL = 'pull_from_central',
   BIDIRECTIONAL = 'bidirectional',
