@@ -1,6 +1,9 @@
 import randomToken from 'rand-token';
 import moment from 'moment';
+
 import { UnauthenticatedError } from '@tupaia/utils';
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -18,6 +21,8 @@ export class OneTimeLoginRecord extends DatabaseRecord {
 }
 
 export class OneTimeLoginModel extends DatabaseModel {
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return OneTimeLoginRecord;
   }

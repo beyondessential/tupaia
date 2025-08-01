@@ -10,7 +10,7 @@ export class SurveyScreenRecord extends DatabaseRecord {
 }
 
 export class SurveyScreenModel extends DatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return SurveyScreenRecord;

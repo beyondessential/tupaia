@@ -309,7 +309,7 @@ export class EntityRecord extends DatabaseRecord {
 }
 
 export class EntityModel extends MaterializedViewLogDatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get DatabaseRecordClass() {
     return EntityRecord;
@@ -540,25 +540,35 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return {
       ctes: [
         `
-          entity_parent_child_relation_union AS (
-            SELECT parent_id as entity_id, entity_hierarchy_id 
-            FROM entity_parent_child_relation
+          entities_to_sync AS (
+            -- root project entities
+            SELECT entity.id as entity_id, project.entity_hierarchy_id
+            FROM entity join project on entity.id = project.entity_id
+
             UNION
+
+            -- all child entities of root project entities
             SELECT child_id as entity_id, entity_hierarchy_id 
             FROM entity_parent_child_relation
           )
         `,
       ],
       select: await buildSyncLookupSelect(this, {
-        projectIds: `ARRAY_AGG(project.id)`,
+        // Sync all country entities as they are needed for permission checks
+        projectIds: `CASE WHEN entity.type = 'country' THEN NULL ELSE ARRAY_AGG(project.id) END`,
       }),
       joins: `
-        LEFT JOIN entity_parent_child_relation_union 
-          ON entity_parent_child_relation_union.entity_id = entity.id 
+        LEFT JOIN entities_to_sync 
+          ON entities_to_sync.entity_id = entity.id 
         LEFT JOIN project 
-          ON project.entity_hierarchy_id = entity_parent_child_relation_union.entity_hierarchy_id
+          ON project.entity_hierarchy_id = entities_to_sync.entity_hierarchy_id
       `,
       groupBy: ['entity.id'],
     };
   }
+
+  sanitizeForClient = data => {
+    const { point, bounds, region, parent_id, ...sanitizedData } = data;
+    return sanitizedData;
+  };
 }

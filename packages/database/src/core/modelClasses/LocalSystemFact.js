@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -8,6 +10,8 @@ export class LocalSystemFactRecord extends DatabaseRecord {
 }
 
 export class LocalSystemFactModel extends DatabaseModel {
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return LocalSystemFactRecord;
   }
@@ -22,11 +26,6 @@ export class LocalSystemFactModel extends DatabaseModel {
     if (existing) {
       await this.update({ key }, { value });
     } else {
-      // This function is used in the migration code, and in Postgres
-      // version 12 `gen_random_uuid()` is not available in a blank
-      // database, and it's used to default the ID. So instead, create
-      // random UUIDs here in code, so the default isn't invoked. We
-      // use Node's native function so it's just as fast.
       await this.create({ id: generateId(), key, value });
     }
   }

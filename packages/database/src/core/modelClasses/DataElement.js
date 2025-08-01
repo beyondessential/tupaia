@@ -1,3 +1,5 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -72,6 +74,8 @@ export class DataElementRecord extends DatabaseRecord {
 }
 
 export class DataElementModel extends MaterializedViewLogDatabaseModel {
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
+
   SERVICE_TYPES = SERVICE_TYPES;
 
   get DatabaseRecordClass() {
@@ -79,4 +83,8 @@ export class DataElementModel extends MaterializedViewLogDatabaseModel {
   }
 
   getDhisDataTypes = () => DHIS_DATA_TYPES;
+
+  async buildSyncLookupQueryDetails() {
+    return null;
+  }
 }

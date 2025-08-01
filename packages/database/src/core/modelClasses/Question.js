@@ -10,7 +10,7 @@ export class QuestionRecord extends DatabaseRecord {
 }
 
 export class QuestionModel extends MaterializedViewLogDatabaseModel {
-  syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return QuestionRecord;

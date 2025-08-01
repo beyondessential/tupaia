@@ -3,6 +3,7 @@ import { encryptPassword } from '@tupaia/auth';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { SyncDirections } from '@tupaia/constants';
 
 export class UserRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ACCOUNT;
@@ -32,6 +33,8 @@ export class UserRecord extends DatabaseRecord {
 const PUBLIC_USER_EMAIL = 'public@tupaia.org';
 
 export class UserModel extends DatabaseModel {
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+
   get DatabaseRecordClass() {
     return UserRecord;
   }
@@ -47,6 +50,10 @@ export class UserModel extends DatabaseModel {
     }
 
     return user;
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return null;
   }
 
   customColumnSelectors = {

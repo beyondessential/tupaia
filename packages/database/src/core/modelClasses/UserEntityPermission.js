@@ -1,6 +1,9 @@
+import { SyncDirections } from '@tupaia/constants';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { buildSyncLookupSelect } from '../sync';
 
 export class UserEntityPermissionRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ENTITY_PERMISSION;
@@ -39,6 +42,8 @@ export class UserEntityPermissionRecord extends DatabaseRecord {
 }
 
 export class UserEntityPermissionModel extends DatabaseModel {
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+
   get DatabaseRecordClass() {
     return UserEntityPermissionRecord;
   }
@@ -56,5 +61,13 @@ export class UserEntityPermissionModel extends DatabaseModel {
       `,
       [userId],
     );
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return {
+      select: await buildSyncLookupSelect(this, {
+        userIds: `ARRAY[user_entity_permission.user_id]`,
+      }),
+    };
   }
 }
