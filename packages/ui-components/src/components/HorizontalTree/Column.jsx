@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { darken, fade } from '@material-ui/core';
+import { darken } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { ColumnFilter, useFilter } from './ColumnFilter';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
+
 import { FetchLoader } from '../FetchLoader';
+import { ColumnFilter, useFilter } from './ColumnFilter';
 
 const CLASS_NAME = 'TupaiaHorizontalTreeColumn';
 
@@ -42,15 +43,19 @@ const ContentContainer = styled.div`
           ? theme.palette.primary.contrastText
           : undefined};
 
-      background-color: ${({ isExpanded, showExpandIcon, readOnly, theme }) => {
+      ${({ isExpanded, showExpandIcon, readOnly, theme }) => {
         if (!showExpandIcon || readOnly) {
-          return theme.palette.primary.main;
+          return css`
+            background-color: ${theme.palette.primary.main};
+          `;
         }
         if (isExpanded) {
-          return fade(theme.palette.primary.main, 0.1);
+          return css`
+            background-color: ${theme.palette.primary.main}1a;
+            background-color: oklch(from ${theme.palette.primary.main} l c h / 10%);
+          `;
         }
-        return 'transparent';
-      }};
+      }}
 
       .MuiListItemText-root:hover {
         background-color: ${({ isExpanded, showExpandIcon, theme }) => {

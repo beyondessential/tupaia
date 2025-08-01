@@ -24,7 +24,7 @@ export const SurveysInput = () => {
               name="surveys"
               required
               getOptionLabel={option => option.label}
-              placeholder="Select survey..."
+              placeholder="Select survey…"
               getOptionSelected={(option, selected) => option.value === selected.value}
               onChange={(_, newValue) => {
                 // the onChange function expected by react-hook-form and mui are different

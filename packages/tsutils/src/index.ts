@@ -1,9 +1,10 @@
+export * from './arrayToAnalytics';
+export * from './camelcaseKeys';
 export * from './datetime';
 export * from './getSyncQueueChangeTime';
 export * from './hashStringToInt';
+export * from './object';
 export * from './period';
 export * from './typeGuards';
+export { ValueOf } from './utilityTypes';
 export * from './validation';
-export * from './arrayToAnalytics';
-export * from './camelcaseKeys';
-export * from './object';
