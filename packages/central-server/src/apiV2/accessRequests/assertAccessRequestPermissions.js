@@ -26,6 +26,11 @@ export const assertAccessRequestPermissions = async (accessPolicy, models, acces
     const permissionGroup = await models.permissionGroup.findById(
       accessRequest.permission_group_id,
     );
+    if (!permissionGroup) {
+      throw new NotFoundError(
+        `No permission group exists with ID ${accessRequest.permission_group_id}`,
+      );
+    }
 
     if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
       throw new PermissionsError(
