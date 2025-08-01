@@ -41248,9 +41248,6 @@ export const AdminPanelSessionSchema = {
 		},
 		"refresh_token": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -41260,8 +41257,7 @@ export const AdminPanelSessionSchema = {
 		"access_token_expiry",
 		"email",
 		"id",
-		"refresh_token",
-		"updated_at_sync_tick"
+		"refresh_token"
 	]
 } 
 
@@ -41282,9 +41278,6 @@ export const AdminPanelSessionCreateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -41315,9 +41308,6 @@ export const AdminPanelSessionUpdateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -41890,9 +41880,6 @@ export const ClinicSchema = {
 		},
 		"type_name": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -41901,8 +41888,7 @@ export const ClinicSchema = {
 		"country_id",
 		"geographical_area_id",
 		"id",
-		"name",
-		"updated_at_sync_tick"
+		"name"
 	]
 } 
 
@@ -41928,9 +41914,6 @@ export const ClinicCreateSchema = {
 			"type": "string"
 		},
 		"type_name": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -41965,9 +41948,6 @@ export const ClinicUpdateSchema = {
 			"type": "string"
 		},
 		"type_name": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -42060,17 +42040,13 @@ export const CountrySchema = {
 		},
 		"name": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"code",
 		"id",
-		"name",
-		"updated_at_sync_tick"
+		"name"
 	]
 } 
 
@@ -42081,9 +42057,6 @@ export const CountryCreateSchema = {
 			"type": "string"
 		},
 		"name": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -42101,9 +42074,6 @@ export const CountryUpdateSchema = {
 			"type": "string"
 		},
 		"name": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -69540,9 +69510,6 @@ export const DataElementSchema = {
 				"weather"
 			],
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -69551,8 +69518,7 @@ export const DataElementSchema = {
 		"config",
 		"id",
 		"permission_groups",
-		"service_type",
-		"updated_at_sync_tick"
+		"service_type"
 	]
 } 
 
@@ -69582,9 +69548,6 @@ export const DataElementCreateSchema = {
 				"tupaia",
 				"weather"
 			],
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -69621,9 +69584,6 @@ export const DataElementUpdateSchema = {
 				"tupaia",
 				"weather"
 			],
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -69807,9 +69767,6 @@ export const DataGroupSchema = {
 				"weather"
 			],
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -69817,8 +69774,7 @@ export const DataGroupSchema = {
 		"code",
 		"config",
 		"id",
-		"service_type",
-		"updated_at_sync_tick"
+		"service_type"
 	]
 } 
 
@@ -69842,9 +69798,6 @@ export const DataGroupCreateSchema = {
 				"tupaia",
 				"weather"
 			],
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -69875,9 +69828,6 @@ export const DataGroupUpdateSchema = {
 				"tupaia",
 				"weather"
 			],
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -70221,9 +70171,6 @@ export const DatatrakSessionSchema = {
 		},
 		"refresh_token": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -70233,8 +70180,7 @@ export const DatatrakSessionSchema = {
 		"access_token_expiry",
 		"email",
 		"id",
-		"refresh_token",
-		"updated_at_sync_tick"
+		"refresh_token"
 	]
 } 
 
@@ -70255,9 +70201,6 @@ export const DatatrakSessionCreateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -70288,9 +70231,6 @@ export const DatatrakSessionUpdateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -70394,17 +70334,13 @@ export const DhisSyncLogSchema = {
 		},
 		"updated": {
 			"type": "number"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"id",
 		"record_id",
-		"record_type",
-		"updated_at_sync_tick"
+		"record_type"
 	]
 } 
 
@@ -70437,9 +70373,6 @@ export const DhisSyncLogCreateSchema = {
 		},
 		"updated": {
 			"type": "number"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -70478,9 +70411,6 @@ export const DhisSyncLogUpdateSchema = {
 		},
 		"updated": {
 			"type": "number"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -70518,9 +70448,6 @@ export const DhisSyncQueueSchema = {
 		},
 		"type": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -70528,8 +70455,7 @@ export const DhisSyncQueueSchema = {
 		"id",
 		"record_id",
 		"record_type",
-		"type",
-		"updated_at_sync_tick"
+		"type"
 	]
 } 
 
@@ -70561,9 +70487,6 @@ export const DhisSyncQueueCreateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -70603,9 +70526,6 @@ export const DhisSyncQueueUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -70999,15 +70919,11 @@ export const ErrorLogSchema = {
 		},
 		"type": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
-		"id",
-		"updated_at_sync_tick"
+		"id"
 	]
 } 
 
@@ -71025,9 +70941,6 @@ export const ErrorLogCreateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -71048,9 +70961,6 @@ export const ErrorLogUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -71682,9 +71592,6 @@ export const LesmisSessionSchema = {
 		},
 		"refresh_token": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -71694,8 +71601,7 @@ export const LesmisSessionSchema = {
 		"access_token_expiry",
 		"email",
 		"id",
-		"refresh_token",
-		"updated_at_sync_tick"
+		"refresh_token"
 	]
 } 
 
@@ -71716,9 +71622,6 @@ export const LesmisSessionCreateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -71749,9 +71652,6 @@ export const LesmisSessionUpdateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -71818,16 +71718,12 @@ export const LoginAttemptsSchema = {
 		},
 		"points": {
 			"type": "number"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"key",
-		"points",
-		"updated_at_sync_tick"
+		"points"
 	]
 } 
 
@@ -71842,9 +71738,6 @@ export const LoginAttemptsCreateSchema = {
 		},
 		"points": {
 			"type": "number"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -71864,9 +71757,6 @@ export const LoginAttemptsUpdateSchema = {
 		},
 		"points": {
 			"type": "number"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -81354,17 +81244,13 @@ export const Ms1SyncLogSchema = {
 		},
 		"record_type": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"id",
 		"record_id",
-		"record_type",
-		"updated_at_sync_tick"
+		"record_type"
 	]
 } 
 
@@ -81387,9 +81273,6 @@ export const Ms1SyncLogCreateSchema = {
 			"type": "string"
 		},
 		"record_type": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -81419,9 +81302,6 @@ export const Ms1SyncLogUpdateSchema = {
 			"type": "string"
 		},
 		"record_type": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -81460,9 +81340,6 @@ export const Ms1SyncQueueSchema = {
 		},
 		"type": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -81470,8 +81347,7 @@ export const Ms1SyncQueueSchema = {
 		"id",
 		"record_id",
 		"record_type",
-		"type",
-		"updated_at_sync_tick"
+		"type"
 	]
 } 
 
@@ -81503,9 +81379,6 @@ export const Ms1SyncQueueCreateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -81545,9 +81418,6 @@ export const Ms1SyncQueueUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -82250,9 +82120,6 @@ export const PsssSessionSchema = {
 		},
 		"refresh_token": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -82262,8 +82129,7 @@ export const PsssSessionSchema = {
 		"access_token_expiry",
 		"email",
 		"id",
-		"refresh_token",
-		"updated_at_sync_tick"
+		"refresh_token"
 	]
 } 
 
@@ -82284,9 +82150,6 @@ export const PsssSessionCreateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -82317,9 +82180,6 @@ export const PsssSessionUpdateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -82825,9 +82685,6 @@ export const SettingSchema = {
 		"key": {
 			"type": "string"
 		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		},
 		"value": {
 			"type": "string"
 		}
@@ -82835,8 +82692,7 @@ export const SettingSchema = {
 	"additionalProperties": false,
 	"required": [
 		"id",
-		"key",
-		"updated_at_sync_tick"
+		"key"
 	]
 } 
 
@@ -82844,9 +82700,6 @@ export const SettingCreateSchema = {
 	"type": "object",
 	"properties": {
 		"key": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		},
 		"value": {
@@ -82863,9 +82716,6 @@ export const SettingUpdateSchema = {
 	"type": "object",
 	"properties": {
 		"key": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		},
 		"value": {
@@ -84563,9 +84413,6 @@ export const TupaiaWebSessionSchema = {
 		},
 		"refresh_token": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -84575,8 +84422,7 @@ export const TupaiaWebSessionSchema = {
 		"access_token_expiry",
 		"email",
 		"id",
-		"refresh_token",
-		"updated_at_sync_tick"
+		"refresh_token"
 	]
 } 
 
@@ -84597,9 +84443,6 @@ export const TupaiaWebSessionCreateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -84630,9 +84473,6 @@ export const TupaiaWebSessionUpdateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -84703,9 +84543,6 @@ export const UserAccountSchema = {
 		"profile_image": {
 			"type": "string"
 		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		},
 		"verified_email": {
 			"enum": [
 				"new_user",
@@ -84721,8 +84558,7 @@ export const UserAccountSchema = {
 		"id",
 		"password_hash",
 		"password_salt",
-		"preferences",
-		"updated_at_sync_tick"
+		"preferences"
 	]
 } 
 
@@ -84785,9 +84621,6 @@ export const UserAccountCreateSchema = {
 			"type": "string"
 		},
 		"profile_image": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		},
 		"verified_email": {
@@ -84866,9 +84699,6 @@ export const UserAccountUpdateSchema = {
 			"type": "string"
 		},
 		"profile_image": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		},
 		"verified_email": {
@@ -85076,9 +84906,6 @@ export const UserSessionSchema = {
 		"refreshToken": {
 			"type": "string"
 		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		},
 		"userName": {
 			"type": "string"
 		}
@@ -85088,7 +84915,6 @@ export const UserSessionSchema = {
 		"access_token_expiry",
 		"id",
 		"refreshToken",
-		"updated_at_sync_tick",
 		"userName"
 	]
 } 
@@ -85107,9 +84933,6 @@ export const UserSessionCreateSchema = {
 			"type": "string"
 		},
 		"refreshToken": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		},
 		"userName": {
@@ -85137,9 +84960,6 @@ export const UserSessionUpdateSchema = {
 			"type": "string"
 		},
 		"refreshToken": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		},
 		"userName": {

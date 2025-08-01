@@ -56,7 +56,6 @@ export interface AdminPanelSession {
   'email': string;
   'id': string;
   'refresh_token': string;
-  'updated_at_sync_tick': string;
 }
 export interface AdminPanelSessionCreate {
   'access_policy': {};
@@ -64,7 +63,6 @@ export interface AdminPanelSessionCreate {
   'access_token_expiry': string;
   'email': string;
   'refresh_token': string;
-  'updated_at_sync_tick'?: string;
 }
 export interface AdminPanelSessionUpdate {
   'access_policy'?: {};
@@ -72,7 +70,6 @@ export interface AdminPanelSessionUpdate {
   'access_token_expiry'?: string;
   'email'?: string;
   'refresh_token'?: string;
-  'updated_at_sync_tick'?: string;
 }
 export interface Analytics {
   'data_element_code'?: string | null;
@@ -216,7 +213,6 @@ export interface Clinic {
   'name': string;
   'type'?: string | null;
   'type_name'?: string | null;
-  'updated_at_sync_tick': string;
 }
 export interface ClinicCreate {
   'category_code'?: string | null;
@@ -226,7 +222,6 @@ export interface ClinicCreate {
   'name': string;
   'type'?: string | null;
   'type_name'?: string | null;
-  'updated_at_sync_tick'?: string;
 }
 export interface ClinicUpdate {
   'category_code'?: string | null;
@@ -236,7 +231,6 @@ export interface ClinicUpdate {
   'name'?: string;
   'type'?: string | null;
   'type_name'?: string | null;
-  'updated_at_sync_tick'?: string;
 }
 export interface Comment {
   'created_time': Date;
@@ -261,17 +255,14 @@ export interface Country {
   'code': string;
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
 }
 export interface CountryCreate {
   'code': string;
   'name': string;
-  'updated_at_sync_tick'?: string;
 }
 export interface CountryUpdate {
   'code'?: string;
   'name'?: string;
-  'updated_at_sync_tick'?: string;
 }
 export interface Dashboard {
   'code': string;
@@ -386,21 +377,18 @@ export interface DataElement {
   'id': string;
   'permission_groups': string[];
   'service_type': ServiceType;
-  'updated_at_sync_tick': string;
 }
 export interface DataElementCreate {
   'code': string;
   'config'?: {};
   'permission_groups'?: string[];
   'service_type': ServiceType;
-  'updated_at_sync_tick'?: string;
 }
 export interface DataElementUpdate {
   'code'?: string;
   'config'?: {};
   'permission_groups'?: string[];
   'service_type'?: ServiceType;
-  'updated_at_sync_tick'?: string;
 }
 export interface DataElementDataGroup {
   'data_element_id': string;
@@ -439,19 +427,16 @@ export interface DataGroup {
   'config': {};
   'id': string;
   'service_type': ServiceType;
-  'updated_at_sync_tick': string;
 }
 export interface DataGroupCreate {
   'code': string;
   'config'?: {};
   'service_type': ServiceType;
-  'updated_at_sync_tick'?: string;
 }
 export interface DataGroupUpdate {
   'code'?: string;
   'config'?: {};
   'service_type'?: ServiceType;
-  'updated_at_sync_tick'?: string;
 }
 export interface DataServiceEntity {
   'config': {};
@@ -520,7 +505,6 @@ export interface DatatrakSession {
   'email': string;
   'id': string;
   'refresh_token': string;
-  'updated_at_sync_tick': string;
 }
 export interface DatatrakSessionCreate {
   'access_policy': {};
@@ -528,7 +512,6 @@ export interface DatatrakSessionCreate {
   'access_token_expiry': string;
   'email': string;
   'refresh_token': string;
-  'updated_at_sync_tick'?: string;
 }
 export interface DatatrakSessionUpdate {
   'access_policy'?: {};
@@ -536,7 +519,6 @@ export interface DatatrakSessionUpdate {
   'access_token_expiry'?: string;
   'email'?: string;
   'refresh_token'?: string;
-  'updated_at_sync_tick'?: string;
 }
 export interface DhisInstance {
   'code': string;
@@ -565,7 +547,6 @@ export interface DhisSyncLog {
   'record_id': string;
   'record_type': string;
   'updated'?: number | null;
-  'updated_at_sync_tick': string;
 }
 export interface DhisSyncLogCreate {
   'data'?: string | null;
@@ -577,7 +558,6 @@ export interface DhisSyncLogCreate {
   'record_id': string;
   'record_type': string;
   'updated'?: number | null;
-  'updated_at_sync_tick'?: string;
 }
 export interface DhisSyncLogUpdate {
   'data'?: string | null;
@@ -589,7 +569,6 @@ export interface DhisSyncLogUpdate {
   'record_id'?: string;
   'record_type'?: string;
   'updated'?: number | null;
-  'updated_at_sync_tick'?: string;
 }
 export interface DhisSyncQueue {
   'bad_request_count'?: number | null;
@@ -602,7 +581,6 @@ export interface DhisSyncQueue {
   'record_id': string;
   'record_type': string;
   'type': string;
-  'updated_at_sync_tick': string;
 }
 export interface DhisSyncQueueCreate {
   'bad_request_count'?: number | null;
@@ -614,7 +592,6 @@ export interface DhisSyncQueueCreate {
   'record_id': string;
   'record_type': string;
   'type': string;
-  'updated_at_sync_tick'?: string;
 }
 export interface DhisSyncQueueUpdate {
   'bad_request_count'?: number | null;
@@ -626,7 +603,6 @@ export interface DhisSyncQueueUpdate {
   'record_id'?: string;
   'record_type'?: string;
   'type'?: string;
-  'updated_at_sync_tick'?: string;
 }
 export interface Entity {
   'attributes': EntityAttributes;
@@ -728,21 +704,18 @@ export interface ErrorLog {
   'id': string;
   'message'?: string | null;
   'type'?: string | null;
-  'updated_at_sync_tick': string;
 }
 export interface ErrorLogCreate {
   'api_request_log_id'?: string | null;
   'error_time'?: Date | null;
   'message'?: string | null;
   'type'?: string | null;
-  'updated_at_sync_tick'?: string;
 }
 export interface ErrorLogUpdate {
   'api_request_log_id'?: string | null;
   'error_time'?: Date | null;
   'message'?: string | null;
   'type'?: string | null;
-  'updated_at_sync_tick'?: string;
 }
 export interface ExternalDatabaseConnection {
   'code': string;
@@ -910,7 +883,6 @@ export interface LesmisSession {
   'email': string;
   'id': string;
   'refresh_token': string;
-  'updated_at_sync_tick': string;
 }
 export interface LesmisSessionCreate {
   'access_policy': {};
@@ -918,7 +890,6 @@ export interface LesmisSessionCreate {
   'access_token_expiry': string;
   'email': string;
   'refresh_token': string;
-  'updated_at_sync_tick'?: string;
 }
 export interface LesmisSessionUpdate {
   'access_policy'?: {};
@@ -926,7 +897,6 @@ export interface LesmisSessionUpdate {
   'access_token_expiry'?: string;
   'email'?: string;
   'refresh_token'?: string;
-  'updated_at_sync_tick'?: string;
 }
 export interface LocalSystemFact {
   'id': string;
@@ -945,19 +915,16 @@ export interface LoginAttempts {
   'expire'?: string | null;
   'key': string;
   'points': number;
-  'updated_at_sync_tick': string;
 }
 export interface LoginAttemptsCreate {
   'expire'?: string | null;
   'key': string;
   'points'?: number;
-  'updated_at_sync_tick'?: string;
 }
 export interface LoginAttemptsUpdate {
   'expire'?: string | null;
   'key'?: string;
   'points'?: number;
-  'updated_at_sync_tick'?: string;
 }
 export interface MapOverlay {
   'code': string;
@@ -1083,7 +1050,6 @@ export interface Ms1SyncLog {
   'id': string;
   'record_id': string;
   'record_type': string;
-  'updated_at_sync_tick': string;
 }
 export interface Ms1SyncLogCreate {
   'count'?: number | null;
@@ -1092,7 +1058,6 @@ export interface Ms1SyncLogCreate {
   'error_list'?: string | null;
   'record_id': string;
   'record_type': string;
-  'updated_at_sync_tick'?: string;
 }
 export interface Ms1SyncLogUpdate {
   'count'?: number | null;
@@ -1101,7 +1066,6 @@ export interface Ms1SyncLogUpdate {
   'error_list'?: string | null;
   'record_id'?: string;
   'record_type'?: string;
-  'updated_at_sync_tick'?: string;
 }
 export interface Ms1SyncQueue {
   'bad_request_count'?: number | null;
@@ -1114,7 +1078,6 @@ export interface Ms1SyncQueue {
   'record_id': string;
   'record_type': string;
   'type': string;
-  'updated_at_sync_tick': string;
 }
 export interface Ms1SyncQueueCreate {
   'bad_request_count'?: number | null;
@@ -1126,7 +1089,6 @@ export interface Ms1SyncQueueCreate {
   'record_id': string;
   'record_type': string;
   'type': string;
-  'updated_at_sync_tick'?: string;
 }
 export interface Ms1SyncQueueUpdate {
   'bad_request_count'?: number | null;
@@ -1138,7 +1100,6 @@ export interface Ms1SyncQueueUpdate {
   'record_id'?: string;
   'record_type'?: string;
   'type'?: string;
-  'updated_at_sync_tick'?: string;
 }
 export interface OneTimeLogin {
   'creation_date'?: Date | null;
@@ -1291,7 +1252,6 @@ export interface PsssSession {
   'email': string;
   'id': string;
   'refresh_token': string;
-  'updated_at_sync_tick': string;
 }
 export interface PsssSessionCreate {
   'access_policy': {};
@@ -1299,7 +1259,6 @@ export interface PsssSessionCreate {
   'access_token_expiry': string;
   'email': string;
   'refresh_token': string;
-  'updated_at_sync_tick'?: string;
 }
 export interface PsssSessionUpdate {
   'access_policy'?: {};
@@ -1307,7 +1266,6 @@ export interface PsssSessionUpdate {
   'access_token_expiry'?: string;
   'email'?: string;
   'refresh_token'?: string;
-  'updated_at_sync_tick'?: string;
 }
 export interface Question {
   'code'?: string | null;
@@ -1390,17 +1348,14 @@ export interface ReportUpdate {
 export interface Setting {
   'id': string;
   'key': string;
-  'updated_at_sync_tick': string;
   'value'?: string | null;
 }
 export interface SettingCreate {
   'key': string;
-  'updated_at_sync_tick'?: string;
   'value'?: string | null;
 }
 export interface SettingUpdate {
   'key'?: string;
-  'updated_at_sync_tick'?: string;
   'value'?: string | null;
 }
 export interface SupersetInstance {
@@ -1743,7 +1698,6 @@ export interface TupaiaWebSession {
   'email': string;
   'id': string;
   'refresh_token': string;
-  'updated_at_sync_tick': string;
 }
 export interface TupaiaWebSessionCreate {
   'access_policy': {};
@@ -1751,7 +1705,6 @@ export interface TupaiaWebSessionCreate {
   'access_token_expiry': string;
   'email': string;
   'refresh_token': string;
-  'updated_at_sync_tick'?: string;
 }
 export interface TupaiaWebSessionUpdate {
   'access_policy'?: {};
@@ -1759,7 +1712,6 @@ export interface TupaiaWebSessionUpdate {
   'access_token_expiry'?: string;
   'email'?: string;
   'refresh_token'?: string;
-  'updated_at_sync_tick'?: string;
 }
 export interface UserAccount {
   'creation_date'?: Date | null;
@@ -1776,7 +1728,6 @@ export interface UserAccount {
   'preferences': UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
-  'updated_at_sync_tick': string;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserAccountCreate {
@@ -1793,7 +1744,6 @@ export interface UserAccountCreate {
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
-  'updated_at_sync_tick'?: string;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserAccountUpdate {
@@ -1810,7 +1760,6 @@ export interface UserAccountUpdate {
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
-  'updated_at_sync_tick'?: string;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserCountryAccessAttempt {
@@ -1864,7 +1813,6 @@ export interface UserSession {
   'accessToken'?: string | null;
   'id': string;
   'refreshToken': string;
-  'updated_at_sync_tick': string;
   'userName': string;
 }
 export interface UserSessionCreate {
@@ -1872,7 +1820,6 @@ export interface UserSessionCreate {
   'accessPolicy'?: {} | null;
   'accessToken'?: string | null;
   'refreshToken': string;
-  'updated_at_sync_tick'?: string;
   'userName': string;
 }
 export interface UserSessionUpdate {
@@ -1880,7 +1827,6 @@ export interface UserSessionUpdate {
   'accessPolicy'?: {} | null;
   'accessToken'?: string | null;
   'refreshToken'?: string;
-  'updated_at_sync_tick'?: string;
   'userName'?: string;
 }
 export enum VerifiedEmail {
