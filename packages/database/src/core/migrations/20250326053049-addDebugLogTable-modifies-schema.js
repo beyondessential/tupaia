@@ -22,8 +22,8 @@ exports.up = async function (db) {
   await db.runSql(`
     CREATE TABLE logs.debug_log
     (
-      id    VARCHAR(255) PRIMARY KEY,
-      type  VARCHAR(255) NOT NULL,
+      id    TEXT PRIMARY KEY,
+      type  TEXT NOT NULL,
       info  JSONB NOT NULL
     );  
   `);
