@@ -16,13 +16,16 @@ exports.setup = function (options, seedLink) {
 
 exports.up = async function (db) {
   await db.runSql(`
-    CREATE TABLE local_system_fact
+    CREATE SCHEMA logs;
+  `);
+
+  await db.runSql(`
+    CREATE TABLE logs.debug_log
     (
-        id         VARCHAR(255) PRIMARY KEY,
-        key        VARCHAR(255) NOT NULL,
-        value      TEXT,
-        CONSTRAINT local_system_fact_key_unique UNIQUE (key)
-    );
+      id    TEXT PRIMARY KEY,
+      type  TEXT NOT NULL,
+      info  JSONB NOT NULL
+    );  
   `);
 };
 
@@ -32,5 +35,4 @@ exports.down = function (db) {
 
 exports._meta = {
   version: 1,
-  targets: ['browser', 'server'],
 };

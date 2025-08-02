@@ -1,9 +1,11 @@
+import { switchTombstoneTriggers } from '../../core';
 import { AnalyticsRefresher } from '../../server/changeHandlers';
 
 // tables are in a significant order, ensuring any foreign keys are cleaned up correctly
 const TABLES_TO_CLEAR = [
   'api_request_log',
   'access_request',
+  'tombstone',
   'answer',
   'survey_response',
   'survey_response_comment',
@@ -62,8 +64,12 @@ export async function clearTestData(db) {
     );
   }
 
-  const sql = TABLES_TO_CLEAR.reduce((acc, table) => `${acc}\nDELETE FROM ${table};`, '');
+  await db.wrapInTransaction(async (db) => {
+    await switchTombstoneTriggers(db, false);
+    const sql = TABLES_TO_CLEAR.reduce((acc, table) => `${acc}\nDELETE FROM ${table};`, '');
+    await db.executeSql(sql);
+    await switchTombstoneTriggers(db, true);
+  });
 
-  await db.executeSql(sql);
   await AnalyticsRefresher.refreshAnalytics(db);
 }
