@@ -25,6 +25,11 @@ const ORIGINS = {
   datatrak: requireEnv('DATATRAK_FRONT_END_URL'),
 };
 
+const PATHNAMES = {
+  default: '/verify-email',
+  lesmis: '/en/verify-email',
+};
+
 const getEmailVerificationToken = user => `${user.email}${user.password_hash}`;
 
 const generateVerificationLink = async user => {
@@ -32,8 +37,9 @@ const generateVerificationLink = async user => {
 
   const platform = user.primary_platform || 'tupaia';
   const origin = ORIGINS[platform];
+  const pathname = PATHNAMES[platform] ?? PATHNAMES.default;
   try {
-    const url = new URL(`/verify-email`, origin);
+    const url = new URL(pathname, origin);
     url.searchParams.set('verifyEmailToken', token);
     return url.toString();
   } catch (e) {
