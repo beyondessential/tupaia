@@ -20,9 +20,11 @@ describe('user', () => {
     it('it invokes registerUser() on the CentralApi', async () => {
       const userId = '1234';
       const user = { id: userId };
+      console.log('userrrr', user);
       const response = await app.post('user', {
         body: user,
       });
+      console.log('responsesss', response);
 
       expect(response.body).toEqual({ message: mockResponseMsg, id: userId });
     });
