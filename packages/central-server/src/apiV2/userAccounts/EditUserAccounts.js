@@ -1,5 +1,6 @@
 import { encryptPassword } from '@tupaia/auth';
 import { S3, S3Client } from '@tupaia/server-utils';
+import { ValidationError } from '@tupaia/utils';
 import {
   assertAdminPanelAccess,
   assertAnyPermissions,
@@ -53,7 +54,9 @@ export class EditUserAccounts extends EditHandler {
     }
 
     if (preferenceField) {
-      throw new Error('Preferences should be updated via the specific preferences fields');
+      throw new ValidationError(
+        'Preferences should be updated via the specific preferences fields',
+      );
     }
 
     // Check if there are any updated user preferences in the request
