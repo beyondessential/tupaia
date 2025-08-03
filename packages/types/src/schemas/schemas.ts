@@ -84543,6 +84543,9 @@ export const UserAccountSchema = {
 		"profile_image": {
 			"type": "string"
 		},
+		"updated_at_sync_tick": {
+			"type": "string"
+		},
 		"verified_email": {
 			"enum": [
 				"new_user",
@@ -84558,7 +84561,8 @@ export const UserAccountSchema = {
 		"id",
 		"password_hash",
 		"password_salt",
-		"preferences"
+		"preferences",
+		"updated_at_sync_tick"
 	]
 } 
 
@@ -84621,6 +84625,9 @@ export const UserAccountCreateSchema = {
 			"type": "string"
 		},
 		"profile_image": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
 			"type": "string"
 		},
 		"verified_email": {
@@ -84699,6 +84706,9 @@ export const UserAccountUpdateSchema = {
 			"type": "string"
 		},
 		"profile_image": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
 			"type": "string"
 		},
 		"verified_email": {
