@@ -1728,6 +1728,7 @@ export interface UserAccount {
   'preferences': UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
+  'updated_at_sync_tick': string;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserAccountCreate {
@@ -1744,6 +1745,7 @@ export interface UserAccountCreate {
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
+  'updated_at_sync_tick'?: string;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserAccountUpdate {
@@ -1760,6 +1762,7 @@ export interface UserAccountUpdate {
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
+  'updated_at_sync_tick'?: string;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserCountryAccessAttempt {
