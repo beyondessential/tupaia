@@ -17,7 +17,7 @@ export const SYNCING_TABLES = [
   'survey_screen_component',
   'task',
   'task_comment',
-  'user',
+  'user_account',
   'user_entity_permission',
 ];
 
