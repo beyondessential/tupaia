@@ -5,7 +5,6 @@ import { AnalyticsRefresher } from '../../server/changeHandlers';
 const TABLES_TO_CLEAR = [
   'api_request_log',
   'access_request',
-  'tombstone',
   'answer',
   'survey_response',
   'survey_response_comment',
@@ -52,6 +51,7 @@ const TABLES_TO_CLEAR = [
   'map_overlay_group',
   'map_overlay',
   'login_attempts',
+  'tombstone',
 ];
 
 export async function clearTestData(db) {
@@ -64,12 +64,8 @@ export async function clearTestData(db) {
     );
   }
 
-  await db.wrapInTransaction(async transactingDatabase => {
-    await toggleTombstoneTriggers(transactingDatabase, false);
-    const sql = TABLES_TO_CLEAR.reduce((acc, table) => `${acc}\nDELETE FROM ${table};`, '');
-    await transactingDatabase.executeSql(sql);
-    await toggleTombstoneTriggers(transactingDatabase, true);
-  });
+  const sql = TABLES_TO_CLEAR.reduce((acc, table) => `${acc}\nDELETE FROM ${table};`, '');
+  await db.executeSql(sql);
 
   await AnalyticsRefresher.refreshAnalytics(db);
 }
