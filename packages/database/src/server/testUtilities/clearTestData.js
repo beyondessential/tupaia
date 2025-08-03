@@ -1,4 +1,4 @@
-import { switchTombstoneTriggers } from '../../core';
+import { toggleTombstoneTriggers } from '../../core';
 import { AnalyticsRefresher } from '../../server/changeHandlers';
 
 // tables are in a significant order, ensuring any foreign keys are cleaned up correctly
@@ -65,10 +65,10 @@ export async function clearTestData(db) {
   }
 
   await db.wrapInTransaction(async (db) => {
-    await switchTombstoneTriggers(db, false);
+    await toggleTombstoneTriggers(db, false);
     const sql = TABLES_TO_CLEAR.reduce((acc, table) => `${acc}\nDELETE FROM ${table};`, '');
     await db.executeSql(sql);
-    await switchTombstoneTriggers(db, true);
+    await toggleTombstoneTriggers(db, true);
   });
 
   await AnalyticsRefresher.refreshAnalytics(db);

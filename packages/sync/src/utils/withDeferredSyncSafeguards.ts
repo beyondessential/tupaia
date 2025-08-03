@@ -1,4 +1,4 @@
-import { BaseDatabase, switchTombstoneTriggers } from '@tupaia/database';
+import { BaseDatabase, toggleTombstoneTriggers } from '@tupaia/database';
 
 export const withDeferredSyncSafeguards = async <T>(
   database: BaseDatabase,
@@ -27,7 +27,7 @@ export const withDeferredSyncSafeguards = async <T>(
 
   // Disable tombstone triggers to avoid syncing deletion
   // also put the records into tombstone table
-  await switchTombstoneTriggers(database, false);
+  await toggleTombstoneTriggers(database, false);
 
   try {
     return operation();
@@ -38,6 +38,6 @@ export const withDeferredSyncSafeguards = async <T>(
     `);
 
     // Re-enable tombstone triggers
-    await switchTombstoneTriggers(database, true);
+    await toggleTombstoneTriggers(database, true);
   }
 };
