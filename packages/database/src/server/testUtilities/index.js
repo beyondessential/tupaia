@@ -1,6 +1,6 @@
 export { clearTestData } from './clearTestData';
-export { getTestDatabase, getTestModels } from '../../server/testUtilities/getTestDatabase';
-export { setupTest } from '../../server/testUtilities/setupTest';
+export { getTestDatabase, getTestModels } from './getTestDatabase';
+export { setupTest } from './setupTest';
 export { createModelsStub } from './createModelsStub';
 export { buildAndInsertSurvey, buildAndInsertSurveys } from './buildAndInsertSurveys';
 export { buildAndInsertSurveyResponses } from './buildAndInsertSurveyResponses';

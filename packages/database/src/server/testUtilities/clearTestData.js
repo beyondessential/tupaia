@@ -1,3 +1,4 @@
+import { toggleTombstoneTriggers } from '../../core';
 import { AnalyticsRefresher } from '../../server/changeHandlers';
 
 // tables are in a significant order, ensuring any foreign keys are cleaned up correctly
@@ -50,6 +51,7 @@ const TABLES_TO_CLEAR = [
   'map_overlay_group',
   'map_overlay',
   'login_attempts',
+  'tombstone',
 ];
 
 export async function clearTestData(db) {
@@ -63,7 +65,7 @@ export async function clearTestData(db) {
   }
 
   const sql = TABLES_TO_CLEAR.reduce((acc, table) => `${acc}\nDELETE FROM ${table};`, '');
-
   await db.executeSql(sql);
+
   await AnalyticsRefresher.refreshAnalytics(db);
 }
