@@ -48,6 +48,8 @@ export class EditUserAccounts extends EditHandler {
 
     if (password) {
       updatedFields.password_hash = await encryptPassword(password);
+      // Discard legacy salt used for SHA-256 hashing (redundant if already migrated to Argon2)
+      updatedFields.legacy_password_salt = null;
     }
 
     if (preferenceField) {
