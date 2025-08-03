@@ -8,10 +8,10 @@ import { copyDirectory, removeDirectoryIfExists, createDirectory } from '@tupaia
 import { runPostMigration } from './runPostMigration';
 import { getConnectionConfig } from './getConnectionConfig';
 
-const MIGRATIONS_DIR = path.resolve(process.cwd(), 'src/core/migrations');
+const MIGRATIONS_DIR = path.resolve(__dirname, '../core/migrations');
 const SERVER_MIGRATION_DIR = path.resolve(
-  process.cwd(),
-  `src/core/server-migrations-${Date.now()}`,
+  __dirname,
+  `../core/server-migrations-${Date.now()}`,
 );
 
 const exitWithError = error => {
