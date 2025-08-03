@@ -1,8 +1,6 @@
 import { SyncTickFlags } from '@tupaia/constants';
 
 export const SYNCING_TABLES = [
-  'user_account',
-  'user_entity_permission',
   'answer',
   'entity',
   'entity_hierarchy',
@@ -19,6 +17,8 @@ export const SYNCING_TABLES = [
   'survey_screen_component',
   'task',
   'task_comment',
+  'user_account',
+  'user_entity_permission',
 ];
 
 const TABLES_WITHOUT_COLUMN_QUERY = `
