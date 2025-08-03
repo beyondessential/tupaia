@@ -75,8 +75,8 @@ const getFilterInfo = async (
 
   let allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
     .map(child => child.country_code)
-    .filter(isNotNullish)
-    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index); // De-duplicate countryCodes
+    .filter(isNotNullish);
+  allowedCountries = [...new Set(allowedCountries)]; // De-duplicate country codes
 
   if (!isPublic) {
     const { permission_groups: projectPermissionGroups } = await req.models.project.findOne({
