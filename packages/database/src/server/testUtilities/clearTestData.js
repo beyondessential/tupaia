@@ -64,11 +64,11 @@ export async function clearTestData(db) {
     );
   }
 
-  await db.wrapInTransaction(async (db) => {
-    await toggleTombstoneTriggers(db, false);
+  await db.wrapInTransaction(async transactingDatabase => {
+    await toggleTombstoneTriggers(transactingDatabase, false);
     const sql = TABLES_TO_CLEAR.reduce((acc, table) => `${acc}\nDELETE FROM ${table};`, '');
-    await db.executeSql(sql);
-    await toggleTombstoneTriggers(db, true);
+    await transactingDatabase.executeSql(sql);
+    await toggleTombstoneTriggers(transactingDatabase, true);
   });
 
   await AnalyticsRefresher.refreshAnalytics(db);
