@@ -28,6 +28,7 @@ export const toggleTombstoneTriggers = async (database, enabled) => {
         ORDER BY l.granted, a.query_start;
       `);
       console.log('lockssss', locks);
+      console.trace();
     }
     await database.executeSql(`
         ALTER TABLE "${table}" ${action} TRIGGER add_${table}_tombstone_on_delete;
