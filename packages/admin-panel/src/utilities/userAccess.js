@@ -3,32 +3,35 @@ import { useUser } from '../api/queries';
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 const VIZ_BUILDER_PERMISSION_GROUP = 'Viz Builder User';
 
-// Assume that if a user has any BES Admin access, they are an internal user,
-// to avoid having to check permissions for every country
-export const getHasBESAdminAccess = user => {
-  if (!user?.accessPolicy) return false;
-  return Object.keys(user.accessPolicy).some(countryCode =>
-    user.accessPolicy[countryCode].some(
-      permissionGroupName => permissionGroupName === BES_ADMIN_PERMISSION_GROUP,
-    ),
-  );
-};
-
-export const getHasVizBuilderAccess = user => {
-  if (!user || !user.accessPolicy) return false;
-  return Object.keys(user.accessPolicy).some(countryCode =>
-    user.accessPolicy[countryCode].some(
-      permissionGroupName => permissionGroupName === VIZ_BUILDER_PERMISSION_GROUP,
-    ),
-  );
-};
-
 /**
- * @returns {boolean | undefined} `true` if the user has the BES Admin permission group, `false` if
- * they don’t, and `undefined` if the result is pending.
+ * @param {string} permissionGroupName
+ * @returns {boolean | undefined} `true` if the user has the {@link permissionGroupName} permission
+ * group, `false` if they don’t, and `undefined` if the result is pending.
  */
-export function useHasBesAdminAccess() {
+export function useHasPermissionGroup(permissionGroupName) {
   const { data: user, isFetched } = useUser();
   if (!isFetched) return undefined;
-  return getHasBESAdminAccess(user);
+  if (!user?.accessPolicy) return false; // Should never happen
+
+  // Permission groups the current user has access to for any country
+  const allPermissionGroups = new Set(Object.values(user.accessPolicy).flat());
+  return allPermissionGroups.has(permissionGroupName);
+}
+
+/**
+ * @returns {boolean | undefined} `true` if the user has the {@link BES_ADMIN_PERMISSION_GROUP}
+ * permission group, `false` if they don’t, and `undefined` if the result is pending.
+ * @privateRemarks Assume that if a user has any BES Admin access, they are an internal user; and
+ * short-circuit checking permissions for every country.
+ */
+export function useHasBesAdminAccess() {
+  return useHasPermissionGroup(BES_ADMIN_PERMISSION_GROUP);
+}
+
+/**
+ * @returns {boolean | undefined} `true` if the user has the {@link VIZ_BUILDER_PERMISSION_GROUP}
+ * permission group, `false` if they don’t, and `undefined` if the result is pending.
+ */
+export function useHasVizBuilderAccess() {
+  return useHasPermissionGroup(VIZ_BUILDER_PERMISSION_GROUP);
 }

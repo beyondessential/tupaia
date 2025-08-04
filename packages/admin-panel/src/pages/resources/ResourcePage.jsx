@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
 import { PageHeader } from '../../widgets';
-import { getExplodedFields } from '../../utilities';
+import { getExplodedFields, useHasVizBuilderAccess } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
@@ -57,7 +57,7 @@ export const ResourcePage = ({
   actionLabel,
   resourceName,
 }) => {
-  const { hasVizBuilderAccess } = useUser();
+  const hasVizBuilderAccess = useHasVizBuilderAccess();
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
 
