@@ -4,7 +4,6 @@ import { get } from '../api';
 
 export const useEmailVerification = () => {
   const [{ verifyEmailToken }] = useUrlSearchParams();
-  console.log('verifyEmailToken', verifyEmailToken);
 
   return useQuery(
     ['user', verifyEmailToken],
