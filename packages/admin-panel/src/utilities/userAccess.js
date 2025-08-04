@@ -10,7 +10,7 @@ export function useUserPermissionGroups() {
     if (!isFetched || !user /* Redundant, helps type inference */) return undefined;
     if (!user.accessPolicy) return new Set(); // Should never happen
     return new Set(Object.values(user.accessPolicy).flat());
-  }, [user?.accessPolicy]);
+  }, [isFetched, user]);
 }
 
 /**
