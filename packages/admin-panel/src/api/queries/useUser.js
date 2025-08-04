@@ -5,14 +5,14 @@ import { get } from '../../VizBuilderApp/api';
 export const useUser = () => {
   const query = useQuery(['user'], () => get('user'), {
     retry: false,
-    staleTime: 1000 * 60 * 60 * 1,
+    staleTime: 3_600_000, // 1 hour
   });
 
-  return useMemo(() => {
-    const isLoggedIn = query.isSuccess && Boolean(query.data?.id);
-    return {
+  return useMemo(
+    () => ({
       ...query,
-      isLoggedIn,
-    };
-  }, [query]);
+      isLoggedIn: query.isSuccess && Boolean(query.data?.id),
+    }),
+    [query],
+  );
 };
