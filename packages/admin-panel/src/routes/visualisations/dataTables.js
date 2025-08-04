@@ -124,5 +124,6 @@ export const dataTables = {
   importConfig: IMPORT_CONFIG,
   editorConfig: EDITOR_CONFIG,
   onProcessDataForSave,
-  needsVizBuilderAccess: ['create'],
+  needsVizBuilderAccess: ['create', 'edit'],
+  needsBESAdminAccess: ['delete', 'import'],
 };
