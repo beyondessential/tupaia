@@ -1,3 +1,5 @@
+import { BES_ADMIN_PERMISSION_GROUP } from '../../utilities/userAccess';
+
 const RESOURCE_NAME = { singular: 'legacy report' };
 
 const FIELDS = [
@@ -45,5 +47,5 @@ export const legacyReports = {
   path: '/legacy-reports',
   endpoint: 'legacyReports',
   columns: COLUMNS,
-  isBESAdminOnly: true,
+  requiresSomePermissionGroup: [BES_ADMIN_PERMISSION_GROUP],
 };

@@ -1,7 +1,17 @@
+import { useMemo } from 'react';
 import { useUser } from '../api/queries';
 
-const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
-const VIZ_BUILDER_PERMISSION_GROUP = 'Viz Builder User';
+export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
+export const VIZ_BUILDER_PERMISSION_GROUP = 'Viz Builder User';
+
+export function useUserPermissionGroups() {
+  const { data: user, isFetched } = useUser();
+  return useMemo(() => {
+    if (!isFetched || !user /* Redundant, helps type inference */) return undefined;
+    if (!user.accessPolicy) return new Set(); // Should never happen
+    return new Set(Object.values(user.accessPolicy).flat());
+  }, [user?.accessPolicy]);
+}
 
 /**
  * @param {string} permissionGroupName
@@ -9,13 +19,8 @@ const VIZ_BUILDER_PERMISSION_GROUP = 'Viz Builder User';
  * group, `false` if they don’t, and `undefined` if the result is pending.
  */
 export function useHasPermissionGroup(permissionGroupName) {
-  const { data: user, isFetched } = useUser();
-  if (!isFetched) return undefined;
-  if (!user?.accessPolicy) return false; // Should never happen
-
-  // Permission groups the current user has access to for any country
-  const allPermissionGroups = new Set(Object.values(user.accessPolicy).flat());
-  return allPermissionGroups.has(permissionGroupName);
+  const userPermissionGroups = useUserPermissionGroups();
+  return userPermissionGroups?.has(permissionGroupName);
 }
 
 /**
