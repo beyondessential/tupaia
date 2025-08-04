@@ -1,25 +1,26 @@
+import { Box, ButtonBase, Menu, MenuItem, Paper } from '@material-ui/core';
+import { ChevronDown } from 'lucide-react';
 import React, { useState } from 'react';
-import { useLocation, Link, useParams } from 'react-router-dom';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { ButtonBase, Menu, MenuItem, Box, Paper } from '@material-ui/core';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { Dashboard } from '../../../types';
-import { TOP_BAR_HEIGHT } from '../../../constants';
 import { useDashboards } from '../../../api/queries';
+import { TOP_BAR_HEIGHT } from '../../../constants';
+import { Dashboard } from '../../../types';
 import { useDashboard } from '../utils';
 import { ActionsMenu } from './ActionsMenu';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  padding: 1rem 2rem;
+  padding-block: 1rem;
+  padding-inline: 2rem;
   font-size: 1.125rem;
   font-weight: 500;
   line-height: 1.4;
+`;
 
-  .MuiSvgIcon-root {
-    margin-left: 0.5rem;
-  }
+const DisclosureIcon = styled(ChevronDown)`
+  margin-inline-start: 0.5rem;
 `;
 
 const MenuButtonWrapper = styled(Box)`
@@ -43,8 +44,7 @@ const StyledPaper = styled(Paper)`
     ); // 2x top bar height, to make up for any possibly extra in header, e.g. the branch name banner
   }
 
-  .MuiListItem-root {
-    &:hover {
+  .MuiListItem-root:hover {
       background: #606368;
     }
 `;
@@ -58,15 +58,11 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
   const location = useLocation();
   const { projectCode, entityCode, dashboardName: selectedDashboardName } = useParams();
 
-  const encodedDashboardName = encodeURIComponent(dashboardName);
-  const link = {
-    ...location,
-    pathname: `/${projectCode}/${entityCode}/${encodedDashboardName}`,
-  };
+  const pathname = `/${projectCode}/${entityCode}/${encodeURIComponent(dashboardName)}`;
 
   return (
     <MenuItem
-      to={link}
+      to={{ ...location, pathname }}
       onClick={onClose}
       component={Link}
       selected={dashboardName === selectedDashboardName}
@@ -98,7 +94,7 @@ export const DashboardMenu = () => {
         <MenuButtonWrapper>
           <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
             {activeDashboard?.name}
-            {hasMultipleDashboards && <KeyboardArrowDownIcon />}
+            {hasMultipleDashboards && <DisclosureIcon />}
           </MenuButton>
           <ActionsMenu />
         </MenuButtonWrapper>

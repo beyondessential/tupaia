@@ -12589,6 +12589,7 @@ __metadata:
     jquery: ^3.7.1
     jszip: ^3.10.1
     leaflet: ^1.7.1
+    lucide-react: ^0.525.0
     moment: ^2.24.0
     msw: ^2.0.9
     react: ^16.14.0
@@ -12680,6 +12681,7 @@ __metadata:
     jszip: ^3.10.1
     lodash: ^4.17.4
     lodash.throttle: ^4.1.1
+    lucide-react: ^0.525.0
     markdown-to-jsx: ^6.4.1
     moment: ^2.24.0
     prop-types: ^15.7.2
@@ -27965,6 +27967,15 @@ __metadata:
   peerDependencies:
     react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: 8d6459e63863465a00bb5a9a3ffe12bf7f61d67764a399f09e4a30ce62d2809756658cf770ea4c2ae6cb94f7f4217d39810bf5384ade849126188d84917d168d
+  languageName: node
+  linkType: hard
+
+"lucide-react@npm:^0.525.0":
+  version: 0.525.0
+  resolution: "lucide-react@npm:0.525.0"
+  peerDependencies:
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: eef781bfcfd211dac1ca93d0e7c5830aec1bacef72f4af3994807ac04d2a0fe327aca1a77234daf7f13e06ea47e5585766c927c8e1f2e7dcb982e4dc55aeda5e
   languageName: node
   linkType: hard
 
