@@ -26,8 +26,8 @@ export function useHasPermissionGroup(permissionGroupName) {
 /**
  * @returns {boolean | undefined} `true` if the user has the {@link BES_ADMIN_PERMISSION_GROUP}
  * permission group, `false` if they don’t, and `undefined` if the result is pending.
- * @privateRemarks Assume that if a user has any BES Admin access, they are an internal user; and
- * short-circuit checking permissions for every country.
+ * @privateRemarks You can assume that if a user has any BES Admin access, they are an internal
+ * user; and short-circuit checking permissions for every country.
  */
 export function useHasBesAdminAccess() {
   return useHasPermissionGroup(BES_ADMIN_PERMISSION_GROUP);
