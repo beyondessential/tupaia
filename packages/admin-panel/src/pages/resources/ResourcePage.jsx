@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
 import { PageHeader } from '../../widgets';
-import { getExplodedFields, useHasVizBuilderAccess } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
@@ -12,6 +11,7 @@ import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
 import { ArchiveSurveyResponseModal } from '../../surveyResponse';
 import { useUser } from '../../api/queries';
+import { getExplodedFields, useHasBesAdminAccess, useHasVizBuilderAccess } from '../../utilities';
 
 const useEndpoint = (endpoint, details, params) => {
   if (!details && !params) return endpoint;
@@ -51,12 +51,12 @@ export const ResourcePage = ({
   getDisplayValue,
   getNestedViewLink,
   basePath,
-  hasBESAdminAccess,
   needsBESAdminAccess,
   needsVizBuilderAccess,
   actionLabel,
   resourceName,
 }) => {
+  const hasBESAdminAccess = useHasBesAdminAccess();
   const hasVizBuilderAccess = useHasVizBuilderAccess();
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
@@ -161,7 +161,6 @@ ResourcePage.propTypes = {
   getDisplayValue: PropTypes.func,
   getNestedViewLink: PropTypes.func,
   basePath: PropTypes.string,
-  hasBESAdminAccess: PropTypes.bool.isRequired,
   needsBESAdminAccess: PropTypes.arrayOf(PropTypes.string),
   actionLabel: PropTypes.string,
 };
