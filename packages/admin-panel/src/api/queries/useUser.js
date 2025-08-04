@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { get } from '../../VizBuilderApp/api';
 
 export const useUser = () => {
@@ -7,10 +8,11 @@ export const useUser = () => {
     staleTime: 1000 * 60 * 60 * 1,
   });
 
-  const isLoggedIn = query.isSuccess && Boolean(query.data?.id);
-
-  return {
-    ...query,
-    isLoggedIn,
-  };
+  return useMemo(() => {
+    const isLoggedIn = query.isSuccess && Boolean(query.data?.id);
+    return {
+      ...query,
+      isLoggedIn,
+    };
+  }, [query]);
 };
