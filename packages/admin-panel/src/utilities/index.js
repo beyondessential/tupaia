@@ -8,5 +8,10 @@ export { makeSubstitutionsInString } from './makeSubstitutionsInString';
 export * from './persistSearch';
 export * from './pretty';
 export { usePortalWithCallback } from './usePortalWithCallback';
-export { useHasBesAdminAccess, useHasPermissionGroup, useHasVizBuilderAccess } from './userAccess';
+export {
+  useHasBesAdminAccess,
+  useHasPermissionGroup,
+  useHasVizBuilderAccess,
+  useUserPermissionGroups,
+} from './userAccess';
 export { checkVisibilityCriteriaAreMet } from './visibilityCriteria';

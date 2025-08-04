@@ -9,8 +9,7 @@ import { LoginPage } from './pages/LoginPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { AUTH_ROUTES, ROUTES } from './routes';
-import { useHasBesAdminAccess } from './utilities';
-import { useUserPermissionGroups } from './utilities/userAccess';
+import { useHasBesAdminAccess, useUserPermissionGroups } from './utilities';
 
 export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
