@@ -39,7 +39,7 @@ export const TreeResourcePage = ({
 };
 
 TreeResourcePage.defaultProps = {
-  resourceName: {},
+  resourceName: { singular: 'record' },
   ExportModalComponent: null,
   title: '',
 };
