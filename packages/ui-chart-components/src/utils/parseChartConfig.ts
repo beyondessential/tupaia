@@ -125,9 +125,9 @@ const sortChartConfigByLegendOrder = (chartConfig: LooseObject) => {
   return Object.entries(chartConfig)
     .sort(defaultSort)
     .sort(([, cfg1], [, cfg2]) => {
-      if (Number.isNaN(cfg1.legendOrder) && Number.isNaN(cfg2.legendOrder)) return 0;
-      if (Number.isNaN(cfg1.legendOrder)) return 1;
-      if (Number.isNaN(cfg2.legendOrder)) return -1;
+      if (isNaN(cfg1.legendOrder) && isNaN(cfg2.legendOrder)) return 0;
+      if (isNaN(cfg1.legendOrder)) return 1;
+      if (isNaN(cfg2.legendOrder)) return -1;
       return cfg1.legendOrder - cfg2.legendOrder;
     })
     .reduce((newChartConfig, [key, val]) => {
