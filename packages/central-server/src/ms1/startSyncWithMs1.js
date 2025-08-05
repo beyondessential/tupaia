@@ -62,7 +62,7 @@ export async function pushLatest(models, syncQueue, ms1Api) {
     } catch (error) {
       await addToSyncLog(models, change, error.message, error.endpoint, error.data);
       if (
-        (error instanceof HttpError && INVALID_HTTP_CODES.indexOf(error.status) !== -1) ||
+        (error instanceof HttpError && INVALID_HTTP_CODES.includes(error.status)) ||
         error.message === ENDPOINT_NOT_FOUND
       ) {
         // in this case clear up the poor request

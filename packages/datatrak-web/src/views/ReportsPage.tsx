@@ -78,7 +78,7 @@ export const ReportsPage = () => {
       <Wrapper>
         <Container>
           <Text>
-            Download a raw data excel file to complete your own analysis. If the desired report is
+            Download a raw data Excel file to complete your own analysis. If the desired report is
             not available, please contact{' '}
             <InlineLink href="mailto:support@tupaia.org" color="textPrimary">
               support@tupaia.org

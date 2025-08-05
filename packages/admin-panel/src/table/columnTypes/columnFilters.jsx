@@ -110,7 +110,7 @@ export const VerifiedFilter = ({ filter, onChange, column }) => {
         { label: 'Show All', value: '' },
         { label: 'Yes', value: 'verified' },
         { label: 'No', value: 'new_user' },
-        { label: 'Not Applicable', value: 'unverified' },
+        { label: 'Not applicable', value: 'unverified' },
       ]}
       onChange={e => onChange(e.target.value)}
       value={filter.value ?? ''}
