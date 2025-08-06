@@ -1,7 +1,7 @@
 import { subMinutes } from 'date-fns';
 import { getTestModels } from '@tupaia/database';
-import { CentralSyncManager } from '../sync/CentralSyncManager';
 
+import { CentralSyncManager } from '../sync/CentralSyncManager';
 import { TestModelRegistry } from '../types';
 
 describe('CentralSyncManager.queueDeviceForSync', () => {

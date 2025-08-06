@@ -24,9 +24,6 @@ exports.up = function (db) {
       urgent             BOOLEAN                                NOT NULL
     );
 
-    CREATE INDEX sync_queued_device_id
-        ON sync_queued_device (id);
-
     CREATE INDEX sync_queued_device_last_seen_time
         ON sync_queued_device (last_seen_time);
 

@@ -85,7 +85,7 @@ export class CentralSyncManager {
     return { tick: tock - 1, tock };
   }
 
-  async getIsSyncCapacityFull() {
+  async getIsSyncCapacityFull(): Promise<boolean> {
     const { maxConcurrentSessions } = this.config;
     const activeSyncs = await this.models.syncSession.find({
       completed_at: null,
@@ -94,7 +94,11 @@ export class CentralSyncManager {
     return activeSyncs.length >= maxConcurrentSessions;
   }
 
-  async queueDeviceForSync(deviceId: string, urgent: boolean = false, lastSyncedTick: number = 0) {
+  async queueDeviceForSync(
+    deviceId: string,
+    urgent: boolean = false,
+    lastSyncedTick: number = 0,
+  ) {
     const staleSessions = await this.models.syncSession.find({
       completed_at: null,
       'info->>deviceId': deviceId,
