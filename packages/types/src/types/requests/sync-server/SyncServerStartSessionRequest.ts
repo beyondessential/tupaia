@@ -9,12 +9,14 @@ export type ResBody = {
   sessionId?: string;
   status?: QueueStatus;
   behind?: {
-    id: string;
+    deviceId: string;
     lastSyncedTick: number;
     urgent: boolean;
   };
 };
 export type ReqBody = {
   deviceId: string;
+  urgent: boolean;
+  lastSyncedTick: number;
 };
 export type ReqQuery = Record<string, never>;

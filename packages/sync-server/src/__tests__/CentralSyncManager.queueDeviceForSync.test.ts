@@ -53,20 +53,6 @@ describe('CentralSyncManager.queueDeviceForSync', () => {
     expect(resultC).toHaveProperty('status', 'waitingInQueue');
   });
 
-  it('Should queue if a sync is running', async () => {
-    const resultA = await requestSync('A');
-    expect(resultA).toHaveProperty('sessionId');
-
-    const resultB = await requestSync('B');
-    // we're first in line (device A having been removed from the queue to start its sync)
-    // but we are waiting for that sync to complete
-    expect(resultB).toHaveProperty('status', 'activeSync');
-
-    const resultC = await requestSync('C');
-    // we're behind device B
-    expect(resultC).toHaveProperty('status', 'waitingInQueue');
-  });
-
   it('Should pick the oldest syncedTick device given uniform urgency', async () => {
     const resultA = await requestSync('A'); // start active sync
     expect(resultA).toHaveProperty('sessionId');
@@ -83,7 +69,6 @@ describe('CentralSyncManager.queueDeviceForSync', () => {
     expect(waiting).toHaveProperty('status', 'waitingInQueue');
 
     const started = await requestSync('E', 10);
-    console.log('startedddd', started);
     expect(started).toHaveProperty('sessionId');
   });
 

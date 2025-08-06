@@ -73,8 +73,11 @@ export class ClientSyncManager {
       );
     }
 
+    const lastSyncedTick =
+        (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
+
     const startTime = performance.now();
-    const { sessionId, startedAtTick, status } = await this.startSyncSession(urgent);
+    const { sessionId, startedAtTick, status } = await this.startSyncSession(urgent, lastSyncedTick);
 
     if (!sessionId) {
       // we're queued
@@ -107,13 +110,14 @@ export class ClientSyncManager {
     return { queued: false, hasRun: true };
   }
 
-  async startSyncSession(urgent: boolean) {
+  async startSyncSession(urgent: boolean, lastSyncedTick: number) {
     for await (const { kind, message } of stream(() => ({
       method: 'POST',
       endpoint: `sync`,
       options: {
         deviceId: this.deviceId,
         urgent,
+        lastSyncedTick,
       },
     }))) {
       handler: switch (kind) {

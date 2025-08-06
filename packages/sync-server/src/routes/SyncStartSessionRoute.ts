@@ -13,8 +13,8 @@ export type SyncStartSessionRequest = Request<
 export class SyncStartSessionRoute extends Route<SyncStartSessionRequest> {
   public async buildResponse() {
     const { ctx } = this.req;
-    const { deviceId } = this.req.body;
+    const { deviceId, urgent, lastSyncedTick } = this.req.body;
 
-    return ctx.centralSyncManager.queueDeviceForSync(deviceId);
+    return ctx.centralSyncManager.queueDeviceForSync(deviceId, urgent, lastSyncedTick);
   }
 }
