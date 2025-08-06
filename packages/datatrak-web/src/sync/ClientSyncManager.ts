@@ -24,6 +24,7 @@ import { remove, stream } from '../api';
 
 export interface SyncResult {
   hasRun: boolean;
+  queued: boolean;
 }
 
 export class ClientSyncManager {
@@ -47,14 +48,14 @@ export class ClientSyncManager {
     });
   }
 
-  async triggerSync(projectIds: string[]) {
+  async triggerSync(projectIds: string[], urgent: boolean) {
     if (this.currentSyncPromise) {
       console.log('ClientSyncManager.triggerSync - already running');
       return this.currentSyncPromise;
     }
 
     // set up a common sync promise to avoid double sync
-    this.currentSyncPromise = this.runSync(projectIds);
+    this.currentSyncPromise = this.runSync(projectIds, urgent);
 
     // make sure sync promise gets cleared when finished, even if there's an error
     try {
@@ -65,7 +66,7 @@ export class ClientSyncManager {
     }
   }
 
-  async runSync(projectIds: string[]) {
+  async runSync(projectIds: string[], urgent: boolean = false) {
     if (this.currentSyncPromise) {
       throw new Error(
         'It should not be possible to call "runSync" while an existing run is active',
@@ -73,7 +74,13 @@ export class ClientSyncManager {
     }
 
     const startTime = performance.now();
-    const { sessionId, startedAtTick } = await this.startSyncSession();
+    const { sessionId, startedAtTick, status } = await this.startSyncSession(urgent);
+
+    if (!sessionId) {
+      // we're queued
+      console.log('ClientSyncManager.wasQueued', { status });
+      return { queued: true, hasRun: false };
+    }
 
     // clear previous temp data, in case last session errored out or server was restarted
     await dropAllSnapshotTables(this.database);
@@ -97,13 +104,17 @@ export class ClientSyncManager {
     // clear temp data stored for persist
     await dropSnapshotTable(this.database, sessionId);
 
-    return { hasRun: true };
+    return { queued: false, hasRun: true };
   }
 
-  async startSyncSession() {
+  async startSyncSession(urgent: boolean) {
     for await (const { kind, message } of stream(() => ({
       method: 'POST',
       endpoint: `sync`,
+      options: {
+        deviceId: this.deviceId,
+        urgent,
+      },
     }))) {
       handler: switch (kind) {
         case SYNC_STREAM_MESSAGE_KIND.SESSION_WAITING:

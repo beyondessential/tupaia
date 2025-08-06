@@ -52,6 +52,9 @@ const TABLES_TO_CLEAR = [
   'map_overlay_group',
   'map_overlay',
   'login_attempts',
+  'sync_queued_device',
+  'sync_session',
+  'sync_device_tick',
 ];
 
 export async function clearTestData(db) {

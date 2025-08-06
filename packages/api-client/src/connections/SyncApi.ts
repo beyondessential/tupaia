@@ -7,11 +7,16 @@ import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
 
 export class SyncApi extends BaseApi {
-  async startSyncSession(res: ExpressResponse) {
+  async startSyncSession(res: ExpressResponse, deviceId: string, urgent: boolean) {
     // start a sync session
-    const { sessionId } = await this.connection.post('sync');
+    const { sessionId, status } = await this.connection.post('sync', {}, { deviceId, urgent });
 
-    // TODO: Implement sync queue RN-1667
+    if (!sessionId) {
+      // we're waiting in a queue
+      res.write(StreamMessage.end({ status }));
+      res.end();
+      return;
+    }
 
     // then, poll the sync/:sessionId/status endpoint until we get a valid response
     // this is because POST /sync (especially the tickTockGlobalClock action) might get blocked
