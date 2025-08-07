@@ -28,6 +28,7 @@ const upsertUserAccount = async ({
         last_name: lastName,
         email: email,
         password_hash: passwordHash,
+        legacy_password_salt: null,
       },
     );
     return existingUserAccount.id;
@@ -136,7 +137,6 @@ export const initialiseApiClient = async (
       models: transactingModels,
       email: API_CLIENT_NAME,
       password: API_CLIENT_PASSWORD,
-      legacy_password_salt: null,
     });
     await upsertApiClient({
       models: transactingModels,
