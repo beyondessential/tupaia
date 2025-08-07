@@ -71,7 +71,6 @@ export const DataTableEditFields = React.memo(
     const {
       data: reportData = { columns: [], rows: [], limit: 0, total: 0 },
       refetch,
-      isLoading,
       isFetching,
       isError,
       error,
@@ -197,11 +196,11 @@ export const DataTableEditFields = React.memo(
               </div>
               <StyledGrid item xs={12}>
                 <FetchLoader
-                  isLoading={isLoading || isFetching}
+                  isLoading={isFetching}
                   isError={isError}
                   error={error}
                   isNoData={!rows.length}
-                  noDataMessage="No Data Found"
+                  noDataMessage="No data found"
                 >
                   <DataGrid rows={rows} columns={columns} autoPageSize />
                 </FetchLoader>

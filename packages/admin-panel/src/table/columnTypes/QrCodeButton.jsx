@@ -27,7 +27,7 @@ const LittleQrCodeIcon = props => {
 };
 
 export const QrCodeButtonComponent = ({ openModal, actionConfig }) => {
-  const { title = 'View QR code' } = actionConfig;
+  const { title = <>View QR&nbsp;code</> } = actionConfig;
   return (
     <ColumnActionButton className="edit-button" onClick={openModal} title={title}>
       <LittleQrCodeIcon />

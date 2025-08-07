@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import { FlexEnd, FlexSpaceBetween, FlexStart } from '@tupaia/ui-components';
-import { usePreviewDataContext, useVizConfigContext } from '../../context';
-import { LinkButton } from '../LinkButton';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+
+import { Button, FlexEnd, FlexSpaceBetween, FlexStart } from '@tupaia/ui-components';
+
 import { useUploadTestData } from '../../api';
-import { ProjectField } from './ProjectField';
-import { LocationField } from './LocationField';
+import { usePreviewDataContext, useVizConfigContext } from '../../context';
 import { DateRangeField } from './DateRangeField';
 import { ImportModal } from './ImportModal';
+import { LocationField } from './LocationField';
+import { ProjectField } from './ProjectField';
 
-const Container = styled(FlexSpaceBetween)`
+const Container = styled(FlexStart)`
   padding: 24px 0;
 `;
 
@@ -27,6 +28,13 @@ const UploadedFileContainer = styled(FlexSpaceBetween)`
   }
 `;
 
+export const StyledButton = styled(Button).attrs({ variant: 'text', color: 'primary' })`
+  &.MuiButton-root,
+  &.MuiButton-root:hover {
+    text-decoration: underline;
+  }
+`;
+
 const UploadedFile = ({ children, onRemove }) => (
   <UploadedFileContainer>
     <FlexStart>
@@ -34,7 +42,7 @@ const UploadedFile = ({ children, onRemove }) => (
       {children}
     </FlexStart>
     <FlexEnd>
-      <LinkButton onClick={onRemove}>Remove</LinkButton>
+      <StyledButton onClick={onRemove}>Remove</StyledButton>
     </FlexEnd>
   </UploadedFileContainer>
 );
@@ -90,31 +98,29 @@ export const PreviewOptions = () => {
 
   return (
     <Container>
-      <FlexStart flex={1}>
-        {fileName ? (
-          <UploadedFile onRemove={handleRemoveData}>{fileName}</UploadedFile>
-        ) : (
-          <>
-            <ProjectField />
-            <LocationField />
-            <DateRangeField />
-            <LinkButton
-              onClick={() => {
-                setIsImportModalOpen(true);
-              }}
-            >
-              or upload data
-            </LinkButton>{' '}
-          </>
-        )}
-        <UploadDataModal
-          isOpen={isImportModalOpen}
-          onSubmit={handleUploadData}
-          onClose={() => {
-            setIsImportModalOpen(false);
-          }}
-        />
-      </FlexStart>
+      {fileName ? (
+        <UploadedFile onRemove={handleRemoveData}>{fileName}</UploadedFile>
+      ) : (
+        <>
+          <ProjectField />
+          <LocationField />
+          <DateRangeField />
+          <StyledButton
+            onClick={() => {
+              setIsImportModalOpen(true);
+            }}
+          >
+            or upload data
+          </StyledButton>
+        </>
+      )}
+      <UploadDataModal
+        isOpen={isImportModalOpen}
+        onSubmit={handleUploadData}
+        onClose={() => {
+          setIsImportModalOpen(false);
+        }}
+      />
     </Container>
   );
 };
