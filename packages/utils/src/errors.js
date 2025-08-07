@@ -34,7 +34,7 @@ export class DatabaseError extends RespondingError {
     super(
       `Database error: ${message}${originalError ? ` - ${originalError.message}` : ''}`,
       500,
-      originalError.extraFields,
+      originalError?.extraFields,
     );
     this.name = 'DatabaseError';
   }
