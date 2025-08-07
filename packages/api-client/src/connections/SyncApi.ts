@@ -7,9 +7,14 @@ import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
 
 export class SyncApi extends BaseApi {
-  async startSyncSession(res: ExpressResponse, deviceId: string, urgent: boolean) {
+  async startSyncSession(
+    res: ExpressResponse,
+    deviceId: string,
+    urgent: boolean,
+    lastSyncedTick: number,
+  ) {
     // start a sync session
-    const { sessionId, status } = await this.connection.post('sync', {}, { deviceId, urgent });
+    const { sessionId, status } = await this.connection.post('sync', {}, { deviceId, urgent, lastSyncedTick });
 
     if (!sessionId) {
       // we're waiting in a queue

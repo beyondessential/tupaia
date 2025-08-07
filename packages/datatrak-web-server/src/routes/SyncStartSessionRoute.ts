@@ -15,7 +15,7 @@ export class SyncStartSessionRoute extends Route<SyncStartSessionRequest> {
 
   public async stream() {
     const { ctx } = this.req;
-    const { deviceId, urgent } = this.req.body;
-    return ctx.services.sync.startSyncSession(this.res, deviceId, urgent);
+    const { deviceId, urgent, lastSyncedTick } = this.req.body;
+    return ctx.services.sync.startSyncSession(this.res, deviceId, urgent, lastSyncedTick);
   }
 }
