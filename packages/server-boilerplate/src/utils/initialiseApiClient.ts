@@ -136,6 +136,7 @@ export const initialiseApiClient = async (
       models: transactingModels,
       email: API_CLIENT_NAME,
       password: API_CLIENT_PASSWORD,
+      legacy_password_salt: null,
     });
     await upsertApiClient({
       models: transactingModels,
