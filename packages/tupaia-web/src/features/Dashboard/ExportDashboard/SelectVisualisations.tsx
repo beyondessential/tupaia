@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Button, CheckboxList, ListItemProps } from '@tupaia/ui-components';
 import { DashboardItem } from '../../../types';
-import { useDashboard } from '../utils';
+import { useDashboardContext } from '../utils';
 
 const Container = styled.div`
   display: flex;
@@ -71,7 +71,7 @@ export const SelectVisualisation = ({
   selectedDashboardItems,
   setSelectedDashboardItems,
 }: SelectVisualisationsProps) => {
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
 
   const list =
     activeDashboard?.items?.map(({ config, code }) => {
