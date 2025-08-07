@@ -15,5 +15,7 @@ export class CreateDataTables extends CreateHandler {
     );
   }
 
-  createRecord = this.insertRecord;
+  async createRecord() {
+    await this.insertRecord();
+  }
 }
