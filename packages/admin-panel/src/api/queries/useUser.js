@@ -1,20 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { get } from '../../VizBuilderApp/api';
-import { getHasVizBuilderAccess } from '../../utilities';
 
 export const useUser = () => {
   const query = useQuery(['user'], () => get('user'), {
     retry: false,
-    staleTime: 1000 * 60 * 60 * 1,
+    staleTime: 3_600_000, // 1 hour
   });
 
-  const isLoggedIn = query.isSuccess && Boolean(query.data?.id);
-
-  const hasVizBuilderAccess = getHasVizBuilderAccess(query?.data);
-
-  return {
-    ...query,
-    isLoggedIn,
-    hasVizBuilderAccess,
-  };
+  return useMemo(
+    () => ({
+      ...query,
+      isLoggedIn: query.isSuccess && Boolean(query.data?.id),
+    }),
+    [query],
+  );
 };

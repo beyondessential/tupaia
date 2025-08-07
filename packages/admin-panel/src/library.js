@@ -24,7 +24,7 @@ export {
 } from './routes';
 export { LoginPage } from './pages';
 export { PrivateRoute } from './authentication';
-export { getHasBESAdminAccess } from './utilities';
+export { useHasBesAdminAccess } from './utilities';
 export * from './pages/resources';
 export { ReduxAutocomplete } from './autocomplete';
 export { IconButton } from './widgets';
