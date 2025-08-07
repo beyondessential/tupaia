@@ -47,7 +47,7 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
       const projectIds = projects.map(project => project.id);
       const intervalId = setInterval(() => {
         console.log('Starting regular sync');
-        clientSyncManager.triggerSync(projectIds);
+        clientSyncManager.triggerSync(projectIds, false);
       }, SYNC_INTERVAL);
 
       setIsSyncScheduled(true);
