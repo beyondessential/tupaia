@@ -6,5 +6,7 @@ export class BESAdminCreateHandler extends CreateHandler {
     await this.assertPermissions(assertBESAdminAccess);
   }
 
-  createRecord = this.insertRecord;
+  async createRecord() {
+    await this.insertRecord();
+  }
 }
