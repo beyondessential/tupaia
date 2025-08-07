@@ -18,6 +18,9 @@ const StyledModal = styled(Modal)<{ $requestAccess?: boolean }>`
     .MuiPaper-root {
       height: 100%;
       background: ${({ theme }) => theme.palette.background.default};
+      padding-bottom: max(env(safe-area-inset-bottom, 0), 1rem);
+      padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
+      padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
 
       // Hide the close button on mobile
       > .MuiButtonBase-root.MuiIconButton-root {
