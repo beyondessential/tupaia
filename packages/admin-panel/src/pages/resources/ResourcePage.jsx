@@ -68,10 +68,10 @@ export const ResourcePage = ({
   const isDetailsPage = !!parent;
 
   const getHasPermission = actionType => {
-    if (needsBESAdminAccess && needsBESAdminAccess.includes(actionType)) {
+    if (needsBESAdminAccess?.includes(actionType)) {
       return !!hasBESAdminAccess;
     }
-    if (needsVizBuilderAccess && needsVizBuilderAccess.includes(actionType)) {
+    if (needsVizBuilderAccess?.includes(actionType)) {
       return !!hasVizBuilderAccess;
     }
     return true;
@@ -98,12 +98,12 @@ export const ResourcePage = ({
         />
       )}
       <PageHeader
-        importConfig={canImport && importConfig}
-        exportConfig={canExport && exportConfig}
-        createConfig={canCreate && createConfig}
-        ExportModalComponent={canExport && ExportModalComponent}
+        importConfig={canImport ? importConfig : null}
+        exportConfig={canExport ? exportConfig : null}
+        createConfig={canCreate ? createConfig : null}
+        ExportModalComponent={canExport ? ExportModalComponent : null}
         /* Links component is only used for adding viz builder button */
-        LinksComponent={hasVizBuilderAccess && LinksComponent}
+        LinksComponent={hasVizBuilderAccess ? LinksComponent : null}
         resourceName={resourceName?.singular}
       />
       <DataFetchingTable

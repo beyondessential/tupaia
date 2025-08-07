@@ -1,21 +1,21 @@
-import { CreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
   assertVizBuilderAccess,
 } from '../../permissions';
+import { CreateHandler } from '../CreateHandler';
 
-export class CreateMapOverlayGroups extends CreateHandler {
+export class CreateDataTables extends CreateHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
         [assertBESAdminAccess, assertVizBuilderAccess],
-        'BES Admin or Viz Builder User permission required to create a map overlay group',
+        'BES Admin or Viz Builder User permission required to create a data table',
       ),
     );
   }
 
   async createRecord() {
-    return this.insertRecord();
+    await this.insertRecord();
   }
 }

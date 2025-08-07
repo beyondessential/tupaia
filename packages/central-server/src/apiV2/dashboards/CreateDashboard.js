@@ -11,7 +11,7 @@ export class CreateDashboard extends CreateHandler {
     await this.assertPermissions(
       assertAnyPermissions(
         [assertBESAdminAccess, assertVizBuilderAccess],
-        'You require Viz Builder User or BES Admin permission to create a dashboard.',
+        'BES Admin or Viz Builder User permission required to create a dashboard',
       ),
     );
   }
