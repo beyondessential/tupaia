@@ -1,3 +1,5 @@
+import { BES_ADMIN_PERMISSION_GROUP } from '../../utilities/userAccess';
+
 const RESOURCE_NAME = { singular: 'indicator' };
 
 const FIELDS = [
@@ -57,5 +59,5 @@ export const indicators = {
   endpoint: 'indicators',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
-  isBESAdminOnly: true,
+  requiresSomePermissionGroup: [BES_ADMIN_PERMISSION_GROUP],
 };

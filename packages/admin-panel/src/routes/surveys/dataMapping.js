@@ -3,6 +3,7 @@ import {
   DataSourceConfigView,
   SERVICE_TYPE_OPTIONS,
 } from '../../common';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../utilities/userAccess';
 
 const RESOURCE_NAME = { singular: 'mapping' };
 
@@ -79,5 +80,5 @@ export const dataMapping = {
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
   createConfig: CREATE_CONFIG,
-  isBESAdminOnly: true,
+  requiresSomePermissionGroup: [BES_ADMIN_PERMISSION_GROUP],
 };

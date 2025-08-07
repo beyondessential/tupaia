@@ -1,3 +1,4 @@
+import { BES_ADMIN_PERMISSION_GROUP } from '../../utilities/userAccess';
 import { BASE_OPTION_FIELDS } from './optionSets';
 
 const RESOURCE_NAME = { singular: 'question' };
@@ -82,7 +83,7 @@ export const questions = {
   path: '/questions',
   endpoint: 'questions',
   columns: QUESTION_COLUMNS,
-  isBESAdminOnly: true,
+  requiresSomePermissionGroup: [BES_ADMIN_PERMISSION_GROUP],
   editorConfig: EDITOR_CONFIG,
   nestedViews: [
     {

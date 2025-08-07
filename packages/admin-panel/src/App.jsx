@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { PrivateRoute } from './authentication';
@@ -9,7 +9,7 @@ import { LoginPage } from './pages/LoginPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { AUTH_ROUTES, ROUTES } from './routes';
-import { useHasBesAdminAccess } from './utilities';
+import { useHasBesAdminAccess, useUserPermissionGroups } from './utilities';
 
 export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
@@ -46,9 +46,19 @@ export const getFlattenedChildViews = (route, basePath = '') => {
 
 const App = () => {
   const hasBESAdminAccess = useHasBesAdminAccess();
+
+  const userPermissionGroups = useUserPermissionGroups();
+  const userHasPermissionGroup = useCallback(
+    pg => userPermissionGroups?.has(pg) ?? false,
+    [userPermissionGroups],
+  );
+
   const userHasAccessToTab = tab => {
-    if (tab.isBESAdminOnly) {
-      return !!hasBESAdminAccess;
+    if (
+      Array.isArray(tab.requiresSomePermissionGroup) &&
+      tab.requiresSomePermissionGroup.length > 0
+    ) {
+      return tab.requiresSomePermissionGroup.some(userHasPermissionGroup);
     }
     return true;
   };
@@ -61,7 +71,12 @@ const App = () => {
         childViews: route.childViews.filter(childView => userHasAccessToTab(childView)),
       };
     }).filter(route => {
-      if (route.isBESAdminOnly) return !!hasBESAdminAccess;
+      if (
+        Array.isArray(route.requiresSomePermissionGroup) &&
+        route.requiresSomePermissionGroup.length > 0
+      ) {
+        return route.requiresSomePermissionGroup.some(userHasPermissionGroup);
+      }
       return route.childViews.length > 0;
     });
   };

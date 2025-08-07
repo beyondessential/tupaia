@@ -18,7 +18,7 @@ export const getVisualisationsTabsRoutes = (translate, adminUrl, isBESAdmin) => 
     getMapOverlayGroupRelationsPageConfig(translate),
     {
       ...dataTables,
-      isBESAdminOnly: false,
+      requiresSomePermissionGroup: undefined,
     },
   ],
 });

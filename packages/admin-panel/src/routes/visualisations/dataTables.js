@@ -3,6 +3,7 @@ import { DataTableEditFields } from '../../dataTables/DataTableEditFields';
 import { onProcessDataForSave } from '../../dataTables/onProcessDataForSave';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
+import { VIZ_BUILDER_PERMISSION_GROUP } from '../../utilities/userAccess';
 
 const RESOURCE_NAME = { singular: 'data table' };
 
@@ -126,4 +127,5 @@ export const dataTables = {
   onProcessDataForSave,
   needsVizBuilderAccess: ['create', 'edit'],
   needsBESAdminAccess: ['delete', 'import'],
+  requiresSomePermissionGroup: [VIZ_BUILDER_PERMISSION_GROUP],
 };
