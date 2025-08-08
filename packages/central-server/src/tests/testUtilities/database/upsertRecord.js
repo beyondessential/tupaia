@@ -1,4 +1,4 @@
-import { generateId, upsertDummyRecord } from '@tupaia/database';
+import { upsertDummyRecord } from '@tupaia/database';
 import { randomString } from '@tupaia/utils';
 import { getModels } from './getModels';
 
@@ -49,14 +49,13 @@ export const upsertDataGroup = async data => {
 };
 
 export const upsertSurvey = async data => {
-  const project = await upsertProject({ code: generateId() });
-  const permissionGroup = await upsertPermissionGroup({ name: randomString() });
+  const augmented = { ...data };
 
-  return upsertDummyRecord(models.survey, {
-    ...data,
-    permission_group_id: permissionGroup.id,
-    project_id: project.id,
-  });
+  // Satisfy foreign key constraints
+  augmented.permission_group_id ??= (await upsertPermissionGroup({ name: randomString() })).id;
+  augmented.project_id ??= (await upsertProject({ code: randomString() })).id;
+
+  return await upsertDummyRecord(models.survey, augmented);
 };
 
 export const upsertSurveyGroup = async data => {
