@@ -19,7 +19,11 @@ export class GeographicalAreaRecord extends DatabaseRecord {
   }
 
   async parent() {
-    return this.model.findById(this.parent_id);
+    if (!this.parent_id) return null;
+    return ensure(
+      await this.model.findById(this.parent_id),
+      `Couldn’t find parent for geographical area ${this.id} (expected geographical area with ID ${this.parent_id})`,
+    );
   }
 
   async getParents() {
