@@ -14,11 +14,11 @@ function removeDiacritics(str) {
 }
 
 function extractBestMatch(data) {
-  if (!data || !data.filter) {
-    winston.error(data);
+  if (!Array.isArray(data)) {
+    winston.error('Couldn’t extract best match', { data });
     return null;
   }
-  return data.filter(x => x.class === 'boundary' && x.type === 'administrative')[0];
+  return data.find(x => x.class === 'boundary' && x.type === 'administrative');
 }
 
 async function searchGeojson(name, countryName) {
