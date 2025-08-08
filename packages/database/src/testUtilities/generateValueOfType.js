@@ -26,6 +26,13 @@ export function generateValueOfType(type, options = {}) {
     case 'USER-DEFINED': // used for postgis columns that knex doesn't understand
       return null;
     default:
-      throw new Error(`${type} is not a supported dummy data type`);
+      throw new UnsupportedDummyDataType(`‘${type}’ is not a supported dummy data type`);
+  }
+}
+
+class UnsupportedDummyDataType extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'UnsupportedDummyDataType';
   }
 }
