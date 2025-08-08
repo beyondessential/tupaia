@@ -46,9 +46,8 @@ const StyledMenu = styled(MuiMenu)`
       right: 36px;
       z-index: -1;
       content: '';
-      border-right: 5px solid transparent;
-      border-left: 5px solid transparent;
-      border-bottom: 7px solid ${props => props.theme.palette.grey['400']};
+      border-inline: 5px solid transparent;
+      border-block-end: 7px solid ${props => props.theme.palette.grey['400']};
     }
 
     &:after {
@@ -57,9 +56,8 @@ const StyledMenu = styled(MuiMenu)`
       right: 36px;
       content: '';
       z-index: 1;
-      border-right: 5px solid transparent;
-      border-left: 5px solid transparent;
-      border-bottom: 7px solid white;
+      border-inline: 5px solid transparent;
+      border-block-end: 7px solid white;
     }
   }
 `;
@@ -107,7 +105,7 @@ export const LocaleMenu = ({ className }) => {
     });
   };
 
-  const handleChange = (event, newLocale) => {
+  const handleChange = (_event, newLocale) => {
     const path = generateNewPath(newLocale);
     const link = `${path}${search}`;
     navigate(link, {
@@ -137,7 +135,7 @@ export const LocaleMenu = ({ className }) => {
         endIcon={<ArrowDropDownIcon />}
         className={className}
       >
-        <span>{selectedLocale.label}</span>
+        <span>{selectedLocale?.label ?? 'Select language'}</span>
       </StyledButton>
       <StyledMenu
         id="simple-menu"

@@ -9,7 +9,7 @@ import {
   constructIsOneOf,
   constructIsEmptyOr,
 } from '@tupaia/utils';
-import { hashAndSaltPassword } from '@tupaia/auth';
+import { encryptPassword } from '@tupaia/auth';
 import { VerifiedEmail } from '@tupaia/types';
 import {
   assertAdminPanelAccessToCountry,
@@ -47,9 +47,10 @@ export async function importUsers(req, res) {
           }
           emails.push(userObject.email);
           const { password, permission_group: permissionGroupName, ...restOfUser } = userObject;
+
           const userToUpsert = {
             ...restOfUser,
-            ...hashAndSaltPassword(password),
+            password_hash: await encryptPassword(password),
           };
           const user = await transactingModels.user.updateOrCreate(
             { email: userObject.email },
