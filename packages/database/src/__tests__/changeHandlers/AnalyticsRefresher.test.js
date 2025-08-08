@@ -1,12 +1,12 @@
+import { AnalyticsRefresher } from '../../changeHandlers/AnalyticsRefresher';
 import {
+  clearTestData,
   getTestModels,
   populateTestData,
-  clearTestData,
   upsertDummyRecord,
 } from '../../testUtilities';
-import { AnalyticsRefresher } from '../../changeHandlers/AnalyticsRefresher';
-
-import { TEST_DATA, ANALYTICS, ANSWER001_TEST_ANALYTIC } from './AnalyticsRefresher.fixtures';
+import { generateId } from '../../utilities';
+import { ANALYTICS, ANSWER001_TEST_ANALYTIC, TEST_DATA } from './AnalyticsRefresher.fixtures';
 
 const matchingFields = [
   'value',
@@ -82,8 +82,13 @@ describe('AnalyticsRefresher', () => {
 
   it('refreshes analytics table if answers are added', async () => {
     // Add an answer, make sure analytic is populated
+    const permissionGroup = await upsertDummyRecord(models.permissionGroup, {
+      id: generateId(),
+      name: 'Test Permission Group',
+    });
     await upsertDummyRecord(models.surveyResponse, {
       id: 'create_test_survey_response',
+      permission_group_id: permissionGroup.id,
       data_time: '2020-01-01 11:58:23',
       survey_id: 'survey001_test',
       entity_id: 'entity001_test',
