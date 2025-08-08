@@ -46,10 +46,7 @@ const generateDummyRecord = async (model, overrides = {}) => {
       if (overrides[fieldName] !== undefined) return overrides[fieldName];
       // - the value stored in CUSTOM_DUMMY_VALUES, even if that is 'null'
       const { databaseRecord } = model;
-      if (
-        CUSTOM_DUMMY_VALUES[databaseRecord] &&
-        CUSTOM_DUMMY_VALUES[databaseRecord][fieldName] !== undefined
-      )
+      if (CUSTOM_DUMMY_VALUES[databaseRecord]?.[fieldName] !== undefined)
         return CUSTOM_DUMMY_VALUES[databaseRecord][fieldName];
       // - the default value from the database schema
       if (columnInfo.defaultValue !== null)
