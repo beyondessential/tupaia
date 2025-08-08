@@ -1,3 +1,4 @@
+import { ensure } from '@tupaia/tsutils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -61,16 +62,35 @@ export class TaskRecord extends DatabaseRecord {
     },
   ];
 
+  /**
+   * @returns {Promise<import('./Entity').EntityRecord>}
+   */
   async entity() {
-    return this.otherModels.entity.findById(this.entity_id);
+    return ensure(
+      await this.otherModels.entity.findById(this.entity_id),
+      `Couldn’t find entity for task ${this.id} (expected entity with ID ${this.entity_id})`,
+    );
   }
 
+  /**
+   * @returns {Promise<import('./UserAccount').UserAccountRecord | null>}
+   */
   async assignee() {
-    return this.otherModels.userAccount.findById(this.assignee_id);
+    if (!this.assignee_id) return null;
+    return ensure(
+      await this.otherModels.userAccount.findById(this.assignee_id),
+      `Couldn’t find assignee for task ${this.id} (expected user account with ID ${this.assignee_id})`,
+    );
   }
 
+  /**
+   * @returns {Promise<import('./Survey').SurveyRecord>}
+   */
   async survey() {
-    return this.otherModels.survey.findById(this.survey_id);
+    return ensure(
+      await this.otherModels.survey.findById(this.survey_id),
+      `Couldn’t find survey for task ${this.id} (expected survey with ID ${this.survey_id})`,
+    );
   }
 
   hasValidRepeatSchedule() {
@@ -283,9 +303,8 @@ export class TaskModel extends DatabaseModel {
   }
 
   async createAccessPolicyQueryClause(accessPolicy) {
-    const countryCodesByPermissionGroupId = await this.getCountryCodesByPermissionGroupId(
-      accessPolicy,
-    );
+    const countryCodesByPermissionGroupId =
+      await this.getCountryCodesByPermissionGroupId(accessPolicy);
 
     const params = Object.entries(countryCodesByPermissionGroupId).flat().flat(); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
 
@@ -296,7 +315,7 @@ export class TaskModel extends DatabaseModel {
             .map(([_, countryCodes]) => {
               return `
               (
-                survey.permission_group_id = ? AND 
+                survey.permission_group_id = ? AND
                 entity.country_code IN (${countryCodes.map(() => '?').join(', ')})
               )
             `;
@@ -423,23 +442,23 @@ export class TaskModel extends DatabaseModel {
   customColumnSelectors = {
     task_due_date: () => `to_timestamp(due_date/1000)`,
     task_status: () =>
-      `CASE  
+      `CASE
         WHEN status = 'cancelled' then 'cancelled'
         WHEN status = 'completed' then 'completed'
         WHEN (status = 'to_do' OR status IS NULL) THEN
-            CASE 
+            CASE
                 WHEN repeat_schedule IS NOT NULL THEN 'repeating'
                 WHEN due_date IS NULL THEN 'to_do'
                 WHEN due_date < ${new Date().getTime()} THEN 'overdue'
                 ELSE 'to_do'
             END
-        ELSE 'to_do' 
+        ELSE 'to_do'
     END`,
     assignee_name: () =>
-      `CASE 
-        WHEN assignee_id IS NULL THEN 'Unassigned' 
-        WHEN assignee.last_name IS NULL THEN assignee.first_name 
-        ELSE assignee.first_name || ' ' || assignee.last_name 
+      `CASE
+        WHEN assignee_id IS NULL THEN 'Unassigned'
+        WHEN assignee.last_name IS NULL THEN assignee.first_name
+        ELSE assignee.first_name || ' ' || assignee.last_name
       END`,
   };
 }

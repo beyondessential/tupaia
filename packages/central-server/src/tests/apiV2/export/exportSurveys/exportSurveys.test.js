@@ -89,7 +89,7 @@ describe('exportSurveys(): GET export/surveys, GET export/surveys/:surveyId', ()
       // json_to_sheet is called when putting exportData into excel sheet
       expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnceWithExactly([
         [
-          `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed ${adminPermissionGroup.name} access to ${vanuatuCountry.name} to export the survey ${survey1.name}\n`,
+          `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed ${adminPermissionGroup.name} access to ${vanuatuCountry.name} to export the survey ${survey1.name}`,
         ],
       ]);
     });

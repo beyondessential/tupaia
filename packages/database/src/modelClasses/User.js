@@ -15,6 +15,13 @@ export class UserRecord extends DatabaseRecord {
     return userFullName;
   }
 
+  /**
+   * @returns {Promise<import('./UserEntityPermission').UserEntityPermissionRecord[]>}
+   */
+  async getEntityPermissions() {
+    return this.otherModels.userEntityPermission.find({ user_id: this.id });
+  }
+
   // Checks if the provided non-encrypted password corresponds to this user
   checkPassword(password) {
     return encryptPassword(password, this.password_salt) === this.password_hash;
@@ -51,9 +58,9 @@ export class UserModel extends DatabaseModel {
 
   customColumnSelectors = {
     full_name: () =>
-      `CASE 
-        WHEN last_name IS NULL THEN first_name 
-        ELSE first_name || ' ' || last_name 
+      `CASE
+        WHEN last_name IS NULL THEN first_name
+        ELSE first_name || ' ' || last_name
       END`,
   };
 
