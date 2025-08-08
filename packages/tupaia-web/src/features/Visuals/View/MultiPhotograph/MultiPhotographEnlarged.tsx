@@ -9,7 +9,7 @@ import { IconButton, Typography } from '@material-ui/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { SmallAlert } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../../../constants';
-import { useDashboard } from '../../../Dashboard';
+import { useDashboardContext } from '../../../Dashboard';
 import { useDownloadImages } from './useDownloadImages';
 import { ExportIconButton } from '../../../EnlargedDashboardItem';
 
@@ -115,7 +115,7 @@ const Thumbnail = styled(Slide)<{
   .slick-track:has(&) {
     display: flex;
     justify-content: center;
-    
+
 `;
 
 interface ArrowIconWrapperProps extends Record<string, unknown> {
@@ -152,7 +152,7 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
 
   const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
   const { projectCode, entityCode } = useParams();
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
 
   const {
     mutate: downloadImages,

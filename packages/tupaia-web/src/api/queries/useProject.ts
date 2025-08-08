@@ -10,30 +10,26 @@ export const useProject = (projectCode?: string) => {
   const { isLoggedIn } = useUser();
   const location = useLocation();
   const { navigateToModal, navigateToLogin } = useModal();
-  return useQuery(
-    ['project', projectCode],
-    (): Promise<SingleProject> => get(`project/${projectCode}`, {}),
-    {
-      enabled: !!projectCode,
-      keepPreviousData: false, // this needs to be false, otherwise when we change project, the old one is returned for until the new data is fetched, which leads to extra requests to the wrong project+entity code
-      onSuccess: (data: SingleProject) => {
-        const locationIsRequestAccess =
-          location.hash.replace(/^#/, '') === MODAL_ROUTES.REQUEST_PROJECT_ACCESS;
+  return useQuery<SingleProject>(['project', projectCode], () => get(`project/${projectCode}`), {
+    enabled: !!projectCode,
+    keepPreviousData: false, // this needs to be false, otherwise when we change project, the old one is returned for until the new data is fetched, which leads to extra requests to the wrong project+entity code
+    onSuccess: data => {
+      const locationIsRequestAccess =
+        location.hash.replace(/^#/, '') === MODAL_ROUTES.REQUEST_PROJECT_ACCESS;
 
-        if (data?.hasAccess || locationIsRequestAccess) {
-          return;
-        }
+      if (data?.hasAccess || locationIsRequestAccess) {
+        return;
+      }
 
-        if (isLoggedIn && !locationIsRequestAccess) {
-          return navigateToModal(MODAL_ROUTES.REQUEST_PROJECT_ACCESS, [
-            {
-              param: URL_SEARCH_PARAMS.PROJECT,
-              value: projectCode!,
-            },
-          ]);
-        }
-        return navigateToLogin();
-      },
+      if (isLoggedIn && !locationIsRequestAccess) {
+        return navigateToModal(MODAL_ROUTES.REQUEST_PROJECT_ACCESS, [
+          {
+            param: URL_SEARCH_PARAMS.PROJECT,
+            value: projectCode!,
+          },
+        ]);
+      }
+      return navigateToLogin();
     },
-  );
+  });
 };
