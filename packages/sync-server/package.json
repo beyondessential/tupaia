@@ -26,11 +26,20 @@
     "test": "yarn run package:test"
   },
   "dependencies": {
+    "@tupaia/access-policy": "workspace:*",
+    "@tupaia/api-client": "workspace:*",
+    "@tupaia/constants": "workspace:*",
+    "@tupaia/database": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
-    "@tupaia/sync": "workspace:*"
+    "@tupaia/sync": "workspace:*",
+    "@tupaia/types": "workspace:*",
+    "@tupaia/utils": "workspace:*",
+    "date-fns": "^2.30.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "rimraf": "^6.0.1"
   }
 }
