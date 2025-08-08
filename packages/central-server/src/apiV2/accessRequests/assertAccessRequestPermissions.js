@@ -20,11 +20,7 @@ export const assertAccessRequestPermissions = async (accessPolicy, models, acces
   }
 
   if (accessRequest.permission_group_id) {
-    const permissionGroup = ensure(
-      await models.permissionGroup.findById(accessRequest.permission_group_id),
-      `No permission group exists with ID ${accessRequest.permission_group_id}`,
-    );
-
+    const permissionGroup = await accessRequest.getPermissionGroup();
     if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
       throw new PermissionsError(
         `Need ‘${permissionGroup.name}’ access to entity ‘${entity.country_code}’`,
@@ -53,12 +49,9 @@ export const assertAccessRequestEditPermissions = async (
     `No access request exists with ID ${accessRequestId}`,
   );
 
-  const permissionGroup = ensure(
-    await models.permissionGroup.findById(accessRequest.permission_group_id),
-    `No permission group exists with ID ${accessRequest.permission_group_id}`,
-  );
+  const permissionGroup = await accessRequest.getPermissionGroup();
 
-  if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
+  if (permissionGroup?.name === BES_ADMIN_PERMISSION_GROUP) {
     throw new PermissionsError(
       `Need ${BES_ADMIN_PERMISSION_GROUP} access to the country this access request is for`,
     );
