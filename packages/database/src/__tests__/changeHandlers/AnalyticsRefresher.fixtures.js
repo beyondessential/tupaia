@@ -122,15 +122,15 @@ const SURVEY = [
     id: 'survey001_test',
     code: 'S001',
     data_group_id: 'dataGroup001_test',
-    project_id: 'project001',
     permission_group_id: PERMISSION_GROUPS[0].id,
+    project_id: 'project001',
   },
   {
     id: 'survey002_test',
     code: 'S002',
     data_group_id: 'dataGroup002_test',
-    project_id: 'project001',
     permission_group_id: PERMISSION_GROUPS[1].id,
+    project_id: 'project001',
   },
 ];
 
