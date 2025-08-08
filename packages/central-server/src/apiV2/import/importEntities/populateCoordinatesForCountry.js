@@ -5,19 +5,12 @@ import { fetchWithTimeout, HttpError } from '@tupaia/utils';
 
 const BASE_PATH = 'uploads/geojson';
 
-const CODE_REPLACE = {
-  á: 'a',
-  í: 'i',
-  ó: 'o',
-  é: 'e',
-};
-
-function getLatin1(name) {
-  let safe = name;
-  Object.entries(CODE_REPLACE).forEach(([src, dest]) => {
-    safe = safe.replace(src, dest);
-  });
-  return safe;
+/**
+ * @param {string} str
+ * @returns {string}
+ */
+function removeDiacritics(str) {
+  return str.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 }
 
 function extractBestMatch(data) {
@@ -29,9 +22,13 @@ function extractBestMatch(data) {
 }
 
 async function searchGeojson(name, countryName) {
-  const search = getLatin1(`${name}, ${countryName}`);
-  const url = `http://nominatim.openstreetmap.org/search?polygon_geojson=1&format=json&q=${search}`;
-  const response = await fetchWithTimeout(url);
+  const url = new URL('/search', 'http://nominatim.openstreetmap.org');
+  url.searchParams.set('polygon_geojson', '1');
+  url.searchParams.set('format', 'json');
+  const query = removeDiacritics(`${name}, ${countryName}`);
+  url.searchParams.set('q', query);
+
+  const response = await fetchWithTimeout(url.toString());
   if (!response.ok) {
     throw new HttpError(response);
   }
