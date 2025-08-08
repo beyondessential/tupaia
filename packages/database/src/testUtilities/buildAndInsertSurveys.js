@@ -1,3 +1,4 @@
+import { randomString } from '@tupaia/utils';
 import { generateId } from '../utilities';
 import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
@@ -33,6 +34,15 @@ const buildAndInsertDataGroup = async (models, fields) => {
   );
 };
 
+const buildAndInsertPermissionGroup = async models => {
+  const uniqueId = generateId();
+  return findOrCreateDummyRecord(
+    models.permissionGroup,
+    { id: uniqueId },
+    { id: uniqueId, name: randomString() },
+  );
+};
+
 const buildAndInsertProject = async models => {
   const uniqueId = generateId();
   return findOrCreateDummyRecord(
@@ -61,6 +71,10 @@ export const buildAndInsertSurvey = async (
   if (!surveyFields.project_id) {
     const project = await buildAndInsertProject(models);
     allSurveyFields.project_id = project.id;
+  }
+  if (!surveyFields.permission_group_id) {
+    const permissionGroup = await buildAndInsertPermissionGroup(models);
+    allSurveyFields.permission_group_id = permissionGroup.id;
   }
 
   const survey = await findOrCreateDummyRecord(
