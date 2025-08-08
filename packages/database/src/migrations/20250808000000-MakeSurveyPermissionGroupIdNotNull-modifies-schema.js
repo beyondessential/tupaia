@@ -15,11 +15,11 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-  return db.runSql(`ALTER TABLE survey ALTER COLUMN permission_group_id SET NOT NULL`);
+  return db.runSql('ALTER TABLE survey ALTER COLUMN permission_group_id SET NOT NULL');
 };
 
 exports.down = function (db) {
-  return db.runSql(`ALTER TABLE survey ALTER COLUMN permission_group_id DROP NOT NULL`);
+  return db.runSql('ALTER TABLE survey ALTER COLUMN permission_group_id DROP NOT NULL');
 };
 
 exports._meta = {
