@@ -48,7 +48,6 @@ export const assertAccessRequestEditPermissions = async (
   );
 
   const permissionGroup = await accessRequest.getPermissionGroup();
-
   if (permissionGroup?.name === BES_ADMIN_PERMISSION_GROUP) {
     throw new PermissionsError(
       `Need ${BES_ADMIN_PERMISSION_GROUP} access to the country this access request is for`,
