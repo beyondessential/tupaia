@@ -114,8 +114,10 @@ export class SurveyRecord extends DatabaseRecord {
     return countries.map(c => c.code);
   }
 
-  hasResponses = async () =>
-    !!(await this.otherModels.surveyResponse.findOne({ survey_id: this.id }));
+  async hasResponses() {
+    const count = await this.otherModels.surveyResponse.count({ survey_id: this.id });
+    return count > 0;
+  }
 }
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
