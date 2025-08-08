@@ -1,5 +1,6 @@
 import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { assertIsNotNullish, ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   hasBESAdminAccess,
@@ -16,23 +17,20 @@ export const assertUserEntityPermissionPermissions = async (
   models,
   userEntityPermissionId,
 ) => {
-  const userEntityPermission = await models.userEntityPermission.findById(userEntityPermissionId);
-  if (!userEntityPermission) {
-    throw new NotFoundError(`No user entity permission exists with ID ${userEntityPermissionId}`);
-  }
+  const userEntityPermission = ensure(
+    await models.userEntityPermission.findById(userEntityPermissionId),
+    `No user entity permission exists with ID ${userEntityPermissionId}`,
+  );
 
   const [entity, permissionGroup] = await Promise.all([
     models.entity.findById(userEntityPermission.entity_id),
     models.permissionGroup.findById(userEntityPermission.permission_group_id),
   ]);
-  if (!entity) {
-    throw new NotFoundError(`No entity exists with ID ${userEntityPermission.entity_id}`);
-  }
-  if (!permissionGroup) {
-    throw new NotFoundError(
-      `No permission group exists with ID ${userEntityPermission.permission_group_id}`,
-    );
-  }
+  assertIsNotNullish(entity, `No entity exists with ID ${userEntityPermission.entity_id}`);
+  assertIsNotNullish(
+    permissionGroup,
+    `No permission group exists with ID ${userEntityPermission.permission_group_id}`,
+  );
 
   const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
   if (!accessibleCountryCodes.includes(entity.country_code)) {
@@ -80,20 +78,22 @@ export const assertUserEntityPermissionUpsertPermissions = async (
   // Check we're not trying to give someone:
   // BES admin access
   // Access to an entity we don't have admin panel access
-  const permissionGroup = await models.permissionGroup.findById(permissionGroupId);
-  if (!permissionGroup) {
-    throw new NotFoundError(`No permission group exists with ID ${permissionGroupId}`);
-  }
+  const permissionGroup = ensure(
+    await models.permissionGroup.findById(permissionGroupId),
+    `No permission group exists with ID ${permissionGroupId}`,
+  );
   if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
     throw new PermissionsError('Need BES Admin access to make this change');
   }
 
-  const entity = await models.entity.findById(entityId);
-  if (!entity) {
-    throw new NotFoundError(`No entity exists with ID ${entityId}`);
-  }
+  const entity = ensure(
+    await models.entity.findById(entityId),
+    `No entity exists with ID ${entityId}`,
+  );
   if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-    throw new PermissionsError(`Need Admin Panel access to ${entity.country_code}`);
+    throw new PermissionsError(
+      `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${entity.country_code}`,
+    );
   }
 
   if (!accessPolicy.allows(entity.code, permissionGroup.name)) {

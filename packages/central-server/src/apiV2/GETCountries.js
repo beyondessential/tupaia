@@ -1,13 +1,14 @@
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../permissions';
 import { GETHandler } from './GETHandler';
 import { mergeFilter } from './utilities';
 
 export const assertCountryPermissions = async (accessPolicy, models, countryId) => {
-  const country = await models.country.findById(countryId);
-  if (!country) {
-    throw new NotFoundError(`No country exists with ID ${countryId}`);
-  }
+  const country = ensure(
+    await models.country.findById(countryId),
+    `No country exists with ID ${countryId}`,
+  );
   if (!accessPolicy.allows(country.code)) {
     throw new PermissionsError('You do not have permissions for this country');
   }

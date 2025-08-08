@@ -1,26 +1,18 @@
 import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
-import { assertSurveyEditPermissions } from '../surveys/assertSurveyPermissions';
+import { ensure } from '@tupaia/tsutils';
 import { hasBESAdminAccess } from '../../permissions';
+import { assertSurveyEditPermissions } from '../surveys/assertSurveyPermissions';
 import { fetchCountryIdsByPermissionGroupId, mergeMultiJoin } from '../utilities';
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
 export const assertSyncGroupEditPermissions = async (accessPolicy, models, syncGroupId) => {
-  const syncGroup = await models.dataServiceSyncGroup.findById(syncGroupId);
-  if (!syncGroup) {
-    throw new NotFoundError(`No sync group exists with ID ${syncGroupId}`);
-  }
-
-  const dataGroup = await models.dataGroup.findOne({ code: syncGroup.data_group_code });
-  if (!dataGroup) {
-    throw new PermissionsError('Sync group is not linked to an existing data group');
-  }
-
-  const survey = await models.survey.findOne({ data_group_id: dataGroup.id });
-  if (!survey) {
-    throw new Error(`No survey found for data group used by sync group`);
-  }
+  const syncGroup = ensure(
+    await models.dataServiceSyncGroup.findById(syncGroupId),
+    `No sync group exists with ID ${syncGroupId}`,
+  );
+  const dataGroup = await syncGroup.getDataGroup();
+  const survey = await dataGroup.getSurvey();
 
   return assertSurveyEditPermissions(accessPolicy, models, survey.id);
 };

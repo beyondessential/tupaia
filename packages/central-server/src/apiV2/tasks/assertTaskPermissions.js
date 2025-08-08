@@ -1,5 +1,6 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import { hasBESAdminAccess } from '../../permissions';
 
 const getUserSurveys = async (models, accessPolicy, projectId) => {
@@ -28,15 +29,9 @@ export const createTaskDBFilter = async (accessPolicy, models, criteria, options
 };
 
 export const assertUserHasTaskPermissions = async (accessPolicy, models, taskId) => {
-  const task = await models.task.findById(taskId);
-  if (!task) {
-    throw new NotFoundError(`No task exists with ID ${taskId}`);
-  }
-
+  const task = ensure(await models.task.findById(taskId), `No task exists with ID ${taskId}`);
   const entity = await task.entity();
-  if (!entity) {
-    throw new NotFoundError(`No entity exists with ID ${task.entity_id}`);
-  }
+
   if (!accessPolicy.allows(entity.country_code)) {
     throw new PermissionsError('Need to have access to the country of the task');
   }
@@ -53,10 +48,10 @@ export const assertUserHasTaskPermissions = async (accessPolicy, models, taskId)
 export const assertUserHasPermissionToCreateTask = async (accessPolicy, models, taskData) => {
   const { entity_id: entityId, survey_id: surveyId } = taskData;
 
-  const entity = await models.entity.findById(entityId);
-  if (!entity) {
-    throw new NotFoundError(`No entity exists with ID ${entityId}`);
-  }
+  const entity = ensure(
+    await models.entity.findById(entityId),
+    `No entity exists with ID ${entityId}`,
+  );
 
   if (!accessPolicy.allows(entity.country_code)) {
     throw new PermissionsError('Need to have access to the country of the task');
@@ -74,10 +69,10 @@ export const assertUserHasPermissionToCreateTask = async (accessPolicy, models, 
 export const assertUserCanEditTask = async (accessPolicy, models, taskId, newRecordData) => {
   await assertUserHasTaskPermissions(accessPolicy, models, taskId);
   if (newRecordData.entity_id) {
-    const entity = await models.entity.findById(newRecordData.entity_id);
-    if (!entity) {
-      throw new NotFoundError(`No entity exists with ID ${newRecordData.entity_id}`);
-    }
+    const entity = ensure(
+      await models.entity.findById(newRecordData.entity_id),
+      `No entity exists with ID ${newRecordData.entity_id}`,
+    );
     if (!accessPolicy.allows(entity.country_code)) {
       throw new PermissionsError('Need to have access to the new entity of the task');
     }

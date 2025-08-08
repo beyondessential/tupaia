@@ -1,5 +1,6 @@
 import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import { BES_ADMIN_PERMISSION_GROUP, hasBESAdminAccess } from '../../permissions';
 import {
   getAdminPanelAllowedCountryCodes,
@@ -7,36 +8,22 @@ import {
 } from '../utilities';
 
 export const assertAccessRequestPermissions = async (accessPolicy, models, accessRequestId) => {
-  const accessRequest = await models.accessRequest.findById(accessRequestId);
-  if (!accessRequest) {
-    throw new NotFoundError(`No access request exists with ID ${accessRequestId}`);
-  }
-
-  const entity = await models.entity.findById(accessRequest.entity_id);
-  if (!entity) {
-    throw new NotFoundError(`No entity exists with ID ${accessRequest.entity_id}`);
-  }
+  const accessRequest = ensure(
+    await models.accessRequest.findById(accessRequestId),
+    `No access request exists with ID ${accessRequestId}`,
+  );
+  const entity = await accessRequest.getEntity();
 
   const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
   if (!accessibleCountryCodes.includes(entity.country_code)) {
     throw new PermissionsError('Need Admin Panel access to the country this access request is for');
   }
 
-  if (accessRequest.permission_group_id) {
-    const permissionGroup = await models.permissionGroup.findById(
-      accessRequest.permission_group_id,
+  const permissionGroup = await accessRequest.getPermissionGroup();
+  if (permissionGroup !== null && !accessPolicy.allows(entity.country_code, permissionGroup.name)) {
+    throw new PermissionsError(
+      `Need ‘${permissionGroup.name}’ access to entity ‘${entity.country_code}’`,
     );
-    if (!permissionGroup) {
-      throw new NotFoundError(
-        `No permission group exists with ID ${accessRequest.permission_group_id}`,
-      );
-    }
-
-    if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
-      throw new PermissionsError(
-        `Need ‘${permissionGroup.name}’ access to entity ‘${entity.country_code}’`,
-      );
-    }
   }
 
   return true;
@@ -53,21 +40,15 @@ export const assertAccessRequestEditPermissions = async (
   // Check we have permission for the change
   await assertAccessRequestUpsertPermissions(accessPolicy, models, updatedFields);
 
-  // We can view access requests for BES admin access even if we don't have BES admin ourselves
-  // So this final check confirms we're not trying to approve a request for BES admin access
-  const accessRequest = await models.accessRequest.findById(accessRequestId);
-  if (!accessRequest) {
-    throw new NotFoundError(`No access request exists with ID ${accessRequestId}`);
-  }
+  const accessRequest = ensure(
+    await models.accessRequest.findById(accessRequestId),
+    `No access request exists with ID ${accessRequestId}`,
+  );
 
-  const permissionGroup = await models.permissionGroup.findById(accessRequest.permission_group_id);
-  if (!permissionGroup) {
-    throw new NotFoundError(
-      `No permission group exists with ID ${accessRequest.permission_group_id}`,
-    );
-  }
-
-  if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
+  const permissionGroup = await accessRequest.getPermissionGroup();
+  if (permissionGroup?.name === BES_ADMIN_PERMISSION_GROUP) {
+    // We can view access requests for ‘BES Admin’ access even if we don’t have it ourselves. This
+    // final check confirms we’re not trying to approve a request for BES Admin access
     throw new PermissionsError(
       `Need ${BES_ADMIN_PERMISSION_GROUP} access to the country this access request is for`,
     );
@@ -81,10 +62,10 @@ export const assertAccessRequestUpsertPermissions = async (
   models,
   { permission_group_id: permissionGroupId, entity_id: entityId },
 ) => {
-  const entity = await models.entity.findById(entityId);
-  if (!entity) {
-    throw new NotFoundError(`No entity exists with ID ${entityId}`);
-  }
+  const entity = ensure(
+    await models.entity.findById(entityId),
+    `No entity exists with ID ${entityId}`,
+  );
 
   const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
   if (!accessibleCountryCodes.includes(entity.country_code)) {
@@ -95,12 +76,13 @@ export const assertAccessRequestUpsertPermissions = async (
     // Check we're not trying to change this access request to give someone:
     // BES admin access
     // Access to an entity we don't have admin panel access
-    const permissionGroup = await models.permissionGroup.findById(permissionGroupId);
-    if (!permissionGroup) {
-      throw new NotFoundError(`No permission group exists with ID ${permissionGroupId}`);
-    }
+    const permissionGroup = ensure(
+      await models.permissionGroup.findById(permissionGroupId),
+      `No permission group exists with ID ${permissionGroupId}`,
+    );
+
     if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
-      throw new PermissionsError('Need BES Admin access to make this change');
+      throw new PermissionsError(`Need ${BES_ADMIN_PERMISSION_GROUP} access to make this change`);
     }
     if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
       throw new PermissionsError(`Need ${permissionGroup.name} access to ${entity.country_code}`);

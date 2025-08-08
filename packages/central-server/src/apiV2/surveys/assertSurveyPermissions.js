@@ -1,5 +1,6 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 import { fetchCountryIdsByPermissionGroupId } from '../utilities';
 
@@ -8,12 +9,14 @@ const { RAW } = QUERY_CONJUNCTIONS;
 const DEFAULT_SURVEY_ERROR_MESSAGE = 'Requires access to one of the countries the survey is in';
 
 export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId) => {
-  const survey = await models.survey.findById(surveyId);
-  if (!survey) {
-    throw new NotFoundError(`No survey exists with ID ${surveyId}`);
-  }
-  const permissionGroup = await survey.getPermissionGroup();
-  const countryCodes = await survey.getCountryCodes();
+  const survey = ensure(
+    await models.survey.findById(surveyId),
+    `No survey exists with ID ${surveyId}`,
+  );
+  const [permissionGroup, countryCodes] = await Promise.all([
+    survey.getPermissionGroup(),
+    survey.getCountryCodes(),
+  ]);
 
   if (accessPolicy.allowsSome(countryCodes, permissionGroup.name)) {
     return true;
@@ -29,11 +32,10 @@ export const assertSurveyEditPermissions = async (
   surveyId,
   errorMessage = DEFAULT_SURVEY_ERROR_MESSAGE,
 ) => {
-  const survey = await models.survey.findById(surveyId);
-  if (!survey) {
-    throw new NotFoundError(`No survey exists with ID ${surveyId}`);
-  }
-
+  const survey = ensure(
+    await models.survey.findById(surveyId),
+    `No survey exists with ID ${surveyId}`,
+  );
   const [permissionGroup, countryCodes] = await Promise.all([
     survey.getPermissionGroup(),
     survey.getCountryCodes(),

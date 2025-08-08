@@ -1,4 +1,5 @@
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../permissions';
 import { GETHandler } from './GETHandler';
 import { mergeFilter } from './utilities';
@@ -8,15 +9,11 @@ export const assertGeographicalAreaPermissions = async (
   models,
   geographicalAreaId,
 ) => {
-  const geographicalArea = await models.geographicalArea.findById(geographicalAreaId);
-  if (!geographicalArea) {
-    throw new NotFoundError(`No geographical area exists with ID ${geographicalAreaId}`);
-  }
-
-  const country = await models.country.findById(geographicalArea.country_id);
-  if (!country) {
-    throw new NotFoundError(`No country exists with ID ${geographicalArea.country_id}`);
-  }
+  const geographicalArea = ensure(
+    await models.geographicalArea.findById(geographicalAreaId),
+    `No geographical area exists with ID ${geographicalAreaId}`,
+  );
+  const country = await geographicalArea.country();
 
   if (!accessPolicy.allows(country.code)) {
     throw new PermissionsError('You do not have permissions for this geographical area');
