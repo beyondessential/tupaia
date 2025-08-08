@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import winston from 'winston';
 import { CustomError, InternalServerError } from '@tupaia/utils';
 
@@ -25,9 +20,9 @@ export const handleError = (err, req, res, next) => {
         err,
       });
     } else {
-      winston.error(err.stack);
       error = new InternalServerError(err);
     }
   }
+  winston.error(err);
   error.respond(res);
 };

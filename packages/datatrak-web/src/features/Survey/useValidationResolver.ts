@@ -1,29 +1,28 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { useCallback } from 'react';
 import * as yup from 'yup';
 import { QuestionType } from '@tupaia/types';
-import { getAllSurveyComponents, useSurveyForm } from '.';
 import { SurveyScreenComponent } from '../../types';
+import { getAllSurveyComponents, useSurveyForm } from '.';
 
 const transformNumberValue = (value: string | number, originalValue: string | number) => {
   // This is a workaround for yup not handling empty number fields (https://github.com/jquense/yup/issues/298)
   return originalValue === '' || isNaN(originalValue as number) ? null : value;
 };
+
 const getBaseSchema = (type: QuestionType) => {
   switch (type) {
     case QuestionType.Number:
       return yup.number().transform(transformNumberValue).nullable();
-    case QuestionType.Autocomplete:
+    case QuestionType.File:
       return yup
         .object()
         .shape({
           value: yup.string(),
+          name: yup.string(),
         })
         .nullable()
         .default(null); // Allow this value to be empty to stop a typeError. The mandatory validation will handle this instead
+
     case QuestionType.Date:
     case QuestionType.SubmissionDate:
     case QuestionType.DateOfData:
@@ -48,6 +47,15 @@ const getBaseSchema = (type: QuestionType) => {
         })
         .nullable()
         .default(() => ({}));
+    case QuestionType.User:
+      return yup
+        .object()
+        .shape({
+          id: yup.string(),
+          name: yup.string(),
+        })
+        .nullable()
+        .default(null); // Allow this value to be empty to stop a typeError. The mandatory validation will handle this instead
     default:
       return yup.string();
   }

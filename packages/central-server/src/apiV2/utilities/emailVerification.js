@@ -1,47 +1,52 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { encryptPassword } from '@tupaia/auth';
 import { sendEmail } from '@tupaia/server-utils';
-
-const { TUPAIA_FRONT_END_URL, LESMIS_FRONT_END_URL, DATATRAK_FRONT_END_URL } = process.env;
+import { requireEnv } from '@tupaia/utils';
 
 const EMAILS = {
   tupaia: {
     subject: 'Tupaia email verification',
-    body: token =>
-      'Thank you for registering with tupaia.org.\n' +
-      'Please click on the following link to register your email address.\n\n' +
-      `${TUPAIA_FRONT_END_URL}/verify-email?verifyEmailToken=${token}\n\n` +
-      'If you believe this email was sent to you in error, please contact us immediately at admin@tupaia.org.\n',
+    platformName: 'tupaia.org',
   },
   datatrak: {
     subject: 'Tupaia Datatrak email verification',
-    body: token =>
-      'Thank you for registering with datatrak.tupaia.org.\n' +
-      'Please click on the following link to register your email address.\n\n' +
-      `${DATATRAK_FRONT_END_URL}/verify-email?verifyEmailToken=${token}\n\n` +
-      'If you believe this email was sent to you in error, please contact us immediately at admin@tupaia.org.\n',
+    platformName: 'datatrak.tupaia.org',
   },
   lesmis: {
     subject: 'LESMIS email verification',
-    body: token =>
-      'Thank you for registering with lesmis.la.\n' +
-      'Please click on the following link to register your email address.\n\n' +
-      `${LESMIS_FRONT_END_URL}/en/verify-email?verifyEmailToken=${token}\n\n` +
-      'If you believe this email was sent to you in error, please contact us immediately at admin@tupaia.org.\n',
     signOff: 'Best regards,\nThe LESMIS Team',
+    platformName: 'lesmis.la',
   },
 };
 
 export const sendEmailVerification = async user => {
   const token = encryptPassword(user.email + user.password_hash, user.password_salt);
   const platform = user.primary_platform ? user.primary_platform : 'tupaia';
-  const { subject, body, signOff } = EMAILS[platform];
+  const { subject, signOff, platformName } = EMAILS[platform];
+  const TUPAIA_FRONT_END_URL = requireEnv('TUPAIA_FRONT_END_URL');
+  const LESMIS_FRONT_END_URL = requireEnv('LESMIS_FRONT_END_URL');
+  const DATATRAK_FRONT_END_URL = requireEnv('DATATRAK_FRONT_END_URL');
 
-  return sendEmail(user.email, { subject, text: body(token), signOff });
+  const url = {
+    tupaia: TUPAIA_FRONT_END_URL,
+    datatrak: DATATRAK_FRONT_END_URL,
+    lesmis: `${LESMIS_FRONT_END_URL}/en`,
+  }[platform];
+
+  const fullUrl = `${url}/verify-email?verifyEmailToken=${token}`;
+
+  return sendEmail(user.email, {
+    subject,
+    signOff,
+    templateName: 'verifyEmail',
+    templateContext: {
+      title: 'Verify your email address',
+      platform: platformName,
+      cta: {
+        text: 'Verify email',
+        url: fullUrl,
+      },
+    },
+  });
 };
 
 export const verifyEmailHelper = async (models, searchCondition, token) => {

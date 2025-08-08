@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 export * from './Footer';
 export * from './Layout';
 export * from './Header';
@@ -17,3 +12,5 @@ export * from './FetchLoader';
 export * from './Modal';
 export * from './AffectedSitesTab';
 export * from './ComingSoon';
+export * from './Tabs';
+export * from './Toolbar';

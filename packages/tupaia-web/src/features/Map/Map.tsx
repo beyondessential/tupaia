@@ -1,28 +1,21 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import {
-  TileLayer,
-  LeafletMap,
-  ZoomControl,
-  TilePicker,
-  getAutoTileSet,
-  DEFAULT_TILESETS,
-} from '@tupaia/ui-map-components';
+import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
-import { useProject } from '../../api/queries';
-import { useGAEffect } from '../../utils';
-import { CUSTOM_TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
+import { MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { MapOverlaysLayer } from './MapOverlaysLayer';
-import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayMapData } from './utils';
+import {
+  useHiddenMapValues,
+  useDefaultMapOverlay,
+  useMapOverlayMapData,
+  MapContextProvider,
+  useMapContext,
+  useTilesets,
+} from './utils';
 import { DemoLand } from './DemoLand';
 
 const MapContainer = styled.div`
@@ -61,7 +54,7 @@ const StyledMap = styled(LeafletMap)`
     top: -50px;
     right: 3px;
     a {
-      background: ${({ theme }) => theme.navigationBtn.main};
+      background: #34353f;
       box-shadow: none;
       border: none;
       color: white;
@@ -108,46 +101,39 @@ const MapControlColumn = styled.div`
   }
 `;
 
-const useTileSets = () => {
-  const { projectCode } = useParams();
-  const { data: project } = useProject(projectCode);
-  const initialTileSet = getAutoTileSet();
-  const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
-  const { tileSets = '' } = project?.config || {};
-  const customTilesetNames = tileSets?.split(',') || [];
-  const customTileSets = customTilesetNames
-    .map(
-      tileset =>
-        CUSTOM_TILE_SETS.find(({ key }) => key === tileset) as (typeof CUSTOM_TILE_SETS)[0],
-    )
-    .filter(item => item);
-  const defaultTileSets = [DEFAULT_TILESETS.osm, DEFAULT_TILESETS.satellite];
-  const availableTileSets = [...defaultTileSets, ...customTileSets];
+// Separate the map component from the context provider so that we can set the map on creation using the context
+const MapInner = () => {
+  const { setMap } = useMapContext();
+  // Setup legend hidden values
+  const { serieses } = useMapOverlayMapData();
+  const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
-  useGAEffect('Map', 'Change Tile Set', activeTileSet?.label);
-
-  const onTileSetChange = (tileSetKey: string) => {
-    const newActiveTileSet = availableTileSets.find(
-      ({ key }) => key === tileSetKey,
-    ) as (typeof CUSTOM_TILE_SETS)[0];
-    setActiveTileSet(newActiveTileSet);
-  };
-
-  useEffect(() => {
-    if (
-      activeTileSet &&
-      availableTileSets.length &&
-      !availableTileSets.some(({ key }) => key === activeTileSet.key)
-    ) {
-      setActiveTileSet(initialTileSet);
-    }
-  }, [JSON.stringify(availableTileSets)]);
-
-  return {
-    availableTileSets,
-    activeTileSet,
-    onTileSetChange,
-  };
+  const { availableTileSets, activeTileSet, onTileSetChange } = useTilesets();
+  return (
+    <ErrorBoundary>
+      <StyledMap shouldSnapToPosition whenCreated={setMap}>
+        <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
+        <MapOverlaysLayer hiddenValues={hiddenValues} />
+        <DemoLand />
+        <ZoomControl position="bottomright" />
+        <MapWatermark />
+      </StyledMap>
+      {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
+      <MapControlWrapper>
+        <MapControlColumn>
+          <MapOverlaySelector hiddenValues={hiddenValues} activeTileSet={activeTileSet} />
+          <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
+        </MapControlColumn>
+        <TilePickerWrapper>
+          <TilePicker
+            tileSets={availableTileSets}
+            activeTileSet={activeTileSet}
+            onChange={onTileSetChange}
+          />
+        </TilePickerWrapper>
+      </MapControlWrapper>
+    </ErrorBoundary>
+  );
 };
 
 export const Map = () => {
@@ -155,37 +141,11 @@ export const Map = () => {
 
   useDefaultMapOverlay(projectCode, entityCode);
 
-  // Setup legend hidden values
-  const { serieses } = useMapOverlayMapData();
-  const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
-
-  const { availableTileSets, activeTileSet, onTileSetChange } = useTileSets();
-
   return (
     <MapContainer>
-      <ErrorBoundary>
-        <StyledMap shouldSnapToPosition>
-          <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-          <MapOverlaysLayer hiddenValues={hiddenValues} />
-          <DemoLand />
-          <ZoomControl position="bottomright" />
-          <MapWatermark />
-        </StyledMap>
-        {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
-        <MapControlWrapper>
-          <MapControlColumn>
-            <MapOverlaySelector />
-            <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
-          </MapControlColumn>
-          <TilePickerWrapper>
-            <TilePicker
-              tileSets={availableTileSets}
-              activeTileSet={activeTileSet}
-              onChange={onTileSetChange}
-            />
-          </TilePickerWrapper>
-        </MapControlWrapper>
-      </ErrorBoundary>
+      <MapContextProvider>
+        <MapInner />
+      </MapContextProvider>
     </MapContainer>
   );
 };

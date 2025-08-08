@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { BooleanExpressionParser, ExpressionParser } from '@tupaia/expression-parser';
 import {
   ArithmeticQuestionConfig,
@@ -11,8 +6,8 @@ import {
   QuestionType,
 } from '@tupaia/types';
 import { SurveyScreenComponent } from '../../../types';
-import { formatSurveyScreenQuestions } from '../utils';
 import { generateMongoId, generateShortId } from './generateId';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 
 export const getIsQuestionVisible = (
   question: SurveyScreenComponent,
@@ -28,7 +23,12 @@ export const getIsQuestionVisible = (
   return Object.entries(dependantQuestions)[operator](([questionId, validAnswers]) => {
     const answer = formData[questionId];
     if (answer === undefined) return false;
-    return Array.isArray(validAnswers) ? validAnswers?.includes(answer) : validAnswers === answer;
+
+    // stringify the answer to compare with the validAnswers so that the types are always the same
+    const stringifiedAnswer = String(answer);
+    return Array.isArray(validAnswers)
+      ? validAnswers?.map(validAnswer => String(validAnswer)).includes(stringifiedAnswer)
+      : String(validAnswers) === stringifiedAnswer;
   });
 };
 
@@ -60,7 +60,6 @@ export const getIsDependentQuestion = (
 export const getDisplayQuestions = (
   activeScreen: SurveyScreenComponent[] = [],
   screenComponents: SurveyScreenComponent[],
-  screenNumber?: number | null,
 ) => {
   // If the first question is an instruction, don't render it since we always just
   // show the text of first questions as the heading. Format the questions with a question number to display
@@ -79,7 +78,7 @@ export const getDisplayQuestions = (
     }
     return question;
   });
-  return formatSurveyScreenQuestions(displayQuestions, screenNumber!);
+  return displayQuestions;
 };
 
 const getConditionIsMet = (expressionParser, formData, { formula, defaultValues = {} }) => {
@@ -143,14 +142,14 @@ const getArithmeticResult = (
   return result;
 };
 
-const resetInvisibleQuestions = (
+const resetInvisibleAndFilteredQuestions = (
   oldFormData: Record<string, any>,
   updates: Record<string, any>,
   screenComponents: SurveyScreenComponent[],
 ) => {
   const updatedFormData = { ...oldFormData, ...updates };
   screenComponents?.forEach(component => {
-    const { questionId, visibilityCriteria } = component;
+    const { questionId, visibilityCriteria, type } = component;
 
     // if the question is not visible and is not set to always be hidden and has a value, reset the value
     if (
@@ -161,6 +160,34 @@ const resetInvisibleQuestions = (
     ) {
       updatedFormData[questionId] = undefined;
     }
+    if (
+      // if the question is an entity question and the value has changed, reset the value of all entity questions that depend on this question
+      (type === QuestionType.Entity || type === QuestionType.PrimaryEntity) &&
+      updatedFormData.hasOwnProperty(questionId) &&
+      updatedFormData[questionId] !== oldFormData[questionId]
+    ) {
+      // get all entity questions that depend on this question
+      const entityQuestionsFilteredByValue = screenComponents.filter(question => {
+        if (!question.config?.entity) return false;
+        const { entity } = question.config;
+        if (entity.filter) {
+          const { filter } = entity;
+          return Object.values(filter).some(filterValue => {
+            if (typeof filterValue === 'object' && 'questionId' in filterValue) {
+              return filterValue.questionId === questionId;
+            }
+            return false;
+          });
+        }
+        return false;
+      });
+
+      // reset the value of all entity questions that depend on this question
+      entityQuestionsFilteredByValue.forEach(entityQuestion => {
+        const { questionId: entityQuestionId } = entityQuestion;
+        updatedFormData[entityQuestionId] = undefined;
+      });
+    }
   });
 
   return updatedFormData;
@@ -168,18 +195,21 @@ const resetInvisibleQuestions = (
 
 const hasConditionConfig = (
   ssc: SurveyScreenComponent,
-): ssc is SurveyScreenComponent & { config: { condition: ConditionQuestionConfig } } =>
-  ssc.type === QuestionType.Condition && ssc.config?.condition !== undefined;
+): ssc is SurveyScreenComponent & {
+  config: { condition: ConditionQuestionConfig };
+} => ssc.type === QuestionType.Condition && ssc.config?.condition !== undefined;
 
 const hasArithmeticConfig = (
   ssc: SurveyScreenComponent,
-): ssc is SurveyScreenComponent & { config: { arithmetic: ArithmeticQuestionConfig } } =>
-  ssc.type === QuestionType.Arithmetic && ssc.config?.arithmetic !== undefined;
+): ssc is SurveyScreenComponent & {
+  config: { arithmetic: ArithmeticQuestionConfig };
+} => ssc.type === QuestionType.Arithmetic && ssc.config?.arithmetic !== undefined;
 
 const hasCodeGeneratorConfig = (
   ssc: SurveyScreenComponent,
-): ssc is SurveyScreenComponent & { config: { codeGenerator: CodeGeneratorQuestionConfig } } =>
-  ssc.type === QuestionType.CodeGenerator && ssc.config?.codeGenerator !== undefined;
+): ssc is SurveyScreenComponent & {
+  config: { codeGenerator: CodeGeneratorQuestionConfig };
+} => ssc.type === QuestionType.CodeGenerator && ssc.config?.codeGenerator !== undefined;
 
 const updateDependentQuestions = (
   formData: Record<string, any>,
@@ -213,6 +243,17 @@ const updateDependentQuestions = (
   return formDataCopy;
 };
 
+const generateCodeAnswer = (question: SurveyScreenComponent, formData: Record<string, any>) => {
+  const { config, questionId } = question;
+  const { codeGenerator } = config as {
+    codeGenerator: CodeGeneratorQuestionConfig;
+  };
+  if (hasCodeGeneratorConfig(question) && !formData[questionId]) {
+    return codeGenerator.type === 'shortid' ? generateShortId(codeGenerator) : generateMongoId();
+  }
+  return formData[questionId];
+};
+
 export const generateCodeForCodeGeneratorQuestions = (
   screenComponents: SurveyScreenComponent[],
   formData: Record<string, any>,
@@ -220,17 +261,26 @@ export const generateCodeForCodeGeneratorQuestions = (
   const formDataCopy = { ...formData };
   screenComponents?.forEach(question => {
     if (!question.config) return;
-    const { config, questionId } = question;
-    const { codeGenerator } = config as {
-      codeGenerator: CodeGeneratorQuestionConfig;
-    };
-    if (hasCodeGeneratorConfig(question) && !formDataCopy[questionId]) {
-      const code =
-        codeGenerator.type === 'shortid' ? generateShortId(codeGenerator) : generateMongoId();
-      formDataCopy[questionId] = code;
-    }
+    const { questionId } = question;
+    formDataCopy[questionId] = generateCodeAnswer(question, formDataCopy);
   });
   return formDataCopy;
+};
+
+/**
+ * @description Remove timezone from date answers so that the date is displayed correctly in the UI no matter the timezone. On submission these will be added back.
+ */
+const removeTimezoneFromDateAnswers = (updates, screenComponents: SurveyScreenComponent[]) => {
+  const updatedAnswers = { ...updates };
+  screenComponents?.forEach(question => {
+    const { questionId, type } = question;
+    if (type.includes('Date')) {
+      if (updates[questionId]) {
+        updatedAnswers[questionId] = stripTimezoneFromDate(updates[questionId]);
+      }
+    }
+  });
+  return updatedAnswers;
 };
 
 export const getUpdatedFormData = (
@@ -238,9 +288,15 @@ export const getUpdatedFormData = (
   formData: Record<string, any>,
   screenComponents: SurveyScreenComponent[],
 ) => {
-  // reset the values of invisible questions first, in case the value of the invisible question is used in the formula of another question
-  const resetInvisibleQuestionData = resetInvisibleQuestions(formData, updates, screenComponents);
-  return updateDependentQuestions(resetInvisibleQuestionData, screenComponents);
+  const updatedValues = removeTimezoneFromDateAnswers(updates, screenComponents);
+
+  // reset the values of invisible questions first, in case the value of the invisible question is used in the formula of another question. Also reset the value of filtered entity questions
+  const resetQuestionData = resetInvisibleAndFilteredQuestions(
+    formData,
+    updatedValues,
+    screenComponents,
+  );
+  return updateDependentQuestions(resetQuestionData, screenComponents);
 };
 
 export const getArithmeticDisplayAnswer = (config, answer, formData) => {

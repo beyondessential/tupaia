@@ -1,11 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { Ref } from 'react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
+import { EntityTypeEnum } from '@tupaia/types';
 import { spyOnMockRequest } from '../../helpers/spyOnMockRequest';
 import { renderComponent } from '../../helpers/render';
 import { EntityQuestion } from '../../../features/Questions';
@@ -14,6 +11,11 @@ jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
     getAnswerByQuestionId: () => 'blue',
     surveyProjectCode: 'explore',
+    countryCode: 'DL',
+    formData: {
+      theParentQuestionId: 'blue',
+      theCodeQuestionId: 'blue',
+    },
   }),
 }));
 
@@ -22,14 +24,6 @@ jest.mock('react-hook-form', () => {
   return {
     ...actual,
     useFormContext: jest.fn().mockReturnValue({ errors: {} }),
-  };
-});
-
-jest.mock('react-router', () => {
-  const actual = jest.requireActual('react-router');
-  return {
-    ...actual,
-    useParams: jest.fn().mockReturnValue({ countryCode: 'DL' }),
   };
 });
 
@@ -64,7 +58,10 @@ const entitiesData = [
       color: 'blue',
     },
   },
-];
+].sort(
+  // EntityDescendantsRoute returns entities in this order
+  (a, b) => a.name.localeCompare(b.name),
+);
 
 const userData = { project: { code: 'explore' }, country: { code: 'DL' } };
 
@@ -123,9 +120,14 @@ describe('Entity Question', () => {
         config={{
           entity: {
             filter: {
-              type: 'facility',
+              type: EntityTypeEnum.facility,
               parentId: {
                 questionId: 'theParentQuestionId',
+              },
+              attributes: {
+                code: {
+                  questionId: 'theCodeQuestionId',
+                },
               },
             },
           },
@@ -139,30 +141,7 @@ describe('Entity Question', () => {
     expect(queryParams.get('filter[countryCode]')).toBe('DL');
     expect(queryParams.get('filter[projectCode]')).toBe('explore');
     expect(queryParams.get('filter[parentId]')).toBe('blue');
-  });
-
-  it('renders only the filtered options when there are attribute filters defined', async () => {
-    renderComponent(
-      <EntityQuestion
-        {...props}
-        config={{
-          entity: {
-            filter: {
-              attributes: {
-                color: {
-                  questionId: 'someOtherQuestionId',
-                },
-              },
-            },
-          },
-        }}
-      />,
-    );
-
-    const displayOptions = await screen.findAllByRole('button');
-    expect(displayOptions.length).toBe(2);
-    expect(displayOptions[0]).toHaveTextContent('North');
-    expect(displayOptions[1]).toHaveTextContent('South East');
+    expect(queryParams.get('filter[attributes->>code]')).toBe('blue');
   });
 
   it('Does not crash if there is legacy config ', async () => {

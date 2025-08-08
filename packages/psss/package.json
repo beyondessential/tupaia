@@ -8,10 +8,10 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/psss"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "scripts": {
     "preview": "vite preview",
-    "build": "npm run --prefix ../../ package:build:vite",
+    "build": "yarn run package:build:vite",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start-stack": "yarn package:start-stack psss",
@@ -23,14 +23,16 @@
     "defaults"
   ],
   "dependencies": {
-    "@material-ui/core": "^4.9.11",
+    "@material-ui/core": "^4.12.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.10",
+    "@tanstack/react-query": "4.36.1",
+    "@tanstack/react-query-devtools": "4.36.1",
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "axios": "^0.21.0",
+    "axios": "^1.6.8",
     "date-fns": "^2.16.1",
     "faker": "^4.1.0",
     "history": "^5.0.0",
@@ -40,26 +42,24 @@
     "lodash.orderby": "^4.6.0",
     "msw": "^0.26.0",
     "prop-types": "^15.7.2",
-    "react": "^16.13.1",
+    "react": "^16.14.0",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.0.0",
-    "react-password-strength-bar": "^0.3.3",
-    "react-query": "^3.19.0",
+    "react-is": "^16.13.1",
+    "react-password-strength-bar": "^0.4.1",
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.2",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
-    "styled-components": "^5.1.0",
-    "whatwg-fetch": "^3.0.0"
+    "styled-components": "^5.1.0"
   },
   "devDependencies": {
-    "@tupaia/auth": "workspace:*",
-    "@tupaia/database": "workspace:*",
-    "cross-env": "^7.0.2",
+    "@testing-library/jest-dom": "^6.2.0",
+    "@testing-library/react": "12.1.2",
+    "jest": "^29.7.0",
     "mockdate": "^3.0.5",
-    "npm-run-all": "^4.1.5",
-    "vite": "^4.3.2"
+    "vite": "^4.5.14"
   }
 }

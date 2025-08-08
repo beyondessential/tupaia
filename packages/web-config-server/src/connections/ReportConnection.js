@@ -1,24 +1,19 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { ApiConnection } from '@tupaia/server-boilerplate';
-import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
+import {
+  createBasicHeader,
+  createBearerHeader,
+  getEnvVarOrDefault,
+  requireEnv,
+} from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from '/appServer/requestHelpers/refreshAndSaveAccessToken';
 
-const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
-
 const PUBLIC_USER_NAME = 'public';
-const PUBLIC_USER_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
-
-const { REPORT_API_URL = 'http://localhost:8030/v1' } = process.env;
 
 /**
  * @deprecated use @tupaia/api-client
  */
 export class ReportConnection extends ApiConnection {
-  baseUrl = REPORT_API_URL;
+  baseUrl = getEnvVarOrDefault('REPORT_API_URL', 'http://localhost:8030/v1');
 
   constructor(req) {
     const userName = req?.userJson?.userName;
@@ -31,6 +26,10 @@ export class ReportConnection extends ApiConnection {
       }
 
       if (userName === PUBLIC_USER_NAME) {
+        const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
+        const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
+
+        const PUBLIC_USER_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
         return PUBLIC_USER_AUTH_HEADER;
       }
 

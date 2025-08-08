@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { LinkProps } from 'react-router-dom-v6';
@@ -41,7 +37,7 @@ export const PasswordForm = ({
       options: FORM_FIELD_VALIDATION.PASSWORD,
     },
     {
-      name: 'passwordConfirm',
+      name: 'newPasswordConfirm',
       label: 'Confirm password',
       options: {
         validate: (value: string) =>

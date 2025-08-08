@@ -1,71 +1,94 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
+
 import { TupaiaDatabase } from '@tupaia/database';
 import {
-  OrchestratorApiBuilder,
-  handleWith,
   attachSessionIfAvailable,
-  SessionSwitchingAuthHandler,
   forwardRequest,
+  handleWith,
+  OrchestratorApiBuilder,
+  SessionSwitchingAuthHandler,
 } from '@tupaia/server-boilerplate';
+import { getEnvVarOrDefault } from '@tupaia/utils';
+
+import { API_CLIENT_PERMISSIONS } from '../constants';
 import { DataTrakSessionModel } from '../models';
 import {
-  UserRoute,
-  UserRequest,
-  SurveysRoute,
-  SurveysRequest,
-  SurveyResponsesRequest,
-  SurveyResponsesRoute,
-  ProjectsRoute,
-  ProjectsRequest,
-  SurveyRequest,
-  SurveyRoute,
-  SingleEntityRequest,
-  SingleEntityRoute,
-  EntityDescendantsRequest,
-  EntityDescendantsRoute,
-  ProjectRequest,
-  ProjectRoute,
-  SubmitSurveyRoute,
-  SubmitSurveyRequest,
-  RecentSurveysRequest,
-  RecentSurveysRoute,
-  LeaderboardRequest,
-  LeaderboardRoute,
   ActivityFeedRequest,
   ActivityFeedRoute,
-  SingleSurveyResponseRoute,
-  SingleSurveyResponseRequest,
-  EntitiesRoute,
+  CreateTaskRequest,
+  CreateTaskRoute,
+  EditTaskRequest,
+  EditTaskRoute,
   EntitiesRequest,
-  GenerateLoginTokenRoute,
+  EntitiesRoute,
+  EntityAncestorsRequest,
+  EntityAncestorsRoute,
+  EntityDescendantsRequest,
+  EntityDescendantsRoute,
+  ExportSurveyResponseRequest,
+  ExportSurveyResponseRoute,
   GenerateLoginTokenRequest,
+  GenerateLoginTokenRoute,
+  LeaderboardRequest,
+  LeaderboardRoute,
+  PermissionGroupUsersRequest,
+  PermissionGroupUsersRoute,
+  ProjectRequest,
+  ProjectRoute,
+  ProjectsRequest,
+  ProjectsRoute,
+  ProjectUsersRequest,
+  ProjectUsersRoute,
+  RecentSurveysRequest,
+  RecentSurveysRoute,
+  ResubmitSurveyResponseRequest,
+  ResubmitSurveyResponseRoute,
+  SingleEntityRequest,
+  SingleEntityRoute,
+  SingleSurveyResponseRequest,
+  SingleSurveyResponseRoute,
+  SubmitSurveyResponseRequest,
+  SubmitSurveyResponseRoute,
+  SurveyRequest,
+  SurveyResponsesRequest,
+  SurveyResponsesRoute,
+  SurveyRoute,
+  SurveysRequest,
+  SurveysRoute,
+  SurveyUsersRequest,
+  SurveyUsersRoute,
+  TaskMetricsRequest,
+  TaskMetricsRoute,
+  TaskRequest,
+  TaskRoute,
+  TasksRequest,
+  TasksRoute,
+  UserRequest,
+  UserRoute,
 } from '../routes';
-
-const {
-  WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
-  CENTRAL_API_URL = 'http://localhost:8090/v2',
-} = process.env;
+import { attachAccessPolicy } from './middleware';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export async function createApp() {
-  const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server', {
-    attachModels: true,
-  })
+  const WEB_CONFIG_API_URL = getEnvVarOrDefault(
+    'WEB_CONFIG_API_URL',
+    'http://localhost:8000/api/v1',
+  );
+  const CENTRAL_API_URL = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
+  const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server')
     .useSessionModel(DataTrakSessionModel)
-
     .useAttachSession(attachSessionIfAvailable)
+    .use('*', attachAccessPolicy)
     .attachApiClientToContext(authHandlerProvider)
-    .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
-    .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
+    // Get Routes
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SingleEntityRequest>('entity/:entityCode', handleWith(SingleEntityRoute))
     .get<EntityDescendantsRequest>('entityDescendants', handleWith(EntityDescendantsRoute))
+    .get<EntityAncestorsRequest>(
+      'entityAncestors/:projectCode/:rootEntityCode',
+      handleWith(EntityAncestorsRoute),
+    )
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
     .get<SurveyResponsesRequest>('surveyResponses', handleWith(SurveyResponsesRoute))
@@ -73,34 +96,38 @@ export async function createApp() {
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<LeaderboardRequest>('leaderboard', handleWith(LeaderboardRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
+    .get<ProjectUsersRequest>('project/:projectCode/users', handleWith(ProjectUsersRoute))
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
+    .get<TaskMetricsRequest>('taskMetrics/:projectId', handleWith(TaskMetricsRoute))
+    .get<TasksRequest>('tasks', handleWith(TasksRoute))
+    .get<TaskRequest>('tasks/:taskId', handleWith(TaskRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
+    .get<SurveyUsersRequest>('users/:surveyCode/:countryCode', handleWith(SurveyUsersRoute))
+    .get<PermissionGroupUsersRequest>('users/:countryCode', handleWith(PermissionGroupUsersRoute))
+    // Post Routes
+    .post<CreateTaskRequest>('tasks', handleWith(CreateTaskRoute))
+    .put<EditTaskRequest>('tasks/:taskId', handleWith(EditTaskRoute))
+    .post<SubmitSurveyResponseRequest>(
+      'submitSurveyResponse',
+      handleWith(SubmitSurveyResponseRoute),
+    )
+    .post<ResubmitSurveyResponseRequest>(
+      'resubmitSurveyResponse/:originalSurveyResponseId',
+      handleWith(ResubmitSurveyResponseRoute),
+    )
+    .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
+    .post<ExportSurveyResponseRequest>(
+      'export/:surveyResponseId',
+      handleWith(ExportSurveyResponseRoute),
+    )
     // Forward auth requests to web-config
-    .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('verifyEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     // Forward everything else to central server
     .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }));
 
-  await builder.initialiseApiClient([
-    { entityCode: 'DL', permissionGroupName: 'Public' }, //	Demo Land
-    { entityCode: 'FJ', permissionGroupName: 'Public' }, //	Fiji
-    { entityCode: 'CK', permissionGroupName: 'Public' }, //	Cook Islands
-    { entityCode: 'PG', permissionGroupName: 'Public' }, //	Papua New Guinea
-    { entityCode: 'SB', permissionGroupName: 'Public' }, //	Solomon Islands
-    { entityCode: 'TK', permissionGroupName: 'Public' }, //	Tokelau
-    { entityCode: 'VE', permissionGroupName: 'Public' }, //	Venezuela
-    { entityCode: 'WS', permissionGroupName: 'Public' }, //	Samoa
-    { entityCode: 'KI', permissionGroupName: 'Public' }, //	Kiribati
-    { entityCode: 'TO', permissionGroupName: 'Public' }, //	Tonga
-    { entityCode: 'NG', permissionGroupName: 'Public' }, //	Nigeria
-    { entityCode: 'VU', permissionGroupName: 'Public' }, //	Vanuatu
-    { entityCode: 'AU', permissionGroupName: 'Public' }, //	Australia
-    { entityCode: 'PW', permissionGroupName: 'Public' }, //	Palau
-    { entityCode: 'NU', permissionGroupName: 'Public' }, //	Niue
-    { entityCode: 'TV', permissionGroupName: 'Public' }, //	Tuvalu
-  ]);
+  await builder.initialiseApiClient(API_CLIENT_PERMISSIONS);
 
   const app = builder.build();
 

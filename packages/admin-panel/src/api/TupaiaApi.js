@@ -1,26 +1,17 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { saveAs } from 'file-saver';
 import { parse } from 'content-disposition-header';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 
-import { logout } from '../authentication';
-
-const FETCH_TIMEOUT = 45 * 1000; // 45 seconds in milliseconds
+const FETCH_TIMEOUT = 120 * 1000; // 120 seconds in milliseconds
 
 const isJsonResponse = response => {
   const contentType = response.headers.get('content-type');
   return contentType.startsWith('application/json');
 };
 
-const {
-  REACT_APP_API_URL = 'http://localhost:8070/v1',
-  REACT_APP_CLIENT_BASIC_AUTH_HEADER,
-} = import.meta.env;
+const { REACT_APP_API_URL = 'http://localhost:8070/v1', REACT_APP_CLIENT_BASIC_AUTH_HEADER } =
+  import.meta.env;
 
 export class TupaiaApi {
   constructor(config) {
@@ -36,20 +27,6 @@ export class TupaiaApi {
 
   dispatch(action) {
     this.store.dispatch(action);
-  }
-
-  async login(loginCredentials) {
-    const { body: authenticationDetails } = await this.post(
-      'login',
-      null,
-      loginCredentials,
-      this.clientBasicAuthHeader,
-    );
-    return authenticationDetails;
-  }
-
-  async logout() {
-    await this.post('logout');
   }
 
   get(endpoint, queryParameters) {
@@ -155,20 +132,9 @@ export class TupaiaApi {
     return { headers: response.headers, body };
   }
 
-  async checkIfAuthorized(response) {
-    // Unauthorized
-    if (response.status === 401) {
-      const data = await response.json();
-      this.dispatch(logout(data.error)); // log out if user is unauthorized
-      throw new Error(data.error);
-    }
-  }
-
   async request(endpoint, queryParameters, fetchConfig) {
     const queryUrl = stringifyQuery(this.apiUrl, endpoint, queryParameters);
     const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
-
-    await this.checkIfAuthorized(response);
 
     await verifyResponseStatus(response);
     return response;

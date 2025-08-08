@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
 import {
@@ -18,19 +13,28 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   AccountSettingsPage,
+  ReportsPage,
+  TasksDashboardPage,
+  TaskDetailsPage,
+  NotAuthorisedPage,
+  ExportSurveyResponsePage,
+  OfflinePage,
 } from '../views';
-import { useCurrentUser } from '../api';
+import { WelcomeScreens } from '../views/WelcomeScreens';
+import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
 import { useFromLocation } from '../utils';
-import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
+import { SyncPage } from '../views/Sync/SyncPage';
+import { CentredLayout, BackgroundPageLayout, MainPageLayout, TasksLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
+import { MobileUserMenu } from '../layout/UserMenu/MobileUserMenu';
 
 /**
  * If the user is logged in and tries to access the auth pages, redirect to the home page or project select pages
  */
 const AuthViewLoggedInRedirect = ({ children }) => {
-  const { isLoggedIn, ...user } = useCurrentUser();
+  const { isLoggedIn, ...user } = useCurrentUserContext();
   const from = useFromLocation();
 
   if (!isLoggedIn) {
@@ -54,11 +58,20 @@ const AuthViewLoggedInRedirect = ({ children }) => {
 export const Routes = () => {
   return (
     <RouterRoutes>
+      <Route path={ROUTES.OFFLINE} element={<OfflinePage />} />
+      <Route path={ROUTES.EXPORT_SURVEY_RESPONSE} element={<ExportSurveyResponsePage />} />
+
       <Route path="/" element={<MainPageLayout />}>
+        <Route path={ROUTES.MOBILE_USER_MENU} element={<MobileUserMenu />} />
         {/* PRIVATE ROUTES */}
         <Route path="/" element={<PrivateRoute />}>
           <Route index element={<LandingPage />} />
+          <Route path={ROUTES.WELCOME} element={<WelcomeScreens />} />
           <Route path={ROUTES.ACCOUNT_SETTINGS} element={<AccountSettingsPage />} />
+          <Route element={<TasksLayout />}>
+            <Route path={ROUTES.TASKS} element={<TasksDashboardPage />} />
+            <Route path={ROUTES.TASK_DETAILS} element={<TaskDetailsPage />} />
+          </Route>
           <Route
             path="/"
             element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}
@@ -78,7 +91,10 @@ export const Routes = () => {
               <Route path={ROUTES.REQUEST_ACCESS} element={<RequestProjectAccessPage />} />
             </Route>
           </Route>
+          <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
+          <Route path={ROUTES.SYNC} element={<SyncPage />} />
         </Route>
+        {/** Reports route is admin only so needs to be inside it's own PrivateRoute instance */}
 
         {/* PUBLIC ROUTES*/}
         <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
@@ -87,7 +103,11 @@ export const Routes = () => {
         <Route
           path="/"
           element={
-            <BackgroundPageLayout backgroundImage="/auth-background.svg" headerBorderHidden />
+            <BackgroundPageLayout
+              backgroundImage="/auth-background.svg"
+              mobileBackgroundImage="/auth-background-mobile.svg"
+              headerBorderHidden
+            />
           }
         >
           <Route
@@ -106,6 +126,7 @@ export const Routes = () => {
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
           </Route>
         </Route>
+        <Route path={ROUTES.NOT_AUTHORISED} element={<NotAuthorisedPage />} />
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </RouterRoutes>

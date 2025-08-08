@@ -1,8 +1,13 @@
 {
   "extends": "../../tsconfig-js.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
   },
-  "include": ["src/**/*.js"],
-  "exclude": ["src/__tests__", "src/migrations"]
+  "include": [
+    "src/**/*.js"
+  ],
+  "exclude": [
+    "src/__tests__",
+    "src/migrations"
+  ]
 }

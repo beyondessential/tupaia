@@ -1,19 +1,15 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
-import { DashboardMetadataForm } from '../Dashboard';
+import {
+  Button,
+  Dialog,
+  ModalContentProvider,
+  ModalFooter,
+  ModalHeader,
+} from '@tupaia/ui-components';
+import { DashboardItemMetadataForm } from '../DashboardItem';
 import { MapOverlayMetadataForm } from '../MapOverlay';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../../constants';
-
-export const Body = styled.div`
-  padding: 30px 20px;
-  background-color: #f9f9f9;
-`;
 
 export const EditModal = () => {
   const { dashboardItemOrMapOverlay } = useParams();
@@ -30,7 +26,7 @@ export const EditModal = () => {
 
   let MetadataForm = null;
   if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM) {
-    MetadataForm = DashboardMetadataForm;
+    MetadataForm = DashboardItemMetadataForm;
   } else if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.MAP_OVERLAY) {
     MetadataForm = MapOverlayMetadataForm;
   } else {
@@ -42,15 +38,15 @@ export const EditModal = () => {
       <Dialog onClose={handleClose} open={isOpen}>
         <MetadataForm
           onSubmit={handleClose}
-          Header={() => <DialogHeader onClose={handleClose} title="Edit Details" />}
-          Body={Body}
+          Header={() => <ModalHeader onClose={handleClose} title="Edit Details" />}
+          Body={ModalContentProvider}
           Footer={() => (
-            <DialogFooter>
+            <ModalFooter>
               <Button onClick={handleClose} variant="outlined">
                 Cancel
               </Button>
               <Button type="submit">Save</Button>
-            </DialogFooter>
+            </ModalFooter>
           )}
         />
       </Dialog>

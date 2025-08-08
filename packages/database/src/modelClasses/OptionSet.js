@@ -1,14 +1,14 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class OptionSetType extends DatabaseType {
-  static databaseType = TYPES.OPTION_SET;
+export class OptionSetRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.OPTION_SET;
+
+  async options() {
+    const options = await this.otherModels.option.find({ option_set_id: this.id });
+    return options.sort((a, b) => a.sort_order - b.sort_order);
+  }
 
   async getSurveyIds() {
     const surveyScreens = await this.database.executeSql(
@@ -28,7 +28,7 @@ export class OptionSetType extends DatabaseType {
 }
 
 export class OptionSetModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return OptionSetType;
+  get DatabaseRecordClass() {
+    return OptionSetRecord;
   }
 }

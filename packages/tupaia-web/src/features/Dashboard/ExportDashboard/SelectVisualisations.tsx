@@ -1,14 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Button, CheckboxList, ListItemProps } from '@tupaia/ui-components';
 import { DashboardItem } from '../../../types';
-import { useDashboard } from '../utils';
+import { useDashboardContext } from '../utils';
 
 const Container = styled.div`
   display: flex;
@@ -76,7 +71,7 @@ export const SelectVisualisation = ({
   selectedDashboardItems,
   setSelectedDashboardItems,
 }: SelectVisualisationsProps) => {
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
 
   const list =
     activeDashboard?.items?.map(({ config, code }) => {
@@ -85,7 +80,7 @@ export const SelectVisualisation = ({
         name: config?.name,
         code,
         disabled: !isSupported,
-        tooltip: !isSupported ? 'PDF export coming soon' : undefined,
+        tooltip: !isSupported ? 'PDF export unavailable' : undefined,
       };
     }) ?? [];
 

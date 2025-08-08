@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import {
   SET_SYNC_PROGRESS,
   SET_SYNC_ERROR,
@@ -12,7 +7,8 @@ import {
   SET_SYNC_COMPLETION_TIME,
   PROGRESS_LOADING,
 } from './constants';
-import { getLatestUserRewardCount } from '../rewards';
+import {getLatestUserRewardCount} from '../rewards';
+import {resetSocialFeed} from '../social';
 
 export const setSyncProgress = progress => ({
   type: SET_SYNC_PROGRESS,
@@ -47,10 +43,15 @@ export const setSyncCompletionTime = lastSyncTime => ({
 export const setSyncComplete = lastSyncTime => async dispatch => {
   dispatch(setSyncCompletionTime(lastSyncTime));
   dispatch(setSyncIsSyncing(false));
+  // update rewards
   dispatch(getLatestUserRewardCount());
+  // reset social feed in case of permissions changes
+  dispatch(resetSocialFeed());
 };
 
-export const synchroniseDatabase = () => async (dispatch, getState, { database, analytics }) => {
-  dispatch(setSyncProgress(PROGRESS_LOADING));
-  return database.synchronise(dispatch);
-};
+export const synchroniseDatabase =
+  () =>
+  async (dispatch, getState, {database, analytics}) => {
+    dispatch(setSyncProgress(PROGRESS_LOADING));
+    return database.synchronise(dispatch);
+  };

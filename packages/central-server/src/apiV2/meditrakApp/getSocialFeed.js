@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
 import { allowNoPermissions } from '../../permissions';
@@ -27,7 +22,7 @@ const INTERNAL_EMAIL = ['@beyondessential.com.au', '@bes.au'];
 
 // TODO: Remove as part of RN-502
 export const getSocialFeed = async (req, res) => {
-  const { query, models } = req;
+  const { query, models, accessPolicy } = req;
   const {
     countryId,
     earliestCreationDate = 0,
@@ -52,9 +47,6 @@ export const getSocialFeed = async (req, res) => {
     };
   }
 
-  // Fetch an extra record on page 0 to check to see if the page range exceeded the toDate.
-  const limit = numberPerPage + 1;
-
   if (earliestCreationDate) {
     conditions.creation_date = {
       comparator: '>',
@@ -62,14 +54,14 @@ export const getSocialFeed = async (req, res) => {
     };
   }
 
-  const feedItems = await models.feedItem.find(conditions, {
-    limit,
-    offset: pageNumber * numberPerPage,
-    sort: ['creation_date DESC'],
-  });
-
-  const hasMorePages = feedItems.length > numberPerPage;
-  const items = await Promise.all(feedItems.slice(0, numberPerPage - 1).map(f => f.getData()));
+  const { items, hasMorePages } = await models.feedItem.findByAccessPolicy(
+    accessPolicy,
+    conditions,
+    {
+      pageLimit: numberPerPage,
+      page,
+    },
+  );
 
   await intersperseDynamicFeedItems(items, countryId, pageNumber, models);
 
@@ -105,7 +97,7 @@ const getLeaderboard = async models => {
   return models.database.executeSql(
     ` SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100)::int as pigs
         FROM survey_response
         GROUP BY user_id
       ) r

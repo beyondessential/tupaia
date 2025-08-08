@@ -1,10 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
-import { QueryParameters } from '../types';
+import { ProjectCountryAccessListRequest } from '@tupaia/types';
+import { QueryParameters, SurveyResponseCreatedResponse } from '../types';
 import { RequestBody } from './ApiConnection';
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
@@ -31,6 +27,10 @@ export class CentralApi extends BaseApi {
     return this.connection.get('me');
   }
 
+  public async getCountryAccessList(): Promise<ProjectCountryAccessListRequest.ResBody> {
+    return this.connection.get('me/countries');
+  }
+
   public async registerUserAccount(
     userFields: Record<string, unknown>,
   ): Promise<{ userId: string; message: string }> {
@@ -41,6 +41,10 @@ export class CentralApi extends BaseApi {
     passwordChangeFields: Record<string, unknown>,
   ): Promise<{ message: string }> {
     return this.connection.post('me/changePassword', null, passwordChangeFields);
+  }
+
+  public async verifyUserEmail(token: string) {
+    return this.connection.post('auth/verifyEmail', null, { token });
   }
 
   public async createSurveyResponses(
@@ -54,9 +58,35 @@ export class CentralApi extends BaseApi {
     }
   }
 
+  public async createSurveyResponse(
+    response: MeditrakSurveyResponseRequest,
+    queryParameters?: QueryParameters,
+  ): Promise<SurveyResponseCreatedResponse> {
+    const data = await this.connection.post('surveyResponse', queryParameters, response);
+    return data?.results[0];
+  }
+
+  public async resubmitSurveyResponse(
+    originalResponseId: string,
+    newResponse: MeditrakSurveyResponseRequest,
+    queryParameters?: QueryParameters,
+  ): Promise<void> {
+    return this.connection.post(
+      `surveyResponses/${originalResponseId}/resubmit`,
+      queryParameters,
+      newResponse,
+    );
+  }
+
   public async fetchResources(endpoint: string, params?: Record<string, unknown>) {
     return this.connection.get(endpoint, stringifyParams(params));
   }
+
+  /**
+   * Use instead of {@link fetchResources} when the URI is unreasonably long to avoid
+   * `414 Request-URI Too Large`.
+   */
+  public fetchResourcesWithPost = this.createResource;
 
   public async createResource(
     endpoint: string,
@@ -74,8 +104,8 @@ export class CentralApi extends BaseApi {
     return this.connection.put(endpoint, stringifyParams(params), body);
   }
 
-  public async deleteResource(endpoint: string) {
-    return this.connection.delete(endpoint);
+  public async deleteResource(endpoint: string, params?: Record<string, unknown>) {
+    return this.connection.delete(endpoint, stringifyParams(params));
   }
 
   public async upsertResource(

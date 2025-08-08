@@ -1,32 +1,18 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
-
-import { VALUE_TYPES, formatDataValueByType } from '@tupaia/utils';
-import {
-  ScaleType
-} from '@tupaia/types';
-import { resolveSpectrumColour } from './markerColors';
-import {
-  YES_COLOR,
-  NO_COLOR,
-  BREWER_AUTO,
-  UNKNOWN_COLOR,
-  MAP_COLORS,
-} from '../constants';
+import { formatDataValueByType } from '@tupaia/utils';
+import { IconMapOverlayConfig } from '@tupaia/types';
+import { YES_COLOR, NO_COLOR, BREWER_AUTO, UNKNOWN_COLOR, MAP_COLORS } from '../constants';
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Markers/markerIcons';
 import {
   SeriesValue,
   LegendProps,
   MeasureData,
-  ScaleTypeLiteral,
   Series,
   SeriesValueMapping,
   Value,
-  MeasureTypeLiteral,
+  RadiusSeries,
+  BaseSeries,
 } from '../types';
+import { resolveSpectrumColour } from './markerColors';
 
 export const MEASURE_TYPE_ICON = 'icon';
 export const MEASURE_TYPE_COLOR = 'color';
@@ -117,26 +103,18 @@ const getNullValueMapping = (type: string) => {
 
 function getFormattedValue(
   value: Value,
-  type: MeasureTypeLiteral,
+  type: Series['type'],
   valueInfo: SeriesValue,
-  scaleType: ScaleTypeLiteral,
   valueType: Series['valueType'],
-  submissionDate: MeasureData['submissionDate'],
 ) {
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
     case MEASURE_TYPE_SHADED_SPECTRUM:
-      if (scaleType === ScaleType.TIME) {
-        return `last submission on ${submissionDate}`;
-      }
       return formatDataValueByType({ value }, valueType);
     case MEASURE_TYPE_RADIUS:
     case MEASURE_TYPE_ICON:
     case MEASURE_TYPE_COLOR:
     case MEASURE_TYPE_SHADING:
-      if (scaleType === ScaleType.TIME) {
-        return `last submission on ${submissionDate}`;
-      }
       return valueInfo.name || value;
     default:
       return value;
@@ -144,11 +122,7 @@ function getFormattedValue(
 }
 
 export const getSpectrumScaleValues = (measureData: MeasureData[], series: Series) => {
-  const { key, scaleType, startDate, endDate } = series;
-
-  if (scaleType === ScaleType.TIME) {
-    return { min: startDate, max: endDate };
-  }
+  const { key } = series;
 
   const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
 
@@ -169,7 +143,9 @@ const clampScaleValues = (
   },
   series: Series,
 ) => {
-  const { valueType, scaleBounds } = series;
+  const { valueType } = series;
+
+  const scaleBounds = 'scaleBounds' in series ? series.scaleBounds : null;
 
   const defaultScale =
     valueType === 'percentage' ? PERCENTAGE_SPECTRUM_SCALE_DEFAULT : SPECTRUM_SCALE_DEFAULT;
@@ -286,14 +262,14 @@ export const getSingleFormattedValue = (markerData: MeasureData, series: Series[
   getFormattedInfo(markerData, series[0]).formattedValue;
 
 export function getFormattedInfo(markerData: MeasureData, series: Series) {
-  const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = series;
+  const { key, valueMapping, type, displayedValueKey, valueType } = series;
   const value = markerData[key];
   const valueInfo = getValueInfo(value, valueMapping);
 
   if (displayedValueKey && (markerData[displayedValueKey] || markerData[displayedValueKey] === 0)) {
     return {
       formattedValue: formatDataValueByType(
-        { value: markerData[displayedValueKey], metadata: markerData.metadata },
+        { value: markerData[displayedValueKey], metadata: markerData.metadata || undefined },
         valueType,
       ),
       valueInfo,
@@ -306,14 +282,7 @@ export function getFormattedInfo(markerData: MeasureData, series: Series) {
   }
 
   return {
-    formattedValue: getFormattedValue(
-      value,
-      type,
-      valueInfo,
-      scaleType,
-      valueType,
-      markerData.submissionDate,
-    ),
+    formattedValue: getFormattedValue(value, type, valueInfo, valueType),
     valueInfo,
   };
 }
@@ -322,72 +291,76 @@ export function getMeasureDisplayInfo(
   measureData = {} as MeasureData,
   serieses: Series[],
   hiddenValues: LegendProps['hiddenValues'] = {},
-  radiusScaleFactor: number = 1,
+  radiusScaleFactor = 1,
 ) {
   const isHidden = getIsHidden(measureData, serieses, hiddenValues);
   const displayInfo = {
     isHidden,
   } as {
-    color?: string;
-    icon?: string;
-    radius?: number;
+    color?: BaseSeries['color'];
+    icon?: IconMapOverlayConfig['icon'];
+    radius?: RadiusSeries['radius'];
     isHidden: boolean;
     originalValue?: SeriesValue['value'];
   };
 
-  serieses.forEach(({ color, icon, radius }: Series) => {
+  serieses.forEach((series: Series) => {
+    const { color } = series;
     if (color) {
       displayInfo.color = color;
     }
-    if (icon) {
-      displayInfo.icon = icon;
+    if ('icon' in series && series.icon) {
+      displayInfo.icon = series.icon;
     }
-    if (radius) {
-      displayInfo.radius = radius;
+    if ('radius' in series) {
+      displayInfo.radius = series.radius;
     }
   });
 
-  serieses.forEach(
-    ({ key, type, valueMapping, noDataColour, scaleType, scaleColorScheme, min, max }) => {
-      const valueInfo = getValueInfo(measureData[key], valueMapping);
+  serieses.forEach(series => {
+    const { key, type, valueMapping } = series;
+    const valueInfo = getValueInfo(measureData[key], valueMapping);
 
-      displayInfo.originalValue = measureData.originalValue;
+    displayInfo.originalValue = measureData.originalValue;
 
-      switch (type) {
-        case MEASURE_TYPE_ICON:
-          displayInfo.icon = valueInfo.icon;
-          displayInfo.color = displayInfo.color || valueInfo.color;
-          break;
-        case MEASURE_TYPE_RADIUS:
-          displayInfo.radius = (valueInfo.value as number) * radiusScaleFactor || 0;
-          displayInfo.color = displayInfo.color || valueInfo.color;
-          break;
-        case MEASURE_TYPE_SPECTRUM:
-        case MEASURE_TYPE_SHADED_SPECTRUM:
-          displayInfo.originalValue =
-            valueInfo.value === null || valueInfo.value === undefined ? 'No data' : valueInfo.value;
-          displayInfo.color = resolveSpectrumColour(
-            scaleType,
-            scaleColorScheme,
-            (valueInfo.value as number) || (valueInfo.value === 0 ? 0 : null),
-            min,
-            max,
-            noDataColour,
-          );
-          displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
-          break;
-        case MEASURE_TYPE_POPUP_ONLY:
-          break;
-        case MEASURE_TYPE_SHADING:
-          displayInfo.color = MAP_COLORS[valueInfo.color] || valueInfo.color || MAP_COLORS.NO_DATA;
-          break;
-        case MEASURE_TYPE_COLOR:
-        default:
-          displayInfo.color = valueInfo.color;
-          break;
+    switch (type) {
+      case MEASURE_TYPE_ICON:
+        displayInfo.icon = valueInfo.icon;
+        displayInfo.color = displayInfo.color || valueInfo.color;
+        break;
+      case MEASURE_TYPE_RADIUS:
+        displayInfo.radius = (valueInfo.value as number) * radiusScaleFactor || 0;
+        displayInfo.color = displayInfo.color || valueInfo.color;
+        break;
+      case MEASURE_TYPE_SPECTRUM:
+      case MEASURE_TYPE_SHADED_SPECTRUM: {
+        const { min, max, scaleType, scaleColorScheme, noDataColour } = series;
+        displayInfo.originalValue =
+          valueInfo.value === null || valueInfo.value === undefined ? 'No data' : valueInfo.value;
+        displayInfo.color = resolveSpectrumColour(
+          scaleType,
+          scaleColorScheme,
+          (valueInfo.value as number) || (valueInfo.value === 0 ? 0 : null),
+          min,
+          max,
+          noDataColour,
+        );
+        displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
+        break;
       }
-    },
-  );
+
+      case MEASURE_TYPE_POPUP_ONLY:
+        break;
+      case MEASURE_TYPE_SHADING:
+        displayInfo.color =
+          (valueInfo.color && MAP_COLORS[valueInfo.color]) || valueInfo.color || MAP_COLORS.NO_DATA;
+        break;
+      case MEASURE_TYPE_COLOR:
+      default:
+        displayInfo.color = valueInfo.color;
+        break;
+    }
+  });
 
   if (!displayInfo.icon && typeof displayInfo.radius === 'undefined') {
     displayInfo.icon = DEFAULT_ICON;

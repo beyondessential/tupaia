@@ -1,21 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import ExportIcon from '@material-ui/icons/GetApp';
-import {
-  Button,
-  Dialog,
-  DialogFooter,
-  DialogHeader,
-  LightOutlinedButton,
-  OutlinedButton,
-} from '@tupaia/ui-components';
-import { ModalContentProvider } from '../widgets';
-import { useApi } from '../utilities/ApiProvider';
+import { Modal } from '@tupaia/ui-components';
+import { useApiContext } from '../utilities/ApiProvider';
+import { ActionButton } from '../editor';
+import { ExportIcon } from '../icons';
 
 const STATUS = {
   IDLE: 'idle',
@@ -34,28 +22,33 @@ export const ExportModal = React.memo(
     exportButtonText,
     cancelButtonText,
     isExportingMessage,
+    extraQueryParameters,
+    onCloseModal,
   }) => {
-    const api = useApi();
+    const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [error, setError] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
     const handleOpen = () => setIsOpen(true);
 
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
-      setErrorMessage(null);
+      setError(null);
     };
 
     const handleClose = () => {
       setStatus(STATUS.IDLE);
-      setErrorMessage(null);
+      setError(null);
       setIsOpen(false);
+      if (onCloseModal) {
+        onCloseModal();
+      }
     };
 
     const handleSubmit = async event => {
       event.preventDefault();
-      setErrorMessage(null);
+      setError(null);
       setStatus(STATUS.LOADING);
 
       try {
@@ -63,6 +56,7 @@ export const ExportModal = React.memo(
         const queryParameters = {
           respondWithEmailTimeout: 10 * 1000, // if an export doesn't finish in 10 seconds, email results
           ...values,
+          ...extraQueryParameters,
         };
         const { body: response } = await api.download(endpoint, queryParameters, fileName);
         if (response?.emailTimeoutHit) {
@@ -70,74 +64,81 @@ export const ExportModal = React.memo(
         } else {
           handleClose();
         }
-      } catch (error) {
+      } catch (e) {
         setStatus(STATUS.ERROR);
-        setErrorMessage(error.message);
+        setError(e);
       }
     };
 
-    const renderButtons = useCallback(() => {
+    const getButtons = () => {
       switch (status) {
         case STATUS.TIMEOUT:
-          return (
-            <Button id="form-button-done" onClick={handleClose}>
-              Done
-            </Button>
-          );
+        case STATUS.SUCCESS:
+          return [
+            {
+              text: 'Done',
+              onClick: handleClose,
+              id: 'form-button-done',
+            },
+          ];
         case STATUS.ERROR:
-          return (
-            <>
-              <OutlinedButton id="form-button-dismiss" onClick={handleDismiss}>
-                Dismiss
-              </OutlinedButton>
-              <Button id="form-button-export" disabled>
-                {exportButtonText}
-              </Button>
-            </>
-          );
+          return [
+            {
+              text: 'Dismiss',
+              onClick: handleDismiss,
+              variant: 'outlined',
+              id: 'form-button-dismiss',
+            },
+            {
+              text: exportButtonText,
+              disabled: true,
+              id: 'form-button-export',
+            },
+          ];
         default:
-          return (
-            <>
-              <OutlinedButton id="form-button-cancel" onClick={handleClose}>
-                {cancelButtonText}
-              </OutlinedButton>
-              <Button
-                id="form-button-export"
-                type="submit"
-                isLoading={status === STATUS.LOADING}
-                onClick={handleSubmit}
-              >
-                {exportButtonText}
-              </Button>
-            </>
-          );
+          return [
+            {
+              text: cancelButtonText,
+              onClick: handleClose,
+              variant: 'outlined',
+              id: 'form-button-cancel',
+            },
+            {
+              text: exportButtonText,
+              disabled: status === STATUS.LOADING,
+              onClick: handleSubmit,
+              id: 'form-button-import',
+              type: 'submit',
+            },
+          ];
       }
-    }, [status, handleDismiss, handleClose, handleSubmit]);
+    };
+    const buttons = getButtons();
 
     return (
       <>
-        <Dialog onClose={handleClose} open={isOpen} disableBackdropClick>
+        <Modal
+          onClose={handleClose}
+          isOpen={isOpen}
+          disableBackdropClick
+          title={error ? 'Error' : title}
+          error={error}
+          isLoading={status === STATUS.LOADING}
+          buttons={buttons}
+        >
           <form onSubmit={handleSubmit} noValidate>
-            <DialogHeader
-              onClose={handleClose}
-              title={errorMessage ? 'Error' : title}
-              color={errorMessage ? 'error' : 'textPrimary'}
-            />
-            <ModalContentProvider errorMessage={errorMessage} isLoading={status === STATUS.LOADING}>
-              {status === STATUS.TIMEOUT ? <p>{isExportingMessage}</p> : children}
-            </ModalContentProvider>
-            <DialogFooter>{renderButtons()}</DialogFooter>
+            {status === STATUS.TIMEOUT ? <p>{isExportingMessage}</p> : children}
           </form>
-        </Dialog>
-        <LightOutlinedButton
+        </Modal>
+        <ActionButton
           id="page-export-button"
           startIcon={<ExportIcon />}
           onClick={handleOpen}
-          isLoading={STATUS === STATUS.LOADING}
-          disabled={STATUS === STATUS.ERROR}
+          isLoading={status === STATUS.LOADING}
+          disabled={status === STATUS.ERROR}
         >
           {exportButtonText}
-        </LightOutlinedButton>
+        </ActionButton>
       </>
     );
   },
@@ -152,13 +153,18 @@ ExportModal.propTypes = {
   exportButtonText: PropTypes.string,
   cancelButtonText: PropTypes.string,
   isExportingMessage: PropTypes.string,
+  onCloseModal: PropTypes.func,
+  extraQueryParameters: PropTypes.object,
 };
 
 ExportModal.defaultProps = {
   fileName: null,
   title: 'Export',
-  exportButtonText: 'Export',
+  exportButtonText: 'Download',
   cancelButtonText: 'Cancel',
-  isExportingMessage: `Export is taking a while, and will continue in the background. You will be emailed the exported file when the process completes.`,
+  isExportingMessage:
+    'Export is taking a while, and will continue in the background. You will be emailed the exported file when the process completes.',
   values: {},
+  onCloseModal: null,
+  extraQueryParameters: {},
 };

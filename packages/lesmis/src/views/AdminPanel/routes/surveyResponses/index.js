@@ -1,0 +1,1 @@
+export { getSurveyResponsesTabRoutes } from './getSurveyResponsesTabRoutes';

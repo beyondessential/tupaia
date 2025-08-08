@@ -1,15 +1,11 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
 import { encryptPassword } from '@tupaia/auth';
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class UserType extends DatabaseType {
-  static databaseType = TYPES.USER_ACCOUNT;
+export class UserRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.USER_ACCOUNT;
 
   get fullName() {
     let userFullName = this.first_name;
@@ -36,8 +32,8 @@ export class UserType extends DatabaseType {
 const PUBLIC_USER_EMAIL = 'public@tupaia.org';
 
 export class UserModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return UserType;
+  get DatabaseRecordClass() {
+    return UserRecord;
   }
 
   /**
@@ -52,6 +48,14 @@ export class UserModel extends DatabaseModel {
 
     return user;
   }
+
+  customColumnSelectors = {
+    full_name: () =>
+      `CASE 
+        WHEN last_name IS NULL THEN first_name 
+        ELSE first_name || ' ' || last_name 
+      END`,
+  };
 
   emailVerifiedStatuses = {
     UNVERIFIED: 'unverified',

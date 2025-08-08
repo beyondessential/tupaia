@@ -1,21 +1,21 @@
 import { ValidationError } from '@tupaia/utils';
-import type { WeatherApi } from '@tupaia/weather-api';
-import { DataServiceMapping } from '../DataServiceMapping';
+import type { WeatherApi, WeatherResult, WeatherSnapshot } from '@tupaia/weather-api';
 import {
-  RawAnalyticResults,
   DataBrokerModelRegistry,
   DataGroup,
   DataSource,
   DataSourceType,
-  EntityType,
+  EntityRecord,
   EventResults,
+  RawAnalyticResults,
 } from '../../types';
 import { EMPTY_ANALYTICS_RESULTS } from '../../utils';
-import { Service } from '../Service';
-import { ApiResultTranslator } from './ApiResultTranslator';
-import { DateSanitiser } from './DateSanitiser';
-import { DataElement, WeatherResult } from './types';
+import { DataServiceMapping } from '../DataServiceMapping';
 import type { PullMetadataOptions as BasePullMetadataOptions } from '../Service';
+import { Service } from '../Service';
+import { ApiResultTranslator, WeatherDataElementCode } from './ApiResultTranslator';
+import { DateSanitiser } from './DateSanitiser';
+import { DataElement } from './types';
 
 export type PullOptions = {
   dataServiceMapping: DataServiceMapping;
@@ -91,7 +91,7 @@ export class WeatherService extends Service {
       const apiResultTranslator = new ApiResultTranslator(
         entities,
         resultFormat,
-        forecastDataElementCodes,
+        forecastDataElementCodes as WeatherDataElementCode[],
       );
 
       return this.getForecastWeather(entities, startDate, endDate, apiResultTranslator);
@@ -100,7 +100,7 @@ export class WeatherService extends Service {
       const apiResultTranslator = new ApiResultTranslator(
         entities,
         resultFormat,
-        historicDataElementCodes,
+        historicDataElementCodes as WeatherDataElementCode[],
       );
 
       return this.getHistoricWeather(entities, startDate, endDate, apiResultTranslator);
@@ -109,14 +109,13 @@ export class WeatherService extends Service {
     return resultFormat === 'analytics' ? EMPTY_ANALYTICS_RESULTS : ([] as EventResults);
   }
 
-  /**
-   */
   public async pullMetadata(
-    /* eslint-disable @typescript-eslint/no-unused-vars */
+    // @ts-ignore
     dataSources: DataElement[],
+    // @ts-ignore
     type: DataSourceType,
+    // @ts-ignore
     options: BasePullMetadataOptions,
-    /* eslint-enable @typescript-eslint/no-unused-vars */
   ) {
     const dataElements = await this.models.dataElement.find({
       service_type: 'weather',
@@ -188,7 +187,7 @@ export class WeatherService extends Service {
     }
   }
 
-  private getEntityPoint(entity: EntityType) {
+  private async getEntityPoint(entity: EntityRecord) {
     try {
       return entity.pointLatLon();
     } catch (error) {
@@ -202,7 +201,7 @@ export class WeatherService extends Service {
    * Fetch API data and return in format of events/analytics
    */
   private async getForecastWeather(
-    entities: EntityType[],
+    entities: EntityRecord[],
     startDate: string,
     endDate: string,
     apiResultTranslator: ApiResultTranslator,
@@ -214,7 +213,7 @@ export class WeatherService extends Service {
      */
     const filterApiResultForDates = (apiResult: WeatherResult) => {
       const filteredData = apiResult.data.filter(
-        entry => entry.datetime >= startDate && entry.datetime <= endDate,
+        (entry: WeatherSnapshot) => entry.datetime >= startDate && entry.datetime <= endDate,
       );
       return {
         ...apiResult,
@@ -223,8 +222,8 @@ export class WeatherService extends Service {
     };
 
     // Run requests in parallel for performance
-    const getDataForEntity = async (entity: EntityType) => {
-      const { lat, lon } = this.getEntityPoint(entity);
+    const getDataForEntity = async (entity: EntityRecord) => {
+      const { lat, lon } = await this.getEntityPoint(entity);
 
       // Maximum forecast is 16 days, we request all of it and filter it down to the dates we need.
       // Performance looks fine requesting 16 days.
@@ -255,7 +254,7 @@ export class WeatherService extends Service {
    * Fetch API data and return in format of events/analytics
    */
   private async getHistoricWeather(
-    entities: EntityType[],
+    entities: EntityRecord[],
     startDate: string,
     endDate: string,
     apiResultTranslator: ApiResultTranslator,
@@ -264,8 +263,8 @@ export class WeatherService extends Service {
       this.dateSanitiser.sanitiseHistoricDateRange(startDate, endDate);
 
     // Run requests in parallel for performance
-    const getDataForEntity = async (entity: EntityType) => {
-      const { lat, lon } = this.getEntityPoint(entity);
+    const getDataForEntity = async (entity: EntityRecord) => {
+      const { lat, lon } = await this.getEntityPoint(entity);
 
       if (sanitisedStartDate === null || sanitisedEndDate === null) {
         return {

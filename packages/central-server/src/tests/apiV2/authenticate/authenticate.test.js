@@ -1,16 +1,17 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
+import sinon from 'sinon';
 
-import { encryptPassword, hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';
-import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
+import { encryptPassword, getTokenClaims, hashAndSaltPassword } from '@tupaia/auth';
+import { findOrCreateDummyCountryEntity, findOrCreateDummyRecord } from '@tupaia/database';
 import { createBasicHeader } from '@tupaia/utils';
 
-import { TestableApp } from '../../testUtilities';
+import { BruteForceRateLimiter } from '../../../apiV2/authenticate/BruteForceRateLimiter';
+import { ConsecutiveFailsRateLimiter } from '../../../apiV2/authenticate/ConsecutiveFailsRateLimiter';
+import { configureEnv } from '../../../configureEnv';
+import { TestableApp, resetTestData } from '../../testUtilities';
+
+configureEnv();
+const sandbox = sinon.createSandbox();
 
 const app = new TestableApp();
 const { models } = app;
@@ -22,8 +23,17 @@ const apiClientSecret = 'api';
 let userAccount;
 let apiClientUserAccount;
 
+function expectRateLimitError(request) {
+  expect(request.body).to.be.an('object').that.has.property('error');
+  expect(request.body.error).to.include('Too Many Requests');
+  expect(request.status).to.equal(429);
+  expect(request.headers).to.be.an('object').that.has.property('retry-after');
+}
+
 describe('Authenticate', function () {
   before(async () => {
+    await resetTestData();
+
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
@@ -77,6 +87,20 @@ describe('Authenticate', function () {
     });
   });
 
+  afterEach(async () => {
+    // completely restore all fakes created through the sandbox
+    sandbox.restore();
+    const db = models.database;
+    const [row] = await db.executeSql(`SELECT current_database();`);
+    const { current_database } = row;
+    if (current_database !== 'tupaia_test') {
+      throw new Error(
+        `Safety check failed: clearTestData can only be run against a database named tupaia_test, found ${current_database}.`,
+      );
+    }
+    await db.executeSql(`DELETE FROM login_attempts;`);
+  });
+
   it('should return user details with apiClient and access policy', async function () {
     const authResponse = await app.post('auth?grantType=password', {
       headers: {
@@ -100,5 +124,182 @@ describe('Authenticate', function () {
     const { userId, apiClientUserId } = getTokenClaims(accessToken);
     expect(userId).to.equal(userAccount.id);
     expect(apiClientUserId).to.equal(apiClientUserAccount.id);
+  });
+
+  it.skip('should add a new entry to the user_country_access_attempts table if one does not already exist', async () => {
+    await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: userAccount.email,
+        password: userAccountPassword,
+        deviceName: 'test_device',
+        timezone: 'Pacific/Auckland',
+      },
+    });
+    const entries = await models.userCountryAccessAttempt.find({
+      user_id: userAccount.id,
+      country_code: 'NZ',
+    });
+    expect(entries).to.have.length(1);
+  });
+
+  it.skip('should not add a new entry to the user_country_access_attempts table if one does already exist', async () => {
+    await models.userCountryAccessAttempt.create({
+      user_id: userAccount.id,
+      country_code: 'WS',
+    });
+    await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: userAccount.email,
+        password: userAccountPassword,
+        deviceName: 'test_device',
+        timezone: 'Pacific/Apia',
+      },
+    });
+    const entries = await models.userCountryAccessAttempt.find({
+      user_id: userAccount.id,
+      country_code: 'WS',
+    });
+    expect(entries).to.have.length(1);
+  });
+
+  it('handles incorrect password', async () => {
+    const response = await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: userAccount.email,
+        password: 'woops',
+        deviceName: 'test_device',
+      },
+    });
+
+    expect(response.body).to.be.an('object').that.has.property('error');
+    expect(response.body.error).to.include('Incorrect email or password');
+    expect(response.status).to.equal(401);
+  });
+
+  it('limit consecutive fails by username', async () => {
+    const times = 4;
+    sandbox.stub(ConsecutiveFailsRateLimiter.prototype, 'getMaxAttempts').returns(times);
+
+    const makeRequest = () => {
+      return app.post('auth?grantType=password', {
+        headers: {
+          authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+        },
+        body: {
+          emailAddress: 'test@bes.au',
+          password: 'woops',
+          deviceName: 'test_device',
+        },
+      });
+    };
+
+    for (let i = 0; i <= times; i++) {
+      const request = await makeRequest();
+
+      if (i < times) {
+        expect(request.status).to.equal(401);
+      } else {
+        // request should be rate limited
+        expectRateLimitError(request);
+        expect(request.headers['retry-after']).to.equal('900');
+      }
+    }
+  });
+
+  it('limit fails by ip address ', async () => {
+    const times = 3;
+    sandbox.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
+
+    const makeRequest = emailAddress => {
+      return app.post('auth?grantType=password', {
+        headers: {
+          authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+        },
+        body: {
+          emailAddress,
+          password: 'woops',
+          deviceName: 'test_device',
+        },
+      });
+    };
+
+    for (let i = 0; i <= times; i++) {
+      const request = await makeRequest(`${i}${userAccount.email}`);
+
+      if (i < times) {
+        expect(request.status).to.equal(401);
+      } else {
+        // request should be rate limited
+        expectRateLimitError(request);
+        expect(request.headers['retry-after']).to.equal('86400');
+      }
+    }
+  });
+
+  it('limit refresh token fails ', async () => {
+    const times = 3;
+    sandbox.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
+    // Make sure that it doesn't rate limit based on email address
+    sandbox.stub(ConsecutiveFailsRateLimiter.prototype, 'getMaxAttempts').returns(times - 1);
+
+    const makeRequest = () => {
+      return app.post('auth?grantType=refresh_token', {
+        headers: {
+          authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+        },
+        body: {
+          refreshToken: 'abc123',
+        },
+      });
+    };
+
+    for (let i = 0; i <= times; i++) {
+      const request = await makeRequest();
+
+      if (i < times) {
+        expect(request.status).to.equal(401);
+      } else {
+        // request should be rate limited
+        expectRateLimitError(request);
+        expect(request.headers['retry-after']).to.equal('86400');
+      }
+    }
+  });
+
+  it('limit one time login fails ', async () => {
+    const times = 3;
+    sandbox.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
+
+    const makeRequest = () => {
+      return app.post('auth?grantType=one_time_login', {
+        headers: {
+          authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+        },
+        body: {
+          token: 'abc123',
+        },
+      });
+    };
+
+    for (let i = 0; i <= times; i++) {
+      const request = await makeRequest();
+
+      if (i < times) {
+        expect(request.status).to.equal(401);
+      } else {
+        // request should be rate limited
+        expectRateLimitError(request);
+        expect(request.headers['retry-after']).to.equal('86400');
+      }
+    }
   });
 });

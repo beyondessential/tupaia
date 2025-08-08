@@ -1,9 +1,4 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { FlexCenter } from './Layout';

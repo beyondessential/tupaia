@@ -1,27 +1,23 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { createContext, useState } from 'react';
 
-type DashboardStateType = {
+interface DashboardStateType {
   exportModalOpen: boolean;
   subscribeModalOpen: boolean;
-  setExportModalOpen: (value: boolean) => void;
-  setSubscribeModalOpen: (value: boolean) => void;
-};
+  setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSubscribeModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const defaultState = {
+const defaultState: DashboardStateType = {
   exportModalOpen: false,
   subscribeModalOpen: false,
   setExportModalOpen: () => {},
   setSubscribeModalOpen: () => {},
-} as DashboardStateType;
+};
 
-export const DashboardContext = createContext(defaultState);
+export const DashboardContext = createContext<DashboardStateType>(defaultState);
 
 // A wrapper containing the context providers for the dashboard
-export const DashboardContextProvider = ({ children }) => {
+export const DashboardContextProvider = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false);
   return (

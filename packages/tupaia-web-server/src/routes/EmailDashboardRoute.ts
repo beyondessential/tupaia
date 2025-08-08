@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { generateUnsubscribeToken, sendEmail } from '@tupaia/server-utils';
@@ -28,7 +22,7 @@ export type EmailDashboardRequest = Request<
 export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
   public async buildResponse() {
     const { projectCode, entityCode, dashboardCode } = this.req.params;
-    const { baseUrl, selectedDashboardItems, cookieDomain } = this.req.body;
+    const { baseUrl, selectedDashboardItems, cookieDomain, settings } = this.req.body;
     const { cookie } = this.req.headers;
 
     if (!cookie) {
@@ -107,11 +101,11 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       cookie,
       cookieDomain,
       selectedDashboardItems,
+      settings,
     );
 
     const emails = mailingListEntries.map(({ email }) => email);
     const subject = `Tupaia Dashboard: ${projectEntity.name} ${entity.name} ${dashboard.name}`;
-    const html = `<p>Latest data for the ${dashboard.name} dashboard in ${entity.name}.</p>`;
     const filename = `${projectEntity.name}-${entity.name}-${dashboard.name}-export.pdf`;
 
     emails.forEach(email => {
@@ -121,13 +115,16 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
         token: unsubscribeToken,
         mailingListId: mailingList.id,
       });
-      const unsubscribeHtml = `If you wish to unsubscribe from these emails please click <a href='${unsubscribeUrl}'>here</a>`;
-      const signOff = `<p>Cheers,<br><br>The Tupaia Team</p><br><p style="font-size: 11px; text-align: center;">${unsubscribeHtml}</p>`;
       return sendEmail(email, {
         subject,
-        html,
-        signOff,
-        attachments: [{ filename, content: buffer }],
+        attachments: [{ filename, content: Buffer.from(buffer) }],
+        templateName: 'dashboardSubscription',
+        templateContext: {
+          title: 'Your Tupaia Dashboard Export is ready',
+          dashboardName: dashboard.name,
+          entityName: entity.name,
+          unsubscribeUrl,
+        },
       });
     });
 

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import xlsx from 'xlsx';
 import {
   respond,
@@ -17,10 +12,9 @@ import {
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { VerifiedEmail } from '@tupaia/types';
 import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  assertAdminPanelAccessToCountry,
   assertAnyPermissions,
   assertBESAdminAccess,
-  hasTupaiaAdminPanelAccessToCountry,
 } from '../../permissions';
 
 export async function importUsers(req, res) {
@@ -74,13 +68,12 @@ export async function importUsers(req, res) {
             );
           }
 
-          const createUserPermissionChecker = accessPolicy => {
-            if (!hasTupaiaAdminPanelAccessToCountry(accessPolicy, countryEntity.code)) {
-              throw new Error(
-                `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${countryEntity.name}`,
-              );
-            }
-
+          const createUserPermissionChecker = async accessPolicy => {
+            await assertAdminPanelAccessToCountry(
+              accessPolicy,
+              transactingModels,
+              countryEntity.id,
+            );
             if (!accessPolicy.allows(countryEntity.code, permissionGroup.name)) {
               throw new Error(`Need ${permissionGroup.name} access to ${countryEntity.name}`);
             }

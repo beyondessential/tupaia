@@ -1,9 +1,14 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
+import { DateOffsetSpec, DefaultTimePeriod, ReferenceProps, VizPeriodGranularity } from '../common';
+
+export type DatePickerOffsetSpec = {
+  unit: 'month' | 'quarter';
+  offset: number;
+};
 
 export type BaseConfig = {
+  /**
+   * @description The title of the viz
+   */
   name: string;
 
   /**
@@ -11,10 +16,51 @@ export type BaseConfig = {
    */
   description?: string;
 
+  /**
+   * @description Granularity of dates in the viz. Controls the date picker and x axis granularity
+   */
   periodGranularity?: `${VizPeriodGranularity}`;
 
+  /**
+   * @description The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.
+   * Currently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.
+   */
+  dateOffset?: DatePickerOffsetSpec;
+
+  /**
+   * @description
+   * Initial date range for this viz.
+   * Either a single offset, or an ISO string / offset for start/end date
+   * eg.
+   * // Single offset
+   * "defaultTimePeriod": {
+   *   "unit": "week",
+   *   "offset": 7
+   * }
+   *
+   * // Explicit start/end dates
+   * "defaultTimePeriod": {
+   *   "start": "2022-10-01",
+   *   "end": "2023-06-30"
+   * }
+   *
+   * // Start/end date offsets
+   * "defaultTimePeriod": {
+   *   "start": {
+   *     "unit": "week",
+   *     "offset": -52
+   *   },
+   *   "end": {
+   *     "unit": "week",
+   *     "offset": 3
+   *   }
+   * }
+   */
   defaultTimePeriod?: DefaultTimePeriod;
 
+  /**
+   * @description Maximum date ranges that the date picker can be used to choose from
+   */
   datePickerLimits?: {
     start?: DateOffsetSpec;
     end?: DateOffsetSpec;
@@ -41,10 +87,24 @@ export type BaseConfig = {
    */
   noDataFetch?: boolean;
 
+  /**
+   * @description Configure drill down functionality in this viz to allow clicking through to another visual
+   */
   drillDown?: {
-    keyLink?: string;
+    /**
+     * @description The code of the dashboard item that drilling down through this viz should take you to
+     */
     itemCode?: string;
+    keyLink?: string;
+
+    /**
+     * @description Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item
+     */
     parameterLink?: string;
+
+    /**
+     * @description A map of series codes to dashboard item codes that drilling down each series should take you to
+     */
     itemCodeByEntry?: {
       [key: string]: string;
     };
@@ -58,16 +118,7 @@ export type BaseConfig = {
   /**
    * @description If provided shows an (i) icon next to the viz title, which allows linking to the source data
    */
-  reference?: {
-    /**
-     * @description url
-     */
-    link: string;
-    /**
-     * @description label
-     */
-    name: string;
-  };
+  reference?: ReferenceProps;
 
   /**
    * @description If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. "Requires mSupply".
@@ -75,29 +126,17 @@ export type BaseConfig = {
   source?: 'dhis' | 'mSupply' | string;
 
   /**
-   * @description If specified will only show this viz if the conditions are met against the current Entity.
-   */
-  displayOnEntityConditions?: DisplayOnEntityConditions;
-
-  /**
    * @description Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'
    * @default 'WEEK_COMMENCING_ABBR'
    */
   weekDisplayFormat?: WeekDisplayFormat;
-};
 
-export enum VizPeriodGranularity {
-  'DAY' = 'day',
-  'SINGLE_DAY' = 'one_day_at_a_time',
-  'WEEK' = 'week',
-  'SINGLE_WEEK' = 'one_week_at_a_time',
-  'MONTH' = 'month',
-  'SINGLE_MONTH' = 'one_month_at_a_time',
-  'QUARTER' = 'quarter',
-  'SINGLE_QUARTER' = 'one_quarter_at_a_time',
-  'YEAR' = 'year',
-  'SINGLE_YEAR' = 'one_year_at_a_time',
-}
+  /**
+   * @description If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'
+   */
+
+  dateRangeDelimiter?: string;
+};
 
 export type ValueType =
   | 'boolean'
@@ -119,53 +158,19 @@ export enum WeekDisplayFormat {
   ISO_WEEK_NUMBER = 'ISO_WEEK_NUMBER',
 }
 
-type PeriodUnit = 'day' | 'week' | 'month' | 'quarter' | 'year';
-
-type DefaultTimePeriod =
-  | DefaultTimePeriodShort
-  | DefaultTimePeriodLong
-  | DefaultTimePeriodWithAbsoluteDate;
-
-type DefaultTimePeriodShort = { offset: number; unit: PeriodUnit };
-
-type DefaultTimePeriodLong = {
-  start: DateOffsetSpec;
-  end: DateOffsetSpec;
-};
-
-type DefaultTimePeriodWithAbsoluteDate = {
-  /**
-   * @description ISO Date Time
-   */
-  start: string;
-};
-
-export type DateOffsetSpec = {
-  unit: PeriodUnit;
-  offset: number;
-  modifier?: OffsetModifier;
-  modifierUnit?: PeriodUnit;
-};
-
-enum OffsetModifier {
-  start_of = 'start_of',
-  end_of = 'end_of',
-}
-
-type DisplayOnEntityConditions =
-  | DisplayOnEntityAttributeConditions
-  | DisplayOnEntityOtherConditions;
-type DisplayOnEntityAttributeConditions = {
-  attributes: {
-    [key: string]: string | number | boolean;
-  };
-};
-type DisplayOnEntityOtherConditions = {
-  [key: string]: string | number | boolean;
-};
-
 export type ExportPresentationOptions = {
+  /**
+   * @description Include labels for each point of data in exports
+   */
   exportWithLabels?: boolean;
+
+  /**
+   * @description Include the data table below the viz in exports
+   */
   exportWithTable?: boolean;
+
+  /**
+   * @description Set to 'true' to prevent users from exporting this viz with the data table
+   */
   exportWithTableDisabled?: boolean;
 };

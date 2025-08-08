@@ -1,32 +1,24 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
-
 import assert from 'assert';
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { reduceToDictionary, snakeKeys, UploadError, yup } from '@tupaia/utils';
 
+import { readFileContent } from '../../utils';
 import {
-  dashboardValidator,
+  DashboardRecord,
   dashboardRelationObjectValidator,
+  DashboardRelationRecord,
+  dashboardValidator,
   DashboardVisualisationExtractor,
+  DashboardVizResource,
   draftDashboardItemValidator,
-  legacyDashboardItemValidator,
   draftReportValidator,
+  legacyDashboardItemValidator,
   legacyReportValidator,
   UpsertDashboard,
   UpsertDashboardRelation,
 } from '../../viz-builder';
-import type {
-  DashboardRecord,
-  DashboardRelationRecord,
-  DashboardVizResource,
-} from '../../viz-builder';
-import { readFileContent } from '../../utils';
 
 const importFileSchema = yup.object().shape(
   {
@@ -150,7 +142,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
     dashboards: UpsertDashboard[],
     dashboardRelations: UpsertDashboardRelation[],
   ) => {
-    await this.upsertDashboards(dashboards.map(d => snakeKeys(d)));
+    await this.upsertDashboards(dashboards.map(d => snakeKeys(d) as DashboardRecord));
     const dashboardRecords = await this.req.ctx.services.central.fetchResources('dashboards', {
       filter: {
         code: dashboardRelations.map(dr => dr.dashboardCode),
@@ -165,7 +157,7 @@ export class ImportDashboardVisualisationRoute extends Route<ImportDashboardVisu
         ...dashboardRelation,
         dashboard_id: dashboardId,
         child_id: vizId,
-      });
+      }) as DashboardRelationRecord;
     });
     await this.upsertDashboardRelations(relationsToUpsert);
   };

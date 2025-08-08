@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/e2e"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "scripts": {
     "cypress:config": "yarn run:babel cypress/scripts/generateConfig",
     "cypress:format-config": "yarn run:babel cypress/scripts/formatConfig",
@@ -19,22 +19,23 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.26.10",
+    "@babel/eslint-parser": "^7.27.5",
     "@babel/node": "^7.10.5",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
     "@cypress/snapshot": "^2.1.7",
-    "@testing-library/cypress": "^7.0.0",
+    "@testing-library/cypress": "^7.0.6",
+    "@testing-library/dom": "^10.4.0",
     "@tupaia/utils": "workspace:*",
-    "case": "^1.6.3",
     "cheerio": "^1.0.0-rc.3",
     "cross-env": "^7.0.2",
     "cypress": "^6.6.0",
+    "cypress-dotenv": "^1.2.2",
+    "dotenv": "16.4.5",
+    "eslint-plugin-cypress": "^2.11.1",
     "js-beautify": "^1.13.0",
     "lodash": "^4.17.4",
-    "markdown-to-jsx": "^6.4.1",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.14",
     "node-fetch": "^1.7.3",
-    "npm-run-all": "^4.1.5",
-    "regenerator-runtime": "^0.13.9"
+    "react": "^16.14.0"
   }
 }

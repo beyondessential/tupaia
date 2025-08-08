@@ -1,17 +1,15 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { AxiosRequestConfig } from 'axios';
-import { useQuery, QueryObserverOptions } from 'react-query';
-import { Entity } from '../../types';
+import { useQuery, QueryObserverOptions } from '@tanstack/react-query';
 import { get } from '../api';
+import { Entity } from '../../types';
+
+type QueryOptions = QueryObserverOptions<Entity[], Error, Entity[]>;
 
 export const useEntities = (
   projectCode?: string,
   entityCode?: string,
   axiosConfig?: AxiosRequestConfig,
-  queryOptions?: QueryObserverOptions,
+  queryOptions?: QueryOptions,
 ) => {
   let enabled = !!projectCode && !!entityCode;
 
@@ -42,6 +40,7 @@ export const useEntities = (
     {
       enabled,
       keepPreviousData: !!queryOptions?.keepPreviousData, // this needs to be false unless otherwise set, otherwise when we change the entity code, the previous data will be returned for a while
+      select: queryOptions?.select,
     },
   );
 };
@@ -50,9 +49,9 @@ export const useEntitiesWithLocation = (
   projectCode?: string,
   entityCode?: string,
   axiosConfig?: AxiosRequestConfig,
-  queryOptions: QueryObserverOptions = {},
-) =>
-  useEntities(
+  queryOptions: QueryOptions = {},
+) => {
+  return useEntities(
     projectCode,
     entityCode,
     {
@@ -79,3 +78,4 @@ export const useEntitiesWithLocation = (
       ...queryOptions,
     },
   );
+};

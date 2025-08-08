@@ -1,21 +1,16 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
+import { SurveyModel as BaseSurveyModel, SurveyRecord as BaseSurveyRecord } from '@tupaia/database';
 
-import { MaterializedViewLogDatabaseModel, SurveyType as BaseSurveyType } from '@tupaia/database';
-
-class SurveyType extends BaseSurveyType {
+class SurveyRecord extends BaseSurveyRecord {
   static meditrakConfig = {
     minAppVersion: '0.0.1',
   };
 }
 
-export class SurveyModel extends MaterializedViewLogDatabaseModel {
+export class SurveyModel extends BaseSurveyModel {
   notifiers = [onChangeUpdateDataGroup];
 
-  get DatabaseTypeClass() {
-    return SurveyType;
+  get DatabaseRecordClass() {
+    return SurveyRecord;
   }
 
   meditrakConfig = {

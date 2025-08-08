@@ -4,11 +4,9 @@ import {
   stringifyQuery,
   createBasicHeader,
   createBearerHeader,
+  requireEnv,
 } from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from './refreshAndSaveAccessToken';
-
-const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
-const DEFAULT_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
 
 /**
  * Send request to Central server and handle responses.
@@ -22,17 +20,19 @@ const DEFAULT_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWO
  * @param {object} authHeader
  *   To overwrite the default Authorization header, e.g. if using an access token
  */
-export const fetchFromCentralServer = async (
-  endpoint,
-  payload,
-  queryParameters,
-  authHeader = DEFAULT_AUTH_HEADER,
-) => {
-  const url = stringifyQuery(process.env.TUPAIA_APP_SERVER_URL, endpoint, queryParameters);
+export const fetchFromCentralServer = async (endpoint, payload, queryParameters, authHeader) => {
+  const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
+  const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
+  const DEFAULT_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
+  const url = stringifyQuery(
+    process.env.TUPAIA_APP_SERVER_URL || 'http://localhost:8090/v2',
+    endpoint,
+    queryParameters,
+  );
   const config = {
     method: payload ? 'POST' : 'GET',
     headers: {
-      Authorization: authHeader,
+      Authorization: authHeader || DEFAULT_AUTH_HEADER,
       'Content-Type': 'application/json',
     },
   };

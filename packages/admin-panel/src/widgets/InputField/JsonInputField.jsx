@@ -1,16 +1,12 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
+import { FormLabel } from '@material-ui/core';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import { InputField } from './InputField';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../../utilities';
+import { EditorInputField } from '../../editor';
 
 const getJsonFieldValues = value => {
   if (value) {
@@ -31,21 +27,21 @@ const DEFAULT_FIELD_TYPE = 'text';
 
 const GreyCard = styled(Card)`
   background: #f9f9f9;
-  margin-bottom: 20px;
 `;
 
-const Container = styled.div`
+const Container = styled.fieldset`
   position: relative;
-  margin-bottom: 20px;
+  border: none;
+  padding: 0px;
 `;
 
-const CardLabel = styled.label`
-  color: rgb(111, 123, 130);
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 18px;
+const CardLabel = styled(FormLabel).attrs({
+  component: 'legend',
+})`
   display: block;
-  margin-bottom: 3px;
+
+  font-size: 1rem;
+  margin-block-end: 0.6rem;
 `;
 
 export const JsonInputField = props => {
@@ -58,6 +54,8 @@ export const JsonInputField = props => {
     secondaryLabel,
     variant,
     recordData,
+    required,
+    error,
   } = props;
   const jsonFieldValues = getJsonFieldValues(value);
   const jsonFieldSchema = getJsonFieldSchema(value, props);
@@ -70,7 +68,9 @@ export const JsonInputField = props => {
 
   return (
     <Container>
-      <CardLabel gutterBottom>{label}</CardLabel>
+      <CardLabel gutterBottom required={required} error={error}>
+        {label}
+      </CardLabel>
       {secondaryLabel && <Typography gutterBottom>{secondaryLabel}</Typography>}
       <CardVariant variant="outlined">
         <CardContent>
@@ -81,19 +81,21 @@ export const JsonInputField = props => {
               }
               return true;
             })
-            .map(
-              ({
+            .map(field => {
+              const {
                 label: fieldLabel,
                 fieldName,
                 secondaryLabel: fieldSecondaryLabel,
                 type = DEFAULT_FIELD_TYPE,
                 csv,
                 ...inputFieldProps
-              }) => (
-                <InputField
+              } = field;
+              return (
+                <EditorInputField
                   id={`inputField-${labelToId(fieldName)}`}
                   key={fieldName}
                   label={fieldLabel}
+                  source={fieldName}
                   secondaryLabel={fieldSecondaryLabel}
                   value={jsonFieldValues[fieldName]}
                   inputKey={fieldName}
@@ -101,9 +103,10 @@ export const JsonInputField = props => {
                   disabled={disabled}
                   type={type}
                   {...inputFieldProps}
+                  editKey={fieldName}
                 />
-              ),
-            )}
+              );
+            })}
         </CardContent>
       </CardVariant>
     </Container>
@@ -119,6 +122,8 @@ JsonInputField.propTypes = {
   secondaryLabel: PropTypes.string,
   variant: PropTypes.string,
   recordData: PropTypes.object,
+  required: PropTypes.bool,
+  error: PropTypes.bool,
 };
 
 JsonInputField.defaultProps = {
@@ -127,4 +132,6 @@ JsonInputField.defaultProps = {
   secondaryLabel: null,
   variant: null,
   recordData: {},
+  required: false,
+  error: false,
 };

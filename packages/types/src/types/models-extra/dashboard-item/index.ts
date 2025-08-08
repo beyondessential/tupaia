@@ -1,16 +1,15 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import type {
   MatrixConfig,
   PresentationOptionCondition,
   MatrixPresentationOptions,
+  ConditionsObject,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
+  PresentationOptionRange,
+  MatrixVizBuilderConfig,
+  MatrixEntityCell,
 } from './matricies';
 import type { ComponentConfig } from './components';
 import type { ChartConfig, ChartPresentationOptions } from './charts';
@@ -43,6 +42,7 @@ export {
   BaseChartConfig,
   CartesianChartConfig,
   PieChartPresentationOptions,
+  PieChartSegmentConfig,
   BarChartPresentationOptions,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
@@ -56,11 +56,14 @@ export {
  */
 export type DashboardItemConfig = ChartConfig | ComponentConfig | MatrixConfig | ViewConfig;
 
-export { ValueType, VizPeriodGranularity } from './common';
+export { ValueType, ExportPresentationOptions, DatePickerOffsetSpec } from './common';
 export type {
   MatrixConfig,
+  MatrixEntityCell,
+  MatrixVizBuilderConfig,
   PresentationOptionCondition,
   MatrixPresentationOptions,
+  ConditionsObject,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
@@ -78,6 +81,7 @@ export type {
   ViewPresentationOptions,
   ChartPresentationOptions,
   ComponentConfig,
+  PresentationOptionRange,
 };
 
 export type PresentationOptions =

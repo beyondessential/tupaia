@@ -1,13 +1,11 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+
+import { LoadingScreen } from '@tupaia/ui-components';
+
 import { Modal as BaseModal } from '../../../components';
-import { useDashboard } from '../utils';
+import { useDashboardContext } from '../utils';
 import { ExportFormats, ExportSettingsContextProvider } from '..';
 import { SelectVisualisation } from './SelectVisualisations';
 import { ExportConfig } from './ExportConfig';
@@ -43,7 +41,7 @@ const Container = styled.div`
   button {
     text-transform: none;
   }
-  .loading-screen {
+  ${LoadingScreen} {
     background-color: ${({ theme }) => theme.palette.background.paper};
     border: 0;
     button {
@@ -70,7 +68,7 @@ const EXPORT_SETTINGS_SCREEN = 'EXPORT_SETTINGS';
 
 export const ExportDashboard = () => {
   const [selectedDashboardItems, setSelectedDashboardItems] = useState<string[]>([]);
-  const { exportModalOpen, toggleExportModal } = useDashboard();
+  const { exportModalOpen, toggleExportModal } = useDashboardContext();
   const [screen, setScreen] = useState(SELECT_VISUALISATIONS_SCREEN);
   const onNext = () => setScreen(EXPORT_SETTINGS_SCREEN);
   const onCloseModal = () => {
@@ -86,6 +84,9 @@ export const ExportDashboard = () => {
           exportFormat: ExportFormats.PNG,
           exportWithLabels: false,
           exportWithTable: true,
+          exportWithTableDisabled: false,
+          exportDescription: '',
+          separatePagePerItem: true,
         }}
       >
         <Wrapper>

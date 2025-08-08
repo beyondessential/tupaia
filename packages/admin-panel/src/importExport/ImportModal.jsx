@@ -1,25 +1,13 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import ImportIcon from '@material-ui/icons/Publish';
-import {
-  Button,
-  Dialog,
-  DialogFooter,
-  DialogHeader,
-  FileUploadField,
-  LightOutlinedButton,
-  OutlinedButton,
-} from '@tupaia/ui-components';
-import { ModalContentProvider, InputField } from '../widgets';
-import { useApi } from '../utilities/ApiProvider';
-import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS, DATA_CHANGE_ERROR } from '../table/constants';
+import { FileUploadField, Modal } from '@tupaia/ui-components';
+import { InputField } from '../widgets';
+import { useApiContext } from '../utilities/ApiProvider';
+import { DATA_CHANGE_ERROR, DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS } from '../table/constants';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
+import { ActionButton } from '../editor';
+import { ImportIcon } from '../icons';
 
 const STATUS = {
   IDLE: 'idle',
@@ -43,17 +31,14 @@ export const ImportModalComponent = React.memo(
     getFinishedMessage,
     confirmButtonText,
     cancelButtonText,
-    uploadButtonText,
-    noFileMessage,
   }) => {
-    const api = useApi();
+    const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
     const [finishedMessage, setFinishedMessage] = useState(null);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [error, setError] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [files, setFiles] = useState([]);
-    const [fileName, setFileName] = useState(noFileMessage);
 
     const handleOpen = () => setIsOpen(true);
 
@@ -66,25 +51,23 @@ export const ImportModalComponent = React.memo(
 
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
-      setErrorMessage(null);
+      setError(null);
       setFinishedMessage(null);
       setFiles([]);
-      setFileName(noFileMessage);
     };
 
     const handleClose = () => {
       setStatus(STATUS.IDLE);
-      setErrorMessage(null);
+      setError(null);
       setFinishedMessage(null);
       setIsOpen(false);
       setValues({});
       setFiles([]);
-      setFileName(noFileMessage);
     };
 
     const handleSubmit = async event => {
       event.preventDefault();
-      setErrorMessage(null);
+      setError(null);
       setFinishedMessage(null);
       setStatus(STATUS.LOADING);
       changeRequest();
@@ -107,111 +90,110 @@ export const ImportModalComponent = React.memo(
           setFinishedMessage(getFinishedMessage(response));
         }
         changeSuccess();
-      } catch (error) {
+      } catch (e) {
+        // Print a more descriptive network timeout error
+        // TODO: Remove this after https://github.com/beyondessential/tupaia-backlog/issues/1009 is fixed
+        const errorMessage =
+          e.message === 'Network request timed out'
+            ? 'Request timed out, but may have still succeeded. Please wait 2 minutes and check to see if the data has changed'
+            : e.message;
         setStatus(STATUS.ERROR);
         setFinishedMessage(null);
-        setErrorMessage(error.message);
+        setError({
+          ...e,
+          message: errorMessage,
+        });
         changeError();
       }
     };
 
-    // Print a more descriptive network timeout error
-    // TODO: Remove this after https://github.com/beyondessential/tupaia-backlog/issues/1009 is fixed
-    const fileErrorMessage =
-      errorMessage === 'Network request timed out'
-        ? 'Request timed out, but may have still succeeded. Please wait 2 minutes and check to see if the data has changed'
-        : errorMessage;
-
-    const renderButtons = useCallback(() => {
+    const getButtons = () => {
       switch (status) {
         case STATUS.TIMEOUT:
         case STATUS.SUCCESS:
-          return <Button onClick={handleClose}>Done</Button>;
+          return [
+            {
+              text: 'Done',
+              onClick: handleClose,
+            },
+          ];
         case STATUS.ERROR:
-          return (
-            <>
-              <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
-              <Button disabled>{confirmButtonText}</Button>
-            </>
-          );
+          return [
+            {
+              text: 'Close',
+              onClick: handleDismiss,
+              variant: 'contained',
+            },
+          ];
         default:
-          return (
-            <>
-              <OutlinedButton id="form-button-cancel" onClick={handleClose}>
-                {cancelButtonText}
-              </OutlinedButton>
-              <Button
-                id="form-button-import"
-                type="submit"
-                disabled={files.length === 0}
-                isLoading={status === STATUS.LOADING}
-                onClick={handleSubmit}
-              >
-                {confirmButtonText}
-              </Button>
-            </>
-          );
+          return [
+            {
+              text: cancelButtonText,
+              onClick: handleClose,
+              variant: 'outlined',
+              id: 'form-button-cancel',
+            },
+            {
+              text: confirmButtonText,
+              disabled: files.length === 0 || status === STATUS.LOADING,
+              isLoading: status === STATUS.LOADING,
+              onClick: handleSubmit,
+              id: 'form-button-import',
+              type: 'submit',
+            },
+          ];
       }
-    }, [status, files, handleDismiss, handleClose, handleSubmit]);
+    };
+
+    const buttons = getButtons();
 
     return (
       <>
-        <Dialog onClose={handleClose} open={isOpen} disableBackdropClick>
-          <form>
-            <DialogHeader
-              onClose={handleClose}
-              title={fileErrorMessage ? 'Error' : title}
-              color={fileErrorMessage ? 'error' : 'textPrimary'}
-            />
-            <ModalContentProvider
-              errorMessage={fileErrorMessage}
-              isLoading={status === STATUS.LOADING}
-            >
-              {finishedMessage ? (
-                <>{finishedMessage}</>
-              ) : (
-                <>
-                  <p>{subtitle}</p>
-                  {queryParameters
-                    .filter(({ visibilityCriteria }) =>
-                      checkVisibilityCriteriaAreMet(visibilityCriteria, values),
-                    )
-                    .map(queryParameter => {
-                      const { parameterKey, ...restOfProps } = queryParameter;
-                      return (
-                        <InputField
-                          key={parameterKey}
-                          inputKey={parameterKey}
-                          value={values[parameterKey]}
-                          {...restOfProps}
-                          onChange={handleValueChange}
-                          id={`field-${labelToId(parameterKey)}`}
-                        />
-                      );
-                    })}
-                  <FileUploadField
-                    onChange={({ target }, newName) => {
-                      setFileName(newName);
-                      setFiles(Array.from(target.files));
-                    }}
-                    name="file-upload"
-                    fileName={fileName}
-                    multiple={actionConfig.multiple}
-                    textOnButton={uploadButtonText}
-                  />
-                </>
-              )}
-            </ModalContentProvider>
-            <DialogFooter>{renderButtons()}</DialogFooter>
-          </form>
-        </Dialog>
-        <LightOutlinedButton
-          id="page-import-button"
-          startIcon={<ImportIcon />}
-          onClick={handleOpen}
+        <Modal
+          onClose={handleClose}
+          isOpen={isOpen}
+          disableBackdropClick
+          title={error ? 'Error' : title}
+          error={error}
+          isLoading={status === STATUS.LOADING}
+          buttons={buttons}
         >
+          <form>
+            {finishedMessage ? (
+              <>{finishedMessage}</>
+            ) : (
+              <>
+                <p>{subtitle}</p>
+                {queryParameters
+                  .filter(({ visibilityCriteria }) =>
+                    checkVisibilityCriteriaAreMet(visibilityCriteria, values),
+                  )
+                  .map(queryParameter => {
+                    const { parameterKey, ...restOfProps } = queryParameter;
+                    return (
+                      <InputField
+                        key={parameterKey}
+                        inputKey={parameterKey}
+                        value={values[parameterKey]}
+                        {...restOfProps}
+                        onChange={handleValueChange}
+                        id={`field-${labelToId(parameterKey)}`}
+                      />
+                    );
+                  })}
+                <FileUploadField
+                  onChange={newFiles => setFiles(newFiles ?? [])}
+                  name="file-upload"
+                  multiple={actionConfig.multiple}
+                  accept={actionConfig.accept}
+                />
+              </>
+            )}
+          </form>
+        </Modal>
+        <ActionButton id="page-import-button" startIcon={<ImportIcon />} onClick={handleOpen}>
           {confirmButtonText}
-        </LightOutlinedButton>
+        </ActionButton>
       </>
     );
   },
@@ -230,7 +212,6 @@ ImportModalComponent.propTypes = {
   confirmButtonText: PropTypes.string,
   cancelButtonText: PropTypes.string,
   uploadButtonText: PropTypes.string,
-  noFileMessage: PropTypes.string,
 };
 
 ImportModalComponent.defaultProps = {
@@ -243,7 +224,6 @@ ImportModalComponent.defaultProps = {
   confirmButtonText: 'Import',
   cancelButtonText: 'Cancel',
   uploadButtonText: 'Choose file',
-  noFileMessage: 'No file chosen',
 };
 
 const mapDispatchToProps = dispatch => ({

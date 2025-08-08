@@ -8,12 +8,12 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/data-broker"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && yarn run package:build:ts",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "setup-test": "yarn workspace @tupaia/database setup-test-database",
@@ -33,22 +33,25 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "@tupaia/weather-api": "workspace:*",
-    "case": "^1.5.5",
+    "case": "^1.6.3",
     "date-fns": "^2.30.0",
     "lodash.flatten": "^4.4.0",
     "lodash.groupby": "^4.6.0",
     "lodash.isequal": "^4.5.0",
     "lodash.keyby": "^4.6.0",
     "lodash.pickby": "^4.6.0",
-    "moment": "^2.24.0",
-    "winston": "^3.3.3"
+    "moment": "^2.24.0"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "@types/lodash.flatten": "^4.4.0",
     "@types/lodash.groupby": "^4.6.0",
     "@types/lodash.isequal": "^4.5.0",
-    "@types/lodash.keyby": "^4.6.0",
+    "@types/lodash.keyby": "^4.6.9",
     "@types/lodash.pickby": "^4.6.0",
-    "npm-run-all": "^4.1.5"
+    "jest": "^29.7.0",
+    "jest-extended": "^0.11.5",
+    "mockdate": "^3.0.5",
+    "rimraf": "^6.0.1"
   }
 }

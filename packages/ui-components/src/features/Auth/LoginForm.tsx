@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LinkProps } from 'react-router-dom-v6';
@@ -47,6 +43,17 @@ interface LoginFormProps {
   message?: Message | null;
   formContext: ReturnType<typeof useForm>;
   className?: string;
+  RegisterLinkComponent?: React.ReactNode;
+  labels?: {
+    title?: string;
+    subtitle?: string;
+    email?: string;
+    password?: string;
+    forgotPassword?: string;
+    login?: string;
+    dontHaveAnAccount?: string;
+    register?: string;
+  };
 }
 
 export const LoginForm = ({
@@ -58,13 +65,27 @@ export const LoginForm = ({
   message,
   formContext,
   className,
+  RegisterLinkComponent,
+  labels,
 }: LoginFormProps) => {
+  const showRegisterLink = registerLink || RegisterLinkComponent;
+  const {
+    title = 'Log in',
+    subtitle = 'Enter your details below to log in',
+    email = 'Email',
+    password = 'Password',
+    forgotPassword = 'Forgot password?',
+    login = 'Log in',
+    dontHaveAnAccount = 'Don’t have an account?',
+    register = 'Register here',
+  } = labels || {};
   return (
-    <Wrapper title="Log in" subtitle="Enter your details below to log in" className={className}>
+    <Wrapper title={title} subtitle={subtitle} className={className}>
       {error && <Typography color="error">{error.message}</Typography>}
       {message && <EmailVerificationDisplay message={message} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
         <FormInput
+          autoComplete="email"
           autoFocus
           id="email"
           name="email"
@@ -72,27 +93,33 @@ export const LoginForm = ({
           options={FORM_FIELD_VALIDATION.EMAIL}
           required
           Input={AuthFormTextField}
-          label="Email"
+          label={email}
           disabled={isLoading}
         />
         <FormInput
+          autoComplete="current-password"
           id="password"
           name="password"
           type="password"
           required
           Input={AuthFormTextField}
-          label="Password"
+          label={password}
           disabled={isLoading}
         />
-        <ForgotPasswordText as={RouterLink} to={forgotPasswordLink}>
-          Forgot password?
-        </ForgotPasswordText>
+        {forgotPasswordLink && (
+          <ForgotPasswordText as={RouterLink} to={forgotPasswordLink}>
+            {forgotPassword}
+          </ForgotPasswordText>
+        )}
         <AuthSubmitButton type="submit" isLoading={isLoading}>
-          Log in
+          {login}
         </AuthSubmitButton>
-        <AuthLink>
-          Don&rsquo;t have an account? <RouterLink to={registerLink}>Register here</RouterLink>
-        </AuthLink>
+        {showRegisterLink && (
+          <AuthLink>
+            {dontHaveAnAccount}
+            {RegisterLinkComponent || <RouterLink to={registerLink}>{register}</RouterLink>}
+          </AuthLink>
+        )}
       </StyledForm>
     </Wrapper>
   );

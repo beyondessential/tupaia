@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebSubscribeDashboardRequest } from '@tupaia/types';
@@ -82,7 +77,7 @@ export class SubscribeDashboardRoute extends Route<SubscribeDashboardRequest> {
       );
     }
 
-    const [upsertedEntry] = await await ctx.services.central.fetchResources(
+    const [upsertedEntry] = await ctx.services.central.fetchResources(
       'dashboardMailingListEntries',
       {
         filter: {

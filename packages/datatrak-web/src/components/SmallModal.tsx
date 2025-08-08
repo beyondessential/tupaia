@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { To } from 'react-router';
@@ -11,14 +6,18 @@ import { Button, Modal } from '.';
 
 const Wrapper = styled.div`
   width: 25rem;
-  padding: 0 2rem 1rem 2rem;
+  max-width: 100%;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding: 0 2rem 1rem;
+  }
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   width: 100%;
   padding-top: 1.8rem;
+  gap: 0.5rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     flex-direction: row;
     justify-content: center;
@@ -35,10 +34,8 @@ const Heading = styled(Typography).attrs({
 const ModalButton = styled(Button).attrs({
   fullWidth: true,
 })`
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    & + & {
-      margin: 1rem 0 0 0;
-    }
+  &.MuiButtonBase-root.MuiButton-root {
+    margin-left: 0;
   }
 `;
 
@@ -54,6 +51,7 @@ interface ModalProps {
   primaryButton?: ButtonProps | null;
   secondaryButton?: ButtonProps | null;
   children?: ReactNode;
+  isLoading?: boolean;
 }
 
 export const SmallModal = ({
@@ -63,6 +61,7 @@ export const SmallModal = ({
   primaryButton,
   secondaryButton,
   children,
+  isLoading = false,
 }: ModalProps) => {
   return (
     <Modal open={open} onClose={onClose}>
@@ -80,7 +79,9 @@ export const SmallModal = ({
             </ModalButton>
           )}
           {primaryButton && (
-            <ModalButton onClick={primaryButton.onClick}>{primaryButton.label}</ModalButton>
+            <ModalButton onClick={primaryButton.onClick} isLoading={isLoading}>
+              {primaryButton.label}
+            </ModalButton>
           )}
         </ButtonWrapper>
       </Wrapper>

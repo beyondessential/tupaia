@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { FieldValue, Row } from '../../types';
 
 /**
@@ -27,7 +22,7 @@ export class TransformTable {
    * into a TransformTable
    */
   public static fromRows(rowObjects: Row[], columnOrder?: string[]) {
-    const columnsInRows = columnOrder || Array.from(new Set(rowObjects.map(Object.keys).flat()));
+    const columnsInRows = columnOrder || Array.from(new Set(rowObjects.flatMap(Object.keys)));
     return new TransformTable(columnsInRows, rowObjects);
   }
 

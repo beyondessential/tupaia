@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
-
 import assert from 'assert';
 import { Request } from 'express';
 
@@ -152,7 +146,9 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
     mapOverlayGroupRelations: MapOverlayGroupRelation[],
   ) => {
     const { central: centralApi } = this.req.ctx.services;
-    await this.upsertMapOverlayGroups(mapOverlayGroups.map(mog => snakeKeys(mog)));
+    await this.upsertMapOverlayGroups(
+      mapOverlayGroups.map(mog => snakeKeys(mog) as MapOverlayGroupRecord),
+    );
     const mapOverlayGroupRecords = await centralApi.fetchResources('mapOverlayGroups', {
       filter: {
         code: mapOverlayGroupRelations.map(mogr => mogr.mapOverlayGroupCode),
@@ -171,7 +167,7 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
           ...mapOverlayGroupRelation,
           map_overlay_group_id: mapOverlayGroupId,
           child_id: vizId,
-        });
+        }) as MapOverlayGroupRelationRecord;
       },
     );
     await this.upsertMapOverlayGroupRelations(relationsToUpsert);

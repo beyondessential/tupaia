@@ -1,14 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { CssColor } from '../../../css';
 import {
   BaseChartConfig,
   CartesianChartConfig,
   CartesianChartPresentationOptions,
   ChartType,
-  ReferenceLinesConfig,
 } from './common';
 
 export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
@@ -17,9 +12,6 @@ export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
    * @description This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}
    */
   valueFormat?: string;
-  referenceLines?: {
-    targetLine?: ReferenceLinesConfig;
-  };
 };
 
 /**
@@ -27,7 +19,11 @@ export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
  */
 export type BarChartConfig = CartesianChartConfig & {
   chartType: ChartType.Bar;
-  presentationOptions: BarChartPresentationOptions;
+
+  /**
+   * @description Common options for configuring the chart presentation
+   */
+  presentationOptions?: BarChartPresentationOptions;
 };
 
 export const isBarChartConfig = (config: BaseChartConfig): config is BarChartConfig =>

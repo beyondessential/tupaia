@@ -1,15 +1,10 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import get from 'lodash.get';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ChartType, ValueType, VizPeriodGranularity } from '@tupaia/types';
-import { CartesianChartViewContent, LooseObject } from '../../types';
+import { CartesianChartConfig, ChartType, ValueType } from '@tupaia/types';
+import { LooseObject } from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
 
@@ -62,7 +57,7 @@ const Box = styled.div`
 
 interface ChartTooltipProps
   extends Pick<
-    CartesianChartViewContent,
+    CartesianChartConfig,
     | 'presentationOptions'
     | 'chartConfig'
     | 'chartType'
@@ -127,7 +122,11 @@ const MultiValueTooltip = ({
         {headline ||
           (getIsTimeSeries([data]) &&
             periodGranularity &&
-            formatTimestampForChart(timestamp, periodGranularity))}
+            formatTimestampForChart(
+              timestamp,
+              periodGranularity,
+              presentationOptions?.periodTickFormat,
+            ))}
       </Heading>
       <List>{valueLabels}</List>
     </TooltipContainer>
@@ -138,6 +137,7 @@ const SingleValueTooltip = ({
   valueType,
   payload,
   periodGranularity,
+  presentationOptions,
   labelType,
 }: ChartTooltipPropsWithData) => {
   const data = payload[0].payload;
@@ -150,7 +150,13 @@ const SingleValueTooltip = ({
     <TooltipContainer>
       {getIsTimeSeries([payload[0].payload]) && periodGranularity ? (
         <>
-          <Heading>{formatTimestampForChart(timestamp, periodGranularity)}</Heading>
+          <Heading>
+            {formatTimestampForChart(
+              timestamp,
+              periodGranularity,
+              presentationOptions?.periodTickFormat,
+            )}
+          </Heading>
           <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
         </>
       ) : (
@@ -163,10 +169,8 @@ const SingleValueTooltip = ({
 const NoDataTooltip = ({
   payload,
   periodGranularity,
-}: {
-  payload: any[];
-  periodGranularity?: `${VizPeriodGranularity}`;
-}) => {
+  presentationOptions,
+}: ChartTooltipPropsWithData) => {
   const data = payload[0]?.payload;
   const { name = undefined, timestamp = undefined } = data || {};
 
@@ -176,7 +180,11 @@ const NoDataTooltip = ({
         {name ||
           (getIsTimeSeries([data]) &&
             periodGranularity &&
-            formatTimestampForChart(timestamp, periodGranularity))}
+            formatTimestampForChart(
+              timestamp,
+              periodGranularity,
+              presentationOptions?.periodTickFormat,
+            ))}
       </Heading>
       <Text>No Data</Text>
     </TooltipContainer>

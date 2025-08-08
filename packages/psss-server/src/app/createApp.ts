@@ -1,9 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import { OrchestratorApiBuilder, handleWith } from '@tupaia/server-boilerplate';
+import { Request } from 'express';
+import {
+  OrchestratorApiBuilder,
+  RequiresSessionAuthHandler,
+  handleWith,
+} from '@tupaia/server-boilerplate';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   SaveWeeklyReportRequest,
@@ -30,12 +30,15 @@ import {
 import { PsssSessionModel } from '../models';
 import { hasPSSSAccess } from '../utils';
 
+const authHandlerProvider = (req: Request) => new RequiresSessionAuthHandler(req);
+
 /**
  * Set up express server with middleware,
  */
 export function createApp(db = new TupaiaDatabase()) {
   const builder = new OrchestratorApiBuilder(db, 'psss')
     .useSessionModel(PsssSessionModel)
+    .attachApiClientToContext(authHandlerProvider)
     .verifyLogin(hasPSSSAccess)
 
     /**

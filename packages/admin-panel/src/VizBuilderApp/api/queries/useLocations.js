@@ -1,21 +1,18 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { useEffect } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import debounce from 'lodash.debounce';
 
 import { get } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
-const useQueryResponse = (project, search) =>
+const useQueryResponse = (projectCode, search) =>
   useQuery(
-    ['hierarchy', project, search],
+    ['hierarchy', projectCode, search],
     () =>
-      project
-        ? get(`hierarchy/${project}/${project}`, {
-            params: { search, fields: 'name,code' },
+      projectCode
+        ? get(`hierarchy/${projectCode}/${projectCode}`, {
+            // limit to 1000 locations for performance
+            params: { search, fields: 'name,code', pageSize: 1000 },
           })
         : [],
     {
@@ -24,8 +21,8 @@ const useQueryResponse = (project, search) =>
     },
   );
 
-export const useLocations = (project, search) => {
-  const queryResponse = useQueryResponse(project, search);
+export const useLocations = (projectCode, search) => {
+  const queryResponse = useQueryResponse(projectCode, search);
   const { refetch } = queryResponse;
   useEffect(() => {
     const debouncedSearch = debounce(() => {
@@ -33,7 +30,7 @@ export const useLocations = (project, search) => {
     }, 100);
     debouncedSearch();
     return debouncedSearch.cancel;
-  }, [project, search]);
+  }, [projectCode, search]);
 
   return queryResponse;
 };

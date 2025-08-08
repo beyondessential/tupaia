@@ -1,15 +1,11 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
 
 import { encryptPassword } from '@tupaia/auth';
 import { randomEmail } from '@tupaia/utils';
 import { getAuthorizationHeader, TestableApp } from '../testUtilities';
+import { configureEnv } from '../../configureEnv';
 
+configureEnv();
 describe('Verify Email', () => {
   const app = new TestableApp();
   const { models } = app;

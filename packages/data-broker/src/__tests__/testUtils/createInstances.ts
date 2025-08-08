@@ -1,12 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { EntityModel, EntityType as BaseEntityType, TYPES } from '@tupaia/database';
-import { DataElement, DataGroup, DataServiceSyncGroup, Entity, EntityType } from '../../types';
+import { EntityModel, EntityRecord as BaseEntityRecord, RECORDS } from '@tupaia/database';
+import { DataElement, DataGroup, DataServiceSyncGroup, Entity, EntityRecord } from '../../types';
 
 const createInstances = <K extends string, T, S>(
   fieldsByKey: Record<K, T>,
@@ -34,7 +29,7 @@ export const dataElement = (fields: DataElementFields): DataElement => {
   return { code, service_type, config, dataElementCode, permission_groups };
 };
 export const dataElementType = (fields: DataElementFields) =>
-  ({ ...dataElement(fields), databaseType: TYPES.DATA_ELEMENT } as DataElement);
+  ({ ...dataElement(fields), databaseRecord: RECORDS.DATA_ELEMENT } as DataElement);
 export const dataElements = <K extends string>(fieldsByKey: Record<K, DataElementFields>) =>
   createInstances(fieldsByKey, dataElement);
 export const dataElementTypes = <K extends string>(fieldsByKey: Record<K, DataElementFields>) =>
@@ -50,7 +45,7 @@ export const dataGroup = (fields: DataGroupFields): DataGroup => {
   return { code, service_type, config };
 };
 export const dataGroupType = (fields: DataGroupFields) =>
-  ({ ...dataGroup(fields), databaseType: TYPES.DATA_GROUP } as DataGroup);
+  ({ ...dataGroup(fields), databaseRecord: RECORDS.DATA_GROUP } as DataGroup);
 export const dataGroups = <K extends string>(fieldsByKey: Record<K, DataGroupFields>) =>
   createInstances(fieldsByKey, dataGroup);
 export const dataGroupTypes = <K extends string>(fieldsByKey: Record<K, DataGroupFields>) =>
@@ -78,7 +73,7 @@ export const dataServiceSyncGroup = (fields: DataServiceSyncGroupFields): DataSe
 export const dataServiceSyncGroupType = (fields: DataServiceSyncGroupFields) =>
   ({
     ...dataServiceSyncGroup(fields),
-    databaseType: TYPES.DATA_SERVICE_SYNC_GROUP,
+    databaseRecord: RECORDS.DATA_SERVICE_SYNC_GROUP,
   } as DataServiceSyncGroup);
 export const dataServiceSyncGroups = <K extends string>(
   fieldsByKey: Record<K, DataServiceSyncGroupFields>,
@@ -99,12 +94,12 @@ export const entity = (fields: EntityFields): Entity => {
   const { code, country_code, type, name = code, config = {}, metadata = {} } = fields;
   return { code, country_code, type, name, config, metadata };
 };
-export const entityType = (fields: Partial<EntityFields & BaseEntityType>) => {
+export const entityType = (fields: Partial<EntityFields & BaseEntityRecord>) => {
   const entityFields: EntityFields = { ...fields, ...entity(fields as EntityFields) };
-  return new BaseEntityType(EntityModel, entityFields) as EntityType;
+  return new BaseEntityRecord(EntityModel, entityFields) as EntityRecord;
 };
 export const entities = <K extends string>(fieldsByKey: Record<K, EntityFields>) =>
   createInstances(fieldsByKey, entity);
 export const entityTypes = <K extends string>(
-  fieldsByKey: Record<K, Partial<EntityFields & BaseEntityType>>,
+  fieldsByKey: Record<K, Partial<EntityFields & BaseEntityRecord>>,
 ) => createInstances(fieldsByKey, entityType);

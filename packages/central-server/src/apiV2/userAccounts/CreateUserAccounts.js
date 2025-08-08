@@ -1,16 +1,10 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
 import { CreateHandler } from '../CreateHandler';
 import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   assertAdminPanelAccess,
+  assertAdminPanelAccessToCountry,
   assertAnyPermissions,
   assertBESAdminAccess,
-  hasTupaiaAdminPanelAccessToCountry,
 } from '../../permissions';
 
 /**
@@ -70,10 +64,8 @@ export class CreateUserAccounts extends CreateHandler {
       throw new Error(`No such country: ${countryName}`);
     }
 
-    const countryPermissionChecker = accessPolicy => {
-      if (!hasTupaiaAdminPanelAccessToCountry(accessPolicy, country.code)) {
-        throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${country.name}`);
-      }
+    const countryPermissionChecker = async accessPolicy => {
+      await assertAdminPanelAccessToCountry(accessPolicy, transactingModels, country.id);
 
       if (!accessPolicy.allows(country.code, permissionGroup.name)) {
         throw new Error(`Need ${permissionGroup.name} access to ${country.name}`);

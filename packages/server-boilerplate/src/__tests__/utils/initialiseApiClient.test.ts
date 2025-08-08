@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 describe('initialiseApiClient', () => {
   it.skip('creates when there are no records', () => {
     expect(1).toBe(1);

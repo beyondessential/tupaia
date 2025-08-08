@@ -1,11 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017-2020 Beyond Essential Systems Pty Ltd
- */
-
 // @ts-expect-error pg has no types
 import { types as pgTypes } from 'pg';
-// @ts-expect-error must upgrade knex to get types. Note: last upgrade attempt broke json field querying
 import knex from 'knex';
 
 import { getConnectionConfig } from './getConnectionConfig';

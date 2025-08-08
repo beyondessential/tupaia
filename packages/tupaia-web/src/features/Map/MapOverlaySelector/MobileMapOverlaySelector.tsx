@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
@@ -9,8 +5,8 @@ import { Typography } from '@material-ui/core';
 import { ArrowBack, ArrowForwardIos } from '@material-ui/icons';
 import { Button } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../../constants';
-import { getMobileTopBarHeight } from '../../../utils';
-import { useMapOverlays } from '../../../api/queries';
+import { getFriendlyEntityType, getMobileTopBarHeight } from '../../../utils';
+import { useEntity, useMapOverlays } from '../../../api/queries';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
@@ -32,11 +28,11 @@ const ExpandButton = styled(Button)`
   align-items: center;
   border-radius: 0;
   padding: 1rem;
-  background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.menuBackground};
   position: relative;
   &:hover,
   &:focus {
-    background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
+    background-color: ${({ theme }) => theme.palette.overlaySelector.menuBackground};
   }
 `;
 
@@ -68,7 +64,7 @@ const OverlayMenu = styled.div<{
   width: 100%;
   position: fixed;
   bottom: 0;
-  background-color: ${({ theme }) => theme.mobile.background};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.mobile};
   overflow: auto;
   ${OverlayLibraryHeaderButton} {
     display: ${({ $expanded }) => ($expanded ? 'flex' : 'none')};
@@ -88,7 +84,7 @@ const MapOverlayTitle = styled(Typography).attrs({
 
 const TitleWrapper = styled.div`
   width: 100%;
-  background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.menuBackground};
   padding: 1rem;
   display: flex;
   justify-content: space-between;
@@ -113,7 +109,10 @@ export const MobileMapOverlaySelector = ({
   toggleOverlayLibrary,
 }: MobileMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
+  const { data: entity } = useEntity(projectCode, entityCode, true);
   const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
+
+  const friendlyEntityType = getFriendlyEntityType(entity?.type);
 
   return (
     <Wrapper>
@@ -146,7 +145,9 @@ export const MobileMapOverlaySelector = ({
           <ArrowWrapper>
             <ArrowBack />
           </ArrowWrapper>
-          <OverlayLibraryHeader>Overlay Library</OverlayLibraryHeader>
+          <OverlayLibraryHeader>
+            Overlay Library {friendlyEntityType && `(${friendlyEntityType})`}
+          </OverlayLibraryHeader>
         </OverlayLibraryHeaderButton>
         <OverlayListWrapper>
           {/* Use the entity code as a key so that the local state of the MapOverlayList resets between entities */}

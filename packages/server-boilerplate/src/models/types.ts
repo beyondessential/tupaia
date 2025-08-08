@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import { DatabaseModel, DatabaseType } from '@tupaia/database';
+import { DatabaseModel, DatabaseRecord } from '@tupaia/database';
 import { ObjectLikeKeys, ObjectLikeFields, Flatten } from '@tupaia/types';
 
 type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in' | '@>';
@@ -75,19 +70,20 @@ export type QueryOptions = {
   sort?: string[];
   rawSort?: string;
   joinWith?: string;
+  columns?: string[];
   joinCondition?: [string, string];
 };
 
-type BaseModelOverrides<Fields = unknown, Type = unknown> = {
-  find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type[]>;
-  findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type>;
-  findById: (id: string, customQueryOptions?: QueryOptions) => Promise<Type>;
+type BaseModelOverrides<Fields = unknown, RecordT = unknown> = {
+  find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<RecordT[]>;
+  findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<RecordT>;
+  findById: (id: string, customQueryOptions?: QueryOptions) => Promise<RecordT>;
   update: (whereCondition: DbFilter<Fields>, fieldsToUpdate: Partial<Fields>) => Promise<void>;
-  all: () => Promise<Type[]>;
+  all: () => Promise<RecordT[]>;
 };
 
-export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseType> = Omit<
+export type Model<BaseModel extends DatabaseModel, Fields, RecordT extends DatabaseRecord> = Omit<
   BaseModel,
   keyof BaseModelOverrides
 > &
-  BaseModelOverrides<Fields, Type>;
+  BaseModelOverrides<Fields, RecordT>;

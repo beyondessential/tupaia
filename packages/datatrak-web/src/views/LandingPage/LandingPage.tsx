@@ -1,96 +1,126 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
-import styled from 'styled-components';
-import { PageContainer as BasePageContainer } from '../../components';
-import { SurveySelectSection } from './SurveySelectSection';
-import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { LeaderboardSection } from './LeaderboardSection';
-import { ActivityFeedSection } from './ActivityFeedSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
-import { DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../constants';
+import styled, { css } from 'styled-components';
 
-const PageContainer = styled(BasePageContainer)`
+import { SafeAreaColumn } from '@tupaia/ui-components';
+
+import { useCurrentUserRecentSurveys } from '../../api';
+import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
+import { ActivityFeedSection } from './ActivityFeedSection';
+import { LeaderboardSection } from './LeaderboardSection';
+import { RecentSurveysSection } from './RecentSurveysSection';
+import { SurveyResponsesSection } from './SurveyResponsesSection';
+import { SurveySelectSection } from './SurveySelectSection';
+import { TasksSection } from './TasksSection';
+
+const PageContainer = styled(SafeAreaColumn).attrs({ component: 'main' })`
+  --body-block-size: calc(100dvb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
+  //                                                 ^~~~~~~~~~~~~~~~~~~ Header’s border-block-end-width
+  block-size: 100%;
   display: flex;
-  background: url('/landing-page-background.svg') center/cover no-repeat;
+  max-block-size: var(--body-block-size);
+  overflow-y: auto;
+  max-inline-size: 100%;
+  inline-size: 100%;
+
+  ${({ theme }) => {
+    const primaryColor = theme.palette.primary.main;
+    const backgroundColor = theme.palette.background.default;
+    return css`
+      background-image:
+        linear-gradient(
+          252deg,
+          oklch(from ${primaryColor} l c h / 14%) 2%,
+          oklch(from ${backgroundColor} l c h / 20%) 29%
+        ),
+        linear-gradient(
+          242deg,
+          oklch(from ${backgroundColor} l c h / 30%) 68%,
+          oklch(from ${primaryColor} l c h / 16%) 100%
+        );
+      @supports not (color: oklch(from black l c h)) {
+        background-image:
+          linear-gradient(252deg, ${primaryColor}24 2%, ${backgroundColor}33 29%),
+          linear-gradient(242deg, ${backgroundColor}4d 68%, ${primaryColor}28 100%);
+      }
+    `;
+  }};
 `;
 
 const PageBody = styled.div`
+  block-size: 100%;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 0;
-  width: 100%;
-  max-width: 85rem;
-  margin: 0 auto;
-  height: auto;
+  inline-size: 100%;
+  margin-block-end: ${BOTTOM_NAVIGATION_HEIGHT_SMALL}; // Padding accounts for safe area insets
+  margin-inline: auto;
+  max-inline-size: 88rem;
+  padding-block-start: 1rem;
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
 
+  // make the body fixed height on large screens
   ${({ theme }) => theme.breakpoints.up('md')} {
-    height: calc(100vh - ${HEADER_HEIGHT});
-    padding: 2rem 2.75rem 0.8rem 2.75rem;
-  }
-
-  ${DESKTOP_MEDIA_QUERY} {
-    padding-top: 4rem;
-    padding-bottom: 2.5rem;
+    block-size: var(--body-block-size);
+    margin-block-end: 0;
   }
 `;
 
-const Grid = styled.div`
-  flex: 1;
+const Grid = styled.div<{ $hasMultiple?: boolean }>`
   display: flex;
   flex-direction: column;
-  margin-top: 1rem;
-  min-height: 0; // This is needed to stop the grid overflowing the flex container
+  gap: 1.5rem;
+  margin-block: 1.5rem;
+  margin-inline: auto;
+  max-inline-size: 100%;
+  min-block-size: 50rem;
 
   .MuiButtonBase-root {
     margin-left: 0; // clear spacing of adjacent buttons
   }
 
   > section {
-    margin-bottom: 1rem;
     overflow: hidden;
   }
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    display: grid;
-    gap: 1.25rem;
-    grid-template-rows: auto auto;
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      'recentSurveys leaderboard'
-      'recentResponses activityFeed';
+  ${({ $hasMultiple, theme }) => {
+    const { up } = theme.breakpoints;
+    return css`
+      ${up('md')} {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 3fr)) minmax(0, 4fr);
+        padding-block: 1rem;
+        margin-block: 0;
+      }
 
-    > section {
-      margin: 0;
-      height: auto;
-    }
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    grid-template-columns: 23% 1fr 1fr 28%;
-    grid-template-areas:
-      'recentSurveys recentSurveys recentSurveys leaderboard'
-      'recentResponses activityFeed activityFeed leaderboard';
-    > div {
-      min-height: auto;
-    }
-  }
-
-  ${DESKTOP_MEDIA_QUERY} {
-    margin-top: 2.5rem;
-    gap: 1.81rem;
-  }
+      // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
+      ${$hasMultiple
+        ? css`
+            grid-template-areas:
+              '--surveySelect    --surveySelect  --surveySelect  --tasks'
+              '--recentSurveys   --recentSurveys --recentSurveys --tasks'
+              '--recentResponses --activityFeed  --activityFeed  --leaderboard';
+            grid-template-rows: repeat(3, minmax(0, auto));
+          `
+        : css`
+            grid-template-areas:
+              '--surveySelect    --surveySelect --surveySelect --tasks'
+              '--recentSurveys   --activityFeed --activityFeed --tasks'
+              '--recentResponses --activityFeed --activityFeed --leaderboard';
+            grid-template-rows: auto auto 1fr;
+          `}
+    `;
+  }}
 `;
 
 export const LandingPage = () => {
+  const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
+  const hasMoreThanOneSurvey = recentSurveys.length > 1;
+
   return (
     <PageContainer>
       <PageBody>
-        <SurveySelectSection />
-        <Grid>
+        <Grid $hasMultiple={hasMoreThanOneSurvey}>
+          <SurveySelectSection />
+          <TasksSection />
           <LeaderboardSection />
           <RecentSurveysSection />
           <SurveyResponsesSection />

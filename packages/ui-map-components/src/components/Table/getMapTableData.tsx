@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { getFormattedInfo } from '../../utils';
@@ -17,14 +13,16 @@ const processColumns = (serieses: Series[]) => {
     return [];
   }
 
-  const configColumns = serieses.map(column => {
-    return {
-      // @ts-ignore - The react table accessors don't work as strings if the key has a space so we
-      // need to use the function accessor. The row and column could be any type so we need to ignore
-      accessor: (row: any) => row[column.key],
-      Header: column.name,
-    };
-  });
+  const configColumns = serieses
+    .filter(column => !column.hideFromTable)
+    .map(column => {
+      return {
+        // @ts-ignore - The react table accessors don't work as strings if the key has a space so we
+        // need to use the function accessor. The row and column could be any type so we need to ignore
+        accessor: (row: any) => row[column.key],
+        Header: column.name,
+      };
+    });
 
   return [
     {
@@ -36,7 +34,6 @@ const processColumns = (serieses: Series[]) => {
       },
     },
     ...configColumns,
-    { Header: 'Most Recent Data Date', accessor: 'submissionDate' },
   ];
 };
 
@@ -54,17 +51,16 @@ const processData = (serieses: Series[], measureData: MeasureData[]) => {
     return {
       name: row.name,
       ...columns,
-      submissionDate: row.submissionDate ?? 'No data',
     };
   });
 };
 
 export const getMapTableData = (serieses: Series[], measureData: MeasureData[]) => {
   const columns = useMemo(() => processColumns(serieses), [JSON.stringify(serieses)]);
-  const data = useMemo(() => processData(serieses, measureData), [
-    JSON.stringify(serieses),
-    JSON.stringify(measureData),
-  ]);
+  const data = useMemo(
+    () => processData(serieses, measureData),
+    [JSON.stringify(serieses), JSON.stringify(measureData)],
+  );
 
   return {
     columns,

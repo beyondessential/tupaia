@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 
@@ -74,6 +76,24 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+/**
+ * Private function to get the list of Native Architectures you want to build.
+ * This reads the value from reactNativeArchitectures in your gradle.properties
+ * file and works together with the --active-arch-only flag of react-native run-android.
+ */
+def reactNativeArchitectures() {
+    def value = project.getProperties().get("reactNativeArchitectures")
+    return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+}
+
+def getAppVersion() {
+    File inputFile = file("${rootDir}/../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+    return packageJson["version"]
+}
+
+def (major, minor, patch) = getAppVersion().tokenize('.')
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -84,8 +104,17 @@ android {
         applicationId "com.tupaiameditrak"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 140
-        versionName "1.14.140"
+        versionCode major.toInteger() * 1000000 + minor.toInteger() * 1000 + patch.toInteger()
+        versionName getAppVersion()
+        multiDexEnabled true
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            universalApk false  // If true, also generate a universal APK
+            include (*reactNativeArchitectures())
+        }
     }
     signingConfigs {
         debug {
@@ -94,18 +123,21 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file("release.keystore")
+            storePassword System.getenv("ANDROID_SIGNING_STORE_PASSWORD")
+            keyAlias System.getenv("ANDROID_SIGNING_KEY_ALIAS")
+            keyPassword System.getenv("ANDROID_SIGNING_KEY_PASSWORD")
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-
-            // Commented out as workaround for https://stackoverflow.com/a/68737960
-            // signingConfig signingConfigs.debug
-
+            if (System.getenv("ANDROID_SIGNING_STORE_PASSWORD")) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

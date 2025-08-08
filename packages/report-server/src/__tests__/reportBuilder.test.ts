@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { Aggregator } from '@tupaia/aggregator';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
@@ -80,6 +75,6 @@ describe('ReportBuilder', () => {
 
     const reportBuilder = new ReportBuilder(reqContext).setConfig(testConfig).setTestData(testData);
     const results = await reportBuilder.build();
-    expect(results).toStrictEqual({ results: testData });
+    expect(results).toStrictEqual({ results: testData, type: 'default' });
   });
 });

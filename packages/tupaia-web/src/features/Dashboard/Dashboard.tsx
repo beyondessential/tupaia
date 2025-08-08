@@ -1,28 +1,26 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
-import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
-import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { MatrixConfig } from '@tupaia/types';
+import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
+import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
+
+import { useEditUser } from '../../api/mutations';
+import { useDashboards, useEntity, useProject, useUser } from '../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../constants';
-import { useDashboards, useEntity, useProject } from '../../api/queries';
-import { DashboardItem as DashboardItemType } from '../../types';
-import { gaEvent, getDefaultDashboard } from '../../utils';
+import { DashboardItem as DashboardItemType, ProjectCode } from '../../types';
+import { gaEvent, useDefaultDashboardName } from '../../utils';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
-import { ExpandButton } from './ExpandButton';
-import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
-import { StaticMap } from './StaticMap';
+import { DashboardMenu, SubscribeModal } from './DashboardMenu';
+import { ExpandButton } from './ExpandButton';
 import { ExportDashboard } from './ExportDashboard';
-import { DashboardContextProvider, useDashboard } from './utils';
-import { SubscribeModal, DashboardMenu } from './DashboardMenu';
+import { Photo } from './Photo';
+import { StaticMap } from './StaticMap';
+import { DashboardContextProvider, useDashboardContext } from './utils';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
@@ -34,10 +32,14 @@ const Panel = styled.div<{
 }>`
   position: relative;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  transition: width 0.3s ease, max-width 0.3s ease;
   width: 100%;
   overflow: visible;
   min-height: 100%;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: 300ms var(--ease-out-quad);
+    transition-property: width, max-width;
+  }
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: ${({ $isExpanded }) => ($isExpanded ? 60 : 25)}%;
@@ -101,74 +103,60 @@ const DashboardItemsWrapper = styled.div<{
       ? 'grid'
       : 'block'}; // when in a column, the items should be stacked vertically. Setting to display: block fixes and issue with the chart not contracting to the correct width
   background-color: ${({ theme }) => theme.palette.background.paper};
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 0.8rem;
 `;
 
-export const Dashboard = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { projectCode, entityCode } = useParams();
-  const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+const useUpdateUserProjectOnSettled = (projectCode?: ProjectCode) => {
+  const { data: project, isSuccess: isProjectSuccess } = useProject(projectCode);
+  const { data: user, isSuccess: isUserSuccess } = useUser();
+  const { mutate: mutateUser } = useEditUser();
+  const shouldUpdate = isUserSuccess && isProjectSuccess && project?.code !== user?.project?.code;
+  useEffect(() => {
+    if (shouldUpdate) mutateUser({ projectId: project?.id });
+  }, [mutateUser, project?.id, shouldUpdate]);
+};
 
-  const { activeDashboard } = useDashboard();
-  const {
-    data: dashboards,
-    isLoading: isLoadingDashboards,
-    isError,
-    isFetched,
-  } = useDashboards(projectCode, entityCode);
+export const Dashboard = () => {
+  const { state: locationState } = useLocation();
+  const { projectCode, entityCode } = useParams();
+  const { data: project, isSuccess: isProjectSuccess } = useProject(projectCode);
+  const defaultDashboardName = useDefaultDashboardName(projectCode, entityCode);
+  useUpdateUserProjectOnSettled(projectCode);
+
+  const { activeDashboard } = useDashboardContext();
+  const { isFetching: isFetchingDashboards, isSuccess: isDashboardsSuccess } = useDashboards(
+    projectCode,
+    entityCode,
+  );
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { data: entity } = useEntity(projectCode, entityCode);
-  const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
-  // we don't want useEntityLink to take care of this because useEntityLink gets called for all child entities on the map, meaning lots of extra queries when we don't need them. Instead the redirect will be taken care of in the useEffect below, as needed
-  const defaultDashboardName = getDefaultDashboard(
-    project,
-    dashboards,
-    isLoadingDashboards,
-    isError,
-  );
+  // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
+
+  const dashboardNotFound =
+    isProjectSuccess && isDashboardsSuccess && project?.code === projectCode && !activeDashboard;
+  if (dashboardNotFound && defaultDashboardName) {
+    const to = `/${projectCode}/${entityCode}/${encodeURIComponent(defaultDashboardName)}`;
+    return <Navigate replace state={locationState} to={to} />;
+  }
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
     gaEvent('Pages', 'Toggle Info Panel');
   };
 
-  // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
-  const dashboardNotFound =
-    isFetched &&
-    !isError &&
-    !isLoadingDashboards &&
-    !isLoadingProject &&
-    project?.code === projectCode &&
-    !activeDashboard;
-
-  useEffect(() => {
-    if (dashboardNotFound) {
-      navigate({
-        ...location,
-        pathname: `/${projectCode}/${entityCode}/${defaultDashboardName}`,
-      });
-    }
-  }, [dashboardNotFound, defaultDashboardName]);
-
   // Filter out drill down items from the dashboard items
   const visibleDashboards =
-    (activeDashboard?.items as DashboardItemType[])?.reduce(
-      (items: DashboardItemType[], item: DashboardItemType) => {
-        const isDrillDown = activeDashboard?.items?.some(dashboardItem => {
-          const { config } = dashboardItem as {
-            config: MatrixConfig;
-          };
-          if (config?.drillDown && config?.drillDown?.itemCode === item.code) return true;
-          return false;
-        });
-        return isDrillDown ? items : [...items, item];
-      },
-      [],
-    ) ?? [];
+    activeDashboard?.items?.filter(item => {
+      const isDrillDown = activeDashboard?.items?.some(dashboardItem => {
+        const config = dashboardItem.config as MatrixConfig;
+        return config?.drillDown?.itemCode === item.code;
+      });
+      return !isDrillDown;
+    }) ?? [];
+
   const title =
     entity?.type === 'project' && project?.config?.projectDashboardHeader
       ? project?.config?.projectDashboardHeader
@@ -185,7 +173,7 @@ export const Dashboard = () => {
               {entity?.imageUrl ? (
                 <Photo title={title} photoUrl={entity?.imageUrl} />
               ) : (
-                <StaticMap bounds={bounds} title={title} />
+                <StaticMap bounds={entity?.bounds || DEFAULT_BOUNDS} title={title} />
               )}
             </div>
             <StickyBar $isExpanded={isExpanded}>
@@ -195,7 +183,7 @@ export const Dashboard = () => {
               <DashboardMenu />
             </StickyBar>
             <DashboardItemsWrapper $isExpanded={isExpanded}>
-              {isLoadingDashboards && <SpinningLoader mt={5} />}
+              {isFetchingDashboards && <SpinningLoader mt={5} />}
               {visibleDashboards?.map(item => (
                 <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
               ))}
@@ -203,7 +191,7 @@ export const Dashboard = () => {
           </ScrollBody>
           <EnlargedDashboardItem entityName={entity?.name} />
           <ExportDashboard />
-          <SubscribeModal />
+          <SubscribeModal key={activeDashboard?.code} />
         </Panel>
       </DashboardContextProvider>
     </ErrorBoundary>

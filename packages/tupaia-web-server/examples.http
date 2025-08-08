@@ -1,5 +1,5 @@
-@localhost = http://localhost:8100/v1
-@dev = https://dev-config.tupaia.org
+@localhost = http://localhost:{{$dotenv PORT}}/v1
+@dev = https://dev-config.tupaia.org/api/v1
 @host = {{localhost}}
 # Uncomment the line below to point at dev rather than localhost
 # @host = {{dev}}
@@ -9,7 +9,22 @@
 # see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
 @authorization  = Basic {{email}}:{{password}}
 
-### Login
+### Sign up
+POST {{host}}/user HTTP/1.1
+content-type: {{contentType}}
+
+{
+  "contactNumber": "123",
+  "emailAddress": "christopher@100acre.wood",
+  "employer": "Self-employed",
+  "firstName": "Christopher",
+  "lastName": "Robin",
+  "passwordConfirm": "nowweare6",
+  "password": "nowweare6",
+  "position": "Friend of Pooh Bear"
+}
+
+### Log in
 # @name login
 POST {{host}}/login HTTP/1.1
 content-type: {{contentType}}
@@ -19,18 +34,29 @@ content-type: {{contentType}}
     "password": "{{password}}"
 }
 
-### Logout
+### Log out
 # @name logout
-GET {{host}}/logout HTTP/1.1
+POST {{host}}/logout HTTP/1.1
 content-type: {{contentType}}
 
+### Change password
+POST {{host}}/changePassword HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "oldPassword": "{{password}}",
+    "password": "very_secure_pwd",
+    "passwordConfirm": "very_secure_pwd"
+}
+
 ### Get projects
-GET {{host}}/projects HTTP/1.1
+GET {{host}}/projects?showExcludedProjects=false HTTP/1.1
 content-type: {{contentType}}
 
 ### Get Project
 # @name project
-GET {{host}}/project/covidau HTTP/1.1
+GET {{host}}/project/flutracking HTTP/1.1
 content-type: {{contentType}}
 
 ### Get Dashboard
@@ -38,19 +64,57 @@ content-type: {{contentType}}
 GET {{host}}/dashboards HTTP/1.1
 content-type: {{contentType}}
 
-
 ### Fetch country access list
-GET {{host}}/countryAccessList
+GET {{host}}/me/countries?projectCode=pacmossi HTTP/1.1
 content-type: {{contentType}}
 
 ### Fetch legacy report
-GET {{host}}/report/28?dashboardCode=explore_General&itemCode=28&legacy=true&organisationUnitCode=explore&projectCode=explore&timeZone=Pacific%2FAuckland
+GET {{host}}/legacyDashboardReport/8
+  ?dashboardCode=explore_General
+  &itemCode=8
+  &projectCode=explore
+  &organisationUnitCode=explore
+  &timeZone=Pacific%2FAuckland
 content-type: {{contentType}}
 
 ### Fetch report
-GET {{host}}/report/tupaia_metrics_n_visuals_by_country?dashboardCode=explore_tupaia_metrics&endDate=2023-06-26&itemCode=tupaia_metrics_n_visuals_by_country&legacy=false&organisationUnitCode=explore&projectCode=explore&startDate=2015-01-01&timeZone=Pacific%2FAuckland
+GET {{host}}/report/tupaia_metrics_n_visuals_by_country
+  ?dashboardCode=explore_tupaia_metrics
+  &endDate=2023-06-26
+  &itemCode=tupaia_metrics_n_visuals_by_country
+  &legacy=false
+  &organisationUnitCode=explore
+  &projectCode=explore
+  &startDate=2015-01-01
+  &timeZone=Pacific%2FAuckland
 content-type: {{contentType}}
 
 ### Fetch entities
-GET {{host}}/entities/strive/PG_Lae_Abb?includeRootEntity=true&fields[]=parent_code&fields[]=code&fields[]=name&fields[]=type&fields[]=point&fields[]=image_url&fields[]=attributes&fields[]=child_codes
+GET {{host}}/entities/strive/PG_Lae_Abb
+  ?includeRootEntity=true
+  &fields[]=parent_code
+  &fields[]=code
+  &fields[]=name
+  &fields[]=type
+  &fields[]=point
+  &fields[]=image_url
+  &fields[]=attributes
+  &fields[]=child_codes
 content-type: {{contentType}}
+
+### Download file(s)
+GET {{host}}/downloadFiles
+  ?uniqueFileNames=cat_pic.pdf HTTP/1.1
+content-type: {{contentType}}
+
+### Survey data download
+GET {{host}}/export/surveyDataDownload
+  ?legacy=true
+  &isExpanded=true
+  &dashboardCode=TO_Asset_Management_Asset_Level
+  &itemCode=asset_management_to_register_an_asset_survey_download
+  &projectCode=asset_management
+  &organisationUnitCode=TO_fs084
+  &timeZone=Pacific%2FAuckland
+  &surveyCodes=TAR
+content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet

@@ -1,10 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import {
-  DataElementType as CommonDataElementType,
+  DataElementRecord as CommonDataElementRecord,
   DataElementModel as CommonDataElementModel,
 } from '@tupaia/database';
 
@@ -20,7 +15,7 @@ export const DATA_SOURCE_SERVICE_TYPES = [
 
 const getSurveyDateCode = surveyCode => `${surveyCode}SurveyDate`;
 
-export class DataElementType extends CommonDataElementType {
+export class DataElementRecord extends CommonDataElementRecord {
   upsertSurveyDateElement = async () => {
     this.assertFnCalledByDataGroup(this.upsertSurveyDateElement.name);
 
@@ -55,7 +50,7 @@ export class DataElementType extends CommonDataElementType {
 export class DataElementModel extends CommonDataElementModel {
   isDeletableViaApi = true;
 
-  get DatabaseTypeClass() {
-    return DataElementType;
+  get DatabaseRecordClass() {
+    return DataElementRecord;
   }
 }

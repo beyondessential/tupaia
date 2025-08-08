@@ -1,32 +1,22 @@
 /*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * This file contains any utils that useful for the matrix component. This is mainly used for
+ * presentation options.
  */
-import { find, isString, isNumber } from 'lodash';
+
+import { find, isNumber, isString } from 'lodash';
 import {
-  ConditionValue,
-  RangePresentationOptions,
   ConditionalPresentationOptions,
-  PresentationOptionCondition,
+  ConditionValue,
   MatrixPresentationOptions,
+  PresentationOptionCondition,
+  RangePresentationOptions,
 } from '@tupaia/types';
 import { MatrixColumnType } from '../../types';
 
-/**
- * This file contains any utils that useful for the matrix component. This is mainly used for presentation options
- */
 export const areStringsEqual = (a: string, b: string, caseSensitive = true) =>
   a
     .toString()
     .localeCompare(b.toString(), undefined, caseSensitive ? {} : { sensitivity: 'accent' }) === 0;
-
-// If the hex is shortened, double up each character. This is for cases like '#fff'
-export const getFullHex = (hex: string) => {
-  let hexString = hex.replace('#', '');
-  const isShortened = hexString.length === 3;
-  if (isShortened) hexString = hexString.replace(/(.)/g, '$1$1');
-  return `#${hexString}`;
-};
 
 export const findByKey = (
   collection: MatrixPresentationOptions['conditions'],
@@ -34,13 +24,9 @@ export const findByKey = (
   caseSensitive = true,
 ) =>
   (isString(key) || isNumber(key)) &&
-  find(collection, (value, valueKey) => areStringsEqual(key, valueKey, caseSensitive));
+  find(collection, (_value, valueKey) => areStringsEqual(key, valueKey, caseSensitive));
 
 /** Functions used to get matrix chart dot colors from presentation options */
-const PRESENTATION_TYPES = {
-  RANGE: 'range',
-  CONDITION: 'condition',
-};
 
 const CONDITION_CHECK_METHOD = {
   '=': (value: any, filterValue: ConditionValue) => {
@@ -112,38 +98,41 @@ export const getPresentationOptionFromRange = (options: RangePresentationOptions
 };
 
 // This function returns the applicable presentation option from the presentation options, for the value
-export const getPresentationOption = (options: MatrixPresentationOptions, value: any) => {
-  switch (options.type) {
-    case PRESENTATION_TYPES.RANGE:
-      return getPresentationOptionFromRange(options as RangePresentationOptions, value);
-    case PRESENTATION_TYPES.CONDITION:
-      return getPresentationOptionFromCondition(options as ConditionalPresentationOptions, value);
-    default:
-      return getPresentationOptionFromKey(options?.conditions, value);
-  }
+export const getPresentationOption = (options?: MatrixPresentationOptions, value?: any) => {
+  if (!options) return null;
+  if (options.type === 'range') return getPresentationOptionFromRange(options, value);
+  if (options.type === 'condition') return getPresentationOptionFromCondition(options, value);
+  return getPresentationOptionFromKey(options?.conditions, value);
 };
 
-export function getIsUsingDots(presentationOptions: MatrixPresentationOptions = {}) {
-  return (
-    Object.keys(presentationOptions).filter(optionName => !optionName.includes('export')).length > 0
-  );
+export function getIsUsingPillCell(presentationOptions?: MatrixPresentationOptions) {
+  return presentationOptions
+    ? Object.keys(presentationOptions).filter(optionName => !optionName.includes('export')).length >
+        0
+    : false;
 }
 
-export function checkIfApplyDotStyle(
-  presentationOptions: ConditionalPresentationOptions = {},
-  columnIndex: number,
+export function checkIfApplyPillCellStyle(
+  presentationOptions?: MatrixPresentationOptions,
+  columnIndex?: number,
 ) {
-  const appliedLocations = presentationOptions?.applyLocation?.columnIndexes;
-  if (!appliedLocations) return true;
-  return appliedLocations.includes(columnIndex);
+  if (!presentationOptions || columnIndex === undefined) return false;
+  const { applyLocation } = presentationOptions;
+  if (applyLocation && 'columnIndexes' in applyLocation && applyLocation?.columnIndexes) {
+    return applyLocation.columnIndexes.includes(columnIndex);
+  }
+  return true;
 }
 
 // This function returns a flattened array of columns, NOT including the parent columns
 export function getFlattenedColumns(columns: MatrixColumnType[]): MatrixColumnType[] {
   return columns.reduce((cols, column) => {
     if (column.children) {
-      return [...cols, ...getFlattenedColumns(column.children)];
+      const childCols = getFlattenedColumns(column.children);
+      cols.push(...childCols);
+      return cols;
     }
-    return [...cols, column];
+    cols.push(column);
+    return cols;
   }, [] as MatrixColumnType[]);
 }

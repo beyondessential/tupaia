@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 export { Answer } from './Answer';
 export { Area as GeographicalArea } from './Area';
 export { Change } from './Change';
@@ -23,3 +18,5 @@ export { Option } from './Option';
 export { OptionSet } from './OptionSet';
 export { User } from './User';
 export { File } from './File';
+export { UserEntityPermission } from './UserEntityPermission';
+export { UserAccount } from './UserAccount';

@@ -1,14 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import {
-  assertDashboardGetPermissions,
-  getDashboardsDBFilter,
-} from './assertDashboardsPermissions';
+import { assertDashboardGetPermissions } from './assertDashboardsPermissions';
+import { getDashboardsDBFilter } from './getDashboardsDBFilter';
 /**
  * Handles endpoints:
  * - /dashboards

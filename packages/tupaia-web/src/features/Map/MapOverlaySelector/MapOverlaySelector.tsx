@@ -1,14 +1,21 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import { ErrorBoundary } from '@tupaia/ui-components';
+import { LegendProps } from '@tupaia/ui-map-components';
 import { DesktopMapOverlaySelector } from './DesktopMapOverlaySelector';
 import { MobileMapOverlaySelector } from './MobileMapOverlaySelector';
 
-export const MapOverlaySelector = () => {
+export const MapOverlaySelector = ({
+  hiddenValues,
+  activeTileSet,
+}: {
+  hiddenValues: LegendProps['hiddenValues'];
+  activeTileSet: {
+    key: string;
+    label: string;
+    thumbnail: string;
+    url: string;
+  };
+}) => {
   const [overlayLibraryOpen, setOverlayLibraryOpen] = useState(false);
 
   const toggleOverlayLibrary = () => {
@@ -24,6 +31,8 @@ export const MapOverlaySelector = () => {
       <DesktopMapOverlaySelector
         overlayLibraryOpen={overlayLibraryOpen}
         toggleOverlayLibrary={toggleOverlayLibrary}
+        hiddenValues={hiddenValues}
+        activeTileSet={activeTileSet}
       />
     </ErrorBoundary>
   );

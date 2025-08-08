@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import {
   Question,
   Survey,
@@ -56,6 +51,7 @@ export type SurveyScreenComponent = CamelCasedComponent &
     label?: BaseSurveyScreenComponent['question_label'];
     options?: Option[] | null;
     screenId?: string;
+    id?: string;
   };
 
 type CamelCasedSurveyScreen = KeysToCamelCase<Pick<BaseSurveyScreen, 'id' | 'screen_number'>>;
@@ -77,4 +73,6 @@ export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   fields?: string[];
   projectId?: string;
+  countryCode?: string;
+  searchTerm?: string;
 }

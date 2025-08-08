@@ -1,37 +1,132 @@
-@localhost = http://localhost:8110/v1
-@dev = https://dev-config.tupaia.org
-@host = {{localhost}}
+@host = http://localhost:8110/v1
 # Uncomment the line below to point at dev rather than localhost
-# @host = {{dev}}
-@contentType = application/json
+# @host = https://dev-config.tupaia.org
 
 # In order to setup authorization, please set 'email' and 'password' in your restClient environement variables
 # see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
 @authorization  = Basic {{email}}:{{password}}
 
+### Sign up
+POST {{host}}/user HTTP/1.1
+content-type: application/json
+
+{
+  "contactNumber": "123",
+  "emailAddress": "christopher@100acre.wood",
+  "employer": "Self-employed",
+  "firstName": "Christopher",
+  "lastName": "Robin",
+  "passwordConfirm": "nowweare6",
+  "password": "nowweare6",
+  "position": "Friend of Pooh Bear"
+}
+
 ### Login
 # @name login
 POST {{host}}/login HTTP/1.1
-content-type: {{contentType}}
+content-type: application/json
 
 {
-    "emailAddress": "{{email}}",
-    "password": "{{password}}"
+  "emailAddress": "{{email}}",
+  "password": "{{password}}"
 }
 
- 
 
-### Get Activity feed 
-GET {{host}}/activityFeed HTTP/1.1
-content-type: {{contentType}}
+### Get Activity feed
+GET {{host}}/activityFeed?projectId=64df18f22ecffb2ac901a2b3 HTTP/1.1
+content-type: application/json
 
- 
+
+### Get entities
+GET {{host}}/entities HTTP/1.1
+content-type: application/json
+
+
 ### Get projects
 GET {{host}}/projects HTTP/1.1
-content-type: {{contentType}}
+content-type: application/json
 
- 
-  
+### Get user
+GET {{host}}/getUser HTTP/1.1
+content-type: application/json
+
 ### Get survey
 GET {{host}}/surveys/TAR HTTP/1.1
-content-type: {{contentType}}
+content-type: application/json
+
+### Get survey users
+GET {{host}}/users/TAR HTTP/1.1
+content-type: application/json
+
+
+### Get tasks
+GET {{host}}/tasks
+	?pageSize=10
+  ?page=0
+	&filters[0][id]=assignee_id
+	&filters[0][value]=5e7846e361f76a411c08b063
+	&filters[1][id]=task_status
+	&filters[1][value][comparator]=NOT+IN
+	&filters[1][value][comparisonValue][0]=completed
+  &filters[1][value][comparisonValue][1]=cancelled
+	&filters[2][id]=survey.project_id
+	&filters[2][value]=5dfc6eaf61f76a497716cddf HTTP/1.1
+content-type: application/json
+Authorization: {{authorization}}
+
+### Get single task by ID
+GET {{host}}/tasks/67ad3cda51b78c409500013c HTTP/1.1
+content-type: application/json
+
+### Create task
+# `repeat_frequency` values come from rrule’s `Frequency` enum, and are derived from `due_date`
+#
+#   - null ← doesn’t repeat
+#   -    0 ← yearly
+#   -    1 ← monthly
+#   -    2 ← weekly
+#   -    3 ← daily
+POST {{host}}/tasks HTTP/1.1
+content-type: application/json
+Authorization: {{authorization}}
+
+{
+	"survey_code": "DL_HM",
+	"entity_id": "5d3f884472db4d31bfe44aa1",
+	"due_date": "2025-02-13T10:59:59.426Z",
+	"repeat_frequency": 2,
+	"assignee": {
+		"id": "5e7846e361f76a411c08b063",
+		"name": "Tupaia Demonstration",
+		"value": "5e7846e361f76a411c08b063",
+		"label": "Tupaia Demonstration"
+	},
+	"comment": "A task can include a comment like this"
+}
+
+### Update task
+#
+# The top-level properties are optional.
+#
+# `repeat_frequency` values come from rrule’s `Frequency` enum, and are derived from the task’s due
+# date:
+#
+#   - null ← doesn’t repeat
+#   -    0 ← yearly
+#   -    1 ← monthly
+#   -    2 ← weekly
+#   -    3 ← daily
+PUT {{host}}/tasks/67ad3cda51b78c409500013c HTTP/1.1
+content-type: application/json
+Authorization: {{authorization}}
+
+{
+	"due_date": "2025-02-13T10:59:59.426Z",
+	"repeat_frequency": 2,
+	"assignee": {
+		"id": "5e7846e361f76a411c08b063",
+		"name": "Tupaia Demonstration",
+		"value": "5e7846e361f76a411c08b063",
+		"label": "Tupaia Demonstration"
+	},
+}

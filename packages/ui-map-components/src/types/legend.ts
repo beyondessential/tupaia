@@ -1,13 +1,9 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import { MarkerSeries, SpectrumSeries, Value } from './series';
+import { MarkerSeries, SeriesValue, SpectrumSeries } from './series';
 
 export type LegendProps = {
-  setValueHidden: (dataKey: string, value: Value, hidden: boolean) => void;
+  setValueHidden: (dataKey: string, value: SeriesValue['value'], hidden: boolean) => void;
   hiddenValues: Record<string, Record<string, boolean>>;
+  isExport?: boolean;
 };
 
 export type MarkerLegendProps = LegendProps & {

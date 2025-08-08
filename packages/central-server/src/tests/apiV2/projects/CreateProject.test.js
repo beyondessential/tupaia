@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
 import { expect } from 'chai';
 import sinon from 'sinon';
@@ -10,7 +5,8 @@ import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';
 
-const rollbackRecords = async (models, projectCode) => {
+const rollbackRecords = async (models, projectCode, projectName) => {
+  const permissionGroup = await models.permissionGroup.findOne({ name: `${projectName} Admin` });
   await models.project.delete({ code: projectCode });
   await models.dashboard.delete({ root_entity_code: projectCode });
   const projectEntity = await models.entity.findOne({ code: projectCode, type: 'project' });
@@ -19,6 +15,10 @@ const rollbackRecords = async (models, projectCode) => {
     await models.entity.delete({ id: projectEntity.id });
   }
   await models.entityHierarchy.delete({ name: projectCode });
+  if (permissionGroup) {
+    await models.permissionGroup.delete({ name: `${projectName} Admin` });
+    await models.userEntityPermission.delete({ permission_group_id: permissionGroup.id });
+  }
 };
 
 describe('Creating a project', async () => {
@@ -50,22 +50,26 @@ describe('Creating a project', async () => {
 
   const app = new TestableApp();
   const { models } = app;
+  let BESDataAdminPermissionGroup;
 
   before(async () => {
     await models.country.delete({ code: 'DL' });
     await models.mapOverlay.delete({ code: '126' });
     await findOrCreateDummyRecord(models.entity, { code: 'World' });
     await findOrCreateDummyRecord(models.country, { id: TEST_COUNTRY_ID, code: 'DL' });
-    await findOrCreateDummyRecord(models.entity, { code: 'DL' });
+    await findOrCreateDummyRecord(models.entity, { code: 'DL', type: 'country' });
     await findOrCreateDummyRecord(models.entity, { code: 'test_project' });
     await findOrCreateDummyRecord(models.project, { code: 'test_project' });
     await findOrCreateDummyRecord(models.permissionGroup, { name: 'test_group1' });
     await findOrCreateDummyRecord(models.mapOverlay, { id: TEST_MAP_OVERLAY_ID, code: '126' });
+    BESDataAdminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'BES Data Admin',
+    });
     uploadImageStub = sinon.stub(UploadImage, 'uploadImage').resolves(EXAMPLE_UPLOADED_IMAGE_URL);
   });
 
   afterEach(async () => {
-    await rollbackRecords(models, 'test_project_new');
+    await rollbackRecords(models, TEST_PROJECT_INPUT.code, TEST_PROJECT_INPUT.name);
     app.revokeAccess();
   });
 
@@ -180,6 +184,59 @@ describe('Creating a project', async () => {
         const result = await models.entityHierarchy.find({ name: TEST_PROJECT_INPUT.code });
         expect(result.length).to.equal(1);
         expect(result[0].name).to.equal(TEST_PROJECT_INPUT.code);
+      });
+
+      it('creates a new admin permission group for the project', async () => {
+        await app.grantAccess(BES_ADMIN_POLICY);
+
+        await app.post('projects', {
+          body: {
+            ...TEST_PROJECT_INPUT,
+          },
+        });
+
+        const permissionGroup = await models.permissionGroup.findOne({
+          name: `${TEST_PROJECT_INPUT.name} Admin`,
+        });
+        expect(permissionGroup.parent_id).to.equal(BESDataAdminPermissionGroup.id);
+
+        const project = await models.project.findOne({ code: TEST_PROJECT_INPUT.code });
+        expect(project.permission_groups).to.deep.equal([
+          permissionGroup.name,
+          ...TEST_PROJECT_INPUT.permission_groups,
+        ]);
+      });
+
+      it('Creates user entity permissions for all countries in the project with the new permission group', async () => {
+        await app.grantAccess(BES_ADMIN_POLICY);
+
+        await app.post('projects', {
+          body: {
+            ...TEST_PROJECT_INPUT,
+          },
+        });
+
+        const permissionGroup = await models.permissionGroup.findOne({
+          name: `${TEST_PROJECT_INPUT.name} Admin`,
+        });
+
+        const userEntityPermissions = await models.userEntityPermission.find({
+          permission_group_id: permissionGroup.id,
+        });
+
+        expect(userEntityPermissions.length).to.equal(TEST_PROJECT_INPUT.countries.length);
+
+        for (const countryId of TEST_PROJECT_INPUT.countries) {
+          const country = await models.country.findOne({ id: countryId });
+          const countryEntity = await models.entity.findOne({
+            code: country.code,
+            type: 'country',
+          });
+          const userEntityPermission = userEntityPermissions.find(
+            ({ entity_id: entityId }) => entityId === countryEntity.id,
+          );
+          expect(userEntityPermission).to.not.be.undefined;
+        }
       });
     });
 

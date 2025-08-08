@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { addRecentEntities } from '../utils';
 
 const NUM_MOCK_ENTITIES = 10;
@@ -24,8 +19,8 @@ const mockUser = {
 
 const mockModels = {
   user: {
-    findById: (id: string) => mockUser,
-    updateById: (id: string, update: any) => {
+    findById: (_id: string) => mockUser,
+    updateById: (_id: string, update: any) => {
       mockUser.preferences = update.preferences;
     },
   },

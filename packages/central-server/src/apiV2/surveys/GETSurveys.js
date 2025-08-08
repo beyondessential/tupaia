@@ -1,9 +1,4 @@
 /* eslint-disable camelcase */
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { JOIN_TYPES } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import {
@@ -25,6 +20,7 @@ import { processColumns } from '../GETHandler/helpers';
 
 const SURVEY_QUESTIONS_COLUMN = 'surveyQuestions';
 const COUNTRY_NAMES_COLUMN = 'countryNames';
+const COUNTRY_CODES_COLUMN = 'countryCodes';
 
 export class GETSurveys extends GETHandler {
   permissionsFilteredInternally = true;
@@ -44,11 +40,13 @@ export class GETSurveys extends GETHandler {
 
     // 2. Add countryNames
     const countryNames = await this.getSurveyCountryNames([surveyId]);
+    const countryCodes = await this.getSurveyCountryCodes([surveyId]);
 
     return {
       ...survey,
       surveyQuestions: surveyQuestionsValues[surveyId],
       countryNames: countryNames[surveyId],
+      countryCodes: countryCodes[surveyId],
     };
   }
 
@@ -65,10 +63,16 @@ export class GETSurveys extends GETHandler {
       records.filter(record => record.id).map(record => record.id),
     );
 
+    // 3. Add countryCodes
+    const countryCodes = await this.getSurveyCountryCodes(
+      records.filter(record => record.id).map(record => record.id),
+    );
+
     return records.map(record => ({
       ...record,
       surveyQuestions: surveyQuestionsValues[record.id],
       countryNames: countryNames[record.id],
+      countryCodes: countryCodes[record.id],
     }));
   }
 
@@ -104,9 +108,10 @@ export class GETSurveys extends GETHandler {
     // If we've requested specific columns, we allow skipping these fields by not requesting them
     this.includeQuestions = parsedColumns.includes(SURVEY_QUESTIONS_COLUMN);
     this.includeCountryNames = parsedColumns.includes(COUNTRY_NAMES_COLUMN);
+    this.includeCountryCodes = parsedColumns.includes(COUNTRY_CODES_COLUMN);
 
     const unprocessedColumns = parsedColumns.filter(
-      col => ![SURVEY_QUESTIONS_COLUMN, COUNTRY_NAMES_COLUMN].includes(col),
+      col => ![SURVEY_QUESTIONS_COLUMN, COUNTRY_NAMES_COLUMN, COUNTRY_CODES_COLUMN].includes(col),
     );
     return processColumns(this.models, unprocessedColumns, this.recordType);
   }
@@ -161,6 +166,21 @@ export class GETSurveys extends GETHandler {
       surveyIds,
     );
     return Object.fromEntries(rows.map(row => [row.id, row.country_names]));
+  }
+
+  async getSurveyCountryCodes(surveyIds) {
+    if (surveyIds.length === 0 || !this.includeCountryCodes) return {};
+    const rows = await this.database.executeSql(
+      `
+    SELECT survey.id, array_agg(country.code) as country_codes
+    FROM survey
+    LEFT JOIN country ON (country.id = any(survey.country_ids))
+    WHERE survey.id in (${surveyIds.map(() => '?').join(',')})
+    GROUP BY survey.id;
+    `,
+      surveyIds,
+    );
+    return Object.fromEntries(rows.map(row => [row.id, row.country_codes.sort()]));
   }
 }
 

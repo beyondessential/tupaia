@@ -1,20 +1,13 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-import React from 'react';
 import MuiCheckbox, { CheckboxProps as MuiCheckboxProps } from '@material-ui/core/Checkbox';
-import MuiFormHelperText from '@material-ui/core/FormHelperText';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
+import MuiFormHelperText from '@material-ui/core/FormHelperText';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
+
 import { InputLabel } from './InputLabel';
 
 const StyledCheckbox = styled(MuiCheckbox)`
-  &.MuiButtonBase-root:not(.MuiIconButton-colorPrimary) {
-    color: ${props => props.theme.palette.text.primary};
-  }
-
-  &.Mui-checked:not(.MuiIconButton-colorPrimary) {
+  &:is(.MuiButtonBase-root, .Mui-checked):not(.MuiIconButton-colorPrimary) {
     color: ${props => props.theme.palette.text.primary};
   }
 `;
@@ -22,6 +15,13 @@ const StyledCheckbox = styled(MuiCheckbox)`
 const Wrapper = styled.div`
   margin-top: -0.375rem;
   margin-bottom: 1.25rem;
+  .MuiFormControlLabel-label {
+    display: flex;
+    align-items: center;
+    span + span {
+      margin-left: 0.5rem;
+    }
+  }
 `;
 
 const FormHelperText = styled(MuiFormHelperText)`
@@ -29,10 +29,9 @@ const FormHelperText = styled(MuiFormHelperText)`
 `;
 
 interface CheckboxProps extends MuiCheckboxProps {
-  label?: React.ReactNode;
+  label?: ReactNode;
   error?: boolean;
-  className?: string;
-  helperText?: string;
+  helperText?: ReactNode;
   tooltip?: string;
 }
 

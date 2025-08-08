@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/central-server/src/devops/CreateThumbnail"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "index.js",
   "scripts": {
     "package-for-lambda": "rm -f CreateThumbnail.zip && zip -r CreateThumbnail.zip ./ && echo \"Uploading to AWS...\" && aws lambda update-function-code --function-name CreateThumbnail --zip-file fileb://CreateThumbnail.zip",

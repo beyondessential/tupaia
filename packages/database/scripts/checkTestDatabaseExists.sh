@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 DIR=$(pwd "$0")
-source $DIR/../../scripts/bash/mergeCurrentEnvWithEnvFile.sh 
+source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
@@ -12,7 +12,7 @@ then
 fi
 
 echo -e "\033[31mError: $DB_NAME database does not exist!\033[m"
-echo    "To create it, get the .env file from LastPass then run:"
+echo    "To create it, get the .env file from Bitwarden then run:"
 echo    ""
 echo -e "  \033[1myarn workspace @tupaia/database setup-test-database\033[m"
 echo    ""

@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 DIR=$(pwd "$0")
-source $DIR/../../scripts/bash/mergeCurrentEnvWithEnvFile.sh 
+source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
 
 # Set default port in case it wasn't in .env
 : "${DATA_LAKE_DB_PORT:=5432}"

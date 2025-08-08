@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { Project } from '@tupaia/types';
 import { Entity } from '.';
 
@@ -18,7 +13,8 @@ export type UserAccountDetails = {
   mobileNumber?: string | null;
 
   // Preferences
-  projectId?: Project['id'];
-  countryId?: Entity['id'];
+  projectId?: Project['id'] | null;
+  countryId?: Entity['id'] | null;
   deleteAccountRequested?: boolean;
+  hideWelcomeScreen?: boolean;
 };

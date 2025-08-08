@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { isNil, omitBy } from 'lodash';
 
 import { snakeKeys, yup } from '@tupaia/utils';
@@ -15,7 +10,7 @@ import { getVizOutputConfig } from '../utils';
 
 export class MapOverlayVisualisationExtractor<
   MapOverlayValidator extends yup.AnyObjectSchema,
-  ReportValidator extends yup.AnyObjectSchema
+  ReportValidator extends yup.AnyObjectSchema,
 > {
   private readonly visualisation: ExpandType<yup.InferType<typeof baseVisualisationValidator>>;
   private readonly mapOverlayValidator: MapOverlayValidator;
@@ -56,6 +51,7 @@ export class MapOverlayVisualisationExtractor<
       countryCodes,
       linkedMeasures,
       mapOverlayPermissionGroup: permissionGroup,
+      entityAttributesFilter,
     } = this.visualisation;
     const { output, ...presentation } = this.visualisation.presentation;
 
@@ -71,6 +67,7 @@ export class MapOverlayVisualisationExtractor<
       countryCodes,
       linkedMeasures,
       permissionGroup,
+      entityAttributesFilter,
     };
   }
 
@@ -99,6 +96,7 @@ export class MapOverlayVisualisationExtractor<
       code,
       permissionGroup,
       config,
+      latestDataParameters: {},
     };
   }
 

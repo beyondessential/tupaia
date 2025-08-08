@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import moment from 'moment';
 import sinon from 'sinon';
 import { roundStartEndDates, getDefaultDates, getLimits } from '../../period/periodGranularities';
@@ -174,6 +169,91 @@ describe('chartGranularities', () => {
         expect(startDate.format()).toEqual('2019-02-04T00:00:00+11:00');
         expect(endDate.format()).toEqual('2019-02-04T23:59:59+11:00');
       });
+
+      it('calculates current period if positive offset is provided and the closest period would start in the future', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'one_year_at_a_time',
+          dateOffset: {
+            unit: 'month',
+            offset: 6,
+          },
+        });
+        expect(startDate.format()).toEqual('2018-07-01T00:00:00+10:00');
+        expect(endDate.format()).toEqual('2019-06-30T23:59:59+10:00');
+      });
+
+      it('calculates the correct period if a positive offset is provided and closest period has already started', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'one_year_at_a_time',
+          dateOffset: {
+            unit: 'month',
+            offset: 1, // feb - jan
+          },
+        });
+        expect(startDate.format()).toEqual('2019-02-01T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2020-01-31T23:59:59+11:00');
+      });
+
+      it('calculates current period if negative offset is provided ', () => {
+        // e.g. if we are in feb 2019, and we want to see march-feb
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'one_year_at_a_time',
+          dateOffset: {
+            unit: 'month',
+            offset: -10, // feb - jan the previous year
+          },
+        });
+        expect(startDate.format()).toEqual('2018-03-01T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2019-02-28T23:59:59+11:00');
+      });
+
+      it('calculates offset default dates with months and weeks', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'one_month_at_a_time',
+          dateOffset: {
+            unit: 'week',
+            offset: 2, // start mid month
+          },
+        });
+        expect(startDate.format()).toEqual('2019-01-15T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2019-02-14T23:59:59+11:00');
+      });
+
+      it('calculates offset default dates with months and days', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'one_month_at_a_time',
+          dateOffset: {
+            unit: 'day',
+            offset: 5, // start 5 days into the month
+          },
+        });
+        expect(startDate.format()).toEqual('2019-01-06T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2019-02-05T23:59:59+11:00');
+      });
+
+      it('calculates offset default dates with weeks and days', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'one_week_at_a_time',
+          dateOffset: {
+            unit: 'day',
+            offset: 4, // start 4 days into the week
+          },
+        });
+        expect(startDate.format()).toEqual('2019-02-01T00:00:00+11:00');
+        expect(endDate.format()).toEqual('2019-02-07T23:59:59+11:00');
+      });
+
+      it('calculates offset default dates with years and quarters', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'one_year_at_a_time',
+          dateOffset: {
+            unit: 'quarter',
+            offset: 3, // q4-q1
+          },
+        });
+        expect(startDate.format()).toEqual('2018-10-01T00:00:00+10:00');
+        expect(endDate.format()).toEqual('2019-09-30T23:59:59+10:00');
+      });
     });
 
     describe('defaultTimePeriod with a date range', () => {
@@ -196,6 +276,22 @@ describe('chartGranularities', () => {
         });
         expect(startDate.format()).toEqual('2019-02-04T00:00:00+11:00');
         expect(endDate.format()).toEqual('2019-02-08T23:59:59+11:00');
+      });
+
+      it('works with offset dates', () => {
+        const { startDate, endDate } = getDefaultDates({
+          periodGranularity: 'one_year_at_a_time',
+          defaultTimePeriod: {
+            start: { unit: 'year', offset: 2 },
+            end: { unit: 'year', offset: 2 },
+          },
+          dateOffset: {
+            unit: 'quarter',
+            offset: 3, // q4-q1
+          },
+        });
+        expect(startDate.format()).toEqual('2020-10-01T00:00:00+10:00');
+        expect(endDate.format()).toEqual('2021-09-30T23:59:59+10:00');
       });
     });
   });

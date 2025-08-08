@@ -1,14 +1,9 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
-
 import React from 'react';
 import styled from 'styled-components';
-import { ReferenceProps, ReferenceTooltip } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import { ICON_STYLES, ReferenceTooltip } from '@tupaia/ui-components';
+import { ReferenceProps } from '@tupaia/types';
 import { SeriesValue } from '../../types';
 
 const StyledButton = styled(Button)`
@@ -100,7 +95,7 @@ export const TileButton = React.memo(({ tileSet, isActive = false, onChange }: T
     <TileLabel>
       {tileSet.label}
       {tileSet.reference && (
-        <ReferenceTooltip reference={tileSet.reference} iconStyleOption="tileSet" />
+        <ReferenceTooltip reference={tileSet.reference} iconStyle={ICON_STYLES.TILE_SET} />
       )}
     </TileLabel>
   </StyledButton>

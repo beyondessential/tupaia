@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { assertSurveyEditPermissions } from '../surveys/assertSurveyPermissions';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryIdsByPermissionGroupId, mergeMultiJoin } from '../utilities';
@@ -45,15 +40,15 @@ export const createSyncGroupDBFilter = async (accessPolicy, models, criteria, op
   dbOptions.multiJoin = mergeMultiJoin(
     [
       {
-        joinWith: TYPES.DATA_GROUP,
+        joinWith: RECORDS.DATA_GROUP,
         joinCondition: [
-          `${TYPES.DATA_GROUP}.code`,
-          `${TYPES.DATA_SERVICE_SYNC_GROUP}.data_group_code`,
+          `${RECORDS.DATA_GROUP}.code`,
+          `${RECORDS.DATA_SERVICE_SYNC_GROUP}.data_group_code`,
         ],
       },
       {
-        joinWith: TYPES.SURVEY,
-        joinCondition: [`${TYPES.SURVEY}.data_group_id`, `${TYPES.DATA_GROUP}.id`],
+        joinWith: RECORDS.SURVEY,
+        joinCondition: [`${RECORDS.SURVEY}.data_group_id`, `${RECORDS.DATA_GROUP}.id`],
       },
     ],
     dbOptions.multiJoin,

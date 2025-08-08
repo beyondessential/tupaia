@@ -1,15 +1,15 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator, CardStyleInterpolators } from 'react-navigation-stack';
+import { CardStyleInterpolators, createStackNavigator } from 'react-navigation-stack';
 
 import { HeaderToolbar } from './HeaderToolbar';
 import { HeaderLeftButton } from './HeaderLeftButton';
 
-import { LoginContainer, WelcomeContainer } from '../authentication';
+import {
+  LoginContainer,
+  NoInternetForgotPasswordContainer,
+  WelcomeContainer,
+} from '../authentication';
 import { RequestCountryAccessContainer } from '../country';
 import { CreateUserContainer } from '../user';
 import { HomeScreenContainer } from '../home';
@@ -17,22 +17,23 @@ import { WebBrowserContainer } from '../web';
 import { ChangePasswordContainer } from '../changePassword';
 import { RealmExplorer } from '../database/RealmExplorer';
 import { RequestAccountDeletionContainer } from '../requestAccountDeletion';
-import { SurveyScreen, SurveysMenuScreen, QrCodeScreen } from '../assessment';
+import { QrCodeScreen, SurveyScreen, SurveysMenuScreen } from '../assessment';
 import {
+  CHANGE_PASSWORD_SCREEN,
   CREATE_ACCOUNT_SCREEN,
+  DELETE_ACCOUNT_REQUEST_SCREEN,
+  HOME_SCREEN,
   LOGIN_SCREEN,
+  NO_INTERNET_FORGOT_PASSWORD_SCREEN,
+  QR_CODES_SCREEN,
   REALM_EXPLORER_SCREEN,
   REQUEST_COUNTRY_ACCESS_SCREEN,
+  ROUTES_WITH_INVISIBLE_HEADERS,
   SURVEY_SCREEN,
   SURVEYS_MENU_SCREEN,
   SYNC_SCREEN,
-  WELCOME_SCREEN,
   WEB_BROWSER_SCREEN,
-  HOME_SCREEN,
-  CHANGE_PASSWORD_SCREEN,
-  ROUTES_WITH_INVISIBLE_HEADERS,
-  DELETE_ACCOUNT_REQUEST_SCREEN,
-  QR_CODES_SCREEN,
+  WELCOME_SCREEN,
 } from './constants';
 import { SyncContainer } from '../sync';
 import { THEME_COLOR_ONE } from '../globalStyles';
@@ -43,6 +44,10 @@ const routes = {
   [CHANGE_PASSWORD_SCREEN]: { screen: ChangePasswordContainer },
   [DELETE_ACCOUNT_REQUEST_SCREEN]: { screen: RequestAccountDeletionContainer },
   [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: () => ({ headerShown: false }) },
+  [NO_INTERNET_FORGOT_PASSWORD_SCREEN]: {
+    screen: NoInternetForgotPasswordContainer,
+    navigationOptions: () => ({ headerShown: false }),
+  },
   [REQUEST_COUNTRY_ACCESS_SCREEN]: { screen: RequestCountryAccessContainer },
   [WELCOME_SCREEN]: {
     screen: WelcomeContainer,

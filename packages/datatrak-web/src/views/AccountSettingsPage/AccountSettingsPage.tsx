@@ -1,17 +1,15 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import { useNavigate } from 'react-router';
 import { Settings } from '@material-ui/icons';
 import { PersonalDetailsSection } from './PersonalDetailsSection';
 import { ChangePasswordSection } from './ChangePasswordSection';
 import { RequestCountryAccessSection } from './RequestCountryAccessSection';
 import { DeleteAccountSection } from './DeleteAccountSection';
 import { PageContainer } from '../../components';
+import { useIsMobile } from '../../utils';
+import { StickyMobileHeader } from '../../layout';
 
 const Wrapper = styled(PageContainer)`
   padding: 1.5rem;
@@ -26,28 +24,50 @@ const Wrapper = styled(PageContainer)`
 const PageTitle = styled(Typography).attrs({
   variant: 'h1',
 })`
-  font-size: 1.25rem;
   display: flex;
   align-items: center;
-  .MuiSvgIcon-root {
-    margin-right: 0.5rem;
-  }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    font-size: 1.5rem;
-  }
+  font-size: 1.5rem;
+`;
+
+const MobilePageTitle = styled(Typography).attrs({
+  variant: 'h3',
+})`
+  display: inline;
+  vertical-align: middle;
+  font-size: 1.25rem;
+`;
+
+const SettingsIcon = styled(Settings).attrs({ color: 'primary' })`
+  margin-right: 0.4rem;
+  vertical-align: middle;
 `;
 
 export const AccountSettingsPage = () => {
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const onBack = () => {
+    navigate(-1);
+  };
   return (
-    <Wrapper>
-      <PageTitle>
-        <Settings color="primary" />
-        Account settings
-      </PageTitle>
-      <PersonalDetailsSection />
-      <ChangePasswordSection />
-      <RequestCountryAccessSection />
-      <DeleteAccountSection />
-    </Wrapper>
+    <>
+      {isMobile && (
+        <StickyMobileHeader onBack={onBack}>
+          <SettingsIcon />
+          <MobilePageTitle>Account settings</MobilePageTitle>
+        </StickyMobileHeader>
+      )}
+      <Wrapper>
+        {!isMobile && (
+          <PageTitle>
+            <SettingsIcon />
+            Account settings
+          </PageTitle>
+        )}
+        <PersonalDetailsSection />
+        <ChangePasswordSection />
+        <RequestCountryAccessSection />
+        <DeleteAccountSection />
+      </Wrapper>
+    </>
   );
 };

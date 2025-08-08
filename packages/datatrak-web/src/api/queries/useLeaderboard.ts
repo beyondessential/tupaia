@@ -1,8 +1,4 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { DatatrakWebLeaderboardRequest, Project } from '@tupaia/types';
 import { get } from '../api';
 

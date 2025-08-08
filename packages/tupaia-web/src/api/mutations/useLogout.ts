@@ -1,9 +1,4 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { post } from '../api';
 import { gaEvent } from '../../utils';
@@ -16,7 +11,7 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  return useMutation('logout', () => post('logout'), {
+  return useMutation(['logout'], () => post('logout'), {
     onMutate: () => {
       gaEvent('User', 'Log out');
     },

@@ -2,11 +2,6 @@ import winston from 'winston';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { pushAggregateData } from '/preaggregation/pushAggregateData';
 
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 const DATA_ELEMENT_GROUP_CODE_PREFIX = 'CriticalMedicines';
 const ORGANISATION_UNIT_GROUP_CODE_PREFIX = 'FacilityType';
 const STOCK_STATUS_CODES = {

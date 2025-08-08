@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 
@@ -28,6 +23,7 @@ export type PullAnalyticsOptions = {
 export class AnalyticsPuller {
   private readonly models;
   private readonly translator;
+  // @ts-ignore
   private readonly dataElementsMetadataPuller;
 
   public constructor(

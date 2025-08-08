@@ -1,25 +1,22 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 // Exact copy of: @tupaia/meditrak-app-server/src/sync/createMeditrakSyncView.ts
 // TODO: Tidy this up as part of RN-502
 
 import '@babel/polyfill';
-
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 
 import { TupaiaDatabase } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
 
 import winston from './log';
 import { createPermissionsBasedMeditrakSyncQueue } from './database';
+import { configureEnv } from './configureEnv';
+
+configureEnv();
 
 (async () => {
   /**
    * Set up database
    */
+
   const database = new TupaiaDatabase();
 
   if (!isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {

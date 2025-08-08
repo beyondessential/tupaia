@@ -1,15 +1,12 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import { CssColor } from '../../css';
+import { DashboardItemType } from '../common';
 import type { BaseConfig, ValueType } from './common';
 
 /**
  * @description Matrix viz type
  */
 export type MatrixConfig = BaseConfig & {
-  type: 'matrix';
+  type: `${DashboardItemType.Matrix}`;
 
   /**
    * @description Matrix viz type can specify a column as the data element column.
@@ -38,6 +35,41 @@ export type MatrixConfig = BaseConfig & {
    * @description A url to an image to be used when a matrix is collapsed.
    */
   placeholder?: string;
+  /**
+   * @description Specify whether to show search filters on the matrix
+   */
+  enableSearch?: boolean;
+};
+
+export type MatrixEntityCell = { entityCode: string; entityLabel: string };
+
+export type MatrixVizBuilderConfig = MatrixConfig & {
+  /**
+   * @description Configuration for rows, columns, and categories of the matrix
+   */
+  output?: {
+    type: 'matrix';
+
+    /**
+     * @description The column of the data-table that should be used for the row values in the matrix
+     */
+    rowField: string;
+
+    /**
+     * @description The column of the data-table that should be used to group the rows into categories
+     */
+    categoryField?: string;
+
+    /**
+     * @description
+     * The columns of the data-table that should be included as columns in the matrix.
+     * Can be either:
+     * a list of column names,
+     * '*' to indicate all columns
+     * or a list of objects with an entityCode and entityLabel to generate entity links
+     */
+    columns?: (string | { entityCode: string; entityLabel: string })[];
+  };
 };
 
 type BasePresentationOption = {
@@ -84,7 +116,7 @@ export type PresentationOptionCondition = BasePresentationOption & {
   /**
    * @description the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }
    */
-  condition: ConditionValue | Record<ConditionType, ConditionValue>;
+  condition: ConditionValue | ConditionsObject;
   legendLabel?: string;
 };
 
@@ -92,6 +124,8 @@ export type PresentationOptionRange = BasePresentationOption & {
   min?: number;
   max?: number;
 };
+
+export type ConditionsObject = { [key in ConditionType]?: ConditionValue };
 
 export type ConditionValue = string | number;
 

@@ -1,7 +1,4 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+/**
+ * @description A CSS color string e.g. green or #abc123
  */
-
-export type CssColor = string; // e.g. green or #abc123
+export type CssColor = string;

@@ -1,10 +1,7 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { useEffect, useRef } from 'react';
-import { LegendProps, MeasureData, Series } from '@tupaia/ui-map-components';
+import { LegendProps, Series } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
+import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import {
   useEntitiesWithLocation,
   useEntity,
@@ -40,6 +37,7 @@ const useMapOverlayEntities = (
   includeRootEntity?: boolean,
   measureLevel?: EntityTypeParam,
   keepPreviousEntitiesData?: boolean,
+  entityAttributesFilter: TupaiaWebMapOverlaysRequest.TranslatedMapOverlay['entityAttributesFilter'] = {},
 ) => {
   return useEntitiesWithLocation(
     projectCode,
@@ -49,6 +47,15 @@ const useMapOverlayEntities = (
         includeRootEntity,
         filter: {
           type: measureLevel,
+          ...Object.entries(entityAttributesFilter).reduce((result, [attribute, filterValue]) => {
+            return {
+              ...result,
+              // convert the filter value to a string if it is an array, so that it gets passed to the server as a comma separated string
+              [`attributes->>${attribute}`]: Array.isArray(filterValue)
+                ? filterValue.join(',')
+                : filterValue,
+            };
+          }, {}),
         },
       },
     },
@@ -91,6 +98,7 @@ export const useMapOverlayTableData = ({
     includeRootEntity,
     selectedOverlay?.measureLevel,
     keepPreviousData,
+    selectedOverlay?.entityAttributesFilter,
   );
 
   const {
@@ -98,7 +106,7 @@ export const useMapOverlayTableData = ({
     isLoading,
     isFetched,
     isFetching,
-    isIdle,
+    fetchStatus,
     isPreviousData,
     error: mapOverlayReportError,
     refetch: refetchMapOverlayReport,
@@ -120,9 +128,9 @@ export const useMapOverlayTableData = ({
       ? [...data?.serieses]?.sort((a: Series, b: Series) => a.key.localeCompare(b.key))
       : [], // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
     hiddenValues: hiddenValues ? hiddenValues : {},
-  }) as MeasureData[];
+  });
 
-  const loadingData = isLoading || isFetching || (!isFetched && !isIdle);
+  const loadingData = isLoading || isFetching || (!isFetched && fetchStatus !== 'idle');
 
   const isLoadingDifferentMeasureLevel =
     (!isPreviousData || data?.measureLevel !== selectedOverlay?.measureLevel) && loadingData;

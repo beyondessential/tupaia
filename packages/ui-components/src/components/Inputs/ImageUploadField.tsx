@@ -1,13 +1,7 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { AvatarProps, Box, Fab, FormHelperText } from '@material-ui/core';
+import { AvatarProps, Box, Fab, FormHelperText, FormLabel } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ConfirmDeleteModal, ConfirmDeleteModalProps } from '../ConfirmDeleteModal';
 import { FlexStart } from '../Layout';
 import { GreyOutlinedButton } from '../Button';
 import { Avatar } from '../Avatar';
@@ -23,7 +17,6 @@ const HiddenFileInput = styled.input`
 `;
 
 const Wrapper = styled(FlexStart)`
-  margin-bottom: 1.6rem;
   align-items: flex-start;
 `;
 
@@ -55,12 +48,13 @@ const DeleteButton = styled(Fab)`
   }
 `;
 
-const TextLabel = styled.span`
+const TextLabel = styled(FormLabel).attrs({
+  component: 'span',
+})`
   font-size: 0.68rem;
   line-height: 0.8rem;
   text-transform: uppercase;
   color: ${props => props.theme.palette.text.tertiary};
-  margin-bottom: 0.6rem;
 `;
 
 const ErrorMessage = styled(FormHelperText)`
@@ -86,7 +80,6 @@ interface ImageUploadFieldProps {
   onDelete?: () => void;
   label: string;
   buttonLabel?: string;
-  deleteModal?: Omit<ConfirmDeleteModalProps, 'isOpen' | 'onConfirm' | 'onCancel'> | null;
   avatarVariant?: AvatarProps['variant'];
   maxHeight?: number;
   maxWidth?: number;
@@ -96,7 +89,7 @@ interface ImageUploadFieldProps {
   tooltip?: string;
   required?: boolean;
   FormHelperTextComponent?: React.ElementType;
-  invalid?: boolean;
+  error?: boolean;
 }
 
 const createBase64Image = (fileObject: File): Promise<Base64> => {
@@ -122,10 +115,6 @@ export const ImageUploadField = React.memo(
     avatarInitial,
     label,
     buttonLabel = 'Upload photo',
-    deleteModal = {
-      title: 'Remove Photo',
-      message: 'Are you sure you want to remove your photo?',
-    },
     avatarVariant = 'circle',
     maxHeight,
     maxWidth,
@@ -135,14 +124,12 @@ export const ImageUploadField = React.memo(
     tooltip,
     required,
     FormHelperTextComponent,
-    invalid,
+    error,
   }: ImageUploadFieldProps) => {
-    const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const inputEl = useRef<HTMLInputElement | null>(null);
 
     const handleDelete = () => {
-      setConfirmModalIsOpen(false);
       if (inputEl && inputEl.current) inputEl.current.value = '';
       onDelete();
       setErrorMessage(null);
@@ -186,14 +173,6 @@ export const ImageUploadField = React.memo(
       }
     };
 
-    const onClickDelete = () => {
-      if (deleteModal) {
-        setConfirmModalIsOpen(true);
-      } else {
-        handleDelete();
-      }
-    };
-
     return (
       <Wrapper className="upload_wrapper">
         <Box position="relative">
@@ -206,7 +185,7 @@ export const ImageUploadField = React.memo(
             {avatarInitial}
           </StyledAvatar>
           {imageSrc && (
-            <DeleteButton onClick={onClickDelete}>
+            <DeleteButton onClick={handleDelete}>
               <DeleteIcon />
             </DeleteButton>
           )}
@@ -217,6 +196,11 @@ export const ImageUploadField = React.memo(
             label={label}
             tooltip={tooltip}
             as={TextLabel}
+            labelProps={{
+              required,
+              error: error || !!errorMessage,
+            }}
+            applyWrapper
           />
           {secondaryLabel && (
             <FormHelperText component={FormHelperTextComponent || 'p'} id={`${name}-description`}>
@@ -230,21 +214,12 @@ export const ImageUploadField = React.memo(
             type="file"
             onChange={handleFileUpload}
             aria-describedby={secondaryLabel ? `${name}-description` : ''}
-            aria-invalid={!!errorMessage || invalid}
+            aria-invalid={!!errorMessage || error}
             required={required}
           />
           <GreyOutlinedButton component="span">{buttonLabel}</GreyOutlinedButton>
           {errorMessage && <ErrorMessage id={`${name}-error-message`}>{errorMessage}</ErrorMessage>}
         </Label>
-
-        {deleteModal && (
-          <ConfirmDeleteModal
-            isOpen={confirmModalIsOpen}
-            onConfirm={handleDelete}
-            onCancel={() => setConfirmModalIsOpen(false)}
-            {...deleteModal}
-          />
-        )}
       </Wrapper>
     );
   },

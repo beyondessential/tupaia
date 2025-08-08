@@ -1,30 +1,27 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
+import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import {
-  Entity,
   DashboardItem,
-  TupaiaWebDashboardsRequest,
   DashboardMailingList,
   DashboardMailingListEntry,
+  Entity,
+  TupaiaWebDashboardsRequest,
 } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
-import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 
 interface DashboardMailingListWithEntityCode extends DashboardMailingList {
   'entity.code': string;
 }
 
-export type DashboardsRequest = Request<
-  TupaiaWebDashboardsRequest.Params,
-  TupaiaWebDashboardsRequest.ResBody,
-  TupaiaWebDashboardsRequest.ReqBody,
-  TupaiaWebDashboardsRequest.ReqQuery
->;
+export interface DashboardsRequest
+  extends Request<
+    TupaiaWebDashboardsRequest.Params,
+    TupaiaWebDashboardsRequest.ResBody,
+    TupaiaWebDashboardsRequest.ReqBody,
+    TupaiaWebDashboardsRequest.ReqQuery
+  > {}
 
 const NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE = 'no_data_at_level';
 const NO_ACCESS_DASHBOARD_ITEM_CODE = 'no_access';
@@ -65,9 +62,15 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       },
     );
   };
+
   public async buildResponse() {
-    const { params, ctx, accessPolicy, session } = this.req;
-    const { projectCode, entityCode } = params;
+    const {
+      accessPolicy,
+      ctx,
+      models,
+      params: { projectCode, entityCode },
+      session,
+    } = this.req;
 
     // We're including the root entity in this request, so we don't need to double up fetching it
     const entities: Entity[] = await ctx.services.entity.getAncestorsOfEntity(
@@ -82,45 +85,40 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ? accessPolicy.getPermissionGroups([rootEntity.country_code])
       : accessPolicy.getPermissionGroups(); // country_code is null for project level
 
-    const dashboards = await this.req.models.dashboard.find(
+    const dashboards = await models.dashboard.find(
       {
         root_entity_code: entities.map(e => e.code),
       },
       { sort: ['sort_order ASC', 'name ASC'] },
     );
 
-    if (!dashboards.length) {
+    if (dashboards.length === 0) {
       return this.getNoDataDashboard(rootEntity.code, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
     }
 
-    // Fetch all dashboard relations
-    const dashboardRelations = await this.req.models.dashboardRelation.find({
-      // Attached to the given dashboards
-      dashboard_id: dashboards.map(d => d.id),
-      // For the root entity type
-      entity_types: {
-        comparator: '@>',
-        comparisonValue: [ensure(rootEntity.type)],
-      },
-      // Within the selected project
-      project_codes: {
-        comparator: '@>',
-        comparisonValue: [projectCode],
-      },
-    });
+    // Fetch all dashboard relations for the given dashboards, project code and root entity type. This is so we can then filter the dashboard items by the permissions of the root entity and the entity attributes, which means we can determine whether to show a 'no access' dashboard item or not
+
+    const dashboardIds = dashboards.map(d => d.id);
+    const dashboardRelations =
+      await models.dashboardRelation.findDashboardRelationsForEntityAndProject(
+        dashboardIds,
+        rootEntity.code,
+        projectCode,
+      );
 
     // The dashboards themselves are fetched from central to ensure permission checking
-    const dashboardItems: DashboardItem[] = await ctx.services.central.fetchResources(
+
+    const dashboardItems: DashboardItem[] = await ctx.services.central.fetchResourcesWithPost(
       'dashboardItems',
+      { pageSize: DEFAULT_PAGE_SIZE }, // Override the default limit of 100 records
       {
+        // Potentially hundreds of dashboard items, hence POST method with body to avoid 414 error
         filter: {
           id: {
             comparator: 'IN',
             comparisonValue: dashboardRelations.map(dr => dr.child_id),
           },
         },
-        // Override the default limit of 100 records
-        pageSize: DEFAULT_PAGE_SIZE,
       },
     );
 
@@ -128,8 +126,6 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     const mergedItemRelations = orderBy(
       dashboardRelations
         .filter(relation =>
-          // We run a permissions filter here instead of in the central fetch so we
-          // know whether the "no data" or "no permission" dashboard is more appropriate
           relation.permission_groups.some(permissionGroup =>
             rootEntityPermissions.includes(permissionGroup),
           ),
@@ -212,16 +208,21 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
 
     const response = dashboardsWithMetadata.filter(dashboard => dashboard.items.length > 0);
 
-    if (!response.length) {
-      const dashboardCode = dashboardRelations.length
-        ? NO_ACCESS_DASHBOARD_ITEM_CODE
-        : NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE;
+    if (response.length === 0) {
+      const dashboardCode =
+        dashboardRelations.length > 0
+          ? NO_ACCESS_DASHBOARD_ITEM_CODE
+          : NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE;
       return this.getNoDataDashboard(rootEntity.code, dashboardCode);
     }
 
     return camelcaseKeys(response, {
       deep: true,
-      stopPaths: ['items.config.presentationOptions', 'items.config.chartConfig'], // these need to not be converted to camelcase because they directly relate to the name of values in the data that is returned
+      stopPaths: [
+        'items.config.presentationOptions',
+        'items.config.chartConfig',
+        'items.config.segmentConfig',
+      ], // these need to not be converted to camelcase because they directly relate to the name of values in the data that is returned
     });
   }
 }

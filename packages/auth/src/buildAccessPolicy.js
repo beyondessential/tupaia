@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 const fetchPermissionGroupChildren = async (models, permissionGroupName) => {
   const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
   const children = await permissionGroup.getChildTree();
@@ -26,10 +21,8 @@ export const buildAccessPolicy = async (models, userId) => {
   // iterate through the user's permissions and build the permission groups per entity
   await Promise.all(
     userEntityPermissions.map(async userEntityPermission => {
-      const {
-        permission_group_name: permissionGroupName,
-        entity_code: entityCode,
-      } = userEntityPermission;
+      const { permission_group_name: permissionGroupName, entity_code: entityCode } =
+        userEntityPermission;
 
       permissionsByEntity[entityCode] = permissionsByEntity[entityCode] || [];
       permissionsByEntity[entityCode].push(permissionGroupName);
@@ -38,9 +31,8 @@ export const buildAccessPolicy = async (models, userId) => {
       // implied access for them, so they'll also be added to the access policy (which has a simple,
       // flat structure, ignorant of the fact that permission groups exist in a hierarchy)
       const permissionGroupChildren = await getOrFetchPermissionGroupChildren(permissionGroupName);
-      permissionsByEntity[entityCode] = permissionsByEntity[entityCode].concat(
-        permissionGroupChildren,
-      );
+      permissionsByEntity[entityCode] =
+        permissionsByEntity[entityCode].concat(permissionGroupChildren);
     }),
   );
 

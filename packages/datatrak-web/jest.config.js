@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 const baseConfig = require('../../jest.config-js.json');
 
 module.exports = async () => ({
@@ -13,7 +8,7 @@ module.exports = async () => ({
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
   moduleNameMapper: {
-    axios: 'axios/dist/node/axios.cjs',
+    '^axios$': require.resolve('axios'),
   },
   transformIgnorePatterns: ['/node_modules/(?!(msw)/).*/'],
 });

@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
 
@@ -69,12 +64,12 @@ export const createSurveyResponseDBFilter = async (accessPolicy, models, criteri
   dbOptions.multiJoin = mergeMultiJoin(
     [
       {
-        joinWith: TYPES.SURVEY,
-        joinCondition: [`${TYPES.SURVEY}.id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
+        joinWith: RECORDS.SURVEY,
+        joinCondition: [`${RECORDS.SURVEY}.id`, `${RECORDS.SURVEY_RESPONSE}.survey_id`],
       },
       {
-        joinWith: TYPES.ENTITY,
-        joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.SURVEY_RESPONSE}.entity_id`],
+        joinWith: RECORDS.ENTITY,
+        joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.SURVEY_RESPONSE}.entity_id`],
       },
     ],
     dbOptions.multiJoin,

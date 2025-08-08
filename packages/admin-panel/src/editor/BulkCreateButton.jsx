@@ -1,23 +1,16 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { LightOutlinedButton } from '@tupaia/ui-components';
 import { openBulkEditModal } from './actions';
+import { CreateActionButton } from './ActionButton';
 
 export const BulkCreateButtonComponent = ({ dispatch, label, actionConfig }) => (
-  <LightOutlinedButton
+  <CreateActionButton
     id="page-button-bulk-create"
-    startIcon={<AddCircleIcon />}
     onClick={() => dispatch(openBulkEditModal(actionConfig))}
   >
     {label}
-  </LightOutlinedButton>
+  </CreateActionButton>
 );
 
 BulkCreateButtonComponent.propTypes = {

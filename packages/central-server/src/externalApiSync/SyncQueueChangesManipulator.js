@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 const UPDATE = 'update';
 const DELETE = 'delete';
 
@@ -23,7 +18,7 @@ export class SyncQueueChangesManipulator {
     changes.filter(c => c.record_type === recordType);
 
   getIdsFromChangesForModel = (changes, model) =>
-    this.getRecordIds(this.getChangesForRecordType(changes, model.databaseType));
+    this.getRecordIds(this.getChangesForRecordType(changes, model.databaseRecord));
 
   getRecords = changes =>
     changes.map(change => {
@@ -32,5 +27,5 @@ export class SyncQueueChangesManipulator {
     });
 
   getRecordsFromChangesForModel = (changes, model) =>
-    this.getRecords(this.getChangesForRecordType(changes, model.databaseType));
+    this.getRecords(this.getChangesForRecordType(changes, model.databaseRecord));
 }

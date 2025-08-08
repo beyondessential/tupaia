@@ -1,16 +1,12 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
+import { generateId } from '@tupaia/database';
+import { VIZ_BUILDER_PERMISSION_GROUP } from '../../../permissions';
 
-import { generateTestId } from '@tupaia/database';
-
-const permissionGroupId = generateTestId();
-const testPermissionGroupId = generateTestId();
+const permissionGroupId = generateId();
+const testPermissionGroupId = generateId();
 
 const MAP_OVERLAYS = [
   {
-    id: generateTestId(),
+    id: generateId(),
     code: 'Modern_Map_Overlay',
     name: 'Modern Map Overlay',
     config: { displayType: 'spectrum', scaleType: 'neutral' },
@@ -27,7 +23,7 @@ const MAP_OVERLAYS = [
 const PERMISSION_GROUPS = [
   {
     id: permissionGroupId,
-    name: 'Viz_Permissions',
+    name: VIZ_BUILDER_PERMISSION_GROUP,
   },
   {
     id: testPermissionGroupId,

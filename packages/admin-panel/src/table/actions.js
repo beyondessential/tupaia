@@ -1,32 +1,24 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
+import debounce from 'lodash.debounce';
 import parseLinkHeader from 'parse-link-header';
 import generateId from 'uuid/v1';
-import debounce from 'lodash.debounce';
 
+import { convertSearchTermToFilter } from '../utilities';
 import {
   ACTION_CANCEL,
   ACTION_CONFIRM,
   ACTION_REQUEST,
-  COLUMNS_RESIZE,
+  CLEAR_ERROR,
   DATA_CHANGE_ERROR,
   DATA_CHANGE_REQUEST,
   DATA_CHANGE_SUCCESS,
   DATA_FETCH_ERROR,
   DATA_FETCH_REQUEST,
   DATA_FETCH_SUCCESS,
-  EXPANSIONS_CHANGE,
-  EXPANSIONS_TAB_CHANGE,
-  FILTERS_CHANGE,
   PAGE_INDEX_CHANGE,
   PAGE_SIZE_CHANGE,
   SORTING_CHANGE,
 } from './constants';
 import { getTableState } from './selectors';
-import { convertSearchTermToFilter } from '../utilities';
 
 export const changePage = (reduxId, pageIndex) => ({
   type: PAGE_INDEX_CHANGE,
@@ -41,45 +33,43 @@ export const changePageSize = (reduxId, pageSize, pageIndex) => ({
   reduxId,
 });
 
-export const changeExpansions = (reduxId, expansions) => ({
-  type: EXPANSIONS_CHANGE,
-  expansions,
-  reduxId,
-});
-
-export const changeExpansionsTab = (reduxId, rowId, tabValue) => ({
-  type: EXPANSIONS_TAB_CHANGE,
-  reduxId,
-  rowId,
-  tabValue,
-});
-
-export const changeFilters = (reduxId, filters) => ({
-  type: FILTERS_CHANGE,
-  filters,
-  reduxId,
-});
-
-export const changeResizedColumns = (reduxId, resizedColumns) => ({
-  type: COLUMNS_RESIZE,
-  resizedColumns,
-  reduxId,
-});
-
 export const changeSorting = (reduxId, sorting) => ({
   type: SORTING_CHANGE,
   sorting,
   reduxId,
 });
 
+const parseIntOrInfinity = val => {
+  if (typeof val === 'number' && Number.isFinite(val)) return val;
+
+  const naive = Number.parseInt(val, 10);
+  return Number.isNaN(naive) || !Number.isFinite(naive) ? Number.POSITIVE_INFINITY : naive;
+};
+
 const refreshDataWithDebounce = debounce(
-  async (reduxId, endpoint, columns, baseFilter, tableState, dispatch, api) => {
-    const { pageIndex, pageSize, filters, sorting } = tableState;
+  async (
+    reduxId,
+    endpoint,
+    columns,
+    baseFilter,
+    filters = [],
+    sorting = [],
+    tableState,
+    dispatch,
+    api,
+  ) => {
+    const { pageIndex, pageSize } = tableState;
 
     // Set up filter
     const filterObject = { ...baseFilter };
     filters.forEach(({ id, value }) => {
-      filterObject[id] = value;
+      if (Array.isArray(value)) {
+        filterObject[id] = {
+          comparator: '@>',
+          comparisonValue: `{${value.join(',')}}`,
+          castAs: 'text[]',
+        };
+      } else filterObject[id] = value;
     });
     const filterString = JSON.stringify(convertSearchTermToFilter(filterObject));
 
@@ -90,7 +80,9 @@ const refreshDataWithDebounce = debounce(
     const sortString = JSON.stringify(sortObjects);
 
     // Set up columns
-    const columnSources = columns.map(column => column.source);
+    const columnSources = columns
+      .filter(column => Boolean(column.source))
+      .map(column => column.source);
     const columnsString = JSON.stringify(columnSources);
 
     // Prepare for request
@@ -110,14 +102,21 @@ const refreshDataWithDebounce = debounce(
         sort: sortString.length > 0 ? sortString : undefined,
       };
       const response = await api.get(endpoint, queryParameters);
+
+      const totalRecords = parseIntOrInfinity(response.headers.get('X-Total-Count'));
+
       const linkHeader = parseLinkHeader(response.headers.get('Link'));
-      const lastPageNumber = parseInt(linkHeader.last.page, 10);
+      const lastPageNumber = parseIntOrInfinity(linkHeader?.last?.page);
+
       dispatch({
         type: DATA_FETCH_SUCCESS,
         reduxId,
         data: response.body,
         numberOfPages: lastPageNumber,
         fetchId,
+        totalRecords,
+        pageIndex,
+        pageSize,
       });
     } catch (error) {
       dispatch({
@@ -125,19 +124,29 @@ const refreshDataWithDebounce = debounce(
         reduxId,
         errorMessage: error.message,
         fetchId,
+        pageIndex,
+        pageSize,
       });
     }
   },
   200,
 );
 
-export const refreshData = (reduxId, endpoint, columns, baseFilter, tableState) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
-  return refreshDataWithDebounce(reduxId, endpoint, columns, baseFilter, tableState, dispatch, api);
-};
+export const refreshData =
+  (reduxId, endpoint, columns, baseFilter, filters, sorting, tableState) =>
+  async (dispatch, getState, { api }) => {
+    return refreshDataWithDebounce(
+      reduxId,
+      endpoint,
+      columns,
+      baseFilter,
+      filters,
+      sorting,
+      tableState,
+      dispatch,
+      api,
+    );
+  };
 
 export const cancelAction = reduxId => ({
   type: ACTION_CANCEL,
@@ -160,30 +169,69 @@ export const requestDeleteRecord = (reduxId, endpoint, id, confirmMessage) => ({
   actionCreator: () => deleteRecordFromTable(reduxId, endpoint, id),
 });
 
-export const deleteRecordFromTable = (reduxId, endpoint, id) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
-  const fetchId = generateId();
-  dispatch({
-    type: DATA_CHANGE_REQUEST,
-    fetchId,
-    reduxId,
-  });
-  try {
-    await api.delete(`${endpoint}/${id}`);
+export const requestArchiveSurveyResponse = (reduxId, endpoint, id, confirmMessage) => ({
+  type: ACTION_REQUEST,
+  reduxId,
+  confirmMessage: confirmMessage || 'Are you sure you want to archive this record?',
+  actionCreator: () => archiveSurveyResponse(reduxId, endpoint, id),
+});
+
+export const deleteRecordFromTable =
+  (reduxId, endpoint, id) =>
+  async (dispatch, getState, { api }) => {
+    const fetchId = generateId();
     dispatch({
-      type: DATA_CHANGE_SUCCESS,
+      type: DATA_CHANGE_REQUEST,
       fetchId,
       reduxId,
     });
-  } catch (error) {
+    try {
+      await api.delete(`${endpoint}/${id}`);
+      dispatch({
+        type: DATA_CHANGE_SUCCESS,
+        fetchId,
+        reduxId,
+      });
+    } catch (error) {
+      dispatch({
+        type: DATA_CHANGE_ERROR,
+        reduxId,
+        fetchId,
+        errorMessage: error.message,
+        confirmActionMessage: '',
+      });
+    }
+  };
+
+export const clearError = () => ({
+  type: CLEAR_ERROR,
+});
+
+export const archiveSurveyResponse =
+  (reduxId, endpoint, id) =>
+  async (dispatch, getState, { api }) => {
+    const fetchId = generateId();
     dispatch({
-      type: DATA_CHANGE_ERROR,
-      reduxId,
+      type: DATA_CHANGE_REQUEST,
       fetchId,
-      errorMessage: error.message,
+      reduxId,
     });
-  }
-};
+    try {
+      await api.put(`${endpoint}/${id}`, null, {
+        outdated: true,
+      });
+      dispatch({
+        type: DATA_CHANGE_SUCCESS,
+        fetchId,
+        reduxId,
+      });
+    } catch (error) {
+      dispatch({
+        type: DATA_CHANGE_ERROR,
+        reduxId,
+        fetchId,
+        errorMessage: error.message,
+        confirmActionMessage: '',
+      });
+    }
+  };

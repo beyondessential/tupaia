@@ -1,11 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { get } from 'lodash';
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
 import { ChangeDetailGenerator } from '../externalApiSync';
 
@@ -60,12 +55,12 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   getIsDataRegionalBySurveyId = async surveyResponses => {
     const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
     const surveyData = await this.models.database.find(
-      TYPES.SURVEY,
-      { [`${TYPES.SURVEY}.id`]: surveyIds },
+      RECORDS.SURVEY,
+      { [`${RECORDS.SURVEY}.id`]: surveyIds },
       {
-        joinWith: TYPES.DATA_GROUP,
-        joinCondition: [`${TYPES.DATA_GROUP}.id`, `${TYPES.SURVEY}.data_group_id`],
-        columns: [`${TYPES.SURVEY}.id`, `${TYPES.DATA_GROUP}.config`],
+        joinWith: RECORDS.DATA_GROUP,
+        joinCondition: [`${RECORDS.DATA_GROUP}.id`, `${RECORDS.SURVEY}.data_group_id`],
+        columns: [`${RECORDS.SURVEY}.id`, `${RECORDS.DATA_GROUP}.config`],
       },
     );
 

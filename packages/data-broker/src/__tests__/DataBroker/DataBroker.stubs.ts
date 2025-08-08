@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import pickBy from 'lodash.pickby';
 import { reduceToDictionary } from '@tupaia/utils';
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';

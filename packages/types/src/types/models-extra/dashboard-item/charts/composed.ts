@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { BaseChartConfig, CartesianChartConfig, ChartConfigObject, ChartType } from './common';
 import { LineChartChartConfig } from './line';
 
@@ -17,6 +12,23 @@ export type ComposedChartConfigObject = ChartConfigObject &
  */
 export type ComposedChartConfig = Omit<CartesianChartConfig, 'chartConfig'> & {
   chartType: ChartType.Composed;
+
+  /**
+   * @description
+   * Configuration for each individual chart within this composed chart
+   *
+   * eg.
+   *  {
+   *    avg_rainfall: {
+   *      chartType: line
+   *      color: green
+   *    }
+   *    num_cases: {
+   *      chartType: bar
+   *      color: red
+   *    }
+   *  }
+   */
   chartConfig?: {
     [key: string]: ComposedChartConfigObject;
   };

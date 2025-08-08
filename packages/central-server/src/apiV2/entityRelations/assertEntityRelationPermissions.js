@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { mergeFilter, mergeMultiJoin } from '../utilities';
 
@@ -41,7 +36,7 @@ export const createEntityRelationDbFilter = (accessPolicy, criteria, options) =>
     dbOptions.multiJoin = mergeMultiJoin(
       [
         {
-          joinWith: TYPES.ENTITY,
+          joinWith: RECORDS.ENTITY,
           joinAs: 'child',
           joinCondition: ['entity_relation.child_id', 'child.id'],
         },

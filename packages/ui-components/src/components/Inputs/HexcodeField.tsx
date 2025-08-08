@@ -3,10 +3,6 @@ import { FormHelperText } from '@material-ui/core';
 import styled from 'styled-components';
 import { TextField } from './TextField';
 
-const HexcodeFieldWrapper = styled.div`
-  margin-bottom: 1em;
-`;
-
 const HexcodeFieldContainer = styled.div`
   display: flex;
   align-items: flex-end;
@@ -39,6 +35,8 @@ interface HexcodeFieldProps {
   disabled?: boolean;
   tooltip?: string;
   placeholder?: string;
+  required?: boolean;
+  error?: boolean;
 }
 
 export const HexcodeField = ({
@@ -50,6 +48,8 @@ export const HexcodeField = ({
   disabled,
   tooltip,
   placeholder,
+  required,
+  error,
 }: HexcodeFieldProps) => {
   const handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
@@ -57,7 +57,7 @@ export const HexcodeField = ({
 
   const isValidHexCode = value ? value.match(HEXCODE_PATTERN) : false;
   return (
-    <HexcodeFieldWrapper>
+    <div>
       <HexcodeFieldContainer>
         <HexInput
           label={label}
@@ -71,12 +71,14 @@ export const HexcodeField = ({
             pattern: HEXCODE_PATTERN,
           }}
           placeholder={placeholder}
+          required={required}
+          error={error}
         />
         {isValidHexCode && (
           <HexcodePreview backgroundColor={value} aria-label={`Colour preview for ${label}`} />
         )}
       </HexcodeFieldContainer>
       {helperText && <FormHelperText id={`${id}-helper-text`}>{helperText}</FormHelperText>}
-    </HexcodeFieldWrapper>
+    </div>
   );
 };

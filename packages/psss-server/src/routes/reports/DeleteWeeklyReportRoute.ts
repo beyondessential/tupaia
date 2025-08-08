@@ -1,10 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
-import { UnauthenticatedError } from '@tupaia/utils';
 import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
 import { Route } from '../Route';
 
@@ -17,8 +11,6 @@ export type DeleteWeeklyReportRequest = Request<
 
 export class DeleteWeeklyReportRoute extends Route<DeleteWeeklyReportRequest> {
   public async buildResponse() {
-    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
-
     const { week } = this.req.query;
     const { countryCode, siteCode } = this.req.params;
 

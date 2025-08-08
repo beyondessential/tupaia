@@ -1,25 +1,22 @@
-/**
- * Tupaia
- * Copyright (c) 2017-2020 Beyond Essential Systems Pty Ltd
- */
-
-import autobind from 'react-autobind';
+import knex, { Knex, KnexTimeoutError } from 'knex';
 import { types as pgTypes } from 'pg';
-import knex from 'knex';
+import autobind from 'react-autobind';
 import winston from 'winston';
-import { Multilock } from '@tupaia/utils';
-import { hashStringToInt } from '@tupaia/tsutils';
 
-import { getConnectionConfig } from './getConnectionConfig';
+import { hashStringToInt } from '@tupaia/tsutils';
+import { Multilock, getEnvVarOrDefault } from '@tupaia/utils';
+
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
-import { generateId } from './utilities/generateId';
+import { getConnectionConfig } from './getConnectionConfig';
+import { generateId } from './utilities';
 import {
-  runDatabaseFunctionInBatches,
   MAX_BINDINGS_PER_QUERY,
+  runDatabaseFunctionInBatches,
 } from './utilities/runDatabaseFunctionInBatches';
 
 const QUERY_METHODS = {
   COUNT: 'count',
+  COUNT_DISTINCT: 'countDistinct',
   INSERT: 'insert',
   UPDATE: 'update',
   SELECT: 'select',
@@ -58,11 +55,38 @@ const COMPARATORS = {
   ILIKE: 'ilike',
 };
 
+/**
+ * We only support specific functions in SELECT statements to avoid SQL injection.
+ *
+ * @privateRemarks Because of the (appropriately) conservative way Knex handles identifiers in
+ * parameterised queries, supported functions may need custom handling in {@link getColSelector}.
+ * Otherwise, Knex will attempt to interpret function calls as identifiers. For example,
+ * `COALESCE(foo, bar)` would otherwise become `"COALESCE(FOO", "bar)"`.
+ *
+ * @see getColSelector
+ */
+const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
+
+const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
+
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class TupaiaDatabase {
+  /**
+   * @privateRemarks No special maths for the default value here, just hand-tuned with a remote dev database to
+   * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
+   * without admin privileges are really expected to time out.
+   */
+  #fastCountTimeoutMs = Number.parseInt(getEnvVarOrDefault('FAST_DB_COUNT_TIMEOUT_MS', '400'));
+
+  /**
+   * If true, always uses `count()` method, even when `countFast()` is called.
+   * @type {boolean}
+   */
+  #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
+
   /**
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
@@ -77,16 +101,19 @@ export class TupaiaDatabase {
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
 
-    const connectToDatabase = async () => {
-      this.connection =
-        transactingConnection ||
-        knex({
+    if (transactingConnection) {
+      this.connection = transactingConnection;
+      this.connectionPromise = Promise.resolve(true);
+    } else {
+      const connectToDatabase = async () => {
+        this.connection = knex({
           client: 'pg',
           connection: getConnectionConfig(),
         });
-      return true;
-    };
-    this.connectionPromise = connectToDatabase();
+        return true;
+      };
+      this.connectionPromise = connectToDatabase();
+    }
 
     this.handlerLock = new Multilock();
 
@@ -106,7 +133,6 @@ export class TupaiaDatabase {
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
-  // can be replaced with 'generateTestId' by tests
   generateId = generateId;
 
   async closeConnections() {
@@ -160,16 +186,21 @@ export class TupaiaDatabase {
   async notifyChangeHandlers(change) {
     const unlock = this.handlerLock.createLock(change.record_id);
     const handlers = this.getHandlersForChange(change);
+    const scheduledPromises = [];
     try {
-      for (let i = 0; i < handlers.length; i++) {
+      for (const handler of handlers) {
         try {
-          await handlers[i](change);
+          const { scheduledPromise } = (await handler(change)) || {};
+          if (scheduledPromise) {
+            scheduledPromises.push(scheduledPromise);
+          }
         } catch (e) {
           winston.error(e);
         }
       }
     } finally {
-      unlock();
+      // Don't await the scheduled promises, so that we don't block the change handler from completing
+      Promise.all(scheduledPromises).finally(unlock);
     }
   }
 
@@ -190,15 +221,30 @@ export class TupaiaDatabase {
     return changeChannel.addSchemaChangeHandler(handler);
   }
 
-  wrapInTransaction(wrappedFunction) {
-    return this.connection.transaction(transaction =>
-      wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.connection.transaction(
+      transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+      transactionConfig,
     );
   }
 
-  async fetchSchemaForTable(databaseType) {
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
+  }
+
+  async fetchSchemaForTable(databaseRecord) {
     await this.waitUntilConnected();
-    return this.connection(databaseType).columnInfo();
+    return this.connection(databaseRecord).columnInfo();
   }
 
   /**
@@ -216,7 +262,7 @@ export class TupaiaDatabase {
    */
   async acquireAdvisoryLockForTransaction(lockKey) {
     const lockKeyInt = hashStringToInt(lockKey); // Locks require bigint key, so must convert key to int
-    return this.executeSql(`SELECT pg_advisory_xact_lock(?)`, [lockKeyInt]);
+    return this.executeSql('SELECT pg_advisory_xact_lock(?)', [lockKeyInt]);
   }
 
   /**
@@ -254,7 +300,7 @@ export class TupaiaDatabase {
    * @param {string} [queryMethod]
    * @returns
    */
-  find(recordType, where = {}, options = {}, queryMethod) {
+  find(recordType, where = {}, options = {}, queryMethod = null, queryMethodParameter = null) {
     if (options.subQuery) {
       const { recordType: subRecordType, where: subWhere, ...subOptions } = options.subQuery;
       options.innerQuery = this.find(subRecordType, subWhere, subOptions);
@@ -264,6 +310,7 @@ export class TupaiaDatabase {
         recordType,
         queryMethod:
           queryMethod || (options.distinct ? QUERY_METHODS.DISTINCT : QUERY_METHODS.SELECT),
+        queryMethodParameter,
       },
       where,
       options,
@@ -316,7 +363,34 @@ export class TupaiaDatabase {
   async count(recordType, where, options) {
     // If just a simple query without options, use the more efficient knex count method
     const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
-    return parseInt(result[0].count, 10);
+    return Number.parseInt(result[0].count, 10);
+  }
+
+  /**
+   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact record
+   * count is merely an enhancement, not critical information in the context. A return value of
+   * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
+   */
+  async countFast(recordType, where, options) {
+    if (this.#forceTrueCount) return await this.count(recordType, where, options);
+
+    let result;
+    try {
+      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(
+        this.#fastCountTimeoutMs,
+        { cancel: true },
+      );
+    } catch (error) {
+      if (error instanceof KnexTimeoutError) {
+        winston.debug(
+          `[TupaiaDatabase#countFast] Counting ${recordType} records timed out. Returning infinity.`,
+        );
+        return Number.POSITIVE_INFINITY;
+      }
+      throw error;
+    }
+
+    return Number.parseInt(result[0].count, 10);
   }
 
   async create(recordType, record, where) {
@@ -499,6 +573,7 @@ export class TupaiaDatabase {
  */
 function buildQuery(connection, queryConfig, where = {}, options = {}) {
   const { recordType, queryMethod, queryMethodParameter } = queryConfig;
+
   let query = connection(recordType); // Query starts as just the table, but will be built up
 
   // If an innerQuery is defined, make the outer query wrap it
@@ -533,11 +608,21 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
         return { [alias]: connection.raw(`??::${castAs}`, [alias]) };
       }
 
-      // special case to handle selecting geojson - avoid generic handling of functions to keep
-      // out sql injection vulnerabilities
-      if (selector.includes('ST_AsGeoJSON')) {
-        const [, columnSelector] = selector.match(/ST_AsGeoJSON\((.*)\)/);
-        return { [alias]: connection.raw('ST_AsGeoJSON(??)', [columnSelector]) };
+      // Special case to handle allowlisted SQL functions, namely for selecting GeoJSON and COALESCE
+      // attributes. Avoid generic handling of functions to keep out SQL injection vulnerabilities.
+      for (const func of supportedFunctions) {
+        if (selector.includes(func)) {
+          const [, argsString] = selector.match(new RegExp(`${func}\\((.*)\\)`));
+          const args = argsString.split(',').map(arg => arg.trim());
+          return {
+            [alias]: connection.raw(`${func}(${args.map(() => '??').join(',')})`, [...args]),
+          };
+        }
+      }
+
+      // Special case to handle raw input statements, otherwise they get interpreted as column names
+      if (RAW_INPUT_PATTERN.test(selector)) {
+        return { [alias]: connection.raw(selector) };
       }
 
       return { [alias]: connection.raw('??', [selector]) };
@@ -634,7 +719,8 @@ function addWhereClause(connection, baseQuery, where) {
       return querySoFar; // Ignore undefined criteria
     }
     if (value === null) {
-      return querySoFar.whereNull(key);
+      const columnKey = getColSelector(connection, key);
+      return querySoFar.whereNull(columnKey);
     }
     const {
       comparisonType = 'where',
@@ -650,6 +736,7 @@ function addWhereClause(connection, baseQuery, where) {
     }
 
     const columnKey = getColSelector(connection, key);
+
     const columnSelector = castAs ? connection.raw(`??::${castAs}`, [columnKey]) : columnKey;
 
     const { args = [comparator, sanitizeComparisonValue(comparator, comparisonValue)] } = value;
@@ -680,23 +767,49 @@ function addJoin(baseQuery, recordType, joinOptions) {
   });
 }
 
+/**
+ * @privateRemarks
+ * This sanitisation step fails if the input uses both JSON operators and the `COALESCE` function.
+ *
+ * @see supportedFunctions
+ */
 function getColSelector(connection, inputColStr) {
-  if (inputColStr.includes('->>')) {
-    // Shorthand way of querying json property
-    // TODO: Replace with knex json where functions, eg. whereJsonPath
-    const [first, ...rest] = inputColStr.split(/->>?/);
-    if (rest.length === 1) {
-      // e.g. 'config->>colour' is converted to config->>'colour'
-      return connection.raw(`??->>?`, [first, ...rest]);
-    }
-    // e.g. 'config->item->>colour' is converted to config->'item'->>'colour'
-    const last = rest.slice(-1);
-    const middle = rest.slice(0, rest.length - 1);
-    return connection.raw(`??->${middle.map(i => '?').join('->')}->>?`, [
-      first,
-      ...middle,
-      ...last,
-    ]);
+  const jsonOperatorPattern = /->>?/g;
+  if (jsonOperatorPattern.test(inputColStr)) {
+    const params = inputColStr.split(jsonOperatorPattern);
+    const allButFirst = params.slice(1);
+    const lastIndexOfLookupAsText = inputColStr.lastIndexOf('->>');
+    const lastIndexOfLookupAsJson = inputColStr.lastIndexOf('->');
+    const selector = lastIndexOfLookupAsText >= lastIndexOfLookupAsJson ? '#>>' : '#>';
+
+    // Turn `config->item->>colour` into `config #>> '{item,colour}'`
+    // For some reason, Knex fails when we try to convert it to `config->'item'->>'colour'`
+    return connection.raw(`?? ${selector} '{${allButFirst.map(() => '??').join(',')}}'`, params);
+  }
+
+  /**
+   * Special handling of COALESCE() - one of the {@link supportedFunctions} - to treat its arguments
+   * as identifiers individually rather than trying to treat ‘COALESCE(foo, bar)’ as a single
+   * identifier.
+   */
+  const coalescePattern = /^COALESCE\(.+\)$/;
+  if (coalescePattern.test(inputColStr)) {
+    const [, argsString] = inputColStr.match(/^COALESCE\((.+)\)$/);
+    const bindings = argsString.split(',').map(arg => arg.trim());
+    const identifiers = bindings.map(() => '??');
+
+    return connection.raw(`COALESCE(${identifiers})`, bindings);
+  }
+
+  // Special handling of raw input statements
+  if (RAW_INPUT_PATTERN.test(inputColStr)) {
+    return connection.raw(inputColStr);
+  }
+
+  const asGeoJsonPattern = /^ST_AsGeoJSON\((.+)\)$/;
+  if (asGeoJsonPattern.test(inputColStr)) {
+    const [, argsString] = inputColStr.match(asGeoJsonPattern);
+    return connection.raw(`ST_AsGeoJSON(${argsString})`);
   }
 
   return inputColStr;

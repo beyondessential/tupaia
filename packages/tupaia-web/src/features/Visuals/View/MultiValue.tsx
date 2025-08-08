@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { Table, TableCell as MuiTableCell, TableRow, TableBody } from '@material-ui/core';
@@ -12,6 +8,7 @@ const StyledTable = styled(Table)<{
   $isExport?: boolean;
   $isEnlarged?: boolean;
 }>`
+  border: none;
   max-width: 30rem;
   margin: ${({ $isEnlarged, $isExport }) => {
     if (!$isEnlarged) return 0;
@@ -27,10 +24,17 @@ const StyledTable = styled(Table)<{
   }
 `;
 
+const Row = styled(TableRow)`
+  background-color: transparent;
+  &:nth-child(even) {
+    background-color: transparent;
+  }
+`;
+
 const PositiveIcon = styled(CheckCircle)<{
   $color?: string;
 }>`
-  color: ${({ $color, theme }) => $color || theme.dashboardItem.multiValue.data};
+  color: ${({ $color, theme }) => $color || theme.palette.dashboardItem.multiValue.data};
   height: 1.25rem;
 `;
 
@@ -66,7 +70,7 @@ const TableCell = styled(MuiTableCell)`
   font-size: 1rem;
   line-height: 1.2;
   &:nth-child(2) {
-    color: ${({ theme }) => theme.dashboardItem.multiValue.data};
+    color: ${({ theme }) => theme.palette.dashboardItem.multiValue.data};
     font-weight: ${({ theme }) => theme.typography.fontWeightBold};
     text-align: right;
   }
@@ -78,7 +82,7 @@ export const MultiValue = ({ report: { data }, config, isExport, isEnlarged }: M
     <StyledTable $isExport={isExport} $isEnlarged={isEnlarged}>
       <TableBody>
         {data?.map((datum: ViewDataItem, i) => (
-          <TableRow key={i}>
+          <Row key={i}>
             <TableCell component="th">{datum.name}</TableCell>
             <TableCell>
               {valueType === 'boolean' ? (
@@ -90,7 +94,7 @@ export const MultiValue = ({ report: { data }, config, isExport, isEnlarged }: M
                 datum.value
               )}
             </TableCell>
-          </TableRow>
+          </Row>
         ))}
       </TableBody>
     </StyledTable>

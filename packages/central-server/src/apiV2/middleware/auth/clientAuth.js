@@ -1,9 +1,4 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
-import { UnauthenticatedError } from '@tupaia/utils';
+import { UnauthenticatedError, requireEnv } from '@tupaia/utils';
 import { encryptPassword, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 
 export async function getAPIClientUser(authHeader, models) {
@@ -12,7 +7,7 @@ export async function getAPIClientUser(authHeader, models) {
     throw new UnauthenticatedError('The provided basic authorization header is invalid');
   }
 
-  const { API_CLIENT_SALT } = process.env;
+  const API_CLIENT_SALT = requireEnv('API_CLIENT_SALT');
 
   // We always need a valid client; throw if none is found
   const secretKeyHash = encryptPassword(secretKey, API_CLIENT_SALT);

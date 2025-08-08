@@ -1,18 +1,12 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 // TODO: Tidy this up as part of RN-502
 
-import winston from 'winston';
 import { ChangeHandler } from '@tupaia/database';
 import { MeditrakSyncRecordUpdater } from './MeditrakSyncRecordUpdater';
 
 const modelValidator = model => {
-  if (!model.meditrakConfig.minAppVersion) {
+  if (!model.meditrakConfig?.minAppVersion) {
     throw new Error(
-      `Model for ${model.databaseType} must have a meditrakConfig.minAppVersion property`,
+      `Model for ${model.databaseRecord} must have a meditrakConfig.minAppVersion property`,
     );
   }
   return true;
@@ -33,10 +27,11 @@ export class MeditrakSyncQueue extends ChangeHandler {
     super(models, 'meditrak-sync-queue');
 
     const typesToSync = models.getTypesToSyncWithMeditrak();
+
     const modelNamesToSync = Object.entries(models)
-      .filter(([, model]) => typesToSync.includes(model.databaseType))
+      .filter(([, model]) => typesToSync.includes(model.databaseRecord))
       .map(([modelName]) => modelName);
-    const modelsToSync = typesToSync.map(type => models.getModelForDatabaseType(type));
+    const modelsToSync = typesToSync.map(type => models.getModelForDatabaseRecord(type));
     modelsToSync.forEach(model => modelValidator(model));
     this.changeTranslators = Object.fromEntries(
       modelNamesToSync.map(model => [model, change => [stripDataFromChange(change)]]),
@@ -50,16 +45,9 @@ export class MeditrakSyncQueue extends ChangeHandler {
    * @private
    */
   async refreshPermissionsBasedView(database) {
-    try {
-      const start = Date.now();
-      await database.executeSql(
-        `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
-      );
-      const end = Date.now();
-      winston.info(`permissions_based_meditrak_sync_queue refresh took: ${end - start}ms`);
-    } catch (error) {
-      winston.error(`permissions_based_meditrak_sync_queue refresh failed: ${error.message}`);
-    }
+    await database.executeSql(
+      `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
+    );
   }
 
   /**

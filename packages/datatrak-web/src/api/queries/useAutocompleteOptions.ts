@@ -1,22 +1,17 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import { useQuery } from 'react-query';
-import { Option } from '@tupaia/types';
+import { useQuery } from '@tanstack/react-query';
+import { Option, OptionSet } from '@tupaia/types';
 import { get } from '../api';
 import { useSurveyForm } from '../../features';
 
 export const useAutocompleteOptions = (
-  optionSetId?: string | null,
+  optionSetId?: OptionSet['id'] | null,
   attributeFilters?: Record<string, any>,
   searchText?: string,
 ) => {
   const { getAnswerByQuestionId } = useSurveyForm();
-  return useQuery(
+  return useQuery<Option[]>(
     ['autocompleteOptions', optionSetId, searchText],
-    (): Promise<Option[]> =>
+    () =>
       get(`optionSets/${optionSetId}/options`, {
         params: {
           filter: searchText
@@ -43,8 +38,8 @@ export const useAutocompleteOptions = (
             if (attributeValue === undefined) return false;
             // if it is another autocomplete question, these are shaped differently
             if (attributeValue.hasOwnProperty('value'))
-              return option.attributes[attribute] === attributeValue?.value;
-            return option.attributes[attribute] === attributeValue;
+              return option?.attributes?.[attribute] === attributeValue?.value;
+            return option?.attributes?.[attribute] === attributeValue;
           });
         });
       },

@@ -1,27 +1,36 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
 import {
   ListItemIcon,
-  MenuItem as MuiMenuItem,
+  IconButton as MuiIconButton,
   Menu as MuiMenu,
-  IconButton,
-  Typography,
+  MenuItem as MuiMenuItem,
   Tooltip,
+  Typography,
 } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { EllipsisVertical } from 'lucide-react';
+import React from 'react';
 import styled from 'styled-components';
 import { ActionsMenuOptionType } from '../types';
+import { VisuallyHidden } from './VisuallyHidden';
 
-const StyledMenuItem = styled(MuiMenuItem)`
-  padding-top: 0.625rem;
-  padding-bottom: 0.625rem;
+const StyledMenu = styled(MuiMenu)`
+  .MuiPaper-root {
+    border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+    min-inline-size: 8rem;
+  }
+  .MuiList-root {
+    padding: 0.2rem;
+  }
 `;
 
-const StyledMenuIcon = styled(MoreVertIcon)`
+const StyledMenuItem = styled(MuiMenuItem)`
+  ${props => props.theme.breakpoints.up('md')} {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+  }
+`;
+
+const StyledMenuIcon = styled(EllipsisVertical)`
+  font-size: 1.5rem;
   color: ${props => props.theme.palette.text.tertiary};
 
   &:hover {
@@ -29,7 +38,7 @@ const StyledMenuIcon = styled(MoreVertIcon)`
   }
 `;
 
-type ActionMenuProps = {
+interface ActionMenuProps {
   options: ActionsMenuOptionType[];
   includesIcons?: boolean;
   anchorOrigin?: {
@@ -40,21 +49,24 @@ type ActionMenuProps = {
     vertical?: 'top' | 'bottom';
     horizontal?: 'left' | 'right';
   };
-};
+  IconButton?: typeof MuiIconButton;
+}
 
 export const ActionsMenu = ({
   options,
   includesIcons = false,
   anchorOrigin = {},
   transformOrigin = {},
+  IconButton = MuiIconButton,
 }: ActionMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
   return (
     <>
-      <IconButton aria-label="open" onClick={event => setAnchorEl(event.currentTarget)}>
-        <StyledMenuIcon />
+      <IconButton onClick={event => setAnchorEl(event.currentTarget)}>
+        <StyledMenuIcon aria-hidden />
+        <VisuallyHidden>Open menu</VisuallyHidden>
       </IconButton>
-      <MuiMenu
+      <StyledMenu
         keepMounted
         disablePortal
         getContentAnchorEl={null}
@@ -62,8 +74,8 @@ export const ActionsMenu = ({
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: 'top',
+          horizontal: 'right',
           ...anchorOrigin,
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top', ...transformOrigin }}
@@ -104,7 +116,7 @@ export const ActionsMenu = ({
             </StyledMenuItem>
           ),
         )}
-      </MuiMenu>
+      </StyledMenu>
     </>
   );
 };

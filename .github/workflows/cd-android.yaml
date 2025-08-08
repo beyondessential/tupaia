@@ -1,0 +1,81 @@
+name: CD Package Android
+
+permissions:
+  contents: write # to update the release notes
+  pull-requests: write # to post apk link comment
+
+on:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: 'gradle'
+
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: Set up Yarn
+        run: |
+          corepack enable yarn
+          corepack install
+          echo "Using Yarn $(yarn --version)"
+
+      - name: Install dependencies
+        run: yarn workspaces focus tupaia @tupaia/meditrak-app
+
+      - name: Build dependencies
+        run: yarn run build:from meditrak-app
+
+      - name: Fetch environment variables
+        uses: bitwarden/sm-action@v2
+        with:
+          access_token: ${{ secrets.BW_ACCESS_TOKEN }}
+          # ID for ‘meditrak-app.production.env’ secret in Bitwarden Secrets Manager
+          # Access via https://vault.bitwarden.com/#/sm
+          secrets: 682237eb-edea-4dac-a4f7-b325003d2120 > MEDITRAK_APP_ENV
+
+      - name: Write .env file
+        # Register the secret with ::add-mask:: so GitHub Actions masks it in the logs
+        # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#example-masking-an-environment-variable
+        run: |
+          echo "::add-mask::$MEDITRAK_APP_ENV"
+          echo "$MEDITRAK_APP_ENV" >packages/meditrak-app/.env
+
+      - name: Append BETA_BRANCH environment variable (if non-production branch)
+        if: github.head_ref != 'master'
+        run: echo -e "BETA_BRANCH=\"${{ github.head_ref }}\"" >>packages/meditrak-app/.env
+
+      - name: Build release
+        working-directory: packages/meditrak-app/android
+        env:
+          ANDROID_SIGNING_KEY_ALIAS: ${{ vars.ANDROID_SIGNING_KEY_ALIAS }}
+          ANDROID_SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+          ANDROID_SIGNING_STORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+        run: ./gradlew app:assembleRelease
+
+      - run: ls -R packages/meditrak-app/android/app/build/outputs
+
+      - name: Upload final build
+        id: artifact-upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-${{github.run_number}}
+          path: packages/meditrak-app/android/app/build/outputs/**/*.apk
+          retention-days: 7

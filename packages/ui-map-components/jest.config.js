@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 const baseConfig = require('../../jest.config-ts.json');
 
 module.exports = {
@@ -18,7 +14,7 @@ module.exports = {
   },
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
-    '^.+\\.js$': 'babel-jest',
+    '^.+\\.js$': ['babel-jest', { configFile: './babel.test.js' }],
   },
   testTimeout: 30 * 1000, // 30 seconds. Needed for CI as some test take a while if CPU has high load
 };

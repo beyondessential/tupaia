@@ -1,1 +1,8 @@
+*.md linguist-documentation
 *.pbxproj -text
+packages/datatrak-web/public/mockServiceWorker.js linguist-generated=true
+packages/datatrak-web/public/sw.js linguist-generated=true
+packages/types/src/schemas/schemas.ts linguist-generated=true
+packages/types/src/types/models.ts linguist-generated=true
+packages/datatrak-web/public/sw.js linguist-generated=true
+yarn.lock linguist-generated=true

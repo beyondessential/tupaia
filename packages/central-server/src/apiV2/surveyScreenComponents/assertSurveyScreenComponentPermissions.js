@@ -1,8 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { mergeFilter, mergeMultiJoin } from '../utilities';
 import {
@@ -67,12 +63,15 @@ export const createSurveyScreenComponentDBFilter = async (
   dbOptions.multiJoin = mergeMultiJoin(
     [
       {
-        joinWith: TYPES.QUESTION,
-        joinCondition: [`${TYPES.QUESTION}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.question_id`],
+        joinWith: RECORDS.QUESTION,
+        joinCondition: [`${RECORDS.QUESTION}.id`, `${RECORDS.SURVEY_SCREEN_COMPONENT}.question_id`],
       },
       {
-        joinWith: TYPES.SURVEY_SCREEN,
-        joinCondition: [`${TYPES.SURVEY_SCREEN}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.screen_id`],
+        joinWith: RECORDS.SURVEY_SCREEN,
+        joinCondition: [
+          `${RECORDS.SURVEY_SCREEN}.id`,
+          `${RECORDS.SURVEY_SCREEN_COMPONENT}.screen_id`,
+        ],
       },
     ],
     dbOptions.multiJoin,

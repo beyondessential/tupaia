@@ -1,14 +1,9 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { expect, assert } from 'chai';
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
-  generateTestId,
+  generateId,
   generateValueOfType,
-  TYPES,
+  RECORDS,
   buildAndInsertSurveys,
   upsertDummyRecord,
   findOrCreateDummyCountryEntity,
@@ -22,8 +17,8 @@ import {
   upsertQuestion,
 } from '../testUtilities';
 
-const entityId = generateTestId();
-const surveyId = generateTestId();
+const entityId = generateId();
+const surveyId = generateId();
 const getQuestionId = (questionNumber = 0) => {
   const id = `4705c02a7_question_${questionNumber}_test`;
   return id.substring(id.length - 24); // Cut off excess for questions > 9
@@ -33,7 +28,7 @@ let defaultTimezone = 'Pacific/Auckland';
 
 const generateDummySurveyResponse = (extraFields = {}) => {
   return {
-    id: generateTestId(),
+    id: generateId(),
     start_time: generateValueOfType('date'),
     end_time: generateValueOfType('date'),
     timestamp: generateValueOfType('date'),
@@ -49,14 +44,14 @@ const generateDummySurveyResponse = (extraFields = {}) => {
 };
 
 const generateDummyAnswer = questionNumber => ({
-  id: generateTestId(),
+  id: generateId(),
   type: 'FreeText',
   body: generateValueOfType('text'),
   question_id: getQuestionId(questionNumber),
 });
 
 const generateDummyEntityDetails = () => ({
-  id: generateTestId(),
+  id: generateId(),
   name: generateValueOfType('text'),
   country_code: 'DL',
   parent_id: entityId,
@@ -204,10 +199,10 @@ describe('POST /surveyResponse', async () => {
       it('adds the survey response to the sync queue after it is submitted', async function () {
         this.retries(10);
         await oneSecondSleep(1000);
-        expect(syncQueue.count(TYPES.SURVEY_RESPONSE), 'survey responses added').to.equal(
+        expect(syncQueue.count(RECORDS.SURVEY_RESPONSE), 'survey responses added').to.equal(
           numberOfSurveyResponsesToAdd,
         );
-        expect(syncQueue.count(TYPES.ANSWER), 'answers added').to.equal(
+        expect(syncQueue.count(RECORDS.ANSWER), 'answers added').to.equal(
           numberOfAnswersInEachSurvey * numberOfSurveyResponsesToAdd,
         );
       });
@@ -215,7 +210,7 @@ describe('POST /surveyResponse', async () => {
 
     describe('Badly formatted survey responses', () => {
       it('returns an error when fields are missing from the survey responses', async () => {
-        const badlyFormattedSurveyResponse = { id: generateTestId() };
+        const badlyFormattedSurveyResponse = { id: generateId() };
         const response = await app.post('surveyResponse', {
           body: [badlyFormattedSurveyResponse],
         });
@@ -224,7 +219,7 @@ describe('POST /surveyResponse', async () => {
 
       it('returns an error when fields are missing from the answer', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
-        surveyResponseObject.answers.push({ id: generateTestId() });
+        surveyResponseObject.answers.push({ id: generateId() });
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(response.statusCode).to.equal(400);
       });

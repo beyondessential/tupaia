@@ -1,11 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
+import { RequestHandler } from 'express';
 
-import { NextFunction, Request, Response } from 'express';
-
-export const checkAppVersion = async (req: Request, res: Response, next: NextFunction) => {
+export const checkAppVersion: RequestHandler = async (req, _res, next) => {
   try {
     const { appVersion } = req.query;
     if (!appVersion) {

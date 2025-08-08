@@ -1,30 +1,34 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import { DatatrakWebEntitiesRequest } from '@tupaia/types';
 import { Route } from '@tupaia/server-boilerplate';
 
-export type EntitiesRequest = Request<
-  DatatrakWebEntitiesRequest.Params,
-  DatatrakWebEntitiesRequest.ResBody,
-  DatatrakWebEntitiesRequest.ReqBody,
-  DatatrakWebEntitiesRequest.ReqQuery
->;
+export interface EntitiesRequest
+  extends Request<
+    DatatrakWebEntitiesRequest.Params,
+    DatatrakWebEntitiesRequest.ResBody,
+    DatatrakWebEntitiesRequest.ReqBody,
+    DatatrakWebEntitiesRequest.ReqQuery
+  > {}
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
-    const { query, models } = this.req;
-    const { filter } = query;
-    const entities = await models.entity.find(filter);
-    return entities.map(({ id, type, name, code, parent_id: parentId }) => ({
-      id,
-      type,
-      name,
+    const {
+      query: { filter, limit, sort },
+      models,
+    } = this.req;
+
+    const entities = await models.entity.find(filter, {
+      columns: ['code', 'id', 'name', 'parent_id', 'type'],
+      limit,
+      sort,
+    });
+
+    return entities.map(({ code, id, name, parent_id, type }) => ({
       code,
-      parent_id: parentId,
+      id,
+      name,
+      parent_id,
+      type,
     }));
   }
 }

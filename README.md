@@ -14,12 +14,19 @@
 
 The [Tupaia Contributing Guidelines](/.github/CONTRIBUTING.md) and [BES Contributor Code of Conduct](/.github/CODE_OF_CONDUCT.md) are published in this repo.
 
+## LLM Agent Usage
+
+For LLM agent setup and usage, see the [LLM Agent System documentation](./llm/README.md).
+
 ## Packages
 
 > [!NOTE]
 > This is a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md).
 
 It is set up using [Yarn workspaces](https://yarnpkg.com/features/workspaces), meaning any command you would normally run inside a package can be run from the root directory using `yarn workspace @tupaia/package-name command`. For example, `yarn workspace @tupaia/central-server start-dev`.
+
+If you want to watch internal dependencies while running a server, run `yarn workspace @tupaia/package-name start-dev -i`. The `-i` command will listen to changes in the internal dependencies' `dist` folders and restart on changes.
+You can also run `build-watch` on these internal dependencies to watch changes and rebuild the package on change. This, combined with `-i` on the server start script will mean anytime you change something in your chosen package, the servers will restart. For example, you could run `yarn workspace @tupaia/central-server start-dev` and also `yarn workspace @tupaia/utils build-watch` which would mean the `central-server` would restart anytime you make a change in `utils`. By default, `central-server`, `datatrak-web-server`, and `tupaia-web-server` have `-i` enabled, for convenience.
 
 Use the `start-stack` command to start all servers needed to run a stack. Available for `admin-panel`, `datatrak`, `lesmis`, `psss` and `tupaia-web`. For example, `yarn start-stack tupaia-web`.
 
@@ -162,4 +169,4 @@ In order to automatically format code in VS Code according to our style guide:
 1. Install [Prettier for VS Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode).
 2. Enable the **Editor: Format on Save** setting: `"editor.formatOnSave": true`.
 
-Your files will now be formatted automatically when you save them.
+Your files will now be formatted automatically when you save them

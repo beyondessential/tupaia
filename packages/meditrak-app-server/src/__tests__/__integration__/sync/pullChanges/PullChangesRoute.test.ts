@@ -1,10 +1,5 @@
 /* eslint jest/expect-expect: ["warn", { "assertFunctionNames": ["expect", "expectMatchingChangeRecords"] }] */
 
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { constructAccessToken } from '@tupaia/auth';
 import {
   clearTestData,
@@ -24,7 +19,6 @@ import {
 import { MeditrakAppServerModelRegistry } from '../../../../types';
 import { TestModelRegistry } from '../../../types';
 import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../../utilities';
-import { CAT_USER_SESSION } from '../../fixtures';
 import { upsertDummyQuestion } from '../upsertDummyQuestion';
 import {
   findRecordsWithPermissions,
@@ -72,7 +66,7 @@ describe('changes (GET)', () => {
   let userId: string;
   const models = getTestModels() as TestModelRegistry;
   const syncableChangeEnqueuer = new SyncableChangeEnqueuer(
-    getTestModels() as MeditrakAppServerModelRegistry,
+    getTestModels() as unknown as MeditrakAppServerModelRegistry,
   );
   syncableChangeEnqueuer.setDebounceTime(50);
 
@@ -91,7 +85,7 @@ describe('changes (GET)', () => {
       };
     }
 
-    const modelName = models.getModelNameForDatabaseType(recordType);
+    const modelName = models.getModelNameForDatabaseRecord(recordType);
 
     if (!modelName) {
       throw new Error(`Cannot find model for record type: ${recordType}`);
@@ -125,7 +119,6 @@ describe('changes (GET)', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId,
-        refreshToken: CAT_USER_SESSION.refresh_token,
         apiClientUserId: undefined,
       }),
     );
@@ -554,12 +547,8 @@ describe('changes (GET)', () => {
       await oneSecondSleep();
       const testStartTime = Date.now();
 
-      const {
-        survey,
-        questions,
-        surveyScreen,
-        surveyScreenComponents,
-      } = await buildAndInsertSurvey(models, LEGACY_SSC_SURVEY as any);
+      const { survey, questions, surveyScreen, surveyScreenComponents } =
+        await buildAndInsertSurvey(models, LEGACY_SSC_SURVEY as any);
       await models.database.waitForAllChangeHandlers();
 
       const response = await app.get('changes', {

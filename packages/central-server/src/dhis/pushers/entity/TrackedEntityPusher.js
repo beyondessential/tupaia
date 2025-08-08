@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { capital as capitaliseFirstLetters } from 'case';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
@@ -73,6 +68,10 @@ export class TrackedEntityPusher extends EntityPusher {
       type: TRACKED_ENTITY_TYPE,
       filter: { displayName: this.entityToTypeName(entity) },
     });
+
+    if (!trackedEntityType) {
+      throw new Error(`Tracked entity type not found for ${type}`);
+    }
 
     return trackedEntityType.id;
   }

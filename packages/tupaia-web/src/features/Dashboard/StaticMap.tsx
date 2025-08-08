@@ -1,21 +1,21 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
 import polyline from '@mapbox/polyline';
-import { Position } from 'geojson';
+import type { Position } from 'geojson';
+import { LatLngBoundsLiteral } from 'leaflet';
+import React from 'react';
 import styled from 'styled-components';
+
 import { DEFAULT_BOUNDS, MOBILE_BREAKPOINT } from '../../constants';
+import { Entity } from '../../types';
 import { Media } from './Media';
+
+type EntityBounds = Entity['bounds'];
 
 const Wrapper = styled.div`
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 `;
-const areBoundsValid = (b: Position[]) => {
+const areBoundsValid = (b: EntityBounds) => {
   return Array.isArray(b) && b.length === 2;
 };
 
@@ -25,7 +25,7 @@ const getBoundingPoint = (coords: Position) => {
   return min + (max - min) / 2;
 };
 
-const getLatLongForBounds = (polygonPoints: Position[]) => {
+const getLatLongForBounds = (polygonPoints: LatLngBoundsLiteral) => {
   const lats = polygonPoints.map(latLong => latLong[0]);
   const longs = polygonPoints.map(latLong => latLong[1]);
 
@@ -41,8 +41,9 @@ const getLatLongForBounds = (polygonPoints: Position[]) => {
 const MAPBOX_TOKEN = import.meta.env.REACT_APP_MAPBOX_TOKEN;
 const MAPBOX_BASE_URL = 'https://api.mapbox.com/styles/v1/sussol/cj64gthqq297z2so13qljil5n/static';
 
-const makeStaticMapUrl = (polygonBounds: Position[]) => {
-  const polygonPoints = [
+const makeStaticMapUrl = (polygonBounds: EntityBounds) => {
+  if (!polygonBounds) return '';
+  const polygonPoints: LatLngBoundsLiteral = [
     [polygonBounds[1][0], polygonBounds[1][1]],
     [polygonBounds[1][0], polygonBounds[0][1]],
     [polygonBounds[0][0], polygonBounds[0][1]],
@@ -72,11 +73,11 @@ const makeStaticMapUrl = (polygonBounds: Position[]) => {
 
 interface StaticMapProps {
   title?: string;
-  bounds: Position[];
+  bounds: EntityBounds;
 }
 
 // default bounds to be DEFAULT_BOUNDS so that something shows while loading the entity, reducing largest contentful paint speeds
-export const StaticMap = ({ bounds = DEFAULT_BOUNDS, title }: StaticMapProps) => {
+export const StaticMap = ({ bounds = DEFAULT_BOUNDS as EntityBounds, title }: StaticMapProps) => {
   if (!areBoundsValid(bounds)) {
     return null;
   }

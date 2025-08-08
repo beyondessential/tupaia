@@ -1,13 +1,10 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
+import type { HeadersInit, RequestInit, Response } from 'node-fetch';
 import nodeFetch from 'node-fetch';
-import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
+
 import { CustomError } from '@tupaia/utils';
-import { QueryParameters, AuthHandler } from '../types';
+
+import { AuthHandler, QueryParameters } from '../types';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
@@ -20,7 +17,7 @@ type FetchConfig = RequestInit & {
   headers: FetchHeaders;
 };
 
-const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
+const DEFAULT_MAX_WAIT_TIME = 120 * 1000; // 120 seconds in milliseconds
 
 export class ApiConnection {
   private readonly authHandler: AuthHandler;
@@ -52,8 +49,8 @@ export class ApiConnection {
     return this.request('PUT', endpoint, queryParameters, body);
   }
 
-  public async delete(endpoint: string) {
-    return this.request('DELETE', endpoint);
+  public async delete(endpoint: string, queryParameters?: QueryParameters | null) {
+    return this.request('DELETE', endpoint, queryParameters);
   }
 
   private async request(
@@ -75,12 +72,15 @@ export class ApiConnection {
     }
 
     const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
+
     await this.verifyResponse(response);
+
     const contentType = response.headers.get('content-type');
-    if (contentType && contentType.indexOf('application/json') !== -1) {
+    if (contentType?.startsWith('application/json')) {
       return response.json();
     }
     // If the content isn't json we expect the receiving code to parse it
+
     return response;
   }
 
@@ -93,7 +93,10 @@ export class ApiConnection {
   }
 
   private async verifyResponse(response: Response): Promise<void> {
-    if (!response.ok) {
+    if (response.ok) return;
+
+    const contentType = response.headers.get('content-type');
+    if (contentType?.startsWith('application/json')) {
       const responseJson = await response.json();
       throw new CustomError(
         {
@@ -103,6 +106,15 @@ export class ApiConnection {
           responseStatus: response.status,
         },
         {},
+      );
+    }
+    if (contentType?.startsWith('text/html')) {
+      throw new CustomError(
+        {
+          responseStatus: response.status,
+          responseText: `${response.statusText}: Expected application/json but got ${contentType}`,
+        },
+        { responseBody: await response.text() },
       );
     }
   }

@@ -1,14 +1,13 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
-import { TestableApp } from '../../testUtilities';
+import {
+  BES_ADMIN_PERMISSION_GROUP,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+} from '../../../permissions';
+import { TestableApp, resetTestData } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';
+import { setupProject } from './utils';
 
 describe('Editing a landing page', async () => {
   let uploadImageStub;
@@ -16,6 +15,10 @@ describe('Editing a landing page', async () => {
 
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
+  };
+
+  const TUPAIA_ADMIN_POLICY = {
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Public'],
   };
   const URL_SEGMENT = 'theUrlSegment';
 
@@ -31,13 +34,15 @@ describe('Editing a landing page', async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(() => {
+  before(async () => {
     uploadImageStub = sinon.stub(UploadImage, 'uploadImage').resolves(EXAMPLE_UPLOADED_IMAGE_URL);
+    await setupProject(models);
   });
   beforeEach(async () => {
     await findOrCreateDummyRecord(models.landingPage, {
       ...TEST_LANDING_PAGE_INPUT,
       url_segment: URL_SEGMENT,
+      project_codes: '{test_project1}',
     });
   });
 
@@ -48,6 +53,7 @@ describe('Editing a landing page', async () => {
 
   after(async () => {
     uploadImageStub.restore();
+    await resetTestData();
   });
 
   describe('PUT /landingPages', async () => {
@@ -122,6 +128,53 @@ describe('Editing a landing page', async () => {
       expect(result.length).to.equal(1);
       expect(result[0].image_url).to.equal(TEST_LANDING_PAGE_INPUT.image_url);
       expect(result[0].logo_url).to.equal(TEST_LANDING_PAGE_INPUT.logo_url);
+    });
+  });
+
+  describe('Permissions checker', async () => {
+    it('Successfully updates a landingPage record if the user has access to the admin panel and a project on the landing page', async () => {
+      await app.grantAccess(TUPAIA_ADMIN_POLICY);
+
+      const result = await app.put(`landingPages/${TEST_LANDING_PAGE_INPUT.id}`, {
+        body: {
+          ...TEST_LANDING_PAGE_INPUT,
+          extended_title: 'the updated extended title',
+        },
+      });
+
+      expect(result.status).to.equal(200);
+    });
+
+    it('Throws an error if the user has admin permission but no access to any projects in the landing page', async () => {
+      await app.grantAccess({
+        TO: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
+      });
+
+      const result = await app.put(`landingPages/${TEST_LANDING_PAGE_INPUT.id}`, {
+        body: {
+          ...TEST_LANDING_PAGE_INPUT,
+          extended_title: 'the updated extended title',
+        },
+      });
+      expect(result.text).to.equal(
+        '{"error":"One of the following conditions need to be satisfied:\\nNeed BES Admin access\\nNeed access to a project that the landing page belongs to.\\n"}',
+      );
+    });
+
+    it('Throws an error if the user has permission for the project but not admin panel permissions', async () => {
+      await app.grantAccess({
+        DL: ['Public'],
+      });
+
+      const result = await app.put(`landingPages/${TEST_LANDING_PAGE_INPUT.id}`, {
+        body: {
+          ...TEST_LANDING_PAGE_INPUT,
+          extended_title: 'the updated extended title',
+        },
+      });
+      expect(result.text).to.equal(
+        '{"error":"One of the following conditions need to be satisfied:\\nNeed BES Admin access\\nNeed Tupaia Admin Panel access\\n"}',
+      );
     });
   });
 });

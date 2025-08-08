@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import {
   buildAndInsertProjectsAndHierarchies,
@@ -11,7 +6,6 @@ import {
 } from '@tupaia/database';
 import {
   BES_ADMIN_PERMISSION_GROUP,
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 import {
   TEST_USER_EMAIL,

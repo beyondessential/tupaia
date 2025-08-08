@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { ObjectValidator, constructIsEmptyOr, constructRecordExistsWithCode } from '@tupaia/utils';
 import { EditHandler } from '../EditHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
@@ -11,6 +7,7 @@ export class EditDashboardItem extends EditHandler {
   async assertUserHasAccess() {
     const dashboardItemChecker = accessPolicy =>
       assertDashboardItemEditPermissions(accessPolicy, this.models, this.recordId);
+
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, dashboardItemChecker]),
     );

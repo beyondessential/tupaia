@@ -1,24 +1,12 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { RefObject, useContext, useEffect } from 'react';
 import moment from 'moment';
 import downloadJs from 'downloadjs';
 import domtoimage from 'dom-to-image';
 import { useParams } from 'react-router-dom';
-import { DashboardItemConfig } from '@tupaia/types';
+import { DashboardItemConfig, DashboardItemReport } from '@tupaia/types';
 import { toFilename } from '@tupaia/utils';
-import { ExportViewContent, useChartDataExport } from '@tupaia/ui-chart-components';
-import {
-  Dashboard,
-  DashboardItem,
-  DashboardItemReport,
-  Entity,
-  EntityCode,
-  ProjectCode,
-} from '../../../types';
+import { useChartDataExport } from '@tupaia/ui-chart-components';
+import { Dashboard, DashboardItem, Entity, EntityCode, ProjectCode } from '../../../types';
 import { gaEvent } from '../../../utils';
 import { useExportToExcel } from '../../../api/mutations';
 import { ExportFormats, useExportSettings } from '../../ExportSettings';
@@ -106,18 +94,8 @@ export const useExportDashboardItem = (
     };
   };
 
-  const getExportViewContent = () => {
-    if (config?.type === 'matrix' || config?.type === 'component') return undefined;
-    const exportViewConfig = getExportViewConfig();
-    return {
-      ...reportData,
-      ...exportViewConfig,
-    } as ExportViewContent; // casting here to handle the different types of data that can be passed to the ExportViewContent component, which the union type doesn't cover well, and the fact that DashboardItemReport doesn't know when type is chart that it returns a ChartData type and not a ViewDataItem type etc
-  };
-
-  const exportViewContent = getExportViewContent();
-
-  const { doExport } = useChartDataExport(exportViewContent, exportTitle);
+  const exportViewConfig = getExportViewConfig();
+  const { doExport } = useChartDataExport(exportViewConfig, reportData, exportTitle);
 
   const filename = toFilename(`export-${entityName}-${config?.name}`, true);
   const file = `${filename}.${exportFormat}`;

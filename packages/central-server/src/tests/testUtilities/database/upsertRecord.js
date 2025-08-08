@@ -1,9 +1,4 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
-import { generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { generateId, upsertDummyRecord } from '@tupaia/database';
 import { getModels } from './getModels';
 
 const models = getModels();
@@ -53,7 +48,7 @@ export const upsertDataGroup = async data => {
 };
 
 export const upsertSurvey = async data => {
-  const project = await upsertProject({ code: generateTestId() });
+  const project = await upsertProject({ code: generateId() });
   return upsertDummyRecord(models.survey, {
     ...data,
     project_id: project.id,

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { NextFunction, Request, Response } from 'express';
 import { ajvValidate } from '@tupaia/tsutils';
 import { DataTablePreviewRequestSchema } from '@tupaia/types';
@@ -17,7 +12,7 @@ import { validatePermissions } from './helpers';
  */
 export const attachDataTableFromPreviewToContext = async (
   req: Request<any, any, any, any>,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {

@@ -1,8 +1,4 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-import { fetchWithTimeout, HttpError, createBearerHeader } from '@tupaia/utils';
+import { fetchWithTimeout, HttpError, createBearerHeader, requireEnv } from '@tupaia/utils';
 
 export class Ms1Api {
   constructor() {
@@ -12,7 +8,8 @@ export class Ms1Api {
   async getAccessToken() {
     const currentServerTime = Date.now();
     if (!this.accessToken || currentServerTime > this.accessTokenExpiry) {
-      const { MS1_USERNAME, MS1_PASSWORD } = process.env;
+      const MS1_USERNAME = requireEnv('MS1_USERNAME');
+      const MS1_PASSWORD = requireEnv('MS1_PASSWORD');
       const body = JSON.stringify({
         username: MS1_USERNAME,
         password: MS1_PASSWORD,

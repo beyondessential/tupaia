@@ -1,35 +1,40 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-import React, { useEffect, useRef, useState } from 'react';
-import { Moment } from 'moment';
-import styled from 'styled-components';
-import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
+import { Property } from 'csstype';
+import { Moment } from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router';
+import styled, { css } from 'styled-components';
+
+import {
+  BaseReport,
+  DashboardItemConfig,
+  TupaiaWebExportDashboardRequest,
+  VizPeriodGranularity,
+} from '@tupaia/types';
+import { A4Page, ReferenceTooltip } from '@tupaia/ui-components';
 import {
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
   getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
-import { BaseReport, DashboardItemConfig, VizPeriodGranularity } from '@tupaia/types';
-import { A4Page, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
-import { Dashboard, DashboardItem, Entity } from '../../types';
+
 import { useProject, useReport } from '../../api/queries';
+import { Dashboard, DashboardItem, Entity } from '../../types';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { PDFExportHeader } from './PDFExportHeader';
 
 const StyledA4Page = styled(A4Page)<{
   $isPreview?: boolean;
-  $previewZoom?: number;
+  $previewZoom?: Property.Zoom;
 }>`
+  width: 31.512cm;
   ${({ $isPreview, $previewZoom = 0.25 }) =>
-    $isPreview ? `width: 100%; zoom: ${$previewZoom};` : ''};
-`;
-
-const PDFExportBody = styled.main`
-  margin-block: 36pt;
+    $isPreview &&
+    css`
+      width: 100%;
+      zoom: ${$previewZoom};
+    `};
 `;
 
 const Title = styled.h3`
@@ -51,6 +56,11 @@ const Description = styled(Typography)`
   margin-inline: auto;
   max-width: 70ch;
   text-align: center;
+`;
+
+const ExportDescription = styled(Typography)`
+  margin-bottom: 0.3rem;
+  word-break: break-word;
 `;
 
 const ExportContent = styled.div<{
@@ -93,6 +103,9 @@ interface PDFExportDashboardItemProps {
   entityName?: Entity['name'];
   activeDashboard?: Dashboard;
   isPreview?: boolean;
+  settings?: TupaiaWebExportDashboardRequest.ReqBody['settings'];
+  displayDescription?: boolean;
+  displayHeader?: boolean;
 }
 
 /**
@@ -104,6 +117,9 @@ export const PDFExportDashboardItem = ({
   entityName,
   activeDashboard,
   isPreview = false,
+  settings,
+  displayDescription = false,
+  displayHeader,
 }: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -111,7 +127,12 @@ export const PDFExportDashboardItem = ({
   useEffect(() => {
     if (pageRef.current) setWidth(pageRef.current.offsetWidth);
   }, []);
-  const previewZoom = width / A4_PAGE_WIDTH_PX;
+
+  // Semantically, this magic number should be 21cm (A4 width) in pixels (at CSS’s fixed
+  // 1 inch : 96px ratio). This was previously defined incorrectly as 1191 in @tupaia/ui-components.
+  // The value of A4_PAGE_WIDTH_PX has since been fixed in @tupaia/ui-components, but here we use
+  // the old value to preserve existing layout behaviour.
+  const previewZoom = width / 1191;
 
   const { projectCode, entityCode } = useParams();
   const { legacy, code, reportCode } = dashboardItem || ({} as DashboardItem);
@@ -136,14 +157,14 @@ export const PDFExportDashboardItem = ({
 
   const { config = {} as DashboardItemConfig } = dashboardItem || ({} as DashboardItem);
 
+  const { separatePagePerItem, ...restOfSettings } = settings || {};
   const presentationOptions =
     config && 'presentationOptions' in config ? config.presentationOptions : undefined;
   const dashboardItemConfig = {
     ...config,
     presentationOptions: {
-      ...(presentationOptions || {}),
-      exportWithLabels: false,
-      exportWithTable: true,
+      ...presentationOptions,
+      ...restOfSettings,
     },
   } as DashboardItemConfig;
   const { description, entityHeader, name, periodGranularity, reference } = dashboardItemConfig;
@@ -156,18 +177,29 @@ export const PDFExportDashboardItem = ({
   const period = getDatesAsString(periodGranularity, startDate, endDate);
 
   const data = isLoading ? undefined : (report as BaseReport)?.data;
+
   return (
     <StyledA4Page
       ref={pageRef}
       key={dashboardItem?.code}
       $isPreview={isPreview}
       $previewZoom={previewZoom}
+      $separatePage={separatePagePerItem}
     >
-      <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
-        {entityName}
-      </PDFExportHeader>
-      <PDFExportBody>
-        <DashboardName>{activeDashboard?.name}</DashboardName>
+      {displayHeader && (
+        <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
+          {entityName}
+        </PDFExportHeader>
+      )}
+      <main>
+        {displayHeader && (
+          <DashboardName>
+            {activeDashboard?.name}
+            {displayDescription && (
+              <ExportDescription>{settings?.exportDescription}</ExportDescription>
+            )}
+          </DashboardName>
+        )}
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}
@@ -187,7 +219,7 @@ export const PDFExportDashboardItem = ({
             <DashboardItemContent />
           </DashboardItemContext.Provider>
         </ExportContent>
-      </PDFExportBody>
+      </main>
     </StyledA4Page>
   );
 };

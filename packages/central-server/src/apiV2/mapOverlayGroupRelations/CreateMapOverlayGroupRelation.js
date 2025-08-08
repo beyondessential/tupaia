@@ -1,13 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { CreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
+  assertVizBuilderAccess,
 } from '../../permissions';
 import { assertMapOverlaysEditPermissions } from '../mapOverlays';
 import { assertMapOverlayGroupsEditPermissions } from '../mapOverlayGroups';
@@ -21,8 +16,8 @@ export class CreateMapOverlayGroupRelation extends CreateHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You need either BES Admin or Tupaia Admin Panel access to create a map overlay group relation',
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You need either BES Admin or Viz Builder User access to create a map overlay group relation',
       ),
     );
   }

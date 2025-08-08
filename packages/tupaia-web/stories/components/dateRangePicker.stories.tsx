@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
 import { Moment } from 'moment';
 import { GRANULARITIES, displayStringToMoment } from '@tupaia/utils';
@@ -12,6 +8,12 @@ import { ValueOf } from '../../src/types';
 const meta: Meta<typeof DateRangePicker> = {
   title: 'components/DateRangePicker',
   component: DateRangePicker,
+  parameters: {
+    backgrounds: {
+      default: 'dark',
+    },
+    theme: 'dark',
+  },
   decorators: [
     Story => (
       <div style={{ margin: '1rem', maxWidth: '20rem' }}>

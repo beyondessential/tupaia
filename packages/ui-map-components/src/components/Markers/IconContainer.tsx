@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
 import React, { SVGProps, ReactNode } from 'react';
 import { ICON_BASE_SIZE } from './constants';
 

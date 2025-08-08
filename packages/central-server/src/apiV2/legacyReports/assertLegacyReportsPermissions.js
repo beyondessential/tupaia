@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { hasDashboardItemGetPermissions, hasDashboardItemEditPermissions } from '../dashboardItems';
 import { createDashboardRelationsDBFilter } from '../dashboardRelations';
@@ -59,11 +54,11 @@ export const createLegacyReportsDBFilter = async (accessPolicy, models, criteria
     {
       multiJoin: [
         {
-          joinWith: TYPES.DASHBOARD_ITEM,
+          joinWith: RECORDS.DASHBOARD_ITEM,
           joinCondition: ['dashboard_item.report_code', 'legacy_report.code'],
         },
         {
-          joinWith: TYPES.DASHBOARD_RELATION,
+          joinWith: RECORDS.DASHBOARD_RELATION,
           joinCondition: ['dashboard_relation.child_id', 'dashboard_item.id'],
         },
       ],

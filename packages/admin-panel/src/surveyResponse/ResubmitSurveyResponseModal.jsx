@@ -1,12 +1,7 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Dialog, DialogHeader } from '@tupaia/ui-components';
+import { Dialog, ModalHeader } from '@tupaia/ui-components';
 import { closeResubmitSurveyModal, onAfterMutate as onAfterMutateAction } from './actions';
 import { Form } from './Form';
 
@@ -17,8 +12,8 @@ export const ResubmitSurveyResponseModalComponent = ({
   onAfterMutate,
 }) => {
   return (
-    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick maxWidth="md">
-      <DialogHeader onClose={onDismiss} title="Resubmit Survey Response" />
+    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick maxWidth="sm">
+      <ModalHeader onClose={onDismiss} title="Resubmit survey response" />
       <Form
         surveyResponseId={surveyResponseId}
         onDismiss={() => onDismiss()}
@@ -40,7 +35,8 @@ ResubmitSurveyResponseModalComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  ...state.resubmitSurveyResponse,
+  ...state.surveyResponse,
+  isOpen: state.surveyResponse.isResubmitModalOpen,
 });
 
 const mapDispatchToProps = dispatch => ({

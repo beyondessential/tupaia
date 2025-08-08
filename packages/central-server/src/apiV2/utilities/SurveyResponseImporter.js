@@ -1,9 +1,8 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
-import { submitResponses } from '../surveyResponse';
+import {
+  upsertEntitiesAndOptions,
+  validateSurveyResponses,
+  saveResponsesToDatabase,
+} from '../surveyResponses';
 
 /**
  * A function that extracts `entityId` and `answers` from a row
@@ -46,9 +45,13 @@ export class SurveyResponseImporter {
     const survey = await this.models.survey.findOne({ name: surveyName });
     const responses = await this.getResponsesForSurvey(survey, rows);
 
-    return this.models.wrapInTransaction(async transactingModels =>
-      submitResponses(transactingModels, userId, responses),
-    );
+    return this.models.wrapInTransaction(async transactingModels => {
+      // Upsert entities and options that were created in user's local database
+      await upsertEntitiesAndOptions(transactingModels, responses);
+      // Allow responses to be submitted in bulk
+      await validateSurveyResponses(transactingModels, responses);
+      return saveResponsesToDatabase(transactingModels, userId, responses);
+    });
   }
 
   getResponsesForSurvey = async (survey, rows) => {

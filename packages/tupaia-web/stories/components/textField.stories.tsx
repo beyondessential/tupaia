@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import type { Meta, StoryObj } from '@storybook/react';
@@ -10,6 +6,12 @@ import { Form, TextField } from '../../src/components';
 const meta: Meta<typeof TextField> = {
   title: 'components/TextField',
   component: TextField,
+  parameters: {
+    backgrounds: {
+      default: 'dark',
+    },
+    theme: 'dark',
+  },
   decorators: [
     Story => {
       const formContext = useForm();

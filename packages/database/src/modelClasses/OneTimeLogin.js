@@ -1,17 +1,12 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
 import randomToken from 'rand-token';
 import moment from 'moment';
-import { DatabaseError, UnauthenticatedError } from '@tupaia/utils';
-
+import { UnauthenticatedError } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class OneTimeLoginType extends DatabaseType {
-  static databaseType = TYPES.ONE_TIME_LOGIN;
+export class OneTimeLoginRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.ONE_TIME_LOGIN;
 
   isExpired() {
     return moment().subtract(1, 'h').isAfter(moment(this.creation_date));
@@ -23,8 +18,8 @@ export class OneTimeLoginType extends DatabaseType {
 }
 
 export class OneTimeLoginModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return OneTimeLoginType;
+  get DatabaseRecordClass() {
+    return OneTimeLoginRecord;
   }
 
   async create(fields) {
@@ -37,15 +32,15 @@ export class OneTimeLoginModel extends DatabaseModel {
   async findValidOneTimeLoginOrFail(token, shouldAllowUsed = false, shouldAllowExpired = false) {
     const oneTimeLogin = await this.findOne({ token });
     if (!oneTimeLogin) {
-      throw new DatabaseError('No one time login found');
+      throw new UnauthenticatedError('No one time login found');
     }
 
     if (!shouldAllowUsed && oneTimeLogin.isUsed()) {
-      throw new DatabaseError('One time login is used');
+      throw new UnauthenticatedError('One time login is used');
     }
 
     if (!shouldAllowExpired && oneTimeLogin.isExpired()) {
-      throw new DatabaseError('One time login is expired');
+      throw new UnauthenticatedError('One time login is expired');
     }
 
     return oneTimeLogin;

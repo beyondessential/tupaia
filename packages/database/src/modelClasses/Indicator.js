@@ -1,21 +1,16 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class IndicatorType extends DatabaseType {
-  static databaseType = TYPES.INDICATOR;
+class IndicatorRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.INDICATOR;
 }
 
 export class IndicatorModel extends DatabaseModel {
   notifiers = [onChangeUpdateDataElement];
 
-  get DatabaseTypeClass() {
-    return IndicatorType;
+  get DatabaseRecordClass() {
+    return IndicatorRecord;
   }
 }
 

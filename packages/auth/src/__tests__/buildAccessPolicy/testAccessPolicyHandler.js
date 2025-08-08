@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { AccessPolicy as AccessPolicyParser } from '@tupaia/access-policy';
 import { upsertDummyRecord, findOrCreateDummyRecord } from '@tupaia/database';
 import { buildAccessPolicy } from '../../buildAccessPolicy';

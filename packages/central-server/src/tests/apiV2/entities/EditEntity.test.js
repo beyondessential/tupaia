@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, generateId } from '@tupaia/database';
 import {
@@ -27,6 +22,7 @@ describe("Editing an entity's name", async () => {
     code: 'test_entity',
     id: generateId(),
     name: 'original_name',
+    country_code: 'SB',
   };
   before(async () => {
     await findOrCreateDummyRecord(models.entity, ENTITY);
@@ -37,7 +33,7 @@ describe("Editing an entity's name", async () => {
   });
 
   describe('PUT /entities/:id', async () => {
-    it('Successfully changes the entity name', async () => {
+    it('Successfully changes the entity name if the user has BES Admin permissions', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       await app.put(`entities/${ENTITY.id}`, {
         body: { name: 'new_name' },
@@ -48,13 +44,28 @@ describe("Editing an entity's name", async () => {
       expect(result[0].name).to.equal('new_name');
     });
 
-    it('Throws an exception if we do not have BES admin access', async () => {
+    it('Successfully changes the entity name if the user has Tupaia Admin Panel permissions for the entity country', async () => {
       await app.grantAccess(TUPAIA_ADMIN_POLICY);
+      await app.put(`entities/${ENTITY.id}`, {
+        body: { name: 'new_name' },
+      });
+
+      const result = await models.entity.find({ id: ENTITY.id, name: 'new_name' });
+      expect(result.length).to.equal(1);
+      expect(result[0].name).to.equal('new_name');
+    });
+
+    it('Throws an exception if we do not have Admin access to the country', async () => {
+      await app.grantAccess({
+        SB: ['Public'],
+      });
       const { body: result } = await app.put(`entities/${ENTITY.id}`, {
         body: { name: 'new_name' },
       });
 
-      expect(result).to.deep.equal({ error: 'Need BES Admin access' });
+      expect(result).to.deep.equal({
+        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to country 'SB' to edit entity\n`,
+      });
     });
   });
 });

@@ -1,11 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MODAL_ROUTES } from '../constants';
+import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../constants';
 import { gaEvent, removeUrlSearchParams } from '.';
+
+const SEARCH_PARAMS_TO_REMOVE = [URL_SEARCH_PARAMS.PROJECT, URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN];
 
 export const useModal = () => {
   const navigate = useNavigate();
@@ -26,11 +23,12 @@ export const useModal = () => {
     }
     navigate({ ...location, hash: hashKey, search: searchParams.toString() });
   }
-  function closeModal(urlSearchParamsToRemove?: string[]) {
+  function closeModal() {
     gaEvent('User', 'Close Dialog');
     navigate({
       ...location,
-      search: removeUrlSearchParams(urlSearchParamsToRemove),
+      // remove the modal-associated search params
+      search: removeUrlSearchParams(SEARCH_PARAMS_TO_REMOVE),
     });
   }
   function navigateToLogin() {

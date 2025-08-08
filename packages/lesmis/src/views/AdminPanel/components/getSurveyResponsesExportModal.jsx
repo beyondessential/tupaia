@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import moment from 'moment';
 import { DateTimePicker, RadioGroup } from '@tupaia/ui-components';
@@ -45,7 +40,7 @@ export const getSurveyResponsesExportModal = translate => {
         />
         <RadioGroup
           name="survey responses mode"
-          label="Mode"
+          label="Level"
           onChange={event => setMode(event.currentTarget.value)}
           options={[
             {

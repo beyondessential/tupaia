@@ -1,50 +1,28 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Redirect, Route } from 'react-router-dom';
-import { getIsUserAuthenticated } from './selectors';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useUser } from '../api/queries';
+import { AUTH_ROUTES } from '../routes';
 
 /*
  * A wrapper for <Route> that redirects to the login
  * screen if you're not yet authenticated.
  */
-export const PrivateRouteComponent = ({ loginPath, isLoggedIn, children, ...props }) => {
-  return (
-    <Route
-      {...props}
-      render={({ location }) => {
-        return isLoggedIn ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: loginPath,
-              state: { from: location },
-            }}
-          />
-        );
-      }}
-    />
-  );
+export const PrivateRoute = ({ basePath = '' }) => {
+  const location = useLocation();
+  const { isLoggedIn, isLoading } = useUser();
+  if (isLoading) return null;
+
+  if (!isLoggedIn) {
+    return <Navigate to={`${basePath}${AUTH_ROUTES.LOGIN}`} state={{ from: location.pathname }} />;
+  }
+  return <Outlet />;
 };
 
-PrivateRouteComponent.propTypes = {
-  children: PropTypes.node.isRequired,
-  isLoggedIn: PropTypes.bool,
-  loginPath: PropTypes.string,
+PrivateRoute.propTypes = {
+  basePath: PropTypes.string,
 };
 
-PrivateRouteComponent.defaultProps = {
-  isLoggedIn: false,
-  loginPath: '/login',
+PrivateRoute.defaultProps = {
+  basePath: '',
 };
-
-const mapStateToProps = state => ({
-  isLoggedIn: getIsUserAuthenticated(state),
-});
-
-export const PrivateRoute = connect(mapStateToProps)(PrivateRouteComponent);

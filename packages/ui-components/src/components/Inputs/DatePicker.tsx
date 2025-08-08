@@ -1,21 +1,16 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import DateFnsUtils from '@date-io/date-fns';
 import * as locales from 'date-fns/locale';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import {
-  KeyboardDatePickerProps,
-  KeyboardDateTimePickerProps,
   KeyboardDatePicker as MuiDatePicker,
+  KeyboardDatePickerProps,
   KeyboardDateTimePicker as MuiDateTimePicker,
+  KeyboardDateTimePickerProps,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
-import { DAY_MONTH_YEAR_DATE_FORMAT, AM_PM_DATE_FORMAT } from '../../constants';
+import { AM_PM_DATE_FORMAT, DAY_MONTH_YEAR_DATE_FORMAT } from '../../constants';
 import { TextField } from './TextField';
 
 const StyledDatePicker = styled(MuiDatePicker)`
@@ -60,7 +55,6 @@ export const DatePicker = ({
         keyboardIcon={<CalendarTodayIcon />}
         InputAdornmentProps={{ position: 'start' }}
         onChange={onChange}
-        animateYearScrolling
         TextFieldComponent={TextFieldComponent}
         className={className}
         KeyboardButtonProps={{
@@ -91,7 +85,6 @@ export const DateTimePicker = ({
         InputAdornmentProps={{ position: 'start' }}
         format={format}
         onChange={onChange}
-        animateYearScrolling
         TextFieldComponent={TextFieldComponent}
         className={className}
         {...props}

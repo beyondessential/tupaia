@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { TEST_USER_EMAIL, TestableApp } from '../testUtilities';
@@ -27,7 +22,7 @@ describe('Access Requests', () => {
   };
 
   const requestCountryAccess = async (userId, entityId, projectCode) => {
-    return app.post(`user/${userId}/requestCountryAccess`, {
+    return app.post('me/requestCountryAccess', {
       body: {
         entityIds: [entityId],
         message: "E rab'a te kaitiboo! / Pleased to meet you",

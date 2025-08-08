@@ -1,13 +1,8 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import FetchError from './fetchError';
 
-const baseUrl = import.meta.env.REACT_APP_VIZ_BUILDER_API_URL;
+const baseUrl = import.meta.env.REACT_APP_VIZ_BUILDER_API_URL || 'http://localhost:8070/v1';
 const timeout = 45 * 1000; // 45 seconds
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials

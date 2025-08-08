@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React, { forwardRef, ReactNode, Ref } from 'react';
 import styled from 'styled-components';
 import MuiButton, { ButtonProps as MuiButtonProps } from '@material-ui/core/Button';
@@ -9,10 +5,9 @@ import MuiLink, { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
 import { OverrideableComponentProps } from '../types';
 
 const StyledButton = styled(MuiButton)`
-  font-size: 0.9375rem;
   line-height: 1.75;
   letter-spacing: 0;
-  padding: 0.5em 1.75em;
+  padding: 0.5rem 1.2rem;
   box-shadow: none;
   min-width: 3rem;
 
@@ -62,7 +57,7 @@ export const Button = forwardRef(
         disabled={isLoading || disabled}
         ref={ref}
       >
-        {isLoading ? `${loadingText}...` : children}
+        {isLoading ? `${loadingText}…` : children}
       </StyledButton>
     );
   },

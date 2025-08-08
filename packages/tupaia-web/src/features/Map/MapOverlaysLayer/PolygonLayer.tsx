@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import {
@@ -105,7 +100,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [], isLoading }: Pol
     if (
       !isLoading &&
       isPolygonSerieses &&
-      overlayLevels.includes(measure?.type?.toLowerCase().replace('_', '')) // handle differences between camelCase and snake_case
+      overlayLevels.includes(measure?.type?.toLowerCase().replaceAll('_', '')) // handle differences between camelCase and snake_case
     ) {
       // The active entity is part of the data visual so display it as a shaded polygon rather
       // than an active polygon

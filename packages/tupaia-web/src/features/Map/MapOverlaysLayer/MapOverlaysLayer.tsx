@@ -1,13 +1,9 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router';
+import { useMatch, useParams } from 'react-router';
 import { useMap } from 'react-leaflet';
 import { LegendProps } from '@tupaia/ui-map-components';
 import { useEntity } from '../../../api/queries';
+import { MAP_OVERLAY_EXPORT_ROUTE } from '../../../constants';
 import { useMapOverlayMapData } from '../utils';
 import { PolygonLayer } from './PolygonLayer';
 import { MarkerLayer } from './MarkerLayer';
@@ -20,9 +16,11 @@ const useZoomToEntity = () => {
   const { data: entity } = useEntity(projectCode, entityCode);
   const map = useMap();
 
+  const isExport = !!useMatch(MAP_OVERLAY_EXPORT_ROUTE);
+
   // This is a replacement for the map positioning being handled in the ui-map-components LeafletMap file. We are doing this because we need access to the user's current zoom level, and are also slowly moving away from class based components to use hooks instead.
   useEffect(() => {
-    if (!entity || !map || (!entity.point && !entity.bounds && !entity.region)) return;
+    if (!entity || !map || (!entity.point && !entity.bounds && !entity.region) || isExport) return;
 
     if (entity.bounds) {
       map.flyToBounds(entity.bounds, {
@@ -33,6 +31,7 @@ const useZoomToEntity = () => {
         animate: false, // don't animate, as it can slow things down a bit
       });
     } else {
+      if (!entity.point) return;
       const currentZoom = map.getZoom();
       // if already zoomed in beyond the POINT_ZOOM_LEVEL, don't zoom out
       const zoomLevel = currentZoom > POINT_ZOOM_LEVEL ? currentZoom : POINT_ZOOM_LEVEL;

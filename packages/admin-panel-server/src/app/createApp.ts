@@ -1,10 +1,12 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
+import { Request } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
-import { OrchestratorApiBuilder, forwardRequest, handleWith } from '@tupaia/server-boilerplate';
-
+import {
+  OrchestratorApiBuilder,
+  RequiresSessionAuthHandler,
+  forwardRequest,
+  handleWith,
+} from '@tupaia/server-boilerplate';
+import { getEnvVarOrDefault } from '@tupaia/utils';
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
 import { upload } from '../middleware';
@@ -42,19 +44,19 @@ import {
   FetchTransformSchemasRoute,
   FetchDataTableBuiltInParamsRequest,
   FetchDataTableBuiltInParamsRoute,
+  ExportEntityHierarchiesRequest,
+  ExportEntityHierarchiesRoute,
 } from '../routes';
-import { authHandlerProvider } from '../auth';
 
-const {
-  CENTRAL_API_URL = 'http://localhost:8090/v2',
-  ENTITY_API_URL = 'http://localhost:8050/v1',
-} = process.env;
-
+const authHandlerProvider = (req: Request) => new RequiresSessionAuthHandler(req);
 /**
  * Set up express server with middleware,
  */
 export async function createApp() {
+  const CENTRAL_API_URL = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
+  const ENTITY_API_URL = getEnvVarOrDefault('ENTITY_API_URL', 'http://localhost:8050/v1');
   const forwardToEntityApi = forwardRequest(ENTITY_API_URL);
+  const forwardToCentralApi = forwardRequest(CENTRAL_API_URL);
   const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
     .attachApiClientToContext(authHandlerProvider)
     .useSessionModel(AdminPanelSessionModel)
@@ -105,6 +107,10 @@ export async function createApp() {
       'export/mapOverlayVisualisation/:mapOverlayVisualisationId',
       handleWith(ExportMapOverlayVisualisationRoute),
     )
+    .get<ExportEntityHierarchiesRequest>(
+      'export/hierarchies',
+      handleWith(ExportEntityHierarchiesRoute),
+    )
     .post<ExportDashboardVisualisationRequest>(
       'export/dashboardVisualisation',
       handleWith(ExportDashboardVisualisationRoute),
@@ -143,7 +149,8 @@ export async function createApp() {
     )
     .use('hierarchy', forwardToEntityApi)
     .use('hierarchies', forwardToEntityApi)
-    .use('*', forwardRequest(CENTRAL_API_URL));
+    .use('surveyResponses', forwardToCentralApi)
+    .use('*', forwardToCentralApi);
 
   await builder.initialiseApiClient();
 

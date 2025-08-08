@@ -1,10 +1,6 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import axios from 'axios';
 
-const PSSS_API_URL = process.env.REACT_APP_PSSS_API_URL;
+const PSSS_API_URL = process.env.REACT_APP_PSSS_API_URL || 'http://localhost:8040/v1';
 const timeout = 45 * 1000;
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials

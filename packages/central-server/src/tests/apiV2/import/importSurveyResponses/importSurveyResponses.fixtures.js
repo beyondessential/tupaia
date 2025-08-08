@@ -1,19 +1,14 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Note: this file includes data that are referenced or used in import spreadsheets
  */
 
-import { findOrCreateRecords, generateTestId } from '@tupaia/database';
+import { findOrCreateRecords, generateId } from '@tupaia/database';
 import { reduceToDictionary, upperFirst } from '@tupaia/utils';
 
 const ID_LENGTH = 24;
 
 export const VALIDATION_SURVEY = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'Test_Import_Validation',
   name: 'Test Import Validation',
   questions: [
@@ -47,7 +42,7 @@ export const VALIDATION_SURVEY = {
 };
 
 export const CLINIC_DATA_SURVEY = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'Test_Clinic_Data',
   name: 'Test Clinic Data',
   questions: [
@@ -81,7 +76,7 @@ export const CLINIC_DATA_SURVEY = {
 };
 
 export const FACILITY_FUNDAMENTALS_SURVEY = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'Test_Facility_Fundamentals',
   name: 'Test Facility Fundamentals',
   questions: [
@@ -95,11 +90,16 @@ export const FACILITY_FUNDAMENTALS_SURVEY = {
       code: 'TFF_Catchment_pop',
       type: 'Number',
     },
+    {
+      id: 'tff_assigned_user___test',
+      code: 'TFF_Assigned_user',
+      type: 'User',
+    },
   ],
 };
 
 export const BASIC_SURVEY_A = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'Test_Basic_Survey_A',
   name: 'Test_Basic Survey A',
   questions: [
@@ -113,11 +113,17 @@ export const BASIC_SURVEY_A = {
       code: 'basic_survey_a_q2',
       type: 'FreeText',
     },
+    {
+      id: 'basic_survey_a_q3___test',
+      code: 'basic_survey_a_q3',
+      type: 'User',
+      text: 'User assigned',
+    },
   ],
 };
 
 export const BASIC_SURVEY_B = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'Test_Basic_Survey_B',
   name: 'Test_Basic Survey B',
   questions: [
@@ -135,7 +141,7 @@ export const BASIC_SURVEY_B = {
 };
 
 export const createPeriodicSurvey = periodGranularity => ({
-  id: generateTestId(),
+  id: generateId(),
   code: `Test_${upperFirst(periodGranularity)}`, // Test_Yearly
   name: `Test ${upperFirst(periodGranularity)}`, // Test Yearly
   period_granularity: periodGranularity,
@@ -166,15 +172,14 @@ export const createSurveyResponses = async (models, responsesBySurvey) => {
   const surveyCodeToId = reduceToDictionary(surveys, 'code', 'id');
 
   const responseRecords = Object.entries(responsesBySurvey)
-    .map(([surveyCode, responses]) =>
+    .flatMap(([surveyCode, responses]) =>
       responses.map(({ id, entityCode }) => ({
         id,
         survey_id: surveyCodeToId[surveyCode],
         user_id: user.id,
         entity_id: entityCodeToId[entityCode],
       })),
-    )
-    .flat();
+    );
 
   await findOrCreateRecords(models, { surveyResponse: responseRecords });
 };
@@ -259,6 +264,7 @@ export const NON_PERIODIC_RESPONSES_AFTER_UPDATES = {
       answers: {
         tff_other_names_____test: 'FNQ',
         tff_catchment_pop___test: '7500',
+        tff_assigned_user___test: 'test_user_id_1',
       },
     },
   ],
@@ -339,6 +345,7 @@ export const NON_PERIODIC_RESPONSES_AFTER_UPDATES = {
       answers: {
         tff_other_names_____test: 'Thorno',
         tff_catchment_pop___test: '8000',
+        tff_assigned_user___test: 'test_user_id_2',
       },
     },
   ],

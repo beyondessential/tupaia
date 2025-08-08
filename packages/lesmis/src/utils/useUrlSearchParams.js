@@ -1,12 +1,7 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const useUrlSearchParams = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
 
@@ -20,11 +15,12 @@ export const useUrlSearchParams = () => {
     });
 
     if (location.search !== urlParams.toString()) {
-      if (pushToHistory) {
-        history.push({ ...location, search: urlParams.toString() });
-      } else {
-        history.replace({ ...location, search: urlParams.toString() });
-      }
+      navigate(
+        { ...location, search: urlParams.toString() },
+        {
+          replace: !pushToHistory,
+        },
+      );
     }
   };
 

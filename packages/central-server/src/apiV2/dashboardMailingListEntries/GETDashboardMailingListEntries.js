@@ -1,15 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import {
-  assertDashboardEditPermissions,
-  getDashboardsDBFilter,
-} from '../dashboards/assertDashboardsPermissions';
+import { assertDashboardEditPermissions } from '../dashboards/assertDashboardsPermissions';
+import { getDashboardsDBFilter } from '../dashboards/getDashboardsDBFilter';
 import { mergeMultiJoin } from '../utilities';
 
 /**
@@ -31,7 +24,12 @@ export class GETDashboardMailingListEntries extends GETHandler {
 
     // Must have edit permissions to a dashboard to view its mailing list
     const dashboardChecker = accessPolicy =>
-      assertDashboardEditPermissions(accessPolicy, this.models, dashboardMailingList.dashboard_id);
+      assertDashboardEditPermissions(
+        accessPolicy,
+        this.models,
+        dashboardMailingList.dashboard_id,
+        false,
+      );
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, dashboardChecker]));
 
@@ -46,14 +44,14 @@ export class GETDashboardMailingListEntries extends GETHandler {
     dbOptions.multiJoin = mergeMultiJoin(
       [
         {
-          joinWith: TYPES.DASHBOARD_MAILING_LIST,
+          joinWith: RECORDS.DASHBOARD_MAILING_LIST,
           joinCondition: [
             'dashboard_mailing_list_entry.dashboard_mailing_list_id',
             'dashboard_mailing_list.id',
           ],
         },
         {
-          joinWith: TYPES.DASHBOARD,
+          joinWith: RECORDS.DASHBOARD,
           joinCondition: ['dashboard_mailing_list.dashboard_id', 'dashboard.id'],
         },
       ],

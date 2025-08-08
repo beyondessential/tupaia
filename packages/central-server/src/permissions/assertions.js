@@ -1,12 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  VIZ_BUILDER_USER_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
 } from './constants';
 
 /**
@@ -27,6 +22,7 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
       const assertion = assertions[i];
       await assertion(accessPolicy);
     }
+    return true;
   } catch (e) {
     throw new Error(errorMessage || e.message);
   }
@@ -59,7 +55,7 @@ export const hasBESAdminAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 
 export const hasVizBuilderAccess = accessPolicy =>
-  accessPolicy.allowsSome(undefined, VIZ_BUILDER_USER_PERMISSION_GROUP);
+  accessPolicy.allowsSome(undefined, VIZ_BUILDER_PERMISSION_GROUP);
 
 export const hasPermissionGroupAccess = (accessPolicy, permissionGroup) =>
   accessPolicy.allowsSome(undefined, permissionGroup);
@@ -92,11 +88,35 @@ export const assertBESAdminAccess = accessPolicy => {
   throw new Error(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
 };
 
+export const assertVizBuilderAccess = accessPolicy => {
+  if (hasVizBuilderAccess(accessPolicy)) {
+    return true;
+  }
+
+  throw new Error(`Need ${VIZ_BUILDER_PERMISSION_GROUP} access`);
+};
+
 export const hasTupaiaAdminPanelAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
 
 export const hasTupaiaAdminPanelAccessToCountry = (accessPolicy, countryCode) =>
   accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
+
+export const assertAdminPanelAccessToCountry = async (accessPolicy, models, recordId) => {
+  const entity = await models.entity.findById(recordId);
+  if (!entity) throw new Error(`No entity found with id ${recordId}`);
+
+  const userHasAdminAccessToCountry = accessPolicy.allows(
+    entity.country_code,
+    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  );
+  if (!userHasAdminAccessToCountry) {
+    throw new Error(
+      `Need Tupaia Admin Panel access to country '${entity.country_code}' to edit entity`,
+    );
+  }
+  return true;
+};
 
 export const assertAdminPanelAccess = accessPolicy => {
   if (hasTupaiaAdminPanelAccess(accessPolicy)) {
@@ -104,14 +124,6 @@ export const assertAdminPanelAccess = accessPolicy => {
   }
 
   throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
-};
-
-export const assertVizBuilderAccess = accessPolicy => {
-  if (hasVizBuilderAccess(accessPolicy)) {
-    return true;
-  }
-
-  throw new Error(`Need ${VIZ_BUILDER_USER_PERMISSION_GROUP} access`);
 };
 
 export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) => {

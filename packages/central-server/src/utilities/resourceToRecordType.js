@@ -1,16 +1,12 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
 import Case from 'case';
 import { singularise } from '@tupaia/utils';
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 
 // For those endpoints that do not make sense using the table name, we can provide a translation
 const RESOURCE_TRANSLATIONS = {
-  user: TYPES.USER_ACCOUNT,
-  facilities: TYPES.FACILITY,
-  facility: TYPES.FACILITY,
+  user: RECORDS.USER_ACCOUNT,
+  facilities: RECORDS.FACILITY,
+  facility: RECORDS.FACILITY,
 };
 
 // This utility function takes in a resource, or endpoint, and converts it to the record type we

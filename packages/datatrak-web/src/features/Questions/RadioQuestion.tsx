@@ -1,14 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { FormControlLabel, FormLabel, Radio, RadioGroup, lighten } from '@material-ui/core';
 import { SurveyQuestionInputProps } from '../../types';
-import { RadioIcon } from '../../components';
-import { QuestionHelperText } from './QuestionHelperText';
+import { RadioIcon, InputHelperText } from '../../components';
 
 const StyledRadioGroup = styled(RadioGroup)`
   width: 100%;
@@ -51,12 +45,18 @@ const RadioButton = styled(Radio)<{
     font-size: 1.25rem;
     fill: ${({ $color }) => ($color ? 'white' : 'transparent')};
   }
+
+  [aria-invalid='true'] & {
+    .MuiSvgIcon-root circle {
+      stroke: ${({ theme }) => theme.palette.error.main};
+    }
+  }
+
   &.Mui-checked {
     color: ${({ theme }) => theme.palette.primary.main};
-  }
-  [aria-invalid='true'] & {
-    .MuiSvgIcon-root {
-      color: ${({ theme }) => theme.palette.error.main};
+
+    .MuiSvgIcon-root circle {
+      stroke: ${({ theme }) => theme.palette.primary.main};
     }
   }
 `;
@@ -89,7 +89,7 @@ export const RadioQuestion = ({
     <StyledRadioGroup
       aria-describedby={`question_number_${id}`}
       name={name!}
-      onChange={onChange}
+      onChange={e => onChange(e, e.target.value)}
       id={id}
       aria-invalid={invalid}
       value={value || ''}
@@ -99,7 +99,7 @@ export const RadioQuestion = ({
         <FormLabel component="legend" error={invalid} required={required}>
           {label?.replace(/\xA0/g, ' ')}
         </FormLabel>
-        {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
+        {detailLabel && <InputHelperText>{detailLabel}</InputHelperText>}
       </LegendWrapper>
       {options?.map(({ label, value, color }, i) => (
         <RadioItem

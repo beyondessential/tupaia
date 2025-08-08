@@ -1,14 +1,13 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
-import { Text, XAxis as XAxisComponent } from 'recharts';
-import { ChartData, ChartType } from '@tupaia/types';
-import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
+import {
+  LabelProps,
+  Text,
+  XAxis as XAxisComponent,
+  XAxisProps as RechartsXAxisProps,
+} from 'recharts';
+import { CartesianChartConfig, ChartData, ChartReport, ChartType } from '@tupaia/types';
+import { formatTimestampForChart, getContrastTextColor, getIsTimeSeries } from '../../utils';
 import { DARK_BLUE } from '../../constants';
-import { CartesianChartViewContent } from '../../types';
 import { VerticalTick } from './VerticalTick';
 
 const AXIS_TIME_PROPS = {
@@ -16,7 +15,7 @@ const AXIS_TIME_PROPS = {
   type: 'number',
   scale: 'time',
   domain: ['dataMin', 'dataMax'],
-};
+} as RechartsXAxisProps; // cast these here because the component is complaining about the types of some of these being strings and not the enums etc that it expects
 
 const X_AXIS_PADDING = {
   enlarged: {
@@ -37,13 +36,13 @@ const renderXAxisLabel = (
   label: string | undefined,
   fillColor: string | undefined,
   isEnlarged: boolean,
-  isExporting: boolean,
-) => {
-  if (label && isEnlarged && !isExporting) {
+  isExporting: boolean
+): LabelProps | undefined => {
+  if (label && isEnlarged) {
     return {
       value: label,
       fill: fillColor,
-      offset: -5,
+      offset: isExporting ? -50 : -5,
       position: 'insideBottom',
     };
   }
@@ -64,15 +63,18 @@ const calculateXAxisHeight = (data: ChartData[], isExporting: boolean) => {
 };
 
 interface XAxisProps {
-  viewContent: CartesianChartViewContent;
+  config: CartesianChartConfig;
+  report: ChartReport;
   isEnlarged?: boolean;
   isExporting?: boolean;
 }
 
-export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: XAxisProps) => {
+export const XAxis = ({ config, report, isExporting = false, isEnlarged = false }: XAxisProps) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
+  const tickMargin = isExporting ? 20 : 0;
   const { Bar, Composed } = ChartType;
-  const { chartType, chartConfig, data } = viewContent;
+  const { chartType, chartConfig } = config;
+  const { data = [] } = report;
   const axisHeight = calculateXAxisHeight(data, isExporting);
   const isTimeSeries = getIsTimeSeries(data);
 
@@ -94,20 +96,9 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
   };
 
   const formatXAxisTick = (tickData: string) => {
-    const periodGranularity =
-      'periodGranularity' in viewContent ? viewContent.periodGranularity : undefined;
-    const getPeriodTickFormat = () => {
-      if (
-        'presentationOptions' in viewContent &&
-        viewContent.presentationOptions &&
-        'periodTickFormat' in viewContent.presentationOptions
-      ) {
-        return viewContent.presentationOptions.periodTickFormat;
-      }
-      return undefined;
-    };
+    const periodGranularity = 'periodGranularity' in config ? config.periodGranularity : undefined;
 
-    const periodTickFormat = getPeriodTickFormat();
+    const periodTickFormat = config?.presentationOptions?.periodTickFormat;
 
     return isTimeSeries
       ? formatTimestampForChart(tickData, periodGranularity, periodTickFormat)
@@ -159,6 +150,7 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
     return { left: 0, right: 10 };
   };
 
+
   const renderVerticalTick = (tickProps: TickProps & { x: number; y: number }) => {
     const { payload, x, y } = tickProps;
 
@@ -175,15 +167,14 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
 
   return (
     <XAxisComponent
-      // @ts-ignore recharts XAxisProps is not handling receiving undefined as a value
-      label={renderXAxisLabel(viewContent?.xName, fillColor, isEnlarged, isExporting)}
+      label={renderXAxisLabel(config?.xName, fillColor, isEnlarged, isExporting)}
       stroke={isExporting ? DARK_BLUE : fillColor}
       height={axisHeight}
       interval={getXAxisTickInterval()}
       tick={getXAxisTickMethod()}
       tickFormatter={formatXAxisTick}
       padding={getXAxisPadding()}
-      tickSize={6}
+      tickMargin={tickMargin}
       {...(isTimeSeries ? AXIS_TIME_PROPS : { dataKey: 'name' })}
     />
   );

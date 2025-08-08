@@ -1,15 +1,10 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { hasContent } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class OptionType extends DatabaseType {
-  static databaseType = TYPES.OPTION;
+export class OptionRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.OPTION;
 
   static fieldValidators = new Map()
     .set('value', [
@@ -19,20 +14,6 @@ export class OptionType extends DatabaseType {
         } catch (error) {
           return error.message;
         }
-      },
-      async (value, model) => {
-        const foundConflict = await findFieldConflict('value', value, model);
-        if (foundConflict) return 'Found duplicate values in option set';
-        return null;
-      },
-      async (value, model) => {
-        if (!model.label) {
-          const foundConflict = await findFieldConflict('label', value, model);
-          if (foundConflict)
-            return 'Label is not provided; value cannot conflict with another label in option set';
-          return null;
-        }
-        return null;
       },
     ])
     .set('label', [
@@ -67,8 +48,8 @@ export class OptionType extends DatabaseType {
 }
 
 export class OptionModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return OptionType;
+  get DatabaseRecordClass() {
+    return OptionRecord;
   }
 
   async getLargestSortOrder(optionSetId) {

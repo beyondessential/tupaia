@@ -1,13 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import winston from 'winston';
 
 import { sleep } from '@tupaia/utils';
 import { ChangeHandler } from '../../changeHandlers/ChangeHandler';
-import { generateTestId, getTestModels, upsertDummyRecord } from '../../testUtilities';
+import { getTestModels, upsertDummyRecord } from '../../testUtilities';
+import { generateId } from '../../utilities';
 
 const DEBOUNCE_TIME = 100; // short debounce time so tests run more quickly
 
@@ -183,8 +179,8 @@ describe('ChangeHandler', () => {
   });
 
   describe('failure handling', () => {
-    const rejectedId = generateTestId();
-    const acceptedId = generateTestId();
+    const rejectedId = generateId();
+    const acceptedId = generateId();
     let processedIds = [];
 
     beforeAll(() => {

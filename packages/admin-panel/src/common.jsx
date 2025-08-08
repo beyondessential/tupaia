@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 
 export const SERVICE_TYPE_OPTIONS = [
@@ -49,6 +44,7 @@ export const DATA_ELEMENT_FIELD_EDIT_CONFIG = {
       optionsEndpoint: 'dhisInstances',
       optionLabelKey: 'dhisInstances.code',
       optionValueKey: 'dhisInstances.code',
+      required: true,
       visibilityCriteria: { service_type: 'dhis' },
     },
     {
@@ -64,11 +60,13 @@ export const DATA_ELEMENT_FIELD_EDIT_CONFIG = {
     {
       label: 'Superset Instance',
       fieldName: 'supersetInstanceCode',
+      required: true,
       visibilityCriteria: { service_type: 'superset' },
     },
     {
       label: 'Superset Chart ID',
       fieldName: 'supersetChartId',
+      required: true,
       visibilityCriteria: { service_type: 'superset' },
     },
     {
@@ -104,3 +102,60 @@ export const DataSourceConfigView = row => {
 
   return <dl>{entries}</dl>;
 };
+
+export const DATA_SOURCE_FIELDS = [
+  {
+    Header: 'Code',
+    source: 'code',
+    required: true,
+  },
+  {
+    Header: 'Data Service',
+    source: 'service_type',
+    required: true,
+    editConfig: { default: 'dhis', options: SERVICE_TYPE_OPTIONS },
+  },
+];
+
+export const getDataSourceButtonsConfig = (fields, recordType) => [
+  {
+    Header: 'Edit',
+    type: 'edit',
+    actionConfig: {
+      editEndpoint: `${recordType}s`,
+      fields,
+      displayUsedBy: true,
+      recordType,
+    },
+    source: 'id',
+  },
+  {
+    Header: 'Delete',
+    type: 'delete',
+    actionConfig: {
+      endpoint: `${recordType}s`,
+    },
+  },
+];
+
+export const DATA_ELEMENT_FIELDS = [
+  ...DATA_SOURCE_FIELDS,
+  {
+    Header: 'Data Service Configuration',
+    source: 'config',
+    Cell: DataSourceConfigView,
+    editConfig: DATA_ELEMENT_FIELD_EDIT_CONFIG,
+  },
+  {
+    Header: 'Permission Groups',
+    source: 'permission_groups',
+    required: true,
+    editConfig: {
+      optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+      sourceKey: 'permission_groups',
+      allowMultipleValues: true,
+    },
+  },
+];

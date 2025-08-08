@@ -1,25 +1,20 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class AncestorDescendantRelationType extends DatabaseType {
-  static databaseType = TYPES.ANCESTOR_DESCENDANT_RELATION;
+export class AncestorDescendantRelationRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.ANCESTOR_DESCENDANT_RELATION;
 
   static joins = [
     {
-      joinWith: TYPES.ENTITY,
+      joinWith: RECORDS.ENTITY,
       joinAs: 'descendant',
       joinCondition: ['descendant_id', 'descendant.id'],
       fields: { code: 'descendant_code' },
     },
     {
-      joinWith: TYPES.ENTITY,
+      joinWith: RECORDS.ENTITY,
       joinAs: 'ancestor',
       joinCondition: ['ancestor_id', 'ancestor.id'],
       fields: { code: 'ancestor_code' },
@@ -28,8 +23,8 @@ export class AncestorDescendantRelationType extends DatabaseType {
 }
 
 export class AncestorDescendantRelationModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return AncestorDescendantRelationType;
+  get DatabaseRecordClass() {
+    return AncestorDescendantRelationRecord;
   }
 
   get cacheEnabled() {
@@ -38,7 +33,7 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
 
   get cacheDependencies() {
     // ancestor_descendant_relation will be manually flagged as changed once it's been rebuilt
-    return [TYPES.ANCESTOR_DESCENDANT_RELATION];
+    return [RECORDS.ANCESTOR_DESCENDANT_RELATION];
   }
 
   async getImmediateRelations(hierarchyId, criteria) {

@@ -1,12 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
+import { DataTable } from '@tupaia/types';
 import { Request } from 'express';
-import { DataTableType } from '../../models';
 
-export const validatePermissions = (dataTable: DataTableType, req: Request<any, any, any, any>) => {
+export const validatePermissions = (dataTable: DataTable, req: Request<any, any, any, any>) => {
   const { code: dataTableCode, permission_groups: permissionGroups } = dataTable;
 
   if (

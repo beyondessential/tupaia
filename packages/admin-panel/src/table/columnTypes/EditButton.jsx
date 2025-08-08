@@ -1,37 +1,45 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
-import { IconButton } from '../../widgets';
-import { openEditModal } from '../../editor/actions';
-import { fetchUsedBy } from '../../usedBy';
+import { loadEditor, openEditModal } from '../../editor/actions';
+import { ColumnActionButton } from './ColumnActionButton';
+import { useLinkWithSearchState } from '../../utilities';
 
-export const EditButtonComponent = ({ onEdit }) => (
-  <IconButton className="edit-button" onClick={onEdit}>
-    <EditIcon />
-  </IconButton>
-);
-
-EditButtonComponent.propTypes = {
-  onEdit: PropTypes.func,
+export const EditButtonComponent = ({ onEdit, actionConfig, row }) => {
+  const parsedLink = actionConfig?.link
+    ? actionConfig.link.replace(/:id/g, row?.original?.id)
+    : null;
+  const { title = 'Edit record' } = actionConfig;
+  const { to, newState } = useLinkWithSearchState(parsedLink);
+  return (
+    <ColumnActionButton
+      className="edit-button"
+      onClick={parsedLink ? null : onEdit}
+      title={title}
+      to={to}
+      state={newState}
+      component={parsedLink ? Link : 'button'}
+    >
+      <EditIcon />
+    </ColumnActionButton>
+  );
 };
 
-EditButtonComponent.defaultProps = {
-  onEdit: () => {},
+EditButtonComponent.propTypes = {
+  onEdit: PropTypes.func.isRequired,
+  actionConfig: PropTypes.object.isRequired,
+  row: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onEdit: () => {
-    const recordId = ownProps.value;
-    dispatch(openEditModal({ ...ownProps.actionConfig, isLoading: true }, recordId));
-    if (ownProps.actionConfig?.displayUsedBy) {
-      dispatch(fetchUsedBy(ownProps.actionConfig.recordType, recordId));
+    const recordId = ownProps.row.original.id;
+    if (!ownProps.actionConfig?.link) {
+      dispatch(loadEditor(ownProps.actionConfig, recordId));
     }
+    dispatch(openEditModal(recordId));
   },
 });
 

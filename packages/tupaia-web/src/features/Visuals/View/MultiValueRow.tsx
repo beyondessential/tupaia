@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { MultiValueRowViewConfig, ViewConfig, ViewDataItem, ViewReport } from '@tupaia/types';
@@ -25,6 +21,14 @@ const StyledTable = styled(Table)<{
   th.MuiTableCell-root,
   td.MuiTableCell-root {
     ${props => props.$isExport && 'color: currentColor;'}
+  }
+  border: none;
+`;
+
+const Row = styled(TableRow)`
+  background-color: transparent;
+  &:nth-child(even) {
+    background-color: transparent;
   }
 `;
 
@@ -54,24 +58,24 @@ export const MultiValueRow = ({ report: { data }, config, isExport }: MultiValue
     <StyledTable $isExport={isExport}>
       {showTableHeader && (
         <TableHead>
-          <TableRow>
+          <Row>
             {rowHeader && <TableHeaderCell>{rowHeader?.name}</TableHeaderCell>}
             {headerCells.map(cell => (
               <TableHeaderCell key={`header-${cell?.header}`}>{cell?.header}</TableHeaderCell>
             ))}
-          </TableRow>
+          </Row>
         </TableHead>
       )}
       <TableBody>
         {data?.map((datum: ViewDataItem, i) => (
-          <TableRow key={datum.name}>
+          <Row key={datum.name}>
             <TableCell>{datum.name}</TableCell>
             {headerCells.map(cell => (
               <TableCell key={`row-${i}-cell-${cell?.header}`}>
                 {datum[cell?.header as string]}
               </TableCell>
             ))}
-          </TableRow>
+          </Row>
         ))}
       </TableBody>
     </StyledTable>

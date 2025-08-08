@@ -1,36 +1,42 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { IconButton } from '../../widgets';
 import { requestDeleteRecord } from '../actions';
+import { ColumnActionButton } from './ColumnActionButton';
 
-const DeleteButtonComponent = ({ dispatch, value, actionConfig, reduxId }) => (
-  <IconButton
-    className="delete-button"
-    onClick={() =>
-      dispatch(
-        requestDeleteRecord(reduxId, actionConfig.endpoint, value, actionConfig.confirmMessage),
-      )
-    }
-  >
-    <DeleteIcon />
-  </IconButton>
-);
+const DeleteButtonComponent = ({ dispatch, actionConfig, reduxId, row }) => {
+  const { title = 'Delete record' } = actionConfig;
+  return (
+    <ColumnActionButton
+      aria-label={title}
+      className="delete-button"
+      title={title}
+      onClick={() =>
+        dispatch(
+          requestDeleteRecord(
+            reduxId,
+            actionConfig.endpoint,
+            row.original.id,
+            actionConfig.confirmMessage,
+          ),
+        )
+      }
+    >
+      <DeleteIcon />
+    </ColumnActionButton>
+  );
+};
 
 DeleteButtonComponent.propTypes = {
   actionConfig: PropTypes.PropTypes.shape({
     endpoint: PropTypes.string,
     confirmMessage: PropTypes.string,
+    title: PropTypes.string,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
   reduxId: PropTypes.string.isRequired,
+  row: PropTypes.object.isRequired,
 };
 
 export const DeleteButton = connect()(DeleteButtonComponent);

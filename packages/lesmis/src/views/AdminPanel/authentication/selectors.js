@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2022 Beyond Essential Systems Pty Ltd
- */
 const getAuthenticationState = ({ authentication = {} }) => authentication;
 
 // Login modal details

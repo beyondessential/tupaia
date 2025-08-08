@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import type { DhisApi } from '@tupaia/dhis-api';
 import { DataGroup } from '../types';
 import { DataBrokerModelRegistry, Event } from '../../../types';
@@ -20,14 +15,17 @@ export type DeprecatedPullEventsOptions = {
 };
 
 /**
+ * @deprecated
  * This is a deprecated puller which invokes a slow DHIS2 api ('/events')
  * and returns an obsolete data structure (equivalent to the raw DHIS2 events).
  * It is invoked using the `options.useDeprecatedApi` flag
  *
+ * @privateRemarks
  * TODO Delete this puller as soon as all its past consumers have migrated over to
  * the new (non-deprecated) method
  */
 export class DeprecatedEventsPuller {
+  // @ts-ignore
   private readonly models: DataBrokerModelRegistry;
   private readonly translator: DhisTranslator;
 

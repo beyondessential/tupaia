@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { ModelRegistry, modelClasses } from '@tupaia/database';
 
 export interface TestModelRegistry extends ModelRegistry {
@@ -21,4 +16,8 @@ export interface TestModelRegistry extends ModelRegistry {
   readonly permissionGroup: modelClasses.PermissionGroup;
   readonly country: modelClasses.Country;
   readonly geographicalArea: modelClasses.GeographicalArea;
+  readonly option: modelClasses.Option;
+  readonly optionSet: modelClasses.OptionSet;
+  readonly surveyGroup: modelClasses.SurveyGroup;
+  readonly surveyScreen: modelClasses.SurveyScreen;
 }

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { grantAccessToCountries, revokeCountryAccess, setupTestApp } from '../testUtilities';
 import { COUNTRIES } from './fixtures';
@@ -157,12 +152,27 @@ describe('relationships', () => {
       });
     });
 
-    it('can fetch relationships of no entities', async () => {
+    it('Throws an error when no ancestor type is provided and there are no results', async () => {
       const { body: entities } = await app.post('hierarchy/redblue/relationships', {
         query: { fields: 'code,name,type', descendant_filter: 'type==facility' },
         body: { entities: [] },
       });
 
+      expect(entities).toEqual({
+        error:
+          'Internal server error: No explicit ancestorType provided and entity type is undefined',
+      });
+    });
+
+    it('can fetch relationships of no entities', async () => {
+      const { body: entities } = await app.post('hierarchy/redblue/relationships', {
+        query: {
+          fields: 'code,name,type',
+          ancestor_filter: 'type==country',
+          descendant_filter: 'type==facility',
+        },
+        body: { entities: [] },
+      });
       expect(entities).toEqual({});
     });
 

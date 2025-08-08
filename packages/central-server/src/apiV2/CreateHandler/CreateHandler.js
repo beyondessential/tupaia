@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { respond, ObjectValidator, DatabaseError } from '@tupaia/utils';
 import { constructNewRecordValidationRules } from '../utilities';
 import { CRUDHandler } from '../CRUDHandler';
@@ -42,7 +37,7 @@ export class CreateHandler extends CRUDHandler {
   }
 
   async insertRecord() {
-    await this.models.getModelForDatabaseType(this.recordType).create(this.newRecordData);
+    await this.models.getModelForDatabaseRecord(this.recordType).create(this.newRecordData);
   }
 
   async validateNewRecord() {

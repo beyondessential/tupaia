@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { createSelector } from 'reselect';
 import { getCountries, loginUser, logoutUser, updateUser, getUser } from '../api';
 import { createReducer } from '../utils/createReducer';
@@ -16,45 +11,49 @@ const LOGOUT = 'LOGOUT';
 export const PROFILE_SUCCESS = 'PROFILE_SUCCESS';
 
 // action creators
-export const login = ({ email, password }) => async dispatch => {
-  const deviceName = window.navigator.userAgent;
+export const login =
+  ({ email, password }) =>
+  async dispatch => {
+    const deviceName = window.navigator.userAgent;
 
-  dispatch({ type: LOGIN_START });
-  try {
-    const { user } = await loginUser({
-      emailAddress: email,
-      password,
-      deviceName,
-    });
-    const { data: countries } = await getCountries(user);
+    dispatch({ type: LOGIN_START });
+    try {
+      const { user } = await loginUser({
+        emailAddress: email,
+        password,
+        deviceName,
+      });
+      const { data: countries } = await getCountries(user);
 
-    dispatch(setCountries(countries));
+      dispatch(setCountries(countries));
+      dispatch({
+        type: LOGIN_SUCCESS,
+        user,
+      });
+    } catch (error) {
+      dispatch({
+        type: LOGIN_ERROR,
+        error: error.message,
+      });
+    }
+  };
+
+export const logout =
+  (error = null) =>
+  async dispatch => {
+    if (error) {
+      dispatch({
+        type: LOGIN_ERROR,
+        error,
+      });
+    }
+
+    dispatch(clearCountries());
     dispatch({
-      type: LOGIN_SUCCESS,
-      user,
+      type: LOGOUT,
     });
-  } catch (error) {
-    dispatch({
-      type: LOGIN_ERROR,
-      error: error.message,
-    });
-  }
-};
-
-export const logout = (error = null) => async dispatch => {
-  if (error) {
-    dispatch({
-      type: LOGIN_ERROR,
-      error,
-    });
-  }
-
-  dispatch(clearCountries());
-  dispatch({
-    type: LOGOUT,
-  });
-  await logoutUser();
-};
+    await logoutUser();
+  };
 
 export const updateProfile = payload => async dispatch => {
   await updateUser(payload);

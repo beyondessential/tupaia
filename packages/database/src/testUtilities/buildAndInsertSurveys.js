@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { generateTestId } from './generateTestId';
+import { generateId } from '../utilities';
 import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
 const buildAndInsertQuestion = async (
@@ -39,7 +34,7 @@ const buildAndInsertDataGroup = async (models, fields) => {
 };
 
 const buildAndInsertProject = async models => {
-  const uniqueId = generateTestId();
+  const uniqueId = generateId();
   return findOrCreateDummyRecord(
     models.project,
     { id: uniqueId },
@@ -60,14 +55,18 @@ export const buildAndInsertSurvey = async (
   models,
   { dataGroup: dataSourceFields, questions: questionFields = [], code, ...surveyFields },
 ) => {
+  const allSurveyFields = { ...surveyFields };
   const dataGroup = await buildAndInsertDataGroup(models, { code, ...dataSourceFields });
 
-  const project = await buildAndInsertProject(models);
+  if (!surveyFields.project_id) {
+    const project = await buildAndInsertProject(models);
+    allSurveyFields.project_id = project.id;
+  }
 
   const survey = await findOrCreateDummyRecord(
     models.survey,
     { code },
-    { ...surveyFields, data_group_id: dataGroup.id, project_id: project.id },
+    { ...allSurveyFields, data_group_id: dataGroup.id },
   );
   const surveyScreen = await findOrCreateDummyRecord(
     models.surveyScreen,

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { yup } from '@tupaia/utils';
 import { Country, Entity, Survey, SurveyResponse } from '@tupaia/types';
@@ -99,16 +94,20 @@ export class SurveyResponseDataTableService extends DataTableService<
     }, {} as Record<string, any>);
 
     if (params.startDate && !params.endDate) {
+      // set the start date to the beginning of the day to include all responses on that day
+      const startDate = new Date(params.startDate).setHours(0, 0, 0, 0);
       filter['survey_response.data_time'] = {
         comparator: '>=',
-        comparisonValue: new Date(params.startDate),
+        comparisonValue: new Date(startDate),
       };
     }
 
     if (!params.startDate && params.endDate) {
+      // set the end date to the end of the day so that it includes all responses on that day - this is because the endDate comes through as just the date, not the time, and so gets automatically set to midnight at the start of the day, so won't include responses from the full day if the date selected is in the period where UTC is behind the local time
+      const endDate = new Date(params.endDate).setHours(23, 59, 59, 999);
       filter['survey_response.data_time'] = {
         comparator: '<=',
-        comparisonValue: new Date(params.endDate),
+        comparisonValue: new Date(endDate),
       };
     }
 

@@ -1,79 +1,105 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
+import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
-import { SurveyIcon, Tile, LoadingTile } from '../../components';
+
+import { DatatrakWebSurveyResponsesRequest } from '@tupaia/types';
+
 import { useCurrentUserRecentSurveys } from '../../api';
+import { InlineScrollView, SurveyIcon, Tile, TileSkeleton } from '../../components';
+import { TileProps } from '../../components/Tile';
+import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const RecentSurveys = styled.section`
-  grid-area: recentSurveys;
-  display: flex;
-  flex-direction: column;
-`;
-
-const ScrollBody = styled.div`
-  border-radius: 10px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr));
-  grid-column-gap: 1rem;
-  grid-row-gap: 0.6rem;
-
-  // make a vertical scrollable container for medium screens (tablet)
-  ${({ theme }) => theme.breakpoints.down('md')} {
-    grid-template-columns: 1fr;
-    overflow: auto;
-  }
-  // make a horizontal scrollable container for small screens
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    grid-auto-flow: column;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    overflow: auto;
-    > .MuiButton-root {
-      min-width: 15rem;
-    }
-  }
+  grid-area: --recentSurveys;
+  grid-template-columns: subgrid;
+  grid-template-rows: auto 1fr;
 `;
+
+const InlineScroll = styled(InlineScrollView).attrs({
+  $gap: '1rem',
+  as: 'ul',
+  role: 'list',
+})``;
+const GridScroll = styled.div.attrs({
+  as: 'ul',
+  role: 'list',
+})`
+  column-gap: 1rem;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: subgrid;
+  row-gap: 0.6rem;
+  grid-column: 1 / -1;
+`;
+
+const TooltipText = styled.p`
+  font-weight: normal;
+  margin-block: 0;
+  text-align: center;
+  text-wrap: balance;
+`;
+
+type RecentSurveyTileProps = TileProps &
+  Pick<
+    DatatrakWebSurveyResponsesRequest.SurveyResponse,
+    'surveyName' | 'surveyCode' | 'countryName' | 'countryCode'
+  >;
+
+const RecentSurveyTile = ({
+  surveyName,
+  surveyCode,
+  countryName,
+  countryCode,
+  ...props
+}: RecentSurveyTileProps) => {
+  const tooltip = (
+    <>
+      <TooltipText>{surveyName}</TooltipText>
+      <TooltipText>{countryName}</TooltipText>
+    </>
+  );
+
+  return (
+    <Tile
+      heading={surveyName}
+      leadingIcons={<SurveyIcon />}
+      to={`/survey/${countryCode}/${surveyCode}/1`}
+      tooltip={tooltip}
+      {...props}
+    >
+      {countryName}
+    </Tile>
+  );
+};
 
 export const RecentSurveysSection = () => {
-  const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
+  const { data: recentSurveys = [], isLoading } = useCurrentUserRecentSurveys();
+
+  const ScrollableList = useIsMobile() ? InlineScroll : GridScroll;
+
+  const renderContents = () => {
+    if (isLoading) return <TileSkeleton lineCount={1} />;
+
+    if (recentSurveys.length > 0)
+      return recentSurveys.map(props => (
+        <li key={`${props.surveyCode}-${props.countryName}`}>
+          <RecentSurveyTile {...props} />
+        </li>
+      ));
+
+    return (
+      <Typography variant="body2" color="textSecondary">
+        No recent surveys to display
+      </Typography>
+    );
+  };
 
   return (
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
-      <ScrollBody>
-        {isLoading && <LoadingTile />}
-        {isSuccess && (
-          <>
-            {recentSurveys?.length ? (
-              recentSurveys.map(({ surveyName, surveyCode, countryName, countryCode }) => (
-                <Tile
-                  key={`${surveyCode}-${countryName}`}
-                  title={surveyName}
-                  text={countryName}
-                  tooltip={
-                    <>
-                      {surveyName}
-                      <br />
-                      {countryName}
-                    </>
-                  }
-                  Icon={SurveyIcon}
-                  to={`/survey/${countryCode}/${surveyCode}/1`}
-                />
-              ))
-            ) : (
-              <Typography variant="body2" color="textSecondary">
-                No recent surveys to display
-              </Typography>
-            )}
-          </>
-        )}
-      </ScrollBody>
+      <ScrollableList>{renderContents()}</ScrollableList>
     </RecentSurveys>
   );
 };

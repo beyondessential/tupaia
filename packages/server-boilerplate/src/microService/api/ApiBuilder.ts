@@ -1,15 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import express, { Express, NextFunction, Request, Response, RequestHandler } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 // @ts-expect-error no types
 import morgan from 'morgan';
-
 import {
   AuthHandler,
   getBaseUrlsForHost,
@@ -18,7 +12,6 @@ import {
 } from '@tupaia/api-client';
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-
 import { handleWith, handleError, initialiseApiClient } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
@@ -58,6 +51,9 @@ export class ApiBuilder {
         credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
       }),
     );
+    // @ts-ignore
+    // We were previously missing a dev dependency so this TS error never cropped up. This should be
+    // tidied up eventually, but leaving for now. (It hasn’t been an issue, yet, for 4+ years)
     this.app.use(bodyParser.json({ limit: '50mb' }));
     this.app.use(errorHandler());
 

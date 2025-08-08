@@ -1,7 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
+// Converts a string to PascalCase (splitting on '_')
+export type PascalCase<S extends string> = S extends `${infer T}_${infer U}`
+  ? `${Capitalize<T>}${Capitalize<PascalCase<U>>}`
+  : Capitalize<S>;
 
 // generic camel case type, that handles dots and underscores for cases where the response is like 'item.test_item_key
 type CamelCase<S extends string> = S extends `${infer Prefix}.${infer Suffix}`

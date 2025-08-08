@@ -1,9 +1,4 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { post } from '../api';
 import { PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
@@ -47,7 +42,7 @@ export const useResetPassword = (options?: {
         navigate({
           ...location,
           search: urlSearchParams.toString(),
-        });
+        }, { replace: true });
 
         if (options?.onSuccess) options.onSuccess(response);
       },

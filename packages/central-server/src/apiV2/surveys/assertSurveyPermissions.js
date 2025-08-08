@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 import { fetchCountryIdsByPermissionGroupId } from '../utilities';
@@ -94,25 +90,28 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
       parameters: countryId,
     };
   } else {
-    dbConditions[RAW] = {
-      sql: `
+    const permissionGroupsForCountry = Object.keys(countryIdsByPermissionGroupId).filter(
+      permissionGroupId => countryIdsByPermissionGroupId[permissionGroupId].includes(countryId),
+    );
+
+    if (permissionGroupsForCountry.length === 0) {
+      dbConditions.id = {
+        comparator: '=',
+        comparisonValue: null,
+      }; // Return no results because we don't have access to any permission groups for this country
+    } else
+      dbConditions[RAW] = {
+        sql: `
       (
         (
           ARRAY[?]
           <@
           survey.country_ids
         )
-        AND
-        (
-          survey.country_ids
-          &&
-          ARRAY(
-            SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-          )
-        )
+        AND survey.permission_group_id IN (${permissionGroupsForCountry.map(() => '?').join(',')})
       )`,
-      parameters: [countryId, JSON.stringify(countryIdsByPermissionGroupId)],
-    };
+        parameters: [countryId, ...permissionGroupsForCountry],
+      };
   }
   return dbConditions;
 };

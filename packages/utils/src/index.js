@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 export * from './array';
 export { DEFAULT_BINARY_OPTIONS, DEFAULT_BINARY_OPTIONS_OBJECT } from './constant';
 export * from './compare';
@@ -42,3 +37,5 @@ export { createClassExtendingProxy } from './proxy';
 export { fetchPatiently } from './fetchPatiently';
 export { oneSecondSleep, sleep } from './sleep';
 export { getUniqueSurveyQuestionFileName } from './getUniqueSurveyQuestionFileName';
+export * from './rrule';
+export { formatDateInTimezone, getOffsetForTimezone } from './timezone';

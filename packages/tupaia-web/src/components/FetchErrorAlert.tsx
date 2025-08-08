@@ -1,13 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography, Link } from '@material-ui/core';
 import { Alert as BaseAlert, TextButton } from '@tupaia/ui-components';
-import { UseQueryResult } from 'react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 
 const ErrorLink = styled(Link)`
   color: inherit;

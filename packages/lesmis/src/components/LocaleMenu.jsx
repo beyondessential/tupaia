@@ -1,13 +1,8 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
 import React, { useState } from 'react';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { generatePath, useHistory, useLocation } from 'react-router-dom';
+import { generatePath, useNavigate, useLocation } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
 import MuiMenu from '@material-ui/core/Menu';
 import MuiMenuItem from '@material-ui/core/MenuItem';
@@ -88,19 +83,36 @@ const options = [
 
 export const LocaleMenu = ({ className }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { locale, entityCode, view } = useUrlParams();
   const { search } = useLocation();
   const queryClient = useQueryClient();
 
-  const handleChange = (event, newLocale) => {
-    const path = generatePath(`/:locale/:entityCode?/:view?`, {
+  const generateNewPath = newLocale => {
+    if (entityCode && view) {
+      return generatePath(`/:locale/:entityCode/:view`, {
+        locale: newLocale,
+        entityCode,
+        view,
+      });
+    }
+    if (entityCode) {
+      return generatePath(`/:locale/:entityCode`, {
+        locale: newLocale,
+        entityCode,
+      });
+    }
+    return generatePath(`/:locale`, {
       locale: newLocale,
-      entityCode,
-      view,
     });
+  };
+
+  const handleChange = (event, newLocale) => {
+    const path = generateNewPath(newLocale);
     const link = `${path}${search}`;
-    history.replace(link);
+    navigate(link, {
+      replace: true,
+    });
     setAnchorEl(null);
     queryClient.clear();
 

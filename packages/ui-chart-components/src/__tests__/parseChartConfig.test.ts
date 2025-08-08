@@ -1,21 +1,15 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
-import { ChartType } from '@tupaia/types';
+import { BarChartConfig, ChartConfigT, ChartReport } from '@tupaia/types';
 import { ADD_TO_ALL_KEY, parseChartConfig } from '../utils';
-import { CHART_COLOR_PALETTE, EXPANDED_CHART_COLOR_PALETTE } from '../constants';
-import { BarChartViewContent, ViewContent } from '../types';
+import { CHART_COLOR_PALETTE } from '../constants';
 
 const testChartConfig = {
   type: 'chart',
-  chartType: ChartType.Bar,
+  chartType: 'bar',
   name: 'test',
   presentationOptions: {},
-};
-const testViewJson = {
-  ...testChartConfig,
+} as BarChartConfig;
+
+const testReport = {
   data: [
     { name: '1', timestamp: 1230000, metric1: 3, metric2: 5, value: 10 },
     { name: '2', timestamp: 1240000, metric1: 4, metric2: 4, value: 20 },
@@ -23,8 +17,14 @@ const testViewJson = {
     { name: '4', timestamp: 1260000, metric1: 6, metric2: 2, value: 40 },
     { name: '5', timestamp: 1270000, metric1: 7, metric2: 1, value: 50 },
   ],
+  startDate: '2020-01-01',
+  endDate: '2020-01-05',
+} as ChartReport;
+
+const testConfig = {
+  ...testChartConfig,
   chartConfig: {},
-} as BarChartViewContent;
+};
 
 describe('parseChartConfig', () => {
   it('should add correct colors based on default color palette', () => {
@@ -33,8 +33,8 @@ describe('parseChartConfig', () => {
       metric2: { stackId: 2 },
     };
     expect(
-      parseChartConfig({
-        ...testViewJson,
+      parseChartConfig(testReport, {
+        ...testConfig,
         chartConfig,
       }),
     ).toEqual({
@@ -48,8 +48,13 @@ describe('parseChartConfig', () => {
       [ADD_TO_ALL_KEY]: { test: 'hi' },
       metric1: { stackId: 1 },
       metric2: { stackId: 2 },
-    };
-    expect(parseChartConfig({ ...testViewJson, chartConfig } as ViewContent)).toEqual({
+    } as ChartConfigT;
+    expect(
+      parseChartConfig(testReport, {
+        ...testConfig,
+        chartConfig,
+      }),
+    ).toEqual({
       metric1: { stackId: 1, color: CHART_COLOR_PALETTE.blue, test: 'hi' },
       metric2: { stackId: 2, color: CHART_COLOR_PALETTE.red, test: 'hi' },
       value: {
@@ -66,26 +71,14 @@ describe('parseChartConfig', () => {
       metric1: { stackId: 1, legendOrder: 5 },
       metric2: { stackId: 2, legendOrder: -2 },
     };
-    expect(parseChartConfig({ ...testViewJson, chartConfig } as ViewContent)).toEqual({
+    expect(
+      parseChartConfig(testReport, {
+        ...testConfig,
+        chartConfig,
+      }),
+    ).toEqual({
       metric1: { stackId: 1, legendOrder: 5, color: CHART_COLOR_PALETTE.red },
       metric2: { stackId: 2, legendOrder: -2, color: CHART_COLOR_PALETTE.blue },
-    });
-  });
-
-  it('should use a specified palette', () => {
-    const chartConfig = {
-      metric1: { stackId: 1 },
-      metric2: { stackId: 2 },
-    };
-    expect(
-      parseChartConfig({
-        ...testViewJson,
-        chartConfig,
-        colorPalette: 'EXPANDED_CHART_COLOR_PALETTE',
-      } as ViewContent),
-    ).toEqual({
-      metric1: { stackId: 1, color: EXPANDED_CHART_COLOR_PALETTE.maroon },
-      metric2: { stackId: 2, color: EXPANDED_CHART_COLOR_PALETTE.red },
     });
   });
 });

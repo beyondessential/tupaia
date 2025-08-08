@@ -1,26 +1,18 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import jwt from 'jsonwebtoken';
-import { UnauthenticatedError } from '@tupaia/utils';
+
+import { UnauthenticatedError, requireEnv } from '@tupaia/utils';
+
 import { getJwtToken } from './security';
 
 const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
 
-export const constructAccessToken = ({ userId, apiClientUserId, refreshToken }) => {
+export const constructAccessToken = ({ userId, apiClientUserId }) => {
   if (!userId) {
     throw new Error('Cannot construct accessToken: missing userId');
   }
 
-  if (!refreshToken) {
-    throw new Error('Cannot construct accessToken: missing refreshToken');
-  }
-
   const jwtPayload = {
     userId,
-    refreshToken,
   };
 
   if (apiClientUserId) {
@@ -28,7 +20,7 @@ export const constructAccessToken = ({ userId, apiClientUserId, refreshToken }) 
   }
 
   // Generate JWT
-  return jwt.sign(jwtPayload, process.env.JWT_SECRET, {
+  return jwt.sign(jwtPayload, requireEnv('JWT_SECRET'), {
     expiresIn: ACCESS_TOKEN_EXPIRY_SECONDS,
   });
 };
@@ -57,7 +49,7 @@ export function getTokenClaimsFromBearerAuth(authHeader) {
 export function getTokenClaims(jwtToken) {
   let tokenClaims = {};
   try {
-    tokenClaims = jwt.verify(jwtToken, process.env.JWT_SECRET);
+    tokenClaims = jwt.verify(jwtToken, requireEnv('JWT_SECRET'));
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       throw new UnauthenticatedError('Authorization token has expired, please log in again');
@@ -96,7 +88,6 @@ export const getAuthorizationObject = async ({
 }) => {
   const tokenClaims = {
     userId: user.id,
-    refreshToken,
   };
 
   if (apiClientUser) {
@@ -116,6 +107,7 @@ export const getAuthorizationObject = async ({
     email: user.email,
     profileImage: user.profile_image,
     verifiedEmail: user.verified_email,
+    preferences: user.preferences,
     accessPolicy,
   };
   if (permissionGroups) {

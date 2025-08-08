@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { useTable, useSortBy } from 'react-table';
 import {
@@ -12,37 +8,17 @@ import {
   TableRow,
   TableBody,
 } from '@material-ui/core';
+import { FlexStart } from '../Layout';
 import { StyledTable } from './StyledTable';
 import { DataTableCell } from './DataTableCell';
 
-import { FlexStart } from '../Layout';
-
-const getColumnId = ({
-  id,
-  accessor,
-  Header,
-}: {
-  id: string;
-  accessor?: string | ((row: any) => any);
-  Header: string;
-}) => {
-  if (id) {
-    return id;
-  }
-
-  if (typeof accessor === 'string') {
-    return accessor;
-  }
-
-  return Header;
-};
-
 interface DataTableProps {
   columns: any[];
-  data: object[];
+  data?: Record<string, unknown>[];
   className?: string;
   rowLimit?: number;
   total?: number;
+  stickyHeader?: boolean;
 }
 
 export const DataTable = ({
@@ -51,18 +27,12 @@ export const DataTable = ({
   className = '',
   rowLimit = 0,
   total = 0,
+  stickyHeader = false,
 }: DataTableProps) => {
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
       columns,
       data,
-      initialState: {
-        sortBy: [
-          {
-            id: getColumnId(columns[0]),
-          },
-        ],
-      },
     },
     useSortBy,
   );
@@ -76,10 +46,10 @@ export const DataTable = ({
 
   return (
     <TableContainer className={className}>
-      <StyledTable {...getTableProps()}>
+      <StyledTable {...getTableProps()} stickyHeader={stickyHeader}>
         <TableHead>
-          {headerGroups.map(({ getHeaderGroupProps, headers }) => (
-            <TableRow {...getHeaderGroupProps()}>
+          {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
+            <TableRow {...getHeaderGroupProps()} key={`table-header-row-${index}`}>
               {headers.map(
                 ({ getHeaderProps, render, isSorted, isSortedDesc, getSortByToggleProps }, i) => (
                   // eslint-disable-next-line react/no-array-index-key
@@ -95,12 +65,16 @@ export const DataTable = ({
           ))}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
-          {rowsToRender.map(row => {
+          {rowsToRender.map((row, index) => {
             prepareRow(row);
             return (
-              <TableRow {...row.getRowProps()}>
-                {row.cells.map(({ getCellProps, value }) => (
-                  <DataTableCell value={value} {...getCellProps()} />
+              <TableRow {...row.getRowProps()} key={`table-row-${index}`}>
+                {row.cells.map(({ getCellProps, value }, i) => (
+                  <DataTableCell
+                    value={value}
+                    {...getCellProps()}
+                    key={`table-row-${index}-cell-${i}`}
+                  />
                 ))}
               </TableRow>
             );

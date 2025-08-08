@@ -1,17 +1,13 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
 import { useDataTableExport } from '@tupaia/ui-components';
-import { ExportViewContent } from '../types';
+import { DashboardItemConfig, DashboardItemReport } from '@tupaia/types';
 import { getChartTableData } from './getChartTableData';
 
-export const useChartDataExport = (viewContent?: ExportViewContent, title = '') => {
-  const startDate = viewContent && 'startDate' in viewContent ? viewContent.startDate : undefined;
-  const endDate = viewContent && 'endDate' in viewContent ? viewContent.endDate : undefined;
+export const useChartDataExport = (
+  config?: DashboardItemConfig,
+  report?: DashboardItemReport,
+  title = '',
+) => {
+  const { columns, data = [] } = getChartTableData(report, config);
 
-  const { columns, data } = getChartTableData(viewContent);
-
-  return useDataTableExport(columns, data, title, startDate, endDate);
+  return useDataTableExport(columns, data, title, report?.startDate, report?.endDate);
 };

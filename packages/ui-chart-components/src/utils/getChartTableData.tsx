@@ -1,13 +1,18 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ValueType, ChartType, isChartConfig } from '@tupaia/types';
+import {
+  ValueType,
+  ChartType,
+  isChartConfig,
+  DashboardItemReport,
+  ChartReport,
+  ChartConfig,
+  DashboardItemConfig,
+  isChartReport,
+} from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { ExportViewContent, LooseObject, TableAccessor, ChartViewContent } from '../types';
+import { LooseObject, TableAccessor } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
 
@@ -42,25 +47,26 @@ const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: Fun
  * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
  * use value as the only column
  */
-const processColumns = (viewContent: ChartViewContent, sortByTimestamp: Function) => {
-  if (!viewContent?.data) {
+const processColumns = (report?: ChartReport, config?: ChartConfig, sortByTimestamp?: Function) => {
+  if (!report || !report.data) {
     return [];
   }
 
-  const { data, periodGranularity, chartType } = viewContent;
+  const { data } = report;
 
   const getXName = () => {
-    return chartType === ChartType.Bar ||
-      chartType === ChartType.Line ||
-      chartType === ChartType.Composed
-      ? viewContent.xName
+    if (config?.type !== 'chart') return undefined;
+    return config?.chartType === ChartType.Bar ||
+      config?.chartType === ChartType.Line ||
+      config?.chartType === ChartType.Composed
+      ? config?.xName
       : undefined;
   };
 
   const xName = getXName();
 
   const hasNamedData = data[0]?.name;
-  const hasTimeSeriesData = getIsTimeSeries(data) && periodGranularity;
+  const hasTimeSeriesData = getIsTimeSeries(data) && config?.periodGranularity;
   let firstColumn = null;
 
   if (hasNamedData) {
@@ -68,14 +74,22 @@ const processColumns = (viewContent: ChartViewContent, sortByTimestamp: Function
   }
 
   if (hasTimeSeriesData) {
+    const periodTickFormat =
+      config &&
+      'presentationOptions' in config &&
+      typeof config.presentationOptions?.periodTickFormat === 'string' // Must check for string as otherwise might be a PieChart presentationOption
+        ? config.presentationOptions?.periodTickFormat
+        : undefined;
+
     firstColumn = makeFirstColumn(
       xName || 'Date',
-      (row: LooseObject) => formatTimestampForChart(row.timestamp, periodGranularity),
+      (row: LooseObject) =>
+        formatTimestampForChart(row.timestamp, config?.periodGranularity, periodTickFormat),
       sortByTimestamp,
     );
   }
 
-  const chartConfig = parseChartConfig(viewContent);
+  const chartConfig = parseChartConfig(report, config);
 
   const chartDataConfig =
     Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
@@ -90,7 +104,7 @@ const processColumns = (viewContent: ChartViewContent, sortByTimestamp: Function
       accessor: (row: LooseObject) => {
         const rowValue = row[columnKey];
         const columnConfig = chartConfig[columnKey];
-        const valueType = columnConfig?.valueType || viewContent.valueType;
+        const valueType = columnConfig?.valueType || config?.valueType;
         return getFormattedValue(rowValue, valueType);
       },
     };
@@ -104,25 +118,24 @@ const sortDates = (dateA: Date, dateB: Date) => {
   return dateAMoreRecent ? 1 : -1;
 };
 
-const processData = (viewContent: ChartViewContent) => {
-  if (!viewContent?.data) {
+const processData = (report?: ChartReport, config?: ChartConfig) => {
+  if (!report) {
     return [];
   }
 
-  const { data, chartType } = viewContent;
-
-  if (chartType === ChartType.Pie) {
-    return data.sort((a: any, b: any) => b.value - a.value);
+  if (config?.chartType === ChartType.Pie) {
+    return report.data?.sort((a: any, b: any) => b.value - a.value) ?? [];
   }
   // For time series, sort by timestamp so that the table is in chronological order always
-  if (getIsTimeSeries(data)) {
-    return data.sort((a: any, b: any) => sortDates(a.timestamp, b.timestamp));
-  }
+
+  const { data = [] } = report;
+  const isTimeSeries = getIsTimeSeries(data);
+  if (isTimeSeries) return data.sort((a: any, b: any) => sortDates(a.timestamp, b.timestamp));
 
   return data;
 };
 
-export const getChartTableData = (viewContent?: ExportViewContent) => {
+export const getChartTableData = (report?: DashboardItemReport, config?: DashboardItemConfig) => {
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
   // the other useMemo hooks. All values need to be memoized, even default values, otherwise it will
   // cause a potentially infinite loop of re-renders.
@@ -132,15 +145,15 @@ export const getChartTableData = (viewContent?: ExportViewContent) => {
     undefined,
   );
 
-  const isChart = isChartConfig(viewContent);
+  const isChartType = isChartReport(report) && isChartConfig(config);
   const columns = useMemo(() => {
     // only process columns if it's a chart, otherwise return an empty array. It won't be used but we have to memoize default values
-    return isChart ? processColumns(viewContent, sortByTimestamp) : [];
-  }, [JSON.stringify(viewContent)]);
+    return isChartType ? processColumns(report, config, sortByTimestamp) : [];
+  }, [JSON.stringify(config), JSON.stringify(report)]);
   const data = useMemo(() => {
     // only process columns if it's a chart, otherwise return an empty array. It won't be used but we have to memoize default values
-    return isChart ? processData(viewContent) : [];
-  }, [JSON.stringify(viewContent)]);
+    return isChartType ? processData(report, config) : [];
+  }, [JSON.stringify(config), JSON.stringify(report)]);
   return {
     columns,
     data,

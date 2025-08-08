@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { ANSWER_TYPES } from '../../../../database/models/Answer';
 import { convertCellToJson } from '../utilities';
 import { ConfigValidator } from '../Validator/ConfigValidator';
@@ -11,15 +6,11 @@ import { processArithmeticConfig } from './processArithmeticConfig';
 import { processConditionConfig } from './processConditionConfig';
 import { processAutocompleteConfig } from './processAutocompleteConfig';
 import { processEntityConfig } from './processEntityConfig';
+import { processTaskConfig } from './processTaskConfig';
+import { processUserConfig } from './processUserConfig';
 
-const {
-  CODE_GENERATOR,
-  ARITHMETIC,
-  CONDITION,
-  AUTOCOMPLETE,
-  ENTITY,
-  PRIMARY_ENTITY,
-} = ANSWER_TYPES;
+const { CODE_GENERATOR, ARITHMETIC, CONDITION, AUTOCOMPLETE, ENTITY, PRIMARY_ENTITY, TASK, USER } =
+  ANSWER_TYPES;
 
 export class ConfigImporter {
   parse = convertCellToJson;
@@ -38,10 +29,11 @@ export class ConfigImporter {
    *
    * @param {number} rowIndex
    * @param {string} componentId
+   * @param {function} constructError
    * @throws {Error}
    */
-  async add(rowIndex, componentId) {
-    await this.validator.validate(rowIndex);
+  async add(rowIndex, componentId, constructError) {
+    await this.validator.validate(rowIndex, constructError);
     this.rowIndexToComponentId[rowIndex] = componentId;
   }
 
@@ -90,6 +82,15 @@ export class ConfigImporter {
         const entityConfig = await processEntityConfig(this.models, config);
         return { entity: entityConfig };
       }
+      case TASK: {
+        const taskConfig = await processTaskConfig(this.models, config);
+        return { task: taskConfig };
+      }
+      case USER: {
+        const userConfig = await processUserConfig(this.models, config);
+        return { user: userConfig };
+      }
+
       default:
         return {};
     }

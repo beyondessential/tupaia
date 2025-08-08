@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
@@ -30,10 +25,6 @@ export class GETMapOverlayGroupRelations extends GETHandler {
       nearTableKey: 'map_overlay_group_relation.map_overlay_group_id',
       farTableKey: 'map_overlay_group.id',
     },
-    map_overlay: {
-      nearTableKey: 'map_overlay_group_relation.child_id',
-      farTableKey: 'map_overlay.id',
-    },
   };
 
   async findSingleRecord(mapOverlayGroupRelationId, options) {
@@ -54,6 +45,17 @@ export class GETMapOverlayGroupRelations extends GETHandler {
     return mapOverlayGroupRelation;
   }
 
+  async getDbQueryOptions() {
+    const { multiJoin, sort, ...restOfOptions } = await super.getDbQueryOptions();
+    return {
+      ...restOfOptions,
+      // Strip table prefix from `child_code` as it’s a `customColumn`
+      sort: sort.map(s => s.replace('map_overlay_group_relation.child_code', 'child_code')),
+      // Appending the multi-join from the Record class so that we can fetch the `child_code`
+      multiJoin: multiJoin.concat(this.models.mapOverlayGroupRelation.DatabaseRecordClass.joins),
+    };
+  }
+
   async getPermissionsFilter(criteria, options) {
     const dbConditions = await createMapOverlayGroupRelationDBFilter(
       this.accessPolicy,
@@ -65,9 +67,9 @@ export class GETMapOverlayGroupRelations extends GETHandler {
 
   async getPermissionsViaParentFilter(criteria, options) {
     switch (this.parentRecordType) {
-      case TYPES.MAP_OVERLAY_GROUP:
+      case RECORDS.MAP_OVERLAY_GROUP:
         return this.getPermissionsViaParentMapOverlayGroupFilter(criteria, options);
-      case TYPES.MAP_OVERLAY:
+      case RECORDS.MAP_OVERLAY:
         return this.getPermissionsViaParentMapOverlayFilter(criteria, options);
       default:
         throw new Error(`Cannot get map overlay relations for ${this.parentRecordType}`);

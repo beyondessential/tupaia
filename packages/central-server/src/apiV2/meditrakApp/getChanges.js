@@ -1,13 +1,7 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 import { respond, DatabaseError } from '@tupaia/utils';
-import { TYPES } from '@tupaia/database';
-import { camel } from 'case';
+import { RECORDS } from '@tupaia/database';
 import { getColumnsForMeditrakApp } from './utilities';
 import {
   supportsPermissionsBasedSync,
@@ -33,10 +27,11 @@ function getRecordForSync(models, record, recordType, appVersion) {
     }
   });
 
+  const model = models.getModelForDatabaseRecord(recordType);
+
   // Translate values in columns based on meditrak app version
-  const selectedModel = models[camel(recordType)];
-  const translatedRecord = selectedModel?.meditrakConfig.translateRecordForSync
-    ? selectedModel.meditrakConfig.translateRecordForSync(recordWithoutNulls, appVersion)
+  const translatedRecord = model?.meditrakConfig.translateRecordForSync
+    ? model.meditrakConfig.translateRecordForSync(recordWithoutNulls, appVersion)
     : recordWithoutNulls;
   return translatedRecord;
 }
@@ -71,7 +66,7 @@ export async function getChanges(req, res) {
       await Promise.all(
         recordTypesToSync.map(async recordType => [
           recordType,
-          await getColumnsForMeditrakApp(models.getModelForDatabaseType(recordType)),
+          await getColumnsForMeditrakApp(models.getModelForDatabaseRecord(recordType)),
         ]),
       ),
     );
@@ -96,7 +91,7 @@ export async function getChanges(req, res) {
       const changeObject = { action, recordType, timestamp };
       if (action === 'delete') {
         changeObject.record = { id: recordId };
-        if (recordType === TYPES.GEOGRAPHICAL_AREA) {
+        if (recordType === RECORDS.GEOGRAPHICAL_AREA) {
           // TODO LEGACY Deal with this bug on app end for v3 api
           changeObject.recordType = 'area';
         }

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { FormControl, FormGroup } from '@material-ui/core';
@@ -29,6 +24,11 @@ const Group = styled(FormGroup)`
   }
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 export const DisplayOptionsSettings = () => {
   const {
     exportWithLabels,
@@ -41,28 +41,30 @@ export const DisplayOptionsSettings = () => {
   if (exportFormat !== ExportFormats.PNG) return null;
 
   return (
-    <FormControl component="fieldset">
-      <ExportSettingLabel as="legend">Display options</ExportSettingLabel>
-      <Group>
-        <Checkbox
-          label="Export with labels"
-          value={true}
-          name="displayOptions"
-          color="primary"
-          checked={exportWithLabels}
-          onChange={updateExportWithLabels}
-        />
-        {!exportWithTableDisabled && (
+    <Wrapper>
+      <FormControl component="fieldset">
+        <ExportSettingLabel as="legend">Display options</ExportSettingLabel>
+        <Group>
           <Checkbox
-            label="Export with table"
+            label="Export with labels"
             value={true}
             name="displayOptions"
             color="primary"
-            checked={exportWithTable}
-            onChange={updateExportWithTable}
+            checked={exportWithLabels}
+            onChange={updateExportWithLabels}
           />
-        )}
-      </Group>
-    </FormControl>
+          {!exportWithTableDisabled && (
+            <Checkbox
+              label="Export with table"
+              value={true}
+              name="displayOptions"
+              color="primary"
+              checked={exportWithTable}
+              onChange={updateExportWithTable}
+            />
+          )}
+        </Group>
+      </FormControl>
+    </Wrapper>
   );
 };

@@ -1,26 +1,21 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, StatusBar, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import {
   Button,
   StatusMessage,
-  TupaiaLogo,
-  TextInput,
   Text,
+  TextInput,
   TouchableOpacity,
   TupaiaBackground,
+  TupaiaLogo,
 } from '../widgets';
 
 import {
   DEFAULT_PADDING,
-  THEME_FONT_FAMILY,
-  THEME_COLOR_ONE,
   THEME_COLOR_DARK,
+  THEME_COLOR_ONE,
+  THEME_FONT_FAMILY,
   THEME_FONT_SIZE_ONE,
 } from '../globalStyles';
 
@@ -61,6 +56,7 @@ export class LoginPage extends React.Component {
       onChangePassword,
       onChangeEmailAddress,
       onCreateAccount,
+      onForgotPassword,
       onLogin,
       password,
       emailAddress,
@@ -78,6 +74,7 @@ export class LoginPage extends React.Component {
           {errorMessage !== '' && renderErrorMessage(errorMessage)}
           <View style={localStyles.horizontalContainer}>
             <TextInput
+              autoComplete="email"
               style={[localStyles.textInput, localStyles.text]}
               placeholder="Email Address"
               placeholderTextColor={THEME_COLOR_ONE}
@@ -94,6 +91,7 @@ export class LoginPage extends React.Component {
           </View>
           <View style={localStyles.horizontalContainer}>
             <TextInput
+              autoComplete="current-password"
               inputRef={reference => {
                 this.passwordInputRef = reference;
               }}
@@ -111,6 +109,11 @@ export class LoginPage extends React.Component {
                 if (loginButtonIsEnabled) onLogin(emailAddress, password);
               }}
             />
+          </View>
+          <View style={[localStyles.linkButton, localStyles.forgotPasswordButton]}>
+            <TouchableOpacity onPress={onForgotPassword} analyticsLabel="Login: Forgot Password">
+              <Text style={localStyles.linkButtonEmphasis}>Forgot password?</Text>
+            </TouchableOpacity>
           </View>
           <View style={localStyles.actions}>
             {isLoggingIn && renderLoadingSpinner()}
@@ -132,6 +135,7 @@ LoginPage.propTypes = {
   onChangeEmailAddress: PropTypes.func.isRequired,
   onLogin: PropTypes.func.isRequired,
   onCreateAccount: PropTypes.func.isRequired,
+  onForgotPassword: PropTypes.func.isRequired,
   password: PropTypes.string,
   emailAddress: PropTypes.string,
   isLoggingIn: PropTypes.bool,
@@ -194,6 +198,11 @@ const localStyles = StyleSheet.create({
   },
   linkButtonEmphasis: {
     textDecorationLine: 'underline',
+  },
+  forgotPasswordButton: {
+    alignSelf: 'flex-end',
+    marginHorizontal: HORIZONTAL_MARGIN,
+    paddingHorizontal: 0,
   },
   errorMessage: {
     marginHorizontal: DEFAULT_PADDING,

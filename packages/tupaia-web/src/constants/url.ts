@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 export const URL_SEARCH_PARAMS = {
   PROJECT: 'project',
   TAB: 'tab',
@@ -16,12 +12,12 @@ export const URL_SEARCH_PARAMS = {
 
 export enum MODAL_ROUTES {
   PROJECTS = 'projects',
+  PROJECT_SELECT = 'project-select',
   LOGIN = 'login',
   REGISTER = 'register',
   FORGOT_PASSWORD = 'forgot-password',
   RESET_PASSWORD = 'reset-password',
   REQUEST_PROJECT_ACCESS = 'request-project-access',
-  REQUEST_COUNTRY_ACCESS = 'request-country-access',
   VERIFY_EMAIL_RESEND = 'verify-email-resend',
 }
 
@@ -35,3 +31,7 @@ export enum TABS {
 export const DEFAULT_PERIOD_PARAM_STRING = 'DEFAULT_PERIOD';
 
 export const DEFAULT_MAP_OVERLAY_ID = '126'; // 'Operational Facilities'
+
+export const ROUTE_STRUCTURE = '/:projectCode/:entityCode/:dashboardName';
+
+export const MAP_OVERLAY_EXPORT_ROUTE = '/:projectCode/:entityCode/map-overlay-pdf-export';

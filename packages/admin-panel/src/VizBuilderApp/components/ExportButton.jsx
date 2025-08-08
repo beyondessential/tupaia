@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 
 import IconButton from '@material-ui/core/IconButton';
@@ -13,11 +8,11 @@ import {
   useExportDashboardVisualisation,
   useExportMapOverlayVisualisation,
 } from '../api/mutations';
-import { useVisualisation, useVizConfigError } from '../context';
+import { useVisualisationContext, useVizConfigErrorContext } from '../context';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
 
 export const ExportButton = () => {
-  const { visualisation } = useVisualisation();
+  const { visualisation } = useVisualisationContext();
 
   const { dashboardItemOrMapOverlay } = useParams();
 
@@ -31,7 +26,7 @@ export const ExportButton = () => {
     throw new Error('Unknown viz type');
   };
 
-  const { hasError: vizConfigHasError } = useVizConfigError();
+  const { hasError: vizConfigHasError } = useVizConfigErrorContext();
   const { mutateAsync: exportVisualisation } = useExportViz();
 
   return (

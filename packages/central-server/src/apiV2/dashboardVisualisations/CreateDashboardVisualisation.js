@@ -1,16 +1,11 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { ObjectValidator } from '@tupaia/utils';
 
 import { CreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
   assertPermissionGroupsAccess,
+  assertVizBuilderAccess,
 } from '../../permissions';
 import { constructNewRecordValidationRules } from '../utilities';
 
@@ -23,8 +18,8 @@ export class CreateDashboardVisualisation extends CreateHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You require Tupaia Admin Panel or BES Admin permission to create visualisations.',
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to create visualisations.',
       ),
     );
   }

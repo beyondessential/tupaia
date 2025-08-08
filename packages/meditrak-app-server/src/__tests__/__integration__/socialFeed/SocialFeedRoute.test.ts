@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 // eslint-disable-next-line import/no-extraneous-dependencies
 import MockDate from 'mockdate';
 import { constructAccessToken } from '@tupaia/auth';
@@ -23,7 +18,6 @@ import {
   replaceItemsCountryWithCountryId,
 } from './helper';
 import { COUNTRIES, FEED_ITEMS, GONDOR } from './SocialFeedRoute.fixtures';
-import { CAT_USER_SESSION } from '../fixtures';
 
 describe('socialFeed', () => {
   const CURRENT_DATE_STUB = '2020-12-15T00:00:00.000Z';
@@ -81,7 +75,6 @@ describe('socialFeed', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId: user.id,
-        refreshToken: CAT_USER_SESSION.refresh_token,
         apiClientUserId: undefined,
       }),
     );

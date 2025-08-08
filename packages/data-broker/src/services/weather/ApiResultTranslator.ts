@@ -1,34 +1,32 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
-import { Analytic, RawAnalyticResults, EntityType, Event, EventResults } from '../../types';
-import { WeatherProperty, WeatherResult } from './types';
+import { WeatherResult, WeatherSnapshot } from '@tupaia/weather-api';
+import { Analytic, EntityRecord, Event, EventResults, RawAnalyticResults } from '../../types';
 
 export type ResultFormat = 'analytics' | 'events';
 
-type WeatherDataElementCode = keyof typeof DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP;
-
-const DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP: Record<string, WeatherProperty> = {
+/** Record<string, WeatherProperty>, but narrower */
+const DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP = {
   WTHR_MIN_TEMP: 'min_temp',
   WTHR_MAX_TEMP: 'max_temp',
   WTHR_PRECIP: 'precip',
+  WTHR_RH: 'rh',
   WTHR_FORECAST_MIN_TEMP: 'min_temp',
   WTHR_FORECAST_MAX_TEMP: 'max_temp',
   WTHR_FORECAST_PRECIP: 'precip',
-};
+  WTHR_FORECAST_RH: 'rh',
+} as const;
+
+export type WeatherDataElementCode = keyof typeof DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP;
 
 /**
  * Translates Weather API data into events/analytics formatted data
  */
 export class ApiResultTranslator {
-  private readonly entities: EntityType[];
+  private readonly entities: EntityRecord[];
   private readonly resultFormat: ResultFormat;
   private readonly dataElementCodes: WeatherDataElementCode[];
 
   public constructor(
-    entities: EntityType[],
+    entities: EntityRecord[],
     resultFormat: ResultFormat,
     dataElementCodes: WeatherDataElementCode[],
   ) {
@@ -63,7 +61,7 @@ export class ApiResultTranslator {
             translated = this.apiResultToEvents(apiResult, entity);
             break;
           default:
-            throw new Error(`Unknown data format`);
+            throw new Error('Unknown data format');
         }
       }
 
@@ -85,16 +83,16 @@ export class ApiResultTranslator {
       case 'events':
         return combinedData;
       default:
-        throw new Error(`Unknown data format`);
+        throw new Error('Unknown data format');
     }
   }
 
-  private apiResultToEvents(apiResult: WeatherResult, entity: EntityType) {
+  private apiResultToEvents(apiResult: WeatherResult, entity: EntityRecord) {
     const events = [];
 
     for (const entry of apiResult.data) {
       const eventDate = `${entry.datetime}T23:59:59`; // time is 23:59:59 to represent the complete day
-      const event: Event & { dataValues: Record<string, string | number> } = {
+      const event: Event & { dataValues: Partial<WeatherSnapshot> } = {
         event: `weather_${entity.code}_${entry.datetime}`,
         orgUnit: entity.code,
         orgUnitName: entity.name,
@@ -104,7 +102,8 @@ export class ApiResultTranslator {
 
       for (const dataElementCode of this.dataElementCodes) {
         const apiProperty = DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP[dataElementCode];
-        event.dataValues[dataElementCode as string] = entry[apiProperty];
+        const val = entry[apiProperty];
+        event.dataValues[dataElementCode] = val;
       }
 
       events.push(event);
@@ -113,7 +112,7 @@ export class ApiResultTranslator {
     return events;
   }
 
-  private apiResultToAnalytics(apiResult: WeatherResult, entity: EntityType) {
+  private apiResultToAnalytics(apiResult: WeatherResult, entity: EntityRecord) {
     const analytics: Analytic[] = [];
 
     for (const entry of apiResult.data) {

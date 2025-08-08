@@ -1,15 +1,12 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
-import { AuthModalBody, AuthModalButton, Form, RouterLink, TextField } from '../components';
+import { AuthModalBody, AuthModalButton, TextField, RouterLink, Form, Modal } from '../components';
 import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
 import { EmailVerificationModal } from './EmailVerificationModal';
+import { useModal } from '../utils';
 
 const ModalBody = styled(AuthModalBody)`
   width: 38rem;
@@ -42,37 +39,39 @@ const ForgotPasswordText = styled(LinkText)`
 `;
 
 export const LoginModal = () => {
+  const { closeModal } = useModal();
   const formContext = useForm();
   const { mutate: login, isLoading, isError, error } = useLogin();
 
   return (
-    <ModalBody title="Log in" subtitle="Enter your details below to log in">
-      {isError ? (
-        <Typography color="error">{error.message}</Typography>
-      ) : (
-        <EmailVerificationModal />
-      )}
-      <StyledForm onSubmit={login as SubmitHandler<any>} formContext={formContext}>
-        <TextField
-          autoFocus
-          name="email"
-          label="Email"
-          type="email"
-          options={FORM_FIELD_VALIDATION.EMAIL}
-          required
-        />
-        <TextField name="password" label="Password" type="password" required />
-        <ForgotPasswordText as={RouterLink} modal={MODAL_ROUTES.FORGOT_PASSWORD}>
-          Forgot password?
-        </ForgotPasswordText>
-        <AuthModalButton type="submit" isLoading={isLoading}>
-          Log in
-        </AuthModalButton>
-        <LinkText align="center">
-          Don&rsquo;t have an account?{' '}
-          <RouterLink modal={MODAL_ROUTES.REGISTER}>Register here</RouterLink>
-        </LinkText>
-      </StyledForm>
-    </ModalBody>
+    <Modal isOpen onClose={closeModal}>
+      <ModalBody title="Log in" subtitle="Enter your details below to log in">
+        {isError ? (
+          <Typography color="error">{error.message}</Typography>
+        ) : (
+          <EmailVerificationModal />
+        )}
+        <StyledForm onSubmit={login as SubmitHandler<any>} formContext={formContext}>
+          <TextField
+            name="email"
+            label="Email"
+            type="email"
+            options={FORM_FIELD_VALIDATION.EMAIL}
+            required
+          />
+          <TextField name="password" label="Password" type="password" required />
+          <ForgotPasswordText as={RouterLink} modal={MODAL_ROUTES.FORGOT_PASSWORD}>
+            Forgot password?
+          </ForgotPasswordText>
+          <AuthModalButton type="submit" isLoading={isLoading}>
+            Log in
+          </AuthModalButton>
+          <LinkText align="center">
+            Don&rsquo;t have an account?{' '}
+            <RouterLink modal={MODAL_ROUTES.REGISTER}>Register here</RouterLink>
+          </LinkText>
+        </StyledForm>
+      </ModalBody>
+    </Modal>
   );
 };

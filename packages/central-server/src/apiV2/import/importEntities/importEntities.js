@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { respond, DatabaseError, UploadError } from '@tupaia/utils';
 import { populateCoordinatesForCountry } from './populateCoordinatesForCountry';
 import { updateCountryEntities } from './updateCountryEntities';
@@ -10,6 +5,23 @@ import { extractEntitiesByCountryName } from './extractEntitiesByCountryName';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import { assertCanImportEntities } from './assertCanImportEntities';
 
+const importEntity = async (
+  transactingModels,
+  countryName,
+  entities,
+  pushToDhis,
+  automaticallyFetchGeojson,
+) => {
+  // Create the entity, along with matching country, geographical_area, and clinic records
+
+  const country = await updateCountryEntities(transactingModels, countryName, entities, pushToDhis);
+
+  if (automaticallyFetchGeojson) {
+    // Go through country and all district/subdistricts, and if any are missing coordinates,
+    // attempt to fetch them and populate the database
+    await populateCoordinatesForCountry(transactingModels, country.code);
+  }
+};
 /**
  * Responds to POST requests to the /import/entities endpoint
  */
@@ -40,19 +52,13 @@ export async function importEntities(req, res) {
       for (const countryEntries of Object.entries(entitiesByCountryName)) {
         const [countryName, entities] = countryEntries;
 
-        // Create the entities, along with matching country, geographical_area, and clinic records
-        const country = await updateCountryEntities(
+        await importEntity(
           transactingModels,
           countryName,
           entities,
           pushToDhis,
+          automaticallyFetchGeojson,
         );
-
-        if (automaticallyFetchGeojson) {
-          // Go through country and all district/subdistricts, and if any are missing coordinates,
-          // attempt to fetch them and populate the database
-          await populateCoordinatesForCountry(transactingModels, country.code);
-        }
       }
     });
     respond(res, { message: 'Imported entities' });

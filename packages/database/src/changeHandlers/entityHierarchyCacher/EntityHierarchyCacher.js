@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-import winston from 'winston';
-import { TYPES } from '../../types';
+import { RECORDS } from '../../records';
 import { generateId } from '../../utilities';
 import { ChangeHandler } from '../ChangeHandler';
 import { EntityHierarchySubtreeRebuilder } from './EntityHierarchySubtreeRebuilder';
@@ -59,22 +54,18 @@ export class EntityHierarchyCacher extends ChangeHandler {
 
   async handleChanges(transactingModels, rebuildJobs) {
     // get the subtrees to delete, then run the delete
-    const start = Date.now();
     const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
     await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
 
     // explicitly flag ancestor_descendant_relation as changed so that model level caches are cleared
     // TODO: Remove this as part of RN-704
     await transactingModels.database.markRecordsAsChanged(
-      TYPES.ANCESTOR_DESCENDANT_RELATION,
+      RECORDS.ANCESTOR_DESCENDANT_RELATION,
       rebuildJobs.map(({ hierarchyId, rootEntityId }) => ({
         id: generateId(),
         hierarchyId,
         rootEntityId,
       })),
     );
-
-    const end = Date.now();
-    winston.info(`Rebuilding entity hierarchy cache took: ${end - start}ms`);
   }
 }

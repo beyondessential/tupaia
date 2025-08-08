@@ -1,23 +1,20 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { AccessPolicy } from '@tupaia/access-policy';
+import { DataTable } from '@tupaia/types';
 import { TupaiaApiClient } from '@tupaia/api-client';
-import { DataTableType as DataTableTypeClass } from '@tupaia/database';
+import { DataTableRecord as DataTableRecordClass } from '@tupaia/database';
 import { DataTableServiceBuilder, getDataTableServiceType } from '../../dataTableService';
 import { AnalyticsDataTableService } from '../../dataTableService/services/AnalyticsDataTableService';
-import { DataTableType } from '../../models';
+
+type DataTableRecord = DataTableRecordClass & DataTable;
 
 describe('DataTableServiceBuilder', () => {
   describe('getDataTableServiceType', () => {
     describe('error cases', () => {
       it('throws an error for an unknown data-table type', () => {
-        const dataTableWithUnknownType = new DataTableTypeClass(
+        const dataTableWithUnknownType = new DataTableRecordClass(
           {},
           { type: 'unknown' },
-        ) as DataTableType;
+        ) as DataTableRecord;
 
         const createUnknownTypeDataTableService = () =>
           getDataTableServiceType(dataTableWithUnknownType);
@@ -29,10 +26,10 @@ describe('DataTableServiceBuilder', () => {
     });
 
     it('can get the service type of a data-table', () => {
-      const analyticsDataTable = new DataTableTypeClass(
+      const analyticsDataTable = new DataTableRecordClass(
         {},
         { type: 'analytics', code: 'analytics' },
-      ) as DataTableType;
+      ) as DataTableRecord;
 
       expect(getDataTableServiceType(analyticsDataTable)).toEqual('analytics');
     });

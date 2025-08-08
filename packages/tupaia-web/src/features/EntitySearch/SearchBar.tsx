@@ -1,19 +1,15 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { TextField, TextFieldProps } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { Close, Search } from '@material-ui/icons';
-import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../constants';
 import { IconButton } from '@tupaia/ui-components';
+import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../constants';
+import { QRCodeScanner } from '../QRCodeScanner';
 
 const SearchInput = styled(TextField).attrs({
   variant: 'outlined',
-  placeholder: 'Search location',
+  placeholder: 'Search location...',
   fullWidth: true,
   InputProps: {
     startAdornment: <SearchIcon />,
@@ -30,7 +26,7 @@ const SearchInput = styled(TextField).attrs({
   }
 
   &:hover .MuiOutlinedInput-notchedOutline {
-    border: 2px ${({ theme }) => theme.form.border} solid;
+    border: 2px ${({ theme }) => theme.palette.form.border} solid;
   }
 
   .Mui-focused .MuiOutlinedInput-notchedOutline {
@@ -61,14 +57,9 @@ const SearchInput = styled(TextField).attrs({
 `;
 
 const MobileCloseButton = styled(IconButton)`
-  display: none;
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: block;
-    position: absolute;
-    top: 0.1rem;
-    right: 0.1rem;
-    z-index: 1;
-  }
+  top: 0.1rem;
+  right: 0.1rem;
+  z-index: 1;
 `;
 
 const Container = styled.div<{
@@ -86,6 +77,8 @@ const Container = styled.div<{
     height: ${TOP_BAR_HEIGHT_MOBILE};
     // Place on top of the hamburger menu on mobile
     z-index: 1;
+    display: flex;
+    background: ${({ theme }) => theme.palette.background.paper};
   }
 `;
 
@@ -93,6 +86,12 @@ const MobileOpenButton = styled(IconButton)`
   display: none;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: block;
+  }
+`;
+const MobileWrapper = styled.div`
+  display: none;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: flex;
   }
 `;
 
@@ -140,9 +139,12 @@ export const SearchBar = ({ value = '', onChange, onFocusChange, onClose }: Sear
           onFocus={() => onFocusChange(true)}
           inputRef={inputRef}
         />
-        <MobileCloseButton onClick={handleClickClose} color="default">
-          <Close />
-        </MobileCloseButton>
+        <MobileWrapper>
+          <QRCodeScanner onCloseEntitySearch={handleClickClose} />
+          <MobileCloseButton onClick={handleClickClose} color="default">
+            <Close />
+          </MobileCloseButton>
+        </MobileWrapper>
       </Container>
     </>
   );

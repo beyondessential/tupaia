@@ -1,18 +1,21 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-import { useQuery } from 'react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { TupaiaWebDashboardsRequest } from '@tupaia/types';
 import { EntityCode, ProjectCode } from '../../types';
 import { get } from '../api';
 
 // Returns all dashboards for a project and entity, and also the active dashboard
-export const useDashboards = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
-  return useQuery(
+export const useDashboards = (
+  projectCode?: ProjectCode,
+  entityCode?: EntityCode,
+  useQueryOptions?: UseQueryOptions<TupaiaWebDashboardsRequest.ResBody>,
+) => {
+  return useQuery<TupaiaWebDashboardsRequest.ResBody>(
     ['dashboards', projectCode, entityCode],
-    (): Promise<TupaiaWebDashboardsRequest.ResBody> =>
-      get(`dashboards/${projectCode}/${entityCode}`),
-    { enabled: !!entityCode && !!projectCode, keepPreviousData: false },
+    () => get(`dashboards/${projectCode}/${entityCode}`),
+    {
+      ...useQueryOptions,
+      enabled: !!projectCode && !!entityCode && (useQueryOptions?.enabled ?? true),
+      keepPreviousData: false,
+    },
   );
 };

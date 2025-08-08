@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import MuiMenuIcon from '@material-ui/icons/Menu';
 import { IconButton, useTheme } from '@material-ui/core';
@@ -99,7 +94,7 @@ export const UserMenu = () => {
   );
 
   const RequestCountryAccess = (
-    <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_COUNTRY_ACCESS}>
+    <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_PROJECT_ACCESS}>
       Request country access
     </BaseMenuItem>
   );
@@ -122,7 +117,7 @@ export const UserMenu = () => {
     <ErrorBoundary>
       <UserMenuContainer>
         <UserInfo
-          currentUserUsername={user?.name}
+          user={user}
           isLoggedIn={isLoggedIn}
           isLandingPage={isLandingPage}
           secondaryColor={menuSecondaryColor}
@@ -150,7 +145,7 @@ export const UserMenu = () => {
           isLoggedIn={isLoggedIn}
           primaryColor={menuPrimaryColor}
           secondaryColor={menuSecondaryColor}
-          currentUserUsername={user?.name}
+          currentUser={user}
         >
           {menuItems}
         </DrawerMenu>

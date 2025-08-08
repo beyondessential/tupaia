@@ -1,10 +1,5 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
-import { generateTestId, populateTestData } from '@tupaia/database';
+import { generateId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
   ANSWER_CHANGE,
@@ -39,12 +34,12 @@ export const testCreateAnswer = (dhisApi, models, dataBroker) => {
   it('should respond true without posting data if there is existing, more recent data for the same period', async () => {
     const moreRecentSurveyResponse = {
       ...SURVEY_RESPONSE,
-      id: generateTestId(),
+      id: generateId(),
       end_time: '2019-04-10T14:05+00',
     };
     const moreRecentAnswer = {
       ...ANSWER,
-      id: generateTestId(),
+      id: generateId(),
       survey_response_id: moreRecentSurveyResponse.id,
     };
     await populateTestData(models, {

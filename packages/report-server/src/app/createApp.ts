@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { MicroServiceApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 import { TupaiaDatabase } from '@tupaia/database';
 import { ForwardingAuthHandler } from '@tupaia/api-client';
@@ -18,8 +13,8 @@ import { FetchTransformSchemaRequest } from '../routes/FetchTransformSchemaRoute
 /**
  * Set up express server
  */
-export async function createApp() {
-  const builder = new MicroServiceApiBuilder(new TupaiaDatabase(), 'report')
+export async function createApp(db = new TupaiaDatabase()) {
+  const builder = new MicroServiceApiBuilder(db, 'report')
     .useBasicBearerAuth()
     .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
     .get<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))

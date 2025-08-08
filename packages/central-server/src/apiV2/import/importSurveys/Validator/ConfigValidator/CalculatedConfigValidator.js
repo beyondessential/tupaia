@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { ValidationError } from '@tupaia/utils';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 import { getDollarPrefixedExpressionVariables } from '../../../../utilities';

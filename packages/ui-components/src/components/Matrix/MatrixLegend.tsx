@@ -1,44 +1,56 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useContext } from 'react';
-import { ConditionalPresentationOptions } from '@tupaia/types';
+import {
+  ConditionsObject,
+  ConditionalPresentationOptions,
+  PresentationOptionCondition,
+} from '@tupaia/types';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
 import { MatrixContext } from './MatrixContext';
-import { getIsUsingDots } from './utils';
+import { getIsUsingPillCell } from './utils';
+import { Pill } from './Pill';
 
 const Wrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-`;
+  margin-block: 1rem;
+  gap: 0.8rem 1rem;
 
-const LegendItem = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 0;
-  &:not(:last-child) {
-    margin-right: 1rem;
+  // at mobile size, display the pills in a column so that they don't overflow the container
+  ${({ theme }) => theme.breakpoints.down('xs')} {
+    flex-direction: column;
+    align-items: flex-start;
   }
 `;
 
-const LegendDot = styled.div<{ $color?: string }>`
-  background-color: ${({ $color }) => $color};
-  border: 1px solid ${({ theme }) => theme.palette.text.primary};
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-`;
+const convertNumberRangeToText = (condition: ConditionsObject) => {
+  // sort the values so that if we have a range, it's displayed in the correct order
+  const sortedValues = Object.values(condition).sort();
 
-const LegendLabel = styled(Typography)`
-  margin-left: 0.5rem;
-`;
+  // if there is only one value, return it either as is or with the operator
+  if (sortedValues.length === 1) {
+    const operator = Object.keys(condition)[0];
+    // only display the operator if it's not an equals sign
+    if (operator === '=') return sortedValues[0];
 
+    return `${operator} ${sortedValues[0]}`;
+  }
+  return sortedValues.join(' – '); // en dash
+};
+
+const convertConditionToText = (condition: PresentationOptionCondition['condition']) => {
+  if (typeof condition === 'object') {
+    const values = Object.values(condition);
+
+    const isNumberRange = values.every(value => !isNaN(parseInt(String(value), 10)));
+    if (isNumberRange) {
+      return convertNumberRangeToText(condition);
+    }
+
+    return `${values.join(' or ')}`;
+  }
+  return condition;
+};
 /**
  * Renders a legend for the matrix, if the matrix is using dots
  */
@@ -46,21 +58,26 @@ export const MatrixLegend = () => {
   const { presentationOptions } = useContext(MatrixContext);
 
   // Only render if the matrix is using dots. Otherwise, return null
-  if (!presentationOptions || !getIsUsingDots(presentationOptions)) return null;
+  if (!presentationOptions || !getIsUsingPillCell(presentationOptions)) return null;
 
   const { conditions } = presentationOptions as ConditionalPresentationOptions;
+
   const legendConditions = conditions?.filter(condition => !!condition.legendLabel);
 
   // Only render if there are legend conditions. Otherwise, return null
   if (legendConditions?.length === 0) return null;
   return (
     <Wrapper>
-      {legendConditions?.map(({ color, legendLabel }) => (
-        <LegendItem key={legendLabel}>
-          <LegendDot $color={color} />
-          <LegendLabel>{legendLabel}</LegendLabel>
-        </LegendItem>
-      ))}
+      {legendConditions?.map(({ color, legendLabel, condition }) => {
+        const text = convertConditionToText(condition);
+
+        const showTooltip = !!legendLabel && text !== legendLabel;
+        return (
+          <Pill key={legendLabel} color={color} tooltip={showTooltip ? legendLabel : null}>
+            {text}
+          </Pill>
+        );
+      })}
     </Wrapper>
   );
 };

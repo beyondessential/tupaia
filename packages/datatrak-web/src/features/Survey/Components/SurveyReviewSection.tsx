@@ -1,33 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
-import { QuestionType } from '@tupaia/types';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
-import { SurveyQuestionGroup } from './SurveyQuestionGroup';
-import { formatSurveyScreenQuestions, getSurveyScreenNumber } from '../utils';
+import { getAllSurveyComponents } from '../utils';
 import { useSurveyForm } from '../SurveyContext';
-
-const Section = styled.section`
-  padding: 1rem 0;
-  &:first-child {
-    padding-top: 0;
-  }
-`;
-
-const SectionHeader = styled(Typography).attrs({
-  variant: 'h3',
-})`
-  font-size: 1rem;
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  margin-bottom: 1rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    font-size: 1.125rem;
-  }
-`;
+import { SurveyQuestionGroup } from './SurveyQuestionGroup';
 
 const Fieldset = styled.fieldset.attrs({
   disabled: true,
@@ -40,37 +15,16 @@ const Fieldset = styled.fieldset.attrs({
     pointer-events: none;
   }
 `;
-export const SurveyReviewSection = () => {
+export const SurveyReviewSection = (props: ComponentPropsWithoutRef<typeof Fieldset>) => {
   const { visibleScreens } = useSurveyForm();
 
-  if (!visibleScreens || !visibleScreens.length) {
+  if (!visibleScreens || visibleScreens.length === 0) {
     return null;
   }
-
-  // split the questions into sections by screen so it's easier to read the long form
-  const questionSections = visibleScreens.map(screen => {
-    const { surveyScreenComponents } = screen;
-    const screenNumber = getSurveyScreenNumber(visibleScreens, screen);
-    const heading = surveyScreenComponents[0].text;
-    const firstQuestionIsInstruction = surveyScreenComponents[0].type === QuestionType.Instruction;
-
-    // if the first question is an instruction, don't display it, because it will be displayed as the heading
-    const questionsToDisplay = firstQuestionIsInstruction
-      ? surveyScreenComponents.slice(1)
-      : surveyScreenComponents;
-    return {
-      heading,
-      questions: formatSurveyScreenQuestions(questionsToDisplay, screenNumber),
-    };
-  });
+  const questions = getAllSurveyComponents(visibleScreens);
   return (
-    <Fieldset>
-      {questionSections.map(({ heading, questions }, index) => (
-        <Section key={index}>
-          <SectionHeader>{heading}</SectionHeader>
-          <SurveyQuestionGroup questions={questions} />
-        </Section>
-      ))}
+    <Fieldset {...props}>
+      <SurveyQuestionGroup questions={questions} />
     </Fieldset>
   );
 };

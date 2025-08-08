@@ -1,14 +1,11 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { NoData } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import {
+  ChartConfig,
   ChartData,
+  ChartReport,
   ChartType,
   isBarChartConfig,
   isComposedChartConfig,
@@ -16,8 +13,8 @@ import {
   isLineChartConfig,
   isPieChartConfig,
 } from '@tupaia/types';
-import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
-import { LegendPosition, ChartViewContent } from '../types';
+import { isDataKey, parseChartConfig, getIsChartData, getIsTimeSeries } from '../utils';
+import { LegendPosition } from '../types';
 import { CartesianChart } from './CartesianChart';
 import { PieChart, GaugeChart } from './Charts';
 
@@ -40,8 +37,8 @@ const UnknownChart = () => (
   </UnknownChartContainer>
 );
 
-const removeNonNumericData = (data: any[]) =>
-  data.map(dataSeries => {
+const removeNonNumericData = (data?: ChartData[]) =>
+  data?.map(dataSeries => {
     const filteredDataSeries: any = {};
     Object.entries(dataSeries).forEach(([key, value]) => {
       if (!isDataKey(key) || !Number.isNaN(Number(value))) {
@@ -49,7 +46,7 @@ const removeNonNumericData = (data: any[]) =>
       }
     });
     return filteredDataSeries;
-  });
+  }) ?? [];
 
 const sortData = (data: ChartData[]) =>
   getIsTimeSeries(data)
@@ -62,68 +59,70 @@ const sortData = (data: ChartData[]) =>
       })
     : data;
 
-const parseViewContent = <T extends ChartViewContent>(viewContent: T): T => {
-  const { data } = viewContent;
-  const massagedData = sortData(removeNonNumericData(data));
-  const chartConfig = 'chartConfig' in viewContent ? viewContent.chartConfig : undefined;
+const parseConfig = <T extends ChartConfig>(config: T, report: ChartReport): T => {
+  const chartConfig = 'chartConfig' in config ? config.chartConfig : undefined;
   return chartConfig
     ? {
-        ...viewContent,
-        data: massagedData,
-        chartConfig: parseChartConfig(viewContent),
+        ...config,
+        chartConfig: parseChartConfig(report, config),
       }
-    : { ...viewContent, data: massagedData };
+    : config;
+};
+const parseReport = <T extends ChartReport>(report: T): T => {
+  const { data } = report;
+  const massagedData = sortData(removeNonNumericData(data));
+  return { ...report, data: massagedData };
 };
 
-interface ChartProps<T extends ChartViewContent> {
-  viewContent: T;
+interface ChartProps<T extends ChartConfig> {
+  report: ChartReport;
+  config: T;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
   legendPosition?: LegendPosition;
 }
 
-export const Chart = <T extends ChartViewContent>({
-  viewContent,
+export const Chart = <T extends ChartConfig>({
+  report,
+  config,
   isExporting = false,
   isEnlarged = true,
   onItemClick = () => {},
   legendPosition = 'bottom',
 }: ChartProps<T>) => {
-  const { chartType } = viewContent;
+  const { chartType } = config;
 
   if (!Object.values(ChartType).includes(chartType)) {
     return <UnknownChart />;
   }
 
-  if (!getIsChartData({ chartType: viewContent.chartType, data: viewContent.data })) {
-    return <NoData viewContent={viewContent} />;
+  if (!getIsChartData(config.chartType, report)) {
+    return <NoData config={config} report={report} />;
   }
+  const parsedReport = parseReport(report);
 
   const commonProps = {
     isEnlarged,
     isExporting,
     onItemClick,
     legendPosition,
+    report: parsedReport,
   };
 
-  if (isPieChartConfig(viewContent)) {
-    const viewContentConfig = parseViewContent(viewContent);
-    return <PieChart viewContent={viewContentConfig} {...commonProps} />;
+  if (isPieChartConfig(config)) {
+    const parsedConfig = parseConfig(config, parsedReport);
+    return <PieChart config={parsedConfig} {...commonProps} />;
   }
 
-  if (isGaugeChartConfig(viewContent)) {
-    const viewContentConfig = parseViewContent(viewContent);
-    return <GaugeChart viewContent={viewContentConfig} {...commonProps} />;
+  if (isGaugeChartConfig(config)) {
+    const parsedConfig = parseConfig(config, parsedReport);
+    return <GaugeChart config={parsedConfig} {...commonProps} />;
   }
 
-  if (
-    isBarChartConfig(viewContent) ||
-    isLineChartConfig(viewContent) ||
-    isComposedChartConfig(viewContent)
-  ) {
-    const viewContentConfig = parseViewContent(viewContent);
-    return <CartesianChart viewContent={viewContentConfig} {...commonProps} />;
+  if (isBarChartConfig(config) || isLineChartConfig(config) || isComposedChartConfig(config)) {
+    const parsedConfig = parseConfig(config, parsedReport);
+    return <CartesianChart config={parsedConfig} {...commonProps} />;
   }
   // if the chart is an unsupported type, return null. Very unlikely to happen, but we need to handle it
   return null;

@@ -1,11 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { camelKeys } from '@tupaia/utils';
 
 import { GETHandler } from '../GETHandler';
@@ -30,6 +25,7 @@ const buildReportObject = (report, legacy, permissionGroupsById) => {
     code: report.code,
     config: report.config,
     permissionGroup: permissionGroupsById[report.permission_group_id]?.name || null,
+    latestDataParameters: report.latest_data_parameters,
   };
 };
 
@@ -39,6 +35,7 @@ const buildVisualisationObject = (dashboardItemObject, referencedRecords) => {
   const { report_code: reportCode, legacy } = dashboardItem;
 
   const report = reportsByCode[reportCode] || legacyReportsByCode[reportCode];
+
   if (!report) {
     throw new Error(`Cannot find a report for visualisation "${dashboardItem.report_code}"`);
   }
@@ -80,7 +77,7 @@ export class GETDashboardVisualisations extends GETHandler {
   }
 
   async findSingleRecord(dashboardVisualisationId) {
-    const [dashboardItem] = await this.database.find(TYPES.DASHBOARD_ITEM, {
+    const [dashboardItem] = await this.database.find(RECORDS.DASHBOARD_ITEM, {
       id: dashboardVisualisationId,
     });
 
@@ -125,7 +122,7 @@ export class GETDashboardVisualisations extends GETHandler {
   }
 
   async countRecords(inputCriteria) {
-    return this.database.count(TYPES.DASHBOARD_ITEM, parseCriteria(inputCriteria), {
+    return this.database.countFast(RECORDS.DASHBOARD_ITEM, parseCriteria(inputCriteria), {
       joinWith: 'report',
       joinCondition: ['dashboard_item.report_code', 'report.code'],
     });

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { pushChange } from './pushChange';
 import { getDhisApiInstanceForChange } from './api';
 
@@ -19,6 +14,7 @@ export async function pushLatest(models, syncQueue, dataBroker, batchSize) {
     if (successfullyPushed) {
       await syncQueue.use(change);
     } else {
+      await syncQueue.registerBadRequest(change);
       await syncQueue.deprioritise(change);
     }
   }

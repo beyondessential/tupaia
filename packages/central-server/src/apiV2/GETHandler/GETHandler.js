@@ -1,19 +1,17 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
+import { isNotNullish, isNullish } from '@tupaia/tsutils';
 import { respond } from '@tupaia/utils';
+
 import { CRUDHandler } from '../CRUDHandler';
 import {
-  getQueryOptionsForColumns,
-  fullyQualifyColumnSelector,
-  processColumns,
-  processColumnSelectorKeys,
   generateLinkHeader,
+  getQueryOptionsForColumns,
+  parsePageSizeQueryParam,
+  processColumnSelector,
+  processColumnSelectorKeys,
+  processColumns,
 } from './helpers';
 
-const MAX_RECORDS_PER_PAGE = 100;
+export const DEFAULT_PAGE_SIZE = 100;
 
 /**
  * Responds to GET requests for a resource.
@@ -39,9 +37,16 @@ export class GETHandler extends CRUDHandler {
     respond(this.res, body);
   }
 
+  /**
+   * @returns {{limit: number|null, page: number|undefined}}
+   */
   getPaginationParameters() {
-    const { pageSize: limit = MAX_RECORDS_PER_PAGE, page } = this.req.query;
-    return { limit, page };
+    const { pageSize = DEFAULT_PAGE_SIZE, page } = this.req.query;
+    const limit = parsePageSizeQueryParam(pageSize);
+
+    return isNullish(limit)
+      ? { limit } // Pagination doesn’t make sense when LIMIT ALL
+      : { limit, page: Number.parseInt(page, 10) };
   }
 
   async getProcessedColumns() {
@@ -58,11 +63,11 @@ export class GETHandler extends CRUDHandler {
   }
 
   async getDbQueryOptions() {
-    const { sort: sortString, distinct = false } = this.req.query;
+    const { sort: sortString, rawSort, distinct = false } = this.req.query;
 
     // set up db query options
     const columns = await this.getProcessedColumns();
-    const columnNames = columns.map(c => Object.keys(c)[0]); // [{ a: 'e' }, { b: 'f' }] => ['a', 'b']
+    const columnNames = columns.flatMap(Object.keys); // [{ a: 'e' }, { b: 'f' }] => ['a', 'b']
     const { sort, multiJoin } = getQueryOptionsForColumns(
       columnNames,
       this.recordType,
@@ -71,21 +76,24 @@ export class GETHandler extends CRUDHandler {
     );
 
     const { limit, page } = this.getPaginationParameters();
-    const offset = limit * page;
 
-    const dbQueryOptions = { multiJoin, columns, sort, distinct, limit, offset };
+    const dbQueryOptions = { multiJoin, columns, sort, rawSort, distinct, limit };
+
+    if (Number.isInteger(limit) && Number.isInteger(page)) {
+      dbQueryOptions.offset = limit * page;
+    }
 
     // add any user requested sorting to the start of the sort clause
     if (sortString) {
       const sortKeys = JSON.parse(sortString);
-      const fullyQualifiedSortKeys = sortKeys.map(sortKey =>
-        fullyQualifyColumnSelector(this.models, sortKey, this.recordType),
+      const processedSortKeys = sortKeys.map(sortKey =>
+        processColumnSelector(this.models, sortKey, this.recordType),
       );
       // if 'distinct', we can't order by any columns that aren't included in the distinct selection
       if (distinct) {
-        dbQueryOptions.sort = fullyQualifiedSortKeys;
+        dbQueryOptions.sort = processedSortKeys;
       } else {
-        dbQueryOptions.sort.unshift(...fullyQualifiedSortKeys);
+        dbQueryOptions.sort.unshift(...processedSortKeys);
       }
     }
 
@@ -134,23 +142,21 @@ export class GETHandler extends CRUDHandler {
         options,
       ));
     }
-    const pageOfRecords = await this.findRecords(criteria, options);
-    const totalNumberOfRecords = await this.countRecords(criteria, options);
-    const { limit, page } = this.getPaginationParameters();
-    const lastPage = Math.ceil(totalNumberOfRecords / limit);
-    const linkHeader = generateLinkHeader(this.resource, page, lastPage, this.req.query);
+
+    const [pageOfRecords, totalRecordCount] = await Promise.all([
+      this.findRecords(criteria, options),
+      this.countRecords(criteria, options),
+    ]);
+
     return {
-      headers: {
-        Link: linkHeader,
-        'Access-Control-Expose-Headers': 'Link', // To get around CORS
-      },
+      headers: this.#buildHeaders(totalRecordCount),
       body: pageOfRecords,
     };
   }
 
   async countRecords(criteria, { multiJoin }) {
     const options = { multiJoin }; // only the join option is required for count
-    return this.database.count(this.recordType, criteria, options);
+    return this.database.countFast(this.recordType, criteria, options);
   }
 
   async findRecords(criteria, options) {
@@ -164,5 +170,24 @@ export class GETHandler extends CRUDHandler {
       options,
     );
     return record;
+  }
+
+  /** @param {number} totalRecordCount */
+  #buildHeaders(totalRecordCount) {
+    const headers = {
+      'Access-Control-Expose-Headers': 'X-Total-Count', // to get around CORS
+      'X-Total-Count': totalRecordCount,
+    };
+
+    const { limit, page } = this.getPaginationParameters();
+    if (Number.isInteger(limit) && Number.isInteger(page)) {
+      const lastPage = Number.isFinite(totalRecordCount)
+        ? Math.ceil(totalRecordCount / limit)
+        : null;
+      headers['Access-Control-Expose-Headers'] = 'Link, X-Total-Count';
+      headers.Link = generateLinkHeader(this.resource, page, lastPage, this.req.query);
+    }
+
+    return headers;
   }
 }

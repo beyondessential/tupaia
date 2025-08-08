@@ -1,10 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
-import { generateTestId } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 import {
   resetTestData,
   TestableApp,
@@ -57,7 +52,7 @@ xdescribe('Survey Response Comments CRUD', () => {
   describe('Create: POST /surveyResponses/[id]/comments', () => {
     it("creates a survey response's comment", async () => {
       const surveyResponseId = await createSurveyResponse();
-      const id = generateTestId();
+      const id = generateId();
       const text = 'It is the unknown that defines our existence.';
 
       const { statusCode, body } = await app.post(`surveyResponses/${surveyResponseId}/comments`, {
@@ -86,8 +81,7 @@ xdescribe('Survey Response Comments CRUD', () => {
       const createdData = [
         await createComment({
           ...commonData,
-          text:
-            'In a part of space where there are few rules, its more important than ever that we hold fast to our own.',
+          text: 'In a part of space where there are few rules, its more important than ever that we hold fast to our own.',
         }),
         await createComment({
           ...commonData,
@@ -116,8 +110,7 @@ xdescribe('Survey Response Comments CRUD', () => {
       const createdComment = await createComment({
         surveyResponseId,
         userId: app.user.id,
-        text:
-          "There is a way out of every box, a solution to every puzzle, it's just a matter of finding it.",
+        text: "There is a way out of every box, a solution to every puzzle, it's just a matter of finding it.",
       });
 
       const { body: comment } = await app.get(

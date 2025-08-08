@@ -1,23 +1,20 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebEntitiesRequest } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest, UserAccount } from '@tupaia/types';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { sortSearchResults } from '../utils';
 
 export type EntityDescendantsRequest = Request<
-  DatatrakWebEntitiesRequest.Params,
-  DatatrakWebEntitiesRequest.ResBody,
-  DatatrakWebEntitiesRequest.ReqBody,
-  DatatrakWebEntitiesRequest.ReqQuery
+  DatatrakWebEntityDescendantsRequest.Params,
+  DatatrakWebEntityDescendantsRequest.ResBody,
+  DatatrakWebEntityDescendantsRequest.ReqBody,
+  DatatrakWebEntityDescendantsRequest.ReqQuery
 >;
 
 const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'];
+
+const DEFAULT_PAGE_SIZE = 100;
 
 async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
   const response = await services.central.fetchResources('entities', {
@@ -28,6 +25,29 @@ async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
   return code;
 }
 
+const getRecentEntities = (
+  currentUser: UserAccount,
+  countryCode: string | undefined,
+  type: string | undefined,
+) => {
+  const { recent_entities: userRecentEntities } = currentUser.preferences;
+  if (!userRecentEntities || !countryCode || !type) {
+    return [];
+  }
+
+  const recentEntitiesForCountry = userRecentEntities[countryCode];
+  if (!recentEntitiesForCountry) {
+    return [];
+  }
+
+  const entityTypes = type.split(',');
+  const recentEntitiesOfTypes = entityTypes.flatMap(
+    entityType => userRecentEntities[countryCode][entityType] ?? [],
+  );
+
+  return recentEntitiesOfTypes;
+};
+
 export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
   public async buildResponse() {
     const { query, ctx, session, models } = this.req;
@@ -37,29 +57,29 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
     let recentEntities: string[] = [];
 
     const {
-      filter: { countryCode, projectCode, grandparentId, parentId, searchString, type },
+      filter: { countryCode, projectCode, grandparentId, parentId, type, ...restOfFilter },
+      searchString,
       fields = DEFAULT_FIELDS,
+      pageSize = DEFAULT_PAGE_SIZE,
     } = query;
 
     if (isLoggedIn) {
       const currentUser = await models.user.findOne({ email: session.email });
-      const { recent_entities: userRecentEntities } = currentUser.preferences;
-      recentEntities = userRecentEntities?.[countryCode]?.[type] || [];
+
+      recentEntities = getRecentEntities(currentUser, countryCode, type);
     }
 
     const filter = {
       generational_distance: {},
       country_code: countryCode,
-      type: {
-        comparator: '=',
-        comparisonValue: type,
-      },
+      type,
       name: searchString
         ? {
             comparator: 'ilike',
             comparisonValue: `%${searchString}%`,
           }
         : undefined,
+      ...restOfFilter,
     };
 
     let entityCode = projectCode as string;
@@ -86,13 +106,14 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       {
         fields,
         filter,
+        pageSize,
       },
       false,
       !isLoggedIn,
     );
 
     const sortedEntities = searchString
-      ? (sortSearchResults(searchString, entities) as DatatrakWebEntitiesRequest.ResBody)
+      ? sortSearchResults(searchString, entities)
       : [
           ...recentEntities
             .map((id: string) => {
@@ -103,8 +124,8 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
                 isRecent: true,
               };
             })
-            .filter(e => e),
-          ...entities,
+            .filter(Boolean),
+          ...entities.sort((a: any, b: any) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
         ];
 
     return camelcaseKeys(sortedEntities, { deep: true });

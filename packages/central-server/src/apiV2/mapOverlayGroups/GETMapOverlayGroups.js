@@ -1,14 +1,10 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertMapOverlayGroupsGetPermissions,
   createMapOverlayGroupDBFilter,
 } from './assertMapOverlayGroupsPermissions';
+
 /**
  * Handles endpoints:
  * - /mapOverlayGroups
@@ -30,12 +26,14 @@ export class GETMapOverlayGroups extends GETHandler {
     return mapOverlayGroup;
   }
 
-  async getPermissionsFilter(criteria, options) {
+  async getPermissionsFilter(criteria, dbOptions = {}) {
     const dbConditions = await createMapOverlayGroupDBFilter(
       this.accessPolicy,
       this.models,
       criteria,
     );
-    return { dbConditions, dbOptions: options };
+
+    // Join with map_overlay_group_relation so that we can also fetch map overlay groups with no children so they can be displayed and edited
+    return { dbConditions, dbOptions };
   }
 }

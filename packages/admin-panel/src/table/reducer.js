@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { createNestedReducer } from '../utilities';
 import {
   ACTION_REQUEST,
@@ -15,13 +10,10 @@ import {
   DATA_CHANGE_ERROR,
   PAGE_INDEX_CHANGE,
   PAGE_SIZE_CHANGE,
-  FILTERS_CHANGE,
-  EXPANSIONS_CHANGE,
-  EXPANSIONS_TAB_CHANGE,
-  COLUMNS_RESIZE,
   SORTING_CHANGE,
   DATA_CHANGE_REQUEST,
   DEFAULT_TABLE_STATE,
+  CLEAR_ERROR,
 } from './constants';
 import { getFetchId } from './selectors';
 
@@ -41,6 +33,7 @@ const handleDataFetchSuccess = (payload, currentState) => {
     ...payload,
     errorMessage: DEFAULT_TABLE_STATE.errorMessage,
     fetchId: DEFAULT_TABLE_STATE.fetchId,
+    confirmActionMessage: DEFAULT_TABLE_STATE.confirmActionMessage,
   };
 };
 
@@ -72,23 +65,14 @@ const stateChanges = {
   [PAGE_INDEX_CHANGE]: payload => payload,
   [PAGE_SIZE_CHANGE]: payload => ({
     ...payload,
-    pageIndex: 0,
   }),
-  [FILTERS_CHANGE]: payload => ({
-    ...payload,
-    pageIndex: 0,
-  }),
-  [EXPANSIONS_CHANGE]: payload => payload,
-  [EXPANSIONS_TAB_CHANGE]: ({ rowId, tabValue }, currentState) => ({
-    expansionTabStates: {
-      ...currentState.expansionTabStates,
-      [rowId]: tabValue,
-    },
-  }),
-  [COLUMNS_RESIZE]: payload => payload,
+
   [SORTING_CHANGE]: payload => ({
     ...payload,
     pageIndex: 0,
+  }),
+  [CLEAR_ERROR]: () => ({
+    errorMessage: DEFAULT_TABLE_STATE.errorMessage,
   }),
 };
 

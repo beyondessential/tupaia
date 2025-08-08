@@ -1,16 +1,11 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
-import { Legend, LegendProps } from '@tupaia/ui-map-components';
-import { MobileMapLegend } from './MobileMapLegend';
 import { useSearchParams } from 'react-router-dom';
-import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
-import { useMapOverlayMapData } from '../utils';
 import styled from 'styled-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
+import { Legend as LegendComponent, LegendProps } from '@tupaia/ui-map-components';
+import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
+import { useMapOverlayMapData } from '../utils';
+import { MobileMapLegend } from './MobileMapLegend';
 
 const DesktopWrapper = styled.div`
   pointer-events: auto;
@@ -35,7 +30,7 @@ const SeriesDivider = styled.div`
   }
 `;
 
-export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
+export const Legend = ({ hiddenValues, setValueHidden, isExport }: LegendProps) => {
   const [urlSearchParams] = useSearchParams();
   const selectedOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
   const { isLoading, isFetched, ...overlayReportData } = useMapOverlayMapData();
@@ -43,25 +38,27 @@ export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
   if (!selectedOverlay || !overlayReportData || isLoading) {
     return null;
   }
-
-  const LegendComponent = () => (
-    <Legend
+  return (
+    <LegendComponent
       measureInfo={{ [selectedOverlay]: overlayReportData }}
       setValueHidden={setValueHidden}
       hiddenValues={hiddenValues}
       currentMapOverlayCodes={[selectedOverlay]}
       displayedMapOverlayCodes={[selectedOverlay]}
-      SeriesDivider={SeriesDivider}
+      SeriesDivider={isExport ? undefined : SeriesDivider}
+      isExport={isExport}
     />
   );
+};
 
+export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
   return (
     <ErrorBoundary>
       <MobileMapLegend>
-        <LegendComponent />
+        <Legend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
       </MobileMapLegend>
       <DesktopWrapper>
-        <LegendComponent />
+        <Legend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
       </DesktopWrapper>
     </ErrorBoundary>
   );

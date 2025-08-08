@@ -1,11 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 // See https://rmp135.github.io/sql-ts/#/?id=totypescript
 
 import sqlts, { Table } from '@rmp135/sql-ts';
+import path from 'path';
 
 import Knex from 'knex';
 // @ts-ignore
@@ -13,7 +9,10 @@ import config from './config/models/config.json';
 
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
-dotenv.config();
+dotenv.config({
+  path: [path.resolve(__dirname, '../../env/db.env'), path.resolve(__dirname, '.env')],
+  override: true,
+});
 
 const db = Knex({
   client: 'postgresql',
@@ -67,11 +66,27 @@ const removeUnwantedColumns = (tables: Table[]) =>
     columns: columns.filter(({ name }) => !name.includes('m_row$')), // Remove mvrefresh columns
   }));
 
+/**
+ * @description There is currently no way to rename just one enum definition in the sql-ts library, so we have to do it manually. This is so that we can set columns of type entity_type to be EntityTypeEnum + string
+ */
+const renameEntityTypeEnumDefinition = (enums: any) => {
+  return enums.map((enumDef: any) => {
+    if (enumDef.name === 'entity_type') {
+      return {
+        ...enumDef,
+        convertedName: 'EntityTypeEnum',
+      };
+    }
+    return enumDef;
+  });
+};
 const run = async () => {
   const failOnChanges = process.argv[2] === '--failOnChanges';
 
   // @ts-ignore
   const definitions = await sqlts.toObject(config, db);
+
+  const enums = renameEntityTypeEnumDefinition(definitions.enums);
 
   // Base Model tables should mark columns with defaultValues as non-optional since the default value will be present
   const baseTables = makeDefaultColumnsRequired(definitions.tables);
@@ -84,7 +99,7 @@ const run = async () => {
 
   const allTables = removeUnwantedColumns(combineTables(baseTables, createTables, updateTables));
 
-  const tsString = sqlts.fromObject({ ...definitions, tables: allTables }, config);
+  const tsString = sqlts.fromObject({ ...definitions, enums, tables: allTables }, config);
 
   if (failOnChanges) {
     const currentTsString = fs.readFileSync(config.filename, { encoding: 'utf8' });

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import MockDate from 'mockdate';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
@@ -93,7 +88,7 @@ describe('AnalyticsDataTableService', () => {
           dataElementCodes: ['PSSS_AFR_Cases'],
           startDate: 'cat',
         },
-        'startDate must be a `date` type',
+        'startDate must be a valid ISO 8601 date: YYYY-MM-DD',
       ],
       [
         'endDate wrong format',
@@ -103,7 +98,7 @@ describe('AnalyticsDataTableService', () => {
           dataElementCodes: ['PSSS_AFR_Cases'],
           endDate: 'dog',
         },
-        'endDate must be a `date` type',
+        'endDate must be a valid ISO 8601 date: YYYY-MM-DD',
       ],
       [
         'aggregations wrong format',
@@ -142,8 +137,8 @@ describe('AnalyticsDataTableService', () => {
         },
         name: 'dataElementCodes',
       },
-      { config: { defaultValue: new Date('2018-12-01'), type: 'date' }, name: 'startDate' },
-      { config: { defaultValue: new Date('2023-12-31'), type: 'date' }, name: 'endDate' },
+      { config: { defaultValue: '2018-12-01', type: 'string' }, name: 'startDate' },
+      { config: { defaultValue: '2023-12-31', type: 'string' }, name: 'endDate' },
     ]);
   });
 

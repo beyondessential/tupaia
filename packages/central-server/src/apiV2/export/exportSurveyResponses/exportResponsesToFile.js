@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import xlsx from 'xlsx';
 import moment from 'moment';
 import keyBy from 'lodash.keyby';
@@ -15,11 +10,11 @@ import {
   truncateString,
   toFilename,
 } from '@tupaia/utils';
-import { TYPES } from '@tupaia/database';
+import { getExportPathForUser } from '@tupaia/server-utils';
+import { RECORDS } from '@tupaia/database';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dataAccessors';
 import { hasBESAdminAccess } from '../../../permissions';
-import { getExportPathForUser } from '../getExportPathForUser';
 import { zipMultipleFiles } from '../../utilities';
 
 const FILE_PREFIX = 'survey_response_export';
@@ -63,6 +58,7 @@ export async function exportResponsesToFile(
     surveyResponse,
     surveys,
     timeZone,
+    includeArchived = false,
   },
 ) {
   if (surveys.length === 0) {
@@ -166,6 +162,11 @@ export async function exportResponsesToFile(
     const surveyResponseFindConditions = {
       survey_id: survey.id,
     };
+
+    if (includeArchived !== true && includeArchived !== 'true') {
+      surveyResponseFindConditions.outdated = false; // only get the latest version of each survey response unless includeArchived === true. Outdated responses are usually resubmissions
+    }
+
     const dataTimeCondition = getDataTimeCondition();
     if (dataTimeCondition) {
       surveyResponseFindConditions.data_time = dataTimeCondition;
@@ -195,6 +196,14 @@ export async function exportResponsesToFile(
         return `Could not find entity with id ${answer.text}`;
       }
       return entity.code;
+    }
+
+    if (answer.type === ANSWER_TYPES.USER) {
+      const user = await models.user.findById(answer.text);
+      if (!user) {
+        return `Could not find user with id ${answer.text}`;
+      }
+      return `${user.first_name} ${user.last_name} (${user.id})`;
     }
     return answer.text;
   };
@@ -227,11 +236,14 @@ export async function exportResponsesToFile(
       models,
       surveyResponseIds,
       {},
-      { columns: [{ [`${TYPES.SURVEY_RESPONSE}.id`]: 'answer.survey_response_id' }], sort: [] },
+      {
+        columns: [{ [`${RECORDS.SURVEY_RESPONSE}.id`]: 'answer.survey_response_id' }],
+        sort: [],
+      },
     );
 
     // Add any questions that are in survey responses but no longer in the survey
-    const allQuestionIds = getUniqueEntries(answers.map(a => a['question.id']).flat());
+    const allQuestionIds = getUniqueEntries(answers.flatMap(a => a['question.id']));
     const validQuestionIds = questions.map(q => q.id);
     const outdatedQuestionIds = allQuestionIds.filter(id => !validQuestionIds.includes(id));
     const outdatedQuestions = await models.question.find({ id: outdatedQuestionIds });

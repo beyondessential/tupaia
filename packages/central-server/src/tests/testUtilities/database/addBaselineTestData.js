@@ -1,16 +1,13 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { encryptPassword } from '@tupaia/auth';
-import { generateTestId } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 import { createUser as createUserAccessor } from '../../../dataAccessors';
+import { configureEnv } from '../../../configureEnv';
 import { getModels } from './getModels';
-import { TEST_USER_EMAIL } from '../constants';
+import { TEST_API_USER_EMAIL, TEST_API_USER_PASSWORD, TEST_USER_EMAIL } from '../constants';
 
 const models = getModels();
+
+configureEnv();
 
 export async function addBaselineTestData() {
   // if there's a pre-existing Demo Land in the DB, use that, otherwise create
@@ -20,7 +17,7 @@ export async function addBaselineTestData() {
       code: 'DL',
     },
     {
-      id: generateTestId(),
+      id: generateId(),
       name: 'Demo Land',
       type: 'country',
       country_code: 'DL',
@@ -32,7 +29,7 @@ export async function addBaselineTestData() {
       name: 'Admin',
     },
     {
-      id: generateTestId(),
+      id: generateId(),
     },
   );
 
@@ -41,7 +38,7 @@ export async function addBaselineTestData() {
       name: 'Donor',
     },
     {
-      id: generateTestId(),
+      id: generateId(),
       parent_id: adminGroup.id,
     },
   );
@@ -51,7 +48,7 @@ export async function addBaselineTestData() {
       name: 'Public',
     },
     {
-      id: generateTestId(),
+      id: generateId(),
       parent_id: donorGroup.id,
     },
   );
@@ -70,8 +67,8 @@ export async function addBaselineTestData() {
   });
 
   const apiUser = await createUserAccessor(models, {
-    emailAddress: process.env.API_CLIENT_NAME,
-    password: process.env.API_CLIENT_PASSWORD,
+    emailAddress: TEST_API_USER_EMAIL,
+    password: TEST_API_USER_PASSWORD,
     firstName: 'API',
     lastName: 'Client',
     employer: 'Automation',
@@ -84,14 +81,11 @@ export async function addBaselineTestData() {
 
   await models.apiClient.findOrCreate(
     {
-      username: process.env.API_CLIENT_NAME,
+      username: TEST_API_USER_EMAIL,
     },
     {
       user_account_id: apiUser.userId,
-      secret_key_hash: encryptPassword(
-        process.env.API_CLIENT_PASSWORD,
-        process.env.API_CLIENT_SALT,
-      ),
+      secret_key_hash: encryptPassword(TEST_API_USER_PASSWORD, process.env.API_CLIENT_SALT),
     },
   );
 }

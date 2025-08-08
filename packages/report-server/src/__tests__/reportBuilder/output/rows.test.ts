@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { Aggregator } from '@tupaia/aggregator';
 import { ReportServerAggregator } from '../../../aggregator';
 import { buildOutput } from '../../../reportBuilder/output';
@@ -19,7 +14,6 @@ describe('rows', () => {
     const config = {
       type: 'rows',
     };
-    const context = {};
     const reportServerAggregator = new ReportServerAggregator(aggregator);
     const output = buildOutput(config, reportServerAggregator);
 

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { ReportServerAggregator } from '../../../aggregator';
 import { buildOutput } from '../../../reportBuilder/output';
 import { TransformTable } from '../../../reportBuilder/transform';
@@ -245,6 +240,77 @@ describe('matrix', () => {
         TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS),
       );
       expect(result).toEqual(expectedData);
+    });
+
+    it('can include entity columns', async () => {
+      const expectedData = {
+        columns: [
+          {
+            entityCode: 'TO',
+            key: 'Tonga',
+            title: 'Tonga',
+          },
+          {
+            key: 'InfrastructureType',
+            title: 'InfrastructureType',
+          },
+          {
+            key: 'Laos',
+            title: 'Laos',
+          },
+        ],
+        rows: [
+          {
+            dataElement: 'hospital',
+            InfrastructureType: 'medical center',
+            Tonga: 0,
+            Laos: 3,
+          },
+          {
+            InfrastructureType: 'medical center',
+            dataElement: 'clinic',
+            Tonga: 9,
+            Laos: 4,
+          },
+          {
+            InfrastructureType: 'others',
+            Tonga: 0,
+            dataElement: 'park',
+          },
+          {
+            InfrastructureType: 'others',
+            Tonga: 5,
+            dataElement: 'library',
+          },
+        ],
+      };
+      // Test setting fixed columns
+      const output1 = buildOutput(
+        {
+          type: 'matrix',
+          rowField: 'FacilityType',
+          columns: [{ entityLabel: 'Tonga', entityCode: 'TO' }, 'InfrastructureType', 'Laos'],
+        },
+        reportServerAggregator,
+      );
+      const result1 = await output1(
+        TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS),
+      );
+      expect(result1).toEqual(expectedData);
+
+      // Test setting fixed & dynamic columns
+      const output2 = buildOutput(
+        {
+          type: 'matrix',
+          rowField: 'FacilityType',
+          columns: [{ entityLabel: 'Tonga', entityCode: 'TO' }, '*'],
+        },
+        reportServerAggregator,
+      );
+      const result2 = await output2(
+        TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS),
+      );
+      expect(result2).toEqual(expectedData);
     });
   });
 

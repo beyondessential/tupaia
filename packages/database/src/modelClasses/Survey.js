@@ -1,31 +1,29 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
+import { reduceToDictionary } from '@tupaia/utils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+import { RECORDS } from '../records';
+import { SqlQuery } from '../SqlQuery';
 
-export class SurveyType extends DatabaseType {
-  static databaseType = TYPES.SURVEY;
+export class SurveyRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.SURVEY;
 
   /**
-   * @returns {Promise<import('./DataGroup').DataGroupType>} data group for survey
+   * @returns {Promise<import('./DataGroup').DataGroupRecord>} data group for survey
    */
   async dataGroup() {
     return this.otherModels.dataGroup.findById(this.data_group_id);
   }
 
   /**
-   * @returns {Promise<import('./SurveyScreen').SurveyScreenType[]>} survey screens in survey
+   * @returns {Promise<import('./SurveyScreen').SurveyScreenRecord[]>} survey screens in survey
    */
   async surveyScreens() {
     return this.otherModels.surveyScreen.find({ survey_id: this.id });
   }
 
   /**
-   * @returns {Promise<import('./SurveyScreenComponent').SurveyScreenComponentType[]>} survey screen components in survey
+   * @returns {Promise<import('./SurveyScreenComponent').SurveyScreenComponentRecord[]>} survey screen components in survey
    */
   async surveyScreenComponents() {
     const questions = await this.database.executeSql(
@@ -41,7 +39,7 @@ export class SurveyType extends DatabaseType {
   }
 
   /**
-   * @returns {Promise<import('./Question').QuestionType[]>} questions in survey
+   * @returns {Promise<import('./Question').QuestionRecord[]>} questions in survey
    */
   async questions() {
     const questions = await this.database.executeSql(
@@ -58,7 +56,7 @@ export class SurveyType extends DatabaseType {
   }
 
   /**
-   * @returns {Promise<import('./OptionSet').OptionSetType[]>} optionSets in questions in survey
+   * @returns {Promise<import('./OptionSet').OptionSetRecord[]>} optionSets in questions in survey
    */
   async optionSets() {
     const optionSets = await this.database.executeSql(
@@ -76,7 +74,7 @@ export class SurveyType extends DatabaseType {
   }
 
   /**
-   * @returns {Promise<import('./Option').OptionType[]>} options in optionSets in questions in survey
+   * @returns {Promise<import('./Option').OptionRecord[]>} options in optionSets in questions in survey
    */
   async options() {
     const options = await this.database.executeSql(
@@ -95,14 +93,14 @@ export class SurveyType extends DatabaseType {
   }
 
   /**
-   * @returns {Promise<import('./PermissionGroup').PermissionGroupType>} permission group for survey
+   * @returns {Promise<import('./PermissionGroup').PermissionGroupRecord>} permission group for survey
    */
   async getPermissionGroup() {
     return this.otherModels.permissionGroup.findById(this.permission_group_id);
   }
 
   /**
-   * @returns {Promise<import('./Country').CountryType[]>} countries that use this survey
+   * @returns {Promise<import('./Country').CountryRecord[]>} countries that use this survey
    */
   async getCountries() {
     return this.otherModels.country.findManyById(this.country_ids);
@@ -121,7 +119,69 @@ export class SurveyType extends DatabaseType {
 }
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
-  get DatabaseTypeClass() {
-    return SurveyType;
+  get DatabaseRecordClass() {
+    return SurveyRecord;
+  }
+
+  async createAccessPolicyQueryClause(accessPolicy) {
+    const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
+    const params = Object.entries(countryIdsByPermissionGroup).flat().flat(); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
+
+    return {
+      sql: `(${Object.entries(countryIdsByPermissionGroup)
+        .map(([_, countryIds]) => {
+          return `
+          (
+            permission_group_id = ? AND 
+            ${SqlQuery.array(countryIds, 'TEXT')} && country_ids
+          )
+        `;
+        })
+        .join(' OR ')})`,
+      parameters: params,
+    };
+  }
+
+  async getCountryIdsByPermissionGroup(accessPolicy) {
+    const permissionGroupNames = accessPolicy.getPermissionGroups();
+
+    const countries = await this.otherModels.country.find({});
+
+    const permissionGroups = await this.otherModels.permissionGroup.find({
+      name: permissionGroupNames,
+    });
+
+    const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
+
+    const permissionGroupIdByName = reduceToDictionary(permissionGroups, 'name', 'id');
+    return permissionGroupNames.reduce((result, permissionGroupName) => {
+      const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
+      const permissionGroupId = permissionGroupIdByName[permissionGroupName];
+      const countryIds = countryCodes.map(code => countryIdByCode[code]);
+      return {
+        ...result,
+        [permissionGroupId]: countryIds,
+      };
+    }, {});
+  }
+
+  /**
+   *
+   * @param {AccessPolicy} accessPolicy
+   * @param {*} dbConditions
+   * @param {*} customQueryOptions
+   * @returns
+   */
+  async findByAccessPolicy(accessPolicy, dbConditions = {}, customQueryOptions) {
+    const queryClause = await this.createAccessPolicyQueryClause(accessPolicy);
+
+    const queryConditions = {
+      [QUERY_CONJUNCTIONS.RAW]: queryClause,
+      ...dbConditions,
+    };
+
+    const surveys = await this.find(queryConditions, customQueryOptions);
+
+    return surveys;
   }
 }

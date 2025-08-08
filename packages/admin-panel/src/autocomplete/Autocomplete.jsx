@@ -1,10 +1,6 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
+import Close from '@material-ui/icons/Close';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import styled from 'styled-components';
 import MuiChip from '@material-ui/core/Chip';
@@ -14,6 +10,11 @@ import debounce from 'lodash.debounce';
 const Chip = styled(MuiChip)`
   &:first-child {
     margin-left: 6px;
+  }
+  color: ${props => props.theme.palette.text.primary};
+  .MuiChip-deleteIcon {
+    color: ${props => props.theme.palette.text.secondary};
+    height: 1rem;
   }
 `;
 
@@ -32,14 +33,18 @@ export const Autocomplete = props => {
     canCreateNewOptions,
     allowMultipleValues,
     optionLabelKey,
+    renderOption,
     muiProps,
+    error,
+    tooltip,
+    required,
   } = props;
   const [searchTerm, setSearchTerm] = React.useState('');
   const debouncedSearchUpdate = React.useCallback(
     debounce(newValue => {
       onChangeSearchTerm(newValue);
     }, 200),
-    [],
+    [onChangeSearchTerm],
   );
 
   const muiPropsForCreateNewOptions = canCreateNewOptions
@@ -75,6 +80,8 @@ export const Autocomplete = props => {
           values.map((option, index) => (
             <Chip
               color="primary"
+              deleteIcon={<Close />}
+              variant="outlined"
               label={optionLabelKey ? option[optionLabelKey] : option}
               {...getTagProps({ index })}
             />
@@ -99,6 +106,7 @@ export const Autocomplete = props => {
       options={options}
       getOptionSelected={getOptionSelected}
       getOptionLabel={getOptionLabel}
+      renderOption={renderOption}
       loading={isLoading}
       onChange={onChangeSelection}
       onInputChange={(event, newValue) => {
@@ -109,6 +117,9 @@ export const Autocomplete = props => {
       placeholder={placeholder}
       helperText={helperText}
       muiProps={extraMuiProps}
+      error={error}
+      tooltip={tooltip}
+      required={required}
     />
   );
 };
@@ -120,6 +131,7 @@ Autocomplete.propTypes = {
   options: PropTypes.array.isRequired,
   getOptionSelected: PropTypes.func.isRequired,
   getOptionLabel: PropTypes.func.isRequired,
+  renderOption: PropTypes.func,
   isLoading: PropTypes.bool,
   onChangeSelection: PropTypes.func.isRequired,
   onChangeSearchTerm: PropTypes.func,
@@ -130,6 +142,9 @@ Autocomplete.propTypes = {
   allowMultipleValues: PropTypes.bool,
   optionLabelKey: PropTypes.string,
   muiProps: PropTypes.object,
+  error: PropTypes.bool,
+  tooltip: PropTypes.string,
+  required: PropTypes.bool,
 };
 
 Autocomplete.defaultProps = {
@@ -144,4 +159,7 @@ Autocomplete.defaultProps = {
   muiProps: {},
   optionLabelKey: null,
   onChangeSearchTerm: () => {},
+  error: false,
+  tooltip: null,
+  required: false,
 };

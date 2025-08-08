@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Box } from '@material-ui/core';
@@ -11,12 +6,13 @@ import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Button } from '../../../components';
 import { UserAccountDetails } from '../../../types';
 import { successToast } from '../../../utils';
-import { CurrentUserContextType, useCurrentUser, useEditUser } from '../../../api';
+import { CurrentUserContextType, useCurrentUserContext, useEditUser } from '../../../api';
 
-type PersonalDetailsFormFields = Pick<
-  UserAccountDetails,
-  'firstName' | 'lastName' | 'employer' | 'position' | 'mobileNumber'
->;
+interface PersonalDetailsFormFields
+  extends Pick<
+    UserAccountDetails,
+    'firstName' | 'lastName' | 'employer' | 'position' | 'mobileNumber'
+  > {}
 
 /**
  * Guarantees right-alignment of button in grid. Necessary because tooltip attribute on the button
@@ -32,7 +28,7 @@ const StyledTextField = styled(TextField)`
   margin: 0; // Use gap on parent to control spacing
 `;
 
-const StyledForm = styled(Form)`
+const StyledForm = styled(Form<PersonalDetailsFormFields>)`
   width: 100%;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -60,7 +56,7 @@ const StyledFieldset = styled.fieldset`
 `;
 
 export const PersonalDetailsForm = () => {
-  const user: CurrentUserContextType = useCurrentUser();
+  const user: CurrentUserContextType = useCurrentUserContext();
 
   const formContext = useForm<PersonalDetailsFormFields>({
     defaultValues: {
@@ -107,7 +103,6 @@ export const PersonalDetailsForm = () => {
       <StyledFieldset disabled={isSubmitting || isLoading}>
         <FormInput
           autoComplete="given-name"
-          autoFocus
           id="firstName"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
@@ -173,6 +168,7 @@ export const PersonalDetailsForm = () => {
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
+            tooltipDelay={0}
             disabled={formIsNotSubmissible}
             fullWidth
           >

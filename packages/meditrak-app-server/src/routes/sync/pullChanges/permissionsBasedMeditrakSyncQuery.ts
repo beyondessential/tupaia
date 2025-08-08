@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import { SqlQuery } from '@tupaia/database';
 import { getCountriesAndPermissionsToSync } from './getCountriesAndPermissionsToSync';

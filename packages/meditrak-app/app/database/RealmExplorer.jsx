@@ -44,8 +44,8 @@ export class RealmExplorer extends React.Component {
   };
 
   setDataTypeDisplayed = type => {
-    const databaseType = type === 'GeographicalArea' ? 'Area' : type;
-    const rawData = database.objects(databaseType);
+    const databaseRecord = type === 'GeographicalArea' ? 'Area' : type;
+    const rawData = database.objects(databaseRecord);
     const data = rawData.map(row => {
       const rowData = {};
       Object.keys(row).forEach(key => {
@@ -150,6 +150,8 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
+    overflow: 'scroll',
+    maxHeight: 500,
   },
   menu: {
     padding: 20,

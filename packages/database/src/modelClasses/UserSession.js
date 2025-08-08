@@ -1,18 +1,13 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class UserSessionType extends DatabaseType {
-  static databaseType = TYPES.USER_SESSION;
+class UserSessionRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.USER_SESSION;
 }
 
 export class UserSessionModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return UserSessionType;
+  get DatabaseRecordClass() {
+    return UserSessionRecord;
   }
 }

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -139,7 +134,8 @@ class AutocompleteComponent extends PureComponent {
               data={options}
               onEndReached={this.onEndReached}
               onEndReachedThreshold={endReachedOffset}
-              keyExtractor={item => item}
+              // add an index here to make sure all options are unique
+              keyExtractor={(item, i) => `${item}-${i}`}
               ItemSeparatorComponent={() => <View style={localStyles.separator} />}
               renderItem={({ item }) => (
                 <AutocompleteOption onOptionSelected={this.onOptionPress} option={item} />

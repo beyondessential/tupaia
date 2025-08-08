@@ -1,93 +1,35 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { removeAt } from '@tupaia/utils';
 import { PSSS_ENTITY, PSSS_HIERARCHY } from '../constants';
-import { ApiConnection } from './ApiConnection';
-
-const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
-
-interface Entity {
-  id: string;
-  code: string;
-  name: string;
-  type: string;
-}
-
-interface EntityOptions {
-  field?: keyof Entity;
-  fields?: (keyof Entity)[];
-  filter?: Partial<Record<keyof Entity, string | string[]>>;
-  includeRootEntity?: boolean;
-}
-
-interface RelationOptions {
-  ancestor?: {
-    filter?: { type: string };
-    field?: keyof Entity;
-  };
-  descendant: {
-    filter: { type: string };
-    field?: keyof Entity;
-  };
-  groupBy?: 'ancestor' | 'descendant';
-}
-
-type ResponseEntity<T extends EntityOptions> = T['field'] extends string
-  ? string
-  : T['fields'] extends Array<unknown>
-  ? Pick<Entity, T['fields'][number]>
-  : Entity;
-
-const getFieldsParam = (fields?: (keyof Entity)[]) => fields && fields.join(',');
-
-const getFilterParam = (filter?: EntityOptions['filter']) =>
-  filter &&
-  Object.entries(filter)
-    .map(([key, value]) => `${key}==${value}`)
-    .join(';');
-
-const getEntityParams = (options: EntityOptions) => {
-  const { fields, filter, includeRootEntity, ...restOfOptions } = options;
-
-  return {
-    ...restOfOptions,
-    fields: getFieldsParam(fields),
-    filter: getFilterParam(filter),
-    includeRootEntity: includeRootEntity ? 'true' : undefined,
-  };
-};
-
-const getRelationParams = (options: RelationOptions) => {
-  const { ancestor = {}, descendant, ...restOfOptions } = options;
-
-  return {
-    ...restOfOptions,
-    ancestor_filter: getFilterParam(ancestor.filter),
-    ancestor_field: ancestor.field,
-    descendant_filter: getFilterParam(descendant.filter),
-    descendant_field: descendant.field,
-  };
-};
+import { TupaiaApiClient } from '@tupaia/api-client';
+import { Entity } from '@tupaia/types';
 
 /**
- * @deprecated use @tupaia/api-client
+ * Wrapper around the EntityApi
  */
-export class EntityConnection extends ApiConnection {
-  baseUrl = ENTITY_API_URL;
+export class EntityConnection {
+  private readonly entityApi: TupaiaApiClient['entity'];
+  public constructor(entityApi: TupaiaApiClient['entity']) {
+    this.entityApi = entityApi;
+  }
 
-  public fetchCountries = async () =>
-    this.fetchDescendants(PSSS_ENTITY, {
+  public async fetchCountries() {
+    return this.entityApi.getDescendantsOfEntity(PSSS_HIERARCHY, PSSS_ENTITY, {
+      fields: ['id', 'code', 'name', 'type'],
       filter: { type: 'country' },
-    });
+    }) as Promise<Pick<Entity, 'id' | 'code' | 'name' | 'type'>[]>;
+  }
 
-  public fetchCountryAndSites = async (countryCode: string) => {
-    const entities = await this.fetchDescendants(countryCode, {
-      filter: { type: 'facility' },
-      includeRootEntity: true,
-    });
+  public async fetchCountryAndSites(countryCode: string) {
+    const entities: Pick<Entity, 'id' | 'code' | 'name' | 'type'>[] =
+      await this.entityApi.getDescendantsOfEntity(
+        PSSS_HIERARCHY,
+        countryCode,
+        {
+          fields: ['id', 'code', 'name', 'type'],
+          filter: { type: 'facility' },
+        },
+        true,
+      );
 
     const countryIndex = entities.findIndex(e => e.code === countryCode);
     if (countryIndex === -1) {
@@ -97,37 +39,23 @@ export class EntityConnection extends ApiConnection {
     const sites = removeAt(entities, countryIndex);
 
     return { country, sites };
-  };
+  }
 
-  public fetchSiteCodes = async (entityCode: string) =>
-    this.fetchDescendants(entityCode, {
+  public async fetchSiteCodes(entityCode: string) {
+    return this.entityApi.getDescendantsOfEntity(PSSS_HIERARCHY, entityCode, {
       field: 'code',
       filter: { type: 'facility' },
-    });
+    }) as Promise<Entity['code'][]>;
+  }
 
-  public fetchSiteCodeToDistrictName = async (entityCode: string) =>
-    this.fetchRelations(entityCode, {
-      ancestor: { filter: { type: 'district' }, field: 'name' },
-      descendant: { filter: { type: 'facility' }, field: 'code' },
-      groupBy: 'descendant',
-    });
-
-  private fetchDescendants = async <T extends EntityOptions>(
-    entityCode: string,
-    options: T,
-  ): Promise<ResponseEntity<T>[]> => {
-    const params = getEntityParams({
-      fields: ['id', 'code', 'name', 'type'],
-      ...options,
-    });
-    return this.get(`hierarchy/${PSSS_HIERARCHY}/${entityCode}/descendants`, params);
-  };
-
-  private fetchRelations = async (
-    entityCode: string,
-    options: RelationOptions,
-  ): Promise<Record<string, string> | Record<string, string[]>> => {
-    const params = getRelationParams(options);
-    return this.get(`hierarchy/${PSSS_HIERARCHY}/${entityCode}/relationships`, params);
-  };
+  public async fetchSiteCodeToDistrictName(entityCode: string) {
+    return this.entityApi.getRelationshipsOfEntity(
+      PSSS_HIERARCHY,
+      entityCode,
+      'descendant',
+      {},
+      { filter: { type: 'district' }, field: 'name' },
+      { filter: { type: 'facility' }, field: 'code' },
+    ) as Promise<Record<string, string>>;
+  }
 }

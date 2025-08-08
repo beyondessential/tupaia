@@ -1,17 +1,13 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Project } from '@tupaia/types';
 import { get } from '../api';
 import { UserRewards } from '../../types';
-import { useCurrentUser } from '../CurrentUserContext';
+import { useCurrentUserContext } from '../CurrentUserContext';
 
 const useRewards = (projectId?: Project['id']) => {
-  return useQuery(
+  return useQuery<UserRewards>(
     ['rewards', projectId],
-    (): Promise<UserRewards> =>
+    () =>
       get('me/rewards', {
         params: {
           projectId,
@@ -24,6 +20,6 @@ const useRewards = (projectId?: Project['id']) => {
 };
 
 export const useUserRewards = () => {
-  const user = useCurrentUser();
+  const user = useCurrentUserContext();
   return useRewards(user.projectId);
 };

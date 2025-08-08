@@ -10,7 +10,7 @@
       "es5",
       "es2019",
       "dom",
-       "dom.iterable"
+      "dom.iterable"
     ],
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -19,6 +19,8 @@
   "include": [
     "src/**/*",
     "jest.config.ts",
-    "helpers/**/*"
+    "helpers/**/*",
+    "stories/**/*",
+    ".storybook"
   ]
 }

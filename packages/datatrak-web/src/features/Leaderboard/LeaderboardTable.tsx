@@ -1,26 +1,24 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
-import styled from 'styled-components';
-import { DatatrakWebLeaderboardRequest, DatatrakWebUserRequest } from '@tupaia/types';
 import {
+  TableContainer as MuiTableContainer,
   Table,
   TableBody,
   TableCell,
-  TableContainer as MuiTableContainer,
   TableFooter,
   TableHead,
   TableRow,
 } from '@material-ui/core';
+import React from 'react';
+import styled from 'styled-components';
+
+import { DatatrakWebLeaderboardRequest } from '@tupaia/types';
+
+import { CurrentUserContextType } from '../../api';
 import { UserRewards } from '../../types';
 
 const TableContainer = styled(MuiTableContainer)`
   font-variant-numeric: tabular-nums;
   height: 100%;
-  padding: 1rem 1.6rem;
+  padding: 0.7rem 1rem;
 
   table {
     height: 100%;
@@ -37,9 +35,36 @@ const TableContainer = styled(MuiTableContainer)`
     vertical-align: baseline;
   }
 
-  table th,
   table td {
-    padding: 0.5rem 1rem;
+    padding-inline: 0.5rem;
+    padding-block: 0.5rem 0.2rem;
+    font-size: 0.75rem;
+  }
+  tbody tr:last-child {
+    td {
+      padding-block-end: 0.5rem;
+    }
+  }
+  th {
+    padding-block-start: 0;
+    padding-block-end: 0.5rem;
+    padding-inline: 0.5rem;
+    font-size: 0.75rem;
+  }
+  th:first-child {
+    width: 1rem;
+  }
+  tfoot td {
+    padding-block-end: 0;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 1rem 1.6rem;
+    table th,
+    table td {
+      font-size: 0.875rem;
+      padding-inline: 1rem;
+      padding-block: 0.5rem;
+    }
   }
 `;
 
@@ -82,9 +107,7 @@ const FooterCell = styled(Cell)`
 
 interface LeaderboardTableProps {
   userRewards?: UserRewards;
-  user?: DatatrakWebUserRequest.ResBody & {
-    isLoggedIn: boolean;
-  };
+  user?: CurrentUserContextType;
   leaderboard?: DatatrakWebLeaderboardRequest.ResBody;
 }
 
@@ -120,7 +143,7 @@ export const LeaderboardTable = ({
         <TableFooter>
           <FooterRow>
             <FooterCell>&mdash;</FooterCell>
-            <FooterCell>{user?.userName}</FooterCell>
+            <FooterCell>{user?.fullName}</FooterCell>
             <FooterCell>{userRewards?.coconuts}</FooterCell>
           </FooterRow>
         </TableFooter>

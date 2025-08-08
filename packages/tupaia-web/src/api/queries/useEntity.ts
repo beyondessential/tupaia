@@ -1,9 +1,4 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router';
 import { EntityCode, ProjectCode, Entity } from '../../types';
 import { get } from '../api';
@@ -11,7 +6,11 @@ import { DEFAULT_BOUNDS, MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants
 import { useModal } from '../../utils';
 import { useUser } from './useUser';
 
-export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
+export const useEntity = (
+  projectCode?: ProjectCode,
+  entityCode?: EntityCode,
+  enabled?: boolean,
+) => {
   const { isLoggedIn } = useUser();
   const { navigateToModal, navigateToLogin } = useModal();
   const location = useLocation();
@@ -32,7 +31,7 @@ export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) =>
       return entity;
     },
     {
-      enabled: !!entityCode && !!projectCode,
+      enabled: !!entityCode && !!projectCode && (enabled === undefined || !!enabled),
       onError: (e: any) => {
         if (e.code !== 403) return;
         if (!isLoggedIn) return navigateToLogin();

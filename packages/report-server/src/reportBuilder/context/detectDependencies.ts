@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import isPlainObject from 'lodash.isplainobject';
 
 import { getUniqueEntries } from '@tupaia/utils';
@@ -17,15 +12,13 @@ import { ContextDependency } from './types';
 const detectDependenciesFromExpressions = (expressions: string[]) => {
   const parser = new TransformParser();
   const functions = expressions
-    .map(calcExpression => {
+    .flatMap(calcExpression => {
       return parser.getFunctions(calcExpression);
-    })
-    .flat();
+    });
 
   const dependencies = Object.entries(contextFunctionDependencies)
     .filter(([fnName]) => functions.includes(fnName))
-    .map(([, fnDependencies]) => fnDependencies)
-    .flat();
+    .flatMap(([, fnDependencies]) => fnDependencies);
 
   return getUniqueEntries(dependencies);
 };
@@ -33,8 +26,7 @@ const detectDependenciesFromExpressions = (expressions: string[]) => {
 const detectDependenciesFromAliasTransforms = (aliasTransforms: string[]) => {
   const dependencies = Object.entries(contextAliasDependencies)
     .filter(([fnName]) => aliasTransforms.includes(fnName))
-    .map(([, aliasDependencies]) => aliasDependencies)
-    .flat();
+    .flatMap(([, aliasDependencies]) => aliasDependencies);
 
   return getUniqueEntries(dependencies);
 };

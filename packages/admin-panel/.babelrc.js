@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 const isTest = process?.env?.NODE_ENV === 'test';
 
 module.exports = {
@@ -18,8 +13,5 @@ module.exports = {
     ],
     '@babel/preset-react',
   ],
-  plugins: [
-    '@babel/plugin-proposal-object-rest-spread',
-    ['@babel/plugin-proposal-class-properties'],
-  ],
+  plugins: [['@babel/plugin-proposal-class-properties']],
 };

@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { yup } from '@tupaia/utils';
 
 import {
@@ -78,6 +72,7 @@ describe('DashboardVisualisationExtractor', () => {
           config: {
             transform: [],
           },
+          latestDataParameters: {},
         });
       });
 
@@ -99,6 +94,7 @@ describe('DashboardVisualisationExtractor', () => {
           config: {
             customReport: 'custom',
           },
+          latestDataParameters: {},
         });
       });
     });
@@ -300,6 +296,7 @@ describe('DashboardVisualisationExtractor', () => {
           },
         },
         permissionGroup: 'Admin',
+        latestDataParameters: {},
       });
     });
 
@@ -339,6 +336,7 @@ describe('DashboardVisualisationExtractor', () => {
           },
         },
         permissionGroup: 'Admin',
+        latestDataParameters: {},
       });
     });
 
@@ -376,6 +374,7 @@ describe('DashboardVisualisationExtractor', () => {
           },
         },
         permissionGroup: 'Admin',
+        latestDataParameters: {},
       });
     });
   });
@@ -385,13 +384,13 @@ describe('DashboardVisualisationExtractor', () => {
       const extractor = new DashboardVisualisationExtractor(
         {
           code: 'viz',
-          name: 'My Viz',
           data: {
             transform: ['keyValueByDataElementName'],
           },
           presentation: {
             type: 'chart',
             chartType: 'bar',
+            name: 'My Viz',
             output: {
               type: 'bar',
             },
@@ -422,13 +421,13 @@ describe('DashboardVisualisationExtractor', () => {
       const extractor = new DashboardVisualisationExtractor(
         {
           code: 'viz',
-          name: 'My Viz',
           data: {
             transform: ['keyValueByDataElementName'],
           },
           presentation: {
             type: 'chart',
             chartType: 'bar',
+            name: 'My Viz',
             output: {
               type: 'bar',
             },
@@ -451,6 +450,7 @@ describe('DashboardVisualisationExtractor', () => {
             },
           },
           permission_group: 'Admin',
+          latest_data_parameters: {},
         },
         dashboardItem: {
           code: 'viz',

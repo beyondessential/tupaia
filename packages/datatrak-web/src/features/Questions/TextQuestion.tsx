@@ -1,15 +1,9 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { SurveyQuestionInputProps } from '../../types';
-import { TextInput } from '../../components';
-import { MOBILE_BREAKPOINT } from '../../constants';
+import { TextInput, InputHelperText } from '../../components';
+import { DESKTOP_BREAKPOINT } from '../../constants';
 import { useSurveyForm } from '..';
-import { QuestionHelperText } from './QuestionHelperText';
 
 const Wrapper = styled.div<{
   $type?: string;
@@ -25,7 +19,7 @@ const Wrapper = styled.div<{
   }
   .MuiFormControlLabel-label {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    @media (min-width: ${MOBILE_BREAKPOINT}) {
+    @media (min-width: ${DESKTOP_BREAKPOINT}) {
       font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
     }
   }
@@ -59,12 +53,12 @@ export const TextQuestion = ({
         label={label}
         name={name!}
         ref={ref}
-        onChange={onChange}
+        onChange={e => onChange(e, (e.target as HTMLInputElement).value)}
         value={value}
         required={required}
         invalid={invalid}
         textInputProps={{
-          ['aria-describedby']: `question_number_${id}`,
+          'aria-describedby': `question_number_${id}`,
           type: FIELD_TYPES[type as unknown as FIELD_TYPES],
           placeholder,
           min,
@@ -72,7 +66,7 @@ export const TextQuestion = ({
           multiline: type === 'FreeText',
           helperText: detailLabel,
           FormHelperTextProps: {
-            component: QuestionHelperText,
+            component: InputHelperText,
           },
         }}
       />

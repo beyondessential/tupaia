@@ -1,15 +1,10 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 // @ts-expect-error db-migrate has no types unfortunately
 import DBMigrate from 'db-migrate';
-import * as dotenv from 'dotenv';
 import { requireEnv } from '@tupaia/utils';
 import { getConnectionConfig } from '@tupaia/database';
+import { configureEnv } from '../src/configureEnv';
 
-dotenv.config(); // Load the environment variables into process.env
+configureEnv(); // Load the environment variables into process.env
 
 const exitWithError = (error: Error) => {
   console.error(error.message);
@@ -29,9 +24,9 @@ const migrationInstance = DBMigrate.getInstance(
       },
     },
   },
-  async (migrator: any, internals: any, originalError: Error, migrationError: Error) => {
+  async (migrator: any, _internals: any, originalError: Error, migrationError: Error) => {
     if (originalError) {
-      exitWithError(new Error(`db-migrate error: ${migrationError.message}`));
+      exitWithError(new Error(`db-migrate error: ${originalError.message}`));
     }
     if (migrationError) {
       exitWithError(new Error(`Migration error: ${migrationError.message}`));

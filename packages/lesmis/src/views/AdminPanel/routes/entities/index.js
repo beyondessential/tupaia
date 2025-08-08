@@ -1,0 +1,1 @@
+export { getEntitiesTabRoutes } from './getEntitiesTabRoutes';

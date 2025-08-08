@@ -1,17 +1,25 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-import { BESAdminEditHandler } from '../EditHandler';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { EditHandler } from '../EditHandler';
 import { uploadImage } from '../utilities';
+import { assertUserHasAccessToLandingPage } from './assertUserHasAccessToLandingPage';
 
-export class EditLandingPage extends BESAdminEditHandler {
+export class EditLandingPage extends EditHandler {
   // Fetch the url_segment and existing image paths for the landing page
   async getFields() {
     const landingPage = await this.models.landingPage.findById(this.recordId, {
       columns: ['url_segment', 'image_url', 'logo_url'],
     });
     return landingPage;
+  }
+
+  async assertUserHasAccess() {
+    const landingPageChecker = accessPolicy =>
+      assertUserHasAccessToLandingPage(this.models, accessPolicy, this.recordId);
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, landingPageChecker]));
+  }
+
+  async editRecord() {
+    await this.updateRecord();
   }
 
   // Before updating the landingPage, if the image_url and logo_url have changed, we need to upload the new images to S3 and update the image_url and logo_url fields with the new urls.

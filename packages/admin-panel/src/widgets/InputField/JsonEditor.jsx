@@ -1,48 +1,53 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
+
+import { InputLabel } from '@tupaia/ui-components';
+
 import { JsonEditor as Editor } from '../JsonEditor';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 300px;
-  margin-bottom: 20px;
+  margin-block-end: 1.25rem;
+  min-block-size: 18.75rem;
 
-  > div {
+  .jsoneditor-parent {
     display: flex;
     flex: 1;
   }
 
   .jsoneditor {
-    height: auto;
+    block-size: auto;
+    border-color: ${({ theme, $invalid }) =>
+      $invalid ? theme.palette.error.main : theme.palette.divider};
+  }
+
+  .jsoneditor:has(:focus-visible) {
+    border-color: ${props => props.theme.palette.primary.main};
+    border-width: max(0.0625rem, 1px);
+  }
+
+  .jsoneditor-parent {
+    border-radius: 0.1875rem;
+  }
+  .jsoneditor,
+  .jsoneditor-outer,
+  .ace_editor {
+    border-radius: inherit;
   }
 `;
 
-const Label = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
-  font-size: 0.9rem;
-  line-height: 1.1rem;
-`;
-
-const HelperText = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
-  font-size: 0.75rem;
-  margin-top: 3px;
-  line-height: 1.66;
-`;
-
-export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange, stringify }) => {
-  if (!value) {
-    return null;
-  }
-
+export const JsonEditor = ({
+  inputKey,
+  label,
+  value,
+  onChange,
+  stringify,
+  error,
+  required,
+  tooltip,
+}) => {
   let editorValue = value;
 
   if (typeof value === 'string') {
@@ -50,17 +55,27 @@ export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange, s
   }
 
   return (
-    <Container>
-      <Label gutterBottom>{label}</Label>
+    <Container $invalid={error}>
+      <InputLabel
+        label={label}
+        labelProps={{
+          required,
+          error,
+        }}
+        tooltip={tooltip}
+        applyWrapper
+      />
       {/* Use json editor plugin. For configuration options @see https://github.com/vankop/jsoneditor-react */}
       <Editor
         mainMenuBar={false}
         statusBar={false}
         mode="code"
-        onChange={json => onChange(inputKey, stringify ? JSON.stringify(json) : json)}
+        onChange={json => onChange(inputKey, stringify ? JSON.stringify(json ?? {}) : json)}
         value={editorValue}
+        htmlElementProps={{
+          className: 'jsoneditor-parent',
+        }}
       />
-      {secondaryLabel && <HelperText>{secondaryLabel}</HelperText>}
     </Container>
   );
 };
@@ -70,12 +85,16 @@ JsonEditor.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.array]),
   onChange: PropTypes.func.isRequired,
-  secondaryLabel: PropTypes.string,
   stringify: PropTypes.bool,
+  error: PropTypes.bool,
+  required: PropTypes.bool,
+  tooltip: PropTypes.string,
 };
 
 JsonEditor.defaultProps = {
-  secondaryLabel: null,
   value: null,
   stringify: true,
+  error: false,
+  required: false,
+  tooltip: null,
 };

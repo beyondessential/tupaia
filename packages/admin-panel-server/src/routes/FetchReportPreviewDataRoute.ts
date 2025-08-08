@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
@@ -49,7 +43,6 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
     const parameters: Record<string, string> = {};
     if (hierarchy) parameters.hierarchy = hierarchy;
     if (entityCode) parameters.organisationUnitCodes = entityCode;
-    if (startDate) parameters.startDate = startDate;
     if (startDate) parameters.startDate = startDate;
     if (endDate) parameters.endDate = endDate;
     if (permissionGroup) parameters.permissionGroup = permissionGroup;

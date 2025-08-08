@@ -1,10 +1,6 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { EMAIL_VERIFICATION_STATUS } from '@tupaia/ui-components';
 import { get } from '../api';
 import { LoginPage } from '.';

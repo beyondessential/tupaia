@@ -1,9 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { AccessPolicy } from '@tupaia/access-policy';
-import { UserType } from '@tupaia/server-boilerplate';
+import { UserRecord } from '@tupaia/server-boilerplate';
 import { MeditrakAppServerModelRegistry, RequestContext } from '../../types';
 
 declare global {
@@ -11,7 +7,7 @@ declare global {
     export interface Request {
       models: MeditrakAppServerModelRegistry;
       ctx: RequestContext;
-      user?: UserType;
+      user?: UserRecord;
       accessPolicy?: AccessPolicy;
     }
 

@@ -1,14 +1,10 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { connect } from 'react-redux';
-
+import { fetch as fetchNetInfo } from '@react-native-community/netinfo';
 import { LoginPage } from './LoginPage';
 import { changeEmailAddress, changePassword, login } from './actions';
-import { goToCreateAccount } from '../navigation/actions';
+import { goToCreateAccount, loadWebsite, navigateToScreen } from '../navigation/actions';
 import { AUTH_STATUSES } from './constants';
+import { NO_INTERNET_FORGOT_PASSWORD_SCREEN } from '../navigation';
 
 const { AUTHENTICATING, UNAUTHENTICATED, ERROR } = AUTH_STATUSES;
 
@@ -55,6 +51,14 @@ function mapDispatchToProps(dispatch) {
     onChangeEmailAddress: newEmailAddress => dispatch(changeEmailAddress(newEmailAddress)),
     onChangePassword: newPassword => dispatch(changePassword(newPassword)),
     onCreateAccount: () => dispatch(goToCreateAccount()),
+    onForgotPassword: async () => {
+      const { isConnected } = await fetchNetInfo();
+      if (isConnected) {
+        dispatch(loadWebsite('https://tupaia.org/explore/explore/General#forgot-password'));
+      } else {
+        dispatch(navigateToScreen(NO_INTERNET_FORGOT_PASSWORD_SCREEN));
+      }
+    },
   };
 }
 

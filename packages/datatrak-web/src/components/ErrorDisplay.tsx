@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Paper, Typography } from '@material-ui/core';
@@ -33,19 +28,19 @@ const Container = styled(Paper).attrs({
 `;
 
 export const ErrorDisplay = ({
-  error,
+  errorMessage,
   children,
   title,
 }: {
-  error?: Error | null;
+  errorMessage?: string | null;
   children?: ReactNode;
-  title;
+  title: ReactNode;
 }) => {
   return (
     <Wrapper>
       <Container>
         <Typography variant="h1">{title}</Typography>
-        {error && <Typography variant="body1">{error.message}</Typography>}
+        {errorMessage && <Typography variant="body1">{errorMessage}</Typography>}
         {children}
       </Container>
     </Wrapper>

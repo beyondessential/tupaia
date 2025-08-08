@@ -1,11 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { generateTestId, populateTestData } from '@tupaia/database';
+import { generateId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import { setupDummySyncQueue } from '../../../../testUtilities';
 import {
@@ -97,7 +92,7 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
     // create an survey response that should be pushed to dhis2 if the current one is deleted
     const nextMostRecentSurveyResponse = {
       ...SURVEY_RESPONSE,
-      id: generateTestId(),
+      id: generateId(),
       data_time: '2019-05-20T12:05',
     };
     await populateTestData(models, { surveyResponse: [nextMostRecentSurveyResponse] });

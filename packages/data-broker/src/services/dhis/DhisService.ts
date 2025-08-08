@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import type { DhisApi } from '@tupaia/dhis-api';
 import { getApiForDataSource, getApiFromServerName, getApisForDataSources } from './getDhisApi';
 import {
@@ -158,7 +153,7 @@ export class DhisService extends Service {
 
   private async validatePushData(
     dataSources: DataSource[],
-    dataValues: DataValue[],
+    _dataValues: DataValue[],
     dataServiceMapping: DataServiceMapping,
   ) {
     const { serverName } = await getApiForDataSource(

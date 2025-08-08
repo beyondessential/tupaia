@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { DatabaseType as BaseDatabaseType } from '@tupaia/database';
+import { DatabaseRecord as BaseDatabaseRecord } from '@tupaia/database';
 
 export interface AnalyticValue {
   readonly organisationUnit: string;
@@ -37,14 +32,14 @@ type DbValue = string | number | boolean | null | DbValue[] | { [key: string]: D
 
 export type DbRecord = Record<string, DbValue>;
 
-type DatabaseType<T extends DbRecord> = BaseDatabaseType & T;
+type DatabaseRecord<T extends DbRecord> = BaseDatabaseRecord & T;
 
 type DbConditions<T extends DbRecord> = Partial<
   Record<keyof T, number | number[] | string | string[]>
 >;
 
 interface DatabaseModel<T extends DbRecord> {
-  find: (dbConditions: DbConditions<T>) => Promise<DatabaseType<T>[]>;
+  find: (dbConditions: DbConditions<T>) => Promise<DatabaseRecord<T>[]>;
 }
 
 export type Indicator = {
@@ -63,9 +58,9 @@ type DataSourceRecord = {
   config: Record<string, DbValue>;
 };
 
-export type DataSourceType = DatabaseType<DataSourceRecord>;
+export type DataSourceType = DatabaseRecord<DataSourceRecord>;
 
-export type IndicatorType = DatabaseType<IndicatorRecord>;
+export type IndicatorType = DatabaseRecord<IndicatorRecord>;
 
 type DataSourceModel = DatabaseModel<DataSourceRecord>;
 

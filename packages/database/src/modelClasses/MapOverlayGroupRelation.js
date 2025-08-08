@@ -1,11 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
+import { JOIN_TYPES } from '../TupaiaDatabase';
 
 const MAP_OVERLAY = 'mapOverlay';
 const MAP_OVERLAY_GROUP = 'mapOverlayGroup';
@@ -14,8 +10,28 @@ const RELATION_CHILD_TYPES = {
   MAP_OVERLAY_GROUP,
 };
 
-export class MapOverlayGroupRelationType extends DatabaseType {
-  static databaseType = TYPES.MAP_OVERLAY_GROUP_RELATION;
+export class MapOverlayGroupRelationRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.MAP_OVERLAY_GROUP_RELATION;
+
+  static joins = [
+    {
+      joinType: JOIN_TYPES.LEFT,
+      joinWith: RECORDS.MAP_OVERLAY,
+      joinAs: 'child_map_overlay',
+      joinCondition: [`${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`, `child_map_overlay.id`],
+      fields: { code: 'code' },
+    },
+    {
+      joinType: JOIN_TYPES.LEFT,
+      joinWith: RECORDS.MAP_OVERLAY_GROUP,
+      joinAs: 'child_map_overlay_group',
+      joinCondition: [
+        `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
+        `child_map_overlay_group.id`,
+      ],
+      fields: { code: 'code' },
+    },
+  ];
 
   async findChildRelations() {
     return this.model.find({ map_overlay_group_id: this.child_id });
@@ -23,13 +39,17 @@ export class MapOverlayGroupRelationType extends DatabaseType {
 }
 
 export class MapOverlayGroupRelationModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return MapOverlayGroupRelationType;
+  get DatabaseRecordClass() {
+    return MapOverlayGroupRelationRecord;
   }
 
   get RelationChildTypes() {
     return RELATION_CHILD_TYPES;
   }
+
+  customColumnSelectors = {
+    child_code: () => 'COALESCE(child_map_overlay.code, child_map_overlay_group.code)',
+  };
 
   async findTopLevelMapOverlayGroupRelations() {
     const rootMapOverlayGroup = await this.otherModels.mapOverlayGroup.findRootMapOverlayGroup();
@@ -51,7 +71,7 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
 
   async findParentRelationTree(childIds) {
     return this.database.findWithParents(
-      this.databaseType,
+      this.databaseRecord,
       childIds,
       'child_id',
       'map_overlay_group_id',

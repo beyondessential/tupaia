@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
@@ -16,7 +11,7 @@ const Container = styled.div`
 
 const HeaderImage = styled.img`
   aspect-ratio: 1;
-  height: 3.5cm; // equivalent to 132px
+  height: 3.5cm;
   object-fit: contain;
 `;
 

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import PropTypes from 'prop-types';
 import React, { createContext, useContext, useState } from 'react';
 
@@ -11,15 +6,25 @@ const PreviewDataContext = createContext(null);
 export const PreviewDataProvider = ({ children }) => {
   const [fetchEnabled, setFetchEnabled] = useState(false);
   const [showData, setShowData] = useState(false);
+  const [jsonToggleEnabled, setJsonToggleEnabled] = useState(false);
 
   return (
-    <PreviewDataContext.Provider value={{ fetchEnabled, setFetchEnabled, showData, setShowData }}>
+    <PreviewDataContext.Provider
+      value={{
+        fetchEnabled,
+        setFetchEnabled,
+        showData,
+        setShowData,
+        jsonToggleEnabled,
+        setJsonToggleEnabled,
+      }}
+    >
       {children}
     </PreviewDataContext.Provider>
   );
 };
 
-export const usePreviewData = () => useContext(PreviewDataContext);
+export const usePreviewDataContext = () => useContext(PreviewDataContext);
 
 PreviewDataProvider.propTypes = {
   children: PropTypes.node.isRequired,

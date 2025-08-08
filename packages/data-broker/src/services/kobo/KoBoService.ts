@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import type { KoBoApi } from '@tupaia/kobo-api';
 import { DataBrokerModelRegistry, Event, SyncGroupResults } from '../../types';
 import { DataServiceMapping } from '../DataServiceMapping';

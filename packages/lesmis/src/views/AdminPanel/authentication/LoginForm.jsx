@@ -1,17 +1,16 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-import React from 'react';
-import { TextField, Button, Checkbox } from '@tupaia/ui-components';
-import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
-import { getEmailAddress, getErrorMessage, getIsLoading, getRememberMe } from './selectors';
-import { changeEmailAddress, login, changeRememberMe } from './actions';
+import styled from 'styled-components';
+
+import { Button, Checkbox } from '@tupaia/ui-components';
+
+import { TextField } from '../../../components/TextField';
 import { I18n, useI18n } from '../../../utils';
+import { changeEmailAddress, changeRememberMe, login } from './actions';
+import { getEmailAddress, getErrorMessage, getIsLoading, getRememberMe } from './selectors';
 
 const ErrorMessage = styled.p`
   color: ${props => props.theme.palette.error.main};
@@ -19,16 +18,15 @@ const ErrorMessage = styled.p`
 
 const Heading = styled(Typography)`
   font-size: 1.125rem;
-  line-height: 1.3rem;
+  line-height: 1.15;
   font-weight: 400;
   color: ${props => props.theme.palette.text.primary};
   text-align: center;
-  margin-bottom: 2rem;
+  margin-block-end: 2rem;
 `;
 
 const StyledButton = styled(Button)`
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-block: 1rem;
 `;
 
 const LoginFormComponent = ({

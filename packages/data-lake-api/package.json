@@ -8,11 +8,11 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/data-lake-api"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && yarn run package:build:ts",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "setup-test": "yarn setup-test-data-lake",
@@ -26,16 +26,15 @@
     "@tupaia/database": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "db-migrate": "^0.11.5",
-    "db-migrate-pg": "^1.2.2",
-    "deep-equal-in-any-order": "^1.0.27",
-    "dotenv": "^8.2.0",
-    "knex": "0.14.6",
+    "knex": "^3.1.0",
     "lodash.groupby": "^4.6.0",
     "moment": "^2.24.0",
     "pg": "8.5.1"
   },
   "devDependencies": {
-    "jest": "^27.0.6"
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "jest-extended": "^0.11.5",
+    "rimraf": "^6.0.1"
   }
 }

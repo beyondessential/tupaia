@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebEntitiesRequest, Entity } from '@tupaia/types';
@@ -41,7 +36,7 @@ const FILTER_PARSERS = {
     comparisonValue: parseInt(filterVal),
   }),
 };
-const parseFilter = (filter: Record<string, any>) =>
+const parseFilter = (filter: Record<string, any>): Record<string, any> =>
   Object.entries(filter).reduce((newFilter, [key, value]) => {
     const parser = FILTER_PARSERS[key as keyof typeof FILTER_PARSERS];
     return { ...newFilter, [key]: parser ? parser(value) : value };
@@ -49,28 +44,25 @@ const parseFilter = (filter: Record<string, any>) =>
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
-    const { params, query, ctx, models } = this.req;
+    const { params, query, ctx, models, accessPolicy } = this.req;
     const { rootEntityCode, projectCode } = params;
     const { filter = DEFAULT_FILTER, fields = DEFAULT_FIELDS } = query;
-    const formattedFilter = parseFilter(filter);
+    const { type, ...restOfFilter } = parseFilter(filter);
 
-    const project = (
-      await ctx.services.central.fetchResources('projects', {
-        filter: { code: projectCode },
-        columns: ['config'],
-      })
-    )[0];
-    const { config } = project;
-
-    const { typesExcludedFromWebFrontend } = models.entity;
+    const frontendExcludedFilter = await generateFrontendExcludedFilter(
+      models,
+      accessPolicy,
+      projectCode,
+      type,
+    );
 
     const flatEntities = await ctx.services.entity.getDescendantsOfEntity(
       projectCode,
       rootEntityCode,
       {
         filter: {
-          ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
-          ...formattedFilter,
+          ...restOfFilter,
+          ...frontendExcludedFilter, // this needs to be after the filter so that if there is a type filter it will be overwritten by the frontendExcludedFilter so the user can't see the types they shouldn't
         },
         fields,
       },

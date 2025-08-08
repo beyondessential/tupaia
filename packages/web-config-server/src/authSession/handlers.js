@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import { setSession } from './authSession';
 import { TUPAIA_CONFIG_SERVER_DEVICE_NAME } from './constants';
 
@@ -43,16 +39,6 @@ const authenticateUsingMethod = async (req, res, authenticationMethod) => {
   }
 };
 
-export const login = async (req, res) => {
-  await authenticateUsingMethod(req, res, 'authenticatePassword');
-};
-
 export const oneTimeLogin = async (req, res) => {
   await authenticateUsingMethod(req, res, 'authenticateOneTimeLogin');
-};
-
-export const logout = (req, res) => {
-  if (req.session && req.session.userJson && req.session.userJson.userName) req.session.reset();
-  if (req.lastuser && req.lastuser.userName) req.lastuser.reset();
-  res.send({ loggedout: true });
 };

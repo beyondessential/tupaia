@@ -1,18 +1,13 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class SurveyGroupType extends DatabaseType {
-  static databaseType = TYPES.SURVEY_GROUP;
+export class SurveyGroupRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.SURVEY_GROUP;
 }
 
 export class SurveyGroupModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return SurveyGroupType;
+  get DatabaseRecordClass() {
+    return SurveyGroupRecord;
   }
 }

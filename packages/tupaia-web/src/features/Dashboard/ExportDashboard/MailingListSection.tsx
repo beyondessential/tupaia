@@ -1,17 +1,13 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import BaseErrorIcon from '@material-ui/icons/ErrorOutline';
 import BaseSuccessIcon from '@material-ui/icons/CheckCircle';
+import { TupaiaWebEmailDashboardRequest } from '@tupaia/types';
 import { Button, SpinningLoader as BaseSpinningLoader } from '@tupaia/ui-components';
 import { useEmailDashboard } from '../../../api/mutations';
 import { ExportSettingLabel } from '../../ExportSettings';
-import { useDashboard, useDashboardMailingList } from '../utils';
+import { useDashboardContext, useDashboardMailingList } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 
 const Wrapper = styled.section`
@@ -76,11 +72,10 @@ const SpinningLoader = styled(BaseSpinningLoader)`
 
 export const MailingListSection = ({
   selectedDashboardItems,
-}: {
-  selectedDashboardItems: string[];
-}) => {
+  settings,
+}: Pick<TupaiaWebEmailDashboardRequest.ReqBody, 'selectedDashboardItems' | 'settings'>) => {
   const { projectCode, entityCode } = useParams();
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
   const mailingList = useDashboardMailingList();
   const showMailingList = mailingList && mailingList.isAdmin;
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
@@ -108,6 +103,7 @@ export const MailingListSection = ({
       entityCode,
       dashboardCode: activeDashboard?.code,
       selectedDashboardItems,
+      settings,
     });
 
   return (

@@ -1,15 +1,29 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
+import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
-import { TYPES } from '../types';
+import { RECORDS } from '../records';
 
-export class ProjectType extends DatabaseType {
-  static databaseType = TYPES.PROJECT;
+const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
+const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
+export class ProjectRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.PROJECT;
+
+  /**
+   * The countries which apply to this project.
+   */
+  async countries() {
+    const entityRelations = await this.otherModels.entityRelation.find({
+      parent_id: this.entity_id,
+    });
+    return Promise.all(
+      entityRelations.map(async entityRelation =>
+        this.otherModels.entity.findOne({
+          id: entityRelation.child_id,
+          type: 'country',
+        }),
+      ),
+    );
+  }
 
   async permissionGroups() {
     return this.otherModels.permissionGroup.find({ name: this.permission_groups });
@@ -18,11 +32,34 @@ export class ProjectType extends DatabaseType {
   async entity() {
     return this.otherModels.entity.findById(this.entity_id);
   }
+
+  async hasAccess(accessPolicy) {
+    if (accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP)) return true;
+    const entity = await this.entity();
+    const projectChildren = await entity.getChildrenViaHierarchy(this.entity_hierarchy_id);
+
+    return projectChildren.some(child =>
+      this.permission_groups.some(permissionGroup =>
+        accessPolicy.allows(child.country_code, permissionGroup),
+      ),
+    );
+  }
+
+  async hasAdminAccess(accessPolicy) {
+    if (accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP)) return true;
+    if (!(await this.hasAccess(accessPolicy))) return false;
+    const entity = await this.entity();
+    const projectChildren = await entity.getChildrenViaHierarchy(this.entity_hierarchy_id);
+    return accessPolicy.allowsSome(
+      projectChildren.map(c => c.country_code),
+      TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+    );
+  }
 }
 
 export class ProjectModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return ProjectType;
+  get DatabaseRecordClass() {
+    return ProjectRecord;
   }
 
   async getAllProjectDetails() {

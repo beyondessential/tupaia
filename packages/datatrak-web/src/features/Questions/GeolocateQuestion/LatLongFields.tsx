@@ -1,19 +1,12 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { TextInput } from '../../../components';
 
 const Wrapper = styled.div`
-  display: flex;
-  .MuiFormControlLabel-root {
-    width: 6.3rem;
-    &:first-child {
-      margin-right: 1.125rem;
-    }
-  }
+  display: grid;
+  grid-template-columns: repeat(2, 7.5em);
+  grid-template-rows: repeat(2, auto);
+  column-gap: 1.125rem;
 `;
 interface LatLongFieldsProps {
   setGeolocation: any;
@@ -33,7 +26,7 @@ export const LatLongFields = ({
   const handleChange = (e: ChangeEvent<{}>, field: string) => {
     setGeolocation({
       ...geolocation,
-      [field]: parseFloat((e.target as HTMLInputElement).value),
+      [field]: Number.parseFloat((e.target as HTMLInputElement).value),
       accuracy: 'N/A',
     });
   };
@@ -63,7 +56,7 @@ export const LatLongFields = ({
         label="Longitude"
         onChange={(e: ChangeEvent<{}>) => handleChange(e, 'longitude')}
         textInputProps={{
-          placeholder: 'e.g. -122.4',
+          placeholder: 'e.g. −122.4', // True minus sign U+2212
           type: 'number',
           inputProps: {
             min: -180,

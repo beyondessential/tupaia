@@ -1,14 +1,10 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { SupersetApi } from '@tupaia/superset-api';
 import { DataBrokerModelRegistry, SupersetInstance } from '../../types';
 
 const instances: Record<string, SupersetApi> = {};
 
 export const getSupersetApiInstance = async (
+  // @ts-ignore
   models: DataBrokerModelRegistry,
   supersetInstance: SupersetInstance,
 ) => {

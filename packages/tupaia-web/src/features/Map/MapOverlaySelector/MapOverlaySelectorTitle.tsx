@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -70,7 +66,7 @@ export const MapOverlaySelectorTitle = () => {
     projectCode,
     entityCode,
   );
-  const { isLoading: isLoadingOverlayData, error, refetch } = useMapOverlayMapData();
+  const { isInitialLoading: isLoadingOverlayData, error, refetch } = useMapOverlayMapData();
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const isLoading =

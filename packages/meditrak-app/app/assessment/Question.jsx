@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { connect } from 'react-redux';
 
 import { getQuestionState } from './selectors';
@@ -29,6 +24,7 @@ import {
   ArithmeticQuestion,
   ConditionQuestion,
   CodeGeneratorQuestion,
+  UserQuestion,
 } from './specificQuestions';
 
 const QUESTION_TYPES = {
@@ -54,6 +50,7 @@ const QUESTION_TYPES = {
   Arithmetic: ArithmeticQuestion,
   Condition: ConditionQuestion,
   File: FileQuestion,
+  User: UserQuestion,
 };
 
 const TYPES_CONTROLLING_QUESTION_TEXT = ['Instruction', 'Checkbox'];

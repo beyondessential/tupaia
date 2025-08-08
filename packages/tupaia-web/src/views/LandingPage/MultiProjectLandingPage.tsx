@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -15,6 +11,7 @@ import {
   ProjectAllowedLink,
   ProjectPendingLink,
 } from '../../layout';
+
 const ProjectsWrapper = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.breakpoints.values.lg}px;
@@ -82,9 +79,10 @@ export function MultiProjectLandingPage({
             projects={projects}
             actions={{
               [PROJECT_ACCESS_TYPES.ALLOWED]: ({
-                project: { code, homeEntityCode, dashboardGroupName },
+                project: { id, code, homeEntityCode, dashboardGroupName },
               }) => (
                 <ProjectAllowedLink
+                  projectId={id}
                   url={`/${code}/${homeEntityCode}${
                     dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
                   }`}

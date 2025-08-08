@@ -7,13 +7,18 @@ export class JsonFieldValidator extends BaseValidator {
 
   /**
    * @param {number} rowIndex
+   * @param {function} constructError
    */
-  async validate(rowIndex) {
+  async validate(rowIndex, constructError) {
     const config = this.getConfig(rowIndex);
 
     const fieldValidators = this.getFieldValidators(rowIndex);
     const otherFieldValidators = this.getOtherFieldValidators();
-    await new ObjectValidator(fieldValidators, otherFieldValidators).validate(config);
+
+    await new ObjectValidator(fieldValidators, otherFieldValidators).validate(
+      config,
+      constructError,
+    );
 
     return true;
   }

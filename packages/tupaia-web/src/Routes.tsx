@@ -1,20 +1,27 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
-import { LandingPage, PDFExport, ProjectPage, Unsubscribe } from './views';
-import { Dashboard } from './features';
-import { MODAL_ROUTES, DEFAULT_URL } from './constants';
 import { useUser } from './api/queries';
-import { MainLayout } from './layout';
 import { LoadingScreen } from './components';
+import { DEFAULT_URL, MAP_OVERLAY_EXPORT_ROUTE, MODAL_ROUTES, ROUTE_STRUCTURE } from './constants';
+import { Dashboard } from './features';
+import { MainLayout } from './layout';
 import { gaEvent, useEntityLink } from './utils';
+import {
+  DashboardPDFExport,
+  LandingPage,
+  MapOverlayPDFExport,
+  ProjectPage,
+  Unsubscribe,
+} from './views';
 
 const HomeRedirect = () => {
-  const { isLoggedIn } = useUser();
+  const { isLoggedIn, data } = useUser();
   gaEvent('Navigate', 'Go Home');
+
+  if (data?.project) {
+    const { code, homeEntityCode, dashboardGroupName } = data.project;
+    return <Navigate to={`/${code}/${homeEntityCode}/${dashboardGroupName}`} replace />;
+  }
 
   return (
     <Navigate
@@ -28,8 +35,9 @@ const HomeRedirect = () => {
  * Redirect to the dashboardGroupName of the project if a dashboard name is not provided
  */
 const ProjectPageDashboardRedirect = () => {
-  const url = useEntityLink();
-  return <Navigate to={url} replace />;
+  const to = useEntityLink();
+  if (to === undefined) return null;
+  return <Navigate to={to} replace />;
 };
 
 const UserPageRedirect = ({ modal }: { modal: MODAL_ROUTES }) => {
@@ -63,7 +71,11 @@ export const Routes = () => {
 
   return (
     <RouterRoutes>
-      <Route path="/:projectCode/:entityCode/:dashboardName/pdf-export" element={<PDFExport />} />
+      <Route
+        path="/:projectCode/:entityCode/:dashboardName/dashboard-pdf-export"
+        element={<DashboardPDFExport />}
+      />
+      <Route path={MAP_OVERLAY_EXPORT_ROUTE} element={<MapOverlayPDFExport />} />
       <Route path="/unsubscribe" element={<Unsubscribe />} />
       <Route element={<MainLayout />}>
         <Route path="/:landingPageUrlSegment" element={<LandingPage />} />
@@ -82,7 +94,7 @@ export const Routes = () => {
           <Route path="/:projectCode/:entityCode" element={<ProjectPageDashboardRedirect />} />
 
           {/* The Dashboard has to be rendered below the Map, otherwise the map will re-mount on route changes */}
-          <Route path="/:projectCode/:entityCode/:dashboardName" element={<Dashboard />} />
+          <Route path={ROUTE_STRUCTURE} element={<Dashboard />} />
         </Route>
       </Route>
     </RouterRoutes>

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { LatLngLiteral } from 'leaflet';
@@ -60,8 +56,8 @@ const Wrapper = styled.div`
   }
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-top: 1rem;
-    height: calc(100vh - ${PAGE_PADDING}px);
+    margin-block-start: 1rem;
+    block-size: calc(100dvb - ${PAGE_PADDING}px);
   }
 `;
 
@@ -76,11 +72,11 @@ interface MapProps {
 export const Map = ({ lat, lng, setCoordinates, tileSet, onChangeTileSet }: MapProps) => {
   const coordinatesInvalid = [lat, lng].some(coordinate => !coordinate && coordinate !== 0);
 
-  // round coordinates to 4 decimal places before setting them - any less and the coordinates are not very accurate
   const onUpdateCoordinates = ({ lat, lng }: LatLngLiteral) => {
+    // Round, preserving approx. 1.11 metres’ precision
     setCoordinates({
-      lat: parseFloat(lat.toFixed(4)),
-      lng: parseFloat(lng.toFixed(4)),
+      lat: Number.parseFloat(lat.toFixed(5)),
+      lng: Number.parseFloat(lng.toFixed(5)),
     });
   };
   return (

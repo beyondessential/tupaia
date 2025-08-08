@@ -1,12 +1,11 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import path from 'path';
 import xlsx from 'xlsx';
 import { respond, UploadError } from '@tupaia/utils';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
+import {
+  assertAdminPanelAccess,
+  assertAnyPermissions,
+  assertBESAdminAccess,
+} from '../../../permissions';
 import { createDataElements } from './createDataElements';
 
 const extractDataElementFromSheets = filePath => {
@@ -32,7 +31,7 @@ export async function importDataElements(req, res) {
     throw new UploadError(error);
   }
 
-  await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess]));
+  await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess, assertAdminPanelAccess]));
 
   await models.wrapInTransaction(async transactingModels => {
     await createDataElements(transactingModels, dataElements);

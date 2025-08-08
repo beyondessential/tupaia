@@ -32,7 +32,7 @@ Once this process is complete, you can check the analytics table is present in y
 
 ### Uninstallation
 
-Removing the analytics table may sometimes be necessary when creating a test database dump, or making configuration changes. Run:
+Removing the analytics table may sometimes be necessary. Run:
 
 `yarn workspace @tupaia/data-api drop-analytics-table`
 

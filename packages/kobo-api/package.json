@@ -8,14 +8,14 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/kobo-api"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "npm run --prefix ../../ package:build:js",
-    "build:types": "npm run --prefix ../../ package:build:types",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && run-p \"build:* {@}\" --",
+    "build:src": "yarn run package:build:js",
+    "build:types": "yarn run package:build:types",
+    "build-dev": "yarn run build",
     "test": "yarn package:test",
     "test:coverage": "yarn test --coverage"
   },
@@ -23,6 +23,8 @@
     "@tupaia/utils": "workspace:*"
   },
   "devDependencies": {
-    "npm-run-all": "^4.1.5"
+    "@babel/eslint-parser": "^7.27.5",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^6.0.1"
   }
 }

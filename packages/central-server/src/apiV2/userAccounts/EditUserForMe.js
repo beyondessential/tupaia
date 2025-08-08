@@ -1,8 +1,4 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
+import { allowNoPermissions } from '../../permissions';
 import { resourceToRecordType } from '../../utilities';
 import { EditUserAccounts } from './EditUserAccounts';
 
@@ -18,6 +14,6 @@ export class EditUserForMe extends EditUserAccounts {
   // no assertion needed as "/me" endpoints are self enforcing - the user returned will be that
   // associated with the auth header
   async assertPermissions() {
-    return super.assertPermissions(() => true);
+    return super.assertPermissions(allowNoPermissions);
   }
 }

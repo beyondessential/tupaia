@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import assert from 'assert';
 
 import { AccessPolicy } from '@tupaia/access-policy';
@@ -20,27 +15,23 @@ jest.mock('@tupaia/database', () => ({
   TupaiaDatabase: jest.fn().mockImplementation(() => {}),
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
   createModelsStub: jest.requireActual('@tupaia/database').createModelsStub, // don't mock needed testUtility
-  TYPES: jest.requireActual('@tupaia/database').TYPES, // don't mock needed type
-}));
-
-jest.mock('@tupaia/server-boilerplate', () => ({
-  ApiConnection: jest.fn().mockImplementation(() => {}),
+  RECORDS: jest.requireActual('@tupaia/database').RECORDS, // don't mock needed type
 }));
 
 jest.mock('../../DataBroker/fetchDataSources', () => ({
-  fetchDataElements: async (models: DataBrokerModelRegistry, codes: string[]) => {
+  fetchDataElements: async (_models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);
     const results = Object.values(DATA_ELEMENTS).filter(({ code }) => codes.includes(code));
     assert(results.length > 0);
     return results;
   },
-  fetchDataGroups: async (models: DataBrokerModelRegistry, codes: string[]) => {
+  fetchDataGroups: async (_models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);
     const results = Object.values(DATA_GROUPS).filter(({ code }) => codes.includes(code));
     assert(results.length > 0);
     return results;
   },
-  fetchSyncGroups: async (models: DataBrokerModelRegistry, codes: string[]) => {
+  fetchSyncGroups: async (_models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);
     const results = Object.values(SYNC_GROUPS).filter(({ code }) => codes.includes(code));
     assert(results.length > 0);

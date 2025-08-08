@@ -1,14 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { generateId } from '@tupaia/database';
 import { convertPeriodStringToDateRange, stripTimezoneFromDate } from '@tupaia/utils';
 import { Entity, Survey } from '@tupaia/types';
-import { ApiConnection } from './ApiConnection';
-
-const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
+import { TupaiaApiClient } from '@tupaia/api-client';
 
 type SurveyResponseObject = {
   'entity.code': string;
@@ -23,10 +16,16 @@ type Answer = {
 };
 
 /**
- * @deprecated use @tupaia/api-client
+ * Wrapper around CentralApi
  */
-export class CentralConnection extends ApiConnection {
-  public baseUrl = CENTRAL_API_URL;
+export class CentralConnection {
+  private readonly centralApi: TupaiaApiClient['central'];
+  private readonly userEmail: string;
+
+  public constructor(centralApi: TupaiaApiClient['central'], userEmail: string) {
+    this.centralApi = centralApi;
+    this.userEmail = userEmail;
+  }
 
   public async updateOrCreateSurveyResponse(
     surveyCode: string,
@@ -50,11 +49,11 @@ export class CentralConnection extends ApiConnection {
     pageSize?: string | undefined,
   ) {
     const [startDate, endDate] = convertPeriodStringToDateRange(period);
-    return (await this.get(`surveyResponses/`, {
+    return this.centralApi.fetchResources(`surveyResponses`, {
       page: '0',
       pageSize,
-      columns: `["entity.code","survey.code","data_time","id"]`,
-      filter: JSON.stringify({
+      columns: ['entity.code', 'survey.code', 'data_time', 'id'],
+      filter: {
         'survey.code': { comparisonValue: surveyCode },
         'entity.code': { comparisonValue: orgUnitCode },
         data_time: {
@@ -62,9 +61,9 @@ export class CentralConnection extends ApiConnection {
           comparisonValue: [startDate, endDate],
           castAs: 'date',
         },
-      }),
-      sort: '["data_time DESC"]',
-    })) as SurveyResponseObject[];
+      },
+      sort: ['data_time DESC'],
+    }) as Promise<SurveyResponseObject[]>;
   }
 
   public async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
@@ -73,27 +72,27 @@ export class CentralConnection extends ApiConnection {
   }
 
   public async findSurveyResponseById(surveyResponseId: string) {
-    return this.get(`surveyResponses/${surveyResponseId}`, {
-      columns: `["entity.code","survey.code","data_time","id"]`,
+    return this.centralApi.fetchResources(`surveyResponses/${surveyResponseId}`, {
+      columns: ['entity.code', 'survey.code', 'data_time', 'id'],
     });
   }
 
   private async findSurvey(surveyCode: string): Promise<Pick<Survey, 'code' | 'id'> | undefined> {
-    const surveys = await this.get(`surveys`, {
-      filter: JSON.stringify({
+    const surveys = await this.centralApi.fetchResources(`surveys`, {
+      filter: {
         code: { comparisonValue: surveyCode },
-      }),
-      columns: `["code","id"]`,
+      },
+      columns: ['code', 'id'],
     });
     return surveys.length > 0 ? surveys[0] : undefined;
   }
 
   private async findEntity(entityCode: string): Promise<Pick<Entity, 'code' | 'id'> | undefined> {
-    const entities = await this.get(`entities`, {
-      filter: JSON.stringify({
+    const entities = await this.centralApi.fetchResources(`entities`, {
+      filter: {
         code: { comparisonValue: entityCode },
-      }),
-      columns: `["code","id"]`,
+      },
+      columns: ['code', 'id'],
     });
     return entities.length > 0 ? entities[0] : undefined;
   }
@@ -123,7 +122,7 @@ export class CentralConnection extends ApiConnection {
     const newAnswers = Object.fromEntries(answers.map(({ code, value }) => [code, value]));
     const currentDate = new Date().toISOString();
 
-    return this.post(
+    return this.centralApi.createResource(
       `surveyResponse/${surveyResponse.id}/resubmit`,
       {
         waitForAnalyticsRebuild: 'true',
@@ -151,7 +150,7 @@ export class CentralConnection extends ApiConnection {
 
     const date = new Date().toISOString();
     const surveyResponseId = generateId();
-    const response = await this.post(
+    const response = await this.centralApi.createResource(
       `surveyResponse`,
       {
         waitForAnalyticsRebuild: 'true',
@@ -163,7 +162,7 @@ export class CentralConnection extends ApiConnection {
           survey_id: survey?.id,
           entity_code: organisationUnitCode,
           entity_id: entity?.id,
-          user_email: this.authHandler.email,
+          user_email: this.userEmail,
           start_time: date,
           end_time: date,
           timestamp: date,
@@ -176,6 +175,8 @@ export class CentralConnection extends ApiConnection {
   }
 
   public async deleteSurveyResponse(surveyResponseId: string) {
-    return this.delete(`surveyResponses/${surveyResponseId}`, { waitForAnalyticsRebuild: 'true' });
+    return this.centralApi.deleteResource(`surveyResponses/${surveyResponseId}`, {
+      waitForAnalyticsRebuild: 'true',
+    });
   }
 }

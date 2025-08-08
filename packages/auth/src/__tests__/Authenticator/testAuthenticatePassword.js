@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { Authenticator } from '../../Authenticator';
 import { models, AccessPolicyBuilderStub, getPolicyForUserStub } from './Authenticator.stubs';
 import {
@@ -165,6 +160,7 @@ export const testAuthenticatePassword = () => {
               user_id: verifiedUser.id,
               app_version: meditrakDeviceDetails.appVersion,
               platform: meditrakDeviceDetails.platform,
+              last_login: new Date(),
             },
           );
 

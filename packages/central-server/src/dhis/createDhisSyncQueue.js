@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { ExternalApiSyncQueue } from '../externalApiSync/ExternalApiSyncQueue';
 import { DhisChangeValidator } from './DhisChangeValidator';
 import { DhisChangeDetailGenerator } from './DhisChangeDetailGenerator';
@@ -13,9 +8,9 @@ const SYNC_QUEUE_KEY = 'dhisSyncQueue';
 export function createDhisSyncQueue(models) {
   // Syncs changes to DHIS2 aggregation servers
   const subscriptions = [
-    models.surveyResponse.databaseType,
-    models.answer.databaseType,
-    models.entity.databaseType,
+    models.surveyResponse.databaseRecord,
+    models.answer.databaseRecord,
+    models.entity.databaseRecord,
   ];
   const validator = new DhisChangeValidator(models);
   const detailGenerator = new DhisChangeDetailGenerator(models);

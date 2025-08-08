@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
+import { JOIN_TYPES, QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
 import { assertSurveyResponsePermissions } from '../surveyResponses';
@@ -51,16 +46,16 @@ export const createAnswerDBFilter = async (accessPolicy, models, criteria, optio
   dbOptions.multiJoin = mergeMultiJoin(
     [
       {
-        joinWith: TYPES.SURVEY_RESPONSE,
-        joinCondition: [`${TYPES.SURVEY_RESPONSE}.id`, `${TYPES.ANSWER}.survey_response_id`],
+        joinWith: RECORDS.SURVEY_RESPONSE,
+        joinCondition: [`${RECORDS.SURVEY_RESPONSE}.id`, `${RECORDS.ANSWER}.survey_response_id`],
       },
       {
-        joinWith: TYPES.SURVEY,
-        joinCondition: [`${TYPES.SURVEY}.id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
+        joinWith: RECORDS.SURVEY,
+        joinCondition: [`${RECORDS.SURVEY}.id`, `${RECORDS.SURVEY_RESPONSE}.survey_id`],
       },
       {
-        joinWith: TYPES.ENTITY,
-        joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.SURVEY_RESPONSE}.entity_id`],
+        joinWith: RECORDS.ENTITY,
+        joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.SURVEY_RESPONSE}.entity_id`],
       },
     ],
     dbOptions.multiJoin,
@@ -99,19 +94,32 @@ export const createAnswerViaSurveyResponseDBFilter = async (
   dbOptions.multiJoin = mergeMultiJoin(
     [
       {
-        joinWith: TYPES.SURVEY_RESPONSE,
-        joinCondition: [`${TYPES.SURVEY_RESPONSE}.id`, `${TYPES.ANSWER}.survey_response_id`],
+        joinWith: RECORDS.SURVEY_RESPONSE,
+        joinCondition: [`${RECORDS.SURVEY_RESPONSE}.id`, `${RECORDS.ANSWER}.survey_response_id`],
       },
       {
-        joinWith: TYPES.SURVEY_SCREEN,
-        joinCondition: [`${TYPES.SURVEY_SCREEN}.survey_id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
+        joinWith: RECORDS.ENTITY,
+        joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.ANSWER}.text`],
+        joinType: JOIN_TYPES.LEFT,
       },
       {
-        joinWith: TYPES.SURVEY_SCREEN_COMPONENT,
-        joinConditions: [
-          [`${TYPES.ANSWER}.question_id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.question_id`],
-          [`${TYPES.SURVEY_SCREEN}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.screen_id`],
+        joinWith: RECORDS.SURVEY_SCREEN,
+        joinCondition: [
+          `${RECORDS.SURVEY_SCREEN}.survey_id`,
+          `${RECORDS.SURVEY_RESPONSE}.survey_id`,
         ],
+      },
+      {
+        joinWith: RECORDS.SURVEY_SCREEN_COMPONENT,
+        joinConditions: [
+          [`${RECORDS.ANSWER}.question_id`, `${RECORDS.SURVEY_SCREEN_COMPONENT}.question_id`],
+          [`${RECORDS.SURVEY_SCREEN}.id`, `${RECORDS.SURVEY_SCREEN_COMPONENT}.screen_id`],
+        ],
+      },
+      {
+        joinWith: RECORDS.USER_ACCOUNT,
+        joinCondition: [`${RECORDS.USER_ACCOUNT}.id`, `${RECORDS.ANSWER}.text`],
+        joinType: JOIN_TYPES.LEFT,
       },
     ],
     dbOptions.multiJoin,

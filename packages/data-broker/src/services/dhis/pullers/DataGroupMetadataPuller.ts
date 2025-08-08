@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { DhisApi } from '@tupaia/dhis-api';
 import { DataGroupModel } from '../../../types';
 import { DhisTranslator } from '../translators';
@@ -15,6 +10,7 @@ export type PullDataGroupsOptions = BasePullMetadataOptions & {
 
 export class DataGroupMetadataPuller {
   private readonly dataSourceModel: DataGroupModel;
+  // @ts-ignore
   private readonly translator: DhisTranslator;
 
   public constructor(dataGroupModel: DataGroupModel, translator: DhisTranslator) {
@@ -29,9 +25,8 @@ export class DataGroupMetadataPuller {
     const { includeOptions } = options;
     const [dataSource] = dataSources;
     const { code: dataGroupCode } = dataSource;
-    const dataElementDataSources = await this.dataSourceModel.getDataElementsInDataGroup(
-      dataGroupCode,
-    );
+    const dataElementDataSources =
+      await this.dataSourceModel.getDataElementsInDataGroup(dataGroupCode);
 
     const dataElementCodes = dataElementDataSources.map(({ code }) => code);
 

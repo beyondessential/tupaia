@@ -1,10 +1,5 @@
 import { LATEST_SERVER_SYNC_TIMESTAMP } from '../settings';
 
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 const DATABASE_SYNC_MIGRATION_VERSION = 'DATABASE_SYNC_MIGRATION_VERSION';
 
 const migrations = {
@@ -46,13 +41,26 @@ const migrations = {
   9: async (synchroniser, setProgressMessage) => {
     await resyncRecordTypes(synchroniser, setProgressMessage, ['survey_screen_component']);
   },
+  // Resync all users so that the new user entity permission structure comes through, and the permission grousp so that the user question can correctly filter by permission group: version 1.14.144
+  10: async (synchroniser, setProgressMessage) => {
+    await resyncRecordTypes(synchroniser, setProgressMessage, [
+      'user_account',
+      'user_entity_permission',
+      'permission_group',
+    ]);
+  },
 };
 
 export const getSyncMigrations = async database => {
   const currentMigrationVersion = (await database.getSetting(DATABASE_SYNC_MIGRATION_VERSION)) || 0;
   const availableMigrationVersions = Object.keys(migrations)
-    .sort()
-    .filter(version => version > currentMigrationVersion);
+    .map(version => parseInt(version, 10))
+    .sort(
+      (versionA, versionB) =>
+        // Sort in ascending order
+        versionA - versionB,
+    )
+    .filter(version => version > parseInt(currentMigrationVersion, 10));
   const hasNeverSynced = await !database.getSetting(LATEST_SERVER_SYNC_TIMESTAMP);
   if (hasNeverSynced) {
     // No need to migrate anything as it will do initial sync, jump the migration version up

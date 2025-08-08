@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
@@ -13,7 +9,7 @@ import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
 
 const Wrapper = styled.div`
-  background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.overlayNameBackground};
   > div {
     margin-top: 0;
   }

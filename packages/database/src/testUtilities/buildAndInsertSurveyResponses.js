@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 
 import { buildAndInsertSurveys } from './buildAndInsertSurveys';
@@ -65,8 +60,8 @@ const buildAndInsertSurveyResponse = async (
  * ]);
  * ```
  */
-export const buildAndInsertSurveyResponses = async (models, surveyResponses) => {
-  const user = await upsertDummyRecord(models.user);
+export const buildAndInsertSurveyResponses = async (models, surveyResponses, userData = {}) => {
+  const user = await upsertDummyRecord(models.user, userData);
   const builtResponses = [];
   for (let i = 0; i < surveyResponses.length; i++) {
     const surveyResponse = surveyResponses[i];

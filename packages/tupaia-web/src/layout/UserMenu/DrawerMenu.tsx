@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Drawer as MuiDrawer } from '@material-ui/core';
@@ -10,6 +5,8 @@ import { IconButton } from '@tupaia/ui-components';
 import CloseIcon from '@material-ui/icons/Close';
 import { MenuItem, MenuList } from './MenuList';
 import { MOBILE_BREAKPOINT, MODAL_ROUTES } from '../../constants';
+import { User } from '../../types';
+import { RouterButton } from '../../components';
 
 /**
  * DrawerMenu is a drawer menu used when the user is on a mobile device
@@ -22,11 +19,11 @@ const Drawer = styled(MuiDrawer)`
 `;
 
 const MenuWrapper = styled.div`
-  padding: 0 1.5em;
+  padding: 0 1rem;
   li a,
   li button {
     font-size: 1.2rem;
-    padding: 0.8rem 0.5rem;
+    padding: 0.8rem 0.8rem;
     line-height: 1.4;
     text-align: left;
     width: 100%;
@@ -42,25 +39,20 @@ const Username = styled.p<{
   $secondaryColor?: string;
 }>`
   font-weight: 400;
-  margin: 0;
+  margin: 1rem 0 0 0;
   width: 100%;
   color: ${({ $secondaryColor }) => $secondaryColor};
   opacity: 0.5;
   font-size: 1.2rem;
-  padding: 0.5rem 0.5em 0.3rem;
 `;
 
-const MenuHeaderWrapper = styled.div`
-  padding: 0;
-`;
-
-const MenuHeaderContainer = styled.div<{
+const MenuHeader = styled.div<{
   $secondaryColor?: string;
 }>`
   display: flex;
-  justify-content: flex-end;
-  padding: 0.8em 0;
-  align-items: center;
+  padding: 0 0.8rem;
+  justify-content: space-between;
+  align-items: flex-start;
   border-bottom: 1px solid ${({ $secondaryColor }) => $secondaryColor};
   color: ${({ $secondaryColor }) => $secondaryColor};
 `;
@@ -74,7 +66,32 @@ const MenuCloseIcon = styled(CloseIcon)<{
 `;
 
 const MenuCloseButton = styled(IconButton)`
-  padding: 0;
+  padding: 1rem;
+  margin: 0 -1rem 0 0;
+`;
+
+const ProjectButton = styled(RouterButton).attrs({
+  variant: 'text',
+})`
+  padding: 0.2rem 0.8rem 0.6rem;
+  margin-inline-start: -0.8rem;
+  text-decoration: none;
+
+  .MuiButton-label {
+    text-decoration: none;
+    text-transform: none;
+    font-size: 0.875rem;
+    color: ${({ theme }) => theme.palette.text.primary};
+    transition: color 0.2s;
+  }
+
+  &:hover {
+    background: none;
+    .MuiButton-label {
+      color: ${({ theme }) => theme.palette.text.primary};
+      text-decoration: underline;
+    }
+  }
 `;
 
 interface DrawerMenuProps {
@@ -84,7 +101,7 @@ interface DrawerMenuProps {
   primaryColor?: string;
   secondaryColor?: string;
   isLoggedIn: boolean;
-  currentUserUsername?: string;
+  currentUser?: User;
 }
 
 export const DrawerMenu = ({
@@ -94,8 +111,10 @@ export const DrawerMenu = ({
   primaryColor,
   secondaryColor,
   isLoggedIn,
-  currentUserUsername,
+  currentUser,
 }: DrawerMenuProps) => {
+  const currentUserUsername = currentUser?.userName;
+  const userProjectName = currentUser?.project?.name || 'Explore';
   return (
     <Drawer
       anchor="right"
@@ -104,16 +123,26 @@ export const DrawerMenu = ({
       PaperProps={{ style: { backgroundColor: primaryColor, minWidth: '70vw' } }}
     >
       <MenuWrapper>
-        <MenuHeaderWrapper>
-          <MenuHeaderContainer $secondaryColor={secondaryColor}>
+        <MenuHeader $secondaryColor={secondaryColor}>
+          <div>
             {currentUserUsername && (
               <Username $secondaryColor={secondaryColor}>{currentUserUsername}</Username>
             )}
-            <MenuCloseButton onClick={onCloseMenu} aria-label="Close menu">
-              <MenuCloseIcon $secondaryColor={secondaryColor} />
-            </MenuCloseButton>
-          </MenuHeaderContainer>
-        </MenuHeaderWrapper>
+            {userProjectName && (
+              <ProjectButton
+                modal={MODAL_ROUTES.PROJECT_SELECT}
+                onClick={() => {
+                  onCloseMenu();
+                }}
+              >
+                {userProjectName}
+              </ProjectButton>
+            )}
+          </div>
+          <MenuCloseButton onClick={onCloseMenu} aria-label="Close menu">
+            <MenuCloseIcon $secondaryColor={secondaryColor} />
+          </MenuCloseButton>
+        </MenuHeader>
         <MenuList secondaryColor={secondaryColor}>
           {/** If the user is not logged in, show the register and login buttons */}
           {!isLoggedIn && (

@@ -1,7 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
+import winston from 'winston';
 import { InternalServerError } from '@tupaia/utils';
 
 export const handleError = (err, req, res, next) => {
@@ -21,5 +18,6 @@ export const handleError = (err, req, res, next) => {
       api_request_log_id: apiRequestLogId,
     });
   }
+  winston.error(err);
   error.respond(res);
 };

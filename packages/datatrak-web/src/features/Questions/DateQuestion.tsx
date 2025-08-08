@@ -1,14 +1,9 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { TextField } from '@material-ui/core';
 import { DatePicker as BaseDatePicker } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
-import { QuestionHelperText } from './QuestionHelperText';
+import { InputHelperText } from '../../components';
 
 const DatePicker = styled(BaseDatePicker).attrs({
   InputAdornmentProps: {
@@ -59,7 +54,7 @@ export const DateQuestion = ({
       error={invalid}
       required={required}
       helperText={detailLabel}
-      FormHelperTextProps={{ component: QuestionHelperText }}
+      FormHelperTextProps={{ component: InputHelperText }}
     />
   );
 };

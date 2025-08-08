@@ -1,31 +1,27 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
-import { createBasicHeader } from '@tupaia/utils';
+import { createBasicHeader, requireEnv } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
-import { Credentials, OneTimeCredentials } from '../types';
+import { Credentials, OneTimeCredentials, RequestResetPasswordCredentials } from '../types';
 import { ApiConnection } from '../../connections';
 
 const DEFAULT_NAME = 'TUPAIA-SERVER';
 
-const basicAuthHandler = {
-  getAuthHeader: async () => {
-    const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
-    return createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
-  },
-};
-
 export interface AuthResponse {
   accessToken?: string;
   refreshToken?: string;
+  preferences?: Record<string, unknown>;
   user?: {
     email: string;
     accessPolicy: AccessPolicyObject;
   };
 }
+
+const basicAuthHandler = {
+  getAuthHeader: async () => {
+    const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
+    const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
+    return createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
+  },
+};
 
 export class AuthConnection extends ApiConnection {
   public baseUrl = process.env.CENTRAL_API_URL || 'http://localhost:8090/v2'; // auth server is actually just central server
@@ -35,13 +31,17 @@ export class AuthConnection extends ApiConnection {
   }
 
   public async login(
-    { emailAddress, password, deviceName }: Credentials,
+    { emailAddress, password, deviceName, timezone }: Credentials,
     serverName: string = DEFAULT_NAME,
+    ip: string,
   ) {
     const response = await this.post(
       'auth',
       { grantType: 'password' },
-      { emailAddress, password, deviceName: `${serverName}: ${deviceName}` },
+      { emailAddress, password, deviceName: `${serverName}: ${deviceName}`, timezone },
+      // forward the client's IP address to the auth server
+      { 'x-forwarded-for': ip },
+
     );
     return this.parseAuthResponse(response);
   }
@@ -56,6 +56,13 @@ export class AuthConnection extends ApiConnection {
       { token, deviceName: `${serverName}: ${deviceName}` },
     );
     return this.parseAuthResponse(response);
+  }
+
+  public async requestResetPassword({
+    emailAddress,
+    resetPasswordUrl,
+  }: RequestResetPasswordCredentials) {
+    return this.post('auth/resetPassword', {}, { emailAddress, resetPasswordUrl });
   }
 
   public async refreshAccessToken(refreshToken: string) {

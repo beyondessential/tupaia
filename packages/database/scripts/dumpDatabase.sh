@@ -29,7 +29,8 @@ function show_loading_spinner() {
     echo "" # reset prompt
 }
 
-source ".env"
+DIR=$(pwd "$0")
+source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
 
 DUMP_FILE_NAME="dump.sql"
 
@@ -71,7 +72,7 @@ if [ "$identity_file" == "" ]; then
 fi
 
 if [ "$DB_PG_USER" == "" ] || [ "$DB_PG_PASSWORD" == "" ]; then
-    echo "Missing postgres user credential env vars in @tupaia/database .env file. Check LastPass for variables and add them to the .env file"
+    echo "Missing postgres user credential env vars in @tupaia/database .env file. Check Bitwarden for variables and add them to the .env file"
     exit 1
 fi
 

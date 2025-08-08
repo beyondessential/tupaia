@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { generateTestId } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 
 const auckland = {
   code: 'NZ_AK',
@@ -124,7 +119,7 @@ const KITTY_SURVEY = {
 export const SURVEYS = [BCD_SURVEY, CROP_SURVEY, KITTY_SURVEY];
 
 export const BCD_RESPONSE_AUCKLAND = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: BCD_SURVEY.code,
   entityCode: auckland.code,
   data_time: '2020-01-31T09:00:00',
@@ -135,7 +130,7 @@ export const BCD_RESPONSE_AUCKLAND = {
 };
 
 export const BCD_RESPONSE_WELLINGTON = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: BCD_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2020-02-05T15:00:00',
@@ -146,7 +141,7 @@ export const BCD_RESPONSE_WELLINGTON = {
 };
 
 export const CROP_RESPONSE_AUCKLAND_2019 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: CROP_SURVEY.code,
   entityCode: auckland.code,
   data_time: '2019-11-21T09:00:00',
@@ -157,7 +152,7 @@ export const CROP_RESPONSE_AUCKLAND_2019 = {
 };
 
 export const CROP_RESPONSE_AUCKLAND_2020 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: CROP_SURVEY.code,
   entityCode: auckland.code,
   data_time: '2020-11-21T09:00:00',
@@ -167,7 +162,7 @@ export const CROP_RESPONSE_AUCKLAND_2020 = {
 };
 
 export const CROP_RESPONSE_WELLINGTON_2019 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: CROP_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2019-12-16T09:00:00',
@@ -178,7 +173,7 @@ export const CROP_RESPONSE_WELLINGTON_2019 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_MORNING_20210104W1 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2021-01-04T09:00:00Z',
@@ -189,7 +184,7 @@ export const KITTY_RESPONSE_WELLINGTON_MORNING_20210104W1 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_MIDDAY_20210104W1 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2021-01-04T09:01:00Z',
@@ -200,7 +195,7 @@ export const KITTY_RESPONSE_WELLINGTON_MIDDAY_20210104W1 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_NIGHT_20210104W1 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2021-01-04T09:02:00Z',
@@ -211,7 +206,7 @@ export const KITTY_RESPONSE_WELLINGTON_NIGHT_20210104W1 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_MORNING_20210105W1 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2021-01-05T09:00:00Z',
@@ -222,7 +217,7 @@ export const KITTY_RESPONSE_WELLINGTON_MORNING_20210105W1 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_NIGHT_20210105W1 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2021-01-05T09:02:00Z',
@@ -233,7 +228,7 @@ export const KITTY_RESPONSE_WELLINGTON_NIGHT_20210105W1 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_MORNING_20210113W2 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2021-01-13T09:00:00Z',
@@ -244,7 +239,7 @@ export const KITTY_RESPONSE_WELLINGTON_MORNING_20210113W2 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_MORNING_20210115W2 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2021-01-15T09:00:00Z',
@@ -255,7 +250,7 @@ export const KITTY_RESPONSE_WELLINGTON_MORNING_20210115W2 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_MORNING_20210205W5 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2021-02-05T09:00:00Z',
@@ -266,7 +261,7 @@ export const KITTY_RESPONSE_WELLINGTON_MORNING_20210205W5 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2021-02-19T09:00:00Z',
@@ -277,7 +272,7 @@ export const KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_MORNING_20220606W23 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2022-06-06T09:00:00Z',
@@ -288,7 +283,7 @@ export const KITTY_RESPONSE_WELLINGTON_MORNING_20220606W23 = {
 };
 
 export const KITTY_RESPONSE_WELLINGTON_MORNING_20220608W23 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
   data_time: '2022-06-08T08:00:00Z',
@@ -299,7 +294,7 @@ export const KITTY_RESPONSE_WELLINGTON_MORNING_20220608W23 = {
 };
 
 export const KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: auckland.code,
   data_time: '2021-06-08T09:00:00Z',
@@ -310,7 +305,7 @@ export const KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23 = {
 };
 
 export const KITTY_RESPONSE_AUCKLAND_MORNING_20220608W23 = {
-  id: generateTestId(),
+  id: generateId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: auckland.code,
   data_time: '2022-06-08T09:00:00Z',

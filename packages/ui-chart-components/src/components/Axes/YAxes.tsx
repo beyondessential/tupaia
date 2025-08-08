@@ -1,26 +1,26 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { VALUE_TYPES, formatDataValueByType } from '@tupaia/utils';
-import { ValueType } from '@tupaia/types';
+import { CartesianChartConfig, ChartReport, ValueType } from '@tupaia/types';
 import { YAxis as YAxisComponent, YAxisProps } from 'recharts';
 import { DARK_BLUE } from '../../constants';
-import { CartesianChartViewContent, LooseObject, ViewContent } from '../../types';
+import { LooseObject } from '../../types';
 import { getContrastTextColor } from '../../utils';
 
 interface AxisDomainProps {
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
   value: any;
   type: any;
 }
 
+enum Orientation {
+  left = 'left',
+  right = 'right',
+}
+
 const Y_AXIS_IDS = {
-  left: 0,
-  right: 1,
+  [Orientation.left]: 0,
+  [Orientation.right]: 1,
 };
 
 const PERCENTAGE_Y_DOMAIN = {
@@ -30,31 +30,33 @@ const PERCENTAGE_Y_DOMAIN = {
 
 const DEFAULT_Y_AXIS = {
   id: Y_AXIS_IDS.left,
-  orientation: 'left',
+  orientation: Orientation.left,
   yAxisDomain: {
     min: { type: 'number', value: 0 },
     max: { type: 'string', value: 'auto' },
   },
 };
 
-const parseDomainConfig = (config: AxisDomainProps) => {
-  switch (config.type) {
+const parseDomainConfig = (axisDomainConfig: AxisDomainProps) => {
+  switch (axisDomainConfig.type) {
     case 'scale':
-      return (dataExtreme: any) => dataExtreme * config.value;
+      return (dataExtreme: any) => dataExtreme * axisDomainConfig.value;
     case 'clamp':
       return (dataExtreme: any) => {
-        const maxClampedVal = config.max ? Math.min(dataExtreme, config.max) : dataExtreme;
-        return config.min ? Math.max(maxClampedVal, config.min) : maxClampedVal;
+        const maxClampedVal = axisDomainConfig.max
+          ? Math.min(dataExtreme, axisDomainConfig.max)
+          : dataExtreme;
+        return axisDomainConfig.min ? Math.max(maxClampedVal, axisDomainConfig.min) : maxClampedVal;
       };
     case 'number':
     case 'string':
     default:
-      return config.value;
+      return axisDomainConfig.value;
   }
 };
 
-const getDefaultYAxisDomain = (viewContent: ViewContent) =>
-  viewContent.valueType === 'percentage' ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
+const getDefaultYAxisDomain = (axisConfig: CartesianChartConfig) =>
+  axisConfig.valueType === 'percentage' ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
 
 const calculateYAxisDomain = ({
   min,
@@ -71,7 +73,7 @@ const containsClamp = ({ min, max }: { min: AxisDomainProps; max: AxisDomainProp
 
 const renderYAxisLabel = (
   label: string,
-  orientation: string,
+  orientation: Orientation,
   fillColor: string,
   isEnlarged: boolean,
 ) => {
@@ -81,7 +83,7 @@ const renderYAxisLabel = (
       angle: -90,
       fill: fillColor,
       style: { textAnchor: 'middle', fontSize: isEnlarged ? '1em' : '0.8em' },
-      position: orientation === 'right' ? 'insideRight' : 'insideLeft',
+      position: orientation === Orientation.right ? 'insideRight' : 'insideLeft',
     };
 
   return undefined;
@@ -89,13 +91,13 @@ const renderYAxisLabel = (
 
 const flattenValues = (data?: any[], dataKeys?: string[]) => {
   if (!data) return [];
-  return data?.map(item => dataKeys?.map(key => item[key])).flat();
+  return data?.flatMap(item => dataKeys?.map(key => item[key]));
 };
 
 /**
  * Calculate a dynamic width for the YAxis
  */
-const getAxisWidth = (data: any[], dataKeys: string[], valueType: ValueType) => {
+const getAxisWidth = (data: ChartReport['data'], dataKeys: string[], valueType?: ValueType) => {
   // Only use a dynamic width for number types. Otherwise fallback to the recharts default
   if (valueType === 'number' || valueType === undefined) {
     const maxValue = Math.max(...flattenValues(data, dataKeys));
@@ -115,7 +117,7 @@ const getAxisWidth = (data: any[], dataKeys: string[], valueType: ValueType) => 
   return undefined;
 };
 
-const getDefaultNumberFormat = (data: any[], dataKeys: string[]) => {
+const getDefaultNumberFormat = (data: ChartReport['data'], dataKeys: string[]) => {
   const uniqueValues = [...new Set(flattenValues(data, dataKeys))];
   const maxValue = Math.max(...uniqueValues);
   // if the maxValue is greater than 4, there will already be multiple ticks visible that are whole numbers, so we can use the default format of 0,0, as used in utils
@@ -124,17 +126,30 @@ const getDefaultNumberFormat = (data: any[], dataKeys: string[]) => {
   return '0.00';
 };
 
+type CustomAxisConfig = {
+  yAxisId?: number;
+  orientation?: Orientation;
+  yAxisDomain?: {
+    min: AxisDomainProps;
+    max: AxisDomainProps;
+  };
+  dataKeys?: string[];
+  valueType?: ValueType;
+  yName?: string;
+};
 interface YAxisComponentProps {
-  config?: any;
-  viewContent: CartesianChartViewContent;
-  chartDataConfig: CartesianChartViewContent['chartConfig'];
+  config: CartesianChartConfig;
+  report: ChartReport;
+  axisConfig?: CustomAxisConfig;
+  chartDataConfig: CartesianChartConfig['chartConfig'];
   isExporting?: boolean;
   isEnlarged?: boolean;
 }
 
 const YAxis = ({
-  config = {},
-  viewContent,
+  axisConfig = {},
+  config,
+  report,
   chartDataConfig,
   isExporting = false,
   isEnlarged = false,
@@ -144,20 +159,18 @@ const YAxis = ({
   const {
     yAxisId = DEFAULT_Y_AXIS.id,
     orientation = DEFAULT_Y_AXIS.orientation,
-    yAxisDomain = getDefaultYAxisDomain(viewContent),
+    yAxisDomain = getDefaultYAxisDomain(config),
     yName: yAxisLabel,
-  } = config;
+  } = axisConfig;
 
-  const { yName, presentationOptions, ticks } = viewContent;
-  const dataKeys = config.dataKeys || (chartDataConfig && Object.keys(chartDataConfig)) || [];
-  const valueType = viewContent.valueType || config.valueType;
-  const width = getAxisWidth(viewContent.data, dataKeys, valueType);
+  const { yName, presentationOptions, ticks } = config;
+  const dataKeys = axisConfig.dataKeys || (chartDataConfig && Object.keys(chartDataConfig)) || [];
+  const valueType = config.valueType || axisConfig.valueType;
+  const width = getAxisWidth(report.data, dataKeys, valueType);
 
   // this is to stop a bug where if there is no value format set, the axis will round decimals to while values, which is undesirable behaviour when the max axis value is less than 3
   const defaultFormatter =
-    valueType === VALUE_TYPES.NUMBER
-      ? getDefaultNumberFormat(viewContent.data, dataKeys)
-      : undefined;
+    valueType === VALUE_TYPES.NUMBER ? getDefaultNumberFormat(report.data, dataKeys) : undefined;
   return (
     <YAxisComponent
       key={yAxisId}
@@ -196,23 +209,32 @@ const YAxis = ({
   );
 };
 
+interface YAxesProps {
+  config: CartesianChartConfig;
+  report: ChartReport;
+  chartDataConfig: CartesianChartConfig['chartConfig'];
+  isExporting?: boolean;
+  isEnlarged?: boolean;
+}
+
 export const YAxes = ({
-  viewContent,
+  config,
+  report,
   chartDataConfig,
   isExporting = false,
   isEnlarged = false,
-}: YAxisComponentProps) => {
-  const { chartConfig } = viewContent;
+}: YAxesProps) => {
+  const { chartConfig } = config;
 
   const axisPropsById: { [p: number]: LooseObject } = {
-    [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: 'left' },
-    [Y_AXIS_IDS.right]: { yAxisId: Y_AXIS_IDS.right, dataKeys: [], orientation: 'right' },
+    [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: Orientation.left },
+    [Y_AXIS_IDS.right]: { yAxisId: Y_AXIS_IDS.right, dataKeys: [], orientation: Orientation.right },
   };
 
   if (chartConfig) {
     Object.entries(chartConfig).forEach(
       ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain, yName }]) => {
-        const axisId = Y_AXIS_IDS[orientation as 'left' | 'right'] || DEFAULT_Y_AXIS.id;
+        const axisId = Y_AXIS_IDS[orientation as Orientation] || DEFAULT_Y_AXIS.id;
         axisPropsById[axisId].dataKeys.push(dataKey);
         if (valueType) {
           axisPropsById[axisId].valueType = valueType;
@@ -226,10 +248,10 @@ export const YAxes = ({
   }
 
   const axesProps = Object.values(axisPropsById).filter(({ dataKeys }) => dataKeys.length > 0);
-  const baseProps = { viewContent, chartDataConfig, isExporting, isEnlarged };
+  const baseProps = { report, config, chartDataConfig, isExporting, isEnlarged };
 
   // If no custom axes provided, render the  default y axis
   return axesProps.length > 0
-    ? axesProps.map(props => YAxis({ config: props, ...baseProps }))
+    ? axesProps.map(props => YAxis({ axisConfig: props, ...baseProps }))
     : YAxis(baseProps);
 };

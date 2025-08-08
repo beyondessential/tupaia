@@ -1,9 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-import { AccessPolicy } from '@tupaia/access-policy';
-
 export interface Entity {
   code: string;
   name: string;
@@ -19,158 +13,128 @@ export interface Relation {
 }
 
 export const DEFAULT_ACCESS_POLICY = {
-  LABRYNNA: ['Public'],
-  HOLODRUM: ['Public'],
-};
-
-export const getAccessPolicy = (accessPolicy = DEFAULT_ACCESS_POLICY) => {
-  return new AccessPolicy(accessPolicy);
+  DL: ['Public'],
+  TO: ['Public'],
 };
 
 export const PROJECTS = [
   {
-    code: 'oracleages',
-    permission_groups: ['Admin'],
-    projectEntityName: 'Oracle of Ages',
-  },
-  {
-    code: 'oracleseasons',
+    code: 'redblue',
     permission_groups: ['Public'],
-    projectEntityName: 'Oracle of Seasons',
+    projectEntityName: 'Pokemon Red/Blue',
   },
 ];
+
+export const COUNTRIES = ['DL', 'TO'];
 
 export const ENTITIES: Entity[] = [
   {
-    code: 'oracleages',
-    name: 'Oracle of Ages',
+    code: 'redblue',
+    name: 'Pokemon Red/Blue',
     type: 'project',
     attributes: {},
   },
   {
-    code: 'oracleseasons',
-    name: 'Oracle of Seasons',
+    code: 'goldsilver',
+    name: 'Pokemon Gold/Silver',
     type: 'project',
     attributes: {},
   },
-  // Country -> District -> Facility
+  // country -> city    -> facility
+  //                    -> individual
+  //         -> village -> individual
+  { country_code: 'DL', code: 'DL', name: 'DL', type: 'country', attributes: {} },
+  { country_code: 'DL', code: 'PALLET', name: 'Pallet Town', type: 'village', attributes: {} },
   {
-    country_code: 'LABRYNNA',
-    code: 'LABRYNNA',
-    name: 'Labrynna',
-    type: 'country',
+    country_code: 'DL',
+    code: 'VIRIDIAN',
+    name: 'Viridian City',
+    type: 'city',
+    attributes: { type: 'gym' },
+  },
+  {
+    country_code: 'DL',
+    code: 'PEWTER',
+    name: 'Pewter City',
+    type: 'city',
+    attributes: { type: 'gym' },
+  },
+  {
+    country_code: 'DL',
+    code: 'CERULEAN',
+    name: 'Cerulean City',
+    type: 'city',
+    attributes: { type: 'gym' },
+  },
+  {
+    country_code: 'DL',
+    code: 'CERULEAN_CAVE',
+    name: 'Cerulean Cave',
+    type: 'facility',
     attributes: {},
   },
-  ...[
-    { code: 'YOLLS', name: 'Yolls Graveyard' },
-    { code: 'DEKU', name: 'Deku Forest' },
-    { code: 'CRESCENT', name: 'Crescent Island' },
-    { code: 'SYMMETRY', name: 'Symmetry Village' },
-    { code: 'RIDGE', name: 'Rolling Ridge' },
-    { code: 'ZORAS', name: 'Zoras Domain' },
-    { code: 'NORETURN', name: 'Sea of No Return' },
-  ].map(({ code, name }) => ({
-    country_code: 'LABRYNNA',
-    code,
-    name,
-    type: 'district',
-    attributes: {},
-  })),
-  ...[
-    { code: 'SPIRITS', name: 'Spirits Grave' },
-    { code: 'WING', name: 'Wing Dungeon' },
-    { code: 'MOONLIT', name: 'Moonlit Grotto' },
-    { code: 'SKULL', name: 'Skull Dungeon' },
-    { code: 'CROWN', name: 'Crown Dungeon' },
-    { code: 'MERMAIDS', name: 'Mermaids Cave' },
-    { code: 'JABU', name: 'Jabu Jabus Belly' },
-    { code: 'TOMB', name: 'Ancient Tomb' },
-  ].map(({ code, name }) => ({
-    country_code: 'LABRYNNA',
-    code,
-    name,
-    type: 'facility',
-    attributes: { type: 'dungeon' },
-  })),
-
   {
-    country_code: 'HOLODRUM',
-    code: 'HOLODRUM',
-    name: 'Holodrum',
-    type: 'country',
+    country_code: 'DL',
+    code: 'VERMILLION',
+    name: 'Vermillion City',
+    type: 'city',
+    attributes: { type: 'gym' },
+  },
+  { country_code: 'DL', code: 'LAVENDER', name: 'Lavender Town', type: 'city', attributes: {} },
+  {
+    country_code: 'DL',
+    code: 'PKMN_TOWER',
+    name: 'Pokemon Tower',
+    type: 'facility',
     attributes: {},
   },
-  ...[
-    { code: 'HORON', name: 'Horon' },
-    { code: 'WINTER', name: 'Woods of Winter' },
-    { code: 'SPOOL', name: 'Spool Swamp' },
-    { code: 'CUCCO', name: 'Mount Cucco' },
-    { code: 'EYEGLASS', name: 'Eyeglass Lake' },
-    { code: 'TARM', name: 'Tarm Ruins' },
-    { code: 'GRAVE', name: 'Holodrum Graveyard' },
-    { code: 'SUBROSIA', name: 'Subrosia' },
-  ].map(({ code, name }) => ({
-    country_code: 'HOLODRUM',
-    code,
-    name,
-    type: 'district',
-    attributes: {},
-  })),
-  ...[
-    { code: 'GNARLED', name: 'Gnarled Root' },
-    { code: 'SNAKES', name: 'Snakes Remains' },
-    { code: 'MOTHS', name: 'Poison Moths Lair' },
-    { code: 'DRAGON', name: 'Dancing Dragon Dungeon' },
-    { code: 'EYEGLASS', name: 'Eyeglass Lake' },
-    { code: 'RUINS', name: 'Ancient Ruins' },
-    { code: 'EXPLORERS', name: 'Explorers Crypt' },
-    { code: 'SUBROSIA', name: 'Sword & Shield Maze' },
-  ].map(({ code, name }) => ({
-    country_code: 'HOLODRUM',
-    code,
-    name,
+  {
+    country_code: 'DL',
+    code: 'LAVENDER_RADIO_TOWER',
+    name: 'Lavender Radio Tower',
     type: 'facility',
-    attributes: { type: 'dungeon' },
-  })),
+    attributes: {},
+  },
+  {
+    country_code: 'DL',
+    code: 'CELADON',
+    name: 'Celadon City',
+    type: 'city',
+    attributes: { type: 'gym' },
+  },
+  {
+    country_code: 'DL',
+    code: 'CELADON_GAME',
+    name: 'Celadon Game Corner',
+    type: 'facility',
+    attributes: {},
+  },
+  {
+    country_code: 'DL',
+    code: 'FUCHSIA',
+    name: 'Fuchsia City',
+    type: 'city',
+    attributes: { type: 'gym' },
+  },
+  { country_code: 'DL', code: 'SAFARI', name: 'Safari Zone', type: 'facility', attributes: {} },
+  {
+    country_code: 'DL',
+    code: 'SAFFRON',
+    name: 'Saffron City',
+    type: 'city',
+    attributes: { type: 'gym' },
+  },
+  { country_code: 'DL', code: 'SILPH', name: 'Silph Co.', type: 'facility', attributes: {} },
+  {
+    country_code: 'DL',
+    code: 'CINNABAR',
+    name: 'Cinnabar Island',
+    type: 'city',
+    attributes: { type: 'gym' },
+  },
 ];
 
-export const ENTITY_RELATIONS: Record<string, Relation[]> = {
-  oracleages: [
-    { parent: 'oracleages', child: 'LABRYNNA', hierarchy: 'oracleages' },
-    { parent: 'LABRYNNA', child: 'YOLLS', hierarchy: 'oracleages' },
-    { parent: 'LABRYNNA', child: 'DEKU', hierarchy: 'oracleages' },
-    { parent: 'LABRYNNA', child: 'CRESCENT', hierarchy: 'oracleages' },
-    { parent: 'LABRYNNA', child: 'SYMMETRY', hierarchy: 'oracleages' },
-    { parent: 'LABRYNNA', child: 'RIDGE', hierarchy: 'oracleages' },
-    { parent: 'LABRYNNA', child: 'ZORAS', hierarchy: 'oracleages' },
-    { parent: 'LABRYNNA', child: 'NORETURN', hierarchy: 'oracleages' },
-    { parent: 'YOLLS', child: 'SPIRITS', hierarchy: 'oracleages' },
-    { parent: 'DEKU', child: 'WING', hierarchy: 'oracleages' },
-    { parent: 'CRESCENT', child: 'MOONLIT', hierarchy: 'oracleages' },
-    { parent: 'SYMMETRY', child: 'SKULL', hierarchy: 'oracleages' },
-    { parent: 'RIDGE', child: 'CROWN', hierarchy: 'oracleages' },
-    { parent: 'RIDGE', child: 'MERMAIDS', hierarchy: 'oracleages' },
-    { parent: 'ZORAS', child: 'JABU', hierarchy: 'oracleages' },
-    { parent: 'NORETURN', child: 'TOMB', hierarchy: 'oracleages' },
-  ],
-
-  oracleseasons: [
-    { parent: 'oracleseasons', child: 'HOLODRUM', hierarchy: 'oracleseasons' },
-    { parent: 'HOLODRUM', child: 'HORON', hierarchy: 'oracleseasons' },
-    { parent: 'HOLODRUM', child: 'WINTER', hierarchy: 'oracleseasons' },
-    { parent: 'HOLODRUM', child: 'SPOOL', hierarchy: 'oracleseasons' },
-    { parent: 'HOLODRUM', child: 'CUCCO', hierarchy: 'oracleseasons' },
-    { parent: 'HOLODRUM', child: 'EYEGLASS', hierarchy: 'oracleseasons' },
-    { parent: 'HOLODRUM', child: 'TARM', hierarchy: 'oracleseasons' },
-    { parent: 'HOLODRUM', child: 'GRAVE', hierarchy: 'oracleseasons' },
-    { parent: 'HOLODRUM', child: 'SUBROSIA', hierarchy: 'oracleseasons' },
-    { parent: 'HORON', child: 'GNARLED', hierarchy: 'oracleseasons' },
-    { parent: 'WINTER', child: 'SNAKES', hierarchy: 'oracleseasons' },
-    { parent: 'SPOOL', child: 'MOTHS', hierarchy: 'oracleseasons' },
-    { parent: 'CUCCO', child: 'DRAGON', hierarchy: 'oracleseasons' },
-    { parent: 'EYEGLASS', child: 'EYEGLASS', hierarchy: 'oracleseasons' },
-    { parent: 'TARM', child: 'RUINS', hierarchy: 'oracleseasons' },
-    { parent: 'GRAVE', child: 'EXPLORERS', hierarchy: 'oracleseasons' },
-    { parent: 'SUBROSIA', child: 'SUBROSIA', hierarchy: 'oracleseasons' },
-  ],
-};
+export const ENTITY_RELATIONS = [
+  { parent: 'redblue', child: 'DL', hierarchy: 'redblue' },
+  { parent: 'DL', child: 'CINNABAR', hierarchy: 'redblue' },
+];
