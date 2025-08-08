@@ -131,7 +131,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
     return {
       sql: `(${Object.entries(countryIdsByPermissionGroup)
-        .map(([_, countryIds]) => {
+        .map(([, countryIds]) => {
           return `
           (
             permission_group_id = ? AND
