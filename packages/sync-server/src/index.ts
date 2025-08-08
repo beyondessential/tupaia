@@ -1,9 +1,9 @@
 import http from 'http';
+import winston from 'winston';
 
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
-import winston from 'winston';
 import { createApp } from './app';
 import { configureEnv } from './configureEnv';
 import { initializeScheduledTasks } from './scheduledTasks/initializeScheduledTasks';
