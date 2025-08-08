@@ -1,7 +1,7 @@
 export { useEntityAncestors } from './useEntityAncestors';
 export { useUser } from './useUser';
 export { useProjects } from './useProjects';
-export { useSurveys } from './useSurveys';
+export { useSurveysQuery } from './useSurveysQuery';
 export { useSurvey } from './useSurvey';
 export { useSurveyResponse } from './useSurveyResponse';
 export { useSurveyResponses, useCurrentUserSurveyResponses } from './useSurveyResponses';
