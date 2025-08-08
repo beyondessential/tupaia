@@ -22,7 +22,7 @@ function extractBestMatch(data) {
 }
 
 async function searchGeojson(name, countryName) {
-  const url = new URL('/search', 'http://nominatim.openstreetmap.org');
+  const url = new URL('/search', 'https://nominatim.openstreetmap.org');
   url.searchParams.set('polygon_geojson', '1');
   url.searchParams.set('format', 'json');
   const query = removeDiacritics(`${name}, ${countryName}`);
