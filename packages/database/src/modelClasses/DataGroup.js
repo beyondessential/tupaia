@@ -25,7 +25,7 @@ export class DataGroupRecord extends DatabaseRecord {
    */
   async getSurvey() {
     return ensure(
-      await this.otherModels.survey.findOne({ data_group_id: this.data_group_id }),
+      await this.otherModels.survey.findOne({ data_group_id: this.id }),
       `No survey found for data group ${this.code}`,
     );
   }
