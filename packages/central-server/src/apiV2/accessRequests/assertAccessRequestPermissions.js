@@ -19,13 +19,11 @@ export const assertAccessRequestPermissions = async (accessPolicy, models, acces
     throw new PermissionsError('Need Admin Panel access to the country this access request is for');
   }
 
-  if (accessRequest.permission_group_id) {
-    const permissionGroup = await accessRequest.getPermissionGroup();
-    if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
-      throw new PermissionsError(
-        `Need ‘${permissionGroup.name}’ access to entity ‘${entity.country_code}’`,
-      );
-    }
+  const permissionGroup = await accessRequest.getPermissionGroup();
+  if (permissionGroup !== null && !accessPolicy.allows(entity.country_code, permissionGroup.name)) {
+    throw new PermissionsError(
+      `Need ‘${permissionGroup.name}’ access to entity ‘${entity.country_code}’`,
+    );
   }
 
   return true;
