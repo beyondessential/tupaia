@@ -40,8 +40,6 @@ export const assertAccessRequestEditPermissions = async (
   // Check we have permission for the change
   await assertAccessRequestUpsertPermissions(accessPolicy, models, updatedFields);
 
-  // We can view access requests for BES admin access even if we don't have BES admin ourselves
-  // So this final check confirms we're not trying to approve a request for BES admin access
   const accessRequest = ensure(
     await models.accessRequest.findById(accessRequestId),
     `No access request exists with ID ${accessRequestId}`,
@@ -49,6 +47,8 @@ export const assertAccessRequestEditPermissions = async (
 
   const permissionGroup = await accessRequest.getPermissionGroup();
   if (permissionGroup?.name === BES_ADMIN_PERMISSION_GROUP) {
+    // We can view access requests for ‘BES Admin’ access even if we don’t have it ourselves. This
+    // final check confirms we’re not trying to approve a request for BES Admin access
     throw new PermissionsError(
       `Need ${BES_ADMIN_PERMISSION_GROUP} access to the country this access request is for`,
     );
