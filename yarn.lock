@@ -11762,6 +11762,7 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     case: ^1.6.3
+    chance: ^1.1.13
     date-fns: ^2.29.2
     date-fns-tz: ^2.0.1
     db-migrate: ^0.11.5
@@ -16805,6 +16806,13 @@ __metadata:
     ansi-styles: ^4.1.0
     supports-color: ^7.1.0
   checksum: 5561c7b4c063badee3e16d04bce50bd033e1be1bf4c6948639275683ffa7a1993c44639b43c22b1c505f0f813a24b1889037eb182546b48946f9fe7cdd0e7d13
+  languageName: node
+  linkType: hard
+
+"chance@npm:^1.1.13":
+  version: 1.1.13
+  resolution: "chance@npm:1.1.13"
+  checksum: 0bab82fc53beca321094d07b7f7933fef7b0f08492b8fc46a9322da6ea13709dc286e7ae60cbb78be3ef5488d802ec95b0c876e9d3fb5ab4177899d7377465ed
   languageName: node
   linkType: hard
 
