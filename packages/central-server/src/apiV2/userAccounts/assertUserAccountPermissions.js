@@ -1,16 +1,17 @@
 import keyBy from 'lodash.keyby';
 
 import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
 export const assertUserAccountPermissions = async (accessPolicy, models, userAccountId) => {
-  const userAccount = await models.user.findById(userAccountId);
-  if (!userAccount) {
-    throw new NotFoundError(`No user account exists with ID ${userAccountId}`);
-  }
+  const userAccount = ensure(
+    await models.user.findById(userAccountId),
+    `No user account exists with ID ${userAccountId}`,
+  );
 
-  const entityPermissions = await models.userEntityPermission.find({ user_id: userAccount.id });
+  const entityPermissions = await userAccount.getEntityPermissions();
   const permissions = await models.permissionGroup.findManyById(
     entityPermissions.map(ep => ep.permission_group_id),
   );

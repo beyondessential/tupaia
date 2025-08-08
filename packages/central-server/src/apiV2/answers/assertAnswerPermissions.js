@@ -1,5 +1,5 @@
 import { JOIN_TYPES, QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
-import { NotFoundError } from '@tupaia/utils';
+import { ensure } from '@tupaia/tsutils';
 import { hasBESAdminAccess } from '../../permissions';
 import { assertSurveyResponsePermissions } from '../surveyResponses';
 import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
@@ -7,10 +7,10 @@ import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utiliti
 const { RAW } = QUERY_CONJUNCTIONS;
 
 export const assertAnswerPermissions = async (accessPolicy, models, answerId) => {
-  const answer = await models.answer.findById(answerId);
-  if (!answer) {
-    throw new NotFoundError(`No answer exists with ID ${answerId}`);
-  }
+  const answer = ensure(
+    await models.answer.findById(answerId),
+    `No answer exists with ID ${answerId}`,
+  );
   return assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
 };
 
@@ -22,10 +22,10 @@ export const assertAnswerEditPermissions = async (
 ) => {
   // Forbid editing the survey response id into a survey response we don't have permission to access
   if (updatedFields.survey_response_id) {
-    const answer = await models.answer.findById(answerId);
-    if (!answer) {
-      throw new NotFoundError(`No answer exists with ID ${answerId}`);
-    }
+    const answer = ensure(
+      await models.answer.findById(answerId),
+      `No answer exists with ID ${answerId}`,
+    );
     await assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
   }
   return true;

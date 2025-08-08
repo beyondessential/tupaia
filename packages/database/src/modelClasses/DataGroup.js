@@ -1,3 +1,4 @@
+import { ensure } from '@tupaia/tsutils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -18,6 +19,16 @@ const CONFIG_SCHEMA_BY_SERVICE = {
 
 export class DataGroupRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DATA_GROUP;
+
+  /**
+   * @returns {Promise<import('./Survey').SurveyRecord>}
+   */
+  async getSurvey() {
+    return ensure(
+      await this.otherModels.survey.findOne({ data_group_id: this.data_group_id }),
+      `No survey found for data group ${this.code}`,
+    );
+  }
 
   sanitizeConfig() {
     const configSchema = CONFIG_SCHEMA_BY_SERVICE[this.service_type];

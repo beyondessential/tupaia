@@ -1,4 +1,5 @@
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -105,8 +106,10 @@ export const hasTupaiaAdminPanelAccessToCountry = (accessPolicy, countryCode) =>
   accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
 
 export const assertAdminPanelAccessToCountry = async (accessPolicy, models, recordId) => {
-  const entity = await models.entity.findById(recordId);
-  if (!entity) throw new NotFoundError(`No entity exists with ID ${recordId}`);
+  const entity = ensure(
+    await models.entity.findById(recordId),
+    `No entity exists with ID ${recordId}`,
+  );
 
   const userHasAdminAccessToCountry = accessPolicy.allows(
     entity.country_code,

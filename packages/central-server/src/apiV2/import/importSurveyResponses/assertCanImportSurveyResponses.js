@@ -1,7 +1,7 @@
 import { flattenDeep, groupBy, keyBy } from 'lodash';
 
-import { isNullish } from '@tupaia/tsutils';
-import { getUniqueEntries, NotFoundError, reduceToDictionary } from '@tupaia/utils';
+import { ensure, isNullish } from '@tupaia/tsutils';
+import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
 import winston from '../../../log';
 
 export const assertCanImportSurveyResponses = async (
@@ -106,18 +106,18 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
       return parentEntity?.code;
     }
 
-    const entity = await models.entity.findById(surveyResponse.entity_id);
-    if (!entity) {
-      throw new NotFoundError(`No entity exists with ID ${surveyResponse.entity_id}`);
-    }
+    const entity = ensure(
+      await models.entity.findById(surveyResponse.entity_id),
+      `No entity exists with ID ${surveyResponse.entity_id}`,
+    );
     return entity.code;
   }
 
   if (surveyResponse.clinic_id) {
-    const clinic = await models.facility.findById(surveyResponse.clinic_id);
-    if (!clinic) {
-      throw new NotFoundError(`No clinic exists with ID ${surveyResponse.clinic_id}`);
-    }
+    const clinic = ensure(
+      await models.facility.findById(surveyResponse.clinic_id),
+      `No clinic exists with ID ${surveyResponse.clinic_id}`,
+    );
     return clinic.code;
   }
 

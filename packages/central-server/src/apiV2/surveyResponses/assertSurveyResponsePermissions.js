@@ -1,5 +1,6 @@
 import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { assertIsNotNullish, ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
 
@@ -10,12 +11,8 @@ const assertSurveyEntityPairPermission = async (accessPolicy, models, surveyId, 
     models.entity.findById(entityId),
     models.survey.findById(surveyId),
   ]);
-  if (!entity) {
-    throw new NotFoundError(`No entity exists with ID ${entityId}`);
-  }
-  if (!survey) {
-    throw new NotFoundError(`No survey exists with ID ${surveyId}`);
-  }
+  assertIsNotNullish(entity, `No entity exists with ID ${entityId}`);
+  assertIsNotNullish(survey, `No survey exists with ID ${surveyId}`);
 
   const permissionGroup = await survey.getPermissionGroup();
   if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
@@ -26,10 +23,10 @@ const assertSurveyEntityPairPermission = async (accessPolicy, models, surveyId, 
 };
 
 export const assertSurveyResponsePermissions = async (accessPolicy, models, surveyResponseId) => {
-  const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
-  if (!surveyResponse) {
-    throw new NotFoundError(`No survey response exists with ID ${surveyResponseId}`);
-  }
+  const surveyResponse = ensure(
+    await models.surveyResponse.findById(surveyResponseId),
+    `No survey response exists with ID ${surveyResponseId}`,
+  );
 
   return assertSurveyEntityPairPermission(
     accessPolicy,
