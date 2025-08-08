@@ -1,11 +1,17 @@
-import { ModelRegistry, SyncSessionModel, SyncDeviceTickModel, modelClasses } from '@tupaia/database';
 import {
-  ProjectModel,
-  EntityModel,
-  SurveyResponseModel,
+  ModelRegistry,
+  SyncDeviceTickModel,
+  SyncQueuedDeviceModel,
+  SyncSessionModel,
+  modelClasses,
+} from '@tupaia/database';
+import {
   AnswerModel,
-  LocalSystemFactModel,
   DebugLogModel,
+  EntityModel,
+  LocalSystemFactModel,
+  ProjectModel,
+  SurveyResponseModel,
 } from '@tupaia/server-boilerplate';
 export interface SyncServerModelRegistry extends ModelRegistry {
   readonly project: ProjectModel;
@@ -79,7 +85,6 @@ export interface PullInitiationResult {
 }
 
 export type UnmarkSessionAsProcessingFunction = () => Promise<void>;
-
 
 export interface TestModelRegistry extends ModelRegistry {
   readonly syncQueuedDevice: modelClasses.SyncQueuedDevice;
