@@ -12108,10 +12108,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/sync-server@workspace:packages/sync-server"
   dependencies:
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/api-client": "workspace:*"
+    "@tupaia/constants": "workspace:*"
+    "@tupaia/database": "workspace:*"
     "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/sync": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
+    "@types/express": ^4.17.21
+    date-fns: ^2.30.0
     rimraf: ^6.0.1
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
