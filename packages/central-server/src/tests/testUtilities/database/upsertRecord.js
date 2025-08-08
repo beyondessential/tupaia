@@ -1,4 +1,5 @@
 import { generateId, upsertDummyRecord } from '@tupaia/database';
+import { randomString } from '@tupaia/utils';
 import { getModels } from './getModels';
 
 const models = getModels();
@@ -49,8 +50,11 @@ export const upsertDataGroup = async data => {
 
 export const upsertSurvey = async data => {
   const project = await upsertProject({ code: generateId() });
+  const permissionGroup = await upsertPermissionGroup({ name: randomString() });
+
   return upsertDummyRecord(models.survey, {
     ...data,
+    permission_group_id: permissionGroup.id,
     project_id: project.id,
   });
 };
