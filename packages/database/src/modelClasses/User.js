@@ -15,6 +15,9 @@ export class UserRecord extends DatabaseRecord {
     return userFullName;
   }
 
+  /**
+   * @returns {Promise<import('./UserEntityPermission').UserEntityPermissionRecord[]>}
+   */
   async getEntityPermissions() {
     return this.otherModels.userEntityPermission.find({ user_id: this.id });
   }

@@ -11,6 +11,9 @@ export class GeographicalAreaRecord extends DatabaseRecord {
     return this.code;
   }
 
+  /**
+   * @returns {Promise<import('./Country').CountryRecord>}
+   */
   async country() {
     return ensure(
       await this.otherModels.country.findById(this.country_id),
@@ -18,6 +21,9 @@ export class GeographicalAreaRecord extends DatabaseRecord {
     );
   }
 
+  /**
+   * @returns {Promise<GeographicalAreaRecord>}
+   */
   async parent() {
     if (!this.parent_id) return null;
     return ensure(

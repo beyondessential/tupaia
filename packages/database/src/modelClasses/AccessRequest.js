@@ -6,6 +6,9 @@ import { RECORDS } from '../records';
 export class AccessRequestRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ACCESS_REQUEST;
 
+  /**
+   * @returns {Promise<import('./Entity').EntityRecord>}
+   */
   async getEntity() {
     return ensure(
       await this.otherModels.entity.findById(this.entity_id),
@@ -13,6 +16,9 @@ export class AccessRequestRecord extends DatabaseRecord {
     );
   }
 
+  /**
+   * @returns {Promise<import('./PermissionGroup').PermissionGroupRecord | null>}
+   */
   async getPermissionGroup() {
     if (!this.permission_group_id) return null;
     return ensure(

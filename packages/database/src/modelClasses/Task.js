@@ -62,6 +62,9 @@ export class TaskRecord extends DatabaseRecord {
     },
   ];
 
+  /**
+   * @returns {Promise<import('./Entity').EntityRecord>}
+   */
   async entity() {
     return ensure(
       await this.otherModels.entity.findById(this.entity_id),
@@ -69,6 +72,9 @@ export class TaskRecord extends DatabaseRecord {
     );
   }
 
+  /**
+   * @returns {Promise<import('./UserAccount').UserAccountRecord | null>}
+   */
   async assignee() {
     if (!this.assignee_id) return null;
     return ensure(
@@ -77,6 +83,9 @@ export class TaskRecord extends DatabaseRecord {
     );
   }
 
+  /**
+   * @returns {Promise<import('./Survey').SurveyRecord>}
+   */
   async survey() {
     return ensure(
       await this.otherModels.survey.findById(this.survey_id),
