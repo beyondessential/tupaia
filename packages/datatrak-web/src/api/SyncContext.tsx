@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 
-import { useDatabase } from './DatabaseContext';
+import { useDatabase } from '../hooks/database';
 import { generateId } from '@tupaia/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
-import { useAccessibleProjects } from './queries/useProjects';
 import { useCurrentUserContext } from './CurrentUserContext';
+import { useDatabaseEffect } from '../hooks/database';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
   clientSyncManager: ClientSyncManager | null;
@@ -20,8 +20,12 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
   const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
   const [isSyncScheduled, setIsSyncScheduled] = useState(false);
   const { models } = useDatabase();
-  const { data: projects } = useAccessibleProjects();
   const { id: userId } = useCurrentUserContext();
+  const [syncedProjectIds] = useDatabaseEffect(async models => {
+    const syncedProjectsFact = await models.localSystemFact.get('syncedProjects');
+    const syncedProjectIds = syncedProjectsFact ? JSON.parse(syncedProjectsFact) : [];
+    return syncedProjectIds;
+  });
 
   useEffect(() => {
     const initSyncManager = async () => {
@@ -43,11 +47,10 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Only schedule the sync if conditions are met
-    if (!isSyncScheduled && clientSyncManager && projects?.length) {
-      const projectIds = projects.map(project => project.id);
+    if (!isSyncScheduled && clientSyncManager && syncedProjectIds?.length) {
       const intervalId = setInterval(() => {
-        console.log('Starting regular sync');
-        clientSyncManager.triggerSync(projectIds, false);
+        console.log('Starting regular sync:', { syncedProjectIds });
+        clientSyncManager.triggerSync(syncedProjectIds, false);
       }, SYNC_INTERVAL);
 
       setIsSyncScheduled(true);
@@ -57,7 +60,7 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
         setIsSyncScheduled(false);
       };
     }
-  }, [clientSyncManager, projects?.length]);
+  }, [clientSyncManager, syncedProjectIds?.length]);
 
   return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;
 };
