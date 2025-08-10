@@ -52,4 +52,11 @@ export class LocalSystemFactModel extends DatabaseModel {
     const fact = rowsAffected[0];
     return fact.value;
   }
+
+  async addProjectForSyncing(projectId) {
+    const existing = await this.findOne({ key: 'syncedProjects' });
+    const syncedProjects = existing?.value ? JSON.parse(existing.value) : [];
+    const newSyncedProjects = [...new Set([...syncedProjects, projectId])];
+    await this.set('syncedProjects', JSON.stringify(newSyncedProjects));
+  }
 }
