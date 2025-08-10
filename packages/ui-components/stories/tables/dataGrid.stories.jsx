@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import * as COLORS from '.../helpers/theme/colors';
 import { DataGrid } from '../../src/components';
+import { LIGHTGREY } from '../story-utils/theme/colors';
 
 export default {
   title: 'Tables/DataGrid',
@@ -10,7 +10,7 @@ export default {
 const Container = styled.div`
   width: 100%;
   padding: 3rem;
-  background: ${COLORS.LIGHTGREY};
+  background: ${LIGHTGREY};
   height: 600px;
 
   > div {
@@ -41,31 +41,26 @@ const columnsWithFlex = [
   { field: 'col2', headerName: 'Column 2', minWidth: 150, flex: 1 },
 ];
 
-
 export const Default = () => {
-
   return (
     <Container>
-      <DataGrid columns={columns} rows={rows}/>
+      <DataGrid columns={columns} rows={rows} />
     </Container>
   );
 };
 
 export const AutoPageSize = () => {
-
   return (
     <Container>
-      <DataGrid columns={columns} rows={rows} autoPageSize={true}/>
+      <DataGrid columns={columns} rows={rows} autoPageSize={true} />
     </Container>
   );
 };
 
 export const FlexColumns = () => {
-
   return (
     <Container>
-      <DataGrid columns={columnsWithFlex} rows={rows}/>
+      <DataGrid columns={columnsWithFlex} rows={rows} />
     </Container>
   );
 };
-

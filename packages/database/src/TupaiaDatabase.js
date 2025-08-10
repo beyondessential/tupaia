@@ -186,16 +186,21 @@ export class TupaiaDatabase {
   async notifyChangeHandlers(change) {
     const unlock = this.handlerLock.createLock(change.record_id);
     const handlers = this.getHandlersForChange(change);
+    const scheduledPromises = [];
     try {
-      for (let i = 0; i < handlers.length; i++) {
+      for (const handler of handlers) {
         try {
-          await handlers[i](change);
+          const { scheduledPromise } = (await handler(change)) || {};
+          if (scheduledPromise) {
+            scheduledPromises.push(scheduledPromise);
+          }
         } catch (e) {
           winston.error(e);
         }
       }
     } finally {
-      unlock();
+      // Don't await the scheduled promises, so that we don't block the change handler from completing
+      Promise.all(scheduledPromises).finally(unlock);
     }
   }
 
@@ -376,7 +381,12 @@ export class TupaiaDatabase {
         { cancel: true },
       );
     } catch (error) {
-      if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
+      if (error instanceof KnexTimeoutError) {
+        winston.debug(
+          `[TupaiaDatabase#countFast] Counting ${recordType} records timed out. Returning infinity.`,
+        );
+        return Number.POSITIVE_INFINITY;
+      }
       throw error;
     }
 

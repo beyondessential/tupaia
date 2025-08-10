@@ -18,24 +18,20 @@ jest.mock('@tupaia/database', () => ({
   RECORDS: jest.requireActual('@tupaia/database').RECORDS, // don't mock needed type
 }));
 
-jest.mock('@tupaia/server-boilerplate', () => ({
-  ApiConnection: jest.fn().mockImplementation(() => {}),
-}));
-
 jest.mock('../../DataBroker/fetchDataSources', () => ({
-  fetchDataElements: async (models: DataBrokerModelRegistry, codes: string[]) => {
+  fetchDataElements: async (_models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);
     const results = Object.values(DATA_ELEMENTS).filter(({ code }) => codes.includes(code));
     assert(results.length > 0);
     return results;
   },
-  fetchDataGroups: async (models: DataBrokerModelRegistry, codes: string[]) => {
+  fetchDataGroups: async (_models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);
     const results = Object.values(DATA_GROUPS).filter(({ code }) => codes.includes(code));
     assert(results.length > 0);
     return results;
   },
-  fetchSyncGroups: async (models: DataBrokerModelRegistry, codes: string[]) => {
+  fetchSyncGroups: async (_models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);
     const results = Object.values(SYNC_GROUPS).filter(({ code }) => codes.includes(code));
     assert(results.length > 0);

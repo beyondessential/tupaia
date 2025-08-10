@@ -1,12 +1,12 @@
-import { Add } from '@material-ui/icons';
+import { Plus } from 'lucide-react';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { isFeatureEnabled } from '@tupaia/utils';
 
 import { Button } from '../../components';
-import { ROUTES } from '../../constants';
+import { useBottomNavigationVisibility } from '../../components/BottomNavigation';
+import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../constants';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
 import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
@@ -24,36 +24,35 @@ const CreateButton = styled(Button).attrs({
   padding-inline-start: 0.9rem;
 `;
 
-const AddIcon = styled(Add)`
-  font-size: 1.2rem;
-  margin-inline-end: 0.2rem;
-`;
-
-const ContentWrapper = styled(TasksContentWrapper)`
+const ContentWrapper = styled(TasksContentWrapper)<{ $isBottomNavVisible?: boolean }>`
   overflow: hidden;
+  ${props =>
+    props.$isBottomNavVisible &&
+    css`
+      padding-bottom: ${BOTTOM_NAVIGATION_HEIGHT_DYNAMIC};
+    `}
 `;
 
 export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const onBack = () => navigate(ROUTES.HOME);
+  const isBottomNavVisible = useBottomNavigationVisibility();
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
+
   return (
     <>
-      {isMobile && <StickyMobileHeader onBack={onBack}>Tasks</StickyMobileHeader>}
+      {isMobile && <StickyMobileHeader>Tasks</StickyMobileHeader>}
       <TaskPageHeader title="Tasks" backTo="/">
         {(!isMobile || canCreateTaskOnMobile) && (
           <>
             {!isMobile && <TaskMetrics style={{ marginInlineEnd: 'auto' }} />}
-            <CreateButton onClick={toggleCreateModal}>
-              <AddIcon aria-hidden />
+            <CreateButton onClick={toggleCreateModal} startIcon={<Plus />}>
               Create task
             </CreateButton>
           </>
         )}
       </TaskPageHeader>
-      <ContentWrapper>
+      <ContentWrapper $isBottomNavVisible={isBottomNavVisible}>
         <TasksTable />
         {createModalOpen && <CreateTaskModal onClose={toggleCreateModal} />}
       </ContentWrapper>

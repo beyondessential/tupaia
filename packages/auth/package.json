@@ -13,8 +13,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rimraf dist && run-p \"build:* {@}\" --",
-    "build:src": "npm run --prefix ../../ package:build:js",
-    "build:types": "npm run --prefix ../../ package:build:types",
+    "build:src": "yarn run package:build:js",
+    "build:types": "yarn run package:build:types",
     "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -32,6 +32,7 @@
     "sha256": "^0.2.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.27.5",
     "@beyondessential/tupaia-access-policy": "^2.5.1",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/database": "workspace:*",

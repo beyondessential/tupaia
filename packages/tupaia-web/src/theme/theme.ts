@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@material-ui/core';
 import { MOBILE_BREAKPOINT } from '../constants';
 
 // MUI v4 doesn't support callbacks for theme overrides, so since these shades get used in multiple places, we need to define them here
@@ -9,7 +9,7 @@ const ERROR_ORANGE = '#f76853';
 
 const overMobileBreakpoint = `@media (min-width: ${MOBILE_BREAKPOINT})`;
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   typography: {
     fontSize: 16, // this needs to be 16 to correctly calculate the axis labels in recharts
     h1: {
@@ -79,11 +79,33 @@ theme.overrides = {
   },
   MuiCssBaseline: {
     '@global': {
+      ':root': {
+        '--ease-in-quad': 'cubic-bezier(0.11, 0, 0.5, 0)',
+        '--ease-out-quad': 'cubic-bezier(0.5, 1, 0.89, 1)',
+        '--ease-in-out-quad': 'cubic-bezier(0.45, 0, 0.55, 1)',
+        '--ease-in-quart': 'cubic-bezier(0.5, 0, 0.75, 0)',
+        '--ease-out-quart': 'cubic-bezier(0.25, 1, 0.5, 1)',
+        '--ease-in-out-quart': 'cubic-bezier(0.76, 0, 0.24, 1)',
+        textWrap: 'pretty',
+      },
       fieldset: {
         border: 0,
         margin: 0,
         minWidth: 0,
         padding: 0,
+      },
+      'button, figcaption, h1, h2, h3, h4, h5, h6, input, label': {
+        textWrap: 'balance',
+      },
+      'button, input, textarea, select': {
+        touchAction: 'manipulation',
+      },
+      'table, time': {
+        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      },
+      '.lucide': {
+        height: 'auto', // Use width to set both dimensions
+        width: '1em', // Sensible default, mirrors MUI Icon behaviour
       },
     },
   },

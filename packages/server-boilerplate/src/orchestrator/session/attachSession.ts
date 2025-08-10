@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { SessionRecord } from '../models/Session';
 
@@ -23,7 +23,7 @@ export const attachSession = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-export const attachSessionIfAvailable = async (req: Request, res: Response, next: NextFunction) => {
+export const attachSessionIfAvailable: RequestHandler = async (req, _res, next) => {
   // Same as above but don't throw errors on failure
   const sessionId = req.sessionCookie?.id;
   if (sessionId) {

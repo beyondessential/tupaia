@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, matchPath, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { BottomNavigation, useBottomNavigationVisibility } from '../components/BottomNavigation';
 import { HEADER_HEIGHT, ROUTES } from '../constants';
 import { SurveyResponseModal } from '../features';
 import { useIsMobile } from '../utils';
@@ -37,6 +38,7 @@ const PageWrapper = styled.div`
 const mobileHeaderlessRoutes = [
   `${ROUTES.SURVEY}/*`,
   ROUTES.ACCOUNT_SETTINGS,
+  ROUTES.MOBILE_USER_MENU,
   ROUTES.SURVEY_SELECT,
   ROUTES.SYNC,
   ROUTES.TASK_DETAILS,
@@ -44,6 +46,13 @@ const mobileHeaderlessRoutes = [
   ROUTES.WELCOME,
 ];
 const desktopHeaderlessRoutes = [ROUTES.WELCOME];
+
+const Nav = styled(BottomNavigation)`
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  position: fixed;
+`;
 
 const useHeaderVisibility = () => {
   const { pathname } = useLocation();
@@ -53,10 +62,12 @@ const useHeaderVisibility = () => {
 
 export const MainPageLayout = () => {
   const showHeader = useHeaderVisibility();
+  const showBottomNavigation = useBottomNavigationVisibility();
   return (
     <PageWrapper>
       {showHeader && <Header />}
       <Outlet />
+      {showBottomNavigation && <Nav />}
       <SurveyResponseModal />
     </PageWrapper>
   );

@@ -9,6 +9,7 @@ const DeleteButtonComponent = ({ dispatch, actionConfig, reduxId, row }) => {
   const { title = 'Delete record' } = actionConfig;
   return (
     <ColumnActionButton
+      aria-label={title}
       className="delete-button"
       title={title}
       onClick={() =>

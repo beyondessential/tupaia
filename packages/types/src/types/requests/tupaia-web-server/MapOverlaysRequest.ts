@@ -1,5 +1,5 @@
 import { MapOverlay } from '../../models';
-import { EntityType, MapOverlayConfig, ReferenceProps } from '../../models-extra';
+import { MapOverlayConfig, ReferenceProps } from '../../models-extra';
 import { KeysToCamelCase } from '../../../utils';
 
 export interface Params {

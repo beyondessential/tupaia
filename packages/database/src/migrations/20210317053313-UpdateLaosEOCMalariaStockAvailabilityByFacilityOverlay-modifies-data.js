@@ -1,7 +1,5 @@
 'use strict';
 
-import { generateId, insertObject, codeToId } from '../utilities';
-
 var dbm;
 var type;
 var seed;

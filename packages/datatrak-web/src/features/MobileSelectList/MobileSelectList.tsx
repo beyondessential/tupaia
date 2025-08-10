@@ -6,12 +6,14 @@ import { CountrySelectWrapper, CountrySelector } from '../CountrySelector';
 import { CountrySelectorProps } from '../CountrySelector/CountrySelector';
 import { ListItemType } from '../useGroupedSurveyList';
 import { ListItem, ListItemSkeleton } from './ListItem';
+import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../constants';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.default};
-  block-size: 100%;
-  padding-block: 1.25rem;
-  padding-inline: 1.5rem;
+  block-size: calc(100% - ${BOTTOM_NAVIGATION_HEIGHT_DYNAMIC});
+  overflow-y: auto;
+  padding-block: 1.25rem 2.5rem;
+  padding-inline: 1.25rem;
 
   ${CountrySelectWrapper} {
     margin-block-end: 1.5rem;

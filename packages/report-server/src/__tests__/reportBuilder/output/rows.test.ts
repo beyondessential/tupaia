@@ -14,7 +14,6 @@ describe('rows', () => {
     const config = {
       type: 'rows',
     };
-    const context = {};
     const reportServerAggregator = new ReportServerAggregator(aggregator);
     const output = buildOutput(config, reportServerAggregator);
 
