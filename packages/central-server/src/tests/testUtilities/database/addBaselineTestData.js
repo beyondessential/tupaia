@@ -1,9 +1,10 @@
 import { encryptPassword } from '@tupaia/auth';
 import { generateId } from '@tupaia/database';
-import { createUser as createUserAccessor } from '../../../dataAccessors';
+
 import { configureEnv } from '../../../configureEnv';
-import { getModels } from './getModels';
+import { createUser as createUserAccessor } from '../../../dataAccessors';
 import { TEST_API_USER_EMAIL, TEST_API_USER_PASSWORD, TEST_USER_EMAIL } from '../constants';
+import { getModels } from './getModels';
 
 const models = getModels();
 
@@ -85,7 +86,7 @@ export async function addBaselineTestData() {
     },
     {
       user_account_id: apiUser.userId,
-      secret_key_hash: encryptPassword(TEST_API_USER_PASSWORD, process.env.API_CLIENT_SALT),
+      secret_key_hash: await encryptPassword(TEST_API_USER_PASSWORD),
     },
   );
 }
