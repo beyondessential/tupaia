@@ -16,7 +16,7 @@ const SyncContext = createContext<SyncContextType | null>(null);
 // TODO: Move to config model RN-1668
 const SYNC_INTERVAL = 1000 * 30;
 
-export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
+export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
   const [isSyncScheduled, setIsSyncScheduled] = useState(false);
   const { models } = useDatabase();

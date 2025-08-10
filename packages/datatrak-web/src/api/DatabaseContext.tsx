@@ -12,7 +12,7 @@ export type DatabaseContextType = DatatrakWebUserRequest.ResBody & {
 
 export const DatabaseContext = createContext<DatabaseContextType | null>(null);
 
-export const DatabaseProvider = ({ children }: { children: React.ReactNode }) => {
+export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [models, setModels] = useState<DatatrakWebModelRegistry | null>(null);
 
   useEffect(() => {
