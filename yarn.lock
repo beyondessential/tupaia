@@ -12130,6 +12130,8 @@ __metadata:
   dependencies:
     "@tupaia/constants": "workspace:*"
     "@tupaia/database": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     lodash: ^4.17.4
     rimraf: ^6.0.1
   languageName: unknown
