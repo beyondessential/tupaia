@@ -36,7 +36,7 @@ export class GetDataTableTypes extends GETHandler {
   }
 
   /**
-   * @param {*} recordId A data table type (the enum value).
+   * @param {DataTableType} recordId A data table type (the enum value).
    * @returns {Promise<{ id: DataTableType, type: DataTableType }>}
    */
   async findSingleRecord(recordId) {
