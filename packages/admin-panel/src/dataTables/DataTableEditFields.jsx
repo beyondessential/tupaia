@@ -12,7 +12,7 @@ import {
 } from '@tupaia/ui-components';
 import { EditorInputField } from '../editor';
 import { onInputChange } from '../editor/FieldsEditor';
-import { getColumns, getRows, labelToId, useHasBesAdminAccess } from '../utilities';
+import { getColumns, getRows, labelToId } from '../utilities';
 import { PreviewFilters } from './components/PreviewFilters';
 import { SqlDataTableConfigEditFields } from './config';
 import { PlayButton } from './PlayButton';
@@ -46,7 +46,6 @@ const typeFieldsMap = {
 
 export const DataTableEditFields = React.memo(
   ({ onEditField, recordData, isLoading: isDataLoading, fields }) => {
-    const hasBesAdminAccess = useHasBesAdminAccess();
     const [fetchDisabled, setFetchDisabled] = useState(false);
     const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
     const {
@@ -127,10 +126,6 @@ export const DataTableEditFields = React.memo(
               {sources.map(source => {
                 const field = getFieldBySource(source);
                 const { Header, editConfig = {}, required, editable = true } = field;
-
-                if (typeof editConfig.options === 'function') {
-                  editConfig.options = editConfig.options(hasBesAdminAccess);
-                }
 
                 return (
                   <EditorInputField

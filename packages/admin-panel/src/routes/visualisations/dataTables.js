@@ -1,4 +1,3 @@
-import { DataTableType } from '@tupaia/types';
 import { DataTableEditFields } from '../../dataTables/DataTableEditFields';
 import { onProcessDataForSave } from '../../dataTables/onProcessDataForSave';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
@@ -8,16 +7,6 @@ import { VIZ_BUILDER_PERMISSION_GROUP } from '../../utilities/userAccess';
 const RESOURCE_NAME = { singular: 'data table' };
 
 const DATA_TABLES_ENDPOINT = 'dataTables';
-
-/**
- * @param {boolean} hasBesAdminAccess
- * @returns {Array<{label: string, value: string}>}
- */
-const getDataTableTypeOptions = hasBesAdminAccess =>
-  Object.values(DataTableType)
-    // Only SQL tables are relevant to non-BES-Admin Viz Builder Users
-    .filter(hasBesAdminAccess ? () => true : type => type === DataTableType.sql)
-    .map(type => ({ label: type, value: type }));
 
 const FIELDS = [
   {
@@ -35,7 +24,9 @@ const FIELDS = [
     source: 'type',
     required: true,
     editConfig: {
-      options: getDataTableTypeOptions,
+      optionsEndpoint: 'dataTableTypes',
+      optionLabelKey: 'type',
+      optionValueKey: 'id',
     },
   },
   {
