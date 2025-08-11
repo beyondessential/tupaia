@@ -34,7 +34,7 @@ const InputRow = styled.div`
   }
 `;
 
-const NoConfig = () => <>This Data Table type has no configuration options</>;
+const NoConfig = () => 'This Data Table type has no configuration options';
 
 const typeFieldsMap = {
   ...Object.fromEntries(Object.values(DataTableType).map(type => [type, NoConfig])),
