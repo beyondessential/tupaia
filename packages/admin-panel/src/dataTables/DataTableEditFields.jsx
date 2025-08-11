@@ -42,9 +42,7 @@ const typeFieldsMap = {
 };
 
 export const DataTableEditFields = React.memo(
-  props => {
-    const { onEditField, recordData, isLoading: isDataLoading, fields } = props;
-
+  ({ onEditField, recordData, isLoading: isDataLoading, fields }) => {
     const [fetchDisabled, setFetchDisabled] = useState(false);
     const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
     const {
