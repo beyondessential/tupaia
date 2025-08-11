@@ -82,7 +82,7 @@ export const DataTableEditFields = React.memo(
     const columns = useMemo(() => getColumns(reportData), [reportData]);
     const rows = useMemo(() => getRows(reportData), [reportData]);
 
-    if (isDataLoading) null;
+    if (isDataLoading) return null;
 
     const ConfigComponent = typeFieldsMap[recordData.type] ?? null;
 
