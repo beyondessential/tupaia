@@ -9,7 +9,7 @@ import { GETHandler } from '../GETHandler';
 
 /**
  * Custom implementation required for this route as there is no corresponding
- * DatabaseModel for DataTableType. It's an enum, not a table.
+ * DatabaseModel for DataTableType. It’s an enum, not a table.
  */
 export class GetDataTableTypes extends GETHandler {
   async assertUserHasAccess() {
