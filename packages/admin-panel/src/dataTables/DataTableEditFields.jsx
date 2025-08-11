@@ -44,9 +44,6 @@ const typeFieldsMap = {
 export const DataTableEditFields = React.memo(
   props => {
     const { onEditField, recordData, isLoading: isDataLoading, fields } = props;
-    if (isDataLoading) {
-      return <div />;
-    }
 
     const [fetchDisabled, setFetchDisabled] = useState(false);
     const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
@@ -84,6 +81,8 @@ export const DataTableEditFields = React.memo(
 
     const columns = useMemo(() => getColumns(reportData), [reportData]);
     const rows = useMemo(() => getRows(reportData), [reportData]);
+
+    if (isDataLoading) null;
 
     const ConfigComponent = typeFieldsMap[recordData.type] ?? null;
 
