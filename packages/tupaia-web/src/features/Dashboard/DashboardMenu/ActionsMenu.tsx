@@ -39,9 +39,8 @@ export const ActionsMenu = () => {
     if (mailingList.isSubscribed) {
       menuOptions.push({
         label: 'Subscribed',
-        ActionIcon: SubscribedIcon,
-        color: 'primary',
         action: toggleSubscribeModal,
+        ActionIcon: SubscribedIcon,
         toolTipTitle: 'Unsubscribe from email updates',
       });
     } else {

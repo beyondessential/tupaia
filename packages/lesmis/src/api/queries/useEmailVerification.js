@@ -5,9 +5,13 @@ import { get } from '../api';
 export const useEmailVerification = () => {
   const [{ verifyEmailToken }] = useUrlSearchParams();
 
-  return useQuery(['user', verifyEmailToken], () => get(`verify/${verifyEmailToken}`), {
-    refetchOnWindowFocus: false,
-    retry: 0,
-    enabled: !!verifyEmailToken,
-  });
+  return useQuery(
+    ['user', verifyEmailToken],
+    () => get(`verify/${encodeURIComponent(verifyEmailToken)}`),
+    {
+      refetchOnWindowFocus: false,
+      retry: 0,
+      enabled: !!verifyEmailToken,
+    },
+  );
 };

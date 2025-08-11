@@ -68,7 +68,7 @@ const USER = [
     name: 'Test User',
     email: 'testuser@tupaia.org',
     password_hash: 'hash',
-    password_salt: 'salt',
+    legacy_password_salt: 'salt',
   },
 ];
 
