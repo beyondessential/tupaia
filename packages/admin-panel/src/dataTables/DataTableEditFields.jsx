@@ -18,6 +18,8 @@ import { PlayButton } from './PlayButton';
 import { onInputChange } from '../editor/FieldsEditor';
 import { EditorInputField } from '../editor';
 
+const sources = ['code', 'description', 'permission_groups', 'type'];
+
 const StyledGrid = styled(Grid)`
   height: 400px;
 `;
@@ -107,8 +109,6 @@ export const DataTableEditFields = React.memo(
     };
 
     const getFieldBySource = source => fields.find(field => field.source === source);
-
-    const sources = ['code', 'description', 'permission_groups', 'type'];
 
     const onChangeField = (inputKey, inputValue, editConfig) => {
       if (inputKey === 'type') {
