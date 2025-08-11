@@ -12,6 +12,7 @@ export const createDatabase = async (): Promise<{
   await migrate(database);
 
   await database.waitForChangeChannel();
+  console.log('Successfully connected to pubsub service');
 
   const models = new ModelRegistry(database, browserModelClasses) as DatatrakWebModelRegistry;
 
