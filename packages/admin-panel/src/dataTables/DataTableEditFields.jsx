@@ -159,7 +159,7 @@ export const DataTableEditFields = React.memo(
                     externalDatabaseConnections.find(
                       connection =>
                         connection.code === recordData?.config?.externalDatabaseConnectionCode,
-                    ) || {}
+                    ) ?? {}
                   }
                 />
               )}
