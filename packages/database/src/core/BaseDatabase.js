@@ -121,10 +121,6 @@ export class BaseDatabase {
 
   generateId = generateId;
 
-  async closeConnections() {
-    return this.connection.destroy();
-  }
-
   async fetchSchemaForTable(databaseRecord, schemaName) {
     await this.waitUntilConnected();
     return this.connection(databaseRecord).withSchema(schemaName).columnInfo();
@@ -538,7 +534,7 @@ export class BaseDatabase {
     if (this.changeChannel) {
       await this.changeChannel.close();
     }
-    return super.closeConnections();
+    return this.connection.destroy();
   }
 
   addSchemaChangeHandler(handler) {
