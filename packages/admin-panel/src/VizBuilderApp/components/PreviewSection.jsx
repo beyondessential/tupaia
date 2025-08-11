@@ -295,6 +295,7 @@ export const PreviewSection = () => {
               showPresentationAsJson={showPresentationAsJson && presentationSchema}
             >
               <PresentationConfigAssistant
+                presentationOptions={visualisation.presentation}
                 dataStructure={{ columns: transformedColumns }}
                 onAssistantResponse={handleAssistantResponse}
               />

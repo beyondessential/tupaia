@@ -82,6 +82,7 @@ const MessageWrapper = styled.div<MessageWrapperProps>`
   gap: 8px;
   animation: ${fadeIn} 0.3s --ease-out-quad;
   flex-direction: ${props => (props.isOwn ? 'row-reverse' : 'row')};
+  margin: 0 0.5rem;
 `;
 
 const MessageContent = styled.div<MessageContentProps>`
@@ -89,6 +90,7 @@ const MessageContent = styled.div<MessageContentProps>`
   flex-direction: column;
   align-items: ${props => (props.isOwn ? 'flex-end' : 'flex-start')};
   ${props => (props.bold ? 'font-weight: 600;' : '')};
+  width: 80%;
 `;
 
 const BaseMessageBubble = styled.p`

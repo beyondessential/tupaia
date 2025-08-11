@@ -5,7 +5,12 @@ export type ResBody = {
   presentationConfig?: Record<string, unknown>;
   message: string;
 };
-export type ReqBody = Record<string, never>;
+
+export type ReqBody = {
+  inputMessage: string;
+  dataStructure: Record<string, unknown>;
+  presentationOptions: Record<string, unknown>;
+};
 export interface ReqQuery {
   fields?: string[];
 }

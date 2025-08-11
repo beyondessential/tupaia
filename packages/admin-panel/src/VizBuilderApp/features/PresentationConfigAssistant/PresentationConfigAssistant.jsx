@@ -14,13 +14,18 @@ const Wrapper = styled.article`
   padding: 0.625rem;
 `;
 
-export const PresentationConfigAssistant = ({ dataStructure, onAssistantResponse }) => {
+export const PresentationConfigAssistant = ({
+  dataStructure,
+  onAssistantResponse,
+  presentationOptions,
+}) => {
   const [currentMessage, setCurrentMessage] = useState(null);
   const { messages, addVisualisationMessage } = usePresentationConfigAssistantContext();
 
   const { data: completion, isFetching } = usePresentationOptionsPromptQuery(
     currentMessage,
     dataStructure,
+    presentationOptions,
     {
       enabled: !!currentMessage,
     },
