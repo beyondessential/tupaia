@@ -122,7 +122,7 @@ export const DataTableEditFields = React.memo(
     return (
       <div>
         <Accordion defaultExpanded>
-          <AccordionSummary>Data Table</AccordionSummary>
+          <AccordionSummary>Data table</AccordionSummary>
           <AccordionDetails>
             <InputRow>
               {sources.map(source => {
@@ -148,8 +148,8 @@ export const DataTableEditFields = React.memo(
               {recordData?.type === DataTableType.sql && (
                 <ExternalDatabaseConnectionAutocomplete // Provide options directly to base Autocomplete
                   options={externalDatabaseConnections}
-                  label="Database Connection"
-                  onChange={(event, selectedValues) =>
+                  label="Database connection"
+                  onChange={(_event, selectedValues) =>
                     onSqlConfigChange('externalDatabaseConnectionCode', selectedValues?.code)
                   }
                   placeholder={recordData?.config?.externalDatabaseConnectionCode}
@@ -200,7 +200,7 @@ export const DataTableEditFields = React.memo(
                   isError={isError}
                   error={error}
                   isNoData={!rows.length}
-                  noDataMessage="No Data Found"
+                  noDataMessage="No data found"
                 >
                   <DataGrid rows={rows} columns={columns} autoPageSize />
                 </FetchLoader>
