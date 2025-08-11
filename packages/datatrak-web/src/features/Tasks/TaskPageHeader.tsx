@@ -72,8 +72,8 @@ export const TaskPageHeader = ({ backTo, children, title, ...props }: TaskPageHe
     <Wrapper {...props}>
       {!isMobile && (
         <Container>
-          <BackButton to={from || backTo}>
-            <ChevronLeft />
+          <BackButton aria-label="Back to all tasks" to={from || backTo}>
+            <ChevronLeft style={{ fontSize: '1.5rem' }} />
           </BackButton>
           <HeadingContainer>
             <TaskIcon aria-hidden htmlColor={primaryColor} />
