@@ -9,10 +9,15 @@ const RESOURCE_NAME = { singular: 'data table' };
 
 const DATA_TABLES_ENDPOINT = 'dataTables';
 
-const dataTableTypeOptions = Object.values(DataTableType).map(type => ({
-  label: type,
-  value: type,
-}));
+/**
+ * @param {boolean} hasBesAdminAccess
+ * @returns {Array<{label: string, value: string}>}
+ */
+const getDataTableTypeOptions = hasBesAdminAccess =>
+  Object.values(DataTableType)
+    // Only SQL tables are relevant to non-BES-Admin Viz Builder Users
+    .filter(hasBesAdminAccess ? () => true : type => type === DataTableType.sql)
+    .map(type => ({ label: type, value: type }));
 
 const FIELDS = [
   {
@@ -30,7 +35,7 @@ const FIELDS = [
     source: 'type',
     required: true,
     editConfig: {
-      options: dataTableTypeOptions,
+      options: getDataTableTypeOptions,
     },
   },
   {
