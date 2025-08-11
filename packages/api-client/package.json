@@ -21,6 +21,7 @@
     "directory": "packages/api-client"
   },
   "dependencies": {
+    "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",

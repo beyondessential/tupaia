@@ -38,28 +38,37 @@ import {
   UnmarkSessionAsProcessingFunction,
 } from '../types';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
+import { SyncServerStartSessionRequest, SyncSession } from '@tupaia/types';
 
-const errorMessageFromSession = (session: SyncSessionRecord) =>
-  `Sync session '${session.id}' encountered an error: ${session.errors.at(-1)}`;
+const DEFAULT_CONFIG: SyncServerConfig = {
+  maxRecordsPerSnapshotChunk: 10000,
+  lookupTable: {
+    perModelUpdateTimeoutMs: 1000000,
+    avoidRepull: false,
+  },
+  snapshotTransactionTimeoutMs: 10 * 60 * 1000,
+  syncSessionTimeoutMs: 20 * 60 * 1000,
+  maxConcurrentSessions: 4,
+};
+
+const errorMessageFromSession = (session: SyncSession) =>
+  `Sync session '${session.id}' encountered an error: ${session.errors?.at(-1)}`;
 
 export class CentralSyncManager {
   models: SyncServerModelRegistry;
 
   config: SyncServerConfig;
 
-  constructor(models: SyncServerModelRegistry) {
+  constructor(
+    models: SyncServerModelRegistry,
+    overrideConfig: Partial<SyncServerConfig> = DEFAULT_CONFIG,
+  ) {
     this.models = models;
 
     // TODO: Move this to a config model RN-1668
     this.config = {
-      maxRecordsPerSnapshotChunk: 10000,
-      lookupTable: {
-        perModelUpdateTimeoutMs: 1000000,
-        avoidRepull: false,
-      },
-      snapshotTransactionTimeoutMs: 10 * 60 * 1000,
-      syncSessionTimeoutMs: 20 * 60 * 1000,
-      maxConcurrentSessions: 4,
+      ...DEFAULT_CONFIG,
+      ...overrideConfig,
     };
   }
 
@@ -76,13 +85,88 @@ export class CentralSyncManager {
     return { tick: tock - 1, tock };
   }
 
-  async getIsSyncCapacityFull() {
+  async getIsSyncCapacityFull(): Promise<boolean> {
     const { maxConcurrentSessions } = this.config;
     const activeSyncs = await this.models.syncSession.find({
       completed_at: null,
       errors: null,
     });
     return activeSyncs.length >= maxConcurrentSessions;
+  }
+
+  async queueDeviceForSync(
+    deviceId: string,
+    urgent: boolean = false,
+    lastSyncedTick: number = 0,
+  ) {
+    const staleSessions = await this.models.syncSession.find({
+      completed_at: null,
+      'info->>deviceId': deviceId,
+    });
+
+    // ... and close them out if so
+    // (highly likely 0 or 1, but still loop as multiples are still theoretically possible)
+    for (const session of staleSessions) {
+      await completeSyncSession(
+        this.models.syncSession,
+        this.models.database,
+        session.id,
+        'Session marked as completed due to its device reconnecting',
+      );
+      const durationMs = Date.now() - session.start_time;
+
+      log.info('StaleSyncSessionCleaner.closedReconnectedSession', {
+        sessionId: session.id,
+        durationMs,
+        deviceId: session.info.deviceId,
+      });
+    }
+
+    // now update our position in the queue and check if we're at the front of it
+    const queueRecord = await this.models.syncQueuedDevice.checkSyncRequest({
+      lastSyncedTick,
+      urgent,
+      deviceId,
+    });
+
+    log.info('Queue position', {
+      lastSyncedTick: queueRecord.last_synced_tick,
+      deviceId: queueRecord.id,
+      urgent: queueRecord.urgent,
+    });
+
+    // if we're not at the front of the queue, we're waiting
+    if (queueRecord.id !== deviceId) {
+      return {
+        status: SyncServerStartSessionRequest.QueueStatus.WaitingInQueue,
+        behind: {
+          lastSyncedTick: queueRecord.last_synced_tick,
+          deviceId: queueRecord.id,
+          urgent: queueRecord.urgent,
+        },
+      };
+    }
+
+    // we're at the front of the queue, but if the previous device's sync is still
+    // underway we need to wait for that
+    const isSyncCapacityFull = await this.getIsSyncCapacityFull();
+    if (isSyncCapacityFull) {
+      return {
+        status: SyncServerStartSessionRequest.QueueStatus.ActiveSync,
+      };
+    }
+
+    // remove our place in the queue before starting sync
+    // (if the resulting sync has an error, we'll be knocked to the back of the queue
+    // but that's fine. It will leave some room for non-errored devices to sync, and
+    // our requests will get priority once our error resolves as we'll have an older
+    // lastSyncedTick)
+    await queueRecord.delete();
+
+    const { sessionId } = await this.startSession({
+      deviceId,
+    });
+    return { sessionId };
   }
 
   async startSession(info = {}): Promise<StartSessionResult> {
@@ -104,7 +188,7 @@ export class CentralSyncManager {
     // no await as prepare session (especially the tickTockGlobalClock action) might get blocked
     // and take a while if the central server is concurrently persisting records from another client.
     // client should poll for the result later.
-    this.prepareSession(syncSession).finally(unmarkSessionAsProcessing);
+    this.prepareSession(sessionId).finally(unmarkSessionAsProcessing);
 
     log.info('CentralSyncManager.startSession', {
       sessionId: syncSession.id,
@@ -125,9 +209,10 @@ export class CentralSyncManager {
     if (
       syncSessionTimeoutMs &&
       !session.errors &&
-      session.updatedAt - session.createdAt > syncSessionTimeoutMs
+      session.last_connection_time - session.start_time > syncSessionTimeoutMs
     ) {
-      await session.markErrored(
+      await this.models.syncSession.markSessionErrored(
+        sessionId,
         `Sync session ${sessionId} timed out after ${syncSessionTimeoutMs} ms`,
       );
     }
@@ -135,11 +220,11 @@ export class CentralSyncManager {
     if (session.errors) {
       throw new Error(errorMessageFromSession(session));
     }
-    if (session.completedAt) {
+    if (session.completed_at) {
       throw new Error(`Sync session '${sessionId}' is already completed`);
     }
-    session.last_connection_time = new Date();
-    await session.save();
+
+    await this.models.syncSession.updateById(sessionId, { last_connection_time: new Date() });
 
     return session;
   }
@@ -150,16 +235,16 @@ export class CentralSyncManager {
     return { startedAtTick: session.started_at_tick };
   }
 
-  async prepareSession(syncSession: SyncSessionRecord): Promise<PrepareSessionResult | void> {
+  async prepareSession(sessionId: string): Promise<PrepareSessionResult | void> {
     try {
-      await createSnapshotTable(this.models.database, syncSession.id);
+      await createSnapshotTable(this.models.database, sessionId);
       const { tick } = await this.tickTockGlobalClock(this.models);
-      await syncSession.markAsStartedAt(tick);
+      await this.models.syncSession.updateById(sessionId, { started_at_tick: tick });
 
-      return { sessionId: syncSession.id, tick };
+      return { sessionId, tick };
     } catch (error: any) {
       log.error('CentralSyncManager.prepareSession encountered an error', error);
-      await this.models.syncSession.markSessionErrored(syncSession.id, error.message);
+      await this.models.syncSession.markSessionErrored(sessionId, error.message);
     }
   }
 
@@ -196,7 +281,8 @@ export class CentralSyncManager {
     // if this session is not marked as processing, but also never set startedAtTick, record an error
     const session = await this.connectToSession(sessionId);
     if (session.started_at_tick === null) {
-      await session.markErrored(
+      await this.models.syncSession.markSessionErrored(
+        sessionId,
         'Session initiation incomplete, likely because the central server restarted during the process',
       );
       throw new Error(errorMessageFromSession(session));
@@ -218,7 +304,8 @@ export class CentralSyncManager {
     // if this snapshot is not marked as processing, but also never completed, record an error
     const session = await this.connectToSession(sessionId);
     if (session.snapshot_completed_at === null) {
-      await session.markErrored(
+      await this.models.syncSession.markSessionErrored(
+        sessionId,
         'Snapshot processing incomplete, likely because the central server restarted during the snapshot',
       );
       throw new Error(errorMessageFromSession(session));
@@ -245,10 +332,10 @@ export class CentralSyncManager {
     snapshotParams: SnapshotParams,
     unmarkSessionAsProcessing: () => Promise<void>,
   ): Promise<void> {
-    const { since, projectIds, deviceId } = snapshotParams;
+    const { since, projectIds, userId, deviceId } = snapshotParams;
     let transactionTimeout;
     try {
-      const session = await this.connectToSession(sessionId);
+      await this.connectToSession(sessionId);
 
       // will wait for concurrent snapshots to complete if we are currently at capacity, then
       // set the snapshot_started_at timestamp before we proceed with the heavy work below
@@ -261,9 +348,7 @@ export class CentralSyncManager {
 
       await this.waitForPendingEdits(tick);
 
-      session.pull_since = since;
-      session.pull_until = tick;
-      await session.save();
+      await this.models.syncSession.updateById(sessionId, { pull_since: since, pull_until: tick });
 
       // snapshot inside a "repeatable read" transaction, so that other changes made while this
       // snapshot is underway aren't included (as this could lead to a pair of foreign records with
@@ -286,6 +371,7 @@ export class CentralSyncManager {
             since,
             sessionId,
             deviceId,
+            userId,
             projectIds,
             this.config,
           );
@@ -295,8 +381,7 @@ export class CentralSyncManager {
       // read isolation level can suffer serialization failures if a record is updated inside and
       // outside the transaction, and the session is being updated to show the last connection
       // time throughout the snapshot process
-      session.snapshot_completed_at = new Date();
-      await session.save();
+      await this.models.syncSession.updateById(sessionId, { snapshot_completed_at: new Date() });
     } catch (error: any) {
       log.error('CentralSyncManager.setupSnapshotForPull encountered an error', {
         sessionId,
@@ -377,7 +462,7 @@ export class CentralSyncManager {
 
       const isInitialBuildOfLookupTable = Number.parseInt(previouslyUpToTick, 10) === -1;
 
-      await this.models.wrapInRepeatableReadTransaction(
+      const changesCount = await this.models.wrapInRepeatableReadTransaction(
         async (transactingModels: SyncServerModelRegistry) => {
           // When it is initial build of sync lookup table, by setting it to null,
           // it will get the updated_at_sync_tick from the actual tables.
@@ -389,13 +474,12 @@ export class CentralSyncManager {
             ? null
             : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
 
-          void (await updateLookupTable(
+          const updatedCount = await updateLookupTable(
             getModelsForPull(transactingModels.getModels()),
             previouslyUpToTick,
             this.config,
             syncLookupTick,
-            debugObject,
-          ));
+          );
 
           // update the last successful lookup table in the same transaction - if updating the cursor fails,
           // we want to roll back the rest of the saves so that the next update can still detect the records that failed
@@ -404,8 +488,12 @@ export class CentralSyncManager {
             lastSuccessfulLookupTableUpdate: currentTick,
           });
           await transactingModels.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, currentTick);
+
+          return updatedCount;
         },
       );
+
+      await debugObject.addInfo({ changesCount });
 
       // If we used the current sync tick to record against each update to the sync lookup table, we would hit an edge case:
       // 1. Current sync tick is = 1, encounter A is updated
@@ -540,7 +628,8 @@ export class CentralSyncManager {
     // if this session is not marked as processing, but also never set persistCompletedAt, record an error
     const session = await this.connectToSession(sessionId);
     if (session.persist_completed_at === null) {
-      await session.markErrored(
+      await this.models.syncSession.markSessionErrored(
+        sessionId,
         'Push persist incomplete, likely because the central server restarted during the process',
       );
       throw new Error(errorMessageFromSession(session));

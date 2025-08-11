@@ -20,8 +20,16 @@ exports.up = function (db) {
       RETURNS trigger
       LANGUAGE plpgsql AS
       $func$
+      DECLARE
+        current_tick bigint;
       BEGIN
-        PERFORM pg_try_advisory_xact_lock_shared(OLD.updated_at_sync_tick);
+        -- First get the current sync tick
+        SELECT value FROM local_system_fact WHERE key = 'currentSyncTick' INTO current_tick;
+
+        -- Then take an advisory lock on that sync tick value (if one doesn't already exist), to
+        -- record that an active transaction is using this sync tick
+        -- see waitForPendingEditsUsingSyncTick for more details
+        PERFORM pg_try_advisory_xact_lock_shared(current_tick);
 
         INSERT INTO tombstone (
           record_id,
@@ -32,7 +40,7 @@ exports.up = function (db) {
           OLD.id,
           TG_TABLE_NAME,
           NOW(),
-          (SELECT value FROM local_system_fact WHERE key = 'currentSyncTick')::BIGINT
+          current_tick::BIGINT
         );
         RETURN OLD;
       END

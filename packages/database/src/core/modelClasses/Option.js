@@ -62,7 +62,6 @@ export class OptionModel extends DatabaseModel {
     return Math.max(...sorOrders);
   }
 
-  // TODO: should filter this
   async buildSyncLookupQueryDetails() {
     return null;
   }

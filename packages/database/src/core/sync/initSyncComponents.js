@@ -1,61 +1,24 @@
 import { SyncTickFlags } from '@tupaia/constants';
 
-export const NON_SYNCING_TABLES = [
-  'access_request',
-  'ancestor_descendant_relation',
-  'analytics',
-  'api_client',
-  'api_request_log',
-  'comment',
-  'dashboard',
-  'dashboard_item',
-  'dashboard_mailing_list',
-  'dashboard_mailing_list_entry',
-  'dashboard_relation',
-  'dashboard_report',
-  'data_element_data_group',
-  'data_element_data_service',
-  'data_service_entity',
-  'data_service_sync_group',
-  'data_table',
-  'debug_log',
-  'dhis_instance',
-  'entity_relation',
-  'external_database_connection',
-  'facility',
-  'feed_item',
-  'geographical_area',
-  'indicator',
-  'landing_page',
-  'legacy_report',
-  'local_system_fact',
-  'log$_answer',
-  'log$_data_element',
-  'log$_entity',
-  'log$_question',
-  'log$_survey',
-  'log$_survey_response',
-  'map_overlay',
-  'map_overlay_group',
-  'map_overlay_group_relation',
-  'meditrak_device',
-  'meditrak_sync_queue',
-  'migrations',
-  'one_time_login',
-  'refresh_token',
-  'report',
-  'spatial_ref_sys',
-  'superset_instance',
-  'survey_response_comment',
-  'sync_device_tick',
-  'sync_group_log',
-  'sync_session',
-  'user_country_access_attempt',
+export const SYNCING_TABLES = [
+  'answer',
+  'entity',
+  'entity_hierarchy',
+  'entity_parent_child_relation',
+  'option',
+  'option_set',
+  'permission_group',
+  'project',
+  'question',
+  'survey',
+  'survey_group',
+  'survey_response',
+  'survey_screen',
+  'survey_screen_component',
+  'task',
+  'task_comment',
+  'user_account',
   'user_entity_permission',
-  'user_favourite_dashboard_item',
-  'user_session',
-  'tombstone',
-  'sync_lookup',
 ];
 
 const TABLES_WITHOUT_COLUMN_QUERY = `
@@ -80,7 +43,7 @@ const TABLES_WITHOUT_COLUMN_QUERY = `
   AND
     pg_attribute.attname IS NULL
   AND
-    pg_class.relname NOT IN (${NON_SYNCING_TABLES.map(t => `'${t}'`).join(',')});
+    pg_class.relname IN (${SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
 const TABLES_WITHOUT_TRIGGER_QUERY = `
@@ -108,10 +71,10 @@ const TABLES_WITHOUT_TRIGGER_QUERY = `
   AND
     t.table_type != 'VIEW'
   AND
-    t.table_name NOT IN (${NON_SYNCING_TABLES.map(t => `'${t}'`).join(',')});
+    t.table_name IN (${SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
-const getTablesQuery = (withTrigger = false) => `
+const getTablesForTombstoneTriggerQuery = (withTrigger = false) => `
   SELECT
     t.table_name as table
   FROM
@@ -136,11 +99,11 @@ const getTablesQuery = (withTrigger = false) => `
   AND
     t.table_type != 'VIEW'
   AND
-    t.table_name NOT IN (${NON_SYNCING_TABLES.map(t => `'${t}'`).join(',')});
+    t.table_name IN (${SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
-const TABLES_WITHOUT_TRIGGER_FOR_DELETE_QUERY = getTablesQuery(false);
-export const TABLES_WITH_TRIGGER_FOR_DELETE_QUERY = getTablesQuery(true);
+const TABLES_WITHOUT_TOMBSTONE_TRIGGER_QUERY = getTablesForTombstoneTriggerQuery(false);
+export const TABLES_WITH_TOMBSTONE_TRIGGER_QUERY = getTablesForTombstoneTriggerQuery(true);
 
 export async function initSyncComponents(driver, isClient = false) {
   // add column: holds last update tick, default to -999 (not modified locally) on client,
@@ -172,7 +135,7 @@ export async function initSyncComponents(driver, isClient = false) {
   }
 
   const { rows: tablesWithoutTriggerForDelete } = await driver.runSql(
-    TABLES_WITHOUT_TRIGGER_FOR_DELETE_QUERY,
+    TABLES_WITHOUT_TOMBSTONE_TRIGGER_QUERY,
   );
   for (const { table } of tablesWithoutTriggerForDelete) {
     console.log(`Adding add_to_tombstone_on_delete trigger for delete to ${table}`);

@@ -30,9 +30,9 @@ export const createSnapshotTable = async (database: TupaiaDatabase, sessionId: s
   await database.executeSql(`
     CREATE TABLE ${tableName} (
       id BIGSERIAL PRIMARY KEY,
-      direction CHARACTER VARYING(255) NOT NULL,
-      record_type CHARACTER VARYING(255) NOT NULL,
-      record_id CHARACTER VARYING(255) NOT NULL,
+      direction TEXT NOT NULL,
+      record_type TEXT NOT NULL,
+      record_id TEXT NOT NULL,
       data json NOT NULL,
       saved_at_sync_tick BIGINT, -- saved_at_sync_tick is used to check whether record has been updated between incoming and outgoing phase of a single session
       sync_lookup_id BIGINT,

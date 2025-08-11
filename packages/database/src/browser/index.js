@@ -3,3 +3,4 @@
  */
 export * from '../core';
 export { migrate } from './migrate';
+export { browserModelClasses } from './modelClasses';

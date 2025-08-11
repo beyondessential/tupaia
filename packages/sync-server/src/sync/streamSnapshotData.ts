@@ -1,27 +1,26 @@
 import { Response } from 'express';
-import { Readable, pipeline } from 'stream';
-import { promisify } from 'util';
 
 import { TupaiaDatabase } from '@tupaia/database';
-
-import { getSnapshotTableName, getSnapshotTableCursorName } from './manageSnapshotTable';
-import type { SyncSessionDirectionValues } from '../types';
-import { getDependencyOrder } from './getDependencyOrder';
+import {
+  getSnapshotTableName,
+  getSnapshotTableCursorName,
+  getDependencyOrder,
+  SyncSessionDirectionValues,
+} from '@tupaia/sync';
+import { StreamMessage } from '@tupaia/server-utils';
 import { camelKeys } from '@tupaia/utils';
-
-const asyncPipeline = promisify(pipeline);
 
 // TODO: Move this to a config model RN-1668
 const FETCH_SIZE = 10000;
 
-async function* streamSnapshotCursor(database: TupaiaDatabase, cursorName: string) {
+async function streamSnapshotCursor(res: Response, database: TupaiaDatabase, cursorName: string) {
   while (true) {
     const rows: any = await database.executeSql(`FETCH FORWARD ${FETCH_SIZE} FROM ${cursorName};`);
 
     if (rows.length === 0) break;
 
     for (const row of rows) {
-      yield JSON.stringify(camelKeys(row)) + '\n';
+      res.write(StreamMessage.pullChange(camelKeys(row)));
     }
   }
 }
@@ -57,10 +56,9 @@ export const streamSnapshotData = async (
         },
       );
 
-      await asyncPipeline(
-        Readable.from(streamSnapshotCursor(transactingDatabase, cursorName)),
-        res,
-      );
+      await streamSnapshotCursor(res, transactingDatabase, cursorName);
+      res.write(StreamMessage.end());
+      res.end();
     } finally {
       await transactingDatabase.executeSql(`CLOSE ${cursorName}`);
     }

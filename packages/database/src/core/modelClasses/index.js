@@ -62,6 +62,7 @@ import { UserCountryAccessAttemptModel } from './UserCountryAccessAttempt';
 import { TaskCommentModel } from './TaskComment';
 import { SyncSessionModel } from './SyncSession';
 import { SyncDeviceTickModel } from './SyncDeviceTick';
+import { SyncQueuedDeviceModel } from './SyncQueuedDevice';
 import { TombstoneModel } from './Tombstone';
 
 // export all models to be used in constructing a ModelRegistry
@@ -131,6 +132,7 @@ export const modelClasses = {
   UserCountryAccessAttempt: UserCountryAccessAttemptModel,
   SyncSession: SyncSessionModel,
   SyncDeviceTick: SyncDeviceTickModel,
+  SyncQueuedDevice: SyncQueuedDeviceModel,
 };
 
 // export any models and types that are extended in other packages
@@ -209,3 +211,4 @@ export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
 export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';
 export { SyncSessionModel, SyncSessionRecord } from './SyncSession';
 export { SyncDeviceTickModel, SyncDeviceTickRecord } from './SyncDeviceTick';
+export { SyncQueuedDeviceModel, SyncQueuedDeviceRecord } from './SyncQueuedDevice';

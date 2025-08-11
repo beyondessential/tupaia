@@ -77,17 +77,8 @@ import {
   TasksRoute,
   UserRequest,
   UserRoute,
-  SyncReadyRoute,
-  SyncReadyRequest,
-  SyncMetadataRequest,
-  SyncMetadataRoute,
-  SyncPullMetadataRequest,
-  SyncPullMetadataRoute,
-  SyncPushStatusRoute,
-  SyncPushStatusRequest,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
-import { SyncPullReadyRequest, SyncPullReadyRoute } from '../routes/SyncPullReadyRoute';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
@@ -145,21 +136,13 @@ export async function createApp() {
 
     // Sync routes
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
-    .get<SyncReadyRequest>('sync/:sessionId/status', handleWith(SyncReadyRoute))
-    .get<SyncMetadataRequest>('sync/:sessionId/metadata', handleWith(SyncMetadataRoute))
     .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
-    .get<SyncPullReadyRequest>('sync/:sessionId/pull/status', handleWith(SyncPullReadyRoute))
-    .get<SyncPullMetadataRequest>(
-      'sync/:sessionId/pull/metadata',
-      handleWith(SyncPullMetadataRoute),
-    )
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
     .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
     .put<SyncPushCompleteRequest>(
       'sync/:sessionId/push/complete',
       handleWith(SyncPushCompleteRoute),
     )
-    .get<SyncPushStatusRequest>('sync/:sessionId/push/status', handleWith(SyncPushStatusRoute))
     .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
 
     // Forward auth requests to web-config
