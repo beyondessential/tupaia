@@ -10,13 +10,16 @@ import { BrowserChangeChannel } from './BrowserChangeChannel';
  * Ideally this should stay in the database package, but it has to stay here to avoid build problems
  */
 export class DatatrakDatabase extends BaseDatabase {
-  constructor(transactingConnection?: Knex.Transaction) {
-    super(transactingConnection, undefined, ClientPgLite, getConnectionConfig);
+  constructor(
+    transactingConnection?: Knex.Transaction,
+    transactingChangeChannel?: DatabaseChangeChannel,
+  ) {
+    super(transactingConnection, transactingChangeChannel, ClientPgLite, getConnectionConfig);
   }
 
   wrapInTransaction(wrappedFunction: (db: DatatrakDatabase) => Promise<void | unknown>) {
     return this.connection.transaction(transaction =>
-      wrappedFunction(new DatatrakDatabase(transaction)),
+      wrappedFunction(new DatatrakDatabase(transaction, this.changeChannel)),
     );
   }
 
