@@ -16,6 +16,7 @@ export class BrowserChangeChannel {
   }
 
   addChannel(channel, handler) {
+    this.channels.push(channel);
     this.pg.listen(channel, async stringPayload => {
       let payload = stringPayload || '';
       
