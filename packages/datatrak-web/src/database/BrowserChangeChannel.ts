@@ -17,6 +17,6 @@ export class BrowserChangeChannel {
   }
 
   publish(channel, payload) {
-    this.pg.query(`NOTIFY ${channel}, '${JSON.stringify(payload)}'`);
+    this.pg.query(`NOTIFY ${channel}, $1`, [JSON.stringify(payload)]);
   }
 }
