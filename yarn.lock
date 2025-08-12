@@ -11551,7 +11551,6 @@ __metadata:
     pg-pubsub: ^0.8.1
     pluralize: ^8.0.0
     rand-token: ^1.0.1
-    react-autobind: 1.0.6
     rimraf: ^6.0.1
     winston: ^3.17.0
   languageName: unknown
@@ -32592,7 +32591,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-autobind@npm:1.0.6, react-autobind@npm:^1.0.6":
+"react-autobind@npm:^1.0.6":
   version: 1.0.6
   resolution: "react-autobind@npm:1.0.6"
   checksum: 0934d45cbd4c0986476ad96d96032cb091f72e23df76cf3c24ade58eb911243a61d21a1bea89cfe91cb2c1ea7b4462f0b2c895c303003bbb796d86003d796bc5
