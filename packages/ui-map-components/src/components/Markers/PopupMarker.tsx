@@ -69,8 +69,8 @@ interface PopupMarkerProps {
 export const PopupMarker = React.memo(
   ({
     onDetailButtonClick,
-    onOpen = () => null,
-    onClose = () => null,
+    onOpen = () => {},
+    onClose = () => {},
     sidePanelWidth = 0,
     buttonText,
     headerText,
