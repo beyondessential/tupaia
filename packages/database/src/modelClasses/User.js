@@ -68,7 +68,7 @@ export class UserRecord extends DatabaseRecord {
     } catch (e) {
       if (e.code === 'InvalidArg') {
         throw new DatabaseError(
-          `Malformed password for user ${this.email}. Must be in PHC String Format.`,
+          `Malformed password hash for user ${this.email}. Must be in PHC String Format.`,
         );
       }
       throw e;
