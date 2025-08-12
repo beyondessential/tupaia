@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 import { CreateActionButton } from '../../editor';
-import { prettyArray } from '../../utilities';
-import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { getPluralForm } from '../../pages/resources/resourceName';
-import { useUser } from '../../api/queries';
+import { ArrayFilter } from '../../table/columnTypes/columnFilters';
+import { prettyArray, useHasVizBuilderAccess } from '../../utilities';
 
 const RESOURCE_NAME = { singular: 'map overlay' };
 
@@ -185,7 +185,7 @@ const IMPORT_CONFIG = {
 };
 
 const LinksComponent = () => {
-  const { hasVizBuilderAccess } = useUser();
+  const hasVizBuilderAccess = useHasVizBuilderAccess();
   if (!hasVizBuilderAccess) {
     return null;
   }
