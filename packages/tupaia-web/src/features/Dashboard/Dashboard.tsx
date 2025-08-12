@@ -125,7 +125,7 @@ export const Dashboard = () => {
   useUpdateUserProjectOnSettled(projectCode);
 
   const { activeDashboard } = useDashboardContext();
-  const { isFetching: isFetchingDashboards, isSuccess: isDashboardsSuccess } = useDashboards(
+  const { isLoading: isLoadingDashboards, isSuccess: isDashboardsSuccess } = useDashboards(
     projectCode,
     entityCode,
   );
@@ -183,7 +183,7 @@ export const Dashboard = () => {
               <DashboardMenu />
             </StickyBar>
             <DashboardItemsWrapper $isExpanded={isExpanded}>
-              {isFetchingDashboards && <SpinningLoader mt={5} />}
+              {isLoadingDashboards && <SpinningLoader mt={5} />}
               {visibleDashboards?.map(item => (
                 <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
               ))}
