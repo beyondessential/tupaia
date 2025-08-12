@@ -11530,6 +11530,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    auto-bind: 4.0.0
     bson-objectid: ^2.0.4
     case: ^1.6.3
     date-fns: ^2.29.2
@@ -11550,7 +11551,6 @@ __metadata:
     pg-pubsub: ^0.8.1
     pluralize: ^8.0.0
     rand-token: ^1.0.1
-    react-autobind: 1.0.6
     rimraf: ^6.0.1
     winston: ^3.17.0
   languageName: unknown
@@ -15125,6 +15125,13 @@ __metadata:
   peerDependencies:
     babel-polyfill: ^6.9.1
   checksum: 931d902dc4f264956685912e298f95ef71774bfbd23f1fc06d72c55c6b57dffc40fd54e9be20c73bccd7ded0e64f88c8e0c81b82f306633890b6baa552402cb4
+  languageName: node
+  linkType: hard
+
+"auto-bind@npm:4.0.0":
+  version: 4.0.0
+  resolution: "auto-bind@npm:4.0.0"
+  checksum: 00cad71cce5742faccb7dd65c1b55ebc4f45add4b0c9a1547b10b05bab22813230133b0c892c67ba3eb969a4524710c5e43cc45c72898ec84e56f3a596e7a04f
   languageName: node
   linkType: hard
 
@@ -32584,7 +32591,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-autobind@npm:1.0.6, react-autobind@npm:^1.0.6":
+"react-autobind@npm:^1.0.6":
   version: 1.0.6
   resolution: "react-autobind@npm:1.0.6"
   checksum: 0934d45cbd4c0986476ad96d96032cb091f72e23df76cf3c24ade58eb911243a61d21a1bea89cfe91cb2c1ea7b4462f0b2c895c303003bbb796d86003d796bc5

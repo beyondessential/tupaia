@@ -1,6 +1,7 @@
 'use strict';
 
-import { DatabaseChangeChannel } from '../../server/DatabaseChangeChannel';
+import { TupaiaChangeChannel } from '../../server/TupaiaChangeChannel';
+import { DatabaseChangeChannel } from '../DatabaseChangeChannel';
 
 var dbm;
 var type;
@@ -42,7 +43,7 @@ const markRecordsForResync = async (changeChannel, recordType, records) => {
 };
 
 exports.up = async function (db) {
-  const changeChannel = new DatabaseChangeChannel();
+  const changeChannel = new DatabaseChangeChannel(new TupaiaChangeChannel());
   try {
     // delete all Tonga specific sync log records, as the data has been manually deleted from dhis2
     await db.runSql(`

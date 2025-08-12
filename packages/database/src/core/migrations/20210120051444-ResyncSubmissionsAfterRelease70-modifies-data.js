@@ -1,6 +1,7 @@
 'use strict';
 
-import { DatabaseChangeChannel } from '../../server/DatabaseChangeChannel';
+import { TupaiaChangeChannel } from '../../server/TupaiaChangeChannel';
+import { DatabaseChangeChannel } from '../DatabaseChangeChannel';
 import { markRecordsForResync } from '../utilities';
 
 var dbm;
@@ -72,7 +73,7 @@ const updateSyncQueueForAnswers = async db =>
       survey_response.end_time > '${MIN_SURVEY_END_TIME}'`);
 
 exports.up = async function (db) {
-  const changeChannel = new DatabaseChangeChannel();
+  const changeChannel = new DatabaseChangeChannel(new TupaiaChangeChannel());
 
   try {
     // publish changes for every survey response and answer that isn't already in

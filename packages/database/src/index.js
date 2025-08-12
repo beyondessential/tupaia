@@ -13,7 +13,7 @@ export {
 export { BaseDatabase, QUERY_CONJUNCTIONS, JOIN_TYPES } from './core/BaseDatabase';
 export { RECORDS } from './core/records';
 export { ModelRegistry } from './core/ModelRegistry';
-export { DatabaseChangeChannel } from './server/DatabaseChangeChannel';
+export { DatabaseChangeChannel } from './core/DatabaseChangeChannel';
 export { DatabaseModel } from './core/DatabaseModel';
 export { DatabaseRecord } from './core/DatabaseRecord';
 export * from './server/testUtilities';

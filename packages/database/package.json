@@ -47,6 +47,7 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "auto-bind": "4.0.0",
     "bson-objectid": "^2.0.4",
     "case": "^1.6.3",
     "date-fns": "^2.29.2",
@@ -65,7 +66,6 @@
     "pg": "8.5.1",
     "pg-pubsub": "^0.8.1",
     "rand-token": "^1.0.1",
-    "react-autobind": "1.0.6",
     "winston": "^3.17.0"
   },
   "devDependencies": {

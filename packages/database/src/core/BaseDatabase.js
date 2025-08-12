@@ -1,5 +1,5 @@
 import knex from 'knex';
-import autobind from 'react-autobind';
+import autoBind from 'auto-bind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
@@ -67,6 +67,10 @@ const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
 
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
+// no math here, just hand-tuned to be as low as possible while
+// keeping all the tests passing
+const HANDLER_DEBOUNCE_MS = 250;
+
 export class BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = false;
 
@@ -88,7 +92,7 @@ export class BaseDatabase {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
     }
 
-    autobind(this);
+    autoBind(this);
     this.changeHandlers = {};
     this.transactingChangeChannel = transactingChangeChannel;
     this.changeChannelPromise = null;
@@ -116,14 +120,6 @@ export class BaseDatabase {
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
   generateId = generateId;
-
-  async closeConnections() {
-    return this.connection.destroy();
-  }
-
-  async waitUntilConnected() {
-    await this.connectionPromise;
-  }
 
   async fetchSchemaForTable(databaseRecord, schemaName) {
     await this.waitUntilConnected();
@@ -459,6 +455,97 @@ export class BaseDatabase {
 
   get isWithinTransaction() {
     return this.connection.isTransaction;
+  }
+
+  createChangeChannel() {
+    throw new Error('createChangeChannel should be implemented by the child class');
+  }
+
+  getHandlersForChange(change) {
+    const { handler_key: specificHandlerKey, record_type: recordType } = change;
+    const handlersForCollection = this.getChangeHandlersForCollection(recordType);
+    if (specificHandlerKey) {
+      return handlersForCollection[specificHandlerKey]
+        ? [handlersForCollection[specificHandlerKey]]
+        : [];
+    }
+    return Object.values(handlersForCollection);
+  }
+
+  async notifyChangeHandlers(change) {
+    const unlock = this.handlerLock.createLock(change.record_id);
+    const handlers = this.getHandlersForChange(change);
+    const scheduledPromises = [];
+    try {
+      for (const handler of handlers) {
+        try {
+          const { scheduledPromise } = (await handler(change)) || {};
+          if (scheduledPromise) {
+            scheduledPromises.push(scheduledPromise);
+          }
+        } catch (e) {
+          winston.error(e);
+        }
+      }
+    } finally {
+      // Don't await the scheduled promises, so that we don't block the change handler from completing
+      Promise.all(scheduledPromises).finally(unlock);
+    }
+  }
+
+  async waitForAllChangeHandlers() {
+    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_MS);
+  }
+
+  getChangeHandlersForCollection(collectionName) {
+    // Instantiate the array if no change handlers currently exist for the collection
+    return (this.changeHandlers[collectionName] ??= {});
+  }
+
+  getOrCreateChangeChannel() {
+    if (!this.changeChannel) {
+      this.changeChannel = this.transactingChangeChannel || this.createChangeChannel();
+      this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
+      this.changeChannelPromise = this.changeChannel.ping(undefined, 0);
+    }
+    return this.changeChannel;
+  }
+
+  async waitUntilConnected() {
+    await this.connectionPromise;
+    if (this.changeChannel) {
+      await this.waitForChangeChannel();
+    }
+  }
+
+  async waitForChangeChannel() {
+    this.getOrCreateChangeChannel();
+    return this.changeChannelPromise;
+  }
+
+  addChangeHandlerForCollection(collectionName, changeHandler, key = this.generateId()) {
+    // if a change handler is being added, this db needs a change channel - make sure it's instantiated
+    this.getOrCreateChangeChannel();
+    this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
+    return () => {
+      delete this.getChangeHandlersForCollection(collectionName)[key];
+    };
+  }
+
+  async closeConnections() {
+    if (this.changeChannel) {
+      await this.changeChannel.close();
+    }
+    return this.connection.destroy();
+  }
+
+  addSchemaChangeHandler(handler) {
+    const changeChannel = this.getOrCreateChangeChannel();
+    return changeChannel.addSchemaChangeHandler(handler);
+  }
+
+  async markRecordsAsChanged(recordType, records) {
+    await this.getOrCreateChangeChannel().publishRecordUpdates(recordType, records);
   }
 }
 
