@@ -18,6 +18,8 @@ import { PlayButton } from './PlayButton';
 import { onInputChange } from '../editor/FieldsEditor';
 import { EditorInputField } from '../editor';
 
+const sources = ['code', 'description', 'permission_groups', 'type'];
+
 const StyledGrid = styled(Grid)`
   height: 400px;
 `;
@@ -34,7 +36,7 @@ const InputRow = styled.div`
   }
 `;
 
-const NoConfig = () => <>This Data Table type has no configuration options</>;
+const NoConfig = () => 'This Data Table type has no configuration options';
 
 const typeFieldsMap = {
   ...Object.fromEntries(Object.values(DataTableType).map(type => [type, NoConfig])),
@@ -42,12 +44,7 @@ const typeFieldsMap = {
 };
 
 export const DataTableEditFields = React.memo(
-  props => {
-    const { onEditField, recordData, isLoading: isDataLoading, fields } = props;
-    if (isDataLoading) {
-      return <div />;
-    }
-
+  ({ onEditField, recordData, isLoading: isDataLoading, fields }) => {
     const [fetchDisabled, setFetchDisabled] = useState(false);
     const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
     const {
@@ -71,7 +68,6 @@ export const DataTableEditFields = React.memo(
     const {
       data: reportData = { columns: [], rows: [], limit: 0, total: 0 },
       refetch,
-      isLoading,
       isFetching,
       isError,
       error,
@@ -85,6 +81,8 @@ export const DataTableEditFields = React.memo(
 
     const columns = useMemo(() => getColumns(reportData), [reportData]);
     const rows = useMemo(() => getRows(reportData), [reportData]);
+
+    if (isDataLoading) return null;
 
     const ConfigComponent = typeFieldsMap[recordData.type] ?? null;
 
@@ -112,8 +110,6 @@ export const DataTableEditFields = React.memo(
 
     const getFieldBySource = source => fields.find(field => field.source === source);
 
-    const sources = ['code', 'description', 'permission_groups', 'type'];
-
     const onChangeField = (inputKey, inputValue, editConfig) => {
       if (inputKey === 'type') {
         onChangeType(inputValue);
@@ -123,7 +119,7 @@ export const DataTableEditFields = React.memo(
     return (
       <div>
         <Accordion defaultExpanded>
-          <AccordionSummary>Data Table</AccordionSummary>
+          <AccordionSummary>Data table</AccordionSummary>
           <AccordionDetails>
             <InputRow>
               {sources.map(source => {
@@ -149,8 +145,8 @@ export const DataTableEditFields = React.memo(
               {recordData?.type === DataTableType.sql && (
                 <ExternalDatabaseConnectionAutocomplete // Provide options directly to base Autocomplete
                   options={externalDatabaseConnections}
-                  label="Database Connection"
-                  onChange={(event, selectedValues) =>
+                  label="Database connection"
+                  onChange={(_event, selectedValues) =>
                     onSqlConfigChange('externalDatabaseConnectionCode', selectedValues?.code)
                   }
                   placeholder={recordData?.config?.externalDatabaseConnectionCode}
@@ -160,7 +156,7 @@ export const DataTableEditFields = React.memo(
                     externalDatabaseConnections.find(
                       connection =>
                         connection.code === recordData?.config?.externalDatabaseConnectionCode,
-                    ) || {}
+                    ) ?? {}
                   }
                 />
               )}
@@ -197,11 +193,11 @@ export const DataTableEditFields = React.memo(
               </div>
               <StyledGrid item xs={12}>
                 <FetchLoader
-                  isLoading={isLoading || isFetching}
+                  isLoading={isFetching}
                   isError={isError}
                   error={error}
                   isNoData={!rows.length}
-                  noDataMessage="No Data Found"
+                  noDataMessage="No data found"
                 >
                   <DataGrid rows={rows} columns={columns} autoPageSize />
                 </FetchLoader>
