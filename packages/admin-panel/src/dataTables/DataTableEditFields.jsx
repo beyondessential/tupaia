@@ -21,8 +21,6 @@ import { useParams } from './useParams';
 
 const sources = ['code', 'description', 'permission_groups', 'type'];
 
-const sources = ['code', 'description', 'permission_groups', 'type'];
-
 const StyledGrid = styled(Grid)`
   height: 400px;
 `;
