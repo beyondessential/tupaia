@@ -1,7 +1,8 @@
+import autoBind from 'auto-bind';
 import { generateId } from './utilities/generateId';
-
 export class DatabaseChangeChannel {
   constructor(changeChannelAdapter) {
+    autoBind(this);
     this.changeChannelAdapter = changeChannelAdapter;
     this.pingListeners = {};
     this.addChannel('ping', this.notifyPingListeners);
@@ -72,7 +73,7 @@ export class DatabaseChangeChannel {
     });
   }
 
-  notifyPingListeners = (result) => {
+  notifyPingListeners(result) {
     Object.values(this.pingListeners).forEach(listener => {
       listener(result);
     });

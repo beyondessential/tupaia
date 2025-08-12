@@ -1,5 +1,5 @@
 import knex from 'knex';
-import autobind from 'react-autobind';
+import autoBind from 'auto-bind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
@@ -92,7 +92,7 @@ export class BaseDatabase {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
     }
 
-    autobind(this);
+    autoBind(this);
     this.changeHandlers = {};
     this.transactingChangeChannel = transactingChangeChannel;
     this.changeChannelPromise = null;

@@ -11530,6 +11530,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    auto-bind: 4.0.0
     bson-objectid: ^2.0.4
     case: ^1.6.3
     date-fns: ^2.29.2
@@ -15125,6 +15126,13 @@ __metadata:
   peerDependencies:
     babel-polyfill: ^6.9.1
   checksum: 931d902dc4f264956685912e298f95ef71774bfbd23f1fc06d72c55c6b57dffc40fd54e9be20c73bccd7ded0e64f88c8e0c81b82f306633890b6baa552402cb4
+  languageName: node
+  linkType: hard
+
+"auto-bind@npm:4.0.0":
+  version: 4.0.0
+  resolution: "auto-bind@npm:4.0.0"
+  checksum: 00cad71cce5742faccb7dd65c1b55ebc4f45add4b0c9a1547b10b05bab22813230133b0c892c67ba3eb969a4524710c5e43cc45c72898ec84e56f3a596e7a04f
   languageName: node
   linkType: hard
 
