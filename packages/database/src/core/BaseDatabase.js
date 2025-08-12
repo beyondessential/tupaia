@@ -69,7 +69,7 @@ const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
-const HANDLER_DEBOUNCE_DURATION = 250;
+const HANDLER_DEBOUNCE_MS = 250;
 
 export class BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = false;
@@ -494,15 +494,12 @@ export class BaseDatabase {
   }
 
   async waitForAllChangeHandlers() {
-    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
+    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_MS);
   }
 
   getChangeHandlersForCollection(collectionName) {
     // Instantiate the array if no change handlers currently exist for the collection
-    if (!this.changeHandlers[collectionName]) {
-      this.changeHandlers[collectionName] = {};
-    }
-    return this.changeHandlers[collectionName];
+    return (this.changeHandlers[collectionName] ??= {});
   }
 
   getOrCreateChangeChannel() {
