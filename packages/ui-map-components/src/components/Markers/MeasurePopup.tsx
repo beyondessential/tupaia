@@ -38,7 +38,7 @@ export const MeasurePopup = React.memo(
     return (
       <PopupMarker
         headerText={buildHeaderText(markerData, popupHeaderFormat)}
-        buttonText="See Dashboard"
+        buttonText="See dashboard"
         coordinates={coordinates}
         onDetailButtonClick={onDetailButtonClick}
       >
