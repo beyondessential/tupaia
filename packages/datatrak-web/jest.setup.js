@@ -6,5 +6,7 @@ jest.mock('@tupaia/database', () => ({
 }));
 
 jest.mock('./src/database/DatatrakDatabase', () => ({
-  DatatrakDatabase: jest.fn().mockImplementation(() => ({})),
+  DatatrakDatabase: jest.fn().mockImplementation(() => ({
+    waitForChangeChannel: jest.fn(),
+  })),
 }));
