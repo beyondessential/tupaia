@@ -16,7 +16,16 @@ export class BrowserChangeChannel {
   }
 
   addChannel(channel, handler) {
-    this.pg.listen(channel, handler);
+    this.pg.listen(channel, async stringPayload => {
+      let payload = stringPayload || '';
+      
+      // If the payload is valid JSON, then replace it with such
+      try {
+        payload = JSON.parse(payload);
+      } catch {}
+
+      await handler(payload);
+    });
   }
 
   publish(channel, payload) {
