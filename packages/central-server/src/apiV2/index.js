@@ -142,6 +142,7 @@ import {
 import { EditEntityHierarchy, GETEntityHierarchy } from './entityHierarchy';
 import { CreateTask, EditTask, GETTasks } from './tasks';
 import { CreateTaskComment, GETTaskComments } from './taskComments';
+import { GetDataTableTypes } from './dataTableTypes';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -239,6 +240,7 @@ apiV2.get('/dataElements/:recordId?', useRouteHandler(GETDataElements));
 apiV2.get('/dataGroups/:parentRecordId/dataElements', useRouteHandler(GETDataElements));
 apiV2.get('/dataGroups/:recordId?', useRouteHandler(GETDataGroups));
 apiV2.get('/dataTables/:recordId?', useRouteHandler(GETDataTables));
+apiV2.get('/dataTableTypes/:recordId?', useRouteHandler(GetDataTableTypes));
 apiV2.get('/dataElementDataGroups', useRouteHandler(GETDataElementDataGroups));
 apiV2.get('/entities/:recordId?', useRouteHandler(GETEntities));
 apiV2.get('/entities/:parentRecordId/surveyResponses', useRouteHandler(GETSurveyResponses));

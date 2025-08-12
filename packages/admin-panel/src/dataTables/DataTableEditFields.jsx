@@ -1,22 +1,25 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
-import {
-  FetchLoader,
-  Autocomplete as ExternalDatabaseConnectionAutocomplete,
-  DataGrid,
-} from '@tupaia/ui-components';
+import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
-import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
+import React, { useEffect, useMemo, useState } from 'react';
+import styled from 'styled-components';
+
 import { DataTableType } from '@tupaia/types';
+import {
+  DataGrid,
+  Autocomplete as ExternalDatabaseConnectionAutocomplete,
+  FetchLoader,
+} from '@tupaia/ui-components';
+import { EditorInputField } from '../editor';
+import { onInputChange } from '../editor/FieldsEditor';
+import { getColumns, getRows, labelToId } from '../utilities';
 import { PreviewFilters } from './components/PreviewFilters';
 import { SqlDataTableConfigEditFields } from './config';
-import { useParams } from './useParams';
-import { useDataTablePreview, useExternalDatabaseConnections } from './query';
-import { getColumns, getRows, labelToId } from '../utilities';
 import { PlayButton } from './PlayButton';
-import { onInputChange } from '../editor/FieldsEditor';
-import { EditorInputField } from '../editor';
+import { useDataTablePreview, useExternalDatabaseConnections } from './query';
+import { useParams } from './useParams';
+
+const sources = ['code', 'description', 'permission_groups', 'type'];
 
 const sources = ['code', 'description', 'permission_groups', 'type'];
 
