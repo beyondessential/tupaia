@@ -25,7 +25,7 @@ export class GetDataTableTypes extends GETHandler {
     if (hasBESAdminAccess(this.accessPolicy)) return dataTableTypes;
 
     // Only SQL data tables are relevant to Viz Builder Users
-    return dataTableTypes.filter(type => type === DataTableType.sql);
+    return [DataTableType.sql];
   }
 
   async getDbQueryOptions() {
