@@ -1,21 +1,14 @@
-import { Upload as ExportIcon, MailCheck, MailPlus } from 'lucide-react';
+import {
+  Upload as ExportIcon,
+  CircleCheck as SubscribedIcon,
+  MailPlus as SubscribeIcon,
+} from 'lucide-react';
 import React from 'react';
-import styled from 'styled-components';
 
 import { ActionsMenuOptionType, ActionsMenu as BaseActionsMenu } from '@tupaia/ui-components';
 import { useDashboardContext, useDashboardMailingList } from '../utils';
 
-const StyledExportIcon = styled(ExportIcon)`
-  font-size: 1.125rem;
-`;
-
-const SubscribeIcon = styled(MailPlus)`
-  font-size: 1.125rem;
-`;
-
-const SubscribedIcon = styled(MailCheck)`
-  font-size: 1.125rem;
-`;
+const GREEN_100 = '#47ca80';
 
 export const ActionsMenu = () => {
   const { toggleExportModal, toggleSubscribeModal, activeDashboard } = useDashboardContext();
@@ -29,8 +22,7 @@ export const ActionsMenu = () => {
   const exportOption: ActionsMenuOptionType = {
     label: 'Export',
     action: toggleExportModal,
-    // eslint-disable-next-line react/display-name
-    ActionIcon: StyledExportIcon,
+    actionIcon: <ExportIcon />,
     toolTipTitle: 'Export dashboard',
   };
   menuOptions.push(exportOption);
@@ -40,14 +32,14 @@ export const ActionsMenu = () => {
       menuOptions.push({
         label: 'Subscribed',
         action: toggleSubscribeModal,
-        ActionIcon: SubscribedIcon,
+        actionIcon: <SubscribedIcon color={GREEN_100} />,
         toolTipTitle: 'Unsubscribe from email updates',
       });
     } else {
       menuOptions.push({
         label: 'Subscribe',
         action: toggleSubscribeModal,
-        ActionIcon: SubscribeIcon,
+        actionIcon: <SubscribeIcon />,
         toolTipTitle: 'Subscribe to receive dashboard email updates',
       });
     }
@@ -56,7 +48,10 @@ export const ActionsMenu = () => {
   const styledMenuOptions: ActionsMenuOptionType[] = menuOptions.map(menuOption => ({
     ...menuOption,
     style: { fontSize: '0.9rem' },
-    iconStyle: { minWidth: '2rem' },
+    iconStyle: {
+      fontSize: '1.125rem',
+      minWidth: '2rem',
+    },
   }));
 
   return (

@@ -44,8 +44,19 @@ export const ActionsMenuWithIcons = () => {
 
       <ActionsMenu
         options={[
-          { label: 'Export', action: () => setAlertMessage('Export was selected'), ActionIcon: ShareIcon, toolTipTitle: 'Export dashboard' },
-          { label: 'Join', action: () => setAlertMessage('Succesfully joined the dashboard mailing list'), ActionIcon: AddCircleOutlineIcon, toolTipTitle: 'Join to receive dashboard email updates', color: 'primary' },
+          {
+            label: 'Export',
+            action: () => setAlertMessage('Export was selected'),
+            actionIcon: <ShareIcon />,
+            toolTipTitle: 'Export dashboard',
+          },
+          {
+            label: 'Join',
+            action: () => setAlertMessage('Successfully joined the dashboard mailing list'),
+            actionIcon: <AddCircleOutlineIcon />,
+            toolTipTitle: 'Join to receive dashboard email updates',
+            color: 'primary',
+          },
         ]}
         includesIcons={true}
       />
