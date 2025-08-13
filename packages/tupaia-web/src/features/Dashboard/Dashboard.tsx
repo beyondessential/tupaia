@@ -134,18 +134,30 @@ export const Dashboard = () => {
 
   // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
   const defaultDashboardName = useDefaultDashboardName(projectCode, entityCode);
-  const { search, hash } = useLocation();
+  const { search, hash, state } = useLocation();
   const navigate = useNavigate();
   const dashboardNotFound = isProjectSuccess && isDashboardsSuccess && !activeDashboard;
   useEffect(() => {
     if (dashboardNotFound && defaultDashboardName) {
-      navigate({
-        pathname: `/${projectCode}/${entityCode}/${encodeURIComponent(defaultDashboardName)}`,
-        search,
-        hash,
-      });
+      navigate(
+        {
+          pathname: `/${projectCode}/${entityCode}/${encodeURIComponent(defaultDashboardName)}`,
+          search,
+          hash,
+        },
+        { replace: true, state },
+      );
     }
-  }, [dashboardNotFound, defaultDashboardName, entityCode, hash, navigate, projectCode, search]);
+  }, [
+    dashboardNotFound,
+    defaultDashboardName,
+    entityCode,
+    hash,
+    navigate,
+    projectCode,
+    search,
+    state,
+  ]);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
