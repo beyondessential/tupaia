@@ -110,11 +110,12 @@ export class WeatherService extends Service {
   }
 
   public async pullMetadata(
-    /* eslint-disable @typescript-eslint/no-unused-vars */
+    // @ts-ignore
     dataSources: DataElement[],
+    // @ts-ignore
     type: DataSourceType,
+    // @ts-ignore
     options: BasePullMetadataOptions,
-    /* eslint-enable @typescript-eslint/no-unused-vars */
   ) {
     const dataElements = await this.models.dataElement.find({
       service_type: 'weather',

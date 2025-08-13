@@ -3,10 +3,7 @@ import { TupaiaWebUserRequest } from '@tupaia/types';
 import { get } from '../api';
 
 export const useUser = () => {
-  const userResponse = useQuery(
-    ['getUser'],
-    (): Promise<TupaiaWebUserRequest.ResBody> => get('getUser'),
-  );
+  const userResponse = useQuery<TupaiaWebUserRequest.ResBody>(['getUser'], () => get('getUser'));
   const { data: user } = userResponse;
 
   return {

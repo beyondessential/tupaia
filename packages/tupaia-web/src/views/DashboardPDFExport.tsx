@@ -4,7 +4,7 @@ import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { useEntity } from '../api/queries';
-import { PDFExportDashboardItem, useDashboard, useExportSettings } from '../features';
+import { PDFExportDashboardItem, useDashboardContext, useExportSettings } from '../features';
 import { DashboardItem } from '../types';
 
 const A4_RATIO = 1 / 1.41;
@@ -37,7 +37,7 @@ export const DashboardPDFExport = ({
 
   const [urlSearchParams] = useSearchParams();
 
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
   const { data: entity } = useEntity(projectCode, entityCode);
   const { exportWithLabels, exportWithTable, exportDescription, separatePagePerItem } =
     useExportSettings();

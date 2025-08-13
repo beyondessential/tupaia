@@ -1,10 +1,11 @@
-import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import { Request } from 'express';
+
+import { AccessPolicy } from '@tupaia/access-policy';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
-import { AccessPolicy } from '@tupaia/access-policy';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../constants';
 import { PermissionsError } from '@tupaia/utils';
+
 import { getParentEntityName } from '../utils';
 
 export type SingleSurveyResponseRequest = Request<
