@@ -18,31 +18,30 @@ export const ActionsMenu = () => {
     return null;
   }
 
-  const menuOptions: ActionsMenuOptionType[] = [];
-  const exportOption: ActionsMenuOptionType = {
+  const menuOptions: Omit<ActionsMenuOptionType, 'iconStyle' | 'style'>[] = [];
+  menuOptions.push({
     label: 'Export',
     action: toggleExportModal,
     actionIcon: <ExportIcon />,
     toolTipTitle: 'Export dashboard',
-  };
-  menuOptions.push(exportOption);
+  });
 
   if (mailingList) {
-    if (mailingList.isSubscribed) {
-      menuOptions.push({
-        label: 'Subscribed',
-        action: toggleSubscribeModal,
-        actionIcon: <SubscribedIcon color={GREEN_100} />,
-        toolTipTitle: 'Unsubscribe from email updates',
-      });
-    } else {
-      menuOptions.push({
-        label: 'Subscribe',
-        action: toggleSubscribeModal,
-        actionIcon: <SubscribeIcon />,
-        toolTipTitle: 'Subscribe to receive dashboard email updates',
-      });
-    }
+    menuOptions.push(
+      mailingList.isSubscribed
+        ? {
+            label: 'Subscribed',
+            action: toggleSubscribeModal,
+            actionIcon: <SubscribedIcon color={GREEN_100} />,
+            toolTipTitle: 'Unsubscribe from email updates',
+          }
+        : {
+            label: 'Subscribe',
+            action: toggleSubscribeModal,
+            actionIcon: <SubscribeIcon />,
+            toolTipTitle: 'Subscribe to receive dashboard email updates',
+          },
+    );
   }
 
   const styledMenuOptions: ActionsMenuOptionType[] = menuOptions.map(menuOption => ({
