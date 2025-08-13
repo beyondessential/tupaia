@@ -136,8 +136,7 @@ export const Dashboard = () => {
   const defaultDashboardName = useDefaultDashboardName(projectCode, entityCode);
   const { search, hash } = useLocation();
   const navigate = useNavigate();
-  const dashboardNotFound =
-    isProjectSuccess && isDashboardsSuccess && project?.code === projectCode && !activeDashboard;
+  const dashboardNotFound = isProjectSuccess && isDashboardsSuccess && !activeDashboard;
   useEffect(() => {
     if (dashboardNotFound && defaultDashboardName) {
       navigate({
