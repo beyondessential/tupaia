@@ -53,9 +53,8 @@ export const ActionsMenuWithIcons = () => {
           {
             label: 'Join',
             action: () => setAlertMessage('Successfully joined the dashboard mailing list'),
-            actionIcon: <AddCircleOutlineIcon />,
+            actionIcon: <AddCircleOutlineIcon color="#47ca80" />,
             toolTipTitle: 'Join to receive dashboard email updates',
-            color: 'primary',
           },
         ]}
         includesIcons={true}
