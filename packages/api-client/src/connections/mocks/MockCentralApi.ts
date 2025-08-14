@@ -99,6 +99,7 @@ export class MockCentralApi implements CentralApiInterface {
       ),
     );
   }
+  public fetchResourcesWithPost = this.createResource;
   public createResource(
     endpoint: string,
     params: Record<string, unknown>,

@@ -3,7 +3,7 @@ import get from 'lodash.get';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
-import { CartesianChartConfig, ChartType, ValueType, VizPeriodGranularity } from '@tupaia/types';
+import { CartesianChartConfig, ChartType, ValueType } from '@tupaia/types';
 import { LooseObject } from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';

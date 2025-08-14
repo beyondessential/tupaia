@@ -23,7 +23,10 @@ export const VerifyEmailPage = () => {
 
   useQuery(
     ['verifyEmail', verifyEmailToken],
-    () => get(`verifyEmail?emailToken=${verifyEmailToken}`),
+    () =>
+      get('verifyEmail', {
+        params: { emailToken: verifyEmailToken },
+      }),
     {
       enabled: !!verifyEmailToken,
       onError: () => {

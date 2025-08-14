@@ -1,28 +1,24 @@
+import { Upload as ExportIcon, MailCheck, MailPlus } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
-import {
-  ActionsMenu as BaseActionsMenu,
-  ExportIcon,
-  ActionsMenuOptionType,
-} from '@tupaia/ui-components';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import { useDashboard, useDashboardMailingList } from '../utils';
+
+import { ActionsMenuOptionType, ActionsMenu as BaseActionsMenu } from '@tupaia/ui-components';
+import { useDashboardContext, useDashboardMailingList } from '../utils';
 
 const StyledExportIcon = styled(ExportIcon)`
-  height: 0.9rem;
+  font-size: 1.125rem;
 `;
 
-const StyledAddCircleOutlineIcon = styled(AddCircleOutlineIcon)`
-  height: 1.2rem;
+const SubscribeIcon = styled(MailPlus)`
+  font-size: 1.125rem;
 `;
 
-const StyledCheckCircleIcon = styled(CheckCircleIcon)`
-  height: 1.2rem;
+const SubscribedIcon = styled(MailCheck)`
+  font-size: 1.125rem;
 `;
 
 export const ActionsMenu = () => {
-  const { toggleExportModal, toggleSubscribeModal, activeDashboard } = useDashboard();
+  const { toggleExportModal, toggleSubscribeModal, activeDashboard } = useDashboardContext();
   const mailingList = useDashboardMailingList();
 
   if (!activeDashboard) {
@@ -34,7 +30,7 @@ export const ActionsMenu = () => {
     label: 'Export',
     action: toggleExportModal,
     // eslint-disable-next-line react/display-name
-    ActionIcon: () => <StyledExportIcon fill="white" />,
+    ActionIcon: StyledExportIcon,
     toolTipTitle: 'Export dashboard',
   };
   menuOptions.push(exportOption);
@@ -43,16 +39,15 @@ export const ActionsMenu = () => {
     if (mailingList.isSubscribed) {
       menuOptions.push({
         label: 'Subscribed',
-        ActionIcon: StyledCheckCircleIcon,
-        color: 'primary',
         action: toggleSubscribeModal,
+        ActionIcon: SubscribedIcon,
         toolTipTitle: 'Unsubscribe from email updates',
       });
     } else {
       menuOptions.push({
         label: 'Subscribe',
         action: toggleSubscribeModal,
-        ActionIcon: StyledAddCircleOutlineIcon,
+        ActionIcon: SubscribeIcon,
         toolTipTitle: 'Subscribe to receive dashboard email updates',
       });
     }

@@ -177,7 +177,7 @@ export const loginForm = () => (
       <TextField id="email" name="email" placeholder="Email" type="email" />
       <TextField id="password" name="password" type="password" placeholder="Password" />
       <Checkbox label="Remember me" color="primary" defaultChecked />
-      <Button type="submit">Login to your account</Button>
+      <Button type="submit">Log in</Button>
     </form>
   </Container>
 );

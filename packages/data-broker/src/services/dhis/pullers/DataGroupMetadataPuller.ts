@@ -10,6 +10,7 @@ export type PullDataGroupsOptions = BasePullMetadataOptions & {
 
 export class DataGroupMetadataPuller {
   private readonly dataSourceModel: DataGroupModel;
+  // @ts-ignore
   private readonly translator: DhisTranslator;
 
   public constructor(dataGroupModel: DataGroupModel, translator: DhisTranslator) {
@@ -24,9 +25,8 @@ export class DataGroupMetadataPuller {
     const { includeOptions } = options;
     const [dataSource] = dataSources;
     const { code: dataGroupCode } = dataSource;
-    const dataElementDataSources = await this.dataSourceModel.getDataElementsInDataGroup(
-      dataGroupCode,
-    );
+    const dataElementDataSources =
+      await this.dataSourceModel.getDataElementsInDataGroup(dataGroupCode);
 
     const dataElementCodes = dataElementDataSources.map(({ code }) => code);
 
