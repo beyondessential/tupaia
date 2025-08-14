@@ -57,7 +57,7 @@ export const ChangePasswordPage = React.memo(() => {
         <PageHeader title={user.name} />
         <form onSubmit={onSubmit} noValidate>
           {error && <ErrorMessage>{error.message}</ErrorMessage>}
-          {isSuccess && <SuccessMessage>Password successfully updated.</SuccessMessage>}
+          {isSuccess && <SuccessMessage>Password updated</SuccessMessage>}
           <TextField
             label="Current Password"
             name="oldPassword"
@@ -106,7 +106,7 @@ export const ChangePasswordPage = React.memo(() => {
             pb={4}
           />
           <StyledButton type="submit" fullWidth isLoading={isLoading}>
-            Save Password
+            Save password
           </StyledButton>
         </form>
       </Container>
