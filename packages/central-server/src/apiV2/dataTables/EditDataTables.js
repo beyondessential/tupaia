@@ -30,7 +30,7 @@ async function hasDataTableWritePermissions(accessPolicy, models, dataTableId) {
 const assertDataTableEditPermissions = async (accessPolicy, models, dataTableId) => {
   const authorized = await hasDataTableWritePermissions(accessPolicy, models, dataTableId);
   if (!authorized) {
-    throw new PermissionsError('You don’t have permission to edit this data table');
+    throw new PermissionsError('Need edit permissions to this data table');
   }
   return true;
 };
