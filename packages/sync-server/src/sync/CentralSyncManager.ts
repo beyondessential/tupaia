@@ -21,7 +21,7 @@ import {
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { SyncTickFlags } from '@tupaia/constants';
-import { generateId, SyncSessionRecord } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 
 import { updateLookupTable, updateSyncLookupPendingRecords } from './updateLookupTable';
 import {
