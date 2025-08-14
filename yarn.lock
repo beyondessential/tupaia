@@ -12551,7 +12551,6 @@ __metadata:
     "@types/api-error-handler": ^1.0.32
     "@types/client-sessions": ^0.8.0
     "@types/cors": ^2.8.8
-    "@types/express": ^4.17.8
     "@types/jest": ^29.5.14
     "@types/supertest": ^2.0.11
     api-error-handler: ^1.0.0
@@ -13297,18 +13296,6 @@ __metadata:
     "@types/qs": "*"
     "@types/serve-static": "*"
   checksum: fb238298630370a7392c7abdc80f495ae6c716723e114705d7e3fb67e3850b3859bbfd29391463a3fb8c0b32051847935933d99e719c0478710f8098ee7091c5
-  languageName: node
-  linkType: hard
-
-"@types/express@npm:^4.17.8":
-  version: 4.17.8
-  resolution: "@types/express@npm:4.17.8"
-  dependencies:
-    "@types/body-parser": "*"
-    "@types/express-serve-static-core": "*"
-    "@types/qs": "*"
-    "@types/serve-static": "*"
-  checksum: ca265de4f9deb7eea2babd66d7f4069ca49202b69db48fb2e805998a8574ac1d186989de7920e66d4a97740228205f62f8c5821283756cf55bb2115ca2f5b901
   languageName: node
   linkType: hard
 
