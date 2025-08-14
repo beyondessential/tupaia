@@ -41,7 +41,7 @@ export const BooleanSelectFilter = ({ filter, onChange, column }) => {
     <Select
       id={column.id}
       options={[
-        { label: 'Show All', value: '' },
+        { label: 'Show all', value: '' },
         { label: 'Yes', value: true },
         { label: 'No', value: false },
       ]}
@@ -76,7 +76,7 @@ export const OutdatedFilter = ({ filter, onChange, column }) => {
     <Select
       id={column.id}
       options={[
-        { label: 'Show All', value: '' },
+        { label: 'Show all', value: '' },
         { label: 'Archived', value: true },
         { label: 'Current', value: false },
       ]}
@@ -107,7 +107,7 @@ export const VerifiedFilter = ({ filter, onChange, column }) => {
     <Select
       id={column.id}
       options={[
-        { label: 'Show All', value: '' },
+        { label: 'Show all', value: '' },
         { label: 'Yes', value: 'verified' },
         { label: 'No', value: 'new_user' },
         { label: 'Not applicable', value: 'unverified' },
