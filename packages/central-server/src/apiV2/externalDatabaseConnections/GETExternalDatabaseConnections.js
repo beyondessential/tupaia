@@ -1,6 +1,24 @@
-import { GETHandler } from '../GETHandler';
+import { assertIsNotNullish } from '@tupaia/tsutils';
 import { assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
+import { GETHandler } from '../GETHandler';
 import { getPermissionListWithWildcard } from '../utilities';
+
+export async function hasExternalDatabaseConnectionPermissions(
+  accessPolicy,
+  models,
+  externalDatabaseConnectionId,
+) {
+  const [connection, userPermissions] = await Promise.all([
+    models.externalDatabaseConnection.findById(externalDatabaseConnectionId),
+    getPermissionListWithWildcard(accessPolicy),
+  ]);
+  assertIsNotNullish(
+    connection,
+    `No external database connection exists with ID ${externalDatabaseConnectionId}`,
+  );
+
+  return connection.permission_groups.some(code => userPermissions.includes(code));
+}
 
 export class GETExternalDatabaseConnections extends GETHandler {
   permissionsFilteredInternally = true;
