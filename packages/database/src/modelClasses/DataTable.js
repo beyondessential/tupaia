@@ -10,14 +10,6 @@ const DATA_TABLE_TYPES = {
 
 export class DataTableRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DATA_TABLE;
-}
-
-export class DataTableModel extends DatabaseModel {
-  static DATA_TABLE_TYPES = DATA_TABLE_TYPES;
-
-  get DatabaseRecordClass() {
-    return DataTableRecord;
-  }
 
   async getExternalDatabaseConnection() {
     if (this.type !== DataTableType.sql) return null;
@@ -29,6 +21,14 @@ export class DataTableModel extends DatabaseModel {
       await this.otherModels.externalDatabaseConnection.findOne({ code }),
       `Couldn’t find external database connection for data table ${this.id} (expected external database connection with code ${code})`,
     );
+  }
+}
+
+export class DataTableModel extends DatabaseModel {
+  static DATA_TABLE_TYPES = DATA_TABLE_TYPES;
+
+  get DatabaseRecordClass() {
+    return DataTableRecord;
   }
 
   /** @returns {Promise<DataTableType[]>} */
