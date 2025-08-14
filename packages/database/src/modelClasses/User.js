@@ -28,6 +28,7 @@ export class UserRecord extends DatabaseRecord {
    * - …prefixed with `$sha256+argon2id$` instead of `$argon2id$`.
    *
    * @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js`
+   * @returns {boolean}
    */
   get hasLegacyPasswordHash() {
     return this.password_hash.startsWith(UserRecord.#legacyHashPrefix);
