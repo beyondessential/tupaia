@@ -16,7 +16,7 @@ import { getColumns, getRows, labelToId } from '../utilities';
 import { PreviewFilters } from './components/PreviewFilters';
 import { SqlDataTableConfigEditFields } from './config';
 import { PlayButton } from './PlayButton';
-import { useDataTablePreview, useExternalDatabaseConnections } from './query';
+import { useDataTablePreview, useExternalDatabaseConnectionsQuery } from './query';
 import { useParams } from './useParams';
 
 const sources = ['code', 'description', 'permission_groups', 'type'];
@@ -46,8 +46,11 @@ const typeFieldsMap = {
 
 export const DataTableEditFields = React.memo(
   ({ onEditField, recordData, isLoading: isDataLoading, fields }) => {
+    const isSqlDataTable = recordData?.type === DataTableType.sql;
     const [fetchDisabled, setFetchDisabled] = useState(false);
-    const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
+    const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnectionsQuery({
+      enabled: isSqlDataTable,
+    });
     const {
       builtInParams,
       additionalParams,
@@ -143,7 +146,7 @@ export const DataTableEditFields = React.memo(
                   />
                 );
               })}
-              {recordData?.type === DataTableType.sql && (
+              {isSqlDataTable && (
                 <ExternalDatabaseConnectionAutocomplete // Provide options directly to base Autocomplete
                   options={externalDatabaseConnections}
                   label="Database connection"
