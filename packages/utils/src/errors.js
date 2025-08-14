@@ -13,6 +13,7 @@ export class RespondingError extends Error {
    */
   constructor(message, statusCode, extraFields = {}, originalError = null) {
     super(message, { cause: originalError });
+    this.name = 'RespondingError';
     this.statusCode = statusCode;
     this.extraFields = extraFields;
     this.respond = res =>
@@ -23,6 +24,7 @@ export class RespondingError extends Error {
 export class HttpError extends Error {
   constructor(response) {
     super(`Attempt to post data returned ${response.status}: ${response.statusText}`);
+    this.name = 'HttpError';
     this.status = response.status;
   }
 }
@@ -32,32 +34,37 @@ export class DatabaseError extends RespondingError {
     super(
       `Database error: ${message}${originalError ? ` - ${originalError.message}` : ''}`,
       500,
-      originalError.extraFields,
+      originalError?.extraFields,
     );
+    this.name = 'DatabaseError';
   }
 }
 
 export class InternalServerError extends RespondingError {
   constructor(error) {
     super(`Internal server error: ${error.message}`, 500, undefined, error);
+    this.name = 'InternalServerError';
   }
 }
 
 export class UnauthenticatedError extends RespondingError {
   constructor(message) {
     super(message, 401);
+    this.name = 'UnauthenticatedError';
   }
 }
 
 export class UnverifiedError extends RespondingError {
   constructor(message) {
     super(message, 403);
+    this.name = 'UnverifiedError';
   }
 }
 
 export class PermissionsError extends RespondingError {
   constructor(message) {
     super(message, 403);
+    this.name = 'PermissionsError';
   }
 }
 
@@ -112,17 +119,13 @@ export class UploadError extends RespondingError {
    */
   constructor(errors, successes = []) {
     if (!errors) {
-      super(`File upload failed`, 500);
-      return;
-    }
-
-    // Just a single error
-    if (!Array.isArray(errors)) {
+      super('File upload failed', 500);
+    } else if (!Array.isArray(errors) /* Just a single error */) {
       super(`File upload failed: ${errors.message}`, 500);
-      return;
+    } else {
+      super(`File upload failed: ${UploadError.multiFileErrorMessage(errors, successes)}`, 500);
     }
-
-    super(`File upload failed: ${UploadError.multiFileErrorMessage(errors, successes)}`, 500);
+    this.name = 'UploadError';
   }
 }
 
@@ -130,6 +133,7 @@ export class ValidationError extends RespondingError {
   constructor(message, details = null) {
     const extraFields = details ? { details } : null;
     super(message, 400, extraFields);
+    this.name = 'ValidationError';
   }
 }
 
@@ -138,6 +142,7 @@ export class MultiValidationError extends RespondingError {
     super(message, 400, {
       errors,
     });
+    this.name = 'MultiValidationError';
   }
 }
 
@@ -150,6 +155,7 @@ export class TypeValidationError extends ValidationError {
     const errorMessage = [header, ...fieldMessages].join('\n');
 
     super(errorMessage);
+    this.name = 'TypeValidationError';
   }
 }
 
@@ -159,16 +165,18 @@ export class ImportValidationError extends ValidationError {
     const rowError = rowNumber !== undefined ? `Row ${rowNumber}` : '';
     const fieldError = field !== undefined ? `field '${field}'` : '';
 
-    const errors = [tabError, rowError, fieldError].filter(e => e).join(', ');
+    const errors = [tabError, rowError, fieldError].filter(Boolean).join(', ');
 
     const errorMessage = `${errors}. ${message}`;
     super(errorMessage, details);
+    this.name = 'ImportValidationError';
   }
 }
 
 export class FormValidationError extends ValidationError {
   constructor(message, invalidFields) {
     super(message, 400, invalidFields);
+    this.name = 'FormValidationError';
   }
 }
 
@@ -181,6 +189,14 @@ export class UnsupportedApiVersionError extends RespondingError {
 export class Dhis2Error extends RespondingError {
   constructor(error, requestedResource) {
     super(`DHIS2 responded with the error "${error.message}" for ${requestedResource}`, 500);
+    this.name = 'Dhis2Error';
+  }
+}
+
+export class UnprocessableContentError extends RespondingError {
+  constructor(message) {
+    super(message, 422);
+    this.name = 'UnprocessableContentError';
   }
 }
 
@@ -196,6 +212,7 @@ export class CustomError extends RespondingError {
     const { status, details } = responseText;
     const errorMessage = status || responseText;
     super(errorMessage, responseStatus, { description, status, details, ...restOfJson });
+    this.name = 'CustomError';
   }
 }
 
@@ -208,6 +225,7 @@ export class TupaiaAppAuthorisationError extends CustomError {
         status: 'Failed to authorise with Tupaia App Server',
       },
     });
+    this.name = 'TupaiaAppAuthorisationError';
   }
 }
 
@@ -221,5 +239,6 @@ export class TupaiaAppCommunicationError extends CustomError {
         errorMessage: error.message,
       },
     });
+    this.name = 'TupaiaAppCommunicationError';
   }
 }

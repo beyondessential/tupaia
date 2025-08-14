@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
 import { useCurrentUserContext } from '../../api';
+import { useBottomNavigationVisibility } from '../../components/BottomNavigation';
 import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC, ROUTES } from '../../constants';
-import { useBottomNavigationVisibility } from '../../utils';
 import { MenuList } from './MenuList';
 
 export const MobileUserMenuRoot = styled(SafeAreaColumn).attrs({ as: 'article' })`

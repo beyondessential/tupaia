@@ -26,7 +26,7 @@
     "dump-database": "./scripts/dumpDatabase.sh",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "migrate": "babel-node ./src/core/migrate.js up -v --config-file ../../babel.config.json",
+    "migrate": "babel-node ./src/server/migrate.js up -v --config-file ../../babel.config.json",
     "migrate-create": "scripts/migrateCreate.sh",
     "migrate-down": "babel-node ./src/migrate.js  down -v --config-file ../../babel.config.json",
     "refresh-database": "node ./scripts/refreshDatabase.js",
@@ -39,6 +39,7 @@
     "setup-new-database": "./scripts/setupNewDatabase.sh"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.0.2",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/auth": "workspace:*",
     "@tupaia/constants": "workspace:*",
@@ -70,7 +71,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
+    "@babel/eslint-parser": "^7.27.5",
     "@babel/node": "^7.10.5",
+    "@tupaia/expression-parser": "workspace:*",
     "npm-run-all": "^4.1.5",
     "pluralize": "^8.0.0",
     "rimraf": "^6.0.1"
