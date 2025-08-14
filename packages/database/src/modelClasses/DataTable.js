@@ -1,4 +1,4 @@
-import { ensure } from '@tupaia/tsutils';
+import { ensure, isNullish } from '@tupaia/tsutils';
 import { DataTableType } from '@tupaia/types';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -12,11 +12,11 @@ export class DataTableRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DATA_TABLE;
 
   async getExternalDatabaseConnection() {
-    if (this.type !== DataTableType.sql) return null;
-    const code = ensure(
-      this.config.externalDatabaseConnectionCode,
-      `Data table ${this.id}’s config is missing required property externalDatabaseConnectionCode`,
-    );
+    if (this.type !== DataTableType.sql || isNullish(this.config.externalDatabaseConnectionCode)) {
+      return null;
+    }
+
+    const code = this.config.externalDatabaseConnectionCode;
     return ensure(
       await this.otherModels.externalDatabaseConnection.findOne({ code }),
       `Couldn’t find external database connection for data table ${this.id} (expected external database connection with code ${code})`,

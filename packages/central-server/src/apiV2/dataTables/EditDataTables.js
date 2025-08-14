@@ -24,6 +24,10 @@ async function hasDataTableWritePermissions(accessPolicy, models, dataTableId) {
 
   // Editing SQL data tables require access to its external database connection
   const dbConnection = await dataTable.getExternalDatabaseConnection();
+
+  // This data table got created with no external database connection. Allow only BES Admin.
+  if (!dbConnection) return false;
+
   return await hasExternalDatabaseConnectionPermissions(accessPolicy, models, dbConnection.id);
 }
 
