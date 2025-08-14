@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -120,6 +120,12 @@ export const DataTableEditFields = React.memo(
       } else onInputChange(inputKey, inputValue, editConfig, recordData, onEditField);
     };
 
+    const isPreviewOnly =
+      isSqlDataTable &&
+      !externalDatabaseConnections.some(
+        connection => connection.code === recordData?.config?.externalDatabaseConnectionCode,
+      );
+
     return (
       <div>
         <Accordion defaultExpanded>
@@ -168,7 +174,7 @@ export const DataTableEditFields = React.memo(
           </AccordionDetails>
         </Accordion>
 
-        {ConfigComponent ? (
+        {ConfigComponent && !isPreviewOnly ? (
           <ConfigComponent
             onEditField={onEditField}
             recordData={recordData}
@@ -178,8 +184,13 @@ export const DataTableEditFields = React.memo(
             onParamsChange={onParamsChange}
           />
         ) : (
-          <Accordion defaultExpanded>
+          <Accordion>
             <AccordionSummary>Config</AccordionSummary>
+            <AccordionDetails>
+              <Typography style={{ fontStyle: 'italic' }} color="textSecondary">
+                No config available
+              </Typography>
+            </AccordionDetails>
           </Accordion>
         )}
 
