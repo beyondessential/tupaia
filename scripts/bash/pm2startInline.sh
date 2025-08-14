@@ -40,15 +40,17 @@ while [ "$1" != "" ]; do
   esac
 done
 
-# TODO: Actually adapt behaviour to --quiet flag
-
 yarn pm2 start "$root_dir/packages/devops/configs/pm2/$1.config.js"
 
 cleanup() {
-  echo -e "\n${BOLD}${WHITE}${ON_RED}  Stopping...  ${RESET}"
+  echo -e "\n${BOLD}${RED}Stopping...${RESET}"
+  echo -e "${DIM}>${RESET} ${BOLD}yarn pm2 delete all${RESET}"
   yarn pm2 delete all
 }
 
 trap cleanup EXIT
 
-yarn pm2 logs --lines 0
+if ((suppress_logs == 0)); then
+  echo -e "${DIM}>${RESET} ${BOLD}yarn pm2 logs --lines 0${RESET}"
+  yarn pm2 logs --lines 0
+fi
