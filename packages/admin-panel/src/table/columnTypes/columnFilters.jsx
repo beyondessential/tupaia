@@ -10,7 +10,7 @@ export const DefaultFilter = styled(TextField).attrs(props => ({
     ...props.InputProps,
     startAdornment: <Search />,
   },
-  placeholder: 'Search...',
+  placeholder: 'Search…',
 }))`
   margin-block-end: 0;
   font-size: inherit;
