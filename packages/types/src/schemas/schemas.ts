@@ -83540,70 +83540,6 @@ export const SyncGroupLogUpdateSchema = {
 	"additionalProperties": false
 } 
 
-export const SyncQueuedDeviceSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"last_seen_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"last_synced_tick": {
-			"type": "string"
-		},
-		"urgent": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"last_seen_time",
-		"last_synced_tick",
-		"urgent"
-	]
-} 
-
-export const SyncQueuedDeviceCreateSchema = {
-	"type": "object",
-	"properties": {
-		"last_seen_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"last_synced_tick": {
-			"type": "string"
-		},
-		"urgent": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"last_synced_tick",
-		"urgent"
-	]
-} 
-
-export const SyncQueuedDeviceUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"last_seen_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"last_synced_tick": {
-			"type": "string"
-		},
-		"urgent": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false
-} 
-
 export const SyncSessionSchema = {
 	"type": "object",
 	"properties": {
@@ -84568,13 +84504,13 @@ export const UserAccountSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84624,7 +84560,6 @@ export const UserAccountSchema = {
 		"email",
 		"id",
 		"password_hash",
-		"password_salt",
 		"preferences",
 		"updated_at_sync_tick"
 	]
@@ -84652,13 +84587,13 @@ export const UserAccountCreateSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84706,8 +84641,7 @@ export const UserAccountCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"email",
-		"password_hash",
-		"password_salt"
+		"password_hash"
 	]
 } 
 
@@ -84733,13 +84667,13 @@ export const UserAccountUpdateSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -85141,6 +85075,8 @@ export const PeriodGranularitySchema = {
 export const EntityTypeEnumSchema = {
 	"enum": [
 		"asset",
+		"bes_asset",
+		"bes_office",
 		"business",
 		"case",
 		"case_contact",
@@ -85148,6 +85084,7 @@ export const EntityTypeEnumSchema = {
 		"city",
 		"commune",
 		"complaint",
+		"consumable",
 		"country",
 		"disaster",
 		"district",
@@ -86869,23 +86806,6 @@ export const UserResponseSchema = {
 	"required": [
 		"id",
 		"name"
-	]
-} 
-
-export const SyncSessionStartedResBodySchema = {
-	"type": "object",
-	"properties": {
-		"sessionId": {
-			"type": "string"
-		},
-		"startedAtTick": {
-			"type": "number"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"sessionId",
-		"startedAtTick"
 	]
 } 
 

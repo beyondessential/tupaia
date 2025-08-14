@@ -67,11 +67,12 @@ export default defineConfig(({ command, mode }) => {
       preserveSymlinks: true, // use the yarn workspace symlinks
       dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components', 'react-router-dom'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
       alias: {
-        http: path.resolve(__dirname, 'moduleMock.js'),
-        winston: path.resolve(__dirname, 'moduleMock.js'),
-        jsonwebtoken: path.resolve(__dirname, 'moduleMock.js'),
-        'node-fetch': path.resolve(__dirname, 'moduleMock.js'),
-        'pg-pubsub': path.resolve(__dirname, 'moduleMock.js'),
+        http: path.resolve(__dirname, 'mock/moduleMock.js'),
+        winston: path.resolve(__dirname, 'mock/moduleMock.js'),
+        jsonwebtoken: path.resolve(__dirname, 'mock/moduleMock.js'),
+        'node-fetch': path.resolve(__dirname, 'mock/moduleMock.js'),
+        'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),
+        '@node-rs/argon2': path.resolve(__dirname, 'mock/argon2ModuleMock.js'),
       },
     },
     optimizeDeps: {

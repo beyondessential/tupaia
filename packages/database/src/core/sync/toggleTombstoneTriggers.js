@@ -1,6 +1,6 @@
 import { TABLES_WITH_TOMBSTONE_TRIGGER_QUERY } from './initSyncComponents';
 
-export const switchTombstoneTriggers = async (database, enabled) => {
+export const toggleTombstoneTriggers = async (database, enabled) => {
   const tablesWithTrigger = await database.executeSql(TABLES_WITH_TOMBSTONE_TRIGGER_QUERY);
 
   const action = enabled ? 'ENABLE' : 'DISABLE';
