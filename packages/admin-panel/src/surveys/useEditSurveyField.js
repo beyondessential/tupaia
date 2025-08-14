@@ -5,7 +5,7 @@ import { useSuggestSurveyCode } from './useSuggestSurveyCode';
 
 export const useEditSurveyField = (recordData, onEditField) => {
   const { name } = recordData;
-  const debouncedName = useDebounce(name);
+  const debouncedName = useDebounce(name, 100);
 
   const [codeTouched, setCodeTouched] = useState(false);
   const api = useApiContext();

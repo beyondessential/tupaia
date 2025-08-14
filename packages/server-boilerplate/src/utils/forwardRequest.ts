@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { IncomingMessage, ServerResponse } from 'http';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 import winston from 'winston';
@@ -25,14 +25,14 @@ export const forwardRequest = (
   options: {
     authHandlerProvider?: AuthHandlerProvider;
   } = {},
-) => {
+): RequestHandler => {
   const { authHandlerProvider = defaultAuthHandlerProvider } = options;
   const proxyOptions = {
     target,
     changeOrigin: true,
     pathRewrite: stripVersionFromPath,
     onProxyReq: fixRequestBody,
-    onProxyRes: (proxyRes: IncomingMessage, req: IncomingMessage, res: ServerResponse) => {
+    onProxyRes: (proxyRes: IncomingMessage, _req: IncomingMessage, res: ServerResponse) => {
       // To get around CORS because Admin Panel has credentials: true in fetch for session cookies
       const cors = res.getHeader('Access-Control-Allow-Origin');
       // eslint-disable-next-line no-param-reassign
@@ -42,7 +42,7 @@ export const forwardRequest = (
 
   const proxyMiddleware = createProxyMiddleware(proxyOptions);
   return async (req: Request, res: Response, next: NextFunction) => {
-    winston.info(`Forwarding ${req.originalUrl} to ${target}`);
+    winston.info(`Forwarding ${req.method} ${req.originalUrl} to ${target}`);
     try {
       const authHandler = authHandlerProvider(req);
       req.headers.authorization = await authHandler.getAuthHeader();

@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { blue, red, green } from '@material-ui/core/colors';
 import { ScaleType, MeasureColorScheme } from '@tupaia/types';
 import { BREWER_PALETTE, HEATMAP_UNKNOWN_COLOR } from '../constants';
@@ -85,14 +84,6 @@ export function getPerformanceHeatmapColor(
 
   return `hsl(${Math.floor(value * 100)}, 100%, 50%)`;
 }
-
-const getTimeProportion = (value: number | null, min: string, max: string) => {
-  if (!value || !isNaN(value)) return null;
-  const range = moment(max).diff(min, 'days');
-  const valueAsMoment = moment(value);
-  const ageOfSample = moment(max).diff(valueAsMoment, 'days');
-  return ageOfSample / range;
-};
 
 /**
  * Takes a value and return a hsl color string for use as a style

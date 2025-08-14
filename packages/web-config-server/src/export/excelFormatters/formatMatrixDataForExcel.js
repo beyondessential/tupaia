@@ -1,5 +1,4 @@
 import { addExportedDateAndOriginAtTheSheetBottom, formatDataValueByType } from '@tupaia/utils';
-import { MatrixEntityCell } from '@tupaia/types';
 
 const DEFAULT_CONFIG = {
   dataElementHeader: 'Data Element',

@@ -6,7 +6,7 @@ export const attachHierarchyContext = async (
   req: Request<Record<string, never>, any, any, { field?: string; fields?: string }> & {
     ctx: HierarchyContext;
   },
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {

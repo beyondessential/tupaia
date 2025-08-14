@@ -12,7 +12,7 @@ export enum SyncDirections {
   BIDIRECTIONAL = 'bidirectional',
 }
 
-export const COLUMNS_EXCLUDED_FROM_SYNC = ['updatedAtSyncTick'];
+export const COLUMNS_EXCLUDED_FROM_SYNC = ['updatedAtSyncTick'] as const;
 
 const NEVER_USE_ZERO = Symbol('zero');
 export const SYNC_STREAM_MESSAGE_KIND = {
@@ -27,4 +27,4 @@ export const SYNC_STREAM_MESSAGE_KIND = {
   PULL_WAITING: 0x0002,
   PULL_CHANGE: 0x0003,
   PUSH_WAITING: 0x0004,
-};
+} as const;

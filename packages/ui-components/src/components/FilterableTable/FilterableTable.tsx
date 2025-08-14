@@ -6,7 +6,7 @@ import {
   TableRow,
   TableSortLabel,
 } from '@material-ui/core';
-import { KeyboardArrowDown } from '@material-ui/icons';
+import { ChevronUp } from 'lucide-react';
 import React, { useMemo } from 'react';
 import { Column, SortingRule, useFlexLayout, useResizeColumns, useTable } from 'react-table';
 import styled from 'styled-components';
@@ -15,13 +15,6 @@ import { SpinningLoader } from '../Loaders';
 import { HeaderDisplayCell, TableCell } from './Cells';
 import { FilterCell, FilterCellProps, Filters } from './FilterCell';
 import { Pagination } from './Pagination';
-
-/*
- * TODO: Move to @tupaia/frontend-utils or @tupaia/react-utils once that exists
- */
-function isReactText(val: unknown): val is string | number {
-  return typeof val === 'string' || typeof val === 'number';
-}
 
 const TableContainer = styled(MuiTableContainer)`
   position: relative;
@@ -47,10 +40,7 @@ const TableContainer = styled(MuiTableContainer)`
   }
 `;
 
-const EmptyStateWrapper = styled.div.attrs(
-  // If empty state message renders as a string, use semantic paragraph element
-  props => isReactText(props.children) && { as: 'p' },
-)`
+const EmptyStateWrapper = styled.div`
   // Make this, and its two immediate ancestors, fill available space
   .MuiTableContainer-root:has(&) :is(.MuiTable-root, .MuiTableBody-root, &) {
     block-size: 100%;
@@ -187,7 +177,7 @@ export const FilterableTable = ({
                           <TableSortLabel
                             active={!!sortedConfig}
                             direction={sortedConfig?.desc ? 'asc' : 'desc'}
-                            IconComponent={KeyboardArrowDown}
+                            IconComponent={ChevronUp}
                             onClick={() => updateSorting(id, sortedConfig?.desc)}
                           />
                         )}

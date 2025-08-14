@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import type { Response } from 'express';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 
 // +---------+---------+---------+----------------+

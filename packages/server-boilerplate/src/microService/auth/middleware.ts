@@ -1,4 +1,4 @@
-import { Request, NextFunction, Response } from 'express';
+import { RequestHandler } from 'express';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { Authenticator, getUserAndPassFromBasicAuth, getJwtToken } from '@tupaia/auth';
@@ -23,7 +23,7 @@ const getBasicAccessPolicy = async (
 
   const apiClient = await models.apiClient.findOne({ username });
   if (apiClient) {
-    return authenticator.authenticateApiClient({
+    return await authenticator.authenticateApiClient({
       username,
       secretKey: password,
     });
@@ -43,14 +43,14 @@ const getBasicAccessPolicy = async (
 };
 
 export const buildBasicBearerAuthMiddleware =
-  (apiName: string, authenticator: Authenticator) =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  (apiName: string, authenticator: Authenticator): RequestHandler =>
+  async (req, _res, next) => {
     try {
       const authHeader = req.headers.authorization;
 
       if (!authHeader) {
         throw new UnauthenticatedError(
-          'No authorization header provided - must be Basic or Bearer Auth Header',
+          'No Authorization header provided. Must use basic or bearer authentication.',
         );
       }
 
@@ -70,7 +70,9 @@ export const buildBasicBearerAuthMiddleware =
         userObject = user;
         accessPolicyObject = accessPolicy;
       } else {
-        throw new UnauthenticatedError('Could not authenticate');
+        throw new UnauthenticatedError(
+          'Authorization header must use basic or bearer authentication, but got neither',
+        );
       }
 
       req.user = userObject;

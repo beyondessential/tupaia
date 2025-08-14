@@ -14,7 +14,7 @@ const DEFAULT_FIELDS = ['id', 'parent_code', 'code', 'name', 'type'];
 
 export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
   public async buildResponse() {
-    const { params, query, ctx } = this.req;
+    const { params, ctx } = this.req;
     const { rootEntityCode, projectCode } = params;
 
     const entities: Entity[] = await ctx.services.entity.getAncestorsOfEntity(
