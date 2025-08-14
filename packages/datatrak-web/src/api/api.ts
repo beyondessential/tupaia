@@ -7,7 +7,7 @@ export const API_URL = process.env.REACT_APP_DATATRAK_WEB_API_URL || 'http://loc
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
 
-export const timeout = 45 * 1000; // 45 seconds
+export const timeout = 180 * 1000; // 3 minutes as sync might take a while
 
 type RequestParameters = Record<string, any> & {
   params?: Record<string, any>;
@@ -48,22 +48,6 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
         throw new FetchError(data.message, data.code, data);
       }
     }
-    throw new Error(error);
-  }
-};
-
-export const stream = async (endpoint: string, options?: RequestParameters) => {
-  try {
-    const response = await fetch(`${API_URL}/${endpoint}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(options),
-    });
-
-    return response.body!.getReader();
-  } catch (error: any) {
     throw new Error(error);
   }
 };

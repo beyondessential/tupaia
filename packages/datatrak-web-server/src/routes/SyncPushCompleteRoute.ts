@@ -11,11 +11,12 @@ export type SyncPushCompleteRequest = Request<
 >;
 
 export class SyncPushCompleteRoute extends Route<SyncPushCompleteRequest> {
-  public async buildResponse() {
+  protected readonly type = 'stream';
+
+  public async stream() {
     const { params, body, ctx } = this.req;
     const { sessionId } = params;
     const { deviceId } = body;
-    await ctx.services.sync.completePush(sessionId, deviceId);
-    return {};
+    return ctx.services.sync.completePush(this.res, sessionId, deviceId);
   }
 }

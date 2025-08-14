@@ -2,7 +2,8 @@ import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { SyncServerPullRequest } from '@tupaia/types';
-import { streamSnapshotData, SYNC_SESSION_DIRECTION } from '@tupaia/sync';
+import { SYNC_SESSION_DIRECTION } from '@tupaia/sync';
+import { streamSnapshotData } from '../sync/streamSnapshotData';
 
 export type SyncPullRequest = Request<
   SyncServerPullRequest.Params,
