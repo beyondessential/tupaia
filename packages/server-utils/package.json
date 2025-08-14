@@ -27,7 +27,7 @@
     "@aws-sdk/lib-storage": "^3.348.0",
     "@tupaia/constants": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "cookie": "^0.5.0",
+    "cookie": "^1.0.2",
     "copyfiles": "^2.4.1",
     "dotenv": "^16.4.5",
     "express": "^5.1.0",

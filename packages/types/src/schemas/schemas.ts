@@ -84504,13 +84504,13 @@ export const UserAccountSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84560,7 +84560,6 @@ export const UserAccountSchema = {
 		"email",
 		"id",
 		"password_hash",
-		"password_salt",
 		"preferences",
 		"updated_at_sync_tick"
 	]
@@ -84588,13 +84587,13 @@ export const UserAccountCreateSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84642,8 +84641,7 @@ export const UserAccountCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"email",
-		"password_hash",
-		"password_salt"
+		"password_hash"
 	]
 } 
 
@@ -84669,13 +84667,13 @@ export const UserAccountUpdateSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -85077,6 +85075,8 @@ export const PeriodGranularitySchema = {
 export const EntityTypeEnumSchema = {
 	"enum": [
 		"asset",
+		"bes_asset",
+		"bes_office",
 		"business",
 		"case",
 		"case_contact",
@@ -85084,6 +85084,7 @@ export const EntityTypeEnumSchema = {
 		"city",
 		"commune",
 		"complaint",
+		"consumable",
 		"country",
 		"disaster",
 		"district",

@@ -5,46 +5,59 @@
 
 import { useEffect, useState } from 'react';
 
-const noSupportError = {
-  code: GeolocationPositionError.POSITION_UNAVAILABLE,
+export const GEOLOCATION_UNSUPPORTED_ERROR = {
+  /** @privateRemarks Not a real {@link GeolocationPositionError} code. */
+  code: -1,
   message: 'Your device or browser doesn’t support location services',
 } as const;
+
+interface UseCurrentPositionParams extends PositionOptions {
+  enabled?: boolean;
+}
 
 export function useCurrentPosition({
   enableHighAccuracy = true,
   timeout,
   maximumAge,
-}: PositionOptions) {
+  enabled = true,
+}: UseCurrentPositionParams = {}): [
+  GeolocationPosition | null,
+  GeolocationPositionError | typeof GEOLOCATION_UNSUPPORTED_ERROR | null,
+] {
   const [position, setPosition] = useState<GeolocationPosition | null>(null);
-  const [error, setError] = useState<GeolocationPositionError | typeof noSupportError | null>(null);
+  const [error, setError] = useState<
+    GeolocationPositionError | typeof GEOLOCATION_UNSUPPORTED_ERROR | null
+  >(null);
 
   useEffect(() => {
     let aborted = false;
 
-    if (!('geolocation' in navigator)) {
-      setError(noSupportError);
-    } else {
-      const successCallback: PositionCallback = pos => {
-        if (aborted) return;
-        setPosition(pos);
-        setError(null);
-      };
-      const errorCallback: PositionErrorCallback = err => {
-        if (aborted) return;
-        setError(err);
-      };
+    if (enabled) {
+      if (!('geolocation' in navigator)) {
+        setError(GEOLOCATION_UNSUPPORTED_ERROR);
+      } else {
+        const successCallback: PositionCallback = pos => {
+          if (aborted) return;
+          setPosition(pos);
+          setError(null);
+        };
+        const errorCallback: PositionErrorCallback = err => {
+          if (aborted) return;
+          setError(err);
+        };
 
-      navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
-        enableHighAccuracy,
-        timeout,
-        maximumAge,
-      });
+        navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
+          enableHighAccuracy,
+          timeout,
+          maximumAge,
+        });
+      }
     }
 
     return () => {
       aborted = true;
     };
-  }, [enableHighAccuracy, timeout, maximumAge]);
+  }, [enabled, enableHighAccuracy, timeout, maximumAge]);
 
   return [position, error];
 }

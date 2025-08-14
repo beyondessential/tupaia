@@ -30,7 +30,7 @@ if [[ $1 = --as-glob ]]; then
     # 'foo,bar,baz' → '{foo,bar,baz}'
     echo "{$pattern}"
 else
-    echo "${deployable_packages[@]}"
+    printf '%s\n' "${deployable_packages[@]}"
 fi
 
 exit 0
