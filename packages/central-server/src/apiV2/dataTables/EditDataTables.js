@@ -8,7 +8,7 @@ import {
   assertVizBuilderAccess,
 } from '../../permissions';
 import { EditHandler } from '../EditHandler';
-import { hasExternalDatabaseConnectionPermissions } from '../externalDatabaseConnections/GETExternalDatabaseConnections';
+import { hasExternalDatabaseConnectionPermissions } from '../externalDatabaseConnections';
 
 async function hasDataTableWritePermissions(accessPolicy, models, dataTableId) {
   const dataTable = ensure(
