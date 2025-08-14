@@ -1,5 +1,5 @@
+import { encryptPassword, generateSecretKey } from '@tupaia/auth';
 import { DatabaseError } from '@tupaia/utils';
-import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
 
 export const createUser = async (
   models,
@@ -34,12 +34,14 @@ export const createUser = async (
         throw new Error(`No such country: ${countryName}`);
       }
 
+      const newPasswordHash = await encryptPassword(password);
+
       const user = await transactingModels.user.create({
         first_name: firstName,
         last_name: lastName,
         email: emailAddress,
         mobile_number: contactNumber,
-        ...hashAndSaltPassword(password),
+        password_hash: newPasswordHash,
         verified_email: verifiedEmail,
         ...restOfUser,
       });
@@ -56,7 +58,7 @@ export const createUser = async (
         await transactingModels.apiClient.create({
           username: user.email,
           user_account_id: user.id,
-          secret_key_hash: encryptPassword(secretKey, process.env.API_CLIENT_SALT),
+          secret_key_hash: await encryptPassword(secretKey),
         });
       }
 

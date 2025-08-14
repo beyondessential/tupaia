@@ -2,8 +2,9 @@ import { expect } from 'chai';
 
 import { encryptPassword } from '@tupaia/auth';
 import { randomEmail } from '@tupaia/utils';
-import { getAuthorizationHeader, TestableApp } from '../testUtilities';
+
 import { configureEnv } from '../../configureEnv';
+import { getAuthorizationHeader, TestableApp } from '../testUtilities';
 
 configureEnv();
 describe('Verify Email', () => {
@@ -39,7 +40,7 @@ describe('Verify Email', () => {
 
   const verifyEmail = async userId => {
     const user = await models.user.findById(userId);
-    const token = encryptPassword(user.email + user.password_hash, user.password_salt);
+    const token = await encryptPassword(`${user.email}${user.password_hash}`);
 
     return app.post('auth/verifyEmail', {
       headers,

@@ -41,6 +41,7 @@
     "jszip": "^3.10.1",
     "lodash": "^4.17.4",
     "lodash.throttle": "^4.1.1",
+    "lucide-react": "^0.525.0",
     "markdown-to-jsx": "^6.4.1",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",

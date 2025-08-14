@@ -9,7 +9,7 @@ import { useUser } from '../../../api/queries';
 import { Modal, Form, TextField, ModalParagraph } from '../../../components';
 import { FORM_FIELD_VALIDATION } from '../../../constants';
 import { useSubscribeDashboard, useUnsubscribeDashboard } from '../../../api/mutations';
-import { useDashboardMailingList, useDashboard } from '../utils';
+import { useDashboardMailingList, useDashboardContext } from '../utils';
 
 const ModalForm = styled(Form)`
   display: flex;
@@ -49,7 +49,7 @@ const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
 
 export const SubscribeModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { activeDashboard, subscribeModalOpen, toggleSubscribeModal } = useDashboard();
+  const { activeDashboard, subscribeModalOpen, toggleSubscribeModal } = useDashboardContext();
   const queryClient = useQueryClient();
   const { entityCode, projectCode } = useParams();
   const { data: user, isLoggedIn, isLoading } = useUser();

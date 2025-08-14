@@ -27,8 +27,12 @@ export async function getHookAnswerValues(surveyResponse, baseHookName, defaultF
 }
 
 export function parseCoordinates(answerText) {
-  const { latitude, longitude } = JSON.parse(answerText);
-  if (Number.isNaN(Number.parseFloat(latitude)) || Number.isNaN(Number.parseFloat(longitude))) {
+  const answer = JSON.parse(answerText);
+
+  const latitude = Number.parseFloat(answer.latitude);
+  const longitude = Number.parseFloat(answer.longitude);
+
+  if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
     throw new Error(`Invalid coordinate data: ${answerText}`);
   }
 

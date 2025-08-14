@@ -1,18 +1,15 @@
 import randomToken from 'rand-token';
 import compareVersions from 'semver-compare';
 
-import { DatabaseError, requireEnv, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
+import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
-import { encryptPassword } from './utils';
 import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
 
 export class Authenticator {
-  #apiClientSalt = requireEnv('API_CLIENT_SALT');
-
   constructor(models, AccessPolicyBuilderClass = AccessPolicyBuilder) {
     this.models = models;
     this.accessPolicyBuilder = new AccessPolicyBuilderClass(models);
@@ -45,14 +42,16 @@ export class Authenticator {
    * @param {{ username: string, secretKey: string }} apiClientCredentials
    */
   async authenticateApiClient({ username, secretKey }) {
-    const secretKeyHash = encryptPassword(secretKey, this.#apiClientSalt);
-    const apiClient = await this.models.apiClient.findOne({
-      username,
-      secret_key_hash: secretKeyHash,
-    });
+    const apiClient = await this.models.apiClient.findOne({ username });
     if (!apiClient) {
-      throw new UnauthenticatedError('Could not authenticate Api Client');
+      throw new UnauthenticatedError(`Couldn’t find API client`);
     }
+
+    const isVerified = await apiClient.verifySecretKey(secretKey);
+    if (!isVerified) {
+      throw new UnauthenticatedError(`Couldn’t authenticate API client`);
+    }
+
     const user = await apiClient.getUser();
     const accessPolicy = await this.getAccessPolicyForUser(user.id);
     return { user, accessPolicy };
@@ -140,7 +139,7 @@ export class Authenticator {
     }
 
     // Check password hash matches that in db
-    if (!user.checkPassword(password)) {
+    if (!(await user.checkPassword(password))) {
       throw new UnauthenticatedError('Incorrect email or password');
     }
 

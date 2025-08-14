@@ -42,7 +42,7 @@ export const forwardRequest = (
 
   const proxyMiddleware = createProxyMiddleware(proxyOptions);
   return async (req: Request, res: Response, next: NextFunction) => {
-    winston.info(`Forwarding ${req.originalUrl} to ${target}`);
+    winston.info(`Forwarding ${req.method} ${req.originalUrl} to ${target}`);
     try {
       const authHandler = authHandlerProvider(req);
       req.headers.authorization = await authHandler.getAuthHeader();
