@@ -2,7 +2,7 @@
 
 set -e
 
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 . "$DIR"/utils.sh
 
 INVALID_CHARS=('/' '\' '.' '&' '?' '_')
