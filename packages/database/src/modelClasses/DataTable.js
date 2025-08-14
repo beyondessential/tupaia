@@ -1,3 +1,5 @@
+import { ensure } from '@tupaia/tsutils';
+import { DataTableType } from '@tupaia/types';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -17,7 +19,19 @@ export class DataTableModel extends DatabaseModel {
     return DataTableRecord;
   }
 
-  /** @returns {Promise<import('@tupaia/types').DataTableType[]>} */
+  async getExternalDatabaseConnection() {
+    if (this.type !== DataTableType.sql) return null;
+    const code = ensure(
+      this.config.externalDatabaseConnectionCode,
+      `Data table ${this.id}’s config is missing required property externalDatabaseConnectionCode`,
+    );
+    return ensure(
+      await this.otherModels.externalDatabaseConnection.findOne({ code }),
+      `Couldn’t find external database connection for data table ${this.id} (expected external database connection with code ${code})`,
+    );
+  }
+
+  /** @returns {Promise<DataTableType[]>} */
   async getDataTableTypes() {
     const dataTableTypes = await this.database.executeSql(
       'SELECT unnest(enum_range(NULL::data_table_type)) AS type;',
