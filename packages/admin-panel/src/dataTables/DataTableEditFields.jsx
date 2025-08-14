@@ -25,6 +25,11 @@ const StyledGrid = styled(Grid)`
   height: 400px;
 `;
 
+const StyledAccordionSummary = styled(AccordionSummary).attrs({ component: 'h3' })`
+  font-size: inherit;
+  font-weight: 500;
+`;
+
 const InputRow = styled.div`
   display: flex;
   justify-content: space-between;
@@ -129,7 +134,7 @@ export const DataTableEditFields = React.memo(
     return (
       <div>
         <Accordion defaultExpanded>
-          <AccordionSummary>Data table</AccordionSummary>
+          <StyledAccordionSummary>Data table</StyledAccordionSummary>
           <AccordionDetails>
             <InputRow>
               {sources.map(source => {
@@ -185,7 +190,7 @@ export const DataTableEditFields = React.memo(
           />
         ) : (
           <Accordion>
-            <AccordionSummary>Config</AccordionSummary>
+            <StyledAccordionSummary>Config</StyledAccordionSummary>
             <AccordionDetails>
               <Typography style={{ fontStyle: 'italic' }} color="textSecondary">
                 No config available
@@ -195,7 +200,7 @@ export const DataTableEditFields = React.memo(
         )}
 
         <Accordion defaultExpanded>
-          <AccordionSummary>Preview</AccordionSummary>
+          <StyledAccordionSummary>Preview</StyledAccordionSummary>
           <AccordionDetails>
             <Grid container spacing={2}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
