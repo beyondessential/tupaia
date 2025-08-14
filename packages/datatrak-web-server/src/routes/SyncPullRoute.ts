@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSyncPullRequest } from '@tupaia/types';
