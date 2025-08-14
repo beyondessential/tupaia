@@ -3,6 +3,7 @@ import { TransformTable } from '../table';
 import { Row } from '../../types';
 import { getColumnMatcher } from './helpers';
 import { gatherColumnsValidator } from './utils';
+import { TransformBuilder } from '.';
 
 type GatherColumnsParams = {
   shouldKeepColumn: (field: string) => boolean;
@@ -51,7 +52,7 @@ const buildParams = (params: unknown): GatherColumnsParams => {
   };
 };
 
-export const buildGatherColumns = (params: unknown) => {
+export const buildGatherColumns: TransformBuilder = (params, _context) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => gatherColumns(table, builtParams);
+  return table => gatherColumns(table, builtParams);
 };

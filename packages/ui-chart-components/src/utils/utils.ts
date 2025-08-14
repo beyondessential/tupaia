@@ -47,7 +47,7 @@ export const getIsTimeSeries = (data?: ChartData[] | ViewDataItem[]) => {
 };
 
 export const isDataKey = (key: string) =>
-  !(['name', 'timestamp'].includes(key) || key.substr(-9) === '_metadata');
+  !(['name', 'timestamp'].includes(key) || key.endsWith('_metadata'));
 
 export const getContrastTextColor = () => {
   const theme = useTheme();

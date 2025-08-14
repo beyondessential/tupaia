@@ -198,10 +198,18 @@ const overrides = {
       label: {
         fontWeight: 500,
       },
+      ':where(table, time)': {
+        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      },
       '.lucide': {
         height: 'auto', // Use width to set both dimensions
         width: '1em', // Sensible default, mirrors MUI Icon behaviour
       },
+    },
+  },
+  MuiDataGrid: {
+    root: {
+      fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
     },
   },
   MuiSvgIcon: {
