@@ -1,4 +1,9 @@
-import { ModelRegistry, SyncSessionModel, SyncDeviceTickModel } from '@tupaia/database';
+import {
+  ModelRegistry,
+  SyncSessionModel,
+  SyncDeviceTickModel,
+  SyncQueuedDeviceModel,
+} from '@tupaia/database';
 import {
   ProjectModel,
   EntityModel,
@@ -7,7 +12,6 @@ import {
   LocalSystemFactModel,
   DebugLogModel,
 } from '@tupaia/server-boilerplate';
-
 export interface SyncServerModelRegistry extends ModelRegistry {
   readonly project: ProjectModel;
   readonly entity: EntityModel;
@@ -17,6 +21,7 @@ export interface SyncServerModelRegistry extends ModelRegistry {
   readonly debugLog: DebugLogModel;
   readonly syncSession: SyncSessionModel;
   readonly syncDeviceTick: SyncDeviceTickModel;
+  readonly syncQueuedDevice: SyncQueuedDeviceModel;
 }
 
 export type SyncServerConfig = {
@@ -79,3 +84,9 @@ export interface PullInitiationResult {
 }
 
 export type UnmarkSessionAsProcessingFunction = () => Promise<void>;
+
+export interface TestModelRegistry extends ModelRegistry {
+  readonly syncQueuedDevice: SyncQueuedDeviceModel;
+  readonly syncSession: SyncSessionModel;
+  readonly syncDeviceTick: SyncDeviceTickModel;
+}
