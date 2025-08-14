@@ -113,7 +113,7 @@ export class ClientSyncManager {
   async startSyncSession(urgent: boolean, lastSyncedTick: number) {
     for await (const { kind, message } of stream(() => ({
       method: 'POST',
-      endpoint: `sync`,
+      endpoint: 'sync',
       options: {
         deviceId: this.deviceId,
         urgent,
