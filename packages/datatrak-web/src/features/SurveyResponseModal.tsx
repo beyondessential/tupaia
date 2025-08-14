@@ -154,7 +154,7 @@ export const SurveyResponseModal = () => {
   const {
     data: surveyResponse,
     error,
-    isFetching: isFetchingSurveyResponse,
+    isLoading: isLoadingSurveyResponse,
   } = useSurveyResponse(surveyResponseId, { meta: { applyCustomErrorHandling: true } });
 
   const onClose = () => {
@@ -175,7 +175,7 @@ export const SurveyResponseModal = () => {
         >
           <SurveyResponseModalContent
             onClose={onClose}
-            isLoading={isFetchingSurveyResponse}
+            isLoading={isLoadingSurveyResponse}
             surveyResponse={surveyResponse}
             error={error as Error}
           />
