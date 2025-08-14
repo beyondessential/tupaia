@@ -1,5 +1,4 @@
 // TODO: Tidy this up as part of RN-502
-
 import { ChangeHandler } from '@tupaia/database';
 import { MeditrakSyncRecordUpdater } from './MeditrakSyncRecordUpdater';
 

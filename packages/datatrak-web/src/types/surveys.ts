@@ -17,12 +17,13 @@ export type SurveyParams = {
 };
 
 export interface SurveyQuestionFieldProps
-  extends Omit<SurveyScreenComponent, 'componentNumber' | 'questionId'> {
+  extends Omit<SurveyScreenComponent, 'componentNumber' | 'questionId' | 'updatedAtSyncTick'> {
   name: SurveyScreenComponent['code'];
   id: SurveyScreenComponent['questionId'];
 }
 
-export interface SurveyQuestionInputProps extends Omit<SurveyQuestionFieldProps, 'type' | 'text'> {
+export interface SurveyQuestionInputProps
+  extends Omit<SurveyQuestionFieldProps, 'type' | 'text' | 'updatedAtSyncTick'> {
   controllerProps: ControllerRenderProps & {
     invalid?: boolean;
   };

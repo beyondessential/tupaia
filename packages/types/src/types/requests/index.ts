@@ -20,6 +20,12 @@ export {
   DatatrakWebTaskRequest,
   DatatrakWebUsersRequest,
   DatatrakWebTaskChangeRequest,
+  DatatrakWebSyncStartSessionRequest,
+  DatatrakWebSyncInitiatePullRequest,
+  DatatrakWebSyncPullRequest,
+  DatatrakWebSyncEndSessionRequest,
+  DatatrakWebSyncPushRequest,
+  DatatrakWebSyncPushCompleteRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebCountriesRequest,
@@ -44,3 +50,16 @@ export {
   TupaiaWebExportSurveyDataRequest,
 } from './tupaia-web-server';
 export { ProjectResponse, WebServerEntityRequest, WebServerProjectRequest } from './web-server';
+export {
+  SyncServerStartSessionRequest,
+  SyncServerSyncReadyRequest,
+  SyncServerSyncMetadataRequest,
+  SyncServerInitiatePullRequest,
+  SyncServerPullReadyRequest,
+  SyncServerPullMetadataRequest,
+  SyncServerPullRequest,
+  SyncServerPushRequest,
+  SyncServerPushStatusRequest,
+  SyncServerPushCompleteRequest,
+  SyncServerEndSessionRequest,
+} from './sync-server';

@@ -113,6 +113,12 @@ export class ApiBuilder {
     return this;
   }
 
+  // To add a custom middleware without a path
+  public useMiddleware<T extends ExpressRequest<T> = Request>(middleware: RequestHandler) {
+    this.app.use(middleware);
+    return this;
+  }
+
   public get<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
@@ -125,6 +131,20 @@ export class ApiBuilder {
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     return this.addRoute('post', path, ...handlers);
+  }
+
+  public put<T extends ExpressRequest<T> = Request>(
+    path: string,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
+  ) {
+    return this.addRoute('put', path, ...handlers);
+  }
+
+  public delete<T extends ExpressRequest<T> = Request>(
+    path: string,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
+  ) {
+    return this.addRoute('delete', path, ...handlers);
   }
 
   private addRoute<T extends ExpressRequest<T> = Request>(

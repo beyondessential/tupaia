@@ -4,6 +4,8 @@ import viteCompression from 'vite-plugin-compression';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import dns from 'dns';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import commonjs from 'vite-plugin-commonjs';
 
 // work around to open browser in localhost https://vitejs.dev/config/server-options.html#server-host
 dns.setDefaultResultOrder('verbatim');
@@ -12,6 +14,11 @@ dns.setDefaultResultOrder('verbatim');
 export default defineConfig(({ command, mode }) => {
   // Load the environment variables, whether or not they are prefixed with REACT_APP_
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
+
+  // Work around for process.env not being loaded correctly in knex library for browser builds
+  const clientEnv = Object.fromEntries(
+    Object.entries(env).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
+  );
 
   const baseConfig = {
     build: {
@@ -30,18 +37,23 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
+        external: ['stream/promises', 'fs/promises'],
       },
     },
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
-      react({
-        jsxRuntime: 'classic',
+      react({ jsxRuntime: 'classic' }),
+      nodePolyfills({
+        protocolImports: true,
+        overrides: {
+          // Since `fs` is not supported in browsers, we can use the `memfs` package to polyfill it.
+          fs: 'memfs',
+        },
       }),
+      commonjs(),
     ],
-    define: {
-      'process.env': env,
-    },
+    define: { ...clientEnv, __dirname: JSON.stringify('/') },
     server: {
       open: true,
       headers: {
@@ -51,6 +63,7 @@ export default defineConfig(({ command, mode }) => {
     },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
+      conditions: ['browser'],
       preserveSymlinks: true, // use the yarn workspace symlinks
       dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components', 'react-router-dom'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
       alias: {
@@ -58,7 +71,11 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'moduleMock.js'),
         jsonwebtoken: path.resolve(__dirname, 'moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'moduleMock.js'),
+        'pg-pubsub': path.resolve(__dirname, 'moduleMock.js'),
       },
+    },
+    optimizeDeps: {
+      exclude: ['@electric-sql/pglite'],
     },
   };
 
@@ -66,10 +83,7 @@ export default defineConfig(({ command, mode }) => {
   if (command === 'serve') {
     return {
       ...baseConfig,
-      define: {
-        ...baseConfig.define,
-        global: {},
-      },
+      define: { ...baseConfig.define, global: {} },
       resolve: {
         ...baseConfig.resolve,
         alias: {
@@ -85,6 +99,8 @@ export default defineConfig(({ command, mode }) => {
             './packages/ui-map-components/src/index.ts',
           ),
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
+          '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
+          '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
         },
       },
     };
