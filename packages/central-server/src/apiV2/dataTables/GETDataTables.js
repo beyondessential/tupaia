@@ -1,9 +1,16 @@
-import { GETHandler } from '../GETHandler';
-import {
-  assertDataTableGETPermissions,
-  createDataTableDBFilter,
-} from './assertDataTablePermissions';
+import { PermissionsError } from '@tupaia/utils';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { GETHandler } from '../GETHandler';
+import { createDataTableDBFilter, hasDataTablePermissions } from './assertDataTablePermissions';
+
+const assertDataTableGETPermissions = async (accessPolicy, models, dataTableId) => {
+  // User requires access to any permission group
+  const authorized = await hasDataTablePermissions(accessPolicy, models, dataTableId);
+  if (!authorized) {
+    throw new PermissionsError('You don’t have permission to view this data table');
+  }
+  return true;
+};
 
 export class GETDataTables extends GETHandler {
   permissionsFilteredInternally = true;

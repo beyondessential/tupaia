@@ -1,17 +1,12 @@
-import { DataTableType } from '@tupaia/types';
 import { DataTableEditFields } from '../../dataTables/DataTableEditFields';
 import { onProcessDataForSave } from '../../dataTables/onProcessDataForSave';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
+import { VIZ_BUILDER_PERMISSION_GROUP } from '../../utilities/userAccess';
 
 const RESOURCE_NAME = { singular: 'data table' };
 
 const DATA_TABLES_ENDPOINT = 'dataTables';
-
-const dataTableTypeOptions = Object.values(DataTableType).map(type => ({
-  label: type,
-  value: type,
-}));
 
 const FIELDS = [
   {
@@ -29,7 +24,9 @@ const FIELDS = [
     source: 'type',
     required: true,
     editConfig: {
-      options: dataTableTypeOptions,
+      optionsEndpoint: 'dataTableTypes',
+      optionLabelKey: 'type',
+      optionValueKey: 'id',
     },
   },
   {
@@ -124,5 +121,7 @@ export const dataTables = {
   importConfig: IMPORT_CONFIG,
   editorConfig: EDITOR_CONFIG,
   onProcessDataForSave,
-  isBESAdminOnly: true,
+  needsVizBuilderAccess: ['create', 'edit'],
+  needsBESAdminAccess: ['delete', 'import'],
+  requiresSomePermissionGroup: [VIZ_BUILDER_PERMISSION_GROUP],
 };

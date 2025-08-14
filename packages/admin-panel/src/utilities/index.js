@@ -1,12 +1,17 @@
-export * from './createReducer';
-export { createNestedReducer } from './createNestedReducer';
 export { convertSearchTermToFilter } from './convertSearchTermToFilter';
-export { makeSubstitutionsInString } from './makeSubstitutionsInString';
-export { usePortalWithCallback } from './usePortalWithCallback';
-export * from './pretty';
-export { checkVisibilityCriteriaAreMet } from './visibilityCriteria';
-export { labelToId } from './labelToId';
-export { getColumns, getRows } from './getRowsAndColumns';
+export { createNestedReducer } from './createNestedReducer';
+export * from './createReducer';
 export { getExplodedFields } from './getFields';
+export { getColumns, getRows } from './getRowsAndColumns';
+export { labelToId } from './labelToId';
+export { makeSubstitutionsInString } from './makeSubstitutionsInString';
 export * from './persistSearch';
-export * from './userAccess';
+export * from './pretty';
+export { usePortalWithCallback } from './usePortalWithCallback';
+export {
+  useHasBesAdminAccess,
+  useHasPermissionGroup,
+  useHasVizBuilderAccess,
+  useUserPermissionGroups,
+} from './userAccess';
+export { checkVisibilityCriteriaAreMet } from './visibilityCriteria';

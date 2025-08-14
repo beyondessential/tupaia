@@ -1,26 +1,27 @@
 import React from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
+
 import {
+  AppPageLayout,
+  AUTH_ROUTES,
+  AuthLayout,
+  getFlattenedChildViews,
+  PageContentWrapper,
   PrivateRoute,
   ResourcePage,
   TabPageLayout,
-  getFlattenedChildViews,
-  PageContentWrapper,
-  AUTH_ROUTES,
-  AuthLayout,
+  useHasBesAdminAccess,
   useUser,
-  getHasBESAdminAccess,
-  AppPageLayout,
   VizBuilderApp,
 } from '@tupaia/admin-panel';
 
-import { LesmisAdminRedirect } from './LesmisAdminRedirect';
-import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
-import { useAdminPanelUrl, useI18n } from '../utils';
 import { Footer } from '../components';
+import { useAdminPanelUrl, useI18n } from '../utils';
+import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
 import { getRoutes } from '../views/AdminPanel/routes';
 import { NotAuthorisedView } from '../views/NotAuthorisedView';
+import { LesmisAdminRedirect } from './LesmisAdminRedirect';
 
 const PageContentContainerComponent = styled(PageContentWrapper)`
   padding-inline: 0;
@@ -49,7 +50,7 @@ const AdminPanelApp = () => {
   const { translate } = useI18n();
   const { data: user } = useUser();
   const adminUrl = useAdminPanelUrl();
-  const hasBESAdminAccess = getHasBESAdminAccess(user);
+  const hasBESAdminAccess = useHasBesAdminAccess();
 
   const routes = getRoutes(adminUrl, translate, hasBESAdminAccess);
 

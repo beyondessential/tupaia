@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
 import { PageHeader } from '../../widgets';
-import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
@@ -12,6 +11,7 @@ import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
 import { ArchiveSurveyResponseModal } from '../../surveyResponse';
 import { useUser } from '../../api/queries';
+import { getExplodedFields, useHasBesAdminAccess, useHasVizBuilderAccess } from '../../utilities';
 
 const useEndpoint = (endpoint, details, params) => {
   if (!details && !params) return endpoint;
@@ -51,13 +51,13 @@ export const ResourcePage = ({
   getDisplayValue,
   getNestedViewLink,
   basePath,
-  hasBESAdminAccess,
   needsBESAdminAccess,
   needsVizBuilderAccess,
   actionLabel,
   resourceName,
 }) => {
-  const { hasVizBuilderAccess } = useUser();
+  const hasBESAdminAccess = useHasBesAdminAccess();
+  const hasVizBuilderAccess = useHasVizBuilderAccess();
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
 
@@ -68,10 +68,10 @@ export const ResourcePage = ({
   const isDetailsPage = !!parent;
 
   const getHasPermission = actionType => {
-    if (needsBESAdminAccess && needsBESAdminAccess.includes(actionType)) {
+    if (needsBESAdminAccess?.includes(actionType)) {
       return !!hasBESAdminAccess;
     }
-    if (needsVizBuilderAccess && needsVizBuilderAccess.includes(actionType)) {
+    if (needsVizBuilderAccess?.includes(actionType)) {
       return !!hasVizBuilderAccess;
     }
     return true;
@@ -98,12 +98,12 @@ export const ResourcePage = ({
         />
       )}
       <PageHeader
-        importConfig={canImport && importConfig}
-        exportConfig={canExport && exportConfig}
-        createConfig={canCreate && createConfig}
-        ExportModalComponent={canExport && ExportModalComponent}
+        importConfig={canImport ? importConfig : null}
+        exportConfig={canExport ? exportConfig : null}
+        createConfig={canCreate ? createConfig : null}
+        ExportModalComponent={canExport ? ExportModalComponent : null}
         /* Links component is only used for adding viz builder button */
-        LinksComponent={hasVizBuilderAccess && LinksComponent}
+        LinksComponent={hasVizBuilderAccess ? LinksComponent : null}
         resourceName={resourceName?.singular}
       />
       <DataFetchingTable
@@ -161,7 +161,6 @@ ResourcePage.propTypes = {
   getDisplayValue: PropTypes.func,
   getNestedViewLink: PropTypes.func,
   basePath: PropTypes.string,
-  hasBESAdminAccess: PropTypes.bool.isRequired,
   needsBESAdminAccess: PropTypes.arrayOf(PropTypes.string),
   actionLabel: PropTypes.string,
 };

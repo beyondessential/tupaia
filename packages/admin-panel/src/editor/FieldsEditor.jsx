@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { InputGroup } from '@tupaia/ui-components';
-import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
+import { checkVisibilityCriteriaAreMet, labelToId, useHasVizBuilderAccess } from '../utilities';
 import { SECTION_FIELD_TYPE } from './constants';
 import { EditorInputField } from './EditorInputField';
 import { getFieldEditKey } from './utils';
@@ -41,7 +41,7 @@ export const onInputChange = async (
 };
 
 export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile }) => {
-  const { hasVizBuilderAccess } = useUser();
+  const hasVizBuilderAccess = useHasVizBuilderAccess();
   if (!fields || fields.length === 0) {
     return false;
   }

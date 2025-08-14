@@ -16,4 +16,21 @@ export class DataTableModel extends DatabaseModel {
   get DatabaseRecordClass() {
     return DataTableRecord;
   }
+
+  /** @returns {Promise<import('@tupaia/types').DataTableType[]>} */
+  async getDataTableTypes() {
+    const dataTableTypes = await this.database.executeSql(
+      'SELECT unnest(enum_range(NULL::data_table_type)) AS type;',
+    );
+    // ORDER BY has no effect (enum order is preserved), so sort here
+    return dataTableTypes.map(({ type }) => type).sort();
+  }
+
+  /** @returns {Promise<number>} */
+  async getDataTableTypeCount() {
+    const [{ cardinality }] = await this.database.executeSql(
+      'SELECT cardinality(enum_range(NULL::data_table_type));',
+    );
+    return cardinality;
+  }
 }

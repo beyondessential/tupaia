@@ -68,6 +68,13 @@ export class PermissionsError extends RespondingError {
   }
 }
 
+export class NotFoundError extends RespondingError {
+  constructor(message) {
+    super(message, 404);
+    this.name = 'NotFoundError';
+  }
+}
+
 export class UploadError extends RespondingError {
   /**
    * @param {{ message: string, fileName: string}[]} [errors]

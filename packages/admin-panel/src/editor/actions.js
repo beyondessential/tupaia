@@ -64,7 +64,7 @@ export const openBulkEditModal =
     } else {
       // set default values
       explodedFields.forEach(field => {
-        if (field.editConfig && field.editConfig.default) {
+        if (field.editConfig?.default) {
           const {
             source: fieldKey,
             editConfig: { default: newValue },

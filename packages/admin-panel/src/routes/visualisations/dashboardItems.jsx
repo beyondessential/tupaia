@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 import { CreateActionButton } from '../../editor';
-import { useUser } from '../../api/queries';
+import { useHasVizBuilderAccess } from '../../utilities';
 
 const RESOURCE_NAME = { singular: 'dashboard item' };
 
@@ -109,7 +110,7 @@ const IMPORT_CONFIG = {
 };
 
 const LinksComponent = () => {
-  const { hasVizBuilderAccess } = useUser();
+  const hasVizBuilderAccess = useHasVizBuilderAccess();
   if (!hasVizBuilderAccess) {
     return null;
   }

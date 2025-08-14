@@ -56,8 +56,8 @@ export const UsedBy = ({ usedBy, isLoading, errorMessage, typeHeadings, header }
       </StyledHeader>
 
       <Collapse in={isOpen}>
-        {isLoading && <>Loading...</>}
-        {!isLoading && errorMessage && <>Failed to load used by: {errorMessage}</>}
+        {isLoading && 'Loading…'}
+        {!isLoading && errorMessage && `Failed to load used by: ${errorMessage}`}
         {!isLoading && !errorMessage && (
           <Card>
             <CardContent>

@@ -1,0 +1,1 @@
+export { GetDataTableTypes } from './GetDataTableTypes';
