@@ -9,6 +9,11 @@
     "target": "ES2022",
     "resolveJsonModule": true,
     "sourceMap": true,
-    "allowJs": false
+    "allowJs": false,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true
   }
 }

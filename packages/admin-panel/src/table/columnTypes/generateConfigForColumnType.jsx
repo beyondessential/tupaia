@@ -13,9 +13,9 @@ import { ResubmitSurveyResponseButton } from './ResubmitSurveyResponseButton';
 import { ExternalLinkButton } from './ExternalLinkButton';
 import { ArchiveSurveyResponseButton } from './ArchiveSurveyResponseButton';
 
-const generateCustomCell = (CustomCell, actionConfig, reduxId) => props => (
-  <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />
-);
+const generateCustomCell = (CustomCell, actionConfig) => {
+  return props => <CustomCell actionConfig={actionConfig} {...props} />;
+};
 
 const BUTTON_COLUMN_OPTIONS = {
   filterable: false,
@@ -56,13 +56,13 @@ const BUTTON_COLUMN_TYPES = [
   'archive',
 ];
 
-export const generateConfigForColumnType = (type = 'tooltip', actionConfig, reduxId) => {
+export const generateConfigForColumnType = (type = 'tooltip', actionConfig) => {
   const CustomCellComponent = CUSTOM_CELL_COMPONENTS[type];
   if (!CustomCellComponent) {
     return {};
   }
 
-  const Cell = generateCustomCell(CustomCellComponent, actionConfig, reduxId);
+  const Cell = generateCustomCell(CustomCellComponent, actionConfig);
 
   if (BUTTON_COLUMN_TYPES.includes(type)) {
     return {
@@ -70,15 +70,13 @@ export const generateConfigForColumnType = (type = 'tooltip', actionConfig, redu
       ...BUTTON_COLUMN_OPTIONS,
     };
   }
-  let config = {
+  const config = {
     Cell,
     minWidth: 120, // so that the filter input is not too small
   };
   if (type === 'boolean') {
-    config = {
-      ...config,
-      Filter: BooleanSelectFilter,
-    };
+    config.Filter = BooleanSelectFilter;
   }
+
   return config;
 };

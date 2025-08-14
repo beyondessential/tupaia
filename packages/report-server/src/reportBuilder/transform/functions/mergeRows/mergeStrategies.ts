@@ -72,7 +72,7 @@ const unique = (values: FieldValue[]): FieldValue => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const exclude = (values: FieldValue[]): FieldValue => {
+const exclude = (_values: FieldValue[]): FieldValue => {
   // Do nothing, don't add the field to the existing row
   return undefined;
 };

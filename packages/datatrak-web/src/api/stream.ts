@@ -1,6 +1,20 @@
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 import { API_URL } from './api';
 
+interface EndpointOptions {
+  endpoint: string;
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  options?: Record<string, any>;
+}
+
+type EndpointFn = () => EndpointOptions;
+
+interface StreamOptions {
+  decodeMessage?: boolean;
+  streamRetryAttempts?: number;
+  streamRetryInterval?: number;
+}
+
 /** Connect to a streaming endpoint and async yield messages.
  *
  * ```js
@@ -46,13 +60,17 @@ import { API_URL } from './api';
  * other reason, pass `decodeMessage: false`. This will be slightly faster as the framing allows
  * us to seek forward through the received data rather than read every byte.
  *
- * @param {() => ({ endpoint: string, method?: 'GET' | 'POST' | 'PUT' | 'DELETE', options?: Record<string, any> })} endpointFn
- * @param {{ decodeMessage?: boolean, streamRetryAttempts?: number, streamRetryInterval?: number }} streamOptions
+ * @param {EndpointFn} endpointFn
+ * @param {StreamOptions} streamOptions
  * @returns
  */
 export async function* stream(
-  endpointFn,
-  { decodeMessage = true, streamRetryAttempts = 10, streamRetryInterval = 10000 } = {},
+  endpointFn: EndpointFn,
+  {
+    decodeMessage = true,
+    streamRetryAttempts = 10,
+    streamRetryInterval = 10000,
+  }: StreamOptions = {},
 ) {
   // +---------+---------+---------+----------------+
   // |  CR+LF  |   kind  |  length |     data...    |

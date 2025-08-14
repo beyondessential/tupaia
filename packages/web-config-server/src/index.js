@@ -1,8 +1,13 @@
 import winston from 'winston';
-import { createApp } from './app';
-import { runPreaggregation } from './preaggregation/runPreaggregation';
-import { configureEnv } from './configureEnv';
 
+import { getEnvVarOrDefault } from '@tupaia/utils';
+import { configureWinston } from '@tupaia/server-boilerplate';
+
+import { createApp } from './app';
+import { configureEnv } from './configureEnv';
+import { runPreaggregation } from './preaggregation/runPreaggregation';
+
+configureWinston();
 configureEnv();
 
 async function start() {
@@ -14,9 +19,9 @@ async function start() {
     // process.env.PORT as per run command PORT=XXXX npm run dev
     const port = process.env.PORT || 8000;
     app.server.listen(port);
-    winston.debug('Logging at debug level');
     winston.info(`Running on port ${port}`);
-    const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
+    winston.info(`Logging at ${winston.level} level`);
+    const aggregationDescription = getEnvVarOrDefault('AGGREGATION_URL_PREFIX', 'production');
     winston.info(`Connected to ${aggregationDescription} aggregation`);
 
     if (process.send) {
