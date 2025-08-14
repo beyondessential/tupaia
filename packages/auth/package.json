@@ -23,6 +23,7 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.0.2",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "jsonwebtoken": "^9.0.0",

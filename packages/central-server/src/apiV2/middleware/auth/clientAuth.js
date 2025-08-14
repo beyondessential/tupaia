@@ -1,5 +1,5 @@
-import { UnauthenticatedError, requireEnv } from '@tupaia/utils';
-import { encryptPassword, getUserAndPassFromBasicAuth } from '@tupaia/auth';
+import { getUserAndPassFromBasicAuth } from '@tupaia/auth';
+import { UnauthenticatedError } from '@tupaia/utils';
 
 export async function getAPIClientUser(authHeader, models) {
   const { username, password: secretKey } = getUserAndPassFromBasicAuth(authHeader);
@@ -7,16 +7,16 @@ export async function getAPIClientUser(authHeader, models) {
     throw new UnauthenticatedError('The provided basic authorization header is invalid');
   }
 
-  const API_CLIENT_SALT = requireEnv('API_CLIENT_SALT');
-
   // We always need a valid client; throw if none is found
-  const secretKeyHash = encryptPassword(secretKey, API_CLIENT_SALT);
-  const apiClient = await models.apiClient.findOne({
-    username,
-    secret_key_hash: secretKeyHash,
-  });
+  const apiClient = await models.apiClient.findOne({ username });
   if (!apiClient) {
-    throw new UnauthenticatedError('Incorrect client username or secret');
+    throw new UnauthenticatedError(`Couldn’t find API client with username ${username}`);
   }
-  return apiClient.getUser();
+
+  const isVerified = await apiClient.verifySecretKey(secretKey);
+  if (!isVerified) {
+    throw new UnauthenticatedError(`Couldn’t authenticate API client ${apiClient.username}`);
+  }
+
+  return await apiClient.getUser();
 }

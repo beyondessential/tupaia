@@ -1,8 +1,9 @@
+import { Upload as ExportIcon, MailCheck, MailPlus } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
-import { ActionsMenu as BaseActionsMenu, ActionsMenuOptionType } from '@tupaia/ui-components';
-import { Upload as ExportIcon, MailPlus, MailCheck } from 'lucide-react';
-import { useDashboard, useDashboardMailingList } from '../utils';
+
+import { ActionsMenuOptionType, ActionsMenu as BaseActionsMenu } from '@tupaia/ui-components';
+import { useDashboardContext, useDashboardMailingList } from '../utils';
 
 const StyledExportIcon = styled(ExportIcon)`
   font-size: 1.125rem;
@@ -17,7 +18,7 @@ const SubscribedIcon = styled(MailCheck)`
 `;
 
 export const ActionsMenu = () => {
-  const { toggleExportModal, toggleSubscribeModal, activeDashboard } = useDashboard();
+  const { toggleExportModal, toggleSubscribeModal, activeDashboard } = useDashboardContext();
   const mailingList = useDashboardMailingList();
 
   if (!activeDashboard) {
@@ -38,9 +39,8 @@ export const ActionsMenu = () => {
     if (mailingList.isSubscribed) {
       menuOptions.push({
         label: 'Subscribed',
-        ActionIcon: SubscribedIcon,
-        color: 'primary',
         action: toggleSubscribeModal,
+        ActionIcon: SubscribedIcon,
         toolTipTitle: 'Unsubscribe from email updates',
       });
     } else {

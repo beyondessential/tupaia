@@ -1,9 +1,9 @@
 import { useParams } from 'react-router';
-import { useDashboard } from './useDashboard';
+import { useDashboardContext } from './useDashboardContext';
 
 export const useDashboardMailingList = () => {
   const { entityCode } = useParams();
-  const { activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboardContext();
   if (!activeDashboard) {
     return undefined;
   }
