@@ -1,3 +1,4 @@
+import { PermissionsError } from '@tupaia/utils';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
 const assertCanImportExistingSurvey = async (accessPolicy, models, survey) => {
@@ -39,7 +40,7 @@ export const assertCanImportSurvey = async (accessPolicy, models, surveyId, newC
       const newCountryNames = newCountries.map(c => c.name);
       const newCountryNamesString = newCountryNames.join(',');
 
-      throw new Error(
+      throw new PermissionsError(
         `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${newCountryNamesString} to import the surveys`,
       );
     }
@@ -53,7 +54,7 @@ export const assertCanImportSurvey = async (accessPolicy, models, surveyId, newC
     const allCountryCodes = allCountries.map(c => c.code);
 
     if (!accessPolicy.allowsAll(allCountryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-      throw new Error(
+      throw new PermissionsError(
         `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to all countries if no countries are specified to import any new survey`,
       );
     }

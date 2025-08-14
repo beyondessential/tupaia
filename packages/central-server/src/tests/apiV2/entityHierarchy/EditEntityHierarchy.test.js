@@ -103,7 +103,7 @@ describe('Editing an entity hierarchy', async () => {
       );
 
       expect(result).to.deep.equal({
-        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to project with hierarchy id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'\n`,
+        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to project with hierarchy id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'`,
       });
     });
 
@@ -119,7 +119,7 @@ describe('Editing an entity hierarchy', async () => {
       );
 
       expect(result).to.deep.equal({
-        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to project with hierarchy id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'\n`,
+        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to project with hierarchy id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'`,
       });
     });
 
@@ -135,7 +135,7 @@ describe('Editing an entity hierarchy', async () => {
       );
 
       expect(result).to.deep.equal({
-        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to project with hierarchy id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'\n`,
+        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to project with hierarchy id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'`,
       });
     });
   });
