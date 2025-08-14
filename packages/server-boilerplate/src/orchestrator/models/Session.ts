@@ -5,6 +5,7 @@ import { SyncDirections } from '@tupaia/constants';
 
 import { AccessPolicyObject } from '../../types';
 import { AuthConnection } from '../auth';
+import { Request } from 'express';
 
 interface SessionDetails {
   email: string;
