@@ -40,7 +40,7 @@ export const useAccessibleProjects = () => {
   if (!useQueryResult.data) return useQueryResult;
 
   const { data, ...query } = useQueryResult;
-  
+
   return {
     ...query,
     data: data?.filter(project => project.hasAccess),
