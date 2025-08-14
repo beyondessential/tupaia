@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as COLORS from '../constants/colors';
 
@@ -15,7 +10,6 @@ export const palette = {
   },
   secondary: {
     main: COLORS.DARK_RED,
-    light: COLORS.LIGHT_RED,
   },
   error: {
     main: COLORS.RED,
@@ -124,6 +118,24 @@ export const overrides = {
   MuiCard: {
     root: {
       borderColor: COLORS.GREY_DE,
+    },
+  },
+  MuiTableRow: {
+    root: {
+      'table:not(.data-fetching-table) tbody &:nth-of-type(odd)': {
+        backgroundColor: COLORS.GREY_F1,
+      },
+    },
+  },
+  MuiTableCell: {
+    root: {
+      padding: '1.125rem 1rem',
+    },
+    body: {
+      borderRight: `1px solid ${COLORS.GREY_DE}`,
+      '&:last-child': {
+        borderRight: 'none',
+      },
     },
   },
 };

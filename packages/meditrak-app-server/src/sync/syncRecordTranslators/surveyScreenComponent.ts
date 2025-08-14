@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { ajvValidate } from '@tupaia/tsutils';
 import { EntityType, SurveyScreenComponent, SurveyScreenComponentSchema } from '@tupaia/types';
 import semverCompare from 'semver-compare';
@@ -99,9 +94,9 @@ const extractEntityFields = (
 export const translateToPreEntityUpsert = (record: Record<string, unknown>) => {
   const validatedRecord = ajvValidate<SurveyScreenComponent>(SurveyScreenComponentSchema, record);
   const { config } = validatedRecord;
-  const { entity: entityConfig, ...restOfConfig } = (config
-    ? JSON.parse(config)
-    : {}) as SurveyScreenComponentConfig;
+  const { entity: entityConfig, ...restOfConfig } = (
+    config ? JSON.parse(config) : {}
+  ) as SurveyScreenComponentConfig;
 
   if (!entityConfig) {
     // No need for translation if no entity config

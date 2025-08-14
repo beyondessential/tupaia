@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useRef, useState } from 'react';
 import MuiInfoIcon from '@material-ui/icons/Info';
 import styled from 'styled-components';
@@ -66,7 +61,10 @@ export const MapWatermark = () => {
       >
         Mapbox
       </StyledLink>
-      <IconButton onClick={() => setShowPopover(true)}>
+      <IconButton
+        onClick={() => setShowPopover(true)}
+        title={`${showPopover ? 'Close' : 'Open'} map attribution details`}
+      >
         <InfoIcon />
       </IconButton>
       <Popover

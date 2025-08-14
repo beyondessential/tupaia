@@ -1,10 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
-import { getSortByKey, UnauthenticatedError } from '@tupaia/utils';
+import { getSortByKey } from '@tupaia/utils';
 import { Route } from '../Route';
 
 export type FetchCountrySitesRequest = Request<
@@ -16,8 +11,6 @@ export type FetchCountrySitesRequest = Request<
 
 export class FetchCountrySites extends Route<FetchCountrySitesRequest> {
   public async buildResponse() {
-    if (!this.entityConnection) throw new UnauthenticatedError('Unauthenticated');
-
     const { countryCode } = this.req.params;
 
     const { country, sites } = await this.entityConnection.fetchCountryAndSites(countryCode);
@@ -25,7 +18,7 @@ export class FetchCountrySites extends Route<FetchCountrySitesRequest> {
       countryCode,
     );
 
-    const buildSiteAddress = (site: typeof sites[number]) => ({
+    const buildSiteAddress = (site: (typeof sites)[number]) => ({
       name: site.name,
       district: siteCodeToDistrictName[site.code],
       country: country.name,

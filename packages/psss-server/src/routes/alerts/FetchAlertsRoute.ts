@@ -1,10 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
-import { getCurrentPeriod, UnauthenticatedError } from '@tupaia/utils';
+import { getCurrentPeriod } from '@tupaia/utils';
 import { Route } from '../Route';
 
 const CATEGORY_TO_REPORT = {
@@ -54,8 +49,6 @@ export class FetchAlertsRoute extends Route<FetchAlertsRequest> {
   }
 
   private fetchAlertData = async () => {
-    if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
-
     const { startWeek, endWeek, orgUnitCodes } = this.req.query;
     const { category } = this.req.params;
 
@@ -71,8 +64,6 @@ export class FetchAlertsRoute extends Route<FetchAlertsRequest> {
   };
 
   private fetchConfirmedDataForAlert = async (alert: AlertReportRow) => {
-    if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
-
     const { organisationUnit, period, syndrome } = alert;
     const { results } = await this.reportConnection.fetchReport(
       `PSSS_${syndrome}_Confirmed_Report`,

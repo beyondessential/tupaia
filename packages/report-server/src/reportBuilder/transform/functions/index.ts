@@ -1,11 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { yup } from '@tupaia/utils';
 import { Context } from '../../context';
 
+import { TransformTable } from '../table';
 import {
   buildInsertColumns,
   paramsValidator as insertColumnsParamsValidator,
@@ -29,7 +25,7 @@ import {
 } from './gatherColumns';
 import { buildFetchData, paramsValidator as fetchDataParamsValidator } from './fetchData';
 import { buildOrderColumns, paramsValidator as orderColumnsParamsValidator } from './orderColumns';
-import { TransformTable } from '../table';
+import { buildSql, paramsValidator as sqlParamsValidator } from './sql';
 
 type TransformBuilder = (
   params: unknown,
@@ -48,6 +44,7 @@ export const transformBuilders: Record<string, TransformBuilder> = {
   insertRows: buildInsertRows,
   gatherColumns: buildGatherColumns,
   orderColumns: buildOrderColumns,
+  sql: buildSql,
 };
 
 export const transformSchemas: Record<string, yup.AnyObjectSchema> = {
@@ -62,4 +59,5 @@ export const transformSchemas: Record<string, yup.AnyObjectSchema> = {
   insertRows: insertRowsParamsValidator,
   gatherColumns: gatherColumnsParamsValidator,
   orderColumns: orderColumnsParamsValidator,
+  sql: sqlParamsValidator,
 };

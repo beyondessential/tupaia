@@ -1,14 +1,10 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useLocation, useRouteMatch } from 'react-router-dom';
-import { WarningCloud, TabsToolbar, Virus } from '@tupaia/ui-components';
+import { WarningCloud, Virus } from '@tupaia/ui-components';
 import { Archive } from '@material-ui/icons';
-import { Header, HeaderTitle, HeaderTitleWithSubHeading } from '../components';
+import { Header, HeaderTitle, HeaderTitleWithSubHeading, TabsToolbar } from '../components';
 import { AlertsExportModal, OutbreaksExportModal } from '../containers/Modals';
 import { AlertRoutes } from '../routes/AlertRoutes';
 import { getCountryCodes, getCountryName } from '../store';

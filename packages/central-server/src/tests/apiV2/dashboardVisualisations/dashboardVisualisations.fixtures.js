@@ -1,38 +1,36 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
+import { generateId } from '@tupaia/database';
+import { VIZ_BUILDER_PERMISSION_GROUP } from '../../../permissions';
 
-import { generateTestId } from '@tupaia/database';
-
-const permissionGroupId = generateTestId();
+const permissionGroupId = generateId();
 
 const DASHBOARD_ITEMS = [
   {
-    id: generateTestId(),
-    code: 'Modern_Dashboard_Item',
+    id: generateId(),
+    code: 'Modern_Report',
     config: { name: 'Modern Dashboard Item', type: 'view', viewType: 'singleValue' },
     report_code: 'Modern_Report',
     legacy: false,
     permissionGroupIds: [],
   },
   {
-    id: generateTestId(),
-    code: 'Legacy_Dashboard_Item',
+    id: generateId(),
+    code: 'Legacy_Report',
     config: { name: 'Legacy Dashboard Item', type: 'chart', chartType: 'bar' },
     report_code: 'Legacy_Report',
     legacy: true,
     permissionGroupIds: [],
   },
   {
-    id: generateTestId(),
+    id: generateId(),
     code: 'Dashboard_Item_No_Report',
+    legacy: true,
     config: {},
   },
   {
-    id: generateTestId(),
+    id: generateId(),
     code: 'Dashboard_Item_Invalid_Report',
     config: {},
+    legacy: true,
     report_code: 'Invalid_Report',
   },
 ];
@@ -40,7 +38,7 @@ const DASHBOARD_ITEMS = [
 const PERMISSION_GROUPS = [
   {
     id: permissionGroupId,
-    name: 'Viz_Permissions',
+    name: VIZ_BUILDER_PERMISSION_GROUP,
   },
 ];
 

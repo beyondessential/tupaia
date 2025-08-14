@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import sinon from 'sinon';
 import sinonTest from 'sinon-test';
@@ -18,9 +13,9 @@ const test = sinonTest(sinon);
 const app = new TestableApp();
 const { models } = app;
 
-const ANSWER = models.answer.databaseType;
-const ENTITY = models.entity.databaseType;
-const SURVEY_RESPONSE = models.surveyResponse.databaseType;
+const ANSWER = models.answer.databaseRecord;
+const ENTITY = models.entity.databaseRecord;
+const SURVEY_RESPONSE = models.surveyResponse.databaseRecord;
 
 describe('pushChange()', () => {
   describe('Push Handler selection', () => {

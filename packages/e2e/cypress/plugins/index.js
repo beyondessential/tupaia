@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 const cypressDotenv = require('cypress-dotenv');
 const fs = require('fs');
 

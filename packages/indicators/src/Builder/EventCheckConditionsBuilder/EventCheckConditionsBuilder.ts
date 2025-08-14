@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { PERIOD_TYPES, utcMoment } from '@tupaia/tsutils';
 import { momentToPeriod } from '@tupaia/utils';
 

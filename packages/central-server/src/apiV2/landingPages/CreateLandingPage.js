@@ -1,13 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 /* eslint-disable camelcase */
-import { BESAdminCreateHandler } from '../CreateHandler';
+import { TupaiaAdminCreateHandler } from '../CreateHandler';
 import { uploadImage } from '../utilities';
 
-export class CreateLandingPage extends BESAdminCreateHandler {
+export class CreateLandingPage extends TupaiaAdminCreateHandler {
   async createRecord() {
     const { url_segment, image_url, logo_url } = this.newRecordData;
 

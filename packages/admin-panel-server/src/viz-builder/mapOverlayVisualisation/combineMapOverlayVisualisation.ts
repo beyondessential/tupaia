@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { ValidationError } from '@tupaia/utils';
 import { LegacyReport, Report } from '../types';
 import { extractDataFromReport } from '../utils';
@@ -37,7 +32,8 @@ export function combineMapOverlayVisualisation(
     mapOverlayPermissionGroup,
     data,
     presentation,
-    reportPermissionGroup: (report as Report).permissionGroup,
+    reportPermissionGroup: report?.permissionGroup,
+    latestDataParameters: report?.latestDataParameters ?? {},
     ...rest,
   };
 

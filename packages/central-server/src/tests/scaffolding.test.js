@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import winston from 'winston';
 
-import { clearAllTestData } from '@tupaia/database';
+import { clearTestData } from '@tupaia/database';
 import { getIsProductionEnvironment } from '@tupaia/utils';
 import * as ServerUtils from '@tupaia/server-utils';
 import { getModels, resetTestData } from './testUtilities';
@@ -41,6 +41,6 @@ before(async () => {
 after(async () => {
   const models = getModels();
   sendEmailStub.restore();
-  await clearAllTestData(models.database);
+  await clearTestData(models.database);
   await models.database.closeConnections();
 });

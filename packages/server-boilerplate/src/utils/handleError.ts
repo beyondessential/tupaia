@@ -1,14 +1,10 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
 import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { Request, Response, NextFunction } from 'express';
+import winston from 'winston';
 
 export const handleError = (
   err: RespondingError | Error,
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) => {
@@ -17,6 +13,8 @@ export const handleError = (
     next(err);
     return;
   }
+
+  winston.error(err);
 
   const error = 'respond' in err ? err : new InternalServerError(err);
   error.respond(res);

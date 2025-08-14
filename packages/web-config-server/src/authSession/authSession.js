@@ -1,11 +1,12 @@
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import session from 'client-sessions';
 
 import { UnauthenticatedError } from '@tupaia/utils';
-
+import { configureEnv } from '../configureEnv';
 import { getUserFromAuthHeader } from './getUserFromAuthHeader';
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
+
+configureEnv();
 
 // auth is a middleware that runs on every request
 const auth = () => async (req, res, next) => {
@@ -16,6 +17,10 @@ const auth = () => async (req, res, next) => {
     const authHeaderUser = await getUserFromAuthHeader(req);
     if (authHeaderUser) {
       req.userJson = { userId: authHeaderUser.id };
+      // to match what is in server boilerplate, until we refactor to use server boilerplate middleware
+      req.user = {
+        id: authHeaderUser.id,
+      };
       req.accessPolicy = await getAccessPolicyForUser(authenticator, authHeaderUser.id);
       next();
       return;
@@ -23,8 +28,13 @@ const auth = () => async (req, res, next) => {
 
     // if logged in
     const userId = req.session?.userJson?.userId;
+
     if (userId) {
       req.userJson = req.session.userJson;
+      // to match what is in server boilerplate, until we refactor to use server boilerplate middleware
+      req.user = {
+        id: authHeaderUser.id,
+      };
       req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(authenticator, userId));
       next();
       return;

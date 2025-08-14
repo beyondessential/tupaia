@@ -1,6 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 export { ActivityFeedSection } from './ActivityFeedSection';
+export { ActivityFeedSurveyItem } from './ActivityFeedSurveyItem';
+export { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';

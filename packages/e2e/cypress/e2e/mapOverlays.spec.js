@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { groupBy } from 'lodash';
 
 import config from '../__generatedConfig.json';
@@ -35,7 +30,10 @@ const urlToRouteRegex = url => {
     throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
   }
 
-  return new RegExp(`measureData\\?(.*&|)mapOverlayCode=${mapOverlayCode}(&|$)`);
+  // Allows responses for both versions of the frontend
+  return new RegExp(
+    `(measureData\\?(.*&|)mapOverlayCode=${mapOverlayCode}(&|$)|legacyMapOverlayReport/${mapOverlayCode})`,
+  );
 };
 
 describe('Map overlays', () => {

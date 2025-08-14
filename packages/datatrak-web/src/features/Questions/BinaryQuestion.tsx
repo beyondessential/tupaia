@@ -1,14 +1,11 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
+
 import { SurveyQuestionInputProps } from '../../types';
+import { isNonEmptyArray } from '../../utils';
 import { RadioQuestion } from './RadioQuestion';
 
 export const BinaryQuestion = ({ options = [], ...props }: SurveyQuestionInputProps) => {
-  const questionOptions = options?.length
+  const questionOptions = isNonEmptyArray(options)
     ? options
     : [
         {

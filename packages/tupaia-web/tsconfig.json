@@ -1,42 +1,9 @@
 {
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "target": "ESNext",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
-    "rootDirs": [
-      "src",
-      "stories",
-      ".storybook"
-    ],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react",
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": false, // this fixes the issue with the `any` type from third party libraries
-  },
+  "extends": "../../tsconfig-frontend.json",
   "include": [
     "src",
     "index.d.ts",
     "stories",
     ".storybook"
   ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
 }

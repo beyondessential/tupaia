@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { WebServerProjectRequest } from '@tupaia/types';
@@ -21,7 +16,9 @@ export class ProjectRoute extends Route<ProjectRequest> {
       params: { projectCode },
     } = this.req;
 
-    const { projects } = await ctx.services.webConfig.fetchProjects();
+    const { projects } = await ctx.services.webConfig.fetchProjects({
+      showExcludedProjects: false,
+    });
 
     const project = projects.find(({ code }: { code: string }) => code === projectCode);
     if (!project) {

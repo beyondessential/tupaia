@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import xlsx from 'xlsx';
 import {
   respond,
@@ -11,16 +6,16 @@ import {
   ObjectValidator,
   constructRecordExistsWithCode,
   constructRecordExistsWithField,
-  DatabaseError,
 } from '@tupaia/utils';
-import { assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertUserEntityPermissionUpsertPermissions } from '../userEntityPermissions/assertUserEntityPermissionPermissions';
 
 const extractItems = filePath => {
   const { Sheets: sheets } = xlsx.readFile(filePath);
   return xlsx.utils.sheet_to_json(Object.values(sheets)[0]);
 };
 
-async function create(transactingModels, items) {
+async function create(req, transactingModels, items) {
   const validator = new ObjectValidator({
     user_email: [constructRecordExistsWithField(transactingModels.user, 'email')],
     entity_code: [
@@ -48,19 +43,26 @@ async function create(transactingModels, items) {
     excelRowNumber++;
     await validator.validate(item, constructImportValidationError);
 
-    const { user_email, entity_code, permission_group_name } = item;
+    const {
+      user_email: email,
+      entity_code: entityCode,
+      permission_group_name: permissionGroupName,
+    } = item;
 
-    const user = await transactingModels.user.findOne({ email: user_email });
-    const entity = await transactingModels.entity.findOne({ code: entity_code });
+    const user = await transactingModels.user.findOne({ email });
+    const entity = await transactingModels.entity.findOne({ code: entityCode });
     const permissionGroup = await transactingModels.permissionGroup.findOne({
-      name: permission_group_name,
+      name: permissionGroupName,
     });
-
-    const existingRecord = await transactingModels.userEntityPermission.findOne({
+    const userEntityPermissionData = {
       user_id: user.id,
       entity_id: entity.id,
       permission_group_id: permissionGroup.id,
-    });
+    };
+
+    const existingRecord = await transactingModels.userEntityPermission.findOne(
+      userEntityPermissionData,
+    );
     if (existingRecord) {
       // Already added
       console.info(
@@ -68,11 +70,23 @@ async function create(transactingModels, items) {
       );
       continue;
     } else {
-      await transactingModels.userEntityPermission.create({
-        user_id: user.id,
-        entity_id: entity.id,
-        permission_group_id: permissionGroup.id,
-      });
+      const createUserEntityPermissionChecker = async accessPolicy => {
+        await assertUserEntityPermissionUpsertPermissions(
+          accessPolicy,
+          transactingModels,
+          userEntityPermissionData,
+        );
+      };
+
+      try {
+        await req.assertPermissions(
+          assertAnyPermissions([assertBESAdminAccess, createUserEntityPermissionChecker]),
+        );
+      } catch (error) {
+        throw constructImportValidationError(error.message);
+      }
+
+      await transactingModels.userEntityPermission.create(userEntityPermissionData);
     }
   }
 }
@@ -83,8 +97,6 @@ async function create(transactingModels, items) {
 export async function importUserPermissions(req, res) {
   const { models } = req;
 
-  await req.assertPermissions(assertBESAdminAccess);
-
   let items;
   try {
     items = extractItems(req.file.path);
@@ -93,7 +105,7 @@ export async function importUserPermissions(req, res) {
   }
 
   await models.wrapInTransaction(async transactingModels => {
-    await create(transactingModels, items);
+    await create(req, transactingModels, items);
     respond(res, { message: `Imported User Permissions` });
   });
 }

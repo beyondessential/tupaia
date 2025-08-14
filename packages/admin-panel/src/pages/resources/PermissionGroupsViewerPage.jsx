@@ -1,16 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
-import { useQuery } from 'react-query';
-import { Header, PageBody } from '../../widgets';
-import { usePortalWithCallback } from '../../utilities';
+import { useQuery } from '@tanstack/react-query';
+import { PageHeader, PageBody } from '../../widgets';
 import { LogsModal } from '../../logsTable';
-import * as COLORS from '../../theme/colors';
 import { get } from '../../VizBuilderApp/api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../../VizBuilderApp/api/constants';
 
@@ -22,22 +15,24 @@ const StyledHorizontalTree = styled(HorizontalTree)`
   margin-top: 40px;
   margin-bottom: 40px;
   max-height: 870px;
-  color: ${COLORS.TEXT_MIDGREY};
-
-  .MuiTypography-body1 {
-    font-size: 15px;
-  }
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
-function getDescendantData(parentNodeId, data) {
-  return data
-    .filter(node => node.parent_id === parentNodeId)
+const getRootLevelNodes = data =>
+  data.filter(({ parent_id: parentId }) => !data.some(({ id }) => id === parentId)); // Cannot find parent
+
+const getChildrenOfNode = (data, nodeId) =>
+  data.filter(({ parent_id: parentId }) => parentId === nodeId);
+
+const getDescendantData = (parentNodeId, data) => {
+  const nodes = !parentNodeId ? getRootLevelNodes(data) : getChildrenOfNode(data, parentNodeId);
+  return nodes
     .sort((a, b) => a.name.localeCompare(b.name))
     .map(node => {
       const children = data.filter(childNode => childNode.parent_id === node.id);
       return { id: node.id, name: node.name, children };
     });
-}
+};
 
 const usePermissionGroups = () => {
   const { isLoading, data } = useQuery(
@@ -51,21 +46,16 @@ const usePermissionGroups = () => {
 
   return { fetchRoot, fetchBranch };
 };
-export const PermissionGroupsViewerPage = ({ getHeaderEl }) => {
-  const HeaderPortal = usePortalWithCallback(<Header title="Permission Groups" />, getHeaderEl);
+export const PermissionGroupsViewerPage = () => {
   const { fetchRoot, fetchBranch } = usePermissionGroups();
 
   return (
     <>
-      {HeaderPortal}
       <Container>
+        <PageHeader resourceName="permission group" title="Permission Groups" />
         <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} readOnly />
       </Container>
       <LogsModal />
     </>
   );
-};
-
-PermissionGroupsViewerPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
 };

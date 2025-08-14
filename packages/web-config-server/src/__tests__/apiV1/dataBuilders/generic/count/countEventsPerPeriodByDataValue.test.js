@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { createJestMockInstance } from '@tupaia/utils';
 import { CountEventsPerPeriodByDataValueBuilder } from '/apiV1/dataBuilders/generic/count/countEventsPerPeriodByDataValue';
 

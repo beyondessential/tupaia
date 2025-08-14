@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ReactNode } from 'react';
 import { Link, useLocation, LinkProps } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
@@ -29,9 +25,9 @@ export const RouterButton = ({
   ...props
 }: RouterButtonProps) => {
   const location = useLocation();
-  const link = (modal
-    ? { ...location, hash: modal, search: removeUrlSearchParams(searchParamsToRemove) }
-    : to) as LinkProps['to'];
+  const link = (
+    modal ? { ...location, hash: modal, search: removeUrlSearchParams(searchParamsToRemove) } : to
+  ) as LinkProps['to'];
 
   return (
     <Button to={link} component={Link} state={routerState} {...props}>

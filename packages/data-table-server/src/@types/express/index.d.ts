@@ -1,12 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
+import { DataTableRecord } from '@tupaia/database';
 import { DataTableService } from '../../dataTableService';
-import { DataTableType } from '../../models';
 import { DataTableServerModelRegistry } from '../../types';
 
 declare global {
@@ -16,7 +11,7 @@ declare global {
       models: DataTableServerModelRegistry;
       ctx: {
         services: TupaiaApiClient;
-        dataTable: DataTableType;
+        dataTable: DataTableRecord;
         dataTableService: DataTableService;
       };
     }

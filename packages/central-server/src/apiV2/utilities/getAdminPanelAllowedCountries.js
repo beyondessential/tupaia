@@ -1,12 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  LESMIS_ADMIN_PERMISSION_GROUP,
-} from '../../permissions';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
 /*
  * Get a list of country codes this user has tupaia admin panel access to, or throw an error if they have none
@@ -21,20 +13,11 @@ export const getAdminPanelAllowedCountryCodes = accessPolicy => {
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );
 
-  const accessibleLESMISAdminCountryCodes = accessPolicy.getEntitiesAllowed(
-    LESMIS_ADMIN_PERMISSION_GROUP,
-  );
-
-  const accessibleCountryCodes = [
-    ...accessibleAdminPanelCountryCodes,
-    ...accessibleLESMISAdminCountryCodes,
-  ];
-
-  if (accessibleCountryCodes.length === 0) {
+  if (accessibleAdminPanelCountryCodes.length === 0) {
     throw new Error('You do not have Tupaia Admin Panel access to any entities');
   }
 
-  return accessibleCountryCodes;
+  return accessibleAdminPanelCountryCodes;
 };
 
 /*
@@ -53,4 +36,23 @@ export const getAdminPanelAllowedCountryIds = async (accessPolicy, models) => {
   });
 
   return entities.map(e => e.id);
+};
+
+/**
+ * Get a mapping of countryIds to permissionGroupIds for countries that the user has Tupaia Admin Panel access to
+ */
+export const getAdminPanelAllowedPermissionGroupIdsByCountryIds = async (accessPolicy, models) => {
+  const allowedCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
+  return Object.fromEntries(
+    await Promise.all(
+      allowedCountryCodes.map(async countryCode => [
+        (await models.entity.findOne({ code: countryCode })).id,
+        (
+          await models.permissionGroup.find({
+            name: accessPolicy.getPermissionGroups([countryCode]),
+          })
+        ).map(({ id }) => id),
+      ]),
+    ),
+  );
 };

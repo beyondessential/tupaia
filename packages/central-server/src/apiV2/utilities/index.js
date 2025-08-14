@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 export { constructAnswerValidator } from './constructAnswerValidator';
 export { constructNewRecordValidationRules } from './constructNewRecordValidationRules';
 export * from './excel';
@@ -14,9 +9,14 @@ export { fetchRequestingMeditrakDevice } from '../meditrakApp/utilities/fetchReq
 export {
   getAdminPanelAllowedCountryIds,
   getAdminPanelAllowedCountryCodes,
+  getAdminPanelAllowedPermissionGroupIdsByCountryIds,
 } from './getAdminPanelAllowedCountries';
 export { getArrayQueryParameter } from './getArrayQueryParameter';
-export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
+export {
+  hasAccessToEntityForVisualisation,
+  hasVizBuilderAccessToEntity,
+  hasVizBuilderAccessToEntityCode,
+} from './hasAccessToEntityForVisualisation';
 export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';

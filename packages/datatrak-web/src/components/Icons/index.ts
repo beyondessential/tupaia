@@ -1,12 +1,15 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 export { Coconut } from './Coconut';
-export { Pig } from './Pig';
-export { SurveyIcon } from './SurveyIcon';
-export { SurveyFolderIcon } from './SurveyFolderIcon';
-export { SurveyTickIcon } from './SurveyTickIcon';
+export { CommentIcon } from './CommentIcon';
+export { CopyIcon } from './CopyIcon';
+export { DotIcon } from './Dot';
+export type { DotIconProps } from './Dot';
 export { DownloadIcon } from './DownloadIcon';
-export { RadioIcon } from './RadioIcon';
+export { Pig } from './Pig';
 export { PinIcon } from './PinIcon';
+export { RadioIcon } from './RadioIcon';
+export { ReportsIcon } from './ReportsIcon';
+export { ShareIcon } from './ShareIcon';
+export { SurveyFolderIcon } from './SurveyFolderIcon';
+export { SurveyIcon } from './SurveyIcon';
+export { SurveyTickIcon } from './SurveyTickIcon';
+export { TaskIcon } from './TaskIcon';

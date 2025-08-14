@@ -1,0 +1,1 @@
+export { QRCodeScanner } from './QRCodeScanner';

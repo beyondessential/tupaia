@@ -1,20 +1,26 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
-import { FlexSpaceBetween, FetchLoader, DataGrid } from '@tupaia/ui-components';
+import { DataGrid, FetchLoader, FlexSpaceBetween } from '@tupaia/ui-components';
 import { Chart } from '@tupaia/ui-chart-components';
-import { JsonEditor } from '../../widgets';
+import { JsonEditor, JsonTreeEditor } from '../../widgets';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
-import { usePreviewData, useVisualisation, useVizConfig, useVizConfigError } from '../context';
+import {
+  usePreviewDataContext,
+  useVisualisationContext,
+  useVizConfigContext,
+  useVizConfigErrorContext,
+} from '../context';
 import { IdleMessage } from './IdleMessage';
 import { getColumns, getRows } from '../../utilities';
+import {
+  DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM,
+  DASHBOARD_ITEM_VIZ_TYPES,
+  MAP_OVERLAY_VIZ_TYPES,
+} from '../constants';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -27,7 +33,6 @@ const PreviewTabs = styled(MuiTabs)`
 `;
 
 const PreviewTab = styled(MuiTab)`
-  font-size: 15px;
   line-height: 140%;
   font-weight: 400;
   min-width: 100px;
@@ -98,18 +103,22 @@ const getTab = index => Object.values(TABS).find(tab => tab.index === index);
 export const PreviewSection = () => {
   const [tab, setTab] = useState(0);
 
-  const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
-  const { hasPresentationError, setPresentationError } = useVizConfigError();
+  const { dashboardItemOrMapOverlay } = useParams();
+  const { fetchEnabled, setFetchEnabled, showData, jsonToggleEnabled } = usePreviewDataContext();
+  const { hasPresentationError, setPresentationError } = useVizConfigErrorContext();
 
   const [
-    { project, location, startDate, endDate, testData, visualisation },
+    { vizType, project, location, startDate, endDate, testData, visualisation },
     { setPresentation },
-  ] = useVizConfig();
-  const { visualisationForFetchingData } = useVisualisation();
+  ] = useVizConfigContext();
+  const { visualisationForFetchingData } = useVisualisationContext();
 
-  const [viewContent, setViewContent] = useState(null);
+  const presentationSchema =
+    dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM
+      ? DASHBOARD_ITEM_VIZ_TYPES[vizType]?.schema
+      : MAP_OVERLAY_VIZ_TYPES[vizType]?.schema;
 
-  const { dashboardItemOrMapOverlay } = useParams();
+  const [config, setConfig] = useState(null);
 
   const {
     data: reportData = { columns: [], rows: [] },
@@ -119,8 +128,8 @@ export const PreviewSection = () => {
     error,
   } = useReportPreview({
     visualisation: visualisationForFetchingData,
-    project,
-    location,
+    project: project?.['project.code'],
+    location: location?.code,
     startDate,
     endDate,
     testData,
@@ -148,12 +157,17 @@ export const PreviewSection = () => {
 
   const columns = useMemo(() => (tab === 0 ? getColumns(reportData) : []), [reportData]);
   const rows = useMemo(() => (tab === 0 ? getRows(reportData) || [] : []), [reportData]);
-  const data = useMemo(() => reportData, [reportData]);
+  const report = useMemo(
+    () => ({
+      data: reportData,
+      type: visualisation?.output?.type,
+    }),
+    [reportData],
+  );
 
   // only update Chart Preview when play button is clicked
   useEffect(() => {
-    const newViewContent = { data, ...visualisation.presentation };
-    setViewContent(newViewContent);
+    setConfig(visualisation.presentation);
   }, [fetchEnabled]);
 
   return (
@@ -190,20 +204,32 @@ export const PreviewSection = () => {
           <ChartContainer>
             {showData ? (
               <FetchLoader isLoading={isLoading || isFetching} isError={isError} error={error}>
-                <Chart viewContent={viewContent} />
+                <Chart report={report} config={config} />
               </FetchLoader>
             ) : (
               <IdleMessage />
             )}
           </ChartContainer>
           <EditorContainer>
-            <JsonEditor
-              value={visualisation.presentation}
-              onChange={setPresentationValue}
-              onInvalidChange={handleInvalidPresentationChange}
-              mode="code"
-              mainMenuBar={false}
-            />
+            {!jsonToggleEnabled && presentationSchema ? (
+              <JsonTreeEditor
+                name="presentation"
+                value={visualisation.presentation}
+                onChange={setPresentationValue}
+                onInvalidChange={handleInvalidPresentationChange}
+                mainMenuBar={false}
+                schema={presentationSchema}
+              />
+            ) : (
+              <JsonEditor
+                value={visualisation.presentation}
+                onChange={setPresentationValue}
+                onInvalidChange={handleInvalidPresentationChange}
+                mode="code"
+                mainMenuBar={false}
+                schema={presentationSchema}
+              />
+            )}
           </EditorContainer>
         </Container>
       </TabPanel>

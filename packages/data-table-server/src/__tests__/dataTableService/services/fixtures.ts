@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 export const ENTITIES = [
   { code: 'test', name: 'Test Project', type: 'project' },
   { code: 'explore', name: 'Explore', type: 'project' },

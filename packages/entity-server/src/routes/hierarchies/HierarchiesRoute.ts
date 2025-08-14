@@ -1,11 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import keyBy from 'lodash.keyby';
-
+import { isNotNullish } from '@tupaia/tsutils';
 import { Route } from '@tupaia/server-boilerplate';
 import { formatHierarchiesForResponse } from './format';
 import { FlattenedHierarchy, HierarchyContext, HierarchyResponseObject } from './types';
@@ -30,15 +25,19 @@ export class HierarchyRoute extends Route<HierarchyRequest> {
     const projects = await this.req.models.project.getAccessibleProjects(this.req.accessPolicy);
     const projectsByEntityId = keyBy(projects, 'entity_id');
     const entities = await this.req.models.entity.find(
-      { id: projects.map(p => p.entity_id) },
+      { id: projects.map(p => p.entity_id).filter(isNotNullish) },
       { sort: ['name'] },
     );
 
     const hierarchies = entities.map(entity => {
       const project = projectsByEntityId[entity.id];
+      const entityHierarchyId = project.entity_hierarchy_id;
+      if (!entityHierarchyId) {
+        throw new Error(`No entity_hierarchy_id found for project: ${project.code}`);
+      }
 
       return {
-        id: project.entity_hierarchy_id,
+        id: entityHierarchyId,
         code: project.code,
         name: entity.name,
       };

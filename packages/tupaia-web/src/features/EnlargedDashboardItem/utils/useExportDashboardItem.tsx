@@ -1,32 +1,17 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { RefObject, useContext, useEffect } from 'react';
 import moment from 'moment';
 import downloadJs from 'downloadjs';
 import domtoimage from 'dom-to-image';
 import { useParams } from 'react-router-dom';
+import { DashboardItemConfig, DashboardItemReport } from '@tupaia/types';
 import { toFilename } from '@tupaia/utils';
-import { ViewContent, useChartDataExport } from '@tupaia/ui-chart-components';
-import {
-  Dashboard,
-  DashboardItem,
-  DashboardItemConfig,
-  DashboardItemReport,
-  Entity,
-  EntityCode,
-  ProjectCode,
-} from '../../../types';
+import { useChartDataExport } from '@tupaia/ui-chart-components';
+import { Dashboard, DashboardItem, Entity, EntityCode, ProjectCode } from '../../../types';
 import { gaEvent } from '../../../utils';
-import {
-  ACTION_TYPES,
-  EXPORT_FORMATS,
-  ExportContext,
-  ExportDispatchContext,
-} from './ExportContext';
 import { useExportToExcel } from '../../../api/mutations';
+import { ExportFormats, useExportSettings } from '../../ExportSettings';
+import { ExportDashboardItemContext } from './ExportDashboardItemContext';
+import { useEnlargedDashboardItem } from '.';
 
 interface ExportToExcelParams {
   projectCode?: ProjectCode;
@@ -48,7 +33,7 @@ export const getExportToExcelParams = ({
 }: ExportToExcelParams) => {
   const { exportConfig } = config || {};
   const dataElementHeader = exportConfig?.dataElementHeader;
-  const { legacy, code: itemCode } = currentDashboardItem || {};
+  const { legacy, code: itemCode } = currentDashboardItem || ({} as DashboardItem);
   const { startDate, endDate } = report || ({} as DashboardItemReport);
 
   let newStartDate = moment.isMoment(startDate) ? startDate.utc().toISOString() : startDate;
@@ -73,45 +58,47 @@ export const getExportToExcelParams = ({
 
 // This is a utility hook that is used in the ExportDashboardItem component, that handles all the exporting of single dashboard items
 export const useExportDashboardItem = (
-  activeDashboard?: Dashboard | null,
-  currentDashboardItem?: DashboardItem,
-  report?: DashboardItemReport,
   entityName?: Entity['name'],
   exportRef?: RefObject<HTMLElement>,
 ) => {
+  const { currentDashboardItem, activeDashboard, reportData } = useEnlargedDashboardItem();
   const { projectCode, entityCode } = useParams();
-  const { exportFormat, exportWithLabels, exportWithTable, exportWithTableDisabled } = useContext(
-    ExportContext,
+  const {
+    exportFormat,
+    exportWithLabels,
+    exportWithTable,
+    exportWithTableDisabled,
+    resetExportSettings,
+  } = useExportSettings();
+  const { setExportError, setIsExportMode, setIsExporting } = useContext(
+    ExportDashboardItemContext,
   );
-  const dispatch = useContext(ExportDispatchContext)!;
-  const { config } = currentDashboardItem || ({} as DashboardItem);
-  const { type, presentationOptions, name } = config || ({} as DashboardItemConfig);
-  const exportTitle = `${name}, ${entityName}`;
 
-  const { doExport } = useChartDataExport(
-    {
-      ...report,
+  const { config } = currentDashboardItem || ({} as DashboardItem);
+
+  const exportTitle = `${config?.name}, ${entityName}`;
+
+  const getExportViewConfig = () => {
+    if (!config || config?.type !== 'chart') return config;
+    const { chartType } = config;
+    if (chartType === 'gauge') return config;
+    const { presentationOptions } = config;
+    return {
       ...config,
       presentationOptions: {
-        ...(presentationOptions || {}),
+        ...presentationOptions,
         exportWithLabels,
         exportWithTable,
         exportWithTableDisabled,
       },
-    } as ViewContent,
-    exportTitle,
-  );
+    };
+  };
 
-  const filename = toFilename(`export-${entityName}-${name}`, true);
+  const exportViewConfig = getExportViewConfig();
+  const { doExport } = useChartDataExport(exportViewConfig, reportData, exportTitle);
+
+  const filename = toFilename(`export-${entityName}-${config?.name}`, true);
   const file = `${filename}.${exportFormat}`;
-
-  const setExportError = (message: string | null) => {
-    dispatch({ type: ACTION_TYPES.SET_EXPORT_ERROR, payload: message });
-  };
-
-  const setIsExporting = (isExporting: boolean) => {
-    dispatch({ type: ACTION_TYPES.SET_IS_EXPORTING, payload: isExporting });
-  };
 
   // set the isExporting state to true and the export error state to null when the export starts
   const handleStartExport = () => {
@@ -132,6 +119,10 @@ export const useExportDashboardItem = (
   const handleError = (e: Error) => {
     setExportError(e.message);
     setIsExporting(false);
+  };
+
+  const cancelExport = () => {
+    setIsExportMode(false);
   };
 
   // use the useExportToExcel hook to export the matrix dashboard item
@@ -158,18 +149,25 @@ export const useExportDashboardItem = (
     dashboardCode: activeDashboard?.code,
     entityCode,
     config,
-    report,
+    report: reportData,
     currentDashboardItem,
   });
 
   const EXPORT_FUNCTIONS = {
-    [EXPORT_FORMATS.PNG]: exportToPNG,
-    [EXPORT_FORMATS.XLSX]: type === 'matrix' ? () => exportToExcel(excelParams) : doExport,
+    [ExportFormats.PNG]: exportToPNG,
+    [ExportFormats.XLSX]: config?.type === 'matrix' ? () => exportToExcel(excelParams) : doExport,
   };
 
   // reset the export state when the current dashboard item changes
   useEffect(() => {
-    dispatch({ type: ACTION_TYPES.RESET_EXPORT_STATE, payload: type });
+    setExportError(null);
+    setIsExporting(false);
+    setIsExportMode(false);
+    resetExportSettings(config?.type);
   }, [currentDashboardItem]);
-  return EXPORT_FUNCTIONS[exportFormat];
+
+  return {
+    handleExport: EXPORT_FUNCTIONS[exportFormat],
+    cancelExport,
+  };
 };

@@ -1,5 +1,12 @@
 import { respond } from '@tupaia/utils';
 
+const FRONTEND_EXCLUDED_PROJECTS = [
+  'ehealth_cook_islands',
+  'ehealth_tokelau',
+  'ehealth_timor_leste',
+  'ehealth_vanuatu',
+];
+
 async function fetchEntitiesWithProjectAccess(req, entities, permissionGroups) {
   return Promise.all(
     entities.map(async ({ id, name, code }) => ({
@@ -86,9 +93,22 @@ export async function buildProjectDataForFrontend(project, req) {
 }
 
 export async function getProjects(req, res) {
-  const data = await req.models.project.getAllProjectDetails();
+  const { query = {} } = req;
+  const { showExcludedProjects } = query;
 
-  const promises = data.map(project => buildProjectDataForFrontend(project, req));
+  const data = await req.models.project.getAllProjectDetails();
+  // Filter out projects that should not be shown on the frontend, if the query param is set.
+  // defaults to true, because tupaia-web should be false, whereas datatrak-web will be true, and there are more places where we want to show all projects than not
+
+  // allow 'false' or false to be falsey (as it depends on the query coming from the server or client side)
+  const isFalsey = value => value === 'false' || value === false;
+
+  const shouldShowExcludedProjects = !isFalsey(showExcludedProjects);
+  const filteredProjects = shouldShowExcludedProjects
+    ? data
+    : data.filter(project => !FRONTEND_EXCLUDED_PROJECTS.includes(project.code));
+
+  const promises = filteredProjects.map(project => buildProjectDataForFrontend(project, req));
   const projects = await Promise.all(promises);
 
   return respond(res, { projects });

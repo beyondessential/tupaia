@@ -1,14 +1,14 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
 export default class FetchError extends Error {
-  code: number;
+  public code: number;
+  public name: string;
+  public responseData: Record<string, unknown> | undefined;
 
-  name: string;
-
-  constructor(message: Error['message'], code: number, ...params: ErrorOptions[]) {
+  constructor(
+    message: Error['message'],
+    code: number,
+    responseData?: Record<string, unknown>,
+    ...params: ErrorOptions[]
+  ) {
     // Pass remaining arguments (including vendor specific ones) to parent constructor
     super(message, ...params);
 
@@ -20,5 +20,6 @@ export default class FetchError extends Error {
     this.name = 'FetchError';
     // Custom debugging information
     this.code = code;
+    this.responseData = responseData;
   }
 }

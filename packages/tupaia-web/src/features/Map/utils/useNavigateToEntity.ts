@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { useParams } from 'react-router';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useProject } from '../../../api/queries';
@@ -20,7 +15,10 @@ export const useNavigateToEntity = () => {
     ? encodeURIComponent(project.dashboardGroupName)
     : '';
 
-  urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
+  // only set the default period param if it is not already set. This is so that if it is already set, changing the entity won't reset the period if they've already changed it
+  if (!urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD)) {
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
+  }
 
   return (entityCode?: EntityCode) => {
     const link = {

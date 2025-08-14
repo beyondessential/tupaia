@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
 import React from 'react';
 import MuiCard from '@material-ui/core/Card';
 import styled from 'styled-components';
@@ -43,20 +38,22 @@ const StyledLocaleLink = styled(LocaleLink)`
   text-decoration: none;
 `;
 
-export const LoginView = () => (
-  <Container>
-    <FormBackButton />
-    <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
-    <StyledCard>
-      <LoginForm />
-    </StyledCard>
-    <FlexCenter mb={4}>
-      <Text color="textSecondary">
-        <I18n t="login.dontHaveAccess" />
-      </Text>
-      <StyledLocaleLink to="/register" color="primary">
-        <I18n t="login.registerHere" />
-      </StyledLocaleLink>
-    </FlexCenter>
-  </Container>
-);
+export const LoginView = () => {
+  return (
+    <Container>
+      <FormBackButton />
+      <StyledImg src="/lesmis-login-logo.svg" alt="LESMIS logo" />
+      <StyledCard>
+        <LoginForm />
+      </StyledCard>
+      <FlexCenter mb={4}>
+        <Text color="textSecondary">
+          <I18n t="login.dontHaveAccess" />
+        </Text>
+        <StyledLocaleLink to="/register" color="primary">
+          <I18n t="login.registerHere" />
+        </StyledLocaleLink>
+      </FlexCenter>
+    </Container>
+  );
+};

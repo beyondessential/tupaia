@@ -1,10 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 const extractParams = template =>
-  [...template.matchAll(/\{(\w+)\}/gi)].map(matchArray => matchArray[1]);
+  [...template.matchAll(/(?<=\{)(.*?)(?=\})/gi)].map(matchArray => matchArray[1]);
 
 export const makeSubstitutionsInString = (template, variables) => {
   const params = extractParams(template);

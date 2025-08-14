@@ -1,11 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { createContext } from 'react';
-import { DashboardItem, DashboardItemConfig, DashboardItemReport } from '../../types';
-import { UseQueryResult } from 'react-query';
+import { UseQueryResult } from '@tanstack/react-query';
+import { DashboardItemConfig, DashboardItemReport } from '@tupaia/types';
+import { DashboardItem } from '../../types';
 
 type DashboardItemState = {
   config?: DashboardItemConfig | null;
@@ -16,6 +12,7 @@ type DashboardItemState = {
   isEnlarged?: boolean;
   isExport?: boolean;
   reportCode?: DashboardItem['reportCode'];
+  isEnabled?: boolean;
 };
 const defaultContext = {
   config: null,
@@ -23,6 +20,7 @@ const defaultContext = {
   isLoading: false,
   error: null,
   refetch: () => {},
+  isEnabled: true,
 } as DashboardItemState;
 
 export const DashboardItemContext = createContext(defaultContext);

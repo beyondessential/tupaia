@@ -25,7 +25,7 @@ const Text = styled.p`
 export const Logo = () => {
   return (
     <Container>
-      <Img alt="logo" src="/lesmis-logo.png" />
+      <Img aria-hidden src="/lesmis-logo.png" />
       <Text>Ministry of Education and Sports Lao PDR</Text>
     </Container>
   );

@@ -1,19 +1,14 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import MuiTextField, { TextFieldProps as MuiTextFieldProps } from '@material-ui/core/TextField';
 import styled from 'styled-components';
-import { FORM_COLORS } from '../constants';
 
 const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   display: flex;
   width: 100%;
   margin-bottom: 0.7rem;
   .MuiFormLabel-root.MuiInputLabel-root {
-    color: ${FORM_COLORS.BORDER};
+    color: ${({ theme }) => theme.palette.form.border};
     font-size: 0.875rem;
   }
 
@@ -31,7 +26,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   }
 
   .MuiFormHelperText-root:not(.Mui-error) {
-    color: ${FORM_COLORS.BORDER};
+    color: ${({ theme }) => theme.palette.form.border};
   }
 `;
 

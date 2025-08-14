@@ -1,51 +1,32 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
-
 /* eslint-disable react/prop-types */
 
 import L from 'leaflet';
 import React, { ElementType } from 'react';
-import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
-import styled from 'styled-components';
 import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
 import { PointExpression } from 'leaflet';
+import { CssColor, IconKey } from '@tupaia/types';
+import { BREWER_PALETTE, WHITE } from '../../constants';
+import { Color, ColorKey } from '../../types';
 import { ICON_BASE_SIZE } from './constants';
+import { IconContainer } from './IconContainer';
 // from https://thenounproject.com/ochavisual/collection/ocha-humanitarian-icons/
 import { UpArrow, DownArrow, RightArrow } from './arrowIcons';
-import { BREWER_PALETTE, WHITE } from '../../constants';
-import { IconContainer } from './IconContainer';
-import { Color, ColorKey } from '../../types';
-import { CssColor, IconKey } from '@tupaia/types';
 
 // allows passing a color to a material icon & scales it down a bit
-const wrapMaterialIcon = (Base: ElementType) => ({ color }: { color: Color }) => (
-  <Base htmlColor={color} viewBox="-3 -3 29 29" />
-);
-
-const StyledSvgWrapper = styled.span`
-  * {
-    fill: ${p => p.color};
-  }
-`;
-
-const wrapSvgIcon = (Base: ElementType) => ({ color }: { color: Color }) => (
-  <StyledSvgWrapper color={color}>
-    <Base />
-  </StyledSvgWrapper>
-);
+const wrapMaterialIcon =
+  (Base: ElementType) =>
+  ({ color }: { color?: Color }) =>
+    <Base htmlColor={color} viewBox="-3 -3 29 29" />;
 
 interface ScaleIconProps {
   scale?: number;
 }
 
 interface IconProps extends ScaleIconProps {
-  color: Color;
+  color?: Color;
 }
 
 const PinIcon = ({ color, scale = 1 }: IconProps) => {
@@ -334,7 +315,7 @@ export const LEGEND_SHADING_ICON = IconKey.SQUARE;
 export const LEGEND_RADIUS_ICON = IconKey.RADIUS;
 export const HIDDEN_ICON = IconKey.HIDDEN;
 
-function toLeaflet(icon: IconType, color?: string, scale: number = 1): L.DivIcon {
+function toLeaflet(icon: IconType, color?: string, scale = 1): L.DivIcon {
   const {
     Component,
     iconAnchor = [0.5 * ICON_BASE_SIZE, 0.5 * ICON_BASE_SIZE], // default to center point
@@ -358,7 +339,7 @@ function toLeaflet(icon: IconType, color?: string, scale: number = 1): L.DivIcon
 // Returns jsx version of marker (for Legend rendering)
 export function getMarkerForOption(
   iconKey: IconKey | undefined,
-  colorName: Color,
+  colorName?: Color,
   stroke?: CssColor,
 ) {
   const icon = icons[iconKey as IconKey] || icons.pin;
@@ -367,11 +348,7 @@ export function getMarkerForOption(
 }
 
 // Return html version of marker (for Map rendering)
-export function getMarkerForValue(
-  iconKey: IconKey | undefined,
-  colorName?: Color,
-  scale: number = 1,
-) {
+export function getMarkerForValue(iconKey: IconKey | undefined, colorName?: Color, scale = 1) {
   const icon = icons[iconKey as IconKey] || icons.pin;
   const color = BREWER_PALETTE[colorName as ColorKey] || colorName;
   return toLeaflet(icon, color, scale);

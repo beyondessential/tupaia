@@ -1,19 +1,19 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import get from 'lodash.get';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ValueType, BaseChartConfig } from '@tupaia/types';
-import { ChartType, PresentationOptions, LooseObject, VizPeriodGranularity } from '../../types';
+import { CartesianChartConfig, ChartType, ValueType } from '@tupaia/types';
+import { LooseObject } from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
 
-function formatLabelledValue(label: string, value: any, valueType: string, metadata: LooseObject) {
+function formatLabelledValue(
+  label: string,
+  value: any,
+  valueType?: ValueType,
+  metadata?: LooseObject,
+) {
   const valueText = formatDataValueByType({ value, metadata }, valueType);
   if (label) {
     return `${label}: ${valueText}`;
@@ -55,15 +55,18 @@ const Box = styled.div`
   margin-right: 5px;
 `;
 
-interface ChartTooltipProps {
+interface ChartTooltipProps
+  extends Pick<
+    CartesianChartConfig,
+    | 'presentationOptions'
+    | 'chartConfig'
+    | 'chartType'
+    | 'valueType'
+    | 'labelType'
+    | 'periodGranularity'
+  > {
   payload?: any[];
   active?: boolean;
-  presentationOptions?: PresentationOptions;
-  valueType: ValueType;
-  chartConfig?: BaseChartConfig;
-  chartType?: ChartType;
-  labelType?: ValueType;
-  periodGranularity?: VizPeriodGranularity;
 }
 
 interface ChartTooltipPropsWithData extends ChartTooltipProps {
@@ -92,7 +95,7 @@ const MultiValueTooltip = ({
   }
 
   const valueLabels = payload.map(({ dataKey, value, color }) => {
-    const options = chartConfig && chartConfig[dataKey as keyof BaseChartConfig];
+    const options = chartConfig && chartConfig[dataKey];
     const label = (options && options.label) || dataKey;
     const valueTypeForLabel =
       labelType ||
@@ -119,7 +122,11 @@ const MultiValueTooltip = ({
         {headline ||
           (getIsTimeSeries([data]) &&
             periodGranularity &&
-            formatTimestampForChart(timestamp, periodGranularity))}
+            formatTimestampForChart(
+              timestamp,
+              periodGranularity,
+              presentationOptions?.periodTickFormat,
+            ))}
       </Heading>
       <List>{valueLabels}</List>
     </TooltipContainer>
@@ -130,6 +137,7 @@ const SingleValueTooltip = ({
   valueType,
   payload,
   periodGranularity,
+  presentationOptions,
   labelType,
 }: ChartTooltipPropsWithData) => {
   const data = payload[0].payload;
@@ -142,7 +150,13 @@ const SingleValueTooltip = ({
     <TooltipContainer>
       {getIsTimeSeries([payload[0].payload]) && periodGranularity ? (
         <>
-          <Heading>{formatTimestampForChart(timestamp, periodGranularity)}</Heading>
+          <Heading>
+            {formatTimestampForChart(
+              timestamp,
+              periodGranularity,
+              presentationOptions?.periodTickFormat,
+            )}
+          </Heading>
           <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
         </>
       ) : (
@@ -155,10 +169,8 @@ const SingleValueTooltip = ({
 const NoDataTooltip = ({
   payload,
   periodGranularity,
-}: {
-  payload: any[];
-  periodGranularity?: VizPeriodGranularity;
-}) => {
+  presentationOptions,
+}: ChartTooltipPropsWithData) => {
   const data = payload[0]?.payload;
   const { name = undefined, timestamp = undefined } = data || {};
 
@@ -168,7 +180,11 @@ const NoDataTooltip = ({
         {name ||
           (getIsTimeSeries([data]) &&
             periodGranularity &&
-            formatTimestampForChart(timestamp, periodGranularity))}
+            formatTimestampForChart(
+              timestamp,
+              periodGranularity,
+              presentationOptions?.periodTickFormat,
+            ))}
       </Heading>
       <Text>No Data</Text>
     </TooltipContainer>

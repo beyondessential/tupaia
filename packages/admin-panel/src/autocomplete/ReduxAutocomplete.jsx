@@ -1,9 +1,4 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getAutocompleteState } from './selectors';
@@ -21,62 +16,91 @@ const getPlaceholder = (placeholder, selection) => {
   return 'Start typing to search';
 };
 
-const ReduxAutocompleteComponent = React.memo(
-  ({
-    onChangeSelection,
-    onChangeSearchTerm,
-    selection,
-    isLoading,
-    results,
-    label,
-    onClearState,
-    optionLabelKey,
-    allowMultipleValues,
-    canCreateNewOptions,
-    searchTerm,
-    placeholder,
-    helperText,
-  }) => {
-    React.useEffect(() => {
-      return () => {
-        onClearState();
-      };
-    }, []);
+const ReduxAutocompleteComponent = ({
+  onChangeSelection,
+  onChangeSearchTerm,
+  selection,
+  programaticallyChangeSelection,
+  initialValue,
+  isLoading,
+  results,
+  label,
+  onClearState,
+  optionLabelKey,
+  allowMultipleValues,
+  canCreateNewOptions,
+  searchTerm,
+  placeholder,
+  helperText,
+  required,
+  error,
+  tooltip,
+  optionValueKey,
+  renderOption,
+  optionFields,
+}) => {
+  const [hasUpdated, setHasUpdated] = React.useState(false);
+  React.useEffect(() => {
+    return () => {
+      onClearState();
+    };
+  }, []);
 
-    let value = selection;
+  // on initial load, set the selection to the initialValue
+  useEffect(() => {
+    if (hasUpdated || !initialValue) return;
+    const needToUpdate = allowMultipleValues
+      ? JSON.stringify(initialValue) !== JSON.stringify(selection?.map(s => s[optionLabelKey]))
+      : initialValue !== selection?.[optionValueKey];
 
-    // If value is null and  multiple is true mui autocomplete will crash
-    if (allowMultipleValues && selection === null && !searchTerm) {
-      value = [];
+    if (needToUpdate) {
+      programaticallyChangeSelection(initialValue);
     }
+    setHasUpdated(true);
+  }, [JSON.stringify(initialValue), JSON.stringify(selection)]);
 
-    return (
-      <Autocomplete
-        value={value}
-        label={label}
-        options={results}
-        getOptionSelected={(option, selected) =>
-          option[optionLabelKey] === selected[optionLabelKey]
-        }
-        getOptionLabel={option => (option && option[optionLabelKey] ? option[optionLabelKey] : '')}
-        isLoading={isLoading}
-        onChangeSelection={onChangeSelection}
-        onChangeSearchTerm={onChangeSearchTerm}
-        searchTerm={searchTerm}
-        placeholder={getPlaceholder(placeholder, selection)}
-        helperText={helperText}
-        canCreateNewOptions={canCreateNewOptions}
-        allowMultipleValues={allowMultipleValues}
-        optionLabelKey={optionLabelKey}
-      />
-    );
-  },
-);
+  let selectedValue = selection;
+
+  // If value is null and  multiple is true mui autocomplete will crash
+  if (allowMultipleValues && selection === null && !searchTerm) {
+    selectedValue = [];
+  }
+
+  const getOptionRendered = option => {
+    if (renderOption) return renderOption(option);
+    if (!option || !option[optionLabelKey]) return '';
+    return option[optionLabelKey];
+  };
+
+  return (
+    <Autocomplete
+      value={selectedValue}
+      label={label}
+      options={results}
+      getOptionSelected={(option, selected) => option[optionLabelKey] === selected[optionLabelKey]}
+      getOptionLabel={option => (option && option[optionLabelKey] ? option[optionLabelKey] : '')}
+      isLoading={isLoading}
+      onChangeSelection={onChangeSelection}
+      onChangeSearchTerm={onChangeSearchTerm}
+      searchTerm={searchTerm}
+      placeholder={getPlaceholder(placeholder, selection)}
+      helperText={helperText}
+      canCreateNewOptions={canCreateNewOptions}
+      allowMultipleValues={allowMultipleValues}
+      optionLabelKey={optionLabelKey}
+      required={required}
+      error={error}
+      tooltip={tooltip}
+      renderOption={getOptionRendered}
+    />
+  );
+};
 
 ReduxAutocompleteComponent.propTypes = {
   allowMultipleValues: PropTypes.bool,
   canCreateNewOptions: PropTypes.bool,
   isLoading: PropTypes.bool.isRequired,
+  programaticallyChangeSelection: PropTypes.func.isRequired,
   onChangeSearchTerm: PropTypes.func.isRequired,
   onChangeSelection: PropTypes.func.isRequired,
   onClearState: PropTypes.func.isRequired,
@@ -87,17 +111,25 @@ ReduxAutocompleteComponent.propTypes = {
   label: PropTypes.string,
   helperText: PropTypes.string,
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  required: PropTypes.bool,
+  error: PropTypes.bool,
+  optionValueKey: PropTypes.string.isRequired,
+  renderOption: PropTypes.func,
 };
 
 ReduxAutocompleteComponent.defaultProps = {
   allowMultipleValues: false,
   selection: [],
+  initialValue: [],
   results: [],
   canCreateNewOptions: false,
   searchTerm: null,
   placeholder: null,
   label: null,
   helperText: null,
+  required: false,
+  error: false,
 };
 
 const mapStateToProps = (state, { reduxId }) => {
@@ -105,6 +137,7 @@ const mapStateToProps = (state, { reduxId }) => {
     state,
     reduxId,
   );
+
   return { selection, searchTerm, results, isLoading, fetchId };
 };
 
@@ -121,8 +154,23 @@ const mapDispatchToProps = (
     baseFilter,
     pageSize,
     distinct,
+    optionFields,
   },
 ) => ({
+  programaticallyChangeSelection: initialValue => {
+    const formattedInitialValue = allowMultipleValues
+      ? initialValue?.map(value => ({ [optionLabelKey]: value, [optionValueKey]: value }))
+      : { [optionLabelKey]: initialValue, [optionValueKey]: initialValue };
+
+    return dispatch(
+      changeSelection(
+        reduxId,
+        // Note: This will look incorrect if we're using a different optionLabelKey to optionValueKey (as the selected option will have the 'value' as the label)
+        // However the same issue exists with the placeholder, and in practice we rarely use different keys for labels and values in multi-select
+        formattedInitialValue,
+      ),
+    );
+  },
   onChangeSelection: (event, newSelection, reason) => {
     if (newSelection === null) {
       onChange(null);
@@ -157,6 +205,7 @@ const mapDispatchToProps = (
         baseFilter,
         pageSize,
         distinct,
+        optionFields,
       ),
     ),
   onClearState: () => dispatch(clearState(reduxId)),

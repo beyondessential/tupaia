@@ -1,16 +1,20 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
+import { Request } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
-import { OrchestratorApiBuilder, forwardRequest, handleWith } from '@tupaia/server-boilerplate';
-
+import {
+  OrchestratorApiBuilder,
+  RequiresSessionAuthHandler,
+  forwardRequest,
+  handleWith,
+} from '@tupaia/server-boilerplate';
+import { getEnvVarOrDefault } from '@tupaia/utils';
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
 import { upload } from '../middleware';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
+  ExportDataTableRequest,
+  ExportDataTableRoute,
   ExportMapOverlayVisualisationRequest,
   ExportMapOverlayVisualisationRoute,
   FetchDashboardVisualisationRequest,
@@ -25,6 +29,8 @@ import {
   FetchDataTablePreviewDataRoute,
   ImportDashboardVisualisationRequest,
   ImportDashboardVisualisationRoute,
+  ImportDataTableRequest,
+  ImportDataTableRoute,
   SaveDashboardVisualisationRequest,
   SaveDashboardVisualisationRoute,
   SaveMapOverlayVisualisationRequest,
@@ -38,20 +44,20 @@ import {
   FetchTransformSchemasRoute,
   FetchDataTableBuiltInParamsRequest,
   FetchDataTableBuiltInParamsRoute,
+  ExportEntityHierarchiesRequest,
+  ExportEntityHierarchiesRoute,
 } from '../routes';
-import { authHandlerProvider } from '../auth';
 
-const {
-  CENTRAL_API_URL = 'http://localhost:8090/v2',
-  ENTITY_API_URL = 'http://localhost:8050/v1',
-} = process.env;
-
+const authHandlerProvider = (req: Request) => new RequiresSessionAuthHandler(req);
 /**
  * Set up express server with middleware,
  */
-export function createApp() {
+export async function createApp() {
+  const CENTRAL_API_URL = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
+  const ENTITY_API_URL = getEnvVarOrDefault('ENTITY_API_URL', 'http://localhost:8050/v1');
   const forwardToEntityApi = forwardRequest(ENTITY_API_URL);
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
+  const forwardToCentralApi = forwardRequest(CENTRAL_API_URL);
+  const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
     .attachApiClientToContext(authHandlerProvider)
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
@@ -96,9 +102,14 @@ export function createApp() {
       'export/dashboardVisualisation/:dashboardVisualisationId',
       handleWith(ExportDashboardVisualisationRoute),
     )
+    .get<ExportDataTableRequest>('export/dataTable/:dataTableId', handleWith(ExportDataTableRoute))
     .get(
       'export/mapOverlayVisualisation/:mapOverlayVisualisationId',
       handleWith(ExportMapOverlayVisualisationRoute),
+    )
+    .get<ExportEntityHierarchiesRequest>(
+      'export/hierarchies',
+      handleWith(ExportEntityHierarchiesRoute),
     )
     .post<ExportDashboardVisualisationRequest>(
       'export/dashboardVisualisation',
@@ -112,6 +123,11 @@ export function createApp() {
       'import/dashboardVisualisations',
       upload.array('dashboardVisualisations'),
       handleWith(ImportDashboardVisualisationRoute),
+    )
+    .post<ImportDataTableRequest>(
+      'import/dataTables',
+      upload.array('dataTables'),
+      handleWith(ImportDataTableRoute),
     )
     .post<ImportMapOverlayVisualisationRequest>(
       'import/mapOverlayVisualisations',
@@ -133,8 +149,12 @@ export function createApp() {
     )
     .use('hierarchy', forwardToEntityApi)
     .use('hierarchies', forwardToEntityApi)
-    .use('*', forwardRequest(CENTRAL_API_URL))
-    .build();
+    .use('surveyResponses', forwardToCentralApi)
+    .use('*', forwardToCentralApi);
+
+  await builder.initialiseApiClient();
+
+  const app = builder.build();
 
   return app;
 }

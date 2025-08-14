@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { getFailureMessage } from './getFailureMessage';
 
 const constructFailuresMessage = failures => {
@@ -13,24 +8,37 @@ Any responses not listed here have been successfully imported, and can be remove
   return message;
 };
 
-const constructMessage = responseBody => {
+const constructTemplateContextMessage = responseBody => {
   const { error, failures = [] } = responseBody;
 
   // global error, whole import has failed
   if (error) {
-    return `Unfortunately, your survey response import failed.
+    return {
+      message: `Unfortunately, your survey response import failed.
 
-${error}`;
+${error}`,
+
+      title: 'Import Failed',
+    };
   }
 
   // at least one response failed, but import finished processing
   if (failures.length > 0) {
-    return constructFailuresMessage(failures);
+    return {
+      message: constructFailuresMessage(failures),
+      title: 'Import Finished with Failures',
+    };
   }
 
-  return 'Your survey responses have been successfully imported.';
+  return {
+    message: 'Your survey responses have been successfully imported.',
+    title: 'Import Successful',
+  };
 };
 
 export const constructImportEmail = responseBody => {
-  return { subject: 'Tupaia Survey Response Import', message: constructMessage(responseBody) };
+  return {
+    subject: 'Tupaia Survey Response Import',
+    templateContext: constructTemplateContextMessage(responseBody),
+  };
 };

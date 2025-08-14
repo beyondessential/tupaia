@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 /* eslint-disable camelcase */
 
 import { SurveyResponseOutdater } from '../../changeHandlers';
@@ -10,10 +5,10 @@ import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,
   getTestModels,
-  generateTestId,
   populateTestData,
   upsertDummyRecord,
 } from '../../testUtilities';
+import { generateId } from '../../utilities';
 
 const buildSurvey = (id, periodGranularity) => {
   const code = `Test_${periodGranularity || 'no_granularity'}`;
@@ -26,14 +21,14 @@ const buildSurvey = (id, periodGranularity) => {
   };
 };
 
-const yearlySurveyId = generateTestId();
-const quarterlySurveyId = generateTestId();
-const monthlySurveyId = generateTestId();
-const weeklySurveyId = generateTestId();
-const dailySurveyId = generateTestId();
-const nonPeriodicSurveyId = generateTestId();
+const yearlySurveyId = generateId();
+const quarterlySurveyId = generateId();
+const monthlySurveyId = generateId();
+const weeklySurveyId = generateId();
+const dailySurveyId = generateId();
+const nonPeriodicSurveyId = generateId();
 
-const userId = generateTestId();
+const userId = generateId();
 
 const SURVEYS = {
   [yearlySurveyId]: buildSurvey(yearlySurveyId, 'yearly'),
@@ -353,6 +348,20 @@ describe('SurveyResponseOutdater', () => {
           [idA]: false,
           [idB]: false,
         });
+      });
+    });
+
+    it("Changing a response to be outdated doesn't change the status", async () => {
+      const [idA] = await createResponses([
+        { survey_id: monthlySurveyId, entity_id: tonga.id, date: '2021-06-01' },
+      ]);
+      await assertOutdatedStatuses({
+        [idA]: false,
+      });
+
+      await models.surveyResponse.update({ id: idA }, { outdated: true });
+      await assertOutdatedStatuses({
+        [idA]: true,
       });
     });
 

@@ -1,12 +1,8 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
+import React, { forwardRef } from 'react';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import styled from 'styled-components';
 import { CheckCircle, Warning } from '@material-ui/icons';
+import { Error } from './Icons';
 
 const StyledAlert = styled(MuiAlert)`
   border-radius: 0;
@@ -22,28 +18,40 @@ const StyledAlert = styled(MuiAlert)`
 
   &.MuiAlert-standardError {
     background: ${props => props.theme.palette.error.light};
-    color: ${props => props.theme.palette.error.main};
   }
 `;
 
-export const Alert = ({
-  variant = 'filled',
-  severity = 'success',
-  iconMapping = {
-    success: <CheckCircle />,
-    error: <Warning />,
-    warning: <Warning />,
-  },
-  ...props
-}: AlertProps) => (
-  <StyledAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
+export const Alert = forwardRef<HTMLDivElement, AlertProps>(
+  (
+    {
+      variant = 'filled',
+      severity = 'success',
+      iconMapping = {
+        success: <CheckCircle />,
+        error: <Error />,
+        warning: <Warning />,
+      },
+      ...props
+    },
+    ref,
+  ) => (
+    <StyledAlert
+      variant={variant}
+      severity={severity}
+      iconMapping={iconMapping}
+      {...props}
+      ref={ref}
+    />
+  ),
 );
 
 const StyledSmallAlert = styled(StyledAlert)`
   font-size: 0.875rem;
   border-radius: 3px;
-  padding: 0.5rem 1.25rem 0.5rem 1rem;
+  padding-block: 0;
+  padding-inline: 1rem;
   box-shadow: none;
+  word-break: break-word;
 
   .MuiAlert-icon {
     padding: 0.5rem 0;
@@ -58,7 +66,7 @@ export const SmallAlert = ({
 
   iconMapping = {
     success: <CheckCircle fontSize="inherit" />,
-    error: <Warning fontSize="inherit" />,
+    error: <Error fontSize="inherit" />,
     warning: <Warning fontSize="inherit" />,
   },
 

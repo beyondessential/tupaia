@@ -1,18 +1,18 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-import React from 'react';
-import MuiContainer from '@material-ui/core/Container';
-import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
-import { FlexStart, FlexEnd, FlexSpaceBetween } from '@tupaia/ui-components';
-import { ExportButton } from './ExportButton';
-import { SaveButton } from './SaveButton';
+import MuiContainer from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { FlexEnd, FlexSpaceBetween, FlexStart } from '@tupaia/ui-components';
+
+import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
+import { useVizConfigContext } from '../context';
 import { DocumentIcon } from './DocumentIcon';
+import { ExportButton } from './ExportButton';
 import { EditModal } from './Modal';
-import { useVizConfig } from '../context';
+import { SaveButton } from './SaveButton';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -52,20 +52,25 @@ const ButtonContainer = styled(FlexSpaceBetween)`
 `;
 
 export const Toolbar = () => {
-  const [{ project, visualisation }] = useVizConfig();
+  const [{ project, visualisation }] = useVizConfigContext();
+  const { dashboardItemOrMapOverlay } = useParams();
 
   const permissionGroup = visualisation.permissionGroup ?? visualisation.mapOverlayPermissionGroup;
+  const name =
+    dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM
+      ? visualisation.presentation?.name
+      : visualisation.name;
 
   return (
     <Wrapper>
       <Container maxWidth="xl">
         <FlexStart>
-          <DocumentIcon />
+          <DocumentIcon aria-hidden />
           <MuiBox ml={2}>
             <SubTitle variant="h4">
-              Project: {project} • {permissionGroup}
+              Project: {project?.['project.code']} &middot; {permissionGroup}
             </SubTitle>
-            <Title variant="h2">{visualisation.name}</Title>
+            <Title variant="h2">{name}</Title>
           </MuiBox>
         </FlexStart>
         <FlexEnd>

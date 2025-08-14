@@ -47,8 +47,10 @@
             "entity": {
               "type": ["sub_district"],
               "createNew": false,
-              "parentId": {
-                "questionId": "603597d461f76a42af02a366"
+              "filter": {
+                "parentId": {
+                  "questionId": "603597d461f76a42af02a366"
+                }
               }
             }
           },
@@ -73,11 +75,13 @@
             "entity": {
               "type": ["facility"],
               "createNew": false,
-              "parentId": {
-                "questionId": ""
-              },
-              "grandparentId": {
-                "questionId": "603597d461f76a42af02a366"
+              "filter": {
+                "parentId": {
+                  "questionId": ""
+                },
+                "grandparentId": {
+                  "questionId": "603597d461f76a42af02a366"
+                }
               }
             }
           },

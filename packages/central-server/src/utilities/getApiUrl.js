@@ -1,14 +1,9 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
-import { getIsProductionEnvironment } from '@tupaia/utils';
+import { getEnvVarOrDefault, getIsProductionEnvironment } from '@tupaia/utils';
 
 const API_VERSION = 2;
-const DOMAIN = 'tupaia.org';
 
 export const getApiUrl = (endpoint, queryParameters) => {
+  const DOMAIN = getEnvVarOrDefault('DOMAIN', 'tupaia.org');
   const subdomain = getIsProductionEnvironment() ? 'api' : 'dev-api';
   const queryString = Object.entries(queryParameters).reduce(
     (stringSoFar, [key, value]) =>

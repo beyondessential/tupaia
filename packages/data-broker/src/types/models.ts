@@ -1,21 +1,16 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import type {
   DatabaseModel as BaseDatabaseModel,
-  DatabaseType as BaseDatabaseType,
+  DatabaseRecord as BaseDatabaseRecord,
   DataElementModel as BaseDataElementModel,
-  DataElementType as BaseDataElementType,
+  DataElementRecord as BaseDataElementRecord,
   DataGroupModel as BaseDataGroupModel,
-  DataGroupType as BaseDataGroupType,
+  DataGroupRecord as BaseDataGroupRecord,
   DataServiceSyncGroupModel as BaseDataServiceSyncGroupModel,
-  DataServiceSyncGroupType as BaseDataServiceSyncGroupType,
+  DataServiceSyncGroupRecord as BaseDataServiceSyncGroupRecord,
   EntityModel as BaseEntityModel,
-  EntityType as BaseEntityType,
+  EntityRecord as BaseEntityRecord,
   ModelRegistry,
-  TYPES,
+  RECORDS,
 } from '@tupaia/database';
 import { Join, Override, Values } from './utils';
 
@@ -32,25 +27,26 @@ type FlatFieldConditions<T> = {
     : K]: T[K] | T[K][];
 };
 
-type JsonFieldConditions<T> = Values<
-  {
-    [K in keyof T as T[K] extends Record<string, string | number | boolean> ? K : never]: {
-      [K1 in keyof T[K] as Join<K, K1, '->>'>]: T[K][K1] | T[K][K1][];
-    };
-  }
->;
+type JsonFieldConditions<T> = Values<{
+  [K in keyof T as T[K] extends Record<string, string | number | boolean> ? K : never]: {
+    [K1 in keyof T[K] as Join<K, K1, '->>'>]: T[K][K1] | T[K][K1][];
+  };
+}>;
 
 export type DbConditions<R> = Partial<FlatFieldConditions<R> & JsonFieldConditions<R>>;
 
-export type DatabaseType<R extends DbRecord, T extends BaseDatabaseType = BaseDatabaseType> = T & R;
+export type DatabaseRecord<
+  R extends DbRecord,
+  T extends BaseDatabaseRecord = BaseDatabaseRecord,
+> = T & R;
 
 type DatabaseModel<
   R extends DbRecord,
-  T extends BaseDatabaseType = BaseDatabaseType,
-  M extends BaseDatabaseModel = BaseDatabaseModel
+  T extends BaseDatabaseRecord = BaseDatabaseRecord,
+  M extends BaseDatabaseModel = BaseDatabaseModel,
 > = Omit<M, 'find' | 'findOne'> & {
-  find: (dbConditions: DbConditions<R>) => Promise<DatabaseType<R, T>[]>;
-  findOne: (dbConditions: DbConditions<R>) => Promise<DatabaseType<R, T>>;
+  find: (dbConditions: DbConditions<R>) => Promise<DatabaseRecord<R, T>[]>;
+  findOne: (dbConditions: DbConditions<R>) => Promise<DatabaseRecord<R, T>>;
 };
 
 export type DataSourceType = 'dataElement' | 'dataGroup' | 'syncGroup';
@@ -142,17 +138,17 @@ export type EntityHierarchy = {
 };
 
 export type DataSourceTypeInstance = DataSource & {
-  databaseType:
-    | typeof TYPES.DATA_ELEMENT
-    | typeof TYPES.DATA_GROUP
-    | typeof TYPES.DATA_SERVICE_SYNC_GROUP;
+  databaseRecord:
+    | typeof RECORDS.DATA_ELEMENT
+    | typeof RECORDS.DATA_GROUP
+    | typeof RECORDS.DATA_SERVICE_SYNC_GROUP;
 };
-type DataElementType = DatabaseType<DataElement, BaseDataElementType>;
-export type EntityType = DatabaseType<Entity, BaseEntityType>;
+type DataElementRecord = DatabaseRecord<DataElement, BaseDataElementRecord>;
+export interface EntityRecord extends DatabaseRecord<Entity, BaseEntityRecord> {}
 
 export type DataElementModel = DatabaseModel<
   DataElement,
-  BaseDataElementType,
+  BaseDataElementRecord,
   Override<
     BaseDataElementModel,
     {
@@ -162,21 +158,21 @@ export type DataElementModel = DatabaseModel<
 >;
 export type DataGroupModel = DatabaseModel<
   DataGroup,
-  BaseDataGroupType,
+  BaseDataGroupRecord,
   Override<
     BaseDataGroupModel,
     {
-      getDataElementsInDataGroup: (dataGroupCode: string) => Promise<DataElementType[]>;
+      getDataElementsInDataGroup: (dataGroupCode: string) => Promise<DataElementRecord[]>;
     }
   >
 >;
 export type DataServiceSyncGroupModel = DatabaseModel<
   DataServiceSyncGroup,
-  BaseDataServiceSyncGroupType,
+  BaseDataServiceSyncGroupRecord,
   BaseDataServiceSyncGroupModel
 >;
 type DataServiceEntityModel = DatabaseModel<DataServiceEntity>;
-type EntityModel = DatabaseModel<Entity, EntityType, BaseEntityModel>;
+type EntityModel = DatabaseModel<Entity, EntityRecord, BaseEntityModel>;
 type SupersetInstanceModel = DatabaseModel<SupersetInstance>;
 type DataElementDataServiceModel = DatabaseModel<DataElementDataService>;
 type DhisInstanceModel = DatabaseModel<DhisInstance>;

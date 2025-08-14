@@ -1,7 +1,7 @@
 import xlsx from 'xlsx';
 import fs from 'fs';
-import { getExportDatesString } from '@tupaia/utils';
-
+import { getExportDatesString, respondWithDownload } from '@tupaia/utils';
+import { getExportPathForUser } from '@tupaia/server-utils';
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
 import { USER_SESSION_CONFIG } from '/authSession';
 import { RouteHandler } from '/apiV1/RouteHandler';
@@ -9,13 +9,11 @@ import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
 import { formatMatrixDataForExcel } from './excelFormatters/formatMatrixDataForExcel';
 
 const EXPORT_FILE_TITLE = 'survey_response_export';
-const EXPORT_DIRECTORY = 'exports';
 
 export class ExportSurveyDataHandler extends RouteHandler {
   static PermissionsChecker = ExportSurveyResponsesPermissionsChecker;
 
   async handleRequest() {
-    await super.handleRequest();
     const {
       organisationUnitCode,
       itemCode,
@@ -32,7 +30,11 @@ export class ExportSurveyDataHandler extends RouteHandler {
     const sessionCookie = cookies[sessionCookieName];
     // If we used an auth header rather than a session, pass it along to the next request
     const authHeader = headers.authorization || headers.Authorization;
-    const { report_code: reportCode, legacy, config } = await this.models.dashboardItem.findOne({
+    const {
+      report_code: reportCode,
+      legacy,
+      config,
+    } = await this.models.dashboardItem.findOne({
       code: itemCode,
     });
 
@@ -101,14 +103,15 @@ export class ExportSurveyDataHandler extends RouteHandler {
       Sheets: sheets,
     };
 
-    if (!(await fs.existsSync(EXPORT_DIRECTORY))) {
-      await fs.mkdirSync(EXPORT_DIRECTORY);
+    const exportDirectory = getExportPathForUser(this.req.user.id);
+
+    if (!(await fs.existsSync(exportDirectory))) {
+      await fs.mkdirSync(exportDirectory);
     }
 
-    const filePath = `${EXPORT_DIRECTORY}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
+    const filePath = `${exportDirectory}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
+
     xlsx.writeFile(workbook, filePath);
-    this.res.download(filePath, () => {
-      fs.unlinkSync(filePath); // delete export file after download
-    });
+    respondWithDownload(this.res, filePath);
   }
 }

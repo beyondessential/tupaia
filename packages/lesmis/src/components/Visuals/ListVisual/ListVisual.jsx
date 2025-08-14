@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
@@ -109,15 +105,15 @@ const DrillDownLink = ({ pathname, reportCode, children }) => {
 };
 
 const ListVisualContent = React.memo(
-  ({ viewContent, isLoading, isError, error, drilldownPathname, reportCodes, isEnlarged }) => {
-    const { data, ...config } = viewContent;
+  ({ config, report, isLoading, isError, error, drilldownPathname, reportCodes, isEnlarged }) => {
+    const { data } = report;
 
     const list = processData(config, data, reportCodes);
 
-    if (!isLoading && !getIsChartData(viewContent)) {
+    if (!isLoading && !getIsChartData(config?.chartType, report)) {
       return (
         <NoDataContainer>
-          <NoData viewContent={viewContent} />
+          <NoData config={config} report={report} />
         </NoDataContainer>
       );
     }
@@ -157,7 +153,8 @@ const ListVisualContent = React.memo(
 
 ListVisualContent.propTypes = {
   drilldownPathname: PropTypes.string,
-  viewContent: PropTypes.object,
+  config: PropTypes.object,
+  report: PropTypes.object,
   reportCodes: PropTypes.object,
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
@@ -168,7 +165,8 @@ ListVisualContent.propTypes = {
 
 ListVisualContent.defaultProps = {
   drilldownPathname: null,
-  viewContent: null,
+  config: {},
+  report: {},
   reportCodes: null,
   isLoading: false,
   isFetching: false,

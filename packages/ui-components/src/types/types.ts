@@ -11,13 +11,13 @@ export type OverrideableComponentProps<P = {}> = P &
 export type MatrixColumnType = {
   key: string;
   title: string;
+  entityLink?: string;
   children?: MatrixColumnType[];
 };
 
 export type MatrixRowType = Record<string, any> & {
   title: string;
   children?: MatrixRowType[];
-  onClick?: () => void | null;
 };
 
 export type Data = Record<string, unknown> & {
@@ -29,6 +29,7 @@ export type ActionsMenuOptionType = {
   label: string;
   action: () => void;
   style?: CSSProperties;
+  iconStyle?: CSSProperties;
   ActionIcon?:
     | OverridableComponent<SvgIconTypeMap<Record<string, unknown>, 'svg'>>
     | React.ElementType;

@@ -1,9 +1,4 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { post } from '../api';
 
 export const useRegisterUser = () => {
@@ -29,6 +24,7 @@ export const useRegisterUser = () => {
           password,
           passwordConfirm,
           deviceName: window.navigator.userAgent,
+          primaryPlatform: 'lesmis',
         },
       }),
   );

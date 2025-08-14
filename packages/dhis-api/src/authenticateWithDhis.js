@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import oauth2 from 'simple-oauth2';
 
 export const authenticateWithDhis = async (serverName, serverUrl) => {

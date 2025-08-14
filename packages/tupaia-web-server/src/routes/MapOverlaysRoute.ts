@@ -1,11 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import {
+  Entity,
   MapOverlay,
   MapOverlayGroup,
   MapOverlayGroupRelation,
@@ -56,9 +52,11 @@ const integrateMapOverlayItemsReference = (children: OverlayChild[]) => {
   }
 
   // Delete all the same references
-  const noReferenceMapOverlayItems = children.map(mapOverlayItem => {
+  const noReferenceMapOverlayItems: OverlayChild[] = children.map(mapOverlayItem => {
     const { info, ...restValues } = mapOverlayItem;
-    delete info!.reference;
+    if (info) {
+      info.reference = undefined;
+    }
     return { ...restValues, info };
   });
 
@@ -75,6 +73,20 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const { pageSize } = query;
 
     const entity = await ctx.services.entity.getEntity(projectCode, entityCode);
+
+    const ancestors: Entity[] = await ctx.services.entity.getAncestorsOfEntity(
+      projectCode,
+      entityCode,
+      {
+        fields: ['code', 'type'],
+      },
+    );
+
+    // get the types of the ancestors, excluding the current entity
+    const ancestorTypes = ancestors
+      .filter(ancestor => ancestor.code !== entityCode)
+      .map(ancestor => ancestor.type.toLowerCase().replace('_', ''));
+
     const rootEntityCode = entity.country_code || entity.code;
 
     // Do the initial overlay fetch from the central server, since that enforces permissions
@@ -112,11 +124,12 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     }
 
     // Breaking orchestration server convention and accessing the db directly
-    const mapOverlayRelations = await this.req.models.mapOverlayGroupRelation.findParentRelationTree(
-      mapOverlays
-        .filter((overlay: MapOverlay) => !overlay.config?.hideFromMenu)
-        .map((overlay: MapOverlay) => overlay.id),
-    );
+    const mapOverlayRelations =
+      await this.req.models.mapOverlayGroupRelation.findParentRelationTree(
+        mapOverlays
+          .filter((overlay: MapOverlay) => !overlay.config?.hideFromMenu)
+          .map((overlay: MapOverlay) => overlay.id),
+      );
 
     // Fetch all the groups we've used
     const overlayGroupIds: string[] = mapOverlayRelations.map(
@@ -138,6 +151,11 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
         (relation: MapOverlayGroupRelation) => {
           if (relation.child_type === MAP_OVERLAY_CHILD_TYPE) {
             const overlay = overlaysById[relation.child_id];
+
+            // If the measure level is found in the ancestor types, that means the currently selected entity is a descendant of the measure level entity, so there will be no data to display. In this case, the overlay should be disabled.
+            const isDisabled = overlay.config.measureLevel
+              ? ancestorTypes.includes(overlay.config.measureLevel.toLowerCase())
+              : false;
             // Translate Map Overlay
             return {
               name: overlay.name,
@@ -145,6 +163,8 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
               reportCode: overlay.report_code,
               legacy: overlay.legacy,
               sortOrder: relation.sort_order,
+              entityAttributesFilter: overlay.entity_attributes_filter,
+              disabled: isDisabled,
               ...overlay.config,
             } as TranslatedMapOverlay;
           }
@@ -167,10 +187,10 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
         name: parentEntry.name,
         info,
         children: orderBy(children, [
-          (child: OverlayChild) => (child.sortOrder === null ? 1 : 0), // Puts null values last
+          child => (child.sortOrder === null ? 1 : 0), // Puts null values last
           'sortOrder',
           'name',
-        ]).map((child: OverlayChild) => {
+        ]).map(child => {
           // We only needed the sortOrder for sorting, strip it before we return
           const { sortOrder, ...restOfChild } = child;
           return restOfChild;

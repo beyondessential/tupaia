@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState, useCallback } from 'react';
 import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
 import { SvgIconProps, TextFieldProps, MenuItem as MuiMenuItem } from '@material-ui/core';
@@ -17,13 +12,12 @@ const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
 `;
 
 const StyledTextField = styled(TextField)`
+  .MuiInputBase-root {
+    background: transparent;
+  }
   .MuiSelect-root {
     padding-right: 1.8rem;
     color: ${props => props.theme.palette.text.primary};
-
-    &:focus {
-      background: white;
-    }
   }
 `;
 

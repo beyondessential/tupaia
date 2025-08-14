@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import xlsx from 'xlsx';
 import moment from 'moment';
 import { generateId } from '@tupaia/database';
@@ -45,6 +40,25 @@ const ANSWER_TRANSFORMERS = {
       throw new Error(`Could not find entity with code ${answerValue}`);
     }
     return entity.id;
+  },
+  [ANSWER_TYPES.USER]: async (models, answerValue) => {
+    if (!answerValue) {
+      return answerValue;
+    }
+
+    const userIdRegex = new RegExp(/(?<=\().+?(?=\))/);
+    const userId = answerValue.match(userIdRegex)?.[0];
+
+    if (!userId) {
+      throw new Error(`Could not find user id in ${answerValue}`);
+    }
+    const user = await models.user.findById(userId);
+
+    if (!user) {
+      throw new Error(`Could not find user with id ${userId}`);
+    }
+
+    return user.id;
   },
 };
 
@@ -148,7 +162,7 @@ export async function importSurveyResponses(req, res) {
       // extract response ids and set up update batcher
       const { maxColumnIndex, maxRowIndex } = getMaxRowColumnIndex(sheet);
       const minSurveyResponseIndex = INFO_COLUMN_HEADERS.length;
-      const surveyResponseIds = [];
+      const surveyResponses = [];
       const isGeneratedIdByColumnIndex = [];
       const existingResponseDataByColumnIndex = [];
 
@@ -168,32 +182,54 @@ export async function importSurveyResponses(req, res) {
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
         const importMode = getImportMode(columnHeader);
+        const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
+        const entityName = getInfoForColumn(sheet, columnIndex, 'Entity Name');
+        const entity = await models.entity.findOne({ code: entityCode });
 
+        if (entityCode && entityName) {
+          if (!entity) {
+            throw new ImportValidationError(
+              `Entity code does match any existing entity: ${entityCode}`,
+            );
+          }
+
+          if (entity.name !== entityName) {
+            throw new ImportValidationError(
+              `Entity code and name don't match: ${entity?.name} and ${entityName}`,
+            );
+          }
+        }
+
+        let surveyResponseIdValue = null;
         if (IMPORT_BEHAVIOURS[importMode].shouldGenerateIds) {
-          surveyResponseIds[columnIndex] = generateId();
+          surveyResponseIdValue = generateId();
           isGeneratedIdByColumnIndex[columnIndex] = true;
         } else if (IMPORT_BEHAVIOURS[importMode].shouldUpdateExistingResponses) {
           const { surveyResponseId } = await getExistingResponseData(columnIndex);
 
           if (surveyResponseId) {
-            surveyResponseIds[columnIndex] = surveyResponseId;
+            surveyResponseIdValue = surveyResponseId;
           } else {
             // A matching existing response was not found, generate a new id
-            surveyResponseIds[columnIndex] = generateId();
+            surveyResponseIdValue = generateId();
             isGeneratedIdByColumnIndex[columnIndex] = true;
           }
         } else {
-          surveyResponseIds[columnIndex] = columnHeader;
+          surveyResponseIdValue = columnHeader;
         }
+        surveyResponses[columnIndex] = {
+          surveyResponseId: surveyResponseIdValue,
+          entityId: entity?.id,
+        };
       }
-      updatePersistor.setupColumnsForSheet(tabName, surveyResponseIds);
+      updatePersistor.setupColumnsForSheet(tabName, surveyResponses);
 
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
         validateColumnHeader(columnHeader, columnIndex, tabName);
 
         if (isGeneratedIdByColumnIndex[columnIndex]) {
-          const surveyResponseId = surveyResponseIds[columnIndex];
+          const { surveyResponseId } = surveyResponses[columnIndex];
           const surveyResponseDetails = await constructNewSurveyResponseDetails(
             models,
             sheet,
@@ -257,9 +293,9 @@ export async function importSurveyResponses(req, res) {
           columnIndex <= maxColumnIndex;
           columnIndex++
         ) {
+          const { surveyResponseId } = surveyResponses[columnIndex];
           const columnHeader = getColumnHeader(sheet, columnIndex);
           const importMode = getImportMode(columnHeader);
-          const surveyResponseId = surveyResponseIds[columnIndex];
           const answerValue = getCellContents(sheet, columnIndex, rowIndex);
           const transformedAnswerValue = answerTransformer
             ? await answerTransformer(models, answerValue)
@@ -331,7 +367,7 @@ export async function importSurveyResponses(req, res) {
     const message =
       failures.length > 0
         ? `Not all responses were successfully processed:
-  ${failures.map(getFailureMessage).join('\n')}`
+    ${failures.map(getFailureMessage).join('\n')}`
         : null;
     respond(res, { message, failures });
   } catch (error) {

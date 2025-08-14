@@ -1,77 +1,85 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useContext } from 'react';
-import { TableCell, TableHead, TableRow, darken } from '@material-ui/core';
+import { darken, TableHead, TableRow } from '@material-ui/core';
 import styled from 'styled-components';
-import { MatrixContext } from './MatrixContext';
-import { getDisplayedColumns, getFullHex } from './utils';
+import { Link as RouterLink } from 'react-router-dom-v6';
 import { MatrixColumnType } from '../../types';
-
-const HeaderCell = styled(TableCell)`
-  text-align: center;
-  max-width: 12rem;
-  border-width: 1px 1px 2px 1px;
-  border-style: solid;
-  border-color: ${({ theme }) => darken(theme.palette.text.primary, 0.4)}
-    ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
-`;
+import { MatrixContext } from './MatrixContext';
+import { HeaderCell } from './Cell';
+import { MatrixSearchRow } from './MatrixSearchRow';
+import { getFlattenedColumns } from './utils';
 
 const ColGroup = styled.colgroup`
-  border: 2px solid ${({ theme }) => darken(theme.palette.text.primary, 0.4)};
+  &:not(:first-of-type) {
+    border-right: 1px solid ${({ theme }) => darken(theme.palette.text.primary, 0.4)};
+  }
 `;
 
+const THead = styled(TableHead)`
+  // Apply sticky positioning to the header element, as we now have 2 header rows
+  position: sticky;
+  top: 0;
+  z-index: 3;
+`;
+
+const CellLink = styled(RouterLink)`
+  color: ${({ theme }) => theme.palette.text.primary};
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+    font-weight: 700;
+  }
+`;
+
+const TitleCell = ({ title, entityLink }: { title: string; entityLink?: string }) => {
+  if (entityLink) {
+    return <CellLink to={entityLink}>{title}</CellLink>;
+  }
+  return <>{title}</>;
+};
 /**
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.
  */
-export const MatrixHeader = () => {
-  const {
-    columns,
-    startColumn,
-    maxColumns,
-    hideColumnTitles = false,
-    rowHeaderColumnTitle,
-  } = useContext(MatrixContext);
-  const displayedColumns = getDisplayedColumns(columns, startColumn, maxColumns);
-  // If a column is not displayed, then it should not be rendered in the header. This means that if a column group has no displayed children, then it should not be rendered either.
-  const displayedColumnGroups = columns.reduce(
-    (result: MatrixColumnType[], column: MatrixColumnType) => {
-      const visibleChildren =
-        column.children?.filter(child => !!displayedColumns.find(({ key }) => key === child.key)) ||
-        [];
-      if (!visibleChildren.length) return result;
-      return [...result, { ...column, children: visibleChildren }];
-    },
-    [],
-  );
+export const MatrixHeader = ({
+  onPageChange,
+}: {
+  onPageChange: (newPageIndex: number) => void;
+}) => {
+  const { columns, hideColumnTitles = false } = useContext(MatrixContext);
+  // Get the grouped columns
+  const columnGroups = columns.reduce((result: MatrixColumnType[], column: MatrixColumnType) => {
+    if (!column.children?.length) return result;
+    return [...result, column];
+  }, []);
 
   // If there are parents, then there should be two rows: 1 for the column group headings, and one for the column headings
-  const hasParents = displayedColumnGroups.length > 0;
+  const hasParents = columnGroups.length > 0;
 
   const RowHeaderColumn = (
-    <HeaderCell rowSpan={hasParents ? 2 : 1}>{rowHeaderColumnTitle}</HeaderCell>
+    <HeaderCell rowSpan={hasParents ? 2 : 1} scope="row" className="MuiTableCell-row-head" />
   );
+
+  const flattenedColumns = getFlattenedColumns(columns);
+
   return (
     /**
      * If there are no parents, then there are only column groups to style for the row header column and the rest of the table. Otherwise, there are column groups for each displayed column group, plus one for the row header column.
      * */
     <>
-      <ColGroup />
+      <ColGroup span={1} />
       {hasParents ? (
         <>
-          {displayedColumnGroups.map(({ title, children = [] }) => (
+          {columnGroups.map(({ title, children = [] }) => (
             <ColGroup key={title} span={children.length} />
           ))}
         </>
       ) : (
-        <ColGroup span={displayedColumns.length} />
+        <ColGroup span={columns.length} />
       )}
-      <TableHead>
+      <THead>
         {hasParents && (
           <TableRow>
             {RowHeaderColumn}
-            {displayedColumnGroups.map(({ title, children = [] }) => (
+            {columnGroups.map(({ title, children = [] }) => (
               <HeaderCell key={title} colSpan={children.length}>
                 {title}
               </HeaderCell>
@@ -81,13 +89,18 @@ export const MatrixHeader = () => {
         <TableRow>
           {/** If hasParents is true, then this row header column cell will have already been rendered. */}
           {!hasParents && RowHeaderColumn}
-          {displayedColumns.map(({ title, key }) => (
-            <HeaderCell key={key} aria-label={hideColumnTitles ? title : ''}>
-              {!hideColumnTitles && title}
+          {flattenedColumns.map(({ title, key, entityLink }) => (
+            <HeaderCell
+              key={key}
+              aria-label={hideColumnTitles ? title : ''}
+              $characterLength={title?.length}
+            >
+              {!hideColumnTitles && <TitleCell title={title} entityLink={entityLink} />}
             </HeaderCell>
           ))}
         </TableRow>
-      </TableHead>
+        <MatrixSearchRow onPageChange={onPageChange} />
+      </THead>
     </>
   );
 };

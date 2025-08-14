@@ -1,12 +1,7 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router';
-import { SpinningLoader } from '@tupaia/ui-components';
+import { Autocomplete, SpinningLoader } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
 import {
   MODAL_ROUTES,
@@ -16,7 +11,7 @@ import {
   URL_SEARCH_PARAMS,
   MOBILE_BREAKPOINT,
 } from '../constants';
-import { useProjects, useUser } from '../api/queries';
+import { useCountriesQuery, useProjects, useUser } from '../api/queries';
 import {
   ProjectAllowedLink,
   ProjectCardList,
@@ -24,8 +19,16 @@ import {
   ProjectLoginLink,
   ProjectPendingLink,
 } from '../layout';
-import { RouterButton } from '../components';
+import { Modal, RouterButton } from '../components';
 import { SingleProject } from '../types';
+import { useModal } from '../utils';
+
+interface CountryAutocompleteOption {
+  label: string;
+  value: string;
+}
+
+const OFF_WHITE = '#B8B8B8';
 
 const Wrapper = styled.div`
   display: flex;
@@ -86,17 +89,24 @@ const ExploreButton = styled(RouterButton).attrs({
 `;
 
 const Line = styled.div`
-  background-color: #9ba0a6;
+  background-color: ${({ theme }) => theme.palette.text.secondary};
   height: 1px;
   margin-top: 0.7rem;
 `;
 
-const ProjectsTitle = styled(Typography)`
+const ProjectsTitle = styled(Typography).attrs({
+  variant: 'h1',
+})`
   color: ${({ theme }) => theme.palette.text.primary};
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 500;
-  margin-top: 1.8rem;
-  margin-left: 0.4rem;
+`;
+
+const ProjectsTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-block-start: 1rem;
+  margin-inline-start: 0.4rem;
 `;
 
 const Logo = styled.img`
@@ -112,67 +122,137 @@ const Loader = styled.div`
   align-items: center;
 `;
 
+const AutoCompleteWrapper = styled.div`
+  border-left: 1px solid ${({ theme }) => theme.palette.text.secondary};
+  margin-inline-start: 0.9rem;
+  padding-inline-start: 1.3rem;
+  width: 100%;
+  max-width: 19rem;
+`;
+
+const SearchAutocomplete = styled(Autocomplete<CountryAutocompleteOption>)`
+  .MuiInputBase-root {
+    background-color: ${({ theme }) => theme.palette.background.paper};
+  }
+  .MuiFormControl-root {
+    margin-block-end: 0;
+  }
+  .MuiOutlinedInput-notchedOutline {
+    border-color: ${OFF_WHITE};
+  }
+  .MuiInputBase-input::placeholder {
+    color: ${OFF_WHITE};
+    font-size: 0.875rem;
+  }
+  .MuiInputBase-input {
+    font-size: 0.875rem;
+  }
+  .MuiAutocomplete-endAdornment {
+    top: initial;
+  }
+  .MuiSvgIcon-root {
+    color: ${OFF_WHITE};
+  }
+`;
+
+const Option = styled.span`
+  font-size: 0.875rem;
+`;
+
 /**
  * This is the projects view that is shown when the projects modal is open
  */
 export const ProjectsModal = () => {
-  const { data, isFetching } = useProjects();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState<CountryAutocompleteOption | null>(null);
+  const { closeModal } = useModal();
+  const { data: projects = [], isFetching } = useProjects();
   const { isLoggedIn } = useUser();
   const location = useLocation();
+  const { data: countries, isLoading } = useCountriesQuery();
 
   return (
-    <Wrapper>
-      <div>
-        <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
-        <TagLine>
-          Data aggregation, analysis, and visualisation for the most remote settings in the world.
-        </TagLine>
-      </div>
-      <div>
-        <ExploreButton>Explore tupaia.org</ExploreButton>
-        <Line />
-        <ProjectsTitle variant="h1">Projects</ProjectsTitle>
-        {isFetching ? (
-          <Loader>
-            <SpinningLoader />
-          </Loader>
-        ) : (
-          <ProjectsGrid>
-            <ProjectCardList
-              projects={data?.projects ?? []}
-              actions={{
-                [PROJECT_ACCESS_TYPES.ALLOWED]: ({
-                  project: { code, homeEntityCode, dashboardGroupName },
-                }: {
-                  project: SingleProject;
-                }) => (
-                  <ProjectAllowedLink
-                    url={`/${code}/${homeEntityCode}${
-                      dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
-                    }`}
-                  />
-                ),
-                [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
-                [PROJECT_ACCESS_TYPES.DENIED]: ({
-                  project: { code },
-                }: {
-                  project: SingleProject;
-                }) => {
-                  if (isLoggedIn) {
-                    return (
-                      <ProjectDeniedLink
-                        url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
-                      />
+    <Modal isOpen onClose={closeModal}>
+      <Wrapper>
+        <div>
+          <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
+          <TagLine>
+            Data aggregation, analysis, and visualisation for the most remote settings in the world.
+          </TagLine>
+        </div>
+        <div>
+          <ExploreButton>Explore tupaia.org</ExploreButton>
+          <Line />
+          <ProjectsTitleWrapper>
+            <ProjectsTitle>Projects</ProjectsTitle>
+            <AutoCompleteWrapper>
+              <SearchAutocomplete
+                options={countries?.map(({ name }) => ({ label: name, value: name })) ?? []}
+                loading={isLoading}
+                placeholder="Search country…"
+                onInputChange={(_, newValue) => setSearchTerm(newValue)}
+                getOptionLabel={option => option.label}
+                value={selectedCountry}
+                onChange={(_, newValue) => {
+                  return setSelectedCountry(newValue);
+                }}
+                renderOption={({ label }) => <Option>{label}</Option>}
+                muiProps={{
+                  filterOptions: options => {
+                    if (!searchTerm) return options;
+                    return options.filter(option =>
+                      option.label.toLowerCase().startsWith(searchTerm.toLowerCase()),
                     );
-                  }
+                  },
+                }}
+                getOptionSelected={(option, value) => option.value === value}
+              />
+            </AutoCompleteWrapper>
+          </ProjectsTitleWrapper>
+          {isFetching ? (
+            <Loader>
+              <SpinningLoader />
+            </Loader>
+          ) : (
+            <ProjectsGrid>
+              <ProjectCardList
+                selectedCountry={selectedCountry?.value}
+                projects={projects}
+                actions={{
+                  [PROJECT_ACCESS_TYPES.ALLOWED]: ({
+                    project: { id, code, homeEntityCode, dashboardGroupName },
+                  }: {
+                    project: SingleProject;
+                  }) => (
+                    <ProjectAllowedLink
+                      projectId={id}
+                      url={`/${code}/${homeEntityCode}${
+                        dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
+                      }`}
+                    />
+                  ),
+                  [PROJECT_ACCESS_TYPES.PENDING]: ProjectPendingLink,
+                  [PROJECT_ACCESS_TYPES.DENIED]: ({
+                    project: { code },
+                  }: {
+                    project: SingleProject;
+                  }) => {
+                    if (isLoggedIn) {
+                      return (
+                        <ProjectDeniedLink
+                          url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
+                        />
+                      );
+                    }
 
-                  return <ProjectLoginLink routerState={{ referrer: location }} />;
-                },
-              }}
-            />
-          </ProjectsGrid>
-        )}
-      </div>
-    </Wrapper>
+                    return <ProjectLoginLink routerState={{ referrer: location }} />;
+                  },
+                }}
+              />
+            </ProjectsGrid>
+          )}
+        </div>
+      </Wrapper>
+    </Modal>
   );
 };

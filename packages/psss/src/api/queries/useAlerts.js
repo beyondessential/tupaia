@@ -1,10 +1,5 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import orderBy from 'lodash.orderby';
-import { useQueryClient, useMutation } from 'react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { MIN_DATE, SYNDROMES } from '../../constants';
 import { getPeriodByDate } from '../../utils';
 import { useData } from './helpers';
@@ -38,8 +33,8 @@ export const useArchiveAlert = alertId => {
   const queryClient = useQueryClient();
   return useMutation(() => put(`alerts/${alertId}/archive`), {
     onSuccess: () => {
-      queryClient.invalidateQueries(`alerts/active`);
-      queryClient.invalidateQueries(`alerts/archive`);
+      queryClient.invalidateQueries([`alerts/active`]);
+      queryClient.invalidateQueries([`alerts/archive`]);
     },
     throwOnError: true,
   });
@@ -49,8 +44,8 @@ export const useRestoreArchivedAlert = alertId => {
   const queryClient = useQueryClient();
   return useMutation(() => put(`alerts/${alertId}/unarchive`), {
     onSuccess: () => {
-      queryClient.invalidateQueries(`alerts/active`);
-      queryClient.invalidateQueries(`alerts/archive`);
+      queryClient.invalidateQueries([`alerts/active`]);
+      queryClient.invalidateQueries([`alerts/archive`]);
     },
     throwOnError: true,
   });
@@ -60,7 +55,7 @@ export const useDeleteAlert = alertId => {
   const queryClient = useQueryClient();
   return useMutation(() => remove(`alerts/${alertId}`), {
     onSuccess: () => {
-      queryClient.invalidateQueries(`alerts/archive`);
+      queryClient.invalidateQueries([`alerts/archive`]);
     },
     throwOnError: true,
   });

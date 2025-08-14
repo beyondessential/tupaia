@@ -1,10 +1,5 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { FakeAPI } from './FakeApi';
 
 export const useTableQuery = (endpoint, options) => {

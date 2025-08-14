@@ -1,18 +1,13 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
+import { RequestHandler } from 'express';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { Authenticator, getJwtToken } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import { NextFunction, Request, Response } from 'express';
 
-export const buildAuthMiddleware = (database: TupaiaDatabase) => {
+export const buildAuthMiddleware = (database: TupaiaDatabase): RequestHandler => {
   const models = new ModelRegistry(database);
   const authenticator = new Authenticator(models);
 
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req, _res, next) => {
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) {

@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 export const FLIGHT_DATE = 'QMIA028';
 const TIMEZONE_SAMOA = 'Pacific/Apia';

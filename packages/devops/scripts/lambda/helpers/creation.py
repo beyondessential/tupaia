@@ -1,12 +1,24 @@
 import boto3
 
 from helpers.networking import add_subdomains_to_route53, setup_subdomains_via_dns, setup_subdomains_via_gateway
-from helpers.utilities import get_instance_by_id
+from helpers.utilities import get_instance_by_id, get_account_ids
 from helpers.rds import get_latest_db_snapshot, wait_for_db_instance
 
 ec2 = boto3.resource('ec2')
 ec = boto3.client('ec2')
 rds = boto3.client('rds')
+
+def get_latest_image_id(image_code):
+    filters = [
+        {'Name': 'tag:Code', 'Values': [image_code]},
+    ]
+    account_ids = get_account_ids()
+    image_response = ec.describe_images(Owners=account_ids, Filters=filters)
+    if 'Images' not in image_response or len(image_response['Images']) == 0:
+        raise Exception('No images matching ' + image_code)
+    image_id = sorted(image_response['Images'], key=lambda k: k['CreationDate'], reverse=True)[0]['ImageId']
+    print('Found image with id ' + image_id)
+    return image_id
 
 def allocate_elastic_ip(instance_id):
     elastic_ip = ec.allocate_address(Domain='Vpc')
@@ -42,6 +54,7 @@ def get_instance_creation_config(
   cloned_from=None,
   extra_tags=None,
   iam_role_arn=None,
+  image_code=None,
   image_id=None,
   security_group_code=None,
   security_group_id=None,
@@ -53,6 +66,8 @@ def get_instance_creation_config(
     security_group_ids = get_security_group_ids_config(security_group_code, security_group_id)
 
     instance_name = deployment_type + ': ' + deployment_name
+
+    image_id = image_id if image_id != None else get_latest_image_id(image_code)
 
     tags = [
       { 'Key': 'Name', 'Value': instance_name },
@@ -68,6 +83,9 @@ def get_instance_creation_config(
 
     if subdomains_via_gateway:
       tags.append({ 'Key': 'SubdomainsViaGateway', 'Value': ','.join(subdomains_via_gateway) })
+
+    if image_code:
+      tags.append({ 'Key': 'ImageCode', 'Value': image_code })
 
     # attach cloning config tags
     if cloned_from:
@@ -113,6 +131,7 @@ def create_instance(
   cloned_from=None,
   extra_tags=None,
   iam_role_arn=None,
+  image_code=None,
   image_id=None,
   security_group_code=None,
   security_group_id=None,
@@ -129,6 +148,7 @@ def create_instance(
       extra_tags=extra_tags,
       cloned_from=cloned_from,
       iam_role_arn=iam_role_arn,
+      image_code=image_code,
       image_id=image_id,
       security_group_code=security_group_code,
       security_group_id=security_group_id,

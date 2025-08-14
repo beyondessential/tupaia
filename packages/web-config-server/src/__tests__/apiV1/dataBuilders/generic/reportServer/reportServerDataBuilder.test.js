@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { ReportServerBuilder } from '/apiV1/dataBuilders/generic/reportServer/reportServerDataBuilder';
 
 const reportRequestKey = (reportCode, query = {}, body = {}) =>

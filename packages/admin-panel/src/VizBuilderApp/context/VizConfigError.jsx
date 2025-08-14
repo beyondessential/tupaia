@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import PropTypes from 'prop-types';
 import React, { createContext, useContext, useState } from 'react';
 
@@ -30,7 +25,7 @@ export const VizConfigErrorProvider = ({ children }) => {
   );
 };
 
-export const useVizConfigError = () => useContext(VizConfigErrorContext);
+export const useVizConfigErrorContext = () => useContext(VizConfigErrorContext);
 
 VizConfigErrorProvider.propTypes = {
   children: PropTypes.node.isRequired,

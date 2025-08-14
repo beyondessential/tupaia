@@ -1,29 +1,15 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import { QueryConjunctions } from '@tupaia/server-boilerplate';
-import { NumericKeys, ObjectLikeKeys, Flatten } from '@tupaia/types';
+import { QueryConjunctions, EntityFilter, EntityFilterFields } from '@tupaia/server-boilerplate';
+import { NumericKeys } from '@tupaia/types';
 import { getSortByKey } from '@tupaia/utils';
 import { Writable } from '../../../types';
-import { EntityFilter, EntityQueryFields } from '../../../models';
 
 const CLAUSE_DELIMITER = ';';
-const NESTED_FIELD_DELIMITER = '_';
 const JSONB_FIELD_DELIMITER = '->>';
 const MULTIPLE_VALUES_DELIMITER = ',';
 
-type NestedFilterQueryFields = Flatten<
-  Pick<EntityQueryFields, ObjectLikeKeys<EntityQueryFields>>,
-  typeof NESTED_FIELD_DELIMITER
->;
+type NumericFilterQueryFields = Pick<EntityFilterFields, NumericKeys<Required<EntityFilterFields>>>;
 
-type NumericFilterQueryFields = Pick<EntityQueryFields, NumericKeys<EntityQueryFields>>;
-
-type EntityFilterQuery = Partial<
-  Omit<EntityQueryFields, ObjectLikeKeys<EntityQueryFields>> & NestedFilterQueryFields
->;
+type EntityFilterQuery = Partial<EntityFilterFields>;
 type NotNull<T> = T extends Array<infer U> ? Array<Exclude<U, null>> : Exclude<T, null>;
 type NotNullValues<T> = {
   [field in keyof T]: NotNull<T[field]>;
@@ -38,30 +24,15 @@ const filterableFields: (keyof EntityFilterQuery)[] = [
   'name',
   'image_url',
   'type',
-  'attributes_type',
   'generational_distance',
+  'attributes',
 ];
 const isFilterableField = (field: string): field is keyof EntityFilterQuery =>
   (filterableFields as string[]).includes(field);
 
-const nestedFields: (keyof NestedFilterQueryFields)[] = ['attributes_type'];
-const isNestedField = (field: keyof EntityFilterQuery): field is keyof NestedFilterQueryFields =>
-  (nestedFields as (keyof EntityFilterQuery)[]).includes(field);
-
 const numericFields: (keyof NumericFilterQueryFields)[] = ['generational_distance'];
 const isNumericField = (field: keyof EntityFilterQuery): field is keyof NumericFilterQueryFields =>
   (numericFields as (keyof EntityFilterQuery)[]).includes(field);
-
-type JsonBKey<
-  T extends keyof NestedFilterQueryFields
-> = T extends `${infer Field}${typeof NESTED_FIELD_DELIMITER}${infer Key}`
-  ? `${Field}${typeof JSONB_FIELD_DELIMITER}${Key}`
-  : T;
-
-const toJsonBKey = <T extends keyof NestedFilterQueryFields>(nestedField: T): JsonBKey<T> => {
-  const [field, value] = nestedField.split(NESTED_FIELD_DELIMITER);
-  return [field, value].join(JSONB_FIELD_DELIMITER) as JsonBKey<T>;
-};
 
 // Inspired by Google Analytics filter: https://developers.google.com/analytics/devguides/reporting/core/v3/reference?hl=en#filters
 const operatorToSqlComparator = {
@@ -154,11 +125,18 @@ const toFilterClause = (queryClause: string) => {
   }
 
   const [field, value] = clauseParts;
-  if (!isFilterableField(field)) {
-    throw new Error(`Unknown filter key: ${field}, must be one of: ${filterableFields}`);
+  let firstField = field;
+
+  // if the field is already in the form of a JSONB key, we just need to check the the first field is valid
+  if (field.includes(JSONB_FIELD_DELIMITER)) {
+    firstField = field.split(JSONB_FIELD_DELIMITER)[0];
+  }
+  if (!isFilterableField(firstField)) {
+    throw new Error(`Unknown filter key: ${firstField}, must be one of: ${filterableFields}`);
   }
 
-  return [field, operator, value] as [typeof field, typeof operator, typeof value];
+  // return the field as passed in, because if it has a JSONB key, we want to keep it
+  return [field, operator, value] as [typeof firstField, typeof operator, typeof value];
 };
 
 export const extractFilterFromQuery = (
@@ -178,11 +156,11 @@ export const extractFilterFromQuery = (
   }
 
   const filterClauses = queryFilter.split(CLAUSE_DELIMITER).map(toFilterClause);
-  const filter: Writable<NotNullValues<Record<string, unknown>>> = {};
+  //TODO: Stop using any here in favour of validating against the entity filter schema
+  const filter: Writable<NotNullValues<Record<string, any>>> = {};
 
   filterClauses.forEach(([field, operator, value]) => {
-    const formattedField = isNestedField(field) ? toJsonBKey(field) : field;
-    filter[formattedField] = convertValueToAdvancedCriteria(field, operator, value);
+    filter[field] = convertValueToAdvancedCriteria(field, operator, value);
   });
 
   // To always force returning only entities in allowed countries, even if there is country_code filter in the query params.

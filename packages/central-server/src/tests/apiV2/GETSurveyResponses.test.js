@@ -1,16 +1,14 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
+
 import {
-  buildAndInsertSurveys,
   buildAndInsertSurveyResponses,
+  buildAndInsertSurveys,
   findOrCreateDummyRecord,
 } from '@tupaia/database';
-import { resetTestData, TestableApp } from '../testUtilities';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+
+import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
+import { getRewardsForUser } from '../../social/getRewardsForUser';
+import { TestableApp, resetTestData } from '../testUtilities';
 
 describe('Permissions checker for GETSurveyResponses', async () => {
   const DEFAULT_POLICY = {
@@ -68,41 +66,37 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       },
     ]);
 
-    const [
-      vanuatuAdminBuild,
-      laosAdminBuild,
-      vanuatuDonorBuild,
-      laosDonorBuild,
-    ] = await buildAndInsertSurveyResponses(models, [
-      {
-        id: vanuatuAdminResponseId,
-        surveyCode: 'TEST_SURVEY_1',
-        entityCode: vanuatuEntity.code,
-        data_time: '2020-01-31T09:00:00',
-        answers: [],
-      },
-      {
-        id: laosAdminResponseId,
-        surveyCode: 'TEST_SURVEY_1',
-        entityCode: laosEntity.code,
-        data_time: '2020-01-31T09:00:00',
-        answers: [],
-      },
-      {
-        id: vanuatuDonorResponseId,
-        surveyCode: 'TEST_SURVEY_2',
-        entityCode: vanuatuEntity.code,
-        data_time: '2020-01-31T09:00:00',
-        answers: [],
-      },
-      {
-        id: laosDonorResponseId,
-        surveyCode: 'TEST_SURVEY_2',
-        entityCode: laosEntity.code,
-        data_time: '2020-01-31T09:00:00',
-        answers: [],
-      },
-    ]);
+    const [vanuatuAdminBuild, laosAdminBuild, vanuatuDonorBuild, laosDonorBuild] =
+      await buildAndInsertSurveyResponses(models, [
+        {
+          id: vanuatuAdminResponseId,
+          surveyCode: 'TEST_SURVEY_1',
+          entityCode: vanuatuEntity.code,
+          data_time: '2020-01-31T09:00:00',
+          answers: [],
+        },
+        {
+          id: laosAdminResponseId,
+          surveyCode: 'TEST_SURVEY_1',
+          entityCode: laosEntity.code,
+          data_time: '2020-01-31T09:00:00',
+          answers: [],
+        },
+        {
+          id: vanuatuDonorResponseId,
+          surveyCode: 'TEST_SURVEY_2',
+          entityCode: vanuatuEntity.code,
+          data_time: '2020-01-31T09:00:00',
+          answers: [],
+        },
+        {
+          id: laosDonorResponseId,
+          surveyCode: 'TEST_SURVEY_2',
+          entityCode: laosEntity.code,
+          data_time: '2020-01-31T09:00:00',
+          answers: [],
+        },
+      ]);
 
     laosAdminResponseId = laosAdminBuild.surveyResponse.id;
     laosDonorResponseId = laosDonorBuild.surveyResponse.id;
@@ -197,6 +191,29 @@ describe('Permissions checker for GETSurveyResponses', async () => {
         vanuatuCountry.name,
         laosCountry.name,
       ]);
+    });
+
+    it('gets user rewards', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const { body: results } = await app.get('surveyResponses');
+
+      const userId = results[0].user_id;
+      const rewards = await getRewardsForUser(app.database, userId);
+
+      expect(rewards.coconuts).to.equal(4);
+    });
+
+    it('gets rewards with a project_id', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const { body: results } = await app.get('surveyResponses');
+
+      const userId = results[0].user_id;
+      const projectId = 'testId';
+      // The test data doesn't have project ids, but still want to make sure that it handles the param and returns the correct rewards
+      const rewards = await getRewardsForUser(app.database, userId, projectId);
+      expect(rewards.coconuts).to.equal(0);
     });
   });
 });

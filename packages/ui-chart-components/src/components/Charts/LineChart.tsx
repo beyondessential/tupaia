@@ -1,26 +1,16 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { Line, LabelList } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
+import { LineChartChartConfig } from '@tupaia/types';
 import { BLUE, DARK_BLUE } from '../../constants';
 
-interface LineChartProps {
-  dataKey: string;
-  opacity?: string;
-  yAxisId: string | number;
-  valueType: string;
-  color?: string;
+interface LineChartProps extends LineChartChartConfig {
   isExporting?: boolean;
   isEnlarged?: boolean;
-  connectNulls?: boolean;
   exportWithLabels?: boolean;
-  strokeDasharray?: string;
-  dot?: boolean;
+  dataKey: string;
+  yAxisId: number;
 }
-
 export const LineChart = ({
   dataKey,
   opacity,
@@ -38,7 +28,6 @@ export const LineChart = ({
   const showDot = isExporting ? false : dot; // Always hide when exporting as it doesn't look nice
 
   return (
-    // @ts-ignore - ts lint is complaining about the children but it is a valid prop in the Line component
     <Line
       key={dataKey}
       type="monotone"

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import {
   buildAndInsertSurveys,
@@ -69,6 +64,12 @@ export const testPermissions = async () => {
             type: 'FreeText',
             text: 'Opening hours',
           },
+          {
+            id: 'fdfcc42a44456c123a9_test',
+            code: 'TEST_IMPORT_SURVEY_RESPONSES_1_question_3_test',
+            type: 'User',
+            text: 'User assigned',
+          },
         ],
       },
       {
@@ -96,25 +97,42 @@ export const testPermissions = async () => {
     const entity = await findOrCreateDummyRecord(models.entity, {
       code: 'DL_7',
       country_code: demoLand.code,
+      name: 'Lake Charm',
     });
-    await findOrCreateDummyRecord(models.entity, { code: 'DL_9', country_code: demoLand.code });
-    await findOrCreateDummyRecord(models.entity, { code: 'DL_10', country_code: demoLand.code });
-    await findOrCreateDummyRecord(models.entity, { code: 'DL_11', country_code: demoLand.code });
+    await findOrCreateDummyRecord(models.entity, {
+      code: 'DL_9',
+      country_code: demoLand.code,
+      name: 'Thornbury',
+    });
+    await findOrCreateDummyRecord(models.entity, {
+      code: 'DL_10',
+      country_code: demoLand.code,
+      name: 'Traralgon',
+    });
+    await findOrCreateDummyRecord(models.entity, {
+      code: 'DL_11',
+      country_code: demoLand.code,
+      name: 'National Medical Warehouse',
+    });
     await findOrCreateDummyRecord(models.entity, {
       code: 'KI_111_test',
       country_code: kiribatiCountry.code,
+      name: 'Test 1',
     });
     await findOrCreateDummyRecord(models.entity, {
       code: 'KI_222_test',
       country_code: kiribatiCountry.code,
+      name: 'Test 2',
     });
     await findOrCreateDummyRecord(models.entity, {
       code: 'KI_333_test',
       country_code: kiribatiCountry.code,
+      name: 'Test 3',
     });
     await findOrCreateDummyRecord(models.entity, {
       code: 'KI_444_test',
       country_code: kiribatiCountry.code,
+      name: 'Test 4',
     });
     const userId = 'user_00000000000000_test';
     await models.user.updateOrCreate(
@@ -125,7 +143,6 @@ export const testPermissions = async () => {
         name: 'Test User',
         email: 'testuser@tupaia.org',
         password_hash: 'hash',
-        password_salt: 'salt',
       },
     );
 

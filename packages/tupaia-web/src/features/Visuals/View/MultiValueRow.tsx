@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { MultiValueRowViewConfig, ViewConfig, ViewDataItem, ViewReport } from '@tupaia/types';
@@ -16,7 +12,25 @@ import {
 interface MultiValueRowProps {
   report: ViewReport;
   config: ViewConfig;
+  isExport?: boolean;
 }
+
+const StyledTable = styled(Table)<{
+  $isExport?: boolean;
+}>`
+  th.MuiTableCell-root,
+  td.MuiTableCell-root {
+    ${props => props.$isExport && 'color: currentColor;'}
+  }
+  border: none;
+`;
+
+const Row = styled(TableRow)`
+  background-color: transparent;
+  &:nth-child(even) {
+    background-color: transparent;
+  }
+`;
 
 const TableCell = styled(MuiTableCell)`
   border: none;
@@ -33,7 +47,7 @@ const TableHeaderCell = styled(TableCell)`
   text-decoration: underline;
 `;
 
-export const MultiValueRow = ({ report: { data }, config }: MultiValueRowProps) => {
+export const MultiValueRow = ({ report: { data }, config, isExport }: MultiValueRowProps) => {
   const { presentationOptions } = (config || {}) as MultiValueRowViewConfig;
   const { leftColumn, middleColumn, rightColumn, rowHeader } = presentationOptions || {};
 
@@ -41,29 +55,29 @@ export const MultiValueRow = ({ report: { data }, config }: MultiValueRowProps) 
   const showTableHeader = headerCells.length > 0 || rowHeader;
 
   return (
-    <Table>
+    <StyledTable $isExport={isExport}>
       {showTableHeader && (
         <TableHead>
-          <TableRow>
+          <Row>
             {rowHeader && <TableHeaderCell>{rowHeader?.name}</TableHeaderCell>}
             {headerCells.map(cell => (
               <TableHeaderCell key={`header-${cell?.header}`}>{cell?.header}</TableHeaderCell>
             ))}
-          </TableRow>
+          </Row>
         </TableHead>
       )}
       <TableBody>
         {data?.map((datum: ViewDataItem, i) => (
-          <TableRow key={datum.name}>
+          <Row key={datum.name}>
             <TableCell>{datum.name}</TableCell>
             {headerCells.map(cell => (
               <TableCell key={`row-${i}-cell-${cell?.header}`}>
                 {datum[cell?.header as string]}
               </TableCell>
             ))}
-          </TableRow>
+          </Row>
         ))}
       </TableBody>
-    </Table>
+    </StyledTable>
   );
 };

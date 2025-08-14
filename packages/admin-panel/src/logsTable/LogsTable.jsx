@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -28,8 +23,8 @@ export const LogsTable = ({ logs, logsCount, page, logsPerPage, onChangePage }) 
       orderBy={orderBy}
       onChangeOrderBy={sortColumn}
       columns={[
-        { key: 'timestamp', title: 'time', sortable: true, width: '250px', align: 'left' },
-        { key: 'message', title: 'message', sortable: false, align: 'left' },
+        { key: 'timestamp', title: 'time', disableSortBy: true, width: '250px', align: 'left' },
+        { key: 'message', title: 'message', disableSortBy: true, align: 'left' },
       ]}
     />
   );

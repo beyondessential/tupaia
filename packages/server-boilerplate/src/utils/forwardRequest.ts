@@ -1,25 +1,15 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { IncomingMessage, ServerResponse } from 'http';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
+import winston from 'winston';
+
 import { AuthHandler } from '@tupaia/api-client';
-import { UnauthenticatedError } from '@tupaia/utils';
+
+import { RequiresSessionAuthHandler } from '../orchestrator';
 
 type AuthHandlerProvider = (req: Request) => AuthHandler;
 
-const defaultAuthHandlerProvider = (req: Request) => {
-  const { session } = req;
-
-  if (!session) {
-    throw new UnauthenticatedError('Session is not attached');
-  }
-
-  // Session already has a getAuthHeader function so can act as an AuthHandler
-  return session;
-};
+const defaultAuthHandlerProvider = (req: Request) => new RequiresSessionAuthHandler(req);
 
 const stripVersionFromPath = (path: string) => {
   if (path.startsWith('/v')) {
@@ -35,14 +25,14 @@ export const forwardRequest = (
   options: {
     authHandlerProvider?: AuthHandlerProvider;
   } = {},
-) => {
+): RequestHandler => {
   const { authHandlerProvider = defaultAuthHandlerProvider } = options;
   const proxyOptions = {
     target,
     changeOrigin: true,
     pathRewrite: stripVersionFromPath,
     onProxyReq: fixRequestBody,
-    onProxyRes: (proxyRes: IncomingMessage, req: IncomingMessage, res: ServerResponse) => {
+    onProxyRes: (proxyRes: IncomingMessage, _req: IncomingMessage, res: ServerResponse) => {
       // To get around CORS because Admin Panel has credentials: true in fetch for session cookies
       const cors = res.getHeader('Access-Control-Allow-Origin');
       // eslint-disable-next-line no-param-reassign
@@ -52,7 +42,7 @@ export const forwardRequest = (
 
   const proxyMiddleware = createProxyMiddleware(proxyOptions);
   return async (req: Request, res: Response, next: NextFunction) => {
-    console.log(`forwarding ${req.originalUrl} to ${target}`);
+    winston.info(`Forwarding ${req.method} ${req.originalUrl} to ${target}`);
     try {
       const authHandler = authHandlerProvider(req);
       req.headers.authorization = await authHandler.getAuthHeader();

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import xlsx from 'xlsx';
 import {
   respond,
@@ -14,13 +9,15 @@ import {
   constructIsOneOf,
   constructIsEmptyOr,
 } from '@tupaia/utils';
-import { hashAndSaltPassword } from '@tupaia/auth';
+import { encryptPassword } from '@tupaia/auth';
 import { VerifiedEmail } from '@tupaia/types';
-import { assertBESAdminAccess } from '../../permissions';
+import {
+  assertAdminPanelAccessToCountry,
+  assertAnyPermissions,
+  assertBESAdminAccess,
+} from '../../permissions';
 
 export async function importUsers(req, res) {
-  await req.assertPermissions(assertBESAdminAccess);
-
   try {
     const { models } = req;
     if (!req.file) {
@@ -50,9 +47,10 @@ export async function importUsers(req, res) {
           }
           emails.push(userObject.email);
           const { password, permission_group: permissionGroupName, ...restOfUser } = userObject;
+
           const userToUpsert = {
             ...restOfUser,
-            ...hashAndSaltPassword(password),
+            password_hash: await encryptPassword(password),
           };
           const user = await transactingModels.user.updateOrCreate(
             { email: userObject.email },
@@ -70,6 +68,31 @@ export async function importUsers(req, res) {
               countryName,
             );
           }
+
+          const createUserPermissionChecker = async accessPolicy => {
+            await assertAdminPanelAccessToCountry(
+              accessPolicy,
+              transactingModels,
+              countryEntity.id,
+            );
+            if (!accessPolicy.allows(countryEntity.code, permissionGroup.name)) {
+              throw new Error(`Need ${permissionGroup.name} access to ${countryEntity.name}`);
+            }
+          };
+
+          try {
+            await req.assertPermissions(
+              assertAnyPermissions([assertBESAdminAccess, createUserPermissionChecker]),
+            );
+          } catch (error) {
+            throw new ImportValidationError(
+              error.message,
+              excelRowNumber,
+              'permission_group',
+              countryName,
+            );
+          }
+
           await transactingModels.userEntityPermission.findOrCreate({
             user_id: user.id,
             entity_id: countryEntity.id,

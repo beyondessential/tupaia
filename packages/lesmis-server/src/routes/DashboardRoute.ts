@@ -1,12 +1,5 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { Request, NextFunction } from 'express';
 import { TranslatableRoute, TranslatableResponse } from '@tupaia/server-boilerplate';
-import { WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME } from '../constants';
 
 export type DashboardRequest = Request<{ entityCode: string }, any, any, any>;
@@ -15,8 +8,6 @@ export class DashboardRoute extends TranslatableRoute<
   DashboardRequest,
   TranslatableResponse<DashboardRequest>
 > {
-  private readonly webConfigConnection: WebConfigConnection;
-
   public constructor(
     req: DashboardRequest,
     res: TranslatableResponse<DashboardRequest>,
@@ -24,7 +15,6 @@ export class DashboardRoute extends TranslatableRoute<
   ) {
     super(req, res, next);
 
-    this.webConfigConnection = new WebConfigConnection(req.session);
     this.translationSchema = {
       domain: 'lesmis',
       layout: {
@@ -67,7 +57,7 @@ export class DashboardRoute extends TranslatableRoute<
 
   public async buildResponse() {
     const { entityCode } = this.req.params;
-    const response = await this.webConfigConnection.fetchDashboard({
+    const response = await this.req.ctx.services.webConfig.fetchDashboards({
       organisationUnitCode: entityCode,
       projectCode: LESMIS_PROJECT_NAME,
     });

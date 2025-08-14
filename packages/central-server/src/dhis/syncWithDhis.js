@@ -1,11 +1,7 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { DataBroker } from '@tupaia/data-broker';
-import { pushLatest } from './pushLatest';
+import winston from '../log';
 import { createDhisSyncQueue } from './createDhisSyncQueue';
+import { pushLatest } from './pushLatest';
 
 // Push one change per 1000 ms, i.e. 60 per minute
 const BATCH_SIZE = 1;
@@ -16,8 +12,7 @@ export async function startSyncWithDhis(models) {
 
   // Start recursive sync loop (enabled by default)
   if (process.env.DHIS_SYNC_DISABLE === 'true') {
-    // eslint-disable-next-line no-console
-    console.log('DHIS2 sync is disabled');
+    winston.info('DHIS2 sync is disabled');
   } else {
     const dataBroker = new DataBroker();
     syncWithDhis(models, syncQueue, dataBroker);

@@ -1,9 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import { EntityType } from '../../models';
+import { EntityRecord } from '@tupaia/server-boilerplate';
+import { isNotNullish } from '@tupaia/tsutils';
 import { EntityServerModelRegistry } from '../../types';
 import { ResponseObjectBuilder } from '../utils';
 import {
@@ -18,27 +14,28 @@ type FormatContext = { hierarchyId: string; allowedCountries: string[] };
 
 export async function formatEntityForResponse(
   ctx: FormatContext,
-  entity: EntityType,
+  entity: EntityRecord,
   field: FlattableEntityFieldName,
 ): Promise<FlattenedEntity>;
 export async function formatEntityForResponse(
   ctx: FormatContext,
-  entity: EntityType,
+  entity: EntityRecord,
   fields: ExtendedEntityFieldName[],
 ): Promise<EntityResponseObject>;
 export async function formatEntityForResponse(
   ctx: FormatContext,
-  entity: EntityType,
+  entity: EntityRecord,
   fieldOrFields: FlattableEntityFieldName | ExtendedEntityFieldName[],
 ): Promise<FlattenedEntity | EntityResponseObject>;
 export async function formatEntityForResponse(
   ctx: FormatContext,
-  entity: EntityType,
+  entity: EntityRecord,
   fieldOrFields: FlattableEntityFieldName | ExtendedEntityFieldName[],
 ) {
   if (!Array.isArray(fieldOrFields)) {
     const field = fieldOrFields;
-    return entity[field];
+    if (isNotNullish(field)) return entity[field];
+    return undefined;
   }
   const fields = fieldOrFields;
   const responseBuilder = new ResponseObjectBuilder<EntityResponseObject>();
@@ -56,25 +53,25 @@ export async function formatEntityForResponse(
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
   ctx: FormatContext,
-  entities: EntityType[],
+  entities: EntityRecord[],
   field: FlattableEntityFieldName,
 ): Promise<FlattenedEntity[]>;
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
   ctx: FormatContext,
-  entities: EntityType[],
+  entities: EntityRecord[],
   fields: ExtendedEntityFieldName[],
 ): Promise<EntityResponseObject[]>;
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
   ctx: FormatContext,
-  entities: EntityType[],
+  entities: EntityRecord[],
   fieldOrFields: FlattableEntityFieldName | ExtendedEntityFieldName[],
 ): Promise<FlattenedEntity[] | EntityResponseObject[]>;
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
   ctx: FormatContext,
-  entities: EntityType[],
+  entities: EntityRecord[],
   fieldOrFields: FlattableEntityFieldName | ExtendedEntityFieldName[],
 ) {
   if (!Array.isArray(fieldOrFields)) {

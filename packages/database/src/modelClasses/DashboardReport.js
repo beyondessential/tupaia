@@ -1,18 +1,13 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class DashboardReportType extends DatabaseType {
-  static databaseType = TYPES.DASHBOARD_REPORT;
+class DashboardReportRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DASHBOARD_REPORT;
 }
 
 export class DashboardReportModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return DashboardReportType;
+  get DatabaseRecordClass() {
+    return DashboardReportRecord;
   }
 }

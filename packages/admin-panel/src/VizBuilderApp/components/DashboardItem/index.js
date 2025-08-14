@@ -1,0 +1,1 @@
+export { DashboardItemMetadataForm } from './DashboardItemMetadataForm';

@@ -1,18 +1,15 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-import {} from 'dotenv/config';
 import { ModelRegistry } from '../ModelRegistry';
 import { TupaiaDatabase } from '../TupaiaDatabase';
-import { generateTestId } from './generateTestId';
+import { configureEnv } from '../configureEnv';
 
 let database = null;
 
+configureEnv();
+
 export function getTestDatabase() {
   if (!database) {
+    process.env.DB_NAME = 'tupaia_test'; // Ensure that we're connecting to the test database
     database = new TupaiaDatabase();
-    database.generateId = generateTestId;
   }
   return database;
 }

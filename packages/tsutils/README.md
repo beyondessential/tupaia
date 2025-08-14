@@ -1,3 +1,3 @@
 # @tupaia/tsutils
 
-Utility functions that are helpful across multiple packages. Uses typescript, and deprecates @tupaia/utils
+Utility functions that are helpful across multiple packages. Uses TypeScript, and deprecates [@tupaia/utils](/packages/utils/README.md).

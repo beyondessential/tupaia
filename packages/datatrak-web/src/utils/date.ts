@@ -1,10 +1,22 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
+export const displayDate = (date?: Date | string | null, localeCode?: string) => {
+  if (!date) {
+    return '';
+  }
+  return new Date(date).toLocaleDateString(localeCode);
+};
 
-import moment from 'moment';
+export const displayDateTime = (date?: Date | string | null, locale?: string) => {
+  if (!date) {
+    return '';
+  }
 
-export const shortDate = (date: Date) => {
-  return moment(date).format('DD/MM/YY');
+  return new Date(date)
+    .toLocaleString(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    })
+    .replace(',', ' ');
 };

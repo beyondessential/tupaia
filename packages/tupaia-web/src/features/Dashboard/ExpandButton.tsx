@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
@@ -43,5 +38,9 @@ interface ExpandButtonProps {
 
 export const ExpandButton = ({ isExpanded, setIsExpanded }: ExpandButtonProps) => {
   const arrowIcon = isExpanded ? <CloseArrowIcon /> : <OpenArrowIcon />;
-  return <SemiCircle onClick={setIsExpanded}>{arrowIcon}</SemiCircle>;
+  return (
+    <SemiCircle onClick={setIsExpanded} title={`${isExpanded ? 'Collapse' : 'Expand'} dashboard`}>
+      {arrowIcon}
+    </SemiCircle>
+  );
 };

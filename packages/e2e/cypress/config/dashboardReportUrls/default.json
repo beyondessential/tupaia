@@ -162,32 +162,6 @@
     "dashboard": "PEHS"
   },
   {
-    "code": "COVID_Compose_Daily_Deaths_Vs_Cases",
-    "project": "covidau",
-    "orgUnit": "AU",
-    "dashboard": "COVID-19"
-  },
-  {
-    "code": "COVID_New_Cases_By_State",
-    "project": "covidau",
-    "orgUnit": "AU",
-    "dashboard": "COVID-19",
-    "startDate": "2021-05-30",
-    "endDate": "2021-05-30"
-  },
-  {
-    "code": "COVID_Total_Cases_By_State",
-    "project": "covidau",
-    "orgUnit": "AU",
-    "dashboard": "COVID-19"
-  },
-  {
-    "code": "COVID_Compose_Cumulative_Deaths_Vs_Cases",
-    "project": "covidau",
-    "orgUnit": "AU_Australian Capital Territory",
-    "dashboard": "COVID-19"
-  },
-  {
     "code": "FETP_PG_graduate_by_district",
     "project": "fetp",
     "orgUnit": "PG",
@@ -206,12 +180,6 @@
     "dashboard": "FETP"
   },
   {
-    "code": "LA_EOC_Total_Dengue_Cases_by_Week",
-    "project": "laos_eoc",
-    "orgUnit": "LA_Bokeo",
-    "dashboard": "Dengue"
-  },
-  {
     "code": "LA_Laos_Schools_Resources_Percentage_Primary",
     "project": "laos_schools",
     "orgUnit": "LA",
@@ -222,26 +190,6 @@
     "project": "laos_schools",
     "orgUnit": "LA",
     "dashboard": "ICT Facilities"
-  },
-  {
-    "code": "Laos_EOC_Malaria_Critical_Item_Availability",
-    "project": "laos_eoc",
-    "orgUnit": "LA-BK AH Bokeo (Military)",
-    "dashboard": "Malaria"
-  },
-  {
-    "code": "Laos_EOC_Malaria_Critical_Item_Availability_Single_Value",
-    "project": "laos_eoc",
-    "orgUnit": "LA-BK AH Bokeo (Military)",
-    "dashboard": "Malaria",
-    "startDate": "2020-06-01",
-    "endDate": "2020-06-30"
-  },
-  {
-    "code": "Laos_EOC_Malaria_Stock_Availability_Facility",
-    "project": "laos_eoc",
-    "orgUnit": "LA-BK AH Bokeo (Military)",
-    "dashboard": "Malaria"
   },
   {
     "code": "Laos_Schools_Age_Of_Computers_By_School_Type",

@@ -1,20 +1,16 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { buildAndInsertProjectsAndHierarchies, findOrCreateDummyRecord } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp, resetTestData } from '../../testUtilities';
 
 describe('Permissions checker for CreateDashboards', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP, 'Admin'],
     SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
     VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
     LA: ['Admin'],

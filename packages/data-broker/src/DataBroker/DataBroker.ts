@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { lower } from 'case';
 
 import type { AccessPolicy } from '@tupaia/access-policy';
@@ -44,10 +39,14 @@ type FetchConditions = { code: string | string[] };
 
 type Fetcher = (dataSourceSpec: FetchConditions) => Promise<DataSourceTypeInstance[]>;
 
-interface PullOptions {
+type PullOptions = Record<string, unknown> & {
   organisationUnitCode?: string;
   organisationUnitCodes?: string[];
-}
+};
+
+type PullMetadataOptions = Record<string, unknown> & {
+  organisationUnitCode?: string;
+};
 
 let modelRegistry: DataBrokerModelRegistry;
 
@@ -259,17 +258,26 @@ export class DataBroker {
     );
   }
 
-  public async pullMetadata(dataSourceSpec: DataSourceSpec, options?: Record<string, unknown>) {
-    const dataSources = await this.fetchDataSources(dataSourceSpec);
+  public async pullDataElements(codes: string[], options?: PullMetadataOptions) {
+    const dataElements = await fetchDataElements(this.models, codes);
     const { serviceType, dataServiceMapping } = await this.getSingleServiceAndMapping(
-      dataSources,
+      dataElements,
       options,
     );
 
     const service = this.createService(serviceType);
-    // `dataSourceSpec` is defined  for a single `type`
-    const { type } = dataSourceSpec;
-    return service.pullMetadata(dataSources, type, { dataServiceMapping, ...options });
+    return service.pullMetadata(dataElements, 'dataElement', { dataServiceMapping, ...options });
+  }
+
+  public async pullDataGroup(code: string, options?: PullMetadataOptions) {
+    const [dataGroup] = await fetchDataGroups(this.models, [code]);
+    const { serviceType, dataServiceMapping } = await this.getSingleServiceAndMapping(
+      [dataGroup],
+      options,
+    );
+
+    const service = this.createService(serviceType);
+    return service.pullMetadata([dataGroup], 'dataGroup', { dataServiceMapping, ...options });
   }
 
   /**
@@ -277,7 +285,7 @@ export class DataBroker {
    */
   private async getSingleServiceAndMapping(
     dataSources: DataSourceTypeInstance[],
-    options: { organisationUnitCode?: string } = {},
+    options: PullMetadataOptions = {},
   ): Promise<{ serviceType: ServiceType; dataServiceMapping: DataServiceMapping }> {
     const { organisationUnitCode } = options;
 

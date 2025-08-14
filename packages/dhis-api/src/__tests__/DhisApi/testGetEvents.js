@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { when } from 'jest-when';
 
 import { createDhisApi } from './helpers';
@@ -11,30 +6,42 @@ import { DATA_ELEMENTS, PROGRAM } from './testGetEventAnalytics.fixtures';
 const createFetchStub = () => {
   const fetchStub = jest.fn();
   when(fetchStub)
-    .calledWith('programs', {
-      fields: expect.arrayContaining(['id']),
-      filter: { code: PROGRAM.code },
-    })
+    .calledWith(
+      'programs',
+      {
+        fields: expect.arrayContaining(['id']),
+        filter: { code: PROGRAM.code },
+      },
+      undefined,
+    )
     .mockResolvedValue({ programs: [{ id: PROGRAM.id }] })
-    .calledWith('dataElements', {
-      fields: expect.arrayContaining(['id', 'code']),
-      filter: {
-        comparator: 'in',
-        code: expect.toBeOneOf([
-          '[FEMALE_POPULATION,MALE_POPULATION]',
-          '[MALE_POPULATION,FEMALE_POPULATION]',
-        ]),
+    .calledWith(
+      'dataElements',
+      {
+        fields: expect.arrayContaining(['id', 'code']),
+        filter: {
+          comparator: 'in',
+          code: expect.toBeOneOf([
+            '[FEMALE_POPULATION,MALE_POPULATION]',
+            '[MALE_POPULATION,FEMALE_POPULATION]',
+          ]),
+        },
       },
-    })
+      undefined,
+    )
     .mockResolvedValue({ dataElements: DATA_ELEMENTS })
-    .calledWith('organisationUnits', {
-      fields: ['id'],
-      filter: {
-        code: 'TO',
+    .calledWith(
+      'organisationUnits',
+      {
+        fields: ['id'],
+        filter: {
+          code: 'TO',
+        },
       },
-    })
+      undefined,
+    )
     .mockResolvedValue({ organisationUnits: [{ id: 'to_dhisId' }] })
-    .calledWith('events/dhis_event_id1')
+    .calledWith('events/dhis_event_id1', expect.anything(), undefined)
     .mockResolvedValue({ dataValues: {} });
 
   return fetchStub;

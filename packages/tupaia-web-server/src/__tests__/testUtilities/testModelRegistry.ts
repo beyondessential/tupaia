@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import {
   ModelRegistry,
   EntityModel,
@@ -10,7 +5,7 @@ import {
   EntityRelationModel,
   UserEntityPermissionModel,
   UserModel,
-  ProjectModel,
+  PermissionGroupModel,
 } from '@tupaia/database';
 
 export interface TestModelRegistry extends ModelRegistry {
@@ -19,5 +14,5 @@ export interface TestModelRegistry extends ModelRegistry {
   readonly entityRelation: EntityRelationModel;
   readonly user: UserModel;
   readonly userEntityPermission: UserEntityPermissionModel;
-  readonly project: ProjectModel;
+  readonly permissionGroup: PermissionGroupModel;
 }

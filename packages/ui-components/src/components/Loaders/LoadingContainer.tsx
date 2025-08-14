@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -13,7 +9,7 @@ const Container = styled.div`
   position: relative;
 `;
 
-const LoadingScreen = styled.div`
+export const LoadingScreen = styled.div`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -23,8 +19,8 @@ const LoadingScreen = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: #f9f9f9;
-  border: 1px solid ${props => props.theme.palette.grey['400']};
+  background: ${props => props.theme.palette.background.default};
+  border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   border-radius: 3px;
   z-index: 10;
 `;
@@ -69,15 +65,18 @@ const ErrorScreen = ({ onReset, errorMessage }: ErrorScreenProps) => {
   );
 };
 
-interface WrapperProps {
-  children: ReactNode;
+interface WrapperProps extends React.ComponentPropsWithoutRef<typeof Container> {
   loadingContainerChildren: ReactNode;
 }
 
-const Wrapper = ({ children: loadingScreenChildren, loadingContainerChildren }: WrapperProps) => (
-  <Container className="loading-container">
+const Wrapper = ({
+  children: loadingScreenChildren,
+  loadingContainerChildren,
+  ...props
+}: WrapperProps) => (
+  <Container className="loading-container" {...props}>
     {loadingContainerChildren}
-    <LoadingScreen className="loading-screen">{loadingScreenChildren}</LoadingScreen>
+    <LoadingScreen>{loadingScreenChildren}</LoadingScreen>
   </Container>
 );
 
@@ -97,13 +96,14 @@ export const LoadingContainer = ({
   isLoading,
   heading = 'Saving Data',
   text = 'Please do not refresh the browser or close this page',
-  children = null,
+  children,
   errorMessage,
   onReset,
+  ...props
 }: LoadingContainerProps) => {
   if (onReset && errorMessage) {
     return (
-      <Wrapper loadingContainerChildren={children}>
+      <Wrapper loadingContainerChildren={children} {...props}>
         <ErrorScreen onReset={onReset} errorMessage={errorMessage} />
       </Wrapper>
     );
@@ -111,7 +111,7 @@ export const LoadingContainer = ({
 
   if (errorMessage) {
     return (
-      <Wrapper loadingContainerChildren={children}>
+      <Wrapper loadingContainerChildren={children} {...props}>
         <ErrorAlert severity="error" variant="standard">
           {errorMessage}
         </ErrorAlert>
@@ -121,7 +121,7 @@ export const LoadingContainer = ({
 
   if (isLoading) {
     return (
-      <Wrapper loadingContainerChildren={children}>
+      <Wrapper loadingContainerChildren={children} {...props}>
         <Loader />
         <LoadingHeading variant="h5">{heading}</LoadingHeading>
         <LoadingText variant="body2">{text}</LoadingText>

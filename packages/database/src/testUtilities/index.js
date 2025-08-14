@@ -1,13 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 export { buildAndInsertSurvey, buildAndInsertSurveys } from './buildAndInsertSurveys';
 export { buildAndInsertSurveyResponses } from './buildAndInsertSurveyResponses';
 export { buildAndInsertProjectsAndHierarchies } from './buildAndInsertProjectsAndHierarchies';
-export { clearTestData, clearAllTestData } from './clearTestData';
-export { generateTestId } from './generateTestId';
+export { clearTestData } from './clearTestData';
 export { generateValueOfType } from './generateValueOfType';
 export { getTestDatabase, getTestModels } from './getTestDatabase';
 export { setupTest } from './setupTest';

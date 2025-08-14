@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
@@ -13,10 +8,10 @@ import { TestableApp } from '../../testUtilities';
 
 describe('Permissions checker for GETUserAccounts', async () => {
   const DEFAULT_POLICY = {
-    DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Public'],
+    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     LA: ['Admin'],
     TO: ['Admin'],
   };
@@ -57,15 +52,15 @@ describe('Permissions checker for GETUserAccounts', async () => {
     // Create test users
     userAccount1 = await findOrCreateDummyRecord(models.user, {
       first_name: 'Clark',
-      last_name: 'Kent',
+      last_name: 'GETUserAccounts',
     });
     userAccount2 = await findOrCreateDummyRecord(models.user, {
       first_name: 'Bruce',
-      last_name: 'Wayne',
+      last_name: 'GETUserAccounts',
     });
     userAccount3 = await findOrCreateDummyRecord(models.user, {
       first_name: 'Diana',
-      last_name: 'Prince',
+      last_name: 'GETUserAccounts',
     });
 
     // Give the test users some permissions

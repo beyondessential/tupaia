@@ -1,18 +1,13 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import assert from 'assert';
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { DataBroker } from '../../DataBroker/DataBroker';
+import { DataServiceMapping } from '../../services/DataServiceMapping';
 import { Service } from '../../services/Service';
 import { DataBrokerModelRegistry, DataElement, ServiceType } from '../../types';
 import { DATA_SOURCE_TYPES } from '../../utils';
 import { DATA_BY_SERVICE, DATA_ELEMENTS, DATA_GROUPS, SYNC_GROUPS } from './DataBroker.fixtures';
 import { stubCreateService, createModelsStub, MockService } from './DataBroker.stubs';
-import { DataServiceMapping } from '../../services/DataServiceMapping';
 
 const mockModels = createModelsStub();
 
@@ -20,27 +15,23 @@ jest.mock('@tupaia/database', () => ({
   TupaiaDatabase: jest.fn().mockImplementation(() => {}),
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
   createModelsStub: jest.requireActual('@tupaia/database').createModelsStub, // don't mock needed testUtility
-  TYPES: jest.requireActual('@tupaia/database').TYPES, // don't mock needed type
-}));
-
-jest.mock('@tupaia/server-boilerplate', () => ({
-  ApiConnection: jest.fn().mockImplementation(() => {}),
+  RECORDS: jest.requireActual('@tupaia/database').RECORDS, // don't mock needed type
 }));
 
 jest.mock('../../DataBroker/fetchDataSources', () => ({
-  fetchDataElements: async (models: DataBrokerModelRegistry, codes: string[]) => {
+  fetchDataElements: async (_models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);
     const results = Object.values(DATA_ELEMENTS).filter(({ code }) => codes.includes(code));
     assert(results.length > 0);
     return results;
   },
-  fetchDataGroups: async (models: DataBrokerModelRegistry, codes: string[]) => {
+  fetchDataGroups: async (_models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);
     const results = Object.values(DATA_GROUPS).filter(({ code }) => codes.includes(code));
     assert(results.length > 0);
     return results;
   },
-  fetchSyncGroups: async (models: DataBrokerModelRegistry, codes: string[]) => {
+  fetchSyncGroups: async (_models: DataBrokerModelRegistry, codes: string[]) => {
     assert(codes.length > 0);
     const results = Object.values(SYNC_GROUPS).filter(({ code }) => codes.includes(code));
     assert(results.length > 0);
@@ -61,7 +52,13 @@ describe('DataBroker', () => {
   });
 
   describe('Data service resolution', () => {
-    type MethodUnderTest = 'push' | 'pullAnalytics' | 'pullEvents' | 'delete' | 'pullMetadata';
+    type MethodUnderTest =
+      | 'push'
+      | 'pullAnalytics'
+      | 'pullEvents'
+      | 'delete'
+      | 'pullDataElements'
+      | 'pullDataGroup';
 
     const TO_OPTIONS = { organisationUnitCode: 'TO_FACILITY_01' };
     const FJ_OPTIONS = { organisationUnitCode: 'FJ_FACILITY_01' };
@@ -81,8 +78,8 @@ describe('DataBroker', () => {
         ['delete', 2, [{ code: 'DHIS_PROGRAM_01', type: 'dataGroup' }, TO_OPTIONS], 'dhis'],
         ['pullAnalytics', 1, ['DHIS_01', TO_OPTIONS], 'dhis'],
         ['pullEvents', 2, ['DHIS_PROGRAM_01', TO_OPTIONS], 'dhis'],
-        ['pullMetadata', 1, [{ code: 'DHIS_01', type: 'dataElement' }, TO_OPTIONS], 'dhis'],
-        ['pullMetadata', 2, [{ code: 'DHIS_PROGRAM_01', type: 'dataGroup' }, TO_OPTIONS], 'dhis'],
+        ['pullDataElements', 1, [['DHIS_01'], TO_OPTIONS], 'dhis'],
+        ['pullDataGroup', 2, ['DHIS_PROGRAM_01', TO_OPTIONS], 'dhis'],
       ];
 
       testData.forEach(([methodUnderTest, testNum, inputArgs, expectedServiceNameUsed]) =>
@@ -115,9 +112,9 @@ describe('DataBroker', () => {
         ['delete', 1, [{ code: 'DHIS_01', type: 'dataElement' }, NO_OU_OPT], 'dhis'],
         ['delete', 2, [{ code: 'DHIS_PROGRAM_01', type: 'dataGroup' }, NO_OU_OPT], 'dhis'],
         ['pullAnalytics', 1, ['DHIS_01', NO_OU_OPT], 'dhis'],
-        ['pullEvents', 2, ['DHIS_PROGRAM_01', NO_OU_OPT], 'dhis'],
-        ['pullMetadata', 1, [{ code: 'DHIS_01', type: 'dataElement' }, NO_OU_OPT], 'dhis'],
-        ['pullMetadata', 2, [{ code: 'DHIS_PROGRAM_01', type: 'dataGroup' }, NO_OU_OPT], 'dhis'],
+        ['pullEvents', 1, ['DHIS_PROGRAM_01', NO_OU_OPT], 'dhis'],
+        ['pullDataElements', 1, [['DHIS_01'], NO_OU_OPT], 'dhis'],
+        ['pullDataGroup', 1, ['DHIS_PROGRAM_01'], 'dhis'],
       ];
 
       testData.forEach(([methodUnderTest, testNum, inputArgs, expectedServiceNameUsed]) =>
@@ -148,7 +145,7 @@ describe('DataBroker', () => {
           'tupaia',
         ],
         ['pullAnalytics', ['MAPPED_01', FJ_OPTIONS], 'tupaia'],
-        ['pullMetadata', [{ code: 'MAPPED_01', type: 'dataElement' }, FJ_OPTIONS], 'tupaia'],
+        ['pullDataElements', [['MAPPED_01'], FJ_OPTIONS], 'tupaia'],
       ];
 
       testData.forEach(([methodUnderTest, inputArgs, expectedServiceType]) =>
@@ -166,35 +163,71 @@ describe('DataBroker', () => {
 
     describe('passes mapping to service', () => {
       const dataBroker = new DataBroker();
-      const mapping = new DataServiceMapping([
-        { dataSource: DATA_ELEMENTS.DHIS_01, service_type: 'dhis', config: {} },
-      ]);
 
-      const testData: [MethodUnderTest, any[]][] = [
-        ['push', [{ code: 'DHIS_01', type: 'dataElement' }, [{ value: 2 }], TO_OPTIONS]],
-        ['delete', [{ code: 'DHIS_01', type: 'dataElement' }, { value: 2 }, TO_OPTIONS]],
-        ['pullMetadata', [{ code: 'DHIS_01', type: 'dataElement' }, TO_OPTIONS]],
-      ];
+      it('passes mapping to service: push', async () => {
+        const expectedMapping = new DataServiceMapping([
+          { dataSource: DATA_ELEMENTS.DHIS_01, service_type: 'dhis', config: {} },
+        ]);
 
-      testData.forEach(
-        ([methodUnderTest, inputArgs]) =>
-          it(`passes mapping to service: ${methodUnderTest}`, async () => {
-            await dataBroker[methodUnderTest](inputArgs[0], inputArgs[1], inputArgs[2]);
-            expect(SERVICES.dhis[methodUnderTest]).toHaveBeenCalledOnceWith(
-              expect.anything(),
-              expect.anything(),
-              expect.objectContaining({ dataServiceMapping: mapping }),
-            );
-          }),
+        await dataBroker.push({ code: 'DHIS_01', type: 'dataElement' }, [{ value: 2 }], TO_OPTIONS);
+        expect(SERVICES.dhis.push).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({ dataServiceMapping: expectedMapping }),
+        );
+      });
 
-        it('passes mapping to service: pullAnalytics', async () => {
-          await dataBroker.pullAnalytics(['DHIS_01'], TO_OPTIONS);
-          expect(SERVICES.dhis.pullAnalytics).toHaveBeenCalledOnceWith(
-            expect.anything(),
-            expect.objectContaining({ dataServiceMapping: mapping }),
-          );
-        }),
-      );
+      it('passes mapping to service: delete', async () => {
+        const expectedMapping = new DataServiceMapping([
+          { dataSource: DATA_ELEMENTS.DHIS_01, service_type: 'dhis', config: {} },
+        ]);
+
+        await dataBroker.delete({ code: 'DHIS_01', type: 'dataElement' }, { value: 2 }, TO_OPTIONS);
+        expect(SERVICES.dhis.delete).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          expect.anything(),
+          expect.objectContaining({ dataServiceMapping: expectedMapping }),
+        );
+      });
+
+      it('passes mapping to service: pullAnalytics', async () => {
+        const expectedMapping = new DataServiceMapping([
+          { dataSource: DATA_ELEMENTS.DHIS_01, service_type: 'dhis', config: {} },
+        ]);
+
+        await dataBroker.pullAnalytics(['DHIS_01'], TO_OPTIONS);
+        expect(SERVICES.dhis.pullAnalytics).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          expect.objectContaining({ dataServiceMapping: expectedMapping }),
+        );
+      });
+
+      it('passes mapping to service: pullDataElements', async () => {
+        const expectedMapping = new DataServiceMapping([
+          { dataSource: DATA_ELEMENTS.DHIS_01, service_type: 'dhis', config: {} },
+        ]);
+
+        await dataBroker.pullDataElements(['DHIS_01'], TO_OPTIONS);
+        expect(SERVICES.dhis.pullMetadata).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          'dataElement',
+          expect.objectContaining({ dataServiceMapping: expectedMapping }),
+        );
+      });
+
+      it('passes mapping to service: pullDataGroup', async () => {
+        const expectedMapping = new DataServiceMapping(
+          [],
+          [{ dataSource: DATA_GROUPS.DHIS_PROGRAM_01, service_type: 'dhis', config: {} }],
+        );
+
+        await dataBroker.pullDataGroup('DHIS_PROGRAM_01', TO_OPTIONS);
+        expect(SERVICES.dhis.pullMetadata).toHaveBeenCalledOnceWith(
+          expect.anything(),
+          'dataGroup',
+          expect.objectContaining({ dataServiceMapping: expectedMapping }),
+        );
+      });
     });
 
     describe('multiple org units pull', () => {
@@ -543,29 +576,17 @@ describe('DataBroker', () => {
     });
   });
 
-  describe('pullMetadata()', () => {
-    it('throws if the data sources belong to multiple services', async () => {
+  describe('pullDataElements()', () => {
+    it('throws if the data elements belong to multiple services', async () => {
       const dataBroker = new DataBroker();
-      await expect(
-        dataBroker.pullMetadata({ code: ['DHIS_01', 'TUPAIA_01'], type: 'dataElement' }),
-      ).toBeRejectedWith('Multiple data service types found, only a single service type expected');
-    });
-
-    it('single data element', async () => {
-      const dataBroker = new DataBroker();
-      await dataBroker.pullMetadata({ code: 'DHIS_01', type: 'dataElement' }, options);
-
-      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
-      expect(SERVICES.dhis.pullMetadata).toHaveBeenCalledOnceWith(
-        [DATA_ELEMENTS.DHIS_01],
-        'dataElement',
-        expect.objectContaining(options),
+      await expect(dataBroker.pullDataElements(['DHIS_01', 'TUPAIA_01'])).toBeRejectedWith(
+        'Multiple data service types found, only a single service type expected',
       );
     });
 
-    it('multiple data elements', async () => {
+    it('pulls data elements', async () => {
       const dataBroker = new DataBroker();
-      await dataBroker.pullMetadata({ code: ['DHIS_01', 'DHIS_02'], type: 'dataElement' }, options);
+      await dataBroker.pullDataElements(['DHIS_01', 'DHIS_02'], options);
 
       expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
       expect(SERVICES.dhis.pullMetadata).toHaveBeenCalledOnceWith(
@@ -574,20 +595,16 @@ describe('DataBroker', () => {
         expect.objectContaining(options),
       );
     });
+  });
 
-    it('multiple data groups', async () => {
+  describe('pullDataGroup()', () => {
+    it('pulls data group', async () => {
       const dataBroker = new DataBroker();
-      await dataBroker.pullMetadata(
-        {
-          code: ['DHIS_PROGRAM_01', 'DHIS_PROGRAM_02'],
-          type: 'dataGroup',
-        },
-        options,
-      );
+      await dataBroker.pullDataGroup('DHIS_PROGRAM_01', options);
 
       expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'dhis', dataBroker);
       expect(SERVICES.dhis.pullMetadata).toHaveBeenCalledOnceWith(
-        [DATA_GROUPS.DHIS_PROGRAM_01, DATA_GROUPS.DHIS_PROGRAM_02],
+        [DATA_GROUPS.DHIS_PROGRAM_01],
         'dataGroup',
         expect.objectContaining(options),
       );

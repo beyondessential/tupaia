@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { when } from 'jest-when';
 
 import * as BuildAnalyticsQuery from '../../buildAnalyticsQuery';
@@ -18,29 +13,41 @@ import {
 const createFetchStub = () => {
   const fetchStub = jest.fn();
   when(fetchStub)
-    .calledWith('programs', {
-      fields: expect.arrayContaining(['id']),
-      filter: { code: PROGRAM.code },
-    })
+    .calledWith(
+      'programs',
+      {
+        fields: expect.arrayContaining(['id']),
+        filter: { code: PROGRAM.code },
+      },
+      undefined,
+    )
     .mockResolvedValue({ programs: [{ id: PROGRAM.id }] })
-    .calledWith('dataElements', {
-      fields: expect.arrayContaining(['id', 'code']),
-      filter: {
-        comparator: 'in',
-        code: expect.toBeOneOf([
-          '[FEMALE_POPULATION,MALE_POPULATION]',
-          '[MALE_POPULATION,FEMALE_POPULATION]',
-        ]),
+    .calledWith(
+      'dataElements',
+      {
+        fields: expect.arrayContaining(['id', 'code']),
+        filter: {
+          comparator: 'in',
+          code: expect.toBeOneOf([
+            '[FEMALE_POPULATION,MALE_POPULATION]',
+            '[MALE_POPULATION,FEMALE_POPULATION]',
+          ]),
+        },
       },
-    })
+      undefined,
+    )
     .mockResolvedValue({ dataElements: DATA_ELEMENTS })
-    .calledWith('organisationUnits', {
-      fields: expect.arrayContaining(['id']),
-      filter: {
-        comparator: 'in',
-        code: expect.toBeOneOf(['[TO,PG]', '[PG,TO]']),
+    .calledWith(
+      'organisationUnits',
+      {
+        fields: expect.arrayContaining(['id']),
+        filter: {
+          comparator: 'in',
+          code: expect.toBeOneOf(['[TO,PG]', '[PG,TO]']),
+        },
       },
-    })
+      undefined,
+    )
     .mockResolvedValue({ organisationUnits: ORGANISATION_UNITS.map(({ id }) => ({ id })) })
     .calledWith(`analytics/events/query/${PROGRAM.id}`, QUERY.fetch, undefined)
     .mockResolvedValue(ANALYTICS_RESULTS.raw);

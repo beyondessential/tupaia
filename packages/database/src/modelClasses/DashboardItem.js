@@ -1,19 +1,14 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class DashboardItemType extends DatabaseType {
-  static databaseType = TYPES.DASHBOARD_ITEM;
+export class DashboardItemRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DASHBOARD_ITEM;
 }
 
 export class DashboardItemModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return DashboardItemType;
+  get DatabaseRecordClass() {
+    return DashboardItemRecord;
   }
 
   async fetchItemsInDashboard(dashboardId, entityTypes, permissionGroups, projectCodes, criteria) {
@@ -21,21 +16,21 @@ export class DashboardItemModel extends DatabaseModel {
       {
         ...criteria,
         dashboard_id: dashboardId,
-        [`${TYPES.DASHBOARD_RELATION}.permission_groups`]: {
+        [`${RECORDS.DASHBOARD_RELATION}.permission_groups`]: {
           comparator: '&&', // User has ANY of the permission groups
           comparisonValue: permissionGroups,
         },
-        [`${TYPES.DASHBOARD_RELATION}.project_codes`]: {
+        [`${RECORDS.DASHBOARD_RELATION}.project_codes`]: {
           comparator: '@>',
           comparisonValue: projectCodes,
         },
-        [`${TYPES.DASHBOARD_RELATION}.entity_types`]: {
+        [`${RECORDS.DASHBOARD_RELATION}.entity_types`]: {
           comparator: '@>',
           comparisonValue: entityTypes,
         },
       },
       {
-        joinWith: TYPES.DASHBOARD_RELATION,
+        joinWith: RECORDS.DASHBOARD_RELATION,
         joinCondition: ['child_id', 'dashboard_item.id'],
         sort: ['sort_order', 'code'],
       },

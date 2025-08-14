@@ -1,21 +1,14 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
-import { IconButton } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
 import { FileUploadField } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
-import { QuestionHelperText } from './QuestionHelperText';
+import { InputHelperText } from '../../components';
+import { useSurveyForm } from '../Survey';
+import { useIsMobile } from '../../utils';
 
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
 
 const Wrapper = styled.div`
-  display: flex;
-  align-items: flex-end;
   label {
     display: flex;
     flex-direction: column;
@@ -27,11 +20,6 @@ const Wrapper = styled.div`
       font-size: 0.875rem;
     }
   }
-`;
-
-const ClearButton = styled(IconButton)`
-  padding: 0.5rem;
-  margin-left: 0.5rem;
 `;
 
 type Base64 = string | null | ArrayBuffer;
@@ -56,7 +44,14 @@ export const FileQuestion = ({
   detailLabel,
   controllerProps: { onChange, value: selectedFile, name },
 }: SurveyQuestionInputProps) => {
-  const handleChange = async (_e, _name, files) => {
+  const { isResponseScreen, isReviewScreen } = useSurveyForm();
+  const isMobile = useIsMobile();
+
+  const handleChange = async (files: File[] | FileList | null) => {
+    if (!files || files.length === 0) {
+      onChange(null);
+      return;
+    }
     const file = files[0];
     const encodedFile = await createEncodedFile(file);
     // convert to an object with an encoded file so that it can be handled in the backend and uploaded to s3
@@ -66,9 +61,15 @@ export const FileQuestion = ({
     });
   };
 
-  const handleClearFile = () => {
-    onChange(null);
+  const getInitialFiles = () => {
+    if (selectedFile?.value) {
+      return [new File([selectedFile.value as Blob], selectedFile.name)];
+    }
+    return undefined;
   };
+
+  const initialFiles = getInitialFiles();
+  const dropzoneLabel = isMobile ? 'Choose file to upload' : undefined;
   return (
     <Wrapper>
       <FileUploadField
@@ -76,17 +77,14 @@ export const FileQuestion = ({
         fileName={selectedFile?.name}
         onChange={handleChange}
         label={label!}
+        dropzoneLabel={dropzoneLabel}
         helperText={detailLabel!}
         maxSizeInBytes={MAX_FILE_SIZE_BYTES}
-        showFileSize
-        FormHelperTextComponent={QuestionHelperText}
+        FormHelperTextComponent={InputHelperText}
         required={required}
+        disabled={isResponseScreen || isReviewScreen}
+        initialFiles={initialFiles}
       />
-      {selectedFile?.value && (
-        <ClearButton title="Clear file" onClick={handleClearFile}>
-          <Close />
-        </ClearButton>
-      )}
     </Wrapper>
   );
 };

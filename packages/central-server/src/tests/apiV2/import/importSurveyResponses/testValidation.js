@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import {
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
@@ -24,7 +19,13 @@ export const testValidation = async () => {
     await buildAndInsertSurveys(models, [VALIDATION_SURVEY]);
     await findOrCreateDummyCountryEntity(models, { code: 'DL', name: 'Demo Land' });
     await findOrCreateRecords(models, {
-      entity: ['DL_7', 'DL_9', 'DL_10', 'DL_11'].map(code => ({ code, country_code: 'DL' })),
+      entity: [
+        { code: 'DL_1', name: 'Port Douglas' },
+        { code: 'DL_7', name: 'Lake Charm' },
+        { code: 'DL_9', name: 'Thornbury' },
+        { code: 'DL_10', name: 'Traralgon' },
+        { code: 'DL_11', name: 'National Medical Warehouse' },
+      ].map(entity => ({ ...entity, country_code: 'DL' })),
     });
   });
 
@@ -51,6 +52,16 @@ export const testValidation = async () => {
       'a question id does not match an existing question',
       'nonExistentQuestionId.xlsx',
       /No question with id/,
+    ],
+    [
+      'entity code and name mismatch',
+      'mismatchEntityNameAndCode.xlsx',
+      /Entity code and name don\'t match: Thornbury and Lake Charm/,
+    ],
+    [
+      'invalid entity code',
+      'invalidEntity.xlsx',
+      /Entity code does match any existing entity: DL_15/,
     ],
   ];
 

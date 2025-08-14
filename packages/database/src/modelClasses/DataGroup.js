@@ -1,11 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
 const SERVICE_TYPES = {
   DHIS: 'dhis',
@@ -21,8 +16,8 @@ const CONFIG_SCHEMA_BY_SERVICE = {
   [SERVICE_TYPES.INDICATOR]: {},
 };
 
-export class DataGroupType extends DatabaseType {
-  static databaseType = TYPES.DATA_GROUP;
+export class DataGroupRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DATA_GROUP;
 
   sanitizeConfig() {
     const configSchema = CONFIG_SCHEMA_BY_SERVICE[this.service_type];
@@ -68,8 +63,8 @@ export class DataGroupType extends DatabaseType {
 }
 
 export class DataGroupModel extends MaterializedViewLogDatabaseModel {
-  get DatabaseTypeClass() {
-    return DataGroupType;
+  get DatabaseRecordClass() {
+    return DataGroupRecord;
   }
 
   async getDataElementsInDataGroup(dataGroupCode) {
@@ -100,7 +95,7 @@ export class DataGroupModel extends MaterializedViewLogDatabaseModel {
         'data_element_data_group.data_element_id': dataElement.id,
       },
       {
-        joinWith: TYPES.DATA_ELEMENT_DATA_GROUP,
+        joinWith: RECORDS.DATA_ELEMENT_DATA_GROUP,
         joinCondition: ['data_group.id', 'data_element_data_group.data_group_id'],
       },
     );

@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { createModelsStub as baseCreateModelsStub, TYPES } from '@tupaia/database';
+import { createModelsStub as baseCreateModelsStub, RECORDS } from '@tupaia/database';
 import { entities } from '../testUtils';
 
 export const DATA_ELEMENTS = {
@@ -11,25 +6,25 @@ export const DATA_ELEMENTS = {
     code: 'DE_1_NOT_MAPPED',
     service_type: 'dhis',
     config: { dhisInstanceCode: 'dhis_instance_1' },
-    databaseType: TYPES.DATA_ELEMENT,
+    databaseRecord: RECORDS.DATA_ELEMENT,
   },
   DE_2_MAPPED: {
     code: 'DE_2_MAPPED',
     service_type: 'dhis',
     config: { dhisInstanceCode: 'dhis_instance_1' },
-    databaseType: TYPES.DATA_ELEMENT,
+    databaseRecord: RECORDS.DATA_ELEMENT,
   },
   DE_3_MAPPED: {
     code: 'DE_3_MAPPED',
     service_type: 'dhis',
     config: { dhisInstanceCode: 'dhis_instance_1' },
-    databaseType: TYPES.DATA_ELEMENT,
+    databaseRecord: RECORDS.DATA_ELEMENT,
   },
   DE_4_MAPPED_INVALID: {
     code: 'DE_4_MAPPED_INVALID',
     service_type: 'dhis',
     config: { dhisInstanceCode: 'dhis_instance_1' },
-    databaseType: TYPES.DATA_ELEMENT,
+    databaseRecord: RECORDS.DATA_ELEMENT,
   },
 } as const;
 
@@ -38,7 +33,7 @@ export const DATA_GROUPS = {
     code: 'DG_1',
     service_type: 'dhis',
     config: { dhisInstanceCode: 'dhis_instance_1' },
-    databaseType: TYPES.DATA_GROUP,
+    databaseRecord: RECORDS.DATA_GROUP,
   },
 } as const;
 
@@ -47,7 +42,7 @@ export const SYNC_GROUPS = {
     code: 'SG_1',
     service_type: 'kobo',
     config: {},
-    databaseType: TYPES.DATA_SERVICE_SYNC_GROUP,
+    databaseRecord: RECORDS.DATA_SERVICE_SYNC_GROUP,
   },
 } as const;
 

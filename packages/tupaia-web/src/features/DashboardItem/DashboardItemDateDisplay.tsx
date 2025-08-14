@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -26,8 +21,9 @@ export const DashboardItemDateDisplay = () => {
 
   if (!config || !report || isExport || isLoading) return null;
 
+  const { type } = config;
   const { period } = report!;
-  const { showPeriodRange } = config;
+  const showPeriodRange = type === 'chart' ? config?.showPeriodRange : null;
 
   if (!period || !period?.latestAvailable) return null;
   const showLatestAvailable = isEnlarged ? showPeriodRange === 'all' : !!showPeriodRange;

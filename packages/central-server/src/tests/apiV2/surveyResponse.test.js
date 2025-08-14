@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import moment from 'moment';
 
-import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { buildAndInsertSurveys, generateId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
   expectError,
@@ -30,8 +30,8 @@ const getRandomNewEntityForSurveyResponse = async (models, surveyResponse) => {
   return entities[randomIntBetween(0, entities.length - 1)].id;
 };
 
-const ENTITY_ID = generateTestId();
-const ENTITY_NON_CLINIC_ID = generateTestId();
+const ENTITY_ID = generateId();
+const ENTITY_NON_CLINIC_ID = generateId();
 
 const questionCode = key => `TEST-${key}`;
 
@@ -47,6 +47,7 @@ describe('surveyResponse endpoint', () => {
   before(async () => {
     await app.grantFullAccess();
 
+    const publicUser = await upsertDummyRecord(models.user, { email: 'public@tupaia.org' });
     const country = await upsertDummyRecord(models.country);
     const geographicalArea = await upsertDummyRecord(models.geographicalArea, {
       country_id: country.id,
@@ -66,7 +67,7 @@ describe('surveyResponse endpoint', () => {
     await upsertEntity({
       id: ENTITY_NON_CLINIC_ID,
       code: ENTITY_NON_CLINIC_ID,
-      type: 'disaster',
+      type: 'village',
     });
 
     // This question will not be part of the survey
@@ -445,6 +446,48 @@ describe('surveyResponse endpoint', () => {
     expect(moment(dbResponse.end_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
   });
 
+  it('Should support submitting survey responses with the public user', async () => {
+    const response = await app.post('surveyResponse?submitAsPublic=true', {
+      body: {
+        survey_id: surveyId,
+        entity_id: ENTITY_ID,
+        timestamp: 123,
+        answers: {
+          [questionCode(1)]: '123',
+        },
+      },
+    });
+
+    expectSuccess(response);
+
+    const { body } = response;
+    const { surveyResponseId } = body.results[0];
+    const { user_id } = await models.surveyResponse.findById(surveyResponseId);
+    const user = await models.user.findById(user_id);
+    expect(user.email).to.equal('public@tupaia.org');
+  });
+
+  it('Submits survey responses with the logged in user by default', async () => {
+    const response = await app.post('surveyResponse', {
+      body: {
+        survey_id: surveyId,
+        entity_id: ENTITY_ID,
+        timestamp: 123,
+        answers: {
+          [questionCode(1)]: '123',
+        },
+      },
+    });
+
+    expectSuccess(response);
+
+    const { body } = response;
+    const { surveyResponseId } = body.results[0];
+    const { user_id } = await models.surveyResponse.findById(surveyResponseId);
+    const user = await models.user.findById(user_id);
+    expect(user.email).to.equal('test.user@tupaia.org');
+  });
+
   describe('Update entity for existing survey response', async function () {
     let syncQueue;
     let surveyResponseId;
@@ -466,7 +509,7 @@ describe('surveyResponse endpoint', () => {
       numberOfAnswersInSurveyResponse = await models.answer.count({
         survey_response_id: surveyResponseId,
       });
-      response = await app.post(`surveyResponse/${surveyResponseId}/resubmit`, {
+      response = await app.put(`surveyResponses/${surveyResponseId}`, {
         body: {
           entity_id: newEntityId,
         },
@@ -495,8 +538,10 @@ describe('surveyResponse endpoint', () => {
     it('should add the survey response and all answers to the sync queue after it is submitted', async function () {
       this.retries(10);
       await oneSecondSleep(1000);
-      expect(syncQueue.count(models.surveyResponse.databaseType)).to.equal(1);
-      expect(syncQueue.count(models.answer.databaseType)).to.equal(numberOfAnswersInSurveyResponse);
+      expect(syncQueue.count(models.surveyResponse.databaseRecord)).to.equal(1);
+      expect(syncQueue.count(models.answer.databaseRecord)).to.equal(
+        numberOfAnswersInSurveyResponse,
+      );
     });
   });
 

@@ -1,18 +1,11 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Icon, LatLngBoundsLiteral, LatLngLiteral } from 'leaflet';
-import {
-  MapContainer as BaseMapContainer,
-  TileLayer,
-  Marker,
-  useMapEvents,
-  useMap,
-  ZoomControl,
-} from 'react-leaflet';
+import { LatLngLiteral } from 'leaflet';
+import { MapContainer as BaseMapContainer, ZoomControl } from 'react-leaflet';
+import { TilePicker, DEFAULT_TILESETS } from '@tupaia/ui-map-components';
+import { DEFAULT_BOUNDS, DEFAULT_ZOOM_LEVEL, UNSET_LOCATION_ZOOM_LEVEL } from './constants';
+import { UserLocationMap } from './UserLocationMap';
+import { PinDrop } from './PinDrop';
 
 // On small screens the map needs to fit in the body of the modal so that we don't create a scroll trap fo r the user
 // but the map container also needs a set height to render correctly so it's not possible to use flexbox to fill the height
@@ -20,113 +13,102 @@ import {
 const PAGE_PADDING = 280;
 
 const MapContainer = styled(BaseMapContainer)`
-  height: 30rem;
+  height: 100%;
   width: 100%;
-  margin-top: 2.5rem;
+`;
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-top: 1rem;
-    height: calc(100vh - ${PAGE_PADDING}px);
+const ControlsWrapper = styled.div`
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  // This is to prevent the wrapper div from blocking clicks on the map overlays
+  pointer-events: none;
+`;
+
+const TilePickerWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+
+  .MuiButton-root {
+    background-color: ${({ theme }) => theme.palette.background.paper};
+    ${({ theme }) => theme.breakpoints.down('xs')} {
+      margin-bottom: 1.5rem;
+    }
   }
 `;
 
-const Pin = new Icon({
-  iconUrl: '/mapIcon.png',
-  iconSize: [70, 70],
-  iconAnchor: [35, 60], // anchor the tip of the pin to the coordinates
-});
+const Wrapper = styled.div`
+  position: relative;
+  display: flex;
+  height: 30rem;
+  // Overwrite default zoom control styles
 
-type MapComponentProps = {
+  .leaflet-top {
+    z-index: 1;
+  }
+  .leaflet-pane {
+    // Set z-index of map pane to 0 so that it doesn't overlap with the sidebar and the map controls
+    z-index: 0;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-block-start: 1rem;
+    block-size: calc(100dvb - ${PAGE_PADDING}px);
+  }
+`;
+
+interface MapProps {
   lat?: number;
   lng?: number;
   setCoordinates: (coordinates: LatLngLiteral) => void;
-};
+  onChangeTileSet: (tileSetKey: string) => void;
+  tileSet: typeof DEFAULT_TILESETS.osm;
+}
 
-const DEFAULT_ZOOM_LEVEL = 12;
-const UNSET_LOCATION_ZOOM_LEVEL = 3;
-// These match the default bounds in `ui-map-components` but we don't import this package in this app, so we have to duplicate them here
-const DEFAULT_BOUNDS = [
-  [6.5001, 110],
-  [-40, 204.5],
-] as LatLngBoundsLiteral;
-
-const UserLocationMap = ({
-  lat,
-  lng,
-  setCoordinates,
-  coordinatesInvalid,
-}: MapComponentProps & {
-  coordinatesInvalid: boolean;
-}) => {
-  const map = useMap();
-
-  useEffect(() => {
-    // If the user has not yet dropped a pin, use their current location
-    if (coordinatesInvalid) {
-      map
-        .locate()
-        .on('locationfound', e => {
-          map.flyTo(e.latlng, DEFAULT_ZOOM_LEVEL);
-          setCoordinates(e.latlng);
-        })
-        .on('locationerror', () => {
-          // if there is a problem getting the user's location, use the center of the default bounds. This is in cases where, for example, the user denies location access
-          const latLong = {
-            lat: DEFAULT_BOUNDS[0][0] + (DEFAULT_BOUNDS[1][0] - DEFAULT_BOUNDS[0][0]) / 2,
-            lng: DEFAULT_BOUNDS[0][1] + (DEFAULT_BOUNDS[1][1] - DEFAULT_BOUNDS[0][1]) / 2,
-          };
-          map.flyTo(latLong, UNSET_LOCATION_ZOOM_LEVEL);
-          setCoordinates(latLong);
-        });
-    } else {
-      // Otherwise use the location they have already dropped a pin on/entered manually
-      map.setView([lat!, lng!], DEFAULT_ZOOM_LEVEL);
-    }
-  }, []);
-
-  return (
-    <TileLayer
-      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    />
-  );
-};
-
-const PinDrop = ({ lat, lng, setCoordinates }: MapComponentProps) => {
-  useMapEvents({
-    click(e) {
-      setCoordinates(e.latlng);
-    },
-  });
-
-  return <Marker position={[lat!, lng!]} icon={Pin} />;
-};
-
-export const Map = ({ lat, lng, setCoordinates }: MapComponentProps) => {
+export const Map = ({ lat, lng, setCoordinates, tileSet, onChangeTileSet }: MapProps) => {
   const coordinatesInvalid = [lat, lng].some(coordinate => !coordinate && coordinate !== 0);
 
-  // round coordinates to 4 decimal places before setting them - any less and the coordinates are not very accurate
   const onUpdateCoordinates = ({ lat, lng }: LatLngLiteral) => {
+    // Round, preserving approx. 1.11 metres’ precision
     setCoordinates({
-      lat: parseFloat(lat.toFixed(4)),
-      lng: parseFloat(lng.toFixed(4)),
+      lat: Number.parseFloat(lat.toFixed(5)),
+      lng: Number.parseFloat(lng.toFixed(5)),
     });
   };
   return (
-    <MapContainer
-      bounds={DEFAULT_BOUNDS}
-      zoom={coordinatesInvalid ? UNSET_LOCATION_ZOOM_LEVEL : DEFAULT_ZOOM_LEVEL}
-      scrollWheelZoom={true}
-      zoomControl={false}
-    >
-      <UserLocationMap
-        lat={lat}
-        lng={lng}
-        setCoordinates={onUpdateCoordinates}
-        coordinatesInvalid={coordinatesInvalid}
-      />
-      {!coordinatesInvalid && <PinDrop lat={lat} lng={lng} setCoordinates={onUpdateCoordinates} />}
-      <ZoomControl position="bottomright" />
-    </MapContainer>
+    <Wrapper>
+      <MapContainer
+        bounds={DEFAULT_BOUNDS}
+        zoom={coordinatesInvalid ? UNSET_LOCATION_ZOOM_LEVEL : DEFAULT_ZOOM_LEVEL}
+        scrollWheelZoom={true}
+        zoomControl={false}
+        attributionControl={false}
+      >
+        <UserLocationMap
+          lat={lat}
+          lng={lng}
+          setCoordinates={onUpdateCoordinates}
+          coordinatesInvalid={coordinatesInvalid}
+          tileSet={tileSet}
+        />
+        {!coordinatesInvalid && (
+          <PinDrop lat={lat} lng={lng} setCoordinates={onUpdateCoordinates} />
+        )}
+        <ZoomControl position="topright" />
+      </MapContainer>
+      <ControlsWrapper>
+        <TilePickerWrapper>
+          <TilePicker
+            tileSets={[DEFAULT_TILESETS.osm, DEFAULT_TILESETS.satellite]}
+            activeTileSet={tileSet}
+            onChange={onChangeTileSet}
+          />
+        </TilePickerWrapper>
+      </ControlsWrapper>
+    </Wrapper>
   );
 };

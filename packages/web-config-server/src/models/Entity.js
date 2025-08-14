@@ -1,13 +1,11 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- * */
-
 import { pascal } from 'case';
-import { EntityType as CommonEntityType, EntityModel as CommonEntityModel } from '@tupaia/database';
+import {
+  EntityRecord as CommonEntityRecord,
+  EntityModel as CommonEntityModel,
+} from '@tupaia/database';
 import { calculateOuterBounds } from '@tupaia/utils';
 
-class EntityType extends CommonEntityType {
+class EntityRecord extends CommonEntityRecord {
   getOrganisationLevel() {
     return pascal(this.type); // sub_district -> SubDistrict
   }
@@ -45,7 +43,7 @@ class EntityType extends CommonEntityType {
   }
 }
 export class EntityModel extends CommonEntityModel {
-  get DatabaseTypeClass() {
-    return EntityType;
+  get DatabaseRecordClass() {
+    return EntityRecord;
   }
 }

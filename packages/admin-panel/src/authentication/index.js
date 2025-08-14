@@ -1,11 +1,5 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 export * from './actions';
-export { LOGOUT } from './constants';
-export * from './selectors';
-export { reducer } from './reducer';
-export { ProfileButton } from './ProfileButton';
+export { LOGOUT, PASSWORD_RESET_TOKEN_PARAM } from './constants';
 export { PrivateRoute } from './PrivateRoute';
+export { VizBuilderPrivateRoute } from './VizBuilderPrivateRoute';
+export { RegisterLink } from './RegisterLink';

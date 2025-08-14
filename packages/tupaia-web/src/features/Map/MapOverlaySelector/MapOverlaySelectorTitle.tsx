@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -11,11 +7,27 @@ import { useParams } from 'react-router';
 import { useEntity, useMapOverlays } from '../../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { useMapOverlayMapData } from '../utils';
+import { FetchErrorAlert } from '../../../components';
 
 const Wrapper = styled.div<{
   $hasMapOverlays: boolean;
 }>`
   border-radius: ${({ $hasMapOverlays }) => ($hasMapOverlays ? '0' : '0 0 5px 5px')};
+  .MuiAlert-root {
+    padding: 0.6rem 0.8rem;
+    margin-top: 1rem;
+    p {
+      font-size: 0.875rem;
+    }
+    .MuiAlert-message {
+      padding: 0;
+    }
+    @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+      p {
+        font-size: 0.75rem;
+      }
+    }
+  }
 `;
 
 const MapOverlayName = styled.span`
@@ -54,11 +66,12 @@ export const MapOverlaySelectorTitle = () => {
     projectCode,
     entityCode,
   );
-  const { isLoading: isLoadingOverlayData } = useMapOverlayMapData();
+  const { isInitialLoading: isLoadingOverlayData, error, refetch } = useMapOverlayMapData();
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const isLoading =
     isLoadingMapOverlays || isLoadingOverlayData || (hasMapOverlays && !selectedOverlay?.name);
+
   return (
     <Wrapper $hasMapOverlays={hasMapOverlays}>
       {isLoading ? (
@@ -76,6 +89,7 @@ export const MapOverlaySelectorTitle = () => {
           )}
         </Typography>
       )}
+      {error && <FetchErrorAlert error={error} refetch={refetch} />}
     </Wrapper>
   );
 };

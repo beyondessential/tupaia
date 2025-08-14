@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { grantAccessToCountries, revokeCountryAccess, setupTestApp } from '../testUtilities';
 import { getEntitiesWithFields, COUNTRIES } from './fixtures';
@@ -161,6 +156,19 @@ describe('descendants', () => {
 
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(getEntitiesWithFields([], ['code', 'name', 'type']));
+    });
+
+    it('can limit by page size', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/KANTO/descendants', {
+        query: {
+          fields: 'code,name',
+          filter: 'type==city',
+          pageSize: 5,
+        },
+      });
+
+      expect(entities).toBeArray();
+      expect(entities.length).toBe(5);
     });
   });
 

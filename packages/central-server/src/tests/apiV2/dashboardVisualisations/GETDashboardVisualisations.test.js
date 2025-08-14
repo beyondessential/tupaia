@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { setupTest } from '@tupaia/database';
 import { camelKeys } from '@tupaia/utils';
 
@@ -11,6 +6,7 @@ import { findTestRecordByCode, TEST_SETUP } from './dashboardVisualisations.fixt
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 
 describe('GET dashboard visualisations', () => {
@@ -19,8 +15,8 @@ describe('GET dashboard visualisations', () => {
   const app = new TestableApp();
   const { models } = app;
 
-  const modernDashboardItem = findTestRecordByCode('dashboardItem', 'Modern_Dashboard_Item');
-  const legacyDashboardItem = findTestRecordByCode('dashboardItem', 'Legacy_Dashboard_Item');
+  const modernDashboardItem = findTestRecordByCode('dashboardItem', 'Modern_Report');
+  const legacyDashboardItem = findTestRecordByCode('dashboardItem', 'Legacy_Report');
   const modernReport = findTestRecordByCode('report', 'Modern_Report');
   const legacyReport = findTestRecordByCode('legacyReport', 'Legacy_Report');
 
@@ -29,7 +25,8 @@ describe('GET dashboard visualisations', () => {
     report: {
       code: modernReport.code,
       config: modernReport.config,
-      permissionGroup: 'Viz_Permissions',
+      permissionGroup: VIZ_BUILDER_PERMISSION_GROUP,
+      latestDataParameters: {},
     },
   };
   const LEGACY_DASHBOARD_VISUALISATION = {
@@ -43,7 +40,7 @@ describe('GET dashboard visualisations', () => {
   };
 
   const policy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
   };
 
   const besAdminPolicy = {
@@ -79,13 +76,13 @@ describe('GET dashboard visualisations', () => {
     });
 
     it('Returns an existing modern dashboard visualisation', async () => {
-      const id = getVizId('Modern_Dashboard_Item');
+      const id = getVizId('Modern_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
       expectSuccess(response, MODERN_DASHBOARD_VISUALISATION);
     });
 
     it('Returns an existing legacy dashboard visualisation', async () => {
-      const id = getVizId('Legacy_Dashboard_Item');
+      const id = getVizId('Legacy_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
       expectSuccess(response, LEGACY_DASHBOARD_VISUALISATION);
     });
@@ -93,7 +90,7 @@ describe('GET dashboard visualisations', () => {
     it('Returns an existing visualisation with only BES Admin permission', async () => {
       app.revokeAccess();
       await app.grantAccess(besAdminPolicy);
-      const id = getVizId('Legacy_Dashboard_Item');
+      const id = getVizId('Legacy_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
       expectSuccess(response, LEGACY_DASHBOARD_VISUALISATION);
     });
@@ -104,7 +101,7 @@ describe('GET dashboard visualisations', () => {
       const response = await app.get('dashboardVisualisations', {
         query: {
           filter: {
-            code: ['Modern_Dashboard_Item', 'Legacy_Dashboard_Item'],
+            code: ['Modern_Report', 'Legacy_Report'],
           },
         },
       });

@@ -1,24 +1,18 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import {
   BarChartConfigSchema,
-  ColorListViewConfigSchema,
   ComponentConfigSchema,
   ComposedChartConfigSchema,
   DataDownloadViewConfigSchema,
+  DownloadFilesViewConfigSchema,
   GaugeChartConfigSchema,
   LineChartConfigSchema,
-  ListViewConfigSchema,
   MatrixConfigSchema,
   MultiPhotographViewConfigSchema,
   MultiSingleValueViewConfigSchema,
   MultiValueRowViewConfigSchema,
   MultiValueViewConfigSchema,
   PieChartConfigSchema,
+  QRCodeViewConfigSchema,
   SingleDateViewConfigSchema,
   SingleDownloadLinkViewConfigSchema,
   SingleValueViewConfigSchema,
@@ -28,16 +22,16 @@ export const VizTypesByGroup = {
   chart: ['GaugeChart', 'ComposedChart', 'BarChart', 'PieChart', 'LineChart'],
   matrix: ['Matrix'],
   view: [
-    'ListView',
     'SingleValueView',
     'MultiPhotographView',
     'MultiSingleValueView',
     'SingleDownloadLinkView',
     'MultiValueRowView',
-    'ColorListView',
     'DataDownloadView',
     'SingleDateView',
     'MultiValueView',
+    'DownloadFilesView',
+    'QRCodeView',
   ],
   component: ['Component'],
 };
@@ -50,16 +44,16 @@ export const VizTypeSchemaMap: Record<string, any> = {
   LineChart: LineChartConfigSchema,
   Component: ComponentConfigSchema,
   Matrix: MatrixConfigSchema,
-  ListView: ListViewConfigSchema,
   SingleValueView: SingleValueViewConfigSchema,
   MultiPhotographView: MultiPhotographViewConfigSchema,
   MultiSingleValueView: MultiSingleValueViewConfigSchema,
   SingleDownloadLinkView: SingleDownloadLinkViewConfigSchema,
   MultiValueRowView: MultiValueRowViewConfigSchema,
-  ColorListView: ColorListViewConfigSchema,
   DataDownloadView: DataDownloadViewConfigSchema,
   SingleDateView: SingleDateViewConfigSchema,
   MultiValueView: MultiValueViewConfigSchema,
+  DownloadFilesView: DownloadFilesViewConfigSchema,
+  QRCodeView: QRCodeViewConfigSchema,
 };
 
 export const VizTypeNiceName: Record<string, string> = {
@@ -70,16 +64,16 @@ export const VizTypeNiceName: Record<string, string> = {
   LineChart: 'Line chart',
   Component: 'Component',
   Matrix: 'Matrix',
-  ListView: 'List',
   SingleValueView: 'Single value',
   MultiPhotographView: 'Multi photograph',
   MultiSingleValueView: 'Multi single-value',
   SingleDownloadLinkView: 'Single download link',
   MultiValueRowView: 'Multi value row',
-  ColorListView: 'Color list',
   DataDownloadView: 'Data download',
   SingleDateView: 'Single date',
   MultiValueView: 'Multi value',
+  DownloadFilesView: 'Download files',
+  QRCodeView: 'QR code',
 };
 
 export const VizGroupNiceName: Record<string, string> = {

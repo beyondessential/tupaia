@@ -43,12 +43,11 @@ const DATA_ELEMENT_TRANSLATIONS = {
 const generateReportConfig = (entityLevel, educationLevel) => ({
   fetch: {
     dataElements: Object.keys(DATA_ELEMENT_TRANSLATIONS[educationLevel])
-      .map(grade => [
+      .flatMap(grade => [
         `dor_${entityLevel}_${grade}_m`,
         `dor_${entityLevel}_${grade}_f`,
         `dor_${entityLevel}_${grade}_t`,
-      ])
-      .flat(),
+      ]),
     aggregations: [
       {
         type: 'MOST_RECENT',

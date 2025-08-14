@@ -1,31 +1,34 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { IconButton } from '../widgets';
 import { openLogsModal } from './actions';
+import { ColumnActionButton } from '../table/columnTypes/ColumnActionButton';
+import { makeSubstitutionsInString } from '../utilities';
 
 export const LogsButtonComponent = props => {
-  const { openModal } = props;
+  const { openModal, actionConfig, row } = props;
+  const { title = 'View logs' } = actionConfig;
   return (
-    <IconButton className="logs-button" onClick={openModal}>
+    <ColumnActionButton
+      className="logs-button"
+      onClick={openModal}
+      title={makeSubstitutionsInString(title, row.original)}
+    >
       <DescriptionIcon />
-    </IconButton>
+    </ColumnActionButton>
   );
 };
 
 LogsButtonComponent.propTypes = {
   openModal: PropTypes.func.isRequired,
+  actionConfig: PropTypes.object.isRequired,
+  row: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = (dispatch, { actionConfig, value: recordId, row }) => ({
   openModal: () => {
-    dispatch(openLogsModal(actionConfig, recordId, row));
+    dispatch(openLogsModal(actionConfig, recordId, row.original));
   },
 });
 

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
@@ -42,7 +37,7 @@ const formatYupSchema = (yupSchema: yup.AnyObjectSchema) => {
     Object.entries(fields).map(([field, description]) => {
       const formattedDescription = removeRedundantConfigs(description);
       // 'getDefault' is not supported on lazy schemas
-      if (yupSchema.fields[field].getDefault) {
+      if (!Array.isArray(formattedDescription) && yupSchema.fields[field].getDefault) {
         formattedDescription.defaultValue = yupSchema.fields[field].getDefault();
       }
       return [field, formattedDescription];

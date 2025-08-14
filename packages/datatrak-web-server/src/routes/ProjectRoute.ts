@@ -1,10 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
-import { Route } from '@tupaia/server-boilerplate'; 
+import { Route } from '@tupaia/server-boilerplate';
 import { WebServerProjectRequest } from '@tupaia/types';
 
 export type ProjectRequest = Request<

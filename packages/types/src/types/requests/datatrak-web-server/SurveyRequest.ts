@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import {
   Question,
   Survey,
@@ -12,6 +7,7 @@ import {
 } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
 import { SurveyScreenComponentConfig } from '../../models-extra';
+import { WebServerProjectRequest } from '../web-server';
 
 export type Params = Record<string, never>;
 
@@ -55,6 +51,7 @@ export type SurveyScreenComponent = CamelCasedComponent &
     label?: BaseSurveyScreenComponent['question_label'];
     options?: Option[] | null;
     screenId?: string;
+    id?: string;
   };
 
 type CamelCasedSurveyScreen = KeysToCamelCase<Pick<BaseSurveyScreen, 'id' | 'screen_number'>>;
@@ -67,6 +64,8 @@ type SurveyResponse = KeysToCamelCase<Survey> & {
   surveyGroupName?: string | null;
   screens: SurveyScreen[];
   countryNames?: string[];
+  isPublic: boolean;
+  project?: WebServerProjectRequest.ProjectResponse | null;
 };
 
 export type ResBody = SurveyResponse;
@@ -74,4 +73,6 @@ export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   fields?: string[];
   projectId?: string;
+  countryCode?: string;
+  searchTerm?: string;
 }

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
 import React, { ChangeEvent, ReactNode } from 'react';
 import { SelectField } from '../Inputs';
 
@@ -13,7 +8,7 @@ export const DatePicker = ({
   menuItems,
 }: {
   label: string;
-  selectedValue: number;
+  selectedValue: number | undefined;
   onChange: (event: ChangeEvent<{ value: any }>) => void;
   menuItems: ReactNode[];
 }) => (

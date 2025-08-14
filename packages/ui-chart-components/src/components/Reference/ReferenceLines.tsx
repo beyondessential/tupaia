@@ -1,106 +1,72 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
+import { CartesianChartConfig, ChartReport, ChartType } from '@tupaia/types';
 import { TUPAIA_ORANGE } from '../../constants';
-import { BaseChartConfig, PieChartConfig } from '@tupaia/types';
-import { ChartType, DataProps } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
-import { ViewContent } from '../../types';
-
-const ReferenceLineLabel = ({
-  referenceLineLabel,
-  isExporting,
-}: {
-  referenceLineLabel: string;
-  isExporting?: boolean;
-}) => {
-  if (referenceLineLabel === undefined) return undefined;
-  return <ReferenceLabel value={referenceLineLabel} fill={isExporting ? '#000000' : '#ffffff'} />;
-};
-
-enum Y_AXIS_IDS {
-  left = 0,
-  right = 1,
-}
-
-const DEFAULT_Y_AXIS = {
-  id: Y_AXIS_IDS.left,
-  orientation: 'left',
-  yAxisDomain: {
-    min: { type: 'number', value: 0 },
-    max: { type: 'string', value: 'auto' },
-  },
-};
-
-const orientationToYAxisId = (orientation: 'left' | 'right'): number =>
-  Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
-
-interface ChartConfig extends BaseChartConfig {
-  referenceValue?: string | number;
-  yAxisOrientation?: string | number;
-  referenceLabel?: string | number;
-}
-
-function isChartConfig(config: ChartConfig | {}): config is ChartConfig {
-  return (config as ChartConfig).referenceValue !== undefined;
-}
-
-const ValueReferenceLine = ({
-  viewContent,
-  isExporting,
-}: {
-  viewContent: { chartConfig: ChartConfig };
-  isExporting?: boolean;
-}) => {
-  const { chartConfig = {} } = viewContent;
-
-  if (!isChartConfig(chartConfig)) {
-    return [];
-  }
-
-  const referenceLines = Object.entries(chartConfig)
-    .filter(([, { referenceValue }]) => referenceValue)
-    .map(([dataKey, { referenceValue, yAxisOrientation, referenceLabel }]) => ({
-      key: `reference_line_${dataKey}`, // Use prefix to distinguish from curve key
-      y: referenceValue,
-      yAxisId: orientationToYAxisId(yAxisOrientation),
-      referenceLineLabel: referenceLabel,
-    }));
-
-  return referenceLines.map(referenceLine => (
-    <ReferenceLine
-      stroke={isExporting ? '#000000' : '#ffffff'}
-      strokeDasharray="3 3"
-      label={ReferenceLineLabel({
-        referenceLineLabel: referenceLine.referenceLineLabel,
-        isExporting,
-      })}
-      {...referenceLine}
-    />
-  ));
-};
 
 interface ReferenceLineProps {
-  viewContent: ViewContent;
+  config: CartesianChartConfig;
+  report: ChartReport;
   isExporting?: boolean;
   isEnlarged?: boolean;
 }
 
-const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
-  const { valueType, data, presentationOptions } = viewContent;
+/**
+ * Returns a labelled `ReferenceLine`, which may be used in Cartesian charts.
+ *
+ * @example
+ * "presentationOptions": {
+ *   "referenceLines": {
+ *     "targetLine": {
+ *       "referenceLabel": "Total Beds",
+ *       "referenceValue": 43
+ *     }
+ *   }
+ * }
+ *
+ * @remarks Strictly speaking, `referenceLabel` is optional, but its inclusion is encouraged.
+ *
+ * @see https://recharts.org/en-US/api/ReferenceLine
+ * @see https://recharts.org/en-US/examples/LineChartWithReferenceLines
+ */
+const ValueReferenceLine = ({ config, isExporting }: ReferenceLineProps) => {
+  if (!config.presentationOptions?.referenceLines?.targetLine) return null;
+
+  const { referenceLabel, referenceValue } = config.presentationOptions.referenceLines.targetLine;
+  const color = isExporting ? 'black' : 'white';
+  return (
+    <ReferenceLine
+      label={<ReferenceLabel value={referenceLabel} fill={color} />}
+      stroke={color}
+      strokeDasharray="8 3"
+      y={referenceValue}
+    />
+  );
+};
+
+/**
+ * A reference line which is displayed by default on bar charts, showing the average value. This can
+ * be suppressed by setting `hideAverage`.
+ *
+ * @remarks Not supported with stacked charts.
+ *
+ * @example
+ * "presentationOptions": {
+ *   "hideAverage": true
+ * }
+ */
+const AverageReferenceLine = ({ report, config }: ReferenceLineProps) => {
+  const { valueType } = config;
+  const { data = [] } = report;
+  const presentationOptions = 'presentationOptions' in config && config.presentationOptions;
   // show reference line by default
   const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
   // average is null for stacked charts that don't have a "value" key in data
   const average = data.reduce((acc: number, row) => acc + (row.value as number), 0) / data.length;
 
-  if (!average || shouldHideReferenceLine) {
-    return null;
-  }
+  if (!average || shouldHideReferenceLine) return null;
+
   return (
     <ReferenceLine
       y={average}
@@ -115,17 +81,17 @@ const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
   );
 };
 
-const BarReferenceLine = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
-  const { referenceLines } = viewContent.presentationOptions || {};
-  if (referenceLines) {
-    return ValueReferenceLine({ viewContent: { chartConfig: { ...referenceLines } }, isExporting });
-  }
-  return AverageReferenceLine({ viewContent, isExporting, isEnlarged });
-};
+/**
+ * A special case of the {@link ReferenceLines} component for bar charts. If no reference line is
+ * explicitly defined, then a reference line showing the average is displayed.
+ */
+const BarReferenceLine = (props: ReferenceLineProps) =>
+  props.config.presentationOptions?.referenceLines
+    ? ValueReferenceLine(props)
+    : AverageReferenceLine(props);
 
-export const ReferenceLines = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
-  if (viewContent.chartType === ChartType.Bar) {
-    return BarReferenceLine({ viewContent, isExporting, isEnlarged });
-  }
-  return ValueReferenceLine({ viewContent, isExporting });
+export const ReferenceLines = (props: ReferenceLineProps) => {
+  return props.config.chartType === ChartType.Bar
+    ? BarReferenceLine(props)
+    : ValueReferenceLine(props);
 };

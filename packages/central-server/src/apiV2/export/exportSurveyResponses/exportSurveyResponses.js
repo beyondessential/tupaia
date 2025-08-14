@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { respondWithDownload } from '@tupaia/utils';
 import { allowNoPermissions } from '../../../permissions';
 import { SurveyResponseVariablesExtractor } from '../../utilities';
@@ -22,6 +17,7 @@ export async function exportSurveyResponses(req, res) {
     entityIds,
     entityCode,
     countryCode,
+    includeArchived = false,
     latest = false,
     startDate,
     endDate,
@@ -58,6 +54,7 @@ export async function exportSurveyResponses(req, res) {
     surveyResponse,
     surveys,
     timeZone,
+    includeArchived,
   });
   respondWithDownload(res, filePath);
 }

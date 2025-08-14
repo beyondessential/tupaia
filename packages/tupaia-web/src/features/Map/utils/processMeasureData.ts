@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import {
   calculateRadiusScaleFactor,
   getMeasureDisplayInfo,
@@ -10,9 +6,9 @@ import {
   Series,
   MEASURE_TYPE_RADIUS,
 } from '@tupaia/ui-map-components';
-import { Entity } from '@tupaia/types';
+import { Entity } from '../../../types';
 
-interface processMeasureDataProps {
+interface ProcessMeasureDataProps {
   measureData: MeasureData[];
   entitiesData: Entity[];
   serieses: Series[];
@@ -20,25 +16,22 @@ interface processMeasureDataProps {
 }
 
 export const processMeasureData = ({
-  measureData,
+  measureData = [],
   entitiesData,
-  serieses,
+  serieses = [],
   hiddenValues,
-}: processMeasureDataProps) => {
-  if (!measureData || !serieses) {
-    return [];
-  }
-
+}: ProcessMeasureDataProps) => {
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
 
   const entityMeasureData = entitiesData?.map((entity: Entity) => {
-    const measure = measureData.find(
-      (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
-    );
+    const measure =
+      measureData.find(
+        (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
+      ) || ({} as MeasureData);
 
     const { color, icon, originalValue, isHidden, radius } = getMeasureDisplayInfo(
-      measure!,
-      serieses,
+      measure,
+      serieses || [],
       hiddenValues,
       radiusScaleFactor,
     );
@@ -59,7 +52,7 @@ export const processMeasureData = ({
 
   // for radius overlay sort desc radius to place smaller circles over larger circles
   if (serieses.some(l => l.type === MEASURE_TYPE_RADIUS)) {
-    entityMeasureData.sort((a, b) => Number(b.radius) - Number(a.radius));
+    entityMeasureData?.sort((a, b) => Number(b.radius) - Number(a.radius));
   }
 
   return entityMeasureData;

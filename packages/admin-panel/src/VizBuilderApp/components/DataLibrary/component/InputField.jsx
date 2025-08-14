@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import PropTypes from 'prop-types';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -19,9 +15,6 @@ const StyledTextField = styled(TextField)`
   margin: 0;
   & .MuiInputBase-root {
     height: 40px;
-  }
-  & .MuiInputBase-input {
-    font-size: 14px;
   }
 `;
 

@@ -7,6 +7,8 @@
     "jsx-a11y/href-no-hash": "off",
     "react/destructuring-assignment": "off",
     "react/no-unescaped-entities": "off",
-    "import/extensions": "off"
+    "import/extensions": "off",
+    "react/prop-types": "off",
+    "react/display-name": "off"
   }
 }

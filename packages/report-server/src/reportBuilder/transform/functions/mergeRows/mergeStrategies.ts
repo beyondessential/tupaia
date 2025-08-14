@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { isDefined, isNotNullish } from '@tupaia/tsutils';
 import { FieldValue } from '../../../types';
 
@@ -77,7 +72,7 @@ const unique = (values: FieldValue[]): FieldValue => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const exclude = (values: FieldValue[]): FieldValue => {
+const exclude = (_values: FieldValue[]): FieldValue => {
   // Do nothing, don't add the field to the existing row
   return undefined;
 };

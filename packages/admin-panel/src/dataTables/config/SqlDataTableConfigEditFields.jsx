@@ -1,12 +1,7 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@material-ui/core';
-import { SQLQueryEditor } from '../../widgets';
+import { SqlEditor } from '@tupaia/ui-components';
 import { ParameterList, ParameterItem } from '../components/editing';
 import { useSqlEditor } from '../useSqlEditor';
 
@@ -35,7 +30,7 @@ export const SqlDataTableConfigEditFields = ({
       <AccordionDetails>
         <Grid container spacing={1}>
           <Grid item xs={8}>
-            <SQLQueryEditor
+            <SqlEditor
               customKeywords={additionalParams.map(p => p.name)}
               onChange={setSql}
               value={sql}

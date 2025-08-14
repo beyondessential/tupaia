@@ -1,22 +1,15 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { ViewConfig, ViewReport } from '@tupaia/types';
+import { ViewConfig, ViewReport, isViewReport } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
-import { DashboardItemReport, DashboardItemConfig } from '../../../types';
+import { DashboardItemContext, DashboardInfoHover } from '../../DashboardItem';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
 import { MultiValue } from './MultiValue';
 import { MultiValueRow } from './MultiValueRow';
-import { DataDownload } from './DataDownload';
-import { DownloadFiles } from './DownloadFiles';
+import { DataDownload, DownloadFiles } from './Download';
 import { QRCode } from './QRCode';
-import { DashboardItemContext } from '../../DashboardItem';
-import { DashboardInfoHover } from '../../DashboardItem';
 import { MultiPhotograph } from './MultiPhotograph';
 
 const MultiSingleValueWrapper = styled.div`
@@ -24,11 +17,15 @@ const MultiSingleValueWrapper = styled.div`
     margin-top: 1rem;
     text-align: center;
   }
+
+  .MuiTypography-root {
+    font-size: 1.25rem;
+  }
 `;
 interface ViewProps {
   /** This is to allow for multi value view types, which mean this component is treated as a recursive component */
-  customReport?: DashboardItemReport;
-  customConfig?: DashboardItemConfig;
+  customReport?: ViewReport;
+  customConfig?: ViewConfig;
 }
 
 const VIEWS = {
@@ -65,16 +62,21 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
 };
 
 export const View = ({ customConfig, customReport }: ViewProps) => {
-  const { config: originalConfig, report: originalReport, isEnlarged } = useContext(
-    DashboardItemContext,
-  );
+  const {
+    config: originalConfig,
+    report: originalReport,
+    isEnlarged,
+    isExport,
+  } = useContext(DashboardItemContext);
   const report = customReport || originalReport;
   const config = customConfig || originalConfig;
   // cast the config to a ViewConfig so we can access the viewType
   const viewConfig = config as ViewConfig;
   const { viewType } = viewConfig;
-  const { data } = report as ViewReport;
-  if (!data) return null; // in case there is no data at all, return null
+
+  // add a type guard to ensure that the report is a ViewReport, even though we know it will be
+  if (!isViewReport(report) || !report?.data) return null; // in case there is no data at all, return null
+  const { data } = report;
   if (viewType === 'multiSingleValue') {
     // for multi single values, we need to render each data point as a separate single value item
     return (
@@ -91,7 +93,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
               customConfig={
                 {
                   ...config,
-                  viewType: (datum.viewType || 'singleValue') as ViewConfig['viewType'],
+                  viewType: datum.viewType || 'singleValue',
                 } as ViewConfig
               }
             />
@@ -121,6 +123,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
         }
         config={viewConfig}
         isEnlarged={isEnlarged}
+        isExport={isExport}
         isMultiSingleValue={!!customReport} // if this is a multi single value, we need to pass this prop down to the SingleValue component
       />
       {showHoverEffect && <DashboardInfoHover infoText={viewConfig.description} />}

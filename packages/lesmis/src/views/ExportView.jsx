@@ -1,18 +1,12 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FlexColumn, A4PageContent, A4Page } from '@tupaia/ui-components';
-
+import { A4_PAGE_WIDTH_PX, FlexColumn } from '@tupaia/ui-components';
 import {
-  useDashboardDropdownOptions,
   getExportableSubDashboards,
+  useDashboardDropdownOptions,
   useUrlSearchParams,
 } from '../utils';
-
 import { PreviewPage } from '../components/DashboardExportModal/components';
 import { DashboardReportPage, NoReportPage } from '../components/DashboardExportModal/pages';
 import { PROFILE_DASHBOARD_CODE } from '../constants';
@@ -26,6 +20,15 @@ const Container = styled.div`
 
 const PreviewPageContent = styled(FlexColumn)`
   margin: 0px 150px;
+`;
+
+const A4Page = styled(FlexColumn)`
+  width: ${A4_PAGE_WIDTH_PX}px;
+  break-after: page;
+`;
+
+const A4PageContent = styled(FlexColumn)`
+  margin: 0 70px;
 `;
 
 const EXPORT_VIEWS = {

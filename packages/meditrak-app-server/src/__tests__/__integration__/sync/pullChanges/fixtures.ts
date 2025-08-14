@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { AccessPolicy } from '@tupaia/access-policy';
 
 import { buildAndInsertSurvey } from '@tupaia/database';
@@ -193,13 +188,12 @@ export const findRecordsWithPermissions = (
           countryIdsWithAccess.some(cid => survey.country_ids.includes(cid))) &&
         permissionGroupIdsWithAccess.some(pgid => survey.permission_group_id === pgid),
     )
-    .map(({ survey, surveyScreen, surveyScreenComponents, questions }) => [
+    .flatMap(({ survey, surveyScreen, surveyScreenComponents, questions }) => [
       { type: 'survey', record: survey },
       { type: 'survey_screen', record: surveyScreen },
       ...surveyScreenComponents.map(r => ({ type: 'survey_screen_component', record: r })),
       ...questions.map(r => ({ type: 'question', record: r })),
-    ])
-    .flat();
+    ]);
 
   const allRecords = [
     ...countryRecords,

@@ -1,12 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { DashboardItemConfig } from '../../types';
+import { DashboardItemConfig } from '@tupaia/types';
 
 const LoadingContainer = styled.div<{
   $isExporting?: boolean;

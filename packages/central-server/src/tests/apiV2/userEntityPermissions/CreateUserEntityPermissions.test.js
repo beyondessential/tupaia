@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
@@ -55,7 +50,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
     // Create test users
     const userAccount = await findOrCreateDummyRecord(models.user, {
       first_name: 'Clark',
-      last_name: 'Kent',
+      last_name: 'CreateUserEntityPermissions',
     });
     userAccountId = userAccount.id;
   });

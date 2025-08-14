@@ -1,18 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { useFormContext } from 'react-hook-form';
-import { CheckboxField } from '.';
 import { Typography } from '@material-ui/core';
-
-const Fieldset = styled.fieldset`
-  border: none;
-  padding: 0;
-  margin: 0;
-`;
+import { CheckboxField } from '.';
 
 const Legend = styled.legend`
   font-size: 1.2rem;
@@ -28,7 +18,7 @@ const Error = styled(Typography).attrs({
 `;
 
 interface CheckboxListProps {
-  options: { value: string; label: string }[];
+  options: { value: string; label?: string }[];
   legend: string;
   name: string;
   required?: boolean;
@@ -38,19 +28,19 @@ export const CheckboxList = ({ options, legend, name, required }: CheckboxListPr
   const { errors = {} } = useFormContext();
 
   return (
-    <Fieldset>
+    <fieldset>
       <Legend>{legend}</Legend>
       {options.map(({ value, label }) => (
         <CheckboxField
           key={value}
           value={value}
-          label={label}
+          label={label || value}
           name={name}
           required={required}
           helperText={null}
         />
       ))}
       {errors[name] && <Error>{errors[name].message}</Error>}
-    </Fieldset>
+    </fieldset>
   );
 };

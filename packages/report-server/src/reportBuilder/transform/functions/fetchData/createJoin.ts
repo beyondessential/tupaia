@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import groupBy from 'lodash.groupby';
 import { Row } from '../../../types';
 
@@ -22,22 +17,20 @@ export const createJoin = (joinConfig?: { tableColumn: string; newDataColumn: st
   const tableRowsByJoinColumn = groupBy(tableRows, createKey(tableColumns));
   const newDataRowsByJoinColumn = groupBy(newDataRows, createKey(newDataColumns));
   const jointRows = Object.entries(tableRowsByJoinColumn)
-    .map(([joinColumnValue, tableRowsForValue]) => {
+    .flatMap(([joinColumnValue, tableRowsForValue]) => {
       const newDataRowsForValue = newDataRowsByJoinColumn[joinColumnValue];
       if (!newDataRowsForValue) {
         return tableRowsForValue;
       }
 
       return tableRowsForValue
-        .map(tableRowForValue =>
+        .flatMap(tableRowForValue =>
           newDataRowsForValue.map(newDataRowForValue => ({
             ...tableRowForValue,
             ...newDataRowForValue,
           })),
-        )
-        .flat();
-    })
-    .flat();
+        );
+    });
 
   return jointRows;
 };

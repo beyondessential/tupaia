@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { grantAccess, revokeCountryAccess, setupTestApp } from '../testUtilities';
 import { getEntitiesWithFields, getHierarchiesWithFields } from './fixtures';
@@ -67,6 +62,21 @@ describe('permissions', () => {
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(
         getEntitiesWithFields(['BELL_TOWER', 'BURNED_TOWER'], ['code', 'name', 'type']),
+      );
+    });
+
+    it('does not filter descendants when requested with isPublic option', async () => {
+      const { body: entities } = await app.post('hierarchy/goldsilver/descendants?isPublic=true', {
+        query: { fields: 'code,name,type' },
+        body: { entities: ['LAVENDER', 'ECRUTEAK'] },
+      });
+
+      expect(entities).toBeArray();
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(
+          ['LAVENDER_RADIO_TOWER', 'BELL_TOWER', 'BURNED_TOWER'],
+          ['code', 'name', 'type'],
+        ),
       );
     });
 

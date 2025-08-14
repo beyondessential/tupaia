@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import config from '../__generatedConfig.json';
 import { SNAPSHOT_TYPES } from '../constants';
 import { preserveUserSession } from '../support';
@@ -36,7 +31,7 @@ const urlToRouteRegex = url => {
     throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
   }
 
-  return new RegExp(`report/.*\\?(.*&|)isExpanded=true&(.*&|)itemCode=${itemCode}(&|$)`);
+  return new RegExp(`(legacyDashboardReport|report)/.*\\?(.*&|)itemCode=${itemCode}(&|$)`);
 };
 
 describe('Dashboard reports', () => {

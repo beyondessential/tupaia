@@ -1,11 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
-export const API_CLIENT_NAME = 'meditrak-app-server@tupaia.org';
-export const API_CLIENT_PASSWORD = 'test_api_client_password';
-
 export const CAT_USER = {
   firstName: 'Cat',
   lastName: 'Meow',

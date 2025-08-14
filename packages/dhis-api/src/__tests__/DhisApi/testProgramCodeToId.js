@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { when } from 'jest-when';
 import { createDhisApi } from './helpers';
 
@@ -11,10 +6,14 @@ const PROGRAM = { code: 'PROGRAM_CODE', id: 'program_dhisId' };
 const fetchStub = jest.fn();
 when(fetchStub)
   .mockResolvedValue({ programs: [] })
-  .calledWith('programs', {
-    fields: expect.arrayContaining(['id']),
-    filter: { code: PROGRAM.code },
-  })
+  .calledWith(
+    'programs',
+    {
+      fields: expect.arrayContaining(['id']),
+      filter: { code: PROGRAM.code },
+    },
+    undefined,
+  )
   .mockResolvedValue({ programs: [{ id: PROGRAM.id }] });
 
 const dhisApi = createDhisApi({ fetch: fetchStub });

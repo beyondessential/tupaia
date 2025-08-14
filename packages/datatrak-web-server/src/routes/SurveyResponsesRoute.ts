@@ -1,18 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import {
-  DatatrakWebSurveyResponsesRequest,
-  SurveyResponse,
-  Country,
-  Entity,
-  Survey,
-} from '@tupaia/types';
+import { DatatrakWebSurveyResponsesRequest } from '@tupaia/types';
 
 export type SurveyResponsesRequest = Request<
   DatatrakWebSurveyResponsesRequest.Params,
@@ -20,16 +9,6 @@ export type SurveyResponsesRequest = Request<
   DatatrakWebSurveyResponsesRequest.ReqBody,
   DatatrakWebSurveyResponsesRequest.ReqQuery
 >;
-
-type SurveyResponseT = Record<string, any> & {
-  assessor_name: SurveyResponse['assessor_name'];
-  'country.name': Country['name'];
-  data_time: Date;
-  'entity.name': Entity['name'];
-  id: SurveyResponse['id'];
-  'survey.name': Survey['name'];
-  'survey.project_id': Survey['project_id'];
-};
 
 const DEFAULT_FIELDS = [
   'assessor_name',
@@ -55,24 +34,19 @@ export class SurveyResponsesRoute extends Route<SurveyResponsesRequest> {
       pageSize = DEFAULT_LIMIT,
       sort = DEFAULT_SORT,
       userId: user_id,
-      projectId,
+      projectId: project_id,
     } = query;
 
     const surveyResponses = await ctx.services.central.fetchResources('surveyResponses', {
       filter: {
         user_id,
+        'survey.project_id': project_id,
       },
-      columns: [...fields, 'survey.project_id'], // TODO: remove this when this is a db filter for project_id
+      columns: fields,
       pageSize,
       sort,
     });
 
-    // TODO: make this a db filter when survey project_id field is non-nullable. For now, we need to manually filter
-    const projectSurveyResponses = surveyResponses.filter(
-      (surveyResponse: SurveyResponseT) =>
-        surveyResponse['survey.project_id'] === null ||
-        surveyResponse['survey.project_id'] === projectId,
-    );
-    return camelcaseKeys(projectSurveyResponses, { deep: true });
+    return camelcaseKeys(surveyResponses, { deep: true });
   }
 }

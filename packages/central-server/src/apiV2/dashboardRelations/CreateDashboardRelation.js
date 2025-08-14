@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { CreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
@@ -21,7 +16,7 @@ export class CreateDashboardRelation extends CreateHandler {
     await this.assertPermissions(
       assertAnyPermissions(
         [assertBESAdminAccess, assertAdminPanelAccess],
-        'You need either BES Admin or Tupaia Admin Panel access to create user entity permissions',
+        'You need either BES Admin or Viz Builder access to create user entity permissions',
       ),
     );
   }

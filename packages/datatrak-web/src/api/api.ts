@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
 import axios from 'axios';
 import FetchError from './fetchError';
 
@@ -12,7 +7,7 @@ export const API_URL = process.env.REACT_APP_DATATRAK_WEB_API_URL || 'http://loc
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
 
-const timeout = 45 * 1000; // 45 seconds
+export const timeout = 45 * 1000; // 45 seconds
 
 type RequestParameters = Record<string, any> & {
   params?: Record<string, any>;
@@ -42,15 +37,15 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
 
       // Some of the endpoints return 'details' with the message instead of 'message' or 'error'
       if (data.details) {
-        throw new FetchError(data.details, error.response.status);
+        throw new FetchError(data.details, error.response.status, data);
       }
 
       if (data.error) {
-        throw new FetchError(data.error, error.response.status);
+        throw new FetchError(data.error, error.response.status, data);
       }
 
       if (data.message) {
-        throw new FetchError(data.message, data.code);
+        throw new FetchError(data.message, data.code, data);
       }
     }
     throw new Error(error);

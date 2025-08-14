@@ -1,93 +1,102 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
-import styled from 'styled-components';
-import { DatatrakWebLeaderboardRequest, DatatrakWebUserRequest } from '@tupaia/types';
 import {
+  TableContainer as MuiTableContainer,
   Table,
   TableBody,
   TableCell,
-  TableContainer as MuiTableContainer,
+  TableFooter,
   TableHead,
   TableRow,
-  TableFooter,
 } from '@material-ui/core';
+import React from 'react';
+import styled from 'styled-components';
+
+import { DatatrakWebLeaderboardRequest } from '@tupaia/types';
+
+import { CurrentUserContextType } from '../../api';
 import { UserRewards } from '../../types';
 
 const TableContainer = styled(MuiTableContainer)`
-  padding: 0.2rem 1.6rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  font-variant-numeric: tabular-nums;
+  height: 100%;
+  padding: 0.7rem 1rem;
+
   table {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+    height: 100%;
   }
-  thead,
-  tfoot {
-    display: flex;
+
+  table thead,
+  table tfoot {
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  }
+
+  table tr {
+    height: 8.33333333%;
+    min-height: fit-content;
+    vertical-align: baseline;
+  }
+
+  table td {
+    padding-inline: 0.5rem;
+    padding-block: 0.5rem 0.2rem;
+    font-size: 0.75rem;
+  }
+  tbody tr:last-child {
+    td {
+      padding-block-end: 0.5rem;
+    }
+  }
+  th {
+    padding-block-start: 0;
+    padding-block-end: 0.5rem;
+    padding-inline: 0.5rem;
+    font-size: 0.75rem;
+  }
+  th:first-child {
+    width: 1rem;
+  }
+  tfoot td {
+    padding-block-end: 0;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 1rem 1.6rem;
+    table th,
+    table td {
+      font-size: 0.875rem;
+      padding-inline: 1rem;
+      padding-block: 0.5rem;
+    }
   }
 `;
 
-const Row = styled(TableRow)`
-  display: flex;
-  width: 100%;
-`;
-
-const HeaderRow = styled(Row)`
+const HeaderRow = styled(TableRow)`
   border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
-  padding: 0.4rem 0;
-  margin-bottom: 0.5rem;
-  @media screen and (min-height: 900px) {
-    padding: 0.6rem 0;
-  }
 `;
 
-const Body = styled(TableBody)<{
-  $rowCount?: number;
-}>`
-  display: flex;
-  flex-direction: column;
-  justify-content: ${({ $rowCount = 0 }) => ($rowCount < 10 ? 'flex-start' : 'space-between')};
-  width: 100%;
-  flex: 1;
-`;
-
-const FooterRow = styled(Row)`
+const FooterRow = styled(TableRow)`
   border-top: 1px solid ${({ theme }) => theme.palette.divider};
-  padding: 0.3rem 0;
-  margin-top: 0.3rem;
 `;
 
 const Cell = styled(TableCell)<{
   $isActiveUser?: boolean;
 }>`
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
   border: none;
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-size: 0.875rem;
   font-weight: ${({ $isActiveUser, theme }) =>
     $isActiveUser ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.palette.text.primary};
-  width: 55%;
-  text-align: left;
+  text-align: start;
+
   &:first-child {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    width: 20%;
+    text-align: end;
   }
+
   &:last-child {
-    text-align: right;
-    width: 25%;
+    text-align: end;
   }
 `;
 
 const HeaderCell = styled(Cell)`
-  padding-top: 0;
-  padding-bottom: 0;
   line-height: 1.4;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
@@ -98,13 +107,15 @@ const FooterCell = styled(Cell)`
 
 interface LeaderboardTableProps {
   userRewards?: UserRewards;
-  user?: DatatrakWebUserRequest.ResBody & {
-    isLoggedIn: boolean;
-  };
+  user?: CurrentUserContextType;
   leaderboard?: DatatrakWebLeaderboardRequest.ResBody;
 }
 
-export const LeaderboardTable = ({ userRewards, user, leaderboard }: LeaderboardTableProps) => {
+export const LeaderboardTable = ({
+  userRewards,
+  user,
+  leaderboard = [],
+}: LeaderboardTableProps) => {
   return (
     <TableContainer>
       <Table>
@@ -115,24 +126,24 @@ export const LeaderboardTable = ({ userRewards, user, leaderboard }: Leaderboard
             <HeaderCell>Score</HeaderCell>
           </HeaderRow>
         </TableHead>
-        <Body $rowCount={leaderboard?.length}>
+        <TableBody>
           {leaderboard?.map(({ userId, firstName, lastName, coconuts }, i) => {
             const isActiveUser = user && user.id === userId;
             return (
-              <Row key={userId}>
+              <TableRow key={userId}>
                 <Cell>{i + 1}</Cell>
                 <Cell $isActiveUser={isActiveUser}>
                   {firstName} {lastName}
                 </Cell>
-                <Cell $isActiveUser={isActiveUser}>{coconuts}</Cell>
-              </Row>
+                <Cell $isActiveUser={isActiveUser}>{coconuts.toLocaleString()}</Cell>
+              </TableRow>
             );
           })}
-        </Body>
+        </TableBody>
         <TableFooter>
           <FooterRow>
-            <FooterCell>-</FooterCell>
-            <FooterCell>{user?.userName}</FooterCell>
+            <FooterCell>&mdash;</FooterCell>
+            <FooterCell>{user?.fullName}</FooterCell>
             <FooterCell>{userRewards?.coconuts}</FooterCell>
           </FooterRow>
         </TableFooter>

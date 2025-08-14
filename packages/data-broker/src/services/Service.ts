@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import {
   RawAnalyticResults,
   DataBrokerModelRegistry,
@@ -13,7 +8,6 @@ import {
   DataSourceType,
   Diagnostics,
   EventResults,
-  Metadata,
   SyncGroupResults,
 } from '../types';
 import { DATA_SOURCE_TYPES } from '../utils';
@@ -80,9 +74,11 @@ export abstract class Service {
    */
   public async pullMetadata(
     dataSources: DataSource[],
+    // @ts-ignore
     type: DataSourceType,
+    // @ts-ignore
     options: PullMetadataOptions,
-  ): Promise<Metadata[]> {
+  ): Promise<{ code: string }[]> {
     return dataSources.map(ds => ({ code: ds.code }));
   }
 }

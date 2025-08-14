@@ -1,0 +1,1 @@
+export { extractOptionDetails } from './extractOptionDetails';

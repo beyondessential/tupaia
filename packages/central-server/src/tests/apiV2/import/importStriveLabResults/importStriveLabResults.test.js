@@ -1,13 +1,8 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 
 import {
   buildAndInsertSurveys,
-  generateTestId,
+  generateId,
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 import { TestableApp, upsertEntity } from '../../../testUtilities';
@@ -16,14 +11,14 @@ const DEFAULT_POLICY = {
   PG: ['Public'],
 };
 const QUESTION_IDS = {
-  Well: generateTestId(),
-  Cq: generateTestId(),
-  Sq: generateTestId(),
-  Positive: generateTestId(),
+  Well: generateId(),
+  Cq: generateId(),
+  Sq: generateId(),
+  Positive: generateId(),
 };
 const CASE_CODES = ['TEST_STR_LBR_CASE1', 'TEST_STR_LBR_CASE2'];
 const SURVEY = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'TEST_SLR',
   name: 'Test - STRIVE Lab Results',
   questions: [
@@ -60,14 +55,14 @@ const SURVEY = {
 const EXPECTED_ANSWERS_PER_LAB_RESULT = [
   [
     { question_id: QUESTION_IDS.Well, text: 'A01' },
-    { question_id: QUESTION_IDS.Cq, text: '35.11' },
-    { question_id: QUESTION_IDS.Sq, text: '9.25123' },
+    { question_id: QUESTION_IDS.Cq, text: '35.1104612227568' },
+    { question_id: QUESTION_IDS.Sq, text: '9.25123231038543' },
     { question_id: QUESTION_IDS.Positive, text: 'Yes' },
   ],
   [
     { question_id: QUESTION_IDS.Well, text: 'A02' },
-    { question_id: QUESTION_IDS.Cq, text: '31.43' },
-    { question_id: QUESTION_IDS.Sq, text: '93.13989' },
+    { question_id: QUESTION_IDS.Cq, text: '31.4282224241949' },
+    { question_id: QUESTION_IDS.Sq, text: '93.1398874006731' },
     { question_id: QUESTION_IDS.Positive, text: 'No' },
   ],
 ];
@@ -80,7 +75,7 @@ const upsertEntities = async models =>
   Promise.all(
     CASE_CODES.map(caseCode =>
       upsertEntity({
-        id: generateTestId(),
+        id: generateId(),
         type: models.entity.types.CASE,
         code: caseCode,
         name: caseCode,

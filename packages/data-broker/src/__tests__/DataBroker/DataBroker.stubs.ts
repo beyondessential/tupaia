@@ -1,13 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import pickBy from 'lodash.pickby';
 import { reduceToDictionary } from '@tupaia/utils';
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import * as CreateService from '../../services/createService';
 import { Service } from '../../services/Service';
+import { DataBrokerModelRegistry, DataElement, DataGroup, DataServiceSyncGroup } from '../../types';
 import {
   DATA_ELEMENT_DATA_SERVICES,
   DATA_ELEMENTS,
@@ -16,7 +12,6 @@ import {
   MockServiceData,
   SYNC_GROUPS,
 } from './DataBroker.fixtures';
-import { DataBrokerModelRegistry, DataElement, DataGroup, DataServiceSyncGroup } from '../../types';
 
 export const stubCreateService = (services: Record<string, Service>) =>
   jest.spyOn(CreateService, 'createService').mockImplementation((_, type) => {

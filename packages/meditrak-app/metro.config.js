@@ -1,19 +1,25 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-// Metro Bundler Configuration
-// https://facebook.github.io/metro/docs/en/configuration
-
+const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 const path = require('path');
 
-module.exports = {
-  // Add additional Yarn workspace package roots to the module map
+/**
+ * Metro configuration
+ * https://facebook.github.io/metro/docs/configuration
+ *
+ * @type {import('metro-config').MetroConfig}
+ */
+const config = {
+  // Workaround for https://github.com/facebook/metro/issues/1
+  // Should be fixed in the next release of react-native (as at 2023-09-26)
   watchFolders: [
-    path.resolve(__dirname, '../..', 'node_modules'),
     path.resolve(__dirname, '..', 'access-policy'),
     path.resolve(__dirname, '..', 'expression-parser'),
-    path.resolve(__dirname, '..', 'utils'),
+    path.resolve(__dirname, '..', '..', 'node_modules'),
   ],
+  resolver: {
+    unstable_enableSymlinks: true,
+  },
+  // Workaround end
+  resetCache: true,
 };
+
+module.exports = mergeConfig(getDefaultConfig(__dirname), config);

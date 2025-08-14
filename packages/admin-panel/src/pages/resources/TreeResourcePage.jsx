@@ -1,40 +1,36 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
-import { Header, PageBody } from '../../widgets';
-import { usePortalWithCallback } from '../../utilities';
+import { PageBody, PageHeader } from '../../widgets';
 import { LogsModal } from '../../logsTable';
-import * as COLORS from '../../theme/colors';
+import { generateTitle } from './resourceName';
 
 const Container = styled(PageBody)`
   overflow: auto;
 `;
 
 const StyledHorizontalTree = styled(HorizontalTree)`
+  color: ${({ theme }) => theme.palette.text.primary};
   height: 930px;
-  margin-top: 40px;
-  margin-bottom: 40px;
-  max-height: 870px;
-  color: ${COLORS.TEXT_MIDGREY};
-
-  .MuiTypography-body1 {
-    font-size: 15px;
-  }
+  margin-block: 40px;
+  max-block-size: 870px;
 `;
 
-export const TreeResourcePage = ({ title, getHeaderEl, fetchRoot, fetchBranch }) => {
-  const HeaderPortal = usePortalWithCallback(<Header title={title} />, getHeaderEl);
-
+export const TreeResourcePage = ({
+  resourceName,
+  title,
+  fetchRoot,
+  fetchBranch,
+  ExportModalComponent,
+}) => {
   return (
     <>
-      {HeaderPortal}
       <Container>
+        <PageHeader
+          title={title ?? generateTitle(resourceName)}
+          ExportModalComponent={ExportModalComponent}
+        />
         <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} />
       </Container>
       <LogsModal />
@@ -42,9 +38,19 @@ export const TreeResourcePage = ({ title, getHeaderEl, fetchRoot, fetchBranch })
   );
 };
 
+TreeResourcePage.defaultProps = {
+  resourceName: { singular: 'record' },
+  ExportModalComponent: null,
+  title: '',
+};
+
 TreeResourcePage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
+  resourceName: PropTypes.shape({
+    singular: PropTypes.string.isRequired,
+    plural: PropTypes.string,
+  }),
+  title: PropTypes.string,
   fetchRoot: PropTypes.func.isRequired,
   fetchBranch: PropTypes.func.isRequired,
+  ExportModalComponent: PropTypes.elementType,
 };

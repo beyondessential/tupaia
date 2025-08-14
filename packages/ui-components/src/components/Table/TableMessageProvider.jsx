@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import MuiTableBody from '@material-ui/core/TableBody';
 import PropTypes from 'prop-types';
@@ -56,7 +52,7 @@ TableMessageProvider.propTypes = {
   hasData: PropTypes.bool.isRequired,
   colSpan: PropTypes.number.isRequired,
   children: PropTypes.node.isRequired,
-  noDataMessage: PropTypes.string,
+  noDataMessage: PropTypes.node,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
 };

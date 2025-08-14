@@ -1,30 +1,17 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useLocation } from 'react-router';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
-import { SurveyQuestion } from './SurveyQuestion';
 import { SurveyScreenComponent } from '../../../types';
+import { SurveyQuestion } from './SurveyQuestion';
 
-const QuestionWrapper = styled.div<{
-  $isInstruction: boolean;
-}>`
+const QuestionWrapper = styled.div`
   display: flex;
-  &:not(:last-child) {
-    margin-bottom: ${({ $isInstruction }) => ($isInstruction ? '1rem' : '2rem')};
+  & + & {
+    margin-block-start: 2.5rem;
   }
-`;
-
-const QuestionNumber = styled(Typography)`
-  width: 3.5rem;
-  text-transform: lowercase;
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+  .MuiFormLabel-root {
+    color: ${({ theme }) => theme.palette.text.primary};
   }
 `;
 
@@ -49,13 +36,10 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
   useEffect(() => {
     if (errors && Object.keys(errors).length > 0) {
       const firstError = Object.values(errors)[0] as {
-        ref: {
-          focus: () => void;
-        };
+        ref: { focus: () => void };
       };
-      if (firstError && firstError?.ref) {
-        firstError?.ref?.focus();
-      }
+
+      firstError.ref?.focus();
     }
   }, [JSON.stringify(errors)]);
   return (
@@ -73,16 +57,10 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
           detailLabel,
           detail,
           optionSetId,
-          questionNumber,
           updateFormDataOnChange,
         }) => {
           return (
-            <QuestionWrapper key={questionId} $isInstruction={type === 'Instruction'}>
-              {type !== 'Instruction' && (
-                <QuestionNumber id={`question_number_${questionId}`}>
-                  {questionNumber}
-                </QuestionNumber>
-              )}
+            <QuestionWrapper key={questionId}>
               <SurveyQuestion
                 detailLabel={detailLabel || detail}
                 id={questionId}

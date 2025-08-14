@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { yup } from '@tupaia/utils';
 import { isDefined, yupTsUtils } from '@tupaia/tsutils';
 
@@ -22,8 +17,8 @@ type InsertParams = {
 const positioners = {
   before: (index: number, insertCount: number) => index + insertCount,
   after: (index: number, insertCount: number) => index + insertCount + 1,
-  start: (index: number, insertCount: number) => insertCount,
-};
+  start: (_index: number, insertCount: number) => insertCount,
+} as const;
 
 const positionValidator = yup
   .mixed<'before' | 'after' | 'start'>()

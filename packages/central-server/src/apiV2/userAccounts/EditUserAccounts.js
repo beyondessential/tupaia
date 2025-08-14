@@ -1,16 +1,12 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { hashAndSaltPassword } from '@tupaia/auth';
-import { S3Client, S3 } from '@tupaia/server-utils';
-import { EditHandler } from '../EditHandler';
+import { encryptPassword } from '@tupaia/auth';
+import { S3, S3Client } from '@tupaia/server-utils';
+import { ValidationError } from '@tupaia/utils';
 import {
+  assertAdminPanelAccess,
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
 } from '../../permissions';
+import { EditHandler } from '../EditHandler';
 import { assertUserAccountPermissions } from './assertUserAccountPermissions';
 
 /**
@@ -18,7 +14,13 @@ import { assertUserAccountPermissions } from './assertUserAccountPermissions';
  * - /users/:userId
  */
 
-const USER_PREFERENCES_FIELDS = ['project_id', 'country_id', 'delete_account_requested'];
+const USER_PREFERENCES_FIELDS = [
+  'project_id',
+  'country_id',
+  'delete_account_requested',
+  'recent_entities',
+  'hide_welcome_screen',
+];
 
 export class EditUserAccounts extends EditHandler {
   async assertUserHasAccess() {
@@ -46,14 +48,15 @@ export class EditUserAccounts extends EditHandler {
     let updatedFields = restOfUpdatedFields;
 
     if (password) {
-      updatedFields = {
-        ...updatedFields,
-        ...hashAndSaltPassword(password),
-      };
+      updatedFields.password_hash = await encryptPassword(password);
+      // Discard legacy salt used for SHA-256 hashing (redundant if already migrated to Argon2)
+      updatedFields.legacy_password_salt = null;
     }
 
     if (preferenceField) {
-      throw new Error('Preferences should be updated via the specific preferences fields');
+      throw new ValidationError(
+        'Preferences should be updated via the specific preferences fields',
+      );
     }
 
     // Check if there are any updated user preferences in the request
@@ -73,6 +76,10 @@ export class EditUserAccounts extends EditHandler {
       const updatedPreferenceFields = updatedUserPreferences.reduce((obj, [key, value]) => {
         return { ...obj, [key]: value };
       }, preferences);
+      // If we change the selected project, we clear out the recent entities
+      if (updatedPreferenceFields.project_id) {
+        updatedPreferenceFields.recentEntities = {};
+      }
 
       updatedFields = {
         preferences: updatedPreferenceFields,

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import DBMigrate from 'db-migrate';
 import { runPostMigration } from './runPostMigration';
 import { getConnectionConfig } from './getConnectionConfig';
@@ -35,6 +30,10 @@ const appCallback = async (migrator, internals, callback, error) => {
 
   const { driver } = migrator;
   await runPostMigration(driver);
+  // This needs to be called, otherwise the process will hang
+  if (callback) {
+    callback();
+  }
 };
 
 export const getDbMigrator = (forCli = false) =>

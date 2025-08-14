@@ -4,30 +4,35 @@
   "description": "API client for connecting to Tupaia APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "GPL-3.0-or-later",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && yarn run package:build:ts",
+    "build-dev": "yarn run build",
+    "build-watch": "rimraf dist && yarn run package:build:ts-watch",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test",
     "test:coverage": "yarn test --coverage"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/api-client"
   },
   "dependencies": {
-    "@tupaia/tsutils": "1.0.0",
-    "@tupaia/types": "1.0.0",
-    "@tupaia/utils": "1.0.0",
+    "@tupaia/tsutils": "workspace:*",
+    "@tupaia/types": "workspace:*",
+    "@tupaia/utils": "workspace:*",
+    "lodash.isequal": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "node-fetch": "^1.7.3",
-    "qs": "^6.10.1"
+    "qs": "^6.12.0"
   },
   "devDependencies": {
-    "@tupaia/types": "1.0.0"
+    "@types/jest": "^29.5.14",
+    "@types/node-fetch": "^2.6.11",
+    "jest": "^29.7.0",
+    "rimraf": "^6.0.1"
   }
 }

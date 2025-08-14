@@ -1,1 +1,0 @@
-export { MapOverlayHierarchy } from './MapOverlayHierarchy';

@@ -1,26 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no maximum-scale=1"  />
-    <meta name="theme-color" content="#000000" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="Data collection and visualisation for the most remote settings in the world"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Tupaia DataTrak</title>
+
+    <% if ( process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
+    <link rel="preconnect" href="https://datatrak-web-api.tupaia.org" crossorigin />
+    <% } else if (process.env.NODE_ENV === 'production') { %>
+    <link
+      rel="preconnect"
+      href="https://%REACT_APP_DEPLOYMENT_NAME%-datatrak-web-api.tupaia.org"
+      crossorigin
+    />
+    <% } %>
+
+    <!-- Open Graph for shared links -->
+    <meta property="og:title" content="Tupaia DataTrak" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://datatrak.tupaia.org" />
+    <meta property="og:image" content="https://datatrak.tupaia.org/social-preview.png" />
+    <meta property="og:image:alt" content="Woman using DataTrak app to collect health data" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta
       property="og:description"
-      content="Data aggregation, analysis, and visualisation for the most remote settings in the world"
+      content="Data collection and visualisation for the most remote settings in the world"
     />
-    <link rel="icon" type="image/png" href="/favicon.ico" />
+
+    <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'master' ||
+    process.env.REACT_APP_DEPLOYMENT_NAME === 'main' || process.env.REACT_APP_DEPLOYMENT_NAME ===
+    'production') { %>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P5KF6SLGKR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-P5KF6SLGKR');
+    </script>
+    <!-- End Google Analytics -->
+
+    <!-- Start of bes-support Zendesk Widget script -->
+    <script type="text/javascript">
+      const ua = navigator.userAgent.toLowerCase();
+      const platform = navigator.platform.toLowerCase();
+      const platformName = ua.match(/ip(?:ad|od|hone)/)
+        ? 'ios'
+        : (ua.match(/(?:webos|android)/) || platform.match(/mac|win|linux/) || ['other'])[0];
+      const isMobile = /ios|android|webos/.test(platformName);
+
+      if (!isMobile) {
+        const script = document.createElement('script');
+        script.id = 'ze-snippet';
+        script.src =
+          'https://static.zdassets.com/ekr/snippet.js?key=4719227f-a493-431d-a920-41ebcafbcccb';
+        document.head.appendChild(script);
+      }
+    </script>
+    <!-- End of bes-support Zendesk Widget script -->
+    <% } %>
+
+    <link rel="manifest" id="manifest" href="/manifest.json" />
+
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- Add media='print' and onload="this.media='all'" to stop the resource being render-blocking on load: see https://pagespeedchecklist.com/asynchronous-google-fonts -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
       crossorigin="anonymous"
+      media="print"
+      onload="this.media='all'"
     />
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
       integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
       crossorigin=""
+      media="print"
+      onload="this.media='all'"
     />
-    <title>Tupaia Datatrak</title>
+    <!-- Add a noscript fallback for stylesheets -->
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
+        crossorigin
+      />
+      <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin
+      />
+    </noscript>
   </head>
   <body>
     <noscript>

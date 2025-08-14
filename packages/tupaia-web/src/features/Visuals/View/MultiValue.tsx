@@ -1,17 +1,40 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { Table, TableCell as MuiTableCell, TableRow, TableBody } from '@material-ui/core';
 import { CheckCircle, Cancel } from '@material-ui/icons';
 import { MultiValueViewConfig, ViewConfig, ViewReport, ViewDataItem } from '@tupaia/types';
 
+const StyledTable = styled(Table)<{
+  $isExport?: boolean;
+  $isEnlarged?: boolean;
+}>`
+  border: none;
+  max-width: 30rem;
+  margin: ${({ $isEnlarged, $isExport }) => {
+    if (!$isEnlarged) return 0;
+    if ($isExport) {
+      return '1rem auto 0';
+    }
+    return '2rem auto 0';
+  }};
+  color: ${({ theme, $isExport }) => ($isExport ? theme.palette.common.black : 'inherit')};
+  th.MuiTableCell-root,
+  td.MuiTableCell-root {
+    ${props => props.$isExport && 'color: currentColor;'}
+  }
+`;
+
+const Row = styled(TableRow)`
+  background-color: transparent;
+  &:nth-child(even) {
+    background-color: transparent;
+  }
+`;
+
 const PositiveIcon = styled(CheckCircle)<{
   $color?: string;
 }>`
-  color: ${({ $color, theme }) => $color || theme.dashboardItem.multiValue.data};
+  color: ${({ $color, theme }) => $color || theme.palette.dashboardItem.multiValue.data};
   height: 1.25rem;
 `;
 
@@ -37,6 +60,8 @@ const BooleanDisplay = ({ value, config = {} as MultiValueViewConfig }: BooleanD
 interface MultiValueProps {
   report: ViewReport;
   config: ViewConfig;
+  isExport?: boolean;
+  isEnlarged?: boolean;
 }
 
 const TableCell = styled(MuiTableCell)`
@@ -45,19 +70,19 @@ const TableCell = styled(MuiTableCell)`
   font-size: 1rem;
   line-height: 1.2;
   &:nth-child(2) {
-    color: ${({ theme }) => theme.dashboardItem.multiValue.data};
+    color: ${({ theme }) => theme.palette.dashboardItem.multiValue.data};
     font-weight: ${({ theme }) => theme.typography.fontWeightBold};
     text-align: right;
   }
 `;
 
-export const MultiValue = ({ report: { data }, config }: MultiValueProps) => {
+export const MultiValue = ({ report: { data }, config, isExport, isEnlarged }: MultiValueProps) => {
   const { valueType } = config;
   return (
-    <Table>
+    <StyledTable $isExport={isExport} $isEnlarged={isEnlarged}>
       <TableBody>
         {data?.map((datum: ViewDataItem, i) => (
-          <TableRow key={i}>
+          <Row key={i}>
             <TableCell component="th">{datum.name}</TableCell>
             <TableCell>
               {valueType === 'boolean' ? (
@@ -69,9 +94,9 @@ export const MultiValue = ({ report: { data }, config }: MultiValueProps) => {
                 datum.value
               )}
             </TableCell>
-          </TableRow>
+          </Row>
         ))}
       </TableBody>
-    </Table>
+    </StyledTable>
   );
 };

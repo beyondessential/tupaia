@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
+import { ProjectCountryAccessListRequest } from '@tupaia/types';
 import { CentralApiInterface } from '..';
 import { RequestBody } from '../ApiConnection';
+import { SurveyResponseCreatedResponse } from '../../types';
 
 type Data = Record<string, any>[];
 
@@ -59,9 +56,15 @@ export class MockCentralApi implements CentralApiInterface {
   public getUser(): Promise<any> {
     throw new Error('Method not implemented.');
   }
+  public getCountryAccessList(): Promise<ProjectCountryAccessListRequest.ResBody> {
+    throw new Error('Method not implemented.');
+  }
   public registerUserAccount(
     userFields: Record<string, unknown>,
   ): Promise<{ userId: string; message: string }> {
+    throw new Error('Method not implemented.');
+  }
+  public verifyUserEmail(token: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
   public changeUserPassword(
@@ -70,6 +73,19 @@ export class MockCentralApi implements CentralApiInterface {
     throw new Error('Method not implemented.');
   }
   public createSurveyResponses(responses: MeditrakSurveyResponseRequest[]): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+
+  public createSurveyResponse(
+    response: MeditrakSurveyResponseRequest,
+  ): Promise<SurveyResponseCreatedResponse> {
+    throw new Error('Method not implemented.');
+  }
+
+  public resubmitSurveyResponse(
+    originalResponseId: string,
+    newResponse: MeditrakSurveyResponseRequest,
+  ): Promise<void> {
     throw new Error('Method not implemented.');
   }
   public async fetchResources(endpoint: string, params?: Params): Promise<any> {
@@ -83,6 +99,7 @@ export class MockCentralApi implements CentralApiInterface {
       ),
     );
   }
+  public fetchResourcesWithPost = this.createResource;
   public createResource(
     endpoint: string,
     params: Record<string, unknown>,

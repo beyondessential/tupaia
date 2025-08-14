@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
@@ -14,11 +9,11 @@ import { TestableApp } from '../../testUtilities';
 describe('Permissions checker for EditAccessRequests', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-    LA: ['Admin'],
-    TO: ['Admin'],
+    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
+    LA: ['Admin', 'Public'],
+    TO: ['Admin', 'Public'],
   };
 
   const BES_ADMIN_POLICY = {
@@ -29,6 +24,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
   const { models } = app;
   let vanuatuPublicRequest;
   let laosPublicRequest;
+  let kiribatiCatRequest;
   let kiribatiBESRequest;
   let laosEntityId;
   let besPermissionGroupId;
@@ -48,6 +44,9 @@ describe('Permissions checker for EditAccessRequests', async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
+    const catPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Cat',
+    });
     const besPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: BES_ADMIN_PERMISSION_GROUP,
     });
@@ -62,6 +61,12 @@ describe('Permissions checker for EditAccessRequests', async () => {
     laosPublicRequest = await findOrCreateDummyRecord(models.accessRequest, {
       entity_id: laosEntity.id,
       permission_group_id: publicPermissionGroup.id,
+      approved: null,
+      processed_by: null,
+    });
+    kiribatiCatRequest = await findOrCreateDummyRecord(models.accessRequest, {
+      entity_id: kiribatiEntity.id,
+      permission_group_id: catPermissionGroup.id,
       approved: null,
       processed_by: null,
     });
@@ -94,6 +99,15 @@ describe('Permissions checker for EditAccessRequests', async () => {
       it('Throw an exception if we do not have admin panel access to the entity of the access request are editing', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.put(`accessRequests/${laosPublicRequest.id}`, {
+          body: { approved: true },
+        });
+
+        expect(result).to.have.keys('error');
+      });
+
+      it('Throw an exception if we do not have equal or greater access to the entity of the access request are editing', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        const { body: result } = await app.put(`accessRequests/${kiribatiCatRequest.id}`, {
           body: { approved: true },
         });
 

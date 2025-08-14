@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { getDatabase } from './src/DataLakeApi';
 import { getTestWriteDatabase, clearTestData } from './src/__tests__/utilities';
 

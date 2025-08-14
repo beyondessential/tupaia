@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { yup } from '@tupaia/utils';
 
 import { Context } from '../context';
@@ -49,7 +44,7 @@ const transform = async (table: TransformTable, transformSteps: BuiltTransformPa
       }
       const titlePart = transformStep.title ? ` (${transformStep.title})` : '';
       const errorMessagePrefix = `Error in transform[${i + 1}]${titlePart}: `;
-      e.message = `${errorMessagePrefix}${(e as Error).message}`;
+      (e as Error).message = `${errorMessagePrefix}${(e as Error).message}`;
       throw e;
     }
   }

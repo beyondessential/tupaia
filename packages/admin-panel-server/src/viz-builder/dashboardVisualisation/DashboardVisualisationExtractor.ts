@@ -1,21 +1,16 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { isNil, omitBy } from 'lodash';
 
 import { snakeKeys, yup } from '@tupaia/utils';
 
-import type { DashboardVisualisationResource } from './types';
 import type { LegacyReport, Report, ExpandType } from '../types';
 import { PreviewMode } from '../types';
 import { baseVisualisationValidator, baseVisualisationDataValidator } from '../validators';
 import { getVizOutputConfig } from '../utils';
+import type { DashboardVisualisationResource } from './types';
 
 export class DashboardVisualisationExtractor<
   DashboardItemValidator extends yup.AnyObjectSchema,
-  ReportValidator extends yup.AnyObjectSchema
+  ReportValidator extends yup.AnyObjectSchema,
 > {
   private readonly visualisation: ExpandType<yup.InferType<typeof baseVisualisationValidator>>;
   private readonly dashboardItemValidator: DashboardItemValidator;
@@ -48,21 +43,13 @@ export class DashboardVisualisationExtractor<
   };
 
   private vizToDashboardItem() {
-    const { code, name, legacy } = this.visualisation;
+    const { code, legacy } = this.visualisation;
     const { output, ...presentation } = this.visualisation.presentation;
 
     return {
       code,
-      // TODO: for prototype, the whole presentation object will be the json edit box
-      // But in the future, it will be broken down into different structure.
-      // config: {
-      //   type: presentation.type,
-      //   ...presentation.config,
-      //   name,
-      // },
       config: {
         ...presentation,
-        name,
       },
       reportCode: code,
       legacy: !!legacy,
@@ -86,6 +73,7 @@ export class DashboardVisualisationExtractor<
         },
         code,
         permissionGroup,
+        latestDataParameters: {},
       };
     }
 
@@ -104,6 +92,7 @@ export class DashboardVisualisationExtractor<
       code,
       permissionGroup,
       config,
+      latestDataParameters: {},
     };
   }
 

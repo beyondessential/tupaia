@@ -8,14 +8,14 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/auth"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "npm run --prefix ../../ package:build:js",
-    "build:types": "npm run --prefix ../../ package:build:types",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && run-p \"build:* {@}\" --",
+    "build:src": "yarn run package:build:js",
+    "build:types": "yarn run package:build:types",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "setup-test": "yarn workspace @tupaia/database setup-test-database",
@@ -23,17 +23,21 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "@tupaia/utils": "1.0.0",
-    "jsonwebtoken": "^7.4.3",
+    "@node-rs/argon2": "^2.0.2",
+    "@tupaia/server-utils": "workspace:*",
+    "@tupaia/utils": "workspace:*",
+    "jsonwebtoken": "^9.0.0",
     "rand-token": "^1.0.1",
     "randomatic": "^3.1.1",
     "semver-compare": "^1.0.0",
     "sha256": "^0.2.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.27.5",
     "@beyondessential/tupaia-access-policy": "^2.5.1",
-    "@tupaia/access-policy": "3.0.0",
-    "@tupaia/database": "1.0.0",
-    "npm-run-all": "^4.1.5"
+    "@tupaia/access-policy": "workspace:*",
+    "@tupaia/database": "workspace:*",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^6.0.1"
   }
 }

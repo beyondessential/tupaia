@@ -1,16 +1,17 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { defineConfig, loadEnv } from 'vite';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
+import viteCompression from 'vite-plugin-compression';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import dns from 'dns';
+
+// work around to open browser in localhost https://vitejs.dev/config/server-options.html#server-host
+dns.setDefaultResultOrder('verbatim');
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-  const env = loadEnv(mode, process.cwd(), 'REACT_APP_');
+  // Load the environment variables, whether or not they are prefixed with REACT_APP_
+  const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
 
   const baseConfig = {
     build: {
@@ -31,10 +32,9 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
-
-    // ViteEjsPlugin is used to allow the use of EJS templates in the index.html file, for analytics scripts etc
     plugins: [
-      ViteEjsPlugin(),
+      ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
+      viteCompression(),
       react({
         jsxRuntime: 'classic',
       }),
@@ -44,6 +44,10 @@ export default defineConfig(({ command, mode }) => {
     },
     server: {
       open: true,
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+      },
     },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
@@ -70,6 +74,7 @@ export default defineConfig(({ command, mode }) => {
         ...baseConfig.resolve,
         alias: {
           ...baseConfig.resolve.alias,
+          '@tupaia/admin-panel': path.resolve(__dirname, './packages/admin-panel/src/library.js'),
           // this is to allow for hot reloading in dev
           '@tupaia/ui-chart-components': path.resolve(
             __dirname,

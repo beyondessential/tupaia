@@ -1,15 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { isNotNullish } from '@tupaia/tsutils';
 import { EditHandler } from '../EditHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import {
-  assertDashboardGetPermissions,
-  assertDashboardEditPermissions,
-} from '../dashboards/assertDashboardsPermissions';
+import { assertDashboardGetPermissions } from '../dashboards/assertDashboardsPermissions';
 import { assertIsOwnEmail } from './assertDashboardMailingListEntryPermissions';
 
 export class EditDashboardMailingListEntry extends EditHandler {
@@ -19,12 +11,12 @@ export class EditDashboardMailingListEntry extends EditHandler {
     );
     const dashboard = await dashboardMailingListEntry.dashboard();
     const dashboardEditChecker = accessPolicy =>
-      assertDashboardEditPermissions(accessPolicy, this.models, dashboard.id);
+      assertDashboardGetPermissions(accessPolicy, this.models, dashboard.id);
 
     const isOwnEmailChecker = () =>
       assertIsOwnEmail(this.req.userId, this.models, dashboardMailingListEntry.email);
 
-    // User either has edit access to the dashboard or it's their own email in order to edit a mailing list entry
+    // User either has read access to the dashboard or it's their own email in order to edit a mailing list entry
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, dashboardEditChecker, isOwnEmailChecker]),
     );

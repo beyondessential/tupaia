@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
 
@@ -96,7 +90,11 @@ export class EntityApi extends BaseApi {
     }
 
     const { field, fields, filter } = queryOptions;
-    return { field, fields: this.stringifyFields(fields), filter: this.stringifyFilter(filter) };
+    return {
+      field,
+      fields: this.stringifyFields(fields),
+      filter: this.stringifyFilter(filter),
+    };
   }
 
   private stringifyRelationshipsSubQueryParameters<Pref extends 'ancestor' | 'descendant'>(
@@ -156,13 +154,28 @@ export class EntityApi extends BaseApi {
       field?: string;
       fields?: string[];
       filter?: any;
+      pageSize?: number;
     },
     includeRootEntity = false,
+    isPublic = false,
   ) {
-    return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/descendants`, {
-      ...this.stringifyQueryParameters(queryOptions),
+    const { pageSize, ...otherQueryOptions } = queryOptions || {};
+    const params: {
+      pageSize?: number;
+      includeRootEntity: string;
+      isPublic: string;
+      field?: string;
+      fields?: string;
+      filter?: string;
+    } = {
+      ...this.stringifyQueryParameters(otherQueryOptions),
       includeRootEntity: `${includeRootEntity}`,
-    });
+      isPublic: `${isPublic}`,
+    };
+    if (pageSize) {
+      params.pageSize = pageSize;
+    }
+    return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/descendants`, params);
   }
 
   public async getDescendantsOfEntities(

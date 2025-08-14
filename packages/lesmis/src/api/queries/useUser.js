@@ -1,13 +1,8 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { get } from '../api';
 
 export const useUser = options => {
-  const query = useQuery('user', () => get('user'), {
+  const query = useQuery(['user'], () => get('user'), {
     retry: 0,
     // should be refetched in the background every hour
     staleTime: 1000 * 60 * 60 * 1,
@@ -17,8 +12,8 @@ export const useUser = options => {
 
   const user = query.data;
   const isLoggedIn = user && Object.keys(user).length > 0;
-  const isLesmisAdmin = user && user.isLesmisAdmin;
+  const hasAdminPanelAccess = user && user.hasAdminPanelAccess;
   const userId = user && user.id;
 
-  return { ...query, isLoggedIn, isLesmisAdmin, userId };
+  return { ...query, isLoggedIn, hasAdminPanelAccess, userId };
 };

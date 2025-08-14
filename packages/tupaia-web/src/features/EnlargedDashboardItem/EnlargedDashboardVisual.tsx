@@ -1,20 +1,16 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useContext } from 'react';
 import moment, { Moment } from 'moment';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { FlexColumn } from '@tupaia/ui-components';
+import { FlexColumn, ReferenceTooltip } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../constants';
-import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { useDateRanges } from '../../utils';
 import { DateRangePicker } from '../../components';
 import { Entity } from '../../types';
+import { useExportSettings } from '../ExportSettings';
+import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { BackLink } from './BackLink';
-import { ExportContext, useEnlargedDashboardItem } from './utils';
+import { ExportDashboardItemContext, useEnlargedDashboardItem } from './utils';
 
 const Container = styled(FlexColumn)<{
   $isExportMode?: boolean;
@@ -50,8 +46,10 @@ const TitleWrapper = styled(FlexColumn)`
 const Subheading = styled(Typography).attrs({
   variant: 'h3',
 })`
+  color: ${({ theme }) => theme.palette.text.secondary};
   font-size: 1rem;
   margin-bottom: 0.5rem;
+  text-align: center;
 `;
 
 const ContentWrapper = styled.div`
@@ -64,9 +62,9 @@ const ContentWrapper = styled.div`
 const ExportDate = styled(Typography)`
   color: #333333;
   font-size: 0.75rem;
-  padding-top: 1rem;
-  padding-bottom: 0.3rem;
+  padding-block: 1rem 0.3rem;
 `;
+
 interface EnlargedDashboardVisualProps {
   entityName?: Entity['name'];
   isPreview?: boolean;
@@ -79,7 +77,8 @@ export const EnlargedDashboardVisual = ({
   entityName,
   isPreview,
 }: EnlargedDashboardVisualProps) => {
-  const { isExportMode, exportWithLabels, exportWithTable } = useContext(ExportContext);
+  const { exportWithLabels, exportWithTable } = useExportSettings();
+  const { isExportMode } = useContext(ExportDashboardItemContext);
   const {
     currentDashboardItem,
     parentDashboardItem,
@@ -113,11 +112,43 @@ export const EnlargedDashboardVisual = ({
 
   // today's date for export
   const date = String(moment());
+
+  const getMergedConfig = () => {
+    // gauge charts don't have presentation options
+    if (config?.type !== 'chart' || config?.chartType === 'gauge') return config;
+    // only apply these changes to chart types, as they are not relevant to other types
+    if ('presentationOptions' in currentDashboardItem?.config) {
+      return {
+        ...config,
+        presentationOptions: {
+          ...config?.presentationOptions,
+          exportWithLabels,
+          exportWithTable,
+        },
+      };
+    }
+    return {
+      ...config,
+      presentationOptions: {
+        exportWithLabels,
+        exportWithTable,
+      },
+    };
+  };
+
+  const mergedConfig = getMergedConfig();
+
   return (
     <Container $isExportMode={isExportMode}>
       <TitleWrapper>
         <BackLink parentDashboardItem={parentDashboardItem} />
-        {config?.name && <Title>{titleText}</Title>}
+        {config?.name && (
+          <Title>
+            {titleText}
+            {config?.reference && <ReferenceTooltip reference={config.reference} />}
+          </Title>
+        )}
+
         {showDatePicker && !isExportMode && (
           <DateRangePicker
             granularity={periodGranularity}
@@ -128,6 +159,8 @@ export const EnlargedDashboardVisual = ({
             maxDate={maxEndDate}
             weekDisplayFormat={weekDisplayFormat}
             onResetDate={onResetDate}
+            dateOffset={config?.dateOffset}
+            dateRangeDelimiter={config?.dateRangeDelimiter}
           />
         )}
       </TitleWrapper>
@@ -142,14 +175,8 @@ export const EnlargedDashboardVisual = ({
             isEnlarged: true,
             isExport: isPreview,
             reportCode: currentDashboardItem?.reportCode,
-            config: {
-              ...currentDashboardItem?.config,
-              presentationOptions: {
-                ...currentDashboardItem?.config?.presentationOptions,
-                exportWithLabels,
-                exportWithTable,
-              },
-            },
+            config: mergedConfig,
+            isEnabled: true,
           }}
         >
           <DashboardItemContent />

@@ -1,9 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { Request } from 'express';
-import { EntityFilter } from '../../../models';
+import { EntityType } from '@tupaia/types';
+import { EntityFilter } from '@tupaia/server-boilerplate';
 import {
   SingleEntityRequestParams,
   MultiEntityRequestParams,
@@ -30,13 +27,13 @@ export type RelationshipsQuery = RelationshipsSubQuery & {
 type DescendantSubContext = {
   filter: EntityFilter;
   field: FlattableEntityFieldName;
-  type: string;
+  type: EntityType;
 };
 
 type AncestorSubContext = {
   filter: EntityFilter;
   field: FlattableEntityFieldName;
-  type?: string;
+  type?: EntityType;
 };
 
 export type GroupByDescendantRelationshipsResponseBody = Record<FlattenedEntity, EntityResponse>;

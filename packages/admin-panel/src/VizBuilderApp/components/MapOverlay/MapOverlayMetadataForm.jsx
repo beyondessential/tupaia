@@ -1,19 +1,21 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useForm } from 'react-hook-form';
-import { Autocomplete, TextField } from '@tupaia/ui-components';
+import { useForm, Controller } from 'react-hook-form';
+import { Autocomplete, TextField, useDebounce } from '@tupaia/ui-components';
 import Chip from '@material-ui/core/Chip';
-import { useCountries, useSearchPermissionGroups, useProjects } from '../../api/queries';
-import { useVizConfig } from '../../context';
-import { useDebounce } from '../../../utilities';
+import { useCountries, useProjects, useSearchPermissionGroups } from '../../api/queries';
+import { useVizConfigContext } from '../../context';
+import { MAP_OVERLAY_VIZ_TYPES } from '../../constants';
+import { REQUIRED_FIELD_ERROR } from '../../../editor';
 
 export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
-  const { handleSubmit, register, errors } = useForm();
-  const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
+  const vizTypeOptions = Object.entries(MAP_OVERLAY_VIZ_TYPES).map(([vizType, { name }]) => ({
+    value: vizType,
+    label: name,
+  }));
+
+  const [{ visualisation, vizType }, { setVisualisationValue, setVizType, setPresentation }] =
+    useVizConfigContext();
   const { data: allProjects = [], isLoading: isLoadingAllProjects } = useProjects();
   const { data: allCountries = [], isLoading: isLoadingAllCountries } = useCountries();
 
@@ -25,23 +27,29 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     mapOverlayPermissionGroup,
     projectCodes: inputProjectCodes,
     countryCodes: inputCountryCodes,
+    presentation,
   } = defaults;
+
+  const { handleSubmit, register, errors, control } = useForm({
+    mode: 'onChange',
+  });
   const [searchInput, setSearchInput] = useState(mapOverlayPermissionGroup || '');
   const debouncedSearchInput = useDebounce(searchInput, 200);
-  const {
-    data: permissionGroups = [],
-    isLoading: isLoadingPermissionGroups,
-  } = useSearchPermissionGroups({ search: debouncedSearchInput });
-  const [projectCodes, setProjectCodes] = useState(inputProjectCodes);
-  const [countryCodes, setCountryCodes] = useState(inputCountryCodes);
+  const { data: permissionGroups = [], isLoading: isLoadingPermissionGroups } =
+    useSearchPermissionGroups({ search: debouncedSearchInput });
 
   const doSubmit = data => {
     setVisualisationValue('code', data.code);
     setVisualisationValue('name', data.name);
     setVisualisationValue('mapOverlayPermissionGroup', data.mapOverlayPermissionGroup);
     setVisualisationValue('reportPermissionGroup', data.mapOverlayPermissionGroup);
-    setVisualisationValue('projectCodes', projectCodes);
-    setVisualisationValue('countryCodes', countryCodes);
+    setVisualisationValue('projectCodes', data.projectCodes);
+    setVisualisationValue('countryCodes', data.countryCodes);
+    setVizType(data.vizType.value);
+    if (Object.keys(presentation).length === 0) {
+      // If no presentation config exists, set the initial config by vizType
+      setPresentation(MAP_OVERLAY_VIZ_TYPES[data.vizType.value].initialConfig);
+    }
     onSubmit();
   };
 
@@ -52,84 +60,146 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
         <TextField
           name="code"
           label="Code"
+          required
           defaultValue={code}
           error={!!errors.code}
           helperText={errors.code && errors.code.message}
           inputRef={register({
-            required: 'Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
         <TextField
           name="name"
           label="Name"
+          required
           defaultValue={name}
           error={!!errors.name}
           helperText={errors.name && errors.name.message}
           inputRef={register({
-            required: 'Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
-        <Autocomplete
-          id="mapOverlayPermissionGroup"
+        <Controller
+          control={control}
           name="mapOverlayPermissionGroup"
-          label="Permission Group"
-          placeholder="Select Permission Group"
           defaultValue={mapOverlayPermissionGroup}
-          options={permissionGroups.map(p => p.name)}
-          disabled={isLoadingPermissionGroups}
-          error={!!errors.mapOverlayPermissionGroup}
-          helperText={errors.mapOverlayPermissionGroup && errors.mapOverlayPermissionGroup.message}
-          inputRef={register({
-            required: 'Required',
-          })}
-          value={searchInput}
-          onInputChange={(event, newValue) => {
-            setSearchInput(newValue);
-          }}
+          rules={{ required: REQUIRED_FIELD_ERROR }}
+          render={({ onChange, value, ref, name: inputName }) => (
+            <Autocomplete
+              id={inputName}
+              name={inputName}
+              label="Permission group"
+              required
+              placeholder="Select permission group"
+              defaultValue={mapOverlayPermissionGroup}
+              options={permissionGroups.map(p => p.name)}
+              disabled={isLoadingPermissionGroups}
+              error={!!errors.mapOverlayPermissionGroup}
+              helperText={
+                errors.mapOverlayPermissionGroup && errors.mapOverlayPermissionGroup.message
+              }
+              inputRef={ref}
+              value={value}
+              onInputChange={(event, newValue) => {
+                setSearchInput(newValue);
+              }}
+              onChange={(event, newValue) => {
+                onChange(newValue);
+              }}
+            />
+          )}
         />
-        <Autocomplete
-          id="projectCodes"
+        <Controller
+          control={control}
           name="projectCodes"
-          label="Project Codes"
-          defaultValue={projectCodes ?? []}
-          options={allProjects.map(p => p['project.code'])}
-          disabled={isLoadingAllProjects}
-          error={!!errors.projectCodes}
-          helperText={errors.projectCodes && errors.projectCodes.message}
-          muiProps={{
-            freeSolo: true,
-            multiple: true,
-            selectOnFocus: true,
-            clearOnBlur: true,
-            handleHomeEndKeys: true,
-            renderTags: (selected, getTagProps) =>
-              selected.map((option, index) => (
-                <Chip color="primary" label={option} {...getTagProps({ index })} />
-              )),
-          }}
-          onChange={(thing, selected) => setProjectCodes(selected)}
+          defaultValue={inputProjectCodes ?? []}
+          render={({ onChange, value, ref, name: inputName }) => (
+            <Autocomplete
+              id={inputName}
+              label="Project codes"
+              options={allProjects.map(p => p['project.code'])}
+              disabled={isLoadingAllProjects}
+              error={!!errors.projectCodes}
+              helperText={errors.projectCodes && errors.projectCodes.message}
+              muiProps={{
+                freeSolo: true,
+                multiple: true,
+                selectOnFocus: true,
+                clearOnBlur: true,
+                handleHomeEndKeys: true,
+                renderTags: (selected, getTagProps) =>
+                  selected.map((option, index) => (
+                    <Chip color="primary" label={option} {...getTagProps({ index })} />
+                  )),
+              }}
+              onChange={(thing, selected) => onChange(selected)}
+              value={value}
+              inputRef={ref}
+              name={inputName}
+            />
+          )}
         />
-        <Autocomplete
-          id="countryCodes"
+        <Controller
+          control={control}
           name="countryCodes"
-          label="Country Codes"
-          defaultValue={countryCodes ?? []}
-          options={allCountries.map(c => c.code)}
-          disabled={isLoadingAllCountries}
-          error={!!errors.countryCodes}
-          helperText={errors.countryCodes && errors.countryCodes.message}
-          muiProps={{
-            freeSolo: true,
-            multiple: true,
-            selectOnFocus: true,
-            clearOnBlur: true,
-            handleHomeEndKeys: true,
-            renderTags: (selected, getTagProps) =>
-              selected.map((option, index) => (
-                <Chip color="primary" label={option} {...getTagProps({ index })} />
-              )),
+          defaultValue={inputCountryCodes ?? []}
+          render={({ onChange, value, ref, name: inputName }) => {
+            return (
+              <Autocomplete
+                id={inputName}
+                name={inputName}
+                label="Country codes"
+                options={allCountries.map(c => c.code)}
+                disabled={isLoadingAllCountries}
+                error={!!errors.countryCodes}
+                helperText={errors.countryCodes && errors.countryCodes.message}
+                muiProps={{
+                  freeSolo: true,
+                  multiple: true,
+                  selectOnFocus: true,
+                  clearOnBlur: true,
+                  handleHomeEndKeys: true,
+                  renderTags: (selected, getTagProps) =>
+                    selected.map((option, index) => (
+                      <Chip color="primary" label={option} {...getTagProps({ index })} />
+                    )),
+                }}
+                onChange={(thing, selected) => onChange(selected)}
+                value={value}
+                inputRef={ref}
+              />
+            );
           }}
-          onChange={(thing, selected) => setCountryCodes(selected)}
+        />
+
+        <Controller
+          control={control}
+          name="vizType"
+          rules={{ required: REQUIRED_FIELD_ERROR }}
+          defaultValue={vizTypeOptions.find(option => option.value === vizType)}
+          render={({ onChange, value, ref, name: inputName }) => {
+            return (
+              <Autocomplete
+                id={inputName}
+                name={inputName}
+                label="Visualisation type"
+                required
+                placeholder="Select visualisation type"
+                options={vizTypeOptions}
+                getOptionLabel={option => option.label}
+                getOptionSelected={option => {
+                  return option.value === value;
+                }}
+                error={!!errors.vizType}
+                helperText={errors.vizType && errors.vizType.message}
+                inputRef={ref}
+                onChange={(event, newValue) => {
+                  onChange(newValue);
+                }}
+                value={value}
+              />
+            );
+          }}
         />
       </Body>
       <Footer />

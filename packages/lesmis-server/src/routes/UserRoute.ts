@@ -1,25 +1,17 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { CentralConnection } from '../connections';
+import { camelKeys } from '@tupaia/utils';
+import { hasAdminPanelAccess } from '../utils';
 
 export type UserRequest = Request;
 
 export class UserRoute extends Route<UserRequest> {
-  private readonly centralConnection: CentralConnection;
-
-  public constructor(req: Request, res: Response, next: NextFunction) {
-    super(req, res, next);
-
-    this.centralConnection = new CentralConnection(req.session);
-  }
-
   public async buildResponse() {
-    return this.centralConnection.getUser();
+    if (!this.req.session) {
+      return {};
+    }
+
+    const user = await this.req.ctx.services.central.getUser();
+    return { ...camelKeys(user), hasAdminPanelAccess: hasAdminPanelAccess(user.accessPolicy) };
   }
 }

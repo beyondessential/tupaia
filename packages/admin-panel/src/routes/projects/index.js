@@ -1,0 +1,1 @@
+export { projectsTabRoutes } from './projectsTabRoutes';

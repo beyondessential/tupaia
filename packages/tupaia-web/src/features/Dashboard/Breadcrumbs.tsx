@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -12,12 +8,14 @@ import { useEntityAncestors, useProject } from '../../api/queries';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   position: absolute;
-  top: 0.3125rem;
-  left: 0.625rem;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0.3125rem 0 2.5rem 0.625rem;
   z-index: 1;
   font-size: 0.8rem;
   line-height: 1.2rem;
-
+  background: linear-gradient(rgb(43, 45, 56) 0%, rgba(43, 45, 56, 0) 94.27%);
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -65,18 +63,16 @@ export const Breadcrumbs = () => {
 
   return (
     <StyledBreadcrumbs separator={<NavigateNextIcon />}>
-      {breadcrumbs.map(
-        ({ code: entityCode, name: entityName }: { code: string; name: string }, index: number) => {
-          const isLast = index === breadcrumbs.length - 1;
-          return isLast ? (
-            <ActiveCrumb key={entityCode}>{entityName}</ActiveCrumb>
-          ) : (
-            <Crumb key={entityCode} to={{ ...location, pathname: `/${projectCode}/${entityCode}` }}>
-              {entityName}
-            </Crumb>
-          );
-        },
-      )}
+      {breadcrumbs.map(({ code, name }, index: number) => {
+        const isLast = index === breadcrumbs.length - 1;
+        return isLast ? (
+          <ActiveCrumb key={code}>{name}</ActiveCrumb>
+        ) : (
+          <Crumb key={code} to={{ ...location, pathname: `/${projectCode}/${code}` }}>
+            {name}
+          </Crumb>
+        );
+      })}
     </StyledBreadcrumbs>
   );
 };

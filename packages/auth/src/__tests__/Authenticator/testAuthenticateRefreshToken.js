@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { Authenticator } from '../../Authenticator';
 import { models, AccessPolicyBuilderStub, getPolicyForUserStub } from './Authenticator.stubs';
 import { accessPolicy, verifiedUser } from './Authenticator.fixtures';
@@ -12,7 +7,7 @@ export const testAuthenticateRefreshToken = () => {
 
   describe('throws an error with invalid arguments', () => {
     const testData = [
-      ['undefined', undefined, "Cannot read property 'refreshToken' of undefined"],
+      ['undefined', undefined, "Cannot read properties of undefined (reading 'refreshToken')"],
       ['empty', {}, 'Please supply refreshToken'],
       [
         'no fresh token',

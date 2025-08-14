@@ -1,44 +1,44 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { FlexCenter as BaseFlexCenter, FlexColumn as BaseFlexColumn } from '@tupaia/ui-components';
 
-const FlexCenter = styled(BaseFlexCenter)`
-  position: relative;
-  padding: 50px;
+const Container = styled.div`
+  align-items: center;
+  display: grid;
+  gap: 5mm;
+  grid-template-columns: 1fr 2fr 1fr;
+  width: 100%;
 `;
 
-const FlexColumn = styled(BaseFlexColumn)`
-  text-align: center;
+const HeaderImage = styled.img`
+  aspect-ratio: 1;
+  height: 3.5cm;
+  object-fit: contain;
 `;
 
 const Heading = styled.h1`
-  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
-  line-height: 1.4;
   font-size: 1.625rem;
-  text-transform: capitalize;
+  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+  inline-size: 100%;
+  line-height: 1.4;
   margin: 0;
+  text-align: center;
 `;
 
-const Logo = styled.img.attrs({
-  src: '/tupaia-logo-dark.svg',
-})`
-  top: 1.875rem;
-  left: 1.2rem;
-  position: absolute;
-`;
+interface PDFExportHeaderProps {
+  imageUrl?: string;
+  imageDescription?: string;
+  children: ReactNode;
+}
 
-export const PDFExportHeader = ({ children }: { children: ReactNode }) => {
+export const PDFExportHeader = ({
+  imageUrl = '/tupaia-logo-dark.svg',
+  imageDescription = 'Tupaia logo',
+  children,
+}: PDFExportHeaderProps) => {
   return (
-    <FlexCenter>
-      <Logo alt="Tupaia logo" width="74" height="30" />
-      <FlexColumn>
-        <Heading>{children}</Heading>
-      </FlexColumn>
-    </FlexCenter>
+    <Container>
+      <HeaderImage alt={imageDescription} src={imageUrl} width="132" height="132" />
+      <Heading>{children}</Heading>
+    </Container>
   );
 };

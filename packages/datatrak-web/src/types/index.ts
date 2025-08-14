@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 export type {
   Survey,
   SurveyParams,
@@ -10,6 +6,8 @@ export type {
   SurveyScreenComponent,
   SurveyScreen,
 } from './surveys';
-export * from './entity';
-export * from './userRewards';
 export * from './activityFeed';
+export * from './entity';
+export * from './userAccountDetails';
+export * from './userRewards';
+export * from './task';

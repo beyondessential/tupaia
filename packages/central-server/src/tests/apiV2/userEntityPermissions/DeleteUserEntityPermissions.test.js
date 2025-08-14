@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
@@ -14,11 +9,11 @@ import { TestableApp } from '../../testUtilities';
 describe('Permissions checker for DeleteUserEntityPermissions', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-    LA: ['Admin'],
-    TO: ['Admin'],
+    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
+    LA: ['Admin', 'Public'],
+    TO: ['Admin', 'Public'],
   };
 
   const BES_ADMIN_POLICY = {
@@ -28,11 +23,15 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
   const app = new TestableApp();
   const { models } = app;
   let vanuatuPublicPermission;
+  let vanuatuCatPermission;
   let laosPublicPermission;
 
   before(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
+    });
+    const catPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Cat',
     });
 
     const { entity: vanuatuEntity } = await findOrCreateDummyCountryEntity(models, {
@@ -45,7 +44,7 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
     // Create test users
     const userAccount = await findOrCreateDummyRecord(models.user, {
       first_name: 'Clark',
-      last_name: 'Kent',
+      last_name: 'DeleteUserEntityPermissions',
     });
 
     // Give the test user some permissions
@@ -53,6 +52,11 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
       user_id: userAccount.id,
       entity_id: vanuatuEntity.id,
       permission_group_id: publicPermissionGroup.id,
+    });
+    vanuatuCatPermission = await findOrCreateDummyRecord(models.userEntityPermission, {
+      user_id: userAccount.id,
+      entity_id: vanuatuEntity.id,
+      permission_group_id: catPermissionGroup.id,
     });
     laosPublicPermission = await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount.id,
@@ -87,6 +91,17 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
           `userEntityPermissions/${laosPublicPermission.id}`,
         );
         const record = await models.userEntityPermission.findById(laosPublicPermission.id);
+
+        expect(result).to.have.keys('error');
+        expect(record).to.not.equal(null);
+      });
+
+      it('Throw an exception if we do not have permissions for the permission of the user entity permission', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        const { body: result } = await app.delete(
+          `userEntityPermissions/${vanuatuCatPermission.id}`,
+        );
+        const record = await models.userEntityPermission.findById(vanuatuCatPermission.id);
 
         expect(result).to.have.keys('error');
         expect(record).to.not.equal(null);

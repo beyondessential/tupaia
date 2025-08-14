@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { CreateHandler } from '../CreateHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertDashboardEditPermissions } from '../dashboards/assertDashboardsPermissions';
@@ -10,7 +5,12 @@ import { assertDashboardEditPermissions } from '../dashboards/assertDashboardsPe
 export class CreateDashboardMailingList extends CreateHandler {
   async assertUserHasAccess() {
     const dashboardEditChecker = accessPolicy =>
-      assertDashboardEditPermissions(accessPolicy, this.models, this.newRecordData.dashboard_id);
+      assertDashboardEditPermissions(
+        accessPolicy,
+        this.models,
+        this.newRecordData.dashboard_id,
+        false,
+      );
 
     // User must have edit access to the dashboard in order to create a mailing list
     await this.assertPermissions(

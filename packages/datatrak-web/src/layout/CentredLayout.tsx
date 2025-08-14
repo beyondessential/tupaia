@@ -1,18 +1,22 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
+
+import { SafeArea } from '@tupaia/ui-components';
+
 import { HEADER_HEIGHT } from '../constants';
 
-const Wrapper = styled.div`
+export const CenteredLayoutRoot = styled(SafeArea).attrs({
+  bottom: true,
+  left: true,
+  right: true,
+})`
+  align-items: center;
+  block-size: calc(100dvb - 2 * ${HEADER_HEIGHT});
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: calc(100vh - 2 * ${HEADER_HEIGHT});
-  padding: 1rem 0;
+  padding-top: 1rem;
+
   form p,
   form a,
   .MuiTypography-root.MuiFormControlLabel-label {
@@ -33,8 +37,8 @@ const Wrapper = styled.div`
 
 export const CentredLayout = () => {
   return (
-    <Wrapper>
+    <CenteredLayoutRoot>
       <Outlet />
-    </Wrapper>
+    </CenteredLayoutRoot>
   );
 };

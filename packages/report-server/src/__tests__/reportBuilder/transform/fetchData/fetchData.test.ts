@@ -1,15 +1,10 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import MockDate from 'mockdate';
 import { EARLIEST_DATA_DATE_STRING } from '@tupaia/utils';
-
 import { buildTestTransform } from '../../testUtils';
-import { CURRENT_DATE_STUB, analyticsDataTable, eventsDataTable } from './fetchData.fixtures';
-import { getContext } from './getContext';
 import { TransformTable } from '../../../../reportBuilder/transform';
+import { CURRENT_DATE_STUB, eventsDataTable } from '../../../fixtures';
+import { getContext } from './getContext';
+import { analyticsDataTable } from './fixtures';
 
 describe('fetchData', () => {
   const defaultStartDate = EARLIEST_DATA_DATE_STRING;
@@ -177,7 +172,7 @@ describe('fetchData', () => {
       ];
 
       const resultTable = existingTable
-        .map(row => {
+        .flatMap(row => {
           const matchingAnalytics = fetchedAnalytics.filter(
             analytic =>
               analytic.dataElement === row.question_code &&
@@ -189,8 +184,7 @@ describe('fetchData', () => {
           }
 
           return matchingAnalytics.map(analytic => ({ ...row, ...analytic }));
-        })
-        .flat();
+        });
 
       const received = await transform(TransformTable.fromRows(existingTable));
       expect(received).toStrictEqual(TransformTable.fromRows(resultTable));

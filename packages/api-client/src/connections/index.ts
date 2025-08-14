@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 export { ApiConnection } from './ApiConnection';
 export { AuthApi, AuthApiInterface } from './AuthApi';
 export { DataTableApi, DataTableApiInterface } from './DataTableApi';

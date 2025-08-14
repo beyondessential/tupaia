@@ -1,0 +1,96 @@
+[
+  {
+    "id": "test",
+    "code": "test",
+    "name": "test",
+    "rootEntityCode": "test",
+    "items": [
+      {
+        "code": "singleValue",
+        "reportCode": "singleValue",
+        "config": {
+          "name": "Single value",
+          "type": "view",
+          "viewType": "singleValue",
+          "valueType": "number"
+        },
+        "legacy": false
+      },
+      {
+        "code": "singleDate",
+        "reportCode": "singleDate",
+        "config": {
+          "name": "Single date",
+          "type": "view",
+          "viewType": "singleDate"
+        },
+        "legacy": false
+      },
+      {
+        "code": "multiValue",
+        "reportCode": "multiValue",
+        "config": {
+          "name": "Multi value",
+          "type": "view",
+          "viewType": "multiValue"
+        },
+        "legacy": false
+      },
+      {
+        "code": "multiSingleValue",
+        "reportCode": "multiSingleValue",
+        "config": {
+          "name": "Multi single value",
+          "type": "view",
+          "viewType": "multiSingleValue"
+        },
+        "valueType": "text",
+        "legacy": false
+      },
+      {
+        "code": "multiValueRow",
+        "reportCode": "multiValueRow",
+        "config": {
+          "name": "Multi value row",
+          "type": "view",
+          "viewType": "multiValueRow",
+          "presentationOptions": {
+            "rowHeader": {
+              "name": "Facility Name",
+              "color": "white"
+            },
+            "leftColumn": {
+              "color": "white",
+              "header": "Assesment Date 1"
+            },
+            "rightColumn": {
+              "color": "white",
+              "header": "Assesment Date 2"
+            }
+          }
+        },
+        "legacy": false
+      },
+      {
+        "code": "qrCodeVisual",
+        "reportCode": "qrCodeVisual",
+        "config": {
+          "name": "QR code visual",
+          "type": "view",
+          "viewType": "qrCodeVisual"
+        },
+        "legacy": false
+      },
+      {
+        "code": "multiPhotograph",
+        "reportCode": "multiPhotograph",
+        "config": {
+          "name": "Multi photograph",
+          "type": "view",
+          "viewType": "multiPhotograph"
+        },
+        "legacy": false
+      }
+    ]
+  }
+]

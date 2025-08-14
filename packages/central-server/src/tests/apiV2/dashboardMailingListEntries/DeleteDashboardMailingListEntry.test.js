@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import {
   buildAndInsertProjectsAndHierarchies,
@@ -113,7 +108,10 @@ describe('Permissions checker for DeleteDashboardMailingListEntry', async () => 
   describe('DELETE /dashboardMailingListEntries/:id', async () => {
     describe('Insufficient permission', async () => {
       it('Throw an exception when trying to delete a dashboard mailing list entry for a different users email', async () => {
-        await app.grantAccess(DEFAULT_POLICY);
+        await app.grantAccess({
+          DL: ['Public'],
+          KI: ['Public'],
+        });
         const { body: result } = await app.delete(
           `dashboardMailingListEntries/${mailingListEntryDiffUser.id}`,
         );

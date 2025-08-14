@@ -1,14 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class GeographicalAreaType extends DatabaseType {
-  static databaseType = TYPES.GEOGRAPHICAL_AREA;
+export class GeographicalAreaRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.GEOGRAPHICAL_AREA;
 
   // Exposed for access policy creation.
   get organisationUnitCode() {
@@ -34,13 +29,13 @@ class GeographicalAreaType extends DatabaseType {
 }
 
 export class GeographicalAreaModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return GeographicalAreaType;
+  get DatabaseRecordClass() {
+    return GeographicalAreaRecord;
   }
 
   async getAncestorsPath(geographicalAreaId) {
     const geographicalAreaTree = await this.database.findWithParents(
-      TYPES.GEOGRAPHICAL_AREA,
+      RECORDS.GEOGRAPHICAL_AREA,
       geographicalAreaId,
     );
     return Promise.all(

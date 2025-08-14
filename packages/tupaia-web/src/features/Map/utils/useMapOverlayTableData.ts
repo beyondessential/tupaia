@@ -1,23 +1,43 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-import { LegendProps, MeasureData, Series } from '@tupaia/ui-map-components';
+import { useEffect, useRef } from 'react';
+import { LegendProps, Series } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
-import { useEntitiesWithLocation, useEntity, useMapOverlayReport } from '../../../api/queries';
-import { processMeasureData } from './processMeasureData';
-import { useMapOverlays } from '../../../api/queries';
+import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
+import {
+  useEntitiesWithLocation,
+  useEntity,
+  useMapOverlayReport,
+  useMapOverlays,
+} from '../../../api/queries';
 import { Entity, EntityCode, ProjectCode } from '../../../types';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
+import { processMeasureData } from './processMeasureData';
 
 type EntityTypeParam = string | null | undefined;
+
+const usePrevious = value => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value; //assign the value of ref to the argument
+  }, [value]); //this code will run when the value of 'value' changes
+  return ref.current; //in the end, return the current ref value.
+};
+
+const useKeepPreviousData = (projectCode, measureLevel) => {
+  const previousProjectCode = usePrevious(projectCode);
+  const previousMeasureLevel = usePrevious(measureLevel);
+  // we only want to keep the previous data if the project remains the same
+  // and the measure level remains the same
+  return previousProjectCode === projectCode && previousMeasureLevel === measureLevel;
+};
 
 const useMapOverlayEntities = (
   projectCode?: ProjectCode,
   rootEntityCode?: EntityCode,
   includeRootEntity?: boolean,
   measureLevel?: EntityTypeParam,
+  keepPreviousEntitiesData?: boolean,
+  entityAttributesFilter: TupaiaWebMapOverlaysRequest.TranslatedMapOverlay['entityAttributesFilter'] = {},
 ) => {
   return useEntitiesWithLocation(
     projectCode,
@@ -27,10 +47,19 @@ const useMapOverlayEntities = (
         includeRootEntity,
         filter: {
           type: measureLevel,
+          ...Object.entries(entityAttributesFilter).reduce((result, [attribute, filterValue]) => {
+            return {
+              ...result,
+              // convert the filter value to a string if it is an array, so that it gets passed to the server as a comma separated string
+              [`attributes->>${attribute}`]: Array.isArray(filterValue)
+                ? filterValue.join(',')
+                : filterValue,
+            };
+          }, {}),
         },
       },
     },
-    { enabled: !!measureLevel },
+    { enabled: !!measureLevel, keepPreviousData: keepPreviousEntitiesData },
   );
 };
 
@@ -44,6 +73,7 @@ export const useMapOverlayTableData = ({
 }: UseMapOverlayDataProps = {}) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, entityCode);
+  const keepPreviousData = useKeepPreviousData(projectCode, selectedOverlay?.measureLevel);
   const { startDate, endDate } = useDateRanges(
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
     selectedOverlay,
@@ -58,14 +88,29 @@ export const useMapOverlayTableData = ({
     selectedOverlay?.measureLevel?.includes('Country') &&
     entity?.type !== 'project';
 
-  const { data: entities } = useMapOverlayEntities(
+  const {
+    data: entities,
+    error: mapOverlayEntitiesError,
+    refetch: refetchMapOverlayEntities,
+  } = useMapOverlayEntities(
     projectCode,
     rootEntityCode,
     includeRootEntity,
     selectedOverlay?.measureLevel,
+    keepPreviousData,
+    selectedOverlay?.entityAttributesFilter,
   );
 
-  const { data, isLoading, isFetched, isFetching, isIdle } = useMapOverlayReport(
+  const {
+    data,
+    isLoading,
+    isFetched,
+    isFetching,
+    fetchStatus,
+    isPreviousData,
+    error: mapOverlayReportError,
+    refetch: refetchMapOverlayReport,
+  } = useMapOverlayReport(
     projectCode,
     rootEntityCode,
     selectedOverlay,
@@ -73,6 +118,7 @@ export const useMapOverlayTableData = ({
       startDate,
       endDate,
     },
+    keepPreviousData,
   );
 
   const measureData = processMeasureData({
@@ -82,16 +128,24 @@ export const useMapOverlayTableData = ({
       ? [...data?.serieses]?.sort((a: Series, b: Series) => a.key.localeCompare(b.key))
       : [], // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
     hiddenValues: hiddenValues ? hiddenValues : {},
-  }) as MeasureData[];
+  });
+
+  const loadingData = isLoading || isFetching || (!isFetched && fetchStatus !== 'idle');
+
+  const isLoadingDifferentMeasureLevel =
+    (!isPreviousData || data?.measureLevel !== selectedOverlay?.measureLevel) && loadingData;
 
   return {
     ...data,
-    isLoading: isLoading || isFetching || (!isFetched && !isIdle),
+    isLoadingDifferentMeasureLevel,
+    isLoading: loadingData,
     isFetched,
     serieses: data?.serieses,
     measureData,
     activeEntity: entity,
     startDate,
     endDate,
+    error: mapOverlayEntitiesError || mapOverlayReportError,
+    refetch: mapOverlayEntitiesError ? refetchMapOverlayEntities : refetchMapOverlayReport,
   };
 };

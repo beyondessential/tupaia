@@ -1,17 +1,15 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
 import { get } from 'lodash';
+
 import { HttpError } from '@tupaia/utils';
 
-import { ExternalApiSyncQueue } from '../externalApiSync';
-import { Ms1Api } from './api/Ms1Api';
-import { addToSyncLog } from './addToSyncLog';
-import { generateMs1VariableName } from './utilities/generateMs1VariableName';
 import { findQuestionsInSurvey } from '../dataAccessors/findQuestionsInSurvey';
-import { Ms1ChangeValidator } from './Ms1ChangeValidator';
+import { ExternalApiSyncQueue } from '../externalApiSync';
+import winston from '../log';
 import { Ms1ChangeDetailGenerator } from './Ms1ChangeDetailGenerator';
+import { Ms1ChangeValidator } from './Ms1ChangeValidator';
+import { addToSyncLog } from './addToSyncLog';
+import { Ms1Api } from './api/Ms1Api';
+import { generateMs1VariableName } from './utilities/generateMs1VariableName';
 
 const PERIOD_BETWEEN_SYNCS = 1 * 60 * 1000; // 1 minute between syncs
 const MAX_BATCH_SIZE = 10;
@@ -20,12 +18,11 @@ const ENDPOINT_NOT_FOUND = 'Endpoint not found to send data to MS1';
 
 export async function startSyncWithMs1(models) {
   if (process.env.MS1_SYNC_DISABLE === 'true') {
-    // eslint-disable-next-line no-console
-    console.log('Ms1 sync is disabled');
+    winston.info('MS1 sync is disabled');
     return;
   }
 
-  const subscriptions = [models.surveyResponse.databaseType];
+  const subscriptions = [models.surveyResponse.databaseRecord];
   const validator = new Ms1ChangeValidator(models);
   const detailGenerator = new Ms1ChangeDetailGenerator(models);
 
@@ -123,8 +120,7 @@ export async function pushChange(models, change, ms1Api) {
   let body = { distributionId };
   answers.forEach(answer => {
     if (!questionIds.includes(answer.question_id)) {
-      // eslint-disable-next-line no-console
-      console.log(
+      winston.info(
         `Skipping answer:${answer.id} as question_id:${answer.question_id} is not in survey:${surveyResponse.survey_id}`,
       );
       return;

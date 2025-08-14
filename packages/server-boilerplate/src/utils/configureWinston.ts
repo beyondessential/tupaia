@@ -1,14 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import winston from 'winston';
+
+import { getEnvVarOrDefault } from '@tupaia/utils';
 
 // Custom formatter for Errors
 // -- see https://github.com/winstonjs/winston/issues/1338
@@ -61,6 +53,7 @@ export const configureWinston = () => {
           winston.format.colorize(),
           winston.format.simple(),
         ),
+        level: getEnvVarOrDefault('LOG_LEVEL', 'info'),
       }),
     ],
   });

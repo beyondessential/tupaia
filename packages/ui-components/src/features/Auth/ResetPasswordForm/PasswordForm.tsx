@@ -1,10 +1,6 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
-import { LinkProps } from 'react-router-dom';
+import { LinkProps } from 'react-router-dom-v6';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { FORM_FIELD_VALIDATION } from '../../../constants';
 import { Form, FormInput } from '../../Form';
@@ -41,7 +37,7 @@ export const PasswordForm = ({
       options: FORM_FIELD_VALIDATION.PASSWORD,
     },
     {
-      name: 'passwordConfirm',
+      name: 'newPasswordConfirm',
       label: 'Confirm password',
       options: {
         validate: (value: string) =>
@@ -68,6 +64,7 @@ export const PasswordForm = ({
         {formInputs.map(({ name, label, options }) => (
           <FormInput
             key={name}
+            id={name}
             name={name}
             label={label}
             type="password"

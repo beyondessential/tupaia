@@ -1,14 +1,12 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 // @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { useFormContext, Controller } from 'react-hook-form';
 import { FormHelperText } from '@material-ui/core';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 import {
   BinaryQuestion,
+  CodeGeneratorQuestion,
   DateQuestion,
   RadioQuestion,
   TextQuestion,
@@ -21,6 +19,8 @@ import {
   ReadOnlyQuestion,
   PhotoQuestion,
   FileQuestion,
+  UserQuestion,
+  ArithmeticQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
@@ -43,6 +43,7 @@ const QuestionWrapper = styled.div`
 export enum QUESTION_TYPES {
   Binary = BinaryQuestion,
   Checkbox = CheckboxQuestion,
+  CodeGenerator = CodeGeneratorQuestion,
   Date = DateQuestion,
   DateTime = DateTimeQuestion,
   FreeText = TextQuestion,
@@ -56,10 +57,10 @@ export enum QUESTION_TYPES {
   SubmissionDate = DateQuestion,
   DateOfData = DateQuestion,
   PrimaryEntity = EntityQuestion,
-  CodeGenerator = ReadOnlyQuestion,
-  Arithmetic = ReadOnlyQuestion,
+  Arithmetic = ArithmeticQuestion,
   Condition = ReadOnlyQuestion,
   File = FileQuestion,
+  User = UserQuestion,
 }
 
 /**
@@ -73,7 +74,7 @@ export const SurveyQuestion = ({
   ...props
 }: SurveyQuestionFieldProps) => {
   const { control, errors } = useFormContext();
-  const { setFormData, formData } = useSurveyForm();
+  const { updateFormData, formData, isResubmit } = useSurveyForm();
   const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
@@ -85,32 +86,26 @@ export const SurveyQuestion = ({
     return <FieldComponent {...props} name={name} type={type} />;
   }
 
-  // If the question dictates the visibility of any other questions, we need to update the formData when the value changes, so the visibility of other questions can be updated in real time. This doesn't happen that often, so it shouldn't have too much of a performance impact, and we are only updating the formData for the question that is changing, not the entire formData object.
-  const handleOnChange = e => {
-    if (updateFormDataOnChange) {
-      setFormData({
-        [name]: e?.target ? e.target.value : e?.value,
-      });
-    }
-  };
-
   const { mandatory: required, min, max } = validationCriteria || {};
 
   const getDefaultValue = () => {
     if (formData[name] !== undefined) return formData[name];
     // This is so that the default value gets carried through to the component, and dates that have a visible value of 'today' have that value recognised when validating
-    if (type?.includes('Date')) return new Date();
+    if (type?.includes('Date')) {
+      return isResubmit ? null : stripTimezoneFromDate(new Date());
+    }
     return undefined;
   };
 
   const defaultValue = getDefaultValue();
 
-  // display the entity error in it's own component because otherwise it will end up at the bottom of the big list of entities
-  const displayError = errors[name] && errors[name].message && !type.includes('Entity');
-  // Use a Controller so that the fields that require change handlers, values, etc work with react-hook-form, which is uncontrolled by default
+  // Display the entity error in its own component because otherwise it will end up at the bottom of the big list of entities
+  const displayError = errors[name]?.message && !type.includes('Entity');
 
   return (
     <QuestionWrapper>
+      {/* Use a Controller so that the fields that require change handlers, values, etc. work with
+          react-hook-form, which is uncontrolled by default */}
       <Controller
         name={name}
         control={control}
@@ -122,9 +117,16 @@ export const SurveyQuestion = ({
               ...renderProps,
               invalid,
               ref,
-              onChange: e => {
-                handleOnChange(e);
-                onChange(e);
+              onChange: (newValue: unknown, rawValue: unknown = newValue) => {
+                // If the question dictates the visibility of any other questions, we need to update the formData when the value changes,
+                // so the visibility of other questions can be updated in real time. This doesn't happen that often, so it shouldn't have too much of a performance impact,
+                // and we are only updating the formData for the question that is changing, not the entire formData object.
+                if (updateFormDataOnChange) {
+                  updateFormData({
+                    [name]: rawValue,
+                  });
+                }
+                onChange(newValue);
               },
             }}
             required={required}

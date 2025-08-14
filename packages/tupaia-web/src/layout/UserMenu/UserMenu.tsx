@@ -1,20 +1,15 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import MuiMenuIcon from '@material-ui/icons/Menu';
 import { IconButton, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { useLandingPage, useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
+import { MODAL_ROUTES } from '../../constants';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
-import { MODAL_ROUTES } from '../../constants';
 import { UserInfo } from './UserInfo';
-import { ErrorBoundary } from '@tupaia/ui-components';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;
@@ -52,7 +47,7 @@ export const UserMenu = () => {
     landingPage: { primaryHexcode, secondaryHexcode },
   } = useLandingPage();
 
-  const { isLoggedIn, data } = useUser();
+  const { data: user, isLoggedIn } = useUser();
 
   // Create the menu items
   const BaseMenuItem = ({ children, ...props }: any) => (
@@ -63,7 +58,7 @@ export const UserMenu = () => {
 
   const VisitMainSite = (
     <BaseMenuItem key="mainSite" href="https://www.tupaia.org" externalLink>
-      Visit&nbsp;<span>tupaia.org</span>
+      Visit tupaia.org
     </BaseMenuItem>
   );
 
@@ -79,13 +74,16 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
-  const HelpCentre = (
-    <BaseMenuItem
-      key="help"
-      externalLink
-      href="https://beyond-essential.slab.com/topics/support-and-resources-g6piq0i1"
-    >
-      Help centre
+  const datatrakUrl = process.env.REACT_APP_DATATRAK_REDIRECT_URL || 'https://datatrak.tupaia.org';
+  const SubmitData = (
+    <BaseMenuItem key="submitData" href={datatrakUrl} externalLink>
+      Submit data
+    </BaseMenuItem>
+  );
+
+  const SupportCentre = (
+    <BaseMenuItem externalLink href="https://bes-support.zendesk.com" key="support">
+      Support centre
     </BaseMenuItem>
   );
 
@@ -95,22 +93,20 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
+  const RequestCountryAccess = (
+    <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_PROJECT_ACCESS}>
+      Request country access
+    </BaseMenuItem>
+  );
+
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isLoggedIn
-    ? [VisitMainSite, HelpCentre, ChangePassword, Logout]
-    : [VisitMainSite, HelpCentre];
+    ? [VisitMainSite, SupportCentre, ChangePassword, Logout]
+    : [VisitMainSite, SupportCentre];
 
   const baseMenuItems = isLoggedIn
-    ? [
-        ViewProjects,
-        HelpCentre,
-        ChangePassword,
-        <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_COUNTRY_ACCESS}>
-          Request country access
-        </BaseMenuItem>,
-        Logout,
-      ]
-    : [ViewProjects, HelpCentre];
+    ? [ViewProjects, SubmitData, SupportCentre, ChangePassword, RequestCountryAccess, Logout]
+    : [ViewProjects, SubmitData, SupportCentre];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 
@@ -121,12 +117,17 @@ export const UserMenu = () => {
     <ErrorBoundary>
       <UserMenuContainer>
         <UserInfo
-          currentUserUsername={data?.name}
+          user={user}
           isLoggedIn={isLoggedIn}
           isLandingPage={isLandingPage}
           secondaryColor={menuSecondaryColor}
         />
-        <MenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
+        <MenuButton
+          onClick={toggleUserMenu}
+          disableRipple
+          id="user-menu-button"
+          title="Toggle menu"
+        >
           <MenuIcon />
         </MenuButton>
         {/** PopoverMenu is for larger (desktop size) screens, and DrawerMenu is for mobile screens. Each component takes care of the hiding and showing at different screen sizes. Eventually all the props will come from a context */}
@@ -144,7 +145,7 @@ export const UserMenu = () => {
           isLoggedIn={isLoggedIn}
           primaryColor={menuPrimaryColor}
           secondaryColor={menuSecondaryColor}
-          currentUserUsername={data?.name}
+          currentUser={user}
         >
           {menuItems}
         </DrawerMenu>

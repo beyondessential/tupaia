@@ -1,14 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { constructAccessToken } from '@tupaia/auth';
 import { clearTestData, getTestDatabase } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { createBearerHeader } from '@tupaia/utils';
 import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../utilities';
-import { CAT_USER, CAT_USER_SESSION } from './fixtures';
+import { CAT_USER } from './fixtures';
 
 const mockResponseMsg = 'Successfully changed password';
 
@@ -37,7 +32,6 @@ describe('me/changePassword', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId: user.id,
-        refreshToken: CAT_USER_SESSION.refresh_token,
         apiClientUserId: undefined,
       }),
     );

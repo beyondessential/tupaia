@@ -1,10 +1,5 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
 export * from './I18n';
-export * from './isLesmisAdmin';
+export * from './hasAdminPanelAccess';
 export * from './makeEntityLink';
 export * from './search';
 export * from './useAdminPanelUrl';

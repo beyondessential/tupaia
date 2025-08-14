@@ -1,12 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import express, { Express, Request, Response, NextFunction, RequestHandler } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
+import publicIp from 'public-ip';
 import {
   AuthHandler,
   getBaseUrlsForHost,
@@ -17,18 +13,23 @@ import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
 
-import { handleWith, handleError, emptyMiddleware } from '../../utils';
+// @ts-expect-error no types
+import morgan from 'morgan';
+import { handleWith, handleError, emptyMiddleware, initialiseApiClient } from '../../utils';
 import { TestRoute } from '../../routes';
-import { LoginRoute, LogoutRoute, OneTimeLoginRoute } from '../routes';
+import { LoginRoute, LogoutRoute, OneTimeLoginRoute, RequestResetPasswordRoute } from '../routes';
 import { attachSession as defaultAttachSession } from '../session';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
-import { sessionCookie } from './sessionCookie';
 import { SessionModel } from '../models';
-import { logApiRequest } from '../utils';
+import { buildAttachAccessPolicy, logApiRequest } from '../utils';
 import { ServerBoilerplateModelRegistry } from '../../types';
+import { sessionCookie } from './sessionCookie';
+import { AccessPolicyBuilder } from '@tupaia/auth';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const i18n = require('i18n');
+
+const TRUSTED_PROXIES_INTERVAL = 60000; // 1 minute
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -40,6 +41,7 @@ export class ApiBuilder {
   private logApiRequestMiddleware: RequestHandler;
   private attachVerifyLogin: (req: Request, res: Response, next: NextFunction) => void;
   private verifyAuthMiddleware: RequestHandler;
+  private attachAccessPolicy: RequestHandler;
   private version: number;
 
   private translatorConfigured = false;
@@ -47,11 +49,7 @@ export class ApiBuilder {
   // We add handlers at the end so that middlewares and initial routes can be set up first
   private handlers: { add: () => void }[] = [];
 
-  public constructor(
-    transactingConnection: TupaiaDatabase,
-    apiName: string,
-    options: { attachModels: boolean } = { attachModels: false },
-  ) {
+  public constructor(transactingConnection: TupaiaDatabase, apiName: string) {
     this.database = transactingConnection;
     this.models = new ModelRegistry(this.database) as ServerBoilerplateModelRegistry;
     this.apiName = apiName;
@@ -61,6 +59,19 @@ export class ApiBuilder {
     this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
     this.attachVerifyLogin = emptyMiddleware;
     this.verifyAuthMiddleware = emptyMiddleware; // Do nothing by default
+    this.attachAccessPolicy = buildAttachAccessPolicy(new AccessPolicyBuilder(this.models));
+
+    /**
+     * Set trusted proxies
+     */
+    this.startTrustedProxiesInterval();
+
+    /**
+     * Access logs
+     */
+    if (process.env.NODE_ENV !== 'production') {
+      this.app.use(morgan('dev'));
+    }
 
     /**
      * Add middleware
@@ -72,6 +83,9 @@ export class ApiBuilder {
         exposedHeaders: ['Content-Disposition'], // needed for getting download filename
       }),
     );
+    // @ts-ignore
+    // We were previously missing a dev dependency so this TS error never cropped up. This should be
+    // tidied up eventually, but leaving for now. (It hasn’t been an issue, yet, for 4+ years)
     this.app.use(bodyParser.json({ limit: '50mb' }));
     this.app.use(errorHandler());
     this.app.use(sessionCookie());
@@ -80,9 +94,7 @@ export class ApiBuilder {
      * Add singletons to be attached to req for every route
      */
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      if (options.attachModels) {
-        req.models = this.models;
-      }
+      req.models = this.models;
       const context = { apiName: this.apiName }; // context is shared between request and response
       req.ctx = context;
       res.ctx = context;
@@ -117,7 +129,7 @@ export class ApiBuilder {
 
   public useSessionModel(SessionModelClass: new (database: TupaiaDatabase) => SessionModel) {
     const sessionModel = new SessionModelClass(this.database);
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
+    this.app.use((req: Request, _res: Response, next: NextFunction) => {
       req.sessionModel = sessionModel;
       next();
     });
@@ -147,7 +159,7 @@ export class ApiBuilder {
   }
 
   public verifyAuth(verify: (accessPolicy: AccessPolicy) => void) {
-    this.verifyAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    this.verifyAuthMiddleware = (req: Request, _res: Response, next: NextFunction) => {
       try {
         const { session } = req;
         if (!session) {
@@ -165,7 +177,7 @@ export class ApiBuilder {
   }
 
   public verifyLogin(verify: (accessPolicy: AccessPolicy) => void) {
-    this.attachVerifyLogin = (req: Request, res: Response, next: NextFunction) => {
+    this.attachVerifyLogin = (req: Request, _res: Response, next: NextFunction) => {
       req.ctx.verifyLogin = verify;
       next();
     };
@@ -189,9 +201,49 @@ export class ApiBuilder {
     return this;
   }
 
+  public async initialiseApiClient(
+    permissions: { entityCode: string; permissionGroupName: string }[] = [],
+  ) {
+    await initialiseApiClient(this.models, permissions);
+    return this;
+  }
+
+  /**
+   * Call the setTrustedProxies function periodically to update the trusted proxies
+   * because it's possible for the server's IP address to change while server is running
+   */
+  private startTrustedProxiesInterval = () => {
+    this.setTrustedProxies(); // Call it once immediately
+    setInterval(this.setTrustedProxies, TRUSTED_PROXIES_INTERVAL);
+  };
+
+  /**
+   * Dynamically set trusted proxy so that we can trust the IP address of the client
+   */
+  private setTrustedProxies = () => {
+    const trustedProxyIPs = process.env.TRUSTED_PROXY_IPS
+      ? process.env.TRUSTED_PROXY_IPS.split(',').map(ip => ip.trim())
+      : [];
+
+    publicIp
+      .v4()
+      .then(publicIp => {
+        this.app.set('trust proxy', ['loopback', ...trustedProxyIPs, publicIp]);
+      })
+      .catch(err => {
+        console.error('Error fetching public IP:', err);
+      });
+  };
+
   public use(path: string, ...middleware: RequestHandler[]) {
     this.handlers.push({
-      add: () => this.app.use(this.formatPath(path), this.attachSession, ...middleware),
+      add: () =>
+        this.app.use(
+          this.formatPath(path),
+          this.attachSession,
+          this.attachAccessPolicy,
+          ...middleware,
+        ),
     });
     return this;
   }
@@ -206,6 +258,7 @@ export class ApiBuilder {
         this.app[method](
           this.formatPath(path),
           this.attachSession as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+          this.attachAccessPolicy as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
           this.verifyAuthMiddleware as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
           this.logApiRequestMiddleware as RequestHandler<
             Params<T>,
@@ -262,9 +315,16 @@ export class ApiBuilder {
       handleWith(OneTimeLoginRoute),
     );
 
+    this.app.post(
+      this.formatPath('requestResetPassword'),
+      this.logApiRequestMiddleware,
+      handleWith(RequestResetPasswordRoute),
+    );
+
     this.handlers.forEach(handler => handler.add());
 
     this.app.use(handleError);
+
     return this.app;
   }
 

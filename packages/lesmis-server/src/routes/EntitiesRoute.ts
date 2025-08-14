@@ -1,21 +1,19 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { Request, NextFunction } from 'express';
 import { TranslatableResponse, TranslatableRoute } from '@tupaia/server-boilerplate';
-import { EntityConnection } from '../connections';
+import { LESMIS_PROJECT_NAME } from '../constants';
+import { camelcaseKeys } from '@tupaia/tsutils';
 
-export type EntitiesRequest = Request<{ entityCode: string }, any, any, any>;
+export type EntitiesRequest = Request<
+  { entityCode: string },
+  any,
+  any,
+  { includeRootEntity?: string }
+>;
 
 export class EntitiesRoute extends TranslatableRoute<
   EntitiesRequest,
   TranslatableResponse<EntitiesRequest>
 > {
-  private readonly entityConnection: EntityConnection;
-
   public constructor(
     req: EntitiesRequest,
     res: TranslatableResponse<EntitiesRequest>,
@@ -23,7 +21,6 @@ export class EntitiesRoute extends TranslatableRoute<
   ) {
     super(req, res, next);
 
-    this.entityConnection = new EntityConnection(req.session);
     this.translationSchema = {
       domain: 'lesmis',
       layout: {
@@ -39,7 +36,16 @@ export class EntitiesRoute extends TranslatableRoute<
 
   public async buildResponse() {
     const { entityCode } = this.req.params;
-    const queryParameters = this.req.query;
-    return this.entityConnection.getEntities(entityCode, queryParameters);
+    const { includeRootEntity: includeRootEntityParam, ...queryParameters } = this.req.query;
+    const includeRootEntity =
+      includeRootEntityParam !== undefined && includeRootEntityParam.toLocaleLowerCase() === 'true';
+    const entities = await this.req.ctx.services.entity.getDescendantsOfEntity(
+      LESMIS_PROJECT_NAME,
+      entityCode,
+      queryParameters,
+      includeRootEntity,
+    );
+
+    return camelcaseKeys(entities);
   }
 }

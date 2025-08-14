@@ -1,23 +1,18 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 
 import { Request } from 'express';
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatabaseError } from '@tupaia/utils';
 import { MeditrakSyncQueue } from '@tupaia/types';
 import { getSupportedModels, getUnsupportedModelFields } from '../../../sync';
+import { MeditrakAppServerModelRegistry } from '../../../types';
+import { getSyncRecordTranslator } from '../../../sync/appSupportedModels';
 import { buildMeditrakSyncQuery } from './meditrakSyncQuery';
 import { buildPermissionsBasedMeditrakSyncQuery } from './permissionsBasedMeditrakSyncQuery';
 import { supportsPermissionsBasedSync } from './supportsPermissionsBasedSync';
-import { MeditrakAppServerModelRegistry } from '../../../types';
-import { getSyncRecordTranslator } from '../../../sync/appSupportedModels';
 
 type ChangeRecord = {
   action: MeditrakSyncQueue['type'];
@@ -63,7 +58,7 @@ const translateRecordForSync = (
   record: Record<string, unknown>,
 ) => {
   const nullFilteredRecord = filterNullProperties(record);
-  const modelName = models.getModelNameForDatabaseType(recordType);
+  const modelName = models.getModelNameForDatabaseRecord(recordType);
   if (!modelName) {
     throw new Error(`Cannot find model for record type: ${recordType}`);
   }
@@ -80,7 +75,7 @@ const translateRecordForSync = (
 export class PullChangesRoute extends Route<PullChangesRequest> {
   private async getAppSupportColumns(recordType: string) {
     const modelName = getSupportedModels().find(
-      name => this.req.models[name].databaseType === recordType,
+      name => this.req.models[name].databaseRecord === recordType,
     );
     if (!modelName) {
       throw new Error(`Couldn't find model for record type: ${recordType}`);
@@ -149,7 +144,7 @@ export class PullChangesRoute extends Route<PullChangesRequest> {
         const changeObject: ChangeRecord = { action, recordType, timestamp };
         if (action === 'delete') {
           changeObject.record = { id: recordId };
-          if (recordType === TYPES.GEOGRAPHICAL_AREA) {
+          if (recordType === RECORDS.GEOGRAPHICAL_AREA) {
             // TODO LEGACY Deal with this bug on app end for v3 api
             changeObject.recordType = 'area';
           }

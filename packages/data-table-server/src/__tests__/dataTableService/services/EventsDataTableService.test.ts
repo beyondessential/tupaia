@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import MockDate from 'mockdate';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
@@ -87,7 +82,7 @@ const fetchFakeEvents = (
 const fetchFakeDataGroup = (dataGroupCode: string) => {
   const eventsForDataGroup = TEST_EVENTS[dataGroupCode] || [];
   const dataElements = Array.from(
-    new Set(eventsForDataGroup.map(({ dataValues }) => Object.keys(dataValues)).flat()),
+    new Set(eventsForDataGroup.flatMap(({ dataValues }) => Object.keys(dataValues))),
   ).map(dataElement => ({ code: dataElement, name: dataElement }));
   return { code: dataGroupCode, name: dataGroupCode, dataElements };
 };
@@ -159,7 +154,7 @@ describe('EventsDataTableService', () => {
           dataGroupCode: 'PSSS_WNR',
           startDate: 'cat',
         },
-        'startDate must be a `date` type',
+        'startDate must be a valid ISO 8601 date: YYYY-MM-DD',
       ],
       [
         'endDate wrong format',
@@ -169,7 +164,7 @@ describe('EventsDataTableService', () => {
           dataGroupCode: 'PSSS_WNR',
           endDate: 'dog',
         },
-        'endDate must be a `date` type',
+        'endDate must be a valid ISO 8601 date: YYYY-MM-DD',
       ],
       [
         'aggregations wrong format',
@@ -208,8 +203,8 @@ describe('EventsDataTableService', () => {
         config: { innerType: { required: true, type: 'string' }, type: 'dataElementCodes' },
         name: 'dataElementCodes',
       },
-      { config: { defaultValue: new Date('2018-12-01'), type: 'date' }, name: 'startDate' },
-      { config: { defaultValue: new Date('2023-12-31'), type: 'date' }, name: 'endDate' },
+      { config: { defaultValue: '2018-12-01', type: 'string' }, name: 'startDate' },
+      { config: { defaultValue: '2023-12-31', type: 'string' }, name: 'endDate' },
     ]);
   });
 

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 export interface Analytic {
   dataElement: string;
   organisationUnit: string;
@@ -12,17 +7,19 @@ export interface Analytic {
 
 export interface DataElementMetadata {
   code: string;
-  name: string;
+  name?: string;
 }
 
-export interface DhisMetadataObject extends DataElementMetadata {
+export interface DhisMetadataObject {
   id: string;
+  code: string;
+  name: string;
   options?: Record<string, string>;
 }
 
 export interface DataGroupMetadata {
   code: string;
-  name: string;
+  name?: string;
   dataElements?: DataElementMetadata[];
 }
 
@@ -77,8 +74,3 @@ export interface Diagnostics {
   errors: string[];
   wasSuccessful: boolean;
 }
-
-export type Metadata = {
-  code: string;
-  [key: string]: any; // any metadata
-};

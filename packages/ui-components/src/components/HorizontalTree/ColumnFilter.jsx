@@ -1,10 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useCallback, useState } from 'react';
-import { TextField } from '@tupaia/ui-components';
+import { TextField } from '../Inputs';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 

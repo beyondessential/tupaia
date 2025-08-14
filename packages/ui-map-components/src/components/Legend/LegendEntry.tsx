@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
@@ -36,7 +31,7 @@ const Label = styled.div`
 
 interface LegendEntryProps {
   marker: React.ReactNode;
-  label: string;
+  label?: string;
   value: Value;
   dataKey?: string;
   onClick?: LegendProps['setValueHidden'];

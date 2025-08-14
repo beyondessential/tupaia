@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import {
   findOrCreateDummyRecord,
@@ -35,6 +30,8 @@ describe('Permissions checker for GETDashboardMailingListEntries', async () => {
   const { models } = app;
   let nationalDashboard1;
   let nationalDashboard2;
+  let nationalDashboard1MailingList;
+  let nationalDashboard2MailingList;
   const nationalDashboard1MailingListEntries = [];
   const nationalDashboard2MailingListEntries = [];
 
@@ -58,22 +55,16 @@ describe('Permissions checker for GETDashboardMailingListEntries', async () => {
     ({ nationalDashboard1, nationalDashboard2 } = await setupDashboardTestData(models));
 
     // Create the mailing list entries
-    const nationalDashboard1MailingList = await findOrCreateDummyRecord(
-      models.dashboardMailingList,
-      {
-        dashboard_id: nationalDashboard1.id,
-        project_id: project.id,
-        entity_id: entities.find(({ code }) => code === 'KI').id,
-      },
-    );
-    const nationalDashboard2MailingList = await findOrCreateDummyRecord(
-      models.dashboardMailingList,
-      {
-        dashboard_id: nationalDashboard2.id,
-        project_id: project.id,
-        entity_id: entities.find(({ code }) => code === 'LA').id,
-      },
-    );
+    nationalDashboard1MailingList = await findOrCreateDummyRecord(models.dashboardMailingList, {
+      dashboard_id: nationalDashboard1.id,
+      project_id: project.id,
+      entity_id: entities.find(({ code }) => code === 'KI').id,
+    });
+    nationalDashboard2MailingList = await findOrCreateDummyRecord(models.dashboardMailingList, {
+      dashboard_id: nationalDashboard2.id,
+      project_id: project.id,
+      entity_id: entities.find(({ code }) => code === 'LA').id,
+    });
     nationalDashboard1MailingListEntries.push(
       await findOrCreateDummyRecord(models.dashboardMailingListEntry, {
         dashboard_mailing_list_id: nationalDashboard1MailingList.id,
@@ -125,35 +116,28 @@ describe('Permissions checker for GETDashboardMailingListEntries', async () => {
   });
 
   describe('GET /dashboardMailingListEntries', async () => {
-    let filterString;
-    let dashboardMailingListEntryIds;
-
-    before(() => {
-      dashboardMailingListEntryIds = nationalDashboard1MailingListEntries
-        .map(({ id }) => id)
-        .concat(nationalDashboard2MailingListEntries.map(({ id }) => id));
-
-      filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardMailingListEntryIds.join(
-        '","',
-      )}"]}}`;
-    });
-
     it('Sufficient permissions: Return only the mailing list entries of dashboards we have permissions for', async () => {
       const policy = {
         DL: ['Public'],
         KI: ['Admin'],
       };
       await app.grantAccess(policy);
-      const { body: results } = await app.get(`dashboardMailingListEntries?${filterString}`);
+      const { body: results } = await app.get(`dashboardMailingListEntries`);
 
       expect(results.map(r => r.id)).to.deep.equal([nationalDashboard1MailingListEntries[0].id]);
     });
 
     it('Sufficient permissions: Should return the all dashboard mailing list entries if we have BES Admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
-      const { body: results } = await app.get(`dashboardMailingListEntries?${filterString}`);
+      const { body: results } = await app.get(`dashboardMailingListEntries`);
 
-      expect(results.map(r => r.id).sort()).to.deep.equal(dashboardMailingListEntryIds.sort());
+      const allDashboardMailingListEntries = nationalDashboard1MailingListEntries.concat(
+        nationalDashboard2MailingListEntries,
+      );
+
+      expect(results.map(r => r.id).sort()).to.deep.equal(
+        allDashboardMailingListEntries.map(r => r.id).sort(),
+      );
     });
 
     it('Insufficient permissions: Should return an empty array if we have permissions for no dashboards', async () => {
@@ -161,7 +145,35 @@ describe('Permissions checker for GETDashboardMailingListEntries', async () => {
         DL: ['Public'],
       };
       await app.grantAccess(policy);
-      const { body: results } = await app.get(`dashboardMailingListEntries?${filterString}`);
+      const { body: results } = await app.get(`dashboardMailingListEntries`);
+
+      expect(results).to.be.empty;
+    });
+  });
+
+  describe('GET /dashboardMailingLists/:parentId/dashboardMailingListEntries', async () => {
+    it('Sufficient permissions: Return mailing list entries for a dashboard we have permissions for', async () => {
+      const policy = {
+        DL: ['Public'],
+        KI: ['Admin'],
+      };
+      await app.grantAccess(policy);
+      const { body: results } = await app.get(
+        `dashboardMailingLists/${nationalDashboard1MailingList.id}/dashboardMailingListEntries`,
+      );
+
+      expect(results.map(r => r.id)).to.deep.equal([nationalDashboard1MailingListEntries[0].id]);
+    });
+
+    it('Insufficient permissions: Should return an empty array if we do not have permissions for the dashboard', async () => {
+      const policy = {
+        DL: ['Public'],
+        KI: ['Admin'],
+      };
+      await app.grantAccess(policy);
+      const { body: results } = await app.get(
+        `dashboardMailingLists/${nationalDashboard2MailingList.id}/dashboardMailingListEntries`,
+      );
 
       expect(results).to.be.empty;
     });

@@ -1,13 +1,8 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 
 export const findQuestionsInSurvey = async (models, surveyId) => {
   return models.database.find(
-    TYPES.QUESTION,
+    RECORDS.QUESTION,
     { survey_id: surveyId },
     {
       columns: [
@@ -29,14 +24,17 @@ export const findQuestionsInSurvey = async (models, surveyId) => {
       ],
       multiJoin: [
         {
-          joinWith: TYPES.SURVEY_SCREEN_COMPONENT,
-          joinCondition: [`${TYPES.QUESTION}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.question_id`],
+          joinWith: RECORDS.SURVEY_SCREEN_COMPONENT,
+          joinCondition: [
+            `${RECORDS.QUESTION}.id`,
+            `${RECORDS.SURVEY_SCREEN_COMPONENT}.question_id`,
+          ],
         },
         {
-          joinWith: TYPES.SURVEY_SCREEN,
+          joinWith: RECORDS.SURVEY_SCREEN,
           joinCondition: [
-            `${TYPES.SURVEY_SCREEN}.id`,
-            `${TYPES.SURVEY_SCREEN_COMPONENT}.screen_id`,
+            `${RECORDS.SURVEY_SCREEN}.id`,
+            `${RECORDS.SURVEY_SCREEN_COMPONENT}.screen_id`,
           ],
         },
       ],

@@ -1,20 +1,14 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import express from 'express';
 import multer from 'multer';
-
-import { catchAsyncErrors, emailAfterTimeout } from '../middleware';
+import { getTempDirectory } from '@tupaia/server-utils';
+import { emailAfterTimeout } from '@tupaia/server-boilerplate';
+import { catchAsyncErrors } from '../middleware';
 
 import { importOptionSets } from './importOptionSets';
 import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importUsers } from './importUsers';
 import { importSurveyResponses, constructImportEmail } from './importSurveyResponses';
-import { importDisaster } from './importDisaster';
-import { getTempDirectory } from '../../utilities';
 import { importDataElements } from './importDataElements';
 import { importDataElementDataServices } from './importDataElementDataServices';
 import { importUserPermissions } from './importUserPermissions';
@@ -48,7 +42,6 @@ importRoutes.post(
   upload.single('surveyResponses'),
   catchAsyncErrors(importSurveyResponses),
 );
-importRoutes.post('/disasters', upload.single('disasters'), catchAsyncErrors(importDisaster));
 importRoutes.post('/users', upload.single('users'), catchAsyncErrors(importUsers));
 importRoutes.post('/optionSets', upload.single('optionSets'), catchAsyncErrors(importOptionSets));
 importRoutes.post(

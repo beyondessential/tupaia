@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { DataBrokerModelRegistry, DataGroup, DataSourceTypeInstance, Entity } from '../types';
 import { DataServiceMapping, DataServiceMappingEntry } from './DataServiceMapping';
 
@@ -27,9 +22,11 @@ export class DataServiceResolver {
     dataSources: DataSourceTypeInstance[],
     orgUnit?: Entity,
   ): Promise<DataServiceMapping> {
-    const dataElements = dataSources.filter(ds => ds.databaseType === TYPES.DATA_ELEMENT);
-    const dataGroups = dataSources.filter(ds => ds.databaseType === TYPES.DATA_GROUP);
-    const syncGroups = dataSources.filter(ds => ds.databaseType === TYPES.DATA_SERVICE_SYNC_GROUP);
+    const dataElements = dataSources.filter(ds => ds.databaseRecord === RECORDS.DATA_ELEMENT);
+    const dataGroups = dataSources.filter(ds => ds.databaseRecord === RECORDS.DATA_GROUP);
+    const syncGroups = dataSources.filter(
+      ds => ds.databaseRecord === RECORDS.DATA_SERVICE_SYNC_GROUP,
+    );
 
     const mapping = new DataServiceMapping();
     mapping.dataElementMapping = await this.resolveDataElements(dataElements, orgUnit);

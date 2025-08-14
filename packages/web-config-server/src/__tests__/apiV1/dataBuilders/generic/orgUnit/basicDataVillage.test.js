@@ -2,7 +2,7 @@ import { createJestMockInstance } from '@tupaia/utils';
 import { basicDataVillage } from '/apiV1/dataBuilders/generic/orgUnit/basicDataVillage';
 
 const createEntity = parents =>
-  createJestMockInstance('@tupaia/database', 'EntityType', {
+  createJestMockInstance('@tupaia/database', 'EntityRecord', {
     getParent: async hierarchyId => parents.find(parent => parent?.hierarchy === hierarchyId),
   });
 

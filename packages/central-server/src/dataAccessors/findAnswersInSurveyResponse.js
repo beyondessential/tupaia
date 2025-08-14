@@ -1,9 +1,4 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
-import { TYPES, JOIN_TYPES, runDatabaseFunctionInBatches } from '@tupaia/database';
+import { RECORDS, JOIN_TYPES, runDatabaseFunctionInBatches } from '@tupaia/database';
 
 /**
  * Returns the answers to a given survey response in the order they appear in the survey
@@ -25,9 +20,9 @@ export const findAnswersInSurveyResponse = async (
       ? {
           ...options,
           columns: [
-            { [`${TYPES.QUESTION}.id`]: 'question.id' },
+            { [`${RECORDS.QUESTION}.id`]: 'question.id' },
             { text: 'answer.text' },
-            { [`${TYPES.QUESTION}.text`]: 'question.text' },
+            { [`${RECORDS.QUESTION}.text`]: 'question.text' },
             { type: 'question.type' },
             ...(options.columns ? options.columns : []),
           ],
@@ -37,36 +32,36 @@ export const findAnswersInSurveyResponse = async (
 
   const queryDatabase = surveyResponseIdFilter =>
     models.database[queryMethod](
-      TYPES.SURVEY_RESPONSE,
+      RECORDS.SURVEY_RESPONSE,
       { survey_response_id: surveyResponseIdFilter, ...criteria },
       {
         ...findOnlyOptions,
         multiJoin: [
           {
-            joinWith: TYPES.SURVEY_SCREEN,
+            joinWith: RECORDS.SURVEY_SCREEN,
             joinCondition: [
-              `${TYPES.SURVEY_SCREEN}.survey_id`,
-              `${TYPES.SURVEY_RESPONSE}.survey_id`,
+              `${RECORDS.SURVEY_SCREEN}.survey_id`,
+              `${RECORDS.SURVEY_RESPONSE}.survey_id`,
             ],
           },
           {
-            joinWith: TYPES.SURVEY_SCREEN_COMPONENT,
+            joinWith: RECORDS.SURVEY_SCREEN_COMPONENT,
             joinCondition: [
-              `${TYPES.SURVEY_SCREEN}.id`,
-              `${TYPES.SURVEY_SCREEN_COMPONENT}.screen_id`,
+              `${RECORDS.SURVEY_SCREEN}.id`,
+              `${RECORDS.SURVEY_SCREEN_COMPONENT}.screen_id`,
             ],
           },
           {
-            joinWith: TYPES.ANSWER,
+            joinWith: RECORDS.ANSWER,
             joinType: JOIN_TYPES.FULL_OUTER,
             joinConditions: [
-              [`${TYPES.ANSWER}.survey_response_id`, `${TYPES.SURVEY_RESPONSE}.id`],
-              [`${TYPES.ANSWER}.question_id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.question_id`],
+              [`${RECORDS.ANSWER}.survey_response_id`, `${RECORDS.SURVEY_RESPONSE}.id`],
+              [`${RECORDS.ANSWER}.question_id`, `${RECORDS.SURVEY_SCREEN_COMPONENT}.question_id`],
             ],
           },
           {
-            joinWith: TYPES.QUESTION,
-            joinCondition: [`${TYPES.QUESTION}.id`, `${TYPES.ANSWER}.question_id`],
+            joinWith: RECORDS.QUESTION,
+            joinCondition: [`${RECORDS.QUESTION}.id`, `${RECORDS.ANSWER}.question_id`],
           },
         ],
       },

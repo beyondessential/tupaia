@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
@@ -30,6 +25,7 @@ const NumResults = styled.span`
 
 const StyledLink = styled(Link)`
   display: flex;
+  user-select: all; // make the text selectable
   span {
     flex: 1;
     overflow: hidden;
@@ -38,7 +34,7 @@ const StyledLink = styled(Link)`
   }
   .MuiSvgIcon-root {
     width: 16px;
-    color: ${props => props.theme.palette.text.tertiary};
+    color: ${props => props.theme.palette.text.secondary};
     margin-left: 15px;
   }
 `;

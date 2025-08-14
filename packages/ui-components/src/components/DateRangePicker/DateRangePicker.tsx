@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import React, { useState } from 'react';
 import { Moment } from 'moment';
 import styled from 'styled-components';
@@ -16,11 +10,12 @@ import {
   IconButton as MuiIconButton,
 } from '@material-ui/core';
 import { DateRange, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { DatePickerOffsetSpec } from '@tupaia/types';
 import { GRANULARITIES, GRANULARITY_SHAPE } from '@tupaia/utils';
-import { useDateRangePicker } from './useDateRangePicker';
-import { DatePickerDialog } from './DatePickerDialog';
 import { FlexStart } from '../Layout';
 import { WeekDisplayFormatType } from '../../types';
+import { useDateRangePicker } from './useDateRangePicker';
+import { DatePickerDialog } from './DatePickerDialog';
 
 const IconButton = styled(MuiIconButton)`
   background: white;
@@ -74,8 +69,8 @@ const Label = styled(Typography)`
 `;
 
 interface DateRangePickerProps {
-  startDate?: Moment;
-  endDate?: Moment;
+  startDate?: Moment | string;
+  endDate?: Moment | string;
   minDate?: string;
   maxDate?: string;
   granularity?: typeof GRANULARITY_SHAPE;
@@ -83,6 +78,8 @@ interface DateRangePickerProps {
   isLoading?: boolean;
   weekDisplayFormat?: WeekDisplayFormatType;
   dialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
+  dateOffset?: DatePickerOffsetSpec;
+  dateRangeDelimiter?: string;
 }
 
 export const DateRangePicker = ({
@@ -95,6 +92,8 @@ export const DateRangePicker = ({
   isLoading = false,
   weekDisplayFormat,
   dialogProps,
+  dateOffset,
+  dateRangeDelimiter,
 }: DateRangePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -114,6 +113,8 @@ export const DateRangePicker = ({
     granularity,
     onSetDates,
     weekDisplayFormat,
+    dateOffset,
+    dateRangeDelimiter,
   });
 
   const handleOpen = () => {
@@ -164,6 +165,8 @@ export const DateRangePicker = ({
         onSetNewDates={handleDateChange}
         weekDisplayFormat={weekDisplayFormat}
         muiDialogProps={dialogProps}
+        dateOffset={dateOffset}
+        dateRangeDelimiter={dateRangeDelimiter}
       />
     </>
   );

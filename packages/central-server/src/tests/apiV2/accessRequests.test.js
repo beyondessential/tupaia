@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { TEST_USER_EMAIL, TestableApp } from '../testUtilities';
@@ -27,7 +22,7 @@ describe('Access Requests', () => {
   };
 
   const requestCountryAccess = async (userId, entityId, projectCode) => {
-    return app.post(`user/${userId}/requestCountryAccess`, {
+    return app.post('me/requestCountryAccess', {
       body: {
         entityIds: [entityId],
         message: "E rab'a te kaitiboo! / Pleased to meet you",
@@ -55,7 +50,7 @@ describe('Access Requests', () => {
 
       const response1 = await requestCountryAccess(userId, entityId, 'unfpa');
       expect(response1.statusCode).to.equal(200);
-      expect(response1.body).to.deep.equal({ message: 'Country access requested.' });
+      expect(response1.body).to.deep.equal({ message: 'Country access requested' });
 
       const { id: accessRequestId } = await models.accessRequest.findOne({
         user_id: userId,
@@ -88,7 +83,7 @@ describe('Access Requests', () => {
 
       const response1 = await requestCountryAccess(userId, entityId, 'unfpa');
       expect(response1.statusCode).to.equal(200);
-      expect(response1.body).to.deep.equal({ message: 'Country access requested.' });
+      expect(response1.body).to.deep.equal({ message: 'Country access requested' });
 
       const { id: accessRequestId } = await models.accessRequest.findOne({
         user_id: userId,

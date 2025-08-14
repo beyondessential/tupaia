@@ -1,34 +1,39 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
-import { useActivityFeed } from '../../../api/queries';
-import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
 import styled from 'styled-components';
-import { ActivityFeedItem } from './ActivityFeedItem';
+import { Link } from '@material-ui/core';
+import { useCurrentProjectActivityFeed } from '../../../api/queries';
 import { PinIcon as BasePinIcon } from '../../../components';
+import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
+import { ActivityFeedItem } from './ActivityFeedItem';
 
 const PinIcon = styled(BasePinIcon)`
   position: absolute;
-  top: 1.7rem;
-  left: -1.2rem;
+  top: 1.5rem;
+  left: 1.3rem;
   font-size: 1rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    left: -1.3rem;
+  }
 `;
 
 export const PinnedFeedItem = () => {
-  const { data: activityFeed } = useActivityFeed();
+  const { data: activityFeed } = useCurrentProjectActivityFeed();
 
   if (!activityFeed || !activityFeed?.pages?.length) return null;
 
   const { pinned } = activityFeed.pages[0];
 
   if (!pinned) return null;
+  const { link } = pinned.templateVariables;
   return (
-    <ActivityFeedItem>
+    <ActivityFeedItem
+      button={!!link}
+      component={link ? Link : undefined}
+      href={link}
+      target="_blank"
+    >
       <PinIcon />
-      <ActivityFeedMarkdownItem feedItem={pinned} />
+      <ActivityFeedMarkdownItem feedItem={pinned} isPinned />
     </ActivityFeedItem>
   );
 };

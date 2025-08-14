@@ -1,18 +1,13 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { ObjectValidator, constructRecordExistsWithId } from '@tupaia/utils';
 
 import { EditHandler } from '../EditHandler';
 import {
   assertBESAdminAccess,
   assertAnyPermissions,
-  assertAdminPanelAccess,
   assertPermissionGroupsAccess,
 } from '../../permissions';
+import { assertMapOverlaysEditPermissions } from '../mapOverlays';
 
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
   newObject[fieldName] !== undefined && newObject[fieldName] !== oldObject[fieldName];
@@ -30,12 +25,10 @@ const buildReport = async (models, reportRecord) => {
 
 export class EditMapOverlayVisualisation extends EditHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(
-      assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You require Tupaia Admin Panel or BES Admin permission to create visualisations.',
-      ),
-    );
+    const mapOverlayChecker = accessPolicy =>
+      assertMapOverlaysEditPermissions(accessPolicy, this.models, this.recordId);
+
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
   }
 
   getMapOverlayRecord() {
@@ -74,7 +67,7 @@ export class EditMapOverlayVisualisation extends EditHandler {
 
   async validateRecordExists() {
     const validationCriteria = {
-      id: [constructRecordExistsWithId(this.database, TYPES.MAP_OVERLAY)],
+      id: [constructRecordExistsWithId(this.database, RECORDS.MAP_OVERLAY)],
     };
 
     const validator = new ObjectValidator(validationCriteria);
@@ -87,13 +80,6 @@ export class EditMapOverlayVisualisation extends EditHandler {
   }
 
   async editRecord() {
-    await this.assertPermissions(
-      assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You require Viz Builder User or BES Admin permission to create visualisations.',
-      ),
-    );
-
     const mapOverlayRecord = this.getMapOverlayRecord();
     const reportRecord = this.getReportRecord();
 

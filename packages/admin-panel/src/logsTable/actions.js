@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { makeSubstitutionsInString } from '../utilities';
 import {
   LOGS_DATA_FETCH_BEGIN,
@@ -70,27 +65,34 @@ const fetchLogsFirstTime = async (
   }
 };
 
-export const openLogsModal = (
-  { logsEndpoint, logsCountEndpoint, logsPerPage, title },
-  recordId,
-  recordData,
-) => async (dispatch, getState, { api }) => {
-  await fetchLogsFirstTime(dispatch, api, logsCountEndpoint, logsEndpoint, logsPerPage, recordData);
-  dispatch({
-    type: LOGS_OPEN,
-    recordData,
-    recordId,
-    logsEndpoint,
-    logsCountEndpoint,
-    logsPerPage,
-    title: getModalTitle(title, recordData),
-  });
-};
+export const openLogsModal =
+  ({ logsEndpoint, logsCountEndpoint, logsPerPage, title }, recordId, recordData) =>
+  async (dispatch, getState, { api }) => {
+    await fetchLogsFirstTime(
+      dispatch,
+      api,
+      logsCountEndpoint,
+      logsEndpoint,
+      logsPerPage,
+      recordData,
+    );
+    dispatch({
+      type: LOGS_OPEN,
+      recordData,
+      recordId,
+      logsEndpoint,
+      logsCountEndpoint,
+      logsPerPage,
+      title: getModalTitle(title, recordData),
+    });
+  };
 
-export const changeLogsTablePage = page => async (dispatch, getState, { api }) => {
-  const { logsEndpoint, logsPerPage, recordData } = getState().logs;
-  await fetchNewPageOfLogs(dispatch, api, logsEndpoint, page, logsPerPage, recordData);
-};
+export const changeLogsTablePage =
+  page =>
+  async (dispatch, getState, { api }) => {
+    const { logsEndpoint, logsPerPage, recordData } = getState().logs;
+    await fetchNewPageOfLogs(dispatch, api, logsEndpoint, page, logsPerPage, recordData);
+  };
 
 export const closeLogsModal = () => ({
   type: LOGS_DISMISS,

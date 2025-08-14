@@ -1,4 +1,3 @@
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import '@babel/polyfill';
 import http from 'http';
 import express from 'express';
@@ -6,6 +5,7 @@ import compression from 'compression';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import morgan from 'morgan';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
@@ -13,13 +13,21 @@ import { bindUserSessions } from './authSession';
 import { modelClasses } from './models';
 import { handleError, logApiRequest } from './utils';
 import './log';
+import { configureEnv } from './configureEnv';
+
+configureEnv();
 
 export async function createApp() {
   const app = express();
 
   app.server = http.createServer(app);
-  // Uncomment to log out incoming requests
-  // app.use(morgan('dev'));
+
+  /**
+   * Access logs
+   */
+  if (process.env.NODE_ENV !== 'production') {
+    app.use(morgan(':method :url :status :req[Authorization]'));
+  }
 
   app.use(compression());
 

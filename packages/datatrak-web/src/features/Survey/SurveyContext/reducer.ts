@@ -1,28 +1,31 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import { SurveyScreenComponent, SurveyScreen } from '../../../types';
+import { SurveyScreen, SurveyScreenComponent } from '../../../types';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 
-export type SurveyFormContextType = {
-  startTime: string;
-  formData: Record<string, any>;
+export interface SurveyFormContextType {
   activeScreen: SurveyScreenComponent[];
-  isLast: boolean;
-  numberOfScreens: number;
-  screenNumber: number | null;
-  screenHeader?: string;
-  displayQuestions: SurveyScreenComponent[];
-  sideMenuOpen?: boolean;
-  isReviewScreen?: boolean;
-  surveyScreens?: SurveyScreen[];
-  visibleScreens?: SurveyScreen[];
-  surveyStartTime?: string;
-  isSuccessScreen?: boolean;
+  cancelModalConfirmLink: string;
   cancelModalOpen: boolean;
-};
+  countryCode: string | undefined;
+  displayQuestions: SurveyScreenComponent[];
+  formData: Record<string, any>;
+  isLast: boolean;
+  isResponseScreen: boolean;
+  isResubmit: boolean;
+  isReviewScreen: boolean;
+  isSuccessScreen?: boolean;
+  numberOfScreens: number;
+  primaryEntityQuestion?: SurveyScreenComponent | null;
+  screenDetail?: string | null;
+  screenHeader?: string;
+  screenNumber: number | null;
+  sideMenuOpen?: boolean;
+  startTime: string;
+  surveyCode?: string;
+  surveyProjectCode?: string;
+  surveyScreens?: SurveyScreen[];
+  surveyStartTime?: string;
+  visibleScreens?: SurveyScreen[];
+}
 
 export const surveyReducer = (
   state: SurveyFormContextType,
@@ -56,6 +59,7 @@ export const surveyReducer = (
       return {
         ...state,
         cancelModalOpen: true,
+        cancelModalConfirmLink: action.payload as string,
       };
     case ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION:
       return {

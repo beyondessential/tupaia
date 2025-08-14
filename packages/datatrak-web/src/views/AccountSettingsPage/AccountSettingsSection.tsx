@@ -1,9 +1,4 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, PaperProps, Typography } from '@material-ui/core';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { AccountSettingsColumn } from './AccountSettingsColumn';
@@ -12,41 +7,44 @@ const Wrapper = styled(Paper).attrs({
   elevation: 0,
   component: 'section',
 })`
-  padding: 0.8rem;
-  margin-top: 1.5rem;
-  display: flex;
+  column-gap: 2rem;
+  display: block flex;
   flex-direction: column;
+  margin-block-start: 1.5rem;
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
+    gap: 2.5rem;
     justify-content: space-between;
     padding: 2.5rem;
   }
 `;
 
-const Title = styled(Typography).attrs({
+const Heading = styled(Typography).attrs({
   variant: 'h2',
 })`
   font-size: 1rem;
-  margin-bottom: 0.6rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  margin-block-end: 0.6rem;
 `;
 
-interface AccountSettingsSectionProps {
-  title?: ReactNode;
+interface AccountSettingsSectionProps extends PaperProps {
+  heading?: ReactNode;
   description?: ReactNode;
   children?: ReactNode;
 }
 
 export const AccountSettingsSection = ({
-  title,
+  heading,
   description,
   children,
 }: AccountSettingsSectionProps) => {
   return (
     <Wrapper>
       <AccountSettingsColumn>
-        <Title>{title}</Title>
-        {description}
+        <Heading>{heading}</Heading>
+        <Typography color="textSecondary">{description}</Typography>
       </AccountSettingsColumn>
       {children}
     </Wrapper>

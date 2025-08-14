@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
@@ -14,16 +10,13 @@ import {
   Text as RechartText,
   LabelProps,
 } from 'recharts';
+import { ChartReport, GaugeChartConfig } from '@tupaia/types';
 import { BLUE, TRANS_BLACK, WHITE } from '../../constants';
 import { isMobile } from '../../utils';
-import { ViewContent } from '../../types';
-
-interface CustomViewContent extends Omit<ViewContent, 'data'> {
-  data: { value: string | number }[];
-}
 
 interface GaugeChartProps {
-  viewContent: CustomViewContent;
+  config: GaugeChartConfig;
+  report: ChartReport;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
@@ -45,12 +38,14 @@ const getHeight = (isExporting?: boolean, isEnlarged?: boolean, isMobileSize?: b
 };
 
 export const GaugeChart = ({
-  viewContent,
+  config,
+  report,
   isExporting = false,
   isEnlarged = false,
   onItemClick = () => {},
 }: GaugeChartProps) => {
-  const { data, color = BLUE, ...restOfConfigs } = viewContent;
+  const { color = BLUE, ...restOfConfigs } = config;
+  const { data = [] } = report;
   const isMobileSize = isMobile(isExporting);
 
   const generateElements = () => {
@@ -68,11 +63,10 @@ export const GaugeChart = ({
   };
 
   const { elements, cellComponents } = useMemo(() => generateElements(), [data]);
-  const height = useMemo(() => getHeight(isExporting, isEnlarged, isMobileSize), [
-    isExporting,
-    isEnlarged,
-    isMobileSize,
-  ]);
+  const height = useMemo(
+    () => getHeight(isExporting, isEnlarged, isMobileSize),
+    [isExporting, isEnlarged, isMobileSize],
+  );
 
   const responsiveStyle = isEnlarged || isMobileSize || isExporting ? 1.5 : 1;
   const innerRadius = 60 * responsiveStyle;

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 /* eslint-disable jest/expect-expect */
 
 import { getTestModels, setupTest } from '@tupaia/database';

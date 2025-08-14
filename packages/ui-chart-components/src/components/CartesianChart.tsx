@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useEffect, useState } from 'react';
 import get from 'lodash.get';
 import {
@@ -10,21 +6,21 @@ import {
   ComposedChart,
   LineChart,
   Legend,
-  ReferenceArea,
   ResponsiveContainer,
   Tooltip,
   LegendProps,
 } from 'recharts';
-import { BaseChartConfig, CartesianChartConfig, ValueType } from '@tupaia/types';
+import { ChartReport, ChartType, isComposedChartConfig } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { ChartType, ViewContent, LegendPosition } from '../types';
+import { LegendPosition, CartesianChartConfig } from '../types';
+import { isMobile } from '../utils';
 import {
   BarChart as BarChartComponent,
   LineChart as LineChartComponent,
   AreaChart as AreaChartComponent,
 } from './Charts';
-import { getCartesianLegend, ReferenceLines, ChartTooltip as CustomTooltip } from './Reference';
-import { isMobile } from '../utils';
+import { ReferenceLines, ChartTooltip as CustomTooltip } from './Reference';
+import { getCartesianChartLegend } from './Legend';
 import { XAxis as XAxisComponent, YAxes } from './Axes';
 
 const { Area, Bar, Composed, Line } = ChartType;
@@ -44,8 +40,8 @@ const DEFAULT_Y_AXIS = {
   },
 };
 
-const orientationToYAxisId = (orientation: 'left' | 'right'): number =>
-  Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
+const orientationToYAxisId = (orientation?: 'left' | 'right'): number =>
+  (orientation && Y_AXIS_IDS[orientation]) || DEFAULT_Y_AXIS.id;
 
 const LEGEND_ALL_DATA_KEY = 'LEGEND_ALL_DATA_KEY';
 
@@ -69,12 +65,15 @@ const CHART_TYPE_TO_CHART = {
   [Line]: LineChartComponent,
 };
 
-const getRealDataKeys = (chartConfig: CartesianChartConfig | {}) =>
-  Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
+const getRealDataKeys = (chartConfig: CartesianChartConfig['chartConfig'] | {}) =>
+  chartConfig ? Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY) : [];
 
-const getLegendAlignment = (legendPosition: LegendPosition, isExporting: boolean) => {
+const getLegendAlignment = (
+  legendPosition: LegendPosition,
+  isExporting: boolean,
+): Pick<LegendProps, 'align' | 'verticalAlign'> => {
   if (isExporting) {
-    return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
+    return { verticalAlign: 'top', align: 'right' };
   }
   if (legendPosition === 'bottom') {
     return { verticalAlign: 'bottom', align: 'center' };
@@ -106,32 +105,26 @@ const getMargin = (isExporting: boolean, isEnlarged: boolean) => {
   return { left: 0, right: 0, top: 0, bottom: 0 };
 };
 
-type CartesianChartConfigWithAll = CartesianChartConfig & { [LEGEND_ALL_DATA_KEY]?: any };
-
 type CartesianChartType = keyof typeof CHART_TYPE_TO_CONTAINER;
 
-interface CustomViewContent extends Omit<ViewContent, 'chartConfig' | 'valueType' | 'labelType'> {
-  chartConfig: CartesianChartConfig;
-  valueType: ValueType;
-  labelType: ValueType;
-}
-
 interface CartesianChartProps {
-  viewContent: ViewContent<CartesianChartConfig>;
+  report: ChartReport;
+  config: CartesianChartConfig;
   legendPosition: LegendPosition;
   isEnlarged?: boolean;
   isExporting?: boolean;
 }
 
 export const CartesianChart = ({
-  viewContent,
+  report,
+  config,
   isEnlarged = false,
   isExporting = false,
   legendPosition = 'bottom',
 }: CartesianChartProps) => {
-  const [chartConfig, setChartConfig] = useState<CartesianChartConfigWithAll>(
-    viewContent.chartConfig || {},
-  );
+  const initialChartConfig =
+    'chartConfig' in config && config.chartConfig ? config.chartConfig : {};
+  const [chartConfig, setChartConfig] = useState(initialChartConfig);
   const [activeDataKeys, setActiveDataKeys] = useState<string[]>([]);
   // eslint-disable-next-line no-unused-vars
   const [_, setLoaded] = useState(false);
@@ -146,15 +139,9 @@ export const CartesianChart = ({
 
   const isMobileSize = isMobile(isExporting);
 
-  const {
-    chartType: defaultChartType,
-    data,
-    valueType,
-    labelType,
-    presentationOptions,
-    renderLegendForOneItem,
-    referenceAreas,
-  } = viewContent as CustomViewContent;
+  const { chartType: defaultChartType, valueType, labelType, renderLegendForOneItem } = config;
+
+  const { data = [] } = report;
 
   const getIsActiveKey = (legendDataKey: string) =>
     activeDataKeys.length === 0 ||
@@ -165,8 +152,17 @@ export const CartesianChart = ({
     const newChartConfig = { ...chartConfig };
 
     if (hasDisabledData && !(LEGEND_ALL_DATA_KEY in newChartConfig)) {
-      const allChartType = Object.values(chartConfig)[0].chartType || defaultChartType || 'line';
-      newChartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
+      const getChartType = () => {
+        const firstChartConfig = Object.values(chartConfig)[0];
+        if (isComposedChartConfig(config) && 'chartType' in firstChartConfig)
+          return firstChartConfig.chartType;
+        return defaultChartType || ChartType.Line;
+      };
+      const allChartType = getChartType();
+      newChartConfig[LEGEND_ALL_DATA_KEY] = {
+        ...LEGEND_ALL_DATA,
+        chartType: allChartType,
+      };
       setChartConfig(newChartConfig);
     } else if (!hasDisabledData && chartConfig.hasOwnProperty(LEGEND_ALL_DATA_KEY)) {
       delete newChartConfig[LEGEND_ALL_DATA_KEY];
@@ -219,7 +215,9 @@ export const CartesianChart = ({
   const aspect = !isEnlarged && !isMobileSize && !isExporting ? 1.6 : undefined;
   const height = getHeight(isExporting, isEnlarged, hasLegend, isMobileSize);
 
-  const { verticalAlign, align, layout } = getLegendAlignment(legendPosition, isExporting);
+  const { verticalAlign, align } = getLegendAlignment(legendPosition, isExporting);
+
+  const presentationOptions = 'presentationOptions' in config ? config.presentationOptions : {};
 
   /**
    * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
@@ -232,17 +230,16 @@ export const CartesianChart = ({
         margin={getMargin(isExporting, isEnlarged)}
         reverseStackOrder={isExporting}
       >
-        {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
-        {XAxisComponent({ isEnlarged, isExporting, viewContent })}
-        {YAxes({ viewContent, chartDataConfig, isExporting, isEnlarged } as any)}
+        {XAxisComponent({ isEnlarged, isExporting, config, report })}
+        {YAxes({ config, report, chartDataConfig, isExporting, isEnlarged })}
         <Tooltip
           filterNull={false}
           content={
             <CustomTooltip
               valueType={valueType}
               labelType={labelType}
-              periodGranularity={viewContent.periodGranularity}
-              chartConfig={chartConfig as BaseChartConfig}
+              periodGranularity={config.periodGranularity}
+              chartConfig={chartConfig}
               presentationOptions={presentationOptions}
               chartType={defaultChartType}
             />
@@ -250,10 +247,9 @@ export const CartesianChart = ({
         />
         {hasLegend && isEnlarged && (
           <Legend
-            verticalAlign={verticalAlign as LegendProps['verticalAlign']}
-            align={align as LegendProps['align']}
-            layout={layout as LegendProps['layout']}
-            content={getCartesianLegend({
+            verticalAlign={verticalAlign}
+            align={align}
+            content={getCartesianChartLegend({
               chartConfig,
               getIsActiveKey,
               isExporting,
@@ -277,11 +273,11 @@ export const CartesianChart = ({
               isExporting,
               isEnlarged,
               yAxisId,
-              data,
               exportWithLabels: presentationOptions?.exportWithLabels,
+              data,
             });
           })}
-        {ReferenceLines({ viewContent: viewContent as ViewContent, isExporting, isEnlarged })}
+        {ReferenceLines({ report, config, isExporting, isEnlarged })}
       </ChartContainer>
     </ResponsiveContainer>
   );

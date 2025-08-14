@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { Aggregator } from '../../Aggregator';
 import * as AggregateAnalytics from '../../analytics/aggregateAnalytics/aggregateAnalytics';
 import * as FilterAnalytics from '../../analytics/filterAnalytics';
@@ -12,6 +7,8 @@ import {
   RESPONSE_BY_SOURCE_TYPE,
   AGGREGATED_ANALYTICS,
   FILTERED_ANALYTICS,
+  DATA_ELEMENTS,
+  DATA_GROUPS,
 } from './fixtures';
 
 jest.mock('../../analytics/aggregateAnalytics/aggregateAnalytics');
@@ -26,16 +23,17 @@ const dataBroker = {
   getDataSourceTypes: jest.fn(() => DATA_SOURCE_TYPES),
   pullAnalytics: jest.fn(async () => RESPONSE_BY_SOURCE_TYPE[DATA_ELEMENT]),
   pullEvents: jest.fn(async () => RESPONSE_BY_SOURCE_TYPE[DATA_GROUP]),
+  pullDataElements: jest.fn(async codes =>
+    Object.values(DATA_ELEMENTS).filter(de => codes.includes(de.code)),
+  ),
+  pullDataGroup: jest.fn(async code => DATA_GROUPS[code]),
 };
 
+/**
+ * @type {Aggregator}
+ */
 let aggregator;
 
-const fetchOptions = {
-  organisationUnitCodes: ['TO'],
-  startDate: '20200214',
-  endDate: '20200215',
-  period: '20200214;20200215',
-};
 const aggregationOptions = {
   aggregations: [
     {
@@ -56,6 +54,13 @@ describe('Aggregator', () => {
   });
 
   describe('fetchAnalytics()', () => {
+    const fetchOptions = {
+      organisationUnitCodes: ['TO'],
+      startDate: '20200214',
+      endDate: '20200215',
+      period: '20200214;20200215',
+    };
+
     it('`aggregationOptions` parameter is optional', async () => {
       const assertErrorIsNotThrown = async emptyAggregationOptions =>
         expect(
@@ -170,7 +175,14 @@ describe('Aggregator', () => {
     });
   });
 
-  describe('fetch events', () => {
+  describe('fetchEvents()', () => {
+    const fetchOptions = {
+      organisationUnitCodes: ['TO'],
+      startDate: '20200214',
+      endDate: '20200215',
+      period: '20200214;20200215',
+    };
+
     it('fetches events', async () => {
       const code = 'PROGRAM_1';
 
@@ -203,6 +215,27 @@ describe('Aggregator', () => {
       });
       expect(dataBroker.pullEvents).toHaveBeenCalledTimes(0);
       return expect(response).toStrictEqual([]);
+    });
+  });
+
+  describe('fetchDataElements', () => {
+    it('fetches data elements', async () => {
+      const codes = ['POP01', 'POP02'];
+      const fetchOptions = { includeOptions: true };
+
+      const results = await aggregator.fetchDataElements(codes, fetchOptions);
+      expect(results).toStrictEqual([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02]);
+      expect(dataBroker.pullDataElements).toHaveBeenCalledOnceWith(codes, fetchOptions);
+    });
+  });
+
+  describe('fetchDataGroup', () => {
+    it('fetches data groups', async () => {
+      const fetchOptions = { includeOptions: true };
+
+      const result = await aggregator.fetchDataGroup('POP', fetchOptions);
+      expect(result).toStrictEqual(DATA_GROUPS.POP);
+      expect(dataBroker.pullDataGroup).toHaveBeenCalledOnceWith('POP', fetchOptions);
     });
   });
 });

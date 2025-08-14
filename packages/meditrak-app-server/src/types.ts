@@ -1,45 +1,47 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { TupaiaApiClient } from '@tupaia/api-client';
 import {
-  ModelRegistry,
-  EntityModel,
-  OptionSetModel,
-  QuestionModel,
-  UserModel,
-  OptionModel,
-  FacilityModel,
+  AnswerModel,
   CountryModel,
+  DataElementModel,
+  EntityModel,
+  FacilityModel,
+  FeedItemModel,
   GeographicalAreaModel,
+  MeditrakSyncQueueModel,
+  OptionModel,
+  OptionSetModel,
   PermissionGroupModel,
+  QuestionModel,
   SurveyGroupModel,
-  SurveyScreenModel,
+  SurveyModel,
+  SurveyResponseModel,
   SurveyScreenComponentModel,
-} from '@tupaia/database';
-import { FeedItemModel, MeditrakSyncQueueModel, SurveyModel, SurveyResponseModel } from './models';
+  SurveyScreenModel,
+  UserModel,
+} from '@tupaia/server-boilerplate';
+import { ModelRegistry } from '@tupaia/database';
 
 export type RequestContext = {
   services: TupaiaApiClient;
 };
 
 export interface MeditrakAppServerModelRegistry extends ModelRegistry {
-  readonly entity: EntityModel;
+  readonly dataElement: DataElementModel;
+  readonly user: UserModel;
+  readonly surveyResponse: SurveyResponseModel;
+  readonly answer: AnswerModel;
+  readonly feedItem: FeedItemModel;
+  readonly question: QuestionModel;
   readonly country: CountryModel;
   readonly facility: FacilityModel;
-  readonly feedItem: FeedItemModel;
-  readonly geographicalArea: GeographicalAreaModel;
-  readonly meditrakSyncQueue: MeditrakSyncQueueModel;
-  readonly option: OptionModel;
-  readonly optionSet: OptionSetModel;
-  readonly permissionGroup: PermissionGroupModel;
-  readonly question: QuestionModel;
+  readonly entity: EntityModel;
   readonly survey: SurveyModel;
+  readonly permissionGroup: PermissionGroupModel;
+  readonly option: OptionModel;
+  readonly geographicalArea: GeographicalAreaModel;
+  readonly optionSet: OptionSetModel;
   readonly surveyGroup: SurveyGroupModel;
   readonly surveyScreen: SurveyScreenModel;
   readonly surveyScreenComponent: SurveyScreenComponentModel;
-  readonly surveyResponse: SurveyResponseModel;
-  readonly user: UserModel;
+  readonly meditrakSyncQueue: MeditrakSyncQueueModel;
 }

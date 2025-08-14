@@ -1,10 +1,3 @@
-/**
- * Tupaia Web
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
- */
-
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { WEEK_DISPLAY_CONFIG, WEEK_DISPLAY_FORMATS } from './weekDisplayFormats';
@@ -126,21 +119,29 @@ const validateDateString = date => {
   }
 };
 
-export const roundStartDate = (granularity, startDate) => {
+export const roundStartDate = (granularity, startDate, dateOffset = null) => {
   const { momentUnit } = GRANULARITY_CONFIG[granularity];
   const momentStartDate = moment.isMoment(startDate) ? startDate : moment(startDate);
-  return momentStartDate.clone().startOf(momentUnit);
+  const startOf = momentStartDate.clone().startOf(momentUnit);
+  if (dateOffset) {
+    return addMomentOffset(startOf, dateOffset);
+  }
+  return startOf;
 };
 
-export const roundEndDate = (granularity, endDate) => {
+export const roundEndDate = (granularity, endDate, dateOffset = null) => {
   const { momentUnit } = GRANULARITY_CONFIG[granularity];
   const momentEndDate = moment.isMoment(endDate) ? endDate : moment(endDate);
-  return momentEndDate.clone().endOf(momentUnit);
+  const endOf = momentEndDate.clone().endOf(momentUnit);
+  if (dateOffset) {
+    return addMomentOffset(endOf, dateOffset);
+  }
+  return endOf;
 };
 
-export const roundStartEndDates = (granularity, startDate, endDate) => ({
-  startDate: roundStartDate(granularity, startDate),
-  endDate: roundEndDate(granularity, endDate),
+export const roundStartEndDates = (granularity, startDate, endDate, dateOffset = null) => ({
+  startDate: roundStartDate(granularity, startDate, dateOffset),
+  endDate: roundEndDate(granularity, endDate, dateOffset),
 });
 
 /**
@@ -153,6 +154,7 @@ export const roundStartEndDates = (granularity, startDate, endDate) => ({
 export const momentToDateDisplayString = (date, granularity, format, modifier) => {
   // Use the explicit modifier passed in, otherwise fall back to the default modifier of the granularity
   const mod = modifier ?? GRANULARITY_CONFIG[granularity].modifier ?? null;
+
   switch (mod) {
     case 'startOfWeek':
       return date.clone().startOf('W').format(format);
@@ -160,6 +162,15 @@ export const momentToDateDisplayString = (date, granularity, format, modifier) =
       return date.clone().endOf('W').format(format);
     default:
       return date.clone().format(format);
+  }
+};
+
+const validateSingleDateOffset = (offset, periodGranularity) => {
+  const validDateOffsetUnit = GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT[periodGranularity];
+  if (offset.unit !== validDateOffsetUnit) {
+    throw new Error(
+      `defaultTimePeriod unit must match periodGranularity (periodGranularity: ${periodGranularity}, valid unit: ${validDateOffsetUnit}, given: ${offset.unit})`,
+    );
   }
 };
 
@@ -183,7 +194,11 @@ export const momentToDateDisplayString = (date, granularity, format, modifier) =
  * @param {*} periodGranularity
  * @param {*} defaultTimePeriod
  */
-const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTimePeriod) => {
+const getDefaultDatesForSingleDateGranularities = (
+  periodGranularity,
+  defaultTimePeriod,
+  dateOffset,
+) => {
   let startDate = moment();
   let endDate = startDate;
 
@@ -202,12 +217,7 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
       // else, assume defaultTimePeriod is the period config. Eg: {defaultTimePeriod: {unit: 'month', offset: -1}}
       singleDateConfig = defaultTimePeriod;
     }
-    const validDateOffsetUnit = GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT[periodGranularity];
-    if (singleDateConfig.unit !== validDateOffsetUnit) {
-      throw new Error(
-        `defaultTimePeriod unit must match periodGranularity (periodGranularity: ${periodGranularity}, valid unit: ${validDateOffsetUnit}, given: ${singleDateConfig.unit})`,
-      );
-    }
+    validateSingleDateOffset(singleDateConfig, periodGranularity);
 
     // Grab all the details and get a single default date used for both start/end period.
     startDate =
@@ -217,7 +227,35 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
     endDate = startDate;
   }
 
-  return roundStartEndDates(periodGranularity, startDate, endDate);
+  const { startDate: defaultStartDate, endDate: defaultEndDate } = roundStartEndDates(
+    periodGranularity,
+    startDate,
+    endDate,
+    dateOffset,
+  );
+  let defaultStartDateMoment = defaultStartDate;
+  let defaultEndDateMoment = defaultEndDate;
+
+  if (dateOffset) {
+    // get the period we are currently in, for example if offset is 6 months, and we are currently in May, the period would be June - July previous year
+    // if the offset start date is after the initial end date, this means we have to make the start date 1 period before today
+    if (defaultStartDateMoment.isAfter(endDate)) {
+      const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
+      const newStartingDate = moment().subtract(1, momentUnit);
+      defaultStartDateMoment = roundStartDate(periodGranularity, newStartingDate, dateOffset);
+      defaultEndDateMoment = roundEndDate(periodGranularity, newStartingDate, dateOffset);
+    }
+
+    // if the offset end date is before the initial start date, this means we have to make the end date 1 period after today
+    if (defaultEndDateMoment.isBefore(startDate)) {
+      const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
+      const newEndingDate = moment().add(1, momentUnit);
+      defaultStartDateMoment = roundStartDate(periodGranularity, newEndingDate, dateOffset);
+      defaultEndDateMoment = roundEndDate(periodGranularity, newEndingDate, dateOffset);
+    }
+  }
+
+  return { startDate: defaultStartDateMoment, endDate: defaultEndDateMoment };
 };
 
 /**
@@ -232,8 +270,9 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
  * }
  * @param {*} periodGranularity
  * @param {*} defaultTimePeriod
+ * @param {*} dateOffset
  */
-const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeriod) => {
+const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeriod, dateOffset) => {
   if (defaultTimePeriod) {
     let startDate = moment();
     let endDate = startDate;
@@ -257,14 +296,23 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
       throw new Error(`Start date must be earlier than the end date`);
     }
 
-    return roundStartEndDates(periodGranularity, startDate, endDate);
+    return roundStartEndDates(periodGranularity, startDate, endDate, dateOffset);
   }
 
-  return { startDate: moment(DEFAULT_MIN_DATE), endDate: moment() };
+  let defaultStartDate = moment(DEFAULT_MIN_DATE);
+  let defaultEndDate = moment();
+
+  if (dateOffset) {
+    defaultStartDate = addMomentOffset(defaultStartDate, dateOffset);
+    // Round the new end date to the end of the period
+    defaultEndDate = roundEndDate(periodGranularity, defaultEndDate, dateOffset);
+  }
+
+  return { startDate: defaultStartDate, endDate: defaultEndDate };
 };
 
 export function getDefaultDates(viewConfig) {
-  const { periodGranularity, defaultTimePeriod } = viewConfig;
+  const { periodGranularity, defaultTimePeriod, dateOffset } = viewConfig;
 
   // we need a valid granularity to proceed
   if (!periodGranularity) {
@@ -273,9 +321,13 @@ export function getDefaultDates(viewConfig) {
 
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
   if (isSingleDate) {
-    return getDefaultDatesForSingleDateGranularities(periodGranularity, defaultTimePeriod);
+    return getDefaultDatesForSingleDateGranularities(
+      periodGranularity,
+      defaultTimePeriod,
+      dateOffset,
+    );
   }
-  return getDefaultDatesForRangeGranularities(periodGranularity, defaultTimePeriod);
+  return getDefaultDatesForRangeGranularities(periodGranularity, defaultTimePeriod, dateOffset);
 }
 
 export const getDefaultDrillDownDates = (drillDownViewConfig, previousStartDate) => {

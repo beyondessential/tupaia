@@ -1,34 +1,30 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import * as dotenv from 'dotenv';
-
 import http from 'http';
-
 import winston from 'winston';
 import { configureWinston } from '@tupaia/server-boilerplate';
 import { createApp } from './app';
+import { configureEnv } from './configureEnv';
 
 configureWinston();
-dotenv.config(); // Load the environment variables into process.env
+configureEnv();
 
-/**
- * Set up app with routes etc.
- */
-const app = createApp();
+(async () => {
+  /**
+   * Set up app with routes etc.
+   */
+  const app = await createApp();
 
-/**
- * Start the server
- */
-const port = process.env.PORT || 8050;
-http.createServer(app).listen(port);
-winston.info(`Running on port ${port}`);
+  /**
+   * Start the server
+   */
+  const port = process.env.PORT || 8050;
+  http.createServer(app).listen(port);
+  winston.info(`Running on port ${port}`);
+  winston.info(`Logging at ${winston.level} level`);
 
-/**
- * Notify PM2 that we are ready
- * */
-if (process.send) {
-  process.send('ready');
-}
+  /**
+   * Notify PM2 that we are ready
+   * */
+  if (process.send) {
+    process.send('ready');
+  }
+})();

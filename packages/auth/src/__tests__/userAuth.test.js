@@ -1,78 +1,56 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import jwt from 'jsonwebtoken';
-import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
+
+import { createBasicHeader, createBearerHeader, requireEnv } from '@tupaia/utils';
+
 import {
-  getUserAndPassFromBasicAuth,
-  getTokenClaimsFromBearerAuth,
   constructAccessToken,
+  getTokenClaimsFromBearerAuth,
+  getUserAndPassFromBasicAuth,
 } from '../userAuth';
 
 describe('userAuth', () => {
   describe('accessToken', () => {
     it('can construct access token', async () => {
       const userId = 'user1';
-      const refreshToken = 'refresh';
 
-      return expect(constructAccessToken({ userId, refreshToken })).toBeString();
+      return expect(constructAccessToken({ userId })).toBeString();
     });
 
     it('can construct access token with apiClientId', async () => {
       const userId = 'user1';
-      const refreshToken = 'refresh';
       const apiClientUserId = 'apiClient1';
 
-      return expect(constructAccessToken({ userId, refreshToken, apiClientUserId })).toBeString();
+      return expect(constructAccessToken({ userId, apiClientUserId })).toBeString();
     });
 
     it('throws error when constructing access token without userId', async () => {
-      const refreshToken = 'refresh';
       const apiClientUserId = 'apiClient1';
 
-      return expect(() => constructAccessToken({ refreshToken, apiClientUserId })).toThrow(
+      return expect(() => constructAccessToken({ apiClientUserId })).toThrow(
         'Cannot construct accessToken: missing userId',
-      );
-    });
-
-    it('throws error when constructing access token without refreshToken', async () => {
-      const userId = 'user1';
-      const apiClientUserId = 'apiClient1';
-
-      return expect(() => constructAccessToken({ userId, apiClientUserId })).toThrow(
-        'Cannot construct accessToken: missing refreshToken',
       );
     });
 
     it('can decrypt access token claims', async () => {
       const userId = 'user1';
-      const refreshToken = 'refresh';
       const apiClientUserId = 'apiClient1';
 
-      const accessToken = constructAccessToken({ userId, refreshToken, apiClientUserId });
+      const accessToken = constructAccessToken({ userId, apiClientUserId });
       const authHeader = createBearerHeader(accessToken);
-      const {
-        userId: decryptedUserId,
-        refreshToken: decryptedRefreshToken,
-        apiClientUserId: decryptedApiClientUserId,
-      } = getTokenClaimsFromBearerAuth(authHeader);
+      const { userId: decryptedUserId, apiClientUserId: decryptedApiClientUserId } =
+        getTokenClaimsFromBearerAuth(authHeader);
 
       return expect({
         userId: decryptedUserId,
-        refreshToken: decryptedRefreshToken,
         apiClientUserId: decryptedApiClientUserId,
       }).toEqual({
         userId,
-        refreshToken,
         apiClientUserId,
       });
     });
 
     it('throws error when decrypting expired token', async () => {
-      const accessToken = jwt.sign({ test: 'test' }, process.env.JWT_SECRET, {
-        expiresIn: 0,
-      });
+      const accessToken = jwt.sign({ test: 'test' }, requireEnv('JWT_SECRET'), { expiresIn: 0 });
       const authHeader = createBearerHeader(accessToken);
 
       return expect(() => getTokenClaimsFromBearerAuth(authHeader)).toThrow(

@@ -1,27 +1,54 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import formatLinkHeader from 'format-link-header';
-import { ValidationError } from '@tupaia/utils';
-import { getApiUrl, resourceToRecordType } from '../../utilities';
 
+import { isNullish } from '@tupaia/tsutils';
+import { ValidationError } from '@tupaia/utils';
+
+import winston from '../../log';
+import { getApiUrl, resourceToRecordType } from '../../utilities';
+import { DEFAULT_PAGE_SIZE } from './GETHandler';
+
+/**
+ * @param {number|'ALL'|null|undefined} pageSize
+ * @returns {number|null} If non-null, guaranteed to be a positive integer.
+ */
+export const parsePageSizeQueryParam = pageSize => {
+  if (pageSize === 'ALL' || isNullish(pageSize)) return null;
+
+  const parsed = Number.parseInt(pageSize, 10);
+  if (Number.isInteger(parsed) && parsed > 0) return parsed;
+
+  winston.warn(
+    `Received invalid pageSize query parameter: ${JSON.stringify(pageSize)}. If provided, should be 'ALL', null or parsable as a positive integer. Using default of ${DEFAULT_PAGE_SIZE}.`,
+  );
+  return DEFAULT_PAGE_SIZE;
+};
+
+/**
+ * @param {string} resource
+ * @param {*|number|string} pageString
+ * @param {number|null} lastPage
+ * @param {object} originalQueryParameters
+ */
 export const generateLinkHeader = (resource, pageString, lastPage, originalQueryParameters) => {
-  const currentPage = parseInt(pageString, 10);
+  const currentPage = Number.parseInt(pageString, 10);
 
   const getUrlForPage = page => getApiUrl(resource, { ...originalQueryParameters, page });
 
-  // We can always send through first and last, so start with that in the link header
+  // We can always send through first, so start with that in the link header
   const linkHeader = {
     first: {
       url: getUrlForPage(0),
       rel: 'first',
     },
-    last: {
+  };
+
+  const isLastPageKnown = Number.isInteger(lastPage) && lastPage > 0 && Number.isFinite(lastPage);
+  if (isLastPageKnown) {
+    linkHeader.last = {
       url: getUrlForPage(lastPage),
       rel: 'last',
-    },
-  };
+    };
+  }
 
   // If not the first page, generate a 'prev' link to the page before
   if (currentPage > 0) {
@@ -32,7 +59,8 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
   }
 
   // If not the last page, generate a 'next' link to the next page
-  if (currentPage < lastPage) {
+  // If last page is unknown, include it anyway
+  if (currentPage < lastPage || !isLastPageKnown) {
     linkHeader.next = {
       url: getUrlForPage(currentPage + 1),
       rel: 'next',
@@ -55,7 +83,7 @@ export const fullyQualifyColumnSelector = (models, unprocessedColumnSelector, ba
 export const processColumnSelectorKeys = (models, object, recordType) => {
   const processedObject = {};
   Object.entries(object).forEach(([columnSelector, value]) => {
-    processedObject[fullyQualifyColumnSelector(models, columnSelector, recordType)] = value;
+    processedObject[processColumnSelector(models, columnSelector, recordType)] = value;
   });
   return processedObject;
 };
@@ -67,7 +95,7 @@ export const processColumnSelector = (models, unprocessedColumnSelector, baseRec
     baseRecordType,
   );
   const [recordType, column] = fullyQualifiedSelector.split('.');
-  const model = models.getModelForDatabaseType(recordType);
+  const model = models.getModelForDatabaseRecord(recordType);
   const customSelector = model?.customColumnSelectors?.[column];
   return customSelector ? customSelector(fullyQualifiedSelector) : fullyQualifiedSelector;
 };
@@ -97,7 +125,7 @@ const constructJoinCondition = (recordType, baseRecordType, customJoinConditions
     joinType,
   };
   if (join?.through) {
-    if ('nearTableKey' in join !== true || 'farTableKey' in join !== true) {
+    if (!('nearTableKey' in join) || !('farTableKey' in join)) {
       throw new ValidationError(`Incorrect format for customJoinConditions: ${recordType}`);
     }
     const nearTable = join.nearTableKey.split('.');
@@ -144,6 +172,7 @@ export const getQueryOptionsForColumns = (
           customJoinConditions,
           joinType,
         );
+
         joinConditions.forEach(j => {
           if (!recordTypesInQuery.has(j.joinWith)) multiJoin.push(j);
           recordTypesInQuery.add(j.joinWith);

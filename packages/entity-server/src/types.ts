@@ -1,15 +1,10 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { ModelRegistry } from '@tupaia/database';
 import {
   AncestorDescendantRelationModel,
-  EntityModel,
   EntityHierarchyModel,
+  EntityModel,
   ProjectModel,
-} from './models';
+} from '@tupaia/server-boilerplate';
 
 export interface EntityServerModelRegistry extends ModelRegistry {
   readonly ancestorDescendantRelation: AncestorDescendantRelationModel;

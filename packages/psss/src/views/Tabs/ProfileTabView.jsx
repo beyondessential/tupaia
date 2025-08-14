@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -110,10 +105,6 @@ const ProfileTabViewComponent = React.memo(({ user, onUpdateProfile }) => {
             onDelete={handleFileDelete}
             avatarInitial={userInitial}
             label="Your avatar"
-            deleteModal={{
-              title: 'Remove Photo',
-              message: 'Are you sure you want to delete your photo?',
-            }}
           />
           <Divider />
           <TextField

@@ -1,18 +1,12 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
+import { Modal } from '@tupaia/ui-components';
 import { changeLogsTablePage, closeLogsModal } from './actions';
-import { ModalContentProvider } from '../widgets';
 import { LogsTable } from './LogsTable';
 
 export const LogsModalComponent = ({
-  errorMessage,
+  error,
   logs,
   logsCount,
   page,
@@ -24,28 +18,36 @@ export const LogsModalComponent = ({
   title,
 }) => {
   return (
-    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick maxWidth="xl">
-      <DialogHeader onClose={onDismiss} title={title} />
-      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
-        <LogsTable
-          logs={logs}
-          logsCount={logsCount}
-          page={page}
-          logsPerPage={logsPerPage}
-          onChangePage={onChangeLogsTablePage}
-        />
-      </ModalContentProvider>
-      <DialogFooter>
-        <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
-          {errorMessage ? 'Dismiss' : 'Cancel'}
-        </Button>
-      </DialogFooter>
-    </Dialog>
+    <Modal
+      onClose={onDismiss}
+      isOpen={isOpen}
+      disableBackdropClick
+      maxWidth="xl"
+      title={title}
+      error={error}
+      isLoading={isLoading}
+      buttons={[
+        {
+          disabled: isLoading,
+          variant: 'outlined',
+          onClick: onDismiss,
+          text: error ? 'Dismiss' : 'Cancel',
+        },
+      ]}
+    >
+      <LogsTable
+        logs={logs}
+        logsCount={logsCount}
+        page={page}
+        logsPerPage={logsPerPage}
+        onChangePage={onChangeLogsTablePage}
+      />
+    </Modal>
   );
 };
 
 LogsModalComponent.propTypes = {
-  errorMessage: PropTypes.string,
+  error: PropTypes.object,
   isLoading: PropTypes.bool,
   isOpen: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func.isRequired,
@@ -59,7 +61,7 @@ LogsModalComponent.propTypes = {
 
 LogsModalComponent.defaultProps = {
   isLoading: false,
-  errorMessage: null,
+  error: null,
   logsCount: null,
   title: 'Logs',
 };

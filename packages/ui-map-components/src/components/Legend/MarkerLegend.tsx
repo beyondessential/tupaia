@@ -1,14 +1,10 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import MuiBox from '@material-ui/core/Box';
 import { IconKey } from '@tupaia/types';
 import { UNKNOWN_COLOR } from '../../constants';
+import { SeriesValue, MarkerLegendProps, MarkerSeries, Value } from '../../types';
 import {
   DEFAULT_ICON,
   HIDDEN_ICON,
@@ -25,18 +21,23 @@ import {
   MEASURE_VALUE_OTHER,
 } from '../../utils';
 import { LegendEntry } from './LegendEntry';
-import { SeriesValue, MarkerLegendProps, MarkerSeries, Value } from '../../types';
 
-const Container = styled(MuiBox)`
+const Container = styled(MuiBox)<{
+  $isExport?: boolean;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
 
-  ${p => p.theme.breakpoints.down('sm')} {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  ${({ $isExport, theme }) =>
+    !$isExport &&
+    css`
+      ${theme.breakpoints.down('sm')} {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    `}
 `;
 
 /**
@@ -117,8 +118,10 @@ export const MarkerLegend = React.memo(
     hasIconLayer,
     hasRadiusLayer,
     hasColorLayer,
+    isExport,
   }: MarkerLegendProps) => {
-    const { type, values, key: dataKey, valueMapping, icon } = series;
+    const { type, values, key: dataKey, valueMapping } = series;
+    const icon = 'icon' in series ? series.icon : null;
 
     const keys = values
       .filter(v => !v.hideFromLegend)
@@ -180,7 +183,7 @@ export const MarkerLegend = React.memo(
     }
 
     return (
-      <Container>
+      <Container $isExport={isExport}>
         {keys}
         {nullKey}
       </Container>

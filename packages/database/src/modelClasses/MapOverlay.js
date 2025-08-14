@@ -1,22 +1,17 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 import { JOIN_TYPES } from '../TupaiaDatabase';
 
-class MapOverlayType extends DatabaseType {
-  static databaseType = TYPES.MAP_OVERLAY;
+export class MapOverlayRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.MAP_OVERLAY;
 }
 
 export class MapOverlayModel extends DatabaseModel {
   notifiers = [onChangeDeleteRelation];
 
-  get DatabaseTypeClass() {
-    return MapOverlayType;
+  get DatabaseRecordClass() {
+    return MapOverlayRecord;
   }
 
   async findMeasuresByCode(code) {
@@ -24,17 +19,16 @@ export class MapOverlayModel extends DatabaseModel {
       { code: [code] },
       {
         columns: [
-          { code: `${TYPES.MAP_OVERLAY}.code` },
-          { linked_measures: `${TYPES.MAP_OVERLAY}.linked_measures` },
+          { code: `${RECORDS.MAP_OVERLAY}.code` },
+          { linked_measures: `${RECORDS.MAP_OVERLAY}.linked_measures` },
         ],
       },
     );
     const measureCodes = overlays
-      .map(({ code: overlayCode, linked_measures: linkedMeasures }) => [
+      .flatMap(({ code: overlayCode, linked_measures: linkedMeasures }) => [
         overlayCode,
         ...(linkedMeasures !== null ? linkedMeasures : []),
-      ])
-      .flat();
+      ]);
 
     const measureResults = await this.findMeasuresWithLegacyInfo({
       'map_overlay.code': measureCodes,
@@ -48,15 +42,15 @@ export class MapOverlayModel extends DatabaseModel {
 
   // Return measures joined with legacy info if it exists
   async findMeasuresWithLegacyInfo(criteria) {
-    return this.database.find(this.databaseType, criteria, {
+    return this.database.find(this.databaseRecord, criteria, {
       columns: [
         'map_overlay.*',
         'legacy_report.data_builder',
         'legacy_report.data_builder_config',
         'legacy_report.data_services',
       ],
-      joinWith: TYPES.LEGACY_REPORT,
-      joinCondition: [`${TYPES.MAP_OVERLAY}.report_code`, `${TYPES.LEGACY_REPORT}.code`],
+      joinWith: RECORDS.LEGACY_REPORT,
+      joinCondition: [`${RECORDS.MAP_OVERLAY}.report_code`, `${RECORDS.LEGACY_REPORT}.code`],
       joinType: JOIN_TYPES.LEFT,
     });
   }

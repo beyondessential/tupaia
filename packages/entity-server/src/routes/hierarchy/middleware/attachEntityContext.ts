@@ -1,27 +1,22 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { Request, NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
-import { ajvValidate } from '@tupaia/tsutils';
-import { EntityType, EntityFilter } from '../../../models';
-import { extractFilterFromQuery } from './filter';
+import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
+import { EntityTypeEnum } from '@tupaia/types';
+import { EntityRecord, EntityFilter } from '@tupaia/server-boilerplate';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
-
-const notNull = <T>(value: T): value is Exclude<T, null> => value !== null;
+import { extractFilterFromQuery } from './filter';
 
 const throwNoAccessError = (entityCodes: string[]) => {
   throw new PermissionsError(`No access to requested entities: ${entityCodes}`);
 };
 
 const userCanAccessEntity = (
-  entity: EntityType,
+  entity: EntityRecord,
   allowedCountries: string[],
-  rootEntity: EntityType,
+  rootEntity: EntityRecord,
 ) =>
   (entity.isProject() && entity.code === rootEntity.code) ||
-  (notNull(entity.country_code) && allowedCountries.includes(entity.country_code));
+  (isNotNullish(entity.country_code) && allowedCountries.includes(entity.country_code));
 
 const validateEntitiesAndBuildContext = async (
   req: Request<{ hierarchyName: string }, any, any, { filter?: string }>,
@@ -31,7 +26,7 @@ const validateEntitiesAndBuildContext = async (
   const { hierarchyName } = req.params;
   // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
   const rootEntity = await req.models.entity.findOne({
-    type: 'project',
+    type: EntityTypeEnum.project,
     code: hierarchyName,
   });
   if (!rootEntity) {
@@ -73,25 +68,30 @@ const validateEntitiesAndBuildContext = async (
 };
 
 const getFilterInfo = async (
-  req: Request<{ hierarchyName: string }, any, any, { filter?: string }>,
-  rootEntity: EntityType,
+  req: Request<{ hierarchyName: string }, any, any, { filter?: string; isPublic?: string }>,
+  rootEntity: EntityRecord,
 ) => {
-  const { permission_groups: projectPermissionGroups } = await req.models.project.findOne({
-    code: req.params.hierarchyName,
-  });
+  const isPublic = req.query.isPublic?.toLowerCase() === 'true';
 
-  // Fetch all country codes we have any of the project permission groups access to
-  const projectAccessibleCountries: string[] = [];
-  for (const permission of projectPermissionGroups) {
-    projectAccessibleCountries.push(...req.accessPolicy.getEntitiesAllowed(permission));
-  }
-
-  // Fetch countries specific to the hierarchy, filtered by the accessibility list
-  const allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
+  let allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
     .map(child => child.country_code)
-    .filter(notNull)
-    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index) // De-duplicate countryCodes
-    .filter(countryCode => projectAccessibleCountries.includes(countryCode));
+    .filter(isNotNullish)
+    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index); // De-duplicate countryCodes
+
+  if (!isPublic) {
+    const { permission_groups: projectPermissionGroups } = await req.models.project.findOne({
+      code: req.params.hierarchyName,
+    });
+
+    // Fetch all country codes we have any of the project permission groups access to
+    const projectAccessibleCountries: string[] = [];
+    for (const permission of projectPermissionGroups) {
+      projectAccessibleCountries.push(...req.accessPolicy.getEntitiesAllowed(permission));
+    }
+    allowedCountries = allowedCountries.filter(countryCode =>
+      projectAccessibleCountries.includes(countryCode),
+    );
+  }
 
   const { filter: queryFilter } = req.query;
   const filter = extractFilterFromQuery(allowedCountries, queryFilter);
@@ -101,9 +101,9 @@ const getFilterInfo = async (
 
 export const attachSingleEntityContext = async (
   req: Request<{ hierarchyName: string; entityCode: string }, any, any, { filter?: string }> & {
-    ctx: { entities: EntityType[]; allowedCountries: string[]; filter: EntityFilter };
+    ctx: { entities: EntityRecord[]; allowedCountries: string[]; filter: EntityFilter };
   },
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
@@ -123,9 +123,9 @@ export const attachSingleEntityContext = async (
 
 export const attachMultiEntityContext = async (
   req: Request<{ hierarchyName: string }, any, { entities: string[] }, { filter?: string }> & {
-    ctx: { entities: EntityType[]; allowedCountries: string[]; filter: EntityFilter };
+    ctx: { entities: EntityRecord[]; allowedCountries: string[]; filter: EntityFilter };
   },
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
@@ -153,11 +153,11 @@ export const attachEntityFilterContext = async (
   req: Request<{ hierarchyName: string }, any, any, { filter?: string }> & {
     ctx: { allowedCountries: string[]; filter: EntityFilter };
   },
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   const rootEntity = await req.models.entity.findOne({
-    type: 'project',
+    type: EntityTypeEnum.project,
     code: req.params.hierarchyName,
   });
 

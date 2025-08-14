@@ -1,0 +1,7 @@
+export const MESSAGE_REMOVE = 'MESSAGE_REMOVE';
+export const MESSAGE_ADD = 'MESSAGE_ADD';
+
+export const MESSAGE_TYPES = {
+  EXPLODE: 'EXPLODE',
+  BANNER: 'BANNER',
+};

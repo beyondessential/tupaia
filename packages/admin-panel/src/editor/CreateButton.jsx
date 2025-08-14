@@ -1,36 +1,23 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { LightOutlinedButton } from '@tupaia/ui-components';
-import { openEditModal } from './actions';
+import { loadEditor, openEditModal } from './actions';
+import { CreateActionButton } from './ActionButton';
 
-export const CreateButtonComponent = ({ dispatch, label, actionConfig }) => (
-  <LightOutlinedButton
-    id="page-new-button"
-    startIcon={<AddCircleIcon />}
-    onClick={() => dispatch(openEditModal(actionConfig))}
-  >
-    {label}
-  </LightOutlinedButton>
-);
+export const CreateButtonComponent = ({ label, openCreateModal }) => {
+  return <CreateActionButton onClick={openCreateModal}>{label}</CreateActionButton>;
+};
 
 CreateButtonComponent.propTypes = {
-  actionConfig: PropTypes.PropTypes.shape({
-    editEndpoint: PropTypes.string,
-    fields: PropTypes.array,
-  }).isRequired,
-  dispatch: PropTypes.func.isRequired,
-  label: PropTypes.string,
+  openCreateModal: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
 };
 
-CreateButtonComponent.defaultProps = {
-  label: 'New',
-};
+const mapDispatchToProps = (dispatch, { actionConfig }) => ({
+  openCreateModal: () => {
+    dispatch(loadEditor(actionConfig));
+    dispatch(openEditModal());
+  },
+});
 
-export const CreateButton = connect()(CreateButtonComponent);
+export const CreateButton = connect(null, mapDispatchToProps)(CreateButtonComponent);

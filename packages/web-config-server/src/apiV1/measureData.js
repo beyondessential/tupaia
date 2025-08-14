@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import assert from 'assert';
 import { snake } from 'case';
 import { CustomError } from '@tupaia/utils';
@@ -73,7 +68,7 @@ const accessDeniedForMeasure = {
  *   requested: '201901;201902;201903...',
  * }
  */
-const buildMeasureData = (overlays, resultData) => {
+const buildMeasureData = (overlays = [], resultData) => {
   const measureDataResponsesByMeasureCode = resultData.reduce((dataResponse, current) => ({
     ...dataResponse,
     ...current,
@@ -81,7 +76,7 @@ const buildMeasureData = (overlays, resultData) => {
   const measureDataResponses = overlays.map(
     ({ code, data_builder_config: measureBuilderConfig }) => {
       const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
-      const { data } = measureDataResponsesByMeasureCode[code];
+      const { data = [] } = measureDataResponsesByMeasureCode[code];
 
       // Rename the the value field from the dataElementCode to the measureCode
       return data.map(obj => {
@@ -189,6 +184,7 @@ export default class extends DataAggregatingRouteHandler {
     const responseData = await Promise.all(
       measures.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
     );
+
     const { period, measureData } = buildMeasureData(measures, responseData);
     const measureOptions = await this.fetchMeasureOptions(measures, measureData, mapOverlayCode);
 
@@ -265,7 +261,11 @@ export default class extends DataAggregatingRouteHandler {
 
     const { periodGranularity } = measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
-    const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
+    let dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
+
+    if (startDate && endDate && !periodGranularity) {
+      dates = getDateRange('day', startDate, endDate);
+    }
 
     const baseOptions = {
       ...restOfPresentationConfig,
@@ -343,13 +343,11 @@ export default class extends DataAggregatingRouteHandler {
     });
 
     if (legacy) {
-      const {
-        data_builder: measureBuilder,
-        data_builder_config: measureBuilderConfig,
-      } = mapOverlay;
+      const { data_builder: measureBuilder, data_builder_config: measureBuilderConfig } =
+        mapOverlay;
       assert.ok(
         measureBuilderConfig,
-        `No data_builder_config for leagacy overlay ${mapOverlay.code}`,
+        `No data_builder_config for legacy overlay ${mapOverlay.code}`,
       );
       const { dataElementCode = 'value' } = measureBuilderConfig;
       dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);

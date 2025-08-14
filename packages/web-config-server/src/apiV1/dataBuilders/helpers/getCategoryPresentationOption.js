@@ -42,7 +42,7 @@ const getPresentationOptionFromCondition = (config, values) => {
   return option?.key;
 };
 
-// This function has same structure as @web-frontend condition checking in 'color.js'
+// This function has same structure as @tupaia-web condition checking in 'color.js'
 //
 // It performs condition matching for frontend presentation option,
 // which can reduce the frontend loading and calculation time.

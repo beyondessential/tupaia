@@ -1,13 +1,10 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import express from 'express';
-import { catchAsyncErrors, emailAfterTimeout } from '../middleware';
+import { emailAfterTimeout } from '@tupaia/server-boilerplate';
+import { constructExportEmail } from '@tupaia/server-utils';
+import { catchAsyncErrors } from '../middleware';
 import { useRouteHandler } from '../RouteHandler';
-import { constructExportEmail } from './constructExportEmail';
-import { DownloadHandler } from './download';
+import { DownloadHandler } from './DownloadHandler';
+import { exportOptionSet } from './exportOptionSet';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 
@@ -17,6 +14,7 @@ exportRoutes.get('/download/:fileName', useRouteHandler(DownloadHandler));
 
 exportRoutes.use(emailAfterTimeout(constructExportEmail));
 
+exportRoutes.get('/optionSets/:optionSetId', catchAsyncErrors(exportOptionSet));
 exportRoutes.get('/surveyResponses', catchAsyncErrors(exportSurveyResponses));
 exportRoutes.get('/surveyResponses/:surveyResponseId', catchAsyncErrors(exportSurveyResponses));
 exportRoutes.get('/surveys', catchAsyncErrors(exportSurveys));

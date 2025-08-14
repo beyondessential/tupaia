@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import {
   constructRecordExistsWithId,
   DatabaseError,
@@ -58,7 +53,7 @@ export class BulkEditHandler extends CRUDHandler {
   }
 
   async updateRecords(transactingModels, updatedRecords) {
-    const model = transactingModels.getModelForDatabaseType(this.recordType);
+    const model = transactingModels.getModelForDatabaseRecord(this.recordType);
     for (const record of updatedRecords) {
       await model.updateById(record.id, record);
     }

@@ -1,15 +1,11 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
-import { SpinningLoader } from '@tupaia/ui-components';
+
+import { useCurrentUserContext } from '../../api';
 import { useLeaderboard, useUserRewards } from '../../api/queries';
 import { UserRewardsSection } from './UserRewardsSection';
 import { LeaderboardTable } from './LeaderboardTable';
-import { useCurrentUser } from '../../api';
+import { useIsMobile } from '../../utils';
 
 const ScrollBody = styled.div`
   overflow: auto;
@@ -25,14 +21,16 @@ const ScrollBody = styled.div`
 `;
 
 export const Leaderboard = () => {
-  const user = useCurrentUser();
+  const user = useCurrentUserContext();
   const { data: userRewards, isSuccess } = useUserRewards();
-  const { data: leaderboard, isLoading } = useLeaderboard(user.projectId);
-  if (isLoading) return <SpinningLoader />;
+  const { data: leaderboard = [] } = useLeaderboard(user.projectId);
+  const isMobile = useIsMobile();
+  const leaderboardList = isMobile ? leaderboard.slice(0, 5) : leaderboard;
+
   return (
     <ScrollBody>
       {isSuccess && <UserRewardsSection pigs={userRewards.pigs} coconuts={userRewards.coconuts} />}
-      <LeaderboardTable userRewards={userRewards} leaderboard={leaderboard} user={user} />
+      <LeaderboardTable userRewards={userRewards} leaderboard={leaderboardList} user={user} />
     </ScrollBody>
   );
 };

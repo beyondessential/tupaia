@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import {
   allValuesAreNumbers,
   constructEveryItemSync,
@@ -261,9 +256,8 @@ describe('validatorFunctions', () => {
       expect(() => validator('123456')).toThrowError(/Must be shorter than 5 characters/i);
     });
 
-    it('passes if given a string shorter than or equal to the max length', () => {
-      expect(() => validator('123')).not.toThrow();
-      expect(() => validator('12345')).not.toThrow();
+    it('passes if given a string shorter than the max length', () => {
+      expect(() => validator('1234')).not.toThrow();
       expect(() => validator('')).not.toThrow();
     });
   });

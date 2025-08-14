@@ -1,8 +1,5 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-import { useQuery } from 'react-query';
+import moment, { Moment } from 'moment';
+import { useQuery } from '@tanstack/react-query';
 import { momentToDateString } from '@tupaia/utils';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import {
@@ -62,18 +59,26 @@ const formatMapOverlayData = (data: any) => {
   };
 };
 
+const DEFAULT_START_DATE = '2015-01-01';
+
 export const useMapOverlayReport = (
   projectCode?: ProjectCode,
   entityCode?: EntityCode,
   mapOverlay?: SingleMapOverlayItem,
   params?: {
-    startDate?: string;
-    endDate?: string;
+    startDate?: string | Moment;
+    endDate?: string | Moment;
   },
+  keepPreviousData?: boolean,
 ) => {
+  const today = moment();
+  const startDateToUse = params?.startDate ?? moment(DEFAULT_START_DATE); // default to 2015-01-01 if no start date is provided
+  const endDateToUse = params?.endDate ?? today; // default to today if no end date is provided, so that the default end date is always in the user's timezone, not UTC
+
   // convert moment dates to date strings for the endpoint to use
-  const startDate = params?.startDate ? momentToDateString(params.startDate) : undefined;
-  const endDate = params?.startDate ? momentToDateString(params.endDate) : undefined;
+  const endDate = momentToDateString(endDateToUse);
+
+  const startDate = momentToDateString(startDateToUse);
   const mapOverlayCode = mapOverlay?.code;
   const isLegacy = mapOverlay?.legacy ? 'true' : 'false';
 
@@ -96,7 +101,7 @@ export const useMapOverlayReport = (
     },
     {
       enabled,
-      keepPreviousData: false,
+      keepPreviousData,
     },
   );
 };

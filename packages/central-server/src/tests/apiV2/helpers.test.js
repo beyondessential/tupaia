@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { getQueryOptionsForColumns } from '../../apiV2/GETHandler/helpers';
 
@@ -81,45 +76,50 @@ describe('Requests record types that require a through join', () => {
       },
     ]);
   });
-  it('returns record types that require two through joins', () => {
+  it('returns record types that require multiple through joins', () => {
     const customJoinConditions = {
-      country: {
-        through: 'entity',
-        nearTableKey: 'entity.country_code',
-        farTableKey: 'country.code',
+      answer: {
+        through: 'survey_response',
+        nearTableKey: 'survey_response.id',
+        farTableKey: 'answer.survey_response_id',
       },
-      disaster: {
-        through: 'country',
-        nearTableKey: 'country.code',
-        farTableKey: 'disaster.countryCode',
+      question: {
+        through: 'answer',
+        nearTableKey: 'answer.question_id',
+        farTableKey: 'question.id',
+      },
+      survey_screen_component: {
+        through: 'question',
+        nearTableKey: 'question.id',
+        farTableKey: 'survey_screen_component.question_id',
       },
     };
     const results = getQueryOptionsForColumns(
-      ['survey_response.id', 'country.name', 'disaster.type'],
+      ['survey_response.id', 'question.id', 'survey_screen_component.component_number'],
       'survey_response',
       customJoinConditions,
       null,
     );
     expect(results.sort).to.have.ordered.members([
       'survey_response.id',
-      'entity.id',
-      'country.id',
-      'disaster.id',
+      'answer.id',
+      'question.id',
+      'survey_screen_component.id',
     ]);
     expect(results.multiJoin).to.deep.equal([
       {
-        joinWith: 'entity',
-        joinCondition: ['entity.id', 'survey_response.entity_id'],
+        joinWith: 'answer',
+        joinCondition: ['answer.survey_response_id', 'survey_response.id'],
         joinType: null,
       },
       {
-        joinWith: 'country',
-        joinCondition: ['country.code', 'entity.country_code'],
+        joinWith: 'question',
+        joinCondition: ['question.id', 'answer.question_id'],
         joinType: null,
       },
       {
-        joinWith: 'disaster',
-        joinCondition: ['disaster.countryCode', 'country.code'],
+        joinWith: 'survey_screen_component',
+        joinCondition: ['survey_screen_component.question_id', 'question.id'],
         joinType: null,
       },
     ]);

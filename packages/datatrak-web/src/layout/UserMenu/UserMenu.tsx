@@ -1,24 +1,16 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
+import MuiMenuIcon from '@material-ui/icons/Menu';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import MuiMenuIcon from '@material-ui/icons/Menu';
+
 import { IconButton } from '@tupaia/ui-components';
-import { DrawerMenu } from './DrawerMenu';
+
+import { useIsDesktop } from '../../utils';
 import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
-import { ProjectSelectModal } from './ProjectSelectModal';
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    justify-content: space-between;
-    width: 100%;
-  }
 `;
 
 const MenuButton = styled(IconButton).attrs({
@@ -38,35 +30,21 @@ const MenuIcon = styled(MuiMenuIcon)`
  */
 export const UserMenu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [projectModalOpen, setProjectModalOpen] = useState(false);
-  const openProjectModal = () => {
-    setProjectModalOpen(true);
-  };
+  const onCloseMenu = () => setMenuOpen(false);
+  const toggleUserMenu = () => setMenuOpen(!menuOpen);
+  const isDesktop = useIsDesktop();
 
-  const closeProjectModal = () => {
-    setProjectModalOpen(false);
-  };
-
-  const onCloseMenu = () => {
-    setMenuOpen(false);
-  };
-
-  const toggleUserMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
   return (
     <Wrapper>
-      <UserInfo openProjectModal={openProjectModal} />
-      <MenuButton onClick={toggleUserMenu} id="user-menu-button">
-        <MenuIcon />
-      </MenuButton>
-      <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
-      <DrawerMenu
-        menuOpen={menuOpen}
-        onCloseMenu={onCloseMenu}
-        openProjectModal={openProjectModal}
-      />
-      {projectModalOpen && <ProjectSelectModal onClose={closeProjectModal} />}
+      <UserInfo />
+      {isDesktop && (
+        <>
+          <MenuButton onClick={toggleUserMenu} id="user-menu-button" title="Toggle menu">
+            <MenuIcon />
+          </MenuButton>
+          <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
+        </>
+      )}
     </Wrapper>
   );
 };

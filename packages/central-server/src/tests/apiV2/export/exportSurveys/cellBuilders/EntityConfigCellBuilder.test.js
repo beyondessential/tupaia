@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 import { assertCanProcessAndBuild } from './utilities';
 
@@ -29,6 +24,12 @@ const QUESTIONS = [
     id: '123',
     code: 'entity_question',
     type: ANSWER_TYPES.ENTITY,
+  },
+  {
+    id: 'q5',
+    code: 'question_5_code',
+    validationCriteria: 'mandatory: true',
+    type: ANSWER_TYPES.CODE_GENERATOR,
   },
 ];
 
@@ -58,7 +59,7 @@ describe('EntityConfigCellBuilder', () => {
 
   it('supports validating presence of fields.name, fields.code AND fields.type when createNew is true', async () => {
     await assertCanProcessAndBuildEntity(
-      'createNew: Yes\r\nfields.name: question_3_code\r\nfields.code: question_3_code\r\nfields.type: school',
+      'createNew: Yes\r\nfields.name: question_3_code\r\nfields.code: question_5_code\r\nfields.type: school',
     );
   });
 

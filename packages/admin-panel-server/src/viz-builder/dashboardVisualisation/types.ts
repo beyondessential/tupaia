@@ -1,8 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
+import { Report as BaseReportType } from '@tupaia/types';
 import { CamelKeysToSnake, LegacyReport, Report, VizData } from '../types';
 
 // TODO: use DashboardItem['config']
@@ -13,23 +9,23 @@ type Presentation = Record<string, unknown> & {
 type DashboardVisualisation = {
   id?: string;
   code: string;
-  name: string;
   legacy: false;
   data: VizData;
   presentation: Presentation;
   permissionGroup: string;
+  latestDataParameters?: BaseReportType['latest_data_parameters'];
 };
 
 type LegacyDashboardVisualisation = {
   id?: string;
   code: string;
-  name: string;
   legacy: true;
   data: {
     dataBuilder: string;
     config: LegacyReport['config'];
   };
   presentation: Presentation;
+  latestDataParameters: never;
 };
 
 export type DashboardViz = DashboardVisualisation | LegacyDashboardVisualisation;

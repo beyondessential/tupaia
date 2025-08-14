@@ -1,11 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { MapOverlay } from '../../models';
-import { MapOverlayConfig } from '../../models-extra';
-import { KeysToCamelCase } from '../../../utils/casing';
+import { MapOverlayConfig, ReferenceProps } from '../../models-extra';
+import { KeysToCamelCase } from '../../../utils';
 
 export interface Params {
   projectCode: string;
@@ -14,16 +9,17 @@ export interface Params {
 
 // We return a simplified version of data to the frontend
 export type TranslatedMapOverlay = KeysToCamelCase<
-  Pick<MapOverlay, 'code' | 'name' | 'legacy' | 'report_code'>
+  Pick<MapOverlay, 'code' | 'name' | 'legacy' | 'report_code' | 'entity_attributes_filter'>
 > &
   MapOverlayConfig & {
     sortOrder?: number | null;
+    disabled?: boolean;
   };
 export interface TranslatedMapOverlayGroup {
   name: string;
   children: OverlayChild[];
   sortOrder?: number | null;
-  info?: { reference?: { text?: string } };
+  info?: { reference?: ReferenceProps };
 }
 export type OverlayChild = TranslatedMapOverlayGroup | TranslatedMapOverlay;
 export interface ResBody {

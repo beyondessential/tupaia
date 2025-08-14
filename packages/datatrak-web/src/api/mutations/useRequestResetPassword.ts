@@ -1,9 +1,4 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { post } from '../api';
 
 type ResetPasswordParams = {
@@ -12,7 +7,7 @@ type ResetPasswordParams = {
 export const useRequestResetPassword = () => {
   return useMutation<any, Error, ResetPasswordParams, unknown>(
     ({ emailAddress }: ResetPasswordParams) => {
-      return post('auth/resetPassword', {
+      return post('requestResetPassword', {
         data: {
           emailAddress,
           resetPasswordUrl: window.location.origin,

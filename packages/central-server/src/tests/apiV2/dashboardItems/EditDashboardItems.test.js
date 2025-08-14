@@ -1,33 +1,24 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
-  VIZ_BUILDER_USER_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for EditDashboardItems', async () => {
+describe('EditDashboardItems', async () => {
   const DEFAULT_POLICY = {
-    DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-    SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    DL: ['Public', TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
+    KI: ['Admin', VIZ_BUILDER_PERMISSION_GROUP],
+    SB: ['Royal Australasian College of Surgeons'],
+    VU: ['Admin'],
     LA: ['Admin'],
     TO: ['Admin'],
   };
 
   const BES_ADMIN_POLICY = {
     SB: [BES_ADMIN_PERMISSION_GROUP],
-  };
-
-  const VIZ_BUILDER_USER_ADMIN_POLICY = {
-    SB: [VIZ_BUILDER_USER_PERMISSION_GROUP],
   };
 
   const app = new TestableApp();
@@ -40,6 +31,8 @@ describe('Permissions checker for EditDashboardItems', async () => {
   let dashboardItemDLPublicLAAdmin;
   let dashboardItemDLPublicSBAdmin;
   let dashboardItemKIAdmin;
+  let reportKIAdmin;
+  let legacyDashboardItemKIAdmin;
 
   before(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
@@ -110,6 +103,19 @@ describe('Permissions checker for EditDashboardItems', async () => {
       report_code: 'FAV_PKMN',
       config: { name: 'Favourite Pokemon' },
       legacy: false,
+    });
+
+    legacyDashboardItemKIAdmin = await findOrCreateDummyRecord(models.dashboardItem, {
+      code: 'LEGACY_FAV_PKMN',
+      report_code: 'LEGACY_FAV_PKMN',
+      config: { name: 'Favourite Pokemon' },
+      legacy: true,
+    });
+
+    reportKIAdmin = await findOrCreateDummyRecord(models.report, {
+      code: 'ALT_FAV_PKMN',
+      permission_group_id: publicPermissionGroup.id,
+      config: {},
     });
 
     // Give the test users some permissions
@@ -201,7 +207,7 @@ describe('Permissions checker for EditDashboardItems', async () => {
     });
 
     describe('Sufficient permissions', async () => {
-      it('Allow editing of dashboard items if we have admin panel access to all the countries the user we are editing has access to', async () => {
+      it('Allow editing of dashboard items if we have access to all the countries the user we are editing has access to', async () => {
         const newName = 'My all time favourite pokemon';
         await app.grantAccess(DEFAULT_POLICY);
         await app.put(`dashboardItems/${dashboardItemKIAdmin.id}`, {
@@ -222,31 +228,34 @@ describe('Permissions checker for EditDashboardItems', async () => {
 
         expect(result.config.name).to.equal(newName);
       });
+    });
 
-      it('Does not allow editing of a dashboard item if we have Viz Builder User access in any country, and where the user we are editing does not have access to that country', async () => {
-        const newName = 'Where to find cool pokemon';
-        await app.grantAccess(VIZ_BUILDER_USER_ADMIN_POLICY);
-        const { body: result } = await app.put(
-          `dashboardItems/${dashboardItemDLPublicLAAdmin.id}`,
-          {
-            body: { config: { name: newName } },
-          },
-        );
-
-        expect(result).to.have.keys('error');
+    describe('Validation', async () => {
+      it('Does not allow editing of report_code if it does not match an existing report and the dashboard viz is not a legacy viz', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.put(`dashboardItems/${dashboardItemKIAdmin.id}`, {
+          body: { code: 'new code', report_code: 'new code' },
+        });
+        const result = await models.dashboardItem.findById(dashboardItemKIAdmin.id);
+        expect(result.report_code).to.equal(dashboardItemKIAdmin.code);
       });
 
-      it('Does not allow editing of a dashboard item if user has Viz Builder User access in the requested country but not BES Admin or the dashboard specific permission', async () => {
-        const newName = 'Where to find cool pokemon';
-        await app.grantAccess(VIZ_BUILDER_USER_ADMIN_POLICY);
-        const { body: result } = await app.put(
-          `dashboardItems/${dashboardItemDLPublicSBAdmin.id}`,
-          {
-            body: { config: { name: newName } },
-          },
-        );
+      it('Allows editing of report_code if it matches an existing report and the dashboard viz is not a legacy viz', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.put(`dashboardItems/${dashboardItemKIAdmin.id}`, {
+          body: { code: reportKIAdmin.code, report_code: reportKIAdmin.code },
+        });
+        const result = await models.dashboardItem.findById(dashboardItemKIAdmin.id);
+        expect(result.report_code).to.equal(reportKIAdmin.code);
+      });
 
-        expect(result).to.have.keys('error');
+      it('Allows editing of report_code if it does not match an existing report and the dashboard viz is a legacy viz', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.put(`dashboardItems/${legacyDashboardItemKIAdmin.id}`, {
+          body: { code: 'new code', report_code: 'new code' },
+        });
+        const result = await models.dashboardItem.findById(legacyDashboardItemKIAdmin.id);
+        expect(result.report_code).to.equal('new code');
       });
     });
   });

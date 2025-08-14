@@ -1,19 +1,14 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class DashboardType extends DatabaseType {
-  static databaseType = TYPES.DASHBOARD;
+export class DashboardRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DASHBOARD;
 }
 
 export class DashboardModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return DashboardType;
+  get DatabaseRecordClass() {
+    return DashboardRecord;
   }
 
   async getDashboards(entity, hierarchyId, params) {
@@ -35,29 +30,29 @@ export class DashboardModel extends DatabaseModel {
    */
   async findDashboardsWithRelationsByItemIds(dashboardItemIds) {
     const dashboards = await this.database.find(
-      this.databaseType,
+      this.databaseRecord,
       {
-        [`${TYPES.DASHBOARD_RELATION}.child_id`]: dashboardItemIds,
+        [`${RECORDS.DASHBOARD_RELATION}.child_id`]: dashboardItemIds,
       },
       {
         columns: [
-          { id: `${TYPES.DASHBOARD}.id` },
-          { code: `${TYPES.DASHBOARD}.code` },
-          { name: `${TYPES.DASHBOARD}.name` },
-          { rootEntityCode: `${TYPES.DASHBOARD}.root_entity_code` },
-          { itemId: `${TYPES.DASHBOARD_RELATION}.child_id` },
+          { id: `${RECORDS.DASHBOARD}.id` },
+          { code: `${RECORDS.DASHBOARD}.code` },
+          { name: `${RECORDS.DASHBOARD}.name` },
+          { rootEntityCode: `${RECORDS.DASHBOARD}.root_entity_code` },
+          { itemId: `${RECORDS.DASHBOARD_RELATION}.child_id` },
           {
-            permissionGroups: `${TYPES.DASHBOARD_RELATION}.permission_groups`,
+            permissionGroups: `${RECORDS.DASHBOARD_RELATION}.permission_groups`,
           },
           {
-            entityTypes: `${TYPES.DASHBOARD_RELATION}.entity_types`,
+            entityTypes: `${RECORDS.DASHBOARD_RELATION}.entity_types`,
           },
 
-          { projectCodes: `${TYPES.DASHBOARD_RELATION}.project_codes` },
+          { projectCodes: `${RECORDS.DASHBOARD_RELATION}.project_codes` },
         ],
-        joinWith: TYPES.DASHBOARD_RELATION,
-        joinCondition: [`${TYPES.DASHBOARD_RELATION}.dashboard_id`, `${TYPES.DASHBOARD}.id`],
-        sort: [`${TYPES.DASHBOARD_RELATION}.sort_order`],
+        joinWith: RECORDS.DASHBOARD_RELATION,
+        joinCondition: [`${RECORDS.DASHBOARD_RELATION}.dashboard_id`, `${RECORDS.DASHBOARD}.id`],
+        sort: [`${RECORDS.DASHBOARD_RELATION}.sort_order`],
       },
     );
 

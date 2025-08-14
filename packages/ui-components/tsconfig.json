@@ -10,13 +10,12 @@
       "dom",
       "es2019"
     ],
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true
   },
   "include": [
     "src/**/*",
     "jest.config.ts",
-    "helpers/**/*"
+    "helpers",
+    "stories",
+    ".storybook"
   ]
 }

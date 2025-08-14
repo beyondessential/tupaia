@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 type Hierarchy = {
   code: string;
   name: string;
@@ -14,9 +9,7 @@ type Entity = {
   code: string;
   name: string;
   type: string;
-  attributes: {
-    type?: string;
-  };
+  attributes: Record<string, unknown>;
 };
 
 export const getHierarchyWithFields = (hierarchyCode: string, fields: (keyof Hierarchy)[]) => {
@@ -97,7 +90,12 @@ export const ENTITIES: Entity[] = [
     code: 'VIRIDIAN',
     name: 'Viridian City',
     type: 'city',
-    attributes: { type: 'gym' },
+    attributes: {
+      type: 'gym',
+      gym: {
+        type: 'fire',
+      },
+    },
   },
   {
     country_code: 'KANTO',

@@ -1,12 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import {
   upsertCountry,
   upsertEntity,
   upsertPermissionGroup,
+  upsertProject,
   upsertQuestion,
   upsertSurvey,
   upsertSurveyScreen,
@@ -139,6 +135,10 @@ export const insertPermissionsBasedSyncTestData = async () => {
       return upsertCountry({ code, name });
     }),
   );
+
+  const project = await upsertProject({
+    code: 'test_project',
+  });
   const entities = await Promise.all(ENTITIES.map(e => upsertEntity(e)));
   const permissionGroups = await Promise.all(
     PERMISSION_GROUPS.map(pg => upsertPermissionGroup(pg)),
@@ -154,7 +154,12 @@ export const insertPermissionsBasedSyncTestData = async () => {
     const countryIds = surveyCountries.map(code => countries.find(c => c.code === code).id);
     const permissionGroupId = permissionGroups.find(pg => pg.name === surveyPermissionGroup).id;
 
-    return { country_ids: countryIds, permission_group_id: permissionGroupId, ...restOfSurvey };
+    return {
+      country_ids: countryIds,
+      permission_group_id: permissionGroupId,
+      project_id: project.id,
+      ...restOfSurvey,
+    };
   });
 
   const surveys = await Promise.all(surveysWithIds.map(s => upsertSurvey(s)));

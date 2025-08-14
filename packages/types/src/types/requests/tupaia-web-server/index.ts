@@ -1,10 +1,5 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
+export * as TupaiaWebCountriesRequest from './CountriesRequest';
 export * as TupaiaWebChangePasswordRequest from './ChangePasswordRequest';
-export * as TupaiaWebCountryAccessListRequest from './CountryAccessListRequest';
 export * as TupaiaWebDashboardsRequest from './DashboardsRequest';
 export * as TupaiaWebEmailDashboardRequest from './EmailDashboardRequest';
 export * as TupaiaWebExportDashboardRequest from './ExportDashboardRequest';
@@ -18,3 +13,8 @@ export * as TupaiaWebProjectRequest from './ProjectRequest';
 export * as TupaiaWebReportRequest from './ReportRequest';
 export * as TupaiaWebRequestCountryAccessRequest from './RequestCountryAccessRequest';
 export * as TupaiaWebUserRequest from './UserRequest';
+export * as TupaiaWebSubscribeDashboardRequest from './SubscribeDashboardRequest';
+export * as TupaiaWebUnsubscribeDashboardRequest from './UnsubscribeDashboardRequest';
+export * as TupaiaWebUnsubscribeDashboardMailingListRequest from './UnsubscribeDashboardMailingListRequest';
+export * as TupaiaWebExportMapOverlayRequest from './ExportMapOverlayRequest';
+export * as TupaiaWebExportSurveyDataRequest from './ExportSurveyDataRequest';

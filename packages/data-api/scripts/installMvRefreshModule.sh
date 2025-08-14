@@ -3,7 +3,7 @@ DIR=$(dirname "$0")
 
 
 DIR=$(pwd "$0")
-source $DIR/../../scripts/bash/mergeCurrentEnvWithEnvFile.sh 
+source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
@@ -23,4 +23,4 @@ else
 fi
 
 export PGPASSWORD=$DB_PG_PASSWORD
-psql -p $DB_PORT --set=db_user="$DB_USER" --set=mv_user="$DB_MV_USER" -h $DB_URL -d $DB_NAME -U $DB_PG_USER -f scripts/grantMvRefreshPermissions.sql
+psql -p $DB_PORT --set=db_user="$DB_USER" --set=mv_user="$DB_MV_USER" --set=db_name="$DB_NAME" -h $DB_URL -d $DB_NAME -U $DB_PG_USER -f scripts/grantMvRefreshPermissions.sql

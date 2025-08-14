@@ -1,34 +1,29 @@
 #!/usr/bin/env bash
 
-## This file runs on appcenter automated builds
+## This file runs on App Center automated builds
 
-## Move environment variables saved by appcenter as USER-DEFINED_VARIABLE_NAME into .env, ready for react-native-dotenv
-echo "Setting up environment variables"
+## Move environment variables saved by App Center as USER-DEFINED_VARIABLE_NAME into .env, ready for react-native-dotenv
+echo -e "\033[32mSetting up environment variables\033m"
 env | grep "USER-DEFINED_.*" | awk -F "USER-DEFINED_" '{print $2}' > .env
 
-## Although appcenter generally automatically installs dependencies, it doesn't handle mono-repo
-## internal dependencies (see https://github.com/microsoft/appcenter/issues/278)
-## To manage that, we here manually install external deps, build internal deps, then redirect the
-## package.json entries to the internal filesystem
+# Install nvm, Yarn
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
-# workaround to override the v8 alias (see https://intercom.help/appcenter/en/articles/1592748-react-native-builds-fail-with-the-engine-node-is-incompatible-with-this-module-expected-version-x-x-x-error-found-incompatible-module)
-npm config delete prefix
-. ~/.bashrc
 nvm install
 nvm use
+npm install -g yarn
 
-# move to the root folder
-cd ../..
+set -x
 
-# install root dependencies
-SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
+# Install meditrak-app and root (for shared scripts)
+yarn workspaces focus tupaia @tupaia/meditrak-app
 
-# move to meditrak folder
-cd packages/meditrak-app
+# Build meditrak-app deps
+yarn workspace @tupaia/access-policy build-dev
+yarn workspace @tupaia/expression-parser build-dev
 
-# build internal dependencies of meditrak
-../../scripts/bash/buildInternalDependencies.sh --packagePath .
-
-# redirect package.json entries for internal dependencies to look locally
-node scripts/fixInternalDepsAppcenter.js
-
+## App Center does not support Yarn workspaces (https://github.com/microsoft/appcenter/issues/278)
+## Workaround: symlink `npm` to `echo` so it doesnt run (App Center will call `npm install` -> `echo install`)
+ln -sf $(which echo) $(which npm)

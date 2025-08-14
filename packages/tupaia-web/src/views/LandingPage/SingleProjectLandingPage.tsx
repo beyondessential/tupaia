@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -50,9 +45,7 @@ const ActionLink = styled(Button)`
   ${ExtendedTitle} + & {
     margin-top: 2em;
   }
-  &:hover {
-    color: ${props => props.theme.palette.common.white};
-  }
+
   @media screen and (min-width: ${({ theme }) =>
       theme.breakpoints.values.sm}px) and (min-height: 600px) {
     font-size: 1.0625rem;
@@ -99,6 +92,7 @@ export function SingleProjectLandingPage({
       {/* Only display a link if access type is set, and link is disabled if access has not yet been granted */}
       {accessType && (
         <ActionLink
+          color="default"
           variant="contained"
           target={accessType === PROJECT_ACCESS_TYPES.ALLOWED ? '_blank' : '_self'}
           component={Link}

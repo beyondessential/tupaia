@@ -1,37 +1,67 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ComponentType } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { RegisterOptions, useFormContext } from 'react-hook-form';
 
 type HookFormInputWrapperProps = Record<string, unknown> & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  options?: any; // options is type RegisterOptions from react-hook-form, but ts-lint can not find that export
+  options?: RegisterOptions;
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Input: ComponentType<any>;
   required?: boolean;
+  type?: React.InputHTMLAttributes<unknown>['type'];
+  validate?: RegisterOptions['validate'];
 };
+
+/**
+ * A wrapper for `<input>` elements (and their abstractions, such as those from the MUI library)
+ * that makes them self-registering for React Hook Form.
+ *
+ * @remarks Remember to explicitly set the `type` prop when `Input` is not some form of a text
+ * field. It can take the same values as the `type` attribute on vanilla HTML’s `<input>` element.
+ * Otherwise, it defaults to `'text'`, and you will likely see unwanted behaviour (such as an
+ * uncheckable checkbox).
+ */
 export const FormInput = ({
-  name,
-  required,
-  options = {},
   Input,
+  name,
+  options = {},
+  required = false,
+  type = 'text',
+  validate,
   ...props
 }: HookFormInputWrapperProps) => {
   const { register, errors = {} } = useFormContext();
+
   const requiredConfig = required ? { required: 'Required' } : {};
-  const registerOptions = { ...options, ...requiredConfig };
+
+  const shouldTrimToValidate = required && type === 'text'; // Don’t trim passwords!
+  const verifyIsNonwhitespace = (value: string) => !!value.trim() || 'Required';
+  const validateConfig =
+    typeof validate === 'function'
+      ? // `validate` is a single function (type `Validate`), so wrap it in an object of named
+        // functions with it and `verifyIsNonwhitespace`
+        {
+          validate: shouldTrimToValidate ? { validate, verifyIsNonwhitespace } : { validate },
+        }
+      : // `validate` is an object of named functions (type `Record<string, Validate>`), so simply
+        // add `verifyIsNonwhiteapce` to it
+        {
+          validate: shouldTrimToValidate ? { ...validate, verifyIsNonwhitespace } : validate,
+        };
+
+  const registerOptions = {
+    ...requiredConfig,
+    ...validateConfig,
+    ...options,
+  } as RegisterOptions;
 
   return (
     <Input
-      name={name}
-      required={!!required}
       error={!!errors[name]}
       helperText={errors[name]?.message}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      inputRef={register(registerOptions) as any}
+      inputRef={register(registerOptions)}
+      name={name}
+      required={!!required}
+      type={type}
       {...props}
     />
   );

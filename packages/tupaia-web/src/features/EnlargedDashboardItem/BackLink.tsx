@@ -1,11 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
+import React, { ComponentType } from 'react';
 import styled from 'styled-components';
-import { useLocation, useSearchParams, Link } from 'react-router-dom';
+import { useLocation, useSearchParams, Link, To } from 'react-router-dom';
+import { IconButtonProps } from '@material-ui/core';
 import { KeyboardArrowLeft } from '@material-ui/icons';
 import { IconButton } from '@tupaia/ui-components';
 import { DashboardItem } from '../../types';
@@ -23,7 +19,7 @@ const BackLinkButton = styled(IconButton).attrs({
     width: 2rem;
     height: 2rem;
   }
-`;
+` as ComponentType<IconButtonProps & { to: To }>; // need to add the to prop to the type for the icon button
 
 export const BackLink = ({
   parentDashboardItem,

@@ -1,12 +1,11 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import winston from 'winston';
 
 const MAX_RETRY_ATTEMPTS = 3;
 
+/**
+ * @description Base class for listen to changes to records in the database.
+ * IMPORTANT: Make sure the table has a trigger on it, otherwise this will not work.
+ */
 export class ChangeHandler {
   /**
    * A map of change translators by record type. Each translator can alter the change details that
@@ -79,13 +78,16 @@ export class ChangeHandler {
           // Translate changes and schedule their handling as a batch at a later stage
           const translatedChanges = await translator(changeDetails);
           this.changeQueue.push(...translatedChanges);
-          return this.scheduleChangeQueueHandler();
+          const scheduledPromise = this.scheduleChangeQueueHandler();
+          // Don't return the scheduled promise directly, so that it doesn't block processing other changes
+          // But we do need to return it so that the database can track it and wait for it to complete
+          return { scheduledPromise };
         }),
     );
   }
 
   stopListeningForChanges() {
-    this.changeHandlerCancellers.forEach(c => c());
+    for (const c of this.changeHandlerCancellers) c();
     this.changeHandlerCancellers = [];
   }
 
@@ -128,8 +130,24 @@ export class ChangeHandler {
         await this.models.wrapInTransaction(async transactingModels => {
           // Acquire a database advisory lock for the transaction
           // Ensures no other server instance can execute its change handler at the same time
+          let profiler = winston.startTimer();
           await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
+          profiler.done({
+            message: `Acquired advisory lock for ${this.lockKey} change handler`,
+          });
+
+          winston.info(
+            `Running ${this.lockKey} change handler (${currentQueue.length} ${
+              currentQueue.length === 1 ? 'job' : 'jobs'
+            } in queue)`,
+          );
+          profiler = winston.startTimer();
           await this.handleChanges(transactingModels, currentQueue);
+          profiler.done({
+            message: `Completed ${this.lockKey} change handler (${currentQueue.length} ${
+              currentQueue.length === 1 ? 'job' : 'jobs'
+            } in queue)`,
+          });
         });
       } catch (error) {
         winston.warn(

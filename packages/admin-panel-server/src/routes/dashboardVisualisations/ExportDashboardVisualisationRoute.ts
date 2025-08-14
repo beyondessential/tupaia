@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { Request } from 'express';
 import { keyBy } from 'lodash';
 
@@ -22,7 +16,7 @@ import type {
 
 export type ExportDashboardVisualisationRequest = Request<
   { dashboardVisualisationId?: string },
-  { contents: DashboardViz; filePath: string; type: string },
+  { contents: Omit<DashboardViz, 'latestDataParameters'>; filePath: string; type: string },
   { visualisation: DashboardViz },
   Record<string, any>
 >;
@@ -40,14 +34,14 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
       builtVisualisation || (await this.buildDashboardItemVisualisation(dashboardItem));
     const fileBaseName = visualisation.code || 'new_dashboard_visualisation';
 
-    const { id, ...visualisationWithoutId } = visualisation;
+    const { id, latestDataParameters, ...visualisationWithoutIdAndLatestParams } = visualisation;
     const { dashboards, dashboardRelations } = await this.buildDashboardsAndRelations(
       dashboardItem,
     );
 
     return {
       contents: {
-        ...visualisationWithoutId,
+        ...visualisationWithoutIdAndLatestParams,
         dashboards,
         dashboardRelations,
       },

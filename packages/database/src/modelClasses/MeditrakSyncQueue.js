@@ -1,18 +1,13 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class MeditrakSyncQueueType extends DatabaseType {
-  static databaseType = TYPES.MEDITRAK_SYNC_QUEUE;
+export class MeditrakSyncQueueRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.MEDITRAK_SYNC_QUEUE;
 }
 
 export class MeditrakSyncQueueModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return MeditrakSyncQueueType;
+  get DatabaseRecordClass() {
+    return MeditrakSyncQueueRecord;
   }
 }

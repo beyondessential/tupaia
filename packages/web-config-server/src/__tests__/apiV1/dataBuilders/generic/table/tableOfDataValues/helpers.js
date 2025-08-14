@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { when } from 'jest-when';
 import pickBy from 'lodash.pickby';
 
@@ -24,6 +19,7 @@ const createAggregatorStub = dataValues => {
       expect.anything(),
       expect.objectContaining({ dataServices }),
       expect.objectContaining(query),
+      expect.anything(),
     )
     .mockImplementation(dataElementCodes => ({
       results: Object.values(dataValues).filter(({ dataElement }) =>

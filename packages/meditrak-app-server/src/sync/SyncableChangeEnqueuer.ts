@@ -1,9 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
-import winston from 'winston';
 import { ChangeHandler, TupaiaDatabase } from '@tupaia/database';
 import { MeditrakAppServerModelRegistry } from '../types';
 import { getSupportedModels } from './appSupportedModels';
@@ -32,18 +26,9 @@ export class SyncableChangeEnqueuer extends ChangeHandler {
   }
 
   private async refreshPermissionsBasedView(database: TupaiaDatabase) {
-    try {
-      const start = Date.now();
-      await database.executeSql(
-        `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
-      );
-      const end = Date.now();
-      winston.info(`permissions_based_meditrak_sync_queue refresh took: ${end - start}ms`);
-    } catch (error) {
-      winston.error(
-        `permissions_based_meditrak_sync_queue refresh failed: ${(error as Error).message}`,
-      );
-    }
+    await database.executeSql(
+      `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
+    );
   }
 
   protected async handleChanges(

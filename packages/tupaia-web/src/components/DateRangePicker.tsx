@@ -1,14 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Moment } from 'moment';
-import { GRANULARITIES } from '@tupaia/utils';
+import { DatePickerOffsetSpec, VizPeriodGranularity } from '@tupaia/types';
 import { DateRangePicker as DateRangePickerComponent, TextButton } from '@tupaia/ui-components';
 import styled from 'styled-components';
-import { ValueOf } from '../types';
 
 const Wrapper = styled.div`
   margin-top: 0.5rem;
@@ -77,14 +71,16 @@ const DialogPaperComponent = styled.div`
 `;
 
 interface DateRangePickerProps {
-  startDate?: Moment;
-  endDate?: Moment;
-  granularity?: ValueOf<typeof GRANULARITIES>;
+  startDate?: Moment | string;
+  endDate?: Moment | string;
+  granularity?: `${VizPeriodGranularity}`;
   onSetDates?: (startDate: string, endDate: string) => void;
   minDate?: string;
   maxDate?: string;
   onResetDate?: () => void;
   weekDisplayFormat?: string;
+  dateOffset?: DatePickerOffsetSpec;
+  dateRangeDelimiter?: string;
 }
 
 export const DateRangePicker = ({
@@ -96,6 +92,8 @@ export const DateRangePicker = ({
   onSetDates,
   onResetDate,
   weekDisplayFormat,
+  dateOffset,
+  dateRangeDelimiter,
 }: DateRangePickerProps) => {
   return (
     <Wrapper>
@@ -110,6 +108,8 @@ export const DateRangePicker = ({
         dialogProps={{
           PaperComponent: DialogPaperComponent,
         }}
+        dateOffset={dateOffset}
+        dateRangeDelimiter={dateRangeDelimiter}
       />
       <ResetButton onClick={onResetDate}>Reset to default</ResetButton>
     </Wrapper>

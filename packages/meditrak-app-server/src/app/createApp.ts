@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { TupaiaDatabase } from '@tupaia/database';
 import { handleWith, MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
 import {
@@ -32,7 +28,7 @@ import { checkAppVersion } from '../middleware';
  */
 export function createApp(database = new TupaiaDatabase()) {
   const authMiddleware = buildAuthMiddleware(database);
-  const app = new MicroServiceApiBuilder(database, 'meditrak')
+  const builder = new MicroServiceApiBuilder(database, 'meditrak')
     .attachApiClientToContext(authHandlerProvider)
     .use('*', checkAppVersion)
     .post<AuthRequest>('auth', handleWith(AuthRoute))
@@ -51,8 +47,16 @@ export function createApp(database = new TupaiaDatabase()) {
       handleWith(ChangesMetadataRoute),
     )
     .get<PullChangesRequest>('changes', authMiddleware, handleWith(PullChangesRoute))
-    .post<PushChangesRequest>('changes', authMiddleware, handleWith(PushChangesRoute))
-    .build();
+    .post<PushChangesRequest>('changes', authMiddleware, handleWith(PushChangesRoute));
+
+  const app = builder.build();
+
+  builder.initialiseApiClient([
+    {
+      entityCode: 'DL',
+      permissionGroupName: 'Public',
+    },
+  ]);
 
   return app;
 }

@@ -1,10 +1,12 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { ModelRegistry, ApiRequestLogModel, APIClientModel } from '@tupaia/database';
-import { UserModel } from './models';
+import { ModelRegistry } from '@tupaia/database';
+import {
+  ApiClientModel,
+  ApiRequestLogModel,
+  EntityModel,
+  PermissionGroupModel,
+  UserEntityPermissionModel,
+  UserModel,
+} from './models';
 
 export type AccessPolicyObject = Record<string, string[]>;
 
@@ -18,7 +20,10 @@ export type QueryParameters = Record<string, string>;
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
 export interface ServerBoilerplateModelRegistry extends ModelRegistry {
-  readonly apiRequestLog: ApiRequestLogModel;
-  readonly apiClient: APIClientModel;
-  readonly user: UserModel;
+  apiClient: ApiClientModel;
+  apiRequestLog: ApiRequestLogModel;
+  entity: EntityModel;
+  permissionGroup: PermissionGroupModel;
+  user: UserModel;
+  userEntityPermission: UserEntityPermissionModel;
 }

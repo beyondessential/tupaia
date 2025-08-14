@@ -1,18 +1,12 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { ReactNode } from 'react';
 import { CircleMarkerProps, PolygonProps } from 'react-leaflet';
 import { LatLngExpression, LatLngBoundsExpression } from 'leaflet';
-import { Entity as TupaiaEntity, CssColor, IconKey, MeasureType, ScaleType } from '@tupaia/types';
+import { Entity as TupaiaEntity, CssColor, IconKey, InlineValue } from '@tupaia/types';
 import { BREWER_PALETTE } from '../constants';
 
 export type ColorKey = keyof typeof BREWER_PALETTE;
 export type Color = ColorKey | 'transparent' | CssColor;
 
-export type ScaleTypeLiteral = `${ScaleType}`;
-export type MeasureTypeLiteral = `${MeasureType}`;
 export type OrgUnitCode = string | undefined;
 
 export type Location = {
@@ -53,6 +47,7 @@ export type MeasureData = Omit<PolygonProps, 'positions'> &
     icon?: IconKey;
     photoUrl?: string;
     value?: number | string;
-    submissionDate?: string | Date;
     positions?: PolygonProps['positions']; //allow this to be optional because of the loose types of measure data
   };
+
+export type Value = InlineValue['value'];

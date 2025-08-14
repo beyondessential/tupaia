@@ -1,24 +1,19 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 import { JOIN_TYPES } from '../TupaiaDatabase';
 
 const ROOT_MAP_OVERLAY_GROUP_CODE = 'Root';
 
-export class MapOverlayGroupType extends DatabaseType {
-  static databaseType = TYPES.MAP_OVERLAY_GROUP;
+export class MapOverlayGroupRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.MAP_OVERLAY_GROUP;
 }
 
 export class MapOverlayGroupModel extends DatabaseModel {
   notifiers = [onChangeDeleteRelation];
 
-  get DatabaseTypeClass() {
-    return MapOverlayGroupType;
+  get DatabaseRecordClass() {
+    return MapOverlayGroupRecord;
   }
 
   get RootMapOverlayGroupCode() {
@@ -35,11 +30,11 @@ export class MapOverlayGroupModel extends DatabaseModel {
     return this.find(
       { map_overlay_group_id: rootMapOverlayGroup.id, child_type: 'mapOverlayGroup' },
       {
-        joinWith: TYPES.MAP_OVERLAY_GROUP_RELATION,
+        joinWith: RECORDS.MAP_OVERLAY_GROUP_RELATION,
         joinType: JOIN_TYPES.INNER,
         joinCondition: [
-          `${TYPES.MAP_OVERLAY_GROUP}.id`,
-          `${TYPES.MAP_OVERLAY_GROUP_RELATION}.child_id`,
+          `${RECORDS.MAP_OVERLAY_GROUP}.id`,
+          `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
         ],
       },
     );

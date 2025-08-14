@@ -1,14 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import randomToken from 'rand-token';
 import compareVersions from 'semver-compare';
 
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
-import { encryptPassword } from './utils';
 import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
@@ -47,14 +42,16 @@ export class Authenticator {
    * @param {{ username: string, secretKey: string }} apiClientCredentials
    */
   async authenticateApiClient({ username, secretKey }) {
-    const secretKeyHash = encryptPassword(secretKey, process.env.API_CLIENT_SALT);
-    const apiClient = await this.models.apiClient.findOne({
-      username,
-      secret_key_hash: secretKeyHash,
-    });
+    const apiClient = await this.models.apiClient.findOne({ username });
     if (!apiClient) {
-      throw new UnauthenticatedError('Could not authenticate Api Client');
+      throw new UnauthenticatedError(`Couldn’t find API client with username ${username}`);
     }
+
+    const isVerified = await apiClient.verifySecretKey(secretKey);
+    if (!isVerified) {
+      throw new UnauthenticatedError(`Couldn’t authenticate API client ${apiClient.username}`);
+    }
+
     const user = await apiClient.getUser();
     const accessPolicy = await this.getAccessPolicyForUser(user.id);
     return { user, accessPolicy };
@@ -69,8 +66,10 @@ export class Authenticator {
     const user = await this.getAuthenticatedUser({ emailAddress, password, deviceName });
     const meditrakDevice =
       meditrakDeviceDetails && (await this.saveMeditrakDevice(user, meditrakDeviceDetails));
-    const refreshToken = await this.upsertRefreshToken(user.id, deviceName, meditrakDevice);
-    const accessPolicy = await this.getAccessPolicyForUser(user.id, meditrakDevice);
+    const [refreshToken, accessPolicy] = await Promise.all([
+      this.upsertRefreshToken(user.id, deviceName, meditrakDevice),
+      this.getAccessPolicyForUser(user.id, meditrakDevice),
+    ]);
 
     return { refreshToken: refreshToken.token, user, accessPolicy };
   }
@@ -95,8 +94,10 @@ export class Authenticator {
 
     // There was a valid refresh token, find the user and respond
     const userId = refreshToken.user_id;
-    const user = await this.models.user.findById(userId);
-    const meditrakDevice = await refreshToken.meditrakDevice();
+    const [user, meditrakDevice] = await Promise.all([
+      this.models.user.findById(userId),
+      refreshToken.meditrakDevice(),
+    ]);
     const accessPolicy = await this.getAccessPolicyForUser(user.id, meditrakDevice);
 
     return { refreshToken: refreshToken.token, user, accessPolicy };
@@ -112,8 +113,10 @@ export class Authenticator {
     foundToken.save();
 
     const user = await this.models.user.findById(foundToken.user_id);
-    const refreshToken = await this.upsertRefreshToken(user.id, deviceName);
-    const accessPolicy = await this.getAccessPolicyForUser(user.id);
+    const [refreshToken, accessPolicy] = await Promise.all([
+      this.upsertRefreshToken(user.id, deviceName),
+      this.getAccessPolicyForUser(user.id),
+    ]);
 
     return { refreshToken: refreshToken.token, user, accessPolicy };
   }
@@ -136,7 +139,7 @@ export class Authenticator {
     }
 
     // Check password hash matches that in db
-    if (!user.checkPassword(password)) {
+    if (!(await user.checkPassword(password))) {
       throw new UnauthenticatedError('Incorrect email or password');
     }
 
@@ -188,6 +191,7 @@ export class Authenticator {
         user_id: user.id,
         platform,
         app_version: appVersion,
+        last_login: new Date(),
       },
     );
   }

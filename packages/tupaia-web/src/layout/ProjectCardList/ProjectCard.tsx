@@ -1,16 +1,15 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ComponentType } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
 import { darken, lighten } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
+import { Button as UIButton } from '@tupaia/ui-components';
 import { SingleProject } from '../../types';
 import { MODAL_ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { RouterButton } from '../../components';
+import { useNavigate } from 'react-router-dom';
+import { useEditUser } from '../../api/mutations';
 
 const Card = styled.div`
   display: flex;
@@ -34,10 +33,6 @@ const Card = styled.div`
     padding-top: 2.5rem;
     padding-left: 1.875rem;
     padding-right: 1.875rem;
-  }
-
-  button {
-    margin-top: auto;
   }
 `;
 
@@ -92,7 +87,7 @@ const TextWrapper = styled.div`
   height: 100%;
 `;
 
-const BaseLink = styled(RouterButton)`
+const ButtonStyles = css`
   background: ${({ theme }) => theme.palette.primary.main};
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   color: white;
@@ -114,6 +109,14 @@ const BaseLink = styled(RouterButton)`
   @media (max-width: ${MOBILE_BREAKPOINT}) {
     margin-bottom: 0.875rem;
   }
+`;
+
+const BaseLink = styled(RouterButton)`
+  ${ButtonStyles}
+`;
+
+const Button = styled(UIButton)`
+  ${ButtonStyles}
 `;
 
 const OutlineLink = styled(BaseLink).attrs({
@@ -162,11 +165,33 @@ export const ProjectPendingLink = () => (
   </OutlineLink>
 );
 
-export const ProjectAllowedLink = ({ url, isLandingPage }: LinkProps) => (
-  <BaseLink to={url} target={isLandingPage ? '_blank' : '_self'}>
-    View project
-  </BaseLink>
-);
+type ProjectAllowedLinkProps = LinkProps & {
+  projectId: string;
+};
+
+export const ProjectAllowedLink = ({ projectId, url, isLandingPage }: ProjectAllowedLinkProps) => {
+  const navigate = useNavigate();
+  const { mutate } = useEditUser(() => {
+    if (isLandingPage) {
+      window.open(url, '_blank');
+    } else {
+      navigate(url);
+    }
+  });
+  const handleSelectProject = () => {
+    mutate({ projectId });
+  };
+  return (
+    <Button
+      onClick={handleSelectProject}
+      tabIndex="0"
+      role="link"
+      aria-label="Select and navigate to project"
+    >
+      View project
+    </Button>
+  );
+};
 
 interface ProjectCardProps extends Partial<SingleProject> {
   ProjectButton: ComponentType;

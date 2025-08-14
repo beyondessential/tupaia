@@ -1,11 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
 const SERVICE_TYPES = {
   DHIS: 'dhis',
@@ -31,8 +26,8 @@ const DHIS_DATA_TYPES = {
   INDICATOR: 'Indicator',
 };
 
-export class DataElementType extends DatabaseType {
-  static databaseType = TYPES.DATA_ELEMENT;
+export class DataElementRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DATA_ELEMENT;
 
   SERVICE_TYPES = SERVICE_TYPES;
 
@@ -79,8 +74,8 @@ export class DataElementType extends DatabaseType {
 export class DataElementModel extends MaterializedViewLogDatabaseModel {
   SERVICE_TYPES = SERVICE_TYPES;
 
-  get DatabaseTypeClass() {
-    return DataElementType;
+  get DatabaseRecordClass() {
+    return DataElementRecord;
   }
 
   getDhisDataTypes = () => DHIS_DATA_TYPES;

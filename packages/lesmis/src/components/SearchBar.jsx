@@ -1,11 +1,7 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
 import MuiPaper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
@@ -114,7 +110,7 @@ const DEFAULT_LIMIT = 5;
 const EXPANDED_LIMIT = 200;
 
 export const SearchBar = ({ linkType, className }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { translate } = useI18n();
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
@@ -138,7 +134,7 @@ export const SearchBar = ({ linkType, className }) => {
     limit: inputValue && expanded ? EXPANDED_LIMIT : DEFAULT_LIMIT,
     onChange: (event, option) => {
       if (option && option.code) {
-        history.push(makeEntityLink(option.code, linkType));
+        navigate(makeEntityLink(option.code, linkType));
       }
     },
   });

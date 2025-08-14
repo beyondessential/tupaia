@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { NextFunction, Request, Response } from 'express';
 import { getDataTableService } from '../dataTableService';
 import { validatePermissions } from './helpers';
@@ -13,7 +8,7 @@ import { validatePermissions } from './helpers';
  */
 export const attachDataTableToContext = async (
   req: Request<{ dataTableCode: string }, any, any, any>,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {

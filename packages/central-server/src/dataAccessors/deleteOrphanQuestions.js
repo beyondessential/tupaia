@@ -1,9 +1,4 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
-import { TYPES, JOIN_TYPES } from '@tupaia/database';
+import { RECORDS, JOIN_TYPES } from '@tupaia/database';
 
 /**
  * Delete all questions that aren't included in any survey
@@ -12,22 +7,22 @@ export async function deleteOrphanQuestions(models) {
   const subQueryName = 'unusedQuestion';
   const orphanQuestions = await models.database.find(
     subQueryName,
-    { [`${TYPES.ANSWER}.id`]: null },
+    { [`${RECORDS.ANSWER}.id`]: null },
     {
       recordType: subQueryName,
-      joinWith: TYPES.ANSWER,
-      joinCondition: [`${subQueryName}.id`, `${TYPES.ANSWER}.question_id`],
+      joinWith: RECORDS.ANSWER,
+      joinCondition: [`${subQueryName}.id`, `${RECORDS.ANSWER}.question_id`],
       joinType: JOIN_TYPES.LEFT_OUTER,
       columns: [`${subQueryName}.id`],
       subQuery: {
         name: subQueryName,
-        recordType: TYPES.QUESTION,
-        joinWith: TYPES.SURVEY_SCREEN_COMPONENT,
+        recordType: RECORDS.QUESTION,
+        joinWith: RECORDS.SURVEY_SCREEN_COMPONENT,
         joinType: JOIN_TYPES.LEFT_OUTER,
         where: {
-          [`${TYPES.SURVEY_SCREEN_COMPONENT}.id`]: null,
+          [`${RECORDS.SURVEY_SCREEN_COMPONENT}.id`]: null,
         },
-        columns: [`${TYPES.QUESTION}.id`],
+        columns: [`${RECORDS.QUESTION}.id`],
       },
     },
   );

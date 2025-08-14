@@ -1,13 +1,6 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import {
-  Select,
-  TextField,
   FetchLoader,
   Autocomplete as ExternalDatabaseConnectionAutocomplete,
   DataGrid,
@@ -17,25 +10,29 @@ import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import { DataTableType } from '@tupaia/types';
 import { PreviewFilters } from './components/PreviewFilters';
-import { ReduxAutocomplete } from '../autocomplete';
 import { SqlDataTableConfigEditFields } from './config';
 import { useParams } from './useParams';
 import { useDataTablePreview, useExternalDatabaseConnections } from './query';
-import { getColumns, getRows } from '../utilities';
+import { getColumns, getRows, labelToId } from '../utilities';
 import { PlayButton } from './PlayButton';
-
-const FieldWrapper = styled.div`
-  padding: 7.5px;
-`;
+import { onInputChange } from '../editor/FieldsEditor';
+import { EditorInputField } from '../editor';
 
 const StyledGrid = styled(Grid)`
   height: 400px;
 `;
 
-const dataTableTypeOptions = Object.values(DataTableType).map(type => ({
-  label: type,
-  value: type,
-}));
+const InputRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  > div {
+    width: 100%;
+    &:not(:last-child) {
+      margin-inline-end: 1rem;
+    }
+  }
+`;
 
 const NoConfig = () => <>This Data Table type has no configuration options</>;
 
@@ -46,13 +43,12 @@ const typeFieldsMap = {
 
 export const DataTableEditFields = React.memo(
   props => {
-    const { onEditField, recordData, isLoading: isDataLoading } = props;
+    const { onEditField, recordData, isLoading: isDataLoading, fields } = props;
     if (isDataLoading) {
       return <div />;
     }
 
     const [fetchDisabled, setFetchDisabled] = useState(false);
-    const [haveTriedToFetch, setHaveTriedToFetch] = useState(false); // prevent to show error when entering the page
     const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
     const {
       builtInParams,
@@ -87,11 +83,6 @@ export const DataTableEditFields = React.memo(
       },
     });
 
-    const fetchPreviewData = () => {
-      setHaveTriedToFetch(true);
-      refetch();
-    };
-
     const columns = useMemo(() => getColumns(reportData), [reportData]);
     const rows = useMemo(() => getRows(reportData), [reportData]);
 
@@ -119,60 +110,42 @@ export const DataTableEditFields = React.memo(
       }
     };
 
+    const getFieldBySource = source => fields.find(field => field.source === source);
+
+    const sources = ['code', 'description', 'permission_groups', 'type'];
+
+    const onChangeField = (inputKey, inputValue, editConfig) => {
+      if (inputKey === 'type') {
+        onChangeType(inputValue);
+      } else onInputChange(inputKey, inputValue, editConfig, recordData, onEditField);
+    };
+
     return (
       <div>
         <Accordion defaultExpanded>
           <AccordionSummary>Data Table</AccordionSummary>
           <AccordionDetails>
-            <FieldWrapper>
-              <TextField
-                label="Code"
-                name="code"
-                value={recordData?.code}
-                required
-                error={haveTriedToFetch && !recordData.code}
-                helperText={haveTriedToFetch && !recordData.code && 'should not be empty'}
-                onChange={event => onEditField('code', event.target.value.trim())}
-              />
-            </FieldWrapper>
-            <FieldWrapper>
-              <TextField
-                label="Description"
-                name="description"
-                value={recordData?.description}
-                required
-                error={haveTriedToFetch && !recordData.description}
-                helperText={haveTriedToFetch && !recordData.description && 'should not be empty'}
-                onChange={event => onEditField('description', event.target.value)}
-              />
-            </FieldWrapper>
-            <FieldWrapper>
-              <ReduxAutocomplete
-                allowMultipleValues
-                key="permission_groups"
-                inputKey="permission_groups"
-                label="Permission Groups"
-                onChange={selectedValues => onEditField('permission_groups', selectedValues)}
-                placeholder={recordData.permission_groups}
-                id="inputField-permission_groups"
-                reduxId="dataTableEditFields-permission_groups"
-                endpoint="permissionGroups"
-                optionLabelKey="name"
-                optionValueKey="name"
-              />
-            </FieldWrapper>
-            <FieldWrapper>
-              <Select
-                id="data-table-edit-type"
-                label="Type"
-                name="type"
-                required
-                options={dataTableTypeOptions}
-                onChange={event => onChangeType(event.target.value)}
-                value={recordData?.type}
-              />
-            </FieldWrapper>
-            <FieldWrapper>
+            <InputRow>
+              {sources.map(source => {
+                const field = getFieldBySource(source);
+                const { Header, editConfig = {}, required, editable = true } = field;
+
+                return (
+                  <EditorInputField
+                    key={source}
+                    inputKey={source}
+                    label={Header}
+                    onChange={(key, inputValue) => onChangeField(key, inputValue, editConfig)}
+                    value={recordData?.[source]}
+                    disabled={!editable}
+                    recordData={recordData}
+                    id={`inputField-${labelToId(source)}`}
+                    required={required}
+                    editKey={source}
+                    {...editConfig}
+                  />
+                );
+              })}
               {recordData?.type === DataTableType.sql && (
                 <ExternalDatabaseConnectionAutocomplete // Provide options directly to base Autocomplete
                   options={externalDatabaseConnections}
@@ -191,7 +164,7 @@ export const DataTableEditFields = React.memo(
                   }
                 />
               )}
-            </FieldWrapper>
+            </InputRow>
           </AccordionDetails>
         </Accordion>
 
@@ -220,7 +193,7 @@ export const DataTableEditFields = React.memo(
                   onChange={upsertRuntimeParam}
                   runtimeParams={runtimeParams}
                 />
-                <PlayButton disabled={fetchDisabled} fetchPreviewData={fetchPreviewData} />
+                <PlayButton disabled={fetchDisabled} fetchPreviewData={refetch} />
               </div>
               <StyledGrid item xs={12}>
                 <FetchLoader
@@ -248,4 +221,5 @@ DataTableEditFields.propTypes = {
   onEditField: PropTypes.func.isRequired,
   recordData: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  fields: PropTypes.array.isRequired,
 };

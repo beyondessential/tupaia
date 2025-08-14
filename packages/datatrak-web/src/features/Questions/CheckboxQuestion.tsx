@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Checkbox as BaseCheckbox } from '@tupaia/ui-components';
@@ -47,7 +42,7 @@ export const CheckboxQuestion = ({
       inputRef={ref}
       helperText={detailLabel as string}
       inputProps={{
-        ['aria-invalid']: invalid,
+        'aria-invalid': invalid,
       }}
     />
   );

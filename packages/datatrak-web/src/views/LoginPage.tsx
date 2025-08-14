@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LoginForm, EMAIL_VERIFICATION_STATUS } from '@tupaia/ui-components';
@@ -17,7 +13,7 @@ export const LoginPage = ({
   } | null;
 }) => {
   const formContext = useForm();
-  const { mutateAsync: login, isLoading, error } = useLogin();
+  const { mutate: login, isLoading, error } = useLogin();
   return (
     <LoginForm
       onSubmit={login as SubmitHandler<any>}

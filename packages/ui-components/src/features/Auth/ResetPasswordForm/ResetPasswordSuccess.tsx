@@ -1,10 +1,6 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
-import { LinkProps } from 'react-router-dom';
+import { LinkProps } from 'react-router-dom-v6';
 import { Typography } from '@material-ui/core';
 import { CheckCircle } from '@material-ui/icons';
 import { AuthViewWrapper } from '../AuthViewWrapper';
@@ -46,7 +42,7 @@ export const ResetPasswordSuccess = ({ loginLink }: PasswordResetSuccessProps) =
     <Wrapper>
       <CheckIcon />
       <Title>Password reset!</Title>
-      <Description>Your password has been successfully reset.</Description>
+      <Description>Your password has been successfully reset</Description>
       <AuthSubmitButton to={loginLink} component={RouterLink}>
         Back to login
       </AuthSubmitButton>

@@ -18,12 +18,12 @@ jobs:
       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
       TERM: xterm # workaround for issue where cypress fails to upload to cypress.io
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 14.19.3
+          node-version-file: '.nvmrc'
           cache: yarn
-      - run: yarn set version 3.2.1
-      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+      - run: corepack enable yarn
+      - run: yarn install
       - run: yarn workspace @tupaia/utils build
       - run: yarn workspace "@tupaia/e2e" test-e2e --ciBuildId $GITHUB_RUN_ID

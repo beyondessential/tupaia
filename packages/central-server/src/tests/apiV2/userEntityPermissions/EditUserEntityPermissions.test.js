@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
@@ -14,11 +9,11 @@ import { TestableApp } from '../../testUtilities';
 describe('Permissions checker for EditUserEntityPermissions', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-    LA: ['Admin'],
-    TO: ['Admin'],
+    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
+    LA: ['Admin', 'Public'],
+    TO: ['Admin', 'Public'],
   };
 
   const BES_ADMIN_POLICY = {
@@ -55,11 +50,11 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
     // Create test users
     const userAccount = await findOrCreateDummyRecord(models.user, {
       first_name: 'Clark',
-      last_name: 'Kent',
+      last_name: 'EditUserEntityPermissions',
     });
     const userAccount2 = await findOrCreateDummyRecord(models.user, {
       first_name: 'Bruce',
-      last_name: 'Wayne',
+      last_name: 'EditUserEntityPermissions',
     });
     userAccountId2 = userAccount2.id;
 

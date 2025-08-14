@@ -1,11 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { NextFunction, Request, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
-import { extractEntityFieldsFromQuery, extractEntityFieldFromQuery } from './fields';
 import { CommonContext } from '../types';
+import { extractEntityFieldsFromQuery, extractEntityFieldFromQuery } from './fields';
 
 const throwNoAccessError = (hierarchyName: string) => {
   throw new PermissionsError(`No access to requested hierarchy: ${hierarchyName}`);
@@ -15,7 +11,7 @@ export const attachCommonEntityContext = async (
   req: Request<{ hierarchyName: string }, any, any, { field?: string; fields?: string }> & {
     ctx: CommonContext;
   },
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {

@@ -1,11 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import { setupTest, generateTestId } from '@tupaia/database';
+import { setupTest, generateId } from '@tupaia/database';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
+} from '../../../permissions';
 import { TEST_SETUP } from './mapOverlayVisualisations.fixtures';
 
 const clearRecords = async models => {
@@ -18,22 +16,26 @@ describe('POST map overlay visualisations', async () => {
   const { models } = app;
 
   const policy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [
+      TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+      VIZ_BUILDER_PERMISSION_GROUP,
+      'Test Permission Group',
+    ],
   };
 
   const vizBuilderOnlyPermission = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
   };
 
-  const permissionGroupId = generateTestId();
+  const permissionGroupId = generateId();
 
   const NEW_VISUALISATION = {
     mapOverlay: {
-      id: generateTestId(),
+      id: generateId(),
       code: 'new_visual',
       name: 'New Visual',
       config: { displayType: 'spectrum', scaleType: 'neutral' },
-      permission_group: 'Viz_Permissions',
+      permission_group: VIZ_BUILDER_PERMISSION_GROUP,
       country_codes: '{DL}',
       linkedMeasures: [],
       project_codes: '{explore}',
@@ -43,7 +45,7 @@ describe('POST map overlay visualisations', async () => {
     },
     report: {
       code: 'new_visual_report',
-      permission_group: 'Viz_Permissions',
+      permission_group: 'Test Permission Group',
       config: {
         code: 'new_visual_report',
         config: {
@@ -72,7 +74,12 @@ describe('POST map overlay visualisations', async () => {
   describe('POST /dashboardVisualisations/', () => {
     it('Throws if body not provided', async () => {
       const response = await app.post('mapOverlayVisualisations/', {});
-      expectError(response, "Internal server error: Cannot read property 'legacy' of undefined");
+      expectError(
+        response,
+        "Internal server error: Cannot read properties of undefined (reading 'legacy')",
+        undefined,
+        false,
+      );
     });
 
     it('Returns a successful response', async () => {

@@ -1,23 +1,20 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import styled from 'styled-components';
 
 export const AccountSettingsColumn = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
   margin-bottom: 1rem;
-  &:not(:last-child) {
-    padding-right: 2rem;
-  }
-  &:first-child {
-    margin-bottom: 1.9rem;
-  }
-  &:last-child {
-    margin-bottom: 0;
+  width: 100%;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    // Whitespace after section title & description when in single-column layout...
+    :first-child {
+      margin-bottom: 1.9rem;
+    }
+    // ...unless it’s the only thing in the section.
+    :last-child {
+      margin-bottom: 0;
+    }
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {

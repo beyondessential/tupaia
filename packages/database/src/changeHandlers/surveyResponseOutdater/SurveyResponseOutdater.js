@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 
@@ -55,6 +50,11 @@ export class SurveyResponseOutdater extends ChangeHandler {
         if (!oldRecord) {
           // A new response has been created which may outdate an existing response
           return [newRecord];
+        }
+
+        //If the new record is being changed to be outdated, no need to process it, as it already has the correct status
+        if (newRecord.outdated && !oldRecord.outdated) {
+          return [];
         }
 
         const records = [];

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { ImportValidationError, getCountryCode } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
@@ -92,6 +87,7 @@ export async function updateCountryEntities(
     countryCode,
     pushToDhis,
   );
+
   await transactingModels.entity.findOrCreate(
     { code: countryCode },
     {
@@ -103,6 +99,7 @@ export async function updateCountryEntities(
     },
   );
   const codes = []; // An array to hold all facility codes, allowing duplicate checking
+
   for (let i = 0; i < entityObjects.length; i++) {
     const entityObject = entityObjects[i];
     const { entity_type: entityType } = entityObject;
@@ -123,7 +120,7 @@ export async function updateCountryEntities(
       screen_bounds: screenBounds,
       category_code: categoryCode,
       facility_type: facilityType,
-      attributes = {},
+      attributes,
     } = entityObject;
     if (codes.includes(code)) {
       throw new ImportValidationError(
@@ -175,9 +172,12 @@ export async function updateCountryEntities(
         country_code: country.code,
         image_url: imageUrl,
         metadata: entityMetadata,
-        attributes,
       },
     );
+
+    if (attributes !== undefined) {
+      await transactingModels.entity.updateEntityAttributes(code, attributes);
+    }
     if (longitude && latitude) {
       await transactingModels.entity.updatePointCoordinates(code, { longitude, latitude });
     }
@@ -189,7 +189,27 @@ export async function updateCountryEntities(
         geojson.type === 'Polygon'
           ? { type: 'MultiPolygon', coordinates: [geojson.coordinates] }
           : geojson;
-      await transactingModels.entity.updateRegionCoordinates(code, translatedGeojson);
+
+      try {
+        await transactingModels.entity.updateRegionCoordinates(code, translatedGeojson);
+      } catch (error) {
+        if (error.message.includes('payload string too long')) {
+          const largeGeoEntities = entityObjects.filter(entityObject => {
+            if (!entityObject?.geojson) return false;
+            const geoJsonString = JSON.stringify(entityObject.geojson);
+            // If the geo json is too large, we will hit the max payload size limit.
+            // Hard postgres max is 8000 characters, but we need to account for other data in the query payload
+            const maxGeoJsonPayload = 5200;
+            if (geoJsonString.length > maxGeoJsonPayload) {
+              return true;
+            }
+          });
+          const text = largeGeoEntities.map(entity => entity.code).join(', ');
+          error.message = `Error updating region coordinates for entities: ${text} ${error.message}`;
+        }
+
+        throw error;
+      }
     }
   }
   return country;

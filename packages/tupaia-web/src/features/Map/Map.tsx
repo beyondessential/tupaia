@@ -1,20 +1,21 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
-import { TILE_SETS, MOBILE_BREAKPOINT, openStreets, satellite } from '../../constants';
+import { MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { MapOverlaysLayer } from './MapOverlaysLayer';
-import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayMapData } from './utils';
-import { useGAEffect } from '../../utils';
+import {
+  useHiddenMapValues,
+  useDefaultMapOverlay,
+  useMapOverlayMapData,
+  MapContextProvider,
+  useMapContext,
+  useTilesets,
+} from './utils';
 import { DemoLand } from './DemoLand';
 
 const MapContainer = styled.div`
@@ -25,12 +26,17 @@ const MapContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+
+  .leaflet-container {
+    min-height: 15rem;
+  }
 `;
 
 const StyledMap = styled(LeafletMap)`
   height: 100%;
   width: 100%;
   flex: 1;
+
   .leaflet-pane {
     // Set z-index of map pane to 0 so that it doesn't overlap with the sidebar and the map controls
     z-index: 0;
@@ -48,7 +54,7 @@ const StyledMap = styled(LeafletMap)`
     top: -50px;
     right: 3px;
     a {
-      background: ${({ theme }) => theme.navigationBtn.main};
+      background: #34353f;
       box-shadow: none;
       border: none;
       color: white;
@@ -95,23 +101,39 @@ const MapControlColumn = styled.div`
   }
 `;
 
-/**
- * Utility function to determine whether tileSet should default to satellite
- * or to osm, based on page load time. This will only run when determining the
- * initial state of the map.
- */
-const getAutoTileset = () => {
-  // default to osm in dev so that we don't pay for tiles when running locally
-  if (!import.meta.env.PROD) {
-    return openStreets;
-  } else {
-    const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
-    return ((window as unknown) as Window & {
-      loadTime: number;
-    })?.loadTime < SLOW_LOAD_TIME_THRESHOLD
-      ? satellite
-      : openStreets;
-  }
+// Separate the map component from the context provider so that we can set the map on creation using the context
+const MapInner = () => {
+  const { setMap } = useMapContext();
+  // Setup legend hidden values
+  const { serieses } = useMapOverlayMapData();
+  const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
+
+  const { availableTileSets, activeTileSet, onTileSetChange } = useTilesets();
+  return (
+    <ErrorBoundary>
+      <StyledMap shouldSnapToPosition whenCreated={setMap}>
+        <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
+        <MapOverlaysLayer hiddenValues={hiddenValues} />
+        <DemoLand />
+        <ZoomControl position="bottomright" />
+        <MapWatermark />
+      </StyledMap>
+      {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
+      <MapControlWrapper>
+        <MapControlColumn>
+          <MapOverlaySelector hiddenValues={hiddenValues} activeTileSet={activeTileSet} />
+          <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
+        </MapControlColumn>
+        <TilePickerWrapper>
+          <TilePicker
+            tileSets={availableTileSets}
+            activeTileSet={activeTileSet}
+            onChange={onTileSetChange}
+          />
+        </TilePickerWrapper>
+      </MapControlWrapper>
+    </ErrorBoundary>
+  );
 };
 
 export const Map = () => {
@@ -119,43 +141,11 @@ export const Map = () => {
 
   useDefaultMapOverlay(projectCode, entityCode);
 
-  // Setup legend hidden values
-  const { serieses } = useMapOverlayMapData();
-  const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
-
-  // Setup Tile Picker
-  const initialTileSet = getAutoTileset();
-  const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
-  useGAEffect('Map', 'Change Tile Set', activeTileSet.label);
-  const onTileSetChange = (tileSetKey: string) => {
-    setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
-  };
-
   return (
     <MapContainer>
-      <ErrorBoundary>
-        <StyledMap shouldSnapToPosition>
-          <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-          <MapOverlaysLayer hiddenValues={hiddenValues} />
-          <DemoLand />
-          <ZoomControl position="bottomright" />
-          <MapWatermark />
-        </StyledMap>
-        {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
-        <MapControlWrapper>
-          <MapControlColumn>
-            <MapOverlaySelector />
-            <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
-          </MapControlColumn>
-          <TilePickerWrapper>
-            <TilePicker
-              tileSets={TILE_SETS}
-              activeTileSet={activeTileSet}
-              onChange={onTileSetChange}
-            />
-          </TilePickerWrapper>
-        </MapControlWrapper>
-      </ErrorBoundary>
+      <MapContextProvider>
+        <MapInner />
+      </MapContextProvider>
     </MapContainer>
   );
 };

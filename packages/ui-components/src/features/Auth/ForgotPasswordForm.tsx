@@ -1,10 +1,6 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { LinkProps } from 'react-router-dom';
+import { LinkProps } from 'react-router-dom-v6';
 import styled from 'styled-components';
 import { AuthSubmitButton } from './AuthSubmitButton';
 import { FORM_FIELD_VALIDATION } from '../../constants';
@@ -42,6 +38,7 @@ interface ForgotPasswordFormProps {
   onSubmit: SubmitHandler<any>;
   loginLink: LinkProps['to'];
   registerLink: LinkProps['to'];
+  RegisterLinkComponent?: React.ReactNode;
 }
 
 export const ForgotPasswordForm = ({
@@ -52,6 +49,7 @@ export const ForgotPasswordForm = ({
   formContext,
   loginLink,
   registerLink,
+  RegisterLinkComponent,
 }: ForgotPasswordFormProps) => {
   const HEADING_TEXT = {
     title: 'Forgot password',
@@ -69,6 +67,7 @@ export const ForgotPasswordForm = ({
         <StyledForm onSubmit={onSubmit} formContext={formContext}>
           <FormInput
             Input={AuthFormTextField}
+            id="emailAddress"
             name="emailAddress"
             label="Email"
             type="email"
@@ -83,7 +82,12 @@ export const ForgotPasswordForm = ({
             Back to log in
           </AuthSubmitButton>
           <AuthLink align="center">
-            Don't have an account? <RouterLink to={registerLink}>Register here</RouterLink>
+            Don&rsquo;t have an account?{' '}
+            {RegisterLinkComponent ? (
+              RegisterLinkComponent
+            ) : (
+              <RouterLink to={registerLink}>Sign up</RouterLink>
+            )}
           </AuthLink>
         </StyledForm>
       )}

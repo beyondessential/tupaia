@@ -1,7 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
+import { getEnvVarOrDefault } from '@tupaia/utils';
 
 export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -31,36 +28,47 @@ const SERVICES = {
     subdomain: 'api',
     version: 'v2',
     localPort: '8090',
+    prefix: null,
   },
   entity: {
     subdomain: 'entity-api',
     version: 'v1',
     localPort: '8050',
+    prefix: null,
   },
   central: {
     subdomain: 'api',
     version: 'v2',
     localPort: '8090',
+    prefix: null,
   },
   report: {
     subdomain: 'report-api',
     version: 'v1',
     localPort: '8030',
+    prefix: null,
   },
   dataTable: {
     subdomain: 'data-table-api',
     version: 'v1',
     localPort: '8010',
+    prefix: null,
   },
   webConfig: {
     subdomain: 'config',
+    prefix: 'api',
     version: 'v1',
     localPort: '8000',
   },
 };
 
-const getLocalUrl = (service: ServiceName): string =>
-  `http://localhost:${SERVICES[service].localPort}/${SERVICES[service].version}`;
+const getLocalUrl = (service: ServiceName): string => {
+  const { prefix, localPort, version } = SERVICES[service];
+  const base = `http://localhost:${localPort}`;
+  const prefixPath = prefix ? `/${prefix}` : '';
+  return `${base}${prefixPath}/${version}`;
+};
+
 export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
   auth: getLocalUrl('auth'),
   entity: getLocalUrl('entity'),
@@ -71,9 +79,10 @@ export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
 };
 
 const getServiceUrl = (service: ServiceName, subdomainPrefix?: string): string => {
+  const DOMAIN = getEnvVarOrDefault('DOMAIN', 'tupaia.org');
   const { subdomain, version } = SERVICES[service];
   const fullSubdomain = subdomainPrefix ? `${subdomainPrefix}-${subdomain}` : subdomain;
-  return `https://${fullSubdomain}.tupaia.org/${version}`;
+  return `https://${fullSubdomain}.${DOMAIN}/${version}`;
 };
 
 export const DEV_BASE_URLS: ServiceBaseUrlSet = {
@@ -114,14 +123,15 @@ const isLocalhost = (hostname: string) =>
   hostname.startsWith('127.0.0.1') ||
   hostname.startsWith('10.0.2.2'); // Android Emulator out to host
 
-const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
+export const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
+  const DOMAIN = getEnvVarOrDefault('DOMAIN', 'tupaia.org');
   if (isLocalhost(hostname)) {
     return LOCALHOST_BASE_URLS;
   }
 
   // production uses standard base urls
   const [subdomain] = hostname.split('.');
-  if (hostname === 'tupaia.org' || productionSubdomainSet.has(subdomain)) {
+  if (hostname === DOMAIN || productionSubdomainSet.has(subdomain)) {
     return PRODUCTION_BASE_URLS;
   }
 

@@ -1,13 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { Aggregator } from '@tupaia/aggregator';
 import { ObjectValidator } from '@tupaia/utils';
 import { ExpressionParser } from '@tupaia/expression-parser';
 import groupBy from 'lodash.groupby';
-import { Aggregation, Analytic, AnalyticCluster, Event, DataValues, FetchOptions } from '../types';
+import { Aggregation, Analytic, DataValues, FetchOptions } from '../types';
 
 export function validateConfig<T extends Record<string, unknown>>(
   config: Record<string, unknown>,

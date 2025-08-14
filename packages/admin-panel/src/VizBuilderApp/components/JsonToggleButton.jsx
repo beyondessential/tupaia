@@ -1,11 +1,7 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { FormControlLabel, Switch } from '@material-ui/core';
-import { useTabPanel } from '../context';
+import { usePreviewDataContext } from '../context';
 
 const ControlLabel = styled(FormControlLabel)`
   color: ${props => (props.$jsonToggleEnabled ? props.theme.palette.primary.main : 'grey')};
@@ -17,7 +13,7 @@ const ControlLabel = styled(FormControlLabel)`
 `;
 
 export const JsonToggleButton = () => {
-  const { jsonToggleEnabled, setJsonToggleEnabled } = useTabPanel();
+  const { jsonToggleEnabled, setJsonToggleEnabled } = usePreviewDataContext();
 
   const handleClick = () => {
     setJsonToggleEnabled(!jsonToggleEnabled);

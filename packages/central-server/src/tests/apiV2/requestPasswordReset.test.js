@@ -1,14 +1,11 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
 
 import { createBearerHeader, randomEmail, randomString } from '@tupaia/utils';
 
+import { configureEnv } from '../../configureEnv';
 import { getAuthorizationHeader, TestableApp } from '../testUtilities';
+
+configureEnv();
 
 describe('Reset Password', () => {
   const app = new TestableApp();
@@ -57,8 +54,8 @@ describe('Reset Password', () => {
         user_id: userId,
       });
 
-      expect(oneTimeLogin.isExpired()).to.equal(false, 'One time login not expired');
-      expect(oneTimeLogin.isUsed()).to.equal(false, 'One time login not used');
+      expect(oneTimeLogin.isExpired).to.equal(false);
+      expect(oneTimeLogin.isUsed).to.equal(false);
 
       const getOneTimeLoginResponse = async () =>
         app.post('auth?grantType=one_time_login', {
@@ -72,11 +69,11 @@ describe('Reset Password', () => {
       const authResponse = await getOneTimeLoginResponse();
 
       const { user, accessToken } = authResponse.body;
-      expect(user.id).to.equal(userId, 'Successfuly logged in with one time login');
+      expect(user.id).to.equal(userId);
 
       const refetchedOneTimeLogin = await models.oneTimeLogin.findById(oneTimeLogin.id);
-      expect(refetchedOneTimeLogin.isExpired()).to.equal(false);
-      expect(refetchedOneTimeLogin.isUsed()).to.equal(true);
+      expect(refetchedOneTimeLogin.isExpired).to.equal(false);
+      expect(refetchedOneTimeLogin.isUsed).to.equal(true);
 
       const retriedAuthResponse = await getOneTimeLoginResponse();
       expect(retriedAuthResponse.status, 403, 'Access denied for repeated one time login');
@@ -98,7 +95,7 @@ describe('Reset Password', () => {
         },
       });
 
-      expect(changePassword.status).to.equal(200, 'Change password completed');
+      expect(changePassword.status).to.equal(200);
 
       const passwordAuthResponse = await app.post('auth', {
         headers,

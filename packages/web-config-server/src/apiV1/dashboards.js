@@ -1,18 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import { filterEntities } from '@tupaia/utils';
 import orderBy from 'lodash.orderby';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
 
 const NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE = 'no_data_at_level';
 const NO_ACCESS_DASHBOARD_ITEM_CODE = 'no_access';
-
-const checkEntityAgainstConditions = (entity, conditions = {}) =>
-  filterEntities([entity], conditions).length === 1;
 
 export default class extends RouteHandler {
   static PermissionsChecker = NoPermissionRequiredChecker;
@@ -68,12 +59,8 @@ export default class extends RouteHandler {
             permissionGroups,
             [projectCode],
           );
-          const filteredDashboardItems = dashboardItems.filter(dashboardItem => {
-            const { displayOnEntityConditions } = dashboardItem.config;
-            return checkEntityAgainstConditions(entity, displayOnEntityConditions);
-          });
 
-          if (filteredDashboardItems.length === 0) {
+          if (dashboardItems.length === 0) {
             return null;
           }
 
@@ -84,7 +71,7 @@ export default class extends RouteHandler {
             entityType: entity.type,
             entityCode: entity.code,
             entityName: entity.name,
-            items: filteredDashboardItems.map(item => ({
+            items: dashboardItems.map(item => ({
               code: item.code,
               legacy: item.legacy,
               reportCode: item.report_code,

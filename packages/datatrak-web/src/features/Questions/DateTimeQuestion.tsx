@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { TextField } from '@material-ui/core';
@@ -57,6 +52,7 @@ export const DateTimeQuestion = ({
       error={invalid}
       required={required}
       helperText={detailLabel}
+      format="P p" // locale date time format
     />
   );
 };

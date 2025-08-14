@@ -1,23 +1,14 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 import { ArithmeticConfigCellBuilder } from './ArithmeticConfigCellBuilder';
 import { AutocompleteConfigCellBuilder } from './AutocompleteConfigCellBuilder';
 import { CodeGeneratorConfigCellBuilder } from './CodeGeneratorConfigCellBuilder';
 import { ConditionConfigCellBuilder } from './ConditionConfigCellBuilder';
 import { EntityConfigCellBuilder } from './EntityConfigCellBuilder';
+import { TaskConfigCellBuilder } from './TaskConfigCellBuilder';
+import { UserConfigCellBuilder } from './UserConfigCellBuilder';
 
-const {
-  CODE_GENERATOR,
-  ARITHMETIC,
-  CONDITION,
-  AUTOCOMPLETE,
-  ENTITY,
-  PRIMARY_ENTITY,
-} = ANSWER_TYPES;
+const { CODE_GENERATOR, ARITHMETIC, CONDITION, AUTOCOMPLETE, ENTITY, PRIMARY_ENTITY, TASK, USER } =
+  ANSWER_TYPES;
 
 export class QuestionConfigCellBuilder {
   constructor(models) {
@@ -30,6 +21,8 @@ export class QuestionConfigCellBuilder {
       [ARITHMETIC]: new ArithmeticConfigCellBuilder(models),
       [ENTITY]: new EntityConfigCellBuilder(models),
       [PRIMARY_ENTITY]: new EntityConfigCellBuilder(models),
+      [TASK]: new TaskConfigCellBuilder(models),
+      [USER]: new UserConfigCellBuilder(models),
     };
   }
 

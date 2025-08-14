@@ -1,13 +1,8 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 // eslint-disable-next-line no-unused-vars
-import nodeFetch, { Response as NodeFetchResponse } from 'node-fetch';
+import nodeFetch from 'node-fetch';
 import { CustomError } from './errors';
 
-const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
+const DEFAULT_MAX_WAIT_TIME = 120 * 1000; // 120 seconds in milliseconds
 
 const buildParameterString = (key, value) => {
   return Array.isArray(value)
@@ -92,12 +87,15 @@ export const asynchronouslyFetchValuesForObject = async objectSpecification => {
   return returnObject;
 };
 
-const throwCustomError = (status, errorMessage) => {
+const throwCustomError = (status, errorMessage, errorDetails) => {
   const statusCode = status || 500;
-  throw new CustomError({
-    responseStatus: statusCode,
-    responseText: errorMessage,
-  });
+  throw new CustomError(
+    {
+      responseStatus: statusCode,
+      responseText: errorMessage,
+    },
+    { errorDetails },
+  );
 };
 
 export const verifyResponseStatus = async response => {
@@ -116,7 +114,8 @@ export const verifyResponseStatus = async response => {
       throwCustomError(response.status, responseJson.message);
     }
     if (responseJson.error) {
-      throwCustomError(response.status, responseJson.error);
+      const { error: errorMessage, ...restOfError } = responseJson;
+      throwCustomError(response.status, errorMessage, restOfError);
     }
   }
 };

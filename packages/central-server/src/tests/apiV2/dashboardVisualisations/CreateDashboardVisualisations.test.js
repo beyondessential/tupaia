@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { setupTest } from '@tupaia/database';
 import { expect } from 'chai';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
@@ -10,6 +5,7 @@ import { TEST_SETUP } from './dashboardVisualisations.fixtures';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 
 const clearRecords = async models => {
@@ -18,8 +14,6 @@ const clearRecords = async models => {
 };
 
 describe('POST dashboard visualisations', () => {
-  // const getVizId = code => findTestRecordByCode('dashboardItem', code).id;
-
   const app = new TestableApp();
   const { models } = app;
 
@@ -32,13 +26,13 @@ describe('POST dashboard visualisations', () => {
     },
     report: {
       code: 'test_visualisation',
-      permission_group: 'Viz_Permissions',
+      permission_group: VIZ_BUILDER_PERMISSION_GROUP,
       config: {},
     },
   };
 
   const policy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
   };
 
   const besAdminPolicy = {
@@ -59,7 +53,12 @@ describe('POST dashboard visualisations', () => {
   describe('POST /dashboardVisualisations/', () => {
     it('Throws if body not provided', async () => {
       const response = await app.post('dashboardVisualisations/', {});
-      expectError(response, "Internal server error: Cannot read property 'legacy' of undefined");
+      expectError(
+        response,
+        "Internal server error: Cannot read properties of undefined (reading 'legacy')",
+        undefined,
+        false,
+      );
     });
 
     it('Returns a successful response', async () => {
@@ -92,6 +91,19 @@ describe('POST dashboard visualisations', () => {
         body: TEST_VISUALISATION,
       });
       expectSuccess(response);
+    });
+
+    it('Throws an error when a dashboard item code does not match the report_code when the visualisation is not a legacy viz', async () => {
+      const response = await app.post('dashboardVisualisations/', {
+        body: {
+          ...TEST_VISUALISATION,
+          dashboardItem: {
+            ...TEST_VISUALISATION.dashboardItem,
+            code: 'test_visualisation_wrong_code',
+          },
+        },
+      });
+      expect(response.status).to.equal(500);
     });
   });
 });

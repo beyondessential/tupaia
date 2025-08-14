@@ -30,7 +30,7 @@
 # N.B. example 3 is unusual and generally just used for debugging the redeploy process itself. If
 # used, you need to tag the AMI and security groups with the codes you specify
 
-from helpers.create_from_image import create_tupaia_instance_from_image
+from helpers.create_from_image import create_server_instance_from_image
 from helpers.utilities import find_instances, get_tag
 
 def redeploy_tupaia_server(event):
@@ -89,11 +89,11 @@ def redeploy_tupaia_server(event):
 
         # launch server instance based on gold master AMI
         # original instance will be deleted by lambda script "swap_out_tupaia_server" once new instance is running
-        new_instance = create_tupaia_instance_from_image(
+        new_instance = create_server_instance_from_image(
             deployment_name=get_tag(existing_instance, 'DeploymentName'),
             branch=get_tag(existing_instance, 'Branch'),
             instance_type=event.get('InstanceType', existing_instance['InstanceType']),
-            image_code=event.get('ImageCode', 'tupaia-gold-master'), # will use tupaia-gold-master by default if not defined in the event
+            image_code=event.get('ImageCode', get_tag(existing_instance, 'ImageCode')),
             extra_tags=extra_tags,
             security_group_code=event.get('SecurityGroupCode', None), # will use id below if not defined in the event
             security_group_id=existing_instance['SecurityGroups'][0]['GroupId'],

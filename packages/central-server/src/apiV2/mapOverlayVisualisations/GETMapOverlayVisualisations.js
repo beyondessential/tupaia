@@ -1,11 +1,6 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { camelKeys } from '@tupaia/utils';
 
 import { GETHandler } from '../GETHandler';
@@ -30,6 +25,7 @@ const buildReportObject = (report, legacy, permissionGroupsById) => {
     code: report.code,
     config: report.config,
     permissionGroup: permissionGroupsById[report.permission_group_id]?.name || null,
+    latestDataParameters: report.latest_data_parameters || {},
   };
 };
 
@@ -80,7 +76,7 @@ export class GETMapOverlayVisualisations extends GETHandler {
   }
 
   async findSingleRecord(mapOverlayVisualisationId) {
-    const [mapOverlay] = await this.database.find(TYPES.MAP_OVERLAY, {
+    const [mapOverlay] = await this.database.find(RECORDS.MAP_OVERLAY, {
       id: mapOverlayVisualisationId,
     });
 
@@ -125,7 +121,7 @@ export class GETMapOverlayVisualisations extends GETHandler {
   }
 
   async countRecords(inputCriteria) {
-    return this.database.count(TYPES.MAP_OVERLAY, parseCriteria(inputCriteria), {
+    return this.database.countFast(RECORDS.MAP_OVERLAY, parseCriteria(inputCriteria), {
       joinWith: 'report',
       joinCondition: ['map_overlay.report_code', 'report.code'],
     });

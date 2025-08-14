@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { snake } from 'case';
 import { BESAdminCreateHandler } from '../CreateHandler';
 import { uploadImage } from '../utilities';
@@ -10,20 +6,37 @@ import { uploadImage } from '../utilities';
  * - /projects
  */
 
+const getCountryEntityId = async (models, countryId) => {
+  const country = await models.country.findOne({
+    id: countryId,
+  });
+
+  if (!country) throw new Error(`Country with id ${countryId} not found`);
+
+  const entity = await models.entity.findOne({
+    code: country.code,
+    type: 'country',
+  });
+
+  if (!entity) throw new Error(`Entity with code ${country.code} not found`);
+
+  return entity.id;
+};
+
 export class CreateProject extends BESAdminCreateHandler {
   async createRecord() {
     const {
       code: rawProjectCode,
       name,
       description,
-      sort_order,
-      permission_groups,
+      sort_order: sortOrder = null,
+      permission_groups: permissionGroups,
       countries,
       entityTypes,
-      default_measure,
-      dashboard_group_name,
-      image_url,
-      logo_url,
+      default_measure: defaultMeasure,
+      dashboard_group_name: dashboardGroupName,
+      image_url: imageUrl,
+      logo_url: logoUrl,
     } = this.newRecordData;
 
     const projectCode = snake(rawProjectCode);
@@ -41,30 +54,39 @@ export class CreateProject extends BESAdminCreateHandler {
       );
 
       await this.createProjectEntityRelations(transactingModels, projectCode, countries);
-      const { name: dashboardGroupName } = await this.createProjectDashboard(
+
+      const { name: projectDashboardGroupName } = await this.createProjectDashboard(
         transactingModels,
-        dashboard_group_name,
+        dashboardGroupName,
         projectCode,
       );
+
+      const projectPermissionGroup = await this.createProjectPermissionGroup(
+        transactingModels,
+        name,
+      );
+
       // Add the project, and then upload the images afterward, so that if an error is caught when creating the record, the images aren't uploaded unnecessarily
       const newProject = await transactingModels.project.create({
         code: projectCode,
         description,
-        sort_order,
+        sort_order: sortOrder === '' ? null : sortOrder,
         image_url: '',
         logo_url: '',
-        permission_groups,
-        default_measure,
-        dashboard_group_name: dashboardGroupName,
+        permission_groups: [projectPermissionGroup.name, ...permissionGroups],
+        default_measure: defaultMeasure,
+        dashboard_group_name: projectDashboardGroupName,
         entity_id: projectEntityId,
         entity_hierarchy_id: projectEntityHierarchyId,
       });
-      await this.insertImagePaths(
+
+      await this.insertImagePaths(transactingModels, newProject.id, projectCode, imageUrl, logoUrl);
+
+      await this.createUserEntityPermissions(
         transactingModels,
-        newProject.id,
-        projectCode,
-        image_url,
-        logo_url,
+        this.req.user.id,
+        countries,
+        projectPermissionGroup.id,
       );
 
       return newProject;
@@ -102,13 +124,7 @@ export class CreateProject extends BESAdminCreateHandler {
     });
 
     for (const countryId of countries) {
-      const { code: countryCode } = await models.country.findOne({
-        id: countryId,
-      });
-      const { id: entityId } = await models.entity.findOne({
-        code: countryCode,
-        type: 'country',
-      });
+      const entityId = await getCountryEntityId(models, countryId);
       await models.entityRelation.create({
         parent_id: projectEntityId,
         child_id: entityId,
@@ -117,10 +133,10 @@ export class CreateProject extends BESAdminCreateHandler {
     }
   }
 
-  async createProjectDashboard(models, dashboard_group_name, projectCode) {
+  async createProjectDashboard(models, dashboardGroupName, projectCode) {
     return models.dashboard.create({
       code: `${projectCode}_project`,
-      name: dashboard_group_name,
+      name: dashboardGroupName,
       root_entity_code: projectCode,
     });
   }
@@ -129,6 +145,27 @@ export class CreateProject extends BESAdminCreateHandler {
     return models.entityHierarchy.create({
       name: projectCode,
       canonical_types: entityTypes ? `{${entityTypes.join(',')}}` : '{}',
+    });
+  }
+
+  async createUserEntityPermissions(models, userId, countries, permissionGroupId) {
+    for (const countryId of countries) {
+      const entityId = await getCountryEntityId(models, countryId);
+      await models.userEntityPermission.create({
+        user_id: userId,
+        entity_id: entityId,
+        permission_group_id: permissionGroupId,
+      });
+    }
+  }
+
+  async createProjectPermissionGroup(models, name) {
+    const BESDataAdminPermissionGroup = await models.permissionGroup.findOne({
+      name: 'BES Data Admin',
+    });
+    return models.permissionGroup.create({
+      name: `${name} Admin`,
+      parent_id: BESDataAdminPermissionGroup.id,
     });
   }
 }

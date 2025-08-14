@@ -1,8 +1,5 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-import { useQuery } from 'react-query';
+import moment from 'moment';
+import { useQuery } from '@tanstack/react-query';
 import { post } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
@@ -21,12 +18,14 @@ export const useReportPreview = ({
   useQuery(
     ['fetchReportPreviewData', visualisation],
     async () => {
+      const today = moment().format('YYYY-MM-DD');
+      const endDateToUse = endDate ?? today; // default to today if no end date is provided, so that we are getting data in the user's timezone, not UTC
       const response = await post('fetchReportPreviewData', {
         params: {
           entityCode: location,
           hierarchy: project,
           startDate,
-          endDate,
+          endDate: endDateToUse,
           dashboardItemOrMapOverlay,
           previewMode,
           permissionGroup: visualisation.permissionGroup || visualisation.reportPermissionGroup,

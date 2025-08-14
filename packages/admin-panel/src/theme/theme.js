@@ -1,9 +1,4 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import * as COLORS from './colors';
 
 const themeName = 'Tupaia';
@@ -15,12 +10,12 @@ const palette = {
     dark: COLORS.DARK_BLUE,
   },
   secondary: {
-    main: COLORS.DARK_BLUE,
-    light: COLORS.LIGHT_BLUE,
+    main: COLORS.LIGHT_BLACK,
+    light: COLORS.EXTRA_LIGHT_BLACK,
   },
   error: {
     main: COLORS.RED,
-    light: COLORS.LIGHT_RED,
+    light: `${COLORS.LIGHT_RED}1A`, // 10% opacity
   },
   warning: {
     main: COLORS.RED,
@@ -31,10 +26,11 @@ const palette = {
     dark: COLORS.DARK_GREEN,
   },
   text: {
-    primary: COLORS.TEXT_DARKGREY,
+    primary: COLORS.LIGHT_BLACK,
     secondary: COLORS.TEXT_MIDGREY,
-    tertiary: COLORS.TEXT_LIGHTGREY,
+    hint: COLORS.TEXT_LIGHTGREY,
   },
+  divider: COLORS.GREY_DE,
   blue: {
     100: COLORS.BLUE_F6,
     200: COLORS.BLUE_E8,
@@ -46,7 +42,7 @@ const palette = {
     300: COLORS.GREY_E2,
     400: COLORS.GREY_DE,
     500: COLORS.GREY_9F,
-    600: COLORS.GREY_72,
+    600: COLORS.GREY_B8,
   },
   background: {
     default: COLORS.LIGHTGREY,
@@ -62,8 +58,8 @@ const typography = {
     letterSpacing: 0,
   },
   h2: {
-    fontSize: '2rem',
-    fontWeight: 600,
+    fontSize: '0.875rem',
+    fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
@@ -104,13 +100,13 @@ const typography = {
     letterSpacing: 0,
   },
   body1: {
-    fontSize: '1.125rem',
+    fontSize: '0.875rem',
     fontWeight: 400,
-    lineHeight: 1.18,
+    lineHeight: 1.2,
     letterSpacing: 0,
   },
   body2: {
-    fontSize: '1rem',
+    fontSize: '0.875rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,
@@ -129,11 +125,100 @@ const overrides = {
       borderColor: COLORS.GREY_DE,
     },
   },
-  MuiDivider: {
+
+  MuiFormLabel: {
     root: {
-      backgroundColor: COLORS.GREY_DE,
+      fontSize: '0.875rem',
+      fontWeight: 500,
+      color: palette.text.primary,
+      '&.Mui-error': {
+        color: palette.text.primary,
+      },
+    },
+    asterisk: {
+      color: palette.error.main,
+    },
+  },
+  MuiInputBase: {
+    input: {
+      fontSize: '0.875rem',
+      '&::placeholder': {
+        color: COLORS.TEXT_LIGHTGREY,
+      },
+    },
+  },
+  MuiFormControl: {
+    root: {
+      '& legend': {
+        fontSize: '0.875rem',
+        fontWeight: 500,
+        color: palette.text.primary,
+
+        '&.Mui-focused': {
+          color: palette.text.primary,
+        },
+      },
+    },
+  },
+  MuiOutlinedInput: {
+    input: {
+      paddingInline: '1.1rem',
+      paddingBlock: '0.875rem',
+    },
+  },
+  MuiMenuItem: {
+    root: {
+      fontSize: '0.875rem',
+    },
+  },
+  MuiButton: {
+    root: {
+      '&.MuiButtonBase-root': {
+        fontSize: '0.875rem',
+      },
+    },
+  },
+  MuiAlert: {
+    standardError: {
+      border: `1px solid ${COLORS.LIGHT_RED}`,
+      color: palette.text.primary,
+      paddingBlock: '0',
+      '& > .MuiAlert-icon > .MuiSvgIcon-root': {
+        padding: 0,
+        fontSize: '1rem',
+        marginBlockEnd: 0,
+      },
+    },
+    message: {
+      paddingBlock: '0.5rem',
+    },
+  },
+  MuiCssBaseline: {
+    '@global': {
+      label: {
+        fontWeight: 500,
+      },
+      '.lucide': {
+        height: 'auto', // Use width to set both dimensions
+        width: '1em', // Sensible default, mirrors MUI Icon behaviour
+      },
+    },
+  },
+  MuiSvgIcon: {
+    root: {
+      '&.tooltip': {
+        color: palette.text.secondary,
+      },
+      '&.checkbox': {
+        fill: 'transparent',
+      },
+    },
+  },
+  MuiAvatar: {
+    colorDefault: {
+      backgroundColor: '#E7B091',
     },
   },
 };
 
-export const theme = createMuiTheme({ palette, themeName, typography, shape, overrides });
+export const theme = createTheme({ palette, themeName, typography, shape, overrides });

@@ -1,9 +1,4 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { DataGroupModel, DataGroupType } from '../../modelClasses/DataGroup';
+import { DataGroupModel, DataGroupRecord } from '../../modelClasses/DataGroup';
 
 describe('DataGroup', () => {
   describe('sanitizeConfig()', () => {
@@ -12,7 +7,7 @@ describe('DataGroup', () => {
     };
 
     const createDataGroup = ({ serviceType = 'tupaia', config }) =>
-      new DataGroupType(new DataGroupModel(database), {
+      new DataGroupRecord(new DataGroupModel(database), {
         service_type: serviceType,
         config,
       });
