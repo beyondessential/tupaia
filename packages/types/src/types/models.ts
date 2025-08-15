@@ -1891,6 +1891,7 @@ export enum EntityTypeEnum {
   'consumable' = 'consumable',
   'bes_asset' = 'bes_asset',
   'bes_office' = 'bes_office',
+  'policy' = 'policy',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
