@@ -108,6 +108,18 @@ const run = async () => {
         '❌ There are changes in the db schema which are not reflected in @tupaia/types.',
       );
       console.log("Run 'yarn workspace @tupaia/types generate' to fix");
+
+      function findFirstDiffPos(a: string, b: string) {
+        const len = Math.min(a.length, b.length);
+        for (let i = 0; i < len; i++) {
+          if (a[i] !== b[i]) return i;
+        }
+        return -1;
+      }
+      const diffPos = findFirstDiffPos(currentTsString, tsString);
+      console.log('Expected: ', tsString.slice(diffPos));
+      console.log('Actual: ', currentTsString.slice(diffPos));
+
       process.exit(1);
     }
   }
