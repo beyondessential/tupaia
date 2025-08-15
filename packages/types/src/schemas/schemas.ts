@@ -84722,6 +84722,7 @@ export const EntityTypeEnumSchema = {
 		"pacmossi_spraying_site",
 		"pacmossi_village",
 		"pharmacy",
+		"policy",
 		"postcode",
 		"project",
 		"repair_request",

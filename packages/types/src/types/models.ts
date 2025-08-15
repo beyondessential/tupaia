@@ -1891,6 +1891,7 @@ export enum EntityTypeEnum {
   'consumable' = 'consumable',
   'bes_asset' = 'bes_asset',
   'bes_office' = 'bes_office',
+  'policy' = 'policy',
   'tmf_district' = 'tmf_district',
   'tmf_sub_district' = 'tmf_sub_district',
   'tmf_facility' = 'tmf_facility',
