@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, RequestHandler } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
@@ -121,22 +121,22 @@ export async function createApp() {
     )
     .post<ImportDashboardVisualisationRequest>(
       'import/dashboardVisualisations',
-      upload.array('dashboardVisualisations'),
+      upload.array('dashboardVisualisations') as RequestHandler,
       handleWith(ImportDashboardVisualisationRoute),
     )
     .post<ImportDataTableRequest>(
       'import/dataTables',
-      upload.array('dataTables'),
+      upload.array('dataTables') as RequestHandler,
       handleWith(ImportDataTableRoute),
     )
     .post<ImportMapOverlayVisualisationRequest>(
       'import/mapOverlayVisualisations',
-      upload.array('mapOverlayVisualisations'),
+      upload.array('mapOverlayVisualisations') as RequestHandler,
       handleWith(ImportMapOverlayVisualisationRoute),
     )
     .post<UploadTestDataRequest>(
       'uploadTestData',
-      upload.single('testData'),
+      upload.single('testData') as RequestHandler,
       handleWith(UploadTestDataRoute),
     )
     .get<FetchMapOverlayVisualisationRequest>(
