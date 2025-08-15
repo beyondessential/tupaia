@@ -26,19 +26,16 @@ export const MeasurePopup = React.memo(
   ({ markerData, serieses, onSeeOrgUnitDashboard, multiOverlaySerieses }: MeasurePopupProps) => {
     const { coordinates, organisationUnitCode } = markerData;
     const { popupHeaderFormat = '{name}' } = serieses.reduce(
-      (all, mo) => ({ ...all, ...mo }),
+      (all, mo) => Object.assign(all, mo),
       {} as Series,
     );
 
-    let onDetailButtonClick;
-    if (onSeeOrgUnitDashboard) {
-      onDetailButtonClick = () => onSeeOrgUnitDashboard(organisationUnitCode!);
-    }
+    const onDetailButtonClick = () => onSeeOrgUnitDashboard?.(organisationUnitCode!);
 
     return (
       <PopupMarker
         headerText={buildHeaderText(markerData, popupHeaderFormat)}
-        buttonText="See Dashboard"
+        buttonText="See dashboard"
         coordinates={coordinates}
         onDetailButtonClick={onDetailButtonClick}
       >

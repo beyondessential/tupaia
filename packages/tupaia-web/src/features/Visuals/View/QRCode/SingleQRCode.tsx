@@ -24,7 +24,7 @@ export const SingleQRCode = ({ data }: SingleQRCodeProps) => {
 
   return (
     <>
-      <DownloadButton onClick={downloadQrCodes} title="Download QR Code">
+      <DownloadButton onClick={downloadQrCodes} title="Download QR code">
         <DownloadIcon />
       </DownloadButton>
       <QrCodeImage qrCodeContents={value as string} humanReadableId={name} />

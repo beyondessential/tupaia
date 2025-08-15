@@ -27,7 +27,7 @@ export const SignUpComplete = () => {
       <Typography>
         Congratulations, you have successfully signed up to Tupaia. To activate your account please
         click the verification link in your email. Once activated, you can use your new account to
-        log in to tupaia.org and the Tupaia Meditrak app.
+        log in to tupaia.org and the Tupaia MediTrak app.
       </Typography>
       <RouterButton modal={MODAL_ROUTES.VERIFY_EMAIL_RESEND}>
         Resend verification email

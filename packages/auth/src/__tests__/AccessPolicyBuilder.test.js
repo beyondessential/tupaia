@@ -100,12 +100,12 @@ describe('AccessPolicyBuilder', () => {
       const builder = new AccessPolicyBuilder(models);
       const userIds = ['aaa', 'bbb', 'ccc'];
       // build each user's policy once
-      for (let i = 0; i < userIds.length; i++) {
-        await builder.getPolicyForUser(userIds[i]);
+      for (const userId of userIds) {
+        await builder.getPolicyForUser(userId);
       }
       // and now fetch each of them again
-      for (let i = 0; i < userIds.length; i++) {
-        await builder.getPolicyForUser(userIds[i]);
+      for (const userId of userIds) {
+        await builder.getPolicyForUser(userId);
       }
       // finally, a couple of extra fetches for luck
       await builder.getPolicyForUser(userIds[2]);

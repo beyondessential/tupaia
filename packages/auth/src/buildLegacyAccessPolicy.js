@@ -30,9 +30,7 @@ const getCountrySurveyPermissions = async (models, userId, permissionGroupSets) 
 
   const accessPolicyPermissions = {};
 
-  for (let i = 0; i < userCountryPermissions.length; i++) {
-    const countryPermission = userCountryPermissions[i];
-
+  for (const countryPermission of userCountryPermissions) {
     const { country_code: countryCode, permission_group_name: permissionGroup } = countryPermission;
 
     if (!accessPolicyPermissions[countryCode]) {

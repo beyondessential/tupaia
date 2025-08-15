@@ -50,6 +50,11 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions)
   const SITE_EMAIL_ADDRESS = getEnvVarOrDefault('SITE_EMAIL_ADDRESS', undefined);
 
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASSWORD || !SITE_EMAIL_ADDRESS) {
+    const recipientCount = Array.isArray(to) ? to.length : 1;
+    const unit = recipientCount === 1 ? 'recipient' : 'recipients';
+    console.warn(
+      `One or more SMTP_* environment variables are missing. Dropping ${templateName} email for ${recipientCount} ${unit}.`,
+    );
     return {};
   }
 

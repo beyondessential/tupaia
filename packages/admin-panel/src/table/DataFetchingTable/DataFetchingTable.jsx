@@ -145,7 +145,7 @@ const DataFetchingTableComponent = memo(
             <ButtonCell>
               {buttonColumns.map(({ Cell, accessor, ...col }) => {
                 return (
-                  <SingleButtonWrapper key={col.id} style={{ width: col.width }}>
+                  <SingleButtonWrapper key={col.id} style={{ inlineSize: col.width }}>
                     <Cell {...col} row={row} />
                   </SingleButtonWrapper>
                 );
