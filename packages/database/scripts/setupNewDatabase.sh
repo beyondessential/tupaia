@@ -58,7 +58,7 @@ DB_NAME="$DB_NAME" yarn workspace @tupaia/data-api build-analytics-table
 
 echo "Deleting migrations that target data modifications, as there is no data to migrate in the new database"
 rm -rf ./src/migrations-backup
-mkdir  ./src/migrations-backup
+mkdir ./src/migrations-backup
 cp -r ./src/migrations/* ./src/migrations-backup/
 rm ./src/migrations/*modifies-data.js
 DB_NAME="$DB_NAME" yarn migrate
