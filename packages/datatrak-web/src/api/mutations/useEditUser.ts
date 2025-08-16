@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { useDatabase } from '../../hooks/database';
 import { UserAccountDetails } from '../../types';
 import { put } from '../api';
-import { saveProjectForSyncing } from '../../utils/saveProjectForSyncing';
-import { useDatabase } from '../../hooks/database';
 
 /**
  * Converts a string from camel case to snake case.
@@ -47,7 +46,7 @@ export const useEditUser = (onSuccess?: () => void) => {
           queryClient.invalidateQueries(['tasks']);
           await models.localSystemFact.addProjectForSyncing(variables.projectId);
         }
-        if (onSuccess) onSuccess();
+        onSuccess?.();
       },
     },
   );
