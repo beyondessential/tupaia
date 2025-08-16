@@ -38,11 +38,6 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-          echo "Using Yarn $(yarn --version)"
       - run: yarn install
       - run: yarn workspace @tupaia/utils run build # /scripts/node/validateTests.js uses utils package
       - name: Validate unit tests
@@ -77,14 +72,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+        id: setup-node
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-          echo "Using Yarn $(yarn --version)"
       - name: Install dependencies
         run: yarn workspaces focus tupaia @tupaia/database @tupaia/types
       - run: yarn run build:from '{database,types}'
@@ -99,11 +90,6 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-          echo "Using Yarn $(yarn --version)"
       - run: yarn install --immutable
 
   package_list:
@@ -113,13 +99,17 @@ jobs:
       PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
     steps:
       - uses: actions/checkout@v4
-      - id: set-matrix
+      - name: Set matrix list of unscoped package names
+        id: set-matrix
         run: |
-          echo PACKAGES=$(
+          # ["@tupaia/foo","@tupaia/bar"]
+          scoped_packages=$(
             yarn workspaces list --json |
               jq --compact-output --raw-output --slurp \
                 '[.[] | .name] | map(select(. != "tupaia" and . != "@tupaia/devops" and . != "@tupaia/e2e"))'
-          ) >>"$GITHUB_OUTPUT"
+          )
+          # Strip ‘@tupaia/’ prefix → ["foo","bar"]
+          echo PACKAGES=${scoped_packages//@tupaia\//} >>"$GITHUB_OUTPUT"
 
   build:
     name: Build
@@ -143,11 +133,21 @@ jobs:
           corepack install
           echo "Using Yarn $(yarn --version)"
       - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
-      - run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
+      - run: yarn workspaces foreach -Rptv --jobs unlimited --from @tupaia/${{ matrix.package }} run build
+      - uses: actions/cache/save@v4
+        with:
+          path: |
+            packages/*/dist
+            packages/*/lib
+          key: ${{ runner.os }}-${{ matrix.package }}-build-${{ github.sha }}
 
   run_tests:
     name: Test
-    needs: package_list
+    # Don’t let a single failure in build stop entire test matrix
+    if: ${{ needs.package_list.outputs.PACKAGES != '' }}
+    needs:
+      - build
+      - package_list
     timeout-minutes: 15 # Sometimes Jest doesn’t exit properly for meditrak-app-server tests
     runs-on: ubuntu-latest
     env:
@@ -206,22 +206,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        id: restore-build-cache
+        with:
+          path: |
+            packages/*/dist
+            packages/*/lib
+          key: ${{ runner.os }}-${{ matrix.package }}-build-${{ github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-          echo "Using Yarn $(yarn --version)"
       - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
-      - name: Build subtree
-        run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
+      - name: Build subtree (if cache missed)
+        if: steps.restore-build-cache.outputs.cache-hit != 'true'
+        run: yarn workspaces foreach -Rptv --jobs unlimited --from @tupaia/${{ matrix.package }} run build
       - name: Set up tests (if script exists)
-        run: yarn workspaces foreach --include ${{ matrix.package }} run setup-test
+        run: yarn workspaces foreach --include @tupaia/${{ matrix.package }} run setup-test
       - name: Run tests (if script exists)
-        run: yarn workspaces foreach --include ${{ matrix.package }} run test
+        run: yarn workspaces foreach --include @tupaia/${{ matrix.package }} run test
 
   allgreen:
     name: All Green
