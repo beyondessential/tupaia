@@ -14,17 +14,8 @@ fi
 
 cd "$root_dir"
 
-
-if [[ $CI = true ]]; then
-    echo '::group::Set up test database'
-fi
-
 echo "Connected to PostgreSQL server: $DB_URL, starting to setup database"
 yarn workspace @tupaia/database setup-test-database
-
-if [[ $CI = true ]]; then
-    echo '::endgroup::'
-fi
 
 # Run check
 yarn workspace @tupaia/types assert-no-changes
