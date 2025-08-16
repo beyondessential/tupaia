@@ -137,43 +137,32 @@ jobs:
         package: ${{ fromJSON(needs.package_list.outputs.PACKAGES) }}
     steps:
       - uses: actions/checkout@v4
-      - name: Restore build cache
-        uses: actions/cache/restore@v4
-        id: build-cache-restore
+      - uses: actions/cache@v4
+        id: cache-build
         with:
           path: |
             packages/*/dist
             packages/*/lib
           key: ${{ runner.os }}-${{ matrix.package }}-build-${{ hashFiles('yarn.lock', format('packages/{0}/**', matrix.package)) }}
       - uses: actions/setup-node@v4
-        if: steps.build-cache-restore.outputs.cache-hit != 'true'
+        if: steps.cache-build.outputs.cache-hit != 'true'
         with:
           node-version-file: '.nvmrc'
           cache: yarn
       - name: Set up Yarn
-        if: steps.build-cache-restore.outputs.cache-hit != 'true'
+        if: steps.cache-build.outputs.cache-hit != 'true'
         run: |
           corepack enable yarn
           corepack install
           echo "Using Yarn $(yarn --version)"
       - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
-        if: steps.build-cache-restore.outputs.cache-hit != 'true'
+        if: steps.cache-build.outputs.cache-hit != 'true'
       - run: yarn workspaces foreach -Rptv --jobs unlimited --from @tupaia/${{ matrix.package }} run build
-        if: steps.build-cache-restore.outputs.cache-hit != 'true'
-      - name: Save build cache
-        uses: actions/cache/save@v4
-        id: build-cache-save
-        with:
-          path: |
-            packages/*/dist
-            packages/*/lib
-          key: ${{ runner.os }}-${{ matrix.package }}-build-${{ hashFiles('yarn.lock', format('packages/{0}/**', matrix.package)) }}
+        if: steps.cache-build.outputs.cache-hit != 'true'
 
   run_tests:
     name: Test
-    needs:
-      - build
-      - package_list
+    needs: package_list
     timeout-minutes: 15 # Sometimes Jest doesn’t exit properly for meditrak-app-server tests
     runs-on: ubuntu-latest
     env:
@@ -232,6 +221,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        id: cache-build
+        with:
+          path: |
+            packages/*/dist
+            packages/*/lib
+          key: ${{ runner.os }}-${{ matrix.package }}-build-${{ hashFiles('yarn.lock', format('packages/{0}/**', matrix.package)) }}
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -242,15 +238,6 @@ jobs:
           corepack install
           echo "Using Yarn $(yarn --version)"
       - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
-      - uses: actions/cache@v4
-        id: cache-build
-        with:
-          path: |
-            packages/*/dist
-            packages/*/lib
-          key: ${{ runner.os }}-${{ matrix.package }}-build-${{ hashFiles('yarn.lock', format('packages/{0}/**', matrix.package)) }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.package }}-build-
       - name: Build subtree (if cache missed)
         if: steps.cache-build.outputs.cache-hit != 'true'
         run: yarn workspaces foreach -Rptv --jobs unlimited --from @tupaia/${{ matrix.package }} run build
