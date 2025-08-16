@@ -137,13 +137,18 @@ jobs:
         package: ${{ fromJSON(needs.package_list.outputs.PACKAGES) }}
     steps:
       - uses: actions/checkout@v4
+      - name: Get internal dependencies glob
+        id: internal-deps
+        working-directory: scripts/bash
+        run: |
+          echo "INTERNAL_DEPS_GLOB=$(getInternalDependenciesOf.sh --as-glob ${{ matrix.package }})" >>"$GITHUB_OUTPUT"
       - uses: actions/cache@v4
         id: cache-build
         with:
           path: |
             packages/*/dist
             packages/*/lib
-          key: ${{ runner.os }}-${{ matrix.package }}-build-${{ hashFiles('yarn.lock', format('packages/{0}/**', matrix.package)) }}
+          key: ${{ runner.os }}-${{ matrix.package }}-build-${{ hashFiles('yarn.lock', format('packages/{0}/**', steps.internal-deps.outputs.INTERNAL_DEPS_GLOB)) }}
       - uses: actions/setup-node@v4
         if: steps.cache-build.outputs.cache-hit != 'true'
         with:
