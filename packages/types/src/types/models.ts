@@ -1894,6 +1894,7 @@ export enum EntityTypeEnum {
   'tmf_district' = 'tmf_district',
   'tmf_sub_district' = 'tmf_sub_district',
   'tmf_facility' = 'tmf_facility',
+  'policy' = 'policy',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
