@@ -10,12 +10,12 @@ export async function getAPIClientUser(authHeader, models) {
   // We always need a valid client; throw if none is found
   const apiClient = await models.apiClient.findOne({ username });
   if (!apiClient) {
-    throw new UnauthenticatedError(`Couldn’t find API client with username ${username}`);
+    throw new UnauthenticatedError(`Couldn’t find API client`);
   }
 
   const isVerified = await apiClient.verifySecretKey(secretKey);
   if (!isVerified) {
-    throw new UnauthenticatedError(`Couldn’t authenticate API client ${apiClient.username}`);
+    throw new UnauthenticatedError(`Couldn’t authenticate API client`);
   }
 
   return await apiClient.getUser();
