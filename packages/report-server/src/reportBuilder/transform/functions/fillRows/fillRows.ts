@@ -6,6 +6,7 @@ import { TransformParser } from '../../parser';
 import { TransformTable } from '../../table';
 import { checkColumnsExistInTable, expressionOrArrayValidator } from '../utils';
 import { generateRowInserts } from './generateRowInserts';
+import { TransformBuilder } from '..';
 
 type FillRowsParams = {
   requiredColumnValues: { column: string; values: string | FieldValue[] }[];
@@ -65,7 +66,7 @@ const buildParams = (params: unknown) => {
   };
 };
 
-export const buildFillsRows = (params: unknown, context: Context) => {
+export const buildFillsRows: TransformBuilder = (params, context) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => fillRows(table, builtParams, context);
+  return table => fillRows(table, builtParams, context);
 };
