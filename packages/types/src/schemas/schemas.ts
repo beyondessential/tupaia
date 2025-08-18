@@ -84706,6 +84706,7 @@ export const EntityTypeEnumSchema = {
 		"incident_reported",
 		"individual",
 		"institute",
+		"kiuar_area",
 		"larval_habitat",
 		"larval_sample",
 		"local_government",
