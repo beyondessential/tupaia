@@ -274,22 +274,25 @@ exports.up = async function (db) {
 
   // Create user_account table
   await db.runSql(`
-      CREATE TABLE user_account (
-        id               TEXT NOT NULL PRIMARY KEY,
-        first_name       TEXT,
-        last_name        TEXT,
-        email            TEXT NOT NULL UNIQUE,
-        gender           TEXT,
-        creation_date    TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-        employer         TEXT,
-        position         TEXT,
-        mobile_number    TEXT,
-        password_hash    TEXT NOT NULL,
-        password_salt    TEXT NOT NULL,
-        verified_email   verified_email,
-        profile_image    TEXT,
-        primary_platform primary_platform DEFAULT 'tupaia'::primary_platform,
-        preferences      jsonb DEFAULT '{}'::jsonb NOT NULL
+      CREATE TABLE user_account
+      (
+          id                   TEXT                                         NOT NULL
+              PRIMARY KEY,
+          first_name           TEXT,
+          last_name            TEXT,
+          email                TEXT                                         NOT NULL
+              UNIQUE,
+          gender               TEXT,
+          creation_date        TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          employer             TEXT,
+          position             TEXT,
+          mobile_number        TEXT,
+          password_hash        TEXT                                         NOT NULL,
+          legacy_password_salt TEXT,
+          verified_email       verified_email           DEFAULT 'new_user'::verified_email,
+          profile_image        TEXT,
+          primary_platform     primary_platform         DEFAULT 'tupaia'::primary_platform,
+          preferences          JSONB                    DEFAULT '{}'::JSONB NOT NULL
       );
     `);
 
