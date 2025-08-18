@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { MatrixConfig } from '@tupaia/types';
@@ -118,14 +118,13 @@ const useUpdateUserProjectOnSettled = (projectCode?: ProjectCode) => {
 };
 
 export const Dashboard = () => {
-  const { state: locationState } = useLocation();
   const { projectCode, entityCode } = useParams();
   const { data: project, isSuccess: isProjectSuccess } = useProject(projectCode);
-  const defaultDashboardName = useDefaultDashboardName(projectCode, entityCode);
+
   useUpdateUserProjectOnSettled(projectCode);
 
   const { activeDashboard } = useDashboardContext();
-  const { isFetching: isFetchingDashboards, isSuccess: isDashboardsSuccess } = useDashboards(
+  const { isLoading: isLoadingDashboards, isSuccess: isDashboardsSuccess } = useDashboards(
     projectCode,
     entityCode,
   );
@@ -134,13 +133,31 @@ export const Dashboard = () => {
   const { data: entity } = useEntity(projectCode, entityCode);
 
   // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
-
-  const dashboardNotFound =
-    isProjectSuccess && isDashboardsSuccess && project?.code === projectCode && !activeDashboard;
-  if (dashboardNotFound && defaultDashboardName) {
-    const to = `/${projectCode}/${entityCode}/${encodeURIComponent(defaultDashboardName)}`;
-    return <Navigate replace state={locationState} to={to} />;
-  }
+  const defaultDashboardName = useDefaultDashboardName(projectCode, entityCode);
+  const { search, hash, state } = useLocation();
+  const navigate = useNavigate();
+  const dashboardNotFound = isProjectSuccess && isDashboardsSuccess && !activeDashboard;
+  useEffect(() => {
+    if (dashboardNotFound && defaultDashboardName) {
+      navigate(
+        {
+          pathname: `/${projectCode}/${entityCode}/${encodeURIComponent(defaultDashboardName)}`,
+          search,
+          hash,
+        },
+        { replace: true, state },
+      );
+    }
+  }, [
+    dashboardNotFound,
+    defaultDashboardName,
+    entityCode,
+    hash,
+    navigate,
+    projectCode,
+    search,
+    state,
+  ]);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -183,7 +200,7 @@ export const Dashboard = () => {
               <DashboardMenu />
             </StickyBar>
             <DashboardItemsWrapper $isExpanded={isExpanded}>
-              {isFetchingDashboards && <SpinningLoader mt={5} />}
+              {isLoadingDashboards && <SpinningLoader mt={5} />}
               {visibleDashboards?.map(item => (
                 <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
               ))}
