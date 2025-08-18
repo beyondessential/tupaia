@@ -46,7 +46,7 @@ export const useEditUser = (onSuccess?: () => void) => {
           queryClient.invalidateQueries(['tasks']);
           await models.localSystemFact.addProjectForSyncing(variables.projectId);
         }
-        if (onSuccess) onSuccess();
+        onSuccess?.();
       },
     },
   );
