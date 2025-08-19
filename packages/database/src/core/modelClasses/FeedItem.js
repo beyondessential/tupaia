@@ -9,7 +9,13 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 
-export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
+// To avoid circular dependency with @tupaia/types, we define the feed item types here
+const FeedItemTypes = {
+  SurveyResponse: 'SurveyResponse',
+  Markdown: 'markdown',
+};
+
+export const FEED_ITEM_TYPES = Object.values(FeedItemTypes);
 
 export class FeedItemRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.FEED_ITEM;
@@ -45,7 +51,7 @@ export class FeedItemModel extends DatabaseModel {
         `;
         })
         // add the markdown type to the query here so that it always gets wrapped in brackets with the permissions query in the final query, regardless of what other custom conditions are added
-        .join(' OR ')}) OR feed_item.type = 'markdown')`,
+        .join(' OR ')}) OR feed_item.type = '${FeedItemTypes.Markdown}')`,
       parameters: params,
     };
   }
