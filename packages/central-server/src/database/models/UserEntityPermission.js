@@ -65,5 +65,5 @@ async function onUpsertSendPermissionGrantEmail(
 async function expireAccess({ new_record: newRecord, old_record: oldRecord }, models) {
   const userId = newRecord?.user_id || oldRecord.user_id;
   const user = await models.user.findById(userId);
-  await user.expireSessionToken('tupaia_web');
+  await user?.expireSessionToken('tupaia_web');
 }

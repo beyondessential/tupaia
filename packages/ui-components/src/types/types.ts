@@ -1,6 +1,4 @@
-import { ElementType, CSSProperties } from 'react';
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import { SvgIconTypeMap } from '@material-ui/core';
+import { CSSProperties, ElementType } from 'react';
 
 // the Record<any, any> is to allow for any prop to be passed to the component, for the component that is overriding the original
 export type OverrideableComponentProps<P = {}> = P &
@@ -25,14 +23,11 @@ export type Data = Record<string, unknown> & {
   value?: any;
 };
 
-export type ActionsMenuOptionType = {
+export interface ActionsMenuOptionType {
   label: string;
   action: () => void;
   style?: CSSProperties;
   iconStyle?: CSSProperties;
-  ActionIcon?:
-    | OverridableComponent<SvgIconTypeMap<Record<string, unknown>, 'svg'>>
-    | React.ElementType;
+  actionIcon?: React.ReactNode;
   toolTipTitle?: string;
-  color?: string;
-};
+}
