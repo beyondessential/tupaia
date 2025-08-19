@@ -25,6 +25,10 @@ export {
   LoginRequest,
 } from './orchestrator';
 export * from './types';
+
+// These models previously lived in @tupaia/server-boilerplate, but as now need the same models in
+// @tupaia/datatrak-web, they are now moved to @tupaia/types so that they can be shared between the server and web packages.
+// This is a temporary solution to keep the previous imports working, and we can address this in another maintenance card.
 export {
   // Base model types
   Model,

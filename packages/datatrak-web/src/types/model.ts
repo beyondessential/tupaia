@@ -1,11 +1,11 @@
+import { ModelRegistry } from '@tupaia/database';
 import {
   AnswerModel,
   LocalSystemFactModel,
-  ModelRegistry,
   OptionSetModel,
   SurveyModel,
   TombstoneModel,
-} from '@tupaia/database';
+} from '@tupaia/types';
 
 export interface DatatrakWebModelRegistry extends ModelRegistry {
   readonly localSystemFact: LocalSystemFactModel;
