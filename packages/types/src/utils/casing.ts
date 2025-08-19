@@ -1,5 +1,3 @@
-// To avoid circular dependency with @tupaia/tsutils, we define the casing utils here
-
 // Converts a string to PascalCase (splitting on '_')
 export type PascalCase<S extends string> = S extends `${infer T}_${infer U}`
   ? `${Capitalize<T>}${Capitalize<PascalCase<U>>}`
