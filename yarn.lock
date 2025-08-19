@@ -12035,7 +12035,6 @@ __metadata:
     "@tupaia/expression-parser": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
-    "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     bson-objectid: ^2.0.4
     case: ^1.6.3
@@ -12641,7 +12640,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/tsutils@workspace:packages/tsutils"
   dependencies:
-    "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
     "@types/lodash.get": ^4.4.2
@@ -12736,6 +12734,7 @@ __metadata:
   resolution: "@tupaia/types@workspace:packages/types"
   dependencies:
     "@rmp135/sql-ts": ^1.15.1
+    "@tupaia/database": "workspace:*"
     "@types/node": ^20.11.1
     dotenv: ^16.4.5
     knex: ^3.1.0

@@ -1,7 +1,6 @@
 import moment from 'moment';
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { FeedItemTypes } from '@tupaia/types';
 import { reduceToDictionary } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
 
@@ -46,7 +45,7 @@ export class FeedItemModel extends DatabaseModel {
         `;
         })
         // add the markdown type to the query here so that it always gets wrapped in brackets with the permissions query in the final query, regardless of what other custom conditions are added
-        .join(' OR ')}) OR feed_item.type = '${FeedItemTypes.Markdown}')`,
+        .join(' OR ')}) OR feed_item.type = 'markdown')`,
       parameters: params,
     };
   }

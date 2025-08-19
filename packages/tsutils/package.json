@@ -21,7 +21,6 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "ajv": "^8.12.0",
     "ajv-formats": "v3.0.0-rc.0",

@@ -46,7 +46,6 @@
     "@tupaia/expression-parser": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
-    "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "bson-objectid": "^2.0.4",
     "case": "^1.6.3",
