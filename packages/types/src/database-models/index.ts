@@ -36,6 +36,7 @@ export {
 export { FacilityModel, FacilityRecord } from './Facility';
 export { FeedItemModel, FeedItemRecord } from './FeedItem';
 export { GeographicalAreaModel, GeographicalAreaRecord } from './GeographicalArea';
+export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';
 export { MapOverlayModel, MapOverlayRecord } from './MapOverlay';
 export { MapOverlayGroupModel, MapOverlayGroupRecord } from './MapOverlayGroup';
 export {
@@ -55,12 +56,12 @@ export { SurveyResponseModel, SurveyResponseRecord } from './SurveyResponse';
 export { SurveyScreenComponentModel, SurveyScreenComponentRecord } from './SurveyScreenComponent';
 export { SurveyScreenModel, SurveyScreenRecord } from './SurveyScreen';
 export { SurveyModel, SurveyRecord } from './Survey';
+export { TaskModel, TaskRecord } from './Task';
+export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
+export { TombstoneModel, TombstoneRecord } from './Tombstone';
 export { UserEntityPermissionModel, UserEntityPermissionRecord } from './UserEntityPermission';
 export { UserModel, UserRecord } from './User';
 export {
   UserCountryAccessAttemptModel,
   UserCountryAccessAttemptRecord,
 } from './UserCountryAccessAttempt';
-export { TaskModel, TaskRecord } from './Task';
-export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
-export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';
