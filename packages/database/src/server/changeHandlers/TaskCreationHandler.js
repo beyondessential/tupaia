@@ -1,9 +1,13 @@
 import { formatInTimeZone } from 'date-fns-tz';
 import keyBy from 'lodash.keyby';
 
-import { QuestionType } from '@tupaia/types';
-
 import { ChangeHandler } from './ChangeHandler';
+
+// To avoid circular dependency with @tupaia/types, we define the question types here
+const QuestionType = {
+  PrimaryEntity: 'PrimaryEntity',
+  Task: 'Task',
+};
 
 const getAnswerWrapper = (config, answers) => {
   const answersByQuestionId = keyBy(answers, 'question_id');

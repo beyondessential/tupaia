@@ -26,6 +26,9 @@
     "generate:schemas": "ts-node generate-schemas.ts",
     "assert-no-changes": "yarn generate:models --failOnChanges && yarn generate:schemas --failOnChanges"
   },
+  "dependencies": {
+    "@tupaia/database": "workspace:*"
+  },
   "devDependencies": {
     "@rmp135/sql-ts": "^1.15.1",
     "@types/node": "^20.11.1",

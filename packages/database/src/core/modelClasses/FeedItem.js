@@ -1,7 +1,6 @@
 import moment from 'moment';
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { FeedItemTypes } from '@tupaia/types';
 import { reduceToDictionary } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
 
@@ -10,7 +9,13 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 
-export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
+// To avoid circular dependency with @tupaia/types, we define the feed item types here
+const FeedItemTypes = {
+  SurveyResponse: 'SurveyResponse',
+  Markdown: 'markdown',
+};
+
+export const FEED_ITEM_TYPES = Object.values(FeedItemTypes);
 
 export class FeedItemRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.FEED_ITEM;
