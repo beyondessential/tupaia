@@ -1,6 +1,6 @@
 import baseCamelFunction, { Options } from 'camelcase-keys';
-import { KeysToCamelCase } from '@tupaia/types';
 import { isObject } from './typeGuards';
+import { KeysToCamelCase } from './casing';
 
 /**
  * Wrapper for camelcaseKeys library function to add correct type interpretation

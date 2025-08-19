@@ -1,8 +1,6 @@
 import { formatInTimeZone } from 'date-fns-tz';
 import keyBy from 'lodash.keyby';
 
-import { QuestionType } from '@tupaia/types';
-
 import { ChangeHandler } from './ChangeHandler';
 
 const getAnswerWrapper = (config, answers) => {
@@ -18,7 +16,7 @@ const getAnswerWrapper = (config, answers) => {
 };
 
 const isPrimaryEntityQuestion = (config, questions) => {
-  const primaryEntityQuestion = questions.find(q => q.type === QuestionType.PrimaryEntity);
+  const primaryEntityQuestion = questions.find(q => q.type === 'PrimaryEntity');
   const { questionId } = config.entityId;
   return primaryEntityQuestion.id === questionId;
 };

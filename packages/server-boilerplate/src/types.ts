@@ -6,7 +6,7 @@ import {
   PermissionGroupModel,
   UserEntityPermissionModel,
   UserModel,
-} from './models';
+} from '@tupaia/types';
 
 export type AccessPolicyObject = Record<string, string[]>;
 
