@@ -46,7 +46,7 @@ const TileLabel = styled(Typography)`
   position: absolute;
   font-weight: normal;
   font-size: 1rem;
-  line-height: 1.2rem;
+  line-height: 1.2;
   bottom: 0;
   left: 0;
   right: 0;
