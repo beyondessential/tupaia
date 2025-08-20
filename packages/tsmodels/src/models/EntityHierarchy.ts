@@ -2,7 +2,7 @@ import {
   EntityHierarchyModel as BaseEntityHierarchyModel,
   EntityHierarchyRecord as BaseEntityHierarchyRecord,
 } from '@tupaia/database';
-import { EntityHierarchy } from '../types/models';
+import { EntityHierarchy } from '@tupaia/types';
 import { Model } from './types';
 
 export interface EntityHierarchyRecord extends EntityHierarchy, BaseEntityHierarchyRecord {}

@@ -2,7 +2,7 @@ import {
   DashboardMailingListModel as BaseDashboardMailingListModel,
   DashboardMailingListRecord as BaseDashboardMailingListRecord,
 } from '@tupaia/database';
-import { DashboardMailingList } from '../types/models';
+import { DashboardMailingList } from '@tupaia/types';
 import { Model } from './types';
 
 export interface DashboardMailingListRecord

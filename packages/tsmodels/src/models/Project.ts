@@ -1,5 +1,5 @@
 import { AccessPolicy } from '@tupaia/access-policy';
-import { Project } from '../types/models';
+import { Project } from '@tupaia/types';
 import {
   ProjectModel as BaseProjectModel,
   ProjectRecord as BaseProjectRecord,

@@ -2,7 +2,7 @@ import {
   PermissionGroupModel as BasePermissionGroupModel,
   PermissionGroupRecord as BasePermissionGroupRecord,
 } from '@tupaia/database';
-import { PermissionGroup } from '../types/models';
+import { PermissionGroup } from '@tupaia/types';
 import { Model } from './types';
 
 export interface PermissionGroupRecord extends PermissionGroup, BasePermissionGroupRecord {}

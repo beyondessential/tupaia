@@ -2,7 +2,7 @@ import {
   SurveyGroupModel as BaseSurveyGroupModel,
   SurveyGroupRecord as BaseSurveyGroupRecord,
 } from '@tupaia/database';
-import { SurveyGroup } from '../types/models';
+import { SurveyGroup } from '@tupaia/types';
 import { Model } from './types';
 
 export interface SurveyGroupRecord extends SurveyGroup, BaseSurveyGroupRecord {}

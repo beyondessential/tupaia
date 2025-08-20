@@ -1,5 +1,5 @@
 import { UserModel as BaseUserModel, UserRecord as BaseUserRecord } from '@tupaia/database';
-import { UserAccount } from '../types/models';
+import { UserAccount } from '@tupaia/types';
 import { NullableKeysToOptional } from '../utils';
 import { Model } from './types';
 

@@ -2,7 +2,7 @@ import {
   FeedItemModel as BaseFeedItemModel,
   FeedItemRecord as BaseFeedItemRecord,
 } from '@tupaia/database';
-import { FeedItem } from '../types/models';
+import { FeedItem } from '@tupaia/types';
 import { Model } from './types';
 import { NullableKeysToOptional } from '../utils';
 

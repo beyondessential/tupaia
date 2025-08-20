@@ -2,7 +2,7 @@ import {
   AncestorDescendantRelationModel as BaseAncestorDescendantRelationModel,
   AncestorDescendantRelationRecord as BaseAncestorDescendantRelationRecord,
 } from '@tupaia/database';
-import { AncestorDescendantRelation, Entity } from '../types/models';
+import { AncestorDescendantRelation, Entity } from '@tupaia/types';
 import { Model, DbFilter, Joined } from './types';
 
 type AncestorDescendantRelationFields = AncestorDescendantRelation &

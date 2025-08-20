@@ -1,5 +1,5 @@
 import { TaskRecord as BaseTaskRecord, TaskModel as BaseTaskModel } from '@tupaia/database';
-import { Task } from '../types/models';
+import { Task } from '@tupaia/types';
 import { Model } from './types';
 
 export interface TaskRecord extends Task, BaseTaskRecord {

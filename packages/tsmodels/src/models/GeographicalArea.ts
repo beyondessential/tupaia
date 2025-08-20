@@ -2,7 +2,7 @@ import {
   GeographicalAreaModel as BaseGeographicalAreaModel,
   GeographicalAreaRecord as BaseGeographicalAreaRecord,
 } from '@tupaia/database';
-import { GeographicalArea } from '../types/models';
+import { GeographicalArea } from '@tupaia/types';
 import { Model } from './types';
 
 export interface GeographicalAreaRecord extends GeographicalArea, BaseGeographicalAreaRecord {}

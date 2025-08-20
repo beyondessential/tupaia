@@ -2,7 +2,7 @@ import {
   ApiClientModel as BaseApiClientModel,
   ApiClientRecord as BaseApiClientRecord,
 } from '@tupaia/database';
-import { ApiClient } from '../types/models';
+import { ApiClient } from '@tupaia/types';
 import { Model } from './types';
 
 export interface ApiClientRecord extends ApiClient, BaseApiClientRecord {}

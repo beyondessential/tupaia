@@ -2,7 +2,7 @@ import {
   DataTableModel as BaseDataTableModel,
   DataTableRecord as BaseDataTableRecord,
 } from '@tupaia/database';
-import { DataTable } from '../types/models';
+import { DataTable } from '@tupaia/types';
 import { Model } from './types';
 
 export interface DataTableRecord extends DataTable, BaseDataTableRecord {}

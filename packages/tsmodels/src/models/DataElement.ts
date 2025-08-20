@@ -2,7 +2,7 @@ import {
   DataElementModel as BaseDataElementModel,
   DataElementRecord as BaseDataElementRecord,
 } from '@tupaia/database';
-import { DataElement } from '../types/models';
+import { DataElement } from '@tupaia/types';
 import { Model } from './types';
 
 export interface DataElementRecord extends DataElement, BaseDataElementRecord {}

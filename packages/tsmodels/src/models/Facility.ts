@@ -2,7 +2,7 @@ import {
   FacilityModel as BaseFacilityModel,
   FacilityRecord as BaseFacilityRecord,
 } from '@tupaia/database';
-import { Clinic } from '../types/models';
+import { Clinic } from '@tupaia/types';
 import { Model } from './types';
 
 export interface FacilityRecord extends Clinic, BaseFacilityRecord {}

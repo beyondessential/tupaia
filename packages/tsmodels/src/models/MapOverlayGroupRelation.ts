@@ -2,7 +2,7 @@ import {
   MapOverlayGroupRelationModel as BaseMapOverlayGroupRelationModel,
   MapOverlayGroupRelationRecord as BaseMapOverlayGroupRelationType,
 } from '@tupaia/database';
-import { MapOverlayGroupRelation } from '../types/models';
+import { MapOverlayGroupRelation } from '@tupaia/types';
 import { Model } from './types';
 
 export interface MapOverlayGroupRelationRecord

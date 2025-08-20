@@ -1,5 +1,5 @@
 import { EntityModel as BaseEntityModel, EntityRecord as BaseEntityRecord } from '@tupaia/database';
-import { Entity } from '../types/models';
+import { Entity } from '@tupaia/types';
 import { Model, DbFilter } from './types';
 
 export type EntityFilterFields = Entity & {

@@ -2,7 +2,7 @@ import {
   OneTimeLoginModel as BaseOneTimeLoginModel,
   OneTimeLoginRecord as BaseOneTimeLoginRecord,
 } from '@tupaia/database';
-import { OneTimeLogin } from '../types/models';
+import { OneTimeLogin } from '@tupaia/types';
 import { Model } from './types';
 
 export interface OneTimeLoginRecord extends OneTimeLogin, BaseOneTimeLoginRecord {}

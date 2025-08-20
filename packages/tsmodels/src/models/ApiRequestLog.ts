@@ -2,7 +2,7 @@ import {
   ApiRequestLogModel as BaseApiRequestLogModel,
   ApiRequestLogRecord as BaseApiRequestLogRecord,
 } from '@tupaia/database';
-import { ApiRequestLog } from '../types/models';
+import { ApiRequestLog } from '@tupaia/types';
 import { Model } from './types';
 
 export interface ApiRequestLogRecord extends ApiRequestLog, BaseApiRequestLogRecord {}

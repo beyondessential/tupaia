@@ -2,7 +2,7 @@ import {
   UserEntityPermissionModel as BaseUserEntityPermissionModel,
   UserEntityPermissionRecord as BaseUserEntityPermissionRecord,
 } from '@tupaia/database';
-import { Entity, PermissionGroup, UserEntityPermission } from '../types/models';
+import { Entity, PermissionGroup, UserEntityPermission } from '@tupaia/types';
 import { Model } from './types';
 
 export interface UserEntityPermissionRecord
