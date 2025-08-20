@@ -18,9 +18,7 @@ export const TileLayer = ({
   const tileLayer = useRef<LeafletTileLayer | null>(null);
 
   useEffect(() => {
-    if (tileLayer) {
-      tileLayer?.current?.setUrl(tileSetUrl);
-    }
+    tileLayer?.current?.setUrl(tileSetUrl);
   }, [tileSetUrl]);
 
   return (
