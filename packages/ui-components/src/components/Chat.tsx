@@ -73,13 +73,11 @@ const MessagesArea = styled.div<ThemeProps>`
   background: ${props => props.theme.palette.background.grey};
   display: flex;
   flex-direction: column;
-  gap: 16px;
 `;
 
 const MessageWrapper = styled.div<MessageWrapperProps>`
   display: flex;
   align-items: flex-end;
-  gap: 8px;
   animation: ${fadeIn} 0.3s --ease-out-quad;
   flex-direction: ${props => (props.isOwn ? 'row-reverse' : 'row')};
   margin: 0 0.5rem;
