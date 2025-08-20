@@ -211,12 +211,14 @@ export const PreviewSection = () => {
       editorRef.current.set(completion.presentationConfig);
       const validationError = await editorRef.current.validate();
       if (validationError.length > 0) {
-        setPresentationError(validationError[0].message);
+        // if the presentation option is invalid, revert to the previous presentation
+        // and respond with an error message
+        editorRef.current.set(visualisation.presentation);
         assistantReply = ASSISTANT_ERROR_MESSAGE;
       } else {
         // if the presentation option is valid, set the presentation value
         assistantReply = completion.message;
-        setPresentation(completion.presentationConfig);
+        setPresentationValue(completion.presentationConfig);
         setFetchEnabled(true);
         setShowData(true);
       }
@@ -231,8 +233,8 @@ export const PreviewSection = () => {
   };
 
   const { columns: transformedColumns = [] } = tableData;
-  const columns = useMemo(() => (tab === 0 ? getColumns(tableData) : []), [tableData]);
-  const rows = useMemo(() => (tab === 0 ? getRows(tableData) || [] : []), [tableData]);
+  const columns = useMemo(() => (tab === 0 ? getColumns(tableData) : []), [tab, tableData]);
+  const rows = useMemo(() => (tab === 0 ? getRows(tableData) || [] : []), [tab, tableData]);
   const report = useMemo(
     () => ({ data: visualisationData, type: visualisation?.output?.type }),
     [visualisationData],

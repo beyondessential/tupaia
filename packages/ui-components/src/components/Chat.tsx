@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Typography, Input } from '@material-ui/core';
 import styled, { keyframes } from 'styled-components';
 import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
@@ -134,6 +134,9 @@ const Textarea = styled(Input).attrs({
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
   }
+  .MuiInputBase-input::placeholder {
+    color: ${props => props.theme.palette.text.hint};
+  }
 `;
 
 const ButtonBar = styled.div`
@@ -144,7 +147,10 @@ const ButtonBar = styled.div`
   border-bottom-right-radius: 8px;
 `;
 
-const UndoButton = styled(IconButton)``;
+// TODO: Add undo button functionality
+const UndoButton = styled(IconButton)`
+  visibility: hidden;
+`;
 
 const SubmitButton = styled(IconButton).attrs({ type: 'submit' })<ThemeProps>`
   width: 36px;
@@ -196,6 +202,15 @@ export const Chat: React.FC<ChatProps> = ({
   isProcessingMessage = false,
 }) => {
   const [input, setInput] = useState<string>('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSend = (): void => {
     if (input.trim()) {
@@ -241,6 +256,7 @@ export const Chat: React.FC<ChatProps> = ({
           <Message message={message} />
         ))}
         {isProcessingMessage && <TypingIndicator />}
+        <div ref={messagesEndRef} />
       </MessagesArea>
 
       <Textarea
