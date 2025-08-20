@@ -27,6 +27,7 @@ export const TileLayer = ({
     <LayerGroup>
       <AttributionControl position="bottomleft" prefix="" />
       <ReactLeafletTileLayer
+        crossOrigin=""
         url={tileSetUrl}
         attribution={showAttribution ? attribution : ''}
         ref={tileLayer}

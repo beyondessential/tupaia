@@ -220,7 +220,7 @@ export const ProjectCard = ({
     <LogoWrapper>
       {logoUrl && (
         <Logo>
-          <img alt={`${name} logo`} src={logoUrl} />
+          <img alt={`${name} logo`} crossOrigin="" src={logoUrl} />
         </Logo>
       )}
     </LogoWrapper>
