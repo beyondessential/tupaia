@@ -12544,6 +12544,7 @@ __metadata:
     "@tupaia/auth": "workspace:*"
     "@tupaia/database": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
+    "@tupaia/tsmodels": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -12643,6 +12644,18 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     lodash: ^4.17.4
     rimraf: ^6.0.1
+  languageName: unknown
+  linkType: soft
+
+"@tupaia/tsmodels@workspace:*, @tupaia/tsmodels@workspace:packages/tsmodels":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/tsmodels@workspace:packages/tsmodels"
+  dependencies:
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/database": "workspace:*"
+    "@tupaia/types": "workspace:*"
+    rimraf: ^6.0.1
+    ts-node: ^10.9.1
   languageName: unknown
   linkType: soft
 
