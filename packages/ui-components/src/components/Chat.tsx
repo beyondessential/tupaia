@@ -136,6 +136,7 @@ const Textarea = styled(Input).attrs({
   }
   .MuiInputBase-input::placeholder {
     color: ${props => props.theme.palette.text.hint};
+    opacity: 1;
   }
 `;
 
