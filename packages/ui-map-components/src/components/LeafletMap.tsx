@@ -11,12 +11,13 @@
  * complexity.
  */
 
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import { MapContainer as LeafletMapContainer, MapContainerProps } from 'react-leaflet';
 import { LatLngBoundsExpression, Map as LeafletMapInterface } from 'leaflet';
-import { LeafletStyles } from './LeafletStyles';
+import React, { Component } from 'react';
+import { MapContainer as LeafletMapContainer, MapContainerProps } from 'react-leaflet';
+import styled from 'styled-components';
+
 import { DEFAULT_BOUNDS } from '../constants';
+import { LeafletStyles } from './LeafletStyles';
 
 export interface LeafletMapProps extends MapContainerProps {
   onPositionChanged?: (
