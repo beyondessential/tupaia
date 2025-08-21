@@ -12037,7 +12037,7 @@ __metadata:
     leaflet: ^1.7.1
     lodash.keyby: ^4.6.0
     lodash.throttle: ^4.1.1
-    lucide-react: ^0.514.0
+    lucide-react: ^0.525.0
     markdown-to-jsx: ^6.4.1
     msw: ^1.3.1
     nanoid: ^2.0.3
@@ -27958,15 +27958,6 @@ __metadata:
   version: 7.13.1
   resolution: "lru-cache@npm:7.13.1"
   checksum: f53c7dd098a7afd6342b23f7182629edff206c7665de79445a7f5455440e768a4d1c6ec52e1a16175580c71535c9437dfb6f6bc22ca1a0e4a7454a97cde87329
-  languageName: node
-  linkType: hard
-
-"lucide-react@npm:^0.514.0":
-  version: 0.514.0
-  resolution: "lucide-react@npm:0.514.0"
-  peerDependencies:
-    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 8d6459e63863465a00bb5a9a3ffe12bf7f61d67764a399f09e4a30ce62d2809756658cf770ea4c2ae6cb94f7f4217d39810bf5384ade849126188d84917d168d
   languageName: node
   linkType: hard
 

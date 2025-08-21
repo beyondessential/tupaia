@@ -1,8 +1,8 @@
 import { FormValidationError, respond, UnverifiedError } from '@tupaia/utils';
 import { allowNoPermissions } from '../permissions';
 import {
-  InvalidVerificationTokenError,
   sendEmailVerification,
+  VerificationTokenInvalidError,
   verifyEmailHelper,
 } from './utilities/emailVerification';
 
@@ -35,7 +35,7 @@ export const verifyEmail = async (req, res) => {
       );
     }
   } catch (e) {
-    if (e instanceof InvalidVerificationTokenError) {
+    if (e instanceof VerificationTokenInvalidError) {
       throw new UnverifiedError('Verification link is invalid. Please request a new one.');
     }
     throw e;
