@@ -30,10 +30,8 @@ const getLatLongForBounds = (polygonPoints: LatLngBoundsLiteral) => {
   const longs = polygonPoints.map(latLong => latLong[1]);
 
   const latitude = getBoundingPoint(lats);
-  let longitude = getBoundingPoint(longs);
-
   // Mapbox static api throws errors with anything over 180.
-  longitude = longitude > 180 ? 180 : longitude;
+  const longitude = Math.min(getBoundingPoint(longs), 180);
 
   return { latitude, longitude };
 };
