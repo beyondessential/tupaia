@@ -16,6 +16,9 @@ import { DueDatePicker } from '../DueDatePicker';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { TaskForm } from '../TaskForm';
 import { EntityInput } from './EntityInput';
+import { useDatabase } from '../../../hooks/database';
+import { formatTaskChanges } from '../../../utils/formatTaskChanges';
+import { TaskStatus } from '@tupaia/types';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -92,7 +95,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     navigate(ROUTES.PROJECT_SELECT);
   };
   const { mutate: editUser } = useEditUser(navigateToProjectScreen);
-
+  const { models } = useDatabase();
   const isMobile = useIsMobile();
 
   const defaultDueDate = endOfToday();
@@ -132,13 +135,22 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   const { isLoading: isLoadingUser, isFetching: isFetchingUser } = useUser();
 
   const isLoadingData = isLoadingCountries || isLoadingUser || isFetchingUser;
-  const { mutate: createTask, isLoading: isSaving } = useCreateTask(onClose);
+  // const { mutate: createTask, isLoading: isSaving } = useCreateTask(onClose);
 
-  const handleCreateTask = data => {
-    createTask({
+  const isSaving = false;
+  const handleCreateTask = async data => {
+    console.log('data', data);
+    const survey = await models.survey.findOne({ code: data.survey_code });
+    const taskData = formatTaskChanges({
       ...data,
       country_code: selectedCountry?.code,
+      survey_id: survey.id,
     });
+    if (taskData.due_date) {
+      taskData.status = TaskStatus.to_do;
+    }
+    await models.task.create(taskData);
+    onClose();
   };
 
   const buttons = [
@@ -183,7 +195,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     >
       <Wrapper>
         <LoadingContainer isLoading={isLoadingData} heading="Loading data for project" text="">
-          <TaskForm formContext={formContext} onSubmit={createTask}>
+          <TaskForm formContext={formContext} onSubmit={handleCreateTask}>
             <CountrySelectorWrapper>
               <CountrySelector
                 countries={countries}

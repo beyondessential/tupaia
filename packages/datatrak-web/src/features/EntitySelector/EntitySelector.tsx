@@ -6,13 +6,14 @@ import styled from 'styled-components';
 import { Country, Project, SurveyScreenComponentConfig } from '@tupaia/types';
 import { SpinningLoader, useDebounce } from '@tupaia/ui-components';
 
-import { useEntityById, useProjectEntities } from '../../api';
+import { useEntityById } from '../../api';
 import { useSurveyForm } from '../Survey';
 import { QrCodeScanner, QrCodeScannerProps } from './QrCodeScanner';
 import { ResultsList, ResultsListProps } from './ResultsList';
 import { SearchField } from './SearchField';
 import { useEntityBaseFilters } from './useEntityBaseFilters';
 import { OrDivider } from '../../components';
+import { useProjectEntities } from '../../hooks/database';
 
 const Container = styled.div`
   width: 100%;
@@ -34,15 +35,19 @@ const useSearchResults = (
   projectCode: Project['code'] | undefined,
   disableSearch = false,
 ) => {
+  console.log('disableSearch', disableSearch);
+  console.log('filter', filter);
+  console.log('projectCode', projectCode);
   const debouncedSearch = useDebounce(searchValue, 200);
   return useProjectEntities(
     projectCode,
-    {
-      fields: ['id', 'parent_name', 'code', 'name', 'type'],
-      filter,
-      searchString: debouncedSearch,
-      pageSize: 100,
-    },
+    filter,
+    // {
+    //   fields: ['id', 'parent_name', 'code', 'name', 'type'],
+    //   filter,
+    //   searchString: debouncedSearch,
+    //   pageSize: 100,
+    // },
     { enabled: !disableSearch },
   );
 };
@@ -127,13 +132,13 @@ export const EntitySelector = ({
 
   const filters = useEntityBaseFilters(config, data, countryCode);
   const { data: validEntities } = useProjectEntities(projectCode, {
-    fields: ['id', 'name'], // Only these are used by `onQrCodeScannerResult`
-    filter: filters,
+    // fields: ['id', 'name'], // Only these are used by `onQrCodeScannerResult`
+    // filter: filters,
   });
   const {
     data: searchResults,
-    isFetching: isFetchingSearchResults,
-    isFetched,
+    isLoading: isFetchingSearchResults,
+    isSuccess: isFetched,
   } = useSearchResults(searchValue, filters, projectCode, disableSearch);
 
   const { isResponseScreen, isReviewScreen } = useSurveyForm();

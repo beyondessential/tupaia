@@ -52,6 +52,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     const { organisationUnitCodes, hierarchy = 'explore', ...restOfParams } = { ...query, ...body };
 
     const report = await this.findReport();
+    report.customSelectedFields
     const permissionGroupName = await report.permissionGroupName();
 
     const reportQuery = {

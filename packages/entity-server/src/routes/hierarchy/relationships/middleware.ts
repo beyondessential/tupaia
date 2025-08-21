@@ -1,7 +1,6 @@
 import { NextFunction, Response } from 'express';
 import { Writable } from '../../../types';
 import { extractEntityFieldFromQuery } from '../middleware/fields';
-import { extractFilterFromQuery } from '../middleware/filter';
 import {
   RelationshipsRequest,
   MultiEntityRelationshipsRequest,
@@ -9,6 +8,7 @@ import {
   RelationshipsSubQuery,
   Prefix,
 } from './types';
+import { extractEntityFilterFromQuery } from '@tupaia/tsutils';
 
 type Strip<T extends string, U extends string> = T extends `${U}_${infer P}` ? P : T;
 const strip = <T extends string, U extends string>(baseString: T, toStrip: U) => {
@@ -42,7 +42,8 @@ const getSubContext = (
   const { field: baseField, allowedCountries } = req.ctx;
   const { field: queryField, filter: queryFilter } = getSubQuery(req.query, from);
   const field = (queryField ? extractEntityFieldFromQuery(queryField) : baseField) || 'code';
-  const filter = extractFilterFromQuery(allowedCountries, queryFilter);
+  console.log('queryFilter', queryFilter);
+  const filter = extractEntityFilterFromQuery(allowedCountries, queryFilter);
   const { type, ...restOfFilter } = filter;
   if (typeof type !== 'string' && typeof type !== 'undefined') {
     throw new Error(

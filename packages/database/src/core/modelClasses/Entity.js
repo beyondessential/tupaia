@@ -1,6 +1,12 @@
 import keyBy from 'lodash.keyby';
 
-import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
+import {
+  fetchPatiently,
+  translatePoint,
+  translateRegion,
+  translateBounds,
+  snakeKeys,
+} from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
@@ -184,6 +190,15 @@ export class EntityRecord extends DatabaseRecord {
 
   async getDescendants(hierarchyId, criteria, options) {
     return this.model.getDescendantsOfEntities(hierarchyId, [this.id], criteria, options);
+  }
+
+  async getDescendantsFromParentChildRelation(hierarchyId, criteria, options) {
+    return this.model.getDescendantsFromParentChildRelation(
+      hierarchyId,
+      [this.id],
+      criteria,
+      options,
+    );
   }
 
   async getRelatives(hierarchyId, criteria) {
@@ -504,6 +519,58 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
+  async getDescendantsFromParentChildRelation(hierarchyId, entityIds, criteria = {}, options = {}) {
+    const cacheKey = this.getCacheKey(this.getDescendantsFromParentChildRelation.name, arguments);
+    const dbCriteria = snakeKeys(criteria);
+    return this.runCachedFunction(cacheKey, async () => {
+      return this._getDescendantsRecursively(hierarchyId, entityIds, dbCriteria);
+    });
+  }
+
+  /**
+   * Recursively finds descendants using this.find and parent-child relations
+   * @param {string} hierarchyId - The hierarchy ID
+   * @param {string[]} parentIds - Array of parent entity IDs
+   * @param {object} criteria - Filter criteria
+   * @param {Set} visited - Set to track visited entities to prevent infinite loops
+   * @returns {Promise<Map<string, object>>} Map of entity ID to entity data
+   */
+  async _getDescendantsRecursively(hierarchyId, parentIds, criteria, allDescendants = []) {
+    if (!parentIds || parentIds.length === 0) {
+      return allDescendants;
+    }
+
+    // Find direct children using parent-child relation
+    const children = await this.find(
+      {
+        ...criteria,
+        [`${RECORDS.ENTITY_PARENT_CHILD_RELATION}.entity_hierarchy_id`]: hierarchyId,
+        [`${RECORDS.ENTITY_PARENT_CHILD_RELATION}.parent_id`]: parentIds,
+      },
+      {
+        joinWith: 'entity_parent_child_relation',
+        joinCondition: ['entity.id', 'child_id'],
+      },
+    );
+
+
+    const nextLevelParentIds = children.map(c => c.id);
+
+    // Recursively find children of children
+    if (nextLevelParentIds.length === 0) {
+      return allDescendants;
+    }
+
+    allDescendants.push(...children);
+
+    return this._getDescendantsRecursively(
+      hierarchyId,
+      nextLevelParentIds,
+      criteria,
+      allDescendants,
+    );
+  }
+
   async getRelativesOfEntities(hierarchyId, entityIds, criteria) {
     // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
     const ancestors = (await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria))
@@ -554,8 +621,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         `,
       ],
       select: await buildSyncLookupSelect(this, {
-        // Sync all country entities as they are needed for permission checks
-        projectIds: `CASE WHEN entity.type = 'country' THEN NULL ELSE ARRAY_AGG(project.id) END`,
+        // Sync all world, country and project entities as they are needed for permission checks
+        projectIds: `CASE WHEN entity.type IN ('country', 'world', 'project') THEN NULL ELSE ARRAY_AGG(project.id) END`,
       }),
       joins: `
         LEFT JOIN entities_to_sync 
