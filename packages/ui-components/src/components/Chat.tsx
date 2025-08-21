@@ -96,11 +96,7 @@ const BaseMessageBubble = styled.p`
   padding: 12px 16px;
   word-wrap: break-word;
   font-size: 0.875rem;
-  line-height: 1.4;
-
-  p {
-    margin: 0;
-  }
+  margin: 0.2rem;
 `;
 
 // Exactly similar to BaseMessageBubble but just to make it clear that it's a system message
