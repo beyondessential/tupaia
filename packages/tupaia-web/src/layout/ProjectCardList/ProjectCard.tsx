@@ -41,23 +41,13 @@ const LogoWrapper = styled.div`
   margin-bottom: 0.625rem;
 `;
 
-const Logo = styled.div`
-  position: relative;
-  background: white;
+const Logo = styled.img`
+  aspect-ratio: 1;
+  background-color: white;
+  border-radius: 0.1875rem;
+  object-fit: contain;
+  padding: 0.3rem;
   width: 5rem;
-  height: 5rem;
-  border-radius: 3px;
-  overflow: hidden;
-
-  > img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 100%;
-    max-height: 100%;
-    padding: 0.3rem;
-  }
 `;
 
 const Title = styled(Typography)`
@@ -218,11 +208,7 @@ export const ProjectCard = ({
 }: ProjectCardProps) => (
   <Card>
     <LogoWrapper>
-      {logoUrl && (
-        <Logo>
-          <img alt={`${name} logo`} crossOrigin="" src={logoUrl} />
-        </Logo>
-      )}
+      {logoUrl && <Logo alt={`${name} logo`} crossOrigin="" src={logoUrl} />}
     </LogoWrapper>
     <Title>{name}</Title>
     <Body>
