@@ -1,76 +1,65 @@
-import React, { ComponentType } from 'react';
-import styled, { css } from 'styled-components';
-import Lock from '@material-ui/icons/Lock';
-import Alarm from '@material-ui/icons/Alarm';
-import { darken, lighten } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
-import { Button as UIButton } from '@tupaia/ui-components';
-import { SingleProject } from '../../types';
-import { MODAL_ROUTES, MOBILE_BREAKPOINT } from '../../constants';
-import { RouterButton } from '../../components';
+import { darken, lighten } from '@material-ui/core/styles';
+import Alarm from '@material-ui/icons/Alarm';
+import Lock from '@material-ui/icons/Lock';
+import React, { ComponentType } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEditUser } from '../../api/mutations';
+import styled, { css } from 'styled-components';
 
-const Card = styled.div`
+import { Button as UIButton } from '@tupaia/ui-components';
+
+import { useEditUser } from '../../api/mutations';
+import { RouterButton } from '../../components';
+import { MOBILE_BREAKPOINT, MODAL_ROUTES } from '../../constants';
+import { SingleProject } from '../../types';
+
+const Card = styled.article`
+  align-items: flex-start;
+  background-color: ${props => props.theme.palette.background.default};
+  border-radius: 0.3125rem;
+  color: white;
   display: flex;
   flex-direction: column;
-  padding: 1.6rem;
-  min-height: 24.4375rem;
-  border-radius: 5px;
-  background: ${({ theme }) => theme.palette.background.default};
-  color: white;
-  box-sizing: border-box;
-  align-items: flex-start;
   justify-content: space-between;
-
-  text-align: left;
+  min-block-size: 24.4375rem;
+  padding: 1.6rem;
+  text-align: start;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
     padding: 2.5rem;
   }
 
   @media (max-width: ${MOBILE_BREAKPOINT}) {
-    padding-top: 2.5rem;
-    padding-left: 1.875rem;
-    padding-right: 1.875rem;
+    padding-block-start: 2.5rem;
+    padding-inline: 1.875rem;
   }
 `;
 
-const LogoWrapper = styled.div`
-  height: 4.875rem;
-  margin-bottom: 0.625rem;
+const LogoWrapper = styled.div.attrs({ 'aria-hidden': true })`
+  block-size: 4.875rem;
+  margin-block-end: 0.625rem;
 `;
 
-const Logo = styled.div`
-  position: relative;
-  background: white;
+const Logo = styled.img.attrs({ crossOrigin: '' })`
+  aspect-ratio: 1;
+  background-color: white;
+  border-radius: 0.1875rem;
+  object-fit: contain;
+  padding: 0.3rem;
   width: 5rem;
-  height: 5rem;
-  border-radius: 3px;
-  overflow: hidden;
-
-  > img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 100%;
-    max-height: 100%;
-    padding: 0.3rem;
-  }
 `;
 
 const Title = styled(Typography)`
   font-size: 1.25rem;
   line-height: 1.4;
   font-weight: 500;
-  margin-bottom: 0.625rem;
+  margin-block-end: 0.625rem;
 `;
 
 const Text = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1.2;
-  margin-bottom: 0.625rem;
+  margin-block-end: 0.625rem;
   color: ${({ theme }) => theme.palette.text.primary};
 `;
 
@@ -198,13 +187,12 @@ interface ProjectCardProps extends Partial<SingleProject> {
 }
 
 function getCountryNames(countryNames: ProjectCardProps['names']) {
-  if (countryNames && countryNames.length < 3) {
-    return countryNames.sort().join(', ');
-  }
-
-  return 'Multiple countries';
+  if (countryNames === undefined) return null;
+  if (countryNames.length < 3) return countryNames.sort().join(', ');
+  return `${countryNames.length} countries`; // non-breaking space
 }
 
+// TODO: This is inaccessible. Refactor to `line-clamp` or similar.
 function getDescription(text: ProjectCardProps['description'], limit: number = 190) {
   return text && text.length > limit ? `${text.substring(0, limit)}...` : text;
 }
@@ -217,13 +205,7 @@ export const ProjectCard = ({
   ProjectButton,
 }: ProjectCardProps) => (
   <Card>
-    <LogoWrapper>
-      {logoUrl && (
-        <Logo>
-          <img alt={`${name} logo`} src={logoUrl} />
-        </Logo>
-      )}
-    </LogoWrapper>
+    <LogoWrapper>{logoUrl && <Logo src={logoUrl} />}</LogoWrapper>
     <Title>{name}</Title>
     <Body>
       <TextWrapper>

@@ -153,7 +153,7 @@ export const MapOverlayPDFExport = () => {
     <Parent>
       <MapContainer>
         <StyledMap shouldSnapToPosition center={center} zoom={zoom}>
-          <TileLayer tileSetUrl={tileset} showAttribution={false} />
+          <TileLayer tileSetUrl={tileset} />
           <MapOverlaysLayer hiddenValues={hiddenValues} />
         </StyledMap>
       </MapContainer>

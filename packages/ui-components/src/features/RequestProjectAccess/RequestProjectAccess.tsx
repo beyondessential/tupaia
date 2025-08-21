@@ -18,13 +18,16 @@ const BodyText = styled(Typography).attrs({
   margin: 1rem 0 2rem;
 `;
 
-const Logo = styled.img`
-  max-width: 8rem;
-  width: 100%;
+const Logo = styled.img.attrs({
+  crossOrigin: '',
+})`
+  background-color: ${props => props.theme.palette.common.white};
+  border-radius: 0.1875rem;
   height: auto;
-  border-radius: 3px;
-  background-color: ${({ theme }) => theme.palette.common.white};
+  max-width: 8rem;
+  object-fit: contain;
   padding: 0.8rem;
+  width: 100%;
 `;
 
 const ProjectDetails = styled.div`

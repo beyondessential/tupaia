@@ -10,9 +10,9 @@ export const useEntitySearch = (
 ) => {
   const debouncedSearch = useDebounce(searchString!, 300);
 
-  return useQuery(
+  return useQuery<Entity[]>(
     ['entity', projectCode, debouncedSearch, pageSize],
-    async (): Promise<Entity[]> => {
+    async () => {
       return get(`entitySearch/${projectCode}`, {
         params: { searchString: debouncedSearch, pageSize },
       });
