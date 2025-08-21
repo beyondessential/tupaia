@@ -187,11 +187,9 @@ interface ProjectCardProps extends Partial<SingleProject> {
 }
 
 function getCountryNames(countryNames: ProjectCardProps['names']) {
-  if (countryNames && countryNames.length < 3) {
-    return countryNames.sort().join(', ');
-  }
-
-  return 'Multiple countries';
+  if (countryNames === undefined) return null;
+  if (countryNames.length < 3) return countryNames.sort().join(', ');
+  return `${countryNames.length} countries`; // non-breaking space
 }
 
 // TODO: This is inaccessible. Refactor to `line-clamp` or similar.
