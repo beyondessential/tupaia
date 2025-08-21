@@ -17,9 +17,9 @@ export class CountriesRoute extends Route<CountriesRequest> {
     const countries = await models.entity.find(
       {
         code: {
-          comparator: 'not in',
-          // Hide TL and UNFPA Warehouse from the search results
-          comparisonValue: ['TL', 'UW'],
+          comparator: '!=',
+          // Exclude UNFPA Warehouse from search results
+          comparisonValue: 'UW',
         },
         type: 'country',
       },
