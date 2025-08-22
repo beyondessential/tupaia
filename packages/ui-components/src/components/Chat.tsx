@@ -120,6 +120,7 @@ const Textarea = styled(Input).attrs({
   variant: 'outlined',
 })`
   &.MuiInputBase-root {
+    margin-top: 0.875rem;
     overflow-y: auto;
     height: 60px;
     background: white;
