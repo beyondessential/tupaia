@@ -30,7 +30,8 @@ const TypingIndicatorContainer = styled.div`
   align-items: center;
   gap: 8px;
   animation: ${fadeIn} 0.3s --ease-out-quad;
-  margin-left: 20px;
+  margin-top: 0.875rem;
+  margin-left: 1.25rem;
 `;
 
 const TypingBubble = styled.div`
