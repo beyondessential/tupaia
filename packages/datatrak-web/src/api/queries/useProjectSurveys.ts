@@ -7,6 +7,7 @@ import { DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/
 
 import { useDatabase } from '../../hooks/database';
 import { Entity } from '../../types';
+import { isNotNullish, isNullish } from '../../utils';
 import { get } from '../api';
 import { useIsLocalFirst } from '../localFirst';
 
@@ -32,43 +33,51 @@ export const useProjectSurveys = (
       },
     });
   const getLocal = async () => {
-    const constructDbConditions = () => {
-      const dbConditions: DbFilter<Survey> = {};
+    const constructDbFilter = () => {
+      const dbFilter: DbFilter<Survey> = {};
       if (projectId) {
-        dbConditions.project_id = projectId;
+        dbFilter.project_id = projectId;
       }
       if (searchTerm) {
-        dbConditions.name = {
+        dbFilter.name = {
           comparator: 'ilike',
           comparisonValue: `%${searchTerm}%`,
         };
       }
       if (countryCode) {
-        dbConditions[QUERY_CONJUNCTIONS.RAW] = {
+        dbFilter[QUERY_CONJUNCTIONS.RAW] = {
           sql: '(SELECT id FROM country WHERE code = ? LIMIT 1) = ANY(country_ids)',
           parameters: [countryCode],
         };
       }
-      return dbConditions;
+      return dbFilter;
     };
 
-    const where = constructDbConditions();
-    const surveys = (await models.survey.find(where)).map(({ model: _, ...rest }) => rest);
+    const where = constructDbFilter();
+    const surveys = (await models.survey.find(where)).map(
+      // Projection
+      ({ code, id, name, survey_group_id }) => ({
+        code,
+        id,
+        name,
+        survey_group_id,
+      }),
+    );
 
     if (surveys.length === 0) return [];
 
-    const surveyGroupIds = surveys.map(s => s.survey_group_id);
+    const surveyGroupIds = surveys.map(s => s.survey_group_id).filter(isNotNullish);
     const surveyGroups = await models.surveyGroup.find({ id: surveyGroupIds });
-    const surveyGroupNamesById = surveyGroups.reduce(
-      (dict, surveyGroup) => {
+    const surveyGroupNamesById: Record<SurveyGroup['id'], SurveyGroup['name']> =
+      surveyGroups.reduce((dict, surveyGroup) => {
         dict[surveyGroup.id] = surveyGroup.name;
         return dict;
-      },
-      {} as Record<SurveyGroup['id'], SurveyGroup['name']>,
-    );
+      }, {});
 
     const surveyJoinGroupName = surveys.map(s =>
-      !s.survey_group_id ? s : { ...s, surveyGroupName: surveyGroupNamesById[s.survey_group_id] },
+      isNullish(s.survey_group_id)
+        ? s
+        : { ...s, surveyGroupName: surveyGroupNamesById[s.survey_group_id] },
     );
 
     return camelcaseKeys(surveyJoinGroupName, { deep: true });
