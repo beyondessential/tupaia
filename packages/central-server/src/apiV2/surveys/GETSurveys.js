@@ -53,20 +53,12 @@ export class GETSurveys extends GETHandler {
   async findRecords(criteria, options) {
     const records = await super.findRecords(criteria, options);
 
-    // 1. Add surveyQuestions, see README
-    const surveyQuestionsValues = await this.getSurveyQuestionsValues(
-      records.filter(record => record.id).map(record => record.id),
-    );
-
-    // 2. Add countryNames
-    const countryNames = await this.getSurveyCountryNames(
-      records.filter(record => record.id).map(record => record.id),
-    );
-
-    // 3. Add countryCodes
-    const countryCodes = await this.getSurveyCountryCodes(
-      records.filter(record => record.id).map(record => record.id),
-    );
+    const recordIds = records.filter(record => record.id).map(record => record.id);
+    const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
+      this.getSurveyQuestionsValues(recordIds), // 1. Add surveyQuestions, see README
+      this.getSurveyCountryNames(recordIds), // 2. Add countryNames
+      this.getSurveyCountryCodes(recordIds), // 3. Add countryCodes
+    ]);
 
     return records.map(record => ({
       ...record,
@@ -121,7 +113,7 @@ export class GETSurveys extends GETHandler {
     if (surveyIds.length === 0 || !this.includeQuestions) return {};
     const rows = await this.database.executeSql(
       `
-    SELECT 
+    SELECT
       s.id as survey_id,
       ss.id as survey_screen_id,
       ss.screen_number as screen_number,
