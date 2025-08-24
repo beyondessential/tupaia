@@ -145,6 +145,10 @@
       "path": "packages/tupaia-web-server",
     },
     {
+      "name": "tsmodels",
+      "path": "packages/tsmodels",
+    },
+    {
       "name": "tsutils",
       "path": "packages/tsutils",
     },
