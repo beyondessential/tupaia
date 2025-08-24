@@ -306,7 +306,7 @@ export const PreviewSection = () => {
               <JsonEditor
                 // JSONEditor library for some reasons doesn't re-render the value
                 // when the presentation changes until the user clicks on the editor,
-                // so this is a work around to force it to re-render
+                // so this is a workaround to force it to re-render
                 key={JSON.stringify(visualisation.presentation)}
                 value={visualisation.presentation}
                 onChange={setPresentationValue}
