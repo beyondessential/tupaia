@@ -5,7 +5,7 @@ import {
   OptionSetModel,
   SurveyModel,
   TombstoneModel,
-} from '@tupaia/types';
+} from '@tupaia/tsmodels';
 
 export interface DatatrakWebModelRegistry extends ModelRegistry {
   readonly localSystemFact: LocalSystemFactModel;
