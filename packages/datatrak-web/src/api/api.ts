@@ -9,7 +9,7 @@ axios.defaults.withCredentials = true;
 
 export const timeout = 180 * 1000; // 3 minutes as sync might take a while
 
-type RequestParameters = Record<string, any> & {
+export type RequestParameters = Record<string, any> & {
   params?: Record<string, any>;
 };
 

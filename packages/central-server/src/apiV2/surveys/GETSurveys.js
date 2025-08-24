@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { JOIN_TYPES } from '@tupaia/database';
+import { JOIN_TYPES, SqlQuery } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import {
   assertSurveyGetPermissions,
@@ -149,15 +149,18 @@ export class GETSurveys extends GETHandler {
     if (surveyIds.length === 0 || !this.includeCountryNames) return {};
     const rows = await this.database.executeSql(
       `
-    SELECT survey.id, array_agg(country.name) as country_names
-    FROM survey
-    LEFT JOIN country ON (country.id = any(survey.country_ids))
-    WHERE survey.id in (${surveyIds.map(() => '?').join(',')})
-    GROUP BY survey.id;
-    `,
+        SELECT
+          survey.id survey_id,
+          ARRAY_AGG(country.name ORDER BY country.name) country_names
+        FROM
+          survey
+          LEFT JOIN country ON (country.id = ANY (survey.country_ids))
+        WHERE
+          survey.id IN (${SqlQuery.record(surveyIds)}) GROUP BY survey.id;
+      `,
       surveyIds,
     );
-    return Object.fromEntries(rows.map(row => [row.id, row.country_names]));
+    return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
   }
 
   async getSurveyCountryCodes(surveyIds) {
