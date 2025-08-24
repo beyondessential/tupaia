@@ -74,11 +74,13 @@ export const useProjectSurveys = (
         return dict;
       }, {});
 
-    const surveyJoinGroupName = surveys.map(s =>
-      isNullish(s.survey_group_id)
-        ? s
-        : { ...s, surveyGroupName: surveyGroupNamesById[s.survey_group_id] },
-    );
+    const surveyJoinGroupName = surveys.map(s => {
+      const { code, id, name } = s; // Omit survey_group_id from result
+      const surveyGroupName = isNullish(s.survey_group_id)
+        ? null
+        : surveyGroupNamesById[s.survey_group_id];
+      return { code, id, name, surveyGroupName };
+    });
 
     return camelcaseKeys(surveyJoinGroupName, { deep: true });
   };
