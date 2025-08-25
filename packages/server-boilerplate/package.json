@@ -29,6 +29,7 @@
     "@tupaia/auth": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
+    "@tupaia/tsmodels": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",

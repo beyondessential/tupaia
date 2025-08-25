@@ -20,6 +20,7 @@ internal_deps=(
   server-utils
   superset-api
   sync
+  tsmodels
   tsutils
   types
   ui-chart-components
