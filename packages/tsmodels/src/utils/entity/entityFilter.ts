@@ -132,7 +132,7 @@ const toFilterClauseFromQueryString = (queryClause: string) => {
   const [operator] = filterOperators
     .filter(o => queryClause.includes(o))
     // Keep the longest matching operator, e.g. >= instead of >
-    .sort((a, b) => a.length - b.length);
+    .sort((a, b) => b.length - a.length);
 
   if (!operator) {
     throw new Error(

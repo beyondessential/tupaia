@@ -1,6 +1,7 @@
 import { Request, NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
-import { ajvValidate, extractEntityFilterFromQuery, isNotNullish } from '@tupaia/tsutils';
+import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
+import { extractEntityFilterFromQuery } from '@tupaia/tsmodels';
 import { EntityTypeEnum } from '@tupaia/types';
 import { EntityRecord, EntityFilter } from '@tupaia/server-boilerplate';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
