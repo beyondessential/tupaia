@@ -14,11 +14,8 @@ export const {
   error,
   warn,
   info,
+  log,
   http,
   verbose,
   debug,
-  createLogger,
-  configure,
-  format,
-  transports,
 } = winston;
