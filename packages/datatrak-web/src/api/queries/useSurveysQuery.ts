@@ -59,37 +59,36 @@ export function useSurveysQuery(
       survey_group_id,
     }));
 
-    // Add country names in-place
-    surveys = includeCountryNames
-      ? await (async () => {
-          const surveyIds = surveys.map(s => s.id);
-          const countryNamesBySurveyId = await getSurveyCountryNames(models, surveyIds);
-          return surveys.map(s => ({ ...s, countryNames: countryNamesBySurveyId[s.id] }));
-        })()
-      : surveys;
+    // Add country names
+    if (includeCountryNames) {
+      const surveyIds = surveys.map(s => s.id);
+      const countryNamesBySurveyId = await getSurveyCountryNames(models, surveyIds);
+      surveys = surveys.map(s => ({ ...s, countryNames: countryNamesBySurveyId[s.id] }));
+    }
 
-    // Add survey group names in-place
-    surveys = includeSurveyGroupNames
-      ? await (async () => {
-          const surveyGroupIds = surveys.map(s => s.survey_group_id).filter(isNotNullish);
-          const surveyGroups = await models.surveyGroup.find({ id: surveyGroupIds });
-          const surveyGroupNamesById = surveyGroups.reduce<
-            Record<SurveyGroup['id'], SurveyGroup['name']>
-          >((dict, surveyGroup) => {
-            dict[surveyGroup.id] = surveyGroup.name;
-            return dict;
-          }, {});
-          return surveys.map(s => ({
-            ...s,
-            surveyGroupName: isNullish(s.survey_group_id)
-              ? null
-              : surveyGroupNamesById[s.survey_group_id],
-          }));
-        })()
-      : surveys;
+    // Add survey group names
+    if (includeSurveyGroupNames) {
+      const surveyGroupIds = surveys.map(s => s.survey_group_id).filter(isNotNullish);
+      const surveyGroups = await models.surveyGroup.find({ id: surveyGroupIds });
+      const surveyGroupNamesById = surveyGroups.reduce<
+        Record<SurveyGroup['id'], SurveyGroup['name']>
+      >((dict, surveyGroup) => {
+        dict[surveyGroup.id] = surveyGroup.name;
+        return dict;
+      }, {});
 
-    // TODO: Omit survey_group_id from result
-    return camelcaseKeys(surveys, { deep: true });
+      surveys = surveys.map(s => ({
+        ...s,
+        surveyGroupName: isNullish(s.survey_group_id)
+          ? null
+          : surveyGroupNamesById[s.survey_group_id],
+      }));
+    }
+
+    return camelcaseKeys(
+      surveys.map(({ survey_group_id: _, ...rest }) => rest), // Omit survey_group_id from result
+      { deep: true },
+    );
   };
 
   return useQuery<DatatrakWebSurveyRequest.ResBody[]>(
