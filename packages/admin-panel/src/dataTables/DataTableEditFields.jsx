@@ -125,8 +125,17 @@ export const DataTableEditFields = React.memo(
       } else onInputChange(inputKey, inputValue, editConfig, recordData, onEditField);
     };
 
+    /**
+     * True if an only if the active user has edit permissions to this data table.
+     * @privateRemarks A user with read-only access is allowed to access these ‘edit’ fields because
+     * it surfaces information that’s otherwise inaccessible in the GUI.
+     */
     const isPreviewOnly =
+      // Assume if this is a non-SQL data table, this user has BES Admin access. Short-circuit.
+      // @see `@central-server/apiV2/dataTables/EditDataTables`
       isSqlDataTable &&
+      // This is a SQL data table. Require access to the external database connection. (If
+      // externalDatabaseConnectionCode is null, allow edits.)
       !externalDatabaseConnections.some(
         connection => connection.code === recordData?.config?.externalDatabaseConnectionCode,
       );
