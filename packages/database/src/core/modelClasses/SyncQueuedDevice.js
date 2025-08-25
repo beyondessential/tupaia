@@ -49,7 +49,7 @@ export class SyncQueuedDeviceModel extends DatabaseModel {
       // update with most recent info
       // (always go with most urgent request - this way a user-requested urgent
       // sync won't be overwritten to non-urgent by a scheduled sync)
-      await this.update(deviceId, {
+      await this.updateById(deviceId, {
         last_seen_time: new Date(),
         urgent,
         last_synced_tick: lastSyncedTick,
