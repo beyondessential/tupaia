@@ -37,11 +37,10 @@ export function useSurveysQuery(
   const { models } = useDatabase();
 
   const getRemote = async () => {
-    const params: RequestParameters = {
-      fields: ['name', 'code', 'id', 'survey_group.name'],
-    };
+    const params: RequestParameters = { fields: ['name', 'code', 'id'] };
     if (countryCode) params.countryCode = countryCode;
     if (includeCountryNames) params.fields.push('countryNames');
+    if (includeSurveyGroupNames) params.fields.push('survey_group.name');
     if (projectId) params.projectId = projectId;
     if (searchTerm) params.searchTerm = searchTerm;
     return await get('surveys', { params });
