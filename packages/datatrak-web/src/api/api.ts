@@ -9,9 +9,9 @@ axios.defaults.withCredentials = true;
 
 export const timeout = 180 * 1000; // 3 minutes as sync might take a while
 
-export type RequestParameters = Record<string, any> & {
+export interface RequestParameters extends Record<string, any> {
   params?: Record<string, any>;
-};
+}
 
 type RequestParametersWithMethod = RequestParameters & {
   method: 'get' | 'post' | 'put' | 'delete';
