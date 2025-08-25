@@ -1,4 +1,4 @@
-import { SyncDirections } from '@tupaia/constants';
+import { FACT_PROJECTS_IN_SYNC, SyncDirections } from '@tupaia/constants';
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -51,5 +51,16 @@ export class LocalSystemFactModel extends DatabaseModel {
 
     const fact = rowsAffected[0];
     return fact.value;
+  }
+
+  async addProjectForSync(projectId) {
+    if (!projectId) {
+      throw new Error('Project ID is required');
+    }
+
+    const existing = await this.findOne({ key: FACT_PROJECTS_IN_SYNC });
+    const syncedProjects = existing?.value ? JSON.parse(existing.value) : [];
+    const newSyncedProjects = [...new Set([...syncedProjects, projectId])];
+    await this.set(FACT_PROJECTS_IN_SYNC, JSON.stringify(newSyncedProjects));
   }
 }

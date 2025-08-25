@@ -1,14 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 
-import { useDatabase } from './DatabaseContext';
+import { useDatabaseContext } from '../hooks/database';
 import { generateId } from '@tupaia/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
-import { useAccessibleProjects } from './queries/useProjects';
 import { useCurrentUserContext } from './CurrentUserContext';
+import { useSyncedProjects } from '../hooks/database/useSyncedProjects';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
   clientSyncManager: ClientSyncManager | null;
+  refetchSyncedProjectIds: () => void;
 };
 
 const SyncContext = createContext<SyncContextType | null>(null);
@@ -16,12 +17,12 @@ const SyncContext = createContext<SyncContextType | null>(null);
 // TODO: Move to config model RN-1668
 const SYNC_INTERVAL = 1000 * 30;
 
-export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
+export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
   const [isSyncScheduled, setIsSyncScheduled] = useState(false);
-  const { models } = useDatabase();
-  const { data: projects } = useAccessibleProjects();
+  const { models } = useDatabaseContext();
   const { id: userId } = useCurrentUserContext();
+  const { data: syncedProjectIds, onFetch: refetchSyncedProjectIds } = useSyncedProjects();
 
   useEffect(() => {
     const initSyncManager = async () => {
@@ -43,11 +44,10 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Only schedule the sync if conditions are met
-    if (!isSyncScheduled && clientSyncManager && projects?.length) {
-      const projectIds = projects.map(project => project.id);
+    if (!isSyncScheduled && clientSyncManager && syncedProjectIds?.length) {
       const intervalId = setInterval(() => {
-        console.log('Starting regular sync');
-        clientSyncManager.triggerSync(projectIds, false);
+        console.log('Starting regular sync:', { syncedProjectIds });
+        clientSyncManager.triggerSync(syncedProjectIds, false);
       }, SYNC_INTERVAL);
 
       setIsSyncScheduled(true);
@@ -57,9 +57,9 @@ export const SyncProvider = ({ children }: { children: React.ReactNode }) => {
         setIsSyncScheduled(false);
       };
     }
-  }, [clientSyncManager, projects?.length]);
+  }, [clientSyncManager, syncedProjectIds?.length]);
 
-  return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;
+  return <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>{children}</SyncContext.Provider>;
 };
 
 export const useSyncContext = (): SyncContextType => {

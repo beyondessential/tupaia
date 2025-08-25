@@ -97,6 +97,7 @@ export default defineConfig(({ command, mode }) => {
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
           '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
           '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
+          '@tupaia/constants': path.resolve(__dirname, './packages/constants/src/index.ts'),
         },
       },
     };
