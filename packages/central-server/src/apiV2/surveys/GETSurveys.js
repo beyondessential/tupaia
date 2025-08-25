@@ -28,13 +28,11 @@ export class GETSurveys extends GETHandler {
   defaultJoinType = JOIN_TYPES.LEFT_OUTER;
 
   async findSingleRecord(surveyId, options) {
-    const survey = await super.findSingleRecord(surveyId, options);
-
     const surveyChecker = accessPolicy =>
       assertSurveyGetPermissions(accessPolicy, this.models, surveyId);
-
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyChecker]));
 
+    const survey = await super.findSingleRecord(surveyId, options);
     const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
       this.getSurveyQuestionsValues([surveyId]), // 1. Add surveyQuestions, see README
       this.getSurveyCountryNames([surveyId]), // 2. Add countryNames
