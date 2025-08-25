@@ -1,14 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 
-import { useDatabase } from '../hooks/database';
+import { useDatabaseContext } from '../hooks/database';
 import { generateId } from '@tupaia/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useCurrentUserContext } from './CurrentUserContext';
-import { useDatabaseEffect } from '../hooks/database';
+import { useSyncedProjects } from '../hooks/database/useSyncedProjects';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
   clientSyncManager: ClientSyncManager | null;
+  refetchSyncedProjectIds: () => void;
 };
 
 const SyncContext = createContext<SyncContextType | null>(null);
@@ -19,13 +20,9 @@ const SYNC_INTERVAL = 1000 * 30;
 export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
   const [isSyncScheduled, setIsSyncScheduled] = useState(false);
-  const { models } = useDatabase();
+  const { models } = useDatabaseContext();
   const { id: userId } = useCurrentUserContext();
-  const [syncedProjectIds] = useDatabaseEffect(async models => {
-    const syncedProjectsFact = await models.localSystemFact.get('syncedProjects');
-    const syncedProjectIds = syncedProjectsFact ? JSON.parse(syncedProjectsFact) : [];
-    return syncedProjectIds;
-  });
+  const { data: syncedProjectIds, onFetch: refetchSyncedProjectIds } = useSyncedProjects();
 
   useEffect(() => {
     const initSyncManager = async () => {
@@ -62,7 +59,7 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
     }
   }, [clientSyncManager, syncedProjectIds?.length]);
 
-  return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;
+  return <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>{children}</SyncContext.Provider>;
 };
 
 export const useSyncContext = (): SyncContextType => {
