@@ -1,4 +1,4 @@
-import { Writable } from '../../types';
+export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
 
 export class ResponseObjectBuilder<T> {
   private readonly responseObject: Writable<T> = {};

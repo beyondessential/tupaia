@@ -21,7 +21,7 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
   const [isSyncScheduled, setIsSyncScheduled] = useState(false);
   const { models } = useDatabase();
   const { id: userId } = useCurrentUserContext();
-  const [syncedProjectIds] = useDatabaseEffect(async models => {
+  const { data: syncedProjectIds } = useDatabaseEffect(async models => {
     const syncedProjectsFact = await models.localSystemFact.get('syncedProjects');
     const syncedProjectIds = syncedProjectsFact ? JSON.parse(syncedProjectsFact) : [];
     return syncedProjectIds;

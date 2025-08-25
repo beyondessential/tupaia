@@ -43,7 +43,7 @@ export class ClientSyncManager {
     this.database = models.database;
     this.deviceId = deviceId;
     this.userId = userId;
-    console.log('ClientSyncManager.constructor', {
+    console.debug('ClientSyncManager.constructor', {
       deviceId,
     });
   }
@@ -74,21 +74,24 @@ export class ClientSyncManager {
     }
 
     const lastSyncedTick =
-        (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
+      (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
 
     const startTime = performance.now();
-    const { sessionId, startedAtTick, status } = await this.startSyncSession(urgent, lastSyncedTick);
+    const { sessionId, startedAtTick, status } = await this.startSyncSession(
+      urgent,
+      lastSyncedTick,
+    );
 
     if (!sessionId) {
       // we're queued
-      console.log('ClientSyncManager.wasQueued', { status });
+      console.debug('ClientSyncManager.wasQueued', { status });
       return { queued: true, hasRun: false };
     }
 
     // clear previous temp data, in case last session errored out or server was restarted
     await dropAllSnapshotTables(this.database);
 
-    console.log('ClientSyncManager.receivedSessionInfo', {
+    console.debug('ClientSyncManager.receivedSessionInfo', {
       sessionId,
       startedAtTick,
     });
@@ -146,7 +149,7 @@ export class ClientSyncManager {
     // or updated even mid way through this sync, are marked using the new tick and will be captured
     // in the next push
     await this.models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, newSyncClockTime);
-    console.log('ClientSyncManager.updatedLocalSyncClockTime', { newSyncClockTime });
+    console.debug('ClientSyncManager.updatedLocalSyncClockTime', { newSyncClockTime });
 
     await waitForPendingEditsUsingSyncTick(this.database, currentSyncClockTime);
 
@@ -155,7 +158,7 @@ export class ClientSyncManager {
     // this avoids any of the records to be pushed being changed during the push period and
     // causing data that isn't internally coherent from ending up on the central server
     const pushSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
-    console.log('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
+    console.debug('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
     // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
     // is underway aren't included (as this could lead to a pair of foreign records with the child in
@@ -169,30 +172,30 @@ export class ClientSyncManager {
     );
 
     if (outgoingChanges.length > 0) {
-      console.log('ClientSyncManager.pushingOutgoingChanges', {
+      console.debug('ClientSyncManager.pushingOutgoingChanges', {
         totalPushing: outgoingChanges.length,
       });
       await pushOutgoingChanges(sessionId, outgoingChanges, this.deviceId);
     }
 
     await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, currentSyncClockTime);
-    console.log('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
+    console.debug('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
   }
 
   async pullChanges(sessionId: string, projectIds: string[]) {
     try {
-      console.log('ClientSyncManager.pullChanges', {
+      console.debug('ClientSyncManager.pullChanges', {
         sessionId,
       });
       const pullSince =
         (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
 
-      console.log('ClientSyncManager.createClientSnapshotTable', {
+      console.debug('ClientSyncManager.createClientSnapshotTable', {
         sessionId,
       });
       await createClientSnapshotTable(this.database, sessionId);
 
-      console.log('ClientSyncManager.initiatePull', {
+      console.debug('ClientSyncManager.initiatePull', {
         sessionId,
         pullSince,
       });
@@ -239,7 +242,7 @@ export class ClientSyncManager {
       // update the last successful sync in the same save transaction - if updating the cursor fails,
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
-      console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+      console.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
       return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
     });
   }
@@ -264,7 +267,7 @@ export class ClientSyncManager {
       // update the last successful sync in the same save transaction - if updating the cursor fails,
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
-      console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+      console.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
       return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
     });
   }

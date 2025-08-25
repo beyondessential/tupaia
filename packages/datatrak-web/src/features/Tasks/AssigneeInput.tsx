@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import throttle from 'lodash.throttle';
 import { Country, DatatrakWebUsersRequest } from '@tupaia/types';
 import { Autocomplete } from '../../components';
-import { useSurveyUsers } from '../../api';
 import { Survey } from '../../types';
+import { useSurveyUsers } from '../../hooks/database/useSurveyUsers';
 
 type User = DatatrakWebUsersRequest.UserResponse;
 

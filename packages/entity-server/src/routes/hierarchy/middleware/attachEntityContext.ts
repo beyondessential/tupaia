@@ -1,10 +1,9 @@
 import { Request, NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
-import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
+import { ajvValidate, extractEntityFilterFromQuery, isNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
 import { EntityRecord, EntityFilter } from '@tupaia/server-boilerplate';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
-import { extractFilterFromQuery } from './filter';
 
 const throwNoAccessError = (entityCodes: string[]) => {
   throw new PermissionsError(`No access to requested entities: ${entityCodes}`);
@@ -94,7 +93,7 @@ const getFilterInfo = async (
   }
 
   const { filter: queryFilter } = req.query;
-  const filter = extractFilterFromQuery(allowedCountries, queryFilter);
+  const filter = extractEntityFilterFromQuery(allowedCountries, queryFilter);
 
   return { allowedCountries, filter };
 };

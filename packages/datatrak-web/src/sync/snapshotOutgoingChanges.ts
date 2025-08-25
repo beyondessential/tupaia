@@ -22,7 +22,7 @@ const snapshotChangesForModel = async (
   });
 
   const recordsChanged = [...changedRecords, ...deletedRecords];
-  console.log(
+  console.debug(
     `snapshotChangesForModel: Found ${recordsChanged.length} for model ${model.databaseRecord} since ${since}`,
   );
 

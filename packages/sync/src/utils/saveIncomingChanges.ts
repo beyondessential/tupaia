@@ -54,21 +54,21 @@ export const saveChangesForModel = async (
   }
 
   // run each import process
-  console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Creating new records`, {
+  console.debug(`Sync: saveIncomingChanges for ${model.databaseRecord}: Creating new records`, {
     count: recordsForCreate.length,
   });
   if (recordsForCreate.length > 0) {
     await saveCreates(model, recordsForCreate);
   }
 
-  console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Updating existing records`, {
+  console.debug(`Sync: saveIncomingChanges for ${model.databaseRecord}: Updating existing records`, {
     count: recordsForUpdate.length,
   });
   if (recordsForUpdate.length > 0) {
     await saveUpdates(model, recordsForUpdate);
   }
 
-  console.log(`Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`, {
+  console.debug(`Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`, {
     count: recordsForDelete.length,
   });
   if (recordsForDelete.length > 0) {
@@ -95,7 +95,7 @@ const saveChangesForModelInBatches = async (
     fromId = batchRecords[batchRecords.length - 1]?.id;
 
     try {
-      console.log('Sync: Persisting cache to table', {
+      console.debug('Sync: Persisting cache to table', {
         count: batchRecords.length,
       });
 

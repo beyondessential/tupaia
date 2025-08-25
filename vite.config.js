@@ -66,6 +66,10 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'mock/moduleMock.js'),
         jsonwebtoken: path.resolve(__dirname, 'mock/moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'mock/moduleMock.js'),
+        'rand-token': path.resolve(__dirname, 'mock/moduleMock.js'),
+        randomatic: path.resolve(__dirname, 'mock/moduleMock.js'),
+        'semver-compare': path.resolve(__dirname, 'mock/moduleMock.js'),
+        sha256: path.resolve(__dirname, 'mock/moduleMock.js'),
         'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),
         '@node-rs/argon2': path.resolve(__dirname, 'mock/argon2ModuleMock.js'),
       },
@@ -97,6 +101,7 @@ export default defineConfig(({ command, mode }) => {
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
           '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
           '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
+          '@tupaia/constants': path.resolve(__dirname, './packages/constants/src/index.ts'),
         },
       },
     };

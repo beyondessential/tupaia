@@ -1,9 +1,8 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { DbFilter, PermissionGroupRecord } from '@tupaia/server-boilerplate';
+import { DbFilter, PermissionGroupRecord } from '@tupaia/tsmodels';
 import { Country, EntityTypeEnum, UserAccount } from '@tupaia/types';
 
-import { API_CLIENT_PERMISSIONS } from '../constants';
-import { DatatrakWebServerModelRegistry } from '../types';
+import { DatatrakWebModelRegistry } from '../types';
 
 const USERS_EXCLUDED_FROM_LIST = [
   'edmofro@gmail.com', // Edwin
@@ -20,6 +19,27 @@ const USERS_EXCLUDED_FROM_LIST = [
   'public@tupaia.org', // Public User
 ];
 
+export const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
+
+export const API_CLIENT_PERMISSIONS = [
+  { entityCode: 'DL', permissionGroupName: 'Public' }, //	Demo Land
+  { entityCode: 'FJ', permissionGroupName: 'Public' }, //	Fiji
+  { entityCode: 'CK', permissionGroupName: 'Public' }, //	Cook Islands
+  { entityCode: 'PG', permissionGroupName: 'Public' }, //	Papua New Guinea
+  { entityCode: 'SB', permissionGroupName: 'Public' }, //	Solomon Islands
+  { entityCode: 'TK', permissionGroupName: 'Public' }, //	Tokelau
+  { entityCode: 'VE', permissionGroupName: 'Public' }, //	Venezuela
+  { entityCode: 'WS', permissionGroupName: 'Public' }, //	Samoa
+  { entityCode: 'KI', permissionGroupName: 'Public' }, //	Kiribati
+  { entityCode: 'TO', permissionGroupName: 'Public' }, //	Tonga
+  { entityCode: 'NG', permissionGroupName: 'Public' }, //	Nigeria
+  { entityCode: 'VU', permissionGroupName: 'Public' }, //	Vanuatu
+  { entityCode: 'AU', permissionGroupName: 'Public' }, //	Australia
+  { entityCode: 'PW', permissionGroupName: 'Public' }, //	Palau
+  { entityCode: 'NU', permissionGroupName: 'Public' }, //	Niue
+  { entityCode: 'TV', permissionGroupName: 'Public' }, //	Tuvalu
+];
+
 const DEFAULT_PAGE_SIZE = 100;
 
 interface UserAccountWithCustomColumns extends UserAccount {
@@ -27,7 +47,7 @@ interface UserAccountWithCustomColumns extends UserAccount {
 }
 
 export const getFilteredUsers = async (
-  models: DatatrakWebServerModelRegistry,
+  models: DatatrakWebModelRegistry,
   searchTerm?: string,
   userIds?: string[],
 ) => {
@@ -63,7 +83,7 @@ export const getFilteredUsers = async (
 };
 
 export const getFilteredUsersForPermissionGroup = async (
-  models: DatatrakWebServerModelRegistry,
+  models: DatatrakWebModelRegistry,
   countryCode: Country['code'],
   permissionGroup: PermissionGroupRecord,
   searchTerm?: string,

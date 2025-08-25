@@ -5,6 +5,7 @@ import RoomIcon from '@material-ui/icons/Room';
 import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { SelectList } from '@tupaia/ui-components';
 import { useIsMobile } from '../../utils';
+import { EntityResponseObject } from '../../utils/formatEntity';
 
 const DARK_BLUE = '#004975';
 
@@ -74,7 +75,7 @@ type ListItemType = Record<string, unknown> & {
   };
 };
 
-type SearchResults = DatatrakWebEntityDescendantsRequest.ResBody;
+type SearchResults = EntityResponseObject[];
 export interface ResultsListProps {
   value?: string;
   searchValue?: string;

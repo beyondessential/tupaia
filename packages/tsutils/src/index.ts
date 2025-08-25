@@ -7,3 +7,4 @@ export * from './validation';
 export * from './arrayToAnalytics';
 export * from './camelcaseKeys';
 export * from './object';
+export * from './ResponseObjectBuilder';

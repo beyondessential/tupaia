@@ -1,7 +1,6 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTaskChangeRequest, TaskStatus } from '@tupaia/types';
-import { formatTaskChanges } from '../utils';
 
 export type CreateTaskRequest = Request<
   DatatrakWebTaskChangeRequest.Params,
@@ -21,7 +20,7 @@ export class CreateTaskRoute extends Route<CreateTaskRequest> {
       throw new Error('Survey not found');
     }
 
-    const taskDetails = formatTaskChanges({
+    const taskDetails = models.task.formatTaskChanges({
       ...body,
       survey_id: survey.id,
     });
