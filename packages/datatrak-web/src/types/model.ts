@@ -3,7 +3,6 @@ import {
   CountryModel,
   EntityModel,
   LocalSystemFactModel,
-  ModelRegistry,
   OptionSetModel,
   OptionModel,
   PermissionGroupModel,
@@ -22,8 +21,11 @@ import {
   EntityHierarchyModel,
   EntityParentChildRelationModel,
 } from '@tupaia/tsmodels';
+import { ModelRegistry } from '@tupaia/database';
+import { DatatrakDatabase } from '../database/DatatrakDatabase';
 
 export interface DatatrakWebModelRegistry extends ModelRegistry {
+  readonly database: DatatrakDatabase;
   readonly localSystemFact: LocalSystemFactModel;
   readonly optionSet: OptionSetModel;
   readonly option: OptionModel;

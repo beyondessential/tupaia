@@ -1,4 +1,4 @@
-import { EntityRecord } from '@tupaia/server-boilerplate';
+import { EntityRecord } from '@tupaia/tsmodels';
 import { camelcaseKeys, isNotNullish, ResponseObjectBuilder } from '@tupaia/tsutils';
 import { Entity, Resolved } from '@tupaia/types';
 import { extendedFieldFunctions, isExtendedField } from './extendedFieldFunctions';

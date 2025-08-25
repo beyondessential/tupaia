@@ -2,7 +2,7 @@ import { FormLabelProps } from '@material-ui/core';
 import React, { ReactNode, useEffect } from 'react';
 
 import { useCurrentUserContext } from '../api';
-import { useProjectSurveys } from '../hooks/database';
+import { SurveyData, useProjectSurveys } from '../hooks/database';
 import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
 import { innerText } from '../utils';
@@ -46,7 +46,7 @@ export const useGroupedSurveyList = ({
   const { data: surveys } = result;
   const groupedSurveys =
     surveys
-      ?.reduce((acc: ListItemType[], survey: Survey) => {
+      ?.reduce((acc: ListItemType[], survey: SurveyData) => {
         const { surveyGroupName, name, code } = survey;
         const formattedSurvey = {
           content: name,

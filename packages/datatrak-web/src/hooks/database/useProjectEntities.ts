@@ -1,9 +1,11 @@
 import { Project } from '@tupaia/types';
-import { EntityRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
+import { EntityRecord, ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
 import { snakeKeys } from '@tupaia/utils';
+import { isNotNullish } from '@tupaia/tsutils';
+import { AccessPolicy } from '@tupaia/access-policy';
 
+import { DatatrakWebModelRegistry } from '../../types';
 import { DatabaseEffectOptions, ResultObject, useDatabaseEffect } from './useDatabaseEffect';
-import { getAllowedCountries } from './getAllowedCountries';
 import {
   EntityResponseObject,
   ExtendedEntityFieldName,
@@ -16,6 +18,37 @@ export type UseProjectEntitiesParams = {
   filter?: Record<string, unknown>;
   fields?: ExtendedEntityFieldName[];
   pageSize?: number;
+};
+
+const getAllowedCountries = async (
+  models: DatatrakWebModelRegistry,
+  project: ProjectRecord,
+  isPublic: boolean,
+  accessPolicy?: AccessPolicy,
+  countryEntities: EntityRecord[] = [],
+) => {
+  let allowedCountries = countryEntities
+    .map(child => child.country_code)
+    .filter(isNotNullish)
+    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index); // De-duplicate countryCodes
+
+  if (!isPublic) {
+    const { permission_groups: projectPermissionGroups } = await models.project.findOne({
+      code: project.code,
+    });
+
+    // Fetch all country codes we have any of the project permission groups access to
+    const projectAccessibleCountries: string[] = [];
+
+    for (const permission of projectPermissionGroups) {
+      projectAccessibleCountries.push(...(accessPolicy?.getEntitiesAllowed(permission) || []));
+    }
+    allowedCountries = allowedCountries.filter(countryCode =>
+      projectAccessibleCountries.includes(countryCode),
+    );
+  }
+
+  return allowedCountries;
 };
 
 export const useProjectEntities = (

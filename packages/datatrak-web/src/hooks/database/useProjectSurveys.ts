@@ -1,7 +1,7 @@
 import { RECORDS } from '@tupaia/database';
 import { ResultObject, useDatabaseEffect } from './useDatabaseEffect';
 
-type SurveyData = {
+export type SurveyData = {
   id: string;
   name: string;
   code: string;
@@ -18,9 +18,7 @@ export const useProjectSurveys = (
         ? (await models.country.findOne({ code: countryCode })).id
         : null;
 
-      // TODO: Figure out why importing RECORDS from @tupaia/database is not working,
-      const surveys = await models.database.find(
-        RECORDS.SURVEY,
+      const surveys = await models.survey.find(
         {
           ...(projectId && { project_id: projectId }),
           ...(countryId && {
@@ -42,7 +40,7 @@ export const useProjectSurveys = (
         },
       );
 
-      return surveys;
+      return surveys as unknown as SurveyData[];
     },
     [projectId, countryCode],
   );
