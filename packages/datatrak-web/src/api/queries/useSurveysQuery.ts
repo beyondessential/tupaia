@@ -4,7 +4,7 @@ import { DbFilter } from '@tupaia/tsmodels';
 import { camelcaseKeys } from '@tupaia/tsutils';
 import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
 
-import { useDatabase } from '../../hooks/database';
+import { useDatabaseContext } from '../../hooks/database';
 import { DatatrakWebModelRegistry, Entity } from '../../types';
 import { isNotNullish, isNullish } from '../../utils';
 import { get, RequestParameters } from '../api';
@@ -34,7 +34,7 @@ export function useSurveysQuery(
   useQueryOptions?: UseQueryOptions<DatatrakWebSurveyRequest.ResBody[]>,
 ) {
   const isOfflineFirst = useIsLocalFirst();
-  const { models } = useDatabase();
+  const { models } = useDatabaseContext();
 
   const getRemote = async () => {
     const params: RequestParameters = { fields: ['name', 'code', 'id'] };
