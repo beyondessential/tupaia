@@ -9,6 +9,7 @@ import { QrCodeScannerIcon } from '@tupaia/ui-components';
 import { Button } from '../../components';
 import { ModalCloseButton, Modal, ModalBody } from '../../components/Modal';
 import { isNullish, useHasVideoInput, useIsMobile } from '../../utils';
+import { EntityResponseObject } from '../../utils/formatEntity';
 
 const StyledButton = styled(Button).attrs({
   fullWidth: true,
@@ -138,7 +139,7 @@ export interface QrCodeScannerProps {
   disabled?: boolean;
   onSuccess?: (entity: DatatrakWebEntityDescendantsRequest.EntityResponse) => void;
   /** Pass `undefined` when data is pending */
-  validEntities: DatatrakWebEntityDescendantsRequest.ResBody | undefined;
+  validEntities: EntityResponseObject[] | undefined;
 }
 
 export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScannerProps) => {

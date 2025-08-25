@@ -12098,6 +12098,7 @@ __metadata:
     "@tupaia/database": "workspace:*"
     "@tupaia/expression-parser": "workspace:*"
     "@tupaia/sync": "workspace:*"
+    "@tupaia/tsmodels": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
@@ -12209,6 +12210,7 @@ __metadata:
     "@tupaia/database": "workspace:*"
     "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
+    "@tupaia/tsmodels": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -12646,7 +12648,9 @@ __metadata:
   dependencies:
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/database": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     rimraf: ^6.0.1
     ts-node: ^10.9.1
   languageName: unknown

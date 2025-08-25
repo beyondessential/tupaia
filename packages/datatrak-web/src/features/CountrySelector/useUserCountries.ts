@@ -1,23 +1,20 @@
 import { ChangeEvent, ChangeEventHandler, useState } from 'react';
 
 import { camelcaseKeys } from '@tupaia/tsutils';
-import { DatatrakWebEntitiesRequest } from '@tupaia/types';
+import { Entity } from '@tupaia/types';
+import { EntityRecord } from '@tupaia/tsmodels';
 
-import {
-  UseProjectEntitiesQueryOptions,
-  useCurrentUserContext,
-  useProjectEntities,
-} from '../../api';
-import { Entity } from '../../types';
-import { UseProjectEntitiesQueryResult } from '../../api/queries/useProjectEntities';
+import { UseProjectEntitiesQueryOptions, useCurrentUserContext } from '../../api';
+import { ResultObject, useProjectEntities } from '../../hooks/database';
+import { EntityResponseObject } from '../../utils/formatEntity';
 
-export type UserCountriesType = Omit<UseProjectEntitiesQueryResult, 'data'> & {
-  countries: Exclude<UseProjectEntitiesQueryResult['data'], undefined>;
+export type UserCountriesType = Omit<ResultObject<EntityResponseObject[]>, 'data'> & {
+  countries: EntityResponseObject[] | null;
   /**
    * @privateRemarks The internal {@link useState} only ever explicitly stores `Country | null`, but
    * `selectedCountry` may be undefined if the {@link useProjectEntities} query is still loading.
    */
-  selectedCountry: DatatrakWebEntitiesRequest.EntitiesResponseItem | null | undefined;
+  selectedCountry: EntityResponseObject | null | undefined;
   updateSelectedCountry: ChangeEventHandler;
 };
 
@@ -25,17 +22,16 @@ export const useUserCountries = (
   useProjectEntitiesQueryOptions?: UseProjectEntitiesQueryOptions,
 ): UserCountriesType => {
   const user = useCurrentUserContext();
-  const [newSelectedCountry, setSelectedCountry] =
-    useState<DatatrakWebEntitiesRequest.EntitiesResponseItem | null>(null);
+  const [newSelectedCountry, setSelectedCountry] = useState<EntityResponseObject | null>(null);
 
   const projectCode = user.project?.code;
-  const entityRequestParams = {
+
+  const projectEntitiesParams = {
     filter: { type: 'country' },
   };
-  const { data: countries = [], ...projectEntitiesQuery } = useProjectEntities(
+  const { data: countries = [], ...projectEntitiesQueryResult } = useProjectEntities(
     projectCode,
-    entityRequestParams,
-    useProjectEntitiesQueryOptions,
+    projectEntitiesParams,
   );
 
   const getSelectedCountry = () => {
@@ -43,8 +39,8 @@ export const useUserCountries = (
     if (newSelectedCountry) return newSelectedCountry;
 
     // if the user has a country, return that country if it can be found
-    if (user.country && countries?.find(({ code }) => code === user.country?.code)) {
-      return camelcaseKeys(user.country) as DatatrakWebEntitiesRequest.EntitiesResponseItem;
+    if (user.country && countries?.find(country => country.code === user.country?.code)) {
+      return camelcaseKeys(user.country) as EntityResponseObject;
     }
 
     // if the selected project is 'explore', return demo land
@@ -60,12 +56,13 @@ export const useUserCountries = (
 
   return {
     countries,
-    ...projectEntitiesQuery,
-
+    ...projectEntitiesQueryResult,
     selectedCountry,
     updateSelectedCountry: (e: ChangeEvent<HTMLSelectElement>) => {
       const countryCode = e.target.value;
-      const newCountry = countries?.find((country: Entity) => country.code === countryCode);
+      const newCountry = countries?.find(
+        (country: EntityResponseObject) => country.code === countryCode,
+      );
       setSelectedCountry(newCountry ?? null);
     },
   };
