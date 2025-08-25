@@ -137,7 +137,7 @@ const loadingText = (
 
 export interface QrCodeScannerProps {
   disabled?: boolean;
-  onSuccess?: (entity: DatatrakWebEntityDescendantsRequest.EntityResponse) => void;
+  onSuccess?: (entity: EntityResponseObject) => void;
   /** Pass `undefined` when data is pending */
   validEntities: EntityResponseObject[] | undefined;
 }

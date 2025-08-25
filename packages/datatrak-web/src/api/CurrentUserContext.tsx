@@ -11,6 +11,8 @@ export interface CurrentUserContextType extends Omit<DatatrakWebUserRequest.ResB
   accessPolicy?: AccessPolicy;
 }
 
+export interface CurrentUser extends Omit<CurrentUserContextType, 'accessPolicy'> {}
+
 const CurrentUserContext = createContext<CurrentUserContextType | null>(null);
 
 export const useCurrentUserContext = (): CurrentUserContextType => {

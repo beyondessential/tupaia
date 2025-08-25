@@ -693,6 +693,16 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return entityTypes.map(({ type }) => type);
   }
 
+  async getCodeFromId(id) {
+    const entity = await this.findById(id);
+
+    if (!entity) {
+      throw new Error(`Entity with id ${id} not found`);
+    }
+
+    return entity.code;
+  }
+
   async buildSyncLookupQueryDetails() {
     return {
       ctes: [

@@ -18,7 +18,7 @@ export const useProjectSurveys = (
         ? (await models.country.findOne({ code: countryCode })).id
         : null;
 
-      const surveys = await models.survey.find(
+      const surveys = (await models.survey.find(
         {
           ...(projectId && { project_id: projectId }),
           ...(countryId && {
@@ -38,9 +38,14 @@ export const useProjectSurveys = (
             { surveyGroupName: 'survey_group.name' },
           ],
         },
-      );
+      )) as unknown as SurveyData[];
 
-      return surveys as unknown as SurveyData[];
+      return surveys.map(survey => ({
+        id: survey.id,
+        name: survey.name,
+        code: survey.code,
+        surveyGroupName: survey.surveyGroupName,
+      }));
     },
     [projectId, countryCode],
   );

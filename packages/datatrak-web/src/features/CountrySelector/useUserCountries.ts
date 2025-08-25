@@ -1,15 +1,13 @@
 import { ChangeEvent, ChangeEventHandler, useState } from 'react';
 
 import { camelcaseKeys } from '@tupaia/tsutils';
-import { Entity } from '@tupaia/types';
-import { EntityRecord } from '@tupaia/tsmodels';
 
 import { UseProjectEntitiesQueryOptions, useCurrentUserContext } from '../../api';
-import { ResultObject, useProjectEntities } from '../../hooks/database';
+import { DatabaseEffectOptions, ResultObject, useProjectEntities } from '../../hooks/database';
 import { EntityResponseObject } from '../../utils/formatEntity';
 
 export type UserCountriesType = Omit<ResultObject<EntityResponseObject[]>, 'data'> & {
-  countries: EntityResponseObject[] | null;
+  countries: EntityResponseObject[];
   /**
    * @privateRemarks The internal {@link useState} only ever explicitly stores `Country | null`, but
    * `selectedCountry` may be undefined if the {@link useProjectEntities} query is still loading.
@@ -19,7 +17,7 @@ export type UserCountriesType = Omit<ResultObject<EntityResponseObject[]>, 'data
 };
 
 export const useUserCountries = (
-  useProjectEntitiesQueryOptions?: UseProjectEntitiesQueryOptions,
+  useProjectEntitiesDatabaseEffectOptions?: DatabaseEffectOptions,
 ): UserCountriesType => {
   const user = useCurrentUserContext();
   const [newSelectedCountry, setSelectedCountry] = useState<EntityResponseObject | null>(null);
@@ -32,6 +30,7 @@ export const useUserCountries = (
   const { data: countries = [], ...projectEntitiesQueryResult } = useProjectEntities(
     projectCode,
     projectEntitiesParams,
+    useProjectEntitiesDatabaseEffectOptions
   );
 
   const getSelectedCountry = () => {
