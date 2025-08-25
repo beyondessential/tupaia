@@ -1,3 +1,4 @@
+import log from 'winston';
 import { SyncSnapshotAttributes } from '@tupaia/sync';
 import { post, stream } from '../api';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
@@ -32,7 +33,7 @@ export const pushOutgoingChanges = async (
       case SYNC_STREAM_MESSAGE_KIND.END:
         return;
       default:
-        console.warn(`Unexpected message kind: ${kind}`);
+        log.warn(`Unexpected message kind: ${kind}`);
     }
   }
 };

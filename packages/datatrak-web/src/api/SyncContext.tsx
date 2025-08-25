@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import log from 'winston';
+
 import { DatatrakWebUserRequest } from '@tupaia/types';
 
 import { useDatabaseContext } from '../hooks/database';
@@ -46,7 +48,7 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
     // Only schedule the sync if conditions are met
     if (!isSyncScheduled && clientSyncManager && syncedProjectIds?.length) {
       const intervalId = setInterval(() => {
-        console.log('Starting regular sync:', { syncedProjectIds });
+        log.info('Starting regular sync:', { syncedProjectIds });
         clientSyncManager.triggerSync(syncedProjectIds, false);
       }, SYNC_INTERVAL);
 
