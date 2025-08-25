@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -23,6 +23,11 @@ const sources = ['code', 'description', 'permission_groups', 'type'];
 
 const StyledGrid = styled(Grid)`
   height: 400px;
+`;
+
+const StyledAccordionSummary = styled(AccordionSummary).attrs({ component: 'h3' })`
+  font-size: inherit;
+  font-weight: 500;
 `;
 
 const InputRow = styled.div`
@@ -120,10 +125,25 @@ export const DataTableEditFields = React.memo(
       } else onInputChange(inputKey, inputValue, editConfig, recordData, onEditField);
     };
 
+    /**
+     * True if an only if the active user has edit permissions to this data table.
+     * @privateRemarks A user with read-only access is allowed to access these ‘edit’ fields because
+     * it surfaces information that’s otherwise inaccessible in the GUI.
+     */
+    const isPreviewOnly =
+      // Assume if this is a non-SQL data table, this user has BES Admin access. Short-circuit.
+      // @see `@central-server/apiV2/dataTables/EditDataTables`
+      isSqlDataTable &&
+      // This is a SQL data table. Require access to the external database connection. (If
+      // externalDatabaseConnectionCode is null, allow edits.)
+      !externalDatabaseConnections.some(
+        connection => connection.code === recordData?.config?.externalDatabaseConnectionCode,
+      );
+
     return (
       <div>
         <Accordion defaultExpanded>
-          <AccordionSummary>Data table</AccordionSummary>
+          <StyledAccordionSummary>Data table</StyledAccordionSummary>
           <AccordionDetails>
             <InputRow>
               {sources.map(source => {
@@ -168,7 +188,7 @@ export const DataTableEditFields = React.memo(
           </AccordionDetails>
         </Accordion>
 
-        {ConfigComponent ? (
+        {ConfigComponent && !isPreviewOnly ? (
           <ConfigComponent
             onEditField={onEditField}
             recordData={recordData}
@@ -178,13 +198,18 @@ export const DataTableEditFields = React.memo(
             onParamsChange={onParamsChange}
           />
         ) : (
-          <Accordion defaultExpanded>
-            <AccordionSummary>Config</AccordionSummary>
+          <Accordion>
+            <StyledAccordionSummary>Config</StyledAccordionSummary>
+            <AccordionDetails>
+              <Typography style={{ fontStyle: 'italic' }} color="textSecondary">
+                No config available
+              </Typography>
+            </AccordionDetails>
           </Accordion>
         )}
 
         <Accordion defaultExpanded>
-          <AccordionSummary>Preview</AccordionSummary>
+          <StyledAccordionSummary>Preview</StyledAccordionSummary>
           <AccordionDetails>
             <Grid container spacing={2}>
               <div style={{ display: 'flex', alignItems: 'center' }}>

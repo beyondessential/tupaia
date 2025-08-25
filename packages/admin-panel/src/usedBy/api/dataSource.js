@@ -13,38 +13,25 @@ const DATA_SOURCE_TYPES = {
  * @description The report query is used to find the reports that use a data source. The query is different for each record type, because the subkey and the shape of the value is different for each record type. This way we avoid partial matches and false positives.
  */
 const getReportQuery = (recordType, dataSourceCode) => {
-  switch (recordType) {
-    case DATA_SOURCE_TYPES.DATA_TABLE: {
-      //  specifically look for the dataTableCode in the transform array
-      return {
-        'config->transform': {
-          comparator: '@>',
-          comparisonValue: `[{"dataTableCode": "${dataSourceCode}"}]`,
-        },
-      };
+  const comparand = (() => {
+    switch (recordType) {
+      case DATA_SOURCE_TYPES.DATA_TABLE:
+        return { dataTableCode: dataSourceCode };
+      case DATA_SOURCE_TYPES.DATA_ELEMENT:
+        return { parameters: { dataElementCodes: [dataSourceCode] } };
+      case DATA_SOURCE_TYPES.DATA_GROUP:
+        return { parameters: { dataGroupCode: dataSourceCode } };
+      default:
+        throw new Error(`Unknown record type: ${recordType}`);
     }
-    case DATA_SOURCE_TYPES.DATA_ELEMENT: {
-      return {
-        'config->transform': {
-          // specifically look for the data element code in the parameters.dataElementCodes array
-          comparator: '@>',
-          comparisonValue: `[{"parameters": {"dataElementCodes": ["${dataSourceCode}"]}}]`,
-        },
-      };
-    }
-    case DATA_SOURCE_TYPES.DATA_GROUP: {
-      return {
-        'config->transform': {
-          // specifically look for the data group code in parameters.dataGroupCode value
-          comparator: '@>',
-          comparisonValue: `[{"parameters": {"dataGroupCode": "${dataSourceCode}"}}]`,
-        },
-      };
-    }
-    default: {
-      throw new Error(`Unknown record type: ${recordType}`);
-    }
-  }
+  })();
+
+  return {
+    'config->transform': {
+      comparator: '@>',
+      comparisonValue: JSON.stringify([comparand]),
+    },
+  };
 };
 
 const VISUALISATIONS_BASE_URL = '/visualisations';
