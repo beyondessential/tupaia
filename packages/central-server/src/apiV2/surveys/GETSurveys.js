@@ -35,12 +35,11 @@ export class GETSurveys extends GETHandler {
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyChecker]));
 
-    // 1. Add surveyQuestions, see README
-    const surveyQuestionsValues = await this.getSurveyQuestionsValues([surveyId]);
-
-    // 2. Add countryNames
-    const countryNames = await this.getSurveyCountryNames([surveyId]);
-    const countryCodes = await this.getSurveyCountryCodes([surveyId]);
+    const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
+      this.getSurveyQuestionsValues([surveyId]), // 1. Add surveyQuestions, see README
+      this.getSurveyCountryNames([surveyId]), // 2. Add countryNames
+      this.getSurveyCountryCodes([surveyId]), // 3. Add countryCodes
+    ]);
 
     return {
       ...survey,
