@@ -304,8 +304,8 @@ export const PreviewSection = () => {
             </PresentationConfigAssistantContainer>
             <EditorContainer showPresentationAsJson={showPresentationAsJson}>
               <JsonEditor
-                // JSONEditor library for some reasons doesn't re-render the value
-                // when the presentation changes until the user clicks on the editor,
+                // When manually set the new presentation option by AI Presentation Options Assistant,
+                // JSONEditor library for some reasons doesn't re-render the value until the user clicks on the editor,
                 // so this is a workaround to force it to re-render whenever we switch it back to JSON mode
                 key={showPresentationAsJson}
                 value={visualisation.presentation}
