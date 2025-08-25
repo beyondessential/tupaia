@@ -5,9 +5,9 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "build:android": "cd android && ./gradlew app:assembleRelease && ls -R app/build/outputs/apk",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest",
     "reset-cache": "echo Run me and exit to reset cache && react-native start --reset-cache"
   },
   "dependencies": {
@@ -76,13 +76,11 @@
     "@react-native/metro-config": "^0.72.11",
     "@tsconfig/react-native": "^3.0.0",
     "@types/react": "^18.0.24",
-    "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.2.1",
     "eslint": "^7.32.0",
     "metro-react-native-babel-preset": "0.76.8",
     "prettier": "^3.5.1",
     "prop-types": "^15.8.1",
-    "react-test-renderer": "18.2.0",
     "typescript": "4.8.4"
   }
 }

@@ -39,8 +39,9 @@ export const TreeResourcePage = ({
 };
 
 TreeResourcePage.defaultProps = {
-  resourceName: {},
+  resourceName: { singular: 'record' },
   ExportModalComponent: null,
+  title: '',
 };
 
 TreeResourcePage.propTypes = {
@@ -48,7 +49,7 @@ TreeResourcePage.propTypes = {
     singular: PropTypes.string.isRequired,
     plural: PropTypes.string,
   }),
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   fetchRoot: PropTypes.func.isRequired,
   fetchBranch: PropTypes.func.isRequired,
   ExportModalComponent: PropTypes.elementType,

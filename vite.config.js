@@ -15,11 +15,6 @@ export default defineConfig(({ command, mode }) => {
   // Load the environment variables, whether or not they are prefixed with REACT_APP_
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
 
-  // Work around for process.env not being loaded correctly in knex library for browser builds
-  const clientEnv = Object.fromEntries(
-    Object.entries(env).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
-  );
-
   const baseConfig = {
     build: {
       rollupOptions: {
@@ -37,7 +32,7 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
-        external: ['stream/promises', 'fs/promises'],
+        external: ['stream/promises', 'fs/promises', 'knex'],
       },
     },
     plugins: [
@@ -53,7 +48,7 @@ export default defineConfig(({ command, mode }) => {
       }),
       commonjs(),
     ],
-    define: { ...clientEnv, __dirname: JSON.stringify('/') },
+    define: { 'process.env': env, __dirname: JSON.stringify('/') },
     server: {
       open: true,
       headers: {
@@ -67,15 +62,16 @@ export default defineConfig(({ command, mode }) => {
       preserveSymlinks: true, // use the yarn workspace symlinks
       dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components', 'react-router-dom'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
       alias: {
-        http: path.resolve(__dirname, 'moduleMock.js'),
-        winston: path.resolve(__dirname, 'moduleMock.js'),
-        jsonwebtoken: path.resolve(__dirname, 'moduleMock.js'),
-        'node-fetch': path.resolve(__dirname, 'moduleMock.js'),
-        'pg-pubsub': path.resolve(__dirname, 'moduleMock.js'),
+        http: path.resolve(__dirname, 'mock/moduleMock.js'),
+        winston: path.resolve(__dirname, 'mock/moduleMock.js'),
+        jsonwebtoken: path.resolve(__dirname, 'mock/moduleMock.js'),
+        'node-fetch': path.resolve(__dirname, 'mock/moduleMock.js'),
+        'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),
+        '@node-rs/argon2': path.resolve(__dirname, 'mock/argon2ModuleMock.js'),
       },
     },
     optimizeDeps: {
-      exclude: ['@electric-sql/pglite'],
+      exclude: ['@electric-sql/pglite', 'oracledb'],
     },
   };
 

@@ -12,7 +12,7 @@ export enum SyncDirections {
   BIDIRECTIONAL = 'bidirectional',
 }
 
-export const COLUMNS_EXCLUDED_FROM_SYNC = ['updatedAtSyncTick'];
+export const COLUMNS_EXCLUDED_FROM_SYNC = ['updatedAtSyncTick'] as const;
 
 const NEVER_USE_ZERO = Symbol('zero');
 export const SYNC_STREAM_MESSAGE_KIND = {
@@ -27,12 +27,4 @@ export const SYNC_STREAM_MESSAGE_KIND = {
   PULL_WAITING: 0x0002,
   PULL_CHANGE: 0x0003,
   PUSH_WAITING: 0x0004,
-};
-
-// Internal sync facts
-export const FACT_CURRENT_SYNC_TICK = 'currentSyncTick';
-export const FACT_LAST_SUCCESSFUL_SYNC_PULL = 'lastSuccessfulSyncPull';
-export const FACT_LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush';
-export const FACT_LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate';
-export const FACT_SYNC_TRIGGER_CONTROL = 'syncTrigger';
-export const FACT_PROJECTS_IN_SYNC = 'projectsInSync';
+} as const;

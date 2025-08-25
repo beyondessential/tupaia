@@ -38,9 +38,13 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - run: corepack enable yarn
-      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
-      - run: yarn workspace @tupaia/utils build # /scripts/node/validateTests.js uses utils package
+      - name: Set up Yarn
+        run: |
+          corepack enable yarn
+          corepack install
+          echo "Using Yarn $(yarn --version)"
+      - run: yarn install
+      - run: yarn workspace @tupaia/utils run build # /scripts/node/validateTests.js uses utils package
       - name: Validate unit tests
         run: packages/devops/scripts/ci/validateTests.sh
 
@@ -76,13 +80,74 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - run: corepack enable yarn
-      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
-      - run: yarn build:internal-dependencies
+      - name: Set up Yarn
+        run: |
+          corepack enable yarn
+          corepack install
+          echo "Using Yarn $(yarn --version)"
+      - name: Install dependencies
+        run: yarn workspaces focus tupaia @tupaia/database @tupaia/types
+      - run: yarn run build:from '{database,types}'
       - run: ./packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh
 
+  validate_lockfile:
+    name: Validate lockfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - name: Set up Yarn
+        run: |
+          corepack enable yarn
+          corepack install
+          echo "Using Yarn $(yarn --version)"
+      - run: yarn install --immutable
+
+  package_list:
+    name: Generate package list
+    runs-on: ubuntu-latest
+    outputs:
+      PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        run: |
+          echo PACKAGES=$(
+            yarn workspaces list --json |
+              jq --compact-output --raw-output --slurp \
+                '[.[] | .name] | map(select(. != "tupaia" and . != "@tupaia/devops" and . != "@tupaia/e2e"))'
+          ) >>"$GITHUB_OUTPUT"
+
+  build:
+    name: Build
+    needs: package_list
+    runs-on: ubuntu-latest
+    env:
+      CI: false # react-scripts build treats warnings as errors if this is true
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.package_list.outputs.PACKAGES) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - name: Set up Yarn
+        run: |
+          corepack enable yarn
+          corepack install
+          echo "Using Yarn $(yarn --version)"
+      - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
+      - run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
+
   run_tests:
-    name: Run tests
+    name: Test
+    needs: package_list
     timeout-minutes: 15 # Sometimes Jest doesn’t exit properly for meditrak-app-server tests
     runs-on: ubuntu-latest
     env:
@@ -97,9 +162,9 @@ jobs:
       API_CLIENT_SALT: abc132
       JWT_SECRET: abc132
       TUPAIA_ADMIN_EMAIL_ADDRESS: test@tupaia.org
-      TUPAIA_FRONT_END_URL: dev.tupaia.org
-      LESMIS_FRONT_END_URL: dev-lesmis.tupaia.org
-      DATATRAK_FRONT_END_URL: dev-datatrak.tupaia.org
+      TUPAIA_FRONT_END_URL: https://dev.tupaia.org
+      LESMIS_FRONT_END_URL: https://dev-lesmis.tupaia.org
+      DATATRAK_FRONT_END_URL: https://dev-datatrak.tupaia.org
 
       # test database
       DB_PG_USER: postgres
@@ -122,46 +187,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package:
-          - admin-panel
-          - admin-panel-server
-          - aggregator
-          - api-client
-          - auth
-          - central-server
-          - data-api
-          - data-broker
-          - data-lake-api
-          - data-table-server
-          - database
-          - datatrak-web
-          - datatrak-web-server
-          - dhis-api
-          - entity-server
-          - expression-parser
-          - indicators
-          - kobo-api
-          - lesmis
-          - lesmis-server
-          - meditrak-app-server
-          - psss
-          - psss-server
-          - report-server
-          - server-boilerplate
-          - server-utils
-          - superset-api
-          - sync-server
-          - sync
-          - tsutils
-          - tupaia-web
-          - tupaia-web-server
-          - ui-chart-components
-          - ui-components
-          - ui-map-components
-          - utils
-          - viz-test-tool
-          - weather-api
-          - web-config-server
+        package: ${{ fromJSON(needs.package_list.outputs.PACKAGES) }}
 
     services:
       postgres:
@@ -184,33 +210,25 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - run: corepack enable yarn
-      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+      - name: Set up Yarn
+        run: |
+          corepack enable yarn
+          corepack install
+          echo "Using Yarn $(yarn --version)"
+      - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
       - name: Build subtree
-        run: yarn workspaces foreach -Rptv --jobs unlimited --from @tupaia/${{ matrix.package }} run build
-      - run: yarn workspace @tupaia/${{ matrix.package }} setup-test || echo "No setup needed"
-      - run: yarn workspace @tupaia/${{ matrix.package }} test
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    env:
-      CI: false # react-scripts build treats warnings as errors if this is true
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: corepack enable yarn
-      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
-      - run: yarn build
+        run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
+      - name: Set up tests (if script exists)
+        run: yarn workspaces foreach --include ${{ matrix.package }} run setup-test
+      - name: Run tests (if script exists)
+        run: yarn workspaces foreach --include ${{ matrix.package }} run test
 
   allgreen:
     name: All Green
     if: always()
     needs:
       - validate_branch_name
+      - validate_lockfile
       - validate_migration
       - validate_tests
       - validate_types

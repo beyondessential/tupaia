@@ -1,8 +1,9 @@
 import { Request } from 'express';
+
+import { RECORDS } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
-import { getOffsetForTimezone } from '@tupaia/utils';
 import { DatatrakWebTaskMetricsRequest, TaskStatus } from '@tupaia/types';
-import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
+import { getOffsetForTimezone } from '@tupaia/utils';
 
 export type TaskMetricsRequest = Request<
   DatatrakWebTaskMetricsRequest.Params,

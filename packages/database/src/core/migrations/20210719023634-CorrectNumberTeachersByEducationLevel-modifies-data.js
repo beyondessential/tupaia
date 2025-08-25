@@ -1,7 +1,5 @@
 'use strict';
 
-import { insertObject, generateId, findSingleRecord, findSingleRecordBySql } from '../utilities';
-
 var dbm;
 var type;
 var seed;

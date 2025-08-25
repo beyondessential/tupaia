@@ -5,7 +5,6 @@ import {
   generateId,
   findSingleRecord,
   findSingleRecordBySql,
-  deleteObject,
 } from '../utilities';
 
 var dbm;
