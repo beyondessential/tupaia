@@ -5,7 +5,7 @@ import { useDatabaseContext } from '../hooks/database';
 import { generateId } from '@tupaia/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useCurrentUserContext } from './CurrentUserContext';
-import { useSyncedProjects } from '../hooks/database/useSyncedProjects';
+import { useProjectsInSync } from '../hooks/database/useProjectsInSync';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
   clientSyncManager: ClientSyncManager | null;
@@ -22,7 +22,7 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
   const [isSyncScheduled, setIsSyncScheduled] = useState(false);
   const { models } = useDatabaseContext();
   const { id: userId } = useCurrentUserContext();
-  const { data: syncedProjectIds, onFetch: refetchSyncedProjectIds } = useSyncedProjects();
+  const { data: syncedProjectIds, onFetch: refetchSyncedProjectIds } = useProjectsInSync();
 
   useEffect(() => {
     const initSyncManager = async () => {
