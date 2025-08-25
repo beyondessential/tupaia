@@ -18,6 +18,7 @@
     "@material-ui/pickers": "^3.2.10",
     "@tanstack/react-query": "4.36.1",
     "@testing-library/react-hooks": "^8.0.1",
+    "@tupaia/access-policy": "workspace:*",
     "@tupaia/constants": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/expression-parser": "workspace:*",
