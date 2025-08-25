@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { DatabaseContext, DatabaseContextType } from '../../api';
 
-export const useDatabase = (): DatabaseContextType => {
+export const useDatabaseContext = (): DatabaseContextType => {
   const context = useContext(DatabaseContext);
 
   if (!context) {

@@ -8,8 +8,6 @@ import {
   countSyncSnapshotRecords,
   completeSyncSession,
   startSnapshotWhenCapacityAvailable,
-  FACT_CURRENT_SYNC_TICK,
-  FACT_LOOKUP_UP_TO_TICK,
   DEBUG_LOG_TYPES,
   SYNC_SESSION_DIRECTION,
   getModelsForPush,
@@ -20,7 +18,7 @@ import {
   withDeferredSyncSafeguards,
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
-import { SyncTickFlags } from '@tupaia/constants';
+import { SyncTickFlags, FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
 import { generateId } from '@tupaia/database';
 
 import { updateLookupTable, updateSyncLookupPendingRecords } from './updateLookupTable';
@@ -94,11 +92,7 @@ export class CentralSyncManager {
     return activeSyncs.length >= maxConcurrentSessions;
   }
 
-  async queueDeviceForSync(
-    deviceId: string,
-    urgent: boolean = false,
-    lastSyncedTick: number = 0,
-  ) {
+  async queueDeviceForSync(deviceId: string, urgent: boolean = false, lastSyncedTick: number = 0) {
     const staleSessions = await this.models.syncSession.find({
       completed_at: null,
       'info->>deviceId': deviceId,
