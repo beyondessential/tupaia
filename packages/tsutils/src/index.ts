@@ -6,5 +6,4 @@ export * from './hashStringToInt';
 export * from './object';
 export * from './period';
 export * from './typeGuards';
-export { ValueOf } from './utilityTypes';
 export * from './validation';

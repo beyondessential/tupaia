@@ -1,4 +1,4 @@
-import type { ValueOf } from '@tupaia/tsutils';
+import type { ValueOf } from '@tupaia/types';
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
 
