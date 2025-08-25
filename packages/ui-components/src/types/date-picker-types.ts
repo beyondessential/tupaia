@@ -1,7 +1,6 @@
-import { Moment } from 'moment';
-import { DatePickerOffsetSpec } from '@tupaia/types';
+import { DatePickerOffsetSpec, ValueOf } from '@tupaia/types';
 import { GRANULARITIES, WEEK_DISPLAY_FORMATS } from '@tupaia/utils';
-import { ValueOf } from './helpers';
+import { Moment } from 'moment';
 
 export type BaseDatePickerProps = {
   momentDateValue: Moment;

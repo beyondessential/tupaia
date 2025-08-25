@@ -65,3 +65,5 @@ export type Flatten<
     [V in K]: { [field in keyof T[V] & string as `${V}${J}${field}`]: T[V][field] };
   }[K]
 >;
+
+export type ValueOf<T> = T extends Record<string | number | symbol, unknown> ? T[keyof T] : never;

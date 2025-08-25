@@ -30,14 +30,14 @@ export async function importUsers(req, res) {
         const [countryName, sheet] = countries;
         const countryEntity = await transactingModels.entity.findOrCreate({ name: countryName });
         const users = xlsx.utils.sheet_to_json(sheet);
-        const emails = []; // An array to hold all emails, allowing duplicate checking
+        const emails = new Set(); // A set to hold all emails, allowing duplicate checking
         for (let i = 0; i < users.length; i++) {
           const userObject = users[i];
           const excelRowNumber = i + 2;
           const constructImportValidationError = (message, field) =>
             new ImportValidationError(message, excelRowNumber, field, countryName);
           await userObjectValidator.validate(userObject, constructImportValidationError);
-          if (emails.includes(userObject.email)) {
+          if (emails.has(userObject.email)) {
             throw new ImportValidationError(
               `${userObject.email} is not unique`,
               excelRowNumber,
@@ -45,7 +45,7 @@ export async function importUsers(req, res) {
               countryName,
             );
           }
-          emails.push(userObject.email);
+          emails.add(userObject.email);
           const { password, permission_group: permissionGroupName, ...restOfUser } = userObject;
 
           const userToUpsert = {

@@ -1,7 +1,8 @@
-import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import styled from 'styled-components';
+import { LatLngTuple } from 'leaflet';
+import React from 'react';
 import { Popup } from 'react-leaflet';
+import styled from 'styled-components';
 import { MeasureData } from '../../types';
 
 const TOP_BAR_HEIGHT = 60;
@@ -69,8 +70,8 @@ interface PopupMarkerProps {
 export const PopupMarker = React.memo(
   ({
     onDetailButtonClick,
-    onOpen = () => null,
-    onClose = () => null,
+    onOpen = () => {},
+    onClose = () => {},
     sidePanelWidth = 0,
     buttonText,
     headerText,
@@ -78,7 +79,8 @@ export const PopupMarker = React.memo(
     children,
     popupRef,
   }: PopupMarkerProps) => {
-    const displayCoordinates = (coordinates as number[])?.map((c: any) => c.toFixed(5)).join(', ');
+    // TODO: Handle different shapes of LatLngExpression and remove this unsafe cast
+    const displayCoordinates = (coordinates as LatLngTuple)?.map(c => c.toFixed(5)).join(', ');
     /*
      * This is a workaround for a bug in react-leaflet where the onOpen and onClose callbacks cause a
      * re-mount of the Popup component which causes the popup to close unexpectedly on map re-renders

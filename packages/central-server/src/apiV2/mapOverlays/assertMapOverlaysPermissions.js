@@ -13,12 +13,12 @@ export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverl
   }
 
   const entities = await models.entity.find({ code: mapOverlay.country_codes });
-  for (let i = 0; i < entities.length; i++) {
+  for (const entity of entities) {
     if (
       await hasAccessToEntityForVisualisation(
         accessPolicy,
         models,
-        entities[i],
+        entity,
         mapOverlay.permission_group,
       )
     ) {

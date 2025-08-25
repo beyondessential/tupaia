@@ -57,7 +57,7 @@ export const MultiSelect = ({
           <StyledCheckbox
             color="primary"
             label={option.label}
-            checked={selected.indexOf(option.value) > -1}
+            checked={selected.includes(option.value)}
           />
         </MenuItem>
       ))}

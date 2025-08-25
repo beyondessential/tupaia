@@ -33,6 +33,7 @@ export const useRequestCountryAccess = () => {
           });
         }
 
+        queryClient.invalidateQueries({ queryKey: ['me/countries'] });
         queryClient.invalidateQueries({ queryKey: ['projects'] });
       },
     },

@@ -1,9 +1,14 @@
-import React from 'react';
 import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
+import React from 'react';
 import styled from 'styled-components';
-import { LinkReferenceProps, PlaintextReferenceProps, ReferenceProps } from '@tupaia/types';
-import { ValueOf } from '../types/helpers';
+
+import {
+  LinkReferenceProps,
+  PlaintextReferenceProps,
+  ReferenceProps,
+  ValueOf,
+} from '@tupaia/types';
 
 export const ICON_STYLES = {
   DEFAULT: 'default',

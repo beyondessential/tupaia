@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Moment } from 'moment';
-import { GRANULARITIES, displayStringToMoment } from '@tupaia/utils';
 import type { Meta } from '@storybook/react';
+import { Moment } from 'moment';
+import React, { useState } from 'react';
+
+import { ValueOf } from '@tupaia/types';
+import { GRANULARITIES, displayStringToMoment } from '@tupaia/utils';
 import { DateRangePicker } from '../../src/components/DateRangePicker';
-import { ValueOf } from '../../src/types';
 
 const meta: Meta<typeof DateRangePicker> = {
   title: 'components/DateRangePicker',

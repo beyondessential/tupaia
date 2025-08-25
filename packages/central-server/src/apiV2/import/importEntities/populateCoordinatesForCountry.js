@@ -111,8 +111,7 @@ export async function populateCoordinatesForCountry(transactingModels, countryCo
     type: [transactingModels.entity.types.DISTRICT, transactingModels.entity.types.SUB_DISTRICT],
     region: null, // Only bother with entities that don't already have their region coordinates set
   });
-  for (let i = 0; i < entitiesWithoutCoordinates.length; i++) {
-    const { name, code, metadata } = entitiesWithoutCoordinates[i];
+  for (const { name, code, metadata } of entitiesWithoutCoordinates) {
     const openStreetMapsId = get(metadata, 'openStreetMaps.id');
     await addCoordinatesToEntity(transactingModels, countryName, name, code, openStreetMapsId);
   }

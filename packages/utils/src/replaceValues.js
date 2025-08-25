@@ -15,7 +15,7 @@ export const replaceValues = (target, replacements) => {
 
   let replacedString = isString ? target : JSON.stringify(target);
   Object.entries(replacements).forEach(([key, value]) => {
-    if (replacedString.indexOf(`{${key}}`) !== -1) {
+    if (replacedString.includes(`{${key}}`)) {
       replacedString = replacedString.replace(new RegExp(`\{${key}\}`, 'g'), value);
     }
   });
