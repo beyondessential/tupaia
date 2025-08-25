@@ -1,5 +1,6 @@
+// This file is duplicated from entity-server, but reduced to only the functions we need in datatrak-web
 import { EntityRecord } from '@tupaia/server-boilerplate';
-import { camelcaseKeys, isNotNullish, ResponseObjectBuilder } from '@tupaia/tsutils';
+import { camelcaseKeys, ResponseObjectBuilder } from '@tupaia/tsutils';
 import { Entity, Resolved } from '@tupaia/types';
 import { extendedFieldFunctions, isExtendedField } from './extendedFieldFunctions';
 
@@ -21,14 +22,8 @@ type FormatContext = { hierarchyId: string; allowedCountries: string[] };
 export async function formatEntityForResponse(
   ctx: FormatContext,
   entity: EntityRecord,
-  fieldOrFields: ExtendedEntityFieldName[],
+  fields: ExtendedEntityFieldName[],
 ) {
-  if (!Array.isArray(fieldOrFields)) {
-    const field = fieldOrFields;
-    if (isNotNullish(field)) return entity[field];
-    return undefined;
-  }
-  const fields = fieldOrFields;
   const responseBuilder = new ResponseObjectBuilder<EntityResponseObject>();
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i];
