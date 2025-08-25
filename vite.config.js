@@ -63,7 +63,7 @@ export default defineConfig(({ command, mode }) => {
       dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components', 'react-router-dom'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
       alias: {
         http: path.resolve(__dirname, 'mock/moduleMock.js'),
-        winston: path.resolve(__dirname, 'mock/moduleMock.js'),
+        winston: path.resolve(__dirname, 'mock/winston.js'),
         jsonwebtoken: path.resolve(__dirname, 'mock/moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'mock/moduleMock.js'),
         'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),

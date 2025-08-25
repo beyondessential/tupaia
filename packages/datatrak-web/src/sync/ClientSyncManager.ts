@@ -1,3 +1,4 @@
+import winston from 'winston';
 import {
   FACT_CURRENT_SYNC_TICK,
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
@@ -43,14 +44,14 @@ export class ClientSyncManager {
     this.database = models.database;
     this.deviceId = deviceId;
     this.userId = userId;
-    console.log('ClientSyncManager.constructor', {
+    winston.debug('ClientSyncManager.constructor', {
       deviceId,
     });
   }
 
   async triggerSync(projectIds: string[], urgent: boolean) {
     if (this.currentSyncPromise) {
-      console.log('ClientSyncManager.triggerSync - already running');
+      winston.log('ClientSyncManager.triggerSync - already running');
       return this.currentSyncPromise;
     }
 
@@ -81,14 +82,14 @@ export class ClientSyncManager {
 
     if (!sessionId) {
       // we're queued
-      console.log('ClientSyncManager.wasQueued', { status });
+      winston.debug('ClientSyncManager.wasQueued', { status });
       return { queued: true, hasRun: false };
     }
 
     // clear previous temp data, in case last session errored out or server was restarted
     await dropAllSnapshotTables(this.database);
 
-    console.log('ClientSyncManager.receivedSessionInfo', {
+    winston.debug('ClientSyncManager.receivedSessionInfo', {
       sessionId,
       startedAtTick,
     });
@@ -100,7 +101,7 @@ export class ClientSyncManager {
     await this.endSyncSession(sessionId);
 
     const durationMs = Date.now() - startTime;
-    console.log('ClientSyncManager.completedSession', {
+    winston.log('ClientSyncManager.completedSession', {
       durationMs,
     });
 
@@ -128,7 +129,7 @@ export class ClientSyncManager {
           // includes the new tick from starting the session
           return { ...message };
         default:
-          console.warn(`Unexpected message kind: ${kind}`);
+          winston.warn(`Unexpected message kind: ${kind}`);
       }
     }
     throw new Error('Unexpected end of stream');
@@ -146,7 +147,7 @@ export class ClientSyncManager {
     // or updated even mid way through this sync, are marked using the new tick and will be captured
     // in the next push
     await this.models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, newSyncClockTime);
-    console.log('ClientSyncManager.updatedLocalSyncClockTime', { newSyncClockTime });
+    winston.debug('ClientSyncManager.updatedLocalSyncClockTime', { newSyncClockTime });
 
     await waitForPendingEditsUsingSyncTick(this.database, currentSyncClockTime);
 
@@ -155,7 +156,7 @@ export class ClientSyncManager {
     // this avoids any of the records to be pushed being changed during the push period and
     // causing data that isn't internally coherent from ending up on the central server
     const pushSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
-    console.log('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
+    winston.debug('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
     // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
     // is underway aren't included (as this could lead to a pair of foreign records with the child in
@@ -169,30 +170,30 @@ export class ClientSyncManager {
     );
 
     if (outgoingChanges.length > 0) {
-      console.log('ClientSyncManager.pushingOutgoingChanges', {
+      winston.debug('ClientSyncManager.pushingOutgoingChanges', {
         totalPushing: outgoingChanges.length,
       });
       await pushOutgoingChanges(sessionId, outgoingChanges, this.deviceId);
     }
 
     await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, currentSyncClockTime);
-    console.log('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
+    winston.debug('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
   }
 
   async pullChanges(sessionId: string, projectIds: string[]) {
     try {
-      console.log('ClientSyncManager.pullChanges', {
+      winston.debug('ClientSyncManager.pullChanges', {
         sessionId,
       });
       const pullSince =
         (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
 
-      console.log('ClientSyncManager.createClientSnapshotTable', {
+      winston.debug('ClientSyncManager.createClientSnapshotTable', {
         sessionId,
       });
       await createClientSnapshotTable(this.database, sessionId);
 
-      console.log('ClientSyncManager.initiatePull', {
+      winston.debug('ClientSyncManager.initiatePull', {
         sessionId,
         pullSince,
       });
@@ -218,7 +219,7 @@ export class ClientSyncManager {
         await this.pullIncrementalSync(sessionId, pullUntil);
       }
     } catch (error) {
-      console.error('ClientSyncManager.pullChanges', {
+      winston.error('ClientSyncManager.pullChanges', {
         sessionId,
         error,
       });
@@ -239,7 +240,7 @@ export class ClientSyncManager {
       // update the last successful sync in the same save transaction - if updating the cursor fails,
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
-      console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+      winston.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
       return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
     });
   }
@@ -264,7 +265,7 @@ export class ClientSyncManager {
       // update the last successful sync in the same save transaction - if updating the cursor fails,
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
-      console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+      winston.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
       return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
     });
   }

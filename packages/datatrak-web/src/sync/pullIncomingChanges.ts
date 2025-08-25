@@ -15,7 +15,7 @@ export const initiatePull = async (
   projectIds: string[],
   deviceId: string,
 ) => {
-  console.log('ClientSyncManager.pull.waitingForCentral');
+  console.debug('ClientSyncManager.pull.waitingForCentral');
   const body = { since, projectIds, userId, deviceId };
 
   for await (const { kind, message } of stream(() => ({
