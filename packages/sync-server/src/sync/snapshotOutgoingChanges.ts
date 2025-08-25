@@ -1,9 +1,6 @@
 import log from 'winston';
 
-import {
-  getSnapshotTableName,
-  SYNC_SESSION_DIRECTION,
-} from '@tupaia/sync';
+import { getSnapshotTableName, SYNC_SESSION_DIRECTION } from '@tupaia/sync';
 import { DatabaseModel, TupaiaDatabase } from '@tupaia/database';
 import { SyncServerConfig } from '../types';
 
@@ -62,9 +59,9 @@ export const snapshotOutgoingChanges = async (
         AND (
           project_ids IS NULL
           OR
-          project_ids::text[] && ARRAY[${projectIds.map(p => `?`).join(',')}]
+          project_ids::text[] && ARRAY[${projectIds.map(_p => `?`).join(',')}]
         )
-        AND record_type IN (${recordTypes.map(r => `?`).join(',')})
+        AND record_type IN (${recordTypes.map(_r => `?`).join(',')})
         ${
           avoidRepull && deviceId
             ? 'AND (pushed_by_device_id <> ? OR pushed_by_device_id IS NULL)'
