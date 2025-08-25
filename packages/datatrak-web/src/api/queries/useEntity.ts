@@ -8,7 +8,7 @@ export const useEntityByCode = (
 ) => {
   return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
     ['entity', entityCode],
-    () => get(`entity/${entityCode}`),
+    async () => await get(`entity/${entityCode}`),
     {
       ...useQueryOptions,
       enabled: !!entityCode && (useQueryOptions?.enabled ?? true),
