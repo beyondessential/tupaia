@@ -66,6 +66,8 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'mock/moduleMock.js'),
         jsonwebtoken: path.resolve(__dirname, 'mock/moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'mock/moduleMock.js'),
+        'rand-token': path.resolve(__dirname, 'mock/moduleMock.js'),
+        pg: path.resolve(__dirname, 'mock/pgMock.js'),
         'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),
         '@node-rs/argon2': path.resolve(__dirname, 'mock/argon2ModuleMock.js'),
       },
