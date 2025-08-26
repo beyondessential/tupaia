@@ -6,7 +6,8 @@ const PreviewDataContext = createContext(null);
 export const PreviewDataProvider = ({ children }) => {
   const [fetchEnabled, setFetchEnabled] = useState(false);
   const [showData, setShowData] = useState(false);
-  const [jsonToggleEnabled, setJsonToggleEnabled] = useState(false);
+  const [showTransformStepAsJson, setShowTransformStepAsJson] = useState(false);
+  const [showPresentationAsJson, setShowPresentationAsJson] = useState(false);
 
   return (
     <PreviewDataContext.Provider
@@ -15,8 +16,10 @@ export const PreviewDataProvider = ({ children }) => {
         setFetchEnabled,
         showData,
         setShowData,
-        jsonToggleEnabled,
-        setJsonToggleEnabled,
+        showTransformStepAsJson,
+        setShowTransformStepAsJson,
+        showPresentationAsJson,
+        setShowPresentationAsJson,
       }}
     >
       {children}
