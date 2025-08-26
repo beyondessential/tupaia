@@ -73,7 +73,7 @@ fi
 # Long version: the git origin copied from codeship is using ssh, but the container doesn't have ssh setup. The quick way is to swith to https.
 git remote remove origin
 git remote add origin https://github.com/beyondessential/tupaia.git
-# Remove this sub module because it uses ssh
+# Remove this submodule because it uses ssh
 git rm $ROOT/packages/data-api/scripts/pg-mv-fast-refresh
 
 git fetch --quiet
