@@ -2,10 +2,9 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { FormLabelProps, Typography } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
-import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { SelectList } from '@tupaia/ui-components';
 import { useIsMobile } from '../../utils';
-import { EntityResponseObject } from '../../utils/formatEntity';
+import { EntityResponse } from '../../hooks/database/useProjectEntities';
 
 const DARK_BLUE = '#004975';
 
@@ -75,7 +74,7 @@ type ListItemType = Record<string, unknown> & {
   };
 };
 
-type SearchResults = EntityResponseObject[];
+type SearchResults = EntityResponse[];
 export interface ResultsListProps {
   value?: string;
   searchValue?: string;

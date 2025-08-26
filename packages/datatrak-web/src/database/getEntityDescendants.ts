@@ -1,3 +1,6 @@
+// TODO: Some of these are duplicated from datatrak-web-server with tweaks suitable for datatrak-web,
+// Eventually we are going to remove the route from datatrak-web-server
+// and use this function only. So keeping it here for now.
 import { isNil, omitBy } from 'lodash';
 
 import { camelcaseKeys, isNotNullish } from '@tupaia/tsutils';
@@ -91,6 +94,7 @@ const extractFilter = (params: GetEntityDescendantsParams) => {
   const { countryCode, type, parentId, grandparentId, ...restOfFilter } = filter;
 
   const entityFilter = {
+    generational_distance: Number.MAX_SAFE_INTEGER,
     country_code: countryCode,
     type,
     name: searchString
@@ -110,7 +114,7 @@ const extractFilter = (params: GetEntityDescendantsParams) => {
     entityFilter.generational_distance = 2;
   }
 
-  return omitBy(entityFilter, isNil);
+  return omitBy(snakeKeys(entityFilter), isNil);
 };
 
 export const getEntityDescendants = async (
@@ -149,15 +153,12 @@ export const getEntityDescendants = async (
     accessPolicy,
   );
 
-  const dbEntityFilter = extractEntityFilterFromObject(
-    allowedCountries,
-    entityFilter ? snakeKeys(entityFilter) : undefined,
-  );
+  const dbEntityFilter = extractEntityFilterFromObject(allowedCountries, entityFilter);
 
   let recentEntities = [];
 
   // For public surveys
-  if (user?.isLoggedIn) {
+  if (user.isLoggedIn) {
     recentEntities = await models.user.getRecentEntities(
       user.id,
       countryCode as string,

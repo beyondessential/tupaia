@@ -15,7 +15,7 @@ export type ExtendedEntityFieldName = keyof Entity | keyof ExtendedFieldFunction
 
 export type ExtendedEntityFields = Entity & ExtendedFieldFunctions;
 export type EntityResponseObject = {
-  [field in ExtendedEntityFieldName]?: ExtendedEntityFields[field];
+  [field in ExtendedEntityFieldName]: ExtendedEntityFields[field];
 };
 
 type FormatContext = { hierarchyId: string };

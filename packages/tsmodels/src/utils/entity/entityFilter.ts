@@ -183,7 +183,10 @@ export const extractFilterClausesFromQuery = (
 };
 
 export const extractFilterClausesFromObject = (
-  queryObject?: Record<string, string | { comparator: string; comparisonValue: string }>,
+  queryObject?:
+    | Record<string, string | { comparator: string; comparisonValue: string }>
+    | undefined
+    | null,
 ) => {
   if (!queryObject) {
     return null;
@@ -225,7 +228,10 @@ export const extractEntityFilterFromQuery = (allowedCountries: string[], queryFi
 
 export const extractEntityFilterFromObject = (
   allowedCountries: string[],
-  queryObject?: Record<string, string | { comparator: string; comparisonValue: string }>,
+  queryObject?:
+    | Record<string, string | { comparator: string; comparisonValue: string }>
+    | undefined
+    | null,
 ) => {
   const filterClauses = extractFilterClausesFromObject(queryObject);
   return extractEntityFilter(allowedCountries, filterClauses);

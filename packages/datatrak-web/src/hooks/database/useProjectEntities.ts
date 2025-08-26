@@ -1,4 +1,4 @@
-import { Project } from '@tupaia/types';
+import { KeysToCamelCase, Project } from '@tupaia/types';
 import { EntityRecord } from '@tupaia/tsmodels';
 
 import { DatabaseEffectOptions, ResultObject, useDatabaseEffect } from './useDatabaseEffect';
@@ -14,11 +14,18 @@ export type UseProjectEntitiesParams = {
   pageSize?: number;
 };
 
+export interface EntityResponse
+  extends KeysToCamelCase<
+    EntityResponseObject & {
+      isRecent?: boolean;
+    }
+  > {}
+
 export const useProjectEntities = (
   projectCode?: Project['code'],
   params?: GetEntityDescendantsParams,
   options?: DatabaseEffectOptions,
-): ResultObject<EntityResponseObject[]> =>
+): ResultObject<EntityResponse[]> =>
   useDatabaseEffect(
     async (models, accessPolicy, user) => {
       if (!projectCode) {

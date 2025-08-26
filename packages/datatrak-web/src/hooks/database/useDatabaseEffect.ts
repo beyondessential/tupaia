@@ -5,10 +5,9 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { DatatrakWebModelRegistry } from '../../types';
 import { useDatabaseContext } from './useDatabaseContext';
 import { CurrentUser, useCurrentUserContext } from '../../api';
-import { UserAccount } from '@tupaia/types';
 
 export type ResultObject<T> = {
-  data: T | undefined;
+  data: T;
   error: Error | undefined;
   isLoading: boolean;
   isSuccess: boolean;
@@ -27,7 +26,7 @@ export const useCancelableEffect = <T>(
   options: DatabaseEffectOptions,
 ): ResultObject<T> => {
   const { enabled = true, placeholderData, onError } = options;
-  const [data, setData] = useState<T | undefined>(placeholderData as T);
+  const [data, setData] = useState<T>(placeholderData as T);
   const [error, setError] = useState<Error | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

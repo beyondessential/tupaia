@@ -3,13 +3,12 @@ import React, { useState } from 'react';
 import { OnResultFunction, QrReader } from 'react-qr-reader';
 import styled from 'styled-components';
 
-import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { QrCodeScannerIcon } from '@tupaia/ui-components';
 
 import { Button } from '../../components';
 import { ModalCloseButton, Modal, ModalBody } from '../../components/Modal';
 import { isNullish, useHasVideoInput, useIsMobile } from '../../utils';
-import { EntityResponseObject } from '../../utils/formatEntity';
+import { EntityResponse } from '../../hooks/database';
 
 const StyledButton = styled(Button).attrs({
   fullWidth: true,
@@ -137,9 +136,9 @@ const loadingText = (
 
 export interface QrCodeScannerProps {
   disabled?: boolean;
-  onSuccess?: (entity: EntityResponseObject) => void;
+  onSuccess?: (entity: EntityResponse) => void;
   /** Pass `undefined` when data is pending */
-  validEntities: EntityResponseObject[] | undefined;
+  validEntities: EntityResponse[] | undefined;
 }
 
 export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScannerProps) => {

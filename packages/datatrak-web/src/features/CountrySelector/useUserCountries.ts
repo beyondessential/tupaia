@@ -2,17 +2,16 @@ import { ChangeEvent, ChangeEventHandler, useState } from 'react';
 
 import { camelcaseKeys } from '@tupaia/tsutils';
 
-import { UseProjectEntitiesQueryOptions, useCurrentUserContext } from '../../api';
-import { DatabaseEffectOptions, ResultObject, useProjectEntities } from '../../hooks/database';
-import { EntityResponseObject } from '../../utils/formatEntity';
+import { useCurrentUserContext } from '../../api';
+import { DatabaseEffectOptions, EntityResponse, ResultObject, useProjectEntities } from '../../hooks/database';
 
-export type UserCountriesType = Omit<ResultObject<EntityResponseObject[]>, 'data'> & {
-  countries: EntityResponseObject[];
+export type UserCountriesType = Omit<ResultObject<EntityResponse[]>, 'data'> & {
+  countries: EntityResponse[];
   /**
    * @privateRemarks The internal {@link useState} only ever explicitly stores `Country | null`, but
    * `selectedCountry` may be undefined if the {@link useProjectEntities} query is still loading.
    */
-  selectedCountry: EntityResponseObject | null | undefined;
+  selectedCountry: EntityResponse | null | undefined;
   updateSelectedCountry: ChangeEventHandler;
 };
 
@@ -20,7 +19,7 @@ export const useUserCountries = (
   useProjectEntitiesDatabaseEffectOptions?: DatabaseEffectOptions,
 ): UserCountriesType => {
   const user = useCurrentUserContext();
-  const [newSelectedCountry, setSelectedCountry] = useState<EntityResponseObject | null>(null);
+  const [newSelectedCountry, setSelectedCountry] = useState<EntityResponse | null>(null);
 
   const projectCode = user.project?.code;
 
@@ -39,7 +38,7 @@ export const useUserCountries = (
 
     // if the user has a country, return that country if it can be found
     if (user.country && countries?.find(country => country.code === user.country?.code)) {
-      return camelcaseKeys(user.country) as EntityResponseObject;
+      return camelcaseKeys(user.country) as EntityResponse;
     }
 
     // if the selected project is 'explore', return demo land
@@ -60,7 +59,7 @@ export const useUserCountries = (
     updateSelectedCountry: (e: ChangeEvent<HTMLSelectElement>) => {
       const countryCode = e.target.value;
       const newCountry = countries?.find(
-        (country: EntityResponseObject) => country.code === countryCode,
+        (country: EntityResponse) => country.code === countryCode,
       );
       setSelectedCountry(newCountry ?? null);
     },
