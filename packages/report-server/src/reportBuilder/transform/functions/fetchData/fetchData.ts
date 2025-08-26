@@ -1,10 +1,11 @@
 import { yup } from '@tupaia/utils';
 import { Context, updateContext } from '../../../context';
 import { Row } from '../../../types';
-import { createJoin } from './createJoin';
-import { TransformTable } from '../../table';
 import { TransformParser } from '../../parser';
+import { TransformTable } from '../../table';
 import { ExitWithNoDataSignal } from '../../transform';
+import { TransformBuilder } from '..';
+import { createJoin } from './createJoin';
 
 type FetchParams = {
   dataTableCode: string;
@@ -73,7 +74,7 @@ const buildParams = (params: unknown): FetchParams => {
   };
 };
 
-export const buildFetchData = (params: unknown, context: Context) => {
+export const buildFetchData: TransformBuilder = (params, context) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => fetchData(table, builtParams, context);
+  return table => fetchData(table, builtParams, context);
 };

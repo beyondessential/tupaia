@@ -1,29 +1,30 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
-import { DataGrid, FetchLoader, FlexSpaceBetween } from '@tupaia/ui-components';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { Chart } from '@tupaia/ui-chart-components';
+import { DataGrid, FetchLoader, FlexSpaceBetween } from '@tupaia/ui-components';
+import { getColumns, getRows } from '../../utilities';
 import { JsonEditor } from '../../widgets';
-import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
+import {
+  DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM,
+  DASHBOARD_ITEM_VIZ_TYPES,
+  MAP_OVERLAY_VIZ_TYPES,
+} from '../constants';
 import {
   usePreviewDataContext,
   useVisualisationContext,
   useVizConfigContext,
   useVizConfigErrorContext,
 } from '../context';
-import { IdleMessage } from './IdleMessage';
-import { getColumns, getRows } from '../../utilities';
-import {
-  DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM,
-  DASHBOARD_ITEM_VIZ_TYPES,
-  MAP_OVERLAY_VIZ_TYPES,
-} from '../constants';
-import { PresentationConfigAssistant } from '../features/PresentationConfigAssistant/PresentationConfigAssistant';
-import { PresentationJsonToggle } from './JsonToggleButton';
 import { usePresentationConfigAssistantContext } from '../context/PresentationConfigAssistant';
+import { PresentationConfigAssistant } from '../features/PresentationConfigAssistant/PresentationConfigAssistant';
+import { IdleMessage } from './IdleMessage';
+import { PresentationJsonToggle } from './JsonToggleButton';
+import { TabPanel } from './TabPanel';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -163,7 +164,6 @@ export const PreviewSection = () => {
 
   const {
     data: tableData = { columns: [], rows: [] },
-    isLoading: isTableLoading,
     isFetching: isTableFetching,
     isError: isTableError,
     error: tableError,
@@ -171,13 +171,12 @@ export const PreviewSection = () => {
 
   const {
     data: visualisationData,
-    isLoading: isVisualisationLoading,
     isFetching: isVisualisationFetching,
     isError: isVisualisationError,
     error: visualisationError,
   } = runReportPreview('presentation');
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_event, newValue) => {
     setTab(newValue);
     setFetchEnabled(true);
   };
@@ -233,8 +232,10 @@ export const PreviewSection = () => {
   };
 
   const { columns: transformedColumns = [] } = tableData;
-  const columns = useMemo(() => (tab === 0 ? getColumns(tableData) : []), [tab, tableData]);
-  const rows = useMemo(() => (tab === 0 ? getRows(tableData) || [] : []), [tab, tableData]);
+  const [columns, rows] = useMemo(
+    () => (tab === 0 ? [getColumns(tableData), getRows(tableData)] : [[], []]),
+    [tab, tableData],
+  );
   const report = useMemo(
     () => ({ data: visualisationData, type: visualisation?.output?.type }),
     [visualisationData],
@@ -265,7 +266,7 @@ export const PreviewSection = () => {
               isError={isTableError}
               error={tableError}
               isNoData={!rows.length}
-              noDataMessage="No Data Found"
+              noDataMessage="No data found"
             >
               <DataGrid rows={rows} columns={columns} autoPageSize />
             </FetchLoader>
