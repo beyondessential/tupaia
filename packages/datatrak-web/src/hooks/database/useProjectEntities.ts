@@ -34,7 +34,7 @@ export const useProjectEntities = (
 
       return getEntityDescendants(models, projectCode, params, user!, accessPolicy!);
     },
-    [projectCode, JSON.stringify(options)],
+    [projectCode, JSON.stringify(params), options?.enabled],
     {
       ...options,
       enabled: !!projectCode && (options?.enabled ?? true),
