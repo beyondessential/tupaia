@@ -124,7 +124,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
         : [
             ...recentEntities
               .map(id => {
-                const entity = entities.find(e => e.id === id);
+                const entity = entities.find(e => e.id === id); // TODO: Handle when `id` not in projection
                 if (!entity) return null; // If the entity is not found, return null so it is filtered out. This can happen if the entity has been deleted or if the entity is new and the entity hierarchy cache has not refreshed yet
                 return {
                   ...entity,
