@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { JOIN_TYPES } from '@tupaia/database';
+import { JOIN_TYPES, SqlQuery } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import {
   assertSurveyGetPermissions,
@@ -28,19 +28,16 @@ export class GETSurveys extends GETHandler {
   defaultJoinType = JOIN_TYPES.LEFT_OUTER;
 
   async findSingleRecord(surveyId, options) {
-    const survey = await super.findSingleRecord(surveyId, options);
-
     const surveyChecker = accessPolicy =>
       assertSurveyGetPermissions(accessPolicy, this.models, surveyId);
-
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyChecker]));
 
-    // 1. Add surveyQuestions, see README
-    const surveyQuestionsValues = await this.getSurveyQuestionsValues([surveyId]);
-
-    // 2. Add countryNames
-    const countryNames = await this.getSurveyCountryNames([surveyId]);
-    const countryCodes = await this.getSurveyCountryCodes([surveyId]);
+    const survey = await super.findSingleRecord(surveyId, options);
+    const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
+      this.getSurveyQuestionsValues([surveyId]), // 1. Add surveyQuestions, see README
+      this.getSurveyCountryNames([surveyId]), // 2. Add countryNames
+      this.getSurveyCountryCodes([surveyId]), // 3. Add countryCodes
+    ]);
 
     return {
       ...survey,
@@ -53,20 +50,12 @@ export class GETSurveys extends GETHandler {
   async findRecords(criteria, options) {
     const records = await super.findRecords(criteria, options);
 
-    // 1. Add surveyQuestions, see README
-    const surveyQuestionsValues = await this.getSurveyQuestionsValues(
-      records.filter(record => record.id).map(record => record.id),
-    );
-
-    // 2. Add countryNames
-    const countryNames = await this.getSurveyCountryNames(
-      records.filter(record => record.id).map(record => record.id),
-    );
-
-    // 3. Add countryCodes
-    const countryCodes = await this.getSurveyCountryCodes(
-      records.filter(record => record.id).map(record => record.id),
-    );
+    const recordIds = records.filter(record => record.id).map(record => record.id);
+    const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
+      this.getSurveyQuestionsValues(recordIds), // 1. Add surveyQuestions, see README
+      this.getSurveyCountryNames(recordIds), // 2. Add countryNames
+      this.getSurveyCountryCodes(recordIds), // 3. Add countryCodes
+    ]);
 
     return records.map(record => ({
       ...record,
@@ -121,7 +110,7 @@ export class GETSurveys extends GETHandler {
     if (surveyIds.length === 0 || !this.includeQuestions) return {};
     const rows = await this.database.executeSql(
       `
-    SELECT 
+    SELECT
       s.id as survey_id,
       ss.id as survey_screen_id,
       ss.screen_number as screen_number,
@@ -157,15 +146,18 @@ export class GETSurveys extends GETHandler {
     if (surveyIds.length === 0 || !this.includeCountryNames) return {};
     const rows = await this.database.executeSql(
       `
-    SELECT survey.id, array_agg(country.name) as country_names
-    FROM survey
-    LEFT JOIN country ON (country.id = any(survey.country_ids))
-    WHERE survey.id in (${surveyIds.map(() => '?').join(',')})
-    GROUP BY survey.id;
-    `,
+        SELECT
+          survey.id survey_id,
+          ARRAY_AGG(country.name ORDER BY country.name) country_names
+        FROM
+          survey
+          LEFT JOIN country ON (country.id = ANY (survey.country_ids))
+        WHERE
+          survey.id IN (${SqlQuery.record(surveyIds)}) GROUP BY survey.id;
+      `,
       surveyIds,
     );
-    return Object.fromEntries(rows.map(row => [row.id, row.country_names]));
+    return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
   }
 
   async getSurveyCountryCodes(surveyIds) {

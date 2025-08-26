@@ -2,6 +2,7 @@ import { SyncTickFlags } from '@tupaia/constants';
 
 export const SYNCING_TABLES = [
   'answer',
+  'country',
   'entity',
   'entity_hierarchy',
   'entity_parent_child_relation',

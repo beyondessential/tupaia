@@ -11,7 +11,6 @@ import { RECORDS } from '../records';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 
 export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
-
 export class FeedItemRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.FEED_ITEM;
 
