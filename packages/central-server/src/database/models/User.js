@@ -50,7 +50,7 @@ export class UserModel extends CommonUserModel {
       'position',
       'mobile_number',
       'password_hash',
-      'password_salt',
+      'legacy_password_salt',
       'verified_email',
       'profile_image',
       'primary_platform',
