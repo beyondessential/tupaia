@@ -6,13 +6,14 @@ import styled from 'styled-components';
 import { Country, Project, SurveyScreenComponentConfig } from '@tupaia/types';
 import { SpinningLoader, useDebounce } from '@tupaia/ui-components';
 
-import { useEntityById, useProjectEntities } from '../../api';
+import { useEntityById } from '../../api';
 import { useSurveyForm } from '../Survey';
 import { QrCodeScanner, QrCodeScannerProps } from './QrCodeScanner';
 import { ResultsList, ResultsListProps } from './ResultsList';
 import { SearchField } from './SearchField';
 import { useEntityBaseFilters } from './useEntityBaseFilters';
 import { OrDivider } from '../../components';
+import { useProjectEntities } from '../../hooks/database';
 
 const Container = styled.div`
   width: 100%;
@@ -39,8 +40,13 @@ const useSearchResults = (
     projectCode,
     {
       fields: ['id', 'parent_name', 'code', 'name', 'type'],
-      filter,
-      searchString: debouncedSearch,
+      filter: {
+        ...filter,
+        name: {
+          comparator: '=@',
+          comparisonValue: `%${debouncedSearch}%`,
+        },
+      },
       pageSize: 100,
     },
     { enabled: !disableSearch },
@@ -132,8 +138,8 @@ export const EntitySelector = ({
   });
   const {
     data: searchResults,
-    isFetching: isFetchingSearchResults,
-    isFetched,
+    isLoading: isFetchingSearchResults,
+    isSuccess: isFetched,
   } = useSearchResults(searchValue, filters, projectCode, disableSearch);
 
   const { isResponseScreen, isReviewScreen } = useSurveyForm();

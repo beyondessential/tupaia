@@ -30,6 +30,10 @@ export { DebugLogModel, DebugLogRecord } from './DebugLog';
 export { EntityHierarchyModel, EntityHierarchyRecord } from './EntityHierarchy';
 export { EntityModel, EntityRecord, EntityFilter, EntityFilterFields } from './Entity';
 export {
+  EntityParentChildRelationModel,
+  EntityParentChildRelationRecord,
+} from './EntityParentChildRelation';
+export {
   ExternalDatabaseConnectionModel,
   ExternalDatabaseConnectionRecord,
 } from './ExternalDatabaseConnection';
@@ -63,4 +67,5 @@ export {
 } from './UserCountryAccessAttempt';
 export { TaskModel, TaskRecord } from './Task';
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
+export { TombstoneModel, TombstoneRecord } from './Tombstone';
 export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';

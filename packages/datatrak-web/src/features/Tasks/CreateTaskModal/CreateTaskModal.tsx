@@ -92,7 +92,6 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     navigate(ROUTES.PROJECT_SELECT);
   };
   const { mutate: editUser } = useEditUser(navigateToProjectScreen);
-
   const isMobile = useIsMobile();
 
   const defaultDueDate = endOfToday();
@@ -118,6 +117,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   } = formContext;
 
   const handleCountriesError = async (error: any) => {
+    // TODO: No longer work for offline
     if (error?.code !== 403) return;
     // in this case it is a permissions error, so the user needs to be redirected to the project screen after the user's project is updated
     editUser({ projectId: null });
@@ -183,7 +183,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     >
       <Wrapper>
         <LoadingContainer isLoading={isLoadingData} heading="Loading data for project" text="">
-          <TaskForm formContext={formContext} onSubmit={createTask}>
+          <TaskForm formContext={formContext} onSubmit={handleCreateTask}>
             <CountrySelectorWrapper>
               <CountrySelector
                 countries={countries}

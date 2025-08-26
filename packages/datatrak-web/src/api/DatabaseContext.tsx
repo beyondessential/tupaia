@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { LoadingScreen } from '@tupaia/ui-components';
@@ -28,6 +28,5 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
     return <LoadingScreen />;
   }
 
-  const value = useMemo(() => ({ models }), [models]);
-  return <DatabaseContext.Provider value={value}>{children}</DatabaseContext.Provider>;
+  return <DatabaseContext.Provider value={{ models }}>{children}</DatabaseContext.Provider>;
 };

@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import log from 'winston';
+
 import { DatatrakWebUserRequest } from '@tupaia/types';
 
 import { useDatabaseContext } from '../hooks/database';
@@ -22,7 +24,7 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
   const [isSyncScheduled, setIsSyncScheduled] = useState(false);
   const { models } = useDatabaseContext();
   const { id: userId } = useCurrentUserContext();
-  const { data: syncedProjectIds, onFetch: refetchSyncedProjectIds } = useProjectsInSync();
+  const { data: projectsInSync = [], onFetch: refetchSyncedProjectIds } = useProjectsInSync();
 
   useEffect(() => {
     const initSyncManager = async () => {
@@ -44,10 +46,10 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
 
   useEffect(() => {
     // Only schedule the sync if conditions are met
-    if (!isSyncScheduled && clientSyncManager && syncedProjectIds?.length) {
+    if (!isSyncScheduled && clientSyncManager && projectsInSync.length) {
       const intervalId = setInterval(() => {
-        console.log('Starting regular sync:', { syncedProjectIds });
-        clientSyncManager.triggerSync(syncedProjectIds, false);
+        log.info('Starting regular sync:', { projectsInSync });
+        clientSyncManager.triggerSync(projectsInSync, false);
       }, SYNC_INTERVAL);
 
       setIsSyncScheduled(true);
@@ -57,7 +59,7 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
         setIsSyncScheduled(false);
       };
     }
-  }, [clientSyncManager, syncedProjectIds?.length]);
+  }, [clientSyncManager, projectsInSync.length]);
 
   return <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>{children}</SyncContext.Provider>;
 };
