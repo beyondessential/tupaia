@@ -164,10 +164,9 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
       const permissionGroupId = permissionGroupIdByName[permissionGroupName];
       const countryIds = countryCodes.map(code => countryIdByCode[code]);
-      return {
-        ...result,
-        [permissionGroupId]: countryIds,
-      };
+
+      result[permissionGroupId] = countryIds;
+      return result;
     }, {});
   }
 

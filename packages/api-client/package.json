@@ -25,7 +25,7 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "lodash.isequal": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "node-fetch": "^1.7.3",

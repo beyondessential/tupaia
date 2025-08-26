@@ -25,7 +25,6 @@ export {
   LoginRequest,
 } from './orchestrator';
 export * from './types';
-export * from './models';
 export { TestableServer } from './testUtilities';
 
 // These models previously lived in @tupaia/server-boilerplate, but as now need the same models in

@@ -1,7 +1,4 @@
 import {
-  FACT_CURRENT_SYNC_TICK,
-  FACT_LAST_SUCCESSFUL_SYNC_PULL,
-  FACT_LAST_SUCCESSFUL_SYNC_PUSH,
   createClientSnapshotTable,
   dropAllSnapshotTables,
   dropSnapshotTable,
@@ -12,7 +9,12 @@ import {
   getModelsForPull,
   withDeferredSyncSafeguards,
 } from '@tupaia/sync';
-import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
+import {
+  SYNC_STREAM_MESSAGE_KIND,
+  FACT_CURRENT_SYNC_TICK,
+  FACT_LAST_SUCCESSFUL_SYNC_PULL,
+  FACT_LAST_SUCCESSFUL_SYNC_PUSH,
+} from '@tupaia/constants';
 
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
@@ -74,10 +76,13 @@ export class ClientSyncManager {
     }
 
     const lastSyncedTick =
-        (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
+      (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
 
     const startTime = performance.now();
-    const { sessionId, startedAtTick, status } = await this.startSyncSession(urgent, lastSyncedTick);
+    const { sessionId, startedAtTick, status } = await this.startSyncSession(
+      urgent,
+      lastSyncedTick,
+    );
 
     if (!sessionId) {
       // we're queued

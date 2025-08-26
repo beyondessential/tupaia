@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { post } from '../api';
 import { ROUTES } from '../../constants';
 import { getBrowserTimeZone } from '@tupaia/utils';
+import { useDatabaseContext } from '../../hooks/database';
+import { useSyncContext } from '../SyncContext';
 
 type LoginCredentials = {
   email: string;
@@ -14,6 +16,8 @@ export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const from = useFromLocation();
+  const { models } = useDatabaseContext();
+  const { refetchSyncedProjectIds } = useSyncContext();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
@@ -33,6 +37,13 @@ export const useLogin = () => {
       onSuccess: async ({ user }) => {
         await queryClient.invalidateQueries();
         await queryClient.removeQueries();
+
+        if (user.preferences?.projectId) {
+          await models.localSystemFact.addProjectForSync(user.preferences.projectId);
+    
+          // Trigger immediate refresh of synced project IDs to enable immediate syncing
+          refetchSyncedProjectIds();
+        }
 
         if (from) {
           navigate(from, { state: null });
