@@ -506,9 +506,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   async getRelativesOfEntities(hierarchyId, entityIds, criteria) {
     // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
-    const ancestors = (await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria))
-      .slice()
-      .reverse();
+    const ancestors = (
+      await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria)
+    ).toReversed();
 
     const self = await this.find({
       ...criteria,
@@ -548,7 +548,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             UNION
 
             -- all child entities of root project entities
-            SELECT child_id as entity_id, entity_hierarchy_id 
+            SELECT child_id as entity_id, entity_hierarchy_id
             FROM entity_parent_child_relation
           )
         `,
@@ -558,9 +558,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         projectIds: `CASE WHEN entity.type = 'country' THEN NULL ELSE ARRAY_AGG(project.id) END`,
       }),
       joins: `
-        LEFT JOIN entities_to_sync 
-          ON entities_to_sync.entity_id = entity.id 
-        LEFT JOIN project 
+        LEFT JOIN entities_to_sync
+          ON entities_to_sync.entity_id = entity.id
+        LEFT JOIN project
           ON project.entity_hierarchy_id = entities_to_sync.entity_hierarchy_id
       `,
       groupBy: ['entity.id'],
