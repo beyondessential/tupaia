@@ -7,7 +7,7 @@ export const useProjectCountryAccessList = (projectCode: ProjectCode) => {
   return useQuery<ProjectCountryAccessListRequest.ResBody>(
     ['me/countries', projectCode],
     async () =>
-      await get(`me/countries`, {
+      await get('me/countries', {
         params: { projectCode },
       }),
     {
