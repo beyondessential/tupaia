@@ -17,6 +17,11 @@ type NotNullValues<T> = {
 
 type ExtractArrays<T> = T extends unknown[] ? T : never;
 
+type QueryObject =
+  | Record<string, string | { comparator: string; comparisonValue: string }>
+  | undefined
+  | null;
+
 const getDefaultFilter = (allowedCountries: string[]) => ({
   [QueryConjunctions.AND]: {
     country_code: allowedCountries,
@@ -182,9 +187,7 @@ export const extractFilterClausesFromQuery = (
   return queryFilter.split(CLAUSE_DELIMITER).map(toFilterClauseFromQueryString);
 };
 
-export const extractFilterClausesFromObject = (
-  queryObject?: Record<string, string | { comparator: string; comparisonValue: string }>,
-) => {
+export const extractFilterClausesFromObject = (queryObject?: QueryObject) => {
   if (!queryObject) {
     return null;
   }
@@ -225,7 +228,7 @@ export const extractEntityFilterFromQuery = (allowedCountries: string[], queryFi
 
 export const extractEntityFilterFromObject = (
   allowedCountries: string[],
-  queryObject?: Record<string, string | { comparator: string; comparisonValue: string }>,
+  queryObject?: QueryObject,
 ) => {
   const filterClauses = extractFilterClausesFromObject(queryObject);
   return extractEntityFilter(allowedCountries, filterClauses);
