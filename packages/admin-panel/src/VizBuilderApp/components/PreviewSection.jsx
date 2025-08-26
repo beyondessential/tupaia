@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
 import { DataGrid, FetchLoader, FlexSpaceBetween } from '@tupaia/ui-components';
 import { Chart } from '@tupaia/ui-chart-components';
-import { JsonEditor, JsonTreeEditor } from '../../widgets';
+import { JsonEditor } from '../../widgets';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import {
@@ -21,6 +21,9 @@ import {
   DASHBOARD_ITEM_VIZ_TYPES,
   MAP_OVERLAY_VIZ_TYPES,
 } from '../constants';
+import { PresentationConfigAssistant } from '../features/PresentationConfigAssistant/PresentationConfigAssistant';
+import { PresentationJsonToggle } from './JsonToggleButton';
+import { usePresentationConfigAssistantContext } from '../context/PresentationConfigAssistant';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -63,17 +66,31 @@ const ChartContainer = styled.div`
   padding: 4rem 2rem 2rem;
   max-height: 550px;
   min-height: 450px;
-  min-width: 540px;
+  overflow: auto;
   flex: 2;
   border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
 `;
 
+const ChartPreviewSidebar = styled.article`
+  block-size: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  border-inline-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+`;
+
+const EditorActionBar = styled.header`
+  background-color: white;
+  border-block-end: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  display: flex;
+  justify-content: end;
+`;
+
 const EditorContainer = styled.div`
-  min-width: 440px;
+  width: 330px;
   min-height: 500px;
-  flex: 1;
-  border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
-  border-left: 1px solid ${({ theme }) => theme.palette.grey['400']};
+  display: ${props => (props.showPresentationAsJson ? 'flex' : 'none')};
+  flex-direction: column;
 
   > div {
     width: 100%;
@@ -83,6 +100,10 @@ const EditorContainer = styled.div`
   .jsoneditor {
     border: none;
   }
+`;
+
+const PresentationConfigAssistantContainer = styled.div`
+  ${props => (props.showPresentationAsJson ? 'display: none' : '')};
 `;
 
 const TABS = {
@@ -100,11 +121,16 @@ const TABS = {
 
 const getTab = index => Object.values(TABS).find(tab => tab.index === index);
 
+const ASSISTANT_ERROR_MESSAGE =
+  'Sorry, I’m having trouble with that now. Please edit the chart presentation using JSON mode';
+
 export const PreviewSection = () => {
   const [tab, setTab] = useState(0);
+  const editorRef = useRef(null);
 
   const { dashboardItemOrMapOverlay } = useParams();
-  const { fetchEnabled, setFetchEnabled, showData, jsonToggleEnabled } = usePreviewDataContext();
+  const { fetchEnabled, setFetchEnabled, setShowData, showData, showPresentationAsJson } =
+    usePreviewDataContext();
   const { hasPresentationError, setPresentationError } = useVizConfigErrorContext();
 
   const [
@@ -119,27 +145,37 @@ export const PreviewSection = () => {
       : MAP_OVERLAY_VIZ_TYPES[vizType]?.schema;
 
   const [config, setConfig] = useState(null);
+  const runReportPreview = previewMode =>
+    useReportPreview({
+      visualisation: visualisationForFetchingData,
+      project: project?.['project.code'],
+      location: location?.code,
+      startDate,
+      endDate,
+      testData,
+      enabled: fetchEnabled,
+      onSettled: () => {
+        setFetchEnabled(false);
+      },
+      dashboardItemOrMapOverlay,
+      previewMode,
+    });
 
   const {
-    data: reportData = { columns: [], rows: [] },
-    isLoading,
-    isFetching,
-    isError,
-    error,
-  } = useReportPreview({
-    visualisation: visualisationForFetchingData,
-    project: project?.['project.code'],
-    location: location?.code,
-    startDate,
-    endDate,
-    testData,
-    enabled: fetchEnabled,
-    onSettled: () => {
-      setFetchEnabled(false);
-    },
-    dashboardItemOrMapOverlay,
-    previewMode: getTab(tab).previewMode,
-  });
+    data: tableData = { columns: [], rows: [] },
+    isLoading: isTableLoading,
+    isFetching: isTableFetching,
+    isError: isTableError,
+    error: tableError,
+  } = runReportPreview('data');
+
+  const {
+    data: visualisationData,
+    isLoading: isVisualisationLoading,
+    isFetching: isVisualisationFetching,
+    isError: isVisualisationError,
+    error: visualisationError,
+  } = runReportPreview('presentation');
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
@@ -155,14 +191,53 @@ export const PreviewSection = () => {
     setPresentationError(null);
   };
 
-  const columns = useMemo(() => (tab === 0 ? getColumns(reportData) : []), [reportData]);
-  const rows = useMemo(() => (tab === 0 ? getRows(reportData) || [] : []), [reportData]);
+  const { addVisualisationMessage } = usePresentationConfigAssistantContext();
+
+  const handleAssistantResponse = async completion => {
+    let assistantReply = null;
+
+    // If the assistant is unable to generate a valid presentation, set the error state
+    if (completion.status_code === 'error') {
+      assistantReply = completion.message;
+      // We don't need to set the presentation error here because
+      // presentation error is only when the value is already set to the JSONEditor,
+      // we will show the error message in the chat instead
+    }
+
+    // If the assistant is able to generate a presentation option,
+    // it's still not guaranteed that the presentation option is valid,
+    // so we need to validate it using the JSONEditor ref
+    if (completion.status_code === 'success') {
+      editorRef.current.set(completion.presentationConfig);
+      const validationError = await editorRef.current.validate();
+      if (validationError.length > 0) {
+        // if the presentation option is invalid, revert to the previous presentation
+        // and respond with an error message
+        editorRef.current.set(visualisation.presentation);
+        assistantReply = ASSISTANT_ERROR_MESSAGE;
+      } else {
+        // if the presentation option is valid, set the presentation value
+        assistantReply = completion.message;
+        setPresentationValue(completion.presentationConfig);
+        setFetchEnabled(true);
+        setShowData(true);
+      }
+    }
+
+    // add the assistant reply to the messages array
+    addVisualisationMessage({
+      id: Date.now(),
+      text: assistantReply,
+      isOwn: false,
+    });
+  };
+
+  const { columns: transformedColumns = [] } = tableData;
+  const columns = useMemo(() => (tab === 0 ? getColumns(tableData) : []), [tab, tableData]);
+  const rows = useMemo(() => (tab === 0 ? getRows(tableData) || [] : []), [tab, tableData]);
   const report = useMemo(
-    () => ({
-      data: reportData,
-      type: visualisation?.output?.type,
-    }),
-    [reportData],
+    () => ({ data: visualisationData, type: visualisation?.output?.type }),
+    [visualisationData],
   );
 
   // only update Chart Preview when play button is clicked
@@ -186,9 +261,9 @@ export const PreviewSection = () => {
         <TableContainer>
           {showData ? (
             <FetchLoader
-              isLoading={isLoading || isFetching}
-              isError={isError}
-              error={error}
+              isLoading={isTableFetching}
+              isError={isTableError}
+              error={tableError}
               isNoData={!rows.length}
               noDataMessage="No data found"
             >
@@ -203,34 +278,48 @@ export const PreviewSection = () => {
         <Container>
           <ChartContainer>
             {showData ? (
-              <FetchLoader isLoading={isLoading || isFetching} isError={isError} error={error}>
+              <FetchLoader
+                isLoading={isVisualisationFetching}
+                isError={isVisualisationError}
+                error={visualisationError}
+              >
                 <Chart report={report} config={config} />
               </FetchLoader>
             ) : (
               <IdleMessage />
             )}
           </ChartContainer>
-          <EditorContainer>
-            {!jsonToggleEnabled && presentationSchema ? (
-              <JsonTreeEditor
-                name="presentation"
-                value={visualisation.presentation}
-                onChange={setPresentationValue}
-                onInvalidChange={handleInvalidPresentationChange}
-                mainMenuBar={false}
-                schema={presentationSchema}
+          <ChartPreviewSidebar>
+            <EditorActionBar>
+              <PresentationJsonToggle />
+            </EditorActionBar>
+            <PresentationConfigAssistantContainer
+              showPresentationAsJson={showPresentationAsJson && presentationSchema}
+            >
+              <PresentationConfigAssistant
+                presentationOptions={visualisation.presentation}
+                dataStructure={{ columns: transformedColumns }}
+                onAssistantResponse={handleAssistantResponse}
               />
-            ) : (
+            </PresentationConfigAssistantContainer>
+            <EditorContainer showPresentationAsJson={showPresentationAsJson}>
               <JsonEditor
+                // When manually set the new presentation option by AI Presentation Options Assistant,
+                // JSONEditor library for some reasons doesn't re-render the value until the user clicks on the editor,
+                // so this is a workaround to force it to re-render whenever we switch it back to JSON mode
+                key={showPresentationAsJson}
                 value={visualisation.presentation}
                 onChange={setPresentationValue}
                 onInvalidChange={handleInvalidPresentationChange}
                 mode="code"
                 mainMenuBar={false}
                 schema={presentationSchema}
+                editorRef={ref => {
+                  editorRef.current = ref;
+                }}
               />
-            )}
-          </EditorContainer>
+            </EditorContainer>
+          </ChartPreviewSidebar>
         </Container>
       </TabPanel>
     </>
