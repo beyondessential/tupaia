@@ -5,7 +5,7 @@ import { isNil, omitBy } from 'lodash';
 
 import { camelcaseKeys, isNotNullish } from '@tupaia/tsutils';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
+import { EntityRecord, ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
 import { snakeKeys } from '@tupaia/utils';
 
 import { DatatrakWebModelRegistry } from '../types';
@@ -84,7 +84,33 @@ const getAllowedCountries = async (
   return allowedCountries;
 };
 
-const extractFilter = (params: GetEntityDescendantsParams) => {
+const getRecentEntities = async (
+  models: DatatrakWebModelRegistry,
+  user: CurrentUser,
+  countryCode: string,
+  type: string,
+  entities: EntityRecord[],
+) => {
+  // For public surveys
+  if (user.isLoggedIn) {
+    const recentEntities = await models.user.getRecentEntities(
+      user.id,
+      countryCode as string,
+      type as string,
+    );
+    return recentEntities
+      .map((id: string) => {
+        const entity = entities.find((e: any) => e.id === id);
+        if (!entity) return null;
+        return { ...entity, isRecent: true };
+      })
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
+const buildEntityFilter = (params: GetEntityDescendantsParams) => {
   const { filter, searchString } = params;
 
   if (!filter) {
@@ -94,7 +120,6 @@ const extractFilter = (params: GetEntityDescendantsParams) => {
   const { countryCode, type, parentId, grandparentId, ...restOfFilter } = filter;
 
   const entityFilter = {
-    generational_distance: Number.MAX_SAFE_INTEGER,
     country_code: countryCode,
     type,
     name: searchString
@@ -105,14 +130,6 @@ const extractFilter = (params: GetEntityDescendantsParams) => {
       : undefined,
     ...restOfFilter,
   };
-
-  if (parentId) {
-    // If parentId is provided, we just want to get the children of that entity
-    entityFilter.generational_distance = 1;
-  } else if (grandparentId) {
-    // If grandparentId is provided, we just want to get the grandchildren of that entity
-    entityFilter.generational_distance = 2;
-  }
 
   return omitBy(snakeKeys(entityFilter), isNil);
 };
@@ -134,7 +151,7 @@ export const getEntityDescendants = async (
     pageSize = DEFAULT_PAGE_SIZE,
   } = params;
 
-  const entityFilter = extractFilter(params);
+  const entityFilter = buildEntityFilter(params);
 
   const project = await models.project.findOne({ code: projectCode });
 
@@ -143,7 +160,10 @@ export const getEntityDescendants = async (
     throw new Error('Project entity hierarchy ID is not set');
   }
 
-  const rootEntityId = parentId || grandparentId || (project.entity_id as string);
+  const rootEntityId = parentId || grandparentId || project.entity_id;
+  if (!rootEntityId) {
+    throw new Error('No valid rootEntity found');
+  }
 
   const allowedCountries = await getAllowedCountries(
     models,
@@ -155,15 +175,12 @@ export const getEntityDescendants = async (
 
   const dbEntityFilter = extractEntityFilterFromObject(allowedCountries, entityFilter);
 
-  let recentEntities = [];
-
-  // For public surveys
-  if (user.isLoggedIn) {
-    recentEntities = await models.user.getRecentEntities(
-      user.id,
-      countryCode as string,
-      type as string,
-    );
+  if (parentId) {
+    // If parentId is provided, we just want to get the children of that entity
+    dbEntityFilter.generational_distance = 1;
+  } else if (grandparentId) {
+    // If grandparentId is provided, we just want to get the grandchildren of that entity
+    dbEntityFilter.generational_distance = 2;
   }
 
   const entities = await models.entity.getDescendantsFromParentChildRelation(
@@ -176,19 +193,18 @@ export const getEntityDescendants = async (
     },
   );
 
+  const recentEntities = await getRecentEntities(
+    models,
+    user,
+    countryCode as string,
+    type as string,
+    entities,
+  );
+
   const sortedEntities = searchString
     ? sortSearchResults(searchString, entities)
     : [
-        ...recentEntities
-          .map((id: string) => {
-            const entity = entities.find((e: any) => e.id === id);
-            if (!entity) return null; // If the entity is not found, return null so it is filtered out. This can happen if the entity has been deleted or if the entity is new and the entity hierarchy cache has not refreshed yet
-            return {
-              ...entity,
-              isRecent: true,
-            };
-          })
-          .filter(Boolean),
+        ...recentEntities,
         ...entities.sort((a: any, b: any) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
       ];
 
