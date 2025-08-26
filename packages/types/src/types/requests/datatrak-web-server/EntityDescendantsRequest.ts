@@ -1,5 +1,5 @@
-import { Country, Entity, Project } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
+import { Country, Entity, Project } from '../../models';
 
 export interface EntityResponse
   extends KeysToCamelCase<
@@ -23,7 +23,7 @@ export type ReqQuery = {
     projectCode: Project['code'];
     grandparentId?: Entity['id'];
     parentId?: Entity['id'];
-    type?: string;
+    type?: Entity['type'];
   };
   searchString?: string;
   pageSize?: number;

@@ -1,3 +1,4 @@
+import { Entity } from '@tupaia/types';
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
 
@@ -158,7 +159,7 @@ export class EntityApi extends BaseApi {
     },
     includeRootEntity = false,
     isPublic = false,
-  ) {
+  ): Promise<Partial<Entity>[]> {
     const { pageSize, ...otherQueryOptions } = queryOptions || {};
     const params: {
       pageSize?: number;

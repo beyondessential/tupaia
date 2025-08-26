@@ -12,7 +12,7 @@ export type UseProjectEntitiesQueryResult =
 
 export const useProjectEntities = (
   projectCode?: Project['code'],
-  params?: DatatrakWebEntityDescendantsRequest.ReqBody,
+  params?: DatatrakWebEntityDescendantsRequest.ReqQuery,
   useQueryOptions?: UseProjectEntitiesQueryOptions,
 ): UseProjectEntitiesQueryResult => {
   const getEntityDescendants = async () => {

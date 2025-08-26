@@ -1,3 +1,3 @@
 import { EntityTypeEnum } from '../models';
 
-export type EntityType = `${EntityTypeEnum}` | string;
+export type EntityType = EntityTypeEnum;

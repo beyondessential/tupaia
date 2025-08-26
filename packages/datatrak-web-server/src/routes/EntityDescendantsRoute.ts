@@ -1,16 +1,19 @@
-import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebEntityDescendantsRequest, UserAccount } from '@tupaia/types';
-import { TupaiaApiClient } from '@tupaia/api-client';
-import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import { Request } from 'express';
+
+import { TupaiaApiClient } from '@tupaia/api-client';
+import { Route } from '@tupaia/server-boilerplate';
+import { isNotNullish } from '@tupaia/tsutils';
+import { Country, DatatrakWebEntityDescendantsRequest, Entity, UserAccount } from '@tupaia/types';
 import { sortSearchResults } from '../utils';
 
-export type EntityDescendantsRequest = Request<
-  DatatrakWebEntityDescendantsRequest.Params,
-  DatatrakWebEntityDescendantsRequest.ResBody,
-  DatatrakWebEntityDescendantsRequest.ReqBody,
-  DatatrakWebEntityDescendantsRequest.ReqQuery
->;
+export interface EntityDescendantsRequest
+  extends Request<
+    DatatrakWebEntityDescendantsRequest.Params,
+    DatatrakWebEntityDescendantsRequest.ResBody,
+    DatatrakWebEntityDescendantsRequest.ReqBody,
+    DatatrakWebEntityDescendantsRequest.ReqQuery
+  > {}
 
 const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'];
 
@@ -27,7 +30,7 @@ async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
 
 const getRecentEntities = (
   currentUser: UserAccount,
-  countryCode: string | undefined,
+  countryCode: Country['code'] | undefined,
   type: string | undefined,
 ) => {
   const { recent_entities: userRecentEntities } = currentUser.preferences;
@@ -40,7 +43,7 @@ const getRecentEntities = (
     return [];
   }
 
-  const entityTypes = type.split(',');
+  const entityTypes = type.split(',') as Entity['type'][];
   const recentEntitiesOfTypes = entityTypes.flatMap(
     entityType => userRecentEntities[countryCode][entityType] ?? [],
   );
@@ -54,7 +57,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
     const { services } = ctx;
     const isLoggedIn = !!session;
 
-    let recentEntities: string[] = [];
+    let recentEntities: Entity['id'][] = [];
 
     const {
       filter: { countryCode, projectCode, grandparentId, parentId, type, ...restOfFilter },
@@ -82,7 +85,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       ...restOfFilter,
     };
 
-    let entityCode = projectCode as string;
+    let entityCode: Entity['code'] = projectCode;
 
     if (parentId) {
       // If parentId is provided, we just want to get the children of that entity
@@ -112,21 +115,29 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       !isLoggedIn,
     );
 
-    const sortedEntities = searchString
-      ? sortSearchResults(searchString, entities)
-      : [
-          ...recentEntities
-            .map((id: string) => {
-              const entity = entities.find((e: any) => e.id === id);
-              if (!entity) return null; // If the entity is not found, return null so it is filtered out. This can happen if the entity has been deleted or if the entity is new and the entity hierarchy cache has not refreshed yet
-              return {
-                ...entity,
-                isRecent: true,
-              };
-            })
-            .filter(Boolean),
-          ...entities.sort((a: any, b: any) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
-        ];
+    const sortedEntities =
+      searchString && fields.includes('name')
+        ? sortSearchResults(
+            searchString,
+            entities as (Partial<Entity> & { name: Entity['name'] })[], // Safe cast because of `fields.includes('name')`
+          )
+        : [
+            ...recentEntities
+              .map(id => {
+                const entity = entities.find(e => e.id === id);
+                if (!entity) return null; // If the entity is not found, return null so it is filtered out. This can happen if the entity has been deleted or if the entity is new and the entity hierarchy cache has not refreshed yet
+                return {
+                  ...entity,
+                  isRecent: true,
+                };
+              })
+              .filter(isNotNullish),
+            ...entities.sort(
+              (a, b) =>
+                // SQL projection may exclude `name` attribute, but if `a` has .name then so does `b`
+                a.name?.localeCompare(b.name!) ?? 0,
+            ),
+          ];
 
     return camelcaseKeys(sortedEntities, { deep: true });
   }

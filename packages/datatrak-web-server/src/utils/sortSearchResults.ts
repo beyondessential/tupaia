@@ -5,7 +5,10 @@ type SearchResult = {
   };
 };
 
-export function sortSearchResults(searchString: string, results: SearchResult[]) {
+export function sortSearchResults<T extends SearchResult = SearchResult>(
+  searchString: string,
+  results: T[],
+): T[] {
   const lowerSearch = searchString.toLowerCase();
 
   const primarySearchResults = results.filter(({ name }) =>
