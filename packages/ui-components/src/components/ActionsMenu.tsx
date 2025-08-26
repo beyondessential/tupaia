@@ -86,9 +86,8 @@ export const ActionsMenu = ({
             action,
             style,
             iconStyle,
-            ActionIcon,
+            actionIcon,
             toolTipTitle,
-            color,
           }: ActionsMenuOptionType) => (
             <StyledMenuItem
               role="button"
@@ -99,11 +98,9 @@ export const ActionsMenu = ({
                 setAnchorEl(null);
               }}
             >
-              {includesIcons && ActionIcon ? (
+              {includesIcons && actionIcon ? (
                 <>
-                  <ListItemIcon style={iconStyle}>
-                    <ActionIcon fontSize="small" color={color} />
-                  </ListItemIcon>
+                  <ListItemIcon style={iconStyle}>{actionIcon}</ListItemIcon>
                   <Tooltip title={toolTipTitle || ''} arrow>
                     <Typography display="inline" variant="inherit">
                       {label}

@@ -1,16 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
-import {
-  LayerGroup,
-  BasePolygon,
-  AreaTooltip,
-  MeasureData,
-  Series,
-  MAP_COLORS,
-  BREWER_PALETTE,
-} from '@tupaia/ui-map-components';
 import { Polygon } from 'react-leaflet';
 import { useParams } from 'react-router-dom';
+import styled, { css } from 'styled-components';
+
+import {
+  AreaTooltip,
+  BasePolygon,
+  BREWER_PALETTE,
+  LayerGroup,
+  MAP_COLORS,
+  MeasureData,
+  Series,
+} from '@tupaia/ui-map-components';
+
 import { useMapOverlays } from '../../../api/queries';
 import { useNavigateToEntity } from '../utils';
 
@@ -33,12 +35,14 @@ const ShadedPolygon = styled(BasePolygon)<PolygonProps>`
   fill: ${({ $shade }) => $shade};
   stroke: ${({ $shade }) => $shade};
   fill-opacity: 0.5;
-  &:hover {
-    fill-opacity: ${({ $active }) =>
-      $active
-        ? 0.5
-        : 0.8}; // don't add hover effect when it is the active polygon because it isn't clickable
-  }
+
+  ${props =>
+    !props.$active && // No hover effect on active polygon because it isn’t clickable
+    css`
+      &:hover {
+        fill-opacity: 0.8;
+      }
+    `}
 `;
 
 const BasicPolygon = styled(BasePolygon)<PolygonProps>`
@@ -72,7 +76,7 @@ const POLYGON_COMPONENTS = {
   shadedPolygon: ShadedPolygon,
   transparentShadedPolygon: TransparentShadedPolygon,
   activePolygon: ActivePolygon,
-};
+} as const;
 
 const DISPLAY_TYPES = {
   shaded: 'shadedPolygon',
