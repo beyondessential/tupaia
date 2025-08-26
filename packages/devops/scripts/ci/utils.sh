@@ -37,12 +37,11 @@ function get_max_length() {
     echo $max
 }
 
-function get_branch_name() {
-    local branch_name="$CI_BRANCH"
-    if [[ $branch_name == "" ]]; then
-        # Get currently checked out branch
-        branch_name=$(git branch --show-current)
+get_branch_name() {
+    if [[ -n $CI_BRANCH ]]; then
+        echo "$CI_BRANCH"
+    else
+        # Get currently checked out branch, or 'HEAD' if in detached head state
+        git rev-parse --abbrev-ref HEAD
     fi
-
-    echo $branch_name
 }
