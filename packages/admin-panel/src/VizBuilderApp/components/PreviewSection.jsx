@@ -266,7 +266,7 @@ export const PreviewSection = () => {
               isError={isTableError}
               error={tableError}
               isNoData={!rows.length}
-              noDataMessage="No Data Found"
+              noDataMessage="No data found"
             >
               <DataGrid rows={rows} columns={columns} autoPageSize />
             </FetchLoader>
