@@ -209,4 +209,24 @@ export class UserModel extends DatabaseModel {
 
     return await this.getFilteredUsers(searchTerm, userIds);
   }
+
+  async getRecentEntities(userId, countryCode, type) {
+    const user = await this.findById(userId);
+    const { recent_entities: userRecentEntities } = user.preferences;
+    if (!userRecentEntities || !countryCode || !type) {
+      return [];
+    }
+  
+    const recentEntitiesForCountry = userRecentEntities[countryCode];
+    if (!recentEntitiesForCountry) {
+      return [];
+    }
+  
+    const entityTypes = type.split(',');
+    const recentEntitiesOfTypes = entityTypes.flatMap(
+      entityType => userRecentEntities[countryCode][entityType] ?? [],
+    );
+  
+    return recentEntitiesOfTypes;
+  };
 }

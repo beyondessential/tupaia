@@ -6,10 +6,13 @@ import { AccessPolicy } from '@tupaia/access-policy';
 
 import { useUser } from './queries';
 
-export interface CurrentUserContextType extends Omit<DatatrakWebUserRequest.ResBody, 'accessPolicy'> {
+export interface CurrentUserContextType
+  extends Omit<DatatrakWebUserRequest.ResBody, 'accessPolicy'> {
   isLoggedIn: boolean;
   accessPolicy?: AccessPolicy;
 }
+
+export interface CurrentUser extends Omit<CurrentUserContextType, 'accessPolicy'> {}
 
 const CurrentUserContext = createContext<CurrentUserContextType | null>(null);
 

@@ -1,9 +1,10 @@
 import { Request, NextFunction, Response } from 'express';
+
 import { PermissionsError } from '@tupaia/utils';
 import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
-import { extractEntityFilterFromQuery } from '@tupaia/tsmodels';
 import { EntityTypeEnum } from '@tupaia/types';
-import { EntityRecord, EntityFilter } from '@tupaia/server-boilerplate';
+import { EntityRecord, EntityFilter, extractEntityFilterFromQuery } from '@tupaia/tsmodels';
+
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
 const throwNoAccessError = (entityCodes: string[]) => {
