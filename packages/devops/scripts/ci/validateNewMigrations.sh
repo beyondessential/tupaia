@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 DIR=$(dirname "$0")
 ROOT="${DIR}/../../../../"
@@ -28,7 +29,7 @@ function check_migration_outdated() {
   included_date_offset=$((90*24*60*60*1000)) # include migrations up to 90 days old
   included_migrations_timestamp=$(( $($date_command +%s) - included_date_offset / 1000 ))
   valid_migration_date=$(convert_timestamp_to_date "$included_migrations_timestamp")
- 
+
   year=${migration_name:33:4}
   month=${migration_name:37:2}
   day=${migration_name:39:2}
@@ -69,10 +70,10 @@ if [[ "$current_branch_name" == "$origin_branch_name" ]]; then
 fi
 
 # Prevent error The authenticity of host 'github.com' can't be established.
-# Long version: the git origin copied from codeship is using ssh, but the container doesn't have ssh setup. The quick way is to swith to https. 
+# Long version: the git origin copied from codeship is using ssh, but the container doesn't have ssh setup. The quick way is to swith to https.
 git remote remove origin
 git remote add origin https://github.com/beyondessential/tupaia.git
-# Remove this sub module because it uses ssh 
+# Remove this sub module because it uses ssh
 git rm $ROOT/packages/data-api/scripts/pg-mv-fast-refresh
 
 git fetch --quiet
