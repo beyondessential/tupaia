@@ -22,6 +22,7 @@
     "@tupaia/database": "workspace:*",
     "@tupaia/expression-parser": "workspace:*",
     "@tupaia/sync": "workspace:*",
+    "@tupaia/tsmodels": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/ui-components": "workspace:*",

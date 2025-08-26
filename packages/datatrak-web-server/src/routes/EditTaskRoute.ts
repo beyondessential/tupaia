@@ -3,8 +3,6 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
 
-import { formatTaskChanges } from '../utils';
-
 export type EditTaskRequest = Request<
   { taskId: string },
   { message: string },
@@ -19,7 +17,7 @@ export class EditTaskRoute extends Route<EditTaskRequest> {
     const { taskId } = params;
     const originalTask = await models.task.findById(taskId);
 
-    const taskDetails = formatTaskChanges(body, originalTask);
+    const taskDetails = models.task.formatTaskChanges(body, originalTask);
 
     return ctx.services.central.updateResource(`tasks/${taskId}`, {}, taskDetails);
   }

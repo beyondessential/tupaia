@@ -1,3 +1,5 @@
+import log from 'winston';
+
 import { ModelRegistry } from '@tupaia/database';
 import { SyncSnapshotAttributes } from '@tupaia/sync';
 
@@ -15,7 +17,7 @@ export const initiatePull = async (
   projectIds: string[],
   deviceId: string,
 ) => {
-  console.log('ClientSyncManager.pull.waitingForCentral');
+  log.debug('ClientSyncManager.pull.waitingForCentral');
   const body = { since, projectIds, userId, deviceId };
 
   for await (const { kind, message } of stream(() => ({

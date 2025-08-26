@@ -24,7 +24,9 @@
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/database": "workspace:*",
-    "@tupaia/types": "workspace:*"
+    "@tupaia/tsutils": "workspace:*",
+    "@tupaia/types": "workspace:*",
+    "@tupaia/utils": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
