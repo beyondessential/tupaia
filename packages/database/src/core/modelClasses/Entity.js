@@ -663,9 +663,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   async getRelativesOfEntities(hierarchyId, entityIds, criteria) {
     // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
-    const ancestors = (await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria))
-      .slice()
-      .reverse();
+    const ancestors = (
+      await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria)
+    ).toReversed();
 
     const self = await this.find({
       ...criteria,
