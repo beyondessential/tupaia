@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import { MatrixConfig } from '@tupaia/types';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
-import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 
 import { useEditUser } from '../../api/mutations';
 import { useDashboards, useEntity, useProject, useUser } from '../../api/queries';
@@ -190,7 +189,7 @@ export const Dashboard = () => {
               {entity?.imageUrl ? (
                 <Photo title={title} photoUrl={entity?.imageUrl} />
               ) : (
-                <StaticMap bounds={entity?.bounds || DEFAULT_BOUNDS} title={title} />
+                <StaticMap bounds={entity?.bounds} title={title} />
               )}
             </div>
             <StickyBar $isExpanded={isExpanded}>
