@@ -1,4 +1,9 @@
-import { QueryConjunctions, EntityFilter, EntityFilterFields, AdvancedFilterValue } from '../../models';
+import {
+  QueryConjunctions,
+  EntityFilter,
+  EntityFilterFields,
+  AdvancedFilterValue,
+} from '../../models';
 import { NumericKeys } from '@tupaia/types';
 
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
@@ -17,10 +22,7 @@ type NotNullValues<T> = {
 
 type ExtractArrays<T> = T extends unknown[] ? T : never;
 
-type QueryObject =
-  | Record<string, AdvancedFilterValue<string>>
-  | undefined
-  | null;
+type QueryObject = Record<string, AdvancedFilterValue<string>> | undefined | null;
 
 const getDefaultFilter = (allowedCountries: string[]) => ({
   [QueryConjunctions.AND]: {
