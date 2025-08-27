@@ -1,8 +1,7 @@
 import { FormLabelProps } from '@material-ui/core';
 import React, { ReactNode, useEffect } from 'react';
 
-import { useCurrentUserContext } from '../api';
-import { SurveyData, useProjectSurveys } from '../hooks/database';
+import { useCurrentUserContext, useProjectSurveys } from '../api';
 import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
 import { innerText } from '../utils';
@@ -42,11 +41,12 @@ export const useGroupedSurveyList = ({
   setSelectedSurvey,
 }: UseGroupedSurveyListParams) => {
   const user = useCurrentUserContext();
-  const result = useProjectSurveys(user?.projectId, selectedCountry?.code);
-  const { data: surveys } = result;
+  const { data: surveys } = useProjectSurveys(user?.projectId, {
+    countryCode: selectedCountry?.code,
+  });
   const groupedSurveys =
     surveys
-      ?.reduce((acc: ListItemType[], survey: SurveyData) => {
+      ?.reduce((acc: ListItemType[], survey: Survey) => {
         const { surveyGroupName, name, code } = survey;
         const formattedSurvey = {
           content: name,

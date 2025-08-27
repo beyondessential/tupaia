@@ -13,3 +13,5 @@ export { isEmptyArray, isNonEmptyArray, isNotNullish, isNullish } from './typeGu
 export { useBeforeUnload } from './useBeforeUnload';
 export { useHasVideoInput } from './useHasVideoInput';
 export { useFromLocation } from './useLocationState';
+export { formatEntityForResponse, formatEntitiesForResponse } from './formatEntity';
+export type { ExtendedEntityFieldName } from './formatEntity';

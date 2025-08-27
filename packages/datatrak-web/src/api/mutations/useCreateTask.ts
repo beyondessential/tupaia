@@ -1,41 +1,35 @@
-import { DatatrakWebTaskChangeRequest, TaskStatus } from '@tupaia/types';
+import { useQueryClient } from '@tanstack/react-query';
+import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
+
+import { post } from '../api';
 import { successToast, gaEvent } from '../../utils';
 import { useCurrentUserContext } from '../CurrentUserContext';
-import { useDatabaseMutation } from '../../hooks/database';
-import { DatatrakWebModelRegistry } from '../../types';
+import { useDatabaseMutation } from '../queries';
+import { useIsLocalFirst } from '../localFirst';
+import { createTask } from '../../database/task';
 
 type Data = DatatrakWebTaskChangeRequest.ReqBody & {
   country_code: string;
 };
+const createRemote = async ({ data }: { data: Data }) => {
+  const { country_code, ...rest } = data;
+  return post('tasks', {
+    data: rest,
+  });
+};
 
 export const useCreateTask = (onSuccess?: () => void) => {
-  const { project, id: userId } = useCurrentUserContext();
-  return useDatabaseMutation<void, Data, unknown>(
-    async (models: DatatrakWebModelRegistry, data: Data) => {
-      // Country code is not part of the task data, it's used for GA events
-      const { country_code, ...rest } = data;
-      const survey = await models.survey.findOne({ code: data.survey_code });
-      const taskData = models.task.formatTaskChanges({
-        ...rest,
-        country_code,
-        survey_id: survey.id,
-      });
-      if (taskData.due_date) {
-        taskData.status = TaskStatus.to_do;
-      }
+  const queryClient = useQueryClient();
+  const { projectId, project } = useCurrentUserContext();
 
-      await models.wrapInTransaction(async transactingModels => {
-        const task = await transactingModels.task.create(taskData);
+  const isOfflineFirst = useIsLocalFirst();
 
-        if (data.comment) {
-          await task.addUserComment(data.comment, userId);
-        }
-
-        return task;
-      });
-    },
+  return useDatabaseMutation<any, Error, Data, unknown>(
+    isOfflineFirst ? createTask : createRemote,
     {
       onSuccess: (_, variables) => {
+        queryClient.invalidateQueries(['tasks']);
+        queryClient.invalidateQueries(['taskMetric', projectId]);
         successToast('Task successfully created');
         // Send off GA events
         gaEvent('task_created_by_project', project?.code!);
@@ -43,7 +37,7 @@ export const useCreateTask = (onSuccess?: () => void) => {
         gaEvent('task_created_by_survey', variables.survey_code);
         gaEvent('task_created', 'Task created');
 
-        onSuccess?.();
+        if (onSuccess) onSuccess();
       },
     },
   );

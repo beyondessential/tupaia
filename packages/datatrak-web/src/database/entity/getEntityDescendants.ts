@@ -8,9 +8,9 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { EntityRecord, ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
 import { snakeKeys } from '@tupaia/utils';
 
-import { DatatrakWebModelRegistry } from '../types';
-import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../utils/formatEntity';
-import { CurrentUser } from '../api';
+import { CurrentUser } from '../../api';
+import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
+import { DatatrakWebModelRegistry } from '../../types';
 
 const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'] as ExtendedEntityFieldName[];
 
@@ -134,16 +134,13 @@ const buildEntityFilter = (params: GetEntityDescendantsParams) => {
   return omitBy(snakeKeys(entityFilter), isNil);
 };
 
-export const getEntityDescendants = async (
-  models: DatatrakWebModelRegistry,
-  projectCode: string,
-  params: GetEntityDescendantsParams = {
-    fields: DEFAULT_FIELDS,
-    pageSize: DEFAULT_PAGE_SIZE,
-  },
-  user: CurrentUser,
-  accessPolicy: AccessPolicy,
-) => {
+export const getEntityDescendants = async ({
+  models,
+  projectCode,
+  params,
+  user,
+  accessPolicy,
+}) => {
   const {
     filter: { countryCode, grandparentId, parentId, type } = {},
     searchString,
@@ -173,6 +170,7 @@ export const getEntityDescendants = async (
     accessPolicy,
   );
 
+  console.log('entityFilter', entityFilter);
   const dbEntityFilter = extractEntityFilterFromObject(allowedCountries, entityFilter);
 
   if (parentId) {
