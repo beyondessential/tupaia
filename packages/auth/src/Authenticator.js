@@ -44,12 +44,12 @@ export class Authenticator {
   async authenticateApiClient({ username, secretKey }) {
     const apiClient = await this.models.apiClient.findOne({ username });
     if (!apiClient) {
-      throw new UnauthenticatedError(`Couldn’t find API client with username ${username}`);
+      throw new UnauthenticatedError(`Couldn’t find API client`);
     }
 
     const isVerified = await apiClient.verifySecretKey(secretKey);
     if (!isVerified) {
-      throw new UnauthenticatedError(`Couldn’t authenticate API client ${apiClient.username}`);
+      throw new UnauthenticatedError(`Couldn’t authenticate API client`);
     }
 
     const user = await apiClient.getUser();
