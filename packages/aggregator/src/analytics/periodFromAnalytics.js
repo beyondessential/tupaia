@@ -20,7 +20,7 @@ const getMostAndLeastRecentPeriod = periods => {
   // sorts ascending
   const sortedKeys = Object.keys(groupedPeriods).sort((year1, year2) => year1 - year2);
   const earliestYearPeriods = groupedPeriods[sortedKeys[0]];
-  const latestYearPeriods = groupedPeriods[sortedKeys[sortedKeys.length - 1]];
+  const latestYearPeriods = groupedPeriods[sortedKeys.at(-1)];
 
   return {
     earliestAvailable: min(findPeriodsWithCoarsestType(earliestYearPeriods)).toString(),

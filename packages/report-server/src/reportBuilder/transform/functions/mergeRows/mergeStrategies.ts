@@ -57,13 +57,13 @@ const customSort = (values: FieldValue[]): FieldValue[] => {
 // max([1, 2, 3, null]) = 3; max([null, null]) = null
 const max = (values: FieldValue[]): FieldValue => {
   const sortedValues = customSort(values);
-  return sortedValues.length !== 0 ? sortedValues.slice().reverse()[0] : undefined;
+  return sortedValues.at(-1);
 };
 
 // min([1, 2, 3, null]) = null; min([null, null]) = null
 const min = (values: FieldValue[]): FieldValue => {
   const sortedValues = customSort(values);
-  return sortedValues.length !== 0 ? sortedValues[0] : undefined;
+  return sortedValues[0];
 };
 
 const unique = (values: FieldValue[]): FieldValue => {
