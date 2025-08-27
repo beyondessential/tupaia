@@ -205,7 +205,7 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   async getChildrenFromParentChildRelation(hierarchyId, params = { filter: {} }) {
-    return this.getDescendantsFromParentChildRelation(hierarchyId, {
+    return await this.getDescendantsFromParentChildRelation(hierarchyId, {
       ...params,
       filter: { ...params.filter, generational_distance: 1 },
     });
@@ -515,7 +515,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {
-    return this.getRelationsOfEntities(ENTITY_RELATION_TYPE.ANCESTORS, entityIds, {
+    return await this.getRelationsOfEntities(ENTITY_RELATION_TYPE.ANCESTORS, entityIds, {
       entity_hierarchy_id: hierarchyId,
       ...criteria,
     });
@@ -537,7 +537,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     const cacheKey = this.getCacheKey(this.getDescendantsFromParentChildRelation.name, arguments);
 
     return this.runCachedFunction(cacheKey, async () => {
-      return this.#getDescendantsRecursively(hierarchyId, entityIds, params);
+      return await this.#getDescendantsRecursively(hierarchyId, entityIds, params);
     });
   }
 
@@ -545,7 +545,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     const cacheKey = this.getCacheKey(this.getAncestorsFromParentChildRelation.name, arguments);
 
     return this.runCachedFunction(cacheKey, async () => {
-      return this.#getAncestorsRecursively(hierarchyId, entityIds, params);
+      return await this.#getAncestorsRecursively(hierarchyId, entityIds, params);
     });
   }
 
@@ -611,7 +611,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   /**
    * Recursively finds ancestors using this.find and parent-child relations
    * @param {string} hierarchyId - The hierarchy ID
-   * @param {string[]} childIds - Array of child entity IDs
+   * @param {import('@tupaia/types').Entity['id'][]} childIds - Array of child entity IDs
    * @param {object} params - Filter + PageSize
    * @param {Array} allAncestors - Accumulated ancestors array
    * @param {number} level - Current recursion level
@@ -694,13 +694,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async getCodeFromId(id) {
-    const entity = await this.findById(id);
-
-    if (!entity) {
-      throw new Error(`Entity with id ${id} not found`);
-    }
-
-    return entity.code;
+    return await this.findById(id, { fields: ['code'] });
   }
 
   async buildSyncLookupQueryDetails() {

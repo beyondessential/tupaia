@@ -57,8 +57,12 @@ const getAllowedCountries = async (
 ) => {
   const rootEntity = await models.entity.findById(rootEntityId);
 
+  if (!project.entity_hierarchy_id) {
+    throw new Error('Project entity hierarchy ID is not set');
+  }
+
   const countryEntities = await rootEntity.getChildrenFromParentChildRelation(
-    project.entity_hierarchy_id!,
+    project.entity_hierarchy_id,
   );
 
   let allowedCountries = countryEntities
@@ -145,8 +149,8 @@ export const getEntityDescendants = async ({
   models: DatatrakWebModelRegistry;
   projectCode?: Project['code'];
   params?: GetEntityDescendantsParams;
-  user?: CurrentUser;
-  accessPolicy?: AccessPolicy;
+  user: CurrentUser;
+  accessPolicy: AccessPolicy;
 }) => {
   const {
     filter: { countryCode, grandparentId, parentId, type } = {},
@@ -174,10 +178,9 @@ export const getEntityDescendants = async ({
     rootEntityId as string,
     project,
     false,
-    accessPolicy!,
+    accessPolicy,
   );
 
-  console.log('entityFilter', entityFilter);
   const dbEntityFilter = extractEntityFilterFromObject(allowedCountries, entityFilter);
 
   if (parentId) {
@@ -200,7 +203,7 @@ export const getEntityDescendants = async ({
 
   const recentEntities = await getRecentEntities(
     models,
-    user!,
+    user,
     countryCode as string,
     type as string,
     entities,

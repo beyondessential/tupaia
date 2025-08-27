@@ -16,8 +16,8 @@ import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
 // Define global context shape
 type GlobalQueryContext = {
   models: DatatrakWebModelRegistry;
-  accessPolicy?: AccessPolicy;
-  user?: CurrentUser;
+  accessPolicy: AccessPolicy;
+  user: CurrentUser;
 };
 
 type LocalContext = Record<string, unknown>;
@@ -43,6 +43,11 @@ export function useDatabaseQuery<
 ): UseQueryResult<TData, TError> {
   const { models } = useDatabaseContext(); // safely call hooks
   const { accessPolicy, ...user } = useCurrentUserContext();
+
+  // This should never happen, but just in case
+  if (!accessPolicy) {
+    throw new Error('Access policy is required');
+  }
 
   // Wrap the queryFn to include context
   const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext =>

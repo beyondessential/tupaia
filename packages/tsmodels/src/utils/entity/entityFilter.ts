@@ -1,4 +1,4 @@
-import { QueryConjunctions, EntityFilter, EntityFilterFields } from '../../models';
+import { QueryConjunctions, EntityFilter, EntityFilterFields, AdvancedFilterValue } from '../../models';
 import { NumericKeys } from '@tupaia/types';
 
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
@@ -18,7 +18,7 @@ type NotNullValues<T> = {
 type ExtractArrays<T> = T extends unknown[] ? T : never;
 
 type QueryObject =
-  | Record<string, string | { comparator: string; comparisonValue: string }>
+  | Record<string, AdvancedFilterValue<string>>
   | undefined
   | null;
 
