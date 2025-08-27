@@ -108,11 +108,23 @@ export class UserModel extends DatabaseModel {
   }
 
   customColumnSelectors = {
+    /**
+     * @privateRemarks Ideally, to match {@link UserRecord.fullName}, this would be:
+     * ```sql
+     * "TRIM(TRIM(COALESCE(first_name, '')) || ' ' || TRIM(COALESCE(last_name, '')))"
+     * ```
+     * but `TupaiaDatabase.getColSelector` doesn’t support nested functions.
+     *
+     * TODO: Trim `first_name` and `last_name` in the DB, and update application-level logic to trim
+     * when creating a user.
+     */
     full_name: () => `
-      CASE WHEN last_name IS NULL THEN
-        TRIM(first_name)
+      CASE WHEN first_name IS NULL THEN
+        last_name
+      WHEN last_name IS NULL THEN
+        first_name
       ELSE
-        TRIM(first_name) || ' ' || TRIM(last_name)
+        first_name || ' ' || last_name
       END
     `,
   };
