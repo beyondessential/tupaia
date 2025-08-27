@@ -65,7 +65,7 @@ const COMPARATORS = {
  *
  * @see getColSelector
  */
-const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
+const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE', 'TRIM'];
 
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
