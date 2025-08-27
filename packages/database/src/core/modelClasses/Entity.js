@@ -201,7 +201,7 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   async getAncestorsFromParentChildRelation(hierarchyId, params) {
-    return this.model.getAncestorsFromParentChildRelation(hierarchyId, [this.id], params);
+    return await this.model.getAncestorsFromParentChildRelation(hierarchyId, [this.id], params);
   }
 
   async getChildrenFromParentChildRelation(hierarchyId, params = { filter: {} }) {
@@ -212,7 +212,7 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   async getDescendantsFromParentChildRelation(hierarchyId, params) {
-    return this.model.getDescendantsFromParentChildRelation(hierarchyId, [this.id], params);
+    return await this.model.getDescendantsFromParentChildRelation(hierarchyId, [this.id], params);
   }
 
   async getRelatives(hierarchyId, criteria) {
@@ -515,7 +515,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {
-    return await this.getRelationsOfEntities(ENTITY_RELATION_TYPE.ANCESTORS, entityIds, {
+    return this.getRelationsOfEntities(ENTITY_RELATION_TYPE.ANCESTORS, entityIds, {
       entity_hierarchy_id: hierarchyId,
       ...criteria,
     });
@@ -536,7 +536,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   async getDescendantsFromParentChildRelation(hierarchyId, entityIds, params = {}) {
     const cacheKey = this.getCacheKey(this.getDescendantsFromParentChildRelation.name, arguments);
 
-    return this.runCachedFunction(cacheKey, async () => {
+    return await this.runCachedFunction(cacheKey, async () => {
       return await this.#getDescendantsRecursively(hierarchyId, entityIds, params);
     });
   }
@@ -544,7 +544,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   async getAncestorsFromParentChildRelation(hierarchyId, entityIds, params = {}) {
     const cacheKey = this.getCacheKey(this.getAncestorsFromParentChildRelation.name, arguments);
 
-    return this.runCachedFunction(cacheKey, async () => {
+    return await this.runCachedFunction(cacheKey, async () => {
       return await this.#getAncestorsRecursively(hierarchyId, entityIds, params);
     });
   }
@@ -599,7 +599,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
     const newAllDescendants = [...allDescendants, ...children].slice(0, pageSize);
 
-    return this.#getDescendantsRecursively(
+    return await this.#getDescendantsRecursively(
       hierarchyId,
       nextLevelParentIds,
       params,
@@ -652,7 +652,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
     const newAllAncestors = [...allAncestors, ...parents].slice(0, pageSize);
 
-    return this.#getAncestorsRecursively(
+    return await this.#getAncestorsRecursively(
       hierarchyId,
       nextLevelChildIds,
       params,
