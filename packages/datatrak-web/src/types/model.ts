@@ -1,50 +1,50 @@
+import { ModelRegistry } from '@tupaia/database';
 import {
   AnswerModel,
   CountryModel,
+  EntityHierarchyModel,
   EntityModel,
+  EntityParentChildRelationModel,
   LocalSystemFactModel,
-  OptionSetModel,
   OptionModel,
+  OptionSetModel,
   PermissionGroupModel,
   ProjectModel,
   QuestionModel,
-  SurveyModel,
   SurveyGroupModel,
+  SurveyModel,
   SurveyResponseModel,
-  SurveyScreenModel,
   SurveyScreenComponentModel,
-  TaskModel,
+  SurveyScreenModel,
   TaskCommentModel,
+  TaskModel,
   TombstoneModel,
-  UserModel,
   UserEntityPermissionModel,
-  EntityHierarchyModel,
-  EntityParentChildRelationModel,
+  UserModel,
 } from '@tupaia/tsmodels';
-import { ModelRegistry } from '@tupaia/database';
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 
 export interface DatatrakWebModelRegistry extends ModelRegistry {
+  readonly answer: AnswerModel;
+  readonly country: CountryModel;
   readonly database: DatatrakDatabase;
+  readonly entity: EntityModel;
+  readonly entityHierarchy: EntityHierarchyModel;
+  readonly entityParentChildRelation: EntityParentChildRelationModel;
   readonly localSystemFact: LocalSystemFactModel;
-  readonly optionSet: OptionSetModel;
   readonly option: OptionModel;
+  readonly optionSet: OptionSetModel;
+  readonly permissionGroup: PermissionGroupModel;
+  readonly project: ProjectModel;
+  readonly question: QuestionModel;
   readonly survey: SurveyModel;
   readonly surveyGroup: SurveyGroupModel;
   readonly surveyResponse: SurveyResponseModel;
   readonly surveyScreen: SurveyScreenModel;
   readonly surveyScreenComponent: SurveyScreenComponentModel;
-  readonly question: QuestionModel;
-  readonly answer: AnswerModel;
-  readonly tombstone: TombstoneModel;
-  readonly country: CountryModel;
-  readonly entity: EntityModel;
-  readonly entityHierarchy: EntityHierarchyModel;
-  readonly entityParentChildRelation: EntityParentChildRelationModel;
-  readonly project: ProjectModel;
-  readonly permissionGroup: PermissionGroupModel;
-  readonly userEntityPermission: UserEntityPermissionModel;
-  readonly user: UserModel;
   readonly task: TaskModel;
   readonly taskComment: TaskCommentModel;
+  readonly tombstone: TombstoneModel;
+  readonly user: UserModel;
+  readonly userEntityPermission: UserEntityPermissionModel;
 }
