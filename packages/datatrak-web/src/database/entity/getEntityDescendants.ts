@@ -11,6 +11,7 @@ import { snakeKeys } from '@tupaia/utils';
 import { CurrentUser } from '../../api';
 import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
 import { DatatrakWebModelRegistry } from '../../types';
+import { Project } from '@tupaia/types';
 
 const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'] as ExtendedEntityFieldName[];
 
@@ -137,16 +138,22 @@ const buildEntityFilter = (params: GetEntityDescendantsParams) => {
 export const getEntityDescendants = async ({
   models,
   projectCode,
-  params,
+  params = {},
   user,
   accessPolicy,
+}: {
+  models: DatatrakWebModelRegistry;
+  projectCode?: Project['code'];
+  params?: GetEntityDescendantsParams;
+  user?: CurrentUser;
+  accessPolicy?: AccessPolicy;
 }) => {
   const {
     filter: { countryCode, grandparentId, parentId, type } = {},
     searchString,
     fields = DEFAULT_FIELDS,
     pageSize = DEFAULT_PAGE_SIZE,
-  } = params;
+  } = params || {};
 
   const entityFilter = buildEntityFilter(params);
 
@@ -167,7 +174,7 @@ export const getEntityDescendants = async ({
     rootEntityId as string,
     project,
     false,
-    accessPolicy,
+    accessPolicy!,
   );
 
   console.log('entityFilter', entityFilter);
@@ -193,7 +200,7 @@ export const getEntityDescendants = async ({
 
   const recentEntities = await getRecentEntities(
     models,
-    user,
+    user!,
     countryCode as string,
     type as string,
     entities,

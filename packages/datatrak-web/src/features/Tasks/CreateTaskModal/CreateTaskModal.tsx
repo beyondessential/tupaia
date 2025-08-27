@@ -92,6 +92,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     navigate(ROUTES.PROJECT_SELECT);
   };
   const { mutate: editUser } = useEditUser(navigateToProjectScreen);
+
   const isMobile = useIsMobile();
 
   const defaultDueDate = endOfToday();
@@ -183,7 +184,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     >
       <Wrapper>
         <LoadingContainer isLoading={isLoadingData} heading="Loading data for project" text="">
-          <TaskForm formContext={formContext} onSubmit={handleCreateTask}>
+          <TaskForm formContext={formContext} onSubmit={createTask}>
             <CountrySelectorWrapper>
               <CountrySelector
                 countries={countries}

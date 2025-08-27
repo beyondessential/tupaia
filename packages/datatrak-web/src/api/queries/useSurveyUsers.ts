@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { Country, DatatrakWebUsersRequest } from '@tupaia/types';
+
 import { get } from '../api';
 import { Survey } from '../../types';
 import { useIsLocalFirst } from '../localFirst';

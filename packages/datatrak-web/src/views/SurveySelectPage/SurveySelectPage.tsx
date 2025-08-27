@@ -48,13 +48,13 @@ export const SurveySelectPage = () => {
     countries,
     selectedCountry,
     updateSelectedCountry,
-    isLoading: isFetchingCountries,
+    isFetching: isFetchingCountries,
   } = useUserCountries();
   const handleSelectSurvey = useNavigateToSurvey();
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
 
-  const { isLoading: isFetchingSurveys, data: surveys } = useProjectSurveys(user.projectId, {
+  const { isFetching: isFetchingSurveys, data: surveys } = useProjectSurveys(user.projectId, {
     countryCode: selectedCountry?.code,
   });
 

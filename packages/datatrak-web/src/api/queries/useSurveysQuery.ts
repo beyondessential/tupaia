@@ -30,11 +30,11 @@ const getRemote = async ({
   projectId,
   searchTerm,
 }: {
-  countryCode: Entity['code'];
-  includeCountryNames: boolean;
-  includeSurveyGroupNames: boolean;
-  projectId: Project['id'];
-  searchTerm: string;
+  countryCode?: Entity['code'];
+  includeCountryNames?: boolean;
+  includeSurveyGroupNames?: boolean;
+  projectId?: Project['id'];
+  searchTerm?: string;
 }) => {
   const params: RequestParameters = { fields: ['name', 'code', 'id'] };
   if (countryCode) params.countryCode = countryCode;
@@ -54,11 +54,11 @@ const getLocal = async ({
   searchTerm,
 }: {
   models: DatatrakWebModelRegistry;
-  countryCode: Entity['code'];
-  includeCountryNames: boolean;
-  includeSurveyGroupNames: boolean;
-  projectId: Project['id'];
-  searchTerm: string;
+  countryCode?: Entity['code'];
+  includeCountryNames?: boolean;
+  includeSurveyGroupNames?: boolean;
+  projectId?: Project['id'];
+  searchTerm?: string;
 }) => {
   const where = constructDbFilter({ projectId, searchTerm, countryCode });
   const records = await models.survey.find(where);
