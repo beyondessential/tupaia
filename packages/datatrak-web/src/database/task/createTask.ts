@@ -27,7 +27,7 @@ export const createTask = async ({
     taskData.status = TaskStatus.to_do;
   }
 
-  await models.wrapInTransaction(async transactingModels => {
+  return await models.wrapInTransaction(async transactingModels => {
     const task = await transactingModels.task.create(taskData);
 
     if (data.comment) {

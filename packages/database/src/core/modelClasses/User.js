@@ -216,17 +216,17 @@ export class UserModel extends DatabaseModel {
     if (!userRecentEntities || !countryCode || !type) {
       return [];
     }
-  
+
     const recentEntitiesForCountry = userRecentEntities[countryCode];
     if (!recentEntitiesForCountry) {
       return [];
     }
-  
+
     const entityTypes = type.split(',');
     const recentEntitiesOfTypes = entityTypes.flatMap(
       entityType => userRecentEntities[countryCode][entityType] ?? [],
     );
-  
+
     return recentEntitiesOfTypes;
-  };
+  }
 }

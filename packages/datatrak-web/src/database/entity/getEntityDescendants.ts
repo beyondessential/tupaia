@@ -105,7 +105,7 @@ const getRecentEntities = async (
     );
     return recentEntities
       .map((id: string) => {
-        const entity = entities.find((e: any) => e.id === id);
+        const entity = entities.find((e: EntityRecord) => e.id === id);
         if (!entity) return null;
         return { ...entity, isRecent: true };
       })
@@ -213,7 +213,7 @@ export const getEntityDescendants = async ({
     ? sortSearchResults(searchString, entities)
     : [
         ...recentEntities,
-        ...entities.sort((a: any, b: any) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
+        ...entities.sort((a: EntityRecord, b: EntityRecord) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
       ];
 
   const formattedEntities = await formatEntitiesForResponse(
