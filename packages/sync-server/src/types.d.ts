@@ -1,17 +1,18 @@
 import {
   ModelRegistry,
-  SyncSessionModel,
   SyncDeviceTickModel,
   SyncQueuedDeviceModel,
+  SyncSessionModel,
 } from '@tupaia/database';
 import {
-  ProjectModel,
-  EntityModel,
-  SurveyResponseModel,
   AnswerModel,
-  LocalSystemFactModel,
   DebugLogModel,
+  EntityModel,
+  LocalSystemFactModel,
+  ProjectModel,
+  SurveyResponseModel,
 } from '@tupaia/server-boilerplate';
+
 export interface SyncServerModelRegistry extends ModelRegistry {
   readonly project: ProjectModel;
   readonly entity: EntityModel;
