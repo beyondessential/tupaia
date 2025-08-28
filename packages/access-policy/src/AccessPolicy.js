@@ -112,9 +112,9 @@ export class AccessPolicy {
   /**
    * Return entities the user has access to the given permission group for
    *
-   * @param {string} [permissionGroup]
+   * @param {string} [permissionGroup] Permission group name
    *
-   * @returns entities[] The entity objects
+   * @returns {string[]} The entity codes
    */
   getEntitiesAllowed(permissionGroup) {
     const allEntityCodes = Object.keys(this.policy);
