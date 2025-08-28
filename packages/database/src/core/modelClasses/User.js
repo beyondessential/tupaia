@@ -210,6 +210,12 @@ export class UserModel extends DatabaseModel {
     return await this.getFilteredUsers(searchTerm, userIds);
   }
 
+  /**
+   * @param {string} userId
+   * @param {string} countryCode
+   * @param {string} type
+   * @returns {Promise<string[]>} Entity IDs
+   */
   async getRecentEntities(userId, countryCode, type) {
     const user = await this.findById(userId);
     const { recent_entities: userRecentEntities } = user.preferences;

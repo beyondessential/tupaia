@@ -14,13 +14,13 @@ import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
 
 // Define global context shape
-type GlobalQueryContext = {
+interface GlobalQueryContext {
   models: DatatrakWebModelRegistry;
   accessPolicy: AccessPolicy;
   user: CurrentUser;
-};
+}
 
-type LocalContext = Record<string, unknown>;
+type LocalContext = Readonly<Record<string, unknown>>;
 
 // Enhanced QueryFunction type that receives extra context
 type ContextualQueryFn<TData> = (
@@ -39,7 +39,7 @@ export function useDatabaseQuery<
   queryFn: ContextualQueryFn<TQueryFnData>,
   options: UseQueryOptions<TQueryFnData, TError, TData, TQueryKey> & {
     localContext?: TLocalContext;
-  },
+  } = {},
 ): UseQueryResult<TData, TError> {
   const { models } = useDatabaseContext(); // safely call hooks
   const { accessPolicy, ...user } = useCurrentUserContext();
@@ -51,14 +51,14 @@ export function useDatabaseQuery<
 
   // Wrap the queryFn to include context
   const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext =>
-    queryFn({ ...queryFnContext, models, accessPolicy, user, ...options?.localContext });
+    queryFn({ ...queryFnContext, models, accessPolicy, user, ...options.localContext });
 
   // Remove localContext from options before passing to useQuery
-  const { localContext: _omit, ...reactQueryOptions } = options ?? {};
+  const { localContext: _, ...queryOptions } = options;
 
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     queryKey,
     queryFn: wrappedQueryFn,
-    ...reactQueryOptions,
+    ...queryOptions,
   });
 }
