@@ -100,7 +100,11 @@ const getRecentEntities = async (
   type: Entity['type'],
   entities: EntityRecord[],
 ) => {
-  if (!user.isLoggedIn) return []; // For public surveys
+  if (
+    !user.isLoggedIn || // For public surveys
+    !user.id // Redundant, for type inference
+  )
+    return [];
 
   const recentEntities: Entity['id'][] = await models.user.getRecentEntities(
     user.id,
