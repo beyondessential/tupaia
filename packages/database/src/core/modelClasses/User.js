@@ -212,8 +212,8 @@ export class UserModel extends DatabaseModel {
 
   /**
    * @param {string} userId
-   * @param {string} countryCode
-   * @param {string} type
+   * @param {string|undefined} countryCode
+   * @param {string|undefined} type
    * @returns {Promise<string[]>} Entity IDs
    */
   async getRecentEntities(userId, countryCode, type) {
