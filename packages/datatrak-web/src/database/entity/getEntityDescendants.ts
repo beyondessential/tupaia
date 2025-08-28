@@ -16,12 +16,12 @@ const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'] as Extended
 
 const DEFAULT_PAGE_SIZE = 100;
 
-type SearchResult = {
+interface SearchResult {
   name: string;
   parent?: {
     name: string;
   };
-};
+}
 
 export type GetEntityDescendantsParams = {
   filter?: Record<string, unknown>;
@@ -30,21 +30,31 @@ export type GetEntityDescendantsParams = {
   searchString?: string;
 };
 
-export function sortSearchResults(searchString: string, results: SearchResult[]) {
-  const lowerSearch = searchString.toLowerCase();
+export function sortSearchResults<T extends SearchResult = SearchResult>(
+  query: string,
+  results: T[],
+): T[] {
+  const q = query.normalize().toUpperCase();
 
-  const primarySearchResults = results.filter(({ name }) =>
-    name.toLowerCase().startsWith(lowerSearch),
-  );
+  return results.sort((a, b) => {
+    const aName = a.name.normalize().toUpperCase();
+    const bName = b.name.normalize().toUpperCase();
 
-  const secondarySearchResults = results.filter(
-    ({ name, parent }) =>
-      !name.toLowerCase().startsWith(lowerSearch) &&
-      (name.toLowerCase().includes(lowerSearch) ||
-        parent?.name.toLowerCase().startsWith(lowerSearch)),
-  );
+    const aMatchesStrongly = aName.startsWith(q);
+    const bMatchesStrongly = bName.startsWith(q);
+    if (aMatchesStrongly && bMatchesStrongly) return 0;
+    if (aMatchesStrongly && !bMatchesStrongly) return -1;
+    if (!aMatchesStrongly && bMatchesStrongly) return 1;
 
-  return [...primarySearchResults, ...secondarySearchResults];
+    const aMatchesWeakly =
+      aName.includes(q) || a.parent?.name.normalize().toUpperCase().startsWith(q);
+    const bMatchesWeakly =
+      bName.includes(q) || b.parent?.name.normalize().toUpperCase().startsWith(q);
+    if (aMatchesWeakly && !bMatchesWeakly) return -1;
+    if (!aMatchesWeakly && bMatchesWeakly) return 1;
+
+    return 0;
+  });
 }
 
 const getAllowedCountries = async (
@@ -183,7 +193,7 @@ export const getEntityDescendants = async ({
     dbEntityFilter.generational_distance = 2;
   }
 
-  const entities = await models.entity.getDescendantsFromParentChildRelation(
+  const entities: EntityRecord[] = await models.entity.getDescendantsFromParentChildRelation(
     project.entity_hierarchy_id,
     [rootEntityId],
     {
@@ -205,7 +215,8 @@ export const getEntityDescendants = async ({
     ? sortSearchResults(searchString, entities)
     : [
         ...recentEntities,
-        ...entities.sort((a: EntityRecord, b: EntityRecord) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
+        // SQL projection may exclude `name` attribute, but if `a` has `.name` then so does `b`
+        ...entities.sort((a, b) => a.name?.localeCompare(b.name!) ?? 0),
       ];
 
   const formattedEntities = await formatEntitiesForResponse(
