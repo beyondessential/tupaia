@@ -2,7 +2,7 @@ import { Request, NextFunction, Response } from 'express';
 
 import { PermissionsError } from '@tupaia/utils';
 import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
-import { EntityTypeEnum } from '@tupaia/types';
+import { Entity, EntityTypeEnum } from '@tupaia/types';
 import { EntityRecord, EntityFilter, extractEntityFilterFromQuery } from '@tupaia/tsmodels';
 
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
@@ -74,10 +74,9 @@ const getFilterInfo = async (
 ) => {
   const isPublic = req.query.isPublic?.toLowerCase() === 'true';
 
-  let allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
-    .map(child => child.country_code)
-    .filter(isNotNullish)
-    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index); // De-duplicate countryCodes
+  const countryEntities = await rootEntity.getChildren(req.ctx.hierarchyId);
+  const childCodes = countryEntities.map(child => child.country_code).filter(isNotNullish);
+  let allowedCountries = [...new Set(childCodes)];
 
   if (!isPublic) {
     const { permission_groups: projectPermissionGroups } = await req.models.project.findOne({
@@ -85,13 +84,10 @@ const getFilterInfo = async (
     });
 
     // Fetch all country codes we have any of the project permission groups access to
-    const projectAccessibleCountries: string[] = [];
-    for (const permission of projectPermissionGroups) {
-      projectAccessibleCountries.push(...req.accessPolicy.getEntitiesAllowed(permission));
-    }
-    allowedCountries = allowedCountries.filter(countryCode =>
-      projectAccessibleCountries.includes(countryCode),
+    const projectAccessibleCountries = new Set<Entity['code']>(
+      projectPermissionGroups.flatMap(req.accessPolicy.getEntitiesAllowed),
     );
+    allowedCountries = allowedCountries.filter(c => projectAccessibleCountries.has(c));
   }
 
   const { filter: queryFilter } = req.query;
