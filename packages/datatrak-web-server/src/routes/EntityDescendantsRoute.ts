@@ -1,5 +1,5 @@
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest, Entity } from '@tupaia/types';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
@@ -31,7 +31,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
     const { services } = ctx;
     const isLoggedIn = !!session;
 
-    let recentEntities: string[] = [];
+    let recentEntities: Entity['id'][] = [];
 
     const {
       filter: { countryCode, projectCode, grandparentId, parentId, type, ...restOfFilter },

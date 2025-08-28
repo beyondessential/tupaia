@@ -3,15 +3,14 @@
 // and use this function only. So keeping it here for now.
 import { isNil, omitBy } from 'lodash';
 
-import { camelcaseKeys, isNotNullish } from '@tupaia/tsutils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { EntityRecord, ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
+import { camelcaseKeys, isNotNullish } from '@tupaia/tsutils';
+import { Country, Entity, Project } from '@tupaia/types';
 import { snakeKeys } from '@tupaia/utils';
-
 import { CurrentUser } from '../../api';
-import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
 import { DatatrakWebModelRegistry } from '../../types';
-import { Project } from '@tupaia/types';
+import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
 
 const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'] as ExtendedEntityFieldName[];
 
@@ -157,7 +156,7 @@ export const getEntityDescendants = async ({
     searchString,
     fields = DEFAULT_FIELDS,
     pageSize = DEFAULT_PAGE_SIZE,
-  } = params || {};
+  } = params ?? {};
 
   const entityFilter = buildEntityFilter(params);
 
@@ -204,8 +203,8 @@ export const getEntityDescendants = async ({
   const recentEntities = await getRecentEntities(
     models,
     user,
-    countryCode as string,
-    type as string,
+    countryCode as Country['code'],
+    type as Entity['type'],
     entities,
   );
 

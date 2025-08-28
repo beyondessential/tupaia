@@ -1,3 +1,4 @@
+import { Country, Survey } from '@tupaia/types';
 import { DatatrakWebModelRegistry } from '../../types';
 
 export const getSurveyUsers = async ({
@@ -7,8 +8,8 @@ export const getSurveyUsers = async ({
   searchTerm,
 }: {
   models: DatatrakWebModelRegistry;
-  surveyCode?: string;
-  countryCode?: string;
+  surveyCode?: Survey['code'];
+  countryCode?: Country['code'];
   searchTerm?: string;
 }) => {
   if (!surveyCode || !countryCode) {
