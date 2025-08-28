@@ -25,7 +25,7 @@ export const useCurrentUserContext = (): CurrentUserContextType => {
 
 export const CurrentUserContextProvider = ({ children }: { children: Readonly<ReactNode> }) => {
   const currentUserQuery = useUser();
-  if (currentUserQuery.isInitialLoading) {
+  if (currentUserQuery.isLoading) {
     return <FullPageLoader />;
   }
 
