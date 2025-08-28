@@ -102,7 +102,7 @@ const getRecentEntities = async (
   countryCode: Country['code'],
   type: Entity['type'],
   entities: EntityRecord[],
-) => {
+): Promise<(EntityRecord & { isRecent: true })[]> => {
   if (
     !user.isLoggedIn || // For public surveys
     !user.id // Redundant, for type inference
@@ -118,7 +118,7 @@ const getRecentEntities = async (
     .map(id => {
       const entity = entities.find(e => e.id === id);
       if (!entity) return null;
-      return { ...entity, isRecent: true };
+      return { ...entity, isRecent: true } as EntityRecord & { isRecent: true };
     })
     .filter(isNotNullish);
 };
@@ -161,11 +161,12 @@ export const getEntityDescendants = async ({
   accessPolicy: AccessPolicy;
 }) => {
   const {
-    filter: { countryCode, grandparentId, parentId, type } = {},
+    filter,
     searchString,
     fields = DEFAULT_FIELDS,
     pageSize = DEFAULT_PAGE_SIZE,
   } = params ?? {};
+  const { countryCode, grandparentId, parentId, type } = filter ?? {};
 
   const entityFilter = buildEntityFilter(params);
 
@@ -209,13 +210,8 @@ export const getEntityDescendants = async ({
     },
   );
 
-  const recentEntities = await getRecentEntities(
-    models,
-    user,
-    countryCode as Country['code'],
-    type as Entity['type'],
-    entities,
-  );
+  const recentEntities =
+    countryCode && type ? await getRecentEntities(models, user, countryCode, type, entities) : [];
 
   const sortedEntities = searchString
     ? sortSearchResults(searchString, entities)

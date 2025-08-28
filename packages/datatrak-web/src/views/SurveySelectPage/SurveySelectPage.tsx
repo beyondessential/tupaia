@@ -4,8 +4,9 @@ import { useSearchParams } from 'react-router-dom';
 
 import { Country, KeysToCamelCase } from '@tupaia/types';
 
-import { useCurrentUserContext, useProjectSurveys } from '../../api';
+import { useCurrentUserContext } from '../../api';
 import { useEditUser } from '../../api/mutations';
+import { useSurveysQuery } from '../../api/queries/useSurveysQuery';
 import { Button } from '../../components';
 import { CountrySelector, useUserCountries } from '../../features';
 import { Survey } from '../../types';
@@ -54,8 +55,9 @@ export const SurveySelectPage = () => {
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
 
-  const { isFetching: isFetchingSurveys, data: surveys } = useProjectSurveys(user.projectId, {
+  const { isFetching: isFetchingSurveys, data: surveys } = useSurveysQuery({
     countryCode: selectedCountry?.code,
+    projectId: user.projectId,
   });
 
   useEffect(() => {
