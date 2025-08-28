@@ -7,7 +7,7 @@ import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from 
 import { DatatrakWebModelRegistry, Entity } from '../../types';
 import { isNotNullish, isNullish } from '../../utils';
 import { get, RequestParameters } from '../api';
-import { useIsLocalFirst } from '../localFirst';
+import { useIsOfflineFirst } from '../offlineFirst';
 import { useDatabaseQuery } from './useDatabaseQuery';
 
 interface UseSurveysQueryFilterParams {
@@ -114,7 +114,7 @@ export function useSurveysQuery(
   }: UseSurveysQueryParams = {},
   useQueryOptions?: UseQueryOptions<DatatrakWebSurveyRequest.ResBody[]>,
 ) {
-  const isOfflineFirst = useIsLocalFirst();
+  const isOfflineFirst = useIsOfflineFirst();
 
   return useDatabaseQuery<DatatrakWebSurveyRequest.ResBody[]>(
     [
