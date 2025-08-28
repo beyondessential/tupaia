@@ -35,7 +35,7 @@ const getRemote = async ({
   includeSurveyGroupNames?: boolean;
   projectId?: Project['id'];
   searchTerm?: string;
-}) => {
+}): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
   const params: RequestParameters = { fields: ['name', 'code', 'id'] };
   if (countryCode) params.countryCode = countryCode;
   if (includeCountryNames) params.fields.push('countryNames');
@@ -116,7 +116,7 @@ export function useSurveysQuery(
 ) {
   const isOfflineFirst = useIsOfflineFirst();
 
-  return useDatabaseQuery<DatatrakWebSurveyRequest.ResBody[]>(
+  return useDatabaseQuery(
     [
       'surveys',
       projectId,
