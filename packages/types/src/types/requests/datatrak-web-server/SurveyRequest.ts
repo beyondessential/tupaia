@@ -69,7 +69,13 @@ interface SurveyResponse extends KeysToCamelCase<Survey> {
   project?: WebServerProjectRequest.ProjectResponse | null;
 }
 
-export type ResBody = Partial<SurveyResponse>;
+/**
+ * @privateRemarks
+ * HACK: This isn’t enforced by API handlers. This is a band-aid measure to unblock build.
+ */
+export type ResBody = Pick<SurveyResponse, 'code' | 'id' | 'name'> & // Always fetch these...
+  Partial<Exclude<SurveyResponse, 'code' | 'id' | 'name'>>; // ...but let projection omit these.
+
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   fields?: string[];

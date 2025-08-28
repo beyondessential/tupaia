@@ -43,12 +43,13 @@ export const useGroupedSurveyList = ({
 }: UseGroupedSurveyListParams) => {
   const user = useCurrentUserContext();
   const { data: surveys } = useSurveysQuery({
-    projectId: user?.projectId,
     countryCode: selectedCountry?.code,
+    includeSurveyGroupNames: true,
+    projectId: user?.projectId,
   });
   const groupedSurveys =
     surveys
-      ?.reduce((acc: ListItemType[], survey: Survey) => {
+      ?.reduce<ListItemType[]>((acc, survey) => {
         const { surveyGroupName, name, code } = survey;
         const formattedSurvey = {
           content: name,
