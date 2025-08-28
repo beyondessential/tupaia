@@ -20,12 +20,14 @@ interface GlobalQueryContext {
   user: CurrentUser;
 }
 
-type LocalContext = Readonly<Record<string, unknown>>;
+interface LocalContext {
+  readonly [key: string]: unknown;
+}
 
 // Enhanced QueryFunction type that receives extra context
-type ContextualQueryFn<TData> = (
-  context: QueryFunctionContext & GlobalQueryContext & LocalContext,
-) => Promise<TData>;
+interface ContextualQueryFn<TData> {
+  (context: QueryFunctionContext & GlobalQueryContext & LocalContext): Promise<TData>;
+}
 
 // Main function with same signature as useQuery
 export function useDatabaseQuery<
