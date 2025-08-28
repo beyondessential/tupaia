@@ -550,7 +550,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-  * Recursively finds descendants using this.find and parent-child relations
+   * Recursively finds descendants using this.find and parent-child relations
    * @param {string} hierarchyId - The hierarchy ID
    * @param {string[]} parentIds - Array of parent entity IDs
    * @param {object} params - Filter + Fields
@@ -709,19 +709,20 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             UNION
 
             -- all child entities of root project entities
-            SELECT child_id as entity_id, entity_hierarchy_id 
+            SELECT child_id as entity_id, entity_hierarchy_id
             FROM entity_parent_child_relation
           )
         `,
       ],
       select: await buildSyncLookupSelect(this, {
         // Sync all world, country and project entities as they are needed for permission checks
-        projectIds: `CASE WHEN entity.type IN ('country', 'world', 'project') THEN NULL ELSE ARRAY_AGG(project.id) END`,
+        projectIds:
+          "CASE WHEN entity.type IN ('country', 'world', 'project') THEN NULL ELSE ARRAY_AGG(project.id) END",
       }),
       joins: `
-        LEFT JOIN entities_to_sync 
-          ON entities_to_sync.entity_id = entity.id 
-        LEFT JOIN project 
+        LEFT JOIN entities_to_sync
+          ON entities_to_sync.entity_id = entity.id
+        LEFT JOIN project
           ON project.entity_hierarchy_id = entities_to_sync.entity_hierarchy_id
       `,
       groupBy: ['entity.id'],
