@@ -14,6 +14,7 @@ export const DatabaseContext = createContext<DatabaseContextType | null>(null);
 
 export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [models, setModels] = useState<DatatrakWebModelRegistry | null>(null);
+  const value = useMemo(() => (models ? { models } : null), [models]);
 
   useEffect(() => {
     const init = async () => {
@@ -28,6 +29,5 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
     return <LoadingScreen />;
   }
 
-  const value = useMemo(() => ({ models }), [models]);
   return <DatabaseContext.Provider value={value}>{children}</DatabaseContext.Provider>;
 };
