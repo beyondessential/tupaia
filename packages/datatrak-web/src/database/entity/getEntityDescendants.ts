@@ -24,7 +24,12 @@ type SearchResult = {
 };
 
 export type GetEntityDescendantsParams = {
-  filter?: Record<string, unknown>;
+  filter?: {
+    countryCode?: Entity['code'];
+    grandparentId?: Entity['id'];
+    parentId?: Entity['id'];
+    type?: Entity['type'];
+  } & Record<string, unknown>;
   fields?: ExtendedEntityFieldName[];
   pageSize?: number;
   searchString?: string;
@@ -91,27 +96,24 @@ const getAllowedCountries = async (
 const getRecentEntities = async (
   models: DatatrakWebModelRegistry,
   user: CurrentUser,
-  countryCode: string,
-  type: string,
+  countryCode: Country['code'],
+  type: Entity['type'],
   entities: EntityRecord[],
 ) => {
-  // For public surveys
-  if (user.isLoggedIn) {
-    const recentEntities = await models.user.getRecentEntities(
-      user.id,
-      countryCode as string,
-      type as string,
-    );
-    return recentEntities
-      .map((id: string) => {
-        const entity = entities.find((e: EntityRecord) => e.id === id);
-        if (!entity) return null;
-        return { ...entity, isRecent: true };
-      })
-      .filter(Boolean);
-  }
+  if (!user.isLoggedIn) return []; // For public surveys
 
-  return [];
+  const recentEntities: Entity['id'][] = await models.user.getRecentEntities(
+    user.id,
+    countryCode,
+    type,
+  );
+  return recentEntities
+    .map(id => {
+      const entity = entities.find(e => e.id === id);
+      if (!entity) return null;
+      return { ...entity, isRecent: true };
+    })
+    .filter(isNotNullish);
 };
 
 const buildEntityFilter = (params: GetEntityDescendantsParams) => {
@@ -174,7 +176,7 @@ export const getEntityDescendants = async ({
 
   const allowedCountries = await getAllowedCountries(
     models,
-    rootEntityId as string,
+    rootEntityId,
     project,
     false,
     accessPolicy,
