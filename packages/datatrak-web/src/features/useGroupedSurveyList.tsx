@@ -1,7 +1,8 @@
 import { FormLabelProps } from '@material-ui/core';
 import React, { ReactNode, useEffect } from 'react';
 
-import { useCurrentUserContext, useProjectSurveys } from '../api';
+import { useCurrentUserContext } from '../api';
+import { useSurveysQuery } from '../api/queries/useSurveysQuery';
 import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
 import { innerText } from '../utils';
@@ -21,7 +22,7 @@ export interface ListItemType extends Record<string, unknown> {
   };
 }
 
-const alphanumericCompare = (a: ListItemType, b: ListItemType) => {
+const alphanumericCompare = <T extends { content: React.ReactNode }>(a: T, b: T): number => {
   const aText = innerText(a.content).trim();
   const bText = innerText(b.content).trim();
   return aText.localeCompare(bText, 'en', {
@@ -41,7 +42,8 @@ export const useGroupedSurveyList = ({
   setSelectedSurvey,
 }: UseGroupedSurveyListParams) => {
   const user = useCurrentUserContext();
-  const { data: surveys } = useProjectSurveys(user?.projectId, {
+  const { data: surveys } = useSurveysQuery({
+    projectId: user?.projectId,
     countryCode: selectedCountry?.code,
   });
   const groupedSurveys =

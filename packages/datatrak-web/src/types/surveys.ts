@@ -2,11 +2,11 @@ import { ControllerRenderProps } from 'react-hook-form';
 import { DatatrakWebSurveyRequest } from '@tupaia/types';
 
 export type Survey = DatatrakWebSurveyRequest.ResBody;
-export type SurveyScreen = Survey['screens'][number];
+export type SurveyScreen = DatatrakWebSurveyRequest.SurveyScreen;
 
-export type SurveyScreenComponent = SurveyScreen['surveyScreenComponents'][0] & {
+export interface SurveyScreenComponent extends DatatrakWebSurveyRequest.SurveyScreenComponent {
   updateFormDataOnChange?: boolean;
-};
+}
 
 export type SurveyParams = {
   projectCode: string;
