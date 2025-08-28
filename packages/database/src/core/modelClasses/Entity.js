@@ -507,11 +507,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           ...options,
         },
       );
-      const relationData = await Promise.all(relations.map(async r => r.getData()));
+      const relationData = await Promise.all(relations.map(async r => await r.getData()));
       const uniqueEntities = Object.values(keyBy(relationData, 'id'));
       return uniqueEntities;
     });
-    return Promise.all(entityRecords.map(async r => this.generateInstance(r)));
+    return Promise.all(entityRecords.map(async r => await this.generateInstance(r)));
   }
 
   async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {
