@@ -16,14 +16,14 @@ export class SurveyRecord extends DatabaseRecord {
    * @returns {Promise<import('./DataGroup').DataGroupRecord>} data group for survey
    */
   async dataGroup() {
-    return this.otherModels.dataGroup.findById(this.data_group_id);
+    return await this.otherModels.dataGroup.findById(this.data_group_id);
   }
 
   /**
    * @returns {Promise<import('./SurveyScreen').SurveyScreenRecord[]>} survey screens in survey
    */
   async surveyScreens() {
-    return this.otherModels.surveyScreen.find({ survey_id: this.id });
+    return await this.otherModels.surveyScreen.find({ survey_id: this.id });
   }
 
   /**
@@ -39,7 +39,9 @@ export class SurveyRecord extends DatabaseRecord {
       [this.id],
     );
 
-    return Promise.all(questions.map(this.otherModels.surveyScreenComponent.generateInstance));
+    return await Promise.all(
+      questions.map(this.otherModels.surveyScreenComponent.generateInstance),
+    );
   }
 
   /**
@@ -74,7 +76,7 @@ export class SurveyRecord extends DatabaseRecord {
       [this.id],
     );
 
-    return Promise.all(optionSets.map(this.otherModels.optionSet.generateInstance));
+    return await Promise.all(optionSets.map(this.otherModels.optionSet.generateInstance));
   }
 
   /**
@@ -93,21 +95,21 @@ export class SurveyRecord extends DatabaseRecord {
       [this.id],
     );
 
-    return Promise.all(options.map(this.otherModels.option.generateInstance));
+    return await Promise.all(options.map(this.otherModels.option.generateInstance));
   }
 
   /**
    * @returns {Promise<import('./PermissionGroup').PermissionGroupRecord>} permission group for survey
    */
   async getPermissionGroup() {
-    return this.otherModels.permissionGroup.findById(this.permission_group_id);
+    return await this.otherModels.permissionGroup.findById(this.permission_group_id);
   }
 
   /**
    * @returns {Promise<import('./Country').CountryRecord[]>} countries that use this survey
    */
   async getCountries() {
-    return this.otherModels.country.findManyById(this.country_ids);
+    return await this.otherModels.country.findManyById(this.country_ids);
   }
 
   /**
@@ -138,7 +140,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
         .map(([_, countryIds]) => {
           return `
           (
-            permission_group_id = ? AND 
+            permission_group_id = ? AND
             ${SqlQuery.array(countryIds, 'TEXT')} && country_ids
           )
         `;
@@ -193,7 +195,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: `ARRAY[survey.project_id]`,
+        projectIds: 'ARRAY[survey.project_id]',
       }),
     };
   }
