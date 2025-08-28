@@ -109,8 +109,8 @@ export function useSurveysQuery(
     countryCode,
     projectId,
     searchTerm,
-    includeCountryNames = false,
-    includeSurveyGroupNames = false,
+    includeCountryNames = true,
+    includeSurveyGroupNames = true,
   }: UseSurveysQueryParams = {},
   useQueryOptions?: UseQueryOptions<DatatrakWebSurveyRequest.ResBody[]>,
 ) {
