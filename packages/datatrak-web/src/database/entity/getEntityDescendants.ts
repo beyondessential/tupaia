@@ -215,8 +215,7 @@ export const getEntityDescendants = async ({
     ? sortSearchResults(searchString, entities)
     : [
         ...recentEntities,
-        // SQL projection may exclude `name` attribute, but if `a` has `.name` then so does `b`
-        ...entities.sort((a, b) => a.name?.localeCompare(b.name!) ?? 0),
+        ...entities.sort((a, b) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
       ];
 
   const formattedEntities = await formatEntitiesForResponse(
