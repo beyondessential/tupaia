@@ -93,8 +93,8 @@ export class SqlQuery {
    */
   loggableQuery() {
     const replacementIterator = this.parameters
-      .map(param => (typeof param === 'string' ? param.replace(/'/g, "''") : param))
+      .map(param => (typeof param === 'string' ? param.replaceAll("'", "''") : param))
       [Symbol.iterator]();
-    return this.query.replace(/\?/g, () => `'${replacementIterator.next().value}'`);
+    return this.query.replaceAll('?', () => `'${replacementIterator.next().value}'`);
   }
 }
