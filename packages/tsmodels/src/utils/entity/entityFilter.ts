@@ -1,10 +1,10 @@
+import { NumericKeys } from '@tupaia/types';
 import {
-  QueryConjunctions,
+  AdvancedFilterValue,
   EntityFilter,
   EntityFilterFields,
-  AdvancedFilterValue,
+  QueryConjunctions,
 } from '../../models';
-import { NumericKeys } from '@tupaia/types';
 
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
 
@@ -22,7 +22,11 @@ type NotNullValues<T> = {
 
 type ExtractArrays<T> = T extends unknown[] ? T : never;
 
-type QueryObject = Record<string, AdvancedFilterValue<string>> | undefined | null;
+type SingleStringAdvancedFilterValue = Omit<AdvancedFilterValue<string>, 'comparisonValue'> & {
+  comparisonValue: string; // Disallow string[]
+};
+
+type QueryObject = Record<string, SingleStringAdvancedFilterValue> | undefined | null;
 
 const getDefaultFilter = (allowedCountries: string[]) => ({
   [QueryConjunctions.AND]: {

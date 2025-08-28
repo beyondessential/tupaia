@@ -4,11 +4,11 @@ import { ObjectLikeKeys, ObjectLikeFields, Flatten } from '@tupaia/types';
 type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in' | '@>';
 type ComparisonTypes = 'where' | 'whereBetween' | 'whereIn' | 'orWhere';
 
-export type AdvancedFilterValue<T> = {
+export interface AdvancedFilterValue<T> {
   comparisonType?: ComparisonTypes;
   comparator: FilterComparators;
   comparisonValue: T | T[];
-};
+}
 
 /**
  * Example:
