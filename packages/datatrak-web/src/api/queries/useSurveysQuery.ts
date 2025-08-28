@@ -21,7 +21,7 @@ interface UseSurveysQueryJoinParams {
   includeSurveyGroupNames?: boolean;
 }
 
-type UseSurveysQueryParams = UseSurveysQueryFilterParams & UseSurveysQueryJoinParams;
+interface UseSurveysQueryParams extends UseSurveysQueryFilterParams, UseSurveysQueryJoinParams {}
 
 const getRemote = async ({
   countryCode,
