@@ -1,9 +1,9 @@
 import { Country, DatatrakWebUsersRequest } from '@tupaia/types';
 
-import { get } from '../api';
-import { Survey } from '../../types';
-import { useIsLocalFirst } from '../localFirst';
 import { getSurveyUsers } from '../../database';
+import { Survey } from '../../types';
+import { get } from '../api';
+import { useIsOfflineFirst } from '../offlineFirst';
 import { useDatabaseQuery } from './useDatabaseQuery';
 
 const getOnlineSurveyUsers = async ({
@@ -27,7 +27,7 @@ export const useSurveyUsers = (
   countryCode?: Country['code'],
   searchTerm?: string,
 ) => {
-  const isOfflineFirst = useIsLocalFirst();
+  const isOfflineFirst = useIsOfflineFirst();
 
   return useDatabaseQuery<DatatrakWebUsersRequest.ResBody>(
     ['surveyUsers', surveyCode, countryCode, searchTerm],

@@ -1,12 +1,12 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
 
-import { post } from '../api';
-import { successToast, gaEvent } from '../../utils';
-import { useCurrentUserContext } from '../CurrentUserContext';
-import { useDatabaseMutation } from '../queries';
-import { useIsLocalFirst } from '../localFirst';
 import { createTask } from '../../database/task';
+import { gaEvent, successToast } from '../../utils';
+import { post } from '../api';
+import { useCurrentUserContext } from '../CurrentUserContext';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { useDatabaseMutation } from '../queries';
 
 type Data = DatatrakWebTaskChangeRequest.ReqBody & {
   country_code: string;
@@ -22,7 +22,7 @@ export const useCreateTask = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
   const { projectId, project } = useCurrentUserContext();
 
-  const isOfflineFirst = useIsLocalFirst();
+  const isOfflineFirst = useIsOfflineFirst();
 
   return useDatabaseMutation<any, Error, Data, unknown>(
     isOfflineFirst ? createTask : createRemote,
