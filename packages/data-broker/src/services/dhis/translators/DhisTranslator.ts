@@ -1,3 +1,4 @@
+import { uniq } from 'es-toolkit';
 import { keyBy } from 'es-toolkit/compat';
 
 import { DhisApi, translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
@@ -72,7 +73,7 @@ export class DhisTranslator {
     api: DhisApi,
     dataSources: DataElement[],
   ): Promise<Record<string, DataElementDescriptor>> => {
-    const dataElementCodes = [...new Set(dataSources.map(d => d.dataElementCode))];
+    const dataElementCodes = uniq(dataSources.map(d => d.dataElementCode));
     const dataElements: DataElementDescriptor[] = await api.fetchDataElements(dataElementCodes, {
       includeOptions: true,
       additionalFields: ['valueType'],

@@ -1,3 +1,5 @@
+import { uniq } from 'es-toolkit';
+
 import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from './TupaiaDatabase';
 import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
@@ -81,9 +83,7 @@ export class DatabaseModel {
 
       const customColumnSelectors = this.customColumnSelectors || {};
 
-      this.fieldNames = [
-        ...new Set([...Object.keys(schema), ...Object.keys(customColumnSelectors)]),
-      ];
+      this.fieldNames = uniq([...Object.keys(schema), ...Object.keys(customColumnSelectors)]);
     }
     return this.fieldNames;
   }

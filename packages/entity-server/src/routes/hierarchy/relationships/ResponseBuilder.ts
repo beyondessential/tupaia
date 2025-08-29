@@ -1,3 +1,4 @@
+import { uniq } from 'es-toolkit';
 import { keyBy } from 'es-toolkit/compat';
 
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
@@ -75,10 +76,9 @@ export class ResponseBuilder {
       }
     });
 
-    const ancestorCodes = [
-      ...new Set(Object.values(descendantAncestorMapping).map(ancestor => ancestor.code)),
-    ];
-
+    const ancestorCodes = uniq(
+      Object.values(descendantAncestorMapping).map(ancestor => ancestor.code),
+    );
     const ancestorDescendantPairs = Object.entries(descendantAncestorMapping).map(
       ([descendant, { code: ancestor }]) => ({
         descendant,
