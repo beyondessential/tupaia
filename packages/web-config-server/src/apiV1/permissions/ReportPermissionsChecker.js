@@ -1,16 +1,11 @@
+import { uniq } from 'es-toolkit';
+
 import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
 import { RECORDS } from '@tupaia/database';
 
 const getMergedProperties = (records, property) => {
-  return [
-    ...new Set(
-      records.reduce(
-        (combinedList, singleRecord) => [...combinedList, ...singleRecord[property]],
-        [],
-      ),
-    ),
-  ];
+  return uniq(records.flatMap(record => record[property]));
 };
 
 export class ReportPermissionsChecker extends PermissionsChecker {
