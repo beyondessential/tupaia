@@ -13,8 +13,8 @@ const detectDependenciesFromExpressions = (expressions: string[]) => {
   const parser = new TransformParser();
   const functions = expressions
     .flatMap(calcExpression => {
-      return parser.getFunctions(calcExpression);
-    });
+    return parser.getFunctions(calcExpression);
+  });
 
   const dependencies = Object.entries(contextFunctionDependencies)
     .filter(([fnName]) => functions.includes(fnName))
@@ -70,7 +70,6 @@ export const detectDependencies = (transform: unknown): ContextDependency[] => {
       });
     })
     .flat(5)
-    .filter(d => !!d)
     .filter(TransformParser.isExpression);
 
   const aliasTransformDependencies = detectDependenciesFromAliasTransforms(aliasTransforms);
