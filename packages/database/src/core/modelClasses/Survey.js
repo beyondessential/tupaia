@@ -1,10 +1,10 @@
-import { reduceToDictionary } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
+import { reduceToDictionary } from '@tupaia/utils';
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
+import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
 import { buildSyncLookupSelect } from '../sync';
