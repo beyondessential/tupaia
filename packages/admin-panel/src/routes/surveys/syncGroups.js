@@ -1,3 +1,5 @@
+import { BES_ADMIN_PERMISSION_GROUP } from '../../utilities/userAccess';
+
 const RESOURCE_NAME = { singular: 'sync group' };
 
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
@@ -94,5 +96,5 @@ export const syncGroups = {
   columns: COLUMNS,
   editorConfig: EDITOR_CONFIG,
   createConfig: CREATE_CONFIG,
-  isBESAdminOnly: true,
+  requiresSomePermissionGroup: [BES_ADMIN_PERMISSION_GROUP],
 };

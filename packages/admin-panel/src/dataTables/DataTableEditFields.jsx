@@ -1,25 +1,33 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
-import {
-  FetchLoader,
-  Autocomplete as ExternalDatabaseConnectionAutocomplete,
-  DataGrid,
-} from '@tupaia/ui-components';
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
-import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
+import React, { useEffect, useMemo, useState } from 'react';
+import styled from 'styled-components';
+
 import { DataTableType } from '@tupaia/types';
+import {
+  DataGrid,
+  Autocomplete as ExternalDatabaseConnectionAutocomplete,
+  FetchLoader,
+} from '@tupaia/ui-components';
+import { EditorInputField } from '../editor';
+import { onInputChange } from '../editor/FieldsEditor';
+import { getColumns, getRows, labelToId } from '../utilities';
 import { PreviewFilters } from './components/PreviewFilters';
 import { SqlDataTableConfigEditFields } from './config';
-import { useParams } from './useParams';
-import { useDataTablePreview, useExternalDatabaseConnections } from './query';
-import { getColumns, getRows, labelToId } from '../utilities';
 import { PlayButton } from './PlayButton';
-import { onInputChange } from '../editor/FieldsEditor';
-import { EditorInputField } from '../editor';
+import { useDataTablePreview, useExternalDatabaseConnectionsQuery } from './query';
+import { useParams } from './useParams';
+
+const sources = ['code', 'description', 'permission_groups', 'type'];
 
 const StyledGrid = styled(Grid)`
   height: 400px;
+`;
+
+const StyledAccordionSummary = styled(AccordionSummary).attrs({ component: 'h3' })`
+  font-size: inherit;
+  font-weight: 500;
 `;
 
 const InputRow = styled.div`
@@ -34,7 +42,7 @@ const InputRow = styled.div`
   }
 `;
 
-const NoConfig = () => <>This Data Table type has no configuration options</>;
+const NoConfig = () => 'This Data Table type has no configuration options';
 
 const typeFieldsMap = {
   ...Object.fromEntries(Object.values(DataTableType).map(type => [type, NoConfig])),
@@ -42,14 +50,12 @@ const typeFieldsMap = {
 };
 
 export const DataTableEditFields = React.memo(
-  props => {
-    const { onEditField, recordData, isLoading: isDataLoading, fields } = props;
-    if (isDataLoading) {
-      return <div />;
-    }
-
+  ({ onEditField, recordData, isLoading: isDataLoading, fields }) => {
+    const isSqlDataTable = recordData?.type === DataTableType.sql;
     const [fetchDisabled, setFetchDisabled] = useState(false);
-    const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnections();
+    const { data: externalDatabaseConnections = [] } = useExternalDatabaseConnectionsQuery({
+      enabled: isSqlDataTable,
+    });
     const {
       builtInParams,
       additionalParams,
@@ -85,6 +91,8 @@ export const DataTableEditFields = React.memo(
     const columns = useMemo(() => getColumns(reportData), [reportData]);
     const rows = useMemo(() => getRows(reportData), [reportData]);
 
+    if (isDataLoading) return null;
+
     const ConfigComponent = typeFieldsMap[recordData.type] ?? null;
 
     const onChangeType = newType => {
@@ -111,18 +119,31 @@ export const DataTableEditFields = React.memo(
 
     const getFieldBySource = source => fields.find(field => field.source === source);
 
-    const sources = ['code', 'description', 'permission_groups', 'type'];
-
     const onChangeField = (inputKey, inputValue, editConfig) => {
       if (inputKey === 'type') {
         onChangeType(inputValue);
       } else onInputChange(inputKey, inputValue, editConfig, recordData, onEditField);
     };
 
+    /**
+     * True if an only if the active user has edit permissions to this data table.
+     * @privateRemarks A user with read-only access is allowed to access these ‘edit’ fields because
+     * it surfaces information that’s otherwise inaccessible in the GUI.
+     */
+    const isPreviewOnly =
+      // Assume if this is a non-SQL data table, this user has BES Admin access. Short-circuit.
+      // @see `@central-server/apiV2/dataTables/EditDataTables`
+      isSqlDataTable &&
+      // This is a SQL data table. Require access to the external database connection. (If
+      // externalDatabaseConnectionCode is null, allow edits.)
+      !externalDatabaseConnections.some(
+        connection => connection.code === recordData?.config?.externalDatabaseConnectionCode,
+      );
+
     return (
       <div>
         <Accordion defaultExpanded>
-          <AccordionSummary>Data Table</AccordionSummary>
+          <StyledAccordionSummary>Data table</StyledAccordionSummary>
           <AccordionDetails>
             <InputRow>
               {sources.map(source => {
@@ -145,11 +166,11 @@ export const DataTableEditFields = React.memo(
                   />
                 );
               })}
-              {recordData?.type === DataTableType.sql && (
+              {isSqlDataTable && (
                 <ExternalDatabaseConnectionAutocomplete // Provide options directly to base Autocomplete
                   options={externalDatabaseConnections}
-                  label="Database Connection"
-                  onChange={(event, selectedValues) =>
+                  label="Database connection"
+                  onChange={(_event, selectedValues) =>
                     onSqlConfigChange('externalDatabaseConnectionCode', selectedValues?.code)
                   }
                   placeholder={recordData?.config?.externalDatabaseConnectionCode}
@@ -159,7 +180,7 @@ export const DataTableEditFields = React.memo(
                     externalDatabaseConnections.find(
                       connection =>
                         connection.code === recordData?.config?.externalDatabaseConnectionCode,
-                    ) || {}
+                    ) ?? {}
                   }
                 />
               )}
@@ -167,7 +188,7 @@ export const DataTableEditFields = React.memo(
           </AccordionDetails>
         </Accordion>
 
-        {ConfigComponent ? (
+        {ConfigComponent && !isPreviewOnly ? (
           <ConfigComponent
             onEditField={onEditField}
             recordData={recordData}
@@ -177,13 +198,18 @@ export const DataTableEditFields = React.memo(
             onParamsChange={onParamsChange}
           />
         ) : (
-          <Accordion defaultExpanded>
-            <AccordionSummary>Config</AccordionSummary>
+          <Accordion>
+            <StyledAccordionSummary>Config</StyledAccordionSummary>
+            <AccordionDetails>
+              <Typography style={{ fontStyle: 'italic' }} color="textSecondary">
+                No config available
+              </Typography>
+            </AccordionDetails>
           </Accordion>
         )}
 
         <Accordion defaultExpanded>
-          <AccordionSummary>Preview</AccordionSummary>
+          <StyledAccordionSummary>Preview</StyledAccordionSummary>
           <AccordionDetails>
             <Grid container spacing={2}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
