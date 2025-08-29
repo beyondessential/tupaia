@@ -96,9 +96,9 @@ UsedBy.defaultProps = {
   typeHeadings: {
     question: 'Questions',
     indicator: 'Indicators',
-    dashboardItem: 'Dashboard Items',
-    mapOverlay: 'Map Overlays',
-    legacyReport: 'Legacy Reports',
+    dashboardItem: 'Dashboard items',
+    mapOverlay: 'Map overlays',
+    legacyReport: 'Legacy reports',
     dataGroup: 'Data Groups',
     survey: 'Surveys',
   },
