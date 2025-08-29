@@ -1,8 +1,8 @@
-import { Request, NextFunction, Response } from 'express';
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
-import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
+import { EntityFilter, EntityRecord } from '@tupaia/server-boilerplate';
+import { ajvValidate, ensure, isNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
-import { EntityRecord, EntityFilter } from '@tupaia/server-boilerplate';
+import { PermissionsError } from '@tupaia/utils';
+import { NextFunction, Request, Response } from 'express';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 import { extractFilterFromQuery } from './filter';
 
@@ -79,10 +79,10 @@ const getFilterInfo = async (
   allowedCountries = [...new Set(allowedCountries)]; // De-duplicate country codes
 
   if (!isPublic) {
-    const project = await req.models.project.findOne({ code: req.params.hierarchyName });
-    if (!project) {
-      throw new NotFoundError(`No project found with code ${req.params.hierarchyName}`);
-    }
+    const project = ensure(
+      await req.models.project.findOne({ code: req.params.hierarchyName }),
+      `No project exists with code ${req.params.hierarchyName}`,
+    );
 
     // Fetch all country codes we have any of the project permission groups access to
     const projectAccessibleCountries = project.permission_groups.flatMap(permission =>
