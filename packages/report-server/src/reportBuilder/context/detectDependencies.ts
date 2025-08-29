@@ -1,4 +1,4 @@
-import { uniq } from 'es-toolkit';
+import { partition, uniq } from 'es-toolkit';
 import { isPlainObject } from 'es-toolkit/compat';
 
 import {
@@ -38,9 +38,7 @@ export const detectDependencies = (transform: unknown): ContextDependency[] => {
     return [];
   }
 
-  const aliasTransforms = transform.filter(isAliasTransform);
-
-  const regularTransforms = transform.filter(transformStep => !isAliasTransform(transformStep));
+  const [aliasTransforms, regularTransforms] = partition(transform, isAliasTransform);
 
   const expressions = regularTransforms
     .map(transformStep => {
