@@ -1,5 +1,6 @@
 import { isDefined, isNotNullish } from '@tupaia/tsutils';
 import { FieldValue } from '../../../types';
+import { uniq } from 'es-toolkit';
 
 // checkIsNum([1, 2, 3, null, undefined]) = 1, 2, 3]
 const checkIsNum = (values: FieldValue[]): number[] => {
@@ -67,7 +68,7 @@ const min = (values: FieldValue[]): FieldValue => {
 };
 
 const unique = (values: FieldValue[]): FieldValue => {
-  const distinctValues = [...new Set(values.filter(isDefined))];
+  const distinctValues = uniq(values.filter(isDefined));
   return distinctValues.length === 1 ? distinctValues[0] : 'NO_UNIQUE_VALUE';
 };
 

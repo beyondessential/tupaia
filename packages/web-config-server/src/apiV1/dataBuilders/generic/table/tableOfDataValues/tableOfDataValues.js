@@ -1,3 +1,4 @@
+import { uniq } from 'es-toolkit';
 import { flatten, keyBy } from 'es-toolkit/compat';
 
 import { getSortByKey, reduceToDictionary, reduceToSet } from '@tupaia/utils';
@@ -103,9 +104,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   buildDataElementCodes() {
-    return [...new Set(flatten(this.config.cells))].filter(
-      cell => !TotalCalculator.isTotalKey(cell),
-    );
+    return uniq(flatten(this.config.cells)).filter(cell => !TotalCalculator.isTotalKey(cell));
   }
 
   buildValuesByCell() {

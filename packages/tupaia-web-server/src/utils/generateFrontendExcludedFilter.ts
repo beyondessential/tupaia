@@ -1,3 +1,5 @@
+import { uniq } from 'es-toolkit';
+
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaWebServerModelRegistry } from '../types';
 
@@ -65,7 +67,7 @@ const mergeExistingTypesFilter = (
     return {
       type: {
         comparator: '!=',
-        comparisonValue: [...new Set([...typeComparisonValue, ...typesToExclude])],
+        comparisonValue: uniq([...typeComparisonValue, ...typesToExclude]),
       },
     };
   }

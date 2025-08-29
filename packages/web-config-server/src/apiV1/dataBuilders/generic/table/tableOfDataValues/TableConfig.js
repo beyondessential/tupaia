@@ -1,5 +1,6 @@
 import { compareAsc } from '@tupaia/utils';
 import { TotalCalculator } from './TotalCalculator';
+import { uniq } from 'es-toolkit';
 
 const METADATA_FIELDS = {
   $orgUnit: 'organisationUnit',
@@ -70,9 +71,7 @@ export class TableConfig {
   }
 
   getMetadataValues = (results, metadataField) =>
-    [...new Set(results.map(({ [metadataField]: metadataValue }) => metadataValue))].sort(
-      compareAsc,
-    );
+    uniq(results.map(({ [metadataField]: metadataValue }) => metadataValue)).sort(compareAsc);
 
   processRowMetadataFields(results) {
     const metadataValues = this.getMetadataValues(results, this.getRowMetadataField());
@@ -80,6 +79,7 @@ export class TableConfig {
 
     this.rows = metadataValues.map(value => ({ category: value, rows }));
 
+    // TODO: flatMap()
     const cells = [];
     metadataValues.forEach(metadataValue => {
       const newCellRows = this.cells.map(cellRow =>
