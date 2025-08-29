@@ -197,9 +197,9 @@ const getAggregatedQuestions = rawResults => {
       question_detail,
     } = result;
 
-    const screenIndex = surveyQuestions[survey_id]
-      .map(screen => screen.id)
-      .indexOf(survey_screen_id);
+    const screenIndex = surveyQuestions[survey_id].findIndex(
+      screen => screen.id === survey_screen_id,
+    );
 
     surveyQuestions[survey_id][screenIndex].survey_screen_components.push({
       id: survey_screen_component_id,
