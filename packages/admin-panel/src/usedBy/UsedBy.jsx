@@ -51,8 +51,7 @@ export const UsedBy = ({ usedBy, isLoading, errorMessage, typeHeadings, header }
           {header}
           <NumResults>{!isLoading && !errorMessage && <>({usedBy.length})</>}</NumResults>
         </HeaderText>
-        {!isOpen && <ExpandMore />}
-        {isOpen && <ExpandLess />}
+        {isOpen ? <ExpandLess /> : <ExpandMore />}
       </StyledHeader>
 
       <Collapse in={isOpen}>
