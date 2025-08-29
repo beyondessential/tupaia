@@ -16,16 +16,17 @@ export class FetchPreviewDataRoute extends Route<FetchPreviewDataRequest> {
 
     const requestParams = { ...body.runtimeParams };
     const { rows, total, limit } = await ctx.dataTableService.fetchPreviewData(requestParams);
-    let columnArray = new Set();
+    const columns = new Set<string>();
     for (const row of rows) {
-      if (typeof row === 'object' && row) {
-        columnArray = new Set([...columnArray, ...Object.keys(row).map(key => key)]);
+      if (typeof row === 'object' && row !== null) {
+        const keys = Object.keys(row);
+        for (const key of keys) columns.add(key);
       }
     }
 
     return {
       rows,
-      columns: Array.from(columnArray),
+      columns: Array.from(columns),
       total,
       limit,
     };
