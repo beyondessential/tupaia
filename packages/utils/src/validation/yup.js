@@ -1,8 +1,9 @@
 /* eslint-disable no-template-curly-in-string */
 
+import { uniq } from 'es-toolkit';
 import * as yup from 'yup';
+
 import { toArray } from '../array';
-import { getUniqueEntries } from '../getUniqueEntries';
 
 class InvalidSchemaError extends Error {
   constructor(receivedSchema) {
@@ -32,7 +33,7 @@ const createTypeError = schemas => {
     }
     return type;
   });
-  const typeDescription = getUniqueEntries(types).join(' | ');
+  const typeDescription = uniq(types).join(' | ');
 
   return `$\{path} must be a ${quote(typeDescription)} type, but the final value was: ${quote(
     '${value}',
@@ -128,14 +129,14 @@ const testSync = (schema, createError) =>
  * @returns
  */
 const yupTest = (testFunction, message) => (...args) => {
-  try {
-    testFunction(...args);
-  } catch (error) {
-    return new yup.ValidationError(message || error.message);
-  }
+    try {
+      testFunction(...args);
+    } catch (error) {
+      return new yup.ValidationError(message || error.message);
+    }
 
-  return true;
-};
+    return true;
+  };
 
 /**
  * Wrap a list of test functions that throws an error upon failure for using in yup
@@ -145,19 +146,19 @@ const yupTest = (testFunction, message) => (...args) => {
  * @returns
  */
 const yupTestAny = (testFunctions, message) => (...args) => {
-  const testFailures = [];
-  for (let i = 0; i < testFunctions.length; i++) {
-    const testFunction = testFunctions[i];
-    const testResult = yupTest(testFunction)(...args);
-    if (testResult === true) {
-      return true;
+    const testFailures = [];
+    for (let i = 0; i < testFunctions.length; i++) {
+      const testFunction = testFunctions[i];
+      const testResult = yupTest(testFunction)(...args);
+      if (testResult === true) {
+        return true;
+      }
+
+      testFailures.push(testResult.message);
     }
 
-    testFailures.push(testResult.message);
-  }
-
-  return new yup.ValidationError(message || testFailures.join(' or '));
-};
+    return new yup.ValidationError(message || testFailures.join(' or '));
+  };
 
 export const yupUtils = {
   oneOfType,
