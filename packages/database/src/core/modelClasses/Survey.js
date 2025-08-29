@@ -192,6 +192,56 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return surveys;
   }
 
+  /**
+   * @param {SurveyRecord['id'][]} surveyIds
+   * @returns {Promise<Record<SurveyRecord['id'], import('./Country').CountryRecord['id'][]>>}
+   * Dictionary mapping survey IDs to sorted arrays of country codes
+   */
+  async getCountryCodesBySurveyId(surveyIds) {
+    if (surveyIds.length === 0) return {};
+
+    const rows = await this.database.executeSql(
+      `
+        SELECT
+            survey.id survey_id,
+            ARRAY_AGG(country.code ORDER BY country.code) AS country_codes
+        FROM
+            survey
+            LEFT JOIN country ON country.id = ANY (survey.country_ids)
+        WHERE
+            survey.id IN ${SqlQuery.record(surveyIds)}
+        GROUP BY
+            survey.id;
+      `,
+      surveyIds,
+    );
+    return Object.fromEntries(rows.map(row => [row.survey_id, row.country_codes]));
+  }
+
+  /**
+   * @param {SurveyRecord['id'][]} surveyIds
+   * @returns {Promise<Record<SurveyRecord['id'], import('./Country').CountryRecord['id'][]>>}
+   * Dictionary mapping survey IDs to sorted arrays of country names
+   */
+  async getCountryNamesBySurveyId(surveyIds) {
+    if (surveyIds.length === 0) return {};
+
+    const rows = await this.database.executeSql(
+      `
+        SELECT
+          survey.id survey_id,
+          ARRAY_AGG(country.name ORDER BY country.name) country_names
+        FROM
+          survey
+          LEFT JOIN country ON (country.id = ANY (survey.country_ids))
+        WHERE
+          survey.id IN ${SqlQuery.record(surveyIds)} GROUP BY survey.id;
+      `,
+      surveyIds,
+    );
+    return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
+  }
+
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {

@@ -1,13 +1,13 @@
 /* eslint-disable camelcase */
-import { JOIN_TYPES, SqlQuery } from '@tupaia/database';
+import { JOIN_TYPES } from '@tupaia/database';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
+import { processColumns } from '../GETHandler/helpers';
 import {
   assertSurveyGetPermissions,
   createSurveyDBFilter,
   createSurveyViaCountryDBFilter,
 } from './assertSurveyPermissions';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { processColumns } from '../GETHandler/helpers';
 
 /**
  * See ./README.md
@@ -143,36 +143,13 @@ export class GETSurveys extends GETHandler {
   }
 
   async getSurveyCountryNames(surveyIds) {
-    if (surveyIds.length === 0 || !this.includeCountryNames) return {};
-    const rows = await this.database.executeSql(
-      `
-        SELECT
-          survey.id survey_id,
-          ARRAY_AGG(country.name ORDER BY country.name) country_names
-        FROM
-          survey
-          LEFT JOIN country ON (country.id = ANY (survey.country_ids))
-        WHERE
-          survey.id IN (${SqlQuery.record(surveyIds)}) GROUP BY survey.id;
-      `,
-      surveyIds,
-    );
-    return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
+    if (!this.includeCountryNames) return {};
+    return await this.models.survey.getCountryNamesBySurveyId(surveyIds);
   }
 
   async getSurveyCountryCodes(surveyIds) {
-    if (surveyIds.length === 0 || !this.includeCountryCodes) return {};
-    const rows = await this.database.executeSql(
-      `
-    SELECT survey.id, array_agg(country.code) as country_codes
-    FROM survey
-    LEFT JOIN country ON (country.id = any(survey.country_ids))
-    WHERE survey.id in (${surveyIds.map(() => '?').join(',')})
-    GROUP BY survey.id;
-    `,
-      surveyIds,
-    );
-    return Object.fromEntries(rows.map(row => [row.id, row.country_codes.sort()]));
+    if (!this.includeCountryCodes) return {};
+    return await this.models.survey.getCountryCodesBySurveyId(surveyIds);
   }
 }
 

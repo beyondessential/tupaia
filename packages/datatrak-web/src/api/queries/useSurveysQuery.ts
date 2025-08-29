@@ -2,7 +2,7 @@ import { UseQueryOptions } from '@tanstack/react-query';
 
 import { DbFilter } from '@tupaia/tsmodels';
 import { camelcaseKeys } from '@tupaia/tsutils';
-import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
+import { DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
 
 import { DatatrakWebModelRegistry, Entity } from '../../types';
 import { isNotNullish, isNullish } from '../../utils';
@@ -75,7 +75,7 @@ const getLocal = async ({
   // Add country names
   if (includeCountryNames) {
     const surveyIds = surveys.map(s => s.id);
-    const countryNamesBySurveyId = await getSurveyCountryNames(models, surveyIds);
+    const countryNamesBySurveyId = await models.survey.getCountryNamesBySurveyId(surveyIds);
     surveys = surveys.map(s => ({ ...s, countryNames: countryNamesBySurveyId[s.id] }));
   }
 
@@ -109,8 +109,8 @@ export function useSurveysQuery(
     countryCode,
     projectId,
     searchTerm,
-    includeCountryNames = true,
-    includeSurveyGroupNames = true,
+    includeCountryNames = false,
+    includeSurveyGroupNames = false,
   }: UseSurveysQueryParams = {},
   useQueryOptions?: UseQueryOptions<DatatrakWebSurveyRequest.ResBody[]>,
 ) {
@@ -165,29 +165,4 @@ function constructDbFilter({
   }
 
   return dbFilter;
-}
-
-/** @privateRemarks Logic duplicated from `@tupaia/central-server/apiV2/surveys/GETSurveys` */
-async function getSurveyCountryNames(
-  models: DatatrakWebModelRegistry,
-  surveyIds: Survey['id'][],
-): Promise<Record<Survey['id'], Country['name'][]>> {
-  if (surveyIds.length === 0) return {};
-
-  const rows: { survey_id: Survey['id']; country_names: Country['name'][] }[] =
-    await models.database.executeSql(
-      `
-        SELECT
-          survey.id survey_id,
-          ARRAY_AGG(country.name ORDER BY country.name) country_names
-        FROM
-          survey
-          LEFT JOIN country ON (country.id = ANY (survey.country_ids))
-        WHERE
-          survey.id IN (${surveyIds.map(() => '?') /* TODO: SqlQuery.record(surveyIds) */}) GROUP BY survey.id;
-      `,
-      surveyIds,
-    );
-
-  return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
 }
