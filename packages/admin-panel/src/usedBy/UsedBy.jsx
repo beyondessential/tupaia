@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
+import { Collapse, List, ListItem, ListSubheader } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import { Collapse, List, ListItem, ListSubheader } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
 import { ExpandLess, ExpandMore, OpenInNew } from '@material-ui/icons';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const StyledHeader = styled(Typography)`
@@ -18,9 +18,9 @@ const HeaderText = styled.div`
 `;
 
 const NumResults = styled.span`
-  font-size: 12px;
   color: ${props => props.theme.palette.text.secondary};
-  margin-left: 0.5em;
+  font-size: 0.75rem;
+  margin-inline-start: 0.5em;
 `;
 
 const StyledLink = styled(Link)`
@@ -57,7 +57,7 @@ export const UsedBy = ({ usedBy, isLoading, errorMessage, typeHeadings, header }
 
       <Collapse in={isOpen}>
         {isLoading && 'Loading…'}
-        {!isLoading && errorMessage && <>Failed to load used by: {errorMessage}</>}
+        {!isLoading && errorMessage && `Failed to load used by: ${errorMessage}`}
         {!isLoading && !errorMessage && (
           <Card>
             <CardContent>
