@@ -128,7 +128,9 @@ const testSync = (schema, createError) =>
  * @param {string} [message]
  * @returns
  */
-const yupTest = (testFunction, message) => (...args) => {
+const yupTest =
+  (testFunction, message) =>
+  (...args) => {
     try {
       testFunction(...args);
     } catch (error) {
@@ -145,7 +147,9 @@ const yupTest = (testFunction, message) => (...args) => {
  * @param {string} [message]
  * @returns
  */
-const yupTestAny = (testFunctions, message) => (...args) => {
+const yupTestAny =
+  (testFunctions, message) =>
+  (...args) => {
     const testFailures = [];
     for (let i = 0; i < testFunctions.length; i++) {
       const testFunction = testFunctions[i];

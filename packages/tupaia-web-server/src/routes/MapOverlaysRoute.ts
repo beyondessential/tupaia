@@ -10,6 +10,7 @@ import {
   TupaiaWebMapOverlaysRequest,
 } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
+import { uniq } from 'es-toolkit';
 
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,
@@ -134,7 +135,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const overlayGroupIds: string[] = mapOverlayRelations.map(
       (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
     );
-    const uniqueGroupIds: string[] = [...new Set(overlayGroupIds)];
+    const uniqueGroupIds = uniq(overlayGroupIds);
     const mapOverlayGroups = await this.req.models.mapOverlayGroup.find({
       id: uniqueGroupIds,
     });
