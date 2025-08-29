@@ -1,3 +1,5 @@
+import { ensure, isNullish } from '@tupaia/tsutils';
+import { DataTableType } from '@tupaia/types';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -8,6 +10,18 @@ const DATA_TABLE_TYPES = {
 
 export class DataTableRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DATA_TABLE;
+
+  async getExternalDatabaseConnection() {
+    if (this.type !== DataTableType.sql || isNullish(this.config.externalDatabaseConnectionCode)) {
+      return null;
+    }
+
+    const code = this.config.externalDatabaseConnectionCode;
+    return ensure(
+      await this.otherModels.externalDatabaseConnection.findOne({ code }),
+      `Couldn’t find external database connection for data table ${this.id} (expected external database connection with code ${code})`,
+    );
+  }
 }
 
 export class DataTableModel extends DatabaseModel {
@@ -17,7 +31,7 @@ export class DataTableModel extends DatabaseModel {
     return DataTableRecord;
   }
 
-  /** @returns {Promise<import('@tupaia/types').DataTableType[]>} */
+  /** @returns {Promise<DataTableType[]>} */
   async getDataTableTypes() {
     const dataTableTypes = await this.database.executeSql(
       'SELECT unnest(enum_range(NULL::data_table_type)) AS type;',
