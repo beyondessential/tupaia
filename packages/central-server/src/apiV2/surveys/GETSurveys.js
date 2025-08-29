@@ -165,8 +165,8 @@ const getAggregatedQuestions = rawResults => {
     return questionsObject;
   }, initialValue);
 
-  for (let i = 0; i < rawResults.length; i++) {
-    const { survey_id, screen_number, survey_screen_id } = rawResults[i];
+  for (const result of rawResults) {
+    const { survey_id, screen_number, survey_screen_id } = result;
     if (surveyQuestions[survey_id].map(screen => screen.id).includes(survey_screen_id)) {
       continue;
     }
@@ -177,7 +177,7 @@ const getAggregatedQuestions = rawResults => {
     });
   }
 
-  for (let i = 0; i < rawResults.length; i++) {
+  for (const result of rawResults) {
     const {
       survey_id,
       survey_screen_id,
@@ -195,7 +195,7 @@ const getAggregatedQuestions = rawResults => {
       question_options,
       question_option_set_id,
       question_detail,
-    } = rawResults[i];
+    } = result;
 
     const screenIndex = surveyQuestions[survey_id]
       .map(screen => screen.id)
