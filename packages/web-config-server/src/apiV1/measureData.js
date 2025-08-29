@@ -1,5 +1,7 @@
 import assert from 'assert';
 import { snake } from 'case';
+import { uniq } from 'es-toolkit';
+
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
@@ -156,7 +158,7 @@ function updateLegendFromDisplayedValueKey(measureOption, dataElements) {
 
 const getMeasureLevel = mapOverlays => {
   const aggregationTypes = mapOverlays.map(({ config }) => config.measureLevel);
-  return [...new Set(aggregationTypes)].join(',');
+  return uniq(aggregationTypes).join(',');
 };
 
 export default class extends DataAggregatingRouteHandler {

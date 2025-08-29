@@ -4,6 +4,7 @@ import { getCalculatedValuesByCell } from './helpers/getValuesByCell';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 import { NO_DATA_AVAILABLE, ORG_UNIT_COLUMNS_KEYS_SET } from '/apiV1/dataBuilders/constants';
 import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders/helpers';
+import { uniq } from 'es-toolkit';
 
 class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
@@ -14,7 +15,7 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
         ),
       ),
     );
-    return [...new Set(dataElementCodes)];
+    return uniq(dataElementCodes);
   }
 
   getCellKey(rowIndex, columnIndex) {

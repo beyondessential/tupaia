@@ -1,3 +1,4 @@
+import { uniq } from 'es-toolkit';
 import { groupBy, isEqual, keyBy } from 'es-toolkit/compat';
 import { Request } from 'express';
 
@@ -134,7 +135,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const overlayGroupIds: string[] = mapOverlayRelations.map(
       (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
     );
-    const uniqueGroupIds: string[] = [...new Set(overlayGroupIds)];
+    const uniqueGroupIds = uniq(overlayGroupIds);
     const mapOverlayGroups = await this.req.models.mapOverlayGroup.find({
       id: uniqueGroupIds,
     });

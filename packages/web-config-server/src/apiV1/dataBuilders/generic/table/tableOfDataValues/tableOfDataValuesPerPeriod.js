@@ -1,6 +1,8 @@
+import { uniq } from 'es-toolkit';
+import { flatten } from 'es-toolkit/compat';
+
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { parsePeriodType, periodToDisplayString, getPeriodsInRange } from '@tupaia/utils';
-import { flatten } from 'es-toolkit/compat';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
@@ -76,7 +78,7 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
       .map(cell => (typeof cell === 'object' ? cell.dataElement : cell))
       .filter(e => e !== 'NONE');
 
-    return [...new Set(dataElementCodes)];
+    return uniq(dataElementCodes);
   }
 
   getDataElementToRowConfig() {

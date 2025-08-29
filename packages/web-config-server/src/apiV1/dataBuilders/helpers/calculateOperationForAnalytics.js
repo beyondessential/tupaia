@@ -1,3 +1,4 @@
+import { uniq } from 'es-toolkit';
 import { groupBy, keyBy, some } from 'es-toolkit/compat';
 
 import {
@@ -99,10 +100,10 @@ const countDataValues = async (analytics, dataValues, filter, config, models) =>
 
 const buildOrgUnitParentMapForAnalytics = async (analytics, models) => {
   const orgUnits = await models.entity.find({
-    code: [...new Set(analytics.map(a => a.organisationUnit))],
+    code: uniq(analytics.map(a => a.organisationUnit)),
   });
   const orgUnitParents = await models.entity.find({
-    id: [...new Set(orgUnits.map(o => o.parent_id))],
+    id: uniq(orgUnits.map(o => o.parent_id)),
   });
   const parentIdMap = keyBy(orgUnitParents, 'id');
   const orgUnitParentMap = {};
