@@ -88,7 +88,7 @@ const getAllowedCountries = async (
 
     // Fetch all country codes we have any of the project permission groups access to
     const projectAccessibleCountries = new Set<Entity['code']>(
-      projectPermissionGroups.flatMap(accessPolicy.getEntitiesAllowed),
+      projectPermissionGroups.flatMap(pg => accessPolicy.getEntitiesAllowed(pg)),
     );
     allowedCountries = allowedCountries.filter(c => projectAccessibleCountries.has(c));
   }
