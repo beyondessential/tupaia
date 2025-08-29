@@ -66,7 +66,7 @@ describe('Reports', () => {
 
   it('renders the surveys input', async () => {
     renderComponent(<Reports />);
-    const surveysInput = await screen.findByPlaceholderText('Select survey...');
+    const surveysInput = await screen.findByPlaceholderText('Select survey…');
     expect(surveysInput).toBeInTheDocument();
   });
 
@@ -179,7 +179,7 @@ describe('Reports', () => {
       }),
     );
     renderComponent(<Reports />);
-    await userEvent.click(await screen.findByPlaceholderText('Select survey...'));
+    await userEvent.click(await screen.findByPlaceholderText('Select survey…'));
     await userEvent.click(await screen.findByText('Basic clinic data - Demo Land'));
     await userEvent.click(await screen.findByLabelText('Country'));
     await userEvent.click(await screen.getByPlaceholderText('Select country...'));
@@ -212,7 +212,7 @@ describe('Reports', () => {
       }),
     );
     renderComponent(<Reports />);
-    await userEvent.click(await screen.findByPlaceholderText('Select survey...'));
+    await userEvent.click(await screen.findByPlaceholderText('Select survey…'));
     await userEvent.click(await screen.findByText('Basic clinic data - Demo Land'));
     await userEvent.click(await screen.findByLabelText('Country'));
     await userEvent.click(await screen.getByPlaceholderText('Select country...'));
@@ -239,7 +239,7 @@ describe('Reports', () => {
       }),
     );
     renderComponent(<Reports />);
-    await userEvent.click(await screen.findByPlaceholderText('Select survey...'));
+    await userEvent.click(await screen.findByPlaceholderText('Select survey…'));
     await userEvent.click(await screen.findByText('Basic clinic data - Demo Land'));
     await userEvent.click(await screen.findByLabelText('Country'));
     await userEvent.click(await screen.getByPlaceholderText('Select country...'));

@@ -287,7 +287,7 @@ export class TaskModel extends DatabaseModel {
       accessPolicy,
     );
 
-    const params = Object.entries(countryCodesByPermissionGroupId).flat().flat(); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
+    const params = Object.entries(countryCodesByPermissionGroupId).flat(2); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
 
     return {
       sql: `
@@ -296,7 +296,7 @@ export class TaskModel extends DatabaseModel {
             .map(([_, countryCodes]) => {
               return `
               (
-                survey.permission_group_id = ? AND 
+                survey.permission_group_id = ? AND
                 entity.country_code IN (${countryCodes.map(() => '?').join(', ')})
               )
             `;
@@ -380,15 +380,16 @@ export class TaskModel extends DatabaseModel {
       if (!fieldsToCreateCommentsFor.includes(field)) continue;
       const originalValue = originalTask[field];
       // If the field hasn't actually changed, don't add a comment
-      // If the field hasn't actually changed, don't add a comment
       if (originalValue === newValue) continue;
       // Don't add a comment when repeat schedule is updated and the frequency is the same
       if (field === 'repeat_schedule' && originalValue?.freq === newValue?.freq) continue;
       // Don't add a comment when due date is updated for repeat schedule
       if (field === 'due_date' && updatedFields.repeat_schedule) continue;
 
-      const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);
-      const formattedNewValue = await formatValue(field, newValue, this.otherModels);
+      const [formattedOriginalValue, formattedNewValue] = await Promise.all([
+        formatValue(field, originalValue, this.otherModels),
+        formatValue(field, newValue, this.otherModels),
+      ]);
 
       comments.push({
         field,
@@ -423,23 +424,23 @@ export class TaskModel extends DatabaseModel {
   customColumnSelectors = {
     task_due_date: () => `to_timestamp(due_date/1000)`,
     task_status: () =>
-      `CASE  
+      `CASE
         WHEN status = 'cancelled' then 'cancelled'
         WHEN status = 'completed' then 'completed'
         WHEN (status = 'to_do' OR status IS NULL) THEN
-            CASE 
+            CASE
                 WHEN repeat_schedule IS NOT NULL THEN 'repeating'
                 WHEN due_date IS NULL THEN 'to_do'
                 WHEN due_date < ${new Date().getTime()} THEN 'overdue'
                 ELSE 'to_do'
             END
-        ELSE 'to_do' 
+        ELSE 'to_do'
     END`,
     assignee_name: () =>
-      `CASE 
-        WHEN assignee_id IS NULL THEN 'Unassigned' 
-        WHEN assignee.last_name IS NULL THEN assignee.first_name 
-        ELSE assignee.first_name || ' ' || assignee.last_name 
+      `CASE
+        WHEN assignee_id IS NULL THEN 'Unassigned'
+        WHEN assignee.last_name IS NULL THEN assignee.first_name
+        ELSE assignee.first_name || ' ' || assignee.last_name
       END`,
   };
 }
