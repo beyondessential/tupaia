@@ -1,4 +1,5 @@
-import { getUniqueEntries, convertDateRangeToPeriodQueryString } from '@tupaia/utils';
+import { uniq } from 'es-toolkit';
+import { convertDateRangeToPeriodQueryString } from '@tupaia/utils';
 
 const DX_BATCH_SIZE = 400;
 const OU_BATCH_SIZE = 400;
@@ -9,7 +10,7 @@ const formatGroupCodes = groupCodes =>
 const getDxDimension = query => {
   const { dataElementIds, dataElementCodes, dataElementGroupCodes, dataElementGroupCode } = query;
 
-  return getUniqueEntries(
+  return uniq(
     dataElementIds ||
       dataElementCodes ||
       formatGroupCodes(dataElementGroupCodes) ||
@@ -22,7 +23,7 @@ const getOuDimension = query => {
 
   return (
     organisationUnitIds ||
-    (organisationUnitCode ? [organisationUnitCode] : getUniqueEntries(organisationUnitCodes))
+    (organisationUnitCode ? [organisationUnitCode] : uniq(organisationUnitCodes))
   );
 };
 

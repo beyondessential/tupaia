@@ -1,7 +1,8 @@
+import { uniq } from 'es-toolkit';
 import { get } from 'es-toolkit/compat';
 
 import { RECORDS } from '@tupaia/database';
-import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
+import { reduceToDictionary } from '@tupaia/utils';
 import { ChangeDetailGenerator } from '../externalApiSync';
 
 // Store certain details for faster sync processing
@@ -18,7 +19,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
 
   async generateAnswerDetails(answers) {
     if (answers.length === 0) return {};
-    const surveyResponseIds = getUniqueEntries(answers.map(a => a.survey_response_id));
+    const surveyResponseIds = uniq(answers.map(a => a.survey_response_id));
     const surveyResponses = await this.models.surveyResponse.find({ id: surveyResponseIds });
     const surveyResponseDetailsById = await this.generateSurveyResponseDetails(surveyResponses);
     const changeDetailsById = {};
@@ -31,7 +32,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   async generateSurveyResponseDetails(surveyResponses) {
     if (surveyResponses.length === 0) return {};
     const isDataRegionalBySurveyId = await this.getIsDataRegionalBySurveyId(surveyResponses);
-    const entityIds = getUniqueEntries(surveyResponses.map(r => r.entity_id));
+    const entityIds = uniq(surveyResponses.map(r => r.entity_id));
     const entities = await this.models.entity.find({ id: entityIds });
     const orgUnitByEntityId = {};
     await Promise.all(
@@ -53,7 +54,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   }
 
   getIsDataRegionalBySurveyId = async surveyResponses => {
-    const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
+    const surveyIds = uniq(surveyResponses.map(r => r.survey_id));
     const surveyData = await this.models.database.find(
       RECORDS.SURVEY,
       { [`${RECORDS.SURVEY}.id`]: surveyIds },

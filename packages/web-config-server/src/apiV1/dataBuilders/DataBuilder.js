@@ -1,5 +1,6 @@
-import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
+import { uniq } from 'es-toolkit';
 
+import { getSortByKey, getSortByExtractedValue } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { transformValue } from '/apiV1/dataBuilders/transform';
 import { translateEventEntityIdsToNames } from '/apiV1/dataBuilders/helpers/translateEventEntityIdsToNames';
@@ -135,12 +136,13 @@ export class DataBuilder {
    */
   async addAncestorsToEvents(events, ancestorType) {
     const hierarchyId = await this.fetchEntityHierarchyId();
-    const allEntityCodes = getUniqueEntries(events.map(e => e.orgUnit));
-    const ancestorDetailsByDescendantCode = await this.models.entity.fetchAncestorDetailsByDescendantCode(
-      allEntityCodes,
-      hierarchyId,
-      ancestorType,
-    );
+    const allEntityCodes = uniq(events.map(e => e.orgUnit));
+    const ancestorDetailsByDescendantCode =
+      await this.models.entity.fetchAncestorDetailsByDescendantCode(
+        allEntityCodes,
+        hierarchyId,
+        ancestorType,
+      );
     return events.map(event => {
       const { name: ancestorName } = ancestorDetailsByDescendantCode[event.orgUnit];
       return {

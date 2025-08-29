@@ -1,3 +1,5 @@
+import { uniq } from 'es-toolkit';
+
 const fetchPermissionGroupChildren = async (models, permissionGroupName) => {
   const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
   const children = await permissionGroup.getChildTree();
@@ -39,7 +41,7 @@ export const buildAccessPolicy = async (models, userId) => {
   // policy is simply the permissions by entity, but de-duplicated
   const policy = {};
   Object.entries(permissionsByEntity).forEach(([entityCode, permissionGroups]) => {
-    policy[entityCode] = [...new Set(permissionGroups)]; // remove duplicate permission group names
+    policy[entityCode] = uniq(permissionGroups); // remove duplicate permission group names
   });
   return policy;
 };
