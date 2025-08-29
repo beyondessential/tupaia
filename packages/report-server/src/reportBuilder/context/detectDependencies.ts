@@ -1,6 +1,5 @@
+import { uniq } from 'es-toolkit';
 import { isPlainObject } from 'es-toolkit/compat';
-
-import { getUniqueEntries } from '@tupaia/utils';
 
 import {
   contextFunctionDependencies,
@@ -19,7 +18,7 @@ const detectDependenciesFromExpressions = (expressions: string[]) => {
     .filter(([fnName]) => functions.includes(fnName))
     .flatMap(([, fnDependencies]) => fnDependencies);
 
-  return getUniqueEntries(dependencies);
+  return uniq(dependencies);
 };
 
 const detectDependenciesFromAliasTransforms = (aliasTransforms: string[]) => {
@@ -27,7 +26,7 @@ const detectDependenciesFromAliasTransforms = (aliasTransforms: string[]) => {
     .filter(([fnName]) => aliasTransforms.includes(fnName))
     .flatMap(([, aliasDependencies]) => aliasDependencies);
 
-  return getUniqueEntries(dependencies);
+  return uniq(dependencies);
 };
 
 const isAliasTransform = (transformStep: unknown): transformStep is string => {
@@ -75,5 +74,5 @@ export const detectDependencies = (transform: unknown): ContextDependency[] => {
   const aliasTransformDependencies = detectDependenciesFromAliasTransforms(aliasTransforms);
   const regularTransformDependencies = detectDependenciesFromExpressions(expressions as string[]);
 
-  return getUniqueEntries([...aliasTransformDependencies, ...regularTransformDependencies]);
+  return uniq([...aliasTransformDependencies, ...regularTransformDependencies]);
 };
