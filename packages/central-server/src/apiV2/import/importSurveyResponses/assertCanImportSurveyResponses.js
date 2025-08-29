@@ -1,7 +1,9 @@
+import { uniq } from 'es-toolkit';
 import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
 
 import { ensure, isNullish } from '@tupaia/tsutils';
-import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
+import { reduceToDictionary } from '@tupaia/utils';
+
 import winston from '../../../log';
 
 export const assertCanImportSurveyResponses = async (
@@ -129,7 +131,7 @@ export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surve
   const entitiesBySurveyCode = {};
 
   // Pre-fetch unique surveys
-  const surveyIds = getUniqueEntries(surveyResponses.map(sr => sr.survey_id));
+  const surveyIds = uniq(surveyResponses.map(sr => sr.survey_id));
 
   await models.wrapInReadOnlyTransaction(async transactingModels => {
     const surveys = await transactingModels.survey.findManyById(surveyIds);
