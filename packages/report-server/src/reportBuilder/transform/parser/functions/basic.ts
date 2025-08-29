@@ -1,3 +1,4 @@
+import { uniq } from 'es-toolkit';
 import { FieldValue } from '../../../types';
 
 export const value = (valueGiven: FieldValue): FieldValue => {
@@ -33,7 +34,7 @@ export const unique = (values: FieldValue[]): FieldValue[] => {
     throw new Error(`Function 'unique' expected an array, but got: ${values}`);
   }
 
-  return values.filter((val, index) => index === values.indexOf(val));
+  return uniq(values);
 };
 
 export const eq = (val1: any, val2: any): boolean => {

@@ -1,6 +1,7 @@
+import { uniq } from 'es-toolkit';
 import { groupBy } from 'es-toolkit/compat';
-
 import moment from 'moment';
+
 import { TupaiaDatabase, SqlQuery } from '@tupaia/database';
 import { getSortByKey, DEFAULT_BINARY_OPTIONS, yup } from '@tupaia/utils';
 import { isNotNullish } from '@tupaia/tsutils';
@@ -180,9 +181,9 @@ export class TupaiaDataApi {
     // includeOptions = true, should also fetch metadata for options from both question.options and question.option_set_id
     if (includeOptions) {
       // Get all possible option_set_ids from questions
-      const optionSetIds = [
-        ...new Set(dataElementsMetadata.map(d => d.option_set_id).filter(isNotNullish)),
-      ];
+      const optionSetIds = uniq(
+        dataElementsMetadata.map(d => d.option_set_id).filter(isNotNullish),
+      );
       // Get all the options from the option sets and grouped by set ids.
       const optionsGroupedBySetId = await this.getOptionsGroupedBySetId(optionSetIds);
 

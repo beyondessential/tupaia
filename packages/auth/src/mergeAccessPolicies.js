@@ -1,3 +1,5 @@
+import { uniq } from 'es-toolkit';
+
 import { isLegacyAccessPolicy } from './isLegacyAccessPolicy';
 
 /**
@@ -11,7 +13,7 @@ export const mergeAccessPolicies = (policy1, policy2) => {
     return policy1; // Merging with legacy access policy is unsupported
   }
 
-  const entitiesWithPermissions = [...new Set([...Object.keys(policy1), ...Object.keys(policy2)])];
+  const entitiesWithPermissions = uniq([...Object.keys(policy1), ...Object.keys(policy2)]);
   const mergedPolicy = {};
   entitiesWithPermissions.forEach(entityCode => {
     const policy1Permissions = policy1[entityCode];
@@ -26,7 +28,7 @@ export const mergeAccessPolicies = (policy1, policy2) => {
       return;
     }
 
-    mergedPolicy[entityCode] = [...new Set([...policy1Permissions, ...policy2Permissions])];
+    mergedPolicy[entityCode] = uniq([...policy1Permissions, ...policy2Permissions]);
   });
   return mergedPolicy;
 };
