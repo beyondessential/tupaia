@@ -210,7 +210,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       return countAnalyticsGroupsThatSatisfyConditions(groupedAnalytics, fraction);
     }
     if (fraction === ORG_UNIT_COUNT || fraction.key === ORG_UNIT_COUNT) {
-      const orgUnitCount = [...new Set(analytics.map(data => data.organisationUnit))].length;
+      const orgUnitCount = new Set(analytics.map(data => data.organisationUnit)).size;
 
       if (fraction.key === ORG_UNIT_COUNT) {
         return this.operateOrgUnitCount(orgUnitCount, fraction);
