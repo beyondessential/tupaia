@@ -3,6 +3,7 @@ import { yup } from '@tupaia/utils';
 import { TransformTable } from '../../table';
 import { sortByFunctions } from './sortByFunctions';
 import { ascOrDescValidator } from '../utils';
+import { TransformBuilder } from '..';
 
 type OrderColumnsParams = {
   columnOrder?: string[];
@@ -93,7 +94,7 @@ const buildParams = (params: unknown): OrderColumnsParams => {
   throw new Error('Must provide either explicit column order or a sort by function');
 };
 
-export const buildOrderColumns = (params: unknown) => {
+export const buildOrderColumns: TransformBuilder = (params, _context) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => orderColumns(table, builtParams);
+  return table => orderColumns(table, builtParams);
 };
