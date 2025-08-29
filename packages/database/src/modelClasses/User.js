@@ -118,11 +118,11 @@ export class UserModel extends DatabaseModel {
      * TODO: Trim `first_name` and `last_name` in the DB, and update application-level logic to trim
      * when creating a user.
      */
-    full_name: () =>
-      `CASE
-        WHEN last_name IS NULL THEN first_name
-        ELSE first_name || ' ' || last_name
-      END`,
+    full_name: () => `CASE
+      WHEN first_name IS NULL THEN last_name
+      WHEN last_name IS NULL THEN first_name
+      ELSE first_name || ' ' || last_name
+    END`,
   };
 
   emailVerifiedStatuses = {
