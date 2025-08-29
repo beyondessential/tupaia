@@ -1,4 +1,6 @@
+import { uniq } from 'es-toolkit';
 import { flatten, groupBy } from 'es-toolkit/compat';
+
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
   countAnalyticsGroupsThatSatisfyConditions,
@@ -92,7 +94,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
     return {
       numerator: [...uniqueNumeratorCodes],
-      denominator: [...new Set(codes.denominator)],
+      denominator: uniq(codes.denominator),
     };
   }
 

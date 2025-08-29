@@ -38,7 +38,7 @@ export const assertCanImportSurveyResponses = async (
       }
 
       const responseEntities = allEntities.filter(e => entityCodes.includes(e.code));
-      const surveyResponseCountryCodes = [...new Set(responseEntities.map(e => e.country_code))];
+      const surveyResponseCountryCodes = uniq(responseEntities.map(e => e.country_code));
       const surveyResponseCountries = await transactingModels.country.findManyByColumn(
         'code',
         surveyResponseCountryCodes,
