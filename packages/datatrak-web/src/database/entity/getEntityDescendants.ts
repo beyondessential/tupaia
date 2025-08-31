@@ -16,12 +16,12 @@ const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'] as Extended
 
 const DEFAULT_PAGE_SIZE = 100;
 
-type SearchResult = {
+interface SearchResult {
   name: string;
   parent?: {
     name: string;
   };
-};
+}
 
 export type GetEntityDescendantsParams = {
   filter?: {
@@ -35,21 +35,31 @@ export type GetEntityDescendantsParams = {
   searchString?: string;
 };
 
-export function sortSearchResults(searchString: string, results: SearchResult[]) {
-  const lowerSearch = searchString.toLowerCase();
+export function sortSearchResults<T extends SearchResult = SearchResult>(
+  query: string,
+  results: T[],
+): T[] {
+  const q = query.normalize().toUpperCase();
 
-  const primarySearchResults = results.filter(({ name }) =>
-    name.toLowerCase().startsWith(lowerSearch),
-  );
+  return results.sort((a, b) => {
+    const aName = a.name.normalize().toUpperCase();
+    const bName = b.name.normalize().toUpperCase();
 
-  const secondarySearchResults = results.filter(
-    ({ name, parent }) =>
-      !name.toLowerCase().startsWith(lowerSearch) &&
-      (name.toLowerCase().includes(lowerSearch) ||
-        parent?.name.toLowerCase().startsWith(lowerSearch)),
-  );
+    const aMatchesStrongly = aName.startsWith(q);
+    const bMatchesStrongly = bName.startsWith(q);
+    if (aMatchesStrongly && bMatchesStrongly) return 0;
+    if (aMatchesStrongly && !bMatchesStrongly) return -1;
+    if (!aMatchesStrongly && bMatchesStrongly) return 1;
 
-  return [...primarySearchResults, ...secondarySearchResults];
+    const aMatchesWeakly =
+      aName.includes(q) || a.parent?.name.normalize().toUpperCase().startsWith(q);
+    const bMatchesWeakly =
+      bName.includes(q) || b.parent?.name.normalize().toUpperCase().startsWith(q);
+    if (aMatchesWeakly && !bMatchesWeakly) return -1;
+    if (!aMatchesWeakly && bMatchesWeakly) return 1;
+
+    return 0;
+  });
 }
 
 const getAllowedCountries = async (
@@ -68,11 +78,8 @@ const getAllowedCountries = async (
   const countryEntities = await rootEntity.getChildrenFromParentChildRelation(
     project.entity_hierarchy_id,
   );
-
-  let allowedCountries = countryEntities
-    .map(child => child.country_code)
-    .filter(isNotNullish)
-    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index); // De-duplicate countryCodes
+  const childCodes = countryEntities.map(child => child.country_code).filter(isNotNullish);
+  let allowedCountries = [...new Set(childCodes)];
 
   if (!isPublic) {
     const { permission_groups: projectPermissionGroups } = await models.project.findOne({
@@ -80,14 +87,10 @@ const getAllowedCountries = async (
     });
 
     // Fetch all country codes we have any of the project permission groups access to
-    const projectAccessibleCountries: string[] = [];
-
-    for (const permission of projectPermissionGroups) {
-      projectAccessibleCountries.push(...(accessPolicy.getEntitiesAllowed(permission) || []));
-    }
-    allowedCountries = allowedCountries.filter(countryCode =>
-      projectAccessibleCountries.includes(countryCode),
+    const projectAccessibleCountries = new Set<Entity['code']>(
+      projectPermissionGroups.flatMap(pg => accessPolicy.getEntitiesAllowed(pg)),
     );
+    allowedCountries = allowedCountries.filter(c => projectAccessibleCountries.has(c));
   }
 
   return allowedCountries;
@@ -197,7 +200,7 @@ export const getEntityDescendants = async ({
     dbEntityFilter.generational_distance = 2;
   }
 
-  const entities = await models.entity.getDescendantsFromParentChildRelation(
+  const entities: EntityRecord[] = await models.entity.getDescendantsFromParentChildRelation(
     project.entity_hierarchy_id,
     [rootEntityId],
     {
@@ -214,7 +217,7 @@ export const getEntityDescendants = async ({
     ? sortSearchResults(searchString, entities)
     : [
         ...recentEntities,
-        ...entities.sort((a: EntityRecord, b: EntityRecord) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
+        ...entities.sort((a, b) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
       ];
 
   const formattedEntities = await formatEntitiesForResponse(
