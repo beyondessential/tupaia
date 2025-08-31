@@ -22,7 +22,9 @@ type NotNullValues<T> = {
 
 type ExtractArrays<T> = T extends unknown[] ? T : never;
 
-type QueryObject = Record<string, AdvancedFilterValue<string>> | undefined | null;
+type RawValue = string | number;
+
+type QueryObject = Record<string, AdvancedFilterValue<RawValue>> | undefined | null;
 
 const getDefaultFilter = (allowedCountries: string[]) => ({
   [QueryConjunctions.AND]: {
@@ -87,7 +89,7 @@ type Operator = keyof typeof operatorToSqlComparator;
 
 const filterOperators = Object.keys(operatorToSqlComparator) as Operator[];
 
-type Value = string | string[] | number | number[];
+type Value = RawValue | RawValue[];
 
 const formatComparisonValue = (value: Value, operator: Operator) => {
   if (operator === '=@' && typeof value === 'string') {
@@ -97,19 +99,30 @@ const formatComparisonValue = (value: Value, operator: Operator) => {
   return value;
 };
 
-const formatValue = <T extends keyof EntityFilterQuery>(field: T, value: string) =>
-  isNumericField(field) ? parseFloat(value) : value;
+const formatValue = <T extends keyof EntityFilterQuery>(field: T, value: RawValue) => {
+  if (typeof value === 'string' && isNumericField(field)) {
+    return parseFloat(value);
+  }
+  return value;
+};
 
 const convertValueToAdvancedCriteria = (
   field: keyof EntityFilterQuery,
   operator: Operator,
-  value: string,
+  value: RawValue | RawValue[],
 ) => {
-  const formattedValue = value.includes(MULTIPLE_VALUES_DELIMITER)
-    ? (value
-        .split(MULTIPLE_VALUES_DELIMITER)
-        .map(val => formatValue(field, val)) as ExtractArrays<Value>)
-    : formatValue(field, value);
+  let formattedValue: RawValue | RawValue[];
+
+  if (Array.isArray(value)) {
+    formattedValue = value.map(val => formatValue(field, val));
+  } else {
+    formattedValue =
+      typeof value === 'string' && value.includes(MULTIPLE_VALUES_DELIMITER)
+        ? (value
+            .split(MULTIPLE_VALUES_DELIMITER)
+            .map(val => formatValue(field, val)) as ExtractArrays<Value>)
+        : formatValue(field, value);
+  }
 
   // For equal operator, we do not need to specify comparison object.
   if (operator === '==') {
@@ -164,7 +177,7 @@ const toFilterClauseFromQueryString = (queryClause: string) => {
 
 const toFilterClauseFromObject = ([field, value]: [
   string,
-  string | { comparator: string; comparisonValue: string },
+  string | AdvancedFilterValue<RawValue>,
 ]) => {
   const firstField = assertFilterableField(field);
 
@@ -199,7 +212,7 @@ export const extractFilterClausesFromObject = (queryObject?: QueryObject) => {
 
 const extractEntityFilter = (
   allowedCountries: string[],
-  filterClauses?: [keyof EntityFilterQuery, Operator, string][] | null,
+  filterClauses?: [keyof EntityFilterQuery, Operator, RawValue | RawValue[]][] | null,
 ): EntityFilter => {
   if (!filterClauses) {
     return getDefaultFilter(allowedCountries);
