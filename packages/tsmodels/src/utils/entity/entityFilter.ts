@@ -1,10 +1,10 @@
+import { Country, NumericKeys } from '@tupaia/types';
 import {
-  QueryConjunctions,
+  AdvancedFilterValue,
   EntityFilter,
   EntityFilterFields,
-  AdvancedFilterValue,
+  QueryConjunctions,
 } from '../../models';
-import { NumericKeys } from '@tupaia/types';
 
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
 
@@ -26,7 +26,7 @@ type RawValue = string | number;
 
 type QueryObject = Record<string, AdvancedFilterValue<RawValue>> | undefined | null;
 
-const getDefaultFilter = (allowedCountries: string[]) => ({
+const getDefaultFilter = (allowedCountries: Country['code'][]) => ({
   [QueryConjunctions.AND]: {
     country_code: allowedCountries,
     [QueryConjunctions.OR]: {
