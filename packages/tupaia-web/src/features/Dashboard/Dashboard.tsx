@@ -166,7 +166,7 @@ export const Dashboard = () => {
 
   const title =
     entity?.type === 'project' && project?.config?.projectDashboardHeader
-      ? project?.config?.projectDashboardHeader
+      ? project.config.projectDashboardHeader
       : entity?.name;
 
   return (
