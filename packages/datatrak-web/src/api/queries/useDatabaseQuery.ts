@@ -26,7 +26,7 @@ interface LocalContext {
 
 // Enhanced QueryFunction type that receives extra context
 interface ContextualQueryFn<TData> {
-  (context: QueryFunctionContext & GlobalQueryContext & LocalContext): Promise<TData>;
+  (context: QueryFunctionContext & GlobalQueryContext & LocalContext): TData | Promise<TData>;
 }
 
 // Main function with same signature as useQuery
