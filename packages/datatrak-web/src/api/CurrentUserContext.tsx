@@ -1,12 +1,13 @@
 import React, { ReactNode, createContext, useContext } from 'react';
 
+import { AccessPolicy } from '@tupaia/access-policy';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { FullPageLoader } from '@tupaia/ui-components';
-import { AccessPolicy } from '@tupaia/access-policy';
 
 import { useUser } from './queries';
 
-export interface CurrentUserContextType extends Omit<DatatrakWebUserRequest.ResBody, 'accessPolicy'> {
+export interface CurrentUserContextType
+  extends Omit<DatatrakWebUserRequest.ResBody, 'accessPolicy'> {
   isLoggedIn: boolean;
   accessPolicy?: AccessPolicy;
 }
