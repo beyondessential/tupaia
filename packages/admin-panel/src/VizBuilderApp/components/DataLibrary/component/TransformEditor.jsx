@@ -10,7 +10,8 @@ const EditorPanel = styled.div`
   flex: 1;
   width: 100%;
 
-  > div {
+  /* Useless div which wraps .jsoneditor but not .sqleditor */
+  > div:has(> .jsoneditor) {
     display: contents;
   }
 
