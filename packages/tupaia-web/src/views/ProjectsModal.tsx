@@ -35,11 +35,11 @@ const Wrapper = styled.div`
   flex-direction: column;
   inline-size: 65rem;
   max-inline-size: 100%;
-  padding-block-end: 0.9rem;
+  padding-block: 0.9rem;
   padding-inline: 0;
   text-align: start;
   ${props => props.theme.breakpoints.up('md')} {
-    padding-block-start: 0.9rem;
+    padding-block-end: 0;
     padding-inline: 3.125rem;
   }
 `;
