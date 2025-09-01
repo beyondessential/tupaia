@@ -11,21 +11,22 @@ import { ContextDependency } from './types';
 
 const detectDependenciesFromExpressions = (expressions: string[]) => {
   const parser = new TransformParser();
-  const functions = expressions
-    .flatMap(calcExpression => {
-      return parser.getFunctions(calcExpression);
-    });
+  const functions = new Set(
+    expressions.flatMap(calcExpression => parser.getFunctions(calcExpression)),
+  );
 
   const dependencies = Object.entries(contextFunctionDependencies)
-    .filter(([fnName]) => functions.includes(fnName))
+    .filter(([fnName]) => functions.has(fnName))
     .flatMap(([, fnDependencies]) => fnDependencies);
 
   return getUniqueEntries(dependencies);
 };
 
 const detectDependenciesFromAliasTransforms = (aliasTransforms: string[]) => {
+  const aliasTransformsSet = new Set(aliasTransforms);
+
   const dependencies = Object.entries(contextAliasDependencies)
-    .filter(([fnName]) => aliasTransforms.includes(fnName))
+    .filter(([fnName]) => aliasTransformsSet.has(fnName))
     .flatMap(([, aliasDependencies]) => aliasDependencies);
 
   return getUniqueEntries(dependencies);
