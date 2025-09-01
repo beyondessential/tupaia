@@ -1,12 +1,13 @@
-import { SurveyScreenComponentConfig } from '@tupaia/types';
+import { Country, SurveyScreenComponentConfig } from '@tupaia/types';
 
 export const useEntityBaseFilters = (
   config?: SurveyScreenComponentConfig | null,
   answers?: Record<string, string>,
-  countryCode?: string,
+  countryCode?: Country['code'],
 ) => {
-  const filters = { countryCode } as Record<string, string | string[]>;
+  if (!countryCode) return {};
 
+  const filters: Record<string, string | string[]> = { countryCode };
   if (!config) return filters;
 
   const filter = config?.entity?.filter;
