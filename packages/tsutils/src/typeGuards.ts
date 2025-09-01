@@ -1,5 +1,9 @@
 export const isDefined = <T>(value: T): value is Exclude<T, undefined> => value !== undefined;
 
+export function isEmpty(val: unknown): val is null | undefined | '' {
+  return val === '' || val === undefined || val === null;
+}
+
 export function isNullish(val: unknown): val is null | undefined {
   return val === null || val === undefined;
 }

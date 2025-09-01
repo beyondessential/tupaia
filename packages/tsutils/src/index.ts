@@ -8,3 +8,4 @@ export * from './arrayToAnalytics';
 export * from './camelcaseKeys';
 export * from './object';
 export * from './ResponseObjectBuilder';
+export * from './task';

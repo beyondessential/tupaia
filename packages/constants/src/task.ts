@@ -1,0 +1,16 @@
+export const TASKS_QUERY_FIELDS = [
+  'id',
+  'survey.name',
+  'survey.code',
+  'entity.country_code',
+  'entity.name',
+  'entity.code',
+  'assignee_name',
+  'assignee_id',
+  'task_status',
+  'task_due_date',
+  'repeat_schedule',
+  'survey_id',
+  'entity_id',
+  'initial_request_id',
+];
