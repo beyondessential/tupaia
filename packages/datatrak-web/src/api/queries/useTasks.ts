@@ -5,8 +5,7 @@ import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
 
 import { get } from '../api';
 import { useCurrentUserContext } from '../CurrentUserContext';
-import { useDatabaseQuery } from './useDatabaseQuery';
-import { DatatrakWebModelRegistry } from '../../types';
+import { LocalContext, useDatabaseQuery } from './useDatabaseQuery';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { getTasks } from '../../database/task/getTasks';
 
@@ -21,6 +20,21 @@ export interface UseTasksQueryParams {
   allAssignees?: boolean;
   includeCancelled?: boolean;
   includeCompleted?: boolean;
+  pageSize?: number;
+  page?: number;
+  filters?: Filter[];
+  sortBy?: SortingRule<
+    // HACK: This should be derived from `DatatrakWebTasksRequest`
+    Record<'assignee_name' | 'due_date' | 'entity.name' | 'survey.name', unknown>
+  >[];
+}
+
+interface UseTasksLocalContext extends LocalContext {
+  projectId?: string;
+  allAssignees?: boolean;
+  includeCancelled?: boolean;
+  includeCompleted?: boolean;
+  userId?: string;
   pageSize?: number;
   page?: number;
   filters?: Filter[];
@@ -94,21 +108,7 @@ const getRemoteTasks = async ({
   page,
   filters,
   sortBy,
-}: {
-  models: DatatrakWebModelRegistry;
-  projectId?: string;
-  allAssignees?: boolean;
-  includeCancelled?: boolean;
-  includeCompleted?: boolean;
-  userId?: string;
-  pageSize?: number;
-  page?: number;
-  filters?: Filter[];
-  sortBy?: SortingRule<
-    // HACK: This should be derived from `DatatrakWebTasksRequest`
-    Record<'assignee_name' | 'due_date' | 'entity.name' | 'survey.name', unknown>
-  >[];
-}) => {
+}: UseTasksLocalContext) => {
   return get('tasks', {
     params: {
       pageSize,
@@ -142,7 +142,13 @@ export const useTasks = (
   const { id: userId } = useCurrentUserContext();
   const isOfflineFirst = useIsOfflineFirst();
 
-  return useDatabaseQuery<DatatrakWebTasksRequest.ResBody>(
+  return useDatabaseQuery<
+    DatatrakWebTasksRequest.ResBody,
+    unknown,
+    DatatrakWebTasksRequest.ResBody,
+    readonly unknown[],
+    LocalContext
+  >(
     [
       'tasks',
       projectId,
