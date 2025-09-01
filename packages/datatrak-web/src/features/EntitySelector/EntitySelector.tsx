@@ -138,12 +138,9 @@ export const EntitySelector = ({
     isFetched,
   } = useSearchResults(searchValue, filters, projectCode, disableSearch);
 
-  const displayResults = searchResults?.filter(({ name: entityName }) => {
-    if (isDirty || !value) {
-      return true;
-    }
-    return entityName === searchValue;
-  });
+  const displayResults = searchResults?.filter(
+    ({ name: entityName }) => isDirty || !value || entityName === searchValue,
+  );
 
   const showLoader = isLoading || ((isFetchingSearchResults || !isFetched) && !disableSearch);
 
