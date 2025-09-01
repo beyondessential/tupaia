@@ -207,16 +207,16 @@ export const saveEdits =
       });
 
       if (filesByFieldKey && Object.keys(filesByFieldKey).length > 0) {
-        const request = isNew ? api.multipartPost : api.multipartPut;
-        await request({
+        const request = isNew ? 'multipartPost' : 'multipartPut';
+        await api[request]({
           endpoint,
           filesByMultipartKey: filesByFieldKey,
           payload: editedFields,
         });
       } else {
         // eslint-disable-next-line
-        const request = isNew ? api.post : api.put;
-        await request(endpoint, null, editedFields);
+        const request = isNew ? 'post' : 'put';
+        await api[request](endpoint, null, editedFields);
       }
 
       dispatch({
