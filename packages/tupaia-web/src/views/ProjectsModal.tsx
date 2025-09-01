@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useLocation } from 'react-router';
-import { Autocomplete, SpinningLoader } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router';
+import styled from 'styled-components';
+
+import { Autocomplete, SpinningLoader } from '@tupaia/ui-components';
+import { useCountriesQuery, useProjects, useUser } from '../api/queries';
+import { Modal, RouterButton } from '../components';
 import {
-  MODAL_ROUTES,
   DEFAULT_URL,
+  MODAL_ROUTES,
   PROJECT_ACCESS_TYPES,
   TUPAIA_LIGHT_LOGO_SRC,
   URL_SEARCH_PARAMS,
-  MOBILE_BREAKPOINT,
 } from '../constants';
-import { useCountriesQuery, useProjects, useUser } from '../api/queries';
 import {
   ProjectAllowedLink,
   ProjectCardList,
@@ -19,7 +20,6 @@ import {
   ProjectLoginLink,
   ProjectPendingLink,
 } from '../layout';
-import { Modal, RouterButton } from '../components';
 import { SingleProject } from '../types';
 import { useModal } from '../utils';
 
@@ -35,11 +35,12 @@ const Wrapper = styled.div`
   flex-direction: column;
   inline-size: 65rem;
   max-inline-size: 100%;
-  padding-block-start: 0.9rem;
-  padding-inline: 3.125rem;
+  padding-block-end: 0.9rem;
+  padding-inline: 0;
   text-align: start;
-  @media (max-width: ${MOBILE_BREAKPOINT}) {
-    padding-block-end: 0.9rem;
+  ${props => props.theme.breakpoints.up('md')} {
+    padding-block-start: 0.9rem;
+    padding-inline: 3.125rem;
   }
 `;
 
