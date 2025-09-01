@@ -139,12 +139,9 @@ export const EntitySelector = ({
   const { isResponseScreen, isReviewScreen } = useSurveyForm();
   const showQrCodeScanner = config?.entity?.allowScanQrCode && !isResponseScreen && !isReviewScreen;
 
-  const displayResults = searchResults?.filter(({ name: entityName }) => {
-    if (isDirty || !value) {
-      return true;
-    }
-    return entityName === searchValue;
-  });
+  const displayResults = searchResults?.filter(
+    entity => isDirty || !value || entity.name === searchValue,
+  );
 
   const showLoader = isLoading || ((isFetchingSearchResults || !isFetched) && !disableSearch);
 
