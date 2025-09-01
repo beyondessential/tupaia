@@ -23,10 +23,10 @@ export const useEntityBaseFilters = (
 
   if (!answers) return filters;
 
-  if (parentId && parentId.questionId && answers?.[parentId.questionId]) {
+  if (parentId?.questionId && answers[parentId.questionId]) {
     filters.parentId = answers[parentId.questionId];
   }
-  if (grandparentId && grandparentId.questionId && answers?.[grandparentId.questionId]) {
+  if (grandparentId?.questionId && answers[grandparentId.questionId]) {
     filters.grandparentId = answers[grandparentId.questionId];
   }
   if (attributes) {
