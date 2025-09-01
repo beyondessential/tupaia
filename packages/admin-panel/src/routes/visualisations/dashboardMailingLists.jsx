@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 import { EntityOptionLabel } from '../../widgets';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../utilities/userAccess';
 
 const RESOURCE_NAME = { singular: 'dashboard mailing list' };
 
@@ -159,5 +160,5 @@ export const dashboardMailingLists = {
       displayProperty: 'dashboard.name',
     },
   ],
-  isBESAdminOnly: true,
+  requiresSomePermissionGroup: [BES_ADMIN_PERMISSION_GROUP],
 };

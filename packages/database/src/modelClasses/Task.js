@@ -306,7 +306,7 @@ export class TaskModel extends DatabaseModel {
     const countryCodesByPermissionGroupId =
       await this.getCountryCodesByPermissionGroupId(accessPolicy);
 
-    const params = Object.entries(countryCodesByPermissionGroupId).flat().flat(); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
+    const params = Object.entries(countryCodesByPermissionGroupId).flat(2); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
 
     return {
       sql: `
@@ -399,15 +399,16 @@ export class TaskModel extends DatabaseModel {
       if (!fieldsToCreateCommentsFor.includes(field)) continue;
       const originalValue = originalTask[field];
       // If the field hasn't actually changed, don't add a comment
-      // If the field hasn't actually changed, don't add a comment
       if (originalValue === newValue) continue;
       // Don't add a comment when repeat schedule is updated and the frequency is the same
       if (field === 'repeat_schedule' && originalValue?.freq === newValue?.freq) continue;
       // Don't add a comment when due date is updated for repeat schedule
       if (field === 'due_date' && updatedFields.repeat_schedule) continue;
 
-      const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);
-      const formattedNewValue = await formatValue(field, newValue, this.otherModels);
+      const [formattedOriginalValue, formattedNewValue] = await Promise.all([
+        formatValue(field, originalValue, this.otherModels),
+        formatValue(field, newValue, this.otherModels),
+      ]);
 
       comments.push({
         field,

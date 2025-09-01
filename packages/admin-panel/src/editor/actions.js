@@ -64,7 +64,7 @@ export const openBulkEditModal =
     } else {
       // set default values
       explodedFields.forEach(field => {
-        if (field.editConfig && field.editConfig.default) {
+        if (field.editConfig?.default) {
           const {
             source: fieldKey,
             editConfig: { default: newValue },
@@ -157,16 +157,11 @@ export const loadEditor =
     } else {
       // set default values
       explodedFields.forEach(field => {
-        if (field.editConfig && field.editConfig.default) {
-          const {
-            source: fieldKey,
-            editConfig: { default: newValue },
-          } = field;
-
+        if (field.editConfig?.default) {
           dispatch({
             type: EDITOR_FIELD_EDIT,
-            fieldKey,
-            newValue,
+            fieldKey: field.source,
+            newValue: field.editConfig.default,
           });
         }
       });
@@ -212,26 +207,16 @@ export const saveEdits =
       });
 
       if (filesByFieldKey && Object.keys(filesByFieldKey).length > 0) {
-        if (isNew) {
-          await api.multipartPost({
-            endpoint,
-            filesByMultipartKey: filesByFieldKey,
-            payload: editedFields,
-          });
-        } else {
-          await api.multipartPut({
-            endpoint,
-            filesByMultipartKey: filesByFieldKey,
-            payload: editedFields,
-          });
-        }
+        const request = isNew ? api.multipartPost : api.multipartPut;
+        await request({
+          endpoint,
+          filesByMultipartKey: filesByFieldKey,
+          payload: editedFields,
+        });
       } else {
         // eslint-disable-next-line
-        if (isNew) {
-          await api.post(endpoint, null, editedFields);
-        } else {
-          await api.put(endpoint, null, editedFields);
-        }
+        const request = isNew ? api.post : api.put;
+        await request(endpoint, null, editedFields);
       }
 
       dispatch({
@@ -243,9 +228,7 @@ export const saveEdits =
         type: EDITOR_ERROR,
         error,
       });
-      if (onError) {
-        onError(error);
-      }
+      onError?.(error);
     }
   };
 
