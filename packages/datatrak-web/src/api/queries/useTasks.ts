@@ -1,13 +1,14 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 import type { SortingRule } from 'react-table';
 
-import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
+import { DatatrakWebTasksRequest } from '@tupaia/types';
 
 import { get } from '../api';
 import { useCurrentUserContext } from '../CurrentUserContext';
 import { LocalContext, useDatabaseQuery } from './useDatabaseQuery';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { getTasks } from '../../database/task/getTasks';
+import { consolidateFilters } from '../../utils/task/consolidateFilters';
 
 interface Filter {
   id: string;
@@ -34,7 +35,6 @@ interface UseTasksLocalContext extends LocalContext {
   allAssignees?: boolean;
   includeCancelled?: boolean;
   includeCompleted?: boolean;
-  userId?: string;
   pageSize?: number;
   page?: number;
   filters?: Filter[];
@@ -44,66 +44,7 @@ interface UseTasksLocalContext extends LocalContext {
   >[];
 }
 
-const consolidateFilters = ({
-  filters = [],
-  projectId,
-  allAssignees,
-  includeCancelled,
-  includeCompleted,
-  userId,
-}: UseTasksQueryParams) => {
-  const augmented = [...filters];
-
-  // `projectId` and `userId` should be truthy because useQuery is otherwise disabled, but TS
-  // server doesn’t know
-  if (projectId) {
-    augmented.push({ id: 'survey.project_id', value: projectId });
-  }
-  if (!allAssignees && userId) {
-    augmented.push({ id: 'assignee_id', value: userId });
-  }
-
-  if (!filters.some(f => f.id === 'task_status')) {
-    // If task status filter is already present, don’t override it
-    if (!includeCompleted && !includeCancelled) {
-      augmented.push({
-        id: 'task_status',
-        value: {
-          comparator: 'NOT IN',
-          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
-        },
-      });
-    } else {
-      if (!includeCancelled) {
-        augmented.push({
-          id: 'task_status',
-          value: {
-            comparator: 'NOT IN',
-            comparisonValue: [TaskStatus.cancelled],
-          },
-        });
-      }
-      if (!includeCompleted) {
-        augmented.push({
-          id: 'task_status',
-          value: {
-            comparator: 'NOT IN',
-            comparisonValue: [TaskStatus.completed],
-          },
-        });
-      }
-    }
-  }
-
-  return augmented;
-};
-
 const getRemoteTasks = async ({
-  projectId,
-  allAssignees,
-  includeCancelled,
-  includeCompleted,
-  userId,
   pageSize,
   page,
   filters,
@@ -113,14 +54,7 @@ const getRemoteTasks = async ({
     params: {
       pageSize,
       page,
-      filters: consolidateFilters({
-        filters,
-        projectId,
-        allAssignees,
-        includeCancelled,
-        includeCompleted,
-        userId,
-      }),
+      filters,
       sort: sortBy?.map(({ id, desc }) => `${id} ${desc ? 'DESC' : 'ASC'}`) ?? [],
     },
   });
@@ -142,6 +76,14 @@ export const useTasks = (
   const { id: userId } = useCurrentUserContext();
   const isOfflineFirst = useIsOfflineFirst();
 
+  const processedFilters = consolidateFilters({
+    filters,
+    projectId,
+    allAssignees,
+    includeCancelled,
+    includeCompleted,
+    userId,
+  });
   return useDatabaseQuery<
     DatatrakWebTasksRequest.ResBody,
     unknown,
@@ -173,13 +115,9 @@ export const useTasks = (
       },
       localContext: {
         projectId,
-        allAssignees,
-        includeCancelled,
-        includeCompleted,
-        userId,
         pageSize,
         page,
-        filters,
+        filters: processedFilters,
         sortBy,
       },
     },

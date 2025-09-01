@@ -384,13 +384,13 @@ export class TaskModel extends DatabaseModel {
 
     // If the user has BES Admin access, return the count of all tasks that match the conditions, otherwise return the count of tasks that match the conditions and the access policy
     const queryConditions = hasBESAdminAccess
-      ? dbConditions
+      ? filtersWithColumnSelectors
       : {
           [QUERY_CONJUNCTIONS.RAW]: queryClause,
-          ...dbConditions,
+          ...filtersWithColumnSelectors,
         };
 
-    return this.count(queryConditions, {
+    return await this.count(queryConditions, {
       multiJoin: customQueryOptions.multiJoin,
     });
   }

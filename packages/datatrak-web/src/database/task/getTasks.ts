@@ -1,7 +1,7 @@
 import { DatatrakWebTasksRequest } from '@tupaia/types';
 import { formatFilters, FormattedFilters } from '@tupaia/tsutils';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { JOIN_TYPES, RECORDS } from '@tupaia/database';
+import { JOIN_TYPES, processColumns, processColumnSelectorKeys, RECORDS } from '@tupaia/database';
 import { TASKS_QUERY_FIELDS } from '@tupaia/constants';
 
 import { DatatrakWebModelRegistry } from '../../types';
@@ -14,30 +14,6 @@ export const queryForCount = async (
   return models.task.countTasksForAccessPolicy(accessPolicy, filters, {
     multiJoin: models.task.DatabaseRecordClass.joins,
   });
-};
-
-export const fullyQualifyColumnSelector = (unprocessedColumnSelector, baseRecordType) => {
-  const [resource, column] = unprocessedColumnSelector.includes('.')
-    ? unprocessedColumnSelector.split('.')
-    : [baseRecordType, unprocessedColumnSelector];
-  return `${resource}.${column}`;
-};
-
-export const processColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
-  const fullyQualifiedSelector = fullyQualifyColumnSelector(
-    unprocessedColumnSelector,
-    baseRecordType,
-  );
-  const [recordType, column] = fullyQualifiedSelector.split('.');
-  const model = models.getModelForDatabaseRecord(recordType);
-  const customSelector = model?.customColumnSelectors?.[column];
-  return customSelector ? customSelector(fullyQualifiedSelector) : fullyQualifiedSelector;
-};
-
-export const processColumns = (models, unprocessedColumns, recordType) => {
-  return unprocessedColumns.map(column => ({
-    [column]: processColumnSelector(models, column, recordType),
-  }));
 };
 
 export const getTasks = async ({
@@ -81,8 +57,9 @@ export const getTasks = async ({
       : `CASE status WHEN 'completed' THEN 1 WHEN 'cancelled' THEN 2 ELSE 0 END ASC, due_date ASC`;
   }
 
-  const _tasks = (await models.database.find(RECORDS.TASK, formattedFilters, {
-    columns: processColumns(models, TASKS_QUERY_FIELDS, 'task'),
+  const processFilters = processColumnSelectorKeys(models, formattedFilters, RECORDS.TASK);
+  const _tasks = (await models.database.find(RECORDS.TASK, processFilters, {
+    columns: processColumns(models, TASKS_QUERY_FIELDS, RECORDS.TASK),
     limit: pageSize,
     offset: page * pageSize,
     sort: params.sort,
@@ -104,14 +81,14 @@ export const getTasks = async ({
         joinWith: RECORDS.SURVEY,
         joinCondition: ['survey_id', `${RECORDS.SURVEY}.id`],
         fields: { name: 'survey_name', code: 'survey_code', project_id: 'project_id' },
-      }
-    ]
+      },
+    ],
   })) as unknown as DatatrakWebTasksRequest.RawTaskResult[];
 
   const tasks = await models.task.formatTasksWithComments(_tasks);
 
   // Get all task ids for pagination
-  const count = await queryForCount(models, accessPolicy, formattedFilters);
+  const count = await queryForCount(models, accessPolicy, processFilters);
   const numberOfPages = Math.ceil(count / pageSize);
   return { tasks, count: tasks.length, numberOfPages };
 };
