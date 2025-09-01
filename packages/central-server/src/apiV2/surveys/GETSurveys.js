@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { JOIN_TYPES } from '@tupaia/database';
+import { JOIN_TYPES, processColumns } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import {
   assertSurveyGetPermissions,
@@ -7,7 +7,6 @@ import {
   createSurveyViaCountryDBFilter,
 } from './assertSurveyPermissions';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { processColumns } from '../GETHandler/helpers';
 
 /**
  * See ./README.md
