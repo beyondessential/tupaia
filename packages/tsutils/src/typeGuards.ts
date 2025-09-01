@@ -12,10 +12,10 @@ export function assertIsNotNullish<T>(val: T, message?: string): asserts val is 
   }
 }
 
-export const ensure = <T>(val: T, message?: string): NonNullable<T> => {
+export function ensure<T>(val: T, message?: string): NonNullable<T> {
   assertIsNotNullish(val, message);
   return val;
-};
+}
 
 export const isObject = (val: unknown): val is Record<string, unknown> =>
   typeof val === 'object' && val !== null && !Array.isArray(val);

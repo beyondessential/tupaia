@@ -85,6 +85,13 @@ export class UserRecord extends DatabaseRecord {
   checkIsEmailVerified() {
     return this.verified_email === this.model.emailVerifiedStatuses.VERIFIED;
   }
+
+  /**
+   * @returns {Promise<import('./UserEntityPermission').UserEntityPermissionRecord[]>}
+   */
+  async getEntityPermissions() {
+    return await this.otherModels.userEntityPermission.find({ user_id: this.id });
+  }
 }
 
 const PUBLIC_USER_EMAIL = 'public@tupaia.org';
