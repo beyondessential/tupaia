@@ -1,18 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import log from 'winston';
 
-import { DatatrakWebUserRequest } from '@tupaia/types';
-
-import { useDatabaseContext } from '../hooks/database';
 import { generateId } from '@tupaia/database';
+import { useDatabaseContext } from '../hooks/database';
+import { useProjectsInSync } from '../hooks/database/useProjectsInSync';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useCurrentUserContext } from './CurrentUserContext';
-import { useProjectsInSync } from '../hooks/database/useProjectsInSync';
 
-export type SyncContextType = DatatrakWebUserRequest.ResBody & {
+export interface SyncContextType {
   clientSyncManager: ClientSyncManager | null;
   refetchSyncedProjectIds: () => void;
-};
+}
 
 const SyncContext = createContext<SyncContextType | null>(null);
 
