@@ -59,7 +59,11 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
     }
   }, [clientSyncManager, projectsInSync.length]);
 
-  return <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>{children}</SyncContext.Provider>;
+  return (
+    <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>
+      {children}
+    </SyncContext.Provider>
+  );
 };
 
 export const useSyncContext = (): SyncContextType => {
