@@ -4,6 +4,20 @@ set -e
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 tupaia_dir=$(realpath -- "$script_dir"/../../../..)
 
+# Temporary! To avoid needing to rebuild the production Amazon Machine Image
+# TODO: Remove this once testing passed
+if ! command -v tailscale &>/dev/null; then
+    echo 'Tailscale not installed. Installing...'
+    curl -fsSL https://tailscale.com/install.sh | sh
+fi
+echo 'Tailscale version:'
+tailscale version
+
+if ! "$tupaia_dir"/scripts/bash/requireCommands.sh tailscale; then
+    # TODO: Figure out why including pm2 or yarn causes this check to fail
+    exit 1
+fi
+
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
 . "$HOME"/.nvm/nvm.sh
 
@@ -28,6 +42,13 @@ set_up_central_server() {
     # ensure that the latest permissions based meditrak sync queue has been built
     yarn workspace @tupaia/central-server create-meditrak-sync-view
 }
+
+# central-server and data-table-server need Tailnet access for external database connections
+set +x # Make sure we don’t accidentally print auth key
+sudo tailscale up \
+    --auth-key="$TAILSCALE_AUTH_KEY" \
+    --ssh \
+    --advertise-tags="$TAILSCALE_TAGS"
 
 readarray -t backend_packages < <(get_backend_packages)
 
