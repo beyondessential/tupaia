@@ -1,6 +1,7 @@
 import { uniq } from 'es-toolkit';
 import { Row } from '../types';
 
+import { Transform } from '@tupaia/types';
 import { detectDependencies } from './detectDependencies';
 import { Context, ContextDependency, ReqContext } from './types';
 
@@ -55,7 +56,7 @@ export const updateContext = async (context: Context, data: Row[]): Promise<Cont
 };
 
 export const buildContext = async (
-  transform: unknown,
+  transform: Transform[],
   reqContext: ReqContext,
 ): Promise<Context> => {
   const dependencies = detectDependencies(transform);

@@ -1,5 +1,6 @@
 export * from './models';
 export {
+  AliasTransform,
   isBarChartConfig,
   isChartConfig,
   isComposedChartConfig,
@@ -103,6 +104,7 @@ export {
   EntityType,
   DateOffsetSpec,
   DatePickerOffsetSpec,
+  Transform,
 } from './models-extra';
 export * from './requests';
 export * from './css';
