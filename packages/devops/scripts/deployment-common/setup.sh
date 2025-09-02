@@ -100,6 +100,14 @@ sudo apt-get -yqq install \
   wget \
   xdg-utils
 
+# Install Tailscale
+if ! command -v tailscale &>/dev/null; then
+  echo 'Tailscale not installed. Installing...'
+  curl -fsSL https://tailscale.com/install.sh | sh
+fi
+echo 'Tailscale version:'
+tailscale version
+
 # install node and yarn
 if ! command -v node &>/dev/null; then
   echo 'nvm not installed. Installing...'
