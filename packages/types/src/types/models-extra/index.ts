@@ -8,6 +8,7 @@ export {
   DashboardItemType,
 } from './common';
 export type {
+  AliasTransform,
   ReportConfig,
   StandardReportConfig,
   CustomReportConfig,
@@ -20,6 +21,7 @@ export type {
   ChartReport,
   DashboardItemReport,
   ChartData,
+  Transform,
 } from './report';
 export {
   isBarChartConfig,
