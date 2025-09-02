@@ -1,6 +1,7 @@
 import { partition, uniq } from 'es-toolkit';
 import { isPlainObject } from 'es-toolkit/compat';
 
+import { AliasTransform, Transform, ValueOf } from '@tupaia/types';
 import {
   contextFunctionDependencies,
   contextAliasDependencies,
@@ -8,7 +9,7 @@ import {
 } from '../transform';
 import { ContextDependency } from './types';
 
-const detectDependenciesFromExpressions = (expressions: string[]) => {
+const detectDependenciesFromExpressions = (expressions: string[]): ContextDependency[] => {
   const parser = new TransformParser();
   const functions = expressions.flatMap(calcExpression => {
     return parser.getFunctions(calcExpression);
@@ -21,24 +22,32 @@ const detectDependenciesFromExpressions = (expressions: string[]) => {
   return uniq(dependencies);
 };
 
-const detectDependenciesFromAliasTransforms = (aliasTransforms: string[]) => {
+const detectDependenciesFromAliasTransforms = (
+  aliasTransforms: string[],
+): ValueOf<typeof contextAliasDependencies>[number][] => {
   const dependencies = Object.entries(contextAliasDependencies)
     .filter(([fnName]) => aliasTransforms.includes(fnName))
     .flatMap(([, aliasDependencies]) => aliasDependencies);
 
-  return uniq(dependencies);
+  // Awkward cast because `contextAliasDependencies` is an empty object, so `Object.entries` will be
+  // an empty array, causing `filter` call to throw TS2488. If `contextAliasDependencies` becomes
+  // nonempty, this cast becomes redundant (and safe to remove).
+  return uniq(dependencies) as ValueOf<typeof contextAliasDependencies>[number][];
 };
 
-const isAliasTransform = (transformStep: unknown): transformStep is string => {
+const isAliasTransform = (transformStep: unknown): transformStep is AliasTransform => {
   return typeof transformStep === 'string';
 };
 
-export const detectDependencies = (transform: unknown): ContextDependency[] => {
+export const detectDependencies = (transform: Transform[]): ContextDependency[] => {
   if (!Array.isArray(transform)) {
     return [];
   }
 
-  const [aliasTransforms, regularTransforms] = partition(transform, isAliasTransform);
+  const [aliasTransforms, regularTransforms] = partition(transform, isAliasTransform) as [
+    AliasTransform[],
+    Record<string, unknown>[],
+  ];
 
   const expressions = regularTransforms
     .map(transformStep => {
