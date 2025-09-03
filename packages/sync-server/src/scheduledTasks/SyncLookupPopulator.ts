@@ -1,9 +1,9 @@
 import log from 'winston';
 
 import { ScheduledTask } from '@tupaia/server-utils';
-import { CentralSyncManager } from '../sync';
 import { ModelRegistry } from '@tupaia/database';
 
+import { CentralSyncManager } from '../sync';
 export class SyncLookupPopulator extends ScheduledTask {
   private syncManager: CentralSyncManager;
   

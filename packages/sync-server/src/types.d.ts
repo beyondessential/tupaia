@@ -40,6 +40,7 @@ export interface SyncLookupQueryDetails {
 
 export interface SnapshotParams {
   since: number;
+  userId: string;
   projectIds: string[];
   deviceId: string;
 }
