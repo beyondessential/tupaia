@@ -22,6 +22,11 @@ export const List = ({ items, onSelect, ListItem = Item }: SelectListProps) => {
 };
 
 export const ListSkeleton = ({ length = 6 }: { length?: number }) => {
-  const listItem = <ListItemSkeleton />;
-  return <MuiList disablePadding>{Array.from({ length }).map(() => listItem)}</MuiList>;
+  return (
+    <MuiList disablePadding>
+      {Array.from({ length }).map((_, i) => (
+        <ListItemSkeleton key={i} />
+      ))}
+    </MuiList>
+  );
 };

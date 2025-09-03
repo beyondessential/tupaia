@@ -102,7 +102,7 @@ describe('GET entity hierarchy', () => {
       const { body: result } = await app.get(`entityHierarchy/${PROJECT_ENTITY_HIERARCHIES[1].id}`);
 
       expect(result).to.deep.equal({
-        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to hierarchy with id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'\n`,
+        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to hierarchy with id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'`,
       });
     });
 
@@ -113,7 +113,7 @@ describe('GET entity hierarchy', () => {
       const { body: result } = await app.get(`entityHierarchy/${PROJECT_ENTITY_HIERARCHIES[1].id}`);
 
       expect(result).to.deep.equal({
-        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to hierarchy with id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'\n`,
+        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to hierarchy with id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'`,
       });
     });
 
@@ -124,7 +124,7 @@ describe('GET entity hierarchy', () => {
       const { body: result } = await app.get(`entityHierarchy/${PROJECT_ENTITY_HIERARCHIES[1].id}`);
 
       expect(result).to.deep.equal({
-        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to hierarchy with id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'\n`,
+        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to hierarchy with id: '${PROJECT_ENTITY_HIERARCHIES[1].id}'`,
       });
     });
   });
@@ -161,7 +161,8 @@ describe('GET entity hierarchy', () => {
       const { body: result } = await app.get('entityHierarchy');
 
       expect(result).to.deep.equal({
-        error: `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access\n`,
+        error:
+          'One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access',
       });
     });
   });

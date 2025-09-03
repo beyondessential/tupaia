@@ -153,12 +153,9 @@ export const SurveyResponseModal = () => {
 
   const {
     data: surveyResponse,
-    isLoading,
     error,
-    isFetched,
+    isLoading: isLoadingSurveyResponse,
   } = useSurveyResponse(surveyResponseId, { meta: { applyCustomErrorHandling: true } });
-
-  const isLoadingSurveyResponse = isLoading || !isFetched;
 
   const onClose = () => {
     // Redirect to the previous page by removing all the query params

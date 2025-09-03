@@ -44,13 +44,11 @@ export const ApproveButton = ({ row }) => {
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <>
-          {isError && (
-            <SmallAlert onClose={handleClose} severity="error">
-              Error. Please click refresh and try again.
-            </SmallAlert>
-          )}
-        </>
+        {isError && (
+          <SmallAlert onClose={handleClose} severity="error">
+            Error. Please refresh and try again.
+          </SmallAlert>
+        )}
       </MuiSnackbar>
     </>
   );

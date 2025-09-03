@@ -13,16 +13,20 @@ export function generateSecretKey() {
  * @returns {string} token from header
  */
 export function getJwtToken(authHeader) {
-  const authHeaderComponents = authHeader.split(' '); // Split between Bearer and the JWT
-  if (
-    authHeaderComponents[0] !== 'Bearer' ||
-    !authHeaderComponents[1] ||
-    authHeaderComponents[1].length === 0
-  ) {
-    throw new Error('Invalid Authorization header, requires Bearer and a JWT token');
+  const [scheme, token] = authHeader.split(' ');
+
+  if (scheme !== 'Bearer') {
+    throw new MalformedAuthorizationHeaderError(
+      `Invalid Authorization header: expected Bearer scheme but got ‘${scheme}’`,
+    );
+  }
+  if (!token) {
+    throw new MalformedAuthorizationHeaderError(
+      `Invalid Authorization header: missing JSON Web Token`,
+    );
   }
 
-  return authHeaderComponents[1];
+  return token;
 }
 
 const isJwtToken = authHeader => authHeader.startsWith('Bearer ');
@@ -36,3 +40,10 @@ export const extractRefreshTokenFromReq = req => {
   const jwtToken = getJwtToken(authHeader);
   return jwt.verify(jwtToken, requireEnv('JWT_SECRET')).refreshToken;
 };
+
+class MalformedAuthorizationHeaderError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'MalformedAuthorizationHeaderError';
+  }
+}

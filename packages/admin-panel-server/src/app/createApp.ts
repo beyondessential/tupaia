@@ -165,6 +165,7 @@ export async function createApp(promptManager: PromptManager) {
     )
     .use('hierarchy', forwardToEntityApi)
     .use('hierarchies', forwardToEntityApi)
+    .use('dataTableTypes', forwardToCentralApi)
     .use('surveyResponses', forwardToCentralApi)
     .use('*', forwardToCentralApi);
 
