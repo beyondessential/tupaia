@@ -1558,6 +1558,22 @@ export interface SyncGroupLogUpdate {
   'sync_group_code'?: string;
   'timestamp'?: Date | null;
 }
+export interface SyncQueuedDevice {
+  'id': string;
+  'last_seen_time': Date;
+  'last_synced_tick': string;
+  'urgent': boolean;
+}
+export interface SyncQueuedDeviceCreate {
+  'last_seen_time'?: Date;
+  'last_synced_tick': string;
+  'urgent': boolean;
+}
+export interface SyncQueuedDeviceUpdate {
+  'last_seen_time'?: Date;
+  'last_synced_tick'?: string;
+  'urgent'?: boolean;
+}
 export interface SyncSession {
   'completed_at'?: Date | null;
   'errors'?: string[] | null;

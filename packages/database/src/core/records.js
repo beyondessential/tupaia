@@ -69,5 +69,6 @@ export const RECORDS = {
   USER_SESSION: 'userSession',
   SYNC_SESSION: 'sync_session',
   SYNC_DEVICE_TICK: 'sync_device_tick',
+  SYNC_QUEUED_DEVICE: 'sync_queued_device',
   ENTITY_PARENT_CHILD_RELATION: 'entity_parent_child_relation',
 };

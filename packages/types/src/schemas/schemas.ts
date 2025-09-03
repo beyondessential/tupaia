@@ -83540,6 +83540,70 @@ export const SyncGroupLogUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const SyncQueuedDeviceSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"last_seen_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"last_synced_tick": {
+			"type": "string"
+		},
+		"urgent": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"last_seen_time",
+		"last_synced_tick",
+		"urgent"
+	]
+} 
+
+export const SyncQueuedDeviceCreateSchema = {
+	"type": "object",
+	"properties": {
+		"last_seen_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"last_synced_tick": {
+			"type": "string"
+		},
+		"urgent": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"last_synced_tick",
+		"urgent"
+	]
+} 
+
+export const SyncQueuedDeviceUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"last_seen_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"last_synced_tick": {
+			"type": "string"
+		},
+		"urgent": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const SyncSessionSchema = {
 	"type": "object",
 	"properties": {
@@ -99160,6 +99224,14 @@ export const QuerySchema = {
 		"email",
 		"token"
 	]
+} 
+
+export const QueueStatusSchema = {
+	"enum": [
+		"activeSync",
+		"waitingInQueue"
+	],
+	"type": "string"
 } 
 
 export const SyncPullReadyStatusSchema = {

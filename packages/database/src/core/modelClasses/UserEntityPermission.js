@@ -64,10 +64,6 @@ export class UserEntityPermissionModel extends DatabaseModel {
   }
 
   async buildSyncLookupQueryDetails() {
-    return {
-      select: await buildSyncLookupSelect(this, {
-        userIds: `ARRAY[user_entity_permission.user_id]`,
-      }),
-    };
+    return null;
   }
 }

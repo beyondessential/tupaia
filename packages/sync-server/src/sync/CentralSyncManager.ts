@@ -21,7 +21,7 @@ import {
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { SyncTickFlags } from '@tupaia/constants';
-import { generateId, SyncSessionRecord } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 
 import { updateLookupTable, updateSyncLookupPendingRecords } from './updateLookupTable';
 import {
@@ -38,7 +38,18 @@ import {
   UnmarkSessionAsProcessingFunction,
 } from '../types';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
-import { SyncSession } from '@tupaia/types';
+import { SyncServerStartSessionRequest, SyncSession } from '@tupaia/types';
+
+const DEFAULT_CONFIG: SyncServerConfig = {
+  maxRecordsPerSnapshotChunk: 10_000,
+  lookupTable: {
+    perModelUpdateTimeoutMs: 1_000_000,
+    avoidRepull: false,
+  },
+  snapshotTransactionTimeoutMs: 10 * 60 * 1000,
+  syncSessionTimeoutMs: 20 * 60 * 1000,
+  maxConcurrentSessions: 4,
+};
 
 const errorMessageFromSession = (session: SyncSession) =>
   `Sync session '${session.id}' encountered an error: ${session.errors?.at(-1)}`;
@@ -48,19 +59,16 @@ export class CentralSyncManager {
 
   config: SyncServerConfig;
 
-  constructor(models: SyncServerModelRegistry) {
+  constructor(
+    models: SyncServerModelRegistry,
+    overrideConfig: Partial<SyncServerConfig> = DEFAULT_CONFIG,
+  ) {
     this.models = models;
 
     // TODO: Move this to a config model RN-1668
     this.config = {
-      maxRecordsPerSnapshotChunk: 10000,
-      lookupTable: {
-        perModelUpdateTimeoutMs: 1000000,
-        avoidRepull: false,
-      },
-      snapshotTransactionTimeoutMs: 10 * 60 * 1000,
-      syncSessionTimeoutMs: 20 * 60 * 1000,
-      maxConcurrentSessions: 4,
+      ...DEFAULT_CONFIG,
+      ...overrideConfig,
     };
   }
 
@@ -77,13 +85,88 @@ export class CentralSyncManager {
     return { tick: tock - 1, tock };
   }
 
-  async getIsSyncCapacityFull() {
+  async getIsSyncCapacityFull(): Promise<boolean> {
     const { maxConcurrentSessions } = this.config;
     const activeSyncs = await this.models.syncSession.find({
       completed_at: null,
       errors: null,
     });
     return activeSyncs.length >= maxConcurrentSessions;
+  }
+
+  async queueDeviceForSync(
+    deviceId: string,
+    urgent: boolean = false,
+    lastSyncedTick: number = 0,
+  ) {
+    const staleSessions = await this.models.syncSession.find({
+      completed_at: null,
+      'info->>deviceId': deviceId,
+    });
+
+    // Close out stale sessions if they exist
+    // (highly likely 0 or 1, but still loop as multiples are still theoretically possible)
+    for (const session of staleSessions) {
+      await completeSyncSession(
+        this.models.syncSession,
+        this.models.database,
+        session.id,
+        'Session marked as completed due to its device reconnecting',
+      );
+      const durationMs = performance.now() - session.start_time;
+
+      log.info('StaleSyncSessionCleaner.closedReconnectedSession', {
+        sessionId: session.id,
+        durationMs,
+        deviceId: session.info.deviceId,
+      });
+    }
+
+    // now update our position in the queue and check if we're at the front of it
+    const queueRecord = await this.models.syncQueuedDevice.checkSyncRequest({
+      lastSyncedTick,
+      urgent,
+      deviceId,
+    });
+
+    log.info('Queue position', {
+      lastSyncedTick: queueRecord.last_synced_tick,
+      deviceId: queueRecord.id,
+      urgent: queueRecord.urgent,
+    });
+
+    // if we're not at the front of the queue, we're waiting
+    if (queueRecord.id !== deviceId) {
+      return {
+        status: SyncServerStartSessionRequest.QueueStatus.WaitingInQueue,
+        behind: {
+          lastSyncedTick: queueRecord.last_synced_tick,
+          deviceId: queueRecord.id,
+          urgent: queueRecord.urgent,
+        },
+      };
+    }
+
+    // we're at the front of the queue, but if the previous device's sync is still
+    // underway we need to wait for that
+    const isSyncCapacityFull = await this.getIsSyncCapacityFull();
+    if (isSyncCapacityFull) {
+      return {
+        status: SyncServerStartSessionRequest.QueueStatus.ActiveSync,
+      };
+    }
+
+    // remove our place in the queue before starting sync
+    // (if the resulting sync has an error, we'll be knocked to the back of the queue
+    // but that's fine. It will leave some room for non-errored devices to sync, and
+    // our requests will get priority once our error resolves as we'll have an older
+    // lastSyncedTick)
+    await queueRecord.delete();
+
+    const { sessionId } = await this.startSession({
+      deviceId,
+    });
+    return { sessionId };
   }
 
   async startSession(info = {}): Promise<StartSessionResult> {
