@@ -41,9 +41,9 @@ import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 import { SyncServerStartSessionRequest, SyncSession } from '@tupaia/types';
 
 const DEFAULT_CONFIG: SyncServerConfig = {
-  maxRecordsPerSnapshotChunk: 10000,
+  maxRecordsPerSnapshotChunk: 10_000,
   lookupTable: {
-    perModelUpdateTimeoutMs: 1000000,
+    perModelUpdateTimeoutMs: 1_000_000,
     avoidRepull: false,
   },
   snapshotTransactionTimeoutMs: 10 * 60 * 1000,
@@ -104,7 +104,7 @@ export class CentralSyncManager {
       'info->>deviceId': deviceId,
     });
 
-    // ... and close them out if so
+    // Close out stale sessions if they exist
     // (highly likely 0 or 1, but still loop as multiples are still theoretically possible)
     for (const session of staleSessions) {
       await completeSyncSession(
@@ -113,7 +113,7 @@ export class CentralSyncManager {
         session.id,
         'Session marked as completed due to its device reconnecting',
       );
-      const durationMs = Date.now() - session.start_time;
+      const durationMs = performance.now() - session.start_time;
 
       log.info('StaleSyncSessionCleaner.closedReconnectedSession', {
         sessionId: session.id,
