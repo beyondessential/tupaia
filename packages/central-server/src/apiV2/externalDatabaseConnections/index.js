@@ -1,2 +1,5 @@
 export { TestExternalDatabaseConnection } from './TestExternalDatabaseConnection';
-export { GETExternalDatabaseConnections } from './GETExternalDatabaseConnections';
+export {
+  GETExternalDatabaseConnections,
+  hasExternalDatabaseConnectionPermissions,
+} from './GETExternalDatabaseConnections';

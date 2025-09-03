@@ -118,12 +118,12 @@ export const LandingPageFooter = ({ landingPage }: { landingPage: SingleLandingP
             <FooterContactList>
               {phoneNumber && (
                 <FooterContactListItem>
-                  Ph: &nbsp;<FooterLink href={`tel:${phoneNumber}`}>{phoneNumber}</FooterLink>
+                  Ph: <FooterLink href={`tel:${phoneNumber}`}>{phoneNumber}</FooterLink>
                 </FooterContactListItem>
               )}
               {websiteUrl && (
                 <FooterContactListItem>
-                  Website: &nbsp;
+                  Website:{' '}
                   <FooterLink href={parseUrl(websiteUrl)} target="_blank">
                     {websiteUrl}
                   </FooterLink>
@@ -135,7 +135,7 @@ export const LandingPageFooter = ({ landingPage }: { landingPage: SingleLandingP
       </FooterContentWrapper>
       <FooterPoweredByWrapper>
         <FooterBodyText>
-          Powered by &nbsp;
+          Powered by{' '}
           <FooterLink href="https://tupaia.org" target="_blank">
             Tupaia
           </FooterLink>

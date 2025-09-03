@@ -112,7 +112,7 @@ export class DatabaseRecord {
       const results = await Promise.all(resultTasks);
       return {
         field,
-        errors: results.filter(x => x), // remove validations returning null (no error)
+        errors: results.filter(Boolean), // remove validations returning null (no error)
       };
     };
 
