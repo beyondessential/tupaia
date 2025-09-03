@@ -6,14 +6,14 @@ export function isNullish(val: unknown): val is null | undefined {
 
 export const isNotNullish = <T>(val: T): val is NonNullable<T> => val !== undefined && val !== null;
 
-export function assertIsNotNullish<T>(val: T): asserts val is NonNullable<T> {
-  if (!isNotNullish(val)) {
-    throw new Error(`Expected value to be defined, but got ${val}`);
+export function assertIsNotNullish<T>(val: T, message?: string): asserts val is NonNullable<T> {
+  if (isNullish(val)) {
+    throw new UnexpectedNullishValueError(message ?? `Expected non-nullish value, but got ${val}`);
   }
 }
 
-export const ensure = <T>(val: T) => {
-  assertIsNotNullish(val);
+export const ensure = <T>(val: T, message?: string): NonNullable<T> => {
+  assertIsNotNullish(val, message);
   return val;
 };
 
@@ -40,4 +40,11 @@ export function isPrimitive(val: unknown): val is Primitive {
     typeof val === 'bigint' ||
     typeof val === 'symbol'
   );
+}
+
+class UnexpectedNullishValueError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = 'UnexpectedNullishValueError';
+  }
 }

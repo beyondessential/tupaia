@@ -6,6 +6,7 @@ import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import { mapStringToStringValidator } from './utils';
 import { TransformTable } from '../table';
+import { TransformBuilder } from '.';
 
 type InsertColumnsParams = {
   columns: { [key: string]: string };
@@ -71,7 +72,7 @@ const buildParams = (params: unknown): InsertColumnsParams => {
   };
 };
 
-export const buildInsertColumns = (params: unknown, context: Context) => {
+export const buildInsertColumns: TransformBuilder = (params, context) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => insertColumns(table, builtParams, context);
+  return table => insertColumns(table, builtParams, context);
 };

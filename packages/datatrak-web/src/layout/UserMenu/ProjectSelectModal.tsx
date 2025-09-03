@@ -16,8 +16,11 @@ const StyledModal = styled(Modal)<{ $requestAccess?: boolean }>`
   //  instead of in the ui-components select list component
   ${({ theme }) => theme.breakpoints.down('sm')} {
     .MuiPaper-root {
-      height: 100%;
-      background: ${({ theme }) => theme.palette.background.default};
+      background-color: ${props => props.theme.palette.background.default};
+      block-size: 100%;
+      padding-bottom: max(env(safe-area-inset-bottom, 0), 1rem);
+      padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
+      padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
 
       // Hide the close button on mobile
       > .MuiButtonBase-root.MuiIconButton-root {
