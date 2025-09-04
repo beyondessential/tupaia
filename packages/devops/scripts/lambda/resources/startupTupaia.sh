@@ -60,8 +60,7 @@ fi
 
 # Fetch the latest code
 cd $TUPAIA_DIR
-BRANCH_ON_REMOTE=$(sudo -Hu ubuntu git ls-remote --heads origin ${BRANCH})
-if [[ $BRANCH_ON_REMOTE == *${BRANCH} ]]; then
+if sudo -Hu ubuntu git ls-remote --exit-code --heads origin "$BRANCH" &>/dev/null; then
   echo "${BRANCH} exists"
   BRANCH_TO_USE=${BRANCH}
 else
