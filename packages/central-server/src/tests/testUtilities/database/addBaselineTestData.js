@@ -12,7 +12,10 @@ const models = getModels();
 configureEnv();
 
 export async function addBaselineTestData() {
-  await models.localSystemFact.updateOrCreate({ key: FACT_CURRENT_SYNC_TICK }, { value: '1' });
+  await models.localSystemFact.updateOrCreate(
+    { key: FACT_CURRENT_SYNC_TICK },
+    { id: generateId(), value: '1' },
+  );
 
   // if there's a pre-existing Demo Land in the DB, use that, otherwise create
   // one with a test ID so it'll get cleaned up later
