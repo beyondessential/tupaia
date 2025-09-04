@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# DOCUMENTATION
-#   https://docs.aws.amazon.com/cli/latest/reference/ssm/get-parameter.html
+# RELEVANT LINKS
+#   - https://console.aws.amazon.com/systems-manager/parameters
+#   - https://docs.aws.amazon.com/cli/latest/reference/ssm/get-parameter.html
 
 set -e +x
 
