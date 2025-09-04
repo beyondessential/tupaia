@@ -41,13 +41,13 @@ mkdir -m 777 -p $LOGS_DIR
 # Turn on cloudwatch agent for prod and dev (can be turned on manually if needed on feature instances)
 # TODO currently broken
 # if [[ $DEPLOYMENT_NAME == "production" || $DEPLOYMENT_NAME == "dev" ]]; then
-#     $DEPLOYMENT_SCRIPTS/startCloudwatchAgent.sh |& while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
+#   $DEPLOYMENT_SCRIPTS/startCloudwatchAgent.sh |& while IFS= read -r line; do echo "$(date) | $line"; done >>$LOGS_DIR/deployment_log.txt
 # fi
 
 # Add preaggregation cron job if production
 if [[ $DEPLOYMENT_NAME == "production" ]]; then
   \. "$HOME_DIR/.nvm/nvm.sh" # Load nvm so node is available on $PATH
-  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $HOME_DIR/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > $LOGS_DIR/preaggregation.txt" >tmp.cron
+  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $HOME_DIR/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"$(date) | $line\"; done > $LOGS_DIR/preaggregation.txt" >tmp.cron
   sudo -u ubuntu crontab -l >>tmp.cron || echo "" >>tmp.cron
   sudo -u ubuntu crontab tmp.cron
   rm tmp.cron
@@ -82,7 +82,7 @@ startup() {
 
 startup |&
   while IFS= read -r line; do
-    printf '[%s] %s\n' "$(date)" "$line"
+    echo "$(date) | $line"
   done >>$LOGS_DIR/deployment_log.txt
 
 # Tag as complete so CI/CD system can use the tag as a health check
