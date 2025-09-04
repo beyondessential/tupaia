@@ -5,6 +5,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
+// devices are considered "ready" if they've been active within 5 minutes
 const SYNC_READY_WINDOW_MINUTES = 5;
 
 export class SyncQueuedDeviceRecord extends DatabaseRecord {
@@ -18,7 +19,7 @@ export class SyncQueuedDeviceModel extends DatabaseModel {
     return SyncQueuedDeviceRecord;
   }
 
-  getReadyDevicesWhereClause() {
+  get #readyDevicesWhereClause() {
     return {
       last_seen_time: {
         comparator: '>',
@@ -28,7 +29,7 @@ export class SyncQueuedDeviceModel extends DatabaseModel {
   }
 
   async getNextReadyDevice() {
-    return this.findOne(this.getReadyDevicesWhereClause(), {
+    return this.findOne(this.#readyDevicesWhereClause, {
       sort: ['urgent DESC', 'last_synced_tick ASC'],
     });
   }
@@ -51,7 +52,7 @@ export class SyncQueuedDeviceModel extends DatabaseModel {
       // sync won't be overwritten to non-urgent by a scheduled sync)
       await this.updateById(deviceId, {
         last_seen_time: new Date(),
-        urgent,
+        urgent: urgent || queueRecord.urgent,
         last_synced_tick: lastSyncedTick,
       });
     }

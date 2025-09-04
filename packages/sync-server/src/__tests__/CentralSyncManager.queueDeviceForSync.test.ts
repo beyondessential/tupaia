@@ -78,16 +78,33 @@ describe('CentralSyncManager.queueDeviceForSync', () => {
 
     // get some sessions in the queue
     await requestSync('B', 100);
+    await requestSync('C', 200);
+    await requestSync('D', 300);
+    await requestSync('E', 10);
+
+    await closeActiveSyncSessions();
+
+    const started = await requestSync('F', 400, true);
+    expect(started).toHaveProperty('sessionId');
+  });
+
+  it('Should not overwrite urgent flag with non-urgent', async () => {
+    const resultA = await requestSync('A'); // start active sync
+    expect(resultA).toHaveProperty('sessionId');
+
+    // get some sessions in the queue
+    await requestSync('B', 100);
     await requestSync('C', 200, true);
     await requestSync('D', 300);
     await requestSync('E', 10);
+    await requestSync('C', 200); // previous urgent flag should stick
 
     await closeActiveSyncSessions();
 
     const waiting = await requestSync('E', 10);
     expect(waiting).toHaveProperty('status', 'waitingInQueue');
 
-    const started = await requestSync('C', 200); // previous urgent flag should stick
+    const started = await requestSync('C', 200); // non-urgent here but should still be urgent as sent previously for C
     expect(started).toHaveProperty('sessionId');
   });
 
