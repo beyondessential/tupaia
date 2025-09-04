@@ -231,7 +231,7 @@ export class UserModel extends DatabaseModel {
 
     const entityTypes = type.split(',');
     const recentEntitiesOfTypes = entityTypes.flatMap(
-      entityType => userRecentEntities[countryCode][entityType] ?? [],
+      entityType => recentEntitiesForCountry[entityType] ?? [],
     );
 
     return recentEntitiesOfTypes;
