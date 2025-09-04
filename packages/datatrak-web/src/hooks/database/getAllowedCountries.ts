@@ -11,10 +11,9 @@ export const getAllowedCountries = async (
   accessPolicy?: AccessPolicy,
   countryEntities: EntityRecord[] = [],
 ) => {
-  let allowedCountries = countryEntities
-    .map(child => child.country_code)
-    .filter(isNotNullish)
-    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index); // De-duplicate countryCodes
+  let allowedCountries = [
+    ...new Set(countryEntities.map(child => child.country_code).filter(isNotNullish)),
+  ]; // De-duplicate countryCodes
 
   if (!isPublic) {
     const { permission_groups: projectPermissionGroups } = await models.project.findOne({
@@ -22,11 +21,9 @@ export const getAllowedCountries = async (
     });
 
     // Fetch all country codes we have any of the project permission groups access to
-    const projectAccessibleCountries: string[] = [];
-
-    for (const permission of projectPermissionGroups) {
-      projectAccessibleCountries.push(...(accessPolicy?.getEntitiesAllowed(permission) || []));
-    }
+    const projectAccessibleCountries = projectPermissionGroups.flatMap(
+      (permission: string) => accessPolicy?.getEntitiesAllowed(permission) || [],
+    );
     allowedCountries = allowedCountries.filter(countryCode =>
       projectAccessibleCountries.includes(countryCode),
     );

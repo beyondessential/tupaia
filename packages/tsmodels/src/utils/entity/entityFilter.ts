@@ -1,7 +1,5 @@
 import { QueryConjunctions, EntityFilter, EntityFilterFields } from '../../models';
-import { NumericKeys } from '@tupaia/types';
-
-export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
+import { NumericKeys, Writable } from '@tupaia/types';
 
 const CLAUSE_DELIMITER = ';';
 const JSONB_FIELD_DELIMITER = '->>';

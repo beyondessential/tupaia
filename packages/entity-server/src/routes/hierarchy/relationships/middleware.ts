@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express';
 
+import { Writable } from '@tupaia/types';
 import { extractEntityFilterFromQuery } from '@tupaia/tsmodels';
 
-import { Writable } from '../../../types';
 import { extractEntityFieldFromQuery } from '../middleware/fields';
 import {
   RelationshipsRequest,

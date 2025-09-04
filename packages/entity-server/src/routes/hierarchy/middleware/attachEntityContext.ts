@@ -2,7 +2,7 @@ import { Request, NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
 import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
 import { extractEntityFilterFromQuery } from '@tupaia/tsmodels';
-import { EntityTypeEnum } from '@tupaia/types';
+import { Country, EntityTypeEnum } from '@tupaia/types';
 import { EntityRecord, EntityFilter } from '@tupaia/server-boilerplate';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
@@ -84,7 +84,7 @@ const getFilterInfo = async (
     });
 
     // Fetch all country codes we have any of the project permission groups access to
-    const projectAccessibleCountries: string[] = [];
+    const projectAccessibleCountries: Country['code'][] = [];
     for (const permission of projectPermissionGroups) {
       projectAccessibleCountries.push(...req.accessPolicy.getEntitiesAllowed(permission));
     }
