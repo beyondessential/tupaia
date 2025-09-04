@@ -1,6 +1,11 @@
 #!/bin/bash -leE
 # This script gets loaded as "User Data" against the EC2 instance, and deploys the tagged branch
 # the first time the instance starts
+#
+# REMARK
+#   The production version of this script lives in the ‘deployment’ Lambda function; simply merging
+#   does not deploy code changes to production. To make changes, see
+#   https://beyond-essential.slab.com/posts/making-changes-to-deployment-process-9kjpcjic
 
 set -o pipefail # fail pipe where scripts are e.g. piped out to deployment logs
 
