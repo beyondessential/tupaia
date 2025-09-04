@@ -86024,6 +86024,9 @@ export const CamelCaseFeedItemSchema = {
 		"id": {
 			"type": "string"
 		},
+		"permissionGroupId": {
+			"type": "string"
+		},
 		"userId": {
 			"type": "string"
 		},
@@ -86259,9 +86262,6 @@ export const CamelCaseFeedItemSchema = {
 			]
 		},
 		"geographicalAreaId": {
-			"type": "string"
-		},
-		"permissionGroupId": {
 			"type": "string"
 		},
 		"recordId": {
