@@ -2,7 +2,6 @@ import { verify } from '@node-rs/argon2';
 
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
 import { DatabaseError } from '@tupaia/utils';
-import * as constants from '@tupaia/constants';
 import { SyncDirections, API_CLIENT_PERMISSIONS } from '@tupaia/constants';
 
 import { DatabaseModel } from '../DatabaseModel';
@@ -27,6 +26,8 @@ const USERS_EXCLUDED_FROM_LIST = [
   'tamanu-server@tupaia.org', // Tamanu Server
   'public@tupaia.org', // Public User
 ];
+
+const INTERNAL_EMAIL_DOMAINS = ['tupaia.org', 'bes.au', 'beyondessential.com.au'];
 
 export class UserRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ACCOUNT;
@@ -153,7 +154,7 @@ export class UserModel extends DatabaseModel {
       },
       [QUERY_CONJUNCTIONS.RAW]: {
         // exclude E2E users and any internal users
-        sql: "(email NOT ILIKE '%@tupaia.org' AND email NOT ILIKE '%@bes.au' AND email NOT ILIKE '%@beyondessential.com.au')",
+        sql: `(${INTERNAL_EMAIL_DOMAINS.map(domain => `email NOT ILIKE '%@${domain}'`).join(' AND ')})`,
       },
     };
 
@@ -187,7 +188,7 @@ export class UserModel extends DatabaseModel {
           entityCode === countryCode && permissionGroupName === permissionGroup.name,
       )
     ) {
-      return this.getFilteredUsers(searchTerm);
+      return await this.getFilteredUsers(searchTerm);
     }
 
     // get the ancestors of the permission group

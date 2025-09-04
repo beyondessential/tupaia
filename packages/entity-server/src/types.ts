@@ -13,8 +13,6 @@ export interface EntityServerModelRegistry extends ModelRegistry {
   readonly project: ProjectModel;
 }
 
-export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
-
 type SimpleKeys<T> = {
   [K in keyof T]: T[K] extends string | number | symbol ? K : never;
 }[keyof T];

@@ -65,3 +65,5 @@ export type Flatten<
     [V in K]: { [field in keyof T[V] & string as `${V}${J}${field}`]: T[V][field] };
   }[K]
 >;
+
+export type Writable<T> = { -readonly [field in keyof T]?: T[field] };

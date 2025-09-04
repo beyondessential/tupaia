@@ -2,9 +2,9 @@ import { Request, NextFunction, Response } from 'express';
 
 import { PermissionsError } from '@tupaia/utils';
 import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
+
 import { Entity, EntityTypeEnum } from '@tupaia/types';
 import { EntityRecord, EntityFilter, extractEntityFilterFromQuery } from '@tupaia/tsmodels';
-
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
 const throwNoAccessError = (entityCodes: string[]) => {
@@ -85,7 +85,7 @@ const getFilterInfo = async (
 
     // Fetch all country codes we have any of the project permission groups access to
     const projectAccessibleCountries = new Set<Entity['code']>(
-      projectPermissionGroups.flatMap(pg => req.accessPolicy.getEntitiesAllowed(pg)),
+      projectPermissionGroups.flatMap(pg => req.accessPolicy.getEntitiesAllowed(pg))
     );
     allowedCountries = allowedCountries.filter(c => projectAccessibleCountries.has(c));
   }
