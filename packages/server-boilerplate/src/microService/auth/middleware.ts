@@ -1,8 +1,9 @@
+import { RequestHandler } from 'express';
+
 import { AccessPolicy } from '@tupaia/access-policy';
 import { Authenticator, getJwtToken, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { UserRecord } from '@tupaia/tsmodels';
 import { UnauthenticatedError } from '@tupaia/utils';
-import { RequestHandler } from 'express';
 
 import { AccessPolicyObject, ServerBoilerplateModelRegistry } from '../../types';
 
