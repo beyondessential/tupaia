@@ -33,7 +33,7 @@ else
   BASH_PROMPT_COLOR="36"
 fi
 BASH_PROMPT="\\[\\e]0;\\u@${BASH_PROMPT_NAME}: \\w\\a\\]\\\${debian_chroot:+(\\\$debian_chroot)}\\[\\033[01;32m\\]\\u@\\033[01;${BASH_PROMPT_COLOR}m\\]${BASH_PROMPT_NAME}\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ "
-echo "PS1=\"${BASH_PROMPT}\"" >> $HOME_DIR/.bashrc
+echo "PS1=\"${BASH_PROMPT}\"" >>$HOME_DIR/.bashrc
 
 # Create a directory for logs to go
 mkdir -m 777 -p $LOGS_DIR
@@ -47,8 +47,8 @@ mkdir -m 777 -p $LOGS_DIR
 # Add preaggregation cron job if production
 if [[ $DEPLOYMENT_NAME == "production" ]]; then
   \. "$HOME_DIR/.nvm/nvm.sh" # Load nvm so node is available on $PATH
-  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $HOME_DIR/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > $LOGS_DIR/preaggregation.txt" > tmp.cron
-  sudo -u ubuntu crontab -l >> tmp.cron || echo "" >> tmp.cron
+  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $HOME_DIR/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > $LOGS_DIR/preaggregation.txt" >tmp.cron
+  sudo -u ubuntu crontab -l >>tmp.cron || echo "" >>tmp.cron
   sudo -u ubuntu crontab tmp.cron
   rm tmp.cron
 fi
@@ -69,12 +69,21 @@ sudo -Hu ubuntu git reset --hard # clear out any manual changes that have been m
 sudo -Hu ubuntu git checkout ${BRANCH_TO_USE}
 sudo -Hu ubuntu git reset --hard origin/${BRANCH_TO_USE}
 
-# Deploy each package, including injecting environment variables from LastPass
-sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/buildDeployablePackages.sh $DEPLOYMENT_NAME |& while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
-sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/../deployment-common/startBackEnds.sh |& while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
+startup() {
+  # central-server and data-table-server need Tailnet access for external database connections
+  sudo -Hu ubuntu DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/connectTailscale.sh
+  # Build each package, including injecting environment variables from Bitwarden
+  sudo -Hu ubuntu "$DEPLOYMENT_SCRIPTS"/buildDeployablePackages.sh "$DEPLOYMENT_NAME"
+  # Deploy each package
+  sudo -Hu ubuntu "$DEPLOYMENT_SCRIPTS"/../deployment-common/startBackEnds.sh
+  # Set nginx config and start the service running
+  sudo -E DEPLOYMENT_NAME="$DEPLOYMENT_NAME" "$DEPLOYMENT_SCRIPTS"/configureNginx.sh
+}
 
-# Set nginx config and start the service running
-sudo -E DEPLOYMENT_NAME=$DEPLOYMENT_NAME $DEPLOYMENT_SCRIPTS/configureNginx.sh |& while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
+startup |&
+  while IFS= read -r line; do
+    printf '[%s] %s\n' "$(date)" "$line"
+  done >>$LOGS_DIR/deployment_log.txt
 
 # Tag as complete so CI/CD system can use the tag as a health check
 aws ec2 create-tags --resources ${INSTANCE_ID} --tags Key=StartupBuildProgress,Value=complete
