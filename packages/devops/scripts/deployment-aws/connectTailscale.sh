@@ -4,6 +4,16 @@ set -e +x
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 tupaia_dir=$(realpath -- "$script_dir"/../../../..)
 
+if [[ ! -v DEPLOYMENT_NAME ]]; then
+	source "$tupaia_dir"/scripts/bash/ansiControlSequences.sh
+	this_script=$(basename "${BASH_SOURCE[0]}")
+	{
+		echo -en "${BOLD}${YELLOW}Missing environment variable.${RESET} "
+		echo -e "${BOLD}DEPLOYMENT_NAME${RESET} must be set when ${BOLD}$this_script${RESET} is called."
+	} >&2
+	exit 2
+fi
+
 # Temporary! To avoid needing to rebuild the production Amazon Machine Image
 # TODO: Remove this once testing passed
 if ! command -v tailscale &>/dev/null; then
