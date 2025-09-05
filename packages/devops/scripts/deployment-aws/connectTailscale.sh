@@ -26,14 +26,17 @@ else
 	auth_key_param_name=TAILSCALE_AUTH_KEY_STAGING
 	tags=tag:server,tag:server-tupaia,tag:server-tupaia-staging
 fi
+hostname=tupaia-$DEPLOYMENT_NAME
 
 echo
 echo 'Connecting to bes.au Tailnet...'
 echo "  Auth key:  $auth_key_param_name (from Parameter Store)"
+echo "  Hostname:  $hostname"
 echo "  Tags:      $tags"
 
 sudo tailscale up \
 	--auth-key="$("$script_dir"/fetchParameterStoreValue.sh "$auth_key_param_name")" \
+	--hostname="$hostname" \
 	--ssh \
 	--advertise-tags="$tags"
 
