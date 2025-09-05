@@ -107,4 +107,4 @@ main() {
 main |&
   while IFS= read -r line; do
     echo "$(date) │ $line"
-  done >>"$logs_dir"/deployment_log.txt
+  done >>"$logs_dir"/deployment.log
