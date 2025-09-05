@@ -47,6 +47,14 @@ echo "PS1=\"${prompt}\"" >>"$home_dir"/.bashrc
 # Create a directory for logs to go
 mkdir -m 777 -p "$logs_dir"
 
+schedule_preaggregation_job() {
+  \. "$home_dir/.nvm/nvm.sh" # Load nvm so node is available on $PATH
+  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
+  sudo -u ubuntu crontab -l >>tmp.cron || echo >>tmp.cron
+  sudo -u ubuntu crontab tmp.cron
+  rm tmp.cron
+}
+
 fetch_latest_code() {
   cd "$tupaia_dir"
   if sudo -Hu ubuntu git ls-remote --exit-code --heads origin "$branch" &>/dev/null; then
@@ -74,13 +82,8 @@ main() {
   #   $deployment_scripts/startCloudwatchAgent.sh
   # fi
 
-  # Add preaggregation cron job if production
   if [[ $deployment_name = production ]]; then
-    \. "$home_dir/.nvm/nvm.sh" # Load nvm so node is available on $PATH
-    sudo -u ubuntu echo "10 13 * * * PATH=$PATH $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
-    sudo -u ubuntu crontab -l >>tmp.cron || echo >>tmp.cron
-    sudo -u ubuntu crontab tmp.cron
-    rm tmp.cron
+    schedule_preaggregation_job
   fi
 
   fetch_latest_code
