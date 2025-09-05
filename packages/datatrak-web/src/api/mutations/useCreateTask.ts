@@ -12,8 +12,8 @@ type Data = DatatrakWebTaskChangeRequest.ReqBody & {
   country_code: string;
 };
 const createRemote = async ({ data }: { data: Data }) => {
-  const { country_code, ...rest } = data;
-  return post('tasks', {
+  const { country_code: _, ...rest } = data;
+  return await post('tasks', {
     data: rest,
   });
 };

@@ -1,5 +1,6 @@
 import { CentralSyncManager } from '../sync';
 import { SyncServerModelRegistry } from '../types';
+import { StaleSessionCleaner } from './StaleSessionCleaner';
 import { SyncLookupPopulator } from './SyncLookupPopulator';
 
 export const initializeScheduledTasks = (
@@ -7,4 +8,5 @@ export const initializeScheduledTasks = (
   syncManager: CentralSyncManager,
 ) => {
   new SyncLookupPopulator(models, syncManager).init();
+  new StaleSessionCleaner(models).init();
 };

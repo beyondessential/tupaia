@@ -1,5 +1,4 @@
-export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
-
+import { Writable } from '@tupaia/types';
 export class ResponseObjectBuilder<T> {
   private readonly responseObject: Writable<T> = {};
 

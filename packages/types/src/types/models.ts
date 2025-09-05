@@ -1979,12 +1979,6 @@ export enum EntityTypeEnum {
   'consumable' = 'consumable',
   'bes_asset' = 'bes_asset',
   'bes_office' = 'bes_office',
-  'tmf_district' = 'tmf_district',
-  'tmf_sub_district' = 'tmf_sub_district',
-  'tmf_facility' = 'tmf_facility',
-  'policy' = 'policy',
-  'kiuar_facility' = 'kiuar_facility',
-  'kiuar_area' = 'kiuar_area',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
