@@ -1,7 +1,7 @@
 import { DatatrakWebTasksRequest } from '@tupaia/types';
 import { formatFilters, FormattedFilters } from '@tupaia/tsutils';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { JOIN_TYPES, processColumns, processColumnSelectorKeys, RECORDS } from '@tupaia/database';
+import { processColumns, processColumnSelectorKeys, RECORDS } from '@tupaia/database';
 import { TASKS_QUERY_FIELDS } from '@tupaia/constants';
 
 import { DatatrakWebModelRegistry } from '../../types';
@@ -35,15 +35,14 @@ export const getTasks = async ({
 
   const params: {
     filter: FormattedFilters;
-    columns: string[];
     pageSize: number;
     page: number;
     sort?: string[];
     rawSort?: string;
   } = {
     filter: formattedFilters,
-    pageSize: 100000,
-    page: 0,
+    pageSize,
+    page,
   };
 
   if (sort) {
@@ -58,31 +57,15 @@ export const getTasks = async ({
   }
 
   const processFilters = processColumnSelectorKeys(models, formattedFilters, RECORDS.TASK);
+
+  // Custom columns only work with models.database.find instead of models.task.find
   const _tasks = (await models.database.find(RECORDS.TASK, processFilters, {
     columns: processColumns(models, TASKS_QUERY_FIELDS, RECORDS.TASK),
     limit: pageSize,
     offset: page * pageSize,
     sort: params.sort,
     rawSort: params.rawSort,
-    multiJoin: [
-      {
-        joinWith: RECORDS.ENTITY,
-        joinCondition: ['entity_id', `${RECORDS.ENTITY}.id`],
-        fields: { code: 'entity_code', name: 'entity_name', country_code: 'entity_country_code' },
-      },
-      {
-        joinWith: RECORDS.USER_ACCOUNT,
-        joinAs: 'assignee',
-        joinType: JOIN_TYPES.LEFT,
-        joinCondition: ['assignee_id', 'assignee.id'],
-        fields: { first_name: 'assignee_first_name', last_name: 'assignee_last_name' },
-      },
-      {
-        joinWith: RECORDS.SURVEY,
-        joinCondition: ['survey_id', `${RECORDS.SURVEY}.id`],
-        fields: { name: 'survey_name', code: 'survey_code', project_id: 'project_id' },
-      },
-    ],
+    multiJoin: models.task.DatabaseRecordClass.joins,
   })) as unknown as DatatrakWebTasksRequest.RawTaskResult[];
 
   const tasks = await models.task.formatTasksWithComments(_tasks);

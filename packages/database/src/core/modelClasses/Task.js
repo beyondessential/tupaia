@@ -32,23 +32,6 @@ const formatValue = async (field, value, models) => {
   return value;
 };
 
-export const TASKS_FIELDS = [
-  'id',
-  'survey.name',
-  'survey.code',
-  'entity.country_code',
-  'entity.name',
-  'entity.code',
-  'assignee_name',
-  'assignee_id',
-  'task_status',
-  'task_due_date',
-  'repeat_schedule',
-  'survey_id',
-  'entity_id',
-  'initial_request_id',
-];
-
 export class TaskRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK;
 
@@ -581,7 +564,9 @@ export class TaskModel extends DatabaseModel {
       ...rest
     } = task;
 
-    const { project_id: projectId } = await this.otherModels.survey.findById(surveyId);
+    const { project_id: projectId } = await this.otherModels.survey.findById(surveyId, {
+      fields: ['project_id'],
+    });
     const parentName = await this.otherModels.entity.getParentEntityName(projectId, entityId);
 
     const formattedTask = {

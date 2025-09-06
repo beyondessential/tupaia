@@ -50,12 +50,12 @@ const getRemoteTasks = async ({
   filters,
   sortBy,
 }: UseTasksLocalContext) => {
-  return get('tasks', {
+  return await get('tasks', {
     params: {
       pageSize,
       page,
       filters,
-      sort: sortBy?.map(({ id, desc }) => `${id} ${desc ? 'DESC' : 'ASC'}`) ?? [],
+      sort: sortBy?.map(({ id, desc }) => `${id} ${desc ? 'DESC' : 'ASC'}`),
     },
   });
 };

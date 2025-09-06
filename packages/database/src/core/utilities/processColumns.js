@@ -1,8 +1,11 @@
+import { resourceToRecordType } from './resourceToRecordType';
+
 export const fullyQualifyColumnSelector = (unprocessedColumnSelector, baseRecordType) => {
   const [resource, column] = unprocessedColumnSelector.includes('.')
     ? unprocessedColumnSelector.split('.')
     : [baseRecordType, unprocessedColumnSelector];
-  return `${resource}.${column}`;
+  const recordType = resourceToRecordType(resource);
+  return `${recordType}.${column}`;
 };
 
 export const processColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
