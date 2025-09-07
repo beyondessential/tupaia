@@ -61,7 +61,7 @@ export const useCancelableEffect = <T>(
 
 export const useDatabaseEffect = <T>(
   call: (models: DatatrakWebModelRegistry, accessPolicy?: AccessPolicy) => Promise<T> | T,
-  dependencies: React.DependencyList = [],
+  dependencies: React.DependencyList,
   options: DatabaseEffectOptions = { enabled: true },
 ): ResultObject<T> => {
   const { models } = useDatabaseContext();
