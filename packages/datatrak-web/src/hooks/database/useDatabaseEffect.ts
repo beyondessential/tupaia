@@ -14,10 +14,10 @@ export type ResultObject<T> = {
   onFetch: () => void;
 };
 
-export type DatabaseEffectOptions = {
+export interface DatabaseEffectOptions<T = unknown> {
   enabled: boolean;
-  placeholderData?: unknown;
-};
+  placeholderData?: T;
+}
 
 export const useCancelableEffect = <T>(
   fetcher: () => Promise<T> | T,
