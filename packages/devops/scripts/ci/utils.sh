@@ -26,20 +26,6 @@ log_success() {
     log_with_color "$1" $COLOR_GREEN
 }
 
-get_max_length() {
-    array=($@)
-    max=0
-
-    for item in "${array[@]}"; do
-        length=${#item}
-        if [[ $length -gt $max ]]; then
-            max=$length
-        fi
-    done
-
-    echo $max
-}
-
 get_branch_name() {
     if [[ -n $CI_BRANCH ]]; then
         echo "$CI_BRANCH"

@@ -35,6 +35,17 @@ SUBDOMAIN_SUFFIXES=(
     www
 )
 
+get_max_length() {
+    local -i max=0
+    for item in "$@"; do
+        length=${#item}
+        if ((length > $max)); then
+            max=$length
+        fi
+    done
+    echo "$max"
+}
+
 # Branch names are often reused as deployment names for AWS EC2 deployments. Deployment names are
 # combined with standard suffixes to create deployment urls, eg {{deploymentName}}-tonga-aggregation.tupaia.org
 MAX_SUBDOMAIN_LENGTH=64
@@ -46,11 +57,11 @@ DEPLOYMENT_WARNING_PREFIX="This branch name can't be used as a deployment name b
 
 warnings=()
 
-function add_warning() {
+add_warning() {
     warnings+=("$DEPLOYMENT_WARNING_PREFIX $1")
 }
 
-function validate_name_ending() {
+validate_name_ending() {
     local branch_name=$1
 
     for suffix in ${SUBDOMAIN_SUFFIXES[@]}; do
@@ -66,7 +77,7 @@ function validate_name_ending() {
     done
 }
 
-function validate_name_length() {
+validate_name_length() {
     local branch_name=$1
     local name_length=${#branch_name}
 
@@ -75,7 +86,7 @@ function validate_name_length() {
     fi
 }
 
-function validate_name_chars() {
+validate_name_chars() {
     local branch_name=$1
 
     if [[ $branch_name =~ [A-Z] ]]; then
