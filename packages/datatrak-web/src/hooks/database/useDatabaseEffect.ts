@@ -37,7 +37,7 @@ export const useCancelableEffect = <T>(
     setIsLoading(true);
     try {
       const result = await fetcher();
-      if (!isCancel || !isCancel()) {
+      if (!isCancel?.()) {
         setData(result);
         setIsSuccess(true);
       }
