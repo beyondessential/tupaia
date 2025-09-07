@@ -6,13 +6,13 @@ import { DatatrakWebModelRegistry } from '../../types';
 import { useDatabaseContext } from './useDatabaseContext';
 import { useCurrentUserContext } from '../../api';
 
-export type ResultObject<T> = {
+export interface ResultObject<T> {
   data: T | undefined;
   error: Error | undefined;
   isLoading: boolean;
   isSuccess: boolean;
   onFetch: () => void;
-};
+}
 
 export interface DatabaseEffectOptions<T = unknown> {
   enabled: boolean;
