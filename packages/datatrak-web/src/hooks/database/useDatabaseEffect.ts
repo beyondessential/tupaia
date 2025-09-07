@@ -6,31 +6,18 @@ import { DatatrakWebModelRegistry } from '../../types';
 import { useDatabaseContext } from './useDatabaseContext';
 import { useCurrentUserContext } from '../../api';
 
-<<<<<<< HEAD
-export type ResultObject<T> = {
-=======
 export interface ResultObject<T> {
->>>>>>> rn-1545-epic-datatrak-offline
   data: T | undefined;
   error: Error | undefined;
   isLoading: boolean;
   isSuccess: boolean;
   onFetch: () => void;
-<<<<<<< HEAD
-};
-
-export type DatabaseEffectOptions = {
-  enabled: boolean;
-  placeholderData?: unknown;
-};
-=======
 }
 
 export interface DatabaseEffectOptions<T = unknown> {
   enabled: boolean;
   placeholderData?: T;
 }
->>>>>>> rn-1545-epic-datatrak-offline
 
 export const useCancelableEffect = <T>(
   fetcher: () => Promise<T> | T,
