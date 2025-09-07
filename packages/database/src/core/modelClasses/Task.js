@@ -6,6 +6,7 @@ import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { SqlQuery } from '../SqlQuery';
 import { buildSyncLookupSelect } from '../sync';
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
@@ -326,15 +327,13 @@ export class TaskModel extends DatabaseModel {
     return {
       sql: `
         (
-          ${Object.entries(countryCodesByPermissionGroupId)
-            .map(([_, countryCodes]) => {
-              return `
-              (
+          ${Object.values(countryCodesByPermissionGroupId)
+            .map(
+              countryCodes => `(
                 survey.permission_group_id = ? AND
-                entity.country_code IN (${countryCodes.map(() => '?').join(', ')})
-              )
-            `;
-            })
+                entity.country_code IN ${SqlQuery.record(countryCodes)}
+              )`,
+            )
             .join(' OR ')}
         )
        `,
