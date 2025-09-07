@@ -12,7 +12,7 @@ import {
 } from './utilities/runDatabaseFunctionInBatches';
 import { SCHEMA_NAMES } from './constants';
 
-const QUERY_METHODS = {
+export const QUERY_METHODS = {
   COUNT: 'count',
   COUNT_DISTINCT: 'countDistinct',
   INSERT: 'insert',
@@ -43,7 +43,7 @@ export const JOIN_TYPES = {
 // list valid behaviour so we can validate against sql injection
 const VALID_CAST_TYPES = ['text', 'text[]', 'date'];
 const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
-const WHERE_SUBQUERY_CLAUSES = {
+export const WHERE_SUBQUERY_CLAUSES = {
   EXISTS: 'exists',
   NOT_EXISTS: 'notExists',
 };
@@ -471,13 +471,14 @@ export class BaseDatabase {
     return result[0];
   }
 
-  async delete(recordType, where = {}) {
+  async delete(recordType, where = {}, schemaName = SCHEMA_NAMES.PUBLIC) {
     return this.query(
       {
         recordType,
         queryMethod: QUERY_METHODS.DELETE,
       },
       where,
+      { schemaName },
     );
   }
 
@@ -556,10 +557,10 @@ export class BaseDatabase {
  * 'awaited' (in which case it will execute and return the result), or passed back in to
  * this.query as part of a nested query.
  */
-function buildQuery(connection, queryConfig, where = {}, options = {}) {
+function buildQuery(connection, queryConfig, where = {}, options = {}, baseQuery = null) {
   const { recordType, queryMethod, queryMethodParameter } = queryConfig;
 
-  let query = connection(recordType); // Query starts as just the table, but will be built up
+  let query = baseQuery || connection(recordType); // Query starts as just the table, but will be built up
 
   if (options.schemaName) {
     query = query.withSchema(options.schemaName);
@@ -701,12 +702,14 @@ function addWhereClause(connection, baseQuery, where) {
     }
     if (key === WHERE_SUBQUERY_CLAUSES.EXISTS) {
       return querySoFar.whereExists(function () {
-        this.query(value);
+        const { queryMethod, recordType, where: subWhere, options: subOptions } = value;
+        buildQuery(connection, { queryMethod, recordType }, subWhere, subOptions, this);
       });
     }
     if (key === WHERE_SUBQUERY_CLAUSES.NOT_EXISTS) {
       return querySoFar.whereNotExists(function () {
-        this.query(value);
+        const { queryMethod, recordType, where: subWhere, options: subOptions } = value;
+        buildQuery(connection, { queryMethod, recordType }, subWhere, subOptions, this);
       });
     }
     if (value === undefined) {

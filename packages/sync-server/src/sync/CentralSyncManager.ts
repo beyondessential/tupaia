@@ -20,6 +20,8 @@ import {
 import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { SyncTickFlags, FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
 import { generateId } from '@tupaia/database';
+import { SyncServerStartSessionRequest, SyncSession } from '@tupaia/types';
+import { AccessPolicy } from '@tupaia/access-policy';
 
 import { updateLookupTable, updateSyncLookupPendingRecords } from './updateLookupTable';
 import {
@@ -36,7 +38,7 @@ import {
   UnmarkSessionAsProcessingFunction,
 } from '../types';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
-import { SyncServerStartSessionRequest, SyncSession } from '@tupaia/types';
+import { removeSnapshotDataByPermissions } from './removeSnapshotDataByPermissions';
 
 const DEFAULT_CONFIG: SyncServerConfig = {
   maxRecordsPerSnapshotChunk: 10_000,
@@ -246,6 +248,7 @@ export class CentralSyncManager {
   async initiatePull(
     sessionId: string,
     params: SnapshotParams,
+    accessPolicy: AccessPolicy,
   ): Promise<PullInitiationResult | void> {
     try {
       await this.connectToSession(sessionId);
@@ -258,7 +261,7 @@ export class CentralSyncManager {
       }
 
       const unmarkSessionAsProcessing = await this.markSessionAsProcessing(sessionId);
-      this.setupSnapshotForPull(sessionId, params, unmarkSessionAsProcessing); // don't await, as it takes a while - the sync client will poll for it to finish
+      this.setupSnapshotForPull(sessionId, params, unmarkSessionAsProcessing, accessPolicy); // don't await, as it takes a while - the sync client will poll for it to finish
     } catch (error: any) {
       log.error('CentralSyncManager.initiatePull encountered an error', error);
       await this.models.syncSession.markSessionErrored(sessionId, error.message);
@@ -325,6 +328,7 @@ export class CentralSyncManager {
     sessionId: string,
     snapshotParams: SnapshotParams,
     unmarkSessionAsProcessing: () => Promise<void>,
+    accessPolicy: AccessPolicy,
   ): Promise<void> {
     const { since, projectIds, userId, deviceId } = snapshotParams;
     let transactionTimeout;
@@ -368,6 +372,13 @@ export class CentralSyncManager {
             userId,
             projectIds,
             this.config,
+          );
+
+          await removeSnapshotDataByPermissions(
+            sessionId,
+            transactingModels.database,
+            getModelsForPull(transactingModels.getModels()),
+            accessPolicy,
           );
         },
       );

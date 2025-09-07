@@ -1,6 +1,3 @@
-/**
- * @deprecated Use mergeMultiJoin from @tupaia/database instead
- */
 export function mergeMultiJoin(baseMultiJoin, multiJoinToMerge) {
   if (!multiJoinToMerge) {
     return baseMultiJoin;
