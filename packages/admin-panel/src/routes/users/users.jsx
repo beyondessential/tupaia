@@ -16,7 +16,7 @@ const VerifiedCell = ({ value }) => {
   }
   return (
     <TooltipComponent title="Historical user which does not need verification">
-      <div>Not Applicable</div>
+      <div>Not applicable</div>
     </TooltipComponent>
   );
 };

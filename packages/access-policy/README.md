@@ -4,7 +4,7 @@ Methods for parsing the access policy that is received by Tupaia projects during
 
 ## Examples
 
-```
+```js
 // Create access policy instance
 const accessPolicy = new AccessPolicy(policy); // where `policy` is a JSON string to parse
 
@@ -28,7 +28,7 @@ accessPolicy.allowsAnywhere('Donor');
 
 ## JSON Structure
 
-```
+```json
 {
   "EntityCode": ["PermissionGroupName", "PermissionGroupName"],
   "EntityCode": ["PermissionGroupName"]
@@ -48,5 +48,5 @@ to any entity further up the hierarchy, they will be granted access to Thornbury
 
 ## Editing, changing, building
 
-Edit files in src and run `npm run build` to create a new version that's able to be imported by other
+Edit files in src and run `yarn run build` to create a new version that's able to be imported by other
 projects. Commit files from the dist files along with source files.

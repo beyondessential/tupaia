@@ -33,14 +33,14 @@ export class FeedItemModel extends DatabaseModel {
 
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
-    const params = Object.entries(countryIdsByPermissionGroup).flat().flat(); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
+    const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
 
     return {
       sql: `((${Object.entries(countryIdsByPermissionGroup)
         .map(([_, countryIds]) => {
           return `
           (
-            feed_item.permission_group_id = ? AND 
+            feed_item.permission_group_id = ? AND
             feed_item.country_id IN (${countryIds.map(_ => `?`).join(',')})
           )
         `;

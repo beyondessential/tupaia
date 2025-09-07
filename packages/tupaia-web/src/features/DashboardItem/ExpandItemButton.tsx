@@ -1,9 +1,10 @@
+import { ZoomIn } from 'lucide-react';
 import React, { useContext } from 'react';
-import styled from 'styled-components';
-import MuiZoomIcon from '@material-ui/icons/ZoomIn';
 import { useSearchParams } from 'react-router-dom';
-import { Button } from '@tupaia/ui-components';
+import styled from 'styled-components';
+
 import { ViewReport } from '@tupaia/types';
+import { Button } from '@tupaia/ui-components';
 import {
   DashboardItemVizTypes,
   MOBILE_BREAKPOINT,
@@ -50,7 +51,7 @@ const ExpandButtonText = styled.span`
   font-size: 1rem;
 `;
 
-const ZoomInIcon = styled(MuiZoomIcon)`
+const ZoomInIcon = styled(ZoomIn)`
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: 1.5rem;
     height: 1.5rem;

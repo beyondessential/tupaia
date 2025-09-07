@@ -1,9 +1,10 @@
-import { Request, NextFunction, Response } from 'express';
-import { PermissionsError } from '@tupaia/utils';
-import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
+import { NextFunction, Request, Response } from 'express';
+
+import { EntityFilter, EntityRecord } from '@tupaia/server-boilerplate';
 import { extractEntityFilterFromQuery } from '@tupaia/tsmodels';
-import { Country, EntityTypeEnum } from '@tupaia/types';
-import { EntityRecord, EntityFilter } from '@tupaia/server-boilerplate';
+import { ajvValidate, ensure, isNotNullish } from '@tupaia/tsutils';
+import { EntityTypeEnum } from '@tupaia/types';
+import { PermissionsError } from '@tupaia/utils';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
 const throwNoAccessError = (entityCodes: string[]) => {
@@ -75,19 +76,20 @@ const getFilterInfo = async (
 
   let allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
     .map(child => child.country_code)
-    .filter(isNotNullish)
-    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index); // De-duplicate countryCodes
+    .filter(isNotNullish);
+  allowedCountries = [...new Set(allowedCountries)]; // De-duplicate country codes
 
   if (!isPublic) {
-    const { permission_groups: projectPermissionGroups } = await req.models.project.findOne({
-      code: req.params.hierarchyName,
-    });
+    const project = ensure(
+      await req.models.project.findOne({ code: req.params.hierarchyName }),
+      `No project exists with code ${req.params.hierarchyName}`,
+    );
 
     // Fetch all country codes we have any of the project permission groups access to
-    const projectAccessibleCountries: Country['code'][] = [];
-    for (const permission of projectPermissionGroups) {
-      projectAccessibleCountries.push(...req.accessPolicy.getEntitiesAllowed(permission));
-    }
+    const projectAccessibleCountries = project.permission_groups.flatMap(permission =>
+      req.accessPolicy.getEntitiesAllowed(permission),
+    );
+
     allowedCountries = allowedCountries.filter(countryCode =>
       projectAccessibleCountries.includes(countryCode),
     );

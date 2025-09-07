@@ -15,13 +15,10 @@ const meta: Meta<typeof TextField> = {
   decorators: [
     Story => {
       const formContext = useForm();
-      const onSubmit = (data: any) => {
-        console.log(data);
-      };
 
       return (
         <div style={{ margin: '1rem', maxWidth: '20rem' }}>
-          <Form formContext={formContext} onSubmit={onSubmit}>
+          <Form formContext={formContext} onSubmit={console.log}>
             <Story />
           </Form>
         </div>

@@ -2,6 +2,7 @@ import { yup } from '@tupaia/utils';
 import { starSingleOrMultipleColumnsValidator } from './utils';
 import { getColumnMatcher } from './helpers';
 import { TransformTable } from '../table';
+import { TransformBuilder } from '.';
 
 type ExcludeColumnsParams = {
   shouldIncludeColumn: (field: string) => boolean;
@@ -31,7 +32,7 @@ const buildParams = (params: unknown): ExcludeColumnsParams => {
   return { shouldIncludeColumn };
 };
 
-export const buildExcludeColumns = (params: unknown) => {
+export const buildExcludeColumns: TransformBuilder = (params, _context) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => excludeColumns(table, builtParams);
+  return table => excludeColumns(table, builtParams);
 };

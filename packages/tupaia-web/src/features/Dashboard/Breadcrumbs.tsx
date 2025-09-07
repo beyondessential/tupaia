@@ -1,28 +1,29 @@
+import { Breadcrumbs as MuiBreadcrumbs } from '@material-ui/core';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import React from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { Breadcrumbs as MuiBreadcrumbs } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { MOBILE_BREAKPOINT } from '../../constants';
 import { useEntityAncestors, useProject } from '../../api/queries';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 0.3125rem 0 2.5rem 0.625rem;
-  z-index: 1;
+  background-image: linear-gradient(rgb(43, 45, 56) 0%, transparent 94.27%);
+  background-image: linear-gradient(in oklab, oklch(30% 0.0201 277) 0%, transparent 94.27%);
   font-size: 0.8rem;
-  line-height: 1.2rem;
-  background: linear-gradient(rgb(43, 45, 56) 0%, rgba(43, 45, 56, 0) 94.27%);
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  line-height: 1.5;
+  padding-block: 0.3125rem 2.5rem;
+  padding-inline: 0.625rem 0;
+  position: absolute;
+  z-index: 1;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
 
   .MuiBreadcrumbs-separator {
-    margin-left: 0.2rem;
-    margin-right: 0.3rem;
+    margin-inline: 0.2rem 0.3rem;
 
     svg {
       font-size: 0.8rem;

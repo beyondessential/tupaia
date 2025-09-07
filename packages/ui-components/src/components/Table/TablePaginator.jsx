@@ -93,8 +93,8 @@ export const TablePaginator = React.memo(
             page={page}
             count={count}
             rowsPerPage={rowsPerPage}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </MuiTableRow>
       </TableFooter>
