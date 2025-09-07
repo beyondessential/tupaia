@@ -149,10 +149,4 @@ export const CUSTOM_TILE_SETS = [
   unfpaPopulation,
 ];
 
-export const DEFAULT_BOUNDS = [
-  // Note: There's a little bit of a hack going on here, the bounds[0] for explore are actually [6.5, 110]
-  // However in order to trigger the map to re-render we set them slightly adjusted as [6.5001, 110]
-  // See: https://github.com/beyondessential/tupaia-backlog/issues/540#issuecomment-631314721
-  [6.5001, 110],
-  [-40, 204.5],
-];
+export { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';

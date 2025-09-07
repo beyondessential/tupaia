@@ -7,6 +7,7 @@ import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetMergeStrategy } from './getMergeStrategy';
 import { starSingleOrMultipleColumnsValidator } from '../utils';
 import { TransformTable } from '../../table';
+import { TransformBuilder } from '..';
 
 type MergeRowsParams = {
   createGroupKey: (row: Row) => string;
@@ -124,7 +125,7 @@ const buildParams = (params: unknown): MergeRowsParams => {
   };
 };
 
-export const buildMergeRows = (params: unknown) => {
+export const buildMergeRows: TransformBuilder = (params, _context) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => mergeRows(table, builtParams);
+  return table => mergeRows(table, builtParams);
 };

@@ -12,12 +12,14 @@ export class UserRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ACCOUNT;
   static #legacyHashPrefix = '$sha256+argon2id$';
 
+  /**
+   * @returns {string}
+   */
   get fullName() {
-    let userFullName = this.first_name;
-    if (this.last_name && this.last_name?.length > 0) {
-      userFullName += ` ${this.last_name}`;
-    }
-    return userFullName;
+    return [this.first_name, this.last_name]
+      .filter(Boolean)
+      .map(str => str.trim())
+      .join(' ');
   }
 
   /**
@@ -27,6 +29,7 @@ export class UserRecord extends DatabaseRecord {
    * - …prefixed with `$sha256+argon2id$` instead of `$argon2id$`.
    *
    * @see `@tupaia/database/migrations/20250701000000-argon2-passwords-modifies-schema.js`
+   * @returns {boolean}
    */
   get hasLegacyPasswordHash() {
     return this.password_hash.startsWith(UserRecord.#legacyHashPrefix);
@@ -69,7 +72,7 @@ export class UserRecord extends DatabaseRecord {
     } catch (e) {
       if (e.code === 'InvalidArg') {
         throw new DatabaseError(
-          `Malformed password for user ${this.email}. Must be in PHC String Format.`,
+          `Malformed password hash for user ${this.email}. Must be in PHC String Format.`,
         );
       }
       throw e;
@@ -82,6 +85,13 @@ export class UserRecord extends DatabaseRecord {
 
   checkIsEmailVerified() {
     return this.verified_email === this.model.emailVerifiedStatuses.VERIFIED;
+  }
+
+  /**
+   * @returns {Promise<import('./UserEntityPermission').UserEntityPermissionRecord[]>}
+   */
+  async getEntityPermissions() {
+    return await this.otherModels.userEntityPermission.find({ user_id: this.id });
   }
 }
 
@@ -112,11 +122,21 @@ export class UserModel extends DatabaseModel {
   }
 
   customColumnSelectors = {
-    full_name: () =>
-      `CASE
-        WHEN last_name IS NULL THEN first_name
-        ELSE first_name || ' ' || last_name
-      END`,
+    /**
+     * @privateRemarks Ideally, to match {@link UserRecord.fullName}, this would be:
+     * ```sql
+     * "TRIM(TRIM(COALESCE(first_name, '')) || ' ' || TRIM(COALESCE(last_name, '')))"
+     * ```
+     * but `TupaiaDatabase.getColSelector` doesn’t support nested functions.
+     *
+     * TODO: Trim `first_name` and `last_name` in the DB, and update application-level logic to trim
+     * when creating a user.
+     */
+    full_name: () => `CASE
+      WHEN first_name IS NULL THEN last_name
+      WHEN last_name IS NULL THEN first_name
+      ELSE first_name || ' ' || last_name
+    END`,
   };
 
   emailVerifiedStatuses = {
