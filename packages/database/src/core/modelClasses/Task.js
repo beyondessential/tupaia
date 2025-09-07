@@ -1,5 +1,5 @@
 import { SyncDirections } from '@tupaia/constants';
-import { ensure, isNotNullish } from '@tupaia/tsutils';
+import { ensure, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
 
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
@@ -19,7 +19,7 @@ const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
  * @returns {Promise<string>}
  */
 const formatValue = async (field, value, models) => {
-  if (value === null || value === undefined) return null;
+  if (isNullish(value)) return null;
   if (field === 'assignee_id') {
     const assignee = await models.user.findById(value);
     return assignee.full_name;
