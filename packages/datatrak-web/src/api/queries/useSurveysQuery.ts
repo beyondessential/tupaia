@@ -119,11 +119,8 @@ export function useSurveysQuery(
   return useDatabaseQuery(
     [
       'surveys',
-      projectId,
-      countryCode,
-      searchTerm,
-      includeCountryNames,
-      includeSurveyGroupNames,
+      { countryCode, projectId, searchTerm },
+      { includeCountryNames, includeSurveyGroupNames },
       isOfflineFirst,
     ],
     isOfflineFirst ? getLocal : getRemote,
