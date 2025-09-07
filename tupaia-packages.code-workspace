@@ -177,6 +177,7 @@
     "cSpell.caseSensitive": false,
     "cSpell.language": "en-GB",
     "cSpell.words": [
+      "AlaSQL",
       "analytics",
       "asyncio",
       "beyondessential",
@@ -188,6 +189,7 @@
       "cleanup",
       "clearable",
       "Codeship",
+      "comparand",
       "corepack",
       "ctes",
       "DataTrak",
@@ -212,6 +214,7 @@
       "ilike",
       "imms",
       "isequal",
+      "psql",
       "jsonb",
       "keyby",
       "Kobo",

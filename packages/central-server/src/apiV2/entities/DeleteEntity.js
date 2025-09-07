@@ -22,8 +22,7 @@ export class DeleteEntity extends BESAdminDeleteHandler {
     // Check for children (they should be given a new parent first)
     const hierarchies = await this.models.entityHierarchy.all();
     const hierarchiesWhereEntityHasChildren = [];
-    for (let i = 0; i < hierarchies.length; i++) {
-      const hierarchy = hierarchies[i];
+    for (const hierarchy of hierarchies) {
       const children = await entity.getChildren(hierarchy.id);
       if (children.length > 0) {
         hierarchiesWhereEntityHasChildren.push(hierarchy);

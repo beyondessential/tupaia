@@ -7,3 +7,4 @@ export * from './FetchReportSchemasRoute';
 export * from './UploadTestDataRoute';
 export * from './UserRoute';
 export * from './ExportEntityHierarchiesRoute';
+export * from './PresentationOptionsPromptRoute';

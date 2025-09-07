@@ -28,14 +28,23 @@ export class UserEntityPermissionRecord extends DatabaseRecord {
     },
   ];
 
+  /**
+   * @returns {Promise<import('./Entity').EntityRecord>}
+   */
   async entity() {
     return this.otherModels.entity.findById(this.entity_id);
   }
 
+  /**
+   * @returns {Promise<import('./UserAccount').UserAccountRecord>}
+   */
   async user() {
     return this.otherModels.user.findById(this.user_id);
   }
 
+  /**
+   * @returns {Promise<import('./PermissionGroup').PermissionGroupRecord>}
+   */
   async permissionGroup() {
     return this.otherModels.permissionGroup.findById(this.permission_group_id);
   }

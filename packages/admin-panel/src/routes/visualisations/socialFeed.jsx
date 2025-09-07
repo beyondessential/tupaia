@@ -1,7 +1,9 @@
-import React from 'react';
-import moment from 'moment';
-import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import moment from 'moment';
+import React from 'react';
+import styled from 'styled-components';
+
+import { BES_ADMIN_PERMISSION_GROUP } from '../../utilities/userAccess';
 
 const RESOURCE_NAME = { singular: 'social feed post' };
 
@@ -105,5 +107,5 @@ export const socialFeed = {
   columns: SOCIAL_FEED_COLUMNS,
   createConfig: CREATE_CONFIG,
   onProcessDataForSave: data => ({ ...data, type: 'markdown' }),
-  isBESAdminOnly: true,
+  requiresSomePermissionGroup: [BES_ADMIN_PERMISSION_GROUP],
 };

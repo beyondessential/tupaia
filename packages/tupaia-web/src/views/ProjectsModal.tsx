@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useLocation } from 'react-router';
-import { Autocomplete, SpinningLoader } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router';
+import styled from 'styled-components';
+
+import { Autocomplete, SpinningLoader } from '@tupaia/ui-components';
+import { useCountriesQuery, useProjects, useUser } from '../api/queries';
+import { Modal, RouterButton } from '../components';
 import {
-  MODAL_ROUTES,
   DEFAULT_URL,
+  MODAL_ROUTES,
   PROJECT_ACCESS_TYPES,
   TUPAIA_LIGHT_LOGO_SRC,
   URL_SEARCH_PARAMS,
-  MOBILE_BREAKPOINT,
 } from '../constants';
-import { useCountriesQuery, useProjects, useUser } from '../api/queries';
 import {
   ProjectAllowedLink,
   ProjectCardList,
@@ -19,7 +20,6 @@ import {
   ProjectLoginLink,
   ProjectPendingLink,
 } from '../layout';
-import { Modal, RouterButton } from '../components';
 import { SingleProject } from '../types';
 import { useModal } from '../utils';
 
@@ -33,38 +33,38 @@ const OFF_WHITE = '#B8B8B8';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.9rem 0 0;
-  padding-left: 3.125rem;
-  padding-right: 3.125rem;
-  width: 65rem;
-  max-width: 100%;
-  text-align: left;
-  @media (max-width: ${MOBILE_BREAKPOINT}) {
-    padding: 0.9rem 0;
+  inline-size: 65rem;
+  max-inline-size: 100%;
+  padding-block: 0.9rem;
+  padding-inline: 0;
+  text-align: start;
+  ${props => props.theme.breakpoints.up('md')} {
+    padding-block-end: 0;
+    padding-inline: 3.125rem;
   }
 `;
 
 const TagLine = styled.p`
-  margin: 0.5rem 0.4rem 1.5rem;
-  max-width: 26rem;
   font-size: 0.875rem;
   font-weight: 400;
+  margin-block: 0.5rem 1.5rem;
+  margin-inline: 0.4rem;
+  max-width: 26rem;
 `;
 
 const ProjectsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.8125rem;
-  margin: 1.4rem 0;
+  margin-block: 1.4rem;
 
   @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
-    padding-left: 0.675rem;
-    padding-right: 0.675rem;
+    padding-inline: 0.675rem;
   }
 `;
 
@@ -73,25 +73,24 @@ const ExploreButton = styled(RouterButton).attrs({
   color: 'default',
   to: DEFAULT_URL,
 })`
-  margin-top: 0.3rem;
-  margin-bottom: 1rem;
-  margin-left: 0.3rem;
-  width: 10.5rem;
-  height: 2.5rem;
-  line-height: 1.125rem;
-  border-radius: 3px;
+  block-size: 2.5rem;
+  border-color: ${({ theme }) => theme.palette.text.primary};
+  border-radius: 0.1875rem;
   font-size: 0.875rem;
-  font-weight: 500;
   font-style: normal;
+  font-weight: 500;
+  inline-size: 10.5rem;
+  line-height: 1.3;
+  margin-block: 0.3rem 1rem;
+  margin-inline-start: 0.3rem;
   text-align: center;
   text-transform: none;
-  border-color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const Line = styled.div`
   background-color: ${({ theme }) => theme.palette.text.secondary};
   height: 1px;
-  margin-top: 0.7rem;
+  margin-block-start: 0.7rem;
 `;
 
 const ProjectsTitle = styled(Typography).attrs({
@@ -127,7 +126,7 @@ const AutoCompleteWrapper = styled.div`
   margin-inline-start: 0.9rem;
   padding-inline-start: 1.3rem;
   width: 100%;
-  max-width: 19rem;
+  max-inline-size: 19rem;
 `;
 
 const SearchAutocomplete = styled(Autocomplete<CountryAutocompleteOption>)`
