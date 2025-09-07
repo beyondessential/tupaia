@@ -4,6 +4,7 @@ import {
   DataSourceConfigView,
   getDataSourceButtonsConfig,
 } from '../../common';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../utilities/userAccess';
 import { RESOURCE_NAME as DATA_ELEMENT_RESOURCE_NAME } from './dataElements';
 
 const RESOURCE_NAME = { singular: 'data group' };
@@ -51,7 +52,7 @@ export const dataGroups = {
     },
   },
   editorConfig: EDITOR_CONFIG,
-  isBESAdminOnly: true,
+  requiresSomePermissionGroup: [BES_ADMIN_PERMISSION_GROUP],
   nestedViews: [
     {
       resourceName: DATA_ELEMENT_RESOURCE_NAME,

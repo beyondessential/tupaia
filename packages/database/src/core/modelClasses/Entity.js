@@ -193,11 +193,11 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   async getParentFromParentChildRelation(hierarchyId, params = { filter: {} }) {
-    const ancestors = await this.getAncestorsFromParentChildRelation(hierarchyId, {
+    const [parent] = await this.getAncestorsFromParentChildRelation(hierarchyId, {
       ...params,
       filter: { ...params.filter, generational_distance: 1 },
     });
-    return ancestors && ancestors.length > 0 ? ancestors[0] : undefined;
+    return parent;
   }
 
   async getAncestorsFromParentChildRelation(hierarchyId, params) {

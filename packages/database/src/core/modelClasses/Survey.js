@@ -120,8 +120,10 @@ export class SurveyRecord extends DatabaseRecord {
     return countries.map(c => c.code);
   }
 
-  hasResponses = async () =>
-    !!(await this.otherModels.surveyResponse.findOne({ survey_id: this.id }));
+  async hasResponses() {
+    const count = await this.otherModels.surveyResponse.count({ survey_id: this.id });
+    return count > 0;
+  }
 }
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
@@ -133,11 +135,11 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
-    const params = Object.entries(countryIdsByPermissionGroup).flat().flat(); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
+    const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
 
     return {
       sql: `(${Object.entries(countryIdsByPermissionGroup)
-        .map(([_, countryIds]) => {
+        .map(([, countryIds]) => {
           return `
           (
             permission_group_id = ? AND

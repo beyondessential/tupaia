@@ -26,8 +26,7 @@ export async function formatEntityForResponse(
   fields: ExtendedEntityFieldName[],
 ) {
   const responseBuilder = new ResponseObjectBuilder<EntityResponseObject>();
-  for (let i = 0; i < fields.length; i++) {
-    const field = fields[i];
+  for (const field of fields) {
     if (isExtendedField(field)) {
       responseBuilder.set(field, await extendedFieldFunctions[field](entity, ctx));
     } else {
@@ -45,8 +44,7 @@ export async function formatEntitiesForResponse(
   const responseBuilders = new Array(entities.length)
     .fill(0)
     .map(() => new ResponseObjectBuilder<EntityResponseObject>()); // fill array with empty objects
-  for (let i = 0; i < fields.length; i++) {
-    const field = fields[i];
+  for (const field of fields) {
     if (isExtendedField(field)) {
       await Promise.all(
         entities.map(async (entity, index) => {

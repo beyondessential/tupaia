@@ -1,10 +1,11 @@
-import { Request, NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
-import { PermissionsError } from '@tupaia/utils';
+import { EntityFilter, EntityRecord, extractEntityFilterFromQuery } from '@tupaia/tsmodels';
 import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
 import { Entity, EntityTypeEnum } from '@tupaia/types';
-import { EntityRecord, EntityFilter, extractEntityFilterFromQuery } from '@tupaia/tsmodels';
+import { PermissionsError } from '@tupaia/utils';
 
+import { ensure } from '@tupaia/tsutils';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
 const throwNoAccessError = (entityCodes: string[]) => {
@@ -79,9 +80,10 @@ const getFilterInfo = async (
   let allowedCountries = [...new Set(childCodes)];
 
   if (!isPublic) {
-    const { permission_groups: projectPermissionGroups } = await req.models.project.findOne({
-      code: req.params.hierarchyName,
-    });
+    const { permission_groups: projectPermissionGroups } = ensure(
+      await req.models.project.findOne({ code: req.params.hierarchyName }),
+      `No project exists with code ${req.params.hierarchyName}`,
+    );
 
     // Fetch all country codes we have any of the project permission groups access to
     const projectAccessibleCountries = new Set<Entity['code']>(

@@ -1,12 +1,10 @@
-import { Country, NumericKeys } from '@tupaia/types';
+import { Country, NumericKeys, Writable } from '@tupaia/types';
 import {
   AdvancedFilterValue,
   EntityFilter,
   EntityFilterFields,
   QueryConjunctions,
 } from '../../models';
-
-export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
 
 const CLAUSE_DELIMITER = ';';
 const JSONB_FIELD_DELIMITER = '->>';

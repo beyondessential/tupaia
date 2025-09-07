@@ -1,4 +1,5 @@
-import { Request, RequestHandler } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
@@ -7,30 +8,40 @@ import {
   handleWith,
 } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
-import { AdminPanelSessionModel } from '../models';
-import { hasTupaiaAdminPanelAccess } from '../utils';
+
 import { upload } from '../middleware';
+import { AdminPanelSessionModel } from '../models';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
   ExportDataTableRequest,
   ExportDataTableRoute,
+  ExportEntityHierarchiesRequest,
+  ExportEntityHierarchiesRoute,
   ExportMapOverlayVisualisationRequest,
   ExportMapOverlayVisualisationRoute,
   FetchDashboardVisualisationRequest,
   FetchDashboardVisualisationRoute,
+  FetchDataTableBuiltInParamsRequest,
+  FetchDataTableBuiltInParamsRoute,
+  FetchDataTablePreviewDataRequest,
+  FetchDataTablePreviewDataRoute,
   FetchHierarchyEntitiesRequest,
   FetchHierarchyEntitiesRoute,
   FetchMapOverlayVisualisationRequest,
   FetchMapOverlayVisualisationRoute,
   FetchReportPreviewDataRequest,
   FetchReportPreviewDataRoute,
-  FetchDataTablePreviewDataRequest,
-  FetchDataTablePreviewDataRoute,
+  FetchTransformSchemasRequest,
+  FetchTransformSchemasRoute,
   ImportDashboardVisualisationRequest,
   ImportDashboardVisualisationRoute,
   ImportDataTableRequest,
   ImportDataTableRoute,
+  ImportMapOverlayVisualisationRequest,
+  ImportMapOverlayVisualisationRoute,
+  PresentationOptionsPromptRequest,
+  PresentationOptionsPromptRoute,
   SaveDashboardVisualisationRequest,
   SaveDashboardVisualisationRoute,
   SaveMapOverlayVisualisationRequest,
@@ -38,21 +49,21 @@ import {
   UploadTestDataRequest,
   UploadTestDataRoute,
   UserRoute,
-  ImportMapOverlayVisualisationRequest,
-  ImportMapOverlayVisualisationRoute,
-  FetchTransformSchemasRequest,
-  FetchTransformSchemasRoute,
-  FetchDataTableBuiltInParamsRequest,
-  FetchDataTableBuiltInParamsRoute,
-  ExportEntityHierarchiesRequest,
-  ExportEntityHierarchiesRoute,
 } from '../routes';
+import { hasTupaiaAdminPanelAccess } from '../utils';
+import { PromptManager } from '../viz-builder/prompts/PromptManager';
+
+export const addPromptManagerToContext =
+  (promptManager: PromptManager) => (req: Request, _res: Response, next: NextFunction) => {
+    req.ctx.promptManager = promptManager;
+    next();
+  };
 
 const authHandlerProvider = (req: Request) => new RequiresSessionAuthHandler(req);
 /**
  * Set up express server with middleware,
  */
-export async function createApp() {
+export async function createApp(promptManager: PromptManager) {
   const CENTRAL_API_URL = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
   const ENTITY_API_URL = getEnvVarOrDefault('ENTITY_API_URL', 'http://localhost:8050/v1');
   const forwardToEntityApi = forwardRequest(ENTITY_API_URL);
@@ -61,6 +72,7 @@ export async function createApp() {
     .attachApiClientToContext(authHandlerProvider)
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
+    .useMiddleware(addPromptManagerToContext(promptManager))
     .get('user', handleWith(UserRoute))
     .get<FetchHierarchyEntitiesRequest>(
       'hierarchy/:hierarchyName/:entityCode',
@@ -147,8 +159,15 @@ export async function createApp() {
       'fetchTransformSchemas',
       handleWith(FetchTransformSchemasRoute),
     )
+
+    // AI Chat
+    .post<PresentationOptionsPromptRequest>(
+      'presentationOptionsPrompt',
+      handleWith(PresentationOptionsPromptRoute),
+    )
     .use('hierarchy', forwardToEntityApi)
     .use('hierarchies', forwardToEntityApi)
+    .use('dataTableTypes', forwardToCentralApi)
     .use('surveyResponses', forwardToCentralApi)
     .use('*', forwardToCentralApi);
 

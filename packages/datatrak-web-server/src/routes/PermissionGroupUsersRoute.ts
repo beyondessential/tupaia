@@ -27,6 +27,6 @@ export class PermissionGroupUsersRoute extends Route<PermissionGroupUsersRequest
       throw new Error(`Permission group with id '${permissionGroupId}' not found`);
     }
 
-    return models.user.getFilteredUsersForPermissionGroup(countryCode, permissionGroup, searchTerm);
+    return await models.user.getFilteredUsersForPermissionGroup(countryCode, permissionGroup, searchTerm);
   }
 }

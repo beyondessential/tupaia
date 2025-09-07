@@ -234,8 +234,10 @@ export class DatabaseModel {
   }
 
   async findOne(dbConditions, customQueryOptions = {}) {
-    const queryOptions = await this.getQueryOptions(customQueryOptions);
-    const processedDbConditions = await this.getDbConditions(dbConditions);
+    const [queryOptions, processedDbConditions] = await Promise.all([
+      this.getQueryOptions(customQueryOptions),
+      this.getDbConditions(dbConditions),
+    ]);
     const result = await this.database.findOne(
       this.databaseRecord,
       processedDbConditions,
@@ -262,7 +264,7 @@ export class DatabaseModel {
       processedDbConditions,
       queryOptions,
     );
-    return Promise.all(dbResults.map(result => this.generateInstance(result)));
+    return Promise.all(dbResults.map(this.generateInstance));
   }
 
   async findOrCreate(where, extraFieldsIfCreating = {}) {

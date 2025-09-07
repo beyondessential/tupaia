@@ -1,6 +1,6 @@
 import { encryptPassword } from '@tupaia/auth';
 import { generateId } from '@tupaia/database';
-import { FACT_CURRENT_SYNC_TICK } from '@tupaia/sync';
+import { FACT_CURRENT_SYNC_TICK } from '@tupaia/constants';
 
 import { configureEnv } from '../../../configureEnv';
 import { createUser as createUserAccessor } from '../../../dataAccessors';

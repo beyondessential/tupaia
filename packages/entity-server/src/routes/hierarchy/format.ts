@@ -38,13 +38,11 @@ export async function formatEntityForResponse(
   }
   const fields = fieldOrFields;
   const responseBuilder = new ResponseObjectBuilder<EntityResponseObject>();
-  for (let i = 0; i < fields.length; i++) {
-    const field = fields[i];
-    if (isExtendedField(field)) {
-      responseBuilder.set(field, await extendedFieldFunctions[field](entity, ctx));
-    } else {
-      responseBuilder.set(field, entity[field]);
-    }
+  for (const field of fields) {
+    const value = isExtendedField(field)
+      ? await extendedFieldFunctions[field](entity, ctx)
+      : entity[field];
+    responseBuilder.set(field, value);
   }
   return responseBuilder.build();
 }
