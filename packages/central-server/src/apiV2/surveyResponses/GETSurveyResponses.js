@@ -4,7 +4,6 @@ import { getQueryOptionsForColumns } from '../GETHandler/helpers';
 import { assertEntityPermissions } from '../entities';
 import {
   assertSurveyResponsePermissions,
-  createSurveyResponseDBFilter,
 } from './assertSurveyResponsePermissions';
 
 /**
@@ -40,7 +39,7 @@ export class GETSurveyResponses extends GETHandler {
   }
 
   async getPermissionsFilter(criteria, options) {
-    return createSurveyResponseDBFilter(this.accessPolicy, this.models, criteria, options);
+    return this.models.surveyResponse.createPermissionsFilter(this.accessPolicy, criteria, options);
   }
 
   async getPermissionsViaParentFilter(criteria, options) {
@@ -61,7 +60,7 @@ export class GETSurveyResponses extends GETHandler {
     const columnsInCountQuery = Object.keys(criteria).filter(column => !column.startsWith('_'));
 
     // Always filter by survey permissions and entity permissions for non BES Admin users
-    // See: createSurveyResponseDBFilter
+    // See: surveyResponse.createPermissionsFilter
     if (!hasBESAdminAccess(this.accessPolicy)) {
       columnsInCountQuery.push('entity.id', 'survey.id');
     }

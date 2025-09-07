@@ -37,6 +37,8 @@ import {
 } from '../types';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 import { SyncServerStartSessionRequest, SyncSession } from '@tupaia/types';
+import { removeDataByPermissions } from './removeDataByPermissions';
+import { AccessPolicy } from '@tupaia/access-policy';
 
 const DEFAULT_CONFIG: SyncServerConfig = {
   maxRecordsPerSnapshotChunk: 10_000,
@@ -246,6 +248,7 @@ export class CentralSyncManager {
   async initiatePull(
     sessionId: string,
     params: SnapshotParams,
+    accessPolicy: AccessPolicy,
   ): Promise<PullInitiationResult | void> {
     try {
       await this.connectToSession(sessionId);
@@ -258,7 +261,7 @@ export class CentralSyncManager {
       }
 
       const unmarkSessionAsProcessing = await this.markSessionAsProcessing(sessionId);
-      this.setupSnapshotForPull(sessionId, params, unmarkSessionAsProcessing); // don't await, as it takes a while - the sync client will poll for it to finish
+      this.setupSnapshotForPull(sessionId, params, unmarkSessionAsProcessing, accessPolicy); // don't await, as it takes a while - the sync client will poll for it to finish
     } catch (error: any) {
       log.error('CentralSyncManager.initiatePull encountered an error', error);
       await this.models.syncSession.markSessionErrored(sessionId, error.message);
@@ -325,6 +328,7 @@ export class CentralSyncManager {
     sessionId: string,
     snapshotParams: SnapshotParams,
     unmarkSessionAsProcessing: () => Promise<void>,
+    accessPolicy: AccessPolicy,
   ): Promise<void> {
     const { since, projectIds, userId, deviceId } = snapshotParams;
     let transactionTimeout;
@@ -369,6 +373,13 @@ export class CentralSyncManager {
             projectIds,
             this.config,
           );
+
+          await removeDataByPermissions(
+            sessionId,
+            transactingModels.database,
+            getModelsForPull(transactingModels.getModels()),
+            accessPolicy,
+          );
         },
       );
       // this update to the session needs to happen outside of the transaction, as the repeatable
@@ -382,6 +393,7 @@ export class CentralSyncManager {
         error: error.message,
       });
       await this.models.syncSession.markSessionErrored(sessionId, error.message);
+      throw error;
     } finally {
       if (transactionTimeout) {
         clearTimeout(transactionTimeout);

@@ -8,6 +8,8 @@ import { RECORDS } from '../records';
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { buildSyncLookupSelect } from '../sync';
 import { TaskCommentType } from '@tupaia/types';
+import { hasBESAdminAccess } from '@tupaia/access-policy';
+import { mergeMultiJoin } from '../utilities';
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -595,4 +597,62 @@ export class TaskModel extends DatabaseModel {
       deep: true,
     });
   }
+
+  async assertUserHasPermissionToCreateTask(accessPolicy, taskData) {
+    const { entity_id: entityId, survey_id: surveyId } = taskData;
+  
+    const entity = await this.otherModels.entity.findById(entityId);
+    if (!entity) {
+      throw new Error(`No entity found with id ${entityId}`);
+    }
+  
+    if (!accessPolicy.allows(entity.country_code)) {
+      throw new Error('Need to have access to the country of the task');
+    }
+  
+    const userSurveys = await this.otherModels.survey.findByAccessPolicy(accessPolicy, {}, {
+      columns: ['id', 'permission_group_id', 'country_ids'],
+    });
+    const survey = userSurveys.find(({ id }) => id === surveyId);
+    if (!survey) {
+      throw new Error('Need to have access to the survey of the task');
+    }
+  
+    return true;
+  };
+
+  async assertUserHasTaskPermissions(accessPolicy, taskId) {
+    const task = await this.findById(taskId);
+    if (!task) {
+      throw new Error(`No task found with id ${taskId}`);
+    }
+  
+    const entity = await task.entity();
+    if (!accessPolicy.allows(entity.country_code)) {
+      throw new Error('Need to have access to the country of the task');
+    }
+  
+    const userSurveys = await getUserSurveys(models, accessPolicy);
+    const survey = userSurveys.find(({ id }) => id === task.survey_id);
+    if (!survey) {
+      throw new Error('Need to have access to the survey of the task');
+    }
+  
+    return true;
+  };
+
+  async createPermissionsFilter(accessPolicy, criteria, options) {
+    if (hasBESAdminAccess(accessPolicy)) {
+      return { dbConditions: criteria, dbOptions: options };
+    }
+    const dbConditions = { ...criteria };
+    const dbOptions = { ...options };
+  
+    const taskPermissionsQuery = await this.createAccessPolicyQueryClause(accessPolicy);
+  
+    dbConditions[QUERY_CONJUNCTIONS.RAW] = taskPermissionsQuery;
+    dbOptions.multiJoin = mergeMultiJoin(this.joins, dbOptions.multiJoin);
+  
+    return { dbConditions, dbOptions };
+  };
 }

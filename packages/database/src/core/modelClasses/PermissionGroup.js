@@ -59,4 +59,18 @@ export class PermissionGroupModel extends DatabaseModel {
   async buildSyncLookupQueryDetails() {
     return null;
   }
+
+  async fetchCountryCodesByPermissionGroupId(accessPolicy) {
+    const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
+    const countryCodesByPermissionGroupId = {};
+    const permissionGroupNameToId = await this.findIdByField(
+      'name',
+      allPermissionGroupsNames,
+    );
+    for (const [permissionGroupName, permissionGroupId] of Object.entries(permissionGroupNameToId)) {
+      const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
+      countryCodesByPermissionGroupId[permissionGroupId] = countryCodes;
+    }
+    return countryCodesByPermissionGroupId;
+  };
 }

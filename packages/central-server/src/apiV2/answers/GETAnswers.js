@@ -31,7 +31,7 @@ export class GETAnswers extends GETHandler {
   }
 
   async getPermissionsFilter(criteria, options) {
-    return createAnswerDBFilter(this.accessPolicy, this.models, criteria, options);
+    return this.models.answer.createPermissionsFilter(this.accessPolicy, criteria, options);
   }
 
   async getPermissionsViaParentFilter(criteria, options) {

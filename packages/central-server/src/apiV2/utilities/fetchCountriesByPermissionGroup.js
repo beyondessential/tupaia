@@ -15,9 +15,8 @@ export const fetchCountryCodesByPermissionGroupId = async (accessPolicy, models)
 
 // Generate lists of country ids we have access to per permission group id
 export const fetchCountryIdsByPermissionGroupId = async (accessPolicy, models) => {
-  const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
+  const countryCodesByPermissionGroupId = await models.permissionGroup.fetchCountryCodesByPermissionGroupId(
     accessPolicy,
-    models,
   );
 
   // Transform arrays of codes to arrays of ids

@@ -1,6 +1,3 @@
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { hasBESAdminAccess } from '../../permissions';
-
 const getUserSurveys = async (models, accessPolicy, projectId) => {
   const query = {};
   if (projectId) {
@@ -10,20 +7,6 @@ const getUserSurveys = async (models, accessPolicy, projectId) => {
     columns: ['id', 'permission_group_id', 'country_ids'],
   });
   return userSurveys;
-};
-
-export const createTaskDBFilter = async (accessPolicy, models, criteria, options) => {
-  if (hasBESAdminAccess(accessPolicy)) {
-    return { dbConditions: criteria, dbOptions: options };
-  }
-  const dbConditions = { ...criteria };
-  const dbOptions = { ...options };
-
-  const taskPermissionsQuery = await models.task.createAccessPolicyQueryClause(accessPolicy);
-
-  dbConditions[QUERY_CONJUNCTIONS.RAW] = taskPermissionsQuery;
-
-  return { dbConditions, dbOptions };
 };
 
 export const assertUserHasTaskPermissions = async (accessPolicy, models, taskId) => {

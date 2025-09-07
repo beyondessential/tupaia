@@ -7,7 +7,7 @@ export class GETTasks extends GETHandler {
   permissionsFilteredInternally = true;
 
   async getPermissionsFilter(criteria, options) {
-    return createTaskDBFilter(this.accessPolicy, this.models, criteria, options);
+    return this.models.task.createPermissionsFilter(this.accessPolicy, criteria, options);
   }
 
   async findSingleRecord(projectId, options) {
