@@ -15,7 +15,7 @@ export class AnswerRecord extends DatabaseRecord {
 export class AnswerModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
 
-  async createRecordsPermissionFilter(accessPolicy, criteria, options) {
+  async createRecordsPermissionFilter(accessPolicy, criteria = {}, options = {}) {
     const dbConditions = { ...criteria };
     const dbOptions = { ...options };
 

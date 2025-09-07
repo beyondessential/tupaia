@@ -17,7 +17,7 @@ export class TaskCommentModel extends DatabaseModel {
     return TaskCommentRecord;
   }
 
-  async createRecordsPermissionFilter(accessPolicy, criteria, options) {
+  async createRecordsPermissionFilter(accessPolicy, criteria = {}, options = {}) {
     if (hasBESAdminAccess(accessPolicy)) {
       return { dbConditions: criteria, dbOptions: options };
     }

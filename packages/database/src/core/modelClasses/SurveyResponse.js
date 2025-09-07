@@ -76,7 +76,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     return this.database.executeSql(query, bindings);
   }
 
-  async createRecordsPermissionFilter(accessPolicy, criteria, options) {
+  async createRecordsPermissionFilter(accessPolicy, criteria = {}, options = {}) {
     const dbConditions = { ...criteria };
     const dbOptions = { ...options };
 
