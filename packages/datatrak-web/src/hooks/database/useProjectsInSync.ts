@@ -6,4 +6,4 @@ export const useProjectsInSync = () =>
     const syncedProjectsFact = await models.localSystemFact.get(FACT_PROJECTS_IN_SYNC);
     const syncedProjectIds = syncedProjectsFact ? JSON.parse(syncedProjectsFact) : [];
     return syncedProjectIds;
-  });
+  }, []);

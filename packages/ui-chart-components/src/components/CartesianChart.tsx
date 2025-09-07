@@ -199,10 +199,14 @@ export const CartesianChart = ({
 
     return hasDisabledData
       ? data.map(dataSeries =>
-          Object.entries(dataSeries).reduce((newDataSeries, [key, value]) => {
-            const isInactive = Object.keys(chartConfig).includes(key) && !getIsActiveKey(key);
-            return isInactive ? newDataSeries : { ...newDataSeries, [key]: value };
-          }, {}),
+          Object.entries(dataSeries).reduce<Record<string, unknown>>(
+            (newDataSeries, [key, value]) => {
+              const isInactive = Object.keys(chartConfig).includes(key) && !getIsActiveKey(key);
+              if (!isInactive) newDataSeries[key] = value;
+              return newDataSeries;
+            },
+            {},
+          ),
         )
       : data;
   };

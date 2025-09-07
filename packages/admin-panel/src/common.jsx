@@ -110,7 +110,7 @@ export const DATA_SOURCE_FIELDS = [
     required: true,
   },
   {
-    Header: 'Data Service',
+    Header: 'Data service',
     source: 'service_type',
     required: true,
     editConfig: { default: 'dhis', options: SERVICE_TYPE_OPTIONS },
@@ -141,13 +141,13 @@ export const getDataSourceButtonsConfig = (fields, recordType) => [
 export const DATA_ELEMENT_FIELDS = [
   ...DATA_SOURCE_FIELDS,
   {
-    Header: 'Data Service Configuration',
+    Header: 'Data service configuration',
     source: 'config',
     Cell: DataSourceConfigView,
     editConfig: DATA_ELEMENT_FIELD_EDIT_CONFIG,
   },
   {
-    Header: 'Permission Groups',
+    Header: 'Permission groups',
     source: 'permission_groups',
     required: true,
     editConfig: {
