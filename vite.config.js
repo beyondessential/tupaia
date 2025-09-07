@@ -32,7 +32,7 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
-        external: ['stream/promises', 'fs/promises', 'knex'],
+        external: ['@node-rs/argon2-wasm32-wasi', 'stream/promises', 'fs/promises', 'knex'],
       },
     },
     plugins: [
@@ -66,6 +66,8 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'mock/moduleMock.js'),
         jsonwebtoken: path.resolve(__dirname, 'mock/moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'mock/moduleMock.js'),
+        'rand-token': path.resolve(__dirname, 'mock/moduleMock.js'),
+        pg: path.resolve(__dirname, 'mock/pgMock.js'),
         'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),
         '@node-rs/argon2': path.resolve(__dirname, 'mock/argon2ModuleMock.js'),
       },
@@ -97,6 +99,7 @@ export default defineConfig(({ command, mode }) => {
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
           '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
           '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
+          '@tupaia/constants': path.resolve(__dirname, './packages/constants/src/index.ts'),
         },
       },
     };

@@ -4,6 +4,7 @@ import { isNotNullish } from '@tupaia/tsutils';
 import { requireEnv } from '@tupaia/utils';
 import { encryptPassword } from '@tupaia/auth';
 import { ServerBoilerplateModelRegistry } from '../types';
+import { Entity, PermissionGroup } from '@tupaia/types';
 
 const upsertUserAccount = async ({
   models,
@@ -90,10 +91,10 @@ const upsertPermissions = async ({
 }) => {
   await models.userEntityPermission.delete({ user_id: userAccountId });
 
-  const entities = await models.entity.find({ code: permissions.map(p => p.entityCode) });
+  const entities: Entity[] = await models.entity.find({ code: permissions.map(p => p.entityCode) });
   const entityIdByCode = Object.fromEntries(entities.map(entity => [entity.code, entity.id]));
 
-  const permissionGroups = await models.permissionGroup.find({
+  const permissionGroups: PermissionGroup[] = await models.permissionGroup.find({
     name: permissions.map(p => p.permissionGroupName),
   });
   const permissionGroupIdByName = Object.fromEntries(

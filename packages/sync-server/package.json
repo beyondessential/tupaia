@@ -15,22 +15,31 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
-    "lint": "yarn package:lint",
+    "build": "rimraf dist && yarn run package:build:ts",
+    "build-dev": "yarn run build",
+    "lint": "yarn run package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "node dist",
-    "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts",
-    "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "setup-test": "yarn workspace @tupaia/database setup-test-database",
-    "test": "yarn package:test"
+    "start-dev": "LOG_LEVEL=debug yarn run package:start:backend-start-dev 9998 -ts",
+    "start-verbose": "LOG_LEVEL=debug yarn run start-dev",
+    "setup-test": "yarn workspace @tupaia/database run setup-test-database",
+    "test": "yarn run package:test"
   },
   "dependencies": {
+    "@tupaia/access-policy": "workspace:*",
+    "@tupaia/api-client": "workspace:*",
+    "@tupaia/constants": "workspace:*",
+    "@tupaia/database": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
-    "@tupaia/sync": "workspace:*"
+    "@tupaia/sync": "workspace:*",
+    "@tupaia/types": "workspace:*",
+    "@tupaia/utils": "workspace:*",
+    "date-fns": "^2.30.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.22",
     "rimraf": "^6.0.1"
   }
 }

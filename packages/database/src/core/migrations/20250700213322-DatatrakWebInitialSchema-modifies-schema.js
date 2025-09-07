@@ -220,10 +220,10 @@ exports.up = async function (db) {
       CREATE TABLE permission_group (
         id        TEXT NOT NULL PRIMARY KEY,
         name      TEXT NOT NULL UNIQUE,
-        parent_id TEXT REFERENCES permission_group 
-          ON UPDATE CASCADE ON DELETE RESTRICT 
+        parent_id TEXT REFERENCES permission_group
+          ON UPDATE CASCADE ON DELETE RESTRICT
           DEFERRABLE INITIALLY IMMEDIATE
-          
+
       );
     `);
 
@@ -274,41 +274,33 @@ exports.up = async function (db) {
 
   // Create user_account table
   await db.runSql(`
-      CREATE TABLE user_account (
-        id               TEXT NOT NULL PRIMARY KEY,
-        first_name       TEXT,
-        last_name        TEXT,
-        email            TEXT NOT NULL UNIQUE,
-        gender           TEXT,
-        creation_date    TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-        employer         TEXT,
-        position         TEXT,
-        mobile_number    TEXT,
-        password_hash    TEXT NOT NULL,
-        password_salt    TEXT NOT NULL,
-        verified_email   verified_email,
-        profile_image    TEXT,
-        primary_platform primary_platform DEFAULT 'tupaia'::primary_platform,
-        preferences      jsonb DEFAULT '{}'::jsonb NOT NULL
+      CREATE TABLE user_account
+      (
+          id                   TEXT                                         NOT NULL
+              PRIMARY KEY,
+          first_name           TEXT,
+          last_name            TEXT,
+          email                TEXT                                         NOT NULL
+              UNIQUE,
+          gender               TEXT,
+          creation_date        TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          employer             TEXT,
+          position             TEXT,
+          mobile_number        TEXT,
+          password_hash        TEXT                                         NOT NULL,
+          legacy_password_salt TEXT,
+          verified_email       verified_email           DEFAULT 'new_user'::verified_email,
+          profile_image        TEXT,
+          primary_platform     primary_platform         DEFAULT 'tupaia'::primary_platform,
+          preferences          JSONB                    DEFAULT '{}'::JSONB NOT NULL
       );
     `);
 
   // Create user_account indexes
-  await db.runSql(`
-      CREATE INDEX user_account_creation_date_idx ON user_account (creation_date);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX user_account_email_idx ON user_account (email);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX user_account_first_name_idx ON user_account (first_name);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX user_account_last_name_idx ON user_account (last_name);
-    `);
+  await db.runSql('CREATE INDEX user_account_creation_date_idx ON user_account (creation_date);');
+  await db.runSql('CREATE INDEX user_account_email_idx ON user_account (email);');
+  await db.runSql('CREATE INDEX user_account_first_name_idx ON user_account (first_name);');
+  await db.runSql('CREATE INDEX user_account_last_name_idx ON user_account (last_name);');
 
   // Create period_granularity enum
   await db.runSql(`
@@ -330,9 +322,7 @@ exports.up = async function (db) {
     `);
 
   // Create survey_group index
-  await db.runSql(`
-      CREATE INDEX survey_group_name_idx ON survey_group (name);
-    `);
+  await db.runSql('CREATE INDEX survey_group_name_idx ON survey_group (name);');
 
   // Create survey table
   await db.runSql(`
@@ -354,25 +344,11 @@ exports.up = async function (db) {
     `);
 
   // Create survey indexes
-  await db.runSql(`
-      CREATE INDEX survey_name_idx ON survey (name);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_permission_group_id_idx ON survey (permission_group_id);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_survey_group_id_idx ON survey (survey_group_id);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_code_idx ON survey (code);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_project_id_idx ON survey (project_id);
-    `);
+  await db.runSql('CREATE INDEX survey_name_idx ON survey (name);');
+  await db.runSql('CREATE INDEX survey_permission_group_id_idx ON survey (permission_group_id);');
+  await db.runSql('CREATE INDEX survey_survey_group_id_idx ON survey (survey_group_id);');
+  await db.runSql('CREATE INDEX survey_code_idx ON survey (code);');
+  await db.runSql('CREATE INDEX survey_project_id_idx ON survey (project_id);');
 
   // Create survey_screen table
   await db.runSql(`
@@ -413,17 +389,17 @@ exports.up = async function (db) {
     `);
 
   // Create survey_screen_component indexes
-  await db.runSql(`
-      CREATE INDEX survey_screen_component_component_number_idx ON survey_screen_component (component_number);
-    `);
+  await db.runSql(
+    'CREATE INDEX survey_screen_component_component_number_idx ON survey_screen_component (component_number);',
+  );
 
-  await db.runSql(`
-      CREATE INDEX survey_screen_component_question_id_idx ON survey_screen_component (question_id);
-    `);
+  await db.runSql(
+    'CREATE INDEX survey_screen_component_question_id_idx ON survey_screen_component (question_id);',
+  );
 
-  await db.runSql(`
-      CREATE INDEX survey_screen_component_screen_id_idx ON survey_screen_component (screen_id);
-    `);
+  await db.runSql(
+    'CREATE INDEX survey_screen_component_screen_id_idx ON survey_screen_component (screen_id);',
+  );
 
   // Create survey_response table
   await db.runSql(`
@@ -446,33 +422,15 @@ exports.up = async function (db) {
     `);
 
   // Create survey_response indexes
-  await db.runSql(`
-      CREATE INDEX survey_response_end_time_idx ON survey_response (end_time);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_response_start_time_idx ON survey_response (start_time);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_response_survey_id_idx ON survey_response (survey_id);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_response_user_id_idx ON survey_response (user_id);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_response_entity_id_idx ON survey_response (entity_id);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_response_outdated_id_idx ON survey_response (outdated);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_response_data_time_idx ON survey_response (data_time DESC);
-    `);
+  await db.runSql('CREATE INDEX survey_response_end_time_idx ON survey_response (end_time);');
+  await db.runSql('CREATE INDEX survey_response_start_time_idx ON survey_response (start_time);');
+  await db.runSql('CREATE INDEX survey_response_survey_id_idx ON survey_response (survey_id);');
+  await db.runSql('CREATE INDEX survey_response_user_id_idx ON survey_response (user_id);');
+  await db.runSql('CREATE INDEX survey_response_entity_id_idx ON survey_response (entity_id);');
+  await db.runSql('CREATE INDEX survey_response_outdated_id_idx ON survey_response (outdated);');
+  await db.runSql(
+    'CREATE INDEX survey_response_data_time_idx ON survey_response (data_time DESC);',
+  );
 
   // Create answer table
   await db.runSql(`
@@ -483,15 +441,13 @@ exports.up = async function (db) {
           ON UPDATE CASCADE ON DELETE CASCADE,
         question_id        TEXT NOT NULL REFERENCES question,
         text               TEXT,
-  
+
         CONSTRAINT answer_survey_response_id_question_id_unique
           UNIQUE (survey_response_id, question_id)
       );
   `);
 
-  await db.runSql(`
-    CREATE INDEX answer_question_id_idx ON answer (question_id);
-  `);
+  await db.runSql('CREATE INDEX answer_question_id_idx ON answer (question_id);');
 
   await db.runSql(`
     CREATE TYPE task_status AS ENUM (
@@ -533,29 +489,12 @@ exports.up = async function (db) {
     );
   `);
 
-  await db.runSql(`
-    CREATE INDEX task_survey_id_idx ON task (survey_id);
-  `);
-
-  await db.runSql(`
-    CREATE INDEX task_entity_id_idx ON task (entity_id);
-  `);
-
-  await db.runSql(`
-    CREATE INDEX task_assignee_id_idx ON task (assignee_id);
-  `);
-
-  await db.runSql(`
-    CREATE INDEX task_survey_response_id_idx ON task (survey_response_id);
-  `);
-
-  await db.runSql(`
-    CREATE INDEX task_initial_request_id_fk ON task (survey_response_id);
-  `);
-
-  await db.runSql(`
-    CREATE INDEX task_parent_task_id_fk ON task (parent_task_id);
-  `);
+  await db.runSql('CREATE INDEX task_survey_id_idx ON task (survey_id);');
+  await db.runSql('CREATE INDEX task_entity_id_idx ON task (entity_id);');
+  await db.runSql('CREATE INDEX task_assignee_id_idx ON task (assignee_id);');
+  await db.runSql('CREATE INDEX task_survey_response_id_idx ON task (survey_response_id);');
+  await db.runSql('CREATE INDEX task_initial_request_id_fk ON task (survey_response_id);');
+  await db.runSql('CREATE INDEX task_parent_task_id_fk ON task (parent_task_id);');
 
   await db.runSql(`
     CREATE TABLE task_comment
@@ -574,13 +513,8 @@ exports.up = async function (db) {
     );
   `);
 
-  await db.runSql(`
-    CREATE INDEX task_comment_task_id_idx ON task_comment (task_id);
-  `);
-
-  await db.runSql(`
-    CREATE INDEX task_comment_user_id_idx ON task_comment (user_id);
-  `);
+  await db.runSql('CREATE INDEX task_comment_task_id_idx ON task_comment (task_id);');
+  await db.runSql('CREATE INDEX task_comment_user_id_idx ON task_comment (user_id);');
 
   await db.runSql(`
     CREATE TABLE user_entity_permission
@@ -595,17 +529,15 @@ exports.up = async function (db) {
     );
   `);
 
-  await db.runSql(`
-    CREATE INDEX user_entity_permission_entity_id_idx ON user_entity_permission (entity_id);
-  `);
-
-  await db.runSql(`
-    CREATE INDEX user_entity_permission_permission_group_id_idx ON user_entity_permission (permission_group_id);
-  `);
-
-  await db.runSql(`
-    CREATE INDEX user_entity_permission_user_id_idx ON user_entity_permission (user_id);
-  `);
+  await db.runSql(
+    'CREATE INDEX user_entity_permission_entity_id_idx ON user_entity_permission (entity_id);',
+  );
+  await db.runSql(
+    'CREATE INDEX user_entity_permission_permission_group_id_idx ON user_entity_permission (permission_group_id);',
+  );
+  await db.runSql(
+    'CREATE INDEX user_entity_permission_user_id_idx ON user_entity_permission (user_id);',
+  );
 };
 
 exports.down = function (db) {
