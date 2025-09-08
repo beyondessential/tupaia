@@ -300,16 +300,15 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     const surveyQuestions = rawResults.reduce((questionsObject, currentResult) => {
       const { survey_id: id } = currentResult;
       const updatedValue = questionsObject;
-      if (updatedValue[id]) {
-        return updatedValue;
-      }
+      if (updatedValue[id]) return updatedValue;
+
       updatedValue[id] = [];
       return questionsObject;
     }, initialValue);
 
     for (const result of rawResults) {
       const { survey_id, screen_number, survey_screen_id } = result;
-      if (surveyQuestions[survey_id].map(screen => screen.id).includes(survey_screen_id)) {
+      if (surveyQuestions[survey_id].find(screen => screen.id === survey_screen_id) !== undefined) {
         continue;
       }
       surveyQuestions[survey_id].push({
