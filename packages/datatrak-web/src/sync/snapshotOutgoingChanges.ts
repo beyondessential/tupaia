@@ -1,3 +1,5 @@
+import log from 'winston';
+
 import { SyncDirections } from '@tupaia/constants';
 import { DatabaseModel } from '@tupaia/database';
 import { sanitizeRecord, SYNC_SESSION_DIRECTION, SyncSnapshotAttributes } from '@tupaia/sync';
@@ -22,7 +24,7 @@ const snapshotChangesForModel = async (
   });
 
   const recordsChanged = [...changedRecords, ...deletedRecords];
-  console.log(
+  log.debug(
     `snapshotChangesForModel: Found ${recordsChanged.length} for model ${model.databaseRecord} since ${since}`,
   );
 

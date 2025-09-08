@@ -1,6 +1,5 @@
-import { QueryConjunctions, EntityFilter, EntityFilterFields } from '@tupaia/server-boilerplate';
+import { QueryConjunctions, EntityFilter, EntityFilterFields } from '../../models';
 import { NumericKeys, Writable } from '@tupaia/types';
-import { getSortByKey } from '@tupaia/utils';
 
 const CLAUSE_DELIMITER = ';';
 const JSONB_FIELD_DELIMITER = '->>';
@@ -16,6 +15,20 @@ type NotNullValues<T> = {
 
 type ExtractArrays<T> = T extends unknown[] ? T : never;
 
+type QueryObject =
+  | Record<string, string | { comparator: string; comparisonValue: string }>
+  | undefined
+  | null;
+
+const getDefaultFilter = (allowedCountries: string[]) => ({
+  [QueryConjunctions.AND]: {
+    country_code: allowedCountries,
+    [QueryConjunctions.OR]: {
+      country_code: null,
+    },
+  },
+});
+
 const filterableFields: (keyof EntityFilterQuery)[] = [
   'id',
   'code',
@@ -28,6 +41,20 @@ const filterableFields: (keyof EntityFilterQuery)[] = [
 ];
 const isFilterableField = (field: string): field is keyof EntityFilterQuery =>
   (filterableFields as string[]).includes(field);
+
+const assertFilterableField = (field: string): keyof EntityFilterQuery => {
+  let firstField = field;
+
+  // if the field is already in the form of a JSONB key, we just need to check the the first field is valid
+  if (field.includes(JSONB_FIELD_DELIMITER)) {
+    firstField = field.split(JSONB_FIELD_DELIMITER)[0];
+  }
+  if (!isFilterableField(firstField)) {
+    throw new Error(`Unknown filter key: ${firstField}, must be one of: ${filterableFields}`);
+  }
+
+  return firstField;
+};
 
 const numericFields: (keyof NumericFilterQueryFields)[] = ['generational_distance'];
 const isNumericField = (field: keyof EntityFilterQuery): field is keyof NumericFilterQueryFields =>
@@ -104,11 +131,11 @@ const convertValueToAdvancedCriteria = (
   };
 };
 
-const toFilterClause = (queryClause: string) => {
+const toFilterClauseFromQueryString = (queryClause: string) => {
   const [operator] = filterOperators
     .filter(o => queryClause.includes(o))
     // Keep the longest matching operator, e.g. >= instead of >
-    .sort(getSortByKey('length', { ascending: false }));
+    .sort((a, b) => b.length - a.length);
 
   if (!operator) {
     throw new Error(
@@ -124,37 +151,56 @@ const toFilterClause = (queryClause: string) => {
   }
 
   const [field, value] = clauseParts;
-  let firstField = field;
 
-  // if the field is already in the form of a JSONB key, we just need to check the the first field is valid
-  if (field.includes(JSONB_FIELD_DELIMITER)) {
-    firstField = field.split(JSONB_FIELD_DELIMITER)[0];
-  }
-  if (!isFilterableField(firstField)) {
-    throw new Error(`Unknown filter key: ${firstField}, must be one of: ${filterableFields}`);
-  }
+  const firstField = assertFilterableField(field);
 
   // return the field as passed in, because if it has a JSONB key, we want to keep it
   return [field, operator, value] as [typeof firstField, typeof operator, typeof value];
 };
 
-export const extractFilterFromQuery = (
-  allowedCountries: string[],
-  queryFilter?: string,
-): EntityFilter => {
-  if (!queryFilter) {
-    // default filter to only get entities in allowed countries.
-    return {
-      [QueryConjunctions.AND]: {
-        country_code: allowedCountries,
-        [QueryConjunctions.OR]: {
-          country_code: null,
-        },
-      },
-    };
+const toFilterClauseFromObject = ([field, value]: [
+  string,
+  string | { comparator: string; comparisonValue: string },
+]) => {
+  const firstField = assertFilterableField(field);
+
+  const operator = typeof value === 'string' ? '==' : (value.comparator as Operator);
+  const actualValue = typeof value === 'string' ? value : value.comparisonValue;
+
+  if (!filterOperators.includes(operator)) {
+    throw new Error(`Unknown operator: ${operator}, must be one of: ${filterOperators}`);
   }
 
-  const filterClauses = queryFilter.split(CLAUSE_DELIMITER).map(toFilterClause);
+  // return the field as passed in, because if it has a JSONB key, we want to keep it
+  return [field, operator, actualValue] as [typeof firstField, typeof operator, typeof actualValue];
+};
+
+export const extractFilterClausesFromQuery = (
+  queryFilter?: string,
+): [keyof EntityFilterQuery, Operator, string][] | null => {
+  if (!queryFilter) {
+    return null;
+  }
+
+  return queryFilter.split(CLAUSE_DELIMITER).map(toFilterClauseFromQueryString);
+};
+
+export const extractFilterClausesFromObject = (queryObject?: QueryObject) => {
+  if (!queryObject) {
+    return null;
+  }
+
+  return Object.entries(queryObject).map(toFilterClauseFromObject);
+};
+
+const extractEntityFilter = (
+  allowedCountries: string[],
+  filterClauses?: [keyof EntityFilterQuery, Operator, string][] | null,
+): EntityFilter => {
+  if (!filterClauses) {
+    return getDefaultFilter(allowedCountries);
+  }
+
   //TODO: Stop using any here in favour of validating against the entity filter schema
   const filter: Writable<NotNullValues<Record<string, any>>> = {};
 
@@ -171,4 +217,17 @@ export const extractFilterFromQuery = (
   };
 
   return filter;
+};
+
+export const extractEntityFilterFromQuery = (allowedCountries: string[], queryFilter?: string) => {
+  const filterClauses = extractFilterClausesFromQuery(queryFilter);
+  return extractEntityFilter(allowedCountries, filterClauses);
+};
+
+export const extractEntityFilterFromObject = (
+  allowedCountries: string[],
+  queryObject?: QueryObject,
+) => {
+  const filterClauses = extractFilterClausesFromObject(queryObject);
+  return extractEntityFilter(allowedCountries, filterClauses);
 };

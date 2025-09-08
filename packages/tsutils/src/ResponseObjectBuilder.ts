@@ -1,5 +1,4 @@
-import { Writable } from '../../types';
-
+import { Writable } from '@tupaia/types';
 export class ResponseObjectBuilder<T> {
   private readonly responseObject: Writable<T> = {};
 
