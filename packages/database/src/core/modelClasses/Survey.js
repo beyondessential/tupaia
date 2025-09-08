@@ -307,7 +307,10 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
     for (const result of rawResults) {
       const { survey_id, screen_number, survey_screen_id } = result;
-      if (surveyQuestions[survey_id].find(screen => screen.id === survey_screen_id) !== undefined) {
+      const screenIndex = surveyQuestions[survey_id].findIndex(
+        screen => screen.id === survey_screen_id,
+      );
+      if (screenIndex !== -1) {
         continue;
       }
       surveyQuestions[survey_id].push({
