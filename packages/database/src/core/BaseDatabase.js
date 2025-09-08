@@ -70,7 +70,10 @@ const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE', 'TRIM'];
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
 export class BaseDatabase {
-  /** No math here, just hand-tuned to be as low as possible while keeping all the tests passing. */
+  /**
+   * @privateRemarks
+   * No math here, just hand-tuned to be as low as possible while keeping all the tests passing.
+   */
   static handlerDebounceDurationMs = 250;
 
   static IS_CHANGE_HANDLER_SUPPORTED = false;
