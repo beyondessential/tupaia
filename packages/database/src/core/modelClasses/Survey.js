@@ -244,11 +244,124 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
   }
 
+  /** @see `./README.md` */
+  async getQuestionsValues(surveyIds) {
+    if (surveyIds.length === 0) return {};
+
+    const rows = await this.database.executeSql(
+      `
+        SELECT
+          s.id AS survey_id,
+          ss.id AS survey_screen_id,
+          ss.screen_number AS screen_number,
+          ssc.id AS survey_screen_component_id,
+          ssc.component_number AS component_number,
+          ssc.visibility_criteria AS visibility_criteria,
+          ssc.validation_criteria AS validation_criteria,
+          ssc.config AS config,
+          ssc.question_label AS question_label,
+          q.id AS question_id,
+          q.name AS question_name,
+          q.type AS question_type,
+          q.code AS question_code,
+          q.text AS question_text,
+          q.options AS question_options,
+          q.option_set_id AS question_option_set_id,
+          q.detail AS question_detail
+        FROM
+          survey s
+          LEFT JOIN survey_screen ss ON s.id = ss.survey_id
+          LEFT JOIN survey_screen_component ssc ON ss.id = ssc.screen_id
+          LEFT JOIN question q ON ssc.question_id = q.id
+        WHERE
+          s.id IN (${SqlQuery.record(surveyIds)})
+        GROUP BY
+          s.id, ssc.id, ss.id, q.id;
+      `,
+      surveyIds,
+    );
+    return this.#getAggregatedQuestions(rows);
+  }
+
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
         projectIds: 'ARRAY[survey.project_id]',
       }),
     };
+  }
+
+  /**
+   * @param {ReturnType<typeof this.getQuestionsValues>} rawResults
+   * @returns
+   */
+  #getAggregatedQuestions(rawResults) {
+    const initialValue = {};
+    const surveyQuestions = rawResults.reduce((questionsObject, currentResult) => {
+      const { survey_id: id } = currentResult;
+      const updatedValue = questionsObject;
+      if (updatedValue[id]) {
+        return updatedValue;
+      }
+      updatedValue[id] = [];
+      return questionsObject;
+    }, initialValue);
+
+    for (const result of rawResults) {
+      const { survey_id, screen_number, survey_screen_id } = result;
+      if (surveyQuestions[survey_id].map(screen => screen.id).includes(survey_screen_id)) {
+        continue;
+      }
+      surveyQuestions[survey_id].push({
+        id: survey_screen_id,
+        screen_number,
+        survey_screen_components: [],
+      });
+    }
+
+    for (const result of rawResults) {
+      const {
+        survey_id,
+        survey_screen_id,
+        survey_screen_component_id,
+        component_number,
+        visibility_criteria,
+        validation_criteria,
+        config,
+        question_id,
+        question_name,
+        question_type,
+        question_code,
+        question_text,
+        question_label,
+        question_options,
+        question_option_set_id,
+        question_detail,
+      } = result;
+
+      const screenIndex = surveyQuestions[survey_id].findIndex(
+        screen => screen.id === survey_screen_id,
+      );
+
+      surveyQuestions[survey_id][screenIndex].survey_screen_components.push({
+        id: survey_screen_component_id,
+        visibility_criteria,
+        component_number,
+        validation_criteria,
+        config,
+        question: {
+          id: question_id,
+          name: question_name,
+          type: question_type,
+          code: question_code,
+          text: question_text,
+          label: question_label,
+          options: question_options,
+          option_set_id: question_option_set_id,
+          detail: question_detail,
+        },
+      });
+    }
+    return surveyQuestions;
   }
 }
