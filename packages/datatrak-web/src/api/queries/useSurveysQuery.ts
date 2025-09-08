@@ -67,7 +67,7 @@ const getLocal = async ({
 
     if (records.length === 0) return [];
 
-    let surveys = records.map(({ code, id, name, survey_group_id }) => ({
+    const surveys = records.map(({ code, id, name, survey_group_id }) => ({
       code,
       id,
       name,
@@ -78,7 +78,7 @@ const getLocal = async ({
     if (includeCountryNames) {
       const surveyIds = surveys.map(s => s.id);
       const countryNamesBySurveyId = await trxModels.survey.getCountryNamesBySurveyId(surveyIds);
-      surveys = surveys.map(s => ({ ...s, countryNames: countryNamesBySurveyId[s.id] }));
+      for (const survey of surveys) survey.countryNames = countryNamesBySurveyId[survey.id];
     }
 
     // Add survey group names
@@ -94,12 +94,12 @@ const getLocal = async ({
         return dict;
       }, {});
 
-      surveys = surveys.map(s => ({
-        ...s,
-        surveyGroupName: isNullish(s.survey_group_id)
+      for (const survey of surveys) {
+        survey.surveyGroupName = isNullish(survey.survey_group_id)
           ? null
-          : surveyGroupNamesById[s.survey_group_id],
-      }));
+          : surveyGroupNamesById[survey.survey_group_id];
+        survey.survey_group_id = undefined; // Done with survey group ID now. Omit it from result.
+      }
     }
 
     return camelcaseKeys(surveys, { deep: true });
