@@ -61,46 +61,49 @@ const getLocal = async ({
   searchTerm?: string;
 }) => {
   const where = constructDbFilter({ projectId, searchTerm, countryCode });
-  const records = await models.survey.find(where);
 
-  if (records.length === 0) return [];
+  return await models.wrapInReadOnlyTransaction(async (trxModels: DatatrakWebModelRegistry) => {
+    const records = await trxModels.survey.find(where);
 
-  let surveys = records.map(({ code, id, name, survey_group_id }) => ({
-    code,
-    id,
-    name,
-    survey_group_id,
-  }));
+    if (records.length === 0) return [];
 
-  // Add country names
-  if (includeCountryNames) {
-    const surveyIds = surveys.map(s => s.id);
-    const countryNamesBySurveyId = await models.survey.getCountryNamesBySurveyId(surveyIds);
-    surveys = surveys.map(s => ({ ...s, countryNames: countryNamesBySurveyId[s.id] }));
-  }
-
-  // Add survey group names
-  if (includeSurveyGroupNames) {
-    const surveyGroupIds = surveys
-      .filter(s => isNotNullish(s.survey_group_id))
-      .map(s => s.survey_group_id);
-    const surveyGroups = await models.surveyGroup.find({ id: surveyGroupIds });
-    const surveyGroupNamesById = surveyGroups.reduce<
-      Record<SurveyGroup['id'], SurveyGroup['name']>
-    >((dict, surveyGroup) => {
-      dict[surveyGroup.id] = surveyGroup.name;
-      return dict;
-    }, {});
-
-    surveys = surveys.map(s => ({
-      ...s,
-      surveyGroupName: isNullish(s.survey_group_id)
-        ? null
-        : surveyGroupNamesById[s.survey_group_id],
+    let surveys = records.map(({ code, id, name, survey_group_id }) => ({
+      code,
+      id,
+      name,
+      survey_group_id,
     }));
-  }
 
-  return camelcaseKeys(surveys, { deep: true });
+    // Add country names
+    if (includeCountryNames) {
+      const surveyIds = surveys.map(s => s.id);
+      const countryNamesBySurveyId = await trxModels.survey.getCountryNamesBySurveyId(surveyIds);
+      surveys = surveys.map(s => ({ ...s, countryNames: countryNamesBySurveyId[s.id] }));
+    }
+
+    // Add survey group names
+    if (includeSurveyGroupNames) {
+      const surveyGroupIds = surveys
+        .filter(s => isNotNullish(s.survey_group_id))
+        .map(s => s.survey_group_id);
+      const surveyGroups = await trxModels.surveyGroup.find({ id: surveyGroupIds });
+      const surveyGroupNamesById = surveyGroups.reduce<
+        Record<SurveyGroup['id'], SurveyGroup['name']>
+      >((dict, surveyGroup) => {
+        dict[surveyGroup.id] = surveyGroup.name;
+        return dict;
+      }, {});
+
+      surveys = surveys.map(s => ({
+        ...s,
+        surveyGroupName: isNullish(s.survey_group_id)
+          ? null
+          : surveyGroupNamesById[s.survey_group_id],
+      }));
+    }
+
+    return camelcaseKeys(surveys, { deep: true });
+  });
 };
 
 export function useSurveysQuery(

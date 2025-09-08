@@ -195,8 +195,8 @@ export class BaseDatabase {
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
-  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.connection.transaction(
+  async wrapInTransaction(wrappedFunction, transactionConfig = {}) {
+    return await this.connection.transaction(
       transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
       transactionConfig,
     );
@@ -207,8 +207,8 @@ export class BaseDatabase {
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
-  wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
+  async wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
+    return await this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
   }
 
   async fetchSchemaForTable(databaseRecord, schemaName) {
