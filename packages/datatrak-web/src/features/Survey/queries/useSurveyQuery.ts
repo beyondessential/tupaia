@@ -19,8 +19,6 @@ const surveyQueryFunctions = {
     surveyCode,
   }: UseSurveyQueryFunctionContext & { models: DatatrakWebModelRegistry }) =>
     models.wrapInReadOnlyTransaction(async trxModels => {
-      console.log('remote', await surveyQueryFunctions.remote({ surveyCode }));
-
       const survey = await trxModels.survey.findOne({ code: surveyCode });
       const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
         getSurveyQuestionsValues(trxModels, [survey.id]),
