@@ -19,19 +19,9 @@ const StyledButton = styled(Button)`
   background-size: cover;
   transition: none;
 
-  &:hover {
-    div {
-      opacity: 1;
-    }
-  }
-
   &.active {
     border: 2px solid
       ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.primary.main : '#2196f3')};
-
-    div {
-      opacity: 1;
-    }
 
     p {
       background: ${({ theme }) =>
@@ -39,22 +29,14 @@ const StyledButton = styled(Button)`
       color: white;
     }
   }
-
-  img {
-    border-radius: 3px;
-    width: 100%;
-  }
 `;
 
-const Thumbnail = styled.div`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  opacity: 0.9;
-  background-size: cover;
-  transition: opacity 0.3s ease;
+const Thumbnail = styled.img.attrs({
+  'aria-hidden': true,
+  crossOrigin: '',
+})`
+  object-fit: cover;
+  width: 100%;
 `;
 
 const TileLabel = styled(Typography)`
@@ -64,7 +46,7 @@ const TileLabel = styled(Typography)`
   position: absolute;
   font-weight: normal;
   font-size: 1rem;
-  line-height: 1.2rem;
+  line-height: 1.2;
   bottom: 0;
   left: 0;
   right: 0;
@@ -91,7 +73,7 @@ interface TileButtonProps {
 
 export const TileButton = React.memo(({ tileSet, isActive = false, onChange }: TileButtonProps) => (
   <StyledButton onClick={() => onChange(tileSet.key)} className={isActive ? 'active' : ''}>
-    <Thumbnail style={{ backgroundImage: `url(${tileSet.thumbnail})` }} />
+    <Thumbnail src={tileSet.thumbnail} />
     <TileLabel>
       {tileSet.label}
       {tileSet.reference && (

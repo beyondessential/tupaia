@@ -87,7 +87,7 @@ describe('Create permission group', async () => {
       expect(response.status).to.equal(403);
       expect(response.body).to.have.property('error');
       expect(response.body.error).to.equal(
-        'One of the following conditions need to be satisfied:\nNeed BES Admin access\nParent permission group is required\n',
+        'One of the following conditions need to be satisfied:\nNeed BES Admin access\nParent permission group is required',
       );
     });
 
@@ -102,7 +102,7 @@ describe('Create permission group', async () => {
       expect(response.status).to.equal(403);
       expect(response.body).to.have.property('error');
       expect(response.body.error).to.equal(
-        'One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to the parent permission group\n',
+        'One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access to the parent permission group',
       );
     });
 
@@ -119,7 +119,7 @@ describe('Create permission group', async () => {
       expect(response.status).to.equal(403);
       expect(response.body).to.have.property('error');
       expect(response.body.error).to.equal(
-        'One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access\n',
+        'One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed Tupaia Admin Panel access',
       );
     });
   });

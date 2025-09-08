@@ -6,19 +6,19 @@ import { DatatrakWebModelRegistry } from '../../types';
 import { useDatabaseContext } from './useDatabaseContext';
 import { CurrentUser, useCurrentUserContext } from '../../api';
 
-export type ResultObject<T> = {
-  data: T;
+export interface ResultObject<T> {
+  data: T | undefined;
   error: Error | undefined;
   isLoading: boolean;
   isSuccess: boolean;
   onFetch: () => void;
-};
+}
 
-export type DatabaseEffectOptions = {
-  enabled?: boolean;
-  placeholderData?: unknown;
+export interface DatabaseEffectOptions<T = unknown> {
+  enabled: boolean;
   onError?: (e: Error) => void;
-};
+  placeholderData?: T;
+}
 
 export const useCancelableEffect = <T>(
   fetcher: () => Promise<T> | T,
@@ -39,7 +39,7 @@ export const useCancelableEffect = <T>(
     setIsLoading(true);
     try {
       const result = await fetcher();
-      if (!isCancel || !isCancel()) {
+      if (!isCancel?.()) {
         setData(result);
         setIsSuccess(true);
       }
@@ -67,8 +67,8 @@ export const useDatabaseEffect = <T>(
     models: DatatrakWebModelRegistry,
     accessPolicy?: AccessPolicy,
     user?: CurrentUser,
-  ) => Promise<T> | T,
-  dependencies: React.DependencyList = [],
+  ) => T | Promise<T>,
+  dependencies: React.DependencyList,
   options: DatabaseEffectOptions = { enabled: true, onError: (_e: Error) => {} },
 ): ResultObject<T> => {
   const { models } = useDatabaseContext();
