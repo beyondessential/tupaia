@@ -21,6 +21,11 @@ import {
 const SURVEY_QUESTIONS_COLUMN = 'surveyQuestions';
 const COUNTRY_NAMES_COLUMN = 'countryNames';
 const COUNTRY_CODES_COLUMN = 'countryCodes';
+const AD_HOC_COLUMNS = new Set([
+  COUNTRY_CODES_COLUMN,
+  COUNTRY_NAMES_COLUMN,
+  SURVEY_QUESTIONS_COLUMN,
+]);
 
 export class GETSurveys extends GETHandler {
   permissionsFilteredInternally = true;
@@ -103,9 +108,7 @@ export class GETSurveys extends GETHandler {
     this.includeCountryNames = parsedColumns.includes(COUNTRY_NAMES_COLUMN);
     this.includeCountryCodes = parsedColumns.includes(COUNTRY_CODES_COLUMN);
 
-    const unprocessedColumns = parsedColumns.filter(
-      col => ![SURVEY_QUESTIONS_COLUMN, COUNTRY_NAMES_COLUMN, COUNTRY_CODES_COLUMN].includes(col),
-    );
+    const unprocessedColumns = parsedColumns.filter(col => !AD_HOC_COLUMNS.has(col));
     return processColumns(this.models, unprocessedColumns, this.recordType);
   }
 
