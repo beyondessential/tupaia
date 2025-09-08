@@ -105,16 +105,27 @@ export class GETSurveys extends GETHandler {
     return processColumns(this.models, unprocessedColumns, this.recordType);
   }
 
+  /**
+   * @param {import('@tupaia/types').Survey['id'][]} surveyIds
+   */
   async getSurveyQuestionsValues(surveyIds) {
     if (!this.includeQuestions) return {};
     return await this.models.survey.getQuestionsValues(surveyIds);
   }
 
+  /**
+   * @param {import('@tupaia/types').Survey['id'][]} surveyIds
+   * @returns {Promise<Record<Survey['id'], Country['name'][]>>}
+   */
   async getSurveyCountryNames(surveyIds) {
     if (!this.includeCountryNames) return {};
     return await this.models.survey.getCountryNamesBySurveyId(surveyIds);
   }
 
+  /**
+   * @param {import('@tupaia/types').Survey['id'][]} surveyIds
+   * @returns {Promise<Record<import('@tupaia/types').Survey['id'], Country['code'][]>>}
+   */
   async getSurveyCountryCodes(surveyIds) {
     if (!this.includeCountryCodes) return {};
     return await this.models.survey.getCountryCodesBySurveyId(surveyIds);
