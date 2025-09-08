@@ -244,6 +244,30 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
   }
 
+  /**
+   * @param {SurveyRecord['id'][]} surveyIds
+   * @returns {Promise<Record<SurveyRecord['id'], import('./SurveyGroup').SurveyGroupRecord['name']>>}
+   * Dictionary mapping survey IDs to sorted arrays of country names
+   */
+  async getSurveyGroupNamesBySurveyId(surveyIds) {
+    if (surveyIds.length === 0) return {};
+
+    const rows = await this.database.executeSql(
+      `
+        SELECT
+          survey.id AS survey_id,
+          survey_group.name AS survey_group_name
+        FROM
+          survey
+          LEFT JOIN survey_group ON survey.survey_group_id = survey_group.id
+        WHERE
+          survey.id IN ${SqlQuery.record(surveyIds)}
+      `,
+      surveyIds,
+    );
+    return Object.fromEntries(rows.map(row => [row.survey_id, row.survey_group_name]));
+  }
+
   /** @see `./README.md` */
   async getQuestionsValues(surveyIds) {
     if (surveyIds.length === 0) return {};
