@@ -26,9 +26,8 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
   useEffect(() => {
     if (location?.state?.errors) {
       const parsedErrors = JSON.parse(location.state.errors);
-      Object.entries(parsedErrors).forEach(([questionId, error]) => {
-        setError(questionId, error);
-      });
+      const entries = Object.entries(parsedErrors);
+      for (const [questionId, error] of entries) setError(questionId, error);
     }
   }, [location?.state?.errors]);
 

@@ -81,7 +81,9 @@ const getLocal = async ({
 
   // Add survey group names
   if (includeSurveyGroupNames) {
-    const surveyGroupIds = surveys.map(s => s.survey_group_id).filter(isNotNullish);
+    const surveyGroupIds = surveys
+      .filter(s => isNotNullish(s.survey_group_id))
+      .map(s => s.survey_group_id);
     const surveyGroups = await models.surveyGroup.find({ id: surveyGroupIds });
     const surveyGroupNamesById = surveyGroups.reduce<
       Record<SurveyGroup['id'], SurveyGroup['name']>
@@ -98,10 +100,7 @@ const getLocal = async ({
     }));
   }
 
-  return camelcaseKeys(
-    surveys.map(({ survey_group_id: _, ...rest }) => rest), // Omit survey_group_id from result
-    { deep: true },
-  );
+  return camelcaseKeys(surveys, { deep: true });
 };
 
 export function useSurveysQuery(
