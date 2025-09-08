@@ -3,7 +3,7 @@ import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
-import { Multilock, getEnvVarOrDefault } from '@tupaia/utils';
+import { getEnvVarOrDefault } from '@tupaia/utils';
 
 import { generateId } from './utilities';
 import {

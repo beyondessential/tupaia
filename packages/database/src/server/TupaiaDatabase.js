@@ -1,6 +1,8 @@
 import winston from 'winston';
 import { types as pgTypes } from 'pg';
 
+import { Multilock } from '@tupaia/utils';
+
 import { BaseDatabase } from '../core';
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
