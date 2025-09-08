@@ -112,7 +112,7 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {(models: TupaiaDatabase) => Promise<unknown>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
@@ -121,7 +121,7 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: BaseDatabase) => Promise<void | unknown>} wrappedFunction
+   * @param {(models: BaseDatabase) => Promise<unknown>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
