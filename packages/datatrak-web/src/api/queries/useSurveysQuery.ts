@@ -2,7 +2,7 @@ import { UseQueryOptions } from '@tanstack/react-query';
 
 import { DbFilter } from '@tupaia/tsmodels';
 import { camelcaseKeys } from '@tupaia/tsutils';
-import { DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
+import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
 
 import { DatatrakWebModelRegistry, Entity } from '../../types';
 import { isNotNullish, isNullish } from '../../utils';
@@ -67,7 +67,10 @@ const getLocal = async ({
 
     if (records.length === 0) return [];
 
-    const surveys = records.map(({ code, id, name, survey_group_id }) => ({
+    const surveys: (Pick<Survey, 'code' | 'id' | 'name' | 'survey_group_id'> & {
+      countryNames?: Country['name'][];
+      surveyGroupName?: SurveyGroup['name'] | null;
+    })[] = records.map(({ code, id, name, survey_group_id }) => ({
       code,
       id,
       name,
@@ -83,9 +86,7 @@ const getLocal = async ({
 
     // Add survey group names
     if (includeSurveyGroupNames) {
-      const surveyGroupIds = surveys
-        .filter(s => isNotNullish(s.survey_group_id))
-        .map(s => s.survey_group_id);
+      const surveyGroupIds = surveys.map(s => s.survey_group_id).filter(isNotNullish);
       const surveyGroups = await trxModels.surveyGroup.find({ id: surveyGroupIds });
       const surveyGroupNamesById = surveyGroups.reduce<
         Record<SurveyGroup['id'], SurveyGroup['name']>
