@@ -69,10 +69,7 @@ export class TupaiaDatabase extends BaseDatabase {
 
   getChangeHandlersForCollection(collectionName) {
     // Instantiate the array if no change handlers currently exist for the collection
-    if (!this.changeHandlers[collectionName]) {
-      this.changeHandlers[collectionName] = {};
-    }
-    return this.changeHandlers[collectionName];
+    return (this.changeHandlers[collectionName] ??= {});
   }
 
   getOrCreateChangeChannel() {
