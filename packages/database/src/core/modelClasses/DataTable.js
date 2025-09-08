@@ -1,4 +1,6 @@
 import { SyncDirections } from '@tupaia/constants';
+import { ensure, isNullish } from '@tupaia/tsutils';
+import { DataTableType } from '@tupaia/types';
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -10,6 +12,18 @@ const DATA_TABLE_TYPES = {
 
 export class DataTableRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DATA_TABLE;
+
+  async getExternalDatabaseConnection() {
+    if (this.type !== DataTableType.sql || isNullish(this.config.externalDatabaseConnectionCode)) {
+      return null;
+    }
+
+    const code = this.config.externalDatabaseConnectionCode;
+    return ensure(
+      await this.otherModels.externalDatabaseConnection.findOne({ code }),
+      `Couldn’t find external database connection for data table ${this.id} (expected external database connection with code ${code})`,
+    );
+  }
 }
 
 export class DataTableModel extends DatabaseModel {
@@ -19,5 +33,22 @@ export class DataTableModel extends DatabaseModel {
 
   get DatabaseRecordClass() {
     return DataTableRecord;
+  }
+
+  /** @returns {Promise<DataTableType[]>} */
+  async getDataTableTypes() {
+    const dataTableTypes = await this.database.executeSql(
+      'SELECT unnest(enum_range(NULL::data_table_type)) AS type;',
+    );
+    // ORDER BY has no effect (enum order is preserved), so sort here
+    return dataTableTypes.map(({ type }) => type).sort();
+  }
+
+  /** @returns {Promise<number>} */
+  async getDataTableTypeCount() {
+    const [{ cardinality }] = await this.database.executeSql(
+      'SELECT cardinality(enum_range(NULL::data_table_type));',
+    );
+    return cardinality;
   }
 }

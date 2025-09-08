@@ -1,16 +1,23 @@
-import { GETHandler } from './GETHandler';
+import { ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../permissions';
+import { GETHandler } from './GETHandler';
 import { mergeFilter } from './utilities';
 
 export const assertClinicPermissions = async (accessPolicy, models, clinicId) => {
-  const clinic = await models.clinic.findById(clinicId);
-  if (!clinic) {
-    throw new Error(`No clinic exists with id ${clinicId}`);
-  }
-  const country = await models.country.findById(clinic.country_id);
+  const clinic = ensure(
+    await models.clinic.findById(clinicId),
+    `No clinic exists with ID ${clinicId}`,
+  );
+  const country = ensure(
+    await models.country.findById(clinic.country_id),
+    `No country exists with ID ${clinic.country_id}`,
+  );
+
   if (!accessPolicy.allows(country.code)) {
-    throw new Error('You do not have permissions for this clinic');
+    throw new PermissionsError('You do not have permissions for this clinic');
   }
+
   return true;
 };
 

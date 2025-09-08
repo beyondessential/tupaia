@@ -1,11 +1,10 @@
 import { Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { MatrixConfig } from '@tupaia/types';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
-import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 
 import { useEditUser } from '../../api/mutations';
 import { useDashboards, useEntity, useProject, useUser } from '../../api/queries';
@@ -22,11 +21,6 @@ import { Photo } from './Photo';
 import { StaticMap } from './StaticMap';
 import { DashboardContextProvider, useDashboardContext } from './utils';
 
-const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
-const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
-const MIN_SIDEBAR_WIDTH = 360;
-const MIN_EXPANDED_SIDEBAR_WIDTH = 700;
-
 const Panel = styled.div<{
   $isExpanded: boolean;
 }>`
@@ -37,17 +31,13 @@ const Panel = styled.div<{
   min-height: 100%;
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: 300ms var(--ease-out-quad);
-    transition-property: width, max-width;
+    transition: inline-size 300ms var(--ease-out-quad);
   }
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $isExpanded }) => ($isExpanded ? 60 : 25)}%;
-    height: 100%;
-    min-width: ${({ $isExpanded }) =>
-      $isExpanded ? MIN_EXPANDED_SIDEBAR_WIDTH : MIN_SIDEBAR_WIDTH}px;
-    max-width: ${({ $isExpanded }) =>
-      $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
+    block-size: 100%;
+    inline-size: ${props =>
+      props.$isExpanded ? 'clamp(700px, 60%, 1000px)' : 'clamp(260px, 25%, 550px)'};
   }
 `;
 
@@ -118,14 +108,13 @@ const useUpdateUserProjectOnSettled = (projectCode?: ProjectCode) => {
 };
 
 export const Dashboard = () => {
-  const { state: locationState } = useLocation();
   const { projectCode, entityCode } = useParams();
   const { data: project, isSuccess: isProjectSuccess } = useProject(projectCode);
-  const defaultDashboardName = useDefaultDashboardName(projectCode, entityCode);
+
   useUpdateUserProjectOnSettled(projectCode);
 
   const { activeDashboard } = useDashboardContext();
-  const { isFetching: isFetchingDashboards, isSuccess: isDashboardsSuccess } = useDashboards(
+  const { isLoading: isLoadingDashboards, isSuccess: isDashboardsSuccess } = useDashboards(
     projectCode,
     entityCode,
   );
@@ -134,13 +123,31 @@ export const Dashboard = () => {
   const { data: entity } = useEntity(projectCode, entityCode);
 
   // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
-
-  const dashboardNotFound =
-    isProjectSuccess && isDashboardsSuccess && project?.code === projectCode && !activeDashboard;
-  if (dashboardNotFound && defaultDashboardName) {
-    const to = `/${projectCode}/${entityCode}/${encodeURIComponent(defaultDashboardName)}`;
-    return <Navigate replace state={locationState} to={to} />;
-  }
+  const defaultDashboardName = useDefaultDashboardName(projectCode, entityCode);
+  const { search, hash, state } = useLocation();
+  const navigate = useNavigate();
+  const dashboardNotFound = isProjectSuccess && isDashboardsSuccess && !activeDashboard;
+  useEffect(() => {
+    if (dashboardNotFound && defaultDashboardName) {
+      navigate(
+        {
+          pathname: `/${projectCode}/${entityCode}/${encodeURIComponent(defaultDashboardName)}`,
+          search,
+          hash,
+        },
+        { replace: true, state },
+      );
+    }
+  }, [
+    dashboardNotFound,
+    defaultDashboardName,
+    entityCode,
+    hash,
+    navigate,
+    projectCode,
+    search,
+    state,
+  ]);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -173,7 +180,8 @@ export const Dashboard = () => {
               {entity?.imageUrl ? (
                 <Photo title={title} photoUrl={entity?.imageUrl} />
               ) : (
-                <StaticMap bounds={entity?.bounds || DEFAULT_BOUNDS} title={title} />
+                // Don’t pass `null` bounds so that StaticMap uses its internal default
+                <StaticMap bounds={entity?.bounds ?? undefined} title={title} />
               )}
             </div>
             <StickyBar $isExpanded={isExpanded}>
@@ -183,7 +191,7 @@ export const Dashboard = () => {
               <DashboardMenu />
             </StickyBar>
             <DashboardItemsWrapper $isExpanded={isExpanded}>
-              {isFetchingDashboards && <SpinningLoader mt={5} />}
+              {isLoadingDashboards && <SpinningLoader mt={5} />}
               {visibleDashboards?.map(item => (
                 <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
               ))}

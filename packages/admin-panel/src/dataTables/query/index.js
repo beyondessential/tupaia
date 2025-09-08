@@ -1,3 +1,3 @@
 export * from './useDataTablePreview';
-export * from './useExternalDatabaseConnections';
+export * from './useExternalDatabaseConnectionsQuery';
 export * from './useFetchDataTableBuiltInParams';

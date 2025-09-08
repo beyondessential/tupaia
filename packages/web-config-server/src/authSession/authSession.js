@@ -80,10 +80,6 @@ const addUserAccessHelper = (req, res, next) => {
     if (entity.code === 'World') {
       return true;
     }
-    // Timor-Leste is temporarily turned off
-    if (entity.country_code === 'TL') {
-      return false;
-    }
 
     // project access rights are determined by their children
     if (entity.isProject()) {

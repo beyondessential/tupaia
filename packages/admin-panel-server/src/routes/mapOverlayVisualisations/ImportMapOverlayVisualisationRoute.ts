@@ -53,8 +53,7 @@ export class ImportMapOverlayVisualisationRoute extends Route<ImportMapOverlayVi
     const importedVizes: { id: string; code: string }[] = [];
     const successes: string[] = [];
     const errors: { fileName: string; message: string }[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+    for (const file of files) {
       const { originalname: fileName } = file;
       try {
         const fileContent = importFileSchema.validateSync(readFileContent(file));

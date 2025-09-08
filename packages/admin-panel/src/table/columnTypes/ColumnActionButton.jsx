@@ -4,9 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
-const Button = styled(IconButton).attrs(props => ({
-  color: props.color || 'primary',
-}))`
+const Button = styled(IconButton).attrs({ color: 'primary' })`
   padding: 0.3rem;
 `;
 
@@ -25,6 +23,6 @@ ColumnActionButton.defaultProps = {
 };
 
 ColumnActionButton.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.node,
   children: PropTypes.node,
 };

@@ -1,15 +1,15 @@
 import { yup } from '@tupaia/utils';
 
 import { Context } from '../context';
-import { transformBuilders } from './functions';
 import { aliases } from './aliases';
+import { TransformBuilder, transformBuilders, TransformName, TransformStep } from './functions';
 import { TransformTable } from './table';
 
-type BuiltTransformParams = {
+interface BuiltTransformParams {
   title?: string;
   name: string;
-  apply: (table: TransformTable) => TransformTable | Promise<TransformTable>;
-};
+  apply: TransformStep;
+}
 
 const transformParamsValidator = yup.lazy((value: unknown) => {
   if (typeof value === 'string') {
@@ -21,8 +21,8 @@ const transformParamsValidator = yup.lazy((value: unknown) => {
 
   return yup.object().shape({
     transform: yup
-      .mixed<keyof typeof transformBuilders>()
-      .oneOf(Object.keys(transformBuilders) as (keyof typeof transformBuilders)[])
+      .mixed<TransformName>()
+      .oneOf(Object.keys(transformBuilders) as TransformName[])
       .required(),
     title: yup.string(),
     description: yup.string(),
@@ -75,7 +75,7 @@ const buildParams = (params: unknown, context: Context): BuiltTransformParams =>
   };
 };
 
-export const buildTransform = (params: unknown, context: Context) => {
+export const buildTransform: TransformBuilder = (params, context) => {
   const validatedParams = paramsValidator.validateSync(params);
 
   const builtParams = validatedParams.map(param => buildParams(param, context));
@@ -85,4 +85,9 @@ export const buildTransform = (params: unknown, context: Context) => {
 /**
  * A signal to exit the transform steps early
  */
-export class ExitWithNoDataSignal extends Error {}
+export class ExitWithNoDataSignal extends Error {
+  constructor() {
+    super();
+    this.name = 'ExitWithNoDataSignal';
+  }
+}

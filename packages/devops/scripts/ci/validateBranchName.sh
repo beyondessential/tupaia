@@ -1,10 +1,39 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
-DIR=$(dirname "$0")
-. ${DIR}/utils.sh
+set -e
+
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+. "$script_dir"/utils.sh
 
 INVALID_CHARS=('/' '\' '.' '&' '?' '_')
-SUBDOMAIN_SUFFIXES=(admin admin-api aggregation api config db export lesmis lesmis-api mobile psss psss-api report report-api ssh entity entity-api meditrak-api data-table-api sync-api tonga-aggregation www tupaia-web-api datatrak-web-api datatrak)
+
+SUBDOMAIN_SUFFIXES=(
+    admin
+    admin-api
+    aggregation
+    api
+    config
+    data-table-api
+    datatrak
+    datatrak-web-api
+    db
+    entity
+    entity-api
+    export
+    lesmis
+    lesmis-api
+    meditrak-api
+    mobile
+    psss
+    psss-api
+    report
+    report-api
+    ssh
+    sync-api
+    tonga-aggregation
+    tupaia-web-api
+    www
+)
 
 # Branch names are used in AWS EC2 deployments. They are combined with standard suffixes
 # to create deployment urls, eg {{branchName}}-tonga-aggregation.tupaia.org

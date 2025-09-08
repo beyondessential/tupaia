@@ -1,13 +1,14 @@
 import { SyncDirections } from '@tupaia/constants';
-import { camelcaseKeys, isNotNullish } from '@tupaia/tsutils';
+import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
 import { TaskCommentType } from '@tupaia/types';
 import { hasBESAdminAccess } from '@tupaia/access-policy';
 
+import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
+import { SqlQuery } from '../SqlQuery';
 import { buildSyncLookupSelect } from '../sync';
 import { mergeMultiJoin } from '../utilities';
 
@@ -22,7 +23,7 @@ const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
  * @returns {Promise<string>}
  */
 const formatValue = async (field, value, models) => {
-  if (value === null || value === undefined) return null;
+  if (isNullish(value)) return null;
   if (field === 'assignee_id') {
     const assignee = await models.user.findById(value);
     return assignee.full_name;
@@ -69,16 +70,35 @@ export class TaskRecord extends DatabaseRecord {
     },
   ];
 
+  /**
+   * @returns {Promise<import('./Entity').EntityRecord>}
+   */
   async entity() {
-    return this.otherModels.entity.findById(this.entity_id);
+    return ensure(
+      await this.otherModels.entity.findById(this.entity_id),
+      `Couldn’t find entity for task ${this.id} (expected entity with ID ${this.entity_id})`,
+    );
   }
 
+  /**
+   * @returns {Promise<import('./UserAccount').UserAccountRecord | null>}
+   */
   async assignee() {
-    return this.otherModels.userAccount.findById(this.assignee_id);
+    if (!this.assignee_id) return null;
+    return ensure(
+      await this.otherModels.userAccount.findById(this.assignee_id),
+      `Couldn’t find assignee for task ${this.id} (expected user account with ID ${this.assignee_id})`,
+    );
   }
 
+  /**
+   * @returns {Promise<import('./Survey').SurveyRecord>}
+   */
   async survey() {
-    return this.otherModels.survey.findById(this.survey_id);
+    return ensure(
+      await this.otherModels.survey.findById(this.survey_id),
+      `Couldn’t find survey for task ${this.id} (expected survey with ID ${this.survey_id})`,
+    );
   }
 
   hasValidRepeatSchedule() {
@@ -291,11 +311,9 @@ export class TaskModel extends DatabaseModel {
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: `ARRAY[survey.project_id]`,
+        projectIds: 'ARRAY[survey.project_id]',
       }),
-      joins: `
-        LEFT JOIN survey ON survey.id = task.survey_id
-      `,
+      joins: 'LEFT JOIN survey ON survey.id = task.survey_id',
     };
   }
 
@@ -307,20 +325,18 @@ export class TaskModel extends DatabaseModel {
     const countryCodesByPermissionGroupId =
       await this.getCountryCodesByPermissionGroupId(accessPolicy);
 
-    const params = Object.entries(countryCodesByPermissionGroupId).flat().flat(); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
+    const params = Object.entries(countryCodesByPermissionGroupId).flat(2); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
 
     return {
       sql: `
         (
-          ${Object.entries(countryCodesByPermissionGroupId)
-            .map(([_, countryCodes]) => {
-              return `
-              (
-                survey.permission_group_id = ? AND 
-                entity.country_code IN (${countryCodes.map(() => '?').join(', ')})
-              )
-            `;
-            })
+          ${Object.values(countryCodesByPermissionGroupId)
+            .map(
+              countryCodes => `(
+                survey.permission_group_id = ? AND
+                entity.country_code IN ${SqlQuery.record(countryCodes)}
+              )`,
+            )
             .join(' OR ')}
         )
        `,
@@ -411,15 +427,16 @@ export class TaskModel extends DatabaseModel {
       if (!fieldsToCreateCommentsFor.includes(field)) continue;
       const originalValue = originalTask[field];
       // If the field hasn't actually changed, don't add a comment
-      // If the field hasn't actually changed, don't add a comment
       if (originalValue === newValue) continue;
       // Don't add a comment when repeat schedule is updated and the frequency is the same
       if (field === 'repeat_schedule' && originalValue?.freq === newValue?.freq) continue;
       // Don't add a comment when due date is updated for repeat schedule
       if (field === 'due_date' && updatedFields.repeat_schedule) continue;
 
-      const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);
-      const formattedNewValue = await formatValue(field, newValue, this.otherModels);
+      const [formattedOriginalValue, formattedNewValue] = await Promise.all([
+        formatValue(field, originalValue, this.otherModels),
+        formatValue(field, newValue, this.otherModels),
+      ]);
 
       comments.push({
         field,
@@ -454,23 +471,23 @@ export class TaskModel extends DatabaseModel {
   customColumnSelectors = {
     task_due_date: () => `to_timestamp(due_date/1000)`,
     task_status: () =>
-      `CASE  
+      `CASE
         WHEN status = 'cancelled' then 'cancelled'
         WHEN status = 'completed' then 'completed'
         WHEN (status = 'to_do' OR status IS NULL) THEN
-            CASE 
+            CASE
                 WHEN repeat_schedule IS NOT NULL THEN 'repeating'
                 WHEN due_date IS NULL THEN 'to_do'
                 WHEN due_date < ${new Date().getTime()} THEN 'overdue'
                 ELSE 'to_do'
             END
-        ELSE 'to_do' 
+        ELSE 'to_do'
     END`,
     assignee_name: () =>
-      `CASE 
-        WHEN assignee_id IS NULL THEN 'Unassigned' 
-        WHEN assignee.last_name IS NULL THEN assignee.first_name 
-        ELSE assignee.first_name || ' ' || assignee.last_name 
+      `CASE
+        WHEN assignee_id IS NULL THEN 'Unassigned'
+        WHEN assignee.last_name IS NULL THEN assignee.first_name
+        ELSE assignee.first_name || ' ' || assignee.last_name
       END`,
   };
 

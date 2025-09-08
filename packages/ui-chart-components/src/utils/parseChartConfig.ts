@@ -114,7 +114,7 @@ const getDefaultPaletteName = (chartType: ChartType, numberRequired: number): Co
 const CHART_SORT_ORDER = {
   [ChartType.Line]: 0,
   [ChartType.Bar]: 1,
-};
+} as const;
 
 const defaultSort = (a: { chartType: 'bar' | 'line' }[], b: { chartType: 'bar' | 'line' }[]) => {
   return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
@@ -130,13 +130,10 @@ const sortChartConfigByLegendOrder = (chartConfig: LooseObject) => {
       if (isNaN(cfg2.legendOrder)) return -1;
       return cfg1.legendOrder - cfg2.legendOrder;
     })
-    .reduce(
-      (newChartConfig, [key, val]) => ({
-        ...newChartConfig,
-        [key]: val,
-      }),
-      {},
-    );
+    .reduce((newChartConfig, [key, val]) => {
+      newChartConfig[key] = val;
+      return newChartConfig;
+    }, {} as LooseObject);
 };
 
 const createDynamicConfig = (

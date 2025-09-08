@@ -112,7 +112,7 @@ const MapInner = () => {
   return (
     <ErrorBoundary>
       <StyledMap shouldSnapToPosition whenCreated={setMap}>
-        <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
+        <TileLayer tileSetUrl={activeTileSet.url} />
         <MapOverlaysLayer hiddenValues={hiddenValues} />
         <DemoLand />
         <ZoomControl position="bottomright" />
