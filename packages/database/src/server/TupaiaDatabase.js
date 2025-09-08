@@ -5,10 +5,6 @@ import { BaseDatabase } from '../core';
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 
-// no math here, just hand-tuned to be as low as possible while
-// keeping all the tests passing
-const HANDLER_DEBOUNCE_DURATION = 250;
-
 export class TupaiaDatabase extends BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = true;
 
@@ -68,7 +64,7 @@ export class TupaiaDatabase extends BaseDatabase {
   }
 
   async waitForAllChangeHandlers() {
-    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
+    return this.handlerLock.waitWithDebounce(TupaiaDatabase.handlerDebounceDurationMs);
   }
 
   getChangeHandlersForCollection(collectionName) {

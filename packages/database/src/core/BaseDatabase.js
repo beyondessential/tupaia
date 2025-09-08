@@ -70,6 +70,9 @@ const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE', 'TRIM'];
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
 export class BaseDatabase {
+  /** No math here, just hand-tuned to be as low as possible while keeping all the tests passing. */
+  static handlerDebounceDurationMs = 250;
+
   static IS_CHANGE_HANDLER_SUPPORTED = false;
 
   /**
@@ -174,7 +177,7 @@ export class BaseDatabase {
   }
 
   async waitForAllChangeHandlers() {
-    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
+    return await this.handlerLock.waitWithDebounce(BaseDatabase.handlerDebounceDurationMs);
   }
 
   getChangeHandlersForCollection(collectionName) {
@@ -191,19 +194,19 @@ export class BaseDatabase {
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {(models: BaseDatabase) => Promise<void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
-  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.connection.transaction(
-      transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+  async wrapInTransaction(wrappedFunction, transactionConfig = {}) {
+    return await this.connection.transaction(
+      transaction => wrappedFunction(this.constructor(transaction, this.changeChannel)),
       transactionConfig,
     );
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {(models: BaseDatabase) => Promise<void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
@@ -352,7 +355,7 @@ export class BaseDatabase {
     } catch (error) {
       if (error.name === 'KnexTimeoutError') {
         winston.debug(
-          `[TupaiaDatabase#countFast] Counting ${recordType} records timed out. Returning infinity.`,
+          `[BaseDatabase#countFast] Counting ${recordType} records timed out. Returning infinity.`,
         );
         return Number.POSITIVE_INFINITY;
       }
