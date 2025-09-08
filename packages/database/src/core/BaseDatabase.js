@@ -197,19 +197,15 @@ export class BaseDatabase {
   }
 
   /**
-   * @param {(models: BaseDatabase) => Promise<void>} wrappedFunction
+   * @param {(models) => Promise<void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
-  async wrapInTransaction(wrappedFunction, transactionConfig = {}) {
-    return await this.connection.transaction(
-      transaction => wrappedFunction(this.constructor(transaction, this.changeChannel)),
-      transactionConfig,
-    );
+  async wrapInTransaction(_wrappedFunction, _transactionConfig) {
+    throw new Error('wrapInTransaction should be implemented by the child class');
   }
 
   /**
-   * @param {(models: BaseDatabase) => Promise<void>} wrappedFunction
+   * @param {(models) => Promise<void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
@@ -544,10 +540,6 @@ export class BaseDatabase {
       },
       batchSize,
     );
-  }
-
-  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
-    throw new Error('wrapInTransaction should be implemented by the child class');
   }
 
   commitTransaction() {
