@@ -9,12 +9,20 @@ export class TupaiaDatabase extends BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = true;
 
   /**
+   * @privateRemarks
+   * No math here, just hand-tuned to be as low as possible while keeping all the tests passing.
+   */
+  static handlerDebounceDurationMs = 250;
+
+  /**
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
    */
   constructor(transactingConnection, transactingChangeChannel, useNumericStuff = false) {
     super(transactingConnection, transactingChangeChannel, 'pg', getConnectionConfig);
 
+    this.changeHandlers = {};
+    this.handlerLock = new Multilock();
     this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
 
     this.configurePgGlobals(useNumericStuff);
@@ -64,7 +72,7 @@ export class TupaiaDatabase extends BaseDatabase {
   }
 
   async waitForAllChangeHandlers() {
-    return this.handlerLock.waitWithDebounce(TupaiaDatabase.handlerDebounceDurationMs);
+    return await this.handlerLock.waitWithDebounce(TupaiaDatabase.handlerDebounceDurationMs);
   }
 
   getChangeHandlersForCollection(collectionName) {
@@ -90,7 +98,7 @@ export class TupaiaDatabase extends BaseDatabase {
 
   async waitForChangeChannel() {
     this.getOrCreateChangeChannel();
-    return this.changeChannelPromise;
+    return await this.changeChannelPromise;
   }
 
   addChangeHandlerForCollection(collectionName, changeHandler, key = this.generateId()) {
