@@ -293,7 +293,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * @param {ReturnType<typeof this.getQuestionsValues>} rawResults
-   * @returns
    */
   #getAggregatedQuestions(rawResults) {
     const initialValue = {};
