@@ -7,8 +7,8 @@ const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelNam
 
 export class ModelRegistry {
   /**
-   * @param {import('./BaseDatabase').TupaiaDatabase} database
-   * @param {import('./DatabaseModel').Record<string, DatabaseModel>} [extraModelClasses]
+   * @param {import('./BaseDatabase').BaseDatabase} database
+   * @param {Record<string, import('./DatabaseModel').DatabaseModel>} [extraModelClasses]
    */
   constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {
     this.database = database;
@@ -112,8 +112,8 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<unknown>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @param {(models: import('./BaseDatabase').BaseDatabase) => Promise<unknown>} wrappedFunction
+   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
   wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
@@ -121,8 +121,8 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: BaseDatabase) => Promise<unknown>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @param {(models: import('./BaseDatabase').BaseDatabase) => Promise<unknown>} wrappedFunction
+   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
   wrapInRepeatableReadTransaction(wrappedFunction, transactionConfig = {}) {

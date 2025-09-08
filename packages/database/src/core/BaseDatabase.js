@@ -125,16 +125,16 @@ export class BaseDatabase {
   }
 
   /**
-   * @param {(models) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @param {(models) => Promise<unknown>} wrappedFunction
+   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
    */
   async wrapInTransaction(_wrappedFunction, _transactionConfig) {
     throw new Error('wrapInTransaction should be implemented by the child class');
   }
 
   /**
-   * @param {(models) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @param {(models) => Promise<unknown>} wrappedFunction
+   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
   async wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
