@@ -33,36 +33,40 @@ export class GETSurveys extends GETHandler {
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyChecker]));
 
     const survey = await super.findSingleRecord(surveyId, options);
-    const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
-      this.getSurveyQuestionsValues([surveyId]), // 1. Add surveyQuestions, see README
-      this.getSurveyCountryNames([surveyId]), // 2. Add countryNames
-      this.getSurveyCountryCodes([surveyId]), // 3. Add countryCodes
-    ]);
+    return await this.models.wrapInReadOnlyTransaction(async transactingModels => {
+      const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
+        this.getSurveyQuestionsValues(transactingModels, [surveyId]),
+        this.getSurveyCountryNames(transactingModels, [surveyId]),
+        this.getSurveyCountryCodes(transactingModels, [surveyId]),
+      ]);
 
-    return {
-      ...survey,
-      surveyQuestions: surveyQuestionsValues[surveyId],
-      countryNames: countryNames[surveyId],
-      countryCodes: countryCodes[surveyId],
-    };
+      return {
+        ...survey,
+        surveyQuestions: surveyQuestionsValues[surveyId],
+        countryNames: countryNames[surveyId],
+        countryCodes: countryCodes[surveyId],
+      };
+    });
   }
 
   async findRecords(criteria, options) {
     const records = await super.findRecords(criteria, options);
 
     const recordIds = records.filter(record => record.id).map(record => record.id);
-    const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
-      this.getSurveyQuestionsValues(recordIds), // 1. Add surveyQuestions, see README
-      this.getSurveyCountryNames(recordIds), // 2. Add countryNames
-      this.getSurveyCountryCodes(recordIds), // 3. Add countryCodes
-    ]);
+    return await this.models.wrapInReadOnlyTransaction(async transactingModels => {
+      const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
+        this.getSurveyQuestionsValues(transactingModels, recordIds),
+        this.getSurveyCountryNames(transactingModels, recordIds),
+        this.getSurveyCountryCodes(transactingModels, recordIds),
+      ]);
 
-    return records.map(record => ({
-      ...record,
-      surveyQuestions: surveyQuestionsValues[record.id],
-      countryNames: countryNames[record.id],
-      countryCodes: countryCodes[record.id],
-    }));
+      return records.map(record => ({
+        ...record,
+        surveyQuestions: surveyQuestionsValues[record.id],
+        countryNames: countryNames[record.id],
+        countryCodes: countryCodes[record.id],
+      }));
+    });
   }
 
   async getPermissionsFilter(criteria, options) {
@@ -108,26 +112,26 @@ export class GETSurveys extends GETHandler {
   /**
    * @param {import('@tupaia/types').Survey['id'][]} surveyIds
    */
-  async getSurveyQuestionsValues(surveyIds) {
+  async getSurveyQuestionsValues(models, surveyIds) {
     if (!this.includeQuestions) return {};
-    return await this.models.survey.getQuestionsValues(surveyIds);
+    return await models.survey.getQuestionsValues(surveyIds);
   }
 
   /**
    * @param {import('@tupaia/types').Survey['id'][]} surveyIds
-   * @returns {Promise<Record<Survey['id'], Country['name'][]>>}
+   * @returns {Promise<Record<import('@tupaia/types').Survey['id'], Country['name'][]>>}
    */
-  async getSurveyCountryNames(surveyIds) {
+  async getSurveyCountryNames(models, surveyIds) {
     if (!this.includeCountryNames) return {};
-    return await this.models.survey.getCountryNamesBySurveyId(surveyIds);
+    return await models.survey.getCountryNamesBySurveyId(surveyIds);
   }
 
   /**
    * @param {import('@tupaia/types').Survey['id'][]} surveyIds
    * @returns {Promise<Record<import('@tupaia/types').Survey['id'], Country['code'][]>>}
    */
-  async getSurveyCountryCodes(surveyIds) {
+  async getSurveyCountryCodes(models, surveyIds) {
     if (!this.includeCountryCodes) return {};
-    return await this.models.survey.getCountryCodesBySurveyId(surveyIds);
+    return await models.survey.getCountryCodesBySurveyId(surveyIds);
   }
 }
