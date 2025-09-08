@@ -1,16 +1,20 @@
 import winston from 'winston';
 import { types as pgTypes } from 'pg';
 
+import { Multilock } from '@tupaia/utils';
+
 import { BaseDatabase } from '../core';
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 
-// no math here, just hand-tuned to be as low as possible while
-// keeping all the tests passing
-const HANDLER_DEBOUNCE_DURATION = 250;
-
 export class TupaiaDatabase extends BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = true;
+
+  /**
+   * @privateRemarks
+   * No math here, just hand-tuned to be as low as possible while keeping all the tests passing.
+   */
+  static #handlerDebounceDurationMs = 250;
 
   /**
    * @param {TupaiaDatabase} [transactingConnection]
@@ -19,6 +23,8 @@ export class TupaiaDatabase extends BaseDatabase {
   constructor(transactingConnection, transactingChangeChannel, useNumericStuff = false) {
     super(transactingConnection, transactingChangeChannel, 'pg', getConnectionConfig);
 
+    this.changeHandlers = {};
+    this.handlerLock = new Multilock();
     this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
 
     this.configurePgGlobals(useNumericStuff);
@@ -68,15 +74,12 @@ export class TupaiaDatabase extends BaseDatabase {
   }
 
   async waitForAllChangeHandlers() {
-    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
+    return await this.handlerLock.waitWithDebounce(TupaiaDatabase.#handlerDebounceDurationMs);
   }
 
   getChangeHandlersForCollection(collectionName) {
     // Instantiate the array if no change handlers currently exist for the collection
-    if (!this.changeHandlers[collectionName]) {
-      this.changeHandlers[collectionName] = {};
-    }
-    return this.changeHandlers[collectionName];
+    return (this.changeHandlers[collectionName] ??= {});
   }
 
   getOrCreateChangeChannel() {
@@ -97,7 +100,7 @@ export class TupaiaDatabase extends BaseDatabase {
 
   async waitForChangeChannel() {
     this.getOrCreateChangeChannel();
-    return this.changeChannelPromise;
+    return await this.changeChannelPromise;
   }
 
   addChangeHandlerForCollection(collectionName, changeHandler, key = this.generateId()) {
@@ -131,15 +134,6 @@ export class TupaiaDatabase extends BaseDatabase {
       transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
       transactionConfig,
     );
-  }
-
-  /**
-   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
-   */
-  wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
   }
 
   /**

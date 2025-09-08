@@ -3,7 +3,7 @@ import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
-import { Multilock, getEnvVarOrDefault } from '@tupaia/utils';
+import { getEnvVarOrDefault } from '@tupaia/utils';
 
 import { generateId } from './utilities';
 import {
@@ -91,7 +91,6 @@ export class BaseDatabase {
     }
 
     autobind(this);
-    this.changeHandlers = {};
     this.transactingChangeChannel = transactingChangeChannel;
     this.changeChannelPromise = null;
 
@@ -111,8 +110,6 @@ export class BaseDatabase {
       };
       this.connectionPromise = connectToDatabase();
     }
-
-    this.handlerLock = new Multilock();
   }
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
@@ -120,95 +117,28 @@ export class BaseDatabase {
   generateId = generateId;
 
   async closeConnections() {
-    return this.connection.destroy();
+    return await this.connection.destroy();
   }
 
   async waitUntilConnected() {
     await this.connectionPromise;
   }
 
-  async waitForChangeChannel() {
-    this.getOrCreateChangeChannel();
-    return this.changeChannelPromise;
-  }
-
-  addChangeHandlerForCollection(collectionName, changeHandler, key = this.generateId()) {
-    // if a change handler is being added, this db needs a change channel - make sure it's instantiated
-    this.getOrCreateChangeChannel();
-    this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
-    return () => {
-      delete this.getChangeHandlersForCollection(collectionName)[key];
-    };
-  }
-
-  getHandlersForChange(change) {
-    const { handler_key: specificHandlerKey, record_type: recordType } = change;
-    const handlersForCollection = this.getChangeHandlersForCollection(recordType);
-    if (specificHandlerKey) {
-      return handlersForCollection[specificHandlerKey]
-        ? [handlersForCollection[specificHandlerKey]]
-        : [];
-    }
-    return Object.values(handlersForCollection);
-  }
-
-  async notifyChangeHandlers(change) {
-    const unlock = this.handlerLock.createLock(change.record_id);
-    const handlers = this.getHandlersForChange(change);
-    const scheduledPromises = [];
-    try {
-      for (const handler of handlers) {
-        try {
-          const { scheduledPromise } = (await handler(change)) || {};
-          if (scheduledPromise) {
-            scheduledPromises.push(scheduledPromise);
-          }
-        } catch (e) {
-          winston.error(e);
-        }
-      }
-    } finally {
-      // Don't await the scheduled promises, so that we don't block the change handler from completing
-      Promise.all(scheduledPromises).finally(unlock);
-    }
-  }
-
-  async waitForAllChangeHandlers() {
-    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
-  }
-
-  getChangeHandlersForCollection(collectionName) {
-    // Instantiate the array if no change handlers currently exist for the collection
-    if (!this.changeHandlers[collectionName]) {
-      this.changeHandlers[collectionName] = {};
-    }
-    return this.changeHandlers[collectionName];
-  }
-
-  addSchemaChangeHandler(handler) {
-    const changeChannel = this.getOrCreateChangeChannel();
-    return changeChannel.addSchemaChangeHandler(handler);
+  /**
+   * @param {(models) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   */
+  async wrapInTransaction(_wrappedFunction, _transactionConfig) {
+    throw new Error('wrapInTransaction should be implemented by the child class');
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {(models) => Promise<void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
-  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.connection.transaction(
-      transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
-      transactionConfig,
-    );
-  }
-
-  /**
-   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
-   */
-  wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
+  async wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
+    return await this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
   }
 
   async fetchSchemaForTable(databaseRecord, schemaName) {
@@ -231,7 +161,7 @@ export class BaseDatabase {
    */
   async acquireAdvisoryLock(lockKey) {
     const lockKeyInt = hashStringToInt(lockKey); // Locks require bigint key, so must convert key to int
-    return this.executeSql('SELECT pg_advisory_xact_lock(?)', [lockKeyInt]);
+    return await this.executeSql('SELECT pg_advisory_xact_lock(?)', [lockKeyInt]);
   }
 
   /**
@@ -352,7 +282,7 @@ export class BaseDatabase {
     } catch (error) {
       if (error.name === 'KnexTimeoutError') {
         winston.debug(
-          `[TupaiaDatabase#countFast] Counting ${recordType} records timed out. Returning infinity.`,
+          `[BaseDatabase#countFast] Counting ${recordType} records timed out. Returning infinity.`,
         );
         return Number.POSITIVE_INFINITY;
       }
@@ -538,10 +468,6 @@ export class BaseDatabase {
       },
       batchSize,
     );
-  }
-
-  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
-    throw new Error('wrapInTransaction should be implemented by the child class');
   }
 
   commitTransaction() {
