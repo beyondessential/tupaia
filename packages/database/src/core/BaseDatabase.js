@@ -123,7 +123,7 @@ export class BaseDatabase {
   generateId = generateId;
 
   async closeConnections() {
-    return this.connection.destroy();
+    return await this.connection.destroy();
   }
 
   async waitUntilConnected() {
@@ -132,7 +132,7 @@ export class BaseDatabase {
 
   async waitForChangeChannel() {
     this.getOrCreateChangeChannel();
-    return this.changeChannelPromise;
+    return await this.changeChannelPromise;
   }
 
   addChangeHandlerForCollection(collectionName, changeHandler, key = this.generateId()) {
@@ -210,8 +210,8 @@ export class BaseDatabase {
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise} A promise (return value of `knex.transaction()`).
    */
-  wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
+  async wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
+    return await this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
   }
 
   async fetchSchemaForTable(databaseRecord, schemaName) {
@@ -234,7 +234,7 @@ export class BaseDatabase {
    */
   async acquireAdvisoryLock(lockKey) {
     const lockKeyInt = hashStringToInt(lockKey); // Locks require bigint key, so must convert key to int
-    return this.executeSql('SELECT pg_advisory_xact_lock(?)', [lockKeyInt]);
+    return await this.executeSql('SELECT pg_advisory_xact_lock(?)', [lockKeyInt]);
   }
 
   /**
