@@ -2,7 +2,7 @@ import log from 'winston';
 
 import { DatabaseModel } from '@tupaia/database';
 import { sanitizeRecord, SYNC_SESSION_DIRECTION, SyncSnapshotAttributes } from '@tupaia/sync';
-import { assertModelsForPull } from './assertModelsForPull';
+import { assertModelsForPush } from './assertModelsForPush';
 import { getModelOutgoingChangesFilter } from './getModelOutgoingChangesFilter';
 
 const snapshotChangesForModel = async (
@@ -36,7 +36,7 @@ export const snapshotOutgoingChanges = async (
   tombstoneModel: DatabaseModel,
   since: number,
 ) => {
-  assertModelsForPull(models);
+  assertModelsForPush(models);
 
   const modelChanges = await Promise.all(
     models.map(model => snapshotChangesForModel(model, tombstoneModel, since)),

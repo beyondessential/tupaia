@@ -1,7 +1,7 @@
 import { DatabaseModel, LocalSystemFactModel } from '@tupaia/database';
 import { FACT_LAST_SUCCESSFUL_SYNC_PUSH } from '@tupaia/constants';
 
-import { assertModelsForPull } from './assertModelsForPull';
+import { assertModelsForPush } from './assertModelsForPush';
 import { getModelOutgoingChangesFilter } from './getModelOutgoingChangesFilter';
 
 const countChangesForModel = async (
@@ -25,7 +25,7 @@ export const countOutgoingChanges = async (
   tombstoneModel: DatabaseModel,
   localSystemFact: LocalSystemFactModel,
 ) => {
-  assertModelsForPull(models);
+  assertModelsForPush(models);
 
   const pushSince = (await localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
   const changeCounts = await Promise.all(

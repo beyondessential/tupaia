@@ -1,7 +1,7 @@
 import { DatabaseModel } from '@tupaia/database';
 import { SyncDirections } from '@tupaia/constants';
 
-export const assertModelsForPull = (models: DatabaseModel[]) => {
+export const assertModelsForPush = (models: DatabaseModel[]) => {
   const invalidModelNames = models
     .filter(
       m =>
