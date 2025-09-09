@@ -36,6 +36,7 @@ export const removeSnapshotDataByPermissions = async (
     const SNAPSHOT_ALIAS = 'snapshot';
 
     const dbConditions = {
+      record_type: tableName,
       [WHERE_SUBQUERY_CLAUSES.NOT_EXISTS]: {
         queryMethod: QUERY_METHODS.SELECT,
         recordType: tableName,
