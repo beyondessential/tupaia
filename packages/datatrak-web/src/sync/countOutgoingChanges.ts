@@ -29,7 +29,7 @@ export const countOutgoingChanges = async (
 
   const pushSince = (await localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
   const changeCounts = await Promise.all(
-    Object.values(models).map(model => countChangesForModel(model, tombstoneModel, pushSince)),
+    models.map(model => countChangesForModel(model, tombstoneModel, pushSince)),
   );
   return changeCounts.reduce((total, count) => total + count, 0);
 };

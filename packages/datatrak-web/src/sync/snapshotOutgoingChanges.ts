@@ -39,7 +39,7 @@ export const snapshotOutgoingChanges = async (
   assertModelsForPull(models);
 
   const modelChanges = await Promise.all(
-    Object.values(models).map(model => snapshotChangesForModel(model, tombstoneModel, since)),
+    models.map(model => snapshotChangesForModel(model, tombstoneModel, since)),
   );
   return modelChanges.flat();
 };

@@ -110,6 +110,12 @@ export const MenuList = ({
 
   const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
+  const handleLogout = async () => {
+    logout();
+    setUnsyncedChangesWarningModalOpen(false);
+    onCloseMenu?.();
+  };
+
   const onClickInternalLink = (e: any, confirmLink: string) => {
     if (shouldShowCancelModal) {
       e.preventDefault();
@@ -164,6 +170,7 @@ export const MenuList = ({
           setUnsyncedChangesWarningModalOpen(true);
         } else {
           logout();
+          onCloseMenu?.();
         }
       },
       hidden: !isLoggedIn,
@@ -201,7 +208,7 @@ export const MenuList = ({
         cancelText="Cancel"
         isOpen={unsyncedChangesWarningModalOpen}
         onClose={() => setUnsyncedChangesWarningModalOpen(false)}
-        onConfirm={logout}
+        onConfirm={handleLogout}
       />
       <CancelConfirmModal
         isOpen={surveyCancelModalIsOpen}

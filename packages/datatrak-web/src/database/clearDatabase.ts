@@ -46,7 +46,7 @@ const clearTables = async (
         END LOOP;
     END $$;
   `,
-    [schema, ...TABLES_TO_KEEP],
+    [schema, ...tablesToKeep],
   );
 };
 

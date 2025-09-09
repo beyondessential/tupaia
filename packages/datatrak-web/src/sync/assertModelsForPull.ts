@@ -2,7 +2,7 @@ import { DatabaseModel } from '@tupaia/database';
 import { SyncDirections } from '@tupaia/constants';
 
 export const assertModelsForPull = (models: DatabaseModel[]) => {
-  const invalidModelNames = Object.values(models)
+  const invalidModelNames = models
     .filter(
       m =>
         ![SyncDirections.BIDIRECTIONAL, SyncDirections.PUSH_TO_CENTRAL].includes(
