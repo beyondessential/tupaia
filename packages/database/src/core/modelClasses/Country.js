@@ -14,7 +14,7 @@ export class CountryRecord extends DatabaseRecord {
 }
 
 export class CountryModel extends DatabaseModel {
-  static syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   async buildSyncLookupQueryDetails() {
     return null;
@@ -27,5 +27,9 @@ export class CountryModel extends DatabaseModel {
   async getCountryCodeById(countryIds) {
     const countries = await this.findManyById(countryIds);
     return reduceToDictionary(countries, 'id', 'code');
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return null;
   }
 }
