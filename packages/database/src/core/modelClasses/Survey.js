@@ -274,7 +274,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
           LEFT JOIN survey_screen_component ssc ON ss.id = ssc.screen_id
           LEFT JOIN question q ON ssc.question_id = q.id
         WHERE
-          s.id IN (${SqlQuery.record(surveyIds)})
+          s.id IN ${SqlQuery.record(surveyIds)}
         GROUP BY
           s.id, ssc.id, ss.id, q.id;
       `,
