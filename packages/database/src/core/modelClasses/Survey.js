@@ -205,15 +205,15 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     const rows = await this.database.executeSql(
       `
         SELECT
-            survey.id survey_id,
-            ARRAY_AGG(country.code ORDER BY country.code) AS country_codes
+          survey.id survey_id,
+          ARRAY_AGG(country.code ORDER BY country.code) AS country_codes
         FROM
-            survey
-            LEFT JOIN country ON country.id = ANY (survey.country_ids)
+          survey
+          LEFT JOIN country ON country.id = ANY (survey.country_ids)
         WHERE
-            survey.id IN ${SqlQuery.record(surveyIds)}
+          survey.id IN ${SqlQuery.record(surveyIds)}
         GROUP BY
-            survey.id;
+          survey.id;
       `,
       surveyIds,
     );
