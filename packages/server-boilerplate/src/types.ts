@@ -7,6 +7,7 @@ import {
   UserEntityPermissionModel,
   UserModel,
 } from '@tupaia/tsmodels';
+import { Knex } from 'knex';
 
 export type AccessPolicyObject = Record<string, string[]>;
 
@@ -26,4 +27,17 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
   permissionGroup: PermissionGroupModel;
   user: UserModel;
   userEntityPermission: UserEntityPermissionModel;
+
+  wrapInTransaction<T = unknown>(
+    wrappedFunction: (models: ServerBoilerplateModelRegistry) => Promise<T>,
+    transactionConfig?: Knex.TransactionConfig,
+  ): Promise<T>;
+  wrapInReadOnlyTransaction<T = unknown>(
+    wrappedFunction: (models: ServerBoilerplateModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'readOnly'>,
+  ): Promise<T>;
+  wrapInRepeatableReadTransaction<T = unknown>(
+    wrappedFunction: (models: ServerBoilerplateModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolation'>,
+  ): Promise<T>;
 }

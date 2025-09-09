@@ -133,9 +133,9 @@ export class BaseDatabase {
   }
 
   /**
-   * @param {(models: BaseDatabase) => Promise<unknown>} wrappedFunction
-   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   * @param {<T = unknown>(models: BaseDatabase) => Promise<T>} wrappedFunction
+   * @param {Omit<import('knex').Knex.TransactionConfig, 'readOnly'>} [transactionConfig]
+   * @returns {Promise<T>} A promise (return value of `knex.transaction()`).
    */
   async wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
     return await this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
