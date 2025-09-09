@@ -49,7 +49,7 @@ mkdir -m 777 -p "$logs_dir"
 
 schedule_preaggregation_job() {
   \. "$home_dir/.nvm/nvm.sh" # Load nvm so node is available on $PATH
-  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
+  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date --iso-8601=seconds) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
   sudo -u ubuntu crontab -l >>tmp.cron || echo >>tmp.cron
   sudo -u ubuntu crontab tmp.cron
   rm tmp.cron
@@ -106,5 +106,5 @@ main() {
 
 main |&
   while IFS= read -r line; do
-    echo "$(date) │ $line"
+    echo "$(date --iso-8601=seconds) │ $line"
   done >>"$logs_dir"/deployment.log
