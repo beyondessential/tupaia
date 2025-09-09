@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { post } from '../api';
 import { useDatabaseContext } from '../../hooks/database';
-import { clearDatabase } from '../../database/clearTestData';
+import { clearDatabase } from '../../database';
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
@@ -11,7 +11,7 @@ export const useLogout = () => {
     onSuccess: async () => {
       await queryClient.resetQueries();
 
-      // await clearDatabase(models);
+      await clearDatabase(models);
     },
   });
 };

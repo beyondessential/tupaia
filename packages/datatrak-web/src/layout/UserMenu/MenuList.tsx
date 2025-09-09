@@ -5,13 +5,13 @@ import { useMatch } from 'react-router';
 import styled from 'styled-components';
 
 import { Button, RouterLink } from '@tupaia/ui-components';
+import { getModelsForPush } from '@tupaia/sync';
 
 import { useCurrentUserContext, useLogout } from '../../api';
 import { CancelConfirmModal } from '../../components';
 import { ROUTES } from '../../constants';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 import { useDatabaseContext } from '../../hooks/database';
-import { getModelsForPush } from '@tupaia/sync';
 import { countOutgoingChanges } from '../../sync/countOutgoingChanges';
 
 interface MenuItem {
