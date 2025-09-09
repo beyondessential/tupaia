@@ -32,11 +32,12 @@ fi
 if [[ $DEPLOYMENT_NAME = production ]]; then
 	auth_key_param_name=TAILSCALE_AUTH_KEY_PROD
 	tags=tag:server,tag:server-tupaia,tag:server-tupaia-prod
+	hostname=tupaia-prod-$DEPLOYMENT_NAME
 else
 	auth_key_param_name=TAILSCALE_AUTH_KEY_STAGING
 	tags=tag:server,tag:server-tupaia,tag:server-tupaia-staging
+	hostname=tupaia-staging-$DEPLOYMENT_NAME
 fi
-hostname=tupaia-$DEPLOYMENT_NAME
 
 echo
 echo 'Connecting to bes.au Tailnet...'
