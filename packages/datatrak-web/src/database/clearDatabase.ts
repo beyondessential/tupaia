@@ -28,7 +28,7 @@ const clearTypes = async (models: DatatrakWebModelRegistry, schema: string) => {
 const clearTables = async (
   models: DatatrakWebModelRegistry,
   schema: string,
-  tablesToKeep: string[],
+  tablesToKeep: string[] = [],
 ) => {
   await models.database.executeSql(
     `
@@ -39,14 +39,14 @@ const clearTables = async (
         FOR r IN (
           SELECT tablename FROM pg_tables 
           WHERE schemaname = ?
-          ${tablesToKeep?.length > 0 ? `AND tablename NOT IN ${SqlQuery.record(tablesToKeep)}` : ''}
+          ${tablesToKeep.length > 0 ? `AND tablename NOT IN ${SqlQuery.record(tablesToKeep)}` : ''}
         )
         LOOP
             EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
         END LOOP;
     END $$;
   `,
-    [schema, ...tablesToKeep],
+    [schema, ...(tablesToKeep.length > 0 ? tablesToKeep : [])],
   );
 };
 
@@ -54,7 +54,6 @@ export const clearDatabase = async (models: DatatrakWebModelRegistry) => {
   // Clear public schema but still keep some tables
   await clearTables(models, 'public', TABLES_TO_KEEP);
   await clearTypes(models, 'public');
-
 
   // Drop sync_snapshots schema
   await models.database.executeSql(`
