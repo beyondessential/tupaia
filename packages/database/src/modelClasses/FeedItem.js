@@ -1,9 +1,12 @@
 import moment from 'moment';
+
+import { AccessPolicy } from '@tupaia/access-policy';
 import { FeedItemTypes } from '@tupaia/types';
 import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { SqlQuery } from '../SqlQuery';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
@@ -30,14 +33,9 @@ export class FeedItemModel extends DatabaseModel {
     const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
 
     return {
-      sql: `((${Object.entries(countryIdsByPermissionGroup)
-        .map(([_, countryIds]) => {
-          return `
-          (
-            feed_item.permission_group_id = ? AND
-            feed_item.country_id IN (${countryIds.map(_ => `?`).join(',')})
-          )
-        `;
+      sql: `((${Object.values(countryIdsByPermissionGroup)
+        .map(countryIds => {
+          return `(feed_item.permission_group_id = ? AND feed_item.country_id IN ${SqlQuery.record(countryIds)})`;
         })
         // add the markdown type to the query here so that it always gets wrapped in brackets with the permissions query in the final query, regardless of what other custom conditions are added
         .join(' OR ')}) OR feed_item.type = '${FeedItemTypes.Markdown}')`,
