@@ -27,9 +27,10 @@ import {
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 
 export interface DatatrakWebModelRegistry extends ModelRegistry {
+  readonly database: DatatrakDatabase;
+
   readonly answer: AnswerModel;
   readonly country: CountryModel;
-  readonly database: DatatrakDatabase;
   readonly entity: EntityModel;
   readonly entityHierarchy: EntityHierarchyModel;
   readonly entityParentChildRelation: EntityParentChildRelationModel;
