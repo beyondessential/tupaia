@@ -45,7 +45,7 @@ export const streamSnapshotData = async (
             VALUES
               ${valuesSQL}
           )
-          SELECT s.id, s.record_type, s.is_deleted, s.data 
+          SELECT s.id, s.record_type, s.is_deleted, s.data
           FROM ${tableName} s
           LEFT JOIN priority p ON s.record_type = p.record_type
           WHERE direction = :direction
