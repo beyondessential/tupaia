@@ -113,7 +113,7 @@ class TestAllScript extends Script {
     }
   };
 
-  getScriptResult = results => Object.values(results).every(x => x);
+  getScriptResult = results => Object.values(results).every(Boolean);
 }
 
 new TestAllScript().run();

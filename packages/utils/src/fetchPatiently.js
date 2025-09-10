@@ -7,7 +7,7 @@ const DEFAULT_RETRY_PERIOD_MS = 500; // 20 x 0.5 seconds = total of 10 seconds w
 // criteria or we run out of time
 export const fetchPatiently = async (
   fetchFn,
-  validReturnTest = v => !!v,
+  validReturnTest = Boolean,
   retries = DEFAULT_RETRIES,
   retryPeriodMs = DEFAULT_RETRY_PERIOD_MS,
 ) => {
