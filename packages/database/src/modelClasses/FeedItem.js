@@ -53,12 +53,10 @@ export class FeedItemModel extends DatabaseModel {
   /** @param {AccessPolicy} accessPolicy */
   async getCountryIdsByPermissionGroup(accessPolicy) {
     const permissionGroupNames = accessPolicy.getPermissionGroups();
-
-    const countries = await this.otherModels.country.find({});
-
-    const permissionGroups = await this.otherModels.permissionGroup.find({
-      name: permissionGroupNames,
-    });
+    const [countries, permissionGroups] = await Promise.all([
+      this.otherModels.country.all(),
+      this.otherModels.permissionGroup.find({ name: permissionGroupNames }),
+    ]);
 
     const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
 
@@ -67,10 +65,8 @@ export class FeedItemModel extends DatabaseModel {
       const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
       const permissionGroupId = permissionGroupIdByName[permissionGroupName];
       const countryIds = countryCodes.map(code => countryIdByCode[code]);
-      return {
-        ...result,
-        [permissionGroupId]: countryIds,
-      };
+      result[permissionGroupId] = countryIds;
+      return result;
     }, {});
   }
 
