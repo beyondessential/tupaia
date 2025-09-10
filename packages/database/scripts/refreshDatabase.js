@@ -60,7 +60,7 @@ class RefreshDatabaseScript extends Script {
   }
 
   resolvePath = relativePath =>
-    path.resolve([this.args.root, relativePath].filter(x => !!x).join('/'));
+    path.resolve([this.args.root, relativePath].filter(Boolean).join('/'));
 
   execDbCommand = (dbCommand, { user, db } = {}) => {
     const parts = ['psql'];
