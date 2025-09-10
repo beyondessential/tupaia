@@ -165,8 +165,8 @@ export class TaskRecord extends DatabaseRecord {
    * @returns {Promise<TaskCommentRecord[]>}
    */
 
-  async comments() {
-    return this.otherModels.taskComment.find({ task_id: this.id });
+  async comments(customQueryOptions) {
+    return this.otherModels.taskComment.find({ task_id: this.id }, customQueryOptions);
   }
 
   /**
