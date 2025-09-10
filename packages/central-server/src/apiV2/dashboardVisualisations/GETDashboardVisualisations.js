@@ -103,7 +103,7 @@ export class GETDashboardVisualisations extends GETHandler {
     const reports = await this.findReportsByLegacyValue(dashboardItems, false);
     const legacyReports = await this.findReportsByLegacyValue(dashboardItems, true);
     const permissionGroups = await this.models.permissionGroup.find({
-      id: reports.map(r => r.permission_group_id).filter(r => !!r),
+      id: reports.filter(r => Boolean(r.permission_group_id)).map(r => r.permission_group_id),
     });
     const permissionGroupNames = permissionGroups.map(permissionGroup => permissionGroup.name);
     await assertPermissionGroupsAccess(this.accessPolicy, permissionGroupNames);

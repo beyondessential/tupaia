@@ -97,7 +97,7 @@ export const validateSurveyResponses = async (models, responses) => {
     }),
   );
 
-  const errors = validations.filter(x => x);
+  const errors = validations.filter(Boolean);
   if (errors.length > 0) {
     throw new MultiValidationError(
       'The request contained invalid responses. No records have been created; please fix the issues and send the whole request again.',

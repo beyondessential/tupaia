@@ -11,7 +11,7 @@ import { getMostRecentPeriod, getMostAncientPeriod } from '@tupaia/utils';
 export const getAggregatePeriod = periods => {
   if (!periods) return null;
 
-  const filteredPeriods = periods.filter(p => !!p);
+  const filteredPeriods = periods.filter(Boolean);
 
   if (filteredPeriods.length === 0) return null;
 

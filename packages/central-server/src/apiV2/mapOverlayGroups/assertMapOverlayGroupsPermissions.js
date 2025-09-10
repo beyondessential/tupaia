@@ -166,9 +166,7 @@ const findPermittedMapOverlayGroupIds = (
     return [];
   }
 
-  const newRelations = permittedMapOverlayGroupIds
-    .map(id => relationByChildId[id])
-    .filter(r => !!r);
+  const newRelations = permittedMapOverlayGroupIds.map(id => relationByChildId[id]).filter(Boolean);
 
   const nextPermittedMapOverlayGroupIds = findPermittedMapOverlayGroupIds(
     relationByChildId,
