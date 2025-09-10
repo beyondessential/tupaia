@@ -130,28 +130,22 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
 
     return {
-      sql: `(${Object.entries(countryIdsByPermissionGroup)
-        .map(([, countryIds]) => {
-          return `
-          (
-            permission_group_id = ? AND
-            ${SqlQuery.array(countryIds, 'TEXT')} && country_ids
-          )
-        `;
+      sql: `(${Object.values(countryIdsByPermissionGroup)
+        .map(countryIds => {
+          return `(permission_group_id = ? AND ${SqlQuery.array(countryIds, 'TEXT')} && country_ids)`;
         })
         .join(' OR ')})`,
       parameters: params,
     };
   }
 
+  /** @privateRemarks Identical to `FeedItemModel.getCountryIdsByPermissionGroup` */
   async getCountryIdsByPermissionGroup(accessPolicy) {
     const permissionGroupNames = accessPolicy.getPermissionGroups();
-
-    const countries = await this.otherModels.country.find({});
-
-    const permissionGroups = await this.otherModels.permissionGroup.find({
-      name: permissionGroupNames,
-    });
+    const [countries, permissionGroups] = await Promise.all([
+      this.otherModels.country.all(),
+      this.otherModels.permissionGroup.find({ name: permissionGroupNames }),
+    ]);
 
     const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
 
@@ -160,10 +154,8 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
       const permissionGroupId = permissionGroupIdByName[permissionGroupName];
       const countryIds = countryCodes.map(code => countryIdByCode[code]);
-      return {
-        ...result,
-        [permissionGroupId]: countryIds,
-      };
+      result[permissionGroupId] = countryIds;
+      return result;
     }, {});
   }
 
