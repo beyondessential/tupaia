@@ -167,15 +167,14 @@ export class SurveyRecord extends DatabaseRecord {
 
     const questions = await this.model.getQuestionsValues([this.id]);
     const formatted = questions
+      // Hide Task questions in UI. They’re used to trigger task creation by TaskCreationHandler.
+      .filter(question => question.type !== QuestionType.Task)
       .map(screen => ({
         ...screen,
         surveyScreenComponents: screen.surveyScreenComponents
           .map(formatSurveyScreenComponent)
           .sort((a, b) => a.componentNumber - b.componentNumber),
       }))
-      // Hide Task questions from the survey. They are not displayed in the web app and are
-      // just used to trigger new tasks in the TaskCreationHandler
-      .filter(question => question.type !== QuestionType.Task)
       .sort((a, b) => a.screenNumber - b.screenNumber);
 
     console.log('[getPaginatedQuestions]', { formatted });
