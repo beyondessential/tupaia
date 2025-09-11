@@ -9,6 +9,8 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
 import { buildSyncLookupSelect } from '../sync';
+import { QuestionType } from '@tupaia/types';
+import { OptionRecord } from './Option';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
@@ -134,6 +136,50 @@ export class SurveyRecord extends DatabaseRecord {
   async hasResponses() {
     const count = await this.otherModels.surveyResponse.count({ survey_id: this.id });
     return count > 0;
+  }
+
+  async getPaginatedQuestions() {
+    function formatSurveyScreenComponent(ssc) {
+      console.log('[formatSurveyScreenComponent]', ssc);
+      const {
+        config,
+        question,
+        validationCriteria,
+        visibilityCriteria,
+        detailLabel = question.detail, // Screen component can override the question detail
+        questionText = question.text, // Screen component can override the question text
+        ...rest
+      } = ssc;
+
+      return {
+        ...rest,
+        ...question, // include component and question fields in one object
+        componentId: ssc.id,
+        config: config ? JSON.parse(config) : null,
+        detailLabel: detailLabel,
+        options: question.options.map(OptionRecord.parseForClient),
+        questionId: question.id,
+        text: questionText,
+        validationCriteria: validationCriteria ? JSON.parse(validationCriteria) : null,
+        visibilityCriteria: visibilityCriteria ? JSON.parse(visibilityCriteria) : null,
+      };
+    }
+
+    const questions = await this.model.getQuestionsValues([this.id]);
+    const formatted = questions
+      .map(screen => ({
+        ...screen,
+        surveyScreenComponents: screen.surveyScreenComponents
+          .map(formatSurveyScreenComponent)
+          .sort((a, b) => a.componentNumber - b.componentNumber),
+      }))
+      // Hide Task questions from the survey. They are not displayed in the web app and are
+      // just used to trigger new tasks in the TaskCreationHandler
+      .filter(question => question.type !== QuestionType.Task)
+      .sort((a, b) => a.screenNumber - b.screenNumber);
+
+    console.log('[getPaginatedQuestions]', { formatted });
+    return formatted;
   }
 }
 
@@ -281,8 +327,10 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   /** @see `./README.md` */
   async getQuestionsValues(surveyIds) {
+    console.log('[getQuestionsValues]', { surveyIds });
     if (surveyIds.length === 0) return {};
 
+    console.log('[getQuestionsValues] executing SQL');
     const rows = await this.database.executeSql(
       `
         SELECT
@@ -340,6 +388,8 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       return questionsObject;
     }, initialValue);
 
+    console.log('[getAggregatedQuestions]', { surveyQuestions });
+
     for (const result of rawResults) {
       const { survey_id, screen_number, survey_screen_id } = result;
       const screenIndex = surveyQuestions[survey_id].findIndex(
@@ -354,6 +404,8 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
         survey_screen_components: [],
       });
     }
+
+    console.log('[getAggregatedQuestions]', { surveyQuestions });
 
     for (const result of rawResults) {
       const {
@@ -398,6 +450,9 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
         },
       });
     }
+
+    console.log('[getAggregatedQuestions]', { surveyQuestions });
+
     return surveyQuestions;
   }
 }
