@@ -105,6 +105,8 @@ export interface UnmarkSessionAsProcessingFunction {
 }
 
 export interface TestModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly syncQueuedDevice: SyncQueuedDeviceModel;
   readonly syncSession: SyncSessionModel;
   readonly syncDeviceTick: SyncDeviceTickModel;

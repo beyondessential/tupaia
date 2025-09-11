@@ -1,4 +1,4 @@
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   CountryModel,
   DashboardItemModel,
@@ -13,6 +13,8 @@ import {
 } from '@tupaia/server-boilerplate';
 
 export interface TupaiaWebServerModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly country: CountryModel;
   readonly dashboard: DashboardModel;
   readonly dashboardItem: DashboardItemModel;

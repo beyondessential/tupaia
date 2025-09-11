@@ -1,4 +1,4 @@
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   AncestorDescendantRelationModel,
   EntityHierarchyModel,
@@ -7,6 +7,8 @@ import {
 } from '@tupaia/server-boilerplate';
 
 export interface EntityServerModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
   readonly entity: EntityModel;
   readonly entityHierarchy: EntityHierarchyModel;
