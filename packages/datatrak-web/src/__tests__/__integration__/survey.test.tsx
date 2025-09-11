@@ -1,4 +1,6 @@
-import { screen, fireEvent } from '@testing-library/react';
+import '../mocks/matchMedia.mock'; // Import before components under test
+
+import { fireEvent, screen } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderSurveyPage } from '../helpers/render';
