@@ -163,7 +163,7 @@ function constructDbFilter({
   if (countryCode) {
     // TODO: Replace with QUERY_CONJUNCTIONS.RAW once @tupaia/database imports are fixed
     dbFilter._raw_ = {
-      sql: '(SELECT id FROM country WHERE code = ? LIMIT 1) = ANY(country_ids)',
+      sql: '(SELECT id FROM country WHERE code = ?) = ANY (country_ids)',
       parameters: [countryCode],
     };
   }
