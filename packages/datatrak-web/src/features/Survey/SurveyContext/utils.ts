@@ -5,9 +5,9 @@ import {
   ConditionQuestionConfig,
   QuestionType,
 } from '@tupaia/types';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 import { SurveyScreenComponent } from '../../../types';
 import { generateMongoId, generateShortId } from './generateId';
-import { stripTimezoneFromDate } from '@tupaia/utils';
 
 export const getIsQuestionVisible = (
   question: SurveyScreenComponent,
@@ -63,22 +63,16 @@ export const getDisplayQuestions = (
 ) => {
   // If the first question is an instruction, don't render it since we always just
   // show the text of first questions as the heading. Format the questions with a question number to display
-  const displayQuestions = (
-    activeScreen?.length && activeScreen?.[0].type === 'Instruction'
-      ? activeScreen?.slice(1)
-      : activeScreen
-  ).map(question => {
-    const { questionId } = question;
-    if (getIsDependentQuestion(screenComponents, questionId)) {
-      // if the question dictates the visibility of any other questions, we need to update the formData when the value changes so the visibility of other questions can be updated in real time
-      return {
-        ...question,
-        updateFormDataOnChange: true,
-      };
-    }
-    return question;
-  });
-  return displayQuestions;
+  const questions =
+    activeScreen?.[0].type === QuestionType.Instruction ? activeScreen?.slice(1) : activeScreen;
+  return questions.map(question =>
+    getIsDependentQuestion(screenComponents, question.questionId)
+      ? // If the question dictates the visibility of any other questions, we need to update the
+        // formData when the value changes so the visibility of other questions can be updated in
+        // realtime
+        { ...question, updateFormDataOnChange: true }
+      : question,
+  );
 };
 
 const getConditionIsMet = (expressionParser, formData, { formula, defaultValues = {} }) => {
