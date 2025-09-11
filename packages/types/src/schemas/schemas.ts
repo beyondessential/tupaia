@@ -81441,6 +81441,7 @@ export const OptionSchema = {
 	"required": [
 		"id",
 		"option_set_id",
+		"sort_order",
 		"value"
 	]
 } 
@@ -81468,6 +81469,7 @@ export const OptionCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"option_set_id",
+		"sort_order",
 		"value"
 	]
 } 
@@ -85067,6 +85069,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"additionalProperties": false,
 				"required": [
 					"option_set_id",
+					"sort_order",
 					"value"
 				]
 			}
