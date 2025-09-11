@@ -3,6 +3,7 @@ import {
   SyncDeviceTickModel,
   SyncQueuedDeviceModel,
   SyncSessionModel,
+  TupaiaDatabase,
 } from '@tupaia/database';
 import {
   AnswerModel,
@@ -14,6 +15,8 @@ import {
 } from '@tupaia/server-boilerplate';
 
 export interface SyncServerModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly project: ProjectModel;
   readonly entity: EntityModel;
   readonly surveyResponse: SurveyResponseModel;
@@ -23,6 +26,19 @@ export interface SyncServerModelRegistry extends ModelRegistry {
   readonly syncSession: SyncSessionModel;
   readonly syncDeviceTick: SyncDeviceTickModel;
   readonly syncQueuedDevice: SyncQueuedDeviceModel;
+
+  wrapInTransaction<T = unknown>(
+    wrappedFunction: (models: SyncServerModelRegistry) => Promise<T>,
+    transactionConfig?: Knex.TransactionConfig,
+  ): Promise<T>;
+  wrapInReadOnlyTransaction<T = unknown>(
+    wrappedFunction: (models: SyncServerModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'readOnly'>,
+  ): Promise<T>;
+  wrapInRepeatableReadTransaction<T = unknown>(
+    wrappedFunction: (models: SyncServerModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolation'>,
+  ): Promise<T>;
 }
 
 export type SyncServerConfig = {
@@ -84,7 +100,9 @@ export interface PullInitiationResult {
   pullUntil: number;
 }
 
-export type UnmarkSessionAsProcessingFunction = () => Promise<void>;
+export interface UnmarkSessionAsProcessingFunction {
+  (): Promise<void>;
+}
 
 export interface TestModelRegistry extends ModelRegistry {
   readonly syncQueuedDevice: SyncQueuedDeviceModel;

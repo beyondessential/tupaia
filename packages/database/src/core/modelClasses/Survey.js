@@ -304,7 +304,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       `,
       surveyIds,
     );
-    return this.#getAggregatedQuestions(rows);
+    return this.getAggregatedQuestions(rows);
   }
 
   async buildSyncLookupQueryDetails() {
@@ -318,7 +318,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   /**
    * @param {ReturnType<typeof this.getQuestionsValues>} rawResults
    */
-  #getAggregatedQuestions(rawResults) {
+  getAggregatedQuestions(rawResults) {
     const initialValue = {};
     const surveyQuestions = rawResults.reduce((questionsObject, currentResult) => {
       const { survey_id: id } = currentResult;
