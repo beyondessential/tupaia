@@ -1,9 +1,10 @@
+import '../mocks/matchMedia.mock'; // Imported before components under test, incl. renderSurveyPage
+
 import { fireEvent, screen } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderSurveyPage } from '../helpers/render';
 import { handlers } from '../mocks/handlers';
-import '../mocks/matchMedia.mock';
 
 const server = setupServer(
   ...handlers,
