@@ -1,5 +1,5 @@
 import { TupaiaApiClient } from '@tupaia/api-client';
-import { DashboardItemModel, ModelRegistry } from '@tupaia/database';
+import { DashboardItemModel, ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { ReportModel } from '@tupaia/server-boilerplate';
 
 export type RequestContext = {
@@ -7,6 +7,8 @@ export type RequestContext = {
 };
 
 export interface ReportServerModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly report: ReportModel;
   readonly dashboardItem: DashboardItemModel;
 }

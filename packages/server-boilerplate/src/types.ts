@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   ApiClientModel,
   ApiRequestLogModel,
@@ -22,12 +22,14 @@ export type QueryParameters = Record<string, string>;
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
 export interface ServerBoilerplateModelRegistry extends ModelRegistry {
-  apiClient: ApiClientModel;
-  apiRequestLog: ApiRequestLogModel;
-  entity: EntityModel;
-  permissionGroup: PermissionGroupModel;
-  user: UserModel;
-  userEntityPermission: UserEntityPermissionModel;
+  readonly database: TupaiaDatabase;
+
+  readonly apiClient: ApiClientModel;
+  readonly apiRequestLog: ApiRequestLogModel;
+  readonly entity: EntityModel;
+  readonly permissionGroup: PermissionGroupModel;
+  readonly user: UserModel;
+  readonly userEntityPermission: UserEntityPermissionModel;
 
   wrapInTransaction<T = unknown>(
     wrappedFunction: (models: ServerBoilerplateModelRegistry) => Promise<T>,

@@ -1,4 +1,4 @@
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   DataTableModel,
   EntityModel,
@@ -6,6 +6,8 @@ import {
 } from '@tupaia/server-boilerplate';
 
 export interface DataTableServerModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly dataTable: DataTableModel;
   readonly entity: EntityModel;
   readonly externalDatabaseConnection: ExternalDatabaseConnectionModel;

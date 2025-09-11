@@ -1,6 +1,8 @@
-import { ModelRegistry, modelClasses } from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase, modelClasses } from '@tupaia/database';
 
 export interface TestModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly dataElement: modelClasses.DataElement;
   readonly entity: modelClasses.Entity;
   readonly feedItem: modelClasses.FeedItem;
