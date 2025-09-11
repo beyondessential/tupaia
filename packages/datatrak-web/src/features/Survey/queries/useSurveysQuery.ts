@@ -6,12 +6,7 @@ import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from 
 import { get, RequestParameters, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
 import { DatatrakWebModelRegistry, Entity } from '../../../types';
-import {
-  getSurveyCountryCodes,
-  getSurveyCountryNames,
-  getSurveyGroupNames,
-  getSurveyQuestionsValues,
-} from './util';
+import { getSurveyCountryCodes, getSurveyCountryNames, getSurveyGroupNames } from './util';
 
 interface UseSurveysQueryFilterParams {
   countryCode?: Entity['code'];
@@ -30,17 +25,9 @@ const getRemote = async ({
   countryCode,
   includeCountryNames,
   includeSurveyGroupNames,
-  includeQuestions,
   projectId,
   searchTerm,
-}: {
-  countryCode?: Entity['code'];
-  includeCountryNames?: boolean;
-  includeSurveyGroupNames?: boolean;
-  includeQuestions?: boolean;
-  projectId?: Project['id'];
-  searchTerm?: string;
-}): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
+}: UseSurveysQueryParams): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
   const params: RequestParameters = { fields: ['name', 'code', 'id'] };
 
   if (countryCode) params.countryCode = countryCode;
@@ -49,7 +36,6 @@ const getRemote = async ({
 
   if (includeCountryNames) params.fields.push('countryNames');
   if (includeSurveyGroupNames) params.fields.push('survey_group.name');
-  if (includeQuestions) params.fields.push('surveyQuestions');
 
   return await get('surveys', { params });
 };
@@ -59,18 +45,9 @@ const getLocal = async ({
   countryCode,
   includeCountryNames,
   includeSurveyGroupNames,
-  includeQuestions,
   projectId,
   searchTerm,
-}: {
-  models: DatatrakWebModelRegistry;
-  countryCode?: Entity['code'];
-  includeCountryNames?: boolean;
-  includeSurveyGroupNames?: boolean;
-  includeQuestions?: boolean;
-  projectId?: Project['id'];
-  searchTerm?: string;
-}) => {
+}: UseSurveysQueryParams & { models: DatatrakWebModelRegistry }) => {
   const where = constructDbFilter({ projectId, searchTerm, countryCode });
 
   const trxModels = models; // TODO: Replace with read-only transaction
@@ -91,15 +68,13 @@ const getLocal = async ({
   }));
 
   const surveyIds = surveys.map(s => s.id);
-  const [surveyQuestionsValues, countryNames, countryCodes, surveyGroupNames] = await Promise.all([
-    getSurveyQuestionsValues(trxModels, surveyIds, { enabled: includeQuestions }),
+  const [countryNames, countryCodes, surveyGroupNames] = await Promise.all([
     getSurveyCountryNames(trxModels, surveyIds, { enabled: includeCountryNames }),
     getSurveyCountryCodes(trxModels, surveyIds, { enabled: includeSurveyGroupNames }),
     getSurveyGroupNames(trxModels, surveyIds, { enabled: includeSurveyGroupNames }),
   ]);
 
   for (const survey of surveys) {
-    survey.surveyQuestions = surveyQuestionsValues[survey.id];
     survey.countryNames = countryNames[survey.id];
     survey.countryCodes = countryCodes[survey.id];
     survey.surveyGroupName = surveyGroupNames[survey.id];

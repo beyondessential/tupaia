@@ -1,15 +1,5 @@
 import { Country, Survey, SurveyGroup } from '@tupaia/types';
-
 import { DatatrakWebModelRegistry } from '../../../types';
-
-export async function getSurveyQuestionsValues(
-  models: DatatrakWebModelRegistry,
-  surveyIds: Survey['id'][],
-  options: { enabled?: boolean } = { enabled: true },
-): Promise<Record<Survey['id'], unknown[]>> {
-  if (!options.enabled) return {};
-  return await models.survey.getQuestionsValues(surveyIds);
-}
 
 export async function getSurveyCountryNames(
   models: DatatrakWebModelRegistry,
