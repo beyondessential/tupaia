@@ -5,5 +5,5 @@ import { isWebApp } from '../utils';
  * for persisting data to the remote database). Returns `undefined` if the result is pending.
  */
 export function useIsOfflineFirst(): boolean | undefined {
-  return true;
+  return isWebApp();
 }
