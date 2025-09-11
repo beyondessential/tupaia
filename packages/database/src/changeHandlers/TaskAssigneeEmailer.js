@@ -1,5 +1,5 @@
-
 import { sendEmail } from '@tupaia/server-utils';
+import { assertIsNotNullish } from '@tupaia/tsutils';
 import { requireEnv } from '@tupaia/utils';
 import { ChangeHandler } from './ChangeHandler';
 
@@ -34,26 +34,16 @@ export class TaskAssigneeEmailer extends ChangeHandler {
     if (changedTasks.length === 0) return;
 
     for (const task of changedTasks) {
-      const {
-        survey_id: surveyId,
-        assignee_id: assigneeId,
-        entity_id: entityId,
-        due_date: dueDate,
-        id,
-      } = task;
-      const survey = await models.survey.findById(surveyId);
+      const { assignee_id: assigneeId, entity_id: entityId, id, survey_id: surveyId } = task;
 
-      if (!survey) {
-        throw new Error(`Survey with id ${surveyId} not found`);
-      }
-      const assignee = await models.user.findById(assigneeId);
-      if (!assignee) {
-        throw new Error(`User with id ${assigneeId} not found`);
-      }
-      const entity = await models.entity.findById(entityId);
-      if (!entity) {
-        throw new Error(`Entity with id ${entityId} not found`);
-      }
+      const [survey, assignee, entity] = await Promise.all([
+        models.survey.findById(surveyId),
+        models.user.findById(assigneeId),
+        models.entity.findById(entityId),
+      ]);
+      assertIsNotNullish(survey, `No survey found with ID ${surveyId}`);
+      assertIsNotNullish(assignee, `No user found with ID ${assigneeId}`);
+      assertIsNotNullish(entity, `No entity found with ID ${entityId}`);
 
       const datatrakURL = requireEnv('DATATRAK_FRONT_END_URL');
 
