@@ -33,7 +33,7 @@ export const usePrimaryEntityQuestionAutoFill = (
   primaryEntityCode?: Entity['code'],
 ) => {
   const user = useCurrentUserContext();
-  const { data = {}, ...query } = useEntityAncestors(user.project?.code, primaryEntityCode);
+  const { data, ...query } = useEntityAncestors(user.project?.code, primaryEntityCode);
 
   const ancestors = data
     ? getEntityQuestionAncestorAnswers(
