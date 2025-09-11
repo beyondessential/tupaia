@@ -92,10 +92,8 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
     );
 
     if (permissionGroupsForCountry.length === 0) {
-      dbConditions.id = {
-        comparator: '=',
-        comparisonValue: null,
-      }; // Return no results because we don't have access to any permission groups for this country
+      // Return no results because we don’t have access to any permission groups for this country
+      dbConditions[RAW] = 'FALSE';
     } else
       dbConditions[RAW] = {
         sql: `(
