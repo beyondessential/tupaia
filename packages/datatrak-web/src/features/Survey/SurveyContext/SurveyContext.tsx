@@ -120,7 +120,7 @@ export const SurveyContext = ({
     })
     .filter(screen => screen.surveyScreenComponents.length > 0);
 
-  const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
+  const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents ?? [];
 
   const initialiseFormData = () => {
     if (!surveyCode || isResponseScreen || isResubmit) return;
