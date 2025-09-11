@@ -45,7 +45,7 @@ const defaultContext = {
 
 const SurveyFormContext = createContext(defaultContext);
 
-export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
+const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
 export const SurveyContext = ({
   children,
