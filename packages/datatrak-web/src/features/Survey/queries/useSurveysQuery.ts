@@ -5,7 +5,8 @@ import { camelcaseKeys } from '@tupaia/tsutils';
 import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
 import { get, RequestParameters, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
-import { DatatrakWebModelRegistry, Entity } from '../../../types';
+import { ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
+import { Entity } from '../../../types';
 import { getSurveyCountryCodes, getSurveyCountryNames, getSurveyGroupNames } from './util';
 
 interface UseSurveysQueryFilterParams {
@@ -21,13 +22,17 @@ interface UseSurveysQueryJoinParams {
 
 interface UseSurveysQueryParams extends UseSurveysQueryFilterParams, UseSurveysQueryJoinParams {}
 
+interface SurveysQueryFunctionContext
+  extends UseSurveysQueryParams,
+    ContextualQueryFunctionContext {}
+
 const getRemote = async ({
   countryCode,
   includeCountryNames,
   includeSurveyGroupNames,
   projectId,
   searchTerm,
-}: UseSurveysQueryParams): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
+}: SurveysQueryFunctionContext): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
   const params: RequestParameters = { fields: ['name', 'code', 'id'] };
 
   if (countryCode) params.countryCode = countryCode;
@@ -47,7 +52,7 @@ const getLocal = async ({
   includeSurveyGroupNames,
   projectId,
   searchTerm,
-}: UseSurveysQueryParams & { models: DatatrakWebModelRegistry }) => {
+}: SurveysQueryFunctionContext) => {
   const where = constructDbFilter({ projectId, searchTerm, countryCode });
 
   const trxModels = models; // TODO: Replace with read-only transaction

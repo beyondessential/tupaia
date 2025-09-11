@@ -6,20 +6,17 @@ import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import { Country, DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
 import { get, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
-import { DatatrakWebModelRegistry } from '../../../types';
+import { ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
 import { getSurveyCountryCodes, getSurveyCountryNames } from './util';
 
-interface UseSurveyQueryFunctionContext {
+interface SurveyQueryFunctionContext extends ContextualQueryFunctionContext {
   surveyCode?: Survey['code'];
 }
 
 const surveyQueryFunctions = {
-  remote: async ({ surveyCode }: UseSurveyQueryFunctionContext) =>
+  remote: async ({ surveyCode }: SurveyQueryFunctionContext) =>
     await get(`surveys/${encodeURIComponent(ensure(surveyCode))}`),
-  local: async ({
-    models,
-    surveyCode,
-  }: UseSurveyQueryFunctionContext & { models: DatatrakWebModelRegistry }) =>
+  local: async ({ models, surveyCode }: SurveyQueryFunctionContext) =>
     await models.wrapInReadOnlyTransaction(async trxModels => {
       const survey: SurveyRecord & {
         countryCodes?: Country['code'][];

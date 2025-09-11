@@ -1,33 +1,25 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
-import { assertIsNotNullish, camelcaseKeys, ensure } from '@tupaia/tsutils';
+import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import { DatatrakWebEntitiesRequest, Entity } from '@tupaia/types';
-import { DatatrakWebModelRegistry } from '../../types';
 import { get } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
-import { useDatabaseQuery } from './useDatabaseQuery';
+import { ContextualQueryFunctionContext, useDatabaseQuery } from './useDatabaseQuery';
 
-interface UseEntityByCodeQueryFunctionContext {
+interface EntityByCodeQueryFunctionContext extends ContextualQueryFunctionContext {
   entityCode?: Entity['code'];
 }
 
 const entityByCodeQueryFunctions = {
-  remote: async ({ entityCode }: UseEntityByCodeQueryFunctionContext) => {
+  remote: async ({ entityCode }: EntityByCodeQueryFunctionContext) => {
     return await get(`entity/${encodeURIComponent(ensure(entityCode))}`);
   },
-  local: async ({
-    entityCode,
-    models,
-  }: UseEntityByCodeQueryFunctionContext & { models: DatatrakWebModelRegistry }) => {
+  local: async ({ entityCode, models }: EntityByCodeQueryFunctionContext) => {
     const [entity] = await models.entity.find({ code: ensure(entityCode) });
     entity.model = undefined;
     return camelcaseKeys(entity, { deep: true });
   },
 };
-
-interface UseEntityByIdQueryFunctionContext {
-  entityId?: Entity['id'];
-}
 
 export const useEntityByCode = (
   entityCode?: Entity['code'],
@@ -50,18 +42,19 @@ export const useEntityByCode = (
   );
 };
 
+interface EntityByIdQueryFunctionContext extends ContextualQueryFunctionContext {
+  entityId?: Entity['id'];
+}
+
 const entityByIdQueryFunctions = {
-  remote: async ({ entityId }: UseEntityByIdQueryFunctionContext) => {
+  remote: async ({ entityId }: EntityByIdQueryFunctionContext) => {
     return await get('entities', {
       params: {
         filter: { id: ensure(entityId) },
       },
     });
   },
-  local: async ({
-    entityId,
-    models,
-  }: UseEntityByIdQueryFunctionContext & { models: DatatrakWebModelRegistry }) => {
+  local: async ({ entityId, models }: EntityByIdQueryFunctionContext) => {
     const [entity] = await models.entity.find({ id: ensure(entityId) });
     entity.model = undefined;
     return camelcaseKeys(entity, { deep: true });
