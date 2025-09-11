@@ -28,4 +28,8 @@ export class CountryModel extends DatabaseModel {
     const countries = await this.findManyById(countryIds);
     return reduceToDictionary(countries, 'id', 'code');
   }
+
+  async buildSyncLookupQueryDetails() {
+    return null;
+  }
 }
