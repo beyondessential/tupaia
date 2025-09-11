@@ -27,7 +27,7 @@ const createTaskCommentOnline = ({ taskId, data }: CreateTaskCommentLocalContext
 export const useCreateTaskComment = (taskId?: Task['id'], onSuccess?: () => void) => {
   const queryClient = useQueryClient();
   const isOfflineFirst = useIsOfflineFirst();
-  return useDatabaseMutation<any, Error, string, unknown>(
+  return useDatabaseMutation<void, Error, string, unknown>(
     isOfflineFirst ? createTaskComment : createTaskCommentOnline,
     {
       onSuccess: () => {
