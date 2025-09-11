@@ -59,9 +59,9 @@ export const snapshotOutgoingChanges = async (
         AND (
           project_ids IS NULL
           OR
-          project_ids::text[] && ${SqlQuery.array(projectIds, 'TEXT')}
+          project_ids::text[] && ${SqlQuery.array(projectIds)}
         )
-        AND record_type IN (${SqlQuery.record(recordTypes)})
+        AND record_type IN ${SqlQuery.record(recordTypes)}
         ${
           avoidRepull && deviceId
             ? 'AND (pushed_by_device_id <> ? OR pushed_by_device_id IS NULL)'
