@@ -58,7 +58,7 @@ export class OptionModel extends DatabaseModel {
    */
   async getLargestSortOrder(optionSetId) {
     const [{ max_sort_order }] = await this.database.executeSql(
-      'SELECT MAX(sort_order) AS max_sort_order FROM "option" WHERE "option_set_id" = ?;',
+      'SELECT MAX(sort_order) AS max_sort_order FROM option WHERE option_set_id = ?;',
       optionSetId,
     );
     return max_sort_order;
