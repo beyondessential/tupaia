@@ -101,23 +101,21 @@ export const SurveyContext = ({
 
   // filter out screens that have no visible questions, and the components that are not visible. This is so that the titles of the screens are not using questions that are not visible
   const visibleScreens = surveyScreens
-    .map(screen => {
-      return {
-        ...screen,
-        surveyScreenComponents: screen.surveyScreenComponents.filter(question => {
-          // If a primary entity code is pre-set for the survey, hide the primary entity question and its ancestor questions
-          if (primaryEntityCode && !isReviewScreen) {
-            if (
-              question.type === QuestionType.PrimaryEntity ||
-              primaryEntityParentQuestionIds.includes(question.id)
-            ) {
-              return false;
-            }
-          }
-          return getIsQuestionVisible(question, formData);
-        }),
-      };
-    })
+    .map(screen => ({
+      ...screen,
+      surveyScreenComponents: screen.surveyScreenComponents.filter(question => {
+        // If a primary entity code is pre-set for the survey, hide the primary entity question and its ancestor questions
+        if (
+          primaryEntityCode &&
+          !isReviewScreen &&
+          (question.type === QuestionType.PrimaryEntity ||
+            primaryEntityParentQuestionIds.includes(question.id))
+        ) {
+          return false;
+        }
+        return getIsQuestionVisible(question, formData);
+      }),
+    }))
     .filter(screen => screen.surveyScreenComponents.length > 0);
 
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
