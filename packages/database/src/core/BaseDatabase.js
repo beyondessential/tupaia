@@ -85,6 +85,9 @@ export class BaseDatabase {
    */
   #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
 
+  /** @type {import('knex').Knex} */
+  connection;
+
   constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
