@@ -2,6 +2,7 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
 import { reduceToDictionary } from '@tupaia/utils';
 
+import { ensure } from '@tupaia/tsutils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -118,6 +119,16 @@ export class SurveyRecord extends DatabaseRecord {
   async getCountryCodes() {
     const countries = await this.getCountries();
     return countries.map(c => c.code);
+  }
+
+  /**
+   * @returns {Promise<import('./Project').ProjectRecord>}
+   */
+  async getProject() {
+    return ensure(
+      await this.otherModels.project.findById(this.project_id),
+      `Couldn’t find project for survey ${this.code} (expected project with ID ${this.project_id})`,
+    );
   }
 
   async hasResponses() {
