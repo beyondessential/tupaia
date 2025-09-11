@@ -1,4 +1,4 @@
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
 import { PermissionsError } from '@tupaia/utils';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
@@ -55,25 +55,21 @@ export const createSurveyDBFilter = async (accessPolicy, models, criteria) => {
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
-  const dbConditions = { ...criteria };
 
   const countryIdsByPermissionGroupId = await fetchCountryIdsByPermissionGroupId(
     accessPolicy,
     models,
   );
 
-  dbConditions[RAW] = {
-    sql: `
-    (
-      survey.country_ids
-      &&
-      ARRAY(
+  return {
+    ...criteria,
+    [RAW]: {
+      sql: `(survey.country_ids && ARRAY(
         SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-      )
-    )`,
-    parameters: JSON.stringify(countryIdsByPermissionGroupId),
+      ))`,
+      parameters: JSON.stringify(countryIdsByPermissionGroupId),
+    },
   };
-  return dbConditions;
 };
 
 export const createSurveyViaCountryDBFilter = async (accessPolicy, models, criteria, countryId) => {
@@ -87,12 +83,7 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
   // Even if we're BES admin, we need to filter by the country
   if (hasBESAdminAccess(accessPolicy)) {
     dbConditions[RAW] = {
-      sql: `
-      (
-        ARRAY[?]
-        <@
-        survey.country_ids
-      )`,
+      sql: '(ARRAY[?] <@ survey.country_ids)',
       parameters: countryId,
     };
   } else {
@@ -107,15 +98,10 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
       }; // Return no results because we don't have access to any permission groups for this country
     } else
       dbConditions[RAW] = {
-        sql: `
-      (
-        (
-          ARRAY[?]
-          <@
-          survey.country_ids
-        )
-        AND survey.permission_group_id IN (${permissionGroupsForCountry.map(() => '?').join(',')})
-      )`,
+        sql: `(
+          ARRAY[?] <@ survey.country_ids
+          AND survey.permission_group_id IN ${SqlQuery.record(permissionGroupsForCountry)}
+        )`,
         parameters: [countryId, ...permissionGroupsForCountry],
       };
   }
