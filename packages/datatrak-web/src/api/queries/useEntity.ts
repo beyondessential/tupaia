@@ -44,7 +44,7 @@ export const useEntityByCode = (
   );
 
   return useDatabaseQuery(
-    ['entity', entityCode],
+    ['entity', { entityCode }],
     isOfflineFirst ? entityByCodeQueryFunctions.local : entityByCodeQueryFunctions.remote,
     options,
   );
@@ -83,7 +83,7 @@ export const useEntityById = (
   );
 
   return useDatabaseQuery(
-    ['entities', entityId],
+    ['entities', { entityId }],
     isOfflineFirst ? entityByIdQueryFunctions.local : entityByIdQueryFunctions.remote,
     options,
   );
