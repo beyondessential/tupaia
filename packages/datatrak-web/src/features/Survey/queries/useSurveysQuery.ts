@@ -70,7 +70,7 @@ const getLocal = async ({
   const surveyIds = surveys.map(s => s.id);
   const [countryNames, countryCodes, surveyGroupNames] = await Promise.all([
     getSurveyCountryNames(trxModels, surveyIds, { enabled: includeCountryNames }),
-    getSurveyCountryCodes(trxModels, surveyIds, { enabled: includeSurveyGroupNames }),
+    getSurveyCountryCodes(trxModels, surveyIds),
     getSurveyGroupNames(trxModels, surveyIds, { enabled: includeSurveyGroupNames }),
   ]);
 
