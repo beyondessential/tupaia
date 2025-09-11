@@ -1,4 +1,4 @@
-export const BASE_TASK_QUERY_FIELDS = [
+const BASE_TASK_QUERY_FIELDS = [
   'assignee_id',
   'assignee_name',
   'entity.code',
