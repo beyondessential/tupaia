@@ -54,7 +54,7 @@ export class OptionModel extends DatabaseModel {
 
   /**
    * @param {import('@tupaia/types').OptionSet['id']} optionSetId
-   * @returns {Promise<number>}
+   * @returns {Promise<number | null>} `null` if and only if the option set has no options
    */
   async getLargestSortOrder(optionSetId) {
     const [{ max_sort_order }] = await this.database.executeSql(
