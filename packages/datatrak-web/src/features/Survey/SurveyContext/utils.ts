@@ -27,7 +27,7 @@ export const getIsQuestionVisible = (
     // stringify the answer to compare with the validAnswers so that the types are always the same
     const stringifiedAnswer = String(answer);
     return Array.isArray(validAnswers)
-      ? validAnswers?.map(validAnswer => String(validAnswer)).includes(stringifiedAnswer)
+      ? validAnswers.map(validAnswer => String(validAnswer)).includes(stringifiedAnswer)
       : String(validAnswers) === stringifiedAnswer;
   });
 };
