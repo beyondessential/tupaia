@@ -7,7 +7,7 @@ import { Country, DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
 import { get, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
 import { DatatrakWebModelRegistry } from '../../../types';
-import { getSurveyCountryCodes, getSurveyCountryNames, getSurveyQuestionsValues } from './util';
+import { getSurveyCountryCodes, getSurveyCountryNames } from './util';
 
 interface UseSurveyQueryFunctionContext {
   surveyCode?: Survey['code'];
@@ -22,21 +22,21 @@ const surveyQueryFunctions = {
   }: UseSurveyQueryFunctionContext & { models: DatatrakWebModelRegistry }) =>
     await models.wrapInReadOnlyTransaction(async trxModels => {
       const survey: SurveyRecord & {
-        surveyQuestions?: unknown[];
-        countryNames?: Country['name'][];
         countryCodes?: Country['code'][];
+        countryNames?: Country['name'][];
         project?: ProjectRecord;
+        screens?: unknown; // TODO
       } = await trxModels.survey.findOne({ code: ensure(surveyCode) });
 
-      const [surveyQuestionsValues, countryNames, countryCodes, project] = await Promise.all([
-        getSurveyQuestionsValues(trxModels, [survey.id]),
+      const [countryNames, countryCodes, screens, project] = await Promise.all([
         getSurveyCountryNames(trxModels, [survey.id]),
         getSurveyCountryCodes(trxModels, [survey.id]),
+        survey.getPaginatedQuestions(),
         survey.getProject(),
       ]);
-      survey.surveyQuestions = surveyQuestionsValues[survey.id];
       survey.countryNames = countryNames[survey.id];
       survey.countryCodes = countryCodes[survey.id];
+      survey.screens = screens;
       survey.project = project;
 
       survey.model = undefined;
