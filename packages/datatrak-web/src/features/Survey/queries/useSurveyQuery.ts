@@ -8,7 +8,7 @@ import { DatatrakWebModelRegistry } from '../../../types';
 import { getSurveyCountryCodes, getSurveyCountryNames, getSurveyQuestionsValues } from './util';
 
 interface UseSurveyQueryFunctionContext {
-  surveyCode: Survey['code'];
+  surveyCode?: Survey['code'];
 }
 
 const surveyQueryFunctions = {
