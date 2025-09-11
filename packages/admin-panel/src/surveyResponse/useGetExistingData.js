@@ -8,14 +8,15 @@ export const useGetExistingData = surveyResponseId =>
   useQuery(
     ['surveyResubmitData', surveyResponseId],
     async () => {
-      const responseEndpoint = `surveyResponses/${surveyResponseId}`;
+      const responseEndpoint = `surveyResponses/${encodeURIComponent(surveyResponseId)}`;
+
       const surveyResponse = await get(responseEndpoint);
-      const answerEndpoint = `surveyResponses/${surveyResponseId}/answers`;
-      const answers = await get(answerEndpoint);
-      const surveyEndpoint = `surveys/${surveyResponse.survey_id}`;
-      const survey = await get(surveyEndpoint);
-      const primaryEntityEndpoint = `entities/${surveyResponse.entity_id}`;
-      const primaryEntity = await get(primaryEntityEndpoint);
+      const [answers, survey, primaryEntity] = await Promise.all([
+        get(`${responseEndpoint}/answers`),
+        get(`surveys/${encodeURIComponent(surveyResponse.survey_id)}`),
+        get(`entities/${encodeURIComponent(surveyResponse.entity_id)}`),
+      ]);
+
       const answerMap = {};
       for (const answer of answers) {
         for (const screen of survey.surveyQuestions) {
