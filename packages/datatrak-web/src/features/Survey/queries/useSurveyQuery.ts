@@ -1,7 +1,7 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
-import { camelcaseKeys } from '@tupaia/tsutils';
 import { DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
+import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import { get, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
 import { DatatrakWebModelRegistry } from '../../../types';
@@ -13,7 +13,7 @@ interface UseSurveyQueryFunctionContext {
 
 const surveyQueryFunctions = {
   remote: async ({ surveyCode }: UseSurveyQueryFunctionContext) =>
-    await get(`surveys/${encodeURIComponent(surveyCode)}`),
+    await get(`surveys/${encodeURIComponent(ensure(surveyCode))}`),
   local: async ({
     models,
     surveyCode,
