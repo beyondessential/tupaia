@@ -5,15 +5,6 @@ import { useTheme } from '@material-ui/core';
 
 import { CheckCircleIcon } from '../../components/Icons/CheckCircleIcon';
 
-/** Maps [0.0, 1.0] to [0, 100], but won’t round up to 100. Returns 100 if and only if given 1.0 */
-const clamp = value => Math.min(Math.max(value, 0.0), 1.0);
-const floatToPercentage = (float: number) => {
-  const clamped = clamp(float);
-  if (clamped === 1.0) return 100;
-  if (clamped < 0.99) return float * 100;
-  return 99;
-};
-
 const Wrapper = styled.div`
   inline-size: 100%;
 
@@ -43,19 +34,29 @@ const Progress = styled(LinearProgress).attrs({ variant: 'determinate' })`
 `;
 
 interface SyncStatusProps extends HTMLAttributes<HTMLDivElement> {
-  /** A number the closed interval [0.0, 1.0], or null if not actively syncing */
-  value: number | null;
+  percentage: number | null;
+  message: string | null;
+  syncStageMessage: string | null;
+  isSyncing: boolean;
+  syncFinishedSuccessfully: boolean;
 }
 
-export const SyncStatus = ({ value, ...props }: SyncStatusProps) => {
-  const isSyncing = value !== null;
-  const percentage = isSyncing ? floatToPercentage(value) : undefined;
+export const SyncStatus = ({
+  isSyncing,
+  percentage,
+  message,
+  syncFinishedSuccessfully,
+  syncStageMessage,
+  ...props
+}: SyncStatusProps) => {
   const successColor = useTheme().palette.success.main;
 
   return (
     <Wrapper {...props}>
-      <Heading>{isSyncing ? `Syncing ${percentage}%` : 'Sync complete'}</Heading>
-      {isSyncing ? <Progress value={percentage} /> : <CheckCircleIcon htmlColor={successColor} />}
+      <Heading>{message}</Heading>
+      <Heading>{syncStageMessage}</Heading>
+      {isSyncing ? <Progress value={percentage ?? undefined} /> : null}
+      {syncFinishedSuccessfully ? <CheckCircleIcon htmlColor={successColor} /> : null}
     </Wrapper>
   );
 };
