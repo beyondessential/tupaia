@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
+import { Alert } from '@tupaia/ui-components';
+
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { useIsMobile } from '../../utils';
@@ -12,7 +14,6 @@ import { formatDistance } from 'date-fns';
 import { useSyncContext } from '../../api/SyncContext';
 import { useProjectsInSync } from '../../hooks/database/useProjectsInSync';
 import { LastSyncDetails } from './LastSyncDetails';
-import { Alert, LoadingScreen } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
   block-size: 100dvb;

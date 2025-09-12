@@ -1,12 +1,9 @@
 import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
-import { IconButton } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { HEADER_HEIGHT, ROUTES } from '../../constants';
-import { UserMenu } from '../UserMenu';
+import { HEADER_HEIGHT } from '../../constants';
 import { HeaderLeft } from './HeaderLeft';
 import { HeaderRight } from './HeaderRight';
 
@@ -24,17 +21,6 @@ export const HeaderRoot = styled(SafeAreaColumn).attrs({
   position: relative;
   inline-size: 100%;
   z-index: 10;
-`;
-
-const Logo = styled(IconButton)<{
-  component: React.ElementType;
-  to: string;
-}>`
-  padding: 0.5rem;
-  float: right;
-  img {
-    max-block-size: 2rem;
-  }
 `;
 
 export const Header = (props: ComponentPropsWithoutRef<typeof HeaderRoot>) => {
