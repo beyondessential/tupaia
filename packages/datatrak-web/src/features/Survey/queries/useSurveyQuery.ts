@@ -17,17 +17,17 @@ const surveyQueryFunctions = {
   remote: async ({ surveyCode }: SurveyQueryFunctionContext) =>
     await get(`surveys/${encodeURIComponent(ensure(surveyCode))}`),
   local: async ({ models, surveyCode }: SurveyQueryFunctionContext) =>
-    await models.wrapInReadOnlyTransaction(async trxModels => {
+    await models.wrapInReadOnlyTransaction(async transactingModels => {
       const survey: SurveyRecord & {
         countryCodes?: Country['code'][];
         countryNames?: Country['name'][];
         project?: ProjectRecord;
         screens?: unknown; // TODO
-      } = await trxModels.survey.findOne({ code: ensure(surveyCode) });
+      } = await transactingModels.survey.findOne({ code: ensure(surveyCode) });
 
       const [countryNames, countryCodes, screens, project] = await Promise.all([
-        getSurveyCountryNames(trxModels, [survey.id]),
-        getSurveyCountryCodes(trxModels, [survey.id]),
+        getSurveyCountryNames(transactingModels, [survey.id]),
+        getSurveyCountryCodes(transactingModels, [survey.id]),
         survey.getPaginatedQuestions(),
         survey.getProject(),
       ]);
