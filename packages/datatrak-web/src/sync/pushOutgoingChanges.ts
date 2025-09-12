@@ -10,6 +10,7 @@ export const pushOutgoingChanges = async (
   sessionId: string,
   changes: SyncSnapshotAttributes[],
   deviceId: string,
+  progressCallback: (total: number, progressCount: number) => void,
 ): Promise<void> => {
   let startOfPage = 0;
   while (startOfPage < changes.length) {
@@ -17,6 +18,8 @@ export const pushOutgoingChanges = async (
     const page = changes.slice(startOfPage, endOfPage);
 
     await post(`sync/${sessionId}/push`, { data: { changes: page } });
+
+    progressCallback(changes.length, endOfPage);
 
     startOfPage = endOfPage;
   }

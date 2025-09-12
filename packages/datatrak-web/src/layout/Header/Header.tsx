@@ -1,9 +1,11 @@
 import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
+import { IconButton } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { HEADER_HEIGHT } from '../../constants';
+import { HEADER_HEIGHT, ROUTES } from '../../constants';
 import { UserMenu } from '../UserMenu';
 import { HeaderLeft } from './HeaderLeft';
 
@@ -23,10 +25,24 @@ export const HeaderRoot = styled(SafeAreaColumn).attrs({
   z-index: 10;
 `;
 
+const Logo = styled(IconButton)<{
+  component: React.ElementType;
+  to: string;
+}>`
+  padding: 0.5rem;
+  float: right;
+  img {
+    max-block-size: 2rem;
+  }
+`;
+
 export const Header = (props: ComponentPropsWithoutRef<typeof HeaderRoot>) => {
   return (
     <HeaderRoot {...props}>
       <HeaderLeft />
+      <Logo to={ROUTES.SYNC} component={RouterLink}>
+        <img src="/icons/sync-icon.svg" alt="Tupaia DataTrak – Home" width="100%" height="100%" />
+      </Logo>
       <UserMenu />
     </HeaderRoot>
   );
