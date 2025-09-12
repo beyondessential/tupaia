@@ -140,7 +140,6 @@ export class SurveyRecord extends DatabaseRecord {
 
   async getPaginatedQuestions() {
     function formatSurveyScreenComponent(ssc) {
-      console.log('[formatSurveyScreenComponent]', ssc);
       const {
         config,
         question,
@@ -177,7 +176,6 @@ export class SurveyRecord extends DatabaseRecord {
       }))
       .sort((a, b) => a.screenNumber - b.screenNumber);
 
-    console.log('[getPaginatedQuestions]', { formatted });
     return formatted;
   }
 
@@ -331,10 +329,8 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   /** @see `./README.md` */
   async getQuestionsValues(surveyIds) {
-    console.log('[getQuestionsValues]', { surveyIds });
     if (surveyIds.length === 0) return {};
 
-    console.log('[getQuestionsValues] executing SQL');
     const rows = await this.database.executeSql(
       `
         SELECT
@@ -392,8 +388,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       return questionsObject;
     }, initialValue);
 
-    console.log('[getAggregatedQuestions]', { surveyQuestions });
-
     for (const result of rawResults) {
       const { survey_id, screen_number, survey_screen_id } = result;
       const screenIndex = surveyQuestions[survey_id].findIndex(
@@ -406,8 +400,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
         survey_screen_components: [],
       });
     }
-
-    console.log('[getAggregatedQuestions]', { surveyQuestions });
 
     for (const result of rawResults) {
       const {
@@ -452,8 +444,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
         },
       });
     }
-
-    console.log('[getAggregatedQuestions]', { surveyQuestions });
 
     return surveyQuestions;
   }
