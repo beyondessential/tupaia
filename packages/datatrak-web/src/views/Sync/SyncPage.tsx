@@ -73,10 +73,6 @@ export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null
 export const SyncPage = () => {
   const { clientSyncManager: syncManager } = useSyncContext();
 
-  if (!syncManager) {
-    return <LoadingScreen />;
-  }
-
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 

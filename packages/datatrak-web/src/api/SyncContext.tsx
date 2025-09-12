@@ -10,7 +10,7 @@ import { useCurrentUserContext } from './CurrentUserContext';
 import { useProjectsInSync } from '../hooks/database/useProjectsInSync';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
-  clientSyncManager: ClientSyncManager | null;
+  clientSyncManager: ClientSyncManager;
   refetchSyncedProjectIds: () => void;
 };
 
@@ -61,7 +61,13 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
     }
   }, [clientSyncManager, projectsInSync.length]);
 
-  return <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>{children}</SyncContext.Provider>;
+  return (
+    <SyncContext.Provider
+      value={{ clientSyncManager: clientSyncManager!, refetchSyncedProjectIds }}
+    >
+      {children}
+    </SyncContext.Provider>
+  );
 };
 
 export const useSyncContext = (): SyncContextType => {
