@@ -165,7 +165,7 @@ export class SurveyRecord extends DatabaseRecord {
       };
     }
 
-    const questions = await this.model.getQuestionsValues([this.id]);
+    const questions = await this.getQuestionsValues();
     const formatted = questions
       // Hide Task questions in UI. They’re used to trigger task creation by TaskCreationHandler.
       .filter(question => question.type !== QuestionType.Task)
@@ -179,6 +179,11 @@ export class SurveyRecord extends DatabaseRecord {
 
     console.log('[getPaginatedQuestions]', { formatted });
     return formatted;
+  }
+
+  async getQuestionsValues() {
+    const dictionary = await this.model.getQuestionsValues([this.id]);
+    return dictionary[this.id];
   }
 }
 
