@@ -21,11 +21,6 @@ import { Photo } from './Photo';
 import { StaticMap } from './StaticMap';
 import { DashboardContextProvider, useDashboardContext } from './utils';
 
-const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
-const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
-const MIN_SIDEBAR_WIDTH = 360;
-const MIN_EXPANDED_SIDEBAR_WIDTH = 700;
-
 const Panel = styled.div<{
   $isExpanded: boolean;
 }>`
@@ -36,17 +31,13 @@ const Panel = styled.div<{
   min-height: 100%;
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: 300ms var(--ease-out-quad);
-    transition-property: width, max-width;
+    transition: inline-size 300ms var(--ease-out-quad);
   }
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $isExpanded }) => ($isExpanded ? 60 : 25)}%;
-    height: 100%;
-    min-width: ${({ $isExpanded }) =>
-      $isExpanded ? MIN_EXPANDED_SIDEBAR_WIDTH : MIN_SIDEBAR_WIDTH}px;
-    max-width: ${({ $isExpanded }) =>
-      $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
+    block-size: 100%;
+    inline-size: ${props =>
+      props.$isExpanded ? 'clamp(700px, 60%, 1000px)' : 'clamp(260px, 25%, 550px)'};
   }
 `;
 
@@ -189,7 +180,8 @@ export const Dashboard = () => {
               {entity?.imageUrl ? (
                 <Photo title={title} photoUrl={entity?.imageUrl} />
               ) : (
-                <StaticMap bounds={entity?.bounds} title={title} />
+                // Don’t pass `null` bounds so that StaticMap uses its internal default
+                <StaticMap bounds={entity?.bounds ?? undefined} title={title} />
               )}
             </div>
             <StickyBar $isExpanded={isExpanded}>

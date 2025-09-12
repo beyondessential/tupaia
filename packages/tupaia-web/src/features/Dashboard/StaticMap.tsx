@@ -81,7 +81,7 @@ interface StaticMapProps {
 }
 
 // default bounds to be DEFAULT_BOUNDS so that something shows while loading the entity, reducing largest contentful paint speeds
-export const StaticMap = ({ bounds = DEFAULT_BOUNDS as EntityBounds, title }: StaticMapProps) => {
+export const StaticMap = ({ bounds = DEFAULT_BOUNDS, title }: StaticMapProps) => {
   if (!areBoundsValid(bounds)) {
     return null;
   }

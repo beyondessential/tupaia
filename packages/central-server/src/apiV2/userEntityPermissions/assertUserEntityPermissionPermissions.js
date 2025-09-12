@@ -1,36 +1,44 @@
 import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
+import { assertIsNotNullish, ensure } from '@tupaia/tsutils';
+import { PermissionsError } from '@tupaia/utils';
 import {
-  hasBESAdminAccess,
   BES_ADMIN_PERMISSION_GROUP,
+  hasBESAdminAccess,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../permissions';
+import { assertUserAccountPermissions } from '../userAccounts/assertUserAccountPermissions';
 import {
   getAdminPanelAllowedCountryCodes,
   getAdminPanelAllowedPermissionGroupIdsByCountryIds,
 } from '../utilities';
-import { assertUserAccountPermissions } from '../userAccounts/assertUserAccountPermissions';
 
 export const assertUserEntityPermissionPermissions = async (
   accessPolicy,
   models,
   userEntityPermissionId,
 ) => {
-  const userEntityPermission = await models.userEntityPermission.findById(userEntityPermissionId);
-  if (!userEntityPermission) {
-    throw new Error(`No user entity permission found with id ${userEntityPermissionId}`);
-  }
-
-  const entity = await models.entity.findById(userEntityPermission.entity_id);
-  const permissionGroup = await models.permissionGroup.findById(
-    userEntityPermission.permission_group_id,
+  const userEntityPermission = ensure(
+    await models.userEntityPermission.findById(userEntityPermissionId),
+    `No user entity permission exists with ID ${userEntityPermissionId}`,
   );
+
+  const [entity, permissionGroup] = await Promise.all([
+    models.entity.findById(userEntityPermission.entity_id),
+    models.permissionGroup.findById(userEntityPermission.permission_group_id),
+  ]);
+  assertIsNotNullish(entity, `No entity exists with ID ${userEntityPermission.entity_id}`);
+  assertIsNotNullish(
+    permissionGroup,
+    `No permission group exists with ID ${userEntityPermission.permission_group_id}`,
+  );
+
   const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
   if (!accessibleCountryCodes.includes(entity.country_code)) {
-    throw new Error(`Need Admin Panel access to ${entity.country_code}`);
+    throw new PermissionsError(`Need Admin Panel access to ${entity.country_code}`);
   }
 
   if (!accessPolicy.allows(entity.code, permissionGroup.name)) {
-    throw new Error(`Need ${permissionGroup.name} access to ${entity.code}`);
+    throw new PermissionsError(`Need ${permissionGroup.name} access to ${entity.code}`);
   }
 
   return true;
@@ -56,7 +64,7 @@ export const assertUserEntityPermissionEditPermissions = async (
   // Changing any of the pieces of data in a BES admin UEP is abusable, so completely forbid it
   const permissionGroup = await userEntityPermission.permissionGroup();
   if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
-    throw new Error('Need BES Admin access to make this change');
+    throw new PermissionsError('Need BES Admin access to make this change');
   }
 
   return true;
@@ -70,18 +78,26 @@ export const assertUserEntityPermissionUpsertPermissions = async (
   // Check we're not trying to give someone:
   // BES admin access
   // Access to an entity we don't have admin panel access
-  const permissionGroup = await models.permissionGroup.findById(permissionGroupId);
+  const permissionGroup = ensure(
+    await models.permissionGroup.findById(permissionGroupId),
+    `No permission group exists with ID ${permissionGroupId}`,
+  );
   if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
-    throw new Error('Need BES Admin access to make this change');
+    throw new PermissionsError('Need BES Admin access to make this change');
   }
 
-  const entity = await models.entity.findById(entityId);
+  const entity = ensure(
+    await models.entity.findById(entityId),
+    `No entity exists with ID ${entityId}`,
+  );
   if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-    throw new Error(`Need Admin Panel access to ${entity.country_code}`);
+    throw new PermissionsError(
+      `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${entity.country_code}`,
+    );
   }
 
   if (!accessPolicy.allows(entity.code, permissionGroup.name)) {
-    throw new Error(`Need ${permissionGroup.name} access to ${entity.code}`);
+    throw new PermissionsError(`Need ${permissionGroup.name} access to ${entity.code}`);
   }
 
   await assertUserAccountPermissions(accessPolicy, models, userId);
