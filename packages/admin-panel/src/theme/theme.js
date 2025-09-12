@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import * as COLORS from './colors';
 
 const themeName = 'Tupaia';
@@ -198,6 +198,18 @@ const overrides = {
       label: {
         fontWeight: 500,
       },
+      ':where(table, time)': {
+        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      },
+      '.lucide': {
+        height: 'auto', // Use width to set both dimensions
+        width: '1em', // Sensible default, mirrors MUI Icon behaviour
+      },
+    },
+  },
+  MuiDataGrid: {
+    root: {
+      fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
     },
   },
   MuiSvgIcon: {
@@ -217,4 +229,4 @@ const overrides = {
   },
 };
 
-export const theme = createMuiTheme({ palette, themeName, typography, shape, overrides });
+export const theme = createTheme({ palette, themeName, typography, shape, overrides });

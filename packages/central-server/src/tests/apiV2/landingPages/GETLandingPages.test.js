@@ -79,7 +79,7 @@ describe('GETLandingPages', async () => {
 
       const result = await app.get(`landingPages/${LANDING_PAGES[0].id}`);
       expect(result.text).to.equal(
-        '{"error":"One of the following conditions need to be satisfied:\\nNeed BES Admin access\\nNeed access to a project that the landing page belongs to.\\n"}',
+        '{"error":"One of the following conditions need to be satisfied:\\nNeed BES Admin access\\nNeed access to a project that the landing page belongs to."}',
       );
     });
 

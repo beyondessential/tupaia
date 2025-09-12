@@ -1,11 +1,8 @@
 'use strict';
 
 import {
-  arrayToDbString,
   codeToId,
   findSingleRecord,
-  generateId,
-  insertObject,
 } from '../utilities';
 
 var dbm;

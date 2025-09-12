@@ -1,67 +1,56 @@
-import React from 'react';
-import styled from 'styled-components';
 import {
-  ActionsMenu as BaseActionsMenu,
-  ExportIcon,
-  ActionsMenuOptionType,
-} from '@tupaia/ui-components';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import { useDashboard, useDashboardMailingList } from '../utils';
+  Upload as ExportIcon,
+  CircleCheck as SubscribedIcon,
+  MailPlus as SubscribeIcon,
+} from 'lucide-react';
+import React from 'react';
 
-const StyledExportIcon = styled(ExportIcon)`
-  height: 0.9rem;
-`;
+import { ActionsMenuOptionType, ActionsMenu as BaseActionsMenu } from '@tupaia/ui-components';
+import { useDashboardContext, useDashboardMailingList } from '../utils';
 
-const StyledAddCircleOutlineIcon = styled(AddCircleOutlineIcon)`
-  height: 1.2rem;
-`;
-
-const StyledCheckCircleIcon = styled(CheckCircleIcon)`
-  height: 1.2rem;
-`;
+const GREEN_100 = '#47ca80';
 
 export const ActionsMenu = () => {
-  const { toggleExportModal, toggleSubscribeModal, activeDashboard } = useDashboard();
+  const { toggleExportModal, toggleSubscribeModal, activeDashboard } = useDashboardContext();
   const mailingList = useDashboardMailingList();
 
   if (!activeDashboard) {
     return null;
   }
 
-  const menuOptions: ActionsMenuOptionType[] = [];
-  const exportOption: ActionsMenuOptionType = {
+  const menuOptions: Omit<ActionsMenuOptionType, 'iconStyle' | 'style'>[] = [];
+  menuOptions.push({
     label: 'Export',
     action: toggleExportModal,
-    // eslint-disable-next-line react/display-name
-    ActionIcon: () => <StyledExportIcon fill="white" />,
+    actionIcon: <ExportIcon />,
     toolTipTitle: 'Export dashboard',
-  };
-  menuOptions.push(exportOption);
+  });
 
   if (mailingList) {
-    if (mailingList.isSubscribed) {
-      menuOptions.push({
-        label: 'Subscribed',
-        ActionIcon: StyledCheckCircleIcon,
-        color: 'primary',
-        action: toggleSubscribeModal,
-        toolTipTitle: 'Unsubscribe from email updates',
-      });
-    } else {
-      menuOptions.push({
-        label: 'Subscribe',
-        action: toggleSubscribeModal,
-        ActionIcon: StyledAddCircleOutlineIcon,
-        toolTipTitle: 'Subscribe to receive dashboard email updates',
-      });
-    }
+    menuOptions.push(
+      mailingList.isSubscribed
+        ? {
+            label: 'Subscribed',
+            action: toggleSubscribeModal,
+            actionIcon: <SubscribedIcon color={GREEN_100} />,
+            toolTipTitle: 'Unsubscribe from email updates',
+          }
+        : {
+            label: 'Subscribe',
+            action: toggleSubscribeModal,
+            actionIcon: <SubscribeIcon />,
+            toolTipTitle: 'Subscribe to receive dashboard email updates',
+          },
+    );
   }
 
   const styledMenuOptions: ActionsMenuOptionType[] = menuOptions.map(menuOption => ({
     ...menuOption,
     style: { fontSize: '0.9rem' },
-    iconStyle: { minWidth: '2rem' },
+    iconStyle: {
+      fontSize: '1.125rem',
+      minWidth: '2rem',
+    },
   }));
 
   return (

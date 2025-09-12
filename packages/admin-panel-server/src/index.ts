@@ -5,6 +5,7 @@ import winston from 'winston';
 import { configureWinston } from '@tupaia/server-boilerplate';
 import { configureDotEnv } from '@tupaia/server-utils';
 import { createApp } from './app';
+import { PromptManager } from './viz-builder/prompts/PromptManager';
 
 configureWinston();
 
@@ -16,10 +17,11 @@ configureDotEnv([
 ]);
 
 (async () => {
+  const promptManager = new PromptManager();
   /**
    * Set up app with routes etc.
    */
-  const app = await createApp();
+  const app = await createApp(promptManager);
 
   /**
    * Start the server
@@ -27,6 +29,7 @@ configureDotEnv([
   const port = process.env.PORT || 8070;
   http.createServer(app).listen(port);
   winston.info(`Running on port ${port}`);
+  winston.info(`Logging at ${winston.level} level`);
 
   /**
    * Notify PM2 that we are ready

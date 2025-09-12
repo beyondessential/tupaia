@@ -3,6 +3,7 @@ import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import { Context } from '../../context';
 import { TransformTable } from '../table';
+import { TransformBuilder } from '.';
 
 type ExcludeRowsParams = {
   where: (parser: TransformParser) => boolean;
@@ -31,7 +32,7 @@ const buildParams = (params: unknown): ExcludeRowsParams => {
   return { where: buildWhere(params) };
 };
 
-export const buildExcludeRows = (params: unknown, context: Context) => {
+export const buildExcludeRows: TransformBuilder = (params, context) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => excludeRows(table, builtParams, context);
+  return table => excludeRows(table, builtParams, context);
 };

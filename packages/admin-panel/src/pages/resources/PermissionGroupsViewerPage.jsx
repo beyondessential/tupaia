@@ -52,7 +52,7 @@ export const PermissionGroupsViewerPage = () => {
   return (
     <>
       <Container>
-        <PageHeader title="Permission Groups" />
+        <PageHeader resourceName="permission group" title="Permission Groups" />
         <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} readOnly />
       </Container>
       <LogsModal />

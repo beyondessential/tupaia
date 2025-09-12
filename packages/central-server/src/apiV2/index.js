@@ -24,7 +24,7 @@ import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
-import { GETDataTables } from './dataTables';
+import { GETDataTables, CreateDataTables, EditDataTables } from './dataTables';
 import { GETFeedItems, EditFeedItems, CreateFeedItems } from './feedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
@@ -142,6 +142,7 @@ import {
 import { EditEntityHierarchy, GETEntityHierarchy } from './entityHierarchy';
 import { CreateTask, EditTask, GETTasks } from './tasks';
 import { CreateTaskComment, GETTaskComments } from './taskComments';
+import { GetDataTableTypes } from './dataTableTypes';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -239,6 +240,7 @@ apiV2.get('/dataElements/:recordId?', useRouteHandler(GETDataElements));
 apiV2.get('/dataGroups/:parentRecordId/dataElements', useRouteHandler(GETDataElements));
 apiV2.get('/dataGroups/:recordId?', useRouteHandler(GETDataGroups));
 apiV2.get('/dataTables/:recordId?', useRouteHandler(GETDataTables));
+apiV2.get('/dataTableTypes/:recordId?', useRouteHandler(GetDataTableTypes));
 apiV2.get('/dataElementDataGroups', useRouteHandler(GETDataElementDataGroups));
 apiV2.get('/entities/:recordId?', useRouteHandler(GETEntities));
 apiV2.get('/entities/:parentRecordId/surveyResponses', useRouteHandler(GETSurveyResponses));
@@ -267,6 +269,13 @@ apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
 apiV2.get('/tasks/:recordId?', useRouteHandler(GETTasks));
 apiV2.get('/tasks/:parentRecordId/taskComments', useRouteHandler(GETTaskComments));
+
+/**
+ * Semantically a GET, but mechanically a POST, to bypass `414 Request-URI Too Large` error by
+ * putting params in request body.
+ */
+apiV2.post('/dashboardItems', useRouteHandler(GETDashboardItems));
+
 /**
  * POST routes
  */
@@ -291,7 +300,7 @@ apiV2.post(
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataElements', useRouteHandler(TupaiaAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/dataTables', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dataTables', useRouteHandler(CreateDataTables));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/dashboardMailingLists', useRouteHandler(CreateDashboardMailingList));
 apiV2.post('/dashboardMailingListEntries', useRouteHandler(CreateDashboardMailingListEntry));
@@ -324,7 +333,7 @@ apiV2.put('/accessRequests/:recordId?', useRouteHandler(EditAccessRequests));
 apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenComponents));
 apiV2.put('/dataElements/:recordId', useRouteHandler(EditDataElements));
 apiV2.put('/dataGroups/:recordId', useRouteHandler(EditDataGroups));
-apiV2.put('/dataTables/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/dataTables/:recordId', useRouteHandler(EditDataTables));
 apiV2.put('/feedItems/:recordId', useRouteHandler(EditFeedItems));
 apiV2.put('/options/:recordId', useRouteHandler(EditOptions));
 apiV2.put('/optionSets/:recordId', useRouteHandler(EditOptionSets));

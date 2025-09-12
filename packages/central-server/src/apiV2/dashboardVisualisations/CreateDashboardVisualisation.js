@@ -19,7 +19,7 @@ export class CreateDashboardVisualisation extends CreateHandler {
     await this.assertPermissions(
       assertAnyPermissions(
         [assertBESAdminAccess, assertVizBuilderAccess],
-        'You require Viz Builder User or BES Admin permission to create visualisations.',
+        'BES Admin or Viz Builder User permission required to create a visualisation',
       ),
     );
   }

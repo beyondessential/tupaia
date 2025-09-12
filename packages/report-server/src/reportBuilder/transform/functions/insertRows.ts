@@ -7,6 +7,7 @@ import { TransformParser } from '../parser';
 import { buildWhere } from './where';
 import { mapStringToStringValidator } from './utils';
 import { TransformTable } from '../table';
+import { TransformBuilder } from '.';
 
 type InsertParams = {
   columns: { [key: string]: string };
@@ -17,8 +18,8 @@ type InsertParams = {
 const positioners = {
   before: (index: number, insertCount: number) => index + insertCount,
   after: (index: number, insertCount: number) => index + insertCount + 1,
-  start: (index: number, insertCount: number) => insertCount,
-};
+  start: (_index: number, insertCount: number) => insertCount,
+} as const;
 
 const positionValidator = yup
   .mixed<'before' | 'after' | 'start'>()
@@ -78,7 +79,7 @@ const buildParams = (params: unknown): InsertParams => {
   };
 };
 
-export const buildInsertRows = (params: unknown, context: Context) => {
+export const buildInsertRows: TransformBuilder = (params, context) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => insertRows(table, builtParams, context);
+  return table => insertRows(table, builtParams, context);
 };

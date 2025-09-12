@@ -1,4 +1,6 @@
 import { flattenDeep, groupBy, keyBy } from 'lodash';
+
+import { ensure, isNullish } from '@tupaia/tsutils';
 import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
 import winston from '../../../log';
 
@@ -16,6 +18,10 @@ export const assertCanImportSurveyResponses = async (
       transactingModels.survey.findManyByColumn('code', surveyCodes),
     ]);
 
+    if (allEntities.some(isNullish)) {
+      winston.error('Unexpected nullish element in `allEntities`', { allEntities });
+    }
+
     const codeToSurvey = keyBy(surveys, 'code');
     const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
     const surveyPermissionGroups =
@@ -24,12 +30,24 @@ export const assertCanImportSurveyResponses = async (
 
     for (const [surveyCode, entityCodes] of Object.entries(entitiesBySurveyCode)) {
       const survey = codeToSurvey[surveyCode];
+
+      if (isNullish(survey)) {
+        winston.error(`Unexpected nullish survey (code '${surveyCode}')`, { codeToSurvey });
+      }
+
       const responseEntities = allEntities.filter(e => entityCodes.includes(e.code));
       const surveyResponseCountryCodes = [...new Set(responseEntities.map(e => e.country_code))];
       const surveyResponseCountries = await transactingModels.country.findManyByColumn(
         'code',
         surveyResponseCountryCodes,
       );
+
+      if (surveyResponseCountries.some(isNullish)) {
+        winston.error('Unexpected nullish element in `surveyResponseCountries`', {
+          surveyResponseCountries,
+        });
+      }
+
       if (surveyResponseCountries.length !== surveyResponseCountryCodes.length) {
         const expected = surveyResponseCountryCodes;
         const actual = surveyResponseCountries.map(c => c.code);
@@ -46,6 +64,11 @@ export const assertCanImportSurveyResponses = async (
         if (survey.country_ids?.length && !survey.country_ids.includes(surveyResponseCountry.id)) {
           const surveyCountries = await transactingModels.country.findManyById(survey.country_ids);
           const entities = entitiesByCountryCode[surveyResponseCountry.code];
+
+          if (entities.some(isNullish)) {
+            winston.error('Unexpected nullish element in `entities`', { entities });
+          }
+
           const entityCodesString = entities.map(e => e.code).join(', ');
           const surveyCountryNamesString = surveyCountries.map(s => s.name).join(', ');
           throw new Error(
@@ -73,6 +96,7 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
   if (surveyResponse.entity_code) {
     return surveyResponse.entity_code;
   }
+
   if (surveyResponse.entity_id) {
     // If we're submitting a response against a new entity, it won't yet have a valid entity_code in
     // the server db. Instead, check our permissions against the new entity's parent
@@ -81,11 +105,19 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
       const parentEntity = await models.entity.findById(newEntity.parent_id);
       return parentEntity?.code;
     }
-    const entity = await models.entity.findById(surveyResponse.entity_id);
+
+    const entity = ensure(
+      await models.entity.findById(surveyResponse.entity_id),
+      `No entity exists with ID ${surveyResponse.entity_id}`,
+    );
     return entity.code;
   }
+
   if (surveyResponse.clinic_id) {
-    const clinic = await models.facility.findById(surveyResponse.clinic_id);
+    const clinic = ensure(
+      await models.facility.findById(surveyResponse.clinic_id),
+      `No clinic exists with ID ${surveyResponse.clinic_id}`,
+    );
     return clinic.code;
   }
 

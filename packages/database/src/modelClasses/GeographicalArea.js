@@ -1,3 +1,4 @@
+import { ensure } from '@tupaia/tsutils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -10,12 +11,25 @@ export class GeographicalAreaRecord extends DatabaseRecord {
     return this.code;
   }
 
+  /**
+   * @returns {Promise<import('./Country').CountryRecord>}
+   */
   async country() {
-    return this.otherModels.country.findById(this.country_id);
+    return ensure(
+      await this.otherModels.country.findById(this.country_id),
+      `Couldn’t find country for geographical area ${this.id} (expected country with ID ${this.country_id})`,
+    );
   }
 
+  /**
+   * @returns {Promise<GeographicalAreaRecord>}
+   */
   async parent() {
-    return this.model.findById(this.parent_id);
+    if (!this.parent_id) return null;
+    return ensure(
+      await this.model.findById(this.parent_id),
+      `Couldn’t find parent for geographical area ${this.id} (expected geographical area with ID ${this.parent_id})`,
+    );
   }
 
   async getParents() {

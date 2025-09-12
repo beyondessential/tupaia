@@ -39,10 +39,7 @@ const Wrapper = styled.div`
 const MessageWrapper = styled.div`
   position: absolute;
   z-index: 1;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,25 +53,23 @@ const ButtonCell = styled.div`
 `;
 
 const SingleButtonWrapper = styled.div`
-  width: ${({ $width }) => $width}px;
   ${FilterableTableCellContent}:has(&) {
     padding-block: 0;
     padding-inline-end: 0;
   }
 `;
 
-const formatColumnForReactTable = (originalColumn, reduxId) => {
+const formatColumnForReactTable = originalColumn => {
   const { source, type, actionConfig, filterable, ...restOfColumn } = originalColumn;
   const id = source || type;
   return {
     id,
     accessor: id?.includes('.') ? originalRow => originalRow[source] : id, // react-table doesn't like .'s
     actionConfig,
-    reduxId,
     type,
     disableSortBy: !source, // disable action columns from being sortable
     filterable: filterable !== false,
-    ...generateConfigForColumnType(type, actionConfig, reduxId), // Add custom Cell/width/etc.
+    ...generateConfigForColumnType(type, actionConfig), // Add custom Cell/width/etc.
     ...restOfColumn,
   };
 };
@@ -110,7 +105,7 @@ const DataFetchingTableComponent = memo(
     defaultSorting,
   }) => {
     const formattedColumns = useMemo(() => {
-      const cols = columns.map(column => formatColumnForReactTable(column));
+      const cols = columns.map(formatColumnForReactTable);
       // for the columns that are not buttons, display them using a custom wrapper
       const nonButtonColumns = cols
         .filter(col => !col.isButtonColumn)
@@ -150,8 +145,8 @@ const DataFetchingTableComponent = memo(
             <ButtonCell>
               {buttonColumns.map(({ Cell, accessor, ...col }) => {
                 return (
-                  <SingleButtonWrapper $width={col.width}>
-                    <Cell key={`${col.id}`} {...col} row={row} />
+                  <SingleButtonWrapper key={col.id} style={{ inlineSize: col.width }}>
+                    <Cell {...col} row={row} />
                   </SingleButtonWrapper>
                 );
               })}

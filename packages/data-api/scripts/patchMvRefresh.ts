@@ -6,11 +6,6 @@ import { configureEnv } from '../src/configureEnv';
 
 configureEnv(); // Load the environment variables into process.env
 
-const exitWithError = (error: Error) => {
-  console.error(error.message);
-  process.exit(1);
-};
-
 const migrationInstance = DBMigrate.getInstance(
   true,
   {
@@ -24,19 +19,22 @@ const migrationInstance = DBMigrate.getInstance(
       },
     },
   },
-  async (migrator: any, internals: any, originalError: Error, migrationError: Error) => {
+  async (migrator: any, _internals: any, originalError: Error, migrationError: Error) => {
     if (originalError) {
-      exitWithError(new Error(`db-migrate error: ${migrationError.message}`));
+      console.error('db-migrate error:', originalError);
+      process.exit(1);
     }
     if (migrationError) {
-      exitWithError(new Error(`Migration error: ${migrationError.message}`));
+      console.error('Migration error:', migrationError);
+      process.exit(1);
     }
 
     const { driver } = migrator;
     try {
       driver.close();
     } catch (err) {
-      exitWithError(err as Error);
+      console.error('Error closing database connection', err);
+      process.exit(1);
     }
   },
 );

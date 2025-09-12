@@ -1,13 +1,13 @@
-import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
-import { CreateHandler } from '../CreateHandler';
+import { encryptPassword, generateSecretKey } from '@tupaia/auth';
+import { PermissionsError, ValidationError } from '@tupaia/utils';
+
 import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   assertAdminPanelAccess,
   assertAdminPanelAccessToCountry,
   assertAnyPermissions,
   assertBESAdminAccess,
-  hasTupaiaAdminPanelAccessToCountry,
 } from '../../permissions';
+import { CreateHandler } from '../CreateHandler';
 
 /**
  * Handles POST endpoints:
@@ -41,7 +41,7 @@ export class CreateUserAccounts extends CreateHandler {
         await transactingModels.apiClient.create({
           username: user.email,
           user_account_id: user.id,
-          secret_key_hash: encryptPassword(secretKey, process.env.API_CLIENT_SALT),
+          secret_key_hash: await encryptPassword(secretKey),
         });
       }
 
@@ -50,27 +50,22 @@ export class CreateUserAccounts extends CreateHandler {
   }
 
   async createUserPermission(transactingModels, { userId, countryName, permissionGroupName }) {
-    const permissionGroup = await transactingModels.permissionGroup.findOne({
-      name: permissionGroupName,
-    });
-    const country = await transactingModels.entity.findOne({
-      name: countryName,
-      type: 'country',
-    });
+    const [permissionGroup, country] = await Promise.all([
+      transactingModels.permissionGroup.findOne({ name: permissionGroupName }),
+      transactingModels.entity.findOne({ name: countryName, type: 'country' }),
+    ]);
 
     if (!permissionGroup) {
-      throw new Error(`No such permission group: ${permissionGroupName}`);
+      throw new ValidationError(`No such permission group: ${permissionGroupName}`);
     }
-
     if (!country) {
-      throw new Error(`No such country: ${countryName}`);
+      throw new ValidationError(`No such country: ${countryName}`);
     }
 
     const countryPermissionChecker = async accessPolicy => {
       await assertAdminPanelAccessToCountry(accessPolicy, transactingModels, country.id);
-
       if (!accessPolicy.allows(country.code, permissionGroup.name)) {
-        throw new Error(`Need ${permissionGroup.name} access to ${country.name}`);
+        throw new PermissionsError(`Need ${permissionGroup.name} access to ${country.name}`);
       }
     };
 
@@ -98,13 +93,15 @@ export class CreateUserAccounts extends CreateHandler {
       ...restOfUser
     },
   ) {
+    const passwordHash = await encryptPassword(password);
+
     return transactingModels.user.create({
       first_name: firstName,
       last_name: lastName,
       email: emailAddress,
       mobile_number: contactNumber,
       primary_platform: primaryPlatform,
-      ...hashAndSaltPassword(password),
+      password_hash: passwordHash,
       verified_email: verifiedEmail,
       ...restOfUser,
     });

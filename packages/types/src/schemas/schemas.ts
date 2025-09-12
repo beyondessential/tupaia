@@ -84107,13 +84107,13 @@ export const UserAccountSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84160,7 +84160,6 @@ export const UserAccountSchema = {
 		"email",
 		"id",
 		"password_hash",
-		"password_salt",
 		"preferences"
 	]
 } 
@@ -84187,13 +84186,13 @@ export const UserAccountCreateSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84238,8 +84237,7 @@ export const UserAccountCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"email",
-		"password_hash",
-		"password_salt"
+		"password_hash"
 	]
 } 
 
@@ -84268,13 +84266,13 @@ export const UserAccountUpdateSchema = {
 		"last_name": {
 			"type": "string"
 		},
+		"legacy_password_salt": {
+			"type": "string"
+		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
-			"type": "string"
-		},
-		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84675,6 +84673,8 @@ export const PeriodGranularitySchema = {
 export const EntityTypeEnumSchema = {
 	"enum": [
 		"asset",
+		"bes_asset",
+		"bes_office",
 		"business",
 		"case",
 		"case_contact",
@@ -84682,6 +84682,7 @@ export const EntityTypeEnumSchema = {
 		"city",
 		"commune",
 		"complaint",
+		"consumable",
 		"country",
 		"disaster",
 		"district",
@@ -84705,6 +84706,8 @@ export const EntityTypeEnumSchema = {
 		"incident_reported",
 		"individual",
 		"institute",
+		"kiuar_area",
+		"kiuar_facility",
 		"larval_habitat",
 		"larval_sample",
 		"local_government",
@@ -84721,6 +84724,7 @@ export const EntityTypeEnumSchema = {
 		"pacmossi_spraying_site",
 		"pacmossi_village",
 		"pharmacy",
+		"policy",
 		"postcode",
 		"project",
 		"repair_request",
@@ -84729,6 +84733,9 @@ export const EntityTypeEnumSchema = {
 		"sub_district",
 		"sub_facility",
 		"supermarket",
+		"tmf_district",
+		"tmf_facility",
+		"tmf_sub_district",
 		"transfer",
 		"trap",
 		"vehicle",

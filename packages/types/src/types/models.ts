@@ -1650,9 +1650,9 @@ export interface UserAccount {
   'gender'?: string | null;
   'id': string;
   'last_name'?: string | null;
+  'legacy_password_salt'?: string | null;
   'mobile_number'?: string | null;
   'password_hash': string;
-  'password_salt': string;
   'position'?: string | null;
   'preferences': UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
@@ -1666,9 +1666,9 @@ export interface UserAccountCreate {
   'first_name'?: string | null;
   'gender'?: string | null;
   'last_name'?: string | null;
+  'legacy_password_salt'?: string | null;
   'mobile_number'?: string | null;
   'password_hash': string;
-  'password_salt': string;
   'position'?: string | null;
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
@@ -1683,9 +1683,9 @@ export interface UserAccountUpdate {
   'gender'?: string | null;
   'id'?: string;
   'last_name'?: string | null;
+  'legacy_password_salt'?: string | null;
   'mobile_number'?: string | null;
   'password_hash'?: string;
-  'password_salt'?: string;
   'position'?: string | null;
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
@@ -1888,6 +1888,15 @@ export enum EntityTypeEnum {
   'wholesaler' = 'wholesaler',
   'pharmacy' = 'pharmacy',
   'supermarket' = 'supermarket',
+  'consumable' = 'consumable',
+  'bes_asset' = 'bes_asset',
+  'bes_office' = 'bes_office',
+  'tmf_district' = 'tmf_district',
+  'tmf_sub_district' = 'tmf_sub_district',
+  'tmf_facility' = 'tmf_facility',
+  'policy' = 'policy',
+  'kiuar_facility' = 'kiuar_facility',
+  'kiuar_area' = 'kiuar_area',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
