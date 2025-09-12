@@ -4,29 +4,29 @@ import { App } from './App';
 
 renderReactApp(<App />, document.getElementById('root'));
 
-// window.addEventListener('load', () => {
-//   if ('serviceWorker' in navigator) {
-//     navigator.serviceWorker.register('/sw.js').then(registration => {
-//       registration.addEventListener('updatefound', () => {
-//         const newWorker = registration.installing;
+window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(registration => {
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
 
-//         if (!newWorker) {
-//           return;
-//         }
+        if (!newWorker) {
+          return;
+        }
 
-//         newWorker.addEventListener('statechange', () => {
-//           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-//             // New content available
-//             if (confirm('New version available! Update now?')) {
-//               newWorker.postMessage({ type: 'SKIP_WAITING' });
-//               window.location.reload();
-//             }
-//           }
-//         });
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // New content available
+            if (confirm('New version available! Update now?')) {
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+              window.location.reload();
+            }
+          }
+        });
 
-//         // Check for updates
-//         registration.update();
-//       });
-//     });
-//   }
-// });
+        // Check for updates
+        registration.update();
+      });
+    });
+  }
+});
