@@ -63,9 +63,11 @@ const COMPARATORS = {
  * Otherwise, Knex will attempt to interpret function calls as identifiers. For example,
  * `COALESCE(foo, bar)` would otherwise become `"COALESCE(FOO", "bar)"`.
  *
+ * Nested function calls unsupported.
+ *
  * @see getColSelector
  */
-const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
+const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE', 'TRIM'];
 
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
@@ -186,16 +188,21 @@ export class TupaiaDatabase {
   async notifyChangeHandlers(change) {
     const unlock = this.handlerLock.createLock(change.record_id);
     const handlers = this.getHandlersForChange(change);
+    const scheduledPromises = [];
     try {
-      for (let i = 0; i < handlers.length; i++) {
+      for (const handler of handlers) {
         try {
-          await handlers[i](change);
+          const { scheduledPromise } = (await handler(change)) || {};
+          if (scheduledPromise) {
+            scheduledPromises.push(scheduledPromise);
+          }
         } catch (e) {
           winston.error(e);
         }
       }
     } finally {
-      unlock();
+      // Don't await the scheduled promises, so that we don't block the change handler from completing
+      Promise.all(scheduledPromises).finally(unlock);
     }
   }
 
@@ -763,8 +770,18 @@ function addJoin(baseQuery, recordType, joinOptions) {
 }
 
 /**
+ * @param {Knex} connection
+ * @param {string} inputColStr
+ * @returns {Knex.Raw | string}
+ *
  * @privateRemarks
  * This sanitisation step fails if the input uses both JSON operators and the `COALESCE` function.
+ *
+ * Nested {@link supportedFunctions} calls are unsupported; they’ll be sanitised into invalid SQL
+ * syntax.
+ *
+ * Warning: SQL is not a regular language. Don’t attempt to use RegExp to parse more generic SQL
+ * expressions unless you’re absolutely confident it’s watertight.
  *
  * @see supportedFunctions
  */

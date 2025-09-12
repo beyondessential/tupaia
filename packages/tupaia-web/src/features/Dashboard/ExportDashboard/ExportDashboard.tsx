@@ -5,7 +5,7 @@ import { Typography } from '@material-ui/core';
 import { LoadingScreen } from '@tupaia/ui-components';
 
 import { Modal as BaseModal } from '../../../components';
-import { useDashboard } from '../utils';
+import { useDashboardContext } from '../utils';
 import { ExportFormats, ExportSettingsContextProvider } from '..';
 import { SelectVisualisation } from './SelectVisualisations';
 import { ExportConfig } from './ExportConfig';
@@ -63,17 +63,14 @@ const Title = styled(Typography).attrs({
   line-height: 1.4;
 `;
 
-const SELECT_VISUALISATIONS_SCREEN = 'SELECT_VISUALISATIONS';
-const EXPORT_SETTINGS_SCREEN = 'EXPORT_SETTINGS';
-
 export const ExportDashboard = () => {
   const [selectedDashboardItems, setSelectedDashboardItems] = useState<string[]>([]);
-  const { exportModalOpen, toggleExportModal } = useDashboard();
-  const [screen, setScreen] = useState(SELECT_VISUALISATIONS_SCREEN);
-  const onNext = () => setScreen(EXPORT_SETTINGS_SCREEN);
+  const { exportModalOpen, toggleExportModal } = useDashboardContext();
+  const [screen, setScreen] = useState<'selectVisuals' | 'exportSettings'>('selectVisuals');
+  const onNext = () => setScreen('exportSettings');
   const onCloseModal = () => {
     toggleExportModal();
-    setScreen(SELECT_VISUALISATIONS_SCREEN);
+    setScreen('selectVisuals');
     setSelectedDashboardItems([]);
   };
 
@@ -92,7 +89,7 @@ export const ExportDashboard = () => {
         <Wrapper>
           <Title>Export dashboard</Title>
           <Container>
-            {screen === SELECT_VISUALISATIONS_SCREEN ? (
+            {screen === 'selectVisuals' ? (
               <SelectVisualisation
                 onNext={onNext}
                 onClose={onCloseModal}

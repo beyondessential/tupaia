@@ -7,6 +7,7 @@ import { buildWhere } from './where';
 import { mapStringToStringValidator, starSingleOrMultipleColumnsValidator } from './utils';
 import { getColumnMatcher } from './helpers';
 import { TransformTable } from '../table';
+import { TransformBuilder } from '.';
 
 type UpdateColumnsParams = {
   insert: { [key: string]: string };
@@ -90,7 +91,7 @@ const buildParams = (params: unknown): UpdateColumnsParams => {
   };
 };
 
-export const buildUpdateColumns = (params: unknown, context: Context) => {
+export const buildUpdateColumns: TransformBuilder = (params, context) => {
   const builtParams = buildParams(params);
-  return (table: TransformTable) => updateColumns(table, builtParams, context);
+  return table => updateColumns(table, builtParams, context);
 };

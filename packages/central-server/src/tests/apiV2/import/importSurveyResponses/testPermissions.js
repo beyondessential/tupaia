@@ -143,7 +143,6 @@ export const testPermissions = async () => {
         name: 'Test User',
         email: 'testuser@tupaia.org',
         password_hash: 'hash',
-        password_salt: 'salt',
       },
     );
 

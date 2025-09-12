@@ -21,6 +21,6 @@ export const aliases = {
   convertPeriodToWeek,
   convertEventDateToWeek,
   insertSummaryRowAndColumn,
-};
+} as const;
 
 export const contextAliasDependencies = {};

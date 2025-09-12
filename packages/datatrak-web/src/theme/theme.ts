@@ -115,7 +115,7 @@ const overrides = {
       source: {
         display: 'none',
       },
-      'table, time': {
+      ':where(table, time)': {
         fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
       },
       '.lucide': {

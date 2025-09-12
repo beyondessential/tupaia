@@ -34,7 +34,7 @@ export class DatabaseError extends RespondingError {
     super(
       `Database error: ${message}${originalError ? ` - ${originalError.message}` : ''}`,
       500,
-      originalError.extraFields,
+      originalError?.extraFields,
     );
     this.name = 'DatabaseError';
   }
@@ -65,6 +65,13 @@ export class PermissionsError extends RespondingError {
   constructor(message) {
     super(message, 403);
     this.name = 'PermissionsError';
+  }
+}
+
+export class NotFoundError extends RespondingError {
+  constructor(message) {
+    super(message, 404);
+    this.name = 'NotFoundError';
   }
 }
 

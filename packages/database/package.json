@@ -34,6 +34,7 @@
     "setup-new-database": "./scripts/setupNewDatabase.sh"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.0.2",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/auth": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
