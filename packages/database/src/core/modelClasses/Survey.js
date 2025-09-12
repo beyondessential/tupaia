@@ -144,24 +144,24 @@ export class SurveyRecord extends DatabaseRecord {
       const {
         config,
         question,
-        validationCriteria,
-        visibilityCriteria,
-        detailLabel = question.detail, // Screen component can override the question detail
-        questionText = question.text, // Screen component can override the question text
+        validation_criteria,
+        visibility_criteria,
+        detail_label = question.detail, // Screen component can override the question detail
+        question_text = question.text, // Screen component can override the question text
         ...rest
       } = ssc;
 
       return {
         ...rest,
         ...question, // include component and question fields in one object
-        componentId: ssc.id,
+        component_id: ssc.id,
         config: config ? JSON.parse(config) : null,
-        detailLabel: detailLabel,
+        detail_label,
         options: question.options.map(OptionRecord.parseForClient),
-        questionId: question.id,
-        text: questionText,
-        validationCriteria: validationCriteria ? JSON.parse(validationCriteria) : null,
-        visibilityCriteria: visibilityCriteria ? JSON.parse(visibilityCriteria) : null,
+        question_id: question.id,
+        text: question_text,
+        validation_criteria: validation_criteria ? JSON.parse(validation_criteria) : null,
+        visibility_criteria: visibility_criteria ? JSON.parse(visibility_criteria) : null,
       };
     }
 
@@ -171,7 +171,7 @@ export class SurveyRecord extends DatabaseRecord {
       .filter(question => question.type !== QuestionType.Task)
       .map(screen => ({
         ...screen,
-        surveyScreenComponents: screen.surveyScreenComponents
+        survey_screen_components: screen.survey_screen_components
           .map(formatSurveyScreenComponent)
           .sort((a, b) => a.componentNumber - b.componentNumber),
       }))
@@ -399,9 +399,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       const screenIndex = surveyQuestions[survey_id].findIndex(
         screen => screen.id === survey_screen_id,
       );
-      if (screenIndex !== -1) {
-        continue;
-      }
+      if (screenIndex !== -1) continue;
       surveyQuestions[survey_id].push({
         id: survey_screen_id,
         screen_number,
