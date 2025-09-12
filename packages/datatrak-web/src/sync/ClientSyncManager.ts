@@ -31,16 +31,7 @@ import { ensure } from '@tupaia/tsutils';
 const SYNC_STAGES = {
   PUSH: 1,
   PULL: 2,
-  END: 3,
-};
-
-/**
- * Maximum progress that each stage contributes to the overall progress
- */
-const STAGE_MAX_PROGRESS = {
-  [SYNC_STAGES.PUSH]: 33,
-  [SYNC_STAGES.PULL]: 66,
-  [SYNC_STAGES.END]: 100,
+  PERSIST: 3,
 };
 
 type StageMaxProgress = Record<number, number>;
@@ -48,14 +39,12 @@ type StageMaxProgress = Record<number, number>;
 const STAGE_MAX_PROGRESS_INCREMENTAL: StageMaxProgress = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 66,
-  [SYNC_STAGES.END]: 100,
+  [SYNC_STAGES.PERSIST]: 100,
 };
 const STAGE_MAX_PROGRESS_INITIAL: StageMaxProgress = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 100,
 };
-
-export const SYNC_STAGES_TOTAL = Object.values(STAGE_MAX_PROGRESS).length;
 
 export interface SyncResult {
   hasRun: boolean;
@@ -97,12 +86,13 @@ export class ClientSyncManager {
     this.database = models.database;
     this.deviceId = deviceId;
     this.userId = userId;
+    this.progress = 0;
     log.debug('ClientSyncManager.constructor', {
       deviceId,
     });
   }
 
-  setSyncStage(syncStage: number): void {
+  setSyncStage(syncStage: number | null): void {
     this.syncStage = syncStage;
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED);
   }
@@ -150,11 +140,12 @@ export class ClientSyncManager {
 
     try {
       await this.runSync(projectIds, urgent);
-    } catch (error) {
-      this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error });
+    } catch (error: any) {
+      this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
     } finally {
       // Reset all the values to default only if sync actually started, otherwise they should still be default values
       if (this.isSyncing) {
+        this.setProgress(0, '');
         this.syncStage = null;
         this.isSyncing = false;
         this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED);
@@ -202,8 +193,6 @@ export class ClientSyncManager {
 
     this.isInitialSync = pullSince === -1;
 
-    console.log('ok');
-
     this.progressMaxByStage = this.isInitialSync
       ? STAGE_MAX_PROGRESS_INITIAL
       : STAGE_MAX_PROGRESS_INCREMENTAL;
@@ -249,7 +238,6 @@ export class ClientSyncManager {
     await dropSnapshotTable(this.database, sessionId);
 
     this.lastSuccessfulSyncTime = new Date();
-    this.setProgress(0, '');
   }
 
   async startSyncSession(urgent: boolean, lastSyncedTick: number) {
@@ -339,7 +327,7 @@ export class ClientSyncManager {
       // At this stage, we don't really know how long it will take.
       // So only showing a message to indicate this this is still in progress
       this.setProgress(
-        STAGE_MAX_PROGRESS[SYNC_STAGES.PULL - 1],
+        this.progressMaxByStage[SYNC_STAGES.PULL - 1],
         'Pausing at 33% while server prepares for pull, please wait...',
       );
 

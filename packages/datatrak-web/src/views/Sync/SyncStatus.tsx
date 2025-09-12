@@ -1,7 +1,6 @@
-import { LinearProgress, Typography } from '@material-ui/core';
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
-import { useTheme } from '@material-ui/core';
+import { LinearProgress, Typography, useTheme } from '@material-ui/core';
 
 import { CheckCircleIcon } from '../../components/Icons/CheckCircleIcon';
 
@@ -36,7 +35,8 @@ const Progress = styled(LinearProgress).attrs({ variant: 'determinate' })`
 interface SyncStatusProps extends HTMLAttributes<HTMLDivElement> {
   percentage: number | null;
   message: string | null;
-  syncStageMessage: string | null;
+  syncStage: number | null;
+  totalStages: number;
   isSyncing: boolean;
   syncFinishedSuccessfully: boolean;
 }
@@ -46,7 +46,8 @@ export const SyncStatus = ({
   percentage,
   message,
   syncFinishedSuccessfully,
-  syncStageMessage,
+  syncStage,
+  totalStages,
   ...props
 }: SyncStatusProps) => {
   const successColor = useTheme().palette.success.main;
@@ -54,7 +55,7 @@ export const SyncStatus = ({
   return (
     <Wrapper {...props}>
       <Heading>{message}</Heading>
-      <Heading>{syncStageMessage}</Heading>
+      {syncStage && <Heading>{`Sync stage ${syncStage} of ${totalStages}`}</Heading>}
       {isSyncing ? <Progress value={percentage ?? undefined} /> : null}
       {syncFinishedSuccessfully ? <CheckCircleIcon htmlColor={successColor} /> : null}
     </Wrapper>

@@ -8,6 +8,7 @@ import { SafeAreaColumn } from '@tupaia/ui-components';
 import { HEADER_HEIGHT, ROUTES } from '../../constants';
 import { UserMenu } from '../UserMenu';
 import { HeaderLeft } from './HeaderLeft';
+import { HeaderRight } from './HeaderRight';
 
 export const HeaderRoot = styled(SafeAreaColumn).attrs({
   as: 'header',
@@ -40,10 +41,7 @@ export const Header = (props: ComponentPropsWithoutRef<typeof HeaderRoot>) => {
   return (
     <HeaderRoot {...props}>
       <HeaderLeft />
-      <Logo to={ROUTES.SYNC} component={RouterLink}>
-        <img src="/icons/sync-icon.svg" alt="Tupaia DataTrak – Home" width="100%" height="100%" />
-      </Logo>
-      <UserMenu />
+      <HeaderRight />
     </HeaderRoot>
   );
 };

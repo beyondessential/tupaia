@@ -12,6 +12,7 @@ import { formatDistance } from 'date-fns';
 import { useSyncContext } from '../../api/SyncContext';
 import { useProjectsInSync } from '../../hooks/database/useProjectsInSync';
 import { LastSyncDetails } from './LastSyncDetails';
+import { Alert, LoadingScreen } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -59,6 +60,10 @@ const StyledButton = styled(Button)`
   margin-block-start: 2.25rem;
 `;
 
+const StyledAlert = styled(Alert)`
+  margin-block-start: 2.25rem;
+`;
+
 export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null): string {
   return lastSuccessfulSyncTime
     ? formatDistance(lastSuccessfulSyncTime, new Date(), { addSuffix: true })
@@ -66,17 +71,17 @@ export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null
 }
 
 export const SyncPage = () => {
-  const isMobile = useIsMobile();
-  const navigate = useNavigate();
-
   const { clientSyncManager: syncManager } = useSyncContext();
 
   if (!syncManager) {
-    return null;
+    return <LoadingScreen />;
   }
 
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
   const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
-  const [hasError, setHasError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState<boolean>(syncManager.isSyncing);
   const [isQueuing, setIsQueuing] = useState<boolean>(syncManager.isQueuing);
   const [syncStage, setSyncStage] = useState<number | null>(syncManager.syncStage);
@@ -91,13 +96,13 @@ export const SyncPage = () => {
   const [lastSyncPulledRecordsCount, setLastSyncPulledRecordsCount] = useState<number | null>(null);
 
   useEffect(() => {
-    const handler = (action: any): void => {
+    const handler = (action: any, data: any): void => {
       switch (action) {
         case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
           setProgress(0);
           setIsQueuing(true);
           setIsSyncing(false);
-          setHasError(false);
+          setErrorMessage(null);
           setProgressMessage(syncManager.progressMessage);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_STARTED:
@@ -106,7 +111,7 @@ export const SyncPage = () => {
           setIsSyncing(true);
           setProgress(0);
           setProgressMessage('Initialising sync');
-          setHasError(false);
+          setErrorMessage(null);
           // activateKeepAwake(); // don't let the device sleep while syncing
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ENDED:
@@ -128,7 +133,7 @@ export const SyncPage = () => {
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ERROR:
           setIsQueuing(false);
-          setHasError(true);
+          setErrorMessage(data.error);
           break;
         default:
           break;
@@ -146,9 +151,8 @@ export const SyncPage = () => {
     syncManager.triggerUrgentSync(projectsInSync);
   }, [projectsInSync]);
 
-  const syncFinishedSuccessfully = syncStarted && !isSyncing && !isQueuing && !hasError;
+  const syncFinishedSuccessfully = Boolean(syncStarted && !isSyncing && !isQueuing && !errorMessage);
 
-  const syncStageMessage = `Sync stage ${syncStage} of ${Object.keys(syncManager.progressMaxByStage).length}`;
   return (
     <Wrapper>
       {isMobile && <StickyMobileHeader onClose={() => navigate(-1)}>Sync</StickyMobileHeader>}
@@ -162,7 +166,8 @@ export const SyncPage = () => {
             isSyncing={isSyncing}
             percentage={progress}
             message={progressMessage}
-            syncStageMessage={syncStageMessage}
+            syncStage={syncStage}
+            totalStages={Object.keys(syncManager.progressMaxByStage).length}
             syncFinishedSuccessfully={syncFinishedSuccessfully}
           />
           <StyledLastSyncDate message={formattedLastSuccessfulSyncTime} />
@@ -171,6 +176,7 @@ export const SyncPage = () => {
             lastSyncPushedRecordsCount={lastSyncPushedRecordsCount}
           />
           {isSyncing ? null : <StyledButton onClick={manualSync}>Sync now</StyledButton>}
+          {errorMessage ? <StyledAlert severity="error">{errorMessage}</StyledAlert> : null}
         </Content>
       </LayoutManager>
     </Wrapper>
