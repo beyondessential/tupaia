@@ -1,38 +1,53 @@
-import { yup } from '@tupaia/utils';
 import { Context } from '../../context';
-
 import { TransformTable } from '../table';
-import {
-  buildInsertColumns,
-  paramsValidator as insertColumnsParamsValidator,
-} from './insertColumns';
 import {
   buildExcludeColumns,
   paramsValidator as excludeColumnsParamsValidator,
 } from './excludeColumns';
-import {
-  buildUpdateColumns,
-  paramsValidator as updateColumnsParamsValidator,
-} from './updateColumns';
-import { buildMergeRows, paramsValidator as mergeRowsParamsValidator } from './mergeRows';
-import { buildSortRows, paramsValidator as sortRowsParamsValidator } from './sortRows';
 import { buildExcludeRows, paramsValidator as excludeRowsParamsValidator } from './excludeRows';
+import { buildFetchData, paramsValidator as fetchDataParamsValidator } from './fetchData';
 import { buildFillsRows, paramsValidator as fillRowsParamsValidator } from './fillRows';
-import { buildInsertRows, paramsValidator as insertRowsParamsValidator } from './insertRows';
 import {
   buildGatherColumns,
   paramsValidator as gatherColumnsParamsValidator,
 } from './gatherColumns';
-import { buildFetchData, paramsValidator as fetchDataParamsValidator } from './fetchData';
+import {
+  buildInsertColumns,
+  paramsValidator as insertColumnsParamsValidator,
+} from './insertColumns';
+import { buildInsertRows, paramsValidator as insertRowsParamsValidator } from './insertRows';
+import { buildMergeRows, paramsValidator as mergeRowsParamsValidator } from './mergeRows';
 import { buildOrderColumns, paramsValidator as orderColumnsParamsValidator } from './orderColumns';
+import { buildSortRows, paramsValidator as sortRowsParamsValidator } from './sortRows';
 import { buildSql, paramsValidator as sqlParamsValidator } from './sql';
+import {
+  buildUpdateColumns,
+  paramsValidator as updateColumnsParamsValidator,
+} from './updateColumns';
 
-type TransformBuilder = (
-  params: unknown,
-  context: Context,
-) => (table: TransformTable) => TransformTable | Promise<TransformTable>;
+export type TransformName =
+  | 'fetchData'
+  | 'insertColumns'
+  | 'excludeColumns'
+  | 'updateColumns'
+  | 'mergeRows'
+  | 'sortRows'
+  | 'excludeRows'
+  | 'fillRows'
+  | 'insertRows'
+  | 'gatherColumns'
+  | 'orderColumns'
+  | 'sql';
 
-export const transformBuilders: Record<string, TransformBuilder> = {
+export interface TransformStep {
+  (table: TransformTable): TransformTable | Promise<TransformTable>;
+}
+
+export interface TransformBuilder {
+  (params: unknown, context: Context): TransformStep;
+}
+
+export const transformBuilders: Record<TransformName, TransformBuilder> = {
   fetchData: buildFetchData,
   insertColumns: buildInsertColumns,
   excludeColumns: buildExcludeColumns,
@@ -47,7 +62,7 @@ export const transformBuilders: Record<string, TransformBuilder> = {
   sql: buildSql,
 };
 
-export const transformSchemas: Record<string, yup.AnyObjectSchema> = {
+export const transformSchemas = {
   fetchData: fetchDataParamsValidator,
   insertColumns: insertColumnsParamsValidator,
   excludeColumns: excludeColumnsParamsValidator,
@@ -60,4 +75,4 @@ export const transformSchemas: Record<string, yup.AnyObjectSchema> = {
   gatherColumns: gatherColumnsParamsValidator,
   orderColumns: orderColumnsParamsValidator,
   sql: sqlParamsValidator,
-};
+} as const;

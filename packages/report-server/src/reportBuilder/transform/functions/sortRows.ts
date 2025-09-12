@@ -5,6 +5,7 @@ import { Row } from '../../types';
 import { ascOrDescValidator, starSingleOrMultipleColumnsValidator } from './utils';
 import { TransformTable } from '../table';
 import { TransformParser } from '../parser';
+import { TransformBuilder } from '.';
 
 type SortParams = {
   by: string | string[];
@@ -101,7 +102,7 @@ const buildParams = (params: unknown): SortParams => {
   };
 };
 
-export const buildSortRows = (params: unknown) => {
+export const buildSortRows: TransformBuilder = (params, _context) => {
   const builtSortParams = buildParams(params);
-  return (table: TransformTable) => sortRows(table, builtSortParams);
+  return table => sortRows(table, builtSortParams);
 };

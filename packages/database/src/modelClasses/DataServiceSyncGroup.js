@@ -1,4 +1,6 @@
 import winston from 'winston';
+
+import { ensure } from '@tupaia/tsutils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -16,6 +18,16 @@ const syncStatuses = {
 
 export class DataServiceSyncGroupRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DATA_SERVICE_SYNC_GROUP;
+
+  /**
+   * @returns {Promise<import('./DataGroup').DataGroupRecord>}
+   */
+  async getDataGroup() {
+    return ensure(
+      await this.otherModels.dataGroup.findOne({ code: this.data_group_code }),
+      `Sync group ${this.code} is not linked to an existing data group`,
+    );
+  }
 
   async setSyncIdle() {
     return this.model.update({ id: this.id }, { sync_status: syncStatuses.idle });
