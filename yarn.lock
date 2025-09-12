@@ -11206,21 +11206,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-replace@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "@rollup/plugin-replace@npm:6.0.2"
-  dependencies:
-    "@rollup/pluginutils": ^5.0.1
-    magic-string: ^0.30.3
-  peerDependencies:
-    rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
-  peerDependenciesMeta:
-    rollup:
-      optional: true
-  checksum: ef1af8d8cfca3ecf95c85bbcccf6fea3619343f6fc7c48b23ece6485a21622b74ab093a971ffc177af04468aef45c278d3b8a82f7a426d2c25da1061923cf943
-  languageName: node
-  linkType: hard
-
 "@rollup/plugin-terser@npm:^0.4.3":
   version: 0.4.4
   resolution: "@rollup/plugin-terser@npm:0.4.4"
@@ -12515,7 +12500,6 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
     "@material-ui/pickers": ^3.2.10
-    "@rollup/plugin-replace": ^6.0.2
     "@storybook/react": ^8.2.9
     "@tanstack/react-query": 4.36.1
     "@testing-library/dom": ^10.4.0
