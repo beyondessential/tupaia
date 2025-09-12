@@ -32,12 +32,12 @@ get_max_length() {
 
     for item in "${array[@]}"; do
         length=${#item}
-        if [[ $length -gt $max ]]; then
+        if (( length > max )); then
             max=$length
         fi
     done
 
-    echo $max
+    echo "$max"
 }
 
 get_branch_name() {

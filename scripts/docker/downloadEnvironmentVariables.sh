@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 # Fetch environment from LastPass, write to ${ENV_DEST}/${DEPLOYMENT_NAME}/.env
 # Is modified from ../../scripts/bash/downloadEnvironmentVariables.sh
@@ -29,12 +30,11 @@ set +x # do not output commands in this script, as some would show credentials i
 
 DEPLOYMENT_NAME=$1
 ENV_DEST=$2
-DIR=$(dirname "$0")
-
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 # can provide one or more packages as command line arguments, or will default to all
-if [ -z $3 ]; then
-    echo "Fetching all .env files"
+if [[ -z $3 ]]; then
+    echo 'Fetching all .env files'
     PACKAGES=$(${DIR}/../bash/getPackagesWithEnvFiles.sh)
 else
     PACKAGES=${@:3}
@@ -48,20 +48,20 @@ for PACKAGE in $PACKAGES; do
     mkdir -p "$ENV_FILE_DIR"
     ENV_FILE_PATH="${ENV_FILE_DIR}/.env"
     # checkout deployment specific env vars
-    lpass show --notes ${PACKAGE}.${DEPLOYMENT_NAME}.env > ${ENV_FILE_PATH}
+    lpass show --notes ${PACKAGE}.${DEPLOYMENT_NAME}.env >${ENV_FILE_PATH}
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual deployment
     # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
     sed -i -e "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" ${ENV_FILE_PATH}
 
-    if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
+    if [[ $DEPLOYMENT_NAME = *-e2e || $DEPLOYMENT_NAME = e2e ]]; then
         # Update e2e environment variables
-        if [[ ${PACKAGE} == "central-server" || ${PACKAGE} == "web-config-server" ]]; then
+        if [[ $PACKAGE = central-server || $PACKAGE = web-config-server ]]; then
             sed -i -E 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
         fi
     fi
 
-    if [[ "${DEPLOYMENT_NAME}" == dev ]]; then
+    if [[ $DEPLOYMENT_NAME = 'dev' ]]; then
         # Update dev specific environment variables
         # (removes ###DEV_ONLY### prefixes, leaving the key=value pair uncommented)
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
