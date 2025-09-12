@@ -70,7 +70,7 @@ export type QueryOptions = {
   sort?: string[];
   rawSort?: string;
   joinWith?: string;
-  columns?: string[];
+  columns?: string[] | Record<string, string>[];
   joinCondition?: [string, string];
 };
 

@@ -65,11 +65,11 @@ export const AppProviders = ({ children, queryClient = defaultQueryClient }: App
               horizontal: 'right',
             }}
           >
-            <DatabaseProvider>
-              <CurrentUserContextProvider>
+            <CurrentUserContextProvider>
+              <DatabaseProvider>
                 <SyncProvider>{children}</SyncProvider>
-              </CurrentUserContextProvider>
-            </DatabaseProvider>
+              </DatabaseProvider>
+            </CurrentUserContextProvider>
           </SnackbarProvider>
         </QueryClientProvider>
       </ThemeProvider>

@@ -8,7 +8,6 @@ import {
   useCurrentUserContext,
   useProjectEntities,
 } from '../../api';
-import { Entity } from '../../types';
 import { UseProjectEntitiesQueryResult } from '../../api/queries/useProjectEntities';
 
 export type UserCountriesType = Omit<UseProjectEntitiesQueryResult, 'data'> & {
@@ -61,11 +60,10 @@ export const useUserCountries = (
   return {
     countries,
     ...projectEntitiesQuery,
-
     selectedCountry,
     updateSelectedCountry: (e: ChangeEvent<HTMLSelectElement>) => {
       const countryCode = e.target.value;
-      const newCountry = countries?.find((country: Entity) => country.code === countryCode);
+      const newCountry = countries?.find(country => country.code === countryCode);
       setSelectedCountry(newCountry ?? null);
     },
   };

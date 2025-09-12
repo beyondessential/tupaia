@@ -1,5 +1,5 @@
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebEntityDescendantsRequest, UserAccount } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest, Entity } from '@tupaia/types';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
@@ -25,36 +25,13 @@ async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
   return code;
 }
 
-const getRecentEntities = (
-  currentUser: UserAccount,
-  countryCode: string | undefined,
-  type: string | undefined,
-) => {
-  const { recent_entities: userRecentEntities } = currentUser.preferences;
-  if (!userRecentEntities || !countryCode || !type) {
-    return [];
-  }
-
-  const recentEntitiesForCountry = userRecentEntities[countryCode];
-  if (!recentEntitiesForCountry) {
-    return [];
-  }
-
-  const entityTypes = type.split(',');
-  const recentEntitiesOfTypes = entityTypes.flatMap(
-    entityType => userRecentEntities[countryCode][entityType] ?? [],
-  );
-
-  return recentEntitiesOfTypes;
-};
-
 export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
   public async buildResponse() {
     const { query, ctx, session, models } = this.req;
     const { services } = ctx;
     const isLoggedIn = !!session;
 
-    let recentEntities: string[] = [];
+    let recentEntities: Entity['id'][] = [];
 
     const {
       filter: { countryCode, projectCode, grandparentId, parentId, type, ...restOfFilter },
@@ -65,8 +42,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
 
     if (isLoggedIn) {
       const currentUser = await models.user.findOne({ email: session.email });
-
-      recentEntities = getRecentEntities(currentUser, countryCode, type);
+      recentEntities = await models.user.getRecentEntities(currentUser.id, countryCode, type);
     }
 
     const filter = {

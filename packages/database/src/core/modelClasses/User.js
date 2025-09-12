@@ -230,4 +230,30 @@ export class UserModel extends DatabaseModel {
 
     return await this.getFilteredUsers(searchTerm, userIds);
   }
+
+  /**
+   * @param {string} userId
+   * @param {string|undefined} countryCode
+   * @param {string|undefined} type
+   * @returns {Promise<string[]>} Entity IDs
+   */
+  async getRecentEntities(userId, countryCode, type) {
+    const user = await this.findById(userId);
+    const { recent_entities: userRecentEntities } = user.preferences;
+    if (!userRecentEntities || !countryCode || !type) {
+      return [];
+    }
+
+    const recentEntitiesForCountry = userRecentEntities[countryCode];
+    if (!recentEntitiesForCountry) {
+      return [];
+    }
+
+    const entityTypes = type.split(',');
+    const recentEntitiesOfTypes = entityTypes.flatMap(
+      entityType => recentEntitiesForCountry[entityType] ?? [],
+    );
+
+    return recentEntitiesOfTypes;
+  }
 }

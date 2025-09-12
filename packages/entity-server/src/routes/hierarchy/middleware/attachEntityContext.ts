@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { EntityFilter, EntityRecord } from '@tupaia/server-boilerplate';
-import { extractEntityFilterFromQuery } from '@tupaia/tsmodels';
-import { ajvValidate, ensure, isNotNullish } from '@tupaia/tsutils';
-import { EntityTypeEnum } from '@tupaia/types';
+import { EntityFilter, EntityRecord, extractEntityFilterFromQuery } from '@tupaia/tsmodels';
+import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
+import { Entity, EntityTypeEnum } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
+
+import { ensure } from '@tupaia/tsutils';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
 const throwNoAccessError = (entityCodes: string[]) => {
@@ -74,25 +75,21 @@ const getFilterInfo = async (
 ) => {
   const isPublic = req.query.isPublic?.toLowerCase() === 'true';
 
-  let allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
-    .map(child => child.country_code)
-    .filter(isNotNullish);
-  allowedCountries = [...new Set(allowedCountries)]; // De-duplicate country codes
+  const countryEntities = await rootEntity.getChildren(req.ctx.hierarchyId);
+  const childCodes = countryEntities.map(child => child.country_code).filter(isNotNullish);
+  let allowedCountries = [...new Set(childCodes)];
 
   if (!isPublic) {
-    const project = ensure(
+    const { permission_groups: projectPermissionGroups } = ensure(
       await req.models.project.findOne({ code: req.params.hierarchyName }),
       `No project exists with code ${req.params.hierarchyName}`,
     );
 
     // Fetch all country codes we have any of the project permission groups access to
-    const projectAccessibleCountries = project.permission_groups.flatMap(permission =>
-      req.accessPolicy.getEntitiesAllowed(permission),
+    const projectAccessibleCountries = new Set<Entity['code']>(
+      projectPermissionGroups.flatMap(pg => req.accessPolicy.getEntitiesAllowed(pg)),
     );
-
-    allowedCountries = allowedCountries.filter(countryCode =>
-      projectAccessibleCountries.includes(countryCode),
-    );
+    allowedCountries = allowedCountries.filter(c => projectAccessibleCountries.has(c));
   }
 
   const { filter: queryFilter } = req.query;

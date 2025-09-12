@@ -1,7 +1,8 @@
 // This file is duplicated from entity-server, but reduced to only the functions we need in datatrak-web
-import { EntityRecord } from '@tupaia/server-boilerplate';
+import { EntityRecord } from '@tupaia/tsmodels';
 import { camelcaseKeys, ResponseObjectBuilder } from '@tupaia/tsutils';
 import { Entity, Resolved } from '@tupaia/types';
+
 import { extendedFieldFunctions, isExtendedField } from './extendedFieldFunctions';
 
 export type ExtendedFieldFunctions = Readonly<{
@@ -14,10 +15,10 @@ export type ExtendedEntityFieldName = keyof Entity | keyof ExtendedFieldFunction
 
 export type ExtendedEntityFields = Entity & ExtendedFieldFunctions;
 export type EntityResponseObject = {
-  [field in ExtendedEntityFieldName]?: ExtendedEntityFields[field];
+  [field in ExtendedEntityFieldName]: ExtendedEntityFields[field];
 };
 
-type FormatContext = { hierarchyId: string; allowedCountries: string[] };
+type FormatContext = { hierarchyId: string };
 
 export async function formatEntityForResponse(
   ctx: FormatContext,

@@ -4,7 +4,7 @@ import { AccessPolicy } from '@tupaia/access-policy';
 
 import { DatatrakWebModelRegistry } from '../../types';
 import { useDatabaseContext } from './useDatabaseContext';
-import { useCurrentUserContext } from '../../api';
+import { CurrentUser, useCurrentUserContext } from '../../api';
 
 export interface ResultObject<T> {
   data: T | undefined;
@@ -16,21 +16,23 @@ export interface ResultObject<T> {
 
 export interface DatabaseEffectOptions<T = unknown> {
   enabled: boolean;
+  onError?: (e: Error) => void;
   placeholderData?: T;
 }
 
 export const useCancelableEffect = <T>(
   fetcher: () => Promise<T> | T,
   dependencies: React.DependencyList = [],
-  options: DatabaseEffectOptions = { enabled: true, placeholderData: undefined },
+  options: DatabaseEffectOptions,
 ): ResultObject<T> => {
-  const [data, setData] = useState<T | undefined>(options.placeholderData as T);
+  const { enabled = true, placeholderData, onError } = options;
+  const [data, setData] = useState<T>(placeholderData as T);
   const [error, setError] = useState<Error | undefined>(undefined);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const onFetch = async (isCancel?: () => boolean) => {
-    if (!options.enabled) {
+    if (!enabled) {
       return;
     }
 
@@ -43,6 +45,7 @@ export const useCancelableEffect = <T>(
       }
     } catch (e: any) {
       setError(e);
+      onError?.(e);
     } finally {
       setIsLoading(false);
     }
@@ -60,12 +63,16 @@ export const useCancelableEffect = <T>(
 };
 
 export const useDatabaseEffect = <T>(
-  call: (models: DatatrakWebModelRegistry, accessPolicy?: AccessPolicy) => Promise<T> | T,
+  call: (
+    models: DatatrakWebModelRegistry,
+    accessPolicy?: AccessPolicy,
+    user?: CurrentUser,
+  ) => T | Promise<T>,
   dependencies: React.DependencyList,
-  options: DatabaseEffectOptions = { enabled: true },
+  options: DatabaseEffectOptions = { enabled: true, onError: (_e: Error) => {} },
 ): ResultObject<T> => {
   const { models } = useDatabaseContext();
-  const { accessPolicy } = useCurrentUserContext();
+  const { accessPolicy, ...user } = useCurrentUserContext();
 
-  return useCancelableEffect(() => call(models, accessPolicy), dependencies, options);
+  return useCancelableEffect(() => call(models, accessPolicy, user), dependencies, options);
 };
