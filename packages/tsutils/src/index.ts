@@ -8,3 +8,4 @@ export * from './period';
 export * from './ResponseObjectBuilder';
 export * from './typeGuards';
 export * from './validation';
+export * from './task';

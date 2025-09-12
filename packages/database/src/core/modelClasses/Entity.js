@@ -5,9 +5,9 @@ import {
   translatePoint,
   translateRegion,
   translateBounds,
-  snakeKeys,
 } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
+import { ensure } from '@tupaia/tsutils';
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -659,6 +659,20 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       newAllAncestors,
       level + 1,
     );
+  }
+
+  async getParentEntityName(projectId, entityId) {
+    const entity = await this.findById(entityId);
+    ensure(entity, `Entity with id ${entityId} not found`);
+
+    const project = await this.otherModels.project.findById(projectId);
+    ensure(project, `Project with id ${projectId} not found`);
+
+    const entityIsNotCountry = project.entity_hierarchy_id && entity.type !== 'country';
+    const parentEntity = entityIsNotCountry
+      ? await entity.getParentFromParentChildRelation(project.entity_hierarchy_id)
+      : null;
+    return parentEntity?.name;
   }
 
   async getRelativesOfEntities(hierarchyId, entityIds, criteria) {

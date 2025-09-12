@@ -1,5 +1,5 @@
 import { SyncDirections } from '@tupaia/constants';
-import { ensure, isNotNullish, isNullish } from '@tupaia/tsutils';
+import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
 
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
@@ -8,6 +8,7 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
 import { buildSyncLookupSelect } from '../sync';
+import { TaskCommentType } from '@tupaia/types';
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -365,19 +366,30 @@ export class TaskModel extends DatabaseModel {
    * @param {object} customQueryOptions
    */
   async countTasksForAccessPolicy(accessPolicy, dbConditions, customQueryOptions) {
+    const filtersWithColumnSelectors = { ...dbConditions };
+
+    // use column selectors for custom columns being used in filters
+    for (const [key, value] of Object.entries(dbConditions)) {
+      if (key in this.customColumnSelectors) {
+        const colKey = this.customColumnSelectors[key]();
+        filtersWithColumnSelectors[colKey] = value;
+        delete filtersWithColumnSelectors[key];
+      }
+    }
+
     // Check if the user has BES Admin access
     const hasBESAdminAccess = accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
     const queryClause = await this.createAccessPolicyQueryClause(accessPolicy);
 
     // If the user has BES Admin access, return the count of all tasks that match the conditions, otherwise return the count of tasks that match the conditions and the access policy
     const queryConditions = hasBESAdminAccess
-      ? dbConditions
+      ? filtersWithColumnSelectors
       : {
           [QUERY_CONJUNCTIONS.RAW]: queryClause,
-          ...dbConditions,
+          ...filtersWithColumnSelectors,
         };
 
-    return this.count(queryConditions, {
+    return await this.count(queryConditions, {
       multiJoin: customQueryOptions.multiJoin,
     });
   }
@@ -519,5 +531,85 @@ export class TaskModel extends DatabaseModel {
     }
 
     return taskDetails;
+  }
+
+  /**
+   * @description Format the tasks response with comments for the client
+   * @param {import('@tupaia/types').DatatrakWebTasksRequest.RawTaskResult[]} tasks
+   * @returns {Promise<import('@tupaia/types').DatatrakWebTasksRequest.ResBody['tasks']>}
+   */
+  async formatTasksWithComments(tasks) {
+    const formattedTasks = await Promise.all(
+      tasks.map(async task => {
+        const [formattedTask, commentsCount] = await Promise.all([
+          this.formatTaskForClient(task),
+          this.otherModels.taskComment.count({
+            task_id: task.id,
+            type: TaskCommentType.user,
+          }),
+        ]);
+
+        return {
+          ...formattedTask,
+          commentsCount,
+        };
+      }),
+    );
+
+    return formattedTasks;
+  }
+
+  /**
+   * Format the task response for the client
+   * @param {import('@tupaia/types').DatatrakWebTasksRequest.RawTaskResult} task
+   * @returns {Promise<import('@tupaia/types').DatatrakWebTasksRequest.TaskResponse>}
+   */
+  async formatTaskForClient(task) {
+    const {
+      entity_id: entityId,
+      'entity.name': entityName,
+      'entity.code': entityCode,
+      'entity.country_code': entityCountryCode,
+      'survey.code': surveyCode,
+      survey_id: surveyId,
+      'survey.name': surveyName,
+      task_status: taskStatus,
+      repeat_schedule: repeatSchedule,
+      assignee_id: assigneeId,
+      assignee_name: assigneeName,
+      model: _,
+      ...rest
+    } = task;
+
+    const { project_id: projectId } = await this.otherModels.survey.findById(surveyId, {
+      fields: ['project_id'],
+    });
+    const parentName = await this.otherModels.entity.getParentEntityName(projectId, entityId);
+
+    const formattedTask = {
+      ...rest,
+      assignee: {
+        id: assigneeId,
+        name: assigneeName,
+      },
+      entity: {
+        id: entityId,
+        name: entityName,
+        code: entityCode,
+        countryCode: entityCountryCode,
+        parentName,
+      },
+      survey: {
+        id: surveyId,
+        name: surveyName,
+        code: surveyCode,
+      },
+      taskStatus,
+      repeatSchedule,
+    };
+
+    return camelcaseKeys(formattedTask, {
+      deep: true,
+    });
   }
 }
