@@ -76,10 +76,7 @@ export const JsonInputField = props => {
         <CardContent>
           {jsonFieldSchema
             .filter(({ visibilityCriteria }) => {
-              if (visibilityCriteria) {
-                return checkVisibilityCriteriaAreMet(visibilityCriteria, recordData);
-              }
-              return true;
+              return checkVisibilityCriteriaAreMet(visibilityCriteria, recordData);
             })
             .map(field => {
               const {
