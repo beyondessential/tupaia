@@ -9,7 +9,9 @@ jest.mock('@tupaia/database', () => ({
 }));
 
 jest.mock('./src/database/createDatabase', () => ({
-  models: {},
+  createDatabase: jest.fn().mockImplementation(() => ({
+    models: {},
+  })),
 }));
 
 jest.mock('./src/database/DatatrakDatabase', () => ({
