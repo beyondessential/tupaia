@@ -159,9 +159,7 @@ export const ImportModalComponent = React.memo(
           buttons={buttons}
         >
           <form>
-            {finishedMessage ? (
-              <>{finishedMessage}</>
-            ) : (
+            {finishedMessage || (
               <>
                 <p>{subtitle}</p>
                 {queryParameters
