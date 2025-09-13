@@ -90,9 +90,8 @@ export const DataSourceConfigView = row => {
     },
   };
 
-  const blankString = '';
   const entries = Object.entries(row.value)
-    .filter(([, value]) => value !== blankString)
+    .filter(([, value]) => value !== '')
     .map(([key, value]) => (
       <React.Fragment key={key}>
         <dt style={localStyles.config.dt}>{key}:</dt>
