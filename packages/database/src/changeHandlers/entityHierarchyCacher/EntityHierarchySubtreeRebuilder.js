@@ -197,7 +197,6 @@ export class EntityHierarchySubtreeRebuilder {
    *                                          parent at index 0
    */
   async cacheGeneration(hierarchyId, childIdToAncestorIds) {
-    const records = [];
     const childIds = Object.keys(childIdToAncestorIds);
     const existingParentRelations = await this.models.ancestorDescendantRelation.find({
       descendant_id: childIds,
@@ -205,18 +204,16 @@ export class EntityHierarchySubtreeRebuilder {
       generational_distance: 1,
     });
     const childrenAlreadyCached = new Set(existingParentRelations.map(r => r.descendant_id));
-    Object.entries(childIdToAncestorIds)
+    const records = Object.entries(childIdToAncestorIds)
       .filter(([childId]) => !childrenAlreadyCached.has(childId))
-      .forEach(([childId, ancestorIds]) => {
-        ancestorIds.forEach((ancestorId, ancestorIndex) =>
-          records.push({
-            entity_hierarchy_id: hierarchyId,
-            ancestor_id: ancestorId,
-            descendant_id: childId,
-            generational_distance: ancestorIndex + 1,
-          }),
-        );
-      });
+      .flatMap(([childId, ancestorIds]) =>
+        ancestorIds.map((ancestorId, i) => ({
+          entity_hierarchy_id: hierarchyId,
+          ancestor_id: ancestorId,
+          descendant_id: childId,
+          generational_distance: i + 1,
+        })),
+      );
     await this.models.ancestorDescendantRelation.createMany(records);
   }
 }
