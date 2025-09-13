@@ -42040,13 +42040,17 @@ export const CountrySchema = {
 		},
 		"name": {
 			"type": "string"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"code",
 		"id",
-		"name"
+		"name",
+		"updated_at_sync_tick"
 	]
 } 
 
@@ -42057,6 +42061,9 @@ export const CountryCreateSchema = {
 			"type": "string"
 		},
 		"name": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -42074,6 +42081,9 @@ export const CountryUpdateSchema = {
 			"type": "string"
 		},
 		"name": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},

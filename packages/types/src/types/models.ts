@@ -255,14 +255,17 @@ export interface Country {
   'code': string;
   'id': string;
   'name': string;
+  'updated_at_sync_tick': string;
 }
 export interface CountryCreate {
   'code': string;
   'name': string;
+  'updated_at_sync_tick'?: string;
 }
 export interface CountryUpdate {
   'code'?: string;
   'name'?: string;
+  'updated_at_sync_tick'?: string;
 }
 export interface Dashboard {
   'code': string;
