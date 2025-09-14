@@ -1,13 +1,19 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 
+import { Entity, Survey, UserAccount } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { post, useCurrentUserContext, useEntityByCode } from '..';
 import { Coconut } from '../../components';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { gaEvent, successToast } from '../../utils';
+import { useIsOfflineFirst } from '../offlineFirst';
 import { useSurvey } from '../queries';
+import {
+  ContextualMutationFunctionContext,
+  useDatabaseMutation,
+} from '../queries/useDatabaseMutation';
 
 type Answer = string | number | boolean | null | undefined;
 
@@ -15,8 +21,17 @@ export interface AnswersT {
   [key: string]: Answer;
 }
 
+interface ResponseData {
+  countryId: Entity['id'] | undefined;
+  questions: ReturnType<typeof getAllSurveyComponents>;
+  startTime: string | undefined;
+  surveyId: Survey['id'] | undefined;
+  timezone: Intl.ResolvedDateTimeFormatOptions['timeZone'];
+  userId: UserAccount['id'] | undefined | null;
+}
+
 // utility hook for getting survey response data
-export const useSurveyResponseData = () => {
+export const useSurveyResponseData = (): ResponseData => {
   const user = useCurrentUserContext();
   const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
@@ -33,6 +48,21 @@ export const useSurveyResponseData = () => {
   };
 };
 
+const mutationFunctions = {
+  local: async ({
+    models,
+    data,
+    user,
+    answers,
+    surveyResponseData,
+  }: ContextualMutationFunctionContext<AnswersT>) => {},
+  remote: async ({ answers, surveyResponseData }: ContextualMutationFunctionContext<AnswersT>) => {
+    if (!answers) return;
+    const data = { ...surveyResponseData, answers };
+    return await post('submitSurveyResponse', { data });
+  },
+};
+
 export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -41,14 +71,10 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
   const user = useCurrentUserContext();
   const { data: survey } = useSurvey(params.surveyCode);
   const surveyResponseData = useSurveyResponseData();
+  const isOfflineFirst = useIsOfflineFirst();
 
-  return useMutation<any, Error, AnswersT, unknown>(
-    async (answers: AnswersT) => {
-      if (!answers) return;
-      return await post('submitSurveyResponse', {
-        data: { ...surveyResponseData, answers },
-      });
-    },
+  return useDatabaseMutation<any, Error, AnswersT, unknown>(
+    isOfflineFirst ? mutationFunctions.local : mutationFunctions.remote,
     {
       onMutate: () => {
         // Send off survey submissions by survey, project, country, and userId
