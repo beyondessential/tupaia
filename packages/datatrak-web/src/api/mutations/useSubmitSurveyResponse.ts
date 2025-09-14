@@ -1,16 +1,19 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
+
 import { getBrowserTimeZone } from '@tupaia/utils';
-import { Coconut } from '../../components';
 import { post, useCurrentUserContext, useEntityByCode } from '..';
+import { Coconut } from '../../components';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
-import { useSurvey } from '../queries';
 import { gaEvent, successToast } from '../../utils';
+import { useSurvey } from '../queries';
 
 type Answer = string | number | boolean | null | undefined;
 
-export type AnswersT = Record<string, Answer>;
+export interface AnswersT {
+  [key: string]: Answer;
+}
 
 // utility hook for getting survey response data
 export const useSurveyResponseData = () => {
@@ -41,11 +44,8 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
   return useMutation<any, Error, AnswersT, unknown>(
     async (answers: AnswersT) => {
-      if (!answers) {
-        return;
-      }
-
-      return post('submitSurveyResponse', {
+      if (!answers) return;
+      return await post('submitSurveyResponse', {
         data: { ...surveyResponseData, answers },
       });
     },
@@ -58,25 +58,25 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         gaEvent('submit_survey_by_user', user.id!);
       },
       onSuccess: data => {
-        queryClient.invalidateQueries(['surveyResponses']);
+        queryClient.invalidateQueries(['entityDescendants']); // Refresh recent entities
+        queryClient.invalidateQueries(['leaderboard']);
         queryClient.invalidateQueries(['recentSurveys']);
         queryClient.invalidateQueries(['rewards']);
-        queryClient.invalidateQueries(['leaderboard']);
-        queryClient.invalidateQueries(['entityDescendants']); // Refresh recent entities
-        queryClient.invalidateQueries(['tasks']);
+        queryClient.invalidateQueries(['surveyResponses']);
         queryClient.invalidateQueries(['taskMetric', user.projectId]);
+        queryClient.invalidateQueries(['tasks']);
 
+        // Invalidate optionSet queries for questions that have createNew enabled so that the new
+        // options are fetched
         const createNewAutocompleteQuestions = surveyResponseData?.questions?.filter(
           question => question?.config?.autocomplete?.createNew,
         );
-
-        // invalidate optionSet queries for questions that have createNew enabled so that the new options are fetched
         if (createNewAutocompleteQuestions?.length > 0) {
-          createNewAutocompleteQuestions.forEach(question => {
-            const { optionSetId } = question;
-            queryClient.invalidateQueries(['autocompleteOptions', optionSetId]);
-          });
+          for (const question of createNewAutocompleteQuestions) {
+            queryClient.invalidateQueries(['autocompleteOptions', question.optionSetId]);
+          }
         }
+
         resetForm();
         successToast('Congratulations! You’ve earned a coconut', Coconut);
         // include the survey response data in the location state, so that we can use it to generate QR codes

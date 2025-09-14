@@ -1,35 +1,31 @@
 // useMutationWithContext.ts
 import {
+  MutationFunction,
   useMutation,
   UseMutationOptions,
   UseMutationResult,
-  MutationFunction,
 } from '@tanstack/react-query';
-import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
-import { DatatrakWebModelRegistry } from '../../types';
+
 import { AccessPolicy } from '@tupaia/access-policy';
 import { useDatabaseContext } from '../../hooks/database';
+import { DatatrakWebModelRegistry } from '../../types';
+import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
 
-// Global context shape
-type GlobalMutationContext = {
+interface GlobalMutationContext {
   models: DatatrakWebModelRegistry;
   accessPolicy?: AccessPolicy;
   user?: CurrentUser;
-};
+}
 
-// Full wrapper
 export function useDatabaseMutation<
   TData = unknown,
   TError = unknown,
   TVariables = void,
   TContext = unknown,
-  TLocalContext extends Record<string, any> = {},
+  TLocalContext extends Record<string, unknown> = {},
 >(
   mutationFn: (
-    args: {
-      data: TVariables;
-    } & GlobalMutationContext &
-      TLocalContext,
+    args: { data: TVariables } & GlobalMutationContext & TLocalContext,
   ) => Promise<TData>,
   options?: Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'> & {
     localContext?: TLocalContext;
