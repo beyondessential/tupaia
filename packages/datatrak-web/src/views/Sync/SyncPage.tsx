@@ -167,7 +167,7 @@ export const SyncPage = () => {
             totalStages={Object.keys(syncManager.progressMaxByStage).length}
             syncFinishedSuccessfully={syncFinishedSuccessfully}
           />
-          <StyledLastSyncDate message={formattedLastSuccessfulSyncTime} />
+          {isSyncing ? null : <StyledLastSyncDate message={formattedLastSuccessfulSyncTime} />}
           <StyledLastSyncDetails
             lastSyncPulledRecordsCount={lastSyncPulledRecordsCount}
             lastSyncPushedRecordsCount={lastSyncPushedRecordsCount}

@@ -36,7 +36,7 @@ export class SurveyScreenComponentModel extends DatabaseModel {
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: `ARRAY[survey.project_id]`,
+        projectIds: `array_remove(ARRAY[survey.project_id], NULL)`,
       }),
       joins: buildSyncLookupTraverseJoins([this.databaseRecord, 'survey_screen', 'survey'], {
         survey_screen_component_survey_screen: {

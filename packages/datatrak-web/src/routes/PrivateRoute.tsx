@@ -1,16 +1,29 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 import { isFeatureEnabled } from '@tupaia/utils';
 
-import { useCurrentUserContext } from '../api';
+import { useCurrentUserContext, useSyncContext } from '../api';
 import { ADMIN_ONLY_ROUTES, ROUTES } from '../constants';
 import { isWebApp } from '../utils';
+import { useDatabaseContext } from '../hooks/database';
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
 export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactElement => {
   const { isLoggedIn, hasAdminPanelAccess, hideWelcomeScreen, ...user } = useCurrentUserContext();
   const { pathname, search } = useLocation();
+  const { models } = useDatabaseContext();
+  const { refetchSyncedProjectIds } = useSyncContext();
+
+  useEffect(() => {
+    const addProjectForSync = async () => {
+    if (isLoggedIn) {
+        await models.localSystemFact.addProjectForSync(user.projectId);
+        refetchSyncedProjectIds();
+      }
+    };
+    addProjectForSync();
+  }, [models, isLoggedIn, user.projectId, refetchSyncedProjectIds]);
 
   if (!isLoggedIn) {
     return (

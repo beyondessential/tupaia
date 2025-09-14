@@ -15,7 +15,7 @@ export class AnswerModel extends MaterializedViewLogDatabaseModel {
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: `ARRAY[survey.project_id]`,
+        projectIds: `array_remove(ARRAY[survey.project_id], NULL)`,
       }),
       joins: `
         LEFT JOIN survey_response 

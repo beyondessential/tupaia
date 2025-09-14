@@ -55,6 +55,16 @@ export const saveChangesForModel = async (
     }
   }
 
+  winston.debug(
+    `Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`,
+    {
+      count: recordsForDelete.length,
+    },
+  );
+  if (recordsForDelete.length > 0) {
+    await saveDeletes(model, recordsForDelete, 1000, progressCallback);
+  }
+  
   // run each import process
   winston.debug(`Sync: saveIncomingChanges for ${model.databaseRecord}: Creating new records`, {
     count: recordsForCreate.length,
@@ -71,16 +81,6 @@ export const saveChangesForModel = async (
   );
   if (recordsForUpdate.length > 0) {
     await saveUpdates(model, recordsForUpdate, 1000, progressCallback);
-  }
-
-  winston.debug(
-    `Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`,
-    {
-      count: recordsForDelete.length,
-    },
-  );
-  if (recordsForDelete.length > 0) {
-    await saveDeletes(model, recordsForDelete, 1000, progressCallback);
   }
 };
 
