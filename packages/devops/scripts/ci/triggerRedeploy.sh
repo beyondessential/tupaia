@@ -41,8 +41,8 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
   DEPLOYMENT_NAME=$(echo $DEPLOYMENT | jq -r '.DeploymentName')
   NEW_INSTANCE_ID=$(echo $DEPLOYMENT | jq -r '.NewInstanceId')
 
-  echo "Waiting for ${DEPLOYMENT_NAME} to run its startup build script. To watch detailed progress, connect to instance ${NEW_INSTANCE_ID} and run tail -f ~/logs/deployment.log"
   WAIT_ATTEMPTS=0
+  echo "Waiting for $DEPLOYMENT_NAME to run its startup build script. To watch detailed progress, connect to instance $NEW_INSTANCE_ID and run tail -f ~/logs/deployment.log"
   while true; do
     STARTUP_COMPLETE=false
     aws ec2 wait instance-exists \
