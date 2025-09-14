@@ -5,11 +5,11 @@ export const useItemDetails = (params, parent) => {
   return useQuery(
     ['itemDetails', parent?.endpoint, params],
     async () => {
-      return get(parent?.endpoint, {
+      return await get(parent?.endpoint, {
         params: {
           filter: JSON.stringify(params),
           columns: JSON.stringify(
-            parent?.columns?.map(column => column.source).filter(source => source),
+            parent?.columns?.filter(column => column.source).map(column => column.source),
           ),
         },
       });
