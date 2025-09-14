@@ -1,6 +1,6 @@
 import { groupBy, isEqual, keyBy, orderBy } from 'es-toolkit/compat';
 
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
 const { AND, RAW } = QUERY_CONJUNCTIONS;
@@ -180,9 +180,7 @@ export const findAccessibleMapOverlays = async (
 ) => {
   const mapOverlays = await models.mapOverlay.find({
     [RAW]: {
-      sql: `("permission_group" = '' OR "permission_group" IN (${permissionGroups
-        .map(() => '?')
-        .join(',')}))`, // turn `['Public', 'Donor', 'Admin']` into `?,?,?` for binding
+      sql: `("permission_group" = '' OR "permission_group" IN ${SqlQuery.record(permissionGroups)})`,
       parameters: permissionGroups,
     },
     [AND]: {
