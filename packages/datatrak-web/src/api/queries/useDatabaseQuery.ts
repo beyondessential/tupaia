@@ -21,14 +21,14 @@ interface GlobalQueryContext {
   user: CurrentUser;
 }
 
-export interface LocalContext {
+interface LocalQueryContext {
   readonly [key: string]: unknown;
 }
 
 export interface ContextualQueryFunctionContext
   extends QueryFunctionContext,
     GlobalQueryContext,
-    LocalContext {}
+    LocalQueryContext {}
 
 // Enhanced QueryFunction type that receives extra context
 interface ContextualQueryFn<TData = unknown> {
@@ -41,7 +41,7 @@ export function useDatabaseQuery<
   TError = unknown,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
-  TLocalContext extends LocalContext = {},
+  TLocalContext extends LocalQueryContext = {},
 >(
   queryKey: TQueryKey,
   queryFn: ContextualQueryFn<TQueryFnData>,
