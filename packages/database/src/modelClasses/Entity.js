@@ -5,6 +5,7 @@ import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+import { SqlQuery } from '../SqlQuery';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -414,7 +415,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         descendantCodes,
         batchOfDescendantCodes => [
           `
-            SELECT descendant.code as descendant_code, ancestor.code as ancestor_code, ancestor.name as ancestor_name
+            SELECT
+              descendant.code as descendant_code,
+              ancestor.code as ancestor_code,
+              ancestor.name as ancestor_name
             FROM
               ancestor_descendant_relation
             JOIN
@@ -422,7 +426,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             JOIN
               entity as descendant ON descendant.id = ancestor_descendant_relation.descendant_id
             WHERE
-              descendant.code IN (${batchOfDescendantCodes.map(() => '?').join(',')})
+              descendant.code IN ${SqlQuery.record(batchOfDescendantCodes)}
             AND
               ancestor_descendant_relation.entity_hierarchy_id = ?
             AND

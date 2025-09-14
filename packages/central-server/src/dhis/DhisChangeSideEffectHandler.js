@@ -1,3 +1,4 @@
+import { SqlQuery } from '@tupaia/database';
 import { getUniqueEntries } from '@tupaia/utils';
 import { ChangeSideEffectHandler } from '../externalApiSync';
 
@@ -19,7 +20,7 @@ export class DhisChangeSideEffectHandler extends ChangeSideEffectHandler {
           JOIN data_group dg ON survey.data_group_id = dg.id
           JOIN entity ON survey_response.entity_id = entity.id
           WHERE
-            survey_response.id IN (${batchOfSurveyResponseIds.map(() => '?').join(',')})
+            survey_response.id IN ${SqlQuery.record(batchOfSurveyResponseIds)}
             AND ${this.models.surveyResponse.getOnlyEventsQueryClause()}
             AND dg.service_type = 'dhis';
         `,

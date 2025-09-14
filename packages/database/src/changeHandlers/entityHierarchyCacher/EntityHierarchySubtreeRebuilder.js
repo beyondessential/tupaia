@@ -1,5 +1,6 @@
 import { reduceToDictionary } from '@tupaia/utils';
 import { ORG_UNIT_ENTITY_TYPES } from '../../modelClasses/Entity';
+import { SqlQuery } from '../../SqlQuery';
 
 export class EntityHierarchySubtreeRebuilder {
   constructor(models) {
@@ -41,12 +42,12 @@ export class EntityHierarchySubtreeRebuilder {
     const entityIdsForDelete = [...rootEntityIds, ...descendantRelations.map(r => r.descendant_id)];
     await this.models.database.executeSqlInBatches(entityIdsForDelete, batchOfEntityIds => [
       `
-            DELETE FROM ancestor_descendant_relation
-            WHERE
-              entity_hierarchy_id = ?
-            AND
-              descendant_id IN (${batchOfEntityIds.map(() => '?').join(',')});
-          `,
+        DELETE FROM ancestor_descendant_relation
+        WHERE
+          entity_hierarchy_id = ?
+        AND
+          descendant_id IN ${SqlQuery.record(batchOfEntityIds)};
+      `,
       [hierarchyId, ...batchOfEntityIds],
     ]);
   }
