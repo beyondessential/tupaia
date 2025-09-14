@@ -27,7 +27,7 @@ if ! "$tupaia_dir"/scripts/bash/requireCommands.sh "$script_dir"/fetchParameterS
 	exit 1
 fi
 
-# TODO: Try exporting TS_AUTHKEY here
+
 
 if [[ $DEPLOYMENT_NAME = production ]]; then
 	auth_key_param_name=TAILSCALE_AUTH_KEY_PROD
