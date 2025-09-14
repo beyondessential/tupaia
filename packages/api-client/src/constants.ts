@@ -16,6 +16,7 @@ const productionSubdomains = [
   'psss',
   'psss-api',
   'report-api',
+  'sync-api',
   'entity-api',
   'data-table-api',
   'www',
@@ -61,7 +62,7 @@ const SERVICES = {
     localPort: '8000',
   },
   sync: {
-    subdomain: 'sync',
+    subdomain: 'sync-api',
     version: 'v1',
     localPort: '8120',
     prefix: null,
