@@ -1,4 +1,4 @@
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { getPermissionListWithWildcard } from '../utilities';
 
@@ -53,7 +53,7 @@ export const createDataGroupDBFilter = async (accessPolicy, models, criteria) =>
         INNER JOIN data_element
         ON data_element.id = data_element_data_group.data_element_id
         GROUP BY data_group_id
-        HAVING bool_and(permission_groups && array[${userPermissions.map(() => '?').join(',')}])
+        HAVING bool_and(permission_groups && ${SqlQuery.array(userPermissions)})
       )
     `,
     parameters: userPermissions,
