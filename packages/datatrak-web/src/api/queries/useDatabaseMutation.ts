@@ -17,16 +17,24 @@ interface GlobalMutationContext {
   user?: CurrentUser;
 }
 
+interface LocalMutationContext {
+  readonly [key: string]: unknown;
+}
+
+export interface ContextualMutationFunctionContext<TVariables>
+  extends GlobalMutationContext,
+    LocalMutationContext {
+  data: TVariables;
+}
+
 export function useDatabaseMutation<
   TData = unknown,
   TError = unknown,
   TVariables = void,
   TContext = unknown,
-  TLocalContext extends Record<string, unknown> = {},
+  TLocalContext extends LocalMutationContext = {},
 >(
-  mutationFn: (
-    args: { data: TVariables } & GlobalMutationContext & TLocalContext,
-  ) => Promise<TData>,
+  mutationFn: (args: ContextualMutationFunctionContext<TVariables>) => Promise<TData>,
   options?: Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'> & {
     localContext?: TLocalContext;
   },
