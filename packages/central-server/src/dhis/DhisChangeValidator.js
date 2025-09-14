@@ -1,3 +1,4 @@
+import { SqlQuery } from '@tupaia/database';
 import { getUniqueEntries } from '@tupaia/utils';
 import { ChangeValidator } from '../externalApiSync';
 
@@ -32,7 +33,7 @@ export class DhisChangeValidator extends ChangeValidator {
           AND data_group.service_type = 'dhis'
           AND (
             entity.country_code <> 'DL'
-            OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(() => '?').join(',')})
+            OR survey_response.user_id IN ${SqlQuery.record(nonPublicDemoLandUsers)}
           )
           ${
             excludeEventBased
@@ -40,7 +41,7 @@ export class DhisChangeValidator extends ChangeValidator {
               : ''
           }
           AND survey_response.outdated = ?
-          AND survey_response.id IN (${batchOfSurveyResponseIds.map(() => '?').join(',')});
+          AND survey_response.id IN ${SqlQuery.record(batchOfSurveyResponseIds)};
         `,
         [...nonPublicDemoLandUsers, outdated, ...batchOfSurveyResponseIds],
       );
