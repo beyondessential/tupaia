@@ -14,20 +14,9 @@ if [[ ! -v DEPLOYMENT_NAME ]]; then
 	exit 2
 fi
 
-# Temporary! To avoid needing to rebuild the production Amazon Machine Image
-# TODO: Remove this once testing passed
-if ! command -v tailscale &>/dev/null; then
-	echo 'Tailscale not installed. Installing...'
-	curl -fsSL https://tailscale.com/install.sh | sh
-fi
-echo 'Tailscale version:'
-tailscale version
-
 if ! "$tupaia_dir"/scripts/bash/requireCommands.sh "$script_dir"/fetchParameterStoreValue.sh tailscale; then
 	exit 1
 fi
-
-# TODO: Try exporting TS_AUTHKEY here
 
 if [[ $DEPLOYMENT_NAME = production ]]; then
 	auth_key_param_name=TAILSCALE_AUTH_KEY_PROD
