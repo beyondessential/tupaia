@@ -18,7 +18,9 @@ export class AnswerModel extends MaterializedViewLogDatabaseModel {
         projectIds: `ARRAY[survey.project_id]`,
       }),
       joins: `
-        LEFT JOIN survey_response ON survey_response.id = answer.survey_response_id
+        LEFT JOIN survey_response 
+          ON survey_response.id = answer.survey_response_id 
+          AND survey_response.outdated IS FALSE -- no outdated survey response
         LEFT JOIN survey ON survey.id = survey_response.survey_id
       `,
     };
