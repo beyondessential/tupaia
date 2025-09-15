@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+
+import { Alert } from '@tupaia/ui-components';
 
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
+import { SYNC_EVENT_ACTIONS } from '../../types';
+import { formatDistance } from 'date-fns';
+import { useSyncContext } from '../../api/SyncContext';
+import { useProjectsInSync } from '../../hooks/database/useProjectsInSync';
+import { LastSyncDetails } from './LastSyncDetails';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -46,31 +53,148 @@ const StyledLastSyncDate = styled(LastSyncDate)`
   margin-block-start: 2.25rem;
 `;
 
+const StyledLastSyncDetails = styled(LastSyncDetails)`
+  margin-block-start: 2.25rem;
+`;
+
 const StyledButton = styled(Button)`
   margin-block-start: 2.25rem;
 `;
 
+const StyledAlert = styled(Alert)`
+  margin-block-start: 2.25rem;
+`;
+
+export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null): string {
+  return lastSuccessfulSyncTime
+    ? formatDistance(lastSuccessfulSyncTime, new Date(), { addSuffix: true })
+    : '';
+}
+
 export const SyncPage = () => {
+  const { clientSyncManager: syncManager } = useSyncContext();
+
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
-  // <PLACEHOLDERS> TODO: Replace with queries or props
-  const lastSyncDate: Date | null = new Date(new Date().valueOf() - Math.random() * 1e9);
-  const syncProgress: number | null = 0.77;
-  // </PLACEHOLDERS>
+  const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState<boolean>(syncManager.isSyncing);
+  const [isQueuing, setIsQueuing] = useState<boolean>(syncManager.isQueuing);
+  const [syncStage, setSyncStage] = useState<number | null>(syncManager.syncStage);
+  const [progress, setProgress] = useState<number | null>(syncManager.progress);
+  const [progressMessage, setProgressMessage] = useState<string | null>(
+    syncManager.progressMessage,
+  );
+  const [formattedLastSuccessfulSyncTime, setFormattedLastSuccessfulSyncTime] = useState<string>(
+    formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
+  );
+  const [lastSyncPushedRecordsCount, setLastSyncPushedRecordsCount] = useState<number | null>(null);
+  const [lastSyncPulledRecordsCount, setLastSyncPulledRecordsCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handler = (action: any, data: any): void => {
+      switch (action) {
+        case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
+          setProgress(0);
+          setIsQueuing(true);
+          setIsSyncing(false);
+          setErrorMessage(null);
+          setProgressMessage(syncManager.progressMessage);
+          break;
+        case SYNC_EVENT_ACTIONS.SYNC_STARTED:
+          setIsQueuing(false);
+          setSyncStarted(true);
+          setIsSyncing(true);
+          setProgress(0);
+          setProgressMessage('Initialising sync');
+          setSyncStage(1);
+          setErrorMessage(null);
+          // activateKeepAwake(); // don't let the device sleep while syncing
+          break;
+        case SYNC_EVENT_ACTIONS.SYNC_ENDED:
+          setIsQueuing(false);
+          setIsSyncing(false);
+          setProgress(0);
+          setProgressMessage('');
+          // deactivateKeepAwake();
+          break;
+        case SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED:
+          setSyncStage(syncManager.syncStage);
+          setProgress(syncManager.progress);
+          setProgressMessage(syncManager.progressMessage);
+          setFormattedLastSuccessfulSyncTime(
+            formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
+          );
+          setLastSyncPushedRecordsCount(syncManager.lastSyncPushedRecordsCount);
+          setLastSyncPulledRecordsCount(syncManager.lastSyncPulledRecordsCount);
+          break;
+        case SYNC_EVENT_ACTIONS.SYNC_ERROR:
+          setIsQueuing(false);
+          setErrorMessage(data.error);
+          break;
+        default:
+          break;
+      }
+    };
+    syncManager.emitter.on('*', handler);
+    return () => {
+      syncManager.emitter.off('*', handler);
+    };
+  });
+
+  const { data: projectsInSync } = useProjectsInSync();
+
+  const manualSync = useCallback(() => {
+    syncManager.triggerUrgentSync(projectsInSync);
+  }, [projectsInSync]);
+
+  const syncFinishedSuccessfully = Boolean(
+    syncStarted && !isSyncing && !isQueuing && !errorMessage,
+  );
 
   return (
     <Wrapper>
+      {/* Mobile navigation header */}
       {isMobile && <StickyMobileHeader onClose={() => navigate(-1)}>Sync</StickyMobileHeader>}
+
       <LayoutManager>
         <Content>
+          {/* Sync icon */}
           <picture>
             <source srcSet="/datatrak-pin.svg" type="image/svg+xml" />
             <img aria-hidden src="/datatrak-pin.svg" height={80} width={80} />
           </picture>
-          <StyledSyncStatus value={syncProgress} />
-          <StyledLastSyncDate date={lastSyncDate} />
-          <StyledButton>Sync now</StyledButton>
+
+          {/* Current sync status */}
+          <StyledSyncStatus
+            isSyncing={isSyncing}
+            percentage={progress}
+            message={progressMessage}
+            syncStage={syncStage}
+            totalStages={Object.keys(syncManager.progressMaxByStage).length}
+            syncFinishedSuccessfully={syncFinishedSuccessfully}
+          />
+
+          {/* Post-sync information (only when not actively syncing) */}
+          {!isSyncing && (
+            <>
+              {/* Last sync timestamp */}
+              {syncStarted && <StyledLastSyncDate message={formattedLastSuccessfulSyncTime} />}
+
+              {/* Sync statistics */}
+              <StyledLastSyncDetails
+                lastSyncPulledRecordsCount={lastSyncPulledRecordsCount}
+                lastSyncPushedRecordsCount={lastSyncPushedRecordsCount}
+              />
+
+              {/* Manual sync button */}
+              <StyledButton onClick={manualSync}>Sync now</StyledButton>
+            </>
+          )}
+
+          {/* Error state */}
+          {errorMessage && <StyledAlert severity="error">{errorMessage}</StyledAlert>}
         </Content>
       </LayoutManager>
     </Wrapper>

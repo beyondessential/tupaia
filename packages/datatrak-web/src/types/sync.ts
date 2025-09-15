@@ -6,3 +6,12 @@ export interface ProcessStreamDataParams {
   sessionId: string;
   records: SyncSnapshotAttributes[];
 }
+
+export const SYNC_EVENT_ACTIONS = {
+  SYNC_IN_QUEUE: 'syncInQueue',
+  SYNC_STARTED: 'syncStarted',
+  SYNC_STATE_CHANGED: 'syncStateChanged',
+  SYNC_ENDED: 'syncEnded',
+  SYNC_ERROR: 'syncRecordError',
+  SYNC_RECORD_ERROR: 'syncRecordError',
+} as const;
