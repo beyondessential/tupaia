@@ -327,7 +327,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return Object.fromEntries(rows.map(row => [row.survey_id, row.survey_group_name]));
   }
 
-  /** @see `./README.md` */
+  /** @see `./Survey.readme.md` */
   async getQuestionsValues(surveyIds) {
     if (surveyIds.length === 0) return {};
 
