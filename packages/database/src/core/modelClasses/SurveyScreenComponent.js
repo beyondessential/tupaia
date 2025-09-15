@@ -9,11 +9,11 @@ export class SurveyScreenComponentRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_SCREEN_COMPONENT;
 
   async question() {
-    return this.otherModels.question.findById(this.question_id);
+    return await this.otherModels.question.findById(this.question_id);
   }
 
   async surveyScreen() {
-    return this.otherModels.surveyScreen.findById(this.screen_id);
+    return await this.otherModels.surveyScreen.findById(this.screen_id);
   }
 
   async surveyId() {
@@ -22,7 +22,7 @@ export class SurveyScreenComponentRecord extends DatabaseRecord {
   }
 
   async survey() {
-    return this.otherModels.survey.findById(await this.surveyId());
+    return await this.otherModels.survey.findById(await this.surveyId());
   }
 }
 
