@@ -56,7 +56,7 @@ export class SurveyResponseRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_RESPONSE;
 
   async getAnswers(conditions = {}) {
-    return this.otherModels.answer.find({ survey_response_id: this.id, ...conditions });
+    return await this.otherModels.answer.find({ survey_response_id: this.id, ...conditions });
   }
 }
 
@@ -83,6 +83,6 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   async getLeaderboard(projectId = '', rowCount = 10) {
     const bindings = projectId ? [projectId, rowCount] : [rowCount];
     const query = getLeaderboard(projectId);
-    return this.database.executeSql(query, bindings);
+    return await this.database.executeSql(query, bindings);
   }
 }
