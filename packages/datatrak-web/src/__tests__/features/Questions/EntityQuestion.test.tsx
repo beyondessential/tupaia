@@ -1,4 +1,4 @@
-import '../mocks/matchMedia.mock'; // Import before components under test
+import '../../mocks/matchMedia.mock'; // Import before components under test
 
 import { screen } from '@testing-library/react';
 import { rest } from 'msw';

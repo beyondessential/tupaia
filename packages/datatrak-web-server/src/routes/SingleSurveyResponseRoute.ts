@@ -6,8 +6,6 @@ import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
 
-import { getParentEntityName } from '../utils';
-
 export type SingleSurveyResponseRequest = Request<
   DatatrakWebSingleSurveyResponseRequest.Params,
   DatatrakWebSingleSurveyResponseRequest.ResBody,
@@ -93,7 +91,10 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       assertCanViewSurveyResponse(accessPolicy, countryCode, permissionGroup.name);
     }
 
-    const entityParentName = await getParentEntityName(models, projectId, response['entity.id']);
+    const entityParentName = await models.entity.getParentEntityName(
+      projectId,
+      response['entity.id'],
+    );
 
     const answerList = await ctx.services.central.fetchResources('answers', {
       filter: { survey_response_id: surveyResponse.id },

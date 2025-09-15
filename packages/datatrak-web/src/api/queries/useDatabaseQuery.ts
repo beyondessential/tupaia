@@ -20,7 +20,7 @@ interface GlobalQueryContext {
   user: CurrentUser;
 }
 
-interface LocalContext {
+export interface LocalContext {
   readonly [key: string]: unknown;
 }
 

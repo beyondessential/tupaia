@@ -100,6 +100,7 @@ export default defineConfig(({ command, mode }) => {
           '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
           '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
           '@tupaia/constants': path.resolve(__dirname, './packages/constants/src/index.ts'),
+          '@tupaia/tsutils': path.resolve(__dirname, './packages/tsutils/src/index.ts'),
         },
       },
     };

@@ -1,8 +1,8 @@
 import { UnprocessableContentError } from '@tupaia/utils';
+import { processColumnSelectorKeys } from '@tupaia/database';
 
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
-import { processColumnSelectorKeys } from '../GETHandler/helpers';
 import { assertDashboardItemGetPermissions } from './assertDashboardItemsPermissions';
 import { createDashboardItemsDBFilter } from './createDashboardItemsDBFilter';
 
