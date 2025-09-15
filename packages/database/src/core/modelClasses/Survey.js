@@ -378,7 +378,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
    * @param {ReturnType<typeof this.getQuestionsValues>} rawResults
    */
   getAggregatedQuestions(rawResults) {
-    const initialValue = {};
     const surveyQuestions = rawResults.reduce((questionsObject, currentResult) => {
       const { survey_id: id } = currentResult;
       const updatedValue = questionsObject;
@@ -386,7 +385,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
       updatedValue[id] = [];
       return questionsObject;
-    }, initialValue);
+    }, {});
 
     for (const result of rawResults) {
       const { survey_id, screen_number, survey_screen_id } = result;
