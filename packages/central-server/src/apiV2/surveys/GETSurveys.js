@@ -129,10 +129,11 @@ export class GETSurveys extends GETHandler {
 
   /**
    * @param {import('@tupaia/types').Survey['id'][]} surveyIds
+   * @returns {Promise<Record<import('@tupaia/types').Survey['id'], Country['code'][]>>}
    */
-  async getSurveyQuestionsValues(models, surveyIds) {
-    if (!this.includeQuestions) return {};
-    return await models.survey.getQuestionsValues(surveyIds);
+  async getSurveyCountryCodes(models, surveyIds) {
+    if (!this.includeCountryCodes) return {};
+    return await models.survey.getCountryCodesBySurveyId(surveyIds);
   }
 
   /**
@@ -146,10 +147,17 @@ export class GETSurveys extends GETHandler {
 
   /**
    * @param {import('@tupaia/types').Survey['id'][]} surveyIds
-   * @returns {Promise<Record<import('@tupaia/types').Survey['id'], Country['code'][]>>}
    */
-  async getSurveyCountryCodes(models, surveyIds) {
-    if (!this.includeCountryCodes) return {};
-    return await models.survey.getCountryCodesBySurveyId(surveyIds);
+  async getSurveyPaginatedQuestions(models, surveyIds) {
+    if (!this.includePaginatedQuestions) return {};
+    return await models.survey.getPaginatedQuestions(surveyIds);
+  }
+
+  /**
+   * @param {import('@tupaia/types').Survey['id'][]} surveyIds
+   */
+  async getSurveyQuestionsValues(models, surveyIds) {
+    if (!this.includeQuestions) return {};
+    return await models.survey.getQuestionsValues(surveyIds);
   }
 }
