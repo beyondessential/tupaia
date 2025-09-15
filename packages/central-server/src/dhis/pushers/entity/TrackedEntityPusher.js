@@ -33,8 +33,7 @@ export class TrackedEntityPusher extends EntityPusher {
    */
   async delete() {
     const entityData = await this.fetchDataFromSyncLog();
-    const trackedEntityId =
-      entityData.metadata && entityData.metadata.dhis && entityData.metadata.dhis.trackedEntityId;
+    const trackedEntityId = entityData.metadata?.dhis?.trackedEntityId;
     const diagnostics = await this.api.deleteRecordById(TRACKED_ENTITY_INSTANCE, trackedEntityId);
 
     return diagnostics;
