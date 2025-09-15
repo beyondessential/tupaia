@@ -33,10 +33,8 @@ const DEFAULT_PAGE_SIZE = 'ALL';
 // This function checks if all the map overlay items have the same reference and if they do, it
 // removes the reference from the children and adds it to the info object of the parent
 const integrateMapOverlayItemsReference = (children: OverlayChild[]) => {
-  const getReference = (mapOverlayItem: OverlayChild) => {
-    if (mapOverlayItem.info && mapOverlayItem.info.reference) return mapOverlayItem.info.reference;
-    return undefined;
-  };
+  const getReference = (mapOverlayItem: OverlayChild) =>
+    mapOverlayItem.info?.reference ?? undefined;
 
   const firstReference = children[0] && getReference(children[0]);
 
