@@ -1,3 +1,4 @@
+import { EntityTypeEnum } from '@tupaia/types';
 import { DatatrakWebServerModelRegistry } from '../types';
 
 export const getParentEntityName = async (
@@ -18,7 +19,7 @@ export const getParentEntityName = async (
   }
 
   const entityAncestors =
-    project.entity_hierarchy_id && entity.type !== 'country'
+    project.entity_hierarchy_id && entity.type !== EntityTypeEnum.country
       ? await entity.getAncestors(project.entity_hierarchy_id, {
           generational_distance: 1,
         })

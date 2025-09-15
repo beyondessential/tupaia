@@ -1,15 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useParams } from 'react-router';
-import DownloadIcon from '@material-ui/icons/GetApp';
-import MuiIconButton from '@material-ui/core/IconButton';
-import { FlexColumn, SpinningLoader, NoData } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
+import MuiIconButton from '@material-ui/core/IconButton';
+import DownloadIcon from '@material-ui/icons/GetApp';
+import { useParams } from 'react-router';
+import styled from 'styled-components';
+
+import { EntityTypeEnum } from '@tupaia/types';
+import { FlexColumn, NoData, SpinningLoader } from '@tupaia/ui-components';
 import { MapTable, useMapDataExport } from '@tupaia/ui-map-components';
-import { useMapOverlayTableData } from '../utils';
-import { Modal } from '../../../components';
+import React from 'react';
 import { useEntity, useEntityAncestors, useMapOverlays, useProject } from '../../../api/queries';
-import { Entity } from '../../../types';
+import { Modal } from '../../../components';
+import { useMapOverlayTableData } from '../utils';
 
 const Wrapper = styled(FlexColumn)`
   justify-content: flex-start;
@@ -51,7 +52,7 @@ export const MapTableModal = ({ onClose }: any) => {
   const rootEntity =
     entity?.type === 'project'
       ? entity
-      : entityAncestors?.find((entity: Entity) => entity.type === 'country');
+      : entityAncestors?.find(entity => entity.type === EntityTypeEnum.country);
 
   const { serieses, measureData, startDate, endDate, isLoading } = useMapOverlayTableData({
     rootEntityCode: rootEntity?.code,

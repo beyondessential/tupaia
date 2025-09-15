@@ -1,16 +1,18 @@
 import { Request } from 'express';
+import groupBy from 'lodash.groupby';
+import isEqual from 'lodash.isequal';
+import keyBy from 'lodash.keyby';
+
 import { Route } from '@tupaia/server-boilerplate';
 import {
   Entity,
+  EntityTypeEnum,
   MapOverlay,
   MapOverlayGroup,
   MapOverlayGroupRelation,
   TupaiaWebMapOverlaysRequest,
 } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
-import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
-import isEqual from 'lodash.isequal';
 
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,
@@ -109,7 +111,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       // Central returns overlays you can view in at least one of its countries
       // We run an additional filter here to narrow down to the specific country we're requesting for
       (overlay: MapOverlay) =>
-        entity.type === 'project' || // Don't worry about projects, we don't give permissions against them
+        entity.type === EntityTypeEnum.project || // Don't worry about projects, we don't give permissions against them
         !overlay.permission_group || // No permission group means publicly accessible
         accessPolicy.getPermissionGroups([rootEntityCode]).includes(overlay.permission_group), // Filter by country/permission pair
     );

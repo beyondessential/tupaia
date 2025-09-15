@@ -1,11 +1,13 @@
 import xlsx from 'xlsx';
+
+import { EntityTypeEnum } from '@tupaia/types';
 import {
-  respond,
   ImportValidationError,
-  UploadError,
   ObjectValidator,
+  UploadError,
   constructRecordExistsWithCode,
   constructRecordExistsWithField,
+  respond,
 } from '@tupaia/utils';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertUserEntityPermissionUpsertPermissions } from '../userEntityPermissions/assertUserEntityPermissionPermissions';
@@ -22,7 +24,7 @@ async function create(req, transactingModels, items) {
       constructRecordExistsWithCode(transactingModels.entity),
       async entityCode => {
         const entity = await transactingModels.entity.findOne({ code: entityCode });
-        if (entity.type !== 'country') {
+        if (entity.type !== EntityTypeEnum.country) {
           throw new Error(
             `Only country level permissions are currently supported. Entity "${entity.code}" is: "${entity.type}"`,
           );
@@ -60,9 +62,8 @@ async function create(req, transactingModels, items) {
       permission_group_id: permissionGroup.id,
     };
 
-    const existingRecord = await transactingModels.userEntityPermission.findOne(
-      userEntityPermissionData,
-    );
+    const existingRecord =
+      await transactingModels.userEntityPermission.findOne(userEntityPermissionData);
     if (existingRecord) {
       // Already added
       console.info(
