@@ -69,12 +69,10 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
   async buildSyncLookupQueryDetails() {
     return {
-      select: await buildSyncLookupSelect(this, {
-        projectIds: `ARRAY[survey.project_id]`,
-      }),
+      select: await buildSyncLookupSelect(this, { projectIds: 'ARRAY[survey.project_id]' }),
       joins: `
-        LEFT JOIN survey 
-          ON survey.id = survey_response.survey_id 
+        LEFT JOIN survey
+          ON survey.id = survey_response.survey_id
           AND survey_response.outdated IS FALSE -- no outdated survey response
       `,
     };
