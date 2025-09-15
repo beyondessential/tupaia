@@ -137,8 +137,8 @@ const buildEntityFilter = (params: GetEntityDescendantsParams) => {
     type,
     name: searchString
       ? {
-          comparator: 'ilike',
-          comparisonValue: `%${searchString}%`,
+          comparator: '=@',
+          comparisonValue: searchString,
         }
       : undefined,
     ...restOfFilter,
