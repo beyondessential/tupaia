@@ -153,7 +153,6 @@ export const SyncPage = () => {
 
   return (
     <Wrapper>
-      {/* Mobile navigation header */}
       {isMobile && <StickyMobileHeader onClose={() => navigate(-1)}>Sync</StickyMobileHeader>}
 
       <LayoutManager>
