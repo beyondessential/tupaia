@@ -172,9 +172,9 @@ export class SurveyRecord extends DatabaseRecord {
         ...screen,
         survey_screen_components: screen.survey_screen_components
           .map(formatSurveyScreenComponent)
-          .sort((a, b) => a.componentNumber - b.componentNumber),
+          .sort((a, b) => a.component_number - b.component_number),
       }))
-      .sort((a, b) => a.screenNumber - b.screenNumber);
+      .sort((a, b) => a.screen_number - b.screen_number);
 
     return formatted;
   }
