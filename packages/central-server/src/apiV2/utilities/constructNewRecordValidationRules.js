@@ -1,26 +1,26 @@
 import { RECORDS } from '@tupaia/database';
+import { DataTableType, EntityTypeEnum, PeriodGranularity } from '@tupaia/types';
 import {
-  constructRecordExistsWithId,
-  constructRecordExistsWithField,
-  constructRecordNotExistsWithField,
-  hasContent,
-  isEmail,
-  isBoolean,
-  isAString,
-  isPlainObject,
   constructIsEmptyOr,
   constructIsOneOf,
-  isValidPassword,
-  isNumber,
-  ValidationError,
-  constructRecordExistsWithCode,
+  constructIsShorterThan,
   constructIsValidEntityType,
+  constructRecordExistsWithCode,
+  constructRecordExistsWithField,
+  constructRecordExistsWithId,
+  constructRecordNotExistsWithField,
+  hasContent,
+  isAString,
+  isBoolean,
+  isEmail,
   isHexColor,
+  isNumber,
+  isPlainObject,
   isURL,
   isURLPathSegment,
-  constructIsShorterThan,
+  isValidPassword,
+  ValidationError,
 } from '@tupaia/utils';
-import { DataTableType, PeriodGranularity } from '@tupaia/types';
 import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
@@ -55,7 +55,7 @@ export const constructForSingle = (models, recordType) => {
           constructRecordExistsWithId(models.entity),
           async entityId => {
             const entity = await models.entity.findById(entityId);
-            if (entity.type !== 'country') {
+            if (entity.type !== EntityTypeEnum.country) {
               throw new Error('Only country level permissions are currently supported');
             }
           },

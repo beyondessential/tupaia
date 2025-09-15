@@ -1,44 +1,46 @@
+import { Button, IconButton, ListItemProps, List as MuiList } from '@material-ui/core';
+import { ExpandMore as ExpandIcon, LocalHospital as HospitalIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Entity, ProjectCode } from '../../types';
-import { LocalHospital as HospitalIcon, ExpandMore as ExpandIcon } from '@material-ui/icons';
-import { Button, IconButton, List as MuiList, ListItemProps } from '@material-ui/core';
+
+import { EntityTypeEnum } from '@tupaia/types';
 import { useEntities } from '../../api/queries';
+import { Entity, ProjectCode } from '../../types';
 
 const FlexRow = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const List = styled(MuiList)`
-    margin-left: 1rem;
+  margin-left: 1rem;
 
-    .MuiIconButton-root,
-    .MuiSvgIcon-root {
-        font-size: 1.5rem;
-    }
+  .MuiIconButton-root,
+  .MuiSvgIcon-root {
+    font-size: 1.5rem;
+  }
 
-    // Hide expand icon when there are no children but keep the element on the page for spacing
-    .MuiButtonBase-root.MuiIconButton-root.Mui-disabled .MuiSvgIcon-root {
-        color: transparent;
-    }
+  // Hide expand icon when there are no children but keep the element on the page for spacing
+  .MuiButtonBase-root.MuiIconButton-root.Mui-disabled .MuiSvgIcon-root {
+    color: transparent;
+  }
 `;
 
 const MenuLink = styled(Button).attrs({
   component: Link,
 })<ListItemProps>`
-    display: inline;
-    flex: 1;
-    justify-content: flex-start;
-    text-transform: none;
-    padding: 0.8rem;
-    font-size: 0.875rem;
+  display: inline;
+  flex: 1;
+  justify-content: flex-start;
+  text-transform: none;
+  padding: 0.8rem;
+  font-size: 0.875rem;
 
-    .MuiSvgIcon-root {
-        vertical-align: bottom;
-    }
+  .MuiSvgIcon-root {
+    vertical-align: bottom;
+  }
 `;
 
 interface EntityMenuProps {
@@ -99,7 +101,7 @@ const EntityMenuItem = ({ projectCode, entity, children, onClose }: EntityMenuIt
     <div>
       <FlexRow>
         <MenuLink to={link} onClick={onClose}>
-          {entity.name} {entity.type === 'facility' && <HospitalIcon />}
+          {entity.name} {entity.type === EntityTypeEnum.facility && <HospitalIcon />}
         </MenuLink>
         <IconButton
           onClick={toggleExpanded}
