@@ -5,12 +5,13 @@ import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyRequest, WebServerProjectRequest } from '@tupaia/types';
 import { NotFoundError, PermissionsError } from '@tupaia/utils';
 
-export type SurveyRequest = Request<
-  DatatrakWebSurveyRequest.Params,
-  DatatrakWebSurveyRequest.ResBody,
-  DatatrakWebSurveyRequest.ReqBody,
-  DatatrakWebSurveyRequest.ReqQuery
->;
+export interface SurveyRequest
+  extends Request<
+    DatatrakWebSurveyRequest.Params,
+    DatatrakWebSurveyRequest.ResBody,
+    DatatrakWebSurveyRequest.ReqBody,
+    DatatrakWebSurveyRequest.ReqQuery
+  > {}
 
 const DEFAULT_FIELDS = [
   'name',
@@ -20,7 +21,7 @@ const DEFAULT_FIELDS = [
   'survey_group.name',
   'project_id',
   'surveyQuestions',
-];
+] as const;
 
 export class SurveyRoute extends Route<SurveyRequest> {
   public async buildResponse() {
