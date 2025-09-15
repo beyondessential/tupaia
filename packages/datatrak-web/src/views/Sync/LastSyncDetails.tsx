@@ -1,9 +1,6 @@
 import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
 
-const Paragraph = styled.p`
-  margin-block: 0;
-`;
+import { SyncParagraph } from './SyncParagraph';
 
 interface LastSyncDetailsProps extends HTMLAttributes<HTMLDivElement> {
   lastSyncPulledRecordsCount: number | null;
@@ -18,8 +15,8 @@ export const LastSyncDetails = ({
     return null;
   }
   return (
-    <Paragraph>
+    <SyncParagraph>
       {`pulled ${lastSyncPulledRecordsCount} change(s), pushed ${lastSyncPushedRecordsCount} change(s)`}
-    </Paragraph>
+    </SyncParagraph>
   );
 };

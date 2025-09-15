@@ -1,5 +1,5 @@
 import log from 'winston';
-import mitt from 'mitt';
+import mitt, { Emitter } from 'mitt';
 
 import {
   createClientSnapshotTable,
@@ -79,7 +79,7 @@ export class ClientSyncManager {
 
   syncStage: number | null = null;
 
-  emitter = mitt();
+  emitter: Emitter<typeof SYNC_EVENT_ACTIONS> = mitt();
 
   constructor(models: DatatrakWebModelRegistry, deviceId: string, userId: string) {
     this.models = models;
@@ -270,6 +270,7 @@ export class ClientSyncManager {
 
   async pushChanges(sessionId: string, newSyncClockTime: number) {
     this.setSyncStage(SYNC_STAGES.PUSH);
+    this.setProgress(0, 'Pushing all new changes...');
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
     const currentSyncClockTime = await this.models.localSystemFact.get(FACT_CURRENT_SYNC_TICK);
@@ -351,6 +352,8 @@ export class ClientSyncManager {
         this.deviceId,
       );
 
+      this.setProgress(this.progressMaxByStage[SYNC_STAGES.PULL - 1], 'Pulling changes...');
+
       const isInitialPull = pullSince === -1;
 
       // 1. If the pull is initial, we wrap the whole pull in a transaction and persist the stream data straight to the actual tables
@@ -416,7 +419,8 @@ export class ClientSyncManager {
 
     await pullIncomingChanges(this.models, sessionId, processStreamedDataFunction);
 
-    this.setSyncStage(3);
+    this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes...');
+    this.setSyncStage(SYNC_STAGES.PERSIST);
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
       totalSaved += Number(incrementalSaved);

@@ -1,8 +1,10 @@
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
-import { LinearProgress, Typography, useTheme } from '@material-ui/core';
+import { LinearProgress, useTheme } from '@material-ui/core';
 
 import { CheckCircleIcon } from '../../components/Icons/CheckCircleIcon';
+import { SyncHeading } from './SyncHeading';
+import { SyncParagraph } from './SyncParagraph';
 
 const Wrapper = styled.div`
   inline-size: 100%;
@@ -10,11 +12,6 @@ const Wrapper = styled.div`
   > * + * {
     margin-block-start: 1rem;
   }
-`;
-
-const Heading = styled(Typography).attrs({ variant: 'h2' })`
-  font-size: inherit;
-  letter-spacing: initial;
 `;
 
 const Progress = styled(LinearProgress).attrs({ variant: 'determinate' })`
@@ -54,10 +51,31 @@ export const SyncStatus = ({
 
   return (
     <Wrapper {...props}>
-      <Heading>{message}</Heading>
-      {syncStage && <Heading>{`Sync stage ${syncStage} of ${totalStages}`}</Heading>}
-      {isSyncing ? <Progress value={percentage ?? undefined} /> : null}
-      {syncFinishedSuccessfully ? <CheckCircleIcon htmlColor={successColor} /> : null}
+      {/* Current sync stage indicator */}
+      {syncStage && (
+        <SyncHeading>
+          Sync stage {syncStage} of {totalStages}
+        </SyncHeading>
+      )}
+      
+      {/* Active syncing state */}
+      {isSyncing && (
+        <>
+          <SyncHeading>Syncing {percentage}%</SyncHeading>
+          <Progress value={percentage ?? undefined} />
+        </>
+      )}
+      
+      {/* Status message */}
+      {message && <SyncParagraph>{message}</SyncParagraph>}
+      
+      {/* Success state */}
+      {syncFinishedSuccessfully && (
+        <>
+          <SyncHeading>Sync complete</SyncHeading>
+          <CheckCircleIcon htmlColor={successColor} />
+        </>
+      )}
     </Wrapper>
   );
 };

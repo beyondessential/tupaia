@@ -93,7 +93,7 @@ export const SyncPage = () => {
   const [lastSyncPulledRecordsCount, setLastSyncPulledRecordsCount] = useState<number | null>(null);
 
   useEffect(() => {
-    const handler = (action: any, data: any): void => {
+    const handler = (action, data): void => {
       switch (action) {
         case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
           setProgress(0);
@@ -108,15 +108,14 @@ export const SyncPage = () => {
           setIsSyncing(true);
           setProgress(0);
           setProgressMessage('Initialising sync');
+          setSyncStage(1);
           setErrorMessage(null);
-          // activateKeepAwake(); // don't let the device sleep while syncing
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ENDED:
           setIsQueuing(false);
           setIsSyncing(false);
           setProgress(0);
           setProgressMessage('');
-          // deactivateKeepAwake();
           break;
         case SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED:
           setSyncStage(syncManager.syncStage);
@@ -140,25 +139,31 @@ export const SyncPage = () => {
     return () => {
       syncManager.emitter.off('*', handler);
     };
-  });
+  }, [syncManager]);
 
   const { data: projectsInSync } = useProjectsInSync();
 
   const manualSync = useCallback(() => {
     syncManager.triggerUrgentSync(projectsInSync);
-  }, [projectsInSync]);
+  }, [projectsInSync, syncManager]);
 
-  const syncFinishedSuccessfully = Boolean(syncStarted && !isSyncing && !isQueuing && !errorMessage);
+  const syncFinishedSuccessfully = Boolean(
+    syncStarted && !isSyncing && !isQueuing && !errorMessage,
+  );
 
   return (
     <Wrapper>
       {isMobile && <StickyMobileHeader onClose={() => navigate(-1)}>Sync</StickyMobileHeader>}
+
       <LayoutManager>
         <Content>
+          {/* Sync icon */}
           <picture>
             <source srcSet="/datatrak-pin.svg" type="image/svg+xml" />
             <img aria-hidden src="/datatrak-pin.svg" height={80} width={80} />
           </picture>
+
+          {/* Current sync status */}
           <StyledSyncStatus
             isSyncing={isSyncing}
             percentage={progress}
@@ -167,13 +172,26 @@ export const SyncPage = () => {
             totalStages={Object.keys(syncManager.progressMaxByStage).length}
             syncFinishedSuccessfully={syncFinishedSuccessfully}
           />
-          {isSyncing ? null : <StyledLastSyncDate message={formattedLastSuccessfulSyncTime} />}
-          <StyledLastSyncDetails
-            lastSyncPulledRecordsCount={lastSyncPulledRecordsCount}
-            lastSyncPushedRecordsCount={lastSyncPushedRecordsCount}
-          />
-          {isSyncing ? null : <StyledButton onClick={manualSync}>Sync now</StyledButton>}
-          {errorMessage ? <StyledAlert severity="error">{errorMessage}</StyledAlert> : null}
+
+          {/* Post-sync information (only when not actively syncing) */}
+          {!isSyncing && (
+            <>
+              {/* Last sync timestamp */}
+              {syncStarted && <StyledLastSyncDate message={formattedLastSuccessfulSyncTime} />}
+
+              {/* Sync statistics */}
+              <StyledLastSyncDetails
+                lastSyncPulledRecordsCount={lastSyncPulledRecordsCount}
+                lastSyncPushedRecordsCount={lastSyncPushedRecordsCount}
+              />
+
+              {/* Manual sync button */}
+              <StyledButton onClick={manualSync}>Sync now</StyledButton>
+            </>
+          )}
+
+          {/* Error state */}
+          {errorMessage && <StyledAlert severity="error">{errorMessage}</StyledAlert>}
         </Content>
       </LayoutManager>
     </Wrapper>
