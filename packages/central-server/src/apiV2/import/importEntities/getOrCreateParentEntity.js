@@ -1,29 +1,21 @@
+import { EntityTypeEnum } from '@tupaia/types';
 import { getEntityMetadata } from './getEntityMetadata';
 
 function getGeographicalAreaCode(name, country, district) {
   return `${district ? district.code : country.code}_${name.replace("'", '')}`;
 }
 
+const entityTypesWithGeographicalArea = new Set([
+  EntityTypeEnum.country,
+  EntityTypeEnum.district,
+  EntityTypeEnum.sub_district,
+]);
 async function getGeographicalAreaFromEntity(entity, models) {
-  if (entity.type === 'country') {
-    return models.geographicalArea.findOne({
-      name: entity.name,
-      level_code: 'country',
-    });
-  }
-  if (entity.type === 'district') {
-    return models.geographicalArea.findOne({
-      name: entity.name,
-      level_code: 'district',
-    });
-  }
-  if (entity.type === 'sub_district') {
-    return models.geographicalArea.findOne({
-      name: entity.name,
-      level_code: 'sub_district',
-    });
-  }
-  return null;
+  if (!entityTypesWithGeographicalArea.has(entity.type)) return null;
+  return models.geographicalArea.findOne({
+    name: entity.name,
+    level_code: entity.type,
+  });
 }
 
 export async function getOrCreateParentEntity(
