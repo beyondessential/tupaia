@@ -31,6 +31,27 @@ export class GETSurveys extends GETHandler {
 
   defaultJoinType = JOIN_TYPES.LEFT_OUTER;
 
+  /**
+   * @type {boolean}
+   * @see COUNTRY_CODES_COLUMN
+   */
+  includeCountryCodes = false;
+  /**
+   * @type {boolean}
+   * @see COUNTRY_NAMES_COLUMN
+   */
+  includeCountryNames = true;
+  /**
+   * @type {boolean}
+   * @see PAGINATED_QUESTIONS_COLUMN
+   */
+  includePaginatedQuestions = false;
+  /**
+   * @type {boolean}
+   * @see SURVEY_QUESTIONS_COLUMN
+   */
+  includeQuestions = true;
+
   async findSingleRecord(surveyId, options) {
     const surveyChecker = accessPolicy =>
       assertSurveyGetPermissions(accessPolicy, this.models, surveyId);
@@ -94,12 +115,7 @@ export class GETSurveys extends GETHandler {
     // 2. strip out the "countryNames" column, as the CRUD handler falls over with this
     const { columns: columnsString } = this.req.query;
 
-    if (!columnsString) {
-      // Always include these by default
-      this.includeQuestions = true;
-      this.includeCountryNames = true;
-      return super.getProcessedColumns();
-    }
+    if (!columnsString) return super.getProcessedColumns();
 
     const parsedColumns = columnsString && JSON.parse(columnsString);
     // If we've requested specific columns, we allow skipping these fields by not requesting them
