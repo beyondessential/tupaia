@@ -22,7 +22,7 @@ export const useResubmitSurveyResponse = () => {
         return;
       }
 
-      return post(`resubmitSurveyResponse/${surveyResponseId}`, {
+      return await post(`resubmitSurveyResponse/${encodeURIComponent(surveyResponseId)}`, {
         data: {
           ...surveyResponseData,
           answers,
