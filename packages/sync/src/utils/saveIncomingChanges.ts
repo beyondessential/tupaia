@@ -55,6 +55,7 @@ export const saveChangesForModel = async (
     }
   }
 
+  // Should delete records first to avoid foreign key constraints
   winston.debug(
     `Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`,
     {
