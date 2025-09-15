@@ -93,7 +93,7 @@ export const SyncPage = () => {
   const [lastSyncPulledRecordsCount, setLastSyncPulledRecordsCount] = useState<number | null>(null);
 
   useEffect(() => {
-    const handler = (action: any, data: any): void => {
+    const handler = (action, data): void => {
       switch (action) {
         case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
           setProgress(0);
@@ -110,14 +110,12 @@ export const SyncPage = () => {
           setProgressMessage('Initialising sync');
           setSyncStage(1);
           setErrorMessage(null);
-          // activateKeepAwake(); // don't let the device sleep while syncing
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ENDED:
           setIsQueuing(false);
           setIsSyncing(false);
           setProgress(0);
           setProgressMessage('');
-          // deactivateKeepAwake();
           break;
         case SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED:
           setSyncStage(syncManager.syncStage);

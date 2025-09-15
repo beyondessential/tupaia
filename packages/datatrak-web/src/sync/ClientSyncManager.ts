@@ -1,5 +1,5 @@
 import log from 'winston';
-import mitt from 'mitt';
+import mitt, { Emitter } from 'mitt';
 
 import {
   createClientSnapshotTable,
@@ -79,7 +79,7 @@ export class ClientSyncManager {
 
   syncStage: number | null = null;
 
-  emitter = mitt();
+  emitter: Emitter<typeof SYNC_EVENT_ACTIONS> = mitt();
 
   constructor(models: DatatrakWebModelRegistry, deviceId: string, userId: string) {
     this.models = models;
@@ -352,10 +352,7 @@ export class ClientSyncManager {
         this.deviceId,
       );
 
-      this.setProgress(
-        this.progressMaxByStage[SYNC_STAGES.PULL - 1],
-        'Pulling changes...',
-      );
+      this.setProgress(this.progressMaxByStage[SYNC_STAGES.PULL - 1], 'Pulling changes...');
 
       const isInitialPull = pullSince === -1;
 
@@ -422,10 +419,7 @@ export class ClientSyncManager {
 
     await pullIncomingChanges(this.models, sessionId, processStreamedDataFunction);
 
-    this.setProgress(
-      this.progressMaxByStage[SYNC_STAGES.PERSIST - 1],
-      'Saving changes...',
-    );
+    this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes...');
     this.setSyncStage(SYNC_STAGES.PERSIST);
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
