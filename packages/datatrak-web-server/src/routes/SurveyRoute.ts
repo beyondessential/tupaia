@@ -2,6 +2,7 @@ import camelcaseKeys from 'camelcase-keys';
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
+import { isNullish } from '@tupaia/tsutils';
 import { DatatrakWebSurveyRequest, WebServerProjectRequest } from '@tupaia/types';
 import { NotFoundError, PermissionsError } from '@tupaia/utils';
 
@@ -14,13 +15,13 @@ export interface SurveyRequest
   > {}
 
 const DEFAULT_FIELDS = [
-  'name',
+  'can_repeat',
   'code',
   'id',
-  'can_repeat',
-  'survey_group.name',
+  'name',
+  'paginatedQuestions', // This comes from central-server `GET /surveys` handler, not from database
   'project_id',
-  'surveyQuestions',
+  'survey_group.name',
 ] as const;
 
 export class SurveyRoute extends Route<SurveyRequest> {
@@ -33,32 +34,27 @@ export class SurveyRoute extends Route<SurveyRequest> {
     } = this.req;
     const { fields = DEFAULT_FIELDS } = query;
     // check if survey exists in the database
-    const surveyCount = await models.survey.count({ code: surveyCode });
-    if (surveyCount === 0) throw new NotFoundError(`Survey with code ${surveyCode} not found`);
+    const _survey = await models.survey.findOne({ code: surveyCode });
+    if (isNullish(_survey)) throw new NotFoundError(`Survey with code ${surveyCode} not found`);
 
     // check if user has access to survey
-    const surveys = await ctx.services.central.fetchResources('surveys', {
+    const survey = await ctx.services.central.fetchResources(`surveys/${_survey.id}`, {
       filter: { code: surveyCode },
       columns: fields,
     });
 
-    if (!surveys.length)
+    if (isNullish(survey))
       throw new PermissionsError(
         'You do not have access to this survey. If you think this is a mistake, please contact your system administrator.',
       );
 
-    const survey = camelcaseKeys(surveys[0], { deep: true });
-
     const { projects } = await ctx.services.webConfig.fetchProjects();
-    const project = survey?.projectId
-      ? projects.find(({ id }: WebServerProjectRequest.ProjectResponse) => id === survey.projectId)
+    const project = survey.project_id
+      ? projects.find(({ id }: WebServerProjectRequest.ProjectResponse) => id === survey.project_id)
       : null;
 
-    // Replace flat array of `surveyQuestions` with 2D array of `screens` of questions
-    const { surveyQuestions, ...restOfSurvey } = survey;
     return {
-      ...restOfSurvey,
-      screens: await survey.getPaginatedQuestions(),
+      ...camelcaseKeys(survey, { deep: true }),
       project,
     };
   }
