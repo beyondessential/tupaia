@@ -29,6 +29,16 @@ export class SurveyScreenComponentRecord extends DatabaseRecord {
 export class SurveyScreenComponentModel extends DatabaseModel {
   static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
+  /**
+   * @param {import('@tupaia/types').SurveyScreenComponentConfig | undefined} config
+   * @returns
+   */
+  static isUpsertEntityQuestion(config) {
+    if (!config?.entity) return false;
+    if (config.entity.createNew) return true;
+    return config.entity.fields && Object.keys(config.entity.fields).length > 0;
+  }
+
   get DatabaseRecordClass() {
     return SurveyScreenComponentRecord;
   }
