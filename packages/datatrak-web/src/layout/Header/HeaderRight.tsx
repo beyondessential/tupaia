@@ -14,10 +14,6 @@ const SyncButton = styled(IconButton)<{
   to: string;
 }>`
   padding: 0.5rem;
-  float: right;
-  img {
-    max-block-size: 2rem;
-  }
 `;
 
 export const HeaderRight = () => {
