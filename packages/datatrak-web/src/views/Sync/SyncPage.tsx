@@ -141,13 +141,13 @@ export const SyncPage = () => {
     return () => {
       syncManager.emitter.off('*', handler);
     };
-  });
+  }, [syncManager]);
 
   const { data: projectsInSync } = useProjectsInSync();
 
   const manualSync = useCallback(() => {
     syncManager.triggerUrgentSync(projectsInSync);
-  }, [projectsInSync]);
+  }, [projectsInSync, syncManager]);
 
   const syncFinishedSuccessfully = Boolean(
     syncStarted && !isSyncing && !isQueuing && !errorMessage,
