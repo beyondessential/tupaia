@@ -1,6 +1,6 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
-import { camelcaseKeys, ensure } from '@tupaia/tsutils';
+import { camelcaseKeys, ensure, isNullish } from '@tupaia/tsutils';
 import { DatatrakWebEntitiesRequest, Entity } from '@tupaia/types';
 import { get } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
@@ -16,6 +16,7 @@ const entityByCodeQueryFunctions = {
   },
   local: async ({ entityCode, models }: EntityByCodeQueryFunctionContext) => {
     const [entity] = await models.entity.find({ code: ensure(entityCode) });
+    if (isNullish(entity)) return null;
     entity.model = undefined;
     return camelcaseKeys(entity, { deep: true });
   },
