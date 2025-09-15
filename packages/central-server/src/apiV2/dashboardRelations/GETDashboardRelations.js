@@ -1,5 +1,5 @@
-import { RECORDS } from '@tupaia/database';
-import { fullyQualifyColumnSelector } from '../GETHandler/helpers';
+import { fullyQualifyColumnSelector, RECORDS } from '@tupaia/database';
+
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertDashboardGetPermissions } from '../dashboards';
