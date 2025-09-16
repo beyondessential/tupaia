@@ -335,7 +335,7 @@ export class CentralSyncManager {
     try {
       await this.connectToSession(sessionId);
 
-      if (snapshotParams.projectIds?.length === 0) {
+      if (!snapshotParams.projectIds?.length) {
         throw new Error('Project IDs are required');
       }
 
