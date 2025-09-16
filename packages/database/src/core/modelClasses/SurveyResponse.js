@@ -1,5 +1,5 @@
 import { SyncDirections } from '@tupaia/constants';
-import { ajvValidate, isNullish } from '@tupaia/tsutils';
+import { ajvValidate, ensure, isNullish } from '@tupaia/tsutils';
 import { EntityUpdateSchema, QuestionType } from '@tupaia/types';
 import { getOffsetForTimezone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -306,7 +306,10 @@ async function buildUpsertEntity(models, config, questionId, answers, countryId)
             `Parent ID must be a 'string', but got '${typeof parentValue}' (${parentValue})`,
           );
         }
-        const entityRecord = await models.entity.findById(parentValue);
+        const entityRecord = ensure(
+          await models.entity.findById(parentValue),
+          `No entity exists with ID ${parentValue}`,
+        );
         entity.parent_id = entityRecord.id;
       } else {
         entity[fieldName] = fieldValue;
@@ -317,7 +320,10 @@ async function buildUpsertEntity(models, config, questionId, answers, countryId)
   const isUpdate = await models.entity.findById(entityId);
   if (isUpdate) return entity;
 
-  const selectedCountry = await models.entity.findById(countryId);
+  const selectedCountry = ensure(
+    await models.entity.findById(countryId),
+    `No entity exists with ID ${countryId}`,
+  );
   entity.country_code ??= selectedCountry.code;
   entity.parent_id ??= selectedCountry.id;
   entity.code ??= entityId;
