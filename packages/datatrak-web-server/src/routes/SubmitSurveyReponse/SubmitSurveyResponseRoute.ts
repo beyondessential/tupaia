@@ -1,7 +1,8 @@
+import { Request } from 'express';
+
 import { SurveyResponseModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSubmitSurveyResponseRequest as RequestT } from '@tupaia/types';
-import { Request } from 'express';
 import { addRecentEntities } from '../../utils';
 import { handleTaskCompletion } from './handleTaskCompletion';
 
