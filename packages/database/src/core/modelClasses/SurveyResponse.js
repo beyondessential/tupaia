@@ -213,8 +213,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
           // If the answer is a new option, add it to the `options_created` array to be added to the DB
           const isNew =
-            (await this.otherModels.option.count({ option_set_id: optionSetId, value: answer })) ===
-            0;
+            (await models.option.count({ option_set_id: optionSetId, value: answer })) === 0;
           if (isNew) {
             if (!config.autocomplete?.createNew) {
               throw new Error(`Cannot create new options for question: ${questionCode}`);
