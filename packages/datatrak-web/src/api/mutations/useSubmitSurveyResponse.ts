@@ -50,7 +50,7 @@ export const useSurveyResponseData = (): ResponseData => {
 
 interface SurveyResponseMutationFunctionContext
   extends ContextualMutationFunctionContext<{
-    answers: AnswersT;
+    answers?: AnswersT;
   }> {}
 
 export const useSubmitSurveyResponse = (from: string | undefined) => {
