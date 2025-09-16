@@ -96,7 +96,11 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
           ...recentEntities
             .map((id: string) => {
               const entity = entities.find((e: any) => e.id === id);
-              if (!entity) return null;
+              if (!entity) {
+                // This can happen if the entity has been deleted; or it’s new and the entity
+                // hierarchy cache hasn’t refreshed yet
+                return null;
+              }
               return { ...entity, isRecent: true };
             })
             .filter(isNotNullish),
