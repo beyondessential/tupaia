@@ -1,7 +1,11 @@
 import { EntityRecord } from '@tupaia/tsmodels';
-import { FormatContext } from './formatEntity';
 
-const getParentName = async (entity: EntityRecord, context: FormatContext) => {
+const getParentName = async (
+  entity: EntityRecord,
+  context: {
+    hierarchyId: string;
+  },
+) => {
   const { hierarchyId } = context;
   const parent = await entity.getParentFromParentChildRelation(hierarchyId);
   return parent?.name;
