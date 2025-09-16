@@ -1,4 +1,4 @@
-import { generateId } from '../../../core';
+import { generateId, SqlQuery } from '../../../core';
 import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
 
 /**
@@ -183,41 +183,37 @@ export class EntityParentChildRelationBuilder {
   async deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs) {
     const tempValidPairsTableName = `temp_valid_pairs_${generateId()}`;
     try {
-      await this.models.database.executeSql(`
-        CREATE TEMPORARY TABLE ${tempValidPairsTableName} (
-          parent_id TEXT,
-          child_id TEXT
-        )
-      `);
+      await this.models.database.executeSql(
+        'CREATE TEMPORARY TABLE ?? (parent_id TEXT, child_id TEXT)',
+        [tempValidPairsTableName],
+      );
 
       await this.models.database.executeSqlInBatches(
         validParentChildIdPairs,
         batchOfValidParentChildIdPairs => {
           const values = batchOfValidParentChildIdPairs.flat();
           return [
-            `INSERT INTO ${tempValidPairsTableName} (parent_id, child_id) 
-            VALUES ${batchOfValidParentChildIdPairs.map(() => '(?, ?)').join(', ')}`,
-            values,
+            `INSERT INTO ?? (parent_id, child_id)
+            VALUES ${batchOfValidParentChildIdPairs.map(() => '(?,?)').join(',')}`,
+            [tempValidPairsTableName, ...values],
           ];
         },
       );
 
       await this.models.database.executeSqlInBatches(parentIds, batchOfParentIds => [
         `
-          DELETE FROM entity_parent_child_relation 
-          WHERE entity_hierarchy_id = ? 
-            AND parent_id IN (${batchOfParentIds.map(() => '?').join(', ')})
+          DELETE FROM entity_parent_child_relation
+          WHERE entity_hierarchy_id = ?
+            AND parent_id IN ${SqlQuery.record(batchOfParentIds)}
             AND (parent_id, child_id) NOT IN (
-              SELECT parent_id, child_id FROM ${tempValidPairsTableName}
+              SELECT parent_id, child_id FROM ??
             )
           RETURNING parent_id, child_id
         `,
-        [hierarchyId, ...batchOfParentIds],
+        [hierarchyId, ...batchOfParentIds, tempValidPairsTableName],
       ]);
     } finally {
-      await this.models.database.executeSql(`
-        DROP TABLE IF EXISTS ${tempValidPairsTableName}
-      `);
+      await this.models.database.executeSql('DROP TABLE IF EXISTS ??', [tempValidPairsTableName]);
     }
   }
 
@@ -232,10 +228,10 @@ export class EntityParentChildRelationBuilder {
       WITH RECURSIVE connected_nodes AS (
         -- Start with root nodes (entities that exist but aren't children)
         -- Start with the known root node
-        SELECT ? as node_id 
-                
+        SELECT ? as node_id
+
         UNION ALL
-        
+
         -- Recursively find all descendants
         SELECT er.child_id
         FROM entity_parent_child_relation er
@@ -250,7 +246,7 @@ export class EntityParentChildRelationBuilder {
           AND er.entity_hierarchy_id = ?
       )
       -- Delete the orphaned relations
-      DELETE FROM entity_parent_child_relation 
+      DELETE FROM entity_parent_child_relation
       WHERE id IN (SELECT id FROM orphaned_relations);
       `,
       [projectEntityId, hierarchyId, hierarchyId],
