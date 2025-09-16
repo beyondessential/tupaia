@@ -6,7 +6,7 @@ import { isNil, omitBy } from 'lodash';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { EntityRecord, ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
 import { camelcaseKeys, isNotNullish } from '@tupaia/tsutils';
-import { Country, Entity, Project } from '@tupaia/types';
+import { Entity, Project } from '@tupaia/types';
 import { snakeKeys } from '@tupaia/utils';
 import { CurrentUser } from '../../api';
 import { DatatrakWebModelRegistry } from '../../types';
@@ -96,33 +96,6 @@ const getAllowedCountries = async (
   return allowedCountries;
 };
 
-const getRecentEntities = async (
-  models: DatatrakWebModelRegistry,
-  user: CurrentUser,
-  countryCode: Country['code'],
-  type: Entity['type'],
-  entities: EntityRecord[],
-): Promise<(EntityRecord & { isRecent: true })[]> => {
-  if (
-    !user.isLoggedIn || // For public surveys
-    !user.id // Redundant, for type inference
-  )
-    return [];
-
-  const recentEntities: Entity['id'][] = await models.user.getRecentEntities(
-    user.id,
-    countryCode,
-    type,
-  );
-  return recentEntities
-    .map(id => {
-      const entity = entities.find(e => e.id === id);
-      if (!entity) return null;
-      return { ...entity, isRecent: true } as EntityRecord & { isRecent: true };
-    })
-    .filter(isNotNullish);
-};
-
 const buildEntityFilter = (params: GetEntityDescendantsParams) => {
   const { filter, searchString } = params;
 
@@ -200,23 +173,43 @@ export const getEntityDescendants = async ({
     dbEntityFilter.generational_distance = 2;
   }
 
-  const entities: EntityRecord[] = await models.entity.getDescendantsFromParentChildRelation(
-    project.entity_hierarchy_id,
-    [rootEntityId],
-    {
-      filter: dbEntityFilter,
-      fields,
-      pageSize,
-    },
-  );
+  const entities: (EntityRecord & { isRecent: true })[] =
+    await models.entity.getDescendantsFromParentChildRelation(
+      project.entity_hierarchy_id,
+      [rootEntityId],
+      {
+        filter: dbEntityFilter,
+        fields,
+        pageSize,
+      },
+    );
 
-  const recentEntities =
-    countryCode && type ? await getRecentEntities(models, user, countryCode, type, entities) : [];
+  /**
+   * @privateRemarks Modifies {@link entities} in-place! This ensures that when the return array is
+   * spread into {@link sortedEntities}, they are still {@link EntityRecord} instances and not
+   * plain-object shallow clones. This prevents {@link formatEntitiesForResponse} from erroring when
+   * it calls methods on objects in {@link sortedEntities}. (As of this commit, using Lodash or
+   * es-toolkit’s `clone` would also work; but in this case it’s semantically appropriate for the
+   * recent entities hoisted to the top of the array to reference the same instances.)
+   */
+  const getRecentEntities = async () => {
+    const recentEntityIds =
+      user.isLoggedIn && // Recent entities irrelevant for public surveys
+      user.id && // Redundant (implied by isLoggedIn), for type inference
+      countryCode &&
+      type
+        ? new Set(await models.user.getRecentEntityIds(user.id, countryCode, type))
+        : new Set();
+    for (const entity of entities) {
+      if (recentEntityIds.has(entity.id)) entity.isRecent = true;
+    }
+    return entities.filter(e => e.isRecent);
+  };
 
   const sortedEntities = searchString
     ? sortSearchResults(searchString, entities)
     : [
-        ...recentEntities,
+        ...(await getRecentEntities()),
         ...entities.sort((a, b) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
       ];
 
