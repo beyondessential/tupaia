@@ -3,12 +3,12 @@ import type { SortingRule } from 'react-table';
 
 import { DatatrakWebTasksRequest } from '@tupaia/types';
 
-import { get } from '../api';
-import { useCurrentUserContext } from '../CurrentUserContext';
-import { LocalContext, useDatabaseQuery } from './useDatabaseQuery';
-import { useIsOfflineFirst } from '../offlineFirst';
 import { getTasks } from '../../database/task/getTasks';
 import { consolidateFilters } from '../../utils/task/consolidateFilters';
+import { get } from '../api';
+import { useCurrentUserContext } from '../CurrentUserContext';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { ContextualQueryFunctionContext, useDatabaseQuery } from './useDatabaseQuery';
 
 interface Filter {
   id: string;
@@ -30,7 +30,7 @@ export interface UseTasksQueryParams {
   >[];
 }
 
-interface UseTasksLocalContext extends LocalContext {
+interface UseTasksLocalContext extends ContextualQueryFunctionContext {
   projectId?: string;
   allAssignees?: boolean;
   includeCancelled?: boolean;
@@ -44,12 +44,7 @@ interface UseTasksLocalContext extends LocalContext {
   >[];
 }
 
-const getRemoteTasks = async ({
-  pageSize,
-  page,
-  filters,
-  sortBy,
-}: UseTasksLocalContext) => {
+const getRemoteTasks = async ({ pageSize, page, filters, sortBy }: UseTasksLocalContext) => {
   return await get('tasks', {
     params: {
       pageSize,
@@ -84,13 +79,7 @@ export const useTasks = (
     includeCompleted,
     userId,
   });
-  return useDatabaseQuery<
-    DatatrakWebTasksRequest.ResBody,
-    unknown,
-    DatatrakWebTasksRequest.ResBody,
-    readonly unknown[],
-    LocalContext
-  >(
+  return useDatabaseQuery<DatatrakWebTasksRequest.ResBody>(
     [
       'tasks',
       projectId,
