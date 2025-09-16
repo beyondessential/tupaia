@@ -48,20 +48,10 @@ export const useSurveyResponseData = (): ResponseData => {
   };
 };
 
-const mutationFunctions = {
-  local: async ({
-    models,
-    data,
-    user,
-    answers,
-    surveyResponseData,
-  }: ContextualMutationFunctionContext<AnswersT>) => {},
-  remote: async ({ answers, surveyResponseData }: ContextualMutationFunctionContext<AnswersT>) => {
-    if (!answers) return;
-    const data = { ...surveyResponseData, answers };
-    return await post('submitSurveyResponse', { data });
-  },
-};
+interface SurveyResponseMutationFunctionContext
+  extends ContextualMutationFunctionContext<{
+    answers: AnswersT;
+  }> {}
 
 export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
@@ -72,6 +62,15 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
   const { data: survey } = useSurvey(params.surveyCode);
   const surveyResponseData = useSurveyResponseData();
   const isOfflineFirst = useIsOfflineFirst();
+
+  const mutationFunctions = {
+    local: async () => {},
+    remote: async ({ data: { answers } }: SurveyResponseMutationFunctionContext) => {
+      if (!answers) return;
+      const data = { ...surveyResponseData, answers };
+      return await post('submitSurveyResponse', { data });
+    },
+  };
 
   return useDatabaseMutation<any, Error, AnswersT, unknown>(
     isOfflineFirst ? mutationFunctions.local : mutationFunctions.remote,
