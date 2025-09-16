@@ -335,6 +335,12 @@ export class CentralSyncManager {
     try {
       await this.connectToSession(sessionId);
 
+      if (snapshotParams.projectIds?.length === 0) {
+        throw new Error('Project IDs are required');
+      }
+
+      await this.models.syncSession.addInfo(sessionId, { projectIds });
+
       // will wait for concurrent snapshots to complete if we are currently at capacity, then
       // set the snapshot_started_at timestamp before we proceed with the heavy work below
       await startSnapshotWhenCapacityAvailable(this.models.database, sessionId);

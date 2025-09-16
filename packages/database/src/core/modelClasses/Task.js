@@ -618,10 +618,10 @@ export class TaskModel extends DatabaseModel {
   async assertUserHasPermissionToCreateTask(accessPolicy, taskData) {
     const { entity_id: entityId, survey_id: surveyId } = taskData;
 
-    const entity = await this.otherModels.entity.findById(entityId);
-    if (!entity) {
-      throw new Error(`No entity found with id ${entityId}`);
-    }
+    const entity = ensure(
+      await this.otherModels.entity.findById(entityId),
+      `No entity found with id ${entityId}`,
+    );
 
     if (!accessPolicy.allows(entity.country_code)) {
       throw new Error('Need to have access to the country of the task');
