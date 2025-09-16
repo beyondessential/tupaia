@@ -12,7 +12,7 @@ import { CurrentUser } from '../../api';
 import { DatatrakWebModelRegistry } from '../../types';
 import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
 
-const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'] as ExtendedEntityFieldName[];
+const DEFAULT_FIELDS: ExtendedEntityFieldName[] = ['id', 'parent_name', 'code', 'name', 'type'];
 
 const DEFAULT_PAGE_SIZE = 100;
 
