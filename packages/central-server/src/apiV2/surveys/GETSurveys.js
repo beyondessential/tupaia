@@ -70,7 +70,7 @@ export class GETSurveys extends GETHandler {
     }
 
     return await this.models.wrapInReadOnlyTransaction(async transactingModels => {
-      const [countryCodes, surveyQuestionsValues, countryNames, paginatedQuestions] =
+      const [countryCodes, countryNames, surveyQuestionsValues, paginatedQuestions] =
         await Promise.all([
           this.getSurveyCountryCodes(transactingModels, [surveyId]),
           this.getSurveyCountryNames(transactingModels, [surveyId]),
