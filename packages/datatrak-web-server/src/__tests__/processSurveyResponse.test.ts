@@ -482,7 +482,7 @@ describe('processSurveyResponse', () => {
 
   it('throw an error when type is primary entity question and is not filled in', async () => {
     try {
-      void (await SurveyResponseModel.processSurveyResponse({
+      void (await SurveyResponseModel.processSurveyResponse(mockModels, {
         ...responseData,
         questions: [
           {
