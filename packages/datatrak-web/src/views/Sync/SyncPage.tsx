@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { Alert } from '@tupaia/ui-components';
-
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { useIsMobile } from '../../utils';
@@ -58,10 +56,6 @@ const StyledLastSyncDate = styled(LastSyncDate)`
 `;
 
 const StyledButton = styled(Button)`
-  margin-block-start: 2.25rem;
-`;
-
-const StyledAlert = styled(Alert)`
   margin-block-start: 2.25rem;
 `;
 
