@@ -195,8 +195,13 @@ export class ClientSyncManager {
       ? STAGE_MAX_PROGRESS_INITIAL
       : STAGE_MAX_PROGRESS_INCREMENTAL;
 
-    const startTime = performance.now();
-    const { sessionId, startedAtTick, status } = await this.startSyncSession(urgent, pullSince);
+    performance.clearMarks();
+    performance.clearMeasures();
+    performance.mark('startSyncSession');
+    const { sessionId, startedAtTick, status } = await this.startSyncSession(
+      urgent,
+      pullSince,
+    );
 
     if (!sessionId) {
       log.debug(`ClientSyncManager.runSync(): Sync queue status: ${status}`);
@@ -225,10 +230,11 @@ export class ClientSyncManager {
 
     await this.endSyncSession(sessionId);
 
-    const durationMs = Date.now() - startTime;
-    log.info('ClientSyncManager.completedSession', {
-      durationMs,
-    });
+    performance.mark('endSyncSession');
+    log.info(
+      'ClientSyncManager.completedSession',
+      performance.measure('syncDuration', 'startSyncSession', 'endSyncSession'),
+    );
 
     // clear temp data stored for persist
     await dropSnapshotTable(this.database, sessionId);
