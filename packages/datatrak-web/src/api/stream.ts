@@ -132,6 +132,7 @@ export async function* stream(
         'Content-Type': 'application/json',
       },
       body: options ? JSON.stringify(options) : undefined,
+      credentials: 'include',
     });
 
     const reader = response.body!.getReader();

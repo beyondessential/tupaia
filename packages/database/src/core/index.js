@@ -8,3 +8,5 @@ export * from './utilities';
 export { DatabaseModel } from './DatabaseModel';
 export { DatabaseRecord } from './DatabaseRecord';
 export * from './sync';
+export * from './constants';
+export * from './permissions';

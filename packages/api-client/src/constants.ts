@@ -18,6 +18,7 @@ const productionSubdomains = [
   'report-api',
   'entity-api',
   'data-table-api',
+  'sync-api',
   'www',
   'api', // this must go last in the array, otherwise it will be detected before e.g. admin-api
 ];
@@ -61,7 +62,7 @@ const SERVICES = {
     localPort: '8000',
   },
   sync: {
-    subdomain: 'sync',
+    subdomain: 'sync-api',
     version: 'v1',
     localPort: '8120',
     prefix: null,
