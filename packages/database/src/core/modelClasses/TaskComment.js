@@ -56,7 +56,7 @@ export class TaskCommentModel extends DatabaseModel {
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: `ARRAY[survey.project_id]`,
+        projectIds: `array_remove(ARRAY[survey.project_id], NULL)`,
       }),
       joins: `
         LEFT JOIN task ON task.id = task_comment.task_id
