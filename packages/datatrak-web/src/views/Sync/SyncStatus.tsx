@@ -1,8 +1,8 @@
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { LinearProgress, useTheme } from '@material-ui/core';
+import { CircleCheck, CircleX } from 'lucide-react';
 
-import { CheckCircleIcon } from '../../components/Icons/CheckCircleIcon';
 import { SyncHeading } from './SyncHeading';
 import { SyncParagraph } from './SyncParagraph';
 
@@ -36,7 +36,18 @@ interface SyncStatusProps extends HTMLAttributes<HTMLDivElement> {
   totalStages: number;
   isSyncing: boolean;
   syncFinishedSuccessfully: boolean;
+  hasError: boolean;
 }
+
+export const CheckCircleIcon = styled(CircleCheck)`
+  width: 25px;
+  height: 25px;
+`;
+
+export const XCircleIcon = styled(CircleX)`
+  width: 25px;
+  height: 25px;
+`;
 
 export const SyncStatus = ({
   isSyncing,
@@ -45,35 +56,39 @@ export const SyncStatus = ({
   syncFinishedSuccessfully,
   syncStage,
   totalStages,
+  hasError,
   ...props
 }: SyncStatusProps) => {
-  const successColor = useTheme().palette.success.main;
+  const theme = useTheme();
 
   return (
     <Wrapper {...props}>
-      {/* Current sync stage indicator */}
       {syncStage && (
         <SyncHeading>
           Sync stage {syncStage} of {totalStages}
         </SyncHeading>
       )}
-      
-      {/* Active syncing state */}
+
       {isSyncing && (
         <>
           <SyncHeading>Syncing {percentage}%</SyncHeading>
           <Progress value={percentage ?? undefined} />
         </>
       )}
-      
-      {/* Status message */}
+
       {message && <SyncParagraph>{message}</SyncParagraph>}
-      
-      {/* Success state */}
+
       {syncFinishedSuccessfully && (
         <>
           <SyncHeading>Sync complete</SyncHeading>
-          <CheckCircleIcon htmlColor={successColor} />
+          <CheckCircleIcon color={theme.palette.success.main} />
+        </>
+      )}
+
+      {hasError && (
+        <>
+          <SyncHeading>Sync failed</SyncHeading>
+          <XCircleIcon color={theme.palette.error.main} />
         </>
       )}
     </Wrapper>

@@ -27,6 +27,11 @@ const LayoutManager = styled.div`
   grid-template-rows: minmax(0, 2fr) auto minmax(0, 3fr);
 `;
 
+const ErrorMessage = styled.p`
+  margin-block-start: 10rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
+`;
+
 const Content = styled.div`
   align-items: center;
   display: flex;
@@ -160,17 +165,23 @@ export const SyncPage = () => {
             syncStage={syncStage}
             totalStages={Object.keys(syncManager.progressMaxByStage).length}
             syncFinishedSuccessfully={syncFinishedSuccessfully}
+            hasError={Boolean(errorMessage)}
           />
 
           {!isSyncing && (
             <>
-              {syncStarted && <StyledLastSyncDate message={formattedLastSuccessfulSyncTime} />}
+              {syncStarted && Boolean(formattedLastSuccessfulSyncTime) && (
+                <StyledLastSyncDate
+                  formattedLastSuccessfulSyncTime={formattedLastSuccessfulSyncTime}
+                  lastSyncDate={syncManager.lastSuccessfulSyncTime}
+                />
+              )}
 
               <StyledButton onClick={manualSync}>Sync now</StyledButton>
             </>
           )}
 
-          {errorMessage && <StyledAlert severity="error">{errorMessage}</StyledAlert>}
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         </Content>
       </LayoutManager>
     </Wrapper>

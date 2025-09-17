@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { IconButton, useTheme } from '@material-ui/core';
 import { RefreshCcw } from 'lucide-react';
+import { useLocation } from 'react-router';
 
 import { RouterLink } from '@tupaia/ui-components';
 
@@ -17,19 +18,26 @@ const SyncButton = styled(IconButton)<{
   padding: 0.5rem;
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const HeaderRight = () => {
   const isOfflineFirst = useIsOfflineFirst();
   const { isLoggedIn } = useCurrentUserContext();
   const secondaryColor = useTheme().palette.secondary.main;
+  const location = useLocation();
+  const isSyncPage = location.pathname === ROUTES.SYNC;
 
   return (
-    <div>
-      {isOfflineFirst && isLoggedIn && (
+    <Wrapper>
+      {isOfflineFirst && isLoggedIn && !isSyncPage && (
         <SyncButton to={ROUTES.SYNC} component={RouterLink}>
-          <RefreshCcw color={secondaryColor}/>
+          <RefreshCcw size={25} color={secondaryColor}/>
         </SyncButton>
       )}
       <UserMenu />
-    </div>
+    </Wrapper>
   );
 };
