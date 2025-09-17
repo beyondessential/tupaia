@@ -164,7 +164,7 @@ export class SurveyRecord extends DatabaseRecord {
       };
     }
 
-    const questions = await this.getQuestionsValues();
+    const questions = (await this.getQuestionsValues()) ?? [];
     const formatted = questions
       // Hide Task questions in UI. They’re used to trigger task creation by TaskCreationHandler.
       .filter(question => question.type !== QuestionType.Task)
@@ -369,7 +369,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: 'ARRAY[survey.project_id]',
+        projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
       }),
     };
   }

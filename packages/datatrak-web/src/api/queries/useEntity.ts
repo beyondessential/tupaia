@@ -56,7 +56,10 @@ const entityByIdQueryFunctions = {
     });
   },
   local: async ({ entityId, models }: EntityByIdQueryFunctionContext) => {
-    const [entity] = await models.entity.find({ id: ensure(entityId) });
+    const entity = ensure(
+      await models.entity.findById(ensure(entityId)),
+      `No entity exists with ID ${entityId}`,
+    );
     entity.model = undefined;
     return camelcaseKeys(entity, { deep: true });
   },
