@@ -79,7 +79,9 @@ export class ClientSyncManager {
     const lastSyncedTick =
       (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
 
-    const startTime = performance.now();
+    performance.clearMarks();
+    performance.clearMeasures();
+    performance.mark('startSyncSession');
     const { sessionId, startedAtTick, status } = await this.startSyncSession(
       urgent,
       lastSyncedTick,
@@ -105,10 +107,11 @@ export class ClientSyncManager {
 
     await this.endSyncSession(sessionId);
 
-    const durationMs = Date.now() - startTime;
-    log.info('ClientSyncManager.completedSession', {
-      durationMs,
-    });
+    performance.mark('endSyncSession');
+    log.info(
+      'ClientSyncManager.completedSession',
+      performance.measure('syncDuration', 'startSyncSession', 'endSyncSession'),
+    );
 
     // clear temp data stored for persist
     await dropSnapshotTable(this.database, sessionId);

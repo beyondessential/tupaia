@@ -1,6 +1,8 @@
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
+import { TaskCommentType } from '@tupaia/types';
+import { hasBESAdminAccess } from '@tupaia/access-policy';
 
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
@@ -8,7 +10,7 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
 import { buildSyncLookupSelect } from '../sync';
-import { TaskCommentType } from '@tupaia/types';
+import { mergeMultiJoin } from '../utilities';
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -309,7 +311,7 @@ export class TaskModel extends DatabaseModel {
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: 'ARRAY[survey.project_id]',
+        projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
       }),
       joins: 'LEFT JOIN survey ON survey.id = task.survey_id',
     };
@@ -616,5 +618,47 @@ export class TaskModel extends DatabaseModel {
     return camelcaseKeys(formattedTask, {
       deep: true,
     });
+  }
+
+  async assertUserHasPermissionToCreateTask(accessPolicy, taskData) {
+    const { entity_id: entityId, survey_id: surveyId } = taskData;
+
+    const entity = ensure(
+      await this.otherModels.entity.findById(entityId),
+      `No entity found with id ${entityId}`,
+    );
+
+    if (!accessPolicy.allows(entity.country_code)) {
+      throw new Error('Need to have access to the country of the task');
+    }
+
+    const userSurveys = await this.otherModels.survey.findByAccessPolicy(
+      accessPolicy,
+      {},
+      {
+        columns: ['id', 'permission_group_id', 'country_ids'],
+      },
+    );
+    const survey = userSurveys.find(({ id }) => id === surveyId);
+    if (!survey) {
+      throw new Error('Need to have access to the survey of the task');
+    }
+
+    return true;
+  }
+
+  async createRecordsPermissionFilter(accessPolicy, criteria = {}, options = {}) {
+    if (hasBESAdminAccess(accessPolicy)) {
+      return { dbConditions: criteria, dbOptions: options };
+    }
+    const dbConditions = { ...criteria };
+    const dbOptions = { ...options };
+
+    const taskPermissionsQuery = await this.createAccessPolicyQueryClause(accessPolicy);
+
+    dbConditions[QUERY_CONJUNCTIONS.RAW] = taskPermissionsQuery;
+    dbOptions.multiJoin = mergeMultiJoin(this.joins, dbOptions.multiJoin);
+
+    return { dbConditions, dbOptions };
   }
 }
