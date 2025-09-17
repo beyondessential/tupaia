@@ -4,6 +4,7 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { RECORDS } from '../records';
 import { buildSyncLookupSelect } from '../sync';
+import { createSurveyResponsePermissionFilter } from '../permissions';
 
 const USERS_EXCLUDED_FROM_LEADER_BOARD = [
   "'edmofro@gmail.com'", // Edwin
@@ -67,10 +68,20 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     return SurveyResponseRecord;
   }
 
+  async getLeaderboard(projectId = '', rowCount = 10) {
+    const bindings = projectId ? [projectId, rowCount] : [rowCount];
+    const query = getLeaderboard(projectId);
+    return this.database.executeSql(query, bindings);
+  }
+
+  async createRecordsPermissionFilter(accessPolicy, criteria = {}, options = {}) {
+    return await createSurveyResponsePermissionFilter(accessPolicy, this.otherModels, criteria, options);
+  }
+
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: `ARRAY[survey.project_id]`,
+        projectIds: `array_remove(ARRAY[survey.project_id], NULL)`,
       }),
       joins: `
         LEFT JOIN survey 
@@ -78,11 +89,5 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
           AND survey_response.outdated IS FALSE -- no outdated survey response
       `,
     };
-  }
-
-  async getLeaderboard(projectId = '', rowCount = 10) {
-    const bindings = projectId ? [projectId, rowCount] : [rowCount];
-    const query = getLeaderboard(projectId);
-    return this.database.executeSql(query, bindings);
   }
 }
