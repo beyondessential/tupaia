@@ -13,7 +13,6 @@ import { SYNC_EVENT_ACTIONS } from '../../types';
 import { formatDistance } from 'date-fns';
 import { useSyncContext } from '../../api/SyncContext';
 import { useProjectsInSync } from '../../hooks/database/useProjectsInSync';
-import { LastSyncDetails } from './LastSyncDetails';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -53,10 +52,6 @@ const StyledLastSyncDate = styled(LastSyncDate)`
   margin-block-start: 2.25rem;
 `;
 
-const StyledLastSyncDetails = styled(LastSyncDetails)`
-  margin-block-start: 2.25rem;
-`;
-
 const StyledButton = styled(Button)`
   margin-block-start: 2.25rem;
 `;
@@ -89,8 +84,6 @@ export const SyncPage = () => {
   const [formattedLastSuccessfulSyncTime, setFormattedLastSuccessfulSyncTime] = useState<string>(
     formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
   );
-  const [lastSyncPushedRecordsCount, setLastSyncPushedRecordsCount] = useState<number | null>(null);
-  const [lastSyncPulledRecordsCount, setLastSyncPulledRecordsCount] = useState<number | null>(null);
 
   useEffect(() => {
     const handler = (action, data): void => {
@@ -124,8 +117,6 @@ export const SyncPage = () => {
           setFormattedLastSuccessfulSyncTime(
             formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
           );
-          setLastSyncPushedRecordsCount(syncManager.lastSyncPushedRecordsCount);
-          setLastSyncPulledRecordsCount(syncManager.lastSyncPulledRecordsCount);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ERROR:
           setIsQueuing(false);
@@ -157,13 +148,11 @@ export const SyncPage = () => {
 
       <LayoutManager>
         <Content>
-          {/* Sync icon */}
           <picture>
             <source srcSet="/datatrak-pin.svg" type="image/svg+xml" />
             <img aria-hidden src="/datatrak-pin.svg" height={80} width={80} />
           </picture>
 
-          {/* Current sync status */}
           <StyledSyncStatus
             isSyncing={isSyncing}
             percentage={progress}
@@ -173,24 +162,14 @@ export const SyncPage = () => {
             syncFinishedSuccessfully={syncFinishedSuccessfully}
           />
 
-          {/* Post-sync information (only when not actively syncing) */}
           {!isSyncing && (
             <>
-              {/* Last sync timestamp */}
               {syncStarted && <StyledLastSyncDate message={formattedLastSuccessfulSyncTime} />}
 
-              {/* Sync statistics */}
-              <StyledLastSyncDetails
-                lastSyncPulledRecordsCount={lastSyncPulledRecordsCount}
-                lastSyncPushedRecordsCount={lastSyncPushedRecordsCount}
-              />
-
-              {/* Manual sync button */}
               <StyledButton onClick={manualSync}>Sync now</StyledButton>
             </>
           )}
 
-          {/* Error state */}
           {errorMessage && <StyledAlert severity="error">{errorMessage}</StyledAlert>}
         </Content>
       </LayoutManager>

@@ -2,7 +2,7 @@ import React, { HTMLAttributes } from 'react';
 import { SyncHeading } from './SyncHeading';
 import { SyncParagraph } from './SyncParagraph';
 interface LastSyncDateProps extends HTMLAttributes<HTMLDivElement> {
-  message: string;
+  message: React.ReactNode;
 }
 
 export const LastSyncDate = ({ message, ...props }: LastSyncDateProps) => {

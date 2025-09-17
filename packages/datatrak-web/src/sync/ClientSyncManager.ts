@@ -1,5 +1,5 @@
 import log from 'winston';
-import mitt, { Emitter } from 'mitt';
+import mitt from 'mitt';
 
 import {
   createClientSnapshotTable,
@@ -64,14 +64,12 @@ export class ClientSyncManager {
 
   private isInitialSync: boolean = false;
 
-  progressMaxByStage: StageMaxProgress = STAGE_MAX_PROGRESS_INCREMENTAL;
+  progressMaxByStage = STAGE_MAX_PROGRESS_INCREMENTAL;
 
   isSyncing: boolean = false;
   isQueuing: boolean = false;
 
   lastSuccessfulSyncTime: Date | null = null;
-  lastSyncPushedRecordsCount: number | null = null;
-  lastSyncPulledRecordsCount: number | null = null;
 
   progress: number | null = null;
 
@@ -79,7 +77,7 @@ export class ClientSyncManager {
 
   syncStage: number | null = null;
 
-  emitter: Emitter<typeof SYNC_EVENT_ACTIONS> = mitt();
+  emitter = mitt();
 
   constructor(models: DatatrakWebModelRegistry, deviceId: string, userId: string) {
     this.models = models;
@@ -118,13 +116,13 @@ export class ClientSyncManager {
     const syncStage = ensure(this.syncStage);
 
     // Get previous stage max progress
-    const previousProgress = this.progressMaxByStage[syncStage - 1] || 0;
+    const previousProgress = this.progressMaxByStage[syncStage - 1] ?? 0;
     // Calculate the total progress of the current stage
     const progressDenominator = this.progressMaxByStage[syncStage] - previousProgress;
     // Calculate the progress percentage of the current stage
     // (ie: out of stage 2 which is 33% of the overall progress)
     const currentStagePercentage = Math.min(
-      Math.ceil((progress / total) * progressDenominator),
+      Math.floor((progress / total) * progressDenominator),
       progressDenominator,
     );
     // Add the finished stage progress to get the overall progress percentage
@@ -211,8 +209,6 @@ export class ClientSyncManager {
 
     this.isSyncing = true;
     this.isQueuing = false;
-    this.lastSyncPushedRecordsCount = null;
-    this.lastSyncPulledRecordsCount = null;
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STARTED);
 
     // clear previous temp data, in case last session errored out or server was restarted
@@ -312,8 +308,6 @@ export class ClientSyncManager {
 
     await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, currentSyncClockTime);
     log.debug('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
-
-    this.lastSyncPushedRecordsCount = outgoingChanges.length;
   }
 
   async pullChanges(sessionId: string, projectIds: string[]) {
@@ -367,8 +361,6 @@ export class ClientSyncManager {
       } else {
         await this.pullIncrementalSync(sessionId, totalToPull, pullUntil);
       }
-
-      this.lastSyncPulledRecordsCount = totalToPull;
     } catch (error) {
       log.error('ClientSyncManager.pullChanges', {
         sessionId,
