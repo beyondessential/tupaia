@@ -1,4 +1,5 @@
 import log from 'winston';
+import groupBy from 'lodash.groupby';
 
 import {
   getModelsForPull,
@@ -606,8 +607,21 @@ export class CentralSyncManager {
     }
   }
 
+  async validateIncomingChanges(changes: SyncSnapshotAttributes[]) {
+    const allowedPushTables = getModelsForPush(this.models.getModels()).map(m => m.databaseRecord);
+    const incomingTables = Object.keys(groupBy(changes, 'recordType'));
+    const invalidTables = incomingTables.filter(t => !allowedPushTables.includes(t));
+    
+    if (invalidTables.length > 0) {
+      throw new Error(`Invalid tables in incoming changes: ${invalidTables.join(', ')}`);
+    }
+  }
+
   async addIncomingChanges(sessionId: string, changes: SyncSnapshotAttributes[]) {
     await this.connectToSession(sessionId);
+
+    await this.validateIncomingChanges(changes);
+
     const incomingSnapshotRecords = changes.map(c => ({
       ...c,
       direction: SYNC_SESSION_DIRECTION.INCOMING,
