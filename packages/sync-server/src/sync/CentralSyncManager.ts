@@ -607,11 +607,11 @@ export class CentralSyncManager {
     }
   }
 
-  async validateIncomingChanges(changes: SyncSnapshotAttributes[]) {
+  validateIncomingChanges(changes: SyncSnapshotAttributes[]) {
     const allowedPushTables = getModelsForPush(this.models.getModels()).map(m => m.databaseRecord);
     const incomingTables = Object.keys(groupBy(changes, 'recordType'));
     const invalidTables = incomingTables.filter(t => !allowedPushTables.includes(t));
-    
+
     if (invalidTables.length > 0) {
       throw new Error(`Invalid tables in incoming changes: ${invalidTables.join(', ')}`);
     }
@@ -620,7 +620,7 @@ export class CentralSyncManager {
   async addIncomingChanges(sessionId: string, changes: SyncSnapshotAttributes[]) {
     await this.connectToSession(sessionId);
 
-    await this.validateIncomingChanges(changes);
+    this.validateIncomingChanges(changes);
 
     const incomingSnapshotRecords = changes.map(c => ({
       ...c,
