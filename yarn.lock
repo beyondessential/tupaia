@@ -12108,8 +12108,8 @@ __metadata:
   resolution: "@tupaia/access-policy@workspace:packages/access-policy"
   dependencies:
     "@babel/eslint-parser": ^7.27.5
-    "@tupaia/constants": "workspace:^"
-    "@tupaia/utils": "workspace:^"
+    "@tupaia/constants": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     eslint: ^7.32.0
     npm-run-all: ^4.1.5
     rimraf: ^6.0.1
@@ -12319,7 +12319,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/constants@workspace:*, @tupaia/constants@workspace:^, @tupaia/constants@workspace:packages/constants":
+"@tupaia/constants@workspace:*, @tupaia/constants@workspace:packages/constants":
   version: 0.0.0-use.local
   resolution: "@tupaia/constants@workspace:packages/constants"
   dependencies:
@@ -13285,7 +13285,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/utils@workspace:*, @tupaia/utils@workspace:^, @tupaia/utils@workspace:packages/utils":
+"@tupaia/utils@workspace:*, @tupaia/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@tupaia/utils@workspace:packages/utils"
   dependencies:
