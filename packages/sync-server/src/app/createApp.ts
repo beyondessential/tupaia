@@ -31,6 +31,7 @@ export function createApp(database = new TupaiaDatabase(), syncManager: CentralS
   const app = new MicroServiceApiBuilder(database, 'sync')
     .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
     .useMiddleware(addCentralSyncManagerToContext(syncManager))
+    .useBasicBearerAuth()
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
     .get<SyncReadyRequest>('sync/:sessionId/status', handleWith(SyncReadyRoute))
     .get<SyncMetadataRequest>('sync/:sessionId/metadata', handleWith(SyncMetadataRoute))
@@ -49,7 +50,6 @@ export function createApp(database = new TupaiaDatabase(), syncManager: CentralS
     .get<SyncPushStatusRequest>('sync/:sessionId/push/status', handleWith(SyncPushStatusRoute))
     .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
 
-    .useBasicBearerAuth()
     .build();
 
   return app;
