@@ -166,7 +166,7 @@ export class TaskRecord extends DatabaseRecord {
    */
 
   async comments(customQueryOptions) {
-    return this.otherModels.taskComment.find({ task_id: this.id }, customQueryOptions);
+    return await this.otherModels.taskComment.find({ task_id: this.id }, customQueryOptions);
   }
 
   /**
@@ -448,6 +448,11 @@ export class TaskModel extends DatabaseModel {
     await Promise.all(
       comments.map(templateVariables => originalTask.addUpdatedComment(userId, templateVariables)),
     );
+  }
+
+  async addUserComment(message, taskId, userId) {
+    const task = await this.findById(ensure(taskId));
+    await task.addUserComment(message, ensure(userId));
   }
 
   /**
