@@ -5,7 +5,7 @@ import { isNil, omitBy } from 'lodash';
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { EntityRecord, ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
-import { camelcaseKeys, isNotNullish } from '@tupaia/tsutils';
+import { camelcaseKeys, ensure, isNotNullish } from '@tupaia/tsutils';
 import { Entity, Project } from '@tupaia/types';
 import { snakeKeys } from '@tupaia/utils';
 import { CurrentUser } from '../../api';
@@ -143,7 +143,10 @@ export const getEntityDescendants = async ({
 
   const entityFilter = buildEntityFilter(params);
 
-  const project = await models.project.findOne({ code: projectCode });
+  const project = ensure(
+    await models.project.findOne({ code: ensure(projectCode) }),
+    `No project exists with code ${projectCode}`,
+  );
 
   // This should never happen, but just in case
   if (!project.entity_hierarchy_id) {
