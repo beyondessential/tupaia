@@ -34,15 +34,34 @@ deployment_name=$("$deployment_scripts"/../utility/getEC2TagValue.sh DeploymentN
 branch=$("$deployment_scripts"/../utility/getEC2TagValue.sh Branch)
 
 # Set bash prompt to have deployment name in it
-if [[ $deployment_name = production ]]; then
-  prompt_name=PROD
-  prompt_color=31
-else
-  prompt_name=$deployment_name
-  prompt_color=36
-fi
-prompt="\\[\\e]0;\\u@${prompt_name}: \\w\\a\\]\\\${debian_chroot:+(\\\$debian_chroot)}\\[\\033[01;32m\\]\\u@\\033[01;${prompt_color}m\\]${prompt_name}\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ "
-echo "PS1=\"${prompt}\"" >>"$home_dir"/.bashrc
+set_prompt() {
+  local reset='\e[m'
+  local bold_red='\e[1;31m'
+  local bold_green='\e[1;32m'
+  local bold_blue='\e[1;34m'
+  local bold_cyan='\e[1;36m'
+  if [[ $deployment_name = production ]]; then
+    local username_format=$bold_red
+  else
+    local username_format=$bold_cyan
+  fi
+
+  local prompt='\['                              # begin non-printing chars
+  prompt+='\e]0;'                                #   begin window title
+  prompt+="\\u@$deployment_name: \\w"            #    e.g. 'username@deployment-name: ~'
+  prompt+='\a'                                   #   end window title
+  prompt+='\]'                                   # end non-printing chars
+  prompt+='${debian_chroot:+($debian_chroot)}'   # debian_chroot, if set (else nothing)
+  prompt+=$bold_green\\u$reset                   # username
+  prompt+=@                                      # '@'
+  prompt+=$username_format$deployment_name$reset # deployment name
+  prompt+=:                                      # ':'
+  prompt+=$bold_blue\\w$reset                    # working directory
+  prompt+='\$ '                                  # '#' if uid is 0, else '$', followed by trailing wordspace
+
+  echo "PS1=${prompt@Q}" >>"$home_dir"/.bashrc
+}
+set_prompt
 
 # Create a directory for logs to go
 mkdir -m 777 -p "$logs_dir"
