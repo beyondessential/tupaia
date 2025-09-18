@@ -10,8 +10,8 @@ import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissio
 import { RouteHandler } from '../RouteHandler';
 import { validateSurveyResponse } from './validateSurveyResponses';
 import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
-import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 import { saveResponsesToDatabase } from './saveResponsesToDatabase';
+import { SurveyResponseModel } from '@tupaia/database';
 
 /**
  * Handles POST endpoint:
@@ -70,7 +70,9 @@ export class ResubmitSurveyResponse extends RouteHandler {
     }
 
     await this.models.wrapInTransaction(async transactingModels => {
-      await upsertEntitiesAndOptions(transactingModels, [this.newSurveyResponse]);
+      await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [
+        this.newSurveyResponse,
+      ]);
       await validateSurveyResponse(transactingModels, this.newSurveyResponse);
       await this.assertUserHasAccess();
       await saveResponsesToDatabase(transactingModels, originalSurveyResponse.user_id, [

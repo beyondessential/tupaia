@@ -2,11 +2,14 @@ import { expect } from 'chai';
 import { flatten } from 'lodash';
 import sinon from 'sinon';
 
-import { generateId, createModelsStub as baseCreateModelsStub } from '@tupaia/database';
-import { SurveyResponseImporter } from '../../../apiV2/utilities';
+import {
+  createModelsStub as baseCreateModelsStub,
+  generateId,
+  SurveyResponseModel,
+} from '@tupaia/database';
 import * as SaveResponsesToDatabase from '../../../apiV2/surveyResponses/saveResponsesToDatabase';
-import * as UpsertEntitiesAndOptions from '../../../apiV2/surveyResponses/upsertEntitiesAndOptions';
 import * as ValidateSurveyResponses from '../../../apiV2/surveyResponses/validateSurveyResponses';
+import { SurveyResponseImporter } from '../../../apiV2/utilities';
 
 const ENTITY_IDS = {
   1989: generateId(),
@@ -70,7 +73,7 @@ describe('SurveyResponseImporter', () => {
     before(() => {
       clock = sinon.useFakeTimers({ now: TIMESTAMP, toFake: ['Date'] });
       sinon
-        .stub(UpsertEntitiesAndOptions, 'upsertEntitiesAndOptions')
+        .stub(SurveyResponseModel, 'upsertEntitiesAndOptions')
         .callsFake((models, responses) => {});
       sinon
         .stub(ValidateSurveyResponses, 'validateSurveyResponses')
@@ -89,7 +92,7 @@ describe('SurveyResponseImporter', () => {
     });
 
     after(() => {
-      UpsertEntitiesAndOptions.upsertEntitiesAndOptions.restore();
+      SurveyResponseModel.upsertEntitiesAndOptions.restore();
       ValidateSurveyResponses.validateSurveyResponses.restore();
       SaveResponsesToDatabase.saveResponsesToDatabase.restore();
       clock.restore();
