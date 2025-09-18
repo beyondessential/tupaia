@@ -2,13 +2,13 @@ import { SyncDirections } from '@tupaia/constants';
 import { ajvValidate, ensure, isNullish } from '@tupaia/tsutils';
 import { EntityUpdateSchema, QuestionType } from '@tupaia/types';
 import { getOffsetForTimezone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
-import { DatabaseRecord } from '../DatabaseRecord';
-import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { createSurveyResponsePermissionFilter } from '../permissions';
-import { RECORDS } from '../records';
-import { buildSyncLookupSelect } from '../sync';
-import { generateId } from '../utilities';
-import { SurveyScreenComponentModel } from './SurveyScreenComponent';
+import { DatabaseRecord } from '../../DatabaseRecord';
+import { MaterializedViewLogDatabaseModel } from '../../analytics';
+import { createSurveyResponsePermissionFilter } from '../../permissions';
+import { RECORDS } from '../../records';
+import { buildSyncLookupSelect } from '../../sync';
+import { generateId } from '../../utilities';
+import { SurveyScreenComponentModel } from '../SurveyScreenComponent';
 
 const USERS_EXCLUDED_FROM_LEADER_BOARD = [
   "'edmofro@gmail.com'", // Edwin
@@ -286,7 +286,7 @@ function appendTimezoneToDateString(dateString, timezone) {
 }
 
 /**
- * @param {import('../ModelRegistry').ModelRegistry} models
+ * @param {import('../../ModelRegistry').ModelRegistry} models
  * @param {import('@tupaia/types').SurveyScreenComponentConfig} config
  * @param {import('@tupaia/types').Question['id']} questionId
  * @param {import('@tupaia/types').DatatrakWebSubmitSurveyResponseRequest.ReqBody['answers']} answers
