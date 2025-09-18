@@ -54,7 +54,7 @@ async function buildAnswerRecords(models, rawAnswerRecords) {
  */
 async function saveAnswerRecords(models, rawAnswerRecords, surveyResponseId, answerBodyParsers) {
   const answerRecords = await buildAnswerRecords(models, rawAnswerRecords);
-  return upsertAnswers(models, answerRecords, surveyResponseId, answerBodyParsers);
+  return await upsertAnswers(models, answerRecords, surveyResponseId, answerBodyParsers);
 }
 
 function buildResponseRecord(user, entitiesByCode, body) {
