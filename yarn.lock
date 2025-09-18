@@ -12489,6 +12489,7 @@ __metadata:
     notistack: ^3.0.1
     prop-types: ^15.8.1
     react: ^16.14.0
+    react-confirm: ^0.1.27
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
     react-is: ^16.13.1
@@ -33664,6 +33665,16 @@ __metadata:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
   checksum: aaffa002d9372f692238a29229ff1e991d6d0077f4f83dcdf88ad3106a0737aa56e415a71b91fb585f8532e04f09d3f0fabbc5cd8291137206dc3c1a0d70674f
+  languageName: node
+  linkType: hard
+
+"react-confirm@npm:^0.1.27":
+  version: 0.1.27
+  resolution: "react-confirm@npm:0.1.27"
+  peerDependencies:
+    react: ^0.14.7 || 15.x || 16.x || 17.x
+    react-dom: ^0.14.7 || 15.x || 16.x || 17.x
+  checksum: 5f06d6149b99eda5802c8e9e8ecb35c2bd6bd725467b3a020b1854474d4ce298afaf01b75ccbbdee7b9bb440a5c9a8d427e497843d8c0c9b99485354628c5627
   languageName: node
   linkType: hard
 

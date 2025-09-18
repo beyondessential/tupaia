@@ -49,6 +49,7 @@
     "notistack": "^3.0.1",
     "prop-types": "^15.8.1",
     "react": "^16.14.0",
+    "react-confirm": "^0.1.27",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.15.1",
     "react-is": "^16.13.1",
