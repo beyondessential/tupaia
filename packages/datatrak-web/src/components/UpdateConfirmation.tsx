@@ -5,9 +5,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { confirmable, createConfirmation, type ConfirmDialogProps } from 'react-confirm';
+import { confirmable, createConfirmation } from 'react-confirm';
 
-const Backdrop = styled.div`
+const Modal = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -42,7 +42,7 @@ const Title = styled.h2`
 
 const Description = styled.p`
   margin: 0 0 32px 0;
-  color: #6F6F6F;
+  color: #6f6f6f;
   font-size: 14px;
   line-height: 1.5;
   font-weight: 400;
@@ -64,11 +64,11 @@ const RefreshButton = styled.button`
   }
 `;
 
-const UpdateDialog = ({ show, proceed }: ConfirmDialogProps<{ message: string }, boolean>) => {
+const UpdateConfirmationModal = ({ show, proceed }) => {
   if (!show) return null;
 
   return (
-    <Backdrop>
+    <Modal>
       <Dialog>
         <Title>App update available</Title>
 
@@ -79,8 +79,8 @@ const UpdateDialog = ({ show, proceed }: ConfirmDialogProps<{ message: string },
 
         <RefreshButton onClick={() => proceed(true)}>Refresh app</RefreshButton>
       </Dialog>
-    </Backdrop>
+    </Modal>
   );
 };
 
-export const confirm = createConfirmation(confirmable(UpdateDialog));
+export const confirmUpdate = createConfirmation(confirmable(UpdateConfirmationModal));
