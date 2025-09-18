@@ -3,13 +3,11 @@ import log from 'winston';
 import { render as renderReactApp } from 'react-dom';
 
 import { App } from './App';
-import { confirm } from './components/UpgradeConfirmation';
+import { confirmUpdate } from './components/UpdateConfirmation';
 
 renderReactApp(<App />, document.getElementById('root'));
 
 window.addEventListener('load', async () => {
-  await confirm();
-
   if ('serviceWorker' in navigator) {
     const registration = await navigator.serviceWorker.register('/sw.js');
     // Handle updates
@@ -25,7 +23,7 @@ window.addEventListener('load', async () => {
         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
           // New content available
           
-          if (await confirm()) {
+          if (await confirmUpdate()) {
             newWorker.postMessage({ type: 'SKIP_WAITING' });
           }
         }
@@ -35,7 +33,7 @@ window.addEventListener('load', async () => {
     // Check if there's already a waiting worker
     // in case if update found, but user closes the pwa
     if (registration.waiting) {
-      if (await confirm()) {
+      if (await confirmUpdate()) {
         registration.waiting.postMessage({ type: 'SKIP_WAITING' });
       }
     }
@@ -51,8 +49,8 @@ window.addEventListener('load', async () => {
   }
 });
 
-// Add periodic update checks for PWAs (every 5 seconds)
-const UPDATE_CHECK_INTERVAL = 5000;
+// Add periodic update checks for PWAs (every 30 seconds)
+const UPDATE_CHECK_INTERVAL = 30 * 1000;
 
 setInterval(async () => {
   if ('serviceWorker' in navigator) {
