@@ -61,8 +61,7 @@ export class SurveyExporter {
         workbook.SheetNames.push(sheetName);
         workbook.Sheets[sheetName] = xlsx.utils.aoa_to_sheet([[permissionsError]]);
       } else {
-        for (let i = 0; i < surveys.length; i += 1) {
-          const currentSurvey = surveys[i];
+        for (const currentSurvey of surveys) {
           const rows = await SurveyModel.findQuestionsInSurvey(this.models, currentSurvey.id);
           const rowBuilder = new RowBuilder(this.models, rows);
 
