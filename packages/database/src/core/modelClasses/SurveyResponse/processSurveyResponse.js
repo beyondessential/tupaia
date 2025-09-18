@@ -58,7 +58,7 @@ async function buildUpsertEntity(models, config, questionId, answers, countryId)
     }
   }
 
-  const isUpdate = await models.entity.findById(entityId);
+  const isUpdate = (await models.entity.count({ id: entityId })) > 0;
   if (isUpdate) return entity;
 
   const selectedCountry = ensure(
