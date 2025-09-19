@@ -1,4 +1,3 @@
-export { findQuestionsInSurvey } from './findQuestionsInSurvey';
 export { findAnswersInSurveyResponse } from './findAnswersInSurveyResponse';
 export { deleteScreensForSurvey } from './deleteScreensForSurvey';
 export { deleteOrphanQuestions } from './deleteOrphanQuestions';
