@@ -1,17 +1,17 @@
+import { SurveyModel } from '@tupaia/database';
 import {
-  ValidationError,
-  ObjectValidator,
-  constructRecordExistsWithId,
-  constructRecordExistsWithCode,
   constructIsEmptyOr,
-  takesDateForm,
-  hasContent,
-  takesIdForm,
   constructIsNotPresentOr,
+  constructRecordExistsWithCode,
+  constructRecordExistsWithId,
+  hasContent,
   MultiValidationError,
+  ObjectValidator,
+  takesDateForm,
+  takesIdForm,
+  ValidationError,
 } from '@tupaia/utils';
 import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
-import { findQuestionsInSurvey } from '../../dataAccessors';
 
 const constructAnswerValidators = models => ({
   id: [constructIsNotPresentOr(takesIdForm)],
@@ -41,7 +41,7 @@ export const validateSurveyResponse = async (models, body) => {
     throw new Error('Must provide one of entity_id or entity_code');
   }
 
-  const surveyQuestions = await findQuestionsInSurvey(models, body.survey_id);
+  const surveyQuestions = await SurveyModel.findQuestionsInSurvey(models, body.survey_id);
 
   const { answers } = body;
 

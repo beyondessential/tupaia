@@ -3,34 +3,35 @@ import { SyncDirections } from '@tupaia/constants';
 import { reduceToDictionary } from '@tupaia/utils';
 
 import { ensure } from '@tupaia/tsutils';
-import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
-import { DatabaseRecord } from '../DatabaseRecord';
-import { RECORDS } from '../records';
-import { SqlQuery } from '../SqlQuery';
-import { buildSyncLookupSelect } from '../sync';
 import { QuestionType } from '@tupaia/types';
-import { OptionRecord } from './Option';
+import { MaterializedViewLogDatabaseModel } from '../../analytics';
+import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
+import { DatabaseRecord } from '../../DatabaseRecord';
+import { RECORDS } from '../../records';
+import { SqlQuery } from '../../SqlQuery';
+import { buildSyncLookupSelect } from '../../sync';
+import { OptionRecord } from '../Option';
+import { findQuestionsInSurvey } from './findQuestionsInSurvey';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
 
   /**
-   * @returns {Promise<import('./DataGroup').DataGroupRecord>} data group for survey
+   * @returns {Promise<import('../DataGroup').DataGroupRecord>} data group for survey
    */
   async dataGroup() {
     return await this.otherModels.dataGroup.findById(this.data_group_id);
   }
 
   /**
-   * @returns {Promise<import('./SurveyScreen').SurveyScreenRecord[]>} survey screens in survey
+   * @returns {Promise<import('../SurveyScreen').SurveyScreenRecord[]>} survey screens in survey
    */
   async surveyScreens() {
     return await this.otherModels.surveyScreen.find({ survey_id: this.id });
   }
 
   /**
-   * @returns {Promise<import('./SurveyScreenComponent').SurveyScreenComponentRecord[]>} survey screen components in survey
+   * @returns {Promise<import('../SurveyScreenComponent').SurveyScreenComponentRecord[]>} survey screen components in survey
    */
   async surveyScreenComponents() {
     const questions = await this.database.executeSql(
@@ -48,7 +49,7 @@ export class SurveyRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('./Question').QuestionRecord[]>} questions in survey
+   * @returns {Promise<import('../Question').QuestionRecord[]>} questions in survey
    */
   async questions() {
     const questions = await this.database.executeSql(
@@ -65,7 +66,7 @@ export class SurveyRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('./OptionSet').OptionSetRecord[]>} optionSets in questions in survey
+   * @returns {Promise<import('../OptionSet').OptionSetRecord[]>} optionSets in questions in survey
    */
   async optionSets() {
     const optionSets = await this.database.executeSql(
@@ -83,7 +84,7 @@ export class SurveyRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('./Option').OptionRecord[]>} options in optionSets in questions in survey
+   * @returns {Promise<import('../Option').OptionRecord[]>} options in optionSets in questions in survey
    */
   async options() {
     const options = await this.database.executeSql(
@@ -102,14 +103,14 @@ export class SurveyRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('./PermissionGroup').PermissionGroupRecord>} permission group for survey
+   * @returns {Promise<import('../PermissionGroup').PermissionGroupRecord>} permission group for survey
    */
   async getPermissionGroup() {
     return await this.otherModels.permissionGroup.findById(this.permission_group_id);
   }
 
   /**
-   * @returns {Promise<import('./Country').CountryRecord[]>} countries that use this survey
+   * @returns {Promise<import('../Country').CountryRecord[]>} countries that use this survey
    */
   async getCountries() {
     return await this.otherModels.country.findManyById(this.country_ids);
@@ -124,7 +125,7 @@ export class SurveyRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('./Project').ProjectRecord>}
+   * @returns {Promise<import('../Project').ProjectRecord>}
    */
   async getProject() {
     return ensure(
@@ -187,6 +188,10 @@ export class SurveyRecord extends DatabaseRecord {
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+
+  static async findQuestionsInSurvey(models, surveyId) {
+    return await findQuestionsInSurvey(models, surveyId);
+  }
 
   get DatabaseRecordClass() {
     return SurveyRecord;
@@ -255,7 +260,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * @param {SurveyRecord['id'][]} surveyIds
-   * @returns {Promise<Record<SurveyRecord['id'], import('./Country').CountryRecord['id'][]>>}
+   * @returns {Promise<Record<SurveyRecord['id'], import('../Country').CountryRecord['id'][]>>}
    * Dictionary mapping survey IDs to sorted arrays of country codes
    */
   async getCountryCodesBySurveyId(surveyIds) {
@@ -281,7 +286,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * @param {SurveyRecord['id'][]} surveyIds
-   * @returns {Promise<Record<SurveyRecord['id'], import('./Country').CountryRecord['id'][]>>}
+   * @returns {Promise<Record<SurveyRecord['id'], import('../Country').CountryRecord['id'][]>>}
    * Dictionary mapping survey IDs to sorted arrays of country names
    */
   async getCountryNamesBySurveyId(surveyIds) {
@@ -305,7 +310,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * @param {SurveyRecord['id'][]} surveyIds
-   * @returns {Promise<Record<SurveyRecord['id'], import('./SurveyGroup').SurveyGroupRecord['name']>>}
+   * @returns {Promise<Record<SurveyRecord['id'], import('../SurveyGroup').SurveyGroupRecord['name']>>}
    * Dictionary mapping survey IDs to sorted arrays of country names
    */
   async getSurveyGroupNamesBySurveyId(surveyIds) {
@@ -327,7 +332,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return Object.fromEntries(rows.map(row => [row.survey_id, row.survey_group_name]));
   }
 
-  /** @see `./Survey.readme.md` */
+  /** @see `./README.md` */
   async getQuestionsValues(surveyIds) {
     if (surveyIds.length === 0) return {};
 
