@@ -1,9 +1,8 @@
 import xlsx from 'xlsx';
 
+import { SurveyModel } from '@tupaia/database';
 import { getExportPathForUser } from '@tupaia/server-utils';
 import { DatabaseError } from '@tupaia/utils';
-
-import { findQuestionsInSurvey } from '../../../dataAccessors';
 import winston from '../../../log';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import { RowBuilder } from './RowBuilder';
@@ -64,7 +63,7 @@ export class SurveyExporter {
       } else {
         for (let i = 0; i < surveys.length; i += 1) {
           const currentSurvey = surveys[i];
-          const rows = await findQuestionsInSurvey(this.models, currentSurvey.id);
+          const rows = await SurveyModel.findQuestionsInSurvey(this.models, currentSurvey.id);
           const rowBuilder = new RowBuilder(this.models, rows);
 
           const rowsForExport = await Promise.all(rows.map(rowBuilder.build));
