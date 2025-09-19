@@ -1,6 +1,7 @@
-import xlsx from 'xlsx';
 import moment from 'moment';
-import { generateId } from '@tupaia/database';
+import xlsx from 'xlsx';
+
+import { AnswerModel, generateId } from '@tupaia/database';
 import {
   constructIsOneOf,
   constructRecordExistsWithId,
@@ -9,24 +10,22 @@ import {
   hasContent,
   ImportValidationError,
   ObjectValidator,
+  reduceToDictionary,
   respond,
+  stripTimezoneFromDate,
   takesIdForm,
   UploadError,
-  reduceToDictionary,
-  stripTimezoneFromDate,
 } from '@tupaia/utils';
-
-import { getArrayQueryParameter } from '../../utilities';
 import { ANSWER_TYPES } from '../../../database/models/Answer';
-import { constructAnswerValidator } from '../../utilities/constructAnswerValidator';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import {
   EXPORT_DATE_FORMAT,
   INFO_COLUMN_HEADERS,
   INFO_ROW_HEADERS,
 } from '../../export/exportSurveyResponses';
-import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
+import { getArrayQueryParameter } from '../../utilities';
 import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
+import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
 import { getFailureMessage } from './getFailureMessage';
 
 const ANSWER_TRANSFORMERS = {
@@ -267,7 +266,10 @@ export async function importSurveyResponses(req, res) {
           }
           await infoValidator.validate(rowInfo);
           const question = await models.question.findById(questionId);
-          answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
+          answerValidator = new ObjectValidator(
+            {},
+            AnswerModel.constructAnswerValidator(models, question),
+          );
           answerTransformer = ANSWER_TRANSFORMERS[question.type];
         }
 
@@ -276,9 +278,8 @@ export async function importSurveyResponses(req, res) {
             checkIsCellEmpty(answerValue) &&
             IMPORT_BEHAVIOURS[importMode].shouldFillEmptyAnswer
           ) {
-            const { dataTime, answerTextsByQuestionId } = await getExistingResponseData(
-              columnIndex,
-            );
+            const { dataTime, answerTextsByQuestionId } =
+              await getExistingResponseData(columnIndex);
             // Use data from an existing response to fill the empty answer
             return isDateAnswer(rowType) ? dataTime : answerTextsByQuestionId?.[questionId];
           }
