@@ -7,14 +7,9 @@ import { buildSyncLookupSelect } from '../../sync';
 import { getLeaderboardQuery } from './leaderboard';
 import { processSurveyResponse } from './processSurveyResponse';
 import { saveResponsesToDatabase } from './saveToDatabase';
+import { upsertAnswers } from './upsertAnswers';
 import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 import { validateSurveyResponse, validateSurveyResponses } from './validation';
-import { upsertAnswers } from './upsertAnswers';
-
-/**
- * @typedef {import('@tupaia/types').Answer} Answer
- * @typedef {(answer: Answer) => Promise<Answer["text"]>} AnswerBodyParser
- */
 
 export class SurveyResponseRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_RESPONSE;
