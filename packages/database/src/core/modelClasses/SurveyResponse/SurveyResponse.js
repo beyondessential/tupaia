@@ -7,6 +7,7 @@ import { buildSyncLookupSelect } from '../../sync';
 import { getLeaderboardQuery } from './leaderboard';
 import { processSurveyResponse } from './processSurveyResponse';
 import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
+import { validateSurveyResponse, validateSurveyResponses } from './validation';
 
 export class SurveyResponseRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_RESPONSE;
@@ -28,6 +29,14 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
   static async upsertEntitiesAndOptions(models, surveyResponses) {
     return await upsertEntitiesAndOptions(models, surveyResponses);
+  }
+
+  static async validateSurveyResponse(models, surveyResponseData) {
+    return await validateSurveyResponse(models, surveyResponseData);
+  }
+
+  static async validateSurveyResponses(models, surveyResponseData) {
+    return await validateSurveyResponses(models, surveyResponseData);
   }
 
   get DatabaseRecordClass() {

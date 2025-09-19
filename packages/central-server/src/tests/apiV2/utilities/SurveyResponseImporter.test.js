@@ -8,7 +8,6 @@ import {
   SurveyResponseModel,
 } from '@tupaia/database';
 import * as SaveResponsesToDatabase from '../../../apiV2/surveyResponses/saveResponsesToDatabase';
-import * as ValidateSurveyResponses from '../../../apiV2/surveyResponses/validateSurveyResponses';
 import { SurveyResponseImporter } from '../../../apiV2/utilities';
 
 const ENTITY_IDS = {
@@ -76,7 +75,7 @@ describe('SurveyResponseImporter', () => {
         .stub(SurveyResponseModel, 'upsertEntitiesAndOptions')
         .callsFake((models, responses) => {});
       sinon
-        .stub(ValidateSurveyResponses, 'validateSurveyResponses')
+        .stub(SurveyResponseModel, 'validateSurveyResponses')
         .callsFake((models, responses) => {});
       sinon
         .stub(SaveResponsesToDatabase, 'saveResponsesToDatabase')
@@ -93,7 +92,7 @@ describe('SurveyResponseImporter', () => {
 
     after(() => {
       SurveyResponseModel.upsertEntitiesAndOptions.restore();
-      ValidateSurveyResponses.validateSurveyResponses.restore();
+      SurveyResponseModel.validateSurveyResponses.restore();
       SaveResponsesToDatabase.saveResponsesToDatabase.restore();
       clock.restore();
     });

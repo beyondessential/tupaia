@@ -1,17 +1,16 @@
 /* eslint-disable camelcase */
+import { SurveyResponseModel } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
 import {
+  assertAdminPanelAccess,
   assertAllPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
 } from '../../permissions';
-import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
-import { RouteHandler } from '../RouteHandler';
-import { validateSurveyResponse } from './validateSurveyResponses';
 import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
+import { RouteHandler } from '../RouteHandler';
+import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
 import { saveResponsesToDatabase } from './saveResponsesToDatabase';
-import { SurveyResponseModel } from '@tupaia/database';
 
 /**
  * Handles POST endpoint:
@@ -73,7 +72,7 @@ export class ResubmitSurveyResponse extends RouteHandler {
       await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [
         this.newSurveyResponse,
       ]);
-      await validateSurveyResponse(transactingModels, this.newSurveyResponse);
+      await SurveyResponseModel.validateSurveyResponse(transactingModels, this.newSurveyResponse);
       await this.assertUserHasAccess();
       await saveResponsesToDatabase(transactingModels, originalSurveyResponse.user_id, [
         this.newSurveyResponse,

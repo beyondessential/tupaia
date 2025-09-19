@@ -4,7 +4,6 @@ import { saveResponsesToDatabase } from '.';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
 import { RouteHandler } from '../RouteHandler';
-import { validateSurveyResponses } from './validateSurveyResponses';
 
 export class SubmitSurveyResponses extends RouteHandler {
   constructor(req, res) {
@@ -38,7 +37,7 @@ export class SubmitSurveyResponses extends RouteHandler {
     await this.models.wrapInTransaction(async transactingModels => {
       // Upsert entities and options that were created in user's local database
       await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, this.surveyResponses);
-      await validateSurveyResponses(transactingModels, this.surveyResponses);
+      await SurveyResponseModel.validateSurveyResponses(transactingModels, this.surveyResponses);
       await this.assertUserHasAccess(transactingModels);
       results = await saveResponsesToDatabase(transactingModels, submitterId, this.surveyResponses);
 
