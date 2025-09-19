@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { Alert } from '@tupaia/ui-components';
-
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { useIsMobile } from '../../utils';
@@ -13,7 +11,6 @@ import { SYNC_EVENT_ACTIONS } from '../../types';
 import { formatDistance } from 'date-fns';
 import { useSyncContext } from '../../api/SyncContext';
 import { useProjectsInSync } from '../../hooks/database/useProjectsInSync';
-import { LastSyncDetails } from './LastSyncDetails';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -26,6 +23,11 @@ const LayoutManager = styled.div`
   grid-row-start: 2;
   grid-template-areas: '.' '--content' '.';
   grid-template-rows: minmax(0, 2fr) auto minmax(0, 3fr);
+`;
+
+const ErrorMessage = styled.p`
+  margin-block-start: 10rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
 const Content = styled.div`
@@ -53,15 +55,7 @@ const StyledLastSyncDate = styled(LastSyncDate)`
   margin-block-start: 2.25rem;
 `;
 
-const StyledLastSyncDetails = styled(LastSyncDetails)`
-  margin-block-start: 2.25rem;
-`;
-
 const StyledButton = styled(Button)`
-  margin-block-start: 2.25rem;
-`;
-
-const StyledAlert = styled(Alert)`
   margin-block-start: 2.25rem;
 `;
 
@@ -89,8 +83,6 @@ export const SyncPage = () => {
   const [formattedLastSuccessfulSyncTime, setFormattedLastSuccessfulSyncTime] = useState<string>(
     formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
   );
-  const [lastSyncPushedRecordsCount, setLastSyncPushedRecordsCount] = useState<number | null>(null);
-  const [lastSyncPulledRecordsCount, setLastSyncPulledRecordsCount] = useState<number | null>(null);
 
   useEffect(() => {
     const handler = (action, data): void => {
@@ -124,8 +116,6 @@ export const SyncPage = () => {
           setFormattedLastSuccessfulSyncTime(
             formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
           );
-          setLastSyncPushedRecordsCount(syncManager.lastSyncPushedRecordsCount);
-          setLastSyncPulledRecordsCount(syncManager.lastSyncPulledRecordsCount);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ERROR:
           setIsQueuing(false);
@@ -157,13 +147,11 @@ export const SyncPage = () => {
 
       <LayoutManager>
         <Content>
-          {/* Sync icon */}
           <picture>
             <source srcSet="/datatrak-pin.svg" type="image/svg+xml" />
             <img aria-hidden src="/datatrak-pin.svg" height={80} width={80} />
           </picture>
 
-          {/* Current sync status */}
           <StyledSyncStatus
             isSyncing={isSyncing}
             percentage={progress}
@@ -171,27 +159,23 @@ export const SyncPage = () => {
             syncStage={syncStage}
             totalStages={Object.keys(syncManager.progressMaxByStage).length}
             syncFinishedSuccessfully={syncFinishedSuccessfully}
+            hasError={Boolean(errorMessage)}
           />
 
-          {/* Post-sync information (only when not actively syncing) */}
           {!isSyncing && (
             <>
-              {/* Last sync timestamp */}
-              {syncStarted && <StyledLastSyncDate message={formattedLastSuccessfulSyncTime} />}
+              {syncStarted && Boolean(formattedLastSuccessfulSyncTime) && (
+                <StyledLastSyncDate
+                  formattedLastSuccessfulSyncTime={formattedLastSuccessfulSyncTime}
+                  lastSyncDate={syncManager.lastSuccessfulSyncTime}
+                />
+              )}
 
-              {/* Sync statistics */}
-              <StyledLastSyncDetails
-                lastSyncPulledRecordsCount={lastSyncPulledRecordsCount}
-                lastSyncPushedRecordsCount={lastSyncPushedRecordsCount}
-              />
-
-              {/* Manual sync button */}
               <StyledButton onClick={manualSync}>Sync now</StyledButton>
             </>
           )}
 
-          {/* Error state */}
-          {errorMessage && <StyledAlert severity="error">{errorMessage}</StyledAlert>}
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         </Content>
       </LayoutManager>
     </Wrapper>

@@ -48,13 +48,13 @@ export default defineConfig(({ command, mode }) => {
         },
       }),
       commonjs(),
+      // Replace the process.env variables with the actual values
+      // Doing this instead of using define because define also replaces the process.env
+      // in the external node_modules, which caused issues when using knex in frontend
       replace({
-        ...Object.keys(env).reduce((acc, key) => {
-          acc[`process.env.${key}`] = JSON.stringify(env[key]);
-          return acc;
-        }, {}),
-        include: 'src/**/*', // Only your source files
-        exclude: 'node_modules/**', // Exclude all node_modules
+        'process.env': JSON.stringify(env),
+        include: 'src/**/*', // Only source files
+        exclude: 'node_modules/**', // Exclude all external node_modules
         preventAssignment: false,
       }),
     ],
@@ -111,6 +111,7 @@ export default defineConfig(({ command, mode }) => {
           '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
           '@tupaia/constants': path.resolve(__dirname, './packages/constants/src/index.ts'),
           '@tupaia/tsutils': path.resolve(__dirname, './packages/tsutils/src/index.ts'),
+          '@tupaia/access-policy': path.resolve(__dirname, './packages/access-policy/src/index.js'),
         },
       },
     };

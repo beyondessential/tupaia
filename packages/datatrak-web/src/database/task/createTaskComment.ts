@@ -1,12 +1,10 @@
-import { ensure } from '@tupaia/tsutils';
 import { CreateTaskCommentLocalContext } from '../../api/mutations/useCreateTaskComment';
 
 export const createTaskComment = async ({
   models,
-  data,
+  data: message,
   user,
   taskId,
 }: CreateTaskCommentLocalContext) => {
-  const task = await models.task.findById(ensure(taskId));
-  await task.addUserComment(data, ensure(user?.id));
+  return await models.task.addUserComment(message, taskId, user?.id);
 };

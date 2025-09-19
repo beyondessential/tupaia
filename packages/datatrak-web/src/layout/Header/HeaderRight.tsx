@@ -1,14 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IconButton } from '@material-ui/core';
+import { IconButton, useTheme } from '@material-ui/core';
+import { RefreshCcw } from 'lucide-react';
+import { useLocation } from 'react-router';
 
 import { RouterLink } from '@tupaia/ui-components';
 
 import { ROUTES } from '../../constants';
 import { UserMenu } from '../UserMenu/UserMenu';
-import { useIsMobile } from '../../utils';
-
 import { useCurrentUserContext } from '../../api';
+import { useIsOfflineFirst } from '../../api/offlineFirst';
 
 const SyncButton = styled(IconButton)<{
   component: React.ElementType;
@@ -17,17 +18,26 @@ const SyncButton = styled(IconButton)<{
   padding: 0.5rem;
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const HeaderRight = () => {
-  const isMobile = useIsMobile();
+  const isOfflineFirst = useIsOfflineFirst();
   const { isLoggedIn } = useCurrentUserContext();
+  const secondaryColor = useTheme().palette.secondary.main;
+  const location = useLocation();
+  const isSyncPage = location.pathname === ROUTES.SYNC;
+
   return (
-    <div>
-      {isMobile && isLoggedIn && (
+    <Wrapper>
+      {isOfflineFirst && isLoggedIn && !isSyncPage && (
         <SyncButton to={ROUTES.SYNC} component={RouterLink}>
-          <img src="/icons/sync-icon.svg" alt="Tupaia DataTrak – Sync" width="100%" height="100%" />
+          <RefreshCcw size={25} color={secondaryColor}/>
         </SyncButton>
       )}
       <UserMenu />
-    </div>
+    </Wrapper>
   );
 };

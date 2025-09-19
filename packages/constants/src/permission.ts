@@ -16,3 +16,5 @@ export const API_CLIENT_PERMISSIONS = [
   { entityCode: 'VU', permissionGroupName: 'Public' }, //	Vanuatu
   { entityCode: 'VE', permissionGroupName: 'Public' }, //	Venezuela
 ] as const;
+
+export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
