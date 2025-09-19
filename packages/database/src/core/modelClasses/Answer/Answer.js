@@ -1,12 +1,13 @@
-import { SyncDirections } from '@tupaia/constants';
 import { hasBESAdminAccess } from '@tupaia/access-policy';
+import { SyncDirections } from '@tupaia/constants';
 
-import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { DatabaseRecord } from '../DatabaseRecord';
-import { RECORDS } from '../records';
-import { buildSyncLookupSelect } from '../sync';
-import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
-import { mergeMultiJoin } from '../utilities/mergeMultiJoin';
+import { MaterializedViewLogDatabaseModel } from '../../analytics';
+import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
+import { DatabaseRecord } from '../../DatabaseRecord';
+import { RECORDS } from '../../records';
+import { buildSyncLookupSelect } from '../../sync';
+import { mergeMultiJoin } from '../../utilities/mergeMultiJoin';
+import { constructAnswerValidator } from './constructAnswerValidator';
 
 export class AnswerRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ANSWER;
@@ -14,6 +15,42 @@ export class AnswerRecord extends DatabaseRecord {
 
 export class AnswerModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
+
+  /**
+   * @privateRemarks Used only by central-server. I think these are only relevant to MediTrak.
+   * @see `@central-server/database/models/Answer`
+   */
+  static types = {
+    ARITHMETIC: 'Arithmetic',
+    AUTOCOMPLETE: 'Autocomplete',
+    BINARY: 'Binary',
+    CHECKBOX: 'Checkbox',
+    CODE_GENERATOR: 'CodeGenerator',
+    CONDITION: 'Condition',
+    DATE: 'Date',
+    DATE_OF_DATA: 'DateOfData',
+    DATE_TIME: 'DateTime',
+    DAYS_SINCE: 'DaysSince',
+    ENTITY: 'Entity',
+    FILE: 'File',
+    FREE_TEXT: 'FreeText',
+    GEOLOCATE: 'Geolocate',
+    INSTRUCTION: 'Instruction',
+    MONTHS_SINCE: 'MonthsSince',
+    NUMBER: 'Number',
+    PHOTO: 'Photo',
+    PRIMARY_ENTITY: 'PrimaryEntity',
+    RADIO: 'Radio',
+    SUBMISSION_DATE: 'SubmissionDate',
+    TASK: 'Task',
+    USER: 'User',
+    YEARS_SINCE: 'YearsSince',
+    // If adding a new type, add validation in both importSurveys and updateSurveyResponses
+  };
+
+  static constructAnswerValidator(models, question) {
+    return constructAnswerValidator(models, question);
+  }
 
   async createRecordsPermissionFilter(accessPolicy, criteria = {}, options = {}) {
     const dbConditions = { ...criteria };
@@ -66,8 +103,8 @@ export class AnswerModel extends MaterializedViewLogDatabaseModel {
         projectIds: `array_remove(ARRAY[survey.project_id], NULL)`,
       }),
       joins: `
-        LEFT JOIN survey_response 
-          ON survey_response.id = answer.survey_response_id 
+        LEFT JOIN survey_response
+          ON survey_response.id = answer.survey_response_id
           AND survey_response.outdated IS FALSE -- no outdated survey response
         LEFT JOIN survey ON survey.id = survey_response.survey_id
       `,
