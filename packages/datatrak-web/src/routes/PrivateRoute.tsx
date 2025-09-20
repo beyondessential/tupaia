@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 import { isFeatureEnabled } from '@tupaia/utils';
 
-import { useCurrentUserContext, useSyncContext } from '../api';
+import { useCurrentUserContext } from '../api';
 import { ADMIN_ONLY_ROUTES, ROUTES } from '../constants';
 import { isWebApp } from '../utils';
 import { useDatabaseContext } from '../hooks/database';
@@ -13,17 +13,15 @@ export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactEl
   const { isLoggedIn, hasAdminPanelAccess, hideWelcomeScreen, ...user } = useCurrentUserContext();
   const { pathname, search } = useLocation();
   const { models } = useDatabaseContext();
-  const { refetchSyncedProjectIds } = useSyncContext();
 
   useEffect(() => {
     const addProjectForSync = async () => {
-    if (isLoggedIn) {
-        await models.localSystemFact.addProjectForSync(user.projectId);
-        refetchSyncedProjectIds();
-      }
+      await models.localSystemFact.addProjectForSync(user.projectId);
     };
-    addProjectForSync();
-  }, [models, isLoggedIn, user.projectId, refetchSyncedProjectIds]);
+    if (isLoggedIn && user.projectId) {
+      addProjectForSync();
+    }
+  }, [models, isLoggedIn, user.projectId]);
 
   if (!isLoggedIn) {
     return (

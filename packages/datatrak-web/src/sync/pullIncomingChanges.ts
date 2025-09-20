@@ -13,12 +13,11 @@ const WRITE_BATCH_SIZE = 10000;
 export const initiatePull = async (
   sessionId: string,
   since: number,
-  userId: string,
   projectIds: string[],
   deviceId: string,
 ) => {
   log.debug('ClientSyncManager.pull.waitingForCentral');
-  const body = { since, projectIds, userId, deviceId };
+  const body = { since, projectIds, deviceId };
 
   for await (const { kind, message } of stream(() => ({
     method: 'POST',

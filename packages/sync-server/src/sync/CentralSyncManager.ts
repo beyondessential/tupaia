@@ -335,7 +335,7 @@ export class CentralSyncManager {
     unmarkSessionAsProcessing: () => Promise<void>,
     accessPolicy: AccessPolicy,
   ): Promise<void> {
-    const { since, projectIds, userId, deviceId } = snapshotParams;
+    const { since, projectIds, deviceId } = snapshotParams;
     let transactionTimeout;
     try {
       await this.connectToSession(sessionId);
@@ -380,7 +380,6 @@ export class CentralSyncManager {
             since,
             sessionId,
             deviceId,
-            userId,
             projectIds,
             this.config,
           );
