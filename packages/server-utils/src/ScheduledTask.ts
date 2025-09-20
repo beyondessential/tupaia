@@ -61,6 +61,8 @@ export class ScheduledTask {
    */
   models: DatabaseInterface;
 
+  isRunning = false;
+
   constructor(models: DatabaseInterface, name: string, schedule: string) {
     if (!name) {
       throw new Error(`ScheduledTask has no name`);
@@ -84,7 +86,16 @@ export class ScheduledTask {
   async runTask() {
     this.start = Date.now();
 
+    if (this.isRunning) {
+      const durationMs = Date.now() - this.start;
+      winston.info(`ScheduledTask: ${this.name}: Not running (previous task still running)`, {
+        durationMs,
+      });
+      return false;
+    }
+
     try {
+      this.isRunning = true;
       await this.models.wrapInTransaction(async (transactingModels: DatabaseInterface) => {
         // Acquire a database advisory lock for the transaction
         // Ensures no other server instance can execute its change handler at the same time
@@ -101,6 +112,7 @@ export class ScheduledTask {
       return false;
     } finally {
       this.start = null;
+      this.isRunning = false;
     }
   }
 
