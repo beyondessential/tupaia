@@ -24,10 +24,6 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
   const isOfflineFirst = useIsOfflineFirst();
 
   useEffect(() => {
-    if (!isOfflineFirst) {
-      return;
-    }
-
     const initSyncManager = async () => {
       // Only initialize the sync manager if it doesn't exist yet
       if (!clientSyncManager && models) {
@@ -40,23 +36,21 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
         const clientSyncManager = new ClientSyncManager(models, deviceId);
         setClientSyncManager(clientSyncManager);
 
-        const intervalId = setInterval(() => {
-          log.info('Starting regular sync');
-          clientSyncManager.triggerSync(false);
-        }, SYNC_INTERVAL);
+        if (isOfflineFirst) {
+          const intervalId = setInterval(() => {
+            log.info('Starting regular sync');
+            clientSyncManager.triggerSync(false);
+          }, SYNC_INTERVAL);
 
-        return () => {
-          clearInterval(intervalId);
-        };
+          return () => {
+            clearInterval(intervalId);
+          };
+        }
       }
     };
 
     initSyncManager();
   }, [models]);
-  
-  if (!isOfflineFirst) {
-    return children;
-  }
 
   if (!clientSyncManager) {
     return <LoadingScreen />;
