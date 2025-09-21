@@ -69,11 +69,7 @@ export class ModelRegistry {
     const modelEntry = Object.entries(this).find(
       ([, model]) => model.databaseRecord === databaseRecord,
     );
-    if (!modelEntry) {
-      return undefined;
-    }
-
-    return modelEntry[0];
+    return modelEntry?.[0];
   }
 
   addChangeHandlerForCollection(...args) {
