@@ -18,7 +18,7 @@ const getEventsFromAnalytics = (analytics: Analytic[], dataElementsToInclude: st
       .filter(({ data_element_code }) => dataElementsToInclude.includes(data_element_code))
       .reduce<Record<DataElement['code'], string | number>>(
         (values, { data_element_code, value }) => {
-          values[data_element_code] = isNaN(value) ? value : parseFloat(value);
+          values[data_element_code] = Number.isNaN(value) ? value : Number.parseFloat(value);
           return values;
         },
         {},
