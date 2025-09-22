@@ -17,14 +17,24 @@
 #      compatible.)
 set -e
 
-tag_name=$1
+if (($# != 1)); then
+  script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+  source "$script_dir"/../../../../scripts/bash/ansiControlSequences.sh
+  this_script=$(basename "${BASH_SOURCE[0]}")
+  {
+    echo -en "${BOLD}${RED}Usage error.${RESET} "
+    echo -e "${BOLD}$this_script${RESET} expects 1 argument, but got $#. Example usage:"
+    echo
+    echo -e "  ${GREEN}path/to/$this_script ${BLUE}DeploymentName${RESET}"
+  } >&2
+  exit 2
+fi
 
+tag_name=$1
 instance_id=$(ec2metadata --instance-id)
-availability_zone=$(ec2metadata --availability-zone)
-region=${availability_zone::-1}
 
 aws ec2 describe-tags \
 	--filters "Name=resource-id,Values=$instance_id" "Name=key,Values=$tag_name" \
-	--region "$region" \
+  --no-cli-pager \
 	--query 'Tags[0].Value' \
 	--output 'text'
