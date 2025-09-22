@@ -40,7 +40,7 @@ type ChangeRecord = {
   timestamp: number;
 };
 
-const sortByRecordId = (r1: any, r2: any) => (r1.record.id > r2.record.id ? -1 : 1);
+const sortByRecordId = (r1: any, r2: any) => r1.record.id - r2.record.id;
 
 const expectMatchingChangeRecords = (
   actual: ChangeRecord[],
