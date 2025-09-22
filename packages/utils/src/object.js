@@ -120,10 +120,9 @@ export const reduceToDictionary = (objectCollection, keyMapper, valueMapper) => 
   const objects = collectionToArray(objectCollection);
   const [keyOf, valueOf] = buildKeyAndValueFunctions(keyMapper, valueMapper);
   const dictionary = {};
-  // Using `forEach` is much quicker than using `reduce` with a spread operator on the accumulator
-  objects.forEach(object => {
+  for (const object of objects) {
     dictionary[keyOf(object)] = valueOf(object);
-  });
+  }
   return dictionary;
 };
 
@@ -143,15 +142,11 @@ export const reduceToArrayDictionary = (objectCollection, keyMapper, valueMapper
   const objects = collectionToArray(objectCollection);
   const [keyOf, valueOf] = buildKeyAndValueFunctions(keyMapper, valueMapper);
   const dictionary = {};
-  // Using `forEach` is much quicker than using `reduce` with a spread operator on the accumulator
-  objects.forEach(object => {
-    const keyOfObject = keyOf(object);
-    if (dictionary[keyOfObject]) {
-      dictionary[keyOfObject].push(valueOf(object));
-    } else {
-      dictionary[keyOfObject] = [valueOf(object)];
-    }
-  });
+  for (const object of objects) {
+    const key = keyOf(object);
+    const value = valueOf(object);
+    (dictionary[key] ??= []).push(value);
+  }
   return dictionary;
 };
 
