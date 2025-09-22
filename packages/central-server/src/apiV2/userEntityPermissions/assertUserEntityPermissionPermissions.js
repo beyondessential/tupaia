@@ -23,8 +23,8 @@ export const assertUserEntityPermissionPermissions = async (
   );
 
   const [entity, permissionGroup] = await Promise.all([
-    models.entity.findById(userEntityPermission.entity_id),
-    models.permissionGroup.findById(userEntityPermission.permission_group_id),
+    userEntityPermission.entity(),
+    userEntityPermission.permissionGroup(),
   ]);
   assertIsNotNullish(entity, `No entity exists with ID ${userEntityPermission.entity_id}`);
   assertIsNotNullish(
