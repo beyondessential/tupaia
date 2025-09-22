@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { SurveyResponseModel } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
+import { ANSWER_BODY_PARSERS } from '../../dataAccessors';
 import {
   assertAdminPanelAccess,
   assertAllPermissions,
@@ -10,7 +11,6 @@ import {
 import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
 import { RouteHandler } from '../RouteHandler';
 import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
-import { saveResponsesToDatabase } from './saveResponsesToDatabase';
 
 /**
  * Handles POST endpoint:
@@ -74,9 +74,12 @@ export class ResubmitSurveyResponse extends RouteHandler {
       ]);
       await SurveyResponseModel.validateSurveyResponse(transactingModels, this.newSurveyResponse);
       await this.assertUserHasAccess();
-      await saveResponsesToDatabase(transactingModels, originalSurveyResponse.user_id, [
-        this.newSurveyResponse,
-      ]);
+      await SurveyResponseModel.saveResponsesToDatabase(
+        transactingModels,
+        originalSurveyResponse.user_id,
+        [this.newSurveyResponse],
+        ANSWER_BODY_PARSERS,
+      );
       await transactingModels.surveyResponse.updateById(this.originalSurveyResponseId, {
         outdated: true,
       });
