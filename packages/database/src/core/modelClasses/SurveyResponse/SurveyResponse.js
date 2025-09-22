@@ -6,8 +6,15 @@ import { RECORDS } from '../../records';
 import { buildSyncLookupSelect } from '../../sync';
 import { getLeaderboardQuery } from './leaderboard';
 import { processSurveyResponse } from './processSurveyResponse';
+import { saveResponsesToDatabase } from './saveToDatabase';
 import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 import { validateSurveyResponse, validateSurveyResponses } from './validation';
+import { upsertAnswers } from './upsertAnswers';
+
+/**
+ * @typedef {import('@tupaia/types').Answer} Answer
+ * @typedef {(answer: Answer) => Promise<Answer["text"]>} AnswerBodyParser
+ */
 
 export class SurveyResponseRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_RESPONSE;
@@ -25,6 +32,26 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
    */
   static async processSurveyResponse(models, surveyResponseData) {
     return await processSurveyResponse(models, surveyResponseData);
+  }
+
+  /**
+   * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} answerBodyParsers
+   */
+  static async saveResponsesToDatabase(models, userId, surveyResponses, answerBodyParsers) {
+    return await saveResponsesToDatabase(models, userId, surveyResponses, answerBodyParsers);
+  }
+
+  /**
+   * @param {import('../../ModelRegistry').ModelRegistry} models
+   * @param {import('@tupaia/types').Answer[]} answers
+   * @param {import('@tupaia/types').SurveyResponse["id"]} surveyResponseId
+   * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} answerBodyParsers
+   * @returns {Promise<import('@tupaia/types').Answer[]>}
+   * @privateRemarks Does not support offline photo and file uploads. Use
+   * `@tupaia/central-server/dataAccessors/upsertAnswers` instead.
+   */
+  static async upsertAnswers(models, answers, surveyResponseId, answerBodyParsers) {
+    return await upsertAnswers(models, answers, surveyResponseId, answerBodyParsers);
   }
 
   static async upsertEntitiesAndOptions(models, surveyResponses) {

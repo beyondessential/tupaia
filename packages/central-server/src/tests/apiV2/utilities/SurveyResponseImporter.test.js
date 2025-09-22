@@ -7,7 +7,6 @@ import {
   generateId,
   SurveyResponseModel,
 } from '@tupaia/database';
-import * as SaveResponsesToDatabase from '../../../apiV2/surveyResponses/saveResponsesToDatabase';
 import { SurveyResponseImporter } from '../../../apiV2/utilities';
 
 const ENTITY_IDS = {
@@ -78,7 +77,7 @@ describe('SurveyResponseImporter', () => {
         .stub(SurveyResponseModel, 'validateSurveyResponses')
         .callsFake((models, responses) => {});
       sinon
-        .stub(SaveResponsesToDatabase, 'saveResponsesToDatabase')
+        .stub(SurveyResponseModel, 'saveResponsesToDatabase')
         .callsFake((models, userId, responses) => RESULTS_BY_SURVEY_ID[responses[0].survey_id]);
 
       modelsStub = createModelsStub();
@@ -87,19 +86,19 @@ describe('SurveyResponseImporter', () => {
     });
 
     beforeEach(() => {
-      SaveResponsesToDatabase.saveResponsesToDatabase.resetHistory();
+      SurveyResponseModel.saveResponsesToDatabase.resetHistory();
     });
 
     after(() => {
       SurveyResponseModel.upsertEntitiesAndOptions.restore();
       SurveyResponseModel.validateSurveyResponses.restore();
-      SaveResponsesToDatabase.saveResponsesToDatabase.restore();
+      SurveyResponseModel.saveResponsesToDatabase.restore();
       clock.restore();
     });
 
     it('should use the provided user id for the survey submissions', async () => {
       await importer.import(ROWS_BY_SURVEY, USER_ID);
-      expect(SaveResponsesToDatabase.saveResponsesToDatabase).to.have.been.calledWith(
+      expect(SurveyResponseModel.saveResponsesToDatabase).to.have.been.calledWith(
         sinon.match.any,
         USER_ID,
       );
@@ -108,8 +107,8 @@ describe('SurveyResponseImporter', () => {
     it('should use the provided response data as survey responses', async () => {
       await importer.import(ROWS_BY_SURVEY, USER_ID);
 
-      expect(SaveResponsesToDatabase.saveResponsesToDatabase).to.have.been.calledTwice;
-      expect(SaveResponsesToDatabase.saveResponsesToDatabase).to.have.been.calledWith(
+      expect(SurveyResponseModel.saveResponsesToDatabase).to.have.been.calledTwice;
+      expect(SurveyResponseModel.saveResponsesToDatabase).to.have.been.calledWith(
         sinon.match.any,
         sinon.match.any,
         [
@@ -127,7 +126,7 @@ describe('SurveyResponseImporter', () => {
           },
         ],
       );
-      expect(SaveResponsesToDatabase.saveResponsesToDatabase).to.have.been.calledWith(
+      expect(SurveyResponseModel.saveResponsesToDatabase).to.have.been.calledWith(
         sinon.match.any,
         sinon.match.any,
         [
