@@ -1,3 +1,4 @@
+import { ensure } from '@tupaia/tsutils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -29,21 +30,30 @@ export class UserEntityPermissionRecord extends DatabaseRecord {
    * @returns {Promise<import('./Entity').EntityRecord>}
    */
   async entity() {
-    return this.otherModels.entity.findById(this.entity_id);
+    return ensure(
+      await this.otherModels.entity.findById(this.entity_id),
+      `Couldn’t find entity for user–entity permission ${this.entity_id} (expected entity with ID ${this.entity_id})`,
+    );
   }
 
   /**
    * @returns {Promise<import('./UserAccount').UserAccountRecord>}
    */
   async user() {
-    return this.otherModels.user.findById(this.user_id);
+    return ensure(
+      await this.otherModels.user.findById(this.user_id),
+      `Couldn’t find user for user–entity permission ${this.user_id} (expected entity with ID ${this.user_id})`,
+    );
   }
 
   /**
    * @returns {Promise<import('./PermissionGroup').PermissionGroupRecord>}
    */
   async permissionGroup() {
-    return this.otherModels.permissionGroup.findById(this.permission_group_id);
+    return ensure(
+      await this.otherModels.permissionGroup.findById(this.permission_group_id),
+      `Couldn’t find permission group for user–entity permission ${this.permission_group_id} (expected entity with ID ${this.permission_group_id})`,
+    );
   }
 }
 
