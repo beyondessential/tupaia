@@ -77,7 +77,7 @@ describe('TaskAssigneeEmailer', () => {
             assignee_id: 'invalid id',
           },
         ]),
-      ).rejects.toThrow('User with id invalid id not found');
+      ).rejects.toThrow('No user found with ID invalid id');
     });
 
     it('Throws an error when entityId is not valid', async () => {
@@ -89,7 +89,7 @@ describe('TaskAssigneeEmailer', () => {
             entity_id: 'invalid id',
           },
         ]),
-      ).rejects.toThrow('Entity with id invalid id not found');
+      ).rejects.toThrow('No entity found with ID invalid id');
     });
 
     it('Throws an error when surveyId is not valid', async () => {
@@ -101,7 +101,7 @@ describe('TaskAssigneeEmailer', () => {
             survey_id: 'invalid id',
           },
         ]),
-      ).rejects.toThrow('Survey with id invalid id not found');
+      ).rejects.toThrow('No survey found with ID invalid id');
     });
   });
 
