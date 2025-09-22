@@ -1,5 +1,5 @@
 import { SurveyResponseModel } from '@tupaia/database';
-import { saveResponsesToDatabase } from '../surveyResponses';
+import { ANSWER_BODY_PARSERS } from '../../dataAccessors';
 
 /**
  * A function that extracts `entityId` and `answers` from a row
@@ -47,7 +47,12 @@ export class SurveyResponseImporter {
       await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, responses);
       // Allow responses to be submitted in bulk
       await SurveyResponseModel.validateSurveyResponses(transactingModels, responses);
-      return saveResponsesToDatabase(transactingModels, userId, responses);
+      return await SurveyResponseModel.saveResponsesToDatabase(
+        transactingModels,
+        userId,
+        responses,
+        ANSWER_BODY_PARSERS,
+      );
     });
   }
 

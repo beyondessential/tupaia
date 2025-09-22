@@ -1,12 +1,13 @@
-import momentTimezone from 'moment-timezone';
+import { SurveyResponseModel } from '@tupaia/database';
 import {
   DatabaseError,
-  stripTimezoneFromDate,
   reformatDateStringWithoutTz,
+  stripTimezoneFromDate,
   ValidationError,
 } from '@tupaia/utils';
+import momentTimezone from 'moment-timezone';
+import { ANSWER_BODY_PARSERS } from '../../../dataAccessors';
 import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../../../database';
-import { upsertAnswers } from '../../../dataAccessors/upsertAnswers';
 
 /**
  * Creates or updates survey responses from passed changes
@@ -55,7 +56,12 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
         },
       );
 
-      await upsertAnswers(transactingModels, answers, surveyResponse.id);
+      await SurveyResponseModel.upsertAnswers(
+        transactingModels,
+        answers,
+        surveyResponse.id,
+        ANSWER_BODY_PARSERS,
+      );
     });
   } catch (error) {
     throw new DatabaseError(`creating/updating survey response with ID ${surveyResponseId}`, error);

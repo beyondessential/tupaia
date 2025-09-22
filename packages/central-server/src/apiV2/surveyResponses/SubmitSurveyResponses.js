@@ -1,6 +1,6 @@
 import { AnalyticsRefresher, SurveyResponseModel } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
-import { saveResponsesToDatabase } from '.';
+import { ANSWER_BODY_PARSERS } from '../../dataAccessors';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
 import { RouteHandler } from '../RouteHandler';
@@ -39,7 +39,12 @@ export class SubmitSurveyResponses extends RouteHandler {
       await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, this.surveyResponses);
       await SurveyResponseModel.validateSurveyResponses(transactingModels, this.surveyResponses);
       await this.assertUserHasAccess(transactingModels);
-      results = await saveResponsesToDatabase(transactingModels, submitterId, this.surveyResponses);
+      results = await SurveyResponseModel.saveResponsesToDatabase(
+        transactingModels,
+        submitterId,
+        this.surveyResponses,
+        ANSWER_BODY_PARSERS,
+      );
 
       if (waitForAnalyticsRebuild) {
         const { database } = transactingModels;
