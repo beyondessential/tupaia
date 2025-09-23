@@ -1,0 +1,8 @@
+[Unit]
+Description=Connect Tailscale
+
+[Service]
+ExecStart=/home/ubuntu/tupaia/packages/devops/tailscale/connectTailscale.sh
+
+[Install]
+WantedBy=multi-user.target
