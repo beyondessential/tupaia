@@ -237,7 +237,7 @@ export class UserModel extends DatabaseModel {
    * @param {string|undefined} type
    * @returns {Promise<string[]>} Entity IDs
    */
-  async getRecentEntities(userId, countryCode, type) {
+  async getRecentEntityIds(userId, countryCode, type) {
     const user = await this.findById(userId);
     const { recent_entities: userRecentEntities } = user.preferences;
     if (!userRecentEntities || !countryCode || !type) {
