@@ -14,7 +14,8 @@ declare -i start_time="$SECONDS"
 home_dir=/home/ubuntu
 tupaia_dir=$home_dir/tupaia
 logs_dir=$home_dir/logs
-deployment_scripts=$tupaia_dir/packages/devops/scripts/deployment-aws
+devops_dir=$tupaia_dir/packages/devops
+deployment_scripts=$devops_dir/scripts/deployment-aws
 
 # Add tag for CI/CD to use as a health check
 instance_id=$(ec2metadata --instance-id)
@@ -108,7 +109,7 @@ main() {
   fetch_latest_code
 
   # central-server and data-table-server need Tailnet access for external database connections
-  sudo -Hu ubuntu "$deployment_scripts"/connectTailscale.sh
+  sudo -Hu ubuntu "$devops_dir"/connectTailscale.sh
   # Build each package, including injecting environment variables from Bitwarden
   sudo -Hu ubuntu "$deployment_scripts"/buildDeployablePackages.sh "$deployment_name"
   # Deploy each package
