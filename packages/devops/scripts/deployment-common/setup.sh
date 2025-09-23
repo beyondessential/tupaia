@@ -108,7 +108,7 @@ install_tailscale() {
     local os_id=$(source /etc/os-release && echo "$ID")
     local os_codename=$(source /etc/os-release && echo "$VERSION_CODENAME")
 
-    sudo cp "$TUPAIA_DIR"/packages/devops/keyrings/tailscale.gpg /usr/share/keyrings/tailscale.gpg
+    sudo cp "$TUPAIA_DIR"/packages/devops/tailscale/tailscale-archive-keyring.gpg /usr/share/keyrings/tailscale.gpg
     echo "deb [signed-by=/usr/share/keyrings/tailscale.gpg] https://pkgs.tailscale.com/stable/$os_id $os_codename main" |
       sudo tee /etc/apt/sources.list.d/tailscale.list
     sudo apt-get update
