@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 
+import { SurveyResponseModel } from '@tupaia/database';
 import { Entity, Survey, UserAccount } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { post, useCurrentUserContext, useEntityByCode } from '..';
@@ -64,8 +65,36 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
   const isOfflineFirst = useIsOfflineFirst();
 
   const mutationFunctions = {
-    local: async () => {},
-    remote: async ({ data: { answers } }: SurveyResponseMutationFunctionContext) => {
+    local: async ({ data: answers, models, user }: SurveyResponseMutationFunctionContext) => {
+      if (!answers) return;
+
+      // TODO: Assert user has access
+
+      const data = { ...surveyResponseData, answers };
+      const remote = await post('submitSurveyResponse', { data });
+
+      const local = await models.wrapInTransaction(async transactingModels => {
+        // Mirroring datatrak-web-server logic
+        const { qr_codes_to_create, recent_entities, ...processedResponse } =
+          await SurveyResponseModel.processSurveyResponse(transactingModels, data as any);
+
+        // Mirroring central-server logic
+        const submitterId =
+          user.isLoggedIn && user.id // id check redundant, for type inference
+            ? user.id
+            : await transactingModels.user.findPublicUser();
+        await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
+        await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
+        await SurveyResponseModel.saveResponsesToDatabase(transactingModels, submitterId, [
+          processedResponse,
+        ]);
+      });
+
+      // TODO: Update recent entities
+
+      return local;
+    },
+    remote: async ({ data: answers }: SurveyResponseMutationFunctionContext) => {
       if (!answers) return;
       const data = { ...surveyResponseData, answers };
       return await post('submitSurveyResponse', { data });
