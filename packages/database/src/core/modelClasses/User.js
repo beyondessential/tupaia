@@ -1,14 +1,14 @@
 import { verify } from '@node-rs/argon2';
 
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
+import { API_CLIENT_PERMISSIONS, SyncDirections } from '@tupaia/constants';
+import { ensure } from '@tupaia/tsutils';
+import { EntityTypeEnum } from '@tupaia/types';
 import { DatabaseError } from '@tupaia/utils';
-import { SyncDirections, API_CLIENT_PERMISSIONS } from '@tupaia/constants';
-
+import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
-import { EntityTypeEnum } from '@tupaia/types';
 
 const DEFAULT_PAGE_SIZE = 100;
 
@@ -127,15 +127,13 @@ export class UserModel extends DatabaseModel {
 
   /**
    * Returns the user that is used for submitting surveys when not logged in
-   * @returns {Promise<null|*>}
+   * @returns {Promise<UserRecord>}
    */
   async findPublicUser() {
-    const user = await this.findOne({ email: PUBLIC_USER_EMAIL });
-    if (!user) {
-      throw new Error('Public user not found. There must be a user with email public@tupaia.org');
-    }
-
-    return user;
+    return ensure(
+      await this.findOne({ email: PUBLIC_USER_EMAIL }),
+      `Public user not found. There must be a user with email ${PUBLIC_USER_EMAIL}`,
+    );
   }
 
   async buildSyncLookupQueryDetails() {
