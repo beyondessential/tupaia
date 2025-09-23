@@ -497,7 +497,7 @@ describe('processSurveyResponse', () => {
         answers: {},
       }));
     } catch (error: any) {
-      expect(error.message).toBe('Primary Entity Question is a required field');
+      expect(error.message).toBe('Primary Entity question is a required field');
     }
   });
 
