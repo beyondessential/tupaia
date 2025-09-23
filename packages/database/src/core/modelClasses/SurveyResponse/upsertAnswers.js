@@ -7,7 +7,7 @@ import { getAnswerText } from './getAnswerText';
  * @param {import('../../ModelRegistry').ModelRegistry} models
  * @param {Answer[]} answers
  * @param {import('@tupaia/types').SurveyResponse["id"]} surveyResponseId
- * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} answerBodyParsers
+ * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} [answerBodyParsers]
  * @returns {Promise<import('@tupaia/types').Answer[]>}
  */
 export async function upsertAnswers(models, answers, surveyResponseId, answerBodyParsers) {
