@@ -14,7 +14,7 @@ import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
 interface GlobalMutationContext {
   models: DatatrakWebModelRegistry;
   accessPolicy?: AccessPolicy;
-  user?: CurrentUser;
+  user: CurrentUser;
 }
 
 interface LocalMutationContext {
