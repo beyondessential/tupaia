@@ -540,6 +540,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       const { filter = {}, pageSize } = params;
       const { generational_distance, ...restOfFilter } = filter;
 
+      const RECURSIVE_CTE_ALIAS = 'hierarchy';
+
       const descendants = await this.find(
         {
           [`hierarchy.generational_distance`]: generational_distance,
@@ -547,7 +549,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         },
         {
           withRecursive: {
-            alias: 'hierarchy',
+            alias: RECURSIVE_CTE_ALIAS,
             query: `
             -- Base case: start from specific entity IDs
             SELECT 
@@ -568,7 +570,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
               e.entity_hierarchy_id as entity_hierarchy_id,
               h.generational_distance + 1 as generational_distance
             FROM entity_parent_child_relation e
-            INNER JOIN hierarchy h ON e.parent_id = h.child_id
+            INNER JOIN ${RECURSIVE_CTE_ALIAS} h ON e.parent_id = h.child_id
             WHERE e.entity_hierarchy_id = ?
             ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
           `,
@@ -579,8 +581,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
               ...(generational_distance !== undefined ? [generational_distance] : []),
             ],
           },
-          joinWith: 'hierarchy',
-          joinCondition: ['entity.id', 'child_id'],
+          joinWith: RECURSIVE_CTE_ALIAS,
+          joinCondition: ['entity.id', `${RECURSIVE_CTE_ALIAS}.child_id`],
           limit: pageSize,
         },
       );
@@ -598,25 +600,26 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
     return await this.runCachedFunction(cacheKey, async () => {
       const { filter = {}, pageSize } = params;
-
       const { generational_distance, country_code, ...restOfFilter } = filter;
+
+      const RECURSIVE_CTE_ALIAS = 'hierarchy';
 
       // Find direct children using parent-child relation
       const ancestors = await this.find(
         {
           ...restOfFilter,
-          [`hierarchy.generational_distance`]: generational_distance,
+          [`${RECURSIVE_CTE_ALIAS}.generational_distance`]: generational_distance,
         },
         {
           withRecursive: {
-            alias: 'hierarchy',
+            alias: RECURSIVE_CTE_ALIAS,
             query: `
             -- Base case: start from specific entity IDs
             SELECT 
               child_id as child_id, 
               parent_id as parent_id, 
               entity_hierarchy_id as entity_hierarchy_id,
-              0 as generational_distance
+              1 as generational_distance
             FROM entity_parent_child_relation 
             WHERE child_id IN ${SqlQuery.record(childIds)}  -- your starting entity IDs
             AND entity_hierarchy_id = ?
@@ -630,7 +633,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
               e.entity_hierarchy_id as entity_hierarchy_id,
               h.generational_distance + 1 as generational_distance
             FROM entity_parent_child_relation e
-            INNER JOIN hierarchy h ON e.child_id = h.parent_id
+            INNER JOIN ${RECURSIVE_CTE_ALIAS} h ON e.child_id = h.parent_id
             WHERE e.entity_hierarchy_id = ?
             ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
           `,
@@ -641,8 +644,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
               ...(generational_distance !== undefined ? [generational_distance] : []),
             ],
           },
-          joinWith: 'hierarchy',
-          joinCondition: ['entity.id', 'child_id'],
+          joinWith: RECURSIVE_CTE_ALIAS,
+          joinCondition: ['entity.id', `${RECURSIVE_CTE_ALIAS}.parent_id`],
           limit: pageSize,
         },
       );
