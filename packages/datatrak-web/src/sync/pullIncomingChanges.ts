@@ -41,6 +41,7 @@ export const initiatePull = async (
 export const pullIncomingChanges = async (
   models: ModelRegistry,
   sessionId: string,
+  batchSize: number,
   processStreamedDataFunction: (params: ProcessStreamDataParams) => Promise<void>,
 ) => {
   let records: SyncSnapshotAttributes[] = [];
@@ -48,8 +49,9 @@ export const pullIncomingChanges = async (
   stream: for await (const { kind, message } of stream(() => ({
     endpoint: `sync/${sessionId}/pull`,
   }))) {
-    if (records.length >= WRITE_BATCH_SIZE) {
+    if (records.length >= batchSize) {
       // Process batch sequentially to maintain foreign key order
+      console.log('recordTypeee', records.at(-1)?.recordType);
       await processStreamedDataFunction({ models, sessionId, records });
       records = [];
     }
@@ -59,10 +61,10 @@ export const pullIncomingChanges = async (
         records.push({ ...message, data: { ...message.data, updated_at_sync_tick: -1 } });
         break handler;
       case SYNC_STREAM_MESSAGE_KIND.END:
-        console.debug(`FacilitySyncManager.pull.noMoreChanges`);
+        console.debug(`ClientSyncManager.pull.noMoreChanges`);
         break stream;
       default:
-        console.warn('FacilitySyncManager.pull.unknownMessageKind', { kind });
+        console.warn('ClientSyncManager.pull.unknownMessageKind', { kind });
     }
   }
 

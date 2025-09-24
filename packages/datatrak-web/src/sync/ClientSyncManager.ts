@@ -209,10 +209,7 @@ export class ClientSyncManager {
     performance.clearMarks();
     performance.clearMeasures();
     performance.mark('startSyncSession');
-    const { sessionId, startedAtTick, status } = await this.startSyncSession(
-      urgent,
-      pullSince,
-    );
+    const { sessionId, startedAtTick, status } = await this.startSyncSession(urgent, pullSince);
 
     if (!sessionId) {
       log.debug(`ClientSyncManager.runSync(): Sync queue status: ${status}`);
@@ -333,6 +330,7 @@ export class ClientSyncManager {
     try {
       log.debug('ClientSyncManager.pullChanges', {
         sessionId,
+        projectIds,
       });
 
       // This is the start of stage 2 which is calling pull/initiate.
@@ -398,8 +396,9 @@ export class ClientSyncManager {
         await saveChangesFromMemory(models, records, false, progressCallback);
       };
 
+      const batchSize = 10000;
       await withDeferredSyncSafeguards(transactingModels.database, () =>
-        pullIncomingChanges(transactingModels, sessionId, processStreamedDataFunction),
+        pullIncomingChanges(transactingModels, sessionId, batchSize, processStreamedDataFunction),
       );
 
       // update the last successful sync in the same save transaction - if updating the cursor fails,
@@ -425,7 +424,8 @@ export class ClientSyncManager {
       pullProgressCallback(records.length);
     };
 
-    await pullIncomingChanges(this.models, sessionId, processStreamedDataFunction);
+    const batchSize = 200;
+    await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
 
     this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes...');
     this.setSyncStage(SYNC_STAGES.PERSIST);
