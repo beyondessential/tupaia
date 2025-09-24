@@ -20,18 +20,6 @@ Object.defineProperty(window, 'matchMedia', {
 
 jest.mock('@tupaia/database', () => ({
   migrate: jest.fn(),
-  createDatabase: jest.fn().mockImplementation(() => ({
-    models: {
-      localSystemFact: {
-        get: jest.fn().mockImplementation(arg => {
-          if (arg === 'deviceId') {
-            return 'test-device-id';
-          }
-          return undefined;
-        }),
-      },
-    },
-  })),
   ModelRegistry: jest.fn().mockImplementation(() => ({})),
 }));
 
@@ -45,6 +33,7 @@ jest.mock('./src/database/createDatabase', () => ({
           }
           return undefined;
         }),
+        addProjectForSync: jest.fn(),
       },
     },
   })),
