@@ -1,3 +1,4 @@
+import { ensure } from '@tupaia/tsutils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -61,16 +62,35 @@ export class TaskRecord extends DatabaseRecord {
     },
   ];
 
+  /**
+   * @returns {Promise<import('./Entity').EntityRecord>}
+   */
   async entity() {
-    return this.otherModels.entity.findById(this.entity_id);
+    return ensure(
+      await this.otherModels.entity.findById(this.entity_id),
+      `Couldn’t find entity for task ${this.id} (expected entity with ID ${this.entity_id})`,
+    );
   }
 
+  /**
+   * @returns {Promise<import('./UserAccount').UserAccountRecord | null>}
+   */
   async assignee() {
-    return this.otherModels.userAccount.findById(this.assignee_id);
+    if (!this.assignee_id) return null;
+    return ensure(
+      await this.otherModels.userAccount.findById(this.assignee_id),
+      `Couldn’t find assignee for task ${this.id} (expected user account with ID ${this.assignee_id})`,
+    );
   }
 
+  /**
+   * @returns {Promise<import('./Survey').SurveyRecord>}
+   */
   async survey() {
-    return this.otherModels.survey.findById(this.survey_id);
+    return ensure(
+      await this.otherModels.survey.findById(this.survey_id),
+      `Couldn’t find survey for task ${this.id} (expected survey with ID ${this.survey_id})`,
+    );
   }
 
   hasValidRepeatSchedule() {
@@ -283,9 +303,8 @@ export class TaskModel extends DatabaseModel {
   }
 
   async createAccessPolicyQueryClause(accessPolicy) {
-    const countryCodesByPermissionGroupId = await this.getCountryCodesByPermissionGroupId(
-      accessPolicy,
-    );
+    const countryCodesByPermissionGroupId =
+      await this.getCountryCodesByPermissionGroupId(accessPolicy);
 
     const params = Object.entries(countryCodesByPermissionGroupId).flat(2); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
 

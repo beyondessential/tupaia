@@ -1,6 +1,6 @@
 import { flattenDeep, groupBy, keyBy } from 'lodash';
 
-import { isNullish } from '@tupaia/tsutils';
+import { ensure, isNullish } from '@tupaia/tsutils';
 import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
 import winston from '../../../log';
 
@@ -96,6 +96,7 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
   if (surveyResponse.entity_code) {
     return surveyResponse.entity_code;
   }
+
   if (surveyResponse.entity_id) {
     // If we're submitting a response against a new entity, it won't yet have a valid entity_code in
     // the server db. Instead, check our permissions against the new entity's parent
@@ -104,11 +105,19 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
       const parentEntity = await models.entity.findById(newEntity.parent_id);
       return parentEntity?.code;
     }
-    const entity = await models.entity.findById(surveyResponse.entity_id);
+
+    const entity = ensure(
+      await models.entity.findById(surveyResponse.entity_id),
+      `No entity exists with ID ${surveyResponse.entity_id}`,
+    );
     return entity.code;
   }
+
   if (surveyResponse.clinic_id) {
-    const clinic = await models.facility.findById(surveyResponse.clinic_id);
+    const clinic = ensure(
+      await models.facility.findById(surveyResponse.clinic_id),
+      `No clinic exists with ID ${surveyResponse.clinic_id}`,
+    );
     return clinic.code;
   }
 
