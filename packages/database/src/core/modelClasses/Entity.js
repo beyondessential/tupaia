@@ -529,13 +529,6 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
-  /**
-   * Recursively finds descendants using this.find and parent-child relations
-   * @param {string} hierarchyId - The hierarchy ID
-   * @param {string[]} parentIds - Array of parent entity IDs
-   * @param {object} params - Filter + Fields
-   * @returns {Promise<EntityRecord[]>} Array of descendant entity records
-   */
   async getDescendantsFromParentChildRelation(hierarchyId, parentIds, params = {}) {
     if (!parentIds || parentIds.length === 0) {
       return [];
@@ -596,13 +589,6 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     });
   }
 
-   /**
-   * Recursively finds ancestors using this.find and parent-child relations
-   * @param {string} hierarchyId - The hierarchy ID
-   * @param {import('@tupaia/types').Entity['id'][]} childIds - Array of child entity IDs
-   * @param {object} params - Filter + PageSize
-   * @returns {Promise<EntityRecord[]>} Array of ancestor entity data
-   */
   async getAncestorsFromParentChildRelation(hierarchyId, childIds, params = {}) {
     if (!childIds || childIds.length === 0) {
       return [];
