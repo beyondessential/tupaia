@@ -87,13 +87,13 @@
   "eslint.validate": ["typescript", "typescriptreact"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "files.exclude": {
+    ".yarn/": true
   },
   "search.exclude": {
     ".yarn/": true,
     "*.lock": true,
-    "**/lib": true,
-    "**/logfile*.log": true,
-    "**/yarn-1.18.0.js": true
+    "*.log": true,
+    "**/lib": true
   },
   "typescript.tsdk": "root/node_modules/typescript/lib"
 }
