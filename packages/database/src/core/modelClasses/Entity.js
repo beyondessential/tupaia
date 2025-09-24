@@ -529,12 +529,17 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
-  async getDescendantsFromParentChildRelation(hierarchyId, parentIds, params = {}) {
-    if (!parentIds || parentIds.length === 0) {
+  async getEntitiesFromParentChildRelation(hierarchyId, entityIds, direction, params = {}) {
+    if (!entityIds || entityIds.length === 0) {
       return [];
     }
 
-    const cacheKey = this.getCacheKey(this.getDescendantsFromParentChildRelation.name, arguments);
+    const methodName =
+      direction === ENTITY_RELATION_TYPE.DESCENDANTS
+        ? this.getDescendantsFromParentChildRelation.name
+        : this.getAncestorsFromParentChildRelation.name;
+
+    const cacheKey = this.getCacheKey(methodName, [hierarchyId, entityIds, direction, params]);
 
     return await this.runCachedFunction(cacheKey, async () => {
       const { filter = {}, pageSize } = params;
@@ -542,116 +547,74 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
       const RECURSIVE_CTE_ALIAS = 'hierarchy';
 
-      const descendants = await this.find(
+      const results = await this.find(
         {
-          [`hierarchy.generational_distance`]: generational_distance,
+          [`${RECURSIVE_CTE_ALIAS}.generational_distance`]: generational_distance,
           ...restOfFilter,
         },
         {
           withRecursive: {
             alias: RECURSIVE_CTE_ALIAS,
             query: `
-            -- Base case: start from specific entity IDs
-            SELECT 
-              child_id as child_id, 
-              parent_id as parent_id, 
-              entity_hierarchy_id as entity_hierarchy_id,
-              0 as generational_distance
-            FROM entity_parent_child_relation 
-            WHERE parent_id IN ${SqlQuery.record(parentIds)}  -- your starting entity IDs
-            AND entity_hierarchy_id = ?
+          -- Base case: start from specific entity IDs
+          SELECT 
+            child_id as child_id, 
+            parent_id as parent_id, 
+            entity_hierarchy_id as entity_hierarchy_id,
+            ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 1 : 0} as generational_distance
+          FROM entity_parent_child_relation 
+          WHERE ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'child_id' : 'parent_id'} IN ${SqlQuery.record(entityIds)}
+          AND entity_hierarchy_id = ?
 
-            UNION ALL
-            
-            -- Recursive case: get all children
-            SELECT 
-              e.child_id as child_id,
-              e.parent_id as parent_id, 
-              e.entity_hierarchy_id as entity_hierarchy_id,
-              h.generational_distance + 1 as generational_distance
-            FROM entity_parent_child_relation e
-            INNER JOIN ${RECURSIVE_CTE_ALIAS} h ON e.parent_id = h.child_id
-            WHERE e.entity_hierarchy_id = ?
-            ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
-          `,
+          UNION ALL
+          
+          -- Recursive case: get related entities
+          SELECT 
+            e.child_id as child_id,
+            e.parent_id as parent_id, 
+            e.entity_hierarchy_id as entity_hierarchy_id,
+            h.generational_distance + 1 as generational_distance
+          FROM entity_parent_child_relation e
+          INNER JOIN ${RECURSIVE_CTE_ALIAS} h ON ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'e.child_id = h.parent_id' : 'e.parent_id = h.child_id'}
+          WHERE e.entity_hierarchy_id = ?
+          ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
+        `,
             parameters: [
-              ...parentIds,
+              ...entityIds,
               hierarchyId,
               hierarchyId,
               ...(generational_distance !== undefined ? [generational_distance] : []),
             ],
           },
           joinWith: RECURSIVE_CTE_ALIAS,
-          joinCondition: ['entity.id', `${RECURSIVE_CTE_ALIAS}.child_id`],
+          joinCondition: [
+            'entity.id',
+            `${RECURSIVE_CTE_ALIAS}.${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'parent_id' : 'child_id'}`,
+          ],
           limit: pageSize,
         },
       );
 
-      return descendants;
+      return results;
     });
   }
 
+  async getDescendantsFromParentChildRelation(hierarchyId, parentIds, params = {}) {
+    return await this.getEntitiesFromParentChildRelation(
+      hierarchyId,
+      parentIds,
+      ENTITY_RELATION_TYPE.DESCENDANTS,
+      params,
+    );
+  }
+
   async getAncestorsFromParentChildRelation(hierarchyId, childIds, params = {}) {
-    if (!childIds || childIds.length === 0) {
-      return [];
-    }
-
-    const cacheKey = this.getCacheKey(this.getAncestorsFromParentChildRelation.name, arguments);
-
-    return await this.runCachedFunction(cacheKey, async () => {
-      const { filter = {}, pageSize } = params;
-      const { generational_distance, country_code, ...restOfFilter } = filter;
-
-      const RECURSIVE_CTE_ALIAS = 'hierarchy';
-
-      // Find direct children using parent-child relation
-      const ancestors = await this.find(
-        {
-          ...restOfFilter,
-          [`${RECURSIVE_CTE_ALIAS}.generational_distance`]: generational_distance,
-        },
-        {
-          withRecursive: {
-            alias: RECURSIVE_CTE_ALIAS,
-            query: `
-            -- Base case: start from specific entity IDs
-            SELECT 
-              child_id as child_id, 
-              parent_id as parent_id, 
-              entity_hierarchy_id as entity_hierarchy_id,
-              1 as generational_distance
-            FROM entity_parent_child_relation 
-            WHERE child_id IN ${SqlQuery.record(childIds)}  -- your starting entity IDs
-            AND entity_hierarchy_id = ?
-
-            UNION ALL
-            
-            -- Recursive case: get all children
-            SELECT 
-              e.child_id as child_id,
-              e.parent_id as parent_id, 
-              e.entity_hierarchy_id as entity_hierarchy_id,
-              h.generational_distance + 1 as generational_distance
-            FROM entity_parent_child_relation e
-            INNER JOIN ${RECURSIVE_CTE_ALIAS} h ON e.child_id = h.parent_id
-            WHERE e.entity_hierarchy_id = ?
-            ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
-          `,
-            parameters: [
-              ...childIds,
-              hierarchyId,
-              hierarchyId,
-              ...(generational_distance !== undefined ? [generational_distance] : []),
-            ],
-          },
-          joinWith: RECURSIVE_CTE_ALIAS,
-          joinCondition: ['entity.id', `${RECURSIVE_CTE_ALIAS}.parent_id`],
-          limit: pageSize,
-        },
-      );
-
-      return ancestors;
-    });
+    return await this.getEntitiesFromParentChildRelation(
+      hierarchyId,
+      childIds,
+      ENTITY_RELATION_TYPE.ANCESTORS,
+      params,
+    );
   }
 
   async getParentEntityName(projectId, entityId) {
