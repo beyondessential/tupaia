@@ -3,14 +3,22 @@
 jest.mock('@tupaia/database', () => ({
   migrate: jest.fn(),
   createDatabase: jest.fn().mockImplementation(() => ({
-    models: {},
+    models: {
+      localSystemFact: {
+        get: jest.fn(),
+      },
+    },
   })),
   ModelRegistry: jest.fn().mockImplementation(() => ({})),
 }));
 
 jest.mock('./src/database/createDatabase', () => ({
   createDatabase: jest.fn().mockImplementation(() => ({
-    models: {},
+    models: {
+      localSystemFact: {
+        get: jest.fn(),
+      },
+    },
   })),
 }));
 

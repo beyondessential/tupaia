@@ -8,6 +8,7 @@ import { LoadingScreen } from '@tupaia/ui-components';
 import { useDatabaseContext } from '../hooks/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useIsOfflineFirst } from './offlineFirst';
+import { useCurrentUserContext } from './CurrentUserContext';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
   clientSyncManager: ClientSyncManager;
@@ -22,6 +23,7 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
   const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
   const { models } = useDatabaseContext();
   const isOfflineFirst = useIsOfflineFirst();
+  const { isLoggedIn } = useCurrentUserContext();
 
   useEffect(() => {
     const initSyncManager = async () => {
@@ -35,22 +37,24 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
 
         const clientSyncManager = new ClientSyncManager(models, deviceId);
         setClientSyncManager(clientSyncManager);
-
-        if (isOfflineFirst) {
-          const intervalId = setInterval(() => {
-            log.info('Starting regular sync');
-            clientSyncManager.triggerSync(false);
-          }, SYNC_INTERVAL);
-
-          return () => {
-            clearInterval(intervalId);
-          };
-        }
       }
     };
 
     initSyncManager();
   }, [models]);
+
+  useEffect(() => {
+    if (isLoggedIn && isOfflineFirst && clientSyncManager) {
+      const intervalId = setInterval(() => {
+        log.info('Starting regular sync');
+        clientSyncManager.triggerSync(false);
+      }, SYNC_INTERVAL);
+
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
+  }, [isLoggedIn, isOfflineFirst, clientSyncManager]);
 
   if (!clientSyncManager) {
     return <LoadingScreen />;
