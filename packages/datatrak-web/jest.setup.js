@@ -5,7 +5,12 @@ jest.mock('@tupaia/database', () => ({
   createDatabase: jest.fn().mockImplementation(() => ({
     models: {
       localSystemFact: {
-        get: jest.fn(),
+        get: jest.fn().mockImplementation(arg => {
+          if (arg === 'deviceId') {
+            return 'test-device-id';
+          }
+          return undefined;
+        }),
       },
     },
   })),
@@ -16,7 +21,12 @@ jest.mock('./src/database/createDatabase', () => ({
   createDatabase: jest.fn().mockImplementation(() => ({
     models: {
       localSystemFact: {
-        get: jest.fn(),
+        get: jest.fn().mockImplementation(arg => {
+          if (arg === 'deviceId') {
+            return 'test-device-id';
+          }
+          return undefined;
+        }),
       },
     },
   })),
