@@ -1,11 +1,6 @@
 import keyBy from 'lodash.keyby';
 
-import {
-  fetchPatiently,
-  translatePoint,
-  translateRegion,
-  translateBounds,
-} from '@tupaia/utils';
+import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
 
@@ -14,6 +9,7 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { buildSyncLookupSelect } from '../sync';
+import { SqlQuery } from '../SqlQuery';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -533,132 +529,129 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
-  async getDescendantsFromParentChildRelation(hierarchyId, entityIds, params = {}) {
+  async getDescendantsFromParentChildRelation(hierarchyId, parentIds, params = {}) {
+    if (!parentIds || parentIds.length === 0) {
+      return [];
+    }
+
     const cacheKey = this.getCacheKey(this.getDescendantsFromParentChildRelation.name, arguments);
 
     return await this.runCachedFunction(cacheKey, async () => {
-      return await this.#getDescendantsRecursively(hierarchyId, entityIds, params);
+      const { filter = {}, pageSize } = params;
+      const { generational_distance, ...restOfFilter } = filter;
+
+      const RECURSIVE_CTE_ALIAS = 'hierarchy';
+
+      const descendants = await this.find(
+        {
+          [`hierarchy.generational_distance`]: generational_distance,
+          ...restOfFilter,
+        },
+        {
+          withRecursive: {
+            alias: RECURSIVE_CTE_ALIAS,
+            query: `
+            -- Base case: start from specific entity IDs
+            SELECT 
+              child_id as child_id, 
+              parent_id as parent_id, 
+              entity_hierarchy_id as entity_hierarchy_id,
+              0 as generational_distance
+            FROM entity_parent_child_relation 
+            WHERE parent_id IN ${SqlQuery.record(parentIds)}  -- your starting entity IDs
+            AND entity_hierarchy_id = ?
+
+            UNION ALL
+            
+            -- Recursive case: get all children
+            SELECT 
+              e.child_id as child_id,
+              e.parent_id as parent_id, 
+              e.entity_hierarchy_id as entity_hierarchy_id,
+              h.generational_distance + 1 as generational_distance
+            FROM entity_parent_child_relation e
+            INNER JOIN ${RECURSIVE_CTE_ALIAS} h ON e.parent_id = h.child_id
+            WHERE e.entity_hierarchy_id = ?
+            ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
+          `,
+            parameters: [
+              ...parentIds,
+              hierarchyId,
+              hierarchyId,
+              ...(generational_distance !== undefined ? [generational_distance] : []),
+            ],
+          },
+          joinWith: RECURSIVE_CTE_ALIAS,
+          joinCondition: ['entity.id', `${RECURSIVE_CTE_ALIAS}.child_id`],
+          limit: pageSize,
+        },
+      );
+
+      return descendants;
     });
   }
 
-  async getAncestorsFromParentChildRelation(hierarchyId, entityIds, params = {}) {
+  async getAncestorsFromParentChildRelation(hierarchyId, childIds, params = {}) {
+    if (!childIds || childIds.length === 0) {
+      return [];
+    }
+
     const cacheKey = this.getCacheKey(this.getAncestorsFromParentChildRelation.name, arguments);
 
     return await this.runCachedFunction(cacheKey, async () => {
-      return await this.#getAncestorsRecursively(hierarchyId, entityIds, params);
+      const { filter = {}, pageSize } = params;
+      const { generational_distance, country_code, ...restOfFilter } = filter;
+
+      const RECURSIVE_CTE_ALIAS = 'hierarchy';
+
+      // Find direct children using parent-child relation
+      const ancestors = await this.find(
+        {
+          ...restOfFilter,
+          [`${RECURSIVE_CTE_ALIAS}.generational_distance`]: generational_distance,
+        },
+        {
+          withRecursive: {
+            alias: RECURSIVE_CTE_ALIAS,
+            query: `
+            -- Base case: start from specific entity IDs
+            SELECT 
+              child_id as child_id, 
+              parent_id as parent_id, 
+              entity_hierarchy_id as entity_hierarchy_id,
+              1 as generational_distance
+            FROM entity_parent_child_relation 
+            WHERE child_id IN ${SqlQuery.record(childIds)}  -- your starting entity IDs
+            AND entity_hierarchy_id = ?
+
+            UNION ALL
+            
+            -- Recursive case: get all children
+            SELECT 
+              e.child_id as child_id,
+              e.parent_id as parent_id, 
+              e.entity_hierarchy_id as entity_hierarchy_id,
+              h.generational_distance + 1 as generational_distance
+            FROM entity_parent_child_relation e
+            INNER JOIN ${RECURSIVE_CTE_ALIAS} h ON e.child_id = h.parent_id
+            WHERE e.entity_hierarchy_id = ?
+            ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
+          `,
+            parameters: [
+              ...childIds,
+              hierarchyId,
+              hierarchyId,
+              ...(generational_distance !== undefined ? [generational_distance] : []),
+            ],
+          },
+          joinWith: RECURSIVE_CTE_ALIAS,
+          joinCondition: ['entity.id', `${RECURSIVE_CTE_ALIAS}.parent_id`],
+          limit: pageSize,
+        },
+      );
+
+      return ancestors;
     });
-  }
-
-  /**
-   * Recursively finds descendants using this.find and parent-child relations
-   * @param {string} hierarchyId - The hierarchy ID
-   * @param {string[]} parentIds - Array of parent entity IDs
-   * @param {object} params - Filter + Fields
-   * @param {EntityRecord[]} allDescendants - Accumulated descendants array
-   * @param {number} level - Current recursion level
-   * @returns {Promise<EntityRecord[]>} Array of descendant entity records
-   */
-  async #getDescendantsRecursively(
-    hierarchyId,
-    parentIds,
-    params = {},
-    allDescendants = [],
-    level = 0,
-  ) {
-    const { filter = {}, pageSize } = params;
-    if (!parentIds || parentIds.length === 0) {
-      return allDescendants;
-    }
-
-    const { generational_distance, ...restOfFilter } = filter;
-
-    if (generational_distance && level >= generational_distance) {
-      return allDescendants;
-    }
-
-    // Find direct children using parent-child relation
-    const children = await this.find(
-      {
-        ...restOfFilter,
-        [`${RECORDS.ENTITY_PARENT_CHILD_RELATION}.entity_hierarchy_id`]: hierarchyId,
-        [`${RECORDS.ENTITY_PARENT_CHILD_RELATION}.parent_id`]: parentIds,
-      },
-      {
-        joinWith: 'entity_parent_child_relation',
-        joinCondition: ['entity.id', 'child_id'],
-        limit: pageSize,
-      },
-    );
-
-    const nextLevelParentIds = children.map(c => c.id);
-
-    // Recursively find children of children
-    if (nextLevelParentIds.length === 0) {
-      return allDescendants;
-    }
-
-    const newAllDescendants = [...allDescendants, ...children].slice(0, pageSize);
-
-    return await this.#getDescendantsRecursively(
-      hierarchyId,
-      nextLevelParentIds,
-      params,
-      newAllDescendants,
-      level + 1,
-    );
-  }
-
-  /**
-   * Recursively finds ancestors using this.find and parent-child relations
-   * @param {string} hierarchyId - The hierarchy ID
-   * @param {import('@tupaia/types').Entity['id'][]} childIds - Array of child entity IDs
-   * @param {object} params - Filter + PageSize
-   * @param {Array} allAncestors - Accumulated ancestors array
-   * @param {number} level - Current recursion level
-   * @returns {Promise<EntityRecord[]>} Array of ancestor entity data
-   */
-  async #getAncestorsRecursively(hierarchyId, childIds, params = {}, allAncestors = [], level = 0) {
-    const { filter = {}, pageSize } = params;
-    if (!childIds || childIds.length === 0) {
-      return allAncestors;
-    }
-
-    const { generational_distance, ...restOfFilter } = filter;
-
-    if (generational_distance && level >= generational_distance) {
-      return allAncestors;
-    }
-
-    // Find direct parents using parent-child relation
-    const parents = await this.find(
-      {
-        ...restOfFilter,
-        [`${RECORDS.ENTITY_PARENT_CHILD_RELATION}.entity_hierarchy_id`]: hierarchyId,
-        [`${RECORDS.ENTITY_PARENT_CHILD_RELATION}.child_id`]: childIds,
-      },
-      {
-        joinWith: 'entity_parent_child_relation',
-        joinCondition: ['entity.id', `${RECORDS.ENTITY_PARENT_CHILD_RELATION}.parent_id`],
-        limit: pageSize,
-      },
-    );
-
-    const nextLevelChildIds = parents.map(p => p.id);
-
-    // Recursively find parents of parents
-    if (nextLevelChildIds.length === 0) {
-      return allAncestors;
-    }
-
-    const newAllAncestors = [...allAncestors, ...parents].slice(0, pageSize);
-
-    return await this.#getAncestorsRecursively(
-      hierarchyId,
-      nextLevelChildIds,
-      params,
-      newAllAncestors,
-      level + 1,
-    );
   }
 
   async getParentEntityName(projectId, entityId) {
