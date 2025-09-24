@@ -1,3 +1,5 @@
+import './src/__tests__/mocks/matchMedia.mock'; // Import before components under test
+
 // TODO: Set up database for testing later
 
 jest.mock('@tupaia/database', () => ({
