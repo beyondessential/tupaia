@@ -396,9 +396,8 @@ export class TupaiaDatabase {
   }
 
   async create(recordType, record, where) {
-    if (!record.id) {
-      record.id = this.generateId();
-    }
+    record.id ||= this.generateId();
+
     await this.query(
       {
         recordType,
