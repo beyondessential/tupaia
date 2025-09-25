@@ -1,14 +1,15 @@
 // useQueryWithContext.ts
 import {
-  useQuery,
   QueryFunction,
-  UseQueryOptions,
-  UseQueryResult,
   QueryFunctionContext,
   QueryKey,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
 } from '@tanstack/react-query';
-import { AccessPolicy } from '@tupaia/access-policy';
 
+import { AccessPolicy } from '@tupaia/access-policy';
+import { ensure } from '@tupaia/tsutils';
 import { useDatabaseContext } from '../../hooks/database';
 import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
@@ -55,7 +56,7 @@ export function useDatabaseQuery<
   const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext =>
     queryFn({
       ...queryFnContext,
-      accessPolicy: accessPolicy!, // useQuery disabled if accessPolicy is pending
+      accessPolicy: ensure(accessPolicy), // useQuery disabled if accessPolicy is pending
       models,
       user,
       ...options.localContext,
