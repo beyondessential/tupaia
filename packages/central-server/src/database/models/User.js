@@ -31,12 +31,10 @@ class UserRecord extends CommonUserRecord {
     if (!SERVICES[service]) {
       throw new Error(`${service} is not a support service for session expiry`);
     }
-    await this.database.executeSql(
-      `
-        UPDATE ?? SET access_token_expiry = 0 WHERE email = ?
-      `,
-      [SERVICES[service], this.email],
-    );
+    await this.database.executeSql('UPDATE ?? SET access_token_expiry = 0 WHERE email = ?;', [
+      SERVICES[service],
+      this.email,
+    ]);
   }
 }
 
