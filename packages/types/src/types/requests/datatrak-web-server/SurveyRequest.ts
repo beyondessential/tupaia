@@ -65,7 +65,7 @@ interface SurveyResponse extends KeysToCamelCase<Survey> {
   surveyGroupName?: SurveyGroup['name'] | null;
   surveyQuestions: unknown[];
   screens: SurveyScreen[];
-  countryCodes: Country['code'][];
+  countryCodes?: Country['code'][];
   countryNames?: Country['name'][];
   isPublic: boolean;
   project?: WebServerProjectRequest.ProjectResponse | null;
