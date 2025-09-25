@@ -7,8 +7,8 @@ const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelNam
 
 export class ModelRegistry {
   /**
-   * @param {import('./BaseDatabase').TupaiaDatabase} database
-   * @param {import('./DatabaseModel').Record<string, DatabaseModel>} [extraModelClasses]
+   * @param {import('./BaseDatabase').BaseDatabase} database
+   * @param {Record<string, import('./DatabaseModel').DatabaseModel>} [extraModelClasses]
    */
   constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {
     this.database = database;
@@ -88,9 +88,9 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<void | unknown>} wrappedFunction
+   * @param {<T = unknown>(models: ModelRegistry) => Promise<T>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   * @returns {Promise<T>} A promise (return value of `knex.transaction()`).
    */
   async wrapInTransaction(wrappedFunction, transactionConfig = {}) {
     return this.database.wrapInTransaction(async transactingDatabase => {
@@ -112,18 +112,18 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   * @param {<T = unknown>(models: ModelRegistry) => Promise<T>} wrappedFunction
+   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise<T>} A promise (return value of `knex.transaction()`).
    */
   wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
     return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
   }
 
   /**
-   * @param {(models: BaseDatabase) => Promise<void | unknown>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   * @param {<T = unknown>(models: ModelRegistry) => Promise<T>} wrappedFunction
+   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise<T>} A promise (return value of `knex.transaction()`).
    */
   wrapInRepeatableReadTransaction(wrappedFunction, transactionConfig = {}) {
     return this.wrapInTransaction(wrappedFunction, {

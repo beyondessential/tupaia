@@ -3,7 +3,7 @@ import { SurveyScreen, SurveyScreenComponent } from '../../../types';
 
 const validateSurveyComponent = component => {
   if (component.type === QuestionType.PrimaryEntity && !component.config?.entity?.createNew) {
-    component.validationCriteria = component.validationCriteria ?? {};
+    component.validationCriteria ??= {};
     component.validationCriteria.mandatory = true;
   }
   return component;
@@ -35,9 +35,9 @@ export const getSurveyScreenNumber = (screens, screen) => {
 
 export const getAllSurveyComponents = (surveyScreens?: SurveyScreen[]) => {
   return (
-    surveyScreens
-      ?.flatMap(({ surveyScreenComponents }) => surveyScreenComponents)
-      .map(validateSurveyComponent) ?? []
+    surveyScreens?.flatMap(({ surveyScreenComponents }) =>
+      validateSurveyComponent(surveyScreenComponents),
+    ) ?? []
   );
 };
 

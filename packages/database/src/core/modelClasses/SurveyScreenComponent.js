@@ -9,11 +9,11 @@ export class SurveyScreenComponentRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_SCREEN_COMPONENT;
 
   async question() {
-    return this.otherModels.question.findById(this.question_id);
+    return await this.otherModels.question.findById(this.question_id);
   }
 
   async surveyScreen() {
-    return this.otherModels.surveyScreen.findById(this.screen_id);
+    return await this.otherModels.surveyScreen.findById(this.screen_id);
   }
 
   async surveyId() {
@@ -22,12 +22,22 @@ export class SurveyScreenComponentRecord extends DatabaseRecord {
   }
 
   async survey() {
-    return this.otherModels.survey.findById(await this.surveyId());
+    return await this.otherModels.survey.findById(await this.surveyId());
   }
 }
 
 export class SurveyScreenComponentModel extends DatabaseModel {
   static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+
+  /**
+   * @param {import('@tupaia/types').SurveyScreenComponentConfig | undefined} config
+   * @returns
+   */
+  static isUpsertEntityQuestion(config) {
+    if (!config?.entity) return false;
+    if (config.entity.createNew) return true;
+    return config.entity.fields && Object.keys(config.entity.fields).length > 0;
+  }
 
   get DatabaseRecordClass() {
     return SurveyScreenComponentRecord;
@@ -36,7 +46,7 @@ export class SurveyScreenComponentModel extends DatabaseModel {
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: `array_remove(ARRAY[survey.project_id], NULL)`,
+        projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
       }),
       joins: buildSyncLookupTraverseJoins([this.databaseRecord, 'survey_screen', 'survey'], {
         survey_screen_component_survey_screen: {

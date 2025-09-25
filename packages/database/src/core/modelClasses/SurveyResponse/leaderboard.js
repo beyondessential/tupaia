@@ -1,11 +1,3 @@
-import { SyncDirections } from '@tupaia/constants';
-
-import { DatabaseRecord } from '../DatabaseRecord';
-import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { RECORDS } from '../records';
-import { buildSyncLookupSelect } from '../sync';
-import { createSurveyResponsePermissionFilter } from '../permissions';
-
 const USERS_EXCLUDED_FROM_LEADER_BOARD = [
   "'edmofro@gmail.com'", // Edwin
   "'kahlinda.mahoney@gmail.com'", // Kahlinda
@@ -29,7 +21,7 @@ const INTERNAL_PROJECT_IDS = [
   '6704622a45a4fc4941071605', // bes_reporting
 ];
 
-export function getLeaderboard(projectId = '') {
+export function getLeaderboardQuery(projectId = '') {
   const isInternalProject = projectId && INTERNAL_PROJECT_IDS.includes(projectId);
 
   const besUsersFilter = `AND ${INTERNAL_EMAIL.map(email => `email NOT LIKE '%${email}'`).join(' AND ')}`;
@@ -51,43 +43,4 @@ export function getLeaderboard(projectId = '') {
       ORDER BY coconuts DESC
       LIMIT ?;
     `;
-}
-
-export class SurveyResponseRecord extends DatabaseRecord {
-  static databaseRecord = RECORDS.SURVEY_RESPONSE;
-
-  async getAnswers(conditions = {}) {
-    return this.otherModels.answer.find({ survey_response_id: this.id, ...conditions });
-  }
-}
-
-export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
-  static syncDirection = SyncDirections.BIDIRECTIONAL;
-
-  get DatabaseRecordClass() {
-    return SurveyResponseRecord;
-  }
-
-  async getLeaderboard(projectId = '', rowCount = 10) {
-    const bindings = projectId ? [projectId, rowCount] : [rowCount];
-    const query = getLeaderboard(projectId);
-    return this.database.executeSql(query, bindings);
-  }
-
-  async createRecordsPermissionFilter(accessPolicy, criteria = {}, options = {}) {
-    return await createSurveyResponsePermissionFilter(accessPolicy, this.otherModels, criteria, options);
-  }
-
-  async buildSyncLookupQueryDetails() {
-    return {
-      select: await buildSyncLookupSelect(this, {
-        projectIds: `array_remove(ARRAY[survey.project_id], NULL)`,
-      }),
-      joins: `
-        LEFT JOIN survey 
-          ON survey.id = survey_response.survey_id 
-          AND survey_response.outdated IS FALSE -- no outdated survey response
-      `,
-    };
-  }
 }

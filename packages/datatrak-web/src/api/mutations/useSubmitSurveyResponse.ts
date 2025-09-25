@@ -1,19 +1,38 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
+
+import { SurveyResponseModel } from '@tupaia/database';
+import { Entity, Survey, UserAccount } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
-import { Coconut } from '../../components';
 import { post, useCurrentUserContext, useEntityByCode } from '..';
+import { Coconut } from '../../components';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
-import { useSurvey } from '../queries';
 import { gaEvent, successToast } from '../../utils';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { useSurvey } from '../queries';
+import {
+  ContextualMutationFunctionContext,
+  useDatabaseMutation,
+} from '../queries/useDatabaseMutation';
 
 type Answer = string | number | boolean | null | undefined;
 
-export type AnswersT = Record<string, Answer>;
+export interface AnswersT {
+  [key: string]: Answer;
+}
+
+interface ResponseData {
+  countryId: Entity['id'] | undefined;
+  questions: ReturnType<typeof getAllSurveyComponents>;
+  startTime: string | undefined;
+  surveyId: Survey['id'] | undefined;
+  timezone: Intl.ResolvedDateTimeFormatOptions['timeZone'];
+  userId: UserAccount['id'] | undefined | null;
+}
 
 // utility hook for getting survey response data
-export const useSurveyResponseData = () => {
+export const useSurveyResponseData = (): ResponseData => {
   const user = useCurrentUserContext();
   const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
@@ -30,6 +49,11 @@ export const useSurveyResponseData = () => {
   };
 };
 
+interface SurveyResponseMutationFunctionContext
+  extends ContextualMutationFunctionContext<{
+    answers?: AnswersT;
+  }> {}
+
 export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -38,17 +62,47 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
   const user = useCurrentUserContext();
   const { data: survey } = useSurvey(params.surveyCode);
   const surveyResponseData = useSurveyResponseData();
+  const isOfflineFirst = useIsOfflineFirst();
 
-  return useMutation<any, Error, AnswersT, unknown>(
-    async (answers: AnswersT) => {
-      if (!answers) {
-        return;
-      }
+  const mutationFunctions = {
+    local: async ({ data: answers, models, user }: SurveyResponseMutationFunctionContext) => {
+      if (!answers) return;
 
-      return post('submitSurveyResponse', {
-        data: { ...surveyResponseData, answers },
+      // TODO: Assert user has access
+
+      const data = { ...surveyResponseData, answers };
+      const remote = await post('submitSurveyResponse', { data });
+
+      const local = await models.wrapInTransaction(async transactingModels => {
+        // Mirroring datatrak-web-server logic
+        const { qr_codes_to_create, recent_entities, ...processedResponse } =
+          await SurveyResponseModel.processSurveyResponse(transactingModels, data as any);
+
+        // Mirroring central-server logic
+        const submitterId =
+          user.isLoggedIn && user.id // id check redundant, for type inference
+            ? user.id
+            : await transactingModels.user.findPublicUser();
+        await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
+        await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
+        await SurveyResponseModel.saveResponsesToDatabase(transactingModels, submitterId, [
+          processedResponse,
+        ]);
       });
+
+      // TODO: Update recent entities
+
+      return local;
     },
+    remote: async ({ data: answers }: SurveyResponseMutationFunctionContext) => {
+      if (!answers) return;
+      const data = { ...surveyResponseData, answers };
+      return await post('submitSurveyResponse', { data });
+    },
+  };
+
+  return useDatabaseMutation<any, Error, AnswersT, unknown>(
+    isOfflineFirst ? mutationFunctions.local : mutationFunctions.remote,
     {
       onMutate: () => {
         // Send off survey submissions by survey, project, country, and userId
@@ -58,25 +112,25 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         gaEvent('submit_survey_by_user', user.id!);
       },
       onSuccess: data => {
-        queryClient.invalidateQueries(['surveyResponses']);
+        queryClient.invalidateQueries(['entityDescendants']); // Refresh recent entities
+        queryClient.invalidateQueries(['leaderboard']);
         queryClient.invalidateQueries(['recentSurveys']);
         queryClient.invalidateQueries(['rewards']);
-        queryClient.invalidateQueries(['leaderboard']);
-        queryClient.invalidateQueries(['entityDescendants']); // Refresh recent entities
-        queryClient.invalidateQueries(['tasks']);
+        queryClient.invalidateQueries(['surveyResponses']);
         queryClient.invalidateQueries(['taskMetric', user.projectId]);
+        queryClient.invalidateQueries(['tasks']);
 
+        // Invalidate optionSet queries for questions that have createNew enabled so that the new
+        // options are fetched
         const createNewAutocompleteQuestions = surveyResponseData?.questions?.filter(
           question => question?.config?.autocomplete?.createNew,
         );
-
-        // invalidate optionSet queries for questions that have createNew enabled so that the new options are fetched
         if (createNewAutocompleteQuestions?.length > 0) {
-          createNewAutocompleteQuestions.forEach(question => {
-            const { optionSetId } = question;
-            queryClient.invalidateQueries(['autocompleteOptions', optionSetId]);
-          });
+          for (const question of createNewAutocompleteQuestions) {
+            queryClient.invalidateQueries(['autocompleteOptions', question.optionSetId]);
+          }
         }
+
         resetForm();
         successToast('Congratulations! You’ve earned a coconut', Coconut);
         // include the survey response data in the location state, so that we can use it to generate QR codes

@@ -1,17 +1,17 @@
 import {
-  ValidationError,
-  ObjectValidator,
-  constructRecordExistsWithId,
-  constructRecordExistsWithCode,
   constructIsEmptyOr,
-  takesDateForm,
-  hasContent,
-  takesIdForm,
   constructIsNotPresentOr,
+  constructRecordExistsWithCode,
+  constructRecordExistsWithId,
+  hasContent,
   MultiValidationError,
+  ObjectValidator,
+  takesDateForm,
+  takesIdForm,
+  ValidationError,
 } from '@tupaia/utils';
-import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
-import { findQuestionsInSurvey } from '../../dataAccessors';
+import { AnswerModel } from '../Answer';
+import { SurveyModel } from '../Survey';
 
 const constructAnswerValidators = models => ({
   id: [constructIsNotPresentOr(takesIdForm)],
@@ -41,7 +41,7 @@ export const validateSurveyResponse = async (models, body) => {
     throw new Error('Must provide one of entity_id or entity_code');
   }
 
-  const surveyQuestions = await findQuestionsInSurvey(models, body.survey_id);
+  const surveyQuestions = await SurveyModel.findQuestionsInSurvey(models, body.survey_id);
 
   const { answers } = body;
 
@@ -72,7 +72,10 @@ export const validateSurveyResponse = async (models, body) => {
       }
 
       try {
-        const answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
+        const answerValidator = new ObjectValidator(
+          {},
+          AnswerModel.constructAnswerValidator(models, question),
+        );
         await answerValidator.validate({ answer: value });
       } catch (e) {
         // validator will always complain of field "answer" but in this context it is not
@@ -97,7 +100,7 @@ export const validateSurveyResponses = async (models, responses) => {
     }),
   );
 
-  const errors = validations.filter(x => x);
+  const errors = validations.filter(Boolean);
   if (errors.length > 0) {
     throw new MultiValidationError(
       'The request contained invalid responses. No records have been created; please fix the issues and send the whole request again.',

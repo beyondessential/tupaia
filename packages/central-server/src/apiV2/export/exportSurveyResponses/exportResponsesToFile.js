@@ -1,19 +1,20 @@
-import xlsx from 'xlsx';
-import moment from 'moment';
-import keyBy from 'lodash.keyby';
 import chunk from 'lodash.chunk';
 import groupBy from 'lodash.groupby';
+import keyBy from 'lodash.keyby';
+import moment from 'moment';
+import xlsx from 'xlsx';
+
+import { RECORDS, SurveyModel } from '@tupaia/database';
+import { getExportPathForUser } from '@tupaia/server-utils';
 import {
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,
   getUniqueEntries,
-  truncateString,
   toFilename,
+  truncateString,
 } from '@tupaia/utils';
-import { getExportPathForUser } from '@tupaia/server-utils';
-import { RECORDS } from '@tupaia/database';
+import { findAnswersInSurveyResponse } from '../../../dataAccessors';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
-import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dataAccessors';
 import { hasBESAdminAccess } from '../../../permissions';
 import { zipMultipleFiles } from '../../utilities';
 
@@ -317,7 +318,7 @@ export async function exportResponsesToFile(
 
   for (const survey of surveysWithAccess) {
     // Get the current set of questions, in the order they appear in the survey
-    const questions = await findQuestionsInSurvey(models, survey.id);
+    const questions = await SurveyModel.findQuestionsInSurvey(models, survey.id);
 
     if (surveyResponse) {
       await addResponsesToSheet([surveyResponse], survey, questions);

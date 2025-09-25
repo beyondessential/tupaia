@@ -19,13 +19,15 @@ import {
   SurveyScreenModel,
   UserModel,
 } from '@tupaia/server-boilerplate';
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 
 export type RequestContext = {
   services: TupaiaApiClient;
 };
 
 export interface MeditrakAppServerModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly dataElement: DataElementModel;
   readonly user: UserModel;
   readonly surveyResponse: SurveyResponseModel;

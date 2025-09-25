@@ -63,7 +63,9 @@ export interface SurveyScreen extends CamelCasedSurveyScreen {
 
 interface SurveyResponse extends KeysToCamelCase<Survey> {
   surveyGroupName?: SurveyGroup['name'] | null;
+  surveyQuestions: unknown[];
   screens: SurveyScreen[];
+  countryCodes?: Country['code'][];
   countryNames?: Country['name'][];
   isPublic: boolean;
   project?: WebServerProjectRequest.ProjectResponse | null;
