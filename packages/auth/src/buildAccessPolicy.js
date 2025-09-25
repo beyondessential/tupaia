@@ -24,7 +24,7 @@ export const buildAccessPolicy = async (models, userId) => {
       const { permission_group_name: permissionGroupName, entity_code: entityCode } =
         userEntityPermission;
 
-      permissionsByEntity[entityCode] = permissionsByEntity[entityCode] || [];
+      permissionsByEntity[entityCode] ??= [];
       permissionsByEntity[entityCode].push(permissionGroupName);
 
       // get all of the permission groups below this one in the hierarchy, as the user also has
