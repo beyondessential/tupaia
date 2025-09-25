@@ -1,8 +1,9 @@
 import { verify } from '@node-rs/argon2';
+import winston from 'winston';
 
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
 import { API_CLIENT_PERMISSIONS, SyncDirections } from '@tupaia/constants';
-import { ensure } from '@tupaia/tsutils';
+import { ensure, isNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
 import { DatabaseError } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
@@ -113,6 +114,42 @@ export class UserRecord extends DatabaseRecord {
    */
   async getEntityPermissions() {
     return await this.otherModels.userEntityPermission.find({ user_id: this.id });
+  }
+
+  /**
+   * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
+   * @param {string | undefined} [type] comma-separated list of entity types
+   * @returns {(import('./Entity').EntityRecord & { is_recent: true })[]}
+   */
+  async getRecentEntities(countryCode, type) {
+    const entityIds = this.getRecentEntityIds(countryCode, type);
+    const entityRecords = await Promise.all(entityIds.map(this.otherModels.entity.findById));
+    // entity IDs are stored in user_account.preferences JSONB attribute, which doesn’t enforce
+    // foreign key constraints, hence filtering out entities that may no longer exist
+    const augmented = entityRecords.filter(isNotNullish);
+    for (const entity of augmented) entity.is_recent = true;
+    return augmented;
+  }
+
+  /**
+   * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
+   * @param {string | undefined} [type] comma-separated list of entity types
+   * @returns {import('@tupaia/types').Entity['id'][]}
+   */
+  getRecentEntityIds(countryCode, type) {
+    if (!countryCode || !type) {
+      winston.warn(
+        'UserRecord#getRecentEntityIds: missing `countryCode` or `type` argument. Returning empty array.',
+        { countryCode, type },
+      );
+      return [];
+    }
+
+    const recentEntityIdsForCountry = this.preferences.recent_entities?.[countryCode];
+    if (!recentEntityIdsForCountry) return [];
+
+    const entityTypes = type.split(',');
+    return entityTypes.flatMap(entityType => recentEntityIdsForCountry[entityType] ?? []);
   }
 }
 
@@ -230,28 +267,13 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {string} userId
-   * @param {string|undefined} countryCode
-   * @param {string|undefined} type
-   * @returns {Promise<string[]>} Entity IDs
+   * @param {import('@tupaia/types').User['id']} userId
+   * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
+   * @param {string | undefined} [type] comma-separated list of entity types
+   * @returns {Promise<import('@tupaia/types').Entity['id'][]>} Entity IDs
    */
   async getRecentEntityIds(userId, countryCode, type) {
-    const user = await this.findById(userId);
-    const { recent_entities: userRecentEntities } = user.preferences;
-    if (!userRecentEntities || !countryCode || !type) {
-      return [];
-    }
-
-    const recentEntitiesForCountry = userRecentEntities[countryCode];
-    if (!recentEntitiesForCountry) {
-      return [];
-    }
-
-    const entityTypes = type.split(',');
-    const recentEntitiesOfTypes = entityTypes.flatMap(
-      entityType => recentEntitiesForCountry[entityType] ?? [],
-    );
-
-    return recentEntitiesOfTypes;
+    const user = ensure(await this.findById(userId), `No user exists with ID ${userId}`);
+    return user.getRecentEntityIds(countryCode, type);
   }
 }
