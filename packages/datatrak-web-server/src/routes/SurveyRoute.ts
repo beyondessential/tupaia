@@ -1,13 +1,14 @@
-import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import {
   DatatrakWebSurveyRequest,
-  WebServerProjectRequest,
   Question,
   QuestionType,
+  WebServerProjectRequest,
 } from '@tupaia/types';
-import { PermissionsError } from '@tupaia/utils';
+import { NotFoundError, PermissionsError } from '@tupaia/utils';
 
 export type SurveyRequest = Request<
   DatatrakWebSurveyRequest.Params,
@@ -83,9 +84,8 @@ export class SurveyRoute extends Route<SurveyRequest> {
     } = this.req;
     const { fields = DEFAULT_FIELDS } = query;
     // check if survey exists in the database
-    const dbSurveyResults = await models.survey.find({ code: surveyCode });
-
-    if (!dbSurveyResults.length) throw new Error(`Survey with code ${surveyCode} not found`);
+    const surveyCount = await models.survey.count({ code: surveyCode });
+    if (surveyCount === 0) throw new NotFoundError(`Survey with code ${surveyCode} not found`);
 
     // check if user has access to survey
     const surveys = await ctx.services.central.fetchResources('surveys', {

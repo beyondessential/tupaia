@@ -1,10 +1,10 @@
-import { reduceToDictionary } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
+import { reduceToDictionary } from '@tupaia/utils';
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
+import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
 import { buildSyncLookupSelect } from '../sync';
@@ -16,14 +16,14 @@ export class SurveyRecord extends DatabaseRecord {
    * @returns {Promise<import('./DataGroup').DataGroupRecord>} data group for survey
    */
   async dataGroup() {
-    return this.otherModels.dataGroup.findById(this.data_group_id);
+    return await this.otherModels.dataGroup.findById(this.data_group_id);
   }
 
   /**
    * @returns {Promise<import('./SurveyScreen').SurveyScreenRecord[]>} survey screens in survey
    */
   async surveyScreens() {
-    return this.otherModels.surveyScreen.find({ survey_id: this.id });
+    return await this.otherModels.surveyScreen.find({ survey_id: this.id });
   }
 
   /**
@@ -39,7 +39,9 @@ export class SurveyRecord extends DatabaseRecord {
       [this.id],
     );
 
-    return Promise.all(questions.map(this.otherModels.surveyScreenComponent.generateInstance));
+    return await Promise.all(
+      questions.map(this.otherModels.surveyScreenComponent.generateInstance),
+    );
   }
 
   /**
@@ -74,7 +76,7 @@ export class SurveyRecord extends DatabaseRecord {
       [this.id],
     );
 
-    return Promise.all(optionSets.map(this.otherModels.optionSet.generateInstance));
+    return await Promise.all(optionSets.map(this.otherModels.optionSet.generateInstance));
   }
 
   /**
@@ -93,21 +95,21 @@ export class SurveyRecord extends DatabaseRecord {
       [this.id],
     );
 
-    return Promise.all(options.map(this.otherModels.option.generateInstance));
+    return await Promise.all(options.map(this.otherModels.option.generateInstance));
   }
 
   /**
    * @returns {Promise<import('./PermissionGroup').PermissionGroupRecord>} permission group for survey
    */
   async getPermissionGroup() {
-    return this.otherModels.permissionGroup.findById(this.permission_group_id);
+    return await this.otherModels.permissionGroup.findById(this.permission_group_id);
   }
 
   /**
    * @returns {Promise<import('./Country').CountryRecord[]>} countries that use this survey
    */
   async getCountries() {
-    return this.otherModels.country.findManyById(this.country_ids);
+    return await this.otherModels.country.findManyById(this.country_ids);
   }
 
   /**
@@ -192,11 +194,175 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return surveys;
   }
 
+  /**
+   * @param {SurveyRecord['id'][]} surveyIds
+   * @returns {Promise<Record<SurveyRecord['id'], import('./Country').CountryRecord['id'][]>>}
+   * Dictionary mapping survey IDs to sorted arrays of country codes
+   */
+  async getCountryCodesBySurveyId(surveyIds) {
+    if (surveyIds.length === 0) return {};
+
+    const rows = await this.database.executeSql(
+      `
+        SELECT
+          survey.id survey_id,
+          ARRAY_AGG(country.code ORDER BY country.code) AS country_codes
+        FROM
+          survey
+          LEFT JOIN country ON country.id = ANY (survey.country_ids)
+        WHERE
+          survey.id IN ${SqlQuery.record(surveyIds)}
+        GROUP BY
+          survey.id;
+      `,
+      surveyIds,
+    );
+    return Object.fromEntries(rows.map(row => [row.survey_id, row.country_codes]));
+  }
+
+  /**
+   * @param {SurveyRecord['id'][]} surveyIds
+   * @returns {Promise<Record<SurveyRecord['id'], import('./Country').CountryRecord['id'][]>>}
+   * Dictionary mapping survey IDs to sorted arrays of country names
+   */
+  async getCountryNamesBySurveyId(surveyIds) {
+    if (surveyIds.length === 0) return {};
+
+    const rows = await this.database.executeSql(
+      `
+        SELECT
+          survey.id survey_id,
+          ARRAY_AGG(country.name ORDER BY country.name) country_names
+        FROM
+          survey
+          LEFT JOIN country ON (country.id = ANY (survey.country_ids))
+        WHERE
+          survey.id IN ${SqlQuery.record(surveyIds)} GROUP BY survey.id;
+      `,
+      surveyIds,
+    );
+    return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
+  }
+
+  /** @see `./README.md` */
+  async getQuestionsValues(surveyIds) {
+    if (surveyIds.length === 0) return {};
+
+    const rows = await this.database.executeSql(
+      `
+        SELECT
+          s.id AS survey_id,
+          ss.id AS survey_screen_id,
+          ss.screen_number AS screen_number,
+          ssc.id AS survey_screen_component_id,
+          ssc.component_number AS component_number,
+          ssc.visibility_criteria AS visibility_criteria,
+          ssc.validation_criteria AS validation_criteria,
+          ssc.config AS config,
+          ssc.question_label AS question_label,
+          q.id AS question_id,
+          q.name AS question_name,
+          q.type AS question_type,
+          q.code AS question_code,
+          q.text AS question_text,
+          q.options AS question_options,
+          q.option_set_id AS question_option_set_id,
+          q.detail AS question_detail
+        FROM
+          survey s
+          LEFT JOIN survey_screen ss ON s.id = ss.survey_id
+          LEFT JOIN survey_screen_component ssc ON ss.id = ssc.screen_id
+          LEFT JOIN question q ON ssc.question_id = q.id
+        WHERE
+          s.id IN ${SqlQuery.record(surveyIds)}
+        GROUP BY
+          s.id, ssc.id, ss.id, q.id;
+      `,
+      surveyIds,
+    );
+    return this.getAggregatedQuestions(rows);
+  }
+
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: `array_remove(ARRAY[survey.project_id], NULL)`,
+        projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
       }),
     };
+  }
+
+  /**
+   * @param {ReturnType<typeof this.getQuestionsValues>} rawResults
+   */
+  getAggregatedQuestions(rawResults) {
+    const initialValue = {};
+    const surveyQuestions = rawResults.reduce((questionsObject, currentResult) => {
+      const { survey_id: id } = currentResult;
+      const updatedValue = questionsObject;
+      if (updatedValue[id]) return updatedValue;
+
+      updatedValue[id] = [];
+      return questionsObject;
+    }, initialValue);
+
+    for (const result of rawResults) {
+      const { survey_id, screen_number, survey_screen_id } = result;
+      const screenIndex = surveyQuestions[survey_id].findIndex(
+        screen => screen.id === survey_screen_id,
+      );
+      if (screenIndex !== -1) {
+        continue;
+      }
+      surveyQuestions[survey_id].push({
+        id: survey_screen_id,
+        screen_number,
+        survey_screen_components: [],
+      });
+    }
+
+    for (const result of rawResults) {
+      const {
+        survey_id,
+        survey_screen_id,
+        survey_screen_component_id,
+        component_number,
+        visibility_criteria,
+        validation_criteria,
+        config,
+        question_id,
+        question_name,
+        question_type,
+        question_code,
+        question_text,
+        question_label,
+        question_options,
+        question_option_set_id,
+        question_detail,
+      } = result;
+
+      const screenIndex = surveyQuestions[survey_id].findIndex(
+        screen => screen.id === survey_screen_id,
+      );
+
+      surveyQuestions[survey_id][screenIndex].survey_screen_components.push({
+        id: survey_screen_component_id,
+        visibility_criteria,
+        component_number,
+        validation_criteria,
+        config,
+        question: {
+          id: question_id,
+          name: question_name,
+          type: question_type,
+          code: question_code,
+          text: question_text,
+          label: question_label,
+          options: question_options,
+          option_set_id: question_option_set_id,
+          detail: question_detail,
+        },
+      });
+    }
+    return surveyQuestions;
   }
 }

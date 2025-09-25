@@ -14,12 +14,10 @@ const getOnlineSurveyUsers = async ({
   surveyCode?: Survey['code'];
   countryCode?: Country['code'];
   searchTerm?: string;
-}) => {
+}): Promise<DatatrakWebUsersRequest.ResBody> => {
   return await get(`users/${surveyCode}/${countryCode}`, {
-    params: {
-      searchTerm,
-    },
-  }) as DatatrakWebUsersRequest.ResBody;
+    params: { searchTerm },
+  });
 };
 
 export const useSurveyUsers = (

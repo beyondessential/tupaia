@@ -85,6 +85,9 @@ export class BaseDatabase {
    */
   #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
 
+  /** @type {import('knex').Knex} */
+  connection;
+
   constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
@@ -125,17 +128,19 @@ export class BaseDatabase {
   }
 
   /**
-   * @param {(models) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @template T
+   * @param {(models) => Promise<T>} _wrappedFunction
+   * @param {import('knex').Knex.TransactionConfig} [_transactionConfig]
+   * @returns {Promise<T>} A promise (return value of `knex.transaction()`).
    */
   async wrapInTransaction(_wrappedFunction, _transactionConfig) {
     throw new Error('wrapInTransaction should be implemented by the child class');
   }
 
   /**
-   * @param {(models) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   * @param {<T = unknown>(models) => Promise<T>} wrappedFunction
+   * @param {Omit<import('knex').Knex.TransactionConfig, 'readOnly'>} [transactionConfig]
+   * @returns {Promise<T>} A promise (return value of `knex.transaction()`).
    */
   async wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
     return await this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });

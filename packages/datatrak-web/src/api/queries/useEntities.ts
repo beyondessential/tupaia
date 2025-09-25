@@ -3,8 +3,8 @@ import { DatatrakWebEntitiesRequest } from '@tupaia/types';
 import { get } from '../api';
 
 export const useEntities = params => {
-  return useQuery(
+  return useQuery<DatatrakWebEntitiesRequest.ResBody>(
     ['entities', params],
-    (): Promise<DatatrakWebEntitiesRequest.ResBody> => get(`entities`, { params }),
+    async () => await get('entities', { params }),
   );
 };
