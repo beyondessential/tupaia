@@ -1,6 +1,7 @@
 // TODO: Some of these are duplicated from datatrak-web-server with tweaks suitable for datatrak-web,
 // Eventually we are going to remove the route from datatrak-web-server
 // and use this function only. So keeping it here for now.
+import { clone } from 'es-toolkit';
 import omitBy from 'lodash.omitby';
 
 import { AccessPolicy } from '@tupaia/access-policy';
@@ -176,7 +177,7 @@ export const getEntityDescendants = async ({
     dbEntityFilter.generational_distance = 2;
   }
 
-  const entities: (EntityRecord & { isRecent: true })[] =
+  const entities: (EntityRecord & { is_recent: true })[] =
     await models.entity.getDescendantsFromParentChildRelation(
       project.entity_hierarchy_id,
       [rootEntityId],
@@ -187,14 +188,6 @@ export const getEntityDescendants = async ({
       },
     );
 
-  /**
-   * @privateRemarks Modifies {@link entities} in-place! This ensures that when the return array is
-   * spread into {@link sortedEntities}, they are still {@link EntityRecord} instances and not
-   * plain-object shallow clones. This prevents {@link formatEntitiesForResponse} from erroring when
-   * it calls methods on objects in {@link sortedEntities}. (As of this commit, using Lodash or
-   * es-toolkit’s `clone` would also work; but in this case it’s semantically appropriate for the
-   * recent entities hoisted to the top of the array to reference the same instances.)
-   */
   const getRecentEntities = async () => {
     const recentEntityIds =
       user.isLoggedIn && // Recent entities irrelevant for public surveys
@@ -203,10 +196,17 @@ export const getEntityDescendants = async ({
       type
         ? new Set(await models.user.getRecentEntityIds(user.id, countryCode, type))
         : new Set();
+
+    const recentEntities: (EntityRecord & { is_recent: true })[] = [];
     for (const entity of entities) {
-      if (recentEntityIds.has(entity.id)) entity.isRecent = true;
+      if (!recentEntityIds.has(entity.id)) continue;
+      // clone() (not { ...entity }) so copy is still an EntityRecord instance
+      const augmented = clone(entity);
+      augmented.is_recent = true;
+      recentEntities.push(augmented);
     }
-    return entities.filter(e => e.isRecent);
+
+    return recentEntities;
   };
 
   const sortedEntities = searchString
@@ -219,7 +219,7 @@ export const getEntityDescendants = async ({
   const formattedEntities = await formatEntitiesForResponse(
     { hierarchyId: project.entity_hierarchy_id },
     sortedEntities,
-    fields,
+    [...fields, 'is_recent'],
   );
 
   return camelcaseKeys(formattedEntities, { deep: true });
