@@ -48,11 +48,13 @@ interface CancelConfirmModalProps {
   confirmText?: string | null;
   cancelText?: string | null;
   confirmPath?: string | number;
+  onConfirm?: () => void;
 }
 
 export const CancelConfirmModal = ({
   isOpen,
   onClose,
+  onConfirm,
   headingText = 'Survey in progress',
   bodyText = "If you exit, you will lose the progress you've made on the current survey",
   confirmText = 'Exit survey',
@@ -60,7 +62,7 @@ export const CancelConfirmModal = ({
   confirmPath = '/',
 }: CancelConfirmModalProps) => {
   const navigate = useNavigate();
-  const onConfirm = () => {
+  const handleConfirmPath = () => {
     onClose();
     if (typeof confirmPath === 'string') {
       navigate(confirmPath); // Navigate to the specified path
@@ -77,7 +79,7 @@ export const CancelConfirmModal = ({
           <ModalButton onClick={onClose} variant="outlined">
             {cancelText}
           </ModalButton>
-          <ModalButton onClick={onConfirm}>{confirmText}</ModalButton>
+          <ModalButton onClick={onConfirm || handleConfirmPath}>{confirmText}</ModalButton>
         </ButtonWrapper>
       </Wrapper>
     </Modal>

@@ -1,8 +1,9 @@
 import log from 'winston';
 
-import { SyncDirections } from '@tupaia/constants';
 import { DatabaseModel } from '@tupaia/database';
 import { sanitizeRecord, SYNC_SESSION_DIRECTION, SyncSnapshotAttributes } from '@tupaia/sync';
+import { assertModelsForPush } from './assertModelsForPush';
+import { getModelOutgoingChangesFilter } from './getModelOutgoingChangesFilter';
 
 const snapshotChangesForModel = async (
   model: DatabaseModel,
@@ -10,17 +11,11 @@ const snapshotChangesForModel = async (
   since: number,
 ) => {
   const changedRecords = await model.find({
-    updated_at_sync_tick: {
-      comparator: '>',
-      comparisonValue: since,
-    },
+    ...getModelOutgoingChangesFilter(since),
   });
   const deletedRecords = await tombstoneModel.find({
     record_type: model.databaseRecord,
-    updated_at_sync_tick: {
-      comparator: '>',
-      comparisonValue: since,
-    },
+    ...getModelOutgoingChangesFilter(since),
   });
 
   const recordsChanged = [...changedRecords, ...deletedRecords];
@@ -41,25 +36,10 @@ export const snapshotOutgoingChanges = async (
   tombstoneModel: DatabaseModel,
   since: number,
 ) => {
-  const invalidModelNames = Object.values(models)
-    .filter(
-      m =>
-        ![SyncDirections.BIDIRECTIONAL, SyncDirections.PUSH_TO_CENTRAL].includes(
-          (m.constructor as typeof DatabaseModel).syncDirection,
-        ),
-    )
-    .map(m => m.databaseRecord);
+  assertModelsForPush(models);
 
-  if (invalidModelNames.length) {
-    throw new Error(
-      `Invalid sync direction(s) when pushing these models from client: ${invalidModelNames}`,
-    );
-  }
-
-  let outgoingChanges: SyncSnapshotAttributes[] = [];
-  for (const model of Object.values(models)) {
-    const changesForModel = await snapshotChangesForModel(model, tombstoneModel, since);
-    outgoingChanges = [...outgoingChanges, ...changesForModel];
-  }
-  return outgoingChanges;
+  const modelChanges = await Promise.all(
+    models.map(model => snapshotChangesForModel(model, tombstoneModel, since)),
+  );
+  return modelChanges.flat();
 };
