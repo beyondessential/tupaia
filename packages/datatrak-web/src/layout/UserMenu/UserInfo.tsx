@@ -22,9 +22,6 @@ export const UserDetails = styled.div`
   > span {
     color: ${props => props.theme.palette.text.primary};
   }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 const AuthLink = styled(Button).attrs({

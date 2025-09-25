@@ -1,18 +1,10 @@
-import { LinearProgress, Typography } from '@material-ui/core';
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
-import { useTheme } from '@material-ui/core';
+import { LinearProgress, useTheme } from '@material-ui/core';
+import { CircleCheck, CircleX } from 'lucide-react';
 
-import { CheckCircleIcon } from '../../components/Icons/CheckCircleIcon';
-
-/** Maps [0.0, 1.0] to [0, 100], but won’t round up to 100. Returns 100 if and only if given 1.0 */
-const clamp = value => Math.min(Math.max(value, 0.0), 1.0);
-const floatToPercentage = (float: number) => {
-  const clamped = clamp(float);
-  if (clamped === 1.0) return 100;
-  if (clamped < 0.99) return float * 100;
-  return 99;
-};
+import { SyncHeading } from './SyncHeading';
+import { SyncParagraph } from './SyncParagraph';
 
 const Wrapper = styled.div`
   inline-size: 100%;
@@ -20,11 +12,6 @@ const Wrapper = styled.div`
   > * + * {
     margin-block-start: 1rem;
   }
-`;
-
-const Heading = styled(Typography).attrs({ variant: 'h2' })`
-  font-size: inherit;
-  letter-spacing: initial;
 `;
 
 const Progress = styled(LinearProgress).attrs({ variant: 'determinate' })`
@@ -43,19 +30,67 @@ const Progress = styled(LinearProgress).attrs({ variant: 'determinate' })`
 `;
 
 interface SyncStatusProps extends HTMLAttributes<HTMLDivElement> {
-  /** A number the closed interval [0.0, 1.0], or null if not actively syncing */
-  value: number | null;
+  percentage: number | null;
+  message: string | null;
+  syncStage: number | null;
+  totalStages: number;
+  isSyncing: boolean;
+  syncFinishedSuccessfully: boolean;
+  hasError: boolean;
 }
 
-export const SyncStatus = ({ value, ...props }: SyncStatusProps) => {
-  const isSyncing = value !== null;
-  const percentage = isSyncing ? floatToPercentage(value) : undefined;
-  const successColor = useTheme().palette.success.main;
+export const CheckCircleIcon = styled(CircleCheck)`
+  width: 25px;
+  height: 25px;
+`;
+
+export const XCircleIcon = styled(CircleX)`
+  width: 25px;
+  height: 25px;
+`;
+
+export const SyncStatus = ({
+  isSyncing,
+  percentage,
+  message,
+  syncFinishedSuccessfully,
+  syncStage,
+  totalStages,
+  hasError,
+  ...props
+}: SyncStatusProps) => {
+  const theme = useTheme();
 
   return (
     <Wrapper {...props}>
-      <Heading>{isSyncing ? `Syncing ${percentage}%` : 'Sync complete'}</Heading>
-      {isSyncing ? <Progress value={percentage} /> : <CheckCircleIcon htmlColor={successColor} />}
+      {syncStage && (
+        <SyncHeading>
+          Sync stage {syncStage} of {totalStages}
+        </SyncHeading>
+      )}
+
+      {isSyncing && (
+        <>
+          <SyncHeading>Syncing {percentage}%</SyncHeading>
+          <Progress value={percentage ?? undefined} />
+        </>
+      )}
+
+      {message && <SyncParagraph>{message}</SyncParagraph>}
+
+      {syncFinishedSuccessfully && (
+        <>
+          <SyncHeading>Sync complete</SyncHeading>
+          <CheckCircleIcon color={theme.palette.success.main} />
+        </>
+      )}
+
+      {hasError && (
+        <>
+          <SyncHeading>Sync failed</SyncHeading>
+          <XCircleIcon color={theme.palette.error.main} />
+        </>
+      )}
     </Wrapper>
   );
 };

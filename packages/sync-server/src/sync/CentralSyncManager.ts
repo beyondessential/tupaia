@@ -252,6 +252,10 @@ export class CentralSyncManager {
     accessPolicy: AccessPolicy,
   ): Promise<PullInitiationResult | void> {
     try {
+      if (params.projectIds?.length === 0) {
+        throw new Error('No project IDs provided');
+      }
+      
       await this.connectToSession(sessionId);
 
       // first check if the snapshot is already being processed, to throw a sane error if (for some

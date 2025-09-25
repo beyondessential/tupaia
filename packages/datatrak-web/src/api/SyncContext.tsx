@@ -2,15 +2,16 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import log from 'winston';
 
 import { DatatrakWebUserRequest } from '@tupaia/types';
+import { generateId } from '@tupaia/database';
+import { LoadingScreen } from '@tupaia/ui-components';
 
 import { useDatabaseContext } from '../hooks/database';
-import { generateId } from '@tupaia/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useCurrentUserContext } from './CurrentUserContext';
 import { useProjectsInSync } from '../hooks/database/useProjectsInSync';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
-  clientSyncManager: ClientSyncManager | null;
+  clientSyncManager: ClientSyncManager;
   refetchSyncedProjectIds: () => void;
 };
 
@@ -61,6 +62,10 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
     }
   }, [clientSyncManager, projectsInSync.length]);
 
+  if (!clientSyncManager) {
+    return <LoadingScreen />;
+  }
+  
   return <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>{children}</SyncContext.Provider>;
 };
 
