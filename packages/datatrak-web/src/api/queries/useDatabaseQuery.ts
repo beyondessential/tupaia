@@ -51,21 +51,23 @@ export function useDatabaseQuery<
   const { models } = useDatabaseContext(); // safely call hooks
   const { accessPolicy, ...user } = useCurrentUserContext();
 
-  // This should never happen, but just in case
-  if (!accessPolicy) {
-    throw new Error('Access policy is required');
-  }
-
   // Wrap the queryFn to include context
   const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext =>
-    queryFn({ ...queryFnContext, models, accessPolicy, user, ...options.localContext });
+    queryFn({
+      ...queryFnContext,
+      accessPolicy: accessPolicy!, // useQuery disabled if accessPolicy is pending
+      models,
+      user,
+      ...options.localContext,
+    });
 
   // Remove localContext from options before passing to useQuery
-  const { localContext: _, ...queryOptions } = options;
+  const { localContext: _, enabled = true, ...queryOptions } = options;
 
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     queryKey,
     queryFn: wrappedQueryFn,
+    enabled: Boolean(accessPolicy) && enabled,
     ...queryOptions,
   });
 }
