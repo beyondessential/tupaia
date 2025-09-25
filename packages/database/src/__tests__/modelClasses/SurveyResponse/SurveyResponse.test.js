@@ -29,7 +29,7 @@ describe('getLeaderboardQuery()', () => {
         GROUP BY user_id
       ) r
       JOIN user_account on user_account.id = r.user_id
-      WHERE email NOT IN (${[...SYSTEM_USERS, ...USERS_EXCLUDED_FROM_LEADER_BOARD].join(', ')})
+      WHERE email NOT IN (${[...SYSTEM_USERS, ...USERS_EXCLUDED_FROM_LEADER_BOARD].join(',')})
       AND email NOT LIKE '%@beyondessential.com.au' AND email NOT LIKE '%@bes.au'
       ORDER BY coconuts DESC
       LIMIT ?;`;
@@ -52,7 +52,7 @@ describe('getLeaderboardQuery()', () => {
         GROUP BY user_id
       ) r
       JOIN user_account on user_account.id = r.user_id
-      WHERE email NOT IN (${SYSTEM_USERS.join(', ')})
+      WHERE email NOT IN (${SYSTEM_USERS.join(',')})
       ORDER BY coconuts DESC
       LIMIT ?;`;
 
