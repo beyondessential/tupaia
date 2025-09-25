@@ -135,12 +135,8 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   async setDhisTrackedEntityId(trackedEntityId) {
-    if (!this.metadata) {
-      this.metadata = {};
-    }
-    if (!this.metadata.dhis) {
-      this.metadata.dhis = {};
-    }
+    this.metadata ??= {};
+    this.metadata.dhis ??= {};
     this.metadata.dhis.trackedEntityId = trackedEntityId;
     return this.save();
   }
