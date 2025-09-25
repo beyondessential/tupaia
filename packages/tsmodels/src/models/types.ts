@@ -64,6 +64,14 @@ export type Joined<T, U extends string> = {
   [field in keyof T as field extends string ? `${U}.${field}` : never]: T[field];
 };
 
+interface MultiJoinItem {
+  joinWith: string;
+  joinAs?: string;
+  joinType?: string;
+  joinCondition: string[];
+  fields?: Record<string, string | undefined>;
+}
+
 export type QueryOptions = {
   limit?: number;
   offset?: number;
@@ -72,6 +80,7 @@ export type QueryOptions = {
   joinWith?: string;
   columns?: string[] | Record<string, string>[];
   joinCondition?: [string, string];
+  joins?: MultiJoinItem[];
 };
 
 type BaseModelOverrides<Fields = unknown, RecordT = unknown> = {
