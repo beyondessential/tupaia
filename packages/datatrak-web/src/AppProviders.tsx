@@ -33,8 +33,12 @@ const defaultQueryClient = new QueryClient({
     onError: handleError,
   }),
   defaultOptions: {
+    mutations: {
+      networkMode: 'offlineFirst',
+    },
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
+      networkMode: 'offlineFirst',
       refetchOnWindowFocus: false,
       retry: false,
       keepPreviousData: false,
