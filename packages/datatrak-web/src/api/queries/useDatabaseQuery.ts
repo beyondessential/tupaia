@@ -66,6 +66,7 @@ export function useDatabaseQuery<
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     queryKey,
     queryFn: wrappedQueryFn,
+    networkMode: 'always',
     ...queryOptions,
   });
 }
