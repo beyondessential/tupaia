@@ -46,7 +46,7 @@ export class MeditrakSyncQueue extends ChangeHandler {
    */
   async refreshPermissionsBasedView(database) {
     await database.executeSql(
-      `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
+      'REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;',
     );
   }
 
