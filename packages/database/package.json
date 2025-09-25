@@ -61,6 +61,7 @@
     "lodash.keyby": "^4.6.0",
     "lodash.orderby": "^4.6.0",
     "moment": "^2.24.0",
+    "moment-timezone": "^0.5.45",
     "os": "0.1.1",
     "pg": "8.5.1",
     "pg-pubsub": "^0.8.1",

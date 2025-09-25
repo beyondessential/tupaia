@@ -1,11 +1,15 @@
 import keyBy from 'lodash.keyby';
 import momentTimezone from 'moment-timezone';
 
-import { generateId } from '@tupaia/database';
 import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
 import { ValidationError, stripTimezoneFromDate } from '@tupaia/utils';
+import { generateId } from '../../utilities';
+import { upsertAnswers } from './upsertAnswers';
 
-import { upsertAnswers } from '../../dataAccessors';
+/**
+ * @typedef {import('@tupaia/types').Answer} Answer
+ * @typedef {(answer: Answer) => Promise<Answer["text"]>} AnswerBodyParser
+ */
 
 async function getRecordsByCode(model, codes) {
   const records = await model.find({ code: Array.from(codes) });
@@ -45,9 +49,12 @@ async function buildAnswerRecords(models, rawAnswerRecords) {
   return answerRecords;
 }
 
-async function saveAnswerRecords(models, rawAnswerRecords, surveyResponseId) {
+/**
+ * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} answerBodyParsers
+ */
+async function saveAnswerRecords(models, rawAnswerRecords, surveyResponseId, answerBodyParsers) {
   const answerRecords = await buildAnswerRecords(models, rawAnswerRecords);
-  return upsertAnswers(models, answerRecords, surveyResponseId);
+  return await upsertAnswers(models, answerRecords, surveyResponseId, answerBodyParsers);
 }
 
 function buildResponseRecord(user, entitiesByCode, body) {
@@ -107,18 +114,16 @@ function buildResponseRecord(user, entitiesByCode, body) {
 
 async function saveSurveyResponses(models, responseRecords) {
   return Promise.all(
-    responseRecords.map(async record => {
-      return models.surveyResponse.updateOrCreate(
-        {
-          id: record.id,
-        },
-        record,
-      );
-    }),
+    responseRecords.map(async record =>
+      models.surveyResponse.updateOrCreate({ id: record.id }, record),
+    ),
   );
 }
 
-export async function saveResponsesToDatabase(models, userId, responses) {
+/**
+ * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} answerBodyParsers
+ */
+export async function saveResponsesToDatabase(models, userId, responses, answerBodyParsers) {
   // pre-fetch some data that will be used by multiple responses/answers
   const [entitiesByCode, user] = await Promise.all([
     getEntitiesByCode(models, responses),
@@ -141,7 +146,12 @@ export async function saveResponsesToDatabase(models, userId, responses) {
     // overwhelm postgres)
     for (let i = 0; i < responses.length; i++) {
       const response = responses[i];
-      const answers = await saveAnswerRecords(models, response.answers, surveyResponses[i].id);
+      const answers = await saveAnswerRecords(
+        models,
+        response.answers,
+        surveyResponses[i].id,
+        answerBodyParsers,
+      );
 
       idsCreated[i].answerIds = answers.map(a => a.id);
     }
