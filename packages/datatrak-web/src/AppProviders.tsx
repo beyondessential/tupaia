@@ -41,7 +41,7 @@ const defaultQueryClient = new QueryClient({
       networkMode: 'offlineFirst',
       refetchOnWindowFocus: false,
       retry: false,
-      staleTime: 300_000, // 5 minutes
+      staleTime: 1000 * 60 * 5, // 5 minutes
     },
   },
 });
