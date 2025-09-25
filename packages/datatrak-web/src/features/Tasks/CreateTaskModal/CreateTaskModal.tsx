@@ -118,6 +118,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   } = formContext;
 
   const handleCountriesError = async (error: any) => {
+    // TODO: No longer work for offline
     if (error?.code !== 403) return;
     // in this case it is a permissions error, so the user needs to be redirected to the project screen after the user's project is updated
     editUser({ projectId: null });

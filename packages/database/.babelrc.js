@@ -1,6 +1,25 @@
 const includedDateOffset = 90 * 24 * 60 * 60 * 1000; // include migrations up to 90 days old
 const includedMigrationsDate = new Date().setTime(Date.now() - includedDateOffset);
-const checkMigrationOutdated = function (migrationName) {
+const checkMigrationOutdated = function (migrationName, filepath) {
+  if (migrationName.endsWith('.js')) {
+    // Set up Babel to transpile ES6 imports in migrations
+    require('@babel/register')({
+      presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
+      plugins: ['@babel/plugin-transform-modules-commonjs'],
+      extensions: ['.js', '.ts'],
+      cache: false,
+    });
+
+    const migration = require(filepath);
+    const targets = migration._meta?.targets || [];
+
+    // Browser migrations are never outdated because
+    // they are needed for initial set up of new devices
+    if (targets.includes('browser')) {
+      return false;
+    }
+  }
+
   const yearPart = migrationName.substring(0, 4);
   const monthPart = migrationName.substring(4, 6);
   const dayPart = migrationName.substring(6, 8);
@@ -21,7 +40,7 @@ const getIgnore = api => {
         const parentDirectory = filepathComponents.pop();
 
         if (directory === 'migrations' || directory === 'migrationData') {
-          return checkMigrationOutdated(filename);
+          return checkMigrationOutdated(filename, filepath);
         }
 
         // Some migration data is broken into separate subfiles within a folder named with the

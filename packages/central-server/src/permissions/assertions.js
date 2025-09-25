@@ -52,7 +52,7 @@ export const assertAnyPermissions = (assertions, errorMessage) => async accessPo
 };
 
 /**
- * specific permissions assertions
+ * @deprecated Use hasBESAdminAccess from @tupaia/access-policy instead
  */
 export const hasBESAdminAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);

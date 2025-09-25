@@ -1,7 +1,6 @@
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
 import { assertUserHasTaskPermissions } from '../tasks/assertTaskPermissions';
-import { createTaskCommentDBFilter } from './assertTaskCommentPermissions';
 
 /**
  * Handles endpoints:
@@ -12,7 +11,11 @@ export class GETTaskComments extends GETHandler {
   permissionsFilteredInternally = true;
 
   async getPermissionsFilter(criteria, options) {
-    return createTaskCommentDBFilter(this.accessPolicy, this.models, criteria, options);
+    return await this.models.taskComment.createRecordsPermissionFilter(
+      this.accessPolicy,
+      criteria,
+      options,
+    );
   }
 
   async getPermissionsViaParentFilter(criteria, options) {

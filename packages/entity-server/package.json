@@ -33,10 +33,11 @@
     "@tupaia/database": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
+    "@tupaia/tsmodels": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "lodash.keyby": "^4.6.0",
     "winston": "^3.17.0"
   },

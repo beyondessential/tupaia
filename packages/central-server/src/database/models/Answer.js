@@ -2,7 +2,7 @@
 
 import winston from 'winston';
 
-import { MaterializedViewLogDatabaseModel, DatabaseRecord, RECORDS } from '@tupaia/database';
+import { AnswerModel as BaseAnswerModel, DatabaseRecord, RECORDS } from '@tupaia/database';
 import { getHook } from '../../hooks';
 import { CallbackQueue } from '../../utilities/CallbackQueue';
 
@@ -119,7 +119,7 @@ class AnswerRecord extends DatabaseRecord {
   }
 }
 
-export class AnswerModel extends MaterializedViewLogDatabaseModel {
+export class AnswerModel extends BaseAnswerModel {
   notifiers = [onChangeRunQuestionHook];
 
   get DatabaseRecordClass() {

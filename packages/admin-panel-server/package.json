@@ -37,16 +37,16 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "camelcase-keys": "^7.0.0",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "langchain": "^0.3.27",
     "lodash": "^4.17.4",
-    "multer": "^1.4.3",
+    "multer": "^2.0.2",
     "winston": "^3.17.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
-    "@types/multer": "^1.4.7",
+    "@types/multer": "^2.0.0",
     "copyfiles": "^2.4.1",
     "jest": "^29.7.0",
     "rimraf": "^6.0.1"

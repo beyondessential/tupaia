@@ -1,24 +1,7 @@
-// Generate lists of country codes we have access to per permission group id
-export const fetchCountryCodesByPermissionGroupId = async (accessPolicy, models) => {
-  const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
-  const countryCodesByPermissionGroupId = {};
-  const permissionGroupNameToId = await models.permissionGroup.findIdByField(
-    'name',
-    allPermissionGroupsNames,
-  );
-  for (const [permissionGroupName, permissionGroupId] of Object.entries(permissionGroupNameToId)) {
-    const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
-    countryCodesByPermissionGroupId[permissionGroupId] = countryCodes;
-  }
-  return countryCodesByPermissionGroupId;
-};
-
 // Generate lists of country ids we have access to per permission group id
 export const fetchCountryIdsByPermissionGroupId = async (accessPolicy, models) => {
-  const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
-    accessPolicy,
-    models,
-  );
+  const countryCodesByPermissionGroupId =
+    await models.permissionGroup.fetchCountryCodesByPermissionGroupId(accessPolicy);
 
   // Transform arrays of codes to arrays of ids
   const allCountryCodes = accessPolicy.getEntitiesAllowed();

@@ -71,6 +71,7 @@ export class UserRoute extends Route<UserRequest> {
       deleteAccountRequested: delete_account_requested === true,
       hideWelcomeScreen: hide_welcome_screen === true,
       hasAdminPanelAccess,
+      accessPolicy: accessPolicy.policy,
     };
   }
 }

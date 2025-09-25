@@ -3,10 +3,9 @@ import {
   populateTestData,
   clearTestData,
   upsertDummyRecord,
-} from '../../testUtilities';
-import { EntityHierarchyCacher } from '../../changeHandlers';
-import { EntityHierarchySubtreeRebuilder } from '../../changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
-
+} from '../../server/testUtilities';
+import { EntityHierarchyCacher } from '../../server/changeHandlers';
+import { EntityHierarchySubtreeRebuilder } from '../../server/changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
 import {
   TEST_DATA,
   INITIAL_HIERARCHY_OCEAN,
@@ -40,20 +39,39 @@ describe('EntityHierarchyCacher', () => {
     const project = await models.project.findOne({ code: projectCode });
     await subtreeRebuilder.buildAndCacheProject(project);
   };
-  const assertRelationsMatch = async (projectCode, relations) => {
+  const assertRelationsMatch = async (projectCode, expectedAncestorDescendantRelations) => {
     await models.database.waitForAllChangeHandlers();
     const project = await models.project.findOne({ code: projectCode });
     const { entity_hierarchy_id: hierarchyId } = project;
-    const relationsForProject = await models.ancestorDescendantRelation.find({
+    const ancestorDescendantRelationsForProject = await models.ancestorDescendantRelation.find({
       entity_hierarchy_id: hierarchyId,
     });
+    const parentChildRelationsForProject = await models.entityParentChildRelation.find({
+      entity_hierarchy_id: hierarchyId,
+    });
+
+    // Get the expected entity_parent_child_relation
+    // ie: the expected ancestor descendant relations that have a generational distance of 1
+    const expectedParentChildRelations = expectedAncestorDescendantRelations
+      .filter(({ generational_distance }) => generational_distance === 1)
+      .map(({ ancestor_id, descendant_id }) => ({
+        parent_id: ancestor_id,
+        child_id: descendant_id,
+      }));
+
     expect(
-      relationsForProject.map(r => ({
+      parentChildRelationsForProject.map(r => ({
+        parent_id: r.parent_id,
+        child_id: r.child_id,
+      })),
+    ).toIncludeSameMembers(expectedParentChildRelations);
+    expect(
+      ancestorDescendantRelationsForProject.map(r => ({
         ancestor_id: r.ancestor_id,
         descendant_id: r.descendant_id,
         generational_distance: r.generational_distance,
       })),
-    ).toIncludeSameMembers(relations);
+    ).toIncludeSameMembers(expectedAncestorDescendantRelations);
   };
 
   beforeEach(async () => {

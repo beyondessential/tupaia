@@ -1,5 +1,5 @@
-import { RECORDS } from '@tupaia/database';
-import { fullyQualifyColumnSelector } from '../GETHandler/helpers';
+import { fullyQualifyColumnSelector, RECORDS } from '@tupaia/database';
+
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertDashboardGetPermissions } from '../dashboards';
@@ -37,8 +37,7 @@ export class GETDashboardRelations extends GETHandler {
     Object.entries(filter).forEach(([columnSelector, value]) => {
       // We don't want to use the customColumnSelectors for dashboard relations since they are not
       // compatible with the database query so just use fullyQualifyColumnSelector
-      processedObject[fullyQualifyColumnSelector(this.models, columnSelector, this.recordType)] =
-        value;
+      processedObject[fullyQualifyColumnSelector(columnSelector, this.recordType)] = value;
     });
     return processedObject;
   }

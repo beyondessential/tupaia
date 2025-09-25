@@ -78,7 +78,7 @@ export const createMockModelsStub = (responseMap?: MockModelResponseMap) => {
     entity: new EntityModel({ fetchSchemaForTable: () => {} }), // no database
     dataElement: {},
     dataGroup: {},
-  } as DataBrokerModelRegistry;
+  } as unknown as DataBrokerModelRegistry;
 
   if (responseMap?.entity?.find) {
     mockModels.entity.find = jest.fn().mockResolvedValue(responseMap.entity.find);

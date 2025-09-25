@@ -1,13 +1,13 @@
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
 import { mergeMultiJoin } from '../utilities';
-import { assertUserHasTaskPermissions, createTaskDBFilter } from './assertTaskPermissions';
+import { assertUserHasTaskPermissions } from './assertTaskPermissions';
 
 export class GETTasks extends GETHandler {
   permissionsFilteredInternally = true;
 
   async getPermissionsFilter(criteria, options) {
-    return createTaskDBFilter(this.accessPolicy, this.models, criteria, options);
+    return this.models.task.createRecordsPermissionFilter(this.accessPolicy, criteria, options);
   }
 
   async findSingleRecord(projectId, options) {

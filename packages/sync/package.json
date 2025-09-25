@@ -1,0 +1,32 @@
+{
+  "name": "@tupaia/sync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Utilities for syncing data between browser and server in Tupaia",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/sync"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && yarn run package:build:ts",
+    "build-dev": "yarn build",
+    "lint": "yarn package:lint",
+    "lint:fix": "yarn lint --fix",
+    "test": "yarn package:test --passWithNoTests",
+    "test:coverage": "yarn test --coverage"
+  },
+  "dependencies": {
+    "@tupaia/constants": "workspace:*",
+    "@tupaia/database": "workspace:*",
+    "@tupaia/tsutils": "workspace:*",
+    "@tupaia/utils": "workspace:*",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
+  }
+}

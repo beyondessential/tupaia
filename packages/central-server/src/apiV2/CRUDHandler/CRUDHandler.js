@@ -1,6 +1,7 @@
 import { singularise } from '@tupaia/utils';
+import { resourceToRecordType } from '@tupaia/database';
+
 import { RouteHandler } from '../RouteHandler';
-import { resourceToRecordType } from '../../utilities';
 import { extractResourceFromPath, extractChildResourceFromPath } from './helpers';
 
 export class CRUDHandler extends RouteHandler {

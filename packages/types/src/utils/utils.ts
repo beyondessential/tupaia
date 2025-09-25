@@ -67,3 +67,5 @@ export type Flatten<
 >;
 
 export type ValueOf<T> = T extends Record<string | number | symbol, unknown> ? T[keyof T] : never;
+
+export type Writable<T> = { -readonly [field in keyof T]?: T[field] };

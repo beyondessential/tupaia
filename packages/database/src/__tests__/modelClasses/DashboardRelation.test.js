@@ -2,7 +2,7 @@ import {
   findOrCreateDummyCountryEntity,
   findOrCreateDummyRecord,
   getTestModels,
-} from '../../testUtilities';
+} from '../../server/testUtilities';
 
 const DASHBOARDS = [
   {

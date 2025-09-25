@@ -5,5 +5,7 @@ export * from './getSyncQueueChangeTime';
 export * from './hashStringToInt';
 export * from './object';
 export * from './period';
+export * from './ResponseObjectBuilder';
 export * from './typeGuards';
 export * from './validation';
+export * from './task';
