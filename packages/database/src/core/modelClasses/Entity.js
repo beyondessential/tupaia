@@ -516,13 +516,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {string} geojson
    */
   async updateRegionCoordinates(code, geojson) {
-    const shouldSetBounds =
-      (
-        await this.find({
-          code,
-          bounds: null,
-        })
-      ).length > 0;
+    const shouldSetBounds = (await this.count({ code, bounds: null })) > 0;
     const boundsString = shouldSetBounds
       ? ', "bounds" =  ST_Envelope(ST_GeomFromGeoJSON(?)::geometry)'
       : '';
