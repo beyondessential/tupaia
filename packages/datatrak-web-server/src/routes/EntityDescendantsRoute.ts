@@ -1,8 +1,10 @@
-import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebEntityDescendantsRequest, Entity } from '@tupaia/types';
-import { TupaiaApiClient } from '@tupaia/api-client';
-import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import { Request } from 'express';
+
+import { TupaiaApiClient } from '@tupaia/api-client';
+import { Route } from '@tupaia/server-boilerplate';
+import { isNotNullish } from '@tupaia/tsutils';
+import { DatatrakWebEntityDescendantsRequest, Entity } from '@tupaia/types';
 import { sortSearchResults } from '../utils';
 
 export type EntityDescendantsRequest = Request<
@@ -42,7 +44,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
 
     if (isLoggedIn) {
       const currentUser = await models.user.findOne({ email: session.email });
-      recentEntities = await models.user.getRecentEntities(currentUser.id, countryCode, type);
+      recentEntities = await models.user.getRecentEntityIds(currentUser.id, countryCode, type);
     }
 
     const filter = {
@@ -94,13 +96,14 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
           ...recentEntities
             .map((id: string) => {
               const entity = entities.find((e: any) => e.id === id);
-              if (!entity) return null; // If the entity is not found, return null so it is filtered out. This can happen if the entity has been deleted or if the entity is new and the entity hierarchy cache has not refreshed yet
-              return {
-                ...entity,
-                isRecent: true,
-              };
+              if (!entity) {
+                // This can happen if the entity has been deleted; or it’s new and the entity
+                // hierarchy cache hasn’t refreshed yet
+                return null;
+              }
+              return { ...entity, isRecent: true };
             })
-            .filter(Boolean),
+            .filter(isNotNullish),
           ...entities.sort((a: any, b: any) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
         ];
 
