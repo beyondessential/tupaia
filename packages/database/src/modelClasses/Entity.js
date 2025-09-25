@@ -1,11 +1,11 @@
 import keyBy from 'lodash.keyby';
 
-import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
+import { fetchPatiently, translateBounds, translatePoint, translateRegion } from '@tupaia/utils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 import { SqlQuery } from '../SqlQuery';
+import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -196,7 +196,7 @@ export class EntityRecord extends DatabaseRecord {
 
   async getDescendantsOfType(hierarchyId, entityType) {
     if (this.type === entityType) return [this];
-    return this.getDescendants(hierarchyId, { type: entityType });
+    return await this.getDescendants(hierarchyId, { type: entityType });
   }
 
   async getNearestOrgUnitDescendants(hierarchyId) {
@@ -266,11 +266,11 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   async getChildren(hierarchyId, criteria) {
-    return this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
+    return await this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
   }
 
   async getChildrenViaHierarchy(hierarchyId) {
-    return this.database.executeSql(
+    return await this.database.executeSql(
       `
           SELECT entity.*
           FROM entity
@@ -295,7 +295,7 @@ export class EntityRecord extends DatabaseRecord {
 
     // calculate the centroid of the region
     const result = await this.database.executeSql(
-      `SELECT ST_AsGeoJSON(ST_Centroid(ST_AsGeoJSON(region))) as centroid from entity where id = ?;`,
+      'SELECT ST_AsGeoJSON(ST_Centroid(ST_AsGeoJSON(region))) as centroid from entity where id = ?;',
       [this.id],
     );
     const parsedPoint = JSON.parse(result[0].centroid);
@@ -341,7 +341,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async updatePointCoordinatesFormatted(code, point) {
-    return this.database.executeSql(
+    return await this.database.executeSql(
       `
           UPDATE "entity"
           SET
@@ -354,25 +354,16 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async updateBoundsCoordinates(code, bounds) {
-    return this.database.executeSql(
-      `
-          UPDATE "entity"
-          SET "bounds" = ?
-          WHERE "code" = ?;
-        `,
-      [bounds, code],
-    );
+    return await this.database.executeSql('UPDATE "entity" SET "bounds" = ? WHERE "code" = ?;', [
+      bounds,
+      code,
+    ]);
   }
 
   async updateEntityAttributes(code, attributes) {
-    attributes = attributes ?? {};
-    return this.database.executeSql(
-      `
-          UPDATE "entity"
-          SET "attributes" = ?
-          WHERE "code" = ?;
-        `,
-      [attributes, code],
+    return await this.database.executeSql(
+      'UPDATE "entity" SET "attributes" = ? WHERE "code" = ?;',
+      [attributes ?? {}, code],
     );
   }
 
@@ -388,7 +379,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       ? ', "bounds" =  ST_Envelope(ST_GeomFromGeoJSON(?)::geometry)'
       : '';
 
-    return this.database.executeSql(
+    return await this.database.executeSql(
       `
           UPDATE "entity"
           SET "region" = ST_GeomFromGeoJSON(?) ${boundsString}
