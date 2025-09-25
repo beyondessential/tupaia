@@ -55,7 +55,6 @@ export function useDatabaseMutation<
 
   return useMutation<TData, TError, TVariables, TContext>({
     mutationFn: wrappedMutationFn,
-    networkMode: 'always',
     ...reactQueryOptions,
   });
 }
