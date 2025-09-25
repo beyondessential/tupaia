@@ -71,7 +71,6 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
       // TODO: Assert user has access
 
       const data = { ...surveyResponseData, answers };
-      const remote = await post('submitSurveyResponse', { data });
 
       const local = await models.wrapInTransaction(async transactingModels => {
         // Mirroring datatrak-web-server logic

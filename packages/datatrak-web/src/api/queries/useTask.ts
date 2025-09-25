@@ -3,10 +3,10 @@ import { DatatrakWebTaskRequest } from '@tupaia/types';
 import { get } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { getTask } from '../../database';
-import { LocalContext, useDatabaseQuery } from './useDatabaseQuery';
+import { useDatabaseQuery } from './useDatabaseQuery';
 import { DatatrakWebModelRegistry } from '../../types';
 
-export interface UseTaskLocalContext extends LocalContext {
+export interface UseTaskLocalContext {
   models: DatatrakWebModelRegistry;
   taskId?: string;
 }
