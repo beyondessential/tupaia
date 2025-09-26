@@ -84,6 +84,21 @@ export const snapshotOutgoingChanges = async (
 
     fromId = maxId;
     totalCount += chunkCount;
+
+    log.info('snapshotOutgoingChanges.parameters', {
+      since,
+      fromId,
+      projectIds,
+      recordTypes,
+      avoidRepull,
+      deviceId,
+      CHUNK_SIZE,
+    });
+    log.info('snapshotOutgoingChanges.countedChunk', {
+      chunkCount,
+      fromId,
+      totalCount,
+    });
   }
 
   log.info('snapshotOutgoingChangesFromSyncLookup.countedAll', {
