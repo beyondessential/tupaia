@@ -113,7 +113,7 @@ function buildResponseRecord(user, entitiesByCode, body) {
 }
 
 async function saveSurveyResponses(models, responseRecords) {
-  return Promise.all(
+  return await Promise.all(
     responseRecords.map(async record =>
       models.surveyResponse.updateOrCreate({ id: record.id }, record),
     ),
