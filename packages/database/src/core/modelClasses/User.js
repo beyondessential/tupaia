@@ -119,7 +119,7 @@ export class UserRecord extends DatabaseRecord {
   /**
    * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
-   * @returns {(import('./Entity').EntityRecord & { is_recent: true })[]}
+   * @returns {(import('./Entity').EntityRecord & { isRecent: true })[]}
    */
   async getRecentEntities(countryCode, type) {
     const entityIds = this.getRecentEntityIds(countryCode, type);
@@ -127,7 +127,7 @@ export class UserRecord extends DatabaseRecord {
     // entity IDs are stored in user_account.preferences JSONB attribute, which doesn’t enforce
     // foreign key constraints, hence filtering out entities that may no longer exist
     const augmented = entityRecords.filter(isNotNullish);
-    for (const entity of augmented) entity.is_recent = true;
+    for (const entity of augmented) entity.isRecent = true;
     return augmented;
   }
 

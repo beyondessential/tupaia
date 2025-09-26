@@ -5,15 +5,20 @@ import { Entity, Resolved } from '@tupaia/types';
 
 import { extendedFieldFunctions, isExtendedField } from './extendedFieldFunctions';
 
+export interface AugmentedEntityRecord extends EntityRecord {
+  is_recent?: true;
+  parent_name?: Entity['name'];
+}
+
 export type ExtendedFieldFunctions = Readonly<{
   [field in keyof typeof extendedFieldFunctions]: Resolved<
     ReturnType<(typeof extendedFieldFunctions)[field]>
   >;
 }>;
 
-export type ExtendedEntityFieldName = keyof Entity | keyof ExtendedFieldFunctions;
+export type ExtendedEntityFieldName = keyof AugmentedEntityRecord | keyof ExtendedFieldFunctions;
 
-export type ExtendedEntityFields = Entity & ExtendedFieldFunctions;
+export type ExtendedEntityFields = AugmentedEntityRecord & ExtendedFieldFunctions;
 export type EntityResponseObject = {
   [field in ExtendedEntityFieldName]: ExtendedEntityFields[field];
 };
@@ -22,7 +27,7 @@ type FormatContext = { hierarchyId: string };
 
 export async function formatEntityForResponse(
   ctx: FormatContext,
-  entity: EntityRecord,
+  entity: AugmentedEntityRecord,
   fields: ExtendedEntityFieldName[],
 ) {
   const responseBuilder = new ResponseObjectBuilder<EntityResponseObject>();
@@ -38,7 +43,7 @@ export async function formatEntityForResponse(
 
 export async function formatEntitiesForResponse(
   ctx: FormatContext,
-  entities: EntityRecord[],
+  entities: AugmentedEntityRecord[],
   fields: ExtendedEntityFieldName[],
 ) {
   const responseBuilders = new Array(entities.length)

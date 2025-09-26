@@ -5,22 +5,23 @@ import { clone } from 'es-toolkit';
 import omitBy from 'lodash.omitby';
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { EntityRecord, ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
+import { ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
 import { camelcaseKeys, ensure, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { Entity, Project } from '@tupaia/types';
 import { snakeKeys } from '@tupaia/utils';
 import { CurrentUser } from '../../api';
 import { DatatrakWebModelRegistry } from '../../types';
 import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
+import { AugmentedEntityRecord } from '../../utils/formatEntity';
 
 const DEFAULT_FIELDS: ExtendedEntityFieldName[] = ['id', 'parent_name', 'code', 'name', 'type'];
 
 const DEFAULT_PAGE_SIZE = 100;
 
 interface SearchResult {
-  name: string;
+  name: Entity['name'];
   parent?: {
-    name: string;
+    name: Entity['name'];
   };
 }
 
@@ -177,7 +178,7 @@ export const getEntityDescendants = async ({
     dbEntityFilter.generational_distance = 2;
   }
 
-  const entities: (EntityRecord & { is_recent: true })[] =
+  const entities: AugmentedEntityRecord[] =
     await models.entity.getDescendantsFromParentChildRelation(
       project.entity_hierarchy_id,
       [rootEntityId],
@@ -197,7 +198,7 @@ export const getEntityDescendants = async ({
         ? new Set(await models.user.getRecentEntityIds(user.id, countryCode, type))
         : new Set();
 
-    const recentEntities: (EntityRecord & { is_recent: true })[] = [];
+    const recentEntities: AugmentedEntityRecord[] = [];
     for (const entity of entities) {
       if (!recentEntityIds.has(entity.id)) continue;
       // clone() (not { ...entity }) so copy is still an EntityRecord instance
