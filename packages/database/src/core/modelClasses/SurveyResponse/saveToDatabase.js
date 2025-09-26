@@ -50,7 +50,7 @@ async function buildAnswerRecords(models, rawAnswerRecords) {
 }
 
 /**
- * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} answerBodyParsers
+ * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} [answerBodyParsers]
  */
 async function saveAnswerRecords(models, rawAnswerRecords, surveyResponseId, answerBodyParsers) {
   const answerRecords = await buildAnswerRecords(models, rawAnswerRecords);
@@ -113,7 +113,7 @@ function buildResponseRecord(user, entitiesByCode, body) {
 }
 
 async function saveSurveyResponses(models, responseRecords) {
-  return Promise.all(
+  return await Promise.all(
     responseRecords.map(async record =>
       models.surveyResponse.updateOrCreate({ id: record.id }, record),
     ),
@@ -121,7 +121,7 @@ async function saveSurveyResponses(models, responseRecords) {
 }
 
 /**
- * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} answerBodyParsers
+ * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} [answerBodyParsers]
  */
 export async function saveResponsesToDatabase(models, userId, responses, answerBodyParsers) {
   // pre-fetch some data that will be used by multiple responses/answers

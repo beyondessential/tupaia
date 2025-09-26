@@ -18,11 +18,9 @@ export const useResubmitSurveyResponse = () => {
 
   return useMutation<any, Error, AnswersT, unknown>(
     async (answers: AnswersT) => {
-      if (!answers) {
-        return;
-      }
+      if (!answers || !surveyResponseId) return;
 
-      return post(`resubmitSurveyResponse/${surveyResponseId}`, {
+      return await post(`resubmitSurveyResponse/${encodeURIComponent(surveyResponseId)}`, {
         data: {
           ...surveyResponseData,
           answers,

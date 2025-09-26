@@ -35,7 +35,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} answerBodyParsers
+   * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} [answerBodyParsers]
    */
   static async saveResponsesToDatabase(models, userId, surveyResponses, answerBodyParsers) {
     return await saveResponsesToDatabase(models, userId, surveyResponses, answerBodyParsers);
