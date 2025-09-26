@@ -25,7 +25,27 @@ export const snapshotOutgoingChanges = async (
   const avoidRepull = config.lookupTable.avoidRepull;
   const recordTypes = models.map(m => m.databaseRecord);
 
+  log.info('snapshotOutgoingChanges.starting', {
+    since,
+    fromId,
+    projectIds,
+    recordTypes,
+    avoidRepull,
+    deviceId,
+    CHUNK_SIZE,
+  });
+
   while (fromId != null) {
+    log.info('snapshotOutgoingChanges.looping', {
+      since,
+      fromId,
+      projectIds,
+      recordTypes,
+      avoidRepull,
+      deviceId,
+      CHUNK_SIZE,
+    });
+
     const [{ maxId, count }] = (await database.executeSql(
       `
       WITH inserted AS (
