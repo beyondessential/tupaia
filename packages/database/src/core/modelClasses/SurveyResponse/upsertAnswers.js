@@ -31,7 +31,10 @@ export async function upsertAnswers(models, answers, surveyResponseId, answerBod
       );
       answerRecords.push(answerRecord);
     } catch (error) {
-      throw new DatabaseError(`Saving answer ${answer.id}`, error);
+      throw new DatabaseError(
+        `Saving answer ${answer.id ?? ''} for question ${answer.question_id} of survey response ${surveyResponseId}`,
+        error,
+      );
     }
   }
 
