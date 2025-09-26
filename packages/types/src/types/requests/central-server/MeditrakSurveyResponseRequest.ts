@@ -40,7 +40,7 @@ export interface MeditrakSurveyResponseRequest {
   timestamp?: string;
   approval_status?: string;
   entities_upserted?: Entity[];
-  options_created?: Omit<Option, 'id'>[];
+  options_created?: Pick<Option, 'label' | 'option_set_id' | 'value'>[];
   /**
    * @description only used in meditrak-app-server, v1.7.87 to v1.9.110 (inclusive) uses submission_time
    */
