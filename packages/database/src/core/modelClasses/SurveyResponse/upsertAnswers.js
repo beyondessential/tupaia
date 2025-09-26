@@ -8,10 +8,10 @@ import { getAnswerText } from './getAnswerText';
  * @param {Answer[]} answers
  * @param {import('@tupaia/types').SurveyResponse["id"]} surveyResponseId
  * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} [answerBodyParsers]
- * @returns {Promise<import('@tupaia/types').Answer[]>}
+ * @returns {Promise<import('../Answer').AnswerRecord[]>}
  */
 export async function upsertAnswers(models, answers, surveyResponseId, answerBodyParsers) {
-  /** @type {import('@tupaia/types').Answer[]} */
+  /** @type {import('../Answer').AnswerRecord[]} */
   const answerRecords = [];
 
   for (const answer of answers) {
@@ -24,7 +24,7 @@ export async function upsertAnswers(models, answers, surveyResponseId, answerBod
     };
 
     try {
-      /** @type {import('@tupaia/types').Answer} */
+      /** @type {import('../Answer').AnswerRecord[]} */
       const answerRecord = await models.answer.updateOrCreate(
         { survey_response_id: surveyResponseId, question_id: answer.question_id },
         answerDocument,
