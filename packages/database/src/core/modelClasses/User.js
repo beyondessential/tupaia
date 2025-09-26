@@ -123,7 +123,9 @@ export class UserRecord extends DatabaseRecord {
    */
   async getRecentEntities(countryCode, type) {
     const entityIds = this.getRecentEntityIds(countryCode, type);
-    const entityRecords = await Promise.all(entityIds.map(this.otherModels.entity.findById));
+    const entityRecords = await Promise.all(
+      entityIds.map(entityId => this.otherModels.entity.findById(entityId)),
+    );
     // entity IDs are stored in user_account.preferences JSONB attribute, which doesn’t enforce
     // foreign key constraints, hence filtering out entities that may no longer exist
     const augmented = entityRecords.filter(isNotNullish);
