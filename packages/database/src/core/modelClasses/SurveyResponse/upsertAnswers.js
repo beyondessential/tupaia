@@ -19,7 +19,7 @@ export async function upsertAnswers(models, answers, surveyResponseId, answerBod
       id: answer.id,
       question_id: answer.question_id,
       survey_response_id: surveyResponseId,
-      text: getAnswerText(answer, answerBodyParsers),
+      text: await getAnswerText(answer, answerBodyParsers),
       type: answer.type,
     };
 
