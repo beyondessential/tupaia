@@ -81,7 +81,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         const submitterId =
           user.isLoggedIn && user.id // id check redundant, for type inference
             ? user.id
-            : await transactingModels.user.findPublicUser();
+            : (await transactingModels.user.findPublicUser()).id;
         await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
         await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
         await SurveyResponseModel.saveResponsesToDatabase(transactingModels, submitterId, [
