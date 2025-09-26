@@ -24,7 +24,7 @@ export async function upsertAnswers(models, answers, surveyResponseId, answerBod
     };
 
     try {
-      /** @type {import('../Answer').AnswerRecord[]} */
+      /** @type {import('../Answer').AnswerRecord} */
       const answerRecord = await models.answer.updateOrCreate(
         { survey_response_id: surveyResponseId, question_id: answer.question_id },
         answerDocument,
