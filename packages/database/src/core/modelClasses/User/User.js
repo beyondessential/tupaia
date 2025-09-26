@@ -13,7 +13,6 @@ import { RECORDS } from '../../records';
 import { addRecentEntities } from './addRecentEntities';
 
 const DEFAULT_PAGE_SIZE = 100;
-const MAX_RECENT_ENTITIES = 3;
 
 const USERS_EXCLUDED_FROM_LIST = [
   'edmofro@gmail.com', // Edwin

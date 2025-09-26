@@ -1,12 +1,12 @@
-import { DatatrakWebServerModelRegistry } from '../types';
-
 const MAX_RECENT_ENTITIES = 3;
 
-export async function addRecentEntities(
-  models: DatatrakWebServerModelRegistry,
-  userId: string,
-  entityIds: string[],
-) {
+/**
+ * @param {import('../../ModelRegistry').ModelRegistry} models
+ * @param {import('@tupaia/types').User['id']} userId
+ * @param {import('@tupaia/types').Entity['id'][]} entityIds
+ * @returns {Promise}
+ */
+export async function addRecentEntities(models, userId, entityIds) {
   if (!entityIds || !entityIds.length) return;
 
   const user = await models.user.findById(userId);
