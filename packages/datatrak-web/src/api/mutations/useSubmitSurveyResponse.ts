@@ -84,7 +84,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
             : (await transactingModels.user.findPublicUser()).id;
         await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
         await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
-        await SurveyResponseModel.saveResponsesToDatabase(transactingModels, submitterId, [
+        return await SurveyResponseModel.saveResponsesToDatabase(transactingModels, submitterId, [
           processedResponse,
         ]);
       });
