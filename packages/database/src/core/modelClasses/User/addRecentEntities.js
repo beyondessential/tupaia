@@ -1,3 +1,5 @@
+import { ensure } from '@tupaia/tsutils';
+
 const MAX_RECENT_ENTITIES = 3;
 
 /**
@@ -7,47 +9,47 @@ const MAX_RECENT_ENTITIES = 3;
  * @returns {Promise}
  */
 export async function addRecentEntities(models, userId, entityIds) {
-  if (!entityIds || !entityIds.length) return;
+  if (!entityIds?.length) return;
 
-  const user = await models.user.findById(userId);
-  if (!user) throw new Error(`User ${userId} does not exist`);
+  const user = ensure(await models.user.findById(userId), `No user exists with ID ${userId}`);
 
-  const { recent_entities: allRecentEntities = {} } = user.preferences;
+  /**
+   * @typedef {import('@tupaia/types').Country["code"]} CountryCode
+   * @typedef {import('@tupaia/types').Entity["type"]} EntityType
+   * @typedef {import('@tupaia/types').Entity["id"]} EntityId
+   * @type {Record<CountryCode, Record<EntityType, EntityId[]>>}
+   */
+  const recentEntities = user.preferences.recent_entities ?? {};
 
   for (const entityId of entityIds) {
-    const entity = await models.entity.findById(entityId);
-    if (!entity) throw new Error(`Entity ${entityId} does not exist`);
+    /** @type {import('../Entity').EntityRecord} */
+    const entity = ensure(
+      await models.entity.findById(entityId),
+      `No entity exists with ID ${entityId}`,
+    );
 
-    // Possibly null if looking at a project, which shouldn't be added to recent entities
-    if (!entity.country_code) throw new Error(`Country code ${entity.country_code} does not exist`);
-    const countryCode = entity.country_code;
-
-    const entityType = entity.type;
-
-    if (!allRecentEntities?.[countryCode]) {
-      allRecentEntities[countryCode] = {};
+    if (entity.isProject()) {
+      // Projects shouldn’t be added to a user’s recent entities
+      throw new Error('addRecentEntities improperly called with a ‘project’-type entity');
     }
-    if (!allRecentEntities[countryCode][entityType]) {
-      allRecentEntities[countryCode][entityType] = [];
+    if (!entity.country_code) {
+      // This should never happen; only project entities should have NULL country_code
+      throw new Error(
+        `Unexpected falsy country code for entity ${entity.code}: ${entity.country_code}`,
+      );
     }
 
-    let recentEntities = [...(allRecentEntities[countryCode][entityType] ?? [])];
-    // If the recent entities already contains this value exit early
-    if (recentEntities.includes(entityId)) {
-      const index = recentEntities.indexOf(entityId);
-      const prev = recentEntities.slice(0, index);
-      const post = recentEntities.slice(index + 1);
+    const { country_code: countryCode, type: entityType } = entity;
+    recentEntities[countryCode] ??= {};
+    recentEntities[countryCode][entityType] ??= [];
+    recentEntities[countryCode][entityType] = recentEntities[countryCode][entityType]
+      .filter(id => id !== entityId) // If already present, remove it so we can bump it to the front
+      .slice(0, MAX_RECENT_ENTITIES - 1); // Evict tail
 
-      recentEntities = [entityId, ...prev, ...post];
-    } else {
-      recentEntities = [entityId, ...recentEntities.splice(0, MAX_RECENT_ENTITIES - 1)];
-    }
-    allRecentEntities[countryCode][entityType] = recentEntities;
+    void recentEntities[countryCode][entityType].unshift(entityId);
   }
 
-  // Add the latest entity to front of array, cycle out the last entity if we are over the max
-
   return models.user.updateById(userId, {
-    preferences: { ...user.preferences, recent_entities: allRecentEntities },
+    preferences: { ...user.preferences, recent_entities: recentEntities },
   });
 }
