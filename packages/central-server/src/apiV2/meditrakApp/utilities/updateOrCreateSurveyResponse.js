@@ -67,8 +67,8 @@ const createOptions = async (models, optionsCreated) => {
 
   for (const optionObject of optionsCreated) {
     const { value, option_set_id: optionSetId } = optionObject;
-    const largestSorOrder = await models.option.getLargestSortOrder(optionSetId);
-    const sortOrder = largestSorOrder + 1; // append the option to the end to resolve any sort order conflict from other devices
+    const maxSortOrder = (await models.option.getLargestSortOrder(optionSetId)) ?? 0;
+    const sortOrder = maxSortOrder + 1; // append the option to the end to resolve any sort order conflict from other devices
 
     // If an option exists with the same value,
     // set the value of the option to be duplicate and create a new option
