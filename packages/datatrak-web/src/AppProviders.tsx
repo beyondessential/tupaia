@@ -16,7 +16,7 @@ const handleError = (error: any, query: any) => {
     window.location.href = `${error.responseData.redirectClient}?${REDIRECT_ERROR_PARAM}=${error.message}`;
   }
 
-  if (!query?.meta?.applyCustomErrorHandling) {
+  if (!query?.meta || !query?.meta?.applyCustomErrorHandling) {
     errorToast(error.message);
   }
 };
@@ -33,15 +33,11 @@ const defaultQueryClient = new QueryClient({
     onError: handleError,
   }),
   defaultOptions: {
-    mutations: {
-      networkMode: 'offlineFirst',
-    },
     queries: {
-      keepPreviousData: false,
-      networkMode: 'offlineFirst',
+      staleTime: 1000 * 60 * 5, // 5 minutes
       refetchOnWindowFocus: false,
       retry: false,
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      keepPreviousData: false,
     },
   },
 });
