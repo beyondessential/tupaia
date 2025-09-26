@@ -20,7 +20,6 @@ export async function addRecentEntities(models, userId, entityIds) {
    * @type {Record<CountryCode, Record<EntityType, EntityId[]>>}
    */
   const recentEntities = user.preferences.recent_entities ?? {};
-
   for (const entityId of entityIds) {
     /** @type {import('../Entity').EntityRecord} */
     const entity = ensure(
@@ -49,7 +48,12 @@ export async function addRecentEntities(models, userId, entityIds) {
     void recentEntities[countryCode][entityType].unshift(entityId);
   }
 
-  return models.user.updateById(userId, {
-    preferences: { ...user.preferences, recent_entities: recentEntities },
-  });
+  return await models.database.executeSql(
+    `
+      UPDATE user_account
+      SET "preferences" = jsonb_set(preferences, '{recent_entities}', ?, true)
+      WHERE id = ?;
+    `,
+    [JSON.stringify(recentEntities), userId],
+  );
 }
