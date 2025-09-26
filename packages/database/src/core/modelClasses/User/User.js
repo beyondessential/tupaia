@@ -6,12 +6,14 @@ import { API_CLIENT_PERMISSIONS, SyncDirections } from '@tupaia/constants';
 import { ensure, isNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
 import { DatabaseError } from '@tupaia/utils';
-import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseRecord } from '../DatabaseRecord';
-import { RECORDS } from '../records';
+import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
+import { DatabaseModel } from '../../DatabaseModel';
+import { DatabaseRecord } from '../../DatabaseRecord';
+import { RECORDS } from '../../records';
+import { addRecentEntities } from './addRecentEntities';
 
 const DEFAULT_PAGE_SIZE = 100;
+const MAX_RECENT_ENTITIES = 3;
 
 const USERS_EXCLUDED_FROM_LIST = [
   'edmofro@gmail.com', // Edwin
@@ -110,7 +112,7 @@ export class UserRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('./UserEntityPermission').UserEntityPermissionRecord[]>}
+   * @returns {Promise<import('../UserEntityPermission').UserEntityPermissionRecord[]>}
    */
   async getEntityPermissions() {
     return await this.otherModels.userEntityPermission.find({ user_id: this.id });
@@ -119,7 +121,7 @@ export class UserRecord extends DatabaseRecord {
   /**
    * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
-   * @returns {(import('./Entity').EntityRecord & { isRecent: true })[]}
+   * @returns {(import('../Entity').EntityRecord & { isRecent: true })[]}
    */
   async getRecentEntities(countryCode, type) {
     const entityIds = this.getRecentEntityIds(countryCode, type);
@@ -277,5 +279,15 @@ export class UserModel extends DatabaseModel {
   async getRecentEntityIds(userId, countryCode, type) {
     const user = ensure(await this.findById(userId), `No user exists with ID ${userId}`);
     return user.getRecentEntityIds(countryCode, type);
+  }
+
+  /**
+   * @param {import('@tupaia/types').User['id']} userId
+   * @param {import('@tupaia/types').Entity['id'][]} entityIds
+   * @returns {Promise}
+   */
+  async addRecentEntities(userId, entityIds) {
+    const models = { user: this, ...this.otherModels };
+    return await addRecentEntities(models, userId, entityIds);
   }
 }
