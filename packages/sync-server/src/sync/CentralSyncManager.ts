@@ -398,7 +398,7 @@ export class CentralSyncManager {
 
           // regular changes
           if (existingProjectIds.length > 0) {
-            log.info('Snapshotting existing projects', {
+            log.info('Snapshotting existing projectssss', {
               existingProjectIds,
             });
             await snapshotOutgoingChanges(
@@ -414,7 +414,7 @@ export class CentralSyncManager {
 
           // full changes
           if (newProjectIds.length > 0) {
-            log.info('Snapshotting new projects', {
+            log.info('Snapshotting new projectsss', {
               newProjectIds,
             });
             await snapshotOutgoingChanges(

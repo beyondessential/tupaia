@@ -18,6 +18,7 @@ export const snapshotOutgoingChanges = async (
   projectIds: string[],
   config: SyncServerConfig,
 ): Promise<number> => {
+  console.log('okkkk');
   let fromId = '';
   let totalCount = 0;
   const snapshotTableName = getSnapshotTableName(sessionId);
