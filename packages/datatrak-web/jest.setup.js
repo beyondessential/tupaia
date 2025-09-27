@@ -17,7 +17,6 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // TODO: Set up database for testing later
-
 jest.mock('@tupaia/database', () => ({
   migrate: jest.fn(),
   ModelRegistry: jest.fn().mockImplementation(() => ({})),
@@ -38,6 +37,17 @@ jest.mock('./src/database/createDatabase', () => ({
     },
   })),
 }));
+jest.mock('./src/api/CurrentUserContext', () => {
+  const actual = jest.requireActual('./src/api/CurrentUserContext');
+  
+  return {
+    ...actual,
+    useCurrentUserContext: jest.fn(() => ({
+      ...actual.useCurrentUserContext(), // Get the actual return value
+      accessPolicy: {}, // Override just this property
+    })),
+  };
+});
 
 jest.mock('./src/database/DatatrakDatabase', () => ({
   DatatrakDatabase: jest.fn().mockImplementation(() => ({})),
