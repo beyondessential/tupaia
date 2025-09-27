@@ -45,15 +45,25 @@ jest.mock('./src/database/DatatrakDatabase', () => ({
 
 jest.mock('./src/api/DatabaseContext', () => {
   const React = require('react');
-  
+
   return {
-    DatabaseContext: React.createContext({}),
+    DatabaseContext: React.createContext({
+      models: {
+        localSystemFact: {
+          get: jest.fn().mockResolvedValue('test-device-id'),
+          set: jest.fn().mockResolvedValue(undefined),
+          addProjectForSync: jest.fn(),
+        },
+        closeDatabaseConnections: jest.fn(),
+      },
+    }),
     DatabaseProvider: ({ children }) => children,
     useDatabaseContext: () => ({
       models: {
         localSystemFact: {
           get: jest.fn().mockResolvedValue('test-device-id'),
           set: jest.fn().mockResolvedValue(undefined),
+          addProjectForSync: jest.fn(),
         },
         closeDatabaseConnections: jest.fn(),
       },
@@ -63,9 +73,13 @@ jest.mock('./src/api/DatabaseContext', () => {
 
 jest.mock('./src/api/SyncContext', () => {
   const React = require('react');
-  
+
   return {
-    SyncContext: React.createContext({}),
+    SyncContext: React.createContext({
+      clientSyncManager: {
+        triggerSync: jest.fn(),
+      },
+    }),
     SyncProvider: ({ children }) => children,
     useSyncContext: () => ({
       clientSyncManager: {
