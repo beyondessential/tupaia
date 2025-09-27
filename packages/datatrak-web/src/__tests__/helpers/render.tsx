@@ -9,10 +9,18 @@ import { Routes, SurveyRoutes } from '../../routes';
 
 export async function renderComponent(children: ReactNode) {
   const queryClient = new QueryClient();
-  const result = render(<AppProviders queryClient={queryClient}>{children}</AppProviders>);
-  await waitFor(() => expect(result.container.firstChild).toBeInTheDocument());
+  let result: any;
 
-  return result;
+  await act(async () => {
+    result = render(
+      <AppProviders queryClient={queryClient}>
+        <div data-testid="app-root">{children}</div>
+      </AppProviders>,
+    );
+  });
+
+  await waitFor(() => expect(result.queryByTestId('app-root')).toBeInTheDocument());
+  return result!;
 }
 
 export function renderPage(activeUrl) {
