@@ -11,9 +11,16 @@ export type ExtendedFieldFunctions = Readonly<{
   >;
 }>;
 
-export type ExtendedEntityFieldName = keyof Entity | keyof ExtendedFieldFunctions;
+export type CustomEntityFields = { is_recent: boolean };
 
-export type ExtendedEntityFields = Entity & ExtendedFieldFunctions;
+export type CustomEntityFieldName = keyof CustomEntityFields;
+
+export type ExtendedEntityFieldName =
+  | keyof Entity
+  | keyof ExtendedFieldFunctions
+  | CustomEntityFieldName;
+
+export type ExtendedEntityFields = Entity & ExtendedFieldFunctions & CustomEntityFields;
 export type EntityResponseObject = {
   [field in ExtendedEntityFieldName]: ExtendedEntityFields[field];
 };

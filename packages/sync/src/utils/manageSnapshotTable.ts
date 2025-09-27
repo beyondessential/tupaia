@@ -38,8 +38,6 @@ export const createSnapshotTable = async (database: TupaiaDatabase, sessionId: s
       sync_lookup_id BIGINT,
       requires_repull BOOLEAN DEFAULT false,
       is_deleted BOOLEAN DEFAULT false
-    ) WITH (
-      autovacuum_enabled = off
     );
   `);
 

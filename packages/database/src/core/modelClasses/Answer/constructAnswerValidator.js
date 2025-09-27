@@ -2,11 +2,11 @@ import {
   constructIsEmptyOr,
   constructIsOneOf,
   constructRecordExistsWithId,
-  takesDateForm,
   hasNoContent,
   isNumber,
+  takesDateForm,
 } from '@tupaia/utils';
-import { ANSWER_TYPES } from '../../database/models/Answer';
+import { AnswerModel } from './Answer';
 
 function getValuesFromOptions(options) {
   return options.map(option => {
@@ -44,7 +44,7 @@ export function constructAnswerValidator(models, question) {
     PRIMARY_ENTITY,
     ENTITY,
     FILE,
-  } = ANSWER_TYPES;
+  } = AnswerModel.types;
   switch (question.type) {
     case BINARY:
     case CHECKBOX:

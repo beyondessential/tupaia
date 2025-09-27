@@ -1,4 +1,4 @@
-import { getLeaderboard } from '../../core/modelClasses/SurveyResponse';
+import { getLeaderboardQuery } from '../../../core/modelClasses/SurveyResponse/leaderboard';
 
 const USERS_EXCLUDED_FROM_LEADER_BOARD = [
   "'edmofro@gmail.com'",
@@ -13,12 +13,12 @@ const USERS_EXCLUDED_FROM_LEADER_BOARD = [
 ];
 const SYSTEM_USERS = ["'tamanu-server@tupaia.org'", "'public@tupaia.org'", "'josh@sussol.net'"];
 
-const whitespace = /\s/g;
-const expectToBe = (expected, received) => {
-  expect(received.replace(whitespace, '')).toBe(expected.replace(whitespace, ''));
+const normalizeWhitespace = str => str.trim().replace(/(\s|\n)+/g, ' ');
+const expectToBe = (expected, actual) => {
+  expect(normalizeWhitespace(actual)).toBe(normalizeWhitespace(expected));
 };
 
-describe('getLeaderboard()', () => {
+describe('getLeaderboardQuery()', () => {
   it('should filter out internal users on standard projects', async () => {
     const expectedLeaderboard = `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
@@ -29,12 +29,12 @@ describe('getLeaderboard()', () => {
         GROUP BY user_id
       ) r
       JOIN user_account on user_account.id = r.user_id
-      WHERE email NOT IN (${[...SYSTEM_USERS, ...USERS_EXCLUDED_FROM_LEADER_BOARD].join(', ')})
+      WHERE email NOT IN (${[...SYSTEM_USERS, ...USERS_EXCLUDED_FROM_LEADER_BOARD].join(',')})
       AND email NOT LIKE '%@beyondessential.com.au' AND email NOT LIKE '%@bes.au'
       ORDER BY coconuts DESC
       LIMIT ?;`;
 
-    expectToBe(getLeaderboard('5dfc6eaf61f76a497716cddf'), expectedLeaderboard);
+    expectToBe(getLeaderboardQuery('5dfc6eaf61f76a497716cddf'), expectedLeaderboard);
   });
 
   it('should not filter out internal users on internal projects', async () => {
@@ -52,12 +52,12 @@ describe('getLeaderboard()', () => {
         GROUP BY user_id
       ) r
       JOIN user_account on user_account.id = r.user_id
-      WHERE email NOT IN (${SYSTEM_USERS.join(', ')})
+      WHERE email NOT IN (${SYSTEM_USERS.join(',')})
       ORDER BY coconuts DESC
       LIMIT ?;`;
 
     INTERNAL_PROJECT_IDS.forEach(projectId => {
-      expectToBe(getLeaderboard(projectId), expectedLeaderboard);
+      expectToBe(getLeaderboardQuery(projectId), expectedLeaderboard);
     });
   });
 });

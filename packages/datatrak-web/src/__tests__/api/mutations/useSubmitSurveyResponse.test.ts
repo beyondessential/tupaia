@@ -93,7 +93,7 @@ afterAll(() => server.close());
 
 describe('useSubmitSurvey', () => {
   it('should call successToast and navigate to the success screen on successful submission of survey', async () => {
-    const { result, waitFor } = renderMutation(useSubmitSurveyResponse);
+    const { result, waitFor } = await renderMutation(useSubmitSurveyResponse);
     act(() => {
       result.current.mutate({
         question1: 'answer1',

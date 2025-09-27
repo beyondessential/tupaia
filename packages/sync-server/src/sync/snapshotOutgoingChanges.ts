@@ -15,10 +15,10 @@ export const snapshotOutgoingChanges = async (
   since: number,
   sessionId: string,
   deviceId: string,
-  userId: string,
   projectIds: string[],
   config: SyncServerConfig,
 ): Promise<number> => {
+  console.log('okkkk');
   let fromId = '';
   let totalCount = 0;
   const snapshotTableName = getSnapshotTableName(sessionId);
@@ -26,7 +26,27 @@ export const snapshotOutgoingChanges = async (
   const avoidRepull = config.lookupTable.avoidRepull;
   const recordTypes = models.map(m => m.databaseRecord);
 
+  log.info('snapshotOutgoingChanges.starting', {
+    since,
+    fromId,
+    projectIds,
+    recordTypes,
+    avoidRepull,
+    deviceId,
+    CHUNK_SIZE,
+  });
+
   while (fromId != null) {
+    log.info('snapshotOutgoingChanges.looping', {
+      since,
+      fromId,
+      projectIds,
+      recordTypes,
+      avoidRepull,
+      deviceId,
+      CHUNK_SIZE,
+    });
+
     const [{ maxId, count }] = (await database.executeSql(
       `
       WITH inserted AS (
@@ -52,11 +72,6 @@ export const snapshotOutgoingChanges = async (
         WHERE updated_at_sync_tick > ?
         ${fromId ? `AND id > ?` : ''}
         AND (
-          user_ids IS NULL
-          OR
-          user_ids::text[] && ARRAY[?]
-        )
-        AND (
           project_ids IS NULL
           OR
           project_ids::text[] && ${SqlQuery.array(projectIds)}
@@ -79,7 +94,6 @@ export const snapshotOutgoingChanges = async (
       [
         since,
         ...(fromId ? [fromId] : []),
-        userId,
         ...projectIds,
         ...recordTypes,
         ...(avoidRepull && deviceId ? [deviceId] : []),
@@ -91,6 +105,21 @@ export const snapshotOutgoingChanges = async (
 
     fromId = maxId;
     totalCount += chunkCount;
+
+    log.info('snapshotOutgoingChanges.parameters', {
+      since,
+      fromId,
+      projectIds,
+      recordTypes,
+      avoidRepull,
+      deviceId,
+      CHUNK_SIZE,
+    });
+    log.info('snapshotOutgoingChanges.countedChunk', {
+      chunkCount,
+      fromId,
+      totalCount,
+    });
   }
 
   log.info('snapshotOutgoingChangesFromSyncLookup.countedAll', {

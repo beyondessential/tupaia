@@ -1,10 +1,10 @@
+import { Country, NumericKeys, Writable } from '@tupaia/types';
 import {
-  QueryConjunctions,
+  AdvancedFilterValue,
   EntityFilter,
   EntityFilterFields,
-  AdvancedFilterValue,
+  QueryConjunctions,
 } from '../../models';
-import { NumericKeys, Writable } from '@tupaia/types';
 
 const CLAUSE_DELIMITER = ';';
 const JSONB_FIELD_DELIMITER = '->>';
@@ -24,7 +24,7 @@ type RawValue = string | number;
 
 type QueryObject = Record<string, AdvancedFilterValue<RawValue>> | undefined | null;
 
-const getDefaultFilter = (allowedCountries: string[]) => ({
+const getDefaultFilter = (allowedCountries: Country['code'][]) => ({
   [QueryConjunctions.AND]: {
     country_code: allowedCountries,
     [QueryConjunctions.OR]: {

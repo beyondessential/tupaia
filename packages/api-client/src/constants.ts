@@ -16,6 +16,7 @@ const productionSubdomains = [
   'psss',
   'psss-api',
   'report-api',
+  'sync-api',
   'entity-api',
   'data-table-api',
   'sync-api',

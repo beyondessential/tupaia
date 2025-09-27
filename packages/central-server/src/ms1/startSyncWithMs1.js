@@ -1,8 +1,7 @@
 import { get } from 'lodash';
 
+import { SurveyModel } from '@tupaia/database';
 import { HttpError } from '@tupaia/utils';
-
-import { findQuestionsInSurvey } from '../dataAccessors/findQuestionsInSurvey';
 import { ExternalApiSyncQueue } from '../externalApiSync';
 import winston from '../log';
 import { Ms1ChangeDetailGenerator } from './Ms1ChangeDetailGenerator';
@@ -109,7 +108,7 @@ export async function pushChange(models, change, ms1Api) {
   const answers = await models.answer.find({
     survey_response_id: surveyResponseId,
   });
-  const questions = await findQuestionsInSurvey(models, surveyResponse.survey_id);
+  const questions = await SurveyModel.findQuestionsInSurvey(models, surveyResponse.survey_id);
   const questionIdToMs1Variable = {};
   questions.forEach(question => {
     if (!question.name) return;

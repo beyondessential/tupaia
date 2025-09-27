@@ -7,6 +7,7 @@ import { sleep } from '@tupaia/utils';
 import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 import { ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
+import { sortModelsByDependencyOrder } from './getDependencyOrder';
 
 // TODO: Move this to a config model RN-1668
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
@@ -130,8 +131,9 @@ export const saveIncomingSnapshotChanges = async (
   }
 
   assertIsWithinTransaction(models[0].database);
+  const sortedModels = await sortModelsByDependencyOrder(models);
 
-  for (const model of models) {
+  for (const model of sortedModels) {
     await saveChangesForModelInBatches(
       model,
       sessionId,

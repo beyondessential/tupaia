@@ -28,6 +28,23 @@ export class OptionRecord extends DatabaseRecord {
       },
     ]);
 
+  /**
+   * @param {string} option
+   * @returns {{label: string; value: string}}
+   */
+  static parseForClient(option) {
+    try {
+      const parsedOption = JSON.parse(option);
+      if (!('value' in parsedOption)) {
+        // Valid JSON but not a valid option object, e.g. '50'
+        throw new Error('Options defined as an object must contain the value key at minimum');
+      }
+      return parsedOption;
+    } catch (e) {
+      return typeof option === 'string' ? { label: option, value: option } : option;
+    }
+  }
+
   async getSurveyIds() {
     const surveyScreens = await this.database.executeSql(
       `

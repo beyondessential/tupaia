@@ -7,18 +7,14 @@ import { stream } from '../api';
 import { ProcessStreamDataParams } from '../types';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 
-// TODO: Make this configurable
-const WRITE_BATCH_SIZE = 10000;
-
 export const initiatePull = async (
   sessionId: string,
   since: number,
-  userId: string,
   projectIds: string[],
   deviceId: string,
 ) => {
   log.debug('ClientSyncManager.pull.waitingForCentral');
-  const body = { since, projectIds, userId, deviceId };
+  const body = { since, projectIds, deviceId };
 
   for await (const { kind, message } of stream(() => ({
     method: 'POST',
@@ -33,7 +29,7 @@ export const initiatePull = async (
         // message includes pullUntil
         return { ...message };
       default:
-        console.warn(`Unexpected message kind: ${kind}`);
+        log.warn(`Unexpected message kind: ${kind}`);
     }
   }
   throw new Error('Unexpected end of stream');
@@ -42,6 +38,7 @@ export const initiatePull = async (
 export const pullIncomingChanges = async (
   models: ModelRegistry,
   sessionId: string,
+  batchSize: number,
   processStreamedDataFunction: (params: ProcessStreamDataParams) => Promise<void>,
 ) => {
   let records: SyncSnapshotAttributes[] = [];
@@ -49,7 +46,7 @@ export const pullIncomingChanges = async (
   stream: for await (const { kind, message } of stream(() => ({
     endpoint: `sync/${sessionId}/pull`,
   }))) {
-    if (records.length >= WRITE_BATCH_SIZE) {
+    if (records.length >= batchSize) {
       // Process batch sequentially to maintain foreign key order
       await processStreamedDataFunction({ models, sessionId, records });
       records = [];
@@ -60,10 +57,10 @@ export const pullIncomingChanges = async (
         records.push({ ...message, data: { ...message.data, updated_at_sync_tick: -1 } });
         break handler;
       case SYNC_STREAM_MESSAGE_KIND.END:
-        console.debug(`FacilitySyncManager.pull.noMoreChanges`);
+        log.debug(`ClientSyncManager.pull.noMoreChanges`);
         break stream;
       default:
-        console.warn('FacilitySyncManager.pull.unknownMessageKind', { kind });
+        log.warn('ClientSyncManager.pull.unknownMessageKind', { kind });
     }
   }
 

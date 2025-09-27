@@ -42040,13 +42040,17 @@ export const CountrySchema = {
 		},
 		"name": {
 			"type": "string"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"code",
 		"id",
-		"name"
+		"name",
+		"updated_at_sync_tick"
 	]
 } 
 
@@ -42057,6 +42061,9 @@ export const CountryCreateSchema = {
 			"type": "string"
 		},
 		"name": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -42074,6 +42081,9 @@ export const CountryUpdateSchema = {
 			"type": "string"
 		},
 		"name": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -85172,8 +85182,6 @@ export const EntityTypeEnumSchema = {
 		"incident_reported",
 		"individual",
 		"institute",
-		"kiuar_area",
-		"kiuar_facility",
 		"larval_habitat",
 		"larval_sample",
 		"local_government",
@@ -85190,7 +85198,6 @@ export const EntityTypeEnumSchema = {
 		"pacmossi_spraying_site",
 		"pacmossi_village",
 		"pharmacy",
-		"policy",
 		"postcode",
 		"project",
 		"repair_request",
@@ -85199,9 +85206,6 @@ export const EntityTypeEnumSchema = {
 		"sub_district",
 		"sub_facility",
 		"supermarket",
-		"tmf_district",
-		"tmf_facility",
-		"tmf_sub_district",
 		"transfer",
 		"trap",
 		"vehicle",
@@ -85304,15 +85308,64 @@ export const DebugLogUpdateSchema = {
 
 export const ParamsSchema = {
 	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ResBodySchema = {
+	"type": "object",
 	"properties": {
-		"projectCode": {
+		"status_code": {
+			"type": "number"
+		},
+		"presentationConfig": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"message": {
 			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
-		"projectCode"
+		"message",
+		"status_code"
 	]
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"properties": {
+		"inputMessage": {
+			"type": "string"
+		},
+		"dataStructure": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"presentationOptions": {
+			"type": "object",
+			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dataStructure",
+		"inputMessage",
+		"presentationOptions"
+	]
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"properties": {
+		"fields": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false
 } 
 
 export const CountryAccessObjectSchema = {
@@ -85341,56 +85394,6 @@ export const CountryAccessObjectSchema = {
 		"hasPendingAccess",
 		"id",
 		"name"
-	]
-} 
-
-export const ResBodySchema = {
-	"type": "array",
-	"items": {
-		"type": "object",
-		"properties": {
-			"id": {
-				"type": "string"
-			},
-			"name": {
-				"type": "string"
-			},
-			"code": {
-				"type": "string"
-			},
-			"hasAccess": {
-				"type": "boolean"
-			},
-			"hasPendingAccess": {
-				"type": "boolean"
-			}
-		},
-		"additionalProperties": false,
-		"required": [
-			"code",
-			"hasAccess",
-			"hasPendingAccess",
-			"id",
-			"name"
-		]
-	}
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"properties": {
-		"projectId": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"projectId"
 	]
 } 
 
@@ -86407,6 +86410,101 @@ export const TaskAssigneeSchema = {
 	"additionalProperties": false
 } 
 
+export const RawTaskResultSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		},
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "number"
+		},
+		"initial_request_id": {
+			"type": "string"
+		},
+		"overdue_email_sent": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"parent_task_id": {
+			"type": "string"
+		},
+		"repeat_schedule": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
+		},
+		"entity.name": {
+			"type": "string"
+		},
+		"entity.code": {
+			"type": "string"
+		},
+		"entity.country_code": {
+			"type": "string"
+		},
+		"survey.code": {
+			"type": "string"
+		},
+		"survey.name": {
+			"type": "string"
+		},
+		"task_status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"overdue",
+				"repeating",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"task_due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"assignee_name": {
+			"type": "string"
+		}
+	},
+	"required": [
+		"entity.code",
+		"entity.country_code",
+		"entity.name",
+		"entity_id",
+		"id",
+		"survey.code",
+		"survey.name",
+		"survey_id",
+		"task_due_date",
+		"task_status",
+		"updated_at_sync_tick"
+	]
+} 
+
 export const TaskResponseSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -86877,6 +86975,38 @@ export const UserResponseSchema = {
 		"id",
 		"name"
 	]
+} 
+
+export const QueueStatusSchema = {
+	"enum": [
+		"activeSync",
+		"waitingInQueue"
+	],
+	"type": "string"
+} 
+
+export const SyncPullReadyStatusSchema = {
+	"enum": [
+		"pending",
+		"ready"
+	],
+	"type": "string"
+} 
+
+export const SyncReadyStatusSchema = {
+	"enum": [
+		"pending",
+		"ready"
+	],
+	"type": "string"
+} 
+
+export const SyncPushStatusSchema = {
+	"enum": [
+		"complete",
+		"pending"
+	],
+	"type": "string"
 } 
 
 export const CountriesResponseItemSchema = {
@@ -99230,37 +99360,5 @@ export const QuerySchema = {
 		"email",
 		"token"
 	]
-} 
-
-export const QueueStatusSchema = {
-	"enum": [
-		"activeSync",
-		"waitingInQueue"
-	],
-	"type": "string"
-} 
-
-export const SyncPullReadyStatusSchema = {
-	"enum": [
-		"pending",
-		"ready"
-	],
-	"type": "string"
-} 
-
-export const SyncReadyStatusSchema = {
-	"enum": [
-		"pending",
-		"ready"
-	],
-	"type": "string"
-} 
-
-export const SyncPushStatusSchema = {
-	"enum": [
-		"complete",
-		"pending"
-	],
-	"type": "string"
 } 
 

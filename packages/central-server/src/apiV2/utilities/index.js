@@ -1,4 +1,3 @@
-export { constructAnswerValidator } from './constructAnswerValidator';
 export { constructNewRecordValidationRules } from './constructNewRecordValidationRules';
 export * from './excel';
 export { fetchCountryIdsByPermissionGroupId } from './fetchCountriesByPermissionGroup';
