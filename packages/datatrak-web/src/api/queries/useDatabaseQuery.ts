@@ -1,14 +1,15 @@
 // useQueryWithContext.ts
 import {
-  useQuery,
   QueryFunction,
-  UseQueryOptions,
-  UseQueryResult,
   QueryFunctionContext,
   QueryKey,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
 } from '@tanstack/react-query';
-import { AccessPolicy } from '@tupaia/access-policy';
 
+import { AccessPolicy } from '@tupaia/access-policy';
+import { ensure } from '@tupaia/tsutils';
 import { useDatabaseContext } from '../../hooks/database';
 import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
@@ -51,28 +52,23 @@ export function useDatabaseQuery<
   const { models } = useDatabaseContext(); // safely call hooks
   const { accessPolicy, ...user } = useCurrentUserContext();
 
-  // TODO: Fix this for tests
-  // // This should never happen, but just in case
-  // if (!accessPolicy) {
-  //   throw new Error('Access policy is required');
-  // }
-
   // Wrap the queryFn to include context
   const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext =>
     queryFn({
       ...queryFnContext,
+      accessPolicy: ensure(accessPolicy), // useQuery disabled if accessPolicy is pending
       models,
-      accessPolicy: accessPolicy!,
       user,
       ...options.localContext,
     });
 
   // Remove localContext from options before passing to useQuery
-  const { localContext: _, ...queryOptions } = options;
+  const { localContext: _, enabled = true, ...queryOptions } = options;
 
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     queryKey,
     queryFn: wrappedQueryFn,
+    enabled: Boolean(accessPolicy) && enabled,
     ...queryOptions,
   });
 }
