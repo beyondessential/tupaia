@@ -11,6 +11,7 @@ const MAX_RECENT_ENTITIES = 3;
 export async function addRecentEntities(models, userId, entityIds) {
   if (!entityIds?.length) return;
 
+  /** @type {import('../User').UserRecord} */
   const user = ensure(await models.user.findById(userId), `No user exists with ID ${userId}`);
   if (user.isPublicUser) {
     throw new Error('Usage error: addRecentEntities should not be called with the public user');
