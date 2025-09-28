@@ -4,11 +4,12 @@ export const validateSurveyCountries = async (models, surveyId, countryIds, proj
   if (!surveyId) return;
 
   const project = await models.project.findOneOrThrow({ id: projectId });
+  const [projectCountries, countries] = await Promise.all([
+    project.countries(),
+    models.country.findManyById(countryIds),
+  ]);
 
-  const projectCountries = await project.countries();
   const projectCountryNames = projectCountries.map(country => country.name);
-
-  const countries = await models.country.find({ id: countryIds });
 
   const invalidCountryNames = countries
     .filter(({ name }) => !projectCountryNames.includes(name))
