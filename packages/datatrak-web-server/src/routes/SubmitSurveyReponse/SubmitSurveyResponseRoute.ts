@@ -32,7 +32,7 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
     if (!!session && processedResponse.user_id) {
       const { user_id: userId } = processedResponse;
       // add these after the survey response has been submitted because we want to be able to add newly created entities to the recent entities list
-      await addRecentEntities(models, userId, recent_entities);
+      await models.user.addRecentEntities(userId, recent_entities);
     }
 
     await handleTaskCompletion(models, {
