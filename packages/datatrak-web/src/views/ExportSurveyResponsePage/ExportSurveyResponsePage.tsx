@@ -81,6 +81,7 @@ export const ExportSurveyResponsePage = () => {
         <ProjectLogo
           src={survey?.project?.logoUrl || '/tupaia-logo-dark.svg'}
           alt={survey?.project?.name}
+          crossOrigin=""
         />
         <SurveyResponseDetailsWrapper>
           <SurveyTitle>
