@@ -38,31 +38,17 @@
       content="Data collection and visualisation for the most remote settings in the world"
     />
 
-    <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'master' ||
-    process.env.REACT_APP_DEPLOYMENT_NAME === 'main' || process.env.REACT_APP_DEPLOYMENT_NAME ===
-    'production') { %>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P5KF6SLGKR"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
-      gtag('config', 'G-P5KF6SLGKR');
-    </script>
-    <!-- End Google Analytics -->
-
+    <% if (true) { %>
     <!-- Start of bes-support Zendesk Widget script -->
-    <script type="text/javascript">
+    <script type="text/javascript" defer>
       const ua = navigator.userAgent.toLowerCase();
       const platform = navigator.platform.toLowerCase();
       const platformName = ua.match(/ip(?:ad|od|hone)/)
         ? 'ios'
         : (ua.match(/(?:webos|android)/) || platform.match(/mac|win|linux/) || ['other'])[0];
       const isMobile = /ios|android|webos/.test(platformName);
-
-      if (!isMobile) {
+      const isExport = window.location.pathname.startsWith('/export/');
+      if (!isMobile && !isExport) {
         const script = document.createElement('script');
         script.id = 'ze-snippet';
         script.src =
