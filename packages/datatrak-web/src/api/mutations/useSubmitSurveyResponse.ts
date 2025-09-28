@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 
-import { SurveyResponseModel } from '@tupaia/database';
+import { SurveyResponseModel, UserModel } from '@tupaia/database';
 import { Entity, Survey, UserAccount } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { post, useCurrentUserContext, useEntityByCode } from '..';
@@ -90,7 +90,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
           [processedResponse],
         );
 
-        await transactingModels.user.addRecentEntities(user.id, recent_entities);
+        await UserModel.addRecentEntities(transactingModels, user.id, recent_entities);
 
         return idsCreated;
       });

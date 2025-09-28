@@ -161,6 +161,16 @@ const PUBLIC_USER_EMAIL = 'public@tupaia.org';
 export class UserModel extends DatabaseModel {
   static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
+  /**
+   * @param {import('../../ModelRegistry').ModelRegistry} models
+   * @param {import('@tupaia/types').User['id']} userId
+   * @param {import('@tupaia/types').Entity['id'][]} entityIds
+   * @returns {Promise}
+   */
+  static async addRecentEntities(models, userId, entityIds) {
+    return await addRecentEntities(models, userId, entityIds);
+  }
+
   get DatabaseRecordClass() {
     return UserRecord;
   }
@@ -278,15 +288,5 @@ export class UserModel extends DatabaseModel {
   async getRecentEntityIds(userId, countryCode, type) {
     const user = ensure(await this.findById(userId), `No user exists with ID ${userId}`);
     return user.getRecentEntityIds(countryCode, type);
-  }
-
-  /**
-   * @param {import('@tupaia/types').User['id']} userId
-   * @param {import('@tupaia/types').Entity['id'][]} entityIds
-   * @returns {Promise}
-   */
-  async addRecentEntities(userId, entityIds) {
-    const models = { user: this, ...this.otherModels };
-    return await addRecentEntities(models, userId, entityIds);
   }
 }
