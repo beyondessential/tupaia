@@ -129,11 +129,11 @@ export class EventBuilder {
   async assertValidDataSources(answers) {
     const questionIds = answers.map(answer => answer.question_id);
 
-    const questions = await this.models.question.find({ id: questionIds });
+    const questions = await this.models.question.findManyById(questionIds);
 
     const dataElementIds = questions.map(question => question.data_element_id);
 
-    const dataElements = await this.models.dataElement.find({ id: dataElementIds });
+    const dataElements = await this.models.dataElement.findManyById(dataElementIds);
 
     const serviceTypes = {};
 
