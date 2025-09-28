@@ -13,20 +13,20 @@ export async function addRecentEntities(models, userId, entityIds) {
 
   const user = ensure(await models.user.findById(userId), `No user exists with ID ${userId}`);
 
+  /** @type {import('../Entity').EntityRecord[]} */
+  const entities = (await models.entity.findManyById(entityIds)).map((entity, i) =>
+    ensure(entity, `Couldn’t find entity with one of these IDs: ${entityIds.join(', ')}`),
+  );
+
   /**
    * @typedef {import('@tupaia/types').Country["code"]} CountryCode
    * @typedef {import('@tupaia/types').Entity["type"]} EntityType
    * @typedef {import('@tupaia/types').Entity["id"]} EntityId
    * @type {Record<CountryCode, Record<EntityType, EntityId[]>>}
    */
-  const recentEntities = user.preferences.recent_entities ?? {};
-  for (const entityId of entityIds) {
-    /** @type {import('../Entity').EntityRecord} */
-    const entity = ensure(
-      await models.entity.findById(entityId),
-      `No entity exists with ID ${entityId}`,
-    );
+  const recentEntityIds = user.preferences.recent_entities ?? {};
 
+  for (const entity of entities) {
     if (entity.isProject()) {
       // Projects shouldn’t be added to a user’s recent entities
       throw new Error('addRecentEntities improperly called with a ‘project’-type entity');
@@ -38,14 +38,14 @@ export async function addRecentEntities(models, userId, entityIds) {
       );
     }
 
-    const { country_code: countryCode, type: entityType } = entity;
-    recentEntities[countryCode] ??= {};
-    recentEntities[countryCode][entityType] ??= [];
-    recentEntities[countryCode][entityType] = recentEntities[countryCode][entityType]
+    const { country_code: countryCode, id: entityId, type: entityType } = entity;
+    recentEntityIds[countryCode] ??= {};
+    recentEntityIds[countryCode][entityType] ??= [];
+    recentEntityIds[countryCode][entityType] = recentEntityIds[countryCode][entityType]
       .filter(id => id !== entityId) // If already present, remove it so we can bump it to the front
       .slice(0, MAX_RECENT_ENTITIES - 1); // Evict tail
 
-    void recentEntities[countryCode][entityType].unshift(entityId);
+    void recentEntityIds[countryCode][entityType].unshift(entityId);
   }
 
   return await models.database.executeSql(
@@ -54,6 +54,6 @@ export async function addRecentEntities(models, userId, entityIds) {
       SET "preferences" = jsonb_set(preferences, '{recent_entities}', ?, true)
       WHERE id = ?;
     `,
-    [JSON.stringify(recentEntities), userId],
+    [JSON.stringify(recentEntityIds), userId],
   );
 }
