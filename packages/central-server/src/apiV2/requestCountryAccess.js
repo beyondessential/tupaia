@@ -57,10 +57,10 @@ const createAccessRequests = async (models, userId, entities, message, project) 
 
 // fetches entity using the provided ids, or via countries (supports meditrak 1.7.106 and older)
 const fetchEntities = async (models, entityIds, countryIds) => {
-  if (entityIds) return models.entity.find({ id: entityIds });
-  const countries = await models.country.find({ id: countryIds });
+  if (entityIds) return models.entity.findManyById(entityIds);
+  const countries = await models.country.findManyById(countryIds);
   const entityCodes = countries.map(c => c.code);
-  return models.entity.find({ code: entityCodes });
+  return await models.entity.find({ code: entityCodes });
 };
 
 export const requestCountryAccess = async (req, res) => {
