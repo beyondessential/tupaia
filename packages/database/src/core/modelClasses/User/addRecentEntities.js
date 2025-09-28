@@ -12,6 +12,9 @@ export async function addRecentEntities(models, userId, entityIds) {
   if (!entityIds?.length) return;
 
   const user = ensure(await models.user.findById(userId), `No user exists with ID ${userId}`);
+  if (user.isPublicUser) {
+    throw new Error('Usage error: addRecentEntities should not be called with the public user');
+  }
 
   /** @type {import('../Entity').EntityRecord[]} */
   const entities = (await models.entity.findManyById(entityIds)).map((entity, i) =>

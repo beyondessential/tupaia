@@ -2,7 +2,12 @@ import { verify } from '@node-rs/argon2';
 import winston from 'winston';
 
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
-import { API_CLIENT_PERMISSIONS, SyncDirections } from '@tupaia/constants';
+import {
+  API_CLIENT_PERMISSIONS,
+  SyncDirections,
+  PUBLIC_USER_EMAIL,
+  PUBLIC_USER_ID,
+} from '@tupaia/constants';
 import { ensure, isNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
 import { DatabaseError } from '@tupaia/utils';
@@ -56,6 +61,10 @@ export class UserRecord extends DatabaseRecord {
    */
   get hasLegacyPasswordHash() {
     return this.password_hash.startsWith(UserRecord.#legacyHashPrefix);
+  }
+
+  get isPublicUser() {
+    return this.id === PUBLIC_USER_ID;
   }
 
   /**
@@ -155,8 +164,6 @@ export class UserRecord extends DatabaseRecord {
     return entityTypes.flatMap(entityType => recentEntityIdsForCountry[entityType] ?? []);
   }
 }
-
-const PUBLIC_USER_EMAIL = 'public@tupaia.org';
 
 export class UserModel extends DatabaseModel {
   static syncDirection = SyncDirections.PULL_FROM_CENTRAL;

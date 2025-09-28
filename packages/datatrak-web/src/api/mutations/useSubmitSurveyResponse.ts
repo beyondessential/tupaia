@@ -90,7 +90,9 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
           [processedResponse],
         );
 
-        await UserModel.addRecentEntities(transactingModels, user.id, recent_entities);
+        if (user.isLoggedIn) {
+          await UserModel.addRecentEntities(transactingModels, user.id, recent_entities);
+        }
 
         return idsCreated;
       });
