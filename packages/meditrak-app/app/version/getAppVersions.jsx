@@ -16,7 +16,7 @@ const getCurrentAppVersion = async () => {
   try {
     // First check for the current app version in local storage
     version = await AsyncStorage.getItem(APP_VERSION_KEY);
-  } catch (error) {
+  } catch {
     // Silently ignore errors in getting app version, will be set to 0.0.0 below
   }
   // If it was in not in local storage, just set it to 0.0.0

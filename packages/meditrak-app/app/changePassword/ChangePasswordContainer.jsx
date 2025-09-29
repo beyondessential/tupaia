@@ -1,18 +1,10 @@
 import { connect } from 'react-redux';
-
 import { ChangePasswordPage } from './ChangePasswordPage';
 import { changeField, submit } from './actions';
-import { goBack } from '../navigation';
 
 function mapStateToProps({ changePassword }) {
-  const {
-    oldPassword,
-    newPassword,
-    newPasswordConfirm,
-    isLoading,
-    errorMessage,
-    invalidFields,
-  } = changePassword;
+  const { errorMessage, invalidFields, isLoading, newPassword, newPasswordConfirm, oldPassword } =
+    changePassword;
 
   return {
     formFieldValues: {

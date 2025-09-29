@@ -1,15 +1,13 @@
-import React, {useState} from 'react';
-import {Dimensions, Image, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import React, { useState } from 'react';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
 import RNFS from 'react-native-fs';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { useCameraPermission } from 'react-native-vision-camera';
 
-import {useCameraPermission} from 'react-native-vision-camera';
-import {DEFAULT_PADDING} from '../../globalStyles';
-import {getImageSourceFromData} from '../../utilities';
-import {Button, Popup, Text} from '../../widgets';
-
-const IMAGE_QUALITY = 0.2;
+import { DEFAULT_PADDING } from '../../globalStyles';
+import { getImageSourceFromData } from '../../utilities';
+import { Button, Popup, Text } from '../../widgets';
 
 const renderImageButton = (onPress, label) => (
   <Button title={label} onPress={onPress} style={localStyles.button} />
@@ -25,7 +23,7 @@ const renderImage = imageData => (
   </View>
 );
 
-const DumbPhotoQuestion = ({onPressChoosePhoto, onPressRemovePhoto, imageData, errorMessage}) => (
+const DumbPhotoQuestion = ({ onPressChoosePhoto, onPressRemovePhoto, imageData, errorMessage }) => (
   <View style={localStyles.container}>
     {imageData !== null && renderImage(imageData)}
     {imageData === null && errorMessage && <Text>{errorMessage}</Text>}
@@ -77,8 +75,6 @@ const localStyles = StyleSheet.create({
   },
 });
 
-const savePhoto = async (photoData, fileName) => RNFS.copyFile();
-
 const handleImagePickerResponse = async (response, onChangeAnswer, setError) => {
   if (response.didCancel) {
     return; // Do nothing if user cancelled
@@ -91,7 +87,7 @@ const handleImagePickerResponse = async (response, onChangeAnswer, setError) => 
     const time = new Date().getTime();
     const fileName = `${time}-response-photo.jpg`;
 
-    const {assets} = response;
+    const { assets } = response;
     if (!assets || assets.length < 1) {
       return; // Do nothing if user cancelled
     }
@@ -103,10 +99,10 @@ const handleImagePickerResponse = async (response, onChangeAnswer, setError) => 
   }
 };
 
-export const PhotoQuestion = ({answer, onChangeAnswer}) => {
+export const PhotoQuestion = ({ answer, onChangeAnswer }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [error, setError] = useState(null);
-  const {hasPermission, requestPermission} = useCameraPermission();
+  const { requestPermission } = useCameraPermission();
 
   const takeAPhoto = async () => {
     setIsModalVisible(false);

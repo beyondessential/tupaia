@@ -18,7 +18,7 @@ export const checkAnswerPreconditionsAreMet = (answers, visibilityCriteria) => {
     return true;
   }
 
-  const { _conjunction: conjunction, hidden, ...restOfCriteria } = visibilityCriteria;
+  const { _conjunction: conjunction, hidden: _, ...restOfCriteria } = visibilityCriteria;
   if (Object.keys(restOfCriteria).length === 0) {
     return true;
   }

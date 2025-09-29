@@ -13,7 +13,7 @@ export const extractOptionDetails = optionString => {
       // Valid JSON but not a valid option object, e.g. '50'
       throw new Error('Options defined as an object must contain the value key at minimum');
     }
-  } catch (error) {
+  } catch {
     // This is not a valid JSON object, just use the string itself as the value and label
     optionObject = { value: optionString, label: optionString };
   }

@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { View } from 'react-native';
+import { generateMongoId, generateShortId, SHORT_ID } from '../../utilities';
 import { Text } from '../../widgets';
-import { generateShortId, generateMongoId, SHORT_ID, MONGO_ID } from '../../utilities';
 
 export class CodeGeneratorQuestion extends PureComponent {
   componentDidMount() {

@@ -1,11 +1,9 @@
-import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 import Config from 'react-native-config';
-
-import {logoutWithError, receiveUpdatedAccessPolicy} from '../authentication/actions';
-import {isBeta, betaBranch, centralApiUrl, getDeviceAppVersion} from '../version';
-
-import {analytics} from '../utilities';
+import { logoutWithError, receiveUpdatedAccessPolicy } from '../authentication/actions';
+import { analytics } from '../utilities';
+import { betaBranch, centralApiUrl, getDeviceAppVersion, isBeta } from '../version';
 
 const AUTH_API_ENDPOINT = 'auth';
 const CREATE_USER_ENDPOINT = 'user';
@@ -41,9 +39,9 @@ export class TupaiaApi {
       false,
     );
     if (response.error) return response;
-    const {accessToken, refreshToken, user} = response;
+    const { accessToken, refreshToken, user } = response;
     if (!accessToken || !refreshToken || !user) {
-      return {error: 'Invalid response from auth server'};
+      return { error: 'Invalid response from auth server' };
     }
     this.setAuthTokens(accessToken, refreshToken);
     return response;
@@ -64,7 +62,7 @@ export class TupaiaApi {
     try {
       AsyncStorage.setItem(ACCESS_TOKEN_KEY, this.accessToken);
       AsyncStorage.setItem(REFRESH_TOKEN_KEY, this.refreshToken);
-    } catch (error) {
+    } catch {
       // Silently ignore any async storage errors
     }
   }
@@ -74,7 +72,7 @@ export class TupaiaApi {
       const accessToken = (await AsyncStorage.getItem(ACCESS_TOKEN_KEY)) || this.accessToken;
       const refreshToken = (await AsyncStorage.getItem(REFRESH_TOKEN_KEY)) || this.refreshToken;
       if (accessToken && refreshToken) this.setAuthTokens(accessToken, refreshToken);
-    } catch (error) {
+    } catch {
       // Silently ignore any async storage errors
     } finally {
       this.tokenPromise = null;
@@ -109,7 +107,7 @@ export class TupaiaApi {
         Config.CLIENT_BASIC_AUTH_HEADER,
         false,
       );
-    } catch (error) {
+    } catch {
       return; // Silently swallow network errors etc, they will be picked up by the outer request
     }
     if (!response.accessToken) {
@@ -136,7 +134,7 @@ export class TupaiaApi {
     const response = await this.post(
       CHANGE_USER_PASSWORD_ENDPOINT,
       null,
-      JSON.stringify({oldPassword, password: newPassword, passwordConfirm: newPasswordConfirm}),
+      JSON.stringify({ oldPassword, password: newPassword, passwordConfirm: newPasswordConfirm }),
     );
 
     return response;
@@ -177,12 +175,12 @@ export class TupaiaApi {
     return this.request('POST', ...params);
   }
 
-  handleConnectivityChange = ({isInternetReachable}) => {
+  handleConnectivityChange = ({ isInternetReachable }) => {
     this.connectionStatus = isInternetReachable;
   };
 
   getQueryUrl = (endpoint, queryParamsIn) => {
-    const queryParams = {appVersion: getDeviceAppVersion(), ...queryParamsIn};
+    const queryParams = { appVersion: getDeviceAppVersion(), ...queryParamsIn };
     const queryParamsString = Object.entries(queryParams)
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join('&');
@@ -275,10 +273,10 @@ const createTimeoutPromise = () => {
       resolve();
     };
   });
-  return {promise, cleanup};
+  return { promise, cleanup };
 };
 export const fetchWithTimeout = async (url, config) => {
-  const {cleanup, promise: timeoutPromise} = createTimeoutPromise();
+  const { cleanup, promise: timeoutPromise } = createTimeoutPromise();
   try {
     const response = await Promise.race([fetch(url, config), timeoutPromise]);
     return response;
