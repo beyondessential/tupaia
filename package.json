@@ -72,7 +72,7 @@
     "@beyondessential/eslint-config-jest": "^1.0.0",
     "@beyondessential/eslint-config-js": "^1.1.1",
     "@beyondessential/eslint-config-ts": "^2.0.0",
-    "@bitwarden/cli": "2025.4.0",
+    "@bitwarden/cli": "2025.9.0",
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/builder-vite": "^8.2.9",
     "@storybook/react": "^8.2.9",
