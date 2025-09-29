@@ -50,6 +50,8 @@
       gtag('config', 'G-P5KF6SLGKR');
     </script>
     <!-- End Google Analytics -->
+
+    <% } if (process.env.REACT_APP_DEPLOYMENT_NAME === 'rn-1657-testing') { %>
     <!-- Start of bes-support Zendesk Widget script -->
     <script type="text/javascript" defer>
       const ua = navigator.userAgent.toLowerCase();
