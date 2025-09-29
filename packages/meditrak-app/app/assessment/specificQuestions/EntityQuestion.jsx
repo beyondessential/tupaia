@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-
 import { EntityList } from '../../entityMenu';
-import { takeScrollControl, releaseScrollControl } from '../actions';
-import { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
-import { QrCodeScanner } from '../QrCodeScanner';
 import {
   fetchEntities,
   getEntityAttributeChecker,
@@ -13,8 +9,19 @@ import {
   getRecentEntities,
 } from '../../entityMenu/helpers';
 import { Divider } from '../../widgets';
+import { releaseScrollControl, takeScrollControl } from '../actions';
+import { QrCodeScanner } from '../QrCodeScanner';
+import { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
 
 const DumbEntityQuestion = props => {
+  const {
+    config,
+    isOnlyQuestionOnScreen,
+    onClear,
+    onSelectEntity,
+    selectedEntityId,
+    validEntities,
+  } = props;
   const [isScanningQrCode, setIsScanningQrCode] = useState(false);
 
   const onQrCodeRead = qrCodeData => {
@@ -25,32 +32,30 @@ const DumbEntityQuestion = props => {
       throw new Error('Invalid QR Code: Cannot parse entity id');
     }
 
-    if (!props.validEntities.find(({ id }) => id === entityId)) {
+    if (!validEntities.find(({ id }) => id === entityId)) {
       throw new Error('Invalid QR Code: does not match a valid entity for this question');
     }
-    props.onSelectEntity({ id: entityId });
+    onSelectEntity({ id: entityId });
   };
 
-  const { config, isOnlyQuestionOnScreen } = props;
   const shouldGenerateCode = config?.entity?.createNew;
-  const shouldShowQrCodeScanner = !props.selectedEntityId && config?.entity?.allowScanQrCode;
+  const shouldShowQrCodeScanner = !selectedEntityId && config?.entity?.allowScanQrCode;
 
   if (shouldGenerateCode) {
     return <CodeGeneratorQuestion {...props} />;
   }
 
   // RN-984 if selected entity is not in the list, clear the selected entity
-  const { selectedEntityId, validEntities } = props;
   if (selectedEntityId) {
     const selectedEntity = validEntities.find(entity => entity.id === selectedEntityId);
     if (!selectedEntity) {
-      props.onClear();
+      onClear();
       return null;
     }
   }
 
-  const EntityListSelector = (
-    <EntityList startOpen={isOnlyQuestionOnScreen} onRowPress={props.onSelectEntity} {...props} />
+  const entityListSelector = (
+    <EntityList startOpen={isOnlyQuestionOnScreen} onRowPress={onSelectEntity} {...props} />
   );
 
   if (shouldShowQrCodeScanner) {
@@ -62,12 +67,12 @@ const DumbEntityQuestion = props => {
           onFinishScan={() => setIsScanningQrCode(false)}
         />
         {isScanningQrCode ? null : <Divider text="or" />}
-        {isScanningQrCode ? null : EntityListSelector}
+        {isScanningQrCode ? null : entityListSelector}
       </>
     );
   }
 
-  return EntityListSelector;
+  return entityListSelector;
 };
 
 DumbEntityQuestion.propTypes = {
