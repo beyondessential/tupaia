@@ -13,7 +13,7 @@
     <meta name="theme-color" content="#ffffff" />
     <title>Tupaia DataTrak</title>
 
-    <% if ( process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
+    <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
     <link rel="preconnect" href="https://datatrak-web-api.tupaia.org" crossorigin />
     <% } else if (process.env.NODE_ENV === 'production') { %>
     <link
@@ -38,9 +38,7 @@
       content="Data collection and visualisation for the most remote settings in the world"
     />
 
-    <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'master' ||
-    process.env.REACT_APP_DEPLOYMENT_NAME === 'main' || process.env.REACT_APP_DEPLOYMENT_NAME ===
-    'production') { %>
+    <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-P5KF6SLGKR"></script>
     <script>
