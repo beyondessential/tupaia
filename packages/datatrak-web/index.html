@@ -13,7 +13,7 @@
     <meta name="theme-color" content="#ffffff" />
     <title>Tupaia DataTrak</title>
 
-    <% if ( process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
+    <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
     <link rel="preconnect" href="https://datatrak-web-api.tupaia.org" crossorigin />
     <% } else if (process.env.NODE_ENV === 'production') { %>
     <link
@@ -22,6 +22,7 @@
       crossorigin
     />
     <% } %>
+    <link rel="preconnect" href="https://tupaia.s3.ap-southeast-2.amazonaws.com" crossorigin />
 
     <!-- Open Graph for shared links -->
     <meta property="og:title" content="Tupaia DataTrak" />
@@ -37,9 +38,7 @@
       content="Data collection and visualisation for the most remote settings in the world"
     />
 
-    <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'master' ||
-    process.env.REACT_APP_DEPLOYMENT_NAME === 'main' || process.env.REACT_APP_DEPLOYMENT_NAME ===
-    'production') { %>
+    <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-P5KF6SLGKR"></script>
     <script>
@@ -51,17 +50,19 @@
       gtag('config', 'G-P5KF6SLGKR');
     </script>
     <!-- End Google Analytics -->
-
     <!-- Start of bes-support Zendesk Widget script -->
-    <script type="text/javascript">
+    <script type="text/javascript" defer>
       const ua = navigator.userAgent.toLowerCase();
-      const platform = navigator.platform.toLowerCase();
       const platformName = ua.match(/ip(?:ad|od|hone)/)
         ? 'ios'
-        : (ua.match(/(?:webos|android)/) || platform.match(/mac|win|linux/) || ['other'])[0];
+        : (ua.match(/(?:webos|android)/) ||
+            navigator.platform.toLowerCase().match(/mac|win|linux/) || ['other'])[0];
       const isMobile = /ios|android|webos/.test(platformName);
 
-      if (!isMobile) {
+      const EXPORT_SURVEY_RESPONSE = '/export/';
+      const isExport = window.location.pathname.startsWith(EXPORT_SURVEY_RESPONSE);
+
+      if (!isMobile && !isExport) {
         const script = document.createElement('script');
         script.id = 'ze-snippet';
         script.src =
@@ -109,9 +110,7 @@
     </noscript>
   </head>
   <body>
-    <noscript>
-      <p>You need to enable JavaScript to run this app.</p>
-    </noscript>
+    <noscript>Please enable JavaScript to use Tupaia DataTrak.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
