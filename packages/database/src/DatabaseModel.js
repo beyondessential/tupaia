@@ -213,7 +213,7 @@ export class DatabaseModel {
         `Cannot search for ${this.databaseRecord} by ${column} without providing the values`,
       );
     }
-    return runDatabaseFunctionInBatches(values, async batchOfValues =>
+    return await runDatabaseFunctionInBatches(values, async batchOfValues =>
       this.find({ [column]: batchOfValues, ...additionalConditions }, customQueryOptions),
     );
   }
