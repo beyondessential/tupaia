@@ -94,6 +94,8 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
           await UserModel.addRecentEntities(transactingModels, user.id, recent_entities);
         }
 
+        // Marking any corresponding task as complete is delegated to central-server
+
         return idsCreated;
       });
 
