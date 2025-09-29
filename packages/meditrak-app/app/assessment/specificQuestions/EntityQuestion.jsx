@@ -47,8 +47,8 @@ const DumbEntityQuestion = props => {
 
   // RN-984 if selected entity is not in the list, clear the selected entity
   if (selectedEntityId) {
-    const selectedEntity = validEntities.find(entity => entity.id === selectedEntityId);
-    if (!selectedEntity) {
+    const isSelectedEntityInList = validEntities.some(entity => entity.id === selectedEntityId);
+    if (!isSelectedEntityInList) {
       onClear();
       return null;
     }
