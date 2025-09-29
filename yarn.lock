@@ -12101,7 +12101,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
     ace-builds: ^1.10.1
-    axios: ^1.6.8
+    axios: ^1.12.2
     content-disposition-header: ^0.6.0
     date-fns: ^2.29.2
     file-saver: ^1.3.3
@@ -12438,7 +12438,7 @@ __metadata:
     "@types/lodash.keyby": ^4.6.9
     "@types/react": 16.8.6
     "@types/react-table": ^7.7.14
-    axios: ^1.6.8
+    axios: ^1.12.2
     bson-objectid: ^1.2.2
     csstype: ^3.1.3
     date-fns: ^2.29.2
@@ -12626,7 +12626,7 @@ __metadata:
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/ui-map-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    axios: ^1.6.8
+    axios: ^1.12.2
     camelcase: ^6.2.0
     dom-to-image: ^2.6.0
     downloadjs: ^1.4.7
@@ -12787,7 +12787,7 @@ __metadata:
     "@testing-library/react": 12.1.2
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    axios: ^1.6.8
+    axios: ^1.12.2
     date-fns: ^2.16.1
     faker: ^4.1.0
     history: ^5.0.0
@@ -12993,7 +12993,7 @@ __metadata:
     "@types/leaflet": ^1.7.1
     "@types/mapbox__polyline": ^1.0.2
     "@types/react": 16.8.6
-    axios: ^1.6.8
+    axios: ^1.12.2
     csstype: ^3.1.3
     dom-to-image: 2.6.0
     downloadjs: 1.4.7
@@ -15950,7 +15950,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.5, axios@npm:^1.6.8":
+"axios@npm:^1.12.2":
+  version: 1.12.2
+  resolution: "axios@npm:1.12.2"
+  dependencies:
+    follow-redirects: ^1.15.6
+    form-data: ^4.0.4
+    proxy-from-env: ^1.1.0
+  checksum: f0331594fe053a4bbff04104edb073973a3aabfad2e56b0aa18de82428aa63f6f0839ca3d837258ec739cb4528014121793b1649a21e5115ffb2bf8237eadca3
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.6.5":
   version: 1.6.8
   resolution: "axios@npm:1.6.8"
   dependencies:
@@ -22819,6 +22830,19 @@ __metadata:
     hasown: ^2.0.2
     mime-types: ^2.1.12
   checksum: b8e2568c0853ce167b2b9c9c4b81fe563f9ade647178baf6b6381cf8a11e3c01dd2b78a63ba367e6f5eab59afab8284a9438bb5ae768133f9d9fce6567fbc26a
+  languageName: node
+  linkType: hard
+
+"form-data@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "form-data@npm:4.0.4"
+  dependencies:
+    asynckit: ^0.4.0
+    combined-stream: ^1.0.8
+    es-set-tostringtag: ^2.1.0
+    hasown: ^2.0.2
+    mime-types: ^2.1.12
+  checksum: 9b7788836df9fa5a6999e0c02515b001946b2a868cfe53f026c69e2c537a2ff9fbfb8e9d2b678744628f3dc7a2d6e14e4e45dfaf68aa6239727f0bdb8ce0abf2
   languageName: node
   linkType: hard
 
