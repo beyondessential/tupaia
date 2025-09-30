@@ -30,7 +30,7 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
     for (const assertion of assertions) await assertion(accessPolicy);
     return true;
   } catch (e) {
-    throw new Error(errorMessage || e.message);
+    throw new PermissionsError(errorMessage || e.message);
   }
 };
 
@@ -52,7 +52,7 @@ export const assertAnyPermissions = (assertions, errorMessage) => async accessPo
       // swallow specific errors, in case any assertion returns true
     }
   }
-  throw new Error(errorMessage || combinedErrorMessages.join('\n'));
+  throw new PermissionsError(errorMessage || combinedErrorMessages.join('\n'));
 };
 
 /** @type {PermissionsChecker} */
@@ -85,13 +85,13 @@ export const hasSomePermissionGroupsAccess = (accessPolicy, permissionGroups) =>
 /** @type {PermissionsAssertion} */
 export const assertBESAdminAccess = accessPolicy => {
   if (hasBESAdminAccess(accessPolicy)) return true;
-  throw new Error(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
+  throw new PermissionsError(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
 };
 
 /** @type {PermissionsAssertion} */
 export const assertVizBuilderAccess = accessPolicy => {
   if (hasVizBuilderAccess(accessPolicy)) return true;
-  throw new Error(`Need ${VIZ_BUILDER_PERMISSION_GROUP} access`);
+  throw new PermissionsError(`Need ${VIZ_BUILDER_PERMISSION_GROUP} access`);
 };
 
 /** @type {PermissionsChecker} */
@@ -150,5 +150,5 @@ export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames)
   ) {
     return true;
   }
-  throw new Error(`You do not have access to all related permission groups`);
+  throw new PermissionsError(`You do not have access to all related permission groups`);
 };
