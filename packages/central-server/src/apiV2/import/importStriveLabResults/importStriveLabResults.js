@@ -87,7 +87,7 @@ export const importStriveLabResults = async (req, res) => {
   const entitiesGroupedBySurveyCode = await getEntitiesGroupedBySurveyCode(models, inputsPerSurvey);
 
   const importSurveyResponsePermissionsChecker = async accessPolicy => {
-    await this.models.surveyResponse.assertCanImport(accessPolicy, entitiesGroupedBySurveyCode);
+    await models.surveyResponse.assertCanImport(accessPolicy, entitiesGroupedBySurveyCode);
   };
 
   await req.assertPermissions(
