@@ -12449,7 +12449,7 @@ __metadata:
     lodash.keyby: ^4.6.0
     lodash.throttle: ^4.1.1
     lucide-react: ^0.525.0
-    markdown-to-jsx: ^6.4.1
+    markdown-to-jsx: ^7.7.13
     msw: ^1.3.1
     nanoid: ^2.0.3
     notistack: ^3.0.1
@@ -13076,7 +13076,6 @@ __metadata:
     "@types/downloadjs": ^1.4.3
     "@types/jest": ^29.5.14
     "@types/lodash.throttle": ^4.1.7
-    "@types/markdown-to-jsx": ^6.4.1
     "@types/qrcode": ^1.5.1
     "@types/react-dom": ^16.9.18
     "@types/react-router-dom": ^5.3.3
@@ -13093,7 +13092,7 @@ __metadata:
     lodash: ^4.17.4
     lodash.throttle: ^4.1.1
     lucide-react: ^0.525.0
-    markdown-to-jsx: ^6.4.1
+    markdown-to-jsx: ^7.7.13
     moment: ^2.24.0
     prop-types: ^15.7.2
     qrcode: ^1.5.3
@@ -13937,15 +13936,6 @@ __metadata:
   version: 0.0.4
   resolution: "@types/markdown-it@npm:0.0.4"
   checksum: 31c4d5c6567d9e1da19f78aa5b0d9532029eca573d4ae75c31042086f6d2e312c104611c5f769aafa25faf0be75a47196cac7bea252c98863c71b0d168e76e36
-  languageName: node
-  linkType: hard
-
-"@types/markdown-to-jsx@npm:^6.4.1":
-  version: 6.11.3
-  resolution: "@types/markdown-to-jsx@npm:6.11.3"
-  dependencies:
-    "@types/react": "*"
-  checksum: 9775a5a86c254f7235b6992474687197b9d1c44e7d95f631579aea9da5b880d9819653b3c549e7960c66e0ba6240b6e769d2d5141e7b10aa920f554c5a47fdd8
   languageName: node
   linkType: hard
 
@@ -28782,24 +28772,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-to-jsx@npm:^6.4.1":
-  version: 6.10.3
-  resolution: "markdown-to-jsx@npm:6.10.3"
-  dependencies:
-    prop-types: ^15.6.2
-    unquote: ^1.1.0
-  peerDependencies:
-    react: ">= 0.14.0"
-  checksum: 7fb73a85bed20f52559d169e1426ab06e1d3b40d5fc6bc599dc9635a644ac6c053e5665ef4aa4c1d9f4ce0952833006c3fbbce0b31261bcbb8ccc161c44e5710
-  languageName: node
-  linkType: hard
-
 "markdown-to-jsx@npm:^7.4.5":
   version: 7.5.0
   resolution: "markdown-to-jsx@npm:7.5.0"
   peerDependencies:
     react: ">= 0.14.0"
   checksum: c9c6f1bfad5f2d9b1d3476eb0313ae3dffd0a9f14011c74efdd7c664fd32ee1842ef48abb16a496046f90361af49aa80a827e9d9c0bc04824a1986fdeb4d1852
+  languageName: node
+  linkType: hard
+
+"markdown-to-jsx@npm:^7.7.13":
+  version: 7.7.13
+  resolution: "markdown-to-jsx@npm:7.7.13"
+  peerDependencies:
+    react: ">= 0.14.0"
+  checksum: fddc3383cb7b6e5cae42eec5c6d5784ccf7f195aa76f3cfb0992aab8034b701cbcf61d3fec0d481dcf2e8884f6d69a2a80248b2867e4d57c06d673ac1a81c41c
   languageName: node
   linkType: hard
 
@@ -39126,13 +39113,6 @@ __metadata:
     webpack-sources: ^3.2.3
     webpack-virtual-modules: ^0.5.0
   checksum: 49f586b07988397aa130b44710e8017a0472e825d08a218557031f08d694788b3ee61d686e67af153cb39b73132e2616c2f135222b83ff8aa2f7a89027f74600
-  languageName: node
-  linkType: hard
-
-"unquote@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "unquote@npm:1.1.1"
-  checksum: 71745867d09cba44ba2d26cb71d6dda7045a98b14f7405df4faaf2b0c90d24703ad027a9d90ba9a6e0d096de2c8d56f864fd03f1c0498c0b7a3990f73b4c8f5f
   languageName: node
   linkType: hard
 
