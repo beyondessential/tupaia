@@ -145,8 +145,8 @@ export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) =
  */
 export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames) => {
   if (
-    hasPermissionGroupsAccess(accessPolicy, permissionGroupNames) ||
-    hasBESAdminAccess(accessPolicy)
+    hasBESAdminAccess(accessPolicy) ||
+    hasPermissionGroupsAccess(accessPolicy, permissionGroupNames)
   ) {
     return true;
   }
