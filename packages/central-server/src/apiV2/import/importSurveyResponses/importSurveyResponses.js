@@ -139,7 +139,7 @@ export async function importSurveyResponses(req, res) {
     const entityCodeToId = reduceToDictionary(entities, 'code', 'id');
 
     const importSurveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode);
+      await models.surveyResponse.assertCanImport(accessPolicy, entitiesBySurveyCode);
     };
 
     await req.assertPermissions(
