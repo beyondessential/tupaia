@@ -101,7 +101,7 @@ export const assertAdminPanelAccessToCountry = async (accessPolicy, models, reco
   );
   if (!userHasAdminAccessToCountry) {
     throw new PermissionsError(
-      `Need Tupaia Admin Panel access to country '${entity.country_code}' to edit entity`,
+      `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to country ‘${entity.country_code}’ to edit entity ‘${entity.name}’`,
     );
   }
   return true;
