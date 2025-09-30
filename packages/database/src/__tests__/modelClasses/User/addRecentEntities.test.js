@@ -25,7 +25,7 @@ const mockModels = {
     },
   },
   entity: {
-    findById: id => mockEntities.find(x => x.id === id),
+    findById: id => mockEntities.find(x => x.id === id) ?? null,
   },
 };
 
