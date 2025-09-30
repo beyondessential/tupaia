@@ -29,7 +29,7 @@
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "lodash.get": "^4.4.2",
-    "moment": "^2.24.0",
+    "moment": "^2.30.1",
     "react": "^16.14.0",
     "react-dom": "^16.13.1",
     "react-is": "^16.13.1",

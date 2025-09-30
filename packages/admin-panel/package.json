@@ -50,7 +50,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
-    "moment": "^2.24.0",
+    "moment": "^2.30.1",
     "parse-link-header": "^2.0.0",
     "prop-types": "^15.6.0",
     "react": "^16.14.0",
