@@ -35,7 +35,7 @@
     "js-beautify": "^1.13.0",
     "lodash": "^4.17.4",
     "moment": "^2.24.0",
-    "node-fetch": "^1.7.3",
+    "node-fetch": "^2.7.0",
     "react": "^16.14.0"
   }
 }

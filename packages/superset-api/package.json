@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "https-proxy-agent": "^5.0.1",
-    "node-fetch": "^1.7.3",
+    "node-fetch": "^2.7.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
