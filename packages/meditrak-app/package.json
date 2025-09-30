@@ -53,7 +53,7 @@
     "react-navigation-redux-helpers": "^4.0.1",
     "react-navigation-stack": "^2.10.4",
     "react-redux": "^8.1.2",
-    "realm": "^12.3.1",
+    "realm": "^12.15.0",
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
     "redux-persist-error-handler": "^0.1.1",

@@ -11063,6 +11063,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@realm/fetch@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@realm/fetch@npm:0.1.1"
+  checksum: 4922bd005aed959c49ba41fb173e00c4b37e0859a91138cf5e07db1e8165fccf9c77840b4bde7d1a28e4c231a29f5ee13efa9e150ae511dff67c320f35c3802c
+  languageName: node
+  linkType: hard
+
 "@rmp135/sql-ts@npm:^1.15.1":
   version: 1.15.1
   resolution: "@rmp135/sql-ts@npm:1.15.1"
@@ -12738,7 +12745,7 @@ __metadata:
     react-navigation-redux-helpers: ^4.0.1
     react-navigation-stack: ^2.10.4
     react-redux: ^8.1.2
-    realm: ^12.3.1
+    realm: ^12.15.0
     redux: ^4.2.1
     redux-persist: ^6.0.0
     redux-persist-error-handler: ^0.1.1
@@ -30084,10 +30091,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"napi-build-utils@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "napi-build-utils@npm:1.0.2"
-  checksum: 06c14271ee966e108d55ae109f340976a9556c8603e888037145d6522726aebe89dd0c861b4b83947feaf6d39e79e08817559e8693deedc2c94e82c5cbd090c7
+"napi-build-utils@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "napi-build-utils@npm:2.0.0"
+  checksum: 532121efd2dd2272595580bca48859e404bdd4ed455a72a28432ba44868c38d0e64fac3026a8f82bf8563d2a18b32eb9a1d59e601a9da4e84ba4d45b922297f5
   languageName: node
   linkType: hard
 
@@ -30308,7 +30315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7, node-fetch@npm:^2.6.9":
+"node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
@@ -31697,6 +31704,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-browserify@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "path-browserify@npm:1.0.1"
+  checksum: c6d7fa376423fe35b95b2d67990060c3ee304fc815ff0a2dc1c6c3cfaff2bd0d572ee67e18f19d0ea3bbe32e8add2a05021132ac40509416459fffee35200699
+  languageName: node
+  linkType: hard
+
 "path-case@npm:^3.0.4":
   version: 3.0.4
   resolution: "path-case@npm:3.0.4"
@@ -32478,16 +32492,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prebuild-install@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "prebuild-install@npm:7.1.1"
+"prebuild-install@npm:^7.1.2":
+  version: 7.1.3
+  resolution: "prebuild-install@npm:7.1.3"
   dependencies:
     detect-libc: ^2.0.0
     expand-template: ^2.0.3
     github-from-package: 0.0.0
     minimist: ^1.2.3
     mkdirp-classic: ^0.5.3
-    napi-build-utils: ^1.0.1
+    napi-build-utils: ^2.0.0
     node-abi: ^3.3.0
     pump: ^3.0.0
     rc: ^1.2.7
@@ -32496,7 +32510,7 @@ __metadata:
     tunnel-agent: ^0.6.0
   bin:
     prebuild-install: bin.js
-  checksum: dbf96d0146b6b5827fc8f67f72074d2e19c69628b9a7a0a17d0fad1bf37e9f06922896972e074197fc00a52eae912993e6ef5a0d471652f561df5cb516f3f467
+  checksum: 300740ca415e9ddbf2bd363f1a6d2673cc11dd0665c5ec431bbb5bf024c2f13c56791fb939ce2b2a2c12f2d2a09c91316169e8063a80eb4482a44b8fe5b265e1
   languageName: node
   linkType: hard
 
@@ -34458,22 +34472,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"realm@npm:^12.3.1":
-  version: 12.3.1
-  resolution: "realm@npm:12.3.1"
+"realm@npm:^12.15.0":
+  version: 12.15.0
+  resolution: "realm@npm:12.15.0"
   dependencies:
+    "@realm/fetch": ^0.1.1
     bson: ^4.7.2
     debug: ^4.3.4
-    node-fetch: ^2.6.9
     node-gyp: latest
     node-machine-id: ^1.1.12
-    prebuild-install: ^7.1.1
+    path-browserify: ^1.0.1
+    prebuild-install: ^7.1.2
   peerDependencies:
     react-native: ">=0.71.0"
   peerDependenciesMeta:
     react-native:
       optional: true
-  checksum: 509b47c6bec677f23bc0463af9db7abb86875acbffbfb39087d544179eae0c24f3c1e00c7365217d05b0d816aed5af3626997790d52f91b4f8d91896c59ef5a0
+  checksum: 45f3a76ba72edca7cb1b0e5d2b5f2989dca5c1384fd1ca02f0c140f47c23f0d500c0e298fcce852107e3b7e531287ba1eb3fdbb1dec1eab4406cc52400434f3a
   languageName: node
   linkType: hard
 
