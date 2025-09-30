@@ -1,4 +1,4 @@
-import { uniq } from 'es-toolkit';
+import { difference, uniq } from 'es-toolkit';
 import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
 
 import { SyncDirections } from '@tupaia/constants';
@@ -146,11 +146,12 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         }
 
         if (surveyResponseCountries.length !== surveyResponseCountryCodes.length) {
-          const expected = new Set(surveyResponseCountryCodes);
-          const actual = surveyResponseCountries.map(c => c.code);
-          const difference = actual.filter(c => !expected.has(c));
+          const diff = difference(
+            surveyResponseCountryCodes,
+            surveyResponseCountries.map(c => c.code),
+          );
           throw new DatabaseError(
-            `Couldn’t find the following countries: ${difference.join(', ')}`,
+            `Couldn’t find the following countries: ${diff.join(', ')}`,
             surveyResponseCountryCodes,
           );
         }
