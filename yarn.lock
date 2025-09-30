@@ -13912,12 +13912,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/http-proxy@npm:^1.17.5":
-  version: 1.17.7
-  resolution: "@types/http-proxy@npm:1.17.7"
+"@types/http-proxy@npm:^1.17.8":
+  version: 1.17.17
+  resolution: "@types/http-proxy@npm:1.17.17"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10c0/3fbe35390ab783570117d43f953e4d98b5a936792c61544c270a767ae88bde6233d8bdf489b864daf618f42f688a886459f255255d86c5abecc62ea858a1022e
+  checksum: 10c0/547e322a5eecf0b50d08f6a46bd89c8c8663d67dbdcd472da5daf968b03e63a82f6b3650443378abe6c10a46475dac52015f30e8c74ba2ea5820dd4e9cdef2d4
   languageName: node
   linkType: hard
 
@@ -24599,17 +24599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-agent@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "http-proxy-agent@npm:7.0.0"
-  dependencies:
-    agent-base: "npm:^7.1.0"
-    debug: "npm:^4.3.4"
-  checksum: 10c0/a11574ff39436cee3c7bc67f259444097b09474605846ddd8edf0bf4ad8644be8533db1aa463426e376865047d05dc22755e638632819317c0c2f1b2196657c8
-  languageName: node
-  linkType: hard
-
-"http-proxy-agent@npm:^7.0.1, http-proxy-agent@npm:^7.0.2":
+"http-proxy-agent@npm:^7.0.0, http-proxy-agent@npm:^7.0.1, http-proxy-agent@npm:^7.0.2":
   version: 7.0.2
   resolution: "http-proxy-agent@npm:7.0.2"
   dependencies:
@@ -24620,15 +24610,20 @@ __metadata:
   linkType: hard
 
 "http-proxy-middleware@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "http-proxy-middleware@npm:2.0.1"
+  version: 2.0.9
+  resolution: "http-proxy-middleware@npm:2.0.9"
   dependencies:
-    "@types/http-proxy": "npm:^1.17.5"
+    "@types/http-proxy": "npm:^1.17.8"
     http-proxy: "npm:^1.18.1"
     is-glob: "npm:^4.0.1"
     is-plain-obj: "npm:^3.0.0"
     micromatch: "npm:^4.0.2"
-  checksum: 10c0/15ad476c52286fb0c25eb67f069587a7a1bbd0bc2a6dfc92073812d64c29de678e9fdf92c9cd518c62ba7d4dd7451ae61d95a37c2a6f8bd51817a364fc90ef23
+  peerDependencies:
+    "@types/express": ^4.17.13
+  peerDependenciesMeta:
+    "@types/express":
+      optional: true
+  checksum: 10c0/8e9032af625f7c9f2f0d318f6cdb14eb725cc16ffe7b4ccccea25cf591fa819bb7c3bb579e0b543e0ae9c73059b505a6d728290c757bff27bae526a6ed11c05e
   languageName: node
   linkType: hard
 
