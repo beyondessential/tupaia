@@ -1,2 +1,19 @@
 export { AccessPolicy } from './AccessPolicy';
-export * from './permissions';
+export {
+  allowNoPermissions,
+  assertAdminPanelAccess,
+  assertAdminPanelAccessToCountry,
+  assertAllPermissions,
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  assertPermissionGroupAccess,
+  assertPermissionGroupsAccess,
+  assertVizBuilderAccess,
+  hasBESAdminAccess,
+  hasPermissionGroupAccess,
+  hasPermissionGroupsAccess,
+  hasSomePermissionGroupsAccess,
+  hasTupaiaAdminPanelAccess,
+  hasTupaiaAdminPanelAccessToCountry,
+  hasVizBuilderAccess,
+} from './permissions';
