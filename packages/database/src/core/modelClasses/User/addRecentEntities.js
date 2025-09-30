@@ -1,4 +1,6 @@
+import { difference } from 'lodash';
 import { ensure } from '@tupaia/tsutils';
+import { DatabaseError } from '@tupaia/utils';
 
 const MAX_RECENT_ENTITIES = 3;
 
@@ -18,9 +20,15 @@ export async function addRecentEntities(models, userId, entityIds) {
   }
 
   /** @type {import('../Entity').EntityRecord[]} */
-  const entities = (await models.entity.findManyById(entityIds)).map((entity, i) =>
-    ensure(entity, `Couldn’t find entity with one of these IDs: ${entityIds.join(', ')}`),
-  );
+  const entities = await models.entity.findManyById(entityIds);
+
+  if (entityIds.length !== entities.length) {
+    const diff = difference(
+      entityIds,
+      entities.map(e => e.id),
+    );
+    throw new DatabaseError(`Couldn’t find entities with IDs: ${diff.join(', ')}`);
+  }
 
   /**
    * @typedef {import('@tupaia/types').Country["code"]} CountryCode
