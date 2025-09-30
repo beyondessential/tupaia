@@ -27,6 +27,7 @@ import { validateSurveyResponse, validateSurveyResponses } from './validation';
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
  * @typedef {import('../Country').CountryRecord} CountryRecord
  * @typedef {import('../Entity').EntityRecord} EntityRecord
+ * @typedef {import('../Facility').FacilityRecord} FacilityRecord
  * @typedef {import('../PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
  * @typedef {import('../Survey').SurveyRecord} SurveyRecord
  */
@@ -271,6 +272,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         return parentEntity?.code;
       }
 
+      /** @type {EntityRecord} */
       const entity = ensure(
         await this.otherModels.entity.findById(surveyResponse.entity_id),
         `No entity exists with ID ${surveyResponse.entity_id}`,
@@ -279,11 +281,12 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     }
 
     if (surveyResponse.clinic_id) {
-      const clinic = ensure(
+      /** @type {FacilityRecord} */
+      const facility = ensure(
         await this.otherModels.facility.findById(surveyResponse.clinic_id),
-        `No clinic exists with ID ${surveyResponse.clinic_id}`,
+        `No facility exists with ID ${surveyResponse.clinic_id}`,
       );
-      return clinic.code;
+      return facility.code;
     }
 
     throw new Error('Survey response change does not contain valid entity reference');

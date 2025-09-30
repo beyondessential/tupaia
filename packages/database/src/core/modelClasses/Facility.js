@@ -4,6 +4,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
+/** Sometimes referred to as ‘clinic’. */
 export class FacilityRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.FACILITY;
 
