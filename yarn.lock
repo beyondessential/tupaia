@@ -13043,7 +13043,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
     "@types/lodash.get": ^4.4.7
-    "@types/recharts": ^1.8.24
+    "@types/recharts": ^1.8.29
     jest: ^29.7.0
     lodash.get: ^4.4.2
     moment: ^2.24.0
@@ -13448,18 +13448,18 @@ __metadata:
   linkType: hard
 
 "@types/d3-path@npm:^1":
-  version: 1.0.9
-  resolution: "@types/d3-path@npm:1.0.9"
-  checksum: acbf7376fd7bef61701bce915bf5a9cb5eaa9741b7919d3e644f841a65faf1aea3cf63ba949c21ddda8c9849221394856a2054805aa698d3bb5ac3fe7d029817
+  version: 1.0.11
+  resolution: "@types/d3-path@npm:1.0.11"
+  checksum: 5feb35cc6091e63563587d180b4eaded8ed4fc6a017696dc6184d7051db0a4ee130938cc0ae82ef8ea0dc3681f7339469f5eb3144cd87b44f1cf32fda0617f7f
   languageName: node
   linkType: hard
 
 "@types/d3-shape@npm:^1":
-  version: 1.3.8
-  resolution: "@types/d3-shape@npm:1.3.8"
+  version: 1.3.12
+  resolution: "@types/d3-shape@npm:1.3.12"
   dependencies:
     "@types/d3-path": ^1
-  checksum: a7f78a3f0be1215b512efb636ba381768ab4104ef9b72b7fcc2ab9810e7d6fc2ee062f3103ef99236f4462deabac60d2fd96375315ec7ad33278757918c94592
+  checksum: 3a62a0a20ef3f767ecd396b2331b836aeaba43a87926a33bb257e3bbe9c70013a2be60718dd94539e287d628da2c5b6f80675c12c0c3a086a3f4129b04ac2285
   languageName: node
   linkType: hard
 
@@ -14283,13 +14283,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/recharts@npm:^1.8.24":
-  version: 1.8.24
-  resolution: "@types/recharts@npm:1.8.24"
+"@types/recharts@npm:^1.8.29":
+  version: 1.8.29
+  resolution: "@types/recharts@npm:1.8.29"
   dependencies:
     "@types/d3-shape": ^1
     "@types/react": "*"
-  checksum: 1341e5472bf62a83ab98648bc5c14a9a81fba16af9255203ef12a21caa21a988fac3198d9771703394eb876d4fbefb42e818865e35ecfe0d105aee1d1164aa6e
+  checksum: 091d018298d9c5e22b1a937e1229e721e2f6ac030fb73024717f6d20f3ff18575557560afd2247987f102f5981402b1fa1bf13362147aa0e89656ecc51ac3e2b
   languageName: node
   linkType: hard
 
@@ -18606,7 +18606,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^2.5.0, core-js@npm:^2.6.10":
+"core-js@npm:^2.5.0":
   version: 2.6.12
   resolution: "core-js@npm:2.6.12"
   checksum: 44fa9934a85f8c78d61e0c8b7b22436330471ffe59ec5076fe7f324d6e8cf7f824b14b1c81ca73608b13bdb0fef035bd820989bf059767ad6fa13123bb8bd016
@@ -18624,6 +18624,13 @@ __metadata:
   version: 3.38.1
   resolution: "core-js@npm:3.38.1"
   checksum: 55703c2f6fcd537e47a5cc83e9dc9884efef61861bbefb4a96a8c95e87956db980ce314628465dd49f14e626c5e633b9e3433f3e4a1f628404a14da420eb2556
+  languageName: node
+  linkType: hard
+
+"core-js@npm:^3.4.2":
+  version: 3.45.1
+  resolution: "core-js@npm:3.45.1"
+  checksum: 674c79e9c58ed923280cd4afbc3bc4c921b8b11bce70d269f1bd98db484e27f0ff436d1de34e198f27065a10386761b39f110309c471f329fe7376ab0fb32bf6
   languageName: node
   linkType: hard
 
@@ -34512,11 +34519,11 @@ __metadata:
   linkType: hard
 
 "recharts@npm:^1.8.5":
-  version: 1.8.5
-  resolution: "recharts@npm:1.8.5"
+  version: 1.8.6
+  resolution: "recharts@npm:1.8.6"
   dependencies:
     classnames: ^2.2.5
-    core-js: ^2.6.10
+    core-js: ^3.4.2
     d3-interpolate: ^1.3.0
     d3-scale: ^2.1.0
     d3-shape: ^1.2.0
@@ -34529,7 +34536,7 @@ __metadata:
   peerDependencies:
     react: ^15.0.0 || ^16.0.0
     react-dom: ^15.0.0 || ^16.0.0
-  checksum: bdc1b712b90a3e5f5fcc1bbb7755dde8666c056f67cad90f4e4a2dd726ed45f9fcc82fce4a679ae168c2ed2e243a4c1acffb3e1f45ad4d96c47bcf9e764b5c8f
+  checksum: c937ae8c21d6063fa412bf5d458fe0ea1ef78278d4a27b05aabf0250724732d488251436126574c4e06614661912e4908b20aa3f934fcc0d9a957e86949c30a4
   languageName: node
   linkType: hard
 
