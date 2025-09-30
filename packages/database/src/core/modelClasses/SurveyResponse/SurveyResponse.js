@@ -200,18 +200,19 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   async assertCanSubmit(accessPolicy, surveyResponses) {
     const entitiesBySurveyCode = {};
 
+    /** @type {Survey["id"][]} */
     const surveyIds = uniq(surveyResponses.map(sr => sr.survey_id));
+
+    /** @type {{attributes: Record<string, unknown>, code: Entity["code"], country_code: Country["code"], id: Entity["id"], name: Entity["name"], parent_id: Entity["id"], type: Entity["type"]}} */
+    const entitiesUpserted = surveyResponses.reduce((acc, { entities_upserted }) => {
+      if (entities_upserted) acc.push(...entities_upserted);
+      return acc;
+    }, []);
 
     return await this.database.wrapInReadOnlyTransaction(async transactingModels => {
       /** @type {SurveyRecord[]} */
       const surveys = await transactingModels.survey.findManyById(surveyIds);
       const surveyCodesById = reduceToDictionary(surveys, 'id', 'code');
-
-      /** @type {{attributes: Record<string, unknown>, code: Entity["code"], country_code: Country["code"], id: Entity["id"], name: Entity["name"], parent_id: Entity["id"], type: Entity["type"]}} */
-      const entitiesUpserted = surveyResponses.reduce((acc, { entities_upserted }) => {
-        if (entities_upserted) acc.push(...entities_upserted);
-        return acc;
-      }, []);
 
       for (const response of surveyResponses) {
         const entityCode = await this.#getEntityCodeFromSurveyResponseChange(
