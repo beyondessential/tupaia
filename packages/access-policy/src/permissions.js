@@ -150,5 +150,5 @@ export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames)
   ) {
     return true;
   }
-  throw new PermissionsError(`You do not have access to all related permission groups`);
+  throw new PermissionsError(`Need access to ${permissionGroupNames.join(', ')}`);
 };
