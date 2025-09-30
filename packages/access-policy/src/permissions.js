@@ -61,24 +61,11 @@ export const hasPermissionGroupAccess = (accessPolicy, permissionGroup) =>
   accessPolicy.allowsSome(undefined, permissionGroup);
 
 // has access to all permission groups inputted
-export const hasPermissionGroupsAccess = (accessPolicy, permissionGroups) => {
-  for (let i = 0; i < permissionGroups.length; i++) {
-    if (!accessPolicy.allowsSome(undefined, permissionGroups[i])) {
-      return false;
-    }
-  }
-  return true;
-};
+export const hasPermissionGroupsAccess = (accessPolicy, permissionGroups) =>
+  permissionGroups.every(pg => accessPolicy.allowsSome(undefined, pg));
 
-export const hasSomePermissionGroupsAccess = (accessPolicy, permissionGroups) => {
-  for (let i = 0; i < permissionGroups.length; i++) {
-    if (accessPolicy.allowsSome(undefined, permissionGroups[i])) {
-      return true;
-    }
-  }
-
-  return false;
-};
+export const hasSomePermissionGroupsAccess = (accessPolicy, permissionGroups) =>
+  permissionGroups.some(pg => accessPolicy.allowsSome(undefined, pg));
 
 export const assertBESAdminAccess = accessPolicy => {
   if (hasBESAdminAccess(accessPolicy)) {
