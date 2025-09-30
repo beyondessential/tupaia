@@ -7,7 +7,15 @@ import { ensure } from '@tupaia/tsutils';
 import { PermissionsError } from '@tupaia/utils';
 
 /**
+ * @typedef {import('./AccessPolicy').AccessPolicy} AccessPolicy
+ * @typedef {(accessPolicy: AccessPolicy) => true} PermissionsAssertion
+ * @typedef {(accessPolicy: AccessPolicy) => boolean} PermissionsChecker
+ * @typedef {string} PermissionGroupName
+ */
+
+/**
  * Returns true all the time. This is for any route handlers that do not need permissions.
+ * @type {PermissionsChecker}
  */
 export const allowNoPermissions = () => true;
 
@@ -47,54 +55,63 @@ export const assertAnyPermissions = (assertions, errorMessage) => async accessPo
   throw new Error(errorMessage || combinedErrorMessages.join('\n'));
 };
 
-/**
- * @param {import('./AccessPolicy').AccessPolicy} accessPolicy
- * @returns {boolean}
- */
+/** @type {PermissionsChecker} */
 export const hasBESAdminAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 
+/** @type {PermissionsChecker} */
 export const hasVizBuilderAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, VIZ_BUILDER_PERMISSION_GROUP);
 
+/**
+ * @type {PermissionsChecker}
+ * @param {PermissionGroupName}
+ */
 export const hasPermissionGroupAccess = (accessPolicy, permissionGroup) =>
   accessPolicy.allowsSome(undefined, permissionGroup);
 
-// has access to all permission groups inputted
+/**
+ * Has access to all permission groups inputted
+ * @type {PermissionsChecker}
+ * @param {PermissionGroupName[]}
+ */
 export const hasPermissionGroupsAccess = (accessPolicy, permissionGroups) =>
   permissionGroups.every(pg => accessPolicy.allowsSome(undefined, pg));
 
+/** @type {PermissionsChecker} */
 export const hasSomePermissionGroupsAccess = (accessPolicy, permissionGroups) =>
   permissionGroups.some(pg => accessPolicy.allowsSome(undefined, pg));
 
+/** @type {PermissionsAssertion} */
 export const assertBESAdminAccess = accessPolicy => {
-  if (hasBESAdminAccess(accessPolicy)) {
-    return true;
-  }
-
+  if (hasBESAdminAccess(accessPolicy)) return true;
   throw new Error(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
 };
 
+/** @type {PermissionsAssertion} */
 export const assertVizBuilderAccess = accessPolicy => {
-  if (hasVizBuilderAccess(accessPolicy)) {
-    return true;
-  }
-
+  if (hasVizBuilderAccess(accessPolicy)) return true;
   throw new Error(`Need ${VIZ_BUILDER_PERMISSION_GROUP} access`);
 };
 
+/** @type {PermissionsChecker} */
 export const hasTupaiaAdminPanelAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
 
+/** @type {PermissionsChecker} */
 export const hasTupaiaAdminPanelAccessToCountry = (accessPolicy, countryCode) =>
   accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
 
+/**
+ * @type {PermissionsAssertion}
+ * @param {ModelRegistry} models
+ * @param {string} recordId
+ */
 export const assertAdminPanelAccessToCountry = async (accessPolicy, models, recordId) => {
   const entity = ensure(
     await models.entity.findById(recordId),
     `No entity exists with ID ${recordId}`,
   );
-
   const userHasAdminAccessToCountry = accessPolicy.allows(
     entity.country_code,
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -107,22 +124,25 @@ export const assertAdminPanelAccessToCountry = async (accessPolicy, models, reco
   return true;
 };
 
+/** @type {PermissionsAssertion} */
 export const assertAdminPanelAccess = accessPolicy => {
-  if (hasTupaiaAdminPanelAccess(accessPolicy)) {
-    return true;
-  }
-
+  if (hasTupaiaAdminPanelAccess(accessPolicy)) return true;
   throw new PermissionsError(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
 };
 
+/**
+ * @type {PermissionsAssertion}
+ * @param {PermissionGroupName} permissionGroupName
+ */
 export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) => {
-  if (hasPermissionGroupAccess(accessPolicy, permissionGroupName)) {
-    return true;
-  }
-
+  if (hasPermissionGroupAccess(accessPolicy, permissionGroupName)) return true;
   throw new PermissionsError(`Need ${permissionGroupName} access`);
 };
 
+/**
+ * @type {PermissionsAssertion}
+ * @param {PermissionGroupName[]} permissionGroupNames
+ */
 export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames) => {
   if (
     hasPermissionGroupsAccess(accessPolicy, permissionGroupNames) ||
@@ -130,6 +150,5 @@ export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames)
   ) {
     return true;
   }
-
   throw new Error(`You do not have access to all related permission groups`);
 };
