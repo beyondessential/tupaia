@@ -2,7 +2,6 @@ export { AccessPolicy } from './AccessPolicy';
 export {
   allowNoPermissions,
   assertAdminPanelAccess,
-  assertAdminPanelAccessToCountry,
   assertAllPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,

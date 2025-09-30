@@ -3,7 +3,6 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   VIZ_BUILDER_PERMISSION_GROUP,
 } from '@tupaia/constants';
-import { ensure } from '@tupaia/tsutils';
 import { PermissionsError } from '@tupaia/utils';
 
 /**
@@ -101,28 +100,6 @@ export const hasTupaiaAdminPanelAccess = accessPolicy =>
 /** @type {PermissionsChecker} */
 export const hasTupaiaAdminPanelAccessToCountry = (accessPolicy, countryCode) =>
   accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
-
-/**
- * @type {PermissionsAssertion}
- * @param {ModelRegistry} models
- * @param {string} recordId
- */
-export const assertAdminPanelAccessToCountry = async (accessPolicy, models, recordId) => {
-  const entity = ensure(
-    await models.entity.findById(recordId),
-    `No entity exists with ID ${recordId}`,
-  );
-  const userHasAdminAccessToCountry = accessPolicy.allows(
-    entity.country_code,
-    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  );
-  if (!userHasAdminAccessToCountry) {
-    throw new PermissionsError(
-      `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to country ‘${entity.country_code}’ to edit entity ‘${entity.name}’`,
-    );
-  }
-  return true;
-};
 
 /** @type {PermissionsAssertion} */
 export const assertAdminPanelAccess = accessPolicy => {
