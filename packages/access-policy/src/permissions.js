@@ -9,21 +9,17 @@ import { PermissionsError } from '@tupaia/utils';
 /**
  * Returns true all the time. This is for any route handlers that do not need permissions.
  */
-export const allowNoPermissions = () => {
-  return true;
-};
+export const allowNoPermissions = () => true;
 
 /**
  * Returns true if all of the permissions assertions pass, or throws an error
- * @param {function[]} assertions  Each permissions assertion should return true or throw an error
+ * @param {function[]} assertions Each permissions assertion should return `true` or throw a
+ * {@link PermissionsError}
  * @param {string} errorMessage
  */
 export const assertAllPermissions = (assertions, errorMessage) => async accessPolicy => {
   try {
-    for (let i = 0; i < assertions.length; i++) {
-      const assertion = assertions[i];
-      await assertion(accessPolicy);
-    }
+    for (const assertion of assertions) await assertion(accessPolicy);
     return true;
   } catch (e) {
     throw new Error(errorMessage || e.message);
