@@ -17,15 +17,15 @@ export class FacilityRecord extends DatabaseRecord {
   }
 
   async geographicalArea() {
-    return this.otherModels.geographicalArea.findById(this.geographical_area_id);
+    return await this.otherModels.geographicalArea.findById(this.geographical_area_id);
   }
 
   async country() {
-    return this.otherModels.country.findById(this.country_id);
+    return await this.otherModels.country.findById(this.country_id);
   }
 
   async entity() {
-    return this.otherModels.entity.findOne({ code: this.code });
+    return await this.otherModels.entity.findOne({ code: this.code });
   }
 }
 
