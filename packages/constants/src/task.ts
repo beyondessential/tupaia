@@ -1,4 +1,4 @@
-export const TASKS_QUERY_FIELDS = [
+const BASE_TASK_QUERY_FIELDS = [
   'assignee_id',
   'assignee_name',
   'entity.code',
@@ -14,3 +14,7 @@ export const TASKS_QUERY_FIELDS = [
   'task_due_date',
   'task_status',
 ];
+
+export const TASKS_QUERY_FIELDS = BASE_TASK_QUERY_FIELDS;
+
+export const SINGLE_TASK_QUERY_FIELDS = [...TASKS_QUERY_FIELDS, 'survey_response_id'];

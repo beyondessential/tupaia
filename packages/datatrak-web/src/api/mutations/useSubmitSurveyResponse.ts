@@ -100,7 +100,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         );
 
         if (user.isLoggedIn) {
-          await UserModel.addRecentEntities(transactingModels, user.id, recent_entities);
+          await UserModel.addRecentEntities(transactingModels, submitterId, recent_entities);
         }
 
         // Marking any corresponding task as complete is delegated to central-server

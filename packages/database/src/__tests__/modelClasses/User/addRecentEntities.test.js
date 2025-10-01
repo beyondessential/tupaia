@@ -18,6 +18,7 @@ const mockUser = {
 };
 
 const mockModels = {
+  database: { executeSql: () => {} },
   user: {
     findById: _id => mockUser,
     updateById: (_id, update) => {
@@ -25,7 +26,8 @@ const mockModels = {
     },
   },
   entity: {
-    findById: id => mockEntities.find(x => x.id === id),
+    findById: id => mockEntities.find(x => x.id === id) ?? null,
+    findManyById: ids => mockEntities.filter(mockEntity => ids.includes(mockEntity.id)),
   },
 };
 
