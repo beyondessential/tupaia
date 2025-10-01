@@ -15,7 +15,7 @@ export class SubmitSurveyResponses extends RouteHandler {
   async assertUserHasAccess(transactingModels) {
     // Check permissions
     const surveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, this.surveyResponses);
+      await transactingModels.surveyResponse.assertCanSubmit(accessPolicy, this.surveyResponses);
     };
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),

@@ -1,9 +1,8 @@
 import { Request } from 'express';
 
-import { SurveyResponseModel } from '@tupaia/database';
+import { SurveyResponseModel, UserModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSubmitSurveyResponseRequest as RequestT } from '@tupaia/types';
-import { addRecentEntities } from '../../utils';
 import { handleTaskCompletion } from './handleTaskCompletion';
 
 export type SubmitSurveyResponseRequest = Request<
@@ -32,7 +31,7 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
     if (!!session && processedResponse.user_id) {
       const { user_id: userId } = processedResponse;
       // add these after the survey response has been submitted because we want to be able to add newly created entities to the recent entities list
-      await addRecentEntities(models, userId, recent_entities);
+      await UserModel.addRecentEntities(models, userId, recent_entities);
     }
 
     await handleTaskCompletion(models, {

@@ -1,6 +1,6 @@
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { DatatrakWebServerModelRegistry } from '../../types';
+import { QUERY_CONJUNCTIONS, TaskRecord } from '@tupaia/database';
 import { MeditrakSurveyResponseRequest } from '@tupaia/types';
+import { DatatrakWebServerModelRegistry } from '../../types';
 
 export const handleTaskCompletion = async (
   models: DatatrakWebServerModelRegistry,
@@ -13,7 +13,7 @@ export const handleTaskCompletion = async (
     data_time: dataTime,
     user_id: userId,
   } = surveyResponse;
-  const tasksToComplete = await models.task.find(
+  const tasksToComplete: TaskRecord[] = await models.task.find(
     // @ts-ignore - TS doesn't like the nested query
     {
       [QUERY_CONJUNCTIONS.AND]: {

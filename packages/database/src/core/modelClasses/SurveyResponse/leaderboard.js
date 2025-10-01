@@ -29,18 +29,19 @@ export function getLeaderboardQuery(projectId = '') {
     ? SYSTEM_USERS
     : [...SYSTEM_USERS, ...USERS_EXCLUDED_FROM_LEADER_BOARD];
 
-  return `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
-      FROM (
-        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100)::int as pigs
-        FROM survey_response
-        JOIN survey on survey.id=survey_id
-        ${projectId ? 'WHERE survey.project_id = ?' : ''}
-        GROUP BY user_id
-      ) r
-      JOIN user_account on user_account.id = r.user_id
-      WHERE email NOT IN (${excludedUserAccountList.join(',')})
-      ${!isInternalProject ? besUsersFilter : ''}
-      ORDER BY coconuts DESC
-      LIMIT ?;
-    `;
+  return `
+    SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
+    FROM (
+      SELECT user_id, COUNT(*)::INT as coconuts, FLOOR(COUNT(*) / 100)::INT AS pigs
+      FROM survey_response
+      JOIN survey ON survey.id=survey_id
+      ${projectId ? 'WHERE survey.project_id = ?' : ''}
+      GROUP BY user_id
+    ) r
+    JOIN user_account ON user_account.id = r.user_id
+    WHERE email NOT IN (${excludedUserAccountList.join(',')})
+    ${!isInternalProject ? besUsersFilter : ''}
+    ORDER BY coconuts DESC
+    LIMIT ?;
+  `;
 }

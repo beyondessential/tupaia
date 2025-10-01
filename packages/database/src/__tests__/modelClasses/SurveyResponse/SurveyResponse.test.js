@@ -20,11 +20,12 @@ const expectToBe = (expected, actual) => {
 
 describe('getLeaderboardQuery()', () => {
   it('should filter out internal users on standard projects', async () => {
-    const expectedLeaderboard = `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
+    const expectedLeaderboard = `
+      SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100)::int as pigs
+        SELECT user_id, COUNT(*)::INT AS coconuts, FLOOR(COUNT(*) / 100)::INT as pigs
         FROM survey_response
-        JOIN survey on survey.id=survey_id
+        JOIN survey ON survey.id=survey_id
         WHERE survey.project_id = ?
         GROUP BY user_id
       ) r
@@ -43,15 +44,16 @@ describe('getLeaderboardQuery()', () => {
       '66a03660718c54751609eeed', // bes_asset_tracker
       '6704622a45a4fc4941071605', // bes_reporting
     ];
-    const expectedLeaderboard = `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
+    const expectedLeaderboard = `
+      SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100)::int as pigs
+        SELECT user_id, COUNT(*)::INT as coconuts, FLOOR(COUNT(*) / 100)::INT AS pigs
         FROM survey_response
-        JOIN survey on survey.id=survey_id
+        JOIN survey ON survey.id=survey_id
         WHERE survey.project_id = ?
         GROUP BY user_id
       ) r
-      JOIN user_account on user_account.id = r.user_id
+      JOIN user_account ON user_account.id = r.user_id
       WHERE email NOT IN (${SYSTEM_USERS.join(',')})
       ORDER BY coconuts DESC
       LIMIT ?;`;

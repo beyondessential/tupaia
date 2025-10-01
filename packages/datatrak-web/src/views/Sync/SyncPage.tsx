@@ -135,9 +135,7 @@ export const SyncPage = () => {
     syncManager.triggerUrgentSync();
   }, [syncManager]);
 
-  const syncFinishedSuccessfully = Boolean(
-    syncStarted && !isSyncing && !isQueuing && !errorMessage,
-  );
+  const syncFinishedSuccessfully = syncStarted && !isSyncing && !isQueuing && !errorMessage;
 
   return (
     <Wrapper>

@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import log from 'winston';
 
-import { DatatrakWebUserRequest } from '@tupaia/types';
 import { generateId } from '@tupaia/database';
 import { LoadingScreen } from '@tupaia/ui-components';
 
@@ -10,7 +9,7 @@ import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useIsOfflineFirst } from './offlineFirst';
 import { useCurrentUserContext } from './CurrentUserContext';
 
-export type SyncContextType = DatatrakWebUserRequest.ResBody & {
+export interface SyncContextType {
   clientSyncManager: ClientSyncManager;
 };
 
