@@ -22,6 +22,7 @@ export const saveChangesForModel = async (
   model: DatabaseModel,
   changes: SyncSnapshotAttributes[],
   isCentralServer: boolean,
+  progressCallback?: (recordsProcessed: number) => void,
 ) => {
   const sanitizeData = (d: ModelSanitizeArgs) =>
     isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
@@ -54,26 +55,33 @@ export const saveChangesForModel = async (
     }
   }
 
+  // Should delete records first to avoid foreign key constraints
+  winston.debug(
+    `Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`,
+    {
+      count: recordsForDelete.length,
+    },
+  );
+  if (recordsForDelete.length > 0) {
+    await saveDeletes(model, recordsForDelete, 1000, progressCallback);
+  }
+
   // run each import process
   winston.debug(`Sync: saveIncomingChanges for ${model.databaseRecord}: Creating new records`, {
     count: recordsForCreate.length,
   });
   if (recordsForCreate.length > 0) {
-    await saveCreates(model, recordsForCreate);
+    await saveCreates(model, recordsForCreate, 1000, progressCallback);
   }
 
-  winston.debug(`Sync: saveIncomingChanges for ${model.databaseRecord}: Updating existing records`, {
-    count: recordsForUpdate.length,
-  });
+  winston.debug(
+    `Sync: saveIncomingChanges for ${model.databaseRecord}: Updating existing records`,
+    {
+      count: recordsForUpdate.length,
+    },
+  );
   if (recordsForUpdate.length > 0) {
-    await saveUpdates(model, recordsForUpdate);
-  }
-
-  winston.debug(`Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`, {
-    count: recordsForDelete.length,
-  });
-  if (recordsForDelete.length > 0) {
-    await saveDeletes(model, recordsForDelete);
+    await saveUpdates(model, recordsForUpdate, 1000, progressCallback);
   }
 };
 
@@ -82,6 +90,7 @@ const saveChangesForModelInBatches = async (
   sessionId: string,
   recordType: RecordType,
   isCentralServer: boolean,
+  progressCallback?: (recordsProcessed: number) => void,
 ) => {
   let fromId;
   let batchRecords: SyncSnapshotAttributes[] | null = null;
@@ -100,7 +109,7 @@ const saveChangesForModelInBatches = async (
         count: batchRecords.length,
       });
 
-      await saveChangesForModel(model, batchRecords, isCentralServer);
+      await saveChangesForModel(model, batchRecords, isCentralServer, progressCallback);
 
       await sleep(PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS);
     } catch (error) {
@@ -114,6 +123,7 @@ export const saveIncomingSnapshotChanges = async (
   models: DatabaseModel[],
   sessionId: string,
   isCentralServer: boolean,
+  progressCallback?: (recordsProcessed: number) => void,
 ) => {
   if (models.length === 0) {
     return;
@@ -122,14 +132,21 @@ export const saveIncomingSnapshotChanges = async (
   assertIsWithinTransaction(models[0].database);
 
   for (const model of models) {
-    await saveChangesForModelInBatches(model, sessionId, model.databaseRecord, isCentralServer);
+    await saveChangesForModelInBatches(
+      model,
+      sessionId,
+      model.databaseRecord,
+      isCentralServer,
+      progressCallback,
+    );
   }
 };
 
-export const saveIncomingInMemoryChanges = async (
+export const saveChangesFromMemory = async (
   models: ModelRegistry,
   changes: SyncSnapshotAttributes[],
   isCentralServer: boolean,
+  progressCallback: (recordsProcessed: number) => void,
 ) => {
   if (changes.length === 0) {
     return;
@@ -140,6 +157,6 @@ export const saveIncomingInMemoryChanges = async (
   const groupedChanges = groupBy(changes, 'recordType');
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
-    await saveChangesForModel(model, modelChanges, isCentralServer);
+    await saveChangesForModel(model, modelChanges, isCentralServer, progressCallback);
   }
 };
