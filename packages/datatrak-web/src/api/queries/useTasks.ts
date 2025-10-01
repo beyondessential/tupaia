@@ -44,12 +44,7 @@ interface UseTasksLocalContext extends LocalContext {
   >[];
 }
 
-const getRemoteTasks = async ({
-  pageSize,
-  page,
-  filters,
-  sortBy,
-}: UseTasksLocalContext) => {
+const getRemoteTasks = async ({ pageSize, page, filters, sortBy }: UseTasksLocalContext) => {
   return await get('tasks', {
     params: {
       pageSize,
@@ -84,13 +79,7 @@ export const useTasks = (
     includeCompleted,
     userId,
   });
-  return useDatabaseQuery<
-    DatatrakWebTasksRequest.ResBody,
-    unknown,
-    DatatrakWebTasksRequest.ResBody,
-    readonly unknown[],
-    LocalContext
-  >(
+  return useDatabaseQuery<DatatrakWebTasksRequest.ResBody>(
     [
       'tasks',
       projectId,
