@@ -1,3 +1,4 @@
+import { ensure } from '@tupaia/tsutils';
 import { DatatrakWebTaskRequest } from '@tupaia/types';
 import { getTask } from '../../database';
 import { DatatrakWebModelRegistry } from '../../types';
@@ -10,7 +11,8 @@ export interface UseTaskLocalContext extends ContextualQueryFunctionContext {
   taskId?: string;
 }
 
-const getTaskOnline = async ({ taskId }: UseTaskLocalContext) => get(`tasks/${taskId}`);
+const getTaskOnline = async ({ taskId }: UseTaskLocalContext) =>
+  await get(`tasks/${encodeURIComponent(ensure(taskId))}`);
 
 export const useTask = (taskId?: string) => {
   const isOfflineFirst = useIsOfflineFirst();
