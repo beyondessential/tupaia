@@ -43,6 +43,7 @@
     "lucide-react": "^0.525.0",
     "markdown-to-jsx": "^6.4.1",
     "memfs": "^4.17.0",
+    "mitt": "^3.0.1",
     "nanoid": "^2.0.3",
     "notistack": "^3.0.1",
     "prop-types": "^15.8.1",
