@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import log from 'winston';
 
 import { generateId } from '@tupaia/database';
+import { LoadingScreen } from '@tupaia/ui-components';
+
 import { useDatabaseContext } from '../hooks/database';
 import { useProjectsInSync } from '../hooks/database/useProjectsInSync';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
@@ -58,6 +60,10 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
       };
     }
   }, [clientSyncManager, projectsInSync.length]);
+
+  if (!clientSyncManager) {
+    return <LoadingScreen />;
+  }
 
   return (
     <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>
