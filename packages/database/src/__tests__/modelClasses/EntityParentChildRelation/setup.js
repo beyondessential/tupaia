@@ -1,6 +1,8 @@
-import { ENTITIES, ENTITY_RELATIONS, PROJECTS } from './fixtures';
 import { buildAndInsertProjectsAndHierarchies, clearTestData } from '../../../server/testUtilities';
 import { EntityHierarchySubtreeRebuilder } from '../../../server/changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
+import { entityHierarchyFixtures } from '../../../server/testFixtures';
+
+const { PROJECTS, ENTITIES, ENTITY_RELATIONS } = entityHierarchyFixtures;
 
 export const setupTestData = async models => {
   await clearTestData(models.database);

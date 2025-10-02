@@ -1,31 +1,20 @@
-import { getEntitiesWithFields } from './fixtures';
+import { entityHierarchyFixtures } from '../../../server/testFixtures';
 import { setupTestData } from './setup';
 import { getTestModels } from '../../../server/testUtilities';
+import { getHierarchyByName, getEntityByCode, removeEmptyFields } from './utils';
 
-describe('EntityDescendants', () => {
+const { getEntitiesWithFields } = entityHierarchyFixtures;
+
+describe('EntityParentChildDescendants ', () => {
   let models;
   beforeAll(async () => {
     models = getTestModels();
     await setupTestData(models);
   });
 
-  const getHierarchyByName = async name => {
-    return await models.entityHierarchy.findOne({ name });
-  };
-
-  const getEntityByCode = async code => {
-    return await models.entity.findOne({ code });
-  };
-
-  const removeEmptyFields = ({ model: _, ...entity }) => {
-    return Object.fromEntries(
-      Object.entries(entity).filter(([_key, value]) => value !== undefined),
-    );
-  };
-
-  it('can fetch descendants of an entity', async () => {
-    const hierarchyId = (await getHierarchyByName('redblue')).id;
-    const entityId = (await getEntityByCode('LAVENDER')).id;
+  it('fetch descendants of an entity', async () => {
+    const hierarchyId = (await getHierarchyByName(models, 'redblue')).id;
+    const entityId = (await getEntityByCode(models, 'LAVENDER')).id;
     const entities = await models.entity.getDescendantsFromParentChildRelation(
       hierarchyId,
       [entityId],
@@ -40,9 +29,9 @@ describe('EntityDescendants', () => {
     );
   });
 
-  it('can fetch descendants of a project entity', async () => {
-    const hierarchyId = (await getHierarchyByName('redblue')).id;
-    const entityId = (await getEntityByCode('redblue')).id;
+  it('fetch descendants of a project entity', async () => {
+    const hierarchyId = (await getHierarchyByName(models, 'redblue')).id;
+    const entityId = (await getEntityByCode(models, 'redblue')).id;
     const entities = await models.entity.getDescendantsFromParentChildRelation(
       hierarchyId,
       [entityId],
@@ -78,9 +67,9 @@ describe('EntityDescendants', () => {
     );
   });
 
-  it('can fetch descendants of a alternate project entity', async () => {
-    const hierarchyId = (await getHierarchyByName('goldsilver')).id;
-    const entityId = (await getEntityByCode('goldsilver')).id;
+  it('fetch descendants of a alternate project entity', async () => {
+    const hierarchyId = (await getHierarchyByName(models, 'goldsilver')).id;
+    const entityId = (await getEntityByCode(models, 'goldsilver')).id;
     const entities = await models.entity.getDescendantsFromParentChildRelation(
       hierarchyId,
       [entityId],
@@ -131,9 +120,9 @@ describe('EntityDescendants', () => {
     );
   });
 
-  it('can fetch descendants of a country entity', async () => {
-    const hierarchyId = (await getHierarchyByName('redblue')).id;
-    const entityId = (await getEntityByCode('KANTO')).id;
+  it('fetch descendants of a country entity', async () => {
+    const hierarchyId = (await getHierarchyByName(models, 'redblue')).id;
+    const entityId = (await getEntityByCode(models, 'KANTO')).id;
     const entities = await models.entity.getDescendantsFromParentChildRelation(
       hierarchyId,
       [entityId],
@@ -169,9 +158,9 @@ describe('EntityDescendants', () => {
     );
   });
 
-  it('can filter by type', async () => {
-    const hierarchyId = (await getHierarchyByName('redblue')).id;
-    const entityId = (await getEntityByCode('KANTO')).id;
+  it('filter by type', async () => {
+    const hierarchyId = (await getHierarchyByName(models, 'redblue')).id;
+    const entityId = (await getEntityByCode(models, 'KANTO')).id;
     const entities = await models.entity.getDescendantsFromParentChildRelation(
       hierarchyId,
       [entityId],
@@ -187,9 +176,9 @@ describe('EntityDescendants', () => {
     expect(entities.map(removeEmptyFields).every(entity => entity.type === 'city')).toBe(true);
   });
 
-  it('can filter by generational distance', async () => {
-    const hierarchyId = (await getHierarchyByName('redblue')).id;
-    const entityId = (await getEntityByCode('KANTO')).id;
+  it('filter by generational distance', async () => {
+    const hierarchyId = (await getHierarchyByName(models, 'redblue')).id;
+    const entityId = (await getEntityByCode(models, 'KANTO')).id;
     const entities = await models.entity.getDescendantsFromParentChildRelation(
       hierarchyId,
       [entityId],
