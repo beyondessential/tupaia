@@ -12560,6 +12560,7 @@ __metadata:
     react-router-dom: 6.3.0
     react-swipeable-views: ^0.14.0
     rrule: ^2.8.1
+    storybook: ^8.2.9
     styled-components: ^5.1.0
     vite: ^4.5.14
     vite-plugin-commonjs: ^0.10.4
@@ -13171,6 +13172,7 @@ __metadata:
     react-router-dom: 6.3.0
     react-slick: ^0.30.2
     slick-carousel: ^1.8.1
+    storybook: ^8.2.9
     styled-components: ^5.1.0
     vite: ^4.5.14
   languageName: unknown
