@@ -12103,12 +12103,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tupaia/access-policy@workspace:*, @tupaia/access-policy@workspace:^, @tupaia/access-policy@workspace:packages/access-policy":
+"@tupaia/access-policy@workspace:*, @tupaia/access-policy@workspace:packages/access-policy":
   version: 0.0.0-use.local
   resolution: "@tupaia/access-policy@workspace:packages/access-policy"
   dependencies:
     "@babel/eslint-parser": ^7.27.5
     "@tupaia/constants": "workspace:*"
+    "@tupaia/utils": "workspace:*"
     eslint: ^7.32.0
     npm-run-all: ^4.1.5
     rimraf: ^6.0.1
@@ -12643,7 +12644,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/expression-parser@workspace:*, @tupaia/expression-parser@workspace:^, @tupaia/expression-parser@workspace:packages/expression-parser":
+"@tupaia/expression-parser@workspace:*, @tupaia/expression-parser@workspace:packages/expression-parser":
   version: 0.0.0-use.local
   resolution: "@tupaia/expression-parser@workspace:packages/expression-parser"
   dependencies:
@@ -12793,8 +12794,8 @@ __metadata:
     "@react-native/eslint-config": ^0.72.2
     "@react-native/metro-config": ^0.72.11
     "@tsconfig/react-native": ^3.0.0
-    "@tupaia/access-policy": "workspace:^"
-    "@tupaia/expression-parser": "workspace:^"
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/expression-parser": "workspace:*"
     "@types/react": ^18.0.24
     appcenter: ^5.0.0
     appcenter-analytics: ^5.0.0
