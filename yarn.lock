@@ -12103,7 +12103,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tupaia/access-policy@workspace:*, @tupaia/access-policy@workspace:^, @tupaia/access-policy@workspace:packages/access-policy":
+"@tupaia/access-policy@workspace:*, @tupaia/access-policy@workspace:packages/access-policy":
   version: 0.0.0-use.local
   resolution: "@tupaia/access-policy@workspace:packages/access-policy"
   dependencies:
@@ -12641,7 +12641,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/expression-parser@workspace:*, @tupaia/expression-parser@workspace:^, @tupaia/expression-parser@workspace:packages/expression-parser":
+"@tupaia/expression-parser@workspace:*, @tupaia/expression-parser@workspace:packages/expression-parser":
   version: 0.0.0-use.local
   resolution: "@tupaia/expression-parser@workspace:packages/expression-parser"
   dependencies:
@@ -12791,8 +12791,8 @@ __metadata:
     "@react-native/eslint-config": ^0.72.2
     "@react-native/metro-config": ^0.72.11
     "@tsconfig/react-native": ^3.0.0
-    "@tupaia/access-policy": "workspace:^"
-    "@tupaia/expression-parser": "workspace:^"
+    "@tupaia/access-policy": "workspace:*"
+    "@tupaia/expression-parser": "workspace:*"
     "@types/react": ^18.0.24
     appcenter: ^5.0.0
     appcenter-analytics: ^5.0.0
