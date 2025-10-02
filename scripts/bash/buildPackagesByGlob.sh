@@ -96,7 +96,7 @@ case $FLAG in
 	EXAMPLE_USAGE="${BOLD}yarn run build:only '{datatrak-*,types}'${RESET}" \
 		assert_expected_arguments "$@"
 	set -x
-	yarn workspaces foreach -Wtv --jobs unlimited --include "@tupaia/$GLOB" run build
+	yarn workspaces foreach -Wptvv --jobs unlimited --include "@tupaia/$GLOB" run build
 	;;
 -h | --help)
 	echo_help_message
