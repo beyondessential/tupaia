@@ -11,7 +11,7 @@ NODE_ENV=production \
     yarn workspaces foreach \
     --parallel \
     --topological \
-    --verbose \
+    --verbose --verbose \
     --jobs unlimited \
     --include "@tupaia/$package_names_glob" \
     run build-dev \
