@@ -217,7 +217,7 @@ jobs:
           echo "Using Yarn $(yarn --version)"
       - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
       - name: Build subtree
-        run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
+        run: yarn workspaces foreach -Rptvv --jobs unlimited --from ${{ matrix.package }} run build
       - name: Set up tests (if script exists)
         run: yarn workspaces foreach -W --include ${{ matrix.package }} run setup-test
       - name: Run tests (if script exists)
