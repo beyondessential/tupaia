@@ -87,14 +87,14 @@ case $FLAG in
 -f | --from)
 	shift
 	EXAMPLE_USAGE="${BOLD}yarn run build:from 'tupaia-web{,-server}'${RESET}" \
-		assert_expected_arguments $@
+		assert_expected_arguments "$@"
 	set -x
 	yarn workspaces foreach -Rptvv --jobs unlimited --from "@tupaia/$GLOB" run build
 	;;
 -o | --only)
 	shift
 	EXAMPLE_USAGE="${BOLD}yarn run build:only '{datatrak-*,types}'${RESET}" \
-		assert_expected_arguments $@
+		assert_expected_arguments "$@"
 	set -x
 	yarn workspaces foreach -Wtv --jobs unlimited --include "@tupaia/$GLOB" run build
 	;;
