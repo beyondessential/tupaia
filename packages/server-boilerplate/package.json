@@ -27,6 +27,7 @@
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/api-client": "workspace:*",
     "@tupaia/auth": "workspace:*",
+    "@tupaia/constants": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsmodels": "workspace:*",
