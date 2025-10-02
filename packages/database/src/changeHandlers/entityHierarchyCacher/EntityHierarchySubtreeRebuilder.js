@@ -15,14 +15,11 @@ export class EntityHierarchySubtreeRebuilder {
   async rebuildSubtrees(rebuildJobs) {
     // get the subtrees to delete, then run the delete
     const subtreesForDelete = {};
-    rebuildJobs.forEach(({ hierarchyId, rootEntityId }) => {
-      if (!subtreesForDelete[hierarchyId]) {
-        subtreesForDelete[hierarchyId] = new Set();
-      }
-      subtreesForDelete[hierarchyId].add(rootEntityId);
-    });
+    for (const { hierarchyId, rootEntityId } of rebuildJobs) {
+      (subtreesForDelete[hierarchyId] ??= new Set()).add(rootEntityId);
+    }
     const deletes = Object.entries(subtreesForDelete).map(async ([hierarchyId, rootEntityIds]) =>
-      this.deleteSubtrees(hierarchyId, [...rootEntityIds]),
+      this.deleteSubtrees(hierarchyId, rootEntityIds),
     );
     await Promise.all(deletes);
 
