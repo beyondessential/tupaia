@@ -12324,8 +12324,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/constants@workspace:packages/constants"
   dependencies:
+    "@types/node": ^20.11.1
     rimraf: ^6.0.1
     ts-node: ^10.9.1
+    typescript: 5.2.2
   languageName: unknown
   linkType: soft
 
