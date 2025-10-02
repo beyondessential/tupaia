@@ -28,16 +28,14 @@ export class EntityHierarchySubtreeRebuilder {
       await this.entityParentChildRelationBuilder.rebuildRelations(rebuildJobs);
 
     // get the subtrees to delete, then run the delete
-    const subtreesForDelete = {};
     /** @type {Record<EntityHierarchy['id'], Set<Entity['id']>>} */
-    rebuildJobs.forEach(({ hierarchyId, rootEntityId }) => {
-      if (!subtreesForDelete[hierarchyId]) {
-        subtreesForDelete[hierarchyId] = new Set();
-      }
+    const subtreesForDelete = {};
+    for (const { hierarchyId, rootEntityId } of rebuildJobs) {
+      subtreesForDelete[hierarchyId] ??= new Set();
       subtreesForDelete[hierarchyId].add(rootEntityId);
-    });
+    }
     const deletes = Object.entries(subtreesForDelete).map(async ([hierarchyId, rootEntityIds]) =>
-      this.deleteSubtrees(hierarchyId, [...rootEntityIds]),
+      this.deleteSubtrees(hierarchyId, [rootEntityIds]),
     );
     await Promise.all(deletes);
 
