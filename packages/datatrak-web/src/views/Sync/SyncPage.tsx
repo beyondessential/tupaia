@@ -10,7 +10,6 @@ import { SyncStatus } from './SyncStatus';
 import { SYNC_EVENT_ACTIONS } from '../../types';
 import { formatDistance } from 'date-fns';
 import { useSyncContext } from '../../api/SyncContext';
-import { useProjectsInSync } from '../../hooks/database/useProjectsInSync';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -131,11 +130,9 @@ export const SyncPage = () => {
     };
   }, [syncManager]);
 
-  const { data: projectsInSync } = useProjectsInSync();
-
   const manualSync = useCallback(() => {
-    syncManager.triggerUrgentSync(projectsInSync);
-  }, [projectsInSync, syncManager]);
+    syncManager.triggerUrgentSync();
+  }, [syncManager]);
 
   const syncFinishedSuccessfully = syncStarted && !isSyncing && !isQueuing && !errorMessage;
 

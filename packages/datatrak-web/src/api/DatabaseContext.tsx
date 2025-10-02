@@ -21,6 +21,10 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
     };
 
     init();
+
+    return () => {
+      models?.closeDatabaseConnections();
+    };
   }, []);
 
   if (!models) {
