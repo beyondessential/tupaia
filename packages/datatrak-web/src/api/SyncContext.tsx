@@ -10,7 +10,7 @@ import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useCurrentUserContext } from './CurrentUserContext';
 
 export interface SyncContextType {
-  clientSyncManager: ClientSyncManager | null;
+  clientSyncManager: ClientSyncManager;
   refetchSyncedProjectIds: () => void;
 }
 
