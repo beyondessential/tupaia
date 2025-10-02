@@ -110,6 +110,10 @@ jobs:
       PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Yarn
+        run: |
+          corepack enable yarn
+          corepack install
       - id: set-matrix
         run: |
           echo PACKAGES=$(
