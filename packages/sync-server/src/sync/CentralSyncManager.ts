@@ -389,7 +389,7 @@ export class CentralSyncManager {
             ),
           );
 
-          const existingProjectIds = lastSuccessfulSyncedProjectIds.filter(projectId =>
+          const existingProjectIds = projectIds.filter(projectId =>
             lastSuccessfulSyncedProjectIds.includes(projectId),
           );
           const newProjectIds = projectIds.filter(
