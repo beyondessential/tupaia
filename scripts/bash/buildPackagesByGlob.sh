@@ -69,7 +69,7 @@ assert_expected_arguments() {
 		exit 1
 	fi
 
-	if (($# > 2)); then
+	if (($# > 1)); then
 		echo -en "${BOLD}${YELLOW}Too many arguments:${RESET} ${BLUE}$@${RESET}. "
 		echo 'Did you forget to escape (or quote) your glob? Example usage:'
 		echo
