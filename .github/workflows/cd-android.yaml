@@ -29,7 +29,6 @@ jobs:
         run: |
           corepack enable yarn
           corepack install
-          echo "Using Yarn $(yarn --version)"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
