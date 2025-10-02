@@ -14,7 +14,7 @@ describe('EntityParentChildAncestors', () => {
 
   it('fetch ancestors of a country entity', async () => {
     const hierarchyId = (await getHierarchyByName(models, 'redblue')).id;
-    const entityId = (await getEntityByCode('KANTO')).id;
+    const entityId = (await getEntityByCode(models, 'KANTO')).id;
     const entities = await models.entity.getAncestorsFromParentChildRelation(
       hierarchyId,
       [entityId],
@@ -31,7 +31,7 @@ describe('EntityParentChildAncestors', () => {
 
   it('fetch ancestors of a city entity', async () => {
     const hierarchyId = (await getHierarchyByName(models, 'redblue')).id;
-    const entityId = (await getEntityByCode('CELADON')).id;
+    const entityId = (await getEntityByCode(models, 'CELADON')).id;
     const entities = await models.entity.getAncestorsFromParentChildRelation(
       hierarchyId,
       [entityId],
@@ -48,7 +48,7 @@ describe('EntityParentChildAncestors', () => {
 
   it('fetch ancestors of a facility entity', async () => {
     const hierarchyId = (await getHierarchyByName(models, 'redblue')).id;
-    const entityId = (await getEntityByCode('CELADON_GAME')).id;
+    const entityId = (await getEntityByCode(models, 'CELADON_GAME')).id;
     const entities = await models.entity.getAncestorsFromParentChildRelation(
       hierarchyId,
       [entityId],
@@ -65,7 +65,7 @@ describe('EntityParentChildAncestors', () => {
 
   it('filter by type', async () => {
     const hierarchyId = (await getHierarchyByName(models, 'redblue')).id;
-    const entityId = (await getEntityByCode('BLUE')).id;
+    const entityId = (await getEntityByCode(models, 'BLUE')).id;
     const entities = await models.entity.getAncestorsFromParentChildRelation(
       hierarchyId,
       [entityId],
@@ -83,7 +83,7 @@ describe('EntityParentChildAncestors', () => {
 
   it('filter by generational distance', async () => {
     const hierarchyId = (await getHierarchyByName(models, 'redblue')).id;
-    const entityId = (await getEntityByCode('CERULEAN_CAVE')).id;
+    const entityId = (await getEntityByCode(models, 'CERULEAN_CAVE')).id;
     const entities = await models.entity.getAncestorsFromParentChildRelation(
       hierarchyId,
       [entityId],
