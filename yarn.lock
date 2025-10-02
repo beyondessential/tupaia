@@ -12077,7 +12077,7 @@ __metadata:
     multer: ^2.0.2
     rimraf: ^6.0.1
     winston: ^3.17.0
-    xlsx: "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
   languageName: unknown
   linkType: soft
 
@@ -12248,7 +12248,7 @@ __metadata:
     string-similarity: ^1.2.2
     supertest: ^3.1.0
     winston: ^3.17.0
-    xlsx: "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
   languageName: unknown
   linkType: soft
 
@@ -13108,7 +13108,7 @@ __metadata:
     react-table: ^7.7.0
     rimraf: ^6.0.1
     styled-components: ^5.0.1
-    xlsx: "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
   languageName: unknown
   linkType: soft
 
@@ -13168,7 +13168,7 @@ __metadata:
     sinon: ^9.0.2
     validator: ^13.11.0
     winston: ^3.17.0
-    xlsx: "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
     yargs: 15.4.1
     yup: ^0.32.9
   languageName: unknown
@@ -13251,7 +13251,7 @@ __metadata:
     morgan: ^1.9.0
     rimraf: ^6.0.1
     winston: ^3.17.0
-    xlsx: "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
   languageName: unknown
   linkType: soft
 
@@ -40351,9 +40351,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xlsx@https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz":
+"xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fadmin-panel-server%40workspace%3Apackages%2Fadmin-panel-server":
   version: 0.20.3
-  resolution: "xlsx@https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  resolution: "xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fadmin-panel-server%40workspace%3Apackages%2Fadmin-panel-server"
+  bin:
+    xlsx: ./bin/xlsx.njs
+  checksum: c08ac699e6d31222404871240aa2c2804cb8bae59f0bea08d3293e99756cf0d3122fd34739189edaae1d9b0b493bbb8eb95d021950ee7b5cba9d55ecd6fcb4e4
+  languageName: node
+  linkType: hard
+
+"xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fcentral-server%40workspace%3Apackages%2Fcentral-server":
+  version: 0.20.3
+  resolution: "xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fcentral-server%40workspace%3Apackages%2Fcentral-server"
+  bin:
+    xlsx: ./bin/xlsx.njs
+  checksum: c08ac699e6d31222404871240aa2c2804cb8bae59f0bea08d3293e99756cf0d3122fd34739189edaae1d9b0b493bbb8eb95d021950ee7b5cba9d55ecd6fcb4e4
+  languageName: node
+  linkType: hard
+
+"xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fui-components%40workspace%3Apackages%2Fui-components":
+  version: 0.20.3
+  resolution: "xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fui-components%40workspace%3Apackages%2Fui-components"
+  bin:
+    xlsx: ./bin/xlsx.njs
+  checksum: c08ac699e6d31222404871240aa2c2804cb8bae59f0bea08d3293e99756cf0d3122fd34739189edaae1d9b0b493bbb8eb95d021950ee7b5cba9d55ecd6fcb4e4
+  languageName: node
+  linkType: hard
+
+"xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Futils%40workspace%3Apackages%2Futils":
+  version: 0.20.3
+  resolution: "xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Futils%40workspace%3Apackages%2Futils"
+  bin:
+    xlsx: ./bin/xlsx.njs
+  checksum: c08ac699e6d31222404871240aa2c2804cb8bae59f0bea08d3293e99756cf0d3122fd34739189edaae1d9b0b493bbb8eb95d021950ee7b5cba9d55ecd6fcb4e4
+  languageName: node
+  linkType: hard
+
+"xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fweb-config-server%40workspace%3Apackages%2Fweb-config-server":
+  version: 0.20.3
+  resolution: "xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fweb-config-server%40workspace%3Apackages%2Fweb-config-server"
   bin:
     xlsx: ./bin/xlsx.njs
   checksum: c08ac699e6d31222404871240aa2c2804cb8bae59f0bea08d3293e99756cf0d3122fd34739189edaae1d9b0b493bbb8eb95d021950ee7b5cba9d55ecd6fcb4e4
