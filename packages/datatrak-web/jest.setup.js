@@ -16,31 +16,38 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
+const mockModels = {
+  localSystemFact: {
+    get: jest.fn().mockResolvedValue('test-device-id'),
+    set: jest.fn().mockResolvedValue(undefined),
+    addProjectForSync: jest.fn(),
+  },
+  closeDatabaseConnections: jest.fn(),
+};
+
+jest.mock('./src/api/CurrentUserContext', () => {
+  const actual = jest.requireActual('./src/api/CurrentUserContext');
+
+  return {
+    ...actual,
+    useCurrentUserContext: jest.fn(() => ({
+      ...actual.useCurrentUserContext(), // Get the actual return value
+      accessPolicy: {}, // Override just this property
+    })),
+  };
+});
+
 // TODO: Set up database for testing later
 jest.mock('./src/api/DatabaseContext', () => {
   const React = require('react');
 
   return {
     DatabaseContext: React.createContext({
-      models: {
-        localSystemFact: {
-          get: jest.fn().mockResolvedValue('test-device-id'),
-          set: jest.fn().mockResolvedValue(undefined),
-          addProjectForSync: jest.fn(),
-        },
-        closeDatabaseConnections: jest.fn(),
-      },
+      models: mockModels,
     }),
     DatabaseProvider: ({ children }) => children,
     useDatabaseContext: () => ({
-      models: {
-        localSystemFact: {
-          get: jest.fn().mockResolvedValue('test-device-id'),
-          set: jest.fn().mockResolvedValue(undefined),
-          addProjectForSync: jest.fn(),
-        },
-        closeDatabaseConnections: jest.fn(),
-      },
+      models: mockModels,
     }),
   };
 });

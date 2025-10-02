@@ -64,5 +64,6 @@ export const sortModelsByDependencyOrder = async (
 
   return orderedDependencies
     .filter(dep => recordNames.has(dep))
-    .map(dep => models.find(r => r.databaseRecord === dep)) as DatabaseModel[];
+    .map(dep => models.find(r => r.databaseRecord === dep))
+    .filter(m => m !== undefined); // Boolean does not work here.
 };

@@ -6,11 +6,13 @@ const mockEntities = [...Array(NUM_MOCK_ENTITIES).keys()].flatMap(x => [
     id: `DL_${x}`,
     country_code: 'DL',
     type: x > NUM_MOCK_ENTITIES / 2 ? 'facility' : 'district',
+    isProject: () => false,
   },
   {
     id: `FJ_${x}`,
     country_code: 'FJ',
     type: x > NUM_MOCK_ENTITIES / 2 ? 'facility' : 'district',
+    isProject: () => false,
   },
 ]);
 const mockUser = {
