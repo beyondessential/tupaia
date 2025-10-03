@@ -1,36 +1,28 @@
 const getHierarchyWithFields = (hierarchyCode, fields) => {
-  const hierarchy = ENTITIES.find(e => e.code === hierarchyCode && e.type === 'project');
-
-  if (!hierarchy) {
-    throw new Error(`No hierarchy found with code ${hierarchyCode} in test data`);
-  }
+  const hierarchy = ensure(ENTITIES.find(e => e.code === hierarchyCode && e.type === 'project'));
 
   return Object.fromEntries(fields.map(field => [field, hierarchy[field]]));
 };
 
 const getHierarchiesWithFields = (hierarchyCodes, fields) => {
-  const allCodes = ENTITIES.map(e => e.code);
+  const allCodes = new Set(ENTITIES.map(e => e.code));
 
   return hierarchyCodes
-    .filter(hierarchyCode => allCodes.includes(hierarchyCode))
+    .filter(hierarchyCode => allCodes.has(hierarchyCode))
     .map(hierarchyCode => getHierarchyWithFields(hierarchyCode, fields));
 };
 
 const getEntityWithFields = (entityCode, fields) => {
-  const entity = ENTITIES.find(e => e.code === entityCode);
-
-  if (!entity) {
-    throw new Error(`No entity found with code ${entityCode} in test data`);
-  }
+  const entity = ensure(ENTITIES.find(e => e.code === entityCode));
 
   return Object.fromEntries(fields.map(field => [field, entity[field]]));
 };
 
 const getEntitiesWithFields = (entityCodes, fields) => {
-  const allCodes = ENTITIES.map(e => e.code);
+  const allCodes = new Set(ENTITIES.map(e => e.code));
 
   return entityCodes
-    .filter(entityCode => allCodes.includes(entityCode))
+    .filter(entityCode => allCodes.has(entityCode))
     .map(entityCode => getEntityWithFields(entityCode, fields));
 };
 
