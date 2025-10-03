@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { JOIN_TYPES, processColumns } from '@tupaia/database';
+import { NotFoundError } from '@tupaia/utils';
 import winston from '../../log';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
@@ -62,6 +63,7 @@ export class GETSurveys extends GETHandler {
 
     // `super.findSingleRecord` doesn’t seem to return `SurveyRecord` instance, hence `findById`
     const surveyRecord = await this.models.survey.findById(surveyId, options);
+    if (!surveyRecord) throw new NotFoundError(`No survey exists with ID ${surveyId}`);
 
     if (this.includePaginatedQuestions && this.includeQuestions) {
       winston.warn(
