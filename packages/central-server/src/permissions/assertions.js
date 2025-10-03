@@ -1,3 +1,4 @@
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
 /* Re-export for backward compatibility. Prefer importing directly from @tupaia/access-policy. */
 export {
