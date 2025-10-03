@@ -489,11 +489,11 @@ export class BaseDatabase {
  * Builds the query specified by the parameters passed in. The returned query can either be
  * 'awaited' (in which case it will execute and return the result), or passed back in to
  * this.query as part of a nested query.
- * @param {knex.Knex} connection 
- * @param {Record<string, unknown>} queryConfig 
- * @param {Record<string, unknown>} where 
- * @param {Record<string, unknown>} options 
- * @param {knex.QueryBuilder} baseQuery 
+ * @param {knex.Knex} connection
+ * @param {Record<string, unknown>} queryConfig
+ * @param {Record<string, unknown>} where
+ * @param {Record<string, unknown>} options
+ * @param {knex.QueryBuilder} baseQuery
  * @returns {knex.Knex}
  */
 function buildQuery(connection, queryConfig, where = {}, options = {}, baseQuery = null) {
@@ -564,6 +564,13 @@ function buildQuery(connection, queryConfig, where = {}, options = {}, baseQuery
       const [columnName, direction] = sortKey.split(' ');
       query = query.orderBy(columnName, direction);
     }
+  }
+
+  if (options.withRecursive) {
+    query = query.withRecursive(
+      options.withRecursive.alias,
+      connection.raw(options.withRecursive.query, options.withRecursive.parameters),
+    );
   }
 
   // Add raw SQL sort options
