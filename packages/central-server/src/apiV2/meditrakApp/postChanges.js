@@ -58,7 +58,11 @@ export async function postChanges(req, res) {
       .filter(c => c.action === ACTIONS.SubmitSurveyResponse)
       .map(c => c.translatedPayload.survey_response || c.translatedPayload);
     const surveyResponsePermissionsChecker = async accessPolicy => {
-      await transactingModels.surveyResponse.assertCanSubmit(accessPolicy, surveyResponsePayloads);
+      await transactingModels.surveyResponse.assertCanSubmit(
+        transactingModels,
+        accessPolicy,
+        surveyResponsePayloads,
+      );
     };
     await req.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),

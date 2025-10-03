@@ -91,6 +91,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_1]: ['KI_1_test', 'KI_2_test', 'KI_3_test'],
     };
     const result = await models.surveyResponse.assertCanImport(
+      models,
       defaultAccessPolicy,
       entitiesBySurveyCode,
     );
@@ -105,6 +106,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
     const result = await models.surveyResponse.assertCanImport(
+      models,
       defaultAccessPolicy,
       entitiesBySurveyCode,
     );
@@ -118,7 +120,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['LA_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => models.surveyResponse.assertCanImport(defaultAccessPolicy, entitiesBySurveyCode))
+    expect(() => models.surveyResponse.assertCanImport(models, defaultAccessPolicy, entitiesBySurveyCode))
       .to.throw;
   });
 
@@ -137,7 +139,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => models.surveyResponse.assertCanImport(accessPolicy, entitiesBySurveyCode)).to
+    expect(() => models.surveyResponse.assertCanImport(models, accessPolicy, entitiesBySurveyCode)).to
       .throw;
   });
 
@@ -157,7 +159,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => models.surveyResponse.assertCanImport(accessPolicy, entitiesBySurveyCode)).to
+    expect(() => models.surveyResponse.assertCanImport(models, accessPolicy, entitiesBySurveyCode)).to
       .throw;
   });
 });

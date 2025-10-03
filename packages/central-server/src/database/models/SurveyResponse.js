@@ -2,7 +2,7 @@ import momentTimezone from 'moment-timezone';
 import moment from 'moment';
 
 import {
-  MaterializedViewLogDatabaseModel,
+  SurveyResponseModel as BaseSurveyResponseModel,
   DatabaseRecord,
   RECORDS,
   createSurveyResponsePermissionFilter,
@@ -58,7 +58,7 @@ class SurveyResponseRecord extends DatabaseRecord {
   }
 }
 
-export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
+export class SurveyResponseModel extends BaseSurveyResponseModel {
   notifiers = [onChangeMarkAnswersChanged];
 
   get DatabaseRecordClass() {

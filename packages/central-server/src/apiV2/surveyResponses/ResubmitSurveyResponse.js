@@ -38,7 +38,7 @@ export class ResubmitSurveyResponse extends RouteHandler {
         );
 
       const newSurveyResponsePermissionsChecker = async accessPolicy => {
-        await transactingModels.surveyResponse.assertCanSubmit(accessPolicy, [
+        await transactingModels.surveyResponse.assertCanSubmit(transactingModels, accessPolicy, [
           this.newSurveyResponse,
         ]);
       };
