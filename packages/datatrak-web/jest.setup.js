@@ -25,6 +25,27 @@ const mockModels = {
   closeDatabaseConnections: jest.fn(),
 };
 
+jest.mock('@tupaia/database', () => ({
+  migrate: jest.fn(),
+  ModelRegistry: jest.fn().mockImplementation(() => ({})),
+}));
+
+jest.mock('./src/database/createDatabase', () => ({
+  createDatabase: jest.fn().mockImplementation(() => ({
+    models: {
+      localSystemFact: {
+        get: jest.fn().mockImplementation(arg => {
+          if (arg === 'deviceId') {
+            return 'test-device-id';
+          }
+          return undefined;
+        }),
+        addProjectForSync: jest.fn(),
+      },
+    },
+  })),
+}));
+
 jest.mock('./src/api/CurrentUserContext', () => {
   const actual = jest.requireActual('./src/api/CurrentUserContext');
 
