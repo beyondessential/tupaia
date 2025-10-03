@@ -1,3 +1,5 @@
+import { ensure } from '@tupaia/tsutils';
+
 const getHierarchyWithFields = (hierarchyCode, fields) => {
   const hierarchy = ensure(ENTITIES.find(e => e.code === hierarchyCode && e.type === 'project'));
 
