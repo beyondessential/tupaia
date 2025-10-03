@@ -15546,7 +15546,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"asn1@npm:~0.2.0, asn1@npm:~0.2.3":
+"asn1@npm:^0.2.4":
+  version: 0.2.6
+  resolution: "asn1@npm:0.2.6"
+  dependencies:
+    safer-buffer: ~2.1.0
+  checksum: 39f2ae343b03c15ad4f238ba561e626602a3de8d94ae536c46a4a93e69578826305366dc09fbb9b56aec39b4982a463682f259c38e59f6fa380cd72cd61e493d
+  languageName: node
+  linkType: hard
+
+"asn1@npm:~0.2.3":
   version: 0.2.4
   resolution: "asn1@npm:0.2.4"
   dependencies:
@@ -16450,7 +16459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bcrypt-pbkdf@npm:^1.0.0":
+"bcrypt-pbkdf@npm:^1.0.0, bcrypt-pbkdf@npm:^1.0.2":
   version: 1.0.2
   resolution: "bcrypt-pbkdf@npm:1.0.2"
   dependencies:
@@ -18510,6 +18519,16 @@ __metadata:
   version: 0.1.1
   resolution: "countrynames@npm:0.1.1"
   checksum: 55ebe82ee4462ef4cce8ead9e526804c57dc052b8f6c9291661e261ba337e95bf467364a591109adc3beb56990e1a5c329b8377caa788e787b381ea772e2a769
+  languageName: node
+  linkType: hard
+
+"cpu-features@npm:0.0.2":
+  version: 0.0.2
+  resolution: "cpu-features@npm:0.0.2"
+  dependencies:
+    nan: ^2.14.1
+    node-gyp: latest
+  checksum: 15177f9a2d465e4d84390f902c977b34f237dadb29fd8553853b13d906ffe5f15be9f091c72db4f34c71412d5ff4e0e4edf04caebc875b02d1d7ecfce2963299
   languageName: node
   linkType: hard
 
@@ -29591,6 +29610,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nan@npm:^2.14.1, nan@npm:^2.15.0":
+  version: 2.23.0
+  resolution: "nan@npm:2.23.0"
+  dependencies:
+    node-gyp: latest
+  checksum: 2d1fd612d69d4cf4dd63c8ce61ee6aa36ace2caf5363c98b3232833fc24ab761fb96742682997716dea5fb9abf57e2fe7e94e76e0c4c302ed1fcde5b908f3e8f
+  languageName: node
+  linkType: hard
+
 "nanoclone@npm:^0.2.1":
   version: 0.2.1
   resolution: "nanoclone@npm:0.2.1"
@@ -35171,7 +35199,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:2 || 3 || 4 || 5, semver@npm:^5.1.0, semver@npm:^5.3.0, semver@npm:^5.5.0, semver@npm:^5.6.0, semver@npm:^5.7.0, semver@npm:^5.7.1":
+"semver@npm:2 || 3 || 4 || 5, semver@npm:^5.3.0, semver@npm:^5.5.0, semver@npm:^5.6.0, semver@npm:^5.7.0, semver@npm:^5.7.1":
   version: 5.7.2
   resolution: "semver@npm:5.7.2"
   bin:
@@ -35199,11 +35227,11 @@ __metadata:
   linkType: hard
 
 "semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.2, semver@npm:^7.6.3, semver@npm:^7.7.0":
-  version: 7.7.2
-  resolution: "semver@npm:7.7.2"
+  version: 7.7.3
+  resolution: "semver@npm:7.7.3"
   bin:
     semver: bin/semver.js
-  checksum: dd94ba8f1cbc903d8eeb4dd8bf19f46b3deb14262b6717d0de3c804b594058ae785ef2e4b46c5c3b58733c99c83339068203002f9e37cfe44f7e2cc5e3d2f621
+  checksum: f013a3ee4607857bcd3503b6ac1d80165f7f8ea94f5d55e2d3e33df82fce487aa3313b987abf9b39e0793c83c9fc67b76c36c067625141a9f6f704ae0ea18db2
   languageName: node
   linkType: hard
 
@@ -36156,23 +36184,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ssh2-streams@npm:~0.1.15":
-  version: 0.1.20
-  resolution: "ssh2-streams@npm:0.1.20"
+"ssh2@npm:1.4.0":
+  version: 1.4.0
+  resolution: "ssh2@npm:1.4.0"
   dependencies:
-    asn1: ~0.2.0
-    semver: ^5.1.0
-    streamsearch: ~0.1.2
-  checksum: 8c48667451803390f36546a2188c3da36ffdb97367b68523dffd11ae7e6905b2cfee10573c6496cc7442bef1291207582eeca5e814e0eac4b68d44bb8089bbb9
-  languageName: node
-  linkType: hard
-
-"ssh2@npm:0.5.4":
-  version: 0.5.4
-  resolution: "ssh2@npm:0.5.4"
-  dependencies:
-    ssh2-streams: ~0.1.15
-  checksum: 649641070dfbce172f779544a7eab5c5698ce100d1743917208f056d39279f23767d91c0d5ec547f6d33b736ceee55941c6738a41e8edb86e20c779a7de7e578
+    asn1: ^0.2.4
+    bcrypt-pbkdf: ^1.0.2
+    cpu-features: 0.0.2
+    nan: ^2.15.0
+  dependenciesMeta:
+    cpu-features:
+      optional: true
+    nan:
+      optional: true
+  checksum: 354ed1a4ed5df39e4d898b9ad02f0207851c2256adfddd34ca53971a67b793e72b4581d8812b2155c9d70bceb69b4c582445e743a013867516595c31e922d674
   languageName: node
   linkType: hard
 
@@ -36352,13 +36377,6 @@ __metadata:
   version: 1.1.0
   resolution: "streamsearch@npm:1.1.0"
   checksum: 1cce16cea8405d7a233d32ca5e00a00169cc0e19fbc02aa839959985f267335d435c07f96e5e0edd0eadc6d39c98d5435fb5bbbdefc62c41834eadc5622ad942
-  languageName: node
-  linkType: hard
-
-"streamsearch@npm:~0.1.2":
-  version: 0.1.2
-  resolution: "streamsearch@npm:0.1.2"
-  checksum: d2db57cbfbf7947ab9c75a7b4c80a8ef8d24850cf0a1a24258bb6956c97317ce1eab7dbcbf9c5aba3e6198611af1053b02411057bbedb99bf9c64b8275248997
   languageName: node
   linkType: hard
 
@@ -37828,13 +37846,13 @@ __metadata:
   linkType: hard
 
 "tunnel-ssh@npm:^4.0.0":
-  version: 4.1.4
-  resolution: "tunnel-ssh@npm:4.1.4"
+  version: 4.1.6
+  resolution: "tunnel-ssh@npm:4.1.6"
   dependencies:
     debug: 2.6.9
     lodash.defaults: ^4.1.0
-    ssh2: 0.5.4
-  checksum: 9f8bafe3f7fecb44170b7eb03ac85058d821c240143f3684bbbd63b8294ae5677f679c17e0a3a64b9bfd1a36a3ac579180c1cc299cc556e4a6d90001732ccba8
+    ssh2: 1.4.0
+  checksum: 4d39e3a7ffee1ebfa24607b9f4d920f4b2aa3fa841e60301ef7a115b5227243a97cbbc9d6032a2bab9a35888b6b736013e51fa55882fa7538ecf86e17bfe5289
   languageName: node
   linkType: hard
 
