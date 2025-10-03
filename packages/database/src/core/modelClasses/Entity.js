@@ -542,7 +542,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     const cacheKey = this.getCacheKey(methodName, [hierarchyId, entityIds, direction, params]);
 
     return await this.runCachedFunction(cacheKey, async () => {
-      const { filter = {}, pageSize } = params;
+      const { filter = {}, fields, pageSize } = params;
       const { generational_distance, ...restOfFilter } = filter;
 
       const RECURSIVE_CTE_ALIAS = 'hierarchy';
@@ -561,7 +561,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             child_id as child_id, 
             parent_id as parent_id, 
             entity_hierarchy_id as entity_hierarchy_id,
-            ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 1 : 0} as generational_distance
+            1 as generational_distance
           FROM entity_parent_child_relation 
           WHERE ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'child_id' : 'parent_id'} IN ${SqlQuery.record(entityIds)}
           AND entity_hierarchy_id = ?
@@ -591,6 +591,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             'entity.id',
             `${RECURSIVE_CTE_ALIAS}.${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'parent_id' : 'child_id'}`,
           ],
+          columns: fields,
           limit: pageSize,
         },
       );
@@ -675,11 +676,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         `
           entities_to_sync AS (
             -- root project entities
-            SELECT entity.id as entity_id, project.entity_hierarchy_id
+            SELECT entity.id AS entity_id, project.entity_hierarchy_id
             FROM entity join project on entity.id = project.entity_id
             UNION
             -- all child entities of root project entities
-            SELECT child_id as entity_id, entity_hierarchy_id 
+            SELECT child_id AS entity_id, entity_hierarchy_id
             FROM entity_parent_child_relation
             UNION
             -- survey response entities
