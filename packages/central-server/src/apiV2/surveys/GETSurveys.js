@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
 import { JOIN_TYPES, processColumns } from '@tupaia/database';
+import { ensure } from '@tupaia/tsutils';
+import { NotFoundError } from '@tupaia/utils';
 import winston from '../../log';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
@@ -60,14 +62,14 @@ export class GETSurveys extends GETHandler {
       assertSurveyGetPermissions(accessPolicy, this.models, surveyId);
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyChecker]));
 
-    // `super.findSingleRecord` doesn’t seem to return `SurveyRecord` instance, hence `findById`
-    const surveyRecord = await this.models.survey.findById(surveyId, options);
-
     if (this.includePaginatedQuestions && this.includeQuestions) {
       winston.warn(
         `Received ${this.req.method} ${this.req.originalUrl} request with both \`${SURVEY_QUESTIONS_COLUMN}\` and \`${PAGINATED_QUESTIONS_COLUMN}\` fields, which is redundant. Double check your \`fields\` query parameter.`,
       );
     }
+
+    const survey = await super.findSingleRecord(surveyId, options);
+    if (!survey) throw new NotFoundError(`No survey exists with ID ${surveyId}`);
 
     return await this.models.wrapInReadOnlyTransaction(async transactingModels => {
       const [countryCodes, countryNames, surveyQuestionsValues, paginatedQuestions] =
@@ -76,11 +78,13 @@ export class GETSurveys extends GETHandler {
           this.getSurveyCountryNames(transactingModels, [surveyId]),
           this.getSurveyQuestionsValues(transactingModels, [surveyId]),
           this.includePaginatedQuestions
-            ? surveyRecord.getPaginatedQuestions()
+            ? ensure(
+                await transactingModels.survey.findById(surveyId),
+                `No survey exists with ID ${surveyId}`,
+              ).getPaginatedQuestions()
             : Promise.resolve(undefined),
         ]);
 
-      const { model: _, ...survey } = surveyRecord;
       return {
         ...survey,
         surveyQuestions: surveyQuestionsValues[surveyId],
