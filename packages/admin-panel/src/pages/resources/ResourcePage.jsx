@@ -10,7 +10,6 @@ import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurvey
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
 import { ArchiveSurveyResponseModal } from '../../surveyResponse';
-import { useUser } from '../../api/queries';
 import { getExplodedFields, useHasBesAdminAccess, useHasVizBuilderAccess } from '../../utilities';
 
 const useEndpoint = (endpoint, details, params) => {
