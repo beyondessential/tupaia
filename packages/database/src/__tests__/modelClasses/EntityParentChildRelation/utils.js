@@ -7,5 +7,5 @@ export const getEntityByCode = async (models, code) => {
 };
 
 export const removeEmptyFields = ({ model: _, ...entity }) => {
-  return Object.fromEntries(Object.entries(entity).filter(([_key, value]) => value !== undefined));
+  return Object.fromEntries(Object.entries(entity).filter(([, value]) => value !== undefined));
 };
