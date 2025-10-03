@@ -12512,7 +12512,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     cheerio: ^1.0.0-rc.3
     cross-env: ^7.0.2
-    cypress: ^6.6.0
+    cypress: ^6.9.1
     cypress-dotenv: ^1.2.2
     dotenv: 16.4.5
     eslint-plugin-cypress: ^2.11.1
@@ -19044,9 +19044,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^6.6.0":
-  version: 6.6.0
-  resolution: "cypress@npm:6.6.0"
+"cypress@npm:^6.9.1":
+  version: 6.9.1
+  resolution: "cypress@npm:6.9.1"
   dependencies:
     "@cypress/listr-verbose-renderer": ^0.4.1
     "@cypress/request": ^2.88.5
@@ -19090,7 +19090,7 @@ __metadata:
     yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: 85e8c3429ce23816c2b615c1370c4c534143e03bd9e2ad12421f1934768caba5ac2b57e35087eefb178f6e40d84eff0246df7b52d35cb98a3b7c67c46faede73
+  checksum: 6006cd67f037bb9f53fd7cd45de5961324d5b378e5cc92db02fc6eef8fa153d0681be0e353faf7c8a856c85eeb52f2bf2d0664fde0b7efe18f05b816ce64090b
   languageName: node
   linkType: hard
 
