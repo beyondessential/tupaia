@@ -1,3 +1,4 @@
+import log from 'winston';
 import { difference, uniq } from 'es-toolkit';
 import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
 
@@ -97,16 +98,17 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
+   * @param {ModelRegistry} models
    * @param {import('@tupaia/access-policy').AccessPolicy} accessPolicy
    * @param {Record<SurveyCode, Entity["code"][]>} entitiesBySurveyCode
    * @returns {true} If and only if the assertion passes, otherwise throws.
    * @throws {PermissionsError}
    */
-  async assertCanImport(accessPolicy, entitiesBySurveyCode) {
+  async assertCanImport(models, accessPolicy, entitiesBySurveyCode) {
     const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyCode));
     const surveyCodes = Object.keys(entitiesBySurveyCode);
 
-    await this.database.wrapInReadOnlyTransaction(async transactingModels => {
+    await models.wrapInReadOnlyTransaction(async transactingModels => {
       /** @type {[EntityRecord[], SurveyRecord[]]} */
       const [allEntities, surveys] = await Promise.all([
         transactingModels.entity.findManyByColumn('code', allEntityCodes),
@@ -114,7 +116,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       ]);
 
       if (allEntities.some(isNullish)) {
-        console.error('Unexpected nullish element in `allEntities`', { allEntities });
+        log.error('Unexpected nullish element in `allEntities`', { allEntities });
       }
 
       const codeToSurvey = keyBy(surveys, 'code');
@@ -128,7 +130,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       for (const [surveyCode, entityCodes] of Object.entries(entitiesBySurveyCode)) {
         const survey = codeToSurvey[surveyCode];
         if (isNullish(survey)) {
-          console.error(`Unexpected nullish survey (code '${surveyCode}')`, { codeToSurvey });
+          log.error(`Unexpected nullish survey (code '${surveyCode}')`, { codeToSurvey });
         }
 
         const responseEntities = allEntities.filter(e => entityCodes.includes(e.code));
@@ -141,7 +143,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         );
 
         if (surveyResponseCountries.some(isNullish)) {
-          console.error(`Unexpected nullish element in countries for survey  ${surveyCode}`, {
+          log.error(`Unexpected nullish element in countries for survey  ${surveyCode}`, {
             surveyResponseCountries,
           });
         }
@@ -170,7 +172,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
             const entities = entitiesByCountryCode[surveyResponseCountry.code];
             if (entities.some(isNullish)) {
-              console.error('Unexpected nullish element in `entities`', { entities });
+              log.error('Unexpected nullish element in `entities`', { entities });
             }
 
             const entityCodesString = entities.map(e => e.code).join(', ');
@@ -195,12 +197,13 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
+   * @param {ModelRegistry} models
    * @param {import('@tupaia/access-policy').AccessPolicy} accessPolicy
    * @param {Array} surveyResponses Assumed to have already been validated.
    * @returns {true} If and only if the assertion passes, otherwise throws.
    * @throws {PermissionsError}
    */
-  async assertCanSubmit(accessPolicy, surveyResponses) {
+  async assertCanSubmit(models, accessPolicy, surveyResponses) {
     const entitiesBySurveyCode = {};
 
     /** @type {Survey["id"][]} */
@@ -212,7 +215,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       return acc;
     }, []);
 
-    return await this.database.wrapInReadOnlyTransaction(async transactingModels => {
+    return await models.wrapInReadOnlyTransaction(async transactingModels => {
       /** @type {SurveyRecord[]} */
       const surveys = await transactingModels.survey.findManyById(surveyIds);
       const surveyCodesById = reduceToDictionary(surveys, 'id', 'code');
@@ -226,7 +229,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         (entitiesBySurveyCode[surveyCode] ??= []).push(entityCode);
       }
 
-      return await this.assertCanImport(accessPolicy, entitiesBySurveyCode);
+      return await this.assertCanImport(transactingModels, accessPolicy, entitiesBySurveyCode);
     });
   }
 

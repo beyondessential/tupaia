@@ -23,13 +23,13 @@ describe('getLeaderboardQuery()', () => {
     const expectedLeaderboard = `
       SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, COUNT(*)::INT AS coconuts, FLOOR(COUNT(*) / 100)::INT as pigs
+        SELECT user_id, COUNT(*)::INT AS coconuts, FLOOR(COUNT(*) / 100)::INT AS pigs
         FROM survey_response
         JOIN survey ON survey.id=survey_id
         WHERE survey.project_id = ?
         GROUP BY user_id
       ) r
-      JOIN user_account on user_account.id = r.user_id
+      JOIN user_account ON user_account.id = r.user_id
       WHERE email NOT IN (${[...SYSTEM_USERS, ...USERS_EXCLUDED_FROM_LEADER_BOARD].join(',')})
       AND email NOT LIKE '%@beyondessential.com.au' AND email NOT LIKE '%@bes.au'
       ORDER BY coconuts DESC
@@ -47,7 +47,7 @@ describe('getLeaderboardQuery()', () => {
     const expectedLeaderboard = `
       SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, COUNT(*)::INT as coconuts, FLOOR(COUNT(*) / 100)::INT AS pigs
+        SELECT user_id, COUNT(*)::INT AS coconuts, FLOOR(COUNT(*) / 100)::INT AS pigs
         FROM survey_response
         JOIN survey ON survey.id=survey_id
         WHERE survey.project_id = ?

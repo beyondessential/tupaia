@@ -11,7 +11,7 @@ import { useCurrentUserContext } from './CurrentUserContext';
 
 export interface SyncContextType {
   clientSyncManager: ClientSyncManager;
-};
+}
 
 const SyncContext = createContext<SyncContextType | null>(null);
 

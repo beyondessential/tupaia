@@ -389,7 +389,7 @@ export class CentralSyncManager {
             ),
           );
 
-          const existingProjectIds = lastSuccessfulSyncedProjectIds.filter(projectId =>
+          const existingProjectIds = projectIds.filter(projectId =>
             lastSuccessfulSyncedProjectIds.includes(projectId),
           );
           const newProjectIds = projectIds.filter(
@@ -398,7 +398,7 @@ export class CentralSyncManager {
 
           // regular changes
           if (existingProjectIds.length > 0) {
-            log.info('Snapshotting existing projectssss', {
+            log.info('Snapshotting existing projects', {
               existingProjectIds,
             });
             await snapshotOutgoingChanges(
@@ -414,7 +414,7 @@ export class CentralSyncManager {
 
           // full changes
           if (newProjectIds.length > 0) {
-            log.info('Snapshotting new projectsss', {
+            log.info('Snapshotting new projects', {
               newProjectIds,
             });
             await snapshotOutgoingChanges(

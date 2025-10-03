@@ -1,4 +1,3 @@
-import { difference } from 'lodash';
 import { ensure } from '@tupaia/tsutils';
 import { DatabaseError } from '@tupaia/utils';
 
@@ -19,17 +18,6 @@ export async function addRecentEntities(models, userId, entityIds) {
     throw new Error('Usage error: addRecentEntities should not be called with the public user');
   }
 
-  /** @type {import('../Entity').EntityRecord[]} */
-  const entities = await models.entity.findManyById(entityIds);
-
-  if (entityIds.length !== entities.length) {
-    const diff = difference(
-      entityIds,
-      entities.map(e => e.id),
-    );
-    throw new DatabaseError(`Couldn’t find entities with IDs: ${diff.join(', ')}`);
-  }
-
   /**
    * @typedef {import('@tupaia/types').Country["code"]} CountryCode
    * @typedef {import('@tupaia/types').Entity["type"]} EntityType
@@ -38,7 +26,12 @@ export async function addRecentEntities(models, userId, entityIds) {
    */
   const recentEntityIds = user.preferences.recent_entities ?? {};
 
-  for (const entity of entities) {
+  for (const entityId of entityIds) {
+    const entity = await models.entity.findById(entityId);
+    if (!entity) {
+      throw new DatabaseError(`Entity ${entityId} does not exist`);
+    }
+
     if (entity.isProject()) {
       // Projects shouldn’t be added to a user’s recent entities
       throw new Error('addRecentEntities improperly called with a ‘project’-type entity');
@@ -50,7 +43,7 @@ export async function addRecentEntities(models, userId, entityIds) {
       );
     }
 
-    const { country_code: countryCode, id: entityId, type: entityType } = entity;
+    const { country_code: countryCode, type: entityType } = entity;
     recentEntityIds[countryCode] ??= {};
     recentEntityIds[countryCode][entityType] ??= [];
     recentEntityIds[countryCode][entityType] = recentEntityIds[countryCode][entityType]

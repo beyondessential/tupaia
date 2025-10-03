@@ -16,7 +16,15 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// TODO: Set up database for testing later
+const mockModels = {
+  localSystemFact: {
+    get: jest.fn().mockResolvedValue('test-device-id'),
+    set: jest.fn().mockResolvedValue(undefined),
+    addProjectForSync: jest.fn(),
+  },
+  closeDatabaseConnections: jest.fn(),
+};
+
 jest.mock('@tupaia/database', () => ({
   migrate: jest.fn(),
   ModelRegistry: jest.fn().mockImplementation(() => ({})),
@@ -37,9 +45,10 @@ jest.mock('./src/database/createDatabase', () => ({
     },
   })),
 }));
+
 jest.mock('./src/api/CurrentUserContext', () => {
   const actual = jest.requireActual('./src/api/CurrentUserContext');
-  
+
   return {
     ...actual,
     useCurrentUserContext: jest.fn(() => ({
@@ -49,34 +58,17 @@ jest.mock('./src/api/CurrentUserContext', () => {
   };
 });
 
-jest.mock('./src/database/DatatrakDatabase', () => ({
-  DatatrakDatabase: jest.fn().mockImplementation(() => ({})),
-}));
-
+// TODO: Set up database for testing later
 jest.mock('./src/api/DatabaseContext', () => {
   const React = require('react');
 
   return {
     DatabaseContext: React.createContext({
-      models: {
-        localSystemFact: {
-          get: jest.fn().mockResolvedValue('test-device-id'),
-          set: jest.fn().mockResolvedValue(undefined),
-          addProjectForSync: jest.fn(),
-        },
-        closeDatabaseConnections: jest.fn(),
-      },
+      models: mockModels,
     }),
     DatabaseProvider: ({ children }) => children,
     useDatabaseContext: () => ({
-      models: {
-        localSystemFact: {
-          get: jest.fn().mockResolvedValue('test-device-id'),
-          set: jest.fn().mockResolvedValue(undefined),
-          addProjectForSync: jest.fn(),
-        },
-        closeDatabaseConnections: jest.fn(),
-      },
+      models: mockModels,
     }),
   };
 });

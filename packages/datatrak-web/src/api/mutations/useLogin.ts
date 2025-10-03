@@ -44,6 +44,8 @@ export const useLogin = () => {
         
         await clientSyncManager.triggerSync();
 
+        await clientSyncManager.triggerSync();
+
         if (from) {
           navigate(from, { state: null });
         } else {

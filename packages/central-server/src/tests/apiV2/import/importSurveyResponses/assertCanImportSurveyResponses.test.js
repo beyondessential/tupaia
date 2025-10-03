@@ -8,7 +8,6 @@ import {
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../../permissions';
 import { getModels } from '../../../testUtilities';
-import { assertCanImportSurveyResponses } from '../../../../apiV2/import/importSurveyResponses/assertCanImportSurveyResponses';
 
 const DEFAULT_POLICY = {
   DL: ['Public'],
@@ -91,9 +90,9 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
     const entitiesBySurveyCode = {
       [SURVEY_CODE_1]: ['KI_1_test', 'KI_2_test', 'KI_3_test'],
     };
-    const result = await assertCanImportSurveyResponses(
-      defaultAccessPolicy,
+    const result = await models.surveyResponse.assertCanImport(
       models,
+      defaultAccessPolicy,
       entitiesBySurveyCode,
     );
 
@@ -106,9 +105,9 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_1]: ['KI_1_test', 'KI_2_test', 'KI_3_test'],
       [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
-    const result = await assertCanImportSurveyResponses(
-      defaultAccessPolicy,
+    const result = await models.surveyResponse.assertCanImport(
       models,
+      defaultAccessPolicy,
       entitiesBySurveyCode,
     );
 
@@ -121,7 +120,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['LA_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => assertCanImportSurveyResponses(defaultAccessPolicy, models, entitiesBySurveyCode))
+    expect(() => models.surveyResponse.assertCanImport(models, defaultAccessPolicy, entitiesBySurveyCode))
       .to.throw;
   });
 
@@ -140,7 +139,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode)).to
+    expect(() => models.surveyResponse.assertCanImport(models, accessPolicy, entitiesBySurveyCode)).to
       .throw;
   });
 
@@ -160,7 +159,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode)).to
+    expect(() => models.surveyResponse.assertCanImport(models, accessPolicy, entitiesBySurveyCode)).to
       .throw;
   });
 });

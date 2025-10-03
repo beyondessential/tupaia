@@ -130,7 +130,6 @@ export const SyncPage = () => {
     };
   }, [syncManager]);
 
-
   const manualSync = useCallback(() => {
     syncManager.triggerUrgentSync();
   }, [syncManager]);
