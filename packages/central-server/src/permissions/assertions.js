@@ -1,3 +1,4 @@
+import { ensure } from '@tupaia/tsutils';
 /* Re-export for backward compatibility. Prefer importing directly from @tupaia/access-policy. */
 export {
   allowNoPermissions,
