@@ -29,7 +29,7 @@ exports.up = async function (db) {
       CONSTRAINT sync_lookup_record_id_record_type_unique UNIQUE (record_id, record_type)
     );
 
-    CREATE INDEX sync_lookup_updated_at_sync_tick_project_ids_user_ids_index
+    CREATE INDEX sync_lookup_updated_at_sync_tick_project_ids_index
     ON sync_lookup (updated_at_sync_tick, project_ids);
   `);
 };
