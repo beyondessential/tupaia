@@ -396,8 +396,8 @@ export class CentralSyncManager {
               since,
               sessionId,
               deviceId,
-              existingProjectIds,
               this.config,
+              existingProjectIds,
             );
           }
 
@@ -412,8 +412,9 @@ export class CentralSyncManager {
               -1,
               sessionId,
               deviceId,
-              newProjectIds,
               this.config,
+              newProjectIds,
+              existingProjectIds,
             );
           }
 
