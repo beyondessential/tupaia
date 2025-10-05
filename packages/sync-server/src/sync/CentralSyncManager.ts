@@ -396,7 +396,7 @@ export class CentralSyncManager {
             projectId => !lastSuccessfulSyncedProjectIds.includes(projectId),
           );
 
-          // regular changes
+          // regular changes for already synced projects
           if (existingProjectIds.length > 0) {
             log.info('Snapshotting existing projects', {
               existingProjectIds,
@@ -412,7 +412,7 @@ export class CentralSyncManager {
             );
           }
 
-          // full changes
+          // full changes if there are new projects selected from the client
           if (newProjectIds.length > 0) {
             log.info('Snapshotting new projects', {
               newProjectIds,
