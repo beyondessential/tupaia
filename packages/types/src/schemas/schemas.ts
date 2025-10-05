@@ -84695,6 +84695,7 @@ export const EntityTypeEnumSchema = {
 		"facility",
 		"facility_building",
 		"facility_division",
+		"facility_model",
 		"facility_section",
 		"farm",
 		"fetp_graduate",
