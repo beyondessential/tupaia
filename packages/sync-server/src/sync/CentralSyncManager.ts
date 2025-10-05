@@ -374,21 +374,10 @@ export class CentralSyncManager {
             }, snapshotTransactionTimeoutMs);
           }
 
-          performance.mark('start-findLastSuccessfulSyncedProjects');
           const lastSuccessfulSyncedProjectIds = await findLastSuccessfulSyncedProjects(
             transactingModels.database,
             deviceId,
           );
-          performance.mark('end-findLastSuccessfulSyncedProjects');
-          log.info(
-            'findLastSuccessfulSyncedProjects',
-            performance.measure(
-              'findLastSuccessfulSyncedProjects',
-              'start-findLastSuccessfulSyncedProjects',
-              'end-findLastSuccessfulSyncedProjects',
-            ),
-          );
-
           const existingProjectIds = projectIds.filter(projectId =>
             lastSuccessfulSyncedProjectIds.includes(projectId),
           );
@@ -396,7 +385,7 @@ export class CentralSyncManager {
             projectId => !lastSuccessfulSyncedProjectIds.includes(projectId),
           );
 
-          // regular changes
+          // regular changes for already synced projects
           if (existingProjectIds.length > 0) {
             log.info('Snapshotting existing projects', {
               existingProjectIds,
@@ -407,12 +396,12 @@ export class CentralSyncManager {
               since,
               sessionId,
               deviceId,
-              existingProjectIds,
               this.config,
+              existingProjectIds,
             );
           }
 
-          // full changes
+          // full changes if there are new projects selected from the client
           if (newProjectIds.length > 0) {
             log.info('Snapshotting new projects', {
               newProjectIds,
@@ -423,8 +412,9 @@ export class CentralSyncManager {
               -1,
               sessionId,
               deviceId,
-              newProjectIds,
               this.config,
+              newProjectIds,
+              existingProjectIds,
             );
           }
 

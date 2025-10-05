@@ -15,8 +15,9 @@ export const snapshotOutgoingChanges = async (
   since: number,
   sessionId: string,
   deviceId: string,
-  projectIds: string[],
   config: SyncServerConfig,
+  includeProjectIds: string[],
+  excludeProjectIds: string[] = [],
 ): Promise<number> => {
   console.log('okkkk');
   let fromId = '';
@@ -26,27 +27,11 @@ export const snapshotOutgoingChanges = async (
   const avoidRepull = config.lookupTable.avoidRepull;
   const recordTypes = models.map(m => m.databaseRecord);
 
-  log.info('snapshotOutgoingChanges.starting', {
-    since,
-    fromId,
-    projectIds,
-    recordTypes,
-    avoidRepull,
-    deviceId,
-    CHUNK_SIZE,
-  });
+  // If there are excluded project ids, it means this is not an initial sync and just a new selected project
+  // we don't have to resync the non-project data because they should have been synced in the initial sync
+  const shouldSyncNonProjectData = excludeProjectIds.length === 0;
 
   while (fromId != null) {
-    log.info('snapshotOutgoingChanges.looping', {
-      since,
-      fromId,
-      projectIds,
-      recordTypes,
-      avoidRepull,
-      deviceId,
-      CHUNK_SIZE,
-    });
-
     const [{ maxId, count }] = (await database.executeSql(
       `
       WITH inserted AS (
@@ -72,9 +57,23 @@ export const snapshotOutgoingChanges = async (
         WHERE updated_at_sync_tick > ?
         ${fromId ? `AND id > ?` : ''}
         AND (
-          project_ids IS NULL
-          OR
-          project_ids::text[] && ${SqlQuery.array(projectIds)}
+          ${shouldSyncNonProjectData ? 'project_ids IS NULL OR' : ''}
+          (
+            (project_ids::text[] && ${SqlQuery.array(includeProjectIds)})
+
+            -- excluded project ids are projects that have already been synced
+            -- if a record belongs to both included and excluded project ids, it is already synced,
+            -- so we don't need to resync it
+            ${
+              excludeProjectIds.length > 0
+                ? `
+              AND
+              (NOT (project_ids::text[] && ${SqlQuery.array(excludeProjectIds)}))
+            `
+                : ''
+            }
+            
+          )
         )
         AND record_type IN ${SqlQuery.record(recordTypes)}
         ${
@@ -94,7 +93,8 @@ export const snapshotOutgoingChanges = async (
       [
         since,
         ...(fromId ? [fromId] : []),
-        ...projectIds,
+        ...includeProjectIds,
+        ...(excludeProjectIds.length > 0 ? excludeProjectIds : []),
         ...recordTypes,
         ...(avoidRepull && deviceId ? [deviceId] : []),
         CHUNK_SIZE,
@@ -105,21 +105,6 @@ export const snapshotOutgoingChanges = async (
 
     fromId = maxId;
     totalCount += chunkCount;
-
-    log.info('snapshotOutgoingChanges.parameters', {
-      since,
-      fromId,
-      projectIds,
-      recordTypes,
-      avoidRepull,
-      deviceId,
-      CHUNK_SIZE,
-    });
-    log.info('snapshotOutgoingChanges.countedChunk', {
-      chunkCount,
-      fromId,
-      totalCount,
-    });
   }
 
   log.info('snapshotOutgoingChangesFromSyncLookup.countedAll', {

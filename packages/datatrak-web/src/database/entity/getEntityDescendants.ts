@@ -13,6 +13,7 @@ import { CurrentUser } from '../../api';
 import { DatatrakWebModelRegistry } from '../../types';
 import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
 import { AugmentedEntityRecord } from '../../utils/formatEntity';
+import { isExtendedField } from '../../utils/extendedFieldFunctions';
 
 const DEFAULT_FIELDS: ExtendedEntityFieldName[] = ['id', 'parent_name', 'code', 'name', 'type'];
 
@@ -184,7 +185,7 @@ export const getEntityDescendants = async ({
       [rootEntityId],
       {
         filter: dbEntityFilter,
-        fields,
+        fields: fields.filter(field => !isExtendedField(field)),
         pageSize,
       },
     );

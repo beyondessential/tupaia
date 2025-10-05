@@ -1,5 +1,10 @@
+import log from 'winston';
 import type { BaseDatabase } from '@tupaia/database';
 
+/**
+ * Find the last successful synced projects for a device
+ * from the last successful sync session of the device (completed with no errors)
+ */
 export const findLastSuccessfulSyncedProjects = async (
   database: BaseDatabase,
   deviceId: string,
@@ -22,7 +27,8 @@ export const findLastSuccessfulSyncedProjects = async (
       lastSuccessfulSyncedProjectResult?.last_synced_projects,
     );
   } catch (error) {
-    console.error('Error parsing last successful synced projects', error);
+    log.warn('Error parsing last successful synced projects', error);
+    // ignore error, it could be because it could not be found due to this is the initial sync of the device
   }
   return lastSuccessfulSyncedProjectIds;
 };
