@@ -18,8 +18,8 @@ export const saveCreates = async (
         batch.map(async row => {
           try {
             await model.create(row);
-          } catch (error) {
-            throw new Error(`Insert failed with '${e.message}', recordId: ${row.id}`);
+          } catch (error: any) {
+            throw new Error(`Insert failed with '${error.message}', recordId: ${row.id}`);
           }
         }),
       );
