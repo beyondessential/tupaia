@@ -17,6 +17,7 @@ import {
   updateSnapshotRecords,
   SyncSnapshotAttributes,
   withDeferredSyncSafeguards,
+  findLastSuccessfulSyncedProjects,
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { SyncTickFlags, FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
@@ -255,7 +256,7 @@ export class CentralSyncManager {
       if (params.projectIds?.length === 0) {
         throw new Error('No project IDs provided');
       }
-      
+
       await this.connectToSession(sessionId);
 
       // first check if the snapshot is already being processed, to throw a sane error if (for some
@@ -335,7 +336,7 @@ export class CentralSyncManager {
     unmarkSessionAsProcessing: () => Promise<void>,
     accessPolicy: AccessPolicy,
   ): Promise<void> {
-    const { since, projectIds, userId, deviceId } = snapshotParams;
+    const { since, projectIds, deviceId } = snapshotParams;
     let transactionTimeout;
     try {
       await this.connectToSession(sessionId);
@@ -373,17 +374,59 @@ export class CentralSyncManager {
             }, snapshotTransactionTimeoutMs);
           }
 
-          // full changes
-          await snapshotOutgoingChanges(
+          performance.mark('start-findLastSuccessfulSyncedProjects');
+          const lastSuccessfulSyncedProjectIds = await findLastSuccessfulSyncedProjects(
             transactingModels.database,
-            getModelsForPull(transactingModels.getModels()),
-            since,
-            sessionId,
             deviceId,
-            userId,
-            projectIds,
-            this.config,
           );
+          performance.mark('end-findLastSuccessfulSyncedProjects');
+          log.info(
+            'findLastSuccessfulSyncedProjects',
+            performance.measure(
+              'findLastSuccessfulSyncedProjects',
+              'start-findLastSuccessfulSyncedProjects',
+              'end-findLastSuccessfulSyncedProjects',
+            ),
+          );
+
+          const existingProjectIds = projectIds.filter(projectId =>
+            lastSuccessfulSyncedProjectIds.includes(projectId),
+          );
+          const newProjectIds = projectIds.filter(
+            projectId => !lastSuccessfulSyncedProjectIds.includes(projectId),
+          );
+
+          // regular changes for already synced projects
+          if (existingProjectIds.length > 0) {
+            log.info('Snapshotting existing projects', {
+              existingProjectIds,
+            });
+            await snapshotOutgoingChanges(
+              transactingModels.database,
+              getModelsForPull(transactingModels.getModels()),
+              since,
+              sessionId,
+              deviceId,
+              existingProjectIds,
+              this.config,
+            );
+          }
+
+          // full changes if there are new projects selected from the client
+          if (newProjectIds.length > 0) {
+            log.info('Snapshotting new projects', {
+              newProjectIds,
+            });
+            await snapshotOutgoingChanges(
+              transactingModels.database,
+              getModelsForPull(transactingModels.getModels()),
+              -1,
+              sessionId,
+              deviceId,
+              newProjectIds,
+              this.config,
+            );
+          }
 
           await removeSnapshotDataByPermissions(
             sessionId,
