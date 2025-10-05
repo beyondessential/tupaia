@@ -3,6 +3,7 @@
  */
 export * from '../core';
 export * from './testUtilities';
+export * from './testFixtures';
 export { TupaiaDatabase } from './TupaiaDatabase';
 export { getDbMigrator } from './getDbMigrator';
 export { getConnectionConfig } from './getConnectionConfig';
