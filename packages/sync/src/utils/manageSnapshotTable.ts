@@ -56,7 +56,7 @@ export const createClientSnapshotTable = async (database: TupaiaDatabase, sessio
   await database.executeSql(`
     CREATE TABLE ${tableName} (
       id BIGSERIAL PRIMARY KEY,
-      record_type character varying(255) NOT NULL,
+      record_type TEXT NOT NULL,
       is_deleted BOOLEAN DEFAULT false,
       data json NOT NULL
     ) WITH (
