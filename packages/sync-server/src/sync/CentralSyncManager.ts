@@ -374,21 +374,10 @@ export class CentralSyncManager {
             }, snapshotTransactionTimeoutMs);
           }
 
-          performance.mark('start-findLastSuccessfulSyncedProjects');
           const lastSuccessfulSyncedProjectIds = await findLastSuccessfulSyncedProjects(
             transactingModels.database,
             deviceId,
           );
-          performance.mark('end-findLastSuccessfulSyncedProjects');
-          log.info(
-            'findLastSuccessfulSyncedProjects',
-            performance.measure(
-              'findLastSuccessfulSyncedProjects',
-              'start-findLastSuccessfulSyncedProjects',
-              'end-findLastSuccessfulSyncedProjects',
-            ),
-          );
-
           const existingProjectIds = projectIds.filter(projectId =>
             lastSuccessfulSyncedProjectIds.includes(projectId),
           );
