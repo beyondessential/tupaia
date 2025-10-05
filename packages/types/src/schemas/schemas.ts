@@ -84731,6 +84731,7 @@ export const EntityTypeEnumSchema = {
 		"project",
 		"repair_request",
 		"school",
+		"spare_part",
 		"sub_catchment",
 		"sub_district",
 		"sub_facility",
