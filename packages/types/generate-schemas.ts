@@ -1,6 +1,6 @@
-import * as fs from 'fs';
 import { createPatch } from 'diff';
-import { resolve } from 'path';
+import * as fs from 'node:fs';
+import { resolve } from 'node:path';
 import * as TJS from 'typescript-json-schema';
 
 // @ts-ignore

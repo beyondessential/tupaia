@@ -2,13 +2,13 @@
 
 import sqlts, { Table } from '@rmp135/sql-ts';
 import { createPatch } from 'diff';
+import * as dotenv from 'dotenv';
+import * as fs from 'node:fs';
 import Knex from 'knex';
-import path from 'path';
+import path from 'node:path';
 // @ts-ignore
 import config from './config/models/config.json';
 
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
 dotenv.config({
   path: [path.resolve(__dirname, '../../env/db.env'), path.resolve(__dirname, '.env')],
   override: true,
