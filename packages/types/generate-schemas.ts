@@ -57,9 +57,10 @@ if (schemas?.definitions) {
     const currentFileContents = fs.readFileSync(filename, { encoding: 'utf8' });
     if (currentFileContents !== fileContents) {
       const patch = createPatch(filename, currentFileContents, fileContents);
-      console.log('❌ There are changes in the types which are not reflected in the json schema.');
+      console.log(
+        `${process.env.CI ? ':error:' : '❌ '}There are changes in the types which are not reflected in the JSON schema. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
+      );
       console.log(patch);
-      console.log("Run 'yarn workspace @tupaia/types generate' to fix");
       process.exit(1);
     }
   }

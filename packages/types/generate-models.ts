@@ -106,10 +106,9 @@ const run = async () => {
     if (currentTsString !== tsString) {
       const patch = createPatch(config.filename, currentTsString, tsString);
       console.log(
-        '❌ There are changes in the db schema which are not reflected in @tupaia/types.',
+        `${process.env.CI ? ':error:' : '❌ '}There are changes in the database schema which are not reflected in @tupaia/types. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
       );
       console.log(patch);
-      console.log("Run 'yarn workspace @tupaia/types generate' to fix");
       process.exit(1);
     }
   }
