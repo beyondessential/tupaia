@@ -106,9 +106,30 @@ const run = async () => {
     if (currentTsString !== tsString) {
       const patch = createPatch(config.filename, currentTsString, tsString);
       console.log(
-        `${process.env.CI ? ':error:' : '❌ '}There are changes in the database schema which are not reflected in @tupaia/types. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
+        `${process.env.CI ? '::error::' : '❌ '}There are changes in the database schema which are not reflected in @tupaia/types. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
       );
       console.log(patch);
+
+      if (process.env.CI) {
+        process.env.GITHUB_STEP_SUMMARY ||= `## **CI / Validate types** failed
+
+To fix, run:
+
+\`\`\`sh
+yarn workspace @tupaia/types run generate
+\`\`\`
+`;
+        process.env.GITHUB_STEP_SUMMARY += `
+### Models
+
+There are changes in the database schema which are not reflected in **@tupaia/types**.
+
+\`\`\`diff
+${patch}
+\`\`\`
+`;
+      }
+
       process.exit(1);
     }
   }

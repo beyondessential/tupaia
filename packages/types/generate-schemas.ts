@@ -58,9 +58,34 @@ if (schemas?.definitions) {
     if (currentFileContents !== fileContents) {
       const patch = createPatch(filename, currentFileContents, fileContents);
       console.log(
-        `${process.env.CI ? ':error:' : '❌ '}There are changes in the types which are not reflected in the JSON schema. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
+        `${process.env.CI ? '::error::' : '❌ '}There are changes in the types which are not reflected in the JSON schema. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
       );
       console.log(patch);
+
+      if (process.env.CI) {
+        process.env.GITHUB_STEP_SUMMARY ||= `## **CI / Validate types** failed
+
+To fix, run:
+
+\`\`\`sh
+yarn workspace @tupaia/types run generate
+\`\`\`
+`;
+        process.env.GITHUB_STEP_SUMMARY += `
+### Schema
+
+There are changes in the types which are not reflected in the JSON schema. To fix, run:
+
+\`\`\`sh
+yarn workspace @tupaia/types run generate
+\`\`\`
+
+\`\`\`diff
+${patch}
+\`\`\`
+`;
+      }
+
       process.exit(1);
     }
   }
