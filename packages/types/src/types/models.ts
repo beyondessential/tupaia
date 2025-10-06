@@ -255,14 +255,17 @@ export interface Country {
   'code': string;
   'id': string;
   'name': string;
+  'updated_at_sync_tick': string;
 }
 export interface CountryCreate {
   'code': string;
   'name': string;
+  'updated_at_sync_tick'?: string;
 }
 export interface CountryUpdate {
   'code'?: string;
   'name'?: string;
+  'updated_at_sync_tick'?: string;
 }
 export interface Dashboard {
   'code': string;
@@ -1125,24 +1128,24 @@ export interface Option {
   'id': string;
   'label'?: string | null;
   'option_set_id': string;
-  'updated_at_sync_tick': string;
   'sort_order': number;
+  'updated_at_sync_tick': string;
   'value': string;
 }
 export interface OptionCreate {
   'attributes'?: {} | null;
   'label'?: string | null;
   'option_set_id': string;
-  'updated_at_sync_tick'?: string;
   'sort_order': number;
+  'updated_at_sync_tick'?: string;
   'value': string;
 }
 export interface OptionUpdate {
   'attributes'?: {} | null;
   'label'?: string | null;
   'option_set_id'?: string;
-  'updated_at_sync_tick'?: string;
   'sort_order'?: number;
+  'updated_at_sync_tick'?: string;
   'value'?: string;
 }
 export interface OptionSet {
