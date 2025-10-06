@@ -1,10 +1,11 @@
+import { AvatarProps, Box, Fab, FormHelperText, FormLabel } from '@material-ui/core';
+import { Trash2 as DeleteIcon } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { AvatarProps, Box, Fab, FormHelperText, FormLabel } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { FlexStart } from '../Layout';
-import { GreyOutlinedButton } from '../Button';
+
 import { Avatar } from '../Avatar';
+import { GreyOutlinedButton } from '../Button';
+import { FlexStart } from '../Layout';
 import { InputLabel } from './InputLabel';
 
 const HiddenFileInput = styled.input`
@@ -185,7 +186,7 @@ export const ImageUploadField = React.memo(
             {avatarInitial}
           </StyledAvatar>
           {imageSrc && (
-            <DeleteButton onClick={handleDelete}>
+            <DeleteButton aria-label="Clear selected image" onClick={handleDelete}>
               <DeleteIcon />
             </DeleteButton>
           )}
