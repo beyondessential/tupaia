@@ -3,6 +3,32 @@ import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3
 import { getS3UploadFilePath, getS3ImageFilePath, S3_BUCKET_NAME } from './constants';
 import { getUniqueFileName } from './getUniqueFileName';
 import { S3 } from './S3';
+import { UnsupportedMediaTypeError } from '@tupaia/utils';
+
+/** Non-animated image types that are generally web-safe. */
+const supportedImageTypes = {
+  'image/avif': { extension: 'avif', humanReadableName: 'AVIF' },
+  'image/gif': { extension: 'gif', humanReadableName: 'GIF' },
+  'image/jpeg': { extension: 'jpg', humanReadableName: 'JPEG' },
+  'image/png': { extension: 'png', humanReadableName: 'PNG' },
+  'image/svg+xml': { extension: 'svg', humanReadableName: 'SVG' },
+  'image/webp': { extension: 'webp', humanReadableName: 'WebP' },
+} as const;
+
+const supportedImageMediaTypes = new Set(Object.keys(supportedImageTypes));
+
+function isBase64DataUri(val: string): val is `data:${string};base64,${string}` {
+  return val.startsWith('data:') && val.includes(';base64,');
+}
+
+function isImageMediaTypeString(val: string): val is `image/${string}` {
+  // Check length because 'image/' alone is invalid
+  return val.length > 'image/'.length && val.startsWith('image/');
+}
+
+function isSupportedImageMediaTypeString(val: string): val is keyof typeof supportedImageTypes {
+  return supportedImageMediaTypes.has(val);
+}
 
 export class S3Client {
   private readonly s3: S3;
@@ -81,16 +107,13 @@ export class S3Client {
   }
 
   private getContentTypeFromBase64(base64String: string) {
-    let fileType =
-      base64String.includes('data:') && base64String.includes(';base64')
-        ? base64String.substring('data:'.length, base64String.indexOf(';base64'))
-        : 'image/png';
-
-    if (fileType === 'image/jpeg') {
-      fileType = 'image/jpg';
+    if (!isBase64DataUri(base64String)) {
+      throw new Error(
+        `Invalid Base64 data URI. Expected ‘data:content/type;base64,...’ but got: ‘${base64String.substring(0, 40)}...’`,
+      );
     }
 
-    return fileType;
+    return base64String.substring('data:'.length, base64String.indexOf(';base64,', 'data:'.length));
   }
 
   public async uploadFile(fileName: string, readable: Buffer | string) {
@@ -133,37 +156,36 @@ export class S3Client {
   }
 
   public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
-    const imageTypes = ['png', 'jpeg', 'jpg', 'gif', 'svg+xml'];
-
-    // convert the base64 encoded image to a buffer
     const buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
-
     const contentType = this.getContentTypeFromBase64(base64EncodedImage);
 
-    // use the file type from the image if it's available, otherwise default to png
-    let fileType = contentType.split('/')[1] || 'png';
-
-    // If is not an image file type, e.g. a pdf, throw an error
-    if (!imageTypes.includes(fileType)) throw new Error(`File type ${fileType} is not supported`);
-
-    if (fileType === 'jpeg') fileType = 'jpg';
-
-    const fileExtension = fileType.replace('+xml', '');
-
-    const filePath = getS3ImageFilePath();
-
-    // If a fileId is provided, use it as the file name, otherwise generate a unique file name
-    const fileName = fileId
-      ? `${filePath}${fileId}.${fileExtension}`
-      : `${filePath}${getUniqueFileName()}.${fileExtension}`;
-
-    // In some cases we want to allow overwriting of existing files
-    if (!allowOverwrite) {
-      if (await this.checkIfFileExists(fileName))
-        throw new Error(`File ${fileName} already exists on S3, overwrite is not allowed`);
+    if (!isImageMediaTypeString(contentType)) {
+      // Redundant because of `isSupportedImageMediaTypeString`, but clearer error message
+      throw new UnsupportedMediaTypeError(`Expected image file but got ${contentType}`);
     }
 
-    return this.uploadPublicImage(fileName, buffer, contentType);
+    if (!isSupportedImageMediaTypeString(contentType)) {
+      throw new UnsupportedMediaTypeError(
+        `${contentType} images aren’t supported. Please provide one of: ${Object.values(
+          supportedImageTypes,
+        )
+          .map(type => type.humanReadableName)
+          .join(', ')}`,
+      );
+    }
+
+    const dirname = getS3ImageFilePath();
+    const fileExtension = supportedImageTypes[contentType].extension;
+    // If a fileId is provided, use it as the file name, otherwise generate a unique file name
+    const basename = `${fileId || getUniqueFileName()}.${fileExtension}`;
+    const filePath = `${dirname}${basename}`;
+
+    // In some cases we want to allow overwriting of existing files
+    if (!allowOverwrite && (await this.checkIfFileExists(filePath))) {
+      throw new Error(`File ${filePath} already exists on S3, overwrite is not allowed`);
+    }
+
+    return this.uploadPublicImage(filePath, buffer, contentType);
   }
 
   public async downloadFile(fileName: string) {
