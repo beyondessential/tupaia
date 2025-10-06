@@ -1898,7 +1898,7 @@ export enum EntityTypeEnum {
   'kiuar_facility' = 'kiuar_facility',
   'kiuar_area' = 'kiuar_area',
   'spare_part' = 'spare_part',
-  'facility_model' = 'facility_model',
+  'rehab_facility_model' = 'rehab_facility_model',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
