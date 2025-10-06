@@ -11,6 +11,12 @@ if [[ $1 != OK ]]; then
   exit 1;
 fi
 
+if [[ $CI = true ]]; then
+    echo '::group::Set up test database'
+fi
+
+declare -i tic=$SECONDS
+
 DIR=$(pwd "$0")
 source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
 
@@ -58,4 +64,9 @@ DB_NAME="$DB_NAME" yarn migrate
 cp -r ./src/migrations-backup/* ./src/migrations/
 rm -rf ./src/migrations-backup
 
-echo "Done"
+if [[ $CI = true ]]; then
+    echo '::endgroup::'
+fi
+
+declare -i toc=$SECONDS
+echo "Set up test database in $((toc - tic)) s"
