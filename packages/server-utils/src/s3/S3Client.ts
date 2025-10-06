@@ -165,12 +165,11 @@ export class S3Client {
     }
 
     if (!isSupportedImageMediaTypeString(contentType)) {
+      const humanReadableList = Object.values(supportedImageTypes)
+        .map(type => type.humanReadableName)
+        .join(', ');
       throw new UnsupportedMediaTypeError(
-        `${contentType} images aren’t supported. Please provide one of: ${Object.values(
-          supportedImageTypes,
-        )
-          .map(type => type.humanReadableName)
-          .join(', ')}`,
+        `${contentType} images aren’t supported. Please provide one of: ${humanReadableList}`,
       );
     }
 
