@@ -15,8 +15,6 @@ const supportedImageTypes = {
   'image/webp': { extension: 'webp', humanReadableName: 'WebP' },
 } as const;
 
-const supportedImageMediaTypes = new Set(Object.keys(supportedImageTypes));
-
 function isBase64DataUri(val: string): val is `data:${string};base64,${string}` {
   return val.startsWith('data:') && val.includes(';base64,');
 }
@@ -27,7 +25,7 @@ function isImageMediaTypeString(val: string): val is `image/${string}` {
 }
 
 function isSupportedImageMediaTypeString(val: string): val is keyof typeof supportedImageTypes {
-  return supportedImageMediaTypes.has(val);
+  return supportedImageTypes.hasOwnProperty(val);
 }
 
 export class S3Client {
