@@ -156,15 +156,15 @@ export const ImageUploadField = React.memo(
       const { height, width } = await getImageSize(file);
 
       if ((maxHeight && height > maxHeight) || (maxWidth && width > maxWidth)) {
-        return `Image is too large (max. ${maxWidth} × ${maxHeight})`;
+        return `Image too large (max. ${maxWidth} × ${maxHeight})`;
       }
       if ((minHeight && height < minHeight) || (minWidth && width < minWidth)) {
-        return `Image is too small (min. ${minWidth} × ${minHeight})`;
+        return `Image too small (min. ${minWidth} × ${minHeight})`;
       }
       return null;
     };
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const image = event.target.files?.[0] ? event.target.files[0] : null;
+      const image = event.target.files?.[0] ?? null;
       const newErrorMessage = await validateImageSize(image);
       setErrorMessage(newErrorMessage);
       // Only call onChange if image is validated, so the user can't upload anything invalid.
