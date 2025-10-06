@@ -8,7 +8,10 @@ import { GreyOutlinedButton } from '../Button';
 import { FlexStart } from '../Layout';
 import { InputLabel } from './InputLabel';
 
-const HiddenFileInput = styled.input`
+const HiddenFileInput = styled.input.attrs({
+  // TODO: Accept 'image/*' and convert in backend if needed
+  accept: 'image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp',
+})`
   width: 0.1px;
   height: 0.1px;
   opacity: 0;
