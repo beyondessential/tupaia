@@ -1,9 +1,9 @@
 // See https://rmp135.github.io/sql-ts/#/?id=totypescript
 
 import sqlts, { Table } from '@rmp135/sql-ts';
-import path from 'path';
-
+import { createPatch } from 'diff';
 import Knex from 'knex';
+import path from 'path';
 // @ts-ignore
 import config from './config/models/config.json';
 
@@ -123,10 +123,11 @@ const run = async () => {
   if (failOnChanges) {
     const currentTsString = fs.readFileSync(config.filename, { encoding: 'utf8' });
     if (currentTsString !== tsString) {
+      const patch = createPatch(config.filename, currentTsString, tsString);
       console.log(
-        '❌ There are changes in the db schema which are not reflected in @tupaia/types.',
+        `${process.env.CI ? '::error::' : '❌ '}There are changes in the database schema which are not reflected in @tupaia/types. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
       );
-      console.log("Run 'yarn workspace @tupaia/types generate' to fix");
+      console.log(patch);
       process.exit(1);
     }
   }
