@@ -47,8 +47,8 @@ if (schemas?.definitions) {
       const finalisedSchema = `export const ${typeName}Schema = ${JSON.stringify(
         schema,
         null,
-        '\t',
-      )} \n\n`;
+        2,
+      )}\n`;
       fileContents += finalisedSchema;
     }
   });
