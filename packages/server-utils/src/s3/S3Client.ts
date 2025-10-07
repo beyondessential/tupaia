@@ -1,18 +1,23 @@
 import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import sharp from 'sharp';
 
 import { UnsupportedMediaTypeError } from '@tupaia/utils';
 import { getS3ImageFilePath, getS3UploadFilePath, S3_BUCKET_NAME } from './constants';
 import { getUniqueFileName } from './getUniqueFileName';
 import { S3 } from './S3';
 
-/** Non-animated image types that are generally web-safe. */
+const MAX_IMAGE_SIZE = 3_000;
+
+/** Formats officially supported by Sharp */
+// TODO: Delete extension property?
 const supportedImageTypes = {
   'image/avif': { extension: 'avif', humanReadableName: 'AVIF' },
   'image/gif': { extension: 'gif', humanReadableName: 'GIF' },
   'image/jpeg': { extension: 'jpg', humanReadableName: 'JPEG' },
   'image/png': { extension: 'png', humanReadableName: 'PNG' },
   'image/svg+xml': { extension: 'svg', humanReadableName: 'SVG' },
+  'image/tiff': { extension: 'tiff', humanReadableName: 'TIFF' },
   'image/webp': { extension: 'webp', humanReadableName: 'WebP' },
 } as const;
 
@@ -155,7 +160,7 @@ export class S3Client {
   }
 
   public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
-    const buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
+    let buffer: Buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
     const contentType = this.getContentTypeFromBase64(base64EncodedImage);
 
     if (!isImageMediaTypeString(contentType)) {
@@ -172,10 +177,19 @@ export class S3Client {
       );
     }
 
+    buffer = await sharp(buffer)
+      .keepIccProfile()
+      .autoOrient()
+      .resize(MAX_IMAGE_SIZE, MAX_IMAGE_SIZE, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp()
+      .toBuffer();
+
     const dirname = getS3ImageFilePath();
-    const fileExtension = supportedImageTypes[contentType].extension;
     // If a fileId is provided, use it as the file name, otherwise generate a unique file name
-    const basename = `${fileId || getUniqueFileName()}.${fileExtension}`;
+    const basename = `${fileId || getUniqueFileName()}.webp`;
     const filePath = `${dirname}${basename}`;
 
     // In some cases we want to allow overwriting of existing files
