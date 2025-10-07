@@ -6,6 +6,9 @@ import * as TJS from 'typescript-json-schema';
 // @ts-ignore
 import config from './config/schemas/config.json';
 
+console.log('Generating schemas...');
+const tic = performance.now();
+
 const failOnChanges = process.argv[2] === '--failOnChanges';
 
 const settings: TJS.PartialArgs = {
@@ -42,16 +45,12 @@ const schemas = TJS.generateSchema(program, '*', settings, filesToBuildSchemasFo
 if (schemas?.definitions) {
   let fileContents = HEADER;
 
-  Object.entries(schemas.definitions || {}).forEach(([typeName, schema]) => {
-    if (typeof schema !== 'boolean') {
-      const finalisedSchema = `export const ${typeName}Schema = ${JSON.stringify(
-        schema,
-        null,
-        2,
-      )}\n`;
-      fileContents += finalisedSchema;
-    }
-  });
+  const definitions = Object.entries(schemas.definitions || {});
+  for (const [typeName, schema] of definitions) {
+    if (typeof schema === 'boolean') continue;
+    fileContents += `export const ${typeName}Schema = ${JSON.stringify(schema, null, 2)}\n`;
+  }
+  console.log(`Generated ${definitions.length} schema definitions`);
 
   if (failOnChanges) {
     const currentFileContents = fs.readFileSync(filename, { encoding: 'utf8' });
@@ -66,5 +65,8 @@ if (schemas?.definitions) {
   }
 
   fs.writeFileSync(filename, fileContents);
-  console.log(`Created file: ${filename}`);
+  console.log(`Wrote ${filename}`);
+
+  const duration = performance.now() - tic;
+  console.log(`Done in ${Math.round(duration)} ms`);
 }

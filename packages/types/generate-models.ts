@@ -133,9 +133,15 @@ const run = async () => {
   }
 
   fs.writeFile(config.filename, tsString, () => {
-    console.log(`File written: ${config.filename}`);
+    console.log(`Wrote ${config.filename}`);
     process.exit(0);
   });
 };
 
+console.log('Generating models...');
+const tic = performance.now();
+
 run();
+
+const duration = performance.now() - tic;
+console.log(`Done in ${Math.round(duration)} ms`);
