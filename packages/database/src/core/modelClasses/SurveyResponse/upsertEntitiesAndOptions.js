@@ -35,12 +35,12 @@ const createOptions = async (models, optionsCreated) => {
 
   for (const optionObject of optionsCreated) {
     const { value, option_set_id: optionSetId } = optionObject;
-    const largestSorOrder = await models.option.getLargestSortOrder(optionSetId);
+    const maxSortOrder = (await models.option.getLargestSortOrder(optionSetId)) ?? 0;
     const optionRecord = await models.option.updateOrCreate(
       { option_set_id: optionSetId, value },
       {
         ...optionObject,
-        sort_order: largestSorOrder + 1, // append the option to the end to resolve any sort order conflict from other devices
+        sort_order: maxSortOrder + 1, // append the option to the end to resolve any sort order conflict from other devices
         attributes: {},
       },
     );
