@@ -97,7 +97,7 @@ describe('POST map overlay visualisations', async () => {
       });
       expectError(
         response,
-        'Database error: Creating record - You do not have access to all related permission groups',
+        'Database error: Creating record - Need access to Test Permission Group',
       );
     });
   });
