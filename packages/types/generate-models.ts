@@ -48,7 +48,7 @@ const removeIdColumn = (tables: Table[]) =>
 const removeUpdatedAtSyncTickColumn = (tables: Table[]) =>
   tables.map(({ columns, ...restOfTable }) => ({
     ...restOfTable,
-    columns: columns.filter(({ name }) => name !== 'id'),
+    columns: columns.filter(({ name }) => name !== 'updated_at_sync_tick'),
   }));
 
 const makeColumnsOptional = (tables: Table[]): Table[] =>
