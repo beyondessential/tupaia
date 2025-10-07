@@ -15,7 +15,6 @@ const config = {
     path.resolve(__dirname, '..', 'access-policy'),
     path.resolve(__dirname, '..', 'constants'),
     path.resolve(__dirname, '..', 'expression-parser'),
-    path.resolve(__dirname, '..', 'utils'),
   ],
   resolver: {
     unstable_enableSymlinks: true,
