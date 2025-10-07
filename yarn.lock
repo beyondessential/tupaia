@@ -12111,7 +12111,6 @@ __metadata:
     "@babel/eslint-parser": ^7.27.5
     "@tupaia/constants": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
-    "@tupaia/utils": "workspace:*"
     eslint: ^7.32.0
     npm-run-all: ^4.1.5
     rimraf: ^6.0.1

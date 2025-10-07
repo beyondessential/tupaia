@@ -3,7 +3,6 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   VIZ_BUILDER_PERMISSION_GROUP,
 } from '@tupaia/constants';
-import { PermissionsError } from '@tupaia/utils';
 
 /**
  * @typedef {import('./AccessPolicy').AccessPolicy} AccessPolicy
@@ -20,28 +19,30 @@ export const allowNoPermissions = () => true;
 
 /**
  * Returns true if all of the permissions assertions pass, or throws an error
- * @param {function[]} assertions Each permissions assertion should return `true` or throw a
- * {@link PermissionsError}
+ * @param {function[]} assertions Each permissions assertion should return `true` or throw
  * @param {string} errorMessage
  * @returns {true}
- * @throws {PermissionsError}
+ * @privateRemarks Ideally, these should throw `PermissionsError`s but adding @tupaia/utils as a
+ * transitive dependency of @tupaia/meditrak-app causes MediTrak build to fail because it has
+ * imports from node:fs.
  */
 export const assertAllPermissions = (assertions, errorMessage) => async accessPolicy => {
   try {
     for (const assertion of assertions) await assertion(accessPolicy);
     return true;
   } catch (e) {
-    throw new PermissionsError(errorMessage || e.message);
+    throw new Error(errorMessage || e.message);
   }
 };
 
 /**
- * Returns true if any of the permissions assertions pass, or throws an error
- * @param {function[]} assertions Each permissions assertion should return true or throw a
- * {@link PermissionsError}
+ * Returns `true` if any of the permissions assertions pass, otherwise throws
+ * @param {function[]} assertions Each permissions assertion should return true or throw
  * @param {string} errorMessage
  * @returns {true}
- * @throws {PermissionsError}
+ * @privateRemarks Ideally, these should throw `PermissionsError`s but adding @tupaia/utils as a
+ * transitive dependency of @tupaia/meditrak-app causes MediTrak build to fail because it has
+ * imports from node:fs.
  */
 export const assertAnyPermissions = (assertions, errorMessage) => async accessPolicy => {
   const combinedErrorMessages = ['One of the following conditions need to be satisfied:'];
@@ -55,7 +56,7 @@ export const assertAnyPermissions = (assertions, errorMessage) => async accessPo
       // swallow specific errors, in case any assertion returns true
     }
   }
-  throw new PermissionsError(errorMessage || combinedErrorMessages.join('\n'));
+  throw new Error(errorMessage || combinedErrorMessages.join('\n'));
 };
 
 /** @type {SimplePermissionsChecker} */
@@ -90,13 +91,13 @@ export const hasSomePermissionGroupsAccess = (accessPolicy, permissionGroups) =>
 /** @type {SimplePermissionsAssertion} */
 export const assertBESAdminAccess = accessPolicy => {
   if (hasBESAdminAccess(accessPolicy)) return true;
-  throw new PermissionsError(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
+  throw new Error(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
 };
 
 /** @type {SimplePermissionsAssertion} */
 export const assertVizBuilderAccess = accessPolicy => {
   if (hasVizBuilderAccess(accessPolicy)) return true;
-  throw new PermissionsError(`Need ${VIZ_BUILDER_PERMISSION_GROUP} access`);
+  throw new Error(`Need ${VIZ_BUILDER_PERMISSION_GROUP} access`);
 };
 
 /** @type {SimplePermissionsChecker} */
@@ -114,25 +115,23 @@ export const hasTupaiaAdminPanelAccessToCountry = (accessPolicy, countryCode) =>
 /** @type {SimplePermissionsAssertion} */
 export const assertAdminPanelAccess = accessPolicy => {
   if (hasTupaiaAdminPanelAccess(accessPolicy)) return true;
-  throw new PermissionsError(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
+  throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
 };
 
 /**
  * @param {AccessPolicy} accessPolicy
  * @param {PermissionGroupName} permissionGroupName
  * @returns {true}
- * @throws {PermissionsError}
  */
 export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) => {
   if (hasPermissionGroupAccess(accessPolicy, permissionGroupName)) return true;
-  throw new PermissionsError(`Need ${permissionGroupName} access`);
+  throw new Error(`Need ${permissionGroupName} access`);
 };
 
 /**
  * @param {AccessPolicy} accessPolicy
  * @param {PermissionGroupName[]} permissionGroupNames
  * @returns {true}
- * @throws {PermissionsError}
  */
 export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames) => {
   if (
@@ -141,5 +140,5 @@ export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames)
   ) {
     return true;
   }
-  throw new PermissionsError(`Need access to ${permissionGroupNames.join(', ')}`);
+  throw new Error(`Need access to ${permissionGroupNames.join(', ')}`);
 };
