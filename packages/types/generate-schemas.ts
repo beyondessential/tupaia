@@ -48,7 +48,7 @@ if (schemas?.definitions) {
   const definitions = Object.entries(schemas.definitions || {});
   for (const [typeName, schema] of definitions) {
     if (typeof schema === 'boolean') continue;
-    fileContents += `export const ${typeName}Schema = ${JSON.stringify(schema, null, 2)}\n`;
+    fileContents += `export const ${typeName}Schema = ${JSON.stringify(schema, null, '\t')}\n`;
   }
   console.log(`Generated ${definitions.length} schema definitions`);
 
