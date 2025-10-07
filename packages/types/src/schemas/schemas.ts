@@ -81530,6 +81530,7 @@ export const OptionSchema = {
 		"id",
 		"option_set_id",
 		"updated_at_sync_tick",
+		"sort_order",
 		"value"
 	]
 } 
@@ -81560,6 +81561,7 @@ export const OptionCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"option_set_id",
+		"sort_order",
 		"value"
 	]
 } 
@@ -85193,8 +85195,10 @@ export const EntityTypeEnumSchema = {
 		"policy",
 		"postcode",
 		"project",
+		"rehab_facility_model",
 		"repair_request",
 		"school",
+		"spare_part",
 		"sub_catchment",
 		"sub_district",
 		"sub_facility",

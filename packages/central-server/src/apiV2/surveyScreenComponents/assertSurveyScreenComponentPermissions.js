@@ -1,6 +1,5 @@
 import { RECORDS } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
-import { NotFoundError } from '@tupaia/utils';
 import { hasBESAdminAccess } from '../../permissions';
 import {
   assertSurveyEditPermissions,
