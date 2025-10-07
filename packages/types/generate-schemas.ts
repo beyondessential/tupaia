@@ -1,13 +1,9 @@
-import * as fs from 'fs';
-import { createPatch } from 'diff';
 import { resolve } from 'path';
+import * as fs from 'fs';
 import * as TJS from 'typescript-json-schema';
 
 // @ts-ignore
 import config from './config/schemas/config.json';
-
-console.log('🎰 Generating schemas...');
-const tic = performance.now();
 
 const failOnChanges = process.argv[2] === '--failOnChanges';
 
@@ -45,28 +41,26 @@ const schemas = TJS.generateSchema(program, '*', settings, filesToBuildSchemasFo
 if (schemas?.definitions) {
   let fileContents = HEADER;
 
-  const definitions = Object.entries(schemas.definitions || {});
-  for (const [typeName, schema] of definitions) {
-    if (typeof schema === 'boolean') continue;
-    fileContents += `export const ${typeName}Schema = ${JSON.stringify(schema, null, '\t')}\n`;
-  }
-  console.log(`ℹ️ Generated ${definitions.length} schema definitions`);
+  Object.entries(schemas.definitions || {}).forEach(([typeName, schema]) => {
+    if (typeof schema !== 'boolean') {
+      const finalisedSchema = `export const ${typeName}Schema = ${JSON.stringify(
+        schema,
+        null,
+        '\t',
+      )}\n`;
+      fileContents += finalisedSchema;
+    }
+  });
 
   if (failOnChanges) {
     const currentFileContents = fs.readFileSync(filename, { encoding: 'utf8' });
     if (currentFileContents !== fileContents) {
-      const patch = createPatch(filename, currentFileContents, fileContents);
-      console.log(
-        `${process.env.CI ? '::error::' : '❌ '}There are changes in the types which are not reflected in the JSON schema. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
-      );
-      console.log(patch);
+      console.log('❌ There are changes in the types which are not reflected in the json schema.');
+      console.log("Run 'yarn workspace @tupaia/types generate' to fix");
       process.exit(1);
     }
   }
 
   fs.writeFileSync(filename, fileContents);
-  console.log(`💾 Wrote ${filename}`);
-
-  const duration = performance.now() - tic;
-  console.log(`✅ Done in ${Math.round(duration)} ms`);
+  console.log(`Created file: ${filename}`);
 }
