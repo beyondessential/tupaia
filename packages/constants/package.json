@@ -15,9 +15,9 @@
     "hoistingLimits": "workspaces"
   },
   "scripts": {
-    "build": "rimraf dist && yarn package:build:ts",
+    "build": "rimraf dist && yarn run package:build:ts",
     "build-dev": "yarn run build",
-    "build-watch": "rimraf dist && yarn package:build:ts-watch",
+    "build-watch": "rimraf dist && yarn run package:build:ts-watch",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix"
   },
