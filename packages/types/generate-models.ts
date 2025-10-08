@@ -119,7 +119,7 @@ const run = async () => {
       console.log(patch);
 
       if (process.env.CI && process.env.GITHUB_STEP_SUMMARY) {
-        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '## Schemas\n\n');
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '## Models\n\n');
         fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '```diff\n');
         fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, patch);
         fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '```\n');
