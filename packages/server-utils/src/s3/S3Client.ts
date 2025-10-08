@@ -10,7 +10,6 @@ import { S3 } from './S3';
 const MAX_IMAGE_SIZE = 3_000;
 
 /** Formats officially supported by Sharp */
-// TODO: Delete extension property?
 const supportedImageTypes = {
   'image/avif': { extension: 'avif', humanReadableName: 'AVIF' },
   'image/gif': { extension: 'gif', humanReadableName: 'GIF' },
@@ -161,35 +160,41 @@ export class S3Client {
 
   public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
     let buffer: Buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
-    const contentType = this.getContentTypeFromBase64(base64EncodedImage);
+    const sourceContentType = this.getContentTypeFromBase64(base64EncodedImage);
 
-    if (!isImageMediaTypeString(contentType)) {
+    if (!isImageMediaTypeString(sourceContentType)) {
       // Redundant because of `isSupportedImageMediaTypeString`, but clearer error message
-      throw new UnsupportedMediaTypeError(`Expected image file but got ${contentType}`);
+      throw new UnsupportedMediaTypeError(`Expected image file but got ${sourceContentType}`);
     }
 
-    if (!isSupportedImageMediaTypeString(contentType)) {
+    if (!isSupportedImageMediaTypeString(sourceContentType)) {
       const humanReadableList = Object.values(supportedImageTypes)
         .map(type => type.humanReadableName)
         .join(', ');
       throw new UnsupportedMediaTypeError(
-        `${contentType} images aren’t supported. Please provide one of: ${humanReadableList}`,
+        `${sourceContentType} images aren’t supported. Please provide one of: ${humanReadableList}`,
       );
     }
 
-    buffer = await sharp(buffer)
-      .keepIccProfile()
-      .autoOrient()
-      .resize(MAX_IMAGE_SIZE, MAX_IMAGE_SIZE, {
-        fit: 'inside',
-        withoutEnlargement: true,
-      })
-      .webp()
-      .toBuffer();
+    const shouldConvert = sourceContentType !== 'image/svg+xml';
+    const destinationContentType = shouldConvert ? 'image/webp' : sourceContentType;
+
+    if (shouldConvert) {
+      buffer = await sharp(buffer)
+        .autoOrient()
+        .keepIccProfile()
+        .resize(MAX_IMAGE_SIZE, MAX_IMAGE_SIZE, {
+          fit: 'inside',
+          withoutEnlargement: true,
+        })
+        .webp({ quality: 90 })
+        .toBuffer();
+    }
 
     const dirname = getS3ImageFilePath();
+    const { extension } = supportedImageTypes[destinationContentType];
     // If a fileId is provided, use it as the file name, otherwise generate a unique file name
-    const basename = `${fileId || getUniqueFileName()}.webp`;
+    const basename = `${fileId || getUniqueFileName()}.${extension}`;
     const filePath = `${dirname}${basename}`;
 
     // In some cases we want to allow overwriting of existing files
@@ -197,7 +202,7 @@ export class S3Client {
       throw new Error(`File ${filePath} already exists on S3, overwrite is not allowed`);
     }
 
-    return this.uploadPublicImage(filePath, buffer, 'image/webp');
+    return this.uploadPublicImage(filePath, buffer, destinationContentType);
   }
 
   public async downloadFile(fileName: string) {
