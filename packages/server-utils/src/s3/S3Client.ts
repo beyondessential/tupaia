@@ -197,7 +197,7 @@ export class S3Client {
       throw new Error(`File ${filePath} already exists on S3, overwrite is not allowed`);
     }
 
-    return this.uploadPublicImage(filePath, buffer, contentType);
+    return this.uploadPublicImage(filePath, buffer, 'image/webp');
   }
 
   public async downloadFile(fileName: string) {
