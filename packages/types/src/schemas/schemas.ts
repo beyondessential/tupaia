@@ -71521,9 +71521,6 @@ export const MapOverlaySchema = {
                       "description": "Time unit to offset by",
                       "enum": [
                         "day",
-                        "month",
-                        "quarter",
-                        "week",
                         "year"
                       ],
                       "type": "string"
@@ -84368,7 +84365,6 @@ export const EntityTypeEnumSchema = {
     "policy",
     "postcode",
     "project",
-    "rehab_facility_model",
     "repair_request",
     "school",
     "spare_part",
@@ -89759,10 +89755,6 @@ export const DashboardWithMetadataSchema = {
                     "properties": {
                       "exportWithLabels": {
                         "description": "Include labels for each point of data in exports",
-                        "type": "boolean"
-                      },
-                      "exportWithTable": {
-                        "description": "Include the data table below the viz in exports",
                         "type": "boolean"
                       },
                       "exportWithTableDisabled": {

@@ -617,10 +617,6 @@ export interface DhisSyncQueueCreate {
 export interface DhisSyncQueueUpdate {
   'bad_request_count'?: number | null;
   'change_time'?: number | null;
-  'details'?: string | null;
-  'id'?: string;
-  'is_dead_letter'?: boolean | null;
-  'is_deleted'?: boolean | null;
   'priority'?: number | null;
   'record_id'?: string;
   'record_type'?: string;
@@ -1891,10 +1887,6 @@ export enum EntityTypeEnum {
   'consumable' = 'consumable',
   'bes_asset' = 'bes_asset',
   'bes_office' = 'bes_office',
-  'tmf_district' = 'tmf_district',
-  'tmf_sub_district' = 'tmf_sub_district',
-  'tmf_facility' = 'tmf_facility',
-  'policy' = 'policy',
   'kiuar_facility' = 'kiuar_facility',
   'kiuar_area' = 'kiuar_area',
   'spare_part' = 'spare_part',
