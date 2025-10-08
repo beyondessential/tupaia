@@ -23,7 +23,7 @@ describe('getLeaderboardQuery()', () => {
     const expectedLeaderboard = `
       SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, COUNT(*)::INT AS coconuts, FLOOR(COUNT(*) / 100)::INT as pigs
+        SELECT user_id, COUNT(*)::INT AS coconuts, FLOOR(COUNT(*) / 100)::INT AS pigs
         FROM survey_response
         JOIN survey ON survey.id=survey_id
         WHERE survey.project_id = ?
@@ -47,7 +47,7 @@ describe('getLeaderboardQuery()', () => {
     const expectedLeaderboard = `
       SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, COUNT(*)::INT as coconuts, FLOOR(COUNT(*) / 100)::INT AS pigs
+        SELECT user_id, COUNT(*)::INT AS coconuts, FLOOR(COUNT(*) / 100)::INT AS pigs
         FROM survey_response
         JOIN survey ON survey.id=survey_id
         WHERE survey.project_id = ?
