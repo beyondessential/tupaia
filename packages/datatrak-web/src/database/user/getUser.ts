@@ -20,9 +20,9 @@ export const getUser = async ({ models }: GetUserLocalContext) => {
     preferences = {},
     // @ts-ignore - access_policy is not in the UserRecord type and only used for client
     access_policy: accessPolicy,
-  } = await models.user.findOne({
+  } = (await models.user.findOne({
     email: currentUserEmail,
-  });
+  })) || {};
   const {
     project_id: projectId,
     country_id: countryId,
