@@ -17,6 +17,7 @@ import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 import { validateSurveyResponse, validateSurveyResponses } from './validation';
 
 /**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
  * @typedef {import('@tupaia/types').Answer} Answer
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
@@ -96,16 +97,17 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {import('@tupaia/access-policy').AccessPolicy} accessPolicy
+   * @param {ModelRegistry} models
+   * @param {AccessPolicy} accessPolicy
    * @param {Record<SurveyCode, Entity["code"][]>} entitiesBySurveyCode
    * @returns {true} If and only if the assertion passes, otherwise throws.
    * @throws {PermissionsError}
    */
-  async assertCanImport(accessPolicy, entitiesBySurveyCode) {
+  async assertCanImport(models, accessPolicy, entitiesBySurveyCode) {
     const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyCode));
     const surveyCodes = Object.keys(entitiesBySurveyCode);
 
-    await this.database.wrapInReadOnlyTransaction(async transactingModels => {
+    await models.wrapInReadOnlyTransaction(async transactingModels => {
       /** @type {[EntityRecord[], SurveyRecord[]]} */
       const [allEntities, surveys] = await Promise.all([
         transactingModels.entity.findManyByColumn('code', allEntityCodes),
@@ -194,12 +196,13 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {import('@tupaia/access-policy').AccessPolicy} accessPolicy
+   * @param {ModelRegistry} models
+   * @param {AccessPolicy} accessPolicy
    * @param {Array} surveyResponses Assumed to have already been validated.
    * @returns {true} If and only if the assertion passes, otherwise throws.
    * @throws {PermissionsError}
    */
-  async assertCanSubmit(accessPolicy, surveyResponses) {
+  async assertCanSubmit(models, accessPolicy, surveyResponses) {
     const entitiesBySurveyCode = {};
 
     /** @type {Survey["id"][]} */
@@ -211,7 +214,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       return acc;
     }, []);
 
-    return await this.database.wrapInReadOnlyTransaction(async transactingModels => {
+    return await models.wrapInReadOnlyTransaction(async transactingModels => {
       /** @type {SurveyRecord[]} */
       const surveys = await transactingModels.survey.findManyById(surveyIds);
       const surveyCodesById = reduceToDictionary(surveys, 'id', 'code');
@@ -225,7 +228,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         (entitiesBySurveyCode[surveyCode] ??= []).push(entityCode);
       }
 
-      return await this.assertCanImport(accessPolicy, entitiesBySurveyCode);
+      return await this.assertCanImport(transactingModels, accessPolicy, entitiesBySurveyCode);
     });
   }
 
