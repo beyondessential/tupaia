@@ -117,6 +117,14 @@ const run = async () => {
         `${process.env.CI ? '::error::' : '❌ '}There are changes in the database schema which are not reflected in @tupaia/types. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
       );
       console.log(patch);
+
+      if (process.env.CI && process.env.GITHUB_STEP_SUMMARY) {
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '## Models\n\n');
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '```diff\n');
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, patch);
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '```\n');
+      }
+
       const duration = performance.now() - tic;
       console.log(`💥 Failed after ${Math.round(duration)} ms`);
       process.exit(1);
