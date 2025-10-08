@@ -1,10 +1,11 @@
 import { expect } from 'chai';
+
 import { AccessPolicy } from '@tupaia/access-policy';
 import {
-  findOrCreateDummyRecord,
   addBaselineTestCountries,
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
+  findOrCreateDummyRecord,
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../../permissions';
 import { getModels } from '../../../testUtilities';
@@ -120,8 +121,9 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['LA_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => models.surveyResponse.assertCanImport(models, defaultAccessPolicy, entitiesBySurveyCode))
-      .to.throw;
+    expect(() =>
+      models.surveyResponse.assertCanImport(models, defaultAccessPolicy, entitiesBySurveyCode),
+    ).to.throw;
   });
 
   it('Insufficient permissions: Should not allow importing survey responses when users do not have permission group access to the countries of the survey (single survey)', async () => {
@@ -139,8 +141,8 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => models.surveyResponse.assertCanImport(models, accessPolicy, entitiesBySurveyCode)).to
-      .throw;
+    expect(() => models.surveyResponse.assertCanImport(models, accessPolicy, entitiesBySurveyCode))
+      .to.throw;
   });
 
   it('Insufficient permissions: Should not allow importing survey responses when users do not have permission group access to the countries of the survey (multiple surveys)', async () => {
@@ -159,7 +161,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => models.surveyResponse.assertCanImport(models, accessPolicy, entitiesBySurveyCode)).to
-      .throw;
+    expect(() => models.surveyResponse.assertCanImport(models, accessPolicy, entitiesBySurveyCode))
+      .to.throw;
   });
 });
