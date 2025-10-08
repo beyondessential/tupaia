@@ -12,6 +12,7 @@ import { snakeKeys } from '@tupaia/utils';
 import { CurrentUser } from '../../api';
 import { DatatrakWebModelRegistry } from '../../types';
 import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
+import { isExtendedField } from '../../utils/extendedFieldFunctions';
 import { AugmentedEntityRecord } from '../../utils/formatEntity';
 import { isExtendedField } from '../../utils/extendedFieldFunctions';
 
