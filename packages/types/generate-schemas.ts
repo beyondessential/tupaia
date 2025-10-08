@@ -60,6 +60,8 @@ if (schemas?.definitions) {
         `${process.env.CI ? '::error::' : '❌ '}There are changes in the types which are not reflected in the JSON schema. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
       );
       console.log(patch);
+      const duration = performance.now() - tic;
+      console.log(`💥 Failed after ${Math.round(duration)} ms`);
       process.exit(1);
     }
   }
