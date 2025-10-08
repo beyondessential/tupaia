@@ -1,28 +1,29 @@
 import { cloneDeep } from 'lodash';
+
 import { AnalyticsRefresher } from '@tupaia/database';
 import {
-  respond,
-  ValidationError,
-  ObjectValidator,
-  hasContent,
-  isPresent,
-  constructRecordExistsWithId,
-  constructIsEmptyOr,
   constructEveryItem,
-  takesIdForm,
-  takesDateForm,
-  isNumber,
+  constructIsEmptyOr,
   constructIsValidEntityType,
+  constructRecordExistsWithId,
+  hasContent,
+  isNumber,
+  isPresent,
+  ObjectValidator,
+  respond,
+  takesDateForm,
+  takesIdForm,
+  ValidationError,
 } from '@tupaia/utils';
-import { updateOrCreateSurveyResponse, addSurveyImage, addSurveyFile } from './utilities';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
-  translateObjectFields,
   translateEntityCodeToId,
+  translateObjectFields,
+  translateQuestionCodeToId,
   translateSurveyCodeToId,
   translateUserEmailToIdAndAssessorName,
-  translateQuestionCodeToId,
 } from '../utilities';
+import { addSurveyFile, addSurveyImage, updateOrCreateSurveyResponse } from './utilities';
 
 const ACTIONS = {
   SubmitSurveyResponse: 'SubmitSurveyResponse',

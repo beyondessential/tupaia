@@ -1,6 +1,7 @@
 import log from 'winston';
 import { difference, uniq } from 'es-toolkit';
 import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
+import log from 'winston';
 
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, isNullish } from '@tupaia/tsutils';
