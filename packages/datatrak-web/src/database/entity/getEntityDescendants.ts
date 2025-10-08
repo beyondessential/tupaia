@@ -14,7 +14,6 @@ import { DatatrakWebModelRegistry } from '../../types';
 import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
 import { isExtendedField } from '../../utils/extendedFieldFunctions';
 import { AugmentedEntityRecord } from '../../utils/formatEntity';
-import { isExtendedField } from '../../utils/extendedFieldFunctions';
 
 const DEFAULT_FIELDS: ExtendedEntityFieldName[] = ['id', 'parent_name', 'code', 'name', 'type'];
 
