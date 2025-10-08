@@ -1,9 +1,10 @@
-import { Upload } from '@aws-sdk/lib-storage';
 import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
-import { getS3UploadFilePath, getS3ImageFilePath, S3_BUCKET_NAME } from './constants';
+import { Upload } from '@aws-sdk/lib-storage';
+
+import { UnsupportedMediaTypeError } from '@tupaia/utils';
+import { getS3ImageFilePath, getS3UploadFilePath, S3_BUCKET_NAME } from './constants';
 import { getUniqueFileName } from './getUniqueFileName';
 import { S3 } from './S3';
-import { UnsupportedMediaTypeError } from '@tupaia/utils';
 
 /** Non-animated image types that are generally web-safe. */
 const supportedImageTypes = {
