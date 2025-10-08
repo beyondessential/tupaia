@@ -1,7 +1,6 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebUserRequest, WebServerProjectRequest } from '@tupaia/types';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../constants';
 
 export type UserRequest = Request<
   DatatrakWebUserRequest.Params,
@@ -30,11 +29,7 @@ export class UserRoute extends Route<UserRequest> {
       position,
       mobile_number: mobileNumber,
       preferences = {},
-    } = await ctx.services.central.getUser();
-
-    // check if user has admin panel access
-    const hasAdminPanelAccess =
-      accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
+    } = await ctx.services.central.getUser();   
 
     const {
       project_id: projectId,
@@ -70,7 +65,6 @@ export class UserRoute extends Route<UserRequest> {
       country,
       deleteAccountRequested: delete_account_requested === true,
       hideWelcomeScreen: hide_welcome_screen === true,
-      hasAdminPanelAccess,
       accessPolicy: accessPolicy.policy,
     };
   }

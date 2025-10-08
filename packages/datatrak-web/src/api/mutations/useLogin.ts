@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { gaEvent, useFromLocation } from '../../utils';
 import { useNavigate } from 'react-router-dom';
-import { post } from '../api';
+
+import { gaEvent, useFromLocation } from '../../utils';
 import { ROUTES } from '../../constants';
-import { getBrowserTimeZone } from '@tupaia/utils';
 import { useDatabaseContext } from '../../hooks/database';
 import { useSyncContext } from '../SyncContext';
+import { AuthService } from '../../auth';
 
 type LoginCredentials = {
   email: string;
@@ -20,15 +20,10 @@ export const useLogin = () => {
   const { clientSyncManager } = useSyncContext();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
-    ({ email, password }: LoginCredentials) => {
-      return post('login', {
-        data: {
-          emailAddress: email,
-          password,
-          deviceName: window.navigator.userAgent,
-          timezone: getBrowserTimeZone(),
-        },
-      });
+    async ({ email, password }: LoginCredentials) => {
+      const authService = new AuthService(models);
+      const user = await authService.signIn({ email, password });
+      return { user };
     },
     {
       onMutate: () => {

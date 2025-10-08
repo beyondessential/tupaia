@@ -287,12 +287,12 @@ exports.up = async function (db) {
           employer             TEXT,
           position             TEXT,
           mobile_number        TEXT,
-          password_hash        TEXT                                         NOT NULL,
-          legacy_password_salt TEXT,
+          password_hash        TEXT,
           verified_email       verified_email           DEFAULT 'new_user'::verified_email,
           profile_image        TEXT,
           primary_platform     primary_platform         DEFAULT 'tupaia'::primary_platform,
-          preferences          JSONB                    DEFAULT '{}'::JSONB NOT NULL
+          preferences          JSONB                    DEFAULT '{}'::JSONB NOT NULL,
+          access_policy        JSONB                    DEFAULT '{}'::JSONB
       );
     `);
 

@@ -168,6 +168,10 @@ export class UserRecord extends DatabaseRecord {
 export class UserModel extends DatabaseModel {
   static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
+  get ExcludedFieldsFromSync() {
+    return ['password_hash'];
+  }
+
   /**
    * @param {import('../../ModelRegistry').ModelRegistry} models
    * @param {import('@tupaia/types').User['id']} userId
