@@ -24,7 +24,7 @@
     "generate": "yarn generate:models && yarn generate:schemas && yarn build",
     "generate:models": "ts-node generate-models.ts",
     "generate:schemas": "ts-node generate-schemas.ts",
-    "assert-no-changes": "yarn generate:models --failOnChanges && yarn generate:schemas --failOnChanges"
+    "assert-no-changes": "yarn generate:models --failOnChanges; yarn generate:schemas --failOnChanges"
   },
   "devDependencies": {
     "@rmp135/sql-ts": "^1.15.1",
