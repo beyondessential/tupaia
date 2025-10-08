@@ -1,5 +1,6 @@
 import { difference, uniq } from 'es-toolkit';
 import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
+import log from 'winston';
 
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, isNullish } from '@tupaia/tsutils';
@@ -115,7 +116,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       ]);
 
       if (allEntities.some(isNullish)) {
-        console.error('Unexpected nullish element in `allEntities`', { allEntities });
+        log.error('Unexpected nullish element in `allEntities`', { allEntities });
       }
 
       const codeToSurvey = keyBy(surveys, 'code');
@@ -129,7 +130,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       for (const [surveyCode, entityCodes] of Object.entries(entitiesBySurveyCode)) {
         const survey = codeToSurvey[surveyCode];
         if (isNullish(survey)) {
-          console.error(`Unexpected nullish survey (code '${surveyCode}')`, { codeToSurvey });
+          log.error(`Unexpected nullish survey (code '${surveyCode}')`, { codeToSurvey });
         }
 
         const responseEntities = allEntities.filter(e => entityCodes.includes(e.code));
@@ -142,7 +143,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         );
 
         if (surveyResponseCountries.some(isNullish)) {
-          console.error(`Unexpected nullish element in countries for survey  ${surveyCode}`, {
+          log.error(`Unexpected nullish element in countries for survey  ${surveyCode}`, {
             surveyResponseCountries,
           });
         }
@@ -171,7 +172,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
             const entities = entitiesByCountryCode[surveyResponseCountry.code];
             if (entities.some(isNullish)) {
-              console.error('Unexpected nullish element in `entities`', { entities });
+              log.error('Unexpected nullish element in `entities`', { entities });
             }
 
             const entityCodesString = entities.map(e => e.code).join(', ');
