@@ -12540,6 +12540,7 @@ __metadata:
     downloadjs: 1.4.7
     es-toolkit: ^1.39.10
     esbuild: ^0.24.0
+    hash-wasm: ^4.12.0
     jest: ^29.7.0
     knex: ^3.1.0
     knex-pglite: ^0.11.0
@@ -24522,6 +24523,13 @@ __metadata:
     inherits: ^2.0.4
     safe-buffer: ^5.2.1
   checksum: 6a82675a5de2ea9347501bbe655a2334950c7ec972fd9810ae9529e06aeab8f7e8ef68fc2112e5e6f0745561a7e05326efca42ad59bb5fd116537f5f8b0a216d
+  languageName: node
+  linkType: hard
+
+"hash-wasm@npm:^4.12.0":
+  version: 4.12.0
+  resolution: "hash-wasm@npm:4.12.0"
+  checksum: f292c94a19a3d7c075e1e7de2764ba8a006ae5a9551b1a35c61f693035df7977e6cb41f3fc036deb4a724e1949711b7cba06f7ad174f5aeb295edb64649b4a32
   languageName: node
   linkType: hard
 

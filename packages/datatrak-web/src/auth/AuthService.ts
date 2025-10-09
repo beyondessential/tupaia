@@ -3,6 +3,7 @@ import log from 'winston';
 import { getBrowserTimeZone, snakeKeys } from '@tupaia/utils';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { camelcaseKeys } from '@tupaia/tsutils';
+import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
 
 import { DatatrakWebModelRegistry } from '../types';
 import { post } from '../api';
@@ -37,7 +38,9 @@ export class AuthService {
   async signIn(params: SignInParams) {
     const isOnline = window.navigator.onLine;
     if (!isOnline) {
-      return await this.localSignIn(params);
+      const user = await this.localSignIn(params);
+      
+      return user;
     }
 
     try {
@@ -69,8 +72,6 @@ export class AuthService {
       throw new Error('Invalid user credentials');
     }
 
-    await localStorage.setItem('currentUserEmail', user.email);
-
     return camelcaseKeys(user, { deep: true }) as DatatrakWebUserRequest.ResBody;
   }
 
@@ -83,6 +84,8 @@ export class AuthService {
         timezone: getBrowserTimeZone(),
       },
     });
+
+    await this.models.localSystemFact.set(FACT_CURRENT_USER_ID, user.id);
 
     // kick off a local save
     await this.saveLocalUser(user, params.password);

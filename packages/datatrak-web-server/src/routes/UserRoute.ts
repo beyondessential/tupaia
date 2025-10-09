@@ -11,7 +11,7 @@ export type UserRequest = Request<
 
 export class UserRoute extends Route<UserRequest> {
   public async buildResponse() {
-    const { ctx, session, accessPolicy } = this.req;
+    const { ctx, session, accessPolicy, models } = this.req;
 
     // Avoid sending a 'me' request as the api user
     if (!session) {
@@ -19,27 +19,13 @@ export class UserRoute extends Route<UserRequest> {
       return {};
     }
 
-    const {
-      id,
-      full_name: fullName,
-      first_name: firstName,
-      last_name: lastName,
-      email,
-      employer,
-      position,
-      mobile_number: mobileNumber,
-      preferences = {},
-    } = await ctx.services.central.getUser();   
-
-    const {
-      project_id: projectId,
-      country_id: countryId,
-      delete_account_requested,
-      hide_welcome_screen,
-    } = preferences;
+    const userData = await ctx.services.central.getUser();
+    const { preferences = {} } = userData;
+    const { project_id: projectId, country_id: countryId } = preferences;
 
     let project = null;
     let country = null;
+
     if (projectId) {
       const { projects } = await ctx.services.webConfig.fetchProjects();
       project = projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
@@ -51,21 +37,10 @@ export class UserRoute extends Route<UserRequest> {
       country = countryResponse || null;
     }
 
-    return {
-      fullName,
-      firstName,
-      lastName,
-      email,
-      id,
-      employer,
-      position,
-      mobileNumber,
-      projectId,
+    return models.user.transformUserData(
+      { ...userData, access_policy: accessPolicy.policy },
       project,
       country,
-      deleteAccountRequested: delete_account_requested === true,
-      hideWelcomeScreen: hide_welcome_screen === true,
-      accessPolicy: accessPolicy.policy,
-    };
+    );
   }
 }

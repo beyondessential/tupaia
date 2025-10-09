@@ -6,6 +6,7 @@ import { ROUTES } from '../../constants';
 import { useDatabaseContext } from '../../hooks/database';
 import { useSyncContext } from '../SyncContext';
 import { AuthService } from '../../auth';
+import { useIsOfflineFirst } from '../offlineFirst';
 
 type LoginCredentials = {
   email: string;
@@ -18,11 +19,17 @@ export const useLogin = () => {
   const from = useFromLocation();
   const { models } = useDatabaseContext();
   const { clientSyncManager } = useSyncContext();
+  const isOfflineFirst = useIsOfflineFirst();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     async ({ email, password }: LoginCredentials) => {
       const authService = new AuthService(models);
-      const user = await authService.signIn({ email, password });
+      let user;
+      if (isOfflineFirst) {
+        user = await authService.signIn({ email, password });
+      } else {
+        user = await authService.remoteSignIn({ email, password });
+      }
       return { user };
     },
     {

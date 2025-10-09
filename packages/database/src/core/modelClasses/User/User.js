@@ -300,4 +300,48 @@ export class UserModel extends DatabaseModel {
     const user = ensure(await this.findById(userId), `No user exists with ID ${userId}`);
     return user.getRecentEntityIds(countryCode, type);
   }
+
+  async transformUserData(
+    userData,
+    project = null,
+    country = null,
+  ) {
+    const {
+      id,
+      full_name: fullName,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      employer,
+      position,
+      mobile_number: mobileNumber,
+      preferences = {},
+      access_policy: accessPolicy,
+    } = userData;
+  
+    const {
+      project_id: projectId,
+      country_id: countryId,
+      delete_account_requested,
+      hide_welcome_screen,
+    } = preferences;
+  
+    return {
+      fullName,
+      firstName,
+      lastName,
+      email,
+      id,
+      employer,
+      position,
+      mobileNumber,
+      projectId,
+      project,
+      countryId,
+      country,
+      deleteAccountRequested: delete_account_requested === true,
+      hideWelcomeScreen: hide_welcome_screen === true,
+      accessPolicy,
+    };
+  };
 }

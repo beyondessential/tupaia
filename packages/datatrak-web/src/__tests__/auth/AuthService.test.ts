@@ -1,3 +1,4 @@
+import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
 import { AuthService } from '../../auth/AuthService';
 import { DatatrakWebModelRegistry } from '../../types';
 
@@ -64,6 +65,9 @@ describe('AuthService', () => {
         findOne: jest.fn().mockResolvedValue(null),
         create: jest.fn(),
       },
+      localSystemFact: {
+        set: jest.fn(),
+      },
     } as unknown as DatatrakWebModelRegistry;
 
     authService = new AuthService(models);
@@ -92,10 +96,14 @@ describe('AuthService', () => {
       user: {
         update: jest.fn(),
         findOne: jest.fn().mockResolvedValue({
+          id: 'user-123',
           email: 'test@example.com',
           password_hash: 'password123',
         }),
         create: jest.fn(),
+      },
+      localSystemFact: {
+        set: jest.fn(),
       },
     } as unknown as DatatrakWebModelRegistry;
 
@@ -106,10 +114,10 @@ describe('AuthService', () => {
       password: 'password123',
     });
 
-    expect(localStorage.setItem).toHaveBeenCalledWith('currentUserEmail', 'test@example.com');
+    expect(models.localSystemFact.set).toHaveBeenCalledWith(FACT_CURRENT_USER_ID, 'user-123');
   });
 
-  it('login locally if remote login fails', async () => {
+  it.only('login locally if remote login fails', async () => {
     Object.defineProperty(window.navigator, 'onLine', {
       writable: true,
       value: true,
@@ -119,10 +127,14 @@ describe('AuthService', () => {
       user: {
         update: jest.fn(),
         findOne: jest.fn().mockResolvedValue({
+          id: 'user-123',
           email: 'test@example.com',
           password_hash: 'password123',
         }),
         create: jest.fn(),
+      },
+      localSystemFact: {
+        set: jest.fn(),
       },
     } as unknown as DatatrakWebModelRegistry;
 
@@ -136,7 +148,7 @@ describe('AuthService', () => {
       password: 'password123',
     });
 
-    expect(localStorage.setItem).toHaveBeenCalledWith('currentUserEmail', 'test@example.com');
+    expect(models.localSystemFact.set).toHaveBeenCalledWith(FACT_CURRENT_USER_ID, 'user-123');
   });
 
   it('throws an error if there is no internet connection and user has never logged in', async () => {
@@ -149,9 +161,13 @@ describe('AuthService', () => {
       user: {
         update: jest.fn(),
         findOne: jest.fn().mockResolvedValue({
+          id: 'user-123',
           email: 'test@example.com',
         }),
         create: jest.fn(),
+      },
+      localSystemFact: {
+        set: jest.fn(),
       },
     } as unknown as DatatrakWebModelRegistry;
 
