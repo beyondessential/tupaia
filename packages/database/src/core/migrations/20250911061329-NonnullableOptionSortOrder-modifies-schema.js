@@ -14,12 +14,12 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
-  return db.runSql('ALTER TABLE "option" ALTER COLUMN "sort_order" SET NOT NULL;');
+exports.up = async function (db) {
+  return await db.runSql('ALTER TABLE "option" ALTER COLUMN "sort_order" SET NOT NULL;');
 };
 
-exports.down = function (db) {
-  return db.runSql('ALTER TABLE "option" ALTER COLUMN "sort_order" DROP NOT NULL;');
+exports.down = async function (db) {
+  return await db.runSql('ALTER TABLE "option" ALTER COLUMN "sort_order" DROP NOT NULL;');
 };
 
 exports._meta = {

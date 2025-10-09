@@ -14,8 +14,8 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
-  return db.runSql("ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'kiuar_facility';");
+exports.up = async function (db) {
+  return await db.runSql("ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'kiuar_facility';");
 };
 
 exports.down = function (db) {
