@@ -2,7 +2,7 @@ import { COLUMNS_EXCLUDED_FROM_SYNC } from '@tupaia/constants';
 
 export async function buildSyncLookupSelect(model, columns = {}) {
   const attributes = Object.keys(await model.fetchSchema());
-  const { projectIds, userIds } = columns;
+  const { projectIds } = columns;
   const table = model.databaseRecord;
 
   return `
@@ -16,7 +16,6 @@ export async function buildSyncLookupSelect(model, columns = {}) {
           .filter(a => !COLUMNS_EXCLUDED_FROM_SYNC.includes(a))
           .map(a => `'${a}', ${table}.${a}`)}
       ),
-      ${projectIds || 'NULL'},
-      ${userIds || 'NULL'}
+      ${projectIds || 'NULL'}
   `;
 }
