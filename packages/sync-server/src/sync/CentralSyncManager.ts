@@ -255,7 +255,7 @@ export class CentralSyncManager {
       if (params.projectIds?.length === 0) {
         throw new Error('No project IDs provided');
       }
-      
+
       await this.connectToSession(sessionId);
 
       // first check if the snapshot is already being processed, to throw a sane error if (for some
@@ -335,7 +335,7 @@ export class CentralSyncManager {
     unmarkSessionAsProcessing: () => Promise<void>,
     accessPolicy: AccessPolicy,
   ): Promise<void> {
-    const { since, projectIds, userId, deviceId } = snapshotParams;
+    const { since, projectIds, deviceId } = snapshotParams;
     let transactionTimeout;
     try {
       await this.connectToSession(sessionId);
@@ -380,7 +380,6 @@ export class CentralSyncManager {
             since,
             sessionId,
             deviceId,
-            userId,
             projectIds,
             this.config,
           );
