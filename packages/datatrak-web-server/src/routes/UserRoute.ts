@@ -1,7 +1,8 @@
 import { Request } from 'express';
+
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebUserRequest, WebServerProjectRequest } from '@tupaia/types';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../constants';
 
 export type UserRequest = Request<
   DatatrakWebUserRequest.Params,
