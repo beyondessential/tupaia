@@ -1,5 +1,3 @@
-export const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
-
 export const API_CLIENT_PERMISSIONS = [
   { entityCode: 'DL', permissionGroupName: 'Public' }, //	Demo Land
   { entityCode: 'FJ', permissionGroupName: 'Public' }, //	Fiji

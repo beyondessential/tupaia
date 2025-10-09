@@ -15,7 +15,6 @@ export const snapshotOutgoingChanges = async (
   since: number,
   sessionId: string,
   deviceId: string,
-  userId: string,
   projectIds: string[],
   config: SyncServerConfig,
 ): Promise<number> => {
@@ -52,11 +51,6 @@ export const snapshotOutgoingChanges = async (
         WHERE updated_at_sync_tick > ?
         ${fromId ? `AND id > ?` : ''}
         AND (
-          user_ids IS NULL
-          OR
-          user_ids::text[] && ARRAY[?]
-        )
-        AND (
           project_ids IS NULL
           OR
           project_ids::text[] && ${SqlQuery.array(projectIds)}
@@ -79,7 +73,6 @@ export const snapshotOutgoingChanges = async (
       [
         since,
         ...(fromId ? [fromId] : []),
-        userId,
         ...projectIds,
         ...recordTypes,
         ...(avoidRepull && deviceId ? [deviceId] : []),

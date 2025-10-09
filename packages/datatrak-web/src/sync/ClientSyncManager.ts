@@ -17,6 +17,7 @@ import {
   FACT_CURRENT_SYNC_TICK,
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
   FACT_LAST_SUCCESSFUL_SYNC_PUSH,
+  FACT_PROJECTS_IN_SYNC,
 } from '@tupaia/constants';
 
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
@@ -58,8 +59,6 @@ export class ClientSyncManager {
 
   private deviceId: string;
 
-  private userId: string;
-
   private urgentSyncInterval: NodeJS.Timeout | null = null;
 
   private isInitialSync: boolean = false;
@@ -79,11 +78,10 @@ export class ClientSyncManager {
 
   emitter = mitt();
 
-  constructor(models: DatatrakWebModelRegistry, deviceId: string, userId: string) {
+  constructor(models: DatatrakWebModelRegistry, deviceId: string) {
     this.models = models;
     this.database = models.database;
     this.deviceId = deviceId;
-    this.userId = userId;
     this.progress = 0;
     log.debug('ClientSyncManager.constructor', {
       deviceId,
@@ -130,14 +128,20 @@ export class ClientSyncManager {
     this.setProgress(progressPercentage, progressMessage);
   };
 
-  async triggerSync(projectIds: string[], urgent: boolean) {
+  async getProjectsInSync(): Promise<string[]> {
+    const syncedProjectsFact = await this.models.localSystemFact.get(FACT_PROJECTS_IN_SYNC);
+    const syncedProjectIds = syncedProjectsFact ? JSON.parse(syncedProjectsFact) : [];
+    return syncedProjectIds;
+  }
+
+  async triggerSync(urgent: boolean = false) {
     if (this.isSyncing) {
       log.warn('ClientSyncManager.triggerSync(): Tried to start syncing while sync in progress');
       return;
     }
 
     try {
-      await this.runSync(projectIds, urgent);
+      await this.runSync(urgent);
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
     } finally {
@@ -160,7 +164,7 @@ export class ClientSyncManager {
    * Trigger urgent sync, and along with urgent sync, schedule regular sync requests
    * to continuously connect to central server and request for status change of the sync session
    */
-  async triggerUrgentSync(projectIds: string[]): Promise<void> {
+  async triggerUrgentSync(): Promise<void> {
     if (this.urgentSyncInterval) {
       log.warn('ClientSyncManager.triggerUrgentSync(): Urgent sync already started');
       return;
@@ -170,19 +174,26 @@ export class ClientSyncManager {
 
     // Schedule regular urgent sync
     this.urgentSyncInterval = setInterval(
-      () => this.triggerSync(projectIds, true),
+      () => this.triggerSync(true),
       urgentSyncIntervalInSeconds * 1000,
     );
 
     // start the sync now
-    await this.triggerSync(projectIds, true);
+    await this.triggerSync(true);
   }
 
-  async runSync(projectIds: string[], urgent: boolean = false) {
+  async runSync(urgent: boolean = false) {
     if (this.isSyncing) {
       throw new Error(
         'It should not be possible to call "runSync" while an existing run is active',
       );
+    }
+
+    const projectIds = await this.getProjectsInSync();
+
+    if (projectIds.length === 0) {
+      log.warn('ClientSyncManager.runSync(): No projects in sync');
+      return;
     }
 
     this.isSyncing = true;
@@ -198,10 +209,7 @@ export class ClientSyncManager {
     performance.clearMarks();
     performance.clearMeasures();
     performance.mark('startSyncSession');
-    const { sessionId, startedAtTick, status } = await this.startSyncSession(
-      urgent,
-      pullSince,
-    );
+    const { sessionId, startedAtTick, status } = await this.startSyncSession(urgent, pullSince);
 
     if (!sessionId) {
       log.debug(`ClientSyncManager.runSync(): Sync queue status: ${status}`);
@@ -322,6 +330,7 @@ export class ClientSyncManager {
     try {
       log.debug('ClientSyncManager.pullChanges', {
         sessionId,
+        projectIds,
       });
 
       // This is the start of stage 2 which is calling pull/initiate.
@@ -347,7 +356,6 @@ export class ClientSyncManager {
       const { totalToPull, pullUntil } = await initiatePull(
         sessionId,
         pullSince,
-        this.userId,
         projectIds,
         this.deviceId,
       );
@@ -388,8 +396,9 @@ export class ClientSyncManager {
         await saveChangesFromMemory(models, records, false, progressCallback);
       };
 
+      const batchSize = 10000;
       await withDeferredSyncSafeguards(transactingModels.database, () =>
-        pullIncomingChanges(transactingModels, sessionId, processStreamedDataFunction),
+        pullIncomingChanges(transactingModels, sessionId, batchSize, processStreamedDataFunction),
       );
 
       // update the last successful sync in the same save transaction - if updating the cursor fails,
@@ -415,7 +424,8 @@ export class ClientSyncManager {
       pullProgressCallback(records.length);
     };
 
-    await pullIncomingChanges(this.models, sessionId, processStreamedDataFunction);
+    const batchSize = 200;
+    await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
 
     this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes...');
     this.setSyncStage(SYNC_STAGES.PERSIST);
