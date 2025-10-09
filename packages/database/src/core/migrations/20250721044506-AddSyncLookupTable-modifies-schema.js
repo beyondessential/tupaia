@@ -24,14 +24,13 @@ exports.up = async function (db) {
       data                    JSON         NOT NULL,
       updated_at_sync_tick    BIGINT       NOT NULL,
       project_ids             TEXT[],
-      user_ids                TEXT[],
       pushed_by_device_id     TEXT,
       is_deleted              BOOLEAN      DEFAULT FALSE,
       CONSTRAINT sync_lookup_record_id_record_type_unique UNIQUE (record_id, record_type)
     );
 
-    CREATE INDEX sync_lookup_updated_at_sync_tick_project_ids_user_ids_index
-    ON sync_lookup (updated_at_sync_tick, project_ids, user_ids);
+    CREATE INDEX sync_lookup_updated_at_sync_tick_project_ids_index
+    ON sync_lookup (updated_at_sync_tick, project_ids);
   `);
 };
 
