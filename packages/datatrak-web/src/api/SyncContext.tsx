@@ -7,12 +7,11 @@ import { FullPageLoader } from '@tupaia/ui-components';
 
 import { useDatabaseContext } from '../hooks/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
+import { useIsOfflineFirst } from './offlineFirst';
 import { useCurrentUserContext } from './CurrentUserContext';
-import { useProjectsInSync } from '../hooks/database/useProjectsInSync';
 
 export type SyncContextType = DatatrakWebUserRequest.ResBody & {
   clientSyncManager: ClientSyncManager;
-  refetchSyncedProjectIds: () => void;
 };
 
 const SyncContext = createContext<SyncContextType | null>(null);
@@ -22,55 +21,46 @@ const SYNC_INTERVAL = 1000 * 30;
 
 export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
-  const [isSyncScheduled, setIsSyncScheduled] = useState(false);
   const { models } = useDatabaseContext();
-  const { id: userId } = useCurrentUserContext();
-  const { data: projectsInSync = [], onFetch: refetchSyncedProjectIds } = useProjectsInSync();
+  const isOfflineFirst = useIsOfflineFirst();
+  const { isLoggedIn } = useCurrentUserContext();
 
   useEffect(() => {
     const initSyncManager = async () => {
       // Only initialize the sync manager if it doesn't exist yet
-      if (!clientSyncManager && models && userId) {
+      if (!clientSyncManager && models) {
         let deviceId = await models.localSystemFact.get('deviceId');
         if (!deviceId) {
           deviceId = `datatrak-web-${generateId()}`;
           await models.localSystemFact.set('deviceId', deviceId);
         }
 
-        const clientSyncManager = new ClientSyncManager(models, deviceId, userId);
+        const clientSyncManager = new ClientSyncManager(models, deviceId);
         setClientSyncManager(clientSyncManager);
       }
     };
 
     initSyncManager();
-  }, [models, userId]);
+  }, [models]);
 
   useEffect(() => {
-    // Only schedule the sync if conditions are met
-    if (!isSyncScheduled && clientSyncManager && projectsInSync.length) {
+    if (isLoggedIn && isOfflineFirst && clientSyncManager) {
       const intervalId = setInterval(() => {
-        log.info('Starting regular sync:', { projectsInSync });
-        clientSyncManager.triggerSync(projectsInSync, false);
+        log.info('Starting regular sync');
+        clientSyncManager.triggerSync(false);
       }, SYNC_INTERVAL);
-
-      setIsSyncScheduled(true);
 
       return () => {
         clearInterval(intervalId);
-        setIsSyncScheduled(false);
       };
     }
-  }, [clientSyncManager, projectsInSync.length]);
+  }, [isLoggedIn, isOfflineFirst, clientSyncManager]);
 
   if (!clientSyncManager) {
     return <FullPageLoader />;
   }
 
-  return (
-    <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>
-      {children}
-    </SyncContext.Provider>
-  );
+  return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;
 };
 
 export const useSyncContext = (): SyncContextType => {
