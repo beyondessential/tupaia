@@ -16,7 +16,6 @@ export async function buildSyncLookupSelect(model, columns = {}) {
           .filter(a => !COLUMNS_EXCLUDED_FROM_SYNC.includes(a))
           .map(a => `'${a}', ${table}.${a}`)}
       ),
-      ${projectIds || 'NULL'},
-      ${userIds || 'NULL'}
+      ${projectIds || 'NULL'}
   `;
 }
