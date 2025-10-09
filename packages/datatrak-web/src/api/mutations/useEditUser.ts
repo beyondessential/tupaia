@@ -22,7 +22,6 @@ function camelToSnakeCase(camelCaseString: string): string {
 export const useEditUser = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
   const { models } = useDatabaseContext();
-  const { refetchSyncedProjectIds } = useSyncContext();
 
   return useMutation<any, Error, UserAccountDetails, unknown>(
     async (userDetails: UserAccountDetails) => {
@@ -49,8 +48,6 @@ export const useEditUser = (onSuccess?: () => void) => {
 
           (async () => {
             await models.localSystemFact.addProjectForSync(variables.projectId);
-            // Trigger immediate refresh of synced project IDs to enable immediate syncing
-            refetchSyncedProjectIds();
           })();
         }
         onSuccess?.();
