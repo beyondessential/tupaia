@@ -3,7 +3,7 @@ import log from 'winston';
 
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { generateId } from '@tupaia/database';
-import { LoadingScreen } from '@tupaia/ui-components';
+import { FullPageLoader } from '@tupaia/ui-components';
 
 import { useDatabaseContext } from '../hooks/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
@@ -63,10 +63,14 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
   }, [clientSyncManager, projectsInSync.length]);
 
   if (!clientSyncManager) {
-    return <LoadingScreen />;
+    return <FullPageLoader />;
   }
-  
-  return <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>{children}</SyncContext.Provider>;
+
+  return (
+    <SyncContext.Provider value={{ clientSyncManager, refetchSyncedProjectIds }}>
+      {children}
+    </SyncContext.Provider>
+  );
 };
 
 export const useSyncContext = (): SyncContextType => {
