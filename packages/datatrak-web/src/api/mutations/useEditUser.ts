@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useDatabaseContext } from '../../hooks/database';
 import { UserAccountDetails } from '../../types';
 import { put } from '../api';
-import { useSyncContext } from '../SyncContext';
 
 /**
  * Converts a string from camel case to snake case.
