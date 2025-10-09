@@ -7,7 +7,8 @@ export class SqlQuery {
    * @public
    * @param {unknown[]} arr
    * @param {string} [type] type of array (if the array may be empty postgres requires typecasting)
-   * @returns {string} SQL parameter injection string for the array of values
+   * @returns {`ARRAY[${string}]${'' | `::${string}[]`}`} SQL parameter injection string for the array of values
+   * @example SqlQuery.array([1, 2], 'TEXT') => 'ARRAY[?,?]::TEXT[]'
    */
   static array = (arr, type) =>
     `ARRAY[${arr.map(() => '?').join(',')}]${type ? `::${type}[]` : ''}`;
@@ -15,14 +16,16 @@ export class SqlQuery {
   /**
    * @public
    * @param {unknown[]} arr
-   * @returns {string} SQL parameter injection string for the array of values
+   * @returns {`(${string})`} SQL parameter injection string for the array of values
+   * @example SqlQuery.record([1, 2]) => '(?,?)'
    */
   static record = arr => `(${arr.map(() => '?').join(',')})`;
 
   /**
    * @public
    * @param {unknown[][]} rows
-   * @returns {string} SQL parameter injection rows of values
+   * @returns {`VALUES (${string})`} SQL parameter injection rows of values
+   * @example SqlQuery.values([[1], [2, 3]]) => 'VALUES (?), (?,?)'
    */
   static values = rows =>
     `VALUES (${rows.map(values => values.map(() => '?').join(',')).join('), (')})`;
