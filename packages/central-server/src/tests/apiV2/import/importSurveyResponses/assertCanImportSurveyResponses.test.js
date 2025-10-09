@@ -94,7 +94,6 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
     const result = await models.surveyResponse.assertCanImport(
       models,
       defaultAccessPolicy,
-      models,
       entitiesBySurveyCode,
     );
 
@@ -110,7 +109,6 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
     const result = await models.surveyResponse.assertCanImport(
       models,
       defaultAccessPolicy,
-      models,
       entitiesBySurveyCode,
     );
 
