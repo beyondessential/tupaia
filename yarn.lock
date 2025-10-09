@@ -12304,7 +12304,7 @@ __metadata:
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/jest": "npm:^29.5.14"
-    ace-builds: "npm:^1.10.1"
+    ace-builds: "npm:^1.43.3"
     axios: "npm:^1.15.2"
     content-disposition-header: "npm:^0.6.0"
     date-fns: "npm:^2.30.0"
@@ -13358,7 +13358,7 @@ __metadata:
     "@types/react-router-dom": "npm:^5.3.3"
     "@types/react-table": "npm:^7.7.14"
     "@types/styled-components": "npm:^5.0.0"
-    ace-builds: "npm:^1.10.1"
+    ace-builds: "npm:^1.43.3"
     csstype: "npm:^3.1.3"
     date-fns: "npm:^2.30.0"
     downloadjs: "npm:^1.4.7"
@@ -14994,17 +14994,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ace-builds@npm:^1.10.1":
-  version: 1.15.0
-  resolution: "ace-builds@npm:1.15.0"
-  checksum: 10c0/aac05273102294c503447c7304b2798e173257d9c2f6849629f23f34f46f473f142becb9b08c4bb8e08ac8745f8d481f5919796bc3237125f12944d67126ff80
-  languageName: node
-  linkType: hard
-
-"ace-builds@npm:^1.32.6":
-  version: 1.32.7
-  resolution: "ace-builds@npm:1.32.7"
-  checksum: 10c0/77c50f52471a2dc937ec876d2c455dab8ba6d820f8e4e69ec89576d4ec22f1447028b345afd502d55d46f1b37c0c2312e18f019d9b26f1b794f43314b530af2e
+"ace-builds@npm:^1.32.6, ace-builds@npm:^1.43.3":
+  version: 1.43.3
+  resolution: "ace-builds@npm:1.43.3"
+  checksum: 10c0/03c4aade861464e3204cad8cc8277f422d1dcbab86cd676fda1f6cbacd9ec11a73223dc837d56b2ec986db8644ed64a43be5aa3f63ff1f269ff7b9d17c5a6ba0
   languageName: node
   linkType: hard
 
