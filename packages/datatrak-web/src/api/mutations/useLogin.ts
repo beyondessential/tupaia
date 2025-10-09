@@ -17,7 +17,7 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const from = useFromLocation();
   const { models } = useDatabaseContext();
-  const { refetchSyncedProjectIds } = useSyncContext();
+  const { clientSyncManager } = useSyncContext();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
@@ -40,10 +40,9 @@ export const useLogin = () => {
 
         if (user.preferences?.projectId) {
           await models.localSystemFact.addProjectForSync(user.preferences.projectId);
-    
-          // Trigger immediate refresh of synced project IDs to enable immediate syncing
-          refetchSyncedProjectIds();
         }
+
+        await clientSyncManager.triggerSync();
 
         if (from) {
           navigate(from, { state: null });
