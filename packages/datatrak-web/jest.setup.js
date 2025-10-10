@@ -53,7 +53,7 @@ jest.mock('./src/api/CurrentUserContext', () => {
     ...actual,
     useCurrentUserContext: jest.fn(() => ({
       ...actual.useCurrentUserContext(), // Get the actual return value
-      accessPolicy: {}, // Override just this property
+      accessPolicy: new AccessPolicy({}), // Override just this property
     })),
   };
 });
