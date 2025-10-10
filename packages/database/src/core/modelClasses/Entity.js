@@ -663,7 +663,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   async getEntityTypes() {
     const entityTypes = await this.database.executeSql(
-      `SELECT UNNEST(enum_range(null::entity_type)) as type;`,
+      'SELECT unnest(enum_range(NULL::entity_type)::TEXT[]) AS type ORDER BY type;',
     );
     return entityTypes.map(({ type }) => type);
   }
