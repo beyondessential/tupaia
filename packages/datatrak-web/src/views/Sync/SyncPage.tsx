@@ -59,9 +59,14 @@ const StyledButton = styled(Button)`
 `;
 
 export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null): string {
-  return lastSuccessfulSyncTime
+  const formattedTimeString = lastSuccessfulSyncTime
     ? formatDistance(lastSuccessfulSyncTime, new Date(), { addSuffix: true })
     : '';
+
+  // Capitalize the first letter
+  return formattedTimeString.length > 0
+    ? formattedTimeString.charAt(0).toUpperCase() + formattedTimeString.slice(1)
+    : formattedTimeString;
 }
 
 export const SyncPage = () => {
@@ -72,6 +77,7 @@ export const SyncPage = () => {
 
   const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isRequestingSync, setIsRequestingSync] = useState<boolean>(false);
   const [isSyncing, setIsSyncing] = useState<boolean>(syncManager.isSyncing);
   const [isQueuing, setIsQueuing] = useState<boolean>(syncManager.isQueuing);
   const [syncStage, setSyncStage] = useState<number | null>(syncManager.syncStage);
@@ -88,15 +94,18 @@ export const SyncPage = () => {
       switch (action) {
         case SYNC_EVENT_ACTIONS.SYNC_INITIALISING:
           setProgressMessage(syncManager.progressMessage);
+          setIsRequestingSync(true);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
           setProgress(0);
+          setIsRequestingSync(false);
           setIsQueuing(true);
           setIsSyncing(false);
           setErrorMessage(null);
           setProgressMessage(syncManager.progressMessage);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_STARTED:
+          setIsRequestingSync(false);
           setIsQueuing(false);
           setSyncStarted(true);
           setIsSyncing(true);
@@ -106,6 +115,7 @@ export const SyncPage = () => {
           setErrorMessage(null);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ENDED:
+          setIsRequestingSync(false);
           setIsQueuing(false);
           setIsSyncing(false);
           setProgress(0);
@@ -120,6 +130,7 @@ export const SyncPage = () => {
           );
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ERROR:
+          setIsRequestingSync(false);
           setIsQueuing(false);
           setErrorMessage(data.error);
           break;
@@ -137,7 +148,8 @@ export const SyncPage = () => {
     syncManager.triggerUrgentSync();
   }, [syncManager]);
 
-  const syncFinishedSuccessfully = syncStarted && !isSyncing && !isQueuing && !errorMessage;
+  const syncFinishedSuccessfully =
+    syncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;
 
   return (
     <Wrapper>
@@ -160,7 +172,7 @@ export const SyncPage = () => {
             hasError={Boolean(errorMessage)}
           />
 
-          {!isSyncing && (
+          {!isSyncing && !isRequestingSync && (
             <>
               {syncStarted && Boolean(formattedLastSuccessfulSyncTime) && (
                 <StyledLastSyncDate

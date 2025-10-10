@@ -196,7 +196,7 @@ export class ClientSyncManager {
       );
     }
 
-    this.progressMessage = 'Initialising sync...';
+    this.progressMessage = 'Requesting sync...';
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_INITIALISING);
 
     const projectIds = await this.getProjectsInSync();
