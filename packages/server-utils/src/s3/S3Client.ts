@@ -2,7 +2,7 @@ import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3
 import { Upload } from '@aws-sdk/lib-storage';
 import sharp from 'sharp';
 
-import { UnsupportedMediaTypeError } from '@tupaia/utils';
+import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
 import { getS3ImageFilePath, getS3UploadFilePath, S3_BUCKET_NAME } from './constants';
 import { getUniqueFileName } from './getUniqueFileName';
 import { S3 } from './S3';
@@ -199,7 +199,7 @@ export class S3Client {
 
     // In some cases we want to allow overwriting of existing files
     if (!allowOverwrite && (await this.checkIfFileExists(filePath))) {
-      throw new Error(`File ${filePath} already exists on S3, overwrite is not allowed`);
+      throw new ConflictError(`File ${filePath} already exists on S3, overwrite is not allowed`);
     }
 
     return this.uploadPublicImage(filePath, buffer, destinationContentType);
