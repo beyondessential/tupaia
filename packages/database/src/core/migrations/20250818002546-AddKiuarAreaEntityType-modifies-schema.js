@@ -15,11 +15,11 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
-  return await db.runSql('ALTER TABLE "option" ALTER COLUMN "sort_order" SET NOT NULL;');
+  return await db.runSql("ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'kiuar_area';");
 };
 
-exports.down = async function (db) {
-  return await db.runSql('ALTER TABLE "option" ALTER COLUMN "sort_order" DROP NOT NULL;');
+exports.down = function (db) {
+  return null;
 };
 
 exports._meta = {
