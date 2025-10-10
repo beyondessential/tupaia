@@ -22,5 +22,10 @@ export const useUser = () => {
   return useQuery<DatatrakWebUserRequest.ResBody>(
     ['getUser'],
     isOfflineFirst ? () => getUser({ models }) : getUserOnline,
+    {
+      staleTime: 0,
+      cacheTime: 0,
+      refetchOnMount: 'always',
+    }
   );
 };

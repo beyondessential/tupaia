@@ -2,6 +2,7 @@ import { CountryRecord, ProjectRecord } from '@tupaia/tsmodels';
 import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
 
 import { GetUserLocalContext } from '../../api/queries/useUser';
+import { RECORDS } from '@tupaia/database';
 
 export const getUser = async ({ models }: GetUserLocalContext) => {
   const currentUserId = await models.localSystemFact.get(FACT_CURRENT_USER_ID);
@@ -20,7 +21,14 @@ export const getUser = async ({ models }: GetUserLocalContext) => {
   let project: ProjectRecord | null = null;
   let country: CountryRecord | null = null;
   if (projectId) {
-    project = await models.project.findById(projectId);
+    project = await models.database.findOne(
+      RECORDS.PROJECT,
+      { [`${RECORDS.PROJECT}.id`]: projectId },
+      {
+        joinWith: RECORDS.ENTITY,
+        joinCondition: ['entity.id', 'project.entity_id'],
+      },
+    );
   }
   if (countryId) {
     const countryResponse = await models.country.findById(countryId);
