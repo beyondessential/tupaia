@@ -22,6 +22,12 @@ const mockModels = {
     set: jest.fn().mockResolvedValue(undefined),
     addProjectForSync: jest.fn(),
   },
+  user: {
+    findOne: jest.fn().mockResolvedValue({
+      id: 'user-123',
+      email: 'test@example.com',
+    }),
+  },
   closeDatabaseConnections: jest.fn(),
 };
 
@@ -41,6 +47,12 @@ jest.mock('./src/database/createDatabase', () => ({
           return undefined;
         }),
         addProjectForSync: jest.fn(),
+      },
+      user: {
+        findOne: jest.fn().mockResolvedValue({
+          id: 'user-123',
+          email: 'test@example.com',
+        }),
       },
     },
   })),
