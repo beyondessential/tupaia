@@ -10,6 +10,7 @@ import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
 import { SyncButton } from '../Header/SyncButton';
 import { ROUTES } from '../../constants';
+import { useIsOfflineFirst } from '../../api/offlineFirst';
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,12 +32,13 @@ export const UserMenu = () => {
   const toggleUserMenu = () => setMenuOpen(!menuOpen);
   const isDesktop = useIsDesktop();
   const location = useLocation();
+  const isOfflineFirst = useIsOfflineFirst();
   const isSyncPage = location.pathname === ROUTES.SYNC;
 
   return (
     <Wrapper>
       <UserInfo />
-      {!isSyncPage && <SyncButton />}
+      {!isSyncPage && isOfflineFirst && <SyncButton />}
       {isDesktop && (
         <>
           <IconButton
