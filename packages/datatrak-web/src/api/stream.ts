@@ -15,6 +15,10 @@ interface StreamOptions {
   streamRetryInterval?: number;
 }
 
+const isRecoverableError = (response: Response) => {
+  return response.status < 500;
+};
+
 /** Connect to a streaming endpoint and async yield messages.
  *
  * ```js
@@ -134,6 +138,9 @@ export async function* stream(
       body: options ? JSON.stringify(options) : undefined,
       credentials: 'include',
     });
+    if (!response.ok && !isRecoverableError(response)) {
+      throw new Error(response.statusText);
+    }
 
     const reader = response.body!.getReader();
 
