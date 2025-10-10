@@ -5,7 +5,7 @@ import { SafeAreaColumn } from '@tupaia/ui-components';
 
 import { HEADER_HEIGHT } from '../../constants';
 import { HeaderLeft } from './HeaderLeft';
-import { HeaderRight } from './HeaderRight';
+import { UserMenu } from '../UserMenu';
 
 export const HeaderRoot = styled(SafeAreaColumn).attrs({
   as: 'header',
@@ -27,7 +27,7 @@ export const Header = (props: ComponentPropsWithoutRef<typeof HeaderRoot>) => {
   return (
     <HeaderRoot {...props}>
       <HeaderLeft />
-      <HeaderRight />
+      <UserMenu />
     </HeaderRoot>
   );
 };

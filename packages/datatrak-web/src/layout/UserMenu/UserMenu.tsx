@@ -7,19 +7,11 @@ import { IconButton } from '@tupaia/ui-components';
 import { useIsDesktop } from '../../utils';
 import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
+import { SyncButton } from '../Header/SyncButton';
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-   ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
-`;
-
-const MenuButton = styled(IconButton).attrs({
-  disableRipple: true,
-})`
-  margin-left: 1rem;
 `;
 
 const MenuIcon = styled(MuiMenuIcon)`
@@ -40,11 +32,12 @@ export const UserMenu = () => {
   return (
     <Wrapper>
       <UserInfo />
+      <SyncButton />
       {isDesktop && (
         <>
-          <MenuButton onClick={toggleUserMenu} id="user-menu-button" title="Toggle menu">
+          <IconButton onClick={toggleUserMenu} id="user-menu-button" title="Toggle menu" disableRipple>
             <MenuIcon />
-          </MenuButton>
+          </IconButton>
           <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
         </>
       )}
