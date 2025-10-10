@@ -123,7 +123,7 @@ export class S3Client {
 
     // If the file already exists, throw an error
     if (alreadyExists) {
-      throw new Error(`File ${s3FilePath} already exists on S3, overwrite is not allowed`);
+      throw new ConflictError(`File ${s3FilePath} already exists on S3, overwrite is not allowed`);
     }
 
     // If the file is a url string, ignore it because it's not a file. This shouldn't happen but it's a safety check
