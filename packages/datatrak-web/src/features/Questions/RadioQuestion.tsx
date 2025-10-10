@@ -1,8 +1,8 @@
+import { FormControlLabel, FormLabel, Radio, RadioGroup } from '@material-ui/core';
 import React from 'react';
-import styled from 'styled-components';
-import { FormControlLabel, FormLabel, Radio, RadioGroup, lighten } from '@material-ui/core';
+import styled, { css } from 'styled-components';
+import { InputHelperText, RadioIcon } from '../../components';
 import { SurveyQuestionInputProps } from '../../types';
-import { RadioIcon, InputHelperText } from '../../components';
 
 const StyledRadioGroup = styled(RadioGroup)`
   width: 100%;
@@ -27,9 +27,11 @@ const RadioItem = styled(FormControlLabel)<{
     margin-bottom: 0.5rem;
   }
   &:has(.Mui-checked) {
-    border-color: ${({ theme, $color }) => $color || theme.palette.primary.main};
-    background-color: ${({ theme, $color }) =>
-      $color ? `${$color}33` : lighten(theme.palette.primary.main, 0.9)};
+    ${({ $color, theme }) => css`
+      background-color: color-mix(in oklab, ${theme.palette.primary.main}, transparent 90%);
+      background-color: oklch(from ${theme.palette.primary.main} l c h / 10%);
+      border-color: ${$color || theme.palette.primary.main};
+    `}
   }
   [aria-invalid='true'] & {
     border-color: ${({ theme }) => theme.palette.error.main};
