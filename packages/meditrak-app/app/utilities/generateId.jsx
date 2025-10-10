@@ -17,7 +17,7 @@ export const MONGO_ID = 'mongoid';
 // e.g. '632-NFO-LEU-I1QI'
 export const generateShortId = config => {
   // Use defaults for any missing config params, allowing users to specify some or all custom configurations
-  const {alphabet, length, chunkLength, prefix} = {
+  const { alphabet, length, chunkLength, prefix } = {
     ...DEFAULT_SHORT_ID_CONFIG,
     ...config.codeGenerator,
   };

@@ -35,46 +35,48 @@ export const createUserSuccess = () => ({
  * Attempts to log in to server using credentials entered by user. If successful, begins a sync to
  * get the latest data (which may be all data if this is the first time the user has logged in)
  */
-export const createUser = userFields => async (dispatch, getState, { api, analytics }) => {
-  dispatch(requestCreateUser());
+export const createUser =
+  userFields =>
+  async (dispatch, getState, { api, analytics }) => {
+    dispatch(requestCreateUser());
 
-  const fields = {
-    ...userFields,
-    deviceName: await DeviceInfo.getDeviceName(),
-  };
+    const fields = {
+      ...userFields,
+      deviceName: await DeviceInfo.getDeviceName(),
+    };
 
-  const invalidFields = [];
+    const invalidFields = [];
 
-  Object.keys(userFieldNames).forEach(fieldConstant => {
-    const fieldName = userFieldNames[fieldConstant];
+    Object.keys(userFieldNames).forEach(fieldConstant => {
+      const fieldName = userFieldNames[fieldConstant];
 
-    if (!fields[fieldName]) {
-      invalidFields.push(fieldName);
+      if (!fields[fieldName]) {
+        invalidFields.push(fieldName);
+      }
+    });
+
+    if (invalidFields.length > 0) {
+      return dispatch(receiveCreateError('Please complete all required fields.', invalidFields));
     }
-  });
 
-  if (invalidFields.length > 0) {
-    return dispatch(receiveCreateError('Please complete all required fields.', invalidFields));
-  }
+    if (!fields[USER_AGREE_TERMS]) {
+      return dispatch(receiveCreateError('Please agree to the terms and conditions.'));
+    }
 
-  if (!fields[USER_AGREE_TERMS]) {
-    return dispatch(receiveCreateError('Please agree to the terms and conditions.'));
-  }
+    let response;
+    try {
+      response = await api.createUser(fields);
+      if (response.error) throw new Error(response.error);
+    } catch (error) {
+      return dispatch(receiveCreateError(error.message));
+    }
 
-  let response;
-  try {
-    response = await api.createUser(fields);
-    if (response.error) throw new Error(response.error);
-  } catch (error) {
-    return dispatch(receiveCreateError(error.message));
-  }
+    // Log user in.
+    dispatch(createUserSuccess());
 
-  // Log user in.
-  dispatch(createUserSuccess());
+    const email = userFields[userFieldNames.USER_EMAIL_KEY];
+    const password = userFields[userFieldNames.USER_PASSWORD_KEY];
 
-  const email = userFields[userFieldNames.USER_EMAIL_KEY];
-  const password = userFields[userFieldNames.USER_PASSWORD_KEY];
-
-  dispatch(resetToLogin());
-  return dispatch(login(email, password));
-};
+    dispatch(resetToLogin());
+    return dispatch(login(email, password));
+  };
