@@ -30,3 +30,7 @@ window.addEventListener('load', () => {
     });
   }
 });
+
+window.addEventListener('appinstalled', () => {
+  window.location.reload();
+});
