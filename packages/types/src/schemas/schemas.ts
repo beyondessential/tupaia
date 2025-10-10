@@ -40812,6 +40812,12 @@ export const UserAccountPreferencesSchema = {
 		"recent_entities": {
 			"type": "object",
 			"additionalProperties": false
+		},
+		"delete_account_requested": {
+			"type": "boolean"
+		},
+		"hide_welcome_screen": {
+			"type": "boolean"
 		}
 	},
 	"additionalProperties": false
@@ -84602,6 +84608,12 @@ export const UserAccountSchema = {
 				"recent_entities": {
 					"type": "object",
 					"additionalProperties": false
+				},
+				"delete_account_requested": {
+					"type": "boolean"
+				},
+				"hide_welcome_screen": {
+					"type": "boolean"
 				}
 			},
 			"additionalProperties": false
@@ -84685,6 +84697,12 @@ export const UserAccountCreateSchema = {
 				"recent_entities": {
 					"type": "object",
 					"additionalProperties": false
+				},
+				"delete_account_requested": {
+					"type": "boolean"
+				},
+				"hide_welcome_screen": {
+					"type": "boolean"
 				}
 			},
 			"additionalProperties": false
@@ -84765,6 +84783,12 @@ export const UserAccountUpdateSchema = {
 				"recent_entities": {
 					"type": "object",
 					"additionalProperties": false
+				},
+				"delete_account_requested": {
+					"type": "boolean"
+				},
+				"hide_welcome_screen": {
+					"type": "boolean"
 				}
 			},
 			"additionalProperties": false
