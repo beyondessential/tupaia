@@ -1,6 +1,7 @@
-import MuiMenuIcon from '@material-ui/icons/Menu';
 import React, { useState } from 'react';
+import { useLocation } from 'react-router';
 import styled from 'styled-components';
+import MuiMenuIcon from '@material-ui/icons/Menu';
 
 import { IconButton } from '@tupaia/ui-components';
 
@@ -8,6 +9,7 @@ import { useIsDesktop } from '../../utils';
 import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
 import { SyncButton } from '../Header/SyncButton';
+import { ROUTES } from '../../constants';
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,14 +30,21 @@ export const UserMenu = () => {
   const onCloseMenu = () => setMenuOpen(false);
   const toggleUserMenu = () => setMenuOpen(!menuOpen);
   const isDesktop = useIsDesktop();
+  const location = useLocation();
+  const isSyncPage = location.pathname === ROUTES.SYNC;
 
   return (
     <Wrapper>
       <UserInfo />
-      <SyncButton />
+      {!isSyncPage && <SyncButton />}
       {isDesktop && (
         <>
-          <IconButton onClick={toggleUserMenu} id="user-menu-button" title="Toggle menu" disableRipple>
+          <IconButton
+            onClick={toggleUserMenu}
+            id="user-menu-button"
+            title="Toggle menu"
+            disableRipple
+          >
             <MenuIcon />
           </IconButton>
           <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
