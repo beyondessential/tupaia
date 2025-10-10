@@ -36,3 +36,4 @@ export const FACT_LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush';
 export const FACT_LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate';
 export const FACT_SYNC_TRIGGER_CONTROL = 'syncTrigger';
 export const FACT_PROJECTS_IN_SYNC = 'projectsInSync';
+export const FACT_CURRENT_USER_ID = 'currentUserId';

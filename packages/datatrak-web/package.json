@@ -35,6 +35,7 @@
     "date-fns": "^2.30.0",
     "downloadjs": "1.4.7",
     "es-toolkit": "^1.39.10",
+    "hash-wasm": "^4.12.0",
     "knex-pglite": "^0.11.0",
     "leaflet": "^1.7.1",
     "lodash.keyby": "^4.6.0",

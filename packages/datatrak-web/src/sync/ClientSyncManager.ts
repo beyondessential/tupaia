@@ -135,6 +135,12 @@ export class ClientSyncManager {
   }
 
   async triggerSync(urgent: boolean = false) {
+    const isOnline = window.navigator.onLine;
+
+    if (!isOnline) {
+      log.warn('ClientSyncManager.triggerSync(): No internet connectivity');
+      return;
+    }
     if (this.isSyncing) {
       log.warn('ClientSyncManager.triggerSync(): Tried to start syncing while sync in progress');
       return;
