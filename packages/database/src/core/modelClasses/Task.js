@@ -1,8 +1,9 @@
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
-import { TaskCommentType } from '@tupaia/types';
+import { TaskCommentType, TaskStatus } from '@tupaia/types';
 import { hasBESAdminAccess } from '@tupaia/access-policy';
+import { getOffsetForTimezone } from '@tupaia/utils';
 
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
@@ -34,6 +35,12 @@ const formatValue = async (field, value, models) => {
   }
   return value;
 };
+
+const getTaskMetricsBaseQuery = projectId => ({ 'survey.project_id': projectId });
+const getTaskMetricsBaseJoin = () => ({
+  joinWith: RECORDS.SURVEY,
+  joinCondition: ['survey.id', 'task.survey_id'],
+});
 
 export class TaskRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK;
@@ -618,6 +625,74 @@ export class TaskModel extends DatabaseModel {
     return camelcaseKeys(formattedTask, {
       deep: true,
     });
+  }
+
+  async countUnassignedTasks(projectId) {
+    return await this.count(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: {
+          comparator: 'NOT IN',
+          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+        },
+        assignee_id: {
+          comparator: 'IS',
+          comparisonValue: null,
+        },
+      },
+      getTaskMetricsBaseJoin(),
+    );
+  }
+
+  async countOverdueTasks(projectId) {
+    return await this.count(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: {
+          comparator: 'NOT IN',
+          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+        },
+        due_date: {
+          comparator: '<=',
+          comparisonValue: new Date().getTime(),
+        },
+      },
+      getTaskMetricsBaseJoin(),
+    );
+  }
+
+  async findCompletedTasks(projectId) {
+    return await this.find(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: TaskStatus.completed,
+        repeat_schedule: {
+          comparator: 'IS',
+          comparisonValue: null,
+        },
+      },
+      {
+        columns: ['due_date', 'data_time', 'timezone', 'project_id'],
+      },
+    );
+  }
+
+  async findOnTimeCompletedTasks(completedTasks) {
+    return completedTasks.filter(record => {
+      if (!record.due_date || !record.data_time) {
+        return false;
+      }
+      const { data_time: dataTime, timezone } = record;
+      const offset = getOffsetForTimezone(timezone, new Date(dataTime));
+      const formattedDate = `${dataTime.toString().replace(' ', 'T')}${offset}`;
+      return new Date(formattedDate).getTime() <= record.due_date;
+    });
+  }
+
+  async calculateOnTimeCompletionRate(projectId) {
+    const completedTasks = await this.findCompletedTasks(projectId);
+    const onTimeCompletedTasks = await this.findOnTimeCompletedTasks(completedTasks);
+    return Math.round((onTimeCompletedTasks.length / completedTasks.length) * 100) || 0;
   }
 
   async assertUserHasPermissionToCreateTask(accessPolicy, taskData) {
