@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { DatatrakWebTaskMetricsRequest } from '@tupaia/types';
 import { get } from '../api';
 import { useDatabaseQuery } from './useDatabaseQuery';
