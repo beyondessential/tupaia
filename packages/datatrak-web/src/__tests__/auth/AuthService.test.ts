@@ -117,7 +117,7 @@ describe('AuthService', () => {
     expect(models.localSystemFact.set).toHaveBeenCalledWith(FACT_CURRENT_USER_ID, 'user-123');
   });
 
-  it.only('login locally if remote login fails', async () => {
+  it('login locally if remote login fails', async () => {
     Object.defineProperty(window.navigator, 'onLine', {
       writable: true,
       value: true,
