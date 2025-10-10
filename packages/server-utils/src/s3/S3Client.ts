@@ -2,7 +2,7 @@ import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3
 import { Upload } from '@aws-sdk/lib-storage';
 import sharp from 'sharp';
 
-import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
+import { ConflictError, UnprocessableContentError, UnsupportedMediaTypeError } from '@tupaia/utils';
 import { getS3ImageFilePath, getS3UploadFilePath, S3_BUCKET_NAME } from './constants';
 import { getUniqueFileName } from './getUniqueFileName';
 import { S3 } from './S3';
@@ -111,7 +111,7 @@ export class S3Client {
 
   private getContentTypeFromBase64(base64String: string) {
     if (!isBase64DataUri(base64String)) {
-      throw new Error(
+      throw new UnprocessableContentError(
         `Invalid Base64 data URI. Expected ‘data:content/type;base64,...’ but got: ‘${base64String.substring(0, 40)}...’`,
       );
     }
