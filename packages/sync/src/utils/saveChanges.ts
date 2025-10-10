@@ -10,7 +10,6 @@ export const saveCreates = async (
     const batch = records.slice(i, i + batchSize);
     try {
       await model.createMany(batch);
-      progressCallback?.(batch.length);
     } catch (e: any) {
       // try records individually, some may succeed and we want to capture the
       // specific one with the error
@@ -24,6 +23,8 @@ export const saveCreates = async (
         }),
       );
     }
+
+    progressCallback?.(batch.length);
   }
 };
 
@@ -39,8 +40,6 @@ export const saveUpdates = async (
 
     try {
       await Promise.all(batch.map(r => model.updateById(r.id, r)));
-      // await Promise.all(batch.map(r => model.updateById(r.id, r)));
-      progressCallback?.(batch.length);
     } catch (e) {
       // try records individually, some may succeed and we want to capture the
       // specific one with the error
@@ -54,6 +53,8 @@ export const saveUpdates = async (
         }),
       );
     }
+
+    progressCallback?.(batch.length);
   }
 };
 
@@ -67,8 +68,6 @@ export const saveDeletes = async (
     const batch = recordsForDelete.slice(i, i + batchSize);
     try {
       await model.delete({ id: batch.map(r => r.id) });
-
-      progressCallback?.(batch.length);
     } catch (e) {
       // try records individually, some may succeed and we want to capture the
       // specific one with the error
@@ -82,5 +81,7 @@ export const saveDeletes = async (
         }),
       );
     }
+
+    progressCallback?.(batch.length);
   }
 };
