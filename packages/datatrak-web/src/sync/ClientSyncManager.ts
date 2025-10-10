@@ -163,6 +163,7 @@ export class ClientSyncManager {
           this.urgentSyncInterval = null;
         }
       }
+      this.progressMessage = null;
     }
   }
 
@@ -194,6 +195,9 @@ export class ClientSyncManager {
         'It should not be possible to call "runSync" while an existing run is active',
       );
     }
+
+    this.progressMessage = 'Initialising sync...';
+    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_INITIALISING);
 
     const projectIds = await this.getProjectsInSync();
 

@@ -86,6 +86,9 @@ export const SyncPage = () => {
   useEffect(() => {
     const handler = (action, data): void => {
       switch (action) {
+        case SYNC_EVENT_ACTIONS.SYNC_INITIALISING:
+          setProgressMessage(syncManager.progressMessage);
+          break;
         case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
           setProgress(0);
           setIsQueuing(true);
