@@ -27,6 +27,8 @@ const mockModels = {
       id: 'user-123',
       email: 'test@example.com',
     }),
+    create: jest.fn(),
+    update: jest.fn(),
   },
   closeDatabaseConnections: jest.fn(),
 };
@@ -53,6 +55,8 @@ jest.mock('./src/database/createDatabase', () => ({
           id: 'user-123',
           email: 'test@example.com',
         }),
+        create: jest.fn(),
+        update: jest.fn(),
       },
     },
   })),
