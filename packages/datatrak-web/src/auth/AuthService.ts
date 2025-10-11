@@ -31,7 +31,8 @@ export class AuthService {
     // Only update password hash, keep other user data updated via sync
     await this.models.user.update(
       { email: userData.email },
-      { password_hash: await hashPassword(password) },
+      // @ts-ignore accessPolicy is only available on the client
+      { access_policy: userData.accessPolicy, password_hash: await hashPassword(password) },
     );
   }
 
@@ -39,7 +40,7 @@ export class AuthService {
     const isOnline = window.navigator.onLine;
     if (!isOnline) {
       const user = await this.localSignIn(params);
-      
+
       return user;
     }
 
@@ -71,6 +72,8 @@ export class AuthService {
     if (!(await verifyPassword(user.password_hash, password))) {
       throw new Error('Invalid user credentials');
     }
+
+    await this.models.localSystemFact.set(FACT_CURRENT_USER_ID, user.id);
 
     return camelcaseKeys(user, { deep: true }) as DatatrakWebUserRequest.ResBody;
   }
