@@ -5,7 +5,6 @@ import { generateId } from '@tupaia/database';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { useDatabaseContext } from '../hooks/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
-import { useIsOfflineFirst } from './offlineFirst';
 import { useCurrentUserContext } from './CurrentUserContext';
 import { useIsOfflineFirst } from './offlineFirst';
 
