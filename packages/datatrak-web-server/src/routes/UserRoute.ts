@@ -33,10 +33,6 @@ export class UserRoute extends Route<UserRequest> {
       preferences = {},
     } = await ctx.services.central.getUser();
 
-    // check if user has admin panel access
-    const hasAdminPanelAccess =
-      accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
-
     const {
       project_id: projectId,
       country_id: countryId,
@@ -44,18 +40,19 @@ export class UserRoute extends Route<UserRequest> {
       hide_welcome_screen,
     } = preferences;
 
-    let project = null;
-    let country = null;
-    if (projectId) {
+    const fetchProject = async () => {
       const { projects } = await ctx.services.webConfig.fetchProjects();
-      project = projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
-    }
-    if (countryId) {
-      const countryResponse = await ctx.services.central.fetchResources(`entities/${countryId}`, {
-        columns: ['id', 'name', 'code'],
-      });
-      country = countryResponse || null;
-    }
+      return projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
+    };
+
+    const [project, country] = await Promise.all([
+      projectId ? fetchProject() : null,
+      countryId
+        ? ctx.services.central.fetchResources(`entities/${countryId}`, {
+            columns: ['id', 'name', 'code'],
+          })
+        : null,
+    ]);
 
     return {
       fullName,
@@ -71,7 +68,8 @@ export class UserRoute extends Route<UserRequest> {
       country,
       deleteAccountRequested: delete_account_requested === true,
       hideWelcomeScreen: hide_welcome_screen === true,
-      hasAdminPanelAccess,
+      hasAdminPanelAccess:
+        accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false,
       accessPolicy: accessPolicy.policy,
     };
   }
