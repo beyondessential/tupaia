@@ -20,6 +20,12 @@ const supportedImageTypes = {
   'image/webp': { extension: 'webp', humanReadableName: 'WebP', shouldConvert: true },
 } as const;
 
+type NonconvertedImageType = keyof {
+  [K in keyof typeof supportedImageTypes as (typeof supportedImageTypes)[K]['shouldConvert'] extends false
+    ? K
+    : never]: unknown;
+};
+
 function isBase64DataUri(val: string): val is `data:${string};base64,${string}` {
   return val.startsWith('data:') && val.includes(';base64,');
 }
@@ -176,10 +182,11 @@ export class S3Client {
       );
     }
 
-    const shouldConvert = sourceContentType !== 'image/svg+xml';
-    const destinationContentType = shouldConvert ? 'image/webp' : sourceContentType;
+    const destinationContentType = supportedImageTypes[sourceContentType].shouldConvert
+      ? 'image/webp'
+      : (sourceContentType as NonconvertedImageType);
 
-    if (shouldConvert) {
+    if (supportedImageTypes[sourceContentType].shouldConvert) {
       buffer = await sharp(buffer)
         .autoOrient()
         .keepIccProfile()
