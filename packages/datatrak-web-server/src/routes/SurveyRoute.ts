@@ -56,8 +56,12 @@ export class SurveyRoute extends Route<SurveyRequest> {
     return {
       ...camelcaseKeys(survey, {
         deep: true,
-        // visibility_criteria has keys that are IDs, which we expect to be lowercase
-        stopPaths: ['screens.survey_screen_components.visibility_criteria'],
+        // Don’t touch JSONB attributes
+        stopPaths: [
+          'screens.survey_screen_components.config',
+          'screens.survey_screen_components.validation_criteria',
+          'screens.survey_screen_components.visibility_criteria',
+        ],
       }),
       project,
     };
