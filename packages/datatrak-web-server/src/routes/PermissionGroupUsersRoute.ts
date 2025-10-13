@@ -1,6 +1,8 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebUsersRequest } from '@tupaia/types';
+import { NotFoundError, ValidationError } from '@tupaia/utils';
 
 export interface PermissionGroupUsersRequest
   extends Request<
@@ -18,14 +20,14 @@ export class PermissionGroupUsersRoute extends Route<PermissionGroupUsersRequest
     const { searchTerm, permissionGroupId } = query;
 
     if (!permissionGroupId) {
-      throw new Error('Permission group id is required');
+      throw new ValidationError('Permission group ID is required');
     }
 
     // get the permission group
     const permissionGroup = await models.permissionGroup.findById(permissionGroupId);
 
     if (!permissionGroup) {
-      throw new Error(`Permission group with id '${permissionGroupId}' not found`);
+      throw new NotFoundError(`No permission group exists with ID ${permissionGroupId}`);
     }
 
     return await models.user.getFilteredUsersForPermissionGroup(countryCode, permissionGroup, searchTerm);
