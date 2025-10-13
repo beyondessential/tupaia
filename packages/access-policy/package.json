@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "@tupaia/constants": "workspace:*",
-    "@tupaia/utils": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
   }
 }

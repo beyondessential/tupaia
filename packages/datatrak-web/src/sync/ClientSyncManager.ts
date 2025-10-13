@@ -48,8 +48,7 @@ const STAGE_MAX_PROGRESS_INITIAL: StageMaxProgress = {
 };
 
 export interface SyncResult {
-  hasRun: boolean;
-  queued: boolean;
+  pulledChangesCount?: number;
 }
 
 export class ClientSyncManager {
@@ -134,14 +133,20 @@ export class ClientSyncManager {
     return syncedProjectIds;
   }
 
-  async triggerSync(urgent: boolean = false) {
+  async triggerSync(urgent: boolean = false): Promise<SyncResult> {
+    const isOnline = window.navigator.onLine;
+
+    if (!isOnline) {
+      log.warn('ClientSyncManager.triggerSync(): No internet connectivity');
+      return {};
+    }
     if (this.isSyncing) {
       log.warn('ClientSyncManager.triggerSync(): Tried to start syncing while sync in progress');
-      return;
+      return {};
     }
 
     try {
-      await this.runSync(urgent);
+      return await this.runSync(urgent);
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
     } finally {
@@ -158,16 +163,18 @@ export class ClientSyncManager {
         }
       }
     }
+
+    return {};
   }
 
   /**
    * Trigger urgent sync, and along with urgent sync, schedule regular sync requests
    * to continuously connect to central server and request for status change of the sync session
    */
-  async triggerUrgentSync(): Promise<void> {
+  async triggerUrgentSync(): Promise<SyncResult> {
     if (this.urgentSyncInterval) {
       log.warn('ClientSyncManager.triggerUrgentSync(): Urgent sync already started');
-      return;
+      return {};
     }
 
     const urgentSyncIntervalInSeconds = 10;
@@ -179,10 +186,10 @@ export class ClientSyncManager {
     );
 
     // start the sync now
-    await this.triggerSync(true);
+    return await this.triggerSync(true);
   }
 
-  async runSync(urgent: boolean = false) {
+  async runSync(urgent: boolean = false): Promise<SyncResult> {
     if (this.isSyncing) {
       throw new Error(
         'It should not be possible to call "runSync" while an existing run is active',
@@ -193,7 +200,7 @@ export class ClientSyncManager {
 
     if (projectIds.length === 0) {
       log.warn('ClientSyncManager.runSync(): No projects in sync');
-      return;
+      return {};
     }
 
     this.isSyncing = true;
@@ -217,7 +224,7 @@ export class ClientSyncManager {
       this.isQueuing = true;
       this.progressMessage = urgent ? 'Sync in progress...' : 'Sync in queue';
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE);
-      return;
+      return {};
     }
 
     this.isSyncing = true;
@@ -234,7 +241,7 @@ export class ClientSyncManager {
 
     await this.pushChanges(sessionId, startedAtTick);
 
-    await this.pullChanges(sessionId, projectIds);
+    const pulledChangesCount = await this.pullChanges(sessionId, projectIds);
 
     await this.endSyncSession(sessionId);
 
@@ -248,6 +255,8 @@ export class ClientSyncManager {
     await dropSnapshotTable(this.database, sessionId);
 
     this.lastSuccessfulSyncTime = new Date();
+
+    return { pulledChangesCount };
   }
 
   async startSyncSession(urgent: boolean, lastSyncedTick: number) {
@@ -324,7 +333,7 @@ export class ClientSyncManager {
     log.debug('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
   }
 
-  async pullChanges(sessionId: string, projectIds: string[]) {
+  async pullChanges(sessionId: string, projectIds: string[]): Promise<number> {
     this.setSyncStage(SYNC_STAGES.PULL);
 
     try {
@@ -375,6 +384,8 @@ export class ClientSyncManager {
       } else {
         await this.pullIncrementalSync(sessionId, totalToPull, pullUntil);
       }
+
+      return totalToPull;
     } catch (error) {
       log.error('ClientSyncManager.pullChanges', {
         sessionId,
