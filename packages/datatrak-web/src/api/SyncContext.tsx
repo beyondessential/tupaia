@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import log from 'winston';
 
@@ -19,6 +20,7 @@ const SYNC_INTERVAL = 1000 * 30;
 
 export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
+  const queryClient = useQueryClient();
   const { models } = useDatabaseContext();
   const isOfflineFirst = useIsOfflineFirst();
   const { isLoggedIn } = useCurrentUserContext();
@@ -43,9 +45,12 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
 
   useEffect(() => {
     if (isLoggedIn && isOfflineFirst && clientSyncManager) {
-      const intervalId = setInterval(() => {
+      const intervalId = setInterval(async () => {
         log.info('Starting regular sync');
-        clientSyncManager.triggerSync(false);
+        const { pulledChangesCount } = await clientSyncManager.triggerSync(false);
+        if (pulledChangesCount) {
+          queryClient.invalidateQueries();
+        }
       }, SYNC_INTERVAL);
 
       return () => {
