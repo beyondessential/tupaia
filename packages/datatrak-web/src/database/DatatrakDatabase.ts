@@ -1,8 +1,7 @@
-import ClientPgLite from 'knex-pglite';
 import type { Knex } from 'knex';
+import ClientPgLite from 'knex-pglite';
 
 import { BaseDatabase } from '@tupaia/database';
-
 import { getConnectionConfig } from './getConnectionConfig';
 
 /**
@@ -13,8 +12,10 @@ export class DatatrakDatabase extends BaseDatabase {
     super(transactingConnection, undefined, ClientPgLite, getConnectionConfig);
   }
 
-  wrapInTransaction(wrappedFunction: (db: DatatrakDatabase) => Promise<void | unknown>) {
-    return this.connection.transaction(transaction =>
+  async wrapInTransaction(
+    wrappedFunction: <T = unknown>(db: DatatrakDatabase) => Promise<T>,
+  ): Promise<Knex.Transaction> {
+    return await this.connection.transaction(transaction =>
       wrappedFunction(new DatatrakDatabase(transaction)),
     );
   }
