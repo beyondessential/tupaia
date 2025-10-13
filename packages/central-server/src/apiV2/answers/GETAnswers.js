@@ -1,11 +1,11 @@
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
+import { assertSurveyResponsePermissions } from '../surveyResponses';
 import {
   assertAnswerPermissions,
   createAnswerDBFilter,
   createAnswerViaSurveyResponseDBFilter,
 } from './assertAnswerPermissions';
-import { assertSurveyResponsePermissions } from '../surveyResponses';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles endpoints:
@@ -13,7 +13,6 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
  * - /answers/id
  * - /surveyResponses/id/answers
  */
-
 export class GETAnswers extends GETHandler {
   permissionsFilteredInternally = true;
 
