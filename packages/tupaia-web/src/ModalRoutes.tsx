@@ -12,23 +12,23 @@ import {
 } from './views';
 import { useModal, useGAEffect } from './utils';
 
+const modalViews = {
+  [MODAL_ROUTES.PROJECTS]: ProjectsModal,
+  [MODAL_ROUTES.PROJECT_SELECT]: ProjectSelectModal,
+  [MODAL_ROUTES.LOGIN]: LoginModal,
+  [MODAL_ROUTES.REGISTER]: RegisterModal,
+  [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: RequestProjectAccessModal,
+  [MODAL_ROUTES.FORGOT_PASSWORD]: ForgotPasswordModal,
+  [MODAL_ROUTES.RESET_PASSWORD]: ResetPasswordModal,
+  [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResendModal,
+} as const;
+
 /**
  * This is the wrapper to handle any search param routes that should be modals
  */
 
 export const ModalRoutes = () => {
   const { hash } = useModal();
-
-  const modalViews = {
-    [MODAL_ROUTES.PROJECTS]: ProjectsModal,
-    [MODAL_ROUTES.PROJECT_SELECT]: ProjectSelectModal,
-    [MODAL_ROUTES.LOGIN]: LoginModal,
-    [MODAL_ROUTES.REGISTER]: RegisterModal,
-    [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: RequestProjectAccessModal,
-    [MODAL_ROUTES.FORGOT_PASSWORD]: ForgotPasswordModal,
-    [MODAL_ROUTES.RESET_PASSWORD]: ResetPasswordModal,
-    [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResendModal,
-  };
 
   const modal = hash as (typeof MODAL_ROUTES)[keyof typeof MODAL_ROUTES];
   useGAEffect('User', 'Open Dialog', modal);
