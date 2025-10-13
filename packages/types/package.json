@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@rmp135/sql-ts": "^1.15.1",
+    "@tupaia/database": "workspace:*",
     "@types/node": "^20.11.1",
     "diff": "^8.0.2",
     "dotenv": "^16.4.5",
