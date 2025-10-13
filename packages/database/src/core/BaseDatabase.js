@@ -129,7 +129,7 @@ export class BaseDatabase {
   }
 
   /**
-   * @param {(models) => Promise<unknown>} wrappedFunction
+   * @param {(models: typeof BaseDatabase) => Promise<void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise<Knex.Transaction>}
    */
@@ -138,7 +138,7 @@ export class BaseDatabase {
   }
 
   /**
-   * @param {(models) => Promise<unknown>} wrappedFunction
+   * @param {(models: typeof BaseDatabase) => Promise<void>} wrappedFunction
    * @param {Omit<Knex.TransactionConfig, 'readOnly'>} [transactionConfig]
    * @returns {Promise<Knex.Transaction>}
    */

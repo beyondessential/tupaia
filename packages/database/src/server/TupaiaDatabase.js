@@ -126,7 +126,7 @@ export class TupaiaDatabase extends BaseDatabase {
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<unknown | void>} wrappedFunction
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise<Knex.Transaction>}
    */
@@ -138,7 +138,6 @@ export class TupaiaDatabase extends BaseDatabase {
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<unknown | void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise<TupaiaDatabase>} TupaiaDatabase instance
    */
