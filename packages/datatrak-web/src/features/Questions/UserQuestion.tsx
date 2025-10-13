@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import { DatatrakWebUsersRequest } from '@tupaia/types';
 
-import { usePermissionGroupUsers } from '../../api';
+import { usePermissionGroupUsersQuery } from '../../api';
 import { InputHelperText, QuestionAutocomplete } from '../../components';
 import { SurveyQuestionInputProps } from '../../types';
 import { useSurveyForm } from '../Survey';
@@ -30,7 +30,11 @@ export const UserQuestion = ({
     isFetched,
     isError,
     error,
-  } = usePermissionGroupUsers(countryCode, config?.user?.permissionGroup, searchValue);
+  } = usePermissionGroupUsersQuery({
+    countryCode,
+    permissionGroupId: config?.user?.permissionGroup,
+    searchTerm: searchValue,
+  });
 
   const options: UserQuestionAutocompleteOption[] =
     users?.map(user => ({

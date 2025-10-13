@@ -22,7 +22,7 @@ export { useTasks } from './useTasks';
 export type { UseTasksQueryParams } from './useTasks';
 export { useTask } from './useTask';
 export { useSurveyUsers } from './useSurveyUsers';
-export { usePermissionGroupUsers } from './usePermissionGroupUsers';
+export { usePermissionGroupUsersQuery } from './usePermissionGroupUsersQuery';
 export { useProjectUsersQuery } from './useProjectUsersQuery';
 export { useDatabaseQuery } from './useDatabaseQuery';
 export { useDatabaseMutation } from './useDatabaseMutation';

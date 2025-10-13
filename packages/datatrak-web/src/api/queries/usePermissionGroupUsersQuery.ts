@@ -1,11 +1,11 @@
 import { ensure } from '@tupaia/tsutils';
-import { Country, DatatrakWebUsersRequest, Entity, PermissionGroup } from '@tupaia/types';
+import { Country, DatatrakWebUsersRequest, PermissionGroup } from '@tupaia/types';
 import { get } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { ContextualQueryFunctionContext, useDatabaseQuery } from './useDatabaseQuery';
 
 interface UsePermissionGroupUsersQueryParams {
-  countryCode?: Entity['code'];
+  countryCode?: Country['code'];
   permissionGroupId?: PermissionGroup['id'];
   searchTerm?: string;
 }
@@ -43,11 +43,11 @@ const getLocal = async ({
   );
 };
 
-export const usePermissionGroupUsers = (
-  countryCode?: Country['code'],
-  permissionGroupId?: PermissionGroup['id'],
-  searchTerm?: string,
-) => {
+export const usePermissionGroupUsersQuery = ({
+  countryCode,
+  permissionGroupId,
+  searchTerm,
+}: UsePermissionGroupUsersQueryParams) => {
   const isOfflineFirst = useIsOfflineFirst();
 
   return useDatabaseQuery<DatatrakWebUsersRequest.ResBody>(
