@@ -14,10 +14,11 @@ export interface PermissionGroupUsersRequest
 
 export class PermissionGroupUsersRoute extends Route<PermissionGroupUsersRequest> {
   public async buildResponse() {
-    const { models, params, query } = this.req;
-    const { countryCode } = params;
-
-    const { searchTerm, permissionGroupId } = query;
+    const {
+      models,
+      params: { countryCode },
+      query: { searchTerm, permissionGroupId },
+    } = this.req;
 
     if (!permissionGroupId) {
       throw new ValidationError('Permission group ID is required');
@@ -25,11 +26,14 @@ export class PermissionGroupUsersRoute extends Route<PermissionGroupUsersRequest
 
     // get the permission group
     const permissionGroup = await models.permissionGroup.findById(permissionGroupId);
-
     if (!permissionGroup) {
       throw new NotFoundError(`No permission group exists with ID ${permissionGroupId}`);
     }
 
-    return await models.user.getFilteredUsersForPermissionGroup(countryCode, permissionGroup, searchTerm);
+    return await models.user.getFilteredUsersForPermissionGroup(
+      countryCode,
+      permissionGroup,
+      searchTerm,
+    );
   }
 }
