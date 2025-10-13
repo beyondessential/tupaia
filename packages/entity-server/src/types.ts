@@ -1,4 +1,6 @@
-import { ModelRegistry } from '@tupaia/database';
+import { Knex } from 'knex';
+
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   AncestorDescendantRelationModel,
   EntityHierarchyModel,
@@ -7,10 +9,25 @@ import {
 } from '@tupaia/server-boilerplate';
 
 export interface EntityServerModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
   readonly entity: EntityModel;
   readonly entityHierarchy: EntityHierarchyModel;
   readonly project: ProjectModel;
+
+  wrapInTransaction<T = unknown>(
+    wrappedFunction: (models: EntityServerModelRegistry) => Promise<T>,
+    transactionConfig?: Knex.TransactionConfig,
+  ): Promise<T>;
+  wrapInReadOnlyTransaction<T = unknown>(
+    wrappedFunction: (models: EntityServerModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'readOnly'>,
+  ): Promise<T>;
+  wrapInRepeatableReadTransaction<T = unknown>(
+    wrappedFunction: (models: EntityServerModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolation'>,
+  ): Promise<T>;
 }
 
 type SimpleKeys<T> = {
