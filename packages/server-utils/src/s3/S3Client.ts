@@ -11,13 +11,13 @@ const MAX_IMAGE_SIZE = 3_000;
 
 /** Formats officially supported by Sharp */
 const supportedImageTypes = {
-  'image/avif': { extension: 'avif', humanReadableName: 'AVIF' },
-  'image/gif': { extension: 'gif', humanReadableName: 'GIF' },
-  'image/jpeg': { extension: 'jpg', humanReadableName: 'JPEG' },
-  'image/png': { extension: 'png', humanReadableName: 'PNG' },
-  'image/svg+xml': { extension: 'svg', humanReadableName: 'SVG' },
-  'image/tiff': { extension: 'tiff', humanReadableName: 'TIFF' },
-  'image/webp': { extension: 'webp', humanReadableName: 'WebP' },
+  'image/avif': { extension: 'avif', humanReadableName: 'AVIF', shouldConvert: true },
+  'image/gif': { extension: 'gif', humanReadableName: 'GIF', shouldConvert: true },
+  'image/jpeg': { extension: 'jpg', humanReadableName: 'JPEG', shouldConvert: true },
+  'image/png': { extension: 'png', humanReadableName: 'PNG', shouldConvert: true },
+  'image/svg+xml': { extension: 'svg', humanReadableName: 'SVG', shouldConvert: false },
+  'image/tiff': { extension: 'tiff', humanReadableName: 'TIFF', shouldConvert: true },
+  'image/webp': { extension: 'webp', humanReadableName: 'WebP', shouldConvert: true },
 } as const;
 
 function isBase64DataUri(val: string): val is `data:${string};base64,${string}` {
