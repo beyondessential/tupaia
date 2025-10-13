@@ -2,12 +2,13 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebUsersRequest } from '@tupaia/types';
 
-export type PermissionGroupUsersRequest = Request<
-  DatatrakWebUsersRequest.Params,
-  DatatrakWebUsersRequest.ResBody,
-  DatatrakWebUsersRequest.ReqBody,
-  DatatrakWebUsersRequest.ReqQuery
->;
+export interface PermissionGroupUsersRequest
+  extends Request<
+    DatatrakWebUsersRequest.Params,
+    DatatrakWebUsersRequest.ResBody,
+    DatatrakWebUsersRequest.ReqBody,
+    DatatrakWebUsersRequest.ReqQuery
+  > {}
 
 export class PermissionGroupUsersRoute extends Route<PermissionGroupUsersRequest> {
   public async buildResponse() {
