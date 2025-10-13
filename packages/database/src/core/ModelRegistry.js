@@ -1,4 +1,9 @@
-/** @typedef {import('knex').Knex} Knex */
+/**
+ * @typedef {import('knex').Knex} Knex
+ * @typedef {import('../server/TupaiaDatabase').TupaiaDatabase} TupaiaDatabase
+ * @typedef {import('./BaseDatabase').BaseDatabase} BaseDatabase
+ * @typedef {import('./DatabaseModel').DatabaseModel} DatabaseModel
+ */
 
 import { modelClasses as baseModelClasses } from './modelClasses';
 
@@ -9,8 +14,8 @@ const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelNam
 
 export class ModelRegistry {
   /**
-   * @param {import('./BaseDatabase').TupaiaDatabase} database
-   * @param {import('./DatabaseModel').Record<string, DatabaseModel>} [extraModelClasses]
+   * @param {typeof BaseDatabase} database
+   * @param {Record<string, typeof DatabaseModel>} [extraModelClasses]
    */
   constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {
     this.database = database;
@@ -57,14 +62,14 @@ export class ModelRegistry {
 
   /**
    * @param {string} databaseRecord
-   * @returns {import('./DatabaseModel').DatabaseModel}
+   * @returns {DatabaseModel}
    */
   getModelForDatabaseRecord(databaseRecord) {
     return Object.values(this).find(model => model.databaseRecord === databaseRecord);
   }
 
   /**
-   * @returns {import('./DatabaseModel').DatabaseModel[]}
+   * @returns {DatabaseModel[]}
    */
   getModels() {
     return Object.values(this).filter(model => Boolean(model.databaseRecord));
@@ -90,7 +95,7 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: TupaiaDatabase) => Promise<unknown>} wrappedFunction
+   * @param {<T = unknown>(models: typeof BaseDatabase) => Promise<T | void>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise<Knex.Transaction>}
    */
@@ -109,12 +114,12 @@ export class ModelRegistry {
         false,
         schemata,
       );
-      return wrappedFunction(transactingModelRegistry);
+      return await wrappedFunction(transactingModelRegistry);
     }, transactionConfig);
   }
 
   /**
-   * @param {(models: BaseDatabase) => Promise<unknown>} wrappedFunction
+   * @param {(models: typeof BaseDatabase) => Promise<unknown>} wrappedFunction
    * @param {Omit<Knex.TransactionConfig, 'readOnly'>} [transactionConfig]
    * @returns {Promise<Knex.Transaction>}
    */
@@ -123,7 +128,7 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: BaseDatabase) => Promise<unknown>} wrappedFunction
+   * @param {(models: typeof BaseDatabase) => Promise<unknown>} wrappedFunction
    * @param {Omit<Knex.TransactionConfig, 'isolationLevel'>} [transactionConfig]
    * @returns {Promise<Knex.Transaction>}
    */
