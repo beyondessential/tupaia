@@ -23,19 +23,19 @@ const modalViews = {
   [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResendModal,
 } as const;
 
+function isModalRoute(hash: string): hash is MODAL_ROUTES {
+  return modalViews.hasOwnProperty(hash);
+}
+
 /**
  * This is the wrapper to handle any search param routes that should be modals
  */
-
 export const ModalRoutes = () => {
   const { hash } = useModal();
+  if (!isModalRoute(hash)) return null;
 
-  const modal = hash as (typeof MODAL_ROUTES)[keyof typeof MODAL_ROUTES];
-  useGAEffect('User', 'Open Dialog', modal);
+  useGAEffect('User', 'Open Dialog', hash);
 
-  // If no modal param or invalid modal param, return null
-  if (!modal || !Object.values(MODAL_ROUTES).includes(modal)) return null;
-  const ModalView = modalViews[modal];
-
+  const ModalView = modalViews[hash];
   return <ModalView />;
 };
