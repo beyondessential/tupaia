@@ -95,9 +95,9 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {<T = unknown>(models: typeof BaseDatabase) => Promise<T | void>} wrappedFunction
+   * @param {<T = unknown>(models: ModelRegistry) => Promise<T>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise<Knex.Transaction>}
+   * @returns {Promise<T>}
    */
   async wrapInTransaction(wrappedFunction, transactionConfig = {}) {
     return await this.database.wrapInTransaction(async transactingDatabase => {
@@ -119,18 +119,18 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {(models: typeof BaseDatabase) => Promise<unknown>} wrappedFunction
+   * @param {<T = unknown>(models: ModelRegistry) => Promise<T>} wrappedFunction
    * @param {Omit<Knex.TransactionConfig, 'readOnly'>} [transactionConfig]
-   * @returns {Promise<Knex.Transaction>}
+   * @returns {Promise<T>}
    */
   async wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
     return await this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
   }
 
   /**
-   * @param {(models: typeof BaseDatabase) => Promise<unknown>} wrappedFunction
+   * @param {<T = unknown>(models: ModelRegistry) => Promise<T>} wrappedFunction
    * @param {Omit<Knex.TransactionConfig, 'isolationLevel'>} [transactionConfig]
-   * @returns {Promise<Knex.Transaction>}
+   * @returns {Promise<T>}
    */
   async wrapInRepeatableReadTransaction(wrappedFunction, transactionConfig = {}) {
     return await this.wrapInTransaction(wrappedFunction, {
