@@ -20,11 +20,11 @@ const supportedImageTypes = {
   'image/webp': { extension: 'webp', humanReadableName: 'WebP', shouldConvert: true },
 } as const;
 
-type NonconvertedImageType = keyof {
-  [K in keyof typeof supportedImageTypes as (typeof supportedImageTypes)[K]['shouldConvert'] extends false
+type NonconvertedImageType = {
+  [K in keyof typeof supportedImageTypes]: (typeof supportedImageTypes)[K]['shouldConvert'] extends false
     ? K
-    : never]: unknown;
-};
+    : never;
+}[keyof typeof supportedImageTypes];
 
 function isBase64DataUri(val: string): val is `data:${string};base64,${string}` {
   return val.startsWith('data:') && val.includes(';base64,');
