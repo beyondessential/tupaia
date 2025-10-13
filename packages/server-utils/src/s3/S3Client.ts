@@ -182,11 +182,12 @@ export class S3Client {
       );
     }
 
-    const destinationContentType = supportedImageTypes[sourceContentType].shouldConvert
+    const { shouldConvert } = supportedImageTypes[sourceContentType];
+
+    const destinationContentType = shouldConvert
       ? 'image/webp'
       : (sourceContentType as NonconvertedImageType);
-
-    if (supportedImageTypes[sourceContentType].shouldConvert) {
+    if (shouldConvert) {
       buffer = await sharp(buffer)
         .autoOrient()
         .keepIccProfile()
