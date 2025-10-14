@@ -23,12 +23,12 @@ export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 export interface ServerBoilerplateModelRegistry extends ModelRegistry {
   readonly database: TupaiaDatabase;
 
-  apiClient: ApiClientModel;
-  apiRequestLog: ApiRequestLogModel;
-  entity: EntityModel;
-  permissionGroup: PermissionGroupModel;
-  user: UserModel;
-  userEntityPermission: UserEntityPermissionModel;
+  readonly apiClient: ApiClientModel;
+  readonly apiRequestLog: ApiRequestLogModel;
+  readonly entity: EntityModel;
+  readonly permissionGroup: PermissionGroupModel;
+  readonly user: UserModel;
+  readonly userEntityPermission: UserEntityPermissionModel;
 
   wrapInTransaction<T = unknown>(
     wrappedFunction: (models: ServerBoilerplateModelRegistry) => Promise<T>,
