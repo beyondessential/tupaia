@@ -12425,6 +12425,7 @@ __metadata:
     "@types/jest": ^29.5.14
     express: ^4.21.2
     jest: ^29.7.0
+    knex: ^3.1.0
     mockdate: ^3.0.5
     rimraf: ^6.0.1
     winston: ^3.17.0
@@ -12491,6 +12492,7 @@ __metadata:
     date-fns: ^2.30.0
     express: ^4.21.2
     jest: ^29.7.0
+    knex: ^3.1.0
     lodash.sortby: ^4.6.0
     rimraf: ^6.0.1
     winston: ^3.17.0
@@ -12641,6 +12643,7 @@ __metadata:
     express: ^4.21.2
     jest: ^29.7.0
     jest-extended: ^0.11.5
+    knex: ^3.1.0
     lodash.keyby: ^4.6.0
     rimraf: ^6.0.1
     winston: ^3.17.0
@@ -12770,6 +12773,7 @@ __metadata:
     "@types/semver-compare": ^1.0.1
     express: ^4.21.2
     jest: ^29.7.0
+    knex: ^3.1.0
     lodash.clonedeep: ^4.5.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -12941,6 +12945,7 @@ __metadata:
     date-fns: ^2.30.0
     express: ^4.21.2
     jest: ^29.7.0
+    knex: ^3.1.0
     lodash.groupby: ^4.6.0
     lodash.isplainobject: ^4.0.6
     lodash.keyby: ^4.6.0
@@ -12980,6 +12985,7 @@ __metadata:
     http-proxy-middleware: ^2.0.1
     i18n: ^0.13.3
     jest: ^29.7.0
+    knex: ^3.1.0
     morgan: ^1.9.0
     public-ip: 4.0.4
     rimraf: ^6.0.1
@@ -13048,6 +13054,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/express": ^4.17.22
     date-fns: ^2.30.0
+    knex: ^3.1.0
     rimraf: ^6.0.1
     winston: ^3.17.0
   languageName: unknown
@@ -13122,6 +13129,7 @@ __metadata:
     "@types/lodash.keyby": ^4.6.9
     express: ^4.21.2
     jest: ^29.7.0
+    knex: ^3.1.0
     lodash.groupby: ^4.6.0
     lodash.isequal: ^4.5.0
     lodash.keyby: ^4.6.0

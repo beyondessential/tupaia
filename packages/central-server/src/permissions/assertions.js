@@ -22,9 +22,10 @@ export {
 } from '@tupaia/access-policy';
 
 /**
- * @type {PermissionsAssertion}
- * @param {ModelRegistry} models
+ * @param {import('@tupaia/access-policy').AccessPolicy} accessPolicy
+ * @param {typeof import('@tupaia/database').ModelRegistry')} models
  * @param {string} recordId
+ * @returns {Promise<true>}
  */
 export const assertAdminPanelAccessToCountry = async (accessPolicy, models, recordId) => {
   const entity = ensure(

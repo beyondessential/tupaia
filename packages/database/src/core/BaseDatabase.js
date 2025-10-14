@@ -1,16 +1,17 @@
+/** @typedef {import('knex').Knex} Knex */
+
 import knex from 'knex';
 import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
 import { getEnvVarOrDefault } from '@tupaia/utils';
-
+import { SCHEMA_NAMES } from './constants';
 import { generateId } from './utilities';
 import {
   MAX_BINDINGS_PER_QUERY,
   runDatabaseFunctionInBatches,
 } from './utilities/runDatabaseFunctionInBatches';
-import { SCHEMA_NAMES } from './constants';
 
 export const QUERY_METHODS = {
   COUNT: 'count',
@@ -85,6 +86,9 @@ export class BaseDatabase {
    */
   #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
 
+  /** @type {Knex} */
+  connection;
+
   constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
@@ -125,17 +129,18 @@ export class BaseDatabase {
   }
 
   /**
-   * @param {(models) => Promise<void>} wrappedFunction
+   * @param {<ReturnT = unknown, DatabaseT extends BaseDatabase = BaseDatabase>(models: DatabaseT) => Promise<ReturnT>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise<ReturnT>}
    */
   async wrapInTransaction(_wrappedFunction, _transactionConfig) {
     throw new Error('wrapInTransaction should be implemented by the child class');
   }
 
   /**
-   * @param {(models) => Promise<void>} wrappedFunction
-   * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   * @param {<ReturnT = unknown, DatabaseT extends BaseDatabase = BaseDatabase>(models: DatabaseT) => Promise<ReturnT>} wrappedFunction
+   * @param {Omit<Knex.TransactionConfig, 'readOnly'>} [transactionConfig]
+   * @returns {Promise<ReturnT>}
    */
   async wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
     return await this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
