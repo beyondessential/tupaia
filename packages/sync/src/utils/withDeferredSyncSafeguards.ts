@@ -1,9 +1,12 @@
 import { BaseDatabase, toggleTombstoneTriggers } from '@tupaia/database';
 
-export const withDeferredSyncSafeguards = async <T>(
-  database: BaseDatabase,
-  operation: () => Promise<T>,
-): Promise<T> => {
+export const withDeferredSyncSafeguards = async <
+  ReturnT = unknown,
+  DatabaseT extends BaseDatabase = BaseDatabase,
+>(
+  database: DatabaseT,
+  operation: () => Promise<ReturnT>,
+): Promise<ReturnT> => {
   if (!database.isWithinTransaction) {
     throw new Error('withDeferredSyncSafeguards must be called within a transaction');
   }
