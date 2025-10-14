@@ -1,8 +1,8 @@
-import { ModelRegistry } from '@tupaia/database';
 import { SyncSnapshotAttributes } from '@tupaia/sync';
+import { DatatrakWebModelRegistry } from './model';
 
 export interface ProcessStreamDataParams {
-  models: ModelRegistry;
+  models: DatatrakWebModelRegistry;
   sessionId: string;
   records: SyncSnapshotAttributes[];
 }

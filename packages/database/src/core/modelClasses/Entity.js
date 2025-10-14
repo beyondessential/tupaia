@@ -2,7 +2,7 @@ import keyBy from 'lodash.keyby';
 
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
-import { ensure } from '@tupaia/tsutils';
+import { assertIsNotNullish, ensure } from '@tupaia/tsutils';
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -10,6 +10,7 @@ import { RECORDS } from '../records';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { buildSyncLookupSelect } from '../sync';
 import { SqlQuery } from '../SqlQuery';
+import { EntityTypeEnum } from '@tupaia/types';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -561,21 +562,21 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             alias: RECURSIVE_CTE_ALIAS,
             query: `
           -- Base case: start from specific entity IDs
-          SELECT 
-            child_id as child_id, 
-            parent_id as parent_id, 
+          SELECT
+            child_id as child_id,
+            parent_id as parent_id,
             entity_hierarchy_id as entity_hierarchy_id,
             1 as generational_distance
-          FROM entity_parent_child_relation 
+          FROM entity_parent_child_relation
           WHERE ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'child_id' : 'parent_id'} IN ${SqlQuery.record(entityIds)}
           AND entity_hierarchy_id = ?
 
           UNION ALL
-          
+
           -- Recursive case: get related entities
-          SELECT 
+          SELECT
             e.child_id as child_id,
-            e.parent_id as parent_id, 
+            e.parent_id as parent_id,
             e.entity_hierarchy_id as entity_hierarchy_id,
             h.generational_distance + 1 as generational_distance
           FROM entity_parent_child_relation e
@@ -622,14 +623,21 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
+  /**
+   * @param {import('@tupaia/types').Project['id']} projectId
+   * @param {import('@tupaia/types').Entity['id']} entityId
+   * @returns {Promise<import('@tupaia/types').Entity['name'] | undefined>}
+   */
   async getParentEntityName(projectId, entityId) {
-    const entity = await this.findById(entityId);
-    ensure(entity, `Entity with id ${entityId} not found`);
+    const [entity, project] = await Promise.all([
+      this.findById(entityId),
+      this.otherModels.project.findById(projectId),
+    ]);
+    assertIsNotNullish(entity, `No entity exists with ID ${entityId}`);
+    assertIsNotNullish(project, `No project exists with ID ${projectId}`);
 
-    const project = await this.otherModels.project.findById(projectId);
-    ensure(project, `Project with id ${projectId} not found`);
-
-    const entityIsNotCountry = project.entity_hierarchy_id && entity.type !== 'country';
+    const entityIsNotCountry =
+      project.entity_hierarchy_id && entity.type !== EntityTypeEnum.country;
     const parentEntity = entityIsNotCountry
       ? await entity.getParentFromParentChildRelation(project.entity_hierarchy_id)
       : null;
