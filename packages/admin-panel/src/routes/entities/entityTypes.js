@@ -12,9 +12,23 @@ export const ENTITY_TYPES_COLUMNS = [
   },
 ];
 
+const CREATE_CONFIG = {
+  title: 'Add a new entity type',
+  actionConfig: {
+    editEndpoint: ENTITY_TYPES_ENDPOINT,
+    fields: [
+      {
+        Header: 'Type',
+        source: 'type',
+      },
+    ],
+  },
+};
+
 export const entityTypes = {
   resourceName: RESOURCE_NAME,
   path: '/entityTypes',
   endpoint: ENTITY_TYPES_ENDPOINT,
   columns: ENTITY_TYPES_COLUMNS,
+  createConfig: CREATE_CONFIG,
 };
