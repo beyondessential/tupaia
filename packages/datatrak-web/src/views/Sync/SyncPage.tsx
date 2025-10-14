@@ -10,6 +10,7 @@ import { SyncStatus } from './SyncStatus';
 import { SYNC_EVENT_ACTIONS } from '../../types';
 import { formatDistance } from 'date-fns';
 import { useSyncContext } from '../../api/SyncContext';
+import { ensure } from '@tupaia/tsutils';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -70,7 +71,8 @@ export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null
 }
 
 export const SyncPage = () => {
-  const { clientSyncManager: syncManager } = useSyncContext();
+  const { clientSyncManager } = useSyncContext() || {};
+  const syncManager = ensure(clientSyncManager);
 
   const isMobile = useIsMobile();
   const navigate = useNavigate();

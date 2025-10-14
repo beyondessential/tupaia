@@ -2,29 +2,32 @@ import React, { ReactElement, useEffect } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 import { isFeatureEnabled } from '@tupaia/utils';
+import { ensure } from '@tupaia/tsutils';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
 
 import { useCurrentUserContext } from '../api';
 import { ADMIN_ONLY_ROUTES, ROUTES } from '../constants';
 import { isWebApp } from '../utils';
 import { useDatabaseContext } from '../hooks/database';
+import { useIsOfflineFirst } from '../api/offlineFirst';
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
 export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactElement => {
   const { isLoggedIn, hideWelcomeScreen, accessPolicy, ...user } = useCurrentUserContext();
   const { pathname, search } = useLocation();
-  const { models } = useDatabaseContext();
+  const { models } = useDatabaseContext() || {};
+  const isOfflineFirst = useIsOfflineFirst();
   const hasAdminPanelAccess =
     accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
 
   useEffect(() => {
     const addProjectForSync = async () => {
-      await models.localSystemFact.addProjectForSync(user.projectId);
+      await ensure(models).localSystemFact.addProjectForSync(user.projectId);
     };
-    if (isLoggedIn && user.projectId) {
+    if (isLoggedIn && user.projectId && isOfflineFirst) {
       addProjectForSync();
     }
-  }, [models, isLoggedIn, user.projectId]);
+  }, [models, isLoggedIn, user.projectId, isOfflineFirst]);
 
   if (!isLoggedIn) {
     return (

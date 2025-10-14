@@ -7,9 +7,12 @@ import {
 } from '@tanstack/react-query';
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { ensure } from '@tupaia/tsutils';
+
 import { useDatabaseContext } from '../../hooks/database';
 import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
+import { useIsOfflineFirst } from '../offlineFirst';
 
 interface GlobalMutationContext {
   models: DatatrakWebModelRegistry;
@@ -39,14 +42,15 @@ export function useDatabaseMutation<
     localContext?: TLocalContext;
   },
 ): UseMutationResult<TData, TError, TVariables, TContext> {
-  const { models } = useDatabaseContext();
+  const { models } = useDatabaseContext() || {};
   const { accessPolicy, ...user } = useCurrentUserContext();
   const localContext = (options?.localContext ?? {}) as TLocalContext;
+  const isOfflineFirst = useIsOfflineFirst();
 
   const wrappedMutationFn: MutationFunction<TData, TVariables> = async (data: TVariables) => {
     return mutationFn({
       data,
-      models,
+      models: isOfflineFirst ? ensure(models) : models!,
       accessPolicy,
       user,
       ...localContext,

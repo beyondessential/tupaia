@@ -1,15 +1,15 @@
 import log from 'winston';
 
-import { getBrowserTimeZone, snakeKeys } from '@tupaia/utils';
+import { snakeKeys } from '@tupaia/utils';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { camelcaseKeys } from '@tupaia/tsutils';
 import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
 
 import { DatatrakWebModelRegistry } from '../types';
-import { post } from '../api';
 import { hashPassword, verifyPassword } from './hash';
+import { login } from './login';
 
-type SignInParams = {
+export type SignInParams = {
   email: string;
   password: string;
 };
@@ -79,14 +79,7 @@ export class AuthService {
   }
 
   async remoteSignIn(params: SignInParams): Promise<DatatrakWebUserRequest.ResBody> {
-    const { user } = await post('login', {
-      data: {
-        emailAddress: params.email,
-        password: params.password,
-        deviceName: window.navigator.userAgent,
-        timezone: getBrowserTimeZone(),
-      },
-    });
+    const { user } = await login(params);
 
     await this.models.localSystemFact.set(FACT_CURRENT_USER_ID, user.id);
 

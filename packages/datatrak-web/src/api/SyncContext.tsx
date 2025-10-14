@@ -21,7 +21,7 @@ const SYNC_INTERVAL = 1000 * 30;
 export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
   const queryClient = useQueryClient();
-  const { models } = useDatabaseContext();
+  const { models } = useDatabaseContext() || {};
   const isOfflineFirst = useIsOfflineFirst();
   const { isLoggedIn } = useCurrentUserContext();
 
@@ -66,10 +66,11 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
   return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;
 };
 
-export const useSyncContext = (): SyncContextType => {
+export const useSyncContext = (): SyncContextType | null => {
   const context = useContext(SyncContext);
+  const isOfflineFirst = useIsOfflineFirst();
 
-  if (!context) {
+  if (!context && isOfflineFirst) {
     throw new Error('useSyncContext must be used within a SyncProvider');
   }
 

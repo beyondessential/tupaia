@@ -13,6 +13,7 @@ import { ensure } from '@tupaia/tsutils';
 import { useDatabaseContext } from '../../hooks/database';
 import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
+import { useIsOfflineFirst } from '../offlineFirst';
 
 // Define global context shape
 interface GlobalQueryContext {
@@ -49,15 +50,16 @@ export function useDatabaseQuery<
     localContext?: TLocalContext;
   } = {},
 ): UseQueryResult<TData, TError> {
-  const { models } = useDatabaseContext(); // safely call hooks
+  const { models } = useDatabaseContext() || {}; // safely call hooks
   const { accessPolicy, ...user } = useCurrentUserContext();
+  const isOfflineFirst = useIsOfflineFirst();
 
   // Wrap the queryFn to include context
   const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext =>
     queryFn({
       ...queryFnContext,
       accessPolicy: ensure(accessPolicy), // useQuery disabled if accessPolicy is pending
-      models,
+      models: isOfflineFirst ? ensure(models) : models!, // we will not use models if this is not offlineFirst
       user,
       ...options.localContext,
     });

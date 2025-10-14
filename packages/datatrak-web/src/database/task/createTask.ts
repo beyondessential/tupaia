@@ -13,7 +13,7 @@ export const createTask = async ({
 }: {
   models: DatatrakWebModelRegistry;
   data: Data;
-  user?: CurrentUser;
+  user: CurrentUser;
 }) => {
   // Country code is not part of the task data, it's used for GA events
   const { country_code, ...rest } = data;
@@ -31,7 +31,7 @@ export const createTask = async ({
     const task = await transactingModels.task.create(taskData);
 
     if (data.comment) {
-      await task.addUserComment(data.comment, user?.id);
+      await task.addUserComment(data.comment, user.id);
     }
 
     return task;

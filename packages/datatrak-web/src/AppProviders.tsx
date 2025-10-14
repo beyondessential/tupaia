@@ -9,6 +9,7 @@ import { Toast } from './components';
 import { errorToast } from './utils';
 import { CurrentUserContextProvider, DatabaseProvider, SyncProvider } from './api';
 import { REDIRECT_ERROR_PARAM } from './constants';
+import { useIsOfflineFirst } from './api/offlineFirst';
 
 const handleError = (error: any, query: any) => {
   if (error.responseData?.redirectClient) {
@@ -51,32 +52,42 @@ interface AppProvidersProps {
   queryClient?: QueryClient;
 }
 
-export const AppProviders = ({ children, queryClient = defaultQueryClient }: AppProvidersProps) => (
-  <StylesProvider injectFirst>
-    <MuiThemeProvider theme={theme}>
-      <ThemeProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          <CssBaseline />
-          <SnackbarProvider
-            Components={{
-              success: Toast,
-              error: Toast,
-              warning: Toast,
-              info: Toast,
-            }}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-          >
-            <DatabaseProvider>
-              <CurrentUserContextProvider>
-                <SyncProvider>{children}</SyncProvider>
-              </CurrentUserContextProvider>
-            </DatabaseProvider>
-          </SnackbarProvider>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </MuiThemeProvider>
-  </StylesProvider>
-);
+export const AppProviders = ({ children, queryClient = defaultQueryClient }: AppProvidersProps) => {
+  const isOfflineFirst = useIsOfflineFirst();
+
+  const SyncProviderContent = isOfflineFirst ? (
+    <DatabaseProvider>
+      <CurrentUserContextProvider>
+        <SyncProvider>{children}</SyncProvider>
+      </CurrentUserContextProvider>
+    </DatabaseProvider>
+  ) : (
+    <CurrentUserContextProvider>{children}</CurrentUserContextProvider>
+  );
+
+  return (
+    <StylesProvider injectFirst>
+      <MuiThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+          <QueryClientProvider client={queryClient}>
+            <CssBaseline />
+            <SnackbarProvider
+              Components={{
+                success: Toast,
+                error: Toast,
+                warning: Toast,
+                info: Toast,
+              }}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              {SyncProviderContent}
+            </SnackbarProvider>
+          </QueryClientProvider>
+        </ThemeProvider>
+      </MuiThemeProvider>
+    </StylesProvider>
+  );
+};
