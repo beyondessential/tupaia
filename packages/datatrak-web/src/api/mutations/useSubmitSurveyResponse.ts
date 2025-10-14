@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 
 import { SurveyResponseModel } from '@tupaia/database';
+import { ensure } from '@tupaia/tsutils';
 import { Entity, Survey, UserAccount } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { post, useCurrentUserContext, useEntityByCode } from '..';
@@ -28,7 +29,7 @@ interface ResponseData {
   startTime: string | undefined;
   surveyId: Survey['id'] | undefined;
   timezone: Intl.ResolvedDateTimeFormatOptions['timeZone'];
-  userId: UserAccount['id'] | undefined | null;
+  userId: UserAccount['id'] | null;
 }
 
 // utility hook for getting survey response data
@@ -44,7 +45,8 @@ export const useSurveyResponseData = (): ResponseData => {
     surveyId: survey?.id,
     questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
     countryId: country?.id,
-    userId: user.isLoggedIn ? user.id : null, // Let the server assign the public user if not logged in
+    // Let mutation function assign public user if not logged in
+    userId: user.isLoggedIn ? ensure(user.id) : null,
     timezone,
   };
 };
@@ -78,10 +80,9 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
           await SurveyResponseModel.processSurveyResponse(transactingModels, data);
 
         // Mirroring central-server logic
-        const submitterId =
-          user.isLoggedIn && user.id // id check redundant, for type inference
-            ? user.id
-            : (await transactingModels.user.findPublicUser()).id;
+        const submitterId = user.isLoggedIn
+          ? ensure(user.id)
+          : (await transactingModels.user.findPublicUser()).id;
         await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
         await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
         return await SurveyResponseModel.saveResponsesToDatabase(transactingModels, submitterId, [
