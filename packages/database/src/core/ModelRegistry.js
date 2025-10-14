@@ -14,8 +14,8 @@ const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelNam
 
 export class ModelRegistry {
   /**
-   * @param {typeof BaseDatabase} database
-   * @param {Record<string, typeof DatabaseModel>} [extraModelClasses]
+   * @param {BaseDatabase} database
+   * @param {Record<string, DatabaseModel>} [extraModelClasses]
    */
   constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {
     this.database = database;
@@ -62,14 +62,14 @@ export class ModelRegistry {
 
   /**
    * @param {string} databaseRecord
-   * @returns {typeof DatabaseModel}
+   * @returns {DatabaseModel}
    */
   getModelForDatabaseRecord(databaseRecord) {
     return Object.values(this).find(model => model.databaseRecord === databaseRecord);
   }
 
   /**
-   * @returns {(typeof DatabaseModel)[]}
+   * @returns {(DatabaseModel)[]}
    */
   getModels() {
     return Object.values(this).filter(model => Boolean(model.databaseRecord));
