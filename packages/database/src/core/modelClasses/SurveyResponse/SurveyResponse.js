@@ -24,6 +24,7 @@ import { validateSurveyResponse, validateSurveyResponses } from './validation';
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('@tupaia/types').Project} Project
  * @typedef {import('@tupaia/types').QuestionType} QuestionType
  * @typedef {import('@tupaia/types').Survey} Survey
  * @typedef {import('@tupaia/types').SurveyResponse} SurveyResponse
@@ -40,6 +41,32 @@ export class SurveyResponseRecord extends DatabaseRecord {
 
   async getAnswers(conditions = {}) {
     return await this.otherModels.answer.find({ survey_response_id: this.id, ...conditions });
+  }
+
+  /** @returns {Promise<EntityRecord>} */
+  async getEntity(conditions) {
+    return ensure(
+      await this.otherModels.entity.findById(this.entity_id, conditions),
+      `Couldn’t find entity for survey response ${this.id} (expected entity with ID ${this.entity_id})`,
+    );
+  }
+
+  /** @returns {Promise<Entity['id']>} */
+  async getEntityId() {
+    const { id } = ensure(
+      await this.getEntity(this.entity_id, { columns: ['id'] }),
+      `Couldn’t find entity for survey response ${this.id} (expected entity with ID ${this.entity_id})`,
+    );
+    return id;
+  }
+
+  /** @returns {Promise<Project['id']>} */
+  async getProjectId() {
+    const { project_id } = ensure(
+      await this.otherModels.survey.findById(this.survey_id, { columns: ['project_id'] }),
+      `Couldn’t find survey for survey response ${this.id} (expected survey with ID ${this.survey_id})`,
+    );
+    return project_id;
   }
 }
 
