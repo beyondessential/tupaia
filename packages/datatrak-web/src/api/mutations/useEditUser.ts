@@ -1,8 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { ensure } from '@tupaia/tsutils';
+
 import { useDatabaseContext } from '../../hooks/database';
 import { UserAccountDetails } from '../../types';
 import { put } from '../api';
+import { useIsOfflineFirst } from '../offlineFirst';
 
 /**
  * Converts a string from camel case to snake case.
@@ -20,7 +23,8 @@ function camelToSnakeCase(camelCaseString: string): string {
 
 export const useEditUser = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
-  const { models } = useDatabaseContext();
+  const isOfflineFirst = useIsOfflineFirst();
+  const { models } = useDatabaseContext() || {};
 
   return useMutation<any, Error, UserAccountDetails, unknown>(
     async (userDetails: UserAccountDetails) => {
@@ -45,7 +49,9 @@ export const useEditUser = (onSuccess?: () => void) => {
           await queryClient.invalidateQueries(['entityDescendants']);
           await queryClient.invalidateQueries(['tasks']);
 
-          models.localSystemFact.addProjectForSync(variables.projectId);
+          if (isOfflineFirst) {
+            ensure(models).localSystemFact.addProjectForSync(variables.projectId);
+          }
         }
         onSuccess?.();
       },
