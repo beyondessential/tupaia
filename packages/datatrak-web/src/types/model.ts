@@ -61,6 +61,6 @@ export interface DatatrakWebModelRegistry extends ModelRegistry {
   ): Promise<T>;
   wrapInRepeatableReadTransaction<T = unknown>(
     wrappedFunction: (models: DatatrakWebModelRegistry) => Promise<T>,
-    transactionConfig?: Omit<Knex.TransactionConfig, 'isolation'>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolationLevel'>,
   ): Promise<T>;
 }
