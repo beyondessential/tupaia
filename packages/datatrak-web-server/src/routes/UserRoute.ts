@@ -1,4 +1,5 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebUserRequest, WebServerProjectRequest } from '@tupaia/types';
 
@@ -20,24 +21,23 @@ export class UserRoute extends Route<UserRequest> {
     }
 
     const userData = await ctx.services.central.getUser();
-    const { preferences = {} } = userData;
-    const { project_id: projectId, country_id: countryId } = preferences;
+    const { project_id: projectId, country_id: countryId } = userData.preferences ?? {};
 
-    let project = null;
-    let country = null;
-
-    if (projectId) {
+    const fetchProject = async () => {
       const { projects } = await ctx.services.webConfig.fetchProjects();
-      project = projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
-    }
-    if (countryId) {
-      const countryResponse = await ctx.services.central.fetchResources(`entities/${countryId}`, {
+      return projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
+    };
+    const fetchCountry = async () =>
+      ctx.services.central.fetchResources(`entities/${countryId}`, {
         columns: ['id', 'name', 'code'],
       });
-      country = countryResponse || null;
-    }
 
-    return models.user.transformUserData(
+    const [project, country] = await Promise.all([
+      projectId ? fetchProject() : null,
+      countryId ? fetchCountry() : null,
+    ]);
+
+    return await models.user.transformUserData(
       { ...userData, access_policy: accessPolicy.policy },
       project,
       country,

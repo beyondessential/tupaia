@@ -72,7 +72,7 @@ export const snapshotOutgoingChanges = async (
             `
                 : ''
             }
-            
+
           )
         )
         AND record_type IN ${SqlQuery.record(recordTypes)}
@@ -85,7 +85,7 @@ export const snapshotOutgoingChanges = async (
         LIMIT ?
         RETURNING sync_lookup_id
       )
-      SELECT  
+      SELECT
         MAX(sync_lookup_id) as "maxId",
         COUNT(*) as "count"
       FROM inserted;

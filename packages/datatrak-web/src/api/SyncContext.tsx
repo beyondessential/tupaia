@@ -1,14 +1,13 @@
+import { useQueryClient } from '@tanstack/react-query';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import log from 'winston';
 
 import { generateId } from '@tupaia/database';
-import { LoadingScreen } from '@tupaia/ui-components';
-
+import { FullPageLoader } from '@tupaia/ui-components';
 import { useDatabaseContext } from '../hooks/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
-import { useIsOfflineFirst } from './offlineFirst';
 import { useCurrentUserContext } from './CurrentUserContext';
-import { useQueryClient } from '@tanstack/react-query';
+import { useIsOfflineFirst } from './offlineFirst';
 
 export interface SyncContextType {
   clientSyncManager: ClientSyncManager;
@@ -61,7 +60,7 @@ export const SyncProvider = ({ children }: { children: Readonly<React.ReactNode>
   }, [isLoggedIn, isOfflineFirst, clientSyncManager]);
 
   if (!clientSyncManager) {
-    return <LoadingScreen />;
+    return <FullPageLoader />;
   }
 
   return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;

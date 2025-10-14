@@ -54,7 +54,15 @@ export class SurveyRoute extends Route<SurveyRequest> {
       : null;
 
     return {
-      ...camelcaseKeys(survey, { deep: true }),
+      ...camelcaseKeys(survey, {
+        deep: true,
+        // Don’t touch JSONB attributes
+        stopPaths: [
+          'screens.survey_screen_components.config',
+          'screens.survey_screen_components.validation_criteria',
+          'screens.survey_screen_components.visibility_criteria',
+        ],
+      }),
       project,
     };
   }
