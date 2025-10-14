@@ -34,11 +34,11 @@ export class SurveyRoute extends Route<SurveyRequest> {
     } = this.req;
     const { fields = DEFAULT_FIELDS } = query;
     // check if survey exists in the database
-    const _survey = await models.survey.findOne({ code: surveyCode });
-    if (isNullish(_survey)) throw new NotFoundError(`Survey with code ${surveyCode} not found`);
+    const stubSurvey = await models.survey.findOne({ code: surveyCode }, { columns: ['id'] });
+    if (isNullish(stubSurvey)) throw new NotFoundError(`Survey with code ${surveyCode} not found`);
 
     // check if user has access to survey
-    const survey = await ctx.services.central.fetchResources(`surveys/${_survey.id}`, {
+    const survey = await ctx.services.central.fetchResources(`surveys/${stubSurvey.id}`, {
       filter: { code: surveyCode },
       columns: fields,
     });
