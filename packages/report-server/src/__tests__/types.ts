@@ -1,3 +1,5 @@
+import { Knex } from 'knex';
+
 import {
   ModelRegistry,
   PermissionGroupModel,
@@ -12,4 +14,17 @@ export interface TestModelRegistry extends ModelRegistry {
   readonly user: UserModel;
   readonly report: ReportModel;
   readonly permissionGroup: PermissionGroupModel;
+
+  wrapInTransaction<T = unknown>(
+    wrappedFunction: (models: TestModelRegistry) => Promise<T>,
+    transactionConfig?: Knex.TransactionConfig,
+  ): Promise<T>;
+  wrapInReadOnlyTransaction<T = unknown>(
+    wrappedFunction: (models: TestModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'readOnly'>,
+  ): Promise<T>;
+  wrapInRepeatableReadTransaction<T = unknown>(
+    wrappedFunction: (models: TestModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolation'>,
+  ): Promise<T>;
 }

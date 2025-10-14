@@ -1,11 +1,12 @@
-import winston from 'winston';
+/** @typedef {import('knex').Knex} Knex */
+
 import { types as pgTypes } from 'pg';
+import winston from 'winston';
 
 import { Multilock } from '@tupaia/utils';
-
 import { BaseDatabase } from '../core';
-import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
+import { getConnectionConfig } from './getConnectionConfig';
 
 export class TupaiaDatabase extends BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = true;
@@ -125,10 +126,9 @@ export class TupaiaDatabase extends BaseDatabase {
   }
 
   /**
-   * @template T
-   * @param {(models: TupaiaDatabase) => Promise} wrappedFunction
-   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise<T>} A promise (return value of `knex.transaction()`).
+   * @param {<T = unknown>(models: TupaiaDatabase) => Promise<T>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise<T>}
    */
   async wrapInTransaction(wrappedFunction, transactionConfig = {}) {
     return await this.connection.transaction(
@@ -138,7 +138,7 @@ export class TupaiaDatabase extends BaseDatabase {
   }
 
   /**
-   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
+   * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise<TupaiaDatabase>} TupaiaDatabase instance
    */
   async createTransaction(transactionConfig = {}) {

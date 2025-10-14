@@ -6,6 +6,7 @@ import { SCHEMA_NAMES } from './constants';
 export class DatabaseModel {
   otherModels = {};
 
+  /** @type {import('@tupaia/constants').SyncDirection | null} */
   static syncDirection = null;
 
   constructor(database, schema = null) {

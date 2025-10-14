@@ -1,3 +1,5 @@
+import { Knex } from 'knex';
+
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { DashboardItemModel, ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { ReportModel } from '@tupaia/server-boilerplate';
@@ -9,8 +11,21 @@ export type RequestContext = {
 export interface ReportServerModelRegistry extends ModelRegistry {
   readonly database: TupaiaDatabase;
 
-  readonly report: ReportModel;
   readonly dashboardItem: DashboardItemModel;
+  readonly report: ReportModel;
+
+  wrapInTransaction<T = unknown>(
+    wrappedFunction: (models: ReportServerModelRegistry) => Promise<T>,
+    transactionConfig?: Knex.TransactionConfig,
+  ): Promise<T>;
+  wrapInReadOnlyTransaction<T = unknown>(
+    wrappedFunction: (models: ReportServerModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'readOnly'>,
+  ): Promise<T>;
+  wrapInRepeatableReadTransaction<T = unknown>(
+    wrappedFunction: (models: ReportServerModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolation'>,
+  ): Promise<T>;
 }
 
 export type PeriodParams = {

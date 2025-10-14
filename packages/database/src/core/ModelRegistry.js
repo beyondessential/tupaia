@@ -1,3 +1,10 @@
+/**
+ * @typedef {import('knex').Knex} Knex
+ * @typedef {import('../server/TupaiaDatabase').TupaiaDatabase} TupaiaDatabase
+ * @typedef {import('./BaseDatabase').BaseDatabase} BaseDatabase
+ * @typedef {import('./DatabaseModel').DatabaseModel} DatabaseModel
+ */
+
 import { modelClasses as baseModelClasses } from './modelClasses';
 
 const MAX_APP_VERSION = '999.999.999';
@@ -7,8 +14,8 @@ const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelNam
 
 export class ModelRegistry {
   /**
-   * @param {import('./BaseDatabase').BaseDatabase} database
-   * @param {Record<string, import('./DatabaseModel').DatabaseModel>} [extraModelClasses]
+   * @param {typeof BaseDatabase} database
+   * @param {Record<string, typeof DatabaseModel>} [extraModelClasses]
    */
   constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {
     this.database = database;
@@ -55,14 +62,14 @@ export class ModelRegistry {
 
   /**
    * @param {string} databaseRecord
-   * @returns {import('./DatabaseModel').DatabaseModel}
+   * @returns {typeof DatabaseModel}
    */
   getModelForDatabaseRecord(databaseRecord) {
     return Object.values(this).find(model => model.databaseRecord === databaseRecord);
   }
 
   /**
-   * @returns {import('./DatabaseModel').DatabaseModel[]}
+   * @returns {(typeof DatabaseModel)[]}
    */
   getModels() {
     return Object.values(this).filter(model => Boolean(model.databaseRecord));
@@ -88,12 +95,12 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {<T = unknown>(models: ModelRegistry) => Promise<T>} wrappedFunction
+   * @param {<ReturnT = unknown, ModelRegistryT extends ModelRegistry = ModelRegistry>(models: ModelRegistryT) => Promise<ReturnT>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise<T>} A promise (return value of `knex.transaction()`).
+   * @returns {Promise<ReturnT>}
    */
   async wrapInTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.database.wrapInTransaction(async transactingDatabase => {
+    return await this.database.wrapInTransaction(async transactingDatabase => {
       const schemata = {};
       await Promise.all(
         Object.keys(this.modelClasses).map(async modelName => {
@@ -107,26 +114,26 @@ export class ModelRegistry {
         false,
         schemata,
       );
-      return wrappedFunction(transactingModelRegistry);
+      return await wrappedFunction(transactingModelRegistry);
     }, transactionConfig);
   }
 
   /**
-   * @param {<T = unknown>(models: ModelRegistry) => Promise<T>} wrappedFunction
-   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise<T>} A promise (return value of `knex.transaction()`).
+   * @param {<ReturnT = unknown, ModelRegistryT extends ModelRegistry = ModelRegistry>(models: ModelRegistryT) => Promise<ReturnT>} wrappedFunction
+   * @param {Omit<Knex.TransactionConfig, 'readOnly'>} [transactionConfig]
+   * @returns {Promise<ReturnT>}
    */
-  wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
+  async wrapInReadOnlyTransaction(wrappedFunction, transactionConfig = {}) {
+    return await this.wrapInTransaction(wrappedFunction, { ...transactionConfig, readOnly: true });
   }
 
   /**
-   * @param {<T = unknown>(models: ModelRegistry) => Promise<T>} wrappedFunction
-   * @param {import('knex').Knex.TransactionConfig} [transactionConfig]
-   * @returns {Promise<T>} A promise (return value of `knex.transaction()`).
+   * @param {<ReturnT = unknown, ModelRegistryT extends ModelRegistry = ModelRegistry>(models: ModelRegistryT) => Promise<ReturnT>} wrappedFunction
+   * @param {Omit<Knex.TransactionConfig, 'isolationLevel'>} [transactionConfig]
+   * @returns {Promise<ReturnT>}
    */
-  wrapInRepeatableReadTransaction(wrappedFunction, transactionConfig = {}) {
-    return this.wrapInTransaction(wrappedFunction, {
+  async wrapInRepeatableReadTransaction(wrappedFunction, transactionConfig = {}) {
+    return await this.wrapInTransaction(wrappedFunction, {
       ...transactionConfig,
       isolationLevel: 'repeatable read',
     });
