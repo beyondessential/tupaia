@@ -1,11 +1,9 @@
 import log from 'winston';
 
-import { ModelRegistry } from '@tupaia/database';
-import { SyncSnapshotAttributes } from '@tupaia/sync';
-
-import { stream } from '../api';
-import { ProcessStreamDataParams } from '../types';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
+import { SyncSnapshotAttributes } from '@tupaia/sync';
+import { stream } from '../api';
+import { DatatrakWebModelRegistry, ProcessStreamDataParams } from '../types';
 
 export const initiatePull = async (
   sessionId: string,
@@ -36,7 +34,7 @@ export const initiatePull = async (
 };
 
 export const pullIncomingChanges = async (
-  models: ModelRegistry,
+  models: DatatrakWebModelRegistry,
   sessionId: string,
   batchSize: number,
   processStreamedDataFunction: (params: ProcessStreamDataParams) => Promise<void>,
