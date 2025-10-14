@@ -12,9 +12,9 @@ export class DatatrakDatabase extends BaseDatabase {
     super(transactingConnection, undefined, ClientPgLite, getConnectionConfig);
   }
 
-  async wrapInTransaction(
+  async wrapInTransaction<T = unknown>(
     wrappedFunction: <T = unknown>(db: DatatrakDatabase) => Promise<T>,
-  ): Promise<Knex.Transaction> {
+  ): Promise<T> {
     return await this.connection.transaction(transaction =>
       wrappedFunction(new DatatrakDatabase(transaction)),
     );
