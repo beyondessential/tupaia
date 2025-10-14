@@ -85,12 +85,16 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
           : (await transactingModels.user.findPublicUser()).id;
         await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
         await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
-        return await SurveyResponseModel.saveResponsesToDatabase(transactingModels, submitterId, [
-          processedResponse,
-        ]);
-      });
+        const idsCreated = await SurveyResponseModel.saveResponsesToDatabase(
+          transactingModels,
+          submitterId,
+          [processedResponse],
+        );
 
-      // TODO: Update recent entities
+        // TODO: Update recent entities
+
+        return idsCreated;
+      });
 
       return local;
     },
