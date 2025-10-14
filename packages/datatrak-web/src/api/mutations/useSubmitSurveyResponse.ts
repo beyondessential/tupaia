@@ -3,7 +3,7 @@ import { generatePath, useNavigate, useParams } from 'react-router';
 
 import { SurveyResponseModel } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
-import { Entity, Survey, UserAccount } from '@tupaia/types';
+import { DatatrakWebSubmitSurveyResponseRequest, Entity, Survey, UserAccount } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { post, useCurrentUserContext, useEntityByCode } from '..';
 import { Coconut } from '../../components';
@@ -72,17 +72,24 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
       // TODO: Assert user has access
 
-      const data = { ...surveyResponseData, answers };
-
       const local = await models.wrapInTransaction(async transactingModels => {
-        // Mirroring datatrak-web-server logic
-        const { qr_codes_to_create, recent_entities, ...processedResponse } =
-          await SurveyResponseModel.processSurveyResponse(transactingModels, data);
-
-        // Mirroring central-server logic
         const submitterId = user.isLoggedIn
           ? ensure(user.id)
           : (await transactingModels.user.findPublicUser()).id;
+        const data = {
+          ...surveyResponseData,
+          answers,
+          userId: submitterId,
+        };
+
+        // Mirroring datatrak-web-server logic
+        const { qr_codes_to_create, recent_entities, ...processedResponse } =
+          await SurveyResponseModel.processSurveyResponse(
+            transactingModels,
+            data as DatatrakWebSubmitSurveyResponseRequest.ReqBody,
+          );
+
+        // Mirroring central-server logic
         await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
         await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
         const idsCreated = await SurveyResponseModel.saveResponsesToDatabase(
