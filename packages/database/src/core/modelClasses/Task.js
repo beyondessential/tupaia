@@ -334,6 +334,10 @@ export class TaskModel extends DatabaseModel {
 
     const params = Object.entries(countryCodesByPermissionGroupId).flat(2); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
 
+    if (Object.keys(countryCodesByPermissionGroupId).length === 0) {
+      return null;
+    }
+
     return {
       sql: `
         (
@@ -394,7 +398,7 @@ export class TaskModel extends DatabaseModel {
     const queryConditions = hasBESAdminAccess
       ? filtersWithColumnSelectors
       : {
-          [QUERY_CONJUNCTIONS.RAW]: queryClause,
+          ...(queryClause ? { [QUERY_CONJUNCTIONS.RAW]: queryClause } : {}),
           ...filtersWithColumnSelectors,
         };
 
