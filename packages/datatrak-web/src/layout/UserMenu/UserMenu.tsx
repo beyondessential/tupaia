@@ -11,6 +11,7 @@ import { UserInfo } from './UserInfo';
 import { SyncButton } from '../Header/SyncButton';
 import { ROUTES } from '../../constants';
 import { useIsOfflineFirst } from '../../api/offlineFirst';
+import { useCurrentUserContext } from '../../api';
 
 const Wrapper = styled.div`
   display: flex;
@@ -33,12 +34,13 @@ export const UserMenu = () => {
   const isDesktop = useIsDesktop();
   const location = useLocation();
   const isOfflineFirst = useIsOfflineFirst();
+  const { isLoggedIn } = useCurrentUserContext();
   const isSyncPage = location.pathname === ROUTES.SYNC;
 
   return (
     <Wrapper>
       <UserInfo />
-      {!isSyncPage && isOfflineFirst && <SyncButton />}
+      {!isSyncPage && isOfflineFirst && isLoggedIn && <SyncButton />}
       {isDesktop && (
         <>
           <IconButton
