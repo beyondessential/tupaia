@@ -81372,6 +81372,7 @@ export const OptionSchema = {
 	"required": [
 		"id",
 		"option_set_id",
+		"sort_order",
 		"updated_at_sync_tick",
 		"value"
 	]
@@ -81399,6 +81400,7 @@ export const OptionCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"option_set_id",
+		"sort_order",
 		"value"
 	]
 }
@@ -84934,6 +84936,8 @@ export const EntityTypeEnumSchema = {
 		"incident_reported",
 		"individual",
 		"institute",
+		"kiuar_area",
+		"kiuar_facility",
 		"larval_habitat",
 		"larval_sample",
 		"local_government",
@@ -84950,14 +84954,20 @@ export const EntityTypeEnumSchema = {
 		"pacmossi_spraying_site",
 		"pacmossi_village",
 		"pharmacy",
+		"policy",
 		"postcode",
 		"project",
+		"rehab_facility_model",
 		"repair_request",
 		"school",
+		"spare_part",
 		"sub_catchment",
 		"sub_district",
 		"sub_facility",
 		"supermarket",
+		"tmf_district",
+		"tmf_facility",
+		"tmf_sub_district",
 		"transfer",
 		"trap",
 		"vehicle",

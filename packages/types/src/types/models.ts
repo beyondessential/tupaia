@@ -1164,7 +1164,7 @@ export interface Option {
   'id': string;
   'label'?: string | null;
   'option_set_id': string;
-  'sort_order'?: number | null;
+  'sort_order': number;
   'updated_at_sync_tick': string;
   'value': string;
 }
@@ -1172,7 +1172,7 @@ export interface OptionCreate {
   'attributes'?: {} | null;
   'label'?: string | null;
   'option_set_id': string;
-  'sort_order'?: number | null;
+  'sort_order': number;
   'value': string;
 }
 export interface OptionUpdate {
@@ -1180,7 +1180,7 @@ export interface OptionUpdate {
   'id'?: string;
   'label'?: string | null;
   'option_set_id'?: string;
-  'sort_order'?: number | null;
+  'sort_order'?: number;
   'value'?: string;
 }
 export interface OptionSet {
@@ -2017,6 +2017,14 @@ export enum EntityTypeEnum {
   'consumable' = 'consumable',
   'bes_asset' = 'bes_asset',
   'bes_office' = 'bes_office',
+  'tmf_district' = 'tmf_district',
+  'tmf_sub_district' = 'tmf_sub_district',
+  'tmf_facility' = 'tmf_facility',
+  'policy' = 'policy',
+  'kiuar_facility' = 'kiuar_facility',
+  'kiuar_area' = 'kiuar_area',
+  'spare_part' = 'spare_part',
+  'rehab_facility_model' = 'rehab_facility_model',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
