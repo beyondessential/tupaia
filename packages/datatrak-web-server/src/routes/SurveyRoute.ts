@@ -39,7 +39,6 @@ export class SurveyRoute extends Route<SurveyRequest> {
 
     // check if user has access to survey
     const survey = await ctx.services.central.fetchResources(`surveys/${stubSurvey.id}`, {
-      filter: { code: surveyCode },
       columns: fields,
     });
 
