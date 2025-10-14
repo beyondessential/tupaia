@@ -24,6 +24,6 @@ export interface DataTableServerModelRegistry extends ModelRegistry {
   ): Promise<T>;
   wrapInRepeatableReadTransaction<T = unknown>(
     wrappedFunction: (models: DataTableServerModelRegistry) => Promise<T>,
-    transactionConfig?: Omit<Knex.TransactionConfig, 'isolation'>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolationLevel'>,
   ): Promise<T>;
 }

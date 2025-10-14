@@ -25,6 +25,6 @@ export interface TestModelRegistry extends ModelRegistry {
   ): Promise<T>;
   wrapInRepeatableReadTransaction<T = unknown>(
     wrappedFunction: (models: TestModelRegistry) => Promise<T>,
-    transactionConfig?: Omit<Knex.TransactionConfig, 'isolation'>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolationLevel'>,
   ): Promise<T>;
 }

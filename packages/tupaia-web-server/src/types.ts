@@ -37,6 +37,6 @@ export interface TupaiaWebServerModelRegistry extends ModelRegistry {
   ): Promise<T>;
   wrapInRepeatableReadTransaction<T = unknown>(
     wrappedFunction: (models: TupaiaWebServerModelRegistry) => Promise<T>,
-    transactionConfig?: Omit<Knex.TransactionConfig, 'isolation'>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolationLevel'>,
   ): Promise<T>;
 }

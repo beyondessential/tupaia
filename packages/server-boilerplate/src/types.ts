@@ -40,6 +40,6 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
   ): Promise<T>;
   wrapInRepeatableReadTransaction<T = unknown>(
     wrappedFunction: (models: ServerBoilerplateModelRegistry) => Promise<T>,
-    transactionConfig?: Omit<Knex.TransactionConfig, 'isolation'>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolationLevel'>,
   ): Promise<T>;
 }
