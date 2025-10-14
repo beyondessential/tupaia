@@ -62,7 +62,7 @@
     "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
-    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-plugin-module-resolver": "^5.0.2",
     "jest": "^29.7.0",
     "jest-when": "^3.6.0",
     "rimraf": "^6.0.1"
