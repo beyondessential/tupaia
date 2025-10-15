@@ -17808,17 +17808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-string@npm:^1.5.2":
-  version: 1.5.3
-  resolution: "color-string@npm:1.5.3"
-  dependencies:
-    color-name: ^1.0.0
-    simple-swizzle: ^0.2.2
-  checksum: 66f071ab5f7b4e6c651abb07141e008439932da33f95a6c8a4d9186f256d34319c684f640a31e77f53ff2ae751a79e833ceb93658c5e54eb7d05e93a8dc79979
-  languageName: node
-  linkType: hard
-
-"color-string@npm:^1.6.0":
+"color-string@npm:^1.5.2, color-string@npm:^1.6.0":
   version: 1.9.1
   resolution: "color-string@npm:1.9.1"
   dependencies:
