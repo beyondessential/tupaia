@@ -97,6 +97,7 @@ export const SyncPage = () => {
         case SYNC_EVENT_ACTIONS.SYNC_INITIALISING:
           setProgressMessage(syncManager.progressMessage);
           setIsRequestingSync(true);
+          setErrorMessage(null);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
           setProgress(0);
