@@ -24107,9 +24107,9 @@ __metadata:
   linkType: hard
 
 "i@npm:0.3.x":
-  version: 0.3.6
-  resolution: "i@npm:0.3.6"
-  checksum: cc1b4b8f9742fc943e045d8a364c99193cbc372b2dda793543480f67a9c20e83015ecdd1a399221e8cc14c2447ce0795f0688bd43198ce753bdbf244b4c98ee6
+  version: 0.3.7
+  resolution: "i@npm:0.3.7"
+  checksum: 97db09a9377223511bbc416f22e24ee7b90417b0a384710756b2ab74e6cbd95a93ff5856c4bdd8d12d9a74e2460fcbf895f0c2525b6ab2f7898795cb5a5743cf
   languageName: node
   linkType: hard
 
