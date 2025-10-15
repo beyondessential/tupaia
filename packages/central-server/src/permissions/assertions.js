@@ -16,7 +16,7 @@ export const allowNoPermissions = () => {
 /**
  * Returns true if all of the permissions assertions pass, or throws an error
  * @param {function[]} assertions  Each permissions assertion should return true or throw an error
- * @param {string} errorMessage
+ * @param {string} [errorMessage]
  */
 export const assertAllPermissions = (assertions, errorMessage) => async accessPolicy => {
   try {
@@ -32,9 +32,8 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
 
 /**
  * Returns true if any of the permissions assertions pass, or throws an error
- * @param {function[]} assertions Each permissions assertion should return true or throw a
- * {@link PermissionsError}
- * @param {string} errorMessage
+ * @param {function[]} assertions Each permissions assertion should return true or throw an error
+ * @param {string} [errorMessage]
  */
 export const assertAnyPermissions = (assertions, errorMessage) => async accessPolicy => {
   const combinedErrorMessages = ['One of the following conditions need to be satisfied:'];
