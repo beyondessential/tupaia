@@ -134,18 +134,18 @@ export class ClientSyncManager {
   }
 
   async triggerSync(urgent: boolean = false): Promise<SyncResult> {
-    const isOnline = window.navigator.onLine;
-
-    if (!isOnline) {
-      log.warn('ClientSyncManager.triggerSync(): No internet connectivity');
-      return {};
-    }
     if (this.isSyncing) {
       log.warn('ClientSyncManager.triggerSync(): Tried to start syncing while sync in progress');
       return {};
     }
 
     try {
+      const isOnline = window.navigator.onLine;
+
+      if (!isOnline) {
+        throw new Error('No internet connectivity');
+      }
+
       return await this.runSync(urgent);
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
