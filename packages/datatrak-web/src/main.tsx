@@ -7,6 +7,12 @@ import { confirmUpdate } from './components/UpdateConfirmation';
 
 renderReactApp(<App />, document.getElementById('root'));
 
+const promptUserToUpdate = async (worker: ServiceWorker) => {
+  if (await confirmUpdate()) {
+    worker.postMessage({ type: 'SKIP_WAITING' });
+  }
+};
+
 window.addEventListener('load', async () => {
   if ('serviceWorker' in navigator) {
     const registration = await navigator.serviceWorker.register('/sw.js');
@@ -22,10 +28,7 @@ window.addEventListener('load', async () => {
       newWorker.addEventListener('statechange', async () => {
         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
           // New content available
-          
-          if (await confirmUpdate()) {
-            newWorker.postMessage({ type: 'SKIP_WAITING' });
-          }
+          await promptUserToUpdate(newWorker);
         }
       });
     });
@@ -33,9 +36,7 @@ window.addEventListener('load', async () => {
     // Check if there's already a waiting worker
     // in case if update found, but user closes the pwa
     if (registration.waiting) {
-      if (await confirmUpdate()) {
-        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-      }
+      await promptUserToUpdate(registration.waiting);
     }
 
     // Check for updates immediately after loading the app
@@ -49,8 +50,8 @@ window.addEventListener('load', async () => {
   }
 });
 
-// Add periodic update checks for PWAs (every 30 seconds)
-const UPDATE_CHECK_INTERVAL = 30 * 1000;
+// Add periodic update checks for PWAs (every 1 minute)
+const UPDATE_CHECK_INTERVAL = 60 * 1000;
 
 setInterval(async () => {
   if ('serviceWorker' in navigator) {
@@ -61,4 +62,3 @@ setInterval(async () => {
     }
   }
 }, UPDATE_CHECK_INTERVAL);
-
