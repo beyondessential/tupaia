@@ -17,6 +17,33 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // TODO: Set up database for testing later
+jest.mock('./src/api/DatabaseContext', () => {
+  const React = require('react');
+
+  return {
+    DatabaseContext: React.createContext({
+      models: {
+        localSystemFact: {
+          get: jest.fn().mockResolvedValue('test-device-id'),
+          set: jest.fn().mockResolvedValue(undefined),
+          addProjectForSync: jest.fn(),
+        },
+        closeDatabaseConnections: jest.fn(),
+      },
+    }),
+    DatabaseProvider: ({ children }) => children,
+    useDatabaseContext: () => ({
+      models: {
+        localSystemFact: {
+          get: jest.fn().mockResolvedValue('test-device-id'),
+          set: jest.fn().mockResolvedValue(undefined),
+          addProjectForSync: jest.fn(),
+        },
+        closeDatabaseConnections: jest.fn(),
+      },
+    }),
+  };
+});
 
 jest.mock('@tupaia/database', () => ({
   migrate: jest.fn(),
