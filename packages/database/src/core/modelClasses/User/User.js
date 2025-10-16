@@ -7,6 +7,7 @@ import {
   SyncDirections,
   PUBLIC_USER_EMAIL,
   PUBLIC_USER_ID,
+  USER_PREFERENCES_FIELDS,
 } from '@tupaia/constants';
 import { ensure, isNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
@@ -290,6 +291,37 @@ export class UserModel extends DatabaseModel {
     return await this.getFilteredUsers(searchTerm, userIds);
   }
 
+  async getUpdatedUserPreferenceFields(userId, updatedFields) {
+    const updatedUserPreferences = Object.entries(updatedFields).filter(([key]) =>
+      USER_PREFERENCES_FIELDS.includes(key),
+    );
+    // If there are, extract them and save them with the existing user preferences
+    if (updatedUserPreferences.length > 0) {
+      // Remove user preferences fields from updatedFields so they don't get saved else where
+      updatedUserPreferences.forEach(([key]) => {
+        delete updatedFields[key];
+      });
+
+      const userRecord = await this.findById(userId);
+      const { preferences } = userRecord;
+
+      const updatedPreferenceFields = updatedUserPreferences.reduce((obj, [key, value]) => {
+        return { ...obj, [key]: value };
+      }, preferences);
+      // If we change the selected project, we clear out the recent entities
+      if (updatedPreferenceFields.project_id) {
+        updatedPreferenceFields.recentEntities = {};
+      }
+
+      updatedFields = {
+        preferences: updatedPreferenceFields,
+        ...updatedFields,
+      };
+    }
+
+    return updatedFields;
+  }
+
   /**
    * @param {import('@tupaia/types').User['id']} userId
    * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
@@ -301,11 +333,7 @@ export class UserModel extends DatabaseModel {
     return user.getRecentEntityIds(countryCode, type);
   }
 
-  async transformUserData(
-    userData,
-    project = null,
-    country = null,
-  ) {
+  async transformUserData(userData, project = null, country = null) {
     const {
       id,
       full_name: fullName,
@@ -318,14 +346,14 @@ export class UserModel extends DatabaseModel {
       preferences = {},
       access_policy: accessPolicy,
     } = userData;
-  
+
     const {
       project_id: projectId,
       country_id: countryId,
       delete_account_requested,
       hide_welcome_screen,
     } = preferences;
-  
+
     return {
       fullName,
       firstName,
@@ -343,5 +371,5 @@ export class UserModel extends DatabaseModel {
       hideWelcomeScreen: hide_welcome_screen === true,
       accessPolicy,
     };
-  };
+  }
 }
