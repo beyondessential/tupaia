@@ -64,7 +64,12 @@ const RefreshButton = styled.button`
   }
 `;
 
-const UpdateConfirmationModal = ({ show, proceed }) => {
+interface UpdateConfirmationModalProps {
+  show: boolean;
+  proceed: (value: boolean) => void;
+}
+
+const UpdateConfirmationModal = ({ show, proceed }: UpdateConfirmationModalProps) => {
   if (!show) return null;
 
   return (
