@@ -57,9 +57,9 @@ export const AppProviders = ({ children, queryClient = defaultQueryClient }: App
 
   const SyncProviderContent = isOfflineFirst ? (
     <DatabaseProvider>
-      <CurrentUserContextProvider>
-        <SyncProvider>{children}</SyncProvider>
-      </CurrentUserContextProvider>
+      <SyncProvider>
+        <CurrentUserContextProvider>{children}</CurrentUserContextProvider>
+      </SyncProvider>
     </DatabaseProvider>
   ) : (
     <CurrentUserContextProvider>{children}</CurrentUserContextProvider>

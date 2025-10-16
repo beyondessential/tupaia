@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { gaEvent, useFromLocation } from '../../utils';
 import { ROUTES } from '../../constants';
 import { useDatabaseContext } from '../../hooks/database';
-import { useSyncContext } from '../SyncContext';
 import { AuthService } from '../../auth';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { ensure } from '@tupaia/tsutils';
@@ -20,8 +19,8 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const from = useFromLocation();
   const { models } = useDatabaseContext() || {};
-  const { clientSyncManager } = useSyncContext() || {};
   const isOfflineFirst = useIsOfflineFirst();
+
   return useMutation<any, Error, LoginCredentials, unknown>(
     async ({ email, password }: LoginCredentials) => {
       let user;
@@ -45,7 +44,6 @@ export const useLogin = () => {
           if (user.preferences?.projectId) {
             await ensure(models).localSystemFact.addProjectForSync(user.preferences.projectId);
           }
-          await ensure(clientSyncManager).triggerSync();
         }
 
         if (from) {

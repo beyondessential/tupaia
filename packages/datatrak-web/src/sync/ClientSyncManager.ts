@@ -1,5 +1,6 @@
 import log from 'winston';
 import mitt from 'mitt';
+import { QueryClient } from '@tanstack/react-query';
 
 import {
   createClientSnapshotTable,
@@ -19,6 +20,8 @@ import {
   FACT_LAST_SUCCESSFUL_SYNC_PUSH,
   FACT_PROJECTS_IN_SYNC,
 } from '@tupaia/constants';
+import { generateId } from '@tupaia/database';
+import { ensure } from '@tupaia/tsutils';
 
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
@@ -27,7 +30,8 @@ import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
 import { remove, stream } from '../api';
-import { ensure } from '@tupaia/tsutils';
+
+const SYNC_INTERVAL = 1000 * 30;
 
 const SYNC_STAGES = {
   PUSH: 1,
@@ -62,10 +66,15 @@ export class ClientSyncManager {
 
   private isInitialSync: boolean = false;
 
+  private syncInterval: NodeJS.Timeout | null = null;
+
   progressMaxByStage = STAGE_MAX_PROGRESS_INCREMENTAL;
 
+  isRequestingSync: boolean = false;
   isSyncing: boolean = false;
   isQueuing: boolean = false;
+
+  errorMessage: string | null = null;
 
   lastSuccessfulSyncTime: Date | null = null;
 
@@ -85,6 +94,58 @@ export class ClientSyncManager {
     log.debug('ClientSyncManager.constructor', {
       deviceId,
     });
+  }
+
+  async initDeviceId(): Promise<void> {
+    let deviceId = await this.models.localSystemFact.get('deviceId');
+    if (!deviceId) {
+      deviceId = `datatrak-web-${generateId()}`;
+      await this.models.localSystemFact.set('deviceId', deviceId);
+    }
+    return deviceId;
+  }
+
+  async startSyncService(queryClient: QueryClient): Promise<void> {
+    if (this.syncInterval) {
+      return;
+    }
+
+    await this.waitForCurrentSyncToEnd();
+
+    const run = async (): Promise<void> => {
+      log.info('Starting regular sync');
+      const { pulledChangesCount } = await this.triggerSync(false);
+      if (pulledChangesCount) {
+        await queryClient.invalidateQueries();
+      }
+    }
+
+    // Run the sync immediately
+    // and then schedule the next sync
+    run();
+    this.syncInterval = setInterval(run, SYNC_INTERVAL);
+  }
+
+  async stopSyncService(): Promise<void> {
+    if (this.syncInterval) {
+      clearInterval(this.syncInterval);
+      this.syncInterval = null;
+      await this.waitForCurrentSyncToEnd();
+    }
+  }
+
+  async waitForCurrentSyncToEnd(): Promise<void> {
+    if (this.isSyncing) {
+      return new Promise(resolve => {
+        const done = (): void => {
+          resolve();
+          this.emitter.off(SYNC_EVENT_ACTIONS.SYNC_ENDED, done);
+        };
+        this.emitter.on(SYNC_EVENT_ACTIONS.SYNC_ENDED, done);
+      });
+    }
+
+    return Promise.resolve();
   }
 
   setSyncStage(syncStage: number | null): void {
@@ -149,6 +210,7 @@ export class ClientSyncManager {
       return await this.runSync(urgent);
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
+      this.errorMessage = error.message;
     } finally {
       // Reset all the values to default only if sync actually started, otherwise they should still be default values
       if (this.isSyncing) {
@@ -198,6 +260,7 @@ export class ClientSyncManager {
     }
 
     this.progressMessage = 'Requesting sync...';
+    this.isRequestingSync = true;
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_INITIALISING);
 
     const projectIds = await this.getProjectsInSync();

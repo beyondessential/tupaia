@@ -78,8 +78,8 @@ export const SyncPage = () => {
   const navigate = useNavigate();
 
   const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isRequestingSync, setIsRequestingSync] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(syncManager.errorMessage);
+  const [isRequestingSync, setIsRequestingSync] = useState<boolean>(syncManager.isRequestingSync);
   const [isSyncing, setIsSyncing] = useState<boolean>(syncManager.isSyncing);
   const [isQueuing, setIsQueuing] = useState<boolean>(syncManager.isQueuing);
   const [syncStage, setSyncStage] = useState<number | null>(syncManager.syncStage);
