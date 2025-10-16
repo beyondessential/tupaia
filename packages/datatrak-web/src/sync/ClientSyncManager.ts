@@ -270,6 +270,7 @@ export class ClientSyncManager {
       return {};
     }
 
+    this.isRequestingSync = false;
     this.isSyncing = true;
 
     const pullSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;

@@ -177,7 +177,7 @@ export const SyncPage = () => {
 
           {!isSyncing && !isRequestingSync && (
             <>
-              {syncStarted && Boolean(formattedLastSuccessfulSyncTime) && (
+              {Boolean(formattedLastSuccessfulSyncTime) && (
                 <StyledLastSyncDate
                   formattedLastSuccessfulSyncTime={formattedLastSuccessfulSyncTime}
                   lastSyncDate={syncManager.lastSuccessfulSyncTime}
