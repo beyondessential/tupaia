@@ -21,7 +21,7 @@ export const getTasks = async ({
   accessPolicy,
   filters,
   pageSize = 100000,
-  page = 1,
+  page = 0,
   sort,
 }: {
   models: DatatrakWebModelRegistry;
