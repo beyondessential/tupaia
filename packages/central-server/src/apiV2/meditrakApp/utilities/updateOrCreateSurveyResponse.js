@@ -1,12 +1,15 @@
 import momentTimezone from 'moment-timezone';
+
+import { ensure } from '@tupaia/tsutils';
 import {
   DatabaseError,
-  stripTimezoneFromDate,
   reformatDateStringWithoutTz,
+  stripTimezoneFromDate,
   ValidationError,
 } from '@tupaia/utils';
-import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../../../database';
 import { upsertAnswers } from '../../../dataAccessors/upsertAnswers';
+import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../../../database';
+import { upsertEntitiesAndOptions } from '../../surveyResponses';
 
 /**
  * Creates or updates survey responses from passed changes
@@ -19,18 +22,14 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
     ...surveyResponseProperties
   } = surveyResponseObject;
 
-  const newAndUpdatedEntities = surveyResponseObject.entities_upserted || [];
-  const optionsCreated = surveyResponseObject.options_created || [];
-
   try {
     await models.wrapInTransaction(async transactingModels => {
-      await upsertEntities(
-        transactingModels,
-        newAndUpdatedEntities,
-        surveyResponseObject.survey_id,
+      await upsertEntitiesAndOptions(transactingModels, surveyResponseObject);
+
+      const survey = ensure(
+        await transactingModels.survey.findById(surveyResponseObject.survey_id),
+        `No survey exists with ID ${surveyResponseObject.survey_id}`,
       );
-      await createOptions(transactingModels, optionsCreated);
-      const survey = await transactingModels.survey.findById(surveyResponseObject.survey_id);
 
       // Ensure entity_id is populated, supporting legacy versions of MediTrak
       if (clinicId) {
@@ -61,74 +60,6 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
     throw new DatabaseError(`creating/updating survey response with ID ${surveyResponseId}`, error);
   }
 }
-
-const createOptions = async (models, optionsCreated) => {
-  const options = [];
-
-  for (const optionObject of optionsCreated) {
-    const { value, option_set_id: optionSetId } = optionObject;
-    const maxSortOrder = (await models.option.getLargestSortOrder(optionSetId)) ?? 0;
-    const sortOrder = maxSortOrder + 1; // append the option to the end to resolve any sort order conflict from other devices
-
-    // If an option exists with the same value,
-    // set the value of the option to be duplicate and create a new option
-    const existingOption = await models.option.findOne({ option_set_id: optionSetId, value });
-    let optionRecord;
-    if (existingOption) {
-      optionRecord = await models.option.create({
-        ...optionObject,
-        option_set_id: optionSetId,
-        value: `${value} (duplicate)`,
-        sort_order: sortOrder,
-        attributes: {},
-      });
-    } else {
-      optionRecord = await models.option.updateOrCreate(
-        { option_set_id: optionSetId, value },
-        {
-          ...optionObject,
-          sort_order: sortOrder,
-          attributes: {},
-        },
-      );
-    }
-
-    options.push(optionRecord);
-  }
-
-  return options;
-};
-
-const upsertEntities = async (models, newAndUpdatedEntities, surveyId) => {
-  const survey = await models.survey.findById(surveyId);
-  const dataGroup = await survey.dataGroup();
-
-  return Promise.all(
-    newAndUpdatedEntities.map(async entity => {
-      const existentEntity = await models.entity.findOne({ id: entity.id });
-
-      if (existentEntity) {
-        return models.entity.updateOrCreate(
-          { id: entity.id },
-          {
-            ...entity,
-            metadata: existentEntity.metadata,
-          },
-        );
-      }
-      return models.entity.updateOrCreate(
-        { id: entity.id },
-        {
-          ...entity,
-          metadata:
-            dataGroup.service_type === 'dhis'
-              ? { dhis: { isDataRegional: dataGroup.config.dhisInstanceCode === 'regional' } }
-              : {},
-        },
-      );
-    }),
-  );
-};
 
 /**
  * @param surveyResponseObject
