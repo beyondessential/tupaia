@@ -1,6 +1,7 @@
 import { DatatrakWebTaskChangeRequest, TaskStatus } from '@tupaia/types';
 import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser } from '../../api';
+import { AccessPolicy } from '@tupaia/access-policy';
 
 type Data = DatatrakWebTaskChangeRequest.ReqBody & {
   country_code: string;
@@ -8,13 +9,17 @@ type Data = DatatrakWebTaskChangeRequest.ReqBody & {
 
 export const createTask = async ({
   models,
+  accessPolicy,
   data,
   user,
 }: {
   models: DatatrakWebModelRegistry;
+  accessPolicy: AccessPolicy;
   data: Data;
   user: CurrentUser;
 }) => {
+  await models.task.assertUserHasPermissionToCreateTask(accessPolicy, data);
+
   // Country code is not part of the task data, it's used for GA events
   const { country_code, ...rest } = data;
   const survey = await models.survey.findOne({ code: data.survey_code });
