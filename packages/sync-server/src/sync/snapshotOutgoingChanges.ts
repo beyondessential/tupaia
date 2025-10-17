@@ -19,7 +19,6 @@ export const snapshotOutgoingChanges = async (
   includeProjectIds: string[],
   excludeProjectIds: string[] = [],
 ): Promise<number> => {
-  console.log('okkkk');
   let fromId = '';
   let totalCount = 0;
   const snapshotTableName = getSnapshotTableName(sessionId);
