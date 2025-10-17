@@ -71,4 +71,18 @@ export class PermissionGroupModel extends DatabaseModel {
     );
     return countryCodesByPermissionGroupId;
   }
+
+  async fetchCountryIdsByPermissionGroupId(accessPolicy) {
+    const countryCodesByPermissionGroupId =
+      await this.fetchCountryCodesByPermissionGroupId(accessPolicy);
+  
+    // Transform arrays of codes to arrays of ids
+    const allCountryCodes = accessPolicy.getEntitiesAllowed();
+    const countryCodeToId = await this.otherModels.country.findIdByCode(allCountryCodes);
+    const countryIdsByPermissionGroupId = {};
+    for (const [permissionGroupId, countryCodes] of Object.entries(countryCodesByPermissionGroupId)) {
+      countryIdsByPermissionGroupId[permissionGroupId] = countryCodes.map(c => countryCodeToId[c]);
+    }
+    return countryIdsByPermissionGroupId;
+  };
 }

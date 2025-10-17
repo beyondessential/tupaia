@@ -7,7 +7,6 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
 import {
   assertSurveyGetPermissions,
-  createSurveyDBFilter,
   createSurveyViaCountryDBFilter,
 } from './assertSurveyPermissions';
 
@@ -116,7 +115,7 @@ export class GETSurveys extends GETHandler {
   }
 
   async getPermissionsFilter(criteria, options) {
-    const dbConditions = await createSurveyDBFilter(this.accessPolicy, this.models, criteria);
+    const dbConditions = await this.models.survey.createRecordsPermissionFilter(this.accessPolicy, criteria);
     return { dbConditions, dbOptions: options };
   }
 

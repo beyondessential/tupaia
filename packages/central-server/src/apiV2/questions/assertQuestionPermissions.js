@@ -1,7 +1,7 @@
 import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { assertDataElementEditPermissions } from '../dataElements/assertDataElementPermissions';
 import { hasBESAdminAccess } from '../../permissions';
-import { fetchCountryIdsByPermissionGroupId, mergeMultiJoin } from '../utilities';
+import { mergeMultiJoin } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -21,10 +21,8 @@ export const createQuestionDBFilter = async (accessPolicy, models, criteria, opt
     return { dbConditions, dbOptions };
   }
 
-  const countryIdsByPermissionGroupId = await fetchCountryIdsByPermissionGroupId(
-    accessPolicy,
-    models,
-  );
+  const countryIdsByPermissionGroupId =
+    await models.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
 
   dbOptions.multiJoin = mergeMultiJoin(
     [

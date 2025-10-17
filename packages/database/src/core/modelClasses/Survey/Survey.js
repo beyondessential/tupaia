@@ -1,9 +1,9 @@
-import { AccessPolicy } from '@tupaia/access-policy';
+import { AccessPolicy, hasBESAdminAccess } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
 import { reduceToDictionary } from '@tupaia/utils';
-
 import { ensure } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
+
 import { MaterializedViewLogDatabaseModel } from '../../analytics';
 import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
 import { DatabaseRecord } from '../../DatabaseRecord';
@@ -377,6 +377,29 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
         projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
       }),
     };
+  }
+
+  async createRecordsPermissionFilter(accessPolicy, criteria = {}) {
+    if (hasBESAdminAccess(accessPolicy)) {
+      return criteria;
+    }
+    const dbConditions = { ...criteria };
+
+    const countryIdsByPermissionGroupId =
+      await this.otherModels.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
+
+    dbConditions[QUERY_CONJUNCTIONS.RAW] = {
+      sql: `
+        (
+          survey.country_ids
+          &&
+          ARRAY(
+            SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
+          )
+        )`,
+      parameters: JSON.stringify(countryIdsByPermissionGroupId),
+    };
+    return dbConditions;
   }
 
   /**
