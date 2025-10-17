@@ -16,7 +16,7 @@ import { useIsOfflineFirst } from '../offlineFirst';
 
 interface GlobalMutationContext {
   models: DatatrakWebModelRegistry;
-  accessPolicy?: AccessPolicy;
+  accessPolicy: AccessPolicy;
   user: CurrentUser;
 }
 
@@ -51,7 +51,7 @@ export function useDatabaseMutation<
     return mutationFn({
       data,
       models: isOfflineFirst ? ensure(models) : models!,
-      accessPolicy,
+      accessPolicy: ensure(accessPolicy),
       user,
       ...localContext,
     });
