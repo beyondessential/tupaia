@@ -31,7 +31,7 @@
     "lodash.throttle": "^4.1.1",
     "lucide-react": "^0.525.0",
     "markdown-to-jsx": "^7.7.13",
-    "nanoid": "^5.1.6",
+    "nanoid": "^3.3.11",
     "notistack": "^3.0.1",
     "prop-types": "^15.8.1",
     "react": "^16.14.0",

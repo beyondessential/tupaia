@@ -12381,7 +12381,7 @@ __metadata:
     lucide-react: ^0.525.0
     markdown-to-jsx: ^7.7.13
     msw: ^1.3.1
-    nanoid: ^5.1.6
+    nanoid: ^3.3.11
     notistack: ^3.0.1
     prop-types: ^15.8.1
     react: ^16.14.0
@@ -29630,15 +29630,6 @@ __metadata:
   bin:
     nanoid: bin/nanoid.cjs
   checksum: 3be20d8866a57a6b6d218e82549711c8352ed969f9ab3c45379da28f405363ad4c9aeb0b39e9abc101a529ca65a72ff9502b00bf74a912c4b64a9d62dfd26c29
-  languageName: node
-  linkType: hard
-
-"nanoid@npm:^5.1.6":
-  version: 5.1.6
-  resolution: "nanoid@npm:5.1.6"
-  bin:
-    nanoid: bin/nanoid.js
-  checksum: 4109dbcf596d7f297a9b42f459b8f01694a03ebbdd2f41408d963ad54e5ec7234cbe7b4acad137751f31add11bb4fb3415a3e688082516745812811f05570014
   languageName: node
   linkType: hard
 
