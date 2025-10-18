@@ -100,6 +100,29 @@ sudo apt-get -yqq install \
   wget \
   xdg-utils
 
+install_tailscale() {
+  if ! command -v tailscale &>/dev/null; then
+    echo 'Tailscale not installed. Installing...'
+
+    # See https://docs.aws.amazon.com/linux/al2023/ug/ident-os-release.html
+    local os_id=$(source /etc/os-release && echo "$ID")
+    local os_codename=$(source /etc/os-release && echo "$VERSION_CODENAME")
+
+    sudo cp "$TUPAIA_DIR"/packages/devops/keyrings/tailscale.gpg /usr/share/keyrings/tailscale.gpg
+    echo "deb [signed-by=/usr/share/keyrings/tailscale.gpg] https://pkgs.tailscale.com/stable/$os_id $os_codename main" |
+      sudo tee /etc/apt/sources.list.d/tailscale.list
+    sudo apt-get update
+    sudo apt-get -qq install tailscale
+  else
+    echo 'Updating Tailscale...'
+    sudo tailscale update
+  fi
+
+  echo 'Tailscale version:'
+  tailscale version
+}
+install_tailscale
+
 # install node and yarn
 if ! command -v node &>/dev/null; then
   echo 'nvm not installed. Installing...'
