@@ -7,18 +7,19 @@ cd "$SCRIPT_DIR/.."
 if [[ $1 != OK ]]; then
   echo 'Note: this script reads .env vars'
   echo '  Update DB_NAME etc... in database db.env'
-  echo 
+  echo
   echo 're-run with OK to continue'
-
-if [[ $CI = true ]]; then
-    echo '::group::Set up test database'
   exit 1
 fi
 
 declare -i tic=$SECONDS
 
 DIR=$(pwd "$0")
-source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
+source "$DIR/../../scripts/bash/mergeEnvForDB.sh"
+
+if [[ $CI = true ]]; then
+  echo '::group::Set up test database'
+fi
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
@@ -65,7 +66,7 @@ cp -r ./src/migrations-backup/* ./src/migrations/
 rm -rf ./src/migrations-backup
 
 if [[ $CI = true ]]; then
-    echo '::endgroup::'
+  echo '::endgroup::'
 fi
 
 declare -i toc=$SECONDS
