@@ -1,6 +1,7 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
-SCRIPT_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 cd "$SCRIPT_DIR/.."
 
 if [[ $1 != OK ]]; then
@@ -8,11 +9,10 @@ if [[ $1 != OK ]]; then
   echo '  Update DB_NAME etc... in database db.env'
   echo 
   echo 're-run with OK to continue'
-  exit 1;
-fi
 
 if [[ $CI = true ]]; then
     echo '::group::Set up test database'
+  exit 1
 fi
 
 declare -i tic=$SECONDS
