@@ -1,6 +1,7 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
-DIR=$(dirname "$0")
-ROOT="${DIR}/../../../../"
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+ROOT="$DIR/../../../../"
 
-node ${ROOT}/scripts/node/validateTests
+node "$ROOT/scripts/node/validateTests"

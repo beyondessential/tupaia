@@ -1,7 +1,8 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 # Get latest code and dependencies
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 TUPAIA_DIR=$DIR/../../../..
 BRANCH=$1
 echo "Checking out ${BRANCH}, or dev if that doesn't exist"
@@ -20,4 +21,4 @@ git reset --hard # clear out any manual changes that have been made, which would
 git checkout ${BRANCH_TO_USE}
 git reset --hard origin/${BRANCH_TO_USE}
 
-echo "Checked out latest code"
+echo 'Checked out latest code'

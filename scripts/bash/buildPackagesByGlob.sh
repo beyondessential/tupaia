@@ -2,7 +2,7 @@
 
 # Preflight
 set -e
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 source "$DIR/ansiControlSequences.sh"
 
 # One flag and one “real” argument expected (except in the case of --help)

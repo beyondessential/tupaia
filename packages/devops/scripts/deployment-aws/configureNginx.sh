@@ -1,6 +1,7 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 TUPAIA_DIR=$DIR/../../../..
 
 # Stop nginx

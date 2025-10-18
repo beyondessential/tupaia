@@ -72,4 +72,4 @@ pm2 save
 # Log dump file
 grep status /home/ubuntu/.pm2/dump.pm2
 
-echo "Finished deploying latest"
+echo 'Finished deploying latest'
