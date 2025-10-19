@@ -2,14 +2,20 @@ import { verify } from '@node-rs/argon2';
 import winston from 'winston';
 
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
-import { API_CLIENT_PERMISSIONS, SyncDirections } from '@tupaia/constants';
+import {
+  API_CLIENT_PERMISSIONS,
+  SyncDirections,
+  PUBLIC_USER_EMAIL,
+  PUBLIC_USER_ID,
+} from '@tupaia/constants';
 import { ensure, isNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
 import { DatabaseError } from '@tupaia/utils';
-import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseRecord } from '../DatabaseRecord';
-import { RECORDS } from '../records';
+import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
+import { DatabaseModel } from '../../DatabaseModel';
+import { DatabaseRecord } from '../../DatabaseRecord';
+import { RECORDS } from '../../records';
+import { addRecentEntities } from './addRecentEntities';
 
 const DEFAULT_PAGE_SIZE = 100;
 
@@ -55,6 +61,10 @@ export class UserRecord extends DatabaseRecord {
    */
   get hasLegacyPasswordHash() {
     return this.password_hash.startsWith(UserRecord.#legacyHashPrefix);
+  }
+
+  get isPublicUser() {
+    return this.id === PUBLIC_USER_ID;
   }
 
   /**
@@ -110,7 +120,7 @@ export class UserRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('./UserEntityPermission').UserEntityPermissionRecord[]>}
+   * @returns {Promise<import('../UserEntityPermission').UserEntityPermissionRecord[]>}
    */
   async getEntityPermissions() {
     return await this.otherModels.userEntityPermission.find({ user_id: this.id });
@@ -119,7 +129,7 @@ export class UserRecord extends DatabaseRecord {
   /**
    * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
-   * @returns {(import('./Entity').EntityRecord & { isRecent: true })[]}
+   * @returns {(import('../Entity').EntityRecord & { isRecent: true })[]}
    */
   async getRecentEntities(countryCode, type) {
     const entityIds = this.getRecentEntityIds(countryCode, type);
@@ -155,10 +165,18 @@ export class UserRecord extends DatabaseRecord {
   }
 }
 
-const PUBLIC_USER_EMAIL = 'public@tupaia.org';
-
 export class UserModel extends DatabaseModel {
   static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+
+  /**
+   * @param {import('../../ModelRegistry').ModelRegistry} models
+   * @param {import('@tupaia/types').User['id']} userId
+   * @param {import('@tupaia/types').Entity['id'][]} entityIds
+   * @returns {Promise}
+   */
+  static async addRecentEntities(models, userId, entityIds) {
+    return await addRecentEntities(models, userId, entityIds);
+  }
 
   get DatabaseRecordClass() {
     return UserRecord;

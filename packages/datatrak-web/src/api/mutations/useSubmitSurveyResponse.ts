@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 
-import { SurveyResponseModel } from '@tupaia/database';
+import { SurveyResponseModel, UserModel } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
 import { DatatrakWebSubmitSurveyResponseRequest, Entity, Survey, UserAccount } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
@@ -76,6 +76,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         const submitterId = user.isLoggedIn
           ? ensure(user.id)
           : (await transactingModels.user.findPublicUser()).id;
+
         const data = {
           ...surveyResponseData,
           answers,
@@ -98,7 +99,11 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
           [processedResponse],
         );
 
-        // TODO: Update recent entities
+        if (user.isLoggedIn) {
+          await UserModel.addRecentEntities(transactingModels, submitterId, recent_entities);
+        }
+
+        // Marking any corresponding task as complete is delegated to central-server
 
         return idsCreated;
       });
