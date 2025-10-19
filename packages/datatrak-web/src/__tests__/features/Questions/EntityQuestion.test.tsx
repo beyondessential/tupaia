@@ -114,7 +114,7 @@ describe('Entity Question', () => {
     });
   });
 
-  it('correctly constructs the request filter for the entities request, ', async () => {
+  it('correctly constructs the request filter for the entities request', async () => {
     const entitiesRequest = spyOnMockRequest(server, 'GET', '*entityDescendants');
 
     renderComponent(

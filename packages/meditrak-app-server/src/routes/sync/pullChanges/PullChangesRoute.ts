@@ -158,7 +158,7 @@ export class PullChangesRoute extends Route<PullChangesRequest> {
               models,
               recordType,
               appVersion,
-              record as unknown as Record<string, unknown>,
+              record as unknown as Record<string, unknown>, // TODO: Sort out this band-aid
             );
           }
         }

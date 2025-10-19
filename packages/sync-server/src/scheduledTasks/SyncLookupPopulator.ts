@@ -3,6 +3,7 @@ import log from 'winston';
 import { ScheduledTask } from '@tupaia/server-utils';
 import { CentralSyncManager } from '../sync';
 import { SyncServerModelRegistry } from '../types';
+
 export class SyncLookupPopulator extends ScheduledTask {
   private syncManager: CentralSyncManager;
 

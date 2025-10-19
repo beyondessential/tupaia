@@ -1,19 +1,17 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import log from 'winston';
 
-import { DatatrakWebUserRequest } from '@tupaia/types';
 import { generateId } from '@tupaia/database';
 import { FullPageLoader } from '@tupaia/ui-components';
-
 import { useDatabaseContext } from '../hooks/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
-import { useIsOfflineFirst } from './offlineFirst';
 import { useCurrentUserContext } from './CurrentUserContext';
-import { useQueryClient } from '@tanstack/react-query';
+import { useIsOfflineFirst } from './offlineFirst';
 
-export type SyncContextType = DatatrakWebUserRequest.ResBody & {
+export interface SyncContextType {
   clientSyncManager: ClientSyncManager;
-};
+}
 
 const SyncContext = createContext<SyncContextType | null>(null);
 

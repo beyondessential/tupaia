@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   CountryModel,

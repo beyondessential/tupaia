@@ -13,6 +13,7 @@ import {
   ProjectModel,
   SurveyResponseModel,
 } from '@tupaia/server-boilerplate';
+
 export interface SyncServerModelRegistry extends ModelRegistry {
   readonly database: TupaiaDatabase;
 
@@ -99,7 +100,9 @@ export interface PullInitiationResult {
   pullUntil: number;
 }
 
-export type UnmarkSessionAsProcessingFunction = () => Promise<void>;
+export interface UnmarkSessionAsProcessingFunction {
+  (): Promise<void>;
+}
 
 export interface TestModelRegistry extends ModelRegistry {
   readonly database: TupaiaDatabase;

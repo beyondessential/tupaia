@@ -504,11 +504,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           ...options,
         },
       );
-      const relationData = await Promise.all(relations.map(async r => r.getData()));
+      const relationData = await Promise.all(relations.map(async r => await r.getData()));
       const uniqueEntities = Object.values(keyBy(relationData, 'id'));
       return uniqueEntities;
     });
-    return Promise.all(entityRecords.map(async r => this.generateInstance(r)));
+    return Promise.all(entityRecords.map(async r => await this.generateInstance(r)));
   }
 
   async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {
@@ -642,9 +642,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   async getRelativesOfEntities(hierarchyId, entityIds, criteria) {
     // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
-    const ancestors = (await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria))
-      .slice()
-      .reverse();
+    const ancestors = (
+      await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria)
+    ).toReversed();
 
     const self = await this.find({
       ...criteria,

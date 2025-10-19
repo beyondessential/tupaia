@@ -1,3 +1,5 @@
+import { Knex } from 'knex';
+
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   ApiClientModel,
@@ -7,7 +9,6 @@ import {
   UserEntityPermissionModel,
   UserModel,
 } from '@tupaia/tsmodels';
-import { Knex } from 'knex';
 
 export type AccessPolicyObject = Record<string, string[]>;
 

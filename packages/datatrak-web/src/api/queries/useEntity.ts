@@ -8,7 +8,7 @@ export const useEntityByCode = (
 ) => {
   return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
     ['entity', entityCode],
-    () => get(`entity/${entityCode}`),
+    async () => await get(`entity/${entityCode}`),
     {
       ...useQueryOptions,
       enabled: !!entityCode && (useQueryOptions?.enabled ?? true),
@@ -23,10 +23,12 @@ export const useEntityById = (
   return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
     ['entities', entityId],
     async () => {
-      const response = await get('entities', {
-        params: { filter: { id: entityId } },
+      const [entity] = await get('entities', {
+        params: {
+          filter: { id: entityId },
+        },
       });
-      return response[0];
+      return entity;
     },
     {
       ...useQueryOptions,

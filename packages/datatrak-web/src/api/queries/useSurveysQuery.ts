@@ -61,47 +61,50 @@ const getLocal = async ({
   searchTerm?: string;
 }) => {
   const where = constructDbFilter({ projectId, searchTerm, countryCode });
-  const records = await models.survey.find(where);
 
-  if (records.length === 0) return [];
+  return await models.wrapInReadOnlyTransaction(async (trxModels: DatatrakWebModelRegistry) => {
+    const records = await trxModels.survey.find(where);
 
-  let surveys = records.map(({ code, id, name, survey_group_id }) => ({
-    code,
-    id,
-    name,
-    survey_group_id,
-  }));
+    if (records.length === 0) return [];
 
-  // Add country names
-  if (includeCountryNames) {
-    const surveyIds = surveys.map(s => s.id);
-    const countryNamesBySurveyId = await getSurveyCountryNames(models, surveyIds);
-    surveys = surveys.map(s => ({ ...s, countryNames: countryNamesBySurveyId[s.id] }));
-  }
-
-  // Add survey group names
-  if (includeSurveyGroupNames) {
-    const surveyGroupIds = surveys.map(s => s.survey_group_id).filter(isNotNullish);
-    const surveyGroups = await models.surveyGroup.find({ id: surveyGroupIds });
-    const surveyGroupNamesById = surveyGroups.reduce<
-      Record<SurveyGroup['id'], SurveyGroup['name']>
-    >((dict, surveyGroup) => {
-      dict[surveyGroup.id] = surveyGroup.name;
-      return dict;
-    }, {});
-
-    surveys = surveys.map(s => ({
-      ...s,
-      surveyGroupName: isNullish(s.survey_group_id)
-        ? null
-        : surveyGroupNamesById[s.survey_group_id],
+    const surveys: (Pick<Survey, 'code' | 'id' | 'name' | 'survey_group_id'> & {
+      countryNames?: Country['name'][];
+      surveyGroupName?: SurveyGroup['name'] | null;
+    })[] = records.map(({ code, id, name, survey_group_id }) => ({
+      code,
+      id,
+      name,
+      survey_group_id,
     }));
-  }
 
-  return camelcaseKeys(
-    surveys.map(({ survey_group_id: _, ...rest }) => rest), // Omit survey_group_id from result
-    { deep: true },
-  );
+    // Add country names
+    if (includeCountryNames) {
+      const surveyIds = surveys.map(s => s.id);
+      const countryNamesBySurveyId = await trxModels.survey.getCountryNamesBySurveyId(surveyIds);
+      for (const survey of surveys) survey.countryNames = countryNamesBySurveyId[survey.id];
+    }
+
+    // Add survey group names
+    if (includeSurveyGroupNames) {
+      const surveyGroupIds = surveys.map(s => s.survey_group_id).filter(isNotNullish);
+      const surveyGroups = await trxModels.surveyGroup.find({ id: surveyGroupIds });
+      const surveyGroupNamesById = surveyGroups.reduce<
+        Record<SurveyGroup['id'], SurveyGroup['name']>
+      >((dict, surveyGroup) => {
+        dict[surveyGroup.id] = surveyGroup.name;
+        return dict;
+      }, {});
+
+      for (const survey of surveys) {
+        survey.surveyGroupName = isNullish(survey.survey_group_id)
+          ? null
+          : surveyGroupNamesById[survey.survey_group_id];
+        survey.survey_group_id = undefined; // Done with survey group ID now. Omit it from result.
+      }
+    }
+
+    return camelcaseKeys(surveys, { deep: true });
+  });
 };
 
 export function useSurveysQuery(
@@ -119,11 +122,8 @@ export function useSurveysQuery(
   return useDatabaseQuery(
     [
       'surveys',
-      projectId,
-      countryCode,
-      searchTerm,
-      includeCountryNames,
-      includeSurveyGroupNames,
+      { countryCode, projectId, searchTerm },
+      { includeCountryNames, includeSurveyGroupNames },
       isOfflineFirst,
     ],
     isOfflineFirst ? getLocal : getRemote,
@@ -165,29 +165,4 @@ function constructDbFilter({
   }
 
   return dbFilter;
-}
-
-/** @privateRemarks Logic duplicated from `@tupaia/central-server/apiV2/surveys/GETSurveys` */
-async function getSurveyCountryNames(
-  models: DatatrakWebModelRegistry,
-  surveyIds: Survey['id'][],
-): Promise<Record<Survey['id'], Country['name'][]>> {
-  if (surveyIds.length === 0) return {};
-
-  const rows: { survey_id: Survey['id']; country_names: Country['name'][] }[] =
-    await models.database.executeSql(
-      `
-        SELECT
-          survey.id survey_id,
-          ARRAY_AGG(country.name ORDER BY country.name) country_names
-        FROM
-          survey
-          LEFT JOIN country ON (country.id = ANY (survey.country_ids))
-        WHERE
-          survey.id IN (${surveyIds.map(() => '?') /* TODO: SqlQuery.record(surveyIds) */}) GROUP BY survey.id;
-      `,
-      surveyIds,
-    );
-
-  return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
 }
