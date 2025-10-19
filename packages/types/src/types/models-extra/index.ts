@@ -3,6 +3,7 @@ export {
   PlaintextReferenceProps,
   LinkReferenceProps,
   EntityAttributes,
+  EntityMetadata,
   DateOffsetSpec,
   VizPeriodGranularity,
   DashboardItemType,
