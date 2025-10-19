@@ -1,5 +1,8 @@
 /* eslint-disable camelcase */
 import { JOIN_TYPES, processColumns } from '@tupaia/database';
+import { ensure } from '@tupaia/tsutils';
+import { NotFoundError } from '@tupaia/utils';
+import winston from '../../log';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
 import {
@@ -20,9 +23,11 @@ import {
 const SURVEY_QUESTIONS_COLUMN = 'surveyQuestions';
 const COUNTRY_NAMES_COLUMN = 'countryNames';
 const COUNTRY_CODES_COLUMN = 'countryCodes';
+const PAGINATED_QUESTIONS_COLUMN = 'paginatedQuestions';
 const AD_HOC_COLUMNS = new Set([
   COUNTRY_CODES_COLUMN,
   COUNTRY_NAMES_COLUMN,
+  PAGINATED_QUESTIONS_COLUMN,
   SURVEY_QUESTIONS_COLUMN,
 ]);
 
@@ -31,24 +36,61 @@ export class GETSurveys extends GETHandler {
 
   defaultJoinType = JOIN_TYPES.LEFT_OUTER;
 
+  /**
+   * @type {boolean}
+   * @see COUNTRY_CODES_COLUMN
+   */
+  includeCountryCodes = false;
+  /**
+   * @type {boolean}
+   * @see COUNTRY_NAMES_COLUMN
+   */
+  includeCountryNames = true;
+  /**
+   * @type {boolean}
+   * @see PAGINATED_QUESTIONS_COLUMN
+   */
+  includePaginatedQuestions = false;
+  /**
+   * @type {boolean}
+   * @see SURVEY_QUESTIONS_COLUMN
+   */
+  includeQuestions = true;
+
   async findSingleRecord(surveyId, options) {
     const surveyChecker = accessPolicy =>
       assertSurveyGetPermissions(accessPolicy, this.models, surveyId);
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyChecker]));
 
+    if (this.includePaginatedQuestions && this.includeQuestions) {
+      winston.warn(
+        `Received ${this.req.method} ${this.req.originalUrl} request with both \`${SURVEY_QUESTIONS_COLUMN}\` and \`${PAGINATED_QUESTIONS_COLUMN}\` fields, which is redundant. Double check your \`fields\` query parameter.`,
+      );
+    }
+
     const survey = await super.findSingleRecord(surveyId, options);
+    if (!survey) throw new NotFoundError(`No survey exists with ID ${surveyId}`);
+
     return await this.models.wrapInReadOnlyTransaction(async transactingModels => {
-      const [surveyQuestionsValues, countryNames, countryCodes] = await Promise.all([
-        this.getSurveyQuestionsValues(transactingModels, [surveyId]),
-        this.getSurveyCountryNames(transactingModels, [surveyId]),
-        this.getSurveyCountryCodes(transactingModels, [surveyId]),
-      ]);
+      const [countryCodes, countryNames, surveyQuestionsValues, paginatedQuestions] =
+        await Promise.all([
+          this.getSurveyCountryCodes(transactingModels, [surveyId]),
+          this.getSurveyCountryNames(transactingModels, [surveyId]),
+          this.getSurveyQuestionsValues(transactingModels, [surveyId]),
+          this.includePaginatedQuestions
+            ? ensure(
+                await transactingModels.survey.findById(surveyId),
+                `No survey exists with ID ${surveyId}`,
+              ).getPaginatedQuestions()
+            : Promise.resolve(undefined),
+        ]);
 
       return {
         ...survey,
         surveyQuestions: surveyQuestionsValues[surveyId],
         countryNames: countryNames[surveyId],
         countryCodes: countryCodes[surveyId],
+        screens: paginatedQuestions, // For datatrak-web (via datatrak-web-server)
       };
     });
   }
@@ -90,22 +132,19 @@ export class GETSurveys extends GETHandler {
 
   async getProcessedColumns() {
     // We override this method to:
-    // 1. strip out the "surveyQuestions" column, as we don't fetch it from the database. See README.md
-    // 2. strip out the "countryNames" column, as the CRUD handler falls over with this
+    // 1. Strip out the `surveyQuestions` column, as we don't fetch it from the database
+    //    See @tupaia/database/core/modelClasses/Survey.readme.md
+    // 2. Strip out the `countryNames` column, as the CRUD handler falls over with this
     const { columns: columnsString } = this.req.query;
 
-    if (!columnsString) {
-      // Always include these by default
-      this.includeQuestions = true;
-      this.includeCountryNames = true;
-      return super.getProcessedColumns();
-    }
+    if (!columnsString) return super.getProcessedColumns();
 
+    // If specific columns requested, override all defaults
     const parsedColumns = columnsString && JSON.parse(columnsString);
-    // If we've requested specific columns, we allow skipping these fields by not requesting them
     this.includeQuestions = parsedColumns.includes(SURVEY_QUESTIONS_COLUMN);
     this.includeCountryNames = parsedColumns.includes(COUNTRY_NAMES_COLUMN);
     this.includeCountryCodes = parsedColumns.includes(COUNTRY_CODES_COLUMN);
+    this.includePaginatedQuestions = parsedColumns.includes(PAGINATED_QUESTIONS_COLUMN);
 
     const unprocessedColumns = parsedColumns.filter(col => !AD_HOC_COLUMNS.has(col));
     return processColumns(this.models, unprocessedColumns, this.recordType);
@@ -113,10 +152,11 @@ export class GETSurveys extends GETHandler {
 
   /**
    * @param {import('@tupaia/types').Survey['id'][]} surveyIds
+   * @returns {Promise<Record<import('@tupaia/types').Survey['id'], Country['code'][]>>}
    */
-  async getSurveyQuestionsValues(models, surveyIds) {
-    if (!this.includeQuestions) return {};
-    return await models.survey.getQuestionsValues(surveyIds);
+  async getSurveyCountryCodes(models, surveyIds) {
+    if (!this.includeCountryCodes) return {};
+    return await models.survey.getCountryCodesBySurveyId(surveyIds);
   }
 
   /**
@@ -130,10 +170,9 @@ export class GETSurveys extends GETHandler {
 
   /**
    * @param {import('@tupaia/types').Survey['id'][]} surveyIds
-   * @returns {Promise<Record<import('@tupaia/types').Survey['id'], Country['code'][]>>}
    */
-  async getSurveyCountryCodes(models, surveyIds) {
-    if (!this.includeCountryCodes) return {};
-    return await models.survey.getCountryCodesBySurveyId(surveyIds);
+  async getSurveyQuestionsValues(models, surveyIds) {
+    if (!this.includeQuestions) return {};
+    return await models.survey.getQuestionsValues(surveyIds);
   }
 }

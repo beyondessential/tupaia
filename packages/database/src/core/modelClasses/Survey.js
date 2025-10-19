@@ -2,12 +2,15 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
 import { reduceToDictionary } from '@tupaia/utils';
 
+import { ensure } from '@tupaia/tsutils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
 import { buildSyncLookupSelect } from '../sync';
+import { QuestionType } from '@tupaia/types';
+import { OptionRecord } from './Option';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
@@ -120,9 +123,65 @@ export class SurveyRecord extends DatabaseRecord {
     return countries.map(c => c.code);
   }
 
+  /**
+   * @returns {Promise<import('./Project').ProjectRecord>}
+   */
+  async getProject() {
+    return ensure(
+      await this.otherModels.project.findById(this.project_id),
+      `Couldn’t find project for survey ${this.code} (expected project with ID ${this.project_id})`,
+    );
+  }
+
   async hasResponses() {
     const count = await this.otherModels.surveyResponse.count({ survey_id: this.id });
     return count > 0;
+  }
+
+  async getPaginatedQuestions() {
+    function formatSurveyScreenComponent(ssc) {
+      const {
+        config,
+        question,
+        validation_criteria,
+        visibility_criteria,
+        detail_label = question.detail, // Screen component can override the question detail
+        question_text = question.text, // Screen component can override the question text
+        ...rest
+      } = ssc;
+
+      return {
+        ...rest,
+        ...question, // include component and question fields in one object
+        component_id: ssc.id,
+        config: config ? JSON.parse(config) : null,
+        detail_label,
+        options: question.options.map(OptionRecord.parseForClient),
+        question_id: question.id,
+        text: question_text,
+        validation_criteria: validation_criteria ? JSON.parse(validation_criteria) : null,
+        visibility_criteria: visibility_criteria ? JSON.parse(visibility_criteria) : null,
+      };
+    }
+
+    const questions = await this.getQuestionsValues();
+    const formatted = questions
+      // Hide Task questions in UI. They’re used to trigger task creation by TaskCreationHandler.
+      .filter(question => question.type !== QuestionType.Task)
+      .map(screen => ({
+        ...screen,
+        survey_screen_components: screen.survey_screen_components
+          .map(formatSurveyScreenComponent)
+          .sort((a, b) => a.component_number - b.component_number),
+      }))
+      .sort((a, b) => a.screen_number - b.screen_number);
+
+    return formatted;
+  }
+
+  async getQuestionsValues() {
+    const dictionary = await this.model.getQuestionsValues([this.id]);
+    return dictionary[this.id] ?? [];
   }
 }
 
@@ -244,7 +303,31 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
   }
 
-  /** @see `./README.md` */
+  /**
+   * @param {SurveyRecord['id'][]} surveyIds
+   * @returns {Promise<Record<SurveyRecord['id'], import('./SurveyGroup').SurveyGroupRecord['name']>>}
+   * Dictionary mapping survey IDs to sorted arrays of country names
+   */
+  async getSurveyGroupNamesBySurveyId(surveyIds) {
+    if (surveyIds.length === 0) return {};
+
+    const rows = await this.database.executeSql(
+      `
+        SELECT
+          survey.id AS survey_id,
+          survey_group.name AS survey_group_name
+        FROM
+          survey
+          LEFT JOIN survey_group ON survey.survey_group_id = survey_group.id
+        WHERE
+          survey.id IN ${SqlQuery.record(surveyIds)}
+      `,
+      surveyIds,
+    );
+    return Object.fromEntries(rows.map(row => [row.survey_id, row.survey_group_name]));
+  }
+
+  /** @see `./Survey.readme.md` */
   async getQuestionsValues(surveyIds) {
     if (surveyIds.length === 0) return {};
 
@@ -295,7 +378,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
    * @param {ReturnType<typeof this.getQuestionsValues>} rawResults
    */
   getAggregatedQuestions(rawResults) {
-    const initialValue = {};
     const surveyQuestions = rawResults.reduce((questionsObject, currentResult) => {
       const { survey_id: id } = currentResult;
       const updatedValue = questionsObject;
@@ -303,16 +385,14 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
       updatedValue[id] = [];
       return questionsObject;
-    }, initialValue);
+    }, {});
 
     for (const result of rawResults) {
       const { survey_id, screen_number, survey_screen_id } = result;
       const screenIndex = surveyQuestions[survey_id].findIndex(
         screen => screen.id === survey_screen_id,
       );
-      if (screenIndex !== -1) {
-        continue;
-      }
+      if (screenIndex !== -1) continue;
       surveyQuestions[survey_id].push({
         id: survey_screen_id,
         screen_number,
@@ -363,6 +443,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
         },
       });
     }
+
     return surveyQuestions;
   }
 }

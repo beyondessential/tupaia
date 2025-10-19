@@ -101,7 +101,6 @@ const overrides = {
       'button, input, textarea, select': {
         touchAction: 'manipulation',
       },
-      button: { font: 'inherit' },
       legend: {
         paddingInline: 0,
       },
