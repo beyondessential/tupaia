@@ -1,7 +1,7 @@
-import { generateId, SurveyResponseModel } from '@tupaia/database';
 import { QuestionType } from '@tupaia/types';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
-import { DatatrakWebServerModelRegistry } from '../types';
+import { SurveyResponseModel } from '../../../core/modelClasses/SurveyResponse';
+import { generateId } from '../../../core/utilities';
 
 const mockFindEntityById = async (_id: string) => ({
   id: 'theEntityId',
@@ -19,7 +19,7 @@ const mockModels = {
   option: {
     findOne: async ({ value }: { value: any }) => (value === '2' ? { value } : null),
   },
-} as DatatrakWebServerModelRegistry;
+};
 
 jest.mock('@tupaia/database', () => ({
   generateId: jest.fn(() => 'theEntityId'),

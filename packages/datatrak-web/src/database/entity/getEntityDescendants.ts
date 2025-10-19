@@ -1,11 +1,11 @@
 // TODO: Some of these are duplicated from datatrak-web-server with tweaks suitable for datatrak-web,
 // Eventually we are going to remove the route from datatrak-web-server
 // and use this function only. So keeping it here for now.
-import { isNil, omitBy } from 'lodash';
+import omitBy from 'lodash.omitby';
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { EntityRecord, ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
-import { camelcaseKeys, ensure, isNotNullish } from '@tupaia/tsutils';
+import { camelcaseKeys, ensure, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { Entity, Project } from '@tupaia/types';
 import { snakeKeys } from '@tupaia/utils';
 import { CurrentUser } from '../../api';
@@ -118,7 +118,7 @@ const buildEntityFilter = (params: GetEntityDescendantsParams) => {
     ...restOfFilter,
   };
 
-  return omitBy(snakeKeys(entityFilter), isNil);
+  return omitBy(snakeKeys(entityFilter), isNullish);
 };
 
 export const getEntityDescendants = async ({

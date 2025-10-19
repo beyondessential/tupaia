@@ -133,7 +133,7 @@ export class GETSurveys extends GETHandler {
   async getProcessedColumns() {
     // We override this method to:
     // 1. Strip out the `surveyQuestions` column, as we don't fetch it from the database
-    //    See @tupaia/database/core/modelClasses/Survey.readme.md
+    //    See @tupaia/database/core/modelClasses/Survey/README.md
     // 2. Strip out the `countryNames` column, as the CRUD handler falls over with this
     const { columns: columnsString } = this.req.query;
 

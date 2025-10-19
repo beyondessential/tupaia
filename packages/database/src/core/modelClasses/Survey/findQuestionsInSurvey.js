@@ -1,7 +1,7 @@
-import { RECORDS } from '@tupaia/database';
+import { RECORDS } from '../../records';
 
 export const findQuestionsInSurvey = async (models, surveyId) => {
-  return models.database.find(
+  return await models.database.find(
     RECORDS.QUESTION,
     { survey_id: surveyId },
     {

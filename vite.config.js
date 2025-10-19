@@ -33,7 +33,12 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
-        external: ['@node-rs/argon2-wasm32-wasi', 'stream/promises', 'fs/promises'],
+        external: [
+          '@node-rs/argon2-wasm32-wasi',
+          'fs/promises',
+          'memfs/promises',
+          'stream/promises',
+        ],
       },
     },
     plugins: [

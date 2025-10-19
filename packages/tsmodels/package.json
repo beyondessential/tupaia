@@ -24,9 +24,7 @@
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/database": "workspace:*",
-    "@tupaia/tsutils": "workspace:*",
-    "@tupaia/types": "workspace:*",
-    "@tupaia/utils": "workspace:*"
+    "@tupaia/types": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.1",

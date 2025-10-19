@@ -31,7 +31,6 @@
     "@tupaia/server-boilerplate": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
-    "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "body-parser": "^1.20.3",
     "case": "^1.6.3",
