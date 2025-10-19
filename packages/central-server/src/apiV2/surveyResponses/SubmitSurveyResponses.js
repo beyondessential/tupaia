@@ -2,7 +2,6 @@ import { AnalyticsRefresher, SurveyResponseModel } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
 import { ANSWER_BODY_PARSERS } from '../../dataAccessors';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
 import { RouteHandler } from '../RouteHandler';
 
 export class SubmitSurveyResponses extends RouteHandler {
@@ -15,7 +14,11 @@ export class SubmitSurveyResponses extends RouteHandler {
   async assertUserHasAccess(transactingModels) {
     // Check permissions
     const surveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, this.surveyResponses);
+      await transactingModels.surveyResponse.assertCanSubmit(
+        transactingModels,
+        accessPolicy,
+        this.surveyResponses,
+      );
     };
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),

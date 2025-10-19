@@ -8,7 +8,6 @@ import {
   assertAnyPermissions,
   assertBESAdminAccess,
 } from '../../permissions';
-import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
 import { RouteHandler } from '../RouteHandler';
 import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
 
@@ -39,7 +38,7 @@ export class ResubmitSurveyResponse extends RouteHandler {
         );
 
       const newSurveyResponsePermissionsChecker = async accessPolicy => {
-        await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, [
+        await transactingModels.surveyResponse.assertCanSubmit(transactingModels, accessPolicy, [
           this.newSurveyResponse,
         ]);
       };

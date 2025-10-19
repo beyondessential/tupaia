@@ -1,29 +1,29 @@
 import { cloneDeep } from 'lodash';
+
 import { AnalyticsRefresher } from '@tupaia/database';
 import {
-  respond,
-  ValidationError,
-  ObjectValidator,
-  hasContent,
-  isPresent,
-  constructRecordExistsWithId,
-  constructIsEmptyOr,
   constructEveryItem,
-  takesIdForm,
-  takesDateForm,
-  isNumber,
+  constructIsEmptyOr,
   constructIsValidEntityType,
+  constructRecordExistsWithId,
+  hasContent,
+  isNumber,
+  isPresent,
+  ObjectValidator,
+  respond,
+  takesDateForm,
+  takesIdForm,
+  ValidationError,
 } from '@tupaia/utils';
-import { updateOrCreateSurveyResponse, addSurveyImage, addSurveyFile } from './utilities';
-import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
-  translateObjectFields,
   translateEntityCodeToId,
+  translateObjectFields,
+  translateQuestionCodeToId,
   translateSurveyCodeToId,
   translateUserEmailToIdAndAssessorName,
-  translateQuestionCodeToId,
 } from '../utilities';
+import { addSurveyFile, addSurveyImage, updateOrCreateSurveyResponse } from './utilities';
 
 const ACTIONS = {
   SubmitSurveyResponse: 'SubmitSurveyResponse',
@@ -59,7 +59,11 @@ export async function postChanges(req, res) {
       .filter(c => c.action === ACTIONS.SubmitSurveyResponse)
       .map(c => c.translatedPayload.survey_response || c.translatedPayload);
     const surveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, surveyResponsePayloads);
+      await transactingModels.surveyResponse.assertCanSubmit(
+        transactingModels,
+        accessPolicy,
+        surveyResponsePayloads,
+      );
     };
     await req.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),

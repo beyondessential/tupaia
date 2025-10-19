@@ -25,7 +25,6 @@ import {
 } from '../../export/exportSurveyResponses';
 import { getArrayQueryParameter } from '../../utilities';
 import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
-import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
 import { getFailureMessage } from './getFailureMessage';
 
 const ANSWER_TRANSFORMERS = {
@@ -139,7 +138,7 @@ export async function importSurveyResponses(req, res) {
     const entityCodeToId = reduceToDictionary(entities, 'code', 'id');
 
     const importSurveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode);
+      await models.surveyResponse.assertCanImport(models, accessPolicy, entitiesBySurveyCode);
     };
 
     await req.assertPermissions(
