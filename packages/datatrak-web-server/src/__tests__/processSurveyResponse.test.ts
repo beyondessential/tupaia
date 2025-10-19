@@ -1,7 +1,6 @@
+import { generateId, SurveyResponseModel } from '@tupaia/database';
 import { QuestionType } from '@tupaia/types';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
-import { generateId } from '@tupaia/database';
-import { processSurveyResponse } from '../routes/SubmitSurveyReponse/processSurveyResponse';
 import { DatatrakWebServerModelRegistry } from '../types';
 
 const mockFindEntityById = async (_id: string) => ({
@@ -65,7 +64,7 @@ describe('processSurveyResponse', () => {
   };
 
   it('should process the survey response with standard question types', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -123,7 +122,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should set the entity_id as the answer when question type is "PrimaryEntity"', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -148,7 +147,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should set the data_time as the answer when question type is "DateOfData"', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -172,7 +171,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should set the data_time as the answer when question type is "SubmissionDate"', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -196,7 +195,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should add new options to options_created when type is "Autocomplete" and answer not in the optionSet', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -235,7 +234,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should not add new options to options_created when type is "Autocomplete" and answer is in the optionSet', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -269,7 +268,7 @@ describe('processSurveyResponse', () => {
 
   it('should throw an error when type is "Autocomplete" and answer is not in the optionSet but createNew is not true', async () => {
     await expect(() =>
-      processSurveyResponse(mockModels, {
+      SurveyResponseModel.processSurveyResponse(mockModels, {
         ...responseData,
         questions: [
           {
@@ -291,7 +290,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should not add to entities_upserted when type is "Entity" and a create config is not set', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -321,7 +320,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should add to entities_upserted when type is "Entity" and a create config is set', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -368,7 +367,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should add to qr_codes_to_create when type is "Entity" and a generateQRCode config is set', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -422,7 +421,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should add to entities_upserted when type is "PrimaryEntity" and a create config is set', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -463,7 +462,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should not add to recent_entities when type is entity question and is not filled in', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -483,7 +482,7 @@ describe('processSurveyResponse', () => {
 
   it('throw an error when type is primary entity question and is not filled in', async () => {
     try {
-      void (await processSurveyResponse(mockModels, {
+      void (await SurveyResponseModel.processSurveyResponse(mockModels, {
         ...responseData,
         questions: [
           {
@@ -498,12 +497,12 @@ describe('processSurveyResponse', () => {
         answers: {},
       }));
     } catch (error: any) {
-      expect(error.message).toBe('Primary Entity Question is a required field');
+      expect(error.message).toBe('Primary Entity question is a required field');
     }
   });
 
   it('should use the country id for new entities if parent id is not filled in', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -543,7 +542,7 @@ describe('processSurveyResponse', () => {
     });
   });
   it('should handle when question type is File', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -578,7 +577,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should handle when question type is File and the file is not an encoded file', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -610,7 +609,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should add the timezone offset when question type is Date', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
@@ -639,7 +638,7 @@ describe('processSurveyResponse', () => {
   });
 
   it('should add the timezone offset when question type is DateTime', async () => {
-    const result = await processSurveyResponse(mockModels, {
+    const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {

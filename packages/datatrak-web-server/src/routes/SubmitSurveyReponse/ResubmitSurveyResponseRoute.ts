@@ -1,7 +1,8 @@
 import { Request } from 'express';
+
+import { SurveyResponseModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebResubmitSurveyResponseRequest as RequestT } from '@tupaia/types';
-import { processSurveyResponse } from './processSurveyResponse';
 import { addRecentEntities } from '../../utils';
 
 export type ResubmitSurveyResponseRequest = Request<
@@ -19,7 +20,7 @@ export class ResubmitSurveyResponseRoute extends Route<ResubmitSurveyResponseReq
     const { originalSurveyResponseId } = params;
 
     const { qr_codes_to_create, recent_entities, ...processedResponse } =
-      await processSurveyResponse(models, surveyResponseData);
+      await SurveyResponseModel.processSurveyResponse(models, surveyResponseData);
 
     await centralApi.resubmitSurveyResponse(originalSurveyResponseId, processedResponse);
 

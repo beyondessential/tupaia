@@ -1,8 +1,9 @@
 import { Request } from 'express';
+
+import { SurveyResponseModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSubmitSurveyResponseRequest as RequestT } from '@tupaia/types';
 import { addRecentEntities } from '../../utils';
-import { processSurveyResponse } from './processSurveyResponse';
 import { handleTaskCompletion } from './handleTaskCompletion';
 
 export type SubmitSurveyResponseRequest = Request<
@@ -19,7 +20,7 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
     const { session, models } = this.req;
 
     const { qr_codes_to_create, recent_entities, ...processedResponse } =
-      await processSurveyResponse(models, surveyResponseData);
+      await SurveyResponseModel.processSurveyResponse(models, surveyResponseData);
 
     const response = await centralApi.createSurveyResponse(
       processedResponse,
@@ -40,7 +41,7 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
     });
 
     return {
-      qrCodeEntitiesCreated: qr_codes_to_create || [],
+      qrCodeEntitiesCreated: qr_codes_to_create,
     };
   }
 }
