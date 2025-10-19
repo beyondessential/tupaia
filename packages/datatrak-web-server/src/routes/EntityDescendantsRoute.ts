@@ -3,7 +3,7 @@ import { Request } from 'express';
 
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Route } from '@tupaia/server-boilerplate';
-import { isNotNullish } from '@tupaia/tsutils';
+import { ensure, isNotNullish } from '@tupaia/tsutils';
 import { DatatrakWebEntityDescendantsRequest, Entity } from '@tupaia/types';
 import { sortSearchResults } from '../utils';
 
@@ -43,8 +43,11 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
     } = query;
 
     if (isLoggedIn) {
-      const currentUser = await models.user.findOne({ email: session.email });
-      recentEntities = await models.user.getRecentEntityIds(currentUser.id, countryCode, type);
+      const currentUser = ensure(
+        await models.user.findOne({ email: session.email }),
+        `No user exists with email ${session.email}`,
+      );
+      recentEntities = currentUser.getRecentEntityIds(countryCode, type);
     }
 
     const filter = {

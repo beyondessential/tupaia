@@ -66,7 +66,7 @@ const offlineAnswerBodyParsers = {
 /**
  * @type {AnswerBodyParser}
  * @param {import('@tupaia/types').Answer} answer
- * @param {Record<QuestionType, AnswerBodyParser> | undefined} customParsers
+ * @param {Record<QuestionType, AnswerBodyParser> | undefined} [customParsers]
  * @returns {Promise<Answer["text"]>}
  */
 export async function getAnswerText(answer, customParsers) {

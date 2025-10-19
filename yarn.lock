@@ -12539,6 +12539,7 @@ __metadata:
     csstype: ^3.1.3
     date-fns: ^2.30.0
     downloadjs: 1.4.7
+    es-toolkit: ^1.39.10
     esbuild: ^0.24.0
     jest: ^29.7.0
     knex: ^3.1.0
@@ -21270,6 +21271,18 @@ __metadata:
     is-date-object: ^1.0.1
     is-symbol: ^1.0.2
   checksum: 4ead6671a2c1402619bdd77f3503991232ca15e17e46222b0a41a5d81aebc8740a77822f5b3c965008e631153e9ef0580540007744521e72de8e33599fca2eed
+  languageName: node
+  linkType: hard
+
+"es-toolkit@npm:^1.39.10":
+  version: 1.39.10
+  resolution: "es-toolkit@npm:1.39.10"
+  dependenciesMeta:
+    "@trivago/prettier-plugin-sort-imports@4.3.0":
+      unplugged: true
+    prettier-plugin-sort-re-exports@0.0.1:
+      unplugged: true
+  checksum: 128d018238487ac58da9447c629943178498a4378737aaca3acc6b1948c0b45eb3d5f5a5c0487247b6b7b3d89b44dfd2977f531512dff7c31ec6b12485c9230d
   languageName: node
   linkType: hard
 

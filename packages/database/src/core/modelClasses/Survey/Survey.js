@@ -299,7 +299,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
           ARRAY_AGG(country.name ORDER BY country.name) country_names
         FROM
           survey
-          LEFT JOIN country ON (country.id = ANY (survey.country_ids))
+          LEFT JOIN country ON country.id = ANY (survey.country_ids)
         WHERE
           survey.id IN ${SqlQuery.record(surveyIds)} GROUP BY survey.id;
       `,

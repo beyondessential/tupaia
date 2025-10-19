@@ -7,14 +7,9 @@ import { buildSyncLookupSelect } from '../../sync';
 import { getLeaderboardQuery } from './leaderboard';
 import { processSurveyResponse } from './processSurveyResponse';
 import { saveResponsesToDatabase } from './saveToDatabase';
+import { upsertAnswers } from './upsertAnswers';
 import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 import { validateSurveyResponse, validateSurveyResponses } from './validation';
-import { upsertAnswers } from './upsertAnswers';
-
-/**
- * @typedef {import('@tupaia/types').Answer} Answer
- * @typedef {(answer: Answer) => Promise<Answer["text"]>} AnswerBodyParser
- */
 
 export class SurveyResponseRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_RESPONSE;
@@ -35,7 +30,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} answerBodyParsers
+   * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} [answerBodyParsers]
    */
   static async saveResponsesToDatabase(models, userId, surveyResponses, answerBodyParsers) {
     return await saveResponsesToDatabase(models, userId, surveyResponses, answerBodyParsers);

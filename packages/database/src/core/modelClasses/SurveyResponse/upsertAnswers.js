@@ -7,11 +7,11 @@ import { getAnswerText } from './getAnswerText';
  * @param {import('../../ModelRegistry').ModelRegistry} models
  * @param {Answer[]} answers
  * @param {import('@tupaia/types').SurveyResponse["id"]} surveyResponseId
- * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} answerBodyParsers
- * @returns {Promise<import('@tupaia/types').Answer[]>}
+ * @param {Record<import('@tupaia/types').QuestionType, AnswerBodyParser> | undefined} [answerBodyParsers]
+ * @returns {Promise<import('../Answer').AnswerRecord[]>}
  */
 export async function upsertAnswers(models, answers, surveyResponseId, answerBodyParsers) {
-  /** @type {import('@tupaia/types').Answer[]} */
+  /** @type {import('../Answer').AnswerRecord[]} */
   const answerRecords = [];
 
   for (const answer of answers) {
@@ -24,14 +24,17 @@ export async function upsertAnswers(models, answers, surveyResponseId, answerBod
     };
 
     try {
-      /** @type {import('@tupaia/types').Answer} */
+      /** @type {import('../Answer').AnswerRecord} */
       const answerRecord = await models.answer.updateOrCreate(
         { survey_response_id: surveyResponseId, question_id: answer.question_id },
         answerDocument,
       );
       answerRecords.push(answerRecord);
     } catch (error) {
-      throw new DatabaseError(`Saving answer ${answer.id}`, error);
+      throw new DatabaseError(
+        `Saving answer ${answer.id ?? ''} for question ${answer.question_id} of survey response ${surveyResponseId}`,
+        error,
+      );
     }
   }
 
