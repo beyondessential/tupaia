@@ -60,6 +60,13 @@ export class SurveyResponseRecord extends DatabaseRecord {
     return id;
   }
 
+  /** @returns {Promise<Entity['name'] | undefined>} */
+  async getEntityParentName() {
+    const projectId = await this.getProjectId();
+    const name = await this.otherModels.entity.getParentEntityName(projectId, this.entity_id);
+    return name;
+  }
+
   /** @returns {Promise<Project['id']>} */
   async getProjectId() {
     const { project_id } = ensure(

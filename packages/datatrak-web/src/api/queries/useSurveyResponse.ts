@@ -29,10 +29,9 @@ const getLocal = async ({
       await transactingModels.surveyResponse.findById(surveyResponseId),
       `No survey response exists with ID ${surveyResponseId}`,
     );
-    const projectId = await surveyResponse.getProjectId();
 
     const [entityParentName, answerList] = await Promise.all([
-      transactingModels.entity.getEntityParentName(projectId, surveyResponse.entity_id),
+      surveyResponse.getEntityParentName(),
       transactingModels.answer.find(
         { survey_response_id: surveyResponseId },
         { columns: ['text', 'question_id', 'type'] },
