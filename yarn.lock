@@ -8004,16 +8004,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bitwarden/cli@npm:2025.9.0":
-  version: 2025.9.0
-  resolution: "@bitwarden/cli@npm:2025.9.0"
+"@bitwarden/cli@npm:2025.10.0":
+  version: 2025.10.0
+  resolution: "@bitwarden/cli@npm:2025.10.0"
   dependencies:
     "@koa/multer": 4.0.0
-    "@koa/router": 13.1.0
+    "@koa/router": 14.0.0
     big-integer: 1.6.52
     browser-hrtime: 1.1.8
     chalk: 4.1.2
-    commander: 11.1.0
+    commander: 14.0.0
     core-js: 3.45.0
     form-data: 4.0.4
     https-proxy-agent: 7.0.6
@@ -8025,7 +8025,7 @@ __metadata:
     koa-json: 2.0.2
     lowdb: 1.0.0
     lunr: 2.3.9
-    multer: 1.4.5-lts.2
+    multer: 2.0.2
     node-fetch: 2.6.12
     node-forge: 1.3.1
     open: 10.1.2
@@ -8037,7 +8037,7 @@ __metadata:
     zxcvbn: 4.4.2
   bin:
     bw: build/bw.js
-  checksum: e16c96f452028af4354d5e25eb62192f1d31a4f59a2da6739c3ccb50d669d5839bc93a3e9971441949e5a4b002c81493b010af9f3398f70c0dcfad64f533fce6
+  checksum: 2facaf4e7734252684a693538f2b08fe83cc93704c2bf37a78f462c2e6e6ce874094db5ad681d0c2ed5d05e4af9a264983ea452501421c5c673b06cb464dfa85
   languageName: node
   linkType: hard
 
@@ -9590,14 +9590,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@koa/router@npm:13.1.0":
-  version: 13.1.0
-  resolution: "@koa/router@npm:13.1.0"
+"@koa/router@npm:14.0.0":
+  version: 14.0.0
+  resolution: "@koa/router@npm:14.0.0"
   dependencies:
+    debug: ^4.4.1
     http-errors: ^2.0.0
     koa-compose: ^4.1.0
-    path-to-regexp: ^6.3.0
-  checksum: c6e072de07e93941dd1aa41eeddd00a844ddecc393b522ca163ab1aa174dd99ac06ace0ff659da8b20ae61df06402e8576cd426c9cd29fce7c643241fb9286a3
+    path-to-regexp: ^8.2.0
+  checksum: 43b20f098d35caf37d972348fef2b90da71286513538757b3462f96c86f2759f867b1c5c39298a3ed905f57a7803eab427d88928b46372bb1459a89467496abd
   languageName: node
   linkType: hard
 
@@ -16885,7 +16886,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"busboy@npm:^1.0.0, busboy@npm:^1.6.0":
+"busboy@npm:^1.6.0":
   version: 1.6.0
   resolution: "busboy@npm:1.6.0"
   dependencies:
@@ -17926,10 +17927,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:11.1.0":
-  version: 11.1.0
-  resolution: "commander@npm:11.1.0"
-  checksum: fd1a8557c6b5b622c89ecdfde703242ab7db3b628ea5d1755784c79b8e7cb0d74d65b4a262289b533359cd58e1bfc0bf50245dfbcd2954682a6f367c828b79ef
+"commander@npm:14.0.0":
+  version: 14.0.0
+  resolution: "commander@npm:14.0.0"
+  checksum: 6e9bdaf2e8e4f512855ffc10579eeae2e84c4a7697a91b1a5f62aab3c9849182207855268dd7c3952ae7a2334312a7138f58e929e4b428aef5bf8af862685c9b
   languageName: node
   linkType: hard
 
@@ -18062,7 +18063,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concat-stream@npm:^1.5.2, concat-stream@npm:^1.6.2":
+"concat-stream@npm:^1.6.2":
   version: 1.6.2
   resolution: "concat-stream@npm:1.6.2"
   dependencies:
@@ -19292,6 +19293,18 @@ __metadata:
     supports-color:
       optional: true
   checksum: fb42df878dd0e22816fc56e1fdca9da73caa85212fbe40c868b1295a6878f9101ae684f4eeef516c13acfc700f5ea07f1136954f43d4cd2d477a811144136479
+  languageName: node
+  linkType: hard
+
+"debug@npm:^4.4.1":
+  version: 4.4.3
+  resolution: "debug@npm:4.4.3"
+  dependencies:
+    ms: ^2.1.3
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 4805abd570e601acdca85b6aa3757186084a45cff9b2fa6eee1f3b173caa776b45f478b2a71a572d616d2010cea9211d0ac4a02a610e4c18ac4324bde3760834
   languageName: node
   linkType: hard
 
@@ -29587,22 +29600,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multer@npm:1.4.5-lts.2":
-  version: 1.4.5-lts.2
-  resolution: "multer@npm:1.4.5-lts.2"
-  dependencies:
-    append-field: ^1.0.0
-    busboy: ^1.0.0
-    concat-stream: ^1.5.2
-    mkdirp: ^0.5.4
-    object-assign: ^4.1.1
-    type-is: ^1.6.4
-    xtend: ^4.0.0
-  checksum: b6f76a24c8fbc4d3ed5696ff8c98e126e7831d26f85e0ce17ab8d77e33a9ec14e33e4d05ea5e4e748e63a1b695cf450c2b05d8eee58484a74a1c13f459429713
-  languageName: node
-  linkType: hard
-
-"multer@npm:^2.0.2":
+"multer@npm:2.0.2, multer@npm:^2.0.2":
   version: 2.0.2
   resolution: "multer@npm:2.0.2"
   dependencies:
@@ -31380,10 +31378,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:^6.3.0":
-  version: 6.3.0
-  resolution: "path-to-regexp@npm:6.3.0"
-  checksum: eca78602e6434a1b6799d511d375ec044e8d7e28f5a48aa5c28d57d8152fb52f3fc62fb1cfc5dfa2198e1f041c2a82ed14043d75740a2fe60e91b5089a153250
+"path-to-regexp@npm:^8.2.0":
+  version: 8.3.0
+  resolution: "path-to-regexp@npm:8.3.0"
+  checksum: 73e0d3db449f9899692b10be8480bbcfa294fd575be2d09bce3e63f2f708d1fccd3aaa8591709f8b82062c528df116e118ff9df8f5c52ccc4c2443a90be73e10
   languageName: node
   linkType: hard
 
@@ -38035,7 +38033,7 @@ __metadata:
     "@beyondessential/eslint-config-jest": ^1.0.0
     "@beyondessential/eslint-config-js": ^1.1.1
     "@beyondessential/eslint-config-ts": ^2.0.0
-    "@bitwarden/cli": 2025.9.0
+    "@bitwarden/cli": 2025.10.0
     "@storybook/addon-essentials": ^8.2.9
     "@storybook/builder-vite": ^8.2.9
     "@storybook/react": ^8.2.9
@@ -38176,7 +38174,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-is@npm:^1.6.16, type-is@npm:^1.6.18, type-is@npm:^1.6.4, type-is@npm:~1.6.18":
+"type-is@npm:^1.6.16, type-is@npm:^1.6.18, type-is@npm:~1.6.18":
   version: 1.6.18
   resolution: "type-is@npm:1.6.18"
   dependencies:
