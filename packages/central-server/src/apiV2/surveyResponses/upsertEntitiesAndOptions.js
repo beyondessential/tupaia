@@ -45,7 +45,7 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
 function hashOption({ option_set_id, value }) {
   // option_set_id known to be 24-chars, so not worried about different (option_set_id, value)
   // pairs colliding. e.g. Collision between ('foo', 'bar') and ('foob', 'ar') won’t happen.
-  return `${option_set_id}${value}`;
+  return `${option_set_id}${value.trim()}`;
 }
 
 /**
@@ -63,7 +63,11 @@ const createOptions = async (models, optionsCreated) => {
   /** @type {import('@tupaia/database').OptionRecord[]} */
   const options = [];
   for (const optionObject of uniqueOptionsCreated) {
-    const { value, option_set_id: optionSetId } = optionObject;
+    const optionSetId = optionObject.option_set_id;
+    const label =
+      typeof optionObject.label === 'string' ? optionObject.label.trim() : optionObject.label;
+    const value = optionObject.value.trim();
+
     /** @type {Pick<import('@tupaia/types').Option, 'option_set_id' | 'value'>} */
     const whereClause = { option_set_id: optionSetId, value };
 
@@ -77,7 +81,9 @@ const createOptions = async (models, optionsCreated) => {
     /** @type {import('@tupaia/database').OptionRecord} */
     const optionRecord = await models.option.updateOrCreate(whereClause, {
       ...optionObject,
+      label,
       sort_order: sortOrder,
+      value,
     });
 
     options.push(optionRecord);
