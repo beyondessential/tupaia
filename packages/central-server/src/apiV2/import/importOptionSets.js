@@ -68,7 +68,10 @@ export async function importOptionSets(req, res) {
         for (let rowIndex = 0; rowIndex < options.length; rowIndex++) {
           const option = options[rowIndex];
           const optionValue = option.value.trim();
-          const optionLabel = typeof option.label === 'string' ? option.label.trim() : option.label;
+          const optionLabel =
+            typeof option.label === 'string'
+              ? option.label.trim() || null // save NULL instead of '' to database
+              : option.label;
 
           // optionName is what the frontend shows, and MUST be unique, or bad things will happen.
           const optionName = optionLabel || optionValue;
