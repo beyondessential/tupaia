@@ -1,7 +1,7 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
 import { camelcaseKeys, ensure } from '@tupaia/tsutils';
-import { DatatrakWebSingleSurveyResponseRequest, Question, QuestionType } from '@tupaia/types';
+import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
 import { get } from '../api';
 import { useCurrentUserContext } from '../CurrentUserContext';
 import { useIsOfflineFirst } from '../offlineFirst';
@@ -38,11 +38,7 @@ const getLocal = async ({
       ),
     ]);
 
-    // TODO: Dedupe this type
-    const answers: Record<
-      Question['id'],
-      string | number | boolean | null | undefined | { name: string; id: string }
-    > = {};
+    const answers: DatatrakWebSingleSurveyResponseRequest.ResBody['answers'] = {};
     for (const { question_id: questionId, type, text } of answerList) {
       if (!text) continue;
       if (type === QuestionType.User) {

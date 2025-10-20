@@ -32,8 +32,6 @@ const DEFAULT_FIELDS = [
   'survey.project_id',
 ];
 
-type AnswerT = string | number | boolean | null | undefined | { name: string; id: string };
-
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
 const assertCanViewSurveyResponse = (
@@ -102,7 +100,7 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       pageSize: 'ALL',
     });
 
-    const answers: Record<string, AnswerT> = {};
+    const answers: DatatrakWebSingleSurveyResponseRequest.ResBody['answers'] = {};
     for (const answer of answerList) {
       const { question_id: questionId, type, text } = answer;
       if (!text) continue;
