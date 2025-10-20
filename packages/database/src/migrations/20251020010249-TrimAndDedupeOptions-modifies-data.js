@@ -43,7 +43,7 @@ exports.up = async function (db) {
     -- Update answer.text values to reflect trimmed option.value values
     UPDATE "answer"
     SET    "text"
-    WHERE  "type" = 'Autocomplete' AND "text" = TRIM("text");
+    WHERE  "type" = 'Autocomplete' AND "text" <> TRIM("text");
 
     COMMIT;
   `);
