@@ -67,8 +67,8 @@ const createOptions = async (models, optionsCreated) => {
     /** @type {Pick<import('@tupaia/types').Option, 'option_set_id' | 'value'>} */
     const whereClause = { option_set_id: optionSetId, value };
 
-    /** @type {import('@tupaia/database').OptionRecord} */
-    const existingOption = await models.option.find(whereClause);
+    /** @type {import('@tupaia/database').OptionRecord | null} */
+    const existingOption = await models.option.findOne(whereClause);
     /** @type {number} */
     const sortOrder =
       existingOption?.sort_order ??
