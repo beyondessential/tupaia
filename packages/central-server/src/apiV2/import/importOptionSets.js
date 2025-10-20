@@ -67,27 +67,33 @@ export async function importOptionSets(req, res) {
         const optionSortOrders = new Set();
         for (let rowIndex = 0; rowIndex < options.length; rowIndex++) {
           const option = options[rowIndex];
+          const optionValue = option.value.trim();
+          const optionLabel =
+            typeof option.label === 'string'
+              ? option.label.trim() || null // save NULL instead of '' to database
+              : option.label;
+
           // optionName is what the frontend shows, and MUST be unique, or bad things will happen.
-          const optionName = option.label || option.value;
+          const optionName = optionLabel || optionValue;
           const excelRowNumber = rowIndex + 2; // +2 to make up for header and 0 index
           // if no custom sort_order is supplied, use the excelRowNumber to sort the options
           const sortOrder = option.sort_order || excelRowNumber.toString();
           const attributes = option.attributes ? convertCellToJson(option.attributes) : {};
 
           // validate that there are no duplicate values or names within this option set sheet.
-          if (optionValues.has(option.value) || optionNames.has(optionName)) {
+          if (optionValues.has(optionValue) || optionNames.has(optionName)) {
             throw new ImportValidationError('Option value or label is not unique', excelRowNumber);
           }
           // validate the sort_order is unique
           if (optionSortOrders.has(sortOrder)) {
             throw new ImportValidationError('Sort order is not unique', excelRowNumber);
           }
-          optionValues.add(option.value);
+          optionValues.add(optionValue);
           optionNames.add(optionName);
           optionSortOrders.add(sortOrder);
           const optionObject = {
-            value: option.value,
-            label: option.label,
+            value: optionValue,
+            label: optionLabel,
             sort_order: sortOrder,
             attributes,
             option_set_id: optionSet.id,
@@ -97,7 +103,7 @@ export async function importOptionSets(req, res) {
             await transactingModels.option.updateOrCreate(
               {
                 option_set_id: optionObject.option_set_id,
-                value: optionObject.value,
+                value: optionValue,
               },
               optionObject,
             );
@@ -107,15 +113,15 @@ export async function importOptionSets(req, res) {
             }
           }
         }
+
         // Delete orphaned options.
-        const existingOptions = await transactingModels.option.find({
+        await transactingModels.option.delete({
           option_set_id: optionSet.id,
+          value: {
+            comparator: 'not in',
+            comparisonValue: Array.from(optionValues),
+          },
         });
-        for (const option of existingOptions) {
-          if (!optionValues.has(option.value)) {
-            await transactingModels.option.delete({ id: option.id });
-          }
-        }
       }
     });
   } catch (error) {
