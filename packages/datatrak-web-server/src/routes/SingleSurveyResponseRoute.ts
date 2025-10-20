@@ -89,16 +89,14 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       assertCanViewSurveyResponse(accessPolicy, countryCode, permissionGroup.name);
     }
 
-    const entityParentName = await models.entity.getParentEntityName(
-      projectId,
-      response['entity.id'],
-    );
-
-    const answerList = await ctx.services.central.fetchResources('answers', {
-      filter: { survey_response_id: surveyResponse.id },
-      columns: ANSWER_COLUMNS,
-      pageSize: 'ALL',
-    });
+    const [entityParentName, answerList] = await Promise.all([
+      models.entity.getParentEntityName(projectId, response['entity.id']),
+      ctx.services.central.fetchResources('answers', {
+        filter: { survey_response_id: surveyResponse.id },
+        columns: ANSWER_COLUMNS,
+        pageSize: 'ALL',
+      }),
+    ]);
 
     const answers: DatatrakWebSingleSurveyResponseRequest.ResBody['answers'] = {};
     for (const answer of answerList) {
