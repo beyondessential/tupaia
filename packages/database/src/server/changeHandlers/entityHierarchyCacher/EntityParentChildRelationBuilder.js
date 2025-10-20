@@ -24,7 +24,7 @@ export class EntityParentChildRelationBuilder {
       if (!project) {
         continue;
       }
-      
+
       await this.rebuildRelationsForEntity(hierarchyId, rootEntityId, project);
     }
   }
@@ -187,13 +187,24 @@ export class EntityParentChildRelationBuilder {
    * @param {*} validParentChildIdPairs valid parent child id pairs to keep
    */
   async deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs) {
+    const tempParentIdsTableName = `temp_parent_ids_${generateId()}`;
     const tempValidPairsTableName = `temp_valid_pairs_${generateId()}`;
     try {
+      await this.models.database.executeSql('CREATE TEMPORARY TABLE ?? (parent_id TEXT)', [
+        tempParentIdsTableName,
+      ]);
       await this.models.database.executeSql(
         'CREATE TEMPORARY TABLE ?? (parent_id TEXT, child_id TEXT)',
         [tempValidPairsTableName],
       );
 
+      await this.models.database.executeSqlInBatches(parentIds, batchOfParentIds => {
+        return [
+          `INSERT INTO ?? (parent_id)
+            VALUES ${batchOfParentIds.map(() => '(?)').join(',')}`,
+          [tempParentIdsTableName, ...batchOfParentIds],
+        ];
+      });
       await this.models.database.executeSqlInBatches(
         validParentChildIdPairs,
         batchOfValidParentChildIdPairs => {
@@ -206,19 +217,20 @@ export class EntityParentChildRelationBuilder {
         },
       );
 
-      await this.models.database.executeSqlInBatches(parentIds, batchOfParentIds => [
+      await this.models.database.executeSql(
         `
           DELETE FROM entity_parent_child_relation
           WHERE entity_hierarchy_id = ?
-            AND parent_id IN ${SqlQuery.record(batchOfParentIds)}
+            AND parent_id IN (SELECT parent_id from ??)
             AND (parent_id, child_id) NOT IN (
               SELECT parent_id, child_id FROM ??
             )
           RETURNING parent_id, child_id
         `,
-        [hierarchyId, ...batchOfParentIds, tempValidPairsTableName],
-      ]);
+        [hierarchyId, tempParentIdsTableName, tempValidPairsTableName],
+      );
     } finally {
+      await this.models.database.executeSql('DROP TABLE IF EXISTS ??', [tempParentIdsTableName]);
       await this.models.database.executeSql('DROP TABLE IF EXISTS ??', [tempValidPairsTableName]);
     }
   }
