@@ -101,6 +101,13 @@ describe('AuthService', () => {
           password_hash: 'password123',
         }),
         create: jest.fn(),
+        transformUserData: jest.fn().mockResolvedValue({
+          id: 'user-123',
+          email: 'test@example.com',
+          first_name: 'Test',
+          last_name: 'User',
+          access_policy: {},
+        }),
       },
       localSystemFact: {
         set: jest.fn(),
@@ -132,6 +139,13 @@ describe('AuthService', () => {
           password_hash: 'password123',
         }),
         create: jest.fn(),
+        transformUserData: jest.fn().mockResolvedValue({
+          id: 'user-123',
+          email: 'test@example.com',
+          first_name: 'Test',
+          last_name: 'User',
+          access_policy: {},
+        }),
       },
       localSystemFact: {
         set: jest.fn(),
