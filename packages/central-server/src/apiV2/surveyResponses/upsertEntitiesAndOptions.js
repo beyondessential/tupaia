@@ -37,18 +37,6 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
 };
 
 /**
- * @param {Pick<import('@tupaia/types').Option, 'option_set_id' | 'value'>} option
- * @returns {string}
- * @privateRemarks Not a true hash, but perfectly serviceable for {@link createOptions}. (Small
- * input change does not result in large output change.)
- */
-function hashOption({ option_set_id, value }) {
-  // option_set_id known to be 24-chars, so not worried about different (option_set_id, value)
-  // pairs colliding. e.g. Collision between ('foo', 'bar') and ('foob', 'ar') won’t happen.
-  return `${option_set_id}${value}`;
-}
-
-/**
  * @param {import('@tupaia/database').ModelRegistry} models
  * @param {import('@tupaia/types').MeditrakSurveyResponseRequest['options_created']} optionsCreated
  * @returns {Promise<Array<import('@tupaia/database').OptionRecord>>}
@@ -56,13 +44,9 @@ function hashOption({ option_set_id, value }) {
 const createOptions = async (models, optionsCreated) => {
   if (optionsCreated.length === 0) return [];
 
-  const uniqueOptionsCreated = new Map(
-    optionsCreated.map(option => [hashOption(option), option]),
-  ).values();
-
   /** @type {import('@tupaia/database').OptionRecord[]} */
   const options = [];
-  for (const optionObject of uniqueOptionsCreated) {
+  for (const optionObject of optionsCreated) {
     const { value, option_set_id: optionSetId } = optionObject;
     /** @type {Pick<import('@tupaia/types').Option, 'option_set_id' | 'value'>} */
     const whereClause = { option_set_id: optionSetId, value };
