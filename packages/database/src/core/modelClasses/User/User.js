@@ -163,6 +163,10 @@ export class UserRecord extends DatabaseRecord {
 export class UserModel extends DatabaseModel {
   static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
+  get ExcludedFieldsFromSync() {
+    return ['password_hash'];
+  }
+
   /**
    * @param {import('../../ModelRegistry').ModelRegistry} models
    * @param {import('@tupaia/types').User['id']} userId
@@ -291,4 +295,48 @@ export class UserModel extends DatabaseModel {
     const user = ensure(await this.findById(userId), `No user exists with ID ${userId}`);
     return user.getRecentEntityIds(countryCode, type);
   }
+
+  async transformUserData(
+    userData,
+    project = null,
+    country = null,
+  ) {
+    const {
+      id,
+      full_name: fullName,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      employer,
+      position,
+      mobile_number: mobileNumber,
+      preferences = {},
+      access_policy: accessPolicy,
+    } = userData;
+  
+    const {
+      project_id: projectId,
+      country_id: countryId,
+      delete_account_requested,
+      hide_welcome_screen,
+    } = preferences;
+  
+    return {
+      fullName,
+      firstName,
+      lastName,
+      email,
+      id,
+      employer,
+      position,
+      mobileNumber,
+      projectId,
+      project,
+      countryId,
+      country,
+      deleteAccountRequested: delete_account_requested === true,
+      hideWelcomeScreen: hide_welcome_screen === true,
+      accessPolicy,
+    };
+  };
 }
