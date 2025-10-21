@@ -1,6 +1,22 @@
 import { generateId, SqlQuery } from '../../../core';
 import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
 
+const RECURSIVE_CONNECTED_NODES_CTE = `
+  RECURSIVE connected_nodes AS (
+    -- Start with root nodes (entities that exist but aren't children)
+    -- Start with the known root node
+    SELECT ? as node_id
+
+    UNION ALL
+
+    -- Recursively find all descendants
+    SELECT er.child_id
+    FROM entity_parent_child_relation er
+    INNER JOIN connected_nodes cn ON er.parent_id = cn.node_id
+      AND er.entity_hierarchy_id = ?
+  )
+`;
+
 /**
  * Builds and caches the entity parent child relations for a given hierarchy
  * This never wipes the subtrees and rebuilds, always only adds new ones and deletes the obsolete ones
@@ -59,6 +75,19 @@ export class EntityParentChildRelationBuilder {
    */
   async rebuildRelationsForEntity(hierarchyId, rootEntityId, project) {
     const { entity_id: projectEntityId } = project;
+
+    // rootEntityId is always the parent_id of the affected entity,
+    // if it is not connected to the hierarchy of the project,
+    // no need to rebuild the relations
+    const isEntityConnected = await this.checkIfEntityIsConnected(
+      hierarchyId,
+      projectEntityId,
+      rootEntityId,
+    );
+    if (!isEntityConnected) {
+      return;
+    }
+
     await this.fetchAndCacheChildren(hierarchyId, [rootEntityId]);
     await this.deleteOrphanedRelations(hierarchyId, projectEntityId);
   }
@@ -235,6 +264,18 @@ export class EntityParentChildRelationBuilder {
     }
   }
 
+  async checkIfEntityIsConnected(hierarchyId, projectEntityId, entityId) {
+    const [{ is_connected: isConnected }] = await this.models.database.executeSql(
+      `
+      WITH
+      ${RECURSIVE_CONNECTED_NODES_CTE}
+      SELECT (? IN (SELECT node_id FROM connected_nodes)) AS is_connected;
+    `,
+      [projectEntityId, hierarchyId, entityId],
+    );
+    return isConnected;
+  }
+
   /**
    * Delete the orphaned relations for a level of the hierarchy
    * @param {*} hierarchyId hierarchy to delete orphaned relations for
@@ -243,19 +284,8 @@ export class EntityParentChildRelationBuilder {
   async deleteOrphanedRelations(hierarchyId, projectEntityId) {
     await this.models.database.executeSql(
       `
-      WITH RECURSIVE connected_nodes AS (
-        -- Start with root nodes (entities that exist but aren't children)
-        -- Start with the known root node
-        SELECT ? as node_id
-
-        UNION ALL
-
-        -- Recursively find all descendants
-        SELECT er.child_id
-        FROM entity_parent_child_relation er
-        INNER JOIN connected_nodes cn ON er.parent_id = cn.node_id
-          AND er.entity_hierarchy_id = ?
-      ),
+      WITH
+      ${RECURSIVE_CONNECTED_NODES_CTE},
       -- Find orphaned relations (not connected to any root)
       orphaned_relations AS (
         SELECT er.*

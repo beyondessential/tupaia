@@ -14,6 +14,7 @@ import {
   TaskUpdateHandler,
   buildEntityParentChildRelationIfEmpty,
   TupaiaDatabase,
+  SyncLookupEntityRefresher,
 } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
 import { isFeatureEnabled } from '@tupaia/utils';
@@ -74,6 +75,10 @@ configureEnv();
   // Add listener to handle survey response entity changes for tasks
   const taskUpdateHandler = new TaskUpdateHandler(models);
   taskUpdateHandler.listenForChanges();
+
+  // Add listener to handle entity parent child relation changes
+  const syncLookupEntityRefresher = new SyncLookupEntityRefresher(models);
+  syncLookupEntityRefresher.listenForChanges();
 
   /**
    * Scheduled tasks
