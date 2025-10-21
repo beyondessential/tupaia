@@ -33,7 +33,7 @@ export const withDeferredSyncSafeguards = async <
   await toggleTombstoneTriggers(database, false);
 
   try {
-    return operation();
+    return await operation();
   } finally {
     // Switch back to immediate mode
     await database.executeSql(`
