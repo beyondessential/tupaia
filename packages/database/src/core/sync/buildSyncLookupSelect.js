@@ -4,7 +4,7 @@ export async function buildSyncLookupSelect(model, columns = {}) {
   const attributes = Object.keys(await model.fetchSchema());
   const { projectIds } = columns;
   const table = model.databaseRecord;
-  const excludedFields = [...(model.ExcludedFieldsFromSync || []), ...COLUMNS_EXCLUDED_FROM_SYNC];
+  const excludedFields = [...(model.excludedFieldsFromSync || []), ...COLUMNS_EXCLUDED_FROM_SYNC];
 
   return `
     SELECT

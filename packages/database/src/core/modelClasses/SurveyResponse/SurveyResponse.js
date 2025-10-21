@@ -1,6 +1,6 @@
-import log from 'winston';
 import { difference, uniq } from 'es-toolkit';
 import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
+import log from 'winston';
 
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, isNullish } from '@tupaia/tsutils';
@@ -18,6 +18,7 @@ import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 import { validateSurveyResponse, validateSurveyResponses } from './validation';
 
 /**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
  * @typedef {import('@tupaia/types').Answer} Answer
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
@@ -98,7 +99,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * @param {ModelRegistry} models
-   * @param {import('@tupaia/access-policy').AccessPolicy} accessPolicy
+   * @param {AccessPolicy} accessPolicy
    * @param {Record<SurveyCode, Entity["code"][]>} entitiesBySurveyCode
    * @returns {true} If and only if the assertion passes, otherwise throws.
    * @throws {PermissionsError}
@@ -197,7 +198,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * @param {ModelRegistry} models
-   * @param {import('@tupaia/access-policy').AccessPolicy} accessPolicy
+   * @param {AccessPolicy} accessPolicy
    * @param {Array} surveyResponses Assumed to have already been validated.
    * @returns {true} If and only if the assertion passes, otherwise throws.
    * @throws {PermissionsError}

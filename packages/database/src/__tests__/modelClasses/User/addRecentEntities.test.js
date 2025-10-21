@@ -1,5 +1,5 @@
-import { getTestModels, upsertDummyRecord } from '../../../server';
 import { addRecentEntities } from '../../../core/modelClasses/User/addRecentEntities';
+import { getTestModels, upsertDummyRecord } from '../../../server';
 
 const NUM_MOCK_ENTITIES = 10;
 const USER_ID = 'user';
@@ -16,11 +16,11 @@ describe('addRecentEntities', () => {
           country_code: 'DL',
           type: x > NUM_MOCK_ENTITIES / 2 ? 'facility' : 'district',
         });
-        const entity2 = await upsertDummyRecord(models.entity,  {
+        const entity2 = await upsertDummyRecord(models.entity, {
           id: `FJ_${x}`,
           country_code: 'FJ',
           type: x > NUM_MOCK_ENTITIES / 2 ? 'facility' : 'district',
-        },);
+        });
         return [entity1, entity2];
       }),
     );

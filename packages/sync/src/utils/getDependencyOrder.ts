@@ -1,6 +1,7 @@
 import { compact, groupBy, mapValues } from 'lodash';
 
 import { BaseDatabase, DatabaseModel } from '@tupaia/database';
+import { isNotNullish } from '@tupaia/tsutils';
 
 interface Dependency {
   table_name: string;
@@ -65,5 +66,5 @@ export const sortModelsByDependencyOrder = async (
   return orderedDependencies
     .filter(dep => recordNames.has(dep))
     .map(dep => models.find(r => r.databaseRecord === dep))
-    .filter((model): model is DatabaseModel => model !== undefined); // Boolean does not work here.
+    .filter(isNotNullish);
 };

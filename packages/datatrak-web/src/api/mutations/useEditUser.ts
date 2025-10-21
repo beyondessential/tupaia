@@ -38,16 +38,14 @@ export const useEditUser = (onSuccess?: () => void) => {
       await put('me', { data: updates });
     },
     {
-      onSuccess: async (_, variables) => {
-        await queryClient.invalidateQueries(['getUser']);
+      onSuccess: (_, variables) => {
+        queryClient.invalidateQueries(['getUser']);
         // If the user changes their project, we need to invalidate the entity descendants query so that recent entities are updated if they change back to the previous project without refreshing the page
         if (variables.projectId) {
-          await queryClient.invalidateQueries(['entityDescendants']);
-          await queryClient.invalidateQueries(['tasks']);
-          
-          (async () => {
-            await models.localSystemFact.addProjectForSync(variables.projectId);
-          })();
+          queryClient.invalidateQueries(['entityDescendants']);
+          queryClient.invalidateQueries(['tasks']);
+
+          models.localSystemFact.addProjectForSync(variables.projectId);
         }
         onSuccess?.();
       },

@@ -12,8 +12,8 @@ import { snakeKeys } from '@tupaia/utils';
 import { CurrentUser } from '../../api';
 import { DatatrakWebModelRegistry } from '../../types';
 import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
-import { AugmentedEntityRecord } from '../../utils/formatEntity';
 import { isExtendedField } from '../../utils/extendedFieldFunctions';
+import { AugmentedEntityRecord } from '../../utils/formatEntity';
 
 const DEFAULT_FIELDS: ExtendedEntityFieldName[] = ['id', 'parent_name', 'code', 'name', 'type'];
 
