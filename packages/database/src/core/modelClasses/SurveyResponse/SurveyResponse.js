@@ -43,6 +43,11 @@ export class SurveyResponseRecord extends DatabaseRecord {
     return await this.otherModels.answer.find({ survey_response_id: this.id, ...conditions });
   }
 
+  /** @returns {Promise<Country['code']>} */
+  async getCountryCode() {
+    return await this.getEntity({ columns: ['country_code'] }).country_code;
+  }
+
   /** @returns {Promise<EntityRecord>} */
   async getEntity(conditions) {
     return ensure(

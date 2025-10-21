@@ -30,8 +30,9 @@ const getLocal = async ({
       `No survey response exists with ID ${surveyResponseId}`,
     );
 
-    const [entityParentName, answerList] = await Promise.all([
+    const [entityParentName, countryCode, answerList] = await Promise.all([
       surveyResponse.getEntityParentName(),
+      surveyResponse.getCountryCode(),
       transactingModels.answer.find(
         { survey_response_id: surveyResponseId },
         { columns: ['text', 'question_id', 'type'] },
@@ -56,7 +57,7 @@ const getLocal = async ({
 
     return camelcaseKeys({
       ...surveyResponse,
-      // countryCode,
+      countryCode,
       entityParentName,
       answers,
     });
