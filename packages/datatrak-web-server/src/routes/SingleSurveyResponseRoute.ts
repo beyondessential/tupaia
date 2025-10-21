@@ -2,8 +2,9 @@ import camelcaseKeys from 'camelcase-keys';
 import { Request } from 'express';
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { SurveyResponseModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
+import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
 
 export type SingleSurveyResponseRequest = Request<
@@ -13,7 +14,7 @@ export type SingleSurveyResponseRequest = Request<
   DatatrakWebSingleSurveyResponseRequest.ReqQuery
 >;
 
-const ANSWER_COLUMNS = ['text', 'question_id', 'type'];
+const ANSWER_COLUMNS = ['text', 'question_id', 'type'] as const;
 
 const DEFAULT_FIELDS = [
   'assessor_name',
@@ -98,22 +99,7 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       }),
     ]);
 
-    const answers: DatatrakWebSingleSurveyResponseRequest.ResBody['answers'] = {};
-    for (const answer of answerList) {
-      const { question_id: questionId, type, text } = answer;
-      if (!text) continue;
-      if (type === QuestionType.User) {
-        const user = await models.user.findById(text);
-        if (!user) {
-          // Log the error but continue to the next answer. This is in case the user was deleted
-          console.error(`User with id ${text} not found`);
-          continue;
-        }
-        answers[questionId] = { id: user.id, name: user.full_name };
-        continue;
-      }
-      answers[questionId] = text;
-    }
+    const answers = await SurveyResponseModel.formatAnswersForClient(models, answerList);
 
     // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
     return camelcaseKeys({ ...response, countryCode, entityParentName, userId, answers });

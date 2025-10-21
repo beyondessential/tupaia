@@ -1,7 +1,8 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
+import { SurveyResponseModel } from '@tupaia/database';
 import { camelcaseKeys, ensure } from '@tupaia/tsutils';
-import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
+import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { get } from '../api';
 import { useCurrentUserContext } from '../CurrentUserContext';
 import { useIsOfflineFirst } from '../offlineFirst';
@@ -39,21 +40,7 @@ const getLocal = async ({
       ),
     ]);
 
-    const answers: DatatrakWebSingleSurveyResponseRequest.ResBody['answers'] = {};
-    for (const { question_id: questionId, type, text } of answerList) {
-      if (!text) continue;
-      if (type === QuestionType.User) {
-        const user = await models.user.findById(text, { columns: ['id', 'full_name'] });
-        if (!user) {
-          // Log the error but continue to the next answer. This is in case the user was deleted
-          console.error(`User with id ${text} not found`);
-          continue;
-        }
-        answers[questionId] = { id: user.id, name: user.full_name };
-        continue;
-      }
-      answers[questionId] = text;
-    }
+    const answers = await SurveyResponseModel.formatAnswersForClient(transactingModels, answerList);
 
     return camelcaseKeys({
       ...surveyResponse,

@@ -4,6 +4,7 @@ import log from 'winston';
 
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, isNullish } from '@tupaia/tsutils';
+import { QuestionType } from '@tupaia/types';
 import { DatabaseError, PermissionsError, reduceToDictionary } from '@tupaia/utils';
 
 import { DatabaseRecord } from '../../DatabaseRecord';
@@ -29,6 +30,7 @@ import { validateSurveyResponse, validateSurveyResponses } from './validation';
  * @typedef {import('@tupaia/types').Survey} Survey
  * @typedef {import('@tupaia/types').SurveyResponse} SurveyResponse
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
+ * @typedef {import('../Answer').AnswerRecord} AnswerRecord
  * @typedef {import('../Country').CountryRecord} CountryRecord
  * @typedef {import('../Entity').EntityRecord} EntityRecord
  * @typedef {import('../Facility').FacilityRecord} FacilityRecord
@@ -84,6 +86,32 @@ export class SurveyResponseRecord extends DatabaseRecord {
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
+
+  /**
+   * @param {ModelRegistry} models
+   * @param {AnswerRecord[]} answers
+   * @returns {Promise<DatatrakWebSingleSurveyResponseRequest.ResBody['answers']>}
+   */
+  static async formatAnswersForClient(models, answers) {
+    const formattedAnswers = {};
+    for (const { question_id: questionId, type, text } of answers) {
+      if (!text) continue;
+
+      if (type === QuestionType.User) {
+        const user = await models.user.findById(text, { columns: ['id', 'full_name'] });
+        if (!user) {
+          log.warn(`User with id ${text} not found`); // User deleted. Log and move on.
+          continue;
+        }
+        formattedAnswers[questionId] = { id: user.id, name: user.full_name };
+        continue;
+      }
+
+      formattedAnswers[questionId] = text;
+    }
+
+    return formattedAnswers;
+  }
 
   /**
    * @param {import('@tupaia/types').DatatrakWebSubmitSurveyResponseRequest.ReqBody | import('@tupaia/types').DatatrakWebResubmitSurveyResponseRequest.ReqBody} surveyResponseData
