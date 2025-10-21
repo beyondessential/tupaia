@@ -9,8 +9,6 @@ import { DatabaseError } from '@tupaia/utils';
  * @returns {Promise<Array<import('@tupaia/database').EntityRecord>>}
  */
 const upsertEntities = async (models, entitiesUpserted, surveyId) => {
-  if (entitiesUpserted.length === 0) return [];
-
   /** @type {import('@tupaia/database').SurveyRecord} */
   const survey = await models.survey.findById(surveyId);
   const dataGroup = await survey.dataGroup();
@@ -42,8 +40,6 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
  * @returns {Promise<Array<import('@tupaia/database').OptionRecord>>}
  */
 const createOptions = async (models, optionsCreated) => {
-  if (optionsCreated.length === 0) return [];
-
   /** @type {import('@tupaia/database').OptionRecord[]} */
   const options = [];
   for (const optionObject of optionsCreated) {
@@ -81,8 +77,12 @@ export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
     const optionsCreated = surveyResponse.options_created ?? [];
 
     try {
-      await upsertEntities(models, entitiesUpserted, surveyResponse.survey_id);
-      await createOptions(models, optionsCreated);
+      if (entitiesUpserted.length > 0) {
+        await upsertEntities(models, entitiesUpserted, surveyResponse.survey_id);
+      }
+      if (optionsCreated.length > 0) {
+        await createOptions(models, optionsCreated);
+      }
     } catch (error) {
       throw new DatabaseError(
         `creating/updating created data from survey response with id ${surveyResponse.survey_id}`,
