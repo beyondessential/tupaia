@@ -21,14 +21,14 @@ export const findLastSuccessfulSyncedProjects = async (
     `,
     [deviceId],
   )) as { last_synced_projects: string }[];
-  let lastSuccessfulSyncedProjectIds = [];
   try {
-    lastSuccessfulSyncedProjectIds = JSON.parse(
-      lastSuccessfulSyncedProjectResult?.last_synced_projects,
-    );
+    const parsed = JSON.parse(lastSuccessfulSyncedProjectResult?.last_synced_projects);
+    if (Array.isArray(parsed)) {
+      return parsed;
+    }
   } catch (error) {
     log.warn('Error parsing last successful synced projects', error);
     // ignore error, it could be because it could not be found due to this is the initial sync of the device
   }
-  return lastSuccessfulSyncedProjectIds;
+  return [];
 };
