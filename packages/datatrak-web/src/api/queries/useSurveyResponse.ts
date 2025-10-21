@@ -43,7 +43,7 @@ const getLocal = async ({
     for (const { question_id: questionId, type, text } of answerList) {
       if (!text) continue;
       if (type === QuestionType.User) {
-        const user = await models.user.findById(text);
+        const user = await models.user.findById(text, { columns: ['id', 'full_name'] });
         if (!user) {
           // Log the error but continue to the next answer. This is in case the user was deleted
           console.error(`User with id ${text} not found`);
