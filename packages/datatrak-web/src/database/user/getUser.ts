@@ -23,8 +23,7 @@ export const getUser = async ({ models }: GetUserLocalContext) => {
     project = await models.project.findById(projectId);
   }
   if (countryId) {
-    const countryResponse = await models.country.findById(countryId);
-    country = countryResponse || null;
+    country = await models.country.findById(countryId);
   }
 
   return await models.user.transformUserData(userData, project, country);

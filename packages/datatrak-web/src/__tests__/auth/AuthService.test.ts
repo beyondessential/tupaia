@@ -179,7 +179,7 @@ describe('AuthService', () => {
         password: 'password123',
       }),
     ).rejects.toThrow(
-      'You need to first login when connected to internet to use your account offline.',
+      'Before using DataTrak offline, please log in once while connected to the internet',
     );
   });
 });

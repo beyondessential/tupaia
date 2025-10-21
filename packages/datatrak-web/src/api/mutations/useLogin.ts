@@ -24,12 +24,10 @@ export const useLogin = () => {
   return useMutation<any, Error, LoginCredentials, unknown>(
     async ({ email, password }: LoginCredentials) => {
       const authService = new AuthService(models);
-      let user;
-      if (isOfflineFirst) {
-        user = await authService.signIn({ email, password });
-      } else {
-        user = await authService.remoteSignIn({ email, password });
-      }
+      const user = await (isOfflineFirst
+        ? authService.signIn({ email, password })
+        : authService.remoteSignIn({ email, password }));
+
       return { user };
     },
     {
