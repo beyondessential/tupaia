@@ -78,13 +78,14 @@ export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
   const responses = Array.isArray(surveyResponses) ? surveyResponses : [surveyResponses];
 
   for (const surveyResponse of responses) {
-    const entitiesUpserted = surveyResponse.entities_upserted ?? [];
-    const optionsCreated = surveyResponse.options_created ?? [];
+    const entitiesUpserted = surveyResponse.entities_upserted || [];
+    const optionsCreated = surveyResponse.options_created || [];
 
     try {
       if (entitiesUpserted.length > 0) {
         await upsertEntities(models, entitiesUpserted, surveyResponse.survey_id);
       }
+
       if (optionsCreated.length > 0) {
         await createOptions(models, optionsCreated);
       }
