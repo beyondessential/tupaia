@@ -1,12 +1,16 @@
-/** @typedef {import('@tupaia/types').MeditrakSurveyResponseRequest} SurveyResponse */
+/**
+ * @typedef {import('@tupaia/database').ModelRegistry} ModelRegistry
+ * @typedef {import('@tupaia/database').OptionRecord} OptionRecord
+ * @typedef {import('@tupaia/types').MeditrakSurveyResponseRequest} SurveyResponse
+ */
 
 import { DatabaseError } from '@tupaia/utils';
 
 /**
- * @param {import('@tupaia/database').ModelRegistry} models
+ * @param {ModelRegistry} models
  * @param {SurveyResponse['entities_upserted']} entitiesUpserted
  * @param {import('@tupaia/types').Survey['id']} surveyId
- * @returns {Promise<Array<import('@tupaia/database').EntityRecord>>}
+ * @returns {Promise<import('@tupaia/database').EntityRecord[]>}
  */
 const upsertEntities = async (models, entitiesUpserted, surveyId) => {
   /** @type {import('@tupaia/database').SurveyRecord} */
@@ -41,11 +45,11 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
 
 /**
  * @param {import('@tupaia/database').ModelRegistry} models
- * @param {import('@tupaia/types').MeditrakSurveyResponseRequest['options_created']} optionsCreated
- * @returns {Promise<Array<import('@tupaia/database').OptionRecord>>}
+ * @param {SurveyResponse['options_created']} optionsCreated
+ * @returns {Promise<OptionRecord[]>}
  */
 const createOptions = async (models, optionsCreated) => {
-  /** @type {import('@tupaia/database').OptionRecord[]} */
+  /** @type {OptionRecord[]} */
   const options = [];
   for (const optionObject of optionsCreated) {
     const { value, option_set_id: optionSetId } = optionObject;
@@ -53,7 +57,7 @@ const createOptions = async (models, optionsCreated) => {
     /** @type {number} */
     const maxSortOrder = (await models.option.getLargestSortOrder(optionSetId)) ?? 0;
 
-    /** @type {import('@tupaia/database').OptionRecord} */
+    /** @type {OptionRecord} */
     const optionRecord = await models.option.updateOrCreate(
       { option_set_id: optionSetId, value },
       {
@@ -71,7 +75,7 @@ const createOptions = async (models, optionsCreated) => {
 
 /**
  * Upsert entities and options that were created in user's local database
- * @param {import('@tupaia/database').ModelRegistry} models
+ * @param {ModelRegistry} models
  * @param {SurveyResponse[]} surveyResponses
  */
 export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
