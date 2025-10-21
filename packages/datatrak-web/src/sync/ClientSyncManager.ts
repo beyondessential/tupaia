@@ -435,7 +435,7 @@ export class ClientSyncManager {
       pullProgressCallback(records.length);
     };
 
-    const batchSize = 200;
+    const batchSize = 10000;
     await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
 
     this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes...');

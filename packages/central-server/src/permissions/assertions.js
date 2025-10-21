@@ -1,24 +1,24 @@
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
 import { PermissionsError } from '@tupaia/utils';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from './constants';
 
 /* Re-export for backward compatibility. Prefer importing directly from @tupaia/access-policy. */
 export {
   allowNoPermissions,
+  assertAdminPanelAccess,
   assertAllPermissions,
   assertAnyPermissions,
+  assertBESAdminAccess,
+  assertPermissionGroupAccess,
+  assertPermissionGroupsAccess,
+  assertVizBuilderAccess,
   hasBESAdminAccess,
-  hasVizBuilderAccess,
   hasPermissionGroupAccess,
   hasPermissionGroupsAccess,
   hasSomePermissionGroupsAccess,
-  assertBESAdminAccess,
-  assertVizBuilderAccess,
   hasTupaiaAdminPanelAccess,
   hasTupaiaAdminPanelAccessToCountry,
-  assertAdminPanelAccess,
-  assertPermissionGroupAccess,
-  assertPermissionGroupsAccess,
+  hasVizBuilderAccess,
 } from '@tupaia/access-policy';
 
 /**

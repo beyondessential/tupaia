@@ -15,12 +15,18 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
   const [models, setModels] = useState<DatatrakWebModelRegistry | null>(null);
 
   useEffect(() => {
+    let modelsInstance: DatatrakWebModelRegistry | null = null;
     const init = async () => {
       const { models } = await createDatabase();
+      modelsInstance = models;
       setModels(models);
     };
 
     init();
+
+    return () => {
+      modelsInstance?.closeDatabaseConnections();
+    };
   }, []);
 
   if (!models) {

@@ -40,7 +40,7 @@ describe('Login', () => {
     renderPage('/login');
     expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent('Log in');
     await doLogin();
-    server.use(mockUserRequest({ email: 'john@gmail.com' }));
+    server.use(mockUserRequest({ email: 'john@gmail.com', accessPolicy: [] }));
 
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/Select project/i);
   });
@@ -49,7 +49,7 @@ describe('Login', () => {
     renderPage('/login');
     expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent('Log in');
 
-    server.use(mockUserRequest({ email: 'john@gmail.com', projectId: 'foo' }));
+    server.use(mockUserRequest({ email: 'john@gmail.com', projectId: 'foo', accessPolicy: [] }));
     await doLogin();
 
     await screen.findByText(/Select survey/i);
@@ -59,7 +59,7 @@ describe('Login', () => {
     renderPage('/survey');
     expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent('Log in');
 
-    server.use(mockUserRequest({ email: 'john@gmail.com', projectId: 'foo' }));
+    server.use(mockUserRequest({ email: 'john@gmail.com', projectId: 'foo', accessPolicy: [] }));
     await doLogin();
 
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/Select survey/i);

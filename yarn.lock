@@ -13036,6 +13036,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/superset-api@workspace:packages/superset-api"
   dependencies:
+    "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
     https-proxy-agent: ^5.0.1
     jest: ^29.7.0

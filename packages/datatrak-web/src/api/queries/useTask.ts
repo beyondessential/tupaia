@@ -3,9 +3,9 @@ import { getTask } from '../../database';
 import { DatatrakWebModelRegistry } from '../../types';
 import { get } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
-import { ContextualQueryFunctionContext, useDatabaseQuery } from './useDatabaseQuery';
+import { useDatabaseQuery } from './useDatabaseQuery';
 
-export interface UseTaskLocalContext extends ContextualQueryFunctionContext {
+export interface UseTaskLocalContext {
   models: DatatrakWebModelRegistry;
   taskId?: string;
 }

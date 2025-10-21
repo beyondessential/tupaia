@@ -41915,6 +41915,9 @@ export const CountryCreateSchema = {
 		},
 		"name": {
 			"type": "string"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -41933,6 +41936,9 @@ export const CountryUpdateSchema = {
 			"type": "string"
 		},
 		"name": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},

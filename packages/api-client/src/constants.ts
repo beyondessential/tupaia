@@ -16,9 +16,9 @@ const productionSubdomains = [
   'psss',
   'psss-api',
   'report-api',
+  'sync-api',
   'entity-api',
   'data-table-api',
-  'sync-api',
   'www',
   'api', // this must go last in the array, otherwise it will be detected before e.g. admin-api
 ];

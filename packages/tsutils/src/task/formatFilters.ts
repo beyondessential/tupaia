@@ -32,7 +32,6 @@ export const formatFilters = (filters: Record<string, string>[]) => {
       const end = new Date(value);
       // subtract 23 hours, 59 minutes, 59 seconds to get the start of the day. This is because the filters always send the end of the day, and we need a range to handle the values being saved in the database as unix timestamps based on the user's timezone.
       const start = sub(end, { hours: 23, minutes: 59, seconds: 59 });
-
       formattedFilters[id] = {
         comparator: 'BETWEEN',
         comparisonValue: [start.getTime(), end.getTime()],

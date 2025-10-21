@@ -337,6 +337,10 @@ export class EntityRecord extends DatabaseRecord {
 export class EntityModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
 
+  get excludedFieldsFromSync() {
+    return ['point', 'bounds', 'region', 'parent_id'];
+  }
+
   get DatabaseRecordClass() {
     return EntityRecord;
   }
@@ -707,9 +711,4 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       groupBy: ['entity.id'],
     };
   }
-
-  sanitizeForClient = data => {
-    const { point, bounds, region, parent_id, ...sanitizedData } = data;
-    return sanitizedData;
-  };
 }

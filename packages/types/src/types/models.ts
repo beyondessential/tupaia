@@ -266,11 +266,13 @@ export interface Country {
 export interface CountryCreate {
   'code': string;
   'name': string;
+  'updated_at_sync_tick'?: string;
 }
 export interface CountryUpdate {
   'code'?: string;
   'id'?: string;
   'name'?: string;
+  'updated_at_sync_tick'?: string;
 }
 export interface Dashboard {
   'code': string;

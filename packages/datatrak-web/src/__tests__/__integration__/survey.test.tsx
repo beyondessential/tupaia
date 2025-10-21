@@ -9,7 +9,14 @@ import { handlers } from '../mocks/handlers';
 const server = setupServer(
   ...handlers,
   rest.get('*/v1/getUser', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ name: 'John Smith', email: 'john@gmail.com' }));
+    return res(
+      ctx.status(200),
+      ctx.json({
+        name: 'John Smith',
+        email: 'john@gmail.com',
+        id: '0'.repeat(24),
+      }),
+    );
   }),
   rest.get('*/v1/*', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json([]));
