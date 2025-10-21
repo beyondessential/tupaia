@@ -48,21 +48,18 @@ const createOptions = async (models, optionsCreated) => {
   const options = [];
   for (const optionObject of optionsCreated) {
     const { value, option_set_id: optionSetId } = optionObject;
-    /** @type {Pick<import('@tupaia/types').Option, 'option_set_id' | 'value'>} */
-    const whereClause = { option_set_id: optionSetId, value };
 
-    /** @type {import('@tupaia/database').OptionRecord | null} */
-    const existingOption = await models.option.findOne(whereClause);
     /** @type {number} */
-    const sortOrder =
-      existingOption?.sort_order ??
-      ((await models.option.getLargestSortOrder(optionSetId)) ?? 0) + 1;
+    const maxSortOrder = (await models.option.getLargestSortOrder(optionSetId)) ?? 0;
 
     /** @type {import('@tupaia/database').OptionRecord} */
-    const optionRecord = await models.option.updateOrCreate(whereClause, {
-      ...optionObject,
-      sort_order: sortOrder,
-    });
+    const optionRecord = await models.option.updateOrCreate(
+      { option_set_id: optionSetId, value },
+      {
+        ...optionObject,
+        sort_order: maxSortOrder + 1,
+      },
+    );
 
     options.push(optionRecord);
   }
