@@ -17,6 +17,7 @@ import {
   updateSnapshotRecords,
   SyncSnapshotAttributes,
   withDeferredSyncSafeguards,
+  findLastSuccessfulSyncedProjects,
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { SyncTickFlags, FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
@@ -373,16 +374,49 @@ export class CentralSyncManager {
             }, snapshotTransactionTimeoutMs);
           }
 
-          // full changes
-          await snapshotOutgoingChanges(
+          const lastSuccessfulSyncedProjectIds = await findLastSuccessfulSyncedProjects(
             transactingModels.database,
-            getModelsForPull(transactingModels.getModels()),
-            since,
-            sessionId,
             deviceId,
-            projectIds,
-            this.config,
           );
+          const existingProjectIds = projectIds.filter(projectId =>
+            lastSuccessfulSyncedProjectIds.includes(projectId),
+          );
+          const newProjectIds = projectIds.filter(
+            projectId => !lastSuccessfulSyncedProjectIds.includes(projectId),
+          );
+
+          // regular changes for already synced projects
+          if (existingProjectIds.length > 0) {
+            log.info('Snapshotting existing projects', {
+              existingProjectIds,
+            });
+            await snapshotOutgoingChanges(
+              transactingModels.database,
+              getModelsForPull(transactingModels.getModels()),
+              since,
+              sessionId,
+              deviceId,
+              this.config,
+              existingProjectIds,
+            );
+          }
+
+          // full changes if there are new projects selected from the client
+          if (newProjectIds.length > 0) {
+            log.info('Snapshotting new projects', {
+              newProjectIds,
+            });
+            await snapshotOutgoingChanges(
+              transactingModels.database,
+              getModelsForPull(transactingModels.getModels()),
+              -1,
+              sessionId,
+              deviceId,
+              this.config,
+              newProjectIds,
+              existingProjectIds,
+            );
+          }
 
           await removeSnapshotDataByPermissions(
             sessionId,

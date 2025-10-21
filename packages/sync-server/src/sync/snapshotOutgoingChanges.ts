@@ -15,8 +15,9 @@ export const snapshotOutgoingChanges = async (
   since: number,
   sessionId: string,
   deviceId: string,
-  projectIds: string[],
   config: SyncServerConfig,
+  includeProjectIds: string[],
+  excludeProjectIds: string[] = [],
 ): Promise<number> => {
   let fromId = '';
   let totalCount = 0;
@@ -24,6 +25,10 @@ export const snapshotOutgoingChanges = async (
   const CHUNK_SIZE = config.maxRecordsPerSnapshotChunk;
   const avoidRepull = config.lookupTable.avoidRepull;
   const recordTypes = models.map(m => m.databaseRecord);
+
+  // If there are excluded project ids, it means this is not an initial sync and just a new selected project
+  // we don't have to resync the non-project data because they should have been synced in the initial sync
+  const shouldSyncNonProjectData = excludeProjectIds.length === 0;
 
   while (fromId != null) {
     const [{ maxId, count }] = (await database.executeSql(
@@ -51,9 +56,23 @@ export const snapshotOutgoingChanges = async (
         WHERE updated_at_sync_tick > ?
         ${fromId ? `AND id > ?` : ''}
         AND (
-          project_ids IS NULL
-          OR
-          project_ids::text[] && ${SqlQuery.array(projectIds)}
+          ${shouldSyncNonProjectData ? 'project_ids IS NULL OR' : ''}
+          (
+            (project_ids::text[] && ${SqlQuery.array(includeProjectIds)})
+
+            -- excluded project ids are projects that have already been synced
+            -- if a record belongs to both included and excluded project ids, it is already synced,
+            -- so we don't need to resync it
+            ${
+              excludeProjectIds.length > 0
+                ? `
+              AND
+              (NOT (project_ids::text[] && ${SqlQuery.array(excludeProjectIds)}))
+            `
+                : ''
+            }
+
+          )
         )
         AND record_type IN ${SqlQuery.record(recordTypes)}
         ${
@@ -65,7 +84,7 @@ export const snapshotOutgoingChanges = async (
         LIMIT ?
         RETURNING sync_lookup_id
       )
-      SELECT  
+      SELECT
         MAX(sync_lookup_id) as "maxId",
         COUNT(*) as "count"
       FROM inserted;
@@ -73,7 +92,8 @@ export const snapshotOutgoingChanges = async (
       [
         since,
         ...(fromId ? [fromId] : []),
-        ...projectIds,
+        ...includeProjectIds,
+        ...(excludeProjectIds.length > 0 ? excludeProjectIds : []),
         ...recordTypes,
         ...(avoidRepull && deviceId ? [deviceId] : []),
         CHUNK_SIZE,
