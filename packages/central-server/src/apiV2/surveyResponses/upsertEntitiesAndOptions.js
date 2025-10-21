@@ -18,18 +18,23 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
       const existingEntity = await models.entity.findById(entity.id);
 
       const existingMetadata = existingEntity?.metadata || {};
-      const metadata =
-        dataGroup.service_type === 'dhis'
-          ? {
-              ...existingMetadata,
-              dhis: {
-                ...existingMetadata?.dhis,
-                isDataRegional: !!dataGroup.config.isDataRegional,
-              },
-            }
-          : {};
 
-      return models.entity.updateOrCreate({ id: entity.id }, { ...entity, metadata });
+      return models.entity.updateOrCreate(
+        { id: entity.id },
+        {
+          ...entity,
+          metadata:
+            dataGroup.service_type === 'dhis'
+              ? {
+                  ...existingMetadata,
+                  dhis: {
+                    ...existingMetadata?.dhis,
+                    isDataRegional: !!dataGroup.config.isDataRegional,
+                  },
+                }
+              : {},
+        },
+      );
     }),
   );
 };
