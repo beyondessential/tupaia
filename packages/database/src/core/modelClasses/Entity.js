@@ -337,7 +337,7 @@ export class EntityRecord extends DatabaseRecord {
 export class EntityModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
 
-  get ExcludedFieldsFromSync() {
+  get excludedFieldsFromSync() {
     return ['point', 'bounds', 'region', 'parent_id'];
   }
 
