@@ -28,10 +28,12 @@ const db = Knex({
   },
 });
 
+const { host, port, user, database } = (db as any).context.client.connectionSettings;
 console.log('🔌 Connected to database');
-console.log('  Host:    ', process.env.DB_URL);
-console.log('  Database:', process.env.DB_NAME);
-console.log('  User:    ', process.env.DB_USER);
+console.log('  Host:    ', host);
+console.log('  Port:    ', port);
+console.log('  User:    ', user);
+console.log('  Database:', database);
 
 const renameTables = (tables: Table[], suffix: string) =>
   tables.map(table => ({
