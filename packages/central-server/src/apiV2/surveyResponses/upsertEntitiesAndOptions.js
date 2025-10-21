@@ -72,7 +72,7 @@ const createOptions = async (models, optionsCreated) => {
 /**
  * Upsert entities and options that were created in user's local database
  * @param {import('@tupaia/database').ModelRegistry} models
- * @param {SurveyResponse | SurveyResponse[]} surveyResponses
+ * @param {SurveyResponse[]} surveyResponses
  */
 export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
   for (const surveyResponse of surveyResponses) {
