@@ -1,6 +1,5 @@
 import momentTimezone from 'moment-timezone';
 
-import { ensure } from '@tupaia/tsutils';
 import {
   DatabaseError,
   reformatDateStringWithoutTz,
@@ -26,10 +25,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
     await models.wrapInTransaction(async transactingModels => {
       await upsertEntitiesAndOptions(transactingModels, surveyResponseObject);
 
-      const survey = ensure(
-        await transactingModels.survey.findById(surveyResponseObject.survey_id),
-        `No survey exists with ID ${surveyResponseObject.survey_id}`,
-      );
+      const survey = await transactingModels.survey.findById(surveyResponseObject.survey_id);
 
       // Ensure entity_id is populated, supporting legacy versions of MediTrak
       if (clinicId) {
