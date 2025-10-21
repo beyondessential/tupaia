@@ -23,7 +23,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
 
   try {
     await models.wrapInTransaction(async transactingModels => {
-      await upsertEntitiesAndOptions(transactingModels, surveyResponseObject);
+      await upsertEntitiesAndOptions(transactingModels, [surveyResponseObject]);
 
       const survey = await transactingModels.survey.findById(surveyResponseObject.survey_id);
 

@@ -75,9 +75,7 @@ const createOptions = async (models, optionsCreated) => {
  * @param {SurveyResponse | SurveyResponse[]} surveyResponses
  */
 export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
-  const responses = Array.isArray(surveyResponses) ? surveyResponses : [surveyResponses];
-
-  for (const surveyResponse of responses) {
+  for (const surveyResponse of surveyResponses) {
     const entitiesUpserted = surveyResponse.entities_upserted || [];
     const optionsCreated = surveyResponse.options_created || [];
 
