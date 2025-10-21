@@ -6,6 +6,7 @@ import { SurveyResponseModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
+import { DatatrakWebServerModelRegistry } from '../types';
 
 export type SingleSurveyResponseRequest = Request<
   DatatrakWebSingleSurveyResponseRequest.Params,
@@ -81,27 +82,39 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       ...response
     } = surveyResponse;
 
-    // If the user is not the owner of the survey response, they should not be able to view the survey response unless they are a BES admin or have access to the admin panel
-    if (userId !== id) {
-      const permissionGroup = await models.permissionGroup.findById(surveyPermissionGroupId);
-      if (!permissionGroup) {
-        throw new Error('Permission group for survey not found');
+    return await models.wrapInReadOnlyTransaction(async transactingModels => {
+      // If the user is not the owner of the survey response, they should not be able to view the
+      // survey response unless they are a BES admin or have access to the Admin Panel
+      if (userId !== id) {
+        // TODO: Fix ModelRegistry and subclass types; and remove ugly casts
+        const permissionGroup = await (
+          transactingModels as unknown as DatatrakWebServerModelRegistry
+        ).permissionGroup.findById(surveyPermissionGroupId);
+        if (!permissionGroup) {
+          throw new Error('Permission group for survey not found');
+        }
+        assertCanViewSurveyResponse(accessPolicy, countryCode, permissionGroup.name);
       }
-      assertCanViewSurveyResponse(accessPolicy, countryCode, permissionGroup.name);
-    }
 
-    const [entityParentName, answerList] = await Promise.all([
-      models.entity.getParentEntityName(projectId, response['entity.id']),
-      ctx.services.central.fetchResources('answers', {
-        filter: { survey_response_id: surveyResponse.id },
-        columns: ANSWER_COLUMNS,
-        pageSize: 'ALL',
-      }),
-    ]);
+      const [entityParentName, answerList] = await Promise.all([
+        (transactingModels as unknown as DatatrakWebServerModelRegistry).entity.getParentEntityName(
+          projectId,
+          response['entity.id'],
+        ),
+        ctx.services.central.fetchResources('answers', {
+          filter: { survey_response_id: surveyResponse.id },
+          columns: ANSWER_COLUMNS,
+          pageSize: 'ALL',
+        }),
+      ]);
 
-    const answers = await SurveyResponseModel.formatAnswersForClient(models, answerList);
+      const answers = await SurveyResponseModel.formatAnswersForClient(
+        transactingModels,
+        answerList,
+      );
 
-    // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
-    return camelcaseKeys({ ...response, countryCode, entityParentName, userId, answers });
+      // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
+      return camelcaseKeys({ ...response, countryCode, entityParentName, userId, answers });
+    });
   }
 }
