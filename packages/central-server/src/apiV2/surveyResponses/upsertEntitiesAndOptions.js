@@ -58,6 +58,7 @@ const createOptions = async (models, optionsCreated) => {
       {
         ...optionObject,
         sort_order: maxSortOrder + 1,
+        attributes: {},
       },
     );
 
