@@ -30,6 +30,7 @@ export const useLogin = () => {
       } else {
         user = await login({ email, password });
       }
+
       return { user };
     },
     {

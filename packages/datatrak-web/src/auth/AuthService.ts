@@ -2,7 +2,6 @@ import log from 'winston';
 
 import { snakeKeys } from '@tupaia/utils';
 import { DatatrakWebUserRequest } from '@tupaia/types';
-import { camelcaseKeys } from '@tupaia/tsutils';
 import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
 
 import { DatatrakWebModelRegistry } from '../types';
@@ -22,7 +21,6 @@ export class AuthService {
   }
 
   async saveLocalUser(userData: DatatrakWebUserRequest.ResBody, password: string): Promise<void> {
-    // save local password to repo for later use
     let user = await this.models.user.findOne({ email: userData.email });
     if (!user) {
       await this.models.user.create(snakeKeys(userData));
@@ -40,7 +38,6 @@ export class AuthService {
     const isOnline = window.navigator.onLine;
     if (!isOnline) {
       const user = await this.localSignIn(params);
-
       return user;
     }
 
@@ -58,24 +55,36 @@ export class AuthService {
   }
 
   async localSignIn({ email, password }: SignInParams): Promise<DatatrakWebUserRequest.ResBody> {
-    const { model, ...user } =
-      (await this.models.user.findOne({
-        email,
-      })) || {};
+    const userRecord = await this.models.user.findOne({
+      email,
+    });
 
-    if (!user?.password_hash) {
+    if (!userRecord) {
+      throw new Error('Invalid username or password');
+    }
+
+    if (!userRecord.password_hash) {
       throw new Error(
-        'You need to first login when connected to internet to use your account offline.',
+        'Before using DataTrak offline, please log in once while connected to the internet',
       );
     }
 
-    if (!(await verifyPassword(user.password_hash, password))) {
+    if (!(await verifyPassword(userRecord.password_hash, password))) {
       throw new Error('Invalid user credentials');
     }
 
-    await this.models.localSystemFact.set(FACT_CURRENT_USER_ID, user.id);
+    const { preferences = {} } = userRecord;
+    const { project_id: projectId, country_id: countryId } = preferences;
 
-    return camelcaseKeys(user, { deep: true }) as DatatrakWebUserRequest.ResBody;
+    const [project, country] = await Promise.all([
+      projectId ? this.models.project.findById(projectId) : null,
+      countryId ? this.models.country.findById(countryId) : null,
+    ]);
+
+    const transformedUser = await this.models.user.transformUserData(userRecord, project, country);
+    await this.models.localSystemFact.set(FACT_CURRENT_USER_ID, transformedUser.id);
+
+    return transformedUser;
   }
 
   async remoteSignIn(params: SignInParams): Promise<DatatrakWebUserRequest.ResBody> {
@@ -96,7 +105,7 @@ export class AuthService {
     }
 
     // HTTP status codes indicating server issues
-    if (error.response?.status) {
+    if (typeof error.response?.status === 'number') {
       const status = error.response.status;
       // 5xx server errors or 408 timeout
       if (status >= 500 || status === 408 || status === 503) {
