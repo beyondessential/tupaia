@@ -5,7 +5,7 @@ export async function getEntityIdFromClinicId(models, clinicId) {
     return null;
   }
   const clinic = await models.facility.findById(clinicId);
-  const entity = await clinic.entity();
+  const entity = await models.entity.findOne({ code: clinic.code });
   if (!entity) {
     throw new Error(`Entity could not be found for clinic with code ${clinic.code}.`);
   }
