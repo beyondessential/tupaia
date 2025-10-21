@@ -58,15 +58,6 @@ export class SurveyResponseRecord extends DatabaseRecord {
     );
   }
 
-  /** @returns {Promise<Entity['id']>} */
-  async getEntityId() {
-    const { id } = ensure(
-      await this.getEntity(this.entity_id, { columns: ['id'] }),
-      `Couldn’t find entity for survey response ${this.id} (expected entity with ID ${this.entity_id})`,
-    );
-    return id;
-  }
-
   /** @returns {Promise<Entity['name'] | undefined>} */
   async getEntityParentName() {
     const projectId = await this.getProjectId();
