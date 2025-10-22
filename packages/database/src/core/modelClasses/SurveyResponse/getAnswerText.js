@@ -36,6 +36,17 @@ async function getFileAnswerText(answer) {
 /**
  * @type {AnswerBodyParser}
  */
+async function getGeolocateAnswerText(answer) {
+  if (answer.type !== QuestionType.Geolocate) {
+    throw new Error(`getGeolocateAnswerText called with answer of type ${answer.type}`);
+  }
+
+  return answer.body ? JSON.stringify(answer.body) : answer.body;
+}
+
+/**
+ * @type {AnswerBodyParser}
+ */
 async function getPhotoAnswerText(answer) {
   if (answer.type !== QuestionType.Photo) {
     throw new Error(`getPhotoAnswerText called with answer of type ${answer.type}`);
@@ -60,6 +71,7 @@ async function getPhotoAnswerText(answer) {
 /** @type {Record<QuestionType, AnswerBodyParser>} */
 const offlineAnswerBodyParsers = {
   [QuestionType.File]: getFileAnswerText,
+  [QuestionType.Geolocate]: getGeolocateAnswerText,
   [QuestionType.Photo]: getPhotoAnswerText,
 };
 
