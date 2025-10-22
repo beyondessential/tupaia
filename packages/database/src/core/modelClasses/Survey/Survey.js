@@ -20,7 +20,13 @@ export class SurveyRecord extends DatabaseRecord {
    * @returns {Promise<import('../DataGroup').DataGroupRecord>} data group for survey
    */
   async dataGroup() {
-    return await this.otherModels.dataGroup.findById(this.data_group_id);
+    const dataGroupId =
+      this.data_group_id ??
+      (await this.model.findById(this.id, { columns: ['data_group_id'] })).data_group_id;
+    return ensure(
+      await this.otherModels.dataGroup.findById(dataGroupId),
+      `Couldn’t find data group for survey ${this.id} (expected data group with ID ${dataGroupId})`,
+    );
   }
 
   /**
