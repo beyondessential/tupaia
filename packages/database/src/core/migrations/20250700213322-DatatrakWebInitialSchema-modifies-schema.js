@@ -97,11 +97,34 @@ exports.up = async function (db) {
     `);
 
   await db.runSql(`
+    CREATE TYPE service_type AS ENUM (
+      'dhis',
+      'tupaia',
+      'indicator',
+      'weather',
+      'kobo',
+      'data-lake',
+      'superset'
+    );
+  `);
+
+  await db.runSql(`
     CREATE TABLE country
     (
       id                   TEXT PRIMARY KEY,
       name                 TEXT NOT NULL UNIQUE,
       code                 TEXT NOT NULL UNIQUE
+    );
+  `);
+
+  await db.runSql(`
+    CREATE TABLE data_group (
+      id                   text         PRIMARY KEY,
+      code                 text         NOT NULL,
+      service_type         service_type NOT NULL,
+      config               jsonb        NOT NULL DEFAULT '{}'::jsonb,
+      updated_at_sync_tick bigint       NOT NULL DEFAULT 0,
+      CONSTRAINT valid_data_service_config CHECK (service_type <> 'dhis'::service_type OR (config ->> 'dhisInstanceCode'::text) IS NOT NULL)
     );
   `);
 
@@ -139,19 +162,6 @@ exports.up = async function (db) {
         id              TEXT NOT NULL PRIMARY KEY,
         name            TEXT NOT NULL UNIQUE,
         canonical_types TEXT[] DEFAULT '{}'::text[]
-      );
-    `);
-
-  // Create service_type enum
-  await db.runSql(`
-      CREATE TYPE service_type AS ENUM (
-        'dhis',
-        'tupaia',
-        'indicator',
-        'weather',
-        'kobo',
-        'data-lake',
-        'superset'
       );
     `);
 
@@ -349,6 +359,8 @@ exports.up = async function (db) {
           ON UPDATE CASCADE ON DELETE SET NULL,
         integration_metadata JSONB DEFAULT '{}'::jsonb,
         period_granularity   period_granularity,
+        data_group_id        TEXT REFERENCES data_group
+          ON UPDATE CASCADE ON DELETE SET NULL,
         requires_approval    BOOLEAN DEFAULT FALSE,
         project_id           TEXT NOT NULL REFERENCES project
       );
