@@ -44,7 +44,7 @@ export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
 
     try {
       if (entitiesUpserted.length > 0) {
-        await upsertEntities(models, entitiesUpserted, surveyResponse.survey_id);
+        await upsertEntities(models, entitiesUpserted);
       }
 
       if (optionsCreated.length > 0) {
