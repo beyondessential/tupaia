@@ -1,21 +1,5 @@
-import {
-  EntityHierarchyModel,
-  EntityModel,
-  EntityRelationModel,
-  ModelRegistry,
-  PermissionGroupModel,
-  TupaiaDatabase,
-  UserEntityPermissionModel,
-  UserModel,
-} from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 
-export interface TestModelRegistry extends ModelRegistry {
+export interface TestModelRegistry extends Omit<ModelRegistry, '#private'> {
   readonly database: TupaiaDatabase;
-
-  readonly entity: EntityModel;
-  readonly entityHierarchy: EntityHierarchyModel;
-  readonly entityRelation: EntityRelationModel;
-  readonly user: UserModel;
-  readonly userEntityPermission: UserEntityPermissionModel;
-  readonly permissionGroup: PermissionGroupModel;
 }

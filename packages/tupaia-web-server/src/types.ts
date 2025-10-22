@@ -1,32 +1,9 @@
 import { Knex } from 'knex';
 
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import {
-  CountryModel,
-  DashboardItemModel,
-  DashboardMailingListEntryModel,
-  DashboardModel,
-  DashboardRelationModel,
-  EntityModel,
-  MapOverlayGroupModel,
-  MapOverlayGroupRelationModel,
-  ProjectModel,
-  UserModel,
-} from '@tupaia/server-boilerplate';
 
-export interface TupaiaWebServerModelRegistry extends ModelRegistry {
+export interface TupaiaWebServerModelRegistry extends Omit<ModelRegistry, '#private'> {
   readonly database: TupaiaDatabase;
-
-  readonly country: CountryModel;
-  readonly dashboard: DashboardModel;
-  readonly dashboardItem: DashboardItemModel;
-  readonly dashboardMailingListEntry: DashboardMailingListEntryModel;
-  readonly dashboardRelation: DashboardRelationModel;
-  readonly entity: EntityModel;
-  readonly mapOverlayGroup: MapOverlayGroupModel;
-  readonly mapOverlayGroupRelation: MapOverlayGroupRelationModel;
-  readonly user: UserModel;
-  readonly project: ProjectModel;
 
   wrapInTransaction<T = unknown>(
     wrappedFunction: (models: TupaiaWebServerModelRegistry) => Promise<T>,

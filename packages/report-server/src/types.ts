@@ -1,18 +1,14 @@
 import { Knex } from 'knex';
 
 import { TupaiaApiClient } from '@tupaia/api-client';
-import { DashboardItemModel, ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import { ReportModel } from '@tupaia/server-boilerplate';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 
 export type RequestContext = {
   services: TupaiaApiClient;
 };
 
-export interface ReportServerModelRegistry extends ModelRegistry {
+export interface ReportServerModelRegistry extends Omit<ModelRegistry, '#private'> {
   readonly database: TupaiaDatabase;
-
-  readonly dashboardItem: DashboardItemModel;
-  readonly report: ReportModel;
 
   wrapInTransaction<T = unknown>(
     wrappedFunction: (models: ReportServerModelRegistry) => Promise<T>,

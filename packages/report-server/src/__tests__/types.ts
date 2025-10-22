@@ -1,19 +1,9 @@
 import { Knex } from 'knex';
 
-import {
-  ModelRegistry,
-  PermissionGroupModel,
-  ReportModel,
-  TupaiaDatabase,
-  UserModel,
-} from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 
-export interface TestModelRegistry extends ModelRegistry {
+export interface TestModelRegistry extends Omit<ModelRegistry, '#private'> {
   readonly database: TupaiaDatabase;
-
-  readonly user: UserModel;
-  readonly report: ReportModel;
-  readonly permissionGroup: PermissionGroupModel;
 
   wrapInTransaction<T = unknown>(
     wrappedFunction: (models: TestModelRegistry) => Promise<T>,

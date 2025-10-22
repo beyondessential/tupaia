@@ -82,6 +82,7 @@ export class DataElementModel extends MaterializedViewLogDatabaseModel {
     return DataElementRecord;
   }
 
+  /** @returns {typeof DHIS_DATA_TYPES} */
   getDhisDataTypes = () => DHIS_DATA_TYPES;
 
   async buildSyncLookupQueryDetails() {

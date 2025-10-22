@@ -52,7 +52,7 @@ let modelRegistry: DataBrokerModelRegistry;
 
 const getModelRegistry = () => {
   if (!modelRegistry) {
-    modelRegistry = new ModelRegistry(new TupaiaDatabase()) as DataBrokerModelRegistry;
+    modelRegistry = new ModelRegistry(new TupaiaDatabase());
   }
   return modelRegistry;
 };

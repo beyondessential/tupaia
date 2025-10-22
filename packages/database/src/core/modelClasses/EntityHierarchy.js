@@ -15,6 +15,7 @@ export class EntityHierarchyModel extends DatabaseModel {
     return EntityHierarchyRecord;
   }
 
+  /** @returns {Promise<null>} */
   async buildSyncLookupQueryDetails() {
     return null;
   }

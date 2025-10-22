@@ -1,18 +1,9 @@
 import { Knex } from 'knex';
 
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import {
-  DataTableModel,
-  EntityModel,
-  ExternalDatabaseConnectionModel,
-} from '@tupaia/server-boilerplate';
 
-export interface DataTableServerModelRegistry extends ModelRegistry {
+export interface DataTableServerModelRegistry extends Omit<ModelRegistry, '#private'> {
   readonly database: TupaiaDatabase;
-
-  readonly dataTable: DataTableModel;
-  readonly entity: EntityModel;
-  readonly externalDatabaseConnection: ExternalDatabaseConnectionModel;
 
   wrapInTransaction<T = unknown>(
     wrappedFunction: (models: DataTableServerModelRegistry) => Promise<T>,

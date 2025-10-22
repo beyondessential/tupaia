@@ -13,9 +13,141 @@ const MAX_APP_VERSION = '999.999.999';
 const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelName.slice(1)}`;
 
 export class ModelRegistry {
+  /** @readonly @type {import('./modelClasses').AccessRequestModel} */
+  accessRequest;
+  /** @readonly @type {import('./modelClasses').AnalyticsModel} */
+  analytics;
+  /** @readonly @type {import('./modelClasses').AncestorDescendantRelationModel} */
+  ancestorDescendantRelation;
+  /** @readonly @type {import('./modelClasses').AnswerModel} */
+  answer;
+  /** @readonly @type {import('./modelClasses').ApiClientModel} */
+  apiClient;
+  /** @readonly @type {import('./modelClasses').ApiRequestLogModel} */
+  apiRequestLog;
+  /** @readonly @type {import('./modelClasses').CommentModel} */
+  comment;
+  /** @readonly @type {import('./modelClasses').CountryModel} */
+  country;
+  /** @readonly @type {import('./modelClasses').DashboardModel} */
+  dashboard;
+  /** @readonly @type {import('./modelClasses').DashboardItemModel} */
+  dashboardItem;
+  /** @readonly @type {import('./modelClasses').DashboardMailingListModel} */
+  dashboardMailingList;
+  /** @readonly @type {import('./modelClasses').DashboardMailingListEntryModel} */
+  dashboardMailingListEntry;
+  /** @readonly @type {import('./modelClasses').DashboardRelationModel} */
+  dashboardRelation;
+  /** @readonly @type {import('./modelClasses').DashboardReportModel} */
+  dashboardReport;
+  /** @readonly @type {import('./modelClasses').DataElementModel} */
+  dataElement;
+  /** @readonly @type {import('./modelClasses').DataElementDataGroupModel} */
+  dataElementDataGroup;
+  /** @readonly @type {import('./modelClasses').DataElementDataServiceModel} */
+  dataElementDataService;
+  /** @readonly @type {import('./modelClasses').DataGroupModel} */
+  dataGroup;
+  /** @readonly @type {import('./modelClasses').DataServiceEntityModel} */
+  dataServiceEntity;
+  /** @readonly @type {import('./modelClasses').DataServiceSyncGroupModel} */
+  dataServiceSyncGroup;
+  /** @readonly @type {import('./modelClasses').DataTableModel} */
+  dataTable;
+  /** @readonly @type {import('./modelClasses').DebugLogModel} */
+  debugLog;
+  /** @readonly @type {import('./modelClasses').DhisInstanceModel} */
+  dhisInstance;
+  /** @readonly @type {import('./modelClasses').EntityModel} */
+  entity;
+  /** @readonly @type {import('./modelClasses').EntityHierarchyModel} */
+  entityHierarchy;
+  /** @readonly @type {import('./modelClasses').EntityParentChildRelationModel} */
+  entityParentChildRelation;
+  /** @readonly @type {import('./modelClasses').EntityRelationModel} */
+  entityRelation;
+  /** @readonly @type {import('./modelClasses').ExternalDatabaseConnectionModel} */
+  externalDatabaseConnection;
+  /** @readonly @type {import('./modelClasses').FacilityModel} */
+  facility;
+  /** @readonly @type {import('./modelClasses').FeedItemModel} */
+  feedItem;
+  /** @readonly @type {import('./modelClasses').GeographicalAreaModel} */
+  geographicalArea;
+  /** @readonly @type {import('./modelClasses').IndicatorModel} */
+  indicator;
+  /** @readonly @type {import('./modelClasses').LandingPageModel} */
+  landingPage;
+  /** @readonly @type {import('./modelClasses').LegacyReportModel} */
+  legacyReport;
+  /** @readonly @type {import('./modelClasses').LocalSystemFactModel} */
+  localSystemFact;
+  /** @readonly @type {import('./modelClasses').MapOverlayModel} */
+  mapOverlay;
+  /** @readonly @type {import('./modelClasses').MapOverlayGroupModel} */
+  mapOverlayGroup;
+  /** @readonly @type {import('./modelClasses').MapOverlayGroupRelationModel} */
+  mapOverlayGroupRelation;
+  /** @readonly @type {import('./modelClasses').MeditrakDeviceModel} */
+  meditrakDevice;
+  /** @readonly @type {import('./modelClasses').MeditrakSyncQueueModel} */
+  meditrakSyncQueue;
+  /** @readonly @type {import('./modelClasses').OneTimeLoginModel} */
+  oneTimeLogin;
+  /** @readonly @type {import('./modelClasses').OptionModel} */
+  option;
+  /** @readonly @type {import('./modelClasses').OptionSetModel} */
+  optionSet;
+  /** @readonly @type {import('./modelClasses').PermissionGroupModel} */
+  permissionGroup;
+  /** @readonly @type {import('./modelClasses').ProjectModel} */
+  project;
+  /** @readonly @type {import('./modelClasses').QuestionModel} */
+  question;
+  /** @readonly @type {import('./modelClasses').RefreshTokenModel} */
+  refreshToken;
+  /** @readonly @type {import('./modelClasses').ReportModel} */
+  report;
+  /** @readonly @type {import('./modelClasses').SupersetInstanceModel} */
+  supersetInstance;
+  /** @readonly @type {import('./modelClasses').SurveyModel} */
+  survey;
+  /** @readonly @type {import('./modelClasses').SurveyGroupModel} */
+  surveyGroup;
+  /** @readonly @type {import('./modelClasses').SurveyResponseModel} */
+  surveyResponse;
+  /** @readonly @type {import('./modelClasses').SurveyResponseCommentModel} */
+  surveyResponseComment;
+  /** @readonly @type {import('./modelClasses').SurveyScreenModel} */
+  surveyScreen;
+  /** @readonly @type {import('./modelClasses').SurveyScreenComponentModel} */
+  surveyScreenComponent;
+  /** @readonly @type {import('./modelClasses').SyncDeviceTickModel} */
+  syncDeviceTick;
+  /** @readonly @type {import('./modelClasses').SyncGroupLogModel} */
+  syncGroupLog;
+  /** @readonly @type {import('./modelClasses').SyncQueuedDeviceModel} */
+  syncQueuedDevice;
+  /** @readonly @type {import('./modelClasses').SyncSessionModel} */
+  syncSession;
+  /** @readonly @type {import('./modelClasses').TaskModel} */
+  task;
+  /** @readonly @type {import('./modelClasses').TaskCommentModel} */
+  taskComment;
+  /** @readonly @type {import('./modelClasses').TombstoneModel} */
+  tombstone;
+  /** @readonly @type {import('./modelClasses').UserModel} */
+  user;
+  /** @readonly @type {import('./modelClasses').UserCountryAccessAttemptModel} */
+  userCountryAccessAttempt;
+  /** @readonly @type {import('./modelClasses').UserEntityPermissionModel} */
+  userEntityPermission;
+  /** @readonly @type {import('./modelClasses').UserFavouriteDashboardItemModel} */
+  userFavouriteDashboardItem;
+
   /**
-   * @param {BaseDatabase} database
-   * @param {Record<string, typeof DatabaseModel>} [extraModelClasses]
+   * @type {<ModelRegistryT extends ModelRegistry = ModelRegistry, DatabaseT extends BaseDatabase = BaseDatabase>(database: DatabaseT, extraModelClasses?: Record<string, typeof DatabaseModel>, useNotifiers?: boolean, schemata?: unknown) => ModelRegistryT>}
    */
   constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {
     this.database = database;

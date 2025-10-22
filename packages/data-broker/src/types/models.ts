@@ -7,6 +7,8 @@ import type {
   DataGroupRecord as BaseDataGroupRecord,
   DataServiceSyncGroupModel as BaseDataServiceSyncGroupModel,
   DataServiceSyncGroupRecord as BaseDataServiceSyncGroupRecord,
+  EntityHierarchyModel as BaseEntityHierarchyModel,
+  EntityHierarchyRecord as BaseEntityHierarchyRecord,
   EntityModel as BaseEntityModel,
   EntityRecord as BaseEntityRecord,
   ModelRegistry,
@@ -150,12 +152,7 @@ export interface EntityRecord extends DatabaseRecord<Entity, BaseEntityRecord> {
 export type DataElementModel = DatabaseModel<
   DataElement,
   BaseDataElementRecord,
-  Override<
-    BaseDataElementModel,
-    {
-      getDhisDataTypes: () => Record<string, 'DataElement' | 'Indicator'>;
-    }
-  >
+  BaseDataElementModel
 >;
 export type DataGroupModel = DatabaseModel<
   DataGroup,
@@ -177,9 +174,13 @@ type EntityModel = DatabaseModel<Entity, EntityRecord, BaseEntityModel>;
 type SupersetInstanceModel = DatabaseModel<SupersetInstance>;
 type DataElementDataServiceModel = DatabaseModel<DataElementDataService>;
 type DhisInstanceModel = DatabaseModel<DhisInstance>;
-type EntityHierarchyModel = DatabaseModel<EntityHierarchy>;
+type EntityHierarchyModel = DatabaseModel<
+  EntityHierarchy,
+  BaseEntityHierarchyRecord,
+  BaseEntityHierarchyModel
+>;
 
-export interface DataBrokerModelRegistry extends ModelRegistry {
+export interface DataBrokerModelRegistry extends Omit<ModelRegistry, '#private'> {
   readonly database: TupaiaDatabase;
 
   readonly dataElementDataService: DataElementDataServiceModel;

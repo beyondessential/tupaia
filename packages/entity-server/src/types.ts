@@ -1,20 +1,9 @@
 import { Knex } from 'knex';
 
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import {
-  AncestorDescendantRelationModel,
-  EntityHierarchyModel,
-  EntityModel,
-  ProjectModel,
-} from '@tupaia/server-boilerplate';
 
-export interface EntityServerModelRegistry extends ModelRegistry {
+export interface EntityServerModelRegistry extends Omit<ModelRegistry, '#private'> {
   readonly database: TupaiaDatabase;
-
-  readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
-  readonly entity: EntityModel;
-  readonly entityHierarchy: EntityHierarchyModel;
-  readonly project: ProjectModel;
 
   wrapInTransaction<T = unknown>(
     wrappedFunction: (models: EntityServerModelRegistry) => Promise<T>,

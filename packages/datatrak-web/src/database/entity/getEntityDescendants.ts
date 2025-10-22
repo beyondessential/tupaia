@@ -81,7 +81,9 @@ const getAllowedCountries = async (
   const countryEntities = await rootEntity.getChildrenFromParentChildRelation(
     project.entity_hierarchy_id,
   );
-  const childCodes = countryEntities.map(child => child.country_code).filter(isNotNullish);
+  const childCodes: Entity['code'][] = countryEntities
+    .map(child => child.country_code)
+    .filter(isNotNullish);
   let allowedCountries = [...new Set(childCodes)];
 
   if (!isPublic) {

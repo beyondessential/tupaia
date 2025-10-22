@@ -1,12 +1,10 @@
 import log from 'winston';
 
-import { CountryRecord, ProjectRecord } from '@tupaia/tsmodels';
-import { getBrowserTimeZone, snakeKeys } from '@tupaia/utils';
-import { DatatrakWebUserRequest } from '@tupaia/types';
 import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
-
-import { DatatrakWebModelRegistry } from '../types';
+import { DatatrakWebUserRequest } from '@tupaia/types';
+import { getBrowserTimeZone, snakeKeys } from '@tupaia/utils';
 import { post } from '../api';
+import { DatatrakWebModelRegistry } from '../types';
 import { hashPassword, verifyPassword } from './hash';
 
 type SignInParams = {
