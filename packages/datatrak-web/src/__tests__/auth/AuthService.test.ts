@@ -41,6 +41,14 @@ Object.defineProperty(window.navigator, 'userAgent', {
   value: 'Mozilla/5.0 (Test Browser)',
 });
 
+const MOCKED_TRANSFORMED_USER = {
+  id: 'user-123',
+  email: 'test@example.com',
+  first_name: 'Test',
+  last_name: 'User',
+  access_policy: {},
+};
+
 class NetworkError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -64,6 +72,7 @@ describe('AuthService', () => {
         update: jest.fn(),
         findOne: jest.fn().mockResolvedValue(null),
         create: jest.fn(),
+        transformUserData: jest.fn().mockResolvedValue(MOCKED_TRANSFORMED_USER),
       },
       localSystemFact: {
         set: jest.fn(),
@@ -101,13 +110,7 @@ describe('AuthService', () => {
           password_hash: 'password123',
         }),
         create: jest.fn(),
-        transformUserData: jest.fn().mockResolvedValue({
-          id: 'user-123',
-          email: 'test@example.com',
-          first_name: 'Test',
-          last_name: 'User',
-          access_policy: {},
-        }),
+        transformUserData: jest.fn().mockResolvedValue(MOCKED_TRANSFORMED_USER),
       },
       localSystemFact: {
         set: jest.fn(),
@@ -139,13 +142,7 @@ describe('AuthService', () => {
           password_hash: 'password123',
         }),
         create: jest.fn(),
-        transformUserData: jest.fn().mockResolvedValue({
-          id: 'user-123',
-          email: 'test@example.com',
-          first_name: 'Test',
-          last_name: 'User',
-          access_policy: {},
-        }),
+          transformUserData: jest.fn().mockResolvedValue(MOCKED_TRANSFORMED_USER),
       },
       localSystemFact: {
         set: jest.fn(),
