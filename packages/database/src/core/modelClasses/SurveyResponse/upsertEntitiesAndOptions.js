@@ -1,4 +1,4 @@
-import { toMerged } from 'es-toolkit';
+import { merge } from 'es-toolkit';
 
 import { DatabaseError } from '@tupaia/utils';
 
@@ -7,7 +7,7 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
     entitiesUpserted.map(async entity => {
       const existingEntity = await models.entity.findOne({ id: entity.id });
       const existingMetadata = existingEntity?.metadata || {};
-      const metadata = toMerged(existingMetadata, entity.metadata);
+      const metadata = merge(existingMetadata, entity.metadata);
 
       return models.entity.updateOrCreate({ id: entity.id }, { ...entity, metadata });
     }),
