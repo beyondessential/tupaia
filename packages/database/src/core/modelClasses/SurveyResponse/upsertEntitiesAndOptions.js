@@ -6,8 +6,10 @@ const upsertEntities = async (models, entitiesUpserted) => {
   return await Promise.all(
     entitiesUpserted.map(async entity => {
       const existingEntity = await models.entity.findOne({ id: entity.id });
+
       const existingMetadata = existingEntity?.metadata || {};
-      const metadata = merge(existingMetadata, entity.metadata);
+      const newMetadata = entity.metadata || {};
+      const metadata = merge(existingMetadata, newMetadata);
 
       return models.entity.updateOrCreate({ id: entity.id }, { ...entity, metadata });
     }),
