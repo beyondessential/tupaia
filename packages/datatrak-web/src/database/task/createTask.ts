@@ -18,8 +18,6 @@ export const createTask = async ({
   data: Data;
   user: CurrentUser;
 }) => {
-  await models.task.assertUserHasPermissionToCreateTask(accessPolicy, data);
-
   // Country code is not part of the task data, it's used for GA events
   const { country_code, ...rest } = data;
   const survey = await models.survey.findOne({ code: data.survey_code });
@@ -31,6 +29,8 @@ export const createTask = async ({
   if (taskData.due_date) {
     taskData.status = TaskStatus.to_do;
   }
+
+  await models.task.assertUserHasPermissionToCreateTask(accessPolicy, taskData);
 
   return await models.wrapInTransaction(async transactingModels => {
     const task = await transactingModels.task.create(taskData);
