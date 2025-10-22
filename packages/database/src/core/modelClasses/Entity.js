@@ -1,16 +1,16 @@
 import keyBy from 'lodash.keyby';
 
-import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
-import { assertIsNotNullish, ensure } from '@tupaia/tsutils';
+import { assertIsNotNullish } from '@tupaia/tsutils';
+import { fetchPatiently, translateBounds, translatePoint, translateRegion } from '@tupaia/utils';
 
+import { EntityTypeEnum } from '@tupaia/types';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
+import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
-import { buildSyncLookupSelect } from '../sync';
 import { SqlQuery } from '../SqlQuery';
-import { EntityTypeEnum } from '@tupaia/types';
+import { buildSyncLookupSelect } from '../sync';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -176,15 +176,24 @@ export class EntityRecord extends DatabaseRecord {
     return translateRegion(this.region);
   }
 
+  /**
+   * @returns {Promise<EntityRecord | undefined>}
+   */
   async getParent(hierarchyId) {
     const ancestors = await this.getAncestors(hierarchyId, { generational_distance: 1 });
     return ancestors && ancestors.length > 0 ? ancestors[0] : undefined;
   }
 
+  /**
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getAncestors(hierarchyId, criteria) {
     return this.model.getAncestorsOfEntities(hierarchyId, [this.id], criteria);
   }
 
+  /**
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getDescendants(hierarchyId, criteria, options) {
     return this.model.getDescendantsOfEntities(hierarchyId, [this.id], criteria, options);
   }
@@ -515,6 +524,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return Promise.all(entityRecords.map(async r => await this.generateInstance(r)));
   }
 
+  /**
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {
     return this.getRelationsOfEntities(ENTITY_RELATION_TYPE.ANCESTORS, entityIds, {
       entity_hierarchy_id: hierarchyId,
@@ -522,7 +534,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     });
   }
 
-  async getDescendantsOfEntities(hierarchyId, entityIds, criteria, options) {
+  /**
+   * @returns {Promise<EntityRecord[]>}
+   */
+  async getDescendantsOfEntities(hierarchyId, entityIds, criteria, options = {}) {
     return this.getRelationsOfEntities(
       ENTITY_RELATION_TYPE.DESCENDANTS,
       entityIds,
@@ -644,6 +659,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return parentEntity?.name;
   }
 
+  /**
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getRelativesOfEntities(hierarchyId, entityIds, criteria) {
     // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
     const ancestors = (
@@ -660,6 +678,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return [...ancestors, ...self, ...descendants];
   }
 
+  /**
+   * @param {keyof ORG_UNIT_ENTITY_TYPES} type
+   * @returns {number}
+   */
   getDhisLevel(type) {
     const level = ORG_UNIT_TYPE_LEVELS[type];
     if (!level) {
@@ -669,6 +691,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return level;
   }
 
+  /**
+   * @returns {Promise<EntityTypeEnum[]>}
+   */
   async getEntityTypes() {
     const entityTypes = await this.database.executeSql(
       'SELECT unnest(enum_range(NULL::entity_type)::TEXT[]) AS type ORDER BY type;',

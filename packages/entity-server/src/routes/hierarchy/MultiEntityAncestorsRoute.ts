@@ -24,7 +24,9 @@ export class MultiEntityAncestorsRoute extends Route<MultiEntityAncestorsRequest
       entities.map(entity => entity.id),
       { ...filter },
     );
-    const entitiesToUse = includeRootEntity ? entities.concat(ancestors) : ancestors;
+    const entitiesToUse: EntityRecord[] = includeRootEntity
+      ? entities.concat(ancestors)
+      : ancestors;
 
     return formatEntitiesForResponse(this.req.models, this.req.ctx, entitiesToUse, field || fields);
   }

@@ -2,9 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 
 import { EntityFilter, EntityRecord, extractEntityFilterFromQuery } from '@tupaia/tsmodels';
 import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
-import { Entity, EntityTypeEnum } from '@tupaia/types';
+import { Entity, EntityTypeEnum, Project } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
 
+import { ProjectRecord } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
@@ -27,7 +28,7 @@ const validateEntitiesAndBuildContext = async (
   const { hierarchyId } = req.ctx;
   const { hierarchyName } = req.params;
   // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
-  const rootEntity = await req.models.entity.findOne({
+  const rootEntity: EntityRecord | null = await req.models.entity.findOne({
     type: EntityTypeEnum.project,
     code: hierarchyName,
   });
@@ -80,7 +81,7 @@ const getFilterInfo = async (
   let allowedCountries = [...new Set(childCodes)];
 
   if (!isPublic) {
-    const { permission_groups: projectPermissionGroups } = ensure(
+    const { permission_groups: projectPermissionGroups }: Project & ProjectRecord = ensure(
       await req.models.project.findOne({ code: req.params.hierarchyName }),
       `No project exists with code ${req.params.hierarchyName}`,
     );
