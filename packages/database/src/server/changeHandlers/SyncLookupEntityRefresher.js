@@ -30,10 +30,10 @@ export class SyncLookupEntityRefresher extends ChangeHandler {
     await models.database.executeSql(
       `
         UPDATE entity
-        SET updated_at_sync_tick = ?
+        SET updated_at_sync_tick = 1
         WHERE id IN ${SqlQuery.record(entityIdsArray)}
     `,
-      [1, ...entityIdsArray],
+      entityIdsArray,
     );
   }
 }
