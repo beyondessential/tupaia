@@ -2,7 +2,7 @@ import { merge } from 'es-toolkit';
 
 import { DatabaseError } from '@tupaia/utils';
 
-const upsertEntities = async (models, entitiesUpserted, surveyId) => {
+const upsertEntities = async (models, entitiesUpserted) => {
   return await Promise.all(
     entitiesUpserted.map(async entity => {
       const existingEntity = await models.entity.findOne({ id: entity.id });
