@@ -217,14 +217,15 @@ export class ClientSyncManager {
         this.setProgress(0, '');
         this.syncStage = null;
         this.isSyncing = false;
+        this.isRequestingSync = false;
         this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED);
         this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ENDED);
         if (this.urgentSyncInterval) {
           clearInterval(this.urgentSyncInterval);
           this.urgentSyncInterval = null;
         }
+        this.progressMessage = null;
       }
-      this.progressMessage = null;
     }
 
     return {};
@@ -261,7 +262,7 @@ export class ClientSyncManager {
 
     this.progressMessage = 'Requesting sync...';
     this.isRequestingSync = true;
-    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_INITIALISING);
+    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_REQUESTING);
 
     const projectIds = await this.getProjectsInSync();
 
@@ -297,6 +298,7 @@ export class ClientSyncManager {
 
     this.isSyncing = true;
     this.isQueuing = false;
+    this.progressMessage = 'Initialising sync';
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STARTED);
 
     // clear previous temp data, in case last session errored out or server was restarted

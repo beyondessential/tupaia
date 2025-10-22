@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+import { formatDistance } from 'date-fns';
+
+import { ensure } from '@tupaia/tsutils';
 
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
@@ -8,9 +11,7 @@ import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
 import { SYNC_EVENT_ACTIONS } from '../../types';
-import { formatDistance } from 'date-fns';
 import { useSyncContext } from '../../api/SyncContext';
-import { ensure } from '@tupaia/tsutils';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -94,7 +95,7 @@ export const SyncPage = () => {
   useEffect(() => {
     const handler = (action, data): void => {
       switch (action) {
-        case SYNC_EVENT_ACTIONS.SYNC_INITIALISING:
+        case SYNC_EVENT_ACTIONS.SYNC_REQUESTING:
           setProgressMessage(syncManager.progressMessage);
           setIsRequestingSync(true);
           setErrorMessage(null);
@@ -113,7 +114,7 @@ export const SyncPage = () => {
           setSyncStarted(true);
           setIsSyncing(true);
           setProgress(0);
-          setProgressMessage('Initialising sync');
+          setProgressMessage(syncManager.progressMessage);
           setSyncStage(1);
           setErrorMessage(null);
           break;

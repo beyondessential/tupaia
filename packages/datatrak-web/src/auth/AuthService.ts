@@ -3,6 +3,7 @@ import log from 'winston';
 import { snakeKeys } from '@tupaia/utils';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
+import { UserRecord } from '@tupaia/tsmodels';
 
 import { DatatrakWebModelRegistry } from '../types';
 import { hashPassword, verifyPassword } from './hash';
@@ -37,8 +38,7 @@ export class AuthService {
   async signIn(params: SignInParams) {
     const isOnline = window.navigator.onLine;
     if (!isOnline) {
-      const user = await this.localSignIn(params);
-      return user;
+      return await this.localSignIn(params);
     }
 
     try {
@@ -52,6 +52,17 @@ export class AuthService {
       // Re-throw other errors (e.g., invalid credentials)
       throw error;
     }
+  }
+
+  async transformUserData(userRecord: UserRecord): Promise<DatatrakWebUserRequest.ResBody> {
+    const { preferences = {} } = userRecord;
+    const { project_id: projectId, country_id: countryId } = preferences;
+    const [project, country] = await Promise.all([
+      projectId ? this.models.project.findById(projectId) : null,
+      countryId ? this.models.country.findById(countryId) : null,
+    ]);
+    
+    return await this.models.user.transformUserData(userRecord, project, country);
   }
 
   async localSignIn({ email, password }: SignInParams): Promise<DatatrakWebUserRequest.ResBody> {
@@ -73,15 +84,7 @@ export class AuthService {
       throw new Error('Invalid user credentials');
     }
 
-    const { preferences = {} } = userRecord;
-    const { project_id: projectId, country_id: countryId } = preferences;
-
-    const [project, country] = await Promise.all([
-      projectId ? this.models.project.findById(projectId) : null,
-      countryId ? this.models.country.findById(countryId) : null,
-    ]);
-
-    const transformedUser = await this.models.user.transformUserData(userRecord, project, country);
+    const transformedUser = await this.transformUserData(userRecord);
     await this.models.localSystemFact.set(FACT_CURRENT_USER_ID, transformedUser.id);
 
     return transformedUser;
@@ -95,7 +98,7 @@ export class AuthService {
     // kick off a local save
     await this.saveLocalUser(user, params.password);
 
-    return user;
+    return await this.transformUserData(user);
   }
 
   private shouldFallbackToLocal(error: any): boolean {

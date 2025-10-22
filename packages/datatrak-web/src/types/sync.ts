@@ -8,7 +8,7 @@ export interface ProcessStreamDataParams {
 }
 
 export const SYNC_EVENT_ACTIONS = {
-  SYNC_INITIALISING: 'syncInitialising',
+  SYNC_REQUESTING: 'syncInitialising',
   SYNC_IN_QUEUE: 'syncInQueue',
   SYNC_STARTED: 'syncStarted',
   SYNC_STATE_CHANGED: 'syncStateChanged',

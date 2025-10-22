@@ -1,12 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
+import { ensure } from '@tupaia/tsutils';
+
 import { gaEvent, useFromLocation } from '../../utils';
 import { ROUTES } from '../../constants';
 import { useDatabaseContext } from '../../hooks/database';
 import { AuthService } from '../../auth';
 import { useIsOfflineFirst } from '../offlineFirst';
-import { ensure } from '@tupaia/tsutils';
 import { login } from '../../auth/login';
 
 type LoginCredentials = {
@@ -38,14 +39,14 @@ export const useLogin = () => {
         gaEvent('login', 'Login', 'Attempt');
       },
       onSuccess: async ({ user }) => {
-        await queryClient.invalidateQueries();
-        await queryClient.removeQueries();
-
         if (isOfflineFirst) {
-          if (user.preferences?.projectId) {
-            await ensure(models).localSystemFact.addProjectForSync(user.preferences.projectId);
+          if (user.projectId) {
+            await ensure(models).localSystemFact.addProjectForSync(user.projectId);
           }
         }
+
+        await queryClient.invalidateQueries();
+        await queryClient.removeQueries();
 
         if (from) {
           navigate(from, { state: null });
