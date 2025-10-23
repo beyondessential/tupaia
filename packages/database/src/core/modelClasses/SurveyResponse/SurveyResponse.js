@@ -52,24 +52,30 @@ export class SurveyResponseRecord extends DatabaseRecord {
 
   /** @returns {Promise<EntityRecord>} */
   async getEntity(conditions) {
+    const entityId =
+      this.entity_id ?? (await this.model.findById(this.id, { columns: ['entity_id'] })).entity_id;
     return ensure(
-      await this.otherModels.entity.findById(this.entity_id, conditions),
-      `Couldn’t find entity for survey response ${this.id} (expected entity with ID ${this.entity_id})`,
+      await this.otherModels.entity.findById(entityId, conditions),
+      `Couldn’t find entity for survey response ${this.id} (expected entity with ID ${entityId})`,
     );
   }
 
   /** @returns {Promise<Entity['name'] | undefined>} */
   async getEntityParentName() {
-    const projectId = await this.getProjectId();
-    const name = await this.otherModels.entity.getParentEntityName(projectId, this.entity_id);
-    return name;
+    const [projectId, entityId] = await Promise.all([
+      this.getProjectId(),
+      this.entity_id ?? (await this.model.findById(this.id, { columns: ['entity_id'] })).entity_id,
+    ]);
+    return await this.otherModels.entity.getParentEntityName(projectId, entityId);
   }
 
   /** @returns {Promise<Project['id']>} */
   async getProjectId() {
+    const surveyId =
+      this.surveyId ?? (await this.model.findById(this.id, { columns: ['survey_id'] })).survey_id;
     const { project_id } = ensure(
-      await this.otherModels.survey.findById(this.survey_id, { columns: ['project_id'] }),
-      `Couldn’t find survey for survey response ${this.id} (expected survey with ID ${this.survey_id})`,
+      await this.otherModels.survey.findById(surveyId, { columns: ['project_id'] }),
+      `Couldn’t find survey for survey response ${this.id} (expected survey with ID ${surveyId})`,
     );
     return project_id;
   }
