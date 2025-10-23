@@ -47,7 +47,7 @@ export class SurveyResponseRecord extends DatabaseRecord {
 
   /** @returns {Promise<Country['code']>} */
   async getCountryCode() {
-    return await this.getEntity({ columns: ['country_code'] }).country_code;
+    return (await this.getEntity({ columns: ['country_code'] })).country_code;
   }
 
   /** @returns {Promise<EntityRecord>} */
