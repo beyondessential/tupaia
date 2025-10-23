@@ -3,6 +3,8 @@
  * functionality removed. (Deferred to RN-1752)
  */
 
+import { isPlainObject } from 'es-toolkit';
+
 import { isValidHttpUrl } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
 
@@ -41,7 +43,7 @@ async function getGeolocateAnswerText(answer) {
     throw new Error(`getGeolocateAnswerText called with answer of type ${answer.type}`);
   }
 
-  return answer.body ? JSON.stringify(answer.body) : answer.body;
+  return isPlainObject(answer.body) ? JSON.stringify(answer.body) : answer.body;
 }
 
 /**
