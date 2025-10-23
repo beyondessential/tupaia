@@ -388,16 +388,20 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     const countryIdsByPermissionGroupId =
       await this.otherModels.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
 
-    dbConditions[QUERY_CONJUNCTIONS.RAW] = {
-      sql: `
-        (
-          survey.country_ids
-          &&
-          ARRAY(
-            SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-          )
-        )`,
-      parameters: JSON.stringify(countryIdsByPermissionGroupId),
+
+    // Using AND instead of RAW to not override the existing RAW criteria
+    dbConditions[QUERY_CONJUNCTIONS.AND] = {
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: `
+          (
+            survey.country_ids
+            &&
+            ARRAY(
+              SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
+            )
+          )`,
+        parameters: JSON.stringify(countryIdsByPermissionGroupId),
+      },
     };
     return dbConditions;
   }
