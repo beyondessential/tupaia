@@ -72,7 +72,7 @@ export class SurveyResponseRecord extends DatabaseRecord {
   /** @returns {Promise<Project['id']>} */
   async getProjectId() {
     const surveyId =
-      this.surveyId ?? (await this.model.findById(this.id, { columns: ['survey_id'] })).survey_id;
+      this.survey_id ?? (await this.model.findById(this.id, { columns: ['survey_id'] })).survey_id;
     const { project_id } = ensure(
       await this.otherModels.survey.findById(surveyId, { columns: ['project_id'] }),
       `Couldn’t find survey for survey response ${this.id} (expected survey with ID ${surveyId})`,
