@@ -39,7 +39,15 @@ const surveyQueryFunctions = {
       survey.model = undefined;
       survey.project.model = undefined;
 
-      return camelcaseKeys(survey, { deep: true });
+      return camelcaseKeys(survey, {
+        deep: true,
+        // Don’t touch JSONB attributes
+        stopPaths: [
+          'screens.survey_screen_components.config',
+          'screens.survey_screen_components.validation_criteria',
+          'screens.survey_screen_components.visibility_criteria',
+        ],
+      });
     }),
 };
 
