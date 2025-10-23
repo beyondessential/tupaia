@@ -8,7 +8,7 @@ export const useQRCodeLocationData = () => {
   if (!surveyResponse) return null;
 
   const { qrCodeEntitiesCreated } = JSON.parse(surveyResponse);
-  if (!qrCodeEntitiesCreated.length) return null;
+  if (!qrCodeEntitiesCreated?.length) return null;
 
   return qrCodeEntitiesCreated;
 };
