@@ -7,7 +7,7 @@ import { post } from '../api';
 import { DatatrakWebModelRegistry } from '../types';
 import { hashPassword, verifyPassword } from './hash';
 
-interface SignInParams {
+export interface SignInParams {
   email: string;
   password: string;
 }
