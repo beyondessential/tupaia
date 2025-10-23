@@ -55,40 +55,41 @@ const getLocal = async ({
 }: SurveysQueryFunctionContext) => {
   const where = constructDbFilter({ projectId, searchTerm, countryCode });
 
-  const trxModels = models; // TODO: Replace with read-only transaction
-  const records = await trxModels.survey.find(where);
+  return await models.wrapInReadOnlyTransaction(async transactingModels => {
+    const records = await transactingModels.survey.find(where);
 
-  if (records.length === 0) return [];
+    if (records.length === 0) return [];
 
-  const surveys: (Pick<Survey, 'code' | 'id' | 'name' | 'survey_group_id'> & {
-    countryNames?: Country['name'][];
-    countryCodes?: Country['code'][];
-    surveyGroupName?: SurveyGroup['name'] | null;
-    surveyQuestions?: unknown[];
-  })[] = records.map(({ code, id, name, survey_group_id }) => ({
-    code,
-    id,
-    name,
-    survey_group_id,
-  }));
+    const surveys: (Pick<Survey, 'code' | 'id' | 'name' | 'survey_group_id'> & {
+      countryNames?: Country['name'][];
+      countryCodes?: Country['code'][];
+      surveyGroupName?: SurveyGroup['name'] | null;
+      surveyQuestions?: unknown[];
+    })[] = records.map(({ code, id, name, survey_group_id }) => ({
+      code,
+      id,
+      name,
+      survey_group_id,
+    }));
 
-  const surveyIds = surveys.map(s => s.id);
-  const [countryNames, countryCodes, surveyGroupNames] = await Promise.all([
-    getSurveyCountryNames(trxModels, surveyIds, { enabled: includeCountryNames }),
-    getSurveyCountryCodes(trxModels, surveyIds),
-    getSurveyGroupNames(trxModels, surveyIds, { enabled: includeSurveyGroupNames }),
-  ]);
+    const surveyIds = surveys.map(s => s.id);
+    const [countryNames, countryCodes, surveyGroupNames] = await Promise.all([
+      getSurveyCountryNames(transactingModels, surveyIds, { enabled: includeCountryNames }),
+      getSurveyCountryCodes(transactingModels, surveyIds),
+      getSurveyGroupNames(transactingModels, surveyIds, { enabled: includeSurveyGroupNames }),
+    ]);
 
-  for (const survey of surveys) {
-    survey.countryNames = countryNames[survey.id];
-    survey.countryCodes = countryCodes[survey.id];
-    survey.surveyGroupName = surveyGroupNames[survey.id];
+    for (const survey of surveys) {
+      survey.countryNames = countryNames[survey.id];
+      survey.countryCodes = countryCodes[survey.id];
+      survey.surveyGroupName = surveyGroupNames[survey.id];
 
-    // Done with survey group ID now. Omit it from result.
-    survey.survey_group_id = undefined;
-  }
+      // Done with survey group ID now. Omit it from result.
+      survey.survey_group_id = undefined;
+    }
 
-  return camelcaseKeys(surveys, { deep: true });
+    return camelcaseKeys(surveys, { deep: true });
+  });
 };
 
 export function useSurveysQuery(
