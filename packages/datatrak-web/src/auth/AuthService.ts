@@ -1,18 +1,16 @@
 import log from 'winston';
 
-import { snakeKeys } from '@tupaia/utils';
-import { DatatrakWebUserRequest } from '@tupaia/types';
 import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
-import { UserRecord } from '@tupaia/tsmodels';
-
+import { DatatrakWebUserRequest } from '@tupaia/types';
+import { getBrowserTimeZone, snakeKeys } from '@tupaia/utils';
+import { post } from '../api';
 import { DatatrakWebModelRegistry } from '../types';
 import { hashPassword, verifyPassword } from './hash';
-import { login } from './login';
 
-export type SignInParams = {
+interface SignInParams {
   email: string;
   password: string;
-};
+}
 
 export class AuthService {
   models: DatatrakWebModelRegistry;
@@ -30,15 +28,15 @@ export class AuthService {
     // Only update password hash, keep other user data updated via sync
     await this.models.user.update(
       { email: userData.email },
-      // @ts-ignore accessPolicy is only available on the client
-      { access_policy: userData.accessPolicy, password_hash: await hashPassword(password) },
+      { password_hash: await hashPassword(password) },
     );
   }
 
   async signIn(params: SignInParams) {
     const isOnline = window.navigator.onLine;
     if (!isOnline) {
-      return await this.localSignIn(params);
+      const user = await this.localSignIn(params);
+      return user;
     }
 
     try {
@@ -52,17 +50,6 @@ export class AuthService {
       // Re-throw other errors (e.g., invalid credentials)
       throw error;
     }
-  }
-
-  async transformUserData(userRecord: UserRecord): Promise<DatatrakWebUserRequest.ResBody> {
-    const { preferences = {} } = userRecord;
-    const { project_id: projectId, country_id: countryId } = preferences;
-    const [project, country] = await Promise.all([
-      projectId ? this.models.project.findById(projectId) : null,
-      countryId ? this.models.country.findById(countryId) : null,
-    ]);
-    
-    return await this.models.user.transformUserData(userRecord, project, country);
   }
 
   async localSignIn({ email, password }: SignInParams): Promise<DatatrakWebUserRequest.ResBody> {
@@ -84,21 +71,36 @@ export class AuthService {
       throw new Error('Invalid user credentials');
     }
 
-    const transformedUser = await this.transformUserData(userRecord);
+    const { preferences = {} } = userRecord;
+    const { project_id: projectId, country_id: countryId } = preferences;
+
+    const [project, country] = await Promise.all([
+      projectId ? this.models.project.findById(projectId) : null,
+      countryId ? this.models.country.findById(countryId) : null,
+    ]);
+
+    const transformedUser = await this.models.user.transformUserData(userRecord, project, country);
     await this.models.localSystemFact.set(FACT_CURRENT_USER_ID, transformedUser.id);
 
     return transformedUser;
   }
 
   async remoteSignIn(params: SignInParams): Promise<DatatrakWebUserRequest.ResBody> {
-    const { user } = await login(params);
+    const { user } = await post('login', {
+      data: {
+        emailAddress: params.email,
+        password: params.password,
+        deviceName: window.navigator.userAgent,
+        timezone: getBrowserTimeZone(),
+      },
+    });
 
     await this.models.localSystemFact.set(FACT_CURRENT_USER_ID, user.id);
 
     // kick off a local save
     await this.saveLocalUser(user, params.password);
 
-    return await this.transformUserData(user);
+    return user;
   }
 
   private shouldFallbackToLocal(error: any): boolean {

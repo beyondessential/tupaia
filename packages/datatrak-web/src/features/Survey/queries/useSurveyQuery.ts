@@ -49,18 +49,14 @@ export function useSurveyQuery(
 ) {
   const isOfflineFirst = useIsOfflineFirst();
 
-  const options = Object.assign(
-    {
-      enabled: Boolean(surveyCode),
-      localContext: { surveyCode },
-      meta: { applyCustomErrorHandling: true },
-    },
-    useQueryOptions,
-  );
-
   return useDatabaseQuery(
     ['survey', surveyCode],
     isOfflineFirst ? surveyQueryFunctions.local : surveyQueryFunctions.remote,
-    options,
+    {
+      ...useQueryOptions,
+      enabled: Boolean(surveyCode) && (useQueryOptions?.enabled ?? true),
+      localContext: { surveyCode },
+      meta: { applyCustomErrorHandling: true },
+    },
   );
 }
