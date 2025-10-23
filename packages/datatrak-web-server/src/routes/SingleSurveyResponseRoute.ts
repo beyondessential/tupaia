@@ -82,6 +82,12 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       ...response
     } = surveyResponse;
 
+    const answerList = await ctx.services.central.fetchResources('answers', {
+      filter: { survey_response_id: surveyResponse.id },
+      columns: ANSWER_COLUMNS,
+      pageSize: 'ALL',
+    });
+
     return await models.wrapInReadOnlyTransaction(async transactingModels => {
       // If the user is not the owner of the survey response, they should not be able to view the
       // survey response unless they are a BES admin or have access to the Admin Panel
@@ -96,22 +102,13 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
         assertCanViewSurveyResponse(accessPolicy, countryCode, permissionGroup.name);
       }
 
-      const [entityParentName, answerList] = await Promise.all([
+      const [entityParentName, answers] = await Promise.all([
         (transactingModels as unknown as DatatrakWebServerModelRegistry).entity.getParentEntityName(
           projectId,
           response['entity.id'],
         ),
-        ctx.services.central.fetchResources('answers', {
-          filter: { survey_response_id: surveyResponse.id },
-          columns: ANSWER_COLUMNS,
-          pageSize: 'ALL',
-        }),
+        SurveyResponseModel.formatAnswersForClient(transactingModels, answerList),
       ]);
-
-      const answers = await SurveyResponseModel.formatAnswersForClient(
-        transactingModels,
-        answerList,
-      );
 
       // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
       return camelcaseKeys({ ...response, countryCode, entityParentName, userId, answers });
