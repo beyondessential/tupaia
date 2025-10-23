@@ -1,5 +1,6 @@
 import { DatabaseModel, LocalSystemFactModel } from '@tupaia/database';
 import { FACT_LAST_SUCCESSFUL_SYNC_PUSH } from '@tupaia/constants';
+import { isNullish } from '@tupaia/tsutils';
 
 import { assertModelsForPush } from './assertModelsForPush';
 import { getModelOutgoingChangesFilter } from './getModelOutgoingChangesFilter';
@@ -9,12 +10,11 @@ const countChangesForModel = async (
   tombstoneModel: DatabaseModel,
   since: number,
 ) => {
-  const changedRecordsCount = await model.count({
-    ...getModelOutgoingChangesFilter(since),
-  });
+  const countFilter = getModelOutgoingChangesFilter(since);
+  const changedRecordsCount = await model.count(countFilter);
   const deletedRecordsCount = await tombstoneModel.count({
     record_type: model.databaseRecord,
-    ...getModelOutgoingChangesFilter(since),
+    ...countFilter,
   });
 
   return changedRecordsCount + deletedRecordsCount;
@@ -27,7 +27,8 @@ export const countOutgoingChanges = async (
 ) => {
   assertModelsForPush(models);
 
-  const pushSince = (await localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
+  const lastSuccessfulSyncPush = await localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH);
+  const pushSince = isNullish(lastSuccessfulSyncPush) ? -1 : parseInt(lastSuccessfulSyncPush, 10);
   const changeCounts = await Promise.all(
     models.map(model => countChangesForModel(model, tombstoneModel, pushSince)),
   );
