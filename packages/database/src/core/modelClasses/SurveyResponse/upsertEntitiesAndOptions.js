@@ -1,31 +1,17 @@
+import { merge } from 'es-toolkit';
+
 import { DatabaseError } from '@tupaia/utils';
 
-const upsertEntities = async (models, entitiesUpserted, surveyId) => {
-  const survey = await models.survey.findById(surveyId);
-  const dataGroup = await survey.dataGroup();
-
-  return Promise.all(
+const upsertEntities = async (models, entitiesUpserted) => {
+  return await Promise.all(
     entitiesUpserted.map(async entity => {
       const existingEntity = await models.entity.findOne({ id: entity.id });
 
       const existingMetadata = existingEntity?.metadata || {};
+      const newMetadata = entity.metadata || {};
+      const metadata = merge(existingMetadata, newMetadata);
 
-      return models.entity.updateOrCreate(
-        { id: entity.id },
-        {
-          ...entity,
-          metadata:
-            dataGroup.service_type === 'dhis'
-              ? {
-                  ...existingMetadata,
-                  dhis: {
-                    ...existingMetadata?.dhis,
-                    isDataRegional: !!dataGroup.config.isDataRegional,
-                  },
-                }
-              : {},
-        },
-      );
+      return models.entity.updateOrCreate({ id: entity.id }, { ...entity, metadata });
     }),
   );
 };
@@ -58,7 +44,7 @@ export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
 
     try {
       if (entitiesUpserted.length > 0) {
-        await upsertEntities(models, entitiesUpserted, surveyResponse.survey_id);
+        await upsertEntities(models, entitiesUpserted);
       }
 
       if (optionsCreated.length > 0) {
