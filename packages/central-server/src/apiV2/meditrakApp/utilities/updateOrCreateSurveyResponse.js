@@ -1,12 +1,13 @@
-import momentTimezone from 'moment-timezone';
+import { SurveyResponseModel } from '@tupaia/database';
 import {
   DatabaseError,
-  stripTimezoneFromDate,
   reformatDateStringWithoutTz,
+  stripTimezoneFromDate,
   ValidationError,
 } from '@tupaia/utils';
+import momentTimezone from 'moment-timezone';
+import { ANSWER_BODY_PARSERS } from '../../../dataAccessors';
 import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../../../database';
-import { upsertAnswers } from '../../../dataAccessors/upsertAnswers';
 
 /**
  * Creates or updates survey responses from passed changes
@@ -55,7 +56,12 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
         },
       );
 
-      await upsertAnswers(transactingModels, answers, surveyResponse.id);
+      await SurveyResponseModel.upsertAnswers(
+        transactingModels,
+        answers,
+        surveyResponse.id,
+        ANSWER_BODY_PARSERS,
+      );
     });
   } catch (error) {
     throw new DatabaseError(`creating/updating survey response with ID ${surveyResponseId}`, error);
@@ -67,8 +73,8 @@ const createOptions = async (models, optionsCreated) => {
 
   for (const optionObject of optionsCreated) {
     const { value, option_set_id: optionSetId } = optionObject;
-    const largestSorOrder = await models.option.getLargestSortOrder(optionSetId);
-    const sortOrder = largestSorOrder + 1; // append the option to the end to resolve any sort order conflict from other devices
+    const maxSortOrder = (await models.option.getLargestSortOrder(optionSetId)) ?? 0;
+    const sortOrder = maxSortOrder + 1; // append the option to the end to resolve any sort order conflict from other devices
 
     // If an option exists with the same value,
     // set the value of the option to be duplicate and create a new option

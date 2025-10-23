@@ -1,10 +1,10 @@
+import { Country, NumericKeys, Writable } from '@tupaia/types';
 import {
-  QueryConjunctions,
+  AdvancedFilterValue,
   EntityFilter,
   EntityFilterFields,
-  AdvancedFilterValue,
+  QueryConjunctions,
 } from '../../models';
-import { NumericKeys, Writable } from '@tupaia/types';
 
 const CLAUSE_DELIMITER = ';';
 const JSONB_FIELD_DELIMITER = '->>';
@@ -24,7 +24,7 @@ type RawValue = string | number;
 
 type QueryObject = Record<string, AdvancedFilterValue<RawValue>> | undefined | null;
 
-const getDefaultFilter = (allowedCountries: string[]) => ({
+const getDefaultFilter = (allowedCountries: Country['code'][]) => ({
   [QueryConjunctions.AND]: {
     country_code: allowedCountries,
     [QueryConjunctions.OR]: {
@@ -33,7 +33,7 @@ const getDefaultFilter = (allowedCountries: string[]) => ({
   },
 });
 
-const filterableFields: (keyof EntityFilterQuery)[] = [
+const filterableFields = new Set<keyof EntityFilterQuery>([
   'id',
   'code',
   'country_code',
@@ -42,9 +42,9 @@ const filterableFields: (keyof EntityFilterQuery)[] = [
   'type',
   'generational_distance',
   'attributes',
-];
+]);
 const isFilterableField = (field: string): field is keyof EntityFilterQuery =>
-  (filterableFields as string[]).includes(field);
+  (filterableFields as Set<string>).has(field);
 
 const assertFilterableField = (field: string): keyof EntityFilterQuery => {
   let firstField = field;
@@ -54,15 +54,17 @@ const assertFilterableField = (field: string): keyof EntityFilterQuery => {
     firstField = field.split(JSONB_FIELD_DELIMITER)[0];
   }
   if (!isFilterableField(firstField)) {
-    throw new Error(`Unknown filter key: ${firstField}, must be one of: ${filterableFields}`);
+    throw new Error(
+      `Unknown filter key: ${firstField}, must be one of: ${[...filterableFields].join(', ')}`,
+    );
   }
 
   return firstField;
 };
 
-const numericFields: (keyof NumericFilterQueryFields)[] = ['generational_distance'];
+const numericFields = new Set<keyof NumericFilterQueryFields>(['generational_distance']);
 const isNumericField = (field: keyof EntityFilterQuery): field is keyof NumericFilterQueryFields =>
-  (numericFields as (keyof EntityFilterQuery)[]).includes(field);
+  (numericFields as Set<keyof EntityFilterQuery>).has(field);
 
 // Inspired by Google Analytics filter: https://developers.google.com/analytics/devguides/reporting/core/v3/reference?hl=en#filters
 const operatorToSqlComparator = {

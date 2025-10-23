@@ -1,4 +1,4 @@
-import { endOfDay, startOfDay } from 'date-fns';
+import { sub } from 'date-fns';
 import { isEmpty } from '../typeGuards';
 
 export interface FormattedFilters {
@@ -28,9 +28,10 @@ export const formatFilters = (filters: Record<string, string>[]) => {
     }
 
     if (id === FILTERS.DUE_DATE) {
-      const date = new Date(value);
-      const start = startOfDay(date);
-      const end = endOfDay(date);
+      // set the time to the end of the day to get the full range of the day, and apply milliseconds to ensure the range is inclusive
+      const end = new Date(value);
+      // subtract 23 hours, 59 minutes, 59 seconds to get the start of the day. This is because the filters always send the end of the day, and we need a range to handle the values being saved in the database as unix timestamps based on the user's timezone.
+      const start = sub(end, { hours: 23, minutes: 59, seconds: 59 });
       formattedFilters[id] = {
         comparator: 'BETWEEN',
         comparisonValue: [start.getTime(), end.getTime()],
@@ -38,13 +39,13 @@ export const formatFilters = (filters: Record<string, string>[]) => {
       continue;
     }
 
-    if (id === FILTERS.REPEAT_SCHEDULE) {
-      formattedFilters['repeat_schedule->freq'] = value;
+    if (EQUALITY_FILTERS.includes(id)) {
+      formattedFilters[id] = value;
       continue;
     }
 
-    if (EQUALITY_FILTERS.includes(id)) {
-      formattedFilters[id] = value;
+    if (id === FILTERS.REPEAT_SCHEDULE) {
+      formattedFilters['repeat_schedule->freq'] = value;
       continue;
     }
 

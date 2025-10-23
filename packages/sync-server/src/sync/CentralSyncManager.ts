@@ -1,4 +1,5 @@
 import log from 'winston';
+import groupBy from 'lodash.groupby';
 
 import {
   getModelsForPull,
@@ -16,6 +17,7 @@ import {
   updateSnapshotRecords,
   SyncSnapshotAttributes,
   withDeferredSyncSafeguards,
+  findLastSuccessfulSyncedProjects,
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { SyncTickFlags, FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
@@ -251,6 +253,10 @@ export class CentralSyncManager {
     accessPolicy: AccessPolicy,
   ): Promise<PullInitiationResult | void> {
     try {
+      if (params.projectIds?.length === 0) {
+        throw new Error('No project IDs provided');
+      }
+
       await this.connectToSession(sessionId);
 
       // first check if the snapshot is already being processed, to throw a sane error if (for some
@@ -330,10 +336,16 @@ export class CentralSyncManager {
     unmarkSessionAsProcessing: () => Promise<void>,
     accessPolicy: AccessPolicy,
   ): Promise<void> {
-    const { since, projectIds, userId, deviceId } = snapshotParams;
+    const { since, projectIds, deviceId } = snapshotParams;
     let transactionTimeout;
     try {
       await this.connectToSession(sessionId);
+
+      if (!snapshotParams.projectIds?.length) {
+        throw new Error('Project IDs are required');
+      }
+
+      await this.models.syncSession.addInfo(sessionId, { projectIds });
 
       // will wait for concurrent snapshots to complete if we are currently at capacity, then
       // set the snapshot_started_at timestamp before we proceed with the heavy work below
@@ -362,17 +374,49 @@ export class CentralSyncManager {
             }, snapshotTransactionTimeoutMs);
           }
 
-          // full changes
-          await snapshotOutgoingChanges(
+          const lastSuccessfulSyncedProjectIds = await findLastSuccessfulSyncedProjects(
             transactingModels.database,
-            getModelsForPull(transactingModels.getModels()),
-            since,
-            sessionId,
             deviceId,
-            userId,
-            projectIds,
-            this.config,
           );
+          const existingProjectIds = projectIds.filter(projectId =>
+            lastSuccessfulSyncedProjectIds.includes(projectId),
+          );
+          const newProjectIds = projectIds.filter(
+            projectId => !lastSuccessfulSyncedProjectIds.includes(projectId),
+          );
+
+          // regular changes for already synced projects
+          if (existingProjectIds.length > 0) {
+            log.info('Snapshotting existing projects', {
+              existingProjectIds,
+            });
+            await snapshotOutgoingChanges(
+              transactingModels.database,
+              getModelsForPull(transactingModels.getModels()),
+              since,
+              sessionId,
+              deviceId,
+              this.config,
+              existingProjectIds,
+            );
+          }
+
+          // full changes if there are new projects selected from the client
+          if (newProjectIds.length > 0) {
+            log.info('Snapshotting new projects', {
+              newProjectIds,
+            });
+            await snapshotOutgoingChanges(
+              transactingModels.database,
+              getModelsForPull(transactingModels.getModels()),
+              -1,
+              sessionId,
+              deviceId,
+              this.config,
+              newProjectIds,
+              existingProjectIds,
+            );
+          }
 
           await removeSnapshotDataByPermissions(
             sessionId,
@@ -600,8 +644,21 @@ export class CentralSyncManager {
     }
   }
 
+  validateIncomingChanges(changes: SyncSnapshotAttributes[]) {
+    const allowedPushTables = getModelsForPush(this.models.getModels()).map(m => m.databaseRecord);
+    const incomingTables = Object.keys(groupBy(changes, 'recordType'));
+    const invalidTables = incomingTables.filter(t => !allowedPushTables.includes(t));
+
+    if (invalidTables.length > 0) {
+      throw new Error(`Invalid tables in incoming changes: ${invalidTables.join(', ')}`);
+    }
+  }
+
   async addIncomingChanges(sessionId: string, changes: SyncSnapshotAttributes[]) {
     await this.connectToSession(sessionId);
+
+    this.validateIncomingChanges(changes);
+
     const incomingSnapshotRecords = changes.map(c => ({
       ...c,
       direction: SYNC_SESSION_DIRECTION.INCOMING,

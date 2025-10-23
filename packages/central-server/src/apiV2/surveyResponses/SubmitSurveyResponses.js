@@ -1,10 +1,7 @@
-import { AnalyticsRefresher } from '@tupaia/database';
+import { AnalyticsRefresher, SurveyResponseModel } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
-import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
+import { ANSWER_BODY_PARSERS } from '../../dataAccessors';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { saveResponsesToDatabase } from '.';
-import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
-import { validateSurveyResponses } from './validateSurveyResponses';
 import { RouteHandler } from '../RouteHandler';
 
 export class SubmitSurveyResponses extends RouteHandler {
@@ -17,7 +14,11 @@ export class SubmitSurveyResponses extends RouteHandler {
   async assertUserHasAccess(transactingModels) {
     // Check permissions
     const surveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, this.surveyResponses);
+      await transactingModels.surveyResponse.assertCanSubmit(
+        transactingModels,
+        accessPolicy,
+        this.surveyResponses,
+      );
     };
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
@@ -38,10 +39,15 @@ export class SubmitSurveyResponses extends RouteHandler {
 
     await this.models.wrapInTransaction(async transactingModels => {
       // Upsert entities and options that were created in user's local database
-      await upsertEntitiesAndOptions(transactingModels, this.surveyResponses);
-      await validateSurveyResponses(transactingModels, this.surveyResponses);
+      await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, this.surveyResponses);
+      await SurveyResponseModel.validateSurveyResponses(transactingModels, this.surveyResponses);
       await this.assertUserHasAccess(transactingModels);
-      results = await saveResponsesToDatabase(transactingModels, submitterId, this.surveyResponses);
+      results = await SurveyResponseModel.saveResponsesToDatabase(
+        transactingModels,
+        submitterId,
+        this.surveyResponses,
+        ANSWER_BODY_PARSERS,
+      );
 
       if (waitForAnalyticsRebuild) {
         const { database } = transactingModels;

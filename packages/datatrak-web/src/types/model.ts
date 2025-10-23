@@ -1,3 +1,5 @@
+import { Knex } from 'knex';
+
 import { ModelRegistry } from '@tupaia/database';
 import {
   AnswerModel,
@@ -25,9 +27,10 @@ import {
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 
 export interface DatatrakWebModelRegistry extends ModelRegistry {
+  readonly database: DatatrakDatabase;
+
   readonly answer: AnswerModel;
   readonly country: CountryModel;
-  readonly database: DatatrakDatabase;
   readonly entity: EntityModel;
   readonly entityHierarchy: EntityHierarchyModel;
   readonly entityParentChildRelation: EntityParentChildRelationModel;
@@ -47,4 +50,17 @@ export interface DatatrakWebModelRegistry extends ModelRegistry {
   readonly tombstone: TombstoneModel;
   readonly user: UserModel;
   readonly userEntityPermission: UserEntityPermissionModel;
+
+  wrapInTransaction<T = unknown>(
+    wrappedFunction: (models: DatatrakWebModelRegistry) => Promise<T>,
+    transactionConfig?: Knex.TransactionConfig,
+  ): Promise<T>;
+  wrapInReadOnlyTransaction<T = unknown>(
+    wrappedFunction: (models: DatatrakWebModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'readOnly'>,
+  ): Promise<T>;
+  wrapInRepeatableReadTransaction<T = unknown>(
+    wrappedFunction: (models: DatatrakWebModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolationLevel'>,
+  ): Promise<T>;
 }

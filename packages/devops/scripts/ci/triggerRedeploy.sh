@@ -5,7 +5,7 @@ STOPPED_INSTANCES=$(aws ec2 describe-instances \
       --no-cli-pager)
 
 if [[ $STOPPED_INSTANCES == *"Instances"* ]]; then
-  echo "Can't redeploy while a deployment for ${CI_BRANCH} is stopped. Try again inside office hours, or start the app server and database then restart the build."
+  echo "::warning::Can’t redeploy while a deployment for $CI_BRANCH is stopped. Try again inside office hours, or start the app server and database then restart the build."
   exit 1
 fi
 
@@ -30,7 +30,7 @@ AWS_MAX_ATTEMPTS=1 aws lambda invoke \
   $RESPONSE_FILE
 
 if grep -q errorMessage "$RESPONSE_FILE"; then
-  echo "Error while trying to redeploy"
+  echo "::error::Error while trying to redeploy"
   cat $RESPONSE_FILE
   exit 1
 fi
@@ -41,8 +41,8 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
   DEPLOYMENT_NAME=$(echo $DEPLOYMENT | jq -r '.DeploymentName')
   NEW_INSTANCE_ID=$(echo $DEPLOYMENT | jq -r '.NewInstanceId')
 
-  echo "Waiting for ${DEPLOYMENT_NAME} to run its startup build script. To watch detailed progress, connect to instance ${NEW_INSTANCE_ID} and run tail -f logs/deployment_log.txt"
   WAIT_ATTEMPTS=0
+  echo "Waiting for $DEPLOYMENT_NAME to run its startup build script. To watch detailed progress, connect to instance $NEW_INSTANCE_ID and run tail -f ~/logs/deployment.log"
   while true; do
     STARTUP_COMPLETE=false
     aws ec2 wait instance-exists \
@@ -55,7 +55,7 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
           --filters Name=tag:StartupBuildProgress,Values=errored \
           --no-cli-pager)
       if [[ $INSTANCE_ERRORED_RESPONSE == *"Instances"* ]]; then
-        echo "Build failed! Connect to instance ${NEW_INSTANCE_ID} and check the logs at ~/logs/deployment_log.txt and /var/log/cloud-init-output.log"
+        echo "::error::Build failed! Connect to instance $NEW_INSTANCE_ID and check the logs at ~/logs/deployment.log and /var/log/cloud-init-output.log"
         exit 1
       fi
       echo "New instance ${NEW_INSTANCE_ID} is ready, swapping over ELB"
@@ -76,11 +76,11 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
       break
     else
       if [ "$WAIT_ATTEMPTS" -ge 75 ]; then # 75 * 200 seconds = 4.16 hours, sitting within codeship's 5 hour timeout
-        echo "Build failed! Waited 75 times, but new instance is still not reachable"
+        echo "::error::Build failed! Waited 75 times, but new instance is still not reachable"
         exit 1
       else
-        echo "Still waiting for ${DEPLOYMENT_NAME} startup build to complete. To watch detailed progress, connect to instance ${NEW_INSTANCE_ID} and run tail -f logs/deployment_log.txt"
-        WAIT_ATTEMPTS=$((WAIT_ATTEMPTS+1))
+        echo "Still waiting for $DEPLOYMENT_NAME startup build to complete. To watch detailed progress, connect to instance $NEW_INSTANCE_ID and run tail -f ~/logs/deployment.log"
+        WAIT_ATTEMPTS=$((WAIT_ATTEMPTS + 1))
       fi
     fi
   done

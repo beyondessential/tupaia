@@ -27,6 +27,7 @@
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/api-client": "workspace:*",
     "@tupaia/auth": "workspace:*",
+    "@tupaia/constants": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsmodels": "workspace:*",
@@ -34,7 +35,7 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "api-error-handler": "^1.0.0",
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.20.3",
     "client-sessions": "^0.8.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
@@ -51,6 +52,7 @@
     "@types/jest": "^29.5.14",
     "@types/supertest": "^2.0.11",
     "jest": "^29.7.0",
+    "knex": "^3.1.0",
     "rimraf": "^6.0.1",
     "supertest": "^3.1.0"
   }

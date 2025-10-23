@@ -36,10 +36,13 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "date-fns": "^2.30.0",
+    "express": "^4.21.2",
+    "lodash.groupby": "^4.6.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.22",
+    "knex": "^3.1.0",
     "rimraf": "^6.0.1"
   }
 }

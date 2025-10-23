@@ -1,25 +1,28 @@
 // TODO: Some of these are duplicated from datatrak-web-server with tweaks suitable for datatrak-web,
 // Eventually we are going to remove the route from datatrak-web-server
 // and use this function only. So keeping it here for now.
-import { isNil, omitBy } from 'lodash';
+import { clone } from 'es-toolkit';
+import omitBy from 'lodash.omitby';
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { EntityRecord, ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
-import { camelcaseKeys, isNotNullish } from '@tupaia/tsutils';
-import { Country, Entity, Project } from '@tupaia/types';
+import { ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
+import { camelcaseKeys, ensure, isNotNullish, isNullish } from '@tupaia/tsutils';
+import { Entity, Project } from '@tupaia/types';
 import { snakeKeys } from '@tupaia/utils';
 import { CurrentUser } from '../../api';
 import { DatatrakWebModelRegistry } from '../../types';
 import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
+import { isExtendedField } from '../../utils/extendedFieldFunctions';
+import { AugmentedEntityRecord } from '../../utils/formatEntity';
 
-const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'] as ExtendedEntityFieldName[];
+const DEFAULT_FIELDS: ExtendedEntityFieldName[] = ['id', 'parent_name', 'code', 'name', 'type'];
 
 const DEFAULT_PAGE_SIZE = 100;
 
 interface SearchResult {
-  name: string;
+  name: Entity['name'];
   parent?: {
-    name: string;
+    name: Entity['name'];
   };
 }
 
@@ -96,33 +99,6 @@ const getAllowedCountries = async (
   return allowedCountries;
 };
 
-const getRecentEntities = async (
-  models: DatatrakWebModelRegistry,
-  user: CurrentUser,
-  countryCode: Country['code'],
-  type: Entity['type'],
-  entities: EntityRecord[],
-): Promise<(EntityRecord & { isRecent: true })[]> => {
-  if (
-    !user.isLoggedIn || // For public surveys
-    !user.id // Redundant, for type inference
-  )
-    return [];
-
-  const recentEntities: Entity['id'][] = await models.user.getRecentEntities(
-    user.id,
-    countryCode,
-    type,
-  );
-  return recentEntities
-    .map(id => {
-      const entity = entities.find(e => e.id === id);
-      if (!entity) return null;
-      return { ...entity, isRecent: true } as EntityRecord & { isRecent: true };
-    })
-    .filter(isNotNullish);
-};
-
 const buildEntityFilter = (params: GetEntityDescendantsParams) => {
   const { filter, searchString } = params;
 
@@ -137,14 +113,14 @@ const buildEntityFilter = (params: GetEntityDescendantsParams) => {
     type,
     name: searchString
       ? {
-          comparator: 'ilike',
-          comparisonValue: `%${searchString}%`,
+          comparator: '=@',
+          comparisonValue: searchString,
         }
       : undefined,
     ...restOfFilter,
   };
 
-  return omitBy(snakeKeys(entityFilter), isNil);
+  return omitBy(snakeKeys(entityFilter), isNullish);
 };
 
 export const getEntityDescendants = async ({
@@ -170,7 +146,10 @@ export const getEntityDescendants = async ({
 
   const entityFilter = buildEntityFilter(params);
 
-  const project = await models.project.findOne({ code: projectCode });
+  const project = ensure(
+    await models.project.findOne({ code: ensure(projectCode) }),
+    `No project exists with code ${projectCode}`,
+  );
 
   // This should never happen, but just in case
   if (!project.entity_hierarchy_id) {
@@ -200,30 +179,49 @@ export const getEntityDescendants = async ({
     dbEntityFilter.generational_distance = 2;
   }
 
-  const entities: EntityRecord[] = await models.entity.getDescendantsFromParentChildRelation(
-    project.entity_hierarchy_id,
-    [rootEntityId],
-    {
-      filter: dbEntityFilter,
-      fields,
-      pageSize,
-    },
-  );
+  const entities: AugmentedEntityRecord[] =
+    await models.entity.getDescendantsFromParentChildRelation(
+      project.entity_hierarchy_id,
+      [rootEntityId],
+      {
+        filter: dbEntityFilter,
+        fields: fields.filter(field => !isExtendedField(field)),
+        pageSize,
+      },
+    );
 
-  const recentEntities =
-    countryCode && type ? await getRecentEntities(models, user, countryCode, type, entities) : [];
+  const getRecentEntities = async () => {
+    const recentEntityIds =
+      user.isLoggedIn && // Recent entities irrelevant for public surveys
+      user.id && // Redundant (implied by isLoggedIn), for type inference
+      countryCode &&
+      type
+        ? new Set(await models.user.getRecentEntityIds(user.id, countryCode, type))
+        : new Set();
+
+    const recentEntities: AugmentedEntityRecord[] = [];
+    for (const entity of entities) {
+      if (!recentEntityIds.has(entity.id)) continue;
+      // clone() (not { ...entity }) so copy is still an EntityRecord instance
+      const augmented = clone(entity);
+      augmented.is_recent = true;
+      recentEntities.push(augmented);
+    }
+
+    return recentEntities;
+  };
 
   const sortedEntities = searchString
     ? sortSearchResults(searchString, entities)
     : [
-        ...recentEntities,
+        ...(await getRecentEntities()),
         ...entities.sort((a, b) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
       ];
 
   const formattedEntities = await formatEntitiesForResponse(
     { hierarchyId: project.entity_hierarchy_id },
     sortedEntities,
-    fields,
+    [...fields, 'is_recent'],
   );
 
   return camelcaseKeys(formattedEntities, { deep: true });

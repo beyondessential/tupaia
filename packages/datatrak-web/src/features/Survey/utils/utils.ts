@@ -3,8 +3,7 @@ import { SurveyScreen, SurveyScreenComponent } from '../../../types';
 
 const validateSurveyComponent = component => {
   if (component.type === QuestionType.PrimaryEntity && !component.config?.entity?.createNew) {
-    component.validationCriteria = component.validationCriteria ?? {};
-    component.validationCriteria.mandatory = true;
+    (component.validationCriteria ??= {}).mandatory = true;
   }
   return component;
 };

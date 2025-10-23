@@ -24,12 +24,12 @@
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/database": "workspace:*",
-    "@tupaia/tsutils": "workspace:*",
-    "@tupaia/types": "workspace:*",
-    "@tupaia/utils": "workspace:*"
+    "@tupaia/types": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^20.11.1",
     "rimraf": "^6.0.1",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "5.2.2"
   }
 }

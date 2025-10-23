@@ -44,8 +44,7 @@ const updateExistingRecordsIntoLookupTable = async (
             updated_at_sync_tick,
             pushed_by_device_id,
             data,
-            project_ids,
-            user_ids
+            project_ids
           )
           ${select || (await buildSyncLookupSelect(model))}
           FROM

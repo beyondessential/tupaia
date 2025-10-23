@@ -1,6 +1,7 @@
 import { compact, groupBy, mapValues } from 'lodash';
 
-import { BaseDatabase } from '@tupaia/database';
+import { BaseDatabase, DatabaseModel } from '@tupaia/database';
+import { isNotNullish } from '@tupaia/tsutils';
 
 interface Dependency {
   table_name: string;
@@ -11,36 +12,29 @@ export async function getDependencyOrder(database: BaseDatabase): Promise<string
   const sorted: string[] = [];
   const dependencies = (await database.executeSql(`
     WITH all_tables AS (
-      SELECT table_name
-      FROM information_schema.tables
-      WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
+      SELECT c.relname AS table_name
+      FROM pg_class c
+      JOIN pg_namespace n ON c.relnamespace = n.oid
+      WHERE n.nspname = 'public'
+        AND c.relkind = 'r'  -- regular tables only
     ),
-
     foreign_keys AS (
-      SELECT
-        tc.table_name   AS child_table,
-        ccu.table_name  AS parent_table
-      FROM
-        information_schema.table_constraints AS tc
-        JOIN information_schema.key_column_usage AS kcu
-          ON tc.constraint_name = kcu.constraint_name
-          AND tc.constraint_schema = kcu.constraint_schema
-        JOIN information_schema.constraint_column_usage AS ccu
-          ON ccu.constraint_name = tc.constraint_name
-          AND ccu.constraint_schema = tc.constraint_schema
-      WHERE
-        tc.constraint_type = 'FOREIGN KEY'
+      SELECT DISTINCT
+        cl.relname AS child_table,
+        fcl.relname AS depends_on
+      FROM pg_constraint con
+      JOIN pg_class cl ON con.conrelid = cl.oid
+      JOIN pg_class fcl ON con.confrelid = fcl.oid
+      JOIN pg_namespace n ON cl.relnamespace = n.oid
+      WHERE con.contype = 'f'
+        AND n.nspname = 'public'
     )
-
-    SELECT DISTINCT
-      t.table_name      AS table_name,
-      fk.parent_table   AS depends_on
-    FROM
-      all_tables t
-      LEFT JOIN foreign_keys fk
-        ON t.table_name = fk.child_table
-    ORDER BY
-      t.table_name, fk.parent_table;
+    SELECT
+      t.table_name,
+      fk.depends_on
+    FROM all_tables t
+    LEFT JOIN foreign_keys fk ON t.table_name = fk.child_table
+    ORDER BY t.table_name, fk.depends_on;
   `)) as Dependency[];
   const groupedDependencies = new Map(
     Object.entries(
@@ -62,3 +56,15 @@ export async function getDependencyOrder(database: BaseDatabase): Promise<string
 
   return sorted;
 }
+
+export const sortModelsByDependencyOrder = async (
+  models: DatabaseModel[],
+): Promise<DatabaseModel[]> => {
+  const orderedDependencies = await getDependencyOrder(models[0].database);
+  const recordNames = new Set(models.map(r => r.databaseRecord));
+
+  return orderedDependencies
+    .filter(dep => recordNames.has(dep))
+    .map(dep => models.find(r => r.databaseRecord === dep))
+    .filter(isNotNullish);
+};

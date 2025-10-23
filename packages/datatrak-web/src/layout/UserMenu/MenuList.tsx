@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import { Button, RouterLink } from '@tupaia/ui-components';
 import { getModelsForPush } from '@tupaia/sync';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
 
 import { useCurrentUserContext, useLogout } from '../../api';
 import { CancelConfirmModal } from '../../components';
@@ -99,7 +100,9 @@ export const MenuList = ({
   onCloseMenu?: () => void;
 }) => {
   const [confirmModalLink, setConfirmModalLink] = useState('');
-  const { isLoggedIn, projectId, hasAdminPanelAccess } = useCurrentUserContext();
+  const { isLoggedIn, projectId, accessPolicy } = useCurrentUserContext();
+  const hasAdminPanelAccess =
+    accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
   const hasProjectSelected = !!projectId;
   const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
   const [unsyncedChangesWarningModalOpen, setUnsyncedChangesWarningModalOpen] = useState(false);

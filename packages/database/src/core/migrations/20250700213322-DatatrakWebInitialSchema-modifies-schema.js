@@ -19,6 +19,8 @@ exports.up = async function (db) {
   await db.runSql(`
       CREATE TYPE entity_type AS ENUM (
         'asset',
+        'bes_asset',
+        'bes_office',
         'business',
         'case',
         'case_contact',
@@ -26,6 +28,7 @@ exports.up = async function (db) {
         'city',
         'commune',
         'complaint',
+        'consumable',
         'country',
         'disaster',
         'district',
@@ -49,6 +52,8 @@ exports.up = async function (db) {
         'incident_reported',
         'individual',
         'institute',
+        'kiuar_area',
+        'kiuar_facility',
         'larval_habitat',
         'larval_sample',
         'local_government',
@@ -65,14 +70,20 @@ exports.up = async function (db) {
         'pacmossi_spraying_site',
         'pacmossi_village',
         'pharmacy',
+        'policy',
         'postcode',
         'project',
+        'rehab_facility_model',
         'repair_request',
         'school',
+        'spare_part',
         'sub_catchment',
         'sub_district',
         'sub_facility',
         'supermarket',
+        'tmf_district',
+        'tmf_facility',
+        'tmf_sub_district',
         'transfer',
         'trap',
         'vehicle',
@@ -287,12 +298,12 @@ exports.up = async function (db) {
           employer             TEXT,
           position             TEXT,
           mobile_number        TEXT,
-          password_hash        TEXT                                         NOT NULL,
-          legacy_password_salt TEXT,
+          password_hash        TEXT,
           verified_email       verified_email           DEFAULT 'new_user'::verified_email,
           profile_image        TEXT,
           primary_platform     primary_platform         DEFAULT 'tupaia'::primary_platform,
-          preferences          JSONB                    DEFAULT '{}'::JSONB NOT NULL
+          preferences          JSONB                    DEFAULT '{}'::JSONB NOT NULL,
+          access_policy        JSONB                    DEFAULT '{}'::JSONB
       );
     `);
 

@@ -17,5 +17,6 @@ export { DatabaseChangeChannel } from './server/DatabaseChangeChannel';
 export { DatabaseModel } from './core/DatabaseModel';
 export { DatabaseRecord } from './core/DatabaseRecord';
 export * from './server/testUtilities';
+export * from './server/testFixtures';
 export { SqlQuery } from './core/SqlQuery';
 export * from './browser';

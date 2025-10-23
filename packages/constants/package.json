@@ -15,14 +15,16 @@
     "hoistingLimits": "workspaces"
   },
   "scripts": {
-    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
+    "build": "rimraf dist && yarn run package:build:ts",
     "build-dev": "yarn run build",
-    "build-watch": "rimraf dist && npm run --prefix ../../ package:build:ts-watch",
+    "build-watch": "rimraf dist && yarn run package:build:ts-watch",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix"
   },
   "devDependencies": {
+    "@types/node": "^20.11.1",
     "rimraf": "^6.0.1",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "5.2.2"
   }
 }

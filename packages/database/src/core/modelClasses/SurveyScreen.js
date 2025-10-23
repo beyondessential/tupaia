@@ -19,7 +19,7 @@ export class SurveyScreenModel extends DatabaseModel {
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: `ARRAY[survey.project_id]`,
+        projectIds: `array_remove(ARRAY[survey.project_id], NULL)`,
       }),
       joins: buildSyncLookupTraverseJoins([this.databaseRecord, 'survey']),
     };

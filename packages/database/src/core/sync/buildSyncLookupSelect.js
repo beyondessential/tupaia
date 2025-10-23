@@ -2,8 +2,9 @@ import { COLUMNS_EXCLUDED_FROM_SYNC } from '@tupaia/constants';
 
 export async function buildSyncLookupSelect(model, columns = {}) {
   const attributes = Object.keys(await model.fetchSchema());
-  const { projectIds, userIds } = columns;
+  const { projectIds } = columns;
   const table = model.databaseRecord;
+  const excludedFields = [...(model.excludedFieldsFromSync || []), ...COLUMNS_EXCLUDED_FROM_SYNC];
 
   return `
     SELECT
@@ -12,11 +13,8 @@ export async function buildSyncLookupSelect(model, columns = {}) {
       COALESCE(:updatedAtSyncTick, ${table}.updated_at_sync_tick),
       sync_device_tick.device_id,
       json_build_object(
-        ${attributes
-          .filter(a => !COLUMNS_EXCLUDED_FROM_SYNC.includes(a))
-          .map(a => `'${a}', ${table}.${a}`)}
+        ${attributes.filter(a => !excludedFields.includes(a)).map(a => `'${a}', ${table}.${a}`)}
       ),
-      ${projectIds || 'NULL'},
-      ${userIds || 'NULL'}
+      ${projectIds || 'NULL'}
   `;
 }

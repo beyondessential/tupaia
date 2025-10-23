@@ -6,6 +6,7 @@ import path from 'path';
 import dns from 'dns';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import commonjs from 'vite-plugin-commonjs';
+import replace from '@rollup/plugin-replace';
 
 // work around to open browser in localhost https://vitejs.dev/config/server-options.html#server-host
 dns.setDefaultResultOrder('verbatim');
@@ -32,7 +33,12 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
-        external: ['@node-rs/argon2-wasm32-wasi', 'stream/promises', 'fs/promises', 'knex'],
+        external: [
+          '@node-rs/argon2-wasm32-wasi',
+          'fs/promises',
+          'memfs/promises',
+          'stream/promises',
+        ],
       },
     },
     plugins: [
@@ -47,8 +53,17 @@ export default defineConfig(({ command, mode }) => {
         },
       }),
       commonjs(),
+      // Replace the process.env variables with the actual values
+      // Doing this instead of using define because define also replaces the process.env
+      // in the external node_modules, which caused issues when using knex in frontend
+      replace({
+        'process.env': JSON.stringify(env),
+        include: 'src/**/*', // Only source files
+        exclude: 'node_modules/**', // Exclude all external node_modules
+        preventAssignment: false,
+      }),
     ],
-    define: { 'process.env': env, __dirname: JSON.stringify('/') },
+    define: { __dirname: JSON.stringify('/') },
     server: {
       open: true,
       headers: {
@@ -73,7 +88,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     optimizeDeps: {
-      exclude: ['@electric-sql/pglite', 'oracledb'],
+      exclude: ['@electric-sql/pglite'],
     },
   };
 

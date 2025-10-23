@@ -1,9 +1,10 @@
+import '../mocks/matchMedia.mock'; // Import before components under test
+
 import { fireEvent, screen } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderPage } from '../helpers/render';
 import { handlers } from '../mocks/handlers';
-import '../mocks/matchMedia.mock'; // Must be imported before components under test
 
 const doLogin = async () => {
   const userInput = await screen.findByLabelText(/Email*/);
@@ -39,7 +40,7 @@ describe('Login', () => {
     renderPage('/login');
     expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent('Log in');
     await doLogin();
-    server.use(mockUserRequest({ email: 'john@gmail.com' }));
+    server.use(mockUserRequest({ email: 'john@gmail.com', accessPolicy: [] }));
 
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/Select project/i);
   });
@@ -48,7 +49,7 @@ describe('Login', () => {
     renderPage('/login');
     expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent('Log in');
 
-    server.use(mockUserRequest({ email: 'john@gmail.com', projectId: 'foo' }));
+    server.use(mockUserRequest({ email: 'john@gmail.com', projectId: 'foo', accessPolicy: [] }));
     await doLogin();
 
     await screen.findByText(/Select survey/i);
@@ -58,7 +59,7 @@ describe('Login', () => {
     renderPage('/survey');
     expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent('Log in');
 
-    server.use(mockUserRequest({ email: 'john@gmail.com', projectId: 'foo' }));
+    server.use(mockUserRequest({ email: 'john@gmail.com', projectId: 'foo', accessPolicy: [] }));
     await doLogin();
 
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/Select survey/i);

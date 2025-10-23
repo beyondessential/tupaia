@@ -167,8 +167,8 @@ export class TaskRecord extends DatabaseRecord {
    * @returns {Promise<TaskCommentRecord[]>}
    */
 
-  async comments() {
-    return this.otherModels.taskComment.find({ task_id: this.id });
+  async comments(customQueryOptions) {
+    return await this.otherModels.taskComment.find({ task_id: this.id }, customQueryOptions);
   }
 
   /**
@@ -311,7 +311,7 @@ export class TaskModel extends DatabaseModel {
   async buildSyncLookupQueryDetails() {
     return {
       select: await buildSyncLookupSelect(this, {
-        projectIds: 'ARRAY[survey.project_id]',
+        projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
       }),
       joins: 'LEFT JOIN survey ON survey.id = task.survey_id',
     };
@@ -450,6 +450,11 @@ export class TaskModel extends DatabaseModel {
     await Promise.all(
       comments.map(templateVariables => originalTask.addUpdatedComment(userId, templateVariables)),
     );
+  }
+
+  async addUserComment(message, taskId, userId) {
+    const task = await this.findById(ensure(taskId));
+    await task.addUserComment(message, ensure(userId));
   }
 
   /**
@@ -618,10 +623,10 @@ export class TaskModel extends DatabaseModel {
   async assertUserHasPermissionToCreateTask(accessPolicy, taskData) {
     const { entity_id: entityId, survey_id: surveyId } = taskData;
 
-    const entity = await this.otherModels.entity.findById(entityId);
-    if (!entity) {
-      throw new Error(`No entity found with id ${entityId}`);
-    }
+    const entity = ensure(
+      await this.otherModels.entity.findById(entityId),
+      `No entity found with id ${entityId}`,
+    );
 
     if (!accessPolicy.allows(entity.country_code)) {
       throw new Error('Need to have access to the country of the task');

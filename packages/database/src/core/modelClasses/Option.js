@@ -28,6 +28,23 @@ export class OptionRecord extends DatabaseRecord {
       },
     ]);
 
+  /**
+   * @param {string} option
+   * @returns {{label: string; value: string}}
+   */
+  static parseForClient(option) {
+    try {
+      const parsedOption = JSON.parse(option);
+      if (!('value' in parsedOption)) {
+        // Valid JSON but not a valid option object, e.g. '50'
+        throw new Error('Options defined as an object must contain the value key at minimum');
+      }
+      return parsedOption;
+    } catch (e) {
+      return typeof option === 'string' ? { label: option, value: option } : option;
+    }
+  }
+
   async getSurveyIds() {
     const surveyScreens = await this.database.executeSql(
       `
@@ -56,10 +73,16 @@ export class OptionModel extends DatabaseModel {
     return OptionRecord;
   }
 
+  /**
+   * @param {import('@tupaia/types').OptionSet['id']} optionSetId
+   * @returns {Promise<number | null>} `null` if and only if the option set has no options
+   */
   async getLargestSortOrder(optionSetId) {
-    const options = await this.find({ option_set_id: optionSetId });
-    const sorOrders = options.map(option => option.sort_order); // sort_order should not be null;
-    return Math.max(...sorOrders);
+    const [{ max_sort_order }] = await this.database.executeSql(
+      'SELECT MAX(sort_order) AS max_sort_order FROM option WHERE option_set_id = ?;',
+      optionSetId,
+    );
+    return max_sort_order;
   }
 
   async buildSyncLookupQueryDetails() {

@@ -1,14 +1,15 @@
 // useQueryWithContext.ts
 import {
-  useQuery,
   QueryFunction,
-  UseQueryOptions,
-  UseQueryResult,
   QueryFunctionContext,
   QueryKey,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
 } from '@tanstack/react-query';
-import { AccessPolicy } from '@tupaia/access-policy';
 
+import { AccessPolicy } from '@tupaia/access-policy';
+import { ensure } from '@tupaia/tsutils';
 import { useDatabaseContext } from '../../hooks/database';
 import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
@@ -20,13 +21,18 @@ interface GlobalQueryContext {
   user: CurrentUser;
 }
 
-export interface LocalContext {
+interface LocalQueryContext {
   readonly [key: string]: unknown;
 }
 
+export interface ContextualQueryFunctionContext
+  extends QueryFunctionContext,
+    GlobalQueryContext,
+    LocalQueryContext {}
+
 // Enhanced QueryFunction type that receives extra context
-interface ContextualQueryFn<TData> {
-  (context: QueryFunctionContext & GlobalQueryContext & LocalContext): Promise<TData>;
+interface ContextualQueryFn<TData = unknown> {
+  (context: ContextualQueryFunctionContext): TData | Promise<TData>;
 }
 
 // Main function with same signature as useQuery
@@ -35,7 +41,7 @@ export function useDatabaseQuery<
   TError = unknown,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
-  TLocalContext extends LocalContext = LocalContext,
+  TLocalContext extends LocalQueryContext = {},
 >(
   queryKey: TQueryKey,
   queryFn: ContextualQueryFn<TQueryFnData>,
@@ -46,21 +52,23 @@ export function useDatabaseQuery<
   const { models } = useDatabaseContext(); // safely call hooks
   const { accessPolicy, ...user } = useCurrentUserContext();
 
-  // This should never happen, but just in case
-  if (!accessPolicy) {
-    throw new Error('Access policy is required');
-  }
-
   // Wrap the queryFn to include context
   const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext =>
-    queryFn({ ...queryFnContext, models, accessPolicy, user, ...options.localContext });
+    queryFn({
+      ...queryFnContext,
+      accessPolicy: ensure(accessPolicy), // useQuery disabled if accessPolicy is pending
+      models,
+      user,
+      ...options.localContext,
+    });
 
   // Remove localContext from options before passing to useQuery
-  const { localContext: _, ...queryOptions } = options;
+  const { localContext: _, enabled = true, ...queryOptions } = options;
 
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     queryKey,
     queryFn: wrappedQueryFn,
+    enabled: Boolean(accessPolicy) && enabled,
     ...queryOptions,
   });
 }
