@@ -80,7 +80,6 @@ export class AuthService {
     ]);
 
     const transformedUser = await this.models.user.transformUserData(userRecord, project, country);
-    await this.models.localSystemFact.set(FACT_CURRENT_USER_ID, transformedUser.id);
 
     return transformedUser;
   }
@@ -94,8 +93,6 @@ export class AuthService {
         timezone: getBrowserTimeZone(),
       },
     });
-
-    await this.models.localSystemFact.set(FACT_CURRENT_USER_ID, user.id);
 
     // kick off a local save
     await this.saveLocalUser(user, params.password);
