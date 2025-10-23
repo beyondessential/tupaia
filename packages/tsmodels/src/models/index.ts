@@ -6,6 +6,7 @@ export {
   Model,
   PartialOrArray,
   QueryConjunctions,
+  QueryOptions,
 } from './types';
 
 export {
