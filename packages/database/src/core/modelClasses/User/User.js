@@ -254,6 +254,12 @@ export class UserModel extends DatabaseModel {
       }));
   }
 
+  /**
+   * @param {import('@tupaia/types').Country['code']} countryCode
+   * @param {import('./PermissionGroup').PermissionGroupRecord} permissionGroup
+   * @param {string | undefined} [searchTerm]
+   * @returns {Promise<{id: string, name: string}[]>}
+   */
   async getFilteredUsersForPermissionGroup(countryCode, permissionGroup, searchTerm) {
     // if the permission group is a public permission group that every user has access to because of the api client permissions, then everyone has access to the survey, so return all non-internal users
     if (
