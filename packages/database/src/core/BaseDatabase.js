@@ -593,6 +593,11 @@ function buildQuery(connection, queryConfig, where = {}, options = {}, baseQuery
     query = query.as(options.name);
   }
 
+  if (options.onConflictMerge) {
+    // onConflictMerge is an array of columns to merge conflicts for
+    query = query.onConflict(options.onConflictMerge).merge();
+  }
+
   if (options.onConflictIgnore) {
     // onConflictIgnore is an array of columns to ignore conflicts for
     query = query.onConflict(options.onConflictIgnore).ignore();

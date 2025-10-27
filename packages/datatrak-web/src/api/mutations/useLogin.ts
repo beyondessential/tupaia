@@ -61,7 +61,6 @@ export const useLogin = () => {
         }
 
         await queryClient.invalidateQueries();
-        await queryClient.removeQueries();
 
         if (from) {
           navigate(from, { state: null });

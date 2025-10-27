@@ -30,6 +30,7 @@ import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
 import { remove, stream } from '../api';
+import { getDeviceId } from './getDeviceId';
 
 const SYNC_INTERVAL = 1000 * 30;
 
@@ -56,6 +57,8 @@ export interface SyncResult {
 }
 
 export class ClientSyncManager {
+  private static instance: ClientSyncManager | null = null;
+
   private database: DatatrakDatabase;
 
   private models: DatatrakWebModelRegistry;
@@ -96,6 +99,14 @@ export class ClientSyncManager {
     });
   }
 
+  static async getInstance(models: DatatrakWebModelRegistry): Promise<ClientSyncManager> {
+    if (!ClientSyncManager.instance) {
+      const deviceId = await getDeviceId(models);
+      ClientSyncManager.instance = new ClientSyncManager(models, deviceId);
+    }
+    return ClientSyncManager.instance;
+  }
+
   async initDeviceId(): Promise<void> {
     let deviceId = await this.models.localSystemFact.get('deviceId');
     if (!deviceId) {
@@ -112,13 +123,14 @@ export class ClientSyncManager {
 
     await this.waitForCurrentSyncToEnd();
 
+    log.info('Starting sync service');
     const run = async (): Promise<void> => {
-      log.info('Starting regular sync');
+      log.info('Running regular sync');
       const { pulledChangesCount } = await this.triggerSync(false);
       if (pulledChangesCount) {
         await queryClient.invalidateQueries();
       }
-    }
+    };
 
     // Run the sync immediately
     // and then schedule the next sync
@@ -128,10 +140,19 @@ export class ClientSyncManager {
 
   async stopSyncService(): Promise<void> {
     if (this.syncInterval) {
+      log.info('Stopping sync service');
       clearInterval(this.syncInterval);
-      this.syncInterval = null;
       await this.waitForCurrentSyncToEnd();
     }
+
+    this.syncInterval = null;
+    this.isSyncing = false;
+    this.isRequestingSync = false;
+    this.isQueuing = false;
+    this.progress = 0;
+    this.progressMessage = null;
+    this.syncStage = null;
+    this.lastSuccessfulSyncTime = null;
   }
 
   async waitForCurrentSyncToEnd(): Promise<void> {
@@ -274,7 +295,8 @@ export class ClientSyncManager {
     this.isRequestingSync = false;
     this.isSyncing = true;
 
-    const pullSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
+    const pullSince =
+      parseInt(await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL), 10) || -1;
 
     this.isInitialSync = pullSince === -1;
 
@@ -362,7 +384,8 @@ export class ClientSyncManager {
     this.setProgress(0, 'Pushing all new changes...');
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
-    const currentSyncClockTime = await this.models.localSystemFact.get(FACT_CURRENT_SYNC_TICK);
+    const currentSyncClockTime =
+      (await this.models.localSystemFact.get(FACT_CURRENT_SYNC_TICK)) || -1;
 
     // use the new unique sync tick for any changes from now on so that any records that are created
     // or updated even mid way through this sync, are marked using the new tick and will be captured
@@ -421,7 +444,7 @@ export class ClientSyncManager {
       );
 
       const pullSince =
-        (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
+        parseInt(await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL), 10) || -1;
 
       log.debug('ClientSyncManager.createClientSnapshotTable', {
         sessionId,

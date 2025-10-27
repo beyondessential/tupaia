@@ -39,7 +39,8 @@ export const saveUpdates = async (
     const batch = recordsToSave.slice(i, i + batchSize);
 
     try {
-      await Promise.all(batch.map(r => model.updateById(r.id, r)));
+      // Using bulk insert on conflict has much better performance than updating records individually
+      await model.createMany(batch, { onConflictMerge: ['id'] });
     } catch (originalError: any) {
       // try records individually, some may succeed and we want to capture the
       // specific one with the error
