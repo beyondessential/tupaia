@@ -7,7 +7,6 @@ import { useDatabaseContext } from '../hooks/database';
 import { ClientSyncManager } from '../sync/ClientSyncManager';
 import { useIsOfflineFirst } from './offlineFirst';
 import { useIsLoggedIn } from './queries/isLoggedIn';
-import { getDeviceId } from '../sync/getDeviceId';
 
 export interface SyncContextType {
   clientSyncManager: ClientSyncManager | null;
@@ -23,15 +22,9 @@ export const SyncProvider = ({ children }: { children: ReactNode }) => {
   const { data: isLoggedIn } = useIsLoggedIn();
 
   useEffect(() => {
-    const initSyncManager = async () => {
-      // Only initialize the sync manager if it doesn't exist yet
-      if (!clientSyncManager && models) {
-        const deviceId = await getDeviceId(models);
-        setClientSyncManager(new ClientSyncManager(models, deviceId));
-      }
-    };
-
-    initSyncManager();
+    if (models) {
+      ClientSyncManager.getInstance(models).then(setClientSyncManager);
+    }
   }, [models]);
 
   useEffect(() => {

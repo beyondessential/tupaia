@@ -1,6 +1,5 @@
 import log from 'winston';
 
-import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { getBrowserTimeZone, snakeKeys } from '@tupaia/utils';
 import { post } from '../api';
@@ -28,7 +27,11 @@ export class AuthService {
     // Only update password hash, keep other user data updated via sync
     await this.models.user.update(
       { email: userData.email },
-      { password_hash: await hashPassword(password) },
+      {
+        password_hash: await hashPassword(password),
+        // @ts-ignore access_policy is an extra field in datatrak-web
+        access_policy: userData.accessPolicy,
+      },
     );
   }
 

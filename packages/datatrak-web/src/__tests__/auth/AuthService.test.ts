@@ -1,4 +1,3 @@
-import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
 import { AuthService } from '../../auth/AuthService';
 import { DatatrakWebModelRegistry } from '../../types';
 
@@ -119,12 +118,12 @@ describe('AuthService', () => {
 
     authService = new AuthService(models);
 
-    await authService.signIn({
+    const user = await authService.signIn({
       email: 'test@example.com',
       password: 'password123',
     });
 
-    expect(models.localSystemFact.set).toHaveBeenCalledWith(FACT_CURRENT_USER_ID, 'user-123');
+    expect(user).toEqual(MOCKED_TRANSFORMED_USER);
   });
 
   it('login locally if remote login fails', async () => {
@@ -154,12 +153,12 @@ describe('AuthService', () => {
       .fn()
       .mockRejectedValue(new NetworkError('Remote login failed', 500));
 
-    await authService.signIn({
+    const user = await authService.signIn({
       email: 'test@example.com',
       password: 'password123',
     });
 
-    expect(models.localSystemFact.set).toHaveBeenCalledWith(FACT_CURRENT_USER_ID, 'user-123');
+    expect(user).toEqual(MOCKED_TRANSFORMED_USER);
   });
 
   it('throws an error if there is no internet connection and user has never logged in', async () => {

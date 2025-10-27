@@ -14,6 +14,7 @@ import { ROUTES } from '../../constants';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 import { useDatabaseContext } from '../../hooks/database';
 import { countOutgoingChanges } from '../../sync/countOutgoingChanges';
+import { useIsOfflineFirst } from '../../api/offlineFirst';
 
 interface MenuItem {
   label: string;
@@ -108,8 +109,9 @@ export const MenuList = ({
   const [unsyncedChangesWarningModalOpen, setUnsyncedChangesWarningModalOpen] = useState(false);
   const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const isOfflineFirst = useIsOfflineFirst();
   const { mutate: logout } = useLogout();
-  const { models } = useDatabaseContext();
+  const { models } = useDatabaseContext() || {};
 
   const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
@@ -163,14 +165,16 @@ export const MenuList = ({
     {
       label: 'Log out',
       onClick: async () => {
-        const unsyncedChangesCount = await countOutgoingChanges(
-          getModelsForPush(models.getModels()),
-          models.tombstone,
-          models.localSystemFact,
-        );
+        if (isOfflineFirst && models) {
+          const unsyncedChangesCount = await countOutgoingChanges(
+            getModelsForPush(models.getModels()),
+            models.tombstone,
+            models.localSystemFact,
+          );
 
-        if (unsyncedChangesCount > 0) {
-          setUnsyncedChangesWarningModalOpen(true);
+          if (unsyncedChangesCount > 0) {
+            setUnsyncedChangesWarningModalOpen(true);
+          }
         } else {
           logout();
           onCloseMenu?.();
