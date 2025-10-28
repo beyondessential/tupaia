@@ -52,11 +52,11 @@ export class SurveyResponseRecord extends DatabaseRecord {
   }
 
   /** @returns {Promise<EntityRecord>} */
-  async getEntity(conditions) {
+  async getEntity(options) {
     const entityId =
       this.entity_id ?? (await this.model.findById(this.id, { columns: ['entity_id'] })).entity_id;
     return ensure(
-      await this.otherModels.entity.findById(entityId, conditions),
+      await this.otherModels.entity.findById(entityId, options),
       `Couldn’t find entity for survey response ${this.id} (expected entity with ID ${entityId})`,
     );
   }
