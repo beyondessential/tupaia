@@ -6,6 +6,8 @@ import { SurveyResponseModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
+import { SURVEY_RESPONSE_DEFAULT_FIELDS } from '@tupaia/constants';
+
 import { DatatrakWebServerModelRegistry } from '../types';
 
 export type SingleSurveyResponseRequest = Request<
@@ -16,23 +18,6 @@ export type SingleSurveyResponseRequest = Request<
 >;
 
 const ANSWER_COLUMNS = ['text', 'question_id', 'type'] as const;
-
-const DEFAULT_FIELDS = [
-  'assessor_name',
-  'country.name',
-  'data_time',
-  'end_time',
-  'entity.name',
-  'entity.id',
-  'id',
-  'survey.name',
-  'survey.code',
-  'user_id',
-  'country.code',
-  'survey.permission_group_id',
-  'timezone',
-  'survey.project_id',
-];
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -60,7 +45,7 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
     const { ctx, params, query, accessPolicy, models } = this.req;
     const { id: responseId } = params;
 
-    const { fields = DEFAULT_FIELDS } = query;
+    const { fields = SURVEY_RESPONSE_DEFAULT_FIELDS } = query;
 
     const currentUser = await ctx.services.central.getUser();
     const { id } = currentUser;
