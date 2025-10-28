@@ -148,6 +148,17 @@ export const SyncPage = () => {
     };
   }, [syncManager]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFormattedLastSuccessfulSyncTime(
+        formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
+      );
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   const manualSync = useCallback(() => {
     syncManager.triggerUrgentSync();
   }, [syncManager]);
