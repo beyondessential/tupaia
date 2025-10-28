@@ -281,6 +281,7 @@ export class ClientSyncManager {
       );
     }
 
+    this.errorMessage = null;
     this.progressMessage = 'Requesting sync...';
     this.isRequestingSync = true;
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_REQUESTING);
