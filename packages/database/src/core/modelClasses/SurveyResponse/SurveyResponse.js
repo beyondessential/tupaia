@@ -18,6 +18,7 @@ import { saveResponsesToDatabase } from './saveToDatabase';
 import { upsertAnswers } from './upsertAnswers';
 import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 import { validateSurveyResponse, validateSurveyResponses } from './validation';
+import { processColumns } from '../../utilities';
 
 /**
  * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
@@ -95,7 +96,9 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       if (!text) continue;
 
       if (type === QuestionType.User) {
-        const user = await models.user.findById(text, { columns: ['id', 'full_name'] });
+        const user = await models.user.findById(text, {
+          columns: processColumns(models, ['id', 'full_name'], RECORDS.USER_ACCOUNT),
+        });
         if (!user) {
           log.warn(`User with id ${text} not found`); // User deleted. Log and move on.
           continue;
