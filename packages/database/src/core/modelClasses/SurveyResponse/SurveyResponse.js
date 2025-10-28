@@ -4,6 +4,7 @@ import log from 'winston';
 
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, isNullish } from '@tupaia/tsutils';
+import { QuestionType } from '@tupaia/types';
 import { DatabaseError, PermissionsError, reduceToDictionary } from '@tupaia/utils';
 
 import { DatabaseRecord } from '../../DatabaseRecord';
@@ -17,6 +18,7 @@ import { saveResponsesToDatabase } from './saveToDatabase';
 import { upsertAnswers } from './upsertAnswers';
 import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 import { validateSurveyResponse, validateSurveyResponses } from './validation';
+import { processColumns } from '../../utilities';
 
 /**
  * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
@@ -24,10 +26,12 @@ import { validateSurveyResponse, validateSurveyResponses } from './validation';
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('@tupaia/types').Project} Project
  * @typedef {import('@tupaia/types').QuestionType} QuestionType
  * @typedef {import('@tupaia/types').Survey} Survey
  * @typedef {import('@tupaia/types').SurveyResponse} SurveyResponse
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
+ * @typedef {import('../Answer').AnswerRecord} AnswerRecord
  * @typedef {import('../Country').CountryRecord} CountryRecord
  * @typedef {import('../Entity').EntityRecord} EntityRecord
  * @typedef {import('../Facility').FacilityRecord} FacilityRecord
@@ -41,10 +45,73 @@ export class SurveyResponseRecord extends DatabaseRecord {
   async getAnswers(conditions = {}) {
     return await this.otherModels.answer.find({ survey_response_id: this.id, ...conditions });
   }
+
+  /** @returns {Promise<Country['code']>} */
+  async getCountryCode() {
+    return (await this.getEntity({ columns: ['country_code'] })).country_code;
+  }
+
+  /** @returns {Promise<EntityRecord>} */
+  async getEntity(options) {
+    const entityId =
+      this.entity_id ?? (await this.model.findById(this.id, { columns: ['entity_id'] })).entity_id;
+    return ensure(
+      await this.otherModels.entity.findById(entityId, options),
+      `Couldn’t find entity for survey response ${this.id} (expected entity with ID ${entityId})`,
+    );
+  }
+
+  /** @returns {Promise<Entity['name'] | undefined>} */
+  async getEntityParentName() {
+    const [projectId, entityId] = await Promise.all([
+      this.getProjectId(),
+      this.entity_id ?? (await this.model.findById(this.id, { columns: ['entity_id'] })).entity_id,
+    ]);
+    return await this.otherModels.entity.getParentEntityName(projectId, entityId);
+  }
+
+  /** @returns {Promise<Project['id']>} */
+  async getProjectId() {
+    const surveyId =
+      this.survey_id ?? (await this.model.findById(this.id, { columns: ['survey_id'] })).survey_id;
+    const { project_id } = ensure(
+      await this.otherModels.survey.findById(surveyId, { columns: ['project_id'] }),
+      `Couldn’t find survey for survey response ${this.id} (expected survey with ID ${surveyId})`,
+    );
+    return project_id;
+  }
 }
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
+
+  /**
+   * @param {ModelRegistry} models
+   * @param {AnswerRecord[]} answers
+   * @returns {Promise<DatatrakWebSingleSurveyResponseRequest.ResBody['answers']>}
+   */
+  static async formatAnswersForClient(models, answers) {
+    const formattedAnswers = {};
+    for (const { question_id: questionId, type, text } of answers) {
+      if (!text) continue;
+
+      if (type === QuestionType.User) {
+        const user = await models.user.findById(text, {
+          columns: processColumns(models, ['id', 'full_name'], RECORDS.USER_ACCOUNT),
+        });
+        if (!user) {
+          log.warn(`User with id ${text} not found`); // User deleted. Log and move on.
+          continue;
+        }
+        formattedAnswers[questionId] = { id: user.id, name: user.full_name };
+        continue;
+      }
+
+      formattedAnswers[questionId] = text;
+    }
+
+    return formattedAnswers;
+  }
 
   /**
    * @param {import('@tupaia/types').DatatrakWebSubmitSurveyResponseRequest.ReqBody | import('@tupaia/types').DatatrakWebResubmitSurveyResponseRequest.ReqBody} surveyResponseData
