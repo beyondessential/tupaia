@@ -185,7 +185,7 @@ export const SyncPage = () => {
                 />
               )}
 
-              <StyledButton onClick={manualSync}>Sync now</StyledButton>
+              <StyledButton onClick={manualSync}>Manual sync</StyledButton>
             </>
           )}
 
