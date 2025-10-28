@@ -69,7 +69,7 @@ export const RegisterModal = () => {
   return (
     <Modal isOpen onClose={closeModal}>
       <ModalBody
-        title={isSuccess ? 'Your account has been registered' : 'Register'}
+        title={isSuccess ? 'Your account has been registered' : 'Register an account'}
         subtitle={!isSuccess ? 'Enter your details below to create an account' : undefined}
       >
         {isSuccess ? (
