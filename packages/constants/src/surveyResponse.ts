@@ -5,7 +5,7 @@ export const SURVEY_RESPONSE_DEFAULT_FIELDS = [
   'end_time',
   'entity.name',
   'entity.id',
-  'survey_response.id',
+  'id',
   'survey.name',
   'survey.code',
   'user_id',
