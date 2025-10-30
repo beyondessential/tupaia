@@ -386,7 +386,7 @@ export class ClientSyncManager {
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
     const currentSyncClockTime =
-      (await this.models.localSystemFact.get(FACT_CURRENT_SYNC_TICK)) || -1;
+      parseInt(await this.models.localSystemFact.get(FACT_CURRENT_SYNC_TICK), 10) || -1;
 
     // use the new unique sync tick for any changes from now on so that any records that are created
     // or updated even mid way through this sync, are marked using the new tick and will be captured
@@ -400,7 +400,8 @@ export class ClientSyncManager {
     // to be pushed, and then pushing those up in batches
     // this avoids any of the records to be pushed being changed during the push period and
     // causing data that isn't internally coherent from ending up on the central server
-    const pushSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
+    const pushSince =
+      parseInt(await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH), 10) || -1;
     log.debug('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
     // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
