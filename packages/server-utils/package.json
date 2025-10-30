@@ -39,6 +39,7 @@
     "sha256": "^0.2.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.5",
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.14",
     "@types/node-schedule": "^2.1.7",
