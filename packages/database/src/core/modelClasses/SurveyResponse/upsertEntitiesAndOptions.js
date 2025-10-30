@@ -5,7 +5,7 @@ import { DatabaseError } from '@tupaia/utils';
 const upsertEntities = async (models, entitiesUpserted) => {
   return await Promise.all(
     entitiesUpserted.map(async entity => {
-      const existingEntity = await models.entity.findOne({ id: entity.id });
+      const existingEntity = await models.entity.findById(entity.id);
 
       const existingMetadata = existingEntity?.metadata || {};
       const newMetadata = entity.metadata || {};
@@ -16,27 +16,41 @@ const upsertEntities = async (models, entitiesUpserted) => {
   );
 };
 
+/**
+ * @param {import('@tupaia/database').ModelRegistry} models
+ * @param {SurveyResponse['options_created']} optionsCreated
+ * @returns {Promise<OptionRecord[]>}
+ */
 const createOptions = async (models, optionsCreated) => {
+  /** @type {OptionRecord[]} */
   const options = [];
-
   for (const optionObject of optionsCreated) {
     const { value, option_set_id: optionSetId } = optionObject;
+
+    /** @type {number} */
     const maxSortOrder = (await models.option.getLargestSortOrder(optionSetId)) ?? 0;
+
+    /** @type {OptionRecord} */
     const optionRecord = await models.option.updateOrCreate(
       { option_set_id: optionSetId, value },
       {
         ...optionObject,
-        sort_order: maxSortOrder + 1, // append the option to the end to resolve any sort order conflict from other devices
+        sort_order: maxSortOrder + 1,
         attributes: {},
       },
     );
+
     options.push(optionRecord);
   }
 
   return options;
 };
 
-// Upsert entities and options that were created in user's local database
+/**
+ * Upsert entities and options that were created in user's local database
+ * @param {ModelRegistry} models
+ * @param {SurveyResponse[]} surveyResponses
+ */
 export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
   for (const surveyResponse of surveyResponses) {
     const entitiesUpserted = surveyResponse.entities_upserted || [];

@@ -39421,8 +39421,7 @@ export const EntityQuestionConfigFieldsSchema = {
 		"image_url",
 		"metadata",
 		"name",
-		"type",
-		"updated_at_sync_tick"
+		"type"
 	],
 	"type": "string"
 }
@@ -39449,8 +39448,7 @@ export const EntityQuestionConfigFieldKeySchema = {
 		"metadata",
 		"name",
 		"parentId",
-		"type",
-		"updated_at_sync_tick"
+		"type"
 	],
 	"type": "string"
 }
@@ -39721,38 +39719,6 @@ export const EntityQuestionConfigSchema = {
 					]
 				},
 				"image_url": {
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {}
-						},
-						{
-							"additionalProperties": false,
-							"type": "object",
-							"properties": {
-								"type": {
-									"type": "string"
-								}
-							}
-						},
-						{
-							"type": "object",
-							"properties": {
-								"questionId": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"questionId"
-							]
-						},
-						{
-							"type": "string"
-						}
-					]
-				},
-				"updated_at_sync_tick": {
 					"anyOf": [
 						{
 							"type": "object",
@@ -40263,38 +40229,6 @@ export const SurveyScreenComponentConfigSchema = {
 							]
 						},
 						"image_url": {
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {}
-								},
-								{
-									"additionalProperties": false,
-									"type": "object",
-									"properties": {
-										"type": {
-											"type": "string"
-										}
-									}
-								},
-								{
-									"type": "object",
-									"properties": {
-										"questionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"questionId"
-									]
-								},
-								{
-									"type": "string"
-								}
-							]
-						},
-						"updated_at_sync_tick": {
 							"anyOf": [
 								{
 									"type": "object",
@@ -40854,9 +40788,7 @@ export const TaskCompletedCommentTemplateVariablesSchema = {
 				"complete"
 			]
 		},
-		"taskId": {
-			"type": "string"
-		}
+		"taskId": {}
 	},
 	"additionalProperties": false,
 	"required": [
@@ -40919,9 +40851,7 @@ export const TaskCommentTemplateVariablesSchema = {
 						"complete"
 					]
 				},
-				"taskId": {
-					"type": "string"
-				}
+				"taskId": {}
 			},
 			"additionalProperties": false,
 			"required": [
@@ -41183,204 +41113,6 @@ export const AdminPanelSessionUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const AnalyticsSchema = {
-	"type": "object",
-	"properties": {
-		"data_element_code": {
-			"type": "string"
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"day_period": {
-			"type": "string"
-		},
-		"entity_code": {
-			"type": "string"
-		},
-		"entity_name": {
-			"type": "string"
-		},
-		"event_id": {
-			"type": "string"
-		},
-		"month_period": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		},
-		"week_period": {
-			"type": "string"
-		},
-		"year_period": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const AnalyticsCreateSchema = {
-	"type": "object",
-	"properties": {
-		"data_element_code": {
-			"type": "string"
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"day_period": {
-			"type": "string"
-		},
-		"entity_code": {
-			"type": "string"
-		},
-		"entity_name": {
-			"type": "string"
-		},
-		"event_id": {
-			"type": "string"
-		},
-		"month_period": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		},
-		"week_period": {
-			"type": "string"
-		},
-		"year_period": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const AnalyticsUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"data_element_code": {
-			"type": "string"
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"day_period": {
-			"type": "string"
-		},
-		"entity_code": {
-			"type": "string"
-		},
-		"entity_name": {
-			"type": "string"
-		},
-		"event_id": {
-			"type": "string"
-		},
-		"month_period": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		},
-		"week_period": {
-			"type": "string"
-		},
-		"year_period": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const AncestorDescendantRelationSchema = {
 	"type": "object",
 	"properties": {
@@ -41471,9 +41203,6 @@ export const AnswerSchema = {
 		},
 		"type": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -41481,8 +41210,7 @@ export const AnswerSchema = {
 		"id",
 		"question_id",
 		"survey_response_id",
-		"type",
-		"updated_at_sync_tick"
+		"type"
 	]
 }
 export const AnswerCreateSchema = {
@@ -41900,17 +41628,13 @@ export const CountrySchema = {
 		},
 		"name": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"code",
 		"id",
-		"name",
-		"updated_at_sync_tick"
+		"name"
 	]
 }
 export const CountryCreateSchema = {
@@ -70441,9 +70165,6 @@ export const EntitySchema = {
 		},
 		"type": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -70453,8 +70174,7 @@ export const EntitySchema = {
 		"id",
 		"metadata",
 		"name",
-		"type",
-		"updated_at_sync_tick"
+		"type"
 	]
 }
 export const EntityCreateSchema = {
@@ -70571,16 +70291,12 @@ export const EntityHierarchySchema = {
 		},
 		"name": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"id",
-		"name",
-		"updated_at_sync_tick"
+		"name"
 	]
 }
 export const EntityHierarchyCreateSchema = {
@@ -70614,72 +70330,6 @@ export const EntityHierarchyUpdateSchema = {
 			"type": "string"
 		},
 		"name": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const EntityParentChildRelationSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"id",
-		"parent_id",
-		"updated_at_sync_tick"
-	]
-}
-export const EntityParentChildRelationCreateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"parent_id"
-	]
-}
-export const EntityParentChildRelationUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
 			"type": "string"
 		}
 	},
@@ -71500,107 +71150,6 @@ export const LesmisSessionUpdateSchema = {
 		},
 		"refresh_token": {
 			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const LocalSystemFactSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"key": {
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"key"
-	]
-}
-export const LocalSystemFactCreateSchema = {
-	"type": "object",
-	"properties": {
-		"key": {
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"key"
-	]
-}
-export const LocalSystemFactUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"key": {
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const LoginAttemptsSchema = {
-	"type": "object",
-	"properties": {
-		"expire": {
-			"type": "string"
-		},
-		"key": {
-			"type": "string"
-		},
-		"points": {
-			"type": "number"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"key",
-		"points"
-	]
-}
-export const LoginAttemptsCreateSchema = {
-	"type": "object",
-	"properties": {
-		"expire": {
-			"type": "string"
-		},
-		"key": {
-			"type": "string"
-		},
-		"points": {
-			"type": "number"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"key"
-	]
-}
-export const LoginAttemptsUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"expire": {
-			"type": "string"
-		},
-		"key": {
-			"type": "string"
-		},
-		"points": {
-			"type": "number"
 		}
 	},
 	"additionalProperties": false
@@ -80916,10 +80465,6 @@ export const MeditrakDeviceSchema = {
 		"install_id": {
 			"type": "string"
 		},
-		"last_login": {
-			"type": "string",
-			"format": "date-time"
-		},
 		"platform": {
 			"type": "string"
 		},
@@ -80946,10 +80491,6 @@ export const MeditrakDeviceCreateSchema = {
 		},
 		"install_id": {
 			"type": "string"
-		},
-		"last_login": {
-			"type": "string",
-			"format": "date-time"
 		},
 		"platform": {
 			"type": "string"
@@ -80979,10 +80520,6 @@ export const MeditrakDeviceUpdateSchema = {
 		},
 		"install_id": {
 			"type": "string"
-		},
-		"last_login": {
-			"type": "string",
-			"format": "date-time"
 		},
 		"platform": {
 			"type": "string"
@@ -81361,9 +80898,6 @@ export const OptionSchema = {
 		"sort_order": {
 			"type": "number"
 		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		},
 		"value": {
 			"type": "string"
 		}
@@ -81372,8 +80906,6 @@ export const OptionSchema = {
 	"required": [
 		"id",
 		"option_set_id",
-		"sort_order",
-		"updated_at_sync_tick",
 		"value"
 	]
 }
@@ -81400,7 +80932,6 @@ export const OptionCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"option_set_id",
-		"sort_order",
 		"value"
 	]
 }
@@ -81437,16 +80968,12 @@ export const OptionSetSchema = {
 		},
 		"name": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"id",
-		"name",
-		"updated_at_sync_tick"
+		"name"
 	]
 }
 export const OptionSetCreateSchema = {
@@ -81484,16 +81011,12 @@ export const PermissionGroupSchema = {
 		},
 		"parent_id": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"id",
-		"name",
-		"updated_at_sync_tick"
+		"name"
 	]
 }
 export const PermissionGroupCreateSchema = {
@@ -81720,9 +81243,6 @@ export const ProjectSchema = {
 		},
 		"sort_order": {
 			"type": "number"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -81730,8 +81250,7 @@ export const ProjectSchema = {
 		"code",
 		"config",
 		"id",
-		"permission_groups",
-		"updated_at_sync_tick"
+		"permission_groups"
 	]
 }
 export const ProjectCreateSchema = {
@@ -82060,13 +81579,8 @@ export const QuestionSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
+				"SubmissionDate"
 			],
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
@@ -82074,8 +81588,7 @@ export const QuestionSchema = {
 	"required": [
 		"id",
 		"text",
-		"type",
-		"updated_at_sync_tick"
+		"type"
 	]
 }
 export const QuestionCreateSchema = {
@@ -82128,9 +81641,7 @@ export const QuestionCreateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
+				"SubmissionDate"
 			],
 			"type": "string"
 		}
@@ -82194,9 +81705,7 @@ export const QuestionUpdateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
+				"SubmissionDate"
 			],
 			"type": "string"
 		}
@@ -82643,9 +82152,6 @@ export const SurveySchema = {
 		},
 		"survey_group_id": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -82653,8 +82159,7 @@ export const SurveySchema = {
 		"code",
 		"id",
 		"name",
-		"project_id",
-		"updated_at_sync_tick"
+		"project_id"
 	]
 }
 export const SurveyCreateSchema = {
@@ -82773,16 +82278,12 @@ export const SurveyGroupSchema = {
 		},
 		"name": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"id",
-		"name",
-		"updated_at_sync_tick"
+		"name"
 	]
 }
 export const SurveyGroupCreateSchema = {
@@ -82854,9 +82355,6 @@ export const SurveyResponseSchema = {
 		"timezone": {
 			"type": "string"
 		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		},
 		"user_id": {
 			"type": "string"
 		}
@@ -82869,7 +82367,6 @@ export const SurveyResponseSchema = {
 		"id",
 		"start_time",
 		"survey_id",
-		"updated_at_sync_tick",
 		"user_id"
 	]
 }
@@ -83042,17 +82539,13 @@ export const SurveyScreenSchema = {
 		},
 		"survey_id": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"id",
 		"screen_number",
-		"survey_id",
-		"updated_at_sync_tick"
+		"survey_id"
 	]
 }
 export const SurveyScreenCreateSchema = {
@@ -83119,9 +82612,6 @@ export const SurveyScreenComponentSchema = {
 		"screen_id": {
 			"type": "string"
 		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		},
 		"validation_criteria": {
 			"type": "string"
 		},
@@ -83134,8 +82624,7 @@ export const SurveyScreenComponentSchema = {
 		"component_number",
 		"id",
 		"question_id",
-		"screen_id",
-		"updated_at_sync_tick"
+		"screen_id"
 	]
 }
 export const SurveyScreenComponentCreateSchema = {
@@ -83325,903 +82814,6 @@ export const SyncGroupLogUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const SyncQueuedDeviceSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"last_seen_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"last_synced_tick": {
-			"type": "string"
-		},
-		"urgent": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"last_seen_time",
-		"last_synced_tick",
-		"urgent"
-	]
-}
-export const SyncQueuedDeviceCreateSchema = {
-	"type": "object",
-	"properties": {
-		"last_seen_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"last_synced_tick": {
-			"type": "string"
-		},
-		"urgent": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"last_synced_tick",
-		"urgent"
-	]
-}
-export const SyncQueuedDeviceUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"last_seen_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"last_synced_tick": {
-			"type": "string"
-		},
-		"urgent": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false
-}
-export const SyncSessionSchema = {
-	"type": "object",
-	"properties": {
-		"completed_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"errors": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"id": {
-			"type": "string"
-		},
-		"info": {
-			"type": "object",
-			"properties": {
-				"constructor": {
-					"$ref": "#/definitions/Function"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"constructor"
-			]
-		},
-		"last_connection_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"persist_completed_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"pull_since": {
-			"type": "string"
-		},
-		"pull_until": {
-			"type": "string"
-		},
-		"snapshot_completed_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"snapshot_started_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"start_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"started_at_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id"
-	]
-}
-export const SyncSessionCreateSchema = {
-	"type": "object",
-	"properties": {
-		"completed_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"errors": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"info": {
-			"type": "object",
-			"properties": {
-				"constructor": {
-					"$ref": "#/definitions/Function"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"constructor"
-			]
-		},
-		"last_connection_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"persist_completed_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"pull_since": {
-			"type": "string"
-		},
-		"pull_until": {
-			"type": "string"
-		},
-		"snapshot_completed_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"snapshot_started_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"start_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"started_at_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const SyncSessionUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"completed_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"errors": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"id": {
-			"type": "string"
-		},
-		"info": {
-			"type": "object",
-			"properties": {
-				"constructor": {
-					"$ref": "#/definitions/Function"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"constructor"
-			]
-		},
-		"last_connection_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"persist_completed_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"pull_since": {
-			"type": "string"
-		},
-		"pull_until": {
-			"type": "string"
-		},
-		"snapshot_completed_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"snapshot_started_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"start_time": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"started_at_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const TaskSchema = {
-	"type": "object",
-	"properties": {
-		"assignee_id": {
-			"type": "string"
-		},
-		"created_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"due_date": {
-			"type": "number"
-		},
-		"entity_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"initial_request_id": {
-			"type": "string"
-		},
-		"overdue_email_sent": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"parent_task_id": {
-			"type": "string"
-		},
-		"repeat_schedule": {
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"freq": {
-					"type": "number"
-				},
-				"interval": {
-					"type": "number"
-				},
-				"bymonthday": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "number"
-							}
-						},
-						{
-							"type": "number"
-						}
-					]
-				},
-				"bysetpos": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "number"
-							}
-						},
-						{
-							"type": "number"
-						}
-					]
-				},
-				"dtstart": {
-					"type": "string",
-					"format": "date-time"
-				}
-			}
-		},
-		"status": {
-			"enum": [
-				"cancelled",
-				"completed",
-				"to_do"
-			],
-			"type": "string"
-		},
-		"survey_id": {
-			"type": "string"
-		},
-		"survey_response_id": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"created_at",
-		"entity_id",
-		"id",
-		"survey_id",
-		"updated_at_sync_tick"
-	]
-}
-export const TaskCreateSchema = {
-	"type": "object",
-	"properties": {
-		"assignee_id": {
-			"type": "string"
-		},
-		"created_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"due_date": {
-			"type": "number"
-		},
-		"entity_id": {
-			"type": "string"
-		},
-		"initial_request_id": {
-			"type": "string"
-		},
-		"overdue_email_sent": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"parent_task_id": {
-			"type": "string"
-		},
-		"repeat_schedule": {
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"freq": {
-					"type": "number"
-				},
-				"interval": {
-					"type": "number"
-				},
-				"bymonthday": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "number"
-							}
-						},
-						{
-							"type": "number"
-						}
-					]
-				},
-				"bysetpos": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "number"
-							}
-						},
-						{
-							"type": "number"
-						}
-					]
-				},
-				"dtstart": {
-					"type": "string",
-					"format": "date-time"
-				}
-			}
-		},
-		"status": {
-			"enum": [
-				"cancelled",
-				"completed",
-				"to_do"
-			],
-			"type": "string"
-		},
-		"survey_id": {
-			"type": "string"
-		},
-		"survey_response_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"entity_id",
-		"survey_id"
-	]
-}
-export const TaskUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"assignee_id": {
-			"type": "string"
-		},
-		"created_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"due_date": {
-			"type": "number"
-		},
-		"entity_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"initial_request_id": {
-			"type": "string"
-		},
-		"overdue_email_sent": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"parent_task_id": {
-			"type": "string"
-		},
-		"repeat_schedule": {
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"freq": {
-					"type": "number"
-				},
-				"interval": {
-					"type": "number"
-				},
-				"bymonthday": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "number"
-							}
-						},
-						{
-							"type": "number"
-						}
-					]
-				},
-				"bysetpos": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "number"
-							}
-						},
-						{
-							"type": "number"
-						}
-					]
-				},
-				"dtstart": {
-					"type": "string",
-					"format": "date-time"
-				}
-			}
-		},
-		"status": {
-			"enum": [
-				"cancelled",
-				"completed",
-				"to_do"
-			],
-			"type": "string"
-		},
-		"survey_id": {
-			"type": "string"
-		},
-		"survey_response_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const TaskCommentSchema = {
-	"type": "object",
-	"properties": {
-		"created_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"id": {
-			"type": "string"
-		},
-		"message": {
-			"type": "string"
-		},
-		"task_id": {
-			"type": "string"
-		},
-		"template_variables": {
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"update"
-							]
-						},
-						"originalValue": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"newValue": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"field": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"create"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"complete"
-							]
-						},
-						"taskId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				}
-			]
-		},
-		"type": {
-			"enum": [
-				"system",
-				"user"
-			],
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		},
-		"user_name": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"created_at",
-		"id",
-		"task_id",
-		"template_variables",
-		"type",
-		"updated_at_sync_tick",
-		"user_name"
-	]
-}
-export const TaskCommentCreateSchema = {
-	"type": "object",
-	"properties": {
-		"created_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"message": {
-			"type": "string"
-		},
-		"task_id": {
-			"type": "string"
-		},
-		"template_variables": {
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"update"
-							]
-						},
-						"originalValue": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"newValue": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"field": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"create"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"complete"
-							]
-						},
-						"taskId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				}
-			]
-		},
-		"type": {
-			"enum": [
-				"system",
-				"user"
-			],
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		},
-		"user_name": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"task_id",
-		"user_name"
-	]
-}
-export const TaskCommentUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"created_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"id": {
-			"type": "string"
-		},
-		"message": {
-			"type": "string"
-		},
-		"task_id": {
-			"type": "string"
-		},
-		"template_variables": {
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"update"
-							]
-						},
-						"originalValue": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"newValue": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"field": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"create"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"complete"
-							]
-						},
-						"taskId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				}
-			]
-		},
-		"type": {
-			"enum": [
-				"system",
-				"user"
-			],
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		},
-		"user_name": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const TombstoneSchema = {
-	"type": "object",
-	"properties": {
-		"deleted_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"id": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"deleted_at",
-		"id",
-		"record_id",
-		"record_type",
-		"updated_at_sync_tick"
-	]
-}
-export const TombstoneCreateSchema = {
-	"type": "object",
-	"properties": {
-		"deleted_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"record_id",
-		"record_type"
-	]
-}
-export const TombstoneUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"deleted_at": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"id": {
-			"type": "string"
-		},
-		"record_id": {
-			"type": "string"
-		},
-		"record_type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const TupaiaWebSessionSchema = {
 	"type": "object",
 	"properties": {
@@ -84334,13 +82926,13 @@ export const UserAccountSchema = {
 		"last_name": {
 			"type": "string"
 		},
-		"legacy_password_salt": {
-			"type": "string"
-		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
+			"type": "string"
+		},
+		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84379,9 +82971,6 @@ export const UserAccountSchema = {
 		"profile_image": {
 			"type": "string"
 		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		},
 		"verified_email": {
 			"enum": [
 				"new_user",
@@ -84396,8 +82985,8 @@ export const UserAccountSchema = {
 		"email",
 		"id",
 		"password_hash",
-		"preferences",
-		"updated_at_sync_tick"
+		"password_salt",
+		"preferences"
 	]
 }
 export const UserAccountCreateSchema = {
@@ -84422,13 +83011,13 @@ export const UserAccountCreateSchema = {
 		"last_name": {
 			"type": "string"
 		},
-		"legacy_password_salt": {
-			"type": "string"
-		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
+			"type": "string"
+		},
+		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84479,7 +83068,8 @@ export const UserAccountCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"email",
-		"password_hash"
+		"password_hash",
+		"password_salt"
 	]
 }
 export const UserAccountUpdateSchema = {
@@ -84507,13 +83097,13 @@ export const UserAccountUpdateSchema = {
 		"last_name": {
 			"type": "string"
 		},
-		"legacy_password_salt": {
-			"type": "string"
-		},
 		"mobile_number": {
 			"type": "string"
 		},
 		"password_hash": {
+			"type": "string"
+		},
+		"password_salt": {
 			"type": "string"
 		},
 		"position": {
@@ -84563,57 +83153,6 @@ export const UserAccountUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const UserCountryAccessAttemptSchema = {
-	"type": "object",
-	"properties": {
-		"country_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"country_code",
-		"id",
-		"user_id"
-	]
-}
-export const UserCountryAccessAttemptCreateSchema = {
-	"type": "object",
-	"properties": {
-		"country_code": {
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"country_code",
-		"user_id"
-	]
-}
-export const UserCountryAccessAttemptUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"country_code": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"user_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const UserEntityPermissionSchema = {
 	"type": "object",
 	"properties": {
@@ -84626,9 +83165,6 @@ export const UserEntityPermissionSchema = {
 		"permission_group_id": {
 			"type": "string"
 		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		},
 		"user_id": {
 			"type": "string"
 		}
@@ -84638,7 +83174,6 @@ export const UserEntityPermissionSchema = {
 		"entity_id",
 		"id",
 		"permission_group_id",
-		"updated_at_sync_tick",
 		"user_id"
 	]
 }
@@ -84821,21 +83356,6 @@ export const VerifiedEmailSchema = {
 	],
 	"type": "string"
 }
-export const TaskStatusSchema = {
-	"enum": [
-		"cancelled",
-		"completed",
-		"to_do"
-	],
-	"type": "string"
-}
-export const TaskCommentTypeSchema = {
-	"enum": [
-		"system",
-		"user"
-	],
-	"type": "string"
-}
 export const SyncGroupSyncStatusSchema = {
 	"enum": [
 		"ERROR",
@@ -84876,9 +83396,7 @@ export const QuestionTypeSchema = {
 		"Photo",
 		"PrimaryEntity",
 		"Radio",
-		"SubmissionDate",
-		"Task",
-		"User"
+		"SubmissionDate"
 	],
 	"type": "string"
 }
@@ -84903,8 +83421,6 @@ export const PeriodGranularitySchema = {
 export const EntityTypeEnumSchema = {
 	"enum": [
 		"asset",
-		"bes_asset",
-		"bes_office",
 		"business",
 		"case",
 		"case_contact",
@@ -84912,13 +83428,10 @@ export const EntityTypeEnumSchema = {
 		"city",
 		"commune",
 		"complaint",
-		"consumable",
 		"country",
 		"disaster",
 		"district",
 		"district_operational",
-		"document",
-		"document_group",
 		"enumeration_area",
 		"facility",
 		"facility_building",
@@ -84929,15 +83442,12 @@ export const EntityTypeEnumSchema = {
 		"field_station",
 		"fiji_aspen_facility",
 		"health_clinic_boundary",
-		"hospital_area",
 		"hospital_ward",
 		"household",
 		"incident",
 		"incident_reported",
 		"individual",
 		"institute",
-		"kiuar_area",
-		"kiuar_facility",
 		"larval_habitat",
 		"larval_sample",
 		"local_government",
@@ -84945,36 +83455,17 @@ export const EntityTypeEnumSchema = {
 		"medical_area",
 		"msupply_store",
 		"nursing_zone",
-		"pacmossi_asset",
-		"pacmossi_asset_facility",
-		"pacmossi_asset_sub_facility",
-		"pacmossi_consumable",
-		"pacmossi_district",
-		"pacmossi_insecticide_test",
-		"pacmossi_spraying_site",
-		"pacmossi_village",
-		"pharmacy",
-		"policy",
 		"postcode",
 		"project",
-		"rehab_facility_model",
 		"repair_request",
 		"school",
-		"spare_part",
 		"sub_catchment",
 		"sub_district",
 		"sub_facility",
-		"supermarket",
-		"tmf_district",
-		"tmf_facility",
-		"tmf_sub_district",
 		"transfer",
 		"trap",
-		"vehicle",
 		"village",
-		"visiting_specialist",
 		"water_sample",
-		"wholesaler",
 		"wish_sub_district",
 		"world"
 	],
@@ -85009,60 +83500,6 @@ export const ApprovalStatusSchema = {
 		"rejected"
 	],
 	"type": "string"
-}
-export const DebugLogSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"info": {
-			"type": "object",
-			"properties": {}
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"info",
-		"type"
-	]
-}
-export const DebugLogCreateSchema = {
-	"type": "object",
-	"properties": {
-		"info": {
-			"type": "object",
-			"properties": {}
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"info",
-		"type"
-	]
-}
-export const DebugLogUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"info": {
-			"type": "object",
-			"properties": {}
-		},
-		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
 }
 export const ParamsSchema = {
 	"type": "object",
@@ -85303,9 +83740,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 					},
 					"type": {
 						"type": "string"
-					},
-					"updated_at_sync_tick": {
-						"type": "string"
 					}
 				},
 				"additionalProperties": false,
@@ -85315,8 +83749,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"id",
 					"metadata",
 					"name",
-					"type",
-					"updated_at_sync_tick"
+					"type"
 				]
 			}
 		},
@@ -85493,9 +83926,6 @@ export const ProjectResponseSchema = {
 		"sortOrder": {
 			"type": "number"
 		},
-		"updatedAtSyncTick": {
-			"type": "string"
-		},
 		"hasAccess": {
 			"type": "boolean"
 		},
@@ -85523,8 +83953,7 @@ export const ProjectResponseSchema = {
 		"homeEntityCode",
 		"id",
 		"name",
-		"permissionGroups",
-		"updatedAtSyncTick"
+		"permissionGroups"
 	]
 }
 export const EntitiesResponseItemSchema = {
@@ -85546,7 +83975,8 @@ export const EntitiesResponseItemSchema = {
 			"type": "string"
 		},
 		"updatedAtSyncTick": {
-			"type": "string"
+			"type": "object",
+			"additionalProperties": false
 		}
 	},
 	"additionalProperties": false,
@@ -85614,13 +84044,8 @@ export const CamelCasedQuestionSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
+				"SubmissionDate"
 			],
-			"type": "string"
-		},
-		"updatedAtSyncTick": {
 			"type": "string"
 		},
 		"dataElementId": {
@@ -85639,16 +84064,12 @@ export const CamelCasedQuestionSchema = {
 	"additionalProperties": false,
 	"required": [
 		"text",
-		"type",
-		"updatedAtSyncTick"
+		"type"
 	]
 }
 export const CamelCasedComponentSchema = {
 	"type": "object",
 	"properties": {
-		"updatedAtSyncTick": {
-			"type": "string"
-		},
 		"answersEnablingFollowUp": {
 			"type": "array",
 			"items": {
@@ -85671,8 +84092,7 @@ export const CamelCasedComponentSchema = {
 	"additionalProperties": false,
 	"required": [
 		"componentNumber",
-		"questionId",
-		"updatedAtSyncTick"
+		"questionId"
 	]
 }
 export const CamelCasedSurveyScreenSchema = {
@@ -86105,9 +84525,6 @@ export const EntityResponseSchema = {
 		"type": {
 			"type": "string"
 		},
-		"updatedAtSyncTick": {
-			"type": "string"
-		},
 		"isRecent": {
 			"type": "boolean"
 		},
@@ -86122,8 +84539,7 @@ export const EntityResponseSchema = {
 		"id",
 		"metadata",
 		"name",
-		"type",
-		"updatedAtSyncTick"
+		"type"
 	]
 }
 export const TaskAssigneeSchema = {
@@ -86142,49 +84558,6 @@ export const RawTaskResultSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		},
-		"entity_id": {
-			"type": "string"
-		},
-		"survey_id": {
-			"type": "string"
-		},
-		"assignee_id": {
-			"type": "string"
-		},
-		"due_date": {
-			"type": "number"
-		},
-		"initial_request_id": {
-			"type": "string"
-		},
-		"overdue_email_sent": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"parent_task_id": {
-			"type": "string"
-		},
-		"repeat_schedule": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"status": {
-			"enum": [
-				"cancelled",
-				"completed",
-				"to_do"
-			],
-			"type": "string"
-		},
-		"survey_response_id": {
-			"type": "string"
-		},
 		"entity.name": {
 			"type": "string"
 		},
@@ -86200,15 +84573,10 @@ export const RawTaskResultSchema = {
 		"survey.name": {
 			"type": "string"
 		},
-		"task_status": {
-			"enum": [
-				"cancelled",
-				"completed",
-				"overdue",
-				"repeating",
-				"to_do"
-			],
-			"type": "string"
+		"task_status": {},
+		"repeat_schedule": {
+			"type": "object",
+			"additionalProperties": false
 		},
 		"task_due_date": {
 			"type": "string",
@@ -86222,274 +84590,16 @@ export const RawTaskResultSchema = {
 		"entity.code",
 		"entity.country_code",
 		"entity.name",
-		"entity_id",
-		"id",
 		"survey.code",
 		"survey.name",
-		"survey_id",
 		"task_due_date",
-		"task_status",
-		"updated_at_sync_tick"
+		"task_status"
 	]
 }
 export const TaskResponseSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"updatedAtSyncTick": {
-			"type": "string"
-		},
-		"assigneeId": {
-			"type": "string"
-		},
-		"initialRequestId": {
-			"type": "string"
-		},
-		"overdueEmailSent": {
-			"type": "object",
-			"properties": {
-				"toString": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"toDateString": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"toTimeString": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"toLocaleString": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"toLocaleDateString": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"toLocaleTimeString": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"valueOf": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getTime": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getFullYear": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getUTCFullYear": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getMonth": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getUTCMonth": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getDate": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getUTCDate": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getDay": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getUTCDay": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getHours": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getUTCHours": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getMinutes": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getUTCMinutes": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getSeconds": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getUTCSeconds": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getMilliseconds": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getUTCMilliseconds": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getTimezoneOffset": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setTime": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setMilliseconds": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setUTCMilliseconds": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setSeconds": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setUTCSeconds": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setMinutes": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setUTCMinutes": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setHours": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setUTCHours": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setDate": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setUTCDate": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setMonth": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setUTCMonth": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setFullYear": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"setUTCFullYear": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"toUTCString": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"toISOString": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"toJSON": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"getVarDate": {
-					"type": "object",
-					"additionalProperties": false
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"getDate",
-				"getDay",
-				"getFullYear",
-				"getHours",
-				"getMilliseconds",
-				"getMinutes",
-				"getMonth",
-				"getSeconds",
-				"getTime",
-				"getTimezoneOffset",
-				"getUTCDate",
-				"getUTCDay",
-				"getUTCFullYear",
-				"getUTCHours",
-				"getUTCMilliseconds",
-				"getUTCMinutes",
-				"getUTCMonth",
-				"getUTCSeconds",
-				"getVarDate",
-				"setDate",
-				"setFullYear",
-				"setHours",
-				"setMilliseconds",
-				"setMinutes",
-				"setMonth",
-				"setSeconds",
-				"setTime",
-				"setUTCDate",
-				"setUTCFullYear",
-				"setUTCHours",
-				"setUTCMilliseconds",
-				"setUTCMinutes",
-				"setUTCMonth",
-				"setUTCSeconds",
-				"toDateString",
-				"toISOString",
-				"toJSON",
-				"toLocaleDateString",
-				"toLocaleString",
-				"toLocaleTimeString",
-				"toString",
-				"toTimeString",
-				"toUTCString",
-				"valueOf"
-			]
-		},
-		"parentTaskId": {
-			"type": "string"
-		},
-		"status": {
-			"enum": [
-				"cancelled",
-				"completed",
-				"to_do"
-			],
-			"type": "string"
-		},
-		"surveyResponseId": {
-			"type": "string"
-		},
 		"assignee": {
 			"type": "object",
 			"properties": {
@@ -86502,16 +84612,7 @@ export const TaskResponseSchema = {
 			},
 			"additionalProperties": false
 		},
-		"taskStatus": {
-			"enum": [
-				"cancelled",
-				"completed",
-				"overdue",
-				"repeating",
-				"to_do"
-			],
-			"type": "string"
-		},
+		"taskStatus": {},
 		"survey": {
 			"type": "object",
 			"properties": {
@@ -86576,114 +84677,10 @@ export const TaskResponseSchema = {
 }
 export const TaskResponseItemSchema = {
 	"type": "object",
-	"properties": {
-		"createdAt": {
-			"description": "ISO 8601 format (e.g. '2025-04-21T21:30:48.344Z')",
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"system",
-				"user"
-			],
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"message": {
-			"type": "string"
-		},
-		"taskId": {
-			"type": "string"
-		},
-		"templateVariables": {
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"update"
-							]
-						},
-						"originalValue": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"newValue": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"field": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"create"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "string",
-							"enum": [
-								"complete"
-							]
-						},
-						"taskId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				}
-			]
-		},
-		"updatedAtSyncTick": {
-			"type": "string"
-		},
-		"userId": {
-			"type": "string"
-		},
-		"userName": {
-			"type": "string"
-		}
-	},
 	"additionalProperties": false,
-	"required": [
-		"createdAt",
-		"id",
-		"taskId",
-		"templateVariables",
-		"type",
-		"updatedAtSyncTick",
-		"userName"
-	]
+	"patternProperties": {
+		"^[0-9]+$": {}
+	}
 }
 export const UserResponseSchema = {
 	"type": "object",
