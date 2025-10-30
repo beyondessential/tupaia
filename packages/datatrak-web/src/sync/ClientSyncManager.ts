@@ -19,9 +19,7 @@ import {
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
   FACT_LAST_SUCCESSFUL_SYNC_PUSH,
   FACT_PROJECTS_IN_SYNC,
-  FACT_DEVICE_ID,
 } from '@tupaia/constants';
-import { generateId } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
 
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
