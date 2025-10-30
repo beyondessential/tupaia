@@ -19,6 +19,7 @@ import {
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
   FACT_LAST_SUCCESSFUL_SYNC_PUSH,
   FACT_PROJECTS_IN_SYNC,
+  FACT_DEVICE_ID,
 } from '@tupaia/constants';
 import { generateId } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
@@ -31,6 +32,7 @@ import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
 import { remove, stream } from '../api';
 import { getDeviceId } from './getDeviceId';
+import { getSyncTick } from './getSyncTick';
 
 const SYNC_INTERVAL = 1000 * 30;
 
@@ -105,15 +107,6 @@ export class ClientSyncManager {
       ClientSyncManager.instance = new ClientSyncManager(models, deviceId);
     }
     return ClientSyncManager.instance;
-  }
-
-  async initDeviceId(): Promise<void> {
-    let deviceId = await this.models.localSystemFact.get('deviceId');
-    if (!deviceId) {
-      deviceId = `datatrak-web-${generateId()}`;
-      await this.models.localSystemFact.set('deviceId', deviceId);
-    }
-    return deviceId;
   }
 
   async startSyncService(queryClient: QueryClient): Promise<void> {
@@ -296,8 +289,7 @@ export class ClientSyncManager {
     this.isRequestingSync = false;
     this.isSyncing = true;
 
-    const pullSince =
-      parseInt(await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL), 10) || -1;
+    const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
 
     this.isInitialSync = pullSince === -1;
 
@@ -385,8 +377,7 @@ export class ClientSyncManager {
     this.setProgress(0, 'Pushing all new changes...');
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
-    const currentSyncClockTime =
-      parseInt(await this.models.localSystemFact.get(FACT_CURRENT_SYNC_TICK), 10) || -1;
+    const currentSyncClockTime = await getSyncTick(this.models, FACT_CURRENT_SYNC_TICK);
 
     // use the new unique sync tick for any changes from now on so that any records that are created
     // or updated even mid way through this sync, are marked using the new tick and will be captured
@@ -400,8 +391,7 @@ export class ClientSyncManager {
     // to be pushed, and then pushing those up in batches
     // this avoids any of the records to be pushed being changed during the push period and
     // causing data that isn't internally coherent from ending up on the central server
-    const pushSince =
-      parseInt(await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH), 10) || -1;
+    const pushSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PUSH);
     log.debug('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
     // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
@@ -445,8 +435,7 @@ export class ClientSyncManager {
         'Pausing at 33% while server prepares for pull, please wait...',
       );
 
-      const pullSince =
-        parseInt(await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL), 10) || -1;
+      const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
 
       log.debug('ClientSyncManager.createClientSnapshotTable', {
         sessionId,
