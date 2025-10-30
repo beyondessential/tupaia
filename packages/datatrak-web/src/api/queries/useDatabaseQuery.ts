@@ -1,4 +1,3 @@
-// useQueryWithContext.ts
 import {
   QueryFunction,
   QueryFunctionContext,
@@ -58,7 +57,7 @@ export function useDatabaseQuery<
   const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext =>
     queryFn({
       ...queryFnContext,
-      accessPolicy: ensure(accessPolicy), // useQuery disabled if accessPolicy is pending
+      accessPolicy: isOfflineFirst ? ensure(accessPolicy) : accessPolicy!, // we will not use accessPolicy if this is not offlineFirst
       models: isOfflineFirst ? ensure(models) : models!, // we will not use models if this is not offlineFirst
       user,
       ...options.localContext,
@@ -70,7 +69,7 @@ export function useDatabaseQuery<
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     queryKey,
     queryFn: wrappedQueryFn,
-    enabled: Boolean(accessPolicy) && enabled,
+    enabled: (isOfflineFirst ? Boolean(accessPolicy) : true) && enabled,
     ...queryOptions,
   });
 }
