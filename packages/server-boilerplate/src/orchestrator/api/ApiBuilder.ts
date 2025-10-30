@@ -86,7 +86,7 @@ export class ApiBuilder {
         origin: true,
         credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
         exposedHeaders: ['Content-Disposition'], // needed for getting download filename
-      }) as RequestHandler,
+      }) as unknown as RequestHandler,
     );
     // @ts-ignore
     // We were previously missing a dev dependency so this TS error never cropped up. This should be
