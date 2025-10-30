@@ -73,6 +73,48 @@ export interface AdminPanelSessionUpdate {
   'id'?: string;
   'refresh_token'?: string;
 }
+export interface Analytics {
+  'data_element_code'?: string | null;
+  'data_group_code'?: string | null;
+  'date'?: Date | null;
+  'day_period'?: string | null;
+  'entity_code'?: string | null;
+  'entity_name'?: string | null;
+  'event_id'?: string | null;
+  'month_period'?: string | null;
+  'type'?: QuestionType | null;
+  'value'?: string | null;
+  'week_period'?: string | null;
+  'year_period'?: string | null;
+}
+export interface AnalyticsCreate {
+  'data_element_code'?: string | null;
+  'data_group_code'?: string | null;
+  'date'?: Date | null;
+  'day_period'?: string | null;
+  'entity_code'?: string | null;
+  'entity_name'?: string | null;
+  'event_id'?: string | null;
+  'month_period'?: string | null;
+  'type'?: QuestionType | null;
+  'value'?: string | null;
+  'week_period'?: string | null;
+  'year_period'?: string | null;
+}
+export interface AnalyticsUpdate {
+  'data_element_code'?: string | null;
+  'data_group_code'?: string | null;
+  'date'?: Date | null;
+  'day_period'?: string | null;
+  'entity_code'?: string | null;
+  'entity_name'?: string | null;
+  'event_id'?: string | null;
+  'month_period'?: string | null;
+  'type'?: QuestionType | null;
+  'value'?: string | null;
+  'week_period'?: string | null;
+  'year_period'?: string | null;
+}
 export interface AncestorDescendantRelation {
   'ancestor_id': string;
   'descendant_id': string;
@@ -99,6 +141,7 @@ export interface Answer {
   'survey_response_id': string;
   'text'?: string | null;
   'type': string;
+  'updated_at_sync_tick': string;
 }
 export interface AnswerCreate {
   'question_id': string;
@@ -218,6 +261,7 @@ export interface Country {
   'code': string;
   'id': string;
   'name': string;
+  'updated_at_sync_tick': string;
 }
 export interface CountryCreate {
   'code': string;
@@ -597,6 +641,7 @@ export interface Entity {
   'point'?: string | null;
   'region'?: string | null;
   'type': EntityType;
+  'updated_at_sync_tick': string;
 }
 export interface EntityCreate {
   'attributes'?: EntityAttributes;
@@ -629,6 +674,7 @@ export interface EntityHierarchy {
   'canonical_types'?: string[] | null;
   'id': string;
   'name': string;
+  'updated_at_sync_tick': string;
 }
 export interface EntityHierarchyCreate {
   'canonical_types'?: string[] | null;
@@ -638,6 +684,24 @@ export interface EntityHierarchyUpdate {
   'canonical_types'?: string[] | null;
   'id'?: string;
   'name'?: string;
+}
+export interface EntityParentChildRelation {
+  'child_id': string;
+  'entity_hierarchy_id': string;
+  'id': string;
+  'parent_id': string;
+  'updated_at_sync_tick': string;
+}
+export interface EntityParentChildRelationCreate {
+  'child_id': string;
+  'entity_hierarchy_id': string;
+  'parent_id': string;
+}
+export interface EntityParentChildRelationUpdate {
+  'child_id'?: string;
+  'entity_hierarchy_id'?: string;
+  'id'?: string;
+  'parent_id'?: string;
 }
 export interface EntityRelation {
   'child_id': string;
@@ -864,6 +928,35 @@ export interface LesmisSessionUpdate {
   'id'?: string;
   'refresh_token'?: string;
 }
+export interface LocalSystemFact {
+  'id': string;
+  'key': string;
+  'value'?: string | null;
+}
+export interface LocalSystemFactCreate {
+  'key': string;
+  'value'?: string | null;
+}
+export interface LocalSystemFactUpdate {
+  'id'?: string;
+  'key'?: string;
+  'value'?: string | null;
+}
+export interface LoginAttempts {
+  'expire'?: string | null;
+  'key': string;
+  'points': number;
+}
+export interface LoginAttemptsCreate {
+  'expire'?: string | null;
+  'key': string;
+  'points'?: number;
+}
+export interface LoginAttemptsUpdate {
+  'expire'?: string | null;
+  'key'?: string;
+  'points'?: number;
+}
 export interface MapOverlay {
   'code': string;
   'config': MapOverlayConfig;
@@ -944,6 +1037,7 @@ export interface MeditrakDevice {
   'config'?: {} | null;
   'id': string;
   'install_id': string;
+  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id': string;
 }
@@ -951,6 +1045,7 @@ export interface MeditrakDeviceCreate {
   'app_version'?: string | null;
   'config'?: {} | null;
   'install_id': string;
+  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id': string;
 }
@@ -959,6 +1054,7 @@ export interface MeditrakDeviceUpdate {
   'config'?: {} | null;
   'id'?: string;
   'install_id'?: string;
+  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id'?: string;
 }
@@ -1068,14 +1164,15 @@ export interface Option {
   'id': string;
   'label'?: string | null;
   'option_set_id': string;
-  'sort_order'?: number | null;
+  'sort_order': number;
+  'updated_at_sync_tick': string;
   'value': string;
 }
 export interface OptionCreate {
   'attributes'?: {} | null;
   'label'?: string | null;
   'option_set_id': string;
-  'sort_order'?: number | null;
+  'sort_order': number;
   'value': string;
 }
 export interface OptionUpdate {
@@ -1083,12 +1180,13 @@ export interface OptionUpdate {
   'id'?: string;
   'label'?: string | null;
   'option_set_id'?: string;
-  'sort_order'?: number | null;
+  'sort_order'?: number;
   'value'?: string;
 }
 export interface OptionSet {
   'id': string;
   'name': string;
+  'updated_at_sync_tick': string;
 }
 export interface OptionSetCreate {
   'name': string;
@@ -1101,6 +1199,7 @@ export interface PermissionGroup {
   'id': string;
   'name': string;
   'parent_id'?: string | null;
+  'updated_at_sync_tick': string;
 }
 export interface PermissionGroupCreate {
   'name': string;
@@ -1153,6 +1252,7 @@ export interface Project {
   'logo_url'?: string | null;
   'permission_groups': string[];
   'sort_order'?: number | null;
+  'updated_at_sync_tick': string;
 }
 export interface ProjectCreate {
   'code': string;
@@ -1215,6 +1315,7 @@ export interface Question {
   'options'?: string[] | null;
   'text': string;
   'type': QuestionType;
+  'updated_at_sync_tick': string;
 }
 export interface QuestionCreate {
   'code'?: string | null;
@@ -1323,6 +1424,7 @@ export interface Survey {
   'project_id': string;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
+  'updated_at_sync_tick': string;
 }
 export interface SurveyCreate {
   'can_repeat'?: boolean | null;
@@ -1354,6 +1456,7 @@ export interface SurveyUpdate {
 export interface SurveyGroup {
   'id': string;
   'name': string;
+  'updated_at_sync_tick': string;
 }
 export interface SurveyGroupCreate {
   'name': string;
@@ -1374,6 +1477,7 @@ export interface SurveyResponse {
   'start_time': Date;
   'survey_id': string;
   'timezone'?: string | null;
+  'updated_at_sync_tick': string;
   'user_id': string;
 }
 export interface SurveyResponseCreate {
@@ -1421,6 +1525,7 @@ export interface SurveyScreen {
   'id': string;
   'screen_number': number;
   'survey_id': string;
+  'updated_at_sync_tick': string;
 }
 export interface SurveyScreenCreate {
   'screen_number': number;
@@ -1441,6 +1546,7 @@ export interface SurveyScreenComponent {
   'question_id': string;
   'question_label'?: string | null;
   'screen_id': string;
+  'updated_at_sync_tick': string;
   'validation_criteria'?: string | null;
   'visibility_criteria'?: string | null;
 }
@@ -1489,6 +1595,154 @@ export interface SyncGroupLogUpdate {
   'sync_group_code'?: string;
   'timestamp'?: Date | null;
 }
+export interface SyncQueuedDevice {
+  'id': string;
+  'last_seen_time': Date;
+  'last_synced_tick': string;
+  'urgent': boolean;
+}
+export interface SyncQueuedDeviceCreate {
+  'last_seen_time'?: Date;
+  'last_synced_tick': string;
+  'urgent': boolean;
+}
+export interface SyncQueuedDeviceUpdate {
+  'id'?: string;
+  'last_seen_time'?: Date;
+  'last_synced_tick'?: string;
+  'urgent'?: boolean;
+}
+export interface SyncSession {
+  'completed_at'?: Date | null;
+  'errors'?: string[] | null;
+  'id': string;
+  'info'?: Object | null;
+  'last_connection_time'?: Date | null;
+  'persist_completed_at'?: Date | null;
+  'pull_since'?: string | null;
+  'pull_until'?: string | null;
+  'snapshot_completed_at'?: Date | null;
+  'snapshot_started_at'?: Date | null;
+  'start_time'?: Date | null;
+  'started_at_tick'?: string | null;
+}
+export interface SyncSessionCreate {
+  'completed_at'?: Date | null;
+  'errors'?: string[] | null;
+  'info'?: Object | null;
+  'last_connection_time'?: Date | null;
+  'persist_completed_at'?: Date | null;
+  'pull_since'?: string | null;
+  'pull_until'?: string | null;
+  'snapshot_completed_at'?: Date | null;
+  'snapshot_started_at'?: Date | null;
+  'start_time'?: Date | null;
+  'started_at_tick'?: string | null;
+}
+export interface SyncSessionUpdate {
+  'completed_at'?: Date | null;
+  'errors'?: string[] | null;
+  'id'?: string;
+  'info'?: Object | null;
+  'last_connection_time'?: Date | null;
+  'persist_completed_at'?: Date | null;
+  'pull_since'?: string | null;
+  'pull_until'?: string | null;
+  'snapshot_completed_at'?: Date | null;
+  'snapshot_started_at'?: Date | null;
+  'start_time'?: Date | null;
+  'started_at_tick'?: string | null;
+}
+export interface Task {
+  'assignee_id'?: string | null;
+  'created_at': Date;
+  'due_date'?: number | null;
+  'entity_id': string;
+  'id': string;
+  'initial_request_id'?: string | null;
+  'overdue_email_sent'?: Date | null;
+  'parent_task_id'?: string | null;
+  'repeat_schedule'?: RepeatSchedule | null;
+  'status'?: TaskStatus | null;
+  'survey_id': string;
+  'survey_response_id'?: string | null;
+  'updated_at_sync_tick': string;
+}
+export interface TaskCreate {
+  'assignee_id'?: string | null;
+  'created_at'?: Date;
+  'due_date'?: number | null;
+  'entity_id': string;
+  'initial_request_id'?: string | null;
+  'overdue_email_sent'?: Date | null;
+  'parent_task_id'?: string | null;
+  'repeat_schedule'?: RepeatSchedule | null;
+  'status'?: TaskStatus | null;
+  'survey_id': string;
+  'survey_response_id'?: string | null;
+}
+export interface TaskUpdate {
+  'assignee_id'?: string | null;
+  'created_at'?: Date;
+  'due_date'?: number | null;
+  'entity_id'?: string;
+  'id'?: string;
+  'initial_request_id'?: string | null;
+  'overdue_email_sent'?: Date | null;
+  'parent_task_id'?: string | null;
+  'repeat_schedule'?: RepeatSchedule | null;
+  'status'?: TaskStatus | null;
+  'survey_id'?: string;
+  'survey_response_id'?: string | null;
+}
+export interface TaskComment {
+  'created_at': Date;
+  'id': string;
+  'message'?: string | null;
+  'task_id': string;
+  'template_variables': TaskCommentTemplateVariables;
+  'type': TaskCommentType;
+  'updated_at_sync_tick': string;
+  'user_id'?: string | null;
+  'user_name': string;
+}
+export interface TaskCommentCreate {
+  'created_at'?: Date;
+  'message'?: string | null;
+  'task_id': string;
+  'template_variables'?: TaskCommentTemplateVariables;
+  'type'?: TaskCommentType;
+  'user_id'?: string | null;
+  'user_name': string;
+}
+export interface TaskCommentUpdate {
+  'created_at'?: Date;
+  'id'?: string;
+  'message'?: string | null;
+  'task_id'?: string;
+  'template_variables'?: TaskCommentTemplateVariables;
+  'type'?: TaskCommentType;
+  'user_id'?: string | null;
+  'user_name'?: string;
+}
+export interface Tombstone {
+  'deleted_at': Date;
+  'id': string;
+  'record_id': string;
+  'record_type': string;
+  'updated_at_sync_tick': string;
+}
+export interface TombstoneCreate {
+  'deleted_at'?: Date;
+  'record_id': string;
+  'record_type': string;
+}
+export interface TombstoneUpdate {
+  'deleted_at'?: Date;
+  'id'?: string;
+  'record_id'?: string;
+  'record_type'?: string;
+}
 export interface TupaiaWebSession {
   'access_policy': {};
   'access_token': string;
@@ -1520,13 +1774,14 @@ export interface UserAccount {
   'gender'?: string | null;
   'id': string;
   'last_name'?: string | null;
+  'legacy_password_salt'?: string | null;
   'mobile_number'?: string | null;
   'password_hash': string;
-  'password_salt': string;
   'position'?: string | null;
   'preferences': UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
+  'updated_at_sync_tick': string;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserAccountCreate {
@@ -1536,9 +1791,9 @@ export interface UserAccountCreate {
   'first_name'?: string | null;
   'gender'?: string | null;
   'last_name'?: string | null;
+  'legacy_password_salt'?: string | null;
   'mobile_number'?: string | null;
   'password_hash': string;
-  'password_salt': string;
   'position'?: string | null;
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
@@ -1553,19 +1808,34 @@ export interface UserAccountUpdate {
   'gender'?: string | null;
   'id'?: string;
   'last_name'?: string | null;
+  'legacy_password_salt'?: string | null;
   'mobile_number'?: string | null;
   'password_hash'?: string;
-  'password_salt'?: string;
   'position'?: string | null;
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
 }
+export interface UserCountryAccessAttempt {
+  'country_code': string;
+  'id': string;
+  'user_id': string;
+}
+export interface UserCountryAccessAttemptCreate {
+  'country_code': string;
+  'user_id': string;
+}
+export interface UserCountryAccessAttemptUpdate {
+  'country_code'?: string;
+  'id'?: string;
+  'user_id'?: string;
+}
 export interface UserEntityPermission {
   'entity_id': string;
   'id': string;
   'permission_group_id': string;
+  'updated_at_sync_tick': string;
   'user_id': string;
 }
 export interface UserEntityPermissionCreate {
@@ -1621,6 +1891,15 @@ export enum VerifiedEmail {
   'new_user' = 'new_user',
   'verified' = 'verified',
 }
+export enum TaskStatus {
+  'to_do' = 'to_do',
+  'cancelled' = 'cancelled',
+  'completed' = 'completed',
+}
+export enum TaskCommentType {
+  'user' = 'user',
+  'system' = 'system',
+}
 export enum SyncGroupSyncStatus {
   'IDLE' = 'IDLE',
   'SYNCING' = 'SYNCING',
@@ -1655,6 +1934,8 @@ export enum QuestionType {
   'Radio' = 'Radio',
   'SubmissionDate' = 'SubmissionDate',
   'File' = 'File',
+  'Task' = 'Task',
+  'User' = 'User',
 }
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',
@@ -1717,6 +1998,33 @@ export enum EntityTypeEnum {
   'maintenance' = 'maintenance',
   'larval_sample' = 'larval_sample',
   'transfer' = 'transfer',
+  'hospital_area' = 'hospital_area',
+  'pacmossi_district' = 'pacmossi_district',
+  'pacmossi_village' = 'pacmossi_village',
+  'pacmossi_spraying_site' = 'pacmossi_spraying_site',
+  'pacmossi_insecticide_test' = 'pacmossi_insecticide_test',
+  'document_group' = 'document_group',
+  'document' = 'document',
+  'vehicle' = 'vehicle',
+  'pacmossi_asset_facility' = 'pacmossi_asset_facility',
+  'pacmossi_asset_sub_facility' = 'pacmossi_asset_sub_facility',
+  'pacmossi_asset' = 'pacmossi_asset',
+  'pacmossi_consumable' = 'pacmossi_consumable',
+  'visiting_specialist' = 'visiting_specialist',
+  'wholesaler' = 'wholesaler',
+  'pharmacy' = 'pharmacy',
+  'supermarket' = 'supermarket',
+  'consumable' = 'consumable',
+  'bes_asset' = 'bes_asset',
+  'bes_office' = 'bes_office',
+  'tmf_district' = 'tmf_district',
+  'tmf_sub_district' = 'tmf_sub_district',
+  'tmf_facility' = 'tmf_facility',
+  'policy' = 'policy',
+  'kiuar_facility' = 'kiuar_facility',
+  'kiuar_area' = 'kiuar_area',
+  'spare_part' = 'spare_part',
+  'rehab_facility_model' = 'rehab_facility_model',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
@@ -1738,4 +2046,18 @@ export enum ApprovalStatus {
   'pending' = 'pending',
   'rejected' = 'rejected',
   'approved' = 'approved',
+}
+export interface DebugLog {
+  'id': string;
+  'info': {};
+  'type': string;
+}
+export interface DebugLogCreate {
+  'info': {};
+  'type': string;
+}
+export interface DebugLogUpdate {
+  'id'?: string;
+  'info'?: {};
+  'type'?: string;
 }
