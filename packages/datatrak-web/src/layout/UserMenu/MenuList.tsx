@@ -174,10 +174,11 @@ export const MenuList = ({
 
           if (unsyncedChangesCount > 0) {
             setUnsyncedChangesWarningModalOpen(true);
+          } else {
+            handleLogout();
           }
         } else {
-          logout();
-          onCloseMenu?.();
+          handleLogout();
         }
       },
       hidden: !isLoggedIn,

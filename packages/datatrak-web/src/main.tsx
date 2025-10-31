@@ -62,3 +62,8 @@ setInterval(async () => {
     }
   }
 }, UPDATE_CHECK_INTERVAL);
+
+// Reload the pwa when it is installed
+window.addEventListener('appinstalled', () => {
+  window.location.reload();
+});
