@@ -110,7 +110,6 @@ exports.up = async function (db) {
       CREATE TABLE entity (
         id            TEXT PRIMARY KEY,
         code          TEXT NOT NULL UNIQUE,
-        parent_id     TEXT REFERENCES entity DEFERRABLE INITIALLY IMMEDIATE,
         name          VARCHAR(128)                     NOT NULL,
         type          entity_type                      NOT NULL,
         image_url     TEXT,
@@ -123,10 +122,6 @@ exports.up = async function (db) {
   // Create entity indexes
   await db.runSql(`
       CREATE INDEX entity_code ON entity (code);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX entity_parent_id_key ON entity (parent_id);
     `);
 
   await db.runSql(`

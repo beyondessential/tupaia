@@ -373,4 +373,9 @@ export class UserModel extends DatabaseModel {
       accessPolicy,
     };
   }
+
+  sanitizeForCentralServer = (data) => {
+    const { password_hash, access_policy, ...rest } = data;
+    return rest;
+  }
 }
