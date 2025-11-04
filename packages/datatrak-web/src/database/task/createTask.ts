@@ -1,7 +1,8 @@
 import { DatatrakWebTaskChangeRequest, TaskStatus } from '@tupaia/types';
+import { AccessPolicy, assertBESAdminAccess, assertAnyPermissions } from '@tupaia/access-policy';
+
 import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser } from '../../api';
-import { AccessPolicy } from '@tupaia/access-policy';
 
 type Data = DatatrakWebTaskChangeRequest.ReqBody & {
   country_code: string;
@@ -30,7 +31,11 @@ export const createTask = async ({
     taskData.status = TaskStatus.to_do;
   }
 
-  await models.task.assertUserHasPermissionToCreateTask(accessPolicy, taskData);
+  const taskPermissionChecker = async (accessPolicy: AccessPolicy) => {
+    return await models.task.assertUserHasPermissionToCreateTask(accessPolicy, taskData);
+  };
+  const permissionChecker = assertAnyPermissions([assertBESAdminAccess, taskPermissionChecker]);
+  await permissionChecker(accessPolicy);
 
   return await models.wrapInTransaction(async transactingModels => {
     const task = await transactingModels.task.create(taskData);
