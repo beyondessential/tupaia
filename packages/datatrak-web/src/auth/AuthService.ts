@@ -60,18 +60,14 @@ export class AuthService {
       email,
     });
 
-    if (!userRecord) {
-      throw new Error('Invalid username or password');
-    }
-
-    if (!userRecord.password_hash) {
+    if (!userRecord?.password_hash) {
       throw new Error(
         'Before using DataTrak offline, please log in once while connected to the internet',
       );
     }
 
     if (!(await verifyPassword(userRecord.password_hash, password))) {
-      throw new Error('Invalid user credentials');
+      throw new Error('Invalid username or password');
     }
 
     const { preferences = {} } = userRecord;
