@@ -32,15 +32,20 @@ export const withDeferredSyncSafeguards = async <
   // also put the records into tombstone table
   await toggleTombstoneTriggers(database, false);
 
-  try {
-    return await operation();
-  } finally {
-    // Switch back to immediate mode
-    await database.executeSql(`
+  const results = await operation();
+
+  // The function is always wrapped inside a transaction, 
+  // If the operation fails, the transaction will be rolled back.
+  // So even though the logic below to switch back to immediate mode and re-enable tombstone triggers are not run
+  // the transaction will still rollback everything.
+
+  // Switch back to immediate mode
+  await database.executeSql(`
       SET CONSTRAINTS ALL IMMEDIATE;
     `);
 
-    // Re-enable tombstone triggers
-    await toggleTombstoneTriggers(database, true);
-  }
+  // Re-enable tombstone triggers
+  await toggleTombstoneTriggers(database, true);
+
+  return results;
 };
