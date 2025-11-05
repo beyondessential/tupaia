@@ -164,7 +164,7 @@ export class UserRecord extends DatabaseRecord {
 export class UserModel extends DatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
 
-  get ExcludedFieldsFromSync() {
+  get excludedFieldsFromSync() {
     return ['password_hash'];
   }
 
