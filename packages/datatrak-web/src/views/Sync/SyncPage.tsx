@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { formatDistance } from 'date-fns';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { ensure } from '@tupaia/tsutils';
 
@@ -77,6 +78,7 @@ export const SyncPage = () => {
 
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
   const [errorMessage, setErrorMessage] = useState<string | null>(syncManager.errorMessage);
@@ -160,8 +162,8 @@ export const SyncPage = () => {
   }, []);
 
   const manualSync = useCallback(() => {
-    syncManager.triggerUrgentSync();
-  }, [syncManager]);
+    syncManager.triggerUrgentSync(queryClient);
+  }, [syncManager, queryClient]);
 
   const syncFinishedSuccessfully =
     syncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;

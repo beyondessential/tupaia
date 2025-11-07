@@ -117,10 +117,7 @@ export class ClientSyncManager {
     log.info('Starting sync service');
     const run = async (): Promise<void> => {
       log.info('Running regular sync');
-      const { pulledChangesCount } = await this.triggerSync(false);
-      if (pulledChangesCount) {
-        await queryClient.invalidateQueries();
-      }
+      await this.triggerSync(false, queryClient);
     };
 
     // Run the sync immediately
@@ -206,10 +203,10 @@ export class ClientSyncManager {
     return syncedProjectIds;
   }
 
-  async triggerSync(urgent: boolean = false): Promise<SyncResult> {
+  async triggerSync(urgent: boolean = false, queryClient: QueryClient): Promise<void> {
     if (this.isSyncing) {
       log.warn('ClientSyncManager.triggerSync(): Tried to start syncing while sync in progress');
-      return {};
+      return;
     }
 
     try {
@@ -219,7 +216,10 @@ export class ClientSyncManager {
         throw new Error('No internet connectivity');
       }
 
-      return await this.runSync(urgent);
+      const { pulledChangesCount } = await this.runSync(urgent);
+      if (pulledChangesCount) {
+        await queryClient.invalidateQueries();
+      }
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
       this.errorMessage = error.message;
@@ -239,30 +239,28 @@ export class ClientSyncManager {
         this.progressMessage = null;
       }
     }
-
-    return {};
   }
 
   /**
    * Trigger urgent sync, and along with urgent sync, schedule regular sync requests
    * to continuously connect to central server and request for status change of the sync session
    */
-  async triggerUrgentSync(): Promise<SyncResult> {
+  async triggerUrgentSync(queryClient: QueryClient): Promise<void> {
     if (this.urgentSyncInterval) {
       log.warn('ClientSyncManager.triggerUrgentSync(): Urgent sync already started');
-      return {};
+      return;
     }
 
     const urgentSyncIntervalInSeconds = 10;
 
     // Schedule regular urgent sync
     this.urgentSyncInterval = setInterval(
-      () => this.triggerSync(true),
+      () => this.triggerSync(true, queryClient),
       urgentSyncIntervalInSeconds * 1000,
     );
 
     // start the sync now
-    return await this.triggerSync(true);
+    return await this.triggerSync(true, queryClient);
   }
 
   async runSync(urgent: boolean = false): Promise<SyncResult> {
