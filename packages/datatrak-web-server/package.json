@@ -36,7 +36,7 @@
     "@tupaia/utils": "workspace:*",
     "camelcase-keys": "^6.2.2",
     "date-fns": "^2.29.2",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "lodash.sortby": "^4.6.0",
     "winston": "^3.17.0"
   },
