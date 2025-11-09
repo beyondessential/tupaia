@@ -34,7 +34,7 @@
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "lodash.groupby": "^4.6.0",
     "winston": "^3.17.0"
   },
