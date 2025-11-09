@@ -36,7 +36,7 @@
     "body-parser": "^1.20.3",
     "client-sessions": "^0.8.0",
     "cors": "^2.8.5",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "http-proxy-middleware": "^2.0.1",
     "i18n": "^0.13.3",
     "morgan": "^1.9.0",
