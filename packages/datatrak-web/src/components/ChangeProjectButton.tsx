@@ -54,6 +54,9 @@ const ProjectButton = styled(Button).attrs({
   .MuiButton-label {
     display: contents;
   }
+  &.Mui-disabled {
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
 `;
 
 interface ChangeProjectButtonProps extends React.ComponentPropsWithoutRef<typeof Container> {
