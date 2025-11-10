@@ -17,8 +17,8 @@ import {
 
 type SurveyResponse = DatatrakWebSingleSurveyResponseRequest.ResBody;
 
-const QuestionWrapper = styled.div<{ $border?: boolean }>`
-  ${({ $border = true }) => $border && 'border-bottom: 1pt solid #ccc;'}
+const QuestionWrapper = styled.div`
+  border-block-end: 1pt solid #ccc;
   page-break-inside: avoid;
   max-width: 350pt;
 
@@ -140,7 +140,7 @@ export const Question = ({
 
   if (type === QuestionType.Instruction) {
     return (
-      <QuestionWrapper $border={false}>
+      <QuestionWrapper style={{ borderBlockEnd: '0' }}>
         <InstructionQuestionText>{text}</InstructionQuestionText>
         {detailLabel && <SmallText>{detailLabel}</SmallText>}
       </QuestionWrapper>
