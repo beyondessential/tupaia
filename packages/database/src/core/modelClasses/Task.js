@@ -749,7 +749,7 @@ export class TaskModel extends DatabaseModel {
     return { dbConditions, dbOptions };
   }
 
-  async handleTaskCompletion(surveyResponse) {
+  async completeTaskForSurveyResponse(surveyResponse) {
     const {
       id: surveyResponseId,
       survey_id: surveyId,

@@ -105,7 +105,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         }
 
         const [{ surveyResponseId }] = idsCreated;
-        await transactingModels.task.handleTaskCompletion({
+        await transactingModels.task.completeTaskForSurveyResponse({
           ...processedResponse,
           id: surveyResponseId,
         });
