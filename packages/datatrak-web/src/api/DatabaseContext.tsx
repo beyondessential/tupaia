@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 
-import { LoadingScreen } from '@tupaia/ui-components';
+import { FullPageLoader } from '@tupaia/ui-components';
 
 import { createDatabase } from '../database/createDatabase';
 import { DatatrakWebModelRegistry } from '../types';
@@ -30,7 +30,7 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
   }, []);
 
   if (!models) {
-    return <LoadingScreen />;
+    return <FullPageLoader />;
   }
 
   return <DatabaseContext.Provider value={{ models }}>{children}</DatabaseContext.Provider>;
