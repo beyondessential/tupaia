@@ -29,6 +29,7 @@ import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
 import { remove, stream } from '../api';
+import { formatFraction } from '../utils';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
 
@@ -479,7 +480,11 @@ export class ClientSyncManager {
     let totalSaved = 0;
     const progressCallback = (incrementalSaved: number) => {
       totalSaved += Number(incrementalSaved);
-      this.updateProgress(totalToPull, totalSaved, `Saving changes (${totalSaved}/${totalToPull})`);
+      this.updateProgress(
+        totalToPull,
+        totalSaved,
+        `Saving changes (${formatFraction(totalSaved, totalToPull)})`,
+      );
     };
 
     await this.models.wrapInTransaction(async transactingModels => {
@@ -504,7 +509,11 @@ export class ClientSyncManager {
     let pullTotal = 0;
     const pullProgressCallback = (incrementalPulled: number) => {
       pullTotal += Number(incrementalPulled);
-      this.updateProgress(totalToPull, pullTotal, `Pulling changes (${pullTotal}/${totalToPull})`);
+      this.updateProgress(
+        totalToPull,
+        pullTotal,
+        `Pulling changes (${formatFraction(pullTotal, totalToPull)})`,
+      );
     };
     const processStreamedDataFunction = async ({
       models,
@@ -523,7 +532,11 @@ export class ClientSyncManager {
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
       totalSaved += Number(incrementalSaved);
-      this.updateProgress(totalToPull, totalSaved, `Saving changes (${totalSaved}/${totalToPull})`);
+      this.updateProgress(
+        totalToPull,
+        totalSaved,
+        `Saving changes (${formatFraction(totalSaved, totalToPull)})`,
+      );
     };
     await this.models.wrapInTransaction(async transactingModels => {
       const incomingModels = getModelsForPull(transactingModels.getModels());
