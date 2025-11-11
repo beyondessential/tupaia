@@ -1,4 +1,6 @@
-import { SyncDirections } from '@tupaia/constants';
+import { format } from 'date-fns';
+
+import { DATA_TIME_FORMAT, SyncDirections } from '@tupaia/constants';
 import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
 import { TaskCommentType, TaskStatus } from '@tupaia/types';
@@ -687,8 +689,14 @@ export class TaskModel extends DatabaseModel {
         return false;
       }
       const { data_time: dataTime, timezone } = record;
-      const offset = getOffsetForTimezone(timezone, new Date(dataTime));
-      const formattedDate = `${dataTime.toString().replace(' ', 'T')}${offset}`;
+
+      // This function is used in both browser and server.
+      // Browser returns date object while server returns string.
+      // So we need to format it to be string in both cases.
+      const formattedDataTime =
+        typeof dataTime === 'string' ? dataTime : format(dataTime, DATA_TIME_FORMAT);
+      const offset = getOffsetForTimezone(timezone, new Date(formattedDataTime));
+      const formattedDate = `${formattedDataTime.replace(' ', 'T')}${offset}`;
       return new Date(formattedDate).getTime() <= record.due_date;
     });
   }
