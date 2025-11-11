@@ -73,7 +73,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
       // TODO: Assert user has access
 
-      const local = await models.wrapInTransaction(async transactingModels => {
+      const local = await models.wrapInRepeatableReadTransaction(async transactingModels => {
         const submitterId = user.isLoggedIn
           ? ensure(user.id)
           : (await transactingModels.user.findPublicUser()).id;
@@ -103,6 +103,12 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         if (user.isLoggedIn) {
           await UserModel.addRecentEntities(transactingModels, submitterId, recent_entities);
         }
+
+        const [{ surveyResponseId }] = idsCreated;
+        await transactingModels.task.handleTaskCompletion({
+          ...processedResponse,
+          id: surveyResponseId,
+        });
 
         // Marking any corresponding task as complete is delegated to central-server
 

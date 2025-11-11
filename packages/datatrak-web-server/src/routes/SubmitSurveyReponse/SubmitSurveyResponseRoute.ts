@@ -34,7 +34,7 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
       await UserModel.addRecentEntities(models, userId, recent_entities);
     }
 
-    await handleTaskCompletion(models, {
+    await models.task.handleTaskCompletion({
       ...processedResponse,
       id: response.surveyResponseId,
     });
