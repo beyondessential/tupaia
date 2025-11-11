@@ -85,7 +85,7 @@ const responseStatus = {
   Filter: OutdatedFilter,
   width: 180,
   // eslint-disable-next-line react/prop-types
-  Cell: ({ value }) => <ResponseStatusPill value={value} />,
+  Cell: ResponseStatusPill,
 };
 
 const entityName = {
