@@ -143,7 +143,7 @@ const OfflineErrorMessage = () => (
     <InfoIcon />
     <OfflineTitle>You are currently offline</OfflineTitle>
     <OfflineMessage>
-      You'll need an internet connection to request access to this project. Come back when you're
+      You'll need an internet connection to request access to a new project. Come back when you're
       connected and try again.
     </OfflineMessage>
   </OfflineErrorMessageContainer>
