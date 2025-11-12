@@ -94,7 +94,7 @@ export const ProjectSelectForm = ({
 }: ProjectSelectFormProps) => {
   const [selectedProjectId, setSelectedProjectId] = useState(projectId);
 
-  const isOnline = false;
+  const isOnline = window.navigator.onLine;
 
   if (!isOnline) {
     return (
