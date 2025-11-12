@@ -4,6 +4,7 @@ import viteCompression from 'vite-plugin-compression';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import dns from 'dns';
+import fs from 'fs';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import commonjs from 'vite-plugin-commonjs';
 import replace from '@rollup/plugin-replace';
@@ -15,6 +16,9 @@ dns.setDefaultResultOrder('verbatim');
 export default defineConfig(({ command, mode }) => {
   // Load the environment variables, whether or not they are prefixed with REACT_APP_
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
+  const DATATRAK_WEB_NAME = '@tupaia/datatrak-web';
+  const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
+  const packageName = packageJson.name;
 
   const baseConfig = {
     build: {
@@ -53,17 +57,22 @@ export default defineConfig(({ command, mode }) => {
         },
       }),
       commonjs(),
-      // Replace the process.env variables with the actual values
+      // For datatrak-web, replace the process.env variables with the actual values
       // Doing this instead of using define because define also replaces the process.env
       // in the external node_modules, which caused issues when using knex in frontend
-      replace({
-        'process.env': JSON.stringify(env),
-        include: 'src/**/*', // Only source files
-        exclude: 'node_modules/**', // Exclude all external node_modules
-        preventAssignment: false,
-      }),
+      packageName === DATATRAK_WEB_NAME
+        ? replace({
+            'process.env': JSON.stringify(env),
+            include: 'src/**/*', // Only source files
+            exclude: 'node_modules/**', // Exclude all external node_modules
+            preventAssignment: false,
+          })
+        : null,
     ],
-    define: { __dirname: JSON.stringify('/') },
+    define: {
+      __dirname: JSON.stringify('/'),
+      ...(packageName !== DATATRAK_WEB_NAME ? { 'process.env': env } : {}),
+    },
     server: {
       open: true,
       headers: {
