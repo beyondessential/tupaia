@@ -1,13 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {
-  DialogActions,
-  FormControl as BaseFormControl,
-  FormGroup,
-  Typography,
-} from '@material-ui/core';
-import MuiInfoIcon from '@material-ui/icons/InfoOutlined';
+import { DialogActions, FormControl as BaseFormControl, FormGroup } from '@material-ui/core';
 
 import { ProjectCountryAccessListRequest, WebServerProjectRequest } from '@tupaia/types';
 
@@ -20,6 +14,7 @@ import {
 } from '../../components';
 import { Form, FormInput } from '../Form';
 import { RequestProjectAccessSuccessMessage } from './RequestProjectAccessSuccessMessage';
+import { OfflineErrorMessage } from '../../components/OfflineErrorMessage';
 
 const FormControl = styled(BaseFormControl).attrs({
   component: 'fieldset',
@@ -102,53 +97,6 @@ interface ProjectAccessFormProps {
   ErrorMessageComponent?: React.ComponentType;
 }
 
-const InfoIcon = styled(MuiInfoIcon)`
-  font-size: 1.5rem;
-  color: ${({ theme }) => theme.palette.primary.main};
-  width: 1.5rem;
-  height: 1.5rem;
-`;
-
-const OfflineErrorMessageContainer = styled.div`
-  padding-inline: 1.5rem;
-  font-size: 0.875rem;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 2rem;
-
-  .MuiTypography-h2 {
-    font-size: 0.9rem;
-  }
-  .MuiTypography-body1 {
-    font-size: 0.9rem;
-  }
-`;
-
-const OfflineTitle = styled(Typography).attrs({
-  variant: 'h1',
-})`
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-`;
-
-const OfflineMessage = styled(Typography).attrs({
-  variant: 'body1',
-})`
-  font-size: 0.875rem;
-`;
-
-const OfflineErrorMessage = () => (
-  <OfflineErrorMessageContainer>
-    <InfoIcon />
-    <OfflineTitle>You are currently offline</OfflineTitle>
-    <OfflineMessage>
-      You'll need an internet connection to request access to a new project. Come back when you're
-      connected and try again.
-    </OfflineMessage>
-  </OfflineErrorMessageContainer>
-);
-
 export const ProjectAccessForm = ({
   project,
   onBack,
@@ -171,7 +119,7 @@ export const ProjectAccessForm = ({
   if (!isOnline) {
     return (
       <>
-        <OfflineErrorMessage />
+        <OfflineErrorMessage offlineMessage="You'll need an internet connection to request access to a new project. Come back when you're connected and try again." />
         <StyledDialogActions>
           <FormButton variant="contained" onClick={onBack} color="primary">
             Back
