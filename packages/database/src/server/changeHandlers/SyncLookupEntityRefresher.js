@@ -13,11 +13,13 @@ export class SyncLookupEntityRefresher extends ChangeHandler {
   getAffectedEntityIds(changeDetails) {
     const { new_record: newRecord, old_record: oldRecord } = changeDetails;
 
+    // if the entity was deleted, we need to refresh the lookup for the parent and child
     if (oldRecord && !newRecord) {
       return [oldRecord.child_id, oldRecord.parent_id];
     }
 
-    return [newRecord.child_id, newRecord.parent_id];
+    // if the entity was created, we need to refresh the lookup for the parent and child
+    return [oldRecord.child_id, oldRecord.parent_id, newRecord.child_id, newRecord.parent_id];
   }
 
   async handleChanges(models, affectedEntityIds) {
