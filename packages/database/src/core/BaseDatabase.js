@@ -89,7 +89,13 @@ export class BaseDatabase {
   /** @type {Knex} */
   connection;
 
-  constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
+  constructor(
+    transactingConnection,
+    transactingChangeChannel,
+    clientType,
+    getConnectionConfigFn,
+    useNumericStuff,
+  ) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
     }
@@ -114,11 +120,24 @@ export class BaseDatabase {
       };
       this.connectionPromise = connectToDatabase();
     }
+
+    this.setCustomTypeParsers(useNumericStuff);
   }
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
   generateId = generateId;
+
+  /**
+   * Subclasses should override parsers for certain PostgreSQL types as needed based on their
+   * PostgreSQL client’s default parsers (e.g. node-postgres, PGlite). If no overrides needed,
+   * override with an empty method.
+   * @param {boolean} [_useNumericStuff]
+   * @returns {void}
+   */
+  setCustomTypeParsers(_useNumericStuff) {
+    throw new Error('Subclass should override setCustomTypeParsers');
+  }
 
   async closeConnections() {
     return await this.connection.destroy();

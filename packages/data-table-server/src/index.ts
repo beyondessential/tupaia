@@ -9,8 +9,7 @@ configureWinston();
 configureEnv();
 
 (async () => {
-  const database = new TupaiaDatabase();
-  database.configurePgGlobals(true);
+  const database = new TupaiaDatabase(undefined, undefined, true);
 
   /**
    * Set up app with routes etc.
