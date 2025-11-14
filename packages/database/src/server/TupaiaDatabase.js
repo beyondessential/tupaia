@@ -20,16 +20,10 @@ export class TupaiaDatabase extends BaseDatabase {
   /**
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
-   * @param {boolean} [useNumericStuff]
+
    */
-  constructor(transactingConnection, transactingChangeChannel, useNumericStuff) {
-    super(
-      transactingConnection,
-      transactingChangeChannel,
-      'pg',
-      getConnectionConfig,
-      useNumericStuff,
-    );
+  constructor(transactingConnection, transactingChangeChannel) {
+    super(transactingConnection, transactingChangeChannel, 'pg', getConnectionConfig);
 
     this.changeHandlers = {};
     this.handlerLock = new Multilock();
@@ -37,15 +31,10 @@ export class TupaiaDatabase extends BaseDatabase {
   }
 
   /** @override */
-  setCustomTypeParsers(useNumericStuff = false) {
+  setCustomTypeParsers() {
     // turn off parsing of timestamp (not timestamptz), so that it stays as a sort of "universal time"
     // string, independent of timezones, rather than being converted to local time
     pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
-
-    if (useNumericStuff) {
-      pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, Number.parseFloat);
-      pgTypes.setTypeParser(pgTypes.builtins.INT8, Number.parseInt); // bigInt type to Integer
-    }
   }
 
   getHandlersForChange(change) {

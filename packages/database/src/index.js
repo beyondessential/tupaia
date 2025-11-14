@@ -1,7 +1,8 @@
 export * from './core/modelClasses';
 export { MaterializedViewLogDatabaseModel } from './core/analytics';
 export * from './server/changeHandlers';
-export * from './server/TupaiaDatabase';
+export { DataTableDatabase } from './server/DataTableDatabase';
+export { TupaiaDatabase } from './server/TupaiaDatabase';
 export { getConnectionConfig } from './server/getConnectionConfig';
 export { getDbMigrator } from './server/getDbMigrator';
 export {
