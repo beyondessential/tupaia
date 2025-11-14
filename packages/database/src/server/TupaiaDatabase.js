@@ -146,6 +146,16 @@ export class TupaiaDatabase extends BaseDatabase {
     return new TupaiaDatabase(transaction, this.changeChannel);
   }
 
+  /**
+   * Force a change to be recorded against the records matching the search criteria, and return
+   * those records.
+   */
+  async markAsChanged(recordType, where, options) {
+    const records = await this.find(recordType, where, options);
+    await this.markRecordsAsChanged(recordType, records);
+    return records;
+  }
+
   async markRecordsAsChanged(recordType, records) {
     await this.getOrCreateChangeChannel().publishRecordUpdates(recordType, records);
   }

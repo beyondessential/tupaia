@@ -423,16 +423,6 @@ export class BaseDatabase {
     return this.delete(recordType, { id });
   }
 
-  /**
-   * Force a change to be recorded against the records matching the search criteria, and return
-   * those records.
-   */
-  async markAsChanged(recordType, where, options) {
-    const records = await this.find(recordType, where, options);
-    await this.markRecordsAsChanged(recordType, records);
-    return records;
-  }
-
   async getSetting(key) {
     const setting = await this.findOne('setting', { key });
     return setting ? setting.value : null;

@@ -14,7 +14,17 @@ export class EntityHierarchyCacher extends ChangeHandler {
     };
   }
 
-  async translateEntityChangeToRebuildJobs({ record_id: entityId, new_record: newRecord }) {
+  async translateEntityChangeToRebuildJobs({ type, old_record: oldRecord, new_record: newRecord }) {
+    // Should only rebuild if parent_id has changed
+    if (
+      type === 'update' &&
+      oldRecord?.parent_id === newRecord?.parent_id &&
+      oldRecord?.type === newRecord?.type &&
+      oldRecord?.country_code === newRecord?.country_code
+    ) {
+      return [];
+    }
+
     // if entity was deleted or created, or parent_id has changed, we need to delete subtrees and
     // rebuild all hierarchies
     const hierarchies = await this.models.entityHierarchy.all();
