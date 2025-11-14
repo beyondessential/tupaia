@@ -32,7 +32,8 @@ export class EntityParentChildRelationBuilder {
    * @param {{hierarchyId: string; rootEntityId: string}[]} rebuildJobs
    */
   async rebuildRelations(rebuildJobs) {
-    // projects are the root entities of every full tree, so start with them
+    let relatedEntityIds = [];
+
     for (const { hierarchyId, rootEntityId } of rebuildJobs) {
       const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
 
@@ -41,8 +42,13 @@ export class EntityParentChildRelationBuilder {
         continue;
       }
 
-      await this.rebuildRelationsForEntity(hierarchyId, rootEntityId, project);
+      const jobRelatedEntityIds = await this.rebuildRelationsForEntity(hierarchyId, rootEntityId, project);
+
+      // Use concat to avoid arguement limit
+      relatedEntityIds = relatedEntityIds.concat(Array.from(jobRelatedEntityIds));
     }
+
+    return [...new Set(relatedEntityIds)];
   }
 
   /**
@@ -63,7 +69,7 @@ export class EntityParentChildRelationBuilder {
    */
   async rebuildRelationsForProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
-    await this.rebuildRelationsForEntity(hierarchyId, projectEntityId, project);
+    return await this.rebuildRelationsForEntity(hierarchyId, projectEntityId, project);
   }
 
   /**
@@ -85,14 +91,21 @@ export class EntityParentChildRelationBuilder {
       rootEntityId,
     );
     if (!isEntityConnected) {
-      return;
+      return new Set();
     }
 
-    await this.fetchAndCacheChildren(hierarchyId, [rootEntityId]);
+    const relatedEntityIds = await this.fetchAndCacheChildren(hierarchyId, [rootEntityId]);
     await this.deleteOrphanedRelations(hierarchyId, projectEntityId);
+
+    return relatedEntityIds;
   }
 
-  async fetchAndCacheChildren(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
+  async fetchAndCacheChildren(
+    hierarchyId,
+    parentIds,
+    childrenAlreadyCached = new Set(),
+    relatedEntityIds = new Set(),
+  ) {
     const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, parentIds);
     const hasEntityRelationLinks = entityRelationChildCount > 0;
 
@@ -101,8 +114,13 @@ export class EntityParentChildRelationBuilder {
       ? await this.getRelationsViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached)
       : await this.getRelationsViaCanonical(hierarchyId, parentIds, childrenAlreadyCached);
 
+    let latestRelatedEntityIds = relatedEntityIds;
     if (entityParentChildRelations.length) {
-      await this.insertRelations(entityParentChildRelations);
+      const insertedRelations = await this.insertRelations(entityParentChildRelations);
+      latestRelatedEntityIds = new Set([
+        ...relatedEntityIds,
+        ...insertedRelations.flatMap(r => [r.parent_id, r.child_id]),
+      ]);
     }
 
     const validParentChildIdPairs = entityParentChildRelations.map(e => [e.parent_id, e.child_id]);
@@ -114,7 +132,7 @@ export class EntityParentChildRelationBuilder {
         parent_id: parentIds,
         entity_hierarchy_id: hierarchyId,
       });
-      return; // at a leaf node generation, no need to go any further
+      return latestRelatedEntityIds; // at a leaf node generation, no need to go any further
     }
 
     const validChildIds = validParentChildIdPairs.map(pair => pair[1]);
@@ -124,7 +142,12 @@ export class EntityParentChildRelationBuilder {
 
     const latestChildrenAlreadyCached = new Set([...childrenAlreadyCached, ...validChildIds]);
 
-    return this.fetchAndCacheChildren(hierarchyId, validChildIds, latestChildrenAlreadyCached);
+    return this.fetchAndCacheChildren(
+      hierarchyId,
+      validChildIds,
+      latestChildrenAlreadyCached,
+      latestRelatedEntityIds,
+    );
   }
 
   /**
@@ -180,7 +203,7 @@ export class EntityParentChildRelationBuilder {
 
   async insertRelations(entityParentChildRelations) {
     // If the relation is already generated, it should be ignored
-    await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
+    return await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
       onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
     });
   }
