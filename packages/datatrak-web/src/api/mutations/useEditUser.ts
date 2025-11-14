@@ -30,9 +30,7 @@ function camelToSnakeCase(camelCaseString: string): string {
 
 export const prepareUserDetails = (userDetails: UserAccountDetails) => {
   // `mobile_number` field in database is nullable; don't just store an empty string
-  if (!userDetails?.mobileNumber) {
-    userDetails.mobileNumber = null;
-  }
+  if (userDetails?.mobileNumber === '') userDetails.mobileNumber = null;
 
   return Object.fromEntries(
     Object.entries(userDetails).map(([key, value]) => [camelToSnakeCase(key), value]),
