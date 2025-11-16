@@ -1,20 +1,19 @@
 import { Link, ListItem } from '@material-ui/core';
 import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
 import React, { ComponentType, ReactNode, useState } from 'react';
-import { useMatch } from 'react-router';
+import { useMatch, useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { Button, RouterLink } from '@tupaia/ui-components';
-import { getModelsForPush } from '@tupaia/sync';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
-
+import { getModelsForPush } from '@tupaia/sync';
+import { Button, RouterLink } from '@tupaia/ui-components';
 import { useCurrentUserContext, useLogout } from '../../api';
+import { useIsOfflineFirst } from '../../api/offlineFirst';
 import { CancelConfirmModal } from '../../components';
 import { ROUTES } from '../../constants';
-import { MobileUserMenuRoot } from './MobileUserMenu';
 import { useDatabaseContext } from '../../hooks/database';
 import { countOutgoingChanges } from '../../sync/countOutgoingChanges';
-import { useIsOfflineFirst } from '../../api/offlineFirst';
+import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
   label: string;
@@ -111,12 +110,12 @@ export const MenuList = ({
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const isOfflineFirst = useIsOfflineFirst();
   const { mutate: logout } = useLogout();
+  const navigate = useNavigate();
   const { models } = useDatabaseContext() || {};
-
   const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
   const handleLogout = async () => {
-    logout();
+    logout(undefined, { onSuccess: () => navigate(ROUTES.LOGIN) });
     setUnsyncedChangesWarningModalOpen(false);
     onCloseMenu?.();
   };
