@@ -1,6 +1,8 @@
 import { generateId } from '../../../core/utilities';
 import { RECORDS } from '../../../core/records';
 import { ChangeHandler } from '../ChangeHandler';
+import { SqlQuery } from '../../../core';
+
 import { EntityHierarchySubtreeRebuilder } from './EntityHierarchySubtreeRebuilder';
 
 export class EntityHierarchyCacher extends ChangeHandler {
