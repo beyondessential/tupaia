@@ -70,12 +70,10 @@ export const SyncStatus = ({
         </>
       )}
 
-      {(syncStage || message) && (
-        <SyncParagraph>
-          {syncStage && `Sync stage ${syncStage} of ${totalStages}`}
-          {message && <SyncParagraph>{message}</SyncParagraph>}
-        </SyncParagraph>
-      )}
+      <div>
+        {syncStage && <SyncParagraph>{`Sync stage ${syncStage} of ${totalStages}`}</SyncParagraph>}
+        {message && <SyncParagraph>{message}</SyncParagraph>}
+      </div>
 
       {syncFinishedSuccessfully && (
         <>
