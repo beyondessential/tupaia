@@ -2,7 +2,6 @@ import React, { createContext, Dispatch, useContext, useMemo, useReducer, useSta
 import { To, useMatch, useParams, useSearchParams } from 'react-router-dom';
 
 import { Country, QuestionType, Survey } from '@tupaia/types';
-
 import { useSurvey } from '../../../api';
 import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
@@ -57,7 +56,7 @@ export const SurveyContext = ({
   surveyCode: Survey['code'] | undefined;
 }) => {
   const [urlSearchParams] = useSearchParams();
-  const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
+  const [prevSurvey, setPrevSurvey] = useState<ReturnType<typeof useSurvey>['data'] | null>(null);
   const primaryEntityCodeParam = urlSearchParams.get(PRIMARY_ENTITY_CODE_PARAM) || undefined;
   const [primaryEntityCode] = useState(primaryEntityCodeParam);
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
@@ -140,8 +139,8 @@ export const SurveyContext = ({
   };
 
   // @see https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
-  if (surveyCode !== prevSurveyCode) {
-    setPrevSurveyCode(surveyCode as string);
+  if (survey !== prevSurvey) {
+    setPrevSurvey(survey);
     initialiseFormData();
   }
 
