@@ -133,10 +133,9 @@ export const SurveyContext = ({
     dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
     // update the start time when a survey is started, so that it can be passed on when submitting the survey
 
-    const currentDate = new Date();
     dispatch({
       type: ACTION_TYPES.SET_SURVEY_START_TIME,
-      payload: currentDate.toISOString(),
+      payload: new Date().toISOString(),
     });
   };
 
