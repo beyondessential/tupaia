@@ -1,32 +1,23 @@
-import { sendEmail } from '@tupaia/server-utils';
+import { sendEmail, MailOptions } from '@tupaia/server-utils';
 import { UserAccount } from '@tupaia/types';
 import { respond } from '@tupaia/utils';
 
-type TemplateContext = {
-  title: string;
-  message: string;
-  cta?: {
-    text: string;
-    url: string;
-  };
-};
+interface EmailAfterTimeoutMailOptions
+  extends Pick<MailOptions, 'attachments' | 'subject' | 'templateContext'> {}
 
 type ConstructEmailFromResponseT = (
   responseBody: any,
   req: any,
-) => Promise<{
-  subject: string;
-  attachments?: { filename: string; content: Buffer }[];
-  templateContext: TemplateContext;
-}>;
+) => Promise<EmailAfterTimeoutMailOptions>;
 
-const sendResponseAsEmail = (
-  user: UserAccount,
-  subject: string,
-  templateContext: TemplateContext,
-  attachments?: { filename: string; content: Buffer }[],
+const sendResponseAsEmail = async (
+  user: Pick<UserAccount, 'email' | 'first_name'>,
+  { attachments, subject, templateContext }: EmailAfterTimeoutMailOptions,
 ) => {
-  sendEmail(user.email, {
+  await sendEmail(user.email, {
+    // Prevent threading in Gmail, even if subject is the same. (`emailAfterTimeout` is used for
+    // large data exports; grouping separate exports into a single thread is probably undesirable.)
+    headers: { 'X-Entity-Ref-ID': crypto.randomUUID() },
     subject,
     attachments,
     templateName: 'emailAfterTimeout',
@@ -62,11 +53,8 @@ const setupEmailResponse = async (
   // override the respond function so that when the endpoint handler finishes (or throws an error),
   // the response is sent via email
   res.overrideRespond = async (responseBody: any) => {
-    const { subject, attachments, templateContext } = await constructEmailFromResponse(
-      responseBody,
-      req,
-    );
-    sendResponseAsEmail(user, subject, templateContext, attachments);
+    const mailOptions = await constructEmailFromResponse(responseBody, req);
+    sendResponseAsEmail(user, mailOptions);
   };
 };
 
