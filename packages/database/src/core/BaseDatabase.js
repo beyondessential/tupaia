@@ -110,12 +110,14 @@ export class BaseDatabase {
           client: clientType,
           connection: getConnectionConfigFn(),
         });
+        // Setting custom type parsers not strictly related to connecting, but setting parsers with
+        // pglite (used by DatatrakDatabase) requires this.connection to be defined; safer to set
+        // here rather than top level of constructor
+        this.setCustomTypeParsers();
         return true;
       };
       this.connectionPromise = connectToDatabase();
     }
-
-    this.setCustomTypeParsers();
   }
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
