@@ -89,6 +89,9 @@ export class BaseDatabase {
   /** @type {Knex} */
   connection;
 
+  /** @type {Promise<true>} */
+  connectionPromise;
+
   constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
@@ -105,6 +108,7 @@ export class BaseDatabase {
       this.connection = transactingConnection;
       this.connectionPromise = Promise.resolve(true);
     } else {
+      /** @returns {Promise<true>} */
       const connectToDatabase = async () => {
         this.connection = knex({
           client: clientType,
