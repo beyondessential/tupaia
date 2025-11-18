@@ -1,4 +1,6 @@
+import { groupBy, isEqual, keyBy } from 'es-toolkit/compat';
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import {
   Entity,
@@ -8,9 +10,7 @@ import {
   TupaiaWebMapOverlaysRequest,
 } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
-import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
-import isEqual from 'lodash.isequal';
+import { uniq } from 'es-toolkit';
 
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,
@@ -135,7 +135,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const overlayGroupIds: string[] = mapOverlayRelations.map(
       (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
     );
-    const uniqueGroupIds: string[] = [...new Set(overlayGroupIds)];
+    const uniqueGroupIds = uniq(overlayGroupIds);
     const mapOverlayGroups = await this.req.models.mapOverlayGroup.find({
       id: uniqueGroupIds,
     });

@@ -1,9 +1,9 @@
-import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
+import { uniq } from 'es-toolkit';
+import { groupBy, keyBy } from 'es-toolkit/compat';
 
-import { getUniqueEntries, haveSameFields } from '@tupaia/utils';
-import { ChangeHandler } from '../ChangeHandler';
+import { haveSameFields } from '@tupaia/utils';
 import { isMarkedChange } from '../../utilities';
+import { ChangeHandler } from '../ChangeHandler';
 import { OutdatedResponseFlagger } from './OutdatedResponseFlagger';
 
 /**
@@ -109,7 +109,7 @@ export class SurveyResponseOutdater extends ChangeHandler {
    * @private
    */
   async fetchSurveysById(surveyResponses) {
-    const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
+    const surveyIds = uniq(surveyResponses.map(r => r.survey_id));
     const surveys = await this.models.survey.findManyById(surveyIds);
     return keyBy(surveys, 'id');
   }

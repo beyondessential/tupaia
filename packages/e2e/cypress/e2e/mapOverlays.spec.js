@@ -1,4 +1,4 @@
-import { groupBy } from 'lodash';
+import { groupBy } from 'es-toolkit/compat';
 
 import config from '../__generatedConfig.json';
 import { SNAPSHOT_TYPES } from '../constants';

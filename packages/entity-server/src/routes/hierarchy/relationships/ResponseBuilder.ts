@@ -1,4 +1,5 @@
-import keyBy from 'lodash.keyby';
+import { uniq } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { QueryConjunctions, EntityFilter, EntityRecord } from '@tupaia/server-boilerplate';
@@ -75,10 +76,9 @@ export class ResponseBuilder {
       }
     });
 
-    const ancestorCodes = [
-      ...new Set(Object.values(descendantAncestorMapping).map(ancestor => ancestor.code)),
-    ];
-
+    const ancestorCodes = uniq(
+      Object.values(descendantAncestorMapping).map(ancestor => ancestor.code),
+    );
     const ancestorDescendantPairs = Object.entries(descendantAncestorMapping).map(
       ([descendant, { code: ancestor }]) => ({
         descendant,

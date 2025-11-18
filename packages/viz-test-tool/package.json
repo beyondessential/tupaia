@@ -30,7 +30,7 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "cli-progress": "^3.12.0",
-    "lodash.isequal": "^4.5.0"
+    "es-toolkit": "^1.39.8"
   },
   "devDependencies": {
     "@types/cli-progress": "^3.11.5",
