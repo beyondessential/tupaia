@@ -79,7 +79,7 @@ export const emailAfterTimeout =
       next();
       return;
     }
-    const timeout = parseInt(respondWithEmailTimeout, 10);
+    const timeout = Number.parseInt(respondWithEmailTimeout, 10);
     if (Number.isNaN(timeout)) {
       throw new Error('respondWithEmailTimeout must be a number');
     }
