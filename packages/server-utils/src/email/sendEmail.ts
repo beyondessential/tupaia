@@ -69,7 +69,7 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions)
   });
 
   // Make sure it doesn't send real users mail from the dev server
-  const sendTo = getIsProductionEnvironment() ? to : (requireEnv('DEV_EMAIL_ADDRESS') as string);
+  const sendTo = getIsProductionEnvironment() ? to : requireEnv('DEV_EMAIL_ADDRESS');
 
   const fullHtml = compileHtml({ templateName, templateContext, signOff });
 
