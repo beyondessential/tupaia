@@ -43,7 +43,7 @@ const setupEmailResponse = async (
   constructEmailFromResponse: ConstructEmailFromResponseT,
 ) => {
   const { models } = req;
-  const user = await models.user.findById(req.user.id);
+  const user = await models.user.findById(req.user.id, { columns: ['email', 'first_name'] });
 
   if (res.headersSent) {
     // no need to do anything if the endpoint handler responded successfully within the timeout
