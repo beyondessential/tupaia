@@ -101,9 +101,13 @@ export class BaseDatabase {
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
 
+    // TODO: Connect to database synchronously, abolish connectionPromise and call
+    // setCustomTypeParsers at top level of constructor
+
     if (transactingConnection) {
       this.connection = transactingConnection;
       this.connectionPromise = Promise.resolve(true);
+      this.setCustomTypeParsers();
     } else {
       const connectToDatabase = async () => {
         this.connection = knex({
