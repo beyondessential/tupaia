@@ -101,8 +101,9 @@ export class SurveyEditor {
       );
     } else {
       // Must be a create, and no permission group specified, use Public
-      permissionGroup = ensure(
-        await transactingModels.permissionGroup.findOne({ name: 'Public' }),
+      permissionGroup = await transactingModels.permissionGroup.findOneOrThrow(
+        { name: 'Public' },
+        undefined,
         `Couldn’t find Public permission group`,
       );
     }
