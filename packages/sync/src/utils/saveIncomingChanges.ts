@@ -19,6 +19,26 @@ const assertIsWithinTransaction = (database: BaseDatabase) => {
   }
 };
 
+export const saveDeletesForModel = async (
+  model: DatabaseModel,
+  changes: SyncSnapshotAttributes[],
+  progressCallback?: (recordsProcessed: number) => void,
+) => {
+  // split changes into create, update
+  const deletedRecords = changes.filter(c => c.isDeleted).map(c => c.data);
+
+  // Should delete records first to avoid foreign key constraints
+  winston.debug(
+    `Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`,
+    {
+      count: deletedRecords.length,
+    },
+  );
+  if (deletedRecords.length > 0) {
+    await saveDeletes(model, deletedRecords, 1000, progressCallback);
+  }
+};
+
 export const saveChangesForModel = async (
   model: DatabaseModel,
   changes: SyncSnapshotAttributes[],
@@ -39,32 +59,15 @@ export const saveChangesForModel = async (
   );
   const recordsForCreate = [];
   const recordsForUpdate = [];
-  const recordsForDelete = [];
 
   for (const change of changes) {
-    const { data, isDeleted } = change;
+    const { data } = change;
 
     if (idToExistingRecord[data.id] === undefined) {
-      if (!isDeleted) {
-        recordsForCreate.push(sanitizeData(data));
-      }
-      // If it's a new record and it's deleted, ignore it
-    } else if (isDeleted) {
-      recordsForDelete.push(sanitizeData(data));
+      recordsForCreate.push(sanitizeData(data));
     } else {
       recordsForUpdate.push(sanitizeData(data));
     }
-  }
-
-  // Should delete records first to avoid foreign key constraints
-  winston.debug(
-    `Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`,
-    {
-      count: recordsForDelete.length,
-    },
-  );
-  if (recordsForDelete.length > 0) {
-    await saveDeletes(model, recordsForDelete, 1000, progressCallback);
   }
 
   // run each import process
@@ -86,15 +89,17 @@ export const saveChangesForModel = async (
   }
 };
 
-const saveChangesForModelInBatches = async (
+const processSyncSnapshotInBatches = async (
   model: DatabaseModel,
   sessionId: string,
   recordType: RecordType,
+  isDeleted: boolean,
   isCentralServer: boolean,
   progressCallback?: (recordsProcessed: number) => void,
 ) => {
   let fromId;
   let batchRecords: SyncSnapshotAttributes[] | null = null;
+
   while (!batchRecords || batchRecords.length > 0) {
     batchRecords = await findSyncSnapshotRecords(
       model.database,
@@ -102,6 +107,8 @@ const saveChangesForModelInBatches = async (
       fromId,
       PERSISTED_CACHE_BATCH_SIZE,
       recordType,
+      undefined,
+      `is_deleted IS ${isDeleted ? 'TRUE' : 'FALSE'}`,
     );
     fromId = batchRecords[batchRecords.length - 1]?.id;
 
@@ -110,7 +117,11 @@ const saveChangesForModelInBatches = async (
         count: batchRecords.length,
       });
 
-      await saveChangesForModel(model, batchRecords, isCentralServer, progressCallback);
+      if (isDeleted) {
+        await saveDeletesForModel(model, batchRecords, progressCallback);
+      } else {
+        await saveChangesForModel(model, batchRecords, isCentralServer, progressCallback);
+      }
 
       await sleep(PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS);
     } catch (error) {
@@ -119,6 +130,29 @@ const saveChangesForModelInBatches = async (
     }
   }
 };
+
+const saveChangesForModelInBatches = (
+  model: DatabaseModel,
+  sessionId: string,
+  recordType: RecordType,
+  isCentralServer: boolean,
+  progressCallback?: (recordsProcessed: number) => void,
+) =>
+  processSyncSnapshotInBatches(
+    model,
+    sessionId,
+    recordType,
+    false,
+    isCentralServer,
+    progressCallback,
+  );
+
+const saveDeletesForModelInBatches = (
+  model: DatabaseModel,
+  sessionId: string,
+  recordType: RecordType,
+  progressCallback?: (recordsProcessed: number) => void,
+) => processSyncSnapshotInBatches(model, sessionId, recordType, true, false, progressCallback);
 
 export const saveIncomingSnapshotChanges = async (
   models: DatabaseModel[],
@@ -131,9 +165,16 @@ export const saveIncomingSnapshotChanges = async (
   }
 
   assertIsWithinTransaction(models[0].database);
-  const sortedModels = await sortModelsByDependencyOrder(models);
+  const sortedModelsForChanges = await sortModelsByDependencyOrder(models);
+  const sortedModelsForDeletes = [...sortedModelsForChanges].reverse();
 
-  for (const model of sortedModels) {
+  // Delete records first in the reverse order to avoid foreign key constraints
+  for (const model of sortedModelsForDeletes) {
+    await saveDeletesForModelInBatches(model, sessionId, model.databaseRecord, progressCallback);
+  }
+
+  // Create and update records in the order of dependencies
+  for (const model of sortedModelsForChanges) {
     await saveChangesForModelInBatches(
       model,
       sessionId,
