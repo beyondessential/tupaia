@@ -50,7 +50,7 @@ const DEFAULT_CONFIG: SyncServerConfig = {
   },
   snapshotTransactionTimeoutMs: 10 * 60 * 1000,
   syncSessionTimeoutMs: 20 * 60 * 1000,
-  maxConcurrentSessions: 4,
+  maxConcurrentSessions: 10,
 };
 
 const errorMessageFromSession = (session: SyncSession) =>

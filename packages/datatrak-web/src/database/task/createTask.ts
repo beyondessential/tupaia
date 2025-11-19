@@ -38,7 +38,7 @@ export const createTask = async ({
   await permissionChecker(accessPolicy);
 
   return await models.wrapInTransaction(async transactingModels => {
-    const task = await transactingModels.task.create(taskData);
+    const task = await transactingModels.task.create(taskData, user.id);
 
     if (data.comment) {
       await task.addUserComment(data.comment, user.id);

@@ -28,10 +28,10 @@ export const generateShortId = (codeGeneratorConfig?: CodeGeneratorQuestionConfi
   // i.e. '632NFOLEUI1QI'.match(pattern) -> ['632', 'NFO', 'LEU', 'I1Q', 'I']
   const pattern = new RegExp(`.{1,${chunkLength}}`, 'g');
 
-  const id = generate(alphabet, length);
+  const id: string = generate(alphabet, length);
   // Reducing rather than joining here to merge remainder characters
   // into last chunk, creating a larger tail chunk rather than smaller.
-  const chunkedId = id.match(pattern).reduce((prev, curr) => {
+  const chunkedId = id.match(pattern)!.reduce((prev, curr) => {
     if (curr.length < chunkLength) return `${prev}${curr}`;
     return `${prev}-${curr}`;
   });

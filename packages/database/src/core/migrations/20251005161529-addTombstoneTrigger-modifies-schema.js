@@ -23,6 +23,9 @@ exports.up = function (db) {
       DECLARE
         current_tick bigint;
       BEGIN
+        IF ((SELECT value FROM local_system_fact WHERE key = 'syncTrigger') = 'disabled') THEN
+            RETURN NEW;
+        END IF;
         -- First get the current sync tick
         SELECT value FROM local_system_fact WHERE key = 'currentSyncTick' INTO current_tick;
 
