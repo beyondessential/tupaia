@@ -1,13 +1,15 @@
 const getCurrentPackage = () => {
-  const [, packageName] = process.cwd().match(/packages\/([^\\/]+)$/);
-  return packageName ? `@tupaia/${packageName}` : '';
+  const cwd = process.cwd();
+  const regExpMatchArray = cwd.match(/packages\/([^\\/]+)$/);
+  const [, packageName] = regExpMatchArray ?? [];
+  return regExpMatchArray !== null ? `@tupaia/${packageName}` : `<unknown package> (${cwd})`;
 };
 
 export const requireEnv = variable => {
   const value = process.env[variable];
   if (value === undefined) {
     throw new Error(
-      `Could not load env variable '${variable}', required in ${getCurrentPackage()} `,
+      `Could not load env variable '${variable}', required in ${getCurrentPackage()}`,
     );
   }
   return value;
