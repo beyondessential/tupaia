@@ -1,8 +1,7 @@
 const getCurrentPackage = () => {
   const cwd = process.cwd();
-  const regExpMatchArray = cwd.match(/packages\/([^\\/]+)$/);
-  const [, packageName] = regExpMatchArray ?? [];
-  return regExpMatchArray !== null ? `@tupaia/${packageName}` : `<unknown package> (${cwd})`;
+  const packageName = cwd.match(/packages\/([^\\/]+)$/)?.[1];
+  return packageName ? `@tupaia/${packageName}` : `<unknown package> (${cwd})`;
 };
 
 export const requireEnv = variable => {
