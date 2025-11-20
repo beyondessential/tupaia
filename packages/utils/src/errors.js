@@ -1,5 +1,12 @@
 import { respond } from './respond';
 
+export class NotImplementedError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.name = 'NotImplementedError';
+  }
+}
+
 /**
  * Responding errors are able to respond to the client's request, informing them of the error with
  * the appropriate http status code

@@ -31,7 +31,7 @@ export class TupaiaDatabase extends BaseDatabase {
   }
 
   /** @override */
-  setCustomTypeParsers() {
+  async setCustomTypeParsers() {
     // turn off parsing of timestamp (not timestamptz), so that it stays as a sort of "universal time"
     // string, independent of timezones, rather than being converted to local time
     pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);

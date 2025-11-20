@@ -5,7 +5,7 @@ import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
-import { getEnvVarOrDefault } from '@tupaia/utils';
+import { getEnvVarOrDefault, NotImplementedError } from '@tupaia/utils';
 import { SCHEMA_NAMES } from './constants';
 import { generateId } from './utilities';
 import {
@@ -104,9 +104,6 @@ export class BaseDatabase {
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
 
-    // TODO: Connect to database synchronously, abolish connectionPromise and call
-    // setCustomTypeParsers at top level of constructor
-
     if (transactingConnection) {
       this.connection = transactingConnection;
       this.connectionPromise = Promise.resolve(true);
@@ -118,13 +115,10 @@ export class BaseDatabase {
           client: clientType,
           connection: getConnectionConfigFn(),
         });
-        // Setting custom type parsers not strictly related to connecting, but setting parsers with
-        // pglite (used by DatatrakDatabase) requires this.connection to be defined; safer to set
-        // here rather than top level of constructor
-        this.setCustomTypeParsers();
         return true;
       };
       this.connectionPromise = connectToDatabase();
+      this.setCustomTypeParsers();
     }
   }
 
@@ -136,10 +130,10 @@ export class BaseDatabase {
    * Subclasses should override parsers for certain PostgreSQL types as needed based on their
    * PostgreSQL client’s default parsers (e.g. node-postgres, PGlite). If no overrides needed,
    * override with an empty method.
-   * @returns {void}
+   * @returns {Promise<void>}
    */
-  setCustomTypeParsers() {
-    throw new Error('Subclass should override setCustomTypeParsers');
+  async setCustomTypeParsers() {
+    throw new NotImplementedError('Subclass should override setCustomTypeParsers');
   }
 
   async closeConnections() {
