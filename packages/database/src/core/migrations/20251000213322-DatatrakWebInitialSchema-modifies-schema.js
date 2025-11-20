@@ -194,7 +194,9 @@ exports.up = async function (db) {
       sort_order           INTEGER,
       option_set_id        TEXT NOT NULL REFERENCES option_set
                             ON UPDATE CASCADE ON DELETE CASCADE,
-      attributes           JSONB DEFAULT '{}'::JSONB
+      attributes           JSONB DEFAULT '{}'::JSONB,
+      CONSTRAINT option_option_set_id_value_unique
+        UNIQUE (option_set_id, value)
     );
 
   `);
