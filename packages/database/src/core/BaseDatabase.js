@@ -130,6 +130,7 @@ export class BaseDatabase {
    * Subclasses should override parsers for certain PostgreSQL types as needed based on their
    * PostgreSQL client’s default parsers (e.g. node-postgres, PGlite). If no overrides needed,
    * override with an empty method.
+   * @abstract
    * @returns {Promise<void>}
    */
   async setCustomTypeParsers() {
@@ -145,12 +146,13 @@ export class BaseDatabase {
   }
 
   /**
+   * @abstract
    * @param {<ReturnT = unknown, DatabaseT extends BaseDatabase = BaseDatabase>(models: DatabaseT) => Promise<ReturnT>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise<ReturnT>}
    */
   async wrapInTransaction(_wrappedFunction, _transactionConfig) {
-    throw new Error('wrapInTransaction should be implemented by the child class');
+    throw new NotImplementedError('wrapInTransaction should be implemented by the child class');
   }
 
   /**
