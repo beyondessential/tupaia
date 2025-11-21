@@ -13,6 +13,10 @@ jest.mock('@aws-sdk/lib-storage', () => ({
 }));
 
 describe('S3Client', () => {
+  // Picked up from .env files when a deployed server depends on @tupaia/server-utils, but not when
+  // running this test suite directly
+  process.env.AWS_REGION ||= 'ap-southeast-2';
+
   let s3Client: S3Client;
 
   beforeEach(() => {
