@@ -1,30 +1,32 @@
 import { S3, S3Client } from '../../s3';
 import * as getUniqueFileNameModule from '../../s3/getUniqueFileName';
 
-/** 1×1 transparent GIF */
-const base64Gif =
-  'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+// Picked up from .env files when a deployed server depends on @tupaia/server-utils, but not when
+// running this test suite directly
+process.env.AWS_REGION ||= 'ap-southeast-2';
 
-// Mock dependencies
+/**
+ * `S3Client#upload` creates an `Upload` instance; but this test suite doesn’t
+ * actually upload files.
+ */
 jest.mock('@aws-sdk/lib-storage', () => ({
   Upload: jest.fn().mockImplementation(() => ({
-    done: jest.fn().mockResolvedValue({ Location: 'https://s3.example.com/test.jpg' }),
+    done: jest.fn().mockResolvedValue({ Location: 'https://s3.tupaia.org/uploads/test.webp' }),
   })),
 }));
 
 describe('S3Client', () => {
-  // Picked up from .env files when a deployed server depends on @tupaia/server-utils, but not when
-  // running this test suite directly
-  process.env.AWS_REGION ||= 'ap-southeast-2';
-
   let s3Client: S3Client;
-
   beforeEach(() => {
     jest.clearAllMocks();
     s3Client = new S3Client(new S3());
   });
 
   describe('uploadImage', () => {
+    /** 1×1 transparent GIF */
+    const base64Gif =
+      'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+
     it('should throw if file is not an image', () => {});
 
     it('should throw if image type is not supported', () => {});
