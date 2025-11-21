@@ -88,9 +88,7 @@ const androidHeaderTitleStyle = {
 };
 
 const isInvisibleHeader = navigation =>
-  navigation.state &&
-  navigation.state &&
-  ROUTES_WITH_INVISIBLE_HEADERS.includes(navigation.state.routeName);
+  navigation.state && ROUTES_WITH_INVISIBLE_HEADERS.includes(navigation.state.routeName);
 
 const config = {
   initialRouteName: INITIAL_SCREEN_NAME,
