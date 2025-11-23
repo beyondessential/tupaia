@@ -63,7 +63,7 @@ export class SurveyResponseImporter {
       return {
         entity_id: entityId,
         survey_id: survey.id,
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         answers,
       };
     };

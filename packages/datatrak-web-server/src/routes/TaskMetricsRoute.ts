@@ -43,7 +43,7 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
         },
         due_date: {
           comparator: '<=',
-          comparisonValue: new Date().getTime(),
+          comparisonValue: Date.now(),
         },
       },
       baseJoin,
