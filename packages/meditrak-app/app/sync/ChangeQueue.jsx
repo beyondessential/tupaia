@@ -22,7 +22,7 @@ export class ChangeQueue {
         .length > 0;
     if (!duplicate) {
       this.database.create('Change', {
-        timestamp: new Date().getTime(),
+        timestamp: Date.now(),
         action,
         recordId,
       });
