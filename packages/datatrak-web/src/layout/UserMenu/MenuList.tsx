@@ -212,7 +212,7 @@ export const MenuList = ({
         headingText="Unsynced data"
         bodyText="You are about to log out with unsynced data! Go back to your home page and sync using the top right sync button and sync before logging out"
         confirmText="Log out anyway"
-        cancelText="Cancel"
+        cancelText="Return home"
         isOpen={unsyncedChangesWarningModalOpen}
         onClose={() => setUnsyncedChangesWarningModalOpen(false)}
         onConfirm={handleLogout}
