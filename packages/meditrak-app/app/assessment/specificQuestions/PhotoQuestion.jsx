@@ -88,7 +88,7 @@ const handleImagePickerResponse = async (response, onChangeAnswer, setError) => 
     setError(`Error: ${response.errorMessage}`);
     onChangeAnswer(null);
   } else {
-    const time = new Date().getTime();
+    const time = Date.now();
     const fileName = `${time}-response-photo.jpg`;
 
     const { assets } = response;

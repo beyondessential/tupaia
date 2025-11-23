@@ -24,7 +24,7 @@ export const writeLogFile = (result: TestResult) => {
     fileContents = fileContents.concat(`\n\n`);
   }
 
-  const fileName = `results_${new Date().getTime()}.log`;
+  const fileName = `results_${Date.now()}.log`;
   const filePath = `${LOGS_DIR}/${fileName}`;
 
   if (!fs.existsSync(LOGS_DIR)) {

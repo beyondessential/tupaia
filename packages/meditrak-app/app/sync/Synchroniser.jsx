@@ -195,7 +195,7 @@ export class Synchroniser {
       await this.pull(setProgress, incomingChangeCount, lastSyncTime);
       this.resolveCountriesAndPermissionsSynced(incomingCountries, incomingPermissionGroups);
 
-      setComplete(new Date().getTime());
+      setComplete(Date.now());
       refreshFeed(); // Pull latest feed items whilst the device has an Internet connection.
 
       setProgressMessage('Sync completed successfully');
@@ -247,13 +247,13 @@ export class Synchroniser {
    * @return {Promise}         Resolves if successful, or passes up any error thrown
    */
   async pushChanges(changesSyncJson) {
-    const startTime = new Date().getTime();
+    const startTime = Date.now();
     const responseJson = await this.api.post(API_ENDPOINT, {}, JSON.stringify(changesSyncJson));
     if (responseJson.error && responseJson.error.length > 0) {
       throw new Error(responseJson.error);
     }
 
-    const endTime = new Date().getTime();
+    const endTime = Date.now();
     return {
       requestDuration: endTime - startTime,
     };
@@ -351,7 +351,7 @@ export class Synchroniser {
     if (responseJson.error && responseJson.error.length > 0) {
       throw new Error(responseJson.error);
     }
-    const endTime = new Date().getTime();
+    const endTime = Date.now();
 
     return {
       changes: responseJson,
