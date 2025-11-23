@@ -313,7 +313,7 @@ export class UserModel extends DatabaseModel {
       }, preferences);
       // If we change the selected project, we clear out the recent entities
       if (updatedPreferenceFields.project_id) {
-        updatedPreferenceFields.recent_entities = {};
+        updatedPreferenceFields.recentEntities = {};
       }
 
       updatedFields = {
