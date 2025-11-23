@@ -385,10 +385,7 @@ export class UserModel extends DatabaseModel {
     const currentUserId = await this.otherModels.localSystemFact.get(FACT_CURRENT_USER_ID);
     const lastSuccessfulSyncPull = await this.otherModels.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL);
 
-    console.log('currentUserId', currentUserId);
-    console.log('lastSuccessfulSyncPull', lastSuccessfulSyncPull);
     if (lastSuccessfulSyncPull === undefined || lastSuccessfulSyncPull === -1) {
-      console.log('filtering out all changes', changes);
       return changes.filter(change => change.data.id !== currentUserId);
     }
 
