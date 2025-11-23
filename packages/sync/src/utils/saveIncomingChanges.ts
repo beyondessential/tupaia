@@ -200,6 +200,7 @@ export const saveChangesFromMemory = async (
   const groupedChanges = groupBy(changes, 'recordType');
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
-    await saveChangesForModel(model, modelChanges, isCentralServer, progressCallback);
+    const filteredModelChanges = await model.filterSyncForClient(modelChanges);
+    await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
   }
 };

@@ -8,6 +8,8 @@ import {
   PUBLIC_USER_EMAIL,
   PUBLIC_USER_ID,
   USER_PREFERENCES_FIELDS,
+  FACT_CURRENT_USER_ID,
+  FACT_LAST_SUCCESSFUL_SYNC_PULL,
 } from '@tupaia/constants';
 import { ensure, isNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
@@ -304,14 +306,14 @@ export class UserModel extends DatabaseModel {
       });
 
       const userRecord = await this.findById(userId);
-      const { preferences } = userRecord;
+      const { preferences = {} } = userRecord;
 
       const updatedPreferenceFields = updatedUserPreferences.reduce((obj, [key, value]) => {
         return { ...obj, [key]: value };
       }, preferences);
       // If we change the selected project, we clear out the recent entities
       if (updatedPreferenceFields.project_id) {
-        updatedPreferenceFields.recentEntities = {};
+        updatedPreferenceFields.recent_entities = {};
       }
 
       updatedFields = {
@@ -377,5 +379,19 @@ export class UserModel extends DatabaseModel {
   sanitizeForCentralServer = (data) => {
     const { password_hash, access_policy, ...rest } = data;
     return rest;
+  }
+
+  filterSyncForClient = async (changes) => {
+    const currentUserId = await this.otherModels.localSystemFact.get(FACT_CURRENT_USER_ID);
+    const lastSuccessfulSyncPull = await this.otherModels.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL);
+
+    console.log('currentUserId', currentUserId);
+    console.log('lastSuccessfulSyncPull', lastSuccessfulSyncPull);
+    if (lastSuccessfulSyncPull === undefined || lastSuccessfulSyncPull === -1) {
+      console.log('filtering out all changes', changes);
+      return changes.filter(change => change.data.id !== currentUserId);
+    }
+
+    return changes;
   }
 }
