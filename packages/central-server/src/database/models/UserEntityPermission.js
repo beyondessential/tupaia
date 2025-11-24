@@ -27,6 +27,8 @@ const EMAILS = {
  * This will send users an email for each new permission they're granted. A smarter system would
  * hold off and pool several changes for the same user (e.g. if they're being granted permission
  * to three countries at once), but this is good enough.
+ * @param {{ type: string, new_record: import('@tupaia/types').UserEntityPermission }}
+ * @param {import('@tupaia/database').ModelRegistry} models
  */
 async function onUpsertSendPermissionGrantEmail(
   { type: changeType, new_record: newRecord },
