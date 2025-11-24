@@ -120,13 +120,8 @@ exports.up = async function (db) {
     `);
 
   // Create entity indexes
-  await db.runSql(`
-      CREATE INDEX entity_code ON entity (code);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX idx_entity_country_code ON entity (country_code);
-    `);
+  await db.runSql('CREATE INDEX entity_code ON entity (code);');
+  await db.runSql('CREATE INDEX idx_entity_country_code ON entity (country_code);');
 
   // Create entity_hierarchy table
   await db.runSql(`
