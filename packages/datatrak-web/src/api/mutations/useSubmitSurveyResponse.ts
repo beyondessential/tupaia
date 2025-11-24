@@ -76,7 +76,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
       const local = await models.wrapInRepeatableReadTransaction(async transactingModels => {
         const submitterId = user.isLoggedIn
           ? ensure(user.id)
-          : (await transactingModels.user.findPublicUser()).id;
+          : (await transactingModels.user.findPublicUser({ columns: ['id'] })).id;
 
         const data = {
           ...surveyResponseData,

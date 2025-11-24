@@ -188,9 +188,9 @@ export class UserModel extends DatabaseModel {
    * Returns the user that is used for submitting surveys when not logged in
    * @returns {Promise<UserRecord>}
    */
-  async findPublicUser() {
+  async findPublicUser(options) {
     return ensure(
-      await this.findOne({ email: PUBLIC_USER_EMAIL }),
+      await this.findOne({ email: PUBLIC_USER_EMAIL }, options),
       `Public user not found. There must be a user with email ${PUBLIC_USER_EMAIL}`,
     );
   }
