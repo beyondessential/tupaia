@@ -107,7 +107,6 @@ export class BaseDatabase {
     if (transactingConnection) {
       this.connection = transactingConnection;
       this.connectionPromise = Promise.resolve(true);
-      this.setCustomTypeParsers();
     } else {
       /** @returns {Promise<true>} */
       const connectToDatabase = async () => {
@@ -118,8 +117,9 @@ export class BaseDatabase {
         return true;
       };
       this.connectionPromise = connectToDatabase();
-      this.setCustomTypeParsers();
     }
+
+    this.setCustomTypeParsers();
   }
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
