@@ -1,12 +1,25 @@
+/**
+ * @typedef {import('@tupaia/database').ModelRegistry} ModelRegistry
+ * @typedef {import('@tupaia/database').OptionRecord} OptionRecord
+ * @typedef {import('@tupaia/types').MeditrakSurveyResponseRequest} SurveyResponse
+ */
+
 import { DatabaseError } from '@tupaia/utils';
 
+/**
+ * @param {ModelRegistry} models
+ * @param {SurveyResponse['entities_upserted']} entitiesUpserted
+ * @param {import('@tupaia/types').Survey['id']} surveyId
+ * @returns {Promise<import('@tupaia/database').EntityRecord[]>}
+ */
 const upsertEntities = async (models, entitiesUpserted, surveyId) => {
+  /** @type {import('@tupaia/database').SurveyRecord} */
   const survey = await models.survey.findById(surveyId);
   const dataGroup = await survey.dataGroup();
 
-  return Promise.all(
+  return await Promise.all(
     entitiesUpserted.map(async entity => {
-      const existingEntity = await models.entity.findOne({ id: entity.id });
+      const existingEntity = await models.entity.findById(entity.id);
 
       const existingMetadata = existingEntity?.metadata || {};
 
@@ -30,27 +43,41 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
   );
 };
 
+/**
+ * @param {import('@tupaia/database').ModelRegistry} models
+ * @param {SurveyResponse['options_created']} optionsCreated
+ * @returns {Promise<OptionRecord[]>}
+ */
 const createOptions = async (models, optionsCreated) => {
+  /** @type {OptionRecord[]} */
   const options = [];
-
   for (const optionObject of optionsCreated) {
     const { value, option_set_id: optionSetId } = optionObject;
+
+    /** @type {number} */
     const maxSortOrder = (await models.option.getLargestSortOrder(optionSetId)) ?? 0;
+
+    /** @type {OptionRecord} */
     const optionRecord = await models.option.updateOrCreate(
       { option_set_id: optionSetId, value },
       {
         ...optionObject,
-        sort_order: maxSortOrder + 1, // append the option to the end to resolve any sort order conflict from other devices
+        sort_order: maxSortOrder + 1,
         attributes: {},
       },
     );
+
     options.push(optionRecord);
   }
 
   return options;
 };
 
-// Upsert entities and options that were created in user's local database
+/**
+ * Upsert entities and options that were created in user's local database
+ * @param {ModelRegistry} models
+ * @param {SurveyResponse[]} surveyResponses
+ */
 export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
   for (const surveyResponse of surveyResponses) {
     const entitiesUpserted = surveyResponse.entities_upserted || [];

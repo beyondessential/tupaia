@@ -1,11 +1,11 @@
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
+import { assertSurveyResponsePermissions } from '../surveyResponses';
 import {
   assertAnswerPermissions,
   createAnswerDBFilter,
   createAnswerViaSurveyResponseDBFilter,
 } from './assertAnswerPermissions';
-import { assertSurveyResponsePermissions } from '../surveyResponses';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles endpoints:
@@ -13,21 +13,17 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
  * - /answers/id
  * - /surveyResponses/id/answers
  */
-
 export class GETAnswers extends GETHandler {
   permissionsFilteredInternally = true;
 
   async findSingleRecord(answerId, options) {
-    const answer = await super.findSingleRecord(answerId, options);
-
     const answerPermissionsChecker = async accessPolicy =>
       assertAnswerPermissions(accessPolicy, this.models, answerId);
-
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, answerPermissionsChecker]),
     );
 
-    return answer;
+    return await super.findSingleRecord(answerId, options);
   }
 
   async getPermissionsFilter(criteria, options) {
