@@ -1,3 +1,9 @@
+/**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ */
+
 import { reduceToDictionary } from '@tupaia/utils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -125,33 +131,28 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return SurveyRecord;
   }
 
+  /** @param {AccessPolicy} accessPolicy */
   async createAccessPolicyQueryClause(accessPolicy) {
+    /** @type {Record<PermissionGroup["name"], Country["id"][]>} */
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
-    const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
-
+    const entries = Object.entries(countryIdsByPermissionGroup);
     return {
-      sql: `(${Object.entries(countryIdsByPermissionGroup)
+      sql: `(${entries
         .map(([, countryIds]) => {
-          return `
-          (
-            permission_group_id = ? AND
-            ${SqlQuery.array(countryIds, 'TEXT')} && country_ids
-          )
-        `;
+          return `(permission_group_id = ? AND ${SqlQuery.array(countryIds, 'TEXT')} && country_ids)`;
         })
         .join(' OR ')})`,
-      parameters: params,
+      parameters: entries.flat(2), // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
     };
   }
 
+  /** @privateRemarks Identical to `FeedItemModel.getCountryIdsByPermissionGroup` */
   async getCountryIdsByPermissionGroup(accessPolicy) {
     const permissionGroupNames = accessPolicy.getPermissionGroups();
-
-    const countries = await this.otherModels.country.find({});
-
-    const permissionGroups = await this.otherModels.permissionGroup.find({
-      name: permissionGroupNames,
-    });
+    const [countries, permissionGroups] = await Promise.all([
+      this.otherModels.country.all(),
+      this.otherModels.permissionGroup.find({ name: permissionGroupNames }),
+    ]);
 
     const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
 
@@ -160,10 +161,8 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
       const permissionGroupId = permissionGroupIdByName[permissionGroupName];
       const countryIds = countryCodes.map(code => countryIdByCode[code]);
-      return {
-        ...result,
-        [permissionGroupId]: countryIds,
-      };
+      result[permissionGroupId] = countryIds;
+      return result;
     }, {});
   }
 
