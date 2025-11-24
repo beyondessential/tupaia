@@ -110,6 +110,7 @@ exports.up = async function (db) {
       CREATE TABLE entity (
         id            TEXT PRIMARY KEY,
         code          TEXT NOT NULL UNIQUE,
+        parent_id     VARCHAR(64) REFERENCES entity(id),
         name          VARCHAR(128)                     NOT NULL,
         type          entity_type                      NOT NULL,
         image_url     TEXT,
