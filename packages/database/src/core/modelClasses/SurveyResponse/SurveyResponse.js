@@ -100,8 +100,8 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   /**
    * @param {ModelRegistry} models
    * @param {AccessPolicy} accessPolicy
-   * @param {Record<SurveyCode, Entity["code"][]>} entitiesBySurveyCode
-   * @returns {true} If and only if the assertion passes, otherwise throws.
+   * @param {Record<Survey["code"], Entity["code"][]>} entitiesBySurveyCode
+   * @returns {Promise<true>} If and only if the assertion passes, otherwise throws.
    * @throws {PermissionsError}
    */
   async assertCanImport(models, accessPolicy, entitiesBySurveyCode) {
@@ -200,7 +200,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
    * @param {ModelRegistry} models
    * @param {AccessPolicy} accessPolicy
    * @param {Array} surveyResponses Assumed to have already been validated.
-   * @returns {true} If and only if the assertion passes, otherwise throws.
+   * @returns {Promise<true>} If and only if the assertion passes, otherwise throws.
    * @throws {PermissionsError}
    */
   async assertCanSubmit(models, accessPolicy, surveyResponses) {
