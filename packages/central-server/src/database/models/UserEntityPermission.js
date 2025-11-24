@@ -50,7 +50,7 @@ async function onUpsertSendPermissionGrantEmail(
 
   const { subject, description, signOff } = EMAILS[platform];
 
-  sendEmail(user.email, {
+  await sendEmail(user.email, {
     subject,
     signOff,
     templateName: 'permissionGranted',
