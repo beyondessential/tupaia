@@ -37,9 +37,13 @@ async function onUpsertSendPermissionGrantEmail(
   }
 
   // Get details of permission granted
-  const user = await models.user.findById(newRecord.user_id);
-  const entity = await models.entity.findById(newRecord.entity_id);
-  const permissionGroup = await models.permissionGroup.findById(newRecord.permission_group_id);
+  const user = await models.user.findById(newRecord.user_id, {
+    columns: ['email', 'first_name', 'primary_platform'],
+  });
+  const entity = await models.entity.findById(newRecord.entity_id, { columns: ['name'] });
+  const permissionGroup = await models.permissionGroup.findById(newRecord.permission_group_id, {
+    columns: ['name'],
+  });
   const platform = user.primary_platform ? user.primary_platform : 'tupaia';
 
   const { subject, description, signOff } = EMAILS[platform];
