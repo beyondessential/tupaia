@@ -1,13 +1,11 @@
 import { Typography } from '@material-ui/core';
-import MuiInfoIcon from '@material-ui/icons/InfoOutlined';
+import { Info } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
 
-const InfoIcon = styled(MuiInfoIcon)`
+const InfoIcon = styled(Info)`
+  color: ${props => props.theme.palette.primary.main};
   font-size: 1.5rem;
-  color: ${({ theme }) => theme.palette.primary.main};
-  width: 1.5rem;
-  height: 1.5rem;
 `;
 
 const OfflineErrorMessageContainer = styled.article`
