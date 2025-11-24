@@ -73,7 +73,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
       // TODO: Assert user has access
 
-      const local = await models.wrapInRepeatableReadTransaction(async transactingModels => {
+      return await models.wrapInRepeatableReadTransaction(async transactingModels => {
         const submitterId = user.isLoggedIn
           ? ensure(user.id)
           : (await transactingModels.user.findPublicUser({ columns: ['id'] })).id;
@@ -114,8 +114,6 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
         return idsCreated;
       });
-
-      return local;
     },
     remote: async ({ data: answers }: SurveyResponseMutationFunctionContext) => {
       if (!answers) return;
