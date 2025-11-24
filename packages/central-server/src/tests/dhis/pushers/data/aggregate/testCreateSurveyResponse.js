@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import sinon from 'sinon';
 import { generateId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';

@@ -1,5 +1,6 @@
 import sinon from 'sinon';
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import { ConfigImporter } from '../../../../../apiV2/import/importSurveys/ConfigImporter';
 import { ConfigValidator } from '../../../../../apiV2/import/importSurveys/Validator/ConfigValidator';
 import { QuestionConfigCellBuilder } from '../../../../../apiV2/export/exportSurveys/cellBuilders';

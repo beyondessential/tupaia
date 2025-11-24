@@ -3,7 +3,8 @@ import {
   findOrCreateDummyCountryEntity,
   findOrCreateRecords,
 } from '@tupaia/database';
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import { expectError, TestableApp } from '../../../testUtilities';
 import { importFile } from './helpers';
 import { BASIC_SURVEY_A, BASIC_SURVEY_B } from './importSurveyResponses.fixtures';

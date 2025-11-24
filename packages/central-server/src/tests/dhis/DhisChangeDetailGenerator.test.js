@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import { generateId } from '@tupaia/database';
 import { DhisChangeDetailGenerator } from '../../dhis/DhisChangeDetailGenerator';
 

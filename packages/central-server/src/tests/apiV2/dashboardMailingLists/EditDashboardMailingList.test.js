@@ -3,7 +3,8 @@ import {
   clearTestData,
   findOrCreateDummyRecord,
 } from '@tupaia/database';
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,

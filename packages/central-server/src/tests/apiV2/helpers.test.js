@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import { getQueryOptionsForColumns } from '../../apiV2/GETHandler/helpers';
 
 describe('Request record types with standard joins', () => {

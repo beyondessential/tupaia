@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import groupBy from 'lodash.groupby';
 import pick from 'lodash.pick';
 import moment from 'moment';

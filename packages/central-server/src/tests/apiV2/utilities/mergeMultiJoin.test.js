@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 
 import { mergeMultiJoin } from '../../../apiV2/utilities/mergeMultiJoin';
 

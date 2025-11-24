@@ -1,6 +1,7 @@
 import moment from 'moment';
 import sinon from 'sinon';
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
   ANSWER_CHANGE,

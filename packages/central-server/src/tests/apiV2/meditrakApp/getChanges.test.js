@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';

@@ -1,5 +1,6 @@
 import { setupTest } from '@tupaia/database';
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,

@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import { buildAndInsertSurveys, generateId, buildAndInsertSurveyResponses } from '@tupaia/database';
 import { expectSuccess, TestableApp, upsertEntity } from '../testUtilities';
 

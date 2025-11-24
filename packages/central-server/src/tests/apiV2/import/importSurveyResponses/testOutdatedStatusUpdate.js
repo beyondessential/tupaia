@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 
 import {
   buildAndInsertSurveys,

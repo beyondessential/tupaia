@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { TEST_USER_EMAIL, TestableApp } from '../testUtilities';
 

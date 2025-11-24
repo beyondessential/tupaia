@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import moment from 'moment';
 
 import { buildAndInsertSurveys, generateId, upsertDummyRecord } from '@tupaia/database';

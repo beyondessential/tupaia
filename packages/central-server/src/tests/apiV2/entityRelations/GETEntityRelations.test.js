@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';

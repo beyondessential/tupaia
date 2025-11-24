@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import { AccessPolicy } from '@tupaia/access-policy';
 import {
   buildAndInsertSurvey,

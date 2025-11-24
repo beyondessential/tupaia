@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 
 import { encryptPassword } from '@tupaia/auth';
 import { randomEmail } from '@tupaia/utils';

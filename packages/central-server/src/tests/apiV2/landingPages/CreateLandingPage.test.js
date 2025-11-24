@@ -1,5 +1,6 @@
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import sinon from 'sinon';
 import {
   BES_ADMIN_PERMISSION_GROUP,

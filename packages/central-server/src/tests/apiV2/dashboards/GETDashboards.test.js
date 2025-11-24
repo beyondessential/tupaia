@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import { buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -44,12 +45,8 @@ describe('Permissions checker for GETDashboards', async () => {
       },
     ]);
 
-    ({
-      districtDashboard1,
-      nationalDashboard1,
-      nationalDashboard2,
-      projectDashboard1,
-    } = await setupDashboardTestData(models));
+    ({ districtDashboard1, nationalDashboard1, nationalDashboard2, projectDashboard1 } =
+      await setupDashboardTestData(models));
   });
 
   afterEach(() => {

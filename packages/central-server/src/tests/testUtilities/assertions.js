@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 
 const getMatch = input => (typeof input === 'string' ? new RegExp(input) : input);
 

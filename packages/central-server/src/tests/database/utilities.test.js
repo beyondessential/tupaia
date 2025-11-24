@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import sinon from 'sinon';
 
 import { ModelRegistry } from '@tupaia/database';

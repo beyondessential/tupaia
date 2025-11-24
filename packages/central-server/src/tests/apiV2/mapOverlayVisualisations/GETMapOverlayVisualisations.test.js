@@ -1,5 +1,6 @@
 import { setupTest } from '@tupaia/database';
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 
 import { expectError, expectSuccess, resetTestData, TestableApp } from '../../testUtilities';
 import { findTestRecordByCode, TEST_SETUP } from './mapOverlayVisualisations.fixtures';

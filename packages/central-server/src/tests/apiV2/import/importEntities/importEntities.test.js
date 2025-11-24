@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chaiCjsModule from 'chai';
+const { expect } = chaiCjsModule;
 import sinon from 'sinon';
 import { findOrCreateDummyRecord, addBaselineTestCountries } from '@tupaia/database';
 import {
