@@ -3,7 +3,7 @@ import { Info } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
 
-const InfoIcon = styled(Info)`
+const InfoIcon = styled(Info).attrs({ 'aria-hidden': true })`
   color: ${props => props.theme.palette.primary.main};
   font-size: 1.5rem;
 `;
