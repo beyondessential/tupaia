@@ -44,7 +44,7 @@ async function onUpsertSendPermissionGrantEmail(
   const permissionGroup = await models.permissionGroup.findById(newRecord.permission_group_id, {
     columns: ['name'],
   });
-  const platform = user.primary_platform ? user.primary_platform : 'tupaia';
+  const platform = user.primary_platform || 'tupaia';
 
   const { subject, description, signOff } = EMAILS[platform];
 
