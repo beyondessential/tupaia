@@ -1,5 +1,6 @@
 import { UserEntityPermissionModel as CommonUserEntityPermissionModel } from '@tupaia/database';
 import { sendEmail } from '@tupaia/server-utils';
+import winston from '../../log';
 
 export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
   meditrakConfig = {
@@ -36,6 +37,12 @@ async function onUpsertSendPermissionGrantEmail(
 ) {
   if (changeType === 'delete') {
     return; // Don't notify the user of permissions being taken away
+  }
+
+  const isApiClientUser = await models.user.isApiClientUser(newRecord.user_id);
+  if (isApiClientUser) {
+    winston.debug('Skipping permission-granted email for API client user', newRecord);
+    return;
   }
 
   // Get details of permission granted
