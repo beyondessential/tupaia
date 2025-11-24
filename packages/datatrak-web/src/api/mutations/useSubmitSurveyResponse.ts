@@ -112,7 +112,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
         // Marking any corresponding task as complete is delegated to central-server
 
-        return idsCreated;
+        return { qrCodeEntitiesCreated: qr_codes_to_create };
       });
     },
     remote: async ({ data: answers }: SurveyResponseMutationFunctionContext) => {
