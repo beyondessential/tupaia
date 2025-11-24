@@ -75,7 +75,6 @@ export const detectDependencies = (transform: Transform[]): ContextDependency[] 
       });
     })
     .flat(5)
-    .filter(d => !!d)
     .filter(TransformParser.isExpression);
 
   const aliasTransformDependencies = detectDependenciesFromAliasTransforms(aliasTransforms);
