@@ -13742,6 +13742,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:20.19.5":
+  version: 20.19.5
+  resolution: "@types/node@npm:20.19.5"
+  dependencies:
+    undici-types: ~6.21.0
+  checksum: ae7c5abf67b6959d9a188976569e6b78c670461620995f4af613fae646b4494aefd6bab23e244365b13be9739e0c811f2fbed18a833835fc1a77cec261c31b25
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:>=18.0.0":
   version: 20.12.7
   resolution: "@types/node@npm:20.12.7"
@@ -37593,7 +37602,7 @@ __metadata:
     "@storybook/builder-vite": ^8.2.9
     "@storybook/react": ^8.2.9
     "@storybook/react-vite": ^8.2.9
-    "@types/node": ^20.11.1
+    "@types/node": 20.19.5
     "@vitejs/plugin-react": ^4.0.4
     babel-jest: ^29.7.0
     babel-preset-react-app: ^10.0.0
