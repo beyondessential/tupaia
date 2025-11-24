@@ -99,7 +99,7 @@ export const ProjectSelectForm = ({
   if (!isOnline) {
     return (
       <OfflineErrorMessageContainer>
-        <OfflineErrorMessage offlineMessage="You'll need an internet connection to select a project. Come back when you're connected and try again." />
+        <OfflineErrorMessage offlineMessage="You’ll need an internet connection to select a project. Come back when you’re connected and try again." />
         <DialogActions>
           <Button onClick={onClose}>Back</Button>
         </DialogActions>
