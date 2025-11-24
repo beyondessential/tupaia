@@ -7927,9 +7927,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bitwarden/cli@npm:2025.10.0":
-  version: 2025.10.0
-  resolution: "@bitwarden/cli@npm:2025.10.0"
+"@bitwarden/cli@npm:2025.11.0":
+  version: 2025.11.0
+  resolution: "@bitwarden/cli@npm:2025.11.0"
   dependencies:
     "@koa/multer": 4.0.0
     "@koa/router": 14.0.0
@@ -7960,7 +7960,7 @@ __metadata:
     zxcvbn: 4.4.2
   bin:
     bw: build/bw.js
-  checksum: 2facaf4e7734252684a693538f2b08fe83cc93704c2bf37a78f462c2e6e6ce874094db5ad681d0c2ed5d05e4af9a264983ea452501421c5c673b06cb464dfa85
+  checksum: 77e29d9a4f0c889ab0f712255d20b53dee152dc4f112b26c82c11bca91b7d01bff879a707a15f336f799f840f25e0ac7f729eb815e05e712dc192a9dd0f9c3fc
   languageName: node
   linkType: hard
 
@@ -37588,7 +37588,7 @@ __metadata:
     "@beyondessential/eslint-config-jest": ^1.0.0
     "@beyondessential/eslint-config-js": ^1.1.1
     "@beyondessential/eslint-config-ts": ^2.0.0
-    "@bitwarden/cli": 2025.10.0
+    "@bitwarden/cli": 2025.11.0
     "@storybook/addon-essentials": ^8.2.9
     "@storybook/builder-vite": ^8.2.9
     "@storybook/react": ^8.2.9
