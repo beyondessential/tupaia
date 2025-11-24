@@ -11971,6 +11971,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/chai": 4.1.2
     adm-zip: ^0.5.5
     api-error-handler: ^1.0.0
     body-parser: ^1.20.3
@@ -13122,6 +13123,13 @@ __metadata:
     "@types/connect": "*"
     "@types/node": "*"
   checksum: 15043566f1909e2a08dabb0a5d2642f8988545a1369bc5995fc40ee90c95200da2aa66f9240fcb19fc6af6ff4e27ff453f311b49363c14bb308c308c0751ca9b
+  languageName: node
+  linkType: hard
+
+"@types/chai@npm:4.1.2":
+  version: 4.1.2
+  resolution: "@types/chai@npm:4.1.2"
+  checksum: 01dbd2623c87cf173247d354942ea31bde995e7dd20ffc273d936a26512fea226d967e202c2a67d70a9da017d4bba6330f1272384466ed984a8607b140ad5547
   languageName: node
   linkType: hard
 
