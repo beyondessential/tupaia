@@ -61,7 +61,7 @@ const getLocal = async ({
       projectId,
       entityId,
     );
-    const countryCode = await surveyResponse['country.code'];
+    const countryCode = surveyResponse['country.code'];
     const answerList = await transactingModels.answer.find(
       { survey_response_id: surveyResponseId },
       { columns: ['text', 'question_id', 'type'] },
