@@ -139,7 +139,7 @@ export async function* stream(
       credentials: 'include',
     });
     if (!response.ok && !isRecoverableError(response)) {
-      throw new Error(response.statusText);
+      throw new Error(response.statusText || 'Stream ended with unknown error');
     }
 
     const reader = response.body!.getReader();
