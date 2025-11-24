@@ -1,7 +1,7 @@
+import { Typography } from '@material-ui/core';
+import MuiInfoIcon from '@material-ui/icons/InfoOutlined';
 import React from 'react';
 import styled from 'styled-components';
-import MuiInfoIcon from '@material-ui/icons/InfoOutlined';
-import { Typography } from '@material-ui/core';
 
 const InfoIcon = styled(MuiInfoIcon)`
   font-size: 1.5rem;
@@ -10,12 +10,13 @@ const InfoIcon = styled(MuiInfoIcon)`
   height: 1.5rem;
 `;
 
-const OfflineErrorMessageContainer = styled.div`
-  padding-inline: 1.5rem;
-  font-size: 0.875rem;
+const OfflineErrorMessageContainer = styled.article`
   align-items: center;
+  font-size: 0.875rem;
+  margin-block-end: 2rem;
+  padding-inline: 1.5rem;
   text-align: center;
-  margin-bottom: 2rem;
+  text-wrap: balance;
 
   .MuiTypography-h2 {
     font-size: 0.9rem;
@@ -37,14 +38,15 @@ const OfflineMessage = styled(Typography).attrs({
   variant: 'body1',
 })`
   font-size: 0.875rem;
+  line-height: 1.5;
 `;
 
-interface OfflineErrorMessageProps {
+interface OfflineErrorMessageProps extends React.HTMLAttributes<HTMLDivElement> {
   offlineMessage: string;
 }
 
-export const OfflineErrorMessage = ({ offlineMessage }: OfflineErrorMessageProps) => (
-  <OfflineErrorMessageContainer>
+export const OfflineErrorMessage = ({ offlineMessage, ...props }: OfflineErrorMessageProps) => (
+  <OfflineErrorMessageContainer {...props}>
     <InfoIcon />
     <OfflineTitle>You are currently offline</OfflineTitle>
     <OfflineMessage>{offlineMessage}</OfflineMessage>
