@@ -229,13 +229,8 @@ exports.up = async function (db) {
     `);
 
   // Create permission_group indexes
-  await db.runSql(`
-      CREATE INDEX permission_group_name_idx ON permission_group (name);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX permission_group_parent_id_idx ON permission_group (parent_id);
-    `);
+  await db.runSql('CREATE INDEX permission_group_name_idx ON permission_group (name);');
+  await db.runSql('CREATE INDEX permission_group_parent_id_idx ON permission_group (parent_id);');
 
   // Create project table
   await db.runSql(`
@@ -362,13 +357,8 @@ exports.up = async function (db) {
     `);
 
   // Create survey_screen indexes
-  await db.runSql(`
-      CREATE INDEX survey_screen_screen_number_idx ON survey_screen (screen_number);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_screen_survey_id_idx ON survey_screen (survey_id);
-    `);
+  await db.runSql('CREATE INDEX survey_screen_screen_number_idx ON survey_screen (screen_number);');
+  await db.runSql('CREATE INDEX survey_screen_survey_id_idx ON survey_screen (survey_id);');
 
   // Create survey_screen_component table
   await db.runSql(`
