@@ -320,7 +320,12 @@ export class TaskModel extends DatabaseModel {
       select: await buildSyncLookupSelect(this, {
         projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
       }),
-      joins: 'LEFT JOIN survey ON survey.id = task.survey_id',
+      joins: `
+        LEFT JOIN survey
+          ON survey.id = task.survey_id
+        LEFT JOIN survey_response
+          ON survey_response.id = task.survey_response_id
+          AND survey_response.outdated IS FALSE -- no outdated survey response`,
     };
   }
 
