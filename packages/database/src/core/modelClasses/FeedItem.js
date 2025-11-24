@@ -60,6 +60,7 @@ export class FeedItemModel extends DatabaseModel {
   /**
    * @param {AccessPolicy} accessPolicy
    * @returns {Promise<Record<PermissionGroup['id'], Country['id'][]>>}
+   * @privateRemarks Identical to `SurveyModel.getCountryIdsByPermissionGroup`
    */
   async getCountryIdsByPermissionGroup(accessPolicy) {
     const permissionGroupNames = accessPolicy.getPermissionGroups();
