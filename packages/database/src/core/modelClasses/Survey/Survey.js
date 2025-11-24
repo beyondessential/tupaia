@@ -1,3 +1,46 @@
+/**
+ * @typedef {import('@tupaia/types').Question} Question
+ * @typedef {import('@tupaia/types').Survey} Survey
+ * @typedef {import('@tupaia/types').SurveyScreen} SurveyScreen
+ * @typedef {import('@tupaia/types').SurveyScreenComponent} SurveyScreenComponent
+ * @typedef {{
+ *   survey_id: Survey['id'];
+ *   survey_screen_id: SurveyScreen['id'];
+ *   screen_number: SurveyScreen['screen_number'];
+ *   survey_screen_component_id: SurveyScreenComponent['id'];
+ *   component_number: SurveyScreenComponent['component_number'];
+ *   visibility_criteria: SurveyScreenComponent['visibility_criteria'];
+ *   validation_criteria: SurveyScreenComponent['validation_criteria'];
+ *   config: SurveyScreenComponent['config'];
+ *   question_label: SurveyScreenComponent['question_label'];
+ *   question_id: Question['id'];
+ *   question_name: Question['name'];
+ *   question_type: Question['type'];
+ *   question_code: Question['code'];
+ *   question_text: Question['text'];
+ *   question_options: Question['options'];
+ *   question_option_set_id: Question['option_set_id'];
+ *   question_detail: Question['detail'];
+ * }[]} RawQuestionValues
+ * @typedef {Record<
+ *   Survey['id'],
+ *   {
+ *     id: SurveyScreen['id'];
+ *     screen_number: SurveyScreen['screen_number'];
+ *     survey_screen_components: (Pick<
+ *       SurveyScreenComponent,
+ *       'component_number' | 'config' | 'id' | 'validation_criteria' | 'visibility_criteria'
+ *     > & {
+ *       question: Pick<
+ *         Question,
+ *         'code' | 'detail' | 'id' | 'label' | 'name' | 'option_set_id' | 'options' | 'text' | 'type'
+ *       >;
+ *     })[];
+ *   }[]
+ * >
+ *} AggregatedQuestions
+ */
+
 import { AccessPolicy, hasBESAdminAccess } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
 import { reduceToDictionary } from '@tupaia/utils';
@@ -336,6 +379,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   async getQuestionsValues(surveyIds) {
     if (surveyIds.length === 0) return {};
 
+    /** @type {RawQuestionValues} */
     const rows = await this.database.executeSql(
       `
         SELECT
@@ -407,24 +451,15 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {ReturnType<typeof this.getQuestionsValues>} rawResults
+   * @param {RawQuestionValues} rawResults
    */
   getAggregatedQuestions(rawResults) {
-    const surveyQuestions = rawResults.reduce((questionsObject, currentResult) => {
-      const { survey_id: id } = currentResult;
-      const updatedValue = questionsObject;
-      if (updatedValue[id]) return updatedValue;
-
-      updatedValue[id] = [];
-      return questionsObject;
-    }, {});
-
+    /** @type {AggregatedQuestions} */
+    const surveyQuestions = {};
     for (const result of rawResults) {
       const { survey_id, screen_number, survey_screen_id } = result;
-      const screenIndex = surveyQuestions[survey_id].findIndex(
-        screen => screen.id === survey_screen_id,
-      );
-      if (screenIndex !== -1) continue;
+      surveyQuestions[survey_id] ??= [];
+      if (surveyQuestions[survey_id].some(screen => screen.id === survey_screen_id)) continue;
       surveyQuestions[survey_id].push({
         id: survey_screen_id,
         screen_number,
