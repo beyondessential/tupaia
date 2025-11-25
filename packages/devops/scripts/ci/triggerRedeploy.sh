@@ -44,7 +44,7 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
   WAIT_ATTEMPTS=0
   echo "Waiting for $DEPLOYMENT_NAME to run its startup build script. To watch detailed progress, connect to instance $NEW_INSTANCE_ID and run tail -f ~/logs/deployment.log"
   echo
-  echo "  https://console.aws.amazon.com/ec2/#ConnectToInstance:instanceId=$NEW_INSTANCE_ID"
+  echo "  https://ap-southeast-2.console.aws.amazon.com/ec2/home?region=ap-southeast-2#ConnectToInstance:instanceId=$NEW_INSTANCE_ID"
   echo
   while true; do
     STARTUP_COMPLETE=false
