@@ -47,10 +47,18 @@ export function useDatabaseMutation<
   const isOfflineFirst = useIsOfflineFirst();
 
   const wrappedMutationFn: MutationFunction<TData, TVariables> = async (data: TVariables) => {
+    // HACK: In offline-first environment, models & accessPolicy genuinely must be defined; but we
+    // expect them to be undefined otherwise. Current type definitions aren’t smart enough to know
+    // when online or offline logic applies. Hence, we ensure at runtime when actually needed; but
+    // lie to the compiler with non-nullish assertion when we don’t care.
     return mutationFn({
       data,
-      models: isOfflineFirst ? ensure(models) : models!,
-      accessPolicy: ensure(accessPolicy),
+      models: isOfflineFirst
+      ? ensure(models, `Expected models to be non-nullish but got ${models}`)
+      : models!,
+      accessPolicy: isOfflineFirst
+        ? ensure(accessPolicy, `Expected accessPolicy to be non-nullish but got ${accessPolicy}`)
+        : accessPolicy!,
       user,
       ...localContext,
     });
