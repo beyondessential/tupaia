@@ -36,7 +36,7 @@
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/ui-map-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "axios": "^1.6.8",
+    "axios": "^1.12.2",
     "camelcase": "^6.2.0",
     "dom-to-image": "^2.6.0",
     "downloadjs": "^1.4.7",

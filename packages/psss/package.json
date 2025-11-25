@@ -33,7 +33,7 @@
     "@tanstack/react-query-devtools": "4.36.1",
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "axios": "^1.6.8",
+    "axios": "^1.12.2",
     "date-fns": "^2.16.1",
     "faker": "^4.1.0",
     "history": "^5.0.0",
