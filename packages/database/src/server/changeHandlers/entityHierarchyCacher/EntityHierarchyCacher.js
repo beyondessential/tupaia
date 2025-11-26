@@ -16,6 +16,10 @@ export class EntityHierarchyCacher extends ChangeHandler {
     };
   }
 
+  getTransactionWrapper() {
+    return this.models.wrapInRepeatableReadTransaction.bind(this.models);
+  }
+
   async translateEntityChangeToRebuildJobs({ type, old_record: oldRecord, new_record: newRecord }) {
     // Should only rebuild if parent_id has changed
     if (
@@ -69,25 +73,19 @@ export class EntityHierarchyCacher extends ChangeHandler {
   }
 
   async handleChanges(transactingModels, rebuildJobs) {
-    await transactingModels.wrapInRepeatableReadTransaction(
-      async repeatableReadTransactionModels => {
-        const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(
-          repeatableReadTransactionModels,
-        );
-        const relatedEntityIds = await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
+    const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
+    const relatedEntityIds = await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
 
-        if (relatedEntityIds.length > 0) {
-          await repeatableReadTransactionModels.database.executeSql(
-            `
-            UPDATE entity
-            SET updated_at_sync_tick = 1
-            WHERE id IN ${SqlQuery.record(relatedEntityIds)}
-            `,
-            relatedEntityIds,
-          );
-        }
-      },
-    );
+    if (relatedEntityIds.length > 0) {
+      await transactingModels.database.executeSql(
+        `
+        UPDATE entity
+        SET updated_at_sync_tick = 1
+        WHERE id IN ${SqlQuery.record(relatedEntityIds)}
+        `,
+        relatedEntityIds,
+      );
+    }
 
     // explicitly flag ancestor_descendant_relation as changed so that model level caches are cleared
     // TODO: Remove this as part of RN-704
