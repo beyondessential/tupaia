@@ -73,7 +73,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
       // TODO: Assert user has access
 
-      const local = await models.wrapInRepeatableReadTransaction(async transactingModels => {
+      return await models.wrapInRepeatableReadTransaction(async transactingModels => {
         const submitterId = user.isLoggedIn
           ? ensure(user.id)
           : (await transactingModels.user.findPublicUser({ columns: ['id'] })).id;
@@ -112,10 +112,8 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
         // Marking any corresponding task as complete is delegated to central-server
 
-        return idsCreated;
+        return { qrCodeEntitiesCreated: qr_codes_to_create };
       });
-
-      return local;
     },
     remote: async ({ data: answers }: SurveyResponseMutationFunctionContext) => {
       if (!answers) return;
