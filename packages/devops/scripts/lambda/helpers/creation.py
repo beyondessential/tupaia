@@ -172,7 +172,7 @@ def create_instance(
     # wait until it is ready
     new_instance = new_instances[0]
     new_instance.wait_until_running()
-    print("New instance is up")
+    print(f"New instance {new_instance.id} is up")
 
     # attach elastic ip
     allocate_elastic_ip(new_instance.id)
