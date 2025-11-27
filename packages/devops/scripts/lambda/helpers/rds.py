@@ -1,6 +1,7 @@
-import boto3
 import asyncio
 import functools
+
+import boto3
 
 resource_group_tagging_api = boto3.client("resourcegroupstaggingapi")
 rds = boto3.client("rds")

@@ -1,9 +1,9 @@
-import boto3
 import asyncio
 import functools
 import re
-
 from datetime import datetime, timedelta
+
+import boto3
 
 ec2 = boto3.resource("ec2")
 ec = boto3.client("ec2")

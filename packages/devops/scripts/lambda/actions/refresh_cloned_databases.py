@@ -27,7 +27,6 @@ Example configs
 import asyncio
 
 from helpers.creation import create_db_instance_from_snapshot_async
-from helpers.teardown import teardown_db_instance
 from helpers.rds import (
     find_db_instances,
     get_all_db_instances,
@@ -35,6 +34,7 @@ from helpers.rds import (
     set_db_instance_master_password,
 )
 from helpers.secrets import get_db_master_password
+from helpers.teardown import teardown_db_instance
 from helpers.utilities import get_db_tag
 
 try:

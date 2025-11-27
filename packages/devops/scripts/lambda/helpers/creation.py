@@ -1,12 +1,11 @@
 import boto3
-
 from helpers.networking import (
     add_subdomains_to_route53,
     setup_subdomains_via_dns,
     setup_subdomains_via_gateway,
 )
-from helpers.utilities import get_instance_by_id, get_account_ids
 from helpers.rds import get_latest_db_snapshot, wait_for_db_instance
+from helpers.utilities import get_account_ids, get_instance_by_id
 
 ec2 = boto3.resource("ec2")
 ec = boto3.client("ec2")

@@ -1,6 +1,7 @@
-import boto3
 import base64
 import json
+
+import boto3
 
 
 def get_db_master_password():

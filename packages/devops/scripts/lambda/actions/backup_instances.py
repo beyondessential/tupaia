@@ -17,8 +17,9 @@ Example configs
 }
 """
 
-import boto3
 import datetime
+
+import boto3
 from helpers.utilities import get_tag
 
 ec = boto3.client("ec2")
