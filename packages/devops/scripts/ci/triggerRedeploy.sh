@@ -23,7 +23,7 @@ echo "At least one running deployment, triggering redeploy of any tagged with Br
 RESPONSE_FILE=lambda_redeploy_response.json
 AWS_MAX_ATTEMPTS=1 aws lambda invoke \
   --function-name deployment \
-  --payload "{\"Action\": \"redeploy_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"Branch\": \"$CI_BRANCH\" }" \
+  --payload "{\"Action\": \"redeploy_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via GitHub Actions\", \"Branch\": \"$CI_BRANCH\" }" \
   --no-cli-pager \
   --cli-binary-format raw-in-base64-out \
   --cli-read-timeout 900 \
@@ -65,7 +65,7 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
       SWAP_OUT_RESPONSE_FILE=lambda_swap_out_response.json
       AWS_MAX_ATTEMPTS=1 aws lambda invoke \
         --function-name deployment \
-        --payload "{\"Action\": \"swap_out_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$NEW_INSTANCE_ID\" }" \
+        --payload "{\"Action\": \"swap_out_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via GitHub Actions\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$NEW_INSTANCE_ID\" }" \
         --no-cli-pager \
         --cli-binary-format raw-in-base64-out \
         --cli-read-timeout 900 \
