@@ -13,7 +13,11 @@ import asyncio
 import time
 from helpers.utilities import find_instances, stop_instance
 
-loop = asyncio.get_event_loop()
+try:
+    loop = asyncio.get_event_loop()
+except RuntimeError:
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
 
 def stop_tagged_servers(event):

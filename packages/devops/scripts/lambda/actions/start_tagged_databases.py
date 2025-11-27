@@ -14,7 +14,11 @@ import time
 
 from helpers.rds import find_db_instances, start_db_instance, wait_for_db_instance
 
-loop = asyncio.get_event_loop()
+try:
+    loop = asyncio.get_event_loop()
+except RuntimeError:
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
 
 def start_tagged_databases(event):

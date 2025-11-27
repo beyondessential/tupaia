@@ -30,7 +30,11 @@ import asyncio
 from helpers.clone import clone_volume_into_instance
 from helpers.utilities import find_instances, get_tag, start_instance, stop_instance
 
-loop = asyncio.get_event_loop()
+try:
+    loop = asyncio.get_event_loop()
+except RuntimeError:
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
 
 def refresh_cloned_servers(event):
