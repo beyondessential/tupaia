@@ -23,7 +23,7 @@ echo "At least one running deployment, triggering redeploy of any tagged with Br
 RESPONSE_FILE=lambda_redeploy_response.json
 AWS_MAX_ATTEMPTS=1 aws lambda invoke \
   --function-name deployment \
-  --payload "{\"Action\": \"redeploy_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"Branch\": \"$CI_BRANCH\" }" \
+  --payload "{\"Action\": \"redeploy_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via GitHub Actions\", \"Branch\": \"$CI_BRANCH\" }" \
   --no-cli-pager \
   --cli-binary-format raw-in-base64-out \
   --cli-read-timeout 900 \
@@ -43,6 +43,9 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
 
   WAIT_ATTEMPTS=0
   echo "Waiting for $DEPLOYMENT_NAME to run its startup build script. To watch detailed progress, connect to instance $NEW_INSTANCE_ID and run tail -f ~/logs/deployment.log"
+  echo
+  echo "  https://ap-southeast-2.console.aws.amazon.com/ec2/home?region=ap-southeast-2#ConnectToInstance:instanceId=$NEW_INSTANCE_ID"
+  echo
   while true; do
     STARTUP_COMPLETE=false
     aws ec2 wait instance-exists \
@@ -62,7 +65,7 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
       SWAP_OUT_RESPONSE_FILE=lambda_swap_out_response.json
       AWS_MAX_ATTEMPTS=1 aws lambda invoke \
         --function-name deployment \
-        --payload "{\"Action\": \"swap_out_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via codeship\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$NEW_INSTANCE_ID\" }" \
+        --payload "{\"Action\": \"swap_out_tupaia_server\", \"User\": \"${CI_COMMITTER_NAME} via GitHub Actions\", \"DeploymentName\": \"$DEPLOYMENT_NAME\", \"NewInstanceId\": \"$NEW_INSTANCE_ID\" }" \
         --no-cli-pager \
         --cli-binary-format raw-in-base64-out \
         --cli-read-timeout 900 \
