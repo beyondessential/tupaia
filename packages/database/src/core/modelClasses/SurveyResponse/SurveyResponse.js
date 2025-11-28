@@ -273,8 +273,12 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       // the server db. Instead, check our permissions against the new entity's parent
       const newEntity = entitiesUpserted.find(e => e.id === surveyResponse.entity_id);
       if (newEntity) {
-        const parentEntity = await this.otherModels.entity.findById(newEntity.parent_id);
-        return parentEntity?.code;
+        /** @type {import('@tupaia/database').EntityRecord} */
+        const parentEntity = ensure(
+          await this.otherModels.findById(newEntity.parent_id, { columns: ['code'] }),
+          `Couldn’t check permissions for parent entity of entity ${newEntity.code}. No entity exists with ID ${newEntity.parent_id}.`,
+        );
+        return parentEntity.code;
       }
 
       /** @type {EntityRecord} */
