@@ -9,8 +9,12 @@ import { FlexStart } from '../Layout';
 import { InputLabel } from './InputLabel';
 
 const HiddenFileInput = styled.input.attrs({
-  // TODO: Accept 'image/*' and convert in backend if needed
-  accept: 'image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp',
+  /*
+   * TODO: Accept 'image/*' and convert in backend if needed
+   * What’s `capture=camera`?
+   * @see https://gist.github.com/danawoodman/4788404bc620d5392d111dba98c73873
+   */
+  accept: 'image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp;capture=camera',
 })`
   width: 0.1px;
   height: 0.1px;
