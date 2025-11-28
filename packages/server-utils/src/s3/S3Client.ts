@@ -135,10 +135,13 @@ export class S3Client {
   public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
     const imageTypes = ['png', 'jpeg', 'jpg', 'gif', 'svg+xml'];
 
-    // convert the base64 encoded image to a buffer
-    const buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
+    // TEMPORARY: Until RN-1788 is complete, the usual assumption that base64EncodedImage !== null
+    // isn’t guaranteed. In the meantime, treat it as if it were undefined.
+    const UNSAFE_base64EncodedImage = base64EncodedImage ?? '';
 
-    const contentType = this.getContentTypeFromBase64(base64EncodedImage);
+    // convert the base64 encoded image to a buffer
+    const buffer = this.convertEncodedFileToBuffer(UNSAFE_base64EncodedImage);
+    const contentType = this.getContentTypeFromBase64(UNSAFE_base64EncodedImage);
 
     // use the file type from the image if it's available, otherwise default to png
     let fileType = contentType.split('/')[1] || 'png';
