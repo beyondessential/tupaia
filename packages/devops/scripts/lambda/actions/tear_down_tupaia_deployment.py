@@ -20,25 +20,34 @@
 from helpers.teardown import teardown_instance, teardown_db_instance
 from helpers.utilities import find_instances, get_tag
 
-def tear_down_tupaia_deployment(event):
-    if 'DeploymentName' not in event:
-        raise Exception('You must include "DeploymentName" in the lambda config, which is the subdomain of tupaia.org you want to tear down (e.g. "dev").')
 
-    deployment_name = event['DeploymentName']
+def tear_down_tupaia_deployment(event):
+    if "DeploymentName" not in event:
+        raise Exception(
+            'You must include "DeploymentName" in the lambda config, which is the subdomain of tupaia.org you want to tear down (e.g. "dev").'
+        )
+
+    deployment_name = event["DeploymentName"]
     instance_filters = [
-      { 'Name': 'tag:DeploymentName', 'Values': [deployment_name] },
-      { 'Name': 'tag:DeploymentType', 'Values': ['tupaia'] },
-      { 'Name': 'instance-state-name', 'Values': ['running', 'stopped']} # ignore terminated instances
+        {"Name": "tag:DeploymentName", "Values": [deployment_name]},
+        {"Name": "tag:DeploymentType", "Values": ["tupaia"]},
+        {
+            "Name": "instance-state-name",
+            "Values": ["running", "stopped"],
+        },  # ignore terminated instances
     ]
     instances = find_instances(instance_filters)
 
     if len(instances) == 0:
-      raise Exception('No matching instances found')
+        raise Exception("No matching instances found")
 
-    print('Tearing down the instances ' + ', '.join([get_tag(instance, 'Name') for instance in instances]))
+    print(
+        "Tearing down the instances "
+        + ", ".join([get_tag(instance, "Name") for instance in instances])
+    )
 
     for instance in instances:
-      teardown_instance(instance)
-      teardown_db_instance(deployment_name, 'tupaia')
+        teardown_instance(instance)
+        teardown_db_instance(deployment_name, "tupaia")
 
-    print('Finished tearing down clone')
+    print("Finished tearing down clone")
