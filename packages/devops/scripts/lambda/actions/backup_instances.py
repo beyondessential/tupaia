@@ -26,7 +26,6 @@ ec = boto3.client("ec2")
 
 
 def backup_instances(event):
-
     # ignore terminated instances
     filters = [{"Name": "instance-state-name", "Values": ["running", "stopped"]}]
 
@@ -47,7 +46,6 @@ def backup_instances(event):
         )
 
     for instance in instances:
-
         instance_name = get_tag(instance, "Name")
         deployment_type = get_tag(instance, "DeploymentType")
         deployment_name = get_tag(instance, "DeploymentName")
