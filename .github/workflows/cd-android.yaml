@@ -6,6 +6,9 @@ permissions:
 
 on:
   pull_request:
+  push:
+    branches:
+      - baseline-* # We never open PRs from baseline branches
   workflow_dispatch:
 jobs:
   build:
