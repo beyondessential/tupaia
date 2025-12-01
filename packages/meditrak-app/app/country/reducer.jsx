@@ -14,11 +14,8 @@ import {
 
 import { LOGOUT, LOGIN_REQUEST } from '../authentication';
 
-const {
-  COUNTRY_REQUEST_IDLE,
-  COUNTRY_REQUESTING,
-  COUNTRY_REQUEST_SUCCESS,
-} = COUNTRY_REQUEST_STATUSES;
+const { COUNTRY_REQUEST_IDLE, COUNTRY_REQUESTING, COUNTRY_REQUEST_SUCCESS } =
+  COUNTRY_REQUEST_STATUSES;
 
 const defaultState = {
   selectedCountryName: null,

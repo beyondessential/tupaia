@@ -7,8 +7,8 @@ import {
   SET_SYNC_COMPLETION_TIME,
   PROGRESS_LOADING,
 } from './constants';
-import {getLatestUserRewardCount} from '../rewards';
-import {resetSocialFeed} from '../social';
+import { getLatestUserRewardCount } from '../rewards';
+import { resetSocialFeed } from '../social';
 
 export const setSyncProgress = progress => ({
   type: SET_SYNC_PROGRESS,
@@ -51,7 +51,7 @@ export const setSyncComplete = lastSyncTime => async dispatch => {
 
 export const synchroniseDatabase =
   () =>
-  async (dispatch, getState, {database, analytics}) => {
+  async (dispatch, getState, { database, analytics }) => {
     dispatch(setSyncProgress(PROGRESS_LOADING));
     return database.synchronise(dispatch);
   };
