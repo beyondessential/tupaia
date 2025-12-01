@@ -1,13 +1,14 @@
-import { DatabaseError, ImportValidationError } from '@tupaia/utils';
+import { ensure } from '@tupaia/tsutils';
+import { ImportValidationError } from '@tupaia/utils';
 import { validateSurveyFields } from '../../../dataAccessors';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
-import { getArrayQueryParameter } from '../../utilities';
 import { importSurveysQuestions } from '../../import/importSurveys';
+import { getArrayQueryParameter } from '../../utilities';
 import { assertCanImportSurvey } from '../assertCanImportSurvey';
-import { updateOrCreateDataGroup } from './updateOrCreateDataGroup';
-import { validateSurveyServiceType } from './validateSurveyServiceType';
 import { updateDataElementsConfig } from './updateDataElementsConfig';
+import { updateOrCreateDataGroup } from './updateOrCreateDataGroup';
 import { validateSurveyCountries } from './validateSurveyCountries';
+import { validateSurveyServiceType } from './validateSurveyServiceType';
 
 export class SurveyEditor {
   constructor(models, assertPermissions) {
@@ -89,23 +90,22 @@ export class SurveyEditor {
       }
     }
 
-    const defaultPermissionGroup = await transactingModels.permissionGroup.findOne({
-      name: 'Public',
-    });
-
     let permissionGroup;
     if (permissionGroupId) {
-      permissionGroup = await transactingModels.permissionGroup.findById(permissionGroupId);
-    } else if (existingSurvey) {
-      permissionGroup = await transactingModels.permissionGroup.findById(
-        existingSurvey.permission_group_id,
+      permissionGroup = ensure(
+        await transactingModels.permissionGroup.findByIdOrThrow(permissionGroupId),
       );
-    } else if (!existingSurvey) {
+    } else if (existingSurvey) {
+      permissionGroup = ensure(
+        await transactingModels.permissionGroup.findByIdOrThrow(existingSurvey.permission_group_id),
+      );
+    } else {
       // Must be a create, and no permission group specified, use Public
-      permissionGroup = defaultPermissionGroup;
-    }
-    if (!permissionGroup) {
-      throw new DatabaseError('finding permission group');
+      permissionGroup = await transactingModels.permissionGroup.findOneOrThrow(
+        { name: 'Public' },
+        undefined,
+        `Couldn’t find Public permission group`,
+      );
     }
 
     // TODO: merge this with surveyChecker
