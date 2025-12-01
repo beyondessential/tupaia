@@ -10,18 +10,33 @@ export type PresentationOptionsPromptRequest = Request<
   PresentationOptionsPromptRequestType.ReqQuery
 >;
 
+const openingFence = '```json\n';
+const closingFence = '\n```';
+
+function fence(obj: any) {
+  return `${openingFence}${JSON.stringify(obj)}${closingFence}`;
+}
+
+function unfence(str: string) {
+  const trimmed = str.trim();
+  const isFenced = trimmed.startsWith(openingFence) && trimmed.endsWith(closingFence);
+  return isFenced ? trimmed.slice(openingFence.length, -closingFence.length) : str;
+}
+
 export class PresentationOptionsPromptRoute extends Route<PresentationOptionsPromptRequest> {
   public async buildResponse() {
-    const { body } = this.req;
-    const { inputMessage, dataStructure, presentationOptions } = body;
-    const { promptManager } = this.req.ctx;
+    const {
+      body: { dataStructure, inputMessage, presentationOptions },
+      ctx: { promptManager },
+    } = this.req;
 
     const response = await promptManager.generatePresentationConfig(
       inputMessage,
-      '```json\n' + JSON.stringify(dataStructure) + '\n```',
-      '```json\n' + JSON.stringify(presentationOptions) + '\n```',
+      fence(dataStructure),
+      fence(presentationOptions),
     );
 
-    return JSON.parse(response.content.toString());
+    const completion = response.content.toString();
+    return JSON.parse(unfence(completion));
   }
 }
