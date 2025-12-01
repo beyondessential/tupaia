@@ -7,7 +7,11 @@ export const testConfigValidation = () => {
 
   describe('invalid config', () => {
     const testData: [string, DbRecord, RegExp | string][] = [
-      ['undefined formula', { aggregation: {} }, /Error .*formula.* empty/],
+      [
+        'undefined formula',
+        { aggregation: {} },
+        /Error .*formula.* Expected nonempty value but got undefined/,
+      ],
       ['formula is not a string', { formula: {}, aggregation: {} }, /Error .*formula.* string/],
       [
         'undefined aggregation',
@@ -111,7 +115,7 @@ export const testConfigValidation = () => {
             { code: 'A', config: {} },
           ],
         },
-        /parameters.* .*builder.* .*should not be empty/i,
+        /parameters.* .*builder.* .*Expected nonempty value but got .*/i,
       ],
     ];
 
