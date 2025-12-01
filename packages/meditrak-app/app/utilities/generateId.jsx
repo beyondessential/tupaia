@@ -1,4 +1,4 @@
-import generate from 'nanoid/non-secure/generate';
+import { customAlphabet } from 'nanoid/non-secure';
 import generateUUID from 'bson-objectid';
 
 // With this config, in order to reach a 1% probability of at least one collision:
@@ -17,7 +17,7 @@ export const MONGO_ID = 'mongoid';
 // e.g. '632-NFO-LEU-I1QI'
 export const generateShortId = config => {
   // Use defaults for any missing config params, allowing users to specify some or all custom configurations
-  const {alphabet, length, chunkLength, prefix} = {
+  const { alphabet, length, chunkLength, prefix } = {
     ...DEFAULT_SHORT_ID_CONFIG,
     ...config.codeGenerator,
   };
@@ -25,7 +25,8 @@ export const generateShortId = config => {
   // i.e. '632NFOLEUI1QI'.match(pattern) -> ['632', 'NFO', 'LEU', 'I1Q', 'I']
   const pattern = new RegExp(`.{1,${chunkLength}}`, 'g');
 
-  const id = generate(alphabet, length);
+  const generate = customAlphabet(alphabet, length);
+  const id = generate();
   // Reducing rather than joining here to merge remainder characters
   // into last chunk, creating a larger tail chunk rather than smaller.
   const chunkedId = id.match(pattern).reduce((prev, curr) => {
