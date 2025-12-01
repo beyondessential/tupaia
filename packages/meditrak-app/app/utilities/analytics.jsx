@@ -7,7 +7,7 @@ if (__DEV__) {
 
 export const analytics = {
   trackEvent: (eventName, props = {}) => {
-    const eventProps = {...props};
+    const eventProps = { ...props };
 
     // Appcenter is sensitive to null values and object values,
     // flatten event props so that they are only numbers and strings.
@@ -23,6 +23,6 @@ export const analytics = {
     Analytics.trackEvent(eventName, eventProps);
   },
   trackButtonPress: label => {
-    analytics.trackEvent('Pressed button', {label});
+    analytics.trackEvent('Pressed button', { label });
   },
 };
