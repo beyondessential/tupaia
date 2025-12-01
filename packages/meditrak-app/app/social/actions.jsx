@@ -13,8 +13,8 @@ export const loadSocialFeedLatest = () => async dispatch => {
  * Fetches next social feed page is available.
  */
 export const loadSocialFeedNextPage = () => async (dispatch, getState) => {
-  const {social} = getState();
-  const {currentPage, hasLastPageLoaded} = social;
+  const { social } = getState();
+  const { currentPage, hasLastPageLoaded } = social;
 
   // Skip if currently loading or fully loaded.
   if (hasLastPageLoaded) {
@@ -27,29 +27,26 @@ export const loadSocialFeedNextPage = () => async (dispatch, getState) => {
 
 export const resetSocialFeed = () => async dispatch => {
   // Reset feed and fetch latest
-  dispatch({type: SOCIAL_FEED_RESET});
+  dispatch({ type: SOCIAL_FEED_RESET });
   dispatch(fetchSocialFeed(0, false));
 };
 
 const fetchSocialFeed =
   (page = 0, shouldPrepend) =>
-  async (dispatch, getState, {api}) => {
-    const {social} = getState();
-    const {isLoading, latestFeedItemDate} = social;
+  async (dispatch, getState, { api }) => {
+    const { social } = getState();
+    const { isLoading, latestFeedItemDate } = social;
 
     // Skip if currently loading or last page reached and not resetting
     if (isLoading) {
       return;
     }
 
-    dispatch({type: SOCIAL_FEED_REQUEST});
+    dispatch({ type: SOCIAL_FEED_REQUEST });
 
     try {
-      const result = await api.getSocialFeed(
-        page,
-        shouldPrepend ? latestFeedItemDate : 0,
-      );
-      const {items, pageNumber, hasMorePages} = result;
+      const result = await api.getSocialFeed(page, shouldPrepend ? latestFeedItemDate : 0);
+      const { items, pageNumber, hasMorePages } = result;
 
       dispatch({
         type: SOCIAL_FEED_SUCCESS,
@@ -61,8 +58,7 @@ const fetchSocialFeed =
     } catch (error) {
       dispatch({
         type: SOCIAL_FEED_FAILURE,
-        errorMessage:
-          'Currently offline, connect to the Internet to see latest activity',
+        errorMessage: 'Currently offline, connect to the Internet to see latest activity',
       });
     }
   };

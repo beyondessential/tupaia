@@ -5,14 +5,8 @@ import { changeField, submit } from './actions';
 import { goBack } from '../navigation';
 
 function mapStateToProps({ changePassword }) {
-  const {
-    oldPassword,
-    newPassword,
-    newPasswordConfirm,
-    isLoading,
-    errorMessage,
-    invalidFields,
-  } = changePassword;
+  const { oldPassword, newPassword, newPasswordConfirm, isLoading, errorMessage, invalidFields } =
+    changePassword;
 
   return {
     formFieldValues: {
