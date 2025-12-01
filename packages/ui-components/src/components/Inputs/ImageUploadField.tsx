@@ -1,13 +1,17 @@
+import { AvatarProps, Box, Fab, FormHelperText, FormLabel } from '@material-ui/core';
+import { Trash2 as DeleteIcon } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { AvatarProps, Box, Fab, FormHelperText, FormLabel } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { FlexStart } from '../Layout';
-import { GreyOutlinedButton } from '../Button';
+
 import { Avatar } from '../Avatar';
+import { GreyOutlinedButton } from '../Button';
+import { FlexStart } from '../Layout';
 import { InputLabel } from './InputLabel';
 
-const HiddenFileInput = styled.input`
+const HiddenFileInput = styled.input.attrs({
+  // TODO: Accept 'image/*' and convert in backend if needed
+  accept: 'image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp',
+})`
   width: 0.1px;
   height: 0.1px;
   opacity: 0;
@@ -43,7 +47,7 @@ const DeleteButton = styled(Fab)`
   border: 1px solid ${props => props.theme.palette.grey['400']};
   color: ${props => props.theme.palette.text.secondary};
 
-  .MuiSvgIcon-root {
+  svg {
     font-size: 1.125rem;
   }
 `;
@@ -130,7 +134,7 @@ export const ImageUploadField = React.memo(
     const inputEl = useRef<HTMLInputElement | null>(null);
 
     const handleDelete = () => {
-      if (inputEl && inputEl.current) inputEl.current.value = '';
+      if (inputEl?.current) inputEl.current.value = '';
       onDelete();
       setErrorMessage(null);
     };
@@ -152,15 +156,15 @@ export const ImageUploadField = React.memo(
       const { height, width } = await getImageSize(file);
 
       if ((maxHeight && height > maxHeight) || (maxWidth && width > maxWidth)) {
-        return `Image is too large (max. dimensions ${maxWidth} × ${maxHeight})`;
+        return `Image too large (max. ${maxWidth} × ${maxHeight})`;
       }
       if ((minHeight && height < minHeight) || (minWidth && width < minWidth)) {
-        return `Image is too small (min. dimensions ${minWidth} × ${minHeight})`;
+        return `Image too small (min. ${minWidth} × ${minHeight})`;
       }
       return null;
     };
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const image = event?.target.files && event.target.files[0] ? event.target.files[0] : null;
+      const image = event.target.files?.[0] ?? null;
       const newErrorMessage = await validateImageSize(image);
       setErrorMessage(newErrorMessage);
       // Only call onChange if image is validated, so the user can't upload anything invalid.
@@ -185,7 +189,7 @@ export const ImageUploadField = React.memo(
             {avatarInitial}
           </StyledAvatar>
           {imageSrc && (
-            <DeleteButton onClick={handleDelete}>
+            <DeleteButton aria-label="Clear selected image" onClick={handleDelete}>
               <DeleteIcon />
             </DeleteButton>
           )}
