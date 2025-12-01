@@ -1,27 +1,28 @@
-# Replaces the RDS database with the latest snapshot of the instance it has been cloned from
-#
-# Example configs
-#
-# 1. Refresh all cloned databases (i.e. those with the tag "ClonedFrom")
-# {
-#   "Action": "refresh_cloned_databases",
-#   "User": "edwin"
-# }
-#
-# 2. Refresh all databases cloned from a specific base, e.g. dev
-# {
-#   "Action": "refresh_cloned_databases",
-#   "User": "edwin",
-#   "ClonedFrom": "dev"
-# }
-#
-# 3. Refresh a specific database
-# {
-#   "Action": "refresh_cloned_databases",
-#   "User": "edwin",
-#   "DeploymentName": "edwin-test"
-# }
+"""
+Replaces the RDS database with the latest snapshot of the instance it has been cloned from
 
+Example configs
+
+1. Refresh all cloned databases (i.e. those with the tag "ClonedFrom")
+{
+  "Action": "refresh_cloned_databases",
+  "User": "edwin"
+}
+
+2. Refresh all databases cloned from a specific base, e.g. dev
+{
+  "Action": "refresh_cloned_databases",
+  "User": "edwin",
+  "ClonedFrom": "dev"
+}
+
+3. Refresh a specific database
+{
+  "Action": "refresh_cloned_databases",
+  "User": "edwin",
+  "DeploymentName": "edwin-test"
+}
+"""
 
 import asyncio
 

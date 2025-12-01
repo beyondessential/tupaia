@@ -1,11 +1,13 @@
-# Starts any server tagged with "StartAtUTC" that is currently stopped, and due to be started
-# within the last hour
-#
-# Example config
-# {
-#   "Action": "start_tagged_servers",
-#   "User": "edwin"
-# }
+"""
+Starts any server tagged with "StartAtUTC" that is currently stopped, and due to be started
+within the last hour
+
+Example config
+{
+  "Action": "start_tagged_servers",
+  "User": "edwin"
+}
+"""
 
 import asyncio
 import time

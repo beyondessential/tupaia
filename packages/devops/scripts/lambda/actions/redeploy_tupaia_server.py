@@ -1,34 +1,36 @@
-# Deploys a new tupaia server (keeping the db) for a given branch. Useful for getting an updated
-# version of the code released.
-#
-# Example configs
-#
-# 1. Redeploy production (note non-matching branch name), using the same instance size
-# {
-#   "Action": "redeploy_tupaia_server",
-#   "User": "edwin",
-#   "DeploymentName": "production",
-#   "Branch": "master"
-# }
-#
-# 2. Redeploy feature branch, maintaining the same instance size
-# {
-#   "Action": "redeploy_tupaia_server",
-#   "User": "edwin",
-#   "Branch": "wai-965"
-# }
-#
-# 3. Redeploy based on a different AMI, with a different instance size
-# {
-#   "Action": "redeploy_tupaia_server",
-#   "User": "edwin",
-#   "Branch": "wai-965",
-#   "InstanceType": "t3a.medium",
-#   "ImageCode": "edwin-test",
-#   "SecurityGroupCode": "edwin-test"
-# }
-# N.B. example 3 is unusual and generally just used for debugging the redeploy process itself. If
-# used, you need to tag the AMI and security groups with the codes you specify
+"""
+Deploys a new tupaia server (keeping the db) for a given branch. Useful for getting an updated
+version of the code released.
+
+Example configs
+
+1. Redeploy production (note non-matching branch name), using the same instance size
+{
+  "Action": "redeploy_tupaia_server",
+  "User": "edwin",
+  "DeploymentName": "production",
+  "Branch": "master"
+}
+
+2. Redeploy feature branch, maintaining the same instance size
+{
+  "Action": "redeploy_tupaia_server",
+  "User": "edwin",
+  "Branch": "wai-965"
+}
+
+3. Redeploy based on a different AMI, with a different instance size
+{
+  "Action": "redeploy_tupaia_server",
+  "User": "edwin",
+  "Branch": "wai-965",
+  "InstanceType": "t3a.medium",
+  "ImageCode": "edwin-test",
+  "SecurityGroupCode": "edwin-test"
+}
+N.B. example 3 is unusual and generally just used for debugging the redeploy process itself. If
+used, you need to tag the AMI and security groups with the codes you specify
+"""
 
 from helpers.create_from_image import create_server_instance_from_image
 from helpers.utilities import find_instances, get_tag

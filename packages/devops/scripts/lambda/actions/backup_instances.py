@@ -1,19 +1,21 @@
-# Creates snapshots of volumes of instances.
-#
-# Example configs
-#
-# 1. Snapshot all instances that have been marked with the "Backup" tag:
-# {
-#   "Action": "backup_instances"
-#   "User": "edwin",
-# }
-#
-# 2. Snapshot a specific instance
-# {
-#   "Action": "backup_instances",
-#   "User": "edwin",
-#   "InstanceName": "Tupaia Tonga Aggregation Server"
-# }
+"""
+Creates snapshots of volumes of instances.
+
+Example configs
+
+1. Snapshot all instances that have been marked with the "Backup" tag:
+{
+  "Action": "backup_instances"
+  "User": "edwin"
+}
+
+2. Snapshot a specific instance
+{
+  "Action": "backup_instances",
+  "User": "edwin",
+  "InstanceName": "Tupaia Tonga Aggregation Server"
+}
+"""
 
 import boto3
 import datetime

@@ -1,11 +1,13 @@
-# Stops any server tagged with "StopAtUTC" that is currently running, and due to be stopped
-# within the last hour
-#
-# Example config
-# {
-#   "Action": "stop_tagged_servers",
-#   "User": "edwin"
-# }
+"""
+Stops any server tagged with "StopAtUTC" that is currently running, and due to be stopped
+within the last hour
+
+Example config
+{
+  "Action": "stop_tagged_servers",
+  "User": "edwin"
+}
+"""
 
 import asyncio
 import time

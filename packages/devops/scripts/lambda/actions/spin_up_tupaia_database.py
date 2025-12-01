@@ -1,15 +1,17 @@
-# Creates a new Tupaia database instance
-#
-# Example configs
-#
-# 1. Spin up a new database instance
-# {
-#   "Action": "spin_up_tupaia_database",
-#   "User": "rohan",
-#   "DeploymentName": "rn-195-epic",
-#   "CloneDbFrom": "dev",
-#   "DbInstanceType": "db.t4g.medium"
-# }
+"""
+Creates a new Tupaia database instance
+
+Example configs
+
+1. Spin up a new database instance
+{
+  "Action": "spin_up_tupaia_database",
+  "User": "rohan",
+  "DeploymentName": "rn-195-epic",
+  "CloneDbFrom": "dev",
+  "DbInstanceType": "db.t4g.medium"
+}
+"""
 
 from helpers.creation import create_db_instance_from_snapshot
 from helpers.rds import set_db_instance_master_password
@@ -27,12 +29,10 @@ def spin_up_tupaia_database(event):
 
     # get manual input parameters, or default for any not provided
     db_instance_type = event.get("DbInstanceType", "db.t4g.large")
-    security_group_code = event.get(
-        "SecurityGroupCode", "tupaia-dev-sg"
-    )  # Use security group tagged with code
-    clone_db_from = event.get(
-        "CloneDbFrom", "production"
-    )  # Use volume snapshot tagged with deployment name
+    # Use security group tagged with code
+    security_group_code = event.get("SecurityGroupCode", "tupaia-dev-sg")
+    # Use volume snapshot tagged with deployment name
+    clone_db_from = event.get("CloneDbFrom", "production")
     extra_tags = build_extra_tags(
         event,
         # Turn off overnight, but come back online an hour before the server so db is available

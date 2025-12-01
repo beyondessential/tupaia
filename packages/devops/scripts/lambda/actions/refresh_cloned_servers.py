@@ -1,27 +1,29 @@
-# Replaces the volume of any cloned application servers with the latest snapshot from the original clone volume
-#
-# Example configs
-#
-# 1. Refresh all cloned servers (i.e. those with the tag "ClonedFrom")
-# {
-#   "Action": "refresh_cloned_servers",
-#   "User": "edwin"
-# }
-#
-# 2. Refresh all servers cloned from a specific base, e.g. all tupaia-db instances
-# {
-#   "Action": "refresh_cloned_servers",
-#   "User": "edwin",
-#   "ClonedFrom": "tupaia-db"
-# }
-#
-# 3. Refresh a specific server
-# {
-#   "Action": "refresh_cloned_servers",
-#   "User": "edwin",
-#   "DeploymentName": "edwin-test"
-# }
+"""
+Replaces the volume of any cloned application servers with the latest snapshot from the original
+clone volume
 
+Example configs
+
+1. Refresh all cloned servers (i.e. those with the tag "ClonedFrom")
+{
+  "Action": "refresh_cloned_servers",
+  "User": "edwin"
+}
+
+2. Refresh all servers cloned from a specific base, e.g. all tupaia-db instances
+{
+  "Action": "refresh_cloned_servers",
+  "User": "edwin",
+  "ClonedFrom": "tupaia-db"
+}
+
+3. Refresh a specific server
+{
+  "Action": "refresh_cloned_servers",
+  "User": "edwin",
+  "DeploymentName": "edwin-test"
+}
+"""
 
 import asyncio
 

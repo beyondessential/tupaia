@@ -1,26 +1,28 @@
-# Creates a new deployment of DHIS2 hosted within the tupaia.org domain
-#
-# Example configs
-#
-# 1. Spin up new deployment of Tonga DHIS2
-# {
-#   "Action": "spin_up_dhis_deployment",
-#   "User": "edwin",
-#   "DeploymentType": "tonga-dhis2",
-#   "DeploymentName": "tonga-for-testing",
-#   "FromDeployment": "production"
-# }
-#
-# 2. Spin up a new deployment of the regional DHIS2, with a custom instance size and security group
-# {
-#   "Action": "spin_up_dhis_deployment",
-#   "User": "edwin",
-#   "DeploymentType": "tonga-dhis2",
-#   "DeploymentName": "fast-regional-agg",
-#   "FromDeployment": "production",
-#   "InstanceType": "t3a.2xlarge",
-#   "SecurityGroupCode": "tupaia-prod-sg"
-# }
+"""
+Creates a new deployment of DHIS2 hosted within the tupaia.org domain
+
+Example configs
+
+1. Spin up new deployment of Tonga DHIS2
+{
+  "Action": "spin_up_dhis_deployment",
+  "User": "edwin",
+  "DeploymentType": "tonga-dhis2",
+  "DeploymentName": "tonga-for-testing",
+  "FromDeployment": "production"
+}
+
+2. Spin up a new deployment of the regional DHIS2, with a custom instance size and security group
+{
+  "Action": "spin_up_dhis_deployment",
+  "User": "edwin",
+  "DeploymentType": "tonga-dhis2",
+  "DeploymentName": "fast-regional-agg",
+  "FromDeployment": "production",
+  "InstanceType": "t3a.2xlarge",
+  "SecurityGroupCode": "tupaia-prod-sg"
+}
+"""
 
 from helpers.clone import clone_instance
 

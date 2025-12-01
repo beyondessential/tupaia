@@ -1,11 +1,13 @@
-# Swaps an ELB to point at a new tupaia server, and kills the old one(s) for a given deployment.
+"""
+Swaps an ELB to point at a new tupaia server, and kills the old one(s) for a given deployment.
 
-# This is called by the startup script on the instance as the second phase of "redeploy_tupaia_server", and
-# shouldn't generally be used directly
+This is called by the startup script on the instance as the second phase of
+"redeploy_tupaia_server", and shouldn’t generally be used directly
+"""
 
 from helpers.networking import get_instance_behind_gateway, swap_gateway_instance
 from helpers.teardown import terminate_instance
-from helpers.utilities import add_tag, get_tag, get_instance_by_id, find_instances
+from helpers.utilities import add_tag, find_instances, get_instance_by_id, get_tag
 
 
 def swap_out_tupaia_server(event):

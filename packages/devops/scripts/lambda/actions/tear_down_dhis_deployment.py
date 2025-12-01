@@ -1,12 +1,14 @@
-# Terminates an instance and any associated elastic ip, route53 entries, load balancer, and gateway
-#
-# Example config
-# {
-#   "Action": "tear_down_dhis_deployment",
-#   "User": "edwin",
-#   "DeploymentName": "wai-965",
-#   "DeploymentType": "tonga-dhis2"
-# }
+"""
+Terminates an instance and any associated elastic ip, route53 entries, load balancer, and gateway
+
+Example config
+{
+  "Action": "tear_down_dhis_deployment",
+  "User": "edwin",
+  "DeploymentName": "wai-965",
+  "DeploymentType": "tonga-dhis2"
+}
+"""
 
 from helpers.teardown import teardown_instance
 from helpers.utilities import get_instance

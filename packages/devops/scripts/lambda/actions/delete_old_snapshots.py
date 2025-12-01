@@ -1,15 +1,17 @@
-import boto3
-import re
 import datetime
+import re
+
+import boto3
 
 ec = boto3.client("ec2")
 iam = boto3.client("iam")
 
-# Deletes *all* snapshots that have a "DeleteOn" tag containing the current day formatted as
-# YYYY-MM-DD. This function should be run at least daily.
-
 
 def delete_old_snapshots(event):
+    """
+    Deletes *all* snapshots that have a "DeleteOn" tag containing the current day formatted as
+    YYYY-MM-DD. This function should be run at least daily.
+    """
     account_ids = list()
     try:
         account_ids.append(iam.get_user()["User"]["Arn"].split(":")[4])

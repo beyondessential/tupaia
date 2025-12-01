@@ -1,38 +1,40 @@
-# Creates a new deployment of Tupaia with a specific branch checked out
-#
-# Example configs
-#
-# 1. Spin up a new feature branch deployment of Tupaia, that will be deleted after 8 hours
-# {
-#   "Action": "spin_up_tupaia_deployment",
-#   "User": "edwin",
-#   "Branch": "wai-965",
-#   "HoursOfLife": 8
-# }
-#
-# 2. Spin up a new deployment of Tupaia, but with the db cloned from dev and a different branch
-#    checked out (wai-965) to its url prefix (timing-test), and specifying the instance type
-# {
-#   "Action": "spin_up_tupaia_deployment",
-#   "User": "edwin",
-#   "DeploymentName": "timing-test",
-#   "Branch": "wai-965",
-#   "CloneDbFrom": "dev",
-#   "InstanceType": "t3.2xlarge"
-# }
-#
-# 3. Spin up a new deployment of Tupaia, but using a different AMI for the server and different base
-#    instance for the db
-# {
-#   "Action": "spin_up_tupaia_deployment",
-#   "User": "edwin",
-#   "Branch": "wai-965",
-#   "ImageCode": "edwin-test-server",
-#   "SecurityGroupCode": "edwin-test-server",
-#   "CloneDbFrom": "edwin-test-db"
-# }
-# N.B. example 3 is unusual and generally just used for debugging the redeploy process itself. If
-# used, you need to tag the AMI and security groups with the codes you specify
+"""
+Creates a new deployment of Tupaia with a specific branch checked out.
+
+Example configs
+
+1. Spin up a new feature branch deployment of Tupaia, that will be deleted after 8 hours
+{
+   "Action": "spin_up_tupaia_deployment",
+   "User": "edwin",
+   "Branch": "wai-965",
+   "HoursOfLife": 8
+}
+
+2. Spin up a new deployment of Tupaia, but with the db cloned from dev and a different branch
+   checked out (wai-965) to its url prefix (timing-test), and specifying the instance type
+{
+   "Action": "spin_up_tupaia_deployment",
+   "User": "edwin",
+   "DeploymentName": "timing-test",
+   "Branch": "wai-965",
+   "CloneDbFrom": "dev",
+   "InstanceType": "t3.2xlarge"
+}
+
+3. Spin up a new deployment of Tupaia, but using a different AMI for the server and different base
+   instance for the db
+{
+   "Action": "spin_up_tupaia_deployment",
+   "User": "edwin",
+   "Branch": "wai-965",
+   "ImageCode": "edwin-test-server",
+   "SecurityGroupCode": "edwin-test-server",
+   "CloneDbFrom": "edwin-test-db"
+}
+N.B. Example 3 is unusual and generally just used for debugging the redeploy process itself. If used
+used, you need to tag the AMI and security groups with the codes you specify.
+"""
 
 from helpers.creation import create_db_instance_from_snapshot
 from helpers.create_from_image import create_server_instance_from_image
@@ -76,15 +78,12 @@ def spin_up_tupaia_deployment(event):
     # get manual input parameters, or default for any not provided
     instance_type = event.get("InstanceType", "t3a.large")
     db_instance_type = event.get("DbInstanceType", "db.t4g.medium")
-    image_code = event.get(
-        "ImageCode", "tupaia-gold-master"
-    )  # Use AMI tagged with code
-    security_group_code = event.get(
-        "SecurityGroupCode", "tupaia-dev-sg"
-    )  # Use security group tagged with code
-    clone_db_from = event.get(
-        "CloneDbFrom", "production"
-    )  # Use volume snapshot tagged with deployment name
+    # Use AMI tagged with code
+    image_code = event.get("ImageCode", "tupaia-gold-master")
+    # Use security group tagged with code
+    security_group_code = event.get("SecurityGroupCode", "tupaia-dev-sg")
+    # Use volume snapshot tagged with deployment name
+    clone_db_from = event.get("CloneDbFrom", "production")
 
     # launch server instance based on gold master AMI
     server_extra_tags = build_extra_tags(

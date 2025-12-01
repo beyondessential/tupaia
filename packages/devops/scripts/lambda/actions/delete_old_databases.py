@@ -1,12 +1,14 @@
 from datetime import datetime
-from helpers.teardown import teardown_db_instance
-from helpers.rds import find_db_instances
-from helpers.utilities import get_db_tag
 
-# Deletes all databases with an expired "DeleteAfter" tag
+from helpers.rds import find_db_instances
+from helpers.teardown import teardown_db_instance
+from helpers.utilities import get_db_tag
 
 
 def delete_old_databases(event):
+    """
+    Deletes all databases with an expired "DeleteAfter" tag
+    """
     current_datetime = datetime.now()
     filters = [{"Key": "DeleteAfter"}, {"Key": "DeploymentType", "Values": ["tupaia"]}]
 

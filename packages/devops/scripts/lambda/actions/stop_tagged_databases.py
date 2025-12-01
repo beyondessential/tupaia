@@ -1,11 +1,13 @@
-# Stops any database tagged with "StopAtUTC" that is currently available, and due to be stopped
-# within the last hour
-#
-# Example config
-# {
-#   "Action": "stop_tagged_databases",
-#   "User": "edwin"
-# }
+"""
+Stops any database tagged with "StopAtUTC" that is currently available, and due to be stopped
+within the last hour
+
+Example config
+{
+  "Action": "stop_tagged_databases",
+  "User": "edwin"
+}
+"""
 
 import time
 

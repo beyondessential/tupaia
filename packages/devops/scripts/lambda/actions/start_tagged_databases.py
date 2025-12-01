@@ -1,11 +1,13 @@
-# Starts any database tagged with "StartAtUTC" that is currently stopped, and due to be started
-# within the last hour
-#
-# Example config
-# {
-#   "Action": "start_tagged_databases",
-#   "User": "edwin"
-# }
+"""
+Starts any database tagged with "StartAtUTC" that is currently stopped, and due to be started
+within the last hour
+
+Example config
+{
+  "Action": "start_tagged_databases",
+  "User": "edwin"
+}
+"""
 
 import asyncio
 import time

@@ -1,15 +1,17 @@
-# Creates a new deployment of LESMIS with a specific branch checked out
-#
-# Example config
-#
-# 1. Spin up a new feature branch deployment of LESMIS, that will be deleted after 8 hours
-# {
-#   "Action": "spin_up_lesmis_deployment",
-#   "User": "edwin",
-#   "Branch": "wai-965",
-#   "DbDumpFile": "lesmis-on-premise/lesmis-dump-tupaia-202404091048.sql",
-#   "HoursOfLife": 8
-# }
+"""
+Creates a new deployment of LESMIS with a specific branch checked out
+
+Example config
+
+1. Spin up a new feature branch deployment of LESMIS, that will be deleted after 8 hours
+{
+  "Action": "spin_up_lesmis_deployment",
+  "User": "edwin",
+  "Branch": "wai-965",
+  "DbDumpFile": "lesmis-on-premise/lesmis-dump-tupaia-202404091048.sql",
+  "HoursOfLife": 8
+}
+"""
 
 from pathlib import Path
 
@@ -57,12 +59,10 @@ def spin_up_lesmis_deployment(event):
 
     # get manual input parameters, or default for any not provided
     instance_type = event.get("InstanceType", "t3a.large")
-    image_code = event.get(
-        "ImageCode", "lesmis-gold-master"
-    )  # Use AMI tagged with code
-    security_group_code = event.get(
-        "SecurityGroupCode", "tupaia-dev-sg"
-    )  # Use security group tagged with code
+    # Use AMI tagged with code
+    image_code = event.get("ImageCode", "lesmis-gold-master")
+    # Use security group tagged with code
+    security_group_code = event.get("SecurityGroupCode", "tupaia-dev-sg")
 
     # launch server instance based on gold master AMI
     server_extra_tags = build_extra_tags(
