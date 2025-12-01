@@ -1,4 +1,5 @@
-#!/usr/bin/env bash -e
+#!/usr/bin/env bash
+set -e
 
 if [[ $CI = true ]]; then
     echo '::group::Load environment variables from .env files'

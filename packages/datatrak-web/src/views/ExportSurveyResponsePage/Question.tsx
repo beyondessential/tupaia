@@ -3,8 +3,11 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
-
+import {
+  DatatrakWebSingleSurveyResponseRequest,
+  DatatrakWebSubmitSurveyResponseRequest,
+  QuestionType,
+} from '@tupaia/types';
 import { useAutocompleteOptions, useEntityById } from '../../api';
 import { SurveyScreenComponent } from '../../types';
 import {
@@ -55,7 +58,7 @@ const StyledAvatar = styled(Avatar)`
 const useDisplayAnswer = (
   surveyScreenComponent: SurveyScreenComponent,
   surveyResponse: SurveyResponse,
-) => {
+): React.ReactNode => {
   const { id, type, options, optionSetId } = surveyScreenComponent;
   // Extract answer
   const answer = surveyResponse.answers[id!] as any;
@@ -123,6 +126,8 @@ const useDisplayAnswer = (
     case QuestionType.Photo: {
       return <StyledAvatar variant="square" src={answer} />;
     }
+    case QuestionType.User:
+      return (answer as DatatrakWebSubmitSurveyResponseRequest.UserAnswer).name;
     default:
       return answer;
   }

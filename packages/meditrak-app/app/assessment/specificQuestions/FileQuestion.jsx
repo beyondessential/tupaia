@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 
-import {DEFAULT_PADDING} from '../../globalStyles';
-import {Button, Text} from '../../widgets';
-import {getFilenameFromUri} from '../../utilities';
+import { DEFAULT_PADDING } from '../../globalStyles';
+import { Button, Text } from '../../widgets';
+import { getFilenameFromUri } from '../../utilities';
 
 /*
  * Limit the max file size to:
@@ -94,7 +94,7 @@ const unlink = async path => {
   }
 };
 
-export const FileQuestion = ({answer, onChangeAnswer}) => {
+export const FileQuestion = ({ answer, onChangeAnswer }) => {
   const filename = getFilenameFromUri(answer);
 
   const [error, setError] = useState(null);
@@ -115,11 +115,11 @@ export const FileQuestion = ({answer, onChangeAnswer}) => {
       // If we previously picked a file (stored a copy in app documents) and now picked a new one, we need to delete the old copy
       await unlink(answer);
 
-      const {fileCopyUri} = filePickerResponse;
+      const { fileCopyUri } = filePickerResponse;
 
       // Check file size
       // Note: from DocumentPicker docs: android does not guarantee the name or size will be present or accurate on the file picker response, so we read the newly copied file in the app documents which is a normal file
-      const {size: newSizeInBytes} = await RNFS.stat(fileCopyUri);
+      const { size: newSizeInBytes } = await RNFS.stat(fileCopyUri);
       if (newSizeInBytes > MAX_FILE_SIZE_BYTES) {
         await unlink(fileCopyUri);
         setSizeInBytes(null);

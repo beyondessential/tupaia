@@ -84378,6 +84378,7 @@ export const EntityTypeEnumSchema = {
 		"supermarket",
 		"tmf_district",
 		"tmf_facility",
+		"tmf_project",
 		"tmf_sub_district",
 		"transfer",
 		"trap",

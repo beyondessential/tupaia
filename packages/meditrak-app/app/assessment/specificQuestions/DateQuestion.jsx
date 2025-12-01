@@ -71,7 +71,8 @@ export class DateQuestion extends PureComponent {
         <TouchableOpacity
           analyticsLabel={`Date: ${questionText}`}
           style={localStyles.field}
-          onPress={() => this.onOpenDatePicker()}>
+          onPress={() => this.onOpenDatePicker()}
+        >
           <Icon library="Ionic" name="calendar-outline" size={20} style={localStyles.icon} />
           {this.renderInput()}
         </TouchableOpacity>

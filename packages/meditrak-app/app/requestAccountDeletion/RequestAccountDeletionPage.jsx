@@ -55,15 +55,8 @@ export class RequestAccountDeletionPage extends PureComponent {
   };
 
   render() {
-    const {
-      onSubmit,
-      isRequestedAccountDeletion,
-      isLoading,
-      emailAddress,
-      name,
-      pigs,
-      coconuts,
-    } = this.props;
+    const { onSubmit, isRequestedAccountDeletion, isLoading, emailAddress, name, pigs, coconuts } =
+      this.props;
 
     return (
       <MenuContext style={localStyles.menuContainer}>
