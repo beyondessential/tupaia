@@ -10,3 +10,9 @@
 
 # fmt(meditrak): apply Prettier formatting
 ed43562a7bdb8ee0a8b7ff30ede9a3414bf03e50
+
+# fmt: Python files with Black
+888422e614d5b8053312636a9620f962fce44340
+
+# style: use multiline string literals for docstrings
+790613ba80759fcf503af958cdaf4b37122a605b
