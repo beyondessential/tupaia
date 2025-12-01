@@ -24,7 +24,7 @@
     "appcenter-analytics": "^5.0.0",
     "babel-polyfill": "^6.9.1",
     "bson-objectid": "^2.0.4",
-    "moment": "^2.24.0",
+    "moment": "^2.30.1",
     "nanoid": "^3.3.11",
     "react": "18.2.0",
     "react-native": "0.72.5",
