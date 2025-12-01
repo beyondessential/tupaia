@@ -1,5 +1,6 @@
-import generate from 'nanoid/non-secure/generate';
 import generateUUID from 'bson-objectid';
+import { customAlphabet } from 'nanoid/non-secure';
+
 import { CodeGeneratorQuestionConfig } from '@tupaia/types';
 
 // With this config, in order to reach a 1% probability of at least one collision:
@@ -28,10 +29,12 @@ export const generateShortId = (codeGeneratorConfig?: CodeGeneratorQuestionConfi
   // i.e. '632NFOLEUI1QI'.match(pattern) -> ['632', 'NFO', 'LEU', 'I1Q', 'I']
   const pattern = new RegExp(`.{1,${chunkLength}}`, 'g');
 
-  const id = generate(alphabet, length);
+  const generate = customAlphabet(alphabet, length);
+  const id = generate();
   // Reducing rather than joining here to merge remainder characters
   // into last chunk, creating a larger tail chunk rather than smaller.
-  const chunkedId = id.match(pattern).reduce((prev, curr) => {
+  // Cast because TS doesn’t know a match is guaranteed
+  const chunkedId = (id.match(pattern) as RegExpMatchArray).reduce((prev, curr) => {
     if (curr.length < chunkLength) return `${prev}${curr}`;
     return `${prev}-${curr}`;
   });

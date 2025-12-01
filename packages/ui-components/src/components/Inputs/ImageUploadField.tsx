@@ -47,7 +47,7 @@ const DeleteButton = styled(Fab)`
   border: 1px solid ${props => props.theme.palette.grey['400']};
   color: ${props => props.theme.palette.text.secondary};
 
-  .MuiSvgIcon-root {
+  svg {
     font-size: 1.125rem;
   }
 `;
