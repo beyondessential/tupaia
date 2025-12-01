@@ -34,20 +34,17 @@ def start_tagged_databases(event):
         filter(lambda x: x["DBInstanceStatus"] == "stopped", tagged_instances)
     )
 
-    if len(stopped_instances) > 0:
-        tasks = sum(
-            [
-                [
-                    asyncio.ensure_future(start_and_wait_for_db(instance))
-                    for instance in stopped_instances
-                ]
-            ],
-            [],
-        )
-        loop.run_until_complete(asyncio.wait(tasks))
-        print(str(len(stopped_instances)) + " previously stopped instances started")
-    else:
+    if not stopped_instances:
         print("No stopped instances required starting")
+        return
+
+    tasks = [
+        asyncio.ensure_future(start_and_wait_for_db(instance))
+        for instance in stopped_instances
+    ]
+    loop.run_until_complete(asyncio.wait(tasks))
+
+    print(f"{len(stopped_instances)} previously stopped instances started")
 
 
 async def start_and_wait_for_db(db_instance):

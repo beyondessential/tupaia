@@ -73,7 +73,7 @@ def get_instance_by_id(id):
 
 def find_instances(filters):
     reservations = ec.describe_instances(Filters=filters).get("Reservations", [])
-    return sum([[i for i in r["Instances"]] for r in reservations], [])
+    return [i for r in reservations for i in r["Instances"]]
 
 
 def tags_contains(tags, key, value):

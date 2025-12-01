@@ -38,7 +38,7 @@ def backup_instances(event):
 
     reservations = ec.describe_instances(Filters=filters).get("Reservations", [])
 
-    instances = sum([[i for i in r["Instances"]] for r in reservations], [])
+    instances = [i for r in reservations for i in r["Instances"]]
 
     if len(instances) == 0:
         print(
