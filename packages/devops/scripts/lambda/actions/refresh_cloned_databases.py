@@ -37,12 +37,6 @@ from helpers.secrets import get_db_master_password
 from helpers.teardown import teardown_db_instance
 from helpers.utilities import get_db_tag
 
-try:
-    loop = asyncio.get_event_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
 
 def refresh_cloned_databases(event):
     async def refresh_instance(db_instance):
