@@ -15,6 +15,7 @@ import {
   takesIdForm,
   ValidationError,
 } from '@tupaia/utils';
+import winston from '../../log';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   translateEntityCodeToId,
@@ -112,6 +113,24 @@ const ACTION_HANDLERS = {
 };
 
 /**
+ * TEMPORARY: Hotfix to unblock sync from a particular client. Revert to `hasContent` once RN-1788
+ * is closed.
+ */
+const hasContentPermissive = value => {
+  try {
+    return hasContent(value);
+  } catch (error) {
+    if (!(error instanceof ValidationError)) throw error;
+
+    winston.error(
+      `hasContentPermissive validation failed, but swallowing the following ValidationError:\n${error.stack}`,
+      { error },
+    );
+    return true;
+  }
+};
+
+/**
  * Contains functions that accept the payload, and validate that it contains the requisite content
  * for the relevant change action, returning true if successful and throwing an error if not
  */
@@ -121,7 +140,9 @@ const PAYLOAD_VALIDATORS = {
   [ACTIONS.AddSurveyImage]: async (models, payload) => {
     const validator = new ObjectValidator({
       id: [hasContent],
-      data: [hasContent],
+      // TEMPORARY: Hotfix to unblock sync from a particular client. Revert to `hasContent` once
+      // RN-1788 is closed.
+      data: [hasContentPermissive],
     });
     await validator.validate(payload);
   },
