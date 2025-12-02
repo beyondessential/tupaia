@@ -26,7 +26,7 @@ function isImageMediaTypeString(val: string): val is `image/${string}` {
 }
 
 function isSupportedImageMediaTypeString(val: string): val is keyof typeof supportedImageTypes {
-  return supportedImageTypes.hasOwnProperty(val);
+  return Object.hasOwn(supportedImageTypes, val);
 }
 
 export class S3Client {
