@@ -26,7 +26,7 @@ function isImageMediaTypeString(val: string): val is `image/${string}` {
 }
 
 function isSupportedImageMediaTypeString(val: string): val is keyof typeof supportedImageTypes {
-  return supportedImageTypes.hasOwnProperty(val);
+  return Object.hasOwn(supportedImageTypes, val);
 }
 
 export class S3Client {
@@ -100,8 +100,7 @@ export class S3Client {
 
   private convertEncodedFileToBuffer(encodedFile: string) {
     // remove the base64 prefix from the image. This handles svg and other image types
-    const encodedFileString = encodedFile.replace(new RegExp('(data:)(.*)(;base64,)'), '');
-
+    const encodedFileString = encodedFile.replace(/^data:.+;base64,/, '');
     return Buffer.from(encodedFileString, 'base64');
   }
 
@@ -112,7 +111,10 @@ export class S3Client {
       );
     }
 
-    return base64String.substring('data:'.length, base64String.indexOf(';base64,', 'data:'.length));
+    return base64String.substring(
+      'data:'.length,
+      base64String.indexOf(';base64,', 'data:'.length),
+    ) as `${string}/${string}`;
   }
 
   public async uploadFile(fileName: string, readable: Buffer | string) {
@@ -132,8 +134,12 @@ export class S3Client {
     }
 
     let buffer = readable;
-    let contentType = undefined; // in cases where the file is directly loaded as a buffer, we don't have a content type and it will work without it
-    let contentEncoding = undefined;
+    /**
+     * In cases where the file is directly loaded as a buffer, we don’t have a content type and it
+     * will work without it
+     */
+    let contentType: `${string}/${string}` | undefined;
+    let contentEncoding: 'base64' | undefined;
 
     // If the file is a base64 string, convert it to a buffer and get the file type. If we don't do this, the file will be uploaded as a binary file and just the text value will be saved and won't be able to be opened
     if (typeof readable === 'string') {
@@ -155,13 +161,9 @@ export class S3Client {
   }
 
   public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
-    // TEMPORARY: Until RN-1788 is complete, the usual assumption that base64EncodedImage !== null
-    // isn’t guaranteed. In the meantime, treat it as if it were undefined.
-    const UNSAFE_base64EncodedImage = base64EncodedImage ?? '';
-
     // convert the base64 encoded image to a buffer
-    const buffer = this.convertEncodedFileToBuffer(UNSAFE_base64EncodedImage);
-    const contentType = this.getContentTypeFromBase64(UNSAFE_base64EncodedImage);
+    const buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
+    const contentType = this.getContentTypeFromBase64(base64EncodedImage);
 
     if (!isImageMediaTypeString(contentType)) {
       // Redundant because of `isSupportedImageMediaTypeString`, but clearer error message
