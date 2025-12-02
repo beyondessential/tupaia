@@ -4,7 +4,6 @@ import {
   ObjectValidator,
   hasNoAlphaLetters,
   fieldHasContent,
-  isEmail,
   isValidPassword,
 } from '@tupaia/utils';
 import { CreateUserAccounts } from './CreateUserAccounts';
@@ -26,7 +25,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
     const fieldValidators = {
       firstName: [fieldHasContent],
       lastName: [fieldHasContent],
-      emailAddress: [fieldHasContent, isEmail],
+      emailAddress: [fieldHasContent],
       password: [fieldHasContent],
       passwordConfirm: [fieldHasContent],
       contactNumber: contactNumber ? [hasNoAlphaLetters] : [],
