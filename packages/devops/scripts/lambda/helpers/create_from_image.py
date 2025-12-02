@@ -1,9 +1,10 @@
-import boto3
 from pathlib import Path
 
+import boto3
 from helpers.creation import create_instance
 
-ec = boto3.client('ec2')
+ec = boto3.client("ec2")
+
 
 def create_instance_from_image(
     deployment_name,
@@ -18,9 +19,9 @@ def create_instance_from_image(
     subdomains_via_dns=None,
     subdomains_via_gateway=None,
     user_data=None,
-    volume_size=None
+    volume_size=None,
 ):
-    print('Creating ' + deployment_name + ' as ' + instance_type)
+    print("Creating " + deployment_name + " as " + instance_type)
 
     instance_object = create_instance(
         deployment_name,
@@ -40,22 +41,44 @@ def create_instance_from_image(
 
     return instance_object
 
+
 def create_server_instance_from_image(
     deployment_name,
     branch,
     instance_type,
     image_code,
-    deployment_type = 'tupaia',
-    startup_script = Path('./resources/startupTupaia.sh').read_text(),
-    volume_size = 20, # 20GB
+    deployment_type="tupaia",
+    startup_script=Path("./resources/startupTupaia.sh").read_text(),
+    volume_size=20,  # 20GB
     extra_tags=None,
     security_group_code=None,
     security_group_id=None,
     setup_gateway=True,
     setup_dns=False,
 ):
-    tupaia_server_iam_role_arn = 'arn:aws:iam::843218180240:instance-profile/TupaiaServerRole'
-    tupaia_subdomains = ['','admin','admin-api','api','config','psss','report-api','psss-api','entity-api','lesmis-api','lesmis', 'meditrak-api', 'data-table-api', 'sync-api', 'tupaia-web-api', 'tupaia-web', 'datatrak-web-api', 'datatrak']
+    tupaia_server_iam_role_arn = (
+        "arn:aws:iam::843218180240:instance-profile/TupaiaServerRole"
+    )
+    tupaia_subdomains = [
+        "",
+        "admin-api",
+        "admin",
+        "api",
+        "config",
+        "data-table-api",
+        "datatrak",
+        "datatrak-web-api",
+        "entity-api",
+        "lesmis",
+        "lesmis-api",
+        "meditrak-api",
+        "psss-api",
+        "psss",
+        "report-api",
+        "sync-api",
+        "tupaia-web",
+        "tupaia-web-api",
+    ]
 
     return create_instance_from_image(
         deployment_name,

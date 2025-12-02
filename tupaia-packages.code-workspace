@@ -296,6 +296,7 @@
       "eamodio.gitlens",
       "esbenp.prettier-vscode",
       "humao.rest-client",
+      "ms-python.black-formatter",
       "ryu1kn.partial-diff",
       "streetsidesoftware.code-spell-checker",
       "visualstudioexptteam.vscodeintellicode",

@@ -19,33 +19,35 @@ export const changePasswordError = (errorMessage, invalidFields = []) => ({
   invalidFields,
 });
 
-export const submit = () => async (dispatch, getState, { api }) => {
-  const { changePassword } = getState();
-  const { oldPassword, newPassword, newPasswordConfirm } = changePassword;
+export const submit =
+  () =>
+  async (dispatch, getState, { api }) => {
+    const { changePassword } = getState();
+    const { oldPassword, newPassword, newPasswordConfirm } = changePassword;
 
-  if (newPassword !== newPasswordConfirm) {
-    dispatch(
-      changePasswordError('Confirmed password must match new password.', [
-        'newPassword',
-        'newPasswordConfirm',
-      ]),
-    );
-    return;
-  }
-
-  dispatch({ type: CHANGE_PASSWORD_REQUEST });
-
-  try {
-    const response = await api.changeUserPassword(oldPassword, newPassword, newPasswordConfirm);
-    if (response.error) {
-      throw new Error(response.error);
+    if (newPassword !== newPasswordConfirm) {
+      dispatch(
+        changePasswordError('Confirmed password must match new password.', [
+          'newPassword',
+          'newPasswordConfirm',
+        ]),
+      );
+      return;
     }
-  } catch (error) {
-    dispatch(changePasswordError(error.message));
-    return;
-  }
 
-  dispatch(addMessage('change_password', 'Your password was successfully updated.'));
-  dispatch({ type: CHANGE_PASSWORD_SUCCESS });
-  dispatch(goBack());
-};
+    dispatch({ type: CHANGE_PASSWORD_REQUEST });
+
+    try {
+      const response = await api.changeUserPassword(oldPassword, newPassword, newPasswordConfirm);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+    } catch (error) {
+      dispatch(changePasswordError(error.message));
+      return;
+    }
+
+    dispatch(addMessage('change_password', 'Your password was successfully updated.'));
+    dispatch({ type: CHANGE_PASSWORD_SUCCESS });
+    dispatch(goBack());
+  };
