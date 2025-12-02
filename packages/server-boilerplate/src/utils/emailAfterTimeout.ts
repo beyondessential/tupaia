@@ -1,32 +1,23 @@
-import { sendEmail } from '@tupaia/server-utils';
+import { sendEmail, MailOptions } from '@tupaia/server-utils';
 import { UserAccount } from '@tupaia/types';
 import { respond } from '@tupaia/utils';
 
-type TemplateContext = {
-  title: string;
-  message: string;
-  cta?: {
-    text: string;
-    url: string;
-  };
-};
+interface EmailAfterTimeoutMailOptions
+  extends Pick<MailOptions, 'attachments' | 'subject' | 'templateContext'> {}
 
 type ConstructEmailFromResponseT = (
   responseBody: any,
   req: any,
-) => Promise<{
-  subject: string;
-  attachments?: { filename: string; content: Buffer }[];
-  templateContext: TemplateContext;
-}>;
+) => Promise<EmailAfterTimeoutMailOptions>;
 
-const sendResponseAsEmail = (
-  user: UserAccount,
-  subject: string,
-  templateContext: TemplateContext,
-  attachments?: { filename: string; content: Buffer }[],
+const sendResponseAsEmail = async (
+  user: Pick<UserAccount, 'email' | 'first_name'>,
+  { attachments, subject, templateContext }: EmailAfterTimeoutMailOptions,
 ) => {
-  sendEmail(user.email, {
+  await sendEmail(user.email, {
+    // Prevent threading in Gmail, even if subject is the same. (`emailAfterTimeout` is used for
+    // large data exports; grouping separate exports into a single thread is probably undesirable.)
+    headers: { 'X-Entity-Ref-ID': crypto.randomUUID() },
     subject,
     attachments,
     templateName: 'emailAfterTimeout',
@@ -43,7 +34,7 @@ const setupEmailResponse = async (
   constructEmailFromResponse: ConstructEmailFromResponseT,
 ) => {
   const { models } = req;
-  const user = await models.user.findById(req.user.id);
+  const user = await models.user.findById(req.user.id, { columns: ['email', 'first_name'] });
 
   if (res.headersSent) {
     // no need to do anything if the endpoint handler responded successfully within the timeout
@@ -62,11 +53,8 @@ const setupEmailResponse = async (
   // override the respond function so that when the endpoint handler finishes (or throws an error),
   // the response is sent via email
   res.overrideRespond = async (responseBody: any) => {
-    const { subject, attachments, templateContext } = await constructEmailFromResponse(
-      responseBody,
-      req,
-    );
-    sendResponseAsEmail(user, subject, templateContext, attachments);
+    const mailOptions = await constructEmailFromResponse(responseBody, req);
+    sendResponseAsEmail(user, mailOptions);
   };
 };
 
@@ -79,7 +67,7 @@ export const emailAfterTimeout =
       next();
       return;
     }
-    const timeout = parseInt(respondWithEmailTimeout, 10);
+    const timeout = Number.parseInt(respondWithEmailTimeout, 10);
     if (Number.isNaN(timeout)) {
       throw new Error('respondWithEmailTimeout must be a number');
     }
