@@ -111,7 +111,10 @@ export class S3Client {
       );
     }
 
-    return base64String.substring('data:'.length, base64String.indexOf(';base64,', 'data:'.length));
+    return base64String.substring(
+      'data:'.length,
+      base64String.indexOf(';base64,', 'data:'.length),
+    ) as `${string}/${string}`;
   }
 
   public async uploadFile(fileName: string, readable: Buffer | string) {
@@ -131,8 +134,12 @@ export class S3Client {
     }
 
     let buffer = readable;
-    let contentType = undefined; // in cases where the file is directly loaded as a buffer, we don't have a content type and it will work without it
-    let contentEncoding = undefined;
+    /**
+     * In cases where the file is directly loaded as a buffer, we don’t have a content type and it
+     * will work without it
+     */
+    let contentType: `${string}/${string}` | undefined;
+    let contentEncoding: 'base64' | undefined;
 
     // If the file is a base64 string, convert it to a buffer and get the file type. If we don't do this, the file will be uploaded as a binary file and just the text value will be saved and won't be able to be opened
     if (typeof readable === 'string') {
