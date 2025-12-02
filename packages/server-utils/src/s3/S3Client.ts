@@ -100,8 +100,7 @@ export class S3Client {
 
   private convertEncodedFileToBuffer(encodedFile: string) {
     // remove the base64 prefix from the image. This handles svg and other image types
-    const encodedFileString = encodedFile.replace(new RegExp('(data:)(.*)(;base64,)'), '');
-
+    const encodedFileString = encodedFile.replace(/(data:)(.*)(;base64,)/, '');
     return Buffer.from(encodedFileString, 'base64');
   }
 
