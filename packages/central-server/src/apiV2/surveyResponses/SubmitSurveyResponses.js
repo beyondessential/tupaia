@@ -38,10 +38,10 @@ export class SubmitSurveyResponses extends RouteHandler {
     let results = [];
 
     await this.models.wrapInTransaction(async transactingModels => {
+      await this.assertUserHasAccess(transactingModels);
       // Upsert entities and options that were created in user's local database
       await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, this.surveyResponses);
       await SurveyResponseModel.validateSurveyResponses(transactingModels, this.surveyResponses);
-      await this.assertUserHasAccess(transactingModels);
       results = await SurveyResponseModel.saveResponsesToDatabase(
         transactingModels,
         submitterId,
