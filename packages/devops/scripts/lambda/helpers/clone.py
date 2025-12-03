@@ -1,12 +1,12 @@
-import boto3
 import asyncio
 import functools
 
+import boto3
 from helpers.creation import create_instance
 from helpers.utilities import (
     get_account_ids,
-    get_tag,
     get_instance,
+    get_tag,
     start_instance,
     stop_instance,
 )
@@ -14,7 +14,11 @@ from helpers.utilities import (
 ec2 = boto3.resource("ec2")
 ec = boto3.client("ec2")
 
-loop = asyncio.get_event_loop()
+try:
+    loop = asyncio.get_event_loop()
+except RuntimeError:
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
 
 async def wait_for_volume(volume_id, to_be):

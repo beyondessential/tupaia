@@ -1,5 +1,4 @@
 import boto3
-
 from helpers.utilities import get_instance_by_id, tags_contains
 
 # --------------

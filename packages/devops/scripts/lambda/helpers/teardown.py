@@ -1,8 +1,7 @@
 import boto3
-
 from helpers.networking import (
-    delete_gateway,
     build_record_set_deletion,
+    delete_gateway,
     get_gateway_elb,
 )
 from helpers.utilities import get_tag

@@ -1,6 +1,6 @@
-import boto3
 from pathlib import Path
 
+import boto3
 from helpers.creation import create_instance
 
 ec = boto3.client("ec2")

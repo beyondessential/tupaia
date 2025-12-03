@@ -22,12 +22,14 @@ Example configs
   "User": "edwin",
   "DeploymentName": "edwin-test"
 }
+
+Related:
+  https://github.com/beyondessential/data-lake/blob/dev/devops/lambda/actions/refresh_cloned_databases.py
 """
 
 import asyncio
 
 from helpers.creation import create_db_instance_from_snapshot_async
-from helpers.teardown import teardown_db_instance
 from helpers.rds import (
     find_db_instances,
     get_all_db_instances,
@@ -35,12 +37,19 @@ from helpers.rds import (
     set_db_instance_master_password,
 )
 from helpers.secrets import get_db_master_password
+from helpers.teardown import teardown_db_instance
 from helpers.utilities import get_db_tag
-
-loop = asyncio.get_event_loop()
 
 
 def refresh_cloned_databases(event):
+    async def refresh_instance(db_instance):
+        await delete_db(db_instance)
+        await recreate_db(db_instance)
+
+    async def refresh_all(instances):
+        tasks = [refresh_instance(instance) for instance in instances]
+        await asyncio.gather(*tasks)
+
     filters = [{"Key": "ClonedFrom"}, {"Key": "DeploymentType", "Values": ["tupaia"]}]
     if "ClonedFrom" in event:
         print("Refreshing databases cloned from " + event["ClonedFrom"])
@@ -56,16 +65,7 @@ def refresh_cloned_databases(event):
         return
 
     print("refreshing " + str(len(instances)) + " databases")
-
-    delete_tasks = sum(
-        [[asyncio.ensure_future(delete_db(instance)) for instance in instances]], []
-    )
-    loop.run_until_complete(asyncio.wait(delete_tasks))
-
-    recreate_tasks = sum(
-        [[asyncio.ensure_future(recreate_db(instance)) for instance in instances]], []
-    )
-    loop.run_until_complete(asyncio.wait(recreate_tasks))
+    asyncio.run(refresh_all(instances))
 
 
 async def delete_db(db_instance):

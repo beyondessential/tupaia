@@ -19,7 +19,7 @@ Example configs
 }
 """
 
-from helpers.teardown import teardown_instance, teardown_db_instance
+from helpers.teardown import teardown_db_instance, teardown_instance
 from helpers.utilities import find_instances, get_tag
 
 

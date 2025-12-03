@@ -11,12 +11,19 @@ Example config
 
 import asyncio
 import time
+
 from helpers.utilities import find_instances, start_instance
 
-loop = asyncio.get_event_loop()
+try:
+    loop = asyncio.get_event_loop()
+except RuntimeError:
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
 
 def start_tagged_servers(event):
+    print("Starting stopped servers with StartAtUTC tag")
+
     hour = time.strftime("%H:00")
     instances = find_instances(
         [
@@ -25,17 +32,11 @@ def start_tagged_servers(event):
         ]
     )
 
-    if len(instances) > 0:
-        tasks = sum(
-            [
-                [
-                    asyncio.ensure_future(start_instance(instance))
-                    for instance in instances
-                ]
-            ],
-            [],
-        )
-        loop.run_until_complete(asyncio.wait(tasks))
-        print("All previously stopped instances started")
-    else:
-        print("No stopped instances required starting")
+    if not instances:
+        print("No stopped instances to start")
+        return
+
+    tasks = [asyncio.ensure_future(start_instance(instance)) for instance in instances]
+    loop.run_until_complete(asyncio.wait(tasks))
+
+    print(f"Started {len(instances)} previously stopped instances")
