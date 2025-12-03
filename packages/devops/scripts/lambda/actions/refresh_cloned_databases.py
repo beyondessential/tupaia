@@ -22,6 +22,9 @@ Example configs
   "User": "edwin",
   "DeploymentName": "edwin-test"
 }
+
+Related:
+  https://github.com/beyondessential/data-lake/blob/dev/devops/lambda/actions/refresh_cloned_databases.py
 """
 
 import asyncio
