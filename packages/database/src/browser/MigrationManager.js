@@ -49,7 +49,7 @@ export class MigrationManager {
             runSql: sql => database.executeSql(sql),
           });
         },
-        down: async () => {
+        down: async database => {
           await migrationModule.down({
             runSql: sql => database.executeSql(sql),
           });
