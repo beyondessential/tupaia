@@ -169,10 +169,15 @@ export const saveIncomingSnapshotChanges = async (
   const sortedModelsForDeletes = [...sortedModelsForChanges].reverse();
 
   // Delete records first in the reverse order to avoid foreign key constraints
+  console.groupCollapsed('Saving incoming snapshot changes');
+  const startTime = performance.now();
+  console.group('DELETE phase');
   for (const model of sortedModelsForDeletes) {
     await saveDeletesForModelInBatches(model, sessionId, model.databaseRecord, progressCallback);
   }
+  console.groupEnd();
 
+  console.group('CREATE/UPDATE phase');
   // Create and update records in the order of dependencies
   for (const model of sortedModelsForChanges) {
     await saveChangesForModelInBatches(
@@ -183,6 +188,9 @@ export const saveIncomingSnapshotChanges = async (
       progressCallback,
     );
   }
+  console.groupEnd();
+  console.groupEnd();
+  console.log(`Saved incoming snapshot changes in ${performance.now() - startTime} ms`);
 };
 
 export const saveChangesFromMemory = async (

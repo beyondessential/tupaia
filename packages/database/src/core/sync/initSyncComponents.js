@@ -107,6 +107,8 @@ const TABLES_WITHOUT_TOMBSTONE_TRIGGER_QUERY = getTablesForTombstoneTriggerQuery
 export const TABLES_WITH_TOMBSTONE_TRIGGER_QUERY = getTablesForTombstoneTriggerQuery(true);
 
 export async function initSyncComponents(driver, isClient = false) {
+  console.groupCollapsed('Initializing sync components');
+  const startTime = performance.now();
   // add column: holds last update tick, default to -999 (not modified locally) on client,
   // and 0 (will be caught in any initial sync) on central server
   // triggers will overwrite the default for future data, but this works for existing data
@@ -148,5 +150,6 @@ export async function initSyncComponents(driver, isClient = false) {
     `);
   }
 
-  console.log('Finished initializing sync components');
+  console.groupEnd();
+  console.log(`Initialized sync components in ${performance.now() - startTime} ms`);
 }

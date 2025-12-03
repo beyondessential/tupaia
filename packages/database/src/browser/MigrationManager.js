@@ -65,6 +65,8 @@ export class MigrationManager {
   }
 
   async migrate() {
+    console.groupCollapsed('Processing migrations');
+    const startTime = performance.now();
     try {
       const migrations = await this.loadMigrationFiles();
       const executedMigrations = await this.getExecutedMigrations();
@@ -91,6 +93,9 @@ export class MigrationManager {
     } catch (error) {
       console.error(`Migration failed: ${error instanceof Error ? error.message : String(error)}`);
       throw error;
+    } finally {
+      console.groupEnd();
+      console.log(`Processed migrations in ${performance.now() - startTime} ms`);
     }
   }
 
