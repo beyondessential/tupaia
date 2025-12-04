@@ -28,10 +28,10 @@ export const allowNoPermissions = () => true;
  */
 export const assertAllPermissions = (assertions, errorMessage) => async accessPolicy => {
   try {
-    for (const assertion of assertions) await assertion(accessPolicy);
+    await Promise.all(assertions.map(assertion => assertion(accessPolicy)));
     return true;
   } catch (e) {
-    throw new Error(errorMessage || e.message);
+    throw errorMessage ? new Error(errorMessage) : e;
   }
 };
 
