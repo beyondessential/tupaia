@@ -1,16 +1,18 @@
 import winston from 'winston';
-import { sendEmail } from '@tupaia/server-utils';
+
+import { ScheduledTask, sendEmail } from '@tupaia/server-utils';
 import { requireEnv } from '@tupaia/utils';
-import { ScheduledTask } from '@tupaia/server-utils';
 
 export class TaskOverdueChecker extends ScheduledTask {
+  #datatrakUrl = requireEnv('DATATRAK_FRONT_END_URL');
+
   constructor(models) {
     // run TaskOverdueChecker every hour
     super(models, 'TaskOverdueChecker', '0 * * * *');
   }
 
   async run() {
-    const { task, user, taskComment } = this.models;
+    const { task, user } = this.models;
     const overdueTasks = await task.find({
       task_status: 'overdue',
       overdue_email_sent: null,
@@ -29,7 +31,6 @@ export class TaskOverdueChecker extends ScheduledTask {
         winston.error(`Assignee with id ${overdueTask.assignee_id} not found`);
         continue;
       }
-      const datatrakURL = requireEnv('DATATRAK_FRONT_END_URL');
 
       const result = await sendEmail(assignee.email, {
         subject: 'Task overdue on Tupaia.org',
@@ -39,7 +40,7 @@ export class TaskOverdueChecker extends ScheduledTask {
           surveyName: overdueTask.survey_name,
           entityName: overdueTask.entity_name,
           cta: {
-            url: `${datatrakURL}/tasks/${overdueTask.id}`,
+            url: `${this.#datatrakUrl}/tasks/${overdueTask.id}`,
             text: 'View task',
           },
         },
