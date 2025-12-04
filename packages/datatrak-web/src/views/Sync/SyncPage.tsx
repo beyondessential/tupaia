@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
@@ -7,6 +7,9 @@ import { StickyMobileHeader } from '../../layout';
 import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
+import { SYNC_EVENT_ACTIONS } from '../../types';
+import { formatDistance } from 'date-fns';
+import { useSyncContext } from '../../api/SyncContext';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -19,6 +22,11 @@ const LayoutManager = styled.div`
   grid-row-start: 2;
   grid-template-areas: '.' '--content' '.';
   grid-template-rows: minmax(0, 2fr) auto minmax(0, 3fr);
+`;
+
+const ErrorMessage = styled.p`
+  margin-block-start: 10rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
 const Content = styled.div`
@@ -50,27 +58,119 @@ const StyledButton = styled(Button)`
   margin-block-start: 2.25rem;
 `;
 
+export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null): string {
+  return lastSuccessfulSyncTime
+    ? formatDistance(lastSuccessfulSyncTime, new Date(), { addSuffix: true })
+    : '';
+}
+
 export const SyncPage = () => {
+  const { clientSyncManager: syncManager } = useSyncContext();
+
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
-  // <PLACEHOLDERS> TODO: Replace with queries or props
-  const lastSyncDate: Date | null = new Date(new Date().valueOf() - Math.random() * 1e9);
-  const syncProgress: number | null = 0.77;
-  // </PLACEHOLDERS>
+  const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState<boolean>(syncManager.isSyncing);
+  const [isQueuing, setIsQueuing] = useState<boolean>(syncManager.isQueuing);
+  const [syncStage, setSyncStage] = useState<number | null>(syncManager.syncStage);
+  const [progress, setProgress] = useState<number | null>(syncManager.progress);
+  const [progressMessage, setProgressMessage] = useState<string | null>(
+    syncManager.progressMessage,
+  );
+  const [formattedLastSuccessfulSyncTime, setFormattedLastSuccessfulSyncTime] = useState<string>(
+    formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
+  );
+
+  useEffect(() => {
+    const handler = (action, data): void => {
+      switch (action) {
+        case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
+          setProgress(0);
+          setIsQueuing(true);
+          setIsSyncing(false);
+          setErrorMessage(null);
+          setProgressMessage(syncManager.progressMessage);
+          break;
+        case SYNC_EVENT_ACTIONS.SYNC_STARTED:
+          setIsQueuing(false);
+          setSyncStarted(true);
+          setIsSyncing(true);
+          setProgress(0);
+          setProgressMessage('Initialising sync');
+          setSyncStage(1);
+          setErrorMessage(null);
+          break;
+        case SYNC_EVENT_ACTIONS.SYNC_ENDED:
+          setIsQueuing(false);
+          setIsSyncing(false);
+          setProgress(0);
+          setProgressMessage('');
+          break;
+        case SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED:
+          setSyncStage(syncManager.syncStage);
+          setProgress(syncManager.progress);
+          setProgressMessage(syncManager.progressMessage);
+          setFormattedLastSuccessfulSyncTime(
+            formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
+          );
+          break;
+        case SYNC_EVENT_ACTIONS.SYNC_ERROR:
+          setIsQueuing(false);
+          setErrorMessage(data.error);
+          break;
+        default:
+          break;
+      }
+    };
+    syncManager.emitter.on('*', handler);
+    return () => {
+      syncManager.emitter.off('*', handler);
+    };
+  }, [syncManager]);
+
+  const manualSync = useCallback(() => {
+    syncManager.triggerUrgentSync();
+  }, [syncManager]);
+
+  const syncFinishedSuccessfully = syncStarted && !isSyncing && !isQueuing && !errorMessage;
 
   return (
     <Wrapper>
       {isMobile && <StickyMobileHeader onClose={() => navigate(-1)}>Sync</StickyMobileHeader>}
+
       <LayoutManager>
         <Content>
           <picture>
             <source srcSet="/datatrak-pin.svg" type="image/svg+xml" />
             <img aria-hidden src="/datatrak-pin.svg" height={80} width={80} />
           </picture>
-          <StyledSyncStatus value={syncProgress} />
-          <StyledLastSyncDate date={lastSyncDate} />
-          <StyledButton>Sync now</StyledButton>
+
+          <StyledSyncStatus
+            isSyncing={isSyncing}
+            percentage={progress}
+            message={progressMessage}
+            syncStage={syncStage}
+            totalStages={Object.keys(syncManager.progressMaxByStage).length}
+            syncFinishedSuccessfully={syncFinishedSuccessfully}
+            hasError={Boolean(errorMessage)}
+          />
+
+          {!isSyncing && (
+            <>
+              {syncStarted && Boolean(formattedLastSuccessfulSyncTime) && (
+                <StyledLastSyncDate
+                  formattedLastSuccessfulSyncTime={formattedLastSuccessfulSyncTime}
+                  lastSyncDate={syncManager.lastSuccessfulSyncTime}
+                />
+              )}
+
+              <StyledButton onClick={manualSync}>Sync now</StyledButton>
+            </>
+          )}
+
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         </Content>
       </LayoutManager>
     </Wrapper>

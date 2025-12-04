@@ -1,6 +1,6 @@
 import winston from 'winston';
 import { getNextOccurrence } from '@tupaia/utils';
-import { ScheduledTask } from './ScheduledTask';
+import { ScheduledTask } from '@tupaia/server-utils';
 
 export class RepeatingTaskDueDateHandler extends ScheduledTask {
   constructor(models) {

@@ -1,7 +1,6 @@
 import { QueryConjunctions, EntityFilter, EntityFilterFields } from '@tupaia/server-boilerplate';
-import { NumericKeys } from '@tupaia/types';
+import { NumericKeys, Writable } from '@tupaia/types';
 import { getSortByKey } from '@tupaia/utils';
-import { Writable } from '../../../types';
 
 const CLAUSE_DELIMITER = ';';
 const JSONB_FIELD_DELIMITER = '->>';

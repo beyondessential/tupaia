@@ -1,5 +1,5 @@
 import { setupTest } from '@tupaia/database';
-import { camelKeys } from '@tupaia/utils';
+import { camelKeys, stripUpdatedAtSyncTickFromArray, stripUpdatedAtSyncTickFromObject } from '@tupaia/utils';
 
 import { expectError, expectSuccess, resetTestData, TestableApp } from '../../testUtilities';
 import { findTestRecordByCode, TEST_SETUP } from './dashboardVisualisations.fixtures';
@@ -78,13 +78,19 @@ describe('GET dashboard visualisations', () => {
     it('Returns an existing modern dashboard visualisation', async () => {
       const id = getVizId('Modern_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
-      expectSuccess(response, MODERN_DASHBOARD_VISUALISATION);
+      expectSuccess(
+        { ...response, body: stripUpdatedAtSyncTickFromObject(response.body) },
+        MODERN_DASHBOARD_VISUALISATION,
+      );
     });
 
     it('Returns an existing legacy dashboard visualisation', async () => {
       const id = getVizId('Legacy_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
-      expectSuccess(response, LEGACY_DASHBOARD_VISUALISATION);
+      expectSuccess(
+        { ...response, body: stripUpdatedAtSyncTickFromObject(response.body) },
+        LEGACY_DASHBOARD_VISUALISATION,
+      );
     });
 
     it('Returns an existing visualisation with only BES Admin permission', async () => {
@@ -92,7 +98,10 @@ describe('GET dashboard visualisations', () => {
       await app.grantAccess(besAdminPolicy);
       const id = getVizId('Legacy_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
-      expectSuccess(response, LEGACY_DASHBOARD_VISUALISATION);
+      expectSuccess(
+        { ...response, body: stripUpdatedAtSyncTickFromObject(response.body) },
+        LEGACY_DASHBOARD_VISUALISATION,
+      );
     });
   });
 
@@ -105,7 +114,10 @@ describe('GET dashboard visualisations', () => {
           },
         },
       });
-      expectSuccess(response, [MODERN_DASHBOARD_VISUALISATION, LEGACY_DASHBOARD_VISUALISATION]);
+      expectSuccess({ ...response, body: stripUpdatedAtSyncTickFromArray(response.body) }, [
+        MODERN_DASHBOARD_VISUALISATION,
+        LEGACY_DASHBOARD_VISUALISATION,
+      ]);
     });
   });
 });

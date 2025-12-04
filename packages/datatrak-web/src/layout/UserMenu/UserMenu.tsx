@@ -11,6 +11,9 @@ import { UserInfo } from './UserInfo';
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
+   ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
 `;
 
 const MenuButton = styled(IconButton).attrs({

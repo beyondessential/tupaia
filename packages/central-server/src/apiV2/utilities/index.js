@@ -1,10 +1,6 @@
-export { constructAnswerValidator } from './constructAnswerValidator';
 export { constructNewRecordValidationRules } from './constructNewRecordValidationRules';
 export * from './excel';
-export {
-  fetchCountryIdsByPermissionGroupId,
-  fetchCountryCodesByPermissionGroupId,
-} from './fetchCountriesByPermissionGroup';
+export { fetchCountryIdsByPermissionGroupId } from './fetchCountriesByPermissionGroup';
 export { fetchRequestingMeditrakDevice } from '../meditrakApp/utilities/fetchRequestingMeditrakDevice';
 export {
   getAdminPanelAllowedCountryIds,

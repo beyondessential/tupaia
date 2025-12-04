@@ -1,0 +1,1 @@
+export { getEntityDescendants } from './getEntityDescendants';

@@ -1,4 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { useDatabaseContext } from '../../hooks/database';
 import { UserAccountDetails } from '../../types';
 import { put } from '../api';
 
@@ -18,6 +20,7 @@ function camelToSnakeCase(camelCaseString: string): string {
 
 export const useEditUser = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
+  const { models } = useDatabaseContext();
 
   return useMutation<any, Error, UserAccountDetails, unknown>(
     async (userDetails: UserAccountDetails) => {
@@ -41,8 +44,10 @@ export const useEditUser = (onSuccess?: () => void) => {
         if (variables.projectId) {
           queryClient.invalidateQueries(['entityDescendants']);
           queryClient.invalidateQueries(['tasks']);
+
+          models.localSystemFact.addProjectForSync(variables.projectId);
         }
-        if (onSuccess) onSuccess();
+        onSuccess?.();
       },
     },
   );

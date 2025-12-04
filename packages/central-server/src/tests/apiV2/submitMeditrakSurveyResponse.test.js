@@ -273,9 +273,8 @@ describe('POST /surveyResponse', async () => {
 
       it('returns an error when survey_id is empty', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
-        const surveyCode = 'TEST_SURVEY';
         delete surveyResponseObject.survey_id;
-        surveyResponseObject.survey_code = surveyCode;
+        surveyResponseObject.survey_code = 'TEST_SURVEY';
         surveyResponseObject.answers.push(generateDummyAnswer());
 
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
