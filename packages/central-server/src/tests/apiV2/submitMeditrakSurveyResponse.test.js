@@ -214,7 +214,7 @@ describe('POST /surveyResponse', async () => {
         const response = await app.post('surveyResponse', {
           body: [badlyFormattedSurveyResponse],
         });
-        expect(response.statusCode).to.equal(403);
+        expect(response.statusCode).to.equal(400);
       });
 
       it('returns an error when fields are missing from the answer', async () => {
@@ -239,7 +239,7 @@ describe('POST /surveyResponse', async () => {
         surveyResponseObject.entity_id = 'wrongFormatId';
 
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(response.statusCode).to.equal(403);
+        expect(response.statusCode).to.equal(400);
       });
 
       it('returns an error when ids in an answer are in the wrong format', async () => {
@@ -279,7 +279,7 @@ describe('POST /surveyResponse', async () => {
 
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
 
-        expect(response.statusCode).to.equal(403);
+        expect(response.statusCode).to.equal(400);
       });
     });
 
@@ -450,7 +450,7 @@ describe('POST /surveyResponse', async () => {
   describe('Unsupported change actions', function () {
     it('returns an error for unsupported change actions', async function () {
       const response = await app.post('surveyResponse', { body: [{ some: 'data' }] });
-      expect(response.statusCode).to.equal(403);
+      expect(response.statusCode).to.equal(400);
     });
   });
 });
