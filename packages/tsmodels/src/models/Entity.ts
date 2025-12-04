@@ -2,9 +2,9 @@ import { EntityModel as BaseEntityModel, EntityRecord as BaseEntityRecord } from
 import { Entity } from '@tupaia/types';
 import { Model, DbFilter } from './types';
 
-export type EntityFilterFields = Entity & {
+export interface EntityFilterFields extends Entity {
   generational_distance: number;
-};
+}
 
 export type EntityFilter = DbFilter<EntityFilterFields>;
 
@@ -12,7 +12,10 @@ export type EntityFilter = DbFilter<EntityFilterFields>;
 export interface EntityRecord extends Entity, BaseEntityRecord {
   getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
   getParentFromParentChildRelation: (hierarchyId: string) => Promise<EntityRecord | undefined>;
-  getChildrenFromParentChildRelation: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
+  getChildrenFromParentChildRelation: (
+    hierarchyId: string,
+    criteria?: EntityFilter,
+  ) => Promise<EntityRecord[]>;
   getParent: (hierarchyId: string) => Promise<EntityRecord | undefined>;
   getDescendants: (
     hierarchyId: string,
