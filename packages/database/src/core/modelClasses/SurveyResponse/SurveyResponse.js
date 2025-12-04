@@ -143,7 +143,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         );
 
         if (surveyResponseCountries.some(isNullish)) {
-          log.error(`Unexpected nullish element in countries for survey  ${surveyCode}`, {
+          log.error(`Unexpected nullish element in countries for survey ${surveyCode}`, {
             surveyResponseCountries,
           });
         }
