@@ -1,6 +1,6 @@
-import { scheduleJob, Job } from 'node-schedule';
-import winston from 'winston';
 import { Knex } from 'knex';
+import { Job, scheduleJob } from 'node-schedule';
+import winston from 'winston';
 
 export interface DatabaseInterface {
   /**
@@ -30,7 +30,7 @@ export interface DatabaseInterface {
  * Subclasses should implement the run method and need to be initialised by instantiating the
  * class and calling init in the central-server index.js file
  */
-export class ScheduledTask {
+export abstract class ScheduledTask {
   /**
    * Cron tab config for scheduling the task
    */
@@ -79,9 +79,7 @@ export class ScheduledTask {
     winston.info(`Initialising scheduled task ${this.name}`);
   }
 
-  async run() {
-    throw new Error('Any subclass of ScheduledTask must implement the "run" method');
-  }
+  abstract run(): Promise<void>;
 
   async runTask() {
     this.start = Date.now();
