@@ -181,8 +181,9 @@ const toFilterClauseFromObject = ([field, value]: [
 ]) => {
   const firstField = assertFilterableField(field);
 
-  const operator = typeof value === 'string' ? '==' : (value.comparator as Operator);
-  const actualValue = typeof value === 'string' ? value : value.comparisonValue;
+  const valueIsString = typeof value === 'string';
+  const operator = valueIsString ? '==' : (value.comparator as Operator);
+  const actualValue = valueIsString ? value : value.comparisonValue;
 
   if (!filterOperators.includes(operator)) {
     throw new Error(`Unknown operator: ${operator}, must be one of: ${filterOperators}`);
