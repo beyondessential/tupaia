@@ -212,7 +212,7 @@ export const extractFilterClausesFromObject = (queryObject?: QueryObject) => {
 };
 
 const extractEntityFilter = (
-  allowedCountries: string[],
+  allowedCountries: Country['code'][],
   filterClauses?: [FilterableField, Operator, RawValue | RawValue[]][] | null,
 ): EntityFilter => {
   if (!filterClauses) {
@@ -237,15 +237,18 @@ const extractEntityFilter = (
   return filter;
 };
 
-export const extractEntityFilterFromQuery = (allowedCountries: string[], queryFilter?: string) => {
+export const extractEntityFilterFromQuery = (
+  allowedCountries: Country['code'][],
+  queryFilter?: string,
+): EntityFilter => {
   const filterClauses = extractFilterClausesFromQuery(queryFilter);
   return extractEntityFilter(allowedCountries, filterClauses);
 };
 
 export const extractEntityFilterFromObject = (
-  allowedCountries: string[],
+  allowedCountries: Country['code'][],
   queryObject?: QueryObject,
-) => {
+): EntityFilter => {
   const filterClauses = extractFilterClausesFromObject(queryObject);
   return extractEntityFilter(allowedCountries, filterClauses);
 };
