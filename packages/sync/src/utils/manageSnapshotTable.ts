@@ -3,11 +3,18 @@ import { snakeKeys } from '@tupaia/utils';
 
 const SCHEMA = 'sync_snapshots';
 
+class InvalidSyncSessionIdError extends Error {
+  constructor(...args: ConstructorParameters<typeof Error>) {
+    super(...args);
+    this.name = 'InvalidSyncSessionIdError';
+  }
+}
+
 const assertSessionIdIsSafe = (sessionId: string) => {
   const safeIdRegex = /^[A-Za-z0-9-]{24}$/;
   if (!safeIdRegex.test(sessionId)) {
-    throw new Error(
-      `${sessionId} does not match the expected format of a session id - be careful of SQL injection!`,
+    throw new InvalidSyncSessionIdError(
+      `${sessionId} doesn’t match the expected format of a session ID. Be careful of SQL injection!`,
     );
   }
 };
