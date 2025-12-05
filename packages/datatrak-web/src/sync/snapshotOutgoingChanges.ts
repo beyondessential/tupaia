@@ -36,10 +36,17 @@ export const snapshotOutgoingChanges = async (
   tombstoneModel: DatabaseModel,
   since: number,
 ) => {
+  console.groupCollapsed('Snapshotting outgoing changes');
+  const startTime = performance.now();
+
   assertModelsForPush(models);
 
   const modelChanges = await Promise.all(
     models.map(model => snapshotChangesForModel(model, tombstoneModel, since)),
   );
+
+  console.groupEnd();
+  console.log(`Snapshotted outgoing changes in ${performance.now() - startTime} ms`);
+
   return modelChanges.flat();
 };

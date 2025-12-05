@@ -97,12 +97,12 @@ describe('Entity Question', () => {
     },
   };
 
-  it('renders the Entity Question component without crashing', () => {
-    renderComponent(<EntityQuestion {...props} />);
+  it('renders the Entity Question component without crashing', async () => {
+    await renderComponent(<EntityQuestion {...props} />);
   });
 
   it('renders all the options when there is no config', async () => {
-    renderComponent(<EntityQuestion {...props} />);
+    await renderComponent(<EntityQuestion {...props} />);
 
     const displayOptions = await screen.findAllByRole('button');
     expect(displayOptions.length).toBe(entitiesData.length);
@@ -117,7 +117,7 @@ describe('Entity Question', () => {
   it('correctly constructs the request filter for the entities request', async () => {
     const entitiesRequest = spyOnMockRequest(server, 'GET', '*entityDescendants');
 
-    renderComponent(
+    await renderComponent(
       <EntityQuestion
         {...props}
         config={{
@@ -148,7 +148,7 @@ describe('Entity Question', () => {
   });
 
   it('Does not crash if there is legacy config ', async () => {
-    renderComponent(
+    await renderComponent(
       <EntityQuestion
         {...props}
         config={{

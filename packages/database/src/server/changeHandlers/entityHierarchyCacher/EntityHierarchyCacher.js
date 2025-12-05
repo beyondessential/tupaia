@@ -1,6 +1,8 @@
 import { generateId } from '../../../core/utilities';
 import { RECORDS } from '../../../core/records';
 import { ChangeHandler } from '../ChangeHandler';
+import { SqlQuery } from '../../../core';
+
 import { EntityHierarchySubtreeRebuilder } from './EntityHierarchySubtreeRebuilder';
 
 export class EntityHierarchyCacher extends ChangeHandler {
@@ -14,7 +16,21 @@ export class EntityHierarchyCacher extends ChangeHandler {
     };
   }
 
-  async translateEntityChangeToRebuildJobs({ record_id: entityId, new_record: newRecord }) {
+  getTransactionWrapper() {
+    return this.models.wrapInRepeatableReadTransaction.bind(this.models);
+  }
+
+  async translateEntityChangeToRebuildJobs({ type, old_record: oldRecord, new_record: newRecord }) {
+    // Should only rebuild if parent_id has changed
+    if (
+      type === 'update' &&
+      oldRecord?.parent_id === newRecord?.parent_id &&
+      oldRecord?.type === newRecord?.type &&
+      oldRecord?.country_code === newRecord?.country_code
+    ) {
+      return [];
+    }
+
     // if entity was deleted or created, or parent_id has changed, we need to delete subtrees and
     // rebuild all hierarchies
     const hierarchies = await this.models.entityHierarchy.all();
@@ -57,9 +73,19 @@ export class EntityHierarchyCacher extends ChangeHandler {
   }
 
   async handleChanges(transactingModels, rebuildJobs) {
-    // get the subtrees to delete, then run the delete
     const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
-    await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
+    const relatedEntityIds = await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
+
+    if (relatedEntityIds.length > 0) {
+      await transactingModels.database.executeSql(
+        `
+        UPDATE entity
+        SET updated_at_sync_tick = 1
+        WHERE id IN ${SqlQuery.record(relatedEntityIds)}
+        `,
+        relatedEntityIds,
+      );
+    }
 
     // explicitly flag ancestor_descendant_relation as changed so that model level caches are cleared
     // TODO: Remove this as part of RN-704

@@ -1,8 +1,9 @@
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
-import { TaskCommentType } from '@tupaia/types';
+import { TaskCommentType, TaskStatus } from '@tupaia/types';
 import { hasBESAdminAccess } from '@tupaia/access-policy';
+import { getOffsetForTimezone } from '@tupaia/utils';
 
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
@@ -34,6 +35,12 @@ const formatValue = async (field, value, models) => {
   }
   return value;
 };
+
+const getTaskMetricsBaseQuery = projectId => ({ 'survey.project_id': projectId });
+const getTaskMetricsBaseJoin = () => ({
+  joinWith: RECORDS.SURVEY,
+  joinCondition: ['survey.id', 'task.survey_id'],
+});
 
 export class TaskRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK;
@@ -313,7 +320,7 @@ export class TaskModel extends DatabaseModel {
       select: await buildSyncLookupSelect(this, {
         projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
       }),
-      joins: 'LEFT JOIN survey ON survey.id = task.survey_id',
+      joins: `LEFT JOIN survey ON survey.id = task.survey_id`,
     };
   }
 
@@ -326,6 +333,10 @@ export class TaskModel extends DatabaseModel {
       await this.getCountryCodesByPermissionGroupId(accessPolicy);
 
     const params = Object.entries(countryCodesByPermissionGroupId).flat(2); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
+
+    if (Object.keys(countryCodesByPermissionGroupId).length === 0) {
+      return null;
+    }
 
     return {
       sql: `
@@ -387,7 +398,7 @@ export class TaskModel extends DatabaseModel {
     const queryConditions = hasBESAdminAccess
       ? filtersWithColumnSelectors
       : {
-          [QUERY_CONJUNCTIONS.RAW]: queryClause,
+          ...(queryClause ? { [QUERY_CONJUNCTIONS.RAW]: queryClause } : {}),
           ...filtersWithColumnSelectors,
         };
 
@@ -620,6 +631,74 @@ export class TaskModel extends DatabaseModel {
     });
   }
 
+  async countUnassignedTasks(projectId) {
+    return await this.count(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: {
+          comparator: 'NOT IN',
+          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+        },
+        assignee_id: {
+          comparator: 'IS',
+          comparisonValue: null,
+        },
+      },
+      getTaskMetricsBaseJoin(),
+    );
+  }
+
+  async countOverdueTasks(projectId) {
+    return await this.count(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: {
+          comparator: 'NOT IN',
+          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+        },
+        due_date: {
+          comparator: '<=',
+          comparisonValue: new Date().getTime(),
+        },
+      },
+      getTaskMetricsBaseJoin(),
+    );
+  }
+
+  async findCompletedTasks(projectId) {
+    return await this.find(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: TaskStatus.completed,
+        repeat_schedule: {
+          comparator: 'IS',
+          comparisonValue: null,
+        },
+      },
+      {
+        columns: ['due_date', 'data_time', 'timezone', 'project_id'],
+      },
+    );
+  }
+
+  async findOnTimeCompletedTasks(completedTasks) {
+    return completedTasks.filter(record => {
+      if (!record.due_date || !record.data_time) {
+        return false;
+      }
+      const { data_time: dataTime, timezone } = record;
+      const offset = getOffsetForTimezone(timezone, new Date(dataTime));
+      const formattedDate = `${dataTime.toString().replace(' ', 'T')}${offset}`;
+      return new Date(formattedDate).getTime() <= record.due_date;
+    });
+  }
+
+  async calculateOnTimeCompletionRate(projectId) {
+    const completedTasks = await this.findCompletedTasks(projectId);
+    const onTimeCompletedTasks = await this.findOnTimeCompletedTasks(completedTasks);
+    return Math.round((onTimeCompletedTasks.length / completedTasks.length) * 100) || 0;
+  }
+
   async assertUserHasPermissionToCreateTask(accessPolicy, taskData) {
     const { entity_id: entityId, survey_id: surveyId } = taskData;
 
@@ -660,5 +739,39 @@ export class TaskModel extends DatabaseModel {
     dbOptions.multiJoin = mergeMultiJoin(this.joins, dbOptions.multiJoin);
 
     return { dbConditions, dbOptions };
+  }
+
+  async completeTaskForSurveyResponse(surveyResponse) {
+    const {
+      id: surveyResponseId,
+      survey_id: surveyId,
+      entity_id: entityId,
+      data_time: dataTime,
+      user_id: userId,
+    } = surveyResponse;
+    const tasksToComplete = await this.find(
+      {
+        [QUERY_CONJUNCTIONS.AND]: {
+          status: 'to_do',
+          [QUERY_CONJUNCTIONS.OR]: {
+            status: {
+              comparator: 'IS',
+              comparisonValue: null,
+            },
+          },
+        },
+        [QUERY_CONJUNCTIONS.RAW]: {
+          sql: `(task.survey_id = ? AND task.entity_id = ? AND task.created_at <= ?)`,
+          parameters: [surveyId, entityId, dataTime],
+        },
+      },
+    );
+
+    // If the survey response was successfully created, complete any tasks that are due
+    if (tasksToComplete.length === 0) return;
+
+    for (const task of tasksToComplete) {
+      await task.handleCompletion(surveyResponseId, userId);
+    }
   }
 }

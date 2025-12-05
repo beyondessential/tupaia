@@ -6,6 +6,7 @@ import { post } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { useDatabaseMutation } from '../queries';
 import { DatatrakWebModelRegistry } from '../../types';
+import { useSyncContext } from '../SyncContext';
 
 const logoutOnline = async () => {
   return await post('logout');
@@ -20,10 +21,14 @@ const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) =
 export const useLogout = () => {
   const queryClient = useQueryClient();
   const isOfflineFirst = useIsOfflineFirst();
+  const { clientSyncManager } = useSyncContext() || {};
 
   return useDatabaseMutation(isOfflineFirst ? logoutOffline : logoutOnline, {
-    onSuccess: async () => {
-      await queryClient.resetQueries();
+    onSuccess: () => {
+      if (isOfflineFirst && clientSyncManager) {
+        clientSyncManager.stopSyncService();
+      }
+      queryClient.resetQueries();
     },
   });
 };

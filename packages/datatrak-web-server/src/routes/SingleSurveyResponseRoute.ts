@@ -2,9 +2,13 @@ import camelcaseKeys from 'camelcase-keys';
 import { Request } from 'express';
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { SurveyResponseModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
+import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
+import { SURVEY_RESPONSE_DEFAULT_FIELDS } from '@tupaia/constants';
+
+import { DatatrakWebServerModelRegistry } from '../types';
 
 export type SingleSurveyResponseRequest = Request<
   DatatrakWebSingleSurveyResponseRequest.Params,
@@ -13,26 +17,7 @@ export type SingleSurveyResponseRequest = Request<
   DatatrakWebSingleSurveyResponseRequest.ReqQuery
 >;
 
-const ANSWER_COLUMNS = ['text', 'question_id', 'type'];
-
-const DEFAULT_FIELDS = [
-  'assessor_name',
-  'country.name',
-  'data_time',
-  'end_time',
-  'entity.name',
-  'entity.id',
-  'id',
-  'survey.name',
-  'survey.code',
-  'user_id',
-  'country.code',
-  'survey.permission_group_id',
-  'timezone',
-  'survey.project_id',
-];
-
-type AnswerT = string | number | boolean | null | undefined | { name: string; id: string };
+const ANSWER_COLUMNS = ['text', 'question_id', 'type'] as const;
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -60,7 +45,7 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
     const { ctx, params, query, accessPolicy, models } = this.req;
     const { id: responseId } = params;
 
-    const { fields = DEFAULT_FIELDS } = query;
+    const { fields = SURVEY_RESPONSE_DEFAULT_FIELDS } = query;
 
     const currentUser = await ctx.services.central.getUser();
     const { id } = currentUser;
@@ -82,44 +67,36 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       ...response
     } = surveyResponse;
 
-    // If the user is not the owner of the survey response, they should not be able to view the survey response unless they are a BES admin or have access to the admin panel
-    if (userId !== id) {
-      const permissionGroup = await models.permissionGroup.findById(surveyPermissionGroupId);
-      if (!permissionGroup) {
-        throw new Error('Permission group for survey not found');
-      }
-      assertCanViewSurveyResponse(accessPolicy, countryCode, permissionGroup.name);
-    }
-
-    const entityParentName = await models.entity.getParentEntityName(
-      projectId,
-      response['entity.id'],
-    );
-
     const answerList = await ctx.services.central.fetchResources('answers', {
       filter: { survey_response_id: surveyResponse.id },
       columns: ANSWER_COLUMNS,
       pageSize: 'ALL',
     });
 
-    const answers: Record<string, AnswerT> = {};
-    for (const answer of answerList) {
-      const { question_id: questionId, type, text } = answer;
-      if (!text) continue;
-      if (type === QuestionType.User) {
-        const user = await models.user.findById(text);
-        if (!user) {
-          // Log the error but continue to the next answer. This is in case the user was deleted
-          console.error(`User with id ${text} not found`);
-          continue;
+    return await models.wrapInReadOnlyTransaction(async transactingModels => {
+      // If the user is not the owner of the survey response, they should not be able to view the
+      // survey response unless they are a BES admin or have access to the Admin Panel
+      if (userId !== id) {
+        // TODO: Fix ModelRegistry and subclass types; and remove ugly casts
+        const permissionGroup = await (
+          transactingModels as unknown as DatatrakWebServerModelRegistry
+        ).permissionGroup.findById(surveyPermissionGroupId);
+        if (!permissionGroup) {
+          throw new Error('Permission group for survey not found');
         }
-        answers[questionId] = { id: user.id, name: user.full_name };
-        continue;
+        assertCanViewSurveyResponse(accessPolicy, countryCode, permissionGroup.name);
       }
-      answers[questionId] = text;
-    }
 
-    // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
-    return camelcaseKeys({ ...response, countryCode, entityParentName, userId, answers });
+      const [entityParentName, answers] = await Promise.all([
+        (transactingModels as unknown as DatatrakWebServerModelRegistry).entity.getParentEntityName(
+          projectId,
+          response['entity.id'],
+        ),
+        SurveyResponseModel.formatAnswersForClient(transactingModels, answerList),
+      ]);
+
+      // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
+      return camelcaseKeys({ ...response, countryCode, entityParentName, userId, answers });
+    });
   }
 }

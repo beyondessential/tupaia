@@ -81,7 +81,7 @@ export const LoginForm = ({
   } = labels || {};
   return (
     <Wrapper title={title} subtitle={subtitle} className={className}>
-      {error && <Typography color="error">{error.message}</Typography>}
+      {error && <Typography color="error" align="center">{error.message}</Typography>}
       {message && <EmailVerificationDisplay message={message} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
         <FormInput

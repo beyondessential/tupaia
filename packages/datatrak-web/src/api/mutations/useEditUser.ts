@@ -1,8 +1,18 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
+
+import { ensure } from '@tupaia/tsutils';
 
 import { useDatabaseContext } from '../../hooks/database';
-import { UserAccountDetails } from '../../types';
+import { DatatrakWebModelRegistry, UserAccountDetails } from '../../types';
 import { put } from '../api';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { useDatabaseMutation } from '../queries';
+import { editUser } from '../../database';
+
+export type EditUserParams = {
+  models: DatatrakWebModelRegistry;
+  data: UserAccountDetails;
+};
 
 /**
  * Converts a string from camel case to snake case.
@@ -18,25 +28,32 @@ function camelToSnakeCase(camelCaseString: string): string {
     .toLowerCase();
 }
 
+export const prepareUserDetails = (userDetails: UserAccountDetails) => {
+  // `mobile_number` field in database is nullable; don't just store an empty string
+  if (userDetails?.mobileNumber === '') userDetails.mobileNumber = null;
+
+  return Object.fromEntries(
+    Object.entries(userDetails).map(([key, value]) => [camelToSnakeCase(key), value]),
+  );
+};
+
+const editUserOnline = async ({ data: userDetails }: { data: UserAccountDetails }) => {
+  if (!userDetails) {
+    return;
+  }
+
+  const updates = prepareUserDetails(userDetails);
+
+  return await put('me', { data: updates });
+};
+
 export const useEditUser = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
-  const { models } = useDatabaseContext();
+  const isOfflineFirst = useIsOfflineFirst();
+  const { models } = useDatabaseContext() || {};
 
-  return useMutation<any, Error, UserAccountDetails, unknown>(
-    async (userDetails: UserAccountDetails) => {
-      if (!userDetails) return;
-
-      // `mobile_number` field in database is nullable; don't just store an empty string
-      if (!userDetails?.mobileNumber) {
-        userDetails.mobileNumber = null;
-      }
-
-      const updates = Object.fromEntries(
-        Object.entries(userDetails).map(([key, value]) => [camelToSnakeCase(key), value]),
-      );
-
-      await put('me', { data: updates });
-    },
+  return useDatabaseMutation<any, Error, UserAccountDetails, unknown>(
+    isOfflineFirst ? editUser : editUserOnline,
     {
       onSuccess: (_, variables) => {
         queryClient.invalidateQueries(['getUser']);
@@ -45,7 +62,9 @@ export const useEditUser = (onSuccess?: () => void) => {
           queryClient.invalidateQueries(['entityDescendants']);
           queryClient.invalidateQueries(['tasks']);
 
-          models.localSystemFact.addProjectForSync(variables.projectId);
+          if (isOfflineFirst) {
+            ensure(models).localSystemFact.addProjectForSync(variables.projectId);
+          }
         }
         onSuccess?.();
       },

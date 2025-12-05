@@ -63,12 +63,6 @@ export const SyncStatus = ({
 
   return (
     <Wrapper {...props}>
-      {syncStage && (
-        <SyncHeading>
-          Sync stage {syncStage} of {totalStages}
-        </SyncHeading>
-      )}
-
       {isSyncing && (
         <>
           <SyncHeading>Syncing {percentage}%</SyncHeading>
@@ -76,7 +70,10 @@ export const SyncStatus = ({
         </>
       )}
 
-      {message && <SyncParagraph>{message}</SyncParagraph>}
+      <div>
+        {syncStage && <SyncParagraph>{`Sync stage ${syncStage} of ${totalStages}`}</SyncParagraph>}
+        {message && <SyncParagraph>{message}</SyncParagraph>}
+      </div>
 
       {syncFinishedSuccessfully && (
         <>

@@ -5,7 +5,7 @@ import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
-import { getEnvVarOrDefault } from '@tupaia/utils';
+import { getEnvVarOrDefault, NotImplementedError } from '@tupaia/utils';
 import { SCHEMA_NAMES } from './constants';
 import { generateId } from './utilities';
 import {
@@ -89,6 +89,9 @@ export class BaseDatabase {
   /** @type {Knex} */
   connection;
 
+  /** @type {Promise<true>} */
+  connectionPromise;
+
   constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
@@ -105,6 +108,7 @@ export class BaseDatabase {
       this.connection = transactingConnection;
       this.connectionPromise = Promise.resolve(true);
     } else {
+      /** @returns {Promise<true>} */
       const connectToDatabase = async () => {
         this.connection = knex({
           client: clientType,
@@ -114,11 +118,24 @@ export class BaseDatabase {
       };
       this.connectionPromise = connectToDatabase();
     }
+
+    this.setCustomTypeParsers();
   }
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
   generateId = generateId;
+
+  /**
+   * Subclasses should override parsers for certain PostgreSQL types as needed based on their
+   * PostgreSQL client’s default parsers (e.g. node-postgres, PGlite). If no overrides needed,
+   * override with an empty method.
+   * @abstract
+   * @returns {Promise<void>}
+   */
+  async setCustomTypeParsers() {
+    throw new NotImplementedError('Subclass should override setCustomTypeParsers');
+  }
 
   async closeConnections() {
     return await this.connection.destroy();
@@ -129,12 +146,13 @@ export class BaseDatabase {
   }
 
   /**
+   * @abstract
    * @param {<ReturnT = unknown, DatabaseT extends BaseDatabase = BaseDatabase>(models: DatabaseT) => Promise<ReturnT>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise<ReturnT>}
    */
   async wrapInTransaction(_wrappedFunction, _transactionConfig) {
-    throw new Error('wrapInTransaction should be implemented by the child class');
+    throw new NotImplementedError('wrapInTransaction should be implemented by the child class');
   }
 
   /**
@@ -423,16 +441,6 @@ export class BaseDatabase {
     return this.delete(recordType, { id });
   }
 
-  /**
-   * Force a change to be recorded against the records matching the search criteria, and return
-   * those records.
-   */
-  async markAsChanged(recordType, where, options) {
-    const records = await this.find(recordType, where, options);
-    await this.markRecordsAsChanged(recordType, records);
-    return records;
-  }
-
   async getSetting(key) {
     const setting = await this.findOne('setting', { key });
     return setting ? setting.value : null;
@@ -452,7 +460,7 @@ export class BaseDatabase {
    * Use only for situations in which Knex is not able to assemble a query.
    *
    * @param {string} sqlString
-   * @param {any[] | Record<string, any> | undefined} [parametersToBind]
+   * @param {readonly knex.Knex.RawBinding[] | knex.Knex.ValueDict | knex.Knex.RawBinding} [parametersToBind]
    * @template Result
    * @returns {Promise<Result>} execution result
    */
@@ -591,6 +599,11 @@ function buildQuery(connection, queryConfig, where = {}, options = {}, baseQuery
   // Alias the query result (for use in nested queries) if name provided
   if (options.name) {
     query = query.as(options.name);
+  }
+
+  if (options.onConflictMerge) {
+    // onConflictMerge is an array of columns to merge conflicts for
+    query = query.onConflict(options.onConflictMerge).merge();
   }
 
   if (options.onConflictIgnore) {

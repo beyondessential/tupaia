@@ -1,5 +1,6 @@
 import log from 'winston';
 import mitt from 'mitt';
+import { QueryClient } from '@tanstack/react-query';
 
 import {
   createClientSnapshotTable,
@@ -19,6 +20,7 @@ import {
   FACT_LAST_SUCCESSFUL_SYNC_PUSH,
   FACT_PROJECTS_IN_SYNC,
 } from '@tupaia/constants';
+import { ensure } from '@tupaia/tsutils';
 
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
@@ -27,7 +29,11 @@ import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { insertSnapshotRecords } from './insertSnapshotRecords';
 import { remove, stream } from '../api';
-import { ensure } from '@tupaia/tsutils';
+import { formatFraction } from '../utils';
+import { getDeviceId } from './getDeviceId';
+import { getSyncTick } from './getSyncTick';
+
+const SYNC_INTERVAL = 1000 * 30;
 
 const SYNC_STAGES = {
   PUSH: 1,
@@ -52,6 +58,8 @@ export interface SyncResult {
 }
 
 export class ClientSyncManager {
+  private static instance: ClientSyncManager | null = null;
+
   private database: DatatrakDatabase;
 
   private models: DatatrakWebModelRegistry;
@@ -62,10 +70,15 @@ export class ClientSyncManager {
 
   private isInitialSync: boolean = false;
 
+  private syncInterval: NodeJS.Timeout | null = null;
+
   progressMaxByStage = STAGE_MAX_PROGRESS_INCREMENTAL;
 
+  isRequestingSync: boolean = false;
   isSyncing: boolean = false;
   isQueuing: boolean = false;
+
+  errorMessage: string | null = null;
 
   lastSuccessfulSyncTime: Date | null = null;
 
@@ -85,6 +98,64 @@ export class ClientSyncManager {
     log.debug('ClientSyncManager.constructor', {
       deviceId,
     });
+  }
+
+  static async getInstance(models: DatatrakWebModelRegistry): Promise<ClientSyncManager> {
+    if (!ClientSyncManager.instance) {
+      const deviceId = await getDeviceId(models);
+      ClientSyncManager.instance = new ClientSyncManager(models, deviceId);
+    }
+    return ClientSyncManager.instance;
+  }
+
+  async startSyncService(queryClient: QueryClient): Promise<void> {
+    if (this.syncInterval) {
+      return;
+    }
+
+    await this.waitForCurrentSyncToEnd();
+
+    log.info('Starting sync service');
+    const run = async (): Promise<void> => {
+      log.info('Running regular sync');
+      await this.triggerSync(false, queryClient);
+    };
+
+    // Run the sync immediately
+    // and then schedule the next sync
+    run();
+    this.syncInterval = setInterval(run, SYNC_INTERVAL);
+  }
+
+  async stopSyncService(): Promise<void> {
+    if (this.syncInterval) {
+      log.info('Stopping sync service');
+      clearInterval(this.syncInterval);
+      await this.waitForCurrentSyncToEnd();
+    }
+
+    this.syncInterval = null;
+    this.isSyncing = false;
+    this.isRequestingSync = false;
+    this.isQueuing = false;
+    this.progress = 0;
+    this.progressMessage = null;
+    this.syncStage = null;
+    this.lastSuccessfulSyncTime = null;
+  }
+
+  async waitForCurrentSyncToEnd(): Promise<void> {
+    if (this.isSyncing) {
+      return new Promise(resolve => {
+        const done = (): void => {
+          resolve();
+          this.emitter.off(SYNC_EVENT_ACTIONS.SYNC_ENDED, done);
+        };
+        this.emitter.on(SYNC_EVENT_ACTIONS.SYNC_ENDED, done);
+      });
+    }
+
+    return Promise.resolve();
   }
 
   setSyncStage(syncStage: number | null): void {
@@ -133,60 +204,64 @@ export class ClientSyncManager {
     return syncedProjectIds;
   }
 
-  async triggerSync(urgent: boolean = false): Promise<SyncResult> {
-    const isOnline = window.navigator.onLine;
-
-    if (!isOnline) {
-      log.warn('ClientSyncManager.triggerSync(): No internet connectivity');
-      return {};
-    }
+  async triggerSync(urgent: boolean = false, queryClient: QueryClient): Promise<void> {
     if (this.isSyncing) {
       log.warn('ClientSyncManager.triggerSync(): Tried to start syncing while sync in progress');
-      return {};
+      return;
     }
 
     try {
-      return await this.runSync(urgent);
+      const isOnline = window.navigator.onLine;
+
+      if (!isOnline) {
+        throw new Error('No internet connectivity');
+      }
+
+      const { pulledChangesCount } = await this.runSync(urgent);
+      if (pulledChangesCount) {
+        await queryClient.invalidateQueries();
+      }
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
+      this.errorMessage = error.message;
     } finally {
       // Reset all the values to default only if sync actually started, otherwise they should still be default values
       if (this.isSyncing) {
         this.setProgress(0, '');
         this.syncStage = null;
         this.isSyncing = false;
+        this.isRequestingSync = false;
         this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED);
         this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ENDED);
         if (this.urgentSyncInterval) {
           clearInterval(this.urgentSyncInterval);
           this.urgentSyncInterval = null;
         }
+        this.progressMessage = null;
       }
     }
-
-    return {};
   }
 
   /**
    * Trigger urgent sync, and along with urgent sync, schedule regular sync requests
    * to continuously connect to central server and request for status change of the sync session
    */
-  async triggerUrgentSync(): Promise<SyncResult> {
+  async triggerUrgentSync(queryClient: QueryClient): Promise<void> {
     if (this.urgentSyncInterval) {
       log.warn('ClientSyncManager.triggerUrgentSync(): Urgent sync already started');
-      return {};
+      return;
     }
 
     const urgentSyncIntervalInSeconds = 10;
 
     // Schedule regular urgent sync
     this.urgentSyncInterval = setInterval(
-      () => this.triggerSync(true),
+      () => this.triggerSync(true, queryClient),
       urgentSyncIntervalInSeconds * 1000,
     );
 
     // start the sync now
-    return await this.triggerSync(true);
+    return await this.triggerSync(true, queryClient);
   }
 
   async runSync(urgent: boolean = false): Promise<SyncResult> {
@@ -196,6 +271,11 @@ export class ClientSyncManager {
       );
     }
 
+    this.errorMessage = null;
+    this.progressMessage = 'Requesting sync...';
+    this.isRequestingSync = true;
+    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_REQUESTING);
+
     const projectIds = await this.getProjectsInSync();
 
     if (projectIds.length === 0) {
@@ -203,9 +283,10 @@ export class ClientSyncManager {
       return {};
     }
 
+    this.isRequestingSync = false;
     this.isSyncing = true;
 
-    const pullSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
+    const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
 
     this.isInitialSync = pullSince === -1;
 
@@ -229,6 +310,7 @@ export class ClientSyncManager {
 
     this.isSyncing = true;
     this.isQueuing = false;
+    this.progressMessage = 'Initialising sync';
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STARTED);
 
     // clear previous temp data, in case last session errored out or server was restarted
@@ -292,7 +374,7 @@ export class ClientSyncManager {
     this.setProgress(0, 'Pushing all new changes...');
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
-    const currentSyncClockTime = await this.models.localSystemFact.get(FACT_CURRENT_SYNC_TICK);
+    const currentSyncClockTime = await getSyncTick(this.models, FACT_CURRENT_SYNC_TICK);
 
     // use the new unique sync tick for any changes from now on so that any records that are created
     // or updated even mid way through this sync, are marked using the new tick and will be captured
@@ -306,7 +388,7 @@ export class ClientSyncManager {
     // to be pushed, and then pushing those up in batches
     // this avoids any of the records to be pushed being changed during the push period and
     // causing data that isn't internally coherent from ending up on the central server
-    const pushSince = (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH)) || -1;
+    const pushSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PUSH);
     log.debug('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
     // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
@@ -350,8 +432,7 @@ export class ClientSyncManager {
         'Pausing at 33% while server prepares for pull, please wait...',
       );
 
-      const pullSince =
-        (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
+      const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
 
       log.debug('ClientSyncManager.createClientSnapshotTable', {
         sessionId,
@@ -399,7 +480,11 @@ export class ClientSyncManager {
     let totalSaved = 0;
     const progressCallback = (incrementalSaved: number) => {
       totalSaved += Number(incrementalSaved);
-      this.updateProgress(totalToPull, totalSaved, `Saving changes (${totalSaved}/${totalToPull})`);
+      this.updateProgress(
+        totalToPull,
+        totalSaved,
+        `Saving changes (${formatFraction(totalSaved, totalToPull)})`,
+      );
     };
 
     await this.models.wrapInTransaction(async transactingModels => {
@@ -424,7 +509,11 @@ export class ClientSyncManager {
     let pullTotal = 0;
     const pullProgressCallback = (incrementalPulled: number) => {
       pullTotal += Number(incrementalPulled);
-      this.updateProgress(totalToPull, pullTotal, `Pulling changes (${pullTotal}/${totalToPull})`);
+      this.updateProgress(
+        totalToPull,
+        pullTotal,
+        `Pulling changes (${formatFraction(pullTotal, totalToPull)})`,
+      );
     };
     const processStreamedDataFunction = async ({
       models,
@@ -443,7 +532,11 @@ export class ClientSyncManager {
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
       totalSaved += Number(incrementalSaved);
-      this.updateProgress(totalToPull, totalSaved, `Saving changes (${totalSaved}/${totalToPull})`);
+      this.updateProgress(
+        totalToPull,
+        totalSaved,
+        `Saving changes (${formatFraction(totalSaved, totalToPull)})`,
+      );
     };
     await this.models.wrapInTransaction(async transactingModels => {
       const incomingModels = getModelsForPull(transactingModels.getModels());

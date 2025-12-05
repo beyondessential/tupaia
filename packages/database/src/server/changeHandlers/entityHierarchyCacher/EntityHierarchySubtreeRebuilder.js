@@ -15,7 +15,7 @@ export class EntityHierarchySubtreeRebuilder {
   async rebuildSubtrees(rebuildJobs) {
     // rebuild the entity parent child relations first so 
     // that the subtree rebuilds are based on the most up to date relations
-    await this.entityParentChildRelationBuilder.rebuildRelations(rebuildJobs);
+    const relatedEntityIds = await this.entityParentChildRelationBuilder.rebuildRelations(rebuildJobs);
 
     // get the subtrees to delete, then run the delete
     const subtreesForDelete = {};
@@ -33,6 +33,8 @@ export class EntityHierarchySubtreeRebuilder {
     // get the unique set of hierarchies to be rebuilt, then run the rebuild
     const hierarchiesForRebuild = Object.keys(subtreesForDelete);
     await this.buildAndCacheHierarchies(hierarchiesForRebuild);
+
+    return relatedEntityIds;
   }
 
   /**

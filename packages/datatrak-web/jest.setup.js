@@ -22,6 +22,14 @@ const mockModels = {
     set: jest.fn().mockResolvedValue(undefined),
     addProjectForSync: jest.fn(),
   },
+  user: {
+    findOne: jest.fn().mockResolvedValue({
+      id: 'user-123',
+      email: 'test@example.com',
+    }),
+    create: jest.fn(),
+    update: jest.fn(),
+  },
   closeDatabaseConnections: jest.fn(),
 };
 
@@ -42,6 +50,14 @@ jest.mock('./src/database/createDatabase', () => ({
         }),
         addProjectForSync: jest.fn(),
       },
+      user: {
+        findOne: jest.fn().mockResolvedValue({
+          id: 'user-123',
+          email: 'test@example.com',
+        }),
+        create: jest.fn(),
+        update: jest.fn(),
+      },
     },
   })),
 }));
@@ -53,7 +69,9 @@ jest.mock('./src/api/CurrentUserContext', () => {
     ...actual,
     useCurrentUserContext: jest.fn(() => ({
       ...actual.useCurrentUserContext(), // Get the actual return value
-      accessPolicy: {}, // Override just this property
+      accessPolicy: {
+        allowsSome: jest.fn().mockReturnValue(true),
+      }, // Override just this property
     })),
   };
 });

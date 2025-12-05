@@ -51,6 +51,10 @@ export class ChangeHandler {
     this.debounceTime = debounceTime;
   }
 
+  getTransactionWrapper() {
+    return this.models.wrapInTransaction.bind(this.models);
+  }
+
   /**
    * @abstract
    * @protected
@@ -127,7 +131,8 @@ export class ChangeHandler {
       success = true;
 
       try {
-        await this.models.wrapInTransaction(async transactingModels => {
+        const transactionWrapper = this.getTransactionWrapper();
+        await transactionWrapper(async transactingModels => {
           // Acquire a database advisory lock for the transaction
           // Ensures no other server instance can execute its change handler at the same time
           let profiler = winston.startTimer();

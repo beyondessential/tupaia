@@ -1,44 +1,17 @@
-/**
- * @typedef {import('@tupaia/database').ModelRegistry} ModelRegistry
- * @typedef {import('@tupaia/database').OptionRecord} OptionRecord
- * @typedef {import('@tupaia/types').MeditrakSurveyResponseRequest} SurveyResponse
- */
+import { merge } from 'es-toolkit';
 
 import { DatabaseError } from '@tupaia/utils';
 
-/**
- * @param {ModelRegistry} models
- * @param {SurveyResponse['entities_upserted']} entitiesUpserted
- * @param {import('@tupaia/types').Survey['id']} surveyId
- * @returns {Promise<import('@tupaia/database').EntityRecord[]>}
- */
-const upsertEntities = async (models, entitiesUpserted, surveyId) => {
-  /** @type {import('@tupaia/database').SurveyRecord} */
-  const survey = await models.survey.findById(surveyId);
-  const dataGroup = await survey.dataGroup();
-
+const upsertEntities = async (models, entitiesUpserted) => {
   return await Promise.all(
     entitiesUpserted.map(async entity => {
       const existingEntity = await models.entity.findById(entity.id);
 
       const existingMetadata = existingEntity?.metadata || {};
+      const newMetadata = entity.metadata || {};
+      const metadata = merge(existingMetadata, newMetadata);
 
-      return models.entity.updateOrCreate(
-        { id: entity.id },
-        {
-          ...entity,
-          metadata:
-            dataGroup.service_type === 'dhis'
-              ? {
-                  ...existingMetadata,
-                  dhis: {
-                    ...existingMetadata?.dhis,
-                    isDataRegional: !!dataGroup.config.isDataRegional,
-                  },
-                }
-              : {},
-        },
-      );
+      return models.entity.updateOrCreate({ id: entity.id }, { ...entity, metadata });
     }),
   );
 };
@@ -85,7 +58,7 @@ export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
 
     try {
       if (entitiesUpserted.length > 0) {
-        await upsertEntities(models, entitiesUpserted, surveyResponse.survey_id);
+        await upsertEntities(models, entitiesUpserted);
       }
 
       if (optionsCreated.length > 0) {
