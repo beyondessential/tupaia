@@ -71,12 +71,8 @@ export const dropSnapshotTable = async (database: TupaiaDatabase, sessionId: str
 };
 
 export const dropAllSnapshotTables = async (database: TupaiaDatabase) => {
-  await database.executeSql(`
-    DROP SCHEMA IF EXISTS ${SCHEMA} CASCADE;
-  `);
-  await database.executeSql(`
-    CREATE SCHEMA ${SCHEMA};
-  `);
+  await database.executeSql('DROP SCHEMA IF EXISTS ?? CASCADE;', [SCHEMA]);
+  await database.executeSql('CREATE SCHEMA ??;', [SCHEMA]);
 };
 
 export const insertSnapshotRecords = async (
