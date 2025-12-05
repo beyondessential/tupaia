@@ -5,6 +5,7 @@ import {
   getSortByKey,
   getUniqueObjects,
   haveSameFields,
+  jsonOperatorAwareSnake,
   mapKeys,
   mapValues,
   orderBy,
@@ -595,6 +596,42 @@ describe('object', () => {
       it.each(testData)('%s', (_, objectCollection, fields) => {
         expect(haveSameFields(objectCollection, fields)).toBe(false);
       });
+    });
+  });
+
+  describe('jsonOperatorAwareSnake', () => {
+    const cases = [
+      [
+        'converts vanilla camelCase string to snake_case',
+        'itIsATruthUniversallyAcknowledged',
+        'it_is_a_truth_universally_acknowledged',
+      ],
+      [
+        'preserves operators in PostgreSQL json/jsonb clause (simple)',
+        'privet->>dursleys',
+        'privet->>dursleys',
+      ],
+      [
+        'preserves operators in PostgreSQL json/jsonb clause (chained)',
+        'ground->hole->>hobbit',
+        'ground->hole->>hobbit',
+      ],
+      [
+        'converts operands in PostgreSQL json/jsonb clause, preserving operators (simple)',
+        'honeyTree->>honeyBee',
+        'honey_tree->>honey_bee',
+      ],
+      [
+        'converts operands in PostgreSQL json/jsonb clause, preserving operators (chained)',
+        'itWas->TheBest->>OfTimes',
+        'it_was->the_best->>of_times',
+      ],
+      ['otherwise behaves like Case.snake', 'Foo!! Bar$& bAZ$%', 'foo_bar_baz'],
+    ];
+
+    it.each(cases)('%s', (_, input, expected) => {
+      const result = jsonOperatorAwareSnake(input);
+      expect(result).toBe(expected);
     });
   });
 });

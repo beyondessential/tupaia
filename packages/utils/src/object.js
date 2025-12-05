@@ -266,5 +266,39 @@ export const haveSameFields = (objectCollection, fields) => {
 export const camelKeys = object =>
   Object.fromEntries(Object.entries(object).map(([key, value]) => [camel(key), value]));
 
-export const snakeKeys = object =>
-  Object.fromEntries(Object.entries(object).map(([key, value]) => [snake(key), value]));
+/**
+ * {@link snake}, but preserves `->` and `->>` PostgreSQL json/jsonb operators.
+ * @param {string} str
+ * @returns {string}
+ */
+export function jsonOperatorAwareSnake(str) {
+  /**
+   * @privateRemarks
+   * - Parentheses are NOT redundant; we need the matched operators in output array of
+   *   {@link String.prototype.split}.
+   * - Does NOT match `#>` or `#>>` standard comparison operators, or any additional jsonb-only
+   *   operators. (No reason other than that we haven’t needed them yet.)
+   * @see https://www.postgresql.org/docs/current/functions-json.html
+   * @example 'country_code' → ['country_code']
+   * @example 'config->item->>colour' → ['config', '->', 'item', '->>', 'colour']
+   */
+  const substrings = str.split(/(->>?)/);
+
+  // Redundant short-circuit, but this is a hot path. (No JSON operators present.)
+  if (substrings.length === 1) return snake(str);
+
+  // Assume input string is valid PostgreSQL json or jsonb clause, which cannot start with an
+  // operator. (`->` and `->>` are binary operators.)
+  return substrings
+    .map((substring, i) => {
+      const isOperand = i % 2 === 0; // Operands at even indexes; operators at odd indexes
+      return isOperand ? snake(substring) : substring; // snake otherwise converts '->>' into '_'
+    })
+    .join('');
+}
+
+export const snakeKeys = object => {
+  return Object.fromEntries(
+    Object.entries(object).map(([key, value]) => [jsonOperatorAwareSnake(key), value]),
+  );
+};
