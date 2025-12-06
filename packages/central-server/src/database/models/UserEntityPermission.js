@@ -1,5 +1,6 @@
 import { UserEntityPermissionModel as CommonUserEntityPermissionModel } from '@tupaia/database';
 import { sendEmail } from '@tupaia/server-utils';
+import winston from '../../log';
 
 export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
   meditrakConfig = {
@@ -27,6 +28,8 @@ const EMAILS = {
  * This will send users an email for each new permission they're granted. A smarter system would
  * hold off and pool several changes for the same user (e.g. if they're being granted permission
  * to three countries at once), but this is good enough.
+ * @param {{ type: string, new_record: import('@tupaia/types').UserEntityPermission }}
+ * @param {import('@tupaia/database').ModelRegistry} models
  */
 async function onUpsertSendPermissionGrantEmail(
   { type: changeType, new_record: newRecord },
@@ -36,15 +39,25 @@ async function onUpsertSendPermissionGrantEmail(
     return; // Don't notify the user of permissions being taken away
   }
 
+  const isApiClientUser = await models.user.isApiClientUser(newRecord.user_id);
+  if (isApiClientUser) {
+    winston.debug('Skipping permission-granted email for API client user', newRecord);
+    return;
+  }
+
   // Get details of permission granted
-  const user = await models.user.findById(newRecord.user_id);
-  const entity = await models.entity.findById(newRecord.entity_id);
-  const permissionGroup = await models.permissionGroup.findById(newRecord.permission_group_id);
-  const platform = user.primary_platform ? user.primary_platform : 'tupaia';
+  const user = await models.user.findById(newRecord.user_id, {
+    columns: ['email', 'first_name', 'primary_platform'],
+  });
+  const entity = await models.entity.findById(newRecord.entity_id, { columns: ['name'] });
+  const permissionGroup = await models.permissionGroup.findById(newRecord.permission_group_id, {
+    columns: ['name'],
+  });
+  const platform = user.primary_platform || 'tupaia';
 
   const { subject, description, signOff } = EMAILS[platform];
 
-  sendEmail(user.email, {
+  await sendEmail(user.email, {
     subject,
     signOff,
     templateName: 'permissionGranted',
