@@ -1,37 +1,37 @@
-import log from 'winston';
-import mitt from 'mitt';
 import { QueryClient } from '@tanstack/react-query';
+import mitt from 'mitt';
+import log from 'winston';
 
 import {
-  createClientSnapshotTable,
-  dropAllSnapshotTables,
-  dropSnapshotTable,
-  saveChangesFromMemory,
-  saveIncomingSnapshotChanges,
-  waitForPendingEditsUsingSyncTick,
-  getModelsForPush,
-  getModelsForPull,
-  withDeferredSyncSafeguards,
-} from '@tupaia/sync';
-import {
-  SYNC_STREAM_MESSAGE_KIND,
   FACT_CURRENT_SYNC_TICK,
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
   FACT_LAST_SUCCESSFUL_SYNC_PUSH,
   FACT_PROJECTS_IN_SYNC,
+  SYNC_STREAM_MESSAGE_KIND,
 } from '@tupaia/constants';
+import {
+  createClientSnapshotTable,
+  dropAllSnapshotTables,
+  dropSnapshotTable,
+  getModelsForPull,
+  getModelsForPush,
+  saveChangesFromMemory,
+  saveIncomingSnapshotChanges,
+  waitForPendingEditsUsingSyncTick,
+  withDeferredSyncSafeguards,
+} from '@tupaia/sync';
 import { ensure } from '@tupaia/tsutils';
-
-import { DatatrakDatabase } from '../database/DatatrakDatabase';
-import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
-import { DatatrakWebModelRegistry, ProcessStreamDataParams, SYNC_EVENT_ACTIONS } from '../types';
-import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
-import { pushOutgoingChanges } from './pushOutgoingChanges';
-import { insertSnapshotRecords } from './insertSnapshotRecords';
+import { Project } from '@tupaia/types';
 import { remove, stream } from '../api';
+import { DatatrakDatabase } from '../database/DatatrakDatabase';
+import { DatatrakWebModelRegistry, ProcessStreamDataParams, SYNC_EVENT_ACTIONS } from '../types';
 import { formatFraction } from '../utils';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
+import { insertSnapshotRecords } from './insertSnapshotRecords';
+import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
+import { pushOutgoingChanges } from './pushOutgoingChanges';
+import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 
 const SYNC_INTERVAL = 1000 * 30;
 
@@ -198,7 +198,7 @@ export class ClientSyncManager {
     this.setProgress(progressPercentage, progressMessage);
   };
 
-  async getProjectsInSync(): Promise<string[]> {
+  async getProjectsInSync(): Promise<Project['id'][]> {
     const syncedProjectsFact = await this.models.localSystemFact.get(FACT_PROJECTS_IN_SYNC);
     const syncedProjectIds = syncedProjectsFact ? JSON.parse(syncedProjectsFact) : [];
     return syncedProjectIds;
@@ -415,7 +415,7 @@ export class ClientSyncManager {
     log.debug('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
   }
 
-  async pullChanges(sessionId: string, projectIds: string[]): Promise<number> {
+  async pullChanges(sessionId: string, projectIds: Project['id'][]): Promise<number> {
     this.setSyncStage(SYNC_STAGES.PULL);
 
     try {
