@@ -1,5 +1,6 @@
 import { UserEntityPermissionModel as CommonUserEntityPermissionModel } from '@tupaia/database';
 import { sendEmail } from '@tupaia/server-utils';
+import { UnexpectedNullishValueError } from '@tupaia/tsutils';
 import winston from '../../log';
 
 export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
@@ -45,30 +46,42 @@ async function onUpsertSendPermissionGrantEmail(
     return;
   }
 
-  // Get details of permission granted
-  const user = await models.user.findById(newRecord.user_id, {
-    columns: ['email', 'first_name', 'primary_platform'],
-  });
-  const entity = await models.entity.findById(newRecord.entity_id, { columns: ['name'] });
-  const permissionGroup = await models.permissionGroup.findById(newRecord.permission_group_id, {
-    columns: ['name'],
-  });
-  const platform = user.primary_platform || 'tupaia';
+  try {
+    // Get details of permission granted
+    const user = await models.user.findByIdOrThrow(newRecord.user_id, {
+      columns: ['email', 'first_name', 'primary_platform'],
+    });
+    const entity = await models.entity.findByIdOrThrow(newRecord.entity_id, { columns: ['name'] });
+    const permissionGroup = await models.permissionGroup.findByIdOrThrow(
+      newRecord.permission_group_id,
+      { columns: ['name'] },
+    );
+    const platform = user.primary_platform || 'tupaia';
 
-  const { subject, description, signOff } = EMAILS[platform];
+    const { subject, description, signOff } = EMAILS[platform];
 
-  await sendEmail(user.email, {
-    subject,
-    signOff,
-    templateName: 'permissionGranted',
-    templateContext: {
-      title: 'Permission Granted',
-      description,
-      userName: user.first_name,
-      entityName: entity.name,
-      permissionGroupName: permissionGroup.name,
-    },
-  });
+    await sendEmail(user.email, {
+      subject,
+      signOff,
+      templateName: 'permissionGranted',
+      templateContext: {
+        title: 'Permission Granted',
+        description,
+        userName: user.first_name,
+        entityName: entity.name,
+        permissionGroupName: permissionGroup.name,
+      },
+    });
+  } catch (e) {
+    if (!(e instanceof UnexpectedNullishValueError)) throw e;
+
+    // Unlikely to reach this path, considering user_entity_permission just got created
+    winston.debug(
+      'Skipping permission-granted email. Couldn’t find user, entity and/or permission_group.',
+      { userEntityPermissionRecord: newRecord, errorMessage: e.message },
+    );
+    return;
+  }
 }
 
 /**

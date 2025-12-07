@@ -42,7 +42,7 @@ export function isPrimitive(val: unknown): val is Primitive {
   );
 }
 
-class UnexpectedNullishValueError extends Error {
+export class UnexpectedNullishValueError extends Error {
   constructor(message?: string) {
     super(message);
     this.name = 'UnexpectedNullishValueError';
