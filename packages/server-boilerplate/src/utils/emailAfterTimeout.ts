@@ -1,14 +1,15 @@
-import { sendEmail, MailOptions } from '@tupaia/server-utils';
+import { NextFunction, Request, Response } from 'express';
+
+import { MailOptions, sendEmail } from '@tupaia/server-utils';
 import { UserAccount } from '@tupaia/types';
 import { respond } from '@tupaia/utils';
 
 interface EmailAfterTimeoutMailOptions
   extends Pick<MailOptions, 'attachments' | 'subject' | 'templateContext'> {}
 
-type ConstructEmailFromResponseT = (
-  responseBody: any,
-  req: any,
-) => Promise<EmailAfterTimeoutMailOptions>;
+interface ConstructEmailFromResponseT<T = unknown> {
+  (responseBody: T, req: Request): Promise<EmailAfterTimeoutMailOptions>;
+}
 
 const sendResponseAsEmail = async (
   user: Pick<UserAccount, 'email' | 'first_name'>,
@@ -31,7 +32,7 @@ const sendResponseAsEmail = async (
 const setupEmailResponse = async (
   req: any,
   res: any,
-  constructEmailFromResponse: ConstructEmailFromResponseT,
+  constructEmailFromResponse: ConstructEmailFromResponseT<typeof req>,
 ) => {
   const { models } = req;
   const user = await models.user.findById(req.user.id, { columns: ['email', 'first_name'] });
@@ -54,15 +55,15 @@ const setupEmailResponse = async (
   // the response is sent via email
   res.overrideRespond = async (responseBody: any) => {
     const mailOptions = await constructEmailFromResponse(responseBody, req);
-    sendResponseAsEmail(user, mailOptions);
+    await sendResponseAsEmail(user, mailOptions);
   };
 };
 
 // if the import takes too long, the results will be emailed
 export const emailAfterTimeout =
   (constructEmailFromResponse: ConstructEmailFromResponseT) =>
-  (req: any, res: any, next: () => void) => {
-    const { respondWithEmailTimeout } = req.query;
+  (req: Request, res: Response, next: NextFunction) => {
+    const { respondWithEmailTimeout } = req.query as { respondWithEmailTimeout?: string };
     if (respondWithEmailTimeout === undefined) {
       next();
       return;
