@@ -4,6 +4,7 @@
  * @typedef {import('@tupaia/types').MeditrakSurveyResponseRequest} SurveyResponse
  */
 
+import merge from 'lodash.merge';
 import winston from '../../log';
 
 /**
@@ -19,22 +20,27 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
 
   return await Promise.all(
     entitiesUpserted.map(async entity => {
-      const [{ exists }] = await models.database.executeSql(
-        'SELECT EXISTS (SELECT 1 FROM entity WHERE id = ?);',
-        [entity.id],
-      );
+      const existingEntity = await models.entity.findById(entity.id, {
+        columns: [
+          // Non-nullable attributes with no DEFAULT, needed for `INSERT ... ON CONFLICT` query
+          // (MediTrak provides all attributes; DataTrak only provides those that need updating)
+          'code',
+          'id',
+          'name',
+          'type',
+          // updateOrCreate doesn’t deeply merge JSONB attributes, so do it here
+          'metadata',
+        ],
+      });
 
-      const entityToPersist = { ...entity };
+      const merged = merge(existingEntity, entity);
       if (dataGroup.service_type === 'dhis') {
-        entityToPersist.dhis ??= {};
-        entityToPersist.dhis.isDataRegional = Boolean(dataGroup.config.isDataRegional);
+        merged.metadata ??= {};
+        merged.metadata.dhis ??= {};
+        merged.metadata.dhis.isDataRegional = Boolean(dataGroup.config.isDataRegional);
       }
 
-      // Not using updateOrCreate because underlying `INSERT ... ON CONFLICT` query requires all
-      // NOT NULL attributes to be provided, but (unlike MediTrak) DataTrak only provides attributes
-      // that need updating. update/updateById are happy with partial data.
-      if (exists) return await models.entity.updateById(entity.id, entityToPersist);
-      return await models.entity.create(entityToPersist);
+      return await models.entity.updateOrCreate({ id: entity.id }, merged);
     }),
   );
 };
