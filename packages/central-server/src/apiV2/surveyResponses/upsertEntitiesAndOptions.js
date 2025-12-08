@@ -30,9 +30,9 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
         entityToPersist.dhis.isDataRegional = Boolean(dataGroup.config.isDataRegional);
       }
 
-      // Not using `updateOrCreate` because underlying `INSERT ... ON CONFLICT` query requires all
+      // Not using updateOrCreate because underlying `INSERT ... ON CONFLICT` query requires all
       // NOT NULL attributes to be provided, but (unlike MediTrak) DataTrak only provides attributes
-      // that need updating. `update`/`updateById` is happy with partial data.
+      // that need updating. update/updateById are happy with partial data.
       if (exists) return await models.entity.updateById(entity.id, entityToPersist);
       return await models.entity.create(entityToPersist);
     }),
