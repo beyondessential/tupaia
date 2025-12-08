@@ -189,7 +189,7 @@ describe('fieldsAndFilters', () => {
         query: { filter: 'fake_field==fake_value' },
       });
 
-      expect(error.error).toContain('Unknown filter key: fake_field');
+      expect(error.error).toContain('Unknown filter key ‘fake_field’');
     });
 
     it('it can filter on equality', async () => {
