@@ -8,15 +8,7 @@ import { ensure } from '@tupaia/tsutils';
 import { useSyncContext } from '../../api/SyncContext';
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
-import {
-  useIsInSyncQueue,
-  useIsRequestingSync,
-  useIsSyncing,
-  useLastSyncTime,
-  useSyncError,
-  useSyncProgress,
-  useSyncStage,
-} from '../../sync/syncStatus';
+import { useSyncStatus } from '../../sync/syncStatus';
 import { SYNC_EVENT_ACTIONS } from '../../types';
 import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
@@ -77,13 +69,16 @@ export const SyncPage = () => {
   const queryClient = useQueryClient();
 
   const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
-  const isRequestingSync = useIsRequestingSync();
-  const isSyncing = useIsSyncing();
-  const isQueuing = useIsInSyncQueue();
-  const syncStage = useSyncStage();
-  const [progress, progressMessage] = useSyncProgress();
-  const errorMessage = useSyncError();
-  const lastSyncTime = useLastSyncTime();
+  const {
+    errorMessage,
+    isRequestingSync,
+    isSyncing,
+    isQueuing,
+    syncStage,
+    progress,
+    progressMessage,
+    lastSyncTime,
+  } = useSyncStatus();
 
   const handler: Handler = useCallback(() => void setSyncStarted(true), []);
   useEffect(() => {
