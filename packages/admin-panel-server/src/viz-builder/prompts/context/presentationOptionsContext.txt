@@ -526,7 +526,7 @@ When user doesn't specify certain details:
         "label": {{}},
         "labelType": {{"enum": ["fraction", "fractionAndPercentage", "number"]}}
     }},
-    "required": ["type", "chartType", "periodGranularity"]
+    "required": ["type", "chartType", "periodGranularity", "name"]
 }}
 ```
 
@@ -609,18 +609,18 @@ When user doesn't specify certain details:
         "label": {{}},
         "labelType": {{"enum": ["fraction", "fractionAndPercentage", "number"]}}
     }},
-    "required": ["type", "chartType", "periodGranularity"]
+    "required": ["type", "chartType", "periodGranularity", "name"]
 }}
 ```
 
 **Area Chart Schema:**
-Same as Line Chart Schema but with `"chartType": {{"type": "string", "enum": ["area"]}}`
+Same as Line Chart Schema but with `"chartType": {{"type": "string", "enum": ["area"]}}` and `"required": ["type", "chartType", "periodGranularity", "name"]`
 
 **Composed Chart Schema:**
-Same as Bar Chart Schema but with `"chartType": {{"type": "string", "enum": ["composed"]}}` and requires `chartType` property within each series in `chartConfig`
+Same as Bar Chart Schema but with `"chartType": {{"type": "string", "enum": ["composed"]}}`, `"required": ["type", "chartType", "periodGranularity", "name"]`, and requires `chartType` property within each series in `chartConfig`
 
 **Gauge Chart Schema:**
-Same as Bar Chart Schema but with `"chartType": {{"type": "string", "enum": ["gauge"]}}`
+Same as Bar Chart Schema but with `"chartType": {{"type": "string", "enum": ["gauge"]}}` and `"required": ["type", "chartType", "periodGranularity", "name"]`
 
 **Instructions:**
 1. Always return a JSON object with status_code, message, and optionally presentationConfig fields
