@@ -4,12 +4,13 @@ import { useSyncContext } from '../api/SyncContext';
 import { SYNC_EVENT_ACTIONS } from '../types';
 
 export function useIsSyncing(): boolean {
-  const [isSyncing, setIsSyncing] = useState(false);
-  const emitter = useSyncContext()?.clientSyncManager?.emitter;
+  const clientSyncManager = useSyncContext()?.clientSyncManager;
+  const [isSyncing, setIsSyncing] = useState(clientSyncManager?.isSyncing ?? false);
 
   const set = useCallback(() => setIsSyncing(true), []);
   const unset = useCallback(() => setIsSyncing(false), []);
 
+  const emitter = clientSyncManager?.emitter;
   useEffect(() => {
     if (emitter === undefined) return;
 
