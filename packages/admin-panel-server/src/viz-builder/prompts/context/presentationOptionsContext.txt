@@ -88,7 +88,7 @@ Strictly adhere to the JSON schema provided below. Currently we support: area, b
 - `defaultTimePeriod` (object): Initial date range
   - Single offset: `{{ "unit": "week", "offset": 7 }}`
   - Explicit dates: `{{ "start": "2022-10-01", "end": "2023-06-30" }}`
-  - Date offsets: `{{ "start": {{ "unit": "week", "offset": -52 }}, "end": {{ "unit": "week", "offset": 3 }} }}`
+  - Date offsets: `{{ "start": { "unit": "week", "offset": -52 }, "end": { "unit": "week", "offset": 3 } }}`
 - `datePickerLimits` (object): Maximum date ranges
   - `start`: DateOffsetSpec object
   - `end`: DateOffsetSpec object
