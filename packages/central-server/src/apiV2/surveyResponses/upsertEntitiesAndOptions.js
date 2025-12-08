@@ -4,7 +4,7 @@
  * @typedef {import('@tupaia/types').MeditrakSurveyResponseRequest} SurveyResponse
  */
 
-import { DatabaseError } from '@tupaia/utils';
+import winston from '../../log';
 
 /**
  * @param {ModelRegistry} models
@@ -83,15 +83,22 @@ export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
       if (entitiesUpserted.length > 0) {
         await upsertEntities(models, entitiesUpserted, surveyResponse.survey_id);
       }
+    } catch (error) {
+      winston.error(
+        `Error upserting entities from survey response ${surveyResponse.id} for survey ${surveyResponse.survey_id}`,
+      );
+      throw error;
+    }
 
+    try {
       if (optionsCreated.length > 0) {
         await createOptions(models, optionsCreated);
       }
     } catch (error) {
-      throw new DatabaseError(
-        `creating/updating created data from survey response with id ${surveyResponse.survey_id}`,
-        error,
+      winston.error(
+        `Error creating options from survey response ${surveyResponse.id} for survey ${surveyResponse.survey_id}`,
       );
+      throw error;
     }
   }
 };
