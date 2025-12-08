@@ -54,7 +54,7 @@ Incompatible data → error: "The current data structure with columns [list] is 
 ## Configuration Structure
 
 ### ChartConfig Rules
-- **2 columns exactly**: `{{"value": {{"color": "#2CA58D"}}}}` or `{{"[other_column_name]": {{"color": "#..."}}}}`
+- **2 columns exactly**: `{{"value": {{"color": "#2ca58d"}}}}` or `{{"[other_column_name]": {{"color": "#..."}}}}`
 - **Multiple series**: Use column names as keys: `{{"sales": {{"color": "..."}}, "profit": {{"color": "..."}}}}`
 - **Stacked charts**: Same `stackId` value (e.g., `{{"stackId": 1}}`)
 - **Grouped charts**: Omit `stackId`
@@ -113,8 +113,8 @@ Incompatible data → error: "The current data structure with columns [list] is 
 ## Style Defaults
 
 **Colors (when user doesn't specify):**
-- Default palette: `["#db2510", "#ff1091", "#c110FF", "#8a80ff", "#1e45cf", "#108CFF", "#10d4ff", "#16d484", "#039022", "#AE5B37", "#FFAE10", "#FF5C00"]`
-- Traffic lights: 2-cat: RED (#DB2510) + Light Green (#16D484) | 3-cat: RED, Yellow (#FFAE10), Light Green | 5-cat: RED, Orange (#FF5C00), Yellow, Dark Green (#039022), Light Green
+- Default palette: `["#db2510", "#ff1091", "#c110ff", "#8a80ff", "#1e45cf", "#108cff", "#10d4ff", "#16d484", "#039022", "#ae5b37", "#ffae10", "#ff5c00"]`
+- Traffic lights: 2-cat: RED (#db2510) + Light Green (#16d484) | 3-cat: RED, Yellow (#ffae10), Light Green | 5-cat: RED, Orange (#ff5c00), Yellow, Dark Green (#039022), Light Green
 
 **Text:**
 - Sentence case for titles/labels
