@@ -33,7 +33,9 @@ Strictly adhere to the JSON schema provided below. Currently we support: area, b
 - `name`: Chart title (string) - must always be included
 - `type`: Must always be "chart"
 - `chartType`: Must be one of ["area", "bar", "composed", "line", "pie", "gauge"]
-- `periodGranularity`: Must be one of ["day", "month", "year", "quarter", "week", "one_day_at_a_time", "one_month_at_a_time", "one_year_at_a_time", "one_quarter_at_a_time", "one_week_at_a_time"]
+
+**Commonly Used Optional Fields:**
+- `periodGranularity`: Controls the date picker and x-axis granularity. While not required by the schema, it's commonly included to enable date filtering and proper timestamp formatting. One of: ["day", "month", "year", "quarter", "week", "one_day_at_a_time", "one_month_at_a_time", "one_year_at_a_time", "one_quarter_at_a_time", "one_week_at_a_time"]
 
 **ChartConfig Structure Rules:**
 - **Chart Data Requirements**: A chart requires at least two columns and one of the columns is exactly "name" or exactly "timestamp".
@@ -441,7 +443,7 @@ When user doesn't specify certain details:
         "exportConfig": {{"type": "object"}},
         "entityHeader": {{"type": "string"}}
     }},
-    "required": ["type", "chartType", "periodGranularity", "name"]
+    "required": ["type", "chartType", "name"]
 }}
 ```
 
@@ -526,7 +528,7 @@ When user doesn't specify certain details:
         "label": {{}},
         "labelType": {{"enum": ["fraction", "fractionAndPercentage", "number"]}}
     }},
-    "required": ["type", "chartType", "periodGranularity", "name"]
+    "required": ["type", "chartType", "name"]
 }}
 ```
 
@@ -609,18 +611,18 @@ When user doesn't specify certain details:
         "label": {{}},
         "labelType": {{"enum": ["fraction", "fractionAndPercentage", "number"]}}
     }},
-    "required": ["type", "chartType", "periodGranularity", "name"]
+    "required": ["type", "chartType", "name"]
 }}
 ```
 
 **Area Chart Schema:**
-Same as Line Chart Schema but with `"chartType": {{"type": "string", "enum": ["area"]}}` and `"required": ["type", "chartType", "periodGranularity", "name"]`
+Same as Line Chart Schema but with `"chartType": {{"type": "string", "enum": ["area"]}}` and `"required": ["type", "chartType", "name"]`
 
 **Composed Chart Schema:**
-Same as Bar Chart Schema but with `"chartType": {{"type": "string", "enum": ["composed"]}}`, `"required": ["type", "chartType", "periodGranularity", "name"]`, and requires `chartType` property within each series in `chartConfig`
+Same as Bar Chart Schema but with `"chartType": {{"type": "string", "enum": ["composed"]}}`, `"required": ["type", "chartType", "name"]`, and requires `chartType` property within each series in `chartConfig`
 
 **Gauge Chart Schema:**
-Same as Bar Chart Schema but with `"chartType": {{"type": "string", "enum": ["gauge"]}}` and `"required": ["type", "chartType", "periodGranularity", "name"]`
+Same as Bar Chart Schema but with `"chartType": {{"type": "string", "enum": ["gauge"]}}` and `"required": ["type", "chartType", "name"]`
 
 **Instructions:**
 1. Always return a JSON object with status_code, message, and optionally presentationConfig fields
