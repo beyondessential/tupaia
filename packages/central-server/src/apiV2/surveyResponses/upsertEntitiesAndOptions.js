@@ -19,26 +19,22 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
 
   return await Promise.all(
     entitiesUpserted.map(async entity => {
-      const existingEntity = await models.entity.findById(entity.id);
-
-      const existingMetadata = existingEntity?.metadata || {};
-
-      return models.entity.updateOrCreate(
-        { id: entity.id },
-        {
-          ...entity,
-          metadata:
-            dataGroup.service_type === 'dhis'
-              ? {
-                  ...existingMetadata,
-                  dhis: {
-                    ...existingMetadata?.dhis,
-                    isDataRegional: !!dataGroup.config.isDataRegional,
-                  },
-                }
-              : {},
-        },
+      const [{ exists }] = await models.database.executeSql(
+        'SELECT EXISTS (SELECT 1 FROM entity WHERE id = ?);',
+        [entity.id],
       );
+
+      const entityToPersist = { ...entity };
+      if (dataGroup.service_type === 'dhis') {
+        entityToPersist.dhis ??= {};
+        entityToPersist.dhis.isDataRegional = Boolean(dataGroup.config.isDataRegional);
+      }
+
+      // Not using `updateOrCreate` because underlying `INSERT ... ON CONFLICT` query requires all
+      // NOT NULL attributes to be provided, but (unlike MediTrak) DataTrak only provides attributes
+      // that need updating. `update`/`updateById` is happy with partial data.
+      if (exists) return await models.entity.updateById(entity.id, entityToPersist);
+      return await models.entity.create(entityToPersist);
     }),
   );
 };
