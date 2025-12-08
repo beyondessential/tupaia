@@ -161,3 +161,24 @@ export function useSyncError(): string | null {
 
   return message;
 }
+
+export function useSyncStatus() {
+  const isRequestingSync = useIsRequestingSync();
+  const isSyncing = useIsSyncing();
+  const isQueuing = useIsInSyncQueue();
+  const syncStage = useSyncStage();
+  const [progress, progressMessage] = useSyncProgress();
+  const errorMessage = useSyncError();
+  const lastSyncTime = useLastSyncTime();
+
+  return {
+    errorMessage,
+    isRequestingSync,
+    isSyncing,
+    isQueuing,
+    syncStage,
+    progress,
+    progressMessage,
+    lastSyncTime,
+  };
+}
