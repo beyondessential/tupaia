@@ -13,8 +13,17 @@ export function useIsRequestingSync(): boolean {
   );
 
   useEffect(() => {
-    syncManager?.emitter?.on('*', update);
-    return () => void syncManager?.emitter?.off('*', update);
+    const eventTypes = [
+      SYNC_EVENT_ACTIONS.SYNC_REQUESTING,
+      SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE,
+      SYNC_EVENT_ACTIONS.SYNC_STARTED,
+      SYNC_EVENT_ACTIONS.SYNC_ENDED,
+      SYNC_EVENT_ACTIONS.SYNC_ERROR,
+    ];
+    for (const type of eventTypes) syncManager?.emitter?.on(type, update);
+    return () => {
+      for (const type of eventTypes) syncManager?.emitter?.off(type, update);
+    };
   }, [syncManager?.emitter, update]);
 
   return isRequestingSync;
@@ -30,8 +39,16 @@ export function useIsInSyncQueue(): boolean {
   );
 
   useEffect(() => {
-    syncManager?.emitter?.on('*', update);
-    return () => void syncManager?.emitter?.off('*', update);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, update);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_STARTED, update);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_ENDED, update);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_ERROR, update);
+    return () => {
+      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, update);
+      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_STARTED, update);
+      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_ENDED, update);
+      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_ERROR, update);
+    };
   }, [syncManager?.emitter, update]);
 
   return isQueuing;
@@ -87,7 +104,11 @@ export function useSyncProgress(): [number | null, string | null] {
   }, [syncManager?.progress, syncManager?.progressMessage]);
 
   useEffect(() => {
-    syncManager?.emitter?.on('*', update);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_REQUESTING, update);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, update);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_STARTED, update);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED, update);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_ENDED, update);
     return () => void syncManager?.emitter?.off('*', update);
   }, [syncManager?.emitter, update]);
 
@@ -117,14 +138,20 @@ export function useSyncError(): string | null {
   const syncManager = useSyncContext()?.clientSyncManager;
   const [message, setMessage] = useState<string | null>(null);
 
-  const update = useCallback(
-    (type, event) => setMessage(type === SYNC_EVENT_ACTIONS.SYNC_ERROR ? event.error : null),
-    [],
-  );
+  const update = useCallback(event => setMessage(event.error), []);
+  const clear = useCallback(() => setMessage(null), []);
 
   useEffect(() => {
-    syncManager?.emitter?.on('*', update);
-    return () => void syncManager?.emitter?.off('*', update);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_REQUESTING, clear);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, clear);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_STARTED, clear);
+    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_ERROR, update);
+    return () => {
+      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_REQUESTING, clear);
+      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, clear);
+      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_STARTED, clear);
+      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_ERROR, update);
+    };
   }, [syncManager?.emitter, update]);
 
   return message;
