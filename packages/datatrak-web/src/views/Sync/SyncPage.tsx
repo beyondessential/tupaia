@@ -1,18 +1,17 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { formatDistance } from 'date-fns';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
-import { formatDistance } from 'date-fns';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { ensure } from '@tupaia/tsutils';
-
+import { useSyncContext } from '../../api/SyncContext';
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
+import { SYNC_EVENT_ACTIONS } from '../../types';
 import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
-import { SYNC_EVENT_ACTIONS } from '../../types';
-import { useSyncContext } from '../../api/SyncContext';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -87,58 +86,36 @@ export const SyncPage = () => {
   const [isQueuing, setIsQueuing] = useState<boolean>(syncManager.isQueuing);
   const [syncStage, setSyncStage] = useState<number | null>(syncManager.syncStage);
   const [progress, setProgress] = useState<number | null>(syncManager.progress);
-  const [progressMessage, setProgressMessage] = useState<string | null>(
-    syncManager.progressMessage,
-  );
+  const [statusMessage, setStatusMessage] = useState<string | null>(syncManager.statusMessage);
   const [formattedLastSuccessfulSyncTime, setFormattedLastSuccessfulSyncTime] = useState<string>(
     formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
   );
 
   useEffect(() => {
     const handler = (action, data): void => {
+      setStatusMessage(syncManager.statusMessage); // Several events update the status message
+
       switch (action) {
-        case SYNC_EVENT_ACTIONS.SYNC_REQUESTING:
-          setProgressMessage(syncManager.progressMessage);
-          setIsRequestingSync(true);
-          setErrorMessage(null);
-          break;
-        case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
-          setProgress(0);
-          setIsRequestingSync(false);
-          setIsQueuing(true);
-          setIsSyncing(false);
-          setErrorMessage(null);
-          setProgressMessage(syncManager.progressMessage);
+        case SYNC_EVENT_ACTIONS.SYNC_STATUS_CHANGED:
+          setIsRequestingSync(syncManager.isRequestingSync);
+          setIsQueuing(syncManager.isQueuing);
+          setIsSyncing(syncManager.isSyncing);
+          setErrorMessage(syncManager.errorMessage);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_STARTED:
-          setIsRequestingSync(false);
-          setIsQueuing(false);
           setSyncStarted(true);
-          setIsSyncing(true);
-          setProgress(0);
-          setProgressMessage(syncManager.progressMessage);
-          setSyncStage(1);
-          setErrorMessage(null);
           break;
-        case SYNC_EVENT_ACTIONS.SYNC_ENDED:
-          setIsRequestingSync(false);
-          setIsQueuing(false);
-          setIsSyncing(false);
-          setProgress(0);
-          setProgressMessage('');
-          break;
-        case SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED:
-          setSyncStage(syncManager.syncStage);
+        case SYNC_EVENT_ACTIONS.SYNC_PROGRESS_CHANGED:
           setProgress(syncManager.progress);
-          setProgressMessage(syncManager.progressMessage);
+          break;
+        case SYNC_EVENT_ACTIONS.SYNC_STAGE_CHANGED:
+          setSyncStage(syncManager.syncStage);
           setFormattedLastSuccessfulSyncTime(
             formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
           );
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ERROR:
-          setIsRequestingSync(false);
-          setIsQueuing(false);
-          setErrorMessage(data.error);
+          setErrorMessage(data?.error);
           break;
         default:
           break;
@@ -182,9 +159,9 @@ export const SyncPage = () => {
           <StyledSyncStatus
             isSyncing={isSyncing}
             percentage={progress}
-            message={progressMessage}
+            message={statusMessage}
             syncStage={syncStage}
-            totalStages={Object.keys(syncManager.progressMaxByStage).length}
+            totalStages={syncManager.stageCount}
             syncFinishedSuccessfully={syncFinishedSuccessfully}
             hasError={Boolean(errorMessage)}
           />
