@@ -272,7 +272,7 @@ export class ClientSyncManager {
     }
 
     this.errorMessage = null;
-    this.progressMessage = 'Requesting sync...';
+    this.progressMessage = 'Requesting sync…';
     this.isRequestingSync = true;
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_REQUESTING);
 
@@ -303,7 +303,7 @@ export class ClientSyncManager {
       log.debug(`ClientSyncManager.runSync(): Sync queue status: ${status}`);
       this.isSyncing = false;
       this.isQueuing = true;
-      this.progressMessage = urgent ? 'Sync in progress...' : 'Sync in queue';
+      this.progressMessage = urgent ? 'Sync in progress…' : 'Sync in queue';
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE);
       return {};
     }
@@ -371,7 +371,7 @@ export class ClientSyncManager {
 
   async pushChanges(sessionId: string, newSyncClockTime: number) {
     this.setSyncStage(SYNC_STAGES.PUSH);
-    this.setProgress(0, 'Pushing all new changes...');
+    this.setProgress(0, 'Pushing all new changes…');
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
     const currentSyncClockTime = await getSyncTick(this.models, FACT_CURRENT_SYNC_TICK);
@@ -407,7 +407,7 @@ export class ClientSyncManager {
         totalPushing: outgoingChanges.length,
       });
       await pushOutgoingChanges(sessionId, outgoingChanges, this.deviceId, (total, pushedRecords) =>
-        this.updateProgress(total, pushedRecords, 'Pushing all new changes...'),
+        this.updateProgress(total, pushedRecords, 'Pushing all new changes…'),
       );
     }
 
@@ -429,7 +429,7 @@ export class ClientSyncManager {
       // So only showing a message to indicate this this is still in progress
       this.setProgress(
         this.progressMaxByStage[SYNC_STAGES.PULL - 1],
-        'Pausing at 33% while server prepares for pull, please wait...',
+        'Pausing at 33% while server prepares for pull, please wait…',
       );
 
       const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
@@ -450,7 +450,7 @@ export class ClientSyncManager {
         this.deviceId,
       );
 
-      this.setProgress(this.progressMaxByStage[SYNC_STAGES.PULL - 1], 'Pulling changes...');
+      this.setProgress(this.progressMaxByStage[SYNC_STAGES.PULL - 1], 'Pulling changes…');
 
       const isInitialPull = pullSince === -1;
 
@@ -527,7 +527,7 @@ export class ClientSyncManager {
     const batchSize = 10000;
     await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
 
-    this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes...');
+    this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');
     this.setSyncStage(SYNC_STAGES.PERSIST);
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
