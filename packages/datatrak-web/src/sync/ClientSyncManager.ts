@@ -21,10 +21,17 @@ import {
   withDeferredSyncSafeguards,
 } from '@tupaia/sync';
 import { ensure } from '@tupaia/tsutils';
-import { Project } from '@tupaia/types';
+import { Project, ValueOf } from '@tupaia/types';
 import { remove, stream } from '../api';
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
-import { DatatrakWebModelRegistry, ProcessStreamDataParams, SYNC_EVENT_ACTIONS } from '../types';
+import {
+  DatatrakWebModelRegistry,
+  ProcessStreamDataParams,
+  SYNC_EVENT_ACTIONS,
+  SYNC_STATUS,
+  SyncEvents,
+  SyncStatus,
+} from '../types';
 import { formatFraction } from '../utils';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
@@ -39,26 +46,35 @@ const SYNC_STAGES = {
   PUSH: 1,
   PULL: 2,
   PERSIST: 3,
-};
+} as const;
 
-type StageMaxProgress = Record<number, number>;
+export type SyncStage = ValueOf<typeof SYNC_STAGES>;
 
-const STAGE_MAX_PROGRESS_INCREMENTAL: StageMaxProgress = {
+const STAGE_MAX_PROGRESS_INCREMENTAL = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 66,
   [SYNC_STAGES.PERSIST]: 100,
-};
-const STAGE_MAX_PROGRESS_INITIAL: StageMaxProgress = {
+} as const;
+
+const STAGE_MAX_PROGRESS_INITIAL = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 100,
-};
+} as const;
 
 export interface SyncResult {
   pulledChangesCount?: number;
 }
 
 export class ClientSyncManager {
-  private static instance: ClientSyncManager | null = null;
+  static #instance: ClientSyncManager | null = null;
+
+  static async getInstance(models: DatatrakWebModelRegistry): Promise<ClientSyncManager> {
+    if (!ClientSyncManager.#instance) {
+      const deviceId = await getDeviceId(models);
+      ClientSyncManager.#instance = new ClientSyncManager(models, deviceId);
+    }
+    return ClientSyncManager.#instance;
+  }
 
   private database: DatatrakDatabase;
 
@@ -66,46 +82,94 @@ export class ClientSyncManager {
 
   private deviceId: string;
 
-  private urgentSyncInterval: NodeJS.Timeout | null = null;
+  #urgentSyncInterval: ReturnType<typeof setInterval> | null = null;
 
   private isInitialSync: boolean = false;
 
   private syncInterval: NodeJS.Timeout | null = null;
 
-  progressMaxByStage = STAGE_MAX_PROGRESS_INCREMENTAL;
+  #progressMaxByStage: typeof STAGE_MAX_PROGRESS_INCREMENTAL | typeof STAGE_MAX_PROGRESS_INITIAL =
+    STAGE_MAX_PROGRESS_INCREMENTAL;
 
-  isRequestingSync: boolean = false;
-  isSyncing: boolean = false;
-  isQueuing: boolean = false;
+  /** Update with private setter {@link status}, which emits update event. */
+  #status: SyncStatus = SYNC_STATUS.IDLE;
 
-  errorMessage: string | null = null;
+  /** Update with private setter {@link syncStage}, which emits update event. */
+  #syncStage: SyncStage | null = null;
 
-  lastSuccessfulSyncTime: Date | null = null;
+  /** Update with private method {@link setProgress}, which emits update event. */
+  #progress: number | null = null;
 
-  progress: number | null = null;
+  #statusMessage: string | null = null;
 
-  progressMessage: string | null = null;
+  #errorMessage: string | null = null;
 
-  syncStage: number | null = null;
+  #lastSuccessfulSyncTime: Date | null = null;
 
-  emitter = mitt();
+  #emitter = mitt<SyncEvents>();
 
   constructor(models: DatatrakWebModelRegistry, deviceId: string) {
     this.models = models;
     this.database = models.database;
     this.deviceId = deviceId;
-    this.progress = 0;
+    this.#progress = 0;
     log.debug('ClientSyncManager.constructor', {
       deviceId,
     });
   }
 
-  static async getInstance(models: DatatrakWebModelRegistry): Promise<ClientSyncManager> {
-    if (!ClientSyncManager.instance) {
-      const deviceId = await getDeviceId(models);
-      ClientSyncManager.instance = new ClientSyncManager(models, deviceId);
-    }
-    return ClientSyncManager.instance;
+  get status(): SyncStatus {
+    return this.#status;
+  }
+
+  private set status(status: SyncStatus) {
+    this.#status = status;
+    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATUS_CHANGED, { status });
+  }
+
+  get isRequestingSync() {
+    return this.#status === 'requesting';
+  }
+
+  get isSyncing() {
+    return this.#status === 'syncing';
+  }
+
+  get isQueuing() {
+    return this.#status === 'queuing';
+  }
+
+  get syncStage() {
+    return this.#syncStage;
+  }
+
+  get progress() {
+    return this.#progress;
+  }
+
+  get statusMessage() {
+    return this.#statusMessage;
+  }
+
+  get errorMessage() {
+    return this.#errorMessage;
+  }
+
+  get lastSuccessfulSyncTime() {
+    return this.#lastSuccessfulSyncTime;
+  }
+
+  get emitter() {
+    return this.#emitter;
+  }
+
+  get stageCount() {
+    return Object.keys(this.#progressMaxByStage).length;
+  }
+
+  private set syncStage(syncStage: SyncStage | null) {
+    this.#syncStage = syncStage;
+    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STAGE_CHANGED, { syncStage });
   }
 
   async startSyncService(queryClient: QueryClient): Promise<void> {
@@ -135,13 +199,10 @@ export class ClientSyncManager {
     }
 
     this.syncInterval = null;
-    this.isSyncing = false;
-    this.isRequestingSync = false;
-    this.isQueuing = false;
-    this.progress = 0;
-    this.progressMessage = null;
+    this.status = SYNC_STATUS.INACTIVE;
+    this.setProgress(0, null);
     this.syncStage = null;
-    this.lastSuccessfulSyncTime = null;
+    this.#lastSuccessfulSyncTime = null;
   }
 
   async waitForCurrentSyncToEnd(): Promise<void> {
@@ -158,35 +219,28 @@ export class ClientSyncManager {
     return Promise.resolve();
   }
 
-  setSyncStage(syncStage: number | null): void {
-    this.syncStage = syncStage;
-    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED);
-  }
-
   /**
    * Set the current progress (%) and the current progress message for the circular progress bar
-   * @param progress
-   * @param progressMessage
    */
-  setProgress(progress: number, progressMessage: string): void {
-    this.progress = progress;
-    this.progressMessage = progressMessage;
-    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED);
+  private setProgress(progress: number, message: string | null): void {
+    this.#progress = progress;
+    this.#statusMessage = message;
+    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_PROGRESS_CHANGED, { progress, message });
   }
 
   /**
    * Calculate the current progress (%) using the final total and the current records in progress
    * @param total total number of records to process
    * @param progress number of records processed
-   * @param progressMessage message to display in the progress bar
+   * @param message message to display in the progress bar
    */
-  updateProgress = (total: number, progress: number, progressMessage: string): void => {
+  private updateProgress = (total: number, progress: number, message: string): void => {
     const syncStage = ensure(this.syncStage);
 
     // Get previous stage max progress
-    const previousProgress = this.progressMaxByStage[syncStage - 1] ?? 0;
+    const previousProgress = this.#progressMaxByStage[syncStage - 1] ?? 0;
     // Calculate the total progress of the current stage
-    const progressDenominator = this.progressMaxByStage[syncStage] - previousProgress;
+    const progressDenominator = this.#progressMaxByStage[syncStage] - previousProgress;
     // Calculate the progress percentage of the current stage
     // (ie: out of stage 2 which is 33% of the overall progress)
     const currentStagePercentage = Math.min(
@@ -195,7 +249,7 @@ export class ClientSyncManager {
     );
     // Add the finished stage progress to get the overall progress percentage
     const progressPercentage = previousProgress + currentStagePercentage;
-    this.setProgress(progressPercentage, progressMessage);
+    this.setProgress(progressPercentage, message);
   };
 
   async getProjectsInSync(): Promise<Project['id'][]> {
@@ -223,21 +277,19 @@ export class ClientSyncManager {
       }
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
-      this.errorMessage = error.message;
+      this.#errorMessage = error.message;
     } finally {
       // Reset all the values to default only if sync actually started, otherwise they should still be default values
       if (this.isSyncing) {
         this.setProgress(0, '');
         this.syncStage = null;
-        this.isSyncing = false;
-        this.isRequestingSync = false;
-        this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED);
+        this.status = SYNC_STATUS.IDLE;
         this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ENDED);
-        if (this.urgentSyncInterval) {
-          clearInterval(this.urgentSyncInterval);
-          this.urgentSyncInterval = null;
+        if (this.#urgentSyncInterval) {
+          clearInterval(this.#urgentSyncInterval);
+          this.#urgentSyncInterval = null;
         }
-        this.progressMessage = null;
+        this.#statusMessage = null;
       }
     }
   }
@@ -247,7 +299,7 @@ export class ClientSyncManager {
    * to continuously connect to central server and request for status change of the sync session
    */
   async triggerUrgentSync(queryClient: QueryClient): Promise<void> {
-    if (this.urgentSyncInterval) {
+    if (this.#urgentSyncInterval) {
       log.warn('ClientSyncManager.triggerUrgentSync(): Urgent sync already started');
       return;
     }
@@ -255,7 +307,7 @@ export class ClientSyncManager {
     const urgentSyncIntervalInSeconds = 10;
 
     // Schedule regular urgent sync
-    this.urgentSyncInterval = setInterval(
+    this.#urgentSyncInterval = setInterval(
       () => this.triggerSync(true, queryClient),
       urgentSyncIntervalInSeconds * 1000,
     );
@@ -271,9 +323,9 @@ export class ClientSyncManager {
       );
     }
 
-    this.errorMessage = null;
-    this.progressMessage = 'Requesting sync…';
-    this.isRequestingSync = true;
+    this.#errorMessage = null;
+    this.#statusMessage = 'Requesting sync…';
+    this.status = SYNC_STATUS.REQUESTING;
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_REQUESTING);
 
     const projectIds = await this.getProjectsInSync();
@@ -283,14 +335,13 @@ export class ClientSyncManager {
       return {};
     }
 
-    this.isRequestingSync = false;
-    this.isSyncing = true;
+    this.status = SYNC_STATUS.SYNCING;
 
     const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
 
     this.isInitialSync = pullSince === -1;
 
-    this.progressMaxByStage = this.isInitialSync
+    this.#progressMaxByStage = this.isInitialSync
       ? STAGE_MAX_PROGRESS_INITIAL
       : STAGE_MAX_PROGRESS_INCREMENTAL;
 
@@ -301,16 +352,14 @@ export class ClientSyncManager {
 
     if (!sessionId) {
       log.debug(`ClientSyncManager.runSync(): Sync queue status: ${status}`);
-      this.isSyncing = false;
-      this.isQueuing = true;
-      this.progressMessage = urgent ? 'Sync in progress…' : 'Sync in queue';
+      this.status = SYNC_STATUS.QUEUING;
+      this.#statusMessage = urgent ? 'Sync in progress…' : 'Sync in queue';
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE);
       return {};
     }
 
-    this.isSyncing = true;
-    this.isQueuing = false;
-    this.progressMessage = 'Initialising sync';
+    this.status = SYNC_STATUS.SYNCING;
+    this.#statusMessage = 'Initialising sync';
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STARTED);
 
     // clear previous temp data, in case last session errored out or server was restarted
@@ -336,7 +385,7 @@ export class ClientSyncManager {
     // clear temp data stored for persist
     await dropSnapshotTable(this.database, sessionId);
 
-    this.lastSuccessfulSyncTime = new Date();
+    this.#lastSuccessfulSyncTime = new Date();
 
     return { pulledChangesCount };
   }
@@ -370,7 +419,7 @@ export class ClientSyncManager {
   }
 
   async pushChanges(sessionId: string, newSyncClockTime: number) {
-    this.setSyncStage(SYNC_STAGES.PUSH);
+    this.syncStage = SYNC_STAGES.PUSH;
     this.setProgress(0, 'Pushing all new changes…');
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
@@ -416,7 +465,7 @@ export class ClientSyncManager {
   }
 
   async pullChanges(sessionId: string, projectIds: Project['id'][]): Promise<number> {
-    this.setSyncStage(SYNC_STAGES.PULL);
+    this.syncStage = SYNC_STAGES.PULL;
 
     try {
       log.debug('ClientSyncManager.pullChanges', {
@@ -428,7 +477,7 @@ export class ClientSyncManager {
       // At this stage, we don't really know how long it will take.
       // So only showing a message to indicate this this is still in progress
       this.setProgress(
-        this.progressMaxByStage[SYNC_STAGES.PULL - 1],
+        this.#progressMaxByStage[SYNC_STAGES.PULL - 1],
         'Pausing at 33% while server prepares for pull, please wait…',
       );
 
@@ -450,7 +499,7 @@ export class ClientSyncManager {
         this.deviceId,
       );
 
-      this.setProgress(this.progressMaxByStage[SYNC_STAGES.PULL - 1], 'Pulling changes…');
+      this.setProgress(this.#progressMaxByStage[SYNC_STAGES.PULL - 1], 'Pulling changes…');
 
       const isInitialPull = pullSince === -1;
 
@@ -527,8 +576,8 @@ export class ClientSyncManager {
     const batchSize = 10000;
     await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
 
-    this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');
-    this.setSyncStage(SYNC_STAGES.PERSIST);
+    this.setProgress(this.#progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');
+    this.syncStage = SYNC_STAGES.PERSIST;
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
       totalSaved += Number(incrementalSaved);

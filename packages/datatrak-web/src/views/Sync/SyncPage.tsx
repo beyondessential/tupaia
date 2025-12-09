@@ -87,9 +87,7 @@ export const SyncPage = () => {
   const [isQueuing, setIsQueuing] = useState<boolean>(syncManager.isQueuing);
   const [syncStage, setSyncStage] = useState<number | null>(syncManager.syncStage);
   const [progress, setProgress] = useState<number | null>(syncManager.progress);
-  const [progressMessage, setProgressMessage] = useState<string | null>(
-    syncManager.progressMessage,
-  );
+  const [progressMessage, setProgressMessage] = useState<string | null>(syncManager.statusMessage);
   const [formattedLastSuccessfulSyncTime, setFormattedLastSuccessfulSyncTime] = useState<string>(
     formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
   );
@@ -98,7 +96,7 @@ export const SyncPage = () => {
     const handler = (action, data): void => {
       switch (action) {
         case SYNC_EVENT_ACTIONS.SYNC_REQUESTING:
-          setProgressMessage(syncManager.progressMessage);
+          setProgressMessage(syncManager.statusMessage);
           setIsRequestingSync(true);
           setErrorMessage(null);
           break;
@@ -108,7 +106,7 @@ export const SyncPage = () => {
           setIsQueuing(true);
           setIsSyncing(false);
           setErrorMessage(null);
-          setProgressMessage(syncManager.progressMessage);
+          setProgressMessage(syncManager.statusMessage);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_STARTED:
           setIsRequestingSync(false);
@@ -116,7 +114,7 @@ export const SyncPage = () => {
           setSyncStarted(true);
           setIsSyncing(true);
           setProgress(0);
-          setProgressMessage(syncManager.progressMessage);
+          setProgressMessage(syncManager.statusMessage);
           setSyncStage(1);
           setErrorMessage(null);
           break;
@@ -127,10 +125,10 @@ export const SyncPage = () => {
           setProgress(0);
           setProgressMessage('');
           break;
-        case SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED:
+        case SYNC_EVENT_ACTIONS.SYNC_STAGE_CHANGED:
           setSyncStage(syncManager.syncStage);
           setProgress(syncManager.progress);
-          setProgressMessage(syncManager.progressMessage);
+          setProgressMessage(syncManager.statusMessage);
           setFormattedLastSuccessfulSyncTime(
             formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
           );
@@ -184,7 +182,7 @@ export const SyncPage = () => {
             percentage={progress}
             message={progressMessage}
             syncStage={syncStage}
-            totalStages={Object.keys(syncManager.progressMaxByStage).length}
+            totalStages={syncManager.stageCount}
             syncFinishedSuccessfully={syncFinishedSuccessfully}
             hasError={Boolean(errorMessage)}
           />
