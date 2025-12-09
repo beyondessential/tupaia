@@ -291,20 +291,18 @@ export class ClientSyncManager {
       if (pulledChangesCount) {
         await queryClient.invalidateQueries();
       }
+      this.status = SYNC_STATUS.IDLE;
     } catch (error: any) {
       this.status = SYNC_STATUS.ERROR;
       this.#errorMessage = error.message;
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
     } finally {
-      // Reset all the values to default only if sync actually started, otherwise they should still be default values
-      if (this.isSyncing) {
-        this.setProgress(0, null);
-        this.syncStage = null;
-        this.status = SYNC_STATUS.IDLE;
-        if (this.#urgentSyncInterval) {
-          clearInterval(this.#urgentSyncInterval);
-          this.#urgentSyncInterval = null;
-        }
+      this.setProgress(0, null);
+      this.syncStage = null;
+
+      if (this.#urgentSyncInterval) {
+        clearInterval(this.#urgentSyncInterval);
+        this.#urgentSyncInterval = null;
       }
     }
   }
