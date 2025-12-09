@@ -347,8 +347,6 @@ export class ClientSyncManager {
       return {};
     }
 
-    this.status = SYNC_STATUS.SYNCING;
-
     const pullSince = await getSyncTick(this.#models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
 
     this.#isInitialSync = pullSince === -1;
@@ -370,6 +368,7 @@ export class ClientSyncManager {
     }
 
     this.setProgress(0, 'Initialising sync');
+    this.status = SYNC_STATUS.SYNCING;
 
     // clear previous temp data, in case last session errored out or server was restarted
     await dropAllSnapshotTables(this.#database);
