@@ -100,7 +100,7 @@ export const SyncPage = () => {
           setIsRequestingSync(syncManager.isRequestingSync);
           setIsQueuing(syncManager.isQueuing);
           setIsSyncing(syncManager.isSyncing);
-          setErrorMessage(data?.error);
+          setErrorMessage(syncManager.errorMessage);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_STARTED:
           setSyncStarted(true);
@@ -113,6 +113,9 @@ export const SyncPage = () => {
           setFormattedLastSuccessfulSyncTime(
             formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
           );
+          break;
+        case SYNC_EVENT_ACTIONS.SYNC_ERROR:
+          setErrorMessage(data?.error);
           break;
         default:
           break;
