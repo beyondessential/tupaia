@@ -274,12 +274,13 @@ export class ClientSyncManager {
         await queryClient.invalidateQueries();
       }
     } catch (error: any) {
-      this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
+      this.status = SYNC_STATUS.ERROR;
       this.#errorMessage = error.message;
+      this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
     } finally {
       // Reset all the values to default only if sync actually started, otherwise they should still be default values
       if (this.isSyncing) {
-        this.setProgress(0, '');
+        this.setProgress(0, null);
         this.syncStage = null;
         this.status = SYNC_STATUS.IDLE;
         this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ENDED);
@@ -287,7 +288,6 @@ export class ClientSyncManager {
           clearInterval(this.#urgentSyncInterval);
           this.#urgentSyncInterval = null;
         }
-        this.#statusMessage = null;
       }
     }
   }
@@ -351,13 +351,13 @@ export class ClientSyncManager {
     if (!sessionId) {
       log.debug(`ClientSyncManager.runSync(): Sync queue status: ${status}`);
       this.status = SYNC_STATUS.QUEUING;
-      this.#statusMessage = urgent ? 'Sync in progress…' : 'Sync in queue';
+      this.setProgress(0, urgent ? 'Sync in progress…' : 'Sync in queue');
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE);
       return {};
     }
 
     this.status = SYNC_STATUS.SYNCING;
-    this.#statusMessage = 'Initialising sync';
+    this.setProgress(0, 'Initialising sync');
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STARTED);
 
     // clear previous temp data, in case last session errored out or server was restarted
