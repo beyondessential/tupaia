@@ -76,17 +76,17 @@ export class ClientSyncManager {
     return ClientSyncManager.#instance;
   }
 
-  private database: DatatrakDatabase;
+  #database: DatatrakDatabase;
 
-  private models: DatatrakWebModelRegistry;
+  #models: DatatrakWebModelRegistry;
 
-  private deviceId: string;
+  #deviceId: string;
 
   #urgentSyncInterval: ReturnType<typeof setInterval> | null = null;
 
-  private isInitialSync: boolean = false;
+  #isInitialSync: boolean = false;
 
-  private syncInterval: NodeJS.Timeout | null = null;
+  #syncInterval: ReturnType<typeof setInterval> | null = null;
 
   #progressMaxByStage: typeof STAGE_MAX_PROGRESS_INCREMENTAL | typeof STAGE_MAX_PROGRESS_INITIAL =
     STAGE_MAX_PROGRESS_INCREMENTAL;
@@ -109,9 +109,9 @@ export class ClientSyncManager {
   #emitter = mitt<SyncEvents>();
 
   constructor(models: DatatrakWebModelRegistry, deviceId: string) {
-    this.models = models;
-    this.database = models.database;
-    this.deviceId = deviceId;
+    this.#models = models;
+    this.#database = models.database;
+    this.#deviceId = deviceId;
     this.#progress = 0;
     log.debug('ClientSyncManager.constructor', {
       deviceId,
@@ -173,9 +173,7 @@ export class ClientSyncManager {
   }
 
   async startSyncService(queryClient: QueryClient): Promise<void> {
-    if (this.syncInterval) {
-      return;
-    }
+    if (this.#syncInterval) return;
 
     await this.waitForCurrentSyncToEnd();
 
@@ -188,17 +186,17 @@ export class ClientSyncManager {
     // Run the sync immediately
     // and then schedule the next sync
     run();
-    this.syncInterval = setInterval(run, SYNC_INTERVAL);
+    this.#syncInterval = setInterval(run, SYNC_INTERVAL);
   }
 
   async stopSyncService(): Promise<void> {
-    if (this.syncInterval) {
+    if (this.#syncInterval) {
       log.info('Stopping sync service');
-      clearInterval(this.syncInterval);
+      clearInterval(this.#syncInterval);
       await this.waitForCurrentSyncToEnd();
     }
 
-    this.syncInterval = null;
+    this.#syncInterval = null;
     this.status = SYNC_STATUS.INACTIVE;
     this.setProgress(0, null);
     this.syncStage = null;
@@ -253,7 +251,7 @@ export class ClientSyncManager {
   };
 
   async getProjectsInSync(): Promise<Project['id'][]> {
-    const syncedProjectsFact = await this.models.localSystemFact.get(FACT_PROJECTS_IN_SYNC);
+    const syncedProjectsFact = await this.#models.localSystemFact.get(FACT_PROJECTS_IN_SYNC);
     const syncedProjectIds = syncedProjectsFact ? JSON.parse(syncedProjectsFact) : [];
     return syncedProjectIds;
   }
@@ -337,11 +335,11 @@ export class ClientSyncManager {
 
     this.status = SYNC_STATUS.SYNCING;
 
-    const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
+    const pullSince = await getSyncTick(this.#models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
 
-    this.isInitialSync = pullSince === -1;
+    this.#isInitialSync = pullSince === -1;
 
-    this.#progressMaxByStage = this.isInitialSync
+    this.#progressMaxByStage = this.#isInitialSync
       ? STAGE_MAX_PROGRESS_INITIAL
       : STAGE_MAX_PROGRESS_INCREMENTAL;
 
@@ -363,7 +361,7 @@ export class ClientSyncManager {
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STARTED);
 
     // clear previous temp data, in case last session errored out or server was restarted
-    await dropAllSnapshotTables(this.database);
+    await dropAllSnapshotTables(this.#database);
 
     log.debug('ClientSyncManager.receivedSessionInfo', {
       sessionId,
@@ -383,7 +381,7 @@ export class ClientSyncManager {
     );
 
     // clear temp data stored for persist
-    await dropSnapshotTable(this.database, sessionId);
+    await dropSnapshotTable(this.#database, sessionId);
 
     this.#lastSuccessfulSyncTime = new Date();
 
@@ -395,7 +393,7 @@ export class ClientSyncManager {
       method: 'POST',
       endpoint: 'sync',
       options: {
-        deviceId: this.deviceId,
+        deviceId: this.#deviceId,
         urgent,
         lastSyncedTick,
       },
@@ -423,28 +421,28 @@ export class ClientSyncManager {
     this.setProgress(0, 'Pushing all new changes…');
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
-    const currentSyncClockTime = await getSyncTick(this.models, FACT_CURRENT_SYNC_TICK);
+    const currentSyncClockTime = await getSyncTick(this.#models, FACT_CURRENT_SYNC_TICK);
 
     // use the new unique sync tick for any changes from now on so that any records that are created
     // or updated even mid way through this sync, are marked using the new tick and will be captured
     // in the next push
-    await this.models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, newSyncClockTime);
+    await this.#models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, newSyncClockTime);
     log.debug('ClientSyncManager.updatedLocalSyncClockTime', { newSyncClockTime });
 
-    await waitForPendingEditsUsingSyncTick(this.database, currentSyncClockTime);
+    await waitForPendingEditsUsingSyncTick(this.#database, currentSyncClockTime);
 
     // syncing outgoing changes happens in two phases: taking a point-in-time copy of all records
     // to be pushed, and then pushing those up in batches
     // this avoids any of the records to be pushed being changed during the push period and
     // causing data that isn't internally coherent from ending up on the central server
-    const pushSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PUSH);
+    const pushSince = await getSyncTick(this.#models, FACT_LAST_SUCCESSFUL_SYNC_PUSH);
     log.debug('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
     // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
     // is underway aren't included (as this could lead to a pair of foreign records with the child in
     // the snapshot and its parent missing)
     // as the snapshot only contains read queries, there will be no concurrent update issues :)
-    const outgoingChanges = await this.models.wrapInRepeatableReadTransaction(
+    const outgoingChanges = await this.#models.wrapInRepeatableReadTransaction(
       async transactingModels => {
         const modelsForPush = getModelsForPush(transactingModels.getModels());
         return snapshotOutgoingChanges(modelsForPush, transactingModels.tombstone, pushSince);
@@ -455,12 +453,16 @@ export class ClientSyncManager {
       log.debug('ClientSyncManager.pushingOutgoingChanges', {
         totalPushing: outgoingChanges.length,
       });
-      await pushOutgoingChanges(sessionId, outgoingChanges, this.deviceId, (total, pushedRecords) =>
-        this.updateProgress(total, pushedRecords, 'Pushing all new changes…'),
+      await pushOutgoingChanges(
+        sessionId,
+        outgoingChanges,
+        this.#deviceId,
+        (total, pushedRecords) =>
+          this.updateProgress(total, pushedRecords, 'Pushing all new changes…'),
       );
     }
 
-    await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, currentSyncClockTime);
+    await this.#models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, currentSyncClockTime);
     log.debug('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
   }
 
@@ -481,12 +483,12 @@ export class ClientSyncManager {
         'Pausing at 33% while server prepares for pull, please wait…',
       );
 
-      const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
+      const pullSince = await getSyncTick(this.#models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
 
       log.debug('ClientSyncManager.createClientSnapshotTable', {
         sessionId,
       });
-      await createClientSnapshotTable(this.database, sessionId);
+      await createClientSnapshotTable(this.#database, sessionId);
 
       log.debug('ClientSyncManager.initiatePull', {
         sessionId,
@@ -496,7 +498,7 @@ export class ClientSyncManager {
         sessionId,
         pullSince,
         projectIds,
-        this.deviceId,
+        this.#deviceId,
       );
 
       this.setProgress(this.#progressMaxByStage[SYNC_STAGES.PULL - 1], 'Pulling changes…');
@@ -536,7 +538,7 @@ export class ClientSyncManager {
       );
     };
 
-    await this.models.wrapInTransaction(async transactingModels => {
+    await this.#models.wrapInTransaction(async transactingModels => {
       const processStreamedDataFunction = async ({ models, records }: ProcessStreamDataParams) => {
         await saveChangesFromMemory(models, records, false, progressCallback);
       };
@@ -574,7 +576,7 @@ export class ClientSyncManager {
     };
 
     const batchSize = 10000;
-    await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
+    await pullIncomingChanges(this.#models, sessionId, batchSize, processStreamedDataFunction);
 
     this.setProgress(this.#progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');
     this.syncStage = SYNC_STAGES.PERSIST;
@@ -587,7 +589,7 @@ export class ClientSyncManager {
         `Saving changes (${formatFraction(totalSaved, totalToPull)})`,
       );
     };
-    await this.models.wrapInTransaction(async transactingModels => {
+    await this.#models.wrapInTransaction(async transactingModels => {
       const incomingModels = getModelsForPull(transactingModels.getModels());
       await withDeferredSyncSafeguards(transactingModels.database, () =>
         saveIncomingSnapshotChanges(incomingModels, sessionId, false, saveProgressCallback),
