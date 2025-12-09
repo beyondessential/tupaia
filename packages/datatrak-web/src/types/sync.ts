@@ -21,12 +21,12 @@ export const SYNC_EVENT_ACTIONS = {
 } as const;
 
 export const SYNC_STATUS = {
-  ERROR: 'error',
-  IDLE: 'idle',
-  INACTIVE: 'inactive',
-  QUEUING: 'queuing',
   REQUESTING: 'requesting',
+  QUEUING: 'queuing',
   SYNCING: 'syncing',
+  IDLE: 'idle',
+  ERROR: 'error',
+  STOPPED: 'stopped',
 } as const;
 
 export type SyncStatus = ValueOf<typeof SYNC_STATUS>;

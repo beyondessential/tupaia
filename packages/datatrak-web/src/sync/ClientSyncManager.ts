@@ -125,18 +125,36 @@ export class ClientSyncManager {
   private set status(status: SyncStatus) {
     this.#status = status;
     this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STATUS_CHANGED, { status });
+
+    switch (status) {
+      case SYNC_STATUS.REQUESTING:
+        this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_REQUESTING);
+        return;
+      case SYNC_STATUS.QUEUING:
+        this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE);
+        return;
+      case SYNC_STATUS.SYNCING:
+        this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STARTED);
+        return;
+      case SYNC_STATUS.IDLE:
+        this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ENDED);
+        return;
+      case SYNC_STATUS.ERROR: // Error event is emitted in the catch block of triggerSync
+      case SYNC_STATUS.STOPPED: // No corresponding event
+        return;
+    }
   }
 
   get isRequestingSync() {
-    return this.#status === 'requesting';
-  }
-
-  get isSyncing() {
-    return this.#status === 'syncing';
+    return this.#status === SYNC_STATUS.REQUESTING;
   }
 
   get isQueuing() {
-    return this.#status === 'queuing';
+    return this.#status === SYNC_STATUS.QUEUING;
+  }
+
+  get isSyncing() {
+    return this.#status === SYNC_STATUS.SYNCING;
   }
 
   get syncStage() {
@@ -197,7 +215,7 @@ export class ClientSyncManager {
     }
 
     this.#syncInterval = null;
-    this.status = SYNC_STATUS.INACTIVE;
+    this.status = SYNC_STATUS.STOPPED;
     this.setProgress(0, null);
     this.syncStage = null;
     this.#lastSuccessfulSyncTime = null;
@@ -283,7 +301,6 @@ export class ClientSyncManager {
         this.setProgress(0, null);
         this.syncStage = null;
         this.status = SYNC_STATUS.IDLE;
-        this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ENDED);
         if (this.#urgentSyncInterval) {
           clearInterval(this.#urgentSyncInterval);
           this.#urgentSyncInterval = null;
@@ -324,7 +341,6 @@ export class ClientSyncManager {
     this.#errorMessage = null;
     this.#statusMessage = 'Requesting sync…';
     this.status = SYNC_STATUS.REQUESTING;
-    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_REQUESTING);
 
     const projectIds = await this.getProjectsInSync();
 
@@ -352,13 +368,10 @@ export class ClientSyncManager {
       log.debug(`ClientSyncManager.runSync(): Sync queue status: ${status}`);
       this.status = SYNC_STATUS.QUEUING;
       this.setProgress(0, urgent ? 'Sync in progress…' : 'Sync in queue');
-      this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE);
       return {};
     }
 
-    this.status = SYNC_STATUS.SYNCING;
     this.setProgress(0, 'Initialising sync');
-    this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_STARTED);
 
     // clear previous temp data, in case last session errored out or server was restarted
     await dropAllSnapshotTables(this.#database);
