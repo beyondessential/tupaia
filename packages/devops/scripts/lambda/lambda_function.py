@@ -19,43 +19,49 @@ from actions.tear_down_tupaia_deployment import tear_down_tupaia_deployment
 from actions.tear_down_dhis_deployment import tear_down_dhis_deployment
 
 actions = {
-  'backup_instances': backup_instances,
-  'delete_old_databases': delete_old_databases,
-  'delete_old_servers': delete_old_servers,
-  'delete_old_snapshots': delete_old_snapshots,
-  'refresh_cloned_servers': refresh_cloned_servers,
-  'refresh_cloned_databases': refresh_cloned_databases,
-  'redeploy_tupaia_server': redeploy_tupaia_server,
-  'spin_up_dhis_deployment': spin_up_dhis_deployment,
-  'spin_up_lesmis_deployment': spin_up_lesmis_deployment,
-  'spin_up_tupaia_deployment': spin_up_tupaia_deployment,
-  'spin_up_tupaia_database': spin_up_tupaia_database,
-  'start_tagged_databases': start_tagged_databases,
-  'start_tagged_servers': start_tagged_servers,
-  'stop_tagged_databases': stop_tagged_databases,
-  'stop_tagged_servers': stop_tagged_servers,
-  'swap_out_tupaia_server': swap_out_tupaia_server,
-  'tear_down_lesmis_deployment': tear_down_lesmis_deployment,
-  'tear_down_tupaia_deployment': tear_down_tupaia_deployment,
-  'tear_down_dhis_deployment': tear_down_dhis_deployment,
+    "backup_instances": backup_instances,
+    "delete_old_databases": delete_old_databases,
+    "delete_old_servers": delete_old_servers,
+    "delete_old_snapshots": delete_old_snapshots,
+    "refresh_cloned_servers": refresh_cloned_servers,
+    "refresh_cloned_databases": refresh_cloned_databases,
+    "redeploy_tupaia_server": redeploy_tupaia_server,
+    "spin_up_dhis_deployment": spin_up_dhis_deployment,
+    "spin_up_lesmis_deployment": spin_up_lesmis_deployment,
+    "spin_up_tupaia_deployment": spin_up_tupaia_deployment,
+    "spin_up_tupaia_database": spin_up_tupaia_database,
+    "start_tagged_databases": start_tagged_databases,
+    "start_tagged_servers": start_tagged_servers,
+    "stop_tagged_databases": stop_tagged_databases,
+    "stop_tagged_servers": stop_tagged_servers,
+    "swap_out_tupaia_server": swap_out_tupaia_server,
+    "tear_down_lesmis_deployment": tear_down_lesmis_deployment,
+    "tear_down_tupaia_deployment": tear_down_tupaia_deployment,
+    "tear_down_dhis_deployment": tear_down_dhis_deployment,
 }
 
+
 def lambda_handler(event, context):
-    if 'Action' not in event:
-      raise Exception('Must provide "Action" in the lambda config to tell it what to do. Supported actions are ' + ', '.join(actions.keys()))
+    if "Action" not in event:
+        raise Exception(
+            'Must provide "Action" in the lambda config to tell it what to do. Supported actions are '
+            + ", ".join(actions.keys())
+        )
 
-    action = event['Action']
+    action = event["Action"]
 
-    if 'User' not in event:
-      raise Exception('Must provide your AWS username under the key "User" in the lambda config')
+    if "User" not in event:
+        raise Exception(
+            'Must provide your AWS username under the key "User" in the lambda config'
+        )
 
-    user = event['User']
+    user = event["User"]
 
     if action not in actions:
-      raise Exception('Action must be one of ' + ', '.join(actions.keys()))
+        raise Exception("Action must be one of " + ", ".join(actions.keys()))
 
     action_handler = actions[action]
 
-    print(user + ' triggered ' + action)
+    print(user + " triggered " + action)
 
     return action_handler(event)
