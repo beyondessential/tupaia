@@ -77,7 +77,6 @@ export const SyncPage = () => {
     syncStage,
     progress,
     progressMessage,
-    lastSyncTime,
   } = useSyncStatus();
 
   const handler: Handler = useCallback(() => void setSyncStarted(true), []);
@@ -116,8 +115,7 @@ export const SyncPage = () => {
 
           {!isSyncing && !isRequestingSync && (
             <>
-              {Boolean(lastSyncTime) && <StyledLastSyncDate lastSyncDate={lastSyncTime} />}
-
+              <StyledLastSyncDate />
               <StyledButton onClick={manualSync}>Manual sync</StyledButton>
             </>
           )}
