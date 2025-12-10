@@ -32,7 +32,7 @@ async function getFileAnswerText(answer) {
     return answer.body;
   }
 
-  return null; // TODO: Handle offline file uploads (RN-1752)
+  return answer.body;
 }
 
 /**
@@ -67,7 +67,7 @@ async function getPhotoAnswerText(answer) {
     return `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.png`;
   }
 
-  return null; // TODO: Handle offline image uploads (RN-1752)
+  return answer.body;
 }
 
 /** @type {Record<QuestionType, AnswerBodyParser>} */

@@ -1,7 +1,7 @@
 import http from 'http';
 import winston from 'winston';
 
-import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase, serverModelClasses } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
 import { createApp } from './app';
@@ -14,7 +14,7 @@ configureWinston();
 configureEnv();
 
 const database = new TupaiaDatabase();
-const models = new ModelRegistry(database) as SyncServerModelRegistry;
+const models = new ModelRegistry(database, serverModelClasses) as SyncServerModelRegistry;
 
 const syncManager = new CentralSyncManager(models);
 
