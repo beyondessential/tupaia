@@ -7,21 +7,26 @@ import { AnswerModel as AnswerModelBase } from '../../core/modelClasses';
 export class AnswerModel extends AnswerModelBase {
   async incomingSyncHook(records) {
     const { PHOTO, FILE } = this.constructor.types;
-    const uploadMethods = {
-      [PHOTO]: 'uploadImage',
-      [FILE]: 'uploadFile',
-    };
-
     const s3Client = new S3Client(new S3());
-    const updates = [];
 
-    for (const record of records) {
-      if ([PHOTO, FILE].includes(record.data.type)) {
-        const uploadMethod = uploadMethods[record.data.type];
-        const newAnswerText = await s3Client[uploadMethod](record.data.text);
-        updates.push({ ...record, data: { ...record.data, text: newAnswerText } });
+    const uploadPromises = records.map(async record => {
+      if (record.data.type === PHOTO) {
+        const newAnswerText = await s3Client.uploadImage(record.data.text, record.data.id);
+        return { ...record, data: { ...record.data, text: newAnswerText } };
       }
-    }
+
+      if (record.data.type === FILE) {
+        const { uniqueFileName, data } = JSON.parse(record.data.text);
+        if (uniqueFileName && data) {
+          const newAnswerText = await s3Client.uploadFile(uniqueFileName, data);
+          return { ...record, data: { ...record.data, text: newAnswerText } };
+        }
+      }
+
+      return null;
+    });
+
+    const updates = (await Promise.all(uploadPromises)).filter(Boolean);
 
     return { updates };
   }

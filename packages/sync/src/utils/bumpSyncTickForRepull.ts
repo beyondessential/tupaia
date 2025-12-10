@@ -4,7 +4,6 @@ import { DatabaseModel, SqlQuery, TupaiaDatabase } from '@tupaia/database';
 
 import { SYNC_SESSION_DIRECTION } from '../constants';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
-import type { SyncSnapshotAttributes } from '../types';
 
 /**
  * Bump the updated_at_sync_tick for all records that require a repull
@@ -15,7 +14,7 @@ import type { SyncSnapshotAttributes } from '../types';
  */
 export const bumpSyncTickForRepull = async (
   database: TupaiaDatabase,
-  persistedModels: DatabaseModel[],
+  models: DatabaseModel[],
   sessionId: string,
 ) => {
   // No need to load records in batches for memory issue as
@@ -33,13 +32,12 @@ export const bumpSyncTickForRepull = async (
   const recordsByType = groupBy(records, 'recordType');
 
   for (const [recordType, records] of Object.entries(recordsByType)) {
-    const typedRecords = records as SyncSnapshotAttributes[];
-    const model = persistedModels.find(model => model.databaseRecord === recordType);
+    const model = models.find(model => model.databaseRecord === recordType);
     if (!model) {
       throw new Error(`Model ${recordType} not found`);
     }
 
-    const ids = typedRecords.map(r => (r as SyncSnapshotAttributes).recordId);
+    const ids = records.map(r => r.recordId);
 
     await database.executeSql(
       `

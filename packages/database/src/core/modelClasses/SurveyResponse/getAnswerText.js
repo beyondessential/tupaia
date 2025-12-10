@@ -32,7 +32,7 @@ async function getFileAnswerText(answer) {
     return answer.body;
   }
 
-  return answer.body;
+  return JSON.stringify(answer.body);
 }
 
 /**

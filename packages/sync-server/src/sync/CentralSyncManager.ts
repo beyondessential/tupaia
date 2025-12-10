@@ -613,8 +613,8 @@ export class CentralSyncManager {
           // saving with a unique tick
           const { tock } = await this.tickTockGlobalClock(transactingModels);
 
-          // run any side effects for each model
-          // eg: resolving duplicated patient display IDs
+          // run any side effects that updates the pushed records and requires repull
+          // eg: uploading images and files answers to S3, and update the answer text to the new S3 URL
           await incomingSyncHook(transactingModels.database, transactingModels, sessionId);
 
           await withDeferredSyncSafeguards(transactingModels.database, () =>

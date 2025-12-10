@@ -7,7 +7,7 @@ import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 import { insertSnapshotRecords, updateSnapshotRecords } from './manageSnapshotTable';
 import { getModelsForPush } from './getModelsForDirection';
 
-const batchSize = 10000;
+const BATCH_SIZE = 10000;
 
 type WrapInReadOnlyTransaction = (
   wrappedFunction: (models: ModelRegistry) => Promise<void>,
@@ -18,6 +18,8 @@ export const incomingSyncHook = async (
   models: ModelRegistry,
   sessionId: string,
 ) => {
+   // model.incomingSyncHook should return modified records without directly mutating the database.
+   // Wrapped in a read-only transaction to enforce this contract and prevent inadvertent writes.
   await (models.wrapInReadOnlyTransaction as WrapInReadOnlyTransaction)(
     async (readOnlyModelsRegistry: ModelRegistry): Promise<void> => {
       const readOnlyModels = getModelsForPush(readOnlyModelsRegistry.getModels());
@@ -38,7 +40,7 @@ export const incomingSyncHook = async (
         );
 
         // Load the persisted record ids in batches to avoid memory issue
-        const batchCount = Math.ceil(modelPersistedRecordsCount / batchSize);
+        const batchCount = Math.ceil(modelPersistedRecordsCount / BATCH_SIZE);
         let fromId;
 
         for (let batchIndex = 0; batchIndex < batchCount; batchIndex++) {
@@ -46,7 +48,7 @@ export const incomingSyncHook = async (
             database,
             sessionId,
             fromId,
-            batchSize,
+            BATCH_SIZE,
             model.databaseRecord,
             SYNC_SESSION_DIRECTION.INCOMING,
           );
