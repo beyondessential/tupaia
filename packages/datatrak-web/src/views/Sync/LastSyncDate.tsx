@@ -1,11 +1,8 @@
 import { formatDistance } from 'date-fns';
-import React, { HTMLAttributes, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLastSyncTime } from '../../sync/syncStatus';
 import { SyncHeading } from './SyncHeading';
 import { SyncParagraph } from './SyncParagraph';
-
-interface LastSyncDateProps extends HTMLAttributes<HTMLDivElement> {
-  lastSyncDate: Date | null;
-}
 
 export function formatLastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null): React.ReactNode {
   const formattedTimeString = lastSuccessfulSyncTime
@@ -18,23 +15,30 @@ export function formatLastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null
     : formattedTimeString;
 }
 
-export const LastSyncDate = ({ lastSyncDate, ...props }: LastSyncDateProps) => {
-  const [formattedDate, setFormattedDate] = useState<React.ReactNode>();
+export const LastSyncDate = (props: React.ComponentPropsWithRef<'div'>) => {
+  const lastSyncTime = useLastSyncTime();
+  const [formattedDate, setFormattedDate] = useState<React.ReactNode>(
+    formatLastSuccessfulSyncTime(lastSyncTime),
+  );
 
   useEffect(() => {
     // Refresh relatively formatted date
     const interval = setInterval(
-      () => void setFormattedDate(formatLastSuccessfulSyncTime(lastSyncDate)),
+      () => void setFormattedDate(formatLastSuccessfulSyncTime(lastSyncTime)),
       1_000,
     );
     return () => void clearInterval(interval);
-  }, [lastSyncDate]);
+  }, [lastSyncTime]);
 
   return (
     <div {...props}>
       <SyncHeading>Last successful sync</SyncHeading>
       <SyncParagraph>
-        <time dateTime={lastSyncDate?.toISOString()}>{formattedDate}</time>
+        {lastSyncTime ? (
+          <time dateTime={lastSyncTime.toISOString()}>{formattedDate}</time>
+        ) : (
+          'Never'
+        )}
       </SyncParagraph>
     </div>
   );
