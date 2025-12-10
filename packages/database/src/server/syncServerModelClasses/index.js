@@ -1,5 +1,5 @@
 import { AnswerModel } from './Answer';
 
-export const serverModelClasses = {
+export const syncServerModelClasses = {
   Answer: AnswerModel,
 };
