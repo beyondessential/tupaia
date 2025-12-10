@@ -11,3 +11,4 @@ export { getConnectionConfig } from './getConnectionConfig';
 export { DatabaseChangeChannel } from './DatabaseChangeChannel';
 export { runPostMigration } from './runPostMigration';
 export * from './changeHandlers';
+export { serverModelClasses } from './serverModelClasses';
