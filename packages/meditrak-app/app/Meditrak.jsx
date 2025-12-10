@@ -1,19 +1,15 @@
 import React from 'react';
-import {StyleSheet, Text, View, BackHandler} from 'react-native';
+import { StyleSheet, Text, View, BackHandler } from 'react-native';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import {database} from './database';
-import {MessageOverlay} from './messages/MessageOverlay';
-import {isBeta, betaBranch, centralApiUrl} from './version';
-import {NavigationMenuContainer, goBack} from './navigation';
-import {
-  DEFAULT_PADDING,
-  THEME_COLOR_THREE,
-  THEME_COLOR_ONE,
-} from './globalStyles';
+import { database } from './database';
+import { MessageOverlay } from './messages/MessageOverlay';
+import { isBeta, betaBranch, centralApiUrl } from './version';
+import { NavigationMenuContainer, goBack } from './navigation';
+import { DEFAULT_PADDING, THEME_COLOR_THREE, THEME_COLOR_ONE } from './globalStyles';
 
-import {requestLocationPermission} from './utilities/userLocation/permission';
+import { requestLocationPermission } from './utilities/userLocation/permission';
 
 class MeditrakContainer extends React.Component {
   componentDidMount() {
@@ -28,14 +24,14 @@ class MeditrakContainer extends React.Component {
   }
 
   getCanNavigateBack = () => {
-    const {nav} = this.props;
+    const { nav } = this.props;
     return nav.index !== 0;
   };
 
   onBackPress = () => {
     if (!this.getCanNavigateBack()) return false;
 
-    const {onGoBack} = this.props;
+    const { onGoBack } = this.props;
     onGoBack();
     return true;
   };
@@ -43,9 +39,7 @@ class MeditrakContainer extends React.Component {
   renderBetaBanner() {
     return (
       <View style={localStyles.betaBanner} pointerEvents="none">
-        <Text style={localStyles.betaBannerText}>
-          {betaBranch?.toUpperCase() || centralApiUrl}
-        </Text>
+        <Text style={localStyles.betaBannerText}>{betaBranch?.toUpperCase() || centralApiUrl}</Text>
       </View>
     );
   }
@@ -95,7 +89,4 @@ const mapDispatchToProps = dispatch => ({
   onGoBack: () => dispatch(goBack()),
 });
 
-export const Meditrak = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MeditrakContainer);
+export const Meditrak = connect(mapStateToProps, mapDispatchToProps)(MeditrakContainer);

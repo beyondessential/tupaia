@@ -84,9 +84,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - name: Install dependencies
-        run: yarn workspaces focus tupaia @tupaia/database @tupaia/types
-      - run: yarn run build:from '{database,types}'
+        run: yarn workspaces focus tupaia @tupaia/types
+      - run: yarn run build:from types
       - run: ./packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh
+        timeout-minutes: 2 # Generating diff for logging may fail if diff is HUGE
 
   validate_lockfile:
     name: Validate lockfile
