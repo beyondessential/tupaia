@@ -152,7 +152,7 @@ export function useSyncError(): string | null {
       syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_STARTED, clear);
       syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_ERROR, update);
     };
-  }, [syncManager?.emitter, update]);
+  }, [clear, syncManager?.emitter, update]);
 
   return message;
 }
