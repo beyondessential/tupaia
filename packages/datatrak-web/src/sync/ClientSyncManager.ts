@@ -66,11 +66,11 @@ export class ClientSyncManager {
 
   private deviceId: string;
 
-  private urgentSyncInterval: NodeJS.Timeout | null = null;
+  private urgentSyncInterval: ReturnType<typeof setInterval> | null = null;
 
   private isInitialSync: boolean = false;
 
-  private syncInterval: NodeJS.Timeout | null = null;
+  private syncInterval: ReturnType<typeof setInterval> | null = null;
 
   progressMaxByStage = STAGE_MAX_PROGRESS_INCREMENTAL;
 
