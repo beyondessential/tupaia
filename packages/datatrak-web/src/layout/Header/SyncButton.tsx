@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { RouterLink } from '@tupaia/ui-components';
 import { ROUTES } from '../../constants/url';
-import { useIsSyncing } from '../../sync/useIsSyncing';
+import { useIsSyncing } from '../../sync/syncStatus';
 
 export const StyledSyncButton = styled(IconButton)<{
   component: React.ElementType;
