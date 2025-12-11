@@ -202,8 +202,8 @@ export class S3Client {
     const dirname = getS3ImageFilePath();
     const { extension } = supportedImageTypes[destinationContentType];
     // If a fileId is provided, use it as the file name, otherwise generate a unique file name
-    const basename = `${fileId || getUniqueFileName()}.${extension}`;
-    const filePath = `${dirname}${basename}`;
+    const basename: `${string}.${typeof extension}` = `${fileId || getUniqueFileName()}.${extension}`;
+    const filePath: `${string}.${typeof extension}` = `${dirname}${basename}`;
 
     // In some cases we want to allow overwriting of existing files
     if (!allowOverwrite && (await this.checkIfFileExists(filePath))) {
