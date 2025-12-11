@@ -34,9 +34,11 @@ export class DatatrakDatabase extends BaseDatabase {
 
   async wrapInTransaction<T = unknown>(
     wrappedFunction: <T = unknown>(db: DatatrakDatabase) => Promise<T>,
+    transactionConfig?: Knex.TransactionConfig,
   ): Promise<T> {
-    return await this.connection.transaction(transaction =>
-      wrappedFunction(new DatatrakDatabase(transaction)),
+    return await this.connection.transaction<T>(
+      transaction => wrappedFunction(new DatatrakDatabase(transaction)),
+      transactionConfig,
     );
   }
 }
