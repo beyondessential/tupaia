@@ -46,7 +46,7 @@ describe('S3Client', () => {
 
       await expect(s3Client.uploadImage(base64Heif, fileId)).rejects.toThrow(
         new UnsupportedMediaTypeError(
-          'image/heic images aren’t supported. Please provide one of: AVIF, GIF, JPEG, PNG, SVG, WebP',
+          'image/heic images aren’t supported. Please provide one of: AVIF, GIF, JPEG, PNG, SVG, TIFF, WebP',
         ),
       );
     });
@@ -74,7 +74,7 @@ describe('S3Client', () => {
 
       const fileId = crypto.randomUUID();
       const expectedError = new ConflictError(
-        `File dev_uploads/images/${fileId}.gif already exists on S3, overwrite is not allowed`,
+        `File dev_uploads/images/${fileId}.webp already exists on S3, overwrite is not allowed`,
       );
 
       await expect(s3Client.uploadImage(base64Gif, fileId, false)).rejects.toThrow(expectedError);
