@@ -7,8 +7,8 @@ import * as getUniqueFileNameModule from '../../s3/getUniqueFileName';
 process.env.AWS_REGION ||= 'ap-southeast-2';
 
 /**
- * `S3Client#upload` creates an `Upload` instance; but this test suite doesn’t
- * actually upload files.
+ * `S3Client#upload` creates an `Upload` instance; but this test suite doesn’t actually upload
+ * files.
  */
 jest.mock('@aws-sdk/lib-storage', () => ({
   Upload: jest.fn().mockImplementation(() => ({
