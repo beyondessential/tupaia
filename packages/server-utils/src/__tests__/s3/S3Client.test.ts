@@ -30,8 +30,7 @@ describe('S3Client', () => {
       'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
     it('should throw if file is not an image', async () => {
-      /** ‘Hello World’, encoded */
-      const base64TextFile = 'data:text/plain;base64,SGVsbG8gV29ybGQ=';
+      const base64TextFile = `data:text/plain;base64,${Buffer.from('Hello World').toString('base64')}`;
       const fileId = crypto.randomUUID();
 
       await expect(s3Client.uploadImage(base64TextFile, fileId)).rejects.toThrow(
