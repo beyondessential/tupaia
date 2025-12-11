@@ -20,6 +20,7 @@ describe('S3Client', () => {
   let s3Client: S3Client;
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
     s3Client = new S3Client(new S3());
   });
 
