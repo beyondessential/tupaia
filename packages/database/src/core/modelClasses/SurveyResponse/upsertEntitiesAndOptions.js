@@ -1,6 +1,5 @@
 import { merge } from 'es-toolkit';
-
-import winston from '../../log';
+import winston from 'winston';
 
 const upsertEntities = async (models, entitiesUpserted) => {
   return await Promise.all(
