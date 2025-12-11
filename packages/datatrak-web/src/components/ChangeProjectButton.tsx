@@ -78,7 +78,7 @@ export const ChangeProjectButton = ({ leadingBorder, ...props }: ChangeProjectBu
     if (project?.name) {
       return project?.name;
     }
-    return noOfflineProjects ? 'Syncing projects...' : 'Select project';
+    return noOfflineProjects ? 'Syncing projects…' : 'Select project';
   }, [project?.name, noOfflineProjects]);
 
   return (
