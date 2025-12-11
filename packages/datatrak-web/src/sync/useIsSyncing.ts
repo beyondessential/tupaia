@@ -4,24 +4,25 @@ import { useSyncContext } from '../api/SyncContext';
 import { SYNC_EVENT_ACTIONS } from '../types';
 
 export function useIsSyncing(): boolean {
-  const clientSyncManager = useSyncContext()?.clientSyncManager;
-  const [isSyncing, setIsSyncing] = useState(clientSyncManager?.isSyncing ?? false);
+  const syncManager = useSyncContext()?.clientSyncManager;
+  const [isSyncing, setIsSyncing] = useState(syncManager?.isSyncing ?? false);
 
-  const set = useCallback(() => setIsSyncing(true), []);
-  const unset = useCallback(() => setIsSyncing(false), []);
+  const update = useCallback(
+    () => void setIsSyncing(syncManager?.isSyncing ?? false),
+    [syncManager?.isSyncing],
+  );
 
-  const emitter = clientSyncManager?.emitter;
   useEffect(() => {
-    if (emitter === undefined) return;
-
-    emitter.on(SYNC_EVENT_ACTIONS.SYNC_STARTED, set);
-    emitter.on(SYNC_EVENT_ACTIONS.SYNC_ENDED, unset);
+    syncManager?.emitter.on(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, update);
+    syncManager?.emitter.on(SYNC_EVENT_ACTIONS.SYNC_STARTED, update);
+    syncManager?.emitter.on(SYNC_EVENT_ACTIONS.SYNC_ENDED, update);
 
     return () => {
-      emitter.off(SYNC_EVENT_ACTIONS.SYNC_STARTED, set);
-      emitter.off(SYNC_EVENT_ACTIONS.SYNC_ENDED, unset);
+      syncManager?.emitter.off(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, update);
+      syncManager?.emitter.off(SYNC_EVENT_ACTIONS.SYNC_STARTED, update);
+      syncManager?.emitter.off(SYNC_EVENT_ACTIONS.SYNC_ENDED, update);
     };
-  }, [emitter, set, unset]);
+  }, [syncManager?.emitter, update]);
 
   return isSyncing;
 }
