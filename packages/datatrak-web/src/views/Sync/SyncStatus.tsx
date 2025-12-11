@@ -7,6 +7,7 @@ import { SyncHeading } from './SyncHeading';
 import { SyncParagraph } from './SyncParagraph';
 
 const Wrapper = styled.div`
+  font-variant-numeric: lining-nums tabular-nums;
   inline-size: 100%;
   text-wrap: balance;
 
