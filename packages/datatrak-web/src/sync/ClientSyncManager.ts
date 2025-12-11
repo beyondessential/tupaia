@@ -24,7 +24,12 @@ import { ensure } from '@tupaia/tsutils';
 import { Project } from '@tupaia/types';
 import { remove, stream } from '../api';
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
-import { DatatrakWebModelRegistry, ProcessStreamDataParams, SYNC_EVENT_ACTIONS } from '../types';
+import {
+  type DatatrakWebModelRegistry,
+  type ProcessStreamDataParams,
+  SYNC_EVENT_ACTIONS,
+  type SyncEvents,
+} from '../types';
 import { formatFraction } from '../utils';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
@@ -47,11 +52,11 @@ const STAGE_MAX_PROGRESS_INCREMENTAL: StageMaxProgress = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 66,
   [SYNC_STAGES.PERSIST]: 100,
-};
+} as const;
 const STAGE_MAX_PROGRESS_INITIAL: StageMaxProgress = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 100,
-};
+} as const;
 
 export interface SyncResult {
   pulledChangesCount?: number;
@@ -72,7 +77,8 @@ export class ClientSyncManager {
 
   private syncInterval: ReturnType<typeof setInterval> | null = null;
 
-  progressMaxByStage = STAGE_MAX_PROGRESS_INCREMENTAL;
+  progressMaxByStage: typeof STAGE_MAX_PROGRESS_INCREMENTAL | typeof STAGE_MAX_PROGRESS_INITIAL =
+    STAGE_MAX_PROGRESS_INCREMENTAL;
 
   isRequestingSync: boolean = false;
   isSyncing: boolean = false;
@@ -88,7 +94,7 @@ export class ClientSyncManager {
 
   syncStage: number | null = null;
 
-  emitter = mitt();
+  emitter = mitt<SyncEvents>();
 
   constructor(models: DatatrakWebModelRegistry, deviceId: string) {
     this.models = models;
