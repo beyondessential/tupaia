@@ -8,6 +8,7 @@ import { SyncParagraph } from './SyncParagraph';
 
 const Wrapper = styled.div`
   inline-size: 100%;
+  text-wrap: balance;
 
   > * + * {
     margin-block-start: 1rem;
@@ -72,7 +73,11 @@ export const SyncStatus = ({
 
       <div>
         {syncStage && <SyncParagraph>{`Sync stage ${syncStage} of ${totalStages}`}</SyncParagraph>}
-        {message && <SyncParagraph>{message}</SyncParagraph>}
+        {message && (
+          <SyncParagraph style={{ minBlockSize: '2lh' /* Minimise layout shift */ }}>
+            {message}
+          </SyncParagraph>
+        )}
       </div>
 
       {syncFinishedSuccessfully && (
