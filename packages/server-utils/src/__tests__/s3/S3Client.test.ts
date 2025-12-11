@@ -42,19 +42,6 @@ describe('S3Client', () => {
       );
     });
 
-    it('should throw if image type is not supported', async () => {
-      /** 1×1 transparent HEIF */
-      const base64Heif =
-        'data:image/heic;base64,AAAAGGZ0eXBoZWljAAAAAG1pZjFoZWljAAACWG1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAHBpY3QAAAAAAAAAAAAAAAAAAAAADnBpdG0AAAAAAAEAAAA0aWxvYwAAAABEQAACAAEAAAAAAngAAQAAAAAAAAArAAIAAAAAAqMAAQAAAAAAAAAjAAAAOGlpbmYAAAAAAAIAAAAVaW5mZQIAAAAAAQAAaHZjMQAAAAAVaW5mZQIAAAAAAgAAaHZjMQAAAAGXaXBycAAAAXBpcGNvAAAAdmh2Y0MBA3AAAAAAAAAAAAAe8AD8/fj4AAAPA2AAAQAYQAEMAf//A3AAAAMAkAAAAwAAAwAeugJAYQABACpCAQEDcAAAAwCQAAADAAADAB6gIIEFluqumubgIaDAgAAAAwCAAAADAIRiAAEABkQBwXPBiQAAABRpc3BlAAAAAAAAAEAAAABAAAAAKGNsYXAAAAABAAAAAQAAAAEAAAAB////wQAAAAL////BAAAAAgAAABBwaXhpAAAAAAMICAgAAABxaHZjQwEECAAAAAAAAAAAAB7wAPz8+PgAAA8DYAABABdAAQwB//8ECAAAAwCf+AAAAwAAHroCQGEAAQAmQgEBBAgAAAMAn/gAAAMAAB7AggQWW6q6a5sCAAADAAIAAAMAAhBiAAEABkQBwXPBiQAAAA5waXhpAAAAAAEIAAAAJ2F1eEMAAAAAdXJuOm1wZWc6aGV2YzoyMDE1OmF1eGlkOjEAAAAAH2lwbWEAAAAAAAAAAgABBIECBIMAAgWFAgaHgwAAABppcmVmAAAAAAAAAA5hdXhsAAIAAQABAAAAVm1kYXQAAAAnKAGvEyExlvhOUKeW/WMCzQyVTFq5T6Vz3QpQk3J+uP7yh5PFYoLgAAAAHygBriZCSiTn1w3//h8LF2FVc1OybCBiRCkSgGP19K4=';
-      const fileId = crypto.randomUUID();
-
-      await expect(s3Client.uploadImage(base64Heif, fileId)).rejects.toThrow(
-        new UnsupportedMediaTypeError(
-          'image/heic images aren’t supported. Please provide one of: AVIF, GIF, JPEG, PNG, SVG, TIFF, WebP',
-        ),
-      );
-    });
-
     it('should generate a unique file name when no file ID is provided', async () => {
       const spy = jest.spyOn(getUniqueFileNameModule, 'getUniqueFileName');
 
@@ -74,6 +61,7 @@ describe('S3Client', () => {
 
     it('should abort if file already exists, if overwrite is prohibited', async () => {
       // Mock private instance method `S3Client#checkIfFileExists` to report a file conflict
+      // Type cast because `checkIfFileExists` is private
       jest.spyOn(S3Client.prototype as any, 'checkIfFileExists').mockResolvedValue(true);
 
       const fileId = crypto.randomUUID();
@@ -86,12 +74,80 @@ describe('S3Client', () => {
 
     it('should not abort if file already exists and overwrite is allowed', async () => {
       // Mock private instance method `S3Client#checkIfFileExists` to report a file conflict
+      // Type cast because `checkIfFileExists` is private
       jest.spyOn(S3Client.prototype as any, 'checkIfFileExists').mockResolvedValue(true);
 
       const fileId = crypto.randomUUID();
 
       await expect(s3Client.uploadImage(base64Webp, fileId, true)).resolves.not.toThrow(
         ConflictError,
+      );
+    });
+
+    it('should throw if image type is not supported', async () => {
+      /** 1×1 transparent HEIF */
+      const base64Heif =
+        'data:image/heic;base64,AAAAGGZ0eXBoZWljAAAAAG1pZjFoZWljAAACWG1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAHBpY3QAAAAAAAAAAAAAAAAAAAAADnBpdG0AAAAAAAEAAAA0aWxvYwAAAABEQAACAAEAAAAAAngAAQAAAAAAAAArAAIAAAAAAqMAAQAAAAAAAAAjAAAAOGlpbmYAAAAAAAIAAAAVaW5mZQIAAAAAAQAAaHZjMQAAAAAVaW5mZQIAAAAAAgAAaHZjMQAAAAGXaXBycAAAAXBpcGNvAAAAdmh2Y0MBA3AAAAAAAAAAAAAe8AD8/fj4AAAPA2AAAQAYQAEMAf//A3AAAAMAkAAAAwAAAwAeugJAYQABACpCAQEDcAAAAwCQAAADAAADAB6gIIEFluqumubgIaDAgAAAAwCAAAADAIRiAAEABkQBwXPBiQAAABRpc3BlAAAAAAAAAEAAAABAAAAAKGNsYXAAAAABAAAAAQAAAAEAAAAB////wQAAAAL////BAAAAAgAAABBwaXhpAAAAAAMICAgAAABxaHZjQwEECAAAAAAAAAAAAB7wAPz8+PgAAA8DYAABABdAAQwB//8ECAAAAwCf+AAAAwAAHroCQGEAAQAmQgEBBAgAAAMAn/gAAAMAAB7AggQWW6q6a5sCAAADAAIAAAMAAhBiAAEABkQBwXPBiQAAAA5waXhpAAAAAAEIAAAAJ2F1eEMAAAAAdXJuOm1wZWc6aGV2YzoyMDE1OmF1eGlkOjEAAAAAH2lwbWEAAAAAAAAAAgABBIECBIMAAgWFAgaHgwAAABppcmVmAAAAAAAAAA5hdXhsAAIAAQABAAAAVm1kYXQAAAAnKAGvEyExlvhOUKeW/WMCzQyVTFq5T6Vz3QpQk3J+uP7yh5PFYoLgAAAAHygBriZCSiTn1w3//h8LF2FVc1OybCBiRCkSgGP19K4=';
+      const fileId = crypto.randomUUID();
+
+      await expect(s3Client.uploadImage(base64Heif, fileId)).rejects.toThrow(
+        new UnsupportedMediaTypeError(
+          'image/heic images aren’t supported. Please provide one of: AVIF, GIF, JPEG, PNG, SVG, TIFF, WebP',
+        ),
+      );
+    });
+
+    it('should convert a supported non-SVG image to WebP', async () => {
+      // Type casts because these methods are private
+      const getContentTypeFromBase64Spy = jest.spyOn(
+        S3Client.prototype as any,
+        'getContentTypeFromBase64',
+      );
+      const uploadSpy = jest.spyOn(S3Client.prototype as any, 'upload');
+
+      const fileId = crypto.randomUUID();
+      // No use inspecting mocked return value from `Upload.done` (see top of this file)
+      void (await s3Client.uploadImage(base64Gif, fileId));
+
+      expect(getContentTypeFromBase64Spy).toHaveBeenCalledTimes(1);
+      expect(getContentTypeFromBase64Spy).toHaveReturnedWith('image/gif');
+
+      expect(uploadSpy).toHaveBeenCalledTimes(1);
+      expect(uploadSpy).toHaveBeenCalledWith(
+        `dev_uploads/images/${fileId}.webp`,
+        expect.objectContaining({
+          ContentEncoding: 'base64',
+          ContentType: 'image/webp',
+        }),
+      );
+    });
+
+    it('should not convert SVG images (i.e. keep it in vector format)', async () => {
+      // Type casts because these methods are private
+      const getContentTypeFromBase64Spy = jest.spyOn(
+        S3Client.prototype as any,
+        'getContentTypeFromBase64',
+      );
+      const uploadSpy = jest.spyOn(S3Client.prototype as any, 'upload');
+
+      const base64Svg = `data:image/svg+xml;base64,${Buffer.from(
+        '<svg width="1" height="1" xmlns="http://www.w3.org/2000/svg"></svg>',
+      ).toString('base64')}`;
+
+      const fileId = crypto.randomUUID();
+      // No use inspecting mocked return value from `Upload.done` (see top of this file)
+      void (await s3Client.uploadImage(base64Svg, fileId));
+
+      expect(getContentTypeFromBase64Spy).toHaveBeenCalledTimes(1);
+      expect(getContentTypeFromBase64Spy).toHaveReturnedWith('image/svg+xml');
+
+      expect(uploadSpy).toHaveBeenCalledTimes(1);
+      expect(uploadSpy).toHaveBeenCalledWith(
+        `dev_uploads/images/${fileId}.svg`,
+        expect.objectContaining({
+          ContentEncoding: 'base64',
+          ContentType: 'image/svg+xml',
+        }),
       );
     });
   });
