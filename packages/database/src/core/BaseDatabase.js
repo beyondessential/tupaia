@@ -298,9 +298,8 @@ export class BaseDatabase {
   }
 
   async create(recordType, record, where, schemaName) {
-    if (!record.id) {
-      record.id = this.generateId();
-    }
+    record.id ||= this.generateId();
+
     await this.query(
       {
         recordType,
