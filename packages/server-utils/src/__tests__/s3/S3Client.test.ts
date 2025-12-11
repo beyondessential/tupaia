@@ -29,6 +29,10 @@ describe('S3Client', () => {
     const base64Gif =
       'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
+    /** 1×1 transparent WebP */
+    const base64Webp =
+      'data:image/webp;base64,UklGRkAAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAIAAAAAAFZQOCAYAAAAMAEAnQEqAQABAAIANCWkAANwAP77lAAA';
+
     it('should throw if file is not an image', async () => {
       const base64TextFile = `data:text/plain;base64,${Buffer.from('Hello World').toString('base64')}`;
       const fileId = crypto.randomUUID();
@@ -54,7 +58,7 @@ describe('S3Client', () => {
     it('should generate a unique file name when no file ID is provided', async () => {
       const spy = jest.spyOn(getUniqueFileNameModule, 'getUniqueFileName');
 
-      await s3Client.uploadImage(base64Gif, '');
+      await s3Client.uploadImage(base64Webp, '');
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith();
     });
@@ -63,7 +67,7 @@ describe('S3Client', () => {
       const fileId = crypto.randomUUID();
       const spy = jest.spyOn(getUniqueFileNameModule, 'getUniqueFileName');
 
-      await s3Client.uploadImage(base64Gif, fileId);
+      await s3Client.uploadImage(base64Webp, fileId);
 
       expect(spy).not.toHaveBeenCalled();
     });
@@ -77,7 +81,7 @@ describe('S3Client', () => {
         `File dev_uploads/images/${fileId}.webp already exists on S3, overwrite is not allowed`,
       );
 
-      await expect(s3Client.uploadImage(base64Gif, fileId, false)).rejects.toThrow(expectedError);
+      await expect(s3Client.uploadImage(base64Webp, fileId, false)).rejects.toThrow(expectedError);
     });
 
     it('should not abort if file already exists and overwrite is allowed', async () => {
@@ -86,7 +90,7 @@ describe('S3Client', () => {
 
       const fileId = crypto.randomUUID();
 
-      await expect(s3Client.uploadImage(base64Gif, fileId, true)).resolves.not.toThrow(
+      await expect(s3Client.uploadImage(base64Webp, fileId, true)).resolves.not.toThrow(
         ConflictError,
       );
     });
