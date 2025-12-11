@@ -24,7 +24,12 @@ import { ensure } from '@tupaia/tsutils';
 import { Project } from '@tupaia/types';
 import { remove, stream } from '../api';
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
-import { DatatrakWebModelRegistry, ProcessStreamDataParams, SYNC_EVENT_ACTIONS } from '../types';
+import {
+  DatatrakWebModelRegistry,
+  ProcessStreamDataParams,
+  SYNC_EVENT_ACTIONS,
+  SyncEvents,
+} from '../types';
 import { formatFraction } from '../utils';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
@@ -88,7 +93,7 @@ export class ClientSyncManager {
 
   syncStage: number | null = null;
 
-  emitter = mitt();
+  emitter = mitt<SyncEvents>();
 
   constructor(models: DatatrakWebModelRegistry, deviceId: string) {
     this.models = models;
