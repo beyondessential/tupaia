@@ -1,17 +1,24 @@
 import { merge } from 'es-toolkit';
 
-import { DatabaseError } from '@tupaia/utils';
+import winston from '../../log';
 
 const upsertEntities = async (models, entitiesUpserted) => {
   return await Promise.all(
     entitiesUpserted.map(async entity => {
-      const existingEntity = await models.entity.findById(entity.id);
-
-      const existingMetadata = existingEntity?.metadata || {};
-      const newMetadata = entity.metadata || {};
-      const metadata = merge(existingMetadata, newMetadata);
-
-      return models.entity.updateOrCreate({ id: entity.id }, { ...entity, metadata });
+      const existingEntity = await models.entity.findById(entity.id, {
+        columns: [
+          // Non-nullable attributes with no DEFAULT, needed for `INSERT ... ON CONFLICT` query
+          // (MediTrak provides all attributes; DataTrak only provides those that need updating)
+          'code',
+          'id',
+          'name',
+          'type',
+          // updateOrCreate doesn’t deeply merge JSONB attributes, so do it here
+          'metadata',
+        ],
+      });
+      const merged = merge(existingEntity, entity);
+      return await models.entity.updateOrCreate({ id: entity.id }, merged);
     }),
   );
 };
@@ -60,15 +67,22 @@ export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
       if (entitiesUpserted.length > 0) {
         await upsertEntities(models, entitiesUpserted);
       }
+    } catch (error) {
+      winston.error(
+        `Error upserting entities from survey response ${surveyResponse.id} for survey ${surveyResponse.survey_id}`,
+      );
+      throw error;
+    }
 
+    try {
       if (optionsCreated.length > 0) {
         await createOptions(models, optionsCreated);
       }
     } catch (error) {
-      throw new DatabaseError(
-        `creating/updating created data from survey response with id ${surveyResponse.survey_id}`,
-        error,
+      winston.error(
+        `Error creating options from survey response ${surveyResponse.id} for survey ${surveyResponse.survey_id}`,
       );
+      throw error;
     }
   }
 };
