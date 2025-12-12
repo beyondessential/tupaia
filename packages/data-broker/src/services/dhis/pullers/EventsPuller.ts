@@ -1,10 +1,12 @@
+import { EntityRecord } from '@tupaia/database';
 import type { DhisApi } from '@tupaia/dhis-api';
 import { getSortByKey } from '@tupaia/utils';
-import { buildEventsFromDhisEventAnalytics } from '../builders';
 import { DataBrokerModelRegistry, Event } from '../../../types';
 import { DataServiceMapping } from '../../DataServiceMapping';
+import { buildEventsFromDhisEventAnalytics } from '../builders';
 import { DhisTranslator } from '../translators';
 import { DataGroup } from '../types';
+import { Entity } from '@tupaia/types';
 
 export type PullEventsOptions = {
   dataServiceMapping: DataServiceMapping;
@@ -88,7 +90,9 @@ export class EventsPuller {
 
       const hierarchyId = (await this.models.entityHierarchy.findOne({ name: hierarchy })).id;
       const parentsOfTrackedEntities = await Promise.all(
-        trackedEntities.map(trackedEntity => trackedEntity.getParent(hierarchyId)),
+        trackedEntities.map(
+          trackedEntity => trackedEntity.getParent(hierarchyId) as Promise<Entity & EntityRecord>,
+        ),
       );
       const parentEvents = await this.pullEventsForOrganisationUnits(api, programCode, {
         ...options,

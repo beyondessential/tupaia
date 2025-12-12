@@ -440,4 +440,8 @@ export class DatabaseModel {
   sanitizeForClient = (data) => {
     return data;
   }
+
+  filterSyncForClient = async (changes) => {
+    return changes;
+  }
 }

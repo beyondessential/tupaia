@@ -10,8 +10,7 @@ export const saveCreates = async (
     const batch = records.slice(i, i + batchSize);
     try {
       await model.createMany(batch);
-      progressCallback?.(batch.length);
-    } catch (e: any) {
+    } catch (originalError: any) {
       // try records individually, some may succeed and we want to capture the
       // specific one with the error
       await Promise.all(
@@ -19,11 +18,13 @@ export const saveCreates = async (
           try {
             await model.create(row);
           } catch (error: any) {
-            throw new Error(`Insert failed with '${error.message}', recordId: ${row.id}`);
+            throw new Error(`Insert failed for record '${row.id}': ${originalError.message}`);
           }
         }),
       );
     }
+
+    progressCallback?.(batch.length);
   }
 };
 
@@ -39,9 +40,7 @@ export const saveUpdates = async (
 
     try {
       await Promise.all(batch.map(r => model.updateById(r.id, r)));
-      // await Promise.all(batch.map(r => model.updateById(r.id, r)));
-      progressCallback?.(batch.length);
-    } catch (e) {
+    } catch (originalError: any) {
       // try records individually, some may succeed and we want to capture the
       // specific one with the error
       await Promise.all(
@@ -49,11 +48,13 @@ export const saveUpdates = async (
           try {
             await model.updateById(row.id, row);
           } catch (error: any) {
-            throw new Error(`Update failed with '${error.message}', recordId: ${row.id}`);
+            throw new Error(`Update failed for record '${row.id}': ${originalError.message}`);
           }
         }),
       );
     }
+
+    progressCallback?.(batch.length);
   }
 };
 
@@ -67,9 +68,7 @@ export const saveDeletes = async (
     const batch = recordsForDelete.slice(i, i + batchSize);
     try {
       await model.delete({ id: batch.map(r => r.id) });
-
-      progressCallback?.(batch.length);
-    } catch (e) {
+    } catch (originalError: any) {
       // try records individually, some may succeed and we want to capture the
       // specific one with the error
       await Promise.all(
@@ -77,10 +76,12 @@ export const saveDeletes = async (
           try {
             await model.delete({ id: row.id });
           } catch (error: any) {
-            throw new Error(`Delete failed with '${error.message}', recordId: ${row.id}`);
+            throw new Error(`Delete failed for record '${row.id}': ${originalError.message}`);
           }
         }),
       );
     }
+
+    progressCallback?.(batch.length);
   }
 };

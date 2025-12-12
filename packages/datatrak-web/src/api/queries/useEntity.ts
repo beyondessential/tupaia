@@ -49,11 +49,12 @@ interface EntityByIdQueryFunctionContext extends ContextualQueryFunctionContext 
 
 const entityByIdQueryFunctions = {
   remote: async ({ entityId }: EntityByIdQueryFunctionContext) => {
-    return await get('entities', {
+    const response = await get('entities', {
       params: {
         filter: { id: ensure(entityId) },
       },
     });
+    return response[0];
   },
   local: async ({ entityId, models }: EntityByIdQueryFunctionContext) => {
     const entity = ensure(

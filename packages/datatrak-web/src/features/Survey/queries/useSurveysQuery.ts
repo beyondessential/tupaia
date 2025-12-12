@@ -1,12 +1,14 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
-import { DbFilter } from '@tupaia/tsmodels';
+import { DbFilter, QueryConjunctions } from '@tupaia/tsmodels';
 import { camelcaseKeys } from '@tupaia/tsutils';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
+
 import { get, RequestParameters, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
 import { ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
-import { Entity } from '../../../types';
+import { DatatrakWebModelRegistry, Entity } from '../../../types';
 import { getSurveyCountryCodes, getSurveyCountryNames, getSurveyGroupNames } from './util';
 
 interface UseSurveysQueryFilterParams {
@@ -47,13 +49,20 @@ const getRemote = async ({
 
 const getLocal = async ({
   models,
+  accessPolicy,
   countryCode,
   includeCountryNames,
   includeSurveyGroupNames,
   projectId,
   searchTerm,
 }: SurveysQueryFunctionContext) => {
-  const where = constructDbFilter({ projectId, searchTerm, countryCode });
+  const where = await constructDbFilter({
+    models,
+    accessPolicy,
+    projectId,
+    searchTerm,
+    countryCode,
+  });
 
   return await models.wrapInReadOnlyTransaction(async transactingModels => {
     const records = await transactingModels.survey.find(where);
@@ -125,11 +134,19 @@ export function useSurveysQuery(
   );
 }
 
-function constructDbFilter({
+async function constructDbFilter({
+  models,
+  accessPolicy,
   projectId,
   searchTerm,
   countryCode,
-}: UseSurveysQueryFilterParams): DbFilter<Survey> {
+}: {
+  models: DatatrakWebModelRegistry;
+  accessPolicy: AccessPolicy;
+  projectId?: Project['id'];
+  searchTerm?: string;
+  countryCode?: Entity['code'];
+}): Promise<DbFilter<Survey>> {
   const dbFilter: DbFilter<Survey> = {};
 
   if (projectId) {
@@ -142,12 +159,11 @@ function constructDbFilter({
     };
   }
   if (countryCode) {
-    // TODO: Replace with QUERY_CONJUNCTIONS.RAW once @tupaia/database imports are fixed
-    dbFilter._raw_ = {
+    dbFilter[QueryConjunctions.RAW] = {
       sql: '(SELECT id FROM country WHERE code = ?) = ANY (country_ids)',
       parameters: [countryCode],
     };
   }
 
-  return dbFilter;
+  return await models.survey.createRecordsPermissionFilter(accessPolicy, dbFilter);
 }

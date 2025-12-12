@@ -92,7 +92,7 @@ export const useGroupedSurveyList = ({
     if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey)) {
       setSelectedSurvey(null);
     }
-  }, [JSON.stringify(surveys)]);
+  }, [selectedSurvey, setSelectedSurvey, surveys]);
 
   const onSelectSurvey = (listItem: ListItemType | null) => {
     if (!listItem) return setSelectedSurvey(null);

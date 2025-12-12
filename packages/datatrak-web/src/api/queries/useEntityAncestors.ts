@@ -1,13 +1,32 @@
-import { useQuery } from '@tanstack/react-query';
 import { Project } from '@tupaia/types';
-import { Entity } from '../../types';
+
+import { DatatrakWebModelRegistry, Entity } from '../../types';
 import { get } from '../api';
+import { useDatabaseQuery } from './useDatabaseQuery';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { getEntityAncestors } from '../../database/entity';
+
+export interface UseEntityAncestorsLocalContext {
+  models: DatatrakWebModelRegistry;
+  projectCode?: Project['code'];
+  entityCode?: Entity['code'];
+}
+
+const getEntityAncestorsOnline = async ({
+  projectCode,
+  entityCode,
+}: UseEntityAncestorsLocalContext) => {
+  return await get(`entityAncestors/${projectCode}/${entityCode}`);
+};
 
 export const useEntityAncestors = (projectCode?: Project['code'], entityCode?: Entity['code']) => {
-  return useQuery(
+  const isOfflineFirst = useIsOfflineFirst();
+
+  return useDatabaseQuery(
     ['entityAncestors', projectCode, entityCode],
-    (): Promise<Entity[]> => get(`entityAncestors/${projectCode}/${entityCode}`),
+    isOfflineFirst ? getEntityAncestors : getEntityAncestorsOnline,
     {
+      localContext: { projectCode, entityCode },
       enabled: !!projectCode && !!entityCode,
     },
   );

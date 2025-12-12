@@ -2,7 +2,6 @@ import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
 import { PermissionsError } from '@tupaia/utils';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
-import { fetchCountryIdsByPermissionGroupId } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -51,38 +50,11 @@ export const assertSurveyEditPermissions = async (
   throw new PermissionsError(errorMessage);
 };
 
-export const createSurveyDBFilter = async (accessPolicy, models, criteria) => {
-  if (hasBESAdminAccess(accessPolicy)) {
-    return criteria;
-  }
-  const dbConditions = { ...criteria };
-
-  const countryIdsByPermissionGroupId = await fetchCountryIdsByPermissionGroupId(
-    accessPolicy,
-    models,
-  );
-
-  dbConditions[RAW] = {
-    sql: `
-    (
-      survey.country_ids
-      &&
-      ARRAY(
-        SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-      )
-    )`,
-    parameters: JSON.stringify(countryIdsByPermissionGroupId),
-  };
-  return dbConditions;
-};
-
 export const createSurveyViaCountryDBFilter = async (accessPolicy, models, criteria, countryId) => {
   const dbConditions = { ...criteria };
 
-  const countryIdsByPermissionGroupId = await fetchCountryIdsByPermissionGroupId(
-    accessPolicy,
-    models,
-  );
+  const countryIdsByPermissionGroupId =
+    await models.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
 
   // Even if we're BES admin, we need to filter by the country
   if (hasBESAdminAccess(accessPolicy)) {

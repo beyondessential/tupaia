@@ -13,7 +13,7 @@ export const countSyncSnapshotRecords = async (
 
   const [{ total }] = (await database.executeSql(
     `
-      SELECT count(*) AS total FROM ${tableName}
+      SELECT count(*)::int AS total FROM ${tableName}
       WHERE direction = :direction
       ${recordType ? 'AND record_type = :recordType' : ''};
     `,
