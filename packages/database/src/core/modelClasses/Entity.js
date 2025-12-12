@@ -1,16 +1,22 @@
+/**
+ * @typedef {import('@tupaia/types').Entity} Entity
+ * @typedef {import('@tupaia/types').EntityHierarchy} EntityHierarchy
+ * @typedef {import('@tupaia/types').Project} Project
+ * @typedef {import('@tupaia/types').ValueOf} ValueOf
+ */
+
 import keyBy from 'lodash.keyby';
 
-import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
-import { assertIsNotNullish, ensure } from '@tupaia/tsutils';
-
+import { assertIsNotNullish } from '@tupaia/tsutils';
+import { EntityTypeEnum } from '@tupaia/types';
+import { fetchPatiently, translateBounds, translatePoint, translateRegion } from '@tupaia/utils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
+import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
-import { buildSyncLookupSelect } from '../sync';
 import { SqlQuery } from '../SqlQuery';
-import { EntityTypeEnum } from '@tupaia/types';
+import { buildSyncLookupSelect } from '../sync';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -42,7 +48,7 @@ const FETP_GRADUATE = 'fetp_graduate';
 
 // Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`, but data is to be stored against
 // it on DHIS2, a corresponding tracked entity type must be created in DHIS2
-const ENTITY_TYPES = {
+const ENTITY_TYPES = /** @type {const} */ ({
   CASE,
   CASE_CONTACT,
   COUNTRY,
@@ -66,31 +72,31 @@ const ENTITY_TYPES = {
   MEDICAL_AREA,
   NURSING_ZONE,
   FETP_GRADUATE,
-};
+});
 
-export const ORG_UNIT_ENTITY_TYPES = {
+export const ORG_UNIT_ENTITY_TYPES = /** @type {const} */ ({
   WORLD,
   COUNTRY,
   DISTRICT,
   SUB_DISTRICT,
   FACILITY,
   VILLAGE,
-};
+});
 
 // reflects how org units are stored on DHIS2
-const ORG_UNIT_TYPE_LEVELS = {
+const ORG_UNIT_TYPE_LEVELS = /** @type {const} */ ({
   [WORLD]: 1,
   [COUNTRY]: 2,
   [DISTRICT]: 3,
   [SUB_DISTRICT]: 4,
   [FACILITY]: 5,
   [VILLAGE]: 6,
-};
+});
 
-const ENTITY_RELATION_TYPE = {
+export const ENTITY_RELATION_TYPE = /** @type {const} */ ({
   ANCESTORS: 'ancestors',
   DESCENDANTS: 'descendants',
-};
+});
 
 export class EntityRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ENTITY;
@@ -160,6 +166,7 @@ export class EntityRecord extends DatabaseRecord {
     return push;
   }
 
+  /** @returns {Promise<EntityRecord | null>} */
   async countryEntity() {
     return this.model.findOne({ code: this.country_code });
   }
@@ -176,19 +183,32 @@ export class EntityRecord extends DatabaseRecord {
     return translateRegion(this.region);
   }
 
+  /** @returns {Promise<EntityRecord | undefined>} */
   async getParent(hierarchyId) {
     const ancestors = await this.getAncestors(hierarchyId, { generational_distance: 1 });
     return ancestors && ancestors.length > 0 ? ancestors[0] : undefined;
   }
 
+  /** @returns {Promise<EntityRecord[]>} */
   async getAncestors(hierarchyId, criteria) {
     return this.model.getAncestorsOfEntities(hierarchyId, [this.id], criteria);
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {*} criteria
+   * @param {*} options
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getDescendants(hierarchyId, criteria, options) {
     return this.model.getDescendantsOfEntities(hierarchyId, [this.id], criteria, options);
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {*} params
+   * @returns {Promise<EntityRecord | undefined>}
+   */
   async getParentFromParentChildRelation(hierarchyId, params = { filter: {} }) {
     const [parent] = await this.getAncestorsFromParentChildRelation(hierarchyId, {
       ...params,
@@ -197,10 +217,20 @@ export class EntityRecord extends DatabaseRecord {
     return parent;
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {*} params
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getAncestorsFromParentChildRelation(hierarchyId, params) {
     return await this.model.getAncestorsFromParentChildRelation(hierarchyId, [this.id], params);
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {*} params
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getChildrenFromParentChildRelation(hierarchyId, params = { filter: {} }) {
     return await this.getDescendantsFromParentChildRelation(hierarchyId, {
       ...params,
@@ -208,25 +238,49 @@ export class EntityRecord extends DatabaseRecord {
     });
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {*} params
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getDescendantsFromParentChildRelation(hierarchyId, params) {
     return await this.model.getDescendantsFromParentChildRelation(hierarchyId, [this.id], params);
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {*} criteria
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getRelatives(hierarchyId, criteria) {
     return this.model.getRelativesOfEntities(hierarchyId, [this.id], criteria);
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {EntityTypeEnum} entityType
+   * @returns {Promise<EntityRecord | undefined>}
+   */
   async getAncestorOfType(hierarchyId, entityType) {
     if (this.type === entityType) return this;
     const [ancestor] = await this.getAncestors(hierarchyId, { type: entityType });
     return ancestor;
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {EntityTypeEnum} entityType
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getDescendantsOfType(hierarchyId, entityType) {
     if (this.type === entityType) return [this];
     return this.getDescendants(hierarchyId, { type: entityType });
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getNearestOrgUnitDescendants(hierarchyId) {
     const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
     // if this is an org unit, don't worry about going deeper
@@ -245,6 +299,7 @@ export class EntityRecord extends DatabaseRecord {
    * Returns the id of the entity hierarchy to use by default for this entity, if none is specified.
    * Will prefer the "explore" hierarchy, but if the entity isn't a member of that, will choose
    * the first hierarchy it is a member of, alphabetically
+   * @returns {EntityHierarchy['id']}
    */
   async fetchDefaultEntityHierarchyIdPatiently() {
     const hierarchiesIncludingEntity = await fetchPatiently(
@@ -273,7 +328,7 @@ export class EntityRecord extends DatabaseRecord {
   /**
    * Fetches the closest node in the entity hierarchy that is an organisation unit,
    * starting from the entity itself and traversing the hierarchy up
-   *
+   * @param {EntityHierarchy['id']} hierarchyId
    * @returns {EntityRecord}
    */
   async fetchNearestOrgUnitAncestor(hierarchyId) {
@@ -288,15 +343,28 @@ export class EntityRecord extends DatabaseRecord {
     return ancestors.find(d => orgUnitEntityTypes.has(d.type));
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @returns {Promise<Entity['code'][]>}
+   */
   async getAncestorCodes(hierarchyId) {
     const ancestors = await this.getAncestors(hierarchyId);
     return ancestors.map(a => a.code);
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {*} criteria
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getChildren(hierarchyId, criteria) {
     return this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @returns {Promise<Entity[]>}
+   */
   async getChildrenViaHierarchy(hierarchyId) {
     return this.database.executeSql(
       `
@@ -387,6 +455,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
+  /**
+   * @param {Entity['code']} code
+   * @param {Entity['bounds']} bounds
+   */
   async updateBoundsCoordinates(code, bounds) {
     return this.database.executeSql(
       `
@@ -398,6 +470,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
+  /**
+   * @param {Entity['code']} code
+   * @param {Entity['attributes']} attributes
+   */
   async updateEntityAttributes(code, attributes) {
     attributes = attributes ?? {};
     return this.database.executeSql(
@@ -410,6 +486,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
+  /**
+   * @param {Entity['code']} code
+   * @param {string} geojson
+   */
   async updateRegionCoordinates(code, geojson) {
     const shouldSetBounds =
       (
@@ -482,8 +562,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * Returns relations (either ancestors or descendants) of entity
-   * @param {*} ancestorsOrDescendants
-   * @param {*} entityIds
+   * @param {ValueOf<typeof ENTITY_RELATION_TYPE>} ancestorsOrDescendants
+   * @param {Entity['id'][]} entityIds
    * @param {*} criteria
    * @param {*} options
    * @returns {Promise<EntityRecord[]>}
@@ -515,6 +595,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return Promise.all(entityRecords.map(async r => await this.generateInstance(r)));
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Entity['id'][]} entityIds
+   * @param {*} criteria
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {
     return this.getRelationsOfEntities(ENTITY_RELATION_TYPE.ANCESTORS, entityIds, {
       entity_hierarchy_id: hierarchyId,
@@ -522,6 +608,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     });
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Entity['id'][]} entityIds
+   * @param {*} criteria
+   * @param {*} options
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getDescendantsOfEntities(hierarchyId, entityIds, criteria, options) {
     return this.getRelationsOfEntities(
       ENTITY_RELATION_TYPE.DESCENDANTS,
@@ -534,6 +627,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Entity['id'][]} entityIds
+   * @param {ValueOf<typeof ENTITY_RELATION_TYPE>} direction
+   * @param {*} params
+   */
   async getEntitiesFromParentChildRelation(hierarchyId, entityIds, direction, params = {}) {
     if (!entityIds || entityIds.length === 0) {
       return [];
@@ -550,16 +649,14 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       const { filter = {}, fields, pageSize } = params;
       const { generational_distance, ...restOfFilter } = filter;
 
-      const RECURSIVE_CTE_ALIAS = 'hierarchy';
-
       const results = await this.find(
         {
-          [`${RECURSIVE_CTE_ALIAS}.generational_distance`]: generational_distance,
+          [`hierarchy.generational_distance`]: generational_distance,
           ...restOfFilter,
         },
         {
           withRecursive: {
-            alias: RECURSIVE_CTE_ALIAS,
+            alias: 'hierarchy',
             query: `
           -- Base case: start from specific entity IDs
           SELECT
@@ -580,7 +677,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             e.entity_hierarchy_id as entity_hierarchy_id,
             h.generational_distance + 1 as generational_distance
           FROM entity_parent_child_relation e
-          INNER JOIN ${RECURSIVE_CTE_ALIAS} h ON ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'e.child_id = h.parent_id' : 'e.parent_id = h.child_id'}
+          INNER JOIN hierarchy h ON ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'e.child_id = h.parent_id' : 'e.parent_id = h.child_id'}
           WHERE e.entity_hierarchy_id = ?
           ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
         `,
@@ -591,10 +688,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
               ...(generational_distance !== undefined ? [generational_distance] : []),
             ],
           },
-          joinWith: RECURSIVE_CTE_ALIAS,
+          joinWith: 'hierarchy',
           joinCondition: [
             'entity.id',
-            `${RECURSIVE_CTE_ALIAS}.${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'parent_id' : 'child_id'}`,
+            `hierarchy.${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'parent_id' : 'child_id'}`,
           ],
           columns: fields,
           limit: pageSize,
@@ -605,6 +702,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     });
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Entity['id'][]} parentIds
+   * @param {*} params
+   */
   async getDescendantsFromParentChildRelation(hierarchyId, parentIds, params = {}) {
     return await this.getEntitiesFromParentChildRelation(
       hierarchyId,
@@ -614,6 +716,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Entity['id'][]} childIds
+   * @param {*} params
+   */
   async getAncestorsFromParentChildRelation(hierarchyId, childIds, params = {}) {
     return await this.getEntitiesFromParentChildRelation(
       hierarchyId,
@@ -624,9 +731,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {import('@tupaia/types').Project['id']} projectId
-   * @param {import('@tupaia/types').Entity['id']} entityId
-   * @returns {Promise<import('@tupaia/types').Entity['name'] | undefined>}
+   * @param {Project['id']} projectId
+   * @param {Entity['id']} entityId
+   * @returns {Promise<Entity['name'] | undefined>}
    */
   async getParentEntityName(projectId, entityId) {
     const [entity, project] = await Promise.all([
@@ -644,6 +751,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return parentEntity?.name;
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Entity['id'][]} entityIds
+   * @param {*} criteria
+   * @returns {Promise<EntityRecord[]>}
+   */
   async getRelativesOfEntities(hierarchyId, entityIds, criteria) {
     // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
     const ancestors = (
@@ -669,6 +782,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return level;
   }
 
+  /**
+   * @returns {Promise<EntityTypeEnum[]>}
+   */
   async getEntityTypes() {
     const entityTypes = await this.database.executeSql(
       'SELECT unnest(enum_range(NULL::entity_type)::TEXT[]) AS type ORDER BY type;',
@@ -676,6 +792,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return entityTypes.map(({ type }) => type);
   }
 
+  /**
+   * @param {Entity['id']} id
+   */
   async getCodeFromId(id) {
     return await this.findById(id, { fields: ['code'] });
   }
@@ -715,9 +834,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           "CASE WHEN entity.type IN ('country', 'world', 'project') THEN NULL ELSE ARRAY_AGG(project.id) END",
       }),
       joins: `
-        LEFT JOIN entities_to_sync 
-          ON entities_to_sync.entity_id = entity.id 
-        LEFT JOIN project 
+        LEFT JOIN entities_to_sync
+          ON entities_to_sync.entity_id = entity.id
+        LEFT JOIN project
           ON project.entity_hierarchy_id = entities_to_sync.entity_hierarchy_id
       `,
       groupBy: ['entity.id'],
