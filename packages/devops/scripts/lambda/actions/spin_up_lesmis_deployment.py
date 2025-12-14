@@ -16,7 +16,7 @@ Example config
 from pathlib import Path
 
 from helpers.create_from_image import create_server_instance_from_image
-from helpers.utilities import find_instances, build_extra_tags
+from helpers.utilities import build_extra_tags, find_instances
 
 
 def spin_up_lesmis_deployment(event):
