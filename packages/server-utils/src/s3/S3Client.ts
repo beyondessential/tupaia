@@ -46,6 +46,7 @@ export class S3Client {
       .catch(() => false);
   }
 
+  /** Returns URL of the uploaded file (i.e. the S3 object URL). */
   private async upload(fileName: string, config?: Partial<PutObjectCommandInput>) {
     const uploader = new Upload({
       client: this.s3,
