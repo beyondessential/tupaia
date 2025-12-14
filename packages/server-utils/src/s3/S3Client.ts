@@ -1,4 +1,8 @@
-import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
+import {
+  CompleteMultipartUploadOutput,
+  GetObjectCommandInput,
+  PutObjectCommandInput,
+} from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
 import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
@@ -47,7 +51,10 @@ export class S3Client {
   }
 
   /** Returns URL of the uploaded file (i.e. the S3 object URL). */
-  private async upload(fileName: string, config?: Partial<PutObjectCommandInput>) {
+  private async upload(
+    fileName: string,
+    config?: Partial<PutObjectCommandInput>,
+  ): Promise<CompleteMultipartUploadOutput['Location']> {
     const uploader = new Upload({
       client: this.s3,
       params: {
