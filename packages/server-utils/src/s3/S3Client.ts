@@ -105,16 +105,22 @@ export class S3Client {
   }
 
   private getContentTypeFromBase64(base64String: string) {
-    if (!isBase64DataUri(base64String)) {
-      throw new Error(
-        `Invalid Base64 data URI. Expected ‘data:content/type;base64,...’ but got: ‘${base64String.substring(0, 40)}...’`,
-      );
-    }
+    try {
+      if (!isBase64DataUri(base64String)) {
+        throw new Error(
+          `Invalid Base64 data URI. Expected ‘data:content/type;base64,...’ but got: ‘${base64String.substring(0, 40)}...’`,
+        );
+      }
 
-    return base64String.substring(
-      'data:'.length,
-      base64String.indexOf(';base64,', 'data:'.length),
-    ) as `${string}/${string}`;
+      return base64String.substring(
+        'data:'.length,
+        base64String.indexOf(';base64,', 'data:'.length),
+      ) as `${string}/${string}`;
+    } catch {
+      // MediTrak just sends Base64-encoded JPEG data, not as a data URI, so we (dangerously) assume
+      // this is what we’re dealing with
+      return 'image/jpeg';
+    }
   }
 
   public async uploadFile(fileName: string, readable: Buffer | string) {
