@@ -76,7 +76,7 @@ export class S3Client {
   }
 
   private async uploadPublicImage(fileName: string, buffer: Buffer, contentType: string) {
-    return this.upload(fileName, {
+    return await this.upload(fileName, {
       Body: buffer,
       ACL: 'public-read',
       ContentType: contentType,
@@ -196,7 +196,7 @@ export class S3Client {
       throw new ConflictError(`File ${filePath} already exists on S3, overwrite is not allowed`);
     }
 
-    return this.uploadPublicImage(filePath, buffer, contentType);
+    return await this.uploadPublicImage(filePath, buffer, contentType);
   }
 
   public async downloadFile(fileName: string) {
