@@ -22,28 +22,51 @@ import { buildSyncLookupSelect } from '../sync';
 // Users can now create their own entity types
 // The up-to-date list of entity types can be found by calling
 // entityModel.getEntityTypes()
+/** @deprecated */
 const CASE = 'case';
+/** @deprecated */
 const CASE_CONTACT = 'case_contact';
+/** @deprecated */
 const COUNTRY = 'country';
+/** @deprecated */
 const DISTRICT = 'district';
+/** @deprecated */
 const FACILITY = 'facility';
+/** @deprecated */
 const SUB_FACILITY = 'sub_facility';
+/** @deprecated */
 const FIELD_STATION = 'field_station';
+/** @deprecated */
 const LARVAL_HABITAT = 'larval_habitat';
+/** @deprecated */
 const INDIVIDUAL = 'individual';
+/** @deprecated */
 const SCHOOL = 'school';
+/** @deprecated */
 const SUB_DISTRICT = 'sub_district';
+/** @deprecated */
 const CATCHMENT = 'catchment';
+/** @deprecated */
 const SUB_CATCHMENT = 'sub_catchment';
+/** @deprecated */
 const VILLAGE = 'village';
+/** @deprecated */
 const HOUSEHOLD = 'household';
+/** @deprecated */
 const WORLD = 'world';
+/** @deprecated */
 const PROJECT = 'project';
+/** @deprecated */
 const CITY = 'city';
+/** @deprecated */
 const POSTCODE = 'postcode';
+/** @deprecated */
 const LOCAL_GOVERNMENT = 'local_government';
+/** @deprecated */
 const MEDICAL_AREA = 'medical_area';
+/** @deprecated */
 const NURSING_ZONE = 'nursing_zone';
+/** @deprecated */
 const FETP_GRADUATE = 'fetp_graduate';
 
 // Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`, but data is to be stored against
@@ -113,22 +136,22 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   isFacility() {
-    return this.type === FACILITY;
+    return this.type === EntityTypeEnum.facility;
   }
 
   isCountry() {
-    return this.type === COUNTRY;
+    return this.type === EntityTypeEnum.country;
   }
 
   isWorld() {
-    return this.type === WORLD;
+    return this.type === EntityTypeEnum.world;
   }
 
   /**
    * @returns {boolean} If the entity is a project
    */
   isProject() {
-    return this.type === PROJECT;
+    return this.type === EntityTypeEnum.project;
   }
 
   isOrganisationUnit() {
