@@ -103,6 +103,7 @@ export {
   EntityType,
   DateOffsetSpec,
   DatePickerOffsetSpec,
+  EntityMetadata,
 } from './models-extra';
 export * from './requests';
 export * from './css';

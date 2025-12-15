@@ -89,6 +89,9 @@ const ENTITY_RELATION_TYPE = {
 export class EntityRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ENTITY;
 
+  /** @type {import('@tupaia/types').EntityMetadata} */
+  metadata;
+
   // Exposed for access policy creation.
   get organisationUnitCode() {
     return this.code;
