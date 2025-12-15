@@ -21,3 +21,4 @@ export * from './server/testUtilities';
 export * from './server/testFixtures';
 export { SqlQuery } from './core/SqlQuery';
 export * from './browser';
+export * from './server';

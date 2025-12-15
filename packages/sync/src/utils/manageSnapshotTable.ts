@@ -99,5 +99,5 @@ export const updateSnapshotRecords = async (
   values: object,
   where: object,
 ) => {
-  await database.update(sessionId, where, values, SCHEMA);
+  await database.update(sessionId, snakeKeys(where), snakeKeys(values), SCHEMA);
 };

@@ -18,6 +18,8 @@ import {
   SyncSnapshotAttributes,
   withDeferredSyncSafeguards,
   findLastSuccessfulSyncedProjects,
+  incomingSyncHook,
+  bumpSyncTickForRepull,
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { SyncTickFlags, FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
@@ -611,6 +613,10 @@ export class CentralSyncManager {
           // saving with a unique tick
           const { tock } = await this.tickTockGlobalClock(transactingModels);
 
+          // run any side effects that updates the pushed records and requires repull
+          // eg: uploading images and files answers to S3, and update the answer text to the new S3 URL
+          await incomingSyncHook(transactingModels.database, transactingModels, sessionId);
+
           await withDeferredSyncSafeguards(transactingModels.database, () =>
             saveIncomingSnapshotChanges(modelsToInclude, sessionId, true),
           );
@@ -632,6 +638,13 @@ export class CentralSyncManager {
         device_id: deviceId,
         persisted_at_sync_tick: persistedAtSyncTick,
       });
+
+      // mark for repull any records that were modified by an incoming sync hook
+      await bumpSyncTickForRepull(
+        this.models.database,
+        getModelsForPush(this.models.getModels()),
+        sessionId,
+      );
 
       // mark persisted so that client polling "completePush" can stop
       await this.models.syncSession.update({ id: sessionId }, { persist_completed_at: new Date() });

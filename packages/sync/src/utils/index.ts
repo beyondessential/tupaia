@@ -10,3 +10,5 @@ export * from './sanitizeRecord';
 export * from './startSnapshotWhenCapacityAvailable';
 export * from './withDeferredSyncSafeguards';
 export * from './findLastSuccessfulSyncedProjects';
+export * from './incomingSyncHook';
+export * from './bumpSyncTickForRepull';
