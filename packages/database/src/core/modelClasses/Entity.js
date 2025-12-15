@@ -5,7 +5,7 @@
  * @typedef {import('@tupaia/types').ValueOf} ValueOf
  */
 
-import keyBy from 'lodash.keyby';
+import keyBy from 'es-toolkit/compat';
 
 import { SyncDirections } from '@tupaia/constants';
 import { assertIsNotNullish } from '@tupaia/tsutils';
@@ -101,6 +101,12 @@ export const ENTITY_RELATION_TYPE = /** @type {const} */ ({
 export class EntityRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ENTITY;
 
+  /** @type {import('@tupaia/types').EntityMetadata} */
+  metadata;
+
+  /** @type {EntityTypeEnum} */
+  type;
+
   // Exposed for access policy creation.
   get organisationUnitCode() {
     return this.code;
@@ -146,12 +152,8 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   async setDhisTrackedEntityId(trackedEntityId) {
-    if (!this.metadata) {
-      this.metadata = {};
-    }
-    if (!this.metadata.dhis) {
-      this.metadata.dhis = {};
-    }
+    this.metadata ??= {};
+    this.metadata.dhis ??= {};
     this.metadata.dhis.trackedEntityId = trackedEntityId;
     return this.save();
   }
