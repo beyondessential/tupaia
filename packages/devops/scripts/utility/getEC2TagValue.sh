@@ -2,8 +2,16 @@
 # Get the stage tag of this ec2 instance from AWS
 set -e
 
-TAG_NAME=$1
-INSTANCE_ID="$(wget -qO- http://instance-data/latest/meta-data/instance-id)"
-REGION="`wget -qO- http://instance-data/latest/meta-data/placement/availability-zone | sed -e 's:\([0-9][0-9]*\)[a-z]*\$:\\1:'`"
-TAG_VALUE="$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=$TAG_NAME" --region $REGION --output=text | cut -f5)"
-echo $TAG_VALUE
+tag_name=$1
+
+instance_id=$(ec2metadata --instance-id)
+availability_zone=$(ec2metadata --availability-zone)
+region=${availability_zone::-1}
+
+tag_value=$(aws ec2 describe-tags \
+	--filters "Name=resource-id,Values=$instance_id" "Name=key,Values=$tag_name" \
+	--region "$region" \
+	--output=text |
+	cut -f5)
+
+echo $tag_value
