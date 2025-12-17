@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
+# Get the stage tag of this ec2 instance from AWS
 set -e
 
-# Get the stage tag of this ec2 instance from AWS
 TAG_NAME=$1
 INSTANCE_ID="$(wget -qO- http://instance-data/latest/meta-data/instance-id)"
 REGION="`wget -qO- http://instance-data/latest/meta-data/placement/availability-zone | sed -e 's:\([0-9][0-9]*\)[a-z]*\$:\\1:'`"
