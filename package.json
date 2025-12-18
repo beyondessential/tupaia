@@ -18,7 +18,7 @@
     ]
   },
   "scripts": {
-    "build": "yarn workspaces foreach -ptv --jobs unlimited --exclude tupaia run build",
+    "build": "yarn workspaces foreach -Wptvv --jobs unlimited --exclude tupaia run build",
     "build:from": "./scripts/bash/buildPackagesByGlob.sh --from",
     "build:only": "./scripts/bash/buildPackagesByGlob.sh --only",
     "build:internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
@@ -49,7 +49,8 @@
     "package:start:vite": "cd \"$INIT_CWD\" && vite --config \"../../vite.config.js\"",
     "package:start-stack": "scripts/bash/pm2startInline.sh",
     "package:storybook:start": "cd \"$INIT_CWD\" && storybook dev -p 6006 -c ../../.storybook",
-    "package:storybook:build": "cd \"$INIT_CWD\" && storybook build -c .storybook"
+    "package:storybook:build": "cd \"$INIT_CWD\" && storybook build -c .storybook",
+    "preinstall": "npx only-allow yarn"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
@@ -105,5 +106,5 @@
   "engines": {
     "node": "^20.11.1"
   },
-  "packageManager": "yarn@3.2.1"
+  "packageManager": "yarn@4.10.3+sha256.cd71753d68307301d21034efaf20bd8eee81f9450af75f068477bf9011bb9ad4"
 }
