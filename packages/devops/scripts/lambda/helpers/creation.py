@@ -114,6 +114,7 @@ def get_instance_creation_config(
         "MinCount": 1,
         "MaxCount": 1,
         "TagSpecifications": [{"ResourceType": "instance", "Tags": tags}],
+        "MetadataOptions": {"HttpTokens": "required"},
     }
 
     # add IAM profile (e.g. role allowing access to lambda) if applicable
