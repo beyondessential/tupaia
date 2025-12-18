@@ -11,5 +11,5 @@ region=${availability_zone::-1}
 aws ec2 describe-tags \
 	--filters "Name=resource-id,Values=$instance_id" "Name=key,Values=$tag_name" \
 	--region "$region" \
-	--query Tags[0].Value \
-	--output=text
+	--query 'Tags[0].Value' \
+	--output 'text'
