@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 import { periodToType } from '@tupaia/tsutils';
 import { min, max, findCoarsestPeriodType } from '@tupaia/utils';
 

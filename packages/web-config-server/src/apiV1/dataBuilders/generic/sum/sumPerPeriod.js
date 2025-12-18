@@ -5,7 +5,7 @@ import {
   convertToPeriod,
 } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import flattenDeep from 'lodash.flattendeep';
+import { flattenDeep } from 'es-toolkit/compat';
 import {
   fetchAggregatedAnalyticsByDhisIds,
   checkAllDataElementsAreDhisIndicators,

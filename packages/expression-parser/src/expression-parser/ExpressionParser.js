@@ -1,3 +1,4 @@
+import { uniq } from 'es-toolkit';
 import { create, all } from 'mathjs';
 
 import { customFunctions } from './customFunctions';
@@ -101,7 +102,7 @@ export class ExpressionParser {
       .filter(node => node.isSymbolNode && extractor(node))
       .map(({ name }) => name);
 
-    return [...new Set(items)];
+    return uniq(items);
   }
 
   /**
