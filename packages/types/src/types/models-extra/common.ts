@@ -93,3 +93,14 @@ export enum DashboardItemType {
 export type EntityAttributes = Record<string, unknown> & {
   type?: string;
 };
+
+export interface EntityMetadata {
+  dhis?: {
+    dhisInstanceCode?: string;
+    isDataRegional?: boolean;
+    push?: boolean;
+    trackedEntityId?: string;
+  };
+  ms1?: { distributionId?: string };
+  openStreetMaps?: { id?: string };
+}
