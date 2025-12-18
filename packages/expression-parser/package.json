@@ -22,11 +22,12 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "date-fns": "^2.16.1",
+    "date-fns": "^2.30.0",
     "lodash.startcase": "^4.4.0",
     "mathjs": "^11.11.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.10",
     "@babel/eslint-parser": "^7.27.5",
     "@tupaia/utils": "workspace:*",
     "@types/jest": "^29.5.14",

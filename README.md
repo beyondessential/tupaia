@@ -80,6 +80,8 @@ While each package type has their own structure, there are a few common standard
 - [entity-server](/packages/entity-server/README.md)
 - [report-server](/packages/report-server/README.md)
 - [data-table-server](/packages/data-table-server/README.md)
+- [sync-server](/packages/sync-server/README.md)
+- [sync](/packages/sync/README.md)
 
 Server packages can be built by running `yarn workspace @tupaia/package-name build`. Server packages can then be started by running `yarn workspace @tupaia/package-name start`.
 

@@ -1,4 +1,4 @@
-import { upsertDummyRecord, getTestModels, findOrCreateDummyRecord } from '../../testUtilities';
+import { upsertDummyRecord, getTestModels, findOrCreateDummyRecord } from '../../server/testUtilities';
 
 const assertHaveEqualIds = (expectedObject, actualObject) => {
   expect(actualObject).toHaveProperty('id', expectedObject.id);

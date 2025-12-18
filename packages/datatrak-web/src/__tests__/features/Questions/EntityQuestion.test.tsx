@@ -1,11 +1,14 @@
-import React, { Ref } from 'react';
+import '../../mocks/matchMedia.mock'; // Import before components under test
+
+import { screen } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { screen } from '@testing-library/react';
+import React, { Ref } from 'react';
+
 import { EntityTypeEnum } from '@tupaia/types';
-import { spyOnMockRequest } from '../../helpers/spyOnMockRequest';
-import { renderComponent } from '../../helpers/render';
 import { EntityQuestion } from '../../../features/Questions';
+import { renderComponent } from '../../helpers/render';
+import { spyOnMockRequest } from '../../helpers/spyOnMockRequest';
 
 jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
@@ -111,7 +114,7 @@ describe('Entity Question', () => {
     });
   });
 
-  it('correctly constructs the request filter for the entities request, ', async () => {
+  it('correctly constructs the request filter for the entities request', async () => {
     const entitiesRequest = spyOnMockRequest(server, 'GET', '*entityDescendants');
 
     renderComponent(

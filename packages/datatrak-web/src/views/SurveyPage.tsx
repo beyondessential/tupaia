@@ -60,7 +60,7 @@ const SurveyPageInner = () => {
   const { mutateAsync: editUser } = useEditUser();
   const user = useCurrentUserContext();
   const { data: survey } = useSurvey(surveyCode);
-  const { data: surveyCountry } = useEntityByCode(countryCode!);
+  const { data: surveyCountry } = useEntityByCode(countryCode);
 
   // Update the user's preferred country if they start a survey in a different country
   useEffect(() => {

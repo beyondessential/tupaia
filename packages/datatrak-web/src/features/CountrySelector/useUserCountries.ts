@@ -1,12 +1,13 @@
 import { ChangeEvent, ChangeEventHandler, useState } from 'react';
 
-import { Country } from '@tupaia/types';
+import { camelcaseKeys } from '@tupaia/tsutils';
+import { DatatrakWebEntitiesRequest } from '@tupaia/types';
+
 import {
   UseProjectEntitiesQueryOptions,
   useCurrentUserContext,
   useProjectEntities,
 } from '../../api';
-import { Entity } from '../../types';
 import { UseProjectEntitiesQueryResult } from '../../api/queries/useProjectEntities';
 
 export type UserCountriesType = Omit<UseProjectEntitiesQueryResult, 'data'> & {
@@ -15,7 +16,7 @@ export type UserCountriesType = Omit<UseProjectEntitiesQueryResult, 'data'> & {
    * @privateRemarks The internal {@link useState} only ever explicitly stores `Country | null`, but
    * `selectedCountry` may be undefined if the {@link useProjectEntities} query is still loading.
    */
-  selectedCountry: Country | null | undefined;
+  selectedCountry: DatatrakWebEntitiesRequest.EntitiesResponseItem | null | undefined;
   updateSelectedCountry: ChangeEventHandler;
 };
 
@@ -23,7 +24,8 @@ export const useUserCountries = (
   useProjectEntitiesQueryOptions?: UseProjectEntitiesQueryOptions,
 ): UserCountriesType => {
   const user = useCurrentUserContext();
-  const [newSelectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const [newSelectedCountry, setSelectedCountry] =
+    useState<DatatrakWebEntitiesRequest.EntitiesResponseItem | null>(null);
 
   const projectCode = user.project?.code;
   const entityRequestParams = {
@@ -41,7 +43,7 @@ export const useUserCountries = (
 
     // if the user has a country, return that country if it can be found
     if (user.country && countries?.find(({ code }) => code === user.country?.code)) {
-      return user.country;
+      return camelcaseKeys(user.country) as DatatrakWebEntitiesRequest.EntitiesResponseItem;
     }
 
     // if the selected project is 'explore', return demo land
@@ -58,11 +60,10 @@ export const useUserCountries = (
   return {
     countries,
     ...projectEntitiesQuery,
-
     selectedCountry,
     updateSelectedCountry: (e: ChangeEvent<HTMLSelectElement>) => {
       const countryCode = e.target.value;
-      const newCountry = countries?.find((country: Entity) => country.code === countryCode);
+      const newCountry = countries?.find(country => country.code === countryCode);
       setSelectedCountry(newCountry ?? null);
     },
   };

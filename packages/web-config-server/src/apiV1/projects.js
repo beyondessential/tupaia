@@ -1,11 +1,11 @@
 import { respond } from '@tupaia/utils';
 
-const FRONTEND_EXCLUDED_PROJECTS = [
+const FRONTEND_EXCLUDED_PROJECTS = new Set([
   'ehealth_cook_islands',
   'ehealth_tokelau',
   'ehealth_timor_leste',
   'ehealth_vanuatu',
-];
+]);
 
 async function fetchEntitiesWithProjectAccess(req, entities, permissionGroups) {
   return Promise.all(
@@ -106,7 +106,7 @@ export async function getProjects(req, res) {
   const shouldShowExcludedProjects = !isFalsey(showExcludedProjects);
   const filteredProjects = shouldShowExcludedProjects
     ? data
-    : data.filter(project => !FRONTEND_EXCLUDED_PROJECTS.includes(project.code));
+    : data.filter(project => !FRONTEND_EXCLUDED_PROJECTS.has(project.code));
 
   const promises = filteredProjects.map(project => buildProjectDataForFrontend(project, req));
   const projects = await Promise.all(promises);

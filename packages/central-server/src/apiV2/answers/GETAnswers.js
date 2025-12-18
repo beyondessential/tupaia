@@ -3,7 +3,6 @@ import { GETHandler } from '../GETHandler';
 import { assertSurveyResponsePermissions } from '../surveyResponses';
 import {
   assertAnswerPermissions,
-  createAnswerDBFilter,
   createAnswerViaSurveyResponseDBFilter,
 } from './assertAnswerPermissions';
 
@@ -27,7 +26,11 @@ export class GETAnswers extends GETHandler {
   }
 
   async getPermissionsFilter(criteria, options) {
-    return createAnswerDBFilter(this.accessPolicy, this.models, criteria, options);
+    return await this.models.answer.createRecordsPermissionFilter(
+      this.accessPolicy,
+      criteria,
+      options,
+    );
   }
 
   async getPermissionsViaParentFilter(criteria, options) {

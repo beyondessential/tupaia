@@ -1,4 +1,4 @@
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   CountryModel,
   EntityModel,
@@ -16,6 +16,8 @@ import {
 } from '@tupaia/server-boilerplate';
 
 export interface DatatrakWebServerModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly user: UserModel;
   readonly entity: EntityModel;
   readonly country: CountryModel;

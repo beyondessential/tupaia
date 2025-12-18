@@ -1,7 +1,9 @@
 import { NextFunction, Response } from 'express';
-import { Writable } from '../../../types';
+
+import { Writable } from '@tupaia/types';
+import { extractEntityFilterFromQuery } from '@tupaia/tsmodels';
+
 import { extractEntityFieldFromQuery } from '../middleware/fields';
-import { extractFilterFromQuery } from '../middleware/filter';
 import {
   RelationshipsRequest,
   MultiEntityRelationshipsRequest,
@@ -42,7 +44,7 @@ const getSubContext = (
   const { field: baseField, allowedCountries } = req.ctx;
   const { field: queryField, filter: queryFilter } = getSubQuery(req.query, from);
   const field = (queryField ? extractEntityFieldFromQuery(queryField) : baseField) || 'code';
-  const filter = extractFilterFromQuery(allowedCountries, queryFilter);
+  const filter = extractEntityFilterFromQuery(allowedCountries, queryFilter);
   const { type, ...restOfFilter } = filter;
   if (typeof type !== 'string' && typeof type !== 'undefined') {
     throw new Error(

@@ -1,0 +1,30 @@
+{
+  "name": "@tupaia/constants",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tupaia constants repository",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/constants"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
+  "scripts": {
+    "build": "rimraf dist && yarn run package:build:ts",
+    "build-dev": "yarn run build",
+    "build-watch": "rimraf dist && yarn run package:build:ts-watch",
+    "lint": "yarn package:lint",
+    "lint:fix": "yarn lint --fix"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.1",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "5.2.2"
+  }
+}
