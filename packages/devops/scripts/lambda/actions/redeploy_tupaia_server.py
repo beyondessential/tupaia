@@ -119,9 +119,8 @@ def redeploy_tupaia_server(event):
             instance_type=event.get("InstanceType", existing_instance["InstanceType"]),
             image_code=event.get("ImageCode", get_tag(existing_instance, "ImageCode")),
             extra_tags=extra_tags,
-            security_group_code=event.get(
-                "SecurityGroupCode", None
-            ),  # will use id below if not defined in the event
+            # Will use ID below if not defined in the event
+            security_group_code=event.get("SecurityGroupCode", None),
             security_group_id=existing_instance["SecurityGroups"][0]["GroupId"],
             setup_gateway=False,
         )
