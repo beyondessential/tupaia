@@ -1,20 +1,30 @@
 import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import sharp from 'sharp';
 
-import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
+import { ConflictError, UnprocessableContentError, UnsupportedMediaTypeError } from '@tupaia/utils';
 import { getS3ImageFilePath, getS3UploadFilePath, S3_BUCKET_NAME } from './constants';
 import { getUniqueFileName } from './getUniqueFileName';
 import { S3 } from './S3';
 
-/** Non-animated image types that are generally web-safe. */
+const MAX_IMAGE_SIZE = 3_000;
+
+/** Formats officially supported by Sharp */
 const supportedImageTypes = {
-  'image/avif': { extension: 'avif', humanReadableName: 'AVIF' },
-  'image/gif': { extension: 'gif', humanReadableName: 'GIF' },
-  'image/jpeg': { extension: 'jpg', humanReadableName: 'JPEG' },
-  'image/png': { extension: 'png', humanReadableName: 'PNG' },
-  'image/svg+xml': { extension: 'svg', humanReadableName: 'SVG' },
-  'image/webp': { extension: 'webp', humanReadableName: 'WebP' },
+  'image/avif': { extension: 'avif', humanReadableName: 'AVIF', shouldConvert: true },
+  'image/gif': { extension: 'gif', humanReadableName: 'GIF', shouldConvert: true },
+  'image/jpeg': { extension: 'jpg', humanReadableName: 'JPEG', shouldConvert: true },
+  'image/png': { extension: 'png', humanReadableName: 'PNG', shouldConvert: true },
+  'image/svg+xml': { extension: 'svg', humanReadableName: 'SVG', shouldConvert: false },
+  'image/tiff': { extension: 'tiff', humanReadableName: 'TIFF', shouldConvert: true },
+  'image/webp': { extension: 'webp', humanReadableName: 'WebP', shouldConvert: true },
 } as const;
+
+type NonconvertedImageType = {
+  [K in keyof typeof supportedImageTypes]: (typeof supportedImageTypes)[K]['shouldConvert'] extends false
+    ? K
+    : never;
+}[keyof typeof supportedImageTypes];
 
 function isBase64DataUri(val: string): val is `data:${string};base64,${string}` {
   return val.startsWith('data:') && val.includes(';base64,');
@@ -107,7 +117,7 @@ export class S3Client {
 
   private getContentTypeFromBase64(base64String: string) {
     if (!isBase64DataUri(base64String)) {
-      throw new Error(
+      throw new UnprocessableContentError(
         `Invalid Base64 data URI. Expected ‘data:content/type;base64,...’ but got: ‘${base64String.substring(0, 40)}...’`,
       );
     }
@@ -155,40 +165,52 @@ export class S3Client {
   }
 
   public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
-    // TEMPORARY: Until RN-1788 is complete, the usual assumption that base64EncodedImage !== null
-    // isn’t guaranteed. In the meantime, treat it as if it were undefined.
-    const UNSAFE_base64EncodedImage = base64EncodedImage ?? '';
+    let buffer: Buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
+    const sourceContentType = this.getContentTypeFromBase64(base64EncodedImage);
 
-    // convert the base64 encoded image to a buffer
-    const buffer = this.convertEncodedFileToBuffer(UNSAFE_base64EncodedImage);
-    const contentType = this.getContentTypeFromBase64(UNSAFE_base64EncodedImage);
-
-    if (!isImageMediaTypeString(contentType)) {
+    if (!isImageMediaTypeString(sourceContentType)) {
       // Redundant because of `isSupportedImageMediaTypeString`, but clearer error message
-      throw new UnsupportedMediaTypeError(`Expected image file but got ${contentType}`);
+      throw new UnsupportedMediaTypeError(`Expected image file but got ${sourceContentType}`);
     }
 
-    if (!isSupportedImageMediaTypeString(contentType)) {
+    if (!isSupportedImageMediaTypeString(sourceContentType)) {
       const humanReadableList = Object.values(supportedImageTypes)
         .map(type => type.humanReadableName)
         .join(', ');
       throw new UnsupportedMediaTypeError(
-        `${contentType} images aren’t supported. Please provide one of: ${humanReadableList}`,
+        `${sourceContentType} images aren’t supported. Please provide one of: ${humanReadableList}`,
       );
     }
 
+    const { shouldConvert } = supportedImageTypes[sourceContentType];
+
+    const destinationContentType = shouldConvert
+      ? 'image/webp'
+      : (sourceContentType as NonconvertedImageType);
+    if (shouldConvert) {
+      buffer = await sharp(buffer)
+        .autoOrient()
+        .keepIccProfile()
+        .resize(MAX_IMAGE_SIZE, MAX_IMAGE_SIZE, {
+          fit: 'inside',
+          withoutEnlargement: true,
+        })
+        .webp({ quality: 90 })
+        .toBuffer();
+    }
+
     const dirname = getS3ImageFilePath();
-    const fileExtension = supportedImageTypes[contentType].extension;
+    const { extension } = supportedImageTypes[destinationContentType];
     // If a fileId is provided, use it as the file name, otherwise generate a unique file name
-    const basename = `${fileId || getUniqueFileName()}.${fileExtension}`;
-    const filePath = `${dirname}${basename}`;
+    const basename: `${string}.${typeof extension}` = `${fileId || getUniqueFileName()}.${extension}`;
+    const filePath: `${string}.${typeof extension}` = `${dirname}${basename}`;
 
     // In some cases we want to allow overwriting of existing files
     if (!allowOverwrite && (await this.checkIfFileExists(filePath))) {
       throw new ConflictError(`File ${filePath} already exists on S3, overwrite is not allowed`);
     }
 
-    return this.uploadPublicImage(filePath, buffer, contentType);
+    return this.uploadPublicImage(filePath, buffer, destinationContentType);
   }
 
   public async downloadFile(fileName: string) {
