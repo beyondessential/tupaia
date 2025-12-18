@@ -6,16 +6,8 @@ import { Text } from './Text';
 import { TouchableOpacity } from './Touchable';
 
 export function Button(props) {
-  const {
-    disabledStyle,
-    isDisabled,
-    onPress,
-    title,
-    textDisabledStyle,
-    textStyle,
-    Icon,
-    style,
-  } = props;
+  const { disabledStyle, isDisabled, onPress, title, textDisabledStyle, textStyle, Icon, style } =
+    props;
 
   const Label = (
     <View style={localStyles.label}>

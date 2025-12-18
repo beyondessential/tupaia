@@ -4,12 +4,8 @@ import { selectCountry, loadCountriesFromDatabase } from './actions';
 import { navigateToRequestCountryAccess } from '../navigation/actions';
 
 const mapStateToProps = ({ country }) => {
-  const {
-    selectedCountryId,
-    isCountryMenuVisible,
-    availableCountries,
-    unavailableCountries,
-  } = country;
+  const { selectedCountryId, isCountryMenuVisible, availableCountries, unavailableCountries } =
+    country;
 
   return {
     selectedCountryId,

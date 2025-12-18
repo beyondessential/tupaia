@@ -16,10 +16,10 @@ export const HeaderLeftButtonContainer = ({ source, ...props }) => (
       source
         ? () => (
             <Image
-            source={source}
-            style={Platform.OS === 'ios' ? iosStyle : {}}
-            tintColor={THEME_COLOR_THREE}
-          />
+              source={source}
+              style={Platform.OS === 'ios' ? iosStyle : {}}
+              tintColor={THEME_COLOR_THREE}
+            />
           )
         : null
     }

@@ -46,52 +46,52 @@ export const setCountryAccessFormFieldValues = fieldValues => ({
   fieldValues,
 });
 
-export const sendCountryAccessRequest = (entityIds, message) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
-  dispatch(beginCountryAccessRequest());
+export const sendCountryAccessRequest =
+  (entityIds, message) =>
+  async (dispatch, getState, { api }) => {
+    dispatch(beginCountryAccessRequest());
 
-  const payload = {
-    entityIds,
-    message,
+    const payload = {
+      entityIds,
+      message,
+    };
+
+    let response;
+
+    try {
+      response = await api.post(`me/requestCountryAccess`, {}, JSON.stringify(payload));
+      if (response.error) throw new Error(response.error);
+    } catch (error) {
+      dispatch(receiveCountryAccessRequestError(error.message));
+      return;
+    }
+
+    dispatch(completeCountryAccessRequest());
   };
 
-  let response;
+export const loadCountriesFromDatabase =
+  () =>
+  (dispatch, getState, { database }) => {
+    const countries = database.getCountries();
+    const currentUser = database.getCurrentUser();
 
-  try {
-    response = await api.post(`me/requestCountryAccess`, {}, JSON.stringify(payload));
-    if (response.error) throw new Error(response.error);
-  } catch (error) {
-    dispatch(receiveCountryAccessRequestError(error.message));
-    return;
-  }
+    const availableCountries = [];
+    const unavailableCountries = [];
 
-  dispatch(completeCountryAccessRequest());
-};
+    countries.forEach(country => {
+      if (
+        currentUser.hasAccessToSomeEntity([country]) ||
+        currentUser.hasAccessToSomeEntity(database.getDescendantsOfCountry(country))
+      ) {
+        availableCountries.push(country);
+      } else {
+        unavailableCountries.push(country);
+      }
+    });
 
-export const loadCountriesFromDatabase = () => (dispatch, getState, { database }) => {
-  const countries = database.getCountries();
-  const currentUser = database.getCurrentUser();
-
-  const availableCountries = [];
-  const unavailableCountries = [];
-
-  countries.forEach(country => {
-    if (
-      currentUser.hasAccessToSomeEntity([country]) ||
-      currentUser.hasAccessToSomeEntity(database.getDescendantsOfCountry(country))
-    ) {
-      availableCountries.push(country);
-    } else {
-      unavailableCountries.push(country);
-    }
-  });
-
-  dispatch({
-    type: RECEIVE_COUNTRIES,
-    availableCountries,
-    unavailableCountries,
-  });
-};
+    dispatch({
+      type: RECEIVE_COUNTRIES,
+      availableCountries,
+      unavailableCountries,
+    });
+  };
