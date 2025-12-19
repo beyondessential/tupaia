@@ -30,11 +30,27 @@ import asyncio
 from helpers.clone import clone_volume_into_instance
 from helpers.utilities import find_instances, get_tag, start_instance, stop_instance
 
-try:
-    loop = asyncio.get_event_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+
+async def _refresh_instance(instance):
+    print(f"Refreshing instance {instance['InstanceId']}...")
+    is_running = instance["State"]["Name"] == "running"
+
+    if is_running:
+        await stop_instance(instance)
+
+    await clone_volume_into_instance(
+        instance, get_tag(instance, "DeploymentType"), get_tag(instance, "ClonedFrom")
+    )
+
+    if is_running:
+        await start_instance(instance)
+
+    print(f"Refreshed instance {instance['InstanceId']}")
+
+
+async def _refresh_instances(instances):
+    tasks = [_refresh_instance(instance) for instance in instances]
+    return await asyncio.gather(*tasks)
 
 
 def refresh_cloned_servers(event):
@@ -61,27 +77,8 @@ def refresh_cloned_servers(event):
         print("No clones to refresh")
         return
 
-    stop_tasks = [
-        asyncio.ensure_future(stop_instance(instance)) for instance in running_instances
-    ]
-    loop.run_until_complete(asyncio.wait(stop_tasks))
-
-    clone_tasks = [
-        asyncio.ensure_future(
-            clone_volume_into_instance(
-                instance,
-                get_tag(instance, "DeploymentType"),
-                get_tag(instance, "ClonedFrom"),
-            )
-        )
-        for instance in instances
-    ]
-    loop.run_until_complete(asyncio.wait(clone_tasks))
-
-    start_tasks = [
-        asyncio.ensure_future(start_instance(instance))
-        for instance in running_instances
-    ]
-    loop.run_until_complete(asyncio.wait(start_tasks))
-
+    print(
+        f"Refreshing {len(instances)} clones ({len(running_instances)} running + {len(stopped_instances)} stopped)"
+    )
+    _ = asyncio.run(_refresh_instances(instances))
     print(f"Refreshed {len(instances)} clones")

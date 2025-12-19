@@ -6,12 +6,6 @@ import boto3
 resource_group_tagging_api = boto3.client("resourcegroupstaggingapi")
 rds = boto3.client("rds")
 
-try:
-    loop = asyncio.get_event_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
 
 def get_db_instance(db_id):
     instances_response = rds.describe_db_instances(DBInstanceIdentifier=db_id)
@@ -89,6 +83,7 @@ def get_latest_db_snapshot(source_db_id):
 
 async def wait_for_db_instance(instance_id, to_be):
     waiter = rds.get_waiter("db_instance_" + to_be)
+    loop = asyncio.get_running_loop()
     await loop.run_in_executor(
         None, functools.partial(waiter.wait, DBInstanceIdentifier=instance_id)
     )
