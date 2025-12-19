@@ -77,17 +77,15 @@ async def delete_db(db_instance):
     temp_id = f"old-{db_id}"
     rename_db_instance(db_id, temp_id)
 
-    rename_complete = False
-    attempts = 0
-    max_attempts = 30
-    delay = 10
+    rename_complete, attempts = False, 0  # Loop control variables
+    delay, max_attempts = 10, 30  # Retry config
     while not rename_complete and attempts < max_attempts:
         await asyncio.sleep(delay)
         all_instances = get_all_db_instances()
         rename_complete = any(
             instance["DBInstanceIdentifier"] == temp_id for instance in all_instances
         )
-        attempts = attempts + 1
+        attempts += 1
 
     if not rename_complete:
         raise Exception(
