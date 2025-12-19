@@ -16,10 +16,7 @@ except RuntimeError:
 def get_db_instance(db_id):
     instances_response = rds.describe_db_instances(DBInstanceIdentifier=db_id)
 
-    if (
-        "DBInstances" not in instances_response
-        or len(instances_response["DBInstances"]) == 0
-    ):
+    if "DBInstances" not in instances_response or not instances_response["DBInstances"]:
         raise Exception("No instance found")
 
     if len(instances_response["DBInstances"]) > 1:

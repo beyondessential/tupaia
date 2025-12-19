@@ -51,10 +51,10 @@ def add_tag(instance_id, tag_name, tag_value):
 
 def get_instance(filters):
     reservations = ec.describe_instances(Filters=filters).get("Reservations", [])
-    if len(reservations) == 0:
+    if not reservations:
         return None
     instances = reservations[0]["Instances"]
-    if len(instances) == 0:
+    if not instances:
         return None
     return instances[0]
 

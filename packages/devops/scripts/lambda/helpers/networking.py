@@ -287,7 +287,7 @@ def get_instance_behind_gateway(deployment_type, deployment_name):
         TargetGroupArn=gateway_target_group["TargetGroupArn"]
     )["TargetHealthDescriptions"]
 
-    if not targets or len(targets) == 0:
+    if not targets:
         raise Exception(
             "Could not find any targets behind the "
             + deployment_type
