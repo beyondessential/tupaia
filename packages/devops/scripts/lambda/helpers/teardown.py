@@ -27,7 +27,7 @@ def delete_route53_record_sets(deployment_name, record_set_deletions):
         for deletion in record_set_deletions
         if deletion["ResourceRecordSet"]["Name"] in all_record_set_names
     ]
-    print("Generated {} record set changes".format(len(record_set_deletions)))
+    print(f"Generated {len(record_set_deletions)} record set changes")
     if len(valid_record_set_deletions) > 0:
         route53.change_resource_record_sets(
             HostedZoneId=hosted_zone_id,
@@ -36,7 +36,7 @@ def delete_route53_record_sets(deployment_name, record_set_deletions):
                 "Changes": valid_record_set_deletions,
             },
         )
-        print("Submitted {} deletions to hosted zone".format(len(record_set_deletions)))
+        print(f"Submitted {len(record_set_deletions)} deletions to hosted zone")
 
 
 def terminate_instance(instance):
@@ -98,10 +98,8 @@ def teardown_instance(instance):
 
 
 def teardown_db_instance(deployment_name=None, deployment_type=None, db_id=None):
-    if db_id:
-        db_instance_id = db_id
-    else:
-        db_instance_id = deployment_type + "-" + deployment_name
+    db_instance_id = db_id if db_id else f"{deployment_type}-{deployment_name}"
+    print(f"Tearing down database instance {db_instance_id}")
 
     db_instance = rds.describe_db_instances(DBInstanceIdentifier=db_instance_id)
     db_instance_public_dns_url = db_instance["DBInstances"][0]["Endpoint"]["Address"]
@@ -111,7 +109,7 @@ def teardown_db_instance(deployment_name=None, deployment_type=None, db_id=None)
         SkipFinalSnapshot=True,
         DeleteAutomatedBackups=True,
     )
-    print("Successfully deleted db instance: " + db_instance_id)
+    print("Deleted database instance: " + db_instance_id)
 
     record_set_deletions = [
         build_record_set_deletion(

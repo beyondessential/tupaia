@@ -218,10 +218,11 @@ def build_record_set_deletion(
 def build_record_set(
     action, domain, subdomain, deployment_name, gateway=None, dns_url=None
 ):
-    if subdomain == "":
-        url = deployment_name + "." + domain + "."
-    else:
-        url = deployment_name + "-" + subdomain + "." + domain + "."
+    url = (
+        f"{deployment_name}-{subdomain}.{domain}."
+        if subdomain
+        else f"{deployment_name}.{domain}."
+    )
 
     # e.g. db subdomain uses CNAME to AWS DNS so that it can be internally resolved within the VPC
     if dns_url:
@@ -266,7 +267,7 @@ def add_subdomains_to_route53(
         )
         for subdomain in subdomains
     ]
-    print("Generated {} record set changes".format(len(record_set_changes)))
+    print(f"Generated {len(record_set_changes)} record set changes")
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)["HostedZones"][
         0
     ]["Id"]
@@ -277,7 +278,7 @@ def add_subdomains_to_route53(
             "Changes": record_set_changes,
         },
     )
-    print("Submitted changes to hosted zone")
+    print(f"Submitted {len(record_set_changes)} changes to hosted zone")
 
 
 def get_instance_behind_gateway(deployment_type, deployment_name):
@@ -287,7 +288,7 @@ def get_instance_behind_gateway(deployment_type, deployment_name):
         TargetGroupArn=gateway_target_group["TargetGroupArn"]
     )["TargetHealthDescriptions"]
 
-    if not targets or len(targets) == 0:
+    if not targets:
         raise Exception(
             "Could not find any targets behind the "
             + deployment_type
