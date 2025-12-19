@@ -84,27 +84,22 @@ def tags_contains(tags, key, value):
     return tag_matching_key["Value"] == value
 
 
-async def wait_for_instance(instance_id, to_be):
-    volume_available_waiter = ec.get_waiter("instance_" + to_be)
-    await loop.run_in_executor(
-        None, functools.partial(volume_available_waiter.wait, InstanceIds=[instance_id])
-    )
-
-
-async def stop_instance(instance):
+def stop_instance(instance):
+    print(f"Stopping instance {instance["InstanceId"]}")
     instance_object = ec2.Instance(instance["InstanceId"])
     instance_object.stop()
-    print("Stopping instance " + instance_object.id)
-    await wait_for_instance(instance_object.id, "stopped")
-    print("Stopped instance with id " + instance_object.id)
+    print(f"Requested stop of instance {instance_object.id}")
+    instance_object.wait_until_stopped()
+    print(f"Stopped instance {instance_object.id}")
 
 
-async def start_instance(instance):
+def start_instance(instance):
+    print(f"Starting instance {instance["InstanceId"]}")
     instance_object = ec2.Instance(instance["InstanceId"])
     instance_object.start()
-    print("Starting instance " + instance_object.id)
-    await wait_for_instance(instance_object.id, "running")
-    print("Started instance with id " + instance_object.id)
+    print(f"Requested start of instance {instance_object.id}")
+    instance_object.wait_until_running()
+    print(f"Started instance {instance_object.id}")
 
 
 def build_extra_tags(event, defaults):
