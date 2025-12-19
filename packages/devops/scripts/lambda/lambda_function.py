@@ -62,6 +62,6 @@ def lambda_handler(event, context):
 
     action_handler = actions[action]
 
-    print(user + " triggered " + action)
+    print(f"{user} triggered {action}")
 
     return action_handler(event)
