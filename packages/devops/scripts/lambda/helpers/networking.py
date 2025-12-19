@@ -218,10 +218,11 @@ def build_record_set_deletion(
 def build_record_set(
     action, domain, subdomain, deployment_name, gateway=None, dns_url=None
 ):
-    if subdomain == "":
-        url = deployment_name + "." + domain + "."
-    else:
-        url = deployment_name + "-" + subdomain + "." + domain + "."
+    url = (
+        f"{deployment_name}-{subdomain}.{domain}."
+        if subdomain
+        else f"{deployment_name}.{domain}."
+    )
 
     # e.g. db subdomain uses CNAME to AWS DNS so that it can be internally resolved within the VPC
     if dns_url:

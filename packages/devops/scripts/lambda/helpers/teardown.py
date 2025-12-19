@@ -98,10 +98,8 @@ def teardown_instance(instance):
 
 
 def teardown_db_instance(deployment_name=None, deployment_type=None, db_id=None):
-    if db_id:
-        db_instance_id = db_id
-    else:
-        db_instance_id = deployment_type + "-" + deployment_name
+    db_instance_id = db_id if db_id else f"{deployment_type}-{deployment_name}"
+    print(f"Tearing down database instance {db_instance_id}")
 
     db_instance = rds.describe_db_instances(DBInstanceIdentifier=db_instance_id)
     db_instance_public_dns_url = db_instance["DBInstances"][0]["Endpoint"]["Address"]
@@ -111,7 +109,7 @@ def teardown_db_instance(deployment_name=None, deployment_type=None, db_id=None)
         SkipFinalSnapshot=True,
         DeleteAutomatedBackups=True,
     )
-    print("Successfully deleted db instance: " + db_instance_id)
+    print("Deleted database instance: " + db_instance_id)
 
     record_set_deletions = [
         build_record_set_deletion(
