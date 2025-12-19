@@ -267,7 +267,7 @@ def add_subdomains_to_route53(
         )
         for subdomain in subdomains
     ]
-    print("Generated {} record set changes".format(len(record_set_changes)))
+    print(f"Generated {len(record_set_changes)} record set changes")
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)["HostedZones"][
         0
     ]["Id"]
@@ -278,7 +278,7 @@ def add_subdomains_to_route53(
             "Changes": record_set_changes,
         },
     )
-    print("Submitted changes to hosted zone")
+    print(f"Submitted {len(record_set_changes)} changes to hosted zone")
 
 
 def get_instance_behind_gateway(deployment_type, deployment_name):

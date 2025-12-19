@@ -84,4 +84,4 @@ def refresh_cloned_servers(event):
     ]
     loop.run_until_complete(asyncio.wait(start_tasks))
 
-    print(f"Finished refreshing {len(running_instances)} clones")
+    print(f"Refreshed {len(instances)} clones")
