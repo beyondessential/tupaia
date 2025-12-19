@@ -78,7 +78,7 @@ def tags_contains(tags, key, value):
 
 
 async def stop_instance(instance):
-    print(f"Stopping instance {instance["InstanceId"]}")
+    print(f"Stopping instance {instance['InstanceId']}")
     instance_object = ec2.Instance(instance["InstanceId"])
     instance_object.stop()
     print(f"Requested stop of instance {instance_object.id}")
@@ -88,7 +88,7 @@ async def stop_instance(instance):
 
 
 async def start_instance(instance):
-    print(f"Starting instance {instance["InstanceId"]}")
+    print(f"Starting instance {instance['InstanceId']}")
     instance_object = ec2.Instance(instance["InstanceId"])
     instance_object.start()
     print(f"Requested start of instance {instance_object.id}")
