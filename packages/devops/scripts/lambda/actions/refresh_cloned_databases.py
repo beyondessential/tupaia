@@ -41,15 +41,17 @@ from helpers.teardown import teardown_db_instance
 from helpers.utilities import get_db_tag
 
 
+async def _refresh_instance(instance):
+    await delete_db(instance)
+    await recreate_db(instance)
+
+
+async def _refresh_instances(instances):
+    tasks = [_refresh_instance(instance) for instance in instances]
+    _ = await asyncio.gather(*tasks)
+
+
 def refresh_cloned_databases(event):
-    async def refresh_instance(db_instance):
-        await delete_db(db_instance)
-        await recreate_db(db_instance)
-
-    async def refresh_all(instances):
-        tasks = [refresh_instance(instance) for instance in instances]
-        await asyncio.gather(*tasks)
-
     filters = [{"Key": "ClonedFrom"}, {"Key": "DeploymentType", "Values": ["tupaia"]}]
     if "ClonedFrom" in event:
         print(f"Refreshing databases cloned from {event['ClonedFrom']}")
@@ -60,12 +62,12 @@ def refresh_cloned_databases(event):
 
     instances = find_db_instances(filters)
 
-    if len(instances) == 0:
-        print("No clones to refresh")
+    if not instances:
+        print("No database clones to refresh")
         return
 
     print(f"Refreshing {len(instances)} databases")
-    asyncio.run(refresh_all(instances))
+    _ = asyncio.run(_refresh_instances(instances))
 
 
 async def delete_db(db_instance):

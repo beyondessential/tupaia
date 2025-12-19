@@ -14,15 +14,10 @@ from helpers.utilities import (
 ec2 = boto3.resource("ec2")
 ec = boto3.client("ec2")
 
-try:
-    loop = asyncio.get_event_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
 
 async def wait_for_volume(volume_id, to_be):
     volume_available_waiter = ec.get_waiter("volume_" + to_be)
+    loop = asyncio.get_running_loop()
     await loop.run_in_executor(
         None, functools.partial(volume_available_waiter.wait, VolumeIds=[volume_id])
     )
@@ -107,7 +102,7 @@ async def clone_volume_into_instance(
     )
 
 
-def clone_instance(
+async def clone_instance(
     deployment_type,
     from_deployment,
     to_deployment,
@@ -160,10 +155,9 @@ def clone_instance(
         subdomains_via_dns=subdomains_via_dns,
         subdomains_via_gateway=subdomains_via_gateway,
     )
-    loop.run_until_complete(stop_instance(new_instance))
-    loop.run_until_complete(
-        clone_volume_into_instance(new_instance, deployment_type, from_deployment)
-    )
-    loop.run_until_complete(start_instance(new_instance))
+
+    await stop_instance(new_instance)
+    await clone_volume_into_instance(new_instance, deployment_type, from_deployment)
+    await start_instance(new_instance)
 
     return new_instance

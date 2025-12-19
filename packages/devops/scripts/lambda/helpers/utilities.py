@@ -1,5 +1,4 @@
 import asyncio
-import functools
 import re
 from datetime import datetime, timedelta
 
@@ -8,12 +7,6 @@ import boto3
 ec2 = boto3.resource("ec2")
 ec = boto3.client("ec2")
 iam = boto3.client("iam")
-
-try:
-    loop = asyncio.get_event_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
 
 
 def get_account_ids():
@@ -84,21 +77,23 @@ def tags_contains(tags, key, value):
     return tag_matching_key["Value"] == value
 
 
-def stop_instance(instance):
+async def stop_instance(instance):
     print(f"Stopping instance {instance["InstanceId"]}")
     instance_object = ec2.Instance(instance["InstanceId"])
     instance_object.stop()
     print(f"Requested stop of instance {instance_object.id}")
-    instance_object.wait_until_stopped()
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, instance_object.wait_until_stopped)
     print(f"Stopped instance {instance_object.id}")
 
 
-def start_instance(instance):
+async def start_instance(instance):
     print(f"Starting instance {instance["InstanceId"]}")
     instance_object = ec2.Instance(instance["InstanceId"])
     instance_object.start()
     print(f"Requested start of instance {instance_object.id}")
-    instance_object.wait_until_running()
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, instance_object.wait_until_running)
     print(f"Started instance {instance_object.id}")
 
 
