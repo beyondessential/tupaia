@@ -9,7 +9,7 @@ export const findSyncSnapshotRecords = async (
   sessionId: string,
   fromId = 0,
   limit = Number.MAX_SAFE_INTEGER,
-  recordType: RecordType,
+  recordType?: RecordType,
   direction?: SyncSessionDirectionValues,
   additionalWhere?: string,
 ): Promise<SyncSnapshotAttributes[]> => {

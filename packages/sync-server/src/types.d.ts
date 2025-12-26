@@ -42,6 +42,7 @@ export interface SyncServerModelRegistry extends ModelRegistry {
 }
 
 export type SyncServerConfig = {
+  pauseSnapshotProcess?: () => Promise<void>;
   maxRecordsPerSnapshotChunk: number;
   lookupTable: {
     perModelUpdateTimeoutMs: number;

@@ -59,6 +59,7 @@ export const RECORDS = {
   SURVEY_SCREEN: 'survey_screen',
   SURVEY: 'survey',
   SYNC_GROUP_LOG: 'sync_group_log',
+  SYNC_LOOKUP: 'sync_lookup',
   TASK: 'task',
   TASK_COMMENT: 'task_comment',
   TOMBSTONE: 'tombstone',

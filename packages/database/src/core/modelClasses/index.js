@@ -60,6 +60,7 @@ import { SupersetInstanceModel } from './SupersetInstance';
 import { TaskModel } from './Task';
 import { UserCountryAccessAttemptModel } from './UserCountryAccessAttempt';
 import { TaskCommentModel } from './TaskComment';
+import { SyncLookupModel } from './SyncLookup';
 import { SyncSessionModel } from './SyncSession';
 import { SyncDeviceTickModel } from './SyncDeviceTick';
 import { SyncQueuedDeviceModel } from './SyncQueuedDevice';
@@ -130,6 +131,7 @@ export const modelClasses = {
   UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
   UserSession: UserSessionModel,
   UserCountryAccessAttempt: UserCountryAccessAttemptModel,
+  SyncLookup: SyncLookupModel,
   SyncSession: SyncSessionModel,
   SyncDeviceTick: SyncDeviceTickModel,
   SyncQueuedDevice: SyncQueuedDeviceModel,
@@ -209,6 +211,7 @@ export {
 } from './UserCountryAccessAttempt';
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
 export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';
+export { SyncLookupModel, SyncLookupRecord } from './SyncLookup';
 export { SyncSessionModel, SyncSessionRecord } from './SyncSession';
 export { SyncDeviceTickModel, SyncDeviceTickRecord } from './SyncDeviceTick';
 export { SyncQueuedDeviceModel, SyncQueuedDeviceRecord } from './SyncQueuedDevice';

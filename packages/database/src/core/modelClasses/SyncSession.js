@@ -41,4 +41,8 @@ export class SyncSessionModel extends DatabaseModel {
   async updatePullMetadata(id, { pullSince, pullUntil }) {
     await this.updateById(id, { pull_since: pullSince, pull_until: pullUntil });
   }
+
+  async markAsStartedAt(id, tick) {
+    await this.updateById(id, { started_at_tick: tick });
+  }
 }
