@@ -46,7 +46,7 @@ const DEFAULT_CONFIG: SyncServerConfig = {
   maxRecordsPerSnapshotChunk: 10_000,
   lookupTable: {
     perModelUpdateTimeoutMs: 1_000_000,
-    avoidRepull: false,
+    avoidRepull: true,
   },
   snapshotTransactionTimeoutMs: 10 * 60 * 1000,
   syncSessionTimeoutMs: 20 * 60 * 1000,
@@ -237,7 +237,7 @@ export class CentralSyncManager {
     try {
       await createSnapshotTable(this.models.database, sessionId);
       const { tick } = await this.tickTockGlobalClock(this.models);
-      await this.models.syncSession.updateById(sessionId, { started_at_tick: tick });
+      await this.models.syncSession.markAsStartedAt(sessionId, tick);
 
       return { sessionId, tick };
     } catch (error: any) {

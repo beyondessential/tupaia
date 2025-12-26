@@ -10,3 +10,4 @@ export * from './sanitizeRecord';
 export * from './startSnapshotWhenCapacityAvailable';
 export * from './withDeferredSyncSafeguards';
 export * from './findLastSuccessfulSyncedProjects';
+export * from './findSyncSnapshotRecords';
