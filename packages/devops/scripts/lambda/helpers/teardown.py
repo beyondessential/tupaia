@@ -27,7 +27,7 @@ def delete_route53_record_sets(deployment_name, record_set_deletions):
         for deletion in record_set_deletions
         if deletion["ResourceRecordSet"]["Name"] in all_record_set_names
     ]
-    print(f"Generated {len(record_set_deletions)} record set changes")
+    print(f"Generated {len(valid_record_set_deletions)} record set changes")
     if len(valid_record_set_deletions) > 0:
         route53.change_resource_record_sets(
             HostedZoneId=hosted_zone_id,
@@ -36,7 +36,7 @@ def delete_route53_record_sets(deployment_name, record_set_deletions):
                 "Changes": valid_record_set_deletions,
             },
         )
-        print(f"Submitted {len(record_set_deletions)} deletions to hosted zone")
+        print(f"Submitted {len(valid_record_set_deletions)} deletions to hosted zone")
 
 
 def terminate_instance(instance):
