@@ -71,7 +71,7 @@ def find_instances(filters):
 
 def tags_contains(tags, key, value):
     tags_matching_key = list(filter(lambda x: x["Key"] == key, tags))
-    if len(tags_matching_key) == 0:
+    if not tags_matching_key:
         return False
     tag_matching_key = tags_matching_key[0]
     return tag_matching_key["Value"] == value

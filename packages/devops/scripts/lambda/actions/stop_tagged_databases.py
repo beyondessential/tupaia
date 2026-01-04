@@ -27,7 +27,7 @@ def stop_tagged_databases(event):
         filter(lambda x: x["DBInstanceStatus"] == "available", tagged_instances)
     )
 
-    if len(available_instances) > 0:
+    if available_instances:
         instance_ids = list(
             map(lambda x: x["DBInstanceIdentifier"], available_instances)
         )

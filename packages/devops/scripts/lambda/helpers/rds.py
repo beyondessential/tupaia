@@ -31,7 +31,7 @@ def find_db_instances(filters):
 
     if (
         "ResourceTagMappingList" not in tagged_resources_response
-        or len(tagged_resources_response["ResourceTagMappingList"]) == 0
+        or not tagged_resources_response["ResourceTagMappingList"]
     ):
         return []
 
@@ -57,19 +57,18 @@ def rename_db_instance(db_id, new_db_id):
 
 def start_db_instance(db_id):
     rds.start_db_instance(DBInstanceIdentifier=db_id)
+    print(f"Requested start of database instance {db_id}")
 
 
 def stop_db_instance(db_id):
     rds.stop_db_instance(DBInstanceIdentifier=db_id)
+    print(f"Requested stop of database instance {db_id}")
 
 
 def get_latest_db_snapshot(source_db_id):
     snapshots_response = rds.describe_db_snapshots(DBInstanceIdentifier=source_db_id)
 
-    if (
-        "DBSnapshots" not in snapshots_response
-        or len(snapshots_response["DBSnapshots"]) == 0
-    ):
+    if "DBSnapshots" not in snapshots_response or not snapshots_response["DBSnapshots"]:
         raise Exception("No snapshots found")
 
     latest_snapshot_id = sorted(
@@ -77,7 +76,7 @@ def get_latest_db_snapshot(source_db_id):
         key=lambda k: k["SnapshotCreateTime"],
         reverse=True,
     )[0]["DBSnapshotIdentifier"]
-    print("Found snapshot with id " + latest_snapshot_id)
+    print(f"Found snapshot {latest_snapshot_id}")
     return latest_snapshot_id
 
 

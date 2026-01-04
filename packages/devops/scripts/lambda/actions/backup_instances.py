@@ -40,7 +40,7 @@ def backup_instances(event):
 
     instances = [i for r in reservations for i in r["Instances"]]
 
-    if len(instances) == 0:
+    if not instances:
         print(
             'Found no instances to back up. Make sure the instance has the tag "Backup"'
         )

@@ -78,7 +78,7 @@ def redeploy_tupaia_server(event):
     # find current instances
     existing_instances = find_instances(instance_filters)
 
-    if len(existing_instances) == 0:
+    if not existing_instances:
         raise Exception(
             "No existing instances found to redeploy, perhaps you want to spin up a new deployment?"
         )

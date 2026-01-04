@@ -18,7 +18,7 @@ def get_latest_image_id(image_code):
     ]
     account_ids = get_account_ids()
     image_response = ec.describe_images(Owners=account_ids, Filters=filters)
-    if "Images" not in image_response or len(image_response["Images"]) == 0:
+    if "Images" not in image_response or not image_response["Images"]:
         raise Exception("No images matching " + image_code)
     image_id = sorted(
         image_response["Images"], key=lambda k: k["CreationDate"], reverse=True
