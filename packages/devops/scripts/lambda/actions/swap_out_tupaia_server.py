@@ -33,7 +33,7 @@ def swap_out_tupaia_server(event):
     old_instance = get_instance_behind_gateway("tupaia", deployment_name)
     if not old_instance:
         raise Exception(
-            "Couldn’t find old instance with name {deployment_name} to swap out"
+            f"Couldn’t find old instance with name {deployment_name} to swap out"
         )
 
     # set up ELB from the old instance to point at the new one
