@@ -127,7 +127,9 @@ def redeploy_tupaia_server(event):
 
         deployment_name = get_tag(new_instance, "DeploymentName")
 
-        print("Successfully deployed " + deployment_name)
+        print(
+            f"Successfully deployed {deployment_name} to {new_instance["InstanceId"]}"
+        )
         response.append(
             {
                 "DeploymentName": deployment_name,
