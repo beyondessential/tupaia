@@ -54,9 +54,7 @@ def teardown_instance(instance):
     protected = get_tag(instance, "Protected")
     if protected == "true":
         raise Exception(
-            "The instance "
-            + get_tag(instance, "Name")
-            + " is protected and cannot be deleted"
+            f"The instance {get_tag(instance, 'Name')} is protected and cannot be deleted"
         )
 
     # Get tagged details of instance
@@ -109,7 +107,7 @@ def teardown_db_instance(deployment_name=None, deployment_type=None, db_id=None)
         SkipFinalSnapshot=True,
         DeleteAutomatedBackups=True,
     )
-    print("Deleted database instance: " + db_instance_id)
+    print(f"Deleted database instance {db_instance_id}")
 
     record_set_deletions = [
         build_record_set_deletion(

@@ -290,16 +290,11 @@ def get_instance_behind_gateway(deployment_type, deployment_name):
 
     if not targets:
         raise Exception(
-            "Could not find any targets behind the "
-            + deployment_type
-            + " gateway for "
-            + deployment_name
+            f"Could not find any targets behind the {deployment_type} gateway for {deployment_name}"
         )
 
     if len(targets) > 1:
-        raise Exception(
-            "Too many targets for " + deployment_type + ": " + deployment_name
-        )
+        raise Exception(f"Too many targets for {deployment_type}: {deployment_name}")
 
     instance_id = targets[0]["Target"]["Id"]
 

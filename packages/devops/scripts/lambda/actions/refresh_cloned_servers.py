@@ -56,10 +56,10 @@ async def _refresh_instances(instances):
 def refresh_cloned_servers(event):
     filters = [{"Name": "tag-key", "Values": ["ClonedFrom"]}]
     if "ClonedFrom" in event:
-        print("Refreshing instances cloned from " + event["ClonedFrom"])
+        print(f"Refreshing instances cloned from {event["ClonedFrom"]}")
         filters.append({"Name": "tag:ClonedFrom", "Values": [event["ClonedFrom"]]})
     if "DeploymentName" in event:
-        print("Refreshing the " + event["DeploymentName"] + " clone")
+        print(f"Refreshing the {event["DeploymentName"]} clone")
         filters.append(
             {"Name": "tag:DeploymentName", "Values": [event["DeploymentName"]]}
         )

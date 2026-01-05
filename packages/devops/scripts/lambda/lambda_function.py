@@ -44,21 +44,22 @@ actions = {
 def lambda_handler(event, context):
     if "Action" not in event:
         raise Exception(
-            'Must provide "Action" in the lambda config to tell it what to do. Supported actions are '
-            + ", ".join(actions.keys())
+            f'Must provide "Action" in the Lambda event to tell it what to do. Supported actions are: {", ".join(actions.keys())}'
         )
 
     action = event["Action"]
 
     if "User" not in event:
         raise Exception(
-            'Must provide your AWS username under the key "User" in the lambda config'
+            'Must provide your AWS username under the key "User" in the Lambda event'
         )
 
     user = event["User"]
 
     if action not in actions:
-        raise Exception("Action must be one of " + ", ".join(actions.keys()))
+        raise Exception(
+            f"{action} isn’t a valid action. Must be one of: {", ".join(actions.keys())}"
+        )
 
     action_handler = actions[action]
 
