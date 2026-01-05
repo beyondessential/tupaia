@@ -43,9 +43,11 @@ def terminate_instance(instance):
     # Release elastic ip
     public_ip_address = instance["PublicIpAddress"]
     elastic_ip = ec.describe_addresses(PublicIps=[public_ip_address])["Addresses"][0]
+    print(f"Releasing elastic IP {elastic_ip['PublicIp']}")
     ec.release_address(AllocationId=elastic_ip["AllocationId"])
 
     # Terminate ec2 instance (taking with it ebs)
+    print(f"Terminating instance {instance['InstanceId']}")
     ec.terminate_instances(InstanceIds=[instance["InstanceId"]])
 
 
