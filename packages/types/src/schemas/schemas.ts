@@ -315,6 +315,48 @@ export const EntityAttributesSchema = {
 		}
 	}
 }
+export const EntityMetadataSchema = {
+	"type": "object",
+	"properties": {
+		"dhis": {
+			"type": "object",
+			"properties": {
+				"dhisInstanceCode": {
+					"type": "string"
+				},
+				"isDataRegional": {
+					"type": "boolean"
+				},
+				"push": {
+					"type": "boolean"
+				},
+				"trackedEntityId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"ms1": {
+			"type": "object",
+			"properties": {
+				"distributionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"openStreetMaps": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false
+}
 export const CssColorSchema = {
 	"description": "A CSS color string e.g. green or #abc123",
 	"type": "string"
@@ -39457,10 +39499,6 @@ export const EntityQuestionConfigFieldKeySchema = {
 export const EntityQuestionConfigFieldValueSchema = {
 	"anyOf": [
 		{
-			"type": "object",
-			"properties": {}
-		},
-		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -39468,6 +39506,48 @@ export const EntityQuestionConfigFieldValueSchema = {
 					"type": "string"
 				}
 			}
+		},
+		{
+			"type": "object",
+			"properties": {
+				"dhis": {
+					"type": "object",
+					"properties": {
+						"dhisInstanceCode": {
+							"type": "string"
+						},
+						"isDataRegional": {
+							"type": "boolean"
+						},
+						"push": {
+							"type": "boolean"
+						},
+						"trackedEntityId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"ms1": {
+					"type": "object",
+					"properties": {
+						"distributionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"openStreetMaps": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
 		},
 		{
 			"type": "object",
@@ -39499,10 +39579,6 @@ export const EntityQuestionConfigSchema = {
 				"metadata": {
 					"anyOf": [
 						{
-							"type": "object",
-							"properties": {}
-						},
-						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -39510,6 +39586,48 @@ export const EntityQuestionConfigSchema = {
 									"type": "string"
 								}
 							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
 						},
 						{
 							"type": "object",
@@ -39531,10 +39649,6 @@ export const EntityQuestionConfigSchema = {
 				"code": {
 					"anyOf": [
 						{
-							"type": "object",
-							"properties": {}
-						},
-						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -39542,6 +39656,48 @@ export const EntityQuestionConfigSchema = {
 									"type": "string"
 								}
 							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
 						},
 						{
 							"type": "object",
@@ -39563,10 +39719,6 @@ export const EntityQuestionConfigSchema = {
 				"attributes": {
 					"anyOf": [
 						{
-							"type": "object",
-							"properties": {}
-						},
-						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -39574,6 +39726,48 @@ export const EntityQuestionConfigSchema = {
 									"type": "string"
 								}
 							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
 						},
 						{
 							"type": "object",
@@ -39595,10 +39789,6 @@ export const EntityQuestionConfigSchema = {
 				"name": {
 					"anyOf": [
 						{
-							"type": "object",
-							"properties": {}
-						},
-						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -39606,6 +39796,48 @@ export const EntityQuestionConfigSchema = {
 									"type": "string"
 								}
 							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
 						},
 						{
 							"type": "object",
@@ -39627,10 +39859,6 @@ export const EntityQuestionConfigSchema = {
 				"type": {
 					"anyOf": [
 						{
-							"type": "object",
-							"properties": {}
-						},
-						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -39638,6 +39866,48 @@ export const EntityQuestionConfigSchema = {
 									"type": "string"
 								}
 							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
 						},
 						{
 							"type": "object",
@@ -39659,10 +39929,6 @@ export const EntityQuestionConfigSchema = {
 				"country_code": {
 					"anyOf": [
 						{
-							"type": "object",
-							"properties": {}
-						},
-						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -39670,6 +39936,48 @@ export const EntityQuestionConfigSchema = {
 									"type": "string"
 								}
 							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
 						},
 						{
 							"type": "object",
@@ -39691,10 +39999,6 @@ export const EntityQuestionConfigSchema = {
 				"id": {
 					"anyOf": [
 						{
-							"type": "object",
-							"properties": {}
-						},
-						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -39702,6 +40006,48 @@ export const EntityQuestionConfigSchema = {
 									"type": "string"
 								}
 							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
 						},
 						{
 							"type": "object",
@@ -39723,10 +40069,6 @@ export const EntityQuestionConfigSchema = {
 				"image_url": {
 					"anyOf": [
 						{
-							"type": "object",
-							"properties": {}
-						},
-						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -39734,6 +40076,48 @@ export const EntityQuestionConfigSchema = {
 									"type": "string"
 								}
 							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
 						},
 						{
 							"type": "object",
@@ -39787,10 +40171,6 @@ export const EntityQuestionConfigSchema = {
 				"parentId": {
 					"anyOf": [
 						{
-							"type": "object",
-							"properties": {}
-						},
-						{
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -39798,6 +40178,48 @@ export const EntityQuestionConfigSchema = {
 									"type": "string"
 								}
 							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
 						},
 						{
 							"type": "object",
@@ -40041,10 +40463,6 @@ export const SurveyScreenComponentConfigSchema = {
 						"metadata": {
 							"anyOf": [
 								{
-									"type": "object",
-									"properties": {}
-								},
-								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
@@ -40052,6 +40470,48 @@ export const SurveyScreenComponentConfigSchema = {
 											"type": "string"
 										}
 									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
 								},
 								{
 									"type": "object",
@@ -40073,10 +40533,6 @@ export const SurveyScreenComponentConfigSchema = {
 						"code": {
 							"anyOf": [
 								{
-									"type": "object",
-									"properties": {}
-								},
-								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
@@ -40084,6 +40540,48 @@ export const SurveyScreenComponentConfigSchema = {
 											"type": "string"
 										}
 									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
 								},
 								{
 									"type": "object",
@@ -40105,10 +40603,6 @@ export const SurveyScreenComponentConfigSchema = {
 						"attributes": {
 							"anyOf": [
 								{
-									"type": "object",
-									"properties": {}
-								},
-								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
@@ -40116,6 +40610,48 @@ export const SurveyScreenComponentConfigSchema = {
 											"type": "string"
 										}
 									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
 								},
 								{
 									"type": "object",
@@ -40137,10 +40673,6 @@ export const SurveyScreenComponentConfigSchema = {
 						"name": {
 							"anyOf": [
 								{
-									"type": "object",
-									"properties": {}
-								},
-								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
@@ -40148,6 +40680,48 @@ export const SurveyScreenComponentConfigSchema = {
 											"type": "string"
 										}
 									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
 								},
 								{
 									"type": "object",
@@ -40169,10 +40743,6 @@ export const SurveyScreenComponentConfigSchema = {
 						"type": {
 							"anyOf": [
 								{
-									"type": "object",
-									"properties": {}
-								},
-								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
@@ -40180,6 +40750,48 @@ export const SurveyScreenComponentConfigSchema = {
 											"type": "string"
 										}
 									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
 								},
 								{
 									"type": "object",
@@ -40201,10 +40813,6 @@ export const SurveyScreenComponentConfigSchema = {
 						"country_code": {
 							"anyOf": [
 								{
-									"type": "object",
-									"properties": {}
-								},
-								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
@@ -40212,6 +40820,48 @@ export const SurveyScreenComponentConfigSchema = {
 											"type": "string"
 										}
 									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
 								},
 								{
 									"type": "object",
@@ -40233,10 +40883,6 @@ export const SurveyScreenComponentConfigSchema = {
 						"id": {
 							"anyOf": [
 								{
-									"type": "object",
-									"properties": {}
-								},
-								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
@@ -40244,6 +40890,48 @@ export const SurveyScreenComponentConfigSchema = {
 											"type": "string"
 										}
 									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
 								},
 								{
 									"type": "object",
@@ -40265,10 +40953,6 @@ export const SurveyScreenComponentConfigSchema = {
 						"image_url": {
 							"anyOf": [
 								{
-									"type": "object",
-									"properties": {}
-								},
-								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
@@ -40276,6 +40960,48 @@ export const SurveyScreenComponentConfigSchema = {
 											"type": "string"
 										}
 									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
 								},
 								{
 									"type": "object",
@@ -40329,10 +41055,6 @@ export const SurveyScreenComponentConfigSchema = {
 						"parentId": {
 							"anyOf": [
 								{
-									"type": "object",
-									"properties": {}
-								},
-								{
 									"additionalProperties": false,
 									"type": "object",
 									"properties": {
@@ -40340,6 +41062,48 @@ export const SurveyScreenComponentConfigSchema = {
 											"type": "string"
 										}
 									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
 								},
 								{
 									"type": "object",
@@ -70425,7 +71189,45 @@ export const EntitySchema = {
 		},
 		"metadata": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"dhis": {
+					"type": "object",
+					"properties": {
+						"dhisInstanceCode": {
+							"type": "string"
+						},
+						"isDataRegional": {
+							"type": "boolean"
+						},
+						"push": {
+							"type": "boolean"
+						},
+						"trackedEntityId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"ms1": {
+					"type": "object",
+					"properties": {
+						"distributionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"openStreetMaps": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
 		},
 		"name": {
 			"type": "string"
@@ -70483,7 +71285,45 @@ export const EntityCreateSchema = {
 		},
 		"metadata": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"dhis": {
+					"type": "object",
+					"properties": {
+						"dhisInstanceCode": {
+							"type": "string"
+						},
+						"isDataRegional": {
+							"type": "boolean"
+						},
+						"push": {
+							"type": "boolean"
+						},
+						"trackedEntityId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"ms1": {
+					"type": "object",
+					"properties": {
+						"distributionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"openStreetMaps": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
 		},
 		"name": {
 			"type": "string"
@@ -70537,7 +71377,45 @@ export const EntityUpdateSchema = {
 		},
 		"metadata": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"dhis": {
+					"type": "object",
+					"properties": {
+						"dhisInstanceCode": {
+							"type": "string"
+						},
+						"isDataRegional": {
+							"type": "boolean"
+						},
+						"push": {
+							"type": "boolean"
+						},
+						"trackedEntityId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"ms1": {
+					"type": "object",
+					"properties": {
+						"distributionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"openStreetMaps": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
 		},
 		"name": {
 			"type": "string"
@@ -85288,7 +86166,45 @@ export const MeditrakSurveyResponseRequestSchema = {
 					},
 					"metadata": {
 						"type": "object",
-						"properties": {}
+						"properties": {
+							"dhis": {
+								"type": "object",
+								"properties": {
+									"dhisInstanceCode": {
+										"type": "string"
+									},
+									"isDataRegional": {
+										"type": "boolean"
+									},
+									"push": {
+										"type": "boolean"
+									},
+									"trackedEntityId": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							},
+							"ms1": {
+								"type": "object",
+								"properties": {
+									"distributionId": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							},
+							"openStreetMaps": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							}
+						},
+						"additionalProperties": false
 					},
 					"name": {
 						"type": "string"
@@ -86089,6 +87005,44 @@ export const EntityResponseSchema = {
 		},
 		"metadata": {
 			"type": "object",
+			"properties": {
+				"dhis": {
+					"type": "object",
+					"properties": {
+						"dhisInstanceCode": {
+							"type": "string"
+						},
+						"isDataRegional": {
+							"type": "boolean"
+						},
+						"push": {
+							"type": "boolean"
+						},
+						"trackedEntityId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"ms1": {
+					"type": "object",
+					"properties": {
+						"distributionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"openStreetMaps": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
 			"additionalProperties": false
 		},
 		"name": {

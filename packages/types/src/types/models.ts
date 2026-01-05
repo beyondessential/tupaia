@@ -6,6 +6,7 @@ import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
 import { MapOverlayConfig } from './models-extra';
 import { EntityAttributes } from './models-extra';
+import { EntityMetadata } from './models-extra';
 import { UserAccountPreferences } from './models-extra';
 import { EntityType } from './models-extra';
 import { ProjectConfig } from './models-extra';
@@ -635,7 +636,7 @@ export interface Entity {
   'country_code'?: string | null;
   'id': string;
   'image_url'?: string | null;
-  'metadata': {};
+  'metadata': EntityMetadata;
   'name': string;
   'parent_id'?: string | null;
   'point'?: string | null;
@@ -649,7 +650,7 @@ export interface EntityCreate {
   'code': string;
   'country_code'?: string | null;
   'image_url'?: string | null;
-  'metadata'?: {};
+  'metadata'?: EntityMetadata;
   'name': string;
   'parent_id'?: string | null;
   'point'?: string | null;
@@ -663,7 +664,7 @@ export interface EntityUpdate {
   'country_code'?: string | null;
   'id'?: string;
   'image_url'?: string | null;
-  'metadata'?: {};
+  'metadata'?: EntityMetadata;
   'name'?: string;
   'parent_id'?: string | null;
   'point'?: string | null;

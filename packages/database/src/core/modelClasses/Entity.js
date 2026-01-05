@@ -1,6 +1,7 @@
 /**
  * @typedef {import('@tupaia/types').Entity} Entity
  * @typedef {import('@tupaia/types').EntityHierarchy} EntityHierarchy
+ * @typedef {import('@tupaia/types').EntityMetadata} EntityMetadata
  * @typedef {import('@tupaia/types').Project} Project
  * @typedef {import('@tupaia/types').ValueOf} ValueOf
  */
@@ -124,7 +125,7 @@ export const ENTITY_RELATION_TYPE = /** @type {const} */ ({
 export class EntityRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ENTITY;
 
-  /** @type {import('@tupaia/types').EntityMetadata} */
+  /** @type {EntityMetadata} */
   metadata;
 
   /** @type {EntityTypeEnum} */
