@@ -24,6 +24,14 @@ def delete_old_snapshots(event):
         {"Name": "tag:DeleteOn", "Values": [delete_on]},
     ]
     snapshot_response = ec.describe_snapshots(OwnerIds=account_ids, Filters=filters)
+    snapshots = snapshot_response["Snapshots"]
 
-    for snap in snapshot_response["Snapshots"]:
-        ec.delete_snapshot(SnapshotId=snap["SnapshotId"])
+    print(f"Found {len(snapshots)} snapshots to delete")
+
+    for snap in snapshots:
+        id = snap["SnapshotId"]
+        print(f"Deleting snapshot {id} ({snap['Description']})")
+        ec.delete_snapshot(SnapshotId=id)
+        print(f"Deleted snapshot {id}")
+
+    print(f"Deleted {len(snapshots)} snapshots")

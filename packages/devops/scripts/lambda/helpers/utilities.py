@@ -1,5 +1,4 @@
 import asyncio
-import functools
 import re
 from datetime import datetime, timedelta
 
@@ -8,12 +7,6 @@ import boto3
 ec2 = boto3.resource("ec2")
 ec = boto3.client("ec2")
 iam = boto3.client("iam")
-
-try:
-    loop = asyncio.get_event_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
 
 
 def get_account_ids():
@@ -51,10 +44,10 @@ def add_tag(instance_id, tag_name, tag_value):
 
 def get_instance(filters):
     reservations = ec.describe_instances(Filters=filters).get("Reservations", [])
-    if len(reservations) == 0:
+    if not reservations:
         return None
     instances = reservations[0]["Instances"]
-    if len(instances) == 0:
+    if not instances:
         return None
     return instances[0]
 
@@ -78,33 +71,30 @@ def find_instances(filters):
 
 def tags_contains(tags, key, value):
     tags_matching_key = list(filter(lambda x: x["Key"] == key, tags))
-    if len(tags_matching_key) == 0:
+    if not tags_matching_key:
         return False
     tag_matching_key = tags_matching_key[0]
     return tag_matching_key["Value"] == value
 
 
-async def wait_for_instance(instance_id, to_be):
-    volume_available_waiter = ec.get_waiter("instance_" + to_be)
-    await loop.run_in_executor(
-        None, functools.partial(volume_available_waiter.wait, InstanceIds=[instance_id])
-    )
-
-
 async def stop_instance(instance):
+    print(f"Stopping instance {instance['InstanceId']}")
     instance_object = ec2.Instance(instance["InstanceId"])
     instance_object.stop()
-    print("Stopping instance " + instance_object.id)
-    await wait_for_instance(instance_object.id, "stopped")
-    print("Stopped instance with id " + instance_object.id)
+    print(f"Requested stop of instance {instance_object.id}")
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, instance_object.wait_until_stopped)
+    print(f"Stopped instance {instance_object.id}")
 
 
 async def start_instance(instance):
+    print(f"Starting instance {instance['InstanceId']}")
     instance_object = ec2.Instance(instance["InstanceId"])
     instance_object.start()
-    print("Starting instance " + instance_object.id)
-    await wait_for_instance(instance_object.id, "running")
-    print("Started instance with id " + instance_object.id)
+    print(f"Requested start of instance {instance_object.id}")
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, instance_object.wait_until_running)
+    print(f"Started instance {instance_object.id}")
 
 
 def build_extra_tags(event, defaults):
@@ -119,14 +109,10 @@ def build_extra_tags(event, defaults):
         if "StartAtUTC" in event or "StopAtUTC" in event:
             raise Exception("Production deployment cannot have StartAtUTC/StopAtUTC")
     else:
-        if "StartAtUTC" in event:
-            extra_tags.append({"Key": "StartAtUTC", "Value": event["StartAtUTC"]})
-        else:
-            extra_tags.append({"Key": "StartAtUTC", "Value": defaults["StartAtUTC"]})
+        start_time = event.get("StartAtUTC", defaults["StartAtUTC"])
+        extra_tags.append({"Key": "StartAtUTC", "Value": start_time})
 
-        if "StopAtUTC" in event:
-            extra_tags.append({"Key": "StopAtUTC", "Value": event["StopAtUTC"]})
-        else:
-            extra_tags.append({"Key": "StopAtUTC", "Value": defaults["StopAtUTC"]})
+        stop_time = event.get("StopAtUTC", defaults["StopAtUTC"])
+        extra_tags.append({"Key": "StopAtUTC", "Value": stop_time})
 
     return extra_tags
