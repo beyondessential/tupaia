@@ -109,14 +109,10 @@ def build_extra_tags(event, defaults):
         if "StartAtUTC" in event or "StopAtUTC" in event:
             raise Exception("Production deployment cannot have StartAtUTC/StopAtUTC")
     else:
-        if "StartAtUTC" in event:
-            extra_tags.append({"Key": "StartAtUTC", "Value": event["StartAtUTC"]})
-        else:
-            extra_tags.append({"Key": "StartAtUTC", "Value": defaults["StartAtUTC"]})
+        start_time = event.get("StartAtUTC", defaults["StartAtUTC"])
+        extra_tags.append({"Key": "StartAtUTC", "Value": start_time})
 
-        if "StopAtUTC" in event:
-            extra_tags.append({"Key": "StopAtUTC", "Value": event["StopAtUTC"]})
-        else:
-            extra_tags.append({"Key": "StopAtUTC", "Value": defaults["StopAtUTC"]})
+        stop_time = event.get("StopAtUTC", defaults["StopAtUTC"])
+        extra_tags.append({"Key": "StopAtUTC", "Value": stop_time})
 
     return extra_tags
