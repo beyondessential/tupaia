@@ -1,5 +1,6 @@
-import { SyncDirections } from '@tupaia/constants';
+/** @typedef {import('@tupaia/types').DataElement} DataElement */
 
+import { SyncDirections } from '@tupaia/constants';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -33,6 +34,10 @@ export class DataElementRecord extends DatabaseRecord {
 
   SERVICE_TYPES = SERVICE_TYPES;
 
+  /** @type {DataElement['config']} */
+  config;
+
+  /** @returns {DataElement['code']} */
   get dataElementCode() {
     return this.config.dataElementCode || this.code;
   }

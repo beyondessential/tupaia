@@ -319,6 +319,63 @@ export const EntityAttributesSchema = {
 		}
 	}
 }
+export const DataElementConfigSchema = {
+	"type": "object",
+	"properties": {
+		"categoryOptionCombo": {
+			"type": "string"
+		},
+		"dataElementCode": {
+			"type": "string"
+		},
+		"dhisDataType": {
+			"enum": [
+				"DataElement",
+				"Indicator",
+				"ProgramIndicator"
+			],
+			"type": "string"
+		},
+		"dhisId": {
+			"type": "string"
+		},
+		"dhisInstanceCode": {
+			"type": "string"
+		},
+		"indicator": {
+			"type": "object",
+			"properties": {
+				"dataPeriodType": {
+					"enum": [
+						"DAY",
+						"MONTH",
+						"QUARTER",
+						"WEEK",
+						"YEAR"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"dataPeriodType"
+			]
+		}
+	},
+	"additionalProperties": false
+}
+export const DataServiceEntityConfigSchema = {
+	"type": "object",
+	"properties": {
+		"dhis_id": {
+			"type": "string"
+		},
+		"kobo_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+}
 export const EntityMetadataSchema = {
 	"type": "object",
 	"properties": {
@@ -360,6 +417,36 @@ export const EntityMetadataSchema = {
 		}
 	},
 	"additionalProperties": false
+}
+export const OptionAttributesSchema = {
+	"type": "object",
+	"properties": {
+		"parent_category": {
+			"type": "string"
+		},
+		"grandparent_category": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+}
+export const SupersetInstanceConfigSchema = {
+	"type": "object",
+	"properties": {
+		"serverName": {
+			"type": "string"
+		},
+		"baseUrl": {
+			"type": "string"
+		},
+		"insecure": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"baseUrl"
+	]
 }
 export const DatePickerOffsetSpecSchema = {
 	"type": "object",
@@ -76664,7 +76751,48 @@ export const DataElementSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"categoryOptionCombo": {
+					"type": "string"
+				},
+				"dataElementCode": {
+					"type": "string"
+				},
+				"dhisDataType": {
+					"enum": [
+						"DataElement",
+						"Indicator",
+						"ProgramIndicator"
+					],
+					"type": "string"
+				},
+				"dhisId": {
+					"type": "string"
+				},
+				"dhisInstanceCode": {
+					"type": "string"
+				},
+				"indicator": {
+					"type": "object",
+					"properties": {
+						"dataPeriodType": {
+							"enum": [
+								"DAY",
+								"MONTH",
+								"QUARTER",
+								"WEEK",
+								"YEAR"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"dataPeriodType"
+					]
+				}
+			},
+			"additionalProperties": false
 		},
 		"id": {
 			"type": "string"
@@ -76705,7 +76833,48 @@ export const DataElementCreateSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"categoryOptionCombo": {
+					"type": "string"
+				},
+				"dataElementCode": {
+					"type": "string"
+				},
+				"dhisDataType": {
+					"enum": [
+						"DataElement",
+						"Indicator",
+						"ProgramIndicator"
+					],
+					"type": "string"
+				},
+				"dhisId": {
+					"type": "string"
+				},
+				"dhisInstanceCode": {
+					"type": "string"
+				},
+				"indicator": {
+					"type": "object",
+					"properties": {
+						"dataPeriodType": {
+							"enum": [
+								"DAY",
+								"MONTH",
+								"QUARTER",
+								"WEEK",
+								"YEAR"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"dataPeriodType"
+					]
+				}
+			},
+			"additionalProperties": false
 		},
 		"permission_groups": {
 			"type": "array",
@@ -76740,7 +76909,48 @@ export const DataElementUpdateSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"categoryOptionCombo": {
+					"type": "string"
+				},
+				"dataElementCode": {
+					"type": "string"
+				},
+				"dhisDataType": {
+					"enum": [
+						"DataElement",
+						"Indicator",
+						"ProgramIndicator"
+					],
+					"type": "string"
+				},
+				"dhisId": {
+					"type": "string"
+				},
+				"dhisInstanceCode": {
+					"type": "string"
+				},
+				"indicator": {
+					"type": "object",
+					"properties": {
+						"dataPeriodType": {
+							"enum": [
+								"DAY",
+								"MONTH",
+								"QUARTER",
+								"WEEK",
+								"YEAR"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"dataPeriodType"
+					]
+				}
+			},
+			"additionalProperties": false
 		},
 		"id": {
 			"type": "string"
@@ -77015,7 +77225,15 @@ export const DataServiceEntitySchema = {
 	"properties": {
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"dhis_id": {
+					"type": "string"
+				},
+				"kobo_id": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"entity_code": {
 			"type": "string"
@@ -77036,7 +77254,15 @@ export const DataServiceEntityCreateSchema = {
 	"properties": {
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"dhis_id": {
+					"type": "string"
+				},
+				"kobo_id": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"entity_code": {
 			"type": "string"
@@ -77053,7 +77279,15 @@ export const DataServiceEntityUpdateSchema = {
 	"properties": {
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"dhis_id": {
+					"type": "string"
+				},
+				"kobo_id": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"entity_code": {
 			"type": "string"
@@ -95937,7 +96171,15 @@ export const OptionSchema = {
 	"properties": {
 		"attributes": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"parent_category": {
+					"type": "string"
+				},
+				"grandparent_category": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"id": {
 			"type": "string"
@@ -95972,7 +96214,15 @@ export const OptionCreateSchema = {
 	"properties": {
 		"attributes": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"parent_category": {
+					"type": "string"
+				},
+				"grandparent_category": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"label": {
 			"type": "string"
@@ -95999,7 +96249,15 @@ export const OptionUpdateSchema = {
 	"properties": {
 		"attributes": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"parent_category": {
+					"type": "string"
+				},
+				"grandparent_category": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"id": {
 			"type": "string"
@@ -97372,7 +97630,21 @@ export const SupersetInstanceSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"serverName": {
+					"type": "string"
+				},
+				"baseUrl": {
+					"type": "string"
+				},
+				"insecure": {
+					"type": "boolean"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"baseUrl"
+			]
 		},
 		"id": {
 			"type": "string"
@@ -97393,7 +97665,21 @@ export const SupersetInstanceCreateSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"serverName": {
+					"type": "string"
+				},
+				"baseUrl": {
+					"type": "string"
+				},
+				"insecure": {
+					"type": "boolean"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"baseUrl"
+			]
 		}
 	},
 	"additionalProperties": false,
@@ -97410,7 +97696,21 @@ export const SupersetInstanceUpdateSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"serverName": {
+					"type": "string"
+				},
+				"baseUrl": {
+					"type": "string"
+				},
+				"insecure": {
+					"type": "boolean"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"baseUrl"
+			]
 		},
 		"id": {
 			"type": "string"
