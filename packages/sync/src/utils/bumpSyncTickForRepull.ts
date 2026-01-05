@@ -1,4 +1,4 @@
-import { groupBy } from 'lodash';
+import { groupBy } from 'es-toolkit';
 
 import { DatabaseModel, SqlQuery, TupaiaDatabase } from '@tupaia/database';
 
@@ -9,8 +9,7 @@ import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
  * Bump the updated_at_sync_tick for all records that require a repull
  * So that they are pulled again in the next sync
  * Records generally require repull when they are changed by some side effect
- * of incoming sync, e.g. deduplicating patient display ids in the incomingSyncHook,
- * or field-wise merge of patient additional data records
+ * of incoming sync, e.g. uploading images or files to S3 and repull the answer with the new URLs
  */
 export const bumpSyncTickForRepull = async (
   database: TupaiaDatabase,

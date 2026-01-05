@@ -18,8 +18,8 @@ export const incomingSyncHook = async (
   models: ModelRegistry,
   sessionId: string,
 ) => {
-   // model.incomingSyncHook should return modified records without directly mutating the database.
-   // Wrapped in a read-only transaction to enforce this contract and prevent inadvertent writes.
+  // model.incomingSyncHook should return modified records without directly mutating the database.
+  // Wrapped in a read-only transaction to enforce this contract and prevent inadvertent writes.
   await (models.wrapInReadOnlyTransaction as WrapInReadOnlyTransaction)(
     async (readOnlyModelsRegistry: ModelRegistry): Promise<void> => {
       const readOnlyModels = getModelsForPush(readOnlyModelsRegistry.getModels());
@@ -41,7 +41,7 @@ export const incomingSyncHook = async (
 
         // Load the persisted record ids in batches to avoid memory issue
         const batchCount = Math.ceil(modelPersistedRecordsCount / BATCH_SIZE);
-        let fromId;
+        let fromId: SyncSnapshotAttributes['id'] | undefined;
 
         for (let batchIndex = 0; batchIndex < batchCount; batchIndex++) {
           const batchRecords = await findSyncSnapshotRecords(
@@ -52,9 +52,8 @@ export const incomingSyncHook = async (
             model.databaseRecord,
             SYNC_SESSION_DIRECTION.INCOMING,
           );
-          fromId = batchRecords[batchRecords.length - 1]?.id;
+          fromId = batchRecords.at(-1)?.id;
 
-          // wrap in read only transaction
           const incomingSnapshotChanges = hasIncomingSyncHook
             ? await (model.incomingSyncHook as Function)(batchRecords)
             : null;
@@ -80,13 +79,11 @@ export const incomingSyncHook = async (
                 requiresRepull: true,
               }));
 
-              await Promise.all(
-                newChangesToUpdate.map(async (change: SyncSnapshotAttributes) => {
-                  await updateSnapshotRecords(database, sessionId, change, {
-                    id: change.id,
-                  });
-                }),
-              );
+              for (const change of newChangesToUpdate) {
+                await updateSnapshotRecords(database, sessionId, change, {
+                  id: change.id,
+                });
+              }
             }
           }
         }
