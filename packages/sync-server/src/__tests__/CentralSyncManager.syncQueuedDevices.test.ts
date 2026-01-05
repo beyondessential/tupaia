@@ -4,18 +4,18 @@ import { clearTestData, getTestModels } from '@tupaia/database';
 import { FACT_CURRENT_SYNC_TICK } from '@tupaia/constants';
 
 import { CentralSyncManager } from '../sync/CentralSyncManager';
-import { SyncServerModelRegistry } from '../types';
+import { TestSyncServerModelRegistry } from '../types';
 
 describe('CentralSyncManager.queueDeviceForSync', () => {
   let centralSyncManager: CentralSyncManager;
-  let models: any;
+  let models: TestSyncServerModelRegistry;
 
   const mockConfig = {
     maxConcurrentSessions: 1,
   };
 
   beforeAll(async () => {
-    models = getTestModels() as SyncServerModelRegistry;
+    models = getTestModels() as TestSyncServerModelRegistry;
     await clearTestData(models.database);
   });
 

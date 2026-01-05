@@ -12,9 +12,11 @@ import {
 } from '@tupaia/sync';
 import { sleep } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
+import { CountryRecord, EntityHierarchyRecord, ProjectRecord, UserRecord } from '@tupaia/server-boilerplate';
 
 import { CentralSyncManager } from '../sync';
 import { waitForPushComplete, waitForSession } from '../testUtilities/waitForSync';
+import { TestSyncServerModelRegistry } from '../types';
 
 const POLICY = {
   DL: [BES_ADMIN_PERMISSION_GROUP, 'Admin'],
@@ -23,21 +25,21 @@ const POLICY = {
 
 describe('CentralSyncManager.pull', () => {
   describe('handles concurrent transactions', () => {
-    let models: any;
-    let country: any;
-    let userAccount: any;
-    let entityHierarchy: any;
-    let project: any;
+    let models: TestSyncServerModelRegistry;
+    let country: CountryRecord;
+    let userAccount: UserRecord;
+    let entityHierarchy: EntityHierarchyRecord;
+    let project: ProjectRecord;
 
     const prepareSnapshotBlocking = async () => {
-      let markSnapshotBlockingReady: () => Promise<any>;
+      let markSnapshotBlockingReady: () => Promise<void>;
       const snapshotBlockingReadyPromise = new Promise(resolve => {
         markSnapshotBlockingReady = async () => resolve(true);
       });
 
       // Build the fakeModelPromise so that it can block the snapshotting process,
       // then we can insert some new records while snapshotting is happening
-      let unblockSnapshot!: () => Promise<any>;
+      let unblockSnapshot!: () => Promise<void>;
       const unblockSnapshotPromise = new Promise(resolve => {
         // count: 100 is not correct but shouldn't matter in this test case
         unblockSnapshot = async () =>
@@ -84,7 +86,7 @@ describe('CentralSyncManager.pull', () => {
     };
 
     beforeAll(async () => {
-      models = getTestModels();
+      models = getTestModels() as TestSyncServerModelRegistry;
       await clearTestData(models.database);
     });
 

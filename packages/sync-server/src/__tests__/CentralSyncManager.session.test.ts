@@ -5,11 +5,12 @@ import { FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constant
 
 import { CentralSyncManager } from '../sync';
 import { waitForSession } from '../testUtilities/waitForSync';
+import { TestSyncServerModelRegistry } from '../types';
 
 const DEFAULT_CURRENT_SYNC_TIME_VALUE = 4;
 
 describe('CentralSyncManager.session', () => {
-  let models: any;
+  let models: TestSyncServerModelRegistry;
 
   const expectMatchingSessionData = async (sessionData1: any, sessionData2: any) => {
     const cleanedSessionData1 = await sessionData1.getData();
@@ -23,7 +24,7 @@ describe('CentralSyncManager.session', () => {
   };
 
   beforeAll(async () => {
-    models = getTestModels();
+    models = getTestModels() as TestSyncServerModelRegistry;
     await clearTestData(models.database);
   });
 
@@ -105,7 +106,7 @@ describe('CentralSyncManager.session', () => {
 
       const fakeCentralSyncManagerPrepareSession = async (sessionId: string) => {
         const originalMarkAsStartedAt = models.syncSession.markAsStartedAt.bind(models.syncSession);
-        const fakeSessionMarkAsStartedAt = async (sessionId: string, tick: any) => {
+        const fakeSessionMarkAsStartedAt = async (sessionId: string, tick: number) => {
           const result = await originalMarkAsStartedAt(sessionId, tick);
           dataValuesAtStartTime = cloneDeep(await models.syncSession.findById(sessionId)); // Save dataValues immediately after marking session as started
           return result;

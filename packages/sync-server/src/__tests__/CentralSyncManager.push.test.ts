@@ -1,15 +1,16 @@
-import { clearTestData, getTestModels, findOrCreateDummyRecord } from '@tupaia/database';
+import { clearTestData, getTestModels, findOrCreateDummyRecord, UserRecord } from '@tupaia/database';
 import { FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
 import { SYNC_SESSION_DIRECTION, SyncSnapshotAttributes } from '@tupaia/sync';
 
 import { CentralSyncManager } from '../sync';
 import { waitForPushComplete, waitForSession } from '../testUtilities/waitForSync';
+import { TestSyncServerModelRegistry } from '../types';
 
 describe('CentralSyncManager.push', () => {
-  let models: any;
+  let models: TestSyncServerModelRegistry;
 
   beforeAll(async () => {
-    models = getTestModels();
+    models = getTestModels() as TestSyncServerModelRegistry;
     await clearTestData(models.database);
   });
 
@@ -36,9 +37,9 @@ describe('CentralSyncManager.push', () => {
       first_name: 'User',
       last_name: 'Account 2',
     });
-    const changes = await Promise.all([userAccount1, userAccount2].map(async (r: any) => ({
+    const changes = await Promise.all([userAccount1, userAccount2].map(async (r: UserRecord) => ({
       direction: SYNC_SESSION_DIRECTION.OUTGOING,
-      isDeleted: !!r.deletedAt,
+      isDeleted: false,
       recordType: 'user_account',
       recordId: r.id,
       data: await r.getData(),

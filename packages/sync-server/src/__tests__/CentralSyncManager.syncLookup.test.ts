@@ -15,6 +15,20 @@ import {
 
 import { snapshotOutgoingChanges } from '../sync/snapshotOutgoingChanges';
 import { SyncLookupQueryDetails, TestSyncServerModelRegistry } from '../types';
+import {
+  EntityHierarchyRecord,
+  EntityRecord,
+  OptionSetRecord,
+  PermissionGroupRecord,
+  ProjectRecord,
+  QuestionRecord,
+  SurveyGroupRecord,
+  SurveyRecord,
+  SurveyResponseRecord,
+  SurveyScreenRecord,
+  TaskRecord,
+  UserRecord,
+} from '@tupaia/server-boilerplate';
 
 const SYNC_CONFIG = {
   maxRecordsPerSnapshotChunk: 10_000,
@@ -32,19 +46,19 @@ describe('Sync Lookup data', () => {
   let centralSyncManager: CentralSyncManager;
   let deviceId: string;
   let sessionId: string;
-  let project: any;
-  let entity1: any;
-  let entity2: any;
-  let entityHierarchy: any;
-  let optionSet: any;
-  let permissionGroup: any;
-  let survey: any;
-  let surveyGroup: any;
-  let surveyResponse: any;
-  let surveyScreen: any;
-  let question: any;
-  let task: any;
-  let userAccount: any;
+  let project: ProjectRecord;
+  let entity1: EntityRecord;
+  let entity2: EntityRecord;
+  let entityHierarchy: EntityHierarchyRecord;
+  let optionSet: OptionSetRecord;
+  let permissionGroup: PermissionGroupRecord;
+  let survey: SurveyRecord;
+  let surveyGroup: SurveyGroupRecord;
+  let surveyResponse: SurveyResponseRecord;
+  let surveyScreen: SurveyScreenRecord;
+  let question: QuestionRecord;
+  let task: TaskRecord;
+  let userAccount: UserRecord;
 
   const prepareData = async () => {
     deviceId = generateId();

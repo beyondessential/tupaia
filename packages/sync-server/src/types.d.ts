@@ -1,18 +1,4 @@
-import {
-  ModelRegistry,
-  SyncDeviceTickModel,
-  SyncQueuedDeviceModel,
-  SyncSessionModel,
-  TupaiaDatabase,
-} from '@tupaia/database';
-import {
-  AnswerModel,
-  DebugLogModel,
-  EntityModel,
-  LocalSystemFactModel,
-  ProjectModel,
-  SurveyResponseModel,
-} from '@tupaia/server-boilerplate';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   EntityParentChildRelationModel,
   QuestionModel,
@@ -20,6 +6,26 @@ import {
   SurveyScreenModel,
   TaskCommentModel,
   TaskModel,
+  SyncDeviceTickModel,
+  SyncQueuedDeviceModel,
+  SyncSessionModel,
+  SyncLookupModel,
+  UserModel,
+  AnswerModel,
+  DebugLogModel,
+  EntityModel,
+  LocalSystemFactModel,
+  ProjectModel,
+  SurveyResponseModel,
+  CountryModel,
+  EntityHierarchyModel,
+  EntityRelationModel,
+  OptionSetModel,
+  OptionModel,
+  PermissionGroupModel,
+  SurveyGroupModel,
+  SurveyModel,
+  UserEntityPermissionModel,
 } from '@tupaia/tsmodels';
 
 export interface SyncServerModelRegistry extends ModelRegistry {
