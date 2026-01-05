@@ -349,13 +349,16 @@ def delete_gateway(deployment_type, deployment_name):
     # 1. Delete listeners
     listeners = get_gateway_listeners(deployment_type, deployment_name)
     for listener in listeners:
+        print(f"Deleting listener {listener['ListenerArn']}")
         elbv2.delete_listener(ListenerArn=listener["ListenerArn"])
 
     # 2. Delete ELB
+    print(f"Deleting ELB {gateway_elb['LoadBalancerArn']}")
     elbv2.delete_load_balancer(LoadBalancerArn=gateway_elb["LoadBalancerArn"])
 
     # 3. Delete Target Group
     gateway_target_group = get_gateway_target_group(deployment_type, deployment_name)
+    print(f"Deleting target group {gateway_target_group['TargetGroupArn']}")
     elbv2.delete_target_group(TargetGroupArn=gateway_target_group["TargetGroupArn"])
 
 
