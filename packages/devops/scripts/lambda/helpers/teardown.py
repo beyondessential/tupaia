@@ -51,8 +51,8 @@ def terminate_instance(instance):
 
 def teardown_instance(instance):
     # Check it's not protected
-    protected = get_tag(instance, "Protected")
-    if protected == "true":
+    is_protected = get_tag(instance, "Protected") == "true"
+    if is_protected:
         raise Exception(
             f"The instance {get_tag(instance, 'Name')} is protected and cannot be deleted"
         )
