@@ -44,6 +44,7 @@
     "package:build:lib": "cd \"$INIT_CWD\" && babel src --out-dir lib --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\"",
     "package:lint": "cd \"$INIT_CWD\" && eslint .",
     "package:test": "cd \"$INIT_CWD\" && jest --maxWorkers=50%",
+    "package:test:serial": "cd \"$INIT_CWD\" && jest --runInBand",
     "package:test:withdb": "cd \"$INIT_CWD\" && yarn workspace @tupaia/database check-test-database-exists && jest --runInBand",
     "package:start:backend-start-dev": "cd \"$INIT_CWD\" && LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh",
     "package:start:vite": "cd \"$INIT_CWD\" && vite --config \"../../vite.config.js\"",
