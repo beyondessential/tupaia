@@ -1,3 +1,5 @@
+/** @typedef {import('@tupaia/types').Entity} Entity */
+
 import keyBy from 'lodash.keyby';
 
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
@@ -89,8 +91,14 @@ const ENTITY_RELATION_TYPE = {
 export class EntityRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ENTITY;
 
-  /** @type {import('@tupaia/types').EntityMetadata} */
-  metadata;
+  constructor(...args) {
+    super(...args);
+    /**
+     * @type {Entity['metadata']}
+     * @privateRemarks Does nothing meaningful runtime, but provides type hint to TypeScript
+     */
+    this.metadata;
+  }
 
   // Exposed for access policy creation.
   get organisationUnitCode() {
