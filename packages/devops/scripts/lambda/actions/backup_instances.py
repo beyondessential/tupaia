@@ -44,6 +44,7 @@ def backup_instances(event):
         print(
             'Found no instances to back up. Make sure the instance has the tag "Backup"'
         )
+        return
 
     for instance in instances:
         instance_name = get_tag(instance, "Name")
