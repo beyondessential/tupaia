@@ -125,11 +125,12 @@ export const ENTITY_RELATION_TYPE = /** @type {const} */ ({
 export class EntityRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ENTITY;
 
-  /** @type {EntityMetadata} */
-  metadata;
-
-  /** @type {EntityTypeEnum} */
-  type;
+  /** @privateRemarks Does nothing meaningful runtime, but provides type hints to TypeScript */
+  constructor(...args) {
+    super(...args);
+    /** @type {Entity['metadata']} */ this.metadata;
+    /** @type {Entity['type']} */ this.type;
+  }
 
   // Exposed for access policy creation.
   get organisationUnitCode() {
