@@ -13,10 +13,19 @@ import {
   ProjectModel,
   SurveyResponseModel,
 } from '@tupaia/server-boilerplate';
+import {
+  EntityParentChildRelationModel,
+  QuestionModel,
+  SurveyScreenComponentModel,
+  SurveyScreenModel,
+  TaskCommentModel,
+  TaskModel,
+} from '@tupaia/tsmodels';
 
 export interface SyncServerModelRegistry extends ModelRegistry {
   readonly database: TupaiaDatabase;
 
+  readonly user: UserModel;
   readonly project: ProjectModel;
   readonly entity: EntityModel;
   readonly surveyResponse: SurveyResponseModel;
@@ -42,6 +51,7 @@ export interface SyncServerModelRegistry extends ModelRegistry {
 }
 
 export type SyncServerConfig = {
+  pauseSnapshotProcess?: () => Promise<void>;
   maxRecordsPerSnapshotChunk: number;
   lookupTable: {
     perModelUpdateTimeoutMs: number;
@@ -104,23 +114,50 @@ export interface UnmarkSessionAsProcessingFunction {
   (): Promise<void>;
 }
 
-export interface TestModelRegistry extends ModelRegistry {
+export interface TestSyncServerModelRegistry extends ModelRegistry {
   readonly database: TupaiaDatabase;
 
-  readonly syncQueuedDevice: SyncQueuedDeviceModel;
+  readonly syncLookup: SyncLookupModel;
+  readonly country: CountryModel;
+  readonly entityHierarchy: EntityHierarchyModel;
+  readonly entityRelation: EntityRelationModel;
+  readonly entityParentChildRelation: EntityParentChildRelationModel;
+  readonly optionSet: OptionSetModel;
+  readonly option: OptionModel;
+  readonly permissionGroup: PermissionGroupModel;
+  readonly surveyGroup: SurveyGroupModel;
+  readonly survey: SurveyModel;
+  readonly surveyScreen: SurveyScreenModel;
+  readonly surveyScreenComponent: SurveyScreenComponentModel;
+  readonly question: QuestionModel;
+  readonly surveyResponse: SurveyResponseModel;
+  readonly answer: AnswerModel;
+  readonly task: TaskModel;
+  readonly taskComment: TaskCommentModel;
+  readonly localSystemFact: LocalSystemFactModel;
+  readonly debugLog: DebugLogModel;
+  readonly userEntityPermission: UserEntityPermissionModel;
+  readonly user: UserModel;
+  readonly project: ProjectModel;
+  readonly entity: EntityModel;
+  readonly surveyResponse: SurveyResponseModel;
+  readonly answer: AnswerModel;
+  readonly localSystemFact: LocalSystemFactModel;
+  readonly debugLog: DebugLogModel;
   readonly syncSession: SyncSessionModel;
   readonly syncDeviceTick: SyncDeviceTickModel;
+  readonly syncQueuedDevice: SyncQueuedDeviceModel;
 
   wrapInTransaction<T = unknown>(
-    wrappedFunction: (models: TestModelRegistry) => Promise<T>,
+    wrappedFunction: (models: SyncServerModelRegistry) => Promise<T>,
     transactionConfig?: Knex.TransactionConfig,
   ): Promise<T>;
   wrapInReadOnlyTransaction<T = unknown>(
-    wrappedFunction: (models: TestModelRegistry) => Promise<T>,
+    wrappedFunction: (models: SyncServerModelRegistry) => Promise<T>,
     transactionConfig?: Omit<Knex.TransactionConfig, 'readOnly'>,
   ): Promise<T>;
   wrapInRepeatableReadTransaction<T = unknown>(
-    wrappedFunction: (models: TestModelRegistry) => Promise<T>,
+    wrappedFunction: (models: SyncServerModelRegistry) => Promise<T>,
     transactionConfig?: Omit<Knex.TransactionConfig, 'isolationLevel'>,
   ): Promise<T>;
 }
