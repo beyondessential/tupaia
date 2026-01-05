@@ -25,10 +25,11 @@ def spin_up_lesmis_deployment(event):
         raise Exception(
             'You must include the key "DeploymentName" in the lambda config, e.g. "dev".'
         )
+
     deployment_name = event["DeploymentName"]
-    branch = event.get(
-        "Branch", deployment_name
-    )  # branch defaults to deployment name if not specified
+    # branch defaults to deployment name if not specified
+    branch = event.get("Branch", deployment_name)
+
     if deployment_name == "production" and branch != "master":
         raise Exception(
             "The production deployment needs to check out master, not " + branch

@@ -54,9 +54,8 @@ def spin_up_dhis_deployment(event):
         )
     instance_type = event["InstanceType"]
 
-    security_group_code = event.get(
-        "SecurityGroupCode", "tupaia-dev-sg"
-    )  # Use security group tagged with code
+    # Use security group tagged with code
+    security_group_code = event.get("SecurityGroupCode", "tupaia-dev-sg")
 
     extra_tags = [{"Key": "DeployedBy", "Value": event["User"]}]
 
