@@ -34,8 +34,11 @@ export class DataElementRecord extends DatabaseRecord {
 
   SERVICE_TYPES = SERVICE_TYPES;
 
-  /** @type {DataElement['config']} */
-  config;
+  constructor(...args) {
+    super(...args);
+    /** @type {DataElement['config']} */
+    this.config;
+  }
 
   /** @returns {DataElement['code']} */
   get dataElementCode() {
