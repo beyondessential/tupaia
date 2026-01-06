@@ -1,10 +1,15 @@
+/**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ */
+
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
 import { TaskCommentType, TaskStatus } from '@tupaia/types';
 import { hasBESAdminAccess } from '@tupaia/access-policy';
 import { getOffsetForTimezone } from '@tupaia/utils';
-
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -355,9 +360,15 @@ export class TaskModel extends DatabaseModel {
     };
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<Record<PermissionGroup['id'], Country['code'][]>>}
+   */
   async getCountryCodesByPermissionGroupId(accessPolicy) {
     const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
+    /** @type {Record<PermissionGroup['id'], Country['code'][]>} */
     const countryCodesByPermissionGroupId = {};
+    /** @type {Record<PermissionGroup['name'], PermissionGroup['id']>} */
     const permissionGroupNameToId = await this.otherModels.permissionGroup.findIdByField(
       'name',
       allPermissionGroupsNames,
