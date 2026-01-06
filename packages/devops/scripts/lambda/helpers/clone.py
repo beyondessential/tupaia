@@ -1,12 +1,12 @@
-import boto3
 import asyncio
 import functools
 
+import boto3
 from helpers.creation import create_instance
 from helpers.utilities import (
     get_account_ids,
-    get_tag,
     get_instance,
+    get_tag,
     start_instance,
     stop_instance,
 )
@@ -14,11 +14,10 @@ from helpers.utilities import (
 ec2 = boto3.resource("ec2")
 ec = boto3.client("ec2")
 
-loop = asyncio.get_event_loop()
-
 
 async def wait_for_volume(volume_id, to_be):
     volume_available_waiter = ec.get_waiter("volume_" + to_be)
+    loop = asyncio.get_running_loop()
     await loop.run_in_executor(
         None, functools.partial(volume_available_waiter.wait, VolumeIds=[volume_id])
     )
@@ -36,20 +35,20 @@ def get_latest_snapshot_id(deployment_type, deployment_name):
     snapshot_id = sorted(
         snapshot_response["Snapshots"], key=lambda k: k["StartTime"], reverse=True
     )[0]["SnapshotId"]
-    print("Found snapshot with id " + snapshot_id)
+    print(f"Found snapshot with ID {snapshot_id}")
     return snapshot_id
 
 
 async def clone_volume_into_instance(
     instance, deployment_type, deployment_name="production"
 ):
-    print("Cloning volume into instance {}".format(instance["InstanceId"]))
+    print(f"Cloning volume into instance {instance['InstanceId']}")
     # Check it's not protected
     protected = get_tag(instance, "Protected")
     name = get_tag(instance, "Name")
     if protected == "true":
         raise Exception(
-            "The instance " + name + " is protected and cannot be wiped and cloned"
+            f"The instance {name} is protected and cannot be wiped and cloned"
         )
 
     # Get snapshot to clone volume from
@@ -60,7 +59,7 @@ async def clone_volume_into_instance(
         if dev.get("Ebs", None) is None:
             continue
         dev_to_attach = dev
-    print("Will attach to " + dev_to_attach["DeviceName"])
+    print(f"Will attach to {dev_to_attach['DeviceName']}")
 
     # Detach the old volume
     old_vol_id = dev_to_attach["Ebs"]["VolumeId"]
@@ -68,7 +67,7 @@ async def clone_volume_into_instance(
     availability_zone = old_volume.availability_zone
     old_volume.detach_from_instance()
     await wait_for_volume(old_vol_id, "available")
-    print("Volume with id " + old_vol_id + " detached")
+    print(f"Volume with ID {old_vol_id} detached")
 
     # Create new volume from snapshot and attach it to EC2 instance
     new_volume_id = ec.create_volume(
@@ -77,11 +76,11 @@ async def clone_volume_into_instance(
         VolumeType=old_volume.volume_type,
     )["VolumeId"]
     await wait_for_volume(new_volume_id, "available")
-    print("Created volume with id " + new_volume_id)
+    print(f"Created volume with ID {new_volume_id}")
 
     # Delete old volume, don't need to wait
-    old_volume.delete()
     print("Deleting old volume")
+    old_volume.delete()
 
     # Attach new volume to instance
     new_volume = ec2.Volume(new_volume_id)
@@ -103,7 +102,7 @@ async def clone_volume_into_instance(
     )
 
 
-def clone_instance(
+async def clone_instance(
     deployment_type,
     from_deployment,
     to_deployment,
@@ -112,14 +111,7 @@ def clone_instance(
     security_group_code=None,
 ):
     print(
-        "Creating "
-        + instance_type
-        + " clone of "
-        + deployment_type
-        + ": "
-        + from_deployment
-        + " as "
-        + to_deployment
+        f"Creating {instance_type} clone of {deployment_type}: {from_deployment} as {to_deployment}"
     )
     base_instance_filters = [
         {"Name": "tag:DeploymentType", "Values": [deployment_type]},
@@ -133,7 +125,7 @@ def clone_instance(
 
     if not base_instance:
         raise Exception(
-            "No instance to clone from for " + deployment_type + ": " + from_deployment
+            f"No instance to clone from for {deployment_type}: {from_deployment}"
         )
 
     subdomains_via_dns = None
@@ -163,10 +155,9 @@ def clone_instance(
         subdomains_via_dns=subdomains_via_dns,
         subdomains_via_gateway=subdomains_via_gateway,
     )
-    loop.run_until_complete(stop_instance(new_instance))
-    loop.run_until_complete(
-        clone_volume_into_instance(new_instance, deployment_type, from_deployment)
-    )
-    loop.run_until_complete(start_instance(new_instance))
+
+    await stop_instance(new_instance)
+    await clone_volume_into_instance(new_instance, deployment_type, from_deployment)
+    await start_instance(new_instance)
 
     return new_instance
