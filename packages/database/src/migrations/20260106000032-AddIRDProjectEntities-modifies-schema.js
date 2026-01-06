@@ -14,8 +14,8 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
-  return db.runSql(`
+exports.up = async function (db) {
+  await db.runSql(`
     ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'ird_province';
     ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'ird_district';
     ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'ird_tehsil';
