@@ -6,7 +6,7 @@
  * @typedef {import('@tupaia/types').ValueOf} ValueOf
  */
 
-import keyBy from 'es-toolkit/compat';
+import { uniqBy } from 'es-toolkit';
 
 import { SyncDirections } from '@tupaia/constants';
 import { assertIsNotNullish } from '@tupaia/tsutils';
@@ -125,11 +125,12 @@ export const ENTITY_RELATION_TYPE = /** @type {const} */ ({
 export class EntityRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ENTITY;
 
-  /** @type {EntityMetadata} */
-  metadata;
-
-  /** @type {EntityTypeEnum} */
-  type;
+  /** @privateRemarks Does nothing meaningful runtime, but provides type hints to TypeScript */
+  constructor(...args) {
+    super(...args);
+    /** @type {Entity['metadata']} */ this.metadata;
+    /** @type {Entity['type']} */ this.type;
+  }
 
   // Exposed for access policy creation.
   get organisationUnitCode() {
@@ -614,11 +615,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           ...options,
         },
       );
-      const relationData = await Promise.all(relations.map(async r => await r.getData()));
-      const uniqueEntities = Object.values(keyBy(relationData, 'id'));
-      return uniqueEntities;
+      const relationData = await Promise.all(relations.map(async r => r.getData()));
+      return uniqBy(relationData, relation => relation.id);
     });
-    return Promise.all(entityRecords.map(async r => await this.generateInstance(r)));
+
+    return await Promise.all(entityRecords.map(async r => this.generateInstance(r)));
   }
 
   /**

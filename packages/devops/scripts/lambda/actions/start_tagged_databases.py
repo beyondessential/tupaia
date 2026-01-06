@@ -14,7 +14,10 @@ import time
 
 from helpers.rds import find_db_instances, start_db_instance, wait_for_db_instance
 
-loop = asyncio.get_event_loop()
+
+async def _start_db_instances(instances):
+    tasks = [start_and_wait_for_db(instance) for instance in instances]
+    return await asyncio.gather(*tasks)
 
 
 def start_tagged_databases(event):
@@ -30,20 +33,12 @@ def start_tagged_databases(event):
         filter(lambda x: x["DBInstanceStatus"] == "stopped", tagged_instances)
     )
 
-    if len(stopped_instances) > 0:
-        tasks = sum(
-            [
-                [
-                    asyncio.ensure_future(start_and_wait_for_db(instance))
-                    for instance in stopped_instances
-                ]
-            ],
-            [],
-        )
-        loop.run_until_complete(asyncio.wait(tasks))
-        print(str(len(stopped_instances)) + " previously stopped instances started")
-    else:
+    if not stopped_instances:
         print("No stopped instances required starting")
+        return
+
+    _ = asyncio.run(_start_db_instances(stopped_instances))
+    print(f"{len(stopped_instances)} previously stopped instances started")
 
 
 async def start_and_wait_for_db(db_instance):
