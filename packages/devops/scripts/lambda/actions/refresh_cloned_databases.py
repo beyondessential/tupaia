@@ -22,12 +22,14 @@ Example configs
   "User": "edwin",
   "DeploymentName": "edwin-test"
 }
+
+Related:
+  https://github.com/beyondessential/data-lake/blob/dev/devops/lambda/actions/refresh_cloned_databases.py
 """
 
 import asyncio
 
 from helpers.creation import create_db_instance_from_snapshot_async
-from helpers.teardown import teardown_db_instance
 from helpers.rds import (
     find_db_instances,
     get_all_db_instances,
@@ -35,78 +37,64 @@ from helpers.rds import (
     set_db_instance_master_password,
 )
 from helpers.secrets import get_db_master_password
+from helpers.teardown import teardown_db_instance
 from helpers.utilities import get_db_tag
 
-loop = asyncio.get_event_loop()
+
+async def _refresh_instance(instance):
+    await delete_db(instance)
+    await recreate_db(instance)
+
+
+async def _refresh_instances(instances):
+    tasks = [_refresh_instance(instance) for instance in instances]
+    _ = await asyncio.gather(*tasks)
 
 
 def refresh_cloned_databases(event):
     filters = [{"Key": "ClonedFrom"}, {"Key": "DeploymentType", "Values": ["tupaia"]}]
     if "ClonedFrom" in event:
-        print("Refreshing databases cloned from " + event["ClonedFrom"])
+        print(f"Refreshing databases cloned from {event['ClonedFrom']}")
         filters[0]["Values"] = [event["ClonedFrom"]]
     if "DeploymentName" in event:
-        print("Refreshing the " + event["DeploymentName"] + " clone")
+        print(f"Refreshing the {event['DeploymentName']} clone")
         filters.append({"Key": "DeploymentName", "Values": [event["DeploymentName"]]})
 
     instances = find_db_instances(filters)
 
-    if len(instances) == 0:
-        print("No clones to refresh")
+    if not instances:
+        print("No database clones to refresh")
         return
 
-    print("refreshing " + str(len(instances)) + " databases")
-
-    delete_tasks = sum(
-        [[asyncio.ensure_future(delete_db(instance)) for instance in instances]], []
-    )
-    loop.run_until_complete(asyncio.wait(delete_tasks))
-
-    recreate_tasks = sum(
-        [[asyncio.ensure_future(recreate_db(instance)) for instance in instances]], []
-    )
-    loop.run_until_complete(asyncio.wait(recreate_tasks))
+    print(f"Refreshing {len(instances)} databases")
+    _ = asyncio.run(_refresh_instances(instances))
 
 
 async def delete_db(db_instance):
     db_id = db_instance["DBInstanceIdentifier"]
 
-    print("starting delete of: " + db_id)
+    print(f"Starting delete of database instance {db_id}")
 
     # we rename, then delete, as it allows us to create the new instance faster
-    temp_id = "old-" + db_id
+    temp_id = f"old-{db_id}"
     rename_db_instance(db_id, temp_id)
 
-    rename_complete = False
-    attempts = 0
-    max_attempts = 30
-    delay = 10
+    rename_complete, attempts = False, 0  # Loop control variables
+    delay, max_attempts = 10, 30  # Retry config
     while not rename_complete and attempts < max_attempts:
         await asyncio.sleep(delay)
         all_instances = get_all_db_instances()
         rename_complete = any(
             instance["DBInstanceIdentifier"] == temp_id for instance in all_instances
         )
-        attempts = attempts + 1
+        attempts += 1
 
     if not rename_complete:
         raise Exception(
-            "Timed out waiting for rename of "
-            + db_id
-            + " after "
-            + str(attempts * delay)
-            + "s"
+            f"Timed out waiting for rename of {db_id} after {attempts * delay} s"
         )
 
-    print(
-        "rename complete: "
-        + db_id
-        + " -> "
-        + temp_id
-        + " after ("
-        + str(attempts)
-        + ") attempts"
-    )
+    print(f"Rename complete: {db_id} → {temp_id} (after {attempts * delay} s)")
     teardown_db_instance(db_id=temp_id)
 
 
@@ -117,7 +105,7 @@ async def recreate_db(db_instance):
     clone_db_from = get_db_tag(db_instance, "ClonedFrom")
     deployment_name = get_db_tag(db_instance, "DeploymentName")
 
-    print("starting recreate of: " + db_id)
+    print(f"Starting recreate of database instance {db_id}")
 
     # recreate db instance from a snapshot
     await create_db_instance_from_snapshot_async(
@@ -132,4 +120,4 @@ async def recreate_db(db_instance):
     # set master password
     set_db_instance_master_password(db_id, get_db_master_password())
 
-    print("recreated: " + db_id)
+    print(f"Recreated database instance {db_id}")
