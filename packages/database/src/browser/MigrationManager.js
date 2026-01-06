@@ -34,6 +34,7 @@ export class MigrationManager {
     );
 
     for (const [name, migrationModule] of Object.entries(sortedMigrationFiles)) {
+      /** @type {('browser' | 'server')[]} */
       const targets = migrationModule._meta?.targets || [];
 
       // Only run migration if it is intended for the browser
@@ -61,7 +62,7 @@ export class MigrationManager {
   }
 
   async getExecutedMigrations() {
-    return this.client.executeSql('SELECT * FROM migrations ORDER BY run_on ASC');
+    return await this.client.executeSql('SELECT * FROM migrations ORDER BY run_on ASC');
   }
 
   async migrate() {
