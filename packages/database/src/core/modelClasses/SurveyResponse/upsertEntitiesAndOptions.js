@@ -1,9 +1,12 @@
-import { merge } from 'es-toolkit';
+/** @typedef {import('../Entity').EntityRecord} EntityRecord */
+
+import { toMerged } from 'es-toolkit';
 import winston from 'winston';
 
 const upsertEntities = async (models, entitiesUpserted) => {
   return await Promise.all(
     entitiesUpserted.map(async entity => {
+      /** @type {EntityRecord | null} */
       const existingEntity = await models.entity.findById(entity.id, {
         columns: [
           // Non-nullable attributes with no DEFAULT, needed for `INSERT ... ON CONFLICT` query
@@ -16,8 +19,9 @@ const upsertEntities = async (models, entitiesUpserted) => {
           'metadata',
         ],
       });
-      const merged = merge(existingEntity, entity);
-      return await models.entity.updateOrCreate({ id: entity.id }, merged);
+
+      const entityToUpsert = existingEntity ? toMerged(existingEntity, entity) : entity;
+      return await models.entity.updateOrCreate({ id: entity.id }, entityToUpsert);
     }),
   );
 };
