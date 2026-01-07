@@ -65,7 +65,7 @@ export const SurveySelectPage = () => {
     if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey)) {
       setSelectedSurvey(null);
     }
-  }, [JSON.stringify(surveys)]);
+  }, [surveys]);
 
   useEffect(() => {
     const updateUserProject = async () => {
