@@ -59,12 +59,7 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
   // Even if we're BES admin, we need to filter by the country
   if (hasBESAdminAccess(accessPolicy)) {
     dbConditions[RAW] = {
-      sql: `
-      (
-        ARRAY[?]
-        <@
-        survey.country_ids
-      )`,
+      sql: '(ARRAY[?] <@ survey.country_ids)',
       parameters: countryId,
     };
   } else {
