@@ -24,6 +24,13 @@ export class MigrationManager {
     `);
   }
 
+  /**
+   * @returns {Promise<{
+   *   name: string;
+   *   up: (database: unknown) => Promise<unknown>;
+   *   down: (database: unknown) => Promise<unknown>;
+   * }[]>}
+   */
   async loadMigrationFiles() {
     // For loading migration files in the browser
     const migrationFiles = import.meta.glob('../core/migrations/*.js', { eager: true });
@@ -61,6 +68,7 @@ export class MigrationManager {
     return migrations;
   }
 
+  /** @returns {Promise<{ id: number; name: string; run_on: string }[]>} */
   async getExecutedMigrations() {
     return await this.client.executeSql('SELECT * FROM migrations ORDER BY run_on ASC');
   }
