@@ -336,27 +336,22 @@ export class TaskModel extends DatabaseModel {
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryCodesByPermissionGroupId =
       await this.getCountryCodesByPermissionGroupId(accessPolicy);
+    const entries = Object.entries(countryCodesByPermissionGroupId);
 
-    const params = Object.entries(countryCodesByPermissionGroupId).flat(2); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
-
-    if (Object.keys(countryCodesByPermissionGroupId).length === 0) {
-      return null;
-    }
+    if (entries.length === 0) return { sql: 'FALSE' };
 
     return {
       sql: `
         (
-          ${Object.values(countryCodesByPermissionGroupId)
-            .map(
-              countryCodes => `(
-                survey.permission_group_id = ? AND
-                entity.country_code IN ${SqlQuery.record(countryCodes)}
-              )`,
-            )
+          ${entries
+            .map(([, countryCodes]) => {
+              return `(survey.permission_group_id = ? AND entity.country_code IN ${SqlQuery.record(countryCodes)})`;
+            })
             .join(' OR ')}
         )
        `,
-      parameters: params,
+      /** @example ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3'] */
+      parameters: entries.flat(2),
     };
   }
 
