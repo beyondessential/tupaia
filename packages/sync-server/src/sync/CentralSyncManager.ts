@@ -111,7 +111,7 @@ export class CentralSyncManager {
         session.id,
         'Session marked as completed due to its device reconnecting',
       );
-      const durationMs = performance.now() - session.start_time;
+      const durationMs = Date.now() - session.start_time;
 
       log.info('StaleSyncSessionCleaner.closedReconnectedSession', {
         sessionId: session.id,
