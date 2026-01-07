@@ -78,10 +78,8 @@ export class MigrationManager {
     const startTime = performance.now();
     try {
       const migrations = await this.loadMigrationFiles();
-      const executedMigrations = await this.getExecutedMigrations();
-      const pendingMigrations = migrations.filter(
-        m => !executedMigrations.find(em => em.name === m.name),
-      );
+      const executedMigrations = new Set((await this.getExecutedMigrations()).map(m => m.name));
+      const pendingMigrations = migrations.filter(m => !executedMigrations.has(m.name));
 
       if (pendingMigrations.length === 0) {
         console.log('No migrations to execute');
