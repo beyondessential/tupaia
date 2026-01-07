@@ -71,7 +71,7 @@ const getAllowedCountries = async (
   project: ProjectRecord,
   isPublic: boolean,
   accessPolicy: AccessPolicy,
-) => {
+): Promise<Entity['code'][]> => {
   const rootEntity = await models.entity.findById(rootEntityId);
 
   if (!project.entity_hierarchy_id) {
