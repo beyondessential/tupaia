@@ -16,11 +16,10 @@ import winston from 'winston';
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
 import {
   API_CLIENT_PERMISSIONS,
-  FACT_CURRENT_USER_ID,
-  FACT_LAST_SUCCESSFUL_SYNC_PULL,
   PUBLIC_USER_EMAIL,
   PUBLIC_USER_ID,
   SyncDirections,
+  SyncFact,
   USER_PREFERENCES_FIELDS,
 } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
@@ -406,19 +405,21 @@ export class UserModel extends DatabaseModel {
     };
   }
 
-  sanitizeForCentralServer = (data) => {
+  sanitizeForCentralServer = data => {
     const { password_hash, access_policy, ...rest } = data;
     return rest;
-  }
+  };
 
-  filterSyncForClient = async (changes) => {
-    const currentUserId = await this.otherModels.localSystemFact.get(FACT_CURRENT_USER_ID);
-    const lastSuccessfulSyncPull = await this.otherModels.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL);
+  filterSyncForClient = async changes => {
+    const currentUserId = await this.otherModels.localSystemFact.get(SyncFact.CURRENT_USER_ID);
+    const lastSuccessfulSyncPull = await this.otherModels.localSystemFact.get(
+      SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+    );
 
     if (lastSuccessfulSyncPull === undefined || lastSuccessfulSyncPull === -1) {
       return changes.filter(change => change.data.id !== currentUserId);
     }
 
     return changes;
-  }
+  };
 }

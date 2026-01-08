@@ -1,10 +1,5 @@
 import { SqlQuery } from '@tupaia/database';
-import {
-  FACT_CURRENT_SYNC_TICK,
-  FACT_LAST_SUCCESSFUL_SYNC_PULL,
-  FACT_LAST_SUCCESSFUL_SYNC_PUSH,
-  FACT_PROJECTS_IN_SYNC,
-} from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
 
 import { DatatrakWebModelRegistry } from '../types';
 
@@ -17,8 +12,8 @@ const clearTables = async (
 ) => {
   const tablesToTruncate = (await models.database.executeSql(
     `
-    SELECT tablename AS table_name 
-    FROM pg_tables 
+    SELECT tablename AS table_name
+    FROM pg_tables
     WHERE schemaname = ?
     ${tablesToKeep.length > 0 ? `AND tablename NOT IN ${SqlQuery.record(tablesToKeep)}` : ''}
   `,
@@ -33,10 +28,10 @@ const clearTables = async (
 };
 
 const clearLocalSystemFacts = async (models: DatatrakWebModelRegistry) => {
-  await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, -1);
-  await models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, -1);
-  await models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, -1);
-  await models.localSystemFact.delete({ key: FACT_PROJECTS_IN_SYNC });
+  await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, -1);
+  await models.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PULL, -1);
+  await models.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PUSH, -1);
+  await models.localSystemFact.delete({ key: SyncFact.PROJECTS_IN_SYNC });
 };
 
 export const clearDatabase = async (models: DatatrakWebModelRegistry) => {

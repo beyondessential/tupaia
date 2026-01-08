@@ -1,5 +1,5 @@
 import { DatabaseModel, LocalSystemFactModel } from '@tupaia/database';
-import { FACT_LAST_SUCCESSFUL_SYNC_PUSH } from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
 import { isNullish } from '@tupaia/tsutils';
 
 import { assertModelsForPush } from './assertModelsForPush';
@@ -16,7 +16,7 @@ export const countOutgoingChanges = async (
 ) => {
   assertModelsForPush(models);
 
-  const lastSuccessfulSyncPush = await localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PUSH);
+  const lastSuccessfulSyncPush = await localSystemFact.get(SyncFact.LAST_SUCCESSFUL_SYNC_PUSH);
   const pushSince = isNullish(lastSuccessfulSyncPush) ? -1 : parseInt(lastSuccessfulSyncPush, 10);
   const changeCounts = await Promise.all(
     models.map(model => countChangesForModel(model, pushSince)),

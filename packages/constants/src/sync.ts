@@ -30,12 +30,14 @@ export const SYNC_STREAM_MESSAGE_KIND = {
 } as const;
 
 // Internal sync facts
-export const FACT_CURRENT_SYNC_TICK = 'currentSyncTick';
-export const FACT_LAST_SUCCESSFUL_SYNC_PULL = 'lastSuccessfulSyncPull';
-export const FACT_LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush';
-export const FACT_LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate';
-export const FACT_SYNC_TRIGGER_CONTROL = 'syncTrigger';
-export const FACT_PROJECTS_IN_SYNC = 'projectsInSync';
-export const FACT_CURRENT_USER_ID = 'currentUserId';
-export const FACT_PREVIOUSLY_LOGGED_IN_USER_ID = 'previouslyLoggedInUserId';
-export const FACT_DEVICE_ID = 'deviceId';
+export enum SyncFact {
+  CURRENT_SYNC_TICK = 'currentSyncTick',
+  LAST_SUCCESSFUL_SYNC_PULL = 'lastSuccessfulSyncPull',
+  LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush',
+  LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate',
+  SYNC_TRIGGER_CONTROL = 'syncTrigger',
+  PROJECTS_IN_SYNC = 'projectsInSync',
+  CURRENT_USER_ID = 'currentUserId',
+  PREVIOUSLY_LOGGED_IN_USER_ID = 'previouslyLoggedInUserId',
+  DEVICE_ID = 'deviceId',
+}

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { ensure } from '@tupaia/tsutils';
-import { FACT_CURRENT_USER_ID, FACT_PREVIOUSLY_LOGGED_IN_USER_ID } from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
 
 import { gaEvent, useFromLocation } from '../../utils';
 import { ROUTES } from '../../constants';
@@ -46,7 +46,7 @@ export const useLogin = () => {
 
           // Clear database if the user has logged in with a different user
           const previouslyLoggedInUserId = await ensuredModels.localSystemFact.get(
-            FACT_PREVIOUSLY_LOGGED_IN_USER_ID,
+            SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID,
           );
           if (previouslyLoggedInUserId && previouslyLoggedInUserId !== user.id) {
             await clearDatabase(ensuredModels);
@@ -59,12 +59,12 @@ export const useLogin = () => {
           }
 
           // Set current user id
-          await ensuredModels.localSystemFact.set(FACT_CURRENT_USER_ID, user.id);
+          await ensuredModels.localSystemFact.set(SyncFact.CURRENT_USER_ID, user.id);
         }
 
         await queryClient.invalidateQueries();
 
-        // Do not remove the isLoggedIn query, 
+        // Do not remove the isLoggedIn query,
         // as it is used to determine if the user is logged in and should be kept to be invalidated
         queryClient.removeQueries({
           predicate: query => query.queryKey[0] !== 'isLoggedIn',

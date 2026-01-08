@@ -1,5 +1,9 @@
-import { FACT_PROJECTS_IN_SYNC, SyncDirections } from '@tupaia/constants';
+/**
+ * @typedef {import('@tupaia/constants').SyncFact} SyncFact
+ * @typedef {import('@tupaia/types').Project} Project
+ */
 
+import { SyncFact, SyncDirections } from '@tupaia/constants';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -16,11 +20,19 @@ export class LocalSystemFactModel extends DatabaseModel {
     return LocalSystemFactRecord;
   }
 
+  /**
+   * @param {SyncFact} key
+   * @returns {Promise<string | undefined>}
+   */
   async get(key) {
     const result = await this.findOne({ key });
     return result?.value;
   }
 
+  /**
+   * @param {SyncFact} key
+   * @param {string} value
+   */
   async set(key, value) {
     const existing = await this.findOne({ key });
     if (existing) {
@@ -30,6 +42,11 @@ export class LocalSystemFactModel extends DatabaseModel {
     }
   }
 
+  /**
+   * @param {SyncFact} key
+   * @param {number} amount
+   * @returns {Promise<string>}
+   */
   async incrementValue(key, amount = 1) {
     const rowsAffected = await this.database.executeSql(
       `
@@ -53,14 +70,15 @@ export class LocalSystemFactModel extends DatabaseModel {
     return fact.value;
   }
 
+  /** @param {Project['id']} projectId */
   async addProjectForSync(projectId) {
     if (!projectId) {
       throw new Error('Project ID is required');
     }
 
-    const existing = await this.findOne({ key: FACT_PROJECTS_IN_SYNC });
+    const existing = await this.findOne({ key: SyncFact.PROJECTS_IN_SYNC });
     const syncedProjects = existing?.value ? JSON.parse(existing.value) : [];
     const newSyncedProjects = [...new Set([...syncedProjects, projectId])];
-    await this.set(FACT_PROJECTS_IN_SYNC, JSON.stringify(newSyncedProjects));
+    await this.set(SyncFact.PROJECTS_IN_SYNC, JSON.stringify(newSyncedProjects));
   }
 }

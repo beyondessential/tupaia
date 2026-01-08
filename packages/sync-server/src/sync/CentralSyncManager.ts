@@ -22,7 +22,7 @@ import {
   bumpSyncTickForRepull,
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
-import { SyncTickFlags, FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
+import { SyncTickFlags, SyncFact } from '@tupaia/constants';
 import { generateId } from '@tupaia/database';
 import { SyncServerStartSessionRequest, SyncSession } from '@tupaia/types';
 import { AccessPolicy } from '@tupaia/access-policy';
@@ -85,7 +85,7 @@ export class CentralSyncManager {
     // "tick" part to be unique to the requesting client, and any changes made directly on the
     // central server will be recorded as updated at the "tock", avoiding any direct changes
     // (e.g. imports) being missed by a client that is at the same sync tick
-    const tock = await models.localSystemFact.incrementValue(FACT_CURRENT_SYNC_TICK, 2);
+    const tock = await models.localSystemFact.incrementValue(SyncFact.CURRENT_SYNC_TICK, 2);
     return { tick: tock - 1, tock };
   }
 
@@ -507,7 +507,7 @@ export class CentralSyncManager {
       await this.waitForPendingEdits(currentTick);
 
       const previouslyUpToTick =
-        (await this.models.localSystemFact.get(FACT_LOOKUP_UP_TO_TICK)) || -1;
+        (await this.models.localSystemFact.get(SyncFact.LOOKUP_UP_TO_TICK)) || -1;
 
       await debugObject.addInfo({ since: previouslyUpToTick });
 
@@ -538,7 +538,7 @@ export class CentralSyncManager {
           log.debug('CentralSyncManager.updateLookupTable()', {
             lastSuccessfulLookupTableUpdate: currentTick,
           });
-          await transactingModels.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, currentTick);
+          await transactingModels.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, currentTick);
 
           return updatedCount;
         },
