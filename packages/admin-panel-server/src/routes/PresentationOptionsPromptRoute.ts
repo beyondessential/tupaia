@@ -20,7 +20,7 @@ function fence(obj: any) {
 function unfence(str: string) {
   const trimmed = str.trim();
   const isFenced = trimmed.startsWith(openingFence) && trimmed.endsWith(closingFence);
-  return isFenced ? trimmed.slice(openingFence.length, -closingFence.length) : str;
+  return isFenced ? trimmed.slice(openingFence.length, -closingFence.length) : trimmed;
 }
 
 export class PresentationOptionsPromptRoute extends Route<PresentationOptionsPromptRequest> {
