@@ -22,7 +22,7 @@ export class LocalSystemFactModel extends DatabaseModel {
 
   /**
    * @param {SyncFact} key
-   * @returns {Promise<string | undefined>}
+   * @returns {Promise<string | null | undefined>}
    */
   async get(key) {
     const result = await this.findOne({ key });
@@ -31,7 +31,7 @@ export class LocalSystemFactModel extends DatabaseModel {
 
   /**
    * @param {SyncFact} key
-   * @param {string} value
+   * @param {string | null} value
    */
   async set(key, value) {
     const existing = await this.findOne({ key });

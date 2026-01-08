@@ -380,7 +380,7 @@ export class ClientSyncManager {
     // use the new unique sync tick for any changes from now on so that any records that are created
     // or updated even mid way through this sync, are marked using the new tick and will be captured
     // in the next push
-    await this.models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, newSyncClockTime);
+    await this.models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, newSyncClockTime.toString());
     log.debug('ClientSyncManager.updatedLocalSyncClockTime', { newSyncClockTime });
 
     await waitForPendingEditsUsingSyncTick(this.database, currentSyncClockTime);
@@ -412,7 +412,10 @@ export class ClientSyncManager {
       );
     }
 
-    await this.models.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PUSH, currentSyncClockTime);
+    await this.models.localSystemFact.set(
+      SyncFact.LAST_SUCCESSFUL_SYNC_PUSH,
+      currentSyncClockTime.toString(),
+    );
     log.debug('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
   }
 
@@ -502,7 +505,10 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return transactingModels.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+      return transactingModels.localSystemFact.set(
+        SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+        pullUntil.toString(),
+      );
     });
   }
 
@@ -549,7 +555,10 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return transactingModels.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+      return transactingModels.localSystemFact.set(
+        SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+        pullUntil.toString(),
+      );
     });
   }
 }

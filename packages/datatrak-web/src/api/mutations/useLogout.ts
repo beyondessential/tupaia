@@ -14,7 +14,10 @@ const logoutOnline = async () => {
 
 const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) => {
   const currentUserId = await models.localSystemFact.get(SyncFact.CURRENT_USER_ID);
-  await models.localSystemFact.set(SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID, currentUserId);
+  if (currentUserId) {
+    // currentUserId should always be defined here; this is mostly to satisfy TypeScript
+    await models.localSystemFact.set(SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID, currentUserId);
+  }
   await models.localSystemFact.delete({ key: SyncFact.CURRENT_USER_ID });
 };
 

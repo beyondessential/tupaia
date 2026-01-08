@@ -28,9 +28,9 @@ const clearTables = async (
 };
 
 const clearLocalSystemFacts = async (models: DatatrakWebModelRegistry) => {
-  await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, -1);
-  await models.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PULL, -1);
-  await models.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PUSH, -1);
+  await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '-1');
+  await models.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PULL, '-1');
+  await models.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PUSH, '-1');
   await models.localSystemFact.delete({ key: SyncFact.PROJECTS_IN_SYNC });
 };
 
