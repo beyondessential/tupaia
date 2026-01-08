@@ -1,4 +1,4 @@
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
 import { PermissionsError } from '@tupaia/utils';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
@@ -67,24 +67,17 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
       permissionGroupId => countryIdsByPermissionGroupId[permissionGroupId].includes(countryId),
     );
 
-    if (permissionGroupsForCountry.length === 0) {
-      dbConditions.id = {
-        comparator: '=',
-        comparisonValue: null,
-      }; // Return no results because we don't have access to any permission groups for this country
-    } else
-      dbConditions[RAW] = {
-        sql: `
-      (
-        (
-          ARRAY[?]
-          <@
-          survey.country_ids
-        )
-        AND survey.permission_group_id IN (${permissionGroupsForCountry.map(() => '?').join(',')})
-      )`,
-        parameters: [countryId, ...permissionGroupsForCountry],
-      };
+    dbConditions[RAW] =
+      permissionGroupsForCountry.length === 0
+        ? // Return no results because we don’t have access to any permission groups for this country
+          { sql: 'FALSE' }
+        : {
+            sql: `(
+              ARRAY[?] <@ survey.country_ids
+              AND survey.permission_group_id IN ${SqlQuery.record(permissionGroupsForCountry)}
+            )`,
+            parameters: [countryId, ...permissionGroupsForCountry],
+          };
   }
   return dbConditions;
 };

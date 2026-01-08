@@ -254,20 +254,15 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
-    const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
-
+    const entries = Object.entries(countryIdsByPermissionGroup);
     return {
-      sql: `(${Object.entries(countryIdsByPermissionGroup)
+      sql: `(${entries
         .map(([, countryIds]) => {
-          return `
-          (
-            permission_group_id = ? AND
-            ${SqlQuery.array(countryIds, 'TEXT')} && country_ids
-          )
-        `;
+          return `(permission_group_id = ? AND ${SqlQuery.array(countryIds, 'TEXT')} && country_ids)`;
         })
         .join(' OR ')})`,
-      parameters: params,
+      /** @example ['Public', 'id1', 'id2', 'Admin', 'id3'] */
+      parameters: entries.flat(2),
     };
   }
 
