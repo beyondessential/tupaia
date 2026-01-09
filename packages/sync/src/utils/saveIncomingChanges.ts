@@ -52,20 +52,16 @@ export const saveChangesForModel = async (
   const sanitizeData = (d: ModelSanitizeArgs) =>
     isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
 
-  // split changes into create, update
   const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
   const idsForIncomingRecords = incomingRecords.map(r => r.id);
+
   // add all records that already exist in the db to the list to be updated
-  const existingRecords = await model.findManyById(idsForIncomingRecords);
-
-  const idToExistingRecord: Record<string, (typeof existingRecords)[number]> = Object.fromEntries(
-    existingRecords.map((e: any) => [e.id, e]),
+  const existingRecordIds = new Set(
+    (await model.findManyById(idsForIncomingRecords)).map(r => r.id),
   );
 
-  const [createChanges, updateChanges] = partition(
-    changes,
-    c => idToExistingRecord[c.data.id] === undefined,
-  );
+  // split changes into create, update
+  const [createChanges, updateChanges] = partition(changes, c => !existingRecordIds.has(c.data.id));
   const recordsForCreate = createChanges.map(c => sanitizeData(c.data));
   const recordsForUpdate = updateChanges.map(c => sanitizeData(c.data));
 
