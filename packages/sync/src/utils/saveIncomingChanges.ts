@@ -1,11 +1,11 @@
-import { groupBy } from 'es-toolkit';
+import { groupBy, partition } from 'es-toolkit';
 import winston from 'winston';
 
 import {
   BaseDatabase,
   DatabaseModel,
-  PublicSchemaRecordName,
   ModelRegistry,
+  PublicSchemaRecordName,
 } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 import { ModelSanitizeArgs, SyncSnapshotAttributes } from '../types';
@@ -61,18 +61,13 @@ export const saveChangesForModel = async (
   const idToExistingRecord: Record<string, (typeof existingRecords)[number]> = Object.fromEntries(
     existingRecords.map((e: any) => [e.id, e]),
   );
-  const recordsForCreate = [];
-  const recordsForUpdate = [];
 
-  for (const change of changes) {
-    const { data } = change;
-
-    if (idToExistingRecord[data.id] === undefined) {
-      recordsForCreate.push(sanitizeData(data));
-    } else {
-      recordsForUpdate.push(sanitizeData(data));
-    }
-  }
+  const [createChanges, updateChanges] = partition(
+    changes,
+    c => idToExistingRecord[c.data.id] === undefined,
+  );
+  const recordsForCreate = createChanges.map(c => sanitizeData(c.data));
+  const recordsForUpdate = updateChanges.map(c => sanitizeData(c.data));
 
   // run each import process
   winston.debug(`Sync: saveIncomingChanges for ${model.databaseRecord}: Creating new records`, {
