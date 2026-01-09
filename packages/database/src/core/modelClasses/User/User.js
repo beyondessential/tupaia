@@ -416,7 +416,7 @@ export class UserModel extends DatabaseModel {
       SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
     );
 
-    if (lastSuccessfulSyncPull === undefined || lastSuccessfulSyncPull === -1) {
+    if (lastSuccessfulSyncPull === undefined || lastSuccessfulSyncPull === '-1') {
       return changes.filter(change => change.data.id !== currentUserId);
     }
 
