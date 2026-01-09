@@ -410,8 +410,14 @@ export class UserModel extends DatabaseModel {
     return rest;
   };
 
+  /**
+   * @param {SyncSnapshotAttributes} changes
+   * @returns {Promise<SyncSnapshotAttributes>}
+   */
   filterSyncForClient = async changes => {
+    /** @type {string | null | undefined} */
     const currentUserId = await this.otherModels.localSystemFact.get(SyncFact.CURRENT_USER_ID);
+    /** @type {string | null | undefined} */
     const lastSuccessfulSyncPull = await this.otherModels.localSystemFact.get(
       SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
     );
