@@ -178,7 +178,7 @@ export class DatabaseModel {
   }
 
   async getDbConditions(dbConditions = {}) {
-    const fieldNames = await this.fetchFieldNames();
+    const fieldNames = new Set(await this.fetchFieldNames());
     const fullyQualifiedConditions = {};
 
     const whereClauses = Object.entries(dbConditions);
@@ -199,7 +199,7 @@ export class DatabaseModel {
           fieldSelector = customSelector;
         }
 
-        const fullyQualifiedField = fieldNames.includes(field) ? fieldSelector : field;
+        const fullyQualifiedField = fieldNames.has(field) ? fieldSelector : field;
         fullyQualifiedConditions[fullyQualifiedField] = value;
       }
     }
@@ -293,8 +293,8 @@ export class DatabaseModel {
   }
 
   async checkFieldNamesExist(fields) {
-    const fieldNames = await this.fetchFieldNames();
-    return fields.every(field => fieldNames.includes(field));
+    const fieldNames = new Set(await this.fetchFieldNames());
+    return fields.every(field => fieldNames.has(field));
   }
 
   async all(customQueryOptions = {}) {
