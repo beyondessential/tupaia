@@ -1,7 +1,7 @@
-import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
-import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
+import { DatabaseError, NotImplementedError, reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from './BaseDatabase';
 import { SCHEMA_NAMES } from './constants';
+import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
   otherModels = {};
@@ -102,10 +102,13 @@ export class DatabaseModel {
 
   /**
    * This method must be overridden by every subclass, so that the model knows what DatabaseRecord to generate when returning results
+   * @abstract
    * @returns {*} DatabaseRecordClass
    */
   get DatabaseRecordClass() {
-    throw new TypeError('get DatabaseRecordClass was called on object that has not implemented it');
+    throw new NotImplementedError(
+      'get DatabaseRecordClass was called on object that has not implemented it',
+    );
   }
 
   get databaseRecord() {
