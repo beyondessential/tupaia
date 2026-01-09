@@ -123,7 +123,11 @@ export class DatabaseModel {
     };
   }
 
-  // A helper function to ensure that we're using fully qualified column names to avoid ambiguous references when joins are being used
+  /**
+   * A helper function to ensure that we're using fully qualified column names to avoid ambiguous references when joins are being used
+   * @param {string} column
+   * @returns {`${string}.${string}`}
+   */
   fullyQualifyColumn(column) {
     if (column.includes('.')) {
       // Already fully qualified
