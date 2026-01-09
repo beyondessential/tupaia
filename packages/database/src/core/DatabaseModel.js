@@ -113,6 +113,7 @@ export class DatabaseModel {
     return this.DatabaseRecordClass.databaseRecord;
   }
 
+  /** @returns {MultiJoinItem[]} */
   get joins() {
     return this.DatabaseRecordClass.joins;
   }
