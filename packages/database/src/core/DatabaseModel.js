@@ -433,15 +433,15 @@ export class DatabaseModel {
     return this.cache[cacheKey];
   }
 
-  sanitizeForCentralServer = (data) => {
+  sanitizeForCentralServer = data => {
     return data;
-  }
+  };
 
-  sanitizeForClient = (data) => {
+  sanitizeForClient = data => {
     return data;
-  }
+  };
 
-  filterSyncForClient = async (changes) => {
+  filterSyncForClient = async changes => {
     return changes;
-  }
+  };
 }
