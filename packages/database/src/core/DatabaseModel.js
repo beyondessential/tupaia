@@ -1,3 +1,5 @@
+import { uniq } from 'es-toolkit';
+
 import { DatabaseError, NotImplementedError, reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from './BaseDatabase';
 import { SCHEMA_NAMES } from './constants';
@@ -90,12 +92,8 @@ export class DatabaseModel {
   async fetchFieldNames() {
     if (!this.fieldNames) {
       const schema = await this.fetchSchema();
-
       const customColumnSelectors = this.customColumnSelectors || {};
-
-      this.fieldNames = [
-        ...new Set([...Object.keys(schema), ...Object.keys(customColumnSelectors)]),
-      ];
+      this.fieldNames = uniq([...Object.keys(schema), ...Object.keys(customColumnSelectors)]);
     }
     return this.fieldNames;
   }
