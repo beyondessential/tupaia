@@ -71,7 +71,7 @@ const getAllowedCountries = async (
   project: ProjectRecord,
   isPublic: boolean,
   accessPolicy: AccessPolicy,
-) => {
+): Promise<Entity['code'][]> => {
   const rootEntity = await models.entity.findById(rootEntityId);
 
   if (!project.entity_hierarchy_id) {
@@ -136,12 +136,7 @@ export const getEntityDescendants = async ({
   user: CurrentUser;
   accessPolicy: AccessPolicy;
 }) => {
-  const {
-    filter,
-    searchString,
-    fields = DEFAULT_FIELDS,
-    pageSize = DEFAULT_PAGE_SIZE,
-  } = params ?? {};
+  const { filter, searchString, fields = DEFAULT_FIELDS, pageSize = DEFAULT_PAGE_SIZE } = params;
   const { countryCode, grandparentId, parentId, type } = filter ?? {};
 
   const entityFilter = buildEntityFilter(params);

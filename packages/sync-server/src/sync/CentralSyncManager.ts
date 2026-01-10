@@ -111,7 +111,7 @@ export class CentralSyncManager {
         session.id,
         'Session marked as completed due to its device reconnecting',
       );
-      const durationMs = performance.now() - session.start_time;
+      const durationMs = Date.now() - session.start_time;
 
       log.info('StaleSyncSessionCleaner.closedReconnectedSession', {
         sessionId: session.id,
@@ -645,9 +645,11 @@ export class CentralSyncManager {
   }
 
   validateIncomingChanges(changes: SyncSnapshotAttributes[]) {
-    const allowedPushTables = getModelsForPush(this.models.getModels()).map(m => m.databaseRecord);
     const incomingTables = Object.keys(groupBy(changes, 'recordType'));
-    const invalidTables = incomingTables.filter(t => !allowedPushTables.includes(t));
+    const allowedPushTables = new Set(
+      getModelsForPush(this.models.getModels()).map(m => m.databaseRecord),
+    );
+    const invalidTables = incomingTables.filter(t => !allowedPushTables.has(t));
 
     if (invalidTables.length > 0) {
       throw new Error(`Invalid tables in incoming changes: ${invalidTables.join(', ')}`);

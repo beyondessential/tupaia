@@ -30,16 +30,36 @@ import asyncio
 from helpers.clone import clone_volume_into_instance
 from helpers.utilities import find_instances, get_tag, start_instance, stop_instance
 
-loop = asyncio.get_event_loop()
+
+async def _refresh_instance(instance):
+    print(f"Refreshing instance {instance['InstanceId']}...")
+    is_running = instance["State"]["Name"] == "running"
+
+    if is_running:
+        await stop_instance(instance)
+
+    await clone_volume_into_instance(
+        instance, get_tag(instance, "DeploymentType"), get_tag(instance, "ClonedFrom")
+    )
+
+    if is_running:
+        await start_instance(instance)
+
+    print(f"Refreshed instance {instance['InstanceId']}")
+
+
+async def _refresh_instances(instances):
+    tasks = [_refresh_instance(instance) for instance in instances]
+    return await asyncio.gather(*tasks)
 
 
 def refresh_cloned_servers(event):
     filters = [{"Name": "tag-key", "Values": ["ClonedFrom"]}]
     if "ClonedFrom" in event:
-        print("Refreshing instances cloned from " + event["ClonedFrom"])
+        print(f"Refreshing instances cloned from {event["ClonedFrom"]}")
         filters.append({"Name": "tag:ClonedFrom", "Values": [event["ClonedFrom"]]})
     if "DeploymentName" in event:
-        print("Refreshing the " + event["DeploymentName"] + " clone")
+        print(f"Refreshing the {event["DeploymentName"]} clone")
         filters.append(
             {"Name": "tag:DeploymentName", "Values": [event["DeploymentName"]]}
         )
@@ -53,49 +73,12 @@ def refresh_cloned_servers(event):
 
     instances = running_instances + stopped_instances
 
-    if len(instances) == 0:
+    if not instances:
         print("No clones to refresh")
         return
 
-    if len(running_instances) > 0:
-        stop_tasks = sum(
-            [
-                [
-                    asyncio.ensure_future(stop_instance(instance))
-                    for instance in running_instances
-                ]
-            ],
-            [],
-        )
-        loop.run_until_complete(asyncio.wait(stop_tasks))
-
-    clone_tasks = sum(
-        [
-            [
-                asyncio.ensure_future(
-                    clone_volume_into_instance(
-                        instance,
-                        get_tag(instance, "DeploymentType"),
-                        get_tag(instance, "ClonedFrom"),
-                    )
-                )
-                for instance in instances
-            ]
-        ],
-        [],
+    print(
+        f"Refreshing {len(instances)} clones ({len(running_instances)} running + {len(stopped_instances)} stopped)"
     )
-    loop.run_until_complete(asyncio.wait(clone_tasks))
-
-    if len(running_instances) > 0:
-        start_tasks = sum(
-            [
-                [
-                    asyncio.ensure_future(start_instance(instance))
-                    for instance in running_instances
-                ]
-            ],
-            [],
-        )
-        loop.run_until_complete(asyncio.wait(start_tasks))
-
-    print("Finished refreshing all clones")
+    _ = asyncio.run(_refresh_instances(instances))
+    print(f"Refreshed {len(instances)} clones")
