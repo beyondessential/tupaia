@@ -869,4 +869,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       groupBy: ['entity.id'],
     };
   }
+
+  sanitizeForCentralServer = data => {
+    const { parent_id, ...rest } = data;
+    // Only include parent_id when syncing entities up to central if parent_id exists
+    return parent_id ? data : rest;
+  };
 }

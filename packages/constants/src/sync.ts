@@ -1,7 +1,7 @@
 export enum SyncTickFlags {
   INCOMING_FROM_CENTRAL_SERVER = -1,
   LAST_UPDATED_ELSEWHERE = -999,
-  SYNC_LOOKUP_PLACEHOLDER = -1,
+  LOOKUP_PENDING_UPDATE = -2,
 }
 
 // Important! Syncing tables should also be added to SYNCING_TABLES in @tupaia/database/initSyncComponents.js

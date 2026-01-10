@@ -235,6 +235,6 @@ export const updateSyncLookupPendingRecords = async (
       SET updated_at_sync_tick = :currentTick
       WHERE updated_at_sync_tick = :pendingUpdateSyncTick;
     `,
-    { currentTick, pendingUpdateSyncTick: SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER },
+    { currentTick, pendingUpdateSyncTick: SyncTickFlags.LOOKUP_PENDING_UPDATE },
   );
 };
