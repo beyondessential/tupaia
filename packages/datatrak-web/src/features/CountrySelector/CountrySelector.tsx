@@ -78,9 +78,9 @@ export const CountrySelector = ({ countries, selectedCountry, onChange }: Countr
           <Pin style={{ marginInlineEnd: '0.25rem' }} />
           <Select
             {...commonProps}
-            placeholder="Select a country"
+            placeholder="Select country"
             SelectProps={{
-              'aria-label': 'Select a country',
+              'aria-label': 'Select country',
             }}
           />
         </>
