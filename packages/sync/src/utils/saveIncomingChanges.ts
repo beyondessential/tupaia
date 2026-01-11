@@ -57,7 +57,7 @@ export const saveChangesForModel = async (
 
   // add all records that already exist in the db to the list to be updated
   const existingRecordIds = new Set(
-    (await model.findManyById(idsForIncomingRecords)).map(r => r.id),
+    (await model.findManyById(idsForIncomingRecords, {}, { columns: ['id'] })).map(r => r.id),
   );
 
   // split changes into create, update
