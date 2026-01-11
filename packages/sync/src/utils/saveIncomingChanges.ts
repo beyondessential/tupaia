@@ -52,8 +52,7 @@ export const saveChangesForModel = async (
   const sanitizeData = (d: ModelSanitizeArgs) =>
     isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
 
-  const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
-  const idsForIncomingRecords = incomingRecords.map(r => r.id);
+  const idsForIncomingRecords = changes.filter(c => c.data.id).map(c => c.data.id);
 
   // add all records that already exist in the db to the list to be updated
   const existingRecordIds = new Set(
