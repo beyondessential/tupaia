@@ -485,12 +485,12 @@ export class ClientSyncManager {
 
   async pullInitialSync(sessionId: string, totalToPull: number, pullUntil: number) {
     let totalSaved = 0;
-    const progressCallback = (incrementalSaved: number) => {
+    const progressCallback = (incrementalSaved: number, table?: string) => {
       totalSaved += Number(incrementalSaved);
       this.updateProgress(
         totalToPull,
         totalSaved,
-        `Saving changes (${formatFraction(totalSaved, totalToPull)})`,
+        `Saving changes ${table ? `for ${table} ` : ''}(${formatFraction(totalSaved, totalToPull)})`,
       );
     };
 
