@@ -69,6 +69,7 @@ export class ExternalDatabaseConnectionModel extends DatabaseModel {
         database,
         user,
         password,
+        ssl: { rejectUnauthorized: false },
       },
     });
     this.activeConnections[connectionId] = connection;
