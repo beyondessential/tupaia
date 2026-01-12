@@ -1,3 +1,14 @@
+/**
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').Entity} Entity
+ * @typedef {import('@tupaia/types').User} User
+ * @typedef {import('@tupaia/types').UserAccountPreferences} UserAccountPreferences
+ * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
+ * @typedef {import('../Entity').EntityRecord} EntityRecord
+ * @typedef {import('../PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
+ * @typedef {import('../UserEntityPermission').UserEntityPermissionRecord} UserEntityPermissionRecord
+ */
+
 import { verify } from '@node-rs/argon2';
 import winston from 'winston';
 
@@ -123,16 +134,16 @@ export class UserRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('../UserEntityPermission').UserEntityPermissionRecord[]>}
+   * @returns {Promise<UserEntityPermissionRecord[]>}
    */
   async getEntityPermissions() {
     return await this.otherModels.userEntityPermission.find({ user_id: this.id });
   }
 
   /**
-   * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
+   * @param {Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
-   * @returns {Promise<(import('../Entity').EntityRecord & { isRecent: true })[]>}
+   * @returns {Promise<(Entity & { isRecent: true })[]>}
    */
   async getRecentEntities(countryCode, type, options) {
     const entityIds = this.getRecentEntityIds(countryCode, type);
@@ -142,9 +153,9 @@ export class UserRecord extends DatabaseRecord {
   }
 
   /**
-   * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
+   * @param {Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
-   * @returns {import('@tupaia/types').Entity['id'][]}
+   * @returns {Entity['id'][]}
    */
   getRecentEntityIds(countryCode, type) {
     if (!countryCode || !type) {
@@ -171,9 +182,9 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {import('../../ModelRegistry').ModelRegistry} models
-   * @param {import('@tupaia/types').User['id']} userId
-   * @param {import('@tupaia/types').Entity['id'][]} entityIds
+   * @param {ModelRegistry} models
+   * @param {User['id']} userId
+   * @param {Entity['id'][]} entityIds
    * @returns {Promise}
    */
   static async addRecentEntities(models, userId, entityIds) {
@@ -223,6 +234,10 @@ export class UserModel extends DatabaseModel {
     NEW_USER: 'new_user',
   };
 
+  /**
+   * @param {User['id'][]} userIds
+   * @returns {Promise<{id: User['id'], name: string}[]>}
+   */
   async getFilteredUsers(searchTerm, userIds) {
     const usersFilter = {
       email: {
@@ -258,8 +273,8 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {import('@tupaia/types').Country['code']} countryCode
-   * @param {import('./PermissionGroup').PermissionGroupRecord} permissionGroup
+   * @param {Country['code']} countryCode
+   * @param {PermissionGroupRecord} permissionGroup
    * @param {string | undefined} [searchTerm]
    * @returns {Promise<{id: string, name: string}[]>}
    */
@@ -284,6 +299,7 @@ export class UserModel extends DatabaseModel {
     ]);
 
     // get the user entity permissions for the permission group and its ancestors
+    /** @type {UserEntityPermissionRecord[]} */
     const userEntityPermissions = await this.otherModels.userEntityPermission.find({
       permission_group_id: permissionGroupWithAncestors.map(p => p.id),
       entity_id: entity.id,
@@ -294,6 +310,9 @@ export class UserModel extends DatabaseModel {
     return await this.getFilteredUsers(searchTerm, userIds);
   }
 
+  /**
+   * @param {User['id']} userId
+   */
   async getUpdatedUserPreferenceFields(userId, updatedFields) {
     const updatedUserPreferences = Object.entries(updatedFields).filter(([key]) =>
       USER_PREFERENCES_FIELDS.includes(key),
@@ -305,9 +324,11 @@ export class UserModel extends DatabaseModel {
         delete updatedFields[key];
       });
 
+      /** @type {UserRecord} */
       const userRecord = await this.findById(userId);
       const { preferences = {} } = userRecord;
 
+      /** @type {UserAccountPreferences} */
       const updatedPreferenceFields = updatedUserPreferences.reduce((obj, [key, value]) => {
         obj[key] = value;
         return obj;
@@ -327,10 +348,10 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {import('@tupaia/types').User['id']} userId
-   * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
+   * @param {User['id']} userId
+   * @param {Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
-   * @returns {Promise<import('@tupaia/types').Entity['id'][]>} Entity IDs
+   * @returns {Promise<Entity['id'][]>} Entity IDs
    */
   async getRecentEntityIds(userId, countryCode, type) {
     const user = ensure(await this.findById(userId), `No user exists with ID ${userId}`);
