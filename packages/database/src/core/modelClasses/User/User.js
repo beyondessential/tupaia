@@ -33,7 +33,7 @@ import { addRecentEntities } from './addRecentEntities';
 
 const DEFAULT_PAGE_SIZE = 100;
 
-const USERS_EXCLUDED_FROM_LIST = [
+const USERS_EXCLUDED_FROM_LIST = /** @type {const} */ ([
   'edmofro@gmail.com', // Edwin
   'kahlinda.mahoney@gmail.com', // Kahlinda
   'lparish1980@gmail.com', // Lewis
@@ -46,9 +46,13 @@ const USERS_EXCLUDED_FROM_LIST = [
   'unicef.laos.edu@gmail.com', // Laos Schools Data Collector
   'tamanu-server@tupaia.org', // Tamanu Server
   'public@tupaia.org', // Public User
-];
+]);
 
-const INTERNAL_EMAIL_DOMAINS = ['tupaia.org', 'bes.au', 'beyondessential.com.au'];
+const INTERNAL_EMAIL_DOMAINS = /** @type {const} */ ([
+  'bes.au',
+  'beyondessential.com.au',
+  'tupaia.org',
+]);
 
 export class UserRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ACCOUNT;
