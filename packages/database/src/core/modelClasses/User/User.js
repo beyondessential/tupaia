@@ -15,14 +15,14 @@ import winston from 'winston';
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
 import {
   API_CLIENT_PERMISSIONS,
-  SyncDirections,
-  PUBLIC_USER_EMAIL,
-  PUBLIC_USER_ID,
-  USER_PREFERENCES_FIELDS,
   FACT_CURRENT_USER_ID,
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
+  PUBLIC_USER_EMAIL,
+  PUBLIC_USER_ID,
+  SyncDirections,
+  USER_PREFERENCES_FIELDS,
 } from '@tupaia/constants';
-import { ensure, isNotNullish } from '@tupaia/tsutils';
+import { ensure } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
 import { DatabaseError } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
