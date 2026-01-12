@@ -404,7 +404,7 @@ export class ClientSyncManager {
     const outgoingChanges = await this.models.wrapInRepeatableReadTransaction(
       async transactingModels => {
         const modelsForPush = getModelsForPush(transactingModels.getModels());
-        return snapshotOutgoingChanges(modelsForPush, transactingModels.tombstone, pushSince);
+        return snapshotOutgoingChanges(modelsForPush, pushSince);
       },
     );
 

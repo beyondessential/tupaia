@@ -31,7 +31,7 @@ export const streamSnapshotData = async (
   sessionId: string,
   direction: SyncSessionDirectionValues,
 ) => {
-  const dependencyOrder = ['tombstone', ...(await getDependencyOrder(database))];
+  const dependencyOrder = await getDependencyOrder(database);
   const tableName = getSnapshotTableName(sessionId);
   const cursorName = getSnapshotTableCursorName(sessionId);
   const valuesSQL = dependencyOrder.map((name, index) => `('${name}', ${index + 1})`).join(',\n');

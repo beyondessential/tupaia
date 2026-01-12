@@ -63,7 +63,6 @@ export { SurveyScreenModel, SurveyScreenRecord } from './SurveyScreen';
 export { SurveyScreenComponentModel, SurveyScreenComponentRecord } from './SurveyScreenComponent';
 export { TaskModel, TaskRecord } from './Task';
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
-export { TombstoneModel, TombstoneRecord } from './Tombstone';
 export { UserModel, UserRecord } from './User';
 export {
   UserCountryAccessAttemptModel,
