@@ -439,6 +439,10 @@ export class DatabaseModel {
     return this.cache[cacheKey];
   }
 
+  clearCache() {
+    this.cache = {};
+  }
+
   sanitizeForCentralServer = data => {
     return data;
   };

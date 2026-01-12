@@ -163,4 +163,9 @@ export class ModelRegistry {
       });
     });
   }
+
+  clearCache() {
+    const models = this.getModels();
+    models.forEach(model => model.clearCache());
+  }
 }
