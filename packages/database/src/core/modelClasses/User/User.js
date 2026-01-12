@@ -2,6 +2,7 @@
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
  * @typedef {import('@tupaia/types').User} User
+ * @typedef {import('@tupaia/types').UserAccount} UserAccount
  * @typedef {import('@tupaia/types').UserAccountPreferences} UserAccountPreferences
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
  * @typedef {import('../Entity').EntityRecord} EntityRecord
@@ -182,7 +183,7 @@ export class UserModel extends DatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get excludedFieldsFromSync() {
-    return ['password_hash'];
+    return /** @type {const} */ (['password_hash']);
   }
 
   /**
@@ -362,6 +363,9 @@ export class UserModel extends DatabaseModel {
     return user.getRecentEntityIds(countryCode, type);
   }
 
+  /**
+   * @param {UserAccount} userData
+   */
   async transformUserData(userData, project = null, country = null) {
     const {
       id,
