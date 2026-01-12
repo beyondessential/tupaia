@@ -1,4 +1,4 @@
-import { BaseDatabase, toggleTombstoneTriggers } from '@tupaia/database';
+import { BaseDatabase } from '@tupaia/database';
 
 export const withDeferredSyncSafeguards = async <
   ReturnT = unknown,
@@ -28,24 +28,18 @@ export const withDeferredSyncSafeguards = async <
     SET CONSTRAINTS ALL DEFERRED;
   `);
 
-  // Disable tombstone triggers to avoid syncing deletion
-  // also put the records into tombstone table
-  await toggleTombstoneTriggers(database, false);
-
   const results = await operation();
 
   // The function is always wrapped inside a transaction, 
   // If the operation fails, the transaction will be rolled back.
-  // So even though the logic below to switch back to immediate mode and re-enable tombstone triggers are not run
+  // So even though the logic below to switch back to immediate mode is not run
   // the transaction will still rollback everything.
 
   // Switch back to immediate mode
   await database.executeSql(`
-      SET CONSTRAINTS ALL IMMEDIATE;
-    `);
+    SET CONSTRAINTS ALL IMMEDIATE;
+  `);
 
-  // Re-enable tombstone triggers
-  await toggleTombstoneTriggers(database, true);
 
   return results;
 };

@@ -1730,24 +1730,6 @@ export interface TaskCommentUpdate {
   'user_id'?: string | null;
   'user_name'?: string;
 }
-export interface Tombstone {
-  'deleted_at': Date;
-  'id': string;
-  'record_id': string;
-  'record_type': string;
-  'updated_at_sync_tick': string;
-}
-export interface TombstoneCreate {
-  'deleted_at'?: Date;
-  'record_id': string;
-  'record_type': string;
-}
-export interface TombstoneUpdate {
-  'deleted_at'?: Date;
-  'id'?: string;
-  'record_id'?: string;
-  'record_type'?: string;
-}
 export interface TupaiaWebSession {
   'access_policy': {};
   'access_token': string;

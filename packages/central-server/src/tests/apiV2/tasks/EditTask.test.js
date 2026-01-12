@@ -10,9 +10,6 @@ import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 
 const rollbackRecordChange = async (models, records) => {
-  await models.database.executeSql(`
-    TRUNCATE TABLE tombstone;
-  `);
   await Promise.all(records.map(record => models.task.delete({ id: record.id })));
 };
 

@@ -61,7 +61,6 @@ export const RECORDS = {
   SYNC_GROUP_LOG: 'sync_group_log',
   TASK: 'task',
   TASK_COMMENT: 'task_comment',
-  TOMBSTONE: 'tombstone',
   USER_ACCOUNT: 'user_account',
   USER_COUNTRY_ACCESS_ATTEMPT: 'user_country_access_attempt',
   USER_ENTITY_PERMISSION: 'user_entity_permission',

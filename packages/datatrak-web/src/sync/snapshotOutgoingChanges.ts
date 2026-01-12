@@ -7,23 +7,17 @@ import { getModelOutgoingChangesFilter } from './getModelOutgoingChangesFilter';
 
 const snapshotChangesForModel = async (
   model: DatabaseModel,
-  tombstoneModel: DatabaseModel,
   since: number,
 ) => {
   const changedRecords = await model.find({
     ...getModelOutgoingChangesFilter(since),
   });
-  const deletedRecords = await tombstoneModel.find({
-    record_type: model.databaseRecord,
-    ...getModelOutgoingChangesFilter(since),
-  });
 
-  const recordsChanged = [...changedRecords, ...deletedRecords];
   log.debug(
-    `snapshotChangesForModel: Found ${recordsChanged.length} for model ${model.databaseRecord} since ${since}`,
+    `snapshotChangesForModel: Found ${changedRecords.length} for model ${model.databaseRecord} since ${since}`,
   );
 
-  return recordsChanged.map(r => ({
+  return changedRecords.map(r => ({
     direction: SYNC_SESSION_DIRECTION.OUTGOING,
     recordType: model.databaseRecord,
     recordId: r.id,
@@ -33,7 +27,6 @@ const snapshotChangesForModel = async (
 
 export const snapshotOutgoingChanges = async (
   models: DatabaseModel[],
-  tombstoneModel: DatabaseModel,
   since: number,
 ) => {
   console.groupCollapsed('Snapshotting outgoing changes');
@@ -42,7 +35,7 @@ export const snapshotOutgoingChanges = async (
   assertModelsForPush(models);
 
   const modelChanges = await Promise.all(
-    models.map(model => snapshotChangesForModel(model, tombstoneModel, since)),
+    models.map(model => snapshotChangesForModel(model, since)),
   );
 
   console.groupEnd();
