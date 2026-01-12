@@ -28,7 +28,7 @@ export const bumpSyncTickForRepull = async (
     'requires_repull IS TRUE',
   );
 
-  const recordsByType = groupBy(records, 'recordType');
+  const recordsByType = groupBy(records, r => r.recordType);
 
   for (const [recordType, records] of Object.entries(recordsByType)) {
     const model = models.find(model => model.databaseRecord === recordType);
