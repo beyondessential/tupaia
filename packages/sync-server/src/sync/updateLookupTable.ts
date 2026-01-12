@@ -32,7 +32,7 @@ const updateLookupTableForModel = async (
     model: model.databaseRecord,
   });
 
-  while (fromId != null) {
+  while (fromId !== null) {
     const [{ maxId, count }] = await model.database.executeSql(
       `
         WITH

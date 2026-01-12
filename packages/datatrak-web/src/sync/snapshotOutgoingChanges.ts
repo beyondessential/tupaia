@@ -5,13 +5,8 @@ import { sanitizeRecord, SYNC_SESSION_DIRECTION, SyncSnapshotAttributes } from '
 import { assertModelsForPush } from './assertModelsForPush';
 import { getModelOutgoingChangesFilter } from './getModelOutgoingChangesFilter';
 
-const snapshotChangesForModel = async (
-  model: DatabaseModel,
-  since: number,
-) => {
-  const changedRecords = await model.find({
-    ...getModelOutgoingChangesFilter(since),
-  });
+const snapshotChangesForModel = async (model: DatabaseModel, since: number) => {
+  const changedRecords = await model.find(getModelOutgoingChangesFilter(since));
 
   log.debug(
     `snapshotChangesForModel: Found ${changedRecords.length} for model ${model.databaseRecord} since ${since}`,
@@ -25,10 +20,7 @@ const snapshotChangesForModel = async (
   })) as SyncSnapshotAttributes[];
 };
 
-export const snapshotOutgoingChanges = async (
-  models: DatabaseModel[],
-  since: number,
-) => {
+export const snapshotOutgoingChanges = async (models: DatabaseModel[], since: number) => {
   console.groupCollapsed('Snapshotting outgoing changes');
   const startTime = performance.now();
 
