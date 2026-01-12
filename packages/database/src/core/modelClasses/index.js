@@ -63,7 +63,6 @@ import { TaskCommentModel } from './TaskComment';
 import { SyncSessionModel } from './SyncSession';
 import { SyncDeviceTickModel } from './SyncDeviceTick';
 import { SyncQueuedDeviceModel } from './SyncQueuedDevice';
-import { TombstoneModel } from './Tombstone';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -124,7 +123,6 @@ export const modelClasses = {
   SyncGroupLog: SyncGroupLogModel,
   Task: TaskModel,
   TaskComment: TaskCommentModel,
-  Tombstone: TombstoneModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
   UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
@@ -202,7 +200,6 @@ export { DashboardRelationRecord, DashboardRelationModel } from './DashboardRela
 export { OneTimeLoginRecord, OneTimeLoginModel } from './OneTimeLogin';
 export { AnswerModel, AnswerRecord } from './Answer';
 export { TaskModel, TaskRecord } from './Task';
-export { TombstoneModel, TombstoneRecord } from './Tombstone';
 export {
   UserCountryAccessAttemptModel,
   UserCountryAccessAttemptRecord,

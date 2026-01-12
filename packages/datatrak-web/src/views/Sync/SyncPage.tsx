@@ -50,7 +50,6 @@ const Content = styled.div`
 
 const StyledSyncStatus = styled(SyncStatus)`
   margin-block-start: 1rem;
-  font-variant-numeric: lining-nums tabular-nums;
 `;
 
 const StyledLastSyncDate = styled(LastSyncDate)`

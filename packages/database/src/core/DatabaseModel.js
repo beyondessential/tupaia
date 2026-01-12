@@ -1,7 +1,9 @@
-import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
-import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
+import { uniq } from 'es-toolkit';
+
+import { DatabaseError, NotImplementedError, reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from './BaseDatabase';
 import { SCHEMA_NAMES } from './constants';
+import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
   otherModels = {};
@@ -90,28 +92,28 @@ export class DatabaseModel {
   async fetchFieldNames() {
     if (!this.fieldNames) {
       const schema = await this.fetchSchema();
-
       const customColumnSelectors = this.customColumnSelectors || {};
-
-      this.fieldNames = [
-        ...new Set([...Object.keys(schema), ...Object.keys(customColumnSelectors)]),
-      ];
+      this.fieldNames = uniq([...Object.keys(schema), ...Object.keys(customColumnSelectors)]);
     }
     return this.fieldNames;
   }
 
   /**
    * This method must be overridden by every subclass, so that the model knows what DatabaseRecord to generate when returning results
+   * @abstract
    * @returns {*} DatabaseRecordClass
    */
   get DatabaseRecordClass() {
-    throw new TypeError('get DatabaseRecordClass was called on object that has not implemented it');
+    throw new NotImplementedError(
+      'get DatabaseRecordClass was called on object that has not implemented it',
+    );
   }
 
   get databaseRecord() {
     return this.DatabaseRecordClass.databaseRecord;
   }
 
+  /** @returns {MultiJoinItem[]} */
   get joins() {
     return this.DatabaseRecordClass.joins;
   }
@@ -123,7 +125,11 @@ export class DatabaseModel {
     };
   }
 
-  // A helper function to ensure that we're using fully qualified column names to avoid ambiguous references when joins are being used
+  /**
+   * A helper function to ensure that we're using fully qualified column names to avoid ambiguous references when joins are being used
+   * @param {string} column
+   * @returns {`${string}.${string}`}
+   */
   fullyQualifyColumn(column) {
     if (column.includes('.')) {
       // Already fully qualified
@@ -172,7 +178,7 @@ export class DatabaseModel {
   }
 
   async getDbConditions(dbConditions = {}) {
-    const fieldNames = await this.fetchFieldNames();
+    const fieldNames = new Set(await this.fetchFieldNames());
     const fullyQualifiedConditions = {};
 
     const whereClauses = Object.entries(dbConditions);
@@ -193,7 +199,7 @@ export class DatabaseModel {
           fieldSelector = customSelector;
         }
 
-        const fullyQualifiedField = fieldNames.includes(field) ? fieldSelector : field;
+        const fullyQualifiedField = fieldNames.has(field) ? fieldSelector : field;
         fullyQualifiedConditions[fullyQualifiedField] = value;
       }
     }
@@ -287,8 +293,8 @@ export class DatabaseModel {
   }
 
   async checkFieldNamesExist(fields) {
-    const fieldNames = await this.fetchFieldNames();
-    return fields.every(field => fieldNames.includes(field));
+    const fieldNames = new Set(await this.fetchFieldNames());
+    return fields.every(field => fieldNames.has(field));
   }
 
   async all(customQueryOptions = {}) {
@@ -433,15 +439,19 @@ export class DatabaseModel {
     return this.cache[cacheKey];
   }
 
-  sanitizeForCentralServer = (data) => {
-    return data;
+  clearCache() {
+    this.cache = {};
   }
 
-  sanitizeForClient = (data) => {
+  sanitizeForCentralServer = data => {
     return data;
-  }
+  };
 
-  filterSyncForClient = async (changes) => {
+  sanitizeForClient = data => {
+    return data;
+  };
+
+  filterSyncForClient = async changes => {
     return changes;
-  }
+  };
 }

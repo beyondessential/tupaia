@@ -36,11 +36,11 @@ N.B. Example 3 is unusual and generally just used for debugging the redeploy pro
 used, you need to tag the AMI and security groups with the codes you specify.
 """
 
-from helpers.creation import create_db_instance_from_snapshot
 from helpers.create_from_image import create_server_instance_from_image
-from helpers.utilities import find_instances, build_extra_tags
+from helpers.creation import create_db_instance_from_snapshot
 from helpers.rds import set_db_instance_master_password
 from helpers.secrets import get_db_master_password
+from helpers.utilities import build_extra_tags, find_instances
 
 
 def spin_up_tupaia_deployment(event):
@@ -70,7 +70,7 @@ def spin_up_tupaia_deployment(event):
         ]
     )
 
-    if len(existing_instances) != 0:
+    if existing_instances:
         raise Exception(
             "A deployment already exists, perhaps you want to redeploy and swap out the existing one? The easiest way is to push a new commit."
         )

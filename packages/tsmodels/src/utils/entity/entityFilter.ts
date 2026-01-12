@@ -68,23 +68,23 @@ const isNumericField = (field: FilterableField): field is keyof NumericFilterQue
 
 // Inspired by Google Analytics filter: https://developers.google.com/analytics/devguides/reporting/core/v3/reference?hl=en#filters
 const operatorToSqlComparator = {
-  '==': '=' as const, // Exact match
-  '!=': '!=' as const, // Does not match
-  '=@': 'ilike' as const, // Contains sub string
-  '<': '<' as const, // Less than
-  '<=': '<=' as const, // Less than or equal
-  '>': '>' as const, // Greater than
-  '>=': '>=' as const, // Greater than or equal
-};
+  '==': '=', // Exact match
+  '!=': '!=', // Does not match
+  '=@': 'ilike', // Contains sub string
+  '<': '<', // Less than
+  '<=': '<=', // Less than or equal
+  '>': '>', // Greater than
+  '>=': '>=', // Greater than or equal
+} as const;
 const operatorToSqlArrayComparator = {
-  '==': 'IN' as const, // Contained in array
-  '!=': 'NOT IN' as const, // Not contained in array
+  '==': 'IN', // Contained in array
+  '!=': 'NOT IN', // Not contained in array
   '=@': undefined, // '@>' might be nice here, but none of our filterable fields are arrays
   '<': undefined,
   '<=': undefined,
   '>': undefined,
   '>=': undefined,
-};
+} as const;
 type Operator = keyof typeof operatorToSqlComparator;
 
 const filterOperators = Object.keys(operatorToSqlComparator) as Operator[];

@@ -85,7 +85,7 @@ export const saveChangesForModel = async (
     },
   );
   if (recordsForUpdate.length > 0) {
-    await saveUpdates(model, recordsForUpdate, 1000, progressCallback);
+    await saveUpdates(model, recordsForUpdate, isCentralServer, 1000, progressCallback);
   }
 };
 

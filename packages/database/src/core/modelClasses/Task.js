@@ -1,10 +1,15 @@
+/**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ */
+
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
 import { TaskCommentType, TaskStatus } from '@tupaia/types';
 import { hasBESAdminAccess } from '@tupaia/access-policy';
 import { getOffsetForTimezone } from '@tupaia/utils';
-
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -320,7 +325,7 @@ export class TaskModel extends DatabaseModel {
       select: await buildSyncLookupSelect(this, {
         projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
       }),
-      joins: `LEFT JOIN survey ON survey.id = task.survey_id`,
+      joins: 'LEFT JOIN survey ON survey.id = task.survey_id',
     };
   }
 
@@ -331,33 +336,34 @@ export class TaskModel extends DatabaseModel {
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryCodesByPermissionGroupId =
       await this.getCountryCodesByPermissionGroupId(accessPolicy);
+    const entries = Object.entries(countryCodesByPermissionGroupId);
 
-    const params = Object.entries(countryCodesByPermissionGroupId).flat(2); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
-
-    if (Object.keys(countryCodesByPermissionGroupId).length === 0) {
-      return null;
-    }
+    if (entries.length === 0) return { sql: 'FALSE' };
 
     return {
       sql: `
         (
-          ${Object.values(countryCodesByPermissionGroupId)
-            .map(
-              countryCodes => `(
-                survey.permission_group_id = ? AND
-                entity.country_code IN ${SqlQuery.record(countryCodes)}
-              )`,
-            )
+          ${entries
+            .map(([, countryCodes]) => {
+              return `(survey.permission_group_id = ? AND entity.country_code IN ${SqlQuery.record(countryCodes)})`;
+            })
             .join(' OR ')}
         )
        `,
-      parameters: params,
+      /** @example ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3'] */
+      parameters: entries.flat(2),
     };
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<Record<PermissionGroup['id'], Country['code'][]>>}
+   */
   async getCountryCodesByPermissionGroupId(accessPolicy) {
     const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
+    /** @type {Record<PermissionGroup['id'], Country['code'][]>} */
     const countryCodesByPermissionGroupId = {};
+    /** @type {Record<PermissionGroup['name'], PermissionGroup['id']>} */
     const permissionGroupNameToId = await this.otherModels.permissionGroup.findIdByField(
       'name',
       allPermissionGroupsNames,
@@ -749,23 +755,21 @@ export class TaskModel extends DatabaseModel {
       data_time: dataTime,
       user_id: userId,
     } = surveyResponse;
-    const tasksToComplete = await this.find(
-      {
-        [QUERY_CONJUNCTIONS.AND]: {
-          status: 'to_do',
-          [QUERY_CONJUNCTIONS.OR]: {
-            status: {
-              comparator: 'IS',
-              comparisonValue: null,
-            },
+    const tasksToComplete = await this.find({
+      [QUERY_CONJUNCTIONS.AND]: {
+        status: 'to_do',
+        [QUERY_CONJUNCTIONS.OR]: {
+          status: {
+            comparator: 'IS',
+            comparisonValue: null,
           },
         },
-        [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `(task.survey_id = ? AND task.entity_id = ? AND task.created_at <= ?)`,
-          parameters: [surveyId, entityId, dataTime],
-        },
       },
-    );
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: '(task.survey_id = ? AND task.entity_id = ? AND task.created_at <= ?)',
+        parameters: [surveyId, entityId, dataTime],
+      },
+    });
 
     // If the survey response was successfully created, complete any tasks that are due
     if (tasksToComplete.length === 0) return;

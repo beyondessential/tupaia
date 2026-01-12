@@ -22,7 +22,7 @@ export const SYNCING_TABLES = [
   'user_entity_permission',
 ];
 
-const TABLES_WITHOUT_COLUMN_QUERY = `
+const TABLES_WITHOUT_SYNC_TICK_COLUMN_QUERY = `
   SELECT
     pg_class.relname as table
   FROM
@@ -47,7 +47,7 @@ const TABLES_WITHOUT_COLUMN_QUERY = `
     pg_class.relname IN (${SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
-const TABLES_WITHOUT_TRIGGER_QUERY = `
+const TABLES_WITHOUT_SET_SYNC_TICK_TRIGGER_QUERY = `
   SELECT
     t.table_name as table
   FROM
@@ -75,7 +75,7 @@ const TABLES_WITHOUT_TRIGGER_QUERY = `
     t.table_name IN (${SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
-const getTablesForTombstoneTriggerQuery = (withTrigger = false) => `
+const TABLES_WITHOUT_MARK_DELETED_IN_SYNC_LOOKUP_TRIGGER_QUERY = `
   SELECT
     t.table_name as table
   FROM
@@ -85,13 +85,13 @@ const getTablesForTombstoneTriggerQuery = (withTrigger = false) => `
   ON
     t.table_name = privileges.table_name AND privileges.table_schema = 'public'
   WHERE
-    ${withTrigger ? 'EXISTS' : 'NOT EXISTS'} (
+    NOT EXISTS (
       SELECT
         *
       FROM
         pg_trigger p
       WHERE
-        p.tgname = substring(concat('add_', lower(t.table_name), '_tombstone_on_delete'), 0, 64)
+        p.tgname = substring(concat('mark_', lower(t.table_name), '_deleted_in_sync_lookup'), 0, 64)
     )
   AND
     privileges.privilege_type = 'TRIGGER'
@@ -103,9 +103,6 @@ const getTablesForTombstoneTriggerQuery = (withTrigger = false) => `
     t.table_name IN (${SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
-const TABLES_WITHOUT_TOMBSTONE_TRIGGER_QUERY = getTablesForTombstoneTriggerQuery(false);
-export const TABLES_WITH_TOMBSTONE_TRIGGER_QUERY = getTablesForTombstoneTriggerQuery(true);
-
 export async function initSyncComponents(driver, isClient = false) {
   console.groupCollapsed('Initializing sync components');
   const startTime = performance.now();
@@ -113,7 +110,7 @@ export async function initSyncComponents(driver, isClient = false) {
   // and 0 (will be caught in any initial sync) on central server
   // triggers will overwrite the default for future data, but this works for existing data
   const initialValue = isClient ? SyncTickFlags.LAST_UPDATED_ELSEWHERE : 0; // -999 on client, 0 on central server
-  const { rows: tablesWithoutColumn } = await driver.runSql(TABLES_WITHOUT_COLUMN_QUERY);
+  const { rows: tablesWithoutColumn } = await driver.runSql(TABLES_WITHOUT_SYNC_TICK_COLUMN_QUERY);
   for (const { table } of tablesWithoutColumn) {
     console.log(`Adding updated_at_sync_tick column to ${table}`);
     await driver.runSql(`
@@ -126,7 +123,9 @@ export async function initSyncComponents(driver, isClient = false) {
   }
 
   // add trigger: before insert or update, set updated_at (overriding any that is passed in)
-  const { rows: tablesWithoutTrigger } = await driver.runSql(TABLES_WITHOUT_TRIGGER_QUERY);
+  const { rows: tablesWithoutTrigger } = await driver.runSql(
+    TABLES_WITHOUT_SET_SYNC_TICK_TRIGGER_QUERY,
+  );
   for (const { table } of tablesWithoutTrigger) {
     console.log(`Adding updated_at_sync_tick trigger to ${table}`);
     await driver.runSql(`
@@ -137,17 +136,20 @@ export async function initSyncComponents(driver, isClient = false) {
     `);
   }
 
-  const { rows: tablesWithoutTriggerForDelete } = await driver.runSql(
-    TABLES_WITHOUT_TOMBSTONE_TRIGGER_QUERY,
-  );
-  for (const { table } of tablesWithoutTriggerForDelete) {
-    console.log(`Adding add_to_tombstone_on_delete trigger for delete to ${table}`);
-    await driver.runSql(`
-      CREATE TRIGGER add_${table}_tombstone_on_delete
+  // We only need to mark deleted in sync lookup trigger on the central server
+  if (!isClient) {
+    const { rows: tablesWithoutTriggerForDelete } = await driver.runSql(
+      TABLES_WITHOUT_MARK_DELETED_IN_SYNC_LOOKUP_TRIGGER_QUERY,
+    );
+    for (const { table } of tablesWithoutTriggerForDelete) {
+      console.log(`Adding mark_deleted_in_sync_lookup trigger for delete to ${table}`);
+      await driver.runSql(`
+      CREATE TRIGGER mark_${table}_deleted_in_sync_lookup
       BEFORE DELETE ON "${table}"
       FOR EACH ROW
-      EXECUTE FUNCTION add_to_tombstone_on_delete();
+      EXECUTE FUNCTION mark_deleted_in_sync_lookup();
     `);
+    }
   }
 
   console.groupEnd();

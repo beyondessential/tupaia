@@ -1,8 +1,8 @@
-export const getModelOutgoingChangesFilter = (since: number) => {
+export const getModelOutgoingChangesFilter = <T extends number>(since: T) => {
   return {
     updated_at_sync_tick: {
-      comparator: '>',
-      comparisonValue: since,
+      comparator: '>' as const,
+      comparisonValue: since as T,
     },
   };
 };

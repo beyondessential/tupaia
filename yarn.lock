@@ -12514,6 +12514,7 @@ __metadata:
     "@tupaia/kobo-api": "workspace:*"
     "@tupaia/superset-api": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
+    "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@tupaia/weather-api": "workspace:*"
     "@types/jest": ^29.5.14

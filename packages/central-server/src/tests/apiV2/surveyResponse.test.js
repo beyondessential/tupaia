@@ -1,8 +1,13 @@
+/**
+ * @typedef {import('@tupaia/database').SurveyResponseRecord} SurveyResponseRecord
+ * @typedef {import('@tupaia/types').Entity} Entity
+ */
+
 import { expect } from 'chai';
 import moment from 'moment';
 
 import { buildAndInsertSurveys, generateId, upsertDummyRecord } from '@tupaia/database';
-import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
+import { oneSecondSleep } from '@tupaia/utils';
 import {
   expectError,
   expectErrors,
@@ -14,20 +19,26 @@ import {
   upsertQuestion,
 } from '../testUtilities';
 
+/** @returns {Promise<SurveyResponseRecord | null>} */
 const getRandomSurveyResponse = async models => {
-  const surveyResponses = await models.surveyResponse.all();
-  return surveyResponses[randomIntBetween(0, surveyResponses.length - 1)];
+  return await models.surveyResponse.findOne({}, { rawSort: 'RANDOM()' });
 };
 
+/** @returns {Promise<Entity['id'] | undefined>} */
 const getRandomNewEntityForSurveyResponse = async (models, surveyResponse) => {
-  const entities = await models.entity.find({
-    id: {
-      comparator: '!=',
-      comparisonValue: surveyResponse.entity_id,
+  const entity = await models.entity.findOne(
+    {
+      id: {
+        comparator: '<>',
+        comparisonValue: surveyResponse.entity_id,
+      },
     },
-  });
-
-  return entities[randomIntBetween(0, entities.length - 1)].id;
+    {
+      columns: ['id'],
+      rawSort: 'RANDOM()',
+    },
+  );
+  return entity?.id;
 };
 
 const ENTITY_ID = generateId();

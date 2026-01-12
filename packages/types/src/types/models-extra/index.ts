@@ -3,9 +3,14 @@ export {
   PlaintextReferenceProps,
   LinkReferenceProps,
   EntityAttributes,
+  EntityMetadata,
   DateOffsetSpec,
   VizPeriodGranularity,
   DashboardItemType,
+  DataElementConfig,
+  DataServiceEntityConfig,
+  OptionAttributes,
+  SupersetInstanceConfig,
 } from './common';
 export type {
   ReportConfig,
