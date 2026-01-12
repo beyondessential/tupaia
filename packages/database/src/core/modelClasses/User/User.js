@@ -309,7 +309,8 @@ export class UserModel extends DatabaseModel {
       const { preferences = {} } = userRecord;
 
       const updatedPreferenceFields = updatedUserPreferences.reduce((obj, [key, value]) => {
-        return { ...obj, [key]: value };
+        obj[key] = value;
+        return obj;
       }, preferences);
       // If we change the selected project, we clear out the recent entities
       if (updatedPreferenceFields.project_id) {
