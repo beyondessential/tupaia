@@ -25,6 +25,7 @@ export class LocalSystemFactModel extends DatabaseModel {
    * @returns {Promise<string | null | undefined>}
    */
   async get(key) {
+    /** @type {LocalSystemFactRecord | null} */
     const result = await this.findOne({ key });
     return result?.value;
   }
@@ -76,8 +77,11 @@ export class LocalSystemFactModel extends DatabaseModel {
       throw new Error('Project ID is required');
     }
 
+    /** @type {LocalSystemFactRecord | null} */
     const existing = await this.findOne({ key: SyncFact.PROJECTS_IN_SYNC });
+    /** @type {Project['id'][]} */
     const syncedProjects = existing?.value ? JSON.parse(existing.value) : [];
+    /** @type {Project['id'][]} */
     const newSyncedProjects = [...new Set([...syncedProjects, projectId])];
     await this.set(SyncFact.PROJECTS_IN_SYNC, JSON.stringify(newSyncedProjects));
   }
