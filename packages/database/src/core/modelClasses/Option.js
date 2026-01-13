@@ -1,4 +1,4 @@
-import { hasContent } from '@tupaia/utils';
+// import { hasContent } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
 
 import { DatabaseModel } from '../DatabaseModel';
@@ -8,25 +8,26 @@ import { RECORDS } from '../records';
 export class OptionRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.OPTION;
 
-  static fieldValidators = new Map()
-    .set('value', [
-      value => {
-        try {
-          return hasContent(value) && null;
-        } catch (error) {
-          return error.message;
-        }
-      },
-    ])
-    .set('label', [
-      async (label, model) => {
-        if (label) {
-          const foundConflict = await findFieldConflict('label', label, model);
-          if (foundConflict) return 'Found duplicate label in option set';
-        }
-        return null;
-      },
-    ]);
+  // TODO: Commented out to test performance of this
+  // static fieldValidators = new Map()
+  //   .set('value', [
+  //     value => {
+  //       try {
+  //         return hasContent(value) && null;
+  //       } catch (error) {
+  //         return error.message;
+  //       }
+  //     },
+  //   ])
+  //   .set('label', [
+  //     async (label, model) => {
+  //       if (label) {
+  //         const foundConflict = await findFieldConflict('label', label, model);
+  //         if (foundConflict) return 'Found duplicate label in option set';
+  //       }
+  //       return null;
+  //     },
+  //   ]);
 
   /**
    * @param {string} option
