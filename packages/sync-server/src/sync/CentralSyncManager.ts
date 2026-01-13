@@ -506,12 +506,13 @@ export class CentralSyncManager {
 
       await this.waitForPendingEdits(currentTick);
 
-      const previouslyUpToTick =
-        (await this.models.localSystemFact.get(SyncFact.LOOKUP_UP_TO_TICK)) || -1;
+      const tickStr: string =
+        (await this.models.localSystemFact.get(SyncFact.LOOKUP_UP_TO_TICK)) || '-1';
+      const previouslyUpToTick = Number.parseInt(tickStr, 10);
 
       await debugObject.addInfo({ since: previouslyUpToTick });
 
-      const isInitialBuildOfLookupTable = Number.parseInt(previouslyUpToTick, 10) === -1;
+      const isInitialBuildOfLookupTable = previouslyUpToTick === -1;
 
       const changesCount = await this.models.wrapInRepeatableReadTransaction(
         async (transactingModels: SyncServerModelRegistry) => {
