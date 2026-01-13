@@ -18,7 +18,7 @@ export interface SyncSnapshotData {
 
 export interface SyncSnapshotAttributes {
   id: number;
-  direction: SyncDirections;
+  direction?: SyncSessionDirectionValues;
   recordType: string;
   recordId: string;
   isDeleted: boolean;
