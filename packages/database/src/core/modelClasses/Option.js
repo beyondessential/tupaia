@@ -1,4 +1,4 @@
-// import { hasContent } from '@tupaia/utils';
+import { hasContent } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
 
 import { DatabaseModel } from '../DatabaseModel';
@@ -8,26 +8,15 @@ import { RECORDS } from '../records';
 export class OptionRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.OPTION;
 
-  // TODO: Commented out to test performance of this
-  // static fieldValidators = new Map()
-  //   .set('value', [
-  //     value => {
-  //       try {
-  //         return hasContent(value) && null;
-  //       } catch (error) {
-  //         return error.message;
-  //       }
-  //     },
-  //   ])
-  //   .set('label', [
-  //     async (label, model) => {
-  //       if (label) {
-  //         const foundConflict = await findFieldConflict('label', label, model);
-  //         if (foundConflict) return 'Found duplicate label in option set';
-  //       }
-  //       return null;
-  //     },
-  //   ]);
+  static fieldValidators = new Map().set('value', [
+    value => {
+      try {
+        return hasContent(value) && null;
+      } catch (error) {
+        return error.message;
+      }
+    },
+  ]);
 
   /**
    * @param {string} option
@@ -90,15 +79,3 @@ export class OptionModel extends DatabaseModel {
     return null;
   }
 }
-
-const findFieldConflict = async (field, valueToCompare, model) => {
-  const conflictingOption = await model.otherModels.option.findOne({
-    [field]: valueToCompare || null,
-    option_set_id: model.option_set_id,
-    id: {
-      comparator: '!=',
-      comparisonValue: model.id || null,
-    },
-  });
-  return !!conflictingOption;
-};
