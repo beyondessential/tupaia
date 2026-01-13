@@ -1,9 +1,6 @@
-import { SyncDirections } from '@tupaia/constants';
 import { RECORDS } from '@tupaia/database';
 import { ValueOf } from '@tupaia/types';
 import { SYNC_SESSION_DIRECTION } from './constants';
-
-export type SyncDirectionValues = (typeof SyncDirections)[keyof typeof SyncDirections];
 
 export type SyncSessionDirectionValues = ValueOf<typeof SYNC_SESSION_DIRECTION>;
 
