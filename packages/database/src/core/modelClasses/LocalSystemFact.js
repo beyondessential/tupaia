@@ -46,9 +46,10 @@ export class LocalSystemFactModel extends DatabaseModel {
   /**
    * @param {SyncFact} key
    * @param {number} amount
-   * @returns {Promise<string>}
+   * @returns {Promise<string | null>}
    */
   async incrementValue(key, amount = 1) {
+    /** @type {{ value: string | null }[]} */
     const rowsAffected = await this.database.executeSql(
       `
         UPDATE
