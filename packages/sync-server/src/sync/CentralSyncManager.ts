@@ -538,7 +538,10 @@ export class CentralSyncManager {
           log.debug('CentralSyncManager.updateLookupTable()', {
             lastSuccessfulLookupTableUpdate: currentTick,
           });
-          await transactingModels.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, currentTick);
+          await transactingModels.localSystemFact.set(
+            SyncFact.LOOKUP_UP_TO_TICK,
+            currentTick.toString(),
+          );
 
           return updatedCount;
         },
