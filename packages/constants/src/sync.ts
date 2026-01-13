@@ -32,12 +32,12 @@ export const SYNC_STREAM_MESSAGE_KIND = {
 // Internal sync facts
 export enum SyncFact {
   CURRENT_SYNC_TICK = 'currentSyncTick',
+  CURRENT_USER_ID = 'currentUserId',
+  DEVICE_ID = 'deviceId',
   LAST_SUCCESSFUL_SYNC_PULL = 'lastSuccessfulSyncPull',
   LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush',
   LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate',
-  SYNC_TRIGGER_CONTROL = 'syncTrigger',
-  PROJECTS_IN_SYNC = 'projectsInSync',
-  CURRENT_USER_ID = 'currentUserId',
   PREVIOUSLY_LOGGED_IN_USER_ID = 'previouslyLoggedInUserId',
-  DEVICE_ID = 'deviceId',
+  PROJECTS_IN_SYNC = 'projectsInSync',
+  SYNC_TRIGGER_CONTROL = 'syncTrigger',
 }
