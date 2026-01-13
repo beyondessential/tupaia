@@ -91,11 +91,11 @@ export class CentralSyncManager {
 
   async getIsSyncCapacityFull(): Promise<boolean> {
     const { maxConcurrentSessions } = this.config;
-    const activeSyncs = await this.models.syncSession.find({
+    const activeSyncCount = await this.models.syncSession.count({
       completed_at: null,
       errors: null,
     });
-    return activeSyncs.length >= maxConcurrentSessions;
+    return activeSyncCount >= maxConcurrentSessions;
   }
 
   async queueDeviceForSync(deviceId: string, urgent: boolean = false, lastSyncedTick: number = 0) {
