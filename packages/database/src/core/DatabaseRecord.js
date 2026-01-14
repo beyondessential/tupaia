@@ -1,5 +1,6 @@
 import { stripFields, TypeValidationError } from '@tupaia/utils';
 
+/** @abstract */
 export class DatabaseRecord {
   static databaseRecord = null; // The database table name
 
@@ -26,6 +27,8 @@ export class DatabaseRecord {
    *     }
    *   ])
    *   .set('anotherField', [ (field) => !field && "field cannot be null or undefined" ]);
+   * @typedef {(field: unknown, model: DatabaseModel) => boolean | string | Promise<boolean | string>} FieldValidator
+   * @type {Map<string, FieldValidator[]>}
    */
   static fieldValidators = new Map();
 
