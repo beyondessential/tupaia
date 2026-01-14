@@ -131,7 +131,7 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
 
     /** @type {import('@tupaia/database').EntityRecord} */
     const entity = ensure(
-      await models.entity.findById(surveyResponse.entity_id),
+      await models.entity.findById(surveyResponse.entity_id, { columns: ['code'] }),
       `No entity exists with ID ${surveyResponse.entity_id}`,
     );
     return entity.code;
