@@ -24,7 +24,6 @@
     "@tupaia/database": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "es-toolkit": "^1.43.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
