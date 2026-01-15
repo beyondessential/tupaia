@@ -30,7 +30,6 @@
     "cookie": "^1.0.2",
     "copyfiles": "^2.4.1",
     "dotenv": "^16.4.5",
-    "express": "^4.21.2",
     "fs-extra": "^11.3.0",
     "handlebars": "^4.7.8",
     "node-schedule": "^2.1.1",
