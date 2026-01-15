@@ -720,12 +720,10 @@ export class TaskModel extends DatabaseModel {
     const userSurveys = await this.otherModels.survey.findByAccessPolicy(
       accessPolicy,
       {},
-      {
-        columns: ['id', 'permission_group_id', 'country_ids'],
-      },
+      { columns: ['id'] },
     );
-    const survey = userSurveys.find(({ id }) => id === surveyId);
-    if (!survey) {
+    const hasAccess = userSurveys.some(({ id }) => id === surveyId);
+    if (!hasAccess) {
       throw new Error('Need to have access to the survey of the task');
     }
 
