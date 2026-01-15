@@ -19,11 +19,13 @@ export class EntityHierarchySubtreeRebuilder {
    * @public
    * Rebuilds subtrees listed in the rebuild jobs
    * @param {{hierarchyId: string; rootEntityId: string}[]} rebuildJobs
+   * @returns {Promise<Entity['id'][]>}
    */
   async rebuildSubtrees(rebuildJobs) {
-    // rebuild the entity parent child relations first so 
+    // rebuild the entity parent child relations first so
     // that the subtree rebuilds are based on the most up to date relations
-    const relatedEntityIds = await this.entityParentChildRelationBuilder.rebuildRelations(rebuildJobs);
+    const relatedEntityIds =
+      await this.entityParentChildRelationBuilder.rebuildRelations(rebuildJobs);
 
     // get the subtrees to delete, then run the delete
     const subtreesForDelete = {};
