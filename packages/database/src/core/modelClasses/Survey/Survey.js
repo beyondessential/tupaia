@@ -297,7 +297,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
    * @param {AccessPolicy} accessPolicy
    * @param {*} dbConditions
    * @param {*} customQueryOptions
-   * @returns
+   * @returns {SurveyRecord[]}
    */
   async findByAccessPolicy(accessPolicy, dbConditions = {}, customQueryOptions) {
     const queryClause = await this.createAccessPolicyQueryClause(accessPolicy);
@@ -307,9 +307,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       ...dbConditions,
     };
 
-    const surveys = await this.find(queryConditions, customQueryOptions);
-
-    return surveys;
+    return await this.find(queryConditions, customQueryOptions);
   }
 
   /**
