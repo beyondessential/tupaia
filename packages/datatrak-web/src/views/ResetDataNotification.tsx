@@ -45,9 +45,7 @@ export const ResetDataNotification = () => {
     };
   }, []);
 
-  const isOnline = window.navigator.onLine;
-
-  if (!permissionsChanged || !isOnline) {
+  if (!permissionsChanged) {
     return null;
   }
 

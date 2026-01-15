@@ -6,12 +6,12 @@ interface BannerNotificationProps {
 }
 
 const StyledAlert = styled(Alert)`
-  background-color: #333333;
+  background-color: ${({ theme }) => theme.palette.grey[900]};
   border-radius: 0;
   color: ${({ theme }) => theme.palette.common.white};
-  '& .MuiAlert-icon': {
-    color: 'white',
-  },
+  .MuiAlert-icon {
+    color: ${({ theme }) => theme.palette.common.white};
+  }
 `;
 
 export function BannerNotification({ message }: BannerNotificationProps) {

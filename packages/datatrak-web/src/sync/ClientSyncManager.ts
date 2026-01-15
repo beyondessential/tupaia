@@ -370,7 +370,7 @@ export class ClientSyncManager {
       { userId: currentUserId },
     );
     if (permissionChangesCount > 0) {
-      await this.models.localSystemFact.set(FACT_PERMISSIONS_CHANGED, true.toString());
+      await this.models.localSystemFact.set(FACT_PERMISSIONS_CHANGED, 'true');
       this.emitter.emit(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, { permissionsChanged: true });
       this.permissionsChanged = true;
     }
