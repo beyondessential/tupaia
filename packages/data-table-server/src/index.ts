@@ -23,6 +23,7 @@ configureEnv();
   http.createServer(app).listen(port);
   winston.info(`Running on port ${port}`);
   winston.info(`Logging at ${winston.level} level`);
+  winston.debug(`Time zone is ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
 
   /**
    * Notify PM2 that we are ready
