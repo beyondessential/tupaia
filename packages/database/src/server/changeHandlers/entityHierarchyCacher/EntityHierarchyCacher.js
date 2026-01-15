@@ -80,10 +80,8 @@ export class EntityHierarchyCacher extends ChangeHandler {
     old_record: oldRecord,
     new_record: newRecord,
   }) {
-    if (oldRecord && newRecord) {
-      if (oldRecord.canonical_types === newRecord.canonical_types) {
-        return null; // if the canonical types are the same, the change won't invalidate the cache
-      }
+    if (oldRecord && newRecord && oldRecord.canonical_types === newRecord.canonical_types) {
+      return null; // if the canonical types are the same, the change won't invalidate the cache
     }
     /** @type {ProjectRecord[]} */
     const projectsUsingHierarchy = await this.models.project.find({
