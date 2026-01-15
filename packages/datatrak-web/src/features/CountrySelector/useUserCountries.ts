@@ -55,10 +55,8 @@ export const useUserCountries = (
     return countries[0] ?? null;
   }, [countries, countriesByCode, user.country, user.project?.code]);
 
-  const state = useState<DatatrakWebEntityDescendantsRequest.EntityResponse | null>(
-    getInitialCountrySelection,
-  );
-  const [selectedCountry, setSelectedCountry] = state;
+  const [selectedCountry, setSelectedCountry] =
+    useState<DatatrakWebEntityDescendantsRequest.EntityResponse | null>(getInitialCountrySelection);
 
   if (
     countries && // Once country list is loaded...
