@@ -53,21 +53,13 @@ export const SurveySelectPage = () => {
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
 
-  const {
-    isFetching: isFetchingSurveys,
-    data: surveys,
-    isLoading: isLoadingSurveys,
-  } = useSurveysQuery({
+  const { isFetching: isFetchingSurveys, data: surveys } = useSurveysQuery({
     countryCode: selectedCountry?.code,
     projectId: user.projectId,
   });
 
   // When surveys change, check if the selected survey is still in the list. If not, clear the selection
-  if (
-    selectedSurvey &&
-    !isLoadingSurveys &&
-    !surveys?.some(survey => survey.code === selectedSurvey)
-  ) {
+  if (selectedSurvey && !surveys?.some(survey => survey.code === selectedSurvey)) {
     setSelectedSurvey(null);
   }
 
