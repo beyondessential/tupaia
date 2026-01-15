@@ -1,5 +1,5 @@
 import { endOfToday } from 'date-fns';
-import React from 'react';
+import React, { ChangeEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
@@ -156,8 +156,8 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     },
   ];
 
-  const onChangeCountry = event => {
-    updateSelectedCountry(event);
+  const onChangeCountry: ChangeEventHandler<HTMLSelectElement> = event => {
+    updateSelectedCountry(event.target.value);
 
     if (dirtyFields.survey_code) {
       setValue('survey_code', null, { shouldValidate: true });
