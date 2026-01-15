@@ -9,7 +9,7 @@ export const countSyncSnapshotRecords = async (
   direction?: SyncSessionDirectionValues,
   recordType?: RecordType,
   additionalWhere?: string,
-  parameters?: Record<string, any>,
+  parameters?: Record<string, unknown>,
 ): Promise<number> => {
   const tableName = getSnapshotTableName(sessionId);
 
