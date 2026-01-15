@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 
-import { Country, KeysToCamelCase } from '@tupaia/types';
-
-import { useCurrentUserContext } from '../../api';
+import { Country, EntityTypeEnum, KeysToCamelCase } from '@tupaia/types';
+import { useCurrentUserContext, useProjectEntities } from '../../api';
 import { useEditUser } from '../../api/mutations';
 import { useSurveysQuery } from '../../api/queries/useSurveysQuery';
 import { Button } from '../../components';
-import { CountrySelector, useUserCountries } from '../../features';
+import { CountrySelector } from '../../features';
+import { useSelectedCountryState } from '../../features/CountrySelector/useUserCountries';
 import { Survey } from '../../types';
 import { useIsMobile } from '../../utils';
 import { DesktopTemplate } from './DesktopTemplate';
 import { MobileTemplate } from './MobileTemplate';
+import { useProjectCountryEntities } from '../../api/queries/useProjectEntities';
 
 const useNavigateToSurvey = () => {
   const navigate = useNavigate();
@@ -45,27 +46,31 @@ export const SurveySelectPage = () => {
   const [selectedSurvey, setSelectedSurvey] = useState<Survey['code'] | null>(null);
   const [urlSearchParams] = useSearchParams();
   const urlProjectId = urlSearchParams.get('projectId');
-  const {
-    countries,
-    selectedCountry,
-    updateSelectedCountry,
-    isFetching: isFetchingCountries,
-  } = useUserCountries();
+  const [selectedCountry, updateSelectedCountry] = useSelectedCountryState();
   const handleSelectSurvey = useNavigateToSurvey();
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
 
-  const { isFetching: isFetchingSurveys, data: surveys } = useSurveysQuery({
+  const {
+    isFetching: isFetchingSurveys,
+    data: surveys,
+    isLoading: isLoadingSurveys,
+  } = useSurveysQuery({
     countryCode: selectedCountry?.code,
     projectId: user.projectId,
   });
+  const { data: countries, isFetching: isFetchingCountries } = useProjectCountryEntities(
+    user.project?.code,
+  );
 
-  useEffect(() => {
-    // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
-    if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey)) {
-      setSelectedSurvey(null);
-    }
-  }, [surveys]);
+  // When surveys change, check if the selected survey is still in the list. If not, clear the selection
+  if (
+    selectedSurvey &&
+    !isLoadingSurveys &&
+    !surveys?.some(survey => survey.code === selectedSurvey)
+  ) {
+    setSelectedSurvey(null);
+  }
 
   useEffect(() => {
     const updateUserProject = async () => {
@@ -84,9 +89,9 @@ export const SurveySelectPage = () => {
 
   const countrySelector = (
     <CountrySelector
-      countries={countries}
-      onChange={updateSelectedCountry}
+      data={countries}
       key={user.projectId} // Force fresh instance when project changes
+      onChange={e => updateSelectedCountry(e.target.value)}
       selectedCountry={selectedCountry}
     />
   );

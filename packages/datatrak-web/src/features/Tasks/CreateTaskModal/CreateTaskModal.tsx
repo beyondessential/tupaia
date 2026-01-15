@@ -125,7 +125,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   };
 
   const {
-    countries,
+    data: countries,
     selectedCountry,
     updateSelectedCountry,
     isLoading: isLoadingCountries,
@@ -187,7 +187,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
           <TaskForm formContext={formContext} onSubmit={createTask}>
             <CountrySelectorWrapper>
               <CountrySelector
-                countries={countries}
+                data={countries}
                 onChange={onChangeCountry}
                 selectedCountry={selectedCountry}
               />

@@ -52,16 +52,18 @@ const Pin = (props: ComponentPropsWithoutRef<typeof Img>) => (
 );
 
 export interface CountrySelectorProps
-  extends Pick<UserCountriesType, 'countries' | 'selectedCountry'>,
+  extends Pick<UserCountriesType, 'data' | 'selectedCountry'>,
     Omit<ComponentPropsWithoutRef<typeof CountrySelectWrapper>, 'onChange'> {
   onChange: ChangeEventHandler<HTMLSelectElement>;
 }
 
-export const CountrySelector = ({ countries, selectedCountry, onChange }: CountrySelectorProps) => {
-  const options = countries.map(country => ({
-    value: country.code,
-    label: country.name,
-  }));
+export const CountrySelector = ({ data, selectedCountry, onChange }: CountrySelectorProps) => {
+  const options =
+    data?.map(country => ({
+      value: country.code,
+      label: country.name,
+    })) ?? [];
+
 
   const commonProps = {
     onChange,
