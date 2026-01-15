@@ -4,12 +4,15 @@ import log from 'winston';
 
 import {
   FACT_CURRENT_SYNC_TICK,
+  FACT_CURRENT_USER_ID,
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
   FACT_LAST_SUCCESSFUL_SYNC_PUSH,
   FACT_PROJECTS_IN_SYNC,
+  FACT_PERMISSIONS_CHANGED,
   SYNC_STREAM_MESSAGE_KIND,
 } from '@tupaia/constants';
 import {
+  countSyncSnapshotRecords,
   createClientSnapshotTable,
   dropAllSnapshotTables,
   dropSnapshotTable,
@@ -17,6 +20,7 @@ import {
   getModelsForPush,
   saveChangesFromMemory,
   saveIncomingSnapshotChanges,
+  SYNC_SESSION_DIRECTION,
   waitForPendingEditsUsingSyncTick,
   withDeferredSyncSafeguards,
 } from '@tupaia/sync';
@@ -93,6 +97,8 @@ export class ClientSyncManager {
   progressMessage: string | null = null;
 
   syncStage: number | null = null;
+
+  permissionsChanged: boolean = false;
 
   emitter = mitt<SyncEvents>();
 
@@ -340,12 +346,34 @@ export class ClientSyncManager {
       performance.measure('syncDuration', 'startSyncSession', 'endSyncSession'),
     );
 
+    if (!this.isInitialSync) {
+      await this.checkForPermissionChanges(sessionId);
+    }
+
     // clear temp data stored for persist
     await dropSnapshotTable(this.database, sessionId);
 
     this.lastSuccessfulSyncTime = new Date();
 
     return { pulledChangesCount };
+  }
+
+  async checkForPermissionChanges(sessionId: string) {
+    const currentUserId = await this.models.localSystemFact.get(FACT_CURRENT_USER_ID);
+
+    const permissionChangesCount = await countSyncSnapshotRecords(
+      this.database,
+      sessionId,
+      undefined,
+      this.models.userEntityPermission.databaseRecord,
+      "data->>'user_id' = :userId",
+      { userId: currentUserId },
+    );
+    if (permissionChangesCount > 0) {
+      await this.models.localSystemFact.set(FACT_PERMISSIONS_CHANGED, true.toString());
+      this.emitter.emit(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, { permissionsChanged: true });
+      this.permissionsChanged = true;
+    }
   }
 
   async startSyncSession(urgent: boolean, lastSyncedTick: number) {

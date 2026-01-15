@@ -3,6 +3,7 @@ import {
   FACT_CURRENT_SYNC_TICK,
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
   FACT_LAST_SUCCESSFUL_SYNC_PUSH,
+  FACT_PERMISSIONS_CHANGED,
   FACT_PROJECTS_IN_SYNC,
 } from '@tupaia/constants';
 
@@ -37,6 +38,7 @@ const clearLocalSystemFacts = async (models: DatatrakWebModelRegistry) => {
   await models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, -1);
   await models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, -1);
   await models.localSystemFact.delete({ key: FACT_PROJECTS_IN_SYNC });
+  await models.localSystemFact.delete({ key: FACT_PERMISSIONS_CHANGED });
 };
 
 export const clearDatabase = async (models: DatatrakWebModelRegistry) => {

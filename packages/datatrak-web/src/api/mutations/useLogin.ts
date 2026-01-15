@@ -11,6 +11,8 @@ import { AuthService } from '../../auth';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { login } from '../../auth/login';
 import { clearDatabase } from '../../database';
+import { useSyncContext } from '../SyncContext';
+import { SYNC_EVENT_ACTIONS } from '../../types';
 
 type LoginCredentials = {
   email: string;
@@ -22,6 +24,7 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const from = useFromLocation();
   const { models } = useDatabaseContext() || {};
+  const { clientSyncManager } = useSyncContext() || {};
   const isOfflineFirst = useIsOfflineFirst();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
@@ -43,6 +46,7 @@ export const useLogin = () => {
       onSuccess: async ({ user }) => {
         if (isOfflineFirst) {
           const ensuredModels = ensure(models);
+          const syncManager = ensure(clientSyncManager);
 
           // Clear database if the user has logged in with a different user
           const previouslyLoggedInUserId = await ensuredModels.localSystemFact.get(
@@ -60,6 +64,9 @@ export const useLogin = () => {
 
           // Set current user id
           await ensuredModels.localSystemFact.set(FACT_CURRENT_USER_ID, user.id);
+
+          // Emit permissions changed event to reset data notification
+          syncManager.emitter.emit(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, { permissionsChanged: false });
         }
 
         await queryClient.invalidateQueries();
