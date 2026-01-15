@@ -1,11 +1,10 @@
 import React, { ChangeEventHandler, ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
+import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { Select as BaseSelect } from '@tupaia/ui-components';
-
 import { FullScreenSelect } from '../../components/FullScreenSelect';
 import { useIsMobile } from '../../utils';
-import type { UserCountriesType } from './useUserCountries';
 
 const Select = styled(BaseSelect)`
   inline-size: 10rem;
@@ -52,18 +51,23 @@ const Pin = (props: ComponentPropsWithoutRef<typeof Img>) => (
 );
 
 export interface CountrySelectorProps
-  extends Pick<UserCountriesType, 'data' | 'selectedCountry'>,
-    Omit<ComponentPropsWithoutRef<typeof CountrySelectWrapper>, 'onChange'> {
+  extends Omit<ComponentPropsWithoutRef<typeof CountrySelectWrapper>, 'onChange'> {
+  countries: DatatrakWebEntityDescendantsRequest.EntityResponse[] | undefined;
   onChange: ChangeEventHandler<HTMLSelectElement>;
+  selectedCountry: DatatrakWebEntityDescendantsRequest.EntityResponse | null;
 }
 
-export const CountrySelector = ({ data, selectedCountry, onChange }: CountrySelectorProps) => {
+export const CountrySelector = ({
+  countries,
+  onChange,
+  selectedCountry,
+  ...props
+}: CountrySelectorProps) => {
   const options =
-    data?.map(country => ({
+    countries?.map(country => ({
       value: country.code,
       label: country.name,
     })) ?? [];
-
 
   const commonProps = {
     onChange,
@@ -72,7 +76,7 @@ export const CountrySelector = ({ data, selectedCountry, onChange }: CountrySele
   };
 
   return (
-    <CountrySelectWrapper>
+    <CountrySelectWrapper {...props}>
       {useIsMobile() ? (
         <FullScreenSelect {...commonProps} icon={<Pin />} label="Select country" />
       ) : (

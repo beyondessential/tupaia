@@ -1,88 +1,40 @@
-import { ChangeEvent, ChangeEventHandler, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-import { camelcaseKeys } from '@tupaia/tsutils';
-import { Country, DatatrakWebEntitiesRequest } from '@tupaia/types';
-import {
-  useCurrentUserContext,
-  useProjectEntities,
-  UseProjectEntitiesQueryOptions,
-} from '../../api';
+import { Country, DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
+import { useCurrentUserContext, UseProjectEntitiesQueryOptions } from '../../api';
 import {
   useProjectCountryEntities,
   UseProjectEntitiesQueryResult,
 } from '../../api/queries/useProjectEntities';
 
-export type UserCountriesType = UseProjectEntitiesQueryResult & {
-  /**
-   * @privateRemarks The internal {@link useState} only ever explicitly stores `Country | null`, but
-   * `selectedCountry` may be undefined if the {@link useProjectEntities} query is still loading.
-   */
-  selectedCountry: DatatrakWebEntitiesRequest.EntitiesResponseItem | null | undefined;
-  updateSelectedCountry: ChangeEventHandler;
-};
+export interface UserCountriesType {
+  queryResult: UseProjectEntitiesQueryResult;
+  state: [
+    DatatrakWebEntityDescendantsRequest.EntityResponse | null,
+    (countryCode: Country['code']) => DatatrakWebEntityDescendantsRequest.EntityResponse | null,
+  ];
+}
 
 export const useUserCountries = (
   useProjectEntitiesQueryOptions?: UseProjectEntitiesQueryOptions,
 ): UserCountriesType => {
   const user = useCurrentUserContext();
 
-  const [newSelectedCountry, setSelectedCountry] =
-    useState<DatatrakWebEntitiesRequest.EntitiesResponseItem | null>(null);
-
-  const projectCode = user.project?.code;
-  const projectEntitiesQuery = useProjectCountryEntities(
-    projectCode,
+  const queryResult = useProjectCountryEntities(
+    user.project?.code,
     undefined,
     useProjectEntitiesQueryOptions,
   );
-  const countries = projectEntitiesQuery.data;
-
-  const selectedCountry = (() => {
-    if (!countries) return undefined;
-
-    // if the country has been changed (but not yet saved), return the new country
-    if (newSelectedCountry) return newSelectedCountry;
-
-    // if the user has a country, return that country if it can be found
-    if (user.country && countries.some(c => c.code === user.country?.code))
-      return camelcaseKeys(user.country) as DatatrakWebEntitiesRequest.EntitiesResponseItem;
-
-    // if the selected project is 'explore', return demo land
-    if (projectCode === 'explore') return countries.find(c => c.code === 'DL');
-
-    // otherwise return the first country in the list
-    return countries[0] ?? null;
-  })();
-
-  return {
-    ...projectEntitiesQuery,
-    selectedCountry,
-    updateSelectedCountry: (e: ChangeEvent<HTMLSelectElement>) => {
-      const countryCode = e.target.value;
-      const newCountry = countries?.find(country => country.code === countryCode);
-      setSelectedCountry(newCountry ?? null);
-    },
-  };
-};
-
-export function useSelectedCountryState(): [
-  DatatrakWebEntitiesRequest.EntitiesResponseItem | null,
-  (countryCode: Country['code']) => DatatrakWebEntitiesRequest.EntitiesResponseItem | null,
-] {
-  const user = useCurrentUserContext();
-  const { data: countries, isLoading: isLoadingCountries } = useProjectCountryEntities(
-    user.project?.code,
-  );
+  const { data: countries } = queryResult;
 
   const countriesByCode = useMemo(
     () =>
-      countries?.reduce<Record<Country['code'], DatatrakWebEntitiesRequest.EntitiesResponseItem>>(
-        (acc, country) => {
-          acc[country.code] = country;
-          return acc;
-        },
-        {},
-      ),
+      countries?.reduce<
+        Record<Country['code'], DatatrakWebEntityDescendantsRequest.EntityResponse>
+      >((acc, country) => {
+        acc[country.code] = country;
+        return acc;
+      }, {}),
     [countries],
   );
 
@@ -101,12 +53,15 @@ export function useSelectedCountryState(): [
     return countries[0] ?? null;
   }, [countries, countriesByCode, user.country, user.project?.code]);
 
-  const [selectedCountry, setSelectedCountry] =
-    useState<DatatrakWebEntitiesRequest.EntitiesResponseItem | null>(getInitialCountrySelection);
+  const state = useState<DatatrakWebEntityDescendantsRequest.EntityResponse | null>(
+    getInitialCountrySelection,
+  );
+  const [selectedCountry, setSelectedCountry] = state;
 
   if (
-    !isLoadingCountries && // Once country list is loaded, if user has...
-    // ...no selection OR stale selection (e.g. after project change)...
+    countries && // Once country list is loaded...
+    countries.length > 0 && // ...it’s nonempty...
+    // ...and user has no selection OR has stale selection (e.g. after project change)...
     (!selectedCountry || !countriesByCode?.[selectedCountry.code])
   ) {
     // ...reinitialise as if user has no country selected.
@@ -119,5 +74,8 @@ export function useSelectedCountryState(): [
     return newCountry;
   };
 
-  return [selectedCountry, updateSelectedCountry];
-}
+  return {
+    queryResult,
+    state: [selectedCountry, updateSelectedCountry],
+  };
+};

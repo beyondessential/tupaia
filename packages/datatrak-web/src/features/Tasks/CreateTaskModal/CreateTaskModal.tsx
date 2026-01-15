@@ -125,10 +125,8 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   };
 
   const {
-    data: countries,
-    selectedCountry,
-    updateSelectedCountry,
-    isLoading: isLoadingCountries,
+    queryResult: { data: countries, isLoading: isLoadingCountries },
+    state: [selectedCountry, updateSelectedCountry],
   } = useUserCountries({ onError: handleCountriesError });
   const { isLoading: isLoadingUser, isFetching: isFetchingUser } = useUser();
 
@@ -187,7 +185,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
           <TaskForm formContext={formContext} onSubmit={createTask}>
             <CountrySelectorWrapper>
               <CountrySelector
-                data={countries}
+                countries={countries}
                 onChange={onChangeCountry}
                 selectedCountry={selectedCountry}
               />
