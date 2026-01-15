@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { Country, DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
+import { Country, DatatrakWebEntityDescendantsRequest, EntityTypeEnum } from '@tupaia/types';
 import { useCurrentUserContext, UseProjectEntitiesQueryOptions } from '../../api';
 import {
-  useProjectCountryEntities,
+  useProjectEntities,
   UseProjectEntitiesQueryResult,
 } from '../../api/queries/useProjectEntities';
 
@@ -20,9 +20,11 @@ export const useUserCountries = (
 ): UserCountriesType => {
   const user = useCurrentUserContext();
 
-  const queryResult = useProjectCountryEntities(
+  const queryResult = useProjectEntities(
     user.project?.code,
-    undefined,
+    {
+      filter: { type: EntityTypeEnum.country },
+    },
     useProjectEntitiesQueryOptions,
   );
   const { data: countries } = queryResult;

@@ -1,6 +1,6 @@
 import { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 
-import { DatatrakWebEntityDescendantsRequest, EntityTypeEnum, Project } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest, Project } from '@tupaia/types';
 import { getEntityDescendants } from '../../database';
 import { get } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
@@ -40,16 +40,4 @@ export const useProjectEntities = (
       },
     },
   );
-};
-
-export const useProjectCountryEntities = (
-  projectCode?: Project['code'],
-  params?: DatatrakWebEntityDescendantsRequest.ReqBody,
-  useQueryOptions?: UseProjectEntitiesQueryOptions,
-) => {
-  const augmentedParams = {
-    ...params,
-    filter: { ...params?.filter, type: EntityTypeEnum.country },
-  };
-  return useProjectEntities(projectCode, augmentedParams, useQueryOptions);
 };
