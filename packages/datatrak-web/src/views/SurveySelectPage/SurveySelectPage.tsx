@@ -86,6 +86,7 @@ export const SurveySelectPage = () => {
     <CountrySelector
       countries={countries}
       onChange={updateSelectedCountry}
+      key={user.projectId} // Force fresh instance when project changes
       selectedCountry={selectedCountry}
     />
   );
