@@ -1,4 +1,5 @@
-import { compact, groupBy, mapValues } from 'lodash';
+import { compact, groupBy } from 'es-toolkit';
+import { mapValues } from 'es-toolkit/compat';
 
 import { BaseDatabase, DatabaseModel } from '@tupaia/database';
 import { isNotNullish } from '@tupaia/tsutils';
@@ -10,7 +11,7 @@ interface Dependency {
 
 export async function getDependencyOrder(database: BaseDatabase): Promise<string[]> {
   const sorted: string[] = [];
-  const dependencies = (await database.executeSql(`
+  const dependencies = await database.executeSql<Dependency[]>(`
     WITH all_tables AS (
       SELECT c.relname AS table_name
       FROM pg_class c
@@ -35,10 +36,13 @@ export async function getDependencyOrder(database: BaseDatabase): Promise<string
     FROM all_tables t
     LEFT JOIN foreign_keys fk ON t.table_name = fk.child_table
     ORDER BY t.table_name, fk.depends_on;
-  `)) as Dependency[];
+  `);
   const groupedDependencies = new Map(
     Object.entries(
-      mapValues(groupBy(dependencies, 'table_name'), v => compact(v.map(d => d.depends_on))),
+      mapValues(
+        groupBy(dependencies, d => d.table_name),
+        v => compact(v.map(d => d.depends_on)),
+      ),
     ),
   );
 
