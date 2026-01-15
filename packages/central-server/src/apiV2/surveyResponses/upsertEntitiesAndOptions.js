@@ -1,12 +1,19 @@
-/** @typedef {import('@tupaia/types').MeditrakSurveyResponseRequest} SurveyResponse */
+/**
+ * @typedef {import('@tupaia/database').EntityRecord} EntityRecord
+ * @typedef {import('@tupaia/database').ModelRegistry} ModelRegistry
+ * @typedef {import('@tupaia/types').MeditrakSurveyResponseRequest} SurveyResponse
+ * @typedef {import('@tupaia/types').Survey} Survey
+ */
+
+import { uniqBy } from 'es-toolkit';
 
 import { DatabaseError } from '@tupaia/utils';
 
 /**
- * @param {import('@tupaia/database').ModelRegistry} models
+ * @param {ModelRegistry} models
  * @param {SurveyResponse['entities_upserted']} entitiesUpserted
- * @param {import('@tupaia/types').Survey['id']} surveyId
- * @returns {Promise<Array<import('@tupaia/database').EntityRecord>>}
+ * @param {Survey['id']} surveyId
+ * @returns {Promise<EntityRecord[]>}
  */
 const upsertEntities = async (models, entitiesUpserted, surveyId) => {
   if (entitiesUpserted.length === 0) return [];
@@ -56,9 +63,7 @@ function hashOption({ option_set_id, value }) {
 const createOptions = async (models, optionsCreated) => {
   if (optionsCreated.length === 0) return [];
 
-  const uniqueOptionsCreated = new Map(
-    optionsCreated.map(option => [hashOption(option), option]),
-  ).values();
+  const uniqueOptionsCreated = uniqBy(optionsCreated, hashOption);
 
   /** @type {import('@tupaia/database').OptionRecord[]} */
   const options = [];

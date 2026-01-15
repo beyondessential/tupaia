@@ -12221,6 +12221,7 @@ __metadata:
     countries-and-timezones: ^3.6.0
     cross-env: ^7.0.2
     deep-equal-in-any-order: ^1.0.21
+    es-toolkit: ^1.43.0
     express: ^4.19.2
     format-link-header: ^2.1.0
     lodash: ^4.17.4
@@ -20801,6 +20802,18 @@ __metadata:
     is-date-object: ^1.0.1
     is-symbol: ^1.0.2
   checksum: 4ead6671a2c1402619bdd77f3503991232ca15e17e46222b0a41a5d81aebc8740a77822f5b3c965008e631153e9ef0580540007744521e72de8e33599fca2eed
+  languageName: node
+  linkType: hard
+
+"es-toolkit@npm:^1.43.0":
+  version: 1.43.0
+  resolution: "es-toolkit@npm:1.43.0"
+  dependenciesMeta:
+    "@trivago/prettier-plugin-sort-imports@4.3.0":
+      unplugged: true
+    prettier-plugin-sort-re-exports@0.0.1:
+      unplugged: true
+  checksum: 202fe8e59d49c34214e8cf1f9a5c1920d5dc04a2938b44e5073ad25e187a61dd74f173e556c332ae380472ca70509b7cd7bd9f9a868d77c5c0525e3ac5b11b08
   languageName: node
   linkType: hard
 
