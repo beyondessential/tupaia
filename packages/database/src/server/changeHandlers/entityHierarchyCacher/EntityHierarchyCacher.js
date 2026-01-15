@@ -84,9 +84,11 @@ export class EntityHierarchyCacher extends ChangeHandler {
       return null; // if the canonical types are the same, the change won't invalidate the cache
     }
     /** @type {ProjectRecord[]} */
-    const projectsUsingHierarchy = await this.models.project.find({
-      entity_hierarchy_id: hierarchyId,
-    });
+    const projectsUsingHierarchy = await this.models.project.find(
+      { entity_hierarchy_id: hierarchyId },
+      { columns: ['entity_id'] },
+    );
+
     // delete and rebuild full hierarchy of any project using this entity
     /** @type {RebuildJob[]} */
     const jobs = projectsUsingHierarchy.map(p => ({
