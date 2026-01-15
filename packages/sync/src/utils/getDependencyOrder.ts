@@ -6,7 +6,7 @@ import { isNotNullish } from '@tupaia/tsutils';
 
 interface Dependency {
   table_name: string;
-  depends_on: string;
+  depends_on: string | null;
 }
 
 export async function getDependencyOrder(database: BaseDatabase): Promise<string[]> {
