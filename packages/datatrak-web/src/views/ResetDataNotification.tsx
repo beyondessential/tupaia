@@ -31,7 +31,7 @@ export const ResetDataNotification = () => {
   useEffect(() => {
     const loadPermissionsChanged = async () => {
       const permissionsChanged = await ensuredModels.localSystemFact.get(FACT_PERMISSIONS_CHANGED);
-      setPermissionsChanged(Boolean(permissionsChanged));
+      setPermissionsChanged(permissionsChanged === 'true');
     };
 
     loadPermissionsChanged();
@@ -46,7 +46,7 @@ export const ResetDataNotification = () => {
       clientSyncManager.emitter.off(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
     };
 
-  // we only want to set up once to avoid multiple subscriptions
+    // we only want to set up once to avoid multiple subscriptions
   }, []);
 
   if (!permissionsChanged) {
