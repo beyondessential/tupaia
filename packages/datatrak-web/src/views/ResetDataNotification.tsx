@@ -45,6 +45,8 @@ export const ResetDataNotification = () => {
     return () => {
       clientSyncManager.emitter.off(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
     };
+
+  // we only want to set up once to avoid multiple subscriptions
   }, []);
 
   if (!permissionsChanged) {
