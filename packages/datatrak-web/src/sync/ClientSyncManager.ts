@@ -369,7 +369,7 @@ export class ClientSyncManager {
       { userId: currentUserId },
     );
     if (permissionChangesCount > 0) {
-        await this.updatePermissionsChanged(true);
+      await this.updatePermissionsChanged(true);
     }
   }
 

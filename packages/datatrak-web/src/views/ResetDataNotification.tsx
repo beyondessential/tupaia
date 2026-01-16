@@ -23,14 +23,13 @@ export const ResetDataNotification = () => {
   const navigate = useNavigate();
   const clientSyncManager = ensure(useSyncContext()?.clientSyncManager);
   const models = ensure(useDatabaseContext()?.models);
-  const ensuredModels = ensure(models);
   const [permissionsChanged, setPermissionsChanged] = useState(
     clientSyncManager.permissionsChanged,
   );
 
   useEffect(() => {
     const loadPermissionsChanged = async () => {
-      const permissionsChanged = await ensuredModels.localSystemFact.get(FACT_PERMISSIONS_CHANGED);
+      const permissionsChanged = await models.localSystemFact.get(FACT_PERMISSIONS_CHANGED);
       setPermissionsChanged(permissionsChanged === 'true');
     };
 
@@ -54,7 +53,7 @@ export const ResetDataNotification = () => {
   }
 
   const resetDatabase = useCallback(async () => {
-    await clearDatabase(ensure(models));
+    await clearDatabase(models);
     logout(undefined, { onSuccess: () => navigate(ROUTES.LOGIN) });
   }, [models, logout, navigate]);
 
