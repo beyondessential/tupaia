@@ -1,12 +1,8 @@
-import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
-import {
-  DatatrakWebSurveyRequest,
-  WebServerProjectRequest,
-  Question,
-  QuestionType,
-} from '@tupaia/types';
+import { DatatrakWebSurveyRequest, Question, QuestionType } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
 
 export interface SurveyRequest
@@ -83,10 +79,13 @@ export class SurveyRoute extends Route<SurveyRequest> {
       models,
     } = this.req;
     const { fields = DEFAULT_FIELDS } = query;
-    // check if survey exists in the database
-    const dbSurveyResults = await models.survey.find({ code: surveyCode });
 
-    if (!dbSurveyResults.length) throw new Error(`Survey with code ${surveyCode} not found`);
+    const [{ exists }] = await models.database.executeSql<[{ exists: boolean }]>(
+      'SELECT EXISTS(SELECT 1 FROM survey WHERE code = ?)',
+      [surveyCode],
+    );
+
+    if (!exists) throw new Error(`Survey with code ${surveyCode} not found`);
 
     // check if user has access to survey
     const surveys = await ctx.services.central.fetchResources('surveys', {
@@ -101,10 +100,21 @@ export class SurveyRoute extends Route<SurveyRequest> {
 
     const survey = camelcaseKeys(surveys[0], { deep: true });
 
-    const { projects } = await ctx.services.webConfig.fetchProjects();
-    const project = survey?.projectId
-      ? projects.find(({ id }: WebServerProjectRequest.ProjectResponse) => id === survey.projectId)
-      : null;
+    const { code: projectCode } = await models.project.findOne(
+      { id: survey.projectId },
+      { columns: ['code'] },
+    );
+
+    let project;
+    try {
+      project = await ctx.services.webConfig.fetchProject(projectCode);
+    } catch (e: any) {
+      if (e.name !== 'NotFoundError') throw e;
+      // Not sure why we don’t throw a DatabaseError or similar if a survey’s project isn’t found,
+      // considering `survey.project_id` is non-nullable. This commit merely preserves existing
+      // behaviour.
+      project = null;
+    }
 
     const { surveyQuestions, ...restOfSurvey } = survey;
 
