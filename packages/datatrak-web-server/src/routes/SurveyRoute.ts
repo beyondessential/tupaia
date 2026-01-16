@@ -25,7 +25,7 @@ const DEFAULT_FIELDS = [
   'survey_group.name',
   'project_id',
   'surveyQuestions',
-];
+] as const;
 
 const parseOption = (option: string) => {
   try {
