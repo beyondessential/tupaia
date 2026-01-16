@@ -1,11 +1,11 @@
 import { respond } from '@tupaia/utils';
 
-const FRONTEND_EXCLUDED_PROJECTS = [
+const FRONTEND_EXCLUDED_PROJECTS = /** @type {const} */ ([
   'ehealth_cook_islands',
   'ehealth_tokelau',
   'ehealth_timor_leste',
   'ehealth_vanuatu',
-];
+]);
 
 async function fetchEntitiesWithProjectAccess(req, entities, permissionGroups) {
   return Promise.all(
