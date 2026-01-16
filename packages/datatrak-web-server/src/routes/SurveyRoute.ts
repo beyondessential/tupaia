@@ -9,12 +9,13 @@ import {
 } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
 
-export type SurveyRequest = Request<
-  DatatrakWebSurveyRequest.Params,
-  DatatrakWebSurveyRequest.ResBody,
-  DatatrakWebSurveyRequest.ReqBody,
-  DatatrakWebSurveyRequest.ReqQuery
->;
+export interface SurveyRequest
+  extends Request<
+    DatatrakWebSurveyRequest.Params,
+    DatatrakWebSurveyRequest.ResBody,
+    DatatrakWebSurveyRequest.ReqBody,
+    DatatrakWebSurveyRequest.ReqQuery
+  > {}
 
 const DEFAULT_FIELDS = [
   'name',
