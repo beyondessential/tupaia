@@ -585,4 +585,9 @@ export class ClientSyncManager {
       return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
     });
   }
+
+  resetPermissionsChanged(): void {
+    this.permissionsChanged = false;
+    this.emitter.emit(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, { permissionsChanged: false });
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link, styled } from '@mui/material';
 
@@ -51,10 +51,10 @@ export const ResetDataNotification = () => {
     return null;
   }
 
-  const resetDatabase = async () => {
+  const resetDatabase = useCallback(async () => {
     await clearDatabase(ensure(models));
     logout(undefined, { onSuccess: () => navigate(ROUTES.LOGIN) });
-  };
+  }, [models, logout, navigate]);
 
   const Message = () => (
     <span>
