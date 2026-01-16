@@ -13,6 +13,9 @@ export class WebConfigApi extends BaseApi {
   public async fetchMeasureData(mapOverlayCode: string, query?: QueryParameters | null) {
     return this.connection.get('measureData', { ...query, mapOverlayCode });
   }
+  public async fetchProject(projectCode: string, query?: QueryParameters | null) {
+    return await this.connection.get(`project/${projectCode}`, query);
+  }
   public async fetchProjects(query?: QueryParameters | null) {
     return this.connection.get('projects', query);
   }
