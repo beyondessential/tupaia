@@ -111,7 +111,7 @@ export class ProjectModel extends DatabaseModel {
         },
       },
       {
-        joinWith: 'entity',
+        joinWith: RECORDS.ENTITY,
         joinCondition: ['entity.id', 'project.entity_id'],
       },
     );
