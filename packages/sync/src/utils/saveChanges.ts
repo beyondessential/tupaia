@@ -5,7 +5,7 @@ export const saveCreates = async (
   model: DatabaseModel,
   records: Record<string, any>[],
   batchSize = 1000,
-  progressCallback?: (recordsProcessed: number, modelName: string) => void,
+  progressCallback?: (recordsProcessed: number) => void,
 ) => {
   for (let i = 0; i < records.length; i += batchSize) {
     const batch = records.slice(i, i + batchSize);
@@ -25,7 +25,7 @@ export const saveCreates = async (
       );
     }
 
-    progressCallback?.(batch.length, model.databaseRecord);
+    progressCallback?.(batch.length);
   }
 };
 
@@ -34,7 +34,7 @@ export const saveUpdates = async (
   incomingRecords: Record<string, any>[],
   isCentralServer: boolean,
   batchSize = 1000,
-  progressCallback?: (recordsProcessed: number, modelName: string) => void,
+  progressCallback?: (recordsProcessed: number) => void,
 ) => {
   const recordsToSave = incomingRecords.filter(r => r.id);
   for (let i = 0; i < recordsToSave.length; i += batchSize) {
@@ -64,7 +64,7 @@ export const saveUpdates = async (
       );
     }
 
-    progressCallback?.(batch.length, model.databaseRecord);
+    progressCallback?.(batch.length);
   }
 };
 
@@ -100,7 +100,7 @@ export const saveDeletes = async (
   model: DatabaseModel,
   recordsForDelete: Record<string, any>[],
   batchSize = 1000,
-  progressCallback?: (recordsProcessed: number, modelName: string) => void,
+  progressCallback?: (recordsProcessed: number) => void,
 ) => {
   for (let i = 0; i < recordsForDelete.length; i += batchSize) {
     const batch = recordsForDelete.slice(i, i + batchSize);
@@ -120,6 +120,6 @@ export const saveDeletes = async (
       );
     }
 
-    progressCallback?.(batch.length, model.databaseRecord);
+    progressCallback?.(batch.length);
   }
 };
