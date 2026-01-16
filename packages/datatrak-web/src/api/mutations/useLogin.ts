@@ -66,7 +66,7 @@ export const useLogin = () => {
           await ensuredModels.localSystemFact.set(FACT_CURRENT_USER_ID, user.id);
 
           // Emit permissions changed event to reset data notification
-          syncManager.resetPermissionsChanged();
+          await syncManager.updatePermissionsChanged(false);
         }
 
         await queryClient.invalidateQueries();

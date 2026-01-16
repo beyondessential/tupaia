@@ -369,9 +369,7 @@ export class ClientSyncManager {
       { userId: currentUserId },
     );
     if (permissionChangesCount > 0) {
-      await this.models.localSystemFact.set(FACT_PERMISSIONS_CHANGED, 'true');
-      this.emitter.emit(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, { permissionsChanged: true });
-      this.permissionsChanged = true;
+        await this.updatePermissionsChanged(true);
     }
   }
 
@@ -586,8 +584,9 @@ export class ClientSyncManager {
     });
   }
 
-  resetPermissionsChanged(): void {
-    this.permissionsChanged = false;
-    this.emitter.emit(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, { permissionsChanged: false });
+  async updatePermissionsChanged(permissionsChanged: boolean): Promise<void> {
+    this.permissionsChanged = permissionsChanged;
+    await this.models.localSystemFact.set(FACT_PERMISSIONS_CHANGED, permissionsChanged.toString());
+    this.emitter.emit(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, { permissionsChanged });
   }
 }
