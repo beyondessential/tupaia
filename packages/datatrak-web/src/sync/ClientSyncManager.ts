@@ -20,7 +20,6 @@ import {
   getModelsForPush,
   saveChangesFromMemory,
   saveIncomingSnapshotChanges,
-  SYNC_SESSION_DIRECTION,
   waitForPendingEditsUsingSyncTick,
   withDeferredSyncSafeguards,
 } from '@tupaia/sync';
