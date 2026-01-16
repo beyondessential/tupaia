@@ -18,12 +18,6 @@ export class ProjectRoute extends Route<ProjectRequest> {
       params: { projectCode },
     } = this.req;
 
-    const { projects } = await ctx.services.webConfig.fetchProjects();
-
-    const project = projects.find(({ code }: { code: string }) => code === projectCode);
-    if (!project) {
-      throw new Error(`No project found with code '${projectCode}'`);
-    }
-    return project;
+    return await ctx.services.webConfig.fetchProject(projectCode);
   }
 }
