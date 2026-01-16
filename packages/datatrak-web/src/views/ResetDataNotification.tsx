@@ -21,14 +21,16 @@ const StyledLink = styled(Link)`
 export const ResetDataNotification = () => {
   const { mutate: logout } = useLogout();
   const navigate = useNavigate();
-  const { clientSyncManager } = useSyncContext() || {};
-  const syncManager = ensure(clientSyncManager);
-  const { models } = useDatabaseContext() || {};
-  const [permissionsChanged, setPermissionsChanged] = useState(syncManager.permissionsChanged);
+  const clientSyncManager = ensure(useSyncContext()?.clientSyncManager);
+  const models = ensure(useDatabaseContext()?.models);
+  const ensuredModels = ensure(models);
+  const [permissionsChanged, setPermissionsChanged] = useState(
+    clientSyncManager.permissionsChanged,
+  );
 
   useEffect(() => {
     const loadPermissionsChanged = async () => {
-      const permissionsChanged = await models?.localSystemFact.get(FACT_PERMISSIONS_CHANGED);
+      const permissionsChanged = await ensuredModels.localSystemFact.get(FACT_PERMISSIONS_CHANGED);
       setPermissionsChanged(Boolean(permissionsChanged));
     };
 
@@ -39,9 +41,9 @@ export const ResetDataNotification = () => {
     const handler = ({ permissionsChanged }: { permissionsChanged: boolean }) => {
       setPermissionsChanged(permissionsChanged);
     };
-    syncManager.emitter.on(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
+    clientSyncManager.emitter.on(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
     return () => {
-      syncManager.emitter.off(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
+      clientSyncManager.emitter.off(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
     };
   }, []);
 
@@ -57,12 +59,7 @@ export const ResetDataNotification = () => {
   const Message = () => (
     <span>
       Looks like there was an update while you were offline,{' '}
-      <StyledLink
-        onClick={resetDatabase}
-      >
-        click here
-      </StyledLink>{' '}
-      to get the latest data
+      <StyledLink onClick={resetDatabase}>click here</StyledLink> to get the latest data
     </span>
   );
 
