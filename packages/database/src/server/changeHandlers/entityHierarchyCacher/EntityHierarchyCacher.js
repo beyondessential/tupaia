@@ -98,23 +98,37 @@ export class EntityHierarchyCacher extends ChangeHandler {
     return jobs;
   }
 
+  async refreshAffectedEntities(transactingModels, affectedEntityIds) {
+    // Lock the rows first to prevent serialization conflicts in REPEATABLE READ transactions
+    // This ensures we wait for any concurrent updates to complete before updating
+    await transactingModels.database.executeSql(
+      `
+      SELECT id FROM entity
+      WHERE id IN ${SqlQuery.record(affectedEntityIds)}
+      FOR UPDATE
+      `,
+      affectedEntityIds,
+    );
+
+    await transactingModels.database.executeSql(
+      `
+      UPDATE entity
+      SET updated_at_sync_tick = 1
+      WHERE id IN ${SqlQuery.record(affectedEntityIds)}
+      `,
+      affectedEntityIds,
+    );
+  }
   /**
    * @param {ModelRegistry} transactingModels
    * @param {RebuildJob[]} rebuildJobs
    */
   async handleChanges(transactingModels, rebuildJobs) {
     const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
-    const relatedEntityIds = await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
+    const affectedEntityIds = await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
 
-    if (relatedEntityIds.length > 0) {
-      await transactingModels.database.executeSql(
-        `
-        UPDATE entity
-        SET updated_at_sync_tick = 1
-        WHERE id IN ${SqlQuery.record(relatedEntityIds)}
-        `,
-        relatedEntityIds,
-      );
+    if (affectedEntityIds.length > 0) {
+      await this.refreshAffectedEntities(transactingModels, affectedEntityIds);
     }
 
     // explicitly flag ancestor_descendant_relation as changed so that model level caches are cleared
