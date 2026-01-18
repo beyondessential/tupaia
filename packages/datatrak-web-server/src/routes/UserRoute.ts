@@ -1,18 +1,22 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebUserRequest, WebServerProjectRequest } from '@tupaia/types';
+import { UnexpectedNullishValueError, ensure } from '@tupaia/tsutils';
+import { DatatrakWebUserRequest } from '@tupaia/types';
+import { CustomError } from '@tupaia/utils';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../constants';
 
-export type UserRequest = Request<
-  DatatrakWebUserRequest.Params,
-  DatatrakWebUserRequest.ResBody,
-  DatatrakWebUserRequest.ReqBody,
-  DatatrakWebUserRequest.ReqQuery
->;
+export interface UserRequest
+  extends Request<
+    DatatrakWebUserRequest.Params,
+    DatatrakWebUserRequest.ResBody,
+    DatatrakWebUserRequest.ReqBody,
+    DatatrakWebUserRequest.ReqQuery
+  > {}
 
 export class UserRoute extends Route<UserRequest> {
   public async buildResponse() {
-    const { ctx, session, accessPolicy } = this.req;
+    const { ctx, session, accessPolicy, models } = this.req;
 
     // Avoid sending a 'me' request as the api user
     if (!session) {
@@ -43,12 +47,27 @@ export class UserRoute extends Route<UserRequest> {
       hide_welcome_screen,
     } = preferences;
 
-    let project = null;
-    let country = null;
+    let project;
     if (projectId) {
-      const { projects } = await ctx.services.webConfig.fetchProjects();
-      project = projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
+      try {
+        const { code: projectCode } = ensure(
+          await models.project.findOne({ id: projectId }, { columns: ['code'] }),
+        );
+        project = await ctx.services.webConfig.fetchProject(projectCode);
+      } catch (e: any) {
+        console.log(e);
+        if (
+          e instanceof UnexpectedNullishValueError || // Project doesn’t exist in DB
+          (e instanceof CustomError && e.statusCode === 404) // Fetch from web-config-server failed
+        ) {
+          project = null;
+        } else {
+          throw e;
+        }
+      }
     }
+
+    let country = null;
     if (countryId) {
       const countryResponse = await ctx.services.central.fetchResources(`entities/${countryId}`, {
         columns: ['id', 'name', 'code'],
