@@ -55,7 +55,6 @@ export class UserRoute extends Route<UserRequest> {
         );
         project = await ctx.services.webConfig.fetchProject(projectCode);
       } catch (e: any) {
-        console.log(e);
         if (
           e instanceof UnexpectedNullishValueError || // Project doesn’t exist in DB
           (e instanceof CustomError && e.statusCode === 404) // Fetch from web-config-server failed
