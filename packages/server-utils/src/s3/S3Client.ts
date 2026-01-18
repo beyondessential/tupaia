@@ -1,4 +1,8 @@
-import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
+import {
+  CompleteMultipartUploadOutput,
+  GetObjectCommandInput,
+  PutObjectCommandInput,
+} from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
 import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
@@ -46,7 +50,11 @@ export class S3Client {
       .catch(() => false);
   }
 
-  private async upload(fileName: string, config?: Partial<PutObjectCommandInput>) {
+  /** Returns URL of the uploaded file (i.e. the S3 object URL). */
+  private async upload(
+    fileName: string,
+    config?: Partial<PutObjectCommandInput>,
+  ): Promise<CompleteMultipartUploadOutput['Location']> {
     const uploader = new Upload({
       client: this.s3,
       params: {
@@ -76,7 +84,7 @@ export class S3Client {
   }
 
   private async uploadPublicImage(fileName: string, buffer: Buffer, contentType: string) {
-    return this.upload(fileName, {
+    return await this.upload(fileName, {
       Body: buffer,
       ACL: 'public-read',
       ContentType: contentType,
@@ -105,16 +113,22 @@ export class S3Client {
   }
 
   private getContentTypeFromBase64(base64String: string) {
-    if (!isBase64DataUri(base64String)) {
-      throw new Error(
-        `Invalid Base64 data URI. Expected ‘data:content/type;base64,...’ but got: ‘${base64String.substring(0, 40)}...’`,
-      );
-    }
+    try {
+      if (!isBase64DataUri(base64String)) {
+        throw new Error(
+          `Invalid Base64 data URI. Expected ‘data:content/type;base64,...’ but got: ‘${base64String.substring(0, 40)}...’`,
+        );
+      }
 
-    return base64String.substring(
-      'data:'.length,
-      base64String.indexOf(';base64,', 'data:'.length),
-    ) as `${string}/${string}`;
+      return base64String.substring(
+        'data:'.length,
+        base64String.indexOf(';base64,', 'data:'.length),
+      ) as `${string}/${string}`;
+    } catch {
+      // MediTrak just sends Base64-encoded JPEG data, not as a data URI, so we (dangerously) assume
+      // this is what we’re dealing with
+      return 'image/jpeg';
+    }
   }
 
   public async uploadFile(fileName: string, readable: Buffer | string) {
@@ -190,7 +204,7 @@ export class S3Client {
       throw new ConflictError(`File ${filePath} already exists on S3, overwrite is not allowed`);
     }
 
-    return this.uploadPublicImage(filePath, buffer, contentType);
+    return await this.uploadPublicImage(filePath, buffer, contentType);
   }
 
   public async downloadFile(fileName: string) {
