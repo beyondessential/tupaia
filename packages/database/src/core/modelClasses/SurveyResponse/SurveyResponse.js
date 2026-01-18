@@ -328,13 +328,27 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
   async buildSyncLookupQueryDetails() {
     return {
+      ctes: [
+        `
+          survey_responses_to_sync AS (
+            SELECT survey_response.id AS survey_response_id, survey.project_id
+            FROM survey_response
+            JOIN survey ON survey.id = survey_response.survey_id
+            UNION
+            SELECT task.initial_request_id AS survey_response_id, survey.project_id
+            FROM task
+            JOIN survey ON survey.id = task.survey_id
+          )
+        `,
+      ],
       select: await buildSyncLookupSelect(this, {
-        projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
+        projectIds: 'array_remove(ARRAY_AGG(survey_responses_to_sync.project_id), NULL)',
       }),
       joins: `
-        LEFT JOIN survey
-          ON survey.id = survey_response.survey_id
+        LEFT JOIN survey_responses_to_sync
+          ON survey_responses_to_sync.survey_response_id = survey_response.id
       `,
+      groupBy: ['survey_response.id'],
     };
   }
 

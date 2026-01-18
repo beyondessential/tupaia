@@ -425,11 +425,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   }
 
   async buildSyncLookupQueryDetails() {
-    return {
-      select: await buildSyncLookupSelect(this, {
-        projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
-      }),
-    };
+    return null;
   }
 
   async createRecordsPermissionFilter(accessPolicy, criteria = {}) {
