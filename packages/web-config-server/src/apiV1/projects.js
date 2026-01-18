@@ -93,18 +93,13 @@ export async function buildProjectDataForFrontend(project, req) {
 }
 
 export async function getProjects(req, res) {
-  const { showExcludedProjects } = req.query;
-
-  // allow 'false' or false to be falsey (as it depends on the query coming from the server or client side)
-  const isFalsey = value => value === 'false' || value === false;
-  const shouldShowExcludedProjects = !isFalsey(showExcludedProjects);
-
+  const showExcludedProjects = !isConsideredFalse(req.query.showExcludedProjects);
   /**
    * Filter out projects that should not be shown on the frontend, if the query param is set.
    * Defaults to true, because tupaia-web should be false, whereas datatrak-web will be true, and
    * there are more places where we want to show all projects than not.
    */
-  const where = shouldShowExcludedProjects
+  const where = showExcludedProjects
     ? undefined
     : {
         code: {
@@ -122,12 +117,25 @@ export async function getProjects(req, res) {
 
 export async function getProject(req, res) {
   const code = req.params.projectCode;
-  const [_project] = await req.models.project.getAllProjectDetails({ code });
+  const showExcludedProjects = !isConsideredFalse(req.query.showExcludedProjects);
 
+  if (!showExcludedProjects && FRONTEND_EXCLUDED_PROJECTS.includes(code)) {
+    throw new NotFoundError(`No project found with code ‘${code}’`);
+  }
+
+  const [_project] = await req.models.project.getAllProjectDetails({ code });
   if (_project === undefined) {
     throw new NotFoundError(`No project found with code ‘${code}’`);
   }
 
   const project = await buildProjectDataForFrontend(_project, req);
   return respond(res, project);
+}
+
+/**
+ * Allow 'false' or false to be falsy (as it depends on the query coming from the server or client
+ * side)
+ */
+function isConsideredFalse(val) {
+  return val === false || val === 'false';
 }
