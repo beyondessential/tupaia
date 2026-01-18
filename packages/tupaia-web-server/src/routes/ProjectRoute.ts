@@ -12,18 +12,12 @@ export type ProjectRequest = Request<
 export class ProjectRoute extends Route<ProjectRequest> {
   public async buildResponse() {
     const {
-      ctx,
       params: { projectCode },
+      ctx,
     } = this.req;
 
-    const { projects } = await ctx.services.webConfig.fetchProjects({
+    return await ctx.services.webConfig.fetchProject(projectCode, {
       showExcludedProjects: false,
     });
-
-    const project = projects.find(({ code }: { code: string }) => code === projectCode);
-    if (!project) {
-      throw new Error(`No project found with code '${projectCode}'`);
-    }
-    return project;
   }
 }
