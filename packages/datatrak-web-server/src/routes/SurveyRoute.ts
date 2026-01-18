@@ -3,7 +3,7 @@ import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyRequest, Question, QuestionType } from '@tupaia/types';
-import { PermissionsError } from '@tupaia/utils';
+import { NotFoundError, PermissionsError } from '@tupaia/utils';
 
 export interface SurveyRequest
   extends Request<
@@ -109,7 +109,7 @@ export class SurveyRoute extends Route<SurveyRequest> {
     try {
       project = await ctx.services.webConfig.fetchProject(projectCode);
     } catch (e: any) {
-      if (e.name !== 'NotFoundError') throw e;
+      if (!(e instanceof NotFoundError)) throw e;
       // Not sure why we don’t throw a DatabaseError or similar if a survey’s project isn’t found,
       // considering `survey.project_id` is non-nullable. This commit merely preserves existing
       // behaviour.
