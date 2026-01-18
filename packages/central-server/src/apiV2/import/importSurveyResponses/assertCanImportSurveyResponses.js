@@ -90,6 +90,14 @@ export const assertCanImportSurveyResponses = async (
   return true;
 };
 
+const getEntityDoesExist = async (models, entityId) => {
+  const [{ exists }] = await models.database.executeSql(
+    'SELECT EXISTS(SELECT 1 FROM "entity" WHERE "id" = ?)',
+    [entityId],
+  );
+  return exists;
+};
+
 /**
  * @returns {Promise<import('@tupaia/types').Entity['code'] | import('@tupaia/types').Clinic['code']>}
  */
@@ -101,10 +109,18 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
   }
 
   if (surveyResponse.entity_id) {
-    // If we're submitting a response against a new entity, it won't yet have a valid entity_code in
-    // the server db. Instead, check our permissions against the new entity's parent
     const newEntity = entitiesUpserted.find(e => e.id === surveyResponse.entity_id);
-    if (newEntity) {
+
+    const isSubmittingAgainstNewEntity =
+      // Submitting response against upserted entity...
+      newEntity !== undefined &&
+      // ...that doesn’t yet exist in database
+      !(await getEntityDoesExist(models, surveyResponse.entity_id));
+
+    if (isSubmittingAgainstNewEntity) {
+      // Submitting against new entity created by this response that doesn’t yet exist in remote
+      // database. Instead, check permissions against the new entity’s parent.
+
       /** @type {import('@tupaia/database').EntityRecord} */
       const parentEntity = ensure(
         await models.entity.findById(newEntity.parent_id, { columns: ['code'] }),
@@ -115,7 +131,7 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
 
     /** @type {import('@tupaia/database').EntityRecord} */
     const entity = ensure(
-      await models.entity.findById(surveyResponse.entity_id),
+      await models.entity.findById(surveyResponse.entity_id, { columns: ['code'] }),
       `No entity exists with ID ${surveyResponse.entity_id}`,
     );
     return entity.code;

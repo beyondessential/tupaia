@@ -30,14 +30,8 @@ export class ChangePasswordPage extends PureComponent {
   };
 
   render() {
-    const {
-      onChangeField,
-      onSubmit,
-      formFieldValues,
-      errorMessage,
-      isLoading,
-      invalidFields,
-    } = this.props;
+    const { onChangeField, onSubmit, formFieldValues, errorMessage, isLoading, invalidFields } =
+      this.props;
 
     return (
       <MenuContext style={localStyles.menuContainer}>
