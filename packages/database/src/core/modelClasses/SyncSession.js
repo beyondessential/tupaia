@@ -25,10 +25,16 @@ export class SyncSessionModel extends DatabaseModel {
    * @param {string} error
    */
   async markSessionErrored(id, error) {
-    const session = await this.findById(id);
-    const sessionErrors = session.errors || [];
-    const newErrors = [...sessionErrors, error];
-    await this.updateById(id, { errors: newErrors, completed_at: new Date() });
+    await this.database.executeSql(
+      `
+        UPDATE ??
+        SET
+          completed_at = NOW(),
+          errors = ARRAY_APPEND(COALESCE(errors, ARRAY[]::TEXT[]), ?)
+        WHERE id = ?
+      `,
+      [this.databaseRecord, error, id],
+    );
   }
 
   /**
