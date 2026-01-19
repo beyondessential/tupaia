@@ -1,5 +1,4 @@
 import { difference, groupBy, keyBy, uniq } from 'es-toolkit';
-import { flattenDeep } from 'es-toolkit/compat';
 import log from 'winston';
 
 import { SyncDirections } from '@tupaia/constants';
@@ -173,7 +172,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
    * @throws {PermissionsError}
    */
   async assertCanImport(models, accessPolicy, entitiesBySurveyCode) {
-    const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyCode));
+    const allEntityCodes = Object.values(entitiesBySurveyCode).flat();
     const surveyCodes = Object.keys(entitiesBySurveyCode);
 
     await models.wrapInReadOnlyTransaction(async transactingModels => {
