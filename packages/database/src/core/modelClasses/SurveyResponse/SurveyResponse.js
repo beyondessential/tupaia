@@ -1,5 +1,5 @@
-import { difference, uniq } from 'es-toolkit';
-import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
+import { difference, groupBy, keyBy, uniq } from 'es-toolkit';
+import { flattenDeep } from 'es-toolkit/compat';
 import log from 'winston';
 
 import { SyncDirections } from '@tupaia/constants';
@@ -12,13 +12,13 @@ import { MaterializedViewLogDatabaseModel } from '../../analytics';
 import { createSurveyResponsePermissionFilter } from '../../permissions';
 import { RECORDS } from '../../records';
 import { buildSyncLookupSelect } from '../../sync';
+import { processColumns } from '../../utilities';
 import { getLeaderboardQuery } from './leaderboard';
 import { processSurveyResponse } from './processSurveyResponse';
 import { saveResponsesToDatabase } from './saveToDatabase';
 import { upsertAnswers } from './upsertAnswers';
 import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 import { validateSurveyResponse, validateSurveyResponses } from './validation';
-import { processColumns } from '../../utilities';
 
 /**
  * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
@@ -187,7 +187,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         log.error('Unexpected nullish element in `allEntities`', { allEntities });
       }
 
-      const codeToSurvey = keyBy(surveys, 'code');
+      const codeToSurvey = keyBy(surveys, s => s.code);
       /** @type {PermissionGroup["id"][]} */
       const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
       /** @type {PermissionGroupRecord[]} */
@@ -226,7 +226,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
             surveyResponseCountryCodes,
           );
         }
-        const entitiesByCountryCode = groupBy(responseEntities, 'country_code');
+        const entitiesByCountryCode = groupBy(responseEntities, e => e.country_code);
 
         for (const surveyResponseCountry of surveyResponseCountries) {
           // Check if the country of the submitted survey response(s) matches with the survey countries.
