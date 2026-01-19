@@ -1,16 +1,16 @@
 import { groupBy } from 'es-toolkit';
 import { mapValues } from 'es-toolkit/compat';
 
-import { BaseDatabase, DatabaseModel } from '@tupaia/database';
+import { BaseDatabase, DatabaseModel, type DatabaseRecordName } from '@tupaia/database';
 import { isNotNullish } from '@tupaia/tsutils';
 
 interface Dependency {
-  table_name: string;
-  depends_on: string | null;
+  table_name: DatabaseRecordName;
+  depends_on: DatabaseRecordName | null;
 }
 
 export async function getDependencyOrder(database: BaseDatabase): Promise<string[]> {
-  const sorted: string[] = [];
+  const sorted: DatabaseRecordName[] = [];
   const dependencies = await database.executeSql<Dependency[]>(`
     WITH all_tables AS (
       SELECT c.relname AS table_name
@@ -44,7 +44,7 @@ export async function getDependencyOrder(database: BaseDatabase): Promise<string
         v => v.map(d => d.depends_on).filter(isNotNullish),
       ),
     ),
-  );
+  ) as Map<DatabaseRecordName, DatabaseRecordName[]>;
 
   while (groupedDependencies.size > 0) {
     for (const [modelName, dependsOn] of groupedDependencies) {
