@@ -2,8 +2,9 @@ import camelcaseKeys from 'camelcase-keys';
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
+import { ensure } from '@tupaia/tsutils';
 import { DatatrakWebSurveyRequest, Question, QuestionType } from '@tupaia/types';
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { PermissionsError } from '@tupaia/utils';
 
 export interface SurveyRequest
   extends Request<
@@ -84,7 +85,6 @@ export class SurveyRoute extends Route<SurveyRequest> {
       'SELECT EXISTS(SELECT 1 FROM survey WHERE code = ?)',
       [surveyCode],
     );
-
     if (!exists) throw new Error(`Survey with code ${surveyCode} not found`);
 
     // check if user has access to survey
@@ -100,21 +100,11 @@ export class SurveyRoute extends Route<SurveyRequest> {
 
     const survey = camelcaseKeys(surveys[0], { deep: true });
 
-    const { code: projectCode } = await models.project.findOne(
-      { id: survey.projectId },
-      { columns: ['code'] },
+    const { code: projectCode } = ensure(
+      await models.project.findOne({ id: survey.projectId }, { columns: ['code'] }),
+      `No project exists with ID ${survey.projectId}`,
     );
-
-    let project;
-    try {
-      project = await ctx.services.webConfig.fetchProject(projectCode);
-    } catch (e: any) {
-      if (!(e instanceof NotFoundError)) throw e;
-      // Not sure why we don’t throw a DatabaseError or similar if a survey’s project isn’t found,
-      // considering `survey.project_id` is non-nullable. This commit merely preserves existing
-      // behaviour.
-      project = null;
-    }
+    const project = await ctx.services.webConfig.fetchProject(projectCode);
 
     const { surveyQuestions, ...restOfSurvey } = survey;
 
