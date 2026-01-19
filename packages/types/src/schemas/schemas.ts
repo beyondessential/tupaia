@@ -48461,6 +48461,47 @@ export const RepeatScheduleSchema = {
 		}
 	}
 }
+export const SyncSessionInfoSchema = {
+	"type": "object",
+	"properties": {
+		"beganPersistAt": {
+			"anyOf": [
+				{
+					"type": "string",
+					"format": "date-time"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			]
+		},
+		"deviceId": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"projectIds": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"totalToPull": {
+			"type": "number"
+		},
+		"totalPushed": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"deviceId"
+	]
+}
 export const AccessRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -99252,13 +99293,42 @@ export const SyncSessionSchema = {
 		"info": {
 			"type": "object",
 			"properties": {
-				"constructor": {
-					"$ref": "#/definitions/Function"
+				"beganPersistAt": {
+					"anyOf": [
+						{
+							"type": "string",
+							"format": "date-time"
+						},
+						{
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					]
+				},
+				"deviceId": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"projectIds": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"totalToPull": {
+					"type": "number"
+				},
+				"totalPushed": {
+					"type": "number"
 				}
 			},
 			"additionalProperties": false,
 			"required": [
-				"constructor"
+				"deviceId"
 			]
 		},
 		"last_connection_time": {
@@ -99312,13 +99382,42 @@ export const SyncSessionCreateSchema = {
 		"info": {
 			"type": "object",
 			"properties": {
-				"constructor": {
-					"$ref": "#/definitions/Function"
+				"beganPersistAt": {
+					"anyOf": [
+						{
+							"type": "string",
+							"format": "date-time"
+						},
+						{
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					]
+				},
+				"deviceId": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"projectIds": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"totalToPull": {
+					"type": "number"
+				},
+				"totalPushed": {
+					"type": "number"
 				}
 			},
 			"additionalProperties": false,
 			"required": [
-				"constructor"
+				"deviceId"
 			]
 		},
 		"last_connection_time": {
@@ -99372,13 +99471,42 @@ export const SyncSessionUpdateSchema = {
 		"info": {
 			"type": "object",
 			"properties": {
-				"constructor": {
-					"$ref": "#/definitions/Function"
+				"beganPersistAt": {
+					"anyOf": [
+						{
+							"type": "string",
+							"format": "date-time"
+						},
+						{
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					]
+				},
+				"deviceId": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"projectIds": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"totalToPull": {
+					"type": "number"
+				},
+				"totalPushed": {
+					"type": "number"
 				}
 			},
 			"additionalProperties": false,
 			"required": [
-				"constructor"
+				"deviceId"
 			]
 		},
 		"last_connection_time": {
