@@ -1,5 +1,4 @@
-import { groupBy } from 'es-toolkit';
-import { mapValues } from 'es-toolkit/compat';
+import { groupBy, mapValues } from 'es-toolkit';
 
 import { BaseDatabase, DatabaseModel, type DatabaseRecordName } from '@tupaia/database';
 import { isNotNullish } from '@tupaia/tsutils';
