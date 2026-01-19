@@ -1,3 +1,5 @@
+/** @typedef {import('@tupaia/types').DatabaseRecordName} DatabaseRecordName */
+
 import { uniq } from 'es-toolkit';
 
 import { DatabaseError, NotImplementedError, reduceToDictionary } from '@tupaia/utils';
@@ -128,7 +130,7 @@ export class DatabaseModel {
   /**
    * A helper function to ensure that we're using fully qualified column names to avoid ambiguous references when joins are being used
    * @param {string} column
-   * @returns {`${string}.${string}`}
+   * @returns {`${DatabaseRecordName}.${string}`}
    */
   fullyQualifyColumn(column) {
     if (column.includes('.')) {
