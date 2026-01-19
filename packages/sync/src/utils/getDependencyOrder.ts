@@ -1,4 +1,4 @@
-import { compact, groupBy } from 'es-toolkit';
+import { groupBy } from 'es-toolkit';
 import { mapValues } from 'es-toolkit/compat';
 
 import { BaseDatabase, DatabaseModel } from '@tupaia/database';
@@ -41,7 +41,7 @@ export async function getDependencyOrder(database: BaseDatabase): Promise<string
     Object.entries(
       mapValues(
         groupBy(dependencies, d => d.table_name),
-        v => compact(v.map(d => d.depends_on)),
+        v => v.map(d => d.depends_on).filter(isNotNullish),
       ),
     ),
   );
