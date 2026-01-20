@@ -219,6 +219,7 @@ export class BaseDatabase {
    */
   async exists(...args) {
     const innerQuery = this.find(...args);
+    /** @type {[{ exists: boolean }]} */
     const [{ exists }] = await this.executeSql('SELECT EXISTS(?);', [innerQuery]);
     return exists;
   }
