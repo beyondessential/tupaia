@@ -1,7 +1,6 @@
 import { encryptPassword } from '@tupaia/auth';
 import { S3, S3Client } from '@tupaia/server-utils';
 import { ValidationError } from '@tupaia/utils';
-import { USER_PREFERENCES_FIELDS } from '@tupaia/constants';
 
 import {
   assertAdminPanelAccess,
@@ -15,7 +14,6 @@ import { assertUserAccountPermissions } from './assertUserAccountPermissions';
  * Handles PUT endpoints:
  * - /users/:userId
  */
-
 export class EditUserAccounts extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
