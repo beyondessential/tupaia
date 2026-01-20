@@ -43,9 +43,11 @@ export class SyncSessionModel extends DatabaseModel {
    * @param {Partial<SyncSessionInfo>} info
    */
   async addInfo(id, info) {
-    const session = await this.findById(id);
-    session.info = { ...session.info, ...info };
-    await session.save();
+    await this.database.executeSql('UPDATE ?? SET info = info || ?::JSONB WHERE id = ?', [
+      this.databaseRecord,
+      JSON.stringify(info),
+      id,
+    ]);
   }
 
   /**
