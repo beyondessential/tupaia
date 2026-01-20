@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 
-import { FACT_CURRENT_USER_ID, FACT_PREVIOUSLY_LOGGED_IN_USER_ID } from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
 
 import { post } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
@@ -13,9 +13,12 @@ const logoutOnline = async () => {
 };
 
 const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) => {
-  const currentUserId = await models.localSystemFact.get(FACT_CURRENT_USER_ID);
-  await models.localSystemFact.set(FACT_PREVIOUSLY_LOGGED_IN_USER_ID, currentUserId);
-  await models.localSystemFact.delete({ key: FACT_CURRENT_USER_ID });
+  const currentUserId = await models.localSystemFact.get(SyncFact.CURRENT_USER_ID);
+  if (currentUserId) {
+    // currentUserId should always be defined here; this is mostly to satisfy TypeScript
+    await models.localSystemFact.set(SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID, currentUserId);
+  }
+  await models.localSystemFact.delete({ key: SyncFact.CURRENT_USER_ID });
 };
 
 export const useLogout = () => {
