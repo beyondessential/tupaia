@@ -39,6 +39,13 @@ export class EditUserAccounts extends EditHandler {
       preferences: preferenceField,
       ...restOfUpdatedFields
     } = this.updatedFields;
+
+    if (preferenceField) {
+      throw new ValidationError(
+        'Preferences should be updated via the specific preferences fields',
+      );
+    }
+
     let updatedFields = restOfUpdatedFields;
 
     if (password) {
@@ -47,13 +54,10 @@ export class EditUserAccounts extends EditHandler {
       updatedFields.legacy_password_salt = null;
     }
 
-    if (preferenceField) {
-      throw new ValidationError(
-        'Preferences should be updated via the specific preferences fields',
-      );
-    }
-
-    updatedFields = await this.models.user.getUpdatedUserPreferenceFields(this.recordId, updatedFields);
+    updatedFields = await this.models.user.getUpdatedUserPreferenceFields(
+      this.recordId,
+      updatedFields,
+    );
 
     if (profileImage) {
       if (profileImage.data && profileImage.fileId) {
