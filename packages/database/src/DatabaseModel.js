@@ -198,6 +198,13 @@ export class DatabaseModel {
     return this.database.count(this.databaseRecord, ...args);
   }
 
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async exists(...args) {
+    return await this.database.exists(this.databaseRecord, ...args);
+  }
+
   async findById(id, customQueryOptions = {}) {
     if (!id) {
       throw new Error(`Cannot search for ${this.databaseRecord} by id without providing an id`);
