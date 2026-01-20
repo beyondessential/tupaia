@@ -16,6 +16,7 @@ import { ProjectConfig } from './models-extra';
 import { TaskCommentTemplateVariables } from './models-extra';
 import { RepeatSchedule } from './models-extra';
 import { SupersetInstanceConfig } from './models-extra';
+import { SyncSessionInfo } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -1621,7 +1622,7 @@ export interface SyncSession {
   'completed_at'?: Date | null;
   'errors'?: string[] | null;
   'id': string;
-  'info'?: Object | null;
+  'info'?: SyncSessionInfo | null;
   'last_connection_time'?: Date | null;
   'persist_completed_at'?: Date | null;
   'pull_since'?: string | null;
@@ -1634,7 +1635,7 @@ export interface SyncSession {
 export interface SyncSessionCreate {
   'completed_at'?: Date | null;
   'errors'?: string[] | null;
-  'info'?: Object | null;
+  'info'?: SyncSessionInfo | null;
   'last_connection_time'?: Date | null;
   'persist_completed_at'?: Date | null;
   'pull_since'?: string | null;
@@ -1648,7 +1649,7 @@ export interface SyncSessionUpdate {
   'completed_at'?: Date | null;
   'errors'?: string[] | null;
   'id'?: string;
-  'info'?: Object | null;
+  'info'?: SyncSessionInfo | null;
   'last_connection_time'?: Date | null;
   'persist_completed_at'?: Date | null;
   'pull_since'?: string | null;
@@ -1729,24 +1730,6 @@ export interface TaskCommentUpdate {
   'type'?: TaskCommentType;
   'user_id'?: string | null;
   'user_name'?: string;
-}
-export interface Tombstone {
-  'deleted_at': Date;
-  'id': string;
-  'record_id': string;
-  'record_type': string;
-  'updated_at_sync_tick': string;
-}
-export interface TombstoneCreate {
-  'deleted_at'?: Date;
-  'record_id': string;
-  'record_type': string;
-}
-export interface TombstoneUpdate {
-  'deleted_at'?: Date;
-  'id'?: string;
-  'record_id'?: string;
-  'record_type'?: string;
 }
 export interface TupaiaWebSession {
   'access_policy': {};

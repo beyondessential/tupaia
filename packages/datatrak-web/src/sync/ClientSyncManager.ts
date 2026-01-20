@@ -226,6 +226,7 @@ export class ClientSyncManager {
       const { pulledChangesCount } = await this.runSync(urgent);
       if (pulledChangesCount) {
         await queryClient.invalidateQueries();
+        this.models.clearCache();
       }
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
@@ -404,7 +405,7 @@ export class ClientSyncManager {
     const outgoingChanges = await this.models.wrapInRepeatableReadTransaction(
       async transactingModels => {
         const modelsForPush = getModelsForPush(transactingModels.getModels());
-        return snapshotOutgoingChanges(modelsForPush, transactingModels.tombstone, pushSince);
+        return snapshotOutgoingChanges(modelsForPush, pushSince);
       },
     );
 

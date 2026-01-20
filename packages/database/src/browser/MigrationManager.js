@@ -24,6 +24,13 @@ export class MigrationManager {
     `);
   }
 
+  /**
+   * @returns {Promise<{
+   *   name: string;
+   *   up: (database: unknown) => Promise<unknown>;
+   *   down: (database: unknown) => Promise<unknown>;
+   * }[]>}
+   */
   async loadMigrationFiles() {
     // For loading migration files in the browser
     const migrationFiles = import.meta.glob('../core/migrations/*.js', { eager: true });
@@ -34,6 +41,7 @@ export class MigrationManager {
     );
 
     for (const [name, migrationModule] of Object.entries(sortedMigrationFiles)) {
+      /** @type {('browser' | 'server')[]} */
       const targets = migrationModule._meta?.targets || [];
 
       // Only run migration if it is intended for the browser
@@ -60,8 +68,9 @@ export class MigrationManager {
     return migrations;
   }
 
+  /** @returns {Promise<{ id: number; name: string; run_on: string }[]>} */
   async getExecutedMigrations() {
-    return this.client.executeSql('SELECT * FROM migrations ORDER BY run_on ASC');
+    return await this.client.executeSql('SELECT * FROM migrations ORDER BY run_on ASC');
   }
 
   async migrate() {
@@ -69,10 +78,8 @@ export class MigrationManager {
     const startTime = performance.now();
     try {
       const migrations = await this.loadMigrationFiles();
-      const executedMigrations = await this.getExecutedMigrations();
-      const pendingMigrations = migrations.filter(
-        m => !executedMigrations.find(em => em.name === m.name),
-      );
+      const executedMigrations = new Set((await this.getExecutedMigrations()).map(m => m.name));
+      const pendingMigrations = migrations.filter(m => !executedMigrations.has(m.name));
 
       if (pendingMigrations.length === 0) {
         console.log('No migrations to execute');

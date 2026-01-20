@@ -7,4 +7,4 @@ export const USER_PREFERENCES_FIELDS = [
   'delete_account_requested',
   'recent_entities',
   'hide_welcome_screen',
-];
+] as const;

@@ -1,4 +1,4 @@
-export const RECORDS = {
+export const RECORDS = /** @type {const} */ ({
   ANALYTICS: 'analytics',
   ANCESTOR_DESCENDANT_RELATION: 'ancestor_descendant_relation',
   ANSWER: 'answer',
@@ -62,7 +62,6 @@ export const RECORDS = {
   SYNC_LOOKUP: 'sync_lookup',
   TASK: 'task',
   TASK_COMMENT: 'task_comment',
-  TOMBSTONE: 'tombstone',
   USER_ACCOUNT: 'user_account',
   USER_COUNTRY_ACCESS_ATTEMPT: 'user_country_access_attempt',
   USER_ENTITY_PERMISSION: 'user_entity_permission',
@@ -72,4 +71,6 @@ export const RECORDS = {
   SYNC_DEVICE_TICK: 'sync_device_tick',
   SYNC_QUEUED_DEVICE: 'sync_queued_device',
   ENTITY_PARENT_CHILD_RELATION: 'entity_parent_child_relation',
-};
+});
+
+/** @typedef {import('@tupaia/types').ValueOf<typeof RECORDS>} DatabaseRecordName */

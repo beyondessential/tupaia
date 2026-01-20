@@ -167,7 +167,6 @@ export const MenuList = ({
         if (isOfflineFirst && models) {
           const unsyncedChangesCount = await countOutgoingChanges(
             getModelsForPush(models.getModels()),
-            models.tombstone,
             models.localSystemFact,
           );
 

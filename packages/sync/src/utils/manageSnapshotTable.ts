@@ -45,6 +45,8 @@ export const createSnapshotTable = async (database: TupaiaDatabase, sessionId: s
       sync_lookup_id BIGINT,
       requires_repull BOOLEAN DEFAULT false,
       is_deleted BOOLEAN DEFAULT false
+    ) WITH (
+      autovacuum_enabled = off
     );
   `);
 
@@ -99,5 +101,5 @@ export const updateSnapshotRecords = async (
   values: object,
   where: object,
 ) => {
-  await database.update(sessionId, where, values, SCHEMA);
+  await database.update(sessionId, snakeKeys(where), snakeKeys(values), SCHEMA);
 };

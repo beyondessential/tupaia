@@ -1,16 +1,20 @@
+/**
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('./Country').CountryRecord} CountryRecord
+ * @typedef {import('./PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
+ */
+
 import moment from 'moment';
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { SyncDirections } from '@tupaia/constants';
 import { FeedItemTypes } from '@tupaia/types';
 import { reduceToDictionary } from '@tupaia/utils';
-import { SyncDirections } from '@tupaia/constants';
-
+import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
-
-export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
 
 export class FeedItemRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.FEED_ITEM;
@@ -51,11 +55,17 @@ export class FeedItemModel extends DatabaseModel {
     };
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<Record<PermissionGroup['id'], Country['id'][]>>}
+   */
   async getCountryIdsByPermissionGroup(accessPolicy) {
     const permissionGroupNames = accessPolicy.getPermissionGroups();
 
+    /** @type {CountryRecord[]} */
     const countries = await this.otherModels.country.find({});
 
+    /** @type {PermissionGroupRecord[]} */
     const permissionGroups = await this.otherModels.permissionGroup.find({
       name: permissionGroupNames,
     });

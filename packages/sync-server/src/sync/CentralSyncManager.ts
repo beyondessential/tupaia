@@ -18,6 +18,8 @@ import {
   SyncSnapshotAttributes,
   withDeferredSyncSafeguards,
   findLastSuccessfulSyncedProjects,
+  incomingSyncHook,
+  bumpSyncTickForRepull,
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { SyncTickFlags, FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
@@ -97,11 +99,11 @@ export class CentralSyncManager {
 
   async getIsSyncCapacityFull(): Promise<boolean> {
     const { maxConcurrentSessions } = this.config;
-    const activeSyncs = await this.models.syncSession.find({
+    const activeSyncCount = await this.models.syncSession.count({
       completed_at: null,
       errors: null,
     });
-    return activeSyncs.length >= maxConcurrentSessions;
+    return activeSyncCount >= maxConcurrentSessions;
   }
 
   async queueDeviceForSync(deviceId: string, urgent: boolean = false, lastSyncedTick: number = 0) {
@@ -119,7 +121,7 @@ export class CentralSyncManager {
         session.id,
         'Session marked as completed due to its device reconnecting',
       );
-      const durationMs = performance.now() - session.start_time;
+      const durationMs = Date.now() - session.start_time;
 
       log.info('StaleSyncSessionCleaner.closedReconnectedSession', {
         sessionId: session.id,
@@ -524,13 +526,13 @@ export class CentralSyncManager {
         async (transactingModels: SyncServerModelRegistry) => {
           // When it is initial build of sync lookup table, by setting it to null,
           // it will get the updated_at_sync_tick from the actual tables.
-          // Otherwise, update it to SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER so that
+          // Otherwise, update it to SYNC_TICK_FLAGS.LOOKUP_PENDING_UPDATE so that
           // it can update the flagged ones post transaction commit to the latest sync tick,
           // avoiding sync sessions missing records while sync lookup is being refreshed
           // See more details in the 'await updateSyncLookupPendingRecords' call
           const syncLookupTick = isInitialBuildOfLookupTable
             ? null
-            : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
+            : SyncTickFlags.LOOKUP_PENDING_UPDATE;
 
           const updatedCount = await updateLookupTable(
             getModelsForPull(transactingModels.getModels()),
@@ -563,7 +565,7 @@ export class CentralSyncManager {
       // 7. Sync session B is started, pulling from lastSuccessfulPullTick = 3, missing encounter A with tick = 1
       //
       // Hence, to fix this, we:
-      // 1. When starting updating lookup table, use fixed -1 as the tick and treat them as pending updates (SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER)
+      // 1. When starting updating lookup table, use fixed -1 as the tick and treat them as pending updates (SYNC_TICK_FLAGS.LOOKUP_PENDING_UPDATE)
       // 2. After updating lookup table IS FINISHED AND COMMITED (hence we wrap in a new transaction),
       // update all the records with tick = -1 to the latest sync tick
       // => That way, sync sessions will never miss any records due to timing issue.
@@ -620,6 +622,10 @@ export class CentralSyncManager {
           // saving with a unique tick
           const { tock } = await this.tickTockGlobalClock(transactingModels);
 
+          // run any side effects that updates the pushed records and requires repull
+          // eg: uploading images and files answers to S3, and update the answer text to the new S3 URL
+          await incomingSyncHook(transactingModels.database, transactingModels, sessionId);
+
           await withDeferredSyncSafeguards(transactingModels.database, () =>
             saveIncomingSnapshotChanges(modelsToInclude, sessionId, true),
           );
@@ -642,6 +648,13 @@ export class CentralSyncManager {
         persisted_at_sync_tick: persistedAtSyncTick,
       });
 
+      // mark for repull any records that were modified by an incoming sync hook
+      await bumpSyncTickForRepull(
+        this.models.database,
+        getModelsForPush(this.models.getModels()),
+        sessionId,
+      );
+
       // mark persisted so that client polling "completePush" can stop
       await this.models.syncSession.update({ id: sessionId }, { persist_completed_at: new Date() });
 
@@ -654,9 +667,11 @@ export class CentralSyncManager {
   }
 
   validateIncomingChanges(changes: SyncSnapshotAttributes[]) {
-    const allowedPushTables = getModelsForPush(this.models.getModels()).map(m => m.databaseRecord);
     const incomingTables = Object.keys(groupBy(changes, 'recordType'));
-    const invalidTables = incomingTables.filter(t => !allowedPushTables.includes(t));
+    const allowedPushTables = new Set(
+      getModelsForPush(this.models.getModels()).map(m => m.databaseRecord),
+    );
+    const invalidTables = incomingTables.filter(t => !allowedPushTables.has(t));
 
     if (invalidTables.length > 0) {
       throw new Error(`Invalid tables in incoming changes: ${invalidTables.join(', ')}`);

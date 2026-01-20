@@ -32,7 +32,7 @@ async function getFileAnswerText(answer) {
     return answer.body;
   }
 
-  return null; // TODO: Handle offline file uploads (RN-1752)
+  return JSON.stringify(answer.body);
 }
 
 /**
@@ -61,13 +61,13 @@ async function getPhotoAnswerText(answer) {
     const isProduction = () =>
       (process.env.IS_PRODUCTION_ENVIRONMENT === 'true' || process.env.NODE_ENV === 'production') &&
       !process.env.CI_BUILD_ID;
-    const S3_BUCKET_PATH = `https://s3-ap-southeast-2.amazonaws.com/tupaia/`;
+    const S3_BUCKET_PATH = 'https://tupaia.s3.ap-southeast-2.amazonaws.com/';
     const s3ImagePath = isProduction() ? 'uploads/images/' : 'dev_uploads/images/';
 
-    return `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.png`;
+    return `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.jpg`;
   }
 
-  return null; // TODO: Handle offline image uploads (RN-1752)
+  return answer.body;
 }
 
 /** @type {Record<QuestionType, AnswerBodyParser>} */

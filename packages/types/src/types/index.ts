@@ -100,6 +100,7 @@ export {
   SurveyResponseTemplateVariables,
   SurveyScreenComponentConfig,
   SystemCommentSubType,
+  SyncSessionInfo,
   TaskCommentTemplateVariables,
   TaskQuestionConfig,
   UserQuestionConfig,

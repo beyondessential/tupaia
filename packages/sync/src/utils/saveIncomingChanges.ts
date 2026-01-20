@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { groupBy } from 'lodash';
+import { groupBy } from 'es-toolkit';
 
 import { BaseDatabase, DatabaseModel, ModelRegistry } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
@@ -85,7 +85,7 @@ export const saveChangesForModel = async (
     },
   );
   if (recordsForUpdate.length > 0) {
-    await saveUpdates(model, recordsForUpdate, 1000, progressCallback);
+    await saveUpdates(model, recordsForUpdate, isCentralServer, 1000, progressCallback);
   }
 };
 
@@ -205,7 +205,7 @@ export const saveChangesFromMemory = async (
 
   assertIsWithinTransaction(models.database);
 
-  const groupedChanges = groupBy(changes, 'recordType');
+  const groupedChanges = groupBy(changes, c => c.recordType);
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
     const filteredModelChanges = await model.filterSyncForClient(modelChanges);

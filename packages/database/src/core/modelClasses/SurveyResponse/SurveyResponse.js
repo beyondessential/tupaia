@@ -1,5 +1,4 @@
-import { difference, uniq } from 'es-toolkit';
-import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
+import { difference, groupBy, keyBy, uniq } from 'es-toolkit';
 import log from 'winston';
 
 import { SyncDirections } from '@tupaia/constants';
@@ -12,13 +11,13 @@ import { MaterializedViewLogDatabaseModel } from '../../analytics';
 import { createSurveyResponsePermissionFilter } from '../../permissions';
 import { RECORDS } from '../../records';
 import { buildSyncLookupSelect } from '../../sync';
+import { processColumns } from '../../utilities';
 import { getLeaderboardQuery } from './leaderboard';
 import { processSurveyResponse } from './processSurveyResponse';
 import { saveResponsesToDatabase } from './saveToDatabase';
 import { upsertAnswers } from './upsertAnswers';
 import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 import { validateSurveyResponse, validateSurveyResponses } from './validation';
-import { processColumns } from '../../utilities';
 
 /**
  * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
@@ -173,7 +172,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
    * @throws {PermissionsError}
    */
   async assertCanImport(models, accessPolicy, entitiesBySurveyCode) {
-    const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyCode));
+    const allEntityCodes = Object.values(entitiesBySurveyCode).flat();
     const surveyCodes = Object.keys(entitiesBySurveyCode);
 
     await models.wrapInReadOnlyTransaction(async transactingModels => {
@@ -187,7 +186,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         log.error('Unexpected nullish element in `allEntities`', { allEntities });
       }
 
-      const codeToSurvey = keyBy(surveys, 'code');
+      const codeToSurvey = keyBy(surveys, s => s.code);
       /** @type {PermissionGroup["id"][]} */
       const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
       /** @type {PermissionGroupRecord[]} */
@@ -226,7 +225,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
             surveyResponseCountryCodes,
           );
         }
-        const entitiesByCountryCode = groupBy(responseEntities, 'country_code');
+        const entitiesByCountryCode = groupBy(responseEntities, e => e.country_code);
 
         for (const surveyResponseCountry of surveyResponseCountries) {
           // Check if the country of the submitted survey response(s) matches with the survey countries.
@@ -328,13 +327,27 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
   async buildSyncLookupQueryDetails() {
     return {
+      ctes: [
+        `
+          survey_responses_to_sync AS (
+            SELECT survey_response.id AS survey_response_id, survey.project_id
+            FROM survey_response
+            JOIN survey ON survey.id = survey_response.survey_id
+            UNION
+            SELECT task.initial_request_id AS survey_response_id, survey.project_id
+            FROM task
+            JOIN survey ON survey.id = task.survey_id
+          )
+        `,
+      ],
       select: await buildSyncLookupSelect(this, {
-        projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
+        projectIds: 'array_remove(ARRAY_AGG(survey_responses_to_sync.project_id), NULL)',
       }),
       joins: `
-        LEFT JOIN survey
-          ON survey.id = survey_response.survey_id
+        LEFT JOIN survey_responses_to_sync
+          ON survey_responses_to_sync.survey_response_id = survey_response.id
       `,
+      groupBy: ['survey_response.id'],
     };
   }
 
@@ -346,10 +359,25 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     }
 
     if (surveyResponse.entity_id) {
+      const getEntityDoesExist = async entityId => {
+        const [{ exists }] = await this.database.executeSql(
+          'SELECT EXISTS(SELECT 1 FROM "entity" WHERE "id" = ?)',
+          [entityId],
+        );
+        return exists;
+      };
+
       // If we're submitting a response against a new entity, it won't yet have a valid entity_code in
       // the server db. Instead, check our permissions against the new entity's parent
       const newEntity = entitiesUpserted.find(e => e.id === surveyResponse.entity_id);
-      if (newEntity) {
+
+      const isSubmittingAgainstNewEntity =
+        // Submitting response against upserted entity...
+        newEntity !== undefined &&
+        // ...that doesn’t yet exist in database
+        !(await getEntityDoesExist(surveyResponse.entity_id));
+
+      if (isSubmittingAgainstNewEntity) {
         /** @type {import('@tupaia/database').EntityRecord} */
         const parentEntity = ensure(
           await this.otherModels.entity.findById(newEntity.parent_id, { columns: ['code'] }),

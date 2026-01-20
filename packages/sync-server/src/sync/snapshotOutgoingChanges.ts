@@ -83,6 +83,7 @@ export const snapshotOutgoingChanges = async (
           )
         )
         AND record_type IN ${SqlQuery.record(recordTypes)}
+        ${since === -1 ? 'AND is_deleted IS FALSE' : ''}
         ${
           avoidRepull && deviceId
             ? 'AND (pushed_by_device_id <> ? OR pushed_by_device_id IS NULL)'

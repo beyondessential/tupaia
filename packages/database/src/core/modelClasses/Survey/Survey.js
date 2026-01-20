@@ -1,8 +1,20 @@
 /**
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
  * @typedef {import('@tupaia/types').Question} Question
  * @typedef {import('@tupaia/types').Survey} Survey
  * @typedef {import('@tupaia/types').SurveyScreen} SurveyScreen
  * @typedef {import('@tupaia/types').SurveyScreenComponent} SurveyScreenComponent
+ * @typedef {import('../Country').CountryRecord} CountryRecord
+ * @typedef {import('../DataGroup').DataGroupRecord} DataGroupRecord
+ * @typedef {import('../Option').OptionRecord} OptionRecord
+ * @typedef {import('../OptionSet').OptionSetRecord} OptionSetRecord
+ * @typedef {import('../PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
+ * @typedef {import('../Project').ProjectRecord} ProjectRecord
+ * @typedef {import('../Question').QuestionRecord} QuestionRecord
+ * @typedef {import('../SurveyGroup').SurveyGroupRecord} SurveyGroupRecord
+ * @typedef {import('../SurveyScreen').SurveyScreenRecord} SurveyScreenRecord
+ * @typedef {import('../SurveyScreenComponent').SurveyScreenComponentRecord} SurveyScreenComponentRecord
  * @typedef {{
  *   survey_id: Survey['id'];
  *   survey_screen_id: SurveyScreen['id'];
@@ -60,21 +72,21 @@ export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
 
   /**
-   * @returns {Promise<import('../DataGroup').DataGroupRecord>} data group for survey
+   * @returns {Promise<DataGroupRecord>} data group for survey
    */
   async dataGroup() {
     return await this.otherModels.dataGroup.findById(this.data_group_id);
   }
 
   /**
-   * @returns {Promise<import('../SurveyScreen').SurveyScreenRecord[]>} survey screens in survey
+   * @returns {Promise<SurveyScreenRecord[]>} survey screens in survey
    */
   async surveyScreens() {
     return await this.otherModels.surveyScreen.find({ survey_id: this.id });
   }
 
   /**
-   * @returns {Promise<import('../SurveyScreenComponent').SurveyScreenComponentRecord[]>} survey screen components in survey
+   * @returns {Promise<SurveyScreenComponentRecord[]>} survey screen components in survey
    */
   async surveyScreenComponents() {
     const questions = await this.database.executeSql(
@@ -92,7 +104,7 @@ export class SurveyRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('../Question').QuestionRecord[]>} questions in survey
+   * @returns {Promise<QuestionRecord[]>} questions in survey
    */
   async questions() {
     const questions = await this.database.executeSql(
@@ -109,7 +121,7 @@ export class SurveyRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('../OptionSet').OptionSetRecord[]>} optionSets in questions in survey
+   * @returns {Promise<OptionSetRecord[]>} optionSets in questions in survey
    */
   async optionSets() {
     const optionSets = await this.database.executeSql(
@@ -127,7 +139,7 @@ export class SurveyRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('../Option').OptionRecord[]>} options in optionSets in questions in survey
+   * @returns {Promise<OptionRecord[]>} options in optionSets in questions in survey
    */
   async options() {
     const options = await this.database.executeSql(
@@ -146,14 +158,14 @@ export class SurveyRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('../PermissionGroup').PermissionGroupRecord>} permission group for survey
+   * @returns {Promise<PermissionGroupRecord>} permission group for survey
    */
   async getPermissionGroup() {
     return await this.otherModels.permissionGroup.findById(this.permission_group_id);
   }
 
   /**
-   * @returns {Promise<import('../Country').CountryRecord[]>} countries that use this survey
+   * @returns {Promise<CountryRecord[]>} countries that use this survey
    */
   async getCountries() {
     return await this.otherModels.country.findManyById(this.country_ids);
@@ -168,7 +180,7 @@ export class SurveyRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('../Project').ProjectRecord>}
+   * @returns {Promise<ProjectRecord>}
    */
   async getProject() {
     return ensure(
@@ -242,23 +254,22 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
-    const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
-
+    const entries = Object.entries(countryIdsByPermissionGroup);
     return {
-      sql: `(${Object.entries(countryIdsByPermissionGroup)
+      sql: `(${entries
         .map(([, countryIds]) => {
-          return `
-          (
-            permission_group_id = ? AND
-            ${SqlQuery.array(countryIds, 'TEXT')} && country_ids
-          )
-        `;
+          return `(permission_group_id = ? AND ${SqlQuery.array(countryIds, 'TEXT')} && country_ids)`;
         })
         .join(' OR ')})`,
-      parameters: params,
+      /** @example ['Public', 'id1', 'id2', 'Admin', 'id3'] */
+      parameters: entries.flat(2),
     };
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<Record<PermissionGroup['id'], Country['id'][]>>}
+   */
   async getCountryIdsByPermissionGroup(accessPolicy) {
     const permissionGroupNames = accessPolicy.getPermissionGroups();
 
@@ -286,7 +297,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
    * @param {AccessPolicy} accessPolicy
    * @param {*} dbConditions
    * @param {*} customQueryOptions
-   * @returns
+   * @returns {SurveyRecord[]}
    */
   async findByAccessPolicy(accessPolicy, dbConditions = {}, customQueryOptions) {
     const queryClause = await this.createAccessPolicyQueryClause(accessPolicy);
@@ -296,14 +307,12 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       ...dbConditions,
     };
 
-    const surveys = await this.find(queryConditions, customQueryOptions);
-
-    return surveys;
+    return await this.find(queryConditions, customQueryOptions);
   }
 
   /**
    * @param {SurveyRecord['id'][]} surveyIds
-   * @returns {Promise<Record<SurveyRecord['id'], import('../Country').CountryRecord['id'][]>>}
+   * @returns {Promise<Record<SurveyRecord['id'], CountryRecord['id'][]>>}
    * Dictionary mapping survey IDs to sorted arrays of country codes
    */
   async getCountryCodesBySurveyId(surveyIds) {
@@ -329,7 +338,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * @param {SurveyRecord['id'][]} surveyIds
-   * @returns {Promise<Record<SurveyRecord['id'], import('../Country').CountryRecord['id'][]>>}
+   * @returns {Promise<Record<SurveyRecord['id'], CountryRecord['id'][]>>}
    * Dictionary mapping survey IDs to sorted arrays of country names
    */
   async getCountryNamesBySurveyId(surveyIds) {
@@ -353,7 +362,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * @param {SurveyRecord['id'][]} surveyIds
-   * @returns {Promise<Record<SurveyRecord['id'], import('../SurveyGroup').SurveyGroupRecord['name']>>}
+   * @returns {Promise<Record<SurveyRecord['id'], SurveyGroupRecord['name']>>}
    * Dictionary mapping survey IDs to sorted arrays of country names
    */
   async getSurveyGroupNamesBySurveyId(surveyIds) {
@@ -416,11 +425,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   }
 
   async buildSyncLookupQueryDetails() {
-    return {
-      select: await buildSyncLookupSelect(this, {
-        projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
-      }),
-    };
+    return null;
   }
 
   async createRecordsPermissionFilter(accessPolicy, criteria = {}) {
@@ -431,7 +436,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
     const countryIdsByPermissionGroupId =
       await this.otherModels.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
-
 
     // Using AND instead of RAW to not override the existing RAW criteria
     dbConditions[QUERY_CONJUNCTIONS.AND] = {
