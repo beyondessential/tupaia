@@ -1,13 +1,12 @@
-import winston from 'winston';
 import { groupBy } from 'es-toolkit';
+import winston from 'winston';
 
-import { BaseDatabase, DatabaseModel, ModelRegistry } from '@tupaia/database';
+import { BaseDatabase, DatabaseModel, DatabaseRecordName, ModelRegistry } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
-
-import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
-import { ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
+import { ModelSanitizeArgs, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 import { sortModelsByDependencyOrder } from './getDependencyOrder';
+import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 
 // TODO: Move this to a config model RN-1668
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
@@ -92,7 +91,7 @@ export const saveChangesForModel = async (
 const processSyncSnapshotInBatches = async (
   model: DatabaseModel,
   sessionId: string,
-  recordType: RecordType,
+  recordType: DatabaseRecordName,
   isDeleted: boolean,
   isCentralServer: boolean,
   progressCallback?: (recordsProcessed: number) => void,
@@ -134,7 +133,7 @@ const processSyncSnapshotInBatches = async (
 const saveChangesForModelInBatches = (
   model: DatabaseModel,
   sessionId: string,
-  recordType: RecordType,
+  recordType: DatabaseRecordName,
   isCentralServer: boolean,
   progressCallback?: (recordsProcessed: number) => void,
 ) =>
@@ -150,7 +149,7 @@ const saveChangesForModelInBatches = (
 const saveDeletesForModelInBatches = (
   model: DatabaseModel,
   sessionId: string,
-  recordType: RecordType,
+  recordType: DatabaseRecordName,
   progressCallback?: (recordsProcessed: number) => void,
 ) => processSyncSnapshotInBatches(model, sessionId, recordType, true, false, progressCallback);
 

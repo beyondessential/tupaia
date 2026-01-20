@@ -1,12 +1,10 @@
-import { RECORDS } from '@tupaia/database';
-import { ValueOf } from '@tupaia/types';
+import { type DatabaseRecordName } from '@tupaia/database';
+import { type ValueOf } from '@tupaia/types';
 import { SYNC_SESSION_DIRECTION } from './constants';
 
 export type SyncSessionDirectionValues = ValueOf<typeof SYNC_SESSION_DIRECTION>;
 
 export type ModelSanitizeArgs<T extends Record<string, any> = { [key: string]: any }> = T;
-
-export type RecordType = ValueOf<typeof RECORDS>;
 
 export interface SyncSnapshotData {
   id: number;
@@ -16,7 +14,7 @@ export interface SyncSnapshotData {
 export interface SyncSnapshotAttributes {
   id: number;
   direction?: SyncSessionDirectionValues;
-  recordType: string;
+  recordType: DatabaseRecordName;
   recordId: string;
   isDeleted: boolean;
   data: SyncSnapshotData;
