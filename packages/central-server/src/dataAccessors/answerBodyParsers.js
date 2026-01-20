@@ -46,7 +46,7 @@ async function getPhotoAnswerText(answer) {
 
   if (isValidFileId(answer.body)) {
     const s3ImagePath = getS3ImageFilePath();
-    return `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.png`;
+    return `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.jpg`;
   }
 
   // Included for backward compatibility passing base64 strings for images, and for datatrak-web to
