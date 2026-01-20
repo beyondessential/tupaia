@@ -1,17 +1,21 @@
 /* Much of this is duplicated in @tupaia/database/core/modelClasses/SurveyResponse/getAnswerText */
 
-import { S3, S3Client, S3_BUCKET_PATH, getS3ImageFilePath } from '@tupaia/server-utils';
-import { isValidHttpUrl } from '@tupaia/tsutils';
-import { QuestionType } from '@tupaia/types';
-
-function isValidFileId(str) {
-  return /^[a-f\d]{24}$/.test(str);
-}
-
 /**
  * @typedef {import('@tupaia/types').Answer} Answer
  * @typedef {(answer: Answer) => Promise<Answer["text"]>} GetAnswerTextFunction
  */
+
+import { S3, S3Client, S3_BUCKET_PATH, getS3ImageFilePath } from '@tupaia/server-utils';
+import { isValidHttpUrl } from '@tupaia/tsutils';
+import { QuestionType } from '@tupaia/types';
+
+/**
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isValidFileId(str) {
+  return /^[a-f\d]{24}$/.test(str);
+}
 
 /**
  * @type {GetAnswerTextFunction}
@@ -55,7 +59,8 @@ async function getPhotoAnswerText(answer) {
   return await s3Client.uploadImage(answer.body);
 }
 
-export const ANSWER_BODY_PARSERS = {
+/** @satisfies {Record<QuestionType, GetAnswerTextFunction>} */
+export const ANSWER_BODY_PARSERS = /** @type {const} */ ({
   [QuestionType.File]: getFileAnswerText,
   [QuestionType.Photo]: getPhotoAnswerText,
-};
+});
