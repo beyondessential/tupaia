@@ -1,7 +1,12 @@
 import momentTimezone from 'moment-timezone';
 import moment from 'moment';
 
-import { MaterializedViewLogDatabaseModel, DatabaseRecord, RECORDS } from '@tupaia/database';
+import {
+  SurveyResponseModel as BaseSurveyResponseModel,
+  DatabaseRecord,
+  RECORDS,
+  createSurveyResponsePermissionFilter,
+} from '@tupaia/database';
 
 export const SURVEY_RESPONSE_APPROVAL_STATUS = {
   NOT_REQUIRED: 'not_required',
@@ -53,7 +58,7 @@ class SurveyResponseRecord extends DatabaseRecord {
   }
 }
 
-export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
+export class SurveyResponseModel extends BaseSurveyResponseModel {
   notifiers = [onChangeMarkAnswersChanged];
 
   get DatabaseRecordClass() {
@@ -95,6 +100,10 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     );
     if (result.length === 0) return false;
     return result[0].count === '1';
+  }
+
+  async createRecordsPermissionFilter(accessPolicy, criteria = {}, options = {}) {
+    return await createSurveyResponsePermissionFilter(accessPolicy, this.otherModels, criteria, options);
   }
 
   approvalStatusTypes = SURVEY_RESPONSE_APPROVAL_STATUS;

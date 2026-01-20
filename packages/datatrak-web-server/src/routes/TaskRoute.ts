@@ -1,8 +1,8 @@
 import { Request } from 'express';
-import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebTaskRequest } from '@tupaia/types';
-import { TaskT, formatTaskResponse } from '../utils';
 import camelcaseKeys from 'camelcase-keys';
+
+import { Route } from '@tupaia/server-boilerplate';
+import { DatatrakWebTaskRequest, DatatrakWebTasksRequest } from '@tupaia/types';
 
 export type TaskRequest = Request<
   DatatrakWebTaskRequest.Params,
@@ -34,7 +34,7 @@ export class TaskRoute extends Route<TaskRequest> {
     const { ctx, params, models } = this.req;
     const { taskId } = params;
 
-    const task: TaskT = await ctx.services.central.fetchResources(`tasks/${taskId}`, {
+    const task: DatatrakWebTasksRequest.RawTaskResult = await ctx.services.central.fetchResources(`tasks/${taskId}`, {
       columns: FIELDS,
     });
     if (!task) {
@@ -45,7 +45,7 @@ export class TaskRoute extends Route<TaskRequest> {
       sort: ['created_at DESC'],
     });
 
-    const formattedTask = await formatTaskResponse(models, task);
+    const formattedTask = await models.task.formatTaskForClient(task);
 
     return {
       ...formattedTask,

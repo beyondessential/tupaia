@@ -7,11 +7,10 @@ export const API_URL = process.env.REACT_APP_DATATRAK_WEB_API_URL || 'http://loc
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
 
-export const timeout = 45 * 1000; // 45 seconds
-
-type RequestParameters = Record<string, any> & {
+export const timeout = 180 * 1000; // 3 minutes as sync might take a while
+export interface RequestParameters extends Record<string, any> {
   params?: Record<string, any>;
-};
+}
 
 type RequestParametersWithMethod = RequestParameters & {
   method: 'get' | 'post' | 'put' | 'delete';

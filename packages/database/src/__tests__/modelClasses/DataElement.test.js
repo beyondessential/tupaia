@@ -1,4 +1,4 @@
-import { DataElementModel, DataElementRecord } from '../../modelClasses/DataElement';
+import { DataElementModel, DataElementRecord } from '../../core/modelClasses/DataElement';
 
 describe('DataElement', () => {
   describe('sanitizeConfig()', () => {

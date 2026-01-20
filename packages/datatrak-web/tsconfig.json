@@ -1,9 +1,9 @@
 {
   "extends": "../../tsconfig-frontend.json",
-  "include": [
-    "src",
-    "index.d.ts",
-    "stories",
-    ".storybook"
-  ],
+  "include": ["src", "index.d.ts", "stories", ".storybook"],
+  "compilerOptions": {
+    "paths": {
+      "@tupaia/database": ["../database/dist/browser/index.d.ts"]
+    }
+  }
 }

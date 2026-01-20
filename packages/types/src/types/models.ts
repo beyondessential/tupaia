@@ -141,6 +141,7 @@ export interface Answer {
   'survey_response_id': string;
   'text'?: string | null;
   'type': string;
+  'updated_at_sync_tick': string;
 }
 export interface AnswerCreate {
   'question_id': string;
@@ -260,6 +261,7 @@ export interface Country {
   'code': string;
   'id': string;
   'name': string;
+  'updated_at_sync_tick': string;
 }
 export interface CountryCreate {
   'code': string;
@@ -639,6 +641,7 @@ export interface Entity {
   'point'?: string | null;
   'region'?: string | null;
   'type': EntityType;
+  'updated_at_sync_tick': string;
 }
 export interface EntityCreate {
   'attributes'?: EntityAttributes;
@@ -671,6 +674,7 @@ export interface EntityHierarchy {
   'canonical_types'?: string[] | null;
   'id': string;
   'name': string;
+  'updated_at_sync_tick': string;
 }
 export interface EntityHierarchyCreate {
   'canonical_types'?: string[] | null;
@@ -680,6 +684,24 @@ export interface EntityHierarchyUpdate {
   'canonical_types'?: string[] | null;
   'id'?: string;
   'name'?: string;
+}
+export interface EntityParentChildRelation {
+  'child_id': string;
+  'entity_hierarchy_id': string;
+  'id': string;
+  'parent_id': string;
+  'updated_at_sync_tick': string;
+}
+export interface EntityParentChildRelationCreate {
+  'child_id': string;
+  'entity_hierarchy_id': string;
+  'parent_id': string;
+}
+export interface EntityParentChildRelationUpdate {
+  'child_id'?: string;
+  'entity_hierarchy_id'?: string;
+  'id'?: string;
+  'parent_id'?: string;
 }
 export interface EntityRelation {
   'child_id': string;
@@ -906,6 +928,20 @@ export interface LesmisSessionUpdate {
   'id'?: string;
   'refresh_token'?: string;
 }
+export interface LocalSystemFact {
+  'id': string;
+  'key': string;
+  'value'?: string | null;
+}
+export interface LocalSystemFactCreate {
+  'key': string;
+  'value'?: string | null;
+}
+export interface LocalSystemFactUpdate {
+  'id'?: string;
+  'key'?: string;
+  'value'?: string | null;
+}
 export interface LoginAttempts {
   'expire'?: string | null;
   'key': string;
@@ -1129,6 +1165,7 @@ export interface Option {
   'label'?: string | null;
   'option_set_id': string;
   'sort_order': number;
+  'updated_at_sync_tick': string;
   'value': string;
 }
 export interface OptionCreate {
@@ -1149,6 +1186,7 @@ export interface OptionUpdate {
 export interface OptionSet {
   'id': string;
   'name': string;
+  'updated_at_sync_tick': string;
 }
 export interface OptionSetCreate {
   'name': string;
@@ -1161,6 +1199,7 @@ export interface PermissionGroup {
   'id': string;
   'name': string;
   'parent_id'?: string | null;
+  'updated_at_sync_tick': string;
 }
 export interface PermissionGroupCreate {
   'name': string;
@@ -1213,6 +1252,7 @@ export interface Project {
   'logo_url'?: string | null;
   'permission_groups': string[];
   'sort_order'?: number | null;
+  'updated_at_sync_tick': string;
 }
 export interface ProjectCreate {
   'code': string;
@@ -1275,6 +1315,7 @@ export interface Question {
   'options'?: string[] | null;
   'text': string;
   'type': QuestionType;
+  'updated_at_sync_tick': string;
 }
 export interface QuestionCreate {
   'code'?: string | null;
@@ -1383,6 +1424,7 @@ export interface Survey {
   'project_id': string;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
+  'updated_at_sync_tick': string;
 }
 export interface SurveyCreate {
   'can_repeat'?: boolean | null;
@@ -1414,6 +1456,7 @@ export interface SurveyUpdate {
 export interface SurveyGroup {
   'id': string;
   'name': string;
+  'updated_at_sync_tick': string;
 }
 export interface SurveyGroupCreate {
   'name': string;
@@ -1434,6 +1477,7 @@ export interface SurveyResponse {
   'start_time': Date;
   'survey_id': string;
   'timezone'?: string | null;
+  'updated_at_sync_tick': string;
   'user_id': string;
 }
 export interface SurveyResponseCreate {
@@ -1481,6 +1525,7 @@ export interface SurveyScreen {
   'id': string;
   'screen_number': number;
   'survey_id': string;
+  'updated_at_sync_tick': string;
 }
 export interface SurveyScreenCreate {
   'screen_number': number;
@@ -1501,6 +1546,7 @@ export interface SurveyScreenComponent {
   'question_id': string;
   'question_label'?: string | null;
   'screen_id': string;
+  'updated_at_sync_tick': string;
   'validation_criteria'?: string | null;
   'visibility_criteria'?: string | null;
 }
@@ -1549,6 +1595,64 @@ export interface SyncGroupLogUpdate {
   'sync_group_code'?: string;
   'timestamp'?: Date | null;
 }
+export interface SyncQueuedDevice {
+  'id': string;
+  'last_seen_time': Date;
+  'last_synced_tick': string;
+  'urgent': boolean;
+}
+export interface SyncQueuedDeviceCreate {
+  'last_seen_time'?: Date;
+  'last_synced_tick': string;
+  'urgent': boolean;
+}
+export interface SyncQueuedDeviceUpdate {
+  'id'?: string;
+  'last_seen_time'?: Date;
+  'last_synced_tick'?: string;
+  'urgent'?: boolean;
+}
+export interface SyncSession {
+  'completed_at'?: Date | null;
+  'errors'?: string[] | null;
+  'id': string;
+  'info'?: Object | null;
+  'last_connection_time'?: Date | null;
+  'persist_completed_at'?: Date | null;
+  'pull_since'?: string | null;
+  'pull_until'?: string | null;
+  'snapshot_completed_at'?: Date | null;
+  'snapshot_started_at'?: Date | null;
+  'start_time'?: Date | null;
+  'started_at_tick'?: string | null;
+}
+export interface SyncSessionCreate {
+  'completed_at'?: Date | null;
+  'errors'?: string[] | null;
+  'info'?: Object | null;
+  'last_connection_time'?: Date | null;
+  'persist_completed_at'?: Date | null;
+  'pull_since'?: string | null;
+  'pull_until'?: string | null;
+  'snapshot_completed_at'?: Date | null;
+  'snapshot_started_at'?: Date | null;
+  'start_time'?: Date | null;
+  'started_at_tick'?: string | null;
+}
+export interface SyncSessionUpdate {
+  'completed_at'?: Date | null;
+  'errors'?: string[] | null;
+  'id'?: string;
+  'info'?: Object | null;
+  'last_connection_time'?: Date | null;
+  'persist_completed_at'?: Date | null;
+  'pull_since'?: string | null;
+  'pull_until'?: string | null;
+  'snapshot_completed_at'?: Date | null;
+  'snapshot_started_at'?: Date | null;
+  'start_time'?: Date | null;
+  'started_at_tick'?: string | null;
+}
 export interface Task {
   'assignee_id'?: string | null;
   'created_at': Date;
@@ -1562,6 +1666,7 @@ export interface Task {
   'status'?: TaskStatus | null;
   'survey_id': string;
   'survey_response_id'?: string | null;
+  'updated_at_sync_tick': string;
 }
 export interface TaskCreate {
   'assignee_id'?: string | null;
@@ -1597,6 +1702,7 @@ export interface TaskComment {
   'task_id': string;
   'template_variables': TaskCommentTemplateVariables;
   'type': TaskCommentType;
+  'updated_at_sync_tick': string;
   'user_id'?: string | null;
   'user_name': string;
 }
@@ -1618,6 +1724,24 @@ export interface TaskCommentUpdate {
   'type'?: TaskCommentType;
   'user_id'?: string | null;
   'user_name'?: string;
+}
+export interface Tombstone {
+  'deleted_at': Date;
+  'id': string;
+  'record_id': string;
+  'record_type': string;
+  'updated_at_sync_tick': string;
+}
+export interface TombstoneCreate {
+  'deleted_at'?: Date;
+  'record_id': string;
+  'record_type': string;
+}
+export interface TombstoneUpdate {
+  'deleted_at'?: Date;
+  'id'?: string;
+  'record_id'?: string;
+  'record_type'?: string;
 }
 export interface TupaiaWebSession {
   'access_policy': {};
@@ -1657,6 +1781,7 @@ export interface UserAccount {
   'preferences': UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
+  'updated_at_sync_tick': string;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserAccountCreate {
@@ -1710,6 +1835,7 @@ export interface UserEntityPermission {
   'entity_id': string;
   'id': string;
   'permission_group_id': string;
+  'updated_at_sync_tick': string;
   'user_id': string;
 }
 export interface UserEntityPermissionCreate {
@@ -1925,4 +2051,18 @@ export enum ApprovalStatus {
   'pending' = 'pending',
   'rejected' = 'rejected',
   'approved' = 'approved',
+}
+export interface DebugLog {
+  'id': string;
+  'info': {};
+  'type': string;
+}
+export interface DebugLogCreate {
+  'info': {};
+  'type': string;
+}
+export interface DebugLogUpdate {
+  'id'?: string;
+  'info'?: {};
+  'type'?: string;
 }

@@ -1,14 +1,14 @@
 /* eslint-disable camelcase */
 
-import { SurveyResponseOutdater } from '../../changeHandlers';
+import { SurveyResponseOutdater } from '../../server/changeHandlers';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,
   getTestModels,
   populateTestData,
   upsertDummyRecord,
-} from '../../testUtilities';
-import { generateId } from '../../utilities';
+} from '../../server/testUtilities';
+import { generateId } from '../../core/utilities';
 
 const buildSurvey = (id, periodGranularity) => {
   const code = `Test_${periodGranularity || 'no_granularity'}`;

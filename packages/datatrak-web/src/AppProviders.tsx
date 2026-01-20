@@ -7,7 +7,7 @@ import { SnackbarProvider } from 'notistack';
 import { theme } from './theme';
 import { Toast } from './components';
 import { errorToast } from './utils';
-import { CurrentUserContextProvider } from './api';
+import { CurrentUserContextProvider, DatabaseProvider, SyncProvider } from './api';
 import { REDIRECT_ERROR_PARAM } from './constants';
 
 const handleError = (error: any, query: any) => {
@@ -16,7 +16,7 @@ const handleError = (error: any, query: any) => {
     window.location.href = `${error.responseData.redirectClient}?${REDIRECT_ERROR_PARAM}=${error.message}`;
   }
 
-  if (!query?.meta || !query?.meta?.applyCustomErrorHandling) {
+  if (!query?.meta?.applyCustomErrorHandling) {
     errorToast(error.message);
   }
 };
@@ -33,11 +33,15 @@ const defaultQueryClient = new QueryClient({
     onError: handleError,
   }),
   defaultOptions: {
+    mutations: {
+      networkMode: 'offlineFirst',
+    },
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      keepPreviousData: false,
+      networkMode: 'offlineFirst',
       refetchOnWindowFocus: false,
       retry: false,
-      keepPreviousData: false,
+      staleTime: 1000 * 60 * 5, // 5 minutes
     },
   },
 });
@@ -65,7 +69,11 @@ export const AppProviders = ({ children, queryClient = defaultQueryClient }: App
               horizontal: 'right',
             }}
           >
-            <CurrentUserContextProvider>{children}</CurrentUserContextProvider>
+            <DatabaseProvider>
+              <CurrentUserContextProvider>
+                <SyncProvider>{children}</SyncProvider>
+              </CurrentUserContextProvider>
+            </DatabaseProvider>
           </SnackbarProvider>
         </QueryClientProvider>
       </ThemeProvider>

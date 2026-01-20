@@ -1,4 +1,4 @@
-import { createModelsStub } from '../../testUtilities';
+import { createModelsStub } from '../../server/testUtilities';
 
 describe('createModelsStub', () => {
   const mockModels = createModelsStub({

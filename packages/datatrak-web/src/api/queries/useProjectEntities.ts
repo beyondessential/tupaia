@@ -1,8 +1,11 @@
-import { UseQueryOptions, UseQueryResult, useQuery } from '@tanstack/react-query';
+import { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 
 import { DatatrakWebEntityDescendantsRequest, Project } from '@tupaia/types';
 
+import { getEntityDescendants } from '../../database';
 import { get } from '../api';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { useDatabaseQuery } from './useDatabaseQuery';
 
 export interface UseProjectEntitiesQueryOptions
   extends UseQueryOptions<DatatrakWebEntityDescendantsRequest.ResBody> {}
@@ -15,7 +18,8 @@ export const useProjectEntities = (
   params?: DatatrakWebEntityDescendantsRequest.ReqBody,
   useQueryOptions?: UseProjectEntitiesQueryOptions,
 ): UseProjectEntitiesQueryResult => {
-  const getEntityDescendants = async () => {
+  const isOfflineFirst = useIsOfflineFirst();
+  const getOnlineEntityDescendants = async () => {
     const entities: DatatrakWebEntityDescendantsRequest.ResBody = await get('entityDescendants', {
       params: {
         ...params,
@@ -25,13 +29,17 @@ export const useProjectEntities = (
     return entities;
   };
 
-  return useQuery<DatatrakWebEntityDescendantsRequest.ResBody>(
+  return useDatabaseQuery<DatatrakWebEntityDescendantsRequest.ResBody>(
     ['entityDescendants', projectCode, params],
-    getEntityDescendants,
+    isOfflineFirst ? getEntityDescendants : getOnlineEntityDescendants,
     {
       ...useQueryOptions,
       enabled: !!projectCode && (useQueryOptions?.enabled ?? true),
       placeholderData: [] as DatatrakWebEntityDescendantsRequest.ResBody,
+      localContext: {
+        projectCode,
+        params,
+      },
     },
   );
 };

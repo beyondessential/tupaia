@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
@@ -7,30 +8,40 @@ import {
   handleWith,
 } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
-import { AdminPanelSessionModel } from '../models';
-import { hasTupaiaAdminPanelAccess } from '../utils';
+
 import { upload } from '../middleware';
+import { AdminPanelSessionModel } from '../models';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
   ExportDataTableRequest,
   ExportDataTableRoute,
+  ExportEntityHierarchiesRequest,
+  ExportEntityHierarchiesRoute,
   ExportMapOverlayVisualisationRequest,
   ExportMapOverlayVisualisationRoute,
   FetchDashboardVisualisationRequest,
   FetchDashboardVisualisationRoute,
+  FetchDataTableBuiltInParamsRequest,
+  FetchDataTableBuiltInParamsRoute,
+  FetchDataTablePreviewDataRequest,
+  FetchDataTablePreviewDataRoute,
   FetchHierarchyEntitiesRequest,
   FetchHierarchyEntitiesRoute,
   FetchMapOverlayVisualisationRequest,
   FetchMapOverlayVisualisationRoute,
   FetchReportPreviewDataRequest,
   FetchReportPreviewDataRoute,
-  FetchDataTablePreviewDataRequest,
-  FetchDataTablePreviewDataRoute,
+  FetchTransformSchemasRequest,
+  FetchTransformSchemasRoute,
   ImportDashboardVisualisationRequest,
   ImportDashboardVisualisationRoute,
   ImportDataTableRequest,
   ImportDataTableRoute,
+  ImportMapOverlayVisualisationRequest,
+  ImportMapOverlayVisualisationRoute,
+  PresentationOptionsPromptRequest,
+  PresentationOptionsPromptRoute,
   SaveDashboardVisualisationRequest,
   SaveDashboardVisualisationRoute,
   SaveMapOverlayVisualisationRequest,
@@ -38,17 +49,8 @@ import {
   UploadTestDataRequest,
   UploadTestDataRoute,
   UserRoute,
-  ImportMapOverlayVisualisationRequest,
-  ImportMapOverlayVisualisationRoute,
-  FetchTransformSchemasRequest,
-  FetchTransformSchemasRoute,
-  FetchDataTableBuiltInParamsRequest,
-  FetchDataTableBuiltInParamsRoute,
-  ExportEntityHierarchiesRequest,
-  ExportEntityHierarchiesRoute,
-  PresentationOptionsPromptRequest,
-  PresentationOptionsPromptRoute,
 } from '../routes';
+import { hasTupaiaAdminPanelAccess } from '../utils';
 import { PromptManager } from '../viz-builder/prompts/PromptManager';
 
 export const addPromptManagerToContext =
@@ -131,22 +133,22 @@ export async function createApp(promptManager: PromptManager) {
     )
     .post<ImportDashboardVisualisationRequest>(
       'import/dashboardVisualisations',
-      upload.array('dashboardVisualisations'),
+      upload.array('dashboardVisualisations') as RequestHandler,
       handleWith(ImportDashboardVisualisationRoute),
     )
     .post<ImportDataTableRequest>(
       'import/dataTables',
-      upload.array('dataTables'),
+      upload.array('dataTables') as RequestHandler,
       handleWith(ImportDataTableRoute),
     )
     .post<ImportMapOverlayVisualisationRequest>(
       'import/mapOverlayVisualisations',
-      upload.array('mapOverlayVisualisations'),
+      upload.array('mapOverlayVisualisations') as RequestHandler,
       handleWith(ImportMapOverlayVisualisationRoute),
     )
     .post<UploadTestDataRequest>(
       'uploadTestData',
-      upload.single('testData'),
+      upload.single('testData') as RequestHandler,
       handleWith(UploadTestDataRoute),
     )
     .get<FetchMapOverlayVisualisationRequest>(

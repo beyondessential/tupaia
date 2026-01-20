@@ -12,6 +12,7 @@ import {
   TaskCompletionHandler,
   TaskCreationHandler,
   TaskUpdateHandler,
+  buildEntityParentChildRelationIfEmpty,
   TupaiaDatabase,
 } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
@@ -127,6 +128,8 @@ configureEnv();
       await dbMigrator.up();
       winston.info('Database migrations complete');
 
+      await buildEntityParentChildRelationIfEmpty(models);
+    
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
         winston.info('Creating permissions based meditrak sync queue');
         // don't await this as it's not critical, and will hold up the process if it fails

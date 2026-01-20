@@ -6,7 +6,9 @@ import {
   stripTimezoneFromDate,
   ValidationError,
 } from '@tupaia/utils';
-import { upsertAnswers } from '../../../dataAccessors/upsertAnswers';
+import { SurveyResponseModel } from '@tupaia/database';
+
+import { ANSWER_BODY_PARSERS } from '../../../dataAccessors';
 import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../../../database';
 import { upsertEntitiesAndOptions } from '../../surveyResponses';
 
@@ -50,7 +52,12 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
         },
       );
 
-      await upsertAnswers(transactingModels, answers, surveyResponse.id);
+      await SurveyResponseModel.upsertAnswers(
+        transactingModels,
+        answers,
+        surveyResponse.id,
+        ANSWER_BODY_PARSERS,
+      );
     });
   } catch (error) {
     throw new DatabaseError(`creating/updating survey response with ID ${surveyResponseId}`, error);

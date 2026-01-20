@@ -2,7 +2,7 @@ import { getEnvVarOrDefault } from '@tupaia/utils';
 
 export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-type ServiceName = 'auth' | 'entity' | 'central' | 'report' | 'dataTable' | 'webConfig';
+type ServiceName = 'auth' | 'entity' | 'central' | 'report' | 'dataTable' | 'webConfig' | 'sync';
 export type ServiceBaseUrlSet = Record<ServiceName, string>;
 
 const productionSubdomains = [
@@ -16,6 +16,7 @@ const productionSubdomains = [
   'psss',
   'psss-api',
   'report-api',
+  'sync-api',
   'entity-api',
   'data-table-api',
   'www',
@@ -60,6 +61,12 @@ const SERVICES = {
     version: 'v1',
     localPort: '8000',
   },
+  sync: {
+    subdomain: 'sync-api',
+    version: 'v1',
+    localPort: '8120',
+    prefix: null,
+  },
 };
 
 const getLocalUrl = (service: ServiceName): string => {
@@ -76,6 +83,7 @@ export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
   report: getLocalUrl('report'),
   dataTable: getLocalUrl('dataTable'),
   webConfig: getLocalUrl('webConfig'),
+  sync: getLocalUrl('sync'),
 };
 
 const getServiceUrl = (service: ServiceName, subdomainPrefix?: string): string => {
@@ -92,6 +100,7 @@ export const DEV_BASE_URLS: ServiceBaseUrlSet = {
   report: getServiceUrl('report', 'dev'),
   dataTable: getServiceUrl('dataTable', 'dev'),
   webConfig: getServiceUrl('webConfig', 'dev'),
+  sync: getServiceUrl('sync', 'dev'),
 };
 
 export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
@@ -101,6 +110,7 @@ export const PRODUCTION_BASE_URLS: ServiceBaseUrlSet = {
   report: getServiceUrl('report'),
   dataTable: getServiceUrl('dataTable'),
   webConfig: getServiceUrl('webConfig'),
+  sync: getServiceUrl('sync'),
 };
 
 const getServiceUrlForSubdomain = (service: ServiceName, originalSubdomain: string): string => {
@@ -142,12 +152,13 @@ export const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
     central: getServiceUrlForSubdomain('central', subdomain),
     report: getServiceUrlForSubdomain('report', subdomain),
     dataTable: getServiceUrlForSubdomain('dataTable', subdomain),
-    webConfig: getServiceUrlForSubdomain('webConfig', subdomain),
+    webConfig: getServiceUrlForSubdomain('webConfig', subdomain), 
+    sync: getServiceUrlForSubdomain('sync', subdomain),
   };
 };
 
 export const getBaseUrlsForHost = (hostname: string): ServiceBaseUrlSet => {
-  const { auth, entity, central, report, dataTable, webConfig } = getDefaultBaseUrls(hostname);
+  const { auth, entity, central, report, dataTable, webConfig, sync } = getDefaultBaseUrls(hostname);
   return {
     auth: process.env.AUTH_API_URL || auth,
     entity: process.env.ENTITY_API_URL || entity,
@@ -155,5 +166,6 @@ export const getBaseUrlsForHost = (hostname: string): ServiceBaseUrlSet => {
     report: process.env.REPORT_API_URL || report,
     dataTable: process.env.DATA_TABLE_API_URL || dataTable,
     webConfig: process.env.WEB_CONFIG_API_URL || webConfig,
+    sync: process.env.SYNC_API_URL || sync,
   };
 };

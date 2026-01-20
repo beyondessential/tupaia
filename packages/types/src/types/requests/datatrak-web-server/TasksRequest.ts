@@ -1,5 +1,5 @@
 import { KeysToCamelCase } from '../../../utils/casing';
-import { Entity, Survey, Task, TaskStatus } from '../../models';
+import { Country, Entity, Survey, Task, TaskStatus } from '../../models';
 
 export type Params = Record<string, never>;
 
@@ -7,6 +7,18 @@ export interface TaskAssignee {
   id?: string | null;
   name?: string | null;
 }
+
+export type RawTaskResult = Omit<Task, 'created_at'> & {
+  'entity.name': Entity['name'];
+  'entity.code': Entity['code'];
+  'entity.country_code': Country['code'];
+  'survey.code': Survey['code'];
+  'survey.name': Survey['name'];
+  task_status: TaskStatus | 'overdue' | 'repeating';
+  repeat_schedule?: Record<string, unknown> | null;
+  task_due_date: Date | null;
+  assignee_name?: string | null;
+};
 
 export type TaskResponse = KeysToCamelCase<
   Partial<Omit<Task, 'entity_id' | 'survey_id' | 'created_at' | 'repeat_schedule' | 'due_date'>>

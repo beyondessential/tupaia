@@ -61,22 +61,23 @@ def create_server_instance_from_image(
     )
     tupaia_subdomains = [
         "",
-        "admin",
         "admin-api",
+        "admin",
         "api",
         "config",
+        "data-table-api",
+        "datatrak",
+        "datatrak-web-api",
+        "entity-api",
+        "lesmis",
+        "lesmis-api",
+        "meditrak-api",
+        "psss-api",
         "psss",
         "report-api",
-        "psss-api",
-        "entity-api",
-        "lesmis-api",
-        "lesmis",
-        "meditrak-api",
-        "data-table-api",
-        "tupaia-web-api",
+        "sync-api",
         "tupaia-web",
-        "datatrak-web-api",
-        "datatrak",
+        "tupaia-web-api",
     ]
 
     return create_instance_from_image(

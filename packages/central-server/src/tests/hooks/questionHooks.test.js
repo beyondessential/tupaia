@@ -272,8 +272,16 @@ describe('Question hooks', () => {
       expect(entity.image_url).to.equal(TEST_URL);
 
       // should be otherwise unchanged
-      const { image_url: beforeImageUrl, ...beforeData } = await beforeEntity.getData();
-      const { image_url: afterImageUrl, ...afterData } = await entity.getData();
+      const {
+        image_url: beforeImageUrl,
+        updated_at_sync_tick: beforeUpdatedAtSyncTick,
+        ...beforeData
+      } = await beforeEntity.getData();
+      const {
+        image_url: afterImageUrl,
+        updated_at_sync_tick: afterUpdatedAtSyncTick,
+        ...afterData
+      } = await entity.getData();
       expect(beforeData).to.deep.equal(afterData);
     });
 
@@ -303,8 +311,16 @@ describe('Question hooks', () => {
         expect(entity.attributes).to.deep.equal(newValue);
 
         // should be otherwise unchanged
-        const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
-        const { attributes: afterAttributes, ...afterData } = await entity.getData();
+        const {
+          attributes: beforeAttributes,
+          updated_at_sync_tick: beforeUpdatedAtSyncTick,
+          ...beforeData
+        } = await beforeEntity.getData();
+        const {
+          attributes: afterAttributes,
+          updated_at_sync_tick: afterUpdatedAtSyncTick,
+          ...afterData
+        } = await entity.getData();
         expect(beforeData).to.deep.equal(afterData);
       });
 
@@ -335,8 +351,16 @@ describe('Question hooks', () => {
         expect(entity.attributes).to.deep.equal(newValue);
 
         // should be otherwise unchanged
-        const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
-        const { attributes: afterAttributes, ...afterData } = await entity.getData();
+        const {
+          attributes: beforeAttributes,
+          updated_at_sync_tick: beforeUpdatedAtSyncTick,
+          ...beforeData
+        } = await beforeEntity.getData();
+        const {
+          attributes: afterAttributes,
+          updated_at_sync_tick: afterUpdatedAtSyncTick,
+          ...afterData
+        } = await entity.getData();
         expect(beforeData).to.deep.equal(afterData);
       });
 
@@ -368,8 +392,16 @@ describe('Question hooks', () => {
         expect(entity.attributes).to.deep.equal(newValue);
 
         // should be otherwise unchanged
-        const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
-        const { attributes: afterAttributes, ...afterData } = await entity.getData();
+        const {
+          attributes: beforeAttributes,
+          updated_at_sync_tick: beforeUpdatedAtSyncTick,
+          ...beforeData
+        } = await beforeEntity.getData();
+        const {
+          attributes: afterAttributes,
+          updated_at_sync_tick: afterUpdatedAtSyncTick,
+          ...afterData
+        } = await entity.getData();
         expect(beforeData).to.deep.equal(afterData);
       });
     });

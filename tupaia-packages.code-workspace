@@ -2,176 +2,192 @@
   "folders": [
     {
       "name": "root",
-      "path": "."
+      "path": ".",
     },
     {
       "name": "access-policy",
-      "path": "packages/access-policy"
+      "path": "packages/access-policy",
     },
     {
       "name": "admin-panel",
-      "path": "packages/admin-panel"
+      "path": "packages/admin-panel",
     },
     {
       "name": "admin-panel-server",
-      "path": "packages/admin-panel-server"
+      "path": "packages/admin-panel-server",
     },
     {
       "name": "aggregator",
-      "path": "packages/aggregator"
+      "path": "packages/aggregator",
     },
     {
       "name": "api-client",
-      "path": "packages/api-client"
+      "path": "packages/api-client",
     },
     {
       "name": "auth",
-      "path": "packages/auth"
+      "path": "packages/auth",
     },
     {
       "name": "central-server",
-      "path": "packages/central-server"
+      "path": "packages/central-server",
+    },
+    {
+      "name": "constants",
+      "path": "packages/constants",
     },
     {
       "name": "data-api",
-      "path": "packages/data-api"
+      "path": "packages/data-api",
     },
     {
       "name": "data-broker",
-      "path": "packages/data-broker"
+      "path": "packages/data-broker",
     },
     {
       "name": "data-lake-api",
-      "path": "packages/data-lake-api"
+      "path": "packages/data-lake-api",
     },
     {
       "name": "data-table-server",
-      "path": "packages/data-table-server"
+      "path": "packages/data-table-server",
     },
     {
       "name": "datatrak-web",
-      "path": "packages/datatrak-web"
+      "path": "packages/datatrak-web",
     },
     {
       "name": "datatrak-web-server",
-      "path": "packages/datatrak-web-server"
+      "path": "packages/datatrak-web-server",
     },
     {
       "name": "database",
-      "path": "packages/database"
+      "path": "packages/database",
     },
     {
       "name": "devops",
-      "path": "packages/devops"
+      "path": "packages/devops",
     },
     {
       "name": "dhis-api",
-      "path": "packages/dhis-api"
+      "path": "packages/dhis-api",
     },
     {
       "name": "e2e",
-      "path": "packages/e2e"
+      "path": "packages/e2e",
     },
     {
       "name": "entity-server",
-      "path": "packages/entity-server"
+      "path": "packages/entity-server",
     },
     {
       "name": "expression-parser",
-      "path": "packages/expression-parser"
+      "path": "packages/expression-parser",
     },
     {
       "name": "indicators",
-      "path": "packages/indicators"
+      "path": "packages/indicators",
     },
     {
       "name": "kobo-api",
-      "path": "packages/kobo-api"
+      "path": "packages/kobo-api",
     },
     {
       "name": "lesmis",
-      "path": "packages/lesmis"
+      "path": "packages/lesmis",
     },
     {
       "name": "lesmis-server",
-      "path": "packages/lesmis-server"
+      "path": "packages/lesmis-server",
     },
     {
       "name": "meditrak-app",
-      "path": "packages/meditrak-app"
+      "path": "packages/meditrak-app",
     },
     {
       "name": "meditrak-app-server",
-      "path": "packages/meditrak-app-server"
+      "path": "packages/meditrak-app-server",
     },
     {
       "name": "psss",
-      "path": "packages/psss"
+      "path": "packages/psss",
     },
     {
       "name": "psss-server",
-      "path": "packages/psss-server"
+      "path": "packages/psss-server",
     },
     {
       "name": "report-server",
-      "path": "packages/report-server"
+      "path": "packages/report-server",
     },
     {
       "name": "server-boilerplate",
-      "path": "packages/server-boilerplate"
+      "path": "packages/server-boilerplate",
     },
     {
       "name": "server-utils",
-      "path": "packages/server-utils"
+      "path": "packages/server-utils",
     },
     {
       "name": "superset-api",
-      "path": "packages/superset-api"
+      "path": "packages/superset-api",
+    },
+    {
+      "name": "sync",
+      "path": "packages/sync",
+    },
+    {
+      "name": "sync-server",
+      "path": "packages/sync-server",
     },
     {
       "name": "tupaia-web",
-      "path": "packages/tupaia-web"
+      "path": "packages/tupaia-web",
     },
     {
       "name": "tupaia-web-server",
-      "path": "packages/tupaia-web-server"
+      "path": "packages/tupaia-web-server",
+    },
+    {
+      "name": "tsmodels",
+      "path": "packages/tsmodels",
     },
     {
       "name": "tsutils",
-      "path": "packages/tsutils"
+      "path": "packages/tsutils",
     },
     {
       "name": "types",
-      "path": "packages/types"
+      "path": "packages/types",
     },
     {
       "name": "ui-chart-components",
-      "path": "packages/ui-chart-components"
+      "path": "packages/ui-chart-components",
     },
     {
       "name": "ui-map-components",
-      "path": "packages/ui-map-components"
+      "path": "packages/ui-map-components",
     },
     {
       "name": "ui-components",
-      "path": "packages/ui-components"
+      "path": "packages/ui-components",
     },
     {
       "name": "utils",
-      "path": "packages/utils"
+      "path": "packages/utils",
     },
     {
       "name": "weather-api",
-      "path": "packages/weather-api"
+      "path": "packages/weather-api",
     },
     {
       "name": "web-config-server",
-      "path": "packages/web-config-server"
+      "path": "packages/web-config-server",
     },
     {
       "name": "viz-test-tool",
-      "path": "packages/viz-test-tool"
-    }
+      "path": "packages/viz-test-tool",
+    },
   ],
   "settings": {
     "cSpell.caseSensitive": false,
@@ -214,7 +230,6 @@
       "ilike",
       "imms",
       "isequal",
-      "psql",
       "jsonb",
       "keyby",
       "Kobo",
@@ -241,8 +256,11 @@
       "prestart",
       "ProGuard",
       "promisify",
+      "psql",
       "PSSS",
       "refetched",
+      "repull",
+      "repull",
       "requestable",
       "singularise",
       "spec",
@@ -250,6 +268,8 @@
       "swipeable",
       "Syncable",
       "testid",
+      "tileset",
+      "tilesets",
       "Tongatapu",
       "Tupaia",
       "updaters",
@@ -262,16 +282,16 @@
     "eslint.validate": ["typescript", "typescriptreact"],
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "files.exclude": {
-      "packages/": true
+      "packages/": true,
     },
     "search.exclude": {
       ".yarn/": true,
       "*.lock": true,
       "**/lib": true,
       "**/logfile*.log": true,
-      "**/yarn-1.18.0.js": true
+      "**/yarn-1.18.0.js": true,
     },
-    "typescript.tsdk": "root/node_modules/typescript/lib"
+    "typescript.tsdk": "root/node_modules/typescript/lib",
   },
   "extensions": {
     "recommendations": [
@@ -283,7 +303,7 @@
       "ryu1kn.partial-diff",
       "streetsidesoftware.code-spell-checker",
       "visualstudioexptteam.vscodeintellicode",
-      "wayou.vscode-todo-highlight"
-    ]
-  }
+      "wayou.vscode-todo-highlight",
+    ],
+  },
 }

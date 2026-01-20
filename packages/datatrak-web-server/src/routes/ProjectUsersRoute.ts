@@ -1,7 +1,6 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebUsersRequest, Project, UserAccount } from '@tupaia/types';
-import { getFilteredUsers } from '../utils';
 import { DatatrakWebServerModelRegistry } from '../types';
 
 export interface ProjectUsersRequest
@@ -43,7 +42,7 @@ const getFilterUsersForProject = async (
   const users: { id: UserAccount['id'] }[] = await models.database.executeSql(usersQuery, bindings);
   const userIds = users.map(user => user.id);
 
-  return getFilteredUsers(models, searchTerm, userIds);
+  return models.user.getFilteredUsers(searchTerm, userIds);
 };
 
 export class ProjectUsersRoute extends Route<ProjectUsersRequest> {

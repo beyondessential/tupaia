@@ -7,6 +7,7 @@ internal_deps=(
   aggregator
   api-client
   auth
+  constants
   data-api
   data-broker
   data-lake-api
@@ -18,6 +19,8 @@ internal_deps=(
   server-boilerplate
   server-utils
   superset-api
+  sync
+  tsmodels
   tsutils
   types
   ui-chart-components

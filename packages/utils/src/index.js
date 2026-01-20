@@ -39,3 +39,7 @@ export { oneSecondSleep, sleep } from './sleep';
 export { getUniqueSurveyQuestionFileName } from './getUniqueSurveyQuestionFileName';
 export * from './rrule';
 export { formatDateInTimezone, getOffsetForTimezone } from './timezone';
+export {
+  stripUpdatedAtSyncTickFromObject,
+  stripUpdatedAtSyncTickFromArray,
+} from './stripUpdatedAtSyncTick';

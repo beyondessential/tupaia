@@ -1,30 +1,25 @@
-import { useQuery } from '@tanstack/react-query';
-import { DatatrakWebSurveyRequest, Project } from '@tupaia/types';
-import { get } from '../api';
-import { Entity } from '../../types';
+import { Entity, Project } from '@tupaia/types';
+import { useSurveysQuery } from './useSurveysQuery';
 
-interface QueryOptions {
-  countryCode?: Entity['code'];
-  searchTerm?: string;
-}
-
+/**
+ * @deprecated Use {@link useSurveysQuery} instead.
+ */
 export const useProjectSurveys = (
   projectId?: Project['id'],
-  { countryCode, searchTerm }: QueryOptions = {},
-) => {
-  const getSurveys = () =>
-    get('surveys', {
-      params: {
-        fields: ['name', 'code', 'id', 'survey_group.name'],
-        projectId,
-        ...(searchTerm && { searchTerm }),
-        ...(countryCode && { countryCode }),
-      },
-    });
-
-  return useQuery<DatatrakWebSurveyRequest.ResBody[]>(
-    ['surveys', projectId, countryCode, searchTerm],
-    getSurveys,
-    { enabled: !!projectId },
+  {
+    countryCode,
+    searchTerm,
+  }: {
+    countryCode?: Entity['code'];
+    searchTerm?: string;
+  } = {},
+) =>
+  useSurveysQuery(
+    {
+      countryCode,
+      includeCountryNames: false,
+      projectId,
+      searchTerm,
+    },
+    { enabled: projectId !== undefined },
   );
-};

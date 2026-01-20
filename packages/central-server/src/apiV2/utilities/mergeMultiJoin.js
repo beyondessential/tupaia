@@ -1,7 +1,5 @@
-export function mergeMultiJoin(baseMultiJoin, multiJoinToMerge) {
-  if (!multiJoinToMerge) {
-    return baseMultiJoin;
-  }
-  const checkJoinIsUnique = join => !baseMultiJoin.find(j => j.joinWith === join.joinWith);
-  return [...baseMultiJoin].concat(...multiJoinToMerge.filter(checkJoinIsUnique));
-}
+import { mergeMultiJoin as mergeMultiJoinDatabase } from '@tupaia/database';
+/**
+ * @deprecated Use mergeMultiJoin from @tupaia/database instead
+ */
+export const mergeMultiJoin = mergeMultiJoinDatabase;

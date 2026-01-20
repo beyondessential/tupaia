@@ -33,6 +33,7 @@
     "sha256": "^0.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.10",
     "@babel/eslint-parser": "^7.27.5",
     "@beyondessential/tupaia-access-policy": "^2.5.1",
     "@tupaia/access-policy": "workspace:*",

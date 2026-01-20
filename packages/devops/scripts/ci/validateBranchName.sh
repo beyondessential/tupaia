@@ -2,10 +2,11 @@
 
 set -e
 
-DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-. "$DIR"/utils.sh
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+. "$script_dir"/utils.sh
 
 INVALID_CHARS=('/' '\' '.' '&' '?' '_')
+
 SUBDOMAIN_SUFFIXES=(
     admin
     admin-api
@@ -28,6 +29,7 @@ SUBDOMAIN_SUFFIXES=(
     report
     report-api
     ssh
+    sync-api
     tonga-aggregation
     tupaia-web-api
     www

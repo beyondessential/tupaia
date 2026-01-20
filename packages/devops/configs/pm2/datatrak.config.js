@@ -8,5 +8,6 @@ module.exports = {
     'datatrak-web-server',
     'datatrak-web',
     'web-config-server',
+    'sync-server',
   ]),
 };
