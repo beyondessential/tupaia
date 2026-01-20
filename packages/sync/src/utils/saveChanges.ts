@@ -75,16 +75,15 @@ export const saveUpdates = async (
  */
 const bulkUpdateForClient = async (model: DatabaseModel, batch: Record<string, any>[]) => {
   const attributes = Object.keys(await model.fetchSchema());
-  const allColumns = [...new Set(batch.flatMap(Object.keys))];
-  const attributesToMerge = attributes
-    .filter(col => allColumns.includes(col))
-    .filter(col => col !== 'updated_at_sync_tick');
+  const allColumns = new Set(batch.flatMap(Object.keys));
+  void allColumns.delete('updated_at_sync_tick');
+  const attributesToMerge = attributes.filter(col => allColumns.has(col));
   // This is really a hack to get the updated_at_sync_tick value to be correctly set to the incoming value from the central server
   // This is because when doing INSERT INTO ON CONFLICT, the set_updated_at_sync_tick() is triggered twice by the following workflow::
   // 1. First trigger before inserting the record
   // 2. The insert is skipped due to the on conflict merge
   // 3. Second trigger before updating the record
-  // Hence, we need to explicitlyset the updated_at_sync_tick to the incoming value from the central server manually when merging during update
+  // Hence, we need to explicitly set the updated_at_sync_tick to the incoming value from the central server manually when merging during update
   const columnsToMerge = {
     ...Object.fromEntries(
       attributesToMerge.map(col => [col, model.database.connection.raw('EXCLUDED.??', [col])]),
