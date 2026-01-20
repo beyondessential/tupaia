@@ -35,7 +35,12 @@ const getRemote = async ({
   projectId,
   searchTerm,
 }: SurveysQueryFunctionContext): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
-  const params: RequestParameters = { fields: ['name', 'code', 'id'] };
+  const params: {
+    countryCode?: Country['code'];
+    fields: string[];
+    projectId?: Project['id'];
+    searchTerm?: string;
+  } = { fields: ['name', 'code', 'id'] } satisfies RequestParameters;
 
   if (countryCode) params.countryCode = countryCode;
   if (projectId) params.projectId = projectId;
