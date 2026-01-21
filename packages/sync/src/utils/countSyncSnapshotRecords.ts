@@ -1,3 +1,5 @@
+import { type Knex } from 'knex';
+
 import { DatabaseRecordName, TupaiaDatabase } from '@tupaia/database';
 import { SyncSessionDirectionValues } from '../types';
 import { getSnapshotTableName } from './manageSnapshotTable';
@@ -8,7 +10,7 @@ export const countSyncSnapshotRecords = async (
   direction?: SyncSessionDirectionValues,
   recordType?: DatabaseRecordName,
   additionalWhere?: string,
-  parameters?: Record<string, unknown>,
+  parameters?: Knex.ValueDict,
 ): Promise<number> => {
   const tableName = getSnapshotTableName(sessionId);
 
