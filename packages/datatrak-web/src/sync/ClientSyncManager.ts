@@ -20,9 +20,9 @@ import { Project } from '@tupaia/types';
 import { remove, stream } from '../api';
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 import {
+  SYNC_EVENT_ACTIONS,
   type DatatrakWebModelRegistry,
   type ProcessStreamDataParams,
-  SYNC_EVENT_ACTIONS,
   type SyncEvents,
 } from '../types';
 import { formatFraction } from '../utils';
@@ -350,7 +350,7 @@ export class ClientSyncManager {
   }
 
   async checkForPermissionChanges(sessionId: string) {
-    const currentUserId = await this.models.localSystemFact.get(FACT_CURRENT_USER_ID);
+    const currentUserId = await this.models.localSystemFact.get(SyncFact.CURRENT_USER_ID);
 
     const permissionChangesCount = await countSyncSnapshotRecords(
       this.database,
@@ -591,7 +591,10 @@ export class ClientSyncManager {
 
   async updatePermissionsChanged(permissionsChanged: boolean): Promise<void> {
     this.permissionsChanged = permissionsChanged;
-    await this.models.localSystemFact.set(FACT_PERMISSIONS_CHANGED, permissionsChanged.toString());
+    await this.models.localSystemFact.set(
+      SyncFact.PERMISSIONS_CHANGED,
+      permissionsChanged.toString(),
+    );
     this.emitter.emit(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, { permissionsChanged });
   }
 }

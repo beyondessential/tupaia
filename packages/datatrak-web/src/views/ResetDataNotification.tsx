@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link, styled } from '@mui/material';
 
 import { ensure } from '@tupaia/tsutils';
-import { FACT_PERMISSIONS_CHANGED } from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
 
 import { BannerNotification } from './BannerNotification';
 import { useLogout, useSyncContext } from '../api';
@@ -29,7 +29,7 @@ export const ResetDataNotification = () => {
 
   useEffect(() => {
     const loadPermissionsChanged = async () => {
-      const permissionsChanged = await models.localSystemFact.get(FACT_PERMISSIONS_CHANGED);
+      const permissionsChanged = await models.localSystemFact.get(SyncFact.PERMISSIONS_CHANGED);
       setPermissionsChanged(permissionsChanged === 'true');
     };
 
