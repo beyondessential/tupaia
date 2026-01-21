@@ -4,7 +4,6 @@ import {
   constructRecordExistsWithField,
   constructRecordNotExistsWithField,
   hasContent,
-  isEmail,
   isBoolean,
   isAString,
   isPlainObject,
@@ -71,7 +70,7 @@ export const constructForSingle = (models, recordType) => {
       return {
         first_name: [hasContent],
         last_name: [hasContent],
-        email: [hasContent, isEmail],
+        email: [hasContent],
         password: [isValidPassword],
         countryName: [hasContent],
         permissionGroupName: [hasContent],
@@ -198,7 +197,7 @@ export const constructForSingle = (models, recordType) => {
     case RECORDS.DASHBOARD_MAILING_LIST_ENTRY:
       return {
         dashboard_mailing_list_id: [hasContent],
-        email: [hasContent, isEmail],
+        email: [hasContent],
       };
     case RECORDS.MAP_OVERLAY_GROUP_RELATION:
       return {
