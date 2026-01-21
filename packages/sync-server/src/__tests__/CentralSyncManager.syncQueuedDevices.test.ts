@@ -1,23 +1,31 @@
 import { subMinutes } from 'date-fns';
-import { getTestModels } from '@tupaia/database';
+
+import { clearTestData, getTestModels } from '@tupaia/database';
+import { FACT_CURRENT_SYNC_TICK } from '@tupaia/constants';
 
 import { CentralSyncManager } from '../sync/CentralSyncManager';
-import { TestModelRegistry } from '../types';
+import { TestSyncServerModelRegistry } from '../types';
 
 describe('CentralSyncManager.queueDeviceForSync', () => {
   let centralSyncManager: CentralSyncManager;
-  let models: any;
+  let models: TestSyncServerModelRegistry;
 
   const mockConfig = {
     maxConcurrentSessions: 1,
   };
 
-  beforeEach(async () => {
-    models = getTestModels() as TestModelRegistry;
+  beforeAll(async () => {
+    models = getTestModels() as TestSyncServerModelRegistry;
+    await clearTestData(models.database);
+  });
 
+  beforeEach(async () => {
     centralSyncManager = new CentralSyncManager(models, mockConfig);
 
+    await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 1);
+
     // Clear any existing data
+    await models.syncDeviceTick.delete({});
     await models.syncSession.delete({});
     await models.syncQueuedDevice.delete({});
   });

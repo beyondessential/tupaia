@@ -2,6 +2,7 @@ import log from 'winston';
 
 import { getSnapshotTableName, SYNC_SESSION_DIRECTION } from '@tupaia/sync';
 import { DatabaseModel, SqlQuery, TupaiaDatabase } from '@tupaia/database';
+
 import { SyncServerConfig } from '../types';
 
 type SnapshotOutgoingChangesResult = {
@@ -25,6 +26,13 @@ export const snapshotOutgoingChanges = async (
   const CHUNK_SIZE = config.maxRecordsPerSnapshotChunk;
   const avoidRepull = config.lookupTable.avoidRepull;
   const recordTypes = models.map(m => m.databaseRecord);
+
+  if (process.env.NODE_ENV === 'test') {
+    const { pauseSnapshotProcess } = config;
+    if (pauseSnapshotProcess) {
+      await pauseSnapshotProcess();
+    }
+  }
 
   // If there are excluded project ids, it means this is not an initial sync and just a new selected project
   // we don't have to resync the non-project data because they should have been synced in the initial sync

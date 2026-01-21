@@ -23,7 +23,7 @@
     "start-dev": "LOG_LEVEL=debug yarn run package:start:backend-start-dev 9998 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn run start-dev",
     "setup-test": "yarn workspace @tupaia/database run setup-test-database",
-    "test": "yarn run package:test"
+    "test": "yarn run package:test:serial"
   },
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",
