@@ -215,6 +215,16 @@ export class BaseDatabase {
   }
 
   /**
+   * @returns {Promise<boolean>}
+   */
+  async exists(...args) {
+    const innerQuery = this.find(...args);
+    /** @type {[{ exists: boolean }]} */
+    const [{ exists }] = await this.executeSql('SELECT EXISTS(?);', [innerQuery]);
+    return exists;
+  }
+
+  /**
    *
    * @param {string} recordType
    * @param {Record<string, unknown>} [where]
@@ -601,8 +611,9 @@ function buildQuery(connection, queryConfig, where = {}, options = {}, baseQuery
   }
 
   if (options.onConflictMerge) {
-    // onConflictMerge is an array of columns to merge conflicts for
-    query = query.onConflict(options.onConflictMerge).merge();
+    // onConflictMerge is an array of conflicted columns
+    // columnsToMerge is an object of columns to merge
+    query = query.onConflict(options.onConflictMerge).merge(options.columnsToMerge);
   }
 
   if (options.onConflictIgnore) {

@@ -1,7 +1,6 @@
 import { encryptPassword } from '@tupaia/auth';
 import { S3, S3Client } from '@tupaia/server-utils';
 import { ValidationError } from '@tupaia/utils';
-import { USER_PREFERENCES_FIELDS } from '@tupaia/constants';
 
 import {
   assertAdminPanelAccess,
@@ -15,7 +14,6 @@ import { assertUserAccountPermissions } from './assertUserAccountPermissions';
  * Handles PUT endpoints:
  * - /users/:userId
  */
-
 export class EditUserAccounts extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
@@ -39,6 +37,13 @@ export class EditUserAccounts extends EditHandler {
       preferences: preferenceField,
       ...restOfUpdatedFields
     } = this.updatedFields;
+
+    if (preferenceField) {
+      throw new ValidationError(
+        'Preferences should be updated via the specific preferences fields',
+      );
+    }
+
     let updatedFields = restOfUpdatedFields;
 
     if (password) {
@@ -47,13 +52,10 @@ export class EditUserAccounts extends EditHandler {
       updatedFields.legacy_password_salt = null;
     }
 
-    if (preferenceField) {
-      throw new ValidationError(
-        'Preferences should be updated via the specific preferences fields',
-      );
-    }
-
-    updatedFields = await this.models.user.getUpdatedUserPreferenceFields(this.recordId, updatedFields);
+    updatedFields = await this.models.user.getUpdatedUserPreferenceFields(
+      this.recordId,
+      updatedFields,
+    );
 
     if (profileImage) {
       if (profileImage.data && profileImage.fileId) {

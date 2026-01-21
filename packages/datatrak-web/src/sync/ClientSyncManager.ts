@@ -2,15 +2,7 @@ import { QueryClient } from '@tanstack/react-query';
 import mitt from 'mitt';
 import log from 'winston';
 
-import {
-  FACT_CURRENT_SYNC_TICK,
-  FACT_CURRENT_USER_ID,
-  FACT_LAST_SUCCESSFUL_SYNC_PULL,
-  FACT_LAST_SUCCESSFUL_SYNC_PUSH,
-  FACT_PROJECTS_IN_SYNC,
-  FACT_PERMISSIONS_CHANGED,
-  SYNC_STREAM_MESSAGE_KIND,
-} from '@tupaia/constants';
+import { SYNC_STREAM_MESSAGE_KIND, SyncFact } from '@tupaia/constants';
 import {
   countSyncSnapshotRecords,
   createClientSnapshotTable,
@@ -210,7 +202,7 @@ export class ClientSyncManager {
   };
 
   async getProjectsInSync(): Promise<Project['id'][]> {
-    const syncedProjectsFact = await this.models.localSystemFact.get(FACT_PROJECTS_IN_SYNC);
+    const syncedProjectsFact = await this.models.localSystemFact.get(SyncFact.PROJECTS_IN_SYNC);
     const syncedProjectIds = syncedProjectsFact ? JSON.parse(syncedProjectsFact) : [];
     return syncedProjectIds;
   }
@@ -298,7 +290,7 @@ export class ClientSyncManager {
     this.isRequestingSync = false;
     this.isSyncing = true;
 
-    const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
+    const pullSince = await getSyncTick(this.models, SyncFact.LAST_SUCCESSFUL_SYNC_PULL);
 
     this.isInitialSync = pullSince === -1;
 
@@ -388,6 +380,10 @@ export class ClientSyncManager {
           // still waiting
           break handler;
         case SYNC_STREAM_MESSAGE_KIND.END:
+          // Check for errors in the END message
+          if (message?.error) {
+            throw new Error(message.error);
+          }
           // includes the new tick from starting the session
           return { ...message };
         default:
@@ -406,12 +402,12 @@ export class ClientSyncManager {
     this.setProgress(0, 'Pushing all new changes…');
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
-    const currentSyncClockTime = await getSyncTick(this.models, FACT_CURRENT_SYNC_TICK);
+    const currentSyncClockTime = await getSyncTick(this.models, SyncFact.CURRENT_SYNC_TICK);
 
     // use the new unique sync tick for any changes from now on so that any records that are created
     // or updated even mid way through this sync, are marked using the new tick and will be captured
     // in the next push
-    await this.models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, newSyncClockTime);
+    await this.models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, newSyncClockTime.toString());
     log.debug('ClientSyncManager.updatedLocalSyncClockTime', { newSyncClockTime });
 
     await waitForPendingEditsUsingSyncTick(this.database, currentSyncClockTime);
@@ -420,7 +416,7 @@ export class ClientSyncManager {
     // to be pushed, and then pushing those up in batches
     // this avoids any of the records to be pushed being changed during the push period and
     // causing data that isn't internally coherent from ending up on the central server
-    const pushSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PUSH);
+    const pushSince = await getSyncTick(this.models, SyncFact.LAST_SUCCESSFUL_SYNC_PUSH);
     log.debug('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
     // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
@@ -443,7 +439,10 @@ export class ClientSyncManager {
       );
     }
 
-    await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, currentSyncClockTime);
+    await this.models.localSystemFact.set(
+      SyncFact.LAST_SUCCESSFUL_SYNC_PUSH,
+      currentSyncClockTime.toString(),
+    );
     log.debug('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
   }
 
@@ -464,7 +463,7 @@ export class ClientSyncManager {
         'Pausing at 33% while server prepares for pull, please wait…',
       );
 
-      const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
+      const pullSince = await getSyncTick(this.models, SyncFact.LAST_SUCCESSFUL_SYNC_PULL);
 
       log.debug('ClientSyncManager.createClientSnapshotTable', {
         sessionId,
@@ -510,12 +509,12 @@ export class ClientSyncManager {
 
   async pullInitialSync(sessionId: string, totalToPull: number, pullUntil: number) {
     let totalSaved = 0;
-    const progressCallback = (incrementalSaved: number, table?: string) => {
+    const progressCallback = (incrementalSaved: number) => {
       totalSaved += Number(incrementalSaved);
       this.updateProgress(
         totalToPull,
         totalSaved,
-        `Saving changes ${table ? `for ${table} ` : ''}(${formatFraction(totalSaved, totalToPull)})`,
+        `Saving changes (${formatFraction(totalSaved, totalToPull)})`,
       );
     };
 
@@ -533,7 +532,10 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+      return transactingModels.localSystemFact.set(
+        SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+        pullUntil.toString(),
+      );
     });
   }
 
@@ -580,7 +582,10 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+      return transactingModels.localSystemFact.set(
+        SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+        pullUntil.toString(),
+      );
     });
   }
 

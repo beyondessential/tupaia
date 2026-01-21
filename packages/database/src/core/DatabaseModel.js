@@ -1,3 +1,9 @@
+/**
+ * @typedef {import('@tupaia/constants').SyncDirection} SyncDirection
+ * @typedef {import('@tupaia/types').DatabaseRecordName} DatabaseRecordName
+ * @typedef {import('./ModelRegistry').ModelRegistry} ModelRegistry
+ */
+
 import { uniq } from 'es-toolkit';
 
 import { DatabaseError, NotImplementedError, reduceToDictionary } from '@tupaia/utils';
@@ -6,9 +12,10 @@ import { SCHEMA_NAMES } from './constants';
 import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
+  /** @type {ModelRegistry} */
   otherModels = {};
 
-  /** @type {import('@tupaia/constants').SyncDirection | null} */
+  /** @type {SyncDirection | null} */
   static syncDirection = null;
 
   constructor(database, schema = null) {
@@ -16,7 +23,6 @@ export class DatabaseModel {
 
     // schema promise will resolve with information about the columns on the table in the database,
     // e.g.: { id: { type: 'text', maxLength: null, nullable: false, defaultValue: null } }
-
     this.schemaPromise = schema ? Promise.resolve(schema) : this.startSchemaFetch();
 
     this.cache = {};
@@ -128,7 +134,7 @@ export class DatabaseModel {
   /**
    * A helper function to ensure that we're using fully qualified column names to avoid ambiguous references when joins are being used
    * @param {string} column
-   * @returns {`${string}.${string}`}
+   * @returns {`${DatabaseRecordName}.${string}`}
    */
   fullyQualifyColumn(column) {
     if (column.includes('.')) {
@@ -213,6 +219,13 @@ export class DatabaseModel {
    */
   async count(...args) {
     return this.database.count(this.databaseRecord, ...args);
+  }
+
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async exists(...args) {
+    return await this.database.exists(this.databaseRecord, ...args);
   }
 
   async findById(id, customQueryOptions = {}) {
@@ -451,6 +464,10 @@ export class DatabaseModel {
     return data;
   };
 
+  /**
+   * @param {SyncSnapshotAttributes[]} changes
+   * @returns {Promise<SyncSnapshotAttributes[]>}
+   */
   filterSyncForClient = async changes => {
     return changes;
   };

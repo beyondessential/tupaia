@@ -1,40 +1,23 @@
 import { useQueryClient } from '@tanstack/react-query';
 
 import { ensure } from '@tupaia/tsutils';
-
+import { snakeKeys } from '@tupaia/utils';
+import { editUser } from '../../database';
 import { useDatabaseContext } from '../../hooks/database';
 import { DatatrakWebModelRegistry, UserAccountDetails } from '../../types';
 import { put } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { useDatabaseMutation } from '../queries';
-import { editUser } from '../../database';
 
 export type EditUserParams = {
   models: DatatrakWebModelRegistry;
   data: UserAccountDetails;
 };
 
-/**
- * Converts a string from camel case to snake case.
- *
- * @remarks
- * Ignores whitespace characters, including wordspaces and newlines. Does not handle fully-
- * uppercase acronyms/initialisms. e.g. 'HTTPRequest' -> 'h_t_t_p_request'.
- */
-function camelToSnakeCase(camelCaseString: string): string {
-  return camelCaseString
-    ?.split(/\.?(?=[A-Z])/)
-    .join('_')
-    .toLowerCase();
-}
-
 export const prepareUserDetails = (userDetails: UserAccountDetails) => {
   // `mobile_number` field in database is nullable; don't just store an empty string
   if (userDetails?.mobileNumber === '') userDetails.mobileNumber = null;
-
-  return Object.fromEntries(
-    Object.entries(userDetails).map(([key, value]) => [camelToSnakeCase(key), value]),
-  );
+  return snakeKeys(userDetails);
 };
 
 const editUserOnline = async ({ data: userDetails }: { data: UserAccountDetails }) => {

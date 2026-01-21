@@ -117,3 +117,4 @@ export { UserAccountPreferences } from './user';
 export { ProjectConfig } from './project';
 export { RepeatSchedule, TaskCommentTemplateVariables, SystemCommentSubType } from './task';
 export { EntityType } from './entityType';
+export { SyncSessionInfo } from './sync';

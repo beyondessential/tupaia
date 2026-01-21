@@ -1,12 +1,12 @@
 import { FormLabelProps } from '@material-ui/core';
 import React, { ReactNode, useEffect } from 'react';
 
+import { DatatrakWebEntitiesRequest } from '@tupaia/types';
 import { useCurrentUserContext } from '../api';
 import { useSurveysQuery } from '../api/queries/useSurveysQuery';
 import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
 import { innerText } from '../utils';
-import { UserCountriesType } from './CountrySelector/useUserCountries';
 
 export interface ListItemType extends Record<string, unknown> {
   children?: ListItemType[];
@@ -31,7 +31,7 @@ const alphanumericCompare = <T extends { content: React.ReactNode }>(a: T, b: T)
 };
 
 export interface UseGroupedSurveyListParams {
-  selectedCountry: UserCountriesType['selectedCountry'];
+  selectedCountry: DatatrakWebEntitiesRequest.EntitiesResponseItem | null;
   selectedSurvey: Survey['code'] | null;
   setSelectedSurvey: React.Dispatch<React.SetStateAction<Survey['code'] | null>>;
 }
