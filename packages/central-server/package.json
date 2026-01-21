@@ -64,7 +64,7 @@
     "react-autobind": "^1.0.6",
     "string-similarity": "^1.2.2",
     "winston": "^3.17.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",

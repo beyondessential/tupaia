@@ -12224,7 +12224,7 @@ __metadata:
     multer: ^2.0.2
     rimraf: ^6.0.1
     winston: ^3.17.0
-    xlsx: ^0.18.5
+    xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
   languageName: unknown
   linkType: soft
 
@@ -12395,7 +12395,7 @@ __metadata:
     string-similarity: ^1.2.2
     supertest: ^3.1.0
     winston: ^3.17.0
-    xlsx: ^0.18.5
+    xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
   languageName: unknown
   linkType: soft
 
@@ -13258,7 +13258,7 @@ __metadata:
     react-table: ^7.7.0
     rimraf: ^6.0.1
     styled-components: ^5.0.1
-    xlsx: ^0.18.5
+    xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
   languageName: unknown
   linkType: soft
 
@@ -13318,7 +13318,7 @@ __metadata:
     sinon: ^9.0.2
     validator: ^13.11.0
     winston: ^3.17.0
-    xlsx: ^0.18.5
+    xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
     yargs: 15.4.1
     yup: ^0.32.9
   languageName: unknown
@@ -13401,7 +13401,7 @@ __metadata:
     morgan: ^1.9.0
     rimraf: ^6.0.1
     winston: ^3.17.0
-    xlsx: ^0.18.5
+    xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
   languageName: unknown
   linkType: soft
 
@@ -15036,13 +15036,6 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 538ba38af0cc9e5ef983aee196c4b8b4d87c0c94532334fa7e065b2c8a1f85863467bb774231aae91613fcda5e68740c15d97b1967ae3394d20faddddd8af61d
-  languageName: node
-  linkType: hard
-
-"adler-32@npm:~1.3.0":
-  version: 1.3.1
-  resolution: "adler-32@npm:1.3.1"
-  checksum: c7f6b02df64a4392fcf1591862344f56733716a558e97a8b06a553dadeeaec792054512389000f42f371b13d2be5370e056e18db3b573944b595c4cb7742c5c6
   languageName: node
   linkType: hard
 
@@ -17407,16 +17400,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cfb@npm:~1.2.1":
-  version: 1.2.2
-  resolution: "cfb@npm:1.2.2"
-  dependencies:
-    adler-32: ~1.3.0
-    crc-32: ~1.2.0
-  checksum: cfb63a7d630a7fa415c1b25655dca66666584f29c95fb0ee90866ada1a28090857827f2ba70a9a50df28bdce05728ae58d495bce417249f305ef7b3c85840024
-  languageName: node
-  linkType: hard
-
 "chai-as-promised@npm:^7.1.1":
   version: 7.1.1
   resolution: "chai-as-promised@npm:7.1.1"
@@ -17969,13 +17952,6 @@ __metadata:
   version: 1.1.0
   resolution: "code-point-at@npm:1.1.0"
   checksum: 17d5666611f9b16d64fdf48176d9b7fb1c7d1c1607a189f7e600040a11a6616982876af148230336adb7d8fe728a559f743a4e29db3747e3b1a32fa7f4529681
-  languageName: node
-  linkType: hard
-
-"codepage@npm:~1.15.0":
-  version: 1.15.0
-  resolution: "codepage@npm:1.15.0"
-  checksum: 86bdfd8f8fd4d78ace6ddab02a1621cbb4a833686fe886984b4155d99cd0287581d69495774b816ab2f571c4dc851c1595e1dbb8d69bd6dbb5a631ebf317fab0
   languageName: node
   linkType: hard
 
@@ -18747,27 +18723,6 @@ __metadata:
     nan: ^2.14.1
     node-gyp: latest
   checksum: 15177f9a2d465e4d84390f902c977b34f237dadb29fd8553853b13d906ffe5f15be9f091c72db4f34c71412d5ff4e0e4edf04caebc875b02d1d7ecfce2963299
-  languageName: node
-  linkType: hard
-
-"crc-32@npm:~1.2.0":
-  version: 1.2.0
-  resolution: "crc-32@npm:1.2.0"
-  dependencies:
-    exit-on-epipe: ~1.0.1
-    printj: ~1.1.0
-  bin:
-    crc32: ./bin/crc32.njs
-  checksum: 7bcde8bea262f6629ac3c70e20bdfa3d058dc77091705ce8620513f76f19b41fc273ddd65a716eef9b4e33fbb61ff7f9b266653d214319aef27e4223789c6b9e
-  languageName: node
-  linkType: hard
-
-"crc-32@npm:~1.2.1":
-  version: 1.2.2
-  resolution: "crc-32@npm:1.2.2"
-  bin:
-    crc32: bin/crc32.njs
-  checksum: ad2d0ad0cbd465b75dcaeeff0600f8195b686816ab5f3ba4c6e052a07f728c3e70df2e3ca9fd3d4484dc4ba70586e161ca5a2334ec8bf5a41bf022a6103ff243
   languageName: node
   linkType: hard
 
@@ -19861,14 +19816,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-libc@npm:^2.0.0":
-  version: 2.0.2
-  resolution: "detect-libc@npm:2.0.2"
-  checksum: 2b2cd3649b83d576f4be7cc37eb3b1815c79969c8b1a03a40a4d55d83bc74d010753485753448eacb98784abf22f7dbd3911fd3b60e29fda28fed2d1a997944d
-  languageName: node
-  linkType: hard
-
-"detect-libc@npm:^2.1.0":
+"detect-libc@npm:^2.0.0, detect-libc@npm:^2.1.0":
   version: 2.1.2
   resolution: "detect-libc@npm:2.1.2"
   checksum: 471740d52365084c4b2ae359e507b863f2b1d79b08a92835ebdf701918e08fc9cfba175b3db28483ca33b155e1311a91d69dc42c6d192b476f41a9e1f094ce6a
@@ -21888,13 +21836,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"exit-on-epipe@npm:~1.0.1":
-  version: 1.0.1
-  resolution: "exit-on-epipe@npm:1.0.1"
-  checksum: e8ab4940416d19f311b3c9226e3725c6c4c6026fe682266ecc0ff33a455d585fe3e4ee757857c7bf1d0491b478cb232b8e395dfb438e65ac87317eda47304c32
-  languageName: node
-  linkType: hard
-
 "exit@npm:^0.1.2":
   version: 0.1.2
   resolution: "exit@npm:0.1.2"
@@ -22802,13 +22743,6 @@ __metadata:
   version: 0.2.0
   resolution: "forwarded@npm:0.2.0"
   checksum: fd27e2394d8887ebd16a66ffc889dc983fbbd797d5d3f01087c020283c0f019a7d05ee85669383d8e0d216b116d720fc0cef2f6e9b7eb9f4c90c6e0bc7fd28e6
-  languageName: node
-  linkType: hard
-
-"frac@npm:~1.1.2":
-  version: 1.1.2
-  resolution: "frac@npm:1.1.2"
-  checksum: fbfbb28003bb84506dd35e7aad8543c5a358bdc95451d0065b6127d40d2c45106f14221575c3e9ce3ea4bf0bbf1225b73c5d655965c9f4ce44332cbe1b34667d
   languageName: node
   linkType: hard
 
@@ -32367,15 +32301,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"printj@npm:~1.1.0":
-  version: 1.1.2
-  resolution: "printj@npm:1.1.2"
-  bin:
-    printj: ./bin/printj.njs
-  checksum: 1c0c66844545415e339356ad62009cdc467819817b1e0341aba428087a1414d46b84089edb4e77ef24705829f8aae6349724b9c7bd89d8690302b2de7a89b315
-  languageName: node
-  linkType: hard
-
 "private@npm:^0.1.8":
   version: 0.1.8
   resolution: "private@npm:0.1.8"
@@ -36432,15 +36357,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ssf@npm:~0.11.2":
-  version: 0.11.2
-  resolution: "ssf@npm:0.11.2"
-  dependencies:
-    frac: ~1.1.2
-  checksum: 6ecef6ae0a90e67dc4b05bc3cca883e2dffad9773b41124af36ee308884e4a29f98bde66d6c8d2bd1ccf5f860ea4f6c49338bd8d733007fc42ebe02dd5295dcf
-  languageName: node
-  linkType: hard
-
 "ssh2@npm:1.4.0":
   version: 1.4.0
   resolution: "ssh2@npm:1.4.0"
@@ -39626,13 +39542,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wmf@npm:~1.0.1":
-  version: 1.0.2
-  resolution: "wmf@npm:1.0.2"
-  checksum: d336acb2c76fa868ef006fbb06c4e64c7c1ed5ff77d16c48a273cf1f4d0a44e35df209b8fde28d93dd4a924d652a9c4fc8a92ad57885a5e437df0b0900769e3b
-  languageName: node
-  linkType: hard
-
 "word-wrap@npm:^1.2.5":
   version: 1.2.5
   resolution: "word-wrap@npm:1.2.5"
@@ -39644,13 +39553,6 @@ __metadata:
   version: 1.2.3
   resolution: "word-wrap@npm:1.2.3"
   checksum: 30b48f91fcf12106ed3186ae4fa86a6a1842416df425be7b60485de14bec665a54a68e4b5156647dec3a70f25e84d270ca8bc8cd23182ed095f5c7206a938c1f
-  languageName: node
-  linkType: hard
-
-"word@npm:~0.3.0":
-  version: 0.3.0
-  resolution: "word@npm:0.3.0"
-  checksum: f84e7061883380c1bcb0d98bd183b7f2b281688011924af7a96d3ed3ee20aeb12cc59a0451b66e5e57520338a056725ff8e0c07b358c0afecf5488a9557c19fe
   languageName: node
   linkType: hard
 
@@ -40027,20 +39929,48 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xlsx@npm:^0.18.5":
-  version: 0.18.5
-  resolution: "xlsx@npm:0.18.5"
-  dependencies:
-    adler-32: ~1.3.0
-    cfb: ~1.2.1
-    codepage: ~1.15.0
-    crc-32: ~1.2.1
-    ssf: ~0.11.2
-    wmf: ~1.0.1
-    word: ~0.3.0
+"xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fadmin-panel-server%40workspace%3Apackages%2Fadmin-panel-server":
+  version: 0.20.3
+  resolution: "xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fadmin-panel-server%40workspace%3Apackages%2Fadmin-panel-server"
   bin:
-    xlsx: bin/xlsx.njs
-  checksum: c5774d3c6abdf2db24f33a7b786e305255dac0e41a4e6bf6167c3f8517bfb5bfcb98e8207c39d5105f8304aa7416758da0400a993fb79aaf8e2ea4cfa8801f2e
+    xlsx: ./bin/xlsx.njs
+  checksum: c08ac699e6d31222404871240aa2c2804cb8bae59f0bea08d3293e99756cf0d3122fd34739189edaae1d9b0b493bbb8eb95d021950ee7b5cba9d55ecd6fcb4e4
+  languageName: node
+  linkType: hard
+
+"xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fcentral-server%40workspace%3Apackages%2Fcentral-server":
+  version: 0.20.3
+  resolution: "xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fcentral-server%40workspace%3Apackages%2Fcentral-server"
+  bin:
+    xlsx: ./bin/xlsx.njs
+  checksum: c08ac699e6d31222404871240aa2c2804cb8bae59f0bea08d3293e99756cf0d3122fd34739189edaae1d9b0b493bbb8eb95d021950ee7b5cba9d55ecd6fcb4e4
+  languageName: node
+  linkType: hard
+
+"xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fui-components%40workspace%3Apackages%2Fui-components":
+  version: 0.20.3
+  resolution: "xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fui-components%40workspace%3Apackages%2Fui-components"
+  bin:
+    xlsx: ./bin/xlsx.njs
+  checksum: c08ac699e6d31222404871240aa2c2804cb8bae59f0bea08d3293e99756cf0d3122fd34739189edaae1d9b0b493bbb8eb95d021950ee7b5cba9d55ecd6fcb4e4
+  languageName: node
+  linkType: hard
+
+"xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Futils%40workspace%3Apackages%2Futils":
+  version: 0.20.3
+  resolution: "xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Futils%40workspace%3Apackages%2Futils"
+  bin:
+    xlsx: ./bin/xlsx.njs
+  checksum: c08ac699e6d31222404871240aa2c2804cb8bae59f0bea08d3293e99756cf0d3122fd34739189edaae1d9b0b493bbb8eb95d021950ee7b5cba9d55ecd6fcb4e4
+  languageName: node
+  linkType: hard
+
+"xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fweb-config-server%40workspace%3Apackages%2Fweb-config-server":
+  version: 0.20.3
+  resolution: "xlsx@file:../../vendor/xlsx-0.20.3.tgz::locator=%40tupaia%2Fweb-config-server%40workspace%3Apackages%2Fweb-config-server"
+  bin:
+    xlsx: ./bin/xlsx.njs
+  checksum: c08ac699e6d31222404871240aa2c2804cb8bae59f0bea08d3293e99756cf0d3122fd34739189edaae1d9b0b493bbb8eb95d021950ee7b5cba9d55ecd6fcb4e4
   languageName: node
   linkType: hard
 

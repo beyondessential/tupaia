@@ -42,7 +42,7 @@
     "sanitize-filename": "^1.6.3",
     "validator": "^13.11.0",
     "winston": "^3.17.0",
-    "xlsx": "^0.18.5",
+    "xlsx": "file:../../vendor/xlsx-0.20.3.tgz",
     "yup": "^0.32.9"
   },
   "devDependencies": {

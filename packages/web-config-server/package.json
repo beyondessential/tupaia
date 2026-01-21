@@ -59,7 +59,7 @@
     "moment-timezone": "^0.5.45",
     "morgan": "^1.9.0",
     "winston": "^3.17.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^5.0.2",

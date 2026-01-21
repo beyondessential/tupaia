@@ -56,7 +56,7 @@
     "react-router-dom-v6": "npm:react-router-dom@6.3.0",
     "react-table": "^7.7.0",
     "styled-components": "^5.0.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
