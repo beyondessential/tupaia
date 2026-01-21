@@ -56,6 +56,10 @@ export interface SyncResult {
   pulledChangesCount?: number;
 }
 
+/**
+ * Hint: Don’t access instance properties in React components; they won’t receive updates. Use
+ * corresponding hooks instead. For example, `useIsSyncing`.
+ */
 export class ClientSyncManager {
   private static instance: ClientSyncManager | null = null;
 
