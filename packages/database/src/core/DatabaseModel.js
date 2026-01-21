@@ -1,7 +1,8 @@
+import { ensure } from '@tupaia/tsutils';
 import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
-import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 import { QUERY_CONJUNCTIONS } from './BaseDatabase';
 import { SCHEMA_NAMES } from './constants';
+import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
   otherModels = {};
@@ -226,6 +227,14 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
+  async findByIdOrThrow(
+    id,
+    customQueryOptions = {},
+    message = `No ${this.databaseRecord} found with ID ${id}`,
+  ) {
+    return ensure(await this.findById(id, customQueryOptions), message);
+  }
+
   async findManyByColumn(column, values, additionalConditions = {}, customQueryOptions = {}) {
     if (!values) {
       throw new Error(
@@ -253,6 +262,14 @@ export class DatabaseModel {
     );
     if (!result) return null;
     return this.generateInstance(result);
+  }
+
+  async findOneOrThrow(
+    dbConditions,
+    customQueryOptions = {},
+    message = `No ${this.databaseRecord} found matching ${JSON.stringify(dbConditions)}`,
+  ) {
+    return ensure(await this.findOne(dbConditions, customQueryOptions), message);
   }
 
   /**
@@ -440,11 +457,11 @@ export class DatabaseModel {
     return this.cache[cacheKey];
   }
 
-  sanitizeForCentralServer = (data) => {
+  sanitizeForCentralServer = data => {
     return data;
-  }
+  };
 
-  sanitizeForClient = (data) => {
+  sanitizeForClient = data => {
     return data;
-  }
+  };
 }
