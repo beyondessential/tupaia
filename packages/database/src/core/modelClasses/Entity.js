@@ -858,7 +858,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       select: await buildSyncLookupSelect(this, {
         // Sync all world, country and project entities as they are needed for entity hierarchy
         projectIds:
-          "CASE WHEN entity.type IN ('country', 'world', 'project') THEN NULL ELSE ARRAY_AGG(project.id) END",
+          "CASE WHEN entity.type IN ('country', 'world', 'project') THEN NULL ELSE ARRAY_REMOVE(ARRAY_AGG(project.id), NULL) END",
       }),
       joins: `
         LEFT JOIN entities_to_sync
