@@ -357,6 +357,10 @@ export class ClientSyncManager {
           // still waiting
           break handler;
         case SYNC_STREAM_MESSAGE_KIND.END:
+          // Check for errors in the END message
+          if (message?.error) {
+            throw new Error(message.error);
+          }
           // includes the new tick from starting the session
           return { ...message };
         default:

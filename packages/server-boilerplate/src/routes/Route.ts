@@ -2,6 +2,7 @@ import { Request, NextFunction, Response } from 'express';
 import fs from 'fs';
 
 import { respond, writeJsonFile } from '@tupaia/utils';
+import { StreamMessage } from '@tupaia/server-utils';
 
 // Infers type arguments from request type
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -62,9 +63,26 @@ export class Route<
     // swallowed.
     try {
       if (this.type === 'stream') {
-        await this.stream();
-        this.res.end();
-        return;
+        try {
+          await this.stream();
+        } catch (streamError: any) {
+          // Send error to client
+          if (!this.res.destroyed && this.res.writable) {
+            try {
+              // Send error to client
+              this.res.write(StreamMessage.end({ error: streamError.message }));
+            } catch (writeError) {
+              // Stream already closed, ignore
+            }
+          }
+          throw streamError; // Re-throw so outer catch can call this.next(error)
+        } finally {
+          // Always end the response
+          if (!this.res.destroyed && this.res.writable) {
+            this.res.end();
+          }
+        }
+        return; // Only reached if no error
       }
       
       if (this.type === 'pipe') {
