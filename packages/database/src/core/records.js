@@ -40,6 +40,7 @@ export const RECORDS = /** @type {const} */ ({
   MAP_OVERLAY_GROUP_RELATION: 'map_overlay_group_relation',
   MEDITRAK_DEVICE: 'meditrak_device',
   MEDITRAK_SYNC_QUEUE: 'meditrak_sync_queue',
+  MIGRATIONS: 'migrations',
   MS1_SYNC_LOG: 'ms1_sync_log',
   MS1_SYNC_QUEUE: 'ms1_sync_queue',
   ONE_TIME_LOGIN: 'one_time_login',

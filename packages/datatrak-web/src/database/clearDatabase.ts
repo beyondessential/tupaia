@@ -1,24 +1,27 @@
-import { SqlQuery } from '@tupaia/database';
 import { SyncFact } from '@tupaia/constants';
-
+import { DatabaseRecordName, SqlQuery } from '@tupaia/database';
 import { DatatrakWebModelRegistry } from '../types';
 
-const TABLES_TO_KEEP = ['user_account', 'migrations', 'local_system_fact'];
+const TABLES_TO_KEEP = [
+  'local_system_fact',
+  'migrations',
+  'user_account',
+] as const satisfies DatabaseRecordName[];
 
 const clearTables = async (
   models: DatatrakWebModelRegistry,
-  schema: string,
-  tablesToKeep: string[] = [],
+  schema: 'logs' | 'mvrefresh' | 'public' | 'sync_snapshots',
+  tablesToKeep: DatabaseRecordName[] = [],
 ) => {
-  const tablesToTruncate = (await models.database.executeSql(
+  const tablesToTruncate = await models.database.executeSql<{ table_name: DatabaseRecordName }[]>(
     `
-    SELECT tablename AS table_name
-    FROM pg_tables
-    WHERE schemaname = ?
-    ${tablesToKeep.length > 0 ? `AND tablename NOT IN ${SqlQuery.record(tablesToKeep)}` : ''}
-  `,
+      SELECT tablename AS table_name
+      FROM pg_tables
+      WHERE schemaname = ?
+      ${tablesToKeep.length > 0 ? `AND tablename NOT IN ${SqlQuery.record(tablesToKeep)}` : ''}
+    `,
     [schema, ...tablesToKeep],
-  )) as { table_name: string }[];
+  );
 
   for (const { table_name: tableName } of tablesToTruncate) {
     await models.database.executeSql(`
