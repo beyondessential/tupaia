@@ -12305,11 +12305,11 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
-    "@types/node-fetch": ^2.6.11
+    "@types/node-fetch": ^2.6.13
     jest: ^29.7.0
     lodash.isequal: ^4.5.0
     lodash.pick: ^4.4.0
-    node-fetch: ^1.7.3
+    node-fetch: ^2.7.0
     qs: ^6.12.0
     rimraf: ^6.0.1
   languageName: unknown
@@ -12666,7 +12666,7 @@ __metadata:
     js-beautify: ^1.13.0
     lodash: ^4.17.4
     moment: ^2.24.0
-    node-fetch: ^1.7.3
+    node-fetch: ^2.7.0
     react: ^16.14.0
   languageName: unknown
   linkType: soft
@@ -13066,7 +13066,7 @@ __metadata:
     "@types/jest": ^29.5.14
     https-proxy-agent: ^5.0.1
     jest: ^29.7.0
-    node-fetch: ^1.7.3
+    node-fetch: ^2.7.0
     rimraf: ^6.0.1
     winston: ^3.17.0
   languageName: unknown
@@ -13308,7 +13308,7 @@ __metadata:
     mockdate: ^3.0.5
     moment: ^2.24.0
     moment-timezone: ^0.5.45
-    node-fetch: ^1.7.3
+    node-fetch: ^2.7.0
     npm-run-all: ^4.1.5
     numeral: ^2.0.6
     prop-types: ^15.6.2
@@ -14093,13 +14093,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:^2.6.11":
-  version: 2.6.11
-  resolution: "@types/node-fetch@npm:2.6.11"
+"@types/node-fetch@npm:^2.6.13":
+  version: 2.6.13
+  resolution: "@types/node-fetch@npm:2.6.13"
   dependencies:
     "@types/node": "*"
-    form-data: ^4.0.0
-  checksum: 180e4d44c432839bdf8a25251ef8c47d51e37355ddd78c64695225de8bc5dc2b50b7bb855956d471c026bb84bd7295688a0960085e7158cbbba803053492568b
+    form-data: ^4.0.4
+  checksum: e4b4db3a8c23309dadf0beb87e88882af1157f0c08b7b76027ac40add6ed363c924e2fa275f42ae45eacf776b25ed439d14400d9d6372eb39634dd4c7e7e1ad8
   languageName: node
   linkType: hard
 
@@ -20385,15 +20385,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"encoding@npm:^0.1.11":
-  version: 0.1.12
-  resolution: "encoding@npm:0.1.12"
-  dependencies:
-    iconv-lite: ~0.4.13
-  checksum: 96df688a93821e866bea19dd689863b1f9e07ef1c15321dde1fbcb8008ed7c785c48b248c4def01367780d2637c459b8ffa988de9647afe4200b003b1ac369ef
-  languageName: node
-  linkType: hard
-
 "encoding@npm:^0.1.13":
   version: 0.1.13
   resolution: "encoding@npm:0.1.13"
@@ -24317,7 +24308,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.24, iconv-lite@npm:^0.4.4, iconv-lite@npm:~0.4.11, iconv-lite@npm:~0.4.13":
+"iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.24, iconv-lite@npm:^0.4.4, iconv-lite@npm:~0.4.11":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
   dependencies:
@@ -25364,7 +25355,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-stream@npm:^1.0.1, is-stream@npm:^1.1.0":
+"is-stream@npm:^1.1.0":
   version: 1.1.0
   resolution: "is-stream@npm:1.1.0"
   checksum: 063c6bec9d5647aa6d42108d4c59723d2bd4ae42135a2d4db6eadbd49b7ea05b750fd69d279e5c7c45cf9da753ad2c00d8978be354d65aa9f6bb434969c6a2ae
@@ -30049,16 +30040,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^1.7.3":
-  version: 1.7.3
-  resolution: "node-fetch@npm:1.7.3"
-  dependencies:
-    encoding: ^0.1.11
-    is-stream: ^1.0.1
-  checksum: 3bb0528c05d541316ebe52770d71ee25a6dce334df4231fd55df41a644143e07f068637488c18a5b0c43f05041dbd3346752f9e19b50df50569a802484544d5b
-  languageName: node
-  linkType: hard
-
 "node-fetch@npm:^2.2.0, node-fetch@npm:^2.6.0":
   version: 2.6.0
   resolution: "node-fetch@npm:2.6.0"
@@ -30073,7 +30054,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7, node-fetch@npm:^2.6.9":
+"node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7, node-fetch@npm:^2.6.9, node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:

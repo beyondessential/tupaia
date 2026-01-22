@@ -35,7 +35,7 @@
     "lodash.pickby": "^4.6.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.45",
-    "node-fetch": "^1.7.3",
+    "node-fetch": "^2.7.0",
     "numeral": "^2.0.6",
     "prop-types": "^15.6.2",
     "rrule": "^2.8.1",
