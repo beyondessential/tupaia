@@ -1,4 +1,4 @@
-import { BaseDatabase, DatabaseRecordName } from '@tupaia/database';
+import { BaseDatabase, PublicSchemaRecordName } from '@tupaia/database';
 import { camelcaseKeys } from '@tupaia/tsutils';
 
 import type { SyncSessionDirectionValues, SyncSnapshotAttributes } from '../types';
@@ -9,7 +9,7 @@ export const findSyncSnapshotRecords = async (
   sessionId: string,
   fromId = 0,
   limit = Number.MAX_SAFE_INTEGER,
-  recordType?: DatabaseRecordName,
+  recordType?: PublicSchemaRecordName,
   direction?: SyncSessionDirectionValues,
   additionalWhere?: string,
 ): Promise<SyncSnapshotAttributes[]> => {

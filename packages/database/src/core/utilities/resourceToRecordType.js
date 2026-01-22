@@ -4,7 +4,7 @@ import { RECORDS } from '../records';
 
 /**
  * For those endpoints that do not make sense using the table name, we can provide a translation
- * @satisfies {Record<string, DatabaseRecordName>}
+ * @satisfies {Record<string, PublicSchemaRecordName>}
  */
 const RESOURCE_TRANSLATIONS = /** @type {const} */ ({
   user: RECORDS.USER_ACCOUNT,
@@ -22,7 +22,7 @@ const RESOURCE_TRANSLATIONS = /** @type {const} */ ({
  * @example 'surveyResponses' → 'survey_response'
  * @example 'countries' → 'country'
  * @param {string} resource
- * @returns {DatabaseRecordName}
+ * @returns {PublicSchemaRecordName}
  */
 export function resourceToRecordType(resource) {
   const singular = singularise(Case.snake(resource));

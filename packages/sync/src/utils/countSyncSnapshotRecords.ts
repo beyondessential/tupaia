@@ -1,4 +1,4 @@
-import { DatabaseRecordName, TupaiaDatabase } from '@tupaia/database';
+import { PublicSchemaRecordName, TupaiaDatabase } from '@tupaia/database';
 import { SyncSessionDirectionValues } from '../types';
 import { getSnapshotTableName } from './manageSnapshotTable';
 
@@ -6,7 +6,7 @@ export const countSyncSnapshotRecords = async (
   database: TupaiaDatabase,
   sessionId: string,
   direction: SyncSessionDirectionValues,
-  recordType?: DatabaseRecordName,
+  recordType?: PublicSchemaRecordName,
 ): Promise<number> => {
   const tableName = getSnapshotTableName(sessionId);
 

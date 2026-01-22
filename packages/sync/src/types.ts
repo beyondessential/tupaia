@@ -1,4 +1,4 @@
-import { type DatabaseRecordName } from '@tupaia/database';
+import { type PublicSchemaRecordName } from '@tupaia/database';
 import { type ValueOf } from '@tupaia/types';
 import { SYNC_SESSION_DIRECTION } from './constants';
 
@@ -14,7 +14,7 @@ export interface SyncSnapshotData {
 export interface SyncSnapshotAttributes {
   id: number;
   direction?: SyncSessionDirectionValues;
-  recordType: DatabaseRecordName;
+  recordType: PublicSchemaRecordName;
   recordId: string;
   isDeleted: boolean;
   data: SyncSnapshotData;

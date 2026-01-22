@@ -23,7 +23,7 @@ import {
 } from '@tupaia/sync';
 import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { SyncTickFlags, SyncFact } from '@tupaia/constants';
-import { generateId } from '@tupaia/database';
+import { type PublicSchemaRecordName, generateId } from '@tupaia/database';
 import { SyncServerStartSessionRequest, SyncSession } from '@tupaia/types';
 import { AccessPolicy } from '@tupaia/access-policy';
 
@@ -662,7 +662,7 @@ export class CentralSyncManager {
   }
 
   validateIncomingChanges(changes: SyncSnapshotAttributes[]) {
-    const incomingTables = Object.keys(groupBy(changes, 'recordType'));
+    const incomingTables = Object.keys(groupBy(changes, 'recordType')) as PublicSchemaRecordName[];
     const allowedPushTables = new Set(
       getModelsForPush(this.models.getModels()).map(m => m.databaseRecord),
     );

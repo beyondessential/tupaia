@@ -1,19 +1,22 @@
 import { SyncFact } from '@tupaia/constants';
-import { DatabaseRecordName, SqlQuery } from '@tupaia/database';
-import { DatatrakWebModelRegistry } from '../types';
+import type { DatabaseSchemaName, PublicSchemaRecordName } from '@tupaia/database';
+import { RECORDS, SqlQuery } from '@tupaia/database';
+import type { DatatrakWebModelRegistry } from '../types';
 
 const TABLES_TO_KEEP = [
-  'local_system_fact',
-  'migrations',
-  'user_account',
-] as const satisfies DatabaseRecordName[];
+  RECORDS.LOCAL_SYSTEM_FACT,
+  RECORDS.MIGRATIONS,
+  RECORDS.USER_ACCOUNT,
+] as const satisfies PublicSchemaRecordName[];
 
 const clearTables = async (
   models: DatatrakWebModelRegistry,
-  schema: 'logs' | 'mvrefresh' | 'public' | 'sync_snapshots',
-  tablesToKeep: DatabaseRecordName[] = [],
+  schema: DatabaseSchemaName,
+  tablesToKeep: PublicSchemaRecordName[] = [],
 ) => {
-  const tablesToTruncate = await models.database.executeSql<{ table_name: DatabaseRecordName }[]>(
+  const tablesToTruncate = await models.database.executeSql<
+    { table_name: PublicSchemaRecordName }[]
+  >(
     `
       SELECT tablename AS table_name
       FROM pg_tables

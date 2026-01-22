@@ -1,14 +1,14 @@
 /**
  * @typedef {import('../ModelRegistry').ModelRegistry} ModelRegistry
- * @typedef {import('../records').DatabaseRecordName} DatabaseRecordName
+ * @typedef {import('../records').PublicSchemaRecordName} PublicSchemaRecordName
  */
 
 import { resourceToRecordType } from './resourceToRecordType';
 
 /**
  * @param {string} unprocessedColumnSelector
- * @param {DatabaseRecordName} baseRecordType
- * @returns {`${DatabaseRecordName}.${string}`}
+ * @param {PublicSchemaRecordName} baseRecordType
+ * @returns {`${PublicSchemaRecordName}.${string}`}
  */
 export const fullyQualifyColumnSelector = (unprocessedColumnSelector, baseRecordType) => {
   const [resource, column] = unprocessedColumnSelector.includes('.')
@@ -21,7 +21,7 @@ export const fullyQualifyColumnSelector = (unprocessedColumnSelector, baseRecord
 /**
  * @param {ModelRegistry} models
  * @param {string} unprocessedColumnSelector
- * @param {DatabaseRecordName} baseRecordType
+ * @param {PublicSchemaRecordName} baseRecordType
  * @returns {string}
  */
 export const processColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
@@ -48,7 +48,7 @@ export const processColumnSelectorKeys = (models, object, recordType) => {
 /**
  * @param {ModelRegistry} models
  * @param {string[]} unprocessedColumns
- * @param {DatabaseRecordName} recordType
+ * @param {PublicSchemaRecordName} recordType
  */
 export const processColumns = (models, unprocessedColumns, recordType) => {
   return unprocessedColumns.map(column => ({
