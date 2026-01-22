@@ -7,23 +7,6 @@ const { RAW } = QUERY_CONJUNCTIONS;
 
 const DEFAULT_SURVEY_ERROR_MESSAGE = 'Requires access to one of the countries the survey is in';
 
-export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId) => {
-  const survey = ensure(
-    await models.survey.findById(surveyId),
-    `No survey exists with ID ${surveyId}`,
-  );
-  const [permissionGroup, countryCodes] = await Promise.all([
-    survey.getPermissionGroup(),
-    survey.getCountryCodes(),
-  ]);
-
-  if (accessPolicy.allowsSome(countryCodes, permissionGroup.name)) {
-    return true;
-  }
-
-  throw new PermissionsError(DEFAULT_SURVEY_ERROR_MESSAGE);
-};
-
 // Used for edit and delete actions
 export const assertSurveyEditPermissions = async (
   accessPolicy,

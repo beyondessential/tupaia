@@ -9,10 +9,7 @@ import { NotFoundError } from '@tupaia/utils';
 import winston from '../../log';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
-import {
-  assertSurveyGetPermissions,
-  createSurveyViaCountryDBFilter,
-} from './assertSurveyPermissions';
+import { createSurveyViaCountryDBFilter } from './assertSurveyPermissions';
 
 const SURVEY_QUESTIONS_COLUMN = 'surveyQuestions';
 const COUNTRY_NAMES_COLUMN = 'countryNames';
@@ -61,9 +58,13 @@ export class GETSurveys extends GETHandler {
    */
   includeQuestions = true;
 
+  /**
+   * @param {Survey['id']} surveyId
+   * @param {*} options
+   */
   async findSingleRecord(surveyId, options) {
-    const surveyChecker = accessPolicy =>
-      assertSurveyGetPermissions(accessPolicy, this.models, surveyId);
+    const surveyChecker = async accessPolicy =>
+      await this.models.survey.assertCanRead(accessPolicy, surveyId);
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyChecker]));
 
     if (this.includePaginatedQuestions && this.includeQuestions) {

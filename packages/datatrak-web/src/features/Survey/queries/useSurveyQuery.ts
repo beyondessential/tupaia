@@ -1,7 +1,8 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
+import type { AccessPolicy } from '@tupaia/access-policy';
+import { assertAnyPermissions, assertBESAdminAccess } from '@tupaia/access-policy';
 import { ProjectRecord } from '@tupaia/database';
-import { SurveyRecord } from '@tupaia/tsmodels';
 import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import { Country, DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
 import { get, useDatabaseQuery } from '../../../api';
@@ -16,28 +17,34 @@ interface SurveyQueryFunctionContext extends ContextualQueryFunctionContext {
 const surveyQueryFunctions = {
   remote: async ({ surveyCode }: SurveyQueryFunctionContext) =>
     await get(`surveys/${encodeURIComponent(ensure(surveyCode))}`),
-  local: async ({ models, surveyCode }: SurveyQueryFunctionContext) =>
+  local: async ({ accessPolicy, models, surveyCode }: SurveyQueryFunctionContext) =>
     await models.wrapInReadOnlyTransaction(async transactingModels => {
-      const survey: SurveyRecord & {
+      const surveyRecord = await transactingModels.survey.findOne({
+        code: ensure(surveyCode),
+      });
+
+      const surveyChecker = async (accessPolicy: AccessPolicy) =>
+        await models.survey.assertCanRead(accessPolicy, surveyRecord.id);
+      const permissionChecker = assertAnyPermissions([assertBESAdminAccess, surveyChecker]);
+      await permissionChecker(accessPolicy);
+
+      const survey: Survey & {
         countryCodes?: Country['code'][];
         countryNames?: Country['name'][];
         project?: ProjectRecord;
         screens?: unknown; // TODO
-      } = await transactingModels.survey.findOne({ code: ensure(surveyCode) });
+      } = (await surveyRecord.getData()) as Survey;
 
       const [countryNames, countryCodes, screens, project] = await Promise.all([
         getSurveyCountryNames(transactingModels, [survey.id]),
         getSurveyCountryCodes(transactingModels, [survey.id]),
-        survey.getPaginatedQuestions(),
-        survey.getProject(),
+        surveyRecord.getPaginatedQuestions(),
+        surveyRecord.getProject(),
       ]);
       survey.countryNames = countryNames[survey.id];
       survey.countryCodes = countryCodes[survey.id];
       survey.screens = screens;
       survey.project = project;
-
-      survey.model = undefined;
-      survey.project.model = undefined;
 
       return camelcaseKeys(survey, {
         deep: true,

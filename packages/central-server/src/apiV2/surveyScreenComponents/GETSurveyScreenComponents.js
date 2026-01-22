@@ -1,10 +1,9 @@
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
 import {
   assertSurveyScreenComponentGetPermissions,
   createSurveyScreenComponentDBFilter,
 } from './assertSurveyScreenComponentPermissions';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { assertSurveyGetPermissions } from '../surveys/assertSurveyPermissions';
 
 /**
  * Handles endpoints:
@@ -35,8 +34,8 @@ export class GETSurveyScreenComponents extends GETHandler {
 
   async getPermissionsViaParentFilter(criteria, options) {
     // Check parent permissions
-    const surveyPermissionsChecker = accessPolicy =>
-      assertSurveyGetPermissions(accessPolicy, this.models, this.parentRecordId);
+    const surveyPermissionsChecker = async accessPolicy =>
+      await this.models.survey.assertCanRead(accessPolicy, this.parentRecordId);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyPermissionsChecker]),
     );

@@ -58,7 +58,7 @@ import { AccessPolicy, hasBESAdminAccess } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
-import { reduceToDictionary } from '@tupaia/utils';
+import { PermissionsError, reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
 import { DatabaseRecord } from '../../DatabaseRecord';
 import { SqlQuery } from '../../SqlQuery';
@@ -254,6 +254,31 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return SurveyRecord;
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @param {Survey['id']} surveyId
+   * @returns {Promise<true>}
+   * @throws {PermissionsError}
+   */
+  async assertCanRead(accessPolicy, surveyId) {
+    const survey = ensure(
+      await this.findById(surveyId),
+      `No survey exists with ID ${surveyId}`,
+      { columns: ['id'] }, // Arbitrary column; just need SurveyRecord instance
+    );
+    const [permissionGroup, countryCodes] = await Promise.all([
+      survey.getPermissionGroup(),
+      survey.getCountryCodes(),
+    ]);
+
+    if (accessPolicy.allowsSome(countryCodes, permissionGroup.name)) return true;
+
+    throw new PermissionsError('Requires access to one of the countries the survey is in');
+  }
+
+  /**
+   * @param {AccessPolicy} accessPolicy
+   */
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
     const entries = Object.entries(countryIdsByPermissionGroup);
