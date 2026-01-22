@@ -39,19 +39,19 @@ const SYNC_STAGES = {
   PUSH: 1,
   PULL: 2,
   PERSIST: 3,
-};
+} as const;
 
 type StageMaxProgress = Record<number, number>;
 
-const STAGE_MAX_PROGRESS_INCREMENTAL: StageMaxProgress = {
+const STAGE_MAX_PROGRESS_INCREMENTAL = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 66,
   [SYNC_STAGES.PERSIST]: 100,
-} as const;
-const STAGE_MAX_PROGRESS_INITIAL: StageMaxProgress = {
+} as const satisfies StageMaxProgress;
+const STAGE_MAX_PROGRESS_INITIAL = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 100,
-} as const;
+} as const satisfies StageMaxProgress;
 
 export interface SyncResult {
   pulledChangesCount?: number;

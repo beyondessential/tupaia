@@ -1,7 +1,7 @@
-import { TupaiaDatabase } from '@tupaia/database';
+import { SCHEMA_NAMES, TupaiaDatabase } from '@tupaia/database';
 import { snakeKeys } from '@tupaia/utils';
 
-const SCHEMA = 'sync_snapshots';
+const SCHEMA = SCHEMA_NAMES.SYNC_SNAPSHOT;
 
 class InvalidSyncSessionIdError extends Error {
   constructor(...args: ConstructorParameters<typeof Error>) {
@@ -20,10 +20,12 @@ const assertSessionIdIsSafe = (sessionId: string) => {
 };
 
 // includes a safety check for using in raw sql rather than via sequelize query building
-export const getSnapshotTableName = (sessionId: string) => {
+export const getSnapshotTableName = <SessionId extends string>(
+  sessionId: string,
+): `"${typeof SCHEMA}".${SessionId}` => {
   assertSessionIdIsSafe(sessionId);
 
-  return `"${SCHEMA}"."${sessionId}"`;
+  return `"${SCHEMA}"."${sessionId}"` as `"${typeof SCHEMA}".${SessionId}`;
 };
 
 export const getSnapshotTableCursorName = (sessionId: string) => {

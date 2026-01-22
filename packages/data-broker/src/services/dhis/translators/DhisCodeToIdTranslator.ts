@@ -343,13 +343,13 @@ export class DhisCodeToIdTranslator {
       throw new Error("Can't read org unit id/code from dhis");
 
     const dhisIds = response.rows.map(row => row[orgUnitIdIndex]) as string[];
-    const mappings: DataServiceEntity[] = await runDatabaseFunctionInBatches(
+    const mappings = (await runDatabaseFunctionInBatches(
       dhisIds,
       async (batchOfRecords: string[]) =>
         this.models.dataServiceEntity.find({
           'config->>dhis_id': batchOfRecords,
         }),
-    );
+    )) as DataServiceEntity[];
 
     const mappingsByDhisId = reduceToDictionary(
       mappings,

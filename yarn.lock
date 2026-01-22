@@ -13244,6 +13244,7 @@ __metadata:
     "@tupaia/database": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@types/node": ^20.11.1
+    knex: ^3.1.0
     rimraf: ^6.0.1
     ts-node: ^10.9.1
     typescript: 5.2.2

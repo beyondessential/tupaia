@@ -1,5 +1,4 @@
 import log from 'winston';
-import groupBy from 'lodash.groupby';
 
 import {
   getModelsForPull,
@@ -662,7 +661,7 @@ export class CentralSyncManager {
   }
 
   validateIncomingChanges(changes: SyncSnapshotAttributes[]) {
-    const incomingTables = Object.keys(groupBy(changes, 'recordType'));
+    const incomingTables = Array.from(new Set(changes.map(c => c.recordType)));
     const allowedPushTables = new Set(
       getModelsForPush(this.models.getModels()).map(m => m.databaseRecord),
     );

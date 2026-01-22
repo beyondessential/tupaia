@@ -1,7 +1,12 @@
 import { groupBy } from 'es-toolkit';
 import winston from 'winston';
 
-import { BaseDatabase, DatabaseModel, DatabaseRecordName, ModelRegistry } from '@tupaia/database';
+import {
+  BaseDatabase,
+  DatabaseModel,
+  PublicSchemaRecordName,
+  ModelRegistry,
+} from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 import { ModelSanitizeArgs, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
@@ -53,7 +58,7 @@ export const saveChangesForModel = async (
   // add all records that already exist in the db to the list to be updated
   const existingRecords = await model.findManyById(idsForIncomingRecords);
 
-  const idToExistingRecord: Record<number, (typeof existingRecords)[0]> = Object.fromEntries(
+  const idToExistingRecord: Record<string, (typeof existingRecords)[number]> = Object.fromEntries(
     existingRecords.map((e: any) => [e.id, e]),
   );
   const recordsForCreate = [];
@@ -91,7 +96,7 @@ export const saveChangesForModel = async (
 const processSyncSnapshotInBatches = async (
   model: DatabaseModel,
   sessionId: string,
-  recordType: DatabaseRecordName,
+  recordType: PublicSchemaRecordName,
   isDeleted: boolean,
   isCentralServer: boolean,
   progressCallback?: (recordsProcessed: number) => void,
@@ -133,7 +138,7 @@ const processSyncSnapshotInBatches = async (
 const saveChangesForModelInBatches = (
   model: DatabaseModel,
   sessionId: string,
-  recordType: DatabaseRecordName,
+  recordType: PublicSchemaRecordName,
   isCentralServer: boolean,
   progressCallback?: (recordsProcessed: number) => void,
 ) =>
@@ -149,7 +154,7 @@ const saveChangesForModelInBatches = (
 const saveDeletesForModelInBatches = (
   model: DatabaseModel,
   sessionId: string,
-  recordType: DatabaseRecordName,
+  recordType: PublicSchemaRecordName,
   progressCallback?: (recordsProcessed: number) => void,
 ) => processSyncSnapshotInBatches(model, sessionId, recordType, true, false, progressCallback);
 

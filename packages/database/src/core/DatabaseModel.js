@@ -1,7 +1,8 @@
 /**
  * @typedef {import('@tupaia/constants').SyncDirection} SyncDirection
- * @typedef {import('@tupaia/types').DatabaseRecordName} DatabaseRecordName
  * @typedef {import('./ModelRegistry').ModelRegistry} ModelRegistry
+ * @typedef {import('./constants').DatabaseSchemaName} DatabaseSchemaName
+ * @typedef {import('./records').PublicSchemaRecordName} PublicSchemaRecordName
  */
 
 import { uniq } from 'es-toolkit';
@@ -69,11 +70,15 @@ export class DatabaseModel {
     return false;
   }
 
-  // can be overridden by any subclass that needs cache invalidation when a related table changes
+  /**
+   * Can be overridden by any subclass that needs cache invalidation when a related table changes.
+   * @returns {PublicSchemaRecordName[]}
+   */
   get cacheDependencies() {
     return [];
   }
 
+  /** @returns {DatabaseSchemaName} */
   get schemaName() {
     return SCHEMA_NAMES.PUBLIC;
   }
@@ -115,6 +120,7 @@ export class DatabaseModel {
     );
   }
 
+  /** @returns {PublicSchemaRecordName} */
   get databaseRecord() {
     return this.DatabaseRecordClass.databaseRecord;
   }
@@ -124,7 +130,12 @@ export class DatabaseModel {
     return this.DatabaseRecordClass.joins;
   }
 
-  // A helper for the 'xById' methods, which disambiguates the id field to ensure joins are handled
+  /**
+   * A helper for the 'xById' methods, which disambiguates the id field to ensure joins are handled
+   * @template {string | string[]} Ids
+   * @param {string} id
+   * @returns {{ [key: `${PublicSchemaRecordName}.id`]: Ids }}
+   */
   getIdClause(id) {
     return {
       [this.fullyQualifyColumn('id')]: id,
@@ -133,8 +144,9 @@ export class DatabaseModel {
 
   /**
    * A helper function to ensure that we're using fully qualified column names to avoid ambiguous references when joins are being used
+   * @template {string} Column
    * @param {string} column
-   * @returns {`${DatabaseRecordName}.${string}`}
+   * @returns {Column extends `${string}.${string}` ? Column : `${PublicSchemaRecordName}.${Column}`}
    */
   fullyQualifyColumn(column) {
     if (column.includes('.')) {

@@ -1,5 +1,7 @@
+import type { Knex } from 'knex';
+
 import { DatabaseModel, DatabaseRecord } from '@tupaia/database';
-import { ObjectLikeKeys, ObjectLikeFields, Flatten } from '@tupaia/types';
+import { Flatten, ObjectLikeFields, ObjectLikeKeys } from '@tupaia/types';
 
 type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in' | '@>';
 type ComparisonTypes = 'where' | 'whereBetween' | 'whereIn' | 'orWhere';
@@ -45,7 +47,7 @@ type ConjunctionCriteria<T> = {
   [QueryConjunctions.OR]?: DbFilterCriteria<T>;
   [QueryConjunctions.RAW]?: {
     sql: string;
-    parameters: string[];
+    parameters: readonly Knex.RawBinding[] | Knex.ValueDict | Knex.RawBinding;
   };
 };
 

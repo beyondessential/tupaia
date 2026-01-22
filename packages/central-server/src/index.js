@@ -4,6 +4,7 @@ import nodeSchedule from 'node-schedule';
 
 import {
   AnalyticsRefresher,
+  buildEntityParentChildRelationIfEmpty,
   EntityHierarchyCacher,
   getDbMigrator,
   ModelRegistry,
@@ -12,13 +13,10 @@ import {
   TaskCompletionHandler,
   TaskCreationHandler,
   TaskUpdateHandler,
-  buildEntityParentChildRelationIfEmpty,
   TupaiaDatabase,
-  SyncLookupEntityRefresher,
 } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
 import { isFeatureEnabled } from '@tupaia/utils';
-
 import { configureEnv } from './configureEnv';
 import { createApp } from './createApp';
 import { createPermissionsBasedMeditrakSyncQueue, MeditrakSyncQueue } from './database';
@@ -134,7 +132,7 @@ configureEnv();
       winston.info('Database migrations complete');
 
       await buildEntityParentChildRelationIfEmpty(models);
-    
+
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
         winston.info('Creating permissions based meditrak sync queue');
         // don't await this as it's not critical, and will hold up the process if it fails
