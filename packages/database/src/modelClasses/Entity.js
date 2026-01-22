@@ -1,6 +1,12 @@
 import keyBy from 'lodash.keyby';
 
-import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
+import {
+  fetchPatiently,
+  translateBounds,
+  translatePoint,
+  translateRegion,
+  ValidationError,
+} from '@tupaia/utils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -529,5 +535,16 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       'SELECT unnest(enum_range(NULL::entity_type)::TEXT[]) AS type ORDER BY type;',
     );
     return entityTypes.map(({ type }) => type);
+  }
+
+  async addEntityType({ type }) {
+    // Postgres doesn't accept parameter binding in enum value queries
+    // So we harshly validate to avoid SQL injection risks
+    if (!/^[a-z_]+$/g.test(type)) {
+      throw new ValidationError(
+        `‘${type}’ is not a permissible entity type. Only lowercase letters and underscores are allowed.`,
+      );
+    }
+    await this.database.executeSql(`ALTER TYPE entity_type ADD VALUE IF NOT EXISTS '${type}';`);
   }
 }
