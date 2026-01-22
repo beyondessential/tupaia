@@ -8,6 +8,7 @@
  * @typedef {import('../Country').CountryRecord} CountryRecord
  * @typedef {import('../DataGroup').DataGroupRecord} DataGroupRecord
  * @typedef {import('../Option').OptionRecord} OptionRecord
+ * @typedef {import('../Option').OptionSet} OptionSet
  * @typedef {import('../OptionSet').OptionSetRecord} OptionSetRecord
  * @typedef {import('../PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
  * @typedef {import('../Project').ProjectRecord} ProjectRecord
@@ -89,6 +90,7 @@ export class SurveyRecord extends DatabaseRecord {
    * @returns {Promise<SurveyScreenComponentRecord[]>} survey screen components in survey
    */
   async surveyScreenComponents() {
+    /** @type {SurveyScreenComponent[]} */
     const questions = await this.database.executeSql(
       `
        SELECT ssc.* FROM survey_screen_component ssc
@@ -124,6 +126,7 @@ export class SurveyRecord extends DatabaseRecord {
    * @returns {Promise<OptionSetRecord[]>} optionSets in questions in survey
    */
   async optionSets() {
+    /** @type {OptionSet[]} */
     const optionSets = await this.database.executeSql(
       `
        SELECT os.* FROM option_set os
@@ -142,6 +145,7 @@ export class SurveyRecord extends DatabaseRecord {
    * @returns {Promise<OptionRecord[]>} options in optionSets in questions in survey
    */
   async options() {
+    /** @type {Option[]} */
     const options = await this.database.executeSql(
       `
        SELECT o.* FROM "option" o
@@ -293,7 +297,6 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   *
    * @param {AccessPolicy} accessPolicy
    * @param {*} dbConditions
    * @param {*} customQueryOptions
