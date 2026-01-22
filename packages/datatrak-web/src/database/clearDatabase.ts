@@ -1,6 +1,6 @@
 import { SyncFact } from '@tupaia/constants';
 import type { DatabaseSchemaName, PublicSchemaRecordName } from '@tupaia/database';
-import { RECORDS, SqlQuery } from '@tupaia/database';
+import { RECORDS, SCHEMA_NAMES, SqlQuery } from '@tupaia/database';
 import type { DatatrakWebModelRegistry } from '../types';
 
 const TABLES_TO_KEEP = [
@@ -27,9 +27,7 @@ const clearTables = async (
   );
 
   for (const { table_name: tableName } of tablesToTruncate) {
-    await models.database.executeSql(`
-      TRUNCATE TABLE ${tableName} CASCADE;
-    `);
+    await models.database.executeSql('TRUNCATE TABLE ?? CASCADE;', tableName);
   }
 };
 
@@ -42,7 +40,6 @@ const clearLocalSystemFacts = async (models: DatatrakWebModelRegistry) => {
 
 export const clearDatabase = async (models: DatatrakWebModelRegistry) => {
   // Clear public schema but still keep some tables
-  await clearTables(models, 'public', TABLES_TO_KEEP);
-
+  await clearTables(models, SCHEMA_NAMES.PUBLIC, TABLES_TO_KEEP);
   await clearLocalSystemFacts(models);
 };
