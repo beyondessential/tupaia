@@ -40,7 +40,7 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
-    "moment-timezone": "^0.5.45",
+    "moment-timezone": "^0.6.0",
     "semver-compare": "^1.0.0",
     "winston": "^3.17.0"
   },
