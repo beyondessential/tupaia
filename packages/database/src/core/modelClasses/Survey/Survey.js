@@ -321,6 +321,8 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   async getCountryCodesBySurveyId(surveyIds) {
     if (surveyIds.length === 0) return {};
 
+    const surveyIdsBinding = this.database.connection.raw(SqlQuery.record(surveyIds), surveyIds);
+
     /** @type {{ survey_id: Survey['id'], country_codes: Country['code'][]}[]} */
     const rows = await this.database.executeSql(
       `
@@ -331,11 +333,11 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
           survey
           LEFT JOIN country ON country.id = ANY (survey.country_ids)
         WHERE
-          survey.id IN ${SqlQuery.record(surveyIds)}
+          survey.id IN ?
         GROUP BY
           survey.id;
       `,
-      surveyIds,
+      surveyIdsBinding,
     );
     return Object.fromEntries(rows.map(row => [row.survey_id, row.country_codes]));
   }
@@ -348,6 +350,8 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   async getCountryNamesBySurveyId(surveyIds) {
     if (surveyIds.length === 0) return {};
 
+    const surveyIdsBinding = this.database.connection.raw(SqlQuery.record(surveyIds), surveyIds);
+
     /** @type {{ survey_id: Survey['id'], country_names: Country['name'][]}[]} */
     const rows = await this.database.executeSql(
       `
@@ -358,9 +362,11 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
           survey
           LEFT JOIN country ON country.id = ANY (survey.country_ids)
         WHERE
-          survey.id IN ${SqlQuery.record(surveyIds)} GROUP BY survey.id;
+          survey.id IN ?
+        GROUP BY
+          survey.id;
       `,
-      surveyIds,
+      surveyIdsBinding,
     );
     return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
   }
