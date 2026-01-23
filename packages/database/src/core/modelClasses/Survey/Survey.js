@@ -314,13 +314,14 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {SurveyRecord['id'][]} surveyIds
-   * @returns {Promise<Record<SurveyRecord['id'], CountryRecord['id'][]>>}
+   * @param {Survey['id'][]} surveyIds
+   * @returns {Promise<Record<Survey['id'], Country['code'][]>>}
    * Dictionary mapping survey IDs to sorted arrays of country codes
    */
   async getCountryCodesBySurveyId(surveyIds) {
     if (surveyIds.length === 0) return {};
 
+    /** @type {{ survey_id: Survey['id'], country_codes: Country['code'][]}[]} */
     const rows = await this.database.executeSql(
       `
         SELECT
@@ -340,13 +341,14 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {SurveyRecord['id'][]} surveyIds
-   * @returns {Promise<Record<SurveyRecord['id'], CountryRecord['id'][]>>}
+   * @param {Survey['id'][]} surveyIds
+   * @returns {Promise<Record<Survey['id'], Country['name'][]>>}
    * Dictionary mapping survey IDs to sorted arrays of country names
    */
   async getCountryNamesBySurveyId(surveyIds) {
     if (surveyIds.length === 0) return {};
 
+    /** @type {{ survey_id: Survey['id'], country_names: Country['name'][]}[]} */
     const rows = await this.database.executeSql(
       `
         SELECT
