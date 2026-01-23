@@ -1,4 +1,5 @@
 /**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
  * @typedef {import('@tupaia/types').Question} Question
@@ -66,6 +67,7 @@ import { MaterializedViewLogDatabaseModel } from '../../analytics';
 import { RECORDS } from '../../records';
 import { OptionRecord } from '../Option';
 import { findQuestionsInSurvey } from './findQuestionsInSurvey';
+import { createSurveyPermissionsViaParentFilter } from './permissions';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
@@ -462,6 +464,10 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return null;
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @param {*} criteria
+   */
   async createRecordsPermissionFilter(accessPolicy, criteria = {}) {
     if (hasBESAdminAccess(accessPolicy)) {
       return criteria;
@@ -486,6 +492,20 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
       },
     };
     return dbConditions;
+  }
+
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @param {*} criteria
+   * @param {Country['id']} countryId
+   */
+  async createPermissionsViaParentFilter(accessPolicy, criteria, countryId) {
+    return await createSurveyPermissionsViaParentFilter(
+      this.otherModels,
+      accessPolicy,
+      criteria,
+      countryId,
+    );
   }
 
   /**

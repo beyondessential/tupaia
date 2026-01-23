@@ -9,7 +9,6 @@ import { NotFoundError } from '@tupaia/utils';
 import winston from '../../log';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
-import { createSurveyViaCountryDBFilter } from './assertSurveyPermissions';
 
 const SURVEY_QUESTIONS_COLUMN = 'surveyQuestions';
 const COUNTRY_NAMES_COLUMN = 'countryNames';
@@ -129,9 +128,8 @@ export class GETSurveys extends GETHandler {
   }
 
   async getPermissionsViaParentFilter(criteria, options) {
-    const dbConditions = await createSurveyViaCountryDBFilter(
+    const dbConditions = await this.models.survey.createPermissionsViaParentFilter(
       this.accessPolicy,
-      this.models,
       criteria,
       this.parentRecordId,
     );
