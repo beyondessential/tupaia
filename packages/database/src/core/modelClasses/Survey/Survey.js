@@ -277,15 +277,15 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   async getCountryIdsByPermissionGroup(accessPolicy) {
     const permissionGroupNames = accessPolicy.getPermissionGroups();
 
-    const countries = await this.otherModels.country.find({});
-
-    const permissionGroups = await this.otherModels.permissionGroup.find({
-      name: permissionGroupNames,
-    });
+    const countries = await this.otherModels.country.all({ columns: ['code', 'id'] });
+    const permissionGroups = await this.otherModels.permissionGroup.find(
+      { name: permissionGroupNames },
+      { columns: ['id', 'name'] },
+    );
 
     const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
-
     const permissionGroupIdByName = reduceToDictionary(permissionGroups, 'name', 'id');
+
     return permissionGroupNames.reduce((result, permissionGroupName) => {
       const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
       const permissionGroupId = permissionGroupIdByName[permissionGroupName];
@@ -293,7 +293,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
       result[permissionGroupId] = countryIds;
       return result;
-    }, {});
+    }, /** @type {Record<PermissionGroup['id'], Country['id'][]} */ ({}));
   }
 
   /**
