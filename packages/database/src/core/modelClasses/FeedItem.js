@@ -14,6 +14,7 @@ import { reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
+import { SqlQuery } from '../SqlQuery';
 import { RECORDS } from '../records';
 
 export class FeedItemRecord extends DatabaseRecord {
@@ -41,21 +42,16 @@ export class FeedItemModel extends DatabaseModel {
    */
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
-    const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
-
+    const entries = Object.entries(countryIdsByPermissionGroup);
     return {
-      sql: `((${Object.entries(countryIdsByPermissionGroup)
-        .map(([_, countryIds]) => {
-          return `
-          (
-            feed_item.permission_group_id = ? AND
-            feed_item.country_id IN (${countryIds.map(_ => `?`).join(',')})
-          )
-        `;
+      sql: `((${entries
+        .map(([, countryIds]) => {
+          return `(feed_item.permission_group_id = ? AND feed_item.country_id IN ${SqlQuery.record(countryIds)})`;
         })
         // add the markdown type to the query here so that it always gets wrapped in brackets with the permissions query in the final query, regardless of what other custom conditions are added
         .join(' OR ')}) OR feed_item.type = '${FeedItemTypes.Markdown}')`,
-      parameters: params,
+      /** @example ['Public', 'id1', 'id2', 'Admin', 'id3'] */
+      parameters: entries.flat(2),
     };
   }
 
