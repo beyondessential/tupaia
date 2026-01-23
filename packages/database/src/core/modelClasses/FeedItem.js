@@ -35,6 +35,10 @@ export class FeedItemModel extends DatabaseModel {
     return FeedItemRecord;
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<{ sql: string; parameters: (PermissionGroup['name'] | Country['id'])[] }>}
+   */
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
     const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
