@@ -1,13 +1,12 @@
 import type { Knex } from 'knex';
 
-import { DatabaseModel, DatabaseRecord } from '@tupaia/database';
+import { DatabaseModel, DatabaseRecord, type ComparisonType } from '@tupaia/database';
 import { Flatten, ObjectLikeFields, ObjectLikeKeys } from '@tupaia/types';
 
 type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in' | '@>';
-type ComparisonTypes = 'where' | 'whereBetween' | 'whereIn' | 'orWhere';
 
 export type AdvancedFilterValue<T> = {
-  comparisonType?: ComparisonTypes;
+  comparisonType?: ComparisonType;
   comparator: FilterComparators;
   comparisonValue: T | T[];
 };
