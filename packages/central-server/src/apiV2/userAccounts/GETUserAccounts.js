@@ -17,7 +17,7 @@ import {
  */
 
 export class GETUserAccounts extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   defaultJoinType = JOIN_TYPES.LEFT_OUTER;
 

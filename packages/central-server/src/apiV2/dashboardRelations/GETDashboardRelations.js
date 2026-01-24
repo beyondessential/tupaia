@@ -17,7 +17,7 @@ import {
  * - /dashboardRelations/:dashboardRelationId
  */
 export class GETDashboardRelations extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   customJoinConditions = {
     dashboard: {

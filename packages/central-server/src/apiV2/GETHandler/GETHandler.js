@@ -25,6 +25,9 @@ export const DEFAULT_PAGE_SIZE = 100;
  *       Get the fourth page of 100 answers for a given survey response
  */
 export class GETHandler extends CRUDHandler {
+  /** @type {boolean} */
+  permissionsFilteredInternally;
+
   async handleRequest() {
     const { headers = {}, body } = await this.buildResponse();
     Object.entries(headers).forEach(([key, value]) => this.res.set(key, value));

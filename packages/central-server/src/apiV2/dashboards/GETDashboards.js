@@ -8,7 +8,7 @@ import { getDashboardsDBFilter } from './getDashboardsDBFilter';
  * - /dashboards/:dashboardId
  */
 export class GETDashboards extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(dashboardId, options) {
     const dashboard = await super.findSingleRecord(dashboardId, options);
