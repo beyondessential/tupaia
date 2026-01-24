@@ -72,8 +72,3 @@ export const RECORDS = /** @type {const} */ ({
   SYNC_QUEUED_DEVICE: 'sync_queued_device',
   ENTITY_PARENT_CHILD_RELATION: 'entity_parent_child_relation',
 });
-
-/**
- * @typedef {import('@tupaia/types').ValueOf<typeof RECORDS>} PublicSchemaRecordName
- * @typedef {PublicSchemaRecordName | string} RecordName
- */
