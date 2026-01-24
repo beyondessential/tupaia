@@ -36,6 +36,7 @@ const mockModels = {
 jest.mock('@tupaia/database', () => ({
   ...jest.requireActual('@tupaia/database'),
   migrate: jest.fn(),
+  MigrationManager: jest.fn().mockImplementation(() => ({})),
   ModelRegistry: jest.fn().mockImplementation(() => ({})),
 }));
 
