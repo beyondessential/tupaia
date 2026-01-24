@@ -56,8 +56,8 @@ export const saveChangesForModel = async (
   const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
   const idsForIncomingRecords = incomingRecords.map(r => r.id);
   // add all records that already exist in the db to the list to be updated
-  const existingRecords = await model.findManyById(idsForIncomingRecords);
-
+  // we only need the id column to check if the record already exists
+  const existingRecords = await model.database.find(model.databaseRecord, { id: idsForIncomingRecords }, { columns: ['id'] });
   const idToExistingRecord: Record<string, (typeof existingRecords)[number]> = Object.fromEntries(
     existingRecords.map((e: any) => [e.id, e]),
   );
