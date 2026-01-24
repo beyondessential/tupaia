@@ -48,7 +48,7 @@ export const saveUpdates = async (
           }),
         );
       } else {
-        bulkUpdateForClient(model, batch);
+        await bulkUpdateForClient(model, batch);
       }
     } catch (originalError: any) {
       // try records individually, some may succeed and we want to capture the
