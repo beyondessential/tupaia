@@ -3,7 +3,7 @@ import type { DatabaseSchemaName, PublicSchemaRecordName } from '@tupaia/databas
 import { SCHEMA_NAMES, SqlQuery } from '@tupaia/database';
 import type { DatatrakWebModelRegistry } from '../types';
 
-/** @privateRemarks Jest can’t handle `RECORDS` from @tupaia/database, hence the magic strings. */
+/** @privateRemarks Jest can’t import `RECORDS` from `@tupaia/database`, hence the magic strings. */
 const TABLES_TO_KEEP = [
   'local_system_fact',
   'migrations',
