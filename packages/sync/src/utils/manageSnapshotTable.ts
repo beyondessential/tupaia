@@ -1,7 +1,11 @@
-import { SCHEMA_NAMES, TupaiaDatabase } from '@tupaia/database';
+import { TupaiaDatabase, type SCHEMA_NAMES } from '@tupaia/database';
 import { snakeKeys } from '@tupaia/utils';
 
-const SCHEMA = SCHEMA_NAMES.SYNC_SNAPSHOT;
+/**
+ * @privateRemarks Jest can’t import `SCHEMA_NAMES` from `@tupaia/database`, hence the magic
+ * string.
+ */
+const SCHEMA = 'sync_snapshots' satisfies typeof SCHEMA_NAMES.SYNC_SNAPSHOT;
 
 class InvalidSyncSessionIdError extends Error {
   constructor(...args: ConstructorParameters<typeof Error>) {
