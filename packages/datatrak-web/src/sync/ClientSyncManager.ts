@@ -225,6 +225,7 @@ export class ClientSyncManager {
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
       this.errorMessage = error.message;
+      log.error('ClientSyncManager.triggerSync()', { error });
     } finally {
       // Reset all the values to default only if sync actually started, otherwise they should still be default values
       if (this.isSyncing) {
