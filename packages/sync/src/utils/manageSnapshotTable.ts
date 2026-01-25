@@ -1,7 +1,7 @@
-import { SCHEMA_NAMES, TupaiaDatabase } from '@tupaia/database';
+import { TupaiaDatabase } from '@tupaia/database';
 import { snakeKeys } from '@tupaia/utils';
 
-const SCHEMA = SCHEMA_NAMES.SYNC_SNAPSHOT;
+const SCHEMA = 'sync_snapshots';
 
 class InvalidSyncSessionIdError extends Error {
   constructor(...args: ConstructorParameters<typeof Error>) {
