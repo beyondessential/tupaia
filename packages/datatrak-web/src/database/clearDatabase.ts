@@ -1,12 +1,13 @@
 import { SyncFact } from '@tupaia/constants';
 import type { DatabaseSchemaName, PublicSchemaRecordName } from '@tupaia/database';
-import { RECORDS, SCHEMA_NAMES, SqlQuery } from '@tupaia/database';
+import { SCHEMA_NAMES, SqlQuery } from '@tupaia/database';
 import type { DatatrakWebModelRegistry } from '../types';
 
+/** @privateRemarks Jest can’t handle `RECORDS` from @tupaia/database, hence the magic strings. */
 const TABLES_TO_KEEP = [
-  RECORDS.LOCAL_SYSTEM_FACT,
-  RECORDS.MIGRATIONS,
-  RECORDS.USER_ACCOUNT,
+  'local_system_fact',
+  'migrations',
+  'user_account',
 ] as const satisfies PublicSchemaRecordName[];
 
 const clearTables = async (
