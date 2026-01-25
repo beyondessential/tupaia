@@ -1,7 +1,10 @@
 import { TupaiaDatabase, type SCHEMA_NAMES } from '@tupaia/database';
 import { snakeKeys } from '@tupaia/utils';
 
-/** @privateRemarks Jest can’t import `RECORDS` from `@tupaia/database`, hence the magic string. */
+/**
+ * @privateRemarks Jest can’t import `SCHEMA_NAMES` from `@tupaia/database`, hence the magic
+ * string.
+ */
 const SCHEMA = 'sync_snapshots' satisfies typeof SCHEMA_NAMES.SYNC_SNAPSHOT;
 
 class InvalidSyncSessionIdError extends Error {
