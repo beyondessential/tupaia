@@ -480,14 +480,11 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     // Using AND instead of RAW to not override the existing RAW criteria
     dbConditions[QUERY_CONJUNCTIONS.AND] = {
       [QUERY_CONJUNCTIONS.RAW]: {
-        sql: `
-          (
-            survey.country_ids
-            &&
-            ARRAY(
-              SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-            )
-          )`,
+        sql: `(
+          survey.country_ids && ARRAY(
+            SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
+          )
+        )`,
         parameters: JSON.stringify(countryIdsByPermissionGroupId),
       },
     };
@@ -499,7 +496,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
    * @param {*} criteria
    * @param {Country['id']} countryId
    */
-  async createPermissionsViaParentFilter(accessPolicy, criteria, countryId) {
+  async getPermissionsViaParentFilter(accessPolicy, criteria, countryId) {
     return await createSurveyPermissionsViaParentFilter(
       this.otherModels,
       accessPolicy,
