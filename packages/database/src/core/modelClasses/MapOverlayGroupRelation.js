@@ -15,7 +15,7 @@ const RELATION_CHILD_TYPES = {
 export class MapOverlayGroupRelationRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.MAP_OVERLAY_GROUP_RELATION;
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       joinType: JOIN_TYPES.LEFT,
       joinWith: RECORDS.MAP_OVERLAY,
@@ -33,7 +33,7 @@ export class MapOverlayGroupRelationRecord extends DatabaseRecord {
       ],
       fields: { code: 'code' },
     },
-  ];
+  ]);
 
   async findChildRelations() {
     return this.model.find({ map_overlay_group_id: this.child_id });

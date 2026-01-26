@@ -56,7 +56,7 @@ export class TaskRecord extends DatabaseRecord {
     Cancelled: 'cancelled',
   };
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       joinWith: RECORDS.ENTITY,
       joinCondition: ['entity_id', `${RECORDS.ENTITY}.id`],
@@ -80,7 +80,7 @@ export class TaskRecord extends DatabaseRecord {
       joinCondition: ['survey_response_id', `${RECORDS.SURVEY_RESPONSE}.id`],
       fields: { data_time: 'data_time', timezone: 'timezone' },
     },
-  ];
+  ]);
 
   /**
    * @returns {Promise<import('./Entity').EntityRecord>}

@@ -7,7 +7,7 @@ import { RECORDS } from '../records';
 class UserFavouriteDashboardItemRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_FAVOURITE_DASHBOARD_ITEM;
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       fields: {
         code: 'dashboard_item_code',
@@ -15,7 +15,7 @@ class UserFavouriteDashboardItemRecord extends DatabaseRecord {
       joinWith: RECORDS.DASHBOARD_ITEM,
       joinCondition: ['dashboard_item.id', 'user_favourite_dashboard_item.dashboard_item_id'],
     },
-  ];
+  ]);
 }
 
 export class UserFavouriteDashboardItemModel extends DatabaseModel {

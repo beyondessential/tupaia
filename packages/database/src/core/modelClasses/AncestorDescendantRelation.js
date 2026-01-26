@@ -8,7 +8,7 @@ import { RECORDS } from '../records';
 export class AncestorDescendantRelationRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ANCESTOR_DESCENDANT_RELATION;
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       joinWith: RECORDS.ENTITY,
       joinAs: 'descendant',
@@ -21,7 +21,7 @@ export class AncestorDescendantRelationRecord extends DatabaseRecord {
       joinCondition: ['ancestor_id', 'ancestor.id'],
       fields: { code: 'ancestor_code' },
     },
-  ];
+  ]);
 }
 
 export class AncestorDescendantRelationModel extends DatabaseModel {

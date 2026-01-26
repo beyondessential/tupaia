@@ -8,7 +8,7 @@ import { RECORDS } from '../records';
 export class DashboardRelationRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DASHBOARD_RELATION;
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       fields: {
         code: 'dashboard_code',
@@ -23,7 +23,7 @@ export class DashboardRelationRecord extends DatabaseRecord {
       joinWith: RECORDS.DASHBOARD_ITEM,
       joinCondition: ['dashboard_item.id', 'dashboard_relation.child_id'],
     },
-  ];
+  ]);
 
   async attributesFilterMatchesEntity(entity) {
     const { attributes_filter: attributesFilter } = this;

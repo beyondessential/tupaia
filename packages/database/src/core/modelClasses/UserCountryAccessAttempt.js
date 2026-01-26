@@ -9,7 +9,7 @@ export class UserCountryAccessAttemptRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_COUNTRY_ACCESS_ATTEMPT;
 
   // Join to user table to get user details
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       joinWith: RECORDS.USER_ACCOUNT,
       joinAs: 'user',
@@ -17,7 +17,7 @@ export class UserCountryAccessAttemptRecord extends DatabaseRecord {
       joinCondition: ['user_id', 'user.id'],
       fields: { email: 'user_email', first_name: 'user_first_name', last_name: 'user_last_name' },
     },
-  ];
+  ]);
 
   async user() {
     return this.otherModels.user.findById(this.user_id);
