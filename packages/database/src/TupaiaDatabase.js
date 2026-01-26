@@ -295,6 +295,15 @@ export class TupaiaDatabase {
   }
 
   /**
+   * @returns {Promise<boolean>}
+   */
+  async exists(...args) {
+    const innerQuery = this.find(...args);
+    const [{ exists }] = await this.executeSql('SELECT EXISTS(?);', [innerQuery]);
+    return exists;
+  }
+
+  /**
    *
    * @param {string} recordType
    * @param {Record<string, unknown>} [where]
