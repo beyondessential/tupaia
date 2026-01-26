@@ -7,10 +7,10 @@ import { JOIN_TYPES } from '../BaseDatabase';
 
 const MAP_OVERLAY = 'mapOverlay';
 const MAP_OVERLAY_GROUP = 'mapOverlayGroup';
-const RELATION_CHILD_TYPES = {
+const RELATION_CHILD_TYPES = /** @type {const} */ ({
   MAP_OVERLAY,
   MAP_OVERLAY_GROUP,
-};
+});
 
 export class MapOverlayGroupRelationRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.MAP_OVERLAY_GROUP_RELATION;

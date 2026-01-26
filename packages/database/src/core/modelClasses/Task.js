@@ -41,20 +41,26 @@ const formatValue = async (field, value, models) => {
   return value;
 };
 
+/**
+ * @template {Project['id'] | Project['id'][]} T
+ * @param {T} projectId
+ * @returns {{ 'survey.project_id': T }}
+ */
 const getTaskMetricsBaseQuery = projectId => ({ 'survey.project_id': projectId });
-const getTaskMetricsBaseJoin = () => ({
-  joinWith: RECORDS.SURVEY,
-  joinCondition: ['survey.id', 'task.survey_id'],
-});
+const getTaskMetricsBaseJoin = () =>
+  /** @type {const} */ ({
+    joinWith: RECORDS.SURVEY,
+    joinCondition: ['survey.id', 'task.survey_id'],
+  });
 
 export class TaskRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK;
 
-  statusTypes = {
+  statusTypes = /** @type {const} */ ({
     ToDo: 'to_do',
     Completed: 'completed',
     Cancelled: 'cancelled',
-  };
+  });
 
   static joins = /** @type {const} */ ([
     {
