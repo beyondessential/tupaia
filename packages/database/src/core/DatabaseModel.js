@@ -411,6 +411,9 @@ export class DatabaseModel {
     return this.database.delete(this.databaseRecord, whereConditions);
   }
 
+  /**
+   * @param {string | string[] } id
+   */
   async deleteById(id) {
     return this.delete(this.getIdClause(id));
   }
