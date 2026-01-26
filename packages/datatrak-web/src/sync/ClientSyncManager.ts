@@ -4,6 +4,7 @@ import log from 'winston';
 
 import { SYNC_STREAM_MESSAGE_KIND, SyncFact } from '@tupaia/constants';
 import {
+  countSyncSnapshotRecords,
   createClientSnapshotTable,
   dropAllSnapshotTables,
   dropSnapshotTable,
@@ -19,9 +20,9 @@ import { Project } from '@tupaia/types';
 import { remove, stream } from '../api';
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
 import {
+  SYNC_EVENT_ACTIONS,
   type DatatrakWebModelRegistry,
   type ProcessStreamDataParams,
-  SYNC_EVENT_ACTIONS,
   type SyncEvents,
 } from '../types';
 import { formatFraction } from '../utils';
@@ -87,6 +88,8 @@ export class ClientSyncManager {
   progressMessage: string | null = null;
 
   syncStage: number | null = null;
+
+  permissionsChanged: boolean = false;
 
   emitter = mitt<SyncEvents>();
 
@@ -335,12 +338,32 @@ export class ClientSyncManager {
       performance.measure('syncDuration', 'startSyncSession', 'endSyncSession'),
     );
 
+    if (!this.isInitialSync) {
+      await this.checkForPermissionChanges(sessionId);
+    }
+
     // clear temp data stored for persist
     await dropSnapshotTable(this.database, sessionId);
 
     this.lastSuccessfulSyncTime = new Date();
 
     return { pulledChangesCount };
+  }
+
+  async checkForPermissionChanges(sessionId: string) {
+    const currentUserId = await this.models.localSystemFact.get(SyncFact.CURRENT_USER_ID);
+
+    const permissionChangesCount = await countSyncSnapshotRecords(
+      this.database,
+      sessionId,
+      undefined,
+      this.models.userEntityPermission.databaseRecord,
+      "data->>'user_id' = :userId",
+      { userId: currentUserId },
+    );
+    if (permissionChangesCount > 0) {
+      await this.updatePermissionsChanged(true);
+    }
   }
 
   async startSyncSession(urgent: boolean, lastSyncedTick: number) {
@@ -565,5 +588,14 @@ export class ClientSyncManager {
         pullUntil.toString(),
       );
     });
+  }
+
+  async updatePermissionsChanged(permissionsChanged: boolean): Promise<void> {
+    this.permissionsChanged = permissionsChanged;
+    await this.models.localSystemFact.set(
+      SyncFact.PERMISSIONS_CHANGED,
+      permissionsChanged.toString(),
+    );
+    this.emitter.emit(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, { permissionsChanged });
   }
 }

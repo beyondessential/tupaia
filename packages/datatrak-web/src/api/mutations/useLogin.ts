@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { ensure } from '@tupaia/tsutils';
 import { SyncFact } from '@tupaia/constants';
-
-import { gaEvent, useFromLocation } from '../../utils';
-import { ROUTES } from '../../constants';
-import { useDatabaseContext } from '../../hooks/database';
+import { ensure } from '@tupaia/tsutils';
 import { AuthService } from '../../auth';
-import { useIsOfflineFirst } from '../offlineFirst';
 import { login } from '../../auth/login';
+import { ROUTES } from '../../constants';
 import { clearDatabase } from '../../database';
+import { useDatabaseContext } from '../../hooks/database';
+import { gaEvent, useFromLocation } from '../../utils';
+import { useSyncContext } from '../SyncContext';
+import { useIsOfflineFirst } from '../offlineFirst';
 
 type LoginCredentials = {
   email: string;
@@ -22,6 +22,7 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const from = useFromLocation();
   const { models } = useDatabaseContext() || {};
+  const { clientSyncManager } = useSyncContext() || {};
   const isOfflineFirst = useIsOfflineFirst();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
@@ -43,6 +44,7 @@ export const useLogin = () => {
       onSuccess: async ({ user }) => {
         if (isOfflineFirst) {
           const ensuredModels = ensure(models);
+          const syncManager = ensure(clientSyncManager);
 
           // Clear database if the user has logged in with a different user
           const previouslyLoggedInUserId = await ensuredModels.localSystemFact.get(
@@ -60,6 +62,9 @@ export const useLogin = () => {
 
           // Set current user id
           await ensuredModels.localSystemFact.set(SyncFact.CURRENT_USER_ID, user.id);
+
+          // Emit permissions changed event to reset data notification
+          await syncManager.updatePermissionsChanged(false);
         }
 
         await queryClient.invalidateQueries();

@@ -1,3 +1,5 @@
+import { type Knex } from 'knex';
+
 import { PublicSchemaRecordName, TupaiaDatabase } from '@tupaia/database';
 import { SyncSessionDirectionValues } from '../types';
 import { getSnapshotTableName } from './manageSnapshotTable';
@@ -5,20 +7,25 @@ import { getSnapshotTableName } from './manageSnapshotTable';
 export const countSyncSnapshotRecords = async (
   database: TupaiaDatabase,
   sessionId: string,
-  direction: SyncSessionDirectionValues,
+  direction?: SyncSessionDirectionValues,
   recordType?: PublicSchemaRecordName,
+  additionalWhere?: string,
+  parameters?: Knex.ValueDict,
 ): Promise<number> => {
   const tableName = getSnapshotTableName(sessionId);
 
   const [{ total }] = await database.executeSql<[{ total?: number }]>(
     `
       SELECT count(*)::int AS total FROM ${tableName}
-      WHERE direction = :direction
-      ${recordType ? 'AND record_type = :recordType' : ''};
+      WHERE true
+      ${direction ? 'AND direction = :direction' : ''}
+      ${recordType ? 'AND record_type = :recordType' : ''}
+      ${additionalWhere ? `AND ${additionalWhere}` : ''}
     `,
     {
       recordType,
       direction,
+      ...parameters,
     },
   );
   return total || 0;
