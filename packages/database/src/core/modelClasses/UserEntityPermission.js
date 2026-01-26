@@ -1,9 +1,7 @@
 import { SyncDirections } from '@tupaia/constants';
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { buildSyncLookupSelect } from '../sync';
 
 export class UserEntityPermissionRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ENTITY_PERMISSION;

@@ -1,6 +1,5 @@
-import { isNotNullish } from '@tupaia/tsutils';
 import { SyncDirections } from '@tupaia/constants';
-
+import { isNotNullish } from '@tupaia/tsutils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';

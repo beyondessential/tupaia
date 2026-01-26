@@ -56,16 +56,14 @@
 
 import { AccessPolicy, hasBESAdminAccess } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
-import { reduceToDictionary } from '@tupaia/utils';
 import { ensure } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
-
-import { MaterializedViewLogDatabaseModel } from '../../analytics';
+import { reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
 import { DatabaseRecord } from '../../DatabaseRecord';
-import { RECORDS } from '../../records';
 import { SqlQuery } from '../../SqlQuery';
-import { buildSyncLookupSelect } from '../../sync';
+import { MaterializedViewLogDatabaseModel } from '../../analytics';
+import { RECORDS } from '../../records';
 import { OptionRecord } from '../Option';
 import { findQuestionsInSurvey } from './findQuestionsInSurvey';
 

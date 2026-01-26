@@ -1,9 +1,8 @@
 import { SyncDirections } from '@tupaia/constants';
-
+import { JOIN_TYPES } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { JOIN_TYPES } from '../BaseDatabase';
 
 const MAP_OVERLAY = 'mapOverlay';
 const MAP_OVERLAY_GROUP = 'mapOverlayGroup';

@@ -2,6 +2,7 @@
  * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('@tupaia/types').Project} Project
  */
 
 import { SyncDirections } from '@tupaia/constants';

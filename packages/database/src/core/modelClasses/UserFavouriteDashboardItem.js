@@ -1,5 +1,4 @@
 import { SyncDirections } from '@tupaia/constants';
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';

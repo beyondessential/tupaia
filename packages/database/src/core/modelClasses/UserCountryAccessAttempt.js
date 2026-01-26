@@ -1,9 +1,8 @@
 import { SyncDirections } from '@tupaia/constants';
-
+import { JOIN_TYPES } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { JOIN_TYPES } from '../BaseDatabase';
 
 export class UserCountryAccessAttemptRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_COUNTRY_ACCESS_ATTEMPT;
