@@ -2,7 +2,7 @@ import { UseQueryOptions } from '@tanstack/react-query';
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { DbFilter } from '@tupaia/tsmodels';
-import { camelcaseKeys, ensure } from '@tupaia/tsutils';
+import { camelcaseKeys } from '@tupaia/tsutils';
 import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
 import { RequestParameters, get, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
@@ -168,8 +168,9 @@ async function constructDbFilter({
     return await models.survey.createRecordsPermissionFilter(accessPolicy, dbFilter);
   }
 
-  const country = ensure(
-    await models.country.findOne({ code: countryCode }, { columns: ['id'] }),
+  const country = await models.country.findOneOrThrow(
+    { code: countryCode },
+    { columns: ['id'] },
     `Cannot find surveys for ${countryCode}; country not found`,
   );
   return await models.survey.getPermissionsViaParentFilter(accessPolicy, dbFilter, country.id);

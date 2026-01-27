@@ -3,7 +3,6 @@ import { Request } from 'express';
 import sortBy from 'lodash.sortby';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { ensure } from '@tupaia/tsutils';
 import { DatatrakWebSurveyRequest } from '@tupaia/types';
 
 type SingleSurveyResponse = DatatrakWebSurveyRequest.ResBody;
@@ -30,8 +29,9 @@ export class SurveysRoute extends Route<SurveysRequest> {
 
     const queryUrl = await (async () => {
       if (!countryCode) return 'surveys';
-      const country = ensure(
-        await models.country.findOne({ code: countryCode }, { columns: ['id'] }),
+      const country = await models.country.findOneOrThrow(
+        { code: countryCode },
+        { columns: ['id'] },
         `Cannot find surveys for ${countryCode}; country not found`,
       );
       return `countries/${country.id}/surveys`;
