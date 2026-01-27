@@ -27,7 +27,7 @@
     "ajv-formats": "v3.0.0-rc.0",
     "better-ajv-errors": "^1.2.0",
     "camelcase-keys": "^6.2.2",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.44.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.45",
     "yup": "^0.32.9"

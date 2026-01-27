@@ -45,7 +45,7 @@
     "axios": "^1.12.2",
     "content-disposition-header": "^0.6.0",
     "date-fns": "^2.29.2",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.44.0",
     "file-saver": "^1.3.3",
     "jsoneditor": "^10.0.1",
     "moment": "^2.24.0",

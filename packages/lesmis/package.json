@@ -39,7 +39,7 @@
     "camelcase": "^6.2.0",
     "dom-to-image": "^2.6.0",
     "downloadjs": "^1.4.7",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.44.0",
     "leaflet": "^1.7.1",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",

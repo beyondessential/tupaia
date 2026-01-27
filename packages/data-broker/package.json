@@ -35,7 +35,7 @@
     "@tupaia/weather-api": "workspace:*",
     "case": "^1.6.3",
     "date-fns": "^2.30.0",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.44.0",
     "moment": "^2.24.0"
   },
   "devDependencies": {

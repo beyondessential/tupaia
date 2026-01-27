@@ -36,7 +36,7 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.44.0",
     "express": "^4.21.2",
     "moment-timezone": "^0.5.45",
     "semver-compare": "^1.0.0",

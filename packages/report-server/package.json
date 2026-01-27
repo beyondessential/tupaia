@@ -42,7 +42,7 @@
     "@tupaia/utils": "workspace:*",
     "alasql": "^4.2.3",
     "date-fns": "^2.29.3",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.44.0",
     "express": "^4.21.2",
     "mathjs": "^11.11.0",
     "moment": "^2.24.0",
