@@ -1,13 +1,12 @@
-import { UseQueryOptions } from '@tanstack/react-query';
+import type { UseQueryOptions } from '@tanstack/react-query';
 
 import type { AccessPolicy } from '@tupaia/access-policy';
 import { assertAnyPermissions, assertBESAdminAccess } from '@tupaia/access-policy';
-import { ProjectRecord } from '@tupaia/database';
 import { camelcaseKeys, ensure } from '@tupaia/tsutils';
-import { Country, DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
+import type { Country, DatatrakWebSurveyRequest, Project, Survey } from '@tupaia/types';
 import { get, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
-import { ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
+import type { ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
 import { getSurveyCountryCodes, getSurveyCountryNames } from './util';
 
 interface SurveyQueryFunctionContext extends ContextualQueryFunctionContext {
@@ -24,14 +23,14 @@ const surveyQueryFunctions = {
       });
 
       const surveyChecker = async (accessPolicy: AccessPolicy) =>
-        await models.survey.assertCanRead(accessPolicy, surveyRecord.id);
+        await transactingModels.survey.assertCanRead(accessPolicy, surveyRecord.id);
       const permissionChecker = assertAnyPermissions([assertBESAdminAccess, surveyChecker]);
       await permissionChecker(accessPolicy);
 
       const survey: Survey & {
         countryCodes?: Country['code'][];
         countryNames?: Country['name'][];
-        project?: ProjectRecord;
+        project?: Project;
         screens?: unknown; // TODO
       } = (await surveyRecord.getData()) as Survey;
 
@@ -39,7 +38,7 @@ const surveyQueryFunctions = {
         getSurveyCountryNames(transactingModels, [survey.id]),
         getSurveyCountryCodes(transactingModels, [survey.id]),
         surveyRecord.getPaginatedQuestions(),
-        surveyRecord.getProject(),
+        (await surveyRecord.getProject()).getData() as Promise<Project>,
       ]);
       survey.countryNames = countryNames[survey.id];
       survey.countryCodes = countryCodes[survey.id];
