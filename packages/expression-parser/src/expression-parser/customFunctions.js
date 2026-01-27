@@ -1,4 +1,4 @@
-import { startCase } from 'es-toolkit/compat';
+import startCase from 'lodash.startcase';
 import * as fns from 'date-fns';
 
 // We use the `'undefined'` string to indicate a missing value in cases where the
