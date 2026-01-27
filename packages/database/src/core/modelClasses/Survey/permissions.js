@@ -79,7 +79,7 @@ export async function createSurveyPermissionsViaParentFilter(
     if (hasBESAdminAccess(accessPolicy)) {
       // Even for BES Admin, we need to filter by the country
       return {
-        sql: '(ARRAY[?] <@ survey.country_ids)',
+        sql: '(? = ANY (survey.country_ids))',
         parameters: countryId,
       };
     }
@@ -98,13 +98,13 @@ export async function createSurveyPermissionsViaParentFilter(
     }
 
     // Choice of survey model is arbitrary; just a way to get to database
-    const pgIdsBinding = models.survey.database.connection.raw(
+    const pgIds = models.survey.database.connection.raw(
       SqlQuery.record(permissionGroupsForCountry),
       permissionGroupsForCountry,
     );
     return {
-      sql: '(ARRAY[?] <@ survey.country_ids AND survey.permission_group_id IN ?)',
-      parameters: [countryId, pgIdsBinding],
+      sql: '(? = ANY (survey.country_ids) AND survey.permission_group_id IN ?)',
+      parameters: [countryId, pgIds],
     };
   }
 

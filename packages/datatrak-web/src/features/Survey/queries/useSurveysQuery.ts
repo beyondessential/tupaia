@@ -168,10 +168,6 @@ async function constructDbFilter({
     return await models.survey.createRecordsPermissionFilter(accessPolicy, dbFilter);
   }
 
-  dbFilter[QueryConjunctions.RAW] = {
-    sql: '(SELECT id FROM country WHERE code = ?) = ANY (country_ids)',
-    parameters: [countryCode],
-  };
   const country = ensure(
     await models.country.findOne({ code: countryCode }, { columns: ['id'] }),
     `Cannot find surveys for ${countryCode}; country not found`,
