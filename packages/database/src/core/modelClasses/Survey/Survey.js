@@ -55,7 +55,7 @@
  *} AggregatedQuestions
  */
 
-import { AccessPolicy, hasBESAdminAccess } from '@tupaia/access-policy';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
@@ -67,7 +67,10 @@ import { MaterializedViewLogDatabaseModel } from '../../analytics';
 import { RECORDS } from '../../records';
 import { OptionRecord } from '../Option';
 import { findQuestionsInSurvey } from './findQuestionsInSurvey';
-import { createSurveyPermissionsViaParentFilter } from './permissions';
+import {
+  createSurveyPermissionsFilter,
+  createSurveyPermissionsViaParentFilter,
+} from './permissions';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
@@ -263,11 +266,13 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
    * @throws {PermissionsError}
    */
   async assertCanRead(accessPolicy, surveyId) {
-    const survey = ensure(
-      // Arbitrary column; just need SurveyRecord instance
-      await this.findById(surveyId, { columns: ['id'] }),
+    /** @type {SurveyRecord} */
+    const survey = await this.findByIdOrThrow(
+      surveyId,
+      { columns: ['country_ids', 'permission_group_id'] },
       `No survey exists with ID ${surveyId}`,
     );
+
     const [permissionGroup, countryCodes] = await Promise.all([
       survey.getPermissionGroup(),
       survey.getCountryCodes(),
@@ -468,27 +473,8 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
    * @param {AccessPolicy} accessPolicy
    * @param {*} criteria
    */
-  async createRecordsPermissionFilter(accessPolicy, criteria = {}) {
-    if (hasBESAdminAccess(accessPolicy)) {
-      return criteria;
-    }
-    const dbConditions = { ...criteria };
-
-    const countryIdsByPermissionGroupId =
-      await this.otherModels.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
-
-    // Using AND instead of RAW to not override the existing RAW criteria
-    dbConditions[QUERY_CONJUNCTIONS.AND] = {
-      [QUERY_CONJUNCTIONS.RAW]: {
-        sql: `(
-          survey.country_ids && ARRAY(
-            SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-          )
-        )`,
-        parameters: JSON.stringify(countryIdsByPermissionGroupId),
-      },
-    };
-    return dbConditions;
+  async createRecordsPermissionFilter(accessPolicy, criteria) {
+    return await createSurveyPermissionsFilter(this.otherModels, accessPolicy, criteria);
   }
 
   /**

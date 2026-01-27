@@ -128,7 +128,7 @@ export class GETSurveys extends GETHandler {
   }
 
   async getPermissionsViaParentFilter(criteria, options) {
-    const dbConditions = await this.models.survey.createPermissionsViaParentFilter(
+    const dbConditions = await this.models.survey.getPermissionsViaParentFilter(
       this.accessPolicy,
       criteria,
       this.parentRecordId,

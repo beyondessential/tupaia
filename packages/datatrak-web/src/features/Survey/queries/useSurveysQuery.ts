@@ -2,7 +2,7 @@ import { UseQueryOptions } from '@tanstack/react-query';
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { DbFilter, QueryConjunctions } from '@tupaia/tsmodels';
-import { camelcaseKeys } from '@tupaia/tsutils';
+import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
 import { RequestParameters, get, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
@@ -149,25 +149,32 @@ async function constructDbFilter({
   accessPolicy: AccessPolicy;
   projectId?: Project['id'];
   searchTerm?: string;
-  countryCode?: Entity['code'];
+  countryCode?: Country['code'];
 }): Promise<DbFilter<Survey>> {
   const dbFilter: DbFilter<Survey> = {};
 
   if (projectId) {
     dbFilter.project_id = projectId;
   }
+
   if (searchTerm) {
     dbFilter.name = {
       comparator: 'ilike',
       comparisonValue: `%${searchTerm}%`,
     };
   }
-  if (countryCode) {
-    dbFilter[QueryConjunctions.RAW] = {
-      sql: '(SELECT id FROM country WHERE code = ?) = ANY (country_ids)',
-      parameters: [countryCode],
-    };
+
+  if (!countryCode) {
+    return await models.survey.createRecordsPermissionFilter(accessPolicy, dbFilter);
   }
 
-  return await models.survey.createRecordsPermissionFilter(accessPolicy, dbFilter);
+  dbFilter[QueryConjunctions.RAW] = {
+    sql: '(SELECT id FROM country WHERE code = ?) = ANY (country_ids)',
+    parameters: [countryCode],
+  };
+  const country = ensure(
+    await models.country.findOne({ code: countryCode }, { columns: ['id'] }),
+    `Cannot find surveys for ${countryCode}; country not found`,
+  );
+  return await models.survey.getPermissionsViaParentFilter(accessPolicy, dbFilter, country.id);
 }

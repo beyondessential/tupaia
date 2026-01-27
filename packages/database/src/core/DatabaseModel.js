@@ -1,5 +1,7 @@
 /**
  * @typedef {import('@tupaia/constants').SyncDirection} SyncDirection
+ * @typedef {import('@tupaia/tsutils').UnexpectedNullishValueError} UnexpectedNullishValueError
+ * @typedef {import('./DatabaseRecord').DatabaseRecord} DatabaseRecord
  * @typedef {import('./ModelRegistry').ModelRegistry} ModelRegistry
  * @typedef {import('./constants').DatabaseSchemaName} DatabaseSchemaName
  * @typedef {import('./records').PublicSchemaRecordName} PublicSchemaRecordName
@@ -7,6 +9,7 @@
 
 import { uniq } from 'es-toolkit';
 
+import { ensure } from '@tupaia/tsutils';
 import { DatabaseError, NotImplementedError, reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from './BaseDatabase';
 import { SCHEMA_NAMES } from './constants';
@@ -240,6 +243,10 @@ export class DatabaseModel {
     return await this.database.exists(this.databaseRecord, ...args);
   }
 
+  /**
+   * @param {string} id
+   * @param {*} [customQueryOptions]
+   */
   async findById(id, customQueryOptions = {}) {
     if (!id) {
       throw new Error(`Cannot search for ${this.databaseRecord} by id without providing an id`);
@@ -248,6 +255,20 @@ export class DatabaseModel {
     const result = await this.findOne(this.getIdClause(id), queryOptions);
     if (!result) return null;
     return this.generateInstance(result);
+  }
+
+  /**
+   * @param {string} id
+   * @param {*} [customQueryOptions]
+   * @param {string} errorMessage
+   * @throws {UnexpectedNullishValueError}
+   */
+  async findByIdOrThrow(
+    id,
+    customQueryOptions = {},
+    errorMessage = `No ${this.databaseRecord} found with ID ${id}`,
+  ) {
+    return ensure(await this.findById(id, customQueryOptions), errorMessage);
   }
 
   async findManyByColumn(column, values, additionalConditions = {}, customQueryOptions = {}) {
