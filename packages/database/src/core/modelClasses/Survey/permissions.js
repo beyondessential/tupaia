@@ -36,7 +36,7 @@ function attachRawClause(existingCriteria, rawClause) {
  * @param {AccessPolicy} accessPolicy
  * @param {*} criteria
  * @returns {*} A shallow copy of `criteria`, augmented with an additional clause to filter by the
- * permission groups `accessPolicy` permis access to in the country specified by `countryId`.
+ * permission groups `accessPolicy` permits access to in the country specified by `countryId`.
  */
 export async function createSurveyPermissionsFilter(models, accessPolicy, criteria = {}) {
   if (hasBESAdminAccess(accessPolicy)) return criteria;
