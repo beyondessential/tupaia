@@ -15,6 +15,10 @@ import { SqlQuery } from '../../SqlQuery';
 
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 
+/**
+ * @param {Record<string, unknown>} existingCriteria
+ * @param {RawClause} rawClause
+ */
 function attachRawClause(existingCriteria, rawClause) {
   if (existingCriteria[RAW] && existingCriteria[AND]) {
     // Guard to avoid having to recursively check for nested AND clauses
