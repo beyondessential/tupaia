@@ -267,11 +267,9 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
    */
   async assertCanRead(accessPolicy, surveyId) {
     /** @type {SurveyRecord} */
-    const survey = await this.findByIdOrThrow(
-      surveyId,
-      { columns: ['country_ids', 'permission_group_id'] },
-      `No survey exists with ID ${surveyId}`,
-    );
+    const survey = await this.findByIdOrThrow(surveyId, {
+      columns: ['country_ids', 'permission_group_id'],
+    });
 
     const [permissionGroup, countryCodes] = await Promise.all([
       survey.getPermissionGroup(),
