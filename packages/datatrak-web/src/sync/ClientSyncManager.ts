@@ -219,8 +219,27 @@ export class ClientSyncManager {
 
       const { pulledChangesCount } = await this.runSync(urgent);
       if (pulledChangesCount) {
+        console.group('🔄 [ClientSyncManager] Post-sync query invalidation');
+        console.log('Pulled changes count:', pulledChangesCount);
+        console.log('Models state before invalidation:', {
+          hasModels: !!this.models,
+          hasDatabase: !!this.models?.database,
+          databaseType: this.models?.database?.constructor?.name,
+          hasConnection: !!this.models?.database?.connection,
+          isSingleton: this.models?.database?.isSingleton,
+        });
+        console.log('Project model state:', {
+          hasProjectModel: !!this.models?.project,
+          projectModelDatabase: !!this.models?.project?.database,
+          projectModelDatabaseType: this.models?.project?.database?.constructor?.name,
+        });
+        console.log('Invalidating all queries...');
+        console.groupEnd();
+        
         await queryClient.invalidateQueries();
         this.models.clearCache();
+        
+        console.log('🔄 [ClientSyncManager] Query invalidation complete');
       }
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
