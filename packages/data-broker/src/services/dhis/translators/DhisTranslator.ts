@@ -1,4 +1,5 @@
-import keyBy from 'lodash.keyby';
+import { uniq } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { DhisApi, translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
 import { mapKeys, reduceToDictionary } from '@tupaia/utils';
@@ -72,7 +73,7 @@ export class DhisTranslator {
     api: DhisApi,
     dataSources: DataElement[],
   ): Promise<Record<string, DataElementDescriptor>> => {
-    const dataElementCodes = [...new Set(dataSources.map(d => d.dataElementCode))];
+    const dataElementCodes = uniq(dataSources.map(d => d.dataElementCode));
     const dataElements: DataElementDescriptor[] = await api.fetchDataElements(dataElementCodes, {
       includeOptions: true,
       additionalFields: ['valueType'],
@@ -175,9 +176,8 @@ export class DhisTranslator {
   };
 
   public async translateInboundEvents(events: Event[], dataGroupCode: string): Promise<Event[]> {
-    const dataElementsInGroup = await this.models.dataGroup.getDataElementsInDataGroup(
-      dataGroupCode,
-    );
+    const dataElementsInGroup =
+      await this.models.dataGroup.getDataElementsInDataGroup(dataGroupCode);
     const dataElementToSourceCode = reduceToDictionary(
       dataElementsInGroup,
       'dataElementCode',

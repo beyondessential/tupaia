@@ -37,9 +37,9 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "camelcase-keys": "^7.0.0",
+    "es-toolkit": "^1.44.0",
     "express": "^4.21.2",
     "langchain": "^0.3.27",
-    "lodash": "^4.17.4",
     "multer": "^2.0.2",
     "winston": "^3.17.0",
     "xlsx": "^0.18.5"

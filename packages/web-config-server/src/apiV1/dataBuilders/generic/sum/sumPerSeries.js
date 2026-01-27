@@ -1,5 +1,4 @@
-import flattenDeep from 'lodash.flattendeep';
-import sumBy from 'lodash.sumby';
+import { flattenDeep, sumBy } from 'es-toolkit/compat';
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 

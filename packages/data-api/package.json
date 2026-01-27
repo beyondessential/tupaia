@@ -31,8 +31,7 @@
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "@types/lodash.groupby": "^4.6.0",
-    "lodash.groupby": "^4.6.0",
+    "es-toolkit": "^1.44.0",
     "moment": "^2.24.0"
   },
   "devDependencies": {

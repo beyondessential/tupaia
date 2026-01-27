@@ -1,25 +1,24 @@
-import flatten from 'lodash.flatten';
-import keyBy from 'lodash.keyby';
+import { uniq } from 'es-toolkit';
+import { flatten, keyBy } from 'es-toolkit/compat';
 
-import { reduceToDictionary, reduceToSet, getSortByKey } from '@tupaia/utils';
-
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { getSortByKey, reduceToDictionary, reduceToSet } from '@tupaia/utils';
 
 import { TableConfig } from './TableConfig';
 import { TotalCalculator } from './TotalCalculator';
+import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import {
   buildBaseRowsForOrgUnit,
-  getValuesByCell,
+  buildCategoryData,
   buildColumnSummary,
   buildRowSummary,
-  buildCategoryData,
+  getValuesByCell,
 } from './helpers';
 
 import {
   ORG_UNIT_COL_KEY,
-  ORG_UNIT_WITH_TYPE_COL_KEY,
   ORG_UNIT_COLUMNS_KEYS_SET,
+  ORG_UNIT_WITH_TYPE_COL_KEY,
 } from '/apiV1/dataBuilders/constants';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
@@ -105,9 +104,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   buildDataElementCodes() {
-    return [...new Set(flatten(this.config.cells))].filter(
-      cell => !TotalCalculator.isTotalKey(cell),
-    );
+    return uniq(flatten(this.config.cells)).filter(cell => !TotalCalculator.isTotalKey(cell));
   }
 
   buildValuesByCell() {
@@ -149,9 +146,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
             rows
               .filter(row => rowsWithData.includes(row.code))
               .forEach(row => {
-                this.rowsToDescriptions[row.name] = this.rowDescriptionResults[
-                  row.descriptionDataElement
-                ];
+                this.rowsToDescriptions[row.name] =
+                  this.rowDescriptionResults[row.descriptionDataElement];
               });
           }
 
@@ -200,9 +196,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
         this.tableConfig.rows
           .filter(row => rowsWithData.includes(row.code))
           .forEach(row => {
-            this.rowsToDescriptions[row.name] = this.rowDescriptionResults[
-              row.descriptionDataElement
-            ];
+            this.rowsToDescriptions[row.name] =
+              this.rowDescriptionResults[row.descriptionDataElement];
           });
       }
       this.tableConfig.rows = this.tableConfig.rows.filter(row => rowsWithData.includes(row.code));

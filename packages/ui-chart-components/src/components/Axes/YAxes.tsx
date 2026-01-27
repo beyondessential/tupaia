@@ -1,4 +1,6 @@
+import { uniq } from 'es-toolkit';
 import React from 'react';
+
 import { VALUE_TYPES, formatDataValueByType } from '@tupaia/utils';
 import { CartesianChartConfig, ChartReport, ValueType } from '@tupaia/types';
 import { YAxis as YAxisComponent, YAxisProps } from 'recharts';
@@ -118,7 +120,7 @@ const getAxisWidth = (data: ChartReport['data'], dataKeys: string[], valueType?:
 };
 
 const getDefaultNumberFormat = (data: ChartReport['data'], dataKeys: string[]) => {
-  const uniqueValues = [...new Set(flattenValues(data, dataKeys))];
+  const uniqueValues = uniq(flattenValues(data, dataKeys));
   const maxValue = Math.max(...uniqueValues);
   // if the maxValue is greater than 4, there will already be multiple ticks visible that are whole numbers, so we can use the default format of 0,0, as used in utils
   if (maxValue >= 4) return '0,0';

@@ -1,7 +1,7 @@
 'use strict';
 
 import assert from 'assert';
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 
 import { arrayToDbString, insertObject } from '../utilities';
 

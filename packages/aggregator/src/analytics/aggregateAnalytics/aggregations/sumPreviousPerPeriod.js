@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 
 import { convertToPeriod, EARLIEST_DATA_DATE_STRING, getPeriodsInRange } from '@tupaia/utils';
 import { getContinuousPeriodsForAnalytics } from './utils';

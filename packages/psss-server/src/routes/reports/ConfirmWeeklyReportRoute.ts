@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 import { RespondingError, dateStringToPeriod } from '@tupaia/utils';
 import { Request } from 'express';
 import { Route } from '../Route';

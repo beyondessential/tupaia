@@ -1,6 +1,6 @@
 import { getCategoryPresentationOption } from '/apiV1/dataBuilders/helpers';
 import { CONDITION, AVERAGE } from '/apiV1/dataBuilders/constants';
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 
 const CATEGORY_AGGREGATION_TYPES = [AVERAGE, CONDITION];
 

@@ -1,4 +1,6 @@
+import { uniq } from 'es-toolkit';
 import winston from 'winston';
+
 import { aggregateAnalytics } from '@tupaia/aggregator';
 import { utcMoment } from '@tupaia/tsutils';
 import { CustomError, getSortByKey, reduceToDictionary } from '@tupaia/utils';
@@ -85,11 +87,11 @@ export class DhisApi {
   async getRecords({ type, ids, codes, filter, fields }) {
     const query = { fields, filter: filter || { comparator: 'in' } };
     if (codes) {
-      const uniqueCodes = [...new Set(codes)];
+      const uniqueCodes = uniq(codes);
       query.filter.code = `[${uniqueCodes.join(',')}]`;
     }
     if (ids) {
-      const uniqueIds = [...new Set(ids)];
+      const uniqueIds = uniq(ids);
       query.filter.id = `[${uniqueIds.join(',')}]`;
     }
 
@@ -425,10 +427,11 @@ export class DhisApi {
 
     await Promise.all(
       queries.map(async query => {
-        const { headers: newHeaders, rows: newRows, metaData: newMetadata } = await this.fetch(
-          endpoint,
-          query,
-        );
+        const {
+          headers: newHeaders,
+          rows: newRows,
+          metaData: newMetadata,
+        } = await this.fetch(endpoint, query);
 
         // Only the final batch's headers and metadata will be used in the result
         headers = newHeaders;
@@ -515,9 +518,7 @@ export class DhisApi {
       fields,
     });
     if (includeOptions) {
-      const optionSetIds = [
-        ...new Set(dataElements.filter(d => !!d.optionSet).map(d => d.optionSet.id)),
-      ];
+      const optionSetIds = uniq(dataElements.filter(d => !!d.optionSet).map(d => d.optionSet.id));
       if (optionSetIds.length === 0) return dataElements;
       const optionSets = await this.getRecords({
         type: OPTION_SET,

@@ -1,4 +1,6 @@
-import { keyBy, groupBy } from 'lodash';
+import { uniq } from 'es-toolkit';
+import { keyBy, groupBy } from 'es-toolkit/compat';
+
 import { JOIN_TYPES, QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import {
@@ -224,9 +226,7 @@ export const getPermittedMapOverlayGroupIds = async (accessPolicy, models) => {
     permittedMapOverlayGroupRelations,
     rootMapOverlayGroup.id,
   );
-  return [
-    ...new Set([...permittedMapOverlayGroupIds, ...mapOverlayGroupsWithNoRelation.map(m => m.id)]),
-  ];
+  return uniq([...permittedMapOverlayGroupIds, ...mapOverlayGroupsWithNoRelation.map(m => m.id)]);
 };
 
 export const createMapOverlayGroupDBFilter = async (accessPolicy, models, criteria) => {

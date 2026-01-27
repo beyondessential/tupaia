@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 
 import { buildAndInsertSurveys } from './buildAndInsertSurveys';
 import { findOrCreateDummyRecord, upsertDummyRecord } from './upsertDummyRecord';

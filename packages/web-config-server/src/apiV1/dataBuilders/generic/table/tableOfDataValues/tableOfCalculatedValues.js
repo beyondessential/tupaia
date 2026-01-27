@@ -1,11 +1,10 @@
-import flatten from 'lodash.flatten';
-import flattenDeep from 'lodash.flattendeep';
+import { flatten, flattenDeep } from 'es-toolkit/compat';
 
 import { getCalculatedValuesByCell } from './helpers/getValuesByCell';
-import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders/helpers';
-import { ORG_UNIT_COLUMNS_KEYS_SET, NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
-
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
+import { NO_DATA_AVAILABLE, ORG_UNIT_COLUMNS_KEYS_SET } from '/apiV1/dataBuilders/constants';
+import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders/helpers';
+import { uniq } from 'es-toolkit';
 
 class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
@@ -16,7 +15,7 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
         ),
       ),
     );
-    return [...new Set(dataElementCodes)];
+    return uniq(dataElementCodes);
   }
 
   getCellKey(rowIndex, columnIndex) {

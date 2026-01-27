@@ -1,7 +1,9 @@
-import { flattenDeep, groupBy, keyBy } from 'lodash';
+import { uniq } from 'es-toolkit';
+import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
 
 import { ensure, isNullish } from '@tupaia/tsutils';
-import { getUniqueEntries, reduceToDictionary, ValidationError } from '@tupaia/utils';
+import { reduceToDictionary, ValidationError } from '@tupaia/utils';
+
 import winston from '../../../log';
 
 export const assertCanImportSurveyResponses = async (
@@ -36,7 +38,7 @@ export const assertCanImportSurveyResponses = async (
       }
 
       const responseEntities = allEntities.filter(e => entityCodes.includes(e.code));
-      const surveyResponseCountryCodes = [...new Set(responseEntities.map(e => e.country_code))];
+      const surveyResponseCountryCodes = uniq(responseEntities.map(e => e.country_code));
       const surveyResponseCountries = await transactingModels.country.findManyByColumn(
         'code',
         surveyResponseCountryCodes,
@@ -154,7 +156,7 @@ export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surve
   const entitiesBySurveyCode = {};
 
   // Pre-fetch unique surveys
-  const surveyIds = getUniqueEntries(surveyResponses.map(sr => sr.survey_id));
+  const surveyIds = uniq(surveyResponses.map(sr => sr.survey_id));
 
   await models.wrapInReadOnlyTransaction(async transactingModels => {
     const surveys = await transactingModels.survey.findManyById(surveyIds);

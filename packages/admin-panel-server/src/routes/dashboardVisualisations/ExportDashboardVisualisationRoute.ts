@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { keyBy } from 'lodash';
+import { keyBy } from 'es-toolkit/compat';
 
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
@@ -35,9 +35,8 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
     const fileBaseName = visualisation.code || 'new_dashboard_visualisation';
 
     const { id, latestDataParameters, ...visualisationWithoutIdAndLatestParams } = visualisation;
-    const { dashboards, dashboardRelations } = await this.buildDashboardsAndRelations(
-      dashboardItem,
-    );
+    const { dashboards, dashboardRelations } =
+      await this.buildDashboardsAndRelations(dashboardItem);
 
     return {
       contents: {
