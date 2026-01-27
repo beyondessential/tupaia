@@ -47,7 +47,7 @@
     "compare-versions": "^6.1.0",
     "cors": "^2.8.5",
     "countries-and-timezones": "^3.6.0",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.44.0",
     "express": "^4.21.2",
     "format-link-header": "^2.1.0",
     "moment": "^2.24.0",

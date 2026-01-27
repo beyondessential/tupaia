@@ -28,7 +28,7 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.44.0",
     "moment": "^2.24.0",
     "react": "^16.14.0",
     "react-dom": "^16.13.1",

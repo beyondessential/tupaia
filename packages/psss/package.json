@@ -34,7 +34,7 @@
     "@tupaia/utils": "workspace:*",
     "axios": "^1.12.2",
     "date-fns": "^2.16.1",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.44.0",
     "faker": "^4.1.0",
     "history": "^5.0.0",
     "msw": "^0.26.0",

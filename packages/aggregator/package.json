@@ -24,7 +24,7 @@
   "dependencies": {
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "es-toolkit": "^1.39.8"
+    "es-toolkit": "^1.44.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.27.5",

@@ -28,7 +28,7 @@
     "countrynames": "^0.1.1",
     "date-fns": "^2.29.2",
     "date-fns-tz": "^2.0.1",
-    "es-toolkit": "^1.39.8",
+    "es-toolkit": "^1.44.0",
     "fast-memoize": "^2.5.2",
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.24.0",
