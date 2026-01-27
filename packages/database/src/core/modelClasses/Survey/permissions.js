@@ -1,6 +1,8 @@
 /**
  * @typedef {import('knex').Knex} Knex
  * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
  * @typedef {import('../PermissionGroup').PermissionGroupModel} PermissionGroupModel
  * @typedef {{
@@ -43,6 +45,7 @@ function attachRawClause(existingCriteria, rawClause) {
 export async function createSurveyPermissionsFilter(models, accessPolicy, criteria = {}) {
   if (hasBESAdminAccess(accessPolicy)) return criteria;
 
+  /** @type {Promise<Record<PermissionGroup['id'], Country['id'][]>>} */
   const countryIdsByPermissionGroupId =
     await models.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
 
