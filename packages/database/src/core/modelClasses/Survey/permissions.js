@@ -18,7 +18,7 @@ import { SqlQuery } from '../../SqlQuery';
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 
 /**
- * @param {Record<string, unknown>} existingCriteria
+ * @param {*} existingCriteria
  * @param {RawClause} rawClause
  */
 function attachRawClause(existingCriteria, rawClause) {
