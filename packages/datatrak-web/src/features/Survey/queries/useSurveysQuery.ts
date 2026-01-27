@@ -1,7 +1,7 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { DbFilter, QueryConjunctions } from '@tupaia/tsmodels';
+import { DbFilter } from '@tupaia/tsmodels';
 import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
 import { RequestParameters, get, useDatabaseQuery } from '../../../api';
