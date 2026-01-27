@@ -34,8 +34,10 @@ const surveyQueryFunctions = {
         screens?: unknown; // TODO
       } = (await surveyRecord.getData()) as Survey;
 
-      const fetchProjectData = async () =>
-        (await surveyRecord.getProject()).getData() as Promise<Project>;
+      const fetchProjectData = async () => {
+        const projectRecord = await surveyRecord.getProject();
+        return (await projectRecord.getData()) as Project;
+      };
 
       const [countryNames, countryCodes, screens, project] = await Promise.all([
         getSurveyCountryNames(transactingModels, [survey.id]),
