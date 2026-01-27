@@ -300,6 +300,14 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
+  async findOneOrThrow(
+    dbConditions,
+    customQueryOptions = {},
+    message = `No ${this.databaseRecord} found matching ${JSON.stringify(dbConditions)}`,
+  ) {
+    return ensure(await this.findOne(dbConditions, customQueryOptions), message);
+  }
+
   /**
    * Finds all records matching query conditions
    * @param {*} dbConditions

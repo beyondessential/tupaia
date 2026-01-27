@@ -18,7 +18,7 @@ const surveyQueryFunctions = {
     await get(`surveys/${encodeURIComponent(ensure(surveyCode))}`),
   local: async ({ accessPolicy, models, surveyCode }: SurveyQueryFunctionContext) =>
     await models.wrapInReadOnlyTransaction(async transactingModels => {
-      const surveyRecord = await transactingModels.survey.findOne({
+      const surveyRecord = await transactingModels.survey.findOneOrThrow({
         code: ensure(surveyCode),
       });
 
