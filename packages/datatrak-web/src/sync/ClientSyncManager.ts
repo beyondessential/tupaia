@@ -501,7 +501,7 @@ export class ClientSyncManager {
         await saveChangesFromMemory(models, records, false, progressCallback);
       };
 
-      const batchSize = 10000;
+      const batchSize = 500;
       await withDeferredSyncSafeguards(transactingModels.database, () =>
         pullIncomingChanges(transactingModels, sessionId, batchSize, processStreamedDataFunction),
       );
@@ -536,7 +536,7 @@ export class ClientSyncManager {
       pullProgressCallback(records.length);
     };
 
-    const batchSize = 10000;
+    const batchSize = 500;
     await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
 
     this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');
