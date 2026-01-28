@@ -13,6 +13,10 @@ export const useIsLoggedIn = () => {
     
     try {
       if (models) {
+        const allSystemFacts = await models.localSystemFact.find({});
+        console.log('[useIsLoggedIn] All system facts', {
+          allSystemFacts,
+        });
         const currentUserId = await models.localSystemFact.get(SyncFact.CURRENT_USER_ID);
         console.log('[useIsLoggedIn] Got currentUserId', {
           hasCurrentUserId: !!currentUserId,
