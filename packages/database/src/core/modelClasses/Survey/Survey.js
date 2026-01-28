@@ -1,4 +1,5 @@
 /**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
  * @typedef {import('@tupaia/types').Question} Question
@@ -54,11 +55,11 @@
  *} AggregatedQuestions
  */
 
-import { AccessPolicy, hasBESAdminAccess } from '@tupaia/access-policy';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
-import { reduceToDictionary } from '@tupaia/utils';
+import { PermissionsError, reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
 import { DatabaseRecord } from '../../DatabaseRecord';
 import { SqlQuery } from '../../SqlQuery';
@@ -66,6 +67,10 @@ import { MaterializedViewLogDatabaseModel } from '../../analytics';
 import { RECORDS } from '../../records';
 import { OptionRecord } from '../Option';
 import { findQuestionsInSurvey } from './findQuestionsInSurvey';
+import {
+  createSurveyPermissionsFilter,
+  createSurveyPermissionsViaParentFilter,
+} from './permissions';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
@@ -254,6 +259,31 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return SurveyRecord;
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @param {Survey['id']} surveyId
+   * @returns {Promise<true>}
+   * @throws {PermissionsError}
+   */
+  async assertCanRead(accessPolicy, surveyId) {
+    /** @type {SurveyRecord} */
+    const survey = await this.findByIdOrThrow(surveyId, {
+      columns: ['country_ids', 'permission_group_id'],
+    });
+
+    const [permissionGroup, countryCodes] = await Promise.all([
+      survey.getPermissionGroup(),
+      survey.getCountryCodes(),
+    ]);
+
+    if (accessPolicy.allowsSome(countryCodes, permissionGroup.name)) return true;
+
+    throw new PermissionsError('Requires access to one of the countries the survey is in');
+  }
+
+  /**
+   * @param {AccessPolicy} accessPolicy
+   */
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
     const entries = Object.entries(countryIdsByPermissionGroup);
@@ -437,30 +467,26 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return null;
   }
 
-  async createRecordsPermissionFilter(accessPolicy, criteria = {}) {
-    if (hasBESAdminAccess(accessPolicy)) {
-      return criteria;
-    }
-    const dbConditions = { ...criteria };
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @param {*} criteria
+   */
+  async createRecordsPermissionFilter(accessPolicy, criteria) {
+    return await createSurveyPermissionsFilter(this.otherModels, accessPolicy, criteria);
+  }
 
-    const countryIdsByPermissionGroupId =
-      await this.otherModels.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
-
-    // Using AND instead of RAW to not override the existing RAW criteria
-    dbConditions[QUERY_CONJUNCTIONS.AND] = {
-      [QUERY_CONJUNCTIONS.RAW]: {
-        sql: `
-          (
-            survey.country_ids
-            &&
-            ARRAY(
-              SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-            )
-          )`,
-        parameters: JSON.stringify(countryIdsByPermissionGroupId),
-      },
-    };
-    return dbConditions;
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @param {*} criteria
+   * @param {Country['id']} countryId
+   */
+  async getPermissionsViaParentFilter(accessPolicy, criteria, countryId) {
+    return await createSurveyPermissionsViaParentFilter(
+      this.otherModels,
+      accessPolicy,
+      criteria,
+      countryId,
+    );
   }
 
   /**
