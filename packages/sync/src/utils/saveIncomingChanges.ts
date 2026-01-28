@@ -15,6 +15,7 @@ import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 
 // TODO: Move this to a config model RN-1668
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
+const SAVE_BATCH_SIZE = 100;
 const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
 const assertIsWithinTransaction = (database: BaseDatabase) => {
@@ -39,7 +40,7 @@ export const saveDeletesForModel = async (
     },
   );
   if (deletedRecords.length > 0) {
-    await saveDeletes(model, deletedRecords, 1000, progressCallback);
+    await saveDeletes(model, deletedRecords, SAVE_BATCH_SIZE, progressCallback);
   }
 };
 
@@ -79,7 +80,7 @@ export const saveChangesForModel = async (
     count: recordsForCreate.length,
   });
   if (recordsForCreate.length > 0) {
-    await saveCreates(model, recordsForCreate, 1000, progressCallback);
+    await saveCreates(model, recordsForCreate, SAVE_BATCH_SIZE, progressCallback);
   }
 
   winston.debug(
@@ -89,7 +90,7 @@ export const saveChangesForModel = async (
     },
   );
   if (recordsForUpdate.length > 0) {
-    await saveUpdates(model, recordsForUpdate, isCentralServer, 1000, progressCallback);
+    await saveUpdates(model, recordsForUpdate, isCentralServer, SAVE_BATCH_SIZE, progressCallback);
   }
 };
 
