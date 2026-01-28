@@ -228,11 +228,39 @@ export class ClientSyncManager {
           hasConnection: !!this.models?.database?.connection,
           isSingleton: this.models?.database?.isSingleton,
         });
+        
+        // Health check before invalidating queries
+        console.log('Running database health check...');
+        const healthResult = await this.database.healthCheck();
+        console.log('Database health check result:', healthResult);
+        
+        if (!healthResult.healthy) {
+          console.error('Database is unhealthy after sync! Error:', healthResult.error);
+          // Don't invalidate queries if database is unhealthy - might cause cascading failures
+          console.groupEnd();
+          throw new Error(`Database unhealthy after sync: ${healthResult.error}`);
+        }
+        
         console.log('Project model state:', {
           hasProjectModel: !!this.models?.project,
           projectModelDatabase: !!this.models?.project?.database,
           projectModelDatabaseType: this.models?.project?.database?.constructor?.name,
         });
+        
+        // Additional delay before invalidating queries to ensure PGlite is fully stable
+        console.log('Waiting additional 500ms before invalidating queries...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Re-check health after delay
+        const healthCheck2 = await this.database.healthCheck();
+        console.log('Second health check before invalidation:', healthCheck2);
+        
+        if (!healthCheck2.healthy) {
+          console.error('Database still unhealthy after delay!');
+          console.groupEnd();
+          throw new Error(`Database unhealthy before query invalidation: ${healthCheck2.error}`);
+        }
+        
         console.log('Invalidating all queries...');
         console.groupEnd();
         
@@ -534,6 +562,19 @@ export class ClientSyncManager {
         pullUntil.toString(),
       );
     });
+    
+    // After initial sync transaction commits, give PGlite time to flush to IndexedDB
+    // This is a workaround for potential race conditions where queries run before data is fully persisted
+    console.log('[ClientSyncManager] Initial sync transaction complete, waiting for PGlite to stabilize...');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Verify the database is healthy after the delay
+    const healthCheck = await this.database.healthCheck();
+    console.log('[ClientSyncManager] Post-initial-sync health check:', healthCheck);
+    
+    if (!healthCheck.healthy) {
+      throw new Error(`Database unhealthy after initial sync: ${healthCheck.error}`);
+    }
   }
 
   async pullIncrementalSync(sessionId: string, totalToPull: number, pullUntil: number) {

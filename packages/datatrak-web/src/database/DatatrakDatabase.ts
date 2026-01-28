@@ -41,4 +41,26 @@ export class DatatrakDatabase extends BaseDatabase {
       transactionConfig,
     );
   }
+
+  /**
+   * Health check to verify database connection is alive
+   */
+  async healthCheck(): Promise<{ healthy: boolean; error?: string }> {
+    try {
+      console.log('[DatatrakDatabase.healthCheck] Starting');
+      const result = await this.connection.raw('SELECT 1 as health');
+      console.log('[DatatrakDatabase.healthCheck] Result', {
+        result,
+        hasRows: !!result?.rows,
+        rowCount: result?.rows?.length,
+      });
+      return { healthy: true };
+    } catch (error: any) {
+      console.error('[DatatrakDatabase.healthCheck] Failed', {
+        error: error?.message,
+        errorStack: error?.stack,
+      });
+      return { healthy: false, error: error?.message };
+    }
+  }
 }
