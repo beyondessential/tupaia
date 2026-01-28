@@ -33,7 +33,7 @@ export class DatatrakDatabase extends BaseDatabase {
   }
 
   async wrapInTransaction<T = unknown>(
-    wrappedFunction: <T = unknown>(db: DatatrakDatabase) => Promise<T>,
+    wrappedFunction: (db: DatatrakDatabase) => Promise<T>,
     transactionConfig?: Knex.TransactionConfig,
   ): Promise<T> {
     console.log('[DatatrakDatabase.wrapInTransaction] Starting transaction', {
