@@ -10,12 +10,16 @@ export const useIsLoggedIn = () => {
       hasModels: !!models,
       timestamp: new Date().toISOString(),
     });
-    
+
     try {
       if (models) {
         const allSystemFacts = await models.localSystemFact.find({});
+        const allUsers = await models.user.find({});
+        const allProjects = await models.project.find({});
         console.log('[useIsLoggedIn] All system facts', {
           allSystemFacts,
+          allUsers,
+          allProjects
         });
         const currentUserId = await models.localSystemFact.get(SyncFact.CURRENT_USER_ID);
         console.log('[useIsLoggedIn] Got currentUserId', {
