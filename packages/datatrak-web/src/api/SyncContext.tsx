@@ -24,7 +24,7 @@ export const SyncProvider = ({ children }: { children: ReactNode }) => {
   // Debug logging
   console.log('[SyncProvider] State', {
     isLoggedIn,
-    isLoggedInError: isLoggedInError?.message,
+    isLoggedInError: (isLoggedInError as Error)?.message,
     isLoggedInStatus,
     hasModels: !!models,
     hasClientSyncManager: !!clientSyncManager,
