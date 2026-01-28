@@ -36,10 +36,36 @@ export class DatatrakDatabase extends BaseDatabase {
     wrappedFunction: <T = unknown>(db: DatatrakDatabase) => Promise<T>,
     transactionConfig?: Knex.TransactionConfig,
   ): Promise<T> {
-    return await this.connection.transaction<T>(
-      transaction => wrappedFunction(new DatatrakDatabase(transaction)),
-      transactionConfig,
-    );
+    console.log('[DatatrakDatabase.wrapInTransaction] Starting transaction', {
+      hasConnection: !!this.connection,
+      config: transactionConfig,
+    });
+    
+    try {
+      const result = await this.connection.transaction<T>(
+        async transaction => {
+          console.log('[DatatrakDatabase.wrapInTransaction] Transaction started', {
+            isTransaction: transaction.isTransaction,
+          });
+          
+          const transactingDb = new DatatrakDatabase(transaction);
+          const innerResult = await wrappedFunction(transactingDb);
+          
+          console.log('[DatatrakDatabase.wrapInTransaction] Inner function complete, transaction should auto-commit');
+          return innerResult;
+        },
+        transactionConfig,
+      );
+      
+      console.log('[DatatrakDatabase.wrapInTransaction] Transaction committed successfully');
+      return result;
+    } catch (error: any) {
+      console.error('[DatatrakDatabase.wrapInTransaction] Transaction failed/rolled back', {
+        error: error?.message,
+        errorStack: error?.stack,
+      });
+      throw error;
+    }
   }
 
   /**

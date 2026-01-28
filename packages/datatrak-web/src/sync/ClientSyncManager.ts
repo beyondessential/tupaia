@@ -320,6 +320,23 @@ export class ClientSyncManager {
       );
     }
 
+    // Debug: Log database state at the VERY START of sync
+    console.log('=== [ClientSyncManager.runSync] START ===');
+    try {
+      const factsAtStart = await this.models.localSystemFact.find({});
+      console.log('[ClientSyncManager.runSync] Local system facts at START:', {
+        count: factsAtStart.length,
+        facts: factsAtStart.map((f: any) => ({ key: f.key, value: f.value })),
+      });
+      
+      const projectsAtStart = await this.models.project.find({});
+      console.log('[ClientSyncManager.runSync] Projects at START:', {
+        count: projectsAtStart.length,
+      });
+    } catch (e: any) {
+      console.error('[ClientSyncManager.runSync] Error checking initial state:', e?.message);
+    }
+
     this.errorMessage = null;
     this.progressMessage = 'Requesting sync…';
     this.isRequestingSync = true;
@@ -372,7 +389,17 @@ export class ClientSyncManager {
 
     await this.pushChanges(sessionId, startedAtTick);
 
+    // Debug: Check state BEFORE pullChanges
+    console.log('[ClientSyncManager.runSync] State BEFORE pullChanges:');
+    const factsBeforePull = await this.models.localSystemFact.find({});
+    console.log('  Local system facts:', factsBeforePull.length);
+
     const pulledChangesCount = await this.pullChanges(sessionId, projectIds);
+
+    // Debug: Check state AFTER pullChanges  
+    console.log('[ClientSyncManager.runSync] State AFTER pullChanges:');
+    const factsAfterPull = await this.models.localSystemFact.find({});
+    console.log('  Local system facts:', factsAfterPull.length);
 
     await this.endSyncSession(sessionId);
 
@@ -557,16 +584,53 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return transactingModels.localSystemFact.set(
+      await transactingModels.localSystemFact.set(
         SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
         pullUntil.toString(),
       );
+      
+      // Debug: Check what's in the database INSIDE the transaction
+      console.log('[ClientSyncManager] Inside transaction - checking data...');
+      const factsInTransaction = await transactingModels.localSystemFact.find({});
+      console.log('[ClientSyncManager] Local system facts INSIDE transaction:', {
+        count: factsInTransaction.length,
+        facts: factsInTransaction.map((f: any) => ({ key: f.key, value: f.value })),
+      });
+      
+      const projectsInTransaction = await transactingModels.project.find({});
+      console.log('[ClientSyncManager] Projects INSIDE transaction:', {
+        count: projectsInTransaction.length,
+      });
+      
+      return factsInTransaction;
     });
     
     // After initial sync transaction commits, give PGlite time to flush to IndexedDB
     // This is a workaround for potential race conditions where queries run before data is fully persisted
     console.log('[ClientSyncManager] Initial sync transaction complete, waiting for PGlite to stabilize...');
+    
+    // Debug: Check what's in the database OUTSIDE the transaction (should be same as inside if committed)
+    console.log('[ClientSyncManager] Checking data OUTSIDE transaction (before delay)...');
+    const factsOutside = await this.models.localSystemFact.find({});
+    console.log('[ClientSyncManager] Local system facts OUTSIDE transaction:', {
+      count: factsOutside.length,
+      facts: factsOutside.map((f: any) => ({ key: f.key, value: f.value })),
+    });
+    
+    const projectsOutside = await this.models.project.find({});
+    console.log('[ClientSyncManager] Projects OUTSIDE transaction:', {
+      count: projectsOutside.length,
+    });
+    
     await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Check again after delay
+    console.log('[ClientSyncManager] Checking data OUTSIDE transaction (after delay)...');
+    const factsAfterDelay = await this.models.localSystemFact.find({});
+    console.log('[ClientSyncManager] Local system facts after delay:', {
+      count: factsAfterDelay.length,
+      facts: factsAfterDelay.map((f: any) => ({ key: f.key, value: f.value })),
+    });
     
     // Verify the database is healthy after the delay
     const healthCheck = await this.database.healthCheck();
