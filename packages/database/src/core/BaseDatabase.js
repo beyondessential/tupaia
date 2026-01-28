@@ -208,9 +208,23 @@ export class BaseDatabase {
    */
   query(...args) {
     if (!this.connection) {
+      console.log('[BaseDatabase.query] No connection, waiting...', {
+        isSingleton: this.isSingleton,
+        hasConnectionPromise: !!this.connectionPromise,
+      });
       // If not yet connected, wait until we are, then run the query
       return this.queryWhenConnected(...args);
     }
+    
+    // Check if connection is in a bad state
+    const client = this.connection?.client;
+    console.log('[BaseDatabase.query] Building query', {
+      hasConnection: !!this.connection,
+      hasClient: !!client,
+      clientDriver: client?.driverName || client?.config?.client,
+      recordType: args[0]?.recordType,
+    });
+    
     // We are already connected, query immediately
     return buildQuery(this.connection, ...args);
   }
@@ -324,9 +338,70 @@ export class BaseDatabase {
   }
 
   async count(recordType, where, options) {
-    // If just a simple query without options, use the more efficient knex count method
-    const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
-    return Number.parseInt(result[0].count, 10);
+    try {
+      console.log('[BaseDatabase.count] Called', {
+        recordType,
+        hasConnection: !!this.connection,
+        connectionType: this.connection?.constructor?.name,
+        isSingleton: this.isSingleton,
+        connectionClientType: this.connection?.client?.constructor?.name,
+      });
+      
+      // If just a simple query without options, use the more efficient knex count method
+      let result;
+      try {
+        result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
+      } catch (findError) {
+        console.error('[BaseDatabase.count] Error during find()!', {
+          recordType,
+          error: findError?.message,
+          errorStack: findError?.stack,
+          errorName: findError?.name,
+        });
+        throw findError;
+      }
+      
+      console.log('[BaseDatabase.count] Find result', {
+        recordType,
+        hasResult: !!result,
+        isArray: Array.isArray(result),
+        resultLength: result?.length,
+        firstItem: result?.[0],
+        resultType: typeof result,
+      });
+      
+      if (!result || !Array.isArray(result) || result.length === 0 || !result[0]) {
+        console.error('[BaseDatabase.count] Invalid result from find!', {
+          recordType,
+          result,
+          isArray: Array.isArray(result),
+          length: result?.length,
+        });
+        // Return 0 instead of crashing to prevent logout
+        return 0;
+      }
+      
+      if (result[0].count === undefined) {
+        console.error('[BaseDatabase.count] Result exists but has no count property!', {
+          recordType,
+          firstItem: result[0],
+          firstItemKeys: Object.keys(result[0]),
+        });
+        return 0;
+      }
+      
+      return Number.parseInt(result[0].count, 10);
+    } catch (error) {
+      console.error('[BaseDatabase.count] Unexpected error!', {
+        recordType,
+        error: error?.message,
+        errorStack: error?.stack,
+        errorName: error?.name,
+        errorType: error?.constructor?.name,
+      });
+      // Return 0 to prevent crashes, but log the full error
+      return 0;
+    }
   }
 
   /**
