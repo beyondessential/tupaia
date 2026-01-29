@@ -1,7 +1,6 @@
 import { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 
 import { DatatrakWebEntityDescendantsRequest, Project } from '@tupaia/types';
-
 import { getEntityDescendants } from '../../database';
 import { get } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
@@ -35,7 +34,6 @@ export const useProjectEntities = (
     {
       ...useQueryOptions,
       enabled: !!projectCode && (useQueryOptions?.enabled ?? true),
-      placeholderData: [] as DatatrakWebEntityDescendantsRequest.ResBody,
       localContext: {
         projectCode,
         params,

@@ -1,30 +1,46 @@
-import { useQuery } from '@tanstack/react-query';
 import { Option, OptionSet } from '@tupaia/types';
+
 import { get } from '../api';
 import { useSurveyForm } from '../../features';
+import { useDatabaseQuery } from './useDatabaseQuery';
+import { DatatrakWebModelRegistry } from '../../types';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { getAutocompleteOptions } from '../../database';
+
+export interface GetAutocompleteOptionsLocalContext {
+  models: DatatrakWebModelRegistry;
+  optionSetId?: OptionSet['id'];
+  searchText?: string;
+}
+
+const getAutocompleteOptionsOnline = async ({
+  optionSetId,
+  searchText,
+}: GetAutocompleteOptionsLocalContext) =>
+  await get(`optionSets/${optionSetId}/options`, {
+    params: {
+      filter: searchText
+        ? JSON.stringify({
+            value: {
+              comparator: 'ilike',
+              comparisonValue: `%${searchText}%`,
+            },
+          })
+        : undefined,
+    },
+  });
 
 export const useAutocompleteOptions = (
   optionSetId?: OptionSet['id'] | null,
   attributeFilters?: Record<string, any>,
   searchText?: string,
 ) => {
+  const isOfflineFirst = useIsOfflineFirst();
   const { getAnswerByQuestionId } = useSurveyForm();
-  return useQuery<Option[]>(
+
+  return useDatabaseQuery<Option[]>(
     ['autocompleteOptions', optionSetId, searchText],
-    () =>
-      get(`optionSets/${optionSetId}/options`, {
-        params: {
-          filter: searchText
-            ? JSON.stringify({
-                value: {
-                  comparator: 'ilike',
-                  comparisonValue: `%${searchText}%`,
-                },
-              })
-            : undefined,
-        },
-        enabled: !!optionSetId,
-      }),
+    isOfflineFirst ? getAutocompleteOptions : getAutocompleteOptionsOnline,
     {
       select: data => {
         // If there are no attribute filters, return all options
@@ -43,6 +59,11 @@ export const useAutocompleteOptions = (
           });
         });
       },
+      localContext: {
+        optionSetId,
+        searchText,
+      },
+      enabled: !!optionSetId,
     },
   );
 };

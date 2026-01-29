@@ -1,3 +1,5 @@
+/** @typedef {import('@tupaia/database').EntityRecord} EntityRecord */
+
 import { expect, assert } from 'chai';
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
@@ -361,6 +363,7 @@ describe('POST /surveyResponse', async () => {
         const syncResponse = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(syncResponse.statusCode).to.equal(200);
 
+        /** @type {EntityRecord[]} */
         const entities = await models.entity.find({ id: entitiesUpserted.map(e => e.id) });
         expect(entities.length).to.equal(entitiesUpserted.length);
       });

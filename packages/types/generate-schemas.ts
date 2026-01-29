@@ -57,7 +57,7 @@ if (schemas?.definitions) {
     if (currentFileContents !== fileContents) {
       const patch = createPatch(filename, currentFileContents, fileContents);
       console.log(
-        `${process.env.CI ? '::error::' : '❌ '}There are changes in the types which are not reflected in the JSON schema. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
+        `${process.env.CI ? '::error::' : '❌ '}There are changes in the types which are not reflected in the JSON schema. Run \`yarn workspace @tupaia/types run generate\` to fix. Alternatively, apply the patch in the job summary.`,
       );
       console.log(patch);
 
@@ -65,7 +65,7 @@ if (schemas?.definitions) {
         fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '## Schemas\n\n');
         fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '```diff\n');
         fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, patch);
-        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '```\n');
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '\n```\n');
       }
 
       const duration = performance.now() - tic;

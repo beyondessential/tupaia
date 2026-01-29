@@ -8,25 +8,15 @@ import { RECORDS } from '../records';
 export class OptionRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.OPTION;
 
-  static fieldValidators = new Map()
-    .set('value', [
-      value => {
-        try {
-          return hasContent(value) && null;
-        } catch (error) {
-          return error.message;
-        }
-      },
-    ])
-    .set('label', [
-      async (label, model) => {
-        if (label) {
-          const foundConflict = await findFieldConflict('label', label, model);
-          if (foundConflict) return 'Found duplicate label in option set';
-        }
-        return null;
-      },
-    ]);
+  static fieldValidators = new Map().set('value', [
+    value => {
+      try {
+        return hasContent(value) && null;
+      } catch (error) {
+        return error.message;
+      }
+    },
+  ]);
 
   /**
    * @param {string} option
@@ -67,7 +57,7 @@ export class OptionRecord extends DatabaseRecord {
 }
 
 export class OptionModel extends DatabaseModel {
-  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+  static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get DatabaseRecordClass() {
     return OptionRecord;
@@ -89,15 +79,3 @@ export class OptionModel extends DatabaseModel {
     return null;
   }
 }
-
-const findFieldConflict = async (field, valueToCompare, model) => {
-  const conflictingOption = await model.otherModels.option.findOne({
-    [field]: valueToCompare || null,
-    option_set_id: model.option_set_id,
-    id: {
-      comparator: '!=',
-      comparisonValue: model.id || null,
-    },
-  });
-  return !!conflictingOption;
-};

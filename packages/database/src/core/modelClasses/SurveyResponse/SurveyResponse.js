@@ -1,15 +1,17 @@
-import { difference, uniq } from 'es-toolkit';
-import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
+import { difference, groupBy, keyBy, uniq } from 'es-toolkit';
 import log from 'winston';
 
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, isNullish } from '@tupaia/tsutils';
+import { QuestionType } from '@tupaia/types';
 import { DatabaseError, PermissionsError, reduceToDictionary } from '@tupaia/utils';
+
 import { DatabaseRecord } from '../../DatabaseRecord';
 import { MaterializedViewLogDatabaseModel } from '../../analytics';
 import { createSurveyResponsePermissionFilter } from '../../permissions';
 import { RECORDS } from '../../records';
 import { buildSyncLookupSelect } from '../../sync';
+import { processColumns } from '../../utilities';
 import { getLeaderboardQuery } from './leaderboard';
 import { processSurveyResponse } from './processSurveyResponse';
 import { saveResponsesToDatabase } from './saveToDatabase';
@@ -23,10 +25,12 @@ import { validateSurveyResponse, validateSurveyResponses } from './validation';
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('@tupaia/types').Project} Project
  * @typedef {import('@tupaia/types').QuestionType} QuestionType
  * @typedef {import('@tupaia/types').Survey} Survey
  * @typedef {import('@tupaia/types').SurveyResponse} SurveyResponse
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
+ * @typedef {import('../Answer').AnswerRecord} AnswerRecord
  * @typedef {import('../Country').CountryRecord} CountryRecord
  * @typedef {import('../Entity').EntityRecord} EntityRecord
  * @typedef {import('../Facility').FacilityRecord} FacilityRecord
@@ -40,10 +44,73 @@ export class SurveyResponseRecord extends DatabaseRecord {
   async getAnswers(conditions = {}) {
     return await this.otherModels.answer.find({ survey_response_id: this.id, ...conditions });
   }
+
+  /** @returns {Promise<Country['code']>} */
+  async getCountryCode() {
+    return (await this.getEntity({ columns: ['country_code'] })).country_code;
+  }
+
+  /** @returns {Promise<EntityRecord>} */
+  async getEntity(options) {
+    const entityId =
+      this.entity_id ?? (await this.model.findById(this.id, { columns: ['entity_id'] })).entity_id;
+    return ensure(
+      await this.otherModels.entity.findById(entityId, options),
+      `Couldn’t find entity for survey response ${this.id} (expected entity with ID ${entityId})`,
+    );
+  }
+
+  /** @returns {Promise<Entity['name'] | undefined>} */
+  async getEntityParentName() {
+    const [projectId, entityId] = await Promise.all([
+      this.getProjectId(),
+      this.entity_id ?? (await this.model.findById(this.id, { columns: ['entity_id'] })).entity_id,
+    ]);
+    return await this.otherModels.entity.getParentEntityName(projectId, entityId);
+  }
+
+  /** @returns {Promise<Project['id']>} */
+  async getProjectId() {
+    const surveyId =
+      this.survey_id ?? (await this.model.findById(this.id, { columns: ['survey_id'] })).survey_id;
+    const { project_id } = ensure(
+      await this.otherModels.survey.findById(surveyId, { columns: ['project_id'] }),
+      `Couldn’t find survey for survey response ${this.id} (expected survey with ID ${surveyId})`,
+    );
+    return project_id;
+  }
 }
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
+
+  /**
+   * @param {ModelRegistry} models
+   * @param {AnswerRecord[]} answers
+   * @returns {Promise<DatatrakWebSingleSurveyResponseRequest.ResBody['answers']>}
+   */
+  static async formatAnswersForClient(models, answers) {
+    const formattedAnswers = {};
+    for (const { question_id: questionId, type, text } of answers) {
+      if (!text) continue;
+
+      if (type === QuestionType.User) {
+        const user = await models.user.findById(text, {
+          columns: processColumns(models, ['id', 'full_name'], RECORDS.USER_ACCOUNT),
+        });
+        if (!user) {
+          log.warn(`User with id ${text} not found`); // User deleted. Log and move on.
+          continue;
+        }
+        formattedAnswers[questionId] = { id: user.id, name: user.full_name };
+        continue;
+      }
+
+      formattedAnswers[questionId] = text;
+    }
+
+    return formattedAnswers;
+  }
 
   /**
    * @param {import('@tupaia/types').DatatrakWebSubmitSurveyResponseRequest.ReqBody | import('@tupaia/types').DatatrakWebResubmitSurveyResponseRequest.ReqBody} surveyResponseData
@@ -105,7 +172,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
    * @throws {PermissionsError}
    */
   async assertCanImport(models, accessPolicy, entitiesBySurveyCode) {
-    const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyCode));
+    const allEntityCodes = Object.values(entitiesBySurveyCode).flat();
     const surveyCodes = Object.keys(entitiesBySurveyCode);
 
     await models.wrapInReadOnlyTransaction(async transactingModels => {
@@ -119,7 +186,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         log.error('Unexpected nullish element in `allEntities`', { allEntities });
       }
 
-      const codeToSurvey = keyBy(surveys, 'code');
+      const codeToSurvey = keyBy(surveys, s => s.code);
       /** @type {PermissionGroup["id"][]} */
       const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
       /** @type {PermissionGroupRecord[]} */
@@ -158,7 +225,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
             surveyResponseCountryCodes,
           );
         }
-        const entitiesByCountryCode = groupBy(responseEntities, 'country_code');
+        const entitiesByCountryCode = groupBy(responseEntities, e => e.country_code);
 
         for (const surveyResponseCountry of surveyResponseCountries) {
           // Check if the country of the submitted survey response(s) matches with the survey countries.
@@ -209,7 +276,17 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     /** @type {Survey["id"][]} */
     const surveyIds = uniq(surveyResponses.map(sr => sr.survey_id));
 
-    /** @type {{attributes: Record<string, unknown>, code: Entity["code"], country_code: Country["code"], id: Entity["id"], name: Entity["name"], parent_id: Entity["id"], type: Entity["type"]}} */
+    /**
+     * @type {{
+     *   attributes: Record<string, unknown>,
+     *   code: Entity["code"],
+     *   country_code: Country["code"],
+     *   id: Entity["id"],
+     *   name: Entity["name"],
+     *   parent_id: Entity["id"],
+     *   type: Entity["type"]
+     * }}
+     */
     const entitiesUpserted = surveyResponses.reduce((acc, { entities_upserted }) => {
       if (entities_upserted) acc.push(...entities_upserted);
       return acc;
@@ -250,14 +327,27 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
   async buildSyncLookupQueryDetails() {
     return {
+      ctes: [
+        `
+          survey_responses_to_sync AS (
+            SELECT survey_response.id AS survey_response_id, survey.project_id
+            FROM survey_response
+            JOIN survey ON survey.id = survey_response.survey_id
+            UNION
+            SELECT task.initial_request_id AS survey_response_id, survey.project_id
+            FROM task
+            JOIN survey ON survey.id = task.survey_id
+          )
+        `,
+      ],
       select: await buildSyncLookupSelect(this, {
-        projectIds: 'array_remove(ARRAY[survey.project_id], NULL)',
+        projectIds: 'array_remove(ARRAY_AGG(survey_responses_to_sync.project_id), NULL)',
       }),
       joins: `
-        LEFT JOIN survey
-          ON survey.id = survey_response.survey_id
-          AND survey_response.outdated IS FALSE -- no outdated survey response
+        LEFT JOIN survey_responses_to_sync
+          ON survey_responses_to_sync.survey_response_id = survey_response.id
       `,
+      groupBy: ['survey_response.id'],
     };
   }
 

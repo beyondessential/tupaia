@@ -11,8 +11,8 @@ const JSONB_FIELD_DELIMITER = '->>';
 const MULTIPLE_VALUES_DELIMITER = ',';
 
 type NumericFilterQueryFields = Pick<EntityFilterFields, NumericKeys<Required<EntityFilterFields>>>;
+type FilterableField = keyof EntityFilterFields;
 
-type EntityFilterQuery = Partial<EntityFilterFields>;
 type NotNull<T> = T extends Array<infer U> ? Array<Exclude<U, null>> : Exclude<T, null>;
 type NotNullValues<T> = {
   [field in keyof T]: NotNull<T[field]>;
@@ -33,20 +33,20 @@ const getDefaultFilter = (allowedCountries: Country['code'][]) => ({
   },
 });
 
-const filterableFields = new Set<keyof EntityFilterQuery>([
-  'id',
+const filterableFields = new Set<FilterableField>([
+  'attributes',
   'code',
   'country_code',
-  'name',
-  'image_url',
-  'type',
   'generational_distance',
-  'attributes',
+  'id',
+  'image_url',
+  'name',
+  'type',
 ]);
-const isFilterableField = (field: string): field is keyof EntityFilterQuery =>
+const isFilterableField = (field: string): field is FilterableField =>
   (filterableFields as Set<string>).has(field);
 
-const assertFilterableField = (field: string): keyof EntityFilterQuery => {
+const assertFilterableField = (field: string): FilterableField => {
   let firstField = field;
 
   // if the field is already in the form of a JSONB key, we just need to check the the first field is valid
@@ -55,7 +55,7 @@ const assertFilterableField = (field: string): keyof EntityFilterQuery => {
   }
   if (!isFilterableField(firstField)) {
     throw new Error(
-      `Unknown filter key: ${firstField}, must be one of: ${[...filterableFields].join(', ')}`,
+      `Unknown filter key ‘${firstField}’. Must be one of: ${Array.from(filterableFields).join(', ')}`,
     );
   }
 
@@ -63,28 +63,28 @@ const assertFilterableField = (field: string): keyof EntityFilterQuery => {
 };
 
 const numericFields = new Set<keyof NumericFilterQueryFields>(['generational_distance']);
-const isNumericField = (field: keyof EntityFilterQuery): field is keyof NumericFilterQueryFields =>
-  (numericFields as Set<keyof EntityFilterQuery>).has(field);
+const isNumericField = (field: FilterableField): field is keyof NumericFilterQueryFields =>
+  (numericFields as Set<FilterableField>).has(field);
 
 // Inspired by Google Analytics filter: https://developers.google.com/analytics/devguides/reporting/core/v3/reference?hl=en#filters
 const operatorToSqlComparator = {
-  '==': '=' as const, // Exact match
-  '!=': '!=' as const, // Does not match
-  '=@': 'ilike' as const, // Contains sub string
-  '<': '<' as const, // Less than
-  '<=': '<=' as const, // Less than or equal
-  '>': '>' as const, // Greater than
-  '>=': '>=' as const, // Greater than or equal
-};
+  '==': '=', // Exact match
+  '!=': '!=', // Does not match
+  '=@': 'ilike', // Contains sub string
+  '<': '<', // Less than
+  '<=': '<=', // Less than or equal
+  '>': '>', // Greater than
+  '>=': '>=', // Greater than or equal
+} as const;
 const operatorToSqlArrayComparator = {
-  '==': 'IN' as const, // Contained in array
-  '!=': 'NOT IN' as const, // Not contained in array
+  '==': 'IN', // Contained in array
+  '!=': 'NOT IN', // Not contained in array
   '=@': undefined, // '@>' might be nice here, but none of our filterable fields are arrays
   '<': undefined,
   '<=': undefined,
   '>': undefined,
   '>=': undefined,
-};
+} as const;
 type Operator = keyof typeof operatorToSqlComparator;
 
 const filterOperators = Object.keys(operatorToSqlComparator) as Operator[];
@@ -99,7 +99,7 @@ const formatComparisonValue = (value: Value, operator: Operator) => {
   return value;
 };
 
-const formatValue = <T extends keyof EntityFilterQuery>(field: T, value: RawValue) => {
+const formatValue = <T extends FilterableField>(field: T, value: RawValue) => {
   if (typeof value === 'string' && isNumericField(field)) {
     return parseFloat(value);
   }
@@ -107,7 +107,7 @@ const formatValue = <T extends keyof EntityFilterQuery>(field: T, value: RawValu
 };
 
 const convertValueToAdvancedCriteria = (
-  field: keyof EntityFilterQuery,
+  field: FilterableField,
   operator: Operator,
   value: RawValue | RawValue[],
 ) => {
@@ -181,8 +181,9 @@ const toFilterClauseFromObject = ([field, value]: [
 ]) => {
   const firstField = assertFilterableField(field);
 
-  const operator = typeof value === 'string' ? '==' : (value.comparator as Operator);
-  const actualValue = typeof value === 'string' ? value : value.comparisonValue;
+  const valueIsString = typeof value === 'string';
+  const operator = valueIsString ? '==' : (value.comparator as Operator);
+  const actualValue = valueIsString ? value : value.comparisonValue;
 
   if (!filterOperators.includes(operator)) {
     throw new Error(`Unknown operator: ${operator}, must be one of: ${filterOperators}`);
@@ -194,7 +195,7 @@ const toFilterClauseFromObject = ([field, value]: [
 
 export const extractFilterClausesFromQuery = (
   queryFilter?: string,
-): [keyof EntityFilterQuery, Operator, string][] | null => {
+): [FilterableField, Operator, string][] | null => {
   if (!queryFilter) {
     return null;
   }
@@ -211,8 +212,8 @@ export const extractFilterClausesFromObject = (queryObject?: QueryObject) => {
 };
 
 const extractEntityFilter = (
-  allowedCountries: string[],
-  filterClauses?: [keyof EntityFilterQuery, Operator, RawValue | RawValue[]][] | null,
+  allowedCountries: Country['code'][],
+  filterClauses?: [FilterableField, Operator, RawValue | RawValue[]][] | null,
 ): EntityFilter => {
   if (!filterClauses) {
     return getDefaultFilter(allowedCountries);
@@ -236,15 +237,18 @@ const extractEntityFilter = (
   return filter;
 };
 
-export const extractEntityFilterFromQuery = (allowedCountries: string[], queryFilter?: string) => {
+export const extractEntityFilterFromQuery = (
+  allowedCountries: Country['code'][],
+  queryFilter?: string,
+): EntityFilter => {
   const filterClauses = extractFilterClausesFromQuery(queryFilter);
   return extractEntityFilter(allowedCountries, filterClauses);
 };
 
 export const extractEntityFilterFromObject = (
-  allowedCountries: string[],
+  allowedCountries: Country['code'][],
   queryObject?: QueryObject,
-) => {
+): EntityFilter => {
   const filterClauses = extractFilterClausesFromObject(queryObject);
   return extractEntityFilter(allowedCountries, filterClauses);
 };

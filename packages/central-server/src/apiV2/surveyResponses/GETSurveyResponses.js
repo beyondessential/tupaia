@@ -10,7 +10,7 @@ import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissio
  * - /surveyResponses/:surveyResponseId
  */
 export class GETSurveyResponses extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   customJoinConditions = {
     country: {

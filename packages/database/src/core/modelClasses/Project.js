@@ -1,8 +1,8 @@
 import { SyncDirections } from '@tupaia/constants';
-
+import { EntityTypeEnum } from '@tupaia/types';
+import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
-import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { RECORDS } from '../records';
 
 const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
@@ -21,7 +21,7 @@ export class ProjectRecord extends DatabaseRecord {
       entityRelations.map(async entityRelation =>
         this.otherModels.entity.findOne({
           id: entityRelation.child_id,
-          type: 'country',
+          type: EntityTypeEnum.country,
         }),
       ),
     );

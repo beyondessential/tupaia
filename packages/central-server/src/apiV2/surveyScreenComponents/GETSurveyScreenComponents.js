@@ -14,7 +14,7 @@ import { assertSurveyGetPermissions } from '../surveys/assertSurveyPermissions';
  */
 
 export class GETSurveyScreenComponents extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(surveyScreenComponentId, options) {
     const surveyScreenComponent = await super.findSingleRecord(surveyScreenComponentId, options);

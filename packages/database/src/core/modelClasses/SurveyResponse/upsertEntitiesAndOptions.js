@@ -1,25 +1,12 @@
-/**
- * @typedef {import('@tupaia/database').ModelRegistry} ModelRegistry
- * @typedef {import('@tupaia/database').OptionRecord} OptionRecord
- * @typedef {import('@tupaia/types').MeditrakSurveyResponseRequest} SurveyResponse
- */
+/** @typedef {import('../Entity').EntityRecord} EntityRecord */
 
-import merge from 'lodash.merge';
-import winston from '../../log';
+import { toMerged } from 'es-toolkit';
+import winston from 'winston';
 
-/**
- * @param {ModelRegistry} models
- * @param {SurveyResponse['entities_upserted']} entitiesUpserted
- * @param {import('@tupaia/types').Survey['id']} surveyId
- * @returns {Promise<import('@tupaia/database').EntityRecord[]>}
- */
-const upsertEntities = async (models, entitiesUpserted, surveyId) => {
-  /** @type {import('@tupaia/database').SurveyRecord} */
-  const survey = await models.survey.findById(surveyId);
-  const dataGroup = await survey.dataGroup();
-
+const upsertEntities = async (models, entitiesUpserted) => {
   return await Promise.all(
     entitiesUpserted.map(async entity => {
+      /** @type {EntityRecord | null} */
       const existingEntity = await models.entity.findById(entity.id, {
         columns: [
           // Non-nullable attributes with no DEFAULT, needed for `INSERT ... ON CONFLICT` query
@@ -33,14 +20,8 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
         ],
       });
 
-      const merged = merge(existingEntity, entity);
-      if (dataGroup.service_type === 'dhis') {
-        merged.metadata ??= {};
-        merged.metadata.dhis ??= {};
-        merged.metadata.dhis.isDataRegional = Boolean(dataGroup.config.isDataRegional);
-      }
-
-      return await models.entity.updateOrCreate({ id: entity.id }, merged);
+      const entityToUpsert = existingEntity ? toMerged(existingEntity, entity) : entity;
+      return await models.entity.updateOrCreate({ id: entity.id }, entityToUpsert);
     }),
   );
 };
@@ -87,7 +68,7 @@ export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
 
     try {
       if (entitiesUpserted.length > 0) {
-        await upsertEntities(models, entitiesUpserted, surveyResponse.survey_id);
+        await upsertEntities(models, entitiesUpserted);
       }
     } catch (error) {
       winston.error(

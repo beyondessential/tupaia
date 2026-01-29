@@ -79,6 +79,7 @@ import {
   UserRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
+import { LoginRoute } from '../routes/LoginRoute';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
@@ -93,6 +94,7 @@ export async function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .use('*', attachAccessPolicy)
     .attachApiClientToContext(authHandlerProvider)
+    .attachLoginRoute(LoginRoute)
     // Get Routes
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SingleEntityRequest>('entity/:entityCode', handleWith(SingleEntityRoute))

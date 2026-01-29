@@ -1,5 +1,5 @@
 import { QuestionType } from '@tupaia/types';
-import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
+import { getUniqueSurveyQuestionFileName, randomString } from '@tupaia/utils';
 import { SurveyResponseModel } from '../../../core/modelClasses/SurveyResponse';
 import { generateId } from '../../../core/utilities';
 
@@ -542,6 +542,8 @@ describe('processSurveyResponse', () => {
     });
   });
   it('should handle when question type is File', async () => {
+    const encodedFile = `data:text/plain;base64,${Buffer.from(randomString()).toString('base64')}`;
+
     const result = await SurveyResponseModel.processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
@@ -555,7 +557,7 @@ describe('processSurveyResponse', () => {
       ],
       answers: {
         question1: {
-          value: 'data://theEncodedFile',
+          value: encodedFile,
           name: 'theFileName',
         },
       },
@@ -568,7 +570,7 @@ describe('processSurveyResponse', () => {
           question_id: 'question1',
           type: QuestionType.File,
           body: {
-            data: 'data://theEncodedFile',
+            data: encodedFile,
             uniqueFileName: getUniqueSurveyQuestionFileName('theFileName'),
           },
         },

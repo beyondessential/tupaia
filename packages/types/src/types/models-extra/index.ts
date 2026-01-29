@@ -3,9 +3,14 @@ export {
   PlaintextReferenceProps,
   LinkReferenceProps,
   EntityAttributes,
+  EntityMetadata,
   DateOffsetSpec,
   VizPeriodGranularity,
   DashboardItemType,
+  DataElementConfig,
+  DataServiceEntityConfig,
+  OptionAttributes,
+  SupersetInstanceConfig,
 } from './common';
 export type {
   ReportConfig,
@@ -112,3 +117,4 @@ export { UserAccountPreferences } from './user';
 export { ProjectConfig } from './project';
 export { RepeatSchedule, TaskCommentTemplateVariables, SystemCommentSubType } from './task';
 export { EntityType } from './entityType';
+export { SyncSessionInfo } from './sync';

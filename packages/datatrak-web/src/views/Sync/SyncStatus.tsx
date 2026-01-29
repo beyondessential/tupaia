@@ -7,7 +7,9 @@ import { SyncHeading } from './SyncHeading';
 import { SyncParagraph } from './SyncParagraph';
 
 const Wrapper = styled.div`
+  font-variant-numeric: lining-nums tabular-nums;
   inline-size: 100%;
+  text-wrap: balance;
 
   > * + * {
     margin-block-start: 1rem;
@@ -63,12 +65,6 @@ export const SyncStatus = ({
 
   return (
     <Wrapper {...props}>
-      {syncStage && (
-        <SyncHeading>
-          Sync stage {syncStage} of {totalStages}
-        </SyncHeading>
-      )}
-
       {isSyncing && (
         <>
           <SyncHeading>Syncing {percentage}%</SyncHeading>
@@ -76,7 +72,14 @@ export const SyncStatus = ({
         </>
       )}
 
-      {message && <SyncParagraph>{message}</SyncParagraph>}
+      <div>
+        {syncStage && <SyncParagraph>{`Sync stage ${syncStage} of ${totalStages}`}</SyncParagraph>}
+        {message && (
+          <SyncParagraph style={{ minBlockSize: '2lh' /* Minimise layout shift */ }}>
+            {message}
+          </SyncParagraph>
+        )}
+      </div>
 
       {syncFinishedSuccessfully && (
         <>

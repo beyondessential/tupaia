@@ -1,6 +1,5 @@
-import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
-
+import { reduceToArrayDictionary, reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -8,7 +7,7 @@ import { RECORDS } from '../records';
 export class AncestorDescendantRelationRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ANCESTOR_DESCENDANT_RELATION;
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       joinWith: RECORDS.ENTITY,
       joinAs: 'descendant',
@@ -21,7 +20,7 @@ export class AncestorDescendantRelationRecord extends DatabaseRecord {
       joinCondition: ['ancestor_id', 'ancestor.id'],
       fields: { code: 'ancestor_code' },
     },
-  ];
+  ]);
 }
 
 export class AncestorDescendantRelationModel extends DatabaseModel {

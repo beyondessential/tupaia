@@ -16,13 +16,16 @@ exports.setup = function (options, seedLink) {
 
 exports.up = function (db) {
   return db.runSql(`
-    CREATE OR REPLACE FUNCTION add_to_tombstone_on_delete()
+    CREATE OR REPLACE FUNCTION mark_deleted_in_sync_lookup()
       RETURNS trigger
       LANGUAGE plpgsql AS
       $func$
       DECLARE
         current_tick bigint;
       BEGIN
+        IF ((SELECT value FROM local_system_fact WHERE key = 'syncTrigger') = 'disabled') THEN
+          RETURN OLD;
+        END IF;
         -- First get the current sync tick
         SELECT value FROM local_system_fact WHERE key = 'currentSyncTick' INTO current_tick;
 
@@ -31,20 +34,14 @@ exports.up = function (db) {
         -- see waitForPendingEditsUsingSyncTick for more details
         PERFORM pg_try_advisory_xact_lock_shared(current_tick);
 
-        INSERT INTO tombstone (
-          record_id,
-          record_type,
-          deleted_at,
-          updated_at_sync_tick
-        ) VALUES (
-          OLD.id,
-          TG_TABLE_NAME,
-          NOW(),
-          current_tick::BIGINT
-        );
+        UPDATE sync_lookup 
+        SET is_deleted = TRUE, 
+          updated_at_sync_tick = current_tick 
+        WHERE record_id = OLD.id 
+          AND record_type = TG_TABLE_NAME;
         RETURN OLD;
       END
-    $func$;  
+    $func$;
   `);
 };
 
@@ -54,5 +51,5 @@ exports.down = function (db) {
 
 exports._meta = {
   version: 1,
-  targets: ['browser', 'server'],
+  targets: ['server'],
 };

@@ -5,6 +5,7 @@ import { TupaiaApiClient } from '@tupaia/api-client';
 import { Route } from '@tupaia/server-boilerplate';
 import { ensure, isNotNullish } from '@tupaia/tsutils';
 import { DatatrakWebEntityDescendantsRequest, Entity } from '@tupaia/types';
+
 import { sortSearchResults } from '../utils';
 
 export type EntityDescendantsRequest = Request<

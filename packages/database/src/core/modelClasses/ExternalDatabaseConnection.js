@@ -1,8 +1,12 @@
+/**
+ * @typedef {import('knex').Knex} Knex
+ * @typedef {import('@tupaia/types').ExternalDatabaseConnection} ExternalDatabaseConnection
+ */
+
 import knex from 'knex';
 
 import { getEnvVarOrDefault, requireEnv } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -18,6 +22,7 @@ export class ExternalDatabaseConnectionRecord extends DatabaseRecord {
     return result.rows;
   }
 
+  /** @returns {Promise<boolean>} */
   async testConnection() {
     const [{ is_connected: isConnected }] = await this.executeSql('select TRUE as is_connected');
     return isConnected;
@@ -27,9 +32,12 @@ export class ExternalDatabaseConnectionRecord extends DatabaseRecord {
 export class ExternalDatabaseConnectionModel extends DatabaseModel {
   static syncDirection = SyncDirections.DO_NOT_SYNC;
 
-  // Map of active external connections that have been established
-  // Using singleton pattern to avoid individual instances overwhelming the external
-  // databases with requests
+  /**
+   * Map of active external connections that have been established.
+   * @privateRemarks Using singleton pattern to avoid individual instances overwhelming the external
+   * databases with requests.
+   * @type {Record<ExternalDatabaseConnection['id'], Knex>}
+   */
   activeConnections = {};
 
   get DatabaseRecordClass() {

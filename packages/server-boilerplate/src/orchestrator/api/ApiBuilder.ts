@@ -42,6 +42,7 @@ export class ApiBuilder {
   private attachVerifyLogin: (req: Request, res: Response, next: NextFunction) => void;
   private verifyAuthMiddleware: RequestHandler;
   private attachAccessPolicy: RequestHandler;
+  private loginRoute: typeof LoginRoute;
   private version: number;
 
   private translatorConfigured = false;
@@ -49,12 +50,16 @@ export class ApiBuilder {
   // We add handlers at the end so that middlewares and initial routes can be set up first
   private handlers: { add: () => void }[] = [];
 
-  public constructor(transactingConnection: TupaiaDatabase, apiName: string) {
+  public constructor(
+    transactingConnection: TupaiaDatabase,
+    apiName: string,
+  ) {
     this.database = transactingConnection;
     this.models = new ModelRegistry(this.database) as ServerBoilerplateModelRegistry;
     this.apiName = apiName;
     this.version = 1; // Default version
     this.app = express();
+    this.loginRoute = LoginRoute;
     this.attachSession = defaultAttachSession;
     this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
     this.attachVerifyLogin = emptyMiddleware;
@@ -125,6 +130,11 @@ export class ApiBuilder {
 
   public useAttachSession(attachSession: RequestHandler) {
     this.attachSession = attachSession;
+    return this;
+  }
+
+  public attachLoginRoute(loginRoute: typeof LoginRoute) {
+    this.loginRoute = loginRoute;
     return this;
   }
 
@@ -312,7 +322,8 @@ export class ApiBuilder {
       this.formatPath('login'),
       this.attachVerifyLogin,
       this.logApiRequestMiddleware,
-      handleWith(LoginRoute),
+      this.attachAccessPolicy,
+      handleWith(this.loginRoute),
     );
     this.app.post(this.formatPath('logout'), this.logApiRequestMiddleware, handleWith(LogoutRoute));
     this.app.post(

@@ -92,6 +92,9 @@ export class AccessPolicy {
     return [...this.getPermissionGroupsSet(entities)];
   }
 
+  /**
+   * @returns {Set<string>}
+   */
   getPermissionGroupsSet(requestedEntities) {
     // if no specific entities were requested, fetch the permissions for all of them
     const entities = requestedEntities || Object.keys(this.policy);

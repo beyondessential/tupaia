@@ -15,9 +15,9 @@ const entityByCodeQueryFunctions = {
     return await get(`entity/${encodeURIComponent(ensure(entityCode))}`);
   },
   local: async ({ entityCode, models }: EntityByCodeQueryFunctionContext) => {
-    const [entity] = await models.entity.find({ code: ensure(entityCode) });
-    if (isNullish(entity)) return null;
-    entity.model = undefined;
+    const [entityRecord] = await models.entity.find({ code: ensure(entityCode) });
+    if (isNullish(entityRecord)) return null;
+    const entity = await entityRecord.getData();
     return camelcaseKeys(entity, { deep: true });
   },
 };
@@ -49,18 +49,19 @@ interface EntityByIdQueryFunctionContext extends ContextualQueryFunctionContext 
 
 const entityByIdQueryFunctions = {
   remote: async ({ entityId }: EntityByIdQueryFunctionContext) => {
-    return await get('entities', {
+    const response = await get('entities', {
       params: {
         filter: { id: ensure(entityId) },
       },
     });
+    return response[0];
   },
   local: async ({ entityId, models }: EntityByIdQueryFunctionContext) => {
-    const entity = ensure(
+    const entityRecord = ensure(
       await models.entity.findById(ensure(entityId)),
       `No entity exists with ID ${entityId}`,
     );
-    entity.model = undefined;
+    const entity = await entityRecord.getData();
     return camelcaseKeys(entity, { deep: true });
   },
 };

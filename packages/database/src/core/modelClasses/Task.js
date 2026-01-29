@@ -1,9 +1,16 @@
+/**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('@tupaia/types').Project} Project
+ */
+
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
-import { TaskCommentType } from '@tupaia/types';
+import { TaskCommentType, TaskStatus } from '@tupaia/types';
 import { hasBESAdminAccess } from '@tupaia/access-policy';
-
+import { getOffsetForTimezone } from '@tupaia/utils';
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -35,16 +42,28 @@ const formatValue = async (field, value, models) => {
   return value;
 };
 
+/**
+ * @template {Project['id'] | Project['id'][]} T
+ * @param {T} projectId
+ * @returns {{ 'survey.project_id': T }}
+ */
+const getTaskMetricsBaseQuery = projectId => ({ 'survey.project_id': projectId });
+const getTaskMetricsBaseJoin = () =>
+  /** @type {const} */ ({
+    joinWith: RECORDS.SURVEY,
+    joinCondition: ['survey.id', 'task.survey_id'],
+  });
+
 export class TaskRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK;
 
-  statusTypes = {
+  statusTypes = /** @type {const} */ ({
     ToDo: 'to_do',
     Completed: 'completed',
     Cancelled: 'cancelled',
-  };
+  });
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       joinWith: RECORDS.ENTITY,
       joinCondition: ['entity_id', `${RECORDS.ENTITY}.id`],
@@ -68,7 +87,7 @@ export class TaskRecord extends DatabaseRecord {
       joinCondition: ['survey_response_id', `${RECORDS.SURVEY_RESPONSE}.id`],
       fields: { data_time: 'data_time', timezone: 'timezone' },
     },
-  ];
+  ]);
 
   /**
    * @returns {Promise<import('./Entity').EntityRecord>}
@@ -324,29 +343,34 @@ export class TaskModel extends DatabaseModel {
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryCodesByPermissionGroupId =
       await this.getCountryCodesByPermissionGroupId(accessPolicy);
+    const entries = Object.entries(countryCodesByPermissionGroupId);
 
-    const params = Object.entries(countryCodesByPermissionGroupId).flat(2); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
+    if (entries.length === 0) return { sql: 'FALSE' };
 
     return {
       sql: `
         (
-          ${Object.values(countryCodesByPermissionGroupId)
-            .map(
-              countryCodes => `(
-                survey.permission_group_id = ? AND
-                entity.country_code IN ${SqlQuery.record(countryCodes)}
-              )`,
-            )
+          ${entries
+            .map(([, countryCodes]) => {
+              return `(survey.permission_group_id = ? AND entity.country_code IN ${SqlQuery.record(countryCodes)})`;
+            })
             .join(' OR ')}
         )
        `,
-      parameters: params,
+      /** @example ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3'] */
+      parameters: entries.flat(2),
     };
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<Record<PermissionGroup['id'], Country['code'][]>>}
+   */
   async getCountryCodesByPermissionGroupId(accessPolicy) {
     const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
+    /** @type {Record<PermissionGroup['id'], Country['code'][]>} */
     const countryCodesByPermissionGroupId = {};
+    /** @type {Record<PermissionGroup['name'], PermissionGroup['id']>} */
     const permissionGroupNameToId = await this.otherModels.permissionGroup.findIdByField(
       'name',
       allPermissionGroupsNames,
@@ -387,7 +411,7 @@ export class TaskModel extends DatabaseModel {
     const queryConditions = hasBESAdminAccess
       ? filtersWithColumnSelectors
       : {
-          [QUERY_CONJUNCTIONS.RAW]: queryClause,
+          ...(queryClause ? { [QUERY_CONJUNCTIONS.RAW]: queryClause } : {}),
           ...filtersWithColumnSelectors,
         };
 
@@ -620,6 +644,74 @@ export class TaskModel extends DatabaseModel {
     });
   }
 
+  async countUnassignedTasks(projectId) {
+    return await this.count(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: {
+          comparator: 'NOT IN',
+          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+        },
+        assignee_id: {
+          comparator: 'IS',
+          comparisonValue: null,
+        },
+      },
+      getTaskMetricsBaseJoin(),
+    );
+  }
+
+  async countOverdueTasks(projectId) {
+    return await this.count(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: {
+          comparator: 'NOT IN',
+          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+        },
+        due_date: {
+          comparator: '<=',
+          comparisonValue: new Date().getTime(),
+        },
+      },
+      getTaskMetricsBaseJoin(),
+    );
+  }
+
+  async findCompletedTasks(projectId) {
+    return await this.find(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: TaskStatus.completed,
+        repeat_schedule: {
+          comparator: 'IS',
+          comparisonValue: null,
+        },
+      },
+      {
+        columns: ['due_date', 'data_time', 'timezone', 'project_id'],
+      },
+    );
+  }
+
+  async findOnTimeCompletedTasks(completedTasks) {
+    return completedTasks.filter(record => {
+      if (!record.due_date || !record.data_time) {
+        return false;
+      }
+      const { data_time: dataTime, timezone } = record;
+      const offset = getOffsetForTimezone(timezone, new Date(dataTime));
+      const formattedDate = `${dataTime.toString().replace(' ', 'T')}${offset}`;
+      return new Date(formattedDate).getTime() <= record.due_date;
+    });
+  }
+
+  async calculateOnTimeCompletionRate(projectId) {
+    const completedTasks = await this.findCompletedTasks(projectId);
+    const onTimeCompletedTasks = await this.findOnTimeCompletedTasks(completedTasks);
+    return Math.round((onTimeCompletedTasks.length / completedTasks.length) * 100) || 0;
+  }
+
   async assertUserHasPermissionToCreateTask(accessPolicy, taskData) {
     const { entity_id: entityId, survey_id: surveyId } = taskData;
 
@@ -635,12 +727,10 @@ export class TaskModel extends DatabaseModel {
     const userSurveys = await this.otherModels.survey.findByAccessPolicy(
       accessPolicy,
       {},
-      {
-        columns: ['id', 'permission_group_id', 'country_ids'],
-      },
+      { columns: ['id'] },
     );
-    const survey = userSurveys.find(({ id }) => id === surveyId);
-    if (!survey) {
+    const hasAccess = userSurveys.some(({ id }) => id === surveyId);
+    if (!hasAccess) {
       throw new Error('Need to have access to the survey of the task');
     }
 
@@ -660,5 +750,37 @@ export class TaskModel extends DatabaseModel {
     dbOptions.multiJoin = mergeMultiJoin(this.joins, dbOptions.multiJoin);
 
     return { dbConditions, dbOptions };
+  }
+
+  async completeTaskForSurveyResponse(surveyResponse) {
+    const {
+      id: surveyResponseId,
+      survey_id: surveyId,
+      entity_id: entityId,
+      data_time: dataTime,
+      user_id: userId,
+    } = surveyResponse;
+    const tasksToComplete = await this.find({
+      [QUERY_CONJUNCTIONS.AND]: {
+        status: 'to_do',
+        [QUERY_CONJUNCTIONS.OR]: {
+          status: {
+            comparator: 'IS',
+            comparisonValue: null,
+          },
+        },
+      },
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: '(task.survey_id = ? AND task.entity_id = ? AND task.created_at <= ?)',
+        parameters: [surveyId, entityId, dataTime],
+      },
+    });
+
+    // If the survey response was successfully created, complete any tasks that are due
+    if (tasksToComplete.length === 0) return;
+
+    for (const task of tasksToComplete) {
+      await task.handleCompletion(surveyResponseId, userId);
+    }
   }
 }

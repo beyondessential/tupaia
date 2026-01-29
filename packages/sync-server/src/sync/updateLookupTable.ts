@@ -5,7 +5,7 @@ import { DatabaseModel, TupaiaDatabase, buildSyncLookupSelect } from '@tupaia/da
 
 import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
 
-const updateExistingRecordsIntoLookupTable = async (
+const updateLookupTableForModel = async (
   model: DatabaseModel,
   config: SyncServerConfig,
   since: number,
@@ -16,7 +16,7 @@ const updateExistingRecordsIntoLookupTable = async (
 
   const table = model.databaseRecord;
 
-  let fromIdInserted = '';
+  let fromId = '';
   let totalCount = 0;
   const hasCustomLookupQuery =
     'buildSyncLookupQueryDetails' in model &&
@@ -32,8 +32,8 @@ const updateExistingRecordsIntoLookupTable = async (
     model: model.databaseRecord,
   });
 
-  while (fromIdInserted != null) {
-    const [{ maxId: maxIdInserted, count: countInserted }] = await model.database.executeSql(
+  while (fromId !== null) {
+    const [{ maxId, count }] = await model.database.executeSql(
       `
         WITH
         ${ctes ? `${ctes.join('\n')}, \n` : ''}
@@ -58,7 +58,7 @@ const updateExistingRecordsIntoLookupTable = async (
           ${joins || ''}
           WHERE
           (${where || `${table}.updated_at_sync_tick > :since`})
-          ${fromIdInserted ? `AND ${table}.id > :fromIdInserted` : ''}
+          ${fromId ? `AND ${table}.id > :fromId` : ''}
           ${allGroupBy ? `GROUP BY ${allGroupBy.join(', ')}` : ''}
           ORDER BY ${table}.id
           LIMIT :limit
@@ -77,105 +77,21 @@ const updateExistingRecordsIntoLookupTable = async (
       {
         since,
         limit: CHUNK_SIZE,
-        fromIdInserted,
+        fromId,
         perModelUpdateTimeoutMs,
         updatedAtSyncTick: syncLookupTick,
       },
     );
 
-    const chunkCount = countInserted; // count should always default to '0'
-    fromIdInserted = maxIdInserted;
+    const chunkCount = count; // count should always default to '0'
+    fromId = maxId;
     totalCount += chunkCount;
 
-    log.info('updateLookupTable.updateExistingRecordsIntoLookupTable inserted or updated', {
+    log.info('updateLookupTable.updateLookupTableForModel', {
       model: model.databaseRecord,
       chunkCount,
     });
   }
-
-  return totalCount;
-};
-
-const updateDeletedRecordsInLookupTable = async (
-  model: DatabaseModel,
-  config: SyncServerConfig,
-  since: number,
-  syncLookupTick: number | null,
-) => {
-  const CHUNK_SIZE = config.maxRecordsPerSnapshotChunk;
-  let fromIdDeleted = '';
-  let totalCount = 0;
-
-  while (fromIdDeleted != null) {
-    const [{ maxId: maxIdDeleted, count: countDeleted }] = await model.database.executeSql(
-      `
-        WITH
-        updated AS (
-          UPDATE sync_lookup 
-          SET is_deleted = true,
-          updated_at_sync_tick = :updatedAtSyncTick
-          WHERE sync_lookup.record_id IN (
-            SELECT record_id FROM tombstone
-            WHERE record_type = :recordType
-              AND updated_at_sync_tick > :since
-              AND record_id > :fromIdDeleted
-              ORDER BY record_id
-              LIMIT :limit
-          )
-          RETURNING record_id
-        )
-        SELECT MAX(record_id) as "maxId",
-          COUNT(*)::int as "count"
-        FROM updated;
-      `,
-      {
-        since,
-        limit: CHUNK_SIZE,
-        fromIdDeleted,
-        updatedAtSyncTick: syncLookupTick,
-        recordType: model.databaseRecord,
-      },
-    );
-
-    const chunkCount = countDeleted;
-    fromIdDeleted = maxIdDeleted;
-    totalCount += chunkCount;
-
-    log.info('updateLookupTable.updateDeletedRecordsInLookupTable deleted', {
-      model: model.databaseRecord,
-      chunkCount,
-    });
-  }
-
-  return totalCount;
-};
-
-const updateLookupTableForModel = async (
-  model: DatabaseModel,
-  config: SyncServerConfig,
-  since: number,
-  syncLookupTick: number | null,
-) => {
-  const changedCount = await updateExistingRecordsIntoLookupTable(
-    model,
-    config,
-    since,
-    syncLookupTick,
-  );
-
-  const deletedCount = await updateDeletedRecordsInLookupTable(
-    model,
-    config,
-    since,
-    syncLookupTick,
-  );
-
-  const totalCount = changedCount + deletedCount;
-
-  log.info('updateLookupTable.updateLookupTableForModel', {
-    model: model.databaseRecord,
-    totalCount,
-  });
 
   return totalCount;
 };
@@ -235,6 +151,6 @@ export const updateSyncLookupPendingRecords = async (
       SET updated_at_sync_tick = :currentTick
       WHERE updated_at_sync_tick = :pendingUpdateSyncTick;
     `,
-    { currentTick, pendingUpdateSyncTick: SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER },
+    { currentTick, pendingUpdateSyncTick: SyncTickFlags.LOOKUP_PENDING_UPDATE },
   );
 };
