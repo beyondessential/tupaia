@@ -28,14 +28,20 @@ async function getFileAnswerText(answer) {
     throw new Error(`getFileAnswerText called with answer of type ${answer.type}`);
   }
 
-  if (!answer.body?.hasOwnProperty('uniqueFileName') || !answer.body?.hasOwnProperty('data')) {
+  if (
+    !answer.body ||
+    !Object.hasOwn(answer.body, 'uniqueFileName') ||
+    !Object.hasOwn(answer.body, 'data')
+  ) {
     return answer.body;
   }
 
   const s3Client = new S3Client(new S3());
-  await s3Client.uploadFile(answer.body.uniqueFileName, answer.body.data);
+  const { uniqueFileName, data } = answer.body;
 
-  return answer.body.uniqueFileName;
+  void (await s3Client.uploadFile(uniqueFileName, data));
+
+  return uniqueFileName;
 }
 
 /**
