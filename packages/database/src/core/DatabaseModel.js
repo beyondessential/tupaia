@@ -267,8 +267,8 @@ export class DatabaseModel {
     );
   }
 
-  async findManyById(ids) {
-    return this.findManyByColumn('id', ids);
+  async findManyById(ids, additionalConditions = {}, customQueryOptions = {}) {
+    return this.findManyByColumn('id', ids, additionalConditions, customQueryOptions);
   }
 
   async findOne(dbConditions, customQueryOptions = {}) {
