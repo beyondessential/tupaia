@@ -1,8 +1,9 @@
 /**
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
- * @typedef {import('@tupaia/types').UserAccount} UserAccount
+ * @typedef {import('@tupaia/types').Survey} Survey
  * @typedef {import('@tupaia/types').UserAccountPreferences} UserAccountPreferences
+ * @typedef {import('@tupaia/types').UserAccount} UserAccount
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
  * @typedef {import('../Entity').EntityRecord} EntityRecord
  * @typedef {import('../PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
@@ -359,6 +360,40 @@ export class UserModel extends DatabaseModel {
   async getRecentEntityIds(userId, countryCode, type) {
     const user = ensure(await this.findById(userId), `No user exists with ID ${userId}`);
     return user.getRecentEntityIds(countryCode, type);
+  }
+
+  /**
+   * @param {UserAccount['id']} userId
+   * @param {Project['id']} projectId
+   * @returns {Promise<{
+   *   country_code: Entity['code'];
+   *   country_id: Entity['id'];
+   *   country_name: Entity['name'];
+   *   survey_code: Survey['code'];
+   *   survey_name: Survey['name'];
+   * }[]>}
+   */
+  async getRecentSurveys(userId, projectId) {
+    return await this.database.executeSql(
+      `
+	      SELECT
+	        survey.name AS survey_name,
+	        survey.code AS survey_code,
+	        c.name AS country_name,
+	        c.id AS country_id,
+	        c.code AS country_code
+	      FROM
+	        survey_response
+	        JOIN survey ON survey.id = survey_response.survey_id
+	        JOIN entity ON entity.id = survey_response.entity_id
+	        JOIN entity c ON c.code = entity.country_code
+	      WHERE survey_response.user_id = ? AND survey.project_id = ?
+	      GROUP BY survey.code, survey.name, c.name, c.id
+	      ORDER BY max(survey_response.data_time) DESC
+	      LIMIT 6;
+	    `,
+      [userId, projectId],
+    );
   }
 
   /**
