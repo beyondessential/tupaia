@@ -6,19 +6,19 @@ describe('removeDiacritics', () => {
   });
 
   it('removes diacritics from accented characters', () => {
-    expect(removeDiacritics('Zürich')).toBe('Zurich');
-    expect(removeDiacritics('España')).toBe('Espana');
-    expect(removeDiacritics('San José')).toBe('San Jose');
-    expect(removeDiacritics('São Paulo')).toBe('Sao Paulo');
-    expect(removeDiacritics('Waitematā')).toBe('Waitemata');
     expect(removeDiacritics('açaí')).toBe('acai');
     expect(removeDiacritics('café')).toBe('cafe');
     expect(removeDiacritics('crème brûlée')).toBe('creme brulee');
+    expect(removeDiacritics('España')).toBe('Espana');
+    expect(removeDiacritics('İzmir')).toBe('Izmir');
     expect(removeDiacritics('mānuka')).toBe('manuka');
     expect(removeDiacritics('naïve')).toBe('naive');
     expect(removeDiacritics('résumé')).toBe('resume');
-    expect(removeDiacritics('İzmir')).toBe('Izmir');
+    expect(removeDiacritics('San José')).toBe('San Jose');
+    expect(removeDiacritics('São Paulo')).toBe('Sao Paulo');
     expect(removeDiacritics('Świętokrzyskie Province')).toBe('Swietokrzyskie Province');
+    expect(removeDiacritics('Waitematā')).toBe('Waitemata');
+    expect(removeDiacritics('Zürich')).toBe('Zurich');
     // ʻOkinas represented with U+02BB modifier letter turned comma
     expect(removeDiacritics('ʻŌmaʻo')).toBe('Omao');
   });
