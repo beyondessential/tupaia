@@ -16,7 +16,7 @@ import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 
 // TODO: Move this to a config model RN-1668
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
-const SAVE_BATCH_SIZE = 100;
+const SAVE_BATCH_SIZE = 1000;
 const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
 const assertIsWithinTransaction = (database: BaseDatabase) => {
