@@ -1,17 +1,11 @@
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { get } from 'lodash';
 import winston from 'winston';
-import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
-import { fetchWithTimeout, HttpError } from '@tupaia/utils';
+
+import { removeDiacritics } from '@tupaia/tsutils';
+import { HttpError, fetchWithTimeout } from '@tupaia/utils';
 
 const BASE_PATH = 'uploads/geojson';
-
-/**
- * @param {string} str
- * @returns {string}
- */
-function removeDiacritics(str) {
-  return str.normalize('NFD').replace(/\p{Diacritic}/gu, '');
-}
 
 function extractBestMatch(data) {
   if (!Array.isArray(data)) {
