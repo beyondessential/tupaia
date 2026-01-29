@@ -47,12 +47,15 @@ export const JOIN_TYPES = /** @type {const} */ ({
 
 // list valid behaviour so we can validate against sql injection
 const VALID_CAST_TYPES = /** @type {const} */ (['text', 'text[]', 'date']);
+
 const VALID_COMPARISON_TYPES = /** @type {const} */ ([
   'where',
   'whereBetween',
   'whereIn',
   'orWhere',
 ]);
+/** @typedef {typeof VALID_COMPARISON_TYPES[number]} ComparisonType */
+
 export const WHERE_SUBQUERY_CLAUSES = /** @type {const} */ ({
   EXISTS: 'exists',
   NOT_EXISTS: 'notExists',

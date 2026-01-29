@@ -1,10 +1,7 @@
 import { RECORDS } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
 import { hasBESAdminAccess } from '../../permissions';
-import {
-  assertSurveyEditPermissions,
-  assertSurveyGetPermissions,
-} from '../surveys/assertSurveyPermissions';
+import { assertSurveyEditPermissions } from '../surveys/assertSurveyPermissions';
 import { mergeFilter, mergeMultiJoin } from '../utilities';
 
 export const assertSurveyScreenComponentGetPermissions = async (
@@ -17,7 +14,7 @@ export const assertSurveyScreenComponentGetPermissions = async (
     `No survey screen component exists with ID ${surveyScreenComponentId}`,
   );
   const surveyId = await surveyScreenComponent.surveyId();
-  return assertSurveyGetPermissions(accessPolicy, models, surveyId);
+  return await models.survey.assertCanRead(accessPolicy, surveyId);
 };
 
 export const assertSurveyScreenComponentEditPermissions = async (
