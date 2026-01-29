@@ -28,7 +28,11 @@ async function getFileAnswerText(answer) {
     throw new Error(`getFileAnswerText called with answer of type ${answer.type}`);
   }
 
-  if (!answer.body?.hasOwnProperty('uniqueFileName') || !answer.body?.hasOwnProperty('data')) {
+  if (
+    !answer.body ||
+    !Object.hasOwn(answer.body, 'uniqueFileName') ||
+    !Object.hasOwn(answer.body, 'data')
+  ) {
     return answer.body;
   }
 
