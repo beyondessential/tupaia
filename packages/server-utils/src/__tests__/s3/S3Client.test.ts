@@ -1,10 +1,11 @@
+import path from 'node:path';
+
 import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
+import { configureDotEnv } from '../../configureDotEnv';
 import { S3, S3Client } from '../../s3';
 import * as getUniqueFileNameModule from '../../s3/getUniqueFileName';
 
-// Picked up from .env files when a deployed server depends on @tupaia/server-utils, but not when
-// running this test suite directly
-process.env.AWS_REGION ||= 'ap-southeast-2';
+configureDotEnv([path.resolve(__dirname, '../../../../../env/aws.env')]);
 
 /**
  * `S3Client#upload` creates an `Upload` instance; but this test suite doesn’t
