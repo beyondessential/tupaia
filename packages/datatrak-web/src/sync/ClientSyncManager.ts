@@ -18,12 +18,8 @@ import { ensure } from '@tupaia/tsutils';
 import { Project } from '@tupaia/types';
 import { remove, stream } from '../api';
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
-import {
-  type DatatrakWebModelRegistry,
-  type ProcessStreamDataParams,
-  SYNC_EVENT_ACTIONS,
-  type SyncEvents,
-} from '../types';
+import type { DatatrakWebModelRegistry, ProcessStreamDataParams, SyncEvents } from '../types';
+import { SYNC_EVENT_ACTIONS } from '../types';
 import { formatFraction } from '../utils';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
@@ -228,45 +224,45 @@ export class ClientSyncManager {
           hasConnection: !!this.models?.database?.connection,
           isSingleton: this.models?.database?.isSingleton,
         });
-        
+
         // Health check before invalidating queries
         console.log('Running database health check...');
         const healthResult = await this.database.healthCheck();
         console.log('Database health check result:', healthResult);
-        
+
         if (!healthResult.healthy) {
           console.error('Database is unhealthy after sync! Error:', healthResult.error);
           // Don't invalidate queries if database is unhealthy - might cause cascading failures
           console.groupEnd();
           throw new Error(`Database unhealthy after sync: ${healthResult.error}`);
         }
-        
+
         console.log('Project model state:', {
           hasProjectModel: !!this.models?.project,
           projectModelDatabase: !!this.models?.project?.database,
           projectModelDatabaseType: this.models?.project?.database?.constructor?.name,
         });
-        
+
         // Additional delay before invalidating queries to ensure PGlite is fully stable
         console.log('Waiting additional 500ms before invalidating queries...');
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         // Re-check health after delay
         const healthCheck2 = await this.database.healthCheck();
         console.log('Second health check before invalidation:', healthCheck2);
-        
+
         if (!healthCheck2.healthy) {
           console.error('Database still unhealthy after delay!');
           console.groupEnd();
           throw new Error(`Database unhealthy before query invalidation: ${healthCheck2.error}`);
         }
-        
+
         console.log('Invalidating all queries...');
         console.groupEnd();
-        
+
         await queryClient.invalidateQueries();
         this.models.clearCache();
-        
+
         console.log('🔄 [ClientSyncManager] Query invalidation complete');
       }
     } catch (error: any) {
@@ -328,7 +324,7 @@ export class ClientSyncManager {
         count: factsAtStart.length,
         facts: factsAtStart.map((f: any) => ({ key: f.key, value: f.value })),
       });
-      
+
       const projectsAtStart = await this.models.project.find({});
       console.log('[ClientSyncManager.runSync] Projects at START:', {
         count: projectsAtStart.length,
@@ -396,7 +392,7 @@ export class ClientSyncManager {
 
     const pulledChangesCount = await this.pullChanges(sessionId, projectIds);
 
-    // Debug: Check state AFTER pullChanges  
+    // Debug: Check state AFTER pullChanges
     console.log('[ClientSyncManager.runSync] State AFTER pullChanges:');
     const factsAfterPull = await this.models.localSystemFact.find({});
     console.log('  Local system facts:', factsAfterPull.length);
@@ -588,7 +584,7 @@ export class ClientSyncManager {
         SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
         pullUntil.toString(),
       );
-      
+
       // Debug: Check what's in the database INSIDE the transaction
       console.log('[ClientSyncManager] Inside transaction - checking data...');
       const factsInTransaction = await transactingModels.localSystemFact.find({});
@@ -596,19 +592,21 @@ export class ClientSyncManager {
         count: factsInTransaction.length,
         facts: factsInTransaction.map((f: any) => ({ key: f.key, value: f.value })),
       });
-      
+
       const projectsInTransaction = await transactingModels.project.find({});
       console.log('[ClientSyncManager] Projects INSIDE transaction:', {
         count: projectsInTransaction.length,
       });
-      
+
       return factsInTransaction;
     });
-    
+
     // After initial sync transaction commits, give PGlite time to flush to IndexedDB
     // This is a workaround for potential race conditions where queries run before data is fully persisted
-    console.log('[ClientSyncManager] Initial sync transaction complete, waiting for PGlite to stabilize...');
-    
+    console.log(
+      '[ClientSyncManager] Initial sync transaction complete, waiting for PGlite to stabilize...',
+    );
+
     // Debug: Check what's in the database OUTSIDE the transaction (should be same as inside if committed)
     console.log('[ClientSyncManager] Checking data OUTSIDE transaction (before delay)...');
     const factsOutside = await this.models.localSystemFact.find({});
@@ -616,14 +614,14 @@ export class ClientSyncManager {
       count: factsOutside.length,
       facts: factsOutside.map((f: any) => ({ key: f.key, value: f.value })),
     });
-    
+
     const projectsOutside = await this.models.project.find({});
     console.log('[ClientSyncManager] Projects OUTSIDE transaction:', {
       count: projectsOutside.length,
     });
-    
+
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Check again after delay
     console.log('[ClientSyncManager] Checking data OUTSIDE transaction (after delay)...');
     const factsAfterDelay = await this.models.localSystemFact.find({});
@@ -631,11 +629,11 @@ export class ClientSyncManager {
       count: factsAfterDelay.length,
       facts: factsAfterDelay.map((f: any) => ({ key: f.key, value: f.value })),
     });
-    
+
     // Verify the database is healthy after the delay
     const healthCheck = await this.database.healthCheck();
     console.log('[ClientSyncManager] Post-initial-sync health check:', healthCheck);
-    
+
     if (!healthCheck.healthy) {
       throw new Error(`Database unhealthy after initial sync: ${healthCheck.error}`);
     }
