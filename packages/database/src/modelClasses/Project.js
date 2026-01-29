@@ -1,4 +1,5 @@
 /**
+ * @typedef {import('knex').Knex} Knex
  * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
@@ -84,19 +85,21 @@ export class ProjectModel extends DatabaseModel {
    * } [where]
    */
   async getAllProjectDetails(where) {
-    /** @type {[string, string[] | undefined]} */
-    const [whereClause, bindings] = (() => {
-      if (!where?.code) return ['', undefined];
+    /** @type {true | Knex.RawBinding} */
+    const whereClause = (() => {
+      if (!where?.code) return true;
 
       const { code } = where;
-      if (typeof code === 'string') return ['WHERE p.code = ?', [code]];
+      const { raw } = this.database.connection;
+      if (typeof code === 'string') return raw('p.code = ?', code);
 
       const { comparator, comparisonValue } = code;
       if (comparator === 'not in' && Array.isArray(comparisonValue) && comparisonValue.length > 0) {
-        return [`WHERE p.code NOT IN ${SqlQuery.record(comparisonValue)}`, comparisonValue];
+        const projectCodes = raw(SqlQuery.record(comparisonValue), comparisonValue);
+        return raw('p.code NOT IN ?', projectCodes);
       }
 
-      return ['', undefined];
+      return true;
     })();
 
     return await this.database.executeSql(
@@ -128,9 +131,9 @@ export class ProjectModel extends DatabaseModel {
               entity_relation er
             GROUP BY
               parent_id) sub ON p.entity_id = sub.parent_id
-        ${whereClause};
+        WHERE ?;
       `,
-      bindings,
+      whereClause,
     );
   }
 
