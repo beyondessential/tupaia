@@ -6,6 +6,7 @@ import {
   DatabaseModel,
   PublicSchemaRecordName,
   ModelRegistry,
+  runDatabaseFunctionInBatches,
 } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 import { ModelSanitizeArgs, SyncSnapshotAttributes } from '../types';
@@ -58,7 +59,9 @@ export const saveChangesForModel = async (
   const idsForIncomingRecords = incomingRecords.map(r => r.id);
   // add all records that already exist in the db to the list to be updated
   // we only need the id column to check if the record already exists
-  const existingRecords = await model.database.find(model.databaseRecord, { id: idsForIncomingRecords }, { columns: ['id'] });
+  const existingRecords = await runDatabaseFunctionInBatches(idsForIncomingRecords,
+    async (ids: string[]) => model.database.find(model.databaseRecord, { id: ids }, { columns: ['id'] })
+  );
   const idToExistingRecord: Record<string, (typeof existingRecords)[number]> = Object.fromEntries(
     existingRecords.map((e: any) => [e.id, e]),
   );
