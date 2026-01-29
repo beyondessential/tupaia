@@ -64,7 +64,7 @@ export const saveChangesForModel = async (
   )) as { id: string }[];
   const existingRecordIds = new Set(existingRecords.map(r => r.id));
 
-  const [createChanges, updateChanges] = partition(changes, c => !existingRecordIds.has(c.data.id));
+  const [updateChanges, createChanges] = partition(changes, c => existingRecordIds.has(c.data.id));
   const recordsForCreate = createChanges.map(c => sanitizeData(c.data));
   const recordsForUpdate = updateChanges.map(c => sanitizeData(c.data));
 
