@@ -40,7 +40,7 @@ describe('removeDiacritics', () => {
     expect(removeDiacritics('Fort-Liberté')).toBe('Fort-Liberte');
     expect(removeDiacritics('Hello, world!')).toBe('Hello, world!');
 
-    // ʻOkina (represtned with U+02BB) in “Hawaii”, but posessive apostroph in “Oahu’s”
+    // ʻOkina (represented with U+02BB) in “Hawaii”, but possessive apostrophe in “Oahu’s”
     expect(removeDiacritics('Hawaiʻi Oʻahu’s')).toBe('Hawaii Oahu’s');
   });
 });
