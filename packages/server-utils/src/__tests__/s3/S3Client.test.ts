@@ -1,6 +1,6 @@
+import type { CompleteMultipartUploadOutput } from '@aws-sdk/client-s3';
 import path from 'node:path';
 
-import { CompleteMultipartUploadOutput } from '@aws-sdk/client-s3';
 import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
 import { configureDotEnv } from '../../configureDotEnv';
 import { S3, S3Client } from '../../s3';
