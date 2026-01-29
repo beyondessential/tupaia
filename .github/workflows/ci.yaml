@@ -9,6 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  AWS_REGION: ap-southeast-2
   NODE_OPTIONS: '--max-old-space-size=6144'
   NODE_ENV: test
 

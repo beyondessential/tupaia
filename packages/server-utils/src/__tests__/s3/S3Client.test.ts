@@ -1,10 +1,12 @@
+import type { CompleteMultipartUploadOutput } from '@aws-sdk/client-s3';
+import path from 'node:path';
+
 import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
+import { configureDotEnv } from '../../configureDotEnv';
 import { S3, S3Client } from '../../s3';
 import * as getUniqueFileNameModule from '../../s3/getUniqueFileName';
 
-// Picked up from .env files when a deployed server depends on @tupaia/server-utils, but not when
-// running this test suite directly
-process.env.AWS_REGION ||= 'ap-southeast-2';
+configureDotEnv([path.resolve(__dirname, '../../../../../env/aws.env')]);
 
 /**
  * `S3Client#upload` creates an `Upload` instance; but this test suite doesn’t
@@ -12,7 +14,11 @@ process.env.AWS_REGION ||= 'ap-southeast-2';
  */
 jest.mock('@aws-sdk/lib-storage', () => ({
   Upload: jest.fn().mockImplementation(() => ({
-    done: jest.fn().mockResolvedValue({ Location: 'https://s3.tupaia.org/uploads/test.webp' }),
+    done: jest.fn().mockResolvedValue({
+      Bucket: 'mock-bucket',
+      Key: 'uploads/files/test.webp',
+      Location: 'https://s3.tupaia.org/uploads/files/test.webp',
+    } satisfies CompleteMultipartUploadOutput),
   })),
 }));
 
