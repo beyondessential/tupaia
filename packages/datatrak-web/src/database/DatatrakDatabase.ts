@@ -33,12 +33,60 @@ export class DatatrakDatabase extends BaseDatabase {
   }
 
   async wrapInTransaction<T = unknown>(
-    wrappedFunction: <T = unknown>(db: DatatrakDatabase) => Promise<T>,
+    wrappedFunction: (db: DatatrakDatabase) => Promise<T>,
     transactionConfig?: Knex.TransactionConfig,
   ): Promise<T> {
-    return await this.connection.transaction<T>(
-      transaction => wrappedFunction(new DatatrakDatabase(transaction)),
-      transactionConfig,
-    );
+    console.log('[DatatrakDatabase.wrapInTransaction] Starting transaction', {
+      hasConnection: !!this.connection,
+      config: transactionConfig,
+    });
+    
+    try {
+      const result = await this.connection.transaction<T>(
+        async transaction => {
+          console.log('[DatatrakDatabase.wrapInTransaction] Transaction started', {
+            isTransaction: transaction.isTransaction,
+          });
+          
+          const transactingDb = new DatatrakDatabase(transaction);
+          const innerResult = await wrappedFunction(transactingDb);
+          
+          console.log('[DatatrakDatabase.wrapInTransaction] Inner function complete, transaction should auto-commit');
+          return innerResult;
+        },
+        transactionConfig,
+      );
+      
+      console.log('[DatatrakDatabase.wrapInTransaction] Transaction committed successfully');
+      return result;
+    } catch (error: any) {
+      console.error('[DatatrakDatabase.wrapInTransaction] Transaction failed/rolled back', {
+        error: error?.message,
+        errorStack: error?.stack,
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Health check to verify database connection is alive
+   */
+  async healthCheck(): Promise<{ healthy: boolean; error?: string }> {
+    try {
+      console.log('[DatatrakDatabase.healthCheck] Starting');
+      const result = await this.connection.raw('SELECT 1 as health');
+      console.log('[DatatrakDatabase.healthCheck] Result', {
+        result,
+        hasRows: !!result?.rows,
+        rowCount: result?.rows?.length,
+      });
+      return { healthy: true };
+    } catch (error: any) {
+      console.error('[DatatrakDatabase.healthCheck] Failed', {
+        error: error?.message,
+        errorStack: error?.stack,
+      });
+      return { healthy: false, error: error?.message };
+    }
   }
 }

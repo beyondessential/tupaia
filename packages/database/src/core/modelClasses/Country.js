@@ -1,6 +1,5 @@
-import { reduceToDictionary } from '@tupaia/utils';
 import { SyncDirections } from '@tupaia/constants';
-
+import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';

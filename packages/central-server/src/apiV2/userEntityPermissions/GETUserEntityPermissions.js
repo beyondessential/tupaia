@@ -16,7 +16,7 @@ import {
  */
 
 export class GETUserEntityPermissions extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async assertUserHasAccess() {
     await this.assertPermissions(

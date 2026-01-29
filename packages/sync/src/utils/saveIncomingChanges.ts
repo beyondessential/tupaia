@@ -6,6 +6,7 @@ import {
   DatabaseModel,
   ModelRegistry,
   PublicSchemaRecordName,
+  runDatabaseFunctionInBatches,
 } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 import { ModelSanitizeArgs, SyncSnapshotAttributes } from '../types';
@@ -15,6 +16,7 @@ import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 
 // TODO: Move this to a config model RN-1668
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
+const SAVE_BATCH_SIZE = 100;
 const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
 const assertIsWithinTransaction = (database: BaseDatabase) => {
@@ -39,7 +41,7 @@ export const saveDeletesForModel = async (
     },
   );
   if (deletedRecords.length > 0) {
-    await saveDeletes(model, deletedRecords, 1000, progressCallback);
+    await saveDeletes(model, deletedRecords, SAVE_BATCH_SIZE, progressCallback);
   }
 };
 
@@ -55,14 +57,13 @@ export const saveChangesForModel = async (
   const idsForIncomingRecords = changes.filter(c => c.data.id).map(c => c.data.id);
 
   // add all records that already exist in the db to the list to be updated
-  const existingRecords = (await model.database.find(
-    model.databaseRecord,
-    { id: idsForIncomingRecords },
-    { columns: ['id'] },
+  const existingRecords = (await runDatabaseFunctionInBatches(
+    idsForIncomingRecords,
+    async (ids: string[]) =>
+      model.database.find(model.databaseRecord, { id: ids }, { columns: ['id'] }),
   )) as { id: string }[];
   const existingRecordIds = new Set(existingRecords.map(r => r.id));
 
-  // split changes into create, update
   const [createChanges, updateChanges] = partition(changes, c => !existingRecordIds.has(c.data.id));
   const recordsForCreate = createChanges.map(c => sanitizeData(c.data));
   const recordsForUpdate = updateChanges.map(c => sanitizeData(c.data));
@@ -72,7 +73,7 @@ export const saveChangesForModel = async (
     count: recordsForCreate.length,
   });
   if (recordsForCreate.length > 0) {
-    await saveCreates(model, recordsForCreate, 1000, progressCallback);
+    await saveCreates(model, recordsForCreate, SAVE_BATCH_SIZE, progressCallback);
   }
 
   winston.debug(
@@ -82,7 +83,7 @@ export const saveChangesForModel = async (
     },
   );
   if (recordsForUpdate.length > 0) {
-    await saveUpdates(model, recordsForUpdate, isCentralServer, 1000, progressCallback);
+    await saveUpdates(model, recordsForUpdate, isCentralServer, SAVE_BATCH_SIZE, progressCallback);
   }
 };
 

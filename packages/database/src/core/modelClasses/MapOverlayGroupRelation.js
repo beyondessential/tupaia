@@ -1,21 +1,20 @@
 import { SyncDirections } from '@tupaia/constants';
-
+import { JOIN_TYPES } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { JOIN_TYPES } from '../BaseDatabase';
 
 const MAP_OVERLAY = 'mapOverlay';
 const MAP_OVERLAY_GROUP = 'mapOverlayGroup';
-const RELATION_CHILD_TYPES = {
+const RELATION_CHILD_TYPES = /** @type {const} */ ({
   MAP_OVERLAY,
   MAP_OVERLAY_GROUP,
-};
+});
 
 export class MapOverlayGroupRelationRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.MAP_OVERLAY_GROUP_RELATION;
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       joinType: JOIN_TYPES.LEFT,
       joinWith: RECORDS.MAP_OVERLAY,
@@ -33,7 +32,7 @@ export class MapOverlayGroupRelationRecord extends DatabaseRecord {
       ],
       fields: { code: 'code' },
     },
-  ];
+  ]);
 
   async findChildRelations() {
     return this.model.find({ map_overlay_group_id: this.child_id });

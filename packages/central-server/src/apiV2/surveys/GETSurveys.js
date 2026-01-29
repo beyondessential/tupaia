@@ -36,7 +36,7 @@ const AD_HOC_COLUMNS = new Set(
  * - /countries/id/surveys
  */
 export class GETSurveys extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   defaultJoinType = JOIN_TYPES.LEFT_OUTER;
 

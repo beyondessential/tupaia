@@ -4,7 +4,7 @@ import { DatabaseModel } from '@tupaia/database';
 export const saveCreates = async (
   model: DatabaseModel,
   records: Record<string, any>[],
-  batchSize = 1000,
+  batchSize = 100,
   progressCallback?: (recordsProcessed: number) => void,
 ) => {
   for (let i = 0; i < records.length; i += batchSize) {
@@ -33,7 +33,7 @@ export const saveUpdates = async (
   model: DatabaseModel,
   incomingRecords: Record<string, any>[],
   isCentralServer: boolean,
-  batchSize = 1000,
+  batchSize = 100,
   progressCallback?: (recordsProcessed: number) => void,
 ) => {
   const recordsToSave = incomingRecords.filter(r => r.id);
@@ -98,7 +98,7 @@ const bulkUpdateForClient = async (model: DatabaseModel, batch: Record<string, a
 export const saveDeletes = async (
   model: DatabaseModel,
   recordsForDelete: Record<string, any>[],
-  batchSize = 1000,
+  batchSize = 100,
   progressCallback?: (recordsProcessed: number) => void,
 ) => {
   for (let i = 0; i < recordsForDelete.length; i += batchSize) {

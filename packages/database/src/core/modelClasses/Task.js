@@ -2,6 +2,7 @@
  * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('@tupaia/types').Project} Project
  */
 
 import { SyncDirections } from '@tupaia/constants';
@@ -41,22 +42,28 @@ const formatValue = async (field, value, models) => {
   return value;
 };
 
+/**
+ * @template {Project['id'] | Project['id'][]} T
+ * @param {T} projectId
+ * @returns {{ 'survey.project_id': T }}
+ */
 const getTaskMetricsBaseQuery = projectId => ({ 'survey.project_id': projectId });
-const getTaskMetricsBaseJoin = () => ({
-  joinWith: RECORDS.SURVEY,
-  joinCondition: ['survey.id', 'task.survey_id'],
-});
+const getTaskMetricsBaseJoin = () =>
+  /** @type {const} */ ({
+    joinWith: RECORDS.SURVEY,
+    joinCondition: ['survey.id', 'task.survey_id'],
+  });
 
 export class TaskRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK;
 
-  statusTypes = {
+  statusTypes = /** @type {const} */ ({
     ToDo: 'to_do',
     Completed: 'completed',
     Cancelled: 'cancelled',
-  };
+  });
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       joinWith: RECORDS.ENTITY,
       joinCondition: ['entity_id', `${RECORDS.ENTITY}.id`],
@@ -80,7 +87,7 @@ export class TaskRecord extends DatabaseRecord {
       joinCondition: ['survey_response_id', `${RECORDS.SURVEY_RESPONSE}.id`],
       fields: { data_time: 'data_time', timezone: 'timezone' },
     },
-  ];
+  ]);
 
   /**
    * @returns {Promise<import('./Entity').EntityRecord>}
