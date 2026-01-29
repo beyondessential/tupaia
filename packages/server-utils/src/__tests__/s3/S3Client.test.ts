@@ -1,5 +1,6 @@
 import path from 'node:path';
 
+import { CompleteMultipartUploadOutput } from '@aws-sdk/client-s3';
 import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
 import { configureDotEnv } from '../../configureDotEnv';
 import { S3, S3Client } from '../../s3';
@@ -13,7 +14,11 @@ configureDotEnv([path.resolve(__dirname, '../../../../../env/aws.env')]);
  */
 jest.mock('@aws-sdk/lib-storage', () => ({
   Upload: jest.fn().mockImplementation(() => ({
-    done: jest.fn().mockResolvedValue({ Location: 'https://s3.tupaia.org/uploads/test.webp' }),
+    done: jest.fn().mockResolvedValue({
+      Bucket: 'mock-bucket',
+      Key: 'uploads/files/test.webp',
+      Location: 'https://s3.tupaia.org/uploads/files/test.webp',
+    } satisfies CompleteMultipartUploadOutput),
   })),
 }));
 
