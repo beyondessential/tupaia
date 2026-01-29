@@ -1,8 +1,3 @@
-/*
- * Duplicated from @tupaia/central-server/dataAccessors/answerBodyParsers, with online-only
- * functionality removed. (Deferred to RN-1752)
- */
-
 import { isPlainObject } from 'es-toolkit';
 
 import { isValidHttpUrl } from '@tupaia/tsutils';
