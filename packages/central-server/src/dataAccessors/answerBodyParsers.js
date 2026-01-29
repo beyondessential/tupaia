@@ -37,9 +37,11 @@ async function getFileAnswerText(answer) {
   }
 
   const s3Client = new S3Client(new S3());
-  await s3Client.uploadFile(answer.body.uniqueFileName, answer.body.data);
+  const { uniqueFileName, data } = answer.body;
 
-  return answer.body.uniqueFileName;
+  void (await s3Client.uploadFile(uniqueFileName, data));
+
+  return uniqueFileName;
 }
 
 /**
