@@ -5,5 +5,6 @@ export * from './getSyncQueueChangeTime';
 export * from './hashStringToInt';
 export * from './object';
 export * from './period';
+export { removeDiacritics } from './removeDiacritics';
 export * from './typeGuards';
 export * from './validation';
