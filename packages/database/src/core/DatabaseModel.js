@@ -63,6 +63,12 @@ export class DatabaseModel {
     if (!this.constructor.syncDirection) {
       throw new Error(`syncDirection must be set by the model: ${this.databaseRecord}`);
     }
+
+    /**
+     * @privateRemarks Does nothing meaningful runtime, but provides type hint to TypeScript
+     * @type {undefined | (records: SyncSnapshotAttributes[]) => Promise<{ inserts: SyncSnapshotAttributes[], updates: SyncSnapshotAttributes[] }>}
+     */
+    this.incomingSyncHook;
   }
 
   // cache disabled by default. If enabling remember to update the TABLES_REQUIRING_TRIGGER_CREATION to include this table in @tupaia/database/src/runPostMigration.js.

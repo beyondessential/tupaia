@@ -1,11 +1,10 @@
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-
 import { SYNC_SESSION_DIRECTION } from '../constants';
 import { SyncSnapshotAttributes } from '../types';
 import { countSyncSnapshotRecords } from './countSyncSnapshotRecords';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
-import { insertSnapshotRecords, updateSnapshotRecords } from './manageSnapshotTable';
 import { getModelsForPush } from './getModelsForDirection';
+import { insertSnapshotRecords, updateSnapshotRecords } from './manageSnapshotTable';
 
 const BATCH_SIZE = 10000;
 
@@ -55,7 +54,7 @@ export const incomingSyncHook = async (
           fromId = batchRecords.at(-1)?.id;
 
           const incomingSnapshotChanges = hasIncomingSyncHook
-            ? await (model.incomingSyncHook as Function)(batchRecords)
+            ? await model.incomingSyncHook(batchRecords)
             : null;
 
           if (incomingSnapshotChanges) {
