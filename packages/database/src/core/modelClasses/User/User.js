@@ -2,8 +2,8 @@
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
  * @typedef {import('@tupaia/types').Survey} Survey
- * @typedef {import('@tupaia/types').UserAccountPreferences} UserAccountPreferences
  * @typedef {import('@tupaia/types').UserAccount} UserAccount
+ * @typedef {import('@tupaia/types').UserAccountPreferences} UserAccountPreferences
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
  * @typedef {import('../Entity').EntityRecord} EntityRecord
  * @typedef {import('../PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
