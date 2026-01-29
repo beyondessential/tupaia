@@ -42,7 +42,7 @@ export class DumbSurveyScreen extends React.Component {
     this.updateHeaderLabel(this.props.surveyName);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.screenIndex !== this.props.screenIndex) {
       this.setState({
         lastScreenIndex: this.props.screenIndex,
