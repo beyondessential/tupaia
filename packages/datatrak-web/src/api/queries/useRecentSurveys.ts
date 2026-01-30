@@ -26,7 +26,7 @@ const queryFunctions = {
 export const useRecentSurveys = (userId?: UserAccount['id'], projectId?: Project['id']) => {
   const isOfflineFirst = useIsOfflineFirst();
   return useDatabaseQuery<DatatrakWebRecentSurveysRequest.ResBody>(
-    ['recentSurveys', userId, projectId],
+    ['recentSurveys', { userId, projectId }],
     isOfflineFirst ? queryFunctions.local : queryFunctions.remote,
     {
       enabled: Boolean(userId && projectId),
