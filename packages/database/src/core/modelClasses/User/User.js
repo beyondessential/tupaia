@@ -388,7 +388,7 @@ export class UserModel extends DatabaseModel {
 	        JOIN entity ON entity.id = survey_response.entity_id
 	        JOIN entity c ON c.code = entity.country_code
 	      WHERE survey_response.user_id = ? AND survey.project_id = ?
-	      GROUP BY survey.code, survey.name, c.name, c.id
+	      GROUP BY survey.id, c.id
 	      ORDER BY max(survey_response.data_time) DESC
 	      LIMIT 6;
 	    `,
