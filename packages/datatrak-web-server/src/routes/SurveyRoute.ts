@@ -1,20 +1,18 @@
-import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
-import {
-  DatatrakWebSurveyRequest,
-  WebServerProjectRequest,
-  Question,
-  QuestionType,
-} from '@tupaia/types';
+import { ensure } from '@tupaia/tsutils';
+import { DatatrakWebSurveyRequest, Question, QuestionType } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
 
-export type SurveyRequest = Request<
-  DatatrakWebSurveyRequest.Params,
-  DatatrakWebSurveyRequest.ResBody,
-  DatatrakWebSurveyRequest.ReqBody,
-  DatatrakWebSurveyRequest.ReqQuery
->;
+export interface SurveyRequest
+  extends Request<
+    DatatrakWebSurveyRequest.Params,
+    DatatrakWebSurveyRequest.ResBody,
+    DatatrakWebSurveyRequest.ReqBody,
+    DatatrakWebSurveyRequest.ReqQuery
+  > {}
 
 const DEFAULT_FIELDS = [
   'name',
@@ -24,7 +22,7 @@ const DEFAULT_FIELDS = [
   'survey_group.name',
   'project_id',
   'surveyQuestions',
-];
+] as const;
 
 const parseOption = (option: string) => {
   try {
@@ -82,10 +80,12 @@ export class SurveyRoute extends Route<SurveyRequest> {
       models,
     } = this.req;
     const { fields = DEFAULT_FIELDS } = query;
-    // check if survey exists in the database
-    const dbSurveyResults = await models.survey.find({ code: surveyCode });
 
-    if (!dbSurveyResults.length) throw new Error(`Survey with code ${surveyCode} not found`);
+    const [{ exists }] = await models.database.executeSql<[{ exists: boolean }]>(
+      'SELECT EXISTS(SELECT 1 FROM survey WHERE code = ?)',
+      [surveyCode],
+    );
+    if (!exists) throw new Error(`Survey with code ${surveyCode} not found`);
 
     // check if user has access to survey
     const surveys = await ctx.services.central.fetchResources('surveys', {
@@ -100,10 +100,11 @@ export class SurveyRoute extends Route<SurveyRequest> {
 
     const survey = camelcaseKeys(surveys[0], { deep: true });
 
-    const { projects } = await ctx.services.webConfig.fetchProjects();
-    const project = survey?.projectId
-      ? projects.find(({ id }: WebServerProjectRequest.ProjectResponse) => id === survey.projectId)
-      : null;
+    const { code: projectCode } = ensure(
+      await models.project.findOne({ id: survey.projectId }, { columns: ['code'] }),
+      `No project exists with ID ${survey.projectId}`,
+    );
+    const project = await ctx.services.webConfig.fetchProject(projectCode);
 
     const { surveyQuestions, ...restOfSurvey } = survey;
 
