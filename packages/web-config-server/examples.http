@@ -49,7 +49,8 @@ GET {{host}}/api/v1/report/PG_Strive_PNG_Weekly_Number_of_Febrile_Cases?dashboar
 content-type: {{contentType}}
 
 ### Fetch Flutracking LGA % participants with fever and cough map overlay
-GET {{host}}/api/v1/measureData?endDate=2021-11-14
+GET {{host}}/api/v1/measureData
+  ?endDate=2021-11-14
   &mapOverlayCode=AU_FLUTRACKING_LGA_Fever_And_Cough
   &organisationUnitCode=AU
   &projectCode=covidau
@@ -59,4 +60,13 @@ content-type: {{contentType}}
 
 ### Get projects
 GET {{host}}/api/v1/projects HTTP/1.1
+content-type: {{contentType}}
+
+### Get projects (including frontend-excluded projects)
+GET {{host}}/api/v1/projects
+  ?showExcludedProjects=false HTTP/1.1
+content-type: {{contentType}}
+
+### Get project by code
+GET {{host}}/api/v1/project/explore HTTP/1.1
 content-type: {{contentType}}
