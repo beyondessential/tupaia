@@ -240,7 +240,7 @@ export class UserModel extends DatabaseModel {
 
   /**
    * @param {UserAccount['id'][]} userIds
-   * @returns {Promise<{id: UserAccount['id'], name: string}[]>}
+   * @returns {Promise<{ id: UserAccount['id'], name: string }[]>}
    */
   async getFilteredUsers(searchTerm, userIds) {
     const usersFilter = {
@@ -280,7 +280,7 @@ export class UserModel extends DatabaseModel {
    * @param {Country['code']} countryCode
    * @param {PermissionGroupRecord} permissionGroup
    * @param {string | undefined} [searchTerm]
-   * @returns {Promise<{id: string, name: string}[]>}
+   * @returns {Promise<{ id: string, name: string }[]>}
    */
   async getFilteredUsersForPermissionGroup(countryCode, permissionGroup, searchTerm) {
     // if the permission group is a public permission group that every user has access to because of the api client permissions, then everyone has access to the survey, so return all non-internal users
