@@ -3,11 +3,11 @@ import type { Entity, Survey } from '../../models';
 export type Params = Record<string, never>;
 
 export interface RecentSurvey {
-  surveyCode: Survey['code'];
-  surveyName: Survey['name'];
-  countryName: Entity['name'];
   countryCode: Entity['code'];
   countryId: Entity['id'];
+  countryName: Entity['name'];
+  surveyCode: Survey['code'];
+  surveyName: Survey['name'];
 }
 
 export type ResBody = RecentSurvey[];
