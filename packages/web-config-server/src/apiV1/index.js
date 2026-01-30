@@ -9,7 +9,7 @@ import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
 import DashboardsHandler from './dashboards';
 import { ReportHandler } from './report';
-import { getProjects } from './projects';
+import { getProject, getProjects } from './projects';
 import { getLandingPage } from './landingPages';
 
 const handleWith = Handler =>
@@ -33,6 +33,7 @@ export const getRoutesForApiV1 = () => {
   api.get('/measures', handleWith(MeasuresHandler));
   api.get('/measureData', handleWith(MeasuresDataHandler));
   api.get('/projects', catchAsyncErrors(getProjects));
+  api.get('/project/:projectCode', catchAsyncErrors(getProject));
   api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards
   api.get('/report/:reportCode', handleWith(ReportHandler));
   api.get('/landingPage/:landingPageUrl', catchAsyncErrors(getLandingPage));
