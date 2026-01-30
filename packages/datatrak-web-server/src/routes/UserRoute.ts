@@ -47,7 +47,7 @@ export class UserRoute extends Route<UserRequest> {
       hide_welcome_screen,
     } = preferences;
 
-    let project;
+    let project = null;
     if (projectId) {
       try {
         const { code: projectCode } = ensure(
@@ -56,11 +56,11 @@ export class UserRoute extends Route<UserRequest> {
         project = await ctx.services.webConfig.fetchProject(projectCode);
       } catch (e: any) {
         if (
-          e instanceof UnexpectedNullishValueError || // Project doesn’t exist in DB
-          (e instanceof CustomError && e.statusCode === 404) // Fetch from web-config-server failed
+          !(
+            e instanceof UnexpectedNullishValueError || // Project doesn’t exist in DB
+            (e instanceof CustomError && e.statusCode === 404) // Fetch from web-config-server failed
+          )
         ) {
-          project = null;
-        } else {
           throw e;
         }
       }

@@ -1,5 +1,7 @@
 import { UserEntityPermissionModel as CommonUserEntityPermissionModel } from '@tupaia/database';
 import { sendEmail } from '@tupaia/server-utils';
+import { UnexpectedNullishValueError } from '@tupaia/tsutils';
+import winston from '../../log';
 
 export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
   meditrakConfig = {
@@ -27,6 +29,8 @@ const EMAILS = {
  * This will send users an email for each new permission they're granted. A smarter system would
  * hold off and pool several changes for the same user (e.g. if they're being granted permission
  * to three countries at once), but this is good enough.
+ * @param {{ type: string, new_record: import('@tupaia/types').UserEntityPermission }}
+ * @param {import('@tupaia/database').ModelRegistry} models
  */
 async function onUpsertSendPermissionGrantEmail(
   { type: changeType, new_record: newRecord },
@@ -36,26 +40,48 @@ async function onUpsertSendPermissionGrantEmail(
     return; // Don't notify the user of permissions being taken away
   }
 
-  // Get details of permission granted
-  const user = await models.user.findById(newRecord.user_id);
-  const entity = await models.entity.findById(newRecord.entity_id);
-  const permissionGroup = await models.permissionGroup.findById(newRecord.permission_group_id);
-  const platform = user.primary_platform ? user.primary_platform : 'tupaia';
+  const isApiClientUser = await models.user.isApiClientUser(newRecord.user_id);
+  if (isApiClientUser) {
+    winston.debug('Skipping permission-granted email for API client user', newRecord);
+    return;
+  }
 
-  const { subject, description, signOff } = EMAILS[platform];
+  try {
+    // Get details of permission granted
+    const user = await models.user.findByIdOrThrow(newRecord.user_id, {
+      columns: ['email', 'first_name', 'primary_platform'],
+    });
+    const entity = await models.entity.findByIdOrThrow(newRecord.entity_id, { columns: ['name'] });
+    const permissionGroup = await models.permissionGroup.findByIdOrThrow(
+      newRecord.permission_group_id,
+      { columns: ['name'] },
+    );
+    const platform = user.primary_platform || 'tupaia';
 
-  sendEmail(user.email, {
-    subject,
-    signOff,
-    templateName: 'permissionGranted',
-    templateContext: {
-      title: 'Permission Granted',
-      description,
-      userName: user.first_name,
-      entityName: entity.name,
-      permissionGroupName: permissionGroup.name,
-    },
-  });
+    const { subject, description, signOff } = EMAILS[platform];
+
+    await sendEmail(user.email, {
+      subject,
+      signOff,
+      templateName: 'permissionGranted',
+      templateContext: {
+        title: 'Permission Granted',
+        description,
+        userName: user.first_name,
+        entityName: entity.name,
+        permissionGroupName: permissionGroup.name,
+      },
+    });
+  } catch (e) {
+    if (!(e instanceof UnexpectedNullishValueError)) throw e;
+
+    // Unlikely to reach this path, considering user_entity_permission just got created
+    winston.debug(
+      'Skipping permission-granted email. Couldn’t find user, entity and/or permission_group.',
+      { userEntityPermissionRecord: newRecord, errorMessage: e.message },
+    );
+    return;
+  }
 }
 
 /**
