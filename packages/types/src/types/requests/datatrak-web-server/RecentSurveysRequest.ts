@@ -1,14 +1,14 @@
-import { Country, Survey } from '../../models';
+import type { Entity, Survey } from '../../models';
 
 export type Params = Record<string, never>;
 
-export type RecentSurvey = {
+export interface RecentSurvey {
+  countryCode: Entity['code'];
+  countryId: Entity['id'];
+  countryName: Entity['name'];
   surveyCode: Survey['code'];
   surveyName: Survey['name'];
-  countryName: Country['name'];
-  countryCode: Country['code'];
-  countryId: Country['id'];
-};
+}
 
 export type ResBody = RecentSurvey[];
 export type ReqBody = Record<string, never>;

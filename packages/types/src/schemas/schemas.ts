@@ -101841,19 +101841,19 @@ export const AnswersSchema = {
 export const RecentSurveySchema = {
 	"type": "object",
 	"properties": {
-		"surveyCode": {
+		"countryCode": {
 			"type": "string"
 		},
-		"surveyName": {
+		"countryId": {
 			"type": "string"
 		},
 		"countryName": {
 			"type": "string"
 		},
-		"countryCode": {
+		"surveyCode": {
 			"type": "string"
 		},
-		"countryId": {
+		"surveyName": {
 			"type": "string"
 		}
 	},
