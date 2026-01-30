@@ -45,6 +45,18 @@ export const saveDeletesForModel = async (
   }
 };
 
+const saveCreatesForModel = async (
+  model: DatabaseModel,
+  changes: SyncSnapshotAttributes[],
+  isCentralServer: boolean,
+  progressCallback?: (recordsProcessed: number) => void,
+) => {
+  const sanitizeData = (d: ModelSanitizeArgs) =>
+    isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
+  const recordsForCreate = changes.map(c => sanitizeData(c.data));
+  await saveCreates(model, recordsForCreate, SAVE_BATCH_SIZE, progressCallback);
+};
+
 export const saveChangesForModel = async (
   model: DatabaseModel,
   changes: SyncSnapshotAttributes[],
@@ -219,6 +231,10 @@ export const saveChangesFromMemory = async (
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
     const filteredModelChanges = await model.filterSyncForClient(modelChanges);
-    await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    if (model.databaseRecord !== 'user_account') {
+      await saveCreatesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    } else {
+      await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    }
   }
 };
