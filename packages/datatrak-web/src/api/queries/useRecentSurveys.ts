@@ -16,7 +16,7 @@ interface RecentSurveysQueryFunction {
 
 const queryFunctions = {
   local: async ({ models, projectId, userId }) => {
-    const surveyResponses = await models.user.getRecentSurveys(ensure(userId), projectId);
+    const surveyResponses = await models.user.getRecentSurveys(ensure(userId), ensure(projectId));
     return camelcaseKeys(surveyResponses);
   },
   remote: async ({ projectId, userId }) =>
