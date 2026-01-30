@@ -95,6 +95,8 @@ export const saveChangesForModel = async (
   if (recordsForUpdate.length > 0) {
     await saveUpdates(model, recordsForUpdate, isCentralServer, SAVE_BATCH_SIZE, progressCallback);
   }
+
+  await model.database.executeSql('VACUUM ANALYZE');
 };
 
 const processSyncSnapshotInBatches = async (
