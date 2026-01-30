@@ -266,15 +266,15 @@ export class DatabaseModel {
   /**
    * @param {string} id
    * @param {*} [customQueryOptions]
-   * @param {string} errorMessage
+   * @param {string} message
    * @throws {UnexpectedNullishValueError}
    */
   async findByIdOrThrow(
     id,
     customQueryOptions = {},
-    errorMessage = `No ${this.databaseRecord} found with ID ${id}`,
+    message = `No ${this.databaseRecord} found with ID ${id}`,
   ) {
-    return ensure(await this.findById(id, customQueryOptions), errorMessage);
+    return ensure(await this.findById(id, customQueryOptions), message);
   }
 
   async findManyByColumn(column, values, additionalConditions = {}, customQueryOptions = {}) {

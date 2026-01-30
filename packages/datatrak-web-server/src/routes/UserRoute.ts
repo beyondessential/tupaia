@@ -1,7 +1,6 @@
 import type { Request } from 'express';
 
-import type { Route } from '@tupaia/server-boilerplate';
-import { UnexpectedNullishValueError } from '@tupaia/tsutils';
+import { Route } from '@tupaia/server-boilerplate';
 import type { DatatrakWebUserRequest } from '@tupaia/types';
 import { CustomError } from '@tupaia/utils';
 
@@ -28,16 +27,11 @@ export class UserRoute extends Route<UserRequest> {
 
     const fetchProject = async () => {
       try {
-        const { code: projectCode } = await models.project.findOneOrThrow(
-          { id: projectId },
-          { columns: ['code'] },
-        );
-        return await ctx.services.webConfig.fetchProject(projectCode);
-      } catch {
-        if (
-          e instanceof UnexpectedNullishValueError || // Project doesn’t exist in DB
-          (e instanceof CustomError && e.statusCode === 404) // Fetch from web-config-server failed
-        ) {
+        const project = await models.project.findOne({ id: projectId }, { columns: ['code'] });
+        return project ? await ctx.services.webConfig.fetchProject(project.code) : null;
+      } catch (e) {
+        if (e instanceof CustomError && e.statusCode === 404) {
+          // Fetch from web-config-server failed
           return null;
         }
         throw e;
