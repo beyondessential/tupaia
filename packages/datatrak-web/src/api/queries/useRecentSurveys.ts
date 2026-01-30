@@ -29,7 +29,7 @@ export const useRecentSurveys = (userId?: UserAccount['id'], projectId?: Project
     ['recentSurveys', userId, projectId],
     isOfflineFirst ? queryFunctions.local : queryFunctions.remote,
     {
-      enabled: !!userId && !!projectId,
+      enabled: Boolean(userId && projectId),
       localContext: { userId, projectId },
     },
   );
