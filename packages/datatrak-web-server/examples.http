@@ -46,6 +46,10 @@ content-type: application/json
 GET {{host}}/projects HTTP/1.1
 content-type: application/json
 
+### Get project by code
+GET {{host}}/project/explore HTTP/1.1
+content-type: application/json
+
 ### Get user
 GET {{host}}/getUser HTTP/1.1
 content-type: application/json

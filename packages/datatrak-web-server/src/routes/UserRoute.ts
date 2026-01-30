@@ -1,14 +1,17 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 
-import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebUserRequest, WebServerProjectRequest } from '@tupaia/types';
+import type { Route } from '@tupaia/server-boilerplate';
+import { UnexpectedNullishValueError } from '@tupaia/tsutils';
+import type { DatatrakWebUserRequest } from '@tupaia/types';
+import { CustomError } from '@tupaia/utils';
 
-export type UserRequest = Request<
-  DatatrakWebUserRequest.Params,
-  DatatrakWebUserRequest.ResBody,
-  DatatrakWebUserRequest.ReqBody,
-  DatatrakWebUserRequest.ReqQuery
->;
+export interface UserRequest
+  extends Request<
+    DatatrakWebUserRequest.Params,
+    DatatrakWebUserRequest.ResBody,
+    DatatrakWebUserRequest.ReqBody,
+    DatatrakWebUserRequest.ReqQuery
+  > {}
 
 export class UserRoute extends Route<UserRequest> {
   public async buildResponse() {
@@ -24,11 +27,24 @@ export class UserRoute extends Route<UserRequest> {
     const { project_id: projectId, country_id: countryId } = userData.preferences ?? {};
 
     const fetchProject = async () => {
-      const { projects } = await ctx.services.webConfig.fetchProjects();
-      return projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
+      try {
+        const { code: projectCode } = await models.project.findOneOrThrow(
+          { id: projectId },
+          { columns: ['code'] },
+        );
+        return await ctx.services.webConfig.fetchProject(projectCode);
+      } catch {
+        if (
+          e instanceof UnexpectedNullishValueError || // Project doesn’t exist in DB
+          (e instanceof CustomError && e.statusCode === 404) // Fetch from web-config-server failed
+        ) {
+          return null;
+        }
+        throw e;
+      }
     };
     const fetchCountry = async () =>
-      ctx.services.central.fetchResources(`entities/${countryId}`, {
+      await ctx.services.central.fetchResources(`entities/${countryId}`, {
         columns: ['id', 'name', 'code'],
       });
 

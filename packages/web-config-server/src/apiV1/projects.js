@@ -1,6 +1,6 @@
-import { respond } from '@tupaia/utils';
+import { NotFoundError, respond } from '@tupaia/utils';
 
-const FRONTEND_EXCLUDED_PROJECTS = new Set([
+const FRONTEND_EXCLUDED_PROJECTS = /** @type {const} */ ([
   'ehealth_cook_islands',
   'ehealth_tokelau',
   'ehealth_timor_leste',
@@ -93,23 +93,46 @@ export async function buildProjectDataForFrontend(project, req) {
 }
 
 export async function getProjects(req, res) {
-  const { query = {} } = req;
-  const { showExcludedProjects } = query;
+  const showExcludedProjects = !isConsideredFalse(req.query.showExcludedProjects);
+  /**
+   * Filter out projects that should not be shown on the frontend, if the query param is set.
+   * Defaults to true, because tupaia-web should be false, whereas datatrak-web will be true, and
+   * there are more places where we want to show all projects than not.
+   */
+  const where = showExcludedProjects
+    ? undefined
+    : /** @type {const} */ ({
+        code: { comparator: 'not in', comparisonValue: FRONTEND_EXCLUDED_PROJECTS },
+      });
+  const _projects = await req.models.project.getAllProjectDetails(where);
 
-  const data = await req.models.project.getAllProjectDetails();
-  // Filter out projects that should not be shown on the frontend, if the query param is set.
-  // defaults to true, because tupaia-web should be false, whereas datatrak-web will be true, and there are more places where we want to show all projects than not
-
-  // allow 'false' or false to be falsey (as it depends on the query coming from the server or client side)
-  const isFalsey = value => value === 'false' || value === false;
-
-  const shouldShowExcludedProjects = !isFalsey(showExcludedProjects);
-  const filteredProjects = shouldShowExcludedProjects
-    ? data
-    : data.filter(project => !FRONTEND_EXCLUDED_PROJECTS.has(project.code));
-
-  const promises = filteredProjects.map(project => buildProjectDataForFrontend(project, req));
+  const promises = _projects.map(project => buildProjectDataForFrontend(project, req));
   const projects = await Promise.all(promises);
 
   return respond(res, { projects });
+}
+
+export async function getProject(req, res) {
+  const code = req.params.projectCode;
+  const showExcludedProjects = !isConsideredFalse(req.query.showExcludedProjects);
+
+  if (!showExcludedProjects && FRONTEND_EXCLUDED_PROJECTS.includes(code)) {
+    throw new NotFoundError(`No project found with code ‘${code}’`);
+  }
+
+  const [_project] = await req.models.project.getAllProjectDetails({ code });
+  if (_project === undefined) {
+    throw new NotFoundError(`No project found with code ‘${code}’`);
+  }
+
+  const project = await buildProjectDataForFrontend(_project, req);
+  return respond(res, project);
+}
+
+/**
+ * Allow 'false' or false to be falsy (as it depends on the query coming from the server or client
+ * side)
+ */
+function isConsideredFalse(val) {
+  return val === false || val === 'false';
 }

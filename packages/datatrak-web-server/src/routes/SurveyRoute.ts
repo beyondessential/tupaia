@@ -3,8 +3,8 @@ import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { isNullish } from '@tupaia/tsutils';
-import { DatatrakWebSurveyRequest, WebServerProjectRequest } from '@tupaia/types';
-import { NotFoundError, PermissionsError } from '@tupaia/utils';
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
+import { PermissionsError } from '@tupaia/utils';
 
 export interface SurveyRequest
   extends Request<
@@ -34,23 +34,27 @@ export class SurveyRoute extends Route<SurveyRequest> {
     } = this.req;
     const { fields = DEFAULT_FIELDS } = query;
     // check if survey exists in the database
-    const stubSurvey = await models.survey.findOne({ code: surveyCode }, { columns: ['id'] });
-    if (isNullish(stubSurvey)) throw new NotFoundError(`Survey with code ${surveyCode} not found`);
+    const _survey = await models.survey.findOneOrThrow(
+      { code: surveyCode },
+      { columns: ['id'] },
+      `Survey with code ${surveyCode} not found`,
+    );
 
     // check if user has access to survey
-    const survey = await ctx.services.central.fetchResources(`surveys/${stubSurvey.id}`, {
+    const survey = await ctx.services.central.fetchResources(`surveys/${_survey.id}`, {
       columns: fields,
     });
-
     if (isNullish(survey))
       throw new PermissionsError(
         'You do not have access to this survey. If you think this is a mistake, please contact your system administrator.',
       );
 
-    const { projects } = await ctx.services.webConfig.fetchProjects();
-    const project = survey.project_id
-      ? projects.find(({ id }: WebServerProjectRequest.ProjectResponse) => id === survey.project_id)
-      : null;
+    const { code: projectCode } = await models.project.findOneOrThrow(
+      { id: survey.projectId },
+      { columns: ['code'] },
+      `No project exists with ID ${survey.projectId}`,
+    );
+    const project = await ctx.services.webConfig.fetchProject(projectCode);
 
     return {
       ...camelcaseKeys(survey, {
