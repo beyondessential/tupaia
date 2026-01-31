@@ -8354,17 +8354,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electric-sql/pglite@npm:^0.2.14":
-  version: 0.2.17
-  resolution: "@electric-sql/pglite@npm:0.2.17"
-  checksum: 4c78d2beea408209cbd00e2cd888daa1def35ba406d2195d32acf8bad6d404df3215e0739bfd7f246c0c98e19fb2f0bded87736767fe8fc10d78789b565dfa93
-  languageName: node
-  linkType: hard
-
-"@electric-sql/pglite@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@electric-sql/pglite@npm:0.3.0"
-  checksum: dcf679c90da61e6ac968f93da92d877c03ff5abdc184884850a27ca58ea06794df2ec9c10c9671f729d536ddf46f5760e58359df586ca79ed3bc6cf955458568
+"@electric-sql/pglite@npm:^0.3.15":
+  version: 0.3.15
+  resolution: "@electric-sql/pglite@npm:0.3.15"
+  checksum: 4495b8922bb331deffe47b110da42d923ab0f894673eac0dd7af0ccc3784a398933ecff4d6066b8b215c0be44167dc7028a1e6c0146bcfa3cab6f11bdecd7b54
   languageName: node
   linkType: hard
 
@@ -12653,7 +12646,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/datatrak-web@workspace:packages/datatrak-web"
   dependencies:
-    "@electric-sql/pglite": ^0.3.0
+    "@electric-sql/pglite": ^0.3.15
     "@material-ui/core": ^4.12.0
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
@@ -12693,7 +12686,7 @@ __metadata:
     hash-wasm: ^4.12.0
     jest: ^29.7.0
     knex: ^3.1.0
-    knex-pglite: ^0.11.0
+    knex-pglite: ^0.13.0
     leaflet: ^1.7.1
     lodash.keyby: ^4.6.0
     lodash.omitby: ^4.6.0
@@ -27875,52 +27868,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knex-pglite@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "knex-pglite@npm:0.11.0"
-  dependencies:
-    "@electric-sql/pglite": ^0.2.14
-    knex: 3.1.0
-  checksum: 680de87b9c567bfc3009c81e85584e4e634ede8b98f14acd4d4463e1eae084cdfc0eed05979db742ee2af1bd6f857bb23ca28c4175abdf27b3d6e3e2dfcba4df
-  languageName: node
-  linkType: hard
-
-"knex@npm:3.1.0, knex@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "knex@npm:3.1.0"
-  dependencies:
-    colorette: 2.0.19
-    commander: ^10.0.0
-    debug: 4.3.4
-    escalade: ^3.1.1
-    esm: ^3.2.25
-    get-package-type: ^0.1.0
-    getopts: 2.3.0
-    interpret: ^2.2.0
-    lodash: ^4.17.21
-    pg-connection-string: 2.6.2
-    rechoir: ^0.8.0
-    resolve-from: ^5.0.0
-    tarn: ^3.0.2
-    tildify: 2.0.0
-  peerDependenciesMeta:
-    better-sqlite3:
-      optional: true
-    mysql:
-      optional: true
-    mysql2:
-      optional: true
-    pg:
-      optional: true
-    pg-native:
-      optional: true
-    sqlite3:
-      optional: true
-    tedious:
-      optional: true
-  bin:
-    knex: bin/cli.js
-  checksum: 3905f8d27960975f7f57f3f488d1ef3ccf47784acc8eb627e8a28cbbe1f296c6879c8ef0cbd9e17e867be80117d305cd948545f3fbd4c74b24c90d2413bbc021
+"knex-pglite@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "knex-pglite@npm:0.13.0"
+  peerDependencies:
+    "@electric-sql/pglite": 0.x
+    knex: 3.x
+  checksum: fe4e7e6a2ca8c31e01a30e26ebe55eb7e6c6e94bbfce0af46fe588cb4628bbb4abe4c0c1395a4f4636c742f2f6bfa6543bce27160295869dc7ba5dead96d4f3d
   languageName: node
   linkType: hard
 
@@ -27960,6 +27914,45 @@ __metadata:
   bin:
     knex: bin/cli.js
   checksum: 57608a3a6813cb66da6f5a078016338166c53ab2cbaab66e81492352023db88fc158e4ad6bbd2156cd9d7c9cac14a4b1e581dd8232b4f9bab2285ea6f1efc5cf
+  languageName: node
+  linkType: hard
+
+"knex@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "knex@npm:3.1.0"
+  dependencies:
+    colorette: 2.0.19
+    commander: ^10.0.0
+    debug: 4.3.4
+    escalade: ^3.1.1
+    esm: ^3.2.25
+    get-package-type: ^0.1.0
+    getopts: 2.3.0
+    interpret: ^2.2.0
+    lodash: ^4.17.21
+    pg-connection-string: 2.6.2
+    rechoir: ^0.8.0
+    resolve-from: ^5.0.0
+    tarn: ^3.0.2
+    tildify: 2.0.0
+  peerDependenciesMeta:
+    better-sqlite3:
+      optional: true
+    mysql:
+      optional: true
+    mysql2:
+      optional: true
+    pg:
+      optional: true
+    pg-native:
+      optional: true
+    sqlite3:
+      optional: true
+    tedious:
+      optional: true
+  bin:
+    knex: bin/cli.js
+  checksum: 3905f8d27960975f7f57f3f488d1ef3ccf47784acc8eb627e8a28cbbe1f296c6879c8ef0cbd9e17e867be80117d305cd948545f3fbd4c74b24c90d2413bbc021
   languageName: node
   linkType: hard
 
