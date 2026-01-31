@@ -19,7 +19,7 @@ export const getConnectionConfig = () => {
   // IMPORTANT: Reuse the same PGlite instance to avoid data isolation issues
   if (!sharedPGliteInstance) {
     console.log('[getConnectionConfig] Creating new PGlite instance');
-    sharedPGliteInstance = new PGlite(connectionString, { relaxedDurability: true });
+    sharedPGliteInstance = new PGlite(connectionString);
   } else {
     console.log('[getConnectionConfig] Reusing existing PGlite instance');
   }
