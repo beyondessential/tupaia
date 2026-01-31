@@ -234,5 +234,6 @@ export const saveChangesFromMemory = async (
     } else {
       await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
     }
+    console.log('Heap limit:', (performance as any).memory?.jsHeapSizeLimit / 1024 / 1024, 'MB');
   }
 };
