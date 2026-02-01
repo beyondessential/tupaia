@@ -182,11 +182,7 @@ export class UserModel extends DatabaseModel {
   }
 
   async isApiClientUser(userId) {
-    const [{ exists }] = await this.database.executeSql(
-      'SELECT EXISTS (SELECT 1 FROM api_client WHERE user_account_id = ?);',
-      userId,
-    );
-    return exists;
+    return await this.otherModels.apiClient.exists({ user_account_id: userId });
   }
 
   /**
