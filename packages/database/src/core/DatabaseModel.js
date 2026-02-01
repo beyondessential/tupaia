@@ -1,3 +1,4 @@
+import { ensure } from '@tupaia/tsutils';
 import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
 import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 import { QUERY_CONJUNCTIONS } from './BaseDatabase';
@@ -224,6 +225,14 @@ export class DatabaseModel {
     const result = await this.findOne(this.getIdClause(id), queryOptions);
     if (!result) return null;
     return this.generateInstance(result);
+  }
+
+  async findByIdOrThrow(
+    id,
+    customQueryOptions = {},
+    message = `No ${this.databaseRecord} found with ID ${id}`,
+  ) {
+    return ensure(await this.findById(id, customQueryOptions), message);
   }
 
   async findManyByColumn(column, values, additionalConditions = {}, customQueryOptions = {}) {
