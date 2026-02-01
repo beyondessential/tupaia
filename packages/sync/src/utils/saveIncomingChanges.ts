@@ -207,7 +207,7 @@ export const saveIncomingSnapshotChanges = async (
       isCentralServer,
       progressCallback,
     );
-    const mem = (performance as any).memory;
+    const mem = (performance as any)?.memory;
     if (mem) {
       console.log('Used:', Math.round(mem.usedJSHeapSize / 1024 / 1024), 'MB');
       console.log('Total:', Math.round(mem.totalJSHeapSize / 1024 / 1024), 'MB');
@@ -240,7 +240,7 @@ export const saveChangesFromMemory = async (
     } else {
       await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
     }
-    const mem = (performance as any).memory;
+    const mem = (performance as any)?.memory;
     if (mem) {
       console.log('Used:', Math.round(mem.usedJSHeapSize / 1024 / 1024), 'MB');
       console.log('Total:', Math.round(mem.totalJSHeapSize / 1024 / 1024), 'MB');
