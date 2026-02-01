@@ -181,6 +181,14 @@ export class UserModel extends DatabaseModel {
     return UserRecord;
   }
 
+  async isApiClientUser(userId) {
+    const [{ exists }] = await this.database.executeSql(
+      'SELECT EXISTS (SELECT 1 FROM api_client WHERE user_account_id = ?);',
+      userId,
+    );
+    return exists;
+  }
+
   /**
    * Returns the user that is used for submitting surveys when not logged in
    * @returns {Promise<UserRecord>}
@@ -302,11 +310,7 @@ export class UserModel extends DatabaseModel {
     return user.getRecentEntityIds(countryCode, type);
   }
 
-  async transformUserData(
-    userData,
-    project = null,
-    country = null,
-  ) {
+  async transformUserData(userData, project = null, country = null) {
     const {
       id,
       full_name: fullName,
@@ -319,14 +323,14 @@ export class UserModel extends DatabaseModel {
       preferences = {},
       access_policy: accessPolicy,
     } = userData;
-  
+
     const {
       project_id: projectId,
       country_id: countryId,
       delete_account_requested,
       hide_welcome_screen,
     } = preferences;
-  
+
     return {
       fullName,
       firstName,
@@ -344,5 +348,5 @@ export class UserModel extends DatabaseModel {
       hideWelcomeScreen: hide_welcome_screen === true,
       accessPolicy,
     };
-  };
+  }
 }
