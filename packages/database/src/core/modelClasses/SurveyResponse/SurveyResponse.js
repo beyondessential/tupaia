@@ -359,14 +359,6 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     }
 
     if (surveyResponse.entity_id) {
-      const getEntityDoesExist = async entityId => {
-        const [{ exists }] = await this.database.executeSql(
-          'SELECT EXISTS(SELECT 1 FROM "entity" WHERE "id" = ?)',
-          [entityId],
-        );
-        return exists;
-      };
-
       // If we're submitting a response against a new entity, it won't yet have a valid entity_code in
       // the server db. Instead, check our permissions against the new entity's parent
       const newEntity = entitiesUpserted.find(e => e.id === surveyResponse.entity_id);
@@ -375,7 +367,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         // Submitting response against upserted entity...
         newEntity !== undefined &&
         // ...that doesn’t yet exist in database
-        !(await getEntityDoesExist(surveyResponse.entity_id));
+        !(await this.otherModels.entity.exists({ id: surveyResponse.entity_id }));
 
       if (isSubmittingAgainstNewEntity) {
         /** @type {import('@tupaia/database').EntityRecord} */

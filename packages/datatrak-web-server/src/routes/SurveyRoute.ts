@@ -2,8 +2,8 @@ import camelcaseKeys from 'camelcase-keys';
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { isNullish } from '@tupaia/tsutils';
-import { DatatrakWebSurveyRequest, WebServerProjectRequest } from '@tupaia/types';
+import { ensure, isNullish } from '@tupaia/tsutils';
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
 import { NotFoundError, PermissionsError } from '@tupaia/utils';
 
 export interface SurveyRequest
@@ -47,10 +47,11 @@ export class SurveyRoute extends Route<SurveyRequest> {
         'You do not have access to this survey. If you think this is a mistake, please contact your system administrator.',
       );
 
-    const { projects } = await ctx.services.webConfig.fetchProjects();
-    const project = survey.project_id
-      ? projects.find(({ id }: WebServerProjectRequest.ProjectResponse) => id === survey.project_id)
-      : null;
+    const { code: projectCode } = ensure(
+      await models.project.findOne({ id: survey.projectId }, { columns: ['code'] }),
+      `No project exists with ID ${survey.projectId}`,
+    );
+    const project = await ctx.services.webConfig.fetchProject(projectCode);
 
     return {
       ...camelcaseKeys(survey, {

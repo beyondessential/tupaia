@@ -309,9 +309,9 @@ export class DatabaseModel {
   async findOneOrThrow(
     dbConditions,
     customQueryOptions = {},
-    message = `No ${this.databaseRecord} found matching ${JSON.stringify(dbConditions)}`,
+    errorMessage = `No ${this.databaseRecord} found matching ${JSON.stringify(dbConditions)}`,
   ) {
-    return ensure(await this.findOne(dbConditions, customQueryOptions), message);
+    return ensure(await this.findOne(dbConditions, customQueryOptions), errorMessage);
   }
 
   /**
