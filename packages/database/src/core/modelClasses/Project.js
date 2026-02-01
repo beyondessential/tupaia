@@ -92,13 +92,17 @@ export class ProjectModel extends DatabaseModel {
       if (!where?.code) return true;
 
       const { code } = where;
-      const { raw } = this.database.connection;
-      if (typeof code === 'string') return raw('p.code = ?', code);
+      if (typeof code === 'string' && code != '') {
+        return this.database.connection.raw('p.code = ?', code);
+      }
 
       const { comparator, comparisonValue } = code;
       if (comparator === 'not in' && Array.isArray(comparisonValue) && comparisonValue.length > 0) {
-        const projectCodes = raw(SqlQuery.record(comparisonValue), comparisonValue);
-        return raw('p.code NOT IN ?', projectCodes);
+        const projectCodes = this.database.connection.raw(
+          SqlQuery.record(comparisonValue),
+          comparisonValue,
+        );
+        return this.database.connection.raw('p.code NOT IN ?', projectCodes);
       }
 
       return true;
