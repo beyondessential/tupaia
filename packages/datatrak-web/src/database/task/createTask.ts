@@ -1,4 +1,6 @@
 import { DatatrakWebTaskChangeRequest, TaskStatus } from '@tupaia/types';
+import { AccessPolicy, assertBESAdminAccess, assertAnyPermissions } from '@tupaia/access-policy';
+
 import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser } from '../../api';
 
@@ -8,12 +10,14 @@ type Data = DatatrakWebTaskChangeRequest.ReqBody & {
 
 export const createTask = async ({
   models,
+  accessPolicy,
   data,
   user,
 }: {
   models: DatatrakWebModelRegistry;
+  accessPolicy: AccessPolicy;
   data: Data;
-  user?: CurrentUser;
+  user: CurrentUser;
 }) => {
   // Country code is not part of the task data, it's used for GA events
   const { country_code, ...rest } = data;
@@ -27,11 +31,17 @@ export const createTask = async ({
     taskData.status = TaskStatus.to_do;
   }
 
+  const taskPermissionChecker = async (accessPolicy: AccessPolicy) => {
+    return await models.task.assertUserHasPermissionToCreateTask(accessPolicy, taskData);
+  };
+  const permissionChecker = assertAnyPermissions([assertBESAdminAccess, taskPermissionChecker]);
+  await permissionChecker(accessPolicy);
+
   return await models.wrapInTransaction(async transactingModels => {
-    const task = await transactingModels.task.create(taskData);
+    const task = await transactingModels.task.create(taskData, user.id);
 
     if (data.comment) {
-      await task.addUserComment(data.comment, user?.id);
+      await task.addUserComment(data.comment, user.id);
     }
 
     return task;

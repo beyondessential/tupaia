@@ -1,7 +1,7 @@
 export enum SyncTickFlags {
   INCOMING_FROM_CENTRAL_SERVER = -1,
   LAST_UPDATED_ELSEWHERE = -999,
-  SYNC_LOOKUP_PLACEHOLDER = -1,
+  LOOKUP_PENDING_UPDATE = -2,
 }
 
 // Important! Syncing tables should also be added to SYNCING_TABLES in @tupaia/database/initSyncComponents.js
@@ -30,11 +30,14 @@ export const SYNC_STREAM_MESSAGE_KIND = {
 } as const;
 
 // Internal sync facts
-export const FACT_CURRENT_SYNC_TICK = 'currentSyncTick';
-export const FACT_LAST_SUCCESSFUL_SYNC_PULL = 'lastSuccessfulSyncPull';
-export const FACT_LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush';
-export const FACT_LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate';
-export const FACT_SYNC_TRIGGER_CONTROL = 'syncTrigger';
-export const FACT_PROJECTS_IN_SYNC = 'projectsInSync';
-export const FACT_CURRENT_USER_ID = 'currentUserId';
-export const FACT_PREVIOUSLY_LOGGED_IN_USER_ID = 'previouslyLoggedInUserId';
+export enum SyncFact {
+  CURRENT_SYNC_TICK = 'currentSyncTick',
+  CURRENT_USER_ID = 'currentUserId',
+  DEVICE_ID = 'deviceId',
+  LAST_SUCCESSFUL_SYNC_PULL = 'lastSuccessfulSyncPull',
+  LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush',
+  LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate',
+  PREVIOUSLY_LOGGED_IN_USER_ID = 'previouslyLoggedInUserId',
+  PROJECTS_IN_SYNC = 'projectsInSync',
+  SYNC_TRIGGER_CONTROL = 'syncTrigger',
+}

@@ -16,7 +16,7 @@ export const assertCountryPermissions = async (accessPolicy, models, countryId) 
 };
 
 export class GETCountries extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(countryId, options) {
     const countryPermissionChecker = accessPolicy =>

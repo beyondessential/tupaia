@@ -1,17 +1,21 @@
 /* Much of this is duplicated in @tupaia/database/core/modelClasses/SurveyResponse/getAnswerText */
 
-import { S3, S3Client, S3_BUCKET_PATH, getS3ImageFilePath } from '@tupaia/server-utils';
-import { isValidHttpUrl } from '@tupaia/tsutils';
-import { QuestionType } from '@tupaia/types';
-
-function isValidFileId(str) {
-  return /^[a-f\d]{24}$/.test(str);
-}
-
 /**
  * @typedef {import('@tupaia/types').Answer} Answer
  * @typedef {(answer: Answer) => Promise<Answer["text"]>} GetAnswerTextFunction
  */
+
+import { S3, S3Client, S3_BUCKET_PATH, getS3ImageFilePath } from '@tupaia/server-utils';
+import { isValidHttpUrl } from '@tupaia/tsutils';
+import { QuestionType } from '@tupaia/types';
+
+/**
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isValidFileId(str) {
+  return /^[a-f\d]{24}$/.test(str);
+}
 
 /**
  * @type {GetAnswerTextFunction}
@@ -24,14 +28,20 @@ async function getFileAnswerText(answer) {
     throw new Error(`getFileAnswerText called with answer of type ${answer.type}`);
   }
 
-  if (!answer.body?.hasOwnProperty('uniqueFileName') || !answer.body?.hasOwnProperty('data')) {
+  if (
+    !answer.body ||
+    !Object.hasOwn(answer.body, 'uniqueFileName') ||
+    !Object.hasOwn(answer.body, 'data')
+  ) {
     return answer.body;
   }
 
   const s3Client = new S3Client(new S3());
-  await s3Client.uploadFile(answer.body.uniqueFileName, answer.body.data);
+  const { uniqueFileName, data } = answer.body;
 
-  return answer.body.uniqueFileName;
+  void (await s3Client.uploadFile(uniqueFileName, data));
+
+  return uniqueFileName;
 }
 
 /**
@@ -55,7 +65,8 @@ async function getPhotoAnswerText(answer) {
   return await s3Client.uploadImage(answer.body);
 }
 
-export const ANSWER_BODY_PARSERS = {
+/** @satisfies {Record<QuestionType, GetAnswerTextFunction>} */
+export const ANSWER_BODY_PARSERS = /** @type {const} */ ({
   [QuestionType.File]: getFileAnswerText,
   [QuestionType.Photo]: getPhotoAnswerText,
-};
+});

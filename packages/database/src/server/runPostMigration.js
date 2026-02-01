@@ -10,6 +10,7 @@ const TABLES_REQUIRING_TRIGGER_CREATION = [
   'data_element',
   'entity',
   'entity_hierarchy',
+  'entity_parent_child_relation',
   'entity_relation',
   'geographical_area',
   'indicator',

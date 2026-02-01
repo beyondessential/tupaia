@@ -274,10 +274,8 @@ const removeTimezoneFromDateAnswers = (updates, screenComponents: SurveyScreenCo
   const updatedAnswers = { ...updates };
   screenComponents?.forEach(question => {
     const { questionId, type } = question;
-    if (type.includes('Date')) {
-      if (updates[questionId]) {
-        updatedAnswers[questionId] = stripTimezoneFromDate(updates[questionId]);
-      }
+    if (type.includes(QuestionType.Date) && updates[questionId]) {
+      updatedAnswers[questionId] = stripTimezoneFromDate(updates[questionId]);
     }
   });
   return updatedAnswers;

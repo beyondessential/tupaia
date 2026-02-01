@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+import { formatDistance } from 'date-fns';
+import { useQueryClient } from '@tanstack/react-query';
+
+import { ensure } from '@tupaia/tsutils';
 
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
@@ -8,7 +12,6 @@ import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
 import { SYNC_EVENT_ACTIONS } from '../../types';
-import { formatDistance } from 'date-fns';
 import { useSyncContext } from '../../api/SyncContext';
 
 const Wrapper = styled.div`
@@ -47,7 +50,6 @@ const Content = styled.div`
 
 const StyledSyncStatus = styled(SyncStatus)`
   margin-block-start: 1rem;
-  font-variant-numeric: lining-nums tabular-nums;
 `;
 
 const StyledLastSyncDate = styled(LastSyncDate)`
@@ -59,19 +61,27 @@ const StyledButton = styled(Button)`
 `;
 
 export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null): string {
-  return lastSuccessfulSyncTime
+  const formattedTimeString = lastSuccessfulSyncTime
     ? formatDistance(lastSuccessfulSyncTime, new Date(), { addSuffix: true })
     : '';
+
+  // Capitalize the first letter
+  return formattedTimeString.length > 0
+    ? formattedTimeString.charAt(0).toUpperCase() + formattedTimeString.slice(1)
+    : formattedTimeString;
 }
 
 export const SyncPage = () => {
-  const { clientSyncManager: syncManager } = useSyncContext();
+  const { clientSyncManager } = useSyncContext() || {};
+  const syncManager = ensure(clientSyncManager);
 
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(syncManager.errorMessage);
+  const [isRequestingSync, setIsRequestingSync] = useState<boolean>(syncManager.isRequestingSync);
   const [isSyncing, setIsSyncing] = useState<boolean>(syncManager.isSyncing);
   const [isQueuing, setIsQueuing] = useState<boolean>(syncManager.isQueuing);
   const [syncStage, setSyncStage] = useState<number | null>(syncManager.syncStage);
@@ -86,23 +96,31 @@ export const SyncPage = () => {
   useEffect(() => {
     const handler = (action, data): void => {
       switch (action) {
+        case SYNC_EVENT_ACTIONS.SYNC_REQUESTING:
+          setProgressMessage(syncManager.progressMessage);
+          setIsRequestingSync(true);
+          setErrorMessage(null);
+          break;
         case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
           setProgress(0);
+          setIsRequestingSync(false);
           setIsQueuing(true);
           setIsSyncing(false);
           setErrorMessage(null);
           setProgressMessage(syncManager.progressMessage);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_STARTED:
+          setIsRequestingSync(false);
           setIsQueuing(false);
           setSyncStarted(true);
           setIsSyncing(true);
           setProgress(0);
-          setProgressMessage('Initialising sync');
+          setProgressMessage(syncManager.progressMessage);
           setSyncStage(1);
           setErrorMessage(null);
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ENDED:
+          setIsRequestingSync(false);
           setIsQueuing(false);
           setIsSyncing(false);
           setProgress(0);
@@ -117,6 +135,7 @@ export const SyncPage = () => {
           );
           break;
         case SYNC_EVENT_ACTIONS.SYNC_ERROR:
+          setIsRequestingSync(false);
           setIsQueuing(false);
           setErrorMessage(data.error);
           break;
@@ -130,11 +149,23 @@ export const SyncPage = () => {
     };
   }, [syncManager]);
 
-  const manualSync = useCallback(() => {
-    syncManager.triggerUrgentSync();
-  }, [syncManager]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFormattedLastSuccessfulSyncTime(
+        formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
+      );
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
-  const syncFinishedSuccessfully = syncStarted && !isSyncing && !isQueuing && !errorMessage;
+  const manualSync = useCallback(() => {
+    syncManager.triggerUrgentSync(queryClient);
+  }, [syncManager, queryClient]);
+
+  const syncFinishedSuccessfully =
+    syncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;
 
   return (
     <Wrapper>
@@ -157,16 +188,16 @@ export const SyncPage = () => {
             hasError={Boolean(errorMessage)}
           />
 
-          {!isSyncing && (
+          {!isSyncing && !isRequestingSync && (
             <>
-              {syncStarted && Boolean(formattedLastSuccessfulSyncTime) && (
+              {Boolean(formattedLastSuccessfulSyncTime) && (
                 <StyledLastSyncDate
                   formattedLastSuccessfulSyncTime={formattedLastSuccessfulSyncTime}
                   lastSyncDate={syncManager.lastSuccessfulSyncTime}
                 />
               )}
 
-              <StyledButton onClick={manualSync}>Sync now</StyledButton>
+              <StyledButton onClick={manualSync}>Manual sync</StyledButton>
             </>
           )}
 

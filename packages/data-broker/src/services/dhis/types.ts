@@ -6,7 +6,7 @@ import {
 
 export type DataType = 'DataElement' | 'Indicator' | 'ProgramIndicator';
 
-type PeriodType = 'DAY' | 'WEEK' | 'MONTH' | 'QUARTER' | ' YEAR';
+type PeriodType = 'DAY' | 'WEEK' | 'MONTH' | 'QUARTER' | 'YEAR';
 
 export type DataSource = BaseDataSource & {
   config: {

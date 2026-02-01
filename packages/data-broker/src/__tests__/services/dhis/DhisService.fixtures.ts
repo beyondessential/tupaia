@@ -1,3 +1,4 @@
+import { EntityTypeEnum } from '@tupaia/types';
 import { DataServiceMapping } from '../../../services/DataServiceMapping';
 import { DhisEventAnalytics } from '../../../services/dhis/types';
 import { dataElements, dataGroups, entityType } from '../../testUtils';
@@ -21,7 +22,7 @@ export const DATA_GROUPS = dataGroups({
 const DL_FACILITY_A = entityType({
   code: 'DL_FACILITY_A',
   name: 'DL FACILITY A',
-  type: 'facility',
+  type: EntityTypeEnum.facility,
   metadata: {},
   isTrackedEntity: () => false,
 });
@@ -31,7 +32,7 @@ export const ENTITIES = {
   DL_HOUSEHOLD_1: entityType({
     code: 'DL_HOUSEHOLD_1',
     name: 'DL HOUSEHOLD 1',
-    type: 'household',
+    type: EntityTypeEnum.household,
     metadata: {
       dhis: { trackedEntityId: 'tracked_entity_id_dl_household_1' },
     },
@@ -41,7 +42,7 @@ export const ENTITIES = {
   DL_HOUSEHOLD_2: entityType({
     code: 'DL_HOUSEHOLD_2',
     name: 'DL HOUSEHOLD 2',
-    type: 'household',
+    type: EntityTypeEnum.household,
     metadata: {
       dhis: { trackedEntityId: 'tracked_entity_id_dl_household_2' },
     },

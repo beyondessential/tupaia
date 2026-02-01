@@ -1,11 +1,12 @@
-import { DatabaseModel, DatabaseRecord } from '@tupaia/database';
-import { ObjectLikeKeys, ObjectLikeFields, Flatten } from '@tupaia/types';
+import type { Knex } from 'knex';
+
+import { DatabaseModel, DatabaseRecord, type ComparisonType } from '@tupaia/database';
+import { Flatten, ObjectLikeFields, ObjectLikeKeys } from '@tupaia/types';
 
 type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in' | '@>';
-type ComparisonTypes = 'where' | 'whereBetween' | 'whereIn' | 'orWhere';
 
 export type AdvancedFilterValue<T> = {
-  comparisonType?: ComparisonTypes;
+  comparisonType?: ComparisonType;
   comparator: FilterComparators;
   comparisonValue: T | T[];
 };
@@ -45,7 +46,7 @@ type ConjunctionCriteria<T> = {
   [QueryConjunctions.OR]?: DbFilterCriteria<T>;
   [QueryConjunctions.RAW]?: {
     sql: string;
-    parameters: string[];
+    parameters: readonly Knex.RawBinding[] | Knex.ValueDict | Knex.RawBinding;
   };
 };
 
@@ -80,7 +81,11 @@ export type QueryOptions = {
   joinWith?: string;
   columns?: string[] | Record<string, string>[];
   joinCondition?: [string, string];
+  // Instance property of DatabaseModel, gets turned into multiJoin
+  // TODO: Consolidate these two
   joins?: MultiJoinItem[];
+  // Passed to BaseDatabase#find options param TODO: Consolidate these two
+  multiJoin?: MultiJoinItem[];
 };
 
 type BaseModelOverrides<Fields = unknown, RecordT = unknown> = {

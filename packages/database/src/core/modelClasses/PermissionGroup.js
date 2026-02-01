@@ -1,6 +1,11 @@
-import { reduceToDictionary } from '@tupaia/utils';
-import { SyncDirections } from '@tupaia/constants';
+/**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ */
 
+import { SyncDirections } from '@tupaia/constants';
+import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -51,15 +56,24 @@ export class PermissionGroupModel extends DatabaseModel {
     return PermissionGroupRecord;
   }
 
+  /**
+   * @param {PermissionGroup['id'][]} permissionGroupIds
+   * @returns {Promise<Record<PermissionGroup['id'], PermissionGroup['name'][]>>}
+   */
   async getPermissionGroupNameById(permissionGroupIds) {
     const permissionGroups = await this.findManyById(permissionGroupIds);
     return reduceToDictionary(permissionGroups, 'id', 'name');
   }
 
+  /** @returns {Promise<null>} */
   async buildSyncLookupQueryDetails() {
     return null;
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<Record<PermissionGroup['id'], Country['code'][]>>}
+   */
   async fetchCountryCodesByPermissionGroupId(accessPolicy) {
     const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
     const permissionGroupNameToId = await this.findIdByField('name', allPermissionGroupsNames);
@@ -70,5 +84,25 @@ export class PermissionGroupModel extends DatabaseModel {
       ]),
     );
     return countryCodesByPermissionGroupId;
+  }
+
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<Record<PermissionGroup['id'], Country['id'][]>>}
+   */
+  async fetchCountryIdsByPermissionGroupId(accessPolicy) {
+    const countryCodesByPermissionGroupId =
+      await this.fetchCountryCodesByPermissionGroupId(accessPolicy);
+
+    // Transform arrays of codes to arrays of ids
+    const allCountryCodes = accessPolicy.getEntitiesAllowed();
+    const countryCodeToId = await this.otherModels.country.findIdByCode(allCountryCodes);
+    const countryIdsByPermissionGroupId = {};
+    for (const [permissionGroupId, countryCodes] of Object.entries(
+      countryCodesByPermissionGroupId,
+    )) {
+      countryIdsByPermissionGroupId[permissionGroupId] = countryCodes.map(c => countryCodeToId[c]);
+    }
+    return countryIdsByPermissionGroupId;
   }
 }

@@ -1,11 +1,15 @@
-/** @typedef {import('knex').Knex} Knex */
+/**
+ * @typedef {import('knex').Knex} Knex
+ * @typedef {import('../core/records').RecordName} RecordName
+ * @typedef {import('../core/constants').DatabaseSchemaName} DatabaseSchemaName
+ */
 
 import knex from 'knex';
 import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
-import { getEnvVarOrDefault } from '@tupaia/utils';
+import { getEnvVarOrDefault, NotImplementedError } from '@tupaia/utils';
 import { SCHEMA_NAMES } from './constants';
 import { generateId } from './utilities';
 import {
@@ -13,7 +17,7 @@ import {
   runDatabaseFunctionInBatches,
 } from './utilities/runDatabaseFunctionInBatches';
 
-export const QUERY_METHODS = {
+export const QUERY_METHODS = /** @type {const} */ ({
   COUNT: 'count',
   COUNT_DISTINCT: 'countDistinct',
   INSERT: 'insert',
@@ -21,15 +25,15 @@ export const QUERY_METHODS = {
   SELECT: 'select',
   DISTINCT: 'distinct',
   DELETE: 'del',
-};
+});
 
-export const QUERY_CONJUNCTIONS = {
+export const QUERY_CONJUNCTIONS = /** @type {const} */ ({
   AND: '_and_',
   OR: '_or_',
   RAW: '_raw_',
-};
+});
 
-export const JOIN_TYPES = {
+export const JOIN_TYPES = /** @type {const} */ ({
   INNER: 'inner',
   LEFT: 'left',
   LEFT_OUTER: 'leftOuter',
@@ -39,20 +43,28 @@ export const JOIN_TYPES = {
   FULL_OUTER: 'fullOuter',
   CROSS: 'cross',
   DEFAULT: null,
-};
+});
 
 // list valid behaviour so we can validate against sql injection
-const VALID_CAST_TYPES = ['text', 'text[]', 'date'];
-const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
-export const WHERE_SUBQUERY_CLAUSES = {
+const VALID_CAST_TYPES = /** @type {const} */ (['text', 'text[]', 'date']);
+
+const VALID_COMPARISON_TYPES = /** @type {const} */ ([
+  'where',
+  'whereBetween',
+  'whereIn',
+  'orWhere',
+]);
+/** @typedef {typeof VALID_COMPARISON_TYPES[number]} ComparisonType */
+
+export const WHERE_SUBQUERY_CLAUSES = /** @type {const} */ ({
   EXISTS: 'exists',
   NOT_EXISTS: 'notExists',
-};
+});
 
-const COMPARATORS = {
+const COMPARATORS = /** @type {const} */ ({
   LIKE: 'like',
   ILIKE: 'ilike',
-};
+});
 
 /**
  * We only support specific functions in SELECT statements to avoid SQL injection.
@@ -66,7 +78,7 @@ const COMPARATORS = {
  *
  * @see getColSelector
  */
-const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE', 'TRIM'];
+const supportedFunctions = /** @type {const} */ (['ST_AsGeoJSON', 'COALESCE', 'TRIM']);
 
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
@@ -89,6 +101,9 @@ export class BaseDatabase {
   /** @type {Knex} */
   connection;
 
+  /** @type {Promise<true>} */
+  connectionPromise;
+
   constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
@@ -105,6 +120,7 @@ export class BaseDatabase {
       this.connection = transactingConnection;
       this.connectionPromise = Promise.resolve(true);
     } else {
+      /** @returns {Promise<true>} */
       const connectToDatabase = async () => {
         this.connection = knex({
           client: clientType,
@@ -114,11 +130,24 @@ export class BaseDatabase {
       };
       this.connectionPromise = connectToDatabase();
     }
+
+    this.setCustomTypeParsers();
   }
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
   generateId = generateId;
+
+  /**
+   * Subclasses should override parsers for certain PostgreSQL types as needed based on their
+   * PostgreSQL client’s default parsers (e.g. node-postgres, PGlite). If no overrides needed,
+   * override with an empty method.
+   * @abstract
+   * @returns {Promise<void>}
+   */
+  async setCustomTypeParsers() {
+    throw new NotImplementedError('Subclass should override setCustomTypeParsers');
+  }
 
   async closeConnections() {
     return await this.connection.destroy();
@@ -129,12 +158,13 @@ export class BaseDatabase {
   }
 
   /**
+   * @abstract
    * @param {<ReturnT = unknown, DatabaseT extends BaseDatabase = BaseDatabase>(models: DatabaseT) => Promise<ReturnT>} wrappedFunction
    * @param {Knex.TransactionConfig} [transactionConfig]
    * @returns {Promise<ReturnT>}
    */
   async wrapInTransaction(_wrappedFunction, _transactionConfig) {
-    throw new Error('wrapInTransaction should be implemented by the child class');
+    throw new NotImplementedError('wrapInTransaction should be implemented by the child class');
   }
 
   /**
@@ -181,9 +211,23 @@ export class BaseDatabase {
    */
   query(...args) {
     if (!this.connection) {
+      console.log('[BaseDatabase.query] No connection, waiting...', {
+        isSingleton: this.isSingleton,
+        hasConnectionPromise: !!this.connectionPromise,
+      });
       // If not yet connected, wait until we are, then run the query
       return this.queryWhenConnected(...args);
     }
+    
+    // Check if connection is in a bad state
+    const client = this.connection?.client;
+    console.log('[BaseDatabase.query] Building query', {
+      hasConnection: !!this.connection,
+      hasClient: !!client,
+      clientDriver: client?.driverName || client?.config?.client,
+      recordType: args[0]?.recordType,
+    });
+    
     // We are already connected, query immediately
     return buildQuery(this.connection, ...args);
   }
@@ -197,16 +241,17 @@ export class BaseDatabase {
   }
 
   /**
+   * @params {Parameters<typeof this.find>}
    * @returns {Promise<boolean>}
    */
   async exists(...args) {
     const innerQuery = this.find(...args);
+    /** @type {[{ exists: boolean }]} */
     const [{ exists }] = await this.executeSql('SELECT EXISTS(?);', [innerQuery]);
     return exists;
   }
 
   /**
-   *
    * @param {string} recordType
    * @param {Record<string, unknown>} [where]
    * @param {Record<string, unknown>} [options]
@@ -230,15 +275,32 @@ export class BaseDatabase {
     );
   }
 
+  /**
+   * @param {RecordName} recordType
+   * @param {*} where
+   * @param {*} options
+   */
   async findOne(recordType, where, options) {
     const results = await this.find(recordType, where, { ...options, limit: 1 });
     return results && results.length > 0 ? results[0] : null;
   }
 
+  /**
+   * @param {RecordName} recordType
+   * @param {string} id
+   * @param {*} options
+   */
   findById(recordType, id, options) {
     return this.findOne(recordType, { id }, options);
   }
 
+  /**
+   * @param {RecordName} recordType
+   * @param {string} id
+   * @param {string} idKey
+   * @param {string} parentIdKey
+   * @returns {Promise<Record<string, unknown>[]}
+   */
   async findRecursiveTree(recordType, id, idKey = 'id', parentIdKey = 'parent_id') {
     // See https://stackoverflow.com/questions/34954873/get-entire-hierarchy-of-parents-from-a-given-child-in-postgresql
     const sql = `
@@ -264,6 +326,11 @@ export class BaseDatabase {
     return this.findRecursiveTree(recordType, id, parentIdKey, idKey);
   }
 
+  /**
+   * @param {RecordName} recordType
+   * @param {*} where
+   * @param {*} extraFieldsIfCreating
+   */
   async findOrCreate(recordType, where, extraFieldsIfCreating = {}) {
     await this.create(
       recordType,
@@ -274,15 +341,80 @@ export class BaseDatabase {
   }
 
   async count(recordType, where, options) {
-    // If just a simple query without options, use the more efficient knex count method
-    const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
-    return Number.parseInt(result[0].count, 10);
+    try {
+      console.log('[BaseDatabase.count] Called', {
+        recordType,
+        hasConnection: !!this.connection,
+        connectionType: this.connection?.constructor?.name,
+        isSingleton: this.isSingleton,
+        connectionClientType: this.connection?.client?.constructor?.name,
+      });
+      
+      // If just a simple query without options, use the more efficient knex count method
+      let result;
+      try {
+        result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
+      } catch (findError) {
+        console.error('[BaseDatabase.count] Error during find()!', {
+          recordType,
+          error: findError?.message,
+          errorStack: findError?.stack,
+          errorName: findError?.name,
+        });
+        throw findError;
+      }
+      
+      console.log('[BaseDatabase.count] Find result', {
+        recordType,
+        hasResult: !!result,
+        isArray: Array.isArray(result),
+        resultLength: result?.length,
+        firstItem: result?.[0],
+        resultType: typeof result,
+      });
+      
+      if (!result || !Array.isArray(result) || result.length === 0 || !result[0]) {
+        console.error('[BaseDatabase.count] Invalid result from find!', {
+          recordType,
+          result,
+          isArray: Array.isArray(result),
+          length: result?.length,
+        });
+        // Return 0 instead of crashing to prevent logout
+        return 0;
+      }
+      
+      if (result[0].count === undefined) {
+        console.error('[BaseDatabase.count] Result exists but has no count property!', {
+          recordType,
+          firstItem: result[0],
+          firstItemKeys: Object.keys(result[0]),
+        });
+        return 0;
+      }
+      
+      return Number.parseInt(result[0].count, 10);
+    } catch (error) {
+      console.error('[BaseDatabase.count] Unexpected error!', {
+        recordType,
+        error: error?.message,
+        errorStack: error?.stack,
+        errorName: error?.name,
+        errorType: error?.constructor?.name,
+      });
+      // Return 0 to prevent crashes, but log the full error
+      return 0;
+    }
   }
 
   /**
    * Same as {@link count}, but aborts after a timeout. Use this when providing the exact record
    * count is merely an enhancement, not critical information in the context. A return value of
    * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
+   * @param {RecordName} recordType
+   * @param {*} where
+   * @param {*} options
+   * @returns {Promise<number>}
    */
   async countFast(recordType, where, options) {
     if (this.#forceTrueCount) return await this.count(recordType, where, options);
@@ -306,6 +438,12 @@ export class BaseDatabase {
     return Number.parseInt(result[0].count, 10);
   }
 
+  /**
+   * @param {RecordName} recordType
+   * @param {Record<string, unknown>[]} records
+   * @param {*} where
+   * @param {DatabaseSchemaName} schemaName
+   */
   async create(recordType, record, where, schemaName) {
     record.id ||= this.generateId();
 
@@ -322,6 +460,12 @@ export class BaseDatabase {
     return record;
   }
 
+  /**
+   * @param {RecordName} recordType
+   * @param {Record<string, unknown>[]} records
+   * @param {DatabaseSchemaName} schemaName
+   * @param {*} options
+   */
   async createMany(recordType, records, schemaName = SCHEMA_NAMES.PUBLIC, options = {}) {
     const { shouldGenerateId = true } = options;
 
@@ -345,9 +489,10 @@ export class BaseDatabase {
 
   /**
    * Updates all records that match the criteria to have the values in updatedFields
-   * @param {string} recordType     Records of this type will be updated
-   * @param {object} where          Records matching this criteria will be updated
-   * @param {object} updatedFields  The new values that should be in the record
+   * @param {RecordName} recordType Records of this type will be updated
+   * @param {object} where Records matching this criteria will be updated
+   * @param {object} updatedFields The new values that should be in the record
+   * @param {DatabaseSchemaName} schemaName
    */
   async update(recordType, where, updatedFields, schemaName) {
     return this.query(
@@ -416,6 +561,11 @@ export class BaseDatabase {
     return result[0];
   }
 
+  /**
+   * @param {RecordName} recordType
+   * @param {*} where
+   * @param {DatabaseSchemaName} schemaName
+   */
   async delete(recordType, where = {}, schemaName = SCHEMA_NAMES.PUBLIC) {
     return this.query(
       {
@@ -427,20 +577,18 @@ export class BaseDatabase {
     );
   }
 
+  /**
+   * @param {RecordName} recordType
+   * @param {string | string[]} id
+   */
   async deleteById(recordType, id) {
     return this.delete(recordType, { id });
   }
 
   /**
-   * Force a change to be recorded against the records matching the search criteria, and return
-   * those records.
+   * @param {string} key
+   * @returns {string | null}
    */
-  async markAsChanged(recordType, where, options) {
-    const records = await this.find(recordType, where, options);
-    await this.markRecordsAsChanged(recordType, records);
-    return records;
-  }
-
   async getSetting(key) {
     const setting = await this.findOne('setting', { key });
     return setting ? setting.value : null;
@@ -460,7 +608,7 @@ export class BaseDatabase {
    * Use only for situations in which Knex is not able to assemble a query.
    *
    * @param {string} sqlString
-   * @param {any[] | Record<string, any> | undefined} [parametersToBind]
+   * @param {readonly knex.Knex.RawBinding[] | knex.Knex.ValueDict | knex.Knex.RawBinding} [parametersToBind]
    * @template Result
    * @returns {Promise<Result>} execution result
    */
@@ -473,6 +621,12 @@ export class BaseDatabase {
     return result.rows;
   }
 
+  /**
+   * @template {unknown} Batch
+   * @param {Batch[]} arrayToBeBatched
+   * @param {(batch: Batch) => [string, readonly knex.Knex.RawBinding[] | knex.Knex.ValueDict | knex.Knex.RawBinding]} generateSql
+   * @param {number} batchSize
+   */
   async executeSqlInBatches(arrayToBeBatched, generateSql, batchSize) {
     return runDatabaseFunctionInBatches(
       arrayToBeBatched,
@@ -599,6 +753,12 @@ function buildQuery(connection, queryConfig, where = {}, options = {}, baseQuery
   // Alias the query result (for use in nested queries) if name provided
   if (options.name) {
     query = query.as(options.name);
+  }
+
+  if (options.onConflictMerge) {
+    // onConflictMerge is an array of conflicted columns
+    // columnsToMerge is an object of columns to merge
+    query = query.onConflict(options.onConflictMerge).merge(options.columnsToMerge);
   }
 
   if (options.onConflictIgnore) {

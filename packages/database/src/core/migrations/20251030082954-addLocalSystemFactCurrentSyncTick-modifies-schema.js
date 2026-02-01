@@ -19,7 +19,7 @@ exports.setup = function (options, seedLink) {
 exports.up = async function (db) {
   await db.runSql(`
     INSERT INTO local_system_fact(id, key, value)
-    VALUES('${generateId()}', 'currentSyncTick', -1);
+    VALUES('${generateId()}', 'currentSyncTick', 0);
   `);
 };
 

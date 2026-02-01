@@ -1,22 +1,35 @@
-import { TupaiaDatabase } from '@tupaia/database';
+import { TupaiaDatabase, type SCHEMA_NAMES } from '@tupaia/database';
 import { snakeKeys } from '@tupaia/utils';
 
-const SCHEMA = 'sync_snapshots';
+/**
+ * @privateRemarks Jest can’t import `SCHEMA_NAMES` from `@tupaia/database`, hence the magic
+ * string.
+ */
+const SCHEMA = 'sync_snapshots' satisfies typeof SCHEMA_NAMES.SYNC_SNAPSHOT;
+
+class InvalidSyncSessionIdError extends Error {
+  constructor(...args: ConstructorParameters<typeof Error>) {
+    super(...args);
+    this.name = 'InvalidSyncSessionIdError';
+  }
+}
 
 const assertSessionIdIsSafe = (sessionId: string) => {
   const safeIdRegex = /^[A-Za-z0-9-]{24}$/;
   if (!safeIdRegex.test(sessionId)) {
-    throw new Error(
-      `${sessionId} does not match the expected format of a session id - be careful of SQL injection!`,
+    throw new InvalidSyncSessionIdError(
+      `${sessionId} doesn’t match the expected format of a session ID. Be careful of SQL injection!`,
     );
   }
 };
 
 // includes a safety check for using in raw sql rather than via sequelize query building
-export const getSnapshotTableName = (sessionId: string) => {
+export const getSnapshotTableName = <SessionId extends string>(
+  sessionId: string,
+): `"${typeof SCHEMA}".${SessionId}` => {
   assertSessionIdIsSafe(sessionId);
 
-  return `"${SCHEMA}"."${sessionId}"`;
+  return `"${SCHEMA}"."${sessionId}"` as `"${typeof SCHEMA}".${SessionId}`;
 };
 
 export const getSnapshotTableCursorName = (sessionId: string) => {
@@ -73,12 +86,8 @@ export const dropSnapshotTable = async (database: TupaiaDatabase, sessionId: str
 };
 
 export const dropAllSnapshotTables = async (database: TupaiaDatabase) => {
-  await database.executeSql(`
-    DROP SCHEMA IF EXISTS ${SCHEMA} CASCADE;
-  `);
-  await database.executeSql(`
-    CREATE SCHEMA ${SCHEMA};
-  `);
+  await database.executeSql('DROP SCHEMA IF EXISTS ?? CASCADE;', [SCHEMA]);
+  await database.executeSql('CREATE SCHEMA ??;', [SCHEMA]);
 };
 
 export const insertSnapshotRecords = async (
@@ -98,5 +107,5 @@ export const updateSnapshotRecords = async (
   values: object,
   where: object,
 ) => {
-  await database.update(sessionId, where, values, SCHEMA);
+  await database.update(sessionId, snakeKeys(where), snakeKeys(values), SCHEMA);
 };

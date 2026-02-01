@@ -1,4 +1,3 @@
-// useQueryWithContext.ts
 import {
   QueryFunction,
   QueryFunctionContext,
@@ -13,6 +12,7 @@ import { ensure } from '@tupaia/tsutils';
 import { useDatabaseContext } from '../../hooks/database';
 import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser, useCurrentUserContext } from '../CurrentUserContext';
+import { useIsOfflineFirst } from '../offlineFirst';
 
 // Define global context shape
 interface GlobalQueryContext {
@@ -49,18 +49,30 @@ export function useDatabaseQuery<
     localContext?: TLocalContext;
   } = {},
 ): UseQueryResult<TData, TError> {
-  const { models } = useDatabaseContext(); // safely call hooks
+  const { models } = useDatabaseContext() || {}; // safely call hooks
   const { accessPolicy, ...user } = useCurrentUserContext();
+  const isOfflineFirst = useIsOfflineFirst();
 
   // Wrap the queryFn to include context
-  const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext =>
-    queryFn({
+  const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext => {
+    // Debug logging for model state when query executes
+    console.log('[useDatabaseQuery] Executing query', {
+      queryKey: queryFnContext.queryKey,
+      timestamp: new Date().toISOString(),
+      hasModels: !!models,
+      hasDatabase: !!models?.database,
+      databaseType: models?.database?.constructor?.name,
+      hasConnection: !!models?.database?.connection,
+    });
+    
+    return queryFn({
       ...queryFnContext,
-      accessPolicy: ensure(accessPolicy), // useQuery disabled if accessPolicy is pending
-      models,
+      accessPolicy: isOfflineFirst ? ensure(accessPolicy) : accessPolicy!, // we will not use accessPolicy if this is not offlineFirst
+      models: isOfflineFirst ? ensure(models) : models!, // we will not use models if this is not offlineFirst
       user,
       ...options.localContext,
     });
+  };
 
   // Remove localContext from options before passing to useQuery
   const { localContext: _, enabled = true, ...queryOptions } = options;
@@ -68,7 +80,7 @@ export function useDatabaseQuery<
   return useQuery<TQueryFnData, TError, TData, TQueryKey>({
     queryKey,
     queryFn: wrappedQueryFn,
-    enabled: Boolean(accessPolicy) && enabled,
+    enabled: (isOfflineFirst ? Boolean(accessPolicy) : true) && enabled,
     ...queryOptions,
   });
 }

@@ -1,0 +1,16 @@
+export const SURVEY_RESPONSE_DEFAULT_FIELDS = [
+  'assessor_name',
+  'country.name',
+  'data_time',
+  'end_time',
+  'entity.name',
+  'entity.id',
+  'id',
+  'survey.name',
+  'survey.code',
+  'user_id',
+  'country.code',
+  'survey.permission_group_id',
+  'timezone',
+  'survey.project_id',
+];

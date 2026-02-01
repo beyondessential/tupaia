@@ -1,19 +1,19 @@
 import { Link, ListItem } from '@material-ui/core';
 import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
 import React, { ComponentType, ReactNode, useState } from 'react';
-import { useMatch } from 'react-router';
+import { useMatch, useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { Button, RouterLink } from '@tupaia/ui-components';
-import { getModelsForPush } from '@tupaia/sync';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
-
+import { getModelsForPush } from '@tupaia/sync';
+import { Button, RouterLink } from '@tupaia/ui-components';
 import { useCurrentUserContext, useLogout } from '../../api';
+import { useIsOfflineFirst } from '../../api/offlineFirst';
 import { CancelConfirmModal } from '../../components';
 import { ROUTES } from '../../constants';
-import { MobileUserMenuRoot } from './MobileUserMenu';
 import { useDatabaseContext } from '../../hooks/database';
 import { countOutgoingChanges } from '../../sync/countOutgoingChanges';
+import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
   label: string;
@@ -108,13 +108,14 @@ export const MenuList = ({
   const [unsyncedChangesWarningModalOpen, setUnsyncedChangesWarningModalOpen] = useState(false);
   const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const isOfflineFirst = useIsOfflineFirst();
   const { mutate: logout } = useLogout();
-  const { models } = useDatabaseContext();
-
+  const navigate = useNavigate();
+  const { models } = useDatabaseContext() || {};
   const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
   const handleLogout = async () => {
-    logout();
+    logout(undefined, { onSuccess: () => navigate(ROUTES.LOGIN) });
     setUnsyncedChangesWarningModalOpen(false);
     onCloseMenu?.();
   };
@@ -163,17 +164,19 @@ export const MenuList = ({
     {
       label: 'Log out',
       onClick: async () => {
-        const unsyncedChangesCount = await countOutgoingChanges(
-          getModelsForPush(models.getModels()),
-          models.tombstone,
-          models.localSystemFact,
-        );
+        if (isOfflineFirst && models) {
+          const unsyncedChangesCount = await countOutgoingChanges(
+            getModelsForPush(models.getModels()),
+            models.localSystemFact,
+          );
 
-        if (unsyncedChangesCount > 0) {
-          setUnsyncedChangesWarningModalOpen(true);
+          if (unsyncedChangesCount > 0) {
+            setUnsyncedChangesWarningModalOpen(true);
+          } else {
+            handleLogout();
+          }
         } else {
-          logout();
-          onCloseMenu?.();
+          handleLogout();
         }
       },
       hidden: !isLoggedIn,
@@ -208,7 +211,7 @@ export const MenuList = ({
         headingText="Unsynced data"
         bodyText="You are about to log out with unsynced data! Go back to your home page and sync using the top right sync button and sync before logging out"
         confirmText="Log out anyway"
-        cancelText="Cancel"
+        cancelText="Return home"
         isOpen={unsyncedChangesWarningModalOpen}
         onClose={() => setUnsyncedChangesWarningModalOpen(false)}
         onConfirm={handleLogout}

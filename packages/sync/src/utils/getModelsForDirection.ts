@@ -1,11 +1,9 @@
 import { SyncDirections } from '@tupaia/constants';
-
-import { SyncSessionDirectionValues } from '../types';
 import { DatabaseModel } from '@tupaia/database';
 
 export const getModelsForDirections = (
   models: DatabaseModel[],
-  directions: SyncSessionDirectionValues[],
+  directions: SyncDirections[],
 ): DatabaseModel[] => {
   return models.filter(model =>
     directions.includes((model.constructor as typeof DatabaseModel).syncDirection),

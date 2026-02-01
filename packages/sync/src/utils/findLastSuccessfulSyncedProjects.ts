@@ -9,18 +9,20 @@ export const findLastSuccessfulSyncedProjects = async (
   database: BaseDatabase,
   deviceId: string,
 ): Promise<string[]> => {
-  const [lastSuccessfulSyncedProjectResult] = (await database.executeSql(
+  const [lastSuccessfulSyncedProjectResult] = await database.executeSql<
+    { last_synced_projects: string }[]
+  >(
     `
       SELECT info->>'projectIds' as last_synced_projects
-      FROM sync_session 
+      FROM sync_session
       WHERE info->>'deviceId' = ?
-      AND completed_at IS NOT NULL 
+      AND completed_at IS NOT NULL
       AND errors IS NULL
-      ORDER BY completed_at DESC 
+      ORDER BY completed_at DESC
       LIMIT 1;
     `,
     [deviceId],
-  )) as { last_synced_projects: string }[];
+  );
   try {
     const parsed = JSON.parse(lastSuccessfulSyncedProjectResult?.last_synced_projects);
     if (Array.isArray(parsed)) {

@@ -19,13 +19,19 @@
   "schemas": ["public", "logs"],
   "enumNameCasing": "pascal",
   "typeOverrides": {
+    "public.data_element.config": "DataElementConfig",
+    "public.data_service_entity.config": "DataServiceEntityConfig",
     "public.report.config": "ReportConfig",
     "public.dashboard_item.config": "DashboardItemConfig",
     "public.map_overlay.config": "MapOverlayConfig",
     "public.entity.attributes": "EntityAttributes",
+    "public.entity.metadata": "EntityMetadata",
     "public.user_account.preferences": "UserAccountPreferences",
     "public.dashboard_relation.entity_types": "EntityType[]",
+    "public.option.attributes": "OptionAttributes",
     "public.project.config": "ProjectConfig",
+    "public.superset_instance.config": "SupersetInstanceConfig",
+    "public.sync_session.info": "SyncSessionInfo",
     "public.task_comment.template_variables": "TaskCommentTemplateVariables",
     "public.task.repeat_schedule": "RepeatSchedule"
   },
@@ -36,15 +42,21 @@
   "template": "config/models/template.handlebars",
   "custom": {
     "imports": {
+      "DataElementConfig": "./models-extra",
+      "DataServiceEntityConfig": "./models-extra",
       "ReportConfig": "./models-extra",
       "DashboardItemConfig": "./models-extra",
       "MapOverlayConfig": "./models-extra",
       "EntityAttributes": "./models-extra",
+      "EntityMetadata": "./models-extra",
       "UserAccountPreferences": "./models-extra",
       "EntityType": "./models-extra",
+      "OptionAttributes": "./models-extra",
       "ProjectConfig": "./models-extra",
       "TaskCommentTemplateVariables": "./models-extra",
-      "RepeatSchedule": "./models-extra"
+      "RepeatSchedule": "./models-extra",
+      "SupersetInstanceConfig": "./models-extra",
+      "SyncSessionInfo": "./models-extra"
     }
   }
 }

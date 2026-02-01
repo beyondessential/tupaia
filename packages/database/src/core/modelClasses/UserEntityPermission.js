@@ -1,14 +1,12 @@
 import { SyncDirections } from '@tupaia/constants';
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { buildSyncLookupSelect } from '../sync';
 
 export class UserEntityPermissionRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ENTITY_PERMISSION;
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       fields: {
         code: 'entity_code',
@@ -26,7 +24,7 @@ export class UserEntityPermissionRecord extends DatabaseRecord {
         `${RECORDS.USER_ENTITY_PERMISSION}.permission_group_id`,
       ],
     },
-  ];
+  ]);
 
   /**
    * @returns {Promise<import('./Entity').EntityRecord>}

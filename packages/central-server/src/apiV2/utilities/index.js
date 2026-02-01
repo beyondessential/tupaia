@@ -1,6 +1,5 @@
 export { constructNewRecordValidationRules } from './constructNewRecordValidationRules';
 export * from './excel';
-export { fetchCountryIdsByPermissionGroupId } from './fetchCountriesByPermissionGroup';
 export { fetchRequestingMeditrakDevice } from '../meditrakApp/utilities/fetchRequestingMeditrakDevice';
 export {
   getAdminPanelAllowedCountryIds,

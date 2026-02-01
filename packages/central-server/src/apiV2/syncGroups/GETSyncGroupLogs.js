@@ -3,7 +3,7 @@ import { assertAdminPanelAccess } from '../../permissions';
 import { createSyncGroupDBFilter } from './assertSyncGroupPermissions';
 
 export class GETSyncGroupLogs extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async buildResponse() {
     const { limit, offset } = this.req.query;

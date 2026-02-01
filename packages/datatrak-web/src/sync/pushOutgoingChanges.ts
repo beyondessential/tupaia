@@ -24,7 +24,7 @@ export const pushOutgoingChanges = async (
     startOfPage = endOfPage;
   }
 
-  for await (const { kind } of stream(() => ({
+  for await (const { kind, message } of stream(() => ({
     method: 'PUT',
     endpoint: `sync/${sessionId}/push/complete`,
     options: { deviceId },
@@ -34,6 +34,10 @@ export const pushOutgoingChanges = async (
         // still waiting
         break handler;
       case SYNC_STREAM_MESSAGE_KIND.END:
+        // Check for errors in the END message
+        if (message?.error) {
+          throw new Error(message.error);
+        }
         return;
       default:
         log.warn(`Unexpected message kind: ${kind}`);

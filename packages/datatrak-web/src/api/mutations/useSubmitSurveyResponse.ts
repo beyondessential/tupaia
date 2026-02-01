@@ -5,6 +5,7 @@ import { SurveyResponseModel, UserModel } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
 import { DatatrakWebSubmitSurveyResponseRequest, Entity, Survey, UserAccount } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
+
 import { post, useCurrentUserContext, useEntityByCode } from '..';
 import { Coconut } from '../../components';
 import { ROUTES } from '../../constants';
@@ -72,10 +73,10 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
       // TODO: Assert user has access
 
-      const local = await models.wrapInTransaction(async transactingModels => {
+      return await models.wrapInRepeatableReadTransaction(async transactingModels => {
         const submitterId = user.isLoggedIn
           ? ensure(user.id)
-          : (await transactingModels.user.findPublicUser()).id;
+          : (await transactingModels.user.findPublicUser({ columns: ['id'] })).id;
 
         const data = {
           ...surveyResponseData,
@@ -103,12 +104,16 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
           await UserModel.addRecentEntities(transactingModels, submitterId, recent_entities);
         }
 
+        const [{ surveyResponseId }] = idsCreated;
+        await transactingModels.task.completeTaskForSurveyResponse({
+          ...processedResponse,
+          id: surveyResponseId,
+        });
+
         // Marking any corresponding task as complete is delegated to central-server
 
-        return idsCreated;
+        return { qrCodeEntitiesCreated: qr_codes_to_create };
       });
-
-      return local;
     },
     remote: async ({ data: answers }: SurveyResponseMutationFunctionContext) => {
       if (!answers) return;

@@ -1,12 +1,19 @@
-import { UseQueryOptions } from '@tanstack/react-query';
+import type { UseQueryOptions } from '@tanstack/react-query';
 
-import { DbFilter } from '@tupaia/tsmodels';
+import type { AccessPolicy } from '@tupaia/access-policy';
+import type { DbFilter } from '@tupaia/tsmodels';
 import { camelcaseKeys } from '@tupaia/tsutils';
-import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
-import { get, RequestParameters, useDatabaseQuery } from '../../../api';
+import type {
+  Country,
+  DatatrakWebSurveyRequest,
+  Project,
+  Survey,
+  SurveyGroup,
+} from '@tupaia/types';
+import { type RequestParameters, get, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
-import { ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
-import { Entity } from '../../../types';
+import { type ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
+import type { DatatrakWebModelRegistry, Entity } from '../../../types';
 import { getSurveyCountryCodes, getSurveyCountryNames, getSurveyGroupNames } from './util';
 
 interface UseSurveysQueryFilterParams {
@@ -33,7 +40,12 @@ const getRemote = async ({
   projectId,
   searchTerm,
 }: SurveysQueryFunctionContext): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
-  const params: RequestParameters = { fields: ['name', 'code', 'id'] };
+  const params: {
+    countryCode?: Country['code'];
+    fields: string[];
+    projectId?: Project['id'];
+    searchTerm?: string;
+  } = { fields: ['name', 'code', 'id'] } satisfies RequestParameters;
 
   if (countryCode) params.countryCode = countryCode;
   if (projectId) params.projectId = projectId;
@@ -47,13 +59,20 @@ const getRemote = async ({
 
 const getLocal = async ({
   models,
+  accessPolicy,
   countryCode,
   includeCountryNames,
   includeSurveyGroupNames,
   projectId,
   searchTerm,
 }: SurveysQueryFunctionContext) => {
-  const where = constructDbFilter({ projectId, searchTerm, countryCode });
+  const where = await constructDbFilter({
+    models,
+    accessPolicy,
+    projectId,
+    searchTerm,
+    countryCode,
+  });
 
   return await models.wrapInReadOnlyTransaction(async transactingModels => {
     const records = await transactingModels.survey.find(where);
@@ -125,29 +144,40 @@ export function useSurveysQuery(
   );
 }
 
-function constructDbFilter({
+async function constructDbFilter({
+  models,
+  accessPolicy,
   projectId,
   searchTerm,
   countryCode,
-}: UseSurveysQueryFilterParams): DbFilter<Survey> {
+}: {
+  models: DatatrakWebModelRegistry;
+  accessPolicy: AccessPolicy;
+  projectId?: Project['id'];
+  searchTerm?: string;
+  countryCode?: Country['code'];
+}): Promise<DbFilter<Survey>> {
   const dbFilter: DbFilter<Survey> = {};
 
   if (projectId) {
     dbFilter.project_id = projectId;
   }
+
   if (searchTerm) {
     dbFilter.name = {
       comparator: 'ilike',
       comparisonValue: `%${searchTerm}%`,
     };
   }
-  if (countryCode) {
-    // TODO: Replace with QUERY_CONJUNCTIONS.RAW once @tupaia/database imports are fixed
-    dbFilter._raw_ = {
-      sql: '(SELECT id FROM country WHERE code = ?) = ANY (country_ids)',
-      parameters: [countryCode],
-    };
+
+  if (!countryCode) {
+    return await models.survey.createRecordsPermissionFilter(accessPolicy, dbFilter);
   }
 
-  return dbFilter;
+  const country = await models.country.findOneOrThrow(
+    { code: countryCode },
+    { columns: ['id'] },
+    `Cannot find surveys for ${countryCode}; country not found`,
+  );
+  return await models.survey.getPermissionsViaParentFilter(accessPolicy, dbFilter, country.id);
 }

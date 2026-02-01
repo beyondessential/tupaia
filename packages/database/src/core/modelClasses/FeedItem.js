@@ -1,16 +1,21 @@
+/**
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('./Country').CountryRecord} CountryRecord
+ * @typedef {import('./PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
+ */
+
 import moment from 'moment';
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { SyncDirections } from '@tupaia/constants';
 import { FeedItemTypes } from '@tupaia/types';
 import { reduceToDictionary } from '@tupaia/utils';
-import { SyncDirections } from '@tupaia/constants';
-
+import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
+import { SqlQuery } from '../SqlQuery';
 import { RECORDS } from '../records';
-import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
-
-export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
 
 export class FeedItemRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.FEED_ITEM;
@@ -31,31 +36,36 @@ export class FeedItemModel extends DatabaseModel {
     return FeedItemRecord;
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<{ sql: string; parameters: (PermissionGroup['name'] | Country['id'])[] }>}
+   */
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
-    const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
-
+    const entries = Object.entries(countryIdsByPermissionGroup);
     return {
-      sql: `((${Object.entries(countryIdsByPermissionGroup)
-        .map(([_, countryIds]) => {
-          return `
-          (
-            feed_item.permission_group_id = ? AND
-            feed_item.country_id IN (${countryIds.map(_ => `?`).join(',')})
-          )
-        `;
+      sql: `((${entries
+        .map(([, countryIds]) => {
+          return `(feed_item.permission_group_id = ? AND feed_item.country_id IN ${SqlQuery.record(countryIds)})`;
         })
         // add the markdown type to the query here so that it always gets wrapped in brackets with the permissions query in the final query, regardless of what other custom conditions are added
         .join(' OR ')}) OR feed_item.type = '${FeedItemTypes.Markdown}')`,
-      parameters: params,
+      /** @example ['Public', 'id1', 'id2', 'Admin', 'id3'] */
+      parameters: entries.flat(2),
     };
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<Record<PermissionGroup['id'], Country['id'][]>>}
+   */
   async getCountryIdsByPermissionGroup(accessPolicy) {
     const permissionGroupNames = accessPolicy.getPermissionGroups();
 
+    /** @type {CountryRecord[]} */
     const countries = await this.otherModels.country.find({});
 
+    /** @type {PermissionGroupRecord[]} */
     const permissionGroups = await this.otherModels.permissionGroup.find({
       name: permissionGroupNames,
     });

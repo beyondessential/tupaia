@@ -31,6 +31,7 @@
     "@tupaia/kobo-api": "workspace:*",
     "@tupaia/superset-api": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
+    "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "@tupaia/weather-api": "workspace:*",
     "case": "^1.6.3",

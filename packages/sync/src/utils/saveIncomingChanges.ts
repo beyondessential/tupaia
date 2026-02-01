@@ -1,22 +1,60 @@
+import { groupBy } from 'es-toolkit';
 import winston from 'winston';
-import { groupBy } from 'lodash';
 
-import { BaseDatabase, DatabaseModel, ModelRegistry } from '@tupaia/database';
+import {
+  BaseDatabase,
+  DatabaseModel,
+  PublicSchemaRecordName,
+  ModelRegistry,
+  runDatabaseFunctionInBatches,
+} from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
-
-import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
-import { ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
+import { ModelSanitizeArgs, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 import { sortModelsByDependencyOrder } from './getDependencyOrder';
+import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 
 // TODO: Move this to a config model RN-1668
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
+const SAVE_BATCH_SIZE = 1000;
 const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
 const assertIsWithinTransaction = (database: BaseDatabase) => {
   if (!database?.isWithinTransaction) {
     throw new Error('saveIncomingChanges must be called within a transaction');
   }
+};
+
+export const saveDeletesForModel = async (
+  model: DatabaseModel,
+  changes: SyncSnapshotAttributes[],
+  progressCallback?: (recordsProcessed: number) => void,
+) => {
+  // split changes into create, update
+  const deletedRecords = changes.filter(c => c.isDeleted).map(c => c.data);
+
+  // Should delete records first to avoid foreign key constraints
+  winston.debug(
+    `Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`,
+    {
+      count: deletedRecords.length,
+    },
+  );
+  if (deletedRecords.length > 0) {
+    await saveDeletes(model, deletedRecords, SAVE_BATCH_SIZE, progressCallback);
+  }
+};
+
+const saveCreatesForModel = async (
+  model: DatabaseModel,
+  changes: SyncSnapshotAttributes[],
+  isCentralServer: boolean,
+  progressCallback?: (recordsProcessed: number) => void,
+) => {
+  const sanitizeData = (d: ModelSanitizeArgs) =>
+    isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
+  const recordsForCreate = changes.map(c => sanitizeData(c.data));
+  await saveCreates(model, recordsForCreate, SAVE_BATCH_SIZE, progressCallback);
 };
 
 export const saveChangesForModel = async (
@@ -32,39 +70,24 @@ export const saveChangesForModel = async (
   const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
   const idsForIncomingRecords = incomingRecords.map(r => r.id);
   // add all records that already exist in the db to the list to be updated
-  const existingRecords = await model.findManyById(idsForIncomingRecords);
-
-  const idToExistingRecord: Record<number, (typeof existingRecords)[0]> = Object.fromEntries(
+  // we only need the id column to check if the record already exists
+  const existingRecords = await runDatabaseFunctionInBatches(idsForIncomingRecords,
+    async (ids: string[]) => model.database.find(model.databaseRecord, { id: ids }, { columns: ['id'] })
+  );
+  const idToExistingRecord: Record<string, (typeof existingRecords)[number]> = Object.fromEntries(
     existingRecords.map((e: any) => [e.id, e]),
   );
   const recordsForCreate = [];
   const recordsForUpdate = [];
-  const recordsForDelete = [];
 
   for (const change of changes) {
-    const { data, isDeleted } = change;
+    const { data } = change;
 
     if (idToExistingRecord[data.id] === undefined) {
-      if (!isDeleted) {
-        recordsForCreate.push(sanitizeData(data));
-      }
-      // If it's a new record and it's deleted, ignore it
-    } else if (isDeleted) {
-      recordsForDelete.push(sanitizeData(data));
+      recordsForCreate.push(sanitizeData(data));
     } else {
       recordsForUpdate.push(sanitizeData(data));
     }
-  }
-
-  // Should delete records first to avoid foreign key constraints
-  winston.debug(
-    `Sync: saveIncomingChanges for ${model.databaseRecord}: Deleting existing records`,
-    {
-      count: recordsForDelete.length,
-    },
-  );
-  if (recordsForDelete.length > 0) {
-    await saveDeletes(model, recordsForDelete, 1000, progressCallback);
   }
 
   // run each import process
@@ -72,7 +95,7 @@ export const saveChangesForModel = async (
     count: recordsForCreate.length,
   });
   if (recordsForCreate.length > 0) {
-    await saveCreates(model, recordsForCreate, 1000, progressCallback);
+    await saveCreates(model, recordsForCreate, SAVE_BATCH_SIZE, progressCallback);
   }
 
   winston.debug(
@@ -82,19 +105,21 @@ export const saveChangesForModel = async (
     },
   );
   if (recordsForUpdate.length > 0) {
-    await saveUpdates(model, recordsForUpdate, 1000, progressCallback);
+    await saveUpdates(model, recordsForUpdate, isCentralServer, SAVE_BATCH_SIZE, progressCallback);
   }
 };
 
-const saveChangesForModelInBatches = async (
+const processSyncSnapshotInBatches = async (
   model: DatabaseModel,
   sessionId: string,
-  recordType: RecordType,
+  recordType: PublicSchemaRecordName,
+  isDeleted: boolean,
   isCentralServer: boolean,
   progressCallback?: (recordsProcessed: number) => void,
 ) => {
   let fromId;
   let batchRecords: SyncSnapshotAttributes[] | null = null;
+
   while (!batchRecords || batchRecords.length > 0) {
     batchRecords = await findSyncSnapshotRecords(
       model.database,
@@ -102,6 +127,8 @@ const saveChangesForModelInBatches = async (
       fromId,
       PERSISTED_CACHE_BATCH_SIZE,
       recordType,
+      undefined,
+      `is_deleted IS ${isDeleted ? 'TRUE' : 'FALSE'}`,
     );
     fromId = batchRecords[batchRecords.length - 1]?.id;
 
@@ -110,7 +137,11 @@ const saveChangesForModelInBatches = async (
         count: batchRecords.length,
       });
 
-      await saveChangesForModel(model, batchRecords, isCentralServer, progressCallback);
+      if (isDeleted) {
+        await saveDeletesForModel(model, batchRecords, progressCallback);
+      } else {
+        await saveChangesForModel(model, batchRecords, isCentralServer, progressCallback);
+      }
 
       await sleep(PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS);
     } catch (error) {
@@ -119,6 +150,29 @@ const saveChangesForModelInBatches = async (
     }
   }
 };
+
+const saveChangesForModelInBatches = (
+  model: DatabaseModel,
+  sessionId: string,
+  recordType: PublicSchemaRecordName,
+  isCentralServer: boolean,
+  progressCallback?: (recordsProcessed: number) => void,
+) =>
+  processSyncSnapshotInBatches(
+    model,
+    sessionId,
+    recordType,
+    false,
+    isCentralServer,
+    progressCallback,
+  );
+
+const saveDeletesForModelInBatches = (
+  model: DatabaseModel,
+  sessionId: string,
+  recordType: PublicSchemaRecordName,
+  progressCallback?: (recordsProcessed: number) => void,
+) => processSyncSnapshotInBatches(model, sessionId, recordType, true, false, progressCallback);
 
 export const saveIncomingSnapshotChanges = async (
   models: DatabaseModel[],
@@ -131,9 +185,21 @@ export const saveIncomingSnapshotChanges = async (
   }
 
   assertIsWithinTransaction(models[0].database);
-  const sortedModels = await sortModelsByDependencyOrder(models);
+  const sortedModelsForChanges = await sortModelsByDependencyOrder(models);
+  const sortedModelsForDeletes = [...sortedModelsForChanges].reverse();
 
-  for (const model of sortedModels) {
+  // Delete records first in the reverse order to avoid foreign key constraints
+  console.groupCollapsed('Saving incoming snapshot changes');
+  const startTime = performance.now();
+  console.group('DELETE phase');
+  for (const model of sortedModelsForDeletes) {
+    await saveDeletesForModelInBatches(model, sessionId, model.databaseRecord, progressCallback);
+  }
+  console.groupEnd();
+
+  console.group('CREATE/UPDATE phase');
+  // Create and update records in the order of dependencies
+  for (const model of sortedModelsForChanges) {
     await saveChangesForModelInBatches(
       model,
       sessionId,
@@ -142,6 +208,9 @@ export const saveIncomingSnapshotChanges = async (
       progressCallback,
     );
   }
+  console.groupEnd();
+  console.groupEnd();
+  console.log(`Saved incoming snapshot changes in ${performance.now() - startTime} ms`);
 };
 
 export const saveChangesFromMemory = async (
@@ -156,9 +225,20 @@ export const saveChangesFromMemory = async (
 
   assertIsWithinTransaction(models.database);
 
-  const groupedChanges = groupBy(changes, 'recordType');
+  const groupedChanges = groupBy(changes, c => c.recordType);
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
-    await saveChangesForModel(model, modelChanges, isCentralServer, progressCallback);
+    const filteredModelChanges = await model.filterSyncForClient(modelChanges);
+    if (model.databaseRecord !== 'user_account') {
+      await saveCreatesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    } else {
+      await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    }
+    const mem = (performance as any).memory;
+    if (mem) {
+      console.log('Used:', Math.round(mem.usedJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Total:', Math.round(mem.totalJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Limit:', Math.round(mem.jsHeapSizeLimit / 1024 / 1024), 'MB');
+    }
   }
 };

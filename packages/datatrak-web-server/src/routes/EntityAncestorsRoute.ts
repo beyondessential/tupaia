@@ -1,7 +1,9 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebEntitiesRequest, Entity } from '@tupaia/types';
 import { camelcaseKeys } from '@tupaia/tsutils';
+import { ENTITY_ANCESTORS_DEFAULT_FIELDS } from '@tupaia/constants';
 
 export type EntityAncestorsRequest = Request<
   TupaiaWebEntitiesRequest.Params,
@@ -9,8 +11,6 @@ export type EntityAncestorsRequest = Request<
   TupaiaWebEntitiesRequest.ReqBody,
   TupaiaWebEntitiesRequest.ReqQuery
 >;
-
-const DEFAULT_FIELDS = ['id', 'parent_code', 'code', 'name', 'type'];
 
 export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
   public async buildResponse() {
@@ -21,7 +21,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
       projectCode,
       rootEntityCode,
       {
-        fields: DEFAULT_FIELDS,
+        fields: ENTITY_ANCESTORS_DEFAULT_FIELDS,
       },
       true,
     );

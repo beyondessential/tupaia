@@ -1,25 +1,21 @@
-import MuiMenuIcon from '@material-ui/icons/Menu';
 import React, { useState } from 'react';
+import { useLocation } from 'react-router';
 import styled from 'styled-components';
+import MuiMenuIcon from '@material-ui/icons/Menu';
 
 import { IconButton } from '@tupaia/ui-components';
 
 import { useIsDesktop } from '../../utils';
 import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
+import { SyncButton } from '../Header/SyncButton';
+import { ROUTES } from '../../constants';
+import { useIsOfflineFirst } from '../../api/offlineFirst';
+import { useCurrentUserContext } from '../../api';
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-   ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
-`;
-
-const MenuButton = styled(IconButton).attrs({
-  disableRipple: true,
-})`
-  margin-left: 1rem;
 `;
 
 const MenuIcon = styled(MuiMenuIcon)`
@@ -36,15 +32,25 @@ export const UserMenu = () => {
   const onCloseMenu = () => setMenuOpen(false);
   const toggleUserMenu = () => setMenuOpen(!menuOpen);
   const isDesktop = useIsDesktop();
+  const location = useLocation();
+  const isOfflineFirst = useIsOfflineFirst();
+  const { isLoggedIn } = useCurrentUserContext();
+  const isSyncPage = location.pathname === ROUTES.SYNC;
 
   return (
     <Wrapper>
       <UserInfo />
+      {!isSyncPage && isOfflineFirst && isLoggedIn && <SyncButton />}
       {isDesktop && (
         <>
-          <MenuButton onClick={toggleUserMenu} id="user-menu-button" title="Toggle menu">
+          <IconButton
+            onClick={toggleUserMenu}
+            id="user-menu-button"
+            title="Toggle menu"
+            disableRipple
+          >
             <MenuIcon />
-          </MenuButton>
+          </IconButton>
           <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
         </>
       )}

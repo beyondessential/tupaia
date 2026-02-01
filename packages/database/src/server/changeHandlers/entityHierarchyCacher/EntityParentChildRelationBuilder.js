@@ -1,5 +1,32 @@
-import { generateId, SqlQuery } from '../../../core';
+/**
+ * @typedef {import('@tupaia/types').Entity} Entity
+ * @typedef {import('@tupaia/types').EntityHierarchy} EntityHierarchy
+ * @typedef {import('@tupaia/types').EntityParentChildRelation} EntityParentChildRelation
+ * @typedef {import('../../../core/modelClasses/Entity').EntityRecord} EntityRecord
+ * @typedef {import('../../../core/modelClasses/EntityHierarchy').EntityHierarchyRecord} EntityHierarchyRecord
+ * @typedef {import('../../../core/modelClasses/EntityParentChildRelation').EntityParentChildRelationRecord} EntityParentChildRelationRecord
+ * @typedef {import('../../../core/modelClasses/Project').ProjectRecord} ProjectRecord
+ * @typedef {[Entity['id'], Entity['id']]} ParentChildIdPair
+ */
+
+import { generateId } from '../../../core';
 import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
+
+const RECURSIVE_CONNECTED_NODES_CTE = `
+  RECURSIVE connected_nodes AS (
+    -- Start with root nodes (entities that exist but aren't children)
+    -- Start with the known root node
+    SELECT ? as node_id
+
+    UNION ALL
+
+    -- Recursively find all descendants
+    SELECT er.child_id
+    FROM entity_parent_child_relation er
+    INNER JOIN connected_nodes cn ON er.parent_id = cn.node_id
+      AND er.entity_hierarchy_id = ?
+  )
+`;
 
 /**
  * Builds and caches the entity parent child relations for a given hierarchy
@@ -14,18 +41,36 @@ export class EntityParentChildRelationBuilder {
   /**
    * Rebuilds the entity parent child relations for the given rebuild jobs
    * @param {{hierarchyId: string; rootEntityId: string}[]} rebuildJobs
+   * @returns {Promise<Entity['id'][]>}
    */
   async rebuildRelations(rebuildJobs) {
-    // projects are the root entities of every full tree, so start with them
+    let relatedEntityIds = [];
+
     for (const { hierarchyId, rootEntityId } of rebuildJobs) {
+      /** @type {ProjectRecord | null} */
       const project = await this.models.project.findOne({ entity_hierarchy_id: hierarchyId });
-      await this.rebuildRelationsForEntity(hierarchyId, rootEntityId, project);
+
+      // No projects using this hierarchy, so skip it
+      if (!project) {
+        continue;
+      }
+
+      const jobRelatedEntityIds = await this.rebuildRelationsForEntity(
+        hierarchyId,
+        rootEntityId,
+        project,
+      );
+
+      // Use concat to avoid arguement limit
+      relatedEntityIds = relatedEntityIds.concat(Array.from(jobRelatedEntityIds));
     }
+
+    return [...new Set(relatedEntityIds)];
   }
 
   /**
    * @public
-   * @param {string[]} hierarchyIds The specific hierarchies to cache (defaults to all)
+   * @param {EntityHierarchy['id'][]} hierarchyIds The specific hierarchies to cache (defaults to all)
    */
   async buildAndCacheHierarchies(hierarchyIds) {
     // projects are the root entities of every full tree, so start with them
@@ -37,11 +82,11 @@ export class EntityParentChildRelationBuilder {
 
   /**
    * Rebuilds the entity parent child relations for a given project
-   * @param {import('../../../core/modelClasses/Project').Project} project
+   * @param {ProjectRecord} project
    */
   async rebuildRelationsForProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
-    await this.rebuildRelationsForEntity(hierarchyId, projectEntityId, project);
+    return await this.rebuildRelationsForEntity(hierarchyId, projectEntityId, project);
   }
 
   /**
@@ -49,15 +94,43 @@ export class EntityParentChildRelationBuilder {
    * It traverses the hierarchy from the root entity to the leaves, and caches new relations + deletes obsolete ones
    * @param {string} hierarchyId hierarchy to rebuild relations for
    * @param {string} rootEntityId root/starting entity id to rebuild relations from
-   * @param {import('../../../core/modelClasses/Project').Project} project
+   * @param {Project} project
+   * @returns {Promise<Set<Entity['id']>>}
    */
   async rebuildRelationsForEntity(hierarchyId, rootEntityId, project) {
     const { entity_id: projectEntityId } = project;
-    await this.fetchAndCacheChildren(hierarchyId, [rootEntityId]);
+
+    // rootEntityId is always the parent_id of the affected entity,
+    // if it is not connected to the hierarchy of the project,
+    // no need to rebuild the relations
+    const isEntityConnected = await this.checkIfEntityIsConnected(
+      hierarchyId,
+      projectEntityId,
+      rootEntityId,
+    );
+    if (!isEntityConnected) {
+      return new Set();
+    }
+
+    const relatedEntityIds = await this.fetchAndCacheChildren(hierarchyId, [rootEntityId]);
     await this.deleteOrphanedRelations(hierarchyId, projectEntityId);
+
+    return relatedEntityIds;
   }
 
-  async fetchAndCacheChildren(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Entity['id'][]} parentIds
+   * @param {Set<Entity['id']>} childrenAlreadyCached
+   * @param {Set<Entity['id']>} relatedEntityIds
+   * @returns {Promise<Set<Entity['id']>>}
+   */
+  async fetchAndCacheChildren(
+    hierarchyId,
+    parentIds,
+    childrenAlreadyCached = new Set(),
+    relatedEntityIds = new Set(),
+  ) {
     const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, parentIds);
     const hasEntityRelationLinks = entityRelationChildCount > 0;
 
@@ -66,10 +139,16 @@ export class EntityParentChildRelationBuilder {
       ? await this.getRelationsViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached)
       : await this.getRelationsViaCanonical(hierarchyId, parentIds, childrenAlreadyCached);
 
+    let latestRelatedEntityIds = relatedEntityIds;
     if (entityParentChildRelations.length) {
-      await this.insertRelations(entityParentChildRelations);
+      const insertedRelations = await this.insertRelations(entityParentChildRelations);
+      latestRelatedEntityIds = new Set([
+        ...relatedEntityIds,
+        ...insertedRelations.flatMap(r => [r.parent_id, r.child_id]),
+      ]);
     }
 
+    /** @type {ParentChildIdPair[]} */
     const validParentChildIdPairs = entityParentChildRelations.map(e => [e.parent_id, e.child_id]);
 
     if (validParentChildIdPairs.length === 0) {
@@ -79,7 +158,7 @@ export class EntityParentChildRelationBuilder {
         parent_id: parentIds,
         entity_hierarchy_id: hierarchyId,
       });
-      return; // at a leaf node generation, no need to go any further
+      return latestRelatedEntityIds; // at a leaf node generation, no need to go any further
     }
 
     const validChildIds = validParentChildIdPairs.map(pair => pair[1]);
@@ -87,17 +166,28 @@ export class EntityParentChildRelationBuilder {
     // Delete the obsolete relations for this level
     await this.deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs);
 
+    /** @type {Set<Entity['id']>} */
     const latestChildrenAlreadyCached = new Set([...childrenAlreadyCached, ...validChildIds]);
 
-    return this.fetchAndCacheChildren(hierarchyId, validChildIds, latestChildrenAlreadyCached);
+    return this.fetchAndCacheChildren(
+      hierarchyId,
+      validChildIds,
+      latestChildrenAlreadyCached,
+      latestRelatedEntityIds,
+    );
   }
 
   /**
    * Cache the current level via entity relations
-   * @param {*} hierarchyId hierarchy to generate entity relation relations for
-   * @param {*} parentIds parent ids of a single level to generate entity relation relations for
+   * @param {EntityHierarchy['id']} hierarchyId hierarchy to generate entity relation relations for
+   * @param {Entity['id'][]} parentIds parent ids of a single level to generate entity relation relations for
    * @param {*} childrenAlreadyCached children already cached to avoid duplicates
-   * @returns
+   * @returns {Promise<
+   *   Pick<
+   *     EntityParentChildRelation,
+   *     'child_id' | 'entity_hierarchy_id' | 'parent_id'
+   *   >[]
+   * >}
    */
   async getRelationsViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
     const entityRelations = await this.models.entityRelation.find({
@@ -119,13 +209,19 @@ export class EntityParentChildRelationBuilder {
 
   /**
    * Cache the current level via canonical types
-   * @param {*} hierarchyId hierarchy to generate canonical relations for
-   * @param {*} parentIds parent ids of a single level to generate canonical relations for
-   * @param {*} childrenAlreadyCached children already cached to avoid duplicates
-   * @returns
+   * @param {EntityHierarchy['id']} hierarchyId hierarchy to generate canonical relations for
+   * @param {Entity['id'][]} parentIds parent ids of a single level to generate canonical relations for
+   * @param {Set<Entity['id']>} childrenAlreadyCached children already cached to avoid duplicates
+   * @returns {Promise<
+   *   Pick<
+   *     EntityParentChildRelation,
+   *     'child_id' | 'entity_hierarchy_id' | 'parent_id'
+   *   >[]
+   * >}
    */
   async getRelationsViaCanonical(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
     const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
+    /** @type {EntityRecord[]} */
     const entities = await this.models.entity.find({
       parent_id: parentIds,
       type: canonicalTypes,
@@ -143,9 +239,13 @@ export class EntityParentChildRelationBuilder {
     );
   }
 
+  /**
+   * @param {EntityParentChildRelation[]} entityParentChildRelations
+   * @returns {Promise<EntityParentChildRelationRecord[]>}
+   */
   async insertRelations(entityParentChildRelations) {
     // If the relation is already generated, it should be ignored
-    await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
+    return await this.models.entityParentChildRelation.createMany(entityParentChildRelations, {
       onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
     });
   }
@@ -160,7 +260,11 @@ export class EntityParentChildRelationBuilder {
     });
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   */
   async getCanonicalTypes(hierarchyId) {
+    /** @type {EntityHierarchyRecord | null} */
     const entityHierarchy = await this.models.entityHierarchy.findById(hierarchyId);
     const { canonical_types: customCanonicalTypes } = entityHierarchy;
     const canonicalTypes =
@@ -176,18 +280,29 @@ export class EntityParentChildRelationBuilder {
    * We delete the obsolete relations that:
    * - at the current level (by checking parent_ids)
    * - not the valid parent child id pairs to keep in a level
-   * @param {*} hierarchyId hierarchy to delete obsolete relations for
-   * @param {*} parentIds parent ids of a single level to delete obsolete relations for
-   * @param {*} validParentChildIdPairs valid parent child id pairs to keep
+   * @param {EntityHierarchy['id']} hierarchyId hierarchy to delete obsolete relations for
+   * @param {Entity['id'][]} parentIds parent ids of a single level to delete obsolete relations for
+   * @param {ParentChildIdPair[]} validParentChildIdPairs valid parent child id pairs to keep
    */
   async deleteObsoleteRelationsForParents(hierarchyId, parentIds, validParentChildIdPairs) {
+    const tempParentIdsTableName = `temp_parent_ids_${generateId()}`;
     const tempValidPairsTableName = `temp_valid_pairs_${generateId()}`;
     try {
+      await this.models.database.executeSql('CREATE TEMPORARY TABLE ?? (parent_id TEXT)', [
+        tempParentIdsTableName,
+      ]);
       await this.models.database.executeSql(
         'CREATE TEMPORARY TABLE ?? (parent_id TEXT, child_id TEXT)',
         [tempValidPairsTableName],
       );
 
+      await this.models.database.executeSqlInBatches(parentIds, batchOfParentIds => {
+        return [
+          `INSERT INTO ?? (parent_id)
+            VALUES ${batchOfParentIds.map(() => '(?)').join(',')}`,
+          [tempParentIdsTableName, ...batchOfParentIds],
+        ];
+      });
       await this.models.database.executeSqlInBatches(
         validParentChildIdPairs,
         batchOfValidParentChildIdPairs => {
@@ -200,44 +315,52 @@ export class EntityParentChildRelationBuilder {
         },
       );
 
-      await this.models.database.executeSqlInBatches(parentIds, batchOfParentIds => [
+      await this.models.database.executeSql(
         `
           DELETE FROM entity_parent_child_relation
           WHERE entity_hierarchy_id = ?
-            AND parent_id IN ${SqlQuery.record(batchOfParentIds)}
+            AND parent_id IN (SELECT parent_id from ??)
             AND (parent_id, child_id) NOT IN (
               SELECT parent_id, child_id FROM ??
             )
           RETURNING parent_id, child_id
         `,
-        [hierarchyId, ...batchOfParentIds, tempValidPairsTableName],
-      ]);
+        [hierarchyId, tempParentIdsTableName, tempValidPairsTableName],
+      );
     } finally {
+      await this.models.database.executeSql('DROP TABLE IF EXISTS ??', [tempParentIdsTableName]);
       await this.models.database.executeSql('DROP TABLE IF EXISTS ??', [tempValidPairsTableName]);
     }
   }
 
   /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Entity['id']} projectEntityId
+   * @param {Entity['id']} entityId
+   * @returns {Promise<boolean>}
+   */
+  async checkIfEntityIsConnected(hierarchyId, projectEntityId, entityId) {
+    const [{ is_connected: isConnected }] = await this.models.database.executeSql(
+      `
+      WITH
+      ${RECURSIVE_CONNECTED_NODES_CTE}
+      SELECT (? IN (SELECT node_id FROM connected_nodes)) AS is_connected;
+    `,
+      [projectEntityId, hierarchyId, entityId],
+    );
+    return isConnected;
+  }
+
+  /**
    * Delete the orphaned relations for a level of the hierarchy
-   * @param {*} hierarchyId hierarchy to delete orphaned relations for
-   * @param {*} projectEntityId project entity id (root entity) to delete orphaned relations for
+   * @param {EntityHierarchy['id']} hierarchyId hierarchy to delete orphaned relations for
+   * @param {Entity['id']} projectEntityId project entity id (root entity) to delete orphaned relations for
    */
   async deleteOrphanedRelations(hierarchyId, projectEntityId) {
     await this.models.database.executeSql(
       `
-      WITH RECURSIVE connected_nodes AS (
-        -- Start with root nodes (entities that exist but aren't children)
-        -- Start with the known root node
-        SELECT ? as node_id
-
-        UNION ALL
-
-        -- Recursively find all descendants
-        SELECT er.child_id
-        FROM entity_parent_child_relation er
-        INNER JOIN connected_nodes cn ON er.parent_id = cn.node_id
-          AND er.entity_hierarchy_id = ?
-      ),
+      WITH
+      ${RECURSIVE_CONNECTED_NODES_CTE},
       -- Find orphaned relations (not connected to any root)
       orphaned_relations AS (
         SELECT er.*

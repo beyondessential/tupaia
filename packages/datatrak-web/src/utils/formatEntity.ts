@@ -19,6 +19,7 @@ export type ExtendedFieldFunctions = Readonly<{
 export type ExtendedEntityFieldName = keyof AugmentedEntityRecord | keyof ExtendedFieldFunctions;
 
 export type ExtendedEntityFields = AugmentedEntityRecord & ExtendedFieldFunctions;
+
 export type EntityResponseObject = {
   [field in ExtendedEntityFieldName]: ExtendedEntityFields[field];
 };

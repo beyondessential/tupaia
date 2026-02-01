@@ -34,9 +34,9 @@ export const getSurveyScreenNumber = (screens, screen) => {
 
 export const getAllSurveyComponents = (surveyScreens?: SurveyScreen[]) => {
   return (
-    surveyScreens
-      ?.flatMap(({ surveyScreenComponents }) => surveyScreenComponents)
-      .map(validateSurveyComponent) ?? []
+    surveyScreens?.flatMap(({ surveyScreenComponents }) =>
+      validateSurveyComponent(surveyScreenComponents),
+    ) ?? []
   );
 };
 

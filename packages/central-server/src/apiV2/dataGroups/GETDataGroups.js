@@ -6,7 +6,7 @@ import {
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 export class GETDataGroups extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(dataGroupId, options) {
     const dataGroupPermissionChecker = accessPolicy =>

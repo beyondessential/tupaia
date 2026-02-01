@@ -2,7 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { DialogActions, FormControl as BaseFormControl, FormGroup } from '@material-ui/core';
+
 import { ProjectCountryAccessListRequest, WebServerProjectRequest } from '@tupaia/types';
+
 import {
   Checkbox as BaseCheckbox,
   SpinningLoader,
@@ -12,6 +14,7 @@ import {
 } from '../../components';
 import { Form, FormInput } from '../Form';
 import { RequestProjectAccessSuccessMessage } from './RequestProjectAccessSuccessMessage';
+import { OfflineErrorMessage } from '../../components/OfflineErrorMessage';
 
 const FormControl = styled(BaseFormControl).attrs({
   component: 'fieldset',
@@ -91,6 +94,7 @@ interface ProjectAccessFormProps {
   isSubmitting: boolean;
   isSuccess: boolean;
   backButtonText?: string;
+  ErrorMessageComponent?: React.ComponentType;
 }
 
 export const ProjectAccessForm = ({
@@ -109,6 +113,21 @@ export const ProjectAccessForm = ({
     formState: { isValid },
     register,
   } = formContext;
+
+  const isOnline = window.navigator.onLine;
+
+  if (!isOnline) {
+    return (
+      <>
+        <OfflineErrorMessage offlineMessage="You'll need an internet connection to request access to a new project. Come back when you're connected and try again." />
+        <StyledDialogActions>
+          <FormButton variant="contained" onClick={onBack} color="primary">
+            Back
+          </FormButton>
+        </StyledDialogActions>
+      </>
+    );
+  }
 
   const projectCode = project?.code;
   const submitForm = (formData: any) => {
