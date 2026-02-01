@@ -207,6 +207,12 @@ export const saveIncomingSnapshotChanges = async (
       isCentralServer,
       progressCallback,
     );
+    const mem = (performance as any).memory;
+    if (mem) {
+      console.log('Used:', Math.round(mem.usedJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Total:', Math.round(mem.totalJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Limit:', Math.round(mem.jsHeapSizeLimit / 1024 / 1024), 'MB');
+    }
   }
   console.groupEnd();
   console.groupEnd();
