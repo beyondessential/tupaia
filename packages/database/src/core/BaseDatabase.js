@@ -53,7 +53,8 @@ const VALID_COMPARISON_TYPES = /** @type {const} */ ([
   'whereBetween',
   'whereIn',
   'orWhere',
-]); /** @typedef {typeof VALID_COMPARISON_TYPES[number]} ComparisonType */
+]);
+/** @typedef {typeof VALID_COMPARISON_TYPES[number]} ComparisonType */
 
 export const WHERE_SUBQUERY_CLAUSES = /** @type {const} */ ({
   EXISTS: 'exists',
