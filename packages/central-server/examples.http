@@ -67,9 +67,20 @@ GET {{baseUrl}}/mapOverlayGroupRelations/5f2c7ddb61f76a513a0000bf
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
+
+### Get survey by ID
+
+GET {{baseUrl}}/surveys/594907318824a80b22151e77
+  ?columns=["can_repeat","code","id","name","paginatedQuestions","project_id","survey_group.name"] HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+
 ### Get survey responses
 
-GET {{baseUrl}}/surveyResponses?pageSize=5&columns=["entity.name", "country.name"] HTTP/2.0
+GET {{baseUrl}}/surveyResponses
+  ?pageSize=5
+  &columns=["entity.name", "country.name"] HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
