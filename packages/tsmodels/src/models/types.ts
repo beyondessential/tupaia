@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 
-import { DatabaseModel, DatabaseRecord, type ComparisonType } from '@tupaia/database';
-import { Flatten, ObjectLikeFields, ObjectLikeKeys } from '@tupaia/types';
+import type { ComparisonType, DatabaseModel, DatabaseRecord } from '@tupaia/database';
+import type { Flatten, ObjectLikeFields, ObjectLikeKeys } from '@tupaia/types';
 
 type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in' | '@>';
 
@@ -73,7 +73,7 @@ interface MultiJoinItem {
   fields?: Record<string, string | undefined>;
 }
 
-export type QueryOptions = {
+export interface QueryOptions {
   limit?: number;
   offset?: number;
   sort?: string[];
@@ -86,18 +86,42 @@ export type QueryOptions = {
   joins?: MultiJoinItem[];
   // Passed to BaseDatabase#find options param TODO: Consolidate these two
   multiJoin?: MultiJoinItem[];
-};
+}
 
-type BaseModelOverrides<Fields = unknown, RecordT = unknown> = {
-  find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<RecordT[]>;
-  findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<RecordT>;
-  findById: (id: string, customQueryOptions?: QueryOptions) => Promise<RecordT>;
-  update: (whereCondition: DbFilter<Fields>, fieldsToUpdate: Partial<Fields>) => Promise<void>;
+interface BaseModelOverrides<
+  Fields extends Object = Object,
+  RecordT extends DatabaseRecord = DatabaseRecord,
+> {
   all: () => Promise<RecordT[]>;
-};
+  create: (fields: Partial<Fields>) => Promise<RecordT>;
+  createMany: (fields: Partial<Fields>[]) => Promise<RecordT[]>;
+  find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<RecordT[]>;
 
-export type Model<BaseModel extends DatabaseModel, Fields, RecordT extends DatabaseRecord> = Omit<
-  BaseModel,
-  keyof BaseModelOverrides
-> &
-  BaseModelOverrides<Fields, RecordT>;
+  findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<RecordT | null>;
+  findOneOrThrow: (
+    filter: DbFilter<Fields>,
+    customQueryOptions?: QueryOptions,
+    errorMessage?: string,
+  ) => Promise<RecordT>;
+
+  findByIdOrThrow: (
+    id: string,
+    customQueryOptions?: QueryOptions,
+    errorMessage?: string,
+  ) => Promise<RecordT>;
+  findById: (id: string, customQueryOptions?: QueryOptions) => Promise<RecordT | null>;
+  findManyById: (id: string | string[]) => Promise<RecordT[]>;
+
+  update: (whereCondition: DbFilter<Fields>, fieldsToUpdate: Partial<Fields>) => Promise<void>;
+  updateById: (id: string, fieldsToUpdate: Partial<Fields>) => Promise<void>;
+  updateOrCreate: (
+    whereCondition: DbFilter<Fields>,
+    fieldsToUpsert: Partial<Fields>,
+  ) => Promise<RecordT[]>;
+}
+
+export type Model<
+  BaseModel extends DatabaseModel,
+  Fields extends Object,
+  RecordT extends DatabaseRecord,
+> = Omit<BaseModel, keyof BaseModelOverrides> & BaseModelOverrides<Fields, RecordT>;
