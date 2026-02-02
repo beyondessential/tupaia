@@ -3,6 +3,8 @@
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
  * @typedef {import('@tupaia/types').Project} Project
+ * @typedef {import('@tupaia/types').Task} Task
+ * @typedef {import('@tupaia/types').UserAccount} UserAccount
  */
 
 import { SyncDirections } from '@tupaia/constants';
@@ -216,7 +218,7 @@ export class TaskRecord extends DatabaseRecord {
    * @description Add a comment to the task. Handles linking the comment to the task and user, and setting the comment type
    *
    * @param {string} message
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    * @param {string} type
    */
   async addComment({ message, userId, type, templateVariables }) {
@@ -234,7 +236,7 @@ export class TaskRecord extends DatabaseRecord {
   /**
    *
    * @param {string} message
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    *
    * @description Add a user comment to the task
    */
@@ -249,7 +251,7 @@ export class TaskRecord extends DatabaseRecord {
   /**
    *
    * @param {object} templateVariables
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    *
    * @description Add a system comment to the task
    */
@@ -263,7 +265,7 @@ export class TaskRecord extends DatabaseRecord {
 
   /**
    *
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    * @param {object} templateVariables
    *
    * @description Add a comment when a task is updated
@@ -279,9 +281,7 @@ export class TaskRecord extends DatabaseRecord {
   }
 
   /**
-   *
-   * @param {string} userId
-   *
+   * @param {UserAccount['id']} userId
    * @description Add a comment when a task is created
    */
   async addCreatedComment(userId) {
@@ -295,7 +295,7 @@ export class TaskRecord extends DatabaseRecord {
 
   /**
    *
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    *
    * @description Add a comment when a task is completed
    */
@@ -310,7 +310,7 @@ export class TaskRecord extends DatabaseRecord {
 
   /**
    *
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    *
    * @description Add a comment when a task overdue email is sent
    */
@@ -421,10 +421,10 @@ export class TaskModel extends DatabaseModel {
   }
 
   /**
-   *
-   * @param {object} fields
+   * @override
+   * @param {Partial<Task>} fields
    * @param {string} [createdBy]
-   * @returns Task
+   * @returns {Task}
    */
   async create(fields, createdBy) {
     const task = await super.create(fields);
@@ -438,8 +438,8 @@ export class TaskModel extends DatabaseModel {
    * @description Add system comments for task updates. This is used to automatically add comments when certain fields are updated, e.g. due date, assignee, etc.
    *
    * @param {object} originalTask
-   * @param {object} updatedFields
-   * @param {string} userId
+   * @param {Partial<Task>} updatedFields
+   * @param {UserAccount['id']} userId
    */
   async addSystemCommentsOnUpdate(originalTask, updatedFields, userId) {
     const fieldsToCreateCommentsFor = ['due_date', 'repeat_schedule', 'status', 'assignee_id'];
@@ -476,17 +476,22 @@ export class TaskModel extends DatabaseModel {
     );
   }
 
+  /**
+   * @param {string} message
+   * @param {Task['id']} taskId
+   * @param {UserAccount['id']} userId
+   */
   async addUserComment(message, taskId, userId) {
     const task = await this.findById(ensure(taskId));
     await task.addUserComment(message, ensure(userId));
   }
 
   /**
-   *
-   * @param {string} id
-   * @param {object} updatedFields
-   * @param {string} [updatedBy]
-   * @returns Task
+   * @override
+   * @param {Task['id']} id
+   * @param {Partial<Task>} updatedFields
+   * @param {UserAccount['id']} [updatedBy]
+   * @returns {Task}
    */
   async updateById(id, updatedFields, updatedBy) {
     const originalTask = await this.findById(id);
