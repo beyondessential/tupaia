@@ -155,7 +155,7 @@ export const attachEntityFilterContext = async (
   _res: Response,
   next: NextFunction,
 ) => {
-  const rootEntity = await req.models.entity.findOne({
+  const rootEntity = await req.models.entity.findOneOrThrow({
     type: EntityTypeEnum.project,
     code: req.params.hierarchyName,
   });

@@ -67,12 +67,12 @@ export function sortSearchResults<T extends SearchResult = SearchResult>(
 
 const getAllowedCountries = async (
   models: DatatrakWebModelRegistry,
-  rootEntityId: string,
+  rootEntityId: Entity['id'],
   project: ProjectRecord,
   isPublic: boolean,
   accessPolicy: AccessPolicy,
 ): Promise<Entity['code'][]> => {
-  const rootEntity = await models.entity.findById(rootEntityId);
+  const rootEntity = await models.entity.findByIdOrThrow(rootEntityId);
 
   if (!project.entity_hierarchy_id) {
     throw new Error('Project entity hierarchy ID is not set');
@@ -85,9 +85,10 @@ const getAllowedCountries = async (
   let allowedCountries = [...new Set(childCodes)];
 
   if (!isPublic) {
-    const { permission_groups: projectPermissionGroups } = await models.project.findOne({
-      code: project.code,
-    });
+    const { permission_groups: projectPermissionGroups } = await models.project.findOneOrThrow(
+      { code: project.code },
+      { columns: ['permission_groups'] },
+    );
 
     // Fetch all country codes we have any of the project permission groups access to
     const projectAccessibleCountries = new Set<Entity['code']>(
