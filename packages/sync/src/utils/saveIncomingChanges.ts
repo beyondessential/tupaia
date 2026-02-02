@@ -16,7 +16,7 @@ import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 
 // TODO: Move this to a config model RN-1668
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
-const SAVE_BATCH_SIZE = 100;
+const SAVE_BATCH_SIZE = 1000;
 const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
 const assertIsWithinTransaction = (database: BaseDatabase) => {
@@ -43,6 +43,18 @@ export const saveDeletesForModel = async (
   if (deletedRecords.length > 0) {
     await saveDeletes(model, deletedRecords, SAVE_BATCH_SIZE, progressCallback);
   }
+};
+
+const saveCreatesForModel = async (
+  model: DatabaseModel,
+  changes: SyncSnapshotAttributes[],
+  isCentralServer: boolean,
+  progressCallback?: (recordsProcessed: number) => void,
+) => {
+  const sanitizeData = (d: ModelSanitizeArgs) =>
+    isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
+  const recordsForCreate = changes.map(c => sanitizeData(c.data));
+  await saveCreates(model, recordsForCreate, SAVE_BATCH_SIZE, progressCallback);
 };
 
 export const saveChangesForModel = async (
@@ -185,6 +197,12 @@ export const saveIncomingSnapshotChanges = async (
       isCentralServer,
       progressCallback,
     );
+    const mem = (performance as any)?.memory;
+    if (mem) {
+      console.log('Used:', Math.round(mem.usedJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Total:', Math.round(mem.totalJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Limit:', Math.round(mem.jsHeapSizeLimit / 1024 / 1024), 'MB');
+    }
   }
   console.groupEnd();
   console.groupEnd();
@@ -207,6 +225,16 @@ export const saveChangesFromMemory = async (
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
     const filteredModelChanges = await model.filterSyncForClient(modelChanges);
-    await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    if (model.databaseRecord !== 'user_account') {
+      await saveCreatesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    } else {
+      await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    }
+    const mem = (performance as any)?.memory;
+    if (mem) {
+      console.log('Used:', Math.round(mem.usedJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Total:', Math.round(mem.totalJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Limit:', Math.round(mem.jsHeapSizeLimit / 1024 / 1024), 'MB');
+    }
   }
 };

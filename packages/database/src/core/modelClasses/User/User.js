@@ -1,7 +1,6 @@
 /**
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
- * @typedef {import('@tupaia/types').User} User
  * @typedef {import('@tupaia/types').UserAccount} UserAccount
  * @typedef {import('@tupaia/types').UserAccountPreferences} UserAccountPreferences
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
@@ -187,7 +186,7 @@ export class UserModel extends DatabaseModel {
 
   /**
    * @param {ModelRegistry} models
-   * @param {User['id']} userId
+   * @param {UserAccount['id']} userId
    * @param {Entity['id'][]} entityIds
    * @returns {Promise}
    */
@@ -197,6 +196,10 @@ export class UserModel extends DatabaseModel {
 
   get DatabaseRecordClass() {
     return UserRecord;
+  }
+
+  async isApiClientUser(userId) {
+    return await this.otherModels.apiClient.exists({ user_account_id: userId });
   }
 
   /**
@@ -239,8 +242,8 @@ export class UserModel extends DatabaseModel {
   };
 
   /**
-   * @param {User['id'][]} userIds
-   * @returns {Promise<{id: User['id'], name: string}[]>}
+   * @param {UserAccount['id'][]} userIds
+   * @returns {Promise<{id: UserAccount['id'], name: string}[]>}
    */
   async getFilteredUsers(searchTerm, userIds) {
     const usersFilter = {
@@ -315,7 +318,7 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {User['id']} userId
+   * @param {UserAccount['id']} userId
    */
   async getUpdatedUserPreferenceFields(userId, updatedFields) {
     const updatedUserPreferences = Object.entries(updatedFields).filter(([key]) =>
@@ -352,7 +355,7 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {User['id']} userId
+   * @param {UserAccount['id']} userId
    * @param {Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
    * @returns {Promise<Entity['id'][]>} Entity IDs

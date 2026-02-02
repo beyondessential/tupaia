@@ -47,8 +47,8 @@ export type SyncServerConfig = {
     perModelUpdateTimeoutMs: number;
     avoidRepull: boolean;
   };
-  snapshotTransactionTimeoutMs: number;
-  syncSessionTimeoutMs: number;
+  snapshotTransactionTimeoutMs?: number;
+  syncSessionTimeoutMs?: number;
   maxConcurrentSessions: number;
 };
 

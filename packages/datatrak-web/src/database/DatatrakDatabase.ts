@@ -71,7 +71,7 @@ export class DatatrakDatabase extends BaseDatabase {
   /**
    * Health check to verify database connection is alive
    */
-  async healthCheck(): Promise<{ healthy: boolean; error?: string }> {
+  async healthCheck(): Promise<{ healthy: true } | { healthy: false; error: string | undefined }> {
     try {
       console.log('[DatatrakDatabase.healthCheck] Starting');
       const result = await this.connection.raw('SELECT 1 as health');
