@@ -29,7 +29,7 @@ export class TasksRoute extends Route<TasksRequest> {
 
   private async queryForCount() {
     const { models, accessPolicy } = this.req;
-    return models.task.countTasksForAccessPolicy(accessPolicy, this.filters, {
+    return await models.task.countTasksForAccessPolicy(accessPolicy, this.filters, {
       multiJoin: models.task.DatabaseRecordClass.joins,
     });
   }
