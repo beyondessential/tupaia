@@ -1,6 +1,8 @@
 /**
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('../BaseDatabase').JoinType} JoinType
+ * @typedef {import('../records').PublicSchemaRecordName} PublicSchemaRecordName
  * @typedef {import('./Country').CountryRecord} CountryRecord
  * @typedef {import('./PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
  */
@@ -92,9 +94,9 @@ export class FeedItemModel extends DatabaseModel {
    * @param {string[]} [dbOptions.sort]
    * @param {number} [dbOptions.pageLimit]
    * @param {number} [dbOptions.page]
-   * @param {string} [dbOptions.joinWith]
-   * @param {string[]} [dbOptions.joinCondition]
-   * @param {string} [dbOptions.joinType]
+   * @param {PublicSchemaRecordName} [dbOptions.joinWith]
+   * @param {[string, string]} [dbOptions.joinCondition]
+   * @param {JoinType | null} [dbOptions.joinType]
    * @returns
    */
   async findByAccessPolicy(accessPolicy, customDbConditions = {}, dbOptions = {}) {

@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
 
-import type { ComparisonType, DatabaseModel, DatabaseRecord } from '@tupaia/database';
+import type { ComparisonType, DatabaseModel, DatabaseRecord, JoinType } from '@tupaia/database';
 import type { Flatten, ObjectLikeFields, ObjectLikeKeys } from '@tupaia/types';
 
 type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in' | '@>';
@@ -68,8 +68,8 @@ export type Joined<T, U extends string> = {
 interface MultiJoinItem {
   joinWith: string;
   joinAs?: string;
-  joinType?: string;
-  joinCondition: string[];
+  joinType?: JoinType;
+  joinCondition: [string, string];
   fields?: Record<string, string | undefined>;
 }
 
