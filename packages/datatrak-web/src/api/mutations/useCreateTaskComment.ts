@@ -32,11 +32,9 @@ export const useCreateTaskComment = (taskId?: Task['id'], onSuccess?: () => void
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['tasks']);
-        queryClient.invalidateQueries(['tasks', taskId]);
+        queryClient.invalidateQueries(['task', taskId]);
         successToast('Comment added successfully');
-        if (onSuccess) {
-          onSuccess();
-        }
+        onSuccess?.();
       },
       localContext: {
         taskId,
