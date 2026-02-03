@@ -45,10 +45,10 @@ export class TasksRoute extends Route<TasksRequest> {
 
     const params: {
       filter: FormattedFilters;
-      columns: string[];
+      columns: readonly string[];
       pageSize: number;
       page: number;
-      sort?: string[];
+      sort?: readonly string[];
       rawSort?: string;
     } = {
       filter: this.filters,

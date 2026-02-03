@@ -13,4 +13,4 @@ export const SURVEY_RESPONSE_DEFAULT_FIELDS = [
   'survey.permission_group_id',
   'timezone',
   'survey.project_id',
-];
+] as const;

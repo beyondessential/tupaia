@@ -1,9 +1,8 @@
-import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import { ENTITY_ANCESTORS_DEFAULT_FIELDS } from '@tupaia/constants';
-
-import { UseEntityAncestorsLocalContext } from '../../api/queries/useEntityAncestors';
-import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils/formatEntity';
+import { camelcaseKeys, ensure } from '@tupaia/tsutils';
+import type { UseEntityAncestorsLocalContext } from '../../api/queries/useEntityAncestors';
 import { isExtendedField } from '../../utils/extendedFieldFunctions';
+import { formatEntitiesForResponse } from '../../utils/formatEntity';
 
 export const getEntityAncestors = async ({
   models,
@@ -39,7 +38,7 @@ export const getEntityAncestors = async ({
   const formattedEntities = await formatEntitiesForResponse(
     { hierarchyId: project.entity_hierarchy_id },
     entities,
-    ENTITY_ANCESTORS_DEFAULT_FIELDS as ExtendedEntityFieldName[],
+    ENTITY_ANCESTORS_DEFAULT_FIELDS,
   );
 
   return camelcaseKeys(formattedEntities, { deep: true });
