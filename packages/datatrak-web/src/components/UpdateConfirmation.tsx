@@ -78,7 +78,7 @@ const UpdateConfirmationModal = ({ show, proceed }: UpdateConfirmationModalProps
         <Title>App update available</Title>
 
         <Description>
-          A new version of Datatrak is now available. Please refresh to continue using the latest
+          A new version of DataTrak is now available. Please refresh to continue using the latest
           features and improvements.
         </Description>
 
