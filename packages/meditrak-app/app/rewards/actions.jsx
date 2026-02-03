@@ -6,33 +6,35 @@ import {
 import { formatPlural } from '../utilities';
 import { addMessage, MESSAGE_TYPES } from '../messages';
 
-export const getLatestUserRewardCount = () => async (dispatch, getState, { api }) => {
-  const { rewards } = getState();
-  const { isInitialLoadComplete } = rewards;
+export const getLatestUserRewardCount =
+  () =>
+  async (dispatch, getState, { api }) => {
+    const { rewards } = getState();
+    const { isInitialLoadComplete } = rewards;
 
-  dispatch({ type: REWARDS_BALANCE_REQUEST });
+    dispatch({ type: REWARDS_BALANCE_REQUEST });
 
-  try {
-    const { coconuts, pigs } = await api.getCurrentUserRewards();
-    const pigDifference = pigs - rewards.pigs;
-    const coconutDifference = coconuts - rewards.coconuts;
+    try {
+      const { coconuts, pigs } = await api.getCurrentUserRewards();
+      const pigDifference = pigs - rewards.pigs;
+      const coconutDifference = coconuts - rewards.coconuts;
 
-    if (isInitialLoadComplete) {
-      emitRewardMessage(pigDifference, coconutDifference, dispatch);
+      if (isInitialLoadComplete) {
+        emitRewardMessage(pigDifference, coconutDifference, dispatch);
+      }
+
+      dispatch({
+        type: REWARDS_BALANCE_SUCCESS,
+        coconuts,
+        pigs,
+      });
+    } catch (error) {
+      dispatch({
+        type: REWARDS_BALANCE_FAILURE,
+        errorMessage: error,
+      });
     }
-
-    dispatch({
-      type: REWARDS_BALANCE_SUCCESS,
-      coconuts,
-      pigs,
-    });
-  } catch (error) {
-    dispatch({
-      type: REWARDS_BALANCE_FAILURE,
-      errorMessage: error,
-    });
-  }
-};
+  };
 
 const emitRewardMessage = (pigDifference, coconutDifference, dispatch) => {
   if (pigDifference < 1 && coconutDifference < 1) {

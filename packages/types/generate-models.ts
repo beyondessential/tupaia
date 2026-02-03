@@ -1,18 +1,21 @@
 // See https://rmp135.github.io/sql-ts/#/?id=totypescript
 
 import sqlts, { Table } from '@rmp135/sql-ts';
-import path from 'path';
-
+import { createPatch } from 'diff';
+import * as dotenv from 'dotenv';
+import * as fs from 'node:fs';
 import Knex from 'knex';
+import path from 'node:path';
 // @ts-ignore
 import config from './config/models/config.json';
 
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
 dotenv.config({
   path: [path.resolve(__dirname, '../../env/db.env'), path.resolve(__dirname, '.env')],
   override: true,
 });
+
+console.log('🎰 Generating models...');
+const tic = performance.now();
 
 const db = Knex({
   client: 'postgresql',
@@ -24,6 +27,13 @@ const db = Knex({
     database: process.env.DB_NAME,
   },
 });
+
+const { host, port, user, database } = (db as any).context.client.connectionSettings;
+console.log('🔌 Connected to database');
+console.log('  Host:    ', host);
+console.log('  Port:    ', port);
+console.log('  User:    ', user);
+console.log('  Database:', database);
 
 const renameTables = (tables: Table[], suffix: string) =>
   tables.map(table => ({
@@ -104,16 +114,29 @@ const run = async () => {
   if (failOnChanges) {
     const currentTsString = fs.readFileSync(config.filename, { encoding: 'utf8' });
     if (currentTsString !== tsString) {
+      const patch = createPatch(config.filename, currentTsString, tsString);
       console.log(
-        '❌ There are changes in the db schema which are not reflected in @tupaia/types.',
+        `${process.env.CI ? '::error::' : '❌ '}There are changes in the database schema which are not reflected in @tupaia/types. Run \`yarn workspace @tupaia/types run generate\` to fix.`,
       );
-      console.log("Run 'yarn workspace @tupaia/types generate' to fix");
+      console.log(patch);
+
+      if (process.env.CI && process.env.GITHUB_STEP_SUMMARY) {
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '## Models\n\n');
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '```diff\n');
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, patch);
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '```\n');
+      }
+
+      const duration = performance.now() - tic;
+      console.log(`💥 Failed after ${Math.round(duration)} ms`);
       process.exit(1);
     }
   }
 
   fs.writeFile(config.filename, tsString, () => {
-    console.log(`File written: ${config.filename}`);
+    console.log(`💾 Wrote ${config.filename}`);
+    const duration = performance.now() - tic;
+    console.log(`✅ Done in ${Math.round(duration)} ms`);
     process.exit(0);
   });
 };

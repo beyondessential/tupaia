@@ -1,21 +1,21 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import {AppRegistry, LogBox} from 'react-native';
+import { AppRegistry, LogBox } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Provider} from 'react-redux';
-import {createStore, compose} from 'redux';
-import {persistStore, persistCombineReducers, createTransform} from 'redux-persist';
-import {ErrorHandler} from 'redux-persist-error-handler';
+import { Provider } from 'react-redux';
+import { createStore, compose } from 'redux';
+import { persistStore, persistCombineReducers, createTransform } from 'redux-persist';
+import { ErrorHandler } from 'redux-persist-error-handler';
 
 import Bugsnag from '@bugsnag/react-native';
-import {Meditrak} from './Meditrak';
-import {api} from './api';
-import {database} from './database';
-import {reducers} from './reducers';
-import {createMiddleware} from './middleware';
-import {NavigationConnectedApp} from './navigation';
-import {analytics} from './utilities';
-import {isBeta, betaBranch} from './version';
+import { Meditrak } from './Meditrak';
+import { api } from './api';
+import { database } from './database';
+import { reducers } from './reducers';
+import { createMiddleware } from './middleware';
+import { NavigationConnectedApp } from './navigation';
+import { analytics } from './utilities';
+import { isBeta, betaBranch } from './version';
 
 const composer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -60,8 +60,8 @@ Bugsnag.start({
       console.log('onError', event);
       if (store) {
         event.addMetadata('reduxState', store.getState());
-        const {authentication = {}} = store.getState();
-        const {currentUserId, emailAddress, name} = authentication;
+        const { authentication = {} } = store.getState();
+        const { currentUserId, emailAddress, name } = authentication;
         event.setUser(currentUserId, emailAddress, name);
       }
     } catch (e) {

@@ -34,7 +34,7 @@ export const changePassword = password => ({
  */
 export const login =
   (emailAddress, password) =>
-  async (dispatch, getState, {api, database, analytics}) => {
+  async (dispatch, getState, { api, database, analytics }) => {
     dispatch(requestLogin());
     analytics.trackEvent('Request login');
     const installId = await AppCenter.getInstallId();
@@ -63,27 +63,25 @@ export const login =
       return;
     }
     const passwordHash = saltAndHash(password);
-    const user = database.updateUser({emailAddress, passwordHash, ...response.user});
+    const user = database.updateUser({ emailAddress, passwordHash, ...response.user });
 
-  dispatch(receiveLogin(emailAddress, user, user.accessPolicy, installId));
-};
+    dispatch(receiveLogin(emailAddress, user, user.accessPolicy, installId));
+  };
 
-export const offlineLogin = (emailAddress, password) => (
-  dispatch,
-  getState,
-  { database, analytics },
-) => {
-  analytics.trackEvent('Request offline login');
+export const offlineLogin =
+  (emailAddress, password) =>
+  (dispatch, getState, { database, analytics }) => {
+    analytics.trackEvent('Request offline login');
 
-  const user = database.getUser(emailAddress);
-  if (user && saltAndHash(password) === user.passwordHash) {
-    dispatch(receiveLogin(emailAddress, user, user.accessPolicy));
-    analytics.trackEvent('Succeed offline login');
-  } else {
-    dispatch(receiveLoginError(UNABLE_TO_CONNECT_MESSAGE));
-    analytics.trackEvent('Fail offline login');
-  }
-};
+    const user = database.getUser(emailAddress);
+    if (user && saltAndHash(password) === user.passwordHash) {
+      dispatch(receiveLogin(emailAddress, user, user.accessPolicy));
+      analytics.trackEvent('Succeed offline login');
+    } else {
+      dispatch(receiveLoginError(UNABLE_TO_CONNECT_MESSAGE));
+      analytics.trackEvent('Fail offline login');
+    }
+  };
 
 export const requestLogin = () => ({
   type: LOGIN_REQUEST,
@@ -91,33 +89,35 @@ export const requestLogin = () => ({
 
 export const receiveLogin =
   (emailAddress, user, accessPolicy, installId) =>
-  async (dispatch, getState, {database}) => {
+  async (dispatch, getState, { database }) => {
     dispatch(resetToWelcomeScreen());
 
-  const syncWasSuccessful = await database.synchronise(dispatch);
-  const existingLoginDetails = database.getCurrentLoginDetails();
-  // If sync failed and this is the first time the user has logged in, don't let them see the app
-  if (!syncWasSuccessful && !existingLoginDetails.emailAddress) {
-    const state = getState();
-    const errorMessage = getErrorMessage(state);
-    dispatch(receiveLoginError(`Sync failed: ${errorMessage}. Log in again to retry.`));
-    dispatch(resetToLogin());
-    return;
-  }
+    const syncWasSuccessful = await database.synchronise(dispatch);
+    const existingLoginDetails = database.getCurrentLoginDetails();
+    // If sync failed and this is the first time the user has logged in, don't let them see the app
+    if (!syncWasSuccessful && !existingLoginDetails.emailAddress) {
+      const state = getState();
+      const errorMessage = getErrorMessage(state);
+      dispatch(receiveLoginError(`Sync failed: ${errorMessage}. Log in again to retry.`));
+      dispatch(resetToLogin());
+      return;
+    }
 
-  database.setCurrentLoginEmail(emailAddress);
+    database.setCurrentLoginEmail(emailAddress);
 
-  dispatch({
-    type: LOGIN_SUCCESS,
-    userId: user.id,
-    name: user.name,
-  });
+    dispatch({
+      type: LOGIN_SUCCESS,
+      userId: user.id,
+      name: user.name,
+    });
 
     dispatch(resetToHome());
   };
 
-export const receiveUpdatedAccessPolicy = userDetails => (dispatch, getState, { database }) =>
-  database.updateUser(userDetails);
+export const receiveUpdatedAccessPolicy =
+  userDetails =>
+  (dispatch, getState, { database }) =>
+    database.updateUser(userDetails);
 
 export const receiveLoginError = errorMessage => ({
   type: LOGIN_FAILURE,
@@ -126,7 +126,7 @@ export const receiveLoginError = errorMessage => ({
 
 export const logout =
   () =>
-  (dispatch, getState, {analytics}) => {
+  (dispatch, getState, { analytics }) => {
     dispatch(resetToLogin());
     dispatch({
       type: LOGOUT,
@@ -135,8 +135,10 @@ export const logout =
     analytics.trackEvent('Log out');
   };
 
-export const logoutWithError = errorMessage => (dispatch, getState, { database }) => {
-  database.clearCurrentUserSession();
-  dispatch(logout());
-  dispatch(receiveLoginError(errorMessage));
-};
+export const logoutWithError =
+  errorMessage =>
+  (dispatch, getState, { database }) => {
+    database.clearCurrentUserSession();
+    dispatch(logout());
+    dispatch(receiveLoginError(errorMessage));
+  };

@@ -42,26 +42,28 @@ const DEFAULT_PRIMARY_ENTITY_QUESTION = {
 /**
  * Action creators for the assessment reducer.
  */
-export const initialiseSurveys = () => (dispatch, getState, { database }) => {
-  const surveys = {};
-  const state = getState();
+export const initialiseSurveys =
+  () =>
+  (dispatch, getState, { database }) => {
+    const surveys = {};
+    const state = getState();
 
-  const countryId = getSelectedCountryId(state);
-  const surveyList = database.getSurveys(countryId);
+    const countryId = getSelectedCountryId(state);
+    const surveyList = database.getSurveys(countryId);
 
-  const currentUser = database.getCurrentUser();
-  const country = database.getCountry(countryId);
-  surveyList
-    .filter(survey => currentUser.hasAccessToSurveyInCountry(survey, country))
-    .forEach(survey => {
-      surveys[survey.id] = survey.getReduxStoreData();
+    const currentUser = database.getCurrentUser();
+    const country = database.getCountry(countryId);
+    surveyList
+      .filter(survey => currentUser.hasAccessToSurveyInCountry(survey, country))
+      .forEach(survey => {
+        surveys[survey.id] = survey.getReduxStoreData();
+      });
+
+    dispatch({
+      type: UPDATE_SURVEYS,
+      surveys,
     });
-
-  dispatch({
-    type: UPDATE_SURVEYS,
-    surveys,
-  });
-};
+  };
 
 export const changeAnswer = (questionId, newAnswer) => ({
   type: ANSWER_CHANGE,
@@ -102,75 +104,73 @@ const findPrimaryEntityComponent = (screens, primaryEntityQuestionId) => {
   return null;
 };
 
-export const selectSurvey = (surveyId, isRepeating = false) => (
-  dispatch,
-  getState,
-  { database, analytics },
-) => {
-  const survey = database.findOne('Survey', surveyId);
-  if (!survey) throw new Error(`No survey found with id ${surveyId}`);
-  const { screens, questions } = survey.getDataForReduxStore();
+export const selectSurvey =
+  (surveyId, isRepeating = false) =>
+  (dispatch, getState, { database, analytics }) => {
+    const survey = database.findOne('Survey', surveyId);
+    if (!survey) throw new Error(`No survey found with id ${surveyId}`);
+    const { screens, questions } = survey.getDataForReduxStore();
 
-  const customPrimaryEntityQuestion = findPrimaryEntityQuestion(Object.values(questions));
-  if (!customPrimaryEntityQuestion) {
-    // no custom primary entity question, add the default
-    questions[DEFAULT_PRIMARY_QUESTION_ID] = DEFAULT_PRIMARY_ENTITY_QUESTION;
-    const entityScreen = {
-      screenNumber: 0, // screen numbers are 1-indexed
-      components: [
-        {
-          questionId: DEFAULT_PRIMARY_QUESTION_ID,
-          visibilityCriteria: {},
-          validationCriteria: {},
-          questionLabel: null,
-          detailLabel: null,
-        },
-      ],
+    const customPrimaryEntityQuestion = findPrimaryEntityQuestion(Object.values(questions));
+    if (!customPrimaryEntityQuestion) {
+      // no custom primary entity question, add the default
+      questions[DEFAULT_PRIMARY_QUESTION_ID] = DEFAULT_PRIMARY_ENTITY_QUESTION;
+      const entityScreen = {
+        screenNumber: 0, // screen numbers are 1-indexed
+        components: [
+          {
+            questionId: DEFAULT_PRIMARY_QUESTION_ID,
+            visibilityCriteria: {},
+            validationCriteria: {},
+            questionLabel: null,
+            detailLabel: null,
+          },
+        ],
+      };
+
+      screens.unshift(entityScreen);
+    }
+    const { id: primaryEntityQuestionId } =
+      customPrimaryEntityQuestion || DEFAULT_PRIMARY_ENTITY_QUESTION;
+
+    // ensure primary entity question is mandatory
+    const primaryEntityComponent = findPrimaryEntityComponent(screens, primaryEntityQuestionId);
+    primaryEntityComponent.validationCriteria = {
+      ...primaryEntityComponent.validationCriteria,
+      mandatory: true,
     };
 
-    screens.unshift(entityScreen);
-  }
-  const { id: primaryEntityQuestionId } =
-    customPrimaryEntityQuestion || DEFAULT_PRIMARY_ENTITY_QUESTION;
+    const answers = {};
+    const userId = database.getCurrentUser().id;
 
-  // ensure primary entity question is mandatory
-  const primaryEntityComponent = findPrimaryEntityComponent(screens, primaryEntityQuestionId);
-  primaryEntityComponent.validationCriteria = {
-    ...primaryEntityComponent.validationCriteria,
-    mandatory: true,
+    const entityCreationQuestionIds = getEntityCreationQuestions(Object.values(questions)).map(
+      ({ id }) => id,
+    );
+    entityCreationQuestionIds.forEach(questionId => {
+      answers[questionId] = generateUUID().toString();
+    });
+
+    dispatch({
+      type: SURVEY_SELECT,
+      assessorId: userId,
+      surveyId,
+      screens,
+      questions,
+      hasCustomEntitySelector: !!customPrimaryEntityQuestion,
+      startTime: new Date().toISOString(),
+      answers,
+      primaryEntityQuestionId,
+    });
+
+    if (!isRepeating) {
+      dispatch(openSurvey());
+      dispatch(watchUserLocation());
+    }
+
+    analytics.trackEvent('Select survey', {
+      surveyId,
+    });
   };
-
-  const answers = {};
-  const userId = database.getCurrentUser().id;
-
-  const entityCreationQuestionIds = getEntityCreationQuestions(Object.values(questions)).map(
-    ({ id }) => id,
-  );
-  entityCreationQuestionIds.forEach(questionId => {
-    answers[questionId] = generateUUID().toString();
-  });
-
-  dispatch({
-    type: SURVEY_SELECT,
-    assessorId: userId,
-    surveyId,
-    screens,
-    questions,
-    hasCustomEntitySelector: !!customPrimaryEntityQuestion,
-    startTime: new Date().toISOString(),
-    answers,
-    primaryEntityQuestionId,
-  });
-
-  if (!isRepeating) {
-    dispatch(openSurvey());
-    dispatch(watchUserLocation());
-  }
-
-  analytics.trackEvent('Select survey', {
-    surveyId,
-  });
-};
 
 export const selectSurveyGroup = openSurveyGroup;
 
@@ -214,27 +214,25 @@ export const moveSurveyScreens = numberOfScreens => (dispatch, getState) => {
   dispatch(moveToSurveyScreen(toIndex));
 };
 
-export const validateComponent = (screenIndex, componentIndex, validationCriteria, answer) => (
-  dispatch,
-  getState,
-) => {
-  dispatch({
-    type: VALIDATION_ERROR_CHANGE,
-    screenIndex,
-    componentIndex,
-    validationErrorMessage: validateAnswer(validationCriteria, answer),
-  });
-  // If there was previously a validation error message on this screen, turn off any screen and
-  // level error messages that no longer apply
-  const screen = getSurveyScreen(getState(), screenIndex);
-  if (!!screen.errorMessage && !doesScreenHaveValidationErrors(screen)) {
+export const validateComponent =
+  (screenIndex, componentIndex, validationCriteria, answer) => (dispatch, getState) => {
     dispatch({
-      type: SURVEY_SCREEN_ERROR_MESSAGE_CHANGE,
+      type: VALIDATION_ERROR_CHANGE,
       screenIndex,
-      message: '',
+      componentIndex,
+      validationErrorMessage: validateAnswer(validationCriteria, answer),
     });
-  }
-};
+    // If there was previously a validation error message on this screen, turn off any screen and
+    // level error messages that no longer apply
+    const screen = getSurveyScreen(getState(), screenIndex);
+    if (!!screen.errorMessage && !doesScreenHaveValidationErrors(screen)) {
+      dispatch({
+        type: SURVEY_SCREEN_ERROR_MESSAGE_CHANGE,
+        screenIndex,
+        message: '',
+      });
+    }
+  };
 
 export const validateScreen = screenIndex => (dispatch, getState) => {
   const state = getState();

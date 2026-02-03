@@ -21,16 +21,16 @@ const Header = styled.div`
 `;
 
 const ProjectLogo = styled.img`
-  max-height: 4rem;
-  max-width: 5rem;
-  width: auto;
+  height: 4rem;
+  object-fit: contain;
+  width: 5rem;
 `;
 
 const SurveyResponseDetailsWrapper = styled.div`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   > * {
     font-size: 0.75rem;
-    text-align: right;
+    text-align: end;
   }
 `;
 
@@ -81,6 +81,7 @@ export const ExportSurveyResponsePage = () => {
         <ProjectLogo
           src={survey?.project?.logoUrl || '/tupaia-logo-dark.svg'}
           alt={survey?.project?.name}
+          crossOrigin=""
         />
         <SurveyResponseDetailsWrapper>
           <SurveyTitle>

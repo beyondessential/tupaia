@@ -1,18 +1,25 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
-SCRIPT_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 cd "$SCRIPT_DIR/.."
 
 if [[ $1 != OK ]]; then
   echo 'Note: this script reads .env vars'
   echo '  Update DB_NAME etc... in database db.env'
-  echo 
+  echo
   echo 're-run with OK to continue'
-  exit 1;
+  exit 1
 fi
 
+declare -i tic=$SECONDS
+
 DIR=$(pwd "$0")
-source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
+source "$DIR/../../scripts/bash/mergeEnvForDB.sh"
+
+if [[ $CI = true ]]; then
+  echo '::group::Set up test database'
+fi
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
@@ -58,4 +65,9 @@ DB_NAME="$DB_NAME" yarn migrate
 cp -r ./src/migrations-backup/* ./src/migrations/
 rm -rf ./src/migrations-backup
 
-echo "Done"
+if [[ $CI = true ]]; then
+  echo '::endgroup::'
+fi
+
+declare -i toc=$SECONDS
+echo "Set up test database in $((toc - tic)) s"

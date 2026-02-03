@@ -124,7 +124,7 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     'Throws if config is empty',
     ['EmptyConfig'],
     ['2019-01-01', '2020-12-31', ['TO']],
-    'Should not be empty',
+    'Expected nonempty value but got undefined',
   ],
   [
     'Returns empty results if org unit has no data',

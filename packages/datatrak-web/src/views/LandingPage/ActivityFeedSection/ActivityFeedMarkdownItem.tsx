@@ -20,7 +20,7 @@ const Heading = styled(Typography)`
   margin-bottom: 0.4rem;
 `;
 
-const Image = styled.img`
+const Image = styled.img.attrs({ crossOrigin: '' })`
   height: 10rem;
   width: auto;
   max-width: 100%;

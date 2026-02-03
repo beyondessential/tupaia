@@ -1,16 +1,14 @@
-#!/bin/bash -ex
-  
+#!/usr/bin/env bash
 
-SCRIPT_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )  
+set -ex
 
-# Load environment variables from .env files
-source $SCRIPT_DIR/../../../../scripts/bash/mergeEnvForDB.sh 
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+root_dir=$(realpath -- "$script_dir"/../../../..)
 
-cd "$SCRIPT_DIR"
- 
+source "$root_dir"/scripts/bash/mergeEnvForDB.sh
+cd "$root_dir"
 
-cd ../../../..
-echo "Connected to postgres server: $DB_URL, starting to setup database"
+echo "Connected to PostgreSQL server: $DB_URL, starting to setup database"
 yarn workspace @tupaia/database setup-test-database
 
 # Run check

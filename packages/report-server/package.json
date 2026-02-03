@@ -42,7 +42,7 @@
     "@tupaia/utils": "workspace:*",
     "alasql": "^4.2.3",
     "date-fns": "^2.29.3",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "lodash.groupby": "^4.6.0",
     "lodash.isplainobject": "^4.0.6",
     "lodash.keyby": "^4.6.0",

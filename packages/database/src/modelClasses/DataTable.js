@@ -34,10 +34,9 @@ export class DataTableModel extends DatabaseModel {
   /** @returns {Promise<DataTableType[]>} */
   async getDataTableTypes() {
     const dataTableTypes = await this.database.executeSql(
-      'SELECT unnest(enum_range(NULL::data_table_type)) AS type;',
+      'SELECT unnest(enum_range(NULL::data_table_type)::TEXT[]) AS type ORDER BY type;',
     );
-    // ORDER BY has no effect (enum order is preserved), so sort here
-    return dataTableTypes.map(({ type }) => type).sort();
+    return dataTableTypes.map(({ type }) => type);
   }
 
   /** @returns {Promise<number>} */

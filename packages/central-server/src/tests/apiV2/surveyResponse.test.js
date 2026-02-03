@@ -595,7 +595,7 @@ describe('surveyResponse endpoint', () => {
 
     it('Should reject an invalid Instruction answer', async () => {
       const response = await postTypeCheck('Instruction', 'Any text');
-      expectValidationError(response, /Should be empty/);
+      expectValidationError(response, /Expected empty value but got 'Any text'/);
     });
 
     it('Should reject an invalid Number answer', async () => {

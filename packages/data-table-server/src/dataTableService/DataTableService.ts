@@ -38,7 +38,7 @@ export abstract class DataTableService<
   Context extends Record<string, unknown> = Record<string, unknown>,
   RequiredParamsSchema extends yup.AnyObjectSchema = yup.AnyObjectSchema,
   ConfigSchema extends yup.AnyObjectSchema = yup.AnyObjectSchema,
-  ResultRow = unknown
+  ResultRow = unknown,
 > {
   protected readonly ctx: Context;
   protected readonly requiredParamsSchema: RequiredParamsSchema;

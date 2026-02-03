@@ -200,6 +200,20 @@ export class Dhis2Error extends RespondingError {
   }
 }
 
+export class ConflictError extends RespondingError {
+  constructor(message) {
+    super(message, 409);
+    this.name = 'ConflictError';
+  }
+}
+
+export class UnsupportedMediaTypeError extends RespondingError {
+  constructor(message) {
+    super(message, 415);
+    this.name = 'UnsupportedMediaTypeError';
+  }
+}
+
 export class UnprocessableContentError extends RespondingError {
   constructor(message) {
     super(message, 422);
