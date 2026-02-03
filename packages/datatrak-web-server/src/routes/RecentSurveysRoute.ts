@@ -3,12 +3,13 @@ import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebRecentSurveysRequest } from '@tupaia/types';
 
-export type RecentSurveysRequest = Request<
-  DatatrakWebRecentSurveysRequest.Params,
-  DatatrakWebRecentSurveysRequest.ResBody,
-  DatatrakWebRecentSurveysRequest.ReqBody,
-  DatatrakWebRecentSurveysRequest.ReqQuery
->;
+export interface RecentSurveysRequest
+  extends Request<
+    DatatrakWebRecentSurveysRequest.Params,
+    DatatrakWebRecentSurveysRequest.ResBody,
+    DatatrakWebRecentSurveysRequest.ReqBody,
+    DatatrakWebRecentSurveysRequest.ReqQuery
+  > {}
 
 export class RecentSurveysRoute extends Route<RecentSurveysRequest> {
   public async buildResponse() {

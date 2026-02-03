@@ -1,4 +1,4 @@
-import type { Entity, Survey } from '../../models';
+import type { Entity, Survey, UserAccount, Project } from '../../models';
 
 export type Params = Record<string, never>;
 
@@ -13,6 +13,6 @@ export interface RecentSurvey {
 export type ResBody = RecentSurvey[];
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
-  userId: string;
-  projectId?: string;
+  userId: UserAccount['id'];
+  projectId: Project['id'];
 }
