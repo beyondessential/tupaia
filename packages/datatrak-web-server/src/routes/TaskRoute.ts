@@ -33,21 +33,26 @@ const FIELDS = [
 
 export class TaskRoute extends Route<TaskRequest> {
   public async buildResponse() {
-    const { ctx, params, models } = this.req;
-    const { taskId } = params;
+    const {
+      ctx,
+      params: { taskId },
+      models,
+    } = this.req;
 
-    const task: DatatrakWebTasksRequest.RawTaskResult = await ctx.services.central.fetchResources(`tasks/${taskId}`, {
-      columns: FIELDS,
-    });
+    const task: DatatrakWebTasksRequest.RawTaskResult = await ctx.services.central.fetchResources(
+      `tasks/${taskId}`,
+      { columns: FIELDS },
+    );
     if (!task) {
       throw new NotFoundError(`No task found with ID ${taskId}`);
     }
 
-    const comments = await ctx.services.central.fetchResources(`tasks/${taskId}/taskComments`, {
-      sort: ['created_at DESC'],
-    });
-
-    const formattedTask = await models.task.formatTaskForClient(task);
+    const [comments, formattedTask] = await Promise.all([
+      ctx.services.central.fetchResources(`tasks/${taskId}/taskComments`, {
+        sort: ['created_at DESC'],
+      }),
+      models.task.formatTaskForClient(task),
+    ]);
 
     return {
       ...formattedTask,
