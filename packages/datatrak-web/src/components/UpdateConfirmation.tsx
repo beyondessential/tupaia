@@ -19,6 +19,7 @@ const Modal = styled.div`
   justify-content: center;
   z-index: 10000;
   padding: 20px;
+  text-wrap: balance;
 `;
 
 const Dialog = styled.div`
@@ -29,7 +30,9 @@ const Dialog = styled.div`
   width: 100%;
   padding: 40px 32px 32px 32px;
   text-align: center;
-  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    Roboto, system-ui, apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial,
+    sans-serif;
 `;
 
 const Title = styled.h2`
