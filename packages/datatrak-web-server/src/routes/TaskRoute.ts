@@ -3,6 +3,7 @@ import camelcaseKeys from 'camelcase-keys';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTaskRequest, DatatrakWebTasksRequest } from '@tupaia/types';
+import { NotFoundError } from '@tupaia/utils';
 
 export type TaskRequest = Request<
   DatatrakWebTaskRequest.Params,
@@ -38,7 +39,7 @@ export class TaskRoute extends Route<TaskRequest> {
       columns: FIELDS,
     });
     if (!task) {
-      throw new Error(`Task with id ${taskId} not found`);
+      throw new NotFoundError(`No task found with ID ${taskId}`);
     }
 
     const comments = await ctx.services.central.fetchResources(`tasks/${taskId}/taskComments`, {
