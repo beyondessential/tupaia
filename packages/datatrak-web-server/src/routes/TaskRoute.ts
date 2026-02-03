@@ -2,15 +2,16 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebTaskRequest, DatatrakWebTasksRequest } from '@tupaia/types';
+import type { DatatrakWebTaskRequest, DatatrakWebTasksRequest } from '@tupaia/types';
 import { NotFoundError } from '@tupaia/utils';
 
-export type TaskRequest = Request<
-  DatatrakWebTaskRequest.Params,
-  DatatrakWebTaskRequest.ResBody,
-  DatatrakWebTaskRequest.ReqBody,
-  DatatrakWebTaskRequest.ReqQuery
->;
+export interface TaskRequest
+  extends Request<
+    DatatrakWebTaskRequest.Params,
+    DatatrakWebTaskRequest.ResBody,
+    DatatrakWebTaskRequest.ReqBody,
+    DatatrakWebTaskRequest.ReqQuery
+  > {}
 
 const FIELDS = [
   'id',
@@ -28,7 +29,7 @@ const FIELDS = [
   'entity_id',
   'survey_response_id',
   'initial_request_id',
-];
+] as const;
 
 export class TaskRoute extends Route<TaskRequest> {
   public async buildResponse() {
