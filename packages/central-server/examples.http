@@ -49,6 +49,18 @@ GET {{baseUrl}}/export/optionSet/5c625e01f013d60db42a5763 HTTP/1.1
 Authorization: {{user-authorization}}
 Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 
+### Get landing pages
+
+GET {{baseUrl}}/landingPages HTTP/1.1
+Authorization: {{user-authorization}}
+Content-Type: {{contentType}}
+
+### Get landing page by ID
+
+GET {{baseUrl}}/landingPages/649167bdbd66033bb50a5cde HTTP/1.1
+Authorization: {{user-authorization}}
+Content-Type: {{contentType}}
+
 ### Get all map overlay groups
 
 GET {{baseUrl}}/mapOverlayGroups
