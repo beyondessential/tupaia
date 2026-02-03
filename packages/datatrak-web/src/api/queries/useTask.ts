@@ -18,7 +18,7 @@ const getTaskOnline = async ({ taskId }: UseTaskLocalContext) => {
 export const useTask = (taskId?: string) => {
   const isOfflineFirst = useIsOfflineFirst();
   return useDatabaseQuery<DatatrakWebTaskRequest.ResBody>(
-    ['tasks', taskId],
+    ['task', taskId],
     isOfflineFirst ? getTask : getTaskOnline,
     {
       localContext: { taskId },

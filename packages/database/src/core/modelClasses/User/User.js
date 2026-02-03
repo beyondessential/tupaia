@@ -199,6 +199,10 @@ export class UserModel extends DatabaseModel {
     return UserRecord;
   }
 
+  async isApiClientUser(userId) {
+    return await this.otherModels.apiClient.exists({ user_account_id: userId });
+  }
+
   /**
    * Returns the user that is used for submitting surveys when not logged in
    * @returns {Promise<UserRecord>}

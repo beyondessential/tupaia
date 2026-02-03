@@ -4,18 +4,24 @@
 import { clone } from 'es-toolkit';
 import omitBy from 'lodash.omitby';
 
-import { AccessPolicy } from '@tupaia/access-policy';
-import { ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
+import type { AccessPolicy } from '@tupaia/access-policy';
+import { extractEntityFilterFromObject, type ProjectRecord } from '@tupaia/tsmodels';
 import { camelcaseKeys, ensure, isNotNullish, isNullish } from '@tupaia/tsutils';
-import { Entity, Project } from '@tupaia/types';
+import type { Entity, Project } from '@tupaia/types';
 import { snakeKeys } from '@tupaia/utils';
-import { CurrentUser } from '../../api';
-import { DatatrakWebModelRegistry } from '../../types';
-import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
+import type { CurrentUser } from '../../api';
+import type { DatatrakWebModelRegistry } from '../../types';
+import { formatEntitiesForResponse, type ExtendedEntityFieldName } from '../../utils';
 import { isExtendedField } from '../../utils/extendedFieldFunctions';
-import { AugmentedEntityRecord } from '../../utils/formatEntity';
+import type { AugmentedEntityRecord } from '../../utils/formatEntity';
 
-const DEFAULT_FIELDS: ExtendedEntityFieldName[] = ['id', 'parent_name', 'code', 'name', 'type'];
+const DEFAULT_FIELDS = [
+  'id',
+  'parent_name',
+  'code',
+  'name',
+  'type',
+] as const satisfies ExtendedEntityFieldName[];
 
 const DEFAULT_PAGE_SIZE = 100;
 
@@ -67,12 +73,12 @@ export function sortSearchResults<T extends SearchResult = SearchResult>(
 
 const getAllowedCountries = async (
   models: DatatrakWebModelRegistry,
-  rootEntityId: string,
+  rootEntityId: Entity['id'],
   project: ProjectRecord,
   isPublic: boolean,
   accessPolicy: AccessPolicy,
 ): Promise<Entity['code'][]> => {
-  const rootEntity = await models.entity.findById(rootEntityId);
+  const rootEntity = await models.entity.findByIdOrThrow(rootEntityId);
 
   if (!project.entity_hierarchy_id) {
     throw new Error('Project entity hierarchy ID is not set');
@@ -85,9 +91,10 @@ const getAllowedCountries = async (
   let allowedCountries = [...new Set(childCodes)];
 
   if (!isPublic) {
-    const { permission_groups: projectPermissionGroups } = await models.project.findOne({
-      code: project.code,
-    });
+    const { permission_groups: projectPermissionGroups } = await models.project.findOneOrThrow(
+      { code: project.code },
+      { columns: ['permission_groups'] },
+    );
 
     // Fetch all country codes we have any of the project permission groups access to
     const projectAccessibleCountries = new Set<Entity['code']>(
