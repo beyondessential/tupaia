@@ -25,15 +25,12 @@ export class GETSurveyResponses extends GETHandler {
   });
 
   async findSingleRecord(surveyResponseId, options) {
-    const surveyResponse = await super.findSingleRecord(surveyResponseId, options);
-
     const surveyResponseChecker = accessPolicy =>
       assertSurveyResponsePermissions(accessPolicy, this.models, surveyResponseId);
-
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponseChecker]),
     );
-    return surveyResponse;
+    return await super.findSingleRecord(surveyResponseId, options);
   }
 
   async getPermissionsFilter(criteria, options) {
