@@ -67,6 +67,15 @@ export class SurveyResponseVariablesExtractor {
   }
 
   async getSurveys(surveyId, surveyCodes, countryId) {
+    const isEnabledInCountryFilter = countryId
+      ? {
+          country_ids: '{}', // empty country_ids means enabled in all countries
+          [OR]: {
+            country_ids: { comparator: '@>', comparisonValue: [countryId] },
+          },
+        }
+      : { country_ids: '{}' };
+
     let surveys;
     if (surveyId) {
       // A surveyId of interest passed in, only export that
@@ -81,23 +90,12 @@ export class SurveyResponseVariablesExtractor {
         },
       };
       if (countryId) {
-        // Fetch surveys where country_ids is empty (enabled in all countries) or contains countryId
-        surveyFindConditions[AND] = {
-          country_ids: '{}',
-          [OR]: {
-            country_ids: { comparator: '@>', comparisonValue: [countryId] },
-          },
-        };
+        surveyFindConditions[AND] = isEnabledInCountryFilter;
       }
       surveys = await this.models.survey.find(surveyFindConditions);
     } else {
       // No specific surveyId passed in, so export all surveys that apply to this country
-      surveys = await this.models.survey.find({
-        country_ids: '{}',
-        [OR]: {
-          country_ids: { comparator: '@>', comparisonValue: [countryId] },
-        },
-      });
+      surveys = await this.models.survey.find(isEnabledInCountryFilter);
     }
     if (!surveys || surveys.length < 1) {
       throw new ValidationError('Survey not found. Please check permissions');
