@@ -12,7 +12,7 @@ import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissio
 export class GETSurveyResponses extends GETHandler {
   permissionsFilteredInternally = /** @type {const} */ (true);
 
-  customJoinConditions = {
+  customJoinConditions = /** @type {const} */ ({
     country: {
       through: 'entity',
       nearTableKey: 'entity.country_code',
@@ -22,7 +22,7 @@ export class GETSurveyResponses extends GETHandler {
       nearTableKey: 'survey_response.entity_id',
       farTableKey: 'entity.id',
     },
-  };
+  });
 
   async findSingleRecord(surveyResponseId, options) {
     const surveyResponse = await super.findSingleRecord(surveyResponseId, options);
