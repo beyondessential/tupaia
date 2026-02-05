@@ -45,6 +45,7 @@ const queryFunctions = {
             joinCondition: ['entity.country_code', 'country.code'],
           },
         ],
+        sort: ['data_time DESC'],
       },
     );
 
