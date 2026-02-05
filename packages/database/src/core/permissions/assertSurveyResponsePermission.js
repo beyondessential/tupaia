@@ -34,11 +34,9 @@ export async function createSurveyResponsePermissionFilter(accessPolicy, models,
   // Check the country code of the entity exists in our list for the permission group
   // of the survey
   dbConditions[QUERY_CONJUNCTIONS.RAW] = {
-    sql: `
-        entity.country_code IN (
-          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-        )
-      `,
+    sql: `entity.country_code IN (
+      SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
+    )`,
     parameters: JSON.stringify(countryCodesByPermissionGroupId),
   };
 
