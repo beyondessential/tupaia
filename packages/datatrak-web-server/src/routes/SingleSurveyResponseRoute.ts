@@ -2,24 +2,23 @@ import camelcaseKeys from 'camelcase-keys';
 import { Request } from 'express';
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { BES_ADMIN_PERMISSION_GROUP, SURVEY_RESPONSE_DEFAULT_FIELDS } from '@tupaia/constants';
 import { SurveyResponseModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
-import { SURVEY_RESPONSE_DEFAULT_FIELDS } from '@tupaia/constants';
 
 import { DatatrakWebServerModelRegistry } from '../types';
 
-export type SingleSurveyResponseRequest = Request<
-  DatatrakWebSingleSurveyResponseRequest.Params,
-  DatatrakWebSingleSurveyResponseRequest.ResBody,
-  DatatrakWebSingleSurveyResponseRequest.ReqBody,
-  DatatrakWebSingleSurveyResponseRequest.ReqQuery
->;
+export interface SingleSurveyResponseRequest
+  extends Request<
+    DatatrakWebSingleSurveyResponseRequest.Params,
+    DatatrakWebSingleSurveyResponseRequest.ResBody,
+    DatatrakWebSingleSurveyResponseRequest.ReqBody,
+    DatatrakWebSingleSurveyResponseRequest.ReqQuery
+  > {}
 
 const ANSWER_COLUMNS = ['text', 'question_id', 'type'] as const;
-
-const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
 const assertCanViewSurveyResponse = (
   accessPolicy: AccessPolicy,
