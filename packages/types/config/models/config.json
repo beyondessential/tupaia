@@ -21,6 +21,7 @@
   "typeOverrides": {
     "public.data_element.config": "DataElementConfig",
     "public.data_service_entity.config": "DataServiceEntityConfig",
+    "public.feed_item.type": "FeedItemTypes",
     "public.report.config": "ReportConfig",
     "public.dashboard_item.config": "DashboardItemConfig",
     "public.map_overlay.config": "MapOverlayConfig",
@@ -44,6 +45,7 @@
     "imports": {
       "DataElementConfig": "./models-extra",
       "DataServiceEntityConfig": "./models-extra",
+      "FeedItemTypes": "./models-extra",
       "ReportConfig": "./models-extra",
       "DashboardItemConfig": "./models-extra",
       "MapOverlayConfig": "./models-extra",
