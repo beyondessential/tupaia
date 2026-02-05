@@ -8,7 +8,14 @@
  * @typedef {import('./records').PublicSchemaRecordName} PublicSchemaRecordName
  * @typedef {(records: SyncSnapshotAttributes[]) => Promise<{ inserts?: SyncSnapshotAttributes[]; updates?: SyncSnapshotAttributes[] }>} IncomingSyncHook
  * @typedef {(accessPolicy: AccessPolicy, criteria: any, options: any) => Promise<{ dbConditions: any; dbOptions: any }>} RecordsPermissionFilterCreator
- * @typedef {() => Promise<{ select: string; joins: string } | null>} SyncLookupQueryDetailsBuilder
+ * @typedef {{
+ *   ctes?: string[];
+ *   select?: string[];
+ *   joins?: string[];
+ *   where?: any;
+ *   groupBy?: string[];
+ * }} SyncLookupQueryDetails
+ * @typedef {() => Promise<SyncLookupQueryDetails | null>} SyncLookupQueryDetailsBuilder
  */
 
 import { uniq } from 'es-toolkit';
