@@ -48,7 +48,9 @@ const queryFunctions = {
       },
     );
 
-    return camelcaseKeys(surveyResponses, { deep: true });
+    return camelcaseKeys(surveyResponses, {
+      deep: true,
+    }) as unknown as DatatrakWebSurveyResponsesRequest.ResBody;
   },
   remote: async ({
     userId,
