@@ -3,11 +3,7 @@ import { mergeMultiJoin } from '../utilities';
 
 export const assertAnswerPermissions = async (accessPolicy, models, answerId) => {
   const answer = await models.answer.findByIdOrThrow(answerId, { columns: ['survey_response_id'] });
-  return await this.models.surveyResponse.assertCanRead(
-    this.models,
-    accessPolicy,
-    answer.survey_response_id,
-  );
+  return await models.surveyResponse.assertCanRead(models, accessPolicy, answer.survey_response_id);
 };
 
 export const assertAnswerEditPermissions = async (
