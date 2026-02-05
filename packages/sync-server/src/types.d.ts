@@ -52,13 +52,7 @@ export type SyncServerConfig = {
   maxConcurrentSessions: number;
 };
 
-export interface SyncLookupQueryDetails {
-  ctes?: string[];
-  select?: string[];
-  joins?: string[];
-  where?: any;
-  groupBy?: string[];
-}
+export type { SyncLookupQueryDetails } from '@tupaia/database';
 
 export interface SnapshotParams {
   since: number;

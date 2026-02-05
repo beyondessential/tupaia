@@ -10,8 +10,8 @@
  * @typedef {(accessPolicy: AccessPolicy, criteria: any, options: any) => Promise<{ dbConditions: any; dbOptions: any }>} RecordsPermissionFilterCreator
  * @typedef {{
  *   ctes?: string[];
- *   select?: string[];
- *   joins?: string[];
+ *   select?: string;
+ *   joins?: string;
  *   where?: any;
  *   groupBy?: string[];
  * }} SyncLookupQueryDetails
