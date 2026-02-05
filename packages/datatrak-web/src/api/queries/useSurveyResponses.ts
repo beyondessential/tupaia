@@ -1,14 +1,76 @@
-import { useQuery } from '@tanstack/react-query';
-import { DatatrakWebSurveyResponsesRequest, UserAccount, Project } from '@tupaia/types';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import type { DatatrakWebSurveyResponsesRequest, Project, UserAccount } from '@tupaia/types';
 import { useCurrentUserContext } from '../CurrentUserContext';
 import { get } from '../api';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { type ContextualQueryFunctionContext, useDatabaseQuery } from './useDatabaseQuery';
+import { camelcaseKeys } from '@tupaia/tsutils';
+
+interface SurveyResponsesQueryFunctionContext extends ContextualQueryFunctionContext {
+  userId?: UserAccount['id'];
+  projectId?: Project['id'];
+}
+
+const queryFunctions = {
+  local: async ({
+    models,
+    userId,
+    projectId,
+  }: SurveyResponsesQueryFunctionContext): Promise<DatatrakWebSurveyResponsesRequest.ResBody> => {
+    const surveyResponses = await models.database.find(
+      models.surveyResponse.databaseRecord,
+      {
+        ['survey.project_id']: projectId,
+        user_id: userId,
+        // Survey response records in database already filtered by user’s access policy
+      },
+      {
+        columns: [
+          { id: 'survey_response.id' },
+          'data_time',
+          { survey_name: 'survey.name' },
+          { entity_name: 'entity.name' },
+          { country_name: 'country.name' },
+        ],
+        multiJoin: [
+          {
+            joinWith: models.survey.databaseRecord,
+            joinCondition: ['survey_response.survey_id', 'survey.id'],
+          },
+          {
+            joinWith: models.entity.databaseRecord,
+            joinCondition: ['survey_response.entity_id', 'entity.id'],
+          },
+          {
+            joinWith: models.country.databaseRecord,
+            joinCondition: ['entity.country_code', 'country.code'],
+          },
+        ],
+      },
+    );
+
+    return camelcaseKeys(surveyResponses, { deep: true });
+  },
+  remote: async ({
+    userId,
+    projectId,
+  }: SurveyResponsesQueryFunctionContext): Promise<DatatrakWebSurveyResponsesRequest.ResBody> => {
+    return await get('surveyResponses', {
+      params: { userId, projectId },
+    });
+  },
+} as const;
 
 export const useSurveyResponses = (userId?: UserAccount['id'], projectId?: Project['id']) => {
   const params = { userId, projectId };
-  return useQuery<DatatrakWebSurveyResponsesRequest.ResBody>(
+
+  return useDatabaseQuery<DatatrakWebSurveyResponsesRequest.ResBody>(
     ['surveyResponses', params],
-    async () => await get('surveyResponses', { params }),
-    { enabled: Boolean(userId && projectId) },
+    useIsOfflineFirst() ? queryFunctions.local : queryFunctions.remote,
+    {
+      enabled: Boolean(userId && projectId),
+      localContext: { projectId, userId },
+    },
   );
 };
 
