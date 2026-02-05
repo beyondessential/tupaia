@@ -2,7 +2,6 @@ import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '.
 import { GETHandler } from '../GETHandler';
 import { getQueryOptionsForColumns } from '../GETHandler/helpers';
 import { assertEntityPermissions } from '../entities';
-import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
 
 /**
  * Handles endpoints:
@@ -25,8 +24,8 @@ export class GETSurveyResponses extends GETHandler {
   });
 
   async findSingleRecord(surveyResponseId, options) {
-    const surveyResponseChecker = accessPolicy =>
-      assertSurveyResponsePermissions(accessPolicy, this.models, surveyResponseId);
+    const surveyResponseChecker = async accessPolicy =>
+      await this.models.surveyResponse.assertCanRead(this.models, accessPolicy, surveyResponseId);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponseChecker]),
     );

@@ -1,14 +1,13 @@
 import { JOIN_TYPES, RECORDS } from '@tupaia/database';
-import { ensure } from '@tupaia/tsutils';
 import { mergeMultiJoin } from '../utilities';
-import { assertSurveyResponsePermissions } from '../surveyResponses';
 
 export const assertAnswerPermissions = async (accessPolicy, models, answerId) => {
-  const answer = ensure(
-    await models.answer.findById(answerId),
-    `No answer exists with ID ${answerId}`,
+  const answer = await models.answer.findByIdOrThrow(answerId, { columns: ['survey_response_id'] });
+  return await this.models.surveyResponse.assertCanRead(
+    this.models,
+    accessPolicy,
+    answer.survey_response_id,
   );
-  return assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
 };
 
 export const assertAnswerEditPermissions = async (
@@ -19,11 +18,14 @@ export const assertAnswerEditPermissions = async (
 ) => {
   // Forbid editing the survey response id into a survey response we don't have permission to access
   if (updatedFields.survey_response_id) {
-    const answer = ensure(
-      await models.answer.findById(answerId),
-      `No answer exists with ID ${answerId}`,
+    const answer = await models.answer.findByIdOrThrow(answerId, {
+      columns: ['survey_response_id'],
+    });
+    await await this.models.surveyResponse.assertCanRead(
+      this.models,
+      accessPolicy,
+      answer.survey_response_id,
     );
-    await assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
   }
   return true;
 };
