@@ -69,7 +69,7 @@ export const useSurveyResponses = (userId?: UserAccount['id'], projectId?: Proje
     useIsOfflineFirst() ? queryFunctions.local : queryFunctions.remote,
     {
       enabled: Boolean(userId && projectId),
-      localContext: { projectId, userId },
+      localContext: params,
     },
   );
 };
