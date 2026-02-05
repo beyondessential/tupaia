@@ -11,16 +11,7 @@ export interface SurveyResponsesRequest
     DatatrakWebSurveyResponsesRequest.ReqQuery
   > {}
 
-const DEFAULT_FIELDS = [
-  'assessor_name',
-  'country.name',
-  'country.code',
-  'data_time',
-  'entity.name',
-  'id',
-  'survey.name',
-  'survey.code',
-] as const;
+const DEFAULT_FIELDS = ['country.name', 'data_time', 'entity.name', 'id', 'survey.name'] as const;
 
 const DEFAULT_LIMIT = 16;
 
