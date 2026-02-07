@@ -54,7 +54,6 @@
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@babel/types": "7.25.6",
     "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0"
   },
   "devDependencies": {
