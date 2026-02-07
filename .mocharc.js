@@ -4,7 +4,6 @@ require('@babel/register')({
 
 module.exports = {
   exit: true,
-  require: ['@babel/polyfill'],
   spec: './src/tests/**/*.test.js',
   timeout: 100000,
 };

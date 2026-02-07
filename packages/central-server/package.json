@@ -28,7 +28,6 @@
     "create-meditrak-sync-view": "node dist/createMeditrakSyncView.js"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.12.1",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/auth": "workspace:*",
     "@tupaia/data-broker": "workspace:*",
