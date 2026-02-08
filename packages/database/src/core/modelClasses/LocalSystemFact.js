@@ -1,5 +1,9 @@
-import { FACT_PROJECTS_IN_SYNC, SyncDirections } from '@tupaia/constants';
+/**
+ * @typedef {import('@tupaia/constants').SyncFact} SyncFact
+ * @typedef {import('@tupaia/types').Project} Project
+ */
 
+import { SyncFact, SyncDirections } from '@tupaia/constants';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -16,11 +20,20 @@ export class LocalSystemFactModel extends DatabaseModel {
     return LocalSystemFactRecord;
   }
 
+  /**
+   * @param {SyncFact} key
+   * @returns {Promise<string | null | undefined>}
+   */
   async get(key) {
+    /** @type {LocalSystemFactRecord | null} */
     const result = await this.findOne({ key });
     return result?.value;
   }
 
+  /**
+   * @param {SyncFact} key
+   * @param {string | null} value
+   */
   async set(key, value) {
     const existing = await this.findOne({ key });
     if (existing) {
@@ -30,17 +43,23 @@ export class LocalSystemFactModel extends DatabaseModel {
     }
   }
 
+  /**
+   * @param {SyncFact} key
+   * @param {number} amount
+   * @returns {Promise<number | null>}
+   */
   async incrementValue(key, amount = 1) {
+    /** @type {{ value: number | null }[]} */
     const rowsAffected = await this.database.executeSql(
       `
         UPDATE
           local_system_fact
         SET
-          value = value::integer + ?
+          value = value::INTEGER + ?
         WHERE
           key = ?
         RETURNING
-          value;
+          value::INTEGER;
       `,
       [amount, key],
     );
@@ -53,14 +72,18 @@ export class LocalSystemFactModel extends DatabaseModel {
     return fact.value;
   }
 
+  /** @param {Project['id']} projectId */
   async addProjectForSync(projectId) {
     if (!projectId) {
       throw new Error('Project ID is required');
     }
 
-    const existing = await this.findOne({ key: FACT_PROJECTS_IN_SYNC });
+    /** @type {LocalSystemFactRecord | null} */
+    const existing = await this.findOne({ key: SyncFact.PROJECTS_IN_SYNC });
+    /** @type {Project['id'][]} */
     const syncedProjects = existing?.value ? JSON.parse(existing.value) : [];
+    /** @type {Project['id'][]} */
     const newSyncedProjects = [...new Set([...syncedProjects, projectId])];
-    await this.set(FACT_PROJECTS_IN_SYNC, JSON.stringify(newSyncedProjects));
+    await this.set(SyncFact.PROJECTS_IN_SYNC, JSON.stringify(newSyncedProjects));
   }
 }

@@ -25,6 +25,10 @@ export const initiatePull = async (
         // still waiting
         break handler;
       case SYNC_STREAM_MESSAGE_KIND.END:
+        // Check for errors in the END message
+        if (message?.error) {
+          throw new Error(message.error);
+        }
         // message includes pullUntil
         return { ...message };
       default:
@@ -62,6 +66,10 @@ export const pullIncomingChanges = async (
         });
         break handler;
       case SYNC_STREAM_MESSAGE_KIND.END:
+        // Check for errors in the END message
+        if (message?.error) {
+          throw new Error(message.error);
+        }
         log.debug(`ClientSyncManager.pull.noMoreChanges`);
         break stream;
       default:

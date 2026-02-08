@@ -40,6 +40,7 @@ export const RECORDS = /** @type {const} */ ({
   MAP_OVERLAY_GROUP_RELATION: 'map_overlay_group_relation',
   MEDITRAK_DEVICE: 'meditrak_device',
   MEDITRAK_SYNC_QUEUE: 'meditrak_sync_queue',
+  MIGRATIONS: 'migrations',
   MS1_SYNC_LOG: 'ms1_sync_log',
   MS1_SYNC_QUEUE: 'ms1_sync_queue',
   ONE_TIME_LOGIN: 'one_time_login',
@@ -73,4 +74,7 @@ export const RECORDS = /** @type {const} */ ({
   ENTITY_PARENT_CHILD_RELATION: 'entity_parent_child_relation',
 });
 
-/** @typedef {import('@tupaia/types').ValueOf<typeof RECORDS>} DatabaseRecordName */
+/**
+ * @typedef {import('@tupaia/types').ValueOf<typeof RECORDS>} PublicSchemaRecordName
+ * @typedef {PublicSchemaRecordName | string} RecordName
+ */

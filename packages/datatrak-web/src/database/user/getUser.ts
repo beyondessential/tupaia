@@ -1,10 +1,10 @@
-import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
 import { EntityRecord, ProjectRecord } from '@tupaia/tsmodels';
 import { RECORDS } from '@tupaia/database';
 import { GetUserLocalContext } from '../../api/queries/useUser';
 
 export const getUser = async ({ models }: GetUserLocalContext) => {
-  const currentUserId = await models.localSystemFact.get(FACT_CURRENT_USER_ID);
+  const currentUserId = await models.localSystemFact.get(SyncFact.CURRENT_USER_ID);
   if (!currentUserId) {
     return {};
   }

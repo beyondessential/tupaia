@@ -8,7 +8,7 @@ import { assertUserHasTaskPermissions } from '../tasks/assertTaskPermissions';
  */
 
 export class GETTaskComments extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async getPermissionsFilter(criteria, options) {
     return await this.models.taskComment.createRecordsPermissionFilter(

@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 
 import { Country, KeysToCamelCase } from '@tupaia/types';
-
 import { useCurrentUserContext } from '../../api';
 import { useEditUser } from '../../api/mutations';
 import { useSurveysQuery } from '../../api/queries/useSurveysQuery';
 import { Button } from '../../components';
-import { CountrySelector, useUserCountries } from '../../features';
+import { CountrySelector } from '../../features';
+import { useUserCountries } from '../../features/CountrySelector/useUserCountries';
 import { Survey } from '../../types';
 import { useIsMobile } from '../../utils';
 import { DesktopTemplate } from './DesktopTemplate';
@@ -46,10 +46,8 @@ export const SurveySelectPage = () => {
   const [urlSearchParams] = useSearchParams();
   const urlProjectId = urlSearchParams.get('projectId');
   const {
-    countries,
-    selectedCountry,
-    updateSelectedCountry,
-    isFetching: isFetchingCountries,
+    queryResult: { data: countries, isFetching: isFetchingCountries },
+    state: [selectedCountry, updateSelectedCountry],
   } = useUserCountries();
   const handleSelectSurvey = useNavigateToSurvey();
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
@@ -60,12 +58,10 @@ export const SurveySelectPage = () => {
     projectId: user.projectId,
   });
 
-  useEffect(() => {
-    // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
-    if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey)) {
-      setSelectedSurvey(null);
-    }
-  }, [surveys]);
+  // When surveys change, check if the selected survey is still in the list. If not, clear the selection
+  if (selectedSurvey && !surveys?.some(survey => survey.code === selectedSurvey)) {
+    setSelectedSurvey(null);
+  }
 
   useEffect(() => {
     const updateUserProject = async () => {
@@ -85,7 +81,8 @@ export const SurveySelectPage = () => {
   const countrySelector = (
     <CountrySelector
       countries={countries}
-      onChange={updateSelectedCountry}
+      key={user.projectId} // Force fresh instance when project changes
+      onChange={e => updateSelectedCountry(e.target.value)}
       selectedCountry={selectedCountry}
     />
   );

@@ -21,10 +21,12 @@ export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactEl
     accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
 
   useEffect(() => {
-    const addProjectForSync = async () => {
-      await ensure(models).localSystemFact.addProjectForSync(user.projectId);
-    };
     if (isLoggedIn && user.projectId && isOfflineFirst) {
+      const addProjectForSync = async () => {
+        await ensure(models).localSystemFact.addProjectForSync(
+          user.projectId!, // Not sure why TypeScript doesn’t infer this must be a string
+        );
+      };
       addProjectForSync();
     }
   }, [models, isLoggedIn, user.projectId, isOfflineFirst]);

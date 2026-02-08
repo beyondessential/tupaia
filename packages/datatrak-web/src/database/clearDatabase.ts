@@ -1,47 +1,46 @@
-import { SqlQuery } from '@tupaia/database';
-import {
-  FACT_CURRENT_SYNC_TICK,
-  FACT_LAST_SUCCESSFUL_SYNC_PULL,
-  FACT_LAST_SUCCESSFUL_SYNC_PUSH,
-  FACT_PROJECTS_IN_SYNC,
-} from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
+import type { DatabaseSchemaName, PublicSchemaRecordName } from '@tupaia/database';
+import { SCHEMA_NAMES, SqlQuery } from '@tupaia/database';
+import type { DatatrakWebModelRegistry } from '../types';
 
-import { DatatrakWebModelRegistry } from '../types';
-
-const TABLES_TO_KEEP = ['user_account', 'migrations', 'local_system_fact'];
+/** @privateRemarks Jest can’t import `RECORDS` from `@tupaia/database`, hence the magic strings. */
+const TABLES_TO_KEEP = [
+  'local_system_fact',
+  'migrations',
+  'user_account',
+] as const satisfies PublicSchemaRecordName[];
 
 const clearTables = async (
   models: DatatrakWebModelRegistry,
-  schema: string,
-  tablesToKeep: string[] = [],
+  schema: DatabaseSchemaName,
+  tablesToKeep: PublicSchemaRecordName[] = [],
 ) => {
-  const tablesToTruncate = (await models.database.executeSql(
+  const tablesToTruncate = await models.database.executeSql<
+    { table_name: PublicSchemaRecordName }[]
+  >(
     `
-    SELECT tablename AS table_name 
-    FROM pg_tables 
-    WHERE schemaname = ?
-    ${tablesToKeep.length > 0 ? `AND tablename NOT IN ${SqlQuery.record(tablesToKeep)}` : ''}
-  `,
+      SELECT tablename AS table_name
+      FROM pg_tables
+      WHERE schemaname = ?
+      ${tablesToKeep.length > 0 ? `AND tablename NOT IN ${SqlQuery.record(tablesToKeep)}` : ''}
+    `,
     [schema, ...tablesToKeep],
-  )) as { table_name: string }[];
+  );
 
   for (const { table_name: tableName } of tablesToTruncate) {
-    await models.database.executeSql(`
-      TRUNCATE TABLE ${tableName} CASCADE;
-    `);
+    await models.database.executeSql('TRUNCATE TABLE ?? CASCADE;', tableName);
   }
 };
 
 const clearLocalSystemFacts = async (models: DatatrakWebModelRegistry) => {
-  await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, -1);
-  await models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, -1);
-  await models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, -1);
-  await models.localSystemFact.delete({ key: FACT_PROJECTS_IN_SYNC });
+  await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '-1');
+  await models.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PULL, '-1');
+  await models.localSystemFact.set(SyncFact.LAST_SUCCESSFUL_SYNC_PUSH, '-1');
+  await models.localSystemFact.delete({ key: SyncFact.PROJECTS_IN_SYNC });
 };
 
 export const clearDatabase = async (models: DatatrakWebModelRegistry) => {
   // Clear public schema but still keep some tables
-  await clearTables(models, 'public', TABLES_TO_KEEP);
-
+  await clearTables(models, SCHEMA_NAMES.PUBLIC, TABLES_TO_KEEP);
   await clearLocalSystemFacts(models);
 };

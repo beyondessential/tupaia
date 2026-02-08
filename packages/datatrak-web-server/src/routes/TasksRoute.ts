@@ -29,7 +29,7 @@ export class TasksRoute extends Route<TasksRequest> {
 
   private async queryForCount() {
     const { models, accessPolicy } = this.req;
-    return models.task.countTasksForAccessPolicy(accessPolicy, this.filters, {
+    return await models.task.countTasksForAccessPolicy(accessPolicy, this.filters, {
       multiJoin: models.task.DatabaseRecordClass.joins,
     });
   }
@@ -45,10 +45,10 @@ export class TasksRoute extends Route<TasksRequest> {
 
     const params: {
       filter: FormattedFilters;
-      columns: string[];
+      columns: readonly string[];
       pageSize: number;
       page: number;
-      sort?: string[];
+      sort?: readonly string[];
       rawSort?: string;
     } = {
       filter: this.filters,
@@ -63,8 +63,8 @@ export class TasksRoute extends Route<TasksRequest> {
       const hasActiveFilter = nonProjectFilters.length > 0;
       // If no sort or search is provided, default to sorting completed and cancelled tasks to the bottom and by due date
       params.rawSort = hasActiveFilter
-        ? `due_date ASC`
-        : `CASE status WHEN 'completed' THEN 1 WHEN 'cancelled' THEN 2 ELSE 0 END ASC, due_date ASC`;
+        ? 'due_date ASC'
+        : "CASE status WHEN 'completed' THEN 1 WHEN 'cancelled' THEN 2 ELSE 0 END ASC, due_date ASC";
     }
 
     const _tasks = await ctx.services.central.fetchResources('tasks', params);

@@ -35,7 +35,7 @@ export const useEditTask = (taskId?: Task['id'], onSuccess?: () => void) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['tasks']);
-        queryClient.invalidateQueries(['tasks', taskId]);
+        queryClient.invalidateQueries(['task', taskId]);
         queryClient.invalidateQueries(['taskMetric', projectId]);
         successToast('Task updated successfully');
         if (onSuccess) onSuccess();

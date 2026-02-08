@@ -3,7 +3,7 @@ import log from 'winston';
 import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
 import { DatabaseModel, TupaiaDatabase, buildSyncLookupSelect } from '@tupaia/database';
 
-import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
+import { SyncServerConfig } from '../types';
 
 const updateLookupTableForModel = async (
   model: DatabaseModel,
@@ -18,12 +18,10 @@ const updateLookupTableForModel = async (
 
   let fromId = '';
   let totalCount = 0;
-  const hasCustomLookupQuery =
-    'buildSyncLookupQueryDetails' in model &&
-    typeof model.buildSyncLookupQueryDetails === 'function';
-  const result: SyncLookupQueryDetails = hasCustomLookupQuery
-    ? await (model.buildSyncLookupQueryDetails as Function)()
-    : {};
+  const result =
+    typeof model.buildSyncLookupQueryDetails === 'function'
+      ? await model.buildSyncLookupQueryDetails()
+      : {};
 
   const { ctes, select, joins, where, groupBy } = result || {};
   const allGroupBy = groupBy ? [...groupBy, 'sync_device_tick.device_id'] : null;

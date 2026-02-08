@@ -1,12 +1,12 @@
-import { UseQueryOptions } from '@tanstack/react-query';
+import type { UseQueryOptions } from '@tanstack/react-query';
 
-import { ProjectRecord } from '@tupaia/database';
-import { SurveyRecord } from '@tupaia/tsmodels';
+import type { AccessPolicy } from '@tupaia/access-policy';
+import { assertAnyPermissions, assertBESAdminAccess } from '@tupaia/access-policy';
 import { camelcaseKeys, ensure } from '@tupaia/tsutils';
-import { Country, DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
+import type { Country, DatatrakWebSurveyRequest, Project, Survey } from '@tupaia/types';
 import { get, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
-import { ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
+import type { ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
 import { getSurveyCountryCodes, getSurveyCountryNames } from './util';
 
 interface SurveyQueryFunctionContext extends ContextualQueryFunctionContext {
@@ -16,28 +16,39 @@ interface SurveyQueryFunctionContext extends ContextualQueryFunctionContext {
 const surveyQueryFunctions = {
   remote: async ({ surveyCode }: SurveyQueryFunctionContext) =>
     await get(`surveys/${encodeURIComponent(ensure(surveyCode))}`),
-  local: async ({ models, surveyCode }: SurveyQueryFunctionContext) =>
+  local: async ({ accessPolicy, models, surveyCode }: SurveyQueryFunctionContext) =>
     await models.wrapInReadOnlyTransaction(async transactingModels => {
-      const survey: SurveyRecord & {
+      const surveyRecord = await transactingModels.survey.findOneOrThrow({
+        code: ensure(surveyCode),
+      });
+
+      const surveyChecker = async (accessPolicy: AccessPolicy) =>
+        await transactingModels.survey.assertCanRead(accessPolicy, surveyRecord.id);
+      const permissionChecker = assertAnyPermissions([assertBESAdminAccess, surveyChecker]);
+      await permissionChecker(accessPolicy);
+
+      const survey: Survey & {
         countryCodes?: Country['code'][];
         countryNames?: Country['name'][];
-        project?: ProjectRecord;
+        project?: Project;
         screens?: unknown; // TODO
-      } = await transactingModels.survey.findOne({ code: ensure(surveyCode) });
+      } = (await surveyRecord.getData()) as Survey;
+
+      const fetchProjectData = async () => {
+        const projectRecord = await surveyRecord.getProject();
+        return (await projectRecord.getData()) as Project;
+      };
 
       const [countryNames, countryCodes, screens, project] = await Promise.all([
         getSurveyCountryNames(transactingModels, [survey.id]),
         getSurveyCountryCodes(transactingModels, [survey.id]),
-        survey.getPaginatedQuestions(),
-        survey.getProject(),
+        surveyRecord.getPaginatedQuestions(),
+        fetchProjectData(),
       ]);
       survey.countryNames = countryNames[survey.id];
       survey.countryCodes = countryCodes[survey.id];
       survey.screens = screens;
       survey.project = project;
-
-      survey.model = undefined;
-      survey.project.model = undefined;
 
       return camelcaseKeys(survey, {
         deep: true,

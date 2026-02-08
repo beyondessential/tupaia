@@ -453,10 +453,10 @@ const constructNewSurveyResponseDetails = async (models, sheet, columnIndex, con
 
 /**
  * Return all the entitites of the submitted survey responses, grouped by the survey code (sheet name) that the survey responses belong to
- * @param {*} models
+ * @param {*} _models
  * @param {*} sheets
  */
-const getEntitiesBySurveyCode = async (models, sheets) => {
+const getEntitiesBySurveyCode = async (_models, sheets) => {
   const entitiesGroupedBySurveyCode = {};
 
   for (const surveySheet of Object.entries(sheets)) {
@@ -469,11 +469,7 @@ const getEntitiesBySurveyCode = async (models, sheets) => {
 
       if (!isInfoColumn(columnIndex)) {
         const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
-
-        if (!entitiesGroupedBySurveyCode[surveyCode]) {
-          entitiesGroupedBySurveyCode[surveyCode] = [];
-        }
-
+        entitiesGroupedBySurveyCode[surveyCode] ??= [];
         entitiesGroupedBySurveyCode[surveyCode].push(entityCode);
       } else if (columnHeader !== INFO_COLUMN_HEADERS[columnIndex]) {
         throw new ImportValidationError(`Missing ${INFO_COLUMN_HEADERS[columnIndex]} column`);
@@ -516,7 +512,7 @@ function getDateStringForColumn(sheet, columnIndex) {
   const date = isInExportFormat
     ? moment(dateString, EXPORT_DATE_FORMAT).toDate()
     : moment(dateString).toDate();
-  if (isNaN(date.getTime())) {
+  if (Number.isNaN(date.getTime())) {
     throw new ImportValidationError(`Invalid date ${dateString}`);
   }
   return stripTimezoneFromDate(date);

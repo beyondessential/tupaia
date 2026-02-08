@@ -1,11 +1,10 @@
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-
 import { SYNC_SESSION_DIRECTION } from '../constants';
 import { SyncSnapshotAttributes } from '../types';
 import { countSyncSnapshotRecords } from './countSyncSnapshotRecords';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
-import { insertSnapshotRecords, updateSnapshotRecords } from './manageSnapshotTable';
 import { getModelsForPush } from './getModelsForDirection';
+import { insertSnapshotRecords, updateSnapshotRecords } from './manageSnapshotTable';
 
 const BATCH_SIZE = 10000;
 
@@ -25,12 +24,7 @@ export const incomingSyncHook = async (
       const readOnlyModels = getModelsForPush(readOnlyModelsRegistry.getModels());
 
       for (const model of readOnlyModels) {
-        const hasIncomingSyncHook =
-          'incomingSyncHook' in model && typeof model.incomingSyncHook === 'function';
-
-        if (!hasIncomingSyncHook) {
-          continue;
-        }
+        if (typeof model.incomingSyncHook !== 'function') continue;
 
         const modelPersistedRecordsCount = await countSyncSnapshotRecords(
           database,
@@ -54,36 +48,28 @@ export const incomingSyncHook = async (
           );
           fromId = batchRecords.at(-1)?.id;
 
-          const incomingSnapshotChanges = hasIncomingSyncHook
-            ? await (model.incomingSyncHook as Function)(batchRecords)
-            : null;
+          const { inserts = [], updates = [] } = await model.incomingSyncHook(batchRecords);
 
-          if (incomingSnapshotChanges) {
-            const { inserts = [], updates = [] } = incomingSnapshotChanges;
+          if (inserts.length > 0) {
+            // Mark new changes as requiring repull
+            const newChangesToInsert = inserts.map((change: SyncSnapshotAttributes) => ({
+              ...change,
+              requiresRepull: true,
+            }));
 
-            if (inserts.length > 0) {
-              // Mark new changes as requiring repull
-              const newChangesToInsert = inserts.map((change: SyncSnapshotAttributes) => ({
-                ...change,
-                requiresRepull: true,
-              }));
+            // Insert new changes into sync_snapshot table
+            await insertSnapshotRecords(database, sessionId, newChangesToInsert);
+          }
 
-              // Insert new changes into sync_snapshot table
-              await insertSnapshotRecords(database, sessionId, newChangesToInsert);
-            }
+          if (updates.length > 0) {
+            // Mark new changes as requiring repull
+            const newChangesToUpdate = updates.map((change: SyncSnapshotAttributes) => ({
+              ...change,
+              requiresRepull: true,
+            }));
 
-            if (updates.length > 0) {
-              // Mark new changes as requiring repull
-              const newChangesToUpdate = updates.map((change: SyncSnapshotAttributes) => ({
-                ...change,
-                requiresRepull: true,
-              }));
-
-              for (const change of newChangesToUpdate) {
-                await updateSnapshotRecords(database, sessionId, change, {
-                  id: change.id,
-                });
-              }
+            for (const change of newChangesToUpdate) {
+              await updateSnapshotRecords(database, sessionId, change, { id: change.id });
             }
           }
         }

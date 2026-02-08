@@ -1,6 +1,6 @@
 import { encryptPassword } from '@tupaia/auth';
 import { generateId } from '@tupaia/database';
-import { FACT_CURRENT_SYNC_TICK } from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
 
 import { configureEnv } from '../../../configureEnv';
 import { createUser as createUserAccessor } from '../../../dataAccessors';
@@ -12,7 +12,7 @@ const models = getModels();
 configureEnv();
 
 export async function addBaselineTestData() {
-  await models.localSystemFact.updateOrCreate({ key: FACT_CURRENT_SYNC_TICK }, { value: '1' });
+  await models.localSystemFact.updateOrCreate({ key: SyncFact.CURRENT_SYNC_TICK }, { value: '1' });
 
   // if there's a pre-existing Demo Land in the DB, use that, otherwise create
   // one with a test ID so it'll get cleaned up later

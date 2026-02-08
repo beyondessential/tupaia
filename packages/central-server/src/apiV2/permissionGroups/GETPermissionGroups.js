@@ -2,7 +2,7 @@ import { GETHandler } from '../GETHandler';
 import { assertAdminPanelAccess, hasBESAdminAccess } from '../../permissions';
 
 export class GETPermissionGroups extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   ancestorsFieldKey = 'ancestors';
 

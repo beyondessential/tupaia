@@ -1,32 +1,37 @@
-import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import { ENTITY_ANCESTORS_DEFAULT_FIELDS } from '@tupaia/constants';
-
-import { UseEntityAncestorsLocalContext } from '../../api/queries/useEntityAncestors';
-import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils/formatEntity';
+import { assertIsNotNullish, camelcaseKeys } from '@tupaia/tsutils';
+import type { UseEntityAncestorsLocalContext } from '../../api/queries/useEntityAncestors';
 import { isExtendedField } from '../../utils/extendedFieldFunctions';
+import { formatEntitiesForResponse } from '../../utils/formatEntity';
 
 export const getEntityAncestors = async ({
   models,
   projectCode,
   entityCode,
 }: UseEntityAncestorsLocalContext) => {
-  const project = ensure(
-    await models.project.findOne({ code: ensure(projectCode) }),
+  assertIsNotNullish(
+    projectCode,
+    'getEntityAncestors query function called with undefined projectCode',
+  );
+  assertIsNotNullish(
+    entityCode,
+    'getEntityAncestors query function called with undefined entityCode',
+  );
+
+  const { entity_hierarchy_id: hierarchyId } = await models.project.findOneOrThrow(
+    { code: projectCode },
+    { columns: ['entity_hierarchy_id'] },
     `No project exists with code ${projectCode}`,
   );
 
   // This should never happen, but just in case
-  if (!project.entity_hierarchy_id) {
+  if (!hierarchyId) {
     throw new Error('Project entity hierarchy ID is not set');
   }
 
-  const entity = ensure(
-    await models.entity.findOne({ code: ensure(entityCode) }),
-    `No entity exists with code ${entityCode}`,
-  );
-
+  const entity = await models.entity.findOneOrThrow({ code: entityCode });
   const ancestors = await models.entity.getAncestorsFromParentChildRelation(
-    project.entity_hierarchy_id,
+    hierarchyId,
     [entity.id],
     {
       fields: ENTITY_ANCESTORS_DEFAULT_FIELDS.filter(field => !isExtendedField(field)),
@@ -37,9 +42,9 @@ export const getEntityAncestors = async ({
   const entities = [entity, ...ancestors];
 
   const formattedEntities = await formatEntitiesForResponse(
-    { hierarchyId: project.entity_hierarchy_id },
+    { hierarchyId: hierarchyId },
     entities,
-    ENTITY_ANCESTORS_DEFAULT_FIELDS as ExtendedEntityFieldName[],
+    ENTITY_ANCESTORS_DEFAULT_FIELDS,
   );
 
   return camelcaseKeys(formattedEntities, { deep: true });

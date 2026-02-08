@@ -4,8 +4,6 @@ import { EntityFilter, EntityRecord, extractEntityFilterFromQuery } from '@tupai
 import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
 import { Entity, EntityTypeEnum } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
-
-import { ensure } from '@tupaia/tsutils';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
 const throwNoAccessError = (entityCodes: string[]) => {
@@ -24,21 +22,22 @@ const validateEntitiesAndBuildContext = async (
   req: Request<{ hierarchyName: string }, any, any, { filter?: string }>,
   entityCodes: string[],
 ) => {
-  const { hierarchyId } = req.ctx;
-  const { hierarchyName } = req.params;
-  // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
-  const rootEntity = await req.models.entity.findOne({
-    type: EntityTypeEnum.project,
-    code: hierarchyName,
-  });
-  if (!rootEntity) {
-    throw new Error(`Cannot find root entity for hierarchy: ${req.params.hierarchyName}`);
-  }
-
   if (entityCodes.length === 0) {
     // No entities requested
     return { entities: [], allowedCountries: [] };
   }
+
+  const { hierarchyId } = req.ctx;
+  const { hierarchyName } = req.params;
+  // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
+  const rootEntity = await req.models.entity.findOneOrThrow(
+    {
+      type: EntityTypeEnum.project,
+      code: hierarchyName,
+    },
+    undefined,
+    `Cannot find root entity for hierarchy: ${req.params.hierarchyName}`,
+  );
 
   const entities = await rootEntity.getDescendants(hierarchyId, {
     code: entityCodes,
@@ -80,8 +79,9 @@ const getFilterInfo = async (
   let allowedCountries = [...new Set(childCodes)];
 
   if (!isPublic) {
-    const { permission_groups: projectPermissionGroups } = ensure(
-      await req.models.project.findOne({ code: req.params.hierarchyName }),
+    const { permission_groups: projectPermissionGroups } = await req.models.project.findOneOrThrow(
+      { code: req.params.hierarchyName },
+      { columns: ['permission_groups'] },
       `No project exists with code ${req.params.hierarchyName}`,
     );
 
@@ -155,7 +155,7 @@ export const attachEntityFilterContext = async (
   _res: Response,
   next: NextFunction,
 ) => {
-  const rootEntity = await req.models.entity.findOne({
+  const rootEntity = await req.models.entity.findOneOrThrow({
     type: EntityTypeEnum.project,
     code: req.params.hierarchyName,
   });

@@ -1,14 +1,19 @@
-import { UseQueryOptions } from '@tanstack/react-query';
+import type { UseQueryOptions } from '@tanstack/react-query';
 
-import { DbFilter, QueryConjunctions } from '@tupaia/tsmodels';
+import type { AccessPolicy } from '@tupaia/access-policy';
+import type { DbFilter } from '@tupaia/tsmodels';
 import { camelcaseKeys } from '@tupaia/tsutils';
-import { AccessPolicy } from '@tupaia/access-policy';
-import { Country, DatatrakWebSurveyRequest, Project, Survey, SurveyGroup } from '@tupaia/types';
-
-import { get, RequestParameters, useDatabaseQuery } from '../../../api';
+import type {
+  Country,
+  DatatrakWebSurveyRequest,
+  Project,
+  Survey,
+  SurveyGroup,
+} from '@tupaia/types';
+import { type RequestParameters, get, useDatabaseQuery } from '../../../api';
 import { useIsOfflineFirst } from '../../../api/offlineFirst';
-import { ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
-import { DatatrakWebModelRegistry, Entity } from '../../../types';
+import { type ContextualQueryFunctionContext } from '../../../api/queries/useDatabaseQuery';
+import type { DatatrakWebModelRegistry, Entity } from '../../../types';
 import { getSurveyCountryCodes, getSurveyCountryNames, getSurveyGroupNames } from './util';
 
 interface UseSurveysQueryFilterParams {
@@ -35,7 +40,12 @@ const getRemote = async ({
   projectId,
   searchTerm,
 }: SurveysQueryFunctionContext): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
-  const params: RequestParameters = { fields: ['name', 'code', 'id'] };
+  const params: {
+    countryCode?: Country['code'];
+    fields: string[];
+    projectId?: Project['id'];
+    searchTerm?: string;
+  } = { fields: ['name', 'code', 'id'] } satisfies RequestParameters;
 
   if (countryCode) params.countryCode = countryCode;
   if (projectId) params.projectId = projectId;
@@ -145,25 +155,29 @@ async function constructDbFilter({
   accessPolicy: AccessPolicy;
   projectId?: Project['id'];
   searchTerm?: string;
-  countryCode?: Entity['code'];
+  countryCode?: Country['code'];
 }): Promise<DbFilter<Survey>> {
   const dbFilter: DbFilter<Survey> = {};
 
   if (projectId) {
     dbFilter.project_id = projectId;
   }
+
   if (searchTerm) {
     dbFilter.name = {
       comparator: 'ilike',
       comparisonValue: `%${searchTerm}%`,
     };
   }
-  if (countryCode) {
-    dbFilter[QueryConjunctions.RAW] = {
-      sql: '(SELECT id FROM country WHERE code = ?) = ANY (country_ids)',
-      parameters: [countryCode],
-    };
+
+  if (!countryCode) {
+    return await models.survey.createRecordsPermissionFilter(accessPolicy, dbFilter);
   }
 
-  return await models.survey.createRecordsPermissionFilter(accessPolicy, dbFilter);
+  const country = await models.country.findOneOrThrow(
+    { code: countryCode },
+    { columns: ['id'] },
+    `Cannot find surveys for ${countryCode}; country not found`,
+  );
+  return await models.survey.getPermissionsViaParentFilter(accessPolicy, dbFilter, country.id);
 }

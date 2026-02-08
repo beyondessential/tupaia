@@ -2,13 +2,7 @@ import { QueryClient } from '@tanstack/react-query';
 import mitt from 'mitt';
 import log from 'winston';
 
-import {
-  FACT_CURRENT_SYNC_TICK,
-  FACT_LAST_SUCCESSFUL_SYNC_PULL,
-  FACT_LAST_SUCCESSFUL_SYNC_PUSH,
-  FACT_PROJECTS_IN_SYNC,
-  SYNC_STREAM_MESSAGE_KIND,
-} from '@tupaia/constants';
+import { SYNC_STREAM_MESSAGE_KIND, SyncFact } from '@tupaia/constants';
 import {
   createClientSnapshotTable,
   dropAllSnapshotTables,
@@ -44,19 +38,19 @@ const SYNC_STAGES = {
   PUSH: 1,
   PULL: 2,
   PERSIST: 3,
-};
+} as const;
 
 type StageMaxProgress = Record<number, number>;
 
-const STAGE_MAX_PROGRESS_INCREMENTAL: StageMaxProgress = {
+const STAGE_MAX_PROGRESS_INCREMENTAL = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 66,
   [SYNC_STAGES.PERSIST]: 100,
-} as const;
-const STAGE_MAX_PROGRESS_INITIAL: StageMaxProgress = {
+} as const satisfies StageMaxProgress;
+const STAGE_MAX_PROGRESS_INITIAL = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 100,
-} as const;
+} as const satisfies StageMaxProgress;
 
 export interface SyncResult {
   pulledChangesCount?: number;
@@ -205,7 +199,7 @@ export class ClientSyncManager {
   };
 
   async getProjectsInSync(): Promise<Project['id'][]> {
-    const syncedProjectsFact = await this.models.localSystemFact.get(FACT_PROJECTS_IN_SYNC);
+    const syncedProjectsFact = await this.models.localSystemFact.get(SyncFact.PROJECTS_IN_SYNC);
     const syncedProjectIds = syncedProjectsFact ? JSON.parse(syncedProjectsFact) : [];
     return syncedProjectIds;
   }
@@ -225,12 +219,64 @@ export class ClientSyncManager {
 
       const { pulledChangesCount } = await this.runSync(urgent);
       if (pulledChangesCount) {
+        console.group('🔄 [ClientSyncManager] Post-sync query invalidation');
+        console.log('Pulled changes count:', pulledChangesCount);
+        console.log('Models state before invalidation:', {
+          hasModels: !!this.models,
+          hasDatabase: !!this.models?.database,
+          databaseType: this.models?.database?.constructor?.name,
+          hasConnection: !!this.models?.database?.connection,
+          isSingleton: this.models?.database?.isSingleton,
+        });
+        
+        // Health check before invalidating queries
+        console.log('Running database health check...');
+        const healthResult = await this.database.healthCheck();
+        console.log('Database health check result:', healthResult);
+        
+        if (!healthResult.healthy) {
+          console.error('Database is unhealthy after sync! Error:', healthResult.error);
+          // Don't invalidate queries if database is unhealthy - might cause cascading failures
+          console.groupEnd();
+          throw new Error(`Database unhealthy after sync: ${healthResult.error}`);
+        }
+        
+        console.log('Project model state:', {
+          hasProjectModel: !!this.models?.project,
+          projectModelDatabase: !!this.models?.project?.database,
+          projectModelDatabaseType: this.models?.project?.database?.constructor?.name,
+        });
+        
+        // Additional delay before invalidating queries to ensure PGlite is fully stable
+        console.log('Waiting additional 500ms before invalidating queries...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Re-check health after delay
+        const healthCheck2 = await this.database.healthCheck();
+        console.log('Second health check before invalidation:', healthCheck2);
+        
+        if (!healthCheck2.healthy) {
+          console.error('Database still unhealthy after delay!');
+          console.groupEnd();
+          throw new Error(`Database unhealthy before query invalidation: ${healthCheck2.error}`);
+        }
+        
+        console.log('Invalidating all queries...');
+        console.groupEnd();
+        
         await queryClient.invalidateQueries();
         this.models.clearCache();
+        
+        console.log('🔄 [ClientSyncManager] Query invalidation complete');
+
+        const projects = await this.models.project.find({});
+        console.log('Projects:', projects);
+
       }
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
       this.errorMessage = error.message;
+      log.error('ClientSyncManager.triggerSync()', { error });
     } finally {
       // Reset all the values to default only if sync actually started, otherwise they should still be default values
       if (this.isSyncing) {
@@ -278,6 +324,23 @@ export class ClientSyncManager {
       );
     }
 
+    // Debug: Log database state at the VERY START of sync
+    console.log('=== [ClientSyncManager.runSync] START ===');
+    try {
+      const factsAtStart = await this.models.localSystemFact.find({});
+      console.log('[ClientSyncManager.runSync] Local system facts at START:', {
+        count: factsAtStart.length,
+        facts: factsAtStart.map((f: any) => ({ key: f.key, value: f.value })),
+      });
+      
+      const projectsAtStart = await this.models.project.find({});
+      console.log('[ClientSyncManager.runSync] Projects at START:', {
+        count: projectsAtStart.length,
+      });
+    } catch (e: any) {
+      console.error('[ClientSyncManager.runSync] Error checking initial state:', e?.message);
+    }
+
     this.errorMessage = null;
     this.progressMessage = 'Requesting sync…';
     this.isRequestingSync = true;
@@ -293,7 +356,7 @@ export class ClientSyncManager {
     this.isRequestingSync = false;
     this.isSyncing = true;
 
-    const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
+    const pullSince = await getSyncTick(this.models, SyncFact.LAST_SUCCESSFUL_SYNC_PULL);
 
     this.isInitialSync = pullSince === -1;
 
@@ -330,7 +393,17 @@ export class ClientSyncManager {
 
     await this.pushChanges(sessionId, startedAtTick);
 
+    // Debug: Check state BEFORE pullChanges
+    console.log('[ClientSyncManager.runSync] State BEFORE pullChanges:');
+    const factsBeforePull = await this.models.localSystemFact.find({});
+    console.log('  Local system facts:', factsBeforePull.length);
+
     const pulledChangesCount = await this.pullChanges(sessionId, projectIds);
+
+    // Debug: Check state AFTER pullChanges  
+    console.log('[ClientSyncManager.runSync] State AFTER pullChanges:');
+    const factsAfterPull = await this.models.localSystemFact.find({});
+    console.log('  Local system facts:', factsAfterPull.length);
 
     await this.endSyncSession(sessionId);
 
@@ -363,6 +436,10 @@ export class ClientSyncManager {
           // still waiting
           break handler;
         case SYNC_STREAM_MESSAGE_KIND.END:
+          // Check for errors in the END message
+          if (message?.error) {
+            throw new Error(message.error);
+          }
           // includes the new tick from starting the session
           return { ...message };
         default:
@@ -381,12 +458,12 @@ export class ClientSyncManager {
     this.setProgress(0, 'Pushing all new changes…');
 
     // get the sync tick we're up to locally, so that we can store it as the successful push cursor
-    const currentSyncClockTime = await getSyncTick(this.models, FACT_CURRENT_SYNC_TICK);
+    const currentSyncClockTime = await getSyncTick(this.models, SyncFact.CURRENT_SYNC_TICK);
 
     // use the new unique sync tick for any changes from now on so that any records that are created
     // or updated even mid way through this sync, are marked using the new tick and will be captured
     // in the next push
-    await this.models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, newSyncClockTime);
+    await this.models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, newSyncClockTime.toString());
     log.debug('ClientSyncManager.updatedLocalSyncClockTime', { newSyncClockTime });
 
     await waitForPendingEditsUsingSyncTick(this.database, currentSyncClockTime);
@@ -395,7 +472,7 @@ export class ClientSyncManager {
     // to be pushed, and then pushing those up in batches
     // this avoids any of the records to be pushed being changed during the push period and
     // causing data that isn't internally coherent from ending up on the central server
-    const pushSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PUSH);
+    const pushSince = await getSyncTick(this.models, SyncFact.LAST_SUCCESSFUL_SYNC_PUSH);
     log.debug('ClientSyncManager.snapshotOutgoingChanges', { pushSince });
 
     // snapshot inside a "repeatable read" transaction, so that other changes made while this snapshot
@@ -418,7 +495,10 @@ export class ClientSyncManager {
       );
     }
 
-    await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PUSH, currentSyncClockTime);
+    await this.models.localSystemFact.set(
+      SyncFact.LAST_SUCCESSFUL_SYNC_PUSH,
+      currentSyncClockTime.toString(),
+    );
     log.debug('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
   }
 
@@ -439,7 +519,7 @@ export class ClientSyncManager {
         'Pausing at 33% while server prepares for pull, please wait…',
       );
 
-      const pullSince = await getSyncTick(this.models, FACT_LAST_SUCCESSFUL_SYNC_PULL);
+      const pullSince = await getSyncTick(this.models, SyncFact.LAST_SUCCESSFUL_SYNC_PULL);
 
       log.debug('ClientSyncManager.createClientSnapshotTable', {
         sessionId,
@@ -508,8 +588,61 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+      await transactingModels.localSystemFact.set(
+        SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+        pullUntil.toString(),
+      );
+      
+      // Debug: Check what's in the database INSIDE the transaction
+      console.log('[ClientSyncManager] Inside transaction - checking data...');
+      const factsInTransaction = await transactingModels.localSystemFact.find({});
+      console.log('[ClientSyncManager] Local system facts INSIDE transaction:', {
+        count: factsInTransaction.length,
+        facts: factsInTransaction.map((f: any) => ({ key: f.key, value: f.value })),
+      });
+      
+      const projectsInTransaction = await transactingModels.project.find({});
+      console.log('[ClientSyncManager] Projects INSIDE transaction:', {
+        count: projectsInTransaction.length,
+      });
+      
+      return factsInTransaction;
     });
+    
+    // After initial sync transaction commits, give PGlite time to flush to IndexedDB
+    // This is a workaround for potential race conditions where queries run before data is fully persisted
+    console.log('[ClientSyncManager] Initial sync transaction complete, waiting for PGlite to stabilize...');
+    
+    // Debug: Check what's in the database OUTSIDE the transaction (should be same as inside if committed)
+    console.log('[ClientSyncManager] Checking data OUTSIDE transaction (before delay)...');
+    const factsOutside = await this.models.localSystemFact.find({});
+    console.log('[ClientSyncManager] Local system facts OUTSIDE transaction:', {
+      count: factsOutside.length,
+      facts: factsOutside.map((f: any) => ({ key: f.key, value: f.value })),
+    });
+    
+    const projectsOutside = await this.models.project.find({});
+    console.log('[ClientSyncManager] Projects OUTSIDE transaction:', {
+      count: projectsOutside.length,
+    });
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Check again after delay
+    console.log('[ClientSyncManager] Checking data OUTSIDE transaction (after delay)...');
+    const factsAfterDelay = await this.models.localSystemFact.find({});
+    console.log('[ClientSyncManager] Local system facts after delay:', {
+      count: factsAfterDelay.length,
+      facts: factsAfterDelay.map((f: any) => ({ key: f.key, value: f.value })),
+    });
+    
+    // Verify the database is healthy after the delay
+    const healthCheck = await this.database.healthCheck();
+    console.log('[ClientSyncManager] Post-initial-sync health check:', healthCheck);
+    
+    if (!healthCheck.healthy) {
+      throw new Error(`Database unhealthy after initial sync: ${healthCheck.error}`);
+    }
   }
 
   async pullIncrementalSync(sessionId: string, totalToPull: number, pullUntil: number) {
@@ -555,7 +688,10 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return transactingModels.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+      return transactingModels.localSystemFact.set(
+        SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+        pullUntil.toString(),
+      );
     });
   }
 }

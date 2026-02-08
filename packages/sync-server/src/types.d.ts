@@ -63,18 +63,12 @@ export type SyncServerConfig = {
     perModelUpdateTimeoutMs: number;
     avoidRepull: boolean;
   };
-  snapshotTransactionTimeoutMs: number;
-  syncSessionTimeoutMs: number;
+  snapshotTransactionTimeoutMs?: number;
+  syncSessionTimeoutMs?: number;
   maxConcurrentSessions: number;
 };
 
-export interface SyncLookupQueryDetails {
-  ctes?: string[];
-  select?: string[];
-  joins?: string[];
-  where?: any;
-  groupBy?: string[];
-}
+export type { SyncLookupQueryDetails } from '@tupaia/database';
 
 export interface SnapshotParams {
   since: number;

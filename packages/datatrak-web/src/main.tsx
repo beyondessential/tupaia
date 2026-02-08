@@ -6,6 +6,27 @@ import { App } from './App';
 import { confirmUpdate } from './components/UpdateConfirmation';
 import { useIsOfflineFirst } from './api/offlineFirst';
 
+// Global error handlers to catch unhandled errors
+window.addEventListener('error', (event) => {
+  console.group('🔴 Unhandled Error');
+  console.error('Error message:', event.message);
+  console.error('Error filename:', event.filename);
+  console.error('Error lineno:', event.lineno);
+  console.error('Error colno:', event.colno);
+  console.error('Error object:', event.error);
+  console.error('Error stack:', event.error?.stack);
+  console.groupEnd();
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.group('🔴 Unhandled Promise Rejection');
+  console.error('Reason:', event.reason);
+  console.error('Reason message:', event.reason?.message);
+  console.error('Reason stack:', event.reason?.stack);
+  console.error('Promise:', event.promise);
+  console.groupEnd();
+});
+
 renderReactApp(<App />, document.getElementById('root'));
 
 const promptUserToUpdate = async (worker: ServiceWorker) => {

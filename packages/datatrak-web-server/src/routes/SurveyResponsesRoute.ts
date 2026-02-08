@@ -3,12 +3,13 @@ import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyResponsesRequest } from '@tupaia/types';
 
-export type SurveyResponsesRequest = Request<
-  DatatrakWebSurveyResponsesRequest.Params,
-  DatatrakWebSurveyResponsesRequest.ResBody,
-  DatatrakWebSurveyResponsesRequest.ReqBody,
-  DatatrakWebSurveyResponsesRequest.ReqQuery
->;
+export interface SurveyResponsesRequest
+  extends Request<
+    DatatrakWebSurveyResponsesRequest.Params,
+    DatatrakWebSurveyResponsesRequest.ResBody,
+    DatatrakWebSurveyResponsesRequest.ReqBody,
+    DatatrakWebSurveyResponsesRequest.ReqQuery
+  > {}
 
 const DEFAULT_FIELDS = [
   'assessor_name',
@@ -19,7 +20,7 @@ const DEFAULT_FIELDS = [
   'id',
   'survey.name',
   'survey.code',
-];
+] as const;
 
 const DEFAULT_LIMIT = 16;
 

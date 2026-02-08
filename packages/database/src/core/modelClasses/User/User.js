@@ -1,7 +1,8 @@
 /**
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
- * @typedef {import('@tupaia/types').User} User
+ * @typedef {import('@tupaia/types').Project} Project
+ * @typedef {import('@tupaia/types').Survey} Survey
  * @typedef {import('@tupaia/types').UserAccount} UserAccount
  * @typedef {import('@tupaia/types').UserAccountPreferences} UserAccountPreferences
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
@@ -16,11 +17,10 @@ import winston from 'winston';
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
 import {
   API_CLIENT_PERMISSIONS,
-  FACT_CURRENT_USER_ID,
-  FACT_LAST_SUCCESSFUL_SYNC_PULL,
   PUBLIC_USER_EMAIL,
   PUBLIC_USER_ID,
   SyncDirections,
+  SyncFact,
   USER_PREFERENCES_FIELDS,
 } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
@@ -188,7 +188,7 @@ export class UserModel extends DatabaseModel {
 
   /**
    * @param {ModelRegistry} models
-   * @param {User['id']} userId
+   * @param {UserAccount['id']} userId
    * @param {Entity['id'][]} entityIds
    * @returns {Promise}
    */
@@ -198,6 +198,10 @@ export class UserModel extends DatabaseModel {
 
   get DatabaseRecordClass() {
     return UserRecord;
+  }
+
+  async isApiClientUser(userId) {
+    return await this.otherModels.apiClient.exists({ user_account_id: userId });
   }
 
   /**
@@ -240,8 +244,8 @@ export class UserModel extends DatabaseModel {
   };
 
   /**
-   * @param {User['id'][]} userIds
-   * @returns {Promise<{id: User['id'], name: string}[]>}
+   * @param {UserAccount['id'][]} userIds
+   * @returns {Promise<{ id: UserAccount['id'], name: string }[]>}
    */
   async getFilteredUsers(searchTerm, userIds) {
     const usersFilter = {
@@ -281,7 +285,7 @@ export class UserModel extends DatabaseModel {
    * @param {Country['code']} countryCode
    * @param {PermissionGroupRecord} permissionGroup
    * @param {string | undefined} [searchTerm]
-   * @returns {Promise<{id: string, name: string}[]>}
+   * @returns {Promise<{ id: string, name: string }[]>}
    */
   async getFilteredUsersForPermissionGroup(countryCode, permissionGroup, searchTerm) {
     // if the permission group is a public permission group that every user has access to because of the api client permissions, then everyone has access to the survey, so return all non-internal users
@@ -316,7 +320,7 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {User['id']} userId
+   * @param {UserAccount['id']} userId
    */
   async getUpdatedUserPreferenceFields(userId, updatedFields) {
     const updatedUserPreferences = Object.entries(updatedFields).filter(([key]) =>
@@ -353,7 +357,7 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {User['id']} userId
+   * @param {UserAccount['id']} userId
    * @param {Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
    * @returns {Promise<Entity['id'][]>} Entity IDs
@@ -361,6 +365,40 @@ export class UserModel extends DatabaseModel {
   async getRecentEntityIds(userId, countryCode, type) {
     const user = ensure(await this.findById(userId), `No user exists with ID ${userId}`);
     return user.getRecentEntityIds(countryCode, type);
+  }
+
+  /**
+   * @param {UserAccount['id']} userId
+   * @param {Project['id']} projectId
+   * @returns {Promise<{
+   *   country_code: Entity['code'];
+   *   country_id: Entity['id'];
+   *   country_name: Entity['name'];
+   *   survey_code: Survey['code'];
+   *   survey_name: Survey['name'];
+   * }[]>}
+   */
+  async getRecentSurveys(userId, projectId) {
+    return await this.database.executeSql(
+      `
+	      SELECT
+	        survey.name AS survey_name,
+	        survey.code AS survey_code,
+	        c.name AS country_name,
+	        c.id AS country_id,
+	        c.code AS country_code
+	      FROM
+	        survey_response
+	        JOIN survey ON survey.id = survey_response.survey_id
+	        JOIN entity ON entity.id = survey_response.entity_id
+	        JOIN entity c ON c.code = entity.country_code
+	      WHERE survey_response.user_id = ? AND survey.project_id = ?
+	      GROUP BY survey.id, c.id
+	      ORDER BY max(survey_response.data_time) DESC
+	      LIMIT 6;
+	    `,
+      [userId, projectId],
+    );
   }
 
   /**
@@ -406,19 +444,27 @@ export class UserModel extends DatabaseModel {
     };
   }
 
-  sanitizeForCentralServer = (data) => {
+  sanitizeForCentralServer = data => {
     const { password_hash, access_policy, ...rest } = data;
     return rest;
-  }
+  };
 
-  filterSyncForClient = async (changes) => {
-    const currentUserId = await this.otherModels.localSystemFact.get(FACT_CURRENT_USER_ID);
-    const lastSuccessfulSyncPull = await this.otherModels.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL);
+  /**
+   * @param {SyncSnapshotAttributes} changes
+   * @returns {Promise<SyncSnapshotAttributes>}
+   */
+  filterSyncForClient = async changes => {
+    /** @type {string | null | undefined} */
+    const currentUserId = await this.otherModels.localSystemFact.get(SyncFact.CURRENT_USER_ID);
+    /** @type {string | null | undefined} */
+    const lastSuccessfulSyncPull = await this.otherModels.localSystemFact.get(
+      SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+    );
 
-    if (lastSuccessfulSyncPull === undefined || lastSuccessfulSyncPull === -1) {
+    if (lastSuccessfulSyncPull === undefined || lastSuccessfulSyncPull === '-1') {
       return changes.filter(change => change.data.id !== currentUserId);
     }
 
     return changes;
-  }
+  };
 }

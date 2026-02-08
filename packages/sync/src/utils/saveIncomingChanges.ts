@@ -1,16 +1,22 @@
-import winston from 'winston';
 import { groupBy } from 'es-toolkit';
+import winston from 'winston';
 
-import { BaseDatabase, DatabaseModel, ModelRegistry } from '@tupaia/database';
+import {
+  BaseDatabase,
+  DatabaseModel,
+  PublicSchemaRecordName,
+  ModelRegistry,
+  runDatabaseFunctionInBatches,
+} from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
-
-import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
-import { ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
+import { ModelSanitizeArgs, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
 import { sortModelsByDependencyOrder } from './getDependencyOrder';
+import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 
 // TODO: Move this to a config model RN-1668
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
+const SAVE_BATCH_SIZE = 1000;
 const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
 const assertIsWithinTransaction = (database: BaseDatabase) => {
@@ -35,8 +41,20 @@ export const saveDeletesForModel = async (
     },
   );
   if (deletedRecords.length > 0) {
-    await saveDeletes(model, deletedRecords, 1000, progressCallback);
+    await saveDeletes(model, deletedRecords, SAVE_BATCH_SIZE, progressCallback);
   }
+};
+
+const saveCreatesForModel = async (
+  model: DatabaseModel,
+  changes: SyncSnapshotAttributes[],
+  isCentralServer: boolean,
+  progressCallback?: (recordsProcessed: number) => void,
+) => {
+  const sanitizeData = (d: ModelSanitizeArgs) =>
+    isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
+  const recordsForCreate = changes.map(c => sanitizeData(c.data));
+  await saveCreates(model, recordsForCreate, SAVE_BATCH_SIZE, progressCallback);
 };
 
 export const saveChangesForModel = async (
@@ -52,9 +70,11 @@ export const saveChangesForModel = async (
   const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
   const idsForIncomingRecords = incomingRecords.map(r => r.id);
   // add all records that already exist in the db to the list to be updated
-  const existingRecords = await model.findManyById(idsForIncomingRecords);
-
-  const idToExistingRecord: Record<number, (typeof existingRecords)[0]> = Object.fromEntries(
+  // we only need the id column to check if the record already exists
+  const existingRecords = await runDatabaseFunctionInBatches(idsForIncomingRecords,
+    async (ids: string[]) => model.database.find(model.databaseRecord, { id: ids }, { columns: ['id'] })
+  );
+  const idToExistingRecord: Record<string, (typeof existingRecords)[number]> = Object.fromEntries(
     existingRecords.map((e: any) => [e.id, e]),
   );
   const recordsForCreate = [];
@@ -75,7 +95,7 @@ export const saveChangesForModel = async (
     count: recordsForCreate.length,
   });
   if (recordsForCreate.length > 0) {
-    await saveCreates(model, recordsForCreate, 1000, progressCallback);
+    await saveCreates(model, recordsForCreate, SAVE_BATCH_SIZE, progressCallback);
   }
 
   winston.debug(
@@ -85,14 +105,14 @@ export const saveChangesForModel = async (
     },
   );
   if (recordsForUpdate.length > 0) {
-    await saveUpdates(model, recordsForUpdate, isCentralServer, 1000, progressCallback);
+    await saveUpdates(model, recordsForUpdate, isCentralServer, SAVE_BATCH_SIZE, progressCallback);
   }
 };
 
 const processSyncSnapshotInBatches = async (
   model: DatabaseModel,
   sessionId: string,
-  recordType: RecordType,
+  recordType: PublicSchemaRecordName,
   isDeleted: boolean,
   isCentralServer: boolean,
   progressCallback?: (recordsProcessed: number) => void,
@@ -134,7 +154,7 @@ const processSyncSnapshotInBatches = async (
 const saveChangesForModelInBatches = (
   model: DatabaseModel,
   sessionId: string,
-  recordType: RecordType,
+  recordType: PublicSchemaRecordName,
   isCentralServer: boolean,
   progressCallback?: (recordsProcessed: number) => void,
 ) =>
@@ -150,7 +170,7 @@ const saveChangesForModelInBatches = (
 const saveDeletesForModelInBatches = (
   model: DatabaseModel,
   sessionId: string,
-  recordType: RecordType,
+  recordType: PublicSchemaRecordName,
   progressCallback?: (recordsProcessed: number) => void,
 ) => processSyncSnapshotInBatches(model, sessionId, recordType, true, false, progressCallback);
 
@@ -187,6 +207,12 @@ export const saveIncomingSnapshotChanges = async (
       isCentralServer,
       progressCallback,
     );
+    const mem = (performance as any)?.memory;
+    if (mem) {
+      console.log('Used:', Math.round(mem.usedJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Total:', Math.round(mem.totalJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Limit:', Math.round(mem.jsHeapSizeLimit / 1024 / 1024), 'MB');
+    }
   }
   console.groupEnd();
   console.groupEnd();
@@ -209,6 +235,16 @@ export const saveChangesFromMemory = async (
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
     const filteredModelChanges = await model.filterSyncForClient(modelChanges);
-    await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    if (model.databaseRecord !== 'user_account') {
+      await saveCreatesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    } else {
+      await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    }
+    const mem = (performance as any)?.memory;
+    if (mem) {
+      console.log('Used:', Math.round(mem.usedJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Total:', Math.round(mem.totalJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Limit:', Math.round(mem.jsHeapSizeLimit / 1024 / 1024), 'MB');
+    }
   }
 };

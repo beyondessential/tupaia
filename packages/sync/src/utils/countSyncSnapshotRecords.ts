@@ -1,17 +1,16 @@
-import { TupaiaDatabase } from '@tupaia/database';
-
-import { RecordType, SyncSessionDirectionValues } from '../types';
+import { PublicSchemaRecordName, TupaiaDatabase } from '@tupaia/database';
+import { SyncSessionDirectionValues } from '../types';
 import { getSnapshotTableName } from './manageSnapshotTable';
 
 export const countSyncSnapshotRecords = async (
   database: TupaiaDatabase,
   sessionId: string,
   direction: SyncSessionDirectionValues,
-  recordType?: RecordType,
+  recordType?: PublicSchemaRecordName,
 ): Promise<number> => {
   const tableName = getSnapshotTableName(sessionId);
 
-  const [{ total }] = (await database.executeSql(
+  const [{ total }] = await database.executeSql<[{ total?: number }]>(
     `
       SELECT count(*)::int AS total FROM ${tableName}
       WHERE direction = :direction
@@ -21,6 +20,6 @@ export const countSyncSnapshotRecords = async (
       recordType,
       direction,
     },
-  )) as { total?: number }[];
+  );
   return total || 0;
 };

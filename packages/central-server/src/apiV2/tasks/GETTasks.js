@@ -4,7 +4,7 @@ import { mergeMultiJoin } from '../utilities';
 import { assertUserHasTaskPermissions } from './assertTaskPermissions';
 
 export class GETTasks extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async getPermissionsFilter(criteria, options) {
     return this.models.task.createRecordsPermissionFilter(this.accessPolicy, criteria, options);

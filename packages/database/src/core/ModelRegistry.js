@@ -15,12 +15,12 @@ const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelNam
 export class ModelRegistry {
   /**
    * @param {BaseDatabase} database
-   * @param {Record<string, typeof DatabaseModel>} [extraModelClasses]
+   * @param {Record<PublicSchemaRecordName, typeof DatabaseModel>} [extraModelClasses]
    */
   constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {
     this.database = database;
 
-    /** @type {Record<string, typeof DatabaseModel>} */
+    /** @type {Record<PublicSchemaRecordName, typeof DatabaseModel>} */
     this.modelClasses = {
       ...baseModelClasses,
       ...extraModelClasses,

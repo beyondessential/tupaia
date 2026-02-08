@@ -1,6 +1,8 @@
 /**
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('../BaseDatabase').JoinType} JoinType
+ * @typedef {import('../records').PublicSchemaRecordName} PublicSchemaRecordName
  * @typedef {import('./Country').CountryRecord} CountryRecord
  * @typedef {import('./PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
  */
@@ -14,6 +16,7 @@ import { reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
+import { SqlQuery } from '../SqlQuery';
 import { RECORDS } from '../records';
 
 export class FeedItemRecord extends DatabaseRecord {
@@ -35,23 +38,22 @@ export class FeedItemModel extends DatabaseModel {
     return FeedItemRecord;
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<{ sql: string; parameters: (PermissionGroup['name'] | Country['id'])[] }>}
+   */
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
-    const params = Object.entries(countryIdsByPermissionGroup).flat(2); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
-
+    const entries = Object.entries(countryIdsByPermissionGroup);
     return {
-      sql: `((${Object.entries(countryIdsByPermissionGroup)
-        .map(([_, countryIds]) => {
-          return `
-          (
-            feed_item.permission_group_id = ? AND
-            feed_item.country_id IN (${countryIds.map(_ => `?`).join(',')})
-          )
-        `;
+      sql: `((${entries
+        .map(([, countryIds]) => {
+          return `(feed_item.permission_group_id = ? AND feed_item.country_id IN ${SqlQuery.record(countryIds)})`;
         })
         // add the markdown type to the query here so that it always gets wrapped in brackets with the permissions query in the final query, regardless of what other custom conditions are added
         .join(' OR ')}) OR feed_item.type = '${FeedItemTypes.Markdown}')`,
-      parameters: params,
+      /** @example ['Public', 'id1', 'id2', 'Admin', 'id3'] */
+      parameters: entries.flat(2),
     };
   }
 
@@ -92,9 +94,9 @@ export class FeedItemModel extends DatabaseModel {
    * @param {string[]} [dbOptions.sort]
    * @param {number} [dbOptions.pageLimit]
    * @param {number} [dbOptions.page]
-   * @param {string} [dbOptions.joinWith]
-   * @param {string[]} [dbOptions.joinCondition]
-   * @param {string} [dbOptions.joinType]
+   * @param {PublicSchemaRecordName} [dbOptions.joinWith]
+   * @param {[string, string]} [dbOptions.joinCondition]
+   * @param {JoinType | null} [dbOptions.joinType]
    * @returns
    */
   async findByAccessPolicy(accessPolicy, customDbConditions = {}, dbOptions = {}) {

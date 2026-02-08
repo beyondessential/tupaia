@@ -4,6 +4,7 @@
  */
 import { DataElementConfig } from './models-extra';
 import { DataServiceEntityConfig } from './models-extra';
+import { FeedItemTypes } from './models-extra';
 import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
 import { MapOverlayConfig } from './models-extra';
@@ -774,7 +775,7 @@ export interface FeedItem {
   'permission_group_id'?: string | null;
   'record_id'?: string | null;
   'template_variables'?: Object | null;
-  'type'?: string | null;
+  'type'?: FeedItemTypes | null;
   'user_id'?: string | null;
 }
 export interface FeedItemCreate {
@@ -784,7 +785,7 @@ export interface FeedItemCreate {
   'permission_group_id'?: string | null;
   'record_id'?: string | null;
   'template_variables'?: Object | null;
-  'type'?: string | null;
+  'type'?: FeedItemTypes | null;
   'user_id'?: string | null;
 }
 export interface FeedItemUpdate {
@@ -795,7 +796,7 @@ export interface FeedItemUpdate {
   'permission_group_id'?: string | null;
   'record_id'?: string | null;
   'template_variables'?: Object | null;
-  'type'?: string | null;
+  'type'?: FeedItemTypes | null;
   'user_id'?: string | null;
 }
 export interface GeographicalArea {

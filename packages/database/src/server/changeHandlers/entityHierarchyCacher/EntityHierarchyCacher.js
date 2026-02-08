@@ -17,11 +17,9 @@
  * @typedef {(change: Change) => RebuildJob[] | null} ChangeTranslator
  */
 
-import { SqlQuery } from '../../../core';
 import { RECORDS } from '../../../core/records';
 import { generateId } from '../../../core/utilities';
 import { ChangeHandler } from '../ChangeHandler';
-
 import { EntityHierarchySubtreeRebuilder } from './EntityHierarchySubtreeRebuilder';
 
 export class EntityHierarchyCacher extends ChangeHandler {
@@ -34,10 +32,6 @@ export class EntityHierarchyCacher extends ChangeHandler {
       entityRelation: change => this.translateEntityRelationChangeToRebuildJobs(change),
       entityHierarchy: change => this.translateEntityHierarchyChangeToRebuildJobs(change),
     });
-  }
-
-  getTransactionWrapper() {
-    return this.models.wrapInRepeatableReadTransaction.bind(this.models);
   }
 
   /** @type {ChangeTranslator} */
@@ -100,37 +94,11 @@ export class EntityHierarchyCacher extends ChangeHandler {
 
   /**
    * @param {ModelRegistry} transactingModels
-   * @param {Entity['id'][]} affectedEntityIds
-   */
-  async refreshAffectedEntities(transactingModels, affectedEntityIds) {
-    if (affectedEntityIds.length === 0) return;
-
-    const bindings = {
-      entityIds: transactingModels.database.connection.raw(
-        SqlQuery.record(affectedEntityIds),
-        affectedEntityIds,
-      ),
-    };
-
-    // Lock the rows first to prevent serialization conflicts in REPEATABLE READ transactions
-    // This ensures we wait for any concurrent updates to complete before updating
-    await transactingModels.database.executeSql(
-      'SELECT id FROM entity WHERE id IN :entityIds FOR UPDATE',
-      bindings,
-    );
-    await transactingModels.database.executeSql(
-      'UPDATE entity SET updated_at_sync_tick = 1 WHERE id IN :entityIds',
-      bindings,
-    );
-  }
-  /**
-   * @param {ModelRegistry} transactingModels
    * @param {RebuildJob[]} rebuildJobs
    */
   async handleChanges(transactingModels, rebuildJobs) {
     const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
-    const affectedEntityIds = await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
-    await this.refreshAffectedEntities(transactingModels, affectedEntityIds);
+    await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
 
     // explicitly flag ancestor_descendant_relation as changed so that model level caches are cleared
     // TODO: Remove this as part of RN-704

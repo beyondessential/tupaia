@@ -1,16 +1,36 @@
-/** @typedef {import('@tupaia/types').DatabaseRecordName} DatabaseRecordName */
+/**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
+ * @typedef {import('@tupaia/constants').SyncDirection} SyncDirection
+ * @typedef {import('@tupaia/tsutils').UnexpectedNullishValueError} UnexpectedNullishValueError
+ * @typedef {import('./DatabaseRecord').DatabaseRecord} DatabaseRecord
+ * @typedef {import('./ModelRegistry').ModelRegistry} ModelRegistry
+ * @typedef {import('./constants').DatabaseSchemaName} DatabaseSchemaName
+ * @typedef {import('./records').PublicSchemaRecordName} PublicSchemaRecordName
+ * @typedef {(records: SyncSnapshotAttributes[]) => Promise<{ inserts?: SyncSnapshotAttributes[]; updates?: SyncSnapshotAttributes[] }>} IncomingSyncHook
+ * @typedef {(accessPolicy: AccessPolicy, criteria: any, options: any) => Promise<{ dbConditions: any; dbOptions: any }>} RecordsPermissionFilterCreator
+ * @typedef {{
+ *   ctes?: string[];
+ *   select?: string;
+ *   joins?: string;
+ *   where?: any;
+ *   groupBy?: string[];
+ * }} SyncLookupQueryDetails
+ * @typedef {() => Promise<SyncLookupQueryDetails | null>} SyncLookupQueryDetailsBuilder
+ */
 
 import { uniq } from 'es-toolkit';
 
+import { ensure } from '@tupaia/tsutils';
 import { DatabaseError, NotImplementedError, reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from './BaseDatabase';
 import { SCHEMA_NAMES } from './constants';
 import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
+  /** @type {ModelRegistry} */
   otherModels = {};
 
-  /** @type {import('@tupaia/constants').SyncDirection | null} */
+  /** @type {SyncDirection | null} */
   static syncDirection = null;
 
   constructor(database, schema = null) {
@@ -18,7 +38,6 @@ export class DatabaseModel {
 
     // schema promise will resolve with information about the columns on the table in the database,
     // e.g.: { id: { type: 'text', maxLength: null, nullable: false, defaultValue: null } }
-
     this.schemaPromise = schema ? Promise.resolve(schema) : this.startSchemaFetch();
 
     this.cache = {};
@@ -58,6 +77,14 @@ export class DatabaseModel {
     if (!this.constructor.syncDirection) {
       throw new Error(`syncDirection must be set by the model: ${this.databaseRecord}`);
     }
+
+    // These do nothing meaningful at runtime, but provide type hints to TypeScript
+    /** @type {undefined | IncomingSyncHook} */
+    this.incomingSyncHook;
+    /** @type {undefined | RecordsPermissionFilterCreator} */
+    this.createRecordsPermissionFilter;
+    /** @type {undefined | SyncLookupQueryDetailsBuilder} */
+    this.buildSyncLookupQueryDetails;
   }
 
   // cache disabled by default. If enabling remember to update the TABLES_REQUIRING_TRIGGER_CREATION to include this table in @tupaia/database/src/runPostMigration.js.
@@ -65,11 +92,15 @@ export class DatabaseModel {
     return false;
   }
 
-  // can be overridden by any subclass that needs cache invalidation when a related table changes
+  /**
+   * Can be overridden by any subclass that needs cache invalidation when a related table changes.
+   * @returns {PublicSchemaRecordName[]}
+   */
   get cacheDependencies() {
     return [];
   }
 
+  /** @returns {DatabaseSchemaName} */
   get schemaName() {
     return SCHEMA_NAMES.PUBLIC;
   }
@@ -111,6 +142,7 @@ export class DatabaseModel {
     );
   }
 
+  /** @returns {PublicSchemaRecordName} */
   get databaseRecord() {
     return this.DatabaseRecordClass.databaseRecord;
   }
@@ -120,7 +152,12 @@ export class DatabaseModel {
     return this.DatabaseRecordClass.joins;
   }
 
-  // A helper for the 'xById' methods, which disambiguates the id field to ensure joins are handled
+  /**
+   * A helper for the 'xById' methods, which disambiguates the id field to ensure joins are handled
+   * @template {string | string[]} Ids
+   * @param {string} id
+   * @returns {{ [key: `${PublicSchemaRecordName}.id`]: Ids }}
+   */
   getIdClause(id) {
     return {
       [this.fullyQualifyColumn('id')]: id,
@@ -129,8 +166,9 @@ export class DatabaseModel {
 
   /**
    * A helper function to ensure that we're using fully qualified column names to avoid ambiguous references when joins are being used
+   * @template {string} Column
    * @param {string} column
-   * @returns {`${DatabaseRecordName}.${string}`}
+   * @returns {Column extends `${string}.${string}` ? Column : `${PublicSchemaRecordName}.${Column}`}
    */
   fullyQualifyColumn(column) {
     if (column.includes('.')) {
@@ -217,6 +255,17 @@ export class DatabaseModel {
     return this.database.count(this.databaseRecord, ...args);
   }
 
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async exists(...args) {
+    return await this.database.exists(this.databaseRecord, ...args);
+  }
+
+  /**
+   * @param {string} id
+   * @param {*} [customQueryOptions]
+   */
   async findById(id, customQueryOptions = {}) {
     if (!id) {
       throw new Error(`Cannot search for ${this.databaseRecord} by id without providing an id`);
@@ -225,6 +274,20 @@ export class DatabaseModel {
     const result = await this.findOne(this.getIdClause(id), queryOptions);
     if (!result) return null;
     return this.generateInstance(result);
+  }
+
+  /**
+   * @param {string} id
+   * @param {*} [customQueryOptions]
+   * @param {string} errorMessage
+   * @throws {UnexpectedNullishValueError}
+   */
+  async findByIdOrThrow(
+    id,
+    customQueryOptions = {},
+    errorMessage = `No ${this.databaseRecord} found with ID ${id}`,
+  ) {
+    return ensure(await this.findById(id, customQueryOptions), errorMessage);
   }
 
   async findManyByColumn(column, values, additionalConditions = {}, customQueryOptions = {}) {
@@ -254,6 +317,14 @@ export class DatabaseModel {
     );
     if (!result) return null;
     return this.generateInstance(result);
+  }
+
+  async findOneOrThrow(
+    dbConditions,
+    customQueryOptions = {},
+    errorMessage = `No ${this.databaseRecord} found matching ${JSON.stringify(dbConditions)}`,
+  ) {
+    return ensure(await this.findOne(dbConditions, customQueryOptions), errorMessage);
   }
 
   /**
@@ -388,6 +459,9 @@ export class DatabaseModel {
     return this.database.delete(this.databaseRecord, whereConditions);
   }
 
+  /**
+   * @param {string | string[] } id
+   */
   async deleteById(id) {
     return this.delete(this.getIdClause(id));
   }
@@ -453,6 +527,10 @@ export class DatabaseModel {
     return data;
   };
 
+  /**
+   * @param {SyncSnapshotAttributes[]} changes
+   * @returns {Promise<SyncSnapshotAttributes[]>}
+   */
   filterSyncForClient = async changes => {
     return changes;
   };

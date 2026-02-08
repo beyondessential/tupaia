@@ -1,4 +1,5 @@
 /**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
  * @typedef {import('@tupaia/types').Question} Question
@@ -8,6 +9,7 @@
  * @typedef {import('../Country').CountryRecord} CountryRecord
  * @typedef {import('../DataGroup').DataGroupRecord} DataGroupRecord
  * @typedef {import('../Option').OptionRecord} OptionRecord
+ * @typedef {import('../Option').OptionSet} OptionSet
  * @typedef {import('../OptionSet').OptionSetRecord} OptionSetRecord
  * @typedef {import('../PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
  * @typedef {import('../Project').ProjectRecord} ProjectRecord
@@ -53,20 +55,22 @@
  *} AggregatedQuestions
  */
 
-import { AccessPolicy, hasBESAdminAccess } from '@tupaia/access-policy';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { SyncDirections } from '@tupaia/constants';
-import { reduceToDictionary } from '@tupaia/utils';
 import { ensure } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
-
-import { MaterializedViewLogDatabaseModel } from '../../analytics';
+import { PermissionsError, reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
 import { DatabaseRecord } from '../../DatabaseRecord';
-import { RECORDS } from '../../records';
 import { SqlQuery } from '../../SqlQuery';
-import { buildSyncLookupSelect } from '../../sync';
+import { MaterializedViewLogDatabaseModel } from '../../analytics';
+import { RECORDS } from '../../records';
 import { OptionRecord } from '../Option';
 import { findQuestionsInSurvey } from './findQuestionsInSurvey';
+import {
+  createSurveyPermissionsFilter,
+  createSurveyPermissionsViaParentFilter,
+} from './permissions';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
@@ -89,6 +93,7 @@ export class SurveyRecord extends DatabaseRecord {
    * @returns {Promise<SurveyScreenComponentRecord[]>} survey screen components in survey
    */
   async surveyScreenComponents() {
+    /** @type {SurveyScreenComponent[]} */
     const questions = await this.database.executeSql(
       `
        SELECT ssc.* FROM survey_screen_component ssc
@@ -124,6 +129,7 @@ export class SurveyRecord extends DatabaseRecord {
    * @returns {Promise<OptionSetRecord[]>} optionSets in questions in survey
    */
   async optionSets() {
+    /** @type {OptionSet[]} */
     const optionSets = await this.database.executeSql(
       `
        SELECT os.* FROM option_set os
@@ -142,6 +148,7 @@ export class SurveyRecord extends DatabaseRecord {
    * @returns {Promise<OptionRecord[]>} options in optionSets in questions in survey
    */
   async options() {
+    /** @type {Option[]} */
     const options = await this.database.executeSql(
       `
        SELECT o.* FROM "option" o
@@ -252,6 +259,31 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return SurveyRecord;
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @param {Survey['id']} surveyId
+   * @returns {Promise<true>}
+   * @throws {PermissionsError}
+   */
+  async assertCanRead(accessPolicy, surveyId) {
+    /** @type {SurveyRecord} */
+    const survey = await this.findByIdOrThrow(surveyId, {
+      columns: ['country_ids', 'permission_group_id'],
+    });
+
+    const [permissionGroup, countryCodes] = await Promise.all([
+      survey.getPermissionGroup(),
+      survey.getCountryCodes(),
+    ]);
+
+    if (accessPolicy.allowsSome(countryCodes, permissionGroup.name)) return true;
+
+    throw new PermissionsError('Requires access to one of the countries the survey is in');
+  }
+
+  /**
+   * @param {AccessPolicy} accessPolicy
+   */
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
     const entries = Object.entries(countryIdsByPermissionGroup);
@@ -273,15 +305,15 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   async getCountryIdsByPermissionGroup(accessPolicy) {
     const permissionGroupNames = accessPolicy.getPermissionGroups();
 
-    const countries = await this.otherModels.country.find({});
-
-    const permissionGroups = await this.otherModels.permissionGroup.find({
-      name: permissionGroupNames,
-    });
+    const countries = await this.otherModels.country.all({ columns: ['code', 'id'] });
+    const permissionGroups = await this.otherModels.permissionGroup.find(
+      { name: permissionGroupNames },
+      { columns: ['id', 'name'] },
+    );
 
     const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
-
     const permissionGroupIdByName = reduceToDictionary(permissionGroups, 'name', 'id');
+
     return permissionGroupNames.reduce((result, permissionGroupName) => {
       const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
       const permissionGroupId = permissionGroupIdByName[permissionGroupName];
@@ -289,11 +321,10 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
       result[permissionGroupId] = countryIds;
       return result;
-    }, {});
+    }, /** @type {Record<PermissionGroup['id'], Country['id'][]} */ ({}));
   }
 
   /**
-   *
    * @param {AccessPolicy} accessPolicy
    * @param {*} dbConditions
    * @param {*} customQueryOptions
@@ -311,13 +342,16 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {SurveyRecord['id'][]} surveyIds
-   * @returns {Promise<Record<SurveyRecord['id'], CountryRecord['id'][]>>}
+   * @param {Survey['id'][]} surveyIds
+   * @returns {Promise<Record<Survey['id'], Country['code'][]>>}
    * Dictionary mapping survey IDs to sorted arrays of country codes
    */
   async getCountryCodesBySurveyId(surveyIds) {
     if (surveyIds.length === 0) return {};
 
+    const surveyIdsBinding = this.database.connection.raw(SqlQuery.record(surveyIds), surveyIds);
+
+    /** @type {{ survey_id: Survey['id'], country_codes: Country['code'][]}[]} */
     const rows = await this.database.executeSql(
       `
         SELECT
@@ -327,23 +361,26 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
           survey
           LEFT JOIN country ON country.id = ANY (survey.country_ids)
         WHERE
-          survey.id IN ${SqlQuery.record(surveyIds)}
+          survey.id IN ?
         GROUP BY
           survey.id;
       `,
-      surveyIds,
+      surveyIdsBinding,
     );
     return Object.fromEntries(rows.map(row => [row.survey_id, row.country_codes]));
   }
 
   /**
-   * @param {SurveyRecord['id'][]} surveyIds
-   * @returns {Promise<Record<SurveyRecord['id'], CountryRecord['id'][]>>}
+   * @param {Survey['id'][]} surveyIds
+   * @returns {Promise<Record<Survey['id'], Country['name'][]>>}
    * Dictionary mapping survey IDs to sorted arrays of country names
    */
   async getCountryNamesBySurveyId(surveyIds) {
     if (surveyIds.length === 0) return {};
 
+    const surveyIdsBinding = this.database.connection.raw(SqlQuery.record(surveyIds), surveyIds);
+
+    /** @type {{ survey_id: Survey['id'], country_names: Country['name'][]}[]} */
     const rows = await this.database.executeSql(
       `
         SELECT
@@ -353,9 +390,11 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
           survey
           LEFT JOIN country ON country.id = ANY (survey.country_ids)
         WHERE
-          survey.id IN ${SqlQuery.record(surveyIds)} GROUP BY survey.id;
+          survey.id IN ?
+        GROUP BY
+          survey.id;
       `,
-      surveyIds,
+      surveyIdsBinding,
     );
     return Object.fromEntries(rows.map(row => [row.survey_id, row.country_names]));
   }
@@ -428,30 +467,26 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return null;
   }
 
-  async createRecordsPermissionFilter(accessPolicy, criteria = {}) {
-    if (hasBESAdminAccess(accessPolicy)) {
-      return criteria;
-    }
-    const dbConditions = { ...criteria };
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @param {*} criteria
+   */
+  async createRecordsPermissionFilter(accessPolicy, criteria) {
+    return await createSurveyPermissionsFilter(this.otherModels, accessPolicy, criteria);
+  }
 
-    const countryIdsByPermissionGroupId =
-      await this.otherModels.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
-
-    // Using AND instead of RAW to not override the existing RAW criteria
-    dbConditions[QUERY_CONJUNCTIONS.AND] = {
-      [QUERY_CONJUNCTIONS.RAW]: {
-        sql: `
-          (
-            survey.country_ids
-            &&
-            ARRAY(
-              SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-            )
-          )`,
-        parameters: JSON.stringify(countryIdsByPermissionGroupId),
-      },
-    };
-    return dbConditions;
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @param {*} criteria
+   * @param {Country['id']} countryId
+   */
+  async getPermissionsViaParentFilter(accessPolicy, criteria, countryId) {
+    return await createSurveyPermissionsViaParentFilter(
+      this.otherModels,
+      accessPolicy,
+      criteria,
+      countryId,
+    );
   }
 
   /**
