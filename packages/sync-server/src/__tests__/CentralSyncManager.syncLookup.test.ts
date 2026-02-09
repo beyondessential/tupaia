@@ -157,8 +157,8 @@ describe('Sync Lookup data', () => {
 
     centralSyncManager = new CentralSyncManager(models);
 
-    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
-    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '4');
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, '-1');
 
     await prepareData();
     await centralSyncManager.updateLookupTable();
@@ -167,8 +167,8 @@ describe('Sync Lookup data', () => {
   beforeEach(async () => {
     sessionId = generateId();
     await createSnapshotTable(models.database, sessionId);
-    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
-    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '4');
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, '-1');
     await models.syncDeviceTick.delete({});
     await models.syncSession.delete({});
     await models.syncQueuedDevice.delete({});
