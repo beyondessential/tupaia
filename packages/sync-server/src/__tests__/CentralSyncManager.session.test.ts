@@ -56,7 +56,8 @@ describe('CentralSyncManager.session', () => {
       await waitForSession(centralSyncManager, sessionId);
 
       const currentSyncTick = await models.localSystemFact.get(SyncFact.CURRENT_SYNC_TICK);
-      expect(parseInt(currentSyncTick, 10)).toBe(DEFAULT_CURRENT_SYNC_TIME_VALUE + 2);
+      expect(currentSyncTick).not.toBeUndefined();
+      expect(Number.parseInt(currentSyncTick!, 10)).toBe(DEFAULT_CURRENT_SYNC_TIME_VALUE + 2);
     });
 
     it('allows concurrent sync sessions', async () => {
