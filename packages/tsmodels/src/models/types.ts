@@ -76,7 +76,7 @@ interface MultiJoinItem {
 export interface QueryOptions {
   limit?: number;
   offset?: number;
-  readonly sort?: string[];
+  sort?: readonly string[];
   rawSort?: string;
   joinWith?: string;
   columns?: readonly string[] | readonly Record<string, string>[];
