@@ -46,7 +46,7 @@ describe('CentralSyncManager.session', () => {
       await waitForSession(centralSyncManager, sessionId);
 
       const syncSession = await models.syncSession.findById(sessionId);
-      expect(syncSession).not.toBeUndefined();
+      expect(syncSession).not.toBeNull();
     });
 
     it('tick-tocks the global clock', async () => {
@@ -71,8 +71,8 @@ describe('CentralSyncManager.session', () => {
       const syncSession1 = await models.syncSession.findById(sessionId1);
       const syncSession2 = await models.syncSession.findById(sessionId2);
 
-      expect(syncSession1).not.toBeUndefined();
-      expect(syncSession2).not.toBeUndefined();
+      expect(syncSession1).not.toBeNull();
+      expect(syncSession2).not.toBeNull();
     });
 
     it('throws an error when checking a session is ready if it never assigned a started_at_tick', async () => {
@@ -224,7 +224,8 @@ describe('CentralSyncManager.session', () => {
 
       await centralSyncManager.endSession(sessionId);
       const syncSession2 = await models.syncSession.findById(sessionId);
-      expect(syncSession2.completed_at).not.toBeUndefined();
+      expect(syncSession2).not.toBeNull();
+      expect(syncSession2?.completed_at).not.toBeUndefined();
     });
 
     it('throws an error when connecting to a session that already ended', async () => {
