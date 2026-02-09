@@ -17,11 +17,7 @@ export const assertAnswerEditPermissions = async (
     const answer = await models.answer.findByIdOrThrow(answerId, {
       columns: ['survey_response_id'],
     });
-    await await this.models.surveyResponse.assertCanRead(
-      this.models,
-      accessPolicy,
-      answer.survey_response_id,
-    );
+    await models.surveyResponse.assertCanRead(models, accessPolicy, answer.survey_response_id);
   }
   return true;
 };
