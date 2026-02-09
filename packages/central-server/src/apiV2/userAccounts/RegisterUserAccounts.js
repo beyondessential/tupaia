@@ -50,10 +50,10 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       throw new FormValidationError(error.message, ['password', 'passwordConfirm']);
     }
 
-    const existingUsers = await this.models.user.find({
+    const exists = await this.models.user.exists({
       email: { comparisonValue: emailAddress, comparator: 'ilike' },
     });
-    if (existingUsers.length > 0) {
+    if (exists) {
       throw new UnauthenticatedError(
         'An account already exists with this email. Please log in or click ’Forgot password?‘ if you have forgotten your password',
       );
