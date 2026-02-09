@@ -87,7 +87,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
 
     const { id: userId } = await this.createUserRecord(this.models, userData);
 
-    const user = await this.models.user.findById(userId);
+    const user = await this.models.user.findByIdOrThrow(userId);
     await sendEmailVerification(user);
 
     return { userId };
