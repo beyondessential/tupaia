@@ -1,7 +1,11 @@
-import { clearTestData, getTestModels, findOrCreateDummyRecord, UserRecord } from '@tupaia/database';
-import { FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
+import {
+  UserRecord,
+  clearTestData,
+  findOrCreateDummyRecord,
+  getTestModels,
+} from '@tupaia/database';
 import { SYNC_SESSION_DIRECTION, SyncSnapshotAttributes } from '@tupaia/sync';
-
 import { CentralSyncManager } from '../sync';
 import { waitForPushComplete, waitForSession } from '../testUtilities/waitForSync';
 import { TestSyncServerModelRegistry } from '../types';
@@ -15,8 +19,8 @@ describe('CentralSyncManager.push', () => {
   });
 
   beforeEach(async () => {
-    await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
-    await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '4');
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, '-1');
     await models.syncLookup.delete({});
     await models.syncDeviceTick.delete({});
     await models.syncSession.delete({});
@@ -37,13 +41,15 @@ describe('CentralSyncManager.push', () => {
       first_name: 'User',
       last_name: 'Account 2',
     });
-    const changes = await Promise.all([userAccount1, userAccount2].map(async (r: UserRecord) => ({
-      direction: SYNC_SESSION_DIRECTION.OUTGOING,
-      isDeleted: false,
-      recordType: 'user_account',
-      recordId: r.id,
-      data: await r.getData(),
-    }))) as SyncSnapshotAttributes[];
+    const changes = (await Promise.all(
+      [userAccount1, userAccount2].map(async (r: UserRecord) => ({
+        direction: SYNC_SESSION_DIRECTION.OUTGOING,
+        isDeleted: false,
+        recordType: 'user_account',
+        recordId: r.id,
+        data: await r.getData(),
+      })),
+    )) as SyncSnapshotAttributes[];
 
     const centralSyncManager = new CentralSyncManager(models);
 

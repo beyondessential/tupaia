@@ -1,20 +1,10 @@
+import { SyncFact } from '@tupaia/constants';
 import {
-  getTestModels,
+  clearTestData,
   findOrCreateDummyRecord,
   generateId,
-  clearTestData,
+  getTestModels,
 } from '@tupaia/database';
-import { CentralSyncManager } from '../sync';
-import { FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
-import {
-  createSnapshotTable,
-  findSyncSnapshotRecords,
-  getModelsForPull,
-  SYNC_SESSION_DIRECTION,
-} from '@tupaia/sync';
-
-import { snapshotOutgoingChanges } from '../sync/snapshotOutgoingChanges';
-import { SyncLookupQueryDetails, TestSyncServerModelRegistry } from '../types';
 import {
   EntityHierarchyRecord,
   EntityRecord,
@@ -29,6 +19,15 @@ import {
   TaskRecord,
   UserRecord,
 } from '@tupaia/server-boilerplate';
+import {
+  SYNC_SESSION_DIRECTION,
+  createSnapshotTable,
+  findSyncSnapshotRecords,
+  getModelsForPull,
+} from '@tupaia/sync';
+import { CentralSyncManager } from '../sync';
+import { snapshotOutgoingChanges } from '../sync/snapshotOutgoingChanges';
+import { SyncLookupQueryDetails, TestSyncServerModelRegistry } from '../types';
 
 const SYNC_CONFIG = {
   maxRecordsPerSnapshotChunk: 10_000,
@@ -158,8 +157,8 @@ describe('Sync Lookup data', () => {
 
     centralSyncManager = new CentralSyncManager(models);
 
-    await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
-    await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
 
     await prepareData();
     await centralSyncManager.updateLookupTable();
@@ -168,8 +167,8 @@ describe('Sync Lookup data', () => {
   beforeEach(async () => {
     sessionId = generateId();
     await createSnapshotTable(models.database, sessionId);
-    await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
-    await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
     await models.syncDeviceTick.delete({});
     await models.syncSession.delete({});
     await models.syncQueuedDevice.delete({});
@@ -348,7 +347,7 @@ describe('Sync Lookup data', () => {
   });
 
   it('Populates updated_at_sync_tick with ticks from actual tables when first build sync_lookup table', async () => {
-    await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1); // -1 means first build
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1); // -1 means first build
 
     await centralSyncManager.updateLookupTable();
 
@@ -366,8 +365,8 @@ describe('Sync Lookup data', () => {
 
   it('Populates updated_at_sync_tick with the current tick when incrementally update the sync_lookup table', async () => {
     const CURRENT_SYNC_TICK = 7;
-    await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, CURRENT_SYNC_TICK);
-    await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, 1);
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, CURRENT_SYNC_TICK.toString());
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, '1');
 
     await models.user.updateById(userAccount.id, { first_name: 'Test User 2' });
 
@@ -408,7 +407,7 @@ describe('Sync Lookup data', () => {
   describe('avoidRepull', () => {
     const snapshotOutgoingRecordsForFacility = async (avoidRepull: boolean) => {
       const deviceId = 'facility-a';
-      await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
+      await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '4');
       await findOrCreateDummyRecord(models.user, {
         email: 'push_user_account_3@email.com',
         first_name: 'Test',
@@ -421,13 +420,13 @@ describe('Sync Lookup data', () => {
 
       // Set new sync time so that it does not match the SyncDeviceTick record
       // in order to have it included in the snapshot.
-      await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 5);
+      await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '5');
       await findOrCreateDummyRecord(models.user, {
         email: 'push_user_account_4@email.com',
         first_name: 'Test',
         last_name: 'User Account 4',
       });
-      const pushedUserFromAnotherDevice = await models.user.findOne({
+      const pushedUserFromAnotherDevice = await models.user.findOneOrThrow({
         email: 'push_user_account_4@email.com',
       });
 
@@ -436,7 +435,7 @@ describe('Sync Lookup data', () => {
         persisted_at_sync_tick: pushedUserFromCurrentDevice.updated_at_sync_tick.toString(),
       });
 
-      await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+      await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, '-1');
       const centralSyncManager = new CentralSyncManager(models, {
         lookupTable: {
           perModelUpdateTimeoutMs: 1_000_000,

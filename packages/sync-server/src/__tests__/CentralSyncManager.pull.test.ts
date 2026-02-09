@@ -1,19 +1,22 @@
-import { clearTestData, getTestModels, findOrCreateDummyRecord } from '@tupaia/database';
+import { AccessPolicy } from '@tupaia/access-policy';
 import {
   BES_ADMIN_PERMISSION_GROUP,
-  FACT_CURRENT_SYNC_TICK,
-  FACT_LOOKUP_UP_TO_TICK,
+  SyncFact,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '@tupaia/constants';
+import { clearTestData, findOrCreateDummyRecord, getTestModels } from '@tupaia/database';
 import {
-  findSyncSnapshotRecords,
+  CountryRecord,
+  EntityHierarchyRecord,
+  ProjectRecord,
+  UserRecord,
+} from '@tupaia/server-boilerplate';
+import {
   SYNC_SESSION_DIRECTION,
   SyncSnapshotAttributes,
+  findSyncSnapshotRecords,
 } from '@tupaia/sync';
 import { sleep } from '@tupaia/utils';
-import { AccessPolicy } from '@tupaia/access-policy';
-import { CountryRecord, EntityHierarchyRecord, ProjectRecord, UserRecord } from '@tupaia/server-boilerplate';
-
 import { CentralSyncManager } from '../sync';
 import { waitForPushComplete, waitForSession } from '../testUtilities/waitForSync';
 import { TestSyncServerModelRegistry } from '../types';
@@ -91,8 +94,8 @@ describe('CentralSyncManager.pull', () => {
     });
 
     beforeEach(async () => {
-      await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
-      await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+      await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '4');
+      await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, '-1');
       await models.syncLookup.delete({});
       await models.syncDeviceTick.delete({});
       await models.syncSession.delete({});
@@ -103,8 +106,8 @@ describe('CentralSyncManager.pull', () => {
     });
 
     it('excludes manually inserted records when main snapshot transaction already started', async () => {
-      await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
-      await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+      await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '4');
+      await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, '-1');
       const { country, userAccount, entityHierarchy, project } = await prepareData();
 
       // Build the fakeModelPromise so that it can block the snapshotting process,
@@ -176,8 +179,8 @@ describe('CentralSyncManager.pull', () => {
     });
 
     it("excludes inserted records from another sync session when the current' session's snapshot transaction already started", async () => {
-      await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
-      await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+      await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '4');
+      await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, '-1');
       const { country, userAccount, entityHierarchy, project } = await prepareData();
 
       // Build the fakeModelPromise so that it can block the snapshotting process,

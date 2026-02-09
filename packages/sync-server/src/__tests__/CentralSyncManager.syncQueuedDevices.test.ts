@@ -1,8 +1,7 @@
 import { subMinutes } from 'date-fns';
 
+import { SyncFact } from '@tupaia/constants';
 import { clearTestData, getTestModels } from '@tupaia/database';
-import { FACT_CURRENT_SYNC_TICK } from '@tupaia/constants';
-
 import { CentralSyncManager } from '../sync/CentralSyncManager';
 import { TestSyncServerModelRegistry } from '../types';
 
@@ -22,7 +21,7 @@ describe('CentralSyncManager.queueDeviceForSync', () => {
   beforeEach(async () => {
     centralSyncManager = new CentralSyncManager(models, mockConfig);
 
-    await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 1);
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '1');
 
     // Clear any existing data
     await models.syncDeviceTick.delete({});
