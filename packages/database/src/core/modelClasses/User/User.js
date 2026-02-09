@@ -5,6 +5,7 @@
  * @typedef {import('@tupaia/types').Survey} Survey
  * @typedef {import('@tupaia/types').UserAccount} UserAccount
  * @typedef {import('@tupaia/types').UserAccountPreferences} UserAccountPreferences
+ * @typedef {import('@tupaia/types').VerifiedEmail} VerifiedEmail
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
  * @typedef {import('../Entity').EntityRecord} EntityRecord
  * @typedef {import('../PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
@@ -24,7 +25,7 @@ import {
   USER_PREFERENCES_FIELDS,
 } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
-import { EntityTypeEnum } from '@tupaia/types';
+import { EntityTypeEnum, VerifiedEmail } from '@tupaia/types';
 import { DatabaseError } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
 import { DatabaseModel } from '../../DatabaseModel';
@@ -237,11 +238,11 @@ export class UserModel extends DatabaseModel {
     END`,
   };
 
-  emailVerifiedStatuses = {
-    UNVERIFIED: 'unverified',
-    VERIFIED: 'verified',
-    NEW_USER: 'new_user',
-  };
+  emailVerifiedStatuses = /** @type {const} */ ({
+    UNVERIFIED: VerifiedEmail.unverified,
+    VERIFIED: VerifiedEmail.verified,
+    NEW_USER: VerifiedEmail.new_user,
+  });
 
   /**
    * @param {UserAccount['id'][]} userIds
