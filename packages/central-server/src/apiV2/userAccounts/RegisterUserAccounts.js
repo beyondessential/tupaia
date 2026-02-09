@@ -1,15 +1,15 @@
 import {
+  ConflictError,
   FormValidationError,
-  UnauthenticatedError,
   ObjectValidator,
-  hasNoAlphaLetters,
   fieldHasContent,
+  hasNoAlphaLetters,
   isEmail,
   isValidPassword,
 } from '@tupaia/utils';
-import { CreateUserAccounts } from './CreateUserAccounts';
-import { sendEmailVerification } from '../utilities/emailVerification';
 import { allowNoPermissions } from '../../permissions';
+import { sendEmailVerification } from '../utilities/emailVerification';
+import { CreateUserAccounts } from './CreateUserAccounts';
 
 /**
  * Handles POST endpoint for registering user:
@@ -54,7 +54,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       email: { comparisonValue: emailAddress, comparator: 'ilike' },
     });
     if (exists) {
-      throw new UnauthenticatedError(
+      throw new ConflictError(
         'An account already exists with this email. Please log in or click ’Forgot password?‘ if you have forgotten your password',
       );
     }
