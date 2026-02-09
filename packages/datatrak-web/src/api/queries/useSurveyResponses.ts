@@ -31,6 +31,7 @@ const queryFunctions = {
           { entity_name: 'entity.name' },
           { country_name: 'country.name' },
         ],
+        limit: 16,
         multiJoin: [
           {
             joinWith: models.survey.databaseRecord,
@@ -46,7 +47,7 @@ const queryFunctions = {
           },
         ],
         sort: ['data_time DESC'],
-      },
+      } as const,
     );
 
     return camelcaseKeys(surveyResponses, {
