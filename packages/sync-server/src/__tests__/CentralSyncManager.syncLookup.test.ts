@@ -351,7 +351,7 @@ describe('Sync Lookup data', () => {
 
     await centralSyncManager.updateLookupTable();
 
-    const newUserAccount = await models.user.findById(userAccount.id);
+    const newUserAccount = await models.user.findByIdOrThrow(userAccount.id);
     const userAccountLookupData = await models.syncLookup.findOne({
       record_id: userAccount.id,
     });
@@ -414,7 +414,7 @@ describe('Sync Lookup data', () => {
         last_name: 'User Account 3',
       });
 
-      const pushedUserFromCurrentDevice = await models.user.findOne({
+      const pushedUserFromCurrentDevice = await models.user.findOneOrThrow({
         email: 'push_user_account_3@email.com',
       });
 
