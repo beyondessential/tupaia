@@ -11,7 +11,7 @@ describe('CentralSyncManager.queueDeviceForSync', () => {
 
   const mockConfig = {
     maxConcurrentSessions: 1,
-  };
+  } as const;
 
   beforeAll(async () => {
     models = getTestModels() as TestSyncServerModelRegistry;

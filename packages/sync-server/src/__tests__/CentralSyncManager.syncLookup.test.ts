@@ -38,7 +38,7 @@ const SYNC_CONFIG = {
   snapshotTransactionTimeoutMs: 10 * 60 * 1000,
   syncSessionTimeoutMs: 20 * 60 * 1000,
   maxConcurrentSessions: 10,
-};
+} as const;
 
 describe('Sync Lookup data', () => {
   let models: TestSyncServerModelRegistry;

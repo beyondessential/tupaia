@@ -24,7 +24,7 @@ import { TestSyncServerModelRegistry } from '../types';
 const POLICY = {
   DL: [BES_ADMIN_PERMISSION_GROUP, 'Admin'],
   KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-};
+} as const;
 
 describe('CentralSyncManager.pull', () => {
   describe('handles concurrent transactions', () => {
