@@ -347,7 +347,7 @@ describe('Sync Lookup data', () => {
   });
 
   it('Populates updated_at_sync_tick with ticks from actual tables when first build sync_lookup table', async () => {
-    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1); // -1 means first build
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, '-1'); // -1 means first build
 
     await centralSyncManager.updateLookupTable();
 
