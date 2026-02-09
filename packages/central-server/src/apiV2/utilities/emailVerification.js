@@ -111,7 +111,21 @@ export const verifyEmailHelper = async (models, searchCondition, token) => {
   if (!token.startsWith('$argon2id$')) throw new VerificationTokenInvalidError();
 
   /** @type {UserRecord[]} */
-  const users = await models.user.find({ verified_email: searchCondition });
+  const users = await models.user.find(
+    { verified_email: searchCondition },
+    {
+      columns: [
+        // Needed for email verification logic
+        'email',
+        'password_hash',
+        // Needed by consumer in return value
+        'id',
+      ],
+      // Demote stale unverified accounts. (Hacky heuristic to deal with the performance of
+      // iterating through every user from this query.)
+      sort: ['creation_date DESC'],
+    },
+  );
 
   try {
     for (const user of users) {
