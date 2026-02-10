@@ -67,15 +67,15 @@ const percentage = value => {
 };
 
 const number = (value, { presentationOptions }) => {
-  const valueFormat = presentationOptions?.valueFormat ? presentationOptions.valueFormat : '0,0';
+  const valueFormat = presentationOptions?.valueFormat ?? '0,0';
   return Number.isNaN(Number(value)) ? value : numeral(value).format(valueFormat);
 };
 
 const defaultFormatter = input =>
-  Number.isNaN(Number(input)) ? input : numeral(input).format('0.[00]');
+  Number.isNaN(Number(input)) ? input : numeral(input).format('0,0.[00]');
 
 const oneDecimalPlace = input =>
-  Number.isNaN(Number(input)) ? input : numeral(input).format('0.[0]');
+  Number.isNaN(Number(input)) ? input : numeral(input).format('0,0.[0]');
 
 const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.TEXT]: text,
