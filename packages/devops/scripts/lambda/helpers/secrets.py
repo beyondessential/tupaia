@@ -1,6 +1,7 @@
-import boto3
 import base64
 import json
+
+import boto3
 
 
 def get_db_master_password():
@@ -10,7 +11,6 @@ def get_db_master_password():
 
 
 def get_secret(secret_name, region_name):
-
     # Create a Secrets Manager client
     session = boto3.session.Session()
     client = session.client(service_name="secretsmanager", region_name=region_name)

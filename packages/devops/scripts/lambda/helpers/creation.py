@@ -1,12 +1,11 @@
 import boto3
-
 from helpers.networking import (
     add_subdomains_to_route53,
     setup_subdomains_via_dns,
     setup_subdomains_via_gateway,
 )
-from helpers.utilities import get_instance_by_id, get_account_ids
 from helpers.rds import get_latest_db_snapshot, wait_for_db_instance
+from helpers.utilities import get_account_ids, get_instance_by_id
 
 ec2 = boto3.resource("ec2")
 ec = boto3.client("ec2")
@@ -19,12 +18,14 @@ def get_latest_image_id(image_code):
     ]
     account_ids = get_account_ids()
     image_response = ec.describe_images(Owners=account_ids, Filters=filters)
-    if "Images" not in image_response or len(image_response["Images"]) == 0:
-        raise Exception("No images matching " + image_code)
+
+    if "Images" not in image_response or not image_response["Images"]:
+        raise Exception(f"No AMI matching {image_code}")
+
     image_id = sorted(
         image_response["Images"], key=lambda k: k["CreationDate"], reverse=True
     )[0]["ImageId"]
-    print("Found image with id " + image_id)
+    print(f"Found AMI {image_id}")
     return image_id
 
 
@@ -115,6 +116,7 @@ def get_instance_creation_config(
         "MinCount": 1,
         "MaxCount": 1,
         "TagSpecifications": [{"ResourceType": "instance", "Tags": tags}],
+        "MetadataOptions": {"HttpTokens": "required"},
     }
 
     # add IAM profile (e.g. role allowing access to lambda) if applicable
@@ -173,7 +175,7 @@ def create_instance(
     # wait until it is ready
     new_instance = new_instances[0]
     new_instance.wait_until_running()
-    print("New instance is up")
+    print(f"New instance {new_instance.id} is up")
 
     # attach elastic ip
     allocate_elastic_ip(new_instance.id)

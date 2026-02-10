@@ -30,7 +30,7 @@ class HomeScreenComponent extends PureComponent {
     this.props.onFetchFeedLatest();
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     const { isScreenFocused } = this.state;
     const isNavigationFocused = this.props.navigation.isFocused();
     if (isScreenFocused !== isNavigationFocused) {

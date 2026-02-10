@@ -41,7 +41,7 @@ export class CreateUserPage extends React.Component {
     headerMode: 'screen',
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       nextProps.errorMessage !== '' &&
       !nextProps.isLoading &&

@@ -19,7 +19,7 @@ Example configs
 }
 """
 
-from helpers.teardown import teardown_instance, teardown_db_instance
+from helpers.teardown import teardown_db_instance, teardown_instance
 from helpers.utilities import find_instances, get_tag
 
 
@@ -40,7 +40,7 @@ def tear_down_lesmis_deployment(event):
     ]
     instances = find_instances(instance_filters)
 
-    if len(instances) == 0:
+    if not instances:
         raise Exception("No matching instances found")
 
     print(

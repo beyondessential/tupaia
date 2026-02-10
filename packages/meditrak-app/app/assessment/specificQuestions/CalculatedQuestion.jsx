@@ -11,7 +11,7 @@ class CalculatedQuestionComponent extends PureComponent {
     this.updateAnswer(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.updateAnswer(nextProps);
   }
 

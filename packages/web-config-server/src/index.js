@@ -21,6 +21,7 @@ async function start() {
     app.server.listen(port);
     winston.info(`Running on port ${port}`);
     winston.info(`Logging at ${winston.level} level`);
+    winston.debug(`Time zone is ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
     const aggregationDescription = getEnvVarOrDefault('AGGREGATION_URL_PREFIX', 'production');
     winston.info(`Connected to ${aggregationDescription} aggregation`);
 

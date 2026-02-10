@@ -17,15 +17,15 @@ Example configs
 }
 """
 
-import boto3
 import datetime
+
+import boto3
 from helpers.utilities import get_tag
 
 ec = boto3.client("ec2")
 
 
 def backup_instances(event):
-
     # ignore terminated instances
     filters = [{"Name": "instance-state-name", "Values": ["running", "stopped"]}]
 
@@ -38,15 +38,15 @@ def backup_instances(event):
 
     reservations = ec.describe_instances(Filters=filters).get("Reservations", [])
 
-    instances = sum([[i for i in r["Instances"]] for r in reservations], [])
+    instances = [i for r in reservations for i in r["Instances"]]
 
-    if len(instances) == 0:
+    if not instances:
         print(
             'Found no instances to back up. Make sure the instance has the tag "Backup"'
         )
+        return
 
     for instance in instances:
-
         instance_name = get_tag(instance, "Name")
         deployment_type = get_tag(instance, "DeploymentType")
         deployment_name = get_tag(instance, "DeploymentName")
@@ -62,10 +62,12 @@ def backup_instances(event):
                 continue
             vol_id = dev["Ebs"]["VolumeId"]
 
+            print(f"Creating snapshot for volume {vol_id}")
             snap = ec.create_snapshot(
                 VolumeId=vol_id,
                 Description="Backup created from " + instance_name,
             )
+            print(f"Created snapshot {snap['SnapshotId']} ({snap['Description']})")
 
             delete_date = datetime.date.today() + datetime.timedelta(
                 days=int(retention_days)

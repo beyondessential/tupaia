@@ -1,4 +1,8 @@
-import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
+import {
+  CompleteMultipartUploadOutput,
+  GetObjectCommandInput,
+  PutObjectCommandInput,
+} from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
 import { ConflictError, UnsupportedMediaTypeError } from '@tupaia/utils';
@@ -26,7 +30,7 @@ function isImageMediaTypeString(val: string): val is `image/${string}` {
 }
 
 function isSupportedImageMediaTypeString(val: string): val is keyof typeof supportedImageTypes {
-  return supportedImageTypes.hasOwnProperty(val);
+  return Object.hasOwn(supportedImageTypes, val);
 }
 
 export class S3Client {
@@ -46,7 +50,11 @@ export class S3Client {
       .catch(() => false);
   }
 
-  private async upload(fileName: string, config?: Partial<PutObjectCommandInput>) {
+  /** Returns URL of the uploaded file (i.e. the S3 object URL). */
+  private async upload(
+    fileName: string,
+    config?: Partial<PutObjectCommandInput>,
+  ): Promise<CompleteMultipartUploadOutput['Location']> {
     const uploader = new Upload({
       client: this.s3,
       params: {
@@ -76,7 +84,7 @@ export class S3Client {
   }
 
   private async uploadPublicImage(fileName: string, buffer: Buffer, contentType: string) {
-    return this.upload(fileName, {
+    return await this.upload(fileName, {
       Body: buffer,
       ACL: 'public-read',
       ContentType: contentType,
@@ -100,19 +108,27 @@ export class S3Client {
 
   private convertEncodedFileToBuffer(encodedFile: string) {
     // remove the base64 prefix from the image. This handles svg and other image types
-    const encodedFileString = encodedFile.replace(new RegExp('(data:)(.*)(;base64,)'), '');
-
+    const encodedFileString = encodedFile.replace(/^data:.+;base64,/, '');
     return Buffer.from(encodedFileString, 'base64');
   }
 
   private getContentTypeFromBase64(base64String: string) {
-    if (!isBase64DataUri(base64String)) {
-      throw new Error(
-        `Invalid Base64 data URI. Expected ‘data:content/type;base64,...’ but got: ‘${base64String.substring(0, 40)}...’`,
-      );
-    }
+    try {
+      if (!isBase64DataUri(base64String)) {
+        throw new Error(
+          `Invalid Base64 data URI. Expected ‘data:content/type;base64,...’ but got: ‘${base64String.substring(0, 40)}...’`,
+        );
+      }
 
-    return base64String.substring('data:'.length, base64String.indexOf(';base64,', 'data:'.length));
+      return base64String.substring(
+        'data:'.length,
+        base64String.indexOf(';base64,', 'data:'.length),
+      ) as `${string}/${string}`;
+    } catch {
+      // MediTrak just sends Base64-encoded JPEG data, not as a data URI, so we (dangerously) assume
+      // this is what we’re dealing with
+      return 'image/jpeg';
+    }
   }
 
   public async uploadFile(fileName: string, readable: Buffer | string) {
@@ -132,8 +148,12 @@ export class S3Client {
     }
 
     let buffer = readable;
-    let contentType = undefined; // in cases where the file is directly loaded as a buffer, we don't have a content type and it will work without it
-    let contentEncoding = undefined;
+    /**
+     * In cases where the file is directly loaded as a buffer, we don’t have a content type and it
+     * will work without it
+     */
+    let contentType: `${string}/${string}` | undefined;
+    let contentEncoding: 'base64' | undefined;
 
     // If the file is a base64 string, convert it to a buffer and get the file type. If we don't do this, the file will be uploaded as a binary file and just the text value will be saved and won't be able to be opened
     if (typeof readable === 'string') {
@@ -155,13 +175,9 @@ export class S3Client {
   }
 
   public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
-    // TEMPORARY: Until RN-1788 is complete, the usual assumption that base64EncodedImage !== null
-    // isn’t guaranteed. In the meantime, treat it as if it were undefined.
-    const UNSAFE_base64EncodedImage = base64EncodedImage ?? '';
-
     // convert the base64 encoded image to a buffer
-    const buffer = this.convertEncodedFileToBuffer(UNSAFE_base64EncodedImage);
-    const contentType = this.getContentTypeFromBase64(UNSAFE_base64EncodedImage);
+    const buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
+    const contentType = this.getContentTypeFromBase64(base64EncodedImage);
 
     if (!isImageMediaTypeString(contentType)) {
       // Redundant because of `isSupportedImageMediaTypeString`, but clearer error message
@@ -188,7 +204,7 @@ export class S3Client {
       throw new ConflictError(`File ${filePath} already exists on S3, overwrite is not allowed`);
     }
 
-    return this.uploadPublicImage(filePath, buffer, contentType);
+    return await this.uploadPublicImage(filePath, buffer, contentType);
   }
 
   public async downloadFile(fileName: string) {

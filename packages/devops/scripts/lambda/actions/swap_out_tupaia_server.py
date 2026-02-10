@@ -26,11 +26,15 @@ def swap_out_tupaia_server(event):
 
     new_instance = get_instance_by_id(new_instance_id)
     if not new_instance:
-        raise Exception("Could not find new instance to swap in")
+        raise Exception(
+            f"Couldn’t find new instance with ID {new_instance_id} to swap in"
+        )
 
     old_instance = get_instance_behind_gateway("tupaia", deployment_name)
     if not old_instance:
-        raise Exception("Could not find old instance to swap out")
+        raise Exception(
+            f"Couldn’t find old instance with name {deployment_name} to swap out"
+        )
 
     # set up ELB from the old instance to point at the new one
     swap_gateway_instance(
@@ -62,7 +66,9 @@ def swap_out_tupaia_server(event):
     for instance in instances:
         if instance["InstanceId"] == new_instance_id:
             continue
-        print("Deleting old instance: " + instance["InstanceId"])
+        print(f"Deleting old instance {instance["InstanceId"]}")
         terminate_instance(instance)
 
-    print("Successfully swapped out " + deployment_name)
+    print(
+        f"Swapped out {deployment_name} ({old_instance["InstanceId"]} → {new_instance_id})"
+    )
