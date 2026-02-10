@@ -43,7 +43,7 @@ export class SyncSessionModel extends DatabaseModel {
    * @param {Partial<SyncSessionInfo>} info
    */
   async addInfo(id, info) {
-    await this.database.executeSql('UPDATE ?? SET info = info || ?::JSONB WHERE id = ?', [
+    await this.database.executeSql('UPDATE ?? SET info = info || ?::jsonb WHERE id = ?', [
       this.databaseRecord,
       JSON.stringify(info),
       id,

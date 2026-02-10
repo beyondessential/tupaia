@@ -9,10 +9,10 @@ export class DebugLogRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DEBUG_LOG;
 
   async addInfo(newInfo) {
-    await this.database.executeSql('UPDATE logs.debug_log SET info = info || ? WHERE id = ?', [
-      JSON.stringify(newInfo),
-      this.id,
-    ]);
+    await this.database.executeSql(
+      'UPDATE logs.debug_log SET info = info || ?::jsonb WHERE id = ?',
+      [JSON.stringify(newInfo), this.id],
+    );
   }
 }
 
