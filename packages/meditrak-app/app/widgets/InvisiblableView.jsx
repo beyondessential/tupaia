@@ -10,7 +10,7 @@ export class InvisiblableView extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.isInvisible === nextProps.isInvisible) return;
     Animated.timing(this.state.animatedOpacity, {
       toValue: nextProps.isInvisible ? 0 : 1,

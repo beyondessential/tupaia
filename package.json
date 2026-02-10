@@ -21,6 +21,7 @@
     "build": "yarn workspaces foreach -ptv --jobs unlimited --exclude tupaia run build",
     "build:from": "./scripts/bash/buildPackagesByGlob.sh --from",
     "build:only": "./scripts/bash/buildPackagesByGlob.sh --only",
+    "build:nonlegacy": "yarn run build:from \"{admin-panel*,datatrak*,tupaia*,{central,data-table,entity,report,sync,web-config}-server}\"",
     "build:internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
     "build:non-internal-dependencies": "./scripts/bash/buildNonInternalDependencies.sh",
     "build:admin-panel": "yarn workspace @tupaia/admin-panel build",
