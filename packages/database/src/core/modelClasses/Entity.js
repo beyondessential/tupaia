@@ -1,9 +1,7 @@
 /**
  * @typedef {import('@tupaia/types').Entity} Entity
  * @typedef {import('@tupaia/types').EntityHierarchy} EntityHierarchy
- * @typedef {import('@tupaia/types').EntityMetadata} EntityMetadata
  * @typedef {import('@tupaia/types').Project} Project
- * @typedef {import('@tupaia/types').ValueOf} ValueOf
  */
 
 import { uniqBy } from 'es-toolkit';
@@ -589,7 +587,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * Returns relations (either ancestors or descendants) of entity
-   * @param {ValueOf<typeof ENTITY_RELATION_TYPE>} ancestorsOrDescendants
+   * @param {(typeof ENTITY_RELATION_TYPE)[keyof typeof ENTITY_RELATION_TYPE]} ancestorsOrDescendants
    * @param {Entity['id'][]} entityIds
    * @param {*} criteria
    * @param {*} options
@@ -657,7 +655,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   /**
    * @param {EntityHierarchy['id']} hierarchyId
    * @param {Entity['id'][]} entityIds
-   * @param {ValueOf<typeof ENTITY_RELATION_TYPE>} direction
+   * @param {(typeof ENTITY_RELATION_TYPE)[keyof typeof ENTITY_RELATION_TYPE]} direction
    * @param {*} params
    */
   async getEntitiesFromParentChildRelation(hierarchyId, entityIds, direction, params = {}) {
