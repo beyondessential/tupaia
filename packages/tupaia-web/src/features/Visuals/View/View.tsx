@@ -38,7 +38,7 @@ const VIEWS = {
   filesDownload: DownloadFiles,
   qrCodeVisual: QRCode,
   multiPhotograph: MultiPhotograph,
-};
+} as const;
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
   const { valueType } = config;

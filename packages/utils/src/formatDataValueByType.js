@@ -1,6 +1,6 @@
 import numeral from 'numeral';
 
-export const VALUE_TYPES = {
+export const VALUE_TYPES = Object.freeze({
   BOOLEAN: 'boolean',
   CURRENCY: 'currency',
   FRACTION: 'fraction',
@@ -10,7 +10,7 @@ export const VALUE_TYPES = {
   TEXT: 'text',
   NUMBER: 'number',
   ONE_DECIMAL_PLACE: 'oneDecimalPlace',
-};
+});
 
 // Note: will display 0 if passed undefined
 const currency = value => numeral(value).format('$0.00a');
@@ -77,7 +77,8 @@ const defaultFormatter = input =>
 const oneDecimalPlace = input =>
   Number.isNaN(Number(input)) ? input : numeral(input).format('0,0.[0]');
 
-const VALUE_TYPE_TO_FORMATTER = {
+/** @satisfies {Record<(typeof VALUE_TYPES)[keyof typeof VALUE_TYPES], <T>(value: T, metadata?: Record<string, unknown>) => string | T>} */
+const VALUE_TYPE_TO_FORMATTER = Object.freeze({
   [VALUE_TYPES.TEXT]: text,
   [VALUE_TYPES.PERCENTAGE]: percentage,
   [VALUE_TYPES.FRACTION_AND_PERCENTAGE]: fractionAndPercentage,
@@ -87,7 +88,7 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.BOOLEAN]: boolean,
   [VALUE_TYPES.NUMBER]: number,
   [VALUE_TYPES.ONE_DECIMAL_PLACE]: oneDecimalPlace,
-};
+});
 
 export const formatDataValueByType = ({ value, metadata = {} }, valueType) => {
   const formatter = VALUE_TYPE_TO_FORMATTER[valueType] || defaultFormatter;
