@@ -94,7 +94,7 @@ export class ProjectModel extends DatabaseModel {
       if (!where?.code) return true;
 
       const { code } = where;
-      if (typeof code === 'string' && code != '') {
+      if (typeof code === 'string') {
         return this.database.connection.raw('p.code = ?', code);
       }
 
