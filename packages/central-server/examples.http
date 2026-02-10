@@ -27,13 +27,12 @@ Content-Type: application/json
 
 GET {{baseUrl}}/downloadFiles?uniqueFileNames=cat_pic.pdf HTTP/2.0
 Authorization: {{user-authorization}}
-Content-Type: application/json
 
 ### Get all option sets
 
 GET {{baseUrl}}/optionSets
-Content-Type: application/json
 Authorization: {{user-authorization}}
+Content-Type: application/json
 
 ### Get option sets by ID
 
@@ -43,7 +42,7 @@ Content-Type: application/json
 
 ### Export option set by ID
 
-GET {{baseUrl}}/export/optionSet/5c625e01f013d60db42a5763 HTTP/1.1
+GET {{baseUrl}}/export/optionSets/5c625e01f013d60db42a5763 HTTP/1.1
 Authorization: {{user-authorization}}
 Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 
@@ -117,23 +116,25 @@ Content-Type: application/json
 ### Get entity hierarchy
 
 GET {{baseUrl}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
+Content-Type: application/json
+Authorization: {{user-authorization}}
 
 ### Get country access list for a project
 
-GET {{baseUrl}}/{{version}}/me/countries
+GET {{baseUrl}}/me/countries
   ?projectCode=explore
 Authorization: Basic {{user-authorization}}
 Content-Type: application/json
 
 ### GET entity hierarchies
 
-GET {{baseUrl}}/{{version}}/entityHierarchy HTTP/2.0
+GET {{baseUrl}}/entityHierarchy HTTP/2.0
 Authorization: {{user-authorization}}
 Content-Type: application/json
 
 ### GET entity hierarchy
 
-GET {{baseUrl}}/{{version}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
+GET {{baseUrl}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
 Authorization: {{user-authorization}}
 Content-Type: application/json
 
