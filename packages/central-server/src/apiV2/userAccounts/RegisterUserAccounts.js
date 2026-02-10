@@ -21,7 +21,9 @@ export class RegisterUserAccounts extends CreateUserAccounts {
   }
 
   async validate() {
-    const { emailAddress, password, passwordConfirm, contactNumber } = this.newRecordData;
+    const { password, passwordConfirm } = this.newRecordData;
+    const contactNumber = this.newRecordData.contactNumber?.trim();
+    const emailAddress = this.newRecordData.emailAddress?.trim();
 
     const fieldValidators = {
       firstName: [fieldHasContent],
