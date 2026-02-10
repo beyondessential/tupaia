@@ -89,7 +89,7 @@ export class ProjectModel extends DatabaseModel {
    * } [where]
    */
   async getAllProjectDetails(where) {
-    /** @type {true | Knex.RawBinding} */
+    /** @type {Knex.RawBinding} */
     const whereClause = (() => {
       if (!where?.code) return true;
 
@@ -100,11 +100,10 @@ export class ProjectModel extends DatabaseModel {
 
       const { comparator, comparisonValue } = code;
       if (comparator === 'not in' && Array.isArray(comparisonValue) && comparisonValue.length > 0) {
-        const projectCodes = this.database.connection.raw(
-          SqlQuery.record(comparisonValue),
+        return this.database.connection.raw(
+          `p.code NOT IN ${SqlQuery.record(comparisonValue)}`,
           comparisonValue,
         );
-        return this.database.connection.raw('p.code NOT IN ?', projectCodes);
       }
 
       return true;
