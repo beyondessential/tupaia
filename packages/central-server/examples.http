@@ -113,7 +113,7 @@ GET {{baseUrl}}/entityHierarchy HTTP/2.0
 Authorization: {{user-authorization}}
 Content-Type: application/json
 
-### Get entity hierarchy
+### Get entity hierarchy by ID
 
 GET {{baseUrl}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
 Content-Type: application/json
@@ -124,18 +124,6 @@ Authorization: {{user-authorization}}
 GET {{baseUrl}}/me/countries
   ?projectCode=explore
 Authorization: Basic {{user-authorization}}
-Content-Type: application/json
-
-### GET entity hierarchies
-
-GET {{baseUrl}}/entityHierarchy HTTP/2.0
-Authorization: {{user-authorization}}
-Content-Type: application/json
-
-### GET entity hierarchy
-
-GET {{baseUrl}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
-Authorization: {{user-authorization}}
 Content-Type: application/json
 
 ### Get tasks
