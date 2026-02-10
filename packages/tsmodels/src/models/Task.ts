@@ -1,6 +1,6 @@
-import { TaskRecord as BaseTaskRecord, TaskModel as BaseTaskModel } from '@tupaia/database';
-import { Task } from '@tupaia/types';
-import { Model } from './types';
+import type { TaskRecord as BaseTaskRecord, TaskModel as BaseTaskModel } from '@tupaia/database';
+import type { Task, UserAccount } from '@tupaia/types';
+import type { Model } from './types';
 
 export interface TaskRecord extends Task, BaseTaskRecord {
   project_id?: string | null;
@@ -8,4 +8,13 @@ export interface TaskRecord extends Task, BaseTaskRecord {
   timezone?: string | null;
 }
 
-export interface TaskModel extends Model<BaseTaskModel, Task, TaskRecord> {}
+// @ts-expect-error
+// BaseTaskModel’s `create` and `updateById` instance method overrides change their signatures
+export interface TaskModel extends Model<BaseTaskModel, Task, TaskRecord> {
+  create(fields: Partial<Task>, createdBy?: UserAccount['id']): Promise<TaskRecord>;
+  updateById(
+    id: Task['id'],
+    updatedFields: Partial<Task>,
+    updatedBy: UserAccount['id'],
+  ): Promise<TaskRecord>;
+}

@@ -83,13 +83,8 @@ export const useTasks = (
     [
       'tasks',
       projectId,
-      pageSize,
-      page,
-      allAssignees,
-      includeCancelled,
-      includeCompleted,
-      filters,
-      sortBy,
+      { allAssignees, filters, includeCancelled, includeCompleted, sortBy },
+      { pageSize, page },
     ],
     isOfflineFirst ? getTasks : getRemoteTasks,
     {

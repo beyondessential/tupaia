@@ -1,15 +1,19 @@
-import { assertIsNotNullish, ensure } from '@tupaia/tsutils';
+import { ensure } from '@tupaia/tsutils';
 import { PermissionsError } from '@tupaia/utils';
 
 const assertSurveyEntityPairPermission = async (accessPolicy, models, surveyId, entityId) => {
-  const [entity, survey] = await Promise.all([
-    models.entity.findById(entityId),
-    models.survey.findById(surveyId),
+  const [entity, permissionGroup] = await Promise.all([
+    models.entity.findByIdOrThrow(entityId, { columns: ['country_code'] }),
+    models.permissionGroup.findOneOrThrow(
+      { [models.survey.fullyQualifyColumn('id')]: surveyId },
+      {
+        columns: [models.permissionGroup.fullyQualifyColumn('name')],
+        joinWith: models.survey.databaseRecord,
+        joinCondition: [models.permissionGroup.fullyQualifyColumn('id'), 'permission_group_id'],
+      },
+    ),
   ]);
-  assertIsNotNullish(entity, `No entity exists with ID ${entityId}`);
-  assertIsNotNullish(survey, `No survey exists with ID ${surveyId}`);
 
-  const permissionGroup = await survey.getPermissionGroup();
   if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
     throw new PermissionsError('You do not have permissions for this survey in this country');
   }

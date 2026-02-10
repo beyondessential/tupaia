@@ -44,8 +44,8 @@ export async function formatEntityForResponse(
 
 export async function formatEntitiesForResponse(
   ctx: FormatContext,
-  entities: AugmentedEntityRecord[],
-  fields: ExtendedEntityFieldName[],
+  entities: readonly AugmentedEntityRecord[],
+  fields: readonly ExtendedEntityFieldName[],
 ) {
   const responseBuilders = new Array(entities.length)
     .fill(0)

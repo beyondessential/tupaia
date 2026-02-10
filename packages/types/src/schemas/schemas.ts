@@ -79210,6 +79210,10 @@ export const FeedItemSchema = {
 			]
 		},
 		"type": {
+			"enum": [
+				"SurveyResponse",
+				"markdown"
+			],
 			"type": "string"
 		},
 		"user_id": {
@@ -79253,6 +79257,10 @@ export const FeedItemCreateSchema = {
 			]
 		},
 		"type": {
+			"enum": [
+				"SurveyResponse",
+				"markdown"
+			],
 			"type": "string"
 		},
 		"user_id": {
@@ -79296,6 +79304,10 @@ export const FeedItemUpdateSchema = {
 			]
 		},
 		"type": {
+			"enum": [
+				"SurveyResponse",
+				"markdown"
+			],
 			"type": "string"
 		},
 		"user_id": {
@@ -101841,19 +101853,19 @@ export const AnswersSchema = {
 export const RecentSurveySchema = {
 	"type": "object",
 	"properties": {
-		"surveyCode": {
+		"countryCode": {
 			"type": "string"
 		},
-		"surveyName": {
+		"countryId": {
 			"type": "string"
 		},
 		"countryName": {
 			"type": "string"
 		},
-		"countryCode": {
+		"surveyCode": {
 			"type": "string"
 		},
-		"countryId": {
+		"surveyName": {
 			"type": "string"
 		}
 	},
@@ -101870,6 +101882,10 @@ export const CamelCaseFeedItemSchema = {
 	"type": "object",
 	"properties": {
 		"type": {
+			"enum": [
+				"SurveyResponse",
+				"markdown"
+			],
 			"type": "string"
 		},
 		"id": {

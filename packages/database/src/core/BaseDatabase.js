@@ -33,6 +33,8 @@ export const QUERY_CONJUNCTIONS = /** @type {const} */ ({
   RAW: '_raw_',
 });
 
+/** @typedef {'cross' | 'fullOuter' | 'inner' | 'left' | 'leftOuter' | 'outer' | 'right' | 'rightOuter'} JoinType */
+/** @satisfies {Record<string, JoinType | null>} */
 export const JOIN_TYPES = /** @type {const} */ ({
   INNER: 'inner',
   LEFT: 'left',

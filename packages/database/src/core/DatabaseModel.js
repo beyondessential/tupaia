@@ -1,10 +1,21 @@
 /**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
  * @typedef {import('@tupaia/constants').SyncDirection} SyncDirection
  * @typedef {import('@tupaia/tsutils').UnexpectedNullishValueError} UnexpectedNullishValueError
  * @typedef {import('./DatabaseRecord').DatabaseRecord} DatabaseRecord
  * @typedef {import('./ModelRegistry').ModelRegistry} ModelRegistry
  * @typedef {import('./constants').DatabaseSchemaName} DatabaseSchemaName
  * @typedef {import('./records').PublicSchemaRecordName} PublicSchemaRecordName
+ * @typedef {(records: SyncSnapshotAttributes[]) => Promise<{ inserts?: SyncSnapshotAttributes[]; updates?: SyncSnapshotAttributes[] }>} IncomingSyncHook
+ * @typedef {(accessPolicy: AccessPolicy, criteria: any, options: any) => Promise<{ dbConditions: any; dbOptions: any }>} RecordsPermissionFilterCreator
+ * @typedef {{
+ *   ctes?: string[];
+ *   select?: string;
+ *   joins?: string;
+ *   where?: any;
+ *   groupBy?: string[];
+ * }} SyncLookupQueryDetails
+ * @typedef {() => Promise<SyncLookupQueryDetails | null>} SyncLookupQueryDetailsBuilder
  */
 
 import { uniq } from 'es-toolkit';
@@ -67,11 +78,13 @@ export class DatabaseModel {
       throw new Error(`syncDirection must be set by the model: ${this.databaseRecord}`);
     }
 
-    /**
-     * @privateRemarks Does nothing meaningful runtime, but provides type hint to TypeScript
-     * @type {undefined | (records: SyncSnapshotAttributes[]) => Promise<{ inserts: SyncSnapshotAttributes[], updates: SyncSnapshotAttributes[] }>}
-     */
+    // These do nothing meaningful at runtime, but provide type hints to TypeScript
+    /** @type {undefined | IncomingSyncHook} */
     this.incomingSyncHook;
+    /** @type {undefined | RecordsPermissionFilterCreator} */
+    this.createRecordsPermissionFilter;
+    /** @type {undefined | SyncLookupQueryDetailsBuilder} */
+    this.buildSyncLookupQueryDetails;
   }
 
   // cache disabled by default. If enabling remember to update the TABLES_REQUIRING_TRIGGER_CREATION to include this table in @tupaia/database/src/runPostMigration.js.

@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import fse from 'fs-extra';
 import winston from 'winston';
 
@@ -18,7 +18,6 @@ export function createDirectory(directoryPath: string) {
   try {
     // Check if directory exists before attempting to create
     if (!fs.existsSync(directoryPath)) {
-      // The recursive option creates parent directories if they don't exist
       fs.mkdirSync(directoryPath, { recursive: true });
       winston.info(`Successfully created directory: ${directoryPath}`);
     }
@@ -31,8 +30,8 @@ export function copyDirectory(sourceDir: string, destinationDir: string) {
   try {
     // Copy entire directory at once
     fse.copySync(sourceDir, destinationDir);
-    winston.info(`Successfully copied directory`);
+    winston.info('Successfully copied directory');
   } catch (error) {
-    winston.error(`Error copying directory:`, error);
+    winston.error('Error copying directory:', error);
   }
 }

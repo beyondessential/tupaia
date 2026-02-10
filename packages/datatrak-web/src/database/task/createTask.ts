@@ -1,8 +1,9 @@
+import { AccessPolicy, assertAnyPermissions, assertBESAdminAccess } from '@tupaia/access-policy';
 import { DatatrakWebTaskChangeRequest, TaskStatus } from '@tupaia/types';
-import { AccessPolicy, assertBESAdminAccess, assertAnyPermissions } from '@tupaia/access-policy';
 
-import { DatatrakWebModelRegistry } from '../../types';
+import { ensure } from '@tupaia/tsutils';
 import { CurrentUser } from '../../api';
+import { DatatrakWebModelRegistry } from '../../types';
 
 type Data = DatatrakWebTaskChangeRequest.ReqBody & {
   country_code: string;
@@ -21,7 +22,10 @@ export const createTask = async ({
 }) => {
   // Country code is not part of the task data, it's used for GA events
   const { country_code, ...rest } = data;
-  const survey = await models.survey.findOne({ code: data.survey_code });
+  const survey = await models.survey.findOneOrThrow(
+    { code: data.survey_code },
+    { columns: [models.survey.fullyQualifyColumn('id')] },
+  );
   const taskData = models.task.formatTaskChanges({
     ...rest,
     country_code,
@@ -41,7 +45,10 @@ export const createTask = async ({
     const task = await transactingModels.task.create(taskData, user.id);
 
     if (data.comment) {
-      await task.addUserComment(data.comment, user.id);
+      await task.addUserComment(
+        data.comment,
+        ensure(user.id, 'createTask mutation function called with `comment` but no `user.id`'),
+      );
     }
 
     return task;

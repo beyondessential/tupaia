@@ -268,6 +268,10 @@ export class ClientSyncManager {
         this.models.clearCache();
         
         console.log('🔄 [ClientSyncManager] Query invalidation complete');
+
+        const projects = await this.models.project.find({});
+        console.log('Projects:', projects);
+
       }
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
