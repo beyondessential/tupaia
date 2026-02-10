@@ -72,7 +72,7 @@ export class RequestCountryAccessPage extends React.Component {
     this.initCountries();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { errorMessage } = this.props;
     const hasNewErrorMessage = errorMessage === '' && nextProps.errorMessage !== '';
     if (hasNewErrorMessage || nextProps.isComplete) {

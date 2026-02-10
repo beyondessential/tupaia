@@ -114,6 +114,14 @@ export class UserModel extends DatabaseModel {
     return user;
   }
 
+  async isApiClientUser(userId) {
+    const [{ exists }] = await this.database.executeSql(
+      'SELECT EXISTS (SELECT 1 FROM api_client WHERE user_account_id = ?);',
+      userId,
+    );
+    return exists;
+  }
+
   customColumnSelectors = {
     /**
      * @privateRemarks Ideally, to match {@link UserRecord.fullName}, this would be:
