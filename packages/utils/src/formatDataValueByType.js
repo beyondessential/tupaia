@@ -97,6 +97,6 @@ const VALUE_TYPE_TO_FORMATTER = Object.freeze({
 });
 
 export const formatDataValueByType = ({ value, metadata = {} }, valueType) => {
-  const formatter = VALUE_TYPE_TO_FORMATTER[valueType] || defaultFormatter;
+  const formatter = VALUE_TYPE_TO_FORMATTER[valueType] ?? defaultFormatter;
   return formatter(value, metadata);
 };
