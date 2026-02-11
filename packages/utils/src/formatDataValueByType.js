@@ -46,10 +46,11 @@ const percentage = value => {
   }
 
   const percentageValue = value * 100;
+  const magnitude = Math.abs(percentageValue);
 
   let decimalPrecision = 0;
-  if (percentageValue < 1) {
-    const decimalPart = percentageValue.toString().substring(2);
+  if (magnitude < 1) {
+    const decimalPart = magnitude.toString().substring(2);
     for (let i = 0; i < decimalPart.length; i++) {
       // Increment precision for each leading zero in decimal digits
       decimalPrecision++;
@@ -58,7 +59,7 @@ const percentage = value => {
       }
     }
     decimalPrecision++;
-  } else if (percentageValue < 100) {
+  } else if (magnitude < 100) {
     decimalPrecision = 1;
   }
   const floatNormalizer = 10 ** decimalPrecision;
@@ -68,7 +69,12 @@ const percentage = value => {
 
 const number = (value, { presentationOptions }) => {
   const valueFormat = presentationOptions?.valueFormat ?? '0,0';
-  return Number.isNaN(Number(value)) ? value : numeral(value).format(valueFormat);
+  if (Number.isNaN(Number(value))) return value;
+
+  // HACKY FIX. For very small-magnitude numbers, `numeral.format` incorrectly returns 'NaN'. Magic
+  // number 1×10⁻⁶ derived from trial and error, not from inspecting Numeral.js source code.
+  // @see https://github.com/adamwdraper/Numeral-js/issues/512
+  return numeral(Math.abs(value) < 1e-6 ? 0 : value).format(valueFormat);
 };
 
 const defaultFormatter = input =>
