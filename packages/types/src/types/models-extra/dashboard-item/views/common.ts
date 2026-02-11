@@ -1,10 +1,10 @@
-import { CssColor } from '../../../css';
-import { DashboardItemType } from '../../common';
-import { BaseConfig, ValueType } from '../common';
+import type { CssColor } from '../../../css';
+import type { DashboardItemType } from '../../common';
+import type { BaseConfig, ValueType, ViewType } from '../common';
 
 export type BaseViewConfig = BaseConfig & {
-  type: `${DashboardItemType.View}`;
-  viewType: string;
+  type: DashboardItemType.View;
+  viewType: ViewType;
   valueType?: ValueType;
   value_metadata?: Record<string, unknown>;
 };

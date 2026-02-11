@@ -1,3 +1,15 @@
-export * from './views';
-export { MultiValueRowViewConfig } from './multiValueRow';
-export { MultiValueViewConfig } from './multiValue';
+export type { MultiValueViewConfig } from './multiValue';
+export type { MultiValueRowViewConfig } from './multiValueRow';
+export type {
+  DataDownloadViewConfig,
+  DataDownloadViewVizBuilderConfig,
+  DownloadFilesViewConfig,
+  MultiPhotographViewConfig,
+  MultiSingleValueViewConfig,
+  QRCodeViewConfig,
+  SingleDateViewConfig,
+  SingleDownloadLinkViewConfig,
+  SingleValueViewConfig,
+  ViewConfig,
+  ViewPresentationOptions,
+} from './views';

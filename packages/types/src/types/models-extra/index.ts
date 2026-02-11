@@ -73,6 +73,7 @@ export {
   LineChartChartConfig,
   ExportPresentationOptions,
   DatePickerOffsetSpec,
+  ViewType,
 } from './dashboard-item';
 export {
   MapOverlayConfig,
