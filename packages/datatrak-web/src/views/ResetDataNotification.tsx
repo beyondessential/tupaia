@@ -32,7 +32,6 @@ export const ResetDataNotification = () => {
       const permissionsChanged = await models.localSystemFact.get(SyncFact.PERMISSIONS_CHANGED);
       setPermissionsChanged(permissionsChanged === 'true');
     };
-
     loadPermissionsChanged();
   }, [models]);
 
@@ -46,7 +45,7 @@ export const ResetDataNotification = () => {
     };
 
     // we only want to set up once to avoid multiple subscriptions
-  }, []);
+  }, [clientSyncManager]);
 
   if (!permissionsChanged) {
     return null;
