@@ -222,7 +222,7 @@ export class BaseDatabase {
         return; // Lock acquired successfully
       }
 
-      // Wait before retrying (with jitter to avoid thundering herd)
+      // Wait before retrying
       await sleep(retryDelayMs);
     }
 
