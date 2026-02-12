@@ -184,10 +184,11 @@ export class BaseDatabase {
   }
 
   /**
-   * @returns {string} The database's timezone
+   * @returns {Promise<string>} The database’s timezone
    */
   async getTimezone() {
-    return (await this.executeSql('show timezone'))[0];
+    const [{ TimeZone }] = await this.executeSql('SHOW timezone');
+    return TimeZone;
   }
 
   /**
