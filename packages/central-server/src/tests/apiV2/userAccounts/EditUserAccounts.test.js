@@ -123,6 +123,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
         });
         const result = await models.user.findById(userAccount1.id);
 
+        expect(result).not.to.be.null;
         expect(result.email).to.deep.equal('barry.allen@ccpd.gov');
       });
 
@@ -133,6 +134,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
         });
         const result = await models.user.findById(userAccount2.id);
 
+        expect(result).not.to.be.null;
         expect(result.email).to.deep.equal('hal.jordan@lantern.corp');
       });
 
