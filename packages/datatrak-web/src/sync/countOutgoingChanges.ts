@@ -7,6 +7,7 @@ import { getModelOutgoingChangesFilter } from './getModelOutgoingChangesFilter';
 
 const countChangesForModel = async (model: DatabaseModel, since: number) => {
   const countFilter = getModelOutgoingChangesFilter(since);
+  console.log('model', model);
   return await model.count(countFilter);
 };
 
@@ -18,6 +19,7 @@ export const countOutgoingChanges = async (
 
   const lastSuccessfulSyncPush = await localSystemFact.get(SyncFact.LAST_SUCCESSFUL_SYNC_PUSH);
   const pushSince = isNullish(lastSuccessfulSyncPush) ? -1 : parseInt(lastSuccessfulSyncPush, 10);
+  console.log('models', models);
   const changeCounts = await Promise.all(
     models.map(model => countChangesForModel(model, pushSince)),
   );

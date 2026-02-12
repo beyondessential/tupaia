@@ -13,7 +13,7 @@ import { createDashboardItemsDBFilter } from './createDashboardItemsDBFilter';
  * - POST /dashboardItems (Read-only, no creates or updates. Use POST to avoid 414 error.)
  */
 export class GETDashboardItems extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   getDbQueryCriteria() {
     /** @type {string | undefined} */

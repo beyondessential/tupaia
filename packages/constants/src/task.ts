@@ -13,8 +13,8 @@ const BASE_TASK_QUERY_FIELDS = [
   'survey_id',
   'task_due_date',
   'task_status',
-];
+] as const;
 
 export const TASKS_QUERY_FIELDS = BASE_TASK_QUERY_FIELDS;
 
-export const SINGLE_TASK_QUERY_FIELDS = [...TASKS_QUERY_FIELDS, 'survey_response_id'];
+export const SINGLE_TASK_QUERY_FIELDS = [...TASKS_QUERY_FIELDS, 'survey_response_id'] as const;

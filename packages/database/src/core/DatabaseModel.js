@@ -1,12 +1,26 @@
 /**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
  * @typedef {import('@tupaia/constants').SyncDirection} SyncDirection
+ * @typedef {import('@tupaia/tsutils').UnexpectedNullishValueError} UnexpectedNullishValueError
+ * @typedef {import('./DatabaseRecord').DatabaseRecord} DatabaseRecord
  * @typedef {import('./ModelRegistry').ModelRegistry} ModelRegistry
  * @typedef {import('./constants').DatabaseSchemaName} DatabaseSchemaName
  * @typedef {import('./records').PublicSchemaRecordName} PublicSchemaRecordName
+ * @typedef {(records: SyncSnapshotAttributes[]) => Promise<{ inserts?: SyncSnapshotAttributes[]; updates?: SyncSnapshotAttributes[] }>} IncomingSyncHook
+ * @typedef {(accessPolicy: AccessPolicy, criteria: any, options: any) => Promise<{ dbConditions: any; dbOptions: any }>} RecordsPermissionFilterCreator
+ * @typedef {{
+ *   ctes?: string[];
+ *   select?: string;
+ *   joins?: string;
+ *   where?: any;
+ *   groupBy?: string[];
+ * }} SyncLookupQueryDetails
+ * @typedef {() => Promise<SyncLookupQueryDetails | null>} SyncLookupQueryDetailsBuilder
  */
 
 import { uniq } from 'es-toolkit';
 
+import { ensure } from '@tupaia/tsutils';
 import { DatabaseError, NotImplementedError, reduceToDictionary } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from './BaseDatabase';
 import { SCHEMA_NAMES } from './constants';
@@ -63,6 +77,14 @@ export class DatabaseModel {
     if (!this.constructor.syncDirection) {
       throw new Error(`syncDirection must be set by the model: ${this.databaseRecord}`);
     }
+
+    // These do nothing meaningful at runtime, but provide type hints to TypeScript
+    /** @type {undefined | IncomingSyncHook} */
+    this.incomingSyncHook;
+    /** @type {undefined | RecordsPermissionFilterCreator} */
+    this.createRecordsPermissionFilter;
+    /** @type {undefined | SyncLookupQueryDetailsBuilder} */
+    this.buildSyncLookupQueryDetails;
   }
 
   // cache disabled by default. If enabling remember to update the TABLES_REQUIRING_TRIGGER_CREATION to include this table in @tupaia/database/src/runPostMigration.js.
@@ -240,6 +262,10 @@ export class DatabaseModel {
     return await this.database.exists(this.databaseRecord, ...args);
   }
 
+  /**
+   * @param {string} id
+   * @param {*} [customQueryOptions]
+   */
   async findById(id, customQueryOptions = {}) {
     if (!id) {
       throw new Error(`Cannot search for ${this.databaseRecord} by id without providing an id`);
@@ -248,6 +274,20 @@ export class DatabaseModel {
     const result = await this.findOne(this.getIdClause(id), queryOptions);
     if (!result) return null;
     return this.generateInstance(result);
+  }
+
+  /**
+   * @param {string} id
+   * @param {*} [customQueryOptions]
+   * @param {string} errorMessage
+   * @throws {UnexpectedNullishValueError}
+   */
+  async findByIdOrThrow(
+    id,
+    customQueryOptions = {},
+    errorMessage = `No ${this.databaseRecord} found with ID ${id}`,
+  ) {
+    return ensure(await this.findById(id, customQueryOptions), errorMessage);
   }
 
   async findManyByColumn(column, values, additionalConditions = {}, customQueryOptions = {}) {
@@ -261,8 +301,8 @@ export class DatabaseModel {
     );
   }
 
-  async findManyById(ids) {
-    return this.findManyByColumn('id', ids);
+  async findManyById(ids, additionalConditions = {}, customQueryOptions = {}) {
+    return this.findManyByColumn('id', ids, additionalConditions, customQueryOptions);
   }
 
   async findOne(dbConditions, customQueryOptions = {}) {
@@ -277,6 +317,14 @@ export class DatabaseModel {
     );
     if (!result) return null;
     return this.generateInstance(result);
+  }
+
+  async findOneOrThrow(
+    dbConditions,
+    customQueryOptions = {},
+    errorMessage = `No ${this.databaseRecord} found matching ${JSON.stringify(dbConditions)}`,
+  ) {
+    return ensure(await this.findOne(dbConditions, customQueryOptions), errorMessage);
   }
 
   /**
@@ -411,6 +459,9 @@ export class DatabaseModel {
     return this.database.delete(this.databaseRecord, whereConditions);
   }
 
+  /**
+   * @param {string | string[] } id
+   */
   async deleteById(id) {
     return this.delete(this.getIdClause(id));
   }

@@ -13,7 +13,7 @@ import {
  * - /surveyResponses/id/answers
  */
 export class GETAnswers extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(answerId, options) {
     const answerPermissionsChecker = async accessPolicy =>

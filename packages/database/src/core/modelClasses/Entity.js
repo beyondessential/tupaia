@@ -1,9 +1,7 @@
 /**
  * @typedef {import('@tupaia/types').Entity} Entity
  * @typedef {import('@tupaia/types').EntityHierarchy} EntityHierarchy
- * @typedef {import('@tupaia/types').EntityMetadata} EntityMetadata
  * @typedef {import('@tupaia/types').Project} Project
- * @typedef {import('@tupaia/types').ValueOf} ValueOf
  */
 
 import { uniqBy } from 'es-toolkit';
@@ -12,12 +10,12 @@ import { SyncDirections } from '@tupaia/constants';
 import { assertIsNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
 import { fetchPatiently, translateBounds, translatePoint, translateRegion } from '@tupaia/utils';
+
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
-import { buildSyncLookupSelect } from '../sync';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -589,7 +587,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   /**
    * Returns relations (either ancestors or descendants) of entity
-   * @param {ValueOf<typeof ENTITY_RELATION_TYPE>} ancestorsOrDescendants
+   * @param {(typeof ENTITY_RELATION_TYPE)[keyof typeof ENTITY_RELATION_TYPE]} ancestorsOrDescendants
    * @param {Entity['id'][]} entityIds
    * @param {*} criteria
    * @param {*} options
@@ -657,7 +655,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   /**
    * @param {EntityHierarchy['id']} hierarchyId
    * @param {Entity['id'][]} entityIds
-   * @param {ValueOf<typeof ENTITY_RELATION_TYPE>} direction
+   * @param {(typeof ENTITY_RELATION_TYPE)[keyof typeof ENTITY_RELATION_TYPE]} direction
    * @param {*} params
    */
   async getEntitiesFromParentChildRelation(hierarchyId, entityIds, direction, params = {}) {
@@ -827,47 +825,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async buildSyncLookupQueryDetails() {
-    return {
-      // TODO: Remove survey response entities and task entities
-      // when MAUI-5722 is complete
-      ctes: [
-        `
-          entities_to_sync AS (
-            -- root project entities
-            SELECT entity.id AS entity_id, project.entity_hierarchy_id
-            FROM entity join project on entity.id = project.entity_id
-            UNION
-            -- all child entities of root project entities
-            SELECT child_id AS entity_id, entity_hierarchy_id
-            FROM entity_parent_child_relation
-            UNION
-            -- survey response entities
-            SELECT survey_response.entity_id, project.entity_hierarchy_id
-            FROM survey_response
-            JOIN survey ON survey.id = survey_response.survey_id
-            JOIN project ON project.id = survey.project_id
-            UNION
-            -- task entities
-            SELECT task.entity_id, project.entity_hierarchy_id
-            FROM task
-            JOIN survey ON survey.id = task.survey_id
-            JOIN project ON project.id = survey.project_id
-          )
-        `,
-      ],
-      select: await buildSyncLookupSelect(this, {
-        // Sync all world, country and project entities as they are needed for entity hierarchy
-        projectIds:
-          "CASE WHEN entity.type IN ('country', 'world', 'project') THEN NULL ELSE ARRAY_REMOVE(ARRAY_AGG(project.id), NULL) END",
-      }),
-      joins: `
-        LEFT JOIN entities_to_sync
-          ON entities_to_sync.entity_id = entity.id
-        LEFT JOIN project
-          ON project.entity_hierarchy_id = entities_to_sync.entity_hierarchy_id
-      `,
-      groupBy: ['entity.id'],
-    };
+    return null;
   }
 
   sanitizeForCentralServer = data => {

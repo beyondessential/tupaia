@@ -12,6 +12,20 @@ import { REDIRECT_ERROR_PARAM } from './constants';
 import { useIsOfflineFirst } from './api/offlineFirst';
 
 const handleError = (error: any, query: any) => {
+  // Enhanced error logging to trace query errors
+  console.group('🔴 Query/Mutation Error');
+  console.error('Error message:', error?.message);
+  console.error('Error name:', error?.name);
+  console.error('Error stack:', error?.stack);
+  console.error('Full error object:', error);
+  console.error('Query/Mutation details:', {
+    queryKey: query?.queryKey,
+    queryHash: query?.queryHash,
+    meta: query?.meta,
+    state: query?.state,
+  });
+  console.groupEnd();
+
   if (error.responseData?.redirectClient) {
     // Redirect the browser to the specified URL and display the error
     window.location.href = `${error.responseData.redirectClient}?${REDIRECT_ERROR_PARAM}=${error.message}`;

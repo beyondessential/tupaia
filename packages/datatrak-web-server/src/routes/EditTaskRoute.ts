@@ -2,6 +2,7 @@ import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
+import { NotFoundError } from '@tupaia/utils';
 
 export type EditTaskRequest = Request<
   { taskId: string },
@@ -16,6 +17,10 @@ export class EditTaskRoute extends Route<EditTaskRequest> {
 
     const { taskId } = params;
     const originalTask = await models.task.findById(taskId);
+
+    if (!originalTask) {
+      throw new NotFoundError(`No task exists with ID ${taskId}`);
+    }
 
     const taskDetails = models.task.formatTaskChanges(body, originalTask);
 

@@ -46,9 +46,9 @@ export const processColumnSelectorKeys = (models, object, recordType) => {
 };
 
 /**
- * @param {ModelRegistry} models
- * @param {string[]} unprocessedColumns
- * @param {PublicSchemaRecordName} recordType
+ * @param {readonly ModelRegistry} models
+ * @param {readonly string[]} unprocessedColumns
+ * @param {readonly PublicSchemaRecordName} recordType
  */
 export const processColumns = (models, unprocessedColumns, recordType) => {
   return unprocessedColumns.map(column => ({

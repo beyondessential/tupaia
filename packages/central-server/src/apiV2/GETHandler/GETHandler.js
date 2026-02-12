@@ -1,5 +1,5 @@
 import { isNullish } from '@tupaia/tsutils';
-import { respond } from '@tupaia/utils';
+import { NotImplementedError, respond } from '@tupaia/utils';
 import { processColumns, processColumnSelector, processColumnSelectorKeys } from '@tupaia/database';
 
 import { CRUDHandler } from '../CRUDHandler';
@@ -25,6 +25,9 @@ export const DEFAULT_PAGE_SIZE = 100;
  *       Get the fourth page of 100 answers for a given survey response
  */
 export class GETHandler extends CRUDHandler {
+  /** @type {boolean} */
+  permissionsFilteredInternally;
+
   async handleRequest() {
     const { headers = {}, body } = await this.buildResponse();
     Object.entries(headers).forEach(([key, value]) => this.res.set(key, value));
@@ -100,14 +103,20 @@ export class GETHandler extends CRUDHandler {
     return processColumnSelectorKeys(this.models, filter, this.recordType);
   }
 
+  /**
+   * @abstract
+   */
   getPermissionsFilter() {
-    throw new Error(
+    throw new NotImplementedError(
       `'getPermissionsFilter' must be implemented by all internally filtered GETHandlers`,
     );
   }
 
+  /**
+   * @abstract
+   */
   getPermissionsViaParentFilter() {
-    throw new Error(
+    throw new NotImplementedError(
       `Cannot GET via parent record without 'getPermissionsViaParentFilter' implementation`,
     );
   }

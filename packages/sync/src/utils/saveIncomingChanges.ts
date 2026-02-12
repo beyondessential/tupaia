@@ -1,11 +1,12 @@
-import { groupBy } from 'es-toolkit';
+import { groupBy, partition } from 'es-toolkit';
 import winston from 'winston';
 
 import {
   BaseDatabase,
   DatabaseModel,
-  PublicSchemaRecordName,
   ModelRegistry,
+  PublicSchemaRecordName,
+  runDatabaseFunctionInBatches,
 } from '@tupaia/database';
 import { sleep } from '@tupaia/utils';
 import { ModelSanitizeArgs, SyncSnapshotAttributes } from '../types';
@@ -15,6 +16,7 @@ import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
 
 // TODO: Move this to a config model RN-1668
 const PERSISTED_CACHE_BATCH_SIZE = 10000;
+const SAVE_BATCH_SIZE = 1000;
 const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
 const assertIsWithinTransaction = (database: BaseDatabase) => {
@@ -39,8 +41,20 @@ export const saveDeletesForModel = async (
     },
   );
   if (deletedRecords.length > 0) {
-    await saveDeletes(model, deletedRecords, 1000, progressCallback);
+    await saveDeletes(model, deletedRecords, SAVE_BATCH_SIZE, progressCallback);
   }
+};
+
+const saveCreatesForModel = async (
+  model: DatabaseModel,
+  changes: SyncSnapshotAttributes[],
+  isCentralServer: boolean,
+  progressCallback?: (recordsProcessed: number) => void,
+) => {
+  const sanitizeData = (d: ModelSanitizeArgs) =>
+    isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
+  const recordsForCreate = changes.map(c => sanitizeData(c.data));
+  await saveCreates(model, recordsForCreate, SAVE_BATCH_SIZE, progressCallback);
 };
 
 export const saveChangesForModel = async (
@@ -52,34 +66,26 @@ export const saveChangesForModel = async (
   const sanitizeData = (d: ModelSanitizeArgs) =>
     isCentralServer ? model.sanitizeForCentralServer(d) : model.sanitizeForClient(d);
 
-  // split changes into create, update
-  const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
-  const idsForIncomingRecords = incomingRecords.map(r => r.id);
+  const idsForIncomingRecords = changes.filter(c => c.data.id).map(c => c.data.id);
+
   // add all records that already exist in the db to the list to be updated
-  const existingRecords = await model.findManyById(idsForIncomingRecords);
+  const existingRecords = (await runDatabaseFunctionInBatches(
+    idsForIncomingRecords,
+    async (ids: string[]) =>
+      model.database.find(model.databaseRecord, { id: ids }, { columns: ['id'] }),
+  )) as { id: string }[];
+  const existingRecordIds = new Set(existingRecords.map(r => r.id));
 
-  const idToExistingRecord: Record<string, (typeof existingRecords)[number]> = Object.fromEntries(
-    existingRecords.map((e: any) => [e.id, e]),
-  );
-  const recordsForCreate = [];
-  const recordsForUpdate = [];
-
-  for (const change of changes) {
-    const { data } = change;
-
-    if (idToExistingRecord[data.id] === undefined) {
-      recordsForCreate.push(sanitizeData(data));
-    } else {
-      recordsForUpdate.push(sanitizeData(data));
-    }
-  }
+  const [updateChanges, createChanges] = partition(changes, c => existingRecordIds.has(c.data.id));
+  const recordsForCreate = createChanges.map(c => sanitizeData(c.data));
+  const recordsForUpdate = updateChanges.map(c => sanitizeData(c.data));
 
   // run each import process
   winston.debug(`Sync: saveIncomingChanges for ${model.databaseRecord}: Creating new records`, {
     count: recordsForCreate.length,
   });
   if (recordsForCreate.length > 0) {
-    await saveCreates(model, recordsForCreate, 1000, progressCallback);
+    await saveCreates(model, recordsForCreate, SAVE_BATCH_SIZE, progressCallback);
   }
 
   winston.debug(
@@ -89,7 +95,7 @@ export const saveChangesForModel = async (
     },
   );
   if (recordsForUpdate.length > 0) {
-    await saveUpdates(model, recordsForUpdate, isCentralServer, 1000, progressCallback);
+    await saveUpdates(model, recordsForUpdate, isCentralServer, SAVE_BATCH_SIZE, progressCallback);
   }
 };
 
@@ -191,6 +197,12 @@ export const saveIncomingSnapshotChanges = async (
       isCentralServer,
       progressCallback,
     );
+    const mem = (performance as any)?.memory;
+    if (mem) {
+      console.log('Used:', Math.round(mem.usedJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Total:', Math.round(mem.totalJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Limit:', Math.round(mem.jsHeapSizeLimit / 1024 / 1024), 'MB');
+    }
   }
   console.groupEnd();
   console.groupEnd();
@@ -213,6 +225,16 @@ export const saveChangesFromMemory = async (
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
     const filteredModelChanges = await model.filterSyncForClient(modelChanges);
-    await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    if (model.databaseRecord !== 'user_account') {
+      await saveCreatesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    } else {
+      await saveChangesForModel(model, filteredModelChanges, isCentralServer, progressCallback);
+    }
+    const mem = (performance as any)?.memory;
+    if (mem) {
+      console.log('Used:', Math.round(mem.usedJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Total:', Math.round(mem.totalJSHeapSize / 1024 / 1024), 'MB');
+      console.log('Limit:', Math.round(mem.jsHeapSizeLimit / 1024 / 1024), 'MB');
+    }
   }
 };

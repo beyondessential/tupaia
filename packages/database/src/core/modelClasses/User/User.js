@@ -1,9 +1,11 @@
 /**
  * @typedef {import('@tupaia/types').Country} Country
  * @typedef {import('@tupaia/types').Entity} Entity
- * @typedef {import('@tupaia/types').User} User
+ * @typedef {import('@tupaia/types').Project} Project
+ * @typedef {import('@tupaia/types').Survey} Survey
  * @typedef {import('@tupaia/types').UserAccount} UserAccount
  * @typedef {import('@tupaia/types').UserAccountPreferences} UserAccountPreferences
+ * @typedef {import('@tupaia/types').VerifiedEmail} VerifiedEmail
  * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
  * @typedef {import('../Entity').EntityRecord} EntityRecord
  * @typedef {import('../PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
@@ -23,7 +25,7 @@ import {
   USER_PREFERENCES_FIELDS,
 } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
-import { EntityTypeEnum } from '@tupaia/types';
+import { EntityTypeEnum, VerifiedEmail } from '@tupaia/types';
 import { DatabaseError } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
 import { DatabaseModel } from '../../DatabaseModel';
@@ -187,7 +189,7 @@ export class UserModel extends DatabaseModel {
 
   /**
    * @param {ModelRegistry} models
-   * @param {User['id']} userId
+   * @param {UserAccount['id']} userId
    * @param {Entity['id'][]} entityIds
    * @returns {Promise}
    */
@@ -197,6 +199,10 @@ export class UserModel extends DatabaseModel {
 
   get DatabaseRecordClass() {
     return UserRecord;
+  }
+
+  async isApiClientUser(userId) {
+    return await this.otherModels.apiClient.exists({ user_account_id: userId });
   }
 
   /**
@@ -232,15 +238,15 @@ export class UserModel extends DatabaseModel {
     END`,
   };
 
-  emailVerifiedStatuses = {
-    UNVERIFIED: 'unverified',
-    VERIFIED: 'verified',
-    NEW_USER: 'new_user',
-  };
+  emailVerifiedStatuses = /** @type {const} */ ({
+    UNVERIFIED: VerifiedEmail.unverified,
+    VERIFIED: VerifiedEmail.verified,
+    NEW_USER: VerifiedEmail.new_user,
+  });
 
   /**
-   * @param {User['id'][]} userIds
-   * @returns {Promise<{id: User['id'], name: string}[]>}
+   * @param {UserAccount['id'][]} userIds
+   * @returns {Promise<{ id: UserAccount['id'], name: string }[]>}
    */
   async getFilteredUsers(searchTerm, userIds) {
     const usersFilter = {
@@ -280,7 +286,7 @@ export class UserModel extends DatabaseModel {
    * @param {Country['code']} countryCode
    * @param {PermissionGroupRecord} permissionGroup
    * @param {string | undefined} [searchTerm]
-   * @returns {Promise<{id: string, name: string}[]>}
+   * @returns {Promise<{ id: string, name: string }[]>}
    */
   async getFilteredUsersForPermissionGroup(countryCode, permissionGroup, searchTerm) {
     // if the permission group is a public permission group that every user has access to because of the api client permissions, then everyone has access to the survey, so return all non-internal users
@@ -315,7 +321,7 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {User['id']} userId
+   * @param {UserAccount['id']} userId
    */
   async getUpdatedUserPreferenceFields(userId, updatedFields) {
     const updatedUserPreferences = Object.entries(updatedFields).filter(([key]) =>
@@ -352,7 +358,7 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {User['id']} userId
+   * @param {UserAccount['id']} userId
    * @param {Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
    * @returns {Promise<Entity['id'][]>} Entity IDs
@@ -360,6 +366,40 @@ export class UserModel extends DatabaseModel {
   async getRecentEntityIds(userId, countryCode, type) {
     const user = ensure(await this.findById(userId), `No user exists with ID ${userId}`);
     return user.getRecentEntityIds(countryCode, type);
+  }
+
+  /**
+   * @param {UserAccount['id']} userId
+   * @param {Project['id']} projectId
+   * @returns {Promise<{
+   *   country_code: Entity['code'];
+   *   country_id: Entity['id'];
+   *   country_name: Entity['name'];
+   *   survey_code: Survey['code'];
+   *   survey_name: Survey['name'];
+   * }[]>}
+   */
+  async getRecentSurveys(userId, projectId) {
+    return await this.database.executeSql(
+      `
+	      SELECT
+	        survey.name AS survey_name,
+	        survey.code AS survey_code,
+	        c.name AS country_name,
+	        c.id AS country_id,
+	        c.code AS country_code
+	      FROM
+	        survey_response
+	        JOIN survey ON survey.id = survey_response.survey_id
+	        JOIN entity ON entity.id = survey_response.entity_id
+	        JOIN entity c ON c.code = entity.country_code
+	      WHERE survey_response.user_id = ? AND survey.project_id = ?
+	      GROUP BY survey.id, c.id
+	      ORDER BY max(survey_response.data_time) DESC
+	      LIMIT 6;
+	    `,
+      [userId, projectId],
+    );
   }
 
   /**

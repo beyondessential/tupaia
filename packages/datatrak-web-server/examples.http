@@ -41,9 +41,17 @@ content-type: application/json
 GET {{host}}/entities HTTP/1.1
 content-type: application/json
 
+### Get entity by code
+GET {{host}}/entity/DL HTTP/1.1
+content-type: application/json
+
 
 ### Get projects
 GET {{host}}/projects HTTP/1.1
+content-type: application/json
+
+### Get project by code
+GET {{host}}/project/explore HTTP/1.1
 content-type: application/json
 
 ### Get user

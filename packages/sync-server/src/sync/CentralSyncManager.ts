@@ -49,8 +49,8 @@ const DEFAULT_CONFIG: SyncServerConfig = {
     perModelUpdateTimeoutMs: 1_000_000,
     avoidRepull: false,
   },
-  snapshotTransactionTimeoutMs: 10 * 60 * 1000,
-  syncSessionTimeoutMs: 20 * 60 * 1000,
+  // snapshotTransactionTimeoutMs: 60 * 60 * 1000, // 1 hour
+  // syncSessionTimeoutMs: 2 * 60 * 60 * 1000, // 2 hours
   maxConcurrentSessions: 10,
 };
 
