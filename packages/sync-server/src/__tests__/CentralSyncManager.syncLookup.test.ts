@@ -25,6 +25,7 @@ import {
   findSyncSnapshotRecords,
   getModelsForPull,
 } from '@tupaia/sync';
+import { OBJECT_ID_PATTERN } from '@tupaia/tsutils';
 import { CentralSyncManager } from '../sync';
 import { snapshotOutgoingChanges } from '../sync/snapshotOutgoingChanges';
 import { SyncLookupQueryDetails, TestSyncServerModelRegistry } from '../types';
@@ -217,7 +218,7 @@ describe('Sync Lookup data', () => {
       expect(syncLookupRecord).toEqual(
         expect.objectContaining({
           data: expect.anything(),
-          record_id: expect.anything(),
+          record_id: expect.stringMatching(OBJECT_ID_PATTERN),
           record_type: model.databaseRecord,
           project_ids: expect.anything(),
           is_deleted: false,
@@ -247,7 +248,7 @@ describe('Sync Lookup data', () => {
 
       expect(outgoingSnapshotRecord).toEqual(
         expect.objectContaining({
-          recordId: expect.anything(),
+          recordId: expect.stringMatching(OBJECT_ID_PATTERN),
           recordType: model.databaseRecord,
           data: expect.anything(),
           isDeleted: false,
@@ -296,7 +297,7 @@ describe('Sync Lookup data', () => {
       expect(syncLookupRecord).toEqual(
         expect.objectContaining({
           data: expect.anything(),
-          record_id: expect.anything(),
+          record_id: expect.stringMatching(OBJECT_ID_PATTERN),
           record_type: model.databaseRecord,
           project_ids: null,
           is_deleted: false,
@@ -337,7 +338,7 @@ describe('Sync Lookup data', () => {
 
       expect(outgoingSnapshotRecord).toEqual(
         expect.objectContaining({
-          recordId: expect.anything(),
+          recordId: expect.stringMatching(OBJECT_ID_PATTERN),
           recordType: model.databaseRecord,
           data: expect.anything(),
           isDeleted: false,
