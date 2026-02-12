@@ -1,4 +1,4 @@
-import { QueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 import mitt from 'mitt';
 import log from 'winston';
 
@@ -16,15 +16,11 @@ import {
   withDeferredSyncSafeguards,
 } from '@tupaia/sync';
 import { ensure } from '@tupaia/tsutils';
-import { Project } from '@tupaia/types';
+import type { Project } from '@tupaia/types';
 import { remove, stream } from '../api';
-import { DatatrakDatabase } from '../database/DatatrakDatabase';
-import {
-  SYNC_EVENT_ACTIONS,
-  type DatatrakWebModelRegistry,
-  type ProcessStreamDataParams,
-  type SyncEvents,
-} from '../types';
+import type { DatatrakDatabase } from '../database/DatatrakDatabase';
+import type { DatatrakWebModelRegistry, ProcessStreamDataParams, SyncEvents } from '../types';
+import { SYNC_EVENT_ACTIONS } from '../types';
 import { formatFraction } from '../utils';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';
