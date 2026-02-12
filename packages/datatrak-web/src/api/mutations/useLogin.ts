@@ -12,10 +12,10 @@ import { gaEvent, useFromLocation } from '../../utils';
 import { useSyncContext } from '../SyncContext';
 import { useIsOfflineFirst } from '../offlineFirst';
 
-type LoginCredentials = {
+interface LoginCredentials {
   email: string;
   password: string;
-};
+}
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
