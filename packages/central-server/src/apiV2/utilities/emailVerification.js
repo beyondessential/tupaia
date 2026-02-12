@@ -96,7 +96,7 @@ const isLegacyToken = token => /^[0-9a-f]{64}$/.test(token);
  *   comparisonValue: VerifiedEmail | VerifiedEmail[];
  * }} searchCondition
  * @param {string} token
- * @returns {Promise<UserRecord | null>}
+ * @returns {Promise<?UserAccount['id']>}
  * @throws {VerificationTokenExpiredError}
  * @throws {VerificationTokenInvalidError}
  */
@@ -114,13 +114,7 @@ export const verifyEmailHelper = async (models, searchCondition, token) => {
   const users = await models.user.find(
     { verified_email: searchCondition },
     {
-      columns: [
-        // Needed for email verification logic
-        'email',
-        'password_hash',
-        // Needed by consumer in return value
-        'id',
-      ],
+      columns: ['email', 'id', 'password_hash'],
       // Demote stale unverified accounts. (Hacky heuristic to deal with the performance of
       // iterating through every user from this query.)
       sort: ['creation_date DESC'],
@@ -130,7 +124,7 @@ export const verifyEmailHelper = async (models, searchCondition, token) => {
   try {
     for (const user of users) {
       const verified = await verifyPassword(getEmailVerificationToken(user), token);
-      if (verified) return user;
+      if (verified) return user.id;
     }
   } catch (e) {
     if (e.code === 'InvalidArg') throw new VerificationTokenInvalidError();
