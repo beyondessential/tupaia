@@ -1,11 +1,7 @@
 import { isPlainObject } from 'es-toolkit';
 
-import { isValidHttpUrl } from '@tupaia/tsutils';
+import { isObjectId, isValidHttpUrl } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
-
-function isValidFileId(str) {
-  return /^[a-f\d]{24}$/.test(str);
-}
 
 /**
  * @typedef {import('@tupaia/types').Answer} Answer
@@ -55,7 +51,7 @@ async function getPhotoAnswerText(answer) {
 
   if (isValidHttpUrl(answer.body)) return answer.body;
 
-  if (isValidFileId(answer.body)) {
+  if (isObjectId(answer.body)) {
     // TODO: Figure out why importing these from @tupaia/server-utils breaks @tupaia/datatrak-web
     const isProduction = () =>
       (process.env.IS_PRODUCTION_ENVIRONMENT === 'true' || process.env.NODE_ENV === 'production') &&
