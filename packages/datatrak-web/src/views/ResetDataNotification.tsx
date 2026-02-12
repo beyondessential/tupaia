@@ -12,9 +12,9 @@ import { SYNC_EVENT_ACTIONS } from '../types/sync';
 import { BannerNotification } from './BannerNotification';
 
 const StyledLink = styled(Link)`
-  color: ${({ theme }) => theme.palette.common.white};
-  text-decoration-color: ${({ theme }) => theme.palette.common.white};
+  color: inherit;
   cursor: pointer;
+  text-decoration-color: currentColor;
 `;
 
 export const ResetDataNotification = () => {
