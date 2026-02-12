@@ -512,8 +512,8 @@ describe('Create and Edit Surveys', () => {
           project_id: null,
         },
       });
-      expect(response.statusCode).to.equal(500);
-      expect(response.body.error).to.equal('Internal server error: Surveys must have a project');
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.error).to.equal('Surveys must have a project');
     });
 
     it('Throws an error if a name is removed from a survey', async () => {
@@ -525,8 +525,8 @@ describe('Create and Edit Surveys', () => {
           name: '',
         },
       });
-      expect(response.statusCode).to.equal(500);
-      expect(response.body.error).to.equal('Internal server error: Survey name is required');
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.error).to.equal('Survey name is required');
     });
 
     it('Throws an error if a permission_group_id is removed from a survey', async () => {
@@ -538,8 +538,8 @@ describe('Create and Edit Surveys', () => {
           permission_group_id: '',
         },
       });
-      expect(response.statusCode).to.equal(500);
-      expect(response.body.error).to.equal('Internal server error: Permission group is required');
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.error).to.equal('Permission group is required');
     });
 
     it('Throws an error if a code is removed from a survey', async () => {
@@ -551,8 +551,8 @@ describe('Create and Edit Surveys', () => {
           code: '',
         },
       });
-      expect(response.statusCode).to.equal(500);
-      expect(response.body.error).to.equal('Internal server error: Survey code is required');
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.error).to.equal('Survey code is required');
     });
 
     it('Throws an error if a country_ids is removed from a survey and set to ""', async () => {
@@ -564,10 +564,8 @@ describe('Create and Edit Surveys', () => {
           country_ids: '',
         },
       });
-      expect(response.statusCode).to.equal(500);
-      expect(response.body.error).to.equal(
-        'Internal server error: Survey must be associated with at least one country',
-      );
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.error).to.equal('Survey must be associated with at least one country');
     });
 
     it('Throws an error if a country_ids is removed from a survey and set to []', async () => {
@@ -579,10 +577,8 @@ describe('Create and Edit Surveys', () => {
           country_ids: [],
         },
       });
-      expect(response.statusCode).to.equal(500);
-      expect(response.body.error).to.equal(
-        'Internal server error: Survey must be associated with at least one country',
-      );
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.error).to.equal('Survey must be associated with at least one country');
     });
 
     it('Throws an error if a country_ids is removed from a survey and set to null', async () => {
@@ -594,7 +590,7 @@ describe('Create and Edit Surveys', () => {
           country_ids: null,
         },
       });
-      expect(response.statusCode).to.equal(500);
+      expect(response.statusCode).to.equal(400);
       expect(response.body.error).to.equal(
         'Internal server error: Survey must be associated with at least one country',
       );

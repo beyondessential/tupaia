@@ -1,4 +1,4 @@
-import { DatabaseError, ImportValidationError } from '@tupaia/utils';
+import { DatabaseError, ImportValidationError, ValidationError } from '@tupaia/utils';
 import { validateSurveyFields } from '../../../dataAccessors';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import { importSurveysQuestions } from '../../import/importSurveys';
@@ -69,23 +69,23 @@ export class SurveyEditor {
     // if the user is trying to remove the project from the survey, throw an error
     if (existingSurvey) {
       if (projectId === null || projectId === '') {
-        throw new Error('Surveys must have a project');
+        throw new ValidationError('Surveys must have a project');
       }
 
       if (code === null || code === '') {
-        throw new Error('Survey code is required');
+        throw new ValidationError('Survey code is required');
       }
 
       if (permissionGroupId === null || permissionGroupId === '') {
-        throw new Error('Permission group is required');
+        throw new ValidationError('Permission group is required');
       }
 
       if (name === null || name === '') {
-        throw new Error('Survey name is required');
+        throw new ValidationError('Survey name is required');
       }
 
       if (countryIds === null || countryIds === '' || (countryIds && countryIds.length === 0)) {
-        throw new Error('Survey must be associated with at least one country');
+        throw new ValidationError('Survey must be associated with at least one country');
       }
     }
 
