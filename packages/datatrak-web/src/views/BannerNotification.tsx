@@ -8,9 +8,8 @@ interface BannerNotificationProps {
 const StyledAlert = styled(Alert)`
   background-color: ${props => props.theme.palette.grey[900]};
   border-radius: 0;
-  color-scheme: only dark;
   color: ${props => props.theme.palette.common.white};
-
+  color-scheme: only dark;
   .MuiAlert-icon {
     color: ${props => props.theme.palette.common.white};
   }
