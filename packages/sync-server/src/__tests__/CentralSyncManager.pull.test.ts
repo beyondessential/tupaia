@@ -16,6 +16,7 @@ import {
   SyncSnapshotAttributes,
   findSyncSnapshotRecords,
 } from '@tupaia/sync';
+import type { EntityHierarchyCreate, ProjectCreate, UserAccountCreate } from '@tupaia/types';
 import { sleep } from '@tupaia/utils';
 import { CentralSyncManager } from '../sync';
 import { waitForPushComplete, waitForSession } from '../testUtilities/waitForSync';
@@ -68,17 +69,18 @@ describe('CentralSyncManager.pull', () => {
         email: 'test_user_account@email.com',
         first_name: 'Test',
         last_name: 'User Account',
-      });
+        password_hash: '', // stub
+      } as const satisfies UserAccountCreate);
       country = await findOrCreateDummyRecord(models.country, { code: 'test_country' });
       entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
         name: 'test_entity_hierarchy',
-        canonical_types: '{country}',
-      });
+        canonical_types: ['country'],
+      } as const satisfies EntityHierarchyCreate);
       project = await findOrCreateDummyRecord(models.project, {
         code: 'test_project',
         description: 'Test Project',
         entity_hierarchy_id: entityHierarchy.id,
-      });
+      } as const satisfies ProjectCreate);
 
       return {
         country,
