@@ -17,31 +17,34 @@ import {
 } from '../../../permissions';
 import { expectPermissionError } from '../../testUtilities/expectResponseError';
 
-const DEFAULT_POLICY = {
+const DEFAULT_POLICY = /** @type {const} */ ({
   DL: ['Public'],
   KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
   SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
   VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
   LA: ['Admin'],
   TO: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-};
+});
 
-const BES_ADMIN_POLICY = {
+const BES_ADMIN_POLICY = /** @type {const} */ ({
   LA: [BES_ADMIN_PERMISSION_GROUP],
-};
+});
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
 
 const EXISTING_TEST_SURVEY_CODE_1 = 'existing_survey_import_1_test';
 
-const BASIC_SURVEY_CREATE_PAYLOAD = {
+const BASIC_SURVEY_CREATE_PAYLOAD = /** @type {const} */ ({
   can_repeat: false,
   requires_approval: false,
   'data_group.service_type': 'tupaia',
   'data_group.config': {},
-};
+});
 
-const EXISTING_QUESTION_CODES = ['fdfuu42a22321c123a8_test', 'fdfzz42a66321c123a8_test'];
+const EXISTING_QUESTION_CODES = /** @type {const} */ ([
+  'fdfuu42a22321c123a8_test',
+  'fdfzz42a66321c123a8_test',
+]);
 
 describe('Create and Edit Surveys', () => {
   const app = new TestableApp();
