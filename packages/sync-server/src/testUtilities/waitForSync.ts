@@ -2,11 +2,9 @@ import { sleep } from '@tupaia/utils';
 import { CentralSyncManager } from '../sync';
 
 export const waitForSession = async (centralSyncManager: CentralSyncManager, sessionId: string) => {
-  let ready = false;
-  while (!ready) {
-    ready = await centralSyncManager.checkSessionReady(sessionId);
+  do {
     await sleep(100);
-  }
+  } while (!(await centralSyncManager.checkSessionReady(sessionId)))
 };
 
 export const waitForPushComplete = async (
