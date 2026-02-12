@@ -34,6 +34,10 @@ export class EntityHierarchyCacher extends ChangeHandler {
     });
   }
 
+  getTransactionWrapper() {
+    return this.models.wrapInRepeatableReadTransaction.bind(this.models);
+  }
+
   /** @type {ChangeTranslator} */
   async translateEntityChangeToRebuildJobs({ type, old_record: oldRecord, new_record: newRecord }) {
     // Should only rebuild if parent_id has changed
