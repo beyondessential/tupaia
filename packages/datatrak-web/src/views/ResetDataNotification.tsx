@@ -46,14 +46,14 @@ export const ResetDataNotification = () => {
     // we only want to set up once to avoid multiple subscriptions
   }, [clientSyncManager]);
 
-  if (!permissionsChanged) {
-    return null;
-  }
-
   const resetDatabase = useCallback(async () => {
     await clearDatabase(models);
     logout(undefined, { onSuccess: () => navigate(ROUTES.LOGIN) });
   }, [models, logout, navigate]);
+
+  if (!permissionsChanged) {
+    return null;
+  }
 
   const Message = () => (
     <>
