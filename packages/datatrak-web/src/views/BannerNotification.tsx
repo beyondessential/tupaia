@@ -1,17 +1,18 @@
-import React from 'react';
 import { Alert, styled } from '@mui/material';
+import React from 'react';
 
 interface BannerNotificationProps {
-  message: React.ReactNode | string;
+  message: React.ReactNode;
 }
 
 const StyledAlert = styled(Alert)`
-  background-color: ${({ theme }) => theme.palette.grey[900]};
+  background-color: ${props => props.theme.palette.grey[900]};
   border-radius: 0;
-  color: ${({ theme }) => theme.palette.common.white};
   color-scheme: only dark;
+  color: ${props => props.theme.palette.common.white};
+
   .MuiAlert-icon {
-    color: ${({ theme }) => theme.palette.common.white};
+    color: ${props => props.theme.palette.common.white};
   }
 `;
 
