@@ -9,6 +9,7 @@ const StyledAlert = styled(Alert)`
   background-color: ${({ theme }) => theme.palette.grey[900]};
   border-radius: 0;
   color: ${({ theme }) => theme.palette.common.white};
+  color-scheme: only dark;
   .MuiAlert-icon {
     color: ${({ theme }) => theme.palette.common.white};
   }
