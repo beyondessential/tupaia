@@ -74,7 +74,8 @@ describe('CentralSyncManager.pull', () => {
       country = await findOrCreateDummyRecord(models.country, { code: 'test_country' });
       entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
         name: 'test_entity_hierarchy',
-        canonical_types: ['country'],
+        // @ts-expect-error Using `['country']` throws ‘malformed array literal: "country"‘
+        canonical_types: '{country}',
       } as const satisfies EntityHierarchyCreate);
       project = await findOrCreateDummyRecord(models.project, {
         code: 'test_project',
