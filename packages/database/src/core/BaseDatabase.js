@@ -9,7 +9,7 @@ import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
-import { getEnvVarOrDefault, NotImplementedError, sleep } from '@tupaia/utils';
+import { getEnvVarOrDefault, NotImplementedError } from '@tupaia/utils';
 import { SCHEMA_NAMES } from './constants';
 import { generateId } from './utilities';
 import {
@@ -191,62 +191,14 @@ export class BaseDatabase {
   }
 
   /**
-   * Acquires an advisory lock by numeric key for the current transaction.
-   * Lock will be immediately released once the transaction ends.
-   * (https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS)
-   *
-   * Uses pg_try_advisory_xact_lock with retry to prevent indefinite blocking
-   * that can exhaust the connection pool.
-   *
-   * @param {number} lockKeyInt numeric key for the lock (bigint)
-   * @param {object} [options]
-   * @param {number} [options.maxRetries=43200] Maximum number of retry attempts (default 12 hours)
-   * @param {number} [options.retryDelayMs=1000] Delay between retries in milliseconds
-   * @param {string} [options.lockDescription] Description for error messages
-   */
-  async acquireAdvisoryLockByKey(lockKeyInt, options = {}) {
-    const {
-      maxRetries = 60 * 60 * 12,
-      retryDelayMs = 1000,
-      lockDescription = lockKeyInt,
-    } = options;
-
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      // Use pg_try_advisory_xact_lock which returns immediately with true/false
-      const [{ pg_try_advisory_xact_lock: acquired }] = await this.executeSql(
-        'SELECT pg_try_advisory_xact_lock(?)',
-        [lockKeyInt],
-      );
-
-      if (acquired) {
-        return; // Lock acquired successfully
-      }
-
-      // Wait before retrying (with jitter to avoid thundering herd)
-      await sleep(retryDelayMs);
-    }
-
-    throw new Error(
-      `Failed to acquire advisory lock "${lockDescription}" after ${maxRetries} attempts (${(maxRetries * retryDelayMs) / 1000}s timeout)`,
-    );
-  }
-
-  /**
    * Acquires an advisory lock for the current transaction
    * Lock will be immediately released once the transaction ends
    * (https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS)
-   *
    * @param {string} lockKey unique identifier key for the lock
-   * @param {object} [options]
-   * @param {number} [options.maxRetries=43200] Maximum number of retry attempts (default 12 hours)
-   * @param {number} [options.retryDelayMs=1000] Delay between retries in milliseconds
    */
-  async acquireAdvisoryLock(lockKey, options = {}) {
+  async acquireAdvisoryLock(lockKey) {
     const lockKeyInt = hashStringToInt(lockKey); // Locks require bigint key, so must convert key to int
-    return await this.acquireAdvisoryLockByKey(lockKeyInt, {
-      ...options,
-      lockDescription: lockKey,
-    });
+    return await this.executeSql('SELECT pg_advisory_xact_lock(?)', [lockKeyInt]);
   }
 
   /**
