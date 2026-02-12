@@ -4,7 +4,7 @@ import {
   SyncFact,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '@tupaia/constants';
-import { clearTestData, findOrCreateDummyRecord, getTestModels } from '@tupaia/database';
+import { RECORDS, clearTestData, findOrCreateDummyRecord, getTestModels } from '@tupaia/database';
 import {
   CountryRecord,
   EntityHierarchyRecord,
@@ -221,46 +221,37 @@ describe('CentralSyncManager.pull', () => {
       const { sessionId: sessionIdTwo } = await centralSyncManager.startSession();
       await waitForSession(centralSyncManager, sessionIdTwo);
 
-      const userAccount2 = await findOrCreateDummyRecord(models.user, {
+      const userAccount2: UserRecord = await findOrCreateDummyRecord(models.user, {
         email: 'new_user_session2@email.com',
         first_name: 'New',
         last_name: 'User Session 2',
       });
-      const userAccount3 = await findOrCreateDummyRecord(models.user, {
+      const userAccount3: UserRecord = await findOrCreateDummyRecord(models.user, {
         email: 'new_user_session3@email.com',
         first_name: 'New',
         last_name: 'User Session 3',
       });
-      const userAccount4 = await findOrCreateDummyRecord(models.user, {
+      const userAccount4: UserRecord = await findOrCreateDummyRecord(models.user, {
         email: 'new_user_session4@email.com',
         first_name: 'New',
         last_name: 'User Session 4',
       });
 
-      const sessionTwoChanges = [
-        {
-          direction: SYNC_SESSION_DIRECTION.OUTGOING,
-          isDeleted: false,
-          recordType: 'user_account',
-          recordId: userAccount2.id,
-          data: await userAccount2.getData(),
-        },
-        {
-          direction: SYNC_SESSION_DIRECTION.OUTGOING,
-          isDeleted: false,
-          recordType: 'user_account',
-          recordId: userAccount3.id,
-          data: await userAccount3.getData(),
-        },
-        {
-          direction: SYNC_SESSION_DIRECTION.OUTGOING,
-          isDeleted: false,
-          recordType: 'user_account',
-          recordId: userAccount4.id,
-          data: await userAccount4.getData(),
-        },
-      ] as SyncSnapshotAttributes[];
-      await centralSyncManager.addIncomingChanges(sessionIdTwo, sessionTwoChanges);
+      const sessionTwoChanges: Omit<SyncSnapshotAttributes, 'savedAtSyncTick'>[] = [
+        { recordId: userAccount2.id, data: await userAccount2.getData() },
+        { recordId: userAccount3.id, data: await userAccount3.getData() },
+        { recordId: userAccount4.id, data: await userAccount4.getData() },
+      ].map((change, i) => ({
+        id: i,
+        direction: SYNC_SESSION_DIRECTION.OUTGOING,
+        isDeleted: false,
+        recordType: RECORDS.USER_ACCOUNT,
+        ...change,
+      }));
+      await centralSyncManager.addIncomingChanges(
+        sessionIdTwo,
+        sessionTwoChanges as SyncSnapshotAttributes[],
+      );
       await centralSyncManager.completePush(sessionIdTwo, 'test-device-id-2');
       await waitForPushComplete(centralSyncManager, sessionIdTwo);
       await centralSyncManager.updateLookupTable();
