@@ -178,7 +178,7 @@ describe('CentralSyncManager.pull', () => {
       );
     });
 
-    it("excludes inserted records from another sync session when the current' session's snapshot transaction already started", async () => {
+    it('excludes inserted records from another sync session when the current session’s snapshot transaction already started', async () => {
       await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, '4');
       await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, '-1');
       const { country, userAccount, entityHierarchy, project } = await prepareData();
