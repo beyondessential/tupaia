@@ -4,11 +4,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { SyncFact } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
+import type { Handler } from 'mitt';
 import { useLogout, useSyncContext } from '../api';
 import { ROUTES } from '../constants';
 import { clearDatabase } from '../database/clearDatabase';
 import { useDatabaseContext } from '../hooks/database';
-import { SYNC_EVENT_ACTIONS } from '../types/sync';
+import { SYNC_EVENT_ACTIONS, SyncEvents } from '../types/sync';
 import { BannerNotification } from './BannerNotification';
 
 const StyledLink = styled(Link)`
@@ -16,6 +17,18 @@ const StyledLink = styled(Link)`
   cursor: pointer;
   text-decoration-color: currentColor;
 `;
+
+function useOnPermissionChange(
+  handler: Handler<SyncEvents[typeof SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED]>,
+) {
+  const syncManager = ensure(useSyncContext()?.clientSyncManager);
+  useEffect(() => {
+    syncManager.emitter.on(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
+    return () => {
+      syncManager.emitter.off(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
+    };
+  }, [syncManager]);
+}
 
 export const ResetDataNotification = () => {
   const { mutate: logout } = useLogout();
@@ -34,17 +47,9 @@ export const ResetDataNotification = () => {
     loadPermissionsChanged();
   }, [models]);
 
-  useEffect(() => {
-    const handler = ({ permissionsChanged }: { permissionsChanged: boolean }) => {
-      setPermissionsChanged(permissionsChanged);
-    };
-    clientSyncManager.emitter.on(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
-    return () => {
-      clientSyncManager.emitter.off(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
-    };
-
-    // we only want to set up once to avoid multiple subscriptions
-  }, [clientSyncManager]);
+  useOnPermissionChange(({ permissionsChanged }) => {
+    setPermissionsChanged(permissionsChanged);
+  });
 
   const resetDatabase = useCallback(async () => {
     await clearDatabase(models);
