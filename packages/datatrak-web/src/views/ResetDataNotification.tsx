@@ -1,16 +1,15 @@
+import { Link, styled } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Link, styled } from '@mui/material';
 
-import { ensure } from '@tupaia/tsutils';
 import { SyncFact } from '@tupaia/constants';
-
-import { BannerNotification } from './BannerNotification';
+import { ensure } from '@tupaia/tsutils';
 import { useLogout, useSyncContext } from '../api';
-import { SYNC_EVENT_ACTIONS } from '../types/sync';
+import { ROUTES } from '../constants';
 import { clearDatabase } from '../database/clearDatabase';
 import { useDatabaseContext } from '../hooks/database';
-import { ROUTES } from '../constants';
+import { SYNC_EVENT_ACTIONS } from '../types/sync';
+import { BannerNotification } from './BannerNotification';
 
 const StyledLink = styled(Link)`
   color: ${({ theme }) => theme.palette.common.white};
@@ -57,10 +56,10 @@ export const ResetDataNotification = () => {
   }, [models, logout, navigate]);
 
   const Message = () => (
-    <span>
-      Looks like there was an update while you were offline,{' '}
-      <StyledLink onClick={resetDatabase}>click here</StyledLink> to get the latest data
-    </span>
+    <>
+      <strong>Permissions changed.</strong> Your permissions were updated while you were offline.{' '}
+      <StyledLink onClick={resetDatabase}>Log out</StyledLink> and back in to get the latest data.
+    </>
   );
 
   return <BannerNotification message={<Message />} />;
