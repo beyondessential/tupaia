@@ -429,7 +429,7 @@ export class ClientSyncManager {
   }
 
   async checkForPermissionChanges(sessionId: string) {
-    const currentUserId = await this.models.localSystemFact.get(SyncFact.CURRENT_USER_ID);
+    const currentUserId = ensure(await this.models.localSystemFact.get(SyncFact.CURRENT_USER_ID));
 
     const permissionChangesCount = await countSyncSnapshotRecords(
       this.database,
