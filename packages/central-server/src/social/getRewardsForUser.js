@@ -1,8 +1,18 @@
 /**
+ * @typedef {import('@tupaia/types').UserAccount} UserAccount
+ * @typedef {import('@tupaia/types').Project} Project
+ * @typedef {{ coconuts: number, pigs: number, rank?: number }} UserRewards
+ */
+
+/**
  * @privateRemarks There’s no technical limitation preventing us from getting the user’s rank for
  * all projects in {@link getRewardsForAllProjects}, but the SELECT is expensive on large relations.
  * Filtering for one project, this takes a few milliseconds; but to calculate rankings for all
  * projects takes several minutes.
+ * @param {TupaiaDatabase} database
+ * @param {UserAccount['id']} userId
+ * @param {Project['id']} projectId
+ * @returns {Promise<Required<UserRewards>>}
  */
 const getRewardsForProject = async (database, userId, projectId) => {
   const [rewards] = await database.executeSql(
@@ -32,6 +42,12 @@ const getRewardsForProject = async (database, userId, projectId) => {
   return rewards ?? { coconuts: 0, pigs: 0, rank: null };
 };
 
+/**
+ * @param {TupaiaDatabase} database
+ * @param {UserAccount['id']} userId
+ * @param {Project['id']} projectId
+ * @returns {Promise<Pick<UserRewards, 'coconuts' | 'pigs'>>}
+ */
 const getRewardsForAllProjects = async (database, userId) => {
   const [rewards] = await database.executeSql(
     `
@@ -52,6 +68,12 @@ const getRewardsForAllProjects = async (database, userId) => {
   return rewards ?? { coconuts: 0, pigs: 0 };
 };
 
+/**
+ * @param {TupaiaDatabase} database
+ * @param {UserAccount['id']} userId
+ * @param {Project['id']} [projectId]
+ * @returns {Promise<UserRewards>}
+ */
 export const getRewardsForUser = async (database, userId, projectId) => {
   if (projectId) {
     return await getRewardsForProject(database, userId, projectId);
