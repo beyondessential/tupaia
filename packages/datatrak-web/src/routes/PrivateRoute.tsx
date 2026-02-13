@@ -6,7 +6,7 @@ import { ensure } from '@tupaia/tsutils';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
 
 import { useCurrentUserContext } from '../api';
-import { ADMIN_ONLY_ROUTES, ROUTES } from '../constants';
+import { isAdminOnlyRoute, ROUTES } from '../constants';
 import { isWebApp } from '../utils';
 import { useDatabaseContext } from '../hooks/database';
 import { useIsOfflineFirst } from '../api/offlineFirst';
@@ -74,10 +74,8 @@ export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactEl
     );
   }
 
-  const isAdminOnlyRoute = ADMIN_ONLY_ROUTES.includes(pathname);
-
   // If the user is logged in but is not an admin and is trying to access an admin only page, redirect to the home page
-  if (isAdminOnlyRoute && !hasAdminPanelAccess) {
+  if (isAdminOnlyRoute(pathname) && !hasAdminPanelAccess) {
     return <Navigate to={ROUTES.HOME} replace={true} />;
   }
   return children ? children : <Outlet />;
