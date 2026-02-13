@@ -6,7 +6,6 @@ import { SyncFact } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
 import type { Handler } from 'mitt';
 import { useLogout, useSyncContext } from '../api';
-import { ROUTES } from '../constants';
 import { clearDatabase } from '../database/clearDatabase';
 import { useDatabaseContext } from '../hooks/database';
 import { SYNC_EVENT_ACTIONS, SyncEvents } from '../types/sync';
