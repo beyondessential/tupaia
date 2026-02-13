@@ -11,6 +11,8 @@ import { isWebApp } from '../utils';
 import { useDatabaseContext } from '../hooks/database';
 import { useIsOfflineFirst } from '../api/offlineFirst';
 
+const PROJECT_SELECT_URLS = new Set<string>([ROUTES.PROJECT_SELECT, ROUTES.REQUEST_ACCESS]);
+
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
 export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactElement => {
   const { isLoggedIn, hideWelcomeScreen, accessPolicy, ...user } = useCurrentUserContext();
@@ -53,15 +55,14 @@ export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactEl
     return <Navigate to={ROUTES.WELCOME} replace={true} />;
   }
 
-  const PROJECT_SELECT_URLS = [ROUTES.PROJECT_SELECT, ROUTES.REQUEST_ACCESS];
   // If the user is logged in and has a project, but is attempting to go to the project select page, redirect to the home page
-  if (user.projectId && PROJECT_SELECT_URLS.includes(pathname)) {
+  if (user.projectId && PROJECT_SELECT_URLS.has(pathname)) {
     return <Navigate to={ROUTES.HOME} replace={true} />;
   }
 
   // If the user is logged in, does not have a project, and is not already on the project select
   // page, redirect to the project select page. (But let them complete on-boarding first.)
-  if (!user.projectId && !PROJECT_SELECT_URLS.includes(pathname) && pathname !== ROUTES.WELCOME) {
+  if (!user.projectId && !PROJECT_SELECT_URLS.has(pathname) && pathname !== ROUTES.WELCOME) {
     return (
       <Navigate
         to={ROUTES.PROJECT_SELECT}

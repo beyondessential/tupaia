@@ -33,7 +33,7 @@ export const ROUTES = {
   WELCOME: '/welcome',
   EXPORT_SURVEY_RESPONSE: 'export/:surveyResponseId',
   MOBILE_USER_MENU: '/more',
-};
+} as const;
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
 export const PRIMARY_ENTITY_CODE_PARAM = 'primaryEntityCode';
@@ -44,4 +44,4 @@ export const ADMIN_ONLY_ROUTES = [
   ROUTES.SURVEY_RESUBMIT_REVIEW,
   ROUTES.SURVEY_RESUBMIT_SUCCESS,
   ROUTES.SURVEY_RESUBMIT,
-];
+] as const;
