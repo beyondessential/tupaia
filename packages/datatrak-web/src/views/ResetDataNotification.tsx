@@ -47,9 +47,7 @@ export const ResetDataNotification = () => {
     loadPermissionsChanged();
   }, [models]);
 
-  useOnPermissionChange(({ permissionsChanged }) => {
-    setPermissionsChanged(permissionsChanged);
-  });
+  useOnPermissionChange(syncEvent => void setPermissionsChanged(syncEvent.permissionsChanged));
 
   const resetDatabase = useCallback(async () => {
     await clearDatabase(models);
