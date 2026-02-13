@@ -50,8 +50,8 @@ export const ResetDataNotification = () => {
   useOnPermissionChange(syncEvent => void setPermissionsChanged(syncEvent.permissionsChanged));
 
   const resetDatabase = useCallback(async () => {
+    logout();
     await clearDatabase(models);
-    logout(undefined, { onSuccess: () => navigate(ROUTES.LOGIN) });
   }, [models, logout, navigate]);
 
   if (!permissionsChanged) {

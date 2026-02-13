@@ -1,7 +1,7 @@
 import { Link, ListItem } from '@material-ui/core';
 import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
 import React, { ComponentType, ReactNode, useState } from 'react';
-import { useMatch, useNavigate } from 'react-router';
+import { useMatch } from 'react-router';
 import styled from 'styled-components';
 
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
@@ -110,12 +110,11 @@ export const MenuList = ({
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const isOfflineFirst = useIsOfflineFirst();
   const { mutate: logout } = useLogout();
-  const navigate = useNavigate();
   const { models } = useDatabaseContext() || {};
   const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
   const handleLogout = async () => {
-    logout(undefined, { onSuccess: () => navigate(ROUTES.LOGIN) });
+    logout();
     setUnsyncedChangesWarningModalOpen(false);
     onCloseMenu?.();
   };
