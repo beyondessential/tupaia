@@ -37,7 +37,9 @@ export const useLogin = () => {
       try {
         if (isOfflineFirst) {
           console.log('[useLogin] Using offline-first auth');
-          const authService = new AuthService(ensure(models));
+          const authService = new AuthService(
+            ensure(models, 'Cannot instantiate AuthService with nullish models'),
+          );
           user = await authService.signIn({ email, password });
           console.log('[useLogin] Auth service signIn complete', { userId: user?.id });
         } else {
@@ -64,7 +66,10 @@ export const useLogin = () => {
         try {
           console.log('[useLogin] onSuccess starting', { userId: user?.id });
           if (isOfflineFirst) {
-            const ensuredModels = ensure(models);
+            const ensuredModels = ensure(
+              models,
+              'useLogin query onSuccess callback fired with nullish models',
+            );
             console.log('[useLogin] Setting up offline-first user data');
 
             // Clear database if the user has logged in with a different user
