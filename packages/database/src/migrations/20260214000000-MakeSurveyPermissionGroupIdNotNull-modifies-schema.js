@@ -14,12 +14,12 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
-  return db.runSql('ALTER TABLE survey ALTER COLUMN permission_group_id SET NOT NULL');
+exports.up = async function (db) {
+  await db.runSql('ALTER TABLE survey ALTER COLUMN permission_group_id SET NOT NULL');
 };
 
-exports.down = function (db) {
-  return db.runSql('ALTER TABLE survey ALTER COLUMN permission_group_id DROP NOT NULL');
+exports.down = async function (db) {
+  await db.runSql('ALTER TABLE survey ALTER COLUMN permission_group_id DROP NOT NULL');
 };
 
 exports._meta = {
