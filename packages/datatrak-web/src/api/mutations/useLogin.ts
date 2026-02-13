@@ -61,11 +61,8 @@ export const useLogin = () => {
         gaEvent('login', 'Login', 'Attempt');
       },
       onSuccess: async ({ user }) => {
-        const syncManager = ensure(clientSyncManager);
-
-        console.log('[useLogin] onSuccess starting', { userId: user?.id });
-
         try {
+          console.log('[useLogin] onSuccess starting', { userId: user?.id });
           if (isOfflineFirst) {
             const ensuredModels = ensure(models);
             console.log('[useLogin] Setting up offline-first user data');
@@ -102,7 +99,7 @@ export const useLogin = () => {
           await queryClient.invalidateQueries();
 
           // Emit permissions changed event to reset data notification
-          await syncManager.updatePermissionsChanged(false);
+          await clientSyncManager?.updatePermissionsChanged(false);
 
           // Do not remove the isLoggedIn query,
           // as it is used to determine if the user is logged in and should be kept to be invalidated
