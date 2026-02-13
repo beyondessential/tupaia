@@ -4,29 +4,30 @@ import { ReportServerAggregator } from '../../../aggregator';
 import { ReqContext } from '../../../reportBuilder/context';
 
 import { testCustomReport } from '../../../reportBuilder/customReports/testCustomReport';
+import { EntityTypeEnum } from '@tupaia/types';
 
 describe('testCustomReport', () => {
   const HIERARCHY = 'test_hierarchy';
   const ENTITIES = [
-    { code: 'FJ', name: 'Fiji', type: 'country' },
-    { code: 'FJ_Facility', name: 'Fiji Facility', type: 'facility' },
-    { code: 'TO', name: 'Tonga', type: 'country' },
+    { code: 'FJ', name: 'Fiji', type: EntityTypeEnum.country },
+    { code: 'FJ_Facility', name: 'Fiji Facility', type: EntityTypeEnum.facility },
+    { code: 'TO', name: 'Tonga', type: EntityTypeEnum.country },
     {
       code: 'TO_District',
       name: 'Tonga District',
-      type: 'district',
+      type: EntityTypeEnum.district,
     },
     {
       code: 'TO_Facility1',
       name: 'Tonga Facility 1',
-      type: 'facility',
+      type: EntityTypeEnum.facility,
     },
     {
       code: 'TO_Facility2',
       name: 'Tonga Facility 2',
-      type: 'facility',
+      type: EntityTypeEnum.facility,
     },
-  ];
+  ] as const;
 
   const RELATIONS = {
     test_hierarchy: [
@@ -35,7 +36,7 @@ describe('testCustomReport', () => {
       { parent: 'TO_District', child: 'TO_Facility2' },
       { parent: 'FJ', child: 'FJ_Facility' },
     ],
-  };
+  } as const;
 
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,

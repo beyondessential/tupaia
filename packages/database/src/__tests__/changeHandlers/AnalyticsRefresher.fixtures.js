@@ -1,5 +1,5 @@
 // answers table
-const ANSWER = [
+const ANSWER = /** @type {const} */ ([
   {
     id: 'answer001_test',
     text: '1',
@@ -60,9 +60,9 @@ const ANSWER = [
     survey_response_id: 'surveyResponse005_test',
     question_id: 'question004_test',
   },
-];
+]);
 
-const USER = [
+const USER = /** @type {const} */ ([
   {
     id: 'user001_test',
     name: 'Test User',
@@ -70,9 +70,9 @@ const USER = [
     password_hash: 'hash',
     legacy_password_salt: 'salt',
   },
-];
+]);
 
-const SURVEY_RESPONSE = [
+const SURVEY_RESPONSE = /** @type {const} */ ([
   {
     id: 'surveyResponse001_test',
     data_time: '2020-01-01 11:58:23',
@@ -108,10 +108,10 @@ const SURVEY_RESPONSE = [
     entity_id: 'entity002_test',
     user_id: 'user001_test',
   },
-];
+]);
 
-const PROJECT = [{ id: 'project001', code: 'P001' }];
-const SURVEY = [
+const PROJECT = /** @type {const} */ ([{ id: 'project001', code: 'P001' }]);
+const SURVEY = /** @type {const} */ ([
   {
     id: 'survey001_test',
     code: 'S001',
@@ -124,33 +124,33 @@ const SURVEY = [
     data_group_id: 'dataGroup002_test',
     project_id: 'project001',
   },
-];
+]);
 
-const ENTITY = [
+const ENTITY = /** @type {const} */ ([
   { id: 'entity001_test', code: 'E001', name: 'Happy Land' },
   { id: 'entity002_test', code: 'E002', name: 'Sad Land' },
-];
+]);
 
-const QUESTION = [
+const QUESTION = /** @type {const} */ ([
   { id: 'question001_test', code: 'Q001', type: 'Number', data_element_id: 'dataElement001_test' },
   { id: 'question002_test', code: 'Q002', type: 'Number', data_element_id: 'dataElement002_test' },
   { id: 'question003_test', code: 'Q003', type: 'Number', data_element_id: 'dataElement003_test' },
   { id: 'question004_test', code: 'Q004', type: 'Number', data_element_id: 'dataElement004_test' },
-];
+]);
 
-const DATA_ELEMENT = [
+const DATA_ELEMENT = /** @type {const} */ ([
   { id: 'dataElement001_test', service_type: 'tupaia' },
   { id: 'dataElement002_test', service_type: 'tupaia' },
   { id: 'dataElement003_test', service_type: 'tupaia' },
   { id: 'dataElement004_test', service_type: 'tupaia' },
-];
+]);
 
-const DATA_GROUP = [
+const DATA_GROUP = /** @type {const} */ ([
   { id: 'dataGroup001_test', service_type: 'tupaia' },
   { id: 'dataGroup002_test', service_type: 'tupaia' },
-];
+]);
 
-export const TEST_DATA = {
+export const TEST_DATA = /** @type {const} */ ({
   entity: ENTITY,
   user: USER,
   dataElement: DATA_ELEMENT,
@@ -160,9 +160,9 @@ export const TEST_DATA = {
   question: QUESTION,
   surveyResponse: SURVEY_RESPONSE,
   answer: ANSWER,
-};
+});
 
-export const ANSWER001_TEST_ANALYTIC = {
+export const ANSWER001_TEST_ANALYTIC = /** @type {const} */ ({
   value: '1',
   type: 'Number',
   entity_code: 'E001',
@@ -175,9 +175,9 @@ export const ANSWER001_TEST_ANALYTIC = {
   week_period: '2020W01',
   day_period: '20200101',
   date: '2020-01-01 11:58:23',
-};
+});
 
-export const ANALYTICS = [
+export const ANALYTICS = /** @type {const} */ ([
   ANSWER001_TEST_ANALYTIC,
   {
     value: '2',
@@ -305,4 +305,4 @@ export const ANALYTICS = [
     day_period: '20200101',
     date: '2020-01-01 11:58:23',
   },
-];
+]);

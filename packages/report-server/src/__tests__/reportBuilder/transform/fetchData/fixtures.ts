@@ -1,21 +1,22 @@
 import { periodToMoment, utcMoment } from '@tupaia/tsutils';
 import { EARLIEST_DATA_DATE_STRING, getPeriodsInRange, yup } from '@tupaia/utils';
 import { CURRENT_DATE_STUB } from '../../../fixtures';
+import { EntityTypeEnum } from '@tupaia/types';
 
 export const HIERARCHY = 'explore';
 
 export const ENTITIES = [
-  { code: 'explore', country_code: null, type: 'project' },
-  { code: 'TO', country_code: 'TO', type: 'country' },
-  { code: 'WS', country_code: 'WS', type: 'country' },
-  { code: 'KI', country_code: 'KI', type: 'country' },
-  { code: 'MY', country_code: 'MY', type: 'country' },
-  { code: 'PG', country_code: 'PG', type: 'country' },
-  { code: 'PG_District', country_code: 'PG', type: 'district' },
-  { code: 'PG_Facility', country_code: 'PG', type: 'facility' },
-  { code: 'underwater_world', country_code: null, type: 'project' },
-  { code: 'AQUA_LAND', country_code: 'AQUA_LAND', type: 'country' },
-];
+  { code: 'explore', country_code: null, type: EntityTypeEnum.project },
+  { code: 'TO', country_code: 'TO', type: EntityTypeEnum.country },
+  { code: 'WS', country_code: 'WS', type: EntityTypeEnum.country },
+  { code: 'KI', country_code: 'KI', type: EntityTypeEnum.country },
+  { code: 'MY', country_code: 'MY', type: EntityTypeEnum.country },
+  { code: 'PG', country_code: 'PG', type: EntityTypeEnum.country },
+  { code: 'PG_District', country_code: 'PG', type: EntityTypeEnum.district },
+  { code: 'PG_Facility', country_code: 'PG', type: EntityTypeEnum.facility },
+  { code: 'underwater_world', country_code: null, type: EntityTypeEnum.project },
+  { code: 'AQUA_LAND', country_code: 'AQUA_LAND', type: EntityTypeEnum.country },
+] as const;
 
 export const RELATIONS = {
   explore: [
@@ -33,7 +34,7 @@ export const RELATIONS = {
 const SURVEY_QUESTIONS = {
   BCD: ['BCD1', 'BCD2'],
   ABC: ['ABC1', 'ABC2'],
-};
+} as const;
 
 const generateFakeAnalytics = () => {
   const periods = getPeriodsInRange(EARLIEST_DATA_DATE_STRING, CURRENT_DATE_STUB, 'DAY');

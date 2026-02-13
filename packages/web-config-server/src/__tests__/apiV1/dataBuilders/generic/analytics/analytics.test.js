@@ -2,10 +2,10 @@ import { createJestMockInstance } from '@tupaia/utils';
 import { analytics } from '/apiV1/dataBuilders/generic/analytics/analytics';
 
 describe('analytics', () => {
-  const ANALYTICS = [
+  const ANALYTICS = /** @type {const} */ ([
     { dataElement: 'TEST01', orgUnit: 'TO', period: '20190101', value: 1 },
     { dataElement: 'TEST02', orgUnit: 'PG', period: '20200101', value: 2 },
-  ];
+  ]);
 
   const aggregator = createJestMockInstance('@tupaia/aggregator', 'Aggregator', {
     fetchAnalytics: jest.fn().mockResolvedValue({ results: ANALYTICS }),

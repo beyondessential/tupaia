@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import pick from 'lodash.pick';
+
 import { isDefined } from '@tupaia/tsutils';
+import { Entity } from '@tupaia/types';
 import { EntityApiInterface } from '..';
 
 export class MockEntityApi implements EntityApiInterface {
@@ -103,8 +105,8 @@ export class MockEntityApi implements EntityApiInterface {
   }
 
   public constructor(
-    entities: Record<string, any>[] = [],
-    relations: Record<string, { parent: string; child: string }[]> = {},
+    entities: readonly Partial<Entity>[] = [],
+    relations: Readonly<Record<string, readonly { parent: string; child: string }[]>> = {},
   ) {
     this.relations = relations;
     this.entitiesByHierarchy = {};
@@ -221,10 +223,8 @@ export class MockEntityApi implements EntityApiInterface {
     descendantQueryOptions: { field?: string; filter?: { type: string } } = {},
   ) {
     const { field: queryField, ...restOfQueryOptions } = queryOptions;
-    const {
-      field: ancestorField = queryField || 'code',
-      ...restOfAncestorQueryOptions
-    } = ancestorQueryOptions;
+    const { field: ancestorField = queryField || 'code', ...restOfAncestorQueryOptions } =
+      ancestorQueryOptions;
     const ancestorOptions = {
       ...restOfQueryOptions,
       ...restOfAncestorQueryOptions,
