@@ -27,11 +27,8 @@ export const useLogout = () => {
   const { clientSyncManager } = useSyncContext() || {};
 
   return useDatabaseMutation(isOfflineFirst ? logoutOffline : logoutOnline, {
-    onSuccess: () => {
-      if (isOfflineFirst && clientSyncManager) {
-        clientSyncManager.stopSyncService();
-      }
-      queryClient.resetQueries();
+    onSuccess: async () => {
+      await Promise.all([clientSyncManager?.stopSyncService(), queryClient.resetQueries()]);
     },
   });
 };
