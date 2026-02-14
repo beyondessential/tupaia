@@ -1,10 +1,11 @@
 import React, { createContext, Dispatch, useContext, useMemo, useReducer, useState } from 'react';
-import { To, useMatch, useParams, useSearchParams } from 'react-router-dom';
+import { To, useParams, useSearchParams } from 'react-router-dom';
 
 import { Country, QuestionType, Survey } from '@tupaia/types';
 import { useSurvey } from '../../../api';
-import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../../constants';
+import { PRIMARY_ENTITY_CODE_PARAM } from '../../../constants';
 import { SurveyParams } from '../../../types';
+import { useIsResubmit, useIsReviewScreen, useIsSuccessScreen } from '../routes';
 import { getAllSurveyComponents, getPrimaryEntityParentQuestionIds } from '../utils';
 import { usePrimaryEntityQuestionAutoFill } from '../utils/usePrimaryEntityQuestionAutoFill';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
@@ -64,15 +65,9 @@ export const SurveyContext = ({
   const screenNumber = params.screenNumber ? Number.parseInt(params.screenNumber, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
 
-  const _isInitialSubmitReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const _isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
-  const isReviewScreen = _isInitialSubmitReviewScreen || _isResubmitReviewScreen;
-
-  const _isInitialSubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const _isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
-  const isSuccessScreen = _isInitialSubmitSuccessScreen || _isResubmitSuccessScreen;
-
-  const isResubmit = !!useMatch(`${ROUTES.SURVEY_RESUBMIT}/*`);
+  const isReviewScreen = useIsReviewScreen();
+  const isSuccessScreen = useIsSuccessScreen();
+  const isResubmit = useIsResubmit();
   const isResponseScreen = !!urlSearchParams.get('responseId');
 
   const surveyScreens = survey?.screens || [];
@@ -196,19 +191,6 @@ export const useSurveyForm = () => {
   const numberOfScreens = visibleScreens?.length ?? 0;
   const isLast = screenNumber === numberOfScreens;
 
-  const _isInitialSubmitReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const _isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
-  const isReviewScreen = _isInitialSubmitReviewScreen || _isResubmitReviewScreen;
-
-  const _isInitialSubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const _isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
-  const isSuccessScreen = _isInitialSubmitSuccessScreen || _isResubmitSuccessScreen;
-
-  const isResubmit = !!useMatch(`${ROUTES.SURVEY_RESUBMIT}/*`);
-
-  const [urlSearchParams] = useSearchParams();
-  const isResponseScreen = !!urlSearchParams.get('responseId');
-
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
   };
@@ -219,7 +201,6 @@ export const useSurveyForm = () => {
 
   const updateFormData = (newFormData: Record<string, any>) => {
     const updatedFormData = getUpdatedFormData(newFormData, formData, flattenedScreenComponents);
-
     setFormData(updatedFormData);
   };
 
@@ -242,10 +223,6 @@ export const useSurveyForm = () => {
   return {
     ...surveyFormContext,
     isLast,
-    isResponseScreen,
-    isResubmit,
-    isReviewScreen,
-    isSuccessScreen,
     numberOfScreens,
     toggleSideMenu,
     updateFormData,
