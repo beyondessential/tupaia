@@ -1,4 +1,4 @@
-import { keyBy } from 'es-toolkit/compat';
+import { uniqBy } from 'es-toolkit';
 
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
@@ -474,7 +474,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         },
       );
       const relationData = await Promise.all(relations.map(async r => r.getData()));
-      const uniqueEntities = Object.values(keyBy(relationData, 'id'));
+      const uniqueEntities = uniqBy(relationData, r => r.id);
       return uniqueEntities;
     });
     return Promise.all(entityRecords.map(async r => this.generateInstance(r)));

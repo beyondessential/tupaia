@@ -1,4 +1,4 @@
-import { groupBy, keyBy } from 'es-toolkit/compat';
+import { groupBy, uniqBy } from 'es-toolkit';
 
 import type { DhisApi } from '@tupaia/dhis-api';
 import { DataBrokerModelRegistry, RawAnalyticResults } from '../../../types';
@@ -184,7 +184,7 @@ export class AnalyticsPuller {
 
     await Promise.all(programCodes.map(fetchAnalyticsForProgram));
     return {
-      headers: Object.values(keyBy(allHeaders, 'name')),
+      headers: uniqBy(allHeaders, h => h.name),
       metaData,
       width,
       height,
