@@ -18,7 +18,7 @@ export const getContinuousPeriodsForAnalytics = (
     .sort(compareAsc);
   const endPeriod =
     !continueTilCurrentPeriod && periodsInAnalytics.length
-      ? periodsInAnalytics[periodsInAnalytics.length - 1].toString() // Max
+      ? periodsInAnalytics.at(-1).toString() // Max
       : getCurrentPeriod(aggregationPeriod);
 
   const startPeriod = periodsInAnalytics.length

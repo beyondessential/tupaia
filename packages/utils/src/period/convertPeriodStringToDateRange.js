@@ -13,6 +13,6 @@ export const convertPeriodStringToDateRange = periodString => {
   }
   const periods = periodString.split(';');
   const startPeriod = periods[0];
-  const endPeriod = periods[periods.length - 1];
+  const endPeriod = periods.at(-1);
   return [periodToDateString(startPeriod, false), periodToDateString(endPeriod, true)];
 };

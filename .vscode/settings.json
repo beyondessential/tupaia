@@ -42,6 +42,7 @@
     "jsonb",
     "keyby",
     "Lesmis",
+    "loggable",
     "MediTrak",
     "Microservice",
     "middlewares",

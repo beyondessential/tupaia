@@ -103,7 +103,7 @@ export class LegacyCountChangesHandler {
     const { unsupportedTypes = [] } = config;
 
     const types = getSyncTypesOrderedByDescVersion(models);
-    const lastUnsupportedType = unsupportedTypes[unsupportedTypes.length - 1];
+    const lastUnsupportedType = unsupportedTypes.at(-1);
     // Add 2 to the index to slice until the next item from the current last
     const newUnsupportedTypes = types.slice(0, types.indexOf(lastUnsupportedType) + 2);
 
