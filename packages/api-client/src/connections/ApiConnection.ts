@@ -1,10 +1,9 @@
+import type { Response as ExpressResponse } from 'express';
 import type { HeadersInit, RequestInit, Response } from 'node-fetch';
 import nodeFetch from 'node-fetch';
 import { stringify } from 'qs';
-import { Response as ExpressResponse} from 'express';
 
 import { CustomError } from '@tupaia/utils';
-
 import { AuthHandler, QueryParameters } from '../types';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
@@ -18,7 +17,7 @@ type FetchConfig = RequestInit & {
   headers: FetchHeaders;
 };
 
-const DEFAULT_MAX_WAIT_TIME = 120 * 1000; // 120 seconds in milliseconds
+const DEFAULT_MAX_WAIT_TIME = 120_000; // 120 seconds
 
 export class ApiConnection {
   private readonly authHandler: AuthHandler;
