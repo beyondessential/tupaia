@@ -3,6 +3,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { ExpandLess, ExpandMore, OpenInNew } from '@material-ui/icons';
+import { uniq } from 'es-toolkit';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -42,7 +43,7 @@ const StyledLink = styled(Link)`
 export const UsedBy = ({ usedBy, isLoading, errorMessage, typeHeadings, header }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const types = [...new Set(usedBy.map(item => item.type))];
+  const types = uniq(usedBy.map(item => item.type));
 
   return (
     <>
