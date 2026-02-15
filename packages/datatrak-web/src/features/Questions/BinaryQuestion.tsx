@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { isNonEmptyArray } from '@tupaia/tsutils';
 import { SurveyQuestionInputProps } from '../../types';
-import { isNonEmptyArray } from '../../utils';
 import { RadioQuestion } from './RadioQuestion';
 
 export const BinaryQuestion = ({ options = [], ...props }: SurveyQuestionInputProps) => {

@@ -3,6 +3,7 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { isNonEmptyArray, isNullish } from '@tupaia/tsutils';
 import {
   DatatrakWebSingleSurveyResponseRequest,
   DatatrakWebSubmitSurveyResponseRequest,
@@ -10,13 +11,7 @@ import {
 } from '@tupaia/types';
 import { useAutocompleteOptions, useEntityById } from '../../api';
 import { SurveyScreenComponent } from '../../types';
-import {
-  displayDate,
-  displayDateTime,
-  formatNumberWithTrueMinus,
-  isNonEmptyArray,
-  isNullish,
-} from '../../utils';
+import { displayDate, displayDateTime, formatNumberWithTrueMinus } from '../../utils';
 
 type SurveyResponse = DatatrakWebSingleSurveyResponseRequest.ResBody;
 
