@@ -198,7 +198,7 @@ export class BaseDatabase {
    * Uses pg_try_advisory_xact_lock with retry to prevent indefinite blocking
    * that can exhaust the connection pool.
    *
-   * @param {number} lockKeyInt numeric key for the lock (bigint)
+   * @param {number} lockKeyInt numeric key for the lock
    * @param {object} [options]
    * @param {number} [options.maxRetries=43200] Maximum number of retry attempts (default 12 hours)
    * @param {number} [options.retryDelayMs=1000] Delay between retries in milliseconds
