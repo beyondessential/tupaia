@@ -24,22 +24,17 @@ export const withDeferredSyncSafeguards = async <
    * Note: Only constraints explicitly altered to be DEFERRABLE will be affected.
    * Standard foreign key constraints continue to be enforced immediately.
    */
-  await database.executeSql(`
-    SET CONSTRAINTS ALL DEFERRED;
-  `);
+  await database.executeSql('SET CONSTRAINTS ALL DEFERRED;');
 
   const results = await operation();
 
-  // The function is always wrapped inside a transaction, 
+  // The function is always wrapped inside a transaction,
   // If the operation fails, the transaction will be rolled back.
   // So even though the logic below to switch back to immediate mode is not run
   // the transaction will still rollback everything.
 
   // Switch back to immediate mode
-  await database.executeSql(`
-    SET CONSTRAINTS ALL IMMEDIATE;
-  `);
-
+  await database.executeSql('SET CONSTRAINTS ALL IMMEDIATE;');
 
   return results;
 };
