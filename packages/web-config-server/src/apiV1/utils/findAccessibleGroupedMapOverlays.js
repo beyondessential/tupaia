@@ -25,10 +25,10 @@ const findNestedGroupedMapOverlays = async (
 
   // If there are map overlay relations, add them to the results
   if (mapOverlayRelations.length) {
-    const mapOverlayIds = mapOverlayRelations.map(m => m.child_id);
+    const mapOverlayIdsSet = new Set(mapOverlayRelations.map(m => m.child_id));
 
     const mapOverlays = Object.values(accessibleMapOverlays).filter(mapOverlay =>
-      mapOverlayIds.includes(mapOverlay.id),
+      mapOverlayIdsSet.has(mapOverlay.id),
     );
 
     mapOverlayResults = translateOverlaysForResponse(mapOverlays);
