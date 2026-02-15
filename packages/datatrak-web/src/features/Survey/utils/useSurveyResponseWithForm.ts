@@ -1,11 +1,13 @@
-import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
 import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
+
+import { ensure } from '@tupaia/tsutils';
+import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { useSurvey } from '../../../api';
 import { useSurveyForm } from '../SurveyContext';
-import { getAllSurveyComponents } from '../utils';
 import { generateCodeForCodeGeneratorQuestions } from '../SurveyContext/utils';
+import { getAllSurveyComponents } from '../utils';
 
 /**
  * Utility hook to process survey response data and populate the form with it
@@ -42,7 +44,7 @@ export const useSurveyResponseWithForm = (
       if (question.type === QuestionType.File && value) {
         // If the value is a file, split the value to get the file name
         const withoutPrefix = (value as string).split('files/');
-        const fileNameParts = withoutPrefix[withoutPrefix.length - 1].split('_');
+        const fileNameParts = ensure(withoutPrefix.at(-1)).split('_');
         // remove first element of the array as it is the file id
         const fileName = fileNameParts.slice(1).join('_');
         return { ...acc, [key]: { name: fileName, value } };

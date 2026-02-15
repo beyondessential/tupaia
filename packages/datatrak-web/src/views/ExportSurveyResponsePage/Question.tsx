@@ -114,7 +114,7 @@ const useDisplayAnswer = (
     case QuestionType.File: {
       // If the value is a file, split the value to get the file name
       const withoutPrefix = answer.split('files/');
-      const fileNameParts = withoutPrefix[withoutPrefix.length - 1].split('_');
+      const fileNameParts = withoutPrefix.at(-1).split('_');
       // remove first element of the array as it is the file id
       return fileNameParts.slice(1).join('_');
     }

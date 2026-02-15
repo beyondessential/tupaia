@@ -25,7 +25,7 @@ export const last = (values: FieldValue[]): FieldValue => {
     return undefined;
   }
 
-  return values[values.length - 1];
+  return values.at(-1);
 };
 
 export const unique = (values: FieldValue[]): FieldValue[] => {
