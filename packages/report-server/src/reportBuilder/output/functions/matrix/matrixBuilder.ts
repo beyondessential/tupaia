@@ -13,7 +13,7 @@ function isMatrixEntityCell(cell: unknown): cell is MatrixEntityCell {
  */
 const ROW_FIELD_KEY = 'dataElement';
 const CATEGORY_FIELD_KEY = 'categoryId';
-const NON_COLUMNS_KEYS = [CATEGORY_FIELD_KEY, ROW_FIELD_KEY];
+const NON_COLUMNS_KEYS = [CATEGORY_FIELD_KEY, ROW_FIELD_KEY] as const;
 
 export class MatrixBuilder {
   private table: TransformTable;
@@ -57,29 +57,28 @@ export class MatrixBuilder {
       includeFields: (string | MatrixEntityCell)[],
       excludeFields: string[],
     ) => {
-      const entityFields = includeFields.filter(field =>
-        isMatrixEntityCell(field),
-      ) as MatrixEntityCell[];
-      const entityFieldNames = entityFields.map(field => field.entityLabel);
+      const fieldNames = new Set(
+        includeFields.filter(isMatrixEntityCell).map(field => field.entityLabel),
+      );
+      const exclusions = new Set(excludeFields);
+      const inclusions = new Set(includeFields);
 
       return this.table.getColumns().filter((columnName: string) => {
-        return (
-          !entityFieldNames.includes(columnName) &&
-          !excludeFields.includes(columnName) &&
-          !includeFields.includes(columnName)
+        return !(
+          fieldNames.has(columnName) ||
+          exclusions.has(columnName) ||
+          inclusions.has(columnName)
         );
       });
     };
 
     const { includeFields: originalIncludeFields, excludeFields } = this.params.columns;
 
-    // If the include fields are a matrix entity cell not in the table columns, don't include them
-    const includeFields = originalIncludeFields.filter(field => {
-      if (isMatrixEntityCell(field)) {
-        return this.table.getColumns().includes(field.entityLabel);
-      }
-      return true;
-    });
+    const columnSet = new Set(this.table.getColumns());
+    const includeFields = originalIncludeFields.filter(field =>
+      // If the include fields are a matrix entity cell not in the table columns, don't include them
+      isMatrixEntityCell(field) ? columnSet.has(field.entityLabel) : true,
+    );
 
     const remainingFields = includeFields.includes('*')
       ? getRemainingFieldsFromRows(includeFields, excludeFields)
