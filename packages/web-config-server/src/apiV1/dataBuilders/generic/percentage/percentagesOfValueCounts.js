@@ -22,16 +22,16 @@ const OPERATION_TYPES = {
 
 const buildFilterAnalyticsFunction = fraction => {
   if (fraction.compare === COMPARISON_TYPES.COUNT) {
-    if (fraction.dataValues.length !== 2) {
+    if (fraction.dataValues.length !== 2 || !fraction.dataValues.every(Array.isArray)) {
       throw new Error(
         'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
       );
     }
 
-    const [values, valuesToCompare] = fraction.dataValues;
+    const [values, valuesToCompare] = fraction.dataValues.map(arr => new Set(arr));
     return results => {
-      const set1 = results.filter(r => values.includes(r.dataElement));
-      const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
+      const set1 = results.filter(r => values.has(r.dataElement));
+      const set2 = results.filter(r => valuesToCompare.has(r.dataElement));
 
       const set1Count = countAnalyticsThatSatisfyConditions(set1, {
         dataValues: values,
@@ -194,8 +194,9 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   calculateFractionPart = (fraction, analytics) => {
     if (fraction.compare || fraction.operation) {
       const filterAnalyticsFunction = buildFilterAnalyticsFunction(fraction);
+      const dataValuesSet = new Set(flatten(fraction.dataValues));
       const filteredAnalytics = analytics.filter(analytic =>
-        flatten(fraction.dataValues).includes(analytic.dataElement),
+        dataValuesSet.has(analytic.dataElement),
       );
 
       return this.countAnalyticsUsingFilterFunction(
