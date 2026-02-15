@@ -149,9 +149,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
             rows
               .filter(row => rowsWithData.includes(row.code))
               .forEach(row => {
-                this.rowsToDescriptions[row.name] = this.rowDescriptionResults[
-                  row.descriptionDataElement
-                ];
+                this.rowsToDescriptions[row.name] =
+                  this.rowDescriptionResults[row.descriptionDataElement];
               });
           }
 
@@ -200,9 +199,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
         this.tableConfig.rows
           .filter(row => rowsWithData.includes(row.code))
           .forEach(row => {
-            this.rowsToDescriptions[row.name] = this.rowDescriptionResults[
-              row.descriptionDataElement
-            ];
+            this.rowsToDescriptions[row.name] =
+              this.rowDescriptionResults[row.descriptionDataElement];
           });
       }
       this.tableConfig.rows = this.tableConfig.rows.filter(row => rowsWithData.includes(row.code));
@@ -384,7 +382,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   flattenColumnCategories = columns => {
     return this.hasColumnsInCategories(columns)
-      ? [].concat(...columns.map(categories => categories.columns))
+      ? columns.flatMap(categories => categories.columns)
       : columns;
   };
 

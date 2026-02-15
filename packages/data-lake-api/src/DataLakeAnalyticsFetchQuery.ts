@@ -78,8 +78,8 @@ export class DataLakeAnalyticsFetchQuery {
 
     // We use INNER JOINs here as it's more performant than a large WHERE IN clause (https://dba.stackexchange.com/questions/91247/optimizing-a-postgres-query-with-a-large-in)
     const query = `
-      SELECT 
-        entity_code AS "entityCode", 
+      SELECT
+        entity_code AS "entityCode",
         data_element_code AS "dataElementCode",
         to_char(date, 'YYYYMMDD') as period,
         value_type as type,
@@ -90,7 +90,7 @@ export class DataLakeAnalyticsFetchQuery {
       ${whereClause}
       ORDER BY date;
      `;
-    const params = this.entityCodes.concat(this.dataElementCodes).concat(whereParams);
+    const params = this.entityCodes.concat(this.dataElementCodes, whereParams);
 
     return { query, params };
   }

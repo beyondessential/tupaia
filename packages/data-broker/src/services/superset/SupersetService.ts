@@ -58,7 +58,7 @@ export class SupersetService extends Service {
           dataServiceMapping,
           { startDate, endDate, organisationUnitCodes },
         );
-        mergedResults = mergedResults.concat(results);
+        mergedResults.push(...results);
       }
     }
 

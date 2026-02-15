@@ -1,11 +1,15 @@
 import { mapKeys, reduceToDictionary } from '@tupaia/utils';
 import { DHIS2_RESOURCE_TYPES } from './types';
 
+/**
+ * @param {*} dhisApi
+ * @param {Array} events
+ */
 export const translateElementIdsToCodesInEvents = async (dhisApi, events) => {
-  const ids = events.reduce(
-    (allIds, event) => allIds.concat(event.dataValues.map(({ dataElement }) => dataElement)),
-    [],
-  );
+  const ids = events.reduce((allIds, event) => {
+    allIds.push(...event.dataValues.map(({ dataElement }) => dataElement));
+    return allIds;
+  }, []);
   const dataElements = await dhisApi.getRecords({
     ids,
     fields: ['id', 'code'],

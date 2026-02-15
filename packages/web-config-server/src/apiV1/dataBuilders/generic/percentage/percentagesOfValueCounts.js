@@ -80,10 +80,10 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
     Object.values(this.config.dataClasses).forEach(({ numerator, denominator }) => {
       const numeratorCodesForClass = getCodesFromConfig(numerator);
-      codes.numerator = codes.numerator.concat(numeratorCodesForClass);
+      codes.numerator.push(...numeratorCodesForClass);
 
       const denominatorCodesForClass = getCodesFromConfig(denominator);
-      codes.denominator = codes.denominator.concat(denominatorCodesForClass);
+      codes.denominator.push(...denominatorCodesForClass);
     });
 
     // This ensures each bit of data is only fetched once.

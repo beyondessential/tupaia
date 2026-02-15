@@ -299,11 +299,10 @@ export class AnalyticsFetchQuery {
       ${SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)}
       ${SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes)}
       ${whereClause}) as base_analytics`;
-    const baseAnalyticsParams = this.entityCodes.concat(this.dataElementCodes).concat(whereParams);
-
+    const baseAnalyticsParams = this.entityCodes.concat(this.dataElementCodes, whereParams);
     const wrapAnalyticsInAggregation = (analytics: string, aggregation: QueryAggregation) =>
-      `(${this.getAggregationSelect(aggregation)} 
-      FROM 
+      `(${this.getAggregationSelect(aggregation)}
+      FROM
       ${analytics}
       ${this.getAggregationJoin(aggregation)}
       ${this.getAggregationGroupByClause(aggregation)}) as a${aggregation.stackId}`;

@@ -52,7 +52,7 @@ export const fetchAllowedOrgUnitsForDataElements = async (
     );
     if (missingPermissions.length === 0) {
       // Have access to all data elements for country
-      allowedOrgUnits = allowedOrgUnits.concat(orgUnitsByCountry[country]);
+       allowedOrgUnits..push(...orgUnitsByCountry[country]);
     }
 
     missingPermissions.forEach(dataElement =>

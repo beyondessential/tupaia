@@ -142,11 +142,7 @@ export class DhisService extends Service {
 
   private getMetadataMergers() {
     return {
-      [this.dataSourceTypes.DATA_ELEMENT]: (results: DataElementMetadata[]) =>
-        results.reduce(
-          (existingResults, result) => existingResults.concat(result),
-          [] as DataElementMetadata[],
-        ),
+      [this.dataSourceTypes.DATA_ELEMENT]: (results: DataElementMetadata[]) => [...results],
       [this.dataSourceTypes.DATA_GROUP]: (results: DataGroupMetadata[]) => results[0],
     };
   }

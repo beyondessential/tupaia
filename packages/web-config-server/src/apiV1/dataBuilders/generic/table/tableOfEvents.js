@@ -41,7 +41,10 @@ class TableOfEventsBuilder extends DataBuilder {
 
   getKeysBySourceType() {
     const allKeys = Object.entries(this.config.columns).reduce(
-      (keys, [primaryKey, { additionalData = [] }]) => keys.concat([primaryKey, ...additionalData]),
+      (keys, [primaryKey, { additionalData = [] }]) => {
+        keys.push(primaryKey, ...additionalData);
+        return keys;
+      },
       [],
     );
 

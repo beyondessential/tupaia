@@ -100,7 +100,7 @@ export class AnalyticsPuller {
       pullOptions: PullAnalyticsOptions,
     ) => {
       const { results, metadata } = await pullAnalyticsForApi(api, dataSourceList, pullOptions);
-      response.results = [...response.results].concat(results);
+      response.results.push(...results);
       response.metadata = {
         dataElementCodeToName: {
           ...(response.metadata?.dataElementCodeToName || {}),
@@ -112,9 +112,8 @@ export class AnalyticsPuller {
       if (dhisDataType === this.models.dataElement.getDhisDataTypes().INDICATOR) {
         // Multiple DHIS Indicators may have different period types,
         // so we have to group them by their period types and fetch them separately
-        const groupedDataSourcesByPeriodType = this.groupIndicatorDataSourcesByPeriodType(
-          dataSources,
-        );
+        const groupedDataSourcesByPeriodType =
+          this.groupIndicatorDataSourcesByPeriodType(dataSources);
         return Promise.all(
           Object.entries(groupedDataSourcesByPeriodType).map(
             ([dataPeriodType, groupedDataSources]) => {
@@ -239,10 +238,8 @@ export class AnalyticsPuller {
       dhisDataType?: DataType;
     },
   ) => {
-    const {
-      programCodes,
-      dhisDataType = this.models.dataElement.getDhisDataTypes().DATA_ELEMENT,
-    } = options;
+    const { programCodes, dhisDataType = this.models.dataElement.getDhisDataTypes().DATA_ELEMENT } =
+      options;
 
     if (programCodes) {
       return this.pullAnalyticsFromEventsForApi;
@@ -275,7 +272,7 @@ export class AnalyticsPuller {
         options,
         dhisDataType,
       );
-      response.results = [...response.results].concat(results);
+      response.results.push(...results);
       response.metadata = {
         dataElementCodeToName: {
           ...(response.metadata?.dataElementCodeToName || {}),

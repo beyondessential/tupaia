@@ -79,7 +79,7 @@ export class DataLakeEventsFetchQuery {
     let params = this.entityCodes;
     const joins = [SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)];
     if (this.hasDataElements) {
-      params = params.concat(this.dataElementCodes as string[]);
+      params.push(...(this.dataElementCodes as string[]));
       joins.push(
         SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes as string[]),
       );

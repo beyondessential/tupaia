@@ -31,8 +31,7 @@ export const buildAccessPolicy = async (models, userId) => {
       // implied access for them, so they'll also be added to the access policy (which has a simple,
       // flat structure, ignorant of the fact that permission groups exist in a hierarchy)
       const permissionGroupChildren = await getOrFetchPermissionGroupChildren(permissionGroupName);
-      permissionsByEntity[entityCode] =
-        permissionsByEntity[entityCode].concat(permissionGroupChildren);
+      permissionsByEntity[entityCode].push(...permissionGroupChildren);
     }),
   );
 

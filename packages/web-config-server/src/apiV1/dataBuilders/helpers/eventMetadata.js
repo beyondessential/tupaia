@@ -80,10 +80,7 @@ class Cache {
   }
 
   getCacheKeys() {
-    const cacheKeys = this.metadataKeys.reduce(
-      (result, key) => result.concat(METADATA_KEYS[key].cache),
-      [],
-    );
+    const cacheKeys = this.metadataKeys.flatMap(key => METADATA_KEYS[key].cache);
     return [...new Set(cacheKeys)];
   }
 

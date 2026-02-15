@@ -38,9 +38,8 @@ export class Aggregator {
     const { aggregations = [], filter } = aggregationOptions;
     const aggregatedAnalytics = results.reduce((array, { analytics, numAggregationsProcessed }) => {
       const remainingAggregations = aggregations.slice(numAggregationsProcessed);
-      return array.concat(
-        this.aggregateAnalytics(analytics, remainingAggregations, requestedPeriod),
-      );
+      array.push(...this.aggregateAnalytics(analytics, remainingAggregations, requestedPeriod));
+      return array;
     }, []);
 
     return filterAnalytics(aggregatedAnalytics, filter);
@@ -75,7 +74,10 @@ export class Aggregator {
 
     const codes = toArray(codeInput);
     const { results, metadata } = await this.dataBroker.pullAnalytics(codes, adjustedFetchOptions);
-    const rawAnalytics = results.reduce((array, { analytics }) => array.concat(analytics), []);
+    const rawAnalytics = results.reduce((array, { analytics }) => {
+      array.push(...analytics);
+      return array;
+    }, []);
 
     return {
       results: this.processAnalytics(results, adjustedAggregationOptions, fetchOptions.period),

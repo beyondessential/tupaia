@@ -175,9 +175,8 @@ export class DhisTranslator {
   };
 
   public async translateInboundEvents(events: Event[], dataGroupCode: string): Promise<Event[]> {
-    const dataElementsInGroup = await this.models.dataGroup.getDataElementsInDataGroup(
-      dataGroupCode,
-    );
+    const dataElementsInGroup =
+      await this.models.dataGroup.getDataElementsInDataGroup(dataGroupCode);
     const dataElementToSourceCode = reduceToDictionary(
       dataElementsInGroup,
       'dataElementCode',
@@ -238,7 +237,7 @@ export class DhisTranslator {
         });
 
       if (translatedMetadata.length > 0) {
-        results = results.concat(translatedMetadata);
+        results.push(...translatedMetadata);
       } else {
         results.push(mData);
       }

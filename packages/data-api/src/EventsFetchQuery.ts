@@ -78,7 +78,7 @@ export class EventsFetchQuery {
     let params = this.entityCodes;
     const joins = [SqlQuery.innerJoin('analytics', 'entity_code', this.entityCodes)];
     if (this.hasDataElements) {
-      params = params.concat(this.dataElementCodes);
+      params.push(...this.dataElementCodes);
       joins.push(SqlQuery.innerJoin('analytics', 'data_element_code', this.dataElementCodes));
     }
     return { joins: joins.join('\n'), params };
