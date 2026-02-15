@@ -1,9 +1,5 @@
 import { Alert, styled } from '@mui/material';
-import React from 'react';
-
-interface BannerNotificationProps {
-  message: React.ReactNode;
-}
+import React, { ComponentPropsWithoutRef } from 'react';
 
 const StyledAlert = styled(Alert)`
   background-color: ${props => props.theme.palette.grey[900]};
@@ -15,6 +11,6 @@ const StyledAlert = styled(Alert)`
   }
 `;
 
-export function BannerNotification({ message }: BannerNotificationProps) {
-  return <StyledAlert icon={false}>{message}</StyledAlert>;
+export function BannerNotification(props: ComponentPropsWithoutRef<typeof StyledAlert>) {
+  return <StyledAlert icon={false} {...props} />;
 }

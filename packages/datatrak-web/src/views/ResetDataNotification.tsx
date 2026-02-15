@@ -1,6 +1,5 @@
 import { Link, styled } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { SyncFact } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
@@ -20,23 +19,20 @@ const StyledLink = styled(Link)`
 function useOnPermissionChange(
   handler: Handler<SyncEvents[typeof SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED]>,
 ) {
-  const syncManager = ensure(useSyncContext()?.clientSyncManager);
+  const syncManager = useSyncContext()?.clientSyncManager;
   useEffect(() => {
-    syncManager.emitter.on(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
+    syncManager?.emitter.on(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
     return () => {
-      syncManager.emitter.off(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
+      syncManager?.emitter.off(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
     };
-  }, [syncManager]);
+  }, [handler, syncManager]);
 }
 
-export const ResetDataNotification = () => {
-  const { mutate: logout } = useLogout();
-  const navigate = useNavigate();
-  const clientSyncManager = ensure(useSyncContext()?.clientSyncManager);
+/** @returns True if and only if the current user’s permissions have changed since last sync. */
+function usePermissionsDidChange() {
   const models = ensure(useDatabaseContext()?.models);
-  const [permissionsChanged, setPermissionsChanged] = useState(
-    clientSyncManager.permissionsChanged,
-  );
+  const syncManager = ensure(useSyncContext()?.clientSyncManager);
+  const [permissionsChanged, setPermissionsChanged] = useState(syncManager.permissionsChanged);
 
   useEffect(() => {
     const loadPermissionsChanged = async () => {
@@ -46,23 +42,33 @@ export const ResetDataNotification = () => {
     loadPermissionsChanged();
   }, [models]);
 
-  useOnPermissionChange(syncEvent => void setPermissionsChanged(syncEvent.permissionsChanged));
+  const permissionChangeHandler = useCallback(
+    syncEvent => void setPermissionsChanged(syncEvent.permissionsChanged),
+    [],
+  );
+  useOnPermissionChange(permissionChangeHandler);
 
-  const resetDatabase = useCallback(async () => {
-    logout();
+  return permissionsChanged;
+}
+
+export const ResetDataNotification = () => {
+  const { mutateAsync: logOut } = useLogout();
+  const models = ensure(useDatabaseContext()?.models);
+  const permissionsChanged = usePermissionsDidChange();
+
+  const resetDatabase = async () => {
+    await logOut();
     await clearDatabase(models);
-  }, [models, logout, navigate]);
+  };
 
   if (!permissionsChanged) {
     return null;
   }
 
-  const Message = () => (
-    <>
+  return (
+    <BannerNotification>
       <strong>Permissions changed.</strong> Your permissions were updated while you were offline.{' '}
       <StyledLink onClick={resetDatabase}>Log out</StyledLink> and back in to get the latest data.
-    </>
+    </BannerNotification>
   );
-
-  return <BannerNotification message={<Message />} />;
 };
