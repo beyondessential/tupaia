@@ -1,5 +1,5 @@
-import { uniq } from 'es-toolkit';
-import { flattenDeep, groupBy, keyBy } from 'es-toolkit/compat';
+import { keyBy, uniq } from 'es-toolkit';
+import { flattenDeep, groupBy } from 'es-toolkit/compat';
 
 import { ensure, isNullish } from '@tupaia/tsutils';
 import { reduceToDictionary, ValidationError } from '@tupaia/utils';
@@ -24,7 +24,7 @@ export const assertCanImportSurveyResponses = async (
       winston.error('Unexpected nullish element in `allEntities`', { allEntities });
     }
 
-    const codeToSurvey = keyBy(surveys, 'code');
+    const codeToSurvey = keyBy(surveys, s => s.code);
     const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
     const surveyPermissionGroups =
       await transactingModels.permissionGroup.findManyById(surveyPermissionGroupIds);

@@ -1,7 +1,8 @@
 import { Request } from 'express';
 import xlsx from 'xlsx';
-import { keyBy } from 'es-toolkit/compat';
+import { keyBy } from 'es-toolkit';
 import { Route } from '@tupaia/server-boilerplate';
+import type { Entity } from '@tupaia/types';
 
 export type ExportEntityHierarchiesRequest = Request<
   { hierarchies: string },
@@ -41,7 +42,7 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
         false,
       );
 
-      const descendantsByCode = keyBy(descendants, 'code');
+      const descendantsByCode = keyBy(descendants, (d: { code: Entity['code'] }) => d.code);
 
       const data = descendants.map((row: ExportEntityHierarchiesData) => {
         const record = {

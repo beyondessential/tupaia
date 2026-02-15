@@ -1,4 +1,4 @@
-import { keyBy } from 'es-toolkit/compat';
+import { keyBy } from 'es-toolkit';
 import momentTimezone from 'moment-timezone';
 
 import { generateId } from '@tupaia/database';
@@ -9,7 +9,7 @@ import { upsertAnswers } from '../../dataAccessors';
 
 async function getRecordsByCode(model, codes) {
   const records = await model.find({ code: Array.from(codes) });
-  return keyBy(records, 'code');
+  return keyBy(records, r => r.code);
 }
 
 async function getEntitiesByCode(models, responses) {

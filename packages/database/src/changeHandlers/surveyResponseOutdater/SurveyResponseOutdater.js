@@ -1,5 +1,4 @@
-import { uniq } from 'es-toolkit';
-import { groupBy, keyBy } from 'es-toolkit/compat';
+import { groupBy, keyBy, uniq } from 'es-toolkit';
 
 import { haveSameFields } from '@tupaia/utils';
 import { isMarkedChange } from '../../utilities';
@@ -93,7 +92,7 @@ export class SurveyResponseOutdater extends ChangeHandler {
    */
   async handleChanges(transactingModels, changedResponses) {
     const surveysById = await this.fetchSurveysById(changedResponses);
-    const responsesBySurveyId = groupBy(changedResponses, 'survey_id');
+    const responsesBySurveyId = groupBy(changedResponses, sr => sr.survey_id);
     const outdatedResponseFlagger = new OutdatedResponseFlagger(transactingModels);
     return Promise.all(
       Object.entries(responsesBySurveyId).map(([surveyId, responsesForSurvey]) =>
@@ -111,6 +110,6 @@ export class SurveyResponseOutdater extends ChangeHandler {
   async fetchSurveysById(surveyResponses) {
     const surveyIds = uniq(surveyResponses.map(r => r.survey_id));
     const surveys = await this.models.survey.findManyById(surveyIds);
-    return keyBy(surveys, 'id');
+    return keyBy(surveys, s => s.id);
   }
 }

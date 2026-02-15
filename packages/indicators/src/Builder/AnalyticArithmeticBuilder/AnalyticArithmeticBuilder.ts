@@ -1,4 +1,4 @@
-import { groupBy } from 'es-toolkit/compat';
+import { groupBy } from 'es-toolkit';
 
 import { stripFields } from '@tupaia/utils';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
@@ -97,7 +97,7 @@ export class AnalyticArithmeticBuilder extends Builder {
 
   private fetchParameterAnalytics = async (fetchOptions: FetchOptions) => {
     const analytics = await this.api.buildAnalyticsForBuilders(this.paramBuilders, fetchOptions);
-    const analyticsByElement = groupBy(analytics, 'dataElement');
+    const analyticsByElement = groupBy(analytics, a => a.dataElement);
 
     return Object.entries(analyticsByElement).flatMap(([element, analyticsForElement]) => {
       const aggregationList = this.config.aggregation[element];

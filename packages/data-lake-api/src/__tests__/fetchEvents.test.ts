@@ -1,4 +1,4 @@
-import { groupBy } from 'es-toolkit/compat';
+import { groupBy } from 'es-toolkit';
 import { DataLakeApi } from '../DataLakeApi';
 import {
   Analytic,
@@ -10,7 +10,7 @@ import {
 import { getTestWriteDatabase, clearTestData, importTestData } from './utilities';
 
 const getEventsFromAnalytics = (analytics: Analytic[], dataElementsToInclude: string[] = []) => {
-  const analyticsById = groupBy(analytics, 'event_id');
+  const analyticsById = groupBy(analytics, a => a.event_id);
   const events = Object.values(analyticsById).map(analyticGroup => {
     const analytic = analyticGroup[0];
     return {

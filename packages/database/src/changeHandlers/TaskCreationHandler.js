@@ -1,12 +1,12 @@
 import { formatInTimeZone } from 'date-fns-tz';
-import { keyBy } from 'es-toolkit/compat';
+import { keyBy } from 'es-toolkit';
 
 import { QuestionType } from '@tupaia/types';
 
 import { ChangeHandler } from './ChangeHandler';
 
 const getAnswerWrapper = (config, answers) => {
-  const answersByQuestionId = keyBy(answers, 'question_id');
+  const answersByQuestionId = keyBy(answers, a => a.question_id);
   return questionKey => {
     const questionId = config[questionKey]?.questionId;
     if (!questionId) {

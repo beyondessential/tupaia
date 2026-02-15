@@ -1,5 +1,5 @@
 import { format, differenceInYears, addDays, isDate } from 'date-fns';
-import { keyBy } from 'es-toolkit/compat';
+import { keyBy } from 'es-toolkit';
 import { Event } from '../../types';
 import { ReqContext } from '../context';
 import SURVEYS from './data/tongaCovidRawData.json';
@@ -115,7 +115,7 @@ const fetchEvents = async (
 };
 
 const combineAndFlatten = (registrationEvents: Event[], resultEvents: Event[]) => {
-  const registrationEventsByOrgUnit = keyBy(registrationEvents, 'orgUnit');
+  const registrationEventsByOrgUnit = keyBy(registrationEvents, e => e.orgUnit);
   const combinedEvents: Record<string, any>[] = [];
   resultEvents.forEach(resultEvent => {
     const { dataValues: resultDataValues, orgUnit, eventDate } = resultEvent;

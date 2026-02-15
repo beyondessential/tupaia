@@ -1,4 +1,4 @@
-import { groupBy, keyBy } from 'es-toolkit/compat';
+import { groupBy, keyBy } from 'es-toolkit';
 
 import { RECORDS } from '@tupaia/database';
 import { DatabaseError, respond } from '@tupaia/utils';
@@ -61,7 +61,7 @@ export async function getChanges(req, res) {
       offset,
     });
     const changes = await query.executeOnDatabase(database);
-    const changesByRecordType = groupBy(changes, 'record_type');
+    const changesByRecordType = groupBy(changes, c => c.record_type);
     const recordTypesToSync = Object.keys(changesByRecordType);
     const columnNamesByRecordType = Object.fromEntries(
       await Promise.all(
@@ -80,7 +80,7 @@ export async function getChanges(req, res) {
         }),
       )
     ).flat();
-    const changeRecordsById = keyBy(changeRecords, 'id');
+    const changeRecordsById = keyBy(changeRecords, c => c.id);
 
     const changesToSend = changes.map(change => {
       const {

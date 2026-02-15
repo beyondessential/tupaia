@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { groupBy } from 'es-toolkit/compat';
+import { groupBy } from 'es-toolkit';
 import path from 'path';
 import xlsx from 'xlsx';
 
@@ -25,7 +25,7 @@ const geojsonParser = filePath => {
     return entity;
   });
 
-  return groupBy(entities, 'country_name');
+  return groupBy(entities, e => e.country_name);
 };
 
 const processXlsxRow = (row, { countryName }) => {

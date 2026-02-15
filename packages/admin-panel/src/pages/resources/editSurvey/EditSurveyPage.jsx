@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { keyBy } from 'es-toolkit/compat';
+import { keyBy } from 'es-toolkit';
 import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
@@ -129,7 +129,7 @@ const EditSurveyPageComponent = withConnectedEditor(
       files,
     );
 
-    const fieldsBySource = keyBy(fields, 'source');
+    const fieldsBySource = keyBy(fields, f => f.source);
 
     const {
       'project.code': projectCode,

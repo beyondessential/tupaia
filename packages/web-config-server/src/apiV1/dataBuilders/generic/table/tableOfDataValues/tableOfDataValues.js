@@ -1,5 +1,5 @@
-import { uniq } from 'es-toolkit';
-import { flatten, keyBy } from 'es-toolkit/compat';
+import { keyBy, uniq } from 'es-toolkit';
+import { flatten } from 'es-toolkit/compat';
 
 import { getSortByKey, reduceToDictionary, reduceToSet } from '@tupaia/utils';
 
@@ -95,7 +95,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
     const { results, period } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await this.fetchDataElements(dataElementCodes);
-    const dataElementByCode = keyBy(dataElements, 'code');
+    const dataElementByCode = keyBy(dataElements, de => de.code);
     const resultsWithMetadata = results.map(result => ({
       ...result,
       metadata: dataElementByCode[result.dataElement] || {},

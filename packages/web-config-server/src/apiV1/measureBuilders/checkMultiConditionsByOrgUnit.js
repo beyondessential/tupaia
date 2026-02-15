@@ -1,4 +1,4 @@
-import { groupBy } from 'es-toolkit/compat';
+import { groupBy } from 'es-toolkit';
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
@@ -26,7 +26,7 @@ class CheckMultiConditionsByOrgUnit extends DataBuilder {
     const { period, results } = await this.fetchAnalytics(dataElementCodes);
 
     const measureData = [];
-    const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
+    const analyticsByOrgUnit = groupBy(results, a => a.organisationUnit);
 
     Object.entries(analyticsByOrgUnit).forEach(([organisationUnitCode, analytics]) => {
       const [displayValue] =

@@ -1,7 +1,7 @@
 import xlsx from 'xlsx';
 import moment from 'moment';
-import { uniq } from 'es-toolkit';
-import { keyBy, chunk, groupBy } from 'es-toolkit/compat';
+import { groupBy, uniq } from 'es-toolkit';
+import { keyBy, chunk } from 'es-toolkit/compat';
 import {
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,
@@ -306,7 +306,7 @@ export async function exportResponsesToFile(
   );
   const { true: surveysWithAccess = [], false: surveysWithoutAccess = [] } = groupBy(
     surveysWithAccessStatus,
-    'accessible',
+    s => s.accessible,
   );
   surveysWithoutAccess.forEach(survey => {
     const exportData = [[`You do not have export access to ${survey.name}`]];

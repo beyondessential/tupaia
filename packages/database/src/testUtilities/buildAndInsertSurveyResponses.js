@@ -1,4 +1,4 @@
-import { keyBy } from 'es-toolkit/compat';
+import { keyBy } from 'es-toolkit';
 
 import { buildAndInsertSurveys } from './buildAndInsertSurveys';
 import { findOrCreateDummyRecord, upsertDummyRecord } from './upsertDummyRecord';
@@ -31,7 +31,7 @@ const buildAndInsertSurveyResponse = async (
     ...surveyResponseFields,
   });
 
-  const questionsByCode = keyBy(questions, 'code');
+  const questionsByCode = keyBy(questions, q => q.code);
   const processAnswer = async ([questionCode, answerText]) => {
     const question = questionsByCode[questionCode];
     return buildAndInsertAnswer(models, surveyResponse, question, answerText);

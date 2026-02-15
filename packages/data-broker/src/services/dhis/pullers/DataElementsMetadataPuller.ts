@@ -1,4 +1,4 @@
-import { groupBy } from 'es-toolkit/compat';
+import { groupBy } from 'es-toolkit';
 
 import type { DhisApi } from '@tupaia/dhis-api';
 import { isNotNullish } from '@tupaia/tsutils';

@@ -1,4 +1,4 @@
-import { groupBy } from 'es-toolkit/compat';
+import { groupBy } from 'es-toolkit';
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 

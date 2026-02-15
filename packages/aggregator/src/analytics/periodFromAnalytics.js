@@ -1,4 +1,4 @@
-import { groupBy } from 'es-toolkit/compat';
+import { groupBy } from 'es-toolkit';
 import { periodToType } from '@tupaia/tsutils';
 import { min, max, findCoarsestPeriodType } from '@tupaia/utils';
 

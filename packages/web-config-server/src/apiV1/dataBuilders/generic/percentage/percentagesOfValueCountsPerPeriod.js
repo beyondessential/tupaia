@@ -1,4 +1,4 @@
-import { groupBy, keyBy } from 'es-toolkit/compat';
+import { groupBy, keyBy } from 'es-toolkit';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { PERIOD_TYPES } from '@tupaia/tsutils';
@@ -19,7 +19,7 @@ const filterFacility = async (models, filterCriteria, analytics) => {
     },
   });
 
-  const facilitiesByCode = keyBy(facilities, 'code');
+  const facilitiesByCode = keyBy(facilities, f => f.code);
   return analytics.filter(({ organisationUnit: orgUnitCode }) => facilitiesByCode[orgUnitCode]);
 };
 
@@ -83,7 +83,7 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
   getDataClassesWithAnalytics = async analytics => {
     if (this.config.isProjectReport) {
       const dataWithCountries = await mapAnalyticsToCountries(this.models, analytics);
-      const dataByCountryCode = groupBy(dataWithCountries, 'organisationUnit');
+      const dataByCountryCode = groupBy(dataWithCountries, datum => datum.organisationUnit);
       const countries = await this.models.entity.find({ code: Object.keys(dataByCountryCode) });
       const countryCodeToName = reduceToDictionary(countries, 'code', 'name');
 
