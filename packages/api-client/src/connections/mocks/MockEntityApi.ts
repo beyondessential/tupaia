@@ -7,7 +7,7 @@ import { EntityApiInterface } from '..';
 
 export class MockEntityApi implements EntityApiInterface {
   private readonly entitiesByHierarchy: Record<string, Record<string, any>[]>;
-  private readonly relations: Record<string, { parent: string; child: string }[]>;
+  private readonly relations: Record<string, readonly { parent: string; child: string }[]>;
 
   private getEntitiesStub(
     hierarchyName: string,
