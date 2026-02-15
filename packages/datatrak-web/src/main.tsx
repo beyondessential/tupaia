@@ -7,7 +7,7 @@ import { confirmUpdate } from './components/UpdateConfirmation';
 import { useIsOfflineFirst } from './api/offlineFirst';
 
 // Global error handlers to catch unhandled errors
-window.addEventListener('error', (event) => {
+window.addEventListener('error', event => {
   console.group('🔴 Unhandled Error');
   console.error('Error message:', event.message);
   console.error('Error filename:', event.filename);
@@ -18,7 +18,7 @@ window.addEventListener('error', (event) => {
   console.groupEnd();
 });
 
-window.addEventListener('unhandledrejection', (event) => {
+window.addEventListener('unhandledrejection', event => {
   console.group('🔴 Unhandled Promise Rejection');
   console.error('Reason:', event.reason);
   console.error('Reason message:', event.reason?.message);
@@ -87,7 +87,7 @@ if (useIsOfflineFirst()) {
   }, UPDATE_CHECK_INTERVAL);
 }
 
- // Reload the pwa when it is installed
- window.addEventListener('appinstalled', () => {
+// Reload the pwa when it is installed
+window.addEventListener('appinstalled', () => {
   window.location.reload();
 });

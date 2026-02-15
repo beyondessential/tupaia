@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { OnResultFunction, QrReader } from 'react-qr-reader';
 import styled from 'styled-components';
 
-import { isObjectId } from '@tupaia/tsutils';
+import { isObjectId, isNullish } from '@tupaia/tsutils';
 import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { QrCodeScannerIcon } from '@tupaia/ui-components';
 import { Button } from '../../components';
 import { Modal, ModalBody, ModalCloseButton } from '../../components/Modal';
-import { isNullish, useHasVideoInput, useIsMobile } from '../../utils';
+import { useHasVideoInput, useIsMobile } from '../../utils';
 
 const StyledButton = styled(Button).attrs({
   fullWidth: true,

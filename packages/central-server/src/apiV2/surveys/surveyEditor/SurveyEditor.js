@@ -96,7 +96,7 @@ export class SurveyEditor {
       permissionGroup = await transactingModels.permissionGroup.findById(
         existingSurvey.permission_group_id,
       );
-    } else if (!existingSurvey) {
+    } else {
       // Must be a create, and no permission group specified, use Public
       permissionGroup = await transactingModels.permissionGroup.findOne({ name: 'Public' });
     }

@@ -2,8 +2,10 @@
 
 import { types as pgTypes } from 'pg';
 import winston from 'winston';
+import autobind from 'react-autobind';
 
 import { Multilock } from '@tupaia/utils';
+
 import { BaseDatabase } from '../core';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { getConnectionConfig } from './getConnectionConfig';
@@ -24,6 +26,8 @@ export class TupaiaDatabase extends BaseDatabase {
    */
   constructor(transactingConnection, transactingChangeChannel) {
     super(transactingConnection, transactingChangeChannel, 'pg', getConnectionConfig);
+
+    autobind(this);
 
     this.changeHandlers = {};
     this.handlerLock = new Multilock();
