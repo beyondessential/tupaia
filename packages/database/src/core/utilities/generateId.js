@@ -13,9 +13,11 @@ export const generateId = () => {
   return ObjectID().toString();
 };
 
+/** @param {number} timestamp */
 export const getHighestPossibleIdForGivenTime = timestamp =>
   getSecondsStringFromTimestamp(timestamp).padEnd(24, 'f');
 
+/** @param {number} timestamp */
 const getSecondsStringFromTimestamp = timestamp =>
   Math.floor(timestamp / 1000)
     .toString(16)
