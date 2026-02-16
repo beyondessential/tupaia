@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useCurrentUserContext } from '../api';
@@ -74,11 +74,6 @@ export const ChangeProjectButton = ({ leadingBorder, ...props }: ChangeProjectBu
 
   const noOfflineProjects = isOfflineFirst && !projectCount;
 
-  const projectName = useMemo(
-    () => project?.name ?? (noOfflineProjects ? 'Syncing projects…' : 'Select project'),
-    [project?.name, noOfflineProjects],
-  );
-
   return (
     <Container $leadingBorder={leadingBorder} {...props}>
       <ProjectButton
@@ -86,7 +81,7 @@ export const ChangeProjectButton = ({ leadingBorder, ...props }: ChangeProjectBu
         tooltip={noOfflineProjects ? undefined : 'Change project'}
         disabled={noOfflineProjects}
       >
-        {projectName}
+        {project?.name ?? (noOfflineProjects ? 'Syncing projects…' : 'Select project')}
       </ProjectButton>
       {projectModalIsOpen && <ProjectSelectModal onBack={closeProjectModal} />}
     </Container>
