@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Button } from './Button';
 import { Modal } from './Modal';
@@ -43,12 +42,11 @@ const ModalButton = styled(Button)`
 interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onConfirm: () => void;
   headingText?: React.ReactNode;
   bodyText?: React.ReactNode;
   confirmText?: React.ReactNode;
   cancelText?: React.ReactNode;
-  confirmPath?: string | number;
-  onConfirm?: () => void;
 }
 
 export const ConfirmationModal = ({
@@ -59,17 +57,7 @@ export const ConfirmationModal = ({
   bodyText = 'If you exit, you will lose the progress you’ve made on the current survey',
   confirmText = 'Exit survey',
   cancelText = 'Continue survey',
-  confirmPath = '/',
 }: ConfirmationModalProps) => {
-  const navigate = useNavigate();
-  const handleConfirmPath = () => {
-    onClose();
-    if (typeof confirmPath === 'string') {
-      navigate(confirmPath); // Navigate to the specified path
-    } else if (typeof confirmPath === 'number') {
-      navigate(confirmPath); // Navigate by delta
-    }
-  };
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Wrapper>
@@ -79,7 +67,7 @@ export const ConfirmationModal = ({
           <ModalButton onClick={onClose} variant="outlined">
             {cancelText}
           </ModalButton>
-          <ModalButton onClick={onConfirm || handleConfirmPath}>{confirmText}</ModalButton>
+          <ModalButton onClick={onConfirm}>{confirmText}</ModalButton>
         </ButtonWrapper>
       </Wrapper>
     </Modal>
