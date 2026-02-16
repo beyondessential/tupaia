@@ -6,28 +6,31 @@ import { ConfirmationModal } from '../components/ConfirmationModal';
 import { hasOutgoingChanges } from '../sync/hasOutgoingChanges';
 import { useDatabaseContext } from './database';
 
-export function useUnsyncedDataLogoutGuard(onLogout: () => void) {
+export function useUnsyncedDataLogoutGuard(onLogout: React.MouseEventHandler<HTMLElement>) {
   const [isOpen, setIsOpen] = useState(false);
   const isOfflineFirst = useIsOfflineFirst();
   const { models } = useDatabaseContext() || {};
 
-  const guardedLogout = useCallback(async () => {
-    if (isOfflineFirst && models) {
-      const hasUnsyncedData = await hasOutgoingChanges(
-        getModelsForPush(models.getModels()),
-        models.localSystemFact,
-      );
-      if (hasUnsyncedData) {
-        setIsOpen(true);
-        return;
+  const guardedLogout = useCallback(
+    async (mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      if (isOfflineFirst && models) {
+        const hasUnsyncedData = await hasOutgoingChanges(
+          getModelsForPush(models.getModels()),
+          models.localSystemFact,
+        );
+        if (hasUnsyncedData) {
+          setIsOpen(true);
+          return;
+        }
       }
-    }
-    onLogout();
-  }, [isOfflineFirst, models, onLogout]);
+      onLogout(mouseEvent);
+    },
+    [isOfflineFirst, models, onLogout],
+  );
 
-  const confirmLogout = () => {
+  const confirmLogout = (mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setIsOpen(false);
-    onLogout();
+    onLogout(mouseEvent);
   };
 
   const confirmationModal = (

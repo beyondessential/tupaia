@@ -3,7 +3,7 @@ import { useMatch } from 'react-router';
 import { ROUTES } from '../constants';
 import { useConfirmationModal } from './useConfirmationModal';
 
-export function useAbandonSurveyGuard<T extends (...args: any[]) => any>(
+export function useAbandonSurveyGuard<T extends React.MouseEventHandler<HTMLElement>>(
   callback: T,
 ): ReturnType<typeof useConfirmationModal> {
   const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);

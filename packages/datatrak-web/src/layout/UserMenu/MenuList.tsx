@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
 import { Button } from '@tupaia/ui-components';
 import { useCurrentUserContext, useLogout } from '../../api';
-import { ROUTES } from '../../constants';
+import { RoutePath, ROUTES } from '../../constants';
 import { useAbandonSurveyGuard } from '../../hooks/useAbandonSurveyGuard';
 import { useUnsyncedDataLogoutGuard } from '../../hooks/useUnsyncedDataLogoutGuard';
 import { MobileUserMenuRoot } from './MobileUserMenu';
@@ -17,7 +17,7 @@ interface MenuItem {
   to?: string | null;
   href?: string;
   isExternal?: boolean;
-  onClick?: (e: Event) => void;
+  onClick?: React.MouseEventHandler<HTMLElement>;
   component?: ComponentType<any> | string;
   hidden?: boolean;
   icon?: React.ReactNode;
@@ -106,12 +106,15 @@ export const MenuList = ({
   const navigateRef = useRef<() => void>(() => {});
   const { guardedCallback, confirmationModal: abandonSurveyConfirmationModal } =
     useAbandonSurveyGuard(() => navigateRef.current());
-  const guardedNavigate = (path: string) => {
+  const guardedNavigate = (
+    mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>,
+    path: RoutePath,
+  ) => {
     navigateRef.current = () => {
       navigate(path);
       onCloseMenu?.();
     };
-    guardedCallback();
+    guardedCallback(mouseEvent);
   };
 
   const { guardedLogout, confirmationModal: unsyncedDataModal } = useUnsyncedDataLogoutGuard(() => {
@@ -122,13 +125,13 @@ export const MenuList = ({
   const allItems: MenuItem[] = [
     {
       label: 'Account settings',
-      onClick: () => guardedNavigate(ROUTES.ACCOUNT_SETTINGS),
+      onClick: mouseEvent => guardedNavigate(mouseEvent, ROUTES.ACCOUNT_SETTINGS),
       hidden: !isLoggedIn || !hasProjectSelected,
       icon: chevronRight,
     },
     {
       label: 'Reports',
-      onClick: () => guardedNavigate(ROUTES.REPORTS),
+      onClick: mouseEvent => guardedNavigate(mouseEvent, ROUTES.REPORTS),
       hidden: !isLoggedIn || !hasAdminPanelAccess,
       icon: chevronRight,
     },

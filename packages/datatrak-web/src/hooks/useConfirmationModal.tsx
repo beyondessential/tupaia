@@ -1,27 +1,22 @@
 import React, { useCallback, useRef, useState } from 'react';
 
-import { ConfirmationModal } from '../components/ConfirmationModal';
+import { ConfirmationModal, ConfirmationModalProps } from '../components/ConfirmationModal';
 
 interface UseConfirmationModalOptions {
   bypass?: boolean;
 }
 
-/**
- * Guards a callback behind a confirmation modal.
- *
- * @param callback The callback to guard.
- * @param options.bypass If true, the modal is skipped and the callback is invoked directly.
- *   Defaults to false.
- */
-export function useConfirmationModal<T extends (...args: any[]) => any>(
-  callback: T,
-  options?: UseConfirmationModalOptions,
-): {
+interface UseConfirmationModalResult {
   /** The input `callback`, guarded. Invokes the callback directly if `bypass` is true. */
-  guardedCallback: (...args: Parameters<T>) => ReturnType<T> | void;
-  /** The confirmation modal element. Render this in your component tree. */
-  confirmationModal: JSX.Element;
-} {
+  guardedCallback: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  /** The confirmation modal element. Make sure this is rendered. */
+  confirmationModal: React.ReactElement<ConfirmationModalProps>;
+}
+
+export function useConfirmationModal(
+  callback: React.MouseEventHandler<HTMLElement>,
+  options?: UseConfirmationModalOptions,
+): UseConfirmationModalResult {
   const bypass = options?.bypass ?? false;
 
   const callbackRef = useRef(callback);
@@ -30,20 +25,19 @@ export function useConfirmationModal<T extends (...args: any[]) => any>(
   const [isOpen, setIsOpen] = useState(false);
 
   const guardedCallback = useCallback(
-    (...args: Parameters<T>) => {
-      if (!bypass) {
-        setIsOpen(true);
+    (mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      if (bypass) {
+        callbackRef.current(mouseEvent);
         return;
       }
-      return callbackRef.current(...args);
+      setIsOpen(true);
     },
     [bypass],
   );
 
-  // Tech debt: ConfirmationModal's onConfirm prop is typed () => {}
-  const onConfirm = useCallback(() => {
+  const onConfirm = useCallback((mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setIsOpen(false);
-    callbackRef.current();
+    callbackRef.current(mouseEvent);
   }, []);
 
   const confirmationModal = (

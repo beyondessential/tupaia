@@ -39,10 +39,10 @@ const ModalButton = styled(Button)`
   }
 `;
 
-interface ConfirmationModalProps {
+export interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: React.MouseEventHandler<HTMLElement>;
   heading?: NonNullable<React.ReactNode>;
   description?: React.ReactNode;
   confirmLabel?: React.ReactNode;
