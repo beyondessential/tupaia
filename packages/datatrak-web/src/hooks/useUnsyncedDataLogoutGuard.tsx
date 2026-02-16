@@ -32,10 +32,10 @@ export function useUnsyncedDataLogoutGuard(onLogout: () => void) {
 
   const confirmationModal = (
     <ConfirmationModal
-      headingText="Unsynced data"
-      bodyText="You are about to log out with unsynced data! Go back to your home page and sync using the top right sync button and sync before logging out"
-      confirmText="Log out anyway"
-      cancelText="Stay logged in"
+      heading="Unsynced data"
+      description="You are about to log out with unsynced data! Go back to your home page and sync using the top right sync button and sync before logging out"
+      confirmLabel="Log out anyway"
+      cancelLabel="Stay logged in"
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
       onConfirm={confirmLogout}

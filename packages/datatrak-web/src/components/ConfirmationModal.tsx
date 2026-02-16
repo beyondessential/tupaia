@@ -43,31 +43,31 @@ interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  headingText?: React.ReactNode;
-  bodyText?: React.ReactNode;
-  confirmText?: React.ReactNode;
-  cancelText?: React.ReactNode;
+  heading?: NonNullable<React.ReactNode>;
+  description?: React.ReactNode;
+  confirmLabel?: React.ReactNode;
+  cancelLabel?: React.ReactNode;
 }
 
 export const ConfirmationModal = ({
   isOpen,
   onClose,
   onConfirm,
-  headingText = 'Survey in progress',
-  bodyText = 'If you exit, you will lose the progress you’ve made on the current survey',
-  confirmText = 'Exit survey',
-  cancelText = 'Continue survey',
+  heading = 'Survey in progress',
+  description = 'If you exit, you will lose the progress you’ve made on the current survey',
+  confirmLabel = 'Exit survey',
+  cancelLabel = 'Continue survey',
 }: ConfirmationModalProps) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Wrapper>
-        <Heading>{headingText}</Heading>
-        <Typography align="center">{bodyText}</Typography>
+        <Heading>{heading}</Heading>
+        <Typography align="center">{description}</Typography>
         <ButtonWrapper>
           <ModalButton onClick={onClose} variant="outlined">
-            {cancelText}
+            {cancelLabel}
           </ModalButton>
-          <ModalButton onClick={onConfirm}>{confirmText}</ModalButton>
+          <ModalButton onClick={onConfirm}>{confirmLabel}</ModalButton>
         </ButtonWrapper>
       </Wrapper>
     </Modal>
