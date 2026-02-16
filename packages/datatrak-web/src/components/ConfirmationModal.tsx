@@ -5,7 +5,7 @@ import { Button } from './Button';
 import { Modal } from './Modal';
 
 const Wrapper = styled.div`
-  max-width: 28rem;
+  max-inline-size: 28rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 1rem 2rem;
   }
@@ -14,10 +14,10 @@ const Wrapper = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column-reverse;
-  width: 100%;
-  max-width: 20rem;
-  margin: 1.5rem auto 0;
   gap: 1rem;
+  inline-size: 100%;
+  margin: 1.5rem auto 0;
+  max-inline-size: 20rem;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
     flex-direction: row;
