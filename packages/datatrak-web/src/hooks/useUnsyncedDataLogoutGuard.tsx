@@ -35,7 +35,7 @@ export function useUnsyncedDataLogoutGuard(onLogout: () => void) {
       headingText="Unsynced data"
       bodyText="You are about to log out with unsynced data! Go back to your home page and sync using the top right sync button and sync before logging out"
       confirmText="Log out anyway"
-      cancelText="Return home"
+      cancelText="Stay logged in"
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
       onConfirm={confirmLogout}
