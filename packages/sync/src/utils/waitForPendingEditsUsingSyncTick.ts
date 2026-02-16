@@ -5,8 +5,13 @@ import type { BaseDatabase } from '@tupaia/database';
 // transactions that involve a create/update of a record have finished
 export const waitForPendingEditsUsingSyncTick = async <
   DatabaseT extends BaseDatabase = BaseDatabase,
-  ReturnT = unknown,
 >(
   database: DatabaseT,
   syncTick: number,
-) => await database.executeSql<ReturnT>('SELECT pg_advisory_xact_lock(:syncTick);', { syncTick });
+  options: { maxRetries?: number; retryDelayMs?: number } = {},
+) => {
+  await database.acquireAdvisoryLockByKey(syncTick, {
+    ...options,
+    lockDescription: `pending edits (syncTick: ${syncTick})`,
+  });
+};
