@@ -1,14 +1,14 @@
 import { Link, ListItem } from '@material-ui/core';
 import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
-import React, { ComponentType, ReactNode, useState } from 'react';
-import { useMatch } from 'react-router';
+import React, { ComponentType, ReactNode, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
-import { Button, RouterLink } from '@tupaia/ui-components';
+import { Button } from '@tupaia/ui-components';
 import { useCurrentUserContext, useLogout } from '../../api';
-import { ConfirmationModal } from '../../components';
 import { ROUTES } from '../../constants';
+import { useAbandonSurveyGuard } from '../../hooks/useAbandonSurveyGuard';
 import { useUnsyncedDataLogoutGuard } from '../../hooks/useUnsyncedDataLogoutGuard';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 
@@ -96,49 +96,39 @@ export const MenuList = ({
   children?: ReactNode;
   onCloseMenu?: () => void;
 }) => {
-  const [confirmModalLink, setConfirmModalLink] = useState('');
   const { isLoggedIn, projectId, accessPolicy } = useCurrentUserContext();
   const hasAdminPanelAccess =
     accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
   const hasProjectSelected = !!projectId;
-  const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
-  const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
-  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const { mutate: logout } = useLogout();
-  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const navigateRef = useRef<() => void>(() => {});
+  const { guardedCallback, confirmationModal: abandonSurveyConfirmationModal } =
+    useAbandonSurveyGuard(() => navigateRef.current());
+  const guardedNavigate = (path: string) => {
+    navigateRef.current = () => {
+      navigate(path);
+      onCloseMenu?.();
+    };
+    guardedCallback();
+  };
+
+  const { guardedLogout, confirmationModal: unsyncedDataModal } = useUnsyncedDataLogoutGuard(() => {
     logout();
     onCloseMenu?.();
-  };
-
-  const { guardedLogout, confirmationModal: unsyncedDataModal } =
-    useUnsyncedDataLogoutGuard(handleLogout);
-
-  const onClickInternalLink = (e: any, confirmLink: string) => {
-    if (shouldShowCancelModal) {
-      e.preventDefault();
-      setIsOpen(true);
-      setConfirmModalLink(confirmLink);
-    } else {
-      onCloseMenu?.();
-    }
-  };
+  });
 
   const allItems: MenuItem[] = [
     {
       label: 'Account settings',
-      component: shouldShowCancelModal ? 'button' : RouterLink,
-      onClick: e => onClickInternalLink(e, ROUTES.ACCOUNT_SETTINGS),
-      to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
+      onClick: () => guardedNavigate(ROUTES.ACCOUNT_SETTINGS),
       hidden: !isLoggedIn || !hasProjectSelected,
       icon: chevronRight,
     },
     {
       label: 'Reports',
-      component: shouldShowCancelModal ? 'button' : RouterLink,
-      onClick: e => onClickInternalLink(e, ROUTES.REPORTS),
-      to: shouldShowCancelModal ? null : ROUTES.REPORTS,
+      onClick: () => guardedNavigate(ROUTES.REPORTS),
       hidden: !isLoggedIn || !hasAdminPanelAccess,
       icon: chevronRight,
     },
@@ -188,11 +178,7 @@ export const MenuList = ({
           ))}
       </Menu>
       {unsyncedDataModal}
-      <ConfirmationModal
-        isOpen={surveyCancelModalIsOpen}
-        onClose={() => setIsOpen(false)}
-        confirmPath={confirmModalLink}
-      />
+      {abandonSurveyConfirmationModal}
     </>
   );
 };
