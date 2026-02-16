@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useCurrentUserContext } from '../api';
-import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal';
-import { Button, TooltipButtonWrapper } from './Button';
 import { useIsOfflineFirst } from '../api/offlineFirst';
 import { useProjectCount } from '../api/queries/useProjectCount';
+import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal';
+import { Button, TooltipButtonWrapper } from './Button';
 
 /**
  * Semantically useless wrapper, but prevents {@link TooltipButtonWrapper} from wreaking havoc on
@@ -74,12 +74,10 @@ export const ChangeProjectButton = ({ leadingBorder, ...props }: ChangeProjectBu
 
   const noOfflineProjects = isOfflineFirst && !projectCount;
 
-  const getProjectName = useCallback(() => {
-    if (project?.name) {
-      return project?.name;
-    }
-    return noOfflineProjects ? 'Syncing projects…' : 'Select project';
-  }, [project?.name, noOfflineProjects]);
+  const projectName = useMemo(
+    () => project?.name ?? (noOfflineProjects ? 'Syncing projects…' : 'Select project'),
+    [project?.name, noOfflineProjects],
+  );
 
   return (
     <Container $leadingBorder={leadingBorder} {...props}>
@@ -88,7 +86,7 @@ export const ChangeProjectButton = ({ leadingBorder, ...props }: ChangeProjectBu
         tooltip={noOfflineProjects ? undefined : 'Change project'}
         disabled={noOfflineProjects}
       >
-        {getProjectName()}
+        {projectName}
       </ProjectButton>
       {projectModalIsOpen && <ProjectSelectModal onBack={closeProjectModal} />}
     </Container>
