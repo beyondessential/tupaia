@@ -27,7 +27,7 @@ export function useAbandonSurveyGuard<T extends (...args: any[]) => any>(
   const isSurveyActive = isSurveyScreen && !isSuccessScreen;
 
   const guardedCallback = useCallback(
-    (...args: any[]) => {
+    (...args: Parameters<T>) => {
       if (isSurveyActive) {
         // Intercept and prompt user for confirmation
         setIsOpen(true);
