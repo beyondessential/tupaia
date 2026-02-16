@@ -107,5 +107,5 @@
   "engines": {
     "node": "^20.11.1"
   },
-  "packageManager": "yarn@4.10.3+sha256.cd71753d68307301d21034efaf20bd8eee81f9450af75f068477bf9011bb9ad4"
+  "packageManager": "yarn@4.12.0+sha256.1fe4e1193cbcd13a48d8f436bb17d3c672b049a5e32a758aab9866a073db1702"
 }
