@@ -9,7 +9,7 @@ import { Button } from '@tupaia/ui-components';
 import { useCurrentUserContext, useLogout } from '../../api';
 import { RoutePath, ROUTES } from '../../constants';
 import { useAbandonSurveyGuard } from '../../hooks/useAbandonSurveyGuard';
-import { useUnsyncedDataLogoutGuard } from '../../hooks/useUnsyncedDataLogoutGuard';
+import { useGuardedLogout } from '../../hooks/useGuardedLogout';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
@@ -117,7 +117,7 @@ export const MenuList = ({
     guardedCallback(mouseEvent);
   };
 
-  const { guardedLogout, confirmationModal: unsyncedDataModal } = useUnsyncedDataLogoutGuard(() => {
+  const { guardedLogout, confirmationModal: logoutConfirmationModal } = useGuardedLogout(() => {
     logout();
     onCloseMenu?.();
   });
@@ -180,7 +180,7 @@ export const MenuList = ({
             </MenuListItem>
           ))}
       </Menu>
-      {unsyncedDataModal}
+      {logoutConfirmationModal}
       {abandonSurveyConfirmationModal}
     </>
   );

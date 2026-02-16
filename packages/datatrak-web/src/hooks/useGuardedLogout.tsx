@@ -6,7 +6,7 @@ import { ConfirmationModal } from '../components/ConfirmationModal';
 import { hasOutgoingChanges } from '../sync/hasOutgoingChanges';
 import { useDatabaseContext } from './database';
 
-export function useUnsyncedDataLogoutGuard(onLogout: React.MouseEventHandler<HTMLElement>) {
+export function useGuardedLogout(onConfirm: React.MouseEventHandler<HTMLElement>) {
   const [isOpen, setIsOpen] = useState(false);
   const isOfflineFirst = useIsOfflineFirst();
   const { models } = useDatabaseContext() || {};
@@ -23,14 +23,14 @@ export function useUnsyncedDataLogoutGuard(onLogout: React.MouseEventHandler<HTM
           return;
         }
       }
-      onLogout(mouseEvent);
+      onConfirm(mouseEvent);
     },
-    [isOfflineFirst, models, onLogout],
+    [isOfflineFirst, models, onConfirm],
   );
 
   const confirmLogout = (mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setIsOpen(false);
-    onLogout(mouseEvent);
+    onConfirm(mouseEvent);
   };
 
   const confirmationModal = (

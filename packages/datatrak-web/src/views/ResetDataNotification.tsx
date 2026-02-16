@@ -8,7 +8,7 @@ import { useLogout, useSyncContext } from '../api';
 import { clearDatabase } from '../database/clearDatabase';
 import { useDatabaseContext } from '../hooks/database';
 import { useAbandonSurveyGuard } from '../hooks/useAbandonSurveyGuard';
-import { useUnsyncedDataLogoutGuard } from '../hooks/useUnsyncedDataLogoutGuard';
+import { useGuardedLogout } from '../hooks/useGuardedLogout';
 import { SYNC_EVENT_ACTIONS, SyncEvents } from '../types/sync';
 import { BannerNotification } from './BannerNotification';
 
@@ -63,8 +63,7 @@ export const ResetDataNotification = () => {
     await clearDatabase(models);
   }, [logOut, models]);
 
-  const { guardedLogout, confirmationModal: unsyncedDataModal } =
-    useUnsyncedDataLogoutGuard(resetDatabase);
+  const { guardedLogout, confirmationModal: unsyncedDataModal } = useGuardedLogout(resetDatabase);
 
   const {
     // If mid-survey AND unsynced data, show ‘survey in progress’ modal, then ‘unsynced data’ modal.
