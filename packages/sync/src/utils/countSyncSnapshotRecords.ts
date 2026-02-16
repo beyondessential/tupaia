@@ -30,3 +30,27 @@ export const countSyncSnapshotRecords = async (
   );
   return total || 0;
 };
+
+export const hasSyncSnapshotRecords = async (
+  database: TupaiaDatabase,
+  sessionId: string,
+  direction?: SyncSessionDirectionValues,
+  recordType?: PublicSchemaRecordName,
+  additionalWhere?: string,
+  parameters?: Knex.ValueDict,
+): Promise<boolean> => {
+  const tableName = getSnapshotTableName(sessionId);
+  const [{ exists }] = await database.executeSql<[{ exists: boolean }]>(
+    `
+      SELECT EXISTS (
+        SELECT 1 FROM ${tableName}
+        WHERE true
+        ${direction ? 'AND direction = :direction' : ''}
+        ${recordType ? 'AND record_type = :recordType' : ''}
+        ${additionalWhere ? `AND ${additionalWhere}` : ''}
+      )
+    `,
+    { recordType, direction, ...parameters },
+  );
+  return exists;
+};

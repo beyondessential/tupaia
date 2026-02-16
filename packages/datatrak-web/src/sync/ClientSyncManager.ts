@@ -4,12 +4,12 @@ import log from 'winston';
 
 import { SYNC_STREAM_MESSAGE_KIND, SyncFact } from '@tupaia/constants';
 import {
-  countSyncSnapshotRecords,
   createClientSnapshotTable,
   dropAllSnapshotTables,
   dropSnapshotTable,
   getModelsForPull,
   getModelsForPush,
+  hasSyncSnapshotRecords,
   saveChangesFromMemory,
   saveIncomingSnapshotChanges,
   waitForPendingEditsUsingSyncTick,
@@ -426,7 +426,7 @@ export class ClientSyncManager {
   async checkForPermissionChanges(sessionId: string) {
     const currentUserId = ensure(await this.models.localSystemFact.get(SyncFact.CURRENT_USER_ID));
 
-    const permissionChangesCount = await countSyncSnapshotRecords(
+    const hasPermissionChange = await hasSyncSnapshotRecords(
       this.database,
       sessionId,
       undefined,
@@ -434,7 +434,7 @@ export class ClientSyncManager {
       "data->>'user_id' = :userId",
       { userId: currentUserId },
     );
-    if (permissionChangesCount > 0) {
+    if (hasPermissionChange) {
       await this.updatePermissionsChanged(true);
     }
   }
