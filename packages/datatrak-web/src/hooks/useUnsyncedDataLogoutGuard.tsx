@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { getModelsForPush } from '@tupaia/sync';
 import { useIsOfflineFirst } from '../api/offlineFirst';
@@ -11,7 +11,7 @@ export function useUnsyncedDataLogoutGuard(onLogout: () => void) {
   const isOfflineFirst = useIsOfflineFirst();
   const { models } = useDatabaseContext() || {};
 
-  const guardedLogout = async () => {
+  const guardedLogout = useCallback(async () => {
     if (isOfflineFirst && models) {
       const hasUnsyncedData = await hasOutgoingChanges(
         getModelsForPush(models.getModels()),
@@ -23,7 +23,7 @@ export function useUnsyncedDataLogoutGuard(onLogout: () => void) {
       }
     }
     onLogout();
-  };
+  }, [isOfflineFirst, models, onLogout]);
 
   const confirmLogout = () => {
     setIsOpen(false);
