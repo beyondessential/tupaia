@@ -1,52 +1,37 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 
-import { getModelsForPush } from '@tupaia/sync';
-import { useIsOfflineFirst } from '../api/offlineFirst';
-import { ConfirmationModal } from '../components/ConfirmationModal';
-import { hasOutgoingChanges } from '../sync/hasOutgoingChanges';
-import { useDatabaseContext } from './database';
+import { useHasUnsyncedDataQuery } from '../api/queries';
+import { useConfirmationModal } from './useConfirmationModal';
+import { useAbandonSurveyGuard } from './useAbandonSurveyGuard';
 
-export function useGuardedLogout(onConfirm: React.MouseEventHandler<HTMLElement>) {
-  const [isOpen, setIsOpen] = useState(false);
-  const isOfflineFirst = useIsOfflineFirst();
-  const { models } = useDatabaseContext() || {};
+const unsyncedDataModalProps = {
+  heading: 'Unsynced data',
+  description:
+    'You are about to log out with unsynced data! Go back to your home page and sync using the top right sync button and sync before logging out',
+  confirmLabel: 'Log out anyway',
+  cancelLabel: 'Stay logged in',
+};
 
-  const guardedLogout = useCallback(
-    async (mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      if (isOfflineFirst && models) {
-        const hasUnsyncedData = await hasOutgoingChanges(
-          getModelsForPush(models.getModels()),
-          models.localSystemFact,
-        );
-        if (hasUnsyncedData) {
-          setIsOpen(true);
-          return;
-        }
-      }
-      onConfirm(mouseEvent);
-    },
-    [isOfflineFirst, models, onConfirm],
-  );
+export function useGuardedLogout(callback: React.MouseEventHandler<HTMLElement>) {
+  const { data: hasUnsyncedData } = useHasUnsyncedDataQuery();
 
-  const confirmLogout = (mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    setIsOpen(false);
-    onConfirm(mouseEvent);
-  };
+  const { guardedCallback, confirmationModal: unsyncedDataModal } = useConfirmationModal(callback, {
+    bypass: !hasUnsyncedData,
+    confirmationModalProps: unsyncedDataModalProps,
+  });
 
-  const confirmationModal = (
-    <ConfirmationModal
-      heading="Unsynced data"
-      description="You are about to log out with unsynced data! Go back to your home page and sync using the top right sync button and sync before logging out"
-      confirmLabel="Log out anyway"
-      cancelLabel="Stay logged in"
-      isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
-      onConfirm={confirmLogout}
-    />
-  );
+  // Use ‘Survey in progress’ modal as the outer guard so it takes precedence over ‘Unsynced data’ modal.
+  // i.e. If user is mid-survey AND has unsynced data, show ‘survey in progress’ warning first.
+  const { guardedCallback: doublyGuardedCallback, confirmationModal: abandonSurveyModal } =
+    useAbandonSurveyGuard(guardedCallback);
 
   return {
-    guardedLogout,
-    confirmationModal,
+    guardedCallback: doublyGuardedCallback,
+    confirmationModal: (
+      <>
+        {unsyncedDataModal}
+        {abandonSurveyModal}
+      </>
+    ),
   };
 }

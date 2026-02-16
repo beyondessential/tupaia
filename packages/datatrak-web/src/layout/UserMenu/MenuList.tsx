@@ -14,7 +14,6 @@ import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
   label: string;
-  to?: string | null;
   href?: string;
   isExternal?: boolean;
   onClick?: React.MouseEventHandler<HTMLElement>;
@@ -117,10 +116,11 @@ export const MenuList = ({
     guardedCallback(mouseEvent);
   };
 
-  const { guardedLogout, confirmationModal: logoutConfirmationModal } = useGuardedLogout(() => {
-    logout();
-    onCloseMenu?.();
-  });
+  const { guardedCallback: guardedLogout, confirmationModal: logoutConfirmationModal } =
+    useGuardedLogout(() => {
+      logout();
+      onCloseMenu?.();
+    });
 
   const allItems: MenuItem[] = [
     {
@@ -163,7 +163,7 @@ export const MenuList = ({
         {children}
         {allItems
           .filter(item => !item.hidden)
-          .map(({ label, to, href, isExternal, onClick, component, icon }) => (
+          .map(({ label, href, isExternal, onClick, component, icon }) => (
             <MenuListItem key={label} button>
               <MenuButton
                 component={component || 'button'}
@@ -171,8 +171,7 @@ export const MenuList = ({
                 underline="none"
                 rel={isExternal ? 'external' : null}
                 target={isExternal ? '_blank' : null}
-                onClick={onClick || onCloseMenu}
-                to={to}
+                onClick={onClick ?? onCloseMenu}
                 href={href}
               >
                 {label}

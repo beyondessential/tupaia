@@ -4,6 +4,10 @@ import { ConfirmationModal, ConfirmationModalProps } from '../components/Confirm
 
 interface UseConfirmationModalOptions {
   bypass?: boolean;
+  confirmationModalProps?: Pick<
+    ConfirmationModalProps,
+    'heading' | 'description' | 'confirmLabel' | 'cancelLabel'
+  >;
 }
 
 interface UseConfirmationModalResult {
@@ -15,9 +19,9 @@ interface UseConfirmationModalResult {
 
 export function useConfirmationModal(
   callback: React.MouseEventHandler<HTMLElement>,
-  options?: UseConfirmationModalOptions,
+  options: UseConfirmationModalOptions = {},
 ): UseConfirmationModalResult {
-  const bypass = options?.bypass ?? false;
+  const { bypass = false, confirmationModalProps } = options;
 
   const callbackRef = useRef(callback);
   callbackRef.current = callback;
@@ -30,6 +34,7 @@ export function useConfirmationModal(
         callbackRef.current(mouseEvent);
         return;
       }
+      mouseEvent.preventDefault();
       setIsOpen(true);
     },
     [bypass],
@@ -41,7 +46,12 @@ export function useConfirmationModal(
   }, []);
 
   const confirmationModal = (
-    <ConfirmationModal isOpen={isOpen} onClose={() => setIsOpen(false)} onConfirm={onConfirm} />
+    <ConfirmationModal
+      {...confirmationModalProps}
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      onConfirm={onConfirm}
+    />
   );
 
   return { guardedCallback, confirmationModal };

@@ -63,7 +63,8 @@ export const ResetDataNotification = () => {
     await clearDatabase(models);
   }, [logOut, models]);
 
-  const { guardedLogout, confirmationModal: unsyncedDataModal } = useGuardedLogout(resetDatabase);
+  const { guardedCallback: guardedLogout, confirmationModal: unsyncedDataModal } =
+    useGuardedLogout(resetDatabase);
 
   const {
     // If mid-survey AND unsynced data, show ‘survey in progress’ modal, then ‘unsynced data’ modal.
