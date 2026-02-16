@@ -43,10 +43,10 @@ const ModalButton = styled(Button)`
 interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  headingText?: string | null;
-  bodyText?: string | null;
-  confirmText?: string | null;
-  cancelText?: string | null;
+  headingText?: React.ReactNode;
+  bodyText?: React.ReactNode;
+  confirmText?: React.ReactNode;
+  cancelText?: React.ReactNode;
   confirmPath?: string | number;
   onConfirm?: () => void;
 }
