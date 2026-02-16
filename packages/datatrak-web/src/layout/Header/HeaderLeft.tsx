@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMatch } from 'react-router';
-import { CancelConfirmModal } from '../../components';
+import { ConfirmationModal } from '../../components';
 import { ROUTES } from '../../constants';
 import { useIsMobile } from '../../utils';
 import { DesktopHeaderLeft } from './DesktopHeaderLeft';
@@ -26,7 +26,7 @@ export const HeaderLeft = () => {
   return (
     <>
       <LeadingContent onClickLogo={onClickLogo} />
-      <CancelConfirmModal isOpen={surveyCancelModalIsOpen} onClose={onClose} />
+      <ConfirmationModal isOpen={surveyCancelModalIsOpen} onClose={onClose} />
     </>
   );
 };

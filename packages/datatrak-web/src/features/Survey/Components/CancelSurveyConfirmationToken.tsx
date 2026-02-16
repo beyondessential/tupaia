@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { CancelConfirmModal } from '../../../components';
+import { ConfirmationModal } from '../../../components';
 import { useBeforeUnload } from '../../../utils';
 import { useSurveyForm } from '../SurveyContext';
 
@@ -14,7 +14,7 @@ export const CancelSurveyConfirmationToken = () => {
   useBeforeUnload(formState.isDirty && !isSuccessScreen);
 
   return (
-    <CancelConfirmModal
+    <ConfirmationModal
       isOpen={cancelModalOpen}
       onClose={closeCancelConfirmation}
       confirmPath={cancelModalConfirmLink}

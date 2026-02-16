@@ -5,14 +5,11 @@ import { useMatch } from 'react-router';
 import styled from 'styled-components';
 
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
-import { getModelsForPush } from '@tupaia/sync';
 import { Button, RouterLink } from '@tupaia/ui-components';
 import { useCurrentUserContext, useLogout } from '../../api';
-import { useIsOfflineFirst } from '../../api/offlineFirst';
-import { CancelConfirmModal } from '../../components';
+import { ConfirmationModal } from '../../components';
 import { ROUTES } from '../../constants';
-import { useDatabaseContext } from '../../hooks/database';
-import { hasOutgoingChanges } from '../../sync/hasOutgoingChanges';
+import { useUnsyncedDataLogoutGuard } from '../../hooks/useUnsyncedDataLogoutGuard';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
@@ -105,19 +102,18 @@ export const MenuList = ({
     accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
   const hasProjectSelected = !!projectId;
   const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
-  const [unsyncedChangesWarningModalOpen, setUnsyncedChangesWarningModalOpen] = useState(false);
   const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const isOfflineFirst = useIsOfflineFirst();
   const { mutate: logout } = useLogout();
-  const { models } = useDatabaseContext() || {};
   const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     logout();
-    setUnsyncedChangesWarningModalOpen(false);
     onCloseMenu?.();
   };
+
+  const { guardedLogout, confirmationModal: unsyncedDataModal } =
+    useUnsyncedDataLogoutGuard(handleLogout);
 
   const onClickInternalLink = (e: any, confirmLink: string) => {
     if (shouldShowCancelModal) {
@@ -162,22 +158,7 @@ export const MenuList = ({
     },
     {
       label: 'Log out',
-      onClick: async () => {
-        if (isOfflineFirst && models) {
-          const hasUnsyncedData = await hasOutgoingChanges(
-            getModelsForPush(models.getModels()),
-            models.localSystemFact,
-          );
-
-          if (hasUnsyncedData) {
-            setUnsyncedChangesWarningModalOpen(true);
-          } else {
-            handleLogout();
-          }
-        } else {
-          handleLogout();
-        }
-      },
+      onClick: guardedLogout,
       hidden: !isLoggedIn,
       icon: logoutIcon,
     },
@@ -206,16 +187,8 @@ export const MenuList = ({
             </MenuListItem>
           ))}
       </Menu>
-      <CancelConfirmModal
-        headingText="Unsynced data"
-        bodyText="You are about to log out with unsynced data! Go back to your home page and sync using the top right sync button and sync before logging out"
-        confirmText="Log out anyway"
-        cancelText="Return home"
-        isOpen={unsyncedChangesWarningModalOpen}
-        onClose={() => setUnsyncedChangesWarningModalOpen(false)}
-        onConfirm={handleLogout}
-      />
-      <CancelConfirmModal
+      {unsyncedDataModal}
+      <ConfirmationModal
         isOpen={surveyCancelModalIsOpen}
         onClose={() => setIsOpen(false)}
         confirmPath={confirmModalLink}

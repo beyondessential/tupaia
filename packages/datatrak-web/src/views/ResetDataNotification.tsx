@@ -7,6 +7,7 @@ import type { Handler } from 'mitt';
 import { useLogout, useSyncContext } from '../api';
 import { clearDatabase } from '../database/clearDatabase';
 import { useDatabaseContext } from '../hooks/database';
+import { useUnsyncedDataLogoutGuard } from '../hooks/useUnsyncedDataLogoutGuard';
 import { SYNC_EVENT_ACTIONS, SyncEvents } from '../types/sync';
 import { BannerNotification } from './BannerNotification';
 
@@ -61,14 +62,19 @@ export const ResetDataNotification = () => {
     await clearDatabase(models);
   };
 
+  const { guardedLogout, confirmationModal } = useUnsyncedDataLogoutGuard(resetDatabase);
+
   if (!permissionsChanged) {
     return null;
   }
 
   return (
-    <BannerNotification>
-      <strong>Permissions changed.</strong> Your permissions were updated while you were offline.{' '}
-      <StyledLink onClick={resetDatabase}>Log out</StyledLink> and back in to get the latest data.
-    </BannerNotification>
+    <>
+      <BannerNotification>
+        <strong>Permissions changed.</strong> Your permissions were updated while you were offline.{' '}
+        <StyledLink onClick={guardedLogout}>Log out</StyledLink> and back in to get the latest data.
+      </BannerNotification>
+      {confirmationModal}
+    </>
   );
 };
