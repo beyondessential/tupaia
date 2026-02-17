@@ -1,17 +1,23 @@
+/*
+ * This module allows you to create and parse ObjectIDs without a reference to the mongodb or bson
+ * modules.
+ */
+
 import ObjectID from 'bson-objectid';
 
+/**
+ * Generates a Mongo-style ObjectID as a hex string. The first four bytes are the number of seconds
+ * since epoch. (Corollary: IDs are ordered by creation time.)
+ */
 export const generateId = () => {
-  // This module allows you to create and parse ObjectIDs
-  // without a reference to the mongodb or bson modules.
-  const seconds = Math.floor(Date.now() / 1000);
-
-  // Constructs the ID based on the current time so that IDs are ordered by the time they're created
-  return ObjectID(seconds).toString();
+  return ObjectID().toString();
 };
 
+/** @param {number} timestamp */
 export const getHighestPossibleIdForGivenTime = timestamp =>
   getSecondsStringFromTimestamp(timestamp).padEnd(24, 'f');
 
+/** @param {number} timestamp */
 const getSecondsStringFromTimestamp = timestamp =>
   Math.floor(timestamp / 1000)
     .toString(16)

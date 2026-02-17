@@ -30,7 +30,7 @@ export class OptionRecord extends DatabaseRecord {
         throw new Error('Options defined as an object must contain the value key at minimum');
       }
       return parsedOption;
-    } catch (e) {
+    } catch {
       return typeof option === 'string' ? { label: option, value: option } : option;
     }
   }

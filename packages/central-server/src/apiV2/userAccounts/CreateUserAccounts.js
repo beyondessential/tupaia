@@ -1,5 +1,5 @@
 import { encryptPassword, generateSecretKey } from '@tupaia/auth';
-import { PermissionsError, ValidationError } from '@tupaia/utils';
+import { PermissionsError } from '@tupaia/utils';
 
 import {
   assertAdminPanelAccess,

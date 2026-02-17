@@ -1,4 +1,9 @@
-import keyBy from 'lodash.keyby';
+/**
+ * @typedef {import('@tupaia/types').Answer} Answer
+ * @typedef {(answer: Answer) => Promise<Answer["text"]>} AnswerBodyParser
+ */
+
+import { keyBy } from 'es-toolkit';
 import momentTimezone from 'moment-timezone';
 
 import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
@@ -6,25 +11,21 @@ import { ValidationError, stripTimezoneFromDate } from '@tupaia/utils';
 import { generateId } from '../../utilities';
 import { upsertAnswers } from './upsertAnswers';
 
-/**
- * @typedef {import('@tupaia/types').Answer} Answer
- * @typedef {(answer: Answer) => Promise<Answer["text"]>} AnswerBodyParser
- */
-
 async function getRecordsByCode(model, codes) {
   const records = await model.find({ code: Array.from(codes) });
-  return keyBy(records, 'code');
+  return keyBy(records, r => r.code);
 }
 
 async function getEntitiesByCode(models, responses) {
   const entityCodes = new Set();
-  responses.forEach(({ entity_code: entityCode }) => entityCode && entityCodes.add(entityCode));
+  for (const { entity_code: entityCode } of responses) {
+    if (entityCode) entityCodes.add(entityCode);
+  }
   return getRecordsByCode(models.entity, entityCodes);
 }
 
 async function getQuestionsByCode(models, answers) {
-  const questionCodes = new Set();
-  Object.keys(answers).forEach(code => questionCodes.add(code));
+  const questionCodes = new Set(Object.keys(answers));
   return getRecordsByCode(models.question, questionCodes);
 }
 
