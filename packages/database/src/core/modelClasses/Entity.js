@@ -171,7 +171,7 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   getDhisTrackedEntityId() {
-    return this.metadata && this.metadata.dhis && this.metadata.dhis.trackedEntityId;
+    return this.metadata?.dhis?.trackedEntityId;
   }
 
   async setDhisTrackedEntityId(trackedEntityId) {
