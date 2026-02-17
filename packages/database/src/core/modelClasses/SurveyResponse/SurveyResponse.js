@@ -317,7 +317,8 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
           entitiesUpserted,
         );
         const surveyCode = surveyCodesById[response.survey_id];
-        (entitiesBySurveyCode[surveyCode] ??= []).push(entityCode);
+        entitiesBySurveyCode[surveyCode] ??= [];
+        entitiesBySurveyCode[surveyCode].push(entityCode);
       }
 
       return await this.assertCanImport(transactingModels, accessPolicy, entitiesBySurveyCode);
