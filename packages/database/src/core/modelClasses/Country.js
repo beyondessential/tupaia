@@ -15,10 +15,6 @@ export class CountryRecord extends DatabaseRecord {
 export class CountryModel extends DatabaseModel {
   static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
-  async buildSyncLookupQueryDetails() {
-    return null;
-  }
-
   get DatabaseRecordClass() {
     return CountryRecord;
   }
