@@ -5,7 +5,6 @@ import { SyncDirections } from '@tupaia/constants';
 import { ensure, isNullish } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
 import { DatabaseError, PermissionsError, reduceToDictionary } from '@tupaia/utils';
-
 import { DatabaseRecord } from '../../DatabaseRecord';
 import { MaterializedViewLogDatabaseModel } from '../../analytics';
 import { createSurveyResponsePermissionFilter } from '../../permissions';
@@ -13,6 +12,7 @@ import { RECORDS } from '../../records';
 import { buildSyncLookupSelect } from '../../sync';
 import { processColumns } from '../../utilities';
 import { getLeaderboardQuery } from './leaderboard';
+import { assertSurveyResponsePermissions } from './permissions';
 import { processSurveyResponse } from './processSurveyResponse';
 import { saveResponsesToDatabase } from './saveToDatabase';
 import { upsertAnswers } from './upsertAnswers';
@@ -162,6 +162,20 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
 
   get DatabaseRecordClass() {
     return SurveyResponseRecord;
+  }
+
+  /**
+   * @param {ModelRegistry} models
+   * @param {AccessPolicy} accessPolicy
+   * @param {SurveyResponse['id']} surveyResponseId
+   * @returns {Promise<true>}
+   * @throws {PermissionsError}
+   */
+  async assertCanRead(models, accessPolicy, surveyResponseId) {
+    return await models.wrapInReadOnlyTransaction(
+      async transactingModels =>
+        await assertSurveyResponsePermissions(transactingModels, accessPolicy, surveyResponseId),
+    );
   }
 
   /**

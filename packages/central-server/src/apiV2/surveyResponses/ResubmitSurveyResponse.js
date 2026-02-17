@@ -9,7 +9,6 @@ import {
   assertBESAdminAccess,
 } from '../../permissions';
 import { RouteHandler } from '../RouteHandler';
-import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
 
 /**
  * Handles POST endpoint:
@@ -30,10 +29,10 @@ export class ResubmitSurveyResponse extends RouteHandler {
       // Check the user has either:
       // - BES admin access
       // - Tupaia Admin Panel access AND permission to view the surveyResponse AND permission to submit the new survey response
-      const originalSurveyResponsePermissionChecker = accessPolicy =>
-        assertSurveyResponsePermissions(
-          accessPolicy,
+      const originalSurveyResponsePermissionChecker = async accessPolicy =>
+        await transactingModels.surveyResponse.assertCanRead(
           transactingModels,
+          accessPolicy,
           this.originalSurveyResponseId,
         );
 
