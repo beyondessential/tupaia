@@ -676,7 +676,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
       const results = await this.find(
         {
-          [`hierarchy.generational_distance`]: generational_distance,
+          'hierarchy.generational_distance': generational_distance,
           ...restOfFilter,
         },
         {
