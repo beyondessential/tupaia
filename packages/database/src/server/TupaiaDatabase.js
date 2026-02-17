@@ -85,7 +85,7 @@ export class TupaiaDatabase extends BaseDatabase {
   getOrCreateChangeChannel() {
     if (!this.changeChannel) {
       this.changeChannel = this.transactingChangeChannel || new DatabaseChangeChannel();
-      this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
+      this.changeChannel.addDataChangeHandler(change => this.notifyChangeHandlers(change));
       this.changeChannelPromise = this.changeChannel.ping(undefined, 0);
     }
     return this.changeChannel;
