@@ -1,12 +1,11 @@
-import styled from 'styled-components';
 import { Link } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 import { SyncFact } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
 import type { Handler } from 'mitt';
-import { useLogout, useSyncContext } from '../api';
-import { clearDatabase } from '../database/clearDatabase';
+import { useSyncContext } from '../api';
 import { useDatabaseContext } from '../hooks/database';
 import { useLogoutGuard } from '../hooks/useGuardedLogout';
 import { SYNC_EVENT_ACTIONS, SyncEvents } from '../types/sync';
@@ -56,16 +55,9 @@ function usePermissionsDidChange() {
 }
 
 export const ResetDataNotification = () => {
-  const { mutateAsync: logOut } = useLogout();
-  const models = ensure(useDatabaseContext()?.models);
   const permissionsChanged = usePermissionsDidChange();
 
-  const resetDatabase = useCallback(async () => {
-    await logOut();
-    await clearDatabase(models);
-  }, [logOut, models]);
-
-  const { guardedCallback: guardedLogout, confirmationModal } = useLogoutGuard(resetDatabase);
+  const { guardedLogout, confirmationModal } = useLogoutGuard();
 
   if (!permissionsChanged) {
     return null;

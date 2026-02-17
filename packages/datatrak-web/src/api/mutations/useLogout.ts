@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { SyncFact } from '@tupaia/constants';
 import { ROUTES } from '../../constants';
+import { clearDatabase } from '../../database';
 import { DatatrakWebModelRegistry } from '../../types';
 import { useSyncContext } from '../SyncContext';
 import { post } from '../api';
@@ -24,6 +25,12 @@ const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) =
       [SyncFact.CURRENT_USER_ID, SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID],
     );
     await transactingModels.localSystemFact.delete({ key: SyncFact.CURRENT_USER_ID });
+
+    const permissionsDidChange =
+      (await transactingModels.localSystemFact.get(SyncFact.PERMISSIONS_CHANGED)) === 'true';
+    if (permissionsDidChange) {
+      await clearDatabase(transactingModels);
+    }
   });
 };
 
