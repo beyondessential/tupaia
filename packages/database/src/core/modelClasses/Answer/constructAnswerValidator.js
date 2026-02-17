@@ -16,7 +16,7 @@ function getValuesFromOptions(options) {
       if (optionObject.value) {
         return optionObject.value;
       }
-    } catch (error) {
+    } catch {
       // Not parsable, the option must just be a simple string
     }
     // It is not a preconfigured object defining the value, so just return the string as is
