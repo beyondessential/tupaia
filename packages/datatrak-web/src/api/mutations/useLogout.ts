@@ -35,8 +35,13 @@ export const useLogout = () => {
 
   return useDatabaseMutation(isOfflineFirst ? logoutOffline : logoutOnline, {
     onSuccess: async () => {
-      () => navigate(ROUTES.LOGIN);
-      await Promise.all([clientSyncManager?.stopSyncService(), queryClient.resetQueries()]);
+      // Immediately update query cache, otherwise navigating to ROUTES.LOGIN may cause unexpected
+      // redirects (even if we were to await invalidateQueries() first).
+      // @see `src/routes/Routes.tsx`
+      queryClient.setQueryData(['getUser'], {});
+      navigate(ROUTES.LOGIN);
+
+      await Promise.all([clientSyncManager?.stopSyncService(), queryClient.refetchQueries()]);
     },
   });
 };

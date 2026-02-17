@@ -9,7 +9,7 @@ import { Button } from '@tupaia/ui-components';
 import { useCurrentUserContext, useLogout } from '../../api';
 import { RoutePath, ROUTES } from '../../constants';
 import { useAbandonSurveyGuard } from '../../hooks/useAbandonSurveyGuard';
-import { useGuardedLogout } from '../../hooks/useGuardedLogout';
+import { useLogoutGuard } from '../../hooks/useGuardedLogout';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
@@ -99,7 +99,7 @@ export const MenuList = ({
   const hasAdminPanelAccess =
     accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
   const hasProjectSelected = !!projectId;
-  const { mutate: logout } = useLogout();
+  const { mutateAsync: logOut } = useLogout();
   const navigate = useNavigate();
 
   const navigateRef = useRef<() => void>(() => {});
@@ -117,8 +117,8 @@ export const MenuList = ({
   };
 
   const { guardedCallback: guardedLogout, confirmationModal: logoutConfirmationModal } =
-    useGuardedLogout(() => {
-      logout();
+    useLogoutGuard(async () => {
+      await logOut();
       onCloseMenu?.();
     });
 

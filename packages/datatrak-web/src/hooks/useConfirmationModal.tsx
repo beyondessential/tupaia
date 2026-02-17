@@ -29,9 +29,9 @@ export function useConfirmationModal(
   const [isOpen, setIsOpen] = useState(false);
 
   const guardedCallback = useCallback(
-    (mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    async (mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
       if (bypass) {
-        callbackRef.current(mouseEvent);
+        await callbackRef.current(mouseEvent);
         return;
       }
       mouseEvent.preventDefault();

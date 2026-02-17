@@ -12,7 +12,7 @@ const unsyncedDataModalProps = {
   cancelLabel: 'Stay logged in',
 };
 
-export function useGuardedLogout(callback: React.MouseEventHandler<HTMLElement>) {
+export function useLogoutGuard(callback: React.MouseEventHandler<HTMLElement>) {
   const { data: hasUnsyncedData } = useHasUnsyncedDataQuery();
 
   const { guardedCallback, confirmationModal: unsyncedDataModal } = useConfirmationModal(callback, {

@@ -8,7 +8,7 @@ import { useLogout, useSyncContext } from '../api';
 import { clearDatabase } from '../database/clearDatabase';
 import { useDatabaseContext } from '../hooks/database';
 import { useAbandonSurveyGuard } from '../hooks/useAbandonSurveyGuard';
-import { useGuardedLogout } from '../hooks/useGuardedLogout';
+import { useLogoutGuard } from '../hooks/useGuardedLogout';
 import { SYNC_EVENT_ACTIONS, SyncEvents } from '../types/sync';
 import { BannerNotification } from './BannerNotification';
 
@@ -63,14 +63,7 @@ export const ResetDataNotification = () => {
     await clearDatabase(models);
   }, [logOut, models]);
 
-  const { guardedCallback: guardedLogout, confirmationModal: unsyncedDataModal } =
-    useGuardedLogout(resetDatabase);
-
-  const {
-    // If mid-survey AND unsynced data, show ‘survey in progress’ modal, then ‘unsynced data’ modal.
-    guardedCallback: doublyGuardedLogout,
-    confirmationModal: surveyModal,
-  } = useAbandonSurveyGuard(guardedLogout);
+  const { guardedCallback: guardedLogout, confirmationModal } = useLogoutGuard(resetDatabase);
 
   if (!permissionsChanged) {
     return null;
@@ -80,11 +73,9 @@ export const ResetDataNotification = () => {
     <>
       <BannerNotification>
         <strong>Permissions changed.</strong> Your permissions were updated while you were offline.{' '}
-        <StyledLink onClick={doublyGuardedLogout}>Log out</StyledLink> and back in to get the latest
-        data.
+        <StyledLink onClick={guardedLogout}>Log out</StyledLink> and back in to get the latest data.
       </BannerNotification>
-      {surveyModal}
-      {unsyncedDataModal}
+      {confirmationModal}
     </>
   );
 };
