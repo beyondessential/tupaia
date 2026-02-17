@@ -17,6 +17,6 @@ export const hasOutgoingChanges = async (
   const lastSuccessfulSyncPush =
     (await localSystemFact.get(SyncFact.LAST_SUCCESSFUL_SYNC_PUSH)) ?? '-1';
   const pushSince = Number.parseInt(lastSuccessfulSyncPush, 10);
-  const promises = await Promise.all(models.map(model => hasChangesForModel(model, pushSince)));
-  return promises.some(Boolean);
+  const results = await Promise.all(models.map(model => hasChangesForModel(model, pushSince)));
+  return results.some(Boolean);
 };
