@@ -1,4 +1,5 @@
-import { Link, styled } from '@mui/material';
+import styled from 'styled-components';
+import { Link } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { SyncFact } from '@tupaia/constants';
@@ -7,15 +8,16 @@ import type { Handler } from 'mitt';
 import { useLogout, useSyncContext } from '../api';
 import { clearDatabase } from '../database/clearDatabase';
 import { useDatabaseContext } from '../hooks/database';
-import { useAbandonSurveyGuard } from '../hooks/useAbandonSurveyGuard';
 import { useLogoutGuard } from '../hooks/useGuardedLogout';
 import { SYNC_EVENT_ACTIONS, SyncEvents } from '../types/sync';
 import { BannerNotification } from './BannerNotification';
 
 const StyledLink = styled(Link)`
-  color: inherit;
-  cursor: pointer;
-  text-decoration-color: currentColor;
+  &.MuiLink-root {
+    color: inherit;
+    cursor: pointer;
+    text-decoration-color: currentColor;
+  }
 `;
 
 function useOnPermissionChange(
