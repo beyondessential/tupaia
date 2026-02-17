@@ -15,7 +15,6 @@ import {
   takesIdForm,
   ValidationError,
 } from '@tupaia/utils';
-import winston from '../../log';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   translateEntityCodeToId,
