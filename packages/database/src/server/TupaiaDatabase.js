@@ -85,7 +85,9 @@ export class TupaiaDatabase extends BaseDatabase {
   getOrCreateChangeChannel() {
     if (!this.changeChannel) {
       this.changeChannel = this.transactingChangeChannel || new DatabaseChangeChannel();
-      this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
+      // Arrow function needed because autobind (see constructor) only binds immediate prototype’s
+      // methods, not inherited ones. Otherwise this fails in subclasses of TupaiaDatabase.
+      this.changeChannel.addDataChangeHandler(change => this.notifyChangeHandlers(change));
       this.changeChannelPromise = this.changeChannel.ping(undefined, 0);
     }
     return this.changeChannel;
