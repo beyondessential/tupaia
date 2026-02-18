@@ -111,17 +111,25 @@ const SURVEY_RESPONSE = [
 ];
 
 const PROJECT = [{ id: 'project001', code: 'P001' }];
+
+const PERMISSION_GROUPS = [
+  { id: 'permissionGroup001_test', name: 'Test Permission Group 1' },
+  { id: 'permissionGroup002_test', name: 'Test Permission Group 2' },
+];
+
 const SURVEY = [
   {
     id: 'survey001_test',
     code: 'S001',
     data_group_id: 'dataGroup001_test',
+    permission_group_id: PERMISSION_GROUPS[0].id,
     project_id: 'project001',
   },
   {
     id: 'survey002_test',
     code: 'S002',
     data_group_id: 'dataGroup002_test',
+    permission_group_id: PERMISSION_GROUPS[1].id,
     project_id: 'project001',
   },
 ];
@@ -155,6 +163,7 @@ export const TEST_DATA = {
   user: USER,
   dataElement: DATA_ELEMENT,
   dataGroup: DATA_GROUP,
+  permissionGroup: PERMISSION_GROUPS,
   project: PROJECT,
   survey: SURVEY,
   question: QUESTION,

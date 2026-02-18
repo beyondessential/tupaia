@@ -1,17 +1,18 @@
 import { expect } from 'chai';
 
-import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
+import { QuestionType } from '@tupaia/types';
+import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
 import {
   TestableApp,
+  upsertCountry,
   upsertEntity,
   upsertQuestion,
+  upsertSurvey,
   upsertSurveyGroup,
   upsertSurveyScreen,
   upsertSurveyScreenComponent,
-  upsertSurvey,
-  upsertCountry,
 } from '../../testUtilities';
 
 describe('GET /changes/*', async () => {
@@ -230,7 +231,7 @@ describe('GET /changes/*', async () => {
       // Wait one second for the triggers to have properly added the changes to the queue
       await oneSecondSleep();
       const questionId = generateId();
-      await upsertQuestion({ id: questionId, type: 'Entity' });
+      await upsertQuestion({ id: questionId, type: QuestionType.Entity });
       const { id: countryId } = await models.country.findOne({ code: 'DL' });
       const survey = await upsertSurvey({ country_ids: [countryId] });
       const screen = await upsertSurveyScreen({ survey_id: survey.id });

@@ -12513,6 +12513,7 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     case: ^1.6.3
+    chance: ^1.1.13
     date-fns: ^2.29.2
     date-fns-tz: ^2.0.1
     db-migrate: ^0.11.5
