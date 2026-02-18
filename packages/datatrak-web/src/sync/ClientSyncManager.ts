@@ -32,7 +32,8 @@ import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 
-const SYNC_INTERVAL = 1000 * 30;
+const SYNC_INTERVAL_MS = 30_000;
+const URGENT_SYNC_INTERVAL_MS = 10_000;
 
 const SYNC_STAGES = {
   PUSH: 1,
@@ -124,7 +125,7 @@ export class ClientSyncManager {
     // Run the sync immediately
     // and then schedule the next sync
     run();
-    this.syncInterval = setInterval(run, SYNC_INTERVAL);
+    this.syncInterval = setInterval(run, SYNC_INTERVAL_MS);
   }
 
   async stopSyncService(): Promise<void> {
@@ -305,12 +306,10 @@ export class ClientSyncManager {
       return;
     }
 
-    const urgentSyncIntervalInSeconds = 10;
-
     // Schedule regular urgent sync
     this.urgentSyncInterval = setInterval(
       () => this.triggerSync(true, queryClient),
-      urgentSyncIntervalInSeconds * 1000,
+      URGENT_SYNC_INTERVAL_MS,
     );
 
     // start the sync now
