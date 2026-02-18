@@ -1,28 +1,18 @@
+import { EntityTypeEnum } from '@tupaia/types';
+
 export const ENTITIES = [
-  { code: 'test', name: 'Test Project', type: 'project' },
-  { code: 'explore', name: 'Explore', type: 'project' },
-  { code: 'AU', name: 'Australia', type: 'country' },
-  { code: 'FJ', name: 'Fiji', type: 'country' },
-  { code: 'PG', name: 'PNG', type: 'country' },
-  {
-    code: 'AU_Facility1',
-    name: 'Australian Facility 1',
-    type: 'facility',
-  },
-  {
-    code: 'AU_Facility2',
-    name: 'Australian Facility 2',
-    type: 'facility',
-  },
-  {
-    code: 'PG_Facility',
-    name: 'PNG Facility',
-    type: 'facility',
-  },
-  { code: 'FJ_Facility', name: 'Fiji Facility', type: 'facility' },
+  { code: 'test', name: 'Test Project', type: EntityTypeEnum.project },
+  { code: 'explore', name: 'Explore', type: EntityTypeEnum.project },
+  { code: 'AU', name: 'Australia', type: EntityTypeEnum.country },
+  { code: 'FJ', name: 'Fiji', type: EntityTypeEnum.country },
+  { code: 'PG', name: 'PNG', type: EntityTypeEnum.country },
+  { code: 'AU_Facility1', name: 'Australian Facility 1', type: EntityTypeEnum.facility },
+  { code: 'AU_Facility2', name: 'Australian Facility 2', type: EntityTypeEnum.facility },
+  { code: 'PG_Facility', name: 'PNG Facility', type: EntityTypeEnum.facility },
+  { code: 'FJ_Facility', name: 'Fiji Facility', type: EntityTypeEnum.facility },
   { code: 'VU_Facility1', attributes: { x: 5, y: 'hello', z: {} } },
   { code: 'VU_Facility2', attributes: { x: 6 } },
-];
+] as const;
 
 export const ENTITY_RELATIONS = {
   explore: [
@@ -38,7 +28,7 @@ export const ENTITY_RELATIONS = {
     { parent: 'PG', child: 'PG_Facility' },
     { parent: 'FJ', child: 'FJ_Facility' },
   ],
-};
+} as const;
 
 export const CENTRAL_API_RESPONSES = {
   surveyResponses: [
@@ -65,4 +55,4 @@ export const CENTRAL_API_RESPONSES = {
       'country.name': 'Fiji',
     },
   ],
-};
+} as const;
