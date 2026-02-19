@@ -1,38 +1,42 @@
 import { SyncFact } from '@tupaia/constants';
-import { EntityRecord, ProjectRecord } from '@tupaia/tsmodels';
 import { RECORDS } from '@tupaia/database';
+import { EntityRecord, ProjectRecord } from '@tupaia/tsmodels';
 import { GetUserLocalContext } from '../../api/queries/useUser';
 
 export const getUser = async ({ models }: GetUserLocalContext) => {
-  const currentUserId = await models.localSystemFact.get(SyncFact.CURRENT_USER_ID);
-  if (!currentUserId) {
-    return {};
-  }
+  return await models.wrapInReadOnlyTransaction(async transactingModels => {
+    const currentUserId = await transactingModels.localSystemFact.get(SyncFact.CURRENT_USER_ID);
+    if (!currentUserId) {
+      return {};
+    }
 
-  const userData = await models.user.findById(currentUserId);
-  if (!userData) {
-    return {};
-  }
+    const userRecord = await transactingModels.user.findById(currentUserId);
+    if (!userRecord) {
+      return {};
+    }
 
-  const { preferences = {} } = userData;
-  const { project_id: projectId, country_id: countryId } = preferences;
+    const { preferences = {} } = userRecord;
+    const { project_id: projectId, country_id: countryId } = preferences;
 
-  let project: ProjectRecord | null = null;
-  if (projectId) {
-    project = await models.database.findOne(
-      RECORDS.PROJECT,
-      { [`${RECORDS.PROJECT}.id`]: projectId },
-      {
-        joinWith: RECORDS.ENTITY,
-        joinCondition: ['entity.id', 'project.entity_id'],
-      },
-    );
-  }
+    let project: ProjectRecord | null = null;
+    if (projectId) {
+      project = await transactingModels.database.findOne(
+        RECORDS.PROJECT,
+        { [`${RECORDS.PROJECT}.id`]: projectId },
+        {
+          joinWith: RECORDS.ENTITY,
+          joinCondition: ['entity.id', 'project.entity_id'],
+        },
+      );
+    }
 
-  let country: EntityRecord | null = null;
-  if (countryId) {
-    country = await models.entity.findById(countryId, { columns: ['code', 'id', 'name'] });
-  }
+    let country: EntityRecord | null = null;
+    if (countryId) {
+      country = await transactingModels.entity.findById(countryId, {
+        columns: ['code', 'id', 'name'],
+      });
+    }
 
-  return await models.user.transformUserData(userData, project, country);
+    return await transactingModels.user.transformUserData(userRecord, project, country);
+  });
 };
