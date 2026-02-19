@@ -19,7 +19,7 @@ export class AuthService {
   }
 
   async saveLocalUser(userData: DatatrakWebUserRequest.ResBody, password: string): Promise<void> {
-    let user = await this.models.user.findOne({ email: userData.email });
+    const user = await this.models.user.findOne({ email: userData.email });
     if (!user) {
       await this.models.user.create(snakeKeys(userData));
     }
