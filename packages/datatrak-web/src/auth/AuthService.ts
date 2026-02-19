@@ -19,20 +19,22 @@ export class AuthService {
   }
 
   async saveLocalUser(userData: DatatrakWebUserRequest.ResBody, password: string): Promise<void> {
-    const user = await this.models.user.findOne({ email: userData.email });
-    if (!user) {
-      await this.models.user.create(snakeKeys(userData));
-    }
+    await this.models.wrapInTransaction(async transactingModels => {
+      const exists = await transactingModels.user.exists({ email: userData.email });
+      if (!exists) {
+        await transactingModels.user.create(snakeKeys(userData));
+      }
 
-    // Only update password hash, keep other user data updated via sync
-    await this.models.user.update(
-      { email: userData.email },
-      {
-        password_hash: await hashPassword(password),
-        // @ts-ignore access_policy is an extra field in datatrak-web
-        access_policy: userData.accessPolicy,
-      },
-    );
+      // Only update password hash, keep other user data updated via sync
+      await transactingModels.user.update(
+        { email: userData.email },
+        {
+          password_hash: await hashPassword(password),
+          // @ts-ignore access_policy is an extra field in datatrak-web
+          access_policy: userData.accessPolicy,
+        },
+      );
+    });
   }
 
   async signIn(params: SignInParams) {
