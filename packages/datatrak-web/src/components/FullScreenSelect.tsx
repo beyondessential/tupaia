@@ -124,14 +124,15 @@ const StyledListItemText = styled(ListItemText).attrs({ disableTypography: true 
 interface SelectItemProps
   extends Required<SelectOption>,
     ComponentPropsWithoutRef<typeof StyledListItem> {}
-const SelectItem = ({ label, value, ...listItemProps }: SelectItemProps) => (
-  <StyledListItem {...listItemProps}>
-    <StyledListItemText primary={label} />
-    {listItemProps.selected && (
-      <Check color={useTheme().palette.primary.main} width={24} height={24} />
-    )}
-  </StyledListItem>
-);
+const SelectItem = ({ label, value, ...listItemProps }: SelectItemProps) => {
+  const iconColor = useTheme().palette.primary.main;
+  return (
+    <StyledListItem {...listItemProps}>
+      <StyledListItemText primary={label} />
+      {listItemProps.selected && <Check color={iconColor} width={24} height={24} />}
+    </StyledListItem>
+  );
+};
 
 interface FullScreenSelectProps
   extends Pick<
