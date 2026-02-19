@@ -15,23 +15,32 @@ const logoutOnline = async () => {
 };
 
 const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) => {
-  await models.wrapInTransaction(async transactingModels => {
-    await transactingModels.database.executeSql(
-      `
-        UPDATE local_system_fact
-        SET value = (SELECT value FROM local_system_fact WHERE key = ?)
-        WHERE key = ?
-      `,
-      [SyncFact.CURRENT_USER_ID, SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID],
-    );
-    await transactingModels.localSystemFact.delete({ key: SyncFact.CURRENT_USER_ID });
+  try {
+    return await models.wrapInTransaction(async transactingModels => {
+      await transactingModels.database.executeSql(
+        `
+          UPDATE local_system_fact
+          SET value = (SELECT value FROM local_system_fact WHERE key = ?)
+          WHERE key = ?
+        `,
+        [SyncFact.CURRENT_USER_ID, SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID],
+      );
+      await transactingModels.localSystemFact.delete({ key: SyncFact.CURRENT_USER_ID });
 
-    const permissionsDidChange =
-      (await transactingModels.localSystemFact.get(SyncFact.PERMISSIONS_CHANGED)) === 'true';
-    if (permissionsDidChange) {
-      await clearDatabase(transactingModels);
+      const permissionsDidChange =
+        (await transactingModels.localSystemFact.get(SyncFact.PERMISSIONS_CHANGED)) === 'true';
+      if (permissionsDidChange) {
+        await clearDatabase(transactingModels);
+      }
+    });
+  } catch (e: unknown) {
+    if (e instanceof Error && e.name === 'KnexTimeoutError') {
+      throw new Error(
+        'Couldn’t log out, likely because sync was taking a long time. Please wait for sync to finish and try again.',
+      );
     }
-  });
+    throw e;
+  }
 };
 
 export const useLogout = () => {
