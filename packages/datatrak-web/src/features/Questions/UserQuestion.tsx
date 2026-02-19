@@ -47,9 +47,8 @@ export const UserQuestion = ({
   useEffect(() => {
     // if the selection is the same as the search value, do not update the search value
     if (value?.name === searchValue) return;
-
     setSearchValue(value?.name ?? '');
-  }, [JSON.stringify(value)]);
+  }, [value?.name]);
 
   return (
     <>
