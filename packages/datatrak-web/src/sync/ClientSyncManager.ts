@@ -558,12 +558,21 @@ export class ClientSyncManager {
 
       const isInitialPull = pullSince === -1;
 
-      // 1. If the pull is initial, we wrap the whole pull in a transaction and persist the stream data straight to the actual tables
-      //    When leaving a long running transaction open, any user trying to update those same records in Tamanu will be blocked until the sync finishes.
-      //    This is not a problem for initial sync because there is no local data, so it is fine to leave a long running transaction open.
-      // 2. If the pull is incremental, we save the stream data to a temporary snapshot table and then use a transaction to persist the data to the actual tables
-      //    This is because we don't want to block the user from updating the records in Tamanu while a long sync is running.
-      //    Also, we don't want to cause memory issues by saving all the data to memory.
+      /*
+       * If the pull is initial:
+       *   - We wrap the whole pull in a transaction and persist the stream data straight to the
+       *     actual tables.
+       *   - When leaving a long running transaction open, any user trying to update those same
+       *     records in DataTrak will be blocked until the sync finishes.
+       *   - This is not a problem for initial sync because there is no local data, so it is fine to
+       *     leave a long-running transaction open.
+       * If the pull is incremental:
+       *   - We save the stream data to a temporary snapshot table and then use a transaction to
+       *     persist the data to the actual tables.
+       *   - This is because we don’t want to block the user from updating the records in DataTrak
+       *     while a long sync is running.
+       *   - Also, we don’t want to cause memory issues by saving all the data to memory.
+       */
       if (isInitialPull) {
         await this.pullInitialSync(sessionId, totalToPull, pullUntil);
       } else {
