@@ -36,7 +36,7 @@ export const Header = (props: ComponentPropsWithoutRef<typeof HeaderRoot>) => {
         <HeaderLeft />
         <UserMenu />
       </HeaderRoot>
-      {isOfflineFirst && isLoggedIn && <ResetDataNotification />}
+      {isOfflineFirst && isLoggedIn && window.navigator.onLine && <ResetDataNotification />}
     </>
   );
 };
