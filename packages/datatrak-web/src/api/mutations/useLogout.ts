@@ -42,10 +42,11 @@ export const useLogout = () => {
 
   return useDatabaseMutation(isOfflineFirst ? logoutOffline : logoutOnline, {
     onSuccess: async () => {
-      // Immediately update query cache, otherwise navigating to ROUTES.LOGIN may cause unexpected
-      // redirects (even if we were to await invalidateQueries() first).
-      // @see `src/routes/Routes.tsx`
-      queryClient.setQueryData(['getUser'], {});
+      // Immediately refetch user rather than waiting for cache invalidation to trigger refetch in
+      // its own time. Having a user cached in the query client will make the ROUTES.LOGIN page
+      // redirect back to ROUTES.HOME.
+      // @see AuthViewLoggedInRedirect in src/routes/Routes.tsx
+      await queryClient.refetchQueries({ queryKey: ['getUser'] });
       navigate(ROUTES.LOGIN);
 
       await Promise.all([clientSyncManager?.stopSyncService(), queryClient.refetchQueries()]);
