@@ -423,7 +423,10 @@ export class ClientSyncManager {
   }
 
   async checkForPermissionChanges(sessionId: string) {
-    const currentUserId = ensure(await this.models.localSystemFact.get(SyncFact.CURRENT_USER_ID));
+    const currentUserId = ensure(
+      await this.models.localSystemFact.get(SyncFact.CURRENT_USER_ID),
+      'Couldn’t check for permission changes. No one is logged in.',
+    );
 
     const hasPermissionChange = await hasSyncSnapshotRecords(
       this.database,
