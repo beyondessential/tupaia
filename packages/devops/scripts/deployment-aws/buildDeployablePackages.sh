@@ -10,6 +10,9 @@ echo "Building deployable packages"
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
 source "$HOME/.nvm/nvm.sh"
 
+# Use Yarn version declared in package.json
+corepack enable yarn
+
 # Install external dependencies
 cd "$root_dir"
 yarn install --immutable
