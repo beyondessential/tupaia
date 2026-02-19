@@ -1,14 +1,11 @@
 import { Link } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import { SyncFact } from '@tupaia/constants';
-import { ensure } from '@tupaia/tsutils';
-import type { Handler } from 'mitt';
-import { useSyncContext } from '../api';
-import { useDatabaseContext } from '../hooks/database';
+import { useDatabaseQuery, useSyncContext } from '../api';
+import { useIsOfflineFirst } from '../api/offlineFirst';
 import { useLogoutGuard } from '../hooks/useGuardedLogout';
-import { SYNC_EVENT_ACTIONS, SyncEvents } from '../types/sync';
 import { BannerNotification } from './BannerNotification';
 
 const StyledLink = styled(Link)`
@@ -19,39 +16,32 @@ const StyledLink = styled(Link)`
   }
 `;
 
-function useOnPermissionChange(
-  handler: Handler<SyncEvents[typeof SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED]>,
-) {
-  const syncManager = useSyncContext()?.clientSyncManager;
-  useEffect(() => {
-    syncManager?.emitter.on(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
-    return () => {
-      syncManager?.emitter.off(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, handler);
-    };
-  }, [handler, syncManager]);
-}
-
-/** @returns True if and only if the current user’s permissions have changed since last sync. */
+/**
+ * @returns
+ * - `true` if the current user’s permissions have changed since last sync;
+ * - `false` if `they haven’t changed since last sync;
+ * - `undefined` if result is pending;
+ * - `null` if not using sync.
+ */
 function usePermissionsDidChange() {
-  const models = ensure(useDatabaseContext()?.models);
-  const syncManager = ensure(useSyncContext()?.clientSyncManager);
-  const [permissionsChanged, setPermissionsChanged] = useState(syncManager.permissionsChanged);
+  const isOfflineFirst = useIsOfflineFirst();
+  const syncManager = useSyncContext()?.clientSyncManager;
 
-  useEffect(() => {
-    const loadPermissionsChanged = async () => {
-      const permissionsChanged = await models.localSystemFact.get(SyncFact.PERMISSIONS_CHANGED);
-      setPermissionsChanged(permissionsChanged === 'true');
-    };
-    loadPermissionsChanged();
-  }, [models]);
-
-  const permissionChangeHandler = useCallback(
-    syncEvent => void setPermissionsChanged(syncEvent.permissionsChanged),
-    [],
+  const query = useDatabaseQuery(
+    ['permissionsChanged'],
+    isOfflineFirst
+      ? async ({ models }) => {
+          const permissionsChanged = await models.localSystemFact.get(SyncFact.PERMISSIONS_CHANGED);
+          return permissionsChanged === 'true';
+        }
+      : async () => null,
+    {
+      initialData: isOfflineFirst ? syncManager?.permissionsChanged : null,
+      localContext: {},
+    },
   );
-  useOnPermissionChange(permissionChangeHandler);
 
-  return permissionsChanged;
+  return query.data;
 }
 
 export const ResetDataNotification = () => {
