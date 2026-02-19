@@ -32,7 +32,6 @@ const ProjectButton = styled(Button).attrs({
 })`
   color: ${({ theme }) => theme.palette.text.secondary};
 
-  :focus,
   :focus-visible,
   :hover {
     background: none;

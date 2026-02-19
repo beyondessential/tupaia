@@ -148,10 +148,12 @@ export const getEntityDescendants = async ({
 
   const entityFilter = buildEntityFilter(params);
 
-  const project = ensure(
-    await models.project.findOne({ code: ensure(projectCode) }),
-    `No project exists with code ${projectCode}`,
-  );
+  const project = await models.project.findOneOrThrow({
+    code: ensure(
+      projectCode,
+      `useProjectEntities query function called with ${projectCode} projectCode`,
+    ),
+  });
 
   // This should never happen, but just in case
   if (!project.entity_hierarchy_id) {
