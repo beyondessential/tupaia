@@ -19,7 +19,7 @@ const queryFunctions = {
     const surveyResponses = await models.database.find(
       models.surveyResponse.databaseRecord,
       {
-        ['survey.project_id']: projectId,
+        'survey.project_id': projectId,
         user_id: userId,
         // Survey response records in database already filtered by user’s access policy
       },
