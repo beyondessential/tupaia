@@ -81511,6 +81511,7 @@ export const ProjectSchema = {
 	"required": [
 		"code",
 		"config",
+		"entity_hierarchy_id",
 		"id",
 		"permission_groups"
 	]
@@ -81605,7 +81606,8 @@ export const ProjectCreateSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"code"
+		"code",
+		"entity_hierarchy_id"
 	]
 }
 export const ProjectUpdateSchema = {
@@ -84874,6 +84876,7 @@ export const ProjectResponseSchema = {
 	"required": [
 		"code",
 		"config",
+		"entityHierarchyId",
 		"hasAccess",
 		"hasPendingAccess",
 		"homeEntityCode",
