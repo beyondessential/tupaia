@@ -24,11 +24,16 @@ export const useUser = () => {
   // A special case where we want don't want to use useDatabaseQuery to avoid circular context
   return useQuery<DatatrakWebUserRequest.ResBody>(
     ['getUser'],
-    isOfflineFirst ? () => getUser({ models: ensure(models) }) : getUserOnline,
+    isOfflineFirst
+      ? async () =>
+          await getUser({
+            models: ensure(models, 'getUser query function called with undefined models'),
+          })
+      : getUserOnline,
     {
       staleTime: 0,
       cacheTime: 0,
       refetchOnMount: 'always',
-    }
+    },
   );
 };
