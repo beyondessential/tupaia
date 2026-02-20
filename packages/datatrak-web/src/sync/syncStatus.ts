@@ -1,30 +1,39 @@
-import { useCallback, useEffect, useState } from 'react';
+import type { Handler } from 'mitt';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useSyncContext } from '../api/SyncContext';
-import { SYNC_EVENT_ACTIONS } from '../types';
+import { SYNC_EVENT_ACTIONS, type SyncEvents } from '../types';
+
+const { SYNC_REQUESTING, SYNC_IN_QUEUE, SYNC_STARTED, SYNC_STATE_CHANGED, SYNC_ENDED, SYNC_ERROR } =
+  SYNC_EVENT_ACTIONS;
+
+export function useSyncEventListener<T extends keyof SyncEvents>(
+  eventType: T,
+  handler: Handler<SyncEvents[T]>,
+) {
+  const emitter = useSyncContext()?.clientSyncManager?.emitter;
+  useEffect(() => {
+    emitter?.on<T>(eventType, handler);
+    return () => {
+      emitter?.off<T>(eventType, handler);
+    };
+  }, [emitter, eventType, handler]);
+}
 
 export function useIsRequestingSync(): boolean {
   const syncManager = useSyncContext()?.clientSyncManager;
   const [isRequestingSync, setIsRequestingSync] = useState(syncManager?.isRequestingSync ?? false);
 
-  const update = useCallback(
+  const update: Handler = useCallback(
     () => setIsRequestingSync(syncManager?.isRequestingSync ?? false),
     [syncManager?.isRequestingSync],
   );
 
-  useEffect(() => {
-    const eventTypes = [
-      SYNC_EVENT_ACTIONS.SYNC_REQUESTING,
-      SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE,
-      SYNC_EVENT_ACTIONS.SYNC_STARTED,
-      SYNC_EVENT_ACTIONS.SYNC_ENDED,
-      SYNC_EVENT_ACTIONS.SYNC_ERROR,
-    ];
-    for (const type of eventTypes) syncManager?.emitter?.on(type, update);
-    return () => {
-      for (const type of eventTypes) syncManager?.emitter?.off(type, update);
-    };
-  }, [syncManager?.emitter, update]);
+  useSyncEventListener(SYNC_REQUESTING, update);
+  useSyncEventListener(SYNC_IN_QUEUE, update);
+  useSyncEventListener(SYNC_STARTED, update);
+  useSyncEventListener(SYNC_ENDED, update);
+  useSyncEventListener(SYNC_ERROR, update);
 
   return isRequestingSync;
 }
@@ -33,23 +42,15 @@ export function useIsInSyncQueue(): boolean {
   const syncManager = useSyncContext()?.clientSyncManager;
   const [isQueuing, setIsQueuing] = useState(syncManager?.isQueuing ?? false);
 
-  const update = useCallback(
+  const update: Handler = useCallback(
     () => setIsQueuing(syncManager?.isQueuing ?? false),
     [syncManager?.isQueuing],
   );
 
-  useEffect(() => {
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, update);
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_STARTED, update);
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_ENDED, update);
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_ERROR, update);
-    return () => {
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, update);
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_STARTED, update);
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_ENDED, update);
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_ERROR, update);
-    };
-  }, [syncManager?.emitter, update]);
+  useSyncEventListener(SYNC_IN_QUEUE, update);
+  useSyncEventListener(SYNC_STARTED, update);
+  useSyncEventListener(SYNC_ENDED, update);
+  useSyncEventListener(SYNC_ERROR, update);
 
   return isQueuing;
 }
@@ -58,21 +59,14 @@ export function useIsSyncing(): boolean {
   const syncManager = useSyncContext()?.clientSyncManager;
   const [isSyncing, setIsSyncing] = useState(syncManager?.isSyncing ?? false);
 
-  const update = useCallback(
+  const update: Handler<undefined> = useCallback(
     () => setIsSyncing(syncManager?.isSyncing ?? false),
     [syncManager?.isSyncing],
   );
 
-  useEffect(() => {
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, update);
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_STARTED, update);
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_ENDED, update);
-    return () => {
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, update);
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_STARTED, update);
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_ENDED, update);
-    };
-  }, [syncManager?.emitter, update]);
+  useSyncEventListener(SYNC_IN_QUEUE, update);
+  useSyncEventListener(SYNC_STARTED, update);
+  useSyncEventListener(SYNC_ENDED, update);
 
   return isSyncing;
 }
@@ -81,15 +75,12 @@ export function useSyncStage(): number | null {
   const syncManager = useSyncContext()?.clientSyncManager;
   const [syncStage, setSyncStage] = useState(syncManager?.syncStage ?? null);
 
-  const update = useCallback(
+  const update: Handler = useCallback(
     () => setSyncStage(syncManager?.syncStage ?? null),
     [syncManager?.syncStage],
   );
 
-  useEffect(() => {
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED, update);
-    return () => void syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED, update);
-  }, [syncManager?.emitter, update]);
+  useSyncEventListener(SYNC_STATE_CHANGED, update);
 
   return syncStage;
 }
@@ -100,24 +91,16 @@ export function useSyncProgress(): [number | null, string | null] {
   const [progress, setProgress] = useState(syncManager?.progress ?? null);
   const [message, setMessage] = useState(syncManager?.progressMessage ?? null);
 
-  const update = useCallback(() => {
+  const update: Handler = useCallback(() => {
     setProgress(syncManager?.progress ?? null);
     setMessage(syncManager?.progressMessage ?? null);
   }, [syncManager?.progress, syncManager?.progressMessage]);
 
-  useEffect(() => {
-    const eventTypes = [
-      SYNC_EVENT_ACTIONS.SYNC_REQUESTING,
-      SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE,
-      SYNC_EVENT_ACTIONS.SYNC_STARTED,
-      SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED,
-      SYNC_EVENT_ACTIONS.SYNC_ENDED,
-    ];
-    for (const type of eventTypes) syncManager?.emitter?.on(type, update);
-    return () => {
-      for (const type of eventTypes) syncManager?.emitter?.off(type, update);
-    };
-  }, [syncManager?.emitter, update]);
+  useSyncEventListener(SYNC_REQUESTING, update);
+  useSyncEventListener(SYNC_IN_QUEUE, update);
+  useSyncEventListener(SYNC_STARTED, update);
+  useSyncEventListener(SYNC_STATE_CHANGED, update);
+  useSyncEventListener(SYNC_ENDED, update);
 
   return [progress, message];
 }
@@ -128,15 +111,12 @@ export function useLastSyncTime(): Date | null {
     syncManager?.lastSuccessfulSyncTime ?? null,
   );
 
-  const update = useCallback(
+  const update: Handler<SyncEvents[typeof SYNC_STATE_CHANGED]> = useCallback(
     () => setLastSyncTime(syncManager?.lastSuccessfulSyncTime ?? null),
     [syncManager?.lastSuccessfulSyncTime],
   );
 
-  useEffect(() => {
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED, update);
-    return () => void syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED, update);
-  }, [syncManager?.emitter, update]);
+  useSyncEventListener(SYNC_STATE_CHANGED, update);
 
   return lastSyncTime;
 }
@@ -145,21 +125,16 @@ export function useSyncError(): string | null {
   const syncManager = useSyncContext()?.clientSyncManager;
   const [message, setMessage] = useState<string | null>(syncManager?.errorMessage ?? null);
 
-  const update = useCallback(event => setMessage(event.error), []);
-  const clear = useCallback(() => setMessage(null), []);
+  const clear: Handler<undefined> = useCallback(() => setMessage(null), []);
+  const update: Handler<SyncEvents[typeof SYNC_ERROR]> = useCallback(
+    event => setMessage(event.error),
+    [],
+  );
 
-  useEffect(() => {
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_REQUESTING, clear);
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, clear);
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_STARTED, clear);
-    syncManager?.emitter?.on(SYNC_EVENT_ACTIONS.SYNC_ERROR, update);
-    return () => {
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_REQUESTING, clear);
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE, clear);
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_STARTED, clear);
-      syncManager?.emitter?.off(SYNC_EVENT_ACTIONS.SYNC_ERROR, update);
-    };
-  }, [clear, syncManager?.emitter, update]);
+  useSyncEventListener(SYNC_REQUESTING, clear);
+  useSyncEventListener(SYNC_IN_QUEUE, clear);
+  useSyncEventListener(SYNC_STARTED, clear);
+  useSyncEventListener(SYNC_ERROR, update);
 
   return message;
 }
@@ -173,14 +148,26 @@ export function useSyncStatus() {
   const errorMessage = useSyncError();
   const lastSyncTime = useLastSyncTime();
 
-  return {
-    errorMessage,
-    isRequestingSync,
-    isSyncing,
-    isQueuing,
-    syncStage,
-    progress,
-    progressMessage,
-    lastSyncTime,
-  };
+  return useMemo(
+    () => ({
+      errorMessage,
+      isRequestingSync,
+      isSyncing,
+      isQueuing,
+      syncStage,
+      progress,
+      progressMessage,
+      lastSyncTime,
+    }),
+    [
+      errorMessage,
+      isRequestingSync,
+      isSyncing,
+      isQueuing,
+      syncStage,
+      progress,
+      progressMessage,
+      lastSyncTime,
+    ],
+  );
 }
