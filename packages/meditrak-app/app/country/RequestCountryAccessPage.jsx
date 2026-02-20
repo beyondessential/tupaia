@@ -72,7 +72,7 @@ export class RequestCountryAccessPage extends React.Component {
     this.initCountries();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { errorMessage } = this.props;
     const hasNewErrorMessage = errorMessage === '' && nextProps.errorMessage !== '';
     if (hasNewErrorMessage || nextProps.isComplete) {
@@ -90,7 +90,7 @@ export class RequestCountryAccessPage extends React.Component {
     // Workaround for an issue where entering text causes a cycle of previous
     // state <-> new state. I suspect it is something to do with the input being
     // controlled and uncontrolled at the same time.
-    this.setState({internalFormFieldValues: fieldValues});
+    this.setState({ internalFormFieldValues: fieldValues });
 
     onFormFieldChange(fieldValues);
   }
@@ -151,8 +151,8 @@ export class RequestCountryAccessPage extends React.Component {
   }
 
   render() {
-    const {countries, internalFormFieldValues} = this.state;
-    const {errorMessage, isLoading, isComplete} = this.props;
+    const { countries, internalFormFieldValues } = this.state;
+    const { errorMessage, isLoading, isComplete } = this.props;
 
     const restrictedCountries = countries;
 

@@ -1,4 +1,9 @@
-#!/bin/bash -e 
+#!/usr/bin/env bash
+set -e
+
+if [[ $CI = true ]]; then
+    echo '::group::Load environment variables from .env files'
+fi
 
 # Function to get the directory of the package that's calling this script
 get_caller_package_directory() {
@@ -15,9 +20,9 @@ get_caller_package_directory() {
 
 # Get the directory of the package that's calling this script
 CALLING_SCRIPT_DIR=$(get_caller_package_directory)
- 
+
 # Get the directory of this script
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 # Fixed paths to the .env files for the test db
 file1="$CURRENT_DIR/../../env/db.env"
@@ -27,7 +32,7 @@ file4="$CALLING_SCRIPT_DIR/.env"
 
 common_files="$file1 $file2 $file3 $file4"
 
- # Remove files that don't exist
+# Remove files that don't exist
 for file in $common_files; do
     if [ ! -f "$file" ]; then
         common_files=$(echo "$common_files" | sed "s|$file||g")
@@ -35,7 +40,7 @@ for file in $common_files; do
 done
 
 # Load environment variables from .env files
-merged_content="$(cat $common_files)" 
+merged_content="$(cat $common_files)"
 
 # Process command line arguments, overwriting values if present
 for var in $(env); do
@@ -48,4 +53,8 @@ for var in $(env); do
 done
 
 # Evaluate merged content to set variables
-eval "$merged_content" 
+eval "$merged_content"
+
+if [[ $CI = true ]]; then
+    echo '::endgroup::'
+fi

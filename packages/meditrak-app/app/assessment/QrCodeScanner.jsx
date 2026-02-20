@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from 'prop-types';
 
-import {StyleSheet, View} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
@@ -11,11 +11,11 @@ import {
   useCameraPermission,
   useCodeScanner,
 } from 'react-native-vision-camera';
-import {Button, STATUS_MESSAGE_ERROR, StatusMessage, Text} from '../widgets';
-import {THEME_COLOR_ONE, THEME_COLOR_TWO} from '../globalStyles';
+import { Button, STATUS_MESSAGE_ERROR, StatusMessage, Text } from '../widgets';
+import { THEME_COLOR_ONE, THEME_COLOR_TWO } from '../globalStyles';
 
-export const QrCodeScanner = ({onRead, onStartScan, onFinishScan}) => {
-  const {hasPermission, requestPermission} = useCameraPermission();
+export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan }) => {
+  const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('back');
 
   const [isScanningQrCode, setIsScanningQrCode] = useState(false);

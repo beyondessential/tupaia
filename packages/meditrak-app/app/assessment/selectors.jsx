@@ -1,20 +1,14 @@
-import {
-  ExpressionParser,
-  BooleanExpressionParser,
-} from '@tupaia/expression-parser';
-import {checkAnswerPreconditionsAreMet} from './helpers';
+import { ExpressionParser, BooleanExpressionParser } from '@tupaia/expression-parser';
+import { checkAnswerPreconditionsAreMet } from './helpers';
 
 const expressionParser = new ExpressionParser();
 const booleanExpressionParser = new BooleanExpressionParser();
 
-export const getSurveyScreenIndex = state =>
-  state.assessment.currentScreenIndex;
+export const getSurveyScreenIndex = state => state.assessment.currentScreenIndex;
 
-export const getCurrentScreen = state =>
-  getSurveyScreen(state, getSurveyScreenIndex(state));
+export const getCurrentScreen = state => getSurveyScreen(state, getSurveyScreenIndex(state));
 
-export const getSurveyScreen = (state, screenIndex) =>
-  getScreens(state)[screenIndex];
+export const getSurveyScreen = (state, screenIndex) => getScreens(state)[screenIndex];
 
 export const getScreens = state => state.assessment.screens || [];
 
@@ -39,7 +33,7 @@ export const getErrorMessageForScreen = (state, screenIndex) => {
 };
 
 const checkQuestionIsVisible = (answers, visibilityCriteria) => {
-  const {hidden} = visibilityCriteria;
+  const { hidden } = visibilityCriteria;
   return !hidden && checkAnswerPreconditionsAreMet(answers, visibilityCriteria);
 };
 
@@ -47,21 +41,15 @@ export const getSurveyScreenQuestions = (state, screenIndex) => {
   // Build questions to display, filtering out follow up questions if enabling answer not given
   const questions = [];
   getSurveyScreen(state, screenIndex).components.forEach((component, index) => {
-    const {
-      questionId,
-      visibilityCriteria,
-      questionLabel,
-      detailLabel,
-      validationCriteria,
-    } = component;
+    const { questionId, visibilityCriteria, questionLabel, detailLabel, validationCriteria } =
+      component;
 
     const question = {
       id: questionId,
       ...getQuestion(state, questionId),
       componentIndex: index,
       visibilityCriteria,
-      checkVisibility: answers =>
-        checkQuestionIsVisible(answers, visibilityCriteria),
+      checkVisibility: answers => checkQuestionIsVisible(answers, visibilityCriteria),
       validationCriteria,
     };
 
@@ -83,58 +71,44 @@ export const getValidQuestions = (state, questions, validatedScreens) => {
     curr.components.forEach(component => {
       components[component.questionId] = component.visibilityCriteria;
     });
-    return {...prev, ...components};
+    return { ...prev, ...components };
   }, {});
 
   return Object.values(questions).filter(question =>
-    checkAnswerPreconditionsAreMet(
-      answers,
-      visibilityCriteriaByQuestion[question.id],
-    ),
+    checkAnswerPreconditionsAreMet(answers, visibilityCriteriaByQuestion[question.id]),
   );
 };
 
-export const getSelectedCountryId = ({country}) => country.selectedCountryId;
+export const getSelectedCountryId = ({ country }) => country.selectedCountryId;
 
 // Whether a given survey can repeat, i.e. be done again and again within a single facility on a
 // single date. If no surveyId passed in, will assume the current survey being completed
-export const getCanSurveyRepeat = (
-  {assessment},
-  surveyId = assessment.surveyId,
-) => assessment.surveys[surveyId] && assessment.surveys[surveyId].canRepeat;
+export const getCanSurveyRepeat = ({ assessment }, surveyId = assessment.surveyId) =>
+  assessment.surveys[surveyId] && assessment.surveys[surveyId].canRepeat;
 
 // The name of a survey. If no surveyId passed in, will assume the current survey being completed
-export const getSurveyName = ({assessment}, surveyId = assessment.surveyId) =>
+export const getSurveyName = ({ assessment }, surveyId = assessment.surveyId) =>
   assessment.surveys[surveyId].name;
 
 export const getQuestionState = (state, screenIndex, componentIndex) => {
-  const component = getSurveyScreen(state, screenIndex).components[
-    componentIndex
-  ];
+  const component = getSurveyScreen(state, screenIndex).components[componentIndex];
   return {
     ...component,
     answer: getAnswerForQuestion(state, component.questionId),
   };
 };
 
-export const getQuestion = (state, questionId) =>
-  state.assessment.questions[questionId];
+export const getQuestion = (state, questionId) => state.assessment.questions[questionId];
 
 export const getAnswers = state => state.assessment.answers;
 
-export const getAnswerForQuestion = (state, questionId) =>
-  getAnswers(state)[questionId];
+export const getAnswerForQuestion = (state, questionId) => getAnswers(state)[questionId];
 
 export const getArithmeticResult = (state, arithmeticQuestionId) => {
-  const {config} = getQuestion(state, arithmeticQuestionId);
+  const { config } = getQuestion(state, arithmeticQuestionId);
 
   const {
-    arithmetic: {
-      formula,
-      valueTranslation = {},
-      defaultValues = {},
-      answerDisplayText = '',
-    },
+    arithmetic: { formula, valueTranslation = {}, defaultValues = {}, answerDisplayText = '' },
   } = config;
 
   const values = {};
@@ -143,10 +117,7 @@ export const getArithmeticResult = (state, arithmeticQuestionId) => {
   const getArithmeticAnswer = questionId => {
     const answer = getAnswerForQuestion(state, questionId);
 
-    if (
-      valueTranslation[questionId] &&
-      valueTranslation[questionId][answer] !== undefined
-    ) {
+    if (valueTranslation[questionId] && valueTranslation[questionId][answer] !== undefined) {
       return valueTranslation[questionId][answer]; // return translated answer if there's any
     }
     // return raw answer if it's a number, else 0 (e.g. if no valueTranslation provided for the question and this specific answer when answer is non-numeric)
@@ -155,9 +126,7 @@ export const getArithmeticResult = (state, arithmeticQuestionId) => {
     }
 
     // return default answer if there's no answer
-    return defaultValues[questionId] !== undefined
-      ? defaultValues[questionId]
-      : 0; // No answer found, return the default answer
+    return defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // No answer found, return the default answer
   };
 
   // Setting up scope values.
@@ -176,15 +145,9 @@ export const getArithmeticResult = (state, arithmeticQuestionId) => {
   let translatedAnswerDisplayText = answerDisplayText;
   questionIds.forEach(questionId => {
     const answer = values[`$${questionId}`];
-    translatedAnswerDisplayText = translatedAnswerDisplayText.replace(
-      questionId,
-      answer,
-    );
+    translatedAnswerDisplayText = translatedAnswerDisplayText.replace(questionId, answer);
   });
-  translatedAnswerDisplayText = translatedAnswerDisplayText.replace(
-    '$result',
-    result,
-  );
+  translatedAnswerDisplayText = translatedAnswerDisplayText.replace('$result', result);
 
   return {
     answerDisplayText: translatedAnswerDisplayText,
@@ -193,19 +156,18 @@ export const getArithmeticResult = (state, arithmeticQuestionId) => {
 };
 
 export const getConditionResult = (state, conditionQuestionId) => {
-  const {config} = getQuestion(state, conditionQuestionId);
+  const { config } = getQuestion(state, conditionQuestionId);
   const {
-    condition: {conditions},
+    condition: { conditions },
   } = config;
-  const checkConditionMet = ({formula, defaultValues = {}}) => {
+  const checkConditionMet = ({ formula, defaultValues = {} }) => {
     const values = {};
     const variables = booleanExpressionParser.getVariables(formula);
 
     variables.forEach(questionIdVariable => {
       const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix
       const answer = getAnswerForQuestion(state, questionId);
-      const defaultValue =
-        defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // 0 is the last resort
+      const defaultValue = defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // 0 is the last resort
       const value = answer !== undefined ? answer : defaultValue;
       values[questionIdVariable] = value;
     });

@@ -62,13 +62,13 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     'Throws if config is empty',
     ['EventCheckConditionsEmptyConfig'],
     ['2020-01-01', '2020-12-31', ['TO']],
-    'Should not be empty',
+    'Expected nonempty value but got undefined',
   ],
   [
     'Throws if config has no programCode',
     ['EventCheckConditionsNoProgramCodeConfig'],
     ['2020-01-01', '2020-12-31', ['NZ']],
-    "Error in field 'programCode': Should not be empty",
+    "Error in field 'programCode': Expected nonempty value but got undefined",
   ],
   [
     'Populate default values if a data value is missing',

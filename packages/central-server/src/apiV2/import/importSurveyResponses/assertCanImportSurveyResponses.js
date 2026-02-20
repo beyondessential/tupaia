@@ -1,7 +1,7 @@
 import { flattenDeep, groupBy, keyBy } from 'lodash';
 
 import { ensure, isNullish } from '@tupaia/tsutils';
-import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
+import { getUniqueEntries, reduceToDictionary, ValidationError } from '@tupaia/utils';
 import winston from '../../../log';
 
 export const assertCanImportSurveyResponses = async (
@@ -90,6 +90,17 @@ export const assertCanImportSurveyResponses = async (
   return true;
 };
 
+const getEntityDoesExist = async (models, entityId) => {
+  const [{ exists }] = await models.database.executeSql(
+    'SELECT EXISTS(SELECT 1 FROM "entity" WHERE "id" = ?)',
+    [entityId],
+  );
+  return exists;
+};
+
+/**
+ * @returns {Promise<import('@tupaia/types').Entity['code'] | import('@tupaia/types').Clinic['code']>}
+ */
 const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, entitiesUpserted) => {
   // There are three valid ways to refer to the entity in a batch change:
   // entity_code, entity_id, clinic_id
@@ -98,22 +109,36 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
   }
 
   if (surveyResponse.entity_id) {
-    // If we're submitting a response against a new entity, it won't yet have a valid entity_code in
-    // the server db. Instead, check our permissions against the new entity's parent
     const newEntity = entitiesUpserted.find(e => e.id === surveyResponse.entity_id);
-    if (newEntity) {
-      const parentEntity = await models.entity.findById(newEntity.parent_id);
-      return parentEntity?.code;
+
+    const isSubmittingAgainstNewEntity =
+      // Submitting response against upserted entity...
+      newEntity !== undefined &&
+      // ...that doesn’t yet exist in database
+      !(await getEntityDoesExist(models, surveyResponse.entity_id));
+
+    if (isSubmittingAgainstNewEntity) {
+      // Submitting against new entity created by this response that doesn’t yet exist in remote
+      // database. Instead, check permissions against the new entity’s parent.
+
+      /** @type {import('@tupaia/database').EntityRecord} */
+      const parentEntity = ensure(
+        await models.entity.findById(newEntity.parent_id, { columns: ['code'] }),
+        `Couldn’t check permissions for parent entity of entity ${newEntity.code}. No entity exists with ID ${newEntity.parent_id}.`,
+      );
+      return parentEntity.code;
     }
 
+    /** @type {import('@tupaia/database').EntityRecord} */
     const entity = ensure(
-      await models.entity.findById(surveyResponse.entity_id),
+      await models.entity.findById(surveyResponse.entity_id, { columns: ['code'] }),
       `No entity exists with ID ${surveyResponse.entity_id}`,
     );
     return entity.code;
   }
 
   if (surveyResponse.clinic_id) {
+    /** @type {import('@tupaia/database').FacilityRecord} */
     const clinic = ensure(
       await models.facility.findById(surveyResponse.clinic_id),
       `No clinic exists with ID ${surveyResponse.clinic_id}`,
@@ -121,7 +146,7 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
     return clinic.code;
   }
 
-  throw new Error('Survey response change does not contain valid entity reference');
+  throw new ValidationError('Survey response change does not contain valid entity reference');
 };
 
 export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surveyResponses) => {

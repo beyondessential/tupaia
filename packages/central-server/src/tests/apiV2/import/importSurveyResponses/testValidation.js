@@ -45,7 +45,7 @@ export const testValidation = async () => {
     ['invalid radio answer', 'invalidRadioAnswer.xlsx', /not an accepted value/],
     ['header row is missing', 'missingHeaderRow.xlsx', /Missing Id column/],
     ['id column is missing', 'missingIdColumn.xlsx', /Missing Id column/],
-    ['a question id is missing', 'missingQuestionId.xlsx', /Should not be empty/],
+    ['a question id is missing', 'missingQuestionId.xlsx', /Expected nonempty value but got ''/],
     ['a response id is missing', 'missingResponseId.xlsx', /Invalid column header/],
     ['type column is missing', 'missingTypeColumn.xlsx', /Missing Type column/],
     [
@@ -56,7 +56,7 @@ export const testValidation = async () => {
     [
       'entity code and name mismatch',
       'mismatchEntityNameAndCode.xlsx',
-      /Entity code and name don\'t match: Thornbury and Lake Charm/,
+      /Entity code and name don't match: Thornbury and Lake Charm/,
     ],
     [
       'invalid entity code',

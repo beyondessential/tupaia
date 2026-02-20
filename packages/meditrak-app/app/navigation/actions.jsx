@@ -22,15 +22,17 @@ import { logout } from '../authentication';
 import { setBaseUrl } from '../web';
 import { stopWatchingUserLocation } from '../utilities/userLocation';
 
-export const goBack = (shouldAlertIfInSurvey = true) => (dispatch, getState) => {
-  if (shouldAlertIfInSurvey && getIsInSurvey(getState())) {
-    notifyUserAboutOngoingAssessment(() => {
+export const goBack =
+  (shouldAlertIfInSurvey = true) =>
+  (dispatch, getState) => {
+    if (shouldAlertIfInSurvey && getIsInSurvey(getState())) {
+      notifyUserAboutOngoingAssessment(() => {
+        dispatch(NavigationActions.back());
+      });
+    } else {
       dispatch(NavigationActions.back());
-    });
-  } else {
-    dispatch(NavigationActions.back());
-  }
-};
+    }
+  };
 
 export const resetToHome = () =>
   StackActions.reset({
@@ -159,18 +161,20 @@ export const navigateToScreen = (routeName, title, params = {}) =>
     },
   });
 
-export const replaceCurrentScreen = (routeName, title, params = {}) => (dispatch, getState) => {
-  const { nav } = getState();
-  const { routes } = nav;
-  const currentRoute = routes[nav.index];
-  dispatch(
-    StackActions.replace({
-      key: currentRoute.key,
-      routeName,
-      params,
-    }),
-  );
-};
+export const replaceCurrentScreen =
+  (routeName, title, params = {}) =>
+  (dispatch, getState) => {
+    const { nav } = getState();
+    const { routes } = nav;
+    const currentRoute = routes[nav.index];
+    dispatch(
+      StackActions.replace({
+        key: currentRoute.key,
+        routeName,
+        params,
+      }),
+    );
+  };
 
 export const navigateToSurveysMenu = () => dispatch => {
   dispatch(navigateToScreen(SURVEYS_MENU_SCREEN));

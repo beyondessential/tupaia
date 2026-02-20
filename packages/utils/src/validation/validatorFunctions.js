@@ -24,7 +24,7 @@ export const isNotPresent = (value, object, key) => {
 
 export const hasContent = value => {
   if (checkIsEmpty(value)) {
-    throw new ValidationError('Should not be empty');
+    throw new ValidationError(`Expected nonempty value but got ${stringifyValue(value)}`);
   }
   return true;
 };
@@ -32,7 +32,7 @@ export const hasContent = value => {
 export const hasNoContent = value => {
   if (value || value === 0) {
     // A `0` is still content, so should also fail
-    throw new ValidationError('Should be empty');
+    throw new ValidationError(`Expected empty value but got ${stringifyValue(value)}`);
   }
   return true;
 };

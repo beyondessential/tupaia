@@ -24,6 +24,7 @@ import {
   translateUserEmailToIdAndAssessorName,
   translateQuestionCodeToId,
 } from '../utilities';
+import winston from '../../log';
 
 const ACTIONS = {
   SubmitSurveyResponse: 'SubmitSurveyResponse',

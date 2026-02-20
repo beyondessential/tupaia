@@ -3,14 +3,12 @@
 @version = v2
 @baseUrl = http://{{hostname}}:{{port}}/{{version}}
 
-@contentType = application/json
-
 ### Log in
 
 # @name login
-POST {{baseUrl}}/auth HTTP/2.0
+POST {{baseUrl}}/auth
 Authorization: Basic meditrak_client:{{meditrak-app-secret}}
-content-type: {{contentType}}
+Content-Type: application/json
 
 {
     "emailAddress": "{{email}}",
@@ -27,95 +25,110 @@ content-type: {{contentType}}
 
 ### Download files
 
-GET {{baseUrl}}/downloadFiles?uniqueFileNames=cat_pic.pdf HTTP/2.0
-content-type: {{contentType}}
+GET {{baseUrl}}/downloadFiles?uniqueFileNames=cat_pic.pdf
 Authorization: {{user-authorization}}
 
 ### Get all option sets
 
 GET {{baseUrl}}/optionSets
-content-type: {{contentType}}
 Authorization: {{user-authorization}}
+Content-Type: application/json
 
 ### Get option sets by ID
 
 GET {{baseUrl}}/optionSets/5c625e11f013d60db4249466
-content-type: {{contentType}}
 Authorization: {{user-authorization}}
+Content-Type: application/json
 
 ### Export option set by ID
 
-GET {{baseUrl}}/export/optionSet/5c625e01f013d60db42a5763 HTTP/1.1
+GET {{baseUrl}}/export/optionSets/5c625e01f013d60db42a5763
 Authorization: {{user-authorization}}
 Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
+### Get landing pages
+
+GET {{baseUrl}}/landingPages
+Authorization: {{user-authorization}}
+Content-Type: application/json
+
+### Get landing page by ID
+
+GET {{baseUrl}}/landingPages/649167bdbd66033bb50a5cde
+Authorization: {{user-authorization}}
+Content-Type: application/json
 
 ### Get all map overlay groups
 
 GET {{baseUrl}}/mapOverlayGroups
-content-type: {{contentType}}
+Content-Type: application/json
 Authorization: {{user-authorization}}
 
 ### Get all map overlay group relations
 
 GET {{baseUrl}}/mapOverlayGroupRelations
-content-type: {{contentType}}
 Authorization: {{user-authorization}}
+Content-Type: application/json
 
 ### Get map overlay group relation by ID
 
 GET {{baseUrl}}/mapOverlayGroupRelations/5f2c7ddb61f76a513a0000bf
-content-type: {{contentType}}
+Authorization: {{user-authorization}}
+Content-Type: application/json
+
+### Get survey by ID
+
+GET {{baseUrl}}/surveys/594907318824a80b22151e77
+  ?columns=["can_repeat","code","id","name","paginatedQuestions","project_id","survey_group.name"]
+Content-Type: application/json
 Authorization: {{user-authorization}}
 
 ### Get survey responses
 
-GET {{baseUrl}}/surveyResponses?pageSize=5&columns=["entity.name", "country.name"] HTTP/2.0
-content-type: {{contentType}}
+GET {{baseUrl}}/surveyResponses
+  ?pageSize=5
+  &columns=["entity.name", "country.name"]
 Authorization: {{user-authorization}}
+Content-Type: application/json
 
 ### Get social feed
 
-GET {{baseUrl}}/socialFeed?appVersion=1.14.140&page=0&earliestCreationDate=2024-02-19T21:45:16.391Z HTTP/2.0
-content-type: {{contentType}}
+GET {{baseUrl}}/socialFeed
+  ?appVersion=1.14.140
+  &page=0
+  &earliestCreationDate=2024-02-19T21:45:16.391Z
 Authorization: {{user-authorization}}
+Content-Type: application/json
 
 ### Export survey response
 
-GET {{baseUrl}}/export/surveyResponses/6631d8b281240914d69f5432?timeZone=Pacific%2FAuckland HTTP/1.1
-content-type: {{contentType}}
+GET {{baseUrl}}/export/surveyResponses/6631d8b281240914d69f5432
+  ?timeZone=Pacific%2FAuckland
 Authorization: {{user-authorization}}
+Content-Type: application/json
 
 ### GET entity hierarchies
 
-GET {{baseUrl}}/entityHierarchy HTTP/2.0
-content-type: {{contentType}}
+GET {{baseUrl}}/entityHierarchy
 Authorization: {{user-authorization}}
+Content-Type: application/json
 
-### Get entity hierarchy
+### Get entity hierarchy by ID
 
-GET {{baseUrl}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
+GET {{baseUrl}}/entityHierarchy/5e9d06e261f76a30c4000002
+Content-Type: application/json
+Authorization: {{user-authorization}}
 
 ### Get country access list for a project
 
-GET {{baseUrl}}/{{version}}/me/countries?projectCode=explore
-content-type: {{contentType}}
+GET {{baseUrl}}/me/countries
+  ?projectCode=explore
 Authorization: Basic {{user-authorization}}
-
-### GET entity hierarchies
-
-GET {{baseUrl}}/{{version}}/entityHierarchy HTTP/2.0
-content-type: {{contentType}}
-Authorization: {{user-authorization}}
-
-### GET entity hierarchy
-
-GET {{baseUrl}}/{{version}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
-content-type: {{contentType}}
-Authorization: {{user-authorization}}
-
+Content-Type: application/json
 
 ### Get tasks
 
-GET {{baseUrl}}/tasks?columns=["task_status","assignee_name"]
-content-type: {{contentType}}
+GET {{baseUrl}}/tasks
+  ?columns=["task_status","assignee_name"]
 Authorization: {{user-authorization}}
+Content-Type: application/json
