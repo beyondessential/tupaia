@@ -1,11 +1,11 @@
+import { useIsMutating } from '@tanstack/react-query';
 import React, { ReactNode, createContext, useContext } from 'react';
-import { useIsFetching, useIsMutating } from '@tanstack/react-query';
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { FullPageLoader } from '@tupaia/ui-components';
-import { useUser } from './queries';
 import { useIsSyncing } from '../sync/syncStatus';
+import { useUser } from './queries';
 
 export interface CurrentUserContextType
   extends Omit<DatatrakWebUserRequest.ResBody, 'accessPolicy'> {
