@@ -1,37 +1,28 @@
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { get } from 'lodash';
 import winston from 'winston';
-import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
-import { fetchWithTimeout, HttpError } from '@tupaia/utils';
+
+import { removeDiacritics } from '@tupaia/tsutils';
+import { HttpError, fetchWithTimeout } from '@tupaia/utils';
 
 const BASE_PATH = 'uploads/geojson';
 
-const CODE_REPLACE = {
-  á: 'a',
-  í: 'i',
-  ó: 'o',
-  é: 'e',
-};
-
-function getLatin1(name) {
-  let safe = name;
-  Object.entries(CODE_REPLACE).forEach(([src, dest]) => {
-    safe = safe.replace(src, dest);
-  });
-  return safe;
-}
-
 function extractBestMatch(data) {
-  if (!data || !data.filter) {
-    winston.error(data);
+  if (!Array.isArray(data)) {
+    winston.error('Couldn’t extract best match', { data });
     return null;
   }
-  return data.filter(x => x.class === 'boundary' && x.type === 'administrative')[0];
+  return data.find(x => x.class === 'boundary' && x.type === 'administrative');
 }
 
 async function searchGeojson(name, countryName) {
-  const search = getLatin1(`${name}, ${countryName}`);
-  const url = `http://nominatim.openstreetmap.org/search?polygon_geojson=1&format=json&q=${search}`;
-  const response = await fetchWithTimeout(url);
+  const url = new URL('/search', 'https://nominatim.openstreetmap.org');
+  url.searchParams.set('polygon_geojson', '1');
+  url.searchParams.set('format', 'json');
+  const query = removeDiacritics(`${name}, ${countryName}`);
+  url.searchParams.set('q', query);
+
+  const response = await fetchWithTimeout(url.toString());
   if (!response.ok) {
     throw new HttpError(response);
   }
