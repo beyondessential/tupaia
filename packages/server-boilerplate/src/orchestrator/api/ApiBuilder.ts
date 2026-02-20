@@ -3,12 +3,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 import publicIp from 'public-ip';
-import {
-  AuthHandler,
-  getBaseUrlsForHost,
-  LOCALHOST_BASE_URLS,
-  TupaiaApiClient,
-} from '@tupaia/api-client';
+import { getBaseUrlsForHost, LOCALHOST_BASE_URLS, TupaiaApiClient } from '@tupaia/api-client';
+import type { AuthHandler, ApiConnectionOptions } from '@tupaia/api-client';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
@@ -200,7 +196,11 @@ export class ApiBuilder {
       try {
         const baseUrls =
           process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
-        const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+        const apiClient = new TupaiaApiClient(
+          authHandlerProvider(req),
+          baseUrls,
+          apiConnectionOptions,
+        );
         req.ctx.services = apiClient;
         res.ctx.services = apiClient;
         next();

@@ -1,5 +1,5 @@
-import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
-import { API_URL } from './api';
+import { SYNC_STREAM_MESSAGE_KIND, SYNC_CLIENT_OUTDATED_ERROR_CODE } from '@tupaia/constants';
+import { API_URL, CLIENT_VERSION } from './api';
 
 interface EndpointOptions {
   endpoint: string;
@@ -134,10 +134,22 @@ export async function* stream(
       method: method || 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Client-Version': CLIENT_VERSION,
       },
       body: options ? JSON.stringify(options) : undefined,
       credentials: 'include',
     });
+
+    if (response.status === 400) {
+      const data = await response.json();
+      if (data.error === SYNC_CLIENT_OUTDATED_ERROR_CODE) {
+        const requiredVersion = response.headers.get('X-Required-Client-Version');
+        throw new Error(
+          `Please reload to get the latest version of Tupaia DataTrak (v${requiredVersion}) before syncing.`,
+        );
+      }
+    }
+
     if (!response.ok && !isRecoverableError(response)) {
       throw new Error(response.statusText || 'Stream ended with unknown error');
     }

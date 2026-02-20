@@ -83,6 +83,11 @@ import { LoginRoute } from '../routes/LoginRoute';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
+/** Forward client version to sync-server for version compatibility check */
+// const getSyncRequestHeaders = (req: Request) => ({
+//   'X-Client-Version': req.get('X-Client-Version') || '',
+// });
+
 export async function createApp() {
   const WEB_CONFIG_API_URL = getEnvVarOrDefault(
     'WEB_CONFIG_API_URL',
@@ -93,7 +98,7 @@ export async function createApp() {
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .use('*', attachAccessPolicy)
-    .attachApiClientToContext(authHandlerProvider)
+    .attachApiClientToContext(authHandlerProvider, {} /* FIXME */)
     .attachLoginRoute(LoginRoute)
     // Get Routes
     .get<UserRequest>('getUser', handleWith(UserRoute))

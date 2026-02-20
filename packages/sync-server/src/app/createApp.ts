@@ -4,6 +4,7 @@ import { ForwardingAuthHandler } from '@tupaia/api-client';
 import { TupaiaDatabase } from '@tupaia/database';
 import { MicroServiceApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 
+import { versionCompatibility } from '../middleware/versionCompatibility';
 import { CentralSyncManager } from '../sync';
 import { SyncStartSessionRequest, SyncStartSessionRoute } from '../routes/SyncStartSessionRoute';
 import { SyncReadyRequest, SyncReadyRoute } from '../routes/SyncReadyRoute';
@@ -32,6 +33,7 @@ export function createApp(database = new TupaiaDatabase(), syncManager: CentralS
     .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
     .useMiddleware(addCentralSyncManagerToContext(syncManager))
     .useBasicBearerAuth()
+    .useMiddleware(versionCompatibility)
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
     .get<SyncReadyRequest>('sync/:sessionId/status', handleWith(SyncReadyRoute))
     .get<SyncMetadataRequest>('sync/:sessionId/metadata', handleWith(SyncMetadataRoute))
