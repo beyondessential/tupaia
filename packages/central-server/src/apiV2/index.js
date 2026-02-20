@@ -90,7 +90,7 @@ import {
   GETUserEntityPermissions,
 } from './userEntityPermissions';
 import { EditEntity, GETEntities, DeleteEntity } from './entities';
-import { GetEntityTypes } from './entityTypes';
+import { GetEntityTypes, CreateEntityType } from './entityTypes';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { changePassword } from './changePassword';
 import { deleteAccount } from './deleteAccount';
@@ -304,6 +304,7 @@ apiV2.post('/dataTables', useRouteHandler(CreateDataTables));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/dashboardMailingLists', useRouteHandler(CreateDashboardMailingList));
 apiV2.post('/dashboardMailingListEntries', useRouteHandler(CreateDashboardMailingListEntry));
+apiV2.post('/entityTypes', useRouteHandler(CreateEntityType));
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/feedItems', useRouteHandler(CreateFeedItems));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
@@ -324,6 +325,7 @@ apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/tasks', useRouteHandler(CreateTask));
 apiV2.post('/tasks/:parentRecordId/taskComments', useRouteHandler(CreateTaskComment));
+
 /**
  * PUT routes
  */
