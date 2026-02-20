@@ -158,7 +158,8 @@ export const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
 };
 
 export const getBaseUrlsForHost = (hostname: string): ServiceBaseUrlSet => {
-  const { auth, entity, central, report, dataTable, webConfig, sync } = getDefaultBaseUrls(hostname);
+  const { auth, entity, central, report, dataTable, webConfig, sync } =
+    getDefaultBaseUrls(hostname);
   return {
     auth: process.env.AUTH_API_URL || auth,
     entity: process.env.ENTITY_API_URL || entity,
