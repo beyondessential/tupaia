@@ -50,10 +50,7 @@ export class ApiBuilder {
   // We add handlers at the end so that middlewares and initial routes can be set up first
   private handlers: { add: () => void }[] = [];
 
-  public constructor(
-    transactingConnection: TupaiaDatabase,
-    apiName: string,
-  ) {
+  public constructor(transactingConnection: TupaiaDatabase, apiName: string) {
     this.database = transactingConnection;
     this.models = new ModelRegistry(this.database) as ServerBoilerplateModelRegistry;
     this.apiName = apiName;
@@ -195,7 +192,10 @@ export class ApiBuilder {
     return this;
   }
 
-  public attachApiClientToContext(authHandlerProvider: (req: Request) => AuthHandler) {
+  public attachApiClientToContext(
+    authHandlerProvider: (req: Request) => AuthHandler,
+    apiConnectionOptions?: ApiConnectionOptions,
+  ) {
     this.app.use((req, res, next) => {
       try {
         const baseUrls =
