@@ -14,7 +14,7 @@
     "cypress:format-config": "yarn run:babel cypress/scripts/formatConfig",
     "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
     "cypress:run": "cross-env NODE_ENV=test yarn cypress run",
-    "run:babel": "babel-node --config-file \"../../babel.config.json\"",
+    "run:babel": "babel-node --config-file ../../babel.config.json",
     "test-e2e": "yarn run:babel cypress/scripts/testE2e"
   },
   "devDependencies": {
