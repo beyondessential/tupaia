@@ -31,7 +31,7 @@ export const useLogin = () => {
         isOfflineFirst,
         hasModels: !!models,
       });
-      
+
       let user;
       try {
         if (isOfflineFirst) {
@@ -61,7 +61,7 @@ export const useLogin = () => {
       },
       onSuccess: async ({ user }) => {
         console.log('[useLogin] onSuccess starting', { userId: user?.id });
-        
+
         try {
           if (isOfflineFirst) {
             const ensuredModels = ensure(models);
@@ -76,7 +76,7 @@ export const useLogin = () => {
               currentUserId: user.id,
               needsClear: previouslyLoggedInUserId && previouslyLoggedInUserId !== user.id,
             });
-            
+
             if (previouslyLoggedInUserId && previouslyLoggedInUserId !== user.id) {
               console.log('[useLogin] Clearing database for new user');
               await clearDatabase(ensuredModels);
@@ -97,12 +97,6 @@ export const useLogin = () => {
 
           console.log('[useLogin] Invalidating queries');
           await queryClient.invalidateQueries();
-
-          // Do not remove the isLoggedIn query,
-          // as it is used to determine if the user is logged in and should be kept to be invalidated
-          queryClient.removeQueries({
-            predicate: query => query.queryKey[0] !== 'isLoggedIn',
-          });
 
           console.log('[useLogin] Navigating', { from, projectId: user.projectId });
           if (from) {
