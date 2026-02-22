@@ -55,16 +55,6 @@ export function useDatabaseQuery<
 
   // Wrap the queryFn to include context
   const wrappedQueryFn: QueryFunction<TQueryFnData, TQueryKey> = queryFnContext => {
-    // Debug logging for model state when query executes
-    console.log('[useDatabaseQuery] Executing query', {
-      queryKey: queryFnContext.queryKey,
-      timestamp: new Date().toISOString(),
-      hasModels: !!models,
-      hasDatabase: !!models?.database,
-      databaseType: models?.database?.constructor?.name,
-      hasConnection: !!models?.database?.connection,
-    });
-    
     return queryFn({
       ...queryFnContext,
       accessPolicy: isOfflineFirst ? ensure(accessPolicy) : accessPolicy!, // we will not use accessPolicy if this is not offlineFirst
