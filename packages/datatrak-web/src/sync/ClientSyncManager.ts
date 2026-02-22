@@ -272,23 +272,6 @@ export class ClientSyncManager {
       );
     }
 
-    // Debug: Log database state at the VERY START of sync
-    console.log('=== [ClientSyncManager.runSync] START ===');
-    try {
-      const factsAtStart = await this.models.localSystemFact.find({});
-      console.log('[ClientSyncManager.runSync] Local system facts at START:', {
-        count: factsAtStart.length,
-        facts: factsAtStart.map((f: any) => ({ key: f.key, value: f.value })),
-      });
-
-      const projectsAtStart = await this.models.project.find({});
-      console.log('[ClientSyncManager.runSync] Projects at START:', {
-        count: projectsAtStart.length,
-      });
-    } catch (e: any) {
-      console.error('[ClientSyncManager.runSync] Error checking initial state:', e?.message);
-    }
-
     this.errorMessage = null;
     this.progressMessage = 'Requesting sync…';
     this.isRequestingSync = true;
@@ -341,17 +324,7 @@ export class ClientSyncManager {
 
     await this.pushChanges(sessionId, startedAtTick);
 
-    // Debug: Check state BEFORE pullChanges
-    console.log('[ClientSyncManager.runSync] State BEFORE pullChanges:');
-    const factsBeforePull = await this.models.localSystemFact.find({});
-    console.log('  Local system facts:', factsBeforePull.length);
-
     const pulledChangesCount = await this.pullChanges(sessionId, projectIds);
-
-    // Debug: Check state AFTER pullChanges
-    console.log('[ClientSyncManager.runSync] State AFTER pullChanges:');
-    const factsAfterPull = await this.models.localSystemFact.find({});
-    console.log('  Local system facts:', factsAfterPull.length);
 
     await this.endSyncSession(sessionId);
 
