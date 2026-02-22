@@ -188,10 +188,13 @@ export class ApiBuilder {
     return this;
   }
 
-  public attachApiClientToContext(
-    authHandlerProvider: (req: Request) => AuthHandler,
-    apiConnectionOptions?: ApiConnectionOptions,
-  ) {
+  public attachApiClientToContext({
+    authHandlerProvider,
+    apiConnectionOptionsProvider,
+  }: {
+    authHandlerProvider: (req: Request) => AuthHandler;
+    apiConnectionOptionsProvider?: (req: Request) => ApiConnectionOptions;
+  }) {
     this.app.use((req, res, next) => {
       try {
         const baseUrls =
@@ -199,7 +202,7 @@ export class ApiBuilder {
         const apiClient = new TupaiaApiClient(
           authHandlerProvider(req),
           baseUrls,
-          apiConnectionOptions,
+          apiConnectionOptionsProvider?.(req),
         );
         req.ctx.services = apiClient;
         res.ctx.services = apiClient;

@@ -69,7 +69,7 @@ export async function createApp(promptManager: PromptManager) {
   const forwardToEntityApi = forwardRequest(ENTITY_API_URL);
   const forwardToCentralApi = forwardRequest(CENTRAL_API_URL);
   const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
-    .attachApiClientToContext(authHandlerProvider)
+    .attachApiClientToContext({ authHandlerProvider })
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .useMiddleware(addPromptManagerToContext(promptManager))

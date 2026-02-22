@@ -30,7 +30,9 @@ export const addCentralSyncManagerToContext =
  */
 export function createApp(database = new TupaiaDatabase(), syncManager: CentralSyncManager) {
   const app = new MicroServiceApiBuilder(database, 'sync')
-    .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
+    .attachApiClientToContext({
+      authHandlerProvider: (req: Request) => new ForwardingAuthHandler(req.headers.authorization),
+    })
     .useMiddleware(addCentralSyncManagerToContext(syncManager))
     .useBasicBearerAuth()
     .useMiddleware(versionCompatibility)

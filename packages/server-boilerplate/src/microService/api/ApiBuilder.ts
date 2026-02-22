@@ -1,21 +1,18 @@
 import errorHandler from 'api-error-handler';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import express, { Express, NextFunction, Request, RequestHandler, Response } from 'express';
+import type { Express, NextFunction, Request, RequestHandler, Response } from 'express';
+import express from 'express';
 // @ts-expect-error no types
 import morgan from 'morgan';
 
-import {
-  AuthHandler,
-  getBaseUrlsForHost,
-  LOCALHOST_BASE_URLS,
-  TupaiaApiClient,
-} from '@tupaia/api-client';
+import type { ApiConnectionOptions, AuthHandler } from '@tupaia/api-client';
+import { getBaseUrlsForHost, LOCALHOST_BASE_URLS, TupaiaApiClient } from '@tupaia/api-client';
 import { Authenticator } from '@tupaia/auth';
-import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
+import { ModelRegistry, type TupaiaDatabase } from '@tupaia/database';
 import { TestRoute } from '../../routes';
-import { ExpressRequest, Params, Query, ReqBody, ResBody } from '../../routes/Route';
-import { ServerBoilerplateModelRegistry } from '../../types';
+import type { ExpressRequest, Params, Query, ReqBody, ResBody } from '../../routes/Route';
+import type { ServerBoilerplateModelRegistry } from '../../types';
 import { handleError, handleWith, initialiseApiClient } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { logApiRequest } from '../utils';
@@ -85,12 +82,22 @@ export class ApiBuilder {
     return this;
   }
 
-  public attachApiClientToContext(authHandlerProvider: (req: Request) => AuthHandler) {
+  public attachApiClientToContext({
+    authHandlerProvider,
+    apiConnectionOptionsProvider,
+  }: {
+    authHandlerProvider: (req: Request) => AuthHandler;
+    apiConnectionOptionsProvider?: (req: Request) => ApiConnectionOptions;
+  }) {
     return this.use('*', (req, res, next) => {
       try {
         const baseUrls =
           process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
-        const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+        const apiClient = new TupaiaApiClient(
+          authHandlerProvider(req),
+          baseUrls,
+          apiConnectionOptionsProvider?.(req),
+        );
         req.ctx.services = apiClient;
         res.ctx.services = apiClient;
         next();
