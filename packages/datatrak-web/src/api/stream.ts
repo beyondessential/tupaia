@@ -1,5 +1,6 @@
-import { SYNC_STREAM_MESSAGE_KIND, SYNC_CLIENT_OUTDATED_ERROR_CODE } from '@tupaia/constants';
-import { API_URL, CLIENT_VERSION } from './api';
+import { SYNC_CLIENT_OUTDATED_ERROR_CODE, SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
+import { ensure } from '@tupaia/tsutils';
+import { API_URL } from './api';
 
 interface EndpointOptions {
   endpoint: string;
@@ -134,7 +135,7 @@ export async function* stream(
       method: method || 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'X-Client-Version': CLIENT_VERSION,
+        'X-Client-Version': ensure(process.env.REACT_APP_VERSION, 'REACT_APP_VERSION is not set'),
       },
       body: options ? JSON.stringify(options) : undefined,
       credentials: 'include',

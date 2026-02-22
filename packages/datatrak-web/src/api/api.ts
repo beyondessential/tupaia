@@ -1,4 +1,6 @@
 import axios from 'axios';
+
+import { SYNC_CLIENT_OUTDATED_ERROR_CODE } from '@tupaia/constants';
 import FetchError from './fetchError';
 
 // Needs to use process.env instead of import.meta.env for compatibility with jest
