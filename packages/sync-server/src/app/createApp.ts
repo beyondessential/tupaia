@@ -35,10 +35,7 @@ export function createApp(database = new TupaiaDatabase(), syncManager: CentralS
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
     .get<SyncReadyRequest>('sync/:sessionId/status', handleWith(SyncReadyRoute))
     .get<SyncMetadataRequest>('sync/:sessionId/metadata', handleWith(SyncMetadataRoute))
-    .post<SyncInitiatePullRequest>(
-      'sync/:sessionId/pull',
-      handleWith(SyncInitiatePullRoute),
-    )
+    .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
     .get<SyncPullReadyRequest>('sync/:sessionId/pull/status', handleWith(SyncPullReadyRoute))
     .get<SyncPullMetadataRequest>(
       'sync/:sessionId/pull/metadata',
@@ -46,7 +43,10 @@ export function createApp(database = new TupaiaDatabase(), syncManager: CentralS
     )
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
     .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
-    .put<SyncPushCompleteRequest>('sync/:sessionId/push/complete', handleWith(SyncPushCompleteRoute))
+    .put<SyncPushCompleteRequest>(
+      'sync/:sessionId/push/complete',
+      handleWith(SyncPushCompleteRoute),
+    )
     .get<SyncPushStatusRequest>('sync/:sessionId/push/status', handleWith(SyncPushStatusRoute))
     .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
 
