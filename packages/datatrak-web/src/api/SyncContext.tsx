@@ -19,17 +19,7 @@ export const SyncProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
   const { models } = useDatabaseContext() || {};
   const isOfflineFirst = useIsOfflineFirst();
-  const { data: isLoggedIn, error: isLoggedInError, status: isLoggedInStatus } = useIsLoggedIn();
-
-  // Debug logging
-  console.log('[SyncProvider] State', {
-    isLoggedIn,
-    isLoggedInError: (isLoggedInError as Error)?.message,
-    isLoggedInStatus,
-    hasModels: !!models,
-    hasClientSyncManager: !!clientSyncManager,
-    isOfflineFirst,
-  });
+  const { data: isLoggedIn } = useIsLoggedIn();
 
   useEffect(() => {
     if (models) {
@@ -38,21 +28,10 @@ export const SyncProvider = ({ children }: { children: ReactNode }) => {
   }, [models]);
 
   useEffect(() => {
-    console.log('[SyncProvider] Sync service effect triggered', {
-      isLoggedIn,
-      isOfflineFirst,
-      hasClientSyncManager: !!clientSyncManager,
-    });
-
     if (isLoggedIn && isOfflineFirst && clientSyncManager) {
-      console.log('[SyncProvider] Starting sync service');
       clientSyncManager.startSyncService(queryClient);
 
       return () => {
-        console.log('[SyncProvider] Cleanup - stopping sync service', {
-          isLoggedIn,
-          isOfflineFirst,
-        });
         clientSyncManager.stopSyncService();
       };
     }
