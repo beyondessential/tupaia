@@ -37,7 +37,5 @@ export const CurrentUserContextProvider = ({ children }: { children: Readonly<Re
     accessPolicy: data?.accessPolicy ? new AccessPolicy(data?.accessPolicy) : undefined,
   };
 
-  console.log('userDataaaaa:', userData);
-
   return <CurrentUserContext.Provider value={userData}>{children}</CurrentUserContext.Provider>;
 };
