@@ -67,7 +67,7 @@ const SERVICES = {
     localPort: '8120',
     prefix: null,
   },
-};
+} as const;
 
 const getLocalUrl = (service: ServiceName): string => {
   const { prefix, localPort, version } = SERVICES[service];
