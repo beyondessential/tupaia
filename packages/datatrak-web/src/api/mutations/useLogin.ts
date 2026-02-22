@@ -72,6 +72,9 @@ export const useLogin = () => {
 
         await queryClient.invalidateQueries();
 
+        // Emit permissions changed event to reset data notification
+        await clientSyncManager?.updatePermissionsChanged(false);
+
         if (from) {
           navigate(from, { state: null });
         } else {
