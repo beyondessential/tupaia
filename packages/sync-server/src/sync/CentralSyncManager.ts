@@ -384,6 +384,12 @@ export class CentralSyncManager {
             }, snapshotTransactionTimeoutMs);
           }
 
+          // Establish the REPEATABLE READ snapshot by reading sync_lookup before any
+          // async pause (e.g. in snapshotOutgoingChanges). This ensures concurrent
+          // inserts from other sessions are excluded when we later INSERT...SELECT
+          // from sync_lookup.
+          await transactingModels.database.executeSql('SELECT 1 FROM sync_lookup LIMIT 1');
+
           const lastSuccessfulSyncedProjectIds = await findLastSuccessfulSyncedProjects(
             transactingModels.database,
             deviceId,

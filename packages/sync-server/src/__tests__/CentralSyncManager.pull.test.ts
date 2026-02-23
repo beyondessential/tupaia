@@ -264,8 +264,9 @@ describe('CentralSyncManager.pull', () => {
 
       await snapshot;
 
-      // Check if only 3 pre inserted records were snapshotted
-      // and not the ones that were inserted in the middle of the snapshot process
+      // Check that only the 4 pre-inserted records were snapshotted and that records
+      // inserted by session two (while the snapshot transaction was paused) are excluded
+      // (REPEATABLE READ isolation should not see those concurrent commits).
       const snapshotRecords = await findSyncSnapshotRecords(
         models.database,
         sessionIdOne,
@@ -274,6 +275,14 @@ describe('CentralSyncManager.pull', () => {
         undefined,
         SYNC_SESSION_DIRECTION.OUTGOING,
       );
+
+      const sessionTwoRecordIds = [userAccount2.id, userAccount3.id, userAccount4.id];
+      const includedSessionTwoIds = snapshotRecords
+        .map(r => r.recordId)
+        .filter(id => sessionTwoRecordIds.includes(id));
+      expect(includedSessionTwoIds).toEqual(
+        [],
+      ); // Snapshot must not include records inserted by the other session (REPEATABLE READ)
 
       expect(snapshotRecords.length).toBe(4);
       expect(snapshotRecords.map(r => r.recordId).sort()).toEqual(
