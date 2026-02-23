@@ -1,5 +1,4 @@
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
-import { ensure } from '@tupaia/tsutils';
 import { API_URL } from './api';
 
 interface EndpointOptions {
@@ -135,7 +134,7 @@ export async function* stream(
       method: method || 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'X-Client-Version': ensure(process.env.REACT_APP_VERSION, 'REACT_APP_VERSION is not set'),
+        'X-Client-Version': process.env.REACT_APP_VERSION || '',
       },
       body: options ? JSON.stringify(options) : undefined,
       credentials: 'include',
