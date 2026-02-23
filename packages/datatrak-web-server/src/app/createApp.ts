@@ -85,14 +85,9 @@ import { LoginRoute } from '../routes/LoginRoute';
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 /** Forward client version to sync-server for version compatibility check */
-const apiConnectionOptionsProvider = (req: Request): ApiConnectionOptions => {
-  console.log('🦺 [apiConnectionOptionsProvider]', req.method, req.url);
-  const rv = {
-    headers: { 'X-Client-Version': req.get('X-Client-Version') ?? '' },
-  };
-  console.log('🦺 [apiConnectionOptionsProvider]', rv);
-  return rv;
-};
+const apiConnectionOptionsProvider = (req: Request): ApiConnectionOptions => ({
+  headers: { 'X-Client-Version': req.get('X-Client-Version') ?? '' },
+});
 
 export async function createApp() {
   const WEB_CONFIG_API_URL = getEnvVarOrDefault(
