@@ -1,6 +1,6 @@
 import type { Response as ExpressResponse } from 'express';
 import type { HeadersInit, RequestInit, Response } from 'node-fetch';
-import nodeFetch, { Headers } from 'node-fetch';
+import nodeFetch from 'node-fetch';
 import { stringify } from 'qs';
 
 import { CustomError } from '@tupaia/utils';
@@ -8,15 +8,13 @@ import { AuthHandler, QueryParameters } from '../types';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
-interface FetchHeaders {
-  Authorization: string;
-  'Content-Type'?: string;
-  'X-Client-Version'?: string;
+interface FetchConfig extends RequestInit {
+  headers: HeadersInit & {
+    Authorization: string;
+    'Content-Type'?: string;
+    'X-Client-Version'?: string;
+  };
 }
-
-type FetchConfig = RequestInit & {
-  headers: HeadersInit & FetchHeaders;
-};
 
 const DEFAULT_MAX_WAIT_TIME = 120_000; // 120 seconds
 
@@ -30,7 +28,7 @@ export class ApiConnection {
 
   private readonly baseUrl: string;
 
-  private readonly headerOverrides?: Headers;
+  private readonly headerOverrides?: ApiConnectionOptions['headers'];
 
   public constructor(
     authHandler: AuthHandler,
@@ -39,7 +37,7 @@ export class ApiConnection {
   ) {
     this.authHandler = authHandler;
     this.baseUrl = baseUrl;
-    this.headerOverrides = new Headers(options.headers);
+    this.headerOverrides = options.headers;
   }
 
   public async get(endpoint: string, queryParameters?: QueryParameters | null) {
@@ -87,7 +85,7 @@ export class ApiConnection {
       headers: {
         Authorization: await this.authHandler.getAuthHeader(),
         'Content-Type': 'application/json',
-        ...this.headerOverrides?.raw(),
+        ...this.headerOverrides,
       },
     };
     if (body) {
