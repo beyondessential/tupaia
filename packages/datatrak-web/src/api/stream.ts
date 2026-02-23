@@ -140,14 +140,6 @@ export async function* stream(
       credentials: 'include',
     });
 
-    if (response.status === 400) {
-      const requiredVersion = response.headers.get('X-Required-Client-Version');
-      if (requiredVersion) {
-        const message = (await response.json()).error;
-        throw new Error(message);
-      }
-    }
-
     if (!response.ok && !isRecoverableError(response)) {
       throw new Error(response.statusText || 'Stream ended with unknown error');
     }
