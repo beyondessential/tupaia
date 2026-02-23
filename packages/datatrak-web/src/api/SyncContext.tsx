@@ -27,7 +27,7 @@ export const SyncProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [models]);
 
-  useEffect(() => {    
+  useEffect(() => {
     if (isLoggedIn && isOfflineFirst && clientSyncManager) {
       clientSyncManager.startSyncService(queryClient);
 
@@ -38,7 +38,7 @@ export const SyncProvider = ({ children }: { children: ReactNode }) => {
   }, [isLoggedIn, isOfflineFirst, clientSyncManager]);
 
   if (!clientSyncManager && isLoggedIn) {
-    return <FullPageLoader />;
+    return <FullPageLoader message="Setting up sync…" />;
   }
 
   return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;
