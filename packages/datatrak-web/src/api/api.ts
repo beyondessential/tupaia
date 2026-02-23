@@ -19,17 +19,10 @@ export interface RequestParameters extends Record<string, any> {
 type RequestParametersWithMethod = RequestParameters & {
   method: 'get' | 'post' | 'put' | 'delete';
 };
-const getRequestOptions = (options?: RequestParametersWithMethod) => {
-  return {
-    ...options,
-  };
-};
 
 const request = async (endpoint: string, options?: RequestParametersWithMethod) => {
-  const requestOptions = getRequestOptions(options);
-
   try {
-    const response = await axios(`${API_URL}/${endpoint}`, requestOptions);
+    const response = await axios(`${API_URL}/${endpoint}`, options);
 
     return response.data;
   } catch (error: any) {
