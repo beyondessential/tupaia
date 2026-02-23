@@ -184,10 +184,11 @@ export class BaseDatabase {
   }
 
   /**
-   * @returns {string} The database's timezone
+   * @returns {Promise<string>} The database’s timezone
    */
   async getTimezone() {
-    return (await this.executeSql('show timezone'))[0];
+    const [{ TimeZone }] = await this.executeSql('SHOW timezone');
+    return TimeZone;
   }
 
   /**
@@ -198,7 +199,7 @@ export class BaseDatabase {
    * Uses pg_try_advisory_xact_lock with retry to prevent indefinite blocking
    * that can exhaust the connection pool.
    *
-   * @param {number} lockKeyInt numeric key for the lock (bigint)
+   * @param {number} lockKeyInt numeric key for the lock
    * @param {object} [options]
    * @param {number} [options.maxRetries=43200] Maximum number of retry attempts (default 12 hours)
    * @param {number} [options.retryDelayMs=1000] Delay between retries in milliseconds
@@ -222,7 +223,7 @@ export class BaseDatabase {
         return; // Lock acquired successfully
       }
 
-      // Wait before retrying (with jitter to avoid thundering herd)
+      // Wait before retrying
       await sleep(retryDelayMs);
     }
 

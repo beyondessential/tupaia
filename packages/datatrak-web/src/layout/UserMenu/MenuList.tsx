@@ -12,7 +12,7 @@ import { useIsOfflineFirst } from '../../api/offlineFirst';
 import { CancelConfirmModal } from '../../components';
 import { ROUTES } from '../../constants';
 import { useDatabaseContext } from '../../hooks/database';
-import { countOutgoingChanges } from '../../sync/countOutgoingChanges';
+import { hasOutgoingChanges } from '../../sync/hasOutgoingChanges';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
@@ -165,12 +165,12 @@ export const MenuList = ({
       label: 'Log out',
       onClick: async () => {
         if (isOfflineFirst && models) {
-          const unsyncedChangesCount = await countOutgoingChanges(
+          const hasUnsyncedData = await hasOutgoingChanges(
             getModelsForPush(models.getModels()),
             models.localSystemFact,
           );
 
-          if (unsyncedChangesCount > 0) {
+          if (hasUnsyncedData) {
             setUnsyncedChangesWarningModalOpen(true);
           } else {
             handleLogout();

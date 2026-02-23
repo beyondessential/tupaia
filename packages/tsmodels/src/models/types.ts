@@ -76,16 +76,16 @@ interface MultiJoinItem {
 export interface QueryOptions {
   limit?: number;
   offset?: number;
-  sort?: string[];
+  sort?: readonly string[];
   rawSort?: string;
   joinWith?: string;
-  columns?: string[] | Record<string, string>[];
-  joinCondition?: [string, string];
+  columns?: readonly string[] | readonly Record<string, string>[];
+  joinCondition?: readonly [string, string];
   // Instance property of DatabaseModel, gets turned into multiJoin
   // TODO: Consolidate these two
-  joins?: MultiJoinItem[];
+  joins?: readonly MultiJoinItem[];
   // Passed to BaseDatabase#find options param TODO: Consolidate these two
-  multiJoin?: MultiJoinItem[];
+  multiJoin?: readonly MultiJoinItem[];
 }
 
 interface BaseModelOverrides<

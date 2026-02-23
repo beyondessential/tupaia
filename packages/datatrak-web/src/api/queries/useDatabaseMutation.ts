@@ -34,7 +34,7 @@ export function useDatabaseMutation<
   TError = unknown,
   TVariables = void,
   TContext = unknown,
-  TLocalContext extends LocalMutationContext = {},
+  TLocalContext extends LocalMutationContext = Record<string, unknown>,
 >(
   mutationFn: (args: ContextualMutationFunctionContext<TVariables>) => Promise<TData>,
   options?: Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'> & {
@@ -54,8 +54,8 @@ export function useDatabaseMutation<
     return mutationFn({
       data,
       models: isOfflineFirst
-      ? ensure(models, `Expected models to be non-nullish but got ${models}`)
-      : models!,
+        ? ensure(models, `Expected models to be non-nullish but got ${models}`)
+        : models!,
       accessPolicy: isOfflineFirst
         ? ensure(accessPolicy, `Expected accessPolicy to be non-nullish but got ${accessPolicy}`)
         : accessPolicy!,

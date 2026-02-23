@@ -85,7 +85,7 @@ describe('POST /surveyResponse', async () => {
   const syncQueue = setupDummySyncQueue(models);
 
   before(async () => {
-    defaultTimezone = (await models.database.getTimezone()).TimeZone;
+    defaultTimezone = await models.database.getTimezone();
   });
 
   describe('SubmitSurveyResponse', () => {

@@ -171,7 +171,7 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   getDhisTrackedEntityId() {
-    return this.metadata && this.metadata.dhis && this.metadata.dhis.trackedEntityId;
+    return this.metadata?.dhis?.trackedEntityId;
   }
 
   async setDhisTrackedEntityId(trackedEntityId) {
@@ -676,7 +676,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
       const results = await this.find(
         {
-          [`hierarchy.generational_distance`]: generational_distance,
+          'hierarchy.generational_distance': generational_distance,
           ...restOfFilter,
         },
         {

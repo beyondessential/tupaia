@@ -512,11 +512,11 @@ export class TaskModel extends DatabaseModel {
             CASE
                 WHEN repeat_schedule IS NOT NULL THEN 'repeating'
                 WHEN due_date IS NULL THEN 'to_do'
-                WHEN due_date < ${new Date().getTime()} THEN 'overdue'
+                WHEN due_date < ${Date.now()} THEN 'overdue'
                 ELSE 'to_do'
             END
         ELSE 'to_do'
-    END`,
+      END`,
     assignee_name: () =>
       `CASE
         WHEN assignee_id IS NULL THEN 'Unassigned'
@@ -676,7 +676,7 @@ export class TaskModel extends DatabaseModel {
         },
         due_date: {
           comparator: '<=',
-          comparisonValue: new Date().getTime(),
+          comparisonValue: Date.now(),
         },
       },
       getTaskMetricsBaseJoin(),

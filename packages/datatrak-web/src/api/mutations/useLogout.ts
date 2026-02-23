@@ -19,6 +19,7 @@ const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) =
     await models.localSystemFact.set(SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID, currentUserId);
   }
   await models.localSystemFact.delete({ key: SyncFact.CURRENT_USER_ID });
+  return { success: true };
 };
 
 export const useLogout = () => {
@@ -27,6 +28,7 @@ export const useLogout = () => {
   const { clientSyncManager } = useSyncContext() || {};
 
   return useDatabaseMutation(isOfflineFirst ? logoutOffline : logoutOnline, {
+    mutationKey: ['logout'],
     onSuccess: () => {
       if (isOfflineFirst && clientSyncManager) {
         clientSyncManager.stopSyncService();

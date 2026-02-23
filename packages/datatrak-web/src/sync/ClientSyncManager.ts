@@ -32,7 +32,8 @@ import { initiatePull, pullIncomingChanges } from './pullIncomingChanges';
 import { pushOutgoingChanges } from './pushOutgoingChanges';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 
-const SYNC_INTERVAL = 1000 * 30;
+const SYNC_INTERVAL_MS = 30_000;
+const URGENT_SYNC_INTERVAL_MS = 10_000;
 
 const SYNC_STAGES = {
   PUSH: 1,
@@ -124,7 +125,7 @@ export class ClientSyncManager {
     // Run the sync immediately
     // and then schedule the next sync
     run();
-    this.syncInterval = setInterval(run, SYNC_INTERVAL);
+    this.syncInterval = setInterval(run, SYNC_INTERVAL_MS);
   }
 
   async stopSyncService(): Promise<void> {
@@ -219,59 +220,8 @@ export class ClientSyncManager {
 
       const { pulledChangesCount } = await this.runSync(urgent);
       if (pulledChangesCount) {
-        console.group('🔄 [ClientSyncManager] Post-sync query invalidation');
-        console.log('Pulled changes count:', pulledChangesCount);
-        console.log('Models state before invalidation:', {
-          hasModels: !!this.models,
-          hasDatabase: !!this.models?.database,
-          databaseType: this.models?.database?.constructor?.name,
-          hasConnection: !!this.models?.database?.connection,
-          isSingleton: this.models?.database?.isSingleton,
-        });
-        
-        // Health check before invalidating queries
-        console.log('Running database health check...');
-        const healthResult = await this.database.healthCheck();
-        console.log('Database health check result:', healthResult);
-        
-        if (!healthResult.healthy) {
-          console.error('Database is unhealthy after sync! Error:', healthResult.error);
-          // Don't invalidate queries if database is unhealthy - might cause cascading failures
-          console.groupEnd();
-          throw new Error(`Database unhealthy after sync: ${healthResult.error}`);
-        }
-        
-        console.log('Project model state:', {
-          hasProjectModel: !!this.models?.project,
-          projectModelDatabase: !!this.models?.project?.database,
-          projectModelDatabaseType: this.models?.project?.database?.constructor?.name,
-        });
-        
-        // Additional delay before invalidating queries to ensure PGlite is fully stable
-        console.log('Waiting additional 500ms before invalidating queries...');
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Re-check health after delay
-        const healthCheck2 = await this.database.healthCheck();
-        console.log('Second health check before invalidation:', healthCheck2);
-        
-        if (!healthCheck2.healthy) {
-          console.error('Database still unhealthy after delay!');
-          console.groupEnd();
-          throw new Error(`Database unhealthy before query invalidation: ${healthCheck2.error}`);
-        }
-        
-        console.log('Invalidating all queries...');
-        console.groupEnd();
-        
         await queryClient.invalidateQueries();
         this.models.clearCache();
-        
-        console.log('🔄 [ClientSyncManager] Query invalidation complete');
-
-        const projects = await this.models.project.find({});
-        console.log('Projects:', projects);
-
       }
     } catch (error: any) {
       this.emitter.emit(SYNC_EVENT_ACTIONS.SYNC_ERROR, { error: error.message });
@@ -305,12 +255,10 @@ export class ClientSyncManager {
       return;
     }
 
-    const urgentSyncIntervalInSeconds = 10;
-
     // Schedule regular urgent sync
     this.urgentSyncInterval = setInterval(
       () => this.triggerSync(true, queryClient),
-      urgentSyncIntervalInSeconds * 1000,
+      URGENT_SYNC_INTERVAL_MS,
     );
 
     // start the sync now
@@ -322,23 +270,6 @@ export class ClientSyncManager {
       throw new Error(
         'It should not be possible to call "runSync" while an existing run is active',
       );
-    }
-
-    // Debug: Log database state at the VERY START of sync
-    console.log('=== [ClientSyncManager.runSync] START ===');
-    try {
-      const factsAtStart = await this.models.localSystemFact.find({});
-      console.log('[ClientSyncManager.runSync] Local system facts at START:', {
-        count: factsAtStart.length,
-        facts: factsAtStart.map((f: any) => ({ key: f.key, value: f.value })),
-      });
-      
-      const projectsAtStart = await this.models.project.find({});
-      console.log('[ClientSyncManager.runSync] Projects at START:', {
-        count: projectsAtStart.length,
-      });
-    } catch (e: any) {
-      console.error('[ClientSyncManager.runSync] Error checking initial state:', e?.message);
     }
 
     this.errorMessage = null;
@@ -393,17 +324,7 @@ export class ClientSyncManager {
 
     await this.pushChanges(sessionId, startedAtTick);
 
-    // Debug: Check state BEFORE pullChanges
-    console.log('[ClientSyncManager.runSync] State BEFORE pullChanges:');
-    const factsBeforePull = await this.models.localSystemFact.find({});
-    console.log('  Local system facts:', factsBeforePull.length);
-
     const pulledChangesCount = await this.pullChanges(sessionId, projectIds);
-
-    // Debug: Check state AFTER pullChanges  
-    console.log('[ClientSyncManager.runSync] State AFTER pullChanges:');
-    const factsAfterPull = await this.models.localSystemFact.find({});
-    console.log('  Local system facts:', factsAfterPull.length);
 
     await this.endSyncSession(sessionId);
 
@@ -541,12 +462,21 @@ export class ClientSyncManager {
 
       const isInitialPull = pullSince === -1;
 
-      // 1. If the pull is initial, we wrap the whole pull in a transaction and persist the stream data straight to the actual tables
-      //    When leaving a long running transaction open, any user trying to update those same records in Tamanu will be blocked until the sync finishes.
-      //    This is not a problem for initial sync because there is no local data, so it is fine to leave a long running transaction open.
-      // 2. If the pull is incremental, we save the stream data to a temporary snapshot table and then use a transaction to persist the data to the actual tables
-      //    This is because we don't want to block the user from updating the records in Tamanu while a long sync is running.
-      //    Also, we don't want to cause memory issues by saving all the data to memory.
+      /*
+       * If the pull is initial:
+       *   - We wrap the whole pull in a transaction and persist the stream data straight to the
+       *     actual tables.
+       *   - When leaving a long running transaction open, any user trying to update those same
+       *     records in DataTrak will be blocked until the sync finishes.
+       *   - This is not a problem for initial sync because there is no local data, so it is fine to
+       *     leave a long-running transaction open.
+       * If the pull is incremental:
+       *   - We save the stream data to a temporary snapshot table and then use a transaction to
+       *     persist the data to the actual tables.
+       *   - This is because we don’t want to block the user from updating the records in DataTrak
+       *     while a long sync is running.
+       *   - Also, we don’t want to cause memory issues by saving all the data to memory.
+       */
       if (isInitialPull) {
         await this.pullInitialSync(sessionId, totalToPull, pullUntil);
       } else {
@@ -592,57 +522,7 @@ export class ClientSyncManager {
         SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
         pullUntil.toString(),
       );
-      
-      // Debug: Check what's in the database INSIDE the transaction
-      console.log('[ClientSyncManager] Inside transaction - checking data...');
-      const factsInTransaction = await transactingModels.localSystemFact.find({});
-      console.log('[ClientSyncManager] Local system facts INSIDE transaction:', {
-        count: factsInTransaction.length,
-        facts: factsInTransaction.map((f: any) => ({ key: f.key, value: f.value })),
-      });
-      
-      const projectsInTransaction = await transactingModels.project.find({});
-      console.log('[ClientSyncManager] Projects INSIDE transaction:', {
-        count: projectsInTransaction.length,
-      });
-      
-      return factsInTransaction;
     });
-    
-    // After initial sync transaction commits, give PGlite time to flush to IndexedDB
-    // This is a workaround for potential race conditions where queries run before data is fully persisted
-    console.log('[ClientSyncManager] Initial sync transaction complete, waiting for PGlite to stabilize...');
-    
-    // Debug: Check what's in the database OUTSIDE the transaction (should be same as inside if committed)
-    console.log('[ClientSyncManager] Checking data OUTSIDE transaction (before delay)...');
-    const factsOutside = await this.models.localSystemFact.find({});
-    console.log('[ClientSyncManager] Local system facts OUTSIDE transaction:', {
-      count: factsOutside.length,
-      facts: factsOutside.map((f: any) => ({ key: f.key, value: f.value })),
-    });
-    
-    const projectsOutside = await this.models.project.find({});
-    console.log('[ClientSyncManager] Projects OUTSIDE transaction:', {
-      count: projectsOutside.length,
-    });
-    
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Check again after delay
-    console.log('[ClientSyncManager] Checking data OUTSIDE transaction (after delay)...');
-    const factsAfterDelay = await this.models.localSystemFact.find({});
-    console.log('[ClientSyncManager] Local system facts after delay:', {
-      count: factsAfterDelay.length,
-      facts: factsAfterDelay.map((f: any) => ({ key: f.key, value: f.value })),
-    });
-    
-    // Verify the database is healthy after the delay
-    const healthCheck = await this.database.healthCheck();
-    console.log('[ClientSyncManager] Post-initial-sync health check:', healthCheck);
-    
-    if (!healthCheck.healthy) {
-      throw new Error(`Database unhealthy after initial sync: ${healthCheck.error}`);
-    }
   }
 
   async pullIncrementalSync(sessionId: string, totalToPull: number, pullUntil: number) {

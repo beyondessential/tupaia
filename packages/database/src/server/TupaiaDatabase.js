@@ -2,8 +2,10 @@
 
 import { types as pgTypes } from 'pg';
 import winston from 'winston';
+import autobind from 'react-autobind';
 
 import { Multilock } from '@tupaia/utils';
+
 import { BaseDatabase } from '../core';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { getConnectionConfig } from './getConnectionConfig';
@@ -24,6 +26,8 @@ export class TupaiaDatabase extends BaseDatabase {
    */
   constructor(transactingConnection, transactingChangeChannel) {
     super(transactingConnection, transactingChangeChannel, 'pg', getConnectionConfig);
+
+    autobind(this);
 
     this.changeHandlers = {};
     this.handlerLock = new Multilock();
@@ -81,7 +85,9 @@ export class TupaiaDatabase extends BaseDatabase {
   getOrCreateChangeChannel() {
     if (!this.changeChannel) {
       this.changeChannel = this.transactingChangeChannel || new DatabaseChangeChannel();
-      this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
+      // Arrow function needed because autobind (see constructor) only binds immediate prototype’s
+      // methods, not inherited ones. Otherwise this fails in subclasses of TupaiaDatabase.
+      this.changeChannel.addDataChangeHandler(change => this.notifyChangeHandlers(change));
       this.changeChannelPromise = this.changeChannel.ping(undefined, 0);
     }
     return this.changeChannel;

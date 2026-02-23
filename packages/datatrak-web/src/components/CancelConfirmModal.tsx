@@ -56,7 +56,7 @@ export const CancelConfirmModal = ({
   onClose,
   onConfirm,
   headingText = 'Survey in progress',
-  bodyText = "If you exit, you will lose the progress you've made on the current survey",
+  bodyText = 'If you exit, you will lose the progress you’ve made on the current survey',
   confirmText = 'Exit survey',
   cancelText = 'Continue survey',
   confirmPath = '/',

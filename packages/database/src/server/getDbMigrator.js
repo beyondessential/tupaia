@@ -48,39 +48,44 @@ export const removeNonServerMigrations = () => {
 };
 
 const cliCallback = async (migrator, _internals, originalError, migrationError) => {
-  resetMigrationFolder();
-
-  if (originalError) {
-    exitWithError(new Error(`db-migrate error: ${originalError.message}`));
-  }
-  if (migrationError) {
-    exitWithError(new Error(`Migration error: ${migrationError.message}`));
-  }
-
   try {
+    if (originalError) {
+      exitWithError(new Error(`db-migrate error: ${originalError.message}`));
+    }
+    if (migrationError) {
+      exitWithError(new Error(`Migration error: ${migrationError.message}`));
+    }
+
     const { driver } = migrator;
     await runPostMigration(driver);
   } catch (error) {
     exitWithError(new Error(`Post migration error: ${error.message}`));
+  } finally {
+    resetMigrationFolder();
   }
 };
 
 const appCallback = async (migrator, internals, callback, error) => {
-  resetMigrationFolder();
+  try {
+    if (error) {
+      throw error;
+    }
 
-  if (error) {
-    throw error;
-  }
-
-  const { driver } = migrator;
-  await runPostMigration(driver);
-  // This needs to be called, otherwise the process will hang
-  if (callback) {
-    callback();
+    const { driver } = migrator;
+    await runPostMigration(driver);
+  } finally {
+    resetMigrationFolder();
+    // This needs to be called, otherwise the process will hang
+    if (callback) {
+      callback();
+    }
   }
 };
 
 export const getDbMigrator = (forCli = false) => {
+  // Ensure cleanup runs even if the process exits unexpectedly (e.g. connection timeout)
+  process.on('exit', resetMigrationFolder);
+
   const instance = DBMigrate.getInstance(
     true,
     {

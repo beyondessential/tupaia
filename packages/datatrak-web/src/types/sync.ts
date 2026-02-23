@@ -1,5 +1,7 @@
-import { SyncSnapshotAttributes } from '@tupaia/sync';
-import { DatatrakWebModelRegistry } from './model';
+import type { EventType } from 'mitt';
+
+import type { SyncSnapshotAttributes } from '@tupaia/sync';
+import type { DatatrakWebModelRegistry } from './model';
 
 export interface ProcessStreamDataParams {
   models: DatatrakWebModelRegistry;
@@ -14,7 +16,7 @@ export const SYNC_EVENT_ACTIONS = {
   SYNC_STATE_CHANGED: 'syncStateChanged',
   SYNC_ENDED: 'syncEnded',
   SYNC_ERROR: 'syncError',
-} as const;
+} as const satisfies Record<string, EventType>;
 
 export type SyncEvents = {
   [SYNC_EVENT_ACTIONS.SYNC_REQUESTING]: undefined;

@@ -4,7 +4,12 @@ import { mergeMultiJoin } from '../utilities/mergeMultiJoin';
 import { RECORDS } from '../records';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 
-export async function createSurveyResponsePermissionFilter(accessPolicy, models, criteria = {}, options = {}) {
+export async function createSurveyResponsePermissionFilter(
+  accessPolicy,
+  models,
+  criteria = {},
+  options = {},
+) {
   const dbConditions = { ...criteria };
   const dbOptions = { ...options };
 

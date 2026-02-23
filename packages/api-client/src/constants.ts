@@ -21,8 +21,8 @@ const productionSubdomains = [
   'data-table-api',
   'www',
   'api', // this must go last in the array, otherwise it will be detected before e.g. admin-api
-];
-const productionSubdomainSet = new Set(productionSubdomains);
+] as const;
+const productionSubdomainSet = new Set<string>(productionSubdomains);
 
 const SERVICES = {
   auth: {
@@ -67,7 +67,7 @@ const SERVICES = {
     localPort: '8120',
     prefix: null,
   },
-};
+} as const;
 
 const getLocalUrl = (service: ServiceName): string => {
   const { prefix, localPort, version } = SERVICES[service];
@@ -152,13 +152,14 @@ export const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
     central: getServiceUrlForSubdomain('central', subdomain),
     report: getServiceUrlForSubdomain('report', subdomain),
     dataTable: getServiceUrlForSubdomain('dataTable', subdomain),
-    webConfig: getServiceUrlForSubdomain('webConfig', subdomain), 
+    webConfig: getServiceUrlForSubdomain('webConfig', subdomain),
     sync: getServiceUrlForSubdomain('sync', subdomain),
   };
 };
 
 export const getBaseUrlsForHost = (hostname: string): ServiceBaseUrlSet => {
-  const { auth, entity, central, report, dataTable, webConfig, sync } = getDefaultBaseUrls(hostname);
+  const { auth, entity, central, report, dataTable, webConfig, sync } =
+    getDefaultBaseUrls(hostname);
   return {
     auth: process.env.AUTH_API_URL || auth,
     entity: process.env.ENTITY_API_URL || entity,

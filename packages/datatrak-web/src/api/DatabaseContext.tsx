@@ -30,7 +30,7 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
   }, []);
 
   if (!models) {
-    return <FullPageLoader />;
+    return <FullPageLoader message="Starting DataTrak…" />;
   }
 
   return <DatabaseContext.Provider value={{ models }}>{children}</DatabaseContext.Provider>;

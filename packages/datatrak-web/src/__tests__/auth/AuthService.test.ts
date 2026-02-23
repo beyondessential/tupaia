@@ -68,14 +68,21 @@ describe('AuthService', () => {
   it('login remotely if internet is available', async () => {
     const models = {
       user: {
-        update: jest.fn(),
-        findOne: jest.fn().mockResolvedValue(null),
         create: jest.fn(),
+        exists: jest.fn().mockResolvedValue(false),
+        findOne: jest.fn().mockResolvedValue(null),
         transformUserData: jest.fn().mockResolvedValue(MOCKED_TRANSFORMED_USER),
+        update: jest.fn(),
       },
       localSystemFact: {
         set: jest.fn(),
       },
+      wrapInTransaction: jest
+        .fn()
+        .mockImplementation(
+          async (callback: <T = unknown>(models: DatatrakWebModelRegistry) => Promise<T>) =>
+            await callback(models),
+        ),
     } as unknown as DatatrakWebModelRegistry;
 
     authService = new AuthService(models);
@@ -141,7 +148,7 @@ describe('AuthService', () => {
           password_hash: 'password123',
         }),
         create: jest.fn(),
-          transformUserData: jest.fn().mockResolvedValue(MOCKED_TRANSFORMED_USER),
+        transformUserData: jest.fn().mockResolvedValue(MOCKED_TRANSFORMED_USER),
       },
       localSystemFact: {
         set: jest.fn(),
