@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-import { SYNC_CLIENT_OUTDATED_ERROR_CODE } from '@tupaia/constants';
 import FetchError from './fetchError';
 
 // Needs to use process.env instead of import.meta.env for compatibility with jest
@@ -35,15 +34,6 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
     // normalise errors using fetch error class
     if (error.response) {
       const { data } = error.response;
-
-      if (data?.error === SYNC_CLIENT_OUTDATED_ERROR_CODE) {
-        const requiredVersion = error.response.headers?.['X-Required-Client-Version'];
-        throw new FetchError(
-          `Please reload to get the latest version of Tupaia DataTrak (v${requiredVersion}) before syncing.`,
-          error.response.status,
-          data,
-        );
-      }
 
       // Some of the endpoints return 'details' with the message instead of 'message' or 'error'
       if (data.details) {
