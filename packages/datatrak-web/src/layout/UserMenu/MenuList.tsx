@@ -1,4 +1,4 @@
-import { Link, ListItem } from '@material-ui/core';
+import { Link, ListItem, Typography } from '@material-ui/core';
 import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
 import React, { ComponentType, ReactNode, useState } from 'react';
 import { useMatch, useNavigate } from 'react-router';
@@ -14,7 +14,6 @@ import { ROUTES } from '../../constants';
 import { useDatabaseContext } from '../../hooks/database';
 import { hasOutgoingChanges } from '../../sync/hasOutgoingChanges';
 import { MobileUserMenuRoot } from './MobileUserMenu';
-
 interface MenuItem {
   label: string;
   to?: string | null;
@@ -87,6 +86,30 @@ export const MenuButton = styled(Button).attrs({
 const chevronRight = <ChevronRight />;
 const externalIcon = <SquareArrowOutUpRight />;
 const logoutIcon = <LogOut />;
+
+const AppVersionParagraph = styled(Typography).attrs({
+  component: 'footer',
+  color: 'textSecondary',
+  variant: 'body2',
+})`
+  font-variant-numeric: lining-nums slashed-zero tabular-nums;
+
+  // Desktop-only styles
+  margin-block: 0.8rem;
+  padding-inline: 0.5rem;
+  ${MobileUserMenuRoot} & {
+    // Unset desktop styles defined immediately above
+    margin-block-end: unset;
+    padding-inline: unset;
+    // Define mobile-only styles
+    margin-block-start: 1rem;
+    padding-block-start: 0.8rem;
+  }
+`;
+
+const appVersionText = process.env.REACT_APP_VERSION ? (
+  <AppVersionParagraph>{`Tupaia DataTrak v${process.env.REACT_APP_VERSION}`}</AppVersionParagraph>
+) : null;
 
 /**
  * The menu list that appears in both the drawer and popover menus. It shows different options depending on whether the
@@ -206,6 +229,7 @@ export const MenuList = ({
               </MenuButton>
             </MenuListItem>
           ))}
+        {appVersionText}
       </Menu>
       <CancelConfirmModal
         headingText="Unsynced data"
