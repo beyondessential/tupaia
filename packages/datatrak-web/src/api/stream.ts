@@ -1,4 +1,4 @@
-import { SYNC_CLIENT_OUTDATED_ERROR, SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
+import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 import { ensure } from '@tupaia/tsutils';
 import { API_URL } from './api';
 
@@ -142,9 +142,10 @@ export async function* stream(
     });
 
     if (response.status === 400) {
-      const data = await response.json();
-      if (data.error === SYNC_CLIENT_OUTDATED_ERROR) {
-        throw new Error(data.error);
+      const requiredVersion = response.headers.get('X-Required-Client-Version');
+      if (requiredVersion) {
+        const message = (await response.json()).error;
+        throw new Error(message);
       }
     }
 

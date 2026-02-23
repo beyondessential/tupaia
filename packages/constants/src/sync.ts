@@ -41,5 +41,3 @@ export enum SyncFact {
   PROJECTS_IN_SYNC = 'projectsInSync',
   SYNC_TRIGGER_CONTROL = 'syncTrigger',
 }
-
-export const SYNC_CLIENT_OUTDATED_ERROR = 'ERR_CLIENT_OUTDATED';
