@@ -13,7 +13,8 @@ export const versionCompatibility = (req: Request, res: Response, next: NextFunc
     return;
   }
 
-  // TODO: Comment why equality works here
+  // Simple inequality check because Tupaia can assume server version ≥ client version. If server
+  // version is different, then it is newer; and client is considered outdated.
   if (clientVersion !== version) {
     console.log('🦺 [versionCompatibility] bad version)');
     res.setHeader('X-Required-Client-Version', version);
