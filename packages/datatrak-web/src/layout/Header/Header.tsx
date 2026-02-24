@@ -6,6 +6,7 @@ import { SafeAreaColumn } from '@tupaia/ui-components';
 import { HEADER_HEIGHT } from '../../constants';
 import { HeaderLeft } from './HeaderLeft';
 import { UserMenu } from '../UserMenu';
+import { UpdateNotification } from '../../components/UpdateConfirmation';
 import { ResetDataNotification } from '../../views/ResetDataNotification';
 import { useIsOfflineFirst } from '../../api/offlineFirst';
 import { useCurrentUserContext } from '../../api';
@@ -36,6 +37,7 @@ export const Header = (props: ComponentPropsWithoutRef<typeof HeaderRoot>) => {
         <HeaderLeft />
         <UserMenu />
       </HeaderRoot>
+      {isOfflineFirst && <UpdateNotification />}
       {isOfflineFirst && isLoggedIn && window.navigator.onLine && <ResetDataNotification />}
     </>
   );
