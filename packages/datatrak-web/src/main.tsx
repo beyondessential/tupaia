@@ -6,54 +6,46 @@ import { App } from './App';
 import { confirmUpdate } from './components/UpdateConfirmation';
 import { useIsOfflineFirst } from './api/offlineFirst';
 
-// Global error handlers to catch unhandled errors
-window.addEventListener('error', event => {
-  console.group('🔴 Unhandled Error');
-  console.error('Error message:', event.message);
-  console.error('Error filename:', event.filename);
-  console.error('Error lineno:', event.lineno);
-  console.error('Error colno:', event.colno);
-  console.error('Error object:', event.error);
-  console.error('Error stack:', event.error?.stack);
-  console.groupEnd();
-});
-
-window.addEventListener('unhandledrejection', event => {
-  console.group('🔴 Unhandled Promise Rejection');
-  console.error('Reason:', event.reason);
-  console.error('Reason message:', event.reason?.message);
-  console.error('Reason stack:', event.reason?.stack);
-  console.error('Promise:', event.promise);
-  console.groupEnd();
-});
-
 renderReactApp(<App />, document.getElementById('root'));
 
 const promptUserToUpdate = async (worker: ServiceWorker) => {
   if (await confirmUpdate()) {
     worker.postMessage({ type: 'SKIP_WAITING' });
+    window.location.reload();
   }
 };
 
 if (useIsOfflineFirst()) {
   window.addEventListener('load', async () => {
     if ('serviceWorker' in navigator) {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      // Handle updates
+      const registration = await navigator.serviceWorker.register('/sw.js', {
+        updateViaCache: 'none',
+      });
+      // When the browser detects a new service worker version, it fires 'updatefound'.
       registration.addEventListener('updatefound', () => {
         log.info('Update found.');
         const newWorker = registration.installing;
 
+        // The worker may have already passed the 'installing' state by the time this
+        // handler runs. Fall back to checking the waiting worker.
         if (!newWorker) {
+          if (registration.waiting && registration.active) {
+            promptUserToUpdate(registration.waiting);
+          }
           return;
         }
 
-        newWorker.addEventListener('statechange', async () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            // New content available
-            await promptUserToUpdate(newWorker);
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && registration.active) {
+            promptUserToUpdate(newWorker);
           }
         });
+
+        // The worker may have reached 'installed' before the statechange listener
+        // was attached above, so check its current state as well.
+        if (newWorker.state === 'installed' && registration.active) {
+          promptUserToUpdate(newWorker);
+        }
       });
 
       // Check if there's already a waiting worker
@@ -66,7 +58,8 @@ if (useIsOfflineFirst()) {
       log.info('Checking for updates...');
       await registration.update();
 
-      // Important: Handle when new SW takes control
+      // After the user confirms the update, the waiting SW calls skipWaiting(),
+      // becomes active, and 'controllerchange' fires — reload to use the new version.
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         window.location.reload();
       });
@@ -82,6 +75,11 @@ if (useIsOfflineFirst()) {
       if (registration) {
         log.info('Periodic update check...');
         await registration.update();
+
+        // Catch any waiting worker that the updatefound handler may have missed
+        if (registration.waiting && registration.active) {
+          await promptUserToUpdate(registration.waiting);
+        }
       }
     }
   }, UPDATE_CHECK_INTERVAL);
