@@ -59,10 +59,18 @@ export const useLogout = () => {
       // its own time. Having a user cached in the query client will make the ROUTES.LOGIN page
       // redirect back to ROUTES.HOME.
       // @see AuthViewLoggedInRedirect in src/routes/Routes.tsx
-      await queryClient.refetchQueries({ queryKey: ['getUser'] });
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ['getUser'] }),
+        queryClient.refetchQueries({ queryKey: ['isLoggedIn'] }),
+      ]);
       navigate(ROUTES.LOGIN);
 
-      await Promise.all([clientSyncManager?.stopSyncService(), queryClient.refetchQueries()]);
+      await Promise.all([
+        clientSyncManager?.stopSyncService(),
+        queryClient.invalidateQueries({
+          predicate: q => q.queryKey?.[0] !== 'getUser' && q.queryKey?.[0] !== 'isLoggedIn',
+        }),
+      ]);
     },
   });
 };
