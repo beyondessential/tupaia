@@ -68,7 +68,10 @@ export const useLogout = () => {
       await Promise.all([
         clientSyncManager?.stopSyncService(),
         queryClient.invalidateQueries({
-          predicate: q => q.queryKey?.[0] !== 'getUser' && q.queryKey?.[0] !== 'isLoggedIn',
+          predicate: q => {
+            const queryKeyHead = q.queryKey?.[0];
+            return queryKeyHead !== 'getUser' && queryKeyHead !== 'isLoggedIn';
+          },
         }),
       ]);
     },
