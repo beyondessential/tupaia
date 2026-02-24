@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 
 import { SyncFact } from '@tupaia/constants';
+
 import { ROUTES } from '../../constants';
 import { clearDatabase } from '../../database';
 import { DatatrakWebModelRegistry } from '../../types';
@@ -32,6 +33,8 @@ const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) =
       if (permissionsDidChange) {
         await clearDatabase(transactingModels);
       }
+
+      return { success: true };
     });
   } catch (e: unknown) {
     if (e instanceof Error && e.name === 'KnexTimeoutError') {
@@ -50,6 +53,7 @@ export const useLogout = () => {
   const navigate = useNavigate();
 
   return useDatabaseMutation(isOfflineFirst ? logoutOffline : logoutOnline, {
+    mutationKey: ['logout'],
     onSuccess: async () => {
       // Immediately refetch user rather than waiting for cache invalidation to trigger refetch in
       // its own time. Having a user cached in the query client will make the ROUTES.LOGIN page
