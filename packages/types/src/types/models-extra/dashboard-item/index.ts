@@ -25,6 +25,7 @@ import type {
   ViewConfig,
   ViewPresentationOptions,
 } from './views';
+export type { ViewType } from './views';
 
 export { ChartType } from './charts';
 export {
@@ -56,7 +57,12 @@ export {
  */
 export type DashboardItemConfig = ChartConfig | ComponentConfig | MatrixConfig | ViewConfig;
 
-export { ValueType, ExportPresentationOptions, DatePickerOffsetSpec } from './common';
+export type {
+  DatePickerOffsetSpec,
+  ExportPresentationOptions,
+  ValueType,
+  ViewType,
+} from './common';
 export type {
   MatrixConfig,
   MatrixEntityCell,

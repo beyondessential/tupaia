@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { ViewConfig, ViewReport, isViewReport } from '@tupaia/types';
+import { type ViewConfig, type ViewReport, isViewReport, type ViewType } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { DashboardItemContext, DashboardInfoHover } from '../../DashboardItem';
 import { SingleDownloadLink } from './SingleDownloadLink';
@@ -28,7 +28,7 @@ interface ViewProps {
   customConfig?: ViewConfig;
 }
 
-const VIEWS = {
+const VIEWS = Object.freeze({
   singleValue: SingleValue,
   singleDate: SingleDate,
   singleDownloadLink: SingleDownloadLink,
@@ -38,7 +38,7 @@ const VIEWS = {
   filesDownload: DownloadFiles,
   qrCodeVisual: QRCode,
   multiPhotograph: MultiPhotograph,
-};
+}) satisfies Partial<Record<ViewType, unknown /* Should be React.FC */>>;
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
   const { valueType } = config;
@@ -68,8 +68,8 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
     isEnlarged,
     isExport,
   } = useContext(DashboardItemContext);
-  const report = customReport || originalReport;
-  const config = customConfig || originalConfig;
+  const report = customReport ?? originalReport;
+  const config = customConfig ?? originalConfig;
   // cast the config to a ViewConfig so we can access the viewType
   const viewConfig = config as ViewConfig;
   const { viewType } = viewConfig;
@@ -103,7 +103,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
     );
   }
 
-  const Component = VIEWS[viewType as keyof typeof VIEWS];
+  const Component = VIEWS[viewType];
 
   // if the view type is not supported, return null
   if (!Component) return null;

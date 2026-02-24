@@ -1,6 +1,6 @@
 import numeral from 'numeral';
 
-export const VALUE_TYPES = {
+export const VALUE_TYPES = Object.freeze({
   BOOLEAN: 'boolean',
   CURRENCY: 'currency',
   FRACTION: 'fraction',
@@ -10,7 +10,7 @@ export const VALUE_TYPES = {
   TEXT: 'text',
   NUMBER: 'number',
   ONE_DECIMAL_PLACE: 'oneDecimalPlace',
-};
+});
 
 // Note: will display 0 if passed undefined
 const currency = value => numeral(value).format('$0.00a');
@@ -46,10 +46,11 @@ const percentage = value => {
   }
 
   const percentageValue = value * 100;
+  const magnitude = Math.abs(percentageValue);
 
   let decimalPrecision = 0;
-  if (percentageValue < 1) {
-    const decimalPart = percentageValue.toString().substring(2);
+  if (magnitude < 1) {
+    const decimalPart = magnitude.toString().substring(2);
     for (let i = 0; i < decimalPart.length; i++) {
       // Increment precision for each leading zero in decimal digits
       decimalPrecision++;
@@ -58,7 +59,7 @@ const percentage = value => {
       }
     }
     decimalPrecision++;
-  } else if (percentageValue < 100) {
+  } else if (magnitude < 100) {
     decimalPrecision = 1;
   }
   const floatNormalizer = 10 ** decimalPrecision;
@@ -67,17 +68,23 @@ const percentage = value => {
 };
 
 const number = (value, { presentationOptions }) => {
-  const valueFormat = presentationOptions?.valueFormat ? presentationOptions.valueFormat : '0,0';
-  return Number.isNaN(Number(value)) ? value : numeral(value).format(valueFormat);
+  const valueFormat = presentationOptions?.valueFormat ?? '0,0';
+  if (Number.isNaN(Number(value))) return value;
+
+  // HACKY FIX. For very small-magnitude numbers, `numeral.format` incorrectly returns 'NaN'. Magic
+  // number 1×10⁻⁶ derived from trial and error, not from inspecting Numeral.js source code.
+  // @see https://github.com/adamwdraper/Numeral-js/issues/512
+  return numeral(Math.abs(value) < 1e-6 ? 0 : value).format(valueFormat);
 };
 
 const defaultFormatter = input =>
-  Number.isNaN(Number(input)) ? input : numeral(input).format('0.[00]');
+  Number.isNaN(Number(input)) ? input : numeral(input).format('0,0.[00]');
 
 const oneDecimalPlace = input =>
-  Number.isNaN(Number(input)) ? input : numeral(input).format('0.[0]');
+  Number.isNaN(Number(input)) ? input : numeral(input).format('0,0.[0]');
 
-const VALUE_TYPE_TO_FORMATTER = {
+/** @satisfies {Record<(typeof VALUE_TYPES)[keyof typeof VALUE_TYPES], <T>(value: T, metadata?: Record<string, unknown>) => string | T>} */
+const VALUE_TYPE_TO_FORMATTER = Object.freeze({
   [VALUE_TYPES.TEXT]: text,
   [VALUE_TYPES.PERCENTAGE]: percentage,
   [VALUE_TYPES.FRACTION_AND_PERCENTAGE]: fractionAndPercentage,
@@ -87,9 +94,9 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.BOOLEAN]: boolean,
   [VALUE_TYPES.NUMBER]: number,
   [VALUE_TYPES.ONE_DECIMAL_PLACE]: oneDecimalPlace,
-};
+});
 
 export const formatDataValueByType = ({ value, metadata = {} }, valueType) => {
-  const formatter = VALUE_TYPE_TO_FORMATTER[valueType] || defaultFormatter;
+  const formatter = VALUE_TYPE_TO_FORMATTER[valueType] ?? defaultFormatter;
   return formatter(value, metadata);
 };

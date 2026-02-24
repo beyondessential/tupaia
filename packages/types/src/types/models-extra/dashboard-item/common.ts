@@ -150,6 +150,18 @@ export type ValueType =
   | 'oneDecimalPlace'
   | 'fraction';
 
+export type ViewType =
+  | 'dataDownload'
+  | 'filesDownload'
+  | 'multiPhotograph'
+  | 'multiSingleValue'
+  | 'multiValue'
+  | 'multiValueRow'
+  | 'qrCodeVisual'
+  | 'singleDate'
+  | 'singleDownloadLink'
+  | 'singleValue';
+
 export enum WeekDisplayFormat {
   WEEK_COMMENCING_ABBR = 'WEEK_COMMENCING_ABBR',
   WEEK_COMMENCING = 'WEEK_COMMENCING',
