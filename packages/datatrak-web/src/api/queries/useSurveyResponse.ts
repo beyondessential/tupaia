@@ -1,10 +1,9 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
-import { processColumns, RECORDS, SurveyResponseModel } from '@tupaia/database';
-import { camelcaseKeys, ensure } from '@tupaia/tsutils';
-import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { SURVEY_RESPONSE_DEFAULT_FIELDS } from '@tupaia/constants';
-
+import { processColumns, RECORDS, SurveyResponseModel } from '@tupaia/database';
+import { camelcaseKeys } from '@tupaia/tsutils';
+import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { get } from '../api';
 import { useCurrentUserContext } from '../CurrentUserContext';
 import { useIsOfflineFirst } from '../offlineFirst';
@@ -30,29 +29,26 @@ const getLocal = async ({
   }
 
   return await models.wrapInReadOnlyTransaction(async transactingModels => {
-    const surveyResponse = ensure(
-      await transactingModels.database.findOne(
-        RECORDS.SURVEY_RESPONSE,
-        { [`${RECORDS.SURVEY_RESPONSE}.id`]: surveyResponseId },
-        {
-          columns: processColumns(models, SURVEY_RESPONSE_DEFAULT_FIELDS, RECORDS.SURVEY_RESPONSE),
-          multiJoin: [
-            {
-              joinWith: RECORDS.SURVEY,
-              joinCondition: [`${RECORDS.SURVEY}.id`, `${RECORDS.SURVEY_RESPONSE}.survey_id`],
-            },
-            {
-              joinWith: RECORDS.ENTITY,
-              joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.SURVEY_RESPONSE}.entity_id`],
-            },
-            {
-              joinWith: RECORDS.COUNTRY,
-              joinCondition: [`${RECORDS.COUNTRY}.code`, `${RECORDS.ENTITY}.country_code`],
-            },
-          ],
-        },
-      ),
-      `No survey response exists with ID ${surveyResponseId}`,
+    const surveyResponse = await transactingModels.database.findOneOrThrow(
+      RECORDS.SURVEY_RESPONSE,
+      { [`${RECORDS.SURVEY_RESPONSE}.id`]: surveyResponseId },
+      {
+        columns: processColumns(models, SURVEY_RESPONSE_DEFAULT_FIELDS, RECORDS.SURVEY_RESPONSE),
+        multiJoin: [
+          {
+            joinWith: RECORDS.SURVEY,
+            joinCondition: [`${RECORDS.SURVEY}.id`, `${RECORDS.SURVEY_RESPONSE}.survey_id`],
+          },
+          {
+            joinWith: RECORDS.ENTITY,
+            joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.SURVEY_RESPONSE}.entity_id`],
+          },
+          {
+            joinWith: RECORDS.COUNTRY,
+            joinCondition: [`${RECORDS.COUNTRY}.code`, `${RECORDS.ENTITY}.country_code`],
+          },
+        ],
+      },
     );
 
     const projectId = surveyResponse['survey.project_id'];

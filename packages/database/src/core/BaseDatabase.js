@@ -1,5 +1,6 @@
 /**
  * @typedef {import('knex').Knex} Knex
+ * @typedef {import('@tupaia/tsutils').UnexpectedNullishValueError} UnexpectedNullishValueError
  * @typedef {import('../core/records').RecordName} RecordName
  * @typedef {import('../core/constants').DatabaseSchemaName} DatabaseSchemaName
  */
@@ -8,7 +9,7 @@ import knex from 'knex';
 import autobind from 'react-autobind';
 import winston from 'winston';
 
-import { hashStringToInt } from '@tupaia/tsutils';
+import { ensure, hashStringToInt } from '@tupaia/tsutils';
 import { getEnvVarOrDefault, NotImplementedError, sleep } from '@tupaia/utils';
 import { SCHEMA_NAMES } from './constants';
 import { generateId } from './utilities';
@@ -324,11 +325,43 @@ export class BaseDatabase {
 
   /**
    * @param {RecordName} recordType
+   * @param {*} [where]
+   * @param {*} [options]
+   * @param {string} errorMessage
+   * @throws {UnexpectedNullishValueError}
+   */
+  async findOneOrThrow(
+    recordType,
+    where,
+    options,
+    errorMessage = `No ${recordType} found matching ${JSON.stringify(where)}`,
+  ) {
+    return ensure(await this.findOne(recordType, where, options), errorMessage);
+  }
+
+  /**
+   * @param {RecordName} recordType
    * @param {string} id
    * @param {*} options
    */
   findById(recordType, id, options) {
     return this.findOne(recordType, { id }, options);
+  }
+
+  /**
+   * @param {RecordName} recordType
+   * @param {string} id
+   * @param {*} [options]
+   * @param {string} errorMessage
+   * @throws {UnexpectedNullishValueError}
+   */
+  async findByIdOrThrow(
+    recordType,
+    id,
+    options,
+    errorMessage = `No ${recordType} found with ID ${id}`,
+  ) {
+    return ensure(await this.findById(recordType, id, options), errorMessage);
   }
 
   /**
