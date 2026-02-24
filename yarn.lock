@@ -12242,7 +12242,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
     "@types/lodash.groupby": ^4.6.0
-    "@types/node": ^20.11.1
+    "@types/node": 20.19.33
     db-migrate: ^0.11.5
     jest: ^29.7.0
     lodash.groupby: ^4.6.0
@@ -13005,7 +13005,7 @@ __metadata:
   dependencies:
     "@rmp135/sql-ts": ^1.15.1
     "@tupaia/database": "workspace:*"
-    "@types/node": ^20.11.1
+    "@types/node": 20.19.33
     diff: ^8.0.2
     dotenv: ^16.4.5
     knex: ^3.1.0
@@ -13168,7 +13168,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/cli-progress": ^3.11.5
     "@types/jest": ^29.5.14
-    "@types/node": ^20.11.1
+    "@types/node": 20.19.33
     cli-progress: ^3.12.0
     jest: ^29.7.0
     lodash.isequal: ^4.5.0
@@ -13960,12 +13960,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.19.5":
-  version: 20.19.5
-  resolution: "@types/node@npm:20.19.5"
+"@types/node@npm:20.19.33":
+  version: 20.19.33
+  resolution: "@types/node@npm:20.19.33"
   dependencies:
     undici-types: ~6.21.0
-  checksum: ae7c5abf67b6959d9a188976569e6b78c670461620995f4af613fae646b4494aefd6bab23e244365b13be9739e0c811f2fbed18a833835fc1a77cec261c31b25
+  checksum: 81819516b2e48fc3efe06682b5405e31c2bca721734a0ce1bec7e34d68b3d6b87e2dd205713c5371746fc501f42a93f3e6442967e1a94f7b872129e109f82163
   languageName: node
   linkType: hard
 
@@ -14000,15 +14000,6 @@ __metadata:
   dependencies:
     undici-types: ~5.26.4
   checksum: 21df1474bda95c5e4c7ea746b369a8050185aea6c7f281c27ec7bc0cb404266f6e9680fc3cdd6d02d5da92183283bc479947e9c9dc7eaf33839d17c2c648aceb
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^20.11.1":
-  version: 20.19.0
-  resolution: "@types/node@npm:20.19.0"
-  dependencies:
-    undici-types: ~6.21.0
-  checksum: 21468a6fd9b56618af881bdd02466736149c8096699256350e27ec47442c6be4942a5b849a21da71653d4d5b819988303c24b19848761887cf73dcff1a408b68
   languageName: node
   linkType: hard
 
@@ -37905,7 +37896,7 @@ __metadata:
     "@storybook/builder-vite": ^8.2.9
     "@storybook/react": ^8.2.9
     "@storybook/react-vite": ^8.2.9
-    "@types/node": 20.19.5
+    "@types/node": 20.19.33
     "@vitejs/plugin-react": ^4.0.4
     babel-jest: ^29.7.0
     babel-preset-react-app: ^10.0.0
