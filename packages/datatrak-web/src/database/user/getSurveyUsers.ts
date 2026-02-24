@@ -16,11 +16,7 @@ export const getSurveyUsers = async ({
     return [];
   }
 
-  const survey = await models.survey.findOne({ code: surveyCode });
-
-  if (!survey) {
-    throw new Error(`Survey with code ${surveyCode} not found`);
-  }
+  const survey = await models.survey.findOneOrThrow({ code: surveyCode });
 
   const { permission_group_id: permissionGroupId } = survey;
 
@@ -29,11 +25,7 @@ export const getSurveyUsers = async ({
   }
 
   // get the permission group
-  const permissionGroup = await models.permissionGroup.findById(permissionGroupId);
-
-  if (!permissionGroup) {
-    throw new Error(`Permission group with id ${permissionGroupId} not found`);
-  }
+  const permissionGroup = await models.permissionGroup.findByIdOrThrow(permissionGroupId);
 
   return await models.user.getFilteredUsersForPermissionGroup(
     countryCode,
