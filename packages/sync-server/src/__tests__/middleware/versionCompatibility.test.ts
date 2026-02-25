@@ -62,9 +62,12 @@ describe('versionCompatibility', () => {
       jest.resetModules();
     });
 
-    it('should respond with 400 and message matching pattern for major version discrepancy', () => {
-      const serverVersion = '2.0.0';
-      jest.doMock('../../../package.json', () => ({ version: serverVersion }));
+    it.each([
+      { requiredVersion: '2.0.0', semverType: 'major' },
+      { requiredVersion: '1.1.0', semverType: 'minor' },
+      { requiredVersion: '1.0.1', semverType: 'patch' },
+    ])('should respond with 400 for $semverType version discrepancy', ({ requiredVersion }) => {
+      jest.doMock('../../../package.json', () => ({ version: requiredVersion }));
       const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
       const req = mockRequest({ 'X-Client-Version': '1.0.0' }) as Request;
@@ -75,43 +78,7 @@ describe('versionCompatibility', () => {
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
-        error: `Please reload to get the latest version of Tupaia DataTrak (v${serverVersion}) before syncing`,
-      });
-      expect(next).not.toHaveBeenCalled();
-    });
-
-    it('should respond with 400 and message matching pattern for minor version discrepancy', () => {
-      const serverVersion = '1.1.0';
-      jest.doMock('../../../package.json', () => ({ version: serverVersion }));
-      const { versionCompatibility } = require('../../middleware/versionCompatibility');
-
-      const req = mockRequest({ 'X-Client-Version': '1.0.0' }) as Request;
-      const res = mockResponse() as Response;
-      const next = jest.fn() as jest.MockedFunction<NextFunction>;
-
-      versionCompatibility(req, res, next);
-
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        error: `Please reload to get the latest version of Tupaia DataTrak (v${serverVersion}) before syncing`,
-      });
-      expect(next).not.toHaveBeenCalled();
-    });
-
-    it('should respond with 400 and message matching pattern for patch version discrepancy', () => {
-      const serverVersion = '1.0.1';
-      jest.doMock('../../../package.json', () => ({ version: serverVersion }));
-      const { versionCompatibility } = require('../../middleware/versionCompatibility');
-
-      const req = mockRequest({ 'X-Client-Version': '1.0.0' }) as Request;
-      const res = mockResponse() as Response;
-      const next = jest.fn() as jest.MockedFunction<NextFunction>;
-
-      versionCompatibility(req, res, next);
-
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        error: `Please reload to get the latest version of Tupaia DataTrak (v${serverVersion}) before syncing`,
+        error: `Please reload to get the latest version of Tupaia DataTrak (v${requiredVersion}) before syncing`,
       });
       expect(next).not.toHaveBeenCalled();
     });
