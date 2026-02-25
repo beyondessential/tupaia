@@ -140,5 +140,5 @@ export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames)
   ) {
     return true;
   }
-  throw new Error(`Need access to ${permissionGroupNames.join(', ')}`);
+  throw new Error(`Need access to ${new Intl.ListFormat('en-AU').format(permissionGroupNames)}`);
 };

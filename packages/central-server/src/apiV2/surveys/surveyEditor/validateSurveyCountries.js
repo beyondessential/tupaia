@@ -16,7 +16,7 @@ export const validateSurveyCountries = async (models, surveyId, countryIds, proj
 
   if (invalidCountryNames.length > 0) {
     throw new ValidationError(
-      `The following countries are not part of the project: ${invalidCountryNames.join(', ')}`,
+      `The following countries are not part of the project: ${new Intl.ListFormat('en-AU').format(invalidCountryNames)}`,
     );
   }
 };
