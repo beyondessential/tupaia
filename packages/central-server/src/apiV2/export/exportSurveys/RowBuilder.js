@@ -49,7 +49,7 @@ export class RowBuilder {
         if (color) {
           optionColors[optionIndex] = color;
         }
-      } catch (error) {
+      } catch {
         processedOptions[optionIndex] = option;
       }
     });
