@@ -2,14 +2,16 @@ import type { NextFunction, Request, Response } from 'express';
 
 import { versionCompatibility } from '../../middleware/versionCompatibility';
 
-const mockRequest = (headers: Record<string, string> = {}): Partial<Request> => ({
-  header: ((name: string) => headers[name] ?? undefined) as Request['header'],
-});
+const mockRequest = (headers: Record<string, string> = {}) =>
+  ({
+    header: ((name: string) => headers[name] ?? undefined) as Request['header'],
+  }) as Partial<Request> as Request;
 
-const mockResponse = (): Partial<Response> => ({
-  json: jest.fn().mockReturnThis(),
-  status: jest.fn().mockReturnThis(),
-});
+const mockResponse = () =>
+  ({
+    json: jest.fn().mockReturnThis(),
+    status: jest.fn().mockReturnThis(),
+  }) as Partial<Response> as Response;
 
 const mockNextFunction = jest.fn() as jest.MockedFunction<NextFunction>;
 
@@ -21,8 +23,8 @@ describe('versionCompatibility', () => {
 
   describe('malformed request header', () => {
     it('should respond with 400 if `X-Client-Version` header is missing', () => {
-      const req = mockRequest() as Request;
-      const res = mockResponse() as Response;
+      const req = mockRequest();
+      const res = mockResponse();
 
       versionCompatibility(req, res, mockNextFunction);
 
@@ -35,8 +37,8 @@ describe('versionCompatibility', () => {
 
     it('should respond with 400 if `X-Client-Version` header is not a valid semver', () => {
       const invalidVersion = 'not-a-version';
-      const req = mockRequest({ 'X-Client-Version': invalidVersion }) as Request;
-      const res = mockResponse() as Response;
+      const req = mockRequest({ 'X-Client-Version': invalidVersion });
+      const res = mockResponse();
 
       versionCompatibility(req, res, mockNextFunction);
 
@@ -61,8 +63,8 @@ describe('versionCompatibility', () => {
       jest.doMock('../../../package.json', () => ({ version: serverVersion }));
       const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
-      const req = mockRequest({ 'X-Client-Version': clientVersion }) as Request;
-      const res = mockResponse() as Response;
+      const req = mockRequest({ 'X-Client-Version': clientVersion });
+      const res = mockResponse();
 
       versionCompatibility(req, res, mockNextFunction);
 
@@ -77,8 +79,8 @@ describe('versionCompatibility', () => {
   it('should not error if the versions match', () => {
     const { version } = require('../../../package.json');
 
-    const req = mockRequest({ 'X-Client-Version': version }) as Request;
-    const res = mockResponse() as Response;
+    const req = mockRequest({ 'X-Client-Version': version });
+    const res = mockResponse();
 
     versionCompatibility(req, res, mockNextFunction);
 
