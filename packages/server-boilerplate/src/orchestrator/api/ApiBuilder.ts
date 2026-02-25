@@ -78,10 +78,7 @@ export class ApiBuilder {
       cors({
         origin: true,
         credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
-        exposedHeaders: [
-          'Content-Disposition', // download filename
-          'X-Required-Client-Version', // sync version compatibility
-        ],
+        exposedHeaders: ['Content-Disposition'], // download filename
       }) as RequestHandler,
     );
     // @ts-ignore

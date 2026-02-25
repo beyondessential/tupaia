@@ -22,7 +22,6 @@ export const versionCompatibility = (req: Request, res: Response, next: NextFunc
   if (semverNeq(clientVersion, version)) {
     // Simple inequality check because Tupaia can assume server version ≥ client version. If server
     // version is different, then it is newer; and client is considered outdated.
-    res.setHeader('X-Required-Client-Version', version);
     res.status(400).json({
       error: `Please reload to get the latest version of Tupaia DataTrak (v${version}) before syncing`,
     });
