@@ -94,14 +94,14 @@ const AppVersionParagraph = styled(Typography).attrs({
 })`
   font-variant-numeric: lining-nums slashed-zero tabular-nums;
 
-  // Desktop-only styles
+  /* Desktop-only styles */
   margin-block: 0.8rem;
   padding-inline: 0.5rem;
   ${MobileUserMenuRoot} & {
-    // Unset desktop styles defined immediately above
+    /* Unset desktop styles defined immediately above */
     margin-block-end: unset;
     padding-inline: unset;
-    // Define mobile-only styles
+    /* Define mobile-only styles */
     margin-block-start: 1rem;
     padding-block-start: 0.8rem;
   }
