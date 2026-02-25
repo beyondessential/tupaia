@@ -3,6 +3,7 @@ import { AnalyticsRefresher } from '../../server/changeHandlers';
 /**
  * Tables are in a topological order, ensuring any foreign keys are cleaned up correctly. Exclusions
  * are commented out, but left in sort order.
+ * @see `@tupaia/sync/src/utils/getDependencyOrder`
  */
 const TABLES_TO_CLEAR = /** @type {const} */ ([
   'answer',
