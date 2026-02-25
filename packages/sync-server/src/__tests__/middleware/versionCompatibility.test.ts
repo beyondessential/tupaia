@@ -76,7 +76,7 @@ describe('versionCompatibility', () => {
     });
   });
 
-  it.only('should not error if the versions match', () => {
+  it('should not error if the versions match', () => {
     const version = '10.10.10';
     jest.doMock('../../../package.json', () => ({ version }));
     const { versionCompatibility } = require('../../middleware/versionCompatibility');
