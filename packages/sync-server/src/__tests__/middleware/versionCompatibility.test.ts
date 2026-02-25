@@ -43,20 +43,6 @@ describe('versionCompatibility', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it('should not error if the versions match', () => {
-    const { version } = require('../../../package.json');
-
-    const req = mockRequest({ 'X-Client-Version': version }) as Request;
-    const res = mockResponse() as Response;
-    const next = jest.fn() as jest.MockedFunction<NextFunction>;
-
-    versionCompatibility(req, res, next);
-
-    expect(res.status).not.toHaveBeenCalled();
-    expect(res.json).not.toHaveBeenCalled();
-    expect(next).toHaveBeenCalled();
-  });
-
   describe('when client version is older than the server', () => {
     beforeEach(() => {
       jest.resetModules();
@@ -82,5 +68,19 @@ describe('versionCompatibility', () => {
       });
       expect(next).not.toHaveBeenCalled();
     });
+  });
+
+  it('should not error if the versions match', () => {
+    const { version } = require('../../../package.json');
+
+    const req = mockRequest({ 'X-Client-Version': version }) as Request;
+    const res = mockResponse() as Response;
+    const next = jest.fn() as jest.MockedFunction<NextFunction>;
+
+    versionCompatibility(req, res, next);
+
+    expect(res.status).not.toHaveBeenCalled();
+    expect(res.json).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalled();
   });
 });
