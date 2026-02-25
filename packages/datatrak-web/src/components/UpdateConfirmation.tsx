@@ -43,7 +43,7 @@ export const UpdateNotification = () => {
   };
 
   return (
-    <BannerNotification backgroundColor="#002D47">
+    <BannerNotification style={{ backgroundColor: '#002d47' }}>
       A new version of DataTrak is now available,{' '}
       <StyledLink onClick={handleClick}>click here</StyledLink> to get the latest version.
     </BannerNotification>
