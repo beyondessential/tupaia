@@ -3,16 +3,13 @@ import log from 'winston';
 import { render as renderReactApp } from 'react-dom';
 
 import { App } from './App';
-import { confirmUpdate } from './components/UpdateConfirmation';
+import { setWaitingWorker } from './components/UpdateConfirmation';
 import { useIsOfflineFirst } from './api/offlineFirst';
 
 renderReactApp(<App />, document.getElementById('root'));
 
-const promptUserToUpdate = async (worker: ServiceWorker) => {
-  if (await confirmUpdate()) {
-    worker.postMessage({ type: 'SKIP_WAITING' });
-    window.location.reload();
-  }
+const promptUserToUpdate = (worker: ServiceWorker) => {
+  setWaitingWorker(worker);
 };
 
 if (useIsOfflineFirst()) {
@@ -51,7 +48,7 @@ if (useIsOfflineFirst()) {
       // Check if there's already a waiting worker
       // in case if update found, but user closes the pwa
       if (registration.waiting) {
-        await promptUserToUpdate(registration.waiting);
+        promptUserToUpdate(registration.waiting);
       }
 
       // Check for updates immediately after loading the app
@@ -78,7 +75,7 @@ if (useIsOfflineFirst()) {
 
         // Catch any waiting worker that the updatefound handler may have missed
         if (registration.waiting && registration.active) {
-          await promptUserToUpdate(registration.waiting);
+          promptUserToUpdate(registration.waiting);
         }
       }
     }
