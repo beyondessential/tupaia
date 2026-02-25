@@ -14,7 +14,7 @@ const mockResponse = (): Partial<Response> => {
 };
 
 describe('versionCompatibility', () => {
-  descrive('malformed request header', () => {
+  describe('malformed request header', () => {
     it('should respond with 400 if `X-Client-Version` header is missing', () => {
       const req = mockRequest() as Request;
       const res = mockResponse() as Response;
