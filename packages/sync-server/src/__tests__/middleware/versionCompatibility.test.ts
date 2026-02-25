@@ -52,14 +52,14 @@ describe('versionCompatibility', () => {
 
   describe('version discrepancy between client and server', () => {
     it.each([
-      ['0.0.0', '1.0.0', 'client major version is older'],
-      ['0.0.0', '0.1.0', 'client minor version is older'],
-      ['0.0.0', '0.0.1', 'client patch version is older'],
+      ['client major version is older', '0.0.0', '1.0.0'],
+      ['client minor version is older', '0.0.0', '0.1.0'],
+      ['client patch version is older', '0.0.0', '0.0.1'],
       // Cases below are never expected to occur in practice
-      ['1.0.0', '0.0.0', 'client major version is newer'],
-      ['0.1.0', '0.0.0', 'client minor version is newer'],
-      ['0.0.1', '0.0.0', 'client patch version is newer'],
-    ])('should respond with 400 if $description', (clientVersion, serverVersion, _description) => {
+      ['client major version is newer', '1.0.0', '0.0.0'],
+      ['client minor version is newer', '0.1.0', '0.0.0'],
+      ['client patch version is newer', '0.0.1', '0.0.0'],
+    ])('should respond with 400 if %s', (_description, clientVersion, serverVersion) => {
       jest.doMock('../../../package.json', () => ({ version: serverVersion }));
       const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
