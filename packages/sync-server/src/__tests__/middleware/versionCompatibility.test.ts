@@ -14,49 +14,9 @@ const mockResponse = (): Partial<Response> => {
 };
 
 describe('versionCompatibility', () => {
-  it('should respond with 400 if `X-Client-Version` header is missing', () => {
-    const req = mockRequest() as Request;
-    const res = mockResponse() as Response;
-    const next = jest.fn() as jest.MockedFunction<NextFunction>;
-
-    versionCompatibility(req, res, next);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: 'Missing X-Client-Version header. This is required for sync.',
-    });
-    expect(next).not.toHaveBeenCalled();
-  });
-
-  it('should respond with 400 if `X-Client-Version` header is not a valid semver', () => {
-    const invalidVersion = 'not-a-version';
-    const req = mockRequest({ 'X-Client-Version': invalidVersion }) as Request;
-    const res = mockResponse() as Response;
-    const next = jest.fn() as jest.MockedFunction<NextFunction>;
-
-    versionCompatibility(req, res, next);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: `Malformed X-Client-Version header. “${invalidVersion}” isn’t a valid semver number`,
-    });
-    expect(next).not.toHaveBeenCalled();
-  });
-
-  describe('when client version is older than the server', () => {
-    beforeEach(() => {
-      jest.resetModules();
-    });
-
-    it.each([
-      { requiredVersion: '2.0.0', semverType: 'major' },
-      { requiredVersion: '1.1.0', semverType: 'minor' },
-      { requiredVersion: '1.0.1', semverType: 'patch' },
-    ])('should respond with 400 for $semverType version discrepancy', ({ requiredVersion }) => {
-      jest.doMock('../../../package.json', () => ({ version: requiredVersion }));
-      const { versionCompatibility } = require('../../middleware/versionCompatibility');
-
-      const req = mockRequest({ 'X-Client-Version': '1.0.0' }) as Request;
+  descrive('malformed request header', () => {
+    it('should respond with 400 if `X-Client-Version` header is missing', () => {
+      const req = mockRequest() as Request;
       const res = mockResponse() as Response;
       const next = jest.fn() as jest.MockedFunction<NextFunction>;
 
@@ -64,7 +24,52 @@ describe('versionCompatibility', () => {
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
-        error: `Please reload to get the latest version of Tupaia DataTrak (v${requiredVersion}) before syncing`,
+        error: 'Missing X-Client-Version header. This is required for sync.',
+      });
+      expect(next).not.toHaveBeenCalled();
+    });
+
+    it('should respond with 400 if `X-Client-Version` header is not a valid semver', () => {
+      const invalidVersion = 'not-a-version';
+      const req = mockRequest({ 'X-Client-Version': invalidVersion }) as Request;
+      const res = mockResponse() as Response;
+      const next = jest.fn() as jest.MockedFunction<NextFunction>;
+
+      versionCompatibility(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        error: `Malformed X-Client-Version header. “${invalidVersion}” isn’t a valid semver number`,
+      });
+      expect(next).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('version discrepancy between client and server', () => {
+    beforeEach(() => {
+      jest.resetModules();
+    });
+
+    it.each([
+      ['0.0.0', '1.0.0', 'client major version is older'],
+      ['0.0.0', '0.1.0', 'client minor version is older'],
+      ['0.0.0', '0.0.1', 'client patch version is older'],
+      ['1.0.0', '0.0.0', 'client major version is newer'],
+      ['0.1.0', '0.0.0', 'client minor version is newer'],
+      ['0.0.1', '0.0.0', 'client patch version is newer'],
+    ])('should respond with 400 if $description', (clientVersion, serverVersion, _description) => {
+      jest.doMock('../../../package.json', () => ({ version: serverVersion }));
+      const { versionCompatibility } = require('../../middleware/versionCompatibility');
+
+      const req = mockRequest({ 'X-Client-Version': clientVersion }) as Request;
+      const res = mockResponse() as Response;
+      const next = jest.fn() as jest.MockedFunction<NextFunction>;
+
+      versionCompatibility(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        error: `Please reload to get the latest version of Tupaia DataTrak (v${serverVersion}) before syncing`,
       });
       expect(next).not.toHaveBeenCalled();
     });
