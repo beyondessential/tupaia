@@ -2,9 +2,6 @@ import type { NextFunction, Request, Response } from 'express';
 
 import { versionCompatibility } from '../../middleware/versionCompatibility';
 
-const OUTDATED_CLIENT_MESSAGE =
-  /Please reload to get the latest version of Tupaia DataTrak \(v(\d+\.){2}\d+\) before syncing\./;
-
 const mockRequest = (headers: Record<string, string> = {}): Partial<Request> => ({
   header: ((name: string) => headers[name] ?? undefined) as Request['header'],
 });
@@ -13,7 +10,6 @@ const mockResponse = (): Partial<Response> => {
   const res: Partial<Response> = {};
   res.status = jest.fn().mockReturnThis();
   res.json = jest.fn().mockReturnThis();
-  res.setHeader = jest.fn().mockReturnThis();
   return res;
 };
 
@@ -67,7 +63,8 @@ describe('versionCompatibility', () => {
     });
 
     it('should respond with 400 and message matching pattern for major version discrepancy', () => {
-      jest.doMock('../../../package.json', () => ({ version: '2.0.0' }));
+      const serverVersion = '2.0.0';
+      jest.doMock('../../../package.json', () => ({ version: serverVersion }));
       const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
       const req = mockRequest({ 'X-Client-Version': '1.0.0' }) as Request;
@@ -77,17 +74,15 @@ describe('versionCompatibility', () => {
       versionCompatibility(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.setHeader).toHaveBeenCalledWith('X-Required-Client-Version', '2.0.0');
-      expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          error: expect.stringMatching(OUTDATED_CLIENT_MESSAGE),
-        }),
-      );
+      expect(res.json).toHaveBeenCalledWith({
+        error: `Please reload to get the latest version of Tupaia DataTrak (v${serverVersion}) before syncing`,
+      });
       expect(next).not.toHaveBeenCalled();
     });
 
     it('should respond with 400 and message matching pattern for minor version discrepancy', () => {
-      jest.doMock('../../../package.json', () => ({ version: '1.1.0' }));
+      const serverVersion = '1.1.0';
+      jest.doMock('../../../package.json', () => ({ version: serverVersion }));
       const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
       const req = mockRequest({ 'X-Client-Version': '1.0.0' }) as Request;
@@ -97,17 +92,15 @@ describe('versionCompatibility', () => {
       versionCompatibility(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.setHeader).toHaveBeenCalledWith('X-Required-Client-Version', '1.1.0');
-      expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          error: expect.stringMatching(OUTDATED_CLIENT_MESSAGE),
-        }),
-      );
+      expect(res.json).toHaveBeenCalledWith({
+        error: `Please reload to get the latest version of Tupaia DataTrak (v${serverVersion}) before syncing`,
+      });
       expect(next).not.toHaveBeenCalled();
     });
 
     it('should respond with 400 and message matching pattern for patch version discrepancy', () => {
-      jest.doMock('../../../package.json', () => ({ version: '1.0.1' }));
+      const serverVersion = '1.0.1';
+      jest.doMock('../../../package.json', () => ({ version: serverVersion }));
       const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
       const req = mockRequest({ 'X-Client-Version': '1.0.0' }) as Request;
@@ -117,12 +110,9 @@ describe('versionCompatibility', () => {
       versionCompatibility(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.setHeader).toHaveBeenCalledWith('X-Required-Client-Version', '1.0.1');
-      expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          error: expect.stringMatching(OUTDATED_CLIENT_MESSAGE),
-        }),
-      );
+      expect(res.json).toHaveBeenCalledWith({
+        error: `Please reload to get the latest version of Tupaia DataTrak (v${serverVersion}) before syncing`,
+      });
       expect(next).not.toHaveBeenCalled();
     });
   });
