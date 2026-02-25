@@ -6,12 +6,10 @@ const mockRequest = (headers: Record<string, string> = {}): Partial<Request> => 
   header: ((name: string) => headers[name] ?? undefined) as Request['header'],
 });
 
-const mockResponse = (): Partial<Response> => {
-  const res: Partial<Response> = {};
-  res.status = jest.fn().mockReturnThis();
-  res.json = jest.fn().mockReturnThis();
-  return res;
-};
+const mockResponse = (): Partial<Response> => ({
+  json: jest.fn().mockReturnThis(),
+  status: jest.fn().mockReturnThis(),
+});
 
 const mockNextFunction = jest.fn() as jest.MockedFunction<NextFunction>;
 
