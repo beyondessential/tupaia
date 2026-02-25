@@ -54,6 +54,7 @@ describe('versionCompatibility', () => {
       ['0.0.0', '1.0.0', 'client major version is older'],
       ['0.0.0', '0.1.0', 'client minor version is older'],
       ['0.0.0', '0.0.1', 'client patch version is older'],
+      // Cases below are never expected to occur in practice
       ['1.0.0', '0.0.0', 'client major version is newer'],
       ['0.1.0', '0.0.0', 'client minor version is newer'],
       ['0.0.1', '0.0.0', 'client patch version is newer'],
