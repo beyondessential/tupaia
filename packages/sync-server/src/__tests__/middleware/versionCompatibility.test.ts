@@ -13,6 +13,8 @@ const mockResponse = (): Partial<Response> => {
   return res;
 };
 
+const mockNextFunction = jest.fn() as jest.MockedFunction<NextFunction>;
+
 describe('versionCompatibility', () => {
   beforeEach(() => {
     jest.resetModules();
@@ -23,30 +25,28 @@ describe('versionCompatibility', () => {
     it('should respond with 400 if `X-Client-Version` header is missing', () => {
       const req = mockRequest() as Request;
       const res = mockResponse() as Response;
-      const next = jest.fn() as jest.MockedFunction<NextFunction>;
 
-      versionCompatibility(req, res, next);
+      versionCompatibility(req, res, mockNextFunction);
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         error: 'Missing X-Client-Version header. This is required for sync.',
       });
-      expect(next).not.toHaveBeenCalled();
+      expect(mockNextFunction).not.toHaveBeenCalled();
     });
 
     it('should respond with 400 if `X-Client-Version` header is not a valid semver', () => {
       const invalidVersion = 'not-a-version';
       const req = mockRequest({ 'X-Client-Version': invalidVersion }) as Request;
       const res = mockResponse() as Response;
-      const next = jest.fn() as jest.MockedFunction<NextFunction>;
 
-      versionCompatibility(req, res, next);
+      versionCompatibility(req, res, mockNextFunction);
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         error: `Malformed X-Client-Version header. “${invalidVersion}” isn’t a valid semver number.`,
       });
-      expect(next).not.toHaveBeenCalled();
+      expect(mockNextFunction).not.toHaveBeenCalled();
     });
   });
 
@@ -65,15 +65,14 @@ describe('versionCompatibility', () => {
 
       const req = mockRequest({ 'X-Client-Version': clientVersion }) as Request;
       const res = mockResponse() as Response;
-      const next = jest.fn() as jest.MockedFunction<NextFunction>;
 
-      versionCompatibility(req, res, next);
+      versionCompatibility(req, res, mockNextFunction);
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         error: `Please reload to get the latest version of Tupaia DataTrak (v${serverVersion}) before syncing`,
       });
-      expect(next).not.toHaveBeenCalled();
+      expect(mockNextFunction).not.toHaveBeenCalled();
     });
   });
 
@@ -82,12 +81,11 @@ describe('versionCompatibility', () => {
 
     const req = mockRequest({ 'X-Client-Version': version }) as Request;
     const res = mockResponse() as Response;
-    const next = jest.fn() as jest.MockedFunction<NextFunction>;
 
-    versionCompatibility(req, res, next);
+    versionCompatibility(req, res, mockNextFunction);
 
     expect(res.status).not.toHaveBeenCalled();
     expect(res.json).not.toHaveBeenCalled();
-    expect(next).toHaveBeenCalled();
+    expect(mockNextFunction).toHaveBeenCalled();
   });
 });
