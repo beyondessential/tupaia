@@ -88,7 +88,7 @@ const TABLES_TO_CLEAR = /** @type {const} */ ([
   'data_element',
   'dashboard_item',
   'country',
-  'analytics',
+  // 'analytics',
   'admin_panel_session',
 ]);
 
