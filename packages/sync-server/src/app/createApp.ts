@@ -35,7 +35,7 @@ export function createApp(database = new TupaiaDatabase(), syncManager: CentralS
     })
     .useMiddleware(addCentralSyncManagerToContext(syncManager))
     .useBasicBearerAuth()
-    .useMiddleware(versionCompatibility)
+    .useMiddleware(versionCompatibility) // Blocks '/test' route from MicroServiceApiBuilder.build()
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
     .get<SyncReadyRequest>('sync/:sessionId/status', handleWith(SyncReadyRoute))
     .get<SyncMetadataRequest>('sync/:sessionId/metadata', handleWith(SyncMetadataRoute))
