@@ -14,6 +14,11 @@ const mockResponse = (): Partial<Response> => {
 };
 
 describe('versionCompatibility', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    jest.resetAllMocks();
+  });
+
   describe('malformed request header', () => {
     it('should respond with 400 if `X-Client-Version` header is missing', () => {
       const req = mockRequest() as Request;
@@ -46,10 +51,6 @@ describe('versionCompatibility', () => {
   });
 
   describe('version discrepancy between client and server', () => {
-    beforeEach(() => {
-      jest.resetModules();
-    });
-
     it.each([
       ['0.0.0', '1.0.0', 'client major version is older'],
       ['0.0.0', '0.1.0', 'client minor version is older'],
