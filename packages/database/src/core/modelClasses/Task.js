@@ -150,7 +150,7 @@ export class TaskRecord extends DatabaseRecord {
 
     let commentUserId = userId;
     if (!userId) {
-      const user = await this.models.user.findPublicUser();
+      const user = await this.otherModels.user.findPublicUser({ columns: ['id'] });
       commentUserId = user.id;
     }
 
