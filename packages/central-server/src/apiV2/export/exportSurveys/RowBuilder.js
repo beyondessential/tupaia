@@ -68,7 +68,7 @@ export class RowBuilder {
       optionColors: optionColors.join('\r\n'),
       visibilityCriteria: await this.visibilityCriteriaCellBuilder.build(visibilityCriteria),
       validationCriteria: await this.validationCriteriaCellBuilder.build(validationCriteria),
-      optionSet: optionSetObject && optionSetObject.name,
+      optionSet: optionSetObject?.name,
       questionLabel,
       detailLabel,
     };
