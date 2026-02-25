@@ -14,7 +14,7 @@ export const versionCompatibility = (req: Request, res: Response, next: NextFunc
 
   if (semverValid(clientVersion) === null) {
     res.status(400).json({
-      error: `Malformed X-Client-Version header. “${clientVersion}” isn’t a valid semver number`,
+      error: `Malformed X-Client-Version header. “${clientVersion}” isn’t a valid semver number.`,
     });
     return;
   }
