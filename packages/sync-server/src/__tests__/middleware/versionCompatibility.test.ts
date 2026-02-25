@@ -62,12 +62,13 @@ describe('versionCompatibility', () => {
   });
 
   describe('when client version is older than the server', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       jest.resetModules();
     });
 
     it('should respond with 400 and message matching pattern for major version discrepancy', () => {
       jest.doMock('../../../package.json', () => ({ version: '2.0.0' }));
+      const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
       const req = mockRequest({ 'X-Client-Version': '1.0.0' }) as Request;
       const res = mockResponse() as Response;
@@ -87,6 +88,7 @@ describe('versionCompatibility', () => {
 
     it('should respond with 400 and message matching pattern for minor version discrepancy', () => {
       jest.doMock('../../../package.json', () => ({ version: '1.1.0' }));
+      const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
       const req = mockRequest({ 'X-Client-Version': '1.0.0' }) as Request;
       const res = mockResponse() as Response;
@@ -106,6 +108,7 @@ describe('versionCompatibility', () => {
 
     it('should respond with 400 and message matching pattern for patch version discrepancy', () => {
       jest.doMock('../../../package.json', () => ({ version: '1.0.1' }));
+      const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
       const req = mockRequest({ 'X-Client-Version': '1.0.0' }) as Request;
       const res = mockResponse() as Response;
