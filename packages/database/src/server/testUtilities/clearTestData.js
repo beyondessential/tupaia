@@ -102,7 +102,9 @@ export async function clearTestData(db) {
   }
 
   const sql = TABLES_TO_CLEAR.map(() => 'DELETE FROM ??;').join('\n');
-  await db.executeSql(sql, TABLES_TO_CLEAR);
+  await db.wrapInTransaction(async db => {
+    await db.executeSql(sql, TABLES_TO_CLEAR);
+  });
 
   await AnalyticsRefresher.refreshAnalytics(db);
 }
