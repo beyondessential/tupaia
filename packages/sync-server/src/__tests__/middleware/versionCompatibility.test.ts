@@ -39,7 +39,7 @@ describe('versionCompatibility', () => {
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
-        error: `Malformed X-Client-Version header. “${invalidVersion}” isn’t a valid semver number`,
+        error: `Malformed X-Client-Version header. “${invalidVersion}” isn’t a valid semver number.`,
       });
       expect(next).not.toHaveBeenCalled();
     });
