@@ -1,6 +1,7 @@
 import { types } from '@electric-sql/pglite';
 import type { Knex } from 'knex';
 import ClientPgLite from 'knex-pglite';
+import winston from 'winston';
 
 import { BaseDatabase } from '@tupaia/database';
 import { getConnectionConfig } from './getConnectionConfig';
@@ -52,7 +53,7 @@ export class DatatrakDatabase extends BaseDatabase {
     try {
       await super.closeConnections();
     } catch (err) {
-      console.warn('DatatrakDatabase.closeConnections:', err);
+      winston.warn('DatatrakDatabase.closeConnections:', err);
     }
   }
 }

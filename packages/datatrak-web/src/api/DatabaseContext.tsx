@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
+import winston from 'winston';
 
 import { FullPageLoader } from '@tupaia/ui-components';
-
 import { createDatabase } from '../database/createDatabase';
 import { DatatrakWebModelRegistry } from '../types';
 
@@ -28,7 +28,7 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
       modelsInstance?.closeDatabaseConnections().catch((err: unknown) => {
         // Graceful recovery: avoid unhandled rejection when closing mid-sync or in environments
         // (e.g. browser) where connection pool cleanup may fail (e.g. timeout.close is not a function)
-        console.warn('Database cleanup on unmount:', err);
+        winston.warn('Database cleanup on unmount:', err);
       });
     };
   }, []);
