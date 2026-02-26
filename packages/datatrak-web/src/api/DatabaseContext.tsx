@@ -25,7 +25,11 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
     init();
 
     return () => {
-      modelsInstance?.closeDatabaseConnections();
+      modelsInstance?.closeDatabaseConnections().catch((err: unknown) => {
+        // Graceful recovery: avoid unhandled rejection when closing mid-sync or in environments
+        // (e.g. browser) where connection pool cleanup may fail (e.g. timeout.close is not a function)
+        console.warn('Database cleanup on unmount:', err);
+      });
     };
   }, []);
 

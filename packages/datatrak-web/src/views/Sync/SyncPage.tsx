@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { formatDistance } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { ensure } from '@tupaia/tsutils';
+import { FullPageLoader } from '@tupaia/ui-components';
 
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
@@ -72,10 +72,17 @@ export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null
 }
 
 export const SyncPage = () => {
-  const { clientSyncManager } = useSyncContext() || {};
-  const syncManager = ensure(clientSyncManager);
+  const syncContext = useSyncContext();
+  const clientSyncManager = syncContext?.clientSyncManager ?? null;
 
   const isMobile = useIsMobile();
+
+  // Sync context may not be ready yet after reload (e.g. mid-sync); show loader until we have a manager
+  if (!clientSyncManager) {
+    return <FullPageLoader message="Setting up sync…" />;
+  }
+
+  const syncManager = clientSyncManager;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 

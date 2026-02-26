@@ -41,4 +41,18 @@ export class DatatrakDatabase extends BaseDatabase {
       transactionConfig,
     );
   }
+
+  /**
+   * @override
+   * Browser-safe close: knex’s pool destroy can throw in the browser (e.g. timeout.close is not
+   * a function when the pool uses Node-style timers). Swallow errors so reload/unmount doesn’t
+   * leave unhandled rejections; the next load will get a fresh connection anyway.
+   */
+  override async closeConnections(): Promise<void> {
+    try {
+      await super.closeConnections();
+    } catch (err) {
+      console.warn('DatatrakDatabase.closeConnections:', err);
+    }
+  }
 }
