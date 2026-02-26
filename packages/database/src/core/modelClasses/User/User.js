@@ -210,9 +210,10 @@ export class UserModel extends DatabaseModel {
    * @returns {Promise<UserRecord>}
    */
   async findPublicUser(options) {
-    return ensure(
-      await this.findOne({ email: PUBLIC_USER_EMAIL }, options),
-      `Public user not found. There must be a user with email ${PUBLIC_USER_EMAIL}`,
+    return await this.findOneOrThrow(
+      { email: PUBLIC_USER_EMAIL },
+      options,
+      `Public user not found. There must be a user with email ${PUBLIC_USER_EMAIL}.`,
     );
   }
 
