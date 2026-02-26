@@ -1,8 +1,32 @@
 import type { NextFunction, Request, Response } from 'express';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import semverNeq from 'semver/functions/neq';
 import semverValid from 'semver/functions/valid';
 
-import { version } from '../../package.json';
+/**
+ * @privateRemarks Cannot use simple static…
+ *
+ * ```js
+ * import { version } from '../../package.json' with { type: 'json' }
+ * ```
+ *
+ * …because it would force the manifest file to be included in the build output and throw off the
+ * `main` entrypoint when we point Node (or PM2) to `dist/`:
+ *
+ * ```txt
+ * 📂 packages/sync-server/
+ * ├─ 📂 dist/
+ * │  ├─ 📁 src/
+ * │  └─ 📄 package.json 👈 Inside `dist/` but would still have `"main": "dist/index.js"` entry!
+ * └─ 📁 src/
+ * ```
+ *
+ * This approach “peeks” outside the `dist/` into the source `packages/sync-server/package.json`;
+ * but retains the expected build output where `dist/` has the same structure as `src/`.
+ */
+const manifest = readFileSync(join(__dirname, '../../package.json'), 'utf8');
+const { version } = JSON.parse(manifest);
 
 export const versionCompatibility = (req: Request, res: Response, next: NextFunction) => {
   const clientVersion = req.header('X-Client-Version');
