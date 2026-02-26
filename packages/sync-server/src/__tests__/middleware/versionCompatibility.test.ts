@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
-
 import { versionCompatibility } from '../../middleware/versionCompatibility';
+
+const mockReadFileSync = jest.fn(() => JSON.stringify({ version: '0.0.0' }));
 
 const mockRequest = (headers: Record<string, string> = {}) =>
   ({
@@ -16,6 +17,8 @@ const mockResponse = () =>
 const mockNextFunction = jest.fn() as jest.MockedFunction<NextFunction>;
 
 describe('versionCompatibility', () => {
+  jest.mock('node:fs', () => ({ readFileSync: mockReadFileSync }));
+
   beforeEach(() => {
     jest.resetModules();
     jest.resetAllMocks();
@@ -60,7 +63,7 @@ describe('versionCompatibility', () => {
       ['client minor version is newer', '0.1.0', '0.0.0'],
       ['client patch version is newer', '0.0.1', '0.0.0'],
     ])('should respond with 400 if %s', (_description, clientVersion, serverVersion) => {
-      jest.doMock('../../../package.json', () => ({ version: serverVersion }));
+      mockReadFileSync.mockReturnValue(JSON.stringify({ version: serverVersion }));
       const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
       const req = mockRequest({ 'X-Client-Version': clientVersion });
@@ -78,7 +81,7 @@ describe('versionCompatibility', () => {
 
   it('should not error if the versions match', () => {
     const version = '10.10.10';
-    jest.doMock('../../../package.json', () => ({ version }));
+    mockReadFileSync.mockReturnValue(JSON.stringify({ version }));
     const { versionCompatibility } = require('../../middleware/versionCompatibility');
 
     const req = mockRequest({ 'X-Client-Version': version });
