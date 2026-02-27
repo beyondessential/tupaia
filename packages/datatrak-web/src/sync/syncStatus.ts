@@ -80,6 +80,7 @@ export function useSyncStage(): number | null {
     [syncManager?.syncStage],
   );
 
+  useSyncEventListener(SYNC_STARTED, update);
   useSyncEventListener(SYNC_STATE_CHANGED, update);
 
   return syncStage;
