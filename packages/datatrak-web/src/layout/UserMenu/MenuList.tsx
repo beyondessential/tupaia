@@ -1,16 +1,18 @@
 import { Link, ListItem, Typography } from '@material-ui/core';
 import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
-import React, { ComponentType, ReactNode, useRef } from 'react';
+import React, { type ComponentType, type ReactNode, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
 import { Button } from '@tupaia/ui-components';
 import { useCurrentUserContext } from '../../api';
-import { RoutePath, ROUTES } from '../../constants';
+import { useIsOfflineFirst } from '../../api/offlineFirst';
+import { type RoutePath, ROUTES } from '../../constants';
 import { useAbandonSurveyGuard } from '../../hooks/useAbandonSurveyGuard';
 import { useLogoutGuard } from '../../hooks/useGuardedLogout';
 import { MobileUserMenuRoot } from './MobileUserMenu';
+
 interface MenuItem {
   label: string;
   href?: string;
@@ -122,6 +124,7 @@ export const MenuList = ({
   const hasAdminPanelAccess =
     accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
   const hasProjectSelected = !!projectId;
+  const isOfflineFirst = useIsOfflineFirst();
   const navigate = useNavigate();
 
   const navigateRef = useRef<() => void>(() => {});
