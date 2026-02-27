@@ -59,11 +59,25 @@ const StyledButton = styled(Button)`
   margin-block-start: 2.25rem;
 `;
 
+function useIsSyncStarted() {
+  const syncManager = useSyncContext()?.clientSyncManager;
+  const [isSyncStarted, setIsSyncStarted] = useState<boolean>(syncManager?.isSyncing ?? false);
+
+  const handler: Handler<SyncEvents[typeof SYNC_EVENT_ACTIONS.SYNC_STARTED]> = useCallback(
+    () => setIsSyncStarted(true),
+    [],
+  );
+
+  useSyncEventListener(SYNC_EVENT_ACTIONS.SYNC_STARTED, handler);
+  return isSyncStarted;
+}
+
 export const SyncPage = () => {
   const syncManager = useSyncContext()?.clientSyncManager;
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
   const {
     errorMessage,
     isRequestingSync,
@@ -73,16 +87,10 @@ export const SyncPage = () => {
     progress,
     progressMessage,
   } = useSyncStatus();
-
-  const [syncStarted, setSyncStarted] = useState<boolean>(syncManager?.isSyncing ?? false);
-  const handler: Handler<SyncEvents[typeof SYNC_EVENT_ACTIONS.SYNC_STARTED]> = useCallback(
-    () => setSyncStarted(true),
-    [],
-  );
-  useSyncEventListener(SYNC_EVENT_ACTIONS.SYNC_STARTED, handler);
+  const isSyncStarted = useIsSyncStarted();
 
   const syncFinishedSuccessfully =
-    syncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;
+    isSyncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;
 
   return (
     <Wrapper>
