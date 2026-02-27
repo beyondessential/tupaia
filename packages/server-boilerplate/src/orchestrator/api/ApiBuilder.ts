@@ -3,12 +3,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 import publicIp from 'public-ip';
-import {
-  AuthHandler,
-  getBaseUrlsForHost,
-  LOCALHOST_BASE_URLS,
-  TupaiaApiClient,
-} from '@tupaia/api-client';
+import { getBaseUrlsForHost, LOCALHOST_BASE_URLS, TupaiaApiClient } from '@tupaia/api-client';
+import type { AuthHandler, ApiConnectionOptions } from '@tupaia/api-client';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
@@ -50,10 +46,7 @@ export class ApiBuilder {
   // We add handlers at the end so that middlewares and initial routes can be set up first
   private handlers: { add: () => void }[] = [];
 
-  public constructor(
-    transactingConnection: TupaiaDatabase,
-    apiName: string,
-  ) {
+  public constructor(transactingConnection: TupaiaDatabase, apiName: string) {
     this.database = transactingConnection;
     this.models = new ModelRegistry(this.database) as ServerBoilerplateModelRegistry;
     this.apiName = apiName;
@@ -85,7 +78,7 @@ export class ApiBuilder {
       cors({
         origin: true,
         credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
-        exposedHeaders: ['Content-Disposition'], // needed for getting download filename
+        exposedHeaders: ['Content-Disposition'], // download filename
       }) as RequestHandler,
     );
     // @ts-ignore
@@ -195,12 +188,22 @@ export class ApiBuilder {
     return this;
   }
 
-  public attachApiClientToContext(authHandlerProvider: (req: Request) => AuthHandler) {
+  public attachApiClientToContext({
+    authHandlerProvider,
+    apiConnectionOptionsProvider,
+  }: {
+    authHandlerProvider: (req: Request) => AuthHandler;
+    apiConnectionOptionsProvider?: (req: Request) => ApiConnectionOptions;
+  }) {
     this.app.use((req, res, next) => {
       try {
         const baseUrls =
           process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
-        const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+        const apiClient = new TupaiaApiClient(
+          authHandlerProvider(req),
+          baseUrls,
+          apiConnectionOptionsProvider?.(req),
+        );
         req.ctx.services = apiClient;
         res.ctx.services = apiClient;
         next();

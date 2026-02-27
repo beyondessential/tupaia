@@ -134,10 +134,12 @@ export async function* stream(
       method: method || 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Client-Version': process.env.REACT_APP_VERSION || '',
       },
       body: options ? JSON.stringify(options) : undefined,
       credentials: 'include',
     });
+
     if (!response.ok && !isRecoverableError(response)) {
       throw new Error(response.statusText || 'Stream ended with unknown error');
     }

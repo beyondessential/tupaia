@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import type { ApiConnectionOptions } from '@tupaia/api-client';
 
 import { TupaiaDatabase } from '@tupaia/database';
 import {
@@ -83,6 +84,16 @@ import { LoginRoute } from '../routes/LoginRoute';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
+/** Forward client version to sync-server for version compatibility check */
+const apiConnectionOptionsProvider = (req: Request): ApiConnectionOptions => {
+  const clientVersionHeader = req.get('X-Client-Version');
+  return clientVersionHeader
+    ? {
+        headers: { 'X-Client-Version': clientVersionHeader },
+      }
+    : {};
+};
+
 export async function createApp() {
   const WEB_CONFIG_API_URL = getEnvVarOrDefault(
     'WEB_CONFIG_API_URL',
@@ -93,7 +104,7 @@ export async function createApp() {
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .use('*', attachAccessPolicy)
-    .attachApiClientToContext(authHandlerProvider)
+    .attachApiClientToContext({ authHandlerProvider, apiConnectionOptionsProvider })
     .attachLoginRoute(LoginRoute)
     // Get Routes
     .get<UserRequest>('getUser', handleWith(UserRoute))

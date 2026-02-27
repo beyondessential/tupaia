@@ -44,7 +44,7 @@ export async function createApp() {
   const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'lesmis')
     .useSessionModel(LesmisSessionModel)
     .useAttachSession(attachSession)
-    .attachApiClientToContext(authHandlerProvider)
+    .attachApiClientToContext({ authHandlerProvider })
     .verifyLogin(hasLesmisAccess)
     .useTranslation(['en', 'lo'], path.join(__dirname, '../../locales'), 'locale')
 
