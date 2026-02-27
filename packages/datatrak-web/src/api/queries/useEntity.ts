@@ -1,6 +1,6 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
-import { camelcaseKeys, ensure, isNullish } from '@tupaia/tsutils';
+import { assertIsNotNullish, camelcaseKeys, ensure, isNullish } from '@tupaia/tsutils';
 import { DatatrakWebEntitiesRequest, Entity } from '@tupaia/types';
 import { get } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
@@ -12,10 +12,18 @@ interface EntityByCodeQueryFunctionContext extends ContextualQueryFunctionContex
 
 const entityByCodeQueryFunctions = {
   remote: async ({ entityCode }: EntityByCodeQueryFunctionContext) => {
-    return await get(`entity/${encodeURIComponent(ensure(entityCode))}`);
+    assertIsNotNullish(
+      entityCode,
+      `useEntityByCode query function called with ${entityCode} entityCode`,
+    );
+    return await get(`entity/${encodeURIComponent(entityCode)}`);
   },
   local: async ({ entityCode, models }: EntityByCodeQueryFunctionContext) => {
-    const [entityRecord] = await models.entity.find({ code: ensure(entityCode) });
+    assertIsNotNullish(
+      entityCode,
+      `useEntityByCode query function called with ${entityCode} entityCode`,
+    );
+    const entityRecord = await models.entity.findOne({ code: entityCode });
     if (isNullish(entityRecord)) return null;
     const entity = await entityRecord.getData();
     return camelcaseKeys(entity, { deep: true });
@@ -57,10 +65,8 @@ const entityByIdQueryFunctions = {
     return response[0];
   },
   local: async ({ entityId, models }: EntityByIdQueryFunctionContext) => {
-    const entityRecord = ensure(
-      await models.entity.findById(ensure(entityId)),
-      `No entity exists with ID ${entityId}`,
-    );
+    assertIsNotNullish(entityId, `useEntityById query function called with ${entityId} entityId`);
+    const entityRecord = await models.entity.findByIdOrThrow(entityId);
     const entity = await entityRecord.getData();
     return camelcaseKeys(entity, { deep: true });
   },

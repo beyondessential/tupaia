@@ -3,7 +3,7 @@ import { ValidationError } from '@tupaia/utils';
 export const validateSurveyCountries = async (models, surveyId, countryIds, projectId) => {
   if (!surveyId) return;
 
-  const project = await models.project.findOne({ id: projectId });
+  const project = await models.project.findOneOrThrow({ id: projectId });
 
   const projectCountries = await project.countries();
   const projectCountryNames = projectCountries.map(country => country.name);
@@ -16,7 +16,7 @@ export const validateSurveyCountries = async (models, surveyId, countryIds, proj
 
   if (invalidCountryNames.length > 0) {
     throw new ValidationError(
-      `The following countries are not part of the project: ${invalidCountryNames.join(', ')}`,
+      `The following countries are not part of the project: ${new Intl.ListFormat('en-AU').format(invalidCountryNames)}`,
     );
   }
 };
