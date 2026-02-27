@@ -1,14 +1,12 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { Handler } from 'mitt';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { ensure } from '@tupaia/tsutils';
 import { useSyncContext } from '../../api/SyncContext';
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
-import { useSyncStatus } from '../../sync/syncStatus';
+import { useSyncEventListener, useSyncStatus } from '../../sync/syncStatus';
 import { SYNC_EVENT_ACTIONS } from '../../types';
 import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
@@ -61,14 +59,10 @@ const StyledButton = styled(Button)`
 `;
 
 export const SyncPage = () => {
-  const { clientSyncManager } = useSyncContext() || {};
-  const syncManager = ensure(clientSyncManager);
-
+  const syncManager = useSyncContext()?.clientSyncManager;
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-  const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
   const {
     errorMessage,
     isRequestingSync,
@@ -79,15 +73,8 @@ export const SyncPage = () => {
     progressMessage,
   } = useSyncStatus();
 
-  const handler: Handler = useCallback(() => void setSyncStarted(true), []);
-  useEffect(() => {
-    syncManager.emitter.on(SYNC_EVENT_ACTIONS.SYNC_STARTED, handler);
-    return () => void syncManager.emitter.off(SYNC_EVENT_ACTIONS.SYNC_STARTED, handler);
-  }, [handler, syncManager]);
-
-  const manualSync = useCallback(() => {
-    syncManager.triggerUrgentSync(queryClient);
-  }, [syncManager, queryClient]);
+  const [syncStarted, setSyncStarted] = useState<boolean>(syncManager?.isSyncing ?? false);
+  useSyncEventListener(SYNC_EVENT_ACTIONS.SYNC_STARTED, () => setSyncStarted(true));
 
   const syncFinishedSuccessfully =
     syncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;
@@ -108,7 +95,9 @@ export const SyncPage = () => {
             percentage={progress}
             message={progressMessage}
             syncStage={syncStage}
-            totalStages={Object.keys(syncManager.progressMaxByStage).length}
+            totalStages={
+              syncManager ? Object.keys(syncManager.progressMaxByStage).length : undefined
+            }
             syncFinishedSuccessfully={syncFinishedSuccessfully}
             hasError={Boolean(errorMessage)}
           />
@@ -116,7 +105,9 @@ export const SyncPage = () => {
           {!isSyncing && !isRequestingSync && (
             <>
               <StyledLastSyncDate />
-              <StyledButton onClick={manualSync}>Manual sync</StyledButton>
+              <StyledButton onClick={() => void syncManager?.triggerUrgentSync(queryClient)}>
+                Manual sync
+              </StyledButton>
             </>
           )}
 
