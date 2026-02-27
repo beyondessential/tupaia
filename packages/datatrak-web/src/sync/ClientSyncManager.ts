@@ -18,12 +18,8 @@ import { ensure } from '@tupaia/tsutils';
 import { Project } from '@tupaia/types';
 import { remove, stream } from '../api';
 import { DatatrakDatabase } from '../database/DatatrakDatabase';
-import {
-  type DatatrakWebModelRegistry,
-  type ProcessStreamDataParams,
-  SYNC_EVENT_ACTIONS,
-  type SyncEvents,
-} from '../types';
+import type { DatatrakWebModelRegistry, ProcessStreamDataParams, SyncEvents } from '../types';
+import { SYNC_EVENT_ACTIONS } from '../types';
 import { formatFraction } from '../utils';
 import { getDeviceId } from './getDeviceId';
 import { getSyncTick } from './getSyncTick';

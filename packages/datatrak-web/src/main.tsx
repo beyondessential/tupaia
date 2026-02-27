@@ -11,13 +11,16 @@ renderReactApp(<App />, document.getElementById('root'));
 const promptUserToUpdate = async (worker: ServiceWorker) => {
   if (await confirmUpdate()) {
     worker.postMessage({ type: 'SKIP_WAITING' });
+    window.location.reload();
   }
 };
 
 if (useIsOfflineFirst()) {
   window.addEventListener('load', async () => {
     if ('serviceWorker' in navigator) {
-      const registration = await navigator.serviceWorker.register('/sw.js');
+      const registration = await navigator.serviceWorker.register('/sw.js', {
+        updateViaCache: 'none',
+      });
       // When the browser detects a new service worker version, it fires 'updatefound'.
       registration.addEventListener('updatefound', () => {
         log.info('Update found.');
