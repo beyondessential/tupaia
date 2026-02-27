@@ -1,16 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { ensure } from '@tupaia/tsutils';
 import { SyncFact } from '@tupaia/constants';
-
-import { gaEvent, useFromLocation } from '../../utils';
-import { ROUTES } from '../../constants';
-import { useDatabaseContext } from '../../hooks/database';
+import { assertIsNotNullish, ensure } from '@tupaia/tsutils';
 import { AuthService } from '../../auth';
-import { useIsOfflineFirst } from '../offlineFirst';
 import { login } from '../../auth/login';
+import { ROUTES } from '../../constants';
 import { clearDatabase } from '../../database';
+import { useDatabaseContext } from '../../hooks/database';
+import { gaEvent, useFromLocation } from '../../utils';
+import { useIsOfflineFirst } from '../offlineFirst';
 
 type LoginCredentials = {
   email: string;
@@ -43,25 +42,25 @@ export const useLogin = () => {
       },
       onSuccess: async ({ user }) => {
         if (isOfflineFirst) {
-          const ensuredModels = ensure(models);
+          assertIsNotNullish(models, 'useLogin query onSuccess callback fired with nullish models');
 
           // Clear database if the user has logged in with a different user
-          const previouslyLoggedInUserId = await ensuredModels.localSystemFact.get(
+          const previouslyLoggedInUserId = await models.localSystemFact.get(
             SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID,
           );
 
           if (previouslyLoggedInUserId && previouslyLoggedInUserId !== user.id) {
-            await clearDatabase(ensuredModels);
+            await clearDatabase(models);
           }
 
           // Add project for sync if the user has a project
           // if already exists, it will be ignored
           if (user.projectId) {
-            await ensuredModels.localSystemFact.addProjectForSync(user.projectId);
+            await models.localSystemFact.addProjectForSync(user.projectId);
           }
 
           // Set current user id
-          await ensuredModels.localSystemFact.set(SyncFact.CURRENT_USER_ID, user.id);
+          await models.localSystemFact.set(SyncFact.CURRENT_USER_ID, user.id);
         }
 
         await queryClient.invalidateQueries();
