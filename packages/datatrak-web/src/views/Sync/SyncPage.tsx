@@ -73,34 +73,36 @@ export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null
 
 export const SyncPage = () => {
   const syncContext = useSyncContext();
-  const clientSyncManager = syncContext?.clientSyncManager ?? null;
-
+  const syncManager = syncContext?.clientSyncManager ?? null;
   const isMobile = useIsMobile();
-
-  // Sync context may not be ready yet after reload (e.g. mid-sync); show loader until we have a manager
-  if (!clientSyncManager) {
-    return <FullPageLoader message="Setting up sync…" />;
-  }
-
-  const syncManager = clientSyncManager;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
-  const [errorMessage, setErrorMessage] = useState<string | null>(syncManager.errorMessage);
-  const [isRequestingSync, setIsRequestingSync] = useState<boolean>(syncManager.isRequestingSync);
-  const [isSyncing, setIsSyncing] = useState<boolean>(syncManager.isSyncing);
-  const [isQueuing, setIsQueuing] = useState<boolean>(syncManager.isQueuing);
-  const [syncStage, setSyncStage] = useState<number | null>(syncManager.syncStage);
-  const [progress, setProgress] = useState<number | null>(syncManager.progress);
-  const [progressMessage, setProgressMessage] = useState<string | null>(
-    syncManager.progressMessage,
-  );
+  const [syncStarted, setSyncStarted] = useState<boolean | undefined>(syncManager?.isSyncing);
+  const [errorMessage, setErrorMessage] = useState<string | null | undefined>(syncManager?.errorMessage);
+  const [isRequestingSync, setIsRequestingSync] = useState<boolean | undefined>(syncManager?.isRequestingSync);
+  const [isSyncing, setIsSyncing] = useState<boolean | undefined>(syncManager?.isSyncing);
+  const [isQueuing, setIsQueuing] = useState<boolean | undefined>(syncManager?.isQueuing);
+  const [syncStage, setSyncStage] = useState<number | null | undefined>(syncManager?.syncStage);
+  const [progress, setProgress] = useState<number | null | undefined>(syncManager?.progress);
+  const [progressMessage, setProgressMessage] = useState<string | null>(null);
   const [formattedLastSuccessfulSyncTime, setFormattedLastSuccessfulSyncTime] = useState<string>(
-    formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
+    '',
   );
 
   useEffect(() => {
+    if (!syncManager) return;
+    setSyncStarted(syncManager.isSyncing);
+    setErrorMessage(syncManager.errorMessage);
+    setIsRequestingSync(syncManager.isRequestingSync);
+    setIsSyncing(syncManager.isSyncing);
+    setIsQueuing(syncManager.isQueuing);
+    setSyncStage(syncManager.syncStage);
+    setProgress(syncManager.progress);
+    setProgressMessage(syncManager.progressMessage);
+    setFormattedLastSuccessfulSyncTime(
+      formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
+    );
     const handler = (action, data): void => {
       switch (action) {
         case SYNC_EVENT_ACTIONS.SYNC_REQUESTING:
@@ -144,7 +146,7 @@ export const SyncPage = () => {
         case SYNC_EVENT_ACTIONS.SYNC_ERROR:
           setIsRequestingSync(false);
           setIsQueuing(false);
-          setErrorMessage(data.error);
+          setErrorMessage(data?.error );
           break;
         default:
           break;
@@ -157,6 +159,7 @@ export const SyncPage = () => {
   }, [syncManager]);
 
   useEffect(() => {
+    if (!syncManager) return;
     const interval = setInterval(() => {
       setFormattedLastSuccessfulSyncTime(
         formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
@@ -165,14 +168,19 @@ export const SyncPage = () => {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [syncManager]);
 
   const manualSync = useCallback(() => {
-    syncManager.triggerUrgentSync(queryClient);
+    syncManager?.triggerUrgentSync(queryClient);
   }, [syncManager, queryClient]);
 
   const syncFinishedSuccessfully =
     syncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;
+
+  // Sync context may not be ready yet after reload (e.g. mid-sync); show loader until we have a manager
+  if (!syncManager) {
+    return <FullPageLoader message="Setting up sync…" />;
+  }
 
   return (
     <Wrapper>
