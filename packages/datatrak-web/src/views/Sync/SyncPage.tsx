@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
@@ -7,10 +7,11 @@ import { useSyncContext } from '../../api/SyncContext';
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { useSyncEventListener, useSyncStatus } from '../../sync/syncStatus';
-import { SYNC_EVENT_ACTIONS } from '../../types';
+import { SYNC_EVENT_ACTIONS, SyncEvents } from '../../types';
 import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
+import { Handler } from 'mitt';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -74,7 +75,11 @@ export const SyncPage = () => {
   } = useSyncStatus();
 
   const [syncStarted, setSyncStarted] = useState<boolean>(syncManager?.isSyncing ?? false);
-  useSyncEventListener(SYNC_EVENT_ACTIONS.SYNC_STARTED, () => setSyncStarted(true));
+  const handler: Handler<SyncEvents[typeof SYNC_EVENT_ACTIONS.SYNC_STARTED]> = useCallback(
+    () => setSyncStarted(true),
+    [],
+  );
+  useSyncEventListener(SYNC_EVENT_ACTIONS.SYNC_STARTED, handler);
 
   const syncFinishedSuccessfully =
     syncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;
