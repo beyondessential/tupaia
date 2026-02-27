@@ -35,7 +35,7 @@ interface SyncStatusProps extends HTMLAttributes<HTMLDivElement> {
   percentage: number | null;
   message: string | null;
   syncStage: number | null;
-  totalStages: number;
+  totalStages: number | undefined;
   isSyncing: boolean;
   syncFinishedSuccessfully: boolean;
   hasError: boolean;
@@ -73,7 +73,9 @@ export const SyncStatus = ({
       )}
 
       <div>
-        {syncStage && <SyncParagraph>{`Sync stage ${syncStage} of ${totalStages}`}</SyncParagraph>}
+        {syncStage && totalStages && (
+          <SyncParagraph>{`Sync stage ${syncStage} of ${totalStages}`}</SyncParagraph>
+        )}
         {message && (
           <SyncParagraph style={{ minBlockSize: '2lh' /* Minimise layout shift */ }}>
             {message}
