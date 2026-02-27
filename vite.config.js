@@ -1,13 +1,13 @@
-import { defineConfig, loadEnv } from 'vite';
-import { ViteEjsPlugin } from 'vite-plugin-ejs';
-import viteCompression from 'vite-plugin-compression';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-import dns from 'dns';
-import fs from 'fs';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import commonjs from 'vite-plugin-commonjs';
 import replace from '@rollup/plugin-replace';
+import react from '@vitejs/plugin-react';
+import dns from 'node:dns';
+import fs from 'node:fs';
+import path from 'node:path';
+import { defineConfig, loadEnv } from 'vite';
+import commonjs from 'vite-plugin-commonjs';
+import viteCompression from 'vite-plugin-compression';
+import { ViteEjsPlugin } from 'vite-plugin-ejs';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // work around to open browser in localhost https://vitejs.dev/config/server-options.html#server-host
 dns.setDefaultResultOrder('verbatim');
@@ -19,6 +19,10 @@ export default defineConfig(({ command, mode }) => {
   const DATATRAK_WEB_NAME = '@tupaia/datatrak-web';
   const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
   const packageName = packageJson.name;
+
+  // Inject package version into env (e.g. datatrak-web uses it for sync version compatibility)
+  env.REACT_APP_VERSION = packageJson.version;
+
 
   const baseConfig = {
     build: {
