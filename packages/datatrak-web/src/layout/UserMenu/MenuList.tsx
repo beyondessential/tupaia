@@ -229,7 +229,7 @@ export const MenuList = ({
               </MenuButton>
             </MenuListItem>
           ))}
-        {appVersionText}
+        {isOfflineFirst && appVersionText}
       </Menu>
       <CancelConfirmModal
         headingText="Unsynced data"
