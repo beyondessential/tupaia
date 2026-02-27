@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { FullPageLoader } from '@tupaia/ui-components';
@@ -37,11 +37,13 @@ export const SyncProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isLoggedIn, isOfflineFirst, clientSyncManager]);
 
-  if (!clientSyncManager && isLoggedIn) {
+  const value = useMemo(() => ({ clientSyncManager }), [clientSyncManager]);
+
+  if (!value.clientSyncManager && isLoggedIn) {
     return <FullPageLoader message="Setting up sync…" />;
   }
 
-  return <SyncContext.Provider value={{ clientSyncManager }}>{children}</SyncContext.Provider>;
+  return <SyncContext.Provider value={value}>{children}</SyncContext.Provider>;
 };
 
 export const useSyncContext = (): SyncContextType | null => {
