@@ -1,4 +1,4 @@
-import { QueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 import mitt from 'mitt';
 import log from 'winston';
 
@@ -9,15 +9,16 @@ import {
   dropSnapshotTable,
   getModelsForPull,
   getModelsForPush,
+  hasSyncSnapshotRecords,
   saveChangesFromMemory,
   saveIncomingSnapshotChanges,
   waitForPendingEditsUsingSyncTick,
   withDeferredSyncSafeguards,
 } from '@tupaia/sync';
 import { ensure } from '@tupaia/tsutils';
-import { Project } from '@tupaia/types';
+import type { Project } from '@tupaia/types';
 import { remove, stream } from '../api';
-import { DatatrakDatabase } from '../database/DatatrakDatabase';
+import type { DatatrakDatabase } from '../database/DatatrakDatabase';
 import type { DatatrakWebModelRegistry, ProcessStreamDataParams, SyncEvents } from '../types';
 import { SYNC_EVENT_ACTIONS } from '../types';
 import { formatFraction } from '../utils';
@@ -84,6 +85,8 @@ export class ClientSyncManager {
   progressMessage: string | null = null;
 
   syncStage: number | null = null;
+
+  permissionsChanged: boolean = false;
 
   emitter = mitt<SyncEvents>();
 
@@ -330,12 +333,35 @@ export class ClientSyncManager {
       performance.measure('syncDuration', 'startSyncSession', 'endSyncSession'),
     );
 
+    if (!this.isInitialSync) {
+      await this.checkForPermissionChanges(sessionId);
+    }
+
     // clear temp data stored for persist
     await dropSnapshotTable(this.database, sessionId);
 
     this.lastSuccessfulSyncTime = new Date();
 
     return { pulledChangesCount };
+  }
+
+  async checkForPermissionChanges(sessionId: string) {
+    const currentUserId = ensure(
+      await this.models.localSystemFact.get(SyncFact.CURRENT_USER_ID),
+      'Couldn’t check for permission changes. No one is logged in.',
+    );
+
+    const hasPermissionChange = await hasSyncSnapshotRecords(
+      this.database,
+      sessionId,
+      undefined,
+      this.models.userEntityPermission.databaseRecord,
+      "data->>'user_id' = :userId",
+      { userId: currentUserId },
+    );
+    if (hasPermissionChange) {
+      await this.updatePermissionsChanged(true);
+    }
   }
 
   async startSyncSession(urgent: boolean, lastSyncedTick: number) {
@@ -569,5 +595,14 @@ export class ClientSyncManager {
         pullUntil.toString(),
       );
     });
+  }
+
+  async updatePermissionsChanged(permissionsChanged: boolean): Promise<void> {
+    this.permissionsChanged = permissionsChanged;
+    await this.models.localSystemFact.set(
+      SyncFact.PERMISSIONS_CHANGED,
+      permissionsChanged.toString(),
+    );
+    this.emitter.emit(SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED, { permissionsChanged });
   }
 }

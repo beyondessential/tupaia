@@ -9,18 +9,20 @@ import { ROUTES } from '../../constants';
 import { clearDatabase } from '../../database';
 import { useDatabaseContext } from '../../hooks/database';
 import { gaEvent, useFromLocation } from '../../utils';
+import { useSyncContext } from '../SyncContext';
 import { useIsOfflineFirst } from '../offlineFirst';
 
-type LoginCredentials = {
+interface LoginCredentials {
   email: string;
   password: string;
-};
+}
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const from = useFromLocation();
   const { models } = useDatabaseContext() || {};
+  const { clientSyncManager } = useSyncContext() || {};
   const isOfflineFirst = useIsOfflineFirst();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
@@ -28,7 +30,9 @@ export const useLogin = () => {
       let user;
 
       if (isOfflineFirst) {
-        const authService = new AuthService(ensure(models));
+        const authService = new AuthService(
+          ensure(models, 'Cannot instantiate AuthService with nullish models'),
+        );
         user = await authService.signIn({ email, password });
       } else {
         user = await login({ email, password });
@@ -64,6 +68,9 @@ export const useLogin = () => {
         }
 
         await queryClient.invalidateQueries();
+
+        // Emit permissions changed event to reset data notification
+        await clientSyncManager?.updatePermissionsChanged(false);
 
         if (from) {
           navigate(from, { state: null });

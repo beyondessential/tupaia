@@ -1,25 +1,23 @@
 import { Link, ListItem, Typography } from '@material-ui/core';
 import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
-import React, { ComponentType, ReactNode, useState } from 'react';
-import { useMatch, useNavigate } from 'react-router';
+import React, { type ComponentType, type ReactNode, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
-import { getModelsForPush } from '@tupaia/sync';
-import { Button, RouterLink } from '@tupaia/ui-components';
-import { useCurrentUserContext, useLogout } from '../../api';
+import { Button } from '@tupaia/ui-components';
+import { useCurrentUserContext } from '../../api';
 import { useIsOfflineFirst } from '../../api/offlineFirst';
-import { CancelConfirmModal } from '../../components';
-import { ROUTES } from '../../constants';
-import { useDatabaseContext } from '../../hooks/database';
-import { hasOutgoingChanges } from '../../sync/hasOutgoingChanges';
+import { type RoutePath, ROUTES } from '../../constants';
+import { useAbandonSurveyGuard } from '../../hooks/useAbandonSurveyGuard';
+import { useLogoutGuard } from '../../hooks/useGuardedLogout';
 import { MobileUserMenuRoot } from './MobileUserMenu';
+
 interface MenuItem {
   label: string;
-  to?: string | null;
   href?: string;
   isExternal?: boolean;
-  onClick?: (e: Event) => void;
+  onClick?: React.MouseEventHandler<HTMLElement>;
   component?: ComponentType<any> | string;
   hidden?: boolean;
   icon?: React.ReactNode;
@@ -122,51 +120,39 @@ export const MenuList = ({
   children?: ReactNode;
   onCloseMenu?: () => void;
 }) => {
-  const [confirmModalLink, setConfirmModalLink] = useState('');
   const { isLoggedIn, projectId, accessPolicy } = useCurrentUserContext();
   const hasAdminPanelAccess =
     accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
   const hasProjectSelected = !!projectId;
-  const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
-  const [unsyncedChangesWarningModalOpen, setUnsyncedChangesWarningModalOpen] = useState(false);
-  const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
-  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const isOfflineFirst = useIsOfflineFirst();
-  const { mutate: logout } = useLogout();
   const navigate = useNavigate();
-  const { models } = useDatabaseContext() || {};
-  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
-  const handleLogout = async () => {
-    logout(undefined, { onSuccess: () => navigate(ROUTES.LOGIN) });
-    setUnsyncedChangesWarningModalOpen(false);
-    onCloseMenu?.();
-  };
-
-  const onClickInternalLink = (e: any, confirmLink: string) => {
-    if (shouldShowCancelModal) {
-      e.preventDefault();
-      setIsOpen(true);
-      setConfirmModalLink(confirmLink);
-    } else {
+  const navigateRef = useRef<() => void>(() => {});
+  const { guardedCallback, confirmationModal: abandonSurveyConfirmationModal } =
+    useAbandonSurveyGuard(() => navigateRef.current());
+  const guardedNavigate = (
+    mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>,
+    path: RoutePath,
+  ) => {
+    navigateRef.current = () => {
+      navigate(path);
       onCloseMenu?.();
-    }
+    };
+    guardedCallback(mouseEvent);
   };
+
+  const { guardedLogout, confirmationModal: logoutConfirmationModal } = useLogoutGuard();
 
   const allItems: MenuItem[] = [
     {
       label: 'Account settings',
-      component: shouldShowCancelModal ? 'button' : RouterLink,
-      onClick: e => onClickInternalLink(e, ROUTES.ACCOUNT_SETTINGS),
-      to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
+      onClick: mouseEvent => guardedNavigate(mouseEvent, ROUTES.ACCOUNT_SETTINGS),
       hidden: !isLoggedIn || !hasProjectSelected,
       icon: chevronRight,
     },
     {
       label: 'Reports',
-      component: shouldShowCancelModal ? 'button' : RouterLink,
-      onClick: e => onClickInternalLink(e, ROUTES.REPORTS),
-      to: shouldShowCancelModal ? null : ROUTES.REPORTS,
+      onClick: mouseEvent => guardedNavigate(mouseEvent, ROUTES.REPORTS),
       hidden: !isLoggedIn || !hasAdminPanelAccess,
       icon: chevronRight,
     },
@@ -186,22 +172,7 @@ export const MenuList = ({
     },
     {
       label: 'Log out',
-      onClick: async () => {
-        if (isOfflineFirst && models) {
-          const hasUnsyncedData = await hasOutgoingChanges(
-            getModelsForPush(models.getModels()),
-            models.localSystemFact,
-          );
-
-          if (hasUnsyncedData) {
-            setUnsyncedChangesWarningModalOpen(true);
-          } else {
-            handleLogout();
-          }
-        } else {
-          handleLogout();
-        }
-      },
+      onClick: guardedLogout,
       hidden: !isLoggedIn,
       icon: logoutIcon,
     },
@@ -213,7 +184,7 @@ export const MenuList = ({
         {children}
         {allItems
           .filter(item => !item.hidden)
-          .map(({ label, to, href, isExternal, onClick, component, icon }) => (
+          .map(({ label, href, isExternal, onClick, component, icon }) => (
             <MenuListItem key={label} button>
               <MenuButton
                 component={component || 'button'}
@@ -221,8 +192,7 @@ export const MenuList = ({
                 underline="none"
                 rel={isExternal ? 'external' : null}
                 target={isExternal ? '_blank' : null}
-                onClick={onClick || onCloseMenu}
-                to={to}
+                onClick={onClick ?? onCloseMenu}
                 href={href}
               >
                 {label}
@@ -231,20 +201,8 @@ export const MenuList = ({
           ))}
         {isOfflineFirst && appVersionText}
       </Menu>
-      <CancelConfirmModal
-        headingText="Unsynced data"
-        bodyText="You are about to log out with unsynced data! Go back to your home page and sync using the top right sync button and sync before logging out"
-        confirmText="Log out anyway"
-        cancelText="Return home"
-        isOpen={unsyncedChangesWarningModalOpen}
-        onClose={() => setUnsyncedChangesWarningModalOpen(false)}
-        onConfirm={handleLogout}
-      />
-      <CancelConfirmModal
-        isOpen={surveyCancelModalIsOpen}
-        onClose={() => setIsOpen(false)}
-        confirmPath={confirmModalLink}
-      />
+      {logoutConfirmationModal}
+      {abandonSurveyConfirmationModal}
     </>
   );
 };

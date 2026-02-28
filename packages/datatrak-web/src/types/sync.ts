@@ -16,6 +16,7 @@ export const SYNC_EVENT_ACTIONS = {
   SYNC_STATE_CHANGED: 'syncStateChanged',
   SYNC_ENDED: 'syncEnded',
   SYNC_ERROR: 'syncError',
+  PERMISSIONS_CHANGED: 'permissionsChanged',
 } as const satisfies Record<string, EventType>;
 
 export type SyncEvents = {
@@ -25,4 +26,5 @@ export type SyncEvents = {
   [SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED]: undefined;
   [SYNC_EVENT_ACTIONS.SYNC_ENDED]: undefined;
   [SYNC_EVENT_ACTIONS.SYNC_ERROR]: { error: string };
+  [SYNC_EVENT_ACTIONS.PERMISSIONS_CHANGED]: { permissionsChanged: boolean };
 };

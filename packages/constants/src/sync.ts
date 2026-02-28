@@ -37,6 +37,7 @@ export enum SyncFact {
   LAST_SUCCESSFUL_SYNC_PULL = 'lastSuccessfulSyncPull',
   LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush',
   LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate',
+  PERMISSIONS_CHANGED = 'permissionsChanged',
   PREVIOUSLY_LOGGED_IN_USER_ID = 'previouslyLoggedInUserId',
   PROJECTS_IN_SYNC = 'projectsInSync',
   SYNC_TRIGGER_CONTROL = 'syncTrigger',

@@ -94,17 +94,14 @@ jest.mock('./src/api/DatabaseContext', () => {
 jest.mock('./src/api/SyncContext', () => {
   const React = require('react');
 
+  const clientSyncManager = {
+    triggerSync: jest.fn(),
+    updatePermissionsChanged: jest.fn(),
+  };
+
   return {
-    SyncContext: React.createContext({
-      clientSyncManager: {
-        triggerSync: jest.fn(),
-      },
-    }),
+    SyncContext: React.createContext({ clientSyncManager }),
     SyncProvider: ({ children }) => children,
-    useSyncContext: () => ({
-      clientSyncManager: {
-        triggerSync: jest.fn(),
-      },
-    }),
+    useSyncContext: () => ({ clientSyncManager }),
   };
 });
