@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { GRANULARITY_CONFIG, periodToMoment } from '@tupaia/utils';
 import { Tooltip, IconButton, SmallAlert } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';
-import { ArrowDropDown, Layers, Assignment, GetApp, Close } from '@material-ui/icons';
+import { ArrowDropDown, Layers, Assignment, GetApp, Close, Image } from '@material-ui/icons';
 import {
   Accordion,
   Typography,
@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import { useMapOverlayMapData, useMapContext } from '../utils';
 import { Entity } from '../../../types';
-import { useExportMapOverlay } from '../../../api/mutations';
+import { useExportMapOverlay, useExportMapOverlayImage } from '../../../api/mutations';
 import { useEntity, useMapOverlays, useProject, useUser } from '../../../api/queries';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import {
@@ -225,6 +225,12 @@ export const DesktopMapOverlaySelector = ({
     error,
     reset,
   } = useExportMapOverlay(exportFileName);
+  const {
+    mutate: exportMapOverlayImage,
+    isLoading: isExportingImage,
+    error: imageError,
+    reset: resetImageError,
+  } = useExportMapOverlayImage(exportFileName);
   const { startDate, endDate } = useDateRanges(
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
     selectedOverlay,
@@ -253,10 +259,9 @@ export const DesktopMapOverlaySelector = ({
     return urlPeriodString;
   };
 
-  const onExportMapOverlay = () => {
+  const getExportParams = () => {
     if (!map) throw new Error('Map is not ready');
-    const urlPeriodString = getMapOverlayPeriodForExport();
-    exportMapOverlay({
+    return {
       projectCode,
       entityCode,
       mapOverlayCode: selectedOverlay?.code,
@@ -264,8 +269,16 @@ export const DesktopMapOverlaySelector = ({
       zoom: map.getZoom(),
       hiddenValues,
       tileset: activeTileSet.url,
-      mapOverlayPeriod: urlPeriodString,
-    });
+      mapOverlayPeriod: getMapOverlayPeriodForExport(),
+    };
+  };
+
+  const onExportMapOverlay = () => {
+    exportMapOverlay(getExportParams());
+  };
+
+  const onExportMapOverlayImage = () => {
+    exportMapOverlayImage(getExportParams());
   };
 
   const friendlyEntityType = getFriendlyEntityType(entity?.type);
@@ -279,19 +292,26 @@ export const DesktopMapOverlaySelector = ({
           {selectedOverlay && (
             <div>
               {isLoggedIn && (
-                <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map}>
-                  {isExporting ? (
-                    <LoadingSpinner />
-                  ) : (
-                    <Tooltip
-                      arrow
-                      placement="top"
-                      title={isExporting ? '' : 'Export map overlay as PDF'}
-                    >
-                      <GetApp />
-                    </Tooltip>
-                  )}
-                </MapButton>
+                <>
+                  <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map}>
+                    {isExporting ? (
+                      <LoadingSpinner />
+                    ) : (
+                      <Tooltip arrow placement="top" title="Export map overlay as PDF">
+                        <GetApp />
+                      </Tooltip>
+                    )}
+                  </MapButton>
+                  <MapButton onClick={onExportMapOverlayImage} disabled={isExportingImage || !map}>
+                    {isExportingImage ? (
+                      <LoadingSpinner />
+                    ) : (
+                      <Tooltip arrow placement="top" title="Export map overlay as PNG">
+                        <Image />
+                      </Tooltip>
+                    )}
+                  </MapButton>
+                </>
               )}
               <Tooltip arrow interactive placement="top" title="Generate report">
                 <MapButton onClick={toggleMapTableModal}>
@@ -307,6 +327,14 @@ export const DesktopMapOverlaySelector = ({
               <ErrorAlert severity="error">
                 <span>{error.message}</span>
                 <ErrorCloseButton onClick={reset} title="Clear error">
+                  <Close />
+                </ErrorCloseButton>
+              </ErrorAlert>
+            )}
+            {imageError && (
+              <ErrorAlert severity="error">
+                <span>{imageError.message}</span>
+                <ErrorCloseButton onClick={resetImageError} title="Clear error">
                   <Close />
                 </ErrorCloseButton>
               </ErrorAlert>

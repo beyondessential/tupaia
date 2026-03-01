@@ -77,6 +77,44 @@ interface DownloadPageAsPdfParams {
   userCookie?: string;
 }
 
+interface DownloadPageAsImageParams {
+  /** The domain of cookie, required when setting up cookie in page */
+  cookieDomain?: string;
+  /** The url to visit and download as an image */
+  pageUrl: string;
+  /** The user's cookie to bypass auth, and ensure page renders under the correct user context */
+  userCookie?: string;
+}
+
+/**
+ * @returns PNG buffer
+ */
+export const downloadPageAsImage = async ({
+  pageUrl,
+  userCookie = '',
+  cookieDomain,
+}: DownloadPageAsImageParams): Promise<Uint8Array> => {
+  let browser: Browser | undefined;
+  let buffer: Uint8Array | undefined;
+  const { cookies, verifiedPDFPageUrl } = buildParams(pageUrl, userCookie, cookieDomain);
+
+  try {
+    browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    // A4 landscape dimensions at 96 DPI (297mm × 210mm)
+    await page.setViewport({ width: 1123, height: 794 });
+    await page.setCookie(...cookies);
+    await page.goto(verifiedPDFPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
+    buffer = await page.screenshot({ type: 'png' });
+  } catch (e) {
+    throw new Error(`puppeteer error: ${(e as Error).message}`);
+  } finally {
+    await browser?.close();
+  }
+
+  return buffer as Uint8Array;
+};
+
 /**
  * @returns PDF buffer
  */

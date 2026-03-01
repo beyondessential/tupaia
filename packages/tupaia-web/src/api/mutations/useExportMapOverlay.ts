@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import downloadJs from 'downloadjs';
 import { LatLng } from 'leaflet';
 import { MapOverlay } from '@tupaia/types';
 import { LegendProps } from '@tupaia/ui-map-components';
@@ -17,39 +18,50 @@ interface ExportDashboardBody {
   mapOverlayPeriod?: string;
 }
 
+const buildExportBody = (body: ExportDashboardBody, format: 'pdf' | 'png') => {
+  const { projectCode, entityCode, mapOverlayCode, zoom, center, hiddenValues, tileset, mapOverlayPeriod } = body;
+  const cookieDomain = new URL(API_URL).hostname;
+  return {
+    endpoint: `mapOverlays/${projectCode}/${entityCode}/${mapOverlayCode}/export`,
+    data: {
+      cookieDomain,
+      baseUrl: window.location.origin,
+      zoom,
+      center: JSON.stringify(center),
+      hiddenValues: JSON.stringify(hiddenValues),
+      tileset,
+      mapOverlayPeriod,
+      locale: window.navigator?.language || 'en-AU',
+      format,
+    },
+  };
+};
+
 // Requests a map overlay PDF export from the server, and returns the response
 export const useExportMapOverlay = (fileName: string) => {
   return useMutation<any, Error, ExportDashboardBody, unknown>(
-    ({
-      projectCode,
-      entityCode,
-      mapOverlayCode,
-      zoom,
-      center,
-      hiddenValues,
-      tileset,
-      mapOverlayPeriod,
-    }: ExportDashboardBody) => {
-      // Auth cookies are saved against this domain. Pass this to server, so that when it pretends to be us, it can do the same.
-      const cookieDomain = new URL(API_URL).hostname;
-
-      return post(`mapOverlays/${projectCode}/${entityCode}/${mapOverlayCode}/export`, {
-        responseType: 'blob',
-        data: {
-          cookieDomain,
-          baseUrl: window.location.origin,
-          zoom,
-          center: JSON.stringify(center),
-          hiddenValues: JSON.stringify(hiddenValues),
-          tileset,
-          mapOverlayPeriod,
-          locale: window.navigator?.language || 'en-AU',
-        },
-      });
+    (body: ExportDashboardBody) => {
+      const { endpoint, data } = buildExportBody(body, 'pdf');
+      return post(endpoint, { responseType: 'blob', data });
     },
     {
       onSuccess: data => {
         downloadPDF(data, fileName);
+      },
+    },
+  );
+};
+
+// Requests a map overlay PNG export from the server, and returns the response
+export const useExportMapOverlayImage = (fileName: string) => {
+  return useMutation<any, Error, ExportDashboardBody, unknown>(
+    (body: ExportDashboardBody) => {
+      const { endpoint, data } = buildExportBody(body, 'png');
+      return post(endpoint, { responseType: 'blob', data });
+    },
+    {
+      onSuccess: data => {
+        downloadJs(data, `${fileName}.png`);
       },
     },
   );
