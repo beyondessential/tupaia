@@ -18,14 +18,12 @@ const logoutOnline = async () => {
 const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) => {
   try {
     return await models.wrapInTransaction(async transactingModels => {
-      await transactingModels.database.executeSql(
-        `
-          UPDATE local_system_fact
-          SET value = (SELECT value FROM local_system_fact WHERE key = ?)
-          WHERE key = ?
-        `,
-        [SyncFact.CURRENT_USER_ID, SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID],
-      );
+      const currentUserId = await transactingModels.localSystemFact.get(SyncFact.CURRENT_USER_ID);
+      if (currentUserId) {
+        // currentUserId should always be defined here; this is mostly to satisfy TypeScript
+        await transactingModels.localSystemFact.set(SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID, currentUserId);
+      }
+
       await transactingModels.localSystemFact.delete({ key: SyncFact.CURRENT_USER_ID });
 
       const permissionsDidChange =
