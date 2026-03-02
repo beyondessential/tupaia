@@ -36,6 +36,10 @@ exports.up = function (db) {
 
         UPDATE sync_lookup 
         SET is_deleted = TRUE, 
+          -- Use GREATEST to ensure the sync tick only moves forward: a concurrent
+          -- transaction with a higher tick may have already updated this row (from updateLookupTable), 
+          -- and blindly setting current_tick would roll it back, causing clients to
+          -- miss that later change
           updated_at_sync_tick = GREATEST(current_tick, updated_at_sync_tick)
         WHERE record_id = OLD.id 
           AND record_type = TG_TABLE_NAME;
