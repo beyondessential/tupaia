@@ -2,7 +2,7 @@ import { GETHandler } from '../GETHandler';
 import { allowNoPermissions } from '../../permissions';
 
 export class GETOptions extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async assertUserHasAccess() {
     await this.assertPermissions(allowNoPermissions);

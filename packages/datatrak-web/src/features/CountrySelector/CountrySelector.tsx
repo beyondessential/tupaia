@@ -1,11 +1,10 @@
 import React, { ChangeEventHandler, ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
+import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { Select as BaseSelect } from '@tupaia/ui-components';
-
 import { FullScreenSelect } from '../../components/FullScreenSelect';
 import { useIsMobile } from '../../utils';
-import type { UserCountriesType } from './useUserCountries';
 
 const Select = styled(BaseSelect)`
   inline-size: 10rem;
@@ -52,16 +51,23 @@ const Pin = (props: ComponentPropsWithoutRef<typeof Img>) => (
 );
 
 export interface CountrySelectorProps
-  extends Pick<UserCountriesType, 'countries' | 'selectedCountry'>,
-    Omit<ComponentPropsWithoutRef<typeof CountrySelectWrapper>, 'onChange'> {
+  extends Omit<ComponentPropsWithoutRef<typeof CountrySelectWrapper>, 'onChange'> {
+  countries: DatatrakWebEntityDescendantsRequest.EntityResponse[] | undefined;
   onChange: ChangeEventHandler<HTMLSelectElement>;
+  selectedCountry: DatatrakWebEntityDescendantsRequest.EntityResponse | null;
 }
 
-export const CountrySelector = ({ countries, selectedCountry, onChange }: CountrySelectorProps) => {
-  const options = countries.map(country => ({
-    value: country.code,
-    label: country.name,
-  }));
+export const CountrySelector = ({
+  countries,
+  onChange,
+  selectedCountry,
+  ...props
+}: CountrySelectorProps) => {
+  const options =
+    countries?.map(country => ({
+      value: country.code,
+      label: country.name,
+    })) ?? [];
 
   const commonProps = {
     onChange,
@@ -70,7 +76,7 @@ export const CountrySelector = ({ countries, selectedCountry, onChange }: Countr
   };
 
   return (
-    <CountrySelectWrapper>
+    <CountrySelectWrapper {...props}>
       {useIsMobile() ? (
         <FullScreenSelect {...commonProps} icon={<Pin />} label="Select country" />
       ) : (
@@ -78,9 +84,9 @@ export const CountrySelector = ({ countries, selectedCountry, onChange }: Countr
           <Pin style={{ marginInlineEnd: '0.25rem' }} />
           <Select
             {...commonProps}
-            placeholder="Select a country"
+            placeholder="Select country"
             SelectProps={{
-              'aria-label': 'Select a country',
+              'aria-label': 'Select country',
             }}
           />
         </>

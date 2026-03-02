@@ -1,38 +1,76 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { gaEvent, useFromLocation } from '../../utils';
 import { useNavigate } from 'react-router-dom';
-import { post } from '../api';
-import { ROUTES } from '../../constants';
-import { getBrowserTimeZone } from '@tupaia/utils';
 
-type LoginCredentials = {
+import { SyncFact } from '@tupaia/constants';
+import { assertIsNotNullish, ensure } from '@tupaia/tsutils';
+import { AuthService } from '../../auth';
+import { login } from '../../auth/login';
+import { ROUTES } from '../../constants';
+import { clearDatabase } from '../../database';
+import { useDatabaseContext } from '../../hooks/database';
+import { gaEvent, useFromLocation } from '../../utils';
+import { useSyncContext } from '../SyncContext';
+import { useIsOfflineFirst } from '../offlineFirst';
+
+interface LoginCredentials {
   email: string;
   password: string;
-};
+}
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const from = useFromLocation();
+  const { models } = useDatabaseContext() || {};
+  const { clientSyncManager } = useSyncContext() || {};
+  const isOfflineFirst = useIsOfflineFirst();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
-    ({ email, password }: LoginCredentials) => {
-      return post('login', {
-        data: {
-          emailAddress: email,
-          password,
-          deviceName: window.navigator.userAgent,
-          timezone: getBrowserTimeZone(),
-        },
-      });
+    async ({ email, password }: LoginCredentials) => {
+      let user;
+
+      if (isOfflineFirst) {
+        const authService = new AuthService(
+          ensure(models, 'Cannot instantiate AuthService with nullish models'),
+        );
+        user = await authService.signIn({ email, password });
+      } else {
+        user = await login({ email, password });
+      }
+
+      return { user };
     },
     {
       onMutate: () => {
         gaEvent('login', 'Login', 'Attempt');
       },
       onSuccess: async ({ user }) => {
+        if (isOfflineFirst) {
+          assertIsNotNullish(models, 'useLogin query onSuccess callback fired with nullish models');
+
+          // Clear database if the user has logged in with a different user
+          const previouslyLoggedInUserId = await models.localSystemFact.get(
+            SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID,
+          );
+
+          if (previouslyLoggedInUserId && previouslyLoggedInUserId !== user.id) {
+            await clearDatabase(models);
+          }
+
+          // Add project for sync if the user has a project
+          // if already exists, it will be ignored
+          if (user.projectId) {
+            await models.localSystemFact.addProjectForSync(user.projectId);
+          }
+
+          // Set current user id
+          await models.localSystemFact.set(SyncFact.CURRENT_USER_ID, user.id);
+        }
+
         await queryClient.invalidateQueries();
-        await queryClient.removeQueries();
+
+        // Emit permissions changed event to reset data notification
+        await clientSyncManager?.updatePermissionsChanged(false);
 
         if (from) {
           navigate(from, { state: null });

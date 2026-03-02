@@ -2,37 +2,12 @@
 
 import winston from 'winston';
 
-import { MaterializedViewLogDatabaseModel, DatabaseRecord, RECORDS } from '@tupaia/database';
+import { AnswerModel as BaseAnswerModel, DatabaseRecord, RECORDS } from '@tupaia/database';
 import { getHook } from '../../hooks';
 import { CallbackQueue } from '../../utilities/CallbackQueue';
 
-export const ANSWER_TYPES = {
-  AUTOCOMPLETE: 'Autocomplete',
-  BINARY: 'Binary',
-  CHECKBOX: 'Checkbox',
-  CODE_GENERATOR: 'CodeGenerator',
-  DATE_TIME: 'DateTime',
-  DATE: 'Date',
-  DATE_OF_DATA: 'DateOfData',
-  DAYS_SINCE: 'DaysSince',
-  ENTITY: 'Entity',
-  FREE_TEXT: 'FreeText',
-  GEOLOCATE: 'Geolocate',
-  INSTRUCTION: 'Instruction',
-  MONTHS_SINCE: 'MonthsSince',
-  NUMBER: 'Number',
-  PHOTO: 'Photo',
-  PRIMARY_ENTITY: 'PrimaryEntity',
-  RADIO: 'Radio',
-  SUBMISSION_DATE: 'SubmissionDate',
-  YEARS_SINCE: 'YearsSince',
-  ARITHMETIC: 'Arithmetic',
-  CONDITION: 'Condition',
-  FILE: 'File',
-  TASK: 'Task',
-  USER: 'User',
-  // If adding a new type, add validation in both importSurveys and updateSurveyResponses
-};
+/** @privateRemarks Re-export for backward compatibility. */
+export const ANSWER_TYPES = BaseAnswerModel.types;
 
 // these answer types are not stored as data, because they either don't take any answer, or their data
 // is used as metadata for the survey response rather than being stored as a standard answer
@@ -119,7 +94,7 @@ class AnswerRecord extends DatabaseRecord {
   }
 }
 
-export class AnswerModel extends MaterializedViewLogDatabaseModel {
+export class AnswerModel extends BaseAnswerModel {
   notifiers = [onChangeRunQuestionHook];
 
   get DatabaseRecordClass() {

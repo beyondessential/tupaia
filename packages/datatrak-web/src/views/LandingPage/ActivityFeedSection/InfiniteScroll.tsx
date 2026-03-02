@@ -1,6 +1,6 @@
-import React, { ReactNode, useEffect, useRef } from 'react';
-import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import React, { ReactNode, useCallback, useEffect, useRef } from 'react';
+import styled from 'styled-components';
 
 const ScrollBody = styled.div`
   overflow: auto;
@@ -39,30 +39,27 @@ export const InfiniteScroll = React.forwardRef<HTMLDivElement, InfiniteScrollPro
   ({ children, onScroll, hasNextPage, isFetchingNextPage }: InfiniteScrollProps, containerRef) => {
     const loader = useRef<HTMLDivElement | null>(null);
 
-    const handleScroll = () => {
+    const handleScroll = useCallback(() => {
       const refElement = (containerRef as React.MutableRefObject<HTMLDivElement | null>)?.current;
       if (!refElement || !loader.current || !hasNextPage) return;
       const isVisible = getIsAtEndOfList(refElement, loader.current);
       if (isVisible && !isFetchingNextPage) onScroll();
-    };
+    }, [containerRef, hasNextPage, isFetchingNextPage, onScroll]);
 
     useEffect(() => {
       const refElement = (containerRef as React.MutableRefObject<HTMLDivElement | null>)?.current;
       if (!refElement || !loader.current) return;
 
-      // add scroll listener
       refElement.addEventListener('scroll', handleScroll);
-
-      // remove scroll listener on unmount
       return () => {
         refElement.removeEventListener('scroll', handleScroll);
       };
-    }, [loader, containerRef, hasNextPage, isFetchingNextPage]);
+    }, [containerRef, handleScroll]);
 
     return (
       <ScrollBody ref={containerRef}>
         {children}
-        {hasNextPage && <Loading ref={loader}>Loading more items</Loading>}
+        {hasNextPage && <Loading ref={loader}>Loading more items…</Loading>}
       </ScrollBody>
     );
   },

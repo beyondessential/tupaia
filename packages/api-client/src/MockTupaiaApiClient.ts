@@ -5,6 +5,7 @@ import {
   EntityApiInterface,
   ReportApiInterface,
   WebConfigApiInterface,
+  SyncApiInterface
 } from './connections';
 
 import {
@@ -15,6 +16,7 @@ import {
   MockReportApi,
   MockWebConfigApi,
 } from './connections/mocks';
+import { MockSyncApi } from './connections/mocks/MockSyncApi';
 
 export class MockTupaiaApiClient {
   public readonly auth: AuthApiInterface;
@@ -23,7 +25,8 @@ export class MockTupaiaApiClient {
   public readonly entity: EntityApiInterface;
   public readonly report: ReportApiInterface;
   public readonly webConfig: WebConfigApiInterface;
-
+  public readonly sync: SyncApiInterface;
+  
   public constructor({
     auth = new MockAuthApi(),
     central = new MockCentralApi(),
@@ -31,6 +34,7 @@ export class MockTupaiaApiClient {
     entity = new MockEntityApi(),
     report = new MockReportApi(),
     webConfig = new MockWebConfigApi(),
+    sync = new MockSyncApi(),
   } = {}) {
     this.auth = auth;
     this.central = central;
@@ -38,5 +42,6 @@ export class MockTupaiaApiClient {
     this.entity = entity;
     this.report = report;
     this.webConfig = webConfig;
+    this.sync = sync;
   }
 }

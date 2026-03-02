@@ -6,3 +6,7 @@ export { configureDotEnv } from './configureDotEnv';
 export { constructExportEmail } from './constructExportEmail';
 export { getTempDirectory } from './getTempDirectory';
 export { getExportPathForUser } from './getExportPathForUser';
+export * from './files';
+export * from './ScheduledTask';
+export { objectIdToTimestamp } from './objectIdToTimestamp';
+export * from './StreamMessage';

@@ -1,9 +1,14 @@
-import React from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+import type { Handler } from 'mitt';
 
+import { useSyncContext } from '../../api/SyncContext';
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
+import { useSyncEventListener, useSyncStatus } from '../../sync/syncStatus';
+import { SYNC_EVENT_ACTIONS, type SyncEvents } from '../../types';
 import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
@@ -19,6 +24,11 @@ const LayoutManager = styled.div`
   grid-row-start: 2;
   grid-template-areas: '.' '--content' '.';
   grid-template-rows: minmax(0, 2fr) auto minmax(0, 3fr);
+`;
+
+const ErrorMessage = styled.p`
+  margin-block-start: 10rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
 const Content = styled.div`
@@ -39,7 +49,6 @@ const Content = styled.div`
 
 const StyledSyncStatus = styled(SyncStatus)`
   margin-block-start: 1rem;
-  font-variant-numeric: lining-nums tabular-nums;
 `;
 
 const StyledLastSyncDate = styled(LastSyncDate)`
@@ -50,27 +59,72 @@ const StyledButton = styled(Button)`
   margin-block-start: 2.25rem;
 `;
 
+function useIsSyncStarted() {
+  const syncManager = useSyncContext()?.clientSyncManager;
+  const [isSyncStarted, setIsSyncStarted] = useState<boolean>(syncManager?.isSyncing ?? false);
+
+  const handler: Handler<SyncEvents[typeof SYNC_EVENT_ACTIONS.SYNC_STARTED]> = useCallback(
+    () => setIsSyncStarted(true),
+    [],
+  );
+
+  useSyncEventListener(SYNC_EVENT_ACTIONS.SYNC_STARTED, handler);
+  return isSyncStarted;
+}
+
 export const SyncPage = () => {
+  const syncManager = useSyncContext()?.clientSyncManager;
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  // <PLACEHOLDERS> TODO: Replace with queries or props
-  const lastSyncDate: Date | null = new Date(new Date().valueOf() - Math.random() * 1e9);
-  const syncProgress: number | null = 0.77;
-  // </PLACEHOLDERS>
+  const {
+    errorMessage,
+    isRequestingSync,
+    isSyncing,
+    isQueuing,
+    syncStage,
+    progress,
+    progressMessage,
+  } = useSyncStatus();
+  const isSyncStarted = useIsSyncStarted();
+
+  const syncFinishedSuccessfully =
+    isSyncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;
 
   return (
     <Wrapper>
       {isMobile && <StickyMobileHeader onClose={() => navigate(-1)}>Sync</StickyMobileHeader>}
+
       <LayoutManager>
         <Content>
           <picture>
             <source srcSet="/datatrak-pin.svg" type="image/svg+xml" />
             <img aria-hidden src="/datatrak-pin.svg" height={80} width={80} />
           </picture>
-          <StyledSyncStatus value={syncProgress} />
-          <StyledLastSyncDate date={lastSyncDate} />
-          <StyledButton>Sync now</StyledButton>
+
+          <StyledSyncStatus
+            isSyncing={isSyncing}
+            percentage={progress}
+            message={progressMessage}
+            syncStage={syncStage}
+            totalStages={
+              syncManager ? Object.keys(syncManager.progressMaxByStage).length : undefined
+            }
+            syncFinishedSuccessfully={syncFinishedSuccessfully}
+            hasError={Boolean(errorMessage)}
+          />
+
+          {!isSyncing && !isRequestingSync && (
+            <>
+              <StyledLastSyncDate />
+              <StyledButton onClick={() => void syncManager?.triggerUrgentSync(queryClient)}>
+                Manual sync
+              </StyledButton>
+            </>
+          )}
+
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         </Content>
       </LayoutManager>
     </Wrapper>

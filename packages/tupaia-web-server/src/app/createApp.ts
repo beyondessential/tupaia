@@ -22,7 +22,7 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
   const builder = new OrchestratorApiBuilder(db, 'tupaia-web')
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
-    .attachApiClientToContext(authHandlerProvider)
+    .attachApiClientToContext({ authHandlerProvider })
     .get<routes.ReportRequest>('report/:reportCode', handleWith(routes.ReportRoute))
     .get<routes.LegacyDashboardReportRequest>(
       'legacyDashboardReport/:reportCode',

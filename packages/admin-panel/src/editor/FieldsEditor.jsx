@@ -1,12 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { InputGroup } from '@tupaia/ui-components';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from 'styled-components';
 import { checkVisibilityCriteriaAreMet, labelToId, useHasVizBuilderAccess } from '../utilities';
 import { SECTION_FIELD_TYPE } from './constants';
 import { EditorInputField } from './EditorInputField';
 import { getFieldEditKey } from './utils';
-import { useUser } from '../api/queries';
 
 const EditorWrapper = styled.form`
   .file_upload_label {

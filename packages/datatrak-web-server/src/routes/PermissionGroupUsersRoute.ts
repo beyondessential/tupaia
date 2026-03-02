@@ -1,33 +1,39 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebUsersRequest } from '@tupaia/types';
-import { getFilteredUsersForPermissionGroup } from '../utils';
+import { NotFoundError, ValidationError } from '@tupaia/utils';
 
-export type PermissionGroupUsersRequest = Request<
-  DatatrakWebUsersRequest.Params,
-  DatatrakWebUsersRequest.ResBody,
-  DatatrakWebUsersRequest.ReqBody,
-  DatatrakWebUsersRequest.ReqQuery
->;
+export interface PermissionGroupUsersRequest
+  extends Request<
+    DatatrakWebUsersRequest.Params,
+    DatatrakWebUsersRequest.ResBody,
+    DatatrakWebUsersRequest.ReqBody,
+    DatatrakWebUsersRequest.ReqQuery
+  > {}
 
 export class PermissionGroupUsersRoute extends Route<PermissionGroupUsersRequest> {
   public async buildResponse() {
-    const { models, params, query } = this.req;
-    const { countryCode } = params;
-
-    const { searchTerm, permissionGroupId } = query;
+    const {
+      models,
+      params: { countryCode },
+      query: { searchTerm, permissionGroupId },
+    } = this.req;
 
     if (!permissionGroupId) {
-      throw new Error('Permission group id is required');
+      throw new ValidationError('Permission group ID is required');
     }
 
     // get the permission group
     const permissionGroup = await models.permissionGroup.findById(permissionGroupId);
-
     if (!permissionGroup) {
-      throw new Error(`Permission group with id '${permissionGroupId}' not found`);
+      throw new NotFoundError(`No permission group exists with ID ${permissionGroupId}`);
     }
 
-    return getFilteredUsersForPermissionGroup(models, countryCode, permissionGroup, searchTerm);
+    return await models.user.getFilteredUsersForPermissionGroup(
+      countryCode,
+      permissionGroup,
+      searchTerm,
+    );
   }
 }
