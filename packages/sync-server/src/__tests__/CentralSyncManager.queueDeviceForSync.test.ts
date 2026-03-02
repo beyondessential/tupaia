@@ -14,14 +14,12 @@ describe('CentralSyncManager.queueDeviceForSync', () => {
     maxConcurrentSessions: 1,
   };
 
-  beforeAll(async () => {
-    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, 3);
-  });
-
   beforeEach(async () => {
     models = getTestModels() as TestModelRegistry;
 
     centralSyncManager = new CentralSyncManager(models, mockConfig);
+
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, 3);
 
     // Clear any existing data
     await models.syncSession.delete({});
