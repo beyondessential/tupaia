@@ -69,10 +69,14 @@ yarn migrate-down
 yarn workspace @tupaia/<package-name> setup-test
 ```
 
-### Types generation (after database schema changes)
+### Types generation
+
+**Always run this after any database schema change** (adding/removing columns, creating/dropping tables, or modifying migrations):
 ```sh
 yarn workspace @tupaia/types generate
 ```
+
+Skipping this will cause TypeScript type errors and stale model types throughout the codebase.
 
 ## Architecture
 
