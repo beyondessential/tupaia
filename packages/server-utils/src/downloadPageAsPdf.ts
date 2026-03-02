@@ -17,21 +17,21 @@ function isValidHostname(hostname: string): boolean {
   );
 }
 
-const verifyPDFPageUrl = (pdfPageUrl: string): string => {
-  if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
-    throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
+const verifyPageUrl = (pageUrl: string): string => {
+  if (!pageUrl || typeof pageUrl !== 'string') {
+    throw new Error(`'pageUrl' should be provided in request body, got: ${pageUrl}`);
   }
-  const { hostname } = new URL(pdfPageUrl);
+  const { hostname } = new URL(pageUrl);
   if (!isValidHostname(hostname)) {
-    throw new Error(`'pdfPageUrl' is not valid, got: ${pdfPageUrl}`);
+    throw new Error(`'pageUrl' is not valid, got: ${pageUrl}`);
   }
-  return pdfPageUrl;
+  return pageUrl;
 };
 
-const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: string | undefined) => {
+const buildParams = (pageUrl: string, userCookie: string, cookieDomain: string | undefined) => {
   const cookies = cookie.parse(userCookie || '');
-  const verifiedPDFPageUrl = verifyPDFPageUrl(pdfPageUrl);
-  const location = new URL(verifiedPDFPageUrl);
+  const verifiedPageUrl = verifyPageUrl(pageUrl);
+  const location = new URL(verifiedPageUrl);
   const finalisedCookieObjects = Object.keys(cookies).map(
     name =>
       ({
@@ -42,7 +42,7 @@ const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: strin
         value: cookies[name],
       }) as CookieParam,
   );
-  return { verifiedPDFPageUrl, cookies: finalisedCookieObjects };
+  return { verifiedPageUrl, cookies: finalisedCookieObjects };
 };
 
 const pageNumberHTML = `
@@ -71,7 +71,7 @@ interface DownloadPageAsPdfParams {
   includePageNumber?: boolean;
   landscape?: boolean;
   /** The url to visit and download as a pdf */
-  pdfPageUrl: string;
+  pageUrl: string;
   timezone?: string;
   /** The user's cookie to bypass auth, and ensure page renders under the correct user context */
   userCookie?: string;
@@ -96,7 +96,7 @@ export const downloadPageAsImage = async ({
 }: DownloadPageAsImageParams): Promise<Uint8Array> => {
   let browser: Browser | undefined;
   let buffer: Uint8Array | undefined;
-  const { cookies, verifiedPDFPageUrl } = buildParams(pageUrl, userCookie, cookieDomain);
+  const { cookies, verifiedPageUrl } = buildParams(pageUrl, userCookie, cookieDomain);
 
   try {
     browser = await puppeteer.launch();
@@ -104,7 +104,7 @@ export const downloadPageAsImage = async ({
     // A4 landscape dimensions at 96 DPI (297mm × 210mm)
     await page.setViewport({ width: 1123, height: 794 });
     await page.setCookie(...cookies);
-    await page.goto(verifiedPDFPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
+    await page.goto(verifiedPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
     buffer = await page.screenshot({ type: 'png' });
   } catch (e) {
     throw new Error(`puppeteer error: ${(e as Error).message}`);
@@ -119,7 +119,7 @@ export const downloadPageAsImage = async ({
  * @returns PDF buffer
  */
 export const downloadPageAsPdf = async ({
-  pdfPageUrl,
+  pageUrl,
   userCookie = '',
   cookieDomain,
   landscape = false,
@@ -128,7 +128,7 @@ export const downloadPageAsPdf = async ({
 }: DownloadPageAsPdfParams): Promise<Uint8Array> => {
   let browser: Browser | undefined;
   let buffer: Uint8Array | undefined;
-  const { cookies, verifiedPDFPageUrl } = buildParams(pdfPageUrl, userCookie, cookieDomain);
+  const { cookies, verifiedPageUrl } = buildParams(pageUrl, userCookie, cookieDomain);
 
   try {
     browser = await puppeteer.launch();
@@ -139,7 +139,7 @@ export const downloadPageAsPdf = async ({
     }
 
     await page.setCookie(...cookies);
-    await page.goto(verifiedPDFPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
+    await page.goto(verifiedPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
 
     buffer = await page.pdf({
       format: 'a4',
