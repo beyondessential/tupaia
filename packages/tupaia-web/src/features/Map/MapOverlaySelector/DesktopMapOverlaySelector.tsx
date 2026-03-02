@@ -47,7 +47,7 @@ const ExportButton = styled(Button).attrs({ variant: 'outlined' })`
   font-size: 0.75rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   color: ${({ theme }) => theme.palette.text.primary};
-  border-color: oklch(1 0 0 / 40%);
+  border-color: white;
   padding-block: 0.15rem;
   padding-inline: 0.5rem;
   min-width: unset;
@@ -59,6 +59,13 @@ const ExportButton = styled(Button).attrs({ variant: 'outlined' })`
   .MuiButton-endIcon {
     margin-inline-start: 0.2rem;
     margin-inline-end: -0.2rem;
+  }
+`;
+
+const ExportMenu = styled(Menu)`
+  .MuiPaper-root {
+    background-color: ${({ theme }) => theme.palette.secondary.main};
+    border: 1px solid white;
   }
 `;
 
@@ -265,7 +272,10 @@ export const DesktopMapOverlaySelector = ({
 
   const isExportingAny = isExporting || isExportingImage;
   const exportError = error || imageError;
-  const resetExportError = () => { reset(); resetImageError(); };
+  const resetExportError = () => {
+    reset();
+    resetImageError();
+  };
 
   const [mapModalOpen, setMapModalOpen] = useState(false);
   const [exportMenuAnchor, setExportMenuAnchor] = useState<HTMLElement | null>(null);
@@ -342,7 +352,7 @@ export const DesktopMapOverlaySelector = ({
                   >
                     Export
                   </ExportButton>
-                  <Menu
+                  <ExportMenu
                     anchorEl={exportMenuAnchor}
                     open={Boolean(exportMenuAnchor)}
                     onClose={handleCloseExportMenu}
@@ -352,7 +362,7 @@ export const DesktopMapOverlaySelector = ({
                   >
                     <ExportMenuItem onClick={onExportMapOverlay}>PDF</ExportMenuItem>
                     <ExportMenuItem onClick={onExportMapOverlayImage}>PNG</ExportMenuItem>
-                  </Menu>
+                  </ExportMenu>
                 </>
               )}
               <Tooltip arrow interactive placement="top" title="Generate report">
