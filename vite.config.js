@@ -53,14 +53,17 @@ export default defineConfig(({ command, mode }) => {
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
       react({ jsxRuntime: 'classic' }),
-      nodePolyfills({
-        protocolImports: true,
-        overrides: {
-          // Since `fs` is not supported in browsers, we can use the `memfs` package to polyfill it.
-          fs: 'memfs',
-        },
-      }),
-      commonjs(),
+      ...(packageName === DATATRAK_WEB_NAME
+        ? [
+            nodePolyfills({
+              protocolImports: true,
+              overrides: {
+                fs: 'memfs',
+              },
+            }),
+            commonjs(),
+          ]
+        : []),
       // For datatrak-web, replace the process.env variables with the actual values
       // Doing this instead of using define because define also replaces the process.env
       // in the external node_modules, which caused issues when using knex in frontend
