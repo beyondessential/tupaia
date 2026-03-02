@@ -74,10 +74,6 @@ configureEnv();
   const taskUpdateHandler = new TaskUpdateHandler(models);
   taskUpdateHandler.listenForChanges();
 
-  // Add listener to handle entity parent child relation changes
-  // const syncLookupEntityRefresher = new SyncLookupEntityRefresher(models);
-  // syncLookupEntityRefresher.listenForChanges();
-
   /**
    * Scheduled tasks
    */
