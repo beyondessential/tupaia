@@ -1,5 +1,7 @@
 import { subMinutes } from 'date-fns';
+
 import { getTestModels } from '@tupaia/database';
+import { SyncFact } from '@tupaia/constants';
 
 import { CentralSyncManager } from '../sync/CentralSyncManager';
 import { TestModelRegistry } from '../types';
@@ -11,6 +13,10 @@ describe('CentralSyncManager.queueDeviceForSync', () => {
   const mockConfig = {
     maxConcurrentSessions: 1,
   };
+
+  beforeAll(async () => {
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, 3);
+  });
 
   beforeEach(async () => {
     models = getTestModels() as TestModelRegistry;
