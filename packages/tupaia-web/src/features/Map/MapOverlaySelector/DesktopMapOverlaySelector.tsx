@@ -5,13 +5,16 @@ import styled from 'styled-components';
 import { GRANULARITY_CONFIG, periodToMoment } from '@tupaia/utils';
 import { Tooltip, IconButton, SmallAlert } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';
-import { ArrowDropDown, Layers, Assignment, GetApp, Close, Image } from '@material-ui/icons';
+import { ArrowDropDown, Layers, Assignment, Close } from '@material-ui/icons';
 import {
   Accordion,
   Typography,
   AccordionSummary,
   AccordionDetails,
   CircularProgress,
+  Button,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 import { useMapOverlayMapData, useMapContext } from '../utils';
 import { Entity } from '../../../types';
@@ -38,6 +41,30 @@ const MapButton = styled(IconButton)`
   .MuiSvgIcon-root {
     font-size: 1.3rem;
   }
+`;
+
+const ExportButton = styled(Button).attrs({ variant: 'outlined' })`
+  font-size: 0.75rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  color: ${({ theme }) => theme.palette.text.primary};
+  border-color: oklch(1 0 0 / 40%);
+  padding-block: 0.15rem;
+  padding-inline: 0.5rem;
+  min-width: unset;
+  margin-inline-end: 0.5rem;
+  &:hover {
+    border-color: ${({ theme }) => theme.palette.text.primary};
+    background-color: oklch(1 0 0 / 8%);
+  }
+  .MuiButton-endIcon {
+    margin-inline-start: 0.2rem;
+    margin-inline-end: -0.2rem;
+  }
+`;
+
+const ExportMenuItem = styled(MenuItem)`
+  font-size: 0.875rem;
+  min-width: 5rem;
 `;
 
 const MaxHeightContainer = styled.div`
@@ -236,7 +263,12 @@ export const DesktopMapOverlaySelector = ({
     selectedOverlay,
   );
 
+  const isExportingAny = isExporting || isExportingImage;
+  const exportError = error || imageError;
+  const resetExportError = () => { reset(); resetImageError(); };
+
   const [mapModalOpen, setMapModalOpen] = useState(false);
+  const [exportMenuAnchor, setExportMenuAnchor] = useState<HTMLElement | null>(null);
   // This only fires when the selected overlay changes. Because this is always rendered, as is the mobile overlay selector, we only need this in one place
   useGAEffect('MapOverlays', 'Change', selectedOverlay?.name);
   const toggleMapTableModal = () => {
@@ -273,11 +305,21 @@ export const DesktopMapOverlaySelector = ({
     };
   };
 
+  const handleOpenExportMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setExportMenuAnchor(event.currentTarget);
+  };
+
+  const handleCloseExportMenu = () => {
+    setExportMenuAnchor(null);
+  };
+
   const onExportMapOverlay = () => {
+    handleCloseExportMenu();
     exportMapOverlay(getExportParams());
   };
 
   const onExportMapOverlayImage = () => {
+    handleCloseExportMenu();
     exportMapOverlayImage(getExportParams());
   };
 
@@ -293,24 +335,24 @@ export const DesktopMapOverlaySelector = ({
             <div>
               {isLoggedIn && (
                 <>
-                  <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map}>
-                    {isExporting ? (
-                      <LoadingSpinner />
-                    ) : (
-                      <Tooltip arrow placement="top" title="Export map overlay as PDF">
-                        <GetApp />
-                      </Tooltip>
-                    )}
-                  </MapButton>
-                  <MapButton onClick={onExportMapOverlayImage} disabled={isExportingImage || !map}>
-                    {isExportingImage ? (
-                      <LoadingSpinner />
-                    ) : (
-                      <Tooltip arrow placement="top" title="Export map overlay as PNG">
-                        <Image />
-                      </Tooltip>
-                    )}
-                  </MapButton>
+                  <ExportButton
+                    onClick={handleOpenExportMenu}
+                    disabled={isExportingAny || !map}
+                    endIcon={isExportingAny ? <LoadingSpinner /> : <ArrowDropDown />}
+                  >
+                    Export
+                  </ExportButton>
+                  <Menu
+                    anchorEl={exportMenuAnchor}
+                    open={Boolean(exportMenuAnchor)}
+                    onClose={handleCloseExportMenu}
+                    getContentAnchorEl={null}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  >
+                    <ExportMenuItem onClick={onExportMapOverlay}>PDF</ExportMenuItem>
+                    <ExportMenuItem onClick={onExportMapOverlayImage}>PNG</ExportMenuItem>
+                  </Menu>
                 </>
               )}
               <Tooltip arrow interactive placement="top" title="Generate report">
@@ -323,18 +365,10 @@ export const DesktopMapOverlaySelector = ({
         </Header>
         <Container>
           <TitleWrapper>
-            {error && (
+            {exportError && (
               <ErrorAlert severity="error">
-                <span>{error.message}</span>
-                <ErrorCloseButton onClick={reset} title="Clear error">
-                  <Close />
-                </ErrorCloseButton>
-              </ErrorAlert>
-            )}
-            {imageError && (
-              <ErrorAlert severity="error">
-                <span>{imageError.message}</span>
-                <ErrorCloseButton onClick={resetImageError} title="Clear error">
+                <span>{exportError.message}</span>
+                <ErrorCloseButton onClick={resetExportError} title="Clear error">
                   <Close />
                 </ErrorCloseButton>
               </ErrorAlert>
