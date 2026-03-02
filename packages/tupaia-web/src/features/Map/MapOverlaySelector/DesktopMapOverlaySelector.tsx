@@ -100,7 +100,6 @@ const Wrapper = styled(MaxHeightContainer)`
   border-radius: 0.3125rem;
   flex: 1;
   max-width: 21.25rem;
-  min-height: 52px;
   margin: 0.625rem;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
