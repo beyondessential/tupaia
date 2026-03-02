@@ -6,12 +6,14 @@ import { GRANULARITY_CONFIG, periodToMoment } from '@tupaia/utils';
 import { Tooltip, IconButton, SmallAlert } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';
 import { ArrowDropDown, Layers, Assignment, Close } from '@material-ui/icons';
+import { ChevronDown } from 'lucide-react';
+import Skeleton from '@material-ui/lab/Skeleton';
 import {
   Accordion,
+  Box,
   Typography,
   AccordionSummary,
   AccordionDetails,
-  CircularProgress,
   Button,
   Menu,
   MenuItem,
@@ -48,17 +50,23 @@ const ExportButton = styled(Button).attrs({ variant: 'outlined' })`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   color: ${({ theme }) => theme.palette.text.primary};
   border-color: white;
-  padding-block: 0.15rem;
-  padding-inline: 0.5rem;
+  text-transform: none;
+  padding-block: 0.1rem;
+  padding-inline: 0.4rem;
   min-width: unset;
   margin-inline-end: 0.5rem;
-  &:hover {
-    border-color: ${({ theme }) => theme.palette.text.primary};
-    background-color: oklch(1 0 0 / 8%);
+
+  &.Mui-disabled {
+    color: ${({ theme }) => theme.palette.text.primary};
+    border-color: white;
   }
+
   .MuiButton-endIcon {
     margin-inline-start: 0.2rem;
     margin-inline-end: -0.2rem;
+    svg {
+      font-size: 1rem;
+    }
   }
 `;
 
@@ -66,12 +74,19 @@ const ExportMenu = styled(Menu)`
   .MuiPaper-root {
     background-color: ${({ theme }) => theme.palette.secondary.main};
     border: 1px solid white;
+    min-width: 0;
+  }
+  .MuiList-root {
+    padding: 0;
   }
 `;
 
 const ExportMenuItem = styled(MenuItem)`
-  font-size: 0.875rem;
-  min-width: 5rem;
+  text-align: left;
+  font-size: 0.75rem;
+  min-width: 4.1rem;
+  padding-block: 0.1rem;
+  padding-inline: 0.3rem;
 `;
 
 const MaxHeightContainer = styled.div`
@@ -85,6 +100,7 @@ const Wrapper = styled(MaxHeightContainer)`
   border-radius: 0.3125rem;
   flex: 1;
   max-width: 21.25rem;
+  min-height: 52px;
   margin: 0.625rem;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
@@ -99,6 +115,7 @@ const Header = styled.div`
   padding-inline: 1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   pointer-events: auto;
+  min-height: 3.25rem;
 `;
 
 const Heading = styled(Typography).attrs({
@@ -199,12 +216,6 @@ const LatestDataContainer = styled.div`
 const LatestDataText = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1.3;
-`;
-
-const LoadingSpinner = styled(CircularProgress).attrs({
-  size: 16,
-})`
-  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const ErrorAlert = styled(SmallAlert)`
@@ -342,35 +353,38 @@ export const DesktopMapOverlaySelector = ({
         <Header>
           <Heading>Map overlays{friendlyEntityType && ` (${friendlyEntityType})`}</Heading>
           {selectedOverlay && (
-            <div>
-              {isLoggedIn && (
-                <>
-                  <ExportButton
-                    onClick={handleOpenExportMenu}
-                    disabled={isExportingAny || !map}
-                    endIcon={isExportingAny ? <LoadingSpinner /> : <ArrowDropDown />}
-                  >
-                    Export
-                  </ExportButton>
-                  <ExportMenu
-                    anchorEl={exportMenuAnchor}
-                    open={Boolean(exportMenuAnchor)}
-                    onClose={handleCloseExportMenu}
-                    getContentAnchorEl={null}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                  >
-                    <ExportMenuItem onClick={onExportMapOverlay}>PDF</ExportMenuItem>
-                    <ExportMenuItem onClick={onExportMapOverlayImage}>PNG</ExportMenuItem>
-                  </ExportMenu>
-                </>
-              )}
+            <Box alignItems="center" display="flex">
+              {isLoggedIn &&
+                (isExportingAny ? (
+                  <Skeleton animation="wave" width="70px" />
+                ) : (
+                  <>
+                    <ExportButton
+                      onClick={handleOpenExportMenu}
+                      disabled={!map}
+                      endIcon={<ChevronDown />}
+                    >
+                      Export
+                    </ExportButton>
+                    <ExportMenu
+                      anchorEl={exportMenuAnchor}
+                      open={Boolean(exportMenuAnchor)}
+                      onClose={handleCloseExportMenu}
+                      getContentAnchorEl={null}
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                      transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                    >
+                      <ExportMenuItem onClick={onExportMapOverlay}>PDF</ExportMenuItem>
+                      <ExportMenuItem onClick={onExportMapOverlayImage}>PNG</ExportMenuItem>
+                    </ExportMenu>
+                  </>
+                ))}
               <Tooltip arrow interactive placement="top" title="Generate report">
                 <MapButton onClick={toggleMapTableModal}>
                   <Assignment />
                 </MapButton>
               </Tooltip>
-            </div>
+            </Box>
           )}
         </Header>
         <Container>
