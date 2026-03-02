@@ -15,6 +15,10 @@ interface StreamOptions {
   streamRetryInterval?: number;
 }
 
+const isRecoverableError = (response: Response) => {
+  return response.status < 500;
+};
+
 /** Connect to a streaming endpoint and async yield messages.
  *
  * ```js
@@ -102,16 +106,6 @@ export async function* stream(
     // we've got the full message, move it out of buffer
     buffer = buffer.subarray(8 + length);
 
-    console.debug('Stream: message', {
-      // we try to show the actual name of the Kind when known instead of the raw value
-      // we also display the raw value in hex as that's how they're defined in constants
-      kind:
-        Object.entries(SYNC_STREAM_MESSAGE_KIND).find(([, value]) => value === kind)?.[0] ??
-        `0x${kind.toString(16)}`,
-      length,
-      data,
-    });
-
     if (decodeMessage) {
       // message is assumed to be an empty object when length is zero,
       // such that it can generally be assumed that message is an object
@@ -130,10 +124,15 @@ export async function* stream(
       method: method || 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Client-Version': process.env.REACT_APP_VERSION || '',
       },
       body: options ? JSON.stringify(options) : undefined,
       credentials: 'include',
     });
+
+    if (!response.ok && !isRecoverableError(response)) {
+      throw new Error(response.statusText || 'Stream ended with unknown error');
+    }
 
     const reader = response.body!.getReader();
 

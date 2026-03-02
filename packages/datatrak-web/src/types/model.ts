@@ -20,7 +20,6 @@ import {
   SurveyScreenModel,
   TaskCommentModel,
   TaskModel,
-  TombstoneModel,
   UserEntityPermissionModel,
   UserModel,
 } from '@tupaia/tsmodels';
@@ -47,7 +46,6 @@ export interface DatatrakWebModelRegistry extends ModelRegistry {
   readonly surveyScreenComponent: SurveyScreenComponentModel;
   readonly task: TaskModel;
   readonly taskComment: TaskCommentModel;
-  readonly tombstone: TombstoneModel;
   readonly user: UserModel;
   readonly userEntityPermission: UserEntityPermissionModel;
 

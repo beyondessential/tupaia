@@ -1,4 +1,4 @@
-import { BaseDatabase, toggleTombstoneTriggers } from '@tupaia/database';
+import { BaseDatabase } from '@tupaia/database';
 
 export const withDeferredSyncSafeguards = async <
   ReturnT = unknown,
@@ -24,23 +24,17 @@ export const withDeferredSyncSafeguards = async <
    * Note: Only constraints explicitly altered to be DEFERRABLE will be affected.
    * Standard foreign key constraints continue to be enforced immediately.
    */
-  await database.executeSql(`
-    SET CONSTRAINTS ALL DEFERRED;
-  `);
+  await database.executeSql('SET CONSTRAINTS ALL DEFERRED;');
 
-  // Disable tombstone triggers to avoid syncing deletion
-  // also put the records into tombstone table
-  await toggleTombstoneTriggers(database, false);
+  const results = await operation();
 
-  try {
-    return operation();
-  } finally {
-    // Switch back to immediate mode
-    await database.executeSql(`
-      SET CONSTRAINTS ALL IMMEDIATE;
-    `);
+  // The function is always wrapped inside a transaction,
+  // If the operation fails, the transaction will be rolled back.
+  // So even though the logic below to switch back to immediate mode is not run
+  // the transaction will still rollback everything.
 
-    // Re-enable tombstone triggers
-    await toggleTombstoneTriggers(database, true);
-  }
+  // Switch back to immediate mode
+  await database.executeSql('SET CONSTRAINTS ALL IMMEDIATE;');
+
+  return results;
 };

@@ -7,7 +7,9 @@
  * @typedef {import('./Entity').EntityRecord} EntityRecord
  * @typedef {import('./EntityRelation').EntityRelationRecord} EntityRelationRecord
  */
+
 import { SyncDirections } from '@tupaia/constants';
+import { EntityTypeEnum } from '@tupaia/types';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -34,7 +36,7 @@ export class ProjectRecord extends DatabaseRecord {
       entityRelations.map(async entityRelation =>
         this.otherModels.entity.findOne({
           id: entityRelation.child_id,
-          type: 'country',
+          type: EntityTypeEnum.country,
         }),
       ),
     );
@@ -87,7 +89,7 @@ export class ProjectModel extends DatabaseModel {
    * } [where]
    */
   async getAllProjectDetails(where) {
-    /** @type {true | Knex.RawBinding} */
+    /** @type {Knex.RawBinding} */
     const whereClause = (() => {
       if (!where?.code) return true;
 
@@ -98,11 +100,10 @@ export class ProjectModel extends DatabaseModel {
 
       const { comparator, comparisonValue } = code;
       if (comparator === 'not in' && Array.isArray(comparisonValue) && comparisonValue.length > 0) {
-        const projectCodes = this.database.connection.raw(
-          SqlQuery.record(comparisonValue),
+        return this.database.connection.raw(
+          `p.code NOT IN ${SqlQuery.record(comparisonValue)}`,
           comparisonValue,
         );
-        return this.database.connection.raw('p.code NOT IN ?', projectCodes);
       }
 
       return true;
@@ -156,25 +157,28 @@ export class ProjectModel extends DatabaseModel {
       countryCodesByPermissionGroup[pg] = accessPolicy.getEntitiesAllowed(pg);
     });
 
-    return this.find(
+    return await this.find(
       {
         [QUERY_CONJUNCTIONS.RAW]: {
           // Pulls permission_group/country_code pairs from the project
           // Returns any project where we have access to at least one of those pairs
           sql: `(
-            SELECT COUNT(*) > 0 FROM
-            (
-              SELECT UNNEST(project.permission_groups) as permission_group, child_entity.country_code
-              FROM entity as child_entity
-              INNER JOIN entity_relation
-                ON entity_relation.child_id = child_entity.id
-                AND entity_relation.parent_id = project.entity_id
-                AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
-            ) AS count
-            WHERE country_code IN
-            (
-              SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->permission_group)::TEXT)
-            )
+	          EXISTS (
+	            SELECT 1
+	            FROM (
+	              SELECT
+								  unnest(project.permission_groups) AS permission_group,
+									child_entity.country_code
+	              FROM entity AS child_entity
+	              INNER JOIN entity_relation
+	                ON entity_relation.child_id = child_entity.id
+	                AND entity_relation.parent_id = project.entity_id
+	                AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
+	            ) AS permission_group_entity_pairs
+	            WHERE country_code IN (
+	              SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->permission_group)::TEXT)
+	            )
+	          )
           )`,
           parameters: [JSON.stringify(countryCodesByPermissionGroup)],
         },

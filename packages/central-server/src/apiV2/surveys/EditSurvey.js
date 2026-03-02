@@ -6,7 +6,7 @@ import { convertFieldsToIds } from './convertFieldsToIds';
  * See ./README.md
  */
 export class EditSurvey extends EditHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async editRecord() {
     const surveyEditor = new SurveyEditor(this.models, this.req.assertPermissions);

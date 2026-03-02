@@ -1,4 +1,4 @@
-export { ApiConnection } from './ApiConnection';
+export { ApiConnection, ApiConnectionOptions } from './ApiConnection';
 export { AuthApi, AuthApiInterface } from './AuthApi';
 export { DataTableApi, DataTableApiInterface } from './DataTableApi';
 export { EntityApi, EntityApiInterface } from './EntityApi';

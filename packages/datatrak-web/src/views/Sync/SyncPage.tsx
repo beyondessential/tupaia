@@ -1,15 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+import type { Handler } from 'mitt';
 
+import { useSyncContext } from '../../api/SyncContext';
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
+import { useSyncEventListener, useSyncStatus } from '../../sync/syncStatus';
+import { SYNC_EVENT_ACTIONS, type SyncEvents } from '../../types';
 import { useIsMobile } from '../../utils';
 import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
-import { SYNC_EVENT_ACTIONS } from '../../types';
-import { formatDistance } from 'date-fns';
-import { useSyncContext } from '../../api/SyncContext';
 
 const Wrapper = styled.div`
   block-size: 100dvb;
@@ -47,7 +49,6 @@ const Content = styled.div`
 
 const StyledSyncStatus = styled(SyncStatus)`
   margin-block-start: 1rem;
-  font-variant-numeric: lining-nums tabular-nums;
 `;
 
 const StyledLastSyncDate = styled(LastSyncDate)`
@@ -58,83 +59,38 @@ const StyledButton = styled(Button)`
   margin-block-start: 2.25rem;
 `;
 
-export function formatlastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null): string {
-  return lastSuccessfulSyncTime
-    ? formatDistance(lastSuccessfulSyncTime, new Date(), { addSuffix: true })
-    : '';
+function useIsSyncStarted() {
+  const syncManager = useSyncContext()?.clientSyncManager;
+  const [isSyncStarted, setIsSyncStarted] = useState<boolean>(syncManager?.isSyncing ?? false);
+
+  const handler: Handler<SyncEvents[typeof SYNC_EVENT_ACTIONS.SYNC_STARTED]> = useCallback(
+    () => setIsSyncStarted(true),
+    [],
+  );
+
+  useSyncEventListener(SYNC_EVENT_ACTIONS.SYNC_STARTED, handler);
+  return isSyncStarted;
 }
 
 export const SyncPage = () => {
-  const { clientSyncManager: syncManager } = useSyncContext();
-
+  const syncManager = useSyncContext()?.clientSyncManager;
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const [syncStarted, setSyncStarted] = useState<boolean>(syncManager.isSyncing);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isSyncing, setIsSyncing] = useState<boolean>(syncManager.isSyncing);
-  const [isQueuing, setIsQueuing] = useState<boolean>(syncManager.isQueuing);
-  const [syncStage, setSyncStage] = useState<number | null>(syncManager.syncStage);
-  const [progress, setProgress] = useState<number | null>(syncManager.progress);
-  const [progressMessage, setProgressMessage] = useState<string | null>(
-    syncManager.progressMessage,
-  );
-  const [formattedLastSuccessfulSyncTime, setFormattedLastSuccessfulSyncTime] = useState<string>(
-    formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
-  );
+  const {
+    errorMessage,
+    isRequestingSync,
+    isSyncing,
+    isQueuing,
+    syncStage,
+    progress,
+    progressMessage,
+  } = useSyncStatus();
+  const isSyncStarted = useIsSyncStarted();
 
-  useEffect(() => {
-    const handler = (action, data): void => {
-      switch (action) {
-        case SYNC_EVENT_ACTIONS.SYNC_IN_QUEUE:
-          setProgress(0);
-          setIsQueuing(true);
-          setIsSyncing(false);
-          setErrorMessage(null);
-          setProgressMessage(syncManager.progressMessage);
-          break;
-        case SYNC_EVENT_ACTIONS.SYNC_STARTED:
-          setIsQueuing(false);
-          setSyncStarted(true);
-          setIsSyncing(true);
-          setProgress(0);
-          setProgressMessage('Initialising sync');
-          setSyncStage(1);
-          setErrorMessage(null);
-          break;
-        case SYNC_EVENT_ACTIONS.SYNC_ENDED:
-          setIsQueuing(false);
-          setIsSyncing(false);
-          setProgress(0);
-          setProgressMessage('');
-          break;
-        case SYNC_EVENT_ACTIONS.SYNC_STATE_CHANGED:
-          setSyncStage(syncManager.syncStage);
-          setProgress(syncManager.progress);
-          setProgressMessage(syncManager.progressMessage);
-          setFormattedLastSuccessfulSyncTime(
-            formatlastSuccessfulSyncTime(syncManager.lastSuccessfulSyncTime),
-          );
-          break;
-        case SYNC_EVENT_ACTIONS.SYNC_ERROR:
-          setIsQueuing(false);
-          setErrorMessage(data.error);
-          break;
-        default:
-          break;
-      }
-    };
-    syncManager.emitter.on('*', handler);
-    return () => {
-      syncManager.emitter.off('*', handler);
-    };
-  }, [syncManager]);
-
-  const manualSync = useCallback(() => {
-    syncManager.triggerUrgentSync();
-  }, [syncManager]);
-
-  const syncFinishedSuccessfully = syncStarted && !isSyncing && !isQueuing && !errorMessage;
+  const syncFinishedSuccessfully =
+    isSyncStarted && !isSyncing && !isQueuing && !errorMessage && !isRequestingSync;
 
   return (
     <Wrapper>
@@ -152,21 +108,19 @@ export const SyncPage = () => {
             percentage={progress}
             message={progressMessage}
             syncStage={syncStage}
-            totalStages={Object.keys(syncManager.progressMaxByStage).length}
+            totalStages={
+              syncManager ? Object.keys(syncManager.progressMaxByStage).length : undefined
+            }
             syncFinishedSuccessfully={syncFinishedSuccessfully}
             hasError={Boolean(errorMessage)}
           />
 
-          {!isSyncing && (
+          {!isSyncing && !isRequestingSync && (
             <>
-              {syncStarted && Boolean(formattedLastSuccessfulSyncTime) && (
-                <StyledLastSyncDate
-                  formattedLastSuccessfulSyncTime={formattedLastSuccessfulSyncTime}
-                  lastSyncDate={syncManager.lastSuccessfulSyncTime}
-                />
-              )}
-
-              <StyledButton onClick={manualSync}>Sync now</StyledButton>
+              <StyledLastSyncDate />
+              <StyledButton onClick={() => void syncManager?.triggerUrgentSync(queryClient)}>
+                Manual sync
+              </StyledButton>
             </>
           )}
 

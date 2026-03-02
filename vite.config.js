@@ -1,12 +1,13 @@
-import { defineConfig, loadEnv } from 'vite';
-import { ViteEjsPlugin } from 'vite-plugin-ejs';
-import viteCompression from 'vite-plugin-compression';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-import dns from 'dns';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import commonjs from 'vite-plugin-commonjs';
 import replace from '@rollup/plugin-replace';
+import react from '@vitejs/plugin-react';
+import dns from 'node:dns';
+import fs from 'node:fs';
+import path from 'node:path';
+import { defineConfig, loadEnv } from 'vite';
+import commonjs from 'vite-plugin-commonjs';
+import viteCompression from 'vite-plugin-compression';
+import { ViteEjsPlugin } from 'vite-plugin-ejs';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // work around to open browser in localhost https://vitejs.dev/config/server-options.html#server-host
 dns.setDefaultResultOrder('verbatim');
@@ -15,6 +16,13 @@ dns.setDefaultResultOrder('verbatim');
 export default defineConfig(({ command, mode }) => {
   // Load the environment variables, whether or not they are prefixed with REACT_APP_
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
+  const DATATRAK_WEB_NAME = '@tupaia/datatrak-web';
+  const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
+  const packageName = packageJson.name;
+
+  // Inject package version into env (e.g. datatrak-web uses it for sync version compatibility)
+  env.REACT_APP_VERSION = packageJson.version;
+
 
   const baseConfig = {
     build: {
@@ -53,17 +61,22 @@ export default defineConfig(({ command, mode }) => {
         },
       }),
       commonjs(),
-      // Replace the process.env variables with the actual values
+      // For datatrak-web, replace the process.env variables with the actual values
       // Doing this instead of using define because define also replaces the process.env
       // in the external node_modules, which caused issues when using knex in frontend
-      replace({
-        'process.env': JSON.stringify(env),
-        include: 'src/**/*', // Only source files
-        exclude: 'node_modules/**', // Exclude all external node_modules
-        preventAssignment: false,
-      }),
+      packageName === DATATRAK_WEB_NAME
+        ? replace({
+            'process.env': JSON.stringify(env),
+            include: 'src/**/*', // Only source files
+            exclude: 'node_modules/**', // Exclude all external node_modules
+            preventAssignment: false,
+          })
+        : null,
     ],
-    define: { __dirname: JSON.stringify('/') },
+    define: {
+      __dirname: JSON.stringify('/'),
+      ...(packageName !== DATATRAK_WEB_NAME ? { 'process.env': env } : {}),
+    },
     server: {
       open: true,
       headers: {

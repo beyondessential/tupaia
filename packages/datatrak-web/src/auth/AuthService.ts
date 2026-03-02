@@ -1,13 +1,12 @@
 import log from 'winston';
 
-import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { getBrowserTimeZone, snakeKeys } from '@tupaia/utils';
 import { post } from '../api';
 import { DatatrakWebModelRegistry } from '../types';
 import { hashPassword, verifyPassword } from './hash';
 
-interface SignInParams {
+export interface SignInParams {
   email: string;
   password: string;
 }
@@ -20,16 +19,22 @@ export class AuthService {
   }
 
   async saveLocalUser(userData: DatatrakWebUserRequest.ResBody, password: string): Promise<void> {
-    let user = await this.models.user.findOne({ email: userData.email });
-    if (!user) {
-      await this.models.user.create(snakeKeys(userData));
-    }
+    await this.models.wrapInTransaction(async transactingModels => {
+      const exists = await transactingModels.user.exists({ email: userData.email });
+      if (!exists) {
+        await transactingModels.user.create(snakeKeys(userData));
+      }
 
-    // Only update password hash, keep other user data updated via sync
-    await this.models.user.update(
-      { email: userData.email },
-      { password_hash: await hashPassword(password) },
-    );
+      // Only update password hash, keep other user data updated via sync
+      await transactingModels.user.update(
+        { email: userData.email },
+        {
+          password_hash: await hashPassword(password),
+          // @ts-ignore access_policy is an extra field in datatrak-web
+          access_policy: userData.accessPolicy,
+        },
+      );
+    });
   }
 
   async signIn(params: SignInParams) {
@@ -57,18 +62,14 @@ export class AuthService {
       email,
     });
 
-    if (!userRecord) {
-      throw new Error('Invalid username or password');
-    }
-
-    if (!userRecord.password_hash) {
+    if (!userRecord?.password_hash) {
       throw new Error(
         'Before using DataTrak offline, please log in once while connected to the internet',
       );
     }
 
     if (!(await verifyPassword(userRecord.password_hash, password))) {
-      throw new Error('Invalid user credentials');
+      throw new Error('Invalid username or password');
     }
 
     const { preferences = {} } = userRecord;

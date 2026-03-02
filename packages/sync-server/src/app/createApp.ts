@@ -4,6 +4,7 @@ import { ForwardingAuthHandler } from '@tupaia/api-client';
 import { TupaiaDatabase } from '@tupaia/database';
 import { MicroServiceApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 
+import { versionCompatibility } from '../middleware/versionCompatibility';
 import { CentralSyncManager } from '../sync';
 import { SyncStartSessionRequest, SyncStartSessionRoute } from '../routes/SyncStartSessionRoute';
 import { SyncReadyRequest, SyncReadyRoute } from '../routes/SyncReadyRoute';
@@ -29,16 +30,16 @@ export const addCentralSyncManagerToContext =
  */
 export function createApp(database = new TupaiaDatabase(), syncManager: CentralSyncManager) {
   const app = new MicroServiceApiBuilder(database, 'sync')
-    .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
+    .attachApiClientToContext({
+      authHandlerProvider: (req: Request) => new ForwardingAuthHandler(req.headers.authorization),
+    })
     .useMiddleware(addCentralSyncManagerToContext(syncManager))
     .useBasicBearerAuth()
+    .useMiddleware(versionCompatibility) // Blocks '/test' route from MicroServiceApiBuilder.build()
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
     .get<SyncReadyRequest>('sync/:sessionId/status', handleWith(SyncReadyRoute))
     .get<SyncMetadataRequest>('sync/:sessionId/metadata', handleWith(SyncMetadataRoute))
-    .post<SyncInitiatePullRequest>(
-      'sync/:sessionId/pull',
-      handleWith(SyncInitiatePullRoute),
-    )
+    .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
     .get<SyncPullReadyRequest>('sync/:sessionId/pull/status', handleWith(SyncPullReadyRoute))
     .get<SyncPullMetadataRequest>(
       'sync/:sessionId/pull/metadata',
@@ -46,7 +47,10 @@ export function createApp(database = new TupaiaDatabase(), syncManager: CentralS
     )
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
     .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
-    .put<SyncPushCompleteRequest>('sync/:sessionId/push/complete', handleWith(SyncPushCompleteRoute))
+    .put<SyncPushCompleteRequest>(
+      'sync/:sessionId/push/complete',
+      handleWith(SyncPushCompleteRoute),
+    )
     .get<SyncPushStatusRequest>('sync/:sessionId/push/status', handleWith(SyncPushStatusRoute))
     .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
 

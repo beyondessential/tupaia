@@ -1,5 +1,7 @@
 import { subMinutes } from 'date-fns';
+
 import { getTestModels } from '@tupaia/database';
+import { SyncFact } from '@tupaia/constants';
 
 import { CentralSyncManager } from '../sync/CentralSyncManager';
 import { TestModelRegistry } from '../types';
@@ -16,6 +18,8 @@ describe('CentralSyncManager.queueDeviceForSync', () => {
     models = getTestModels() as TestModelRegistry;
 
     centralSyncManager = new CentralSyncManager(models, mockConfig);
+
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, 3);
 
     // Clear any existing data
     await models.syncSession.delete({});

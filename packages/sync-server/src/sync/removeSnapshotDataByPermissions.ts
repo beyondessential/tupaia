@@ -54,6 +54,7 @@ export const removeSnapshotDataByPermissions = async (
           columns: [`${tableName}.id`],
         },
       },
+      is_deleted: false, // only delete undeleted records
     };
 
     // Example query to delete survey responses that user does not have access to from the snapshot table:

@@ -19,6 +19,7 @@ export type ExtendedFieldFunctions = Readonly<{
 export type ExtendedEntityFieldName = keyof AugmentedEntityRecord | keyof ExtendedFieldFunctions;
 
 export type ExtendedEntityFields = AugmentedEntityRecord & ExtendedFieldFunctions;
+
 export type EntityResponseObject = {
   [field in ExtendedEntityFieldName]: ExtendedEntityFields[field];
 };
@@ -43,8 +44,8 @@ export async function formatEntityForResponse(
 
 export async function formatEntitiesForResponse(
   ctx: FormatContext,
-  entities: AugmentedEntityRecord[],
-  fields: ExtendedEntityFieldName[],
+  entities: readonly AugmentedEntityRecord[],
+  fields: readonly ExtendedEntityFieldName[],
 ) {
   const responseBuilders = new Array(entities.length)
     .fill(0)

@@ -3,7 +3,6 @@ import { Request } from 'express';
 import { SurveyResponseModel, UserModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSubmitSurveyResponseRequest as RequestT } from '@tupaia/types';
-import { handleTaskCompletion } from './handleTaskCompletion';
 
 export type SubmitSurveyResponseRequest = Request<
   RequestT.Params,
@@ -34,7 +33,7 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
       await UserModel.addRecentEntities(models, userId, recent_entities);
     }
 
-    await handleTaskCompletion(models, {
+    await models.task.completeTaskForSurveyResponse({
       ...processedResponse,
       id: response.surveyResponseId,
     });

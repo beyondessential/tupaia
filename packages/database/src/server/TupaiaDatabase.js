@@ -2,8 +2,10 @@
 
 import { types as pgTypes } from 'pg';
 import winston from 'winston';
+import autobind from 'react-autobind';
 
 import { Multilock } from '@tupaia/utils';
+
 import { BaseDatabase } from '../core';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { getConnectionConfig } from './getConnectionConfig';
@@ -20,26 +22,23 @@ export class TupaiaDatabase extends BaseDatabase {
   /**
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
+
    */
-  constructor(transactingConnection, transactingChangeChannel, useNumericStuff = false) {
+  constructor(transactingConnection, transactingChangeChannel) {
     super(transactingConnection, transactingChangeChannel, 'pg', getConnectionConfig);
+
+    autobind(this);
 
     this.changeHandlers = {};
     this.handlerLock = new Multilock();
     this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
-
-    this.configurePgGlobals(useNumericStuff);
   }
 
-  configurePgGlobals(useNumericStuff = false) {
+  /** @override */
+  async setCustomTypeParsers() {
     // turn off parsing of timestamp (not timestamptz), so that it stays as a sort of "universal time"
     // string, independent of timezones, rather than being converted to local time
     pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
-
-    if (useNumericStuff) {
-      pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, Number.parseFloat);
-      pgTypes.setTypeParser(20, Number.parseInt); // bigInt type to Integer
-    }
   }
 
   getHandlersForChange(change) {
@@ -86,7 +85,9 @@ export class TupaiaDatabase extends BaseDatabase {
   getOrCreateChangeChannel() {
     if (!this.changeChannel) {
       this.changeChannel = this.transactingChangeChannel || new DatabaseChangeChannel();
-      this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
+      // Arrow function needed because autobind (see constructor) only binds immediate prototype’s
+      // methods, not inherited ones. Otherwise this fails in subclasses of TupaiaDatabase.
+      this.changeChannel.addDataChangeHandler(change => this.notifyChangeHandlers(change));
       this.changeChannelPromise = this.changeChannel.ping(undefined, 0);
     }
     return this.changeChannel;
@@ -144,6 +145,16 @@ export class TupaiaDatabase extends BaseDatabase {
   async createTransaction(transactionConfig = {}) {
     const transaction = await this.connection.transaction(transactionConfig);
     return new TupaiaDatabase(transaction, this.changeChannel);
+  }
+
+  /**
+   * Force a change to be recorded against the records matching the search criteria, and return
+   * those records.
+   */
+  async markAsChanged(recordType, where, options) {
+    const records = await this.find(recordType, where, options);
+    await this.markRecordsAsChanged(recordType, records);
+    return records;
   }
 
   async markRecordsAsChanged(recordType, records) {

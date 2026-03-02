@@ -4,18 +4,24 @@
 import { clone } from 'es-toolkit';
 import omitBy from 'lodash.omitby';
 
-import { AccessPolicy } from '@tupaia/access-policy';
-import { ProjectRecord, extractEntityFilterFromObject } from '@tupaia/tsmodels';
-import { camelcaseKeys, ensure, isNotNullish, isNullish } from '@tupaia/tsutils';
-import { Entity, Project } from '@tupaia/types';
+import type { AccessPolicy } from '@tupaia/access-policy';
+import { extractEntityFilterFromObject, type ProjectRecord } from '@tupaia/tsmodels';
+import { assertIsNotNullish, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
+import type { Entity, Project } from '@tupaia/types';
 import { snakeKeys } from '@tupaia/utils';
-import { CurrentUser } from '../../api';
-import { DatatrakWebModelRegistry } from '../../types';
-import { ExtendedEntityFieldName, formatEntitiesForResponse } from '../../utils';
+import type { CurrentUser } from '../../api';
+import type { DatatrakWebModelRegistry } from '../../types';
+import { formatEntitiesForResponse, type ExtendedEntityFieldName } from '../../utils';
 import { isExtendedField } from '../../utils/extendedFieldFunctions';
-import { AugmentedEntityRecord } from '../../utils/formatEntity';
+import type { AugmentedEntityRecord } from '../../utils/formatEntity';
 
-const DEFAULT_FIELDS: ExtendedEntityFieldName[] = ['id', 'parent_name', 'code', 'name', 'type'];
+const DEFAULT_FIELDS = [
+  'id',
+  'parent_name',
+  'code',
+  'name',
+  'type',
+] as const satisfies ExtendedEntityFieldName[];
 
 const DEFAULT_PAGE_SIZE = 100;
 
@@ -67,12 +73,12 @@ export function sortSearchResults<T extends SearchResult = SearchResult>(
 
 const getAllowedCountries = async (
   models: DatatrakWebModelRegistry,
-  rootEntityId: string,
+  rootEntityId: Entity['id'],
   project: ProjectRecord,
   isPublic: boolean,
   accessPolicy: AccessPolicy,
-) => {
-  const rootEntity = await models.entity.findById(rootEntityId);
+): Promise<Entity['code'][]> => {
+  const rootEntity = await models.entity.findByIdOrThrow(rootEntityId);
 
   if (!project.entity_hierarchy_id) {
     throw new Error('Project entity hierarchy ID is not set');
@@ -85,9 +91,10 @@ const getAllowedCountries = async (
   let allowedCountries = [...new Set(childCodes)];
 
   if (!isPublic) {
-    const { permission_groups: projectPermissionGroups } = await models.project.findOne({
-      code: project.code,
-    });
+    const { permission_groups: projectPermissionGroups } = await models.project.findOneOrThrow(
+      { code: project.code },
+      { columns: ['permission_groups'] },
+    );
 
     // Fetch all country codes we have any of the project permission groups access to
     const projectAccessibleCountries = new Set<Entity['code']>(
@@ -136,93 +143,87 @@ export const getEntityDescendants = async ({
   user: CurrentUser;
   accessPolicy: AccessPolicy;
 }) => {
-  const {
-    filter,
-    searchString,
-    fields = DEFAULT_FIELDS,
-    pageSize = DEFAULT_PAGE_SIZE,
-  } = params ?? {};
+  assertIsNotNullish(
+    projectCode,
+    `useProjectEntities query function called with ${projectCode} projectCode`,
+  );
+
+  const { filter, searchString, fields = DEFAULT_FIELDS, pageSize = DEFAULT_PAGE_SIZE } = params;
   const { countryCode, grandparentId, parentId, type } = filter ?? {};
 
   const entityFilter = buildEntityFilter(params);
 
-  const project = ensure(
-    await models.project.findOne({ code: ensure(projectCode) }),
-    `No project exists with code ${projectCode}`,
-  );
+  const formattedEntities = await models.wrapInReadOnlyTransaction(async transactingModels => {
+    const project = await transactingModels.project.findOneOrThrow({ code: projectCode });
 
-  // This should never happen, but just in case
-  if (!project.entity_hierarchy_id) {
-    throw new Error('Project entity hierarchy ID is not set');
-  }
+    // This should never happen, but just in case
+    if (!project.entity_hierarchy_id) throw new Error('Project entity hierarchy ID is not set');
 
-  const rootEntityId = parentId || grandparentId || project.entity_id;
-  if (!rootEntityId) {
-    throw new Error('No valid rootEntity found');
-  }
+    const rootEntityId = parentId || grandparentId || project.entity_id;
+    if (!rootEntityId) throw new Error('No valid rootEntity found');
 
-  const allowedCountries = await getAllowedCountries(
-    models,
-    rootEntityId,
-    project,
-    false,
-    accessPolicy,
-  );
-
-  const dbEntityFilter = extractEntityFilterFromObject(allowedCountries, entityFilter);
-
-  if (parentId) {
-    // If parentId is provided, we just want to get the children of that entity
-    dbEntityFilter.generational_distance = 1;
-  } else if (grandparentId) {
-    // If grandparentId is provided, we just want to get the grandchildren of that entity
-    dbEntityFilter.generational_distance = 2;
-  }
-
-  const entities: AugmentedEntityRecord[] =
-    await models.entity.getDescendantsFromParentChildRelation(
-      project.entity_hierarchy_id,
-      [rootEntityId],
-      {
-        filter: dbEntityFilter,
-        fields: fields.filter(field => !isExtendedField(field)),
-        pageSize,
-      },
+    const allowedCountries = await getAllowedCountries(
+      transactingModels,
+      rootEntityId,
+      project,
+      false,
+      accessPolicy,
     );
 
-  const getRecentEntities = async () => {
-    const recentEntityIds =
-      user.isLoggedIn && // Recent entities irrelevant for public surveys
-      user.id && // Redundant (implied by isLoggedIn), for type inference
-      countryCode &&
-      type
-        ? new Set(await models.user.getRecentEntityIds(user.id, countryCode, type))
-        : new Set();
-
-    const recentEntities: AugmentedEntityRecord[] = [];
-    for (const entity of entities) {
-      if (!recentEntityIds.has(entity.id)) continue;
-      // clone() (not { ...entity }) so copy is still an EntityRecord instance
-      const augmented = clone(entity);
-      augmented.is_recent = true;
-      recentEntities.push(augmented);
+    const dbEntityFilter = extractEntityFilterFromObject(allowedCountries, entityFilter);
+    if (parentId) {
+      // If parentId is provided, we just want to get the children of that entity
+      dbEntityFilter.generational_distance = 1;
+    } else if (grandparentId) {
+      // If grandparentId is provided, we just want to get the grandchildren of that entity
+      dbEntityFilter.generational_distance = 2;
     }
 
-    return recentEntities;
-  };
+    const entities: AugmentedEntityRecord[] =
+      await transactingModels.entity.getDescendantsFromParentChildRelation(
+        project.entity_hierarchy_id,
+        [rootEntityId],
+        {
+          filter: dbEntityFilter,
+          fields: fields.filter(field => !isExtendedField(field)),
+          pageSize,
+        },
+      );
 
-  const sortedEntities = searchString
-    ? sortSearchResults(searchString, entities)
-    : [
-        ...(await getRecentEntities()),
-        ...entities.sort((a, b) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
-      ];
+    const getRecentEntities = async () => {
+      const recentEntityIds =
+        user.isLoggedIn && // Recent entities irrelevant for public surveys
+        user.id && // Redundant (implied by isLoggedIn), for type inference
+        countryCode &&
+        type
+          ? new Set(await transactingModels.user.getRecentEntityIds(user.id, countryCode, type))
+          : new Set();
 
-  const formattedEntities = await formatEntitiesForResponse(
-    { hierarchyId: project.entity_hierarchy_id },
-    sortedEntities,
-    [...fields, 'is_recent'],
-  );
+      const recentEntities: AugmentedEntityRecord[] = [];
+      for (const entity of entities) {
+        if (!recentEntityIds.has(entity.id)) continue;
+        // clone() (not { ...entity }) so copy is still an EntityRecord instance
+        const augmented = clone(entity);
+        augmented.is_recent = true;
+        recentEntities.push(augmented);
+      }
+
+      return recentEntities;
+    };
+
+    const sortedEntities = searchString
+      ? sortSearchResults(searchString, entities)
+      : [
+          ...(await getRecentEntities()),
+          ...entities.sort((a, b) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
+        ];
+
+    return await formatEntitiesForResponse(
+      { hierarchyId: project.entity_hierarchy_id },
+      sortedEntities,
+      [...fields, 'is_recent'],
+    );
+  });
 
   return camelcaseKeys(formattedEntities, { deep: true });
 };

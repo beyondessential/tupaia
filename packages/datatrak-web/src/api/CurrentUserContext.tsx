@@ -1,9 +1,10 @@
+import { useIsMutating } from '@tanstack/react-query';
 import React, { ReactNode, createContext, useContext } from 'react';
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { FullPageLoader } from '@tupaia/ui-components';
-
+import { useIsSyncing } from '../sync/syncStatus';
 import { useUser } from './queries';
 
 export interface CurrentUserContextType
@@ -26,8 +27,16 @@ export const useCurrentUserContext = (): CurrentUserContextType => {
 
 export const CurrentUserContextProvider = ({ children }: { children: Readonly<ReactNode> }) => {
   const currentUserQuery = useUser();
+  const isLoggingOut = useIsMutating(['logout']);
+  const isSyncing = useIsSyncing();
+
   if (currentUserQuery.isLoading) {
+    // This doesn’t necessarily mean logging in. Fetching user may return {}.
     return <FullPageLoader />;
+  }
+
+  if (isLoggingOut) {
+    return <FullPageLoader message={isSyncing ? 'Finishing sync…' : 'Logging out…'} />;
   }
 
   const data = currentUserQuery.data;

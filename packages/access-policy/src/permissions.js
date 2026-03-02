@@ -38,8 +38,8 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
 /**
  * Returns `true` if any of the permissions assertions pass, otherwise throws
  * @param {function[]} assertions Each permissions assertion should return true or throw
- * @param {string} errorMessage
- * @returns {true}
+ * @param {string} [errorMessage]
+ * @returns {function}
  * @privateRemarks Ideally, these should throw `PermissionsError`s but adding @tupaia/utils as a
  * transitive dependency of @tupaia/meditrak-app causes MediTrak build to fail because it has
  * imports from node:fs.
@@ -140,5 +140,5 @@ export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames)
   ) {
     return true;
   }
-  throw new Error(`Need access to ${permissionGroupNames.join(', ')}`);
+  throw new Error(`Need access to ${new Intl.ListFormat('en-AU').format(permissionGroupNames)}`);
 };

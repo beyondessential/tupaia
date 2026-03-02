@@ -38,9 +38,7 @@ export class MapOverlayModel extends DatabaseModel {
       'map_overlay.code': measureCodes,
     });
     return measureResults.sort(
-      (a, b) =>
-        measureCodes.findIndex(measureCode => measureCode === a.code) -
-        measureCodes.findIndex(measureCode => measureCode === b.code),
+      (a, b) => measureCodes.indexOf(a.code) - measureCodes.indexOf(b.code),
     );
   }
 

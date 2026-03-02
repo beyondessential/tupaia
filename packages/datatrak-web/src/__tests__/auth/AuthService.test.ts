@@ -1,4 +1,3 @@
-import { FACT_CURRENT_USER_ID } from '@tupaia/constants';
 import { AuthService } from '../../auth/AuthService';
 import { DatatrakWebModelRegistry } from '../../types';
 
@@ -41,6 +40,14 @@ Object.defineProperty(window.navigator, 'userAgent', {
   value: 'Mozilla/5.0 (Test Browser)',
 });
 
+const MOCKED_TRANSFORMED_USER = {
+  id: 'user-123',
+  email: 'test@example.com',
+  first_name: 'Test',
+  last_name: 'User',
+  access_policy: {},
+};
+
 class NetworkError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -61,13 +68,21 @@ describe('AuthService', () => {
   it('login remotely if internet is available', async () => {
     const models = {
       user: {
-        update: jest.fn(),
-        findOne: jest.fn().mockResolvedValue(null),
         create: jest.fn(),
+        exists: jest.fn().mockResolvedValue(false),
+        findOne: jest.fn().mockResolvedValue(null),
+        transformUserData: jest.fn().mockResolvedValue(MOCKED_TRANSFORMED_USER),
+        update: jest.fn(),
       },
       localSystemFact: {
         set: jest.fn(),
       },
+      wrapInTransaction: jest
+        .fn()
+        .mockImplementation(
+          async (callback: <T = unknown>(models: DatatrakWebModelRegistry) => Promise<T>) =>
+            await callback(models),
+        ),
     } as unknown as DatatrakWebModelRegistry;
 
     authService = new AuthService(models);
@@ -101,6 +116,7 @@ describe('AuthService', () => {
           password_hash: 'password123',
         }),
         create: jest.fn(),
+        transformUserData: jest.fn().mockResolvedValue(MOCKED_TRANSFORMED_USER),
       },
       localSystemFact: {
         set: jest.fn(),
@@ -109,12 +125,12 @@ describe('AuthService', () => {
 
     authService = new AuthService(models);
 
-    await authService.signIn({
+    const user = await authService.signIn({
       email: 'test@example.com',
       password: 'password123',
     });
 
-    expect(models.localSystemFact.set).toHaveBeenCalledWith(FACT_CURRENT_USER_ID, 'user-123');
+    expect(user).toEqual(MOCKED_TRANSFORMED_USER);
   });
 
   it('login locally if remote login fails', async () => {
@@ -132,6 +148,7 @@ describe('AuthService', () => {
           password_hash: 'password123',
         }),
         create: jest.fn(),
+        transformUserData: jest.fn().mockResolvedValue(MOCKED_TRANSFORMED_USER),
       },
       localSystemFact: {
         set: jest.fn(),
@@ -143,12 +160,12 @@ describe('AuthService', () => {
       .fn()
       .mockRejectedValue(new NetworkError('Remote login failed', 500));
 
-    await authService.signIn({
+    const user = await authService.signIn({
       email: 'test@example.com',
       password: 'password123',
     });
 
-    expect(models.localSystemFact.set).toHaveBeenCalledWith(FACT_CURRENT_USER_ID, 'user-123');
+    expect(user).toEqual(MOCKED_TRANSFORMED_USER);
   });
 
   it('throws an error if there is no internet connection and user has never logged in', async () => {

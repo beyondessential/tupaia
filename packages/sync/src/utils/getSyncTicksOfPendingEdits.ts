@@ -11,13 +11,13 @@ export const getSyncTicksOfPendingEdits = async (database: TupaiaDatabase) => {
   // - sync snapshot locks which are `ExclusiveLock`
   // => Only select for in-flight transaction locks by filtering for `ShareLock`
   // to avoid clashing with the sync snapshot locks
-  const results = (await database.executeSql(
+  const results = await database.executeSql<PendingEditTickResult[]>(
     `
       SELECT objid AS tick FROM pg_locks
       WHERE locktype = 'advisory'
       AND mode = 'ShareLock'
     `,
-  )) as PendingEditTickResult[];
+  );
 
   return results?.map((r: PendingEditTickResult) => r.tick);
 };

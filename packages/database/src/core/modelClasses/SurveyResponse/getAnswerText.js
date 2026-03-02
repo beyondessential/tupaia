@@ -1,14 +1,7 @@
-/*
- * Duplicated from @tupaia/central-server/dataAccessors/answerBodyParsers, with online-only
- * functionality removed. (Deferred to RN-1752)
- */
+import { isPlainObject } from 'es-toolkit';
 
-import { isValidHttpUrl } from '@tupaia/tsutils';
+import { isObjectId, isValidHttpUrl } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
-
-function isValidFileId(str) {
-  return /^[a-f\d]{24}$/.test(str);
-}
 
 /**
  * @typedef {import('@tupaia/types').Answer} Answer
@@ -26,11 +19,26 @@ async function getFileAnswerText(answer) {
     throw new Error(`getFileAnswerText called with answer of type ${answer.type}`);
   }
 
-  if (!answer.body?.hasOwnProperty('uniqueFileName') || !answer.body?.hasOwnProperty('data')) {
+  if (
+    !answer.body ||
+    !Object.hasOwn(answer.body, 'uniqueFileName') ||
+    !Object.hasOwn(answer.body, 'data')
+  ) {
     return answer.body;
   }
 
-  return null; // TODO: Handle offline file uploads (RN-1752)
+  return JSON.stringify(answer.body);
+}
+
+/**
+ * @type {AnswerBodyParser}
+ */
+async function getGeolocateAnswerText(answer) {
+  if (answer.type !== QuestionType.Geolocate) {
+    throw new Error(`getGeolocateAnswerText called with answer of type ${answer.type}`);
+  }
+
+  return isPlainObject(answer.body) ? JSON.stringify(answer.body) : answer.body;
 }
 
 /**
@@ -43,7 +51,7 @@ async function getPhotoAnswerText(answer) {
 
   if (isValidHttpUrl(answer.body)) return answer.body;
 
-  if (isValidFileId(answer.body)) {
+  if (isObjectId(answer.body)) {
     // TODO: Figure out why importing these from @tupaia/server-utils breaks @tupaia/datatrak-web
     const isProduction = () =>
       (process.env.IS_PRODUCTION_ENVIRONMENT === 'true' || process.env.NODE_ENV === 'production') &&
@@ -54,12 +62,13 @@ async function getPhotoAnswerText(answer) {
     return `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.jpg`;
   }
 
-  return null; // TODO: Handle offline image uploads (RN-1752)
+  return answer.body;
 }
 
 /** @type {Record<QuestionType, AnswerBodyParser>} */
 const offlineAnswerBodyParsers = {
   [QuestionType.File]: getFileAnswerText,
+  [QuestionType.Geolocate]: getGeolocateAnswerText,
   [QuestionType.Photo]: getPhotoAnswerText,
 };
 

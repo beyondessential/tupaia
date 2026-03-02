@@ -1,13 +1,17 @@
 import axios from 'axios';
+
 import FetchError from './fetchError';
 
 // Needs to use process.env instead of import.meta.env for compatibility with jest
 export const API_URL = process.env.REACT_APP_DATATRAK_WEB_API_URL || 'http://localhost:8110/v1';
 
+axios.defaults.headers.common['X-Client-Version'] = process.env.REACT_APP_VERSION || '';
+
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
 
-export const timeout = 180 * 1000; // 3 minutes as sync might take a while
+axios.defaults.timeout = 180_000; // 3 minutes as sync might take a while
+
 export interface RequestParameters extends Record<string, any> {
   params?: Record<string, any>;
 }
@@ -15,18 +19,10 @@ export interface RequestParameters extends Record<string, any> {
 type RequestParametersWithMethod = RequestParameters & {
   method: 'get' | 'post' | 'put' | 'delete';
 };
-const getRequestOptions = (options?: RequestParametersWithMethod) => {
-  return {
-    ...options,
-    timeout,
-  };
-};
 
 const request = async (endpoint: string, options?: RequestParametersWithMethod) => {
-  const requestOptions = getRequestOptions(options);
-
   try {
-    const response = await axios(`${API_URL}/${endpoint}`, requestOptions);
+    const response = await axios(`${API_URL}/${endpoint}`, options);
 
     return response.data;
   } catch (error: any) {

@@ -45,7 +45,7 @@ export class UserRoute extends Route<UserRequest> {
 
     const [project, country] = await Promise.all([fetchProject(), fetchCountry()]);
 
-    return models.user.transformUserData(
+    return await models.user.transformUserData(
       { ...userData, access_policy: accessPolicy.policy },
       project,
       country,

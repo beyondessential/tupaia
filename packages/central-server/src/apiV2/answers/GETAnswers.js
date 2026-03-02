@@ -1,6 +1,5 @@
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
-import { assertSurveyResponsePermissions } from '../surveyResponses';
 import {
   assertAnswerPermissions,
   createAnswerViaSurveyResponseDBFilter,
@@ -13,7 +12,7 @@ import {
  * - /surveyResponses/id/answers
  */
 export class GETAnswers extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(answerId, options) {
     const answerPermissionsChecker = async accessPolicy =>
@@ -35,8 +34,12 @@ export class GETAnswers extends GETHandler {
 
   async getPermissionsViaParentFilter(criteria, options) {
     // Check parent permissions
-    const surveyResponseChecker = accessPolicy =>
-      assertSurveyResponsePermissions(accessPolicy, this.models, this.parentRecordId);
+    const surveyResponseChecker = async accessPolicy =>
+      await this.models.surveyResponse.assertCanRead(
+        this.models,
+        accessPolicy,
+        this.parentRecordId,
+      );
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponseChecker]),

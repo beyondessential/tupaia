@@ -2,7 +2,6 @@ import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '.
 import { GETHandler } from '../GETHandler';
 import { getQueryOptionsForColumns } from '../GETHandler/helpers';
 import { assertEntityPermissions } from '../entities';
-import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
 
 /**
  * Handles endpoints:
@@ -10,9 +9,9 @@ import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissio
  * - /surveyResponses/:surveyResponseId
  */
 export class GETSurveyResponses extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
-  customJoinConditions = {
+  customJoinConditions = /** @type {const} */ ({
     country: {
       through: 'entity',
       nearTableKey: 'entity.country_code',
@@ -22,18 +21,15 @@ export class GETSurveyResponses extends GETHandler {
       nearTableKey: 'survey_response.entity_id',
       farTableKey: 'entity.id',
     },
-  };
+  });
 
   async findSingleRecord(surveyResponseId, options) {
-    const surveyResponse = await super.findSingleRecord(surveyResponseId, options);
-
-    const surveyResponseChecker = accessPolicy =>
-      assertSurveyResponsePermissions(accessPolicy, this.models, surveyResponseId);
-
+    const surveyResponseChecker = async accessPolicy =>
+      await this.models.surveyResponse.assertCanRead(this.models, accessPolicy, surveyResponseId);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponseChecker]),
     );
-    return surveyResponse;
+    return await super.findSingleRecord(surveyResponseId, options);
   }
 
   async getPermissionsFilter(criteria, options) {

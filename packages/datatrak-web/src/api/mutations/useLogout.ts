@@ -1,29 +1,77 @@
 import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
 
-import { FACT_CURRENT_USER_ID, FACT_PREVIOUSLY_LOGGED_IN_USER_ID } from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
 
+import { ROUTES } from '../../constants';
+import { clearDatabase } from '../../database';
+import { DatatrakWebModelRegistry } from '../../types';
+import { useSyncContext } from '../SyncContext';
 import { post } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { useDatabaseMutation } from '../queries';
-import { DatatrakWebModelRegistry } from '../../types';
 
 const logoutOnline = async () => {
   return await post('logout');
 };
 
 const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) => {
-  const currentUserId = await models.localSystemFact.get(FACT_CURRENT_USER_ID);
-  await models.localSystemFact.set(FACT_PREVIOUSLY_LOGGED_IN_USER_ID, currentUserId);
-  await models.localSystemFact.delete({ key: FACT_CURRENT_USER_ID });
+  try {
+    return await models.wrapInTransaction(async transactingModels => {
+      const currentUserId = await transactingModels.localSystemFact.get(SyncFact.CURRENT_USER_ID);
+      if (currentUserId) {
+        // currentUserId should always be defined here; this is mostly to satisfy TypeScript
+        await transactingModels.localSystemFact.set(SyncFact.PREVIOUSLY_LOGGED_IN_USER_ID, currentUserId);
+      }
+
+      await transactingModels.localSystemFact.delete({ key: SyncFact.CURRENT_USER_ID });
+
+      const permissionsDidChange =
+        (await transactingModels.localSystemFact.get(SyncFact.PERMISSIONS_CHANGED)) === 'true';
+      if (permissionsDidChange) {
+        await clearDatabase(transactingModels);
+      }
+
+      return { success: true };
+    });
+  } catch (e: unknown) {
+    if (e instanceof Error && e.name === 'KnexTimeoutError') {
+      throw new Error(
+        'Couldn’t log out, likely because sync was taking a long time. Please wait for sync to finish and try again.',
+      );
+    }
+    throw e;
+  }
 };
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
   const isOfflineFirst = useIsOfflineFirst();
+  const { clientSyncManager } = useSyncContext() || {};
+  const navigate = useNavigate();
 
   return useDatabaseMutation(isOfflineFirst ? logoutOffline : logoutOnline, {
+    mutationKey: ['logout'],
     onSuccess: async () => {
-      await queryClient.resetQueries();
+      // Immediately refetch user rather than waiting for cache invalidation to trigger refetch in
+      // its own time. Having a user cached in the query client will make the ROUTES.LOGIN page
+      // redirect back to ROUTES.HOME.
+      // @see AuthViewLoggedInRedirect in src/routes/Routes.tsx
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ['getUser'] }),
+        queryClient.refetchQueries({ queryKey: ['isLoggedIn'] }),
+      ]);
+      navigate(ROUTES.LOGIN);
+
+      await Promise.all([
+        clientSyncManager?.stopSyncService(),
+        queryClient.invalidateQueries({
+          predicate: q => {
+            const queryKeyHead = q.queryKey?.[0];
+            return queryKeyHead !== 'getUser' && queryKeyHead !== 'isLoggedIn';
+          },
+        }),
+      ]);
     },
   });
 };

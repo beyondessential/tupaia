@@ -1,16 +1,18 @@
-import { compact, groupBy, mapValues } from 'lodash';
+import { groupBy, mapValues } from 'es-toolkit';
 
-import { BaseDatabase, DatabaseModel } from '@tupaia/database';
+import { BaseDatabase, DatabaseModel, type PublicSchemaRecordName } from '@tupaia/database';
 import { isNotNullish } from '@tupaia/tsutils';
 
 interface Dependency {
-  table_name: string;
-  depends_on: string;
+  table_name: PublicSchemaRecordName;
+  depends_on: PublicSchemaRecordName | null;
 }
 
-export async function getDependencyOrder(database: BaseDatabase): Promise<string[]> {
-  const sorted: string[] = [];
-  const dependencies = (await database.executeSql(`
+export async function getDependencyOrder(
+  database: BaseDatabase,
+): Promise<PublicSchemaRecordName[]> {
+  const sorted: PublicSchemaRecordName[] = [];
+  const dependencies = await database.executeSql<Dependency[]>(`
     WITH all_tables AS (
       SELECT c.relname AS table_name
       FROM pg_class c
@@ -35,12 +37,15 @@ export async function getDependencyOrder(database: BaseDatabase): Promise<string
     FROM all_tables t
     LEFT JOIN foreign_keys fk ON t.table_name = fk.child_table
     ORDER BY t.table_name, fk.depends_on;
-  `)) as Dependency[];
+  `);
   const groupedDependencies = new Map(
     Object.entries(
-      mapValues(groupBy(dependencies, 'table_name'), v => compact(v.map(d => d.depends_on))),
+      mapValues(
+        groupBy(dependencies, d => d.table_name),
+        v => v.map(d => d.depends_on).filter(isNotNullish),
+      ),
     ),
-  );
+  ) as Map<PublicSchemaRecordName, PublicSchemaRecordName[]>;
 
   while (groupedDependencies.size > 0) {
     for (const [modelName, dependsOn] of groupedDependencies) {

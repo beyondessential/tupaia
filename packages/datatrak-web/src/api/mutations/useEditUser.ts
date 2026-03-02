@@ -1,42 +1,42 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
+import { ensure } from '@tupaia/tsutils';
+import { snakeKeys } from '@tupaia/utils';
+import { editUser } from '../../database';
 import { useDatabaseContext } from '../../hooks/database';
-import { UserAccountDetails } from '../../types';
+import { DatatrakWebModelRegistry, UserAccountDetails } from '../../types';
 import { put } from '../api';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { useDatabaseMutation } from '../queries';
 
-/**
- * Converts a string from camel case to snake case.
- *
- * @remarks
- * Ignores whitespace characters, including wordspaces and newlines. Does not handle fully-
- * uppercase acronyms/initialisms. e.g. 'HTTPRequest' -> 'h_t_t_p_request'.
- */
-function camelToSnakeCase(camelCaseString: string): string {
-  return camelCaseString
-    ?.split(/\.?(?=[A-Z])/)
-    .join('_')
-    .toLowerCase();
-}
+export type EditUserParams = {
+  models: DatatrakWebModelRegistry;
+  data: UserAccountDetails;
+};
+
+export const prepareUserDetails = (userDetails: UserAccountDetails) => {
+  // `mobile_number` field in database is nullable; don't just store an empty string
+  if (userDetails?.mobileNumber === '') userDetails.mobileNumber = null;
+  return snakeKeys(userDetails);
+};
+
+const editUserOnline = async ({ data: userDetails }: { data: UserAccountDetails }) => {
+  if (!userDetails) {
+    return;
+  }
+
+  const updates = prepareUserDetails(userDetails);
+
+  return await put('me', { data: updates });
+};
 
 export const useEditUser = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
-  const { models } = useDatabaseContext();
+  const isOfflineFirst = useIsOfflineFirst();
+  const { models } = useDatabaseContext() || {};
 
-  return useMutation<any, Error, UserAccountDetails, unknown>(
-    async (userDetails: UserAccountDetails) => {
-      if (!userDetails) return;
-
-      // `mobile_number` field in database is nullable; don't just store an empty string
-      if (!userDetails?.mobileNumber) {
-        userDetails.mobileNumber = null;
-      }
-
-      const updates = Object.fromEntries(
-        Object.entries(userDetails).map(([key, value]) => [camelToSnakeCase(key), value]),
-      );
-
-      await put('me', { data: updates });
-    },
+  return useDatabaseMutation<any, Error, UserAccountDetails, unknown>(
+    isOfflineFirst ? editUser : editUserOnline,
     {
       onSuccess: (_, variables) => {
         queryClient.invalidateQueries(['getUser']);
@@ -45,7 +45,9 @@ export const useEditUser = (onSuccess?: () => void) => {
           queryClient.invalidateQueries(['entityDescendants']);
           queryClient.invalidateQueries(['tasks']);
 
-          models.localSystemFact.addProjectForSync(variables.projectId);
+          if (isOfflineFirst) {
+            ensure(models).localSystemFact.addProjectForSync(variables.projectId);
+          }
         }
         onSuccess?.();
       },

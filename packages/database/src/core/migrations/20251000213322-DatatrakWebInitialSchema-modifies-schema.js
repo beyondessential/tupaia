@@ -110,7 +110,7 @@ exports.up = async function (db) {
       CREATE TABLE entity (
         id            TEXT PRIMARY KEY,
         code          TEXT NOT NULL UNIQUE,
-        parent_id     TEXT REFERENCES entity DEFERRABLE INITIALLY IMMEDIATE,
+        parent_id     VARCHAR(64) REFERENCES entity(id),
         name          VARCHAR(128)                     NOT NULL,
         type          entity_type                      NOT NULL,
         image_url     TEXT,
@@ -121,17 +121,8 @@ exports.up = async function (db) {
     `);
 
   // Create entity indexes
-  await db.runSql(`
-      CREATE INDEX entity_code ON entity (code);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX entity_parent_id_key ON entity (parent_id);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX idx_entity_country_code ON entity (country_code);
-    `);
+  await db.runSql('CREATE INDEX entity_code ON entity (code);');
+  await db.runSql('CREATE INDEX idx_entity_country_code ON entity (country_code);');
 
   // Create entity_hierarchy table
   await db.runSql(`
@@ -239,13 +230,8 @@ exports.up = async function (db) {
     `);
 
   // Create permission_group indexes
-  await db.runSql(`
-      CREATE INDEX permission_group_name_idx ON permission_group (name);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX permission_group_parent_id_idx ON permission_group (parent_id);
-    `);
+  await db.runSql('CREATE INDEX permission_group_name_idx ON permission_group (name);');
+  await db.runSql('CREATE INDEX permission_group_parent_id_idx ON permission_group (parent_id);');
 
   // Create project table
   await db.runSql(`
@@ -372,13 +358,8 @@ exports.up = async function (db) {
     `);
 
   // Create survey_screen indexes
-  await db.runSql(`
-      CREATE INDEX survey_screen_screen_number_idx ON survey_screen (screen_number);
-    `);
-
-  await db.runSql(`
-      CREATE INDEX survey_screen_survey_id_idx ON survey_screen (survey_id);
-    `);
+  await db.runSql('CREATE INDEX survey_screen_screen_number_idx ON survey_screen (screen_number);');
+  await db.runSql('CREATE INDEX survey_screen_survey_id_idx ON survey_screen (survey_id);');
 
   // Create survey_screen_component table
   await db.runSql(`

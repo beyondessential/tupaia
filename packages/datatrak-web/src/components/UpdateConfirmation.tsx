@@ -1,91 +1,51 @@
-/**
- * Upgrade notification dialog is being used in main.tsx outside of the all AppProviders,
- * so it won't work with MuiThemeProvider or other Providers.
- * Please do not use material-ui components or other context in this file.
- */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from '@mui/material';
 import styled from 'styled-components';
-import { confirmable, createConfirmation } from 'react-confirm';
 
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  padding: 20px;
-`;
+import { BannerNotification } from '../views/BannerNotification';
 
-const Dialog = styled.div`
-  background: #f8f9fa;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 350px;
-  width: 100%;
-  padding: 40px 32px 32px 32px;
-  text-align: center;
-  font-family: Roboto, Helvetica, Arial, sans-serif;
-`;
-
-const Title = styled.h2`
-  margin: 0 0 24px 0;
-  color: #333333;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.2;
-`;
-
-const Description = styled.p`
-  margin: 0 0 32px 0;
-  color: #6f6f6f;
-  font-size: 14px;
-  line-height: 1.5;
-  font-weight: 400;
-`;
-
-const RefreshButton = styled.button`
-  background: #4285f4;
-  color: white;
-  border: none;
-  padding: 16px 24px;
-  border-radius: 3px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  width: 100%;
-
-  &:hover {
-    background: #3367d6;
+const StyledLink = styled(Link)`
+  &.MuiLink-root {
+    color: inherit;
+    cursor: pointer;
+    text-decoration-color: currentColor;
   }
 `;
 
-interface UpdateConfirmationModalProps {
-  show: boolean;
-  proceed: (value: boolean) => void;
+let pendingWorker: ServiceWorker | null = null;
+let notifyComponent: (() => void) | null = null;
+
+export function setWaitingWorker(worker: ServiceWorker) {
+  pendingWorker = worker;
+  notifyComponent?.();
 }
 
-const UpdateConfirmationModal = ({ show, proceed }: UpdateConfirmationModalProps) => {
-  if (!show) return null;
+export const UpdateNotification = () => {
+  const [updateAvailable, setUpdateAvailable] = useState(!!pendingWorker);
+
+  useEffect(() => {
+    notifyComponent = () => setUpdateAvailable(true);
+    if (pendingWorker) {
+      setUpdateAvailable(true);
+    }
+
+    return () => {
+      notifyComponent = null;
+      pendingWorker = null;
+    };
+  }, []);
+
+  if (!updateAvailable) return null;
+
+  const handleClick = () => {
+    pendingWorker?.postMessage({ type: 'SKIP_WAITING' });
+    window.location.reload();
+  };
 
   return (
-    <Modal>
-      <Dialog>
-        <Title>App update available</Title>
-
-        <Description>
-          A new version of Datatrak is now available. Please refresh to continue using the latest
-          features and improvements.
-        </Description>
-
-        <RefreshButton onClick={() => proceed(true)}>Refresh app</RefreshButton>
-      </Dialog>
-    </Modal>
+    <BannerNotification style={{ backgroundColor: '#002d47' }}>
+      A new version of DataTrak is now available,{' '}
+      <StyledLink onClick={handleClick}>click here</StyledLink> to get the latest version.
+    </BannerNotification>
   );
 };
-
-export const confirmUpdate = createConfirmation(confirmable(UpdateConfirmationModal));

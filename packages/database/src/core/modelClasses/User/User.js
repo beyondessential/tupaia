@@ -1,15 +1,31 @@
+/**
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').Entity} Entity
+ * @typedef {import('@tupaia/types').Project} Project
+ * @typedef {import('@tupaia/types').Survey} Survey
+ * @typedef {import('@tupaia/types').UserAccount} UserAccount
+ * @typedef {import('@tupaia/types').UserAccountPreferences} UserAccountPreferences
+ * @typedef {import('@tupaia/types').VerifiedEmail} VerifiedEmail
+ * @typedef {import('../../ModelRegistry').ModelRegistry} ModelRegistry
+ * @typedef {import('../Entity').EntityRecord} EntityRecord
+ * @typedef {import('../PermissionGroup').PermissionGroupRecord} PermissionGroupRecord
+ * @typedef {import('../UserEntityPermission').UserEntityPermissionRecord} UserEntityPermissionRecord
+ */
+
 import { verify } from '@node-rs/argon2';
 import winston from 'winston';
 
 import { encryptPassword, sha256EncryptPassword, verifyPassword } from '@tupaia/auth';
 import {
   API_CLIENT_PERMISSIONS,
-  SyncDirections,
   PUBLIC_USER_EMAIL,
   PUBLIC_USER_ID,
+  SyncDirections,
+  SyncFact,
+  USER_PREFERENCES_FIELDS,
 } from '@tupaia/constants';
-import { ensure, isNotNullish } from '@tupaia/tsutils';
-import { EntityTypeEnum } from '@tupaia/types';
+import { ensure } from '@tupaia/tsutils';
+import { EntityTypeEnum, VerifiedEmail } from '@tupaia/types';
 import { DatabaseError } from '@tupaia/utils';
 import { QUERY_CONJUNCTIONS } from '../../BaseDatabase';
 import { DatabaseModel } from '../../DatabaseModel';
@@ -19,7 +35,7 @@ import { addRecentEntities } from './addRecentEntities';
 
 const DEFAULT_PAGE_SIZE = 100;
 
-const USERS_EXCLUDED_FROM_LIST = [
+const USERS_EXCLUDED_FROM_LIST = /** @type {const} */ ([
   'edmofro@gmail.com', // Edwin
   'kahlinda.mahoney@gmail.com', // Kahlinda
   'lparish1980@gmail.com', // Lewis
@@ -32,9 +48,13 @@ const USERS_EXCLUDED_FROM_LIST = [
   'unicef.laos.edu@gmail.com', // Laos Schools Data Collector
   'tamanu-server@tupaia.org', // Tamanu Server
   'public@tupaia.org', // Public User
-];
+]);
 
-const INTERNAL_EMAIL_DOMAINS = ['tupaia.org', 'bes.au', 'beyondessential.com.au'];
+const INTERNAL_EMAIL_DOMAINS = /** @type {const} */ ([
+  'bes.au',
+  'beyondessential.com.au',
+  'tupaia.org',
+]);
 
 export class UserRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ACCOUNT;
@@ -120,16 +140,16 @@ export class UserRecord extends DatabaseRecord {
   }
 
   /**
-   * @returns {Promise<import('../UserEntityPermission').UserEntityPermissionRecord[]>}
+   * @returns {Promise<UserEntityPermissionRecord[]>}
    */
   async getEntityPermissions() {
     return await this.otherModels.userEntityPermission.find({ user_id: this.id });
   }
 
   /**
-   * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
+   * @param {Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
-   * @returns {Promise<(import('../Entity').EntityRecord & { isRecent: true })[]>}
+   * @returns {Promise<(Entity & { isRecent: true })[]>}
    */
   async getRecentEntities(countryCode, type, options) {
     const entityIds = this.getRecentEntityIds(countryCode, type);
@@ -139,9 +159,9 @@ export class UserRecord extends DatabaseRecord {
   }
 
   /**
-   * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
+   * @param {Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
-   * @returns {import('@tupaia/types').Entity['id'][]}
+   * @returns {Entity['id'][]}
    */
   getRecentEntityIds(countryCode, type) {
     if (!countryCode || !type) {
@@ -161,16 +181,16 @@ export class UserRecord extends DatabaseRecord {
 }
 
 export class UserModel extends DatabaseModel {
-  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+  static syncDirection = SyncDirections.BIDIRECTIONAL;
 
-  get ExcludedFieldsFromSync() {
-    return ['password_hash'];
+  get excludedFieldsFromSync() {
+    return /** @type {const} */ (['password_hash']);
   }
 
   /**
-   * @param {import('../../ModelRegistry').ModelRegistry} models
-   * @param {import('@tupaia/types').User['id']} userId
-   * @param {import('@tupaia/types').Entity['id'][]} entityIds
+   * @param {ModelRegistry} models
+   * @param {UserAccount['id']} userId
+   * @param {Entity['id'][]} entityIds
    * @returns {Promise}
    */
   static async addRecentEntities(models, userId, entityIds) {
@@ -189,10 +209,11 @@ export class UserModel extends DatabaseModel {
    * Returns the user that is used for submitting surveys when not logged in
    * @returns {Promise<UserRecord>}
    */
-  async findPublicUser() {
-    return ensure(
-      await this.findOne({ email: PUBLIC_USER_EMAIL }),
-      `Public user not found. There must be a user with email ${PUBLIC_USER_EMAIL}`,
+  async findPublicUser(options) {
+    return await this.findOneOrThrow(
+      { email: PUBLIC_USER_EMAIL },
+      options,
+      `Public user not found. There must be a user with email ${PUBLIC_USER_EMAIL}.`,
     );
   }
 
@@ -218,12 +239,16 @@ export class UserModel extends DatabaseModel {
     END`,
   };
 
-  emailVerifiedStatuses = {
-    UNVERIFIED: 'unverified',
-    VERIFIED: 'verified',
-    NEW_USER: 'new_user',
-  };
+  emailVerifiedStatuses = /** @type {const} */ ({
+    UNVERIFIED: VerifiedEmail.unverified,
+    VERIFIED: VerifiedEmail.verified,
+    NEW_USER: VerifiedEmail.new_user,
+  });
 
+  /**
+   * @param {UserAccount['id'][]} userIds
+   * @returns {Promise<{ id: UserAccount['id'], name: string }[]>}
+   */
   async getFilteredUsers(searchTerm, userIds) {
     const usersFilter = {
       email: {
@@ -259,10 +284,10 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {import('@tupaia/types').Country['code']} countryCode
-   * @param {import('./PermissionGroup').PermissionGroupRecord} permissionGroup
+   * @param {Country['code']} countryCode
+   * @param {PermissionGroupRecord} permissionGroup
    * @param {string | undefined} [searchTerm]
-   * @returns {Promise<{id: string, name: string}[]>}
+   * @returns {Promise<{ id: string, name: string }[]>}
    */
   async getFilteredUsersForPermissionGroup(countryCode, permissionGroup, searchTerm) {
     // if the permission group is a public permission group that every user has access to because of the api client permissions, then everyone has access to the survey, so return all non-internal users
@@ -285,6 +310,7 @@ export class UserModel extends DatabaseModel {
     ]);
 
     // get the user entity permissions for the permission group and its ancestors
+    /** @type {UserEntityPermissionRecord[]} */
     const userEntityPermissions = await this.otherModels.userEntityPermission.find({
       permission_group_id: permissionGroupWithAncestors.map(p => p.id),
       entity_id: entity.id,
@@ -296,16 +322,90 @@ export class UserModel extends DatabaseModel {
   }
 
   /**
-   * @param {import('@tupaia/types').User['id']} userId
-   * @param {import('@tupaia/types').Entity['code'] | undefined} [countryCode]
+   * @param {UserAccount['id']} userId
+   */
+  async getUpdatedUserPreferenceFields(userId, updatedFields) {
+    const updatedUserPreferences = Object.entries(updatedFields).filter(([key]) =>
+      USER_PREFERENCES_FIELDS.includes(key),
+    );
+    // If there are, extract them and save them with the existing user preferences
+    if (updatedUserPreferences.length > 0) {
+      // Remove user preferences fields from updatedFields so they don't get saved else where
+      updatedUserPreferences.forEach(([key]) => {
+        delete updatedFields[key];
+      });
+
+      /** @type {UserRecord} */
+      const userRecord = await this.findById(userId);
+      const { preferences = {} } = userRecord;
+
+      /** @type {UserAccountPreferences} */
+      const updatedPreferenceFields = updatedUserPreferences.reduce((obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+      }, preferences);
+      // If we change the selected project, we clear out the recent entities
+      if (updatedPreferenceFields.project_id) {
+        updatedPreferenceFields.recentEntities = {};
+      }
+
+      updatedFields = {
+        preferences: updatedPreferenceFields,
+        ...updatedFields,
+      };
+    }
+
+    return updatedFields;
+  }
+
+  /**
+   * @param {UserAccount['id']} userId
+   * @param {Entity['code'] | undefined} [countryCode]
    * @param {string | undefined} [type] comma-separated list of entity types
-   * @returns {Promise<import('@tupaia/types').Entity['id'][]>} Entity IDs
+   * @returns {Promise<Entity['id'][]>} Entity IDs
    */
   async getRecentEntityIds(userId, countryCode, type) {
     const user = ensure(await this.findById(userId), `No user exists with ID ${userId}`);
     return user.getRecentEntityIds(countryCode, type);
   }
 
+  /**
+   * @param {UserAccount['id']} userId
+   * @param {Project['id']} projectId
+   * @returns {Promise<{
+   *   country_code: Entity['code'];
+   *   country_id: Entity['id'];
+   *   country_name: Entity['name'];
+   *   survey_code: Survey['code'];
+   *   survey_name: Survey['name'];
+   * }[]>}
+   */
+  async getRecentSurveys(userId, projectId) {
+    return await this.database.executeSql(
+      `
+	      SELECT
+	        survey.name AS survey_name,
+	        survey.code AS survey_code,
+	        c.name AS country_name,
+	        c.id AS country_id,
+	        c.code AS country_code
+	      FROM
+	        survey_response
+	        JOIN survey ON survey.id = survey_response.survey_id
+	        JOIN entity ON entity.id = survey_response.entity_id
+	        JOIN entity c ON c.code = entity.country_code
+	      WHERE survey_response.user_id = ? AND survey.project_id = ?
+	      GROUP BY survey.id, c.id
+	      ORDER BY max(survey_response.data_time) DESC
+	      LIMIT 6;
+	    `,
+      [userId, projectId],
+    );
+  }
+
+  /**
+   * @param {UserAccount} userData
+   */
   async transformUserData(userData, project = null, country = null) {
     const {
       id,
@@ -345,4 +445,28 @@ export class UserModel extends DatabaseModel {
       accessPolicy,
     };
   }
+
+  sanitizeForCentralServer = data => {
+    const { password_hash, access_policy, ...rest } = data;
+    return rest;
+  };
+
+  /**
+   * @param {SyncSnapshotAttributes} changes
+   * @returns {Promise<SyncSnapshotAttributes>}
+   */
+  filterSyncForClient = async changes => {
+    /** @type {string | null | undefined} */
+    const currentUserId = await this.otherModels.localSystemFact.get(SyncFact.CURRENT_USER_ID);
+    /** @type {string | null | undefined} */
+    const lastSuccessfulSyncPull = await this.otherModels.localSystemFact.get(
+      SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
+    );
+
+    if (lastSuccessfulSyncPull === undefined || lastSuccessfulSyncPull === '-1') {
+      return changes.filter(change => change.data.id !== currentUserId);
+    }
+
+    return changes;
+  };
 }

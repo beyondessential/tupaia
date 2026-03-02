@@ -5,7 +5,11 @@ import { SafeAreaColumn } from '@tupaia/ui-components';
 
 import { HEADER_HEIGHT } from '../../constants';
 import { HeaderLeft } from './HeaderLeft';
-import { HeaderRight } from './HeaderRight';
+import { UserMenu } from '../UserMenu';
+import { UpdateNotification } from '../../components/UpdateConfirmation';
+import { ResetDataNotification } from '../../views/ResetDataNotification';
+import { useIsOfflineFirst } from '../../api/offlineFirst';
+import { useCurrentUserContext } from '../../api';
 
 export const HeaderRoot = styled(SafeAreaColumn).attrs({
   as: 'header',
@@ -24,10 +28,17 @@ export const HeaderRoot = styled(SafeAreaColumn).attrs({
 `;
 
 export const Header = (props: ComponentPropsWithoutRef<typeof HeaderRoot>) => {
+  const isOfflineFirst = useIsOfflineFirst();
+  const { isLoggedIn } = useCurrentUserContext();
+
   return (
-    <HeaderRoot {...props}>
-      <HeaderLeft />
-      <HeaderRight />
-    </HeaderRoot>
+    <>
+      <HeaderRoot {...props}>
+        <HeaderLeft />
+        <UserMenu />
+      </HeaderRoot>
+      {isOfflineFirst && <UpdateNotification />}
+      {isOfflineFirst && isLoggedIn && window.navigator.onLine && <ResetDataNotification />}
+    </>
   );
 };

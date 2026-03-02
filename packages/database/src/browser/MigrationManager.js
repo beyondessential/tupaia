@@ -24,6 +24,13 @@ export class MigrationManager {
     `);
   }
 
+  /**
+   * @returns {Promise<{
+   *   name: string;
+   *   up: (database: unknown) => Promise<unknown>;
+   *   down: (database: unknown) => Promise<unknown>;
+   * }[]>}
+   */
   async loadMigrationFiles() {
     // For loading migration files in the browser
     const migrationFiles = import.meta.glob('../core/migrations/*.js', { eager: true });
@@ -34,6 +41,7 @@ export class MigrationManager {
     );
 
     for (const [name, migrationModule] of Object.entries(sortedMigrationFiles)) {
+      /** @type {('browser' | 'server')[]} */
       const targets = migrationModule._meta?.targets || [];
 
       // Only run migration if it is intended for the browser
@@ -49,7 +57,7 @@ export class MigrationManager {
             runSql: sql => database.executeSql(sql),
           });
         },
-        down: async () => {
+        down: async database => {
           await migrationModule.down({
             runSql: sql => database.executeSql(sql),
           });
@@ -60,17 +68,18 @@ export class MigrationManager {
     return migrations;
   }
 
+  /** @returns {Promise<{ id: number; name: string; run_on: string }[]>} */
   async getExecutedMigrations() {
-    return this.client.executeSql('SELECT * FROM migrations ORDER BY run_on ASC');
+    return await this.client.executeSql('SELECT * FROM migrations ORDER BY run_on ASC');
   }
 
   async migrate() {
+    console.groupCollapsed('Processing migrations');
+    const startTime = performance.now();
     try {
       const migrations = await this.loadMigrationFiles();
-      const executedMigrations = await this.getExecutedMigrations();
-      const pendingMigrations = migrations.filter(
-        m => !executedMigrations.find(em => em.name === m.name),
-      );
+      const executedMigrations = new Set((await this.getExecutedMigrations()).map(m => m.name));
+      const pendingMigrations = migrations.filter(m => !executedMigrations.has(m.name));
 
       if (pendingMigrations.length === 0) {
         console.log('No migrations to execute');
@@ -91,6 +100,9 @@ export class MigrationManager {
     } catch (error) {
       console.error(`Migration failed: ${error instanceof Error ? error.message : String(error)}`);
       throw error;
+    } finally {
+      console.groupEnd();
+      console.log(`Processed migrations in ${performance.now() - startTime} ms`);
     }
   }
 

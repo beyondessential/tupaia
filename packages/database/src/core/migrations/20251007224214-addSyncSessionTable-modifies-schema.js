@@ -14,8 +14,8 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
-  return db.runSql(
+exports.up = async function (db) {
+  return await db.runSql(
     `
       CREATE TABLE sync_session
       (
@@ -23,7 +23,7 @@ exports.up = function (db) {
           start_time            TIMESTAMPTZ,
           last_connection_time  TIMESTAMPTZ,
           snapshot_completed_at TIMESTAMPTZ,
-          info                  json,
+          info                  JSONB,
           completed_at          TIMESTAMPTZ,
           persist_completed_at  TIMESTAMPTZ,
           pull_since            BIGINT,

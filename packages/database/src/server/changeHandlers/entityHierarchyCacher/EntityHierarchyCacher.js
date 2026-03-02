@@ -1,5 +1,24 @@
-import { generateId } from '../../../core/utilities';
+/**
+ * @typedef {import('@tupaia/types').EntityHierarchy} EntityHierarchy
+ * @typedef {import('@tupaia/types').Entity} Entity
+ * @typedef {import('../../../core').EntityHierarchyRecord} EntityHierarchyRecord
+ * @typedef {import('../../../core').ModelRegistry} ModelRegistry
+ * @typedef {import('../../../core').ProjectRecord} ProjectRecord
+ * @typedef {{
+ *   new_record?: EntityHierarchy,
+ *   old_record?: EntityHierarchy,
+ *   record_id?: string,
+ *   type: 'delete' | 'update' | string,
+ * }} Change
+ * @typedef {{
+ *   hierarchyId: EntityHierarchy['id']
+ *   rootEntityId: Entity['id']
+ * }} RebuildJob
+ * @typedef {(change: Change) => RebuildJob[] | null} ChangeTranslator
+ */
+
 import { RECORDS } from '../../../core/records';
+import { generateId } from '../../../core/utilities';
 import { ChangeHandler } from '../ChangeHandler';
 import { EntityHierarchySubtreeRebuilder } from './EntityHierarchySubtreeRebuilder';
 
@@ -7,16 +26,29 @@ export class EntityHierarchyCacher extends ChangeHandler {
   constructor(models) {
     super(models, 'entity-hierarchy-cacher');
 
-    this.changeTranslators = {
+    /** @satisfies {Record<string, ChangeTranslator>} */
+    this.changeTranslators = /** @type {const} */ ({
       entity: change => this.translateEntityChangeToRebuildJobs(change),
       entityRelation: change => this.translateEntityRelationChangeToRebuildJobs(change),
       entityHierarchy: change => this.translateEntityHierarchyChangeToRebuildJobs(change),
-    };
+    });
   }
 
-  async translateEntityChangeToRebuildJobs({ record_id: entityId, new_record: newRecord }) {
+  /** @type {ChangeTranslator} */
+  async translateEntityChangeToRebuildJobs({ type, old_record: oldRecord, new_record: newRecord }) {
+    // Should only rebuild if parent_id has changed
+    if (
+      type === 'update' &&
+      oldRecord?.parent_id === newRecord?.parent_id &&
+      oldRecord?.type === newRecord?.type &&
+      oldRecord?.country_code === newRecord?.country_code
+    ) {
+      return [];
+    }
+
     // if entity was deleted or created, or parent_id has changed, we need to delete subtrees and
     // rebuild all hierarchies
+    /** @type {EntityHierarchyRecord[]} */
     const hierarchies = await this.models.entityHierarchy.all();
     const jobs = hierarchies.map(({ id: hierarchyId }) => ({
       hierarchyId,
@@ -25,6 +57,7 @@ export class EntityHierarchyCacher extends ChangeHandler {
     return jobs;
   }
 
+  /** @type {ChangeTranslator} */
   translateEntityRelationChangeToRebuildJobs({ old_record: oldRecord, new_record: newRecord }) {
     // delete and rebuild subtree from both old and new record, in case hierarchy and/or parent_id
     // have changed
@@ -35,20 +68,23 @@ export class EntityHierarchyCacher extends ChangeHandler {
     return jobs;
   }
 
+  /** @type {ChangeTranslator} */
   async translateEntityHierarchyChangeToRebuildJobs({
     record_id: hierarchyId,
     old_record: oldRecord,
     new_record: newRecord,
   }) {
-    if (oldRecord && newRecord) {
-      if (oldRecord.canonical_types === newRecord.canonical_types) {
-        return null; // if the canonical types are the same, the change won't invalidate the cache
-      }
+    if (oldRecord && newRecord && oldRecord.canonical_types === newRecord.canonical_types) {
+      return null; // if the canonical types are the same, the change won't invalidate the cache
     }
-    const projectsUsingHierarchy = await this.models.project.find({
-      entity_hierarchy_id: hierarchyId,
-    });
+    /** @type {ProjectRecord[]} */
+    const projectsUsingHierarchy = await this.models.project.find(
+      { entity_hierarchy_id: hierarchyId },
+      { columns: ['entity_id'] },
+    );
+
     // delete and rebuild full hierarchy of any project using this entity
+    /** @type {RebuildJob[]} */
     const jobs = projectsUsingHierarchy.map(p => ({
       hierarchyId,
       rootEntityId: p.entity_id,
@@ -56,8 +92,11 @@ export class EntityHierarchyCacher extends ChangeHandler {
     return jobs;
   }
 
+  /**
+   * @param {ModelRegistry} transactingModels
+   * @param {RebuildJob[]} rebuildJobs
+   */
   async handleChanges(transactingModels, rebuildJobs) {
-    // get the subtrees to delete, then run the delete
     const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
     await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
 

@@ -41,11 +41,12 @@ const TooltipText = styled.p`
   text-wrap: balance;
 `;
 
-type RecentSurveyTileProps = TileProps &
-  Pick<
-    DatatrakWebSurveyResponsesRequest.SurveyResponse,
-    'surveyName' | 'surveyCode' | 'countryName' | 'countryCode'
-  >;
+interface RecentSurveyTileProps
+  extends TileProps,
+    Pick<
+      DatatrakWebSurveyResponsesRequest.SurveyResponse,
+      'surveyName' | 'surveyCode' | 'countryName' | 'countryCode'
+    > {}
 
 const RecentSurveyTile = ({
   surveyName,
@@ -83,7 +84,7 @@ export const RecentSurveysSection = () => {
     if (isLoading) return <TileSkeleton lineCount={1} />;
 
     if (recentSurveys.length > 0)
-      return recentSurveys.map(props => (
+      return recentSurveys.map(({ countryId: _, ...props }) => (
         <li key={`${props.surveyCode}-${props.countryName}`}>
           <RecentSurveyTile {...props} />
         </li>

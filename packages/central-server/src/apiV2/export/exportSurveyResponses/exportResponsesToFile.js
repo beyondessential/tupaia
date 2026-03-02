@@ -111,7 +111,7 @@ export async function exportResponsesToFile(
   const getBaseExport = () => [
     infoColumnHeaders.slice(), // deep clone
     ...INFO_ROW_HEADERS.map(rowHeader =>
-      infoColumnHeaders.map((header, index) => {
+      infoColumnHeaders.map((_header, index) => {
         if (index < infoColumnHeaders.length - 1) return 'N/A';
         return rowHeader; // Only final info column should contain row headers
       }),

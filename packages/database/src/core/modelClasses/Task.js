@@ -1,9 +1,18 @@
+/**
+ * @typedef {import('@tupaia/access-policy').AccessPolicy} AccessPolicy
+ * @typedef {import('@tupaia/types').Country} Country
+ * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
+ * @typedef {import('@tupaia/types').Project} Project
+ * @typedef {import('@tupaia/types').Task} Task
+ * @typedef {import('@tupaia/types').UserAccount} UserAccount
+ */
+
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
-import { TaskCommentType } from '@tupaia/types';
+import { TaskCommentType, TaskStatus } from '@tupaia/types';
 import { hasBESAdminAccess } from '@tupaia/access-policy';
-
+import { getOffsetForTimezone } from '@tupaia/utils';
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -35,16 +44,28 @@ const formatValue = async (field, value, models) => {
   return value;
 };
 
+/**
+ * @template {Project['id'] | Project['id'][]} T
+ * @param {T} projectId
+ * @returns {{ 'survey.project_id': T }}
+ */
+const getTaskMetricsBaseQuery = projectId => ({ 'survey.project_id': projectId });
+const getTaskMetricsBaseJoin = () =>
+  /** @type {const} */ ({
+    joinWith: RECORDS.SURVEY,
+    joinCondition: ['survey.id', 'task.survey_id'],
+  });
+
 export class TaskRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK;
 
-  statusTypes = {
+  statusTypes = /** @type {const} */ ({
     ToDo: 'to_do',
     Completed: 'completed',
     Cancelled: 'cancelled',
-  };
+  });
 
-  static joins = [
+  static joins = /** @type {const} */ ([
     {
       joinWith: RECORDS.ENTITY,
       joinCondition: ['entity_id', `${RECORDS.ENTITY}.id`],
@@ -68,7 +89,7 @@ export class TaskRecord extends DatabaseRecord {
       joinCondition: ['survey_response_id', `${RECORDS.SURVEY_RESPONSE}.id`],
       fields: { data_time: 'data_time', timezone: 'timezone' },
     },
-  ];
+  ]);
 
   /**
    * @returns {Promise<import('./Entity').EntityRecord>}
@@ -129,7 +150,7 @@ export class TaskRecord extends DatabaseRecord {
 
     let commentUserId = userId;
     if (!userId) {
-      const user = await this.models.user.findPublicUser();
+      const user = await this.otherModels.user.findPublicUser({ columns: ['id'] });
       commentUserId = user.id;
     }
 
@@ -197,7 +218,7 @@ export class TaskRecord extends DatabaseRecord {
    * @description Add a comment to the task. Handles linking the comment to the task and user, and setting the comment type
    *
    * @param {string} message
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    * @param {string} type
    */
   async addComment({ message, userId, type, templateVariables }) {
@@ -215,7 +236,7 @@ export class TaskRecord extends DatabaseRecord {
   /**
    *
    * @param {string} message
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    *
    * @description Add a user comment to the task
    */
@@ -230,7 +251,7 @@ export class TaskRecord extends DatabaseRecord {
   /**
    *
    * @param {object} templateVariables
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    *
    * @description Add a system comment to the task
    */
@@ -244,7 +265,7 @@ export class TaskRecord extends DatabaseRecord {
 
   /**
    *
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    * @param {object} templateVariables
    *
    * @description Add a comment when a task is updated
@@ -260,9 +281,7 @@ export class TaskRecord extends DatabaseRecord {
   }
 
   /**
-   *
-   * @param {string} userId
-   *
+   * @param {UserAccount['id']} userId
    * @description Add a comment when a task is created
    */
   async addCreatedComment(userId) {
@@ -276,7 +295,7 @@ export class TaskRecord extends DatabaseRecord {
 
   /**
    *
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    *
    * @description Add a comment when a task is completed
    */
@@ -291,7 +310,7 @@ export class TaskRecord extends DatabaseRecord {
 
   /**
    *
-   * @param {string} userId
+   * @param {UserAccount['id']} userId
    *
    * @description Add a comment when a task overdue email is sent
    */
@@ -324,29 +343,34 @@ export class TaskModel extends DatabaseModel {
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryCodesByPermissionGroupId =
       await this.getCountryCodesByPermissionGroupId(accessPolicy);
+    const entries = Object.entries(countryCodesByPermissionGroupId);
 
-    const params = Object.entries(countryCodesByPermissionGroupId).flat(2); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
+    if (entries.length === 0) return { sql: 'FALSE' };
 
     return {
       sql: `
         (
-          ${Object.values(countryCodesByPermissionGroupId)
-            .map(
-              countryCodes => `(
-                survey.permission_group_id = ? AND
-                entity.country_code IN ${SqlQuery.record(countryCodes)}
-              )`,
-            )
+          ${entries
+            .map(([, countryCodes]) => {
+              return `(survey.permission_group_id = ? AND entity.country_code IN ${SqlQuery.record(countryCodes)})`;
+            })
             .join(' OR ')}
         )
        `,
-      parameters: params,
+      /** @example ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3'] */
+      parameters: entries.flat(2),
     };
   }
 
+  /**
+   * @param {AccessPolicy} accessPolicy
+   * @returns {Promise<Record<PermissionGroup['id'], Country['code'][]>>}
+   */
   async getCountryCodesByPermissionGroupId(accessPolicy) {
     const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
+    /** @type {Record<PermissionGroup['id'], Country['code'][]>} */
     const countryCodesByPermissionGroupId = {};
+    /** @type {Record<PermissionGroup['name'], PermissionGroup['id']>} */
     const permissionGroupNameToId = await this.otherModels.permissionGroup.findIdByField(
       'name',
       allPermissionGroupsNames,
@@ -387,7 +411,7 @@ export class TaskModel extends DatabaseModel {
     const queryConditions = hasBESAdminAccess
       ? filtersWithColumnSelectors
       : {
-          [QUERY_CONJUNCTIONS.RAW]: queryClause,
+          ...(queryClause ? { [QUERY_CONJUNCTIONS.RAW]: queryClause } : {}),
           ...filtersWithColumnSelectors,
         };
 
@@ -397,10 +421,10 @@ export class TaskModel extends DatabaseModel {
   }
 
   /**
-   *
-   * @param {object} fields
+   * @override
+   * @param {Partial<Task>} fields
    * @param {string} [createdBy]
-   * @returns Task
+   * @returns {Task}
    */
   async create(fields, createdBy) {
     const task = await super.create(fields);
@@ -414,8 +438,8 @@ export class TaskModel extends DatabaseModel {
    * @description Add system comments for task updates. This is used to automatically add comments when certain fields are updated, e.g. due date, assignee, etc.
    *
    * @param {object} originalTask
-   * @param {object} updatedFields
-   * @param {string} userId
+   * @param {Partial<Task>} updatedFields
+   * @param {UserAccount['id']} userId
    */
   async addSystemCommentsOnUpdate(originalTask, updatedFields, userId) {
     const fieldsToCreateCommentsFor = ['due_date', 'repeat_schedule', 'status', 'assignee_id'];
@@ -452,17 +476,22 @@ export class TaskModel extends DatabaseModel {
     );
   }
 
+  /**
+   * @param {string} message
+   * @param {Task['id']} taskId
+   * @param {UserAccount['id']} userId
+   */
   async addUserComment(message, taskId, userId) {
     const task = await this.findById(ensure(taskId));
     await task.addUserComment(message, ensure(userId));
   }
 
   /**
-   *
-   * @param {string} id
-   * @param {object} updatedFields
-   * @param {string} [updatedBy]
-   * @returns Task
+   * @override
+   * @param {Task['id']} id
+   * @param {Partial<Task>} updatedFields
+   * @param {UserAccount['id']} [updatedBy]
+   * @returns {Task}
    */
   async updateById(id, updatedFields, updatedBy) {
     const originalTask = await this.findById(id);
@@ -483,11 +512,11 @@ export class TaskModel extends DatabaseModel {
             CASE
                 WHEN repeat_schedule IS NOT NULL THEN 'repeating'
                 WHEN due_date IS NULL THEN 'to_do'
-                WHEN due_date < ${new Date().getTime()} THEN 'overdue'
+                WHEN due_date < ${Date.now()} THEN 'overdue'
                 ELSE 'to_do'
             END
         ELSE 'to_do'
-    END`,
+      END`,
     assignee_name: () =>
       `CASE
         WHEN assignee_id IS NULL THEN 'Unassigned'
@@ -620,6 +649,74 @@ export class TaskModel extends DatabaseModel {
     });
   }
 
+  async countUnassignedTasks(projectId) {
+    return await this.count(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: {
+          comparator: 'NOT IN',
+          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+        },
+        assignee_id: {
+          comparator: 'IS',
+          comparisonValue: null,
+        },
+      },
+      getTaskMetricsBaseJoin(),
+    );
+  }
+
+  async countOverdueTasks(projectId) {
+    return await this.count(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: {
+          comparator: 'NOT IN',
+          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+        },
+        due_date: {
+          comparator: '<=',
+          comparisonValue: Date.now(),
+        },
+      },
+      getTaskMetricsBaseJoin(),
+    );
+  }
+
+  async findCompletedTasks(projectId) {
+    return await this.find(
+      {
+        ...getTaskMetricsBaseQuery(projectId),
+        status: TaskStatus.completed,
+        repeat_schedule: {
+          comparator: 'IS',
+          comparisonValue: null,
+        },
+      },
+      {
+        columns: ['due_date', 'data_time', 'timezone', 'project_id'],
+      },
+    );
+  }
+
+  async findOnTimeCompletedTasks(completedTasks) {
+    return completedTasks.filter(record => {
+      if (!record.due_date || !record.data_time) {
+        return false;
+      }
+      const { data_time: dataTime, timezone } = record;
+      const offset = getOffsetForTimezone(timezone, new Date(dataTime));
+      const formattedDate = `${dataTime.toString().replace(' ', 'T')}${offset}`;
+      return new Date(formattedDate).getTime() <= record.due_date;
+    });
+  }
+
+  async calculateOnTimeCompletionRate(projectId) {
+    const completedTasks = await this.findCompletedTasks(projectId);
+    const onTimeCompletedTasks = await this.findOnTimeCompletedTasks(completedTasks);
+    return Math.round((onTimeCompletedTasks.length / completedTasks.length) * 100) || 0;
+  }
+
   async assertUserHasPermissionToCreateTask(accessPolicy, taskData) {
     const { entity_id: entityId, survey_id: surveyId } = taskData;
 
@@ -635,12 +732,10 @@ export class TaskModel extends DatabaseModel {
     const userSurveys = await this.otherModels.survey.findByAccessPolicy(
       accessPolicy,
       {},
-      {
-        columns: ['id', 'permission_group_id', 'country_ids'],
-      },
+      { columns: ['id'] },
     );
-    const survey = userSurveys.find(({ id }) => id === surveyId);
-    if (!survey) {
+    const hasAccess = userSurveys.some(({ id }) => id === surveyId);
+    if (!hasAccess) {
       throw new Error('Need to have access to the survey of the task');
     }
 
@@ -660,5 +755,37 @@ export class TaskModel extends DatabaseModel {
     dbOptions.multiJoin = mergeMultiJoin(this.joins, dbOptions.multiJoin);
 
     return { dbConditions, dbOptions };
+  }
+
+  async completeTaskForSurveyResponse(surveyResponse) {
+    const {
+      id: surveyResponseId,
+      survey_id: surveyId,
+      entity_id: entityId,
+      data_time: dataTime,
+      user_id: userId,
+    } = surveyResponse;
+    const tasksToComplete = await this.find({
+      [QUERY_CONJUNCTIONS.AND]: {
+        status: 'to_do',
+        [QUERY_CONJUNCTIONS.OR]: {
+          status: {
+            comparator: 'IS',
+            comparisonValue: null,
+          },
+        },
+      },
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: '(task.survey_id = ? AND task.entity_id = ? AND task.created_at <= ?)',
+        parameters: [surveyId, entityId, dataTime],
+      },
+    });
+
+    // If the survey response was successfully created, complete any tasks that are due
+    if (tasksToComplete.length === 0) return;
+
+    for (const task of tasksToComplete) {
+      await task.handleCompletion(surveyResponseId, userId);
+    }
   }
 }
