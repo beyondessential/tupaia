@@ -60,18 +60,18 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 describe('Reports', () => {
-  it('renders the Reports component without crashing', () => {
-    renderComponent(<Reports />);
+  it('renders the Reports component without crashing', async () => {
+    await renderComponent(<Reports />);
   });
 
   it('renders the surveys input', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     const surveysInput = await screen.findByPlaceholderText('Select survey…');
     expect(surveysInput).toBeInTheDocument();
   });
 
   it('renders the entity level radio options', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     const radioButtons = await screen.findAllByRole('radio');
     expect(radioButtons).toHaveLength(2);
     expect(radioButtons[0]).toHaveAttribute('value', 'country');
@@ -79,7 +79,7 @@ describe('Reports', () => {
   });
 
   it('renders the country autocomplete input if entity level is country', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     const radioButtons = await screen.findAllByRole('radio');
     await userEvent.click(radioButtons[0]);
     expect(screen.getByPlaceholderText('Select country...')).toBeInTheDocument();
@@ -87,7 +87,7 @@ describe('Reports', () => {
   });
 
   it('renders the entity autocomplete input if entity level is entity', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     const radioButtons = await screen.findAllByRole('radio');
     await userEvent.click(radioButtons[1]);
     expect(screen.getByPlaceholderText('Select entities...')).toBeInTheDocument();
@@ -95,19 +95,19 @@ describe('Reports', () => {
   });
 
   it('renders the start date input', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     const startDateInput = await screen.findByLabelText('Start date');
     expect(startDateInput).toBeInTheDocument();
   });
 
   it('renders the end date input', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     const endDateInput = await screen.findByLabelText('End date');
     expect(endDateInput).toBeInTheDocument();
   });
 
   it('Does not show an error message when form is submitted with startDate that is before endDate', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     const startDateInput = await screen.findByLabelText('Start date');
     const endDateInput = await screen.findByLabelText('End date');
     const submitButton = await screen.findByRole('button', { name: 'Export' });
@@ -121,7 +121,7 @@ describe('Reports', () => {
   });
 
   it('Does not show an error message when form is submitted with startDate and not an endDate', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     const startDateInput = await screen.findByLabelText('Start date');
     const submitButton = await screen.findByRole('button', { name: 'Export' });
 
@@ -133,7 +133,7 @@ describe('Reports', () => {
   });
 
   it('Does not show an error message when form is submitted with endDate and not a startDate', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     const endDateInput = await screen.findByLabelText('End date');
     const submitButton = await screen.findByRole('button', { name: 'Export' });
 
@@ -145,7 +145,7 @@ describe('Reports', () => {
   });
 
   it('Shows an error message when form is submitted with startDate that is after endDate', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
 
     const startDateInput = await screen.findByLabelText('Start date');
     const endDateInput = await screen.findByLabelText('End date');
@@ -160,7 +160,7 @@ describe('Reports', () => {
   });
 
   it('Shows an error message when form is submitted without required fields filled in', async () => {
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
 
     const submitButton = await screen.findByRole('button', { name: 'Export' });
 
@@ -178,7 +178,7 @@ describe('Reports', () => {
         );
       }),
     );
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     await userEvent.click(await screen.findByPlaceholderText('Select survey…'));
     await userEvent.click(await screen.findByText('Basic clinic data - Demo Land'));
     await userEvent.click(await screen.findByLabelText('Country'));
@@ -211,7 +211,7 @@ describe('Reports', () => {
         );
       }),
     );
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     await userEvent.click(await screen.findByPlaceholderText('Select survey…'));
     await userEvent.click(await screen.findByText('Basic clinic data - Demo Land'));
     await userEvent.click(await screen.findByLabelText('Country'));
@@ -238,7 +238,7 @@ describe('Reports', () => {
         return res(ctx.status(500), ctx.json({ error: 'Something went wrong' }));
       }),
     );
-    renderComponent(<Reports />);
+    await renderComponent(<Reports />);
     await userEvent.click(await screen.findByPlaceholderText('Select survey…'));
     await userEvent.click(await screen.findByText('Basic clinic data - Demo Land'));
     await userEvent.click(await screen.findByLabelText('Country'));

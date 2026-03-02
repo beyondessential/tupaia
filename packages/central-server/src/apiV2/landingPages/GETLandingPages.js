@@ -38,7 +38,7 @@ const createLandingPageDBFilter = async (accessPolicy, models, criteria) => {
  */
 
 export class GETLandingPages extends TupaiaAdminGETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(landingPageId, options) {
     const landingPagePermissionChecker = accessPolicy =>
