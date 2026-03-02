@@ -76,7 +76,7 @@ export class ExportMapOverlayRoute extends Route<ExportMapOverlayRequest> {
     const buffer = await downloadPageAsPdf({
       cookieDomain,
       landscape: true,
-      pdfPageUrl: pageUrl,
+      pageUrl,
       userCookie: cookie,
     });
     return { contents: buffer, type: 'application/pdf' };
