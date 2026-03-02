@@ -19,7 +19,23 @@ interface ExportDashboardBody {
 }
 
 const buildExportBody = (body: ExportDashboardBody, format: 'pdf' | 'png') => {
-  const { projectCode, entityCode, mapOverlayCode, zoom, center, hiddenValues, tileset, mapOverlayPeriod } = body;
+  const {
+    projectCode,
+    entityCode,
+    mapOverlayCode,
+    zoom,
+    center,
+    hiddenValues,
+    tileset,
+    mapOverlayPeriod,
+  } = body;
+
+  if (!projectCode || !entityCode || !mapOverlayCode) {
+    throw new Error(
+      `Cannot export map overlay: missing required params (projectCode, entityCode, mapOverlayCode)`,
+    );
+  }
+
   const cookieDomain = new URL(API_URL).hostname;
   return {
     endpoint: `mapOverlays/${projectCode}/${entityCode}/${mapOverlayCode}/export`,
