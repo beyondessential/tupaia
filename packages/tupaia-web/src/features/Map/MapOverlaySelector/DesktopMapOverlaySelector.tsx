@@ -49,7 +49,7 @@ const ExportButton = styled(Button).attrs({ variant: 'outlined' })`
   font-size: 0.75rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   color: ${({ theme }) => theme.palette.text.primary};
-  border-color: white;
+  border-color: ${({ theme }) => theme.palette.text.primary};
   text-transform: none;
   padding-block: 0.1rem;
   padding-inline: 0.4rem;
@@ -58,7 +58,7 @@ const ExportButton = styled(Button).attrs({ variant: 'outlined' })`
 
   &.Mui-disabled {
     color: ${({ theme }) => theme.palette.text.primary};
-    border-color: white;
+    border-color: ${({ theme }) => theme.palette.text.primary};
   }
 
   .MuiButton-endIcon {
@@ -73,7 +73,7 @@ const ExportButton = styled(Button).attrs({ variant: 'outlined' })`
 const ExportMenu = styled(Menu)`
   .MuiPaper-root {
     background-color: ${({ theme }) => theme.palette.secondary.main};
-    border: 1px solid white;
+    border: 1px solid ${({ theme }) => theme.palette.text.primary};
     min-width: 0;
   }
   .MuiList-root {
