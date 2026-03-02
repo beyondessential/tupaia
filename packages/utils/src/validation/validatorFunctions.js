@@ -15,7 +15,7 @@ export const isPresent = value => {
   }
 };
 
-export const isNotPresent = (value, object, key) => {
+export const isNotPresent = (_value, object, key) => {
   if (object.hasOwnProperty(key)) {
     throw new ValidationError('Invalid field');
   }
@@ -138,7 +138,7 @@ export const isValidPassword = password => {
   try {
     hasContent(password);
     constructIsLongerThan(7)(password);
-  } catch (error) {
+  } catch {
     throw new ValidationError('Password must be over 8 characters long.');
   }
   return true;
@@ -298,7 +298,7 @@ export const constructIsShorterThan = maxLength => value => {
 export const constructIsValidJson = () => value => {
   try {
     JSON.parse(value);
-  } catch (exception) {
+  } catch {
     throw new ValidationError(`${value} is not valid JSON`);
   }
 };

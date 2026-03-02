@@ -19,7 +19,8 @@ interface SurveyResponse {
   userId: UserAccount['id'] | null;
   surveyId: Survey['id'];
   countryId: Entity['id'];
-  questions: SurveyScreenComponent[];
+  entityId?: Entity['id'];
+  questions: Omit<SurveyScreenComponent, 'updatedAtSyncTick'>[];
   answers: Answers;
   startTime: string;
   timezone: string;

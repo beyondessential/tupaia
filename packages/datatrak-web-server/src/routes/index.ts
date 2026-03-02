@@ -37,3 +37,9 @@ export {
   ExportSurveyResponseRequest,
   ExportSurveyResponseRoute,
 } from './ExportSurveyResponseRoute';
+export { SyncStartSessionRequest, SyncStartSessionRoute } from './SyncStartSessionRoute';
+export { SyncInitiatePullRequest, SyncInitiatePullRoute } from './SyncInitiatePullRoute';
+export { SyncPullRequest, SyncPullRoute } from './SyncPullRoute';
+export { SyncPushRequest, SyncPushRoute } from './SyncPushRoute';
+export { SyncPushCompleteRequest, SyncPushCompleteRoute } from './SyncPushCompleteRoute';
+export { SyncEndSessionRequest, SyncEndSessionRoute } from './SyncEndSessionRoute';

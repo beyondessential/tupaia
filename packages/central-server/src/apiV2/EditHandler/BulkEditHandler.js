@@ -1,6 +1,7 @@
 import {
   constructRecordExistsWithId,
   DatabaseError,
+  NotImplementedError,
   ObjectValidator,
   respond,
 } from '@tupaia/utils';
@@ -47,9 +48,9 @@ export class BulkEditHandler extends CRUDHandler {
     respond(this.res, { message: `Successfully updated ${this.resource}` }, 200);
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async editRecords(transactingModels, updatedRecords) {
-    throw new Error('Any BulkEditHandler must implement editRecords()');
+  /** @abstract */
+  async editRecords(_transactingModels, _updatedRecords) {
+    throw new NotImplementedError('Any BulkEditHandler must implement editRecords()');
   }
 
   async updateRecords(transactingModels, updatedRecords) {

@@ -1,14 +1,38 @@
-import { useQuery } from '@tanstack/react-query';
-import { DatatrakWebRecentSurveysRequest, Project, UserAccount } from '@tupaia/types';
-import { get } from '../api';
+import { camelcaseKeys, ensure } from '@tupaia/tsutils';
+import type { DatatrakWebRecentSurveysRequest, Project, UserAccount } from '@tupaia/types';
 import { useCurrentUserContext } from '../CurrentUserContext';
+import { get } from '../api';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { useDatabaseQuery, type ContextualQueryFunctionContext } from './useDatabaseQuery';
+
+interface RecentSurveysQueryContext extends ContextualQueryFunctionContext {
+  projectId?: Project['id'];
+  userId?: UserAccount['id'];
+}
+
+interface RecentSurveysQueryFunction {
+  (context: RecentSurveysQueryContext): Promise<DatatrakWebRecentSurveysRequest.ResBody>;
+}
+
+const queryFunctions = {
+  local: async ({ models, projectId, userId }) => {
+    const surveyResponses = await models.user.getRecentSurveys(ensure(userId), ensure(projectId));
+    return camelcaseKeys(surveyResponses);
+  },
+  remote: async ({ projectId, userId }) =>
+    await get('recentSurveys', { params: { projectId, userId } }),
+} as const satisfies Record<'local' | 'remote', RecentSurveysQueryFunction>;
 
 export const useRecentSurveys = (userId?: UserAccount['id'], projectId?: Project['id']) => {
-  return useQuery(
-    ['recentSurveys', userId, projectId],
-    (): Promise<DatatrakWebRecentSurveysRequest.ResBody> =>
-      get('recentSurveys', { params: { userId, projectId } }),
-    { enabled: !!userId && !!projectId },
+  const isOfflineFirst = useIsOfflineFirst();
+  const localContext = { userId, projectId };
+  return useDatabaseQuery<DatatrakWebRecentSurveysRequest.ResBody>(
+    ['recentSurveys', localContext],
+    isOfflineFirst ? queryFunctions.local : queryFunctions.remote,
+    {
+      enabled: Boolean(userId && projectId),
+      localContext: localContext,
+    },
   );
 };
 

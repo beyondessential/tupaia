@@ -90,10 +90,10 @@ export const PersonalDetailsForm = () => {
       // Keep only user-modified fields...
       .filter(field => dirtyFields[field])
       // ...and trim them
-      .reduce(
-        (updatedFields, field) => ({ ...updatedFields, [field]: userDetails[field].trim() }),
-        {} as PersonalDetailsFormFields,
-      );
+      .reduce<PersonalDetailsFormFields>((updatedFields, field) => {
+        updatedFields[field] = userDetails[field].trim();
+        return updatedFields;
+      }, {});
 
     updateUser(updates as UserAccountDetails);
   }
