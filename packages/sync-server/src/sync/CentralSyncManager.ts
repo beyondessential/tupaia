@@ -1,5 +1,6 @@
 import log from 'winston';
 
+import { isNullish } from '@tupaia/tsutils';
 import {
   getModelsForPull,
   getSyncTicksOfPendingEdits,
@@ -236,6 +237,13 @@ export class CentralSyncManager {
 
   async prepareSession(sessionId: string): Promise<PrepareSessionResult | void> {
     try {
+      // if the sync_lookup table is enabled, don't allow syncs until it has finished its first update run
+      const syncLookupUpToTick =
+        await this.models.localSystemFact.get(SyncFact.LOOKUP_UP_TO_TICK);
+      if (isNullish(syncLookupUpToTick)) {
+        throw new Error(`Sync lookup table has not yet built. Cannot initiate sync.`);
+      }
+
       await createSnapshotTable(this.models.database, sessionId);
       const { tick } = await this.tickTockGlobalClock(this.models);
       await this.models.syncSession.updateById(sessionId, { started_at_tick: tick });
