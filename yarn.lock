@@ -13203,6 +13203,7 @@ __metadata:
     "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/sync": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/express": ^4.17.22
