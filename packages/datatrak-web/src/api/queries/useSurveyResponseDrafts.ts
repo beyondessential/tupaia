@@ -9,6 +9,10 @@ interface DraftsQueryContext extends ContextualQueryFunctionContext {
   userId?: string;
 }
 
+interface DraftsQueryFunction {
+  (context: DraftsQueryContext): Promise<DatatrakWebSurveyResponseDraftsRequest.ResBody>;
+}
+
 const queryFunctions = {
   local: async ({ models, userId }: DraftsQueryContext) => {
     const drafts = await models.surveyResponseDraft.find(
@@ -39,7 +43,7 @@ const queryFunctions = {
   },
   remote: async (): Promise<DatatrakWebSurveyResponseDraftsRequest.ResBody> =>
     get('surveyResponseDrafts'),
-} as const;
+} as const satisfies Record<'local' | 'remote', DraftsQueryFunction>;
 
 export const useSurveyResponseDrafts = () => {
   const isOfflineFirst = useIsOfflineFirst();

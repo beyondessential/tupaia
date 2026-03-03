@@ -1,9 +1,9 @@
 export type DraftSurveyResponse = {
   id: string;
   surveyId: string;
-  surveyCode: string;
-  surveyName: string;
-  countryCode: string;
+  surveyCode: string | null;
+  surveyName: string | null;
+  countryCode: string | null;
   entityId: string | null;
   entityName: string | null;
   startTime: string | null;

@@ -1,12 +1,7 @@
-import { IconButton, Tooltip } from '@material-ui/core';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import React from 'react';
 import styled from 'styled-components';
-
-import {
-  useSurveyResponseDrafts,
-  useDeleteSurveyResponseDraft,
-} from '../../api';
+import { ActionsMenu } from '@tupaia/ui-components';
+import { useSurveyResponseDrafts, useDeleteSurveyResponseDraft } from '../../api';
 import { InlineScrollView, SurveyIcon, Tile, TileSkeleton } from '../../components';
 import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
@@ -39,25 +34,27 @@ const GridScroll = styled.div.attrs({
 
 type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
 
-const DraftDeleteButton = ({ draftId }: { draftId: string }) => {
+const Menu = ({ draftId }: { draftId: string }) => {
   const { mutate: deleteDraft, isLoading } = useDeleteSurveyResponseDraft(draftId);
 
+  const actions = [
+    {
+      label: 'Delete',
+      action: () => {
+        if (isLoading) return;
+        deleteDraft();
+      },
+      toolTipTitle: 'Delete draft',
+    },
+  ];
+
   return (
-    <Tooltip title="Delete draft">
-      <span>
-        <IconButton
-          size="small"
-          onClick={e => {
-            e.preventDefault();
-            deleteDraft();
-          }}
-          disabled={isLoading}
-          aria-label="Delete draft"
-        >
-          <DeleteOutlinedIcon fontSize="small" />
-        </IconButton>
-      </span>
-    </Tooltip>
+    <ActionsMenu
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      options={actions}
+      includesIcons
+    />
   );
 };
 
@@ -73,7 +70,7 @@ const DraftSurveyTile = ({
     <Tile
       heading={surveyName ?? 'Draft survey'}
       leadingIcons={<SurveyIcon />}
-      trailingIcons={<DraftDeleteButton draftId={id} />}
+      trailingIcons={<Menu draftId={id} />}
       to={`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`}
     >
       {entityName ?? countryCode}
@@ -101,7 +98,7 @@ export const DraftSurveysSection = () => {
 
   return (
     <DraftSurveys>
-      <SectionHeading>Continue where you left off</SectionHeading>
+      <SectionHeading>My drafts</SectionHeading>
       <ScrollableList>{renderContents()}</ScrollableList>
     </DraftSurveys>
   );
