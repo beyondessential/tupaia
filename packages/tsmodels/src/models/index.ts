@@ -59,6 +59,7 @@ export { ReportModel, ReportRecord } from './Report';
 export { SurveyModel, SurveyRecord } from './Survey';
 export { SurveyGroupModel, SurveyGroupRecord } from './SurveyGroup';
 export { SurveyResponseModel, SurveyResponseRecord } from './SurveyResponse';
+export { SurveyResponseDraftModel, SurveyResponseDraftRecord } from './SurveyResponseDraft';
 export { SurveyScreenModel, SurveyScreenRecord } from './SurveyScreen';
 export { SurveyScreenComponentModel, SurveyScreenComponentRecord } from './SurveyScreenComponent';
 export { TaskModel, TaskRecord } from './Task';

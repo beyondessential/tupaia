@@ -43,3 +43,19 @@ export { SyncPullRequest, SyncPullRoute } from './SyncPullRoute';
 export { SyncPushRequest, SyncPushRoute } from './SyncPushRoute';
 export { SyncPushCompleteRequest, SyncPushCompleteRoute } from './SyncPushCompleteRoute';
 export { SyncEndSessionRequest, SyncEndSessionRoute } from './SyncEndSessionRoute';
+export {
+  GetSurveyResponseDraftsRequest,
+  GetSurveyResponseDraftsRoute,
+} from './GetSurveyResponseDraftsRoute';
+export {
+  SaveSurveyResponseDraftRequest,
+  SaveSurveyResponseDraftRoute,
+} from './SaveSurveyResponseDraftRoute';
+export {
+  UpdateSurveyResponseDraftRequest,
+  UpdateSurveyResponseDraftRoute,
+} from './UpdateSurveyResponseDraftRoute';
+export {
+  DeleteSurveyResponseDraftRequest,
+  DeleteSurveyResponseDraftRoute,
+} from './DeleteSurveyResponseDraftRoute';
