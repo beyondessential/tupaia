@@ -24,6 +24,8 @@ export default defineConfig(({ command, mode }) => {
   env.REACT_APP_VERSION = packageJson.version;
 
 
+  const isDatatrakWeb = packageName === DATATRAK_WEB_NAME;
+
   const baseConfig = {
     build: {
       rollupOptions: {
@@ -41,19 +43,21 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
-        external: [
-          '@node-rs/argon2-wasm32-wasi',
-          'fs/promises',
-          'memfs/promises',
-          'stream/promises',
-        ],
+        ...(isDatatrakWeb && {
+          external: [
+            '@node-rs/argon2-wasm32-wasi',
+            'fs/promises',
+            'memfs/promises',
+            'stream/promises',
+          ],
+        }),
       },
     },
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
       react({ jsxRuntime: 'classic' }),
-      ...(packageName === DATATRAK_WEB_NAME
+      ...(isDatatrakWeb
         ? [
             nodePolyfills({
               protocolImports: true,
@@ -62,23 +66,21 @@ export default defineConfig(({ command, mode }) => {
               },
             }),
             commonjs(),
+            // Replace process.env with actual values instead of using define, because define
+            // also replaces process.env in external node_modules, causing issues with knex
+            replace({
+              'process.env': JSON.stringify(env),
+              include: 'src/**/*',
+              exclude: 'node_modules/**',
+              preventAssignment: false,
+            }),
           ]
         : []),
-      // For datatrak-web, replace the process.env variables with the actual values
-      // Doing this instead of using define because define also replaces the process.env
-      // in the external node_modules, which caused issues when using knex in frontend
-      packageName === DATATRAK_WEB_NAME
-        ? replace({
-            'process.env': JSON.stringify(env),
-            include: 'src/**/*', // Only source files
-            exclude: 'node_modules/**', // Exclude all external node_modules
-            preventAssignment: false,
-          })
-        : null,
     ],
     define: {
-      __dirname: JSON.stringify('/'),
-      ...(packageName !== DATATRAK_WEB_NAME ? { 'process.env': env } : {}),
+      ...(isDatatrakWeb
+        ? { __dirname: JSON.stringify('/') }
+        : { 'process.env': env }),
     },
     server: {
       open: true,
@@ -89,7 +91,7 @@ export default defineConfig(({ command, mode }) => {
     },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
-      conditions: ['browser'],
+      ...(isDatatrakWeb && { conditions: ['browser'] }),
       preserveSymlinks: true, // use the yarn workspace symlinks
       dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components', 'react-router-dom'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
       alias: {
@@ -97,15 +99,19 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'mock/winston.js'),
         jsonwebtoken: path.resolve(__dirname, 'mock/moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'mock/moduleMock.js'),
-        'rand-token': path.resolve(__dirname, 'mock/moduleMock.js'),
-        pg: path.resolve(__dirname, 'mock/pgMock.js'),
-        'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),
-        '@node-rs/argon2': path.resolve(__dirname, 'mock/argon2ModuleMock.js'),
+        ...(isDatatrakWeb && {
+          'rand-token': path.resolve(__dirname, 'mock/moduleMock.js'),
+          pg: path.resolve(__dirname, 'mock/pgMock.js'),
+          'pg-pubsub': path.resolve(__dirname, 'mock/moduleMock.js'),
+          '@node-rs/argon2': path.resolve(__dirname, 'mock/argon2ModuleMock.js'),
+        }),
       },
     },
-    optimizeDeps: {
-      exclude: ['@electric-sql/pglite'],
-    },
+    ...(isDatatrakWeb && {
+      optimizeDeps: {
+        exclude: ['@electric-sql/pglite'],
+      },
+    }),
   };
 
   // Dev specific config. This is because `define.global` breaks the build
@@ -128,11 +134,13 @@ export default defineConfig(({ command, mode }) => {
             './packages/ui-map-components/src/index.ts',
           ),
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
-          '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
-          '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
-          '@tupaia/constants': path.resolve(__dirname, './packages/constants/src/index.ts'),
-          '@tupaia/tsutils': path.resolve(__dirname, './packages/tsutils/src/index.ts'),
-          '@tupaia/access-policy': path.resolve(__dirname, './packages/access-policy/src/index.js'),
+          ...(isDatatrakWeb && {
+            '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
+            '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
+            '@tupaia/constants': path.resolve(__dirname, './packages/constants/src/index.ts'),
+            '@tupaia/tsutils': path.resolve(__dirname, './packages/tsutils/src/index.ts'),
+            '@tupaia/access-policy': path.resolve(__dirname, './packages/access-policy/src/index.js'),
+          }),
         },
       },
     };
