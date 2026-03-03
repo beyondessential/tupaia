@@ -12,20 +12,25 @@ export type GetSurveyResponseDraftsRequest = Request<
 export class GetSurveyResponseDraftsRoute extends Route<GetSurveyResponseDraftsRequest> {
   public async buildResponse() {
     const { ctx, models } = this.req;
+    console.log('GetSurveyResponseDraftsRoute');
 
     const { id: userId } = await ctx.services.central.getUser();
 
-    const drafts = await ctx.services.central.fetchResources('surveyResponseDrafts', {
-      filter: { user_id: userId },
-      sort: ['updated_at DESC'],
-    });
+    const drafts = await models.surveyResponseDraft.find(
+      { user_id: userId },
+      {
+        sort: ['updated_at DESC'],
+      },
+    );
+
+    console.log('drafts.length', drafts.length);
 
     if (!drafts || drafts.length === 0) {
       return [];
     }
 
     const enrichedDrafts = await Promise.all(
-      drafts.map(async (draft: Record<string, unknown>) => {
+      drafts.map(async draft => {
         const survey = draft.survey_id
           ? await models.survey.findById(draft.survey_id as string)
           : null;

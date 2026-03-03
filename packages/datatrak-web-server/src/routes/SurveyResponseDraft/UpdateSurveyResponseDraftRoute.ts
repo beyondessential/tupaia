@@ -12,12 +12,12 @@ export type UpdateSurveyResponseDraftRequest = Request<
 
 export class UpdateSurveyResponseDraftRoute extends Route<UpdateSurveyResponseDraftRequest> {
   public async buildResponse() {
-    const { ctx, params, body } = this.req;
+    const { ctx, params, body, models } = this.req;
 
     const { draftId } = params;
     const { id: userId } = await ctx.services.central.getUser();
 
-    const draft = await ctx.services.central.fetchResources(`surveyResponseDrafts/${draftId}`);
+    const draft = await models.surveyResponseDraft.findById(draftId);
 
     if (!draft) {
       throw new NotFoundError(`No draft found with ID ${draftId}`);
@@ -29,16 +29,12 @@ export class UpdateSurveyResponseDraftRoute extends Route<UpdateSurveyResponseDr
 
     const { entityId, formData, screenNumber } = body;
 
-    await ctx.services.central.updateResource(
-      `surveyResponseDrafts/${draftId}`,
-      {},
-      {
-        entity_id: entityId ?? null,
-        form_data: formData,
-        screen_number: screenNumber,
-        updated_at: new Date().toISOString(),
-      },
-    );
+    await models.surveyResponseDraft.updateById(draftId, {
+      entity_id: entityId ?? null,
+      form_data: formData,
+      screen_number: screenNumber,
+      updated_at: new Date().toISOString(),
+    });
 
     return { message: 'Draft updated successfully' };
   }

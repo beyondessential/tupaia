@@ -12,12 +12,12 @@ export type DeleteSurveyResponseDraftRequest = Request<
 
 export class DeleteSurveyResponseDraftRoute extends Route<DeleteSurveyResponseDraftRequest> {
   public async buildResponse() {
-    const { ctx, params } = this.req;
+    const { ctx, params, models } = this.req;
 
     const { draftId } = params;
     const { id: userId } = await ctx.services.central.getUser();
 
-    const draft = await ctx.services.central.fetchResources(`surveyResponseDrafts/${draftId}`);
+    const draft = await models.surveyResponseDraft.findById(draftId);
 
     if (!draft) {
       throw new NotFoundError(`No draft found with ID ${draftId}`);
@@ -27,7 +27,7 @@ export class DeleteSurveyResponseDraftRoute extends Route<DeleteSurveyResponseDr
       throw new PermissionsError('You do not have permission to delete this draft');
     }
 
-    await ctx.services.central.deleteResource(`surveyResponseDrafts/${draftId}`);
+    await models.surveyResponseDraft.deleteById(draftId);
 
     return { message: 'Draft deleted successfully' };
   }

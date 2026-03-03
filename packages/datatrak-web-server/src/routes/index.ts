@@ -46,16 +46,16 @@ export { SyncEndSessionRequest, SyncEndSessionRoute } from './SyncEndSessionRout
 export {
   GetSurveyResponseDraftsRequest,
   GetSurveyResponseDraftsRoute,
-} from './GetSurveyResponseDraftsRoute';
+} from './SurveyResponseDraft/GetSurveyResponseDraftsRoute';
 export {
   SaveSurveyResponseDraftRequest,
   SaveSurveyResponseDraftRoute,
-} from './SaveSurveyResponseDraftRoute';
+} from './SurveyResponseDraft/SaveSurveyResponseDraftRoute';
 export {
   UpdateSurveyResponseDraftRequest,
   UpdateSurveyResponseDraftRoute,
-} from './UpdateSurveyResponseDraftRoute';
+} from './SurveyResponseDraft/UpdateSurveyResponseDraftRoute';
 export {
   DeleteSurveyResponseDraftRequest,
   DeleteSurveyResponseDraftRoute,
-} from './DeleteSurveyResponseDraftRoute';
+} from './SurveyResponseDraft/DeleteSurveyResponseDraftRoute';
