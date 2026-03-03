@@ -50,6 +50,7 @@ interface ActionMenuProps {
     horizontal?: 'left' | 'right';
   };
   IconButton?: typeof MuiIconButton;
+  className?: string;
 }
 
 export const ActionsMenu = ({
@@ -58,6 +59,7 @@ export const ActionsMenu = ({
   anchorOrigin = {},
   transformOrigin = {},
   IconButton = MuiIconButton,
+  className,
 }: ActionMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
 
@@ -69,7 +71,7 @@ export const ActionsMenu = ({
 
   return (
     <>
-      <IconButton onClick={onOpen}>
+      <IconButton onClick={onOpen} className={className}>
         <StyledMenuIcon aria-hidden />
         <VisuallyHidden>Open menu</VisuallyHidden>
       </IconButton>
