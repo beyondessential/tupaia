@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Dialog, Slide, IconButton } from '@material-ui/core';
-import { Delete } from '@material-ui/icons';
 import { TransitionProps } from '@material-ui/core/transitions';
+import type { DatatrakWebSurveyResponseDraftsRequest } from '@tupaia/types';
+import { Trash2 } from 'lucide-react';
 import { HEADER_HEIGHT } from '../../../constants';
 import { useSurveyResponseDrafts, useDeleteSurveyResponseDraft } from '../../../api';
-import { Button, SurveyIcon, Tile } from '../../../components';
+import { Button } from '../../../components';
+import { DraftSurveyTile } from './DraftSurveyTile';
 import { StickyMobileHeader } from '../../../layout';
-import type { DatatrakWebSurveyResponseDraftsRequest } from '@tupaia/types';
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -22,6 +23,7 @@ const ViewMoreButton = styled(Button).attrs({ variant: 'text', color: 'default' 
 
 const ExpandedWrapper = styled.div`
   height: 100%;
+  background-color: ${({ theme }) => theme.palette.background.default};
 `;
 
 const ListWrapper = styled.div`
@@ -29,8 +31,26 @@ const ListWrapper = styled.div`
   overflow-y: auto;
   flex-direction: column;
   max-block-size: calc(100dvb - ${HEADER_HEIGHT});
-  background-color: ${({ theme }) => theme.palette.background.default};
   padding: 1rem;
+`;
+
+const ListItemContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+
+  > span {
+    flex: 1;
+
+    > a {
+      width: 100%;
+    }
+
+    svg {
+      color: ${props => props.theme.palette.primary.main};
+    }
+  }
 `;
 
 const DraftList = styled.ul`
@@ -42,28 +62,7 @@ const DraftList = styled.ul`
   gap: 0.6rem;
 `;
 
-const DraftItem = styled.li`
-  position: relative;
-`;
-
-const StyledTile = styled(Tile)`
-  padding-right: 4rem;
-`;
-
-const DeleteButton = styled(IconButton)`
-  position: absolute;
-  top: 50%;
-  right: 1rem;
-  transform: translateY(-50%);
-  z-index: 1;
-`;
-
-const TooltipText = styled.p`
-  font-weight: normal;
-  margin-block: 0;
-  text-align: center;
-  text-wrap: balance;
-`;
+const DeleteButton = styled(IconButton)``;
 
 type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
 
@@ -77,45 +76,23 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const DraftSurveyTile = ({
-  id,
-  surveyName,
-  surveyCode,
-  countryCode,
-  entityName,
-  screenNumber,
-}: DraftSurvey) => {
-  const { mutate: deleteDraft, isLoading } = useDeleteSurveyResponseDraft(id);
-  const entityText = entityName ?? countryCode;
-  const tooltip = (
-    <>
-      <TooltipText>{surveyName}</TooltipText>
-      <TooltipText>{entityText}</TooltipText>
-    </>
-  );
+const ListItem = ({ draft }) => {
+  const { mutate: deleteDraft, isLoading } = useDeleteSurveyResponseDraft(draft.id);
 
   return (
-    <DraftItem>
-      <StyledTile
-        heading={surveyName ?? 'Draft survey'}
-        leadingIcons={<SurveyIcon />}
-        tooltip={tooltip}
-        to={`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`}
-      >
-        {entityText}
-      </StyledTile>
+    <ListItemContainer>
+      <DraftSurveyTile key={draft.id} {...draft} />
       <DeleteButton
         onClick={e => {
           e.preventDefault();
           if (!isLoading) {
-            deleteDraft();
+            deleteDraft(draft.id);
           }
         }}
-        size="small"
       >
-        <Delete />
+        <Trash2 />
       </DeleteButton>
-    </DraftItem>
+    </ListItemContainer>
   );
 };
 
@@ -135,7 +112,7 @@ const ExpandedList = ({ expanded, onClose }: { expanded: boolean; onClose: () =>
         <ListWrapper>
           <DraftList>
             {drafts.map(draft => (
-              <DraftSurveyTile key={draft.id} {...draft} />
+              <ListItem draft={draft} />
             ))}
           </DraftList>
         </ListWrapper>
