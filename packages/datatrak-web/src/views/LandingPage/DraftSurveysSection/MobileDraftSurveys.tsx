@@ -46,10 +46,6 @@ const ListItemContainer = styled.div`
     > a {
       width: 100%;
     }
-
-    svg {
-      color: ${props => props.theme.palette.primary.main};
-    }
   }
 `;
 
@@ -62,7 +58,9 @@ const DraftList = styled.ul`
   gap: 0.6rem;
 `;
 
-const DeleteButton = styled(IconButton)``;
+const DeleteButton = styled(IconButton)`
+  color: ${props => props.theme.palette.primary.main};
+`;
 
 type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
 

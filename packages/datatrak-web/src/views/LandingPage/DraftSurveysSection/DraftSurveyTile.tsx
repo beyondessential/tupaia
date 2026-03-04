@@ -11,7 +11,7 @@ type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
 const StyledActionsMenu = styled(ActionsMenu)`
   position: absolute;
   top: 50%;
-  right: 1rem;
+  right: 0;
   transform: translateY(-50%);
   z-index: 1;
 
@@ -20,12 +20,14 @@ const StyledActionsMenu = styled(ActionsMenu)`
   }
 `;
 
-const StyledTile = styled(Tile)`
-  padding-right: 4rem;
-
-  svg {
-    color: ${props => props.theme.palette.text.tertiary};
+const StyledSurveyIcon = styled(SurveyIcon)`
+  &.MuiSvgIcon-root {
+    color: ${props => props.theme.palette.text.hint};
   }
+`;
+
+const StyledTile = styled(Tile)`
+  padding-right: 2.2rem;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
     padding-right: 1rem;
@@ -86,8 +88,9 @@ export const DraftSurveyTile = ({
   );
   return (
     <StyledTile
-      heading={surveyName ?? 'Draft survey'}
-      leadingIcons={<SurveyIcon />}
+      heading={surveyName ? `[draft]Local supply chain form 2` : 'Draft survey'}
+      // heading={surveyName ? `[draft]${surveyName}` : 'Draft survey'}
+      leadingIcons={<StyledSurveyIcon />}
       tooltip={tooltip}
       to={`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`}
     >

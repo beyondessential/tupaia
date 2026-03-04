@@ -6,10 +6,10 @@ export type DraftSurveyResponse = {
   countryCode: string | null;
   entityId: string | null;
   entityName: string | null;
-  startTime: string | null;
+  startTime: Date | null;
   formData: Record<string, unknown>;
   screenNumber: number;
-  updatedAt: string;
+  updatedAt: Date;
 };
 
 export type ResBody = DraftSurveyResponse[];

@@ -33,7 +33,7 @@ export class UpdateSurveyResponseDraftRoute extends Route<UpdateSurveyResponseDr
       entity_id: entityId ?? null,
       form_data: formData,
       screen_number: screenNumber,
-      updated_at: new Date().toISOString(),
+      updated_at: new Date(),
     });
 
     return { message: 'Draft updated successfully' };

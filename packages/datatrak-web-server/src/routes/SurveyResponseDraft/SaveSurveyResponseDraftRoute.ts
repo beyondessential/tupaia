@@ -22,7 +22,7 @@ export class SaveSurveyResponseDraftRoute extends Route<SaveSurveyResponseDraftR
       user_id: userId,
       country_code: countryCode,
       entity_id: entityId ?? null,
-      start_time: startTime ?? null,
+      start_time: startTime ? new Date(startTime) : undefined,
       form_data: formData,
       screen_number: screenNumber,
     });
