@@ -22,10 +22,10 @@ exports.up = async function (db) {
       user_id TEXT NOT NULL,
       country_code TEXT,
       entity_id TEXT,
-      start_time TEXT,
+      start_time TIMESTAMP WITH TIME ZONE NOT NULL,
       form_data JSONB NOT NULL DEFAULT '{}',
       screen_number INTEGER NOT NULL DEFAULT 1,
-      updated_at TIMESTAMP NOT NULL DEFAULT now()
+      updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
     );
   `);
 

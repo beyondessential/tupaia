@@ -12,7 +12,6 @@ export type GetSurveyResponseDraftsRequest = Request<
 export class GetSurveyResponseDraftsRoute extends Route<GetSurveyResponseDraftsRequest> {
   public async buildResponse() {
     const { ctx, models } = this.req;
-    console.log('GetSurveyResponseDraftsRoute');
 
     const { id: userId } = await ctx.services.central.getUser();
 
@@ -22,8 +21,6 @@ export class GetSurveyResponseDraftsRoute extends Route<GetSurveyResponseDraftsR
         sort: ['updated_at DESC'],
       },
     );
-
-    console.log('drafts.length', drafts.length);
 
     if (!drafts || drafts.length === 0) {
       return [];

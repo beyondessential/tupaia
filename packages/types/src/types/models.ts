@@ -89,7 +89,7 @@ export interface Analytics {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -103,7 +103,7 @@ export interface AnalyticsCreate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -117,7 +117,7 @@ export interface AnalyticsUpdate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -268,7 +268,6 @@ export interface Country {
   'code': string;
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
 }
 export interface CountryCreate {
   'code': string;
@@ -648,7 +647,6 @@ export interface Entity {
   'point'?: string | null;
   'region'?: string | null;
   'type': EntityType;
-  'updated_at_sync_tick': string;
 }
 export interface EntityCreate {
   'attributes'?: EntityAttributes;
@@ -681,7 +679,6 @@ export interface EntityHierarchy {
   'canonical_types'?: string[] | null;
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
 }
 export interface EntityHierarchyCreate {
   'canonical_types'?: string[] | null;
@@ -697,7 +694,6 @@ export interface EntityParentChildRelation {
   'entity_hierarchy_id': string;
   'id': string;
   'parent_id': string;
-  'updated_at_sync_tick': string;
 }
 export interface EntityParentChildRelationCreate {
   'child_id': string;
@@ -1172,7 +1168,6 @@ export interface Option {
   'label'?: string | null;
   'option_set_id': string;
   'sort_order': number;
-  'updated_at_sync_tick': string;
   'value': string;
 }
 export interface OptionCreate {
@@ -1193,7 +1188,6 @@ export interface OptionUpdate {
 export interface OptionSet {
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
 }
 export interface OptionSetCreate {
   'name': string;
@@ -1206,7 +1200,6 @@ export interface PermissionGroup {
   'id': string;
   'name': string;
   'parent_id'?: string | null;
-  'updated_at_sync_tick': string;
 }
 export interface PermissionGroupCreate {
   'name': string;
@@ -1259,7 +1252,6 @@ export interface Project {
   'logo_url'?: string | null;
   'permission_groups': string[];
   'sort_order'?: number | null;
-  'updated_at_sync_tick': string;
 }
 export interface ProjectCreate {
   'code': string;
@@ -1322,7 +1314,6 @@ export interface Question {
   'options'?: string[] | null;
   'text': string;
   'type': QuestionType;
-  'updated_at_sync_tick': string;
 }
 export interface QuestionCreate {
   'code'?: string | null;
@@ -1431,7 +1422,6 @@ export interface Survey {
   'project_id': string;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
-  'updated_at_sync_tick': string;
 }
 export interface SurveyCreate {
   'can_repeat'?: boolean | null;
@@ -1463,7 +1453,6 @@ export interface SurveyUpdate {
 export interface SurveyGroup {
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
 }
 export interface SurveyGroupCreate {
   'name': string;
@@ -1484,7 +1473,6 @@ export interface SurveyResponse {
   'start_time': Date;
   'survey_id': string;
   'timezone'?: string | null;
-  'updated_at_sync_tick': string;
   'user_id': string;
 }
 export interface SurveyResponseCreate {
@@ -1531,40 +1519,39 @@ export interface SurveyResponseCommentUpdate {
 export interface SurveyResponseDraft {
   'country_code'?: string | null;
   'entity_id'?: string | null;
-  'form_data': Record<string, unknown>;
+  'form_data': {};
   'id': string;
   'screen_number': number;
-  'start_time'?: string | null;
+  'start_time': Date;
   'survey_id': string;
-  'updated_at': string;
-  'updated_at_sync_tick': string;
+  'updated_at': Date;
   'user_id': string;
 }
 export interface SurveyResponseDraftCreate {
   'country_code'?: string | null;
   'entity_id'?: string | null;
-  'form_data': Record<string, unknown>;
-  'screen_number': number;
-  'start_time'?: string | null;
+  'form_data'?: {};
+  'screen_number'?: number;
+  'start_time': Date;
   'survey_id': string;
+  'updated_at'?: Date;
   'user_id': string;
 }
 export interface SurveyResponseDraftUpdate {
   'country_code'?: string | null;
   'entity_id'?: string | null;
-  'form_data'?: Record<string, unknown>;
+  'form_data'?: {};
   'id'?: string;
   'screen_number'?: number;
-  'start_time'?: string | null;
+  'start_time'?: Date;
   'survey_id'?: string;
-  'updated_at'?: string;
+  'updated_at'?: Date;
   'user_id'?: string;
 }
 export interface SurveyScreen {
   'id': string;
   'screen_number': number;
   'survey_id': string;
-  'updated_at_sync_tick': string;
 }
 export interface SurveyScreenCreate {
   'screen_number': number;
@@ -1585,7 +1572,6 @@ export interface SurveyScreenComponent {
   'question_id': string;
   'question_label'?: string | null;
   'screen_id': string;
-  'updated_at_sync_tick': string;
   'validation_criteria'?: string | null;
   'visibility_criteria'?: string | null;
 }
@@ -1705,7 +1691,6 @@ export interface Task {
   'status'?: TaskStatus | null;
   'survey_id': string;
   'survey_response_id'?: string | null;
-  'updated_at_sync_tick': string;
 }
 export interface TaskCreate {
   'assignee_id'?: string | null;
@@ -1741,7 +1726,6 @@ export interface TaskComment {
   'task_id': string;
   'template_variables': TaskCommentTemplateVariables;
   'type': TaskCommentType;
-  'updated_at_sync_tick': string;
   'user_id'?: string | null;
   'user_name': string;
 }
@@ -1802,7 +1786,6 @@ export interface UserAccount {
   'preferences': UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
-  'updated_at_sync_tick': string;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserAccountCreate {
@@ -1856,7 +1839,6 @@ export interface UserEntityPermission {
   'entity_id': string;
   'id': string;
   'permission_group_id': string;
-  'updated_at_sync_tick': string;
   'user_id': string;
 }
 export interface UserEntityPermissionCreate {
@@ -2024,8 +2006,8 @@ export enum EntityTypeEnum {
   'pacmossi_village' = 'pacmossi_village',
   'pacmossi_spraying_site' = 'pacmossi_spraying_site',
   'pacmossi_insecticide_test' = 'pacmossi_insecticide_test',
-  'document_group' = 'document_group',
   'document' = 'document',
+  'document_group' = 'document_group',
   'vehicle' = 'vehicle',
   'pacmossi_asset_facility' = 'pacmossi_asset_facility',
   'pacmossi_asset_sub_facility' = 'pacmossi_asset_sub_facility',
