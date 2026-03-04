@@ -19,13 +19,13 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
     } = this.req;
 
     const entities = await models.entity.find(filter, {
-      columns: ['code', 'id', 'name', 'parent_id', 'type'],
+      columns: ['code', 'id', 'name', 'parent_id', 'type', 'updated_at_sync_tick'],
       limit,
       sort,
     });
 
     return camelcaseKeys(
-      entities.map(({ code, id, name, parent_id, type, updated_at_sync_tick = '0' }) => ({
+      entities.map(({ code, id, name, parent_id, type, updated_at_sync_tick }) => ({
         code,
         id,
         name,
