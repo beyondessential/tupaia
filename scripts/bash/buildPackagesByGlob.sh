@@ -18,10 +18,10 @@ TIP="💡 ${GREEN}Remember to escape (or quote) the glob, so it isn’t expanded
 echo_usage() {
 	echo -e "${BOLD}USAGE${RESET}"
 	echo -e "  > ${BOLD}yarn run ${GREEN}build:from${RESET} ${BOLD}${BLUE}<escaped glob>${RESET}"
-	echo -e "    yarn workspaces foreach -Rptv -j 5 --from '@tupaia/${BLUE}<escaped glob>${RESET}' run build"
+	echo -e "    yarn workspaces foreach -Rptv -j \"\${YARN_JOBS:-5}\" --from '@tupaia/${BLUE}<escaped glob>${RESET}' run build"
 	echo
 	echo -e "  > ${BOLD}yarn run ${GREEN}build:only${RESET} ${BOLD}${BLUE}<escaped glob>${RESET}"
-	echo -e "    yarn workspaces foreach -ptv -j 5 --include '@tupaia/${BLUE}<escaped glob>${RESET}' run build"
+	echo -e "    yarn workspaces foreach -ptv -j \"\${YARN_JOBS:-5}\" --include '@tupaia/${BLUE}<escaped glob>${RESET}' run build"
 	echo
 	echo -e "${BOLD}REMARKS${RESET}"
 	echo '  • You should omit the “@tupaia/” prefix from your pattern.'
@@ -89,14 +89,14 @@ case $FLAG in
 	EXAMPLE_USAGE="${BOLD}yarn run build:from 'tupaia-web{,-server}'${RESET}" \
 		assert_expected_arguments $@
 	set -x
-	yarn workspaces foreach -Rptv --jobs 5 --from "@tupaia/$GLOB" run build
+	yarn workspaces foreach -Rptv --jobs "${YARN_JOBS:-5}" --from "@tupaia/$GLOB" run build
 	;;
 -o | --only)
 	shift
 	EXAMPLE_USAGE="${BOLD}yarn run build:only '{datatrak-*,types}'${RESET}" \
 		assert_expected_arguments $@
 	set -x
-	yarn workspaces foreach -ptv --jobs 5 --include "@tupaia/$GLOB" run build
+	yarn workspaces foreach -ptv --jobs "${YARN_JOBS:-5}" --include "@tupaia/$GLOB" run build
 	;;
 -h | --help)
 	echo_help_message
