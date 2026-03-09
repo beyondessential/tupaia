@@ -1,7 +1,8 @@
 name: Review Hero
 on:
   pull_request:
-    types: [opened, reopened, edited]
+    # synchronize is needed so the workflow appears in PR status checks on every push
+    types: [opened, synchronize, reopened, edited]
 
 permissions:
   contents: read

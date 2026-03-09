@@ -1,12 +1,7 @@
 project: Tupaia
-description: a data visualisation and collection platform for global health metrics, built as a yarn workspaces monorepo with 30+ packages including React frontends, Express orchestration servers, and shared micro-services backed by PostgreSQL
-
-ignore_patterns:
-  - "packages/types/src/types/models.ts"
-  - "packages/*/src/migrations/**"
-  - "packages/database/src/migrations/**"
+description: a data visualisation and collection platform for global health metrics
 
 agents:
   tupaia-conventions:
     name: "Tupaia Conventions"
-    description: "Tupaia-specific patterns: Route subclasses, orchestration vs micro-server boundaries, TypeScript types generation, database models, JS/TS mixed codebase conventions"
+    description: "Tupaia conventions: Route subclasses, orchestration vs micro-server boundaries, TypeScript types generation, database models, JS/TS mixed codebase"
