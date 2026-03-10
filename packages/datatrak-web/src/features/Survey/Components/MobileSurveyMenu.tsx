@@ -2,13 +2,14 @@ import { IconButton } from '@material-ui/core';
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 
-import { FormatListBulleted, KeyboardArrowRight } from '@material-ui/icons';
+import { FormatListBulleted, KeyboardArrowRight, SaveOutlined } from '@material-ui/icons';
 
 import { ShareIcon, Button as UIButton } from '../../../components';
 import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useShare } from '../utils/useShare';
 import { CopyUrlButton } from './CopyUrlButton';
+import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
 
 const Container = styled.nav`
   align-items: stretch;
@@ -54,14 +55,17 @@ const Button = styled(UIButton).attrs({
 `;
 
 export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
-  const { toggleSideMenu, isLast, isResubmit, isReviewScreen } = useSurveyForm();
+  const { toggleSideMenu, isLast, isResubmit, isReviewScreen, isSuccessScreen } = useSurveyForm();
   const share = useShare();
+  const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft();
 
   const getNextButtonText = () => {
     if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
     if (isLast) return 'Review';
     return 'Next';
   };
+
+  const showSaveExit = !isReviewScreen && !isSuccessScreen;
 
   return (
     <Container {...props}>
@@ -71,7 +75,13 @@ export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
       <IconButton onClick={share}>
         <ShareIcon />
       </IconButton>
-      <StyledCopyUrlButton />
+      {showSaveExit ? (
+        <IconButton onClick={saveAsDraft} disabled={isSavingDraft} title="Save & exit">
+          <SaveOutlined />
+        </IconButton>
+      ) : (
+        <StyledCopyUrlButton />
+      )}
       <Button type="submit">{getNextButtonText()}</Button>
     </Container>
   );

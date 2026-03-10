@@ -1,8 +1,16 @@
-import React, { createContext, Dispatch, useContext, useMemo, useReducer, useState } from 'react';
+import React, {
+  createContext,
+  Dispatch,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 import { To, useParams, useSearchParams } from 'react-router-dom';
 
-import { Country, QuestionType, Survey } from '@tupaia/types';
-import { useSurvey } from '../../../api';
+import { Country, DatatrakWebSurveyResponseDraftsRequest, QuestionType, Survey } from '@tupaia/types';
+import { useSurvey, useSurveyResponseDrafts } from '../../../api';
 import { PRIMARY_ENTITY_CODE_PARAM } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useIsResubmit, useIsReviewScreen, useIsSuccessScreen } from '../routes';
@@ -60,6 +68,12 @@ export const SurveyContext = ({
   const [prevSurvey, setPrevSurvey] = useState<ReturnType<typeof useSurvey>['data'] | null>(null);
   const primaryEntityCodeParam = urlSearchParams.get(PRIMARY_ENTITY_CODE_PARAM) || undefined;
   const [primaryEntityCode] = useState(primaryEntityCodeParam);
+  const draftId = urlSearchParams.get('draftId') || undefined;
+  const { data: drafts = [] } = useSurveyResponseDrafts();
+  const draft = draftId
+    ? drafts.find((d: DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse) => d.id === draftId)
+    : undefined;
+  const isDraft = Boolean(draftId);
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const params = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? Number.parseInt(params.screenNumber, 10) : null;
@@ -130,7 +144,7 @@ export const SurveyContext = ({
   // @see https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
   if (survey !== prevSurvey) {
     const initialiseFormData = () => {
-      if (!surveyCode || isResponseScreen || isResubmit) return;
+      if (!surveyCode || isResponseScreen || isResubmit || isDraft) return;
       // If we are on the response screen, we don’t want to initialise the form data, because we
       // want to show the user’s saved answers
       const initialFormData = generateCodeForCodeGeneratorQuestions(
@@ -148,6 +162,15 @@ export const SurveyContext = ({
     setPrevSurvey(survey);
     initialiseFormData();
   }
+
+  // Load draft data when the draft is available
+  useEffect(() => {
+    if (!draft) return;
+    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: draft.formData as Record<string, any> });
+    if (draft.startTime) {
+      dispatch({ type: ACTION_TYPES.SET_SURVEY_START_TIME, payload: draft.startTime });
+    }
+  }, [draft?.id]);
 
   const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
   const screenHeader = activeScreen?.[0]?.text;
@@ -173,6 +196,8 @@ export const SurveyContext = ({
         primaryEntityQuestion,
         isResubmit,
         isSuccessScreen,
+        isDraft,
+        draftId,
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
