@@ -29,7 +29,10 @@ export const MobileSurveyHeader = () => {
 
   return (
     <>
-      <StickyMobileHeader onBack={handleBack} onClose={openCancelConfirmation}>
+      <StickyMobileHeader
+        onBack={handleBack}
+        onClose={() => openCancelConfirmation({ confirmPath: ROUTES.HOME })}
+      >
         <SurveyDisplayName />
       </StickyMobileHeader>
       {screenNumberParam && (
