@@ -12,14 +12,14 @@ export const TileRoot = styled(Button).attrs({
   align-items: stretch;
   border-radius: 0.625rem;
   display: grid;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 400;
   gap: 0.25rem 0.5rem;
   justify-content: flex-start;
-  line-height: 1.45;
+  line-height: 1;
   min-block-size: fit-content;
   overflow: hidden;
-  padding: 1rem;
+  padding: 0.8rem 1rem;
 
   .MuiButton-label :where(p, h1, h2, h3, h4, h5, h6) {
     margin-block: 0;
@@ -63,7 +63,6 @@ const Header = styled.header`
     const { down, up } = theme.breakpoints;
     return css`
       ${down('lg')} {
-        margin-block-end: 0.5rem;
         block-size: 1.5rem;
       }
       ${up('lg')} {
