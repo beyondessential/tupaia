@@ -20,5 +20,6 @@ export { BlockScrollView, InlineScrollView } from './ScrollView';
 export { SmallModal } from './SmallModal';
 export { TextInput } from './TextInput';
 export { Tile, TileSkeleton, TileSkeletons } from './Tile';
+export { RecentSurveysList } from './RecentSurveysList';
 export { Toast } from './Toast';
 export { TopProgressBar } from './TopProgressBar';

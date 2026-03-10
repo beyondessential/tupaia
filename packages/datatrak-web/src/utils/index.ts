@@ -9,6 +9,14 @@ export {
   useIsMobileSizeClass as useIsMobile,
 } from './sizeClasses';
 export { errorToast, infoToast, successToast } from './toast';
+export {
+  addRecentSurvey,
+  clearRecentSurveys,
+  formatSurveySearchQuery,
+  getRecentSurveys,
+  getRecentSurveysForCountry,
+} from './surveyHistory';
+export type { RecentSurvey } from './surveyHistory';
 export { useBeforeUnload } from './useBeforeUnload';
 export { useHasVideoInput } from './useHasVideoInput';
 export { useFromLocation } from './useLocationState';
