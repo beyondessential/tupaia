@@ -14,6 +14,7 @@ export const SYNCING_TABLES = [
   'survey',
   'survey_group',
   'survey_response',
+  'survey_response_draft',
   'survey_screen',
   'survey_screen_component',
   'task',

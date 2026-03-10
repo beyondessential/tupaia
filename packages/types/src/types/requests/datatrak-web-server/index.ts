@@ -23,3 +23,7 @@ export * as DatatrakWebSyncPullRequest from './DatatrakSyncPullRequest';
 export * as DatatrakWebSyncEndSessionRequest from './DatatrakSyncEndSessionRequest';
 export * as DatatrakWebSyncPushRequest from './DatatrakSyncPushRequest';
 export * as DatatrakWebSyncPushCompleteRequest from './DatatrakSyncPushCompleteRequest';
+export * as DatatrakWebSurveyResponseDraftsRequest from './SurveyResponseDraftsRequest';
+export * as DatatrakWebSaveSurveyResponseDraftRequest from './SaveSurveyResponseDraftRequest';
+export * as DatatrakWebUpdateSurveyResponseDraftRequest from './UpdateSurveyResponseDraftRequest';
+export * as DatatrakWebDeleteSurveyResponseDraftRequest from './DeleteSurveyResponseDraftRequest';

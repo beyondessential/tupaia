@@ -1528,6 +1528,38 @@ export interface SurveyResponseCommentUpdate {
   'id'?: string;
   'survey_response_id'?: string;
 }
+export interface SurveyResponseDraft {
+  'country_code'?: string | null;
+  'entity_id'?: string | null;
+  'form_data': {};
+  'id': string;
+  'screen_number': number;
+  'start_time': Date;
+  'survey_id': string;
+  'updated_at': Date;
+  'user_id': string;
+}
+export interface SurveyResponseDraftCreate {
+  'country_code'?: string | null;
+  'entity_id'?: string | null;
+  'form_data'?: {};
+  'screen_number'?: number;
+  'start_time': Date;
+  'survey_id': string;
+  'updated_at'?: Date;
+  'user_id': string;
+}
+export interface SurveyResponseDraftUpdate {
+  'country_code'?: string | null;
+  'entity_id'?: string | null;
+  'form_data'?: {};
+  'id'?: string;
+  'screen_number'?: number;
+  'start_time'?: Date;
+  'survey_id'?: string;
+  'updated_at'?: Date;
+  'user_id'?: string;
+}
 export interface SurveyScreen {
   'id': string;
   'screen_number': number;
