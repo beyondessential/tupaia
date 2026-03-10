@@ -17,15 +17,15 @@ exports.setup = function (options, seedLink) {
 exports.up = async function (db) {
   await db.runSql(`
     CREATE TABLE survey_response_draft (
-      id TEXT PRIMARY KEY,
-      survey_id TEXT NOT NULL,
-      user_id TEXT NOT NULL,
-      country_code TEXT,
-      entity_id TEXT,
-      start_time TIMESTAMP WITH TIME ZONE NOT NULL,
-      form_data JSONB NOT NULL DEFAULT '{}',
-      screen_number INTEGER NOT NULL DEFAULT 1,
-      updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+       id TEXT PRIMARY KEY,
+       survey_id TEXT NOT NULL REFERENCES survey(id) ON DELETE CASCADE,
+       user_id TEXT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE,
+       country_code TEXT,
+       entity_id TEXT REFERENCES entity(id) ON DELETE CASCADE,
+       start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+       form_data JSONB NOT NULL DEFAULT '{}',
+       screen_number INTEGER NOT NULL DEFAULT 1,
+       updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
     );
   `);
 
