@@ -103,7 +103,7 @@ export const downloadPageAsPdf = async ({
     if (cookies.length > 0) {
       await page.setCookie(...cookies);
     }
-    await page.goto(verifiedPDFPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
+    await page.goto(verifiedPDFPageUrl, { timeout: 60000, waitUntil: 'networkidle2' });
 
     buffer = await page.pdf({
       format: 'a4',
