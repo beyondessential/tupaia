@@ -1537,6 +1537,7 @@ export interface SurveyResponseDraft {
   'start_time': Date;
   'survey_id': string;
   'updated_at': Date;
+  'updated_at_sync_tick': string;
   'user_id': string;
 }
 export interface SurveyResponseDraftCreate {
