@@ -168,6 +168,7 @@ export const FullScreenSelect = ({
     return (
       <SelectItem
         aria-selected={isSelected}
+        component="li"
         key={optionValue}
         label={option.label}
         onClick={e => {
