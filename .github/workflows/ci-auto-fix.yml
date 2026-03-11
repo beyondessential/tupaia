@@ -10,5 +10,5 @@ permissions:
 
 jobs:
   auto-fix:
-    uses: beyondessential/review-hero/.github/workflows/auto-fix.yml@main
+    uses: beyondessential/review-hero/.github/workflows/auto-fix.yml@v1
     secrets: inherit
