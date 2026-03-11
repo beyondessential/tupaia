@@ -23,7 +23,7 @@ export class DeleteSurveyResponseDraftRoute extends Route<DeleteSurveyResponseDr
       throw new NotFoundError(`No draft found with ID ${draftId}`);
     }
 
-    if (draft.user_id !== userId) {
+    if (String(draft.user_id) !== String(userId)) {
       throw new PermissionsError('You do not have permission to delete this draft');
     }
 
