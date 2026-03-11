@@ -78,6 +78,14 @@ import {
   TasksRoute,
   UserRequest,
   UserRoute,
+  GetSurveyResponseDraftsRequest,
+  GetSurveyResponseDraftsRoute,
+  SaveSurveyResponseDraftRequest,
+  SaveSurveyResponseDraftRoute,
+  UpdateSurveyResponseDraftRequest,
+  UpdateSurveyResponseDraftRoute,
+  DeleteSurveyResponseDraftRequest,
+  DeleteSurveyResponseDraftRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 import { LoginRoute } from '../routes/LoginRoute';
@@ -123,6 +131,7 @@ export async function createApp() {
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<ProjectUsersRequest>('project/:projectCode/users', handleWith(ProjectUsersRoute))
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
+    .get<GetSurveyResponseDraftsRequest>('surveyResponseDrafts', handleWith(GetSurveyResponseDraftsRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TaskMetricsRequest>('taskMetrics/:projectId', handleWith(TaskMetricsRoute))
     .get<TasksRequest>('tasks', handleWith(TasksRoute))
@@ -131,6 +140,9 @@ export async function createApp() {
     .get<SurveyUsersRequest>('users/:surveyCode/:countryCode', handleWith(SurveyUsersRoute))
     .get<PermissionGroupUsersRequest>('users/:countryCode', handleWith(PermissionGroupUsersRoute))
     // Post Routes
+    .post<SaveSurveyResponseDraftRequest>('surveyResponseDrafts', handleWith(SaveSurveyResponseDraftRoute))
+    .put<UpdateSurveyResponseDraftRequest>('surveyResponseDrafts/:draftId', handleWith(UpdateSurveyResponseDraftRoute))
+    .delete<DeleteSurveyResponseDraftRequest>('surveyResponseDrafts/:draftId', handleWith(DeleteSurveyResponseDraftRoute))
     .post<CreateTaskRequest>('tasks', handleWith(CreateTaskRoute))
     .put<EditTaskRequest>('tasks/:taskId', handleWith(EditTaskRoute))
     .post<SubmitSurveyResponseRequest>(
