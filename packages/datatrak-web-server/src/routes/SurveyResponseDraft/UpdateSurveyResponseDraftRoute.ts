@@ -30,7 +30,7 @@ export class UpdateSurveyResponseDraftRoute extends Route<UpdateSurveyResponseDr
     const { entityId, formData, screenNumber } = body;
 
     await models.surveyResponseDraft.updateById(draftId, {
-      entity_id: entityId ?? null,
+      ...(entityId !== undefined && { entity_id: entityId }),
       form_data: formData,
       screen_number: screenNumber,
       updated_at: new Date(),
