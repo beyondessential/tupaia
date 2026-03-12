@@ -14,8 +14,12 @@ interface UpdateDraftMutationContext
   extends ContextualMutationFunctionContext<UpdateDraftData>,
     LocalContext {}
 
-const updateRemote = async ({ draftId, data }: UpdateDraftMutationContext) =>
-  put(`surveyResponseDrafts/${ensure(draftId)}`, { data });
+const updateRemote = async ({ draftId, data }: UpdateDraftMutationContext) => {
+  return await put(
+    `surveyResponseDrafts/${ensure(draftId, `useUpdateSurveyResponseDraft mutation function called with ${draftId} draftId`)}`,
+    { data },
+  );
+};
 
 export const useUpdateSurveyResponseDraft = (draftId?: string) => {
   const queryClient = useQueryClient();

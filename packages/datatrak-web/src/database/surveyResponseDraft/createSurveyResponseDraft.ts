@@ -1,3 +1,4 @@
+import { ensure } from '@tupaia/tsutils';
 import { DatatrakWebModelRegistry } from '../../types';
 import { CurrentUser } from '../../api';
 
@@ -23,7 +24,7 @@ export const createSurveyResponseDraft = async ({
 
   const draft = await models.surveyResponseDraft.create({
     survey_id: surveyId,
-    user_id: user.id!,
+    user_id: ensure(user.id, 'A user must be logged in to create a survey draft.'),
     country_code: countryCode,
     entity_id: entityId ?? null,
     start_time: startTime ?? null,
