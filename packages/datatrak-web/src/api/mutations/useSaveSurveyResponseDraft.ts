@@ -9,8 +9,9 @@ type SaveDraftData = DatatrakWebSaveSurveyResponseDraftRequest.ReqBody;
 
 interface SaveDraftMutationContext extends ContextualMutationFunctionContext<SaveDraftData> {}
 
-const saveRemote = async ({ data }: SaveDraftMutationContext) =>
-  post('surveyResponseDrafts', { data });
+const saveRemote = async ({ data }: SaveDraftMutationContext) => {
+  return await post('surveyResponseDrafts', { data });
+};
 
 export const useSaveSurveyResponseDraft = () => {
   const queryClient = useQueryClient();

@@ -11,8 +11,11 @@ interface DeleteDraftMutationContext
   extends ContextualMutationFunctionContext<void>,
     LocalContext {}
 
-const deleteRemote = async ({ draftId }: DeleteDraftMutationContext) =>
-  remove(`surveyResponseDrafts/${ensure(draftId)}`);
+const deleteRemote = async ({ draftId }: DeleteDraftMutationContext) => {
+  return await remove(
+    `surveyResponseDrafts/${ensure(draftId, `useDeleteSurveyResponseDraft mutation function called with ${draftId} draftId`)}`,
+  );
+};
 
 export const useDeleteSurveyResponseDraft = (draftId?: string) => {
   const queryClient = useQueryClient();
