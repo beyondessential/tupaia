@@ -3,6 +3,7 @@ export type ReqBody = {
   countryCode: string;
   entityId?: string | null;
   startTime?: string;
+  /** @additionalProperties true */
   formData: Record<string, unknown>;
   screenNumber: number;
 };

@@ -17,7 +17,9 @@ export class DeleteSurveyResponseDraftRoute extends Route<DeleteSurveyResponseDr
     const { draftId } = params;
     const { id: userId } = await ctx.services.central.getUser();
 
-    const draft = await models.surveyResponseDraft.findById(draftId);
+    const draft = await models.surveyResponseDraft.findById(draftId, {
+      columns: ['id', 'user_id'],
+    });
 
     if (!draft) {
       throw new NotFoundError(`No draft found with ID ${draftId}`);

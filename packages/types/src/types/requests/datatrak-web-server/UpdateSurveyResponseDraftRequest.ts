@@ -1,6 +1,7 @@
 export type Params = { draftId: string };
 export type ReqBody = {
   entityId?: string | null;
+  /** @additionalProperties true */
   formData: Record<string, unknown>;
   screenNumber: number;
 };

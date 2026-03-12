@@ -27,7 +27,7 @@ export const createSurveyResponseDraft = async ({
     user_id: ensure(user.id, 'A user must be logged in to create a survey draft.'),
     country_code: countryCode,
     entity_id: entityId ?? null,
-    start_time: startTime ?? null,
+    start_time: startTime ? new Date(startTime) : undefined,
     form_data: formData,
     screen_number: screenNumber,
   });
