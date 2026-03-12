@@ -7,10 +7,9 @@ import {
   ListItemText,
   SelectProps,
   Slide,
-  useTheme,
 } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
-import { ChevronRight, Check } from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
 import React, {
   ChangeEventHandler,
   ComponentPropsWithoutRef,
