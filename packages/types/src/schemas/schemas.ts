@@ -103032,7 +103032,7 @@ export const DraftSurveyResponseSchema = {
 		},
 		"formData": {
 			"type": "object",
-			"additionalProperties": true
+			"additionalProperties": false
 		},
 		"screenNumber": {
 			"type": "number"
