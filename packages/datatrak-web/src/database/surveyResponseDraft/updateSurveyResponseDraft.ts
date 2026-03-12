@@ -24,6 +24,6 @@ export const updateSurveyResponseDraft = async ({
     entity_id: entityId ?? null,
     form_data: formData,
     screen_number: screenNumber,
-    updated_at: new Date().toISOString(),
+    updated_at: new Date(),
   });
 };
