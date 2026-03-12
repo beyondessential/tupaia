@@ -130,7 +130,7 @@ export class Authenticator {
 
     // Get the user with the matching email address from the database
     const user = await this.models.user.findOne({
-      email: { comparisonValue: emailAddress, comparator: 'ilike' },
+      email: { comparisonValue: emailAddress.replaceAll('%', '\\%'), comparator: 'ilike' },
     });
 
     // If there wasn't a user with the given email, send back a slightly obscured message

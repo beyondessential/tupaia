@@ -51,7 +51,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
     }
 
     const exists = await this.models.user.exists({
-      email: { comparisonValue: emailAddress, comparator: 'ilike' },
+      email: { comparisonValue: emailAddress.replaceAll('%', '\\%'), comparator: 'ilike' },
     });
     if (exists) {
       throw new ConflictError(
