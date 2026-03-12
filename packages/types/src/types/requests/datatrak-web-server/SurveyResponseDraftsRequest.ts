@@ -7,6 +7,7 @@ export type DraftSurveyResponse = {
   entityId: string | null;
   entityName: string | null;
   startTime: Date | null;
+  /** @additionalProperties true */
   formData: Record<string, unknown>;
   screenNumber: number;
   updatedAt: Date;

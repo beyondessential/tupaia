@@ -103031,8 +103031,8 @@ export const DraftSurveyResponseSchema = {
 			"format": "date-time"
 		},
 		"formData": {
-			"type": "object",
-			"additionalProperties": true
+			"additionalProperties": true,
+			"type": "object"
 		},
 		"screenNumber": {
 			"type": "number"
