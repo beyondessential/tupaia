@@ -26,4 +26,6 @@ export { usePermissionGroupUsersQuery } from './usePermissionGroupUsersQuery';
 export { useProjectUsersQuery } from './useProjectUsersQuery';
 export { useDatabaseQuery } from './useDatabaseQuery';
 export { useDatabaseMutation } from './useDatabaseMutation';
+export type { ContextualMutationFunctionContext } from './useDatabaseMutation';
 export { useHasUnsyncedDataQuery } from './useHasUnsyncedDataQuery';
+export { useSurveyResponseDrafts } from './useSurveyResponseDrafts';

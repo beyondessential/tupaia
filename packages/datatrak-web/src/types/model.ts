@@ -16,6 +16,7 @@ import {
   SurveyGroupModel,
   SurveyModel,
   SurveyResponseModel,
+  SurveyResponseDraftModel,
   SurveyScreenComponentModel,
   SurveyScreenModel,
   TaskCommentModel,
@@ -42,6 +43,7 @@ export interface DatatrakWebModelRegistry extends ModelRegistry {
   readonly survey: SurveyModel;
   readonly surveyGroup: SurveyGroupModel;
   readonly surveyResponse: SurveyResponseModel;
+  readonly surveyResponseDraft: SurveyResponseDraftModel;
   readonly surveyScreen: SurveyScreenModel;
   readonly surveyScreenComponent: SurveyScreenComponentModel;
   readonly task: TaskModel;
