@@ -69,7 +69,7 @@ export const MainPageLayout = () => {
       {showHeader && <Header />}
       {/* Header includes BannerNotifications, so if header is not showing, 
       BannerNotifications needs to be shown separately below*/}
-      {!showHeader && <BannerNotifications />}
+      <BannerNotifications />
       <Outlet />
       {showBottomNavigation && <Nav />}
       <SurveyResponseModal />
