@@ -3,7 +3,8 @@ import { useSaveSurveyResponseDraft, useUpdateSurveyResponseDraft, useSurvey } f
 import { useSurveyForm } from '../SurveyContext';
 
 export const useSaveAsDraft = () => {
-  const { formData, surveyStartTime, screenNumber, draftId } = useSurveyForm();
+  const { formData, surveyStartTime, screenNumber, draftId, primaryEntityQuestion } =
+    useSurveyForm();
   const { surveyCode, countryCode } = useParams();
   const { data: survey } = useSurvey(surveyCode);
   const navigate = useNavigate();
@@ -13,9 +14,14 @@ export const useSaveAsDraft = () => {
 
   const isLoading = saveDraft.isLoading || updateDraft.isLoading;
 
+  const entityId = primaryEntityQuestion
+    ? (formData[primaryEntityQuestion.questionId] as string | undefined)
+    : undefined;
+
   const saveAsDraft = async () => {
     if (draftId) {
       await updateDraft.mutateAsync({
+        entityId,
         formData,
         screenNumber: screenNumber ?? 1,
       });
@@ -23,6 +29,7 @@ export const useSaveAsDraft = () => {
       await saveDraft.mutateAsync({
         surveyId: survey!.id,
         countryCode: countryCode!,
+        entityId,
         formData,
         screenNumber: screenNumber ?? 1,
         startTime: surveyStartTime,

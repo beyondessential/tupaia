@@ -5,6 +5,7 @@ import { SurveyIcon } from '../../../components';
 import { DatatrakWebSurveyResponseDraftsRequest } from '@tupaia/types';
 import { useDeleteSurveyResponseDraft } from '../../../api';
 import { Tile } from '../../../components';
+import { Typography } from '@material-ui/core';
 
 type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
 
@@ -88,13 +89,12 @@ export const DraftSurveyTile = ({
   );
   return (
     <StyledTile
-      heading={surveyName ? `[draft]Local supply chain form 2` : 'Draft survey'}
-      // heading={surveyName ? `[draft]${surveyName}` : 'Draft survey'}
+      heading={surveyName ? `[draft]${surveyName}` : 'Draft survey'}
       leadingIcons={<StyledSurveyIcon />}
       tooltip={tooltip}
       to={`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`}
     >
-      {entityText}
+      <Typography>{entityText}</Typography>
       <Menu draftId={id} />
     </StyledTile>
   );
