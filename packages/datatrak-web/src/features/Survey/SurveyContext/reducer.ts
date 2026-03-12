@@ -7,6 +7,7 @@ export interface SurveyFormContextType {
   cancelModalOpen: boolean;
   countryCode: string | undefined;
   displayQuestions: SurveyScreenComponent[];
+  draftId?: string;
   formData: Record<string, any>;
   isLast: boolean;
   isResponseScreen: boolean;

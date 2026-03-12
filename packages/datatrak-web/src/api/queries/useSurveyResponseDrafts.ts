@@ -21,8 +21,8 @@ const queryFunctions = {
     );
 
     // Fetch all surveys and entities in batches to avoid N+1 queries
-    const surveyIds = [...new Set(drafts.map(d => d.survey_id).filter(Boolean))];
-    const entityIds = [...new Set(drafts.map(d => d.entity_id).filter(Boolean))];
+    const surveyIds = [...new Set(drafts.map(d => d.survey_id).filter((id): id is string => Boolean(id)))];
+    const entityIds = [...new Set(drafts.map(d => d.entity_id).filter((id): id is string => Boolean(id)))];
 
     const [surveys, entities] = await Promise.all([
       surveyIds.length > 0 ? models.survey.find({ id: surveyIds }) : Promise.resolve([]),

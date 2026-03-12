@@ -23,6 +23,7 @@ const defaultContext = {
   cancelModalOpen: false,
   countryCode: '',
   displayQuestions: [],
+  draftId: undefined,
   formData: {},
   isLast: false,
   isResponseScreen: false,
