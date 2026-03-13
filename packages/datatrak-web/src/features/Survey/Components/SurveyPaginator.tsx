@@ -7,11 +7,9 @@ import { Button } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
 
-const FormActions = styled.div<{
-  $hasBackButton: boolean;
-}>`
+const FormActions = styled.div`
   display: flex;
-  justify-content: ${({ $hasBackButton }) => ($hasBackButton ? 'space-between' : 'flex-end')};
+  justify-content: space-between;
   align-items: center;
   padding-block: 1rem;
   padding-inline: 0.5rem;
@@ -26,13 +24,7 @@ const FormActions = styled.div<{
 
 const ButtonGroup = styled.div`
   display: flex;
-  float: right;
-  button,
-  a {
-    &:last-child {
-      margin-left: 1rem;
-    }
-  }
+  gap: 1rem;
 `;
 
 const BackButton = styled(Button).attrs({
@@ -66,28 +58,30 @@ export const SurveyPaginator = () => {
     return 'Next';
   };
 
-  const showSaveExit = !isReviewScreen && !isSuccessScreen;
+  const showSaveExit = !isSuccessScreen;
 
   return (
-    <FormActions $hasBackButton={hasBackButton}>
-      {hasBackButton && (
-        <BackButton onClick={onStepPrevious} disabled={isLoading || isSavingDraft}>
-          Back
-        </BackButton>
-      )}
+    <FormActions>
       <ButtonGroup>
-        <Button onClick={openCancelConfirmation} variant="outlined" disabled={isLoading || isSavingDraft}>
-          Cancel
-        </Button>
+        {hasBackButton && (
+          <BackButton onClick={onStepPrevious} disabled={isLoading || isSavingDraft}>
+            Back
+          </BackButton>
+        )}
         {showSaveExit && (
-          <Button
-            onClick={saveAsDraft}
-            variant="outlined"
-            disabled={isLoading || isSavingDraft}
-          >
+          <Button onClick={saveAsDraft} variant="outlined" disabled={isLoading || isSavingDraft}>
             Save &amp; exit
           </Button>
         )}
+      </ButtonGroup>
+      <ButtonGroup>
+        <Button
+          onClick={openCancelConfirmation}
+          variant="outlined"
+          disabled={isLoading || isSavingDraft}
+        >
+          Cancel
+        </Button>
         <Button type="submit" disabled={isLoading || isSavingDraft}>
           {getNextButtonText()}
         </Button>
