@@ -89,7 +89,7 @@ export const DraftSurveyTile = ({
   );
   return (
     <StyledTile
-      heading={surveyName ? `[draft]${surveyName}` : 'Draft survey'}
+      heading={surveyName ? `[draft] ${surveyName}` : 'Draft survey'}
       leadingIcons={<StyledSurveyIcon />}
       tooltip={tooltip}
       to={`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`}
