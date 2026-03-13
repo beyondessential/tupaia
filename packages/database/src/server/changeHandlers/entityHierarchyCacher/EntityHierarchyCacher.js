@@ -46,14 +46,18 @@ export class EntityHierarchyCacher extends ChangeHandler {
       return [];
     }
 
-    // if entity was deleted or created, or parent_id has changed, we need to delete subtrees and
-    // rebuild all hierarchies
+    // Include both old and new parent so that deleteSubtrees can find the entity
+    // as a descendant of the old parent and clean up its stale ancestor_descendant_relation records
+    const parentIds = [...new Set([oldRecord?.parent_id, newRecord?.parent_id].filter(Boolean))];
+
     /** @type {EntityHierarchyRecord[]} */
     const hierarchies = await this.models.entityHierarchy.all();
-    const jobs = hierarchies.map(({ id: hierarchyId }) => ({
-      hierarchyId,
-      rootEntityId: newRecord.parent_id,
-    }));
+    const jobs = hierarchies.flatMap(({ id: hierarchyId }) =>
+      parentIds.map(parentId => ({
+        hierarchyId,
+        rootEntityId: parentId,
+      })),
+    );
     return jobs;
   }
 
