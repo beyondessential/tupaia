@@ -20,7 +20,7 @@ export const MobileSurveyHeader = () => {
 
   const handleBack = () => {
     if (screenNumber === 1) {
-      openCancelConfirmation({ confirmPath: ROUTES.HOME });
+      openCancelConfirmation({ confirmPath: -1 });
     } else {
       onStepPrevious();
     }
