@@ -1,3 +1,4 @@
+import { useFormContext } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSaveSurveyResponseDraft, useUpdateSurveyResponseDraft, useSurvey } from '../../../api';
 import { useSurveyForm } from '../SurveyContext';
@@ -5,6 +6,7 @@ import { useSurveyForm } from '../SurveyContext';
 export const useSaveAsDraft = () => {
   const { formData, surveyStartTime, screenNumber, draftId, primaryEntityQuestion } =
     useSurveyForm();
+  const { getValues } = useFormContext();
   const { surveyCode, countryCode } = useParams();
   const { data: survey } = useSurvey(surveyCode);
   const navigate = useNavigate();
@@ -14,15 +16,19 @@ export const useSaveAsDraft = () => {
 
   const isLoading = saveDraft.isLoading || updateDraft.isLoading;
 
-  const entityId = primaryEntityQuestion
-    ? (formData[primaryEntityQuestion.questionId] as string | undefined)
-    : undefined;
-
   const saveAsDraft = async () => {
+    // Merge current screen's unsaved answers from react-hook-form with formData
+    const currentScreenValues = getValues();
+    const mergedFormData = { ...formData, ...currentScreenValues };
+
+    const entityId = primaryEntityQuestion
+      ? (mergedFormData[primaryEntityQuestion.questionId] as string | undefined)
+      : undefined;
+
     if (draftId) {
       await updateDraft.mutateAsync({
         entityId,
-        formData,
+        formData: mergedFormData,
         screenNumber: screenNumber ?? 1,
       });
     } else {
@@ -30,7 +36,7 @@ export const useSaveAsDraft = () => {
         surveyId: survey!.id,
         countryCode: countryCode!,
         entityId,
-        formData,
+        formData: mergedFormData,
         screenNumber: screenNumber ?? 1,
         startTime: surveyStartTime,
       });
