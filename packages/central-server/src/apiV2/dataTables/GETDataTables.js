@@ -13,7 +13,7 @@ const assertDataTableGETPermissions = async (accessPolicy, models, dataTableId) 
 };
 
 export class GETDataTables extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(dataTableId, options) {
     const dataTablePermissionChecker = accessPolicy =>

@@ -12,7 +12,7 @@ import { mergeMultiJoin } from '../utilities';
  * - /dashboardMailingLists/:dashboardMailingListId/dashboardMailingListEntries
  */
 export class GETDashboardMailingListEntries extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(dashboardMailingListEntryId, options) {
     const dashboardMailingListEntry = await this.models.dashboardMailingListEntry.findById(

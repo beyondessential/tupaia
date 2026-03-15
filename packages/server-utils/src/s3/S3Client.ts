@@ -30,6 +30,10 @@ type NonconvertedImageType = {
     : never;
 }[keyof typeof supportedImageTypes];
 
+const humanReadableSupportedImageTypes = new Intl.ListFormat('en-AU', {
+  type: 'disjunction',
+}).format(Object.values(supportedImageTypes).map(t => t.humanReadableName));
+
 function isBase64DataUri(val: string): val is `data:${string};base64,${string}` {
   return val.startsWith('data:') && val.includes(';base64,');
 }
@@ -193,11 +197,8 @@ export class S3Client {
     }
 
     if (!isSupportedImageMediaTypeString(sourceContentType)) {
-      const humanReadableList = Object.values(supportedImageTypes)
-        .map(type => type.humanReadableName)
-        .join(', ');
       throw new UnsupportedMediaTypeError(
-        `${sourceContentType} images aren’t supported. Please provide one of: ${humanReadableList}`,
+        `${sourceContentType} images aren’t supported. Please provide one of: ${humanReadableSupportedImageTypes}`,
       );
     }
 

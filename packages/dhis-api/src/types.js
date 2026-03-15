@@ -19,7 +19,7 @@ const TRACKED_ENTITY_INSTANCE = 'trackedEntityInstances';
 const TRACKED_ENTITY_TYPE = 'trackedEntityTypes';
 const INDICATOR = 'indicators';
 
-export const DHIS2_RESOURCE_TYPES = {
+export const DHIS2_RESOURCE_TYPES = /** @type {const} */ ({
   CATEGORY_OPTION_COMBO,
   DATA_ELEMENT_GROUP_SET,
   DATA_ELEMENT_GROUP,
@@ -39,4 +39,4 @@ export const DHIS2_RESOURCE_TYPES = {
   TRACKED_ENTITY_INSTANCE,
   TRACKED_ENTITY_TYPE,
   INDICATOR,
-};
+});

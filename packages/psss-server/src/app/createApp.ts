@@ -38,7 +38,7 @@ const authHandlerProvider = (req: Request) => new RequiresSessionAuthHandler(req
 export function createApp(db = new TupaiaDatabase()) {
   const builder = new OrchestratorApiBuilder(db, 'psss')
     .useSessionModel(PsssSessionModel)
-    .attachApiClientToContext(authHandlerProvider)
+    .attachApiClientToContext({ authHandlerProvider })
     .verifyLogin(hasPSSSAccess)
 
     /**

@@ -8,8 +8,8 @@ import { ROUTES } from '../../constants';
 
 const Wrapper = styled.div`
   padding-inline-start: 1rem;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-inline-start: 1.5rem;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
   }
 `;
 
@@ -21,9 +21,6 @@ export const UserDetails = styled.div`
   padding-inline: 0.5rem;
   > span {
     color: ${props => props.theme.palette.text.primary};
-  }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
   }
 `;
 

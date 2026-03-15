@@ -92,7 +92,7 @@ describe('S3Client', () => {
 
       await expect(s3Client.uploadImage(base64Heif, fileId)).rejects.toThrow(
         new UnsupportedMediaTypeError(
-          'image/heic images aren’t supported. Please provide one of: AVIF, GIF, JPEG, PNG, SVG, TIFF, WebP',
+          'image/heic images aren’t supported. Please provide one of: AVIF, GIF, JPEG, PNG, SVG, TIFF or WebP',
         ),
       );
     });

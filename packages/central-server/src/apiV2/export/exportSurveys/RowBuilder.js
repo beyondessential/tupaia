@@ -49,7 +49,7 @@ export class RowBuilder {
         if (color) {
           optionColors[optionIndex] = color;
         }
-      } catch (error) {
+      } catch {
         processedOptions[optionIndex] = option;
       }
     });
@@ -68,7 +68,7 @@ export class RowBuilder {
       optionColors: optionColors.join('\r\n'),
       visibilityCriteria: await this.visibilityCriteriaCellBuilder.build(visibilityCriteria),
       validationCriteria: await this.validationCriteriaCellBuilder.build(validationCriteria),
-      optionSet: optionSetObject && optionSetObject.name,
+      optionSet: optionSetObject?.name,
       questionLabel,
       detailLabel,
     };

@@ -22,7 +22,7 @@ export const assertClinicPermissions = async (accessPolicy, models, clinicId) =>
 };
 
 export class GETClinics extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(clinicId, options) {
     const clinicPermissionChecker = accessPolicy =>
