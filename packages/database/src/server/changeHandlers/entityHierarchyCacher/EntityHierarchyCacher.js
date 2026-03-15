@@ -46,14 +46,27 @@ export class EntityHierarchyCacher extends ChangeHandler {
       return [];
     }
 
-    // if entity was deleted or created, or parent_id has changed, we need to delete subtrees and
-    // rebuild all hierarchies
+    // Include both old and new parent so that deleteSubtrees can find the entity
+    // as a descendant of the old parent and clean up its stale ancestor_descendant_relation records.
+    // Without the old parent, deleteSubtrees only looks for descendants of the new parent in the
+    // stale ancestor_descendant_relation, and won't find the moved entity — leaving its old
+    // records intact and causing cacheGeneration to skip it as "already cached".
+    //
+    // Previously this wasn't needed because rootEntityId was the entity itself (not its parent),
+    // so deleteSubtrees always included it directly in entityIdsForDelete. After the introduction
+    // of entity_parent_child_relation, rootEntityId needs to be the parent for EntityParentChildRelationBuilder, exposing this gap.
+    //
+    // When parent_id hasn't changed, this deduplicates to a single element, preserving original behaviour.
+    const parentIds = [...new Set([oldRecord?.parent_id, newRecord?.parent_id].filter(Boolean))];
+
     /** @type {EntityHierarchyRecord[]} */
     const hierarchies = await this.models.entityHierarchy.all();
-    const jobs = hierarchies.map(({ id: hierarchyId }) => ({
-      hierarchyId,
-      rootEntityId: newRecord.parent_id,
-    }));
+    const jobs = hierarchies.flatMap(({ id: hierarchyId }) =>
+      parentIds.map(parentId => ({
+        hierarchyId,
+        rootEntityId: parentId,
+      })),
+    );
     return jobs;
   }
 
