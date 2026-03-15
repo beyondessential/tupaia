@@ -45,8 +45,10 @@ export const UpdateNotification = () => {
       return;
     }
     setShowOfflineModal(false);
+    // Don't reload here — the controllerchange listener in main.tsx will reload
+    // once skipWaiting() completes and the new SW takes control. Reloading
+    // immediately would race ahead of activation, serving stale cached assets.
     pendingWorker?.postMessage({ type: 'SKIP_WAITING' });
-    window.location.reload();
   };
 
   return (
