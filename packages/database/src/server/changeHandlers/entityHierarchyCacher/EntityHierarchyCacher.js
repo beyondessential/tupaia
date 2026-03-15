@@ -59,7 +59,8 @@ export class EntityHierarchyCacher extends ChangeHandler {
     // of entity_parent_child_relation, rootEntityId needs to be the parent for
     // EntityParentChildRelationBuilder, exposing this gap.
     //
-    // When parent_id hasn't changed, this deduplicates to a single element, preserving original behaviour.
+    // When parent_id hasn't changed, this deduplicates to a single element, preserving original behaviour
+    // for other scenarios where only one parent is involved.
     const parentIds = [...new Set([oldRecord?.parent_id, newRecord?.parent_id].filter(Boolean))];
 
     /** @type {EntityHierarchyRecord[]} */
