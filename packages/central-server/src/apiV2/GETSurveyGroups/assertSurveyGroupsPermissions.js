@@ -1,7 +1,6 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { groupBy, flattenDeep } from 'es-toolkit/compat';
 import { hasBESAdminAccess } from '../../permissions';
-import { fetchCountryIdsByPermissionGroupId } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -55,10 +54,8 @@ export const createSurveyGroupDBFilter = async (accessPolicy, models, criteria) 
   }
   const dbConditions = { ...criteria };
 
-  const countryIdsByPermissionGroupId = await fetchCountryIdsByPermissionGroupId(
-    accessPolicy,
-    models,
-  );
+  const countryIdsByPermissionGroupId =
+    await models.permissionGroup.fetchCountryIdsByPermissionGroupId(accessPolicy);
 
   dbConditions[RAW] = {
     sql: `

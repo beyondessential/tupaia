@@ -5,6 +5,7 @@ import { QueryConjunctions, EntityFilter, EntityRecord } from '@tupaia/server-bo
 import { EntityServerModelRegistry } from '../../../types';
 import { formatEntitiesForResponse } from '../format';
 import { MultiEntityRelationshipsContext } from './types';
+import { FlattenedEntity } from '../../../type-exports';
 
 type Pair = {
   descendant: string;
@@ -133,7 +134,7 @@ export class ResponseBuilder {
               descendantField,
             )),
           ];
-    const formattedEntitiesByCode: Record<string, string> = {};
+    const formattedEntitiesByCode: Record<string, FlattenedEntity | undefined> = {};
     [...ancestors, ...descendants].forEach((entity, index) => {
       formattedEntitiesByCode[entity.code] = formattedEntities[index];
     });
@@ -182,7 +183,7 @@ export class ResponseBuilder {
       .map(pair => ({
         ancestor: formattedEntitiesByCode[pair.ancestor],
         descendant: formattedEntitiesByCode[pair.descendant],
-      }));
+      })) as Pair[];
 
     return this.buildMap(formattedPairs);
   }

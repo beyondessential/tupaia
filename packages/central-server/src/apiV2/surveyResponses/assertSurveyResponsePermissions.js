@@ -1,41 +1,3 @@
-import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
-import { assertIsNotNullish, ensure } from '@tupaia/tsutils';
-import { PermissionsError } from '@tupaia/utils';
-import { hasBESAdminAccess } from '../../permissions';
-import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
-
-const { RAW } = QUERY_CONJUNCTIONS;
-
-const assertSurveyEntityPairPermission = async (accessPolicy, models, surveyId, entityId) => {
-  const [entity, survey] = await Promise.all([
-    models.entity.findById(entityId),
-    models.survey.findById(surveyId),
-  ]);
-  assertIsNotNullish(entity, `No entity exists with ID ${entityId}`);
-  assertIsNotNullish(survey, `No survey exists with ID ${surveyId}`);
-
-  const permissionGroup = await survey.getPermissionGroup();
-  if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
-    throw new PermissionsError('You do not have permissions for this survey in this country');
-  }
-
-  return true;
-};
-
-export const assertSurveyResponsePermissions = async (accessPolicy, models, surveyResponseId) => {
-  const surveyResponse = ensure(
-    await models.surveyResponse.findById(surveyResponseId),
-    `No survey response exists with ID ${surveyResponseId}`,
-  );
-
-  return assertSurveyEntityPairPermission(
-    accessPolicy,
-    models,
-    surveyResponse.survey_id,
-    surveyResponse.entity_id,
-  );
-};
-
 export const assertSurveyResponseEditPermissions = async (
   accessPolicy,
   models,
@@ -51,47 +13,4 @@ export const assertSurveyResponseEditPermissions = async (
     await assertSurveyEntityPairPermission(accessPolicy, models, surveyId, entityId);
   }
   return true;
-};
-
-export const createSurveyResponseDBFilter = async (accessPolicy, models, criteria, options) => {
-  const dbConditions = { ...criteria };
-  const dbOptions = { ...options };
-
-  if (hasBESAdminAccess(accessPolicy)) {
-    return { dbConditions, dbOptions };
-  }
-
-  const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
-    accessPolicy,
-    models,
-  );
-
-  // Join SQL table with entity and survey tables
-  // Running the permissions filtering is much faster with joins than records individually
-  dbOptions.multiJoin = mergeMultiJoin(
-    [
-      {
-        joinWith: RECORDS.SURVEY,
-        joinCondition: [`${RECORDS.SURVEY}.id`, `${RECORDS.SURVEY_RESPONSE}.survey_id`],
-      },
-      {
-        joinWith: RECORDS.ENTITY,
-        joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.SURVEY_RESPONSE}.entity_id`],
-      },
-    ],
-    dbOptions.multiJoin,
-  );
-
-  // Check the country code of the entity exists in our list for the permission group
-  // of the survey
-  dbConditions[RAW] = {
-    sql: `
-      entity.country_code IN (
-        SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-      )
-    `,
-    parameters: JSON.stringify(countryCodesByPermissionGroupId),
-  };
-
-  return { dbConditions, dbOptions };
 };

@@ -33,7 +33,7 @@
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "axios": "^1.12.2",
-    "date-fns": "^2.16.1",
+    "date-fns": "^2.30.0",
     "es-toolkit": "^1.44.0",
     "faker": "^4.1.0",
     "history": "^5.0.0",

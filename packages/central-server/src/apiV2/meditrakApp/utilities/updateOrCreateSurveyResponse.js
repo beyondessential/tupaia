@@ -1,14 +1,14 @@
 import momentTimezone from 'moment-timezone';
 
+import { SurveyResponseModel } from '@tupaia/database';
 import {
   DatabaseError,
   reformatDateStringWithoutTz,
   stripTimezoneFromDate,
   ValidationError,
 } from '@tupaia/utils';
-import { upsertAnswers } from '../../../dataAccessors/upsertAnswers';
+import { ANSWER_BODY_PARSERS } from '../../../dataAccessors';
 import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../../../database';
-import { upsertEntitiesAndOptions } from '../../surveyResponses';
 
 /**
  * Creates or updates survey responses from passed changes
@@ -23,7 +23,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
 
   try {
     await models.wrapInTransaction(async transactingModels => {
-      await upsertEntitiesAndOptions(transactingModels, [surveyResponseObject]);
+      await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [surveyResponseObject]);
 
       const survey = await transactingModels.survey.findById(surveyResponseObject.survey_id);
 
@@ -50,7 +50,12 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
         },
       );
 
-      await upsertAnswers(transactingModels, answers, surveyResponse.id);
+      await SurveyResponseModel.upsertAnswers(
+        transactingModels,
+        answers,
+        surveyResponse.id,
+        ANSWER_BODY_PARSERS,
+      );
     });
   } catch (error) {
     throw new DatabaseError(`creating/updating survey response with ID ${surveyResponseId}`, error);

@@ -1,17 +1,18 @@
-import xlsx from 'xlsx';
-import moment from 'moment';
 import { groupBy, uniq } from 'es-toolkit';
-import { keyBy, chunk } from 'es-toolkit/compat';
+import { chunk, keyBy } from 'es-toolkit/compat';
+import moment from 'moment';
+import xlsx from 'xlsx';
+
+import { RECORDS, SurveyModel } from '@tupaia/database';
+import { getExportPathForUser } from '@tupaia/server-utils';
 import {
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,
-  truncateString,
   toFilename,
+  truncateString,
 } from '@tupaia/utils';
-import { getExportPathForUser } from '@tupaia/server-utils';
-import { RECORDS } from '@tupaia/database';
+import { findAnswersInSurveyResponse } from '../../../dataAccessors';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
-import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dataAccessors';
 import { hasBESAdminAccess } from '../../../permissions';
 import { zipMultipleFiles } from '../../utilities';
 
@@ -108,7 +109,7 @@ export async function exportResponsesToFile(
   const getBaseExport = () => [
     infoColumnHeaders.slice(), // deep clone
     ...INFO_ROW_HEADERS.map(rowHeader =>
-      infoColumnHeaders.map((header, index) => {
+      infoColumnHeaders.map((_header, index) => {
         if (index < infoColumnHeaders.length - 1) return 'N/A';
         return rowHeader; // Only final info column should contain row headers
       }),
@@ -315,7 +316,7 @@ export async function exportResponsesToFile(
 
   for (const survey of surveysWithAccess) {
     // Get the current set of questions, in the order they appear in the survey
-    const questions = await findQuestionsInSurvey(models, survey.id);
+    const questions = await SurveyModel.findQuestionsInSurvey(models, survey.id);
 
     if (surveyResponse) {
       await addResponsesToSheet([surveyResponse], survey, questions);
