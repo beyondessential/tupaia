@@ -64,12 +64,12 @@ describe('Autocomplete Question', () => {
     },
   };
 
-  it('renders the autocomplete question component without crashing', () => {
-    renderComponent(<AutocompleteQuestion {...props} />);
+  it('renders the autocomplete question component without crashing', async () => {
+    await renderComponent(<AutocompleteQuestion {...props} />);
   });
 
   it('renders all the options when there is no attribute filtering involved', async () => {
-    renderComponent(<AutocompleteQuestion {...props} />);
+    await renderComponent(<AutocompleteQuestion {...props} />);
 
     const openButton = screen.getByTitle('Open');
     openButton.click();
@@ -83,7 +83,7 @@ describe('Autocomplete Question', () => {
   });
 
   it('renders only the filtered options when there are attribute filters defined', async () => {
-    renderComponent(
+    await renderComponent(
       <AutocompleteQuestion
         {...props}
         config={{
@@ -108,7 +108,7 @@ describe('Autocomplete Question', () => {
   });
 
   it('renders a "create new" option when createNew is enabled and there is an input value in the search', async () => {
-    renderComponent(
+    await renderComponent(
       <AutocompleteQuestion
         {...props}
         config={{
@@ -129,7 +129,7 @@ describe('Autocomplete Question', () => {
   });
 
   it('Calls the onChange method with a new option when “Add…” option is selected', async () => {
-    renderComponent(
+    await renderComponent(
       <AutocompleteQuestion
         {...props}
         config={{
@@ -150,7 +150,7 @@ describe('Autocomplete Question', () => {
   });
 
   it('Calls the onChange method with the option when an existing option is selected', async () => {
-    renderComponent(<AutocompleteQuestion {...props} />);
+    await renderComponent(<AutocompleteQuestion {...props} />);
 
     const openButton = screen.getByTitle('Open');
     openButton.click();

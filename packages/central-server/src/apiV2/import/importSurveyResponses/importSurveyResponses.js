@@ -1,6 +1,7 @@
-import xlsx from 'xlsx';
 import moment from 'moment';
-import { generateId } from '@tupaia/database';
+import xlsx from 'xlsx';
+
+import { AnswerModel, generateId } from '@tupaia/database';
 import {
   constructIsOneOf,
   constructRecordExistsWithId,
@@ -9,23 +10,20 @@ import {
   hasContent,
   ImportValidationError,
   ObjectValidator,
+  reduceToDictionary,
   respond,
+  stripTimezoneFromDate,
   takesIdForm,
   UploadError,
-  reduceToDictionary,
-  stripTimezoneFromDate,
 } from '@tupaia/utils';
-
-import { getArrayQueryParameter } from '../../utilities';
 import { ANSWER_TYPES } from '../../../database/models/Answer';
-import { constructAnswerValidator } from '../../utilities/constructAnswerValidator';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import {
   EXPORT_DATE_FORMAT,
   INFO_COLUMN_HEADERS,
   INFO_ROW_HEADERS,
 } from '../../export/exportSurveyResponses';
-import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
+import { getArrayQueryParameter } from '../../utilities';
 import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
 import { getFailureMessage } from './getFailureMessage';
 
@@ -140,7 +138,7 @@ export async function importSurveyResponses(req, res) {
     const entityCodeToId = reduceToDictionary(entities, 'code', 'id');
 
     const importSurveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode);
+      await models.surveyResponse.assertCanImport(models, accessPolicy, entitiesBySurveyCode);
     };
 
     await req.assertPermissions(
@@ -267,7 +265,10 @@ export async function importSurveyResponses(req, res) {
           }
           await infoValidator.validate(rowInfo);
           const question = await models.question.findById(questionId);
-          answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
+          answerValidator = new ObjectValidator(
+            {},
+            AnswerModel.constructAnswerValidator(models, question),
+          );
           answerTransformer = ANSWER_TRANSFORMERS[question.type];
         }
 
@@ -276,9 +277,8 @@ export async function importSurveyResponses(req, res) {
             checkIsCellEmpty(answerValue) &&
             IMPORT_BEHAVIOURS[importMode].shouldFillEmptyAnswer
           ) {
-            const { dataTime, answerTextsByQuestionId } = await getExistingResponseData(
-              columnIndex,
-            );
+            const { dataTime, answerTextsByQuestionId } =
+              await getExistingResponseData(columnIndex);
             // Use data from an existing response to fill the empty answer
             return isDateAnswer(rowType) ? dataTime : answerTextsByQuestionId?.[questionId];
           }
@@ -453,10 +453,10 @@ const constructNewSurveyResponseDetails = async (models, sheet, columnIndex, con
 
 /**
  * Return all the entitites of the submitted survey responses, grouped by the survey code (sheet name) that the survey responses belong to
- * @param {*} models
+ * @param {*} _models
  * @param {*} sheets
  */
-const getEntitiesBySurveyCode = async (models, sheets) => {
+const getEntitiesBySurveyCode = async (_models, sheets) => {
   const entitiesGroupedBySurveyCode = {};
 
   for (const surveySheet of Object.entries(sheets)) {
@@ -469,11 +469,7 @@ const getEntitiesBySurveyCode = async (models, sheets) => {
 
       if (!isInfoColumn(columnIndex)) {
         const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
-
-        if (!entitiesGroupedBySurveyCode[surveyCode]) {
-          entitiesGroupedBySurveyCode[surveyCode] = [];
-        }
-
+        entitiesGroupedBySurveyCode[surveyCode] ??= [];
         entitiesGroupedBySurveyCode[surveyCode].push(entityCode);
       } else if (columnHeader !== INFO_COLUMN_HEADERS[columnIndex]) {
         throw new ImportValidationError(`Missing ${INFO_COLUMN_HEADERS[columnIndex]} column`);
@@ -516,7 +512,7 @@ function getDateStringForColumn(sheet, columnIndex) {
   const date = isInExportFormat
     ? moment(dateString, EXPORT_DATE_FORMAT).toDate()
     : moment(dateString).toDate();
-  if (isNaN(date.getTime())) {
+  if (Number.isNaN(date.getTime())) {
     throw new ImportValidationError(`Invalid date ${dateString}`);
   }
   return stripTimezoneFromDate(date);

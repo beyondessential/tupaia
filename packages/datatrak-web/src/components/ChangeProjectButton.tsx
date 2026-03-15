@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useCurrentUserContext } from '../api';
+import { useIsOfflineFirst } from '../api/offlineFirst';
+import { useProjectCount } from '../api/queries/useProjectCount';
 import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal';
 import { Button, TooltipButtonWrapper } from './Button';
 
@@ -30,7 +32,6 @@ const ProjectButton = styled(Button).attrs({
 })`
   color: ${({ theme }) => theme.palette.text.secondary};
 
-  :focus,
   :focus-visible,
   :hover {
     background: none;
@@ -52,6 +53,9 @@ const ProjectButton = styled(Button).attrs({
   .MuiButton-label {
     display: contents;
   }
+  &.Mui-disabled {
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
 `;
 
 interface ChangeProjectButtonProps extends React.ComponentPropsWithoutRef<typeof Container> {
@@ -60,16 +64,23 @@ interface ChangeProjectButtonProps extends React.ComponentPropsWithoutRef<typeof
 
 export const ChangeProjectButton = ({ leadingBorder, ...props }: ChangeProjectButtonProps) => {
   const { project } = useCurrentUserContext();
-  const projectName = project?.name ?? null;
+  const isOfflineFirst = useIsOfflineFirst();
 
+  const { data: projectCount } = useProjectCount();
   const [projectModalIsOpen, setProjectModalIsOpen] = useState(false);
   const openProjectModal = () => setProjectModalIsOpen(true);
   const closeProjectModal = () => setProjectModalIsOpen(false);
 
+  const noOfflineProjects = isOfflineFirst && !projectCount;
+
   return (
     <Container $leadingBorder={leadingBorder} {...props}>
-      <ProjectButton onClick={openProjectModal} tooltip="Change project">
-        {projectName ?? 'Select project'}
+      <ProjectButton
+        onClick={openProjectModal}
+        tooltip={noOfflineProjects ? undefined : 'Change project'}
+        disabled={noOfflineProjects}
+      >
+        {project?.name ?? (noOfflineProjects ? 'Syncing projects…' : 'Select project')}
       </ProjectButton>
       {projectModalIsOpen && <ProjectSelectModal onBack={closeProjectModal} />}
     </Container>

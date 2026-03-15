@@ -11,3 +11,5 @@ export * from './entity';
 export * from './userAccountDetails';
 export * from './userRewards';
 export * from './task';
+export * from './sync';
+export * from './model';
