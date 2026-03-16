@@ -121,7 +121,7 @@ export const SurveySelectSection = () => {
         </ButtonWrapper>
       )}
       <Text>
-        Tupaia DataTrak makes data collection easy - test for Andrew two
+        Tupaia DataTrak makes data collection easy - test for Andrew three
         <SupplementalText>
           {' '}
           You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
