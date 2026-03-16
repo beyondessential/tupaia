@@ -3,9 +3,10 @@ import styled, { css } from 'styled-components';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { useCurrentUserRecentSurveys } from '../../api';
+import { useCurrentUserRecentSurveys, useSurveyResponseDrafts } from '../../api';
 import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
 import { ActivityFeedSection } from './ActivityFeedSection';
+import { DraftSurveysSection } from './DraftSurveysSection';
 import { LeaderboardSection } from './LeaderboardSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
 import { SurveyResponsesSection } from './SurveyResponsesSection';
@@ -64,7 +65,7 @@ const PageBody = styled.div`
   }
 `;
 
-const Grid = styled.div<{ $hasMultiple?: boolean }>`
+const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -81,7 +82,7 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
     overflow: hidden;
   }
 
-  ${({ $hasMultiple, theme }) => {
+  ${({ $hasMultiple, $hasDrafts, theme }) => {
     const { up } = theme.breakpoints;
     return css`
       ${up('md')} {
@@ -92,7 +93,7 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
       }
 
       // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
-      ${$hasMultiple
+      ${$hasMultiple && !$hasDrafts
         ? css`
             grid-template-areas:
               '--surveySelect    --surveySelect  --surveySelect  --tasks'
@@ -100,28 +101,40 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
               '--recentResponses --activityFeed  --activityFeed  --leaderboard';
             grid-template-rows: repeat(3, minmax(0, auto));
           `
-        : css`
-            grid-template-areas:
-              '--surveySelect    --surveySelect --surveySelect --tasks'
-              '--recentSurveys   --activityFeed --activityFeed --tasks'
-              '--recentResponses --activityFeed --activityFeed --leaderboard';
-            grid-template-rows: auto auto 1fr;
-          `}
+        : $hasDrafts
+          ? css`
+              grid-template-areas:
+                '--surveySelect    --surveySelect  --surveySelect  --tasks'
+                '--draftSurveys    --draftSurveys  --draftSurveys  --tasks'
+                '--recentSurveys   --recentSurveys --recentSurveys --tasks'
+                '--recentResponses --activityFeed  --activityFeed  --leaderboard';
+              grid-template-rows: repeat(4, minmax(0, auto));
+            `
+          : css`
+              grid-template-areas:
+                '--surveySelect    --surveySelect --surveySelect --tasks'
+                '--recentSurveys   --activityFeed --activityFeed --tasks'
+                '--recentResponses --activityFeed --activityFeed --leaderboard';
+              grid-template-rows: auto auto 1fr;
+            `}
     `;
   }}
 `;
 
 export const LandingPage = () => {
   const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
+  const { data: drafts = [] } = useSurveyResponseDrafts();
   const hasMoreThanOneSurvey = recentSurveys.length > 1;
+  const hasDrafts = drafts.length > 0;
 
   return (
     <PageContainer>
       <PageBody>
-        <Grid $hasMultiple={hasMoreThanOneSurvey}>
+        <Grid $hasMultiple={hasMoreThanOneSurvey} $hasDrafts={hasDrafts}>
           <SurveySelectSection />
           <TasksSection />
           <LeaderboardSection />
+          {hasDrafts && <DraftSurveysSection drafts={drafts} />}
           <RecentSurveysSection />
           <SurveyResponsesSection />
           <ActivityFeedSection />

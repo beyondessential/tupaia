@@ -15,6 +15,10 @@ const RecentSurveys = styled.section`
   grid-area: --recentSurveys;
   grid-template-columns: subgrid;
   grid-template-rows: auto 1fr;
+
+  .MuiSvgIcon-root {
+    color: ${props => props.theme.palette.primary.main};
+  }
 `;
 
 const InlineScroll = styled(InlineScrollView).attrs({
@@ -70,7 +74,7 @@ const RecentSurveyTile = ({
       tooltip={tooltip}
       {...props}
     >
-      {countryName}
+      <Typography>{countryName}</Typography>
     </Tile>
   );
 };

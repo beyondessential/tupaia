@@ -12,17 +12,22 @@ export const TileRoot = styled(Button).attrs({
   align-items: stretch;
   border-radius: 0.625rem;
   display: grid;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 400;
   gap: 0.25rem 0.5rem;
   justify-content: flex-start;
-  line-height: 1.45;
+  line-height: 1;
   min-block-size: fit-content;
   overflow: hidden;
   padding: 1rem;
 
   .MuiButton-label :where(p, h1, h2, h3, h4, h5, h6) {
     margin-block: 0;
+  }
+
+  p {
+    font-size: 0.75rem;
+    line-height: 1.4;
   }
 
   ${({ theme }) => css`
@@ -41,10 +46,15 @@ export const TileRoot = styled(Button).attrs({
     ${theme.breakpoints.down('sm')} {
       grid-template-columns: 100%;
       inline-size: 14.75rem;
+
+      p {
+        line-height: 1;
+      }
     }
     ${theme.breakpoints.up('md')} {
       grid-template-columns: auto minmax(0, 1fr);
       inline-size: 100%;
+      align-items: center;
     }
   `}
 
@@ -63,8 +73,7 @@ const Header = styled.header`
     const { down, up } = theme.breakpoints;
     return css`
       ${down('lg')} {
-        margin-block-end: 0.5rem;
-        block-size: 1.5rem;
+        block-size: 1.8rem;
       }
       ${up('lg')} {
         flex-direction: column;
@@ -86,13 +95,16 @@ const TrailingIconGroup = styled(IconGroup)`
 `;
 
 const Heading = styled(Typography).attrs({ variant: 'h3' })`
-  color: ${({ theme }) => theme.palette.text.primary};
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: inherit;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  &.MuiTypography-root {
+    color: ${({ theme }) => theme.palette.text.primary};
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-block-end: 0.3rem;
+  }
 `;
 
 export interface TileProps extends ButtonProps {

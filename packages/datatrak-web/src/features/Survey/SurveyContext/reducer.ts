@@ -9,6 +9,7 @@ export interface SurveyFormContextType {
   displayQuestions: SurveyScreenComponent[];
   draftId?: string;
   formData: Record<string, any>;
+  isDraft?: boolean;
   isLast: boolean;
   isResponseScreen: boolean;
   isResubmit: boolean;
