@@ -1,3 +1,4 @@
+import { UseQueryOptions } from '@tanstack/react-query';
 import { ensure } from '@tupaia/tsutils';
 import { DatatrakWebSurveyResponseDraftsRequest } from '@tupaia/types';
 import { useCurrentUserContext } from '../CurrentUserContext';
@@ -21,8 +22,12 @@ const queryFunctions = {
     );
 
     // Fetch all surveys and entities in batches to avoid N+1 queries
-    const surveyIds = [...new Set(drafts.map(d => d.survey_id).filter((id): id is string => Boolean(id)))];
-    const entityIds = [...new Set(drafts.map(d => d.entity_id).filter((id): id is string => Boolean(id)))];
+    const surveyIds = [
+      ...new Set(drafts.map(d => d.survey_id).filter((id): id is string => Boolean(id))),
+    ];
+    const entityIds = [
+      ...new Set(drafts.map(d => d.entity_id).filter((id): id is string => Boolean(id))),
+    ];
 
     const [surveys, entities] = await Promise.all([
       surveyIds.length > 0 ? models.survey.find({ id: surveyIds }) : Promise.resolve([]),
@@ -55,7 +60,10 @@ const queryFunctions = {
     get('surveyResponseDrafts'),
 } as const satisfies Record<'local' | 'remote', DraftsQueryFunction>;
 
-export const useSurveyResponseDrafts = ({ enabled = true }: { enabled?: boolean } = {}) => {
+export const useSurveyResponseDrafts = ({
+  enabled = true,
+  ...rest
+}: UseQueryOptions<DatatrakWebSurveyResponseDraftsRequest.ResBody> = {}) => {
   const isOfflineFirst = useIsOfflineFirst();
   const { id: userId } = useCurrentUserContext();
   const localContext = { userId };
@@ -65,6 +73,7 @@ export const useSurveyResponseDrafts = ({ enabled = true }: { enabled?: boolean 
     isOfflineFirst ? queryFunctions.local : queryFunctions.remote,
     {
       enabled: Boolean(userId) && enabled,
+      ...rest,
       localContext,
     },
   );

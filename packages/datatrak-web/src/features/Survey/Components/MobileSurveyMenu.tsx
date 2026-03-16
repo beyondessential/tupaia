@@ -58,7 +58,7 @@ const SaveButton = styled(SubmitButton).attrs({
 `;
 
 export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
-  const { toggleSideMenu, isLast, isResubmit, isReviewScreen, isSuccessScreen } = useSurveyForm();
+  const { toggleSideMenu, isLast, isResubmit, isReviewScreen } = useSurveyForm();
   const share = useShare();
   const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft();
 
@@ -68,15 +68,11 @@ export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
     return 'Next';
   };
 
-  const showSaveExit = !isSuccessScreen;
-
   return (
     <Container {...props}>
-      {showSaveExit && (
-        <SaveButton onClick={saveAsDraft} disabled={isSavingDraft} title="Save & exit">
-          Save & exit
-        </SaveButton>
-      )}
+      <SaveButton onClick={saveAsDraft} disabled={isSavingDraft}>
+        Save & exit
+      </SaveButton>
       <IconButton onClick={toggleSideMenu}>
         <FormatListBulleted />
       </IconButton>

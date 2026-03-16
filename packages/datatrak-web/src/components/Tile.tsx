@@ -19,7 +19,7 @@ export const TileRoot = styled(Button).attrs({
   line-height: 1;
   min-block-size: fit-content;
   overflow: hidden;
-  padding: 1rem 1rem 0.9rem;
+  padding: 1rem;
 
   .MuiButton-label :where(p, h1, h2, h3, h4, h5, h6) {
     margin-block: 0;

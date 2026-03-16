@@ -47,8 +47,7 @@ type SurveyLayoutContextT = {
 };
 
 export const SurveyPaginator = () => {
-  const { isLast, isResubmit, isReviewScreen, isSuccessScreen, openCancelConfirmation } =
-    useSurveyForm();
+  const { isLast, isResubmit, isReviewScreen, openCancelConfirmation } = useSurveyForm();
   const { isLoading, onStepPrevious, hasBackButton } = useOutletContext<SurveyLayoutContextT>();
   const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft();
 
@@ -58,31 +57,25 @@ export const SurveyPaginator = () => {
     return 'Next';
   };
 
-  const showSaveExit = !isSuccessScreen;
+  const isDisabled = isLoading || isSavingDraft;
 
   return (
     <FormActions>
       <ButtonGroup>
         {hasBackButton && (
-          <BackButton onClick={onStepPrevious} disabled={isLoading || isSavingDraft}>
+          <BackButton onClick={onStepPrevious} disabled={isDisabled}>
             Back
           </BackButton>
         )}
-        {showSaveExit && (
-          <Button onClick={saveAsDraft} variant="outlined" disabled={isLoading || isSavingDraft}>
-            Save &amp; exit
-          </Button>
-        )}
+        <Button onClick={saveAsDraft} variant="outlined" disabled={isDisabled}>
+          Save &amp; exit
+        </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button
-          onClick={openCancelConfirmation}
-          variant="outlined"
-          disabled={isLoading || isSavingDraft}
-        >
+        <Button onClick={openCancelConfirmation} variant="outlined" disabled={isDisabled}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isLoading || isSavingDraft}>
+        <Button type="submit" disabled={isDisabled}>
           {getNextButtonText()}
         </Button>
       </ButtonGroup>

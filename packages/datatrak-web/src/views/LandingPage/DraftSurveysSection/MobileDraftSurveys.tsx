@@ -81,6 +81,7 @@ const ListItem = ({ draft }) => {
     <ListItemContainer>
       <DraftSurveyTile key={draft.id} {...draft} />
       <DeleteButton
+        aria-label="Delete draft"
         onClick={e => {
           e.preventDefault();
           if (!isLoading) {
@@ -88,7 +89,7 @@ const ListItem = ({ draft }) => {
           }
         }}
       >
-        <Trash2 />
+        <Trash2 aria-hidden />
       </DeleteButton>
     </ListItemContainer>
   );
@@ -103,7 +104,6 @@ const ExpandedList = ({
   onClose: () => void;
   drafts: DraftSurvey[];
 }) => {
-
   return (
     <Dialog
       open={expanded}
@@ -131,14 +131,14 @@ interface MobileDraftSurveysProps {
 }
 
 export const MobileDraftSurveys = ({ drafts }: MobileDraftSurveysProps) => {
-  const [expanded, setExpanded] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   if (drafts.length === 0) return null;
 
   return (
     <Wrapper>
-      <ViewMoreButton onClick={() => setExpanded(true)}>View all drafts…</ViewMoreButton>
-      <ExpandedList expanded={expanded} onClose={() => setExpanded(false)} drafts={drafts} />
+      <ViewMoreButton onClick={() => setIsOpen(true)}>View all drafts…</ViewMoreButton>
+      <ExpandedList expanded={isOpen} onClose={() => setIsOpen(false)} drafts={drafts} />
     </Wrapper>
   );
 };

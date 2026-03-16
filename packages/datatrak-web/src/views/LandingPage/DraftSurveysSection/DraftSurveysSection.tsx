@@ -19,8 +19,7 @@ const InlineScroll = styled(InlineScrollView).attrs({
   role: 'list',
 })``;
 
-const GridScroll = styled.div.attrs({
-  as: 'ul',
+const GridScroll = styled.ul.attrs({
   role: 'list',
 })`
   column-gap: 1rem;
@@ -33,7 +32,7 @@ const GridScroll = styled.div.attrs({
 
 export const DraftSurveysSection = ({ drafts }) => {
   const isMobile = useIsMobile();
-  const ScrollableList = isMobile ? InlineScroll : GridScroll;
+  const ScrollableList = (isMobile ? InlineScroll : GridScroll) as React.ElementType;
 
   return (
     <DraftSurveys>
