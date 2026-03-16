@@ -92,7 +92,7 @@ export const DraftSurveyTile = ({
       heading={surveyName ? `[draft] ${surveyName}` : 'Draft survey'}
       leadingIcons={<StyledSurveyIcon />}
       tooltip={tooltip}
-      to={`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`}
+      to={encodeURIComponent(`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`)}
     >
       <Typography>{entityText}</Typography>
       <Menu draftId={id} />
