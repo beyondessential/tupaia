@@ -40,8 +40,6 @@ export const UpdateNotification = () => {
   if (!updateAvailable) return null;
 
   const handleClick = () => {
-    // TODO: remove after verifying mobile tap works
-    alert('handleClick fired');
     if (!window.navigator.onLine) {
       setShowOfflineModal(true);
       return;
