@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { InlineScrollView } from '../../../components';
 import { useIsMobile } from '../../../utils';
 import { SectionHeading } from '../SectionHeading';
+import { InfiniteScroll } from '../ActivityFeedSection/InfiniteScroll';
 import { MobileDraftSurveys } from './MobileDraftSurveys';
 import { DraftSurveyTile } from './DraftSurveyTile';
 
@@ -19,8 +20,7 @@ const InlineScroll = styled(InlineScrollView).attrs({
   role: 'list',
 })``;
 
-const GridScroll = styled.div.attrs({
-  as: 'ul',
+const GridScroll = styled.ul.attrs({
   role: 'list',
 })`
   column-gap: 1rem;
@@ -29,24 +29,56 @@ const GridScroll = styled.div.attrs({
   grid-template-columns: subgrid;
   row-gap: 0.6rem;
   grid-column: 1 / -1;
-  max-block-size: 10rem;
-  overflow-y: auto;
 `;
 
-export const DraftSurveysSection = ({ drafts }) => {
+const ScrollContainer = styled(InfiniteScroll)`
+  grid-column: 1 / -1;
+  max-block-size: 10rem;
+`;
+
+interface DraftSurveysSectionProps {
+  drafts: any[];
+  fetchNextPage: () => void;
+  hasNextPage: boolean;
+  isFetching: boolean;
+}
+
+export const DraftSurveysSection = ({
+  drafts,
+  fetchNextPage,
+  hasNextPage,
+  isFetching,
+}: DraftSurveysSectionProps) => {
   const isMobile = useIsMobile();
-  const ScrollableList = isMobile ? InlineScroll : GridScroll;
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
     <DraftSurveys>
       <SectionHeading>My drafts</SectionHeading>
-      <ScrollableList>
-        {drafts.map(draft => (
-          <li key={draft.id}>
-            <DraftSurveyTile {...draft} />
-          </li>
-        ))}
-      </ScrollableList>
+      {isMobile ? (
+        <InlineScroll>
+          {drafts.map(draft => (
+            <li key={draft.id}>
+              <DraftSurveyTile {...draft} />
+            </li>
+          ))}
+        </InlineScroll>
+      ) : (
+        <ScrollContainer
+          ref={scrollRef}
+          onScroll={fetchNextPage}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetching}
+        >
+          <GridScroll>
+            {drafts.map(draft => (
+              <li key={draft.id}>
+                <DraftSurveyTile {...draft} />
+              </li>
+            ))}
+          </GridScroll>
+        </ScrollContainer>
+      )}
       {isMobile && <MobileDraftSurveys drafts={drafts} />}
     </DraftSurveys>
   );

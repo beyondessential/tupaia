@@ -123,7 +123,12 @@ const Grid = styled.div<{ $hasMultiple?: boolean; $hasDrafts?: boolean }>`
 
 export const LandingPage = () => {
   const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
-  const { data: drafts = [] } = useSurveyResponseDrafts();
+  const {
+    data: drafts,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+  } = useSurveyResponseDrafts();
   const hasMoreThanOneSurvey = recentSurveys.length > 1;
   const hasDrafts = drafts.length > 0;
 
@@ -134,7 +139,14 @@ export const LandingPage = () => {
           <SurveySelectSection />
           <TasksSection />
           <LeaderboardSection />
-          {hasDrafts && <DraftSurveysSection drafts={drafts} />}
+          {hasDrafts && (
+            <DraftSurveysSection
+              drafts={drafts}
+              fetchNextPage={fetchNextPage}
+              hasNextPage={hasNextPage}
+              isFetching={isFetching}
+            />
+          )}
           <RecentSurveysSection />
           <SurveyResponsesSection />
           <ActivityFeedSection />
