@@ -9,7 +9,12 @@ import React, {
 } from 'react';
 import { To, useParams, useSearchParams } from 'react-router-dom';
 
-import { Country, DatatrakWebSurveyResponseDraftsRequest, QuestionType, Survey } from '@tupaia/types';
+import {
+  Country,
+  DatatrakWebSurveyResponseDraftsRequest,
+  QuestionType,
+  Survey,
+} from '@tupaia/types';
 import { useSurvey, useSurveyResponseDrafts } from '../../../api';
 import { PRIMARY_ENTITY_CODE_PARAM } from '../../../constants';
 import { SurveyParams } from '../../../types';
@@ -72,7 +77,9 @@ export const SurveyContext = ({
   const draftId = urlSearchParams.get('draftId') || undefined;
   const { data: drafts = [] } = useSurveyResponseDrafts({ enabled: Boolean(draftId) });
   const draft = draftId
-    ? drafts.find((d: DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse) => d.id === draftId)
+    ? drafts.find(
+        (d: DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse) => d.id === draftId,
+      )
     : undefined;
   const isDraft = Boolean(draftId);
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
@@ -171,7 +178,7 @@ export const SurveyContext = ({
     if (draft.startTime) {
       dispatch({ type: ACTION_TYPES.SET_SURVEY_START_TIME, payload: draft.startTime });
     }
-  }, [draft?.id]);
+  }, [draft?.formData, draft?.id, draft?.startTime]);
 
   const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
   const screenHeader = activeScreen?.[0]?.text;

@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery,UseQueryOptions } from '@tanstack/react-query';
 import { ensure } from '@tupaia/tsutils';
 import { DatatrakWebSurveyResponseDraftsRequest } from '@tupaia/types';
 import { useCurrentUserContext } from '../CurrentUserContext';
@@ -64,7 +64,10 @@ const localQueryFunction = async ({
 
 const noop = () => {};
 
-export const useSurveyResponseDrafts = ({ enabled = true }: { enabled?: boolean } = {}) => {
+export const useSurveyResponseDrafts = ({
+  enabled = true,
+  ...rest
+}: UseQueryOptions<DatatrakWebSurveyResponseDraftsRequest.ResBody> = {}) => {
   const isOfflineFirst = useIsOfflineFirst();
   const { id: userId } = useCurrentUserContext();
 
@@ -74,6 +77,7 @@ export const useSurveyResponseDrafts = ({ enabled = true }: { enabled?: boolean 
     localQueryFunction,
     {
       enabled: isOfflineFirst && Boolean(userId) && enabled,
+      ...rest,
       localContext: { userId },
     },
   );
