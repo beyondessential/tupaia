@@ -25,6 +25,11 @@ export const useSaveAsDraft = () => {
       ? (mergedFormData[primaryEntityQuestion.questionId] as string | undefined)
       : undefined;
 
+    if (!draftId && (!survey || !countryCode)) {
+      console.error('Survey and country code must be available to save a new draft.');
+      return;
+    }
+
     if (draftId) {
       await updateDraft.mutateAsync({
         entityId,

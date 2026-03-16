@@ -55,7 +55,7 @@ const queryFunctions = {
     get('surveyResponseDrafts'),
 } as const satisfies Record<'local' | 'remote', DraftsQueryFunction>;
 
-export const useSurveyResponseDrafts = () => {
+export const useSurveyResponseDrafts = ({ enabled = true }: { enabled?: boolean } = {}) => {
   const isOfflineFirst = useIsOfflineFirst();
   const { id: userId } = useCurrentUserContext();
   const localContext = { userId };
@@ -64,7 +64,7 @@ export const useSurveyResponseDrafts = () => {
     ['surveyResponseDrafts'],
     isOfflineFirst ? queryFunctions.local : queryFunctions.remote,
     {
-      enabled: Boolean(userId),
+      enabled: Boolean(userId) && enabled,
       localContext,
     },
   );

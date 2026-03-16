@@ -70,7 +70,7 @@ export const SurveyContext = ({
   const primaryEntityCodeParam = urlSearchParams.get(PRIMARY_ENTITY_CODE_PARAM) || undefined;
   const [primaryEntityCode] = useState(primaryEntityCodeParam);
   const draftId = urlSearchParams.get('draftId') || undefined;
-  const { data: drafts = [] } = useSurveyResponseDrafts();
+  const { data: drafts = [] } = useSurveyResponseDrafts({ enabled: Boolean(draftId) });
   const draft = draftId
     ? drafts.find((d: DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse) => d.id === draftId)
     : undefined;

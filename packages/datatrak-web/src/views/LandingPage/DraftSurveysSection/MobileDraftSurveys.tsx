@@ -5,7 +5,7 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import type { DatatrakWebSurveyResponseDraftsRequest } from '@tupaia/types';
 import { Trash2 } from 'lucide-react';
 import { HEADER_HEIGHT } from '../../../constants';
-import { useSurveyResponseDrafts, useDeleteSurveyResponseDraft } from '../../../api';
+import { useDeleteSurveyResponseDraft } from '../../../api';
 import { Button } from '../../../components';
 import { DraftSurveyTile } from './DraftSurveyTile';
 import { StickyMobileHeader } from '../../../layout';
@@ -34,7 +34,7 @@ const ListWrapper = styled.div`
   padding: 1rem;
 `;
 
-const ListItemContainer = styled.div`
+const ListItemContainer = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -84,7 +84,7 @@ const ListItem = ({ draft }) => {
         onClick={e => {
           e.preventDefault();
           if (!isLoading) {
-            deleteDraft(draft.id);
+            deleteDraft();
           }
         }}
       >
@@ -94,8 +94,15 @@ const ListItem = ({ draft }) => {
   );
 };
 
-const ExpandedList = ({ expanded, onClose }: { expanded: boolean; onClose: () => void }) => {
-  const { data: drafts = [] } = useSurveyResponseDrafts();
+const ExpandedList = ({
+  expanded,
+  onClose,
+  drafts,
+}: {
+  expanded: boolean;
+  onClose: () => void;
+  drafts: DraftSurvey[];
+}) => {
 
   return (
     <Dialog
@@ -110,7 +117,7 @@ const ExpandedList = ({ expanded, onClose }: { expanded: boolean; onClose: () =>
         <ListWrapper>
           <DraftList>
             {drafts.map(draft => (
-              <ListItem draft={draft} />
+              <ListItem key={draft.id} draft={draft} />
             ))}
           </DraftList>
         </ListWrapper>
@@ -131,7 +138,7 @@ export const MobileDraftSurveys = ({ drafts }: MobileDraftSurveysProps) => {
   return (
     <Wrapper>
       <ViewMoreButton onClick={() => setExpanded(true)}>View all drafts…</ViewMoreButton>
-      <ExpandedList expanded={expanded} onClose={() => setExpanded(false)} />
+      <ExpandedList expanded={expanded} onClose={() => setExpanded(false)} drafts={drafts} />
     </Wrapper>
   );
 };
