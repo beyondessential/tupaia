@@ -14,7 +14,7 @@ const ActivityFeed = styled.section`
 export const ActivityFeedSection = () => {
   return (
     <ActivityFeed>
-      <SectionHeading>Activity feeddd</SectionHeading>
+      <SectionHeading>Activity feed</SectionHeading>
       <DesktopActivityFeed />
       <MobileActivityFeed />
     </ActivityFeed>
