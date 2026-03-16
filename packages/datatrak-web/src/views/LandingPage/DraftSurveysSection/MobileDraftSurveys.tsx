@@ -89,7 +89,7 @@ const ListItem = ({ draft }) => {
           }
         }}
       >
-        <Trash2 aria-hidden />
+        <Trash2 />
       </DeleteButton>
     </ListItemContainer>
   );
