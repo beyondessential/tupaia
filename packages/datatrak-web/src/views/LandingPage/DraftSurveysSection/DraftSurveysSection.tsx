@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSurveyResponseDrafts } from '../../../api';
-import { InlineScrollView, TileSkeleton } from '../../../components';
+import { InlineScrollView } from '../../../components';
 import { useIsMobile } from '../../../utils';
 import { SectionHeading } from '../SectionHeading';
 import { MobileDraftSurveys } from './MobileDraftSurveys';
@@ -32,29 +31,21 @@ const GridScroll = styled.div.attrs({
   grid-column: 1 / -1;
 `;
 
-export const DraftSurveysSection = () => {
-  const { data: drafts = [], isLoading } = useSurveyResponseDrafts();
+export const DraftSurveysSection = ({ drafts }) => {
   const isMobile = useIsMobile();
-
-  if (!isLoading && drafts.length === 0) return null;
-
   const ScrollableList = isMobile ? InlineScroll : GridScroll;
-
-  const renderContents = () => {
-    if (isLoading) return <TileSkeleton lineCount={1} />;
-
-    return drafts.map(draft => (
-      <li key={draft.id}>
-        <DraftSurveyTile {...draft} />
-      </li>
-    ));
-  };
 
   return (
     <DraftSurveys>
       <SectionHeading>My drafts</SectionHeading>
-      <ScrollableList>{renderContents()}</ScrollableList>
-      {isMobile && !isLoading && <MobileDraftSurveys drafts={drafts} />}
+      <ScrollableList>
+        {drafts.map(draft => (
+          <li key={draft.id}>
+            <DraftSurveyTile {...draft} />
+          </li>
+        ))}
+      </ScrollableList>
+      {isMobile && <MobileDraftSurveys drafts={drafts} />}
     </DraftSurveys>
   );
 };

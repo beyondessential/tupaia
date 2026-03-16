@@ -134,7 +134,7 @@ export const LandingPage = () => {
           <SurveySelectSection />
           <TasksSection />
           <LeaderboardSection />
-          {hasDrafts && <DraftSurveysSection />}
+          {hasDrafts && <DraftSurveysSection drafts={drafts} />}
           <RecentSurveysSection />
           <SurveyResponsesSection />
           <ActivityFeedSection />
