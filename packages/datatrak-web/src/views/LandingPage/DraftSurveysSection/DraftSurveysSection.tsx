@@ -29,6 +29,8 @@ const GridScroll = styled.div.attrs({
   grid-template-columns: subgrid;
   row-gap: 0.6rem;
   grid-column: 1 / -1;
+  max-block-size: 10rem;
+  overflow-y: auto;
 `;
 
 export const DraftSurveysSection = ({ drafts }) => {
