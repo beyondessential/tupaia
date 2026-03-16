@@ -61,6 +61,9 @@ export const UpdateNotification = () => {
     });
 
     waiting.postMessage({ type: 'SKIP_WAITING' });
+
+    // Fallback: if controllerchange never fires, reload after 2 seconds
+    setTimeout(() => window.location.reload(), 2000);
   };
 
   return (
