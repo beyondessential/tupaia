@@ -6,7 +6,7 @@ import { useSurveyForm } from '../SurveyContext';
 export const useSaveAsDraft = () => {
   const { formData, surveyStartTime, screenNumber, draftId, primaryEntityQuestion } =
     useSurveyForm();
-  const { getValues } = useFormContext();
+  const formContext = useFormContext();
   const { surveyCode, countryCode } = useParams();
   const { data: survey } = useSurvey(surveyCode);
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export const useSaveAsDraft = () => {
 
   const saveAsDraft = async () => {
     // Merge current screen's unsaved answers from react-hook-form with formData
-    const currentScreenValues = getValues();
+    const currentScreenValues = formContext?.getValues() ?? {};
     const mergedFormData = { ...formData, ...currentScreenValues };
 
     const entityId = primaryEntityQuestion

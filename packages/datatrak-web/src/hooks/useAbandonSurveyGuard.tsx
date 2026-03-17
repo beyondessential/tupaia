@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 import { useMatch } from 'react-router';
 
 import { ROUTES } from '../constants';
+import { useSaveAsDraft } from '../features/Survey/hooks/useSaveAsDraft';
 import { useConfirmationModal } from './useConfirmationModal';
-import { useSaveDraftContext } from './useSaveDraftContext';
 
 export function useAbandonSurveyGuard<T extends React.MouseEventHandler<HTMLElement>>(
   callback: T,
@@ -12,12 +12,10 @@ export function useAbandonSurveyGuard<T extends React.MouseEventHandler<HTMLElem
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const isSurveyActive = isSurveyScreen && !isSuccessScreen;
 
-  const { saveAsDraft, isLoading } = useSaveDraftContext();
+  const { saveAsDraft, isLoading } = useSaveAsDraft();
 
   const handleSaveDraft = useCallback(async () => {
-    if (saveAsDraft) {
-      await saveAsDraft();
-    }
+    await saveAsDraft();
   }, [saveAsDraft]);
 
   return useConfirmationModal(callback, {
