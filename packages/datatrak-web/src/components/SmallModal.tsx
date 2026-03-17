@@ -7,6 +7,10 @@ import { Button, Modal } from '.';
 const Wrapper = styled.div`
   width: 25rem;
   max-width: 100%;
+
+  .MuiTypography-root.MuiTypography-body1 {
+    font-size: 0.875rem;
+  }
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 0 2rem 1rem;
   }
@@ -28,7 +32,9 @@ const Heading = styled(Typography).attrs({
   variant: 'h2',
   align: 'center',
 })`
-  margin-bottom: 1rem;
+  &.MuiTypography-root {
+    margin-bottom: 1rem;
+  }
 `;
 
 const ModalButton = styled(Button).attrs({
