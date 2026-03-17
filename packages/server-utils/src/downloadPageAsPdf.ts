@@ -103,7 +103,9 @@ export const downloadPageAsImage = async ({
     const page = await browser.newPage();
     // A4 landscape dimensions at 96 DPI (297mm × 210mm)
     await page.setViewport({ width: 1123, height: 794 });
-    await page.setCookie(...cookies);
+    if (cookies.length > 0) {
+      await page.setCookie(...cookies);
+    }
     await page.goto(verifiedPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
     buffer = await page.screenshot({ type: 'png' });
   } catch (e) {
@@ -138,7 +140,9 @@ export const downloadPageAsPdf = async ({
       await page.emulateTimezone(timezone);
     }
 
-    await page.setCookie(...cookies);
+    if (cookies.length > 0) {
+      await page.setCookie(...cookies);
+    }
     await page.goto(verifiedPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
 
     buffer = await page.pdf({

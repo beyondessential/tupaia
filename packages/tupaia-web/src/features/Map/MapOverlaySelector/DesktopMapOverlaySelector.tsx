@@ -312,7 +312,7 @@ export const DesktopMapOverlaySelector = ({
   };
 
   const getExportParams = () => {
-    if (!map) throw new Error('Map is not ready');
+    if (!map) return; // Guard against race condition where map becomes null
     return {
       projectCode,
       entityCode,
