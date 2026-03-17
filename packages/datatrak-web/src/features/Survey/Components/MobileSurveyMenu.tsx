@@ -1,5 +1,5 @@
 import { IconButton } from '@material-ui/core';
-import React, { HTMLAttributes } from 'react';
+import React, { HTMLAttributes, useState } from 'react';
 import styled from 'styled-components';
 import { FormatListBulleted, KeyboardArrowRight } from '@material-ui/icons';
 
@@ -8,6 +8,7 @@ import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useShare } from '../utils/useShare';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
+import { SaveAndExitModal } from './SaveAndExitModal';
 
 const Container = styled.nav`
   align-items: stretch;
@@ -61,6 +62,7 @@ export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
   const { toggleSideMenu, isLast, isResubmit, isReviewScreen } = useSurveyForm();
   const share = useShare();
   const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft();
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
   const getNextButtonText = () => {
     if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
@@ -70,7 +72,7 @@ export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
 
   return (
     <Container {...props}>
-      <SaveButton onClick={saveAsDraft} disabled={isSavingDraft}>
+      <SaveButton onClick={() => setIsSaveModalOpen(true)} disabled={isSavingDraft}>
         Save & exit
       </SaveButton>
       <IconButton onClick={toggleSideMenu}>
@@ -82,6 +84,12 @@ export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
       <SubmitButton type="submit" endIcon={<KeyboardArrowRight />}>
         {getNextButtonText()}
       </SubmitButton>
+      <SaveAndExitModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        onSave={saveAsDraft}
+        isLoading={isSavingDraft}
+      />
     </Container>
   );
 };

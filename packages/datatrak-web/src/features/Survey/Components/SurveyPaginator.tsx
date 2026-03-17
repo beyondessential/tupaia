@@ -1,11 +1,12 @@
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import React from 'react';
+import React, { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Button } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
+import { SaveAndExitModal } from './SaveAndExitModal';
 
 const FormActions = styled.div`
   display: flex;
@@ -50,6 +51,7 @@ export const SurveyPaginator = () => {
   const { isLast, isResubmit, isReviewScreen, openCancelConfirmation } = useSurveyForm();
   const { isLoading, onStepPrevious, hasBackButton } = useOutletContext<SurveyLayoutContextT>();
   const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft();
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
   const getNextButtonText = () => {
     if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
@@ -67,7 +69,7 @@ export const SurveyPaginator = () => {
             Back
           </BackButton>
         )}
-        <Button onClick={saveAsDraft} variant="outlined" disabled={isDisabled}>
+        <Button onClick={() => setIsSaveModalOpen(true)} variant="outlined" disabled={isDisabled}>
           Save &amp; exit
         </Button>
       </ButtonGroup>
@@ -79,6 +81,12 @@ export const SurveyPaginator = () => {
           {getNextButtonText()}
         </Button>
       </ButtonGroup>
+      <SaveAndExitModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        onSave={saveAsDraft}
+        isLoading={isSavingDraft}
+      />
     </FormActions>
   );
 };
