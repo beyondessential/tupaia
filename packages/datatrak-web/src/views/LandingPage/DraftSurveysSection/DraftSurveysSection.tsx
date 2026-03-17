@@ -25,15 +25,13 @@ const GridScroll = styled.ul.attrs({
 })`
   column-gap: 1rem;
   display: grid;
-  grid-auto-flow: row;
-  grid-template-columns: subgrid;
+  grid-template-columns: repeat(3, 1fr);
   row-gap: 0.6rem;
-  grid-column: 1 / -1;
 `;
 
 const ScrollContainer = styled(InfiniteScroll)`
   grid-column: 1 / -1;
-  max-block-size: 10rem;
+  max-block-size: 9rem;
 `;
 
 interface DraftSurveysSectionProps {
@@ -58,9 +56,7 @@ export const DraftSurveysSection = ({
       {isMobile ? (
         <InlineScroll>
           {drafts.map(draft => (
-            <li key={draft.id}>
-              <DraftSurveyTile {...draft} />
-            </li>
+            <DraftSurveyTile {...draft} key={draft.id} />
           ))}
         </InlineScroll>
       ) : (
@@ -72,9 +68,7 @@ export const DraftSurveysSection = ({
         >
           <GridScroll>
             {drafts.map(draft => (
-              <li key={draft.id}>
-                <DraftSurveyTile {...draft} />
-              </li>
+              <DraftSurveyTile {...draft} key={draft.id} />
             ))}
           </GridScroll>
         </ScrollContainer>

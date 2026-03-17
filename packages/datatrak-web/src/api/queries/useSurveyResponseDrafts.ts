@@ -86,7 +86,7 @@ export const useSurveyResponseDrafts = ({
   const remoteResult = useInfiniteQuery(
     ['surveyResponseDrafts'],
     ({ pageParam = 0 }): Promise<PageResponse> =>
-      get('surveyResponseDrafts', { params: { page: pageParam } }),
+      get('surveyResponseDrafts', { params: { page: pageParam, pageLimit: 6 } }),
     {
       getNextPageParam: data => {
         if (!data) return 0;
