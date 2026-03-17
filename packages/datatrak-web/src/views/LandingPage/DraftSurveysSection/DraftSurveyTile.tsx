@@ -10,17 +10,46 @@ import { DeleteDraftModal } from './DeleteDraftModal';
 
 type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
 
-const StyledActionsMenu = styled(ActionsMenu)`
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  z-index: 1;
+const Wrapper = styled.div`
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex: 1;
+
+    > span {
+      flex: 1;
+
+      > a.MuiButtonBase-root {
+        width: 100%;
+      }
+    }
+  }
+`;
+
+const StyledTile = styled(Tile)`
+  flex: 1;
+  min-width: 0;
+  border-radius: 0.625rem 0 0 0.625rem;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    border-radius: 0.625rem;
+  }
+`;
+
+const MenuContainer = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  border-radius: 0 0.625rem 0.625rem 0;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: none;
   }
 `;
+
+const StyledActionsMenu = styled(ActionsMenu)``;
 
 const StyledSurveyIcon = styled(SurveyIcon)`
   &.MuiSvgIcon-root {
@@ -28,20 +57,6 @@ const StyledSurveyIcon = styled(SurveyIcon)`
   }
 `;
 
-const StyledTile = styled(Tile)`
-  padding-right: 2.2rem;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    padding-right: 1rem;
-    flex: 1;
-    span {
-      flex: 1;
-    }
-    a {
-      width: 100%;
-    }
-  }
-`;
 const TooltipText = styled.p`
   font-weight: normal;
   margin-block: 0;
@@ -98,14 +113,18 @@ export const DraftSurveyTile = ({
     </>
   );
   return (
-    <StyledTile
-      heading={surveyName ? `[draft] ${surveyName}` : 'Draft survey'}
-      leadingIcons={<StyledSurveyIcon />}
-      tooltip={tooltip}
-      to={`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`}
-    >
-      <Typography>{entityText}</Typography>
-      <Menu draftId={id} />
-    </StyledTile>
+    <Wrapper>
+      <StyledTile
+        heading={surveyName ? `[draft] ${surveyName}` : 'Draft survey'}
+        leadingIcons={<StyledSurveyIcon />}
+        tooltip={tooltip}
+        to={`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`}
+      >
+        <Typography>{entityText}</Typography>
+      </StyledTile>
+      <MenuContainer>
+        <Menu draftId={id} />
+      </MenuContainer>
+    </Wrapper>
   );
 };
