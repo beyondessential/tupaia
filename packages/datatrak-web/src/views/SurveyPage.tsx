@@ -12,6 +12,8 @@ import {
   useValidationResolver,
 } from '../features';
 import { CancelSurveyConfirmationModal } from '../features/Survey/Components';
+import { useSaveAsDraft } from '../features/Survey/hooks/useSaveAsDraft';
+import { useSaveDraftRegistration } from '../hooks/useSaveDraftContext';
 import { SurveyParams } from '../types';
 import { successToast, useIsMobile } from '../utils';
 
@@ -50,6 +52,24 @@ const SurveyScreenContainer = styled.div<{
     padding-block-end: 2rem;
   }
 `;
+
+/** Registers the save-draft function into the app-wide SaveDraftContext.
+ *  Must be rendered inside FormProvider so useSaveAsDraft can access form context. */
+const SaveDraftRegistrar = () => {
+  const { saveAsDraft, isLoading } = useSaveAsDraft();
+  const { register, unregister, setIsLoading } = useSaveDraftRegistration();
+
+  useEffect(() => {
+    register(saveAsDraft);
+    return unregister;
+  }, [saveAsDraft, register, unregister]);
+
+  useEffect(() => {
+    setIsLoading(isLoading);
+  }, [isLoading, setIsLoading]);
+
+  return null;
+};
 
 const SurveyPageInner = () => {
   const { screenNumber } = useParams<SurveyParams>();
@@ -123,6 +143,7 @@ const SurveyPageInner = () => {
   return (
     <PageWrapper>
       <FormProvider {...formContext}>
+        <SaveDraftRegistrar />
         {!useIsMobile() ? <DesktopSurveyHeader /> : null}
         <SurveyScreenContainer $scrollable={isSuccessScreen} $hasToolbar={!isResponseScreen}>
           {/* Use a key to render a different survey screen component for every screen number. This is so

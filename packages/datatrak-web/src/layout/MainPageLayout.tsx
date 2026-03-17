@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { BottomNavigation, useBottomNavigationVisibility } from '../components/BottomNavigation';
 import { HEADER_HEIGHT, ROUTES } from '../constants';
 import { SurveyResponseModal } from '../features';
+import { SaveDraftProvider } from '../hooks/useSaveDraftContext';
 import { useIsMobile } from '../utils';
 import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
@@ -64,11 +65,13 @@ export const MainPageLayout = () => {
   const showHeader = useHeaderVisibility();
   const showBottomNavigation = useBottomNavigationVisibility();
   return (
-    <PageWrapper>
-      {showHeader && <Header />}
-      <Outlet />
-      {showBottomNavigation && <Nav />}
-      <SurveyResponseModal />
-    </PageWrapper>
+    <SaveDraftProvider>
+      <PageWrapper>
+        {showHeader && <Header />}
+        <Outlet />
+        {showBottomNavigation && <Nav />}
+        <SurveyResponseModal />
+      </PageWrapper>
+    </SaveDraftProvider>
   );
 };

@@ -43,7 +43,7 @@ export interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: React.MouseEventHandler<HTMLElement>;
-  onCancel?: React.MouseEventHandler<HTMLElement>;
+  onCancel?: React.MouseEventHandler<HTMLElement> | (() => void | Promise<void>);
   heading?: NonNullable<React.ReactNode>;
   description?: React.ReactNode;
   confirmLabel?: React.ReactNode;
