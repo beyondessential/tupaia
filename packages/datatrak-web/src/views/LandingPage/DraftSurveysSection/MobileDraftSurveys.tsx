@@ -9,6 +9,7 @@ import { useDeleteSurveyResponseDraft } from '../../../api';
 import { Button } from '../../../components';
 import { DraftSurveyTile } from './DraftSurveyTile';
 import { StickyMobileHeader } from '../../../layout';
+import { DeleteDraftModal } from './DeleteDraftModal';
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -76,6 +77,7 @@ const Transition = React.forwardRef(function Transition(
 
 const ListItem = ({ draft }) => {
   const { mutate: deleteDraft, isLoading } = useDeleteSurveyResponseDraft(draft.id);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <ListItemContainer>
@@ -84,13 +86,20 @@ const ListItem = ({ draft }) => {
         aria-label="Delete draft"
         onClick={e => {
           e.preventDefault();
-          if (!isLoading) {
-            deleteDraft();
-          }
+          setIsModalOpen(true);
         }}
       >
         <Trash2 />
       </DeleteButton>
+      <DeleteDraftModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onDelete={() => {
+          deleteDraft();
+          setIsModalOpen(false);
+        }}
+        isLoading={isLoading}
+      />
     </ListItemContainer>
   );
 };

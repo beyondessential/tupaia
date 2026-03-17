@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ActionsMenu } from '@tupaia/ui-components';
 import { SurveyIcon } from '../../../components';
@@ -6,6 +6,7 @@ import { DatatrakWebSurveyResponseDraftsRequest } from '@tupaia/types';
 import { useDeleteSurveyResponseDraft } from '../../../api';
 import { Tile } from '../../../components';
 import { Typography } from '@material-ui/core';
+import { DeleteDraftModal } from './DeleteDraftModal';
 
 type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
 
@@ -50,25 +51,34 @@ const TooltipText = styled.p`
 
 const Menu = ({ draftId }: { draftId: string }) => {
   const { mutate: deleteDraft, isLoading } = useDeleteSurveyResponseDraft(draftId);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const actions = [
     {
       label: 'Delete',
-      action: () => {
-        if (isLoading) return;
-        deleteDraft();
-      },
+      action: () => setIsModalOpen(true),
       toolTipTitle: 'Delete draft',
     },
   ];
 
   return (
-    <StyledActionsMenu
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      options={actions}
-      includesIcons
-    />
+    <>
+      <StyledActionsMenu
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        options={actions}
+        includesIcons
+      />
+      <DeleteDraftModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onDelete={() => {
+          deleteDraft();
+          setIsModalOpen(false);
+        }}
+        isLoading={isLoading}
+      />
+    </>
   );
 };
 
