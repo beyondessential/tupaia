@@ -17,7 +17,7 @@ const ButtonWrapper = styled.div`
   gap: 1rem;
   inline-size: 100%;
   margin: 1.5rem auto 0;
-  max-inline-size: 20rem;
+  max-inline-size: 21rem;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
     flex-direction: row;

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,15 +17,15 @@ export const CancelSurveyConfirmationModal = () => {
 
   useBeforeUnload(formState.isDirty && !isSuccessScreen);
 
-  const handleExitWithoutSaving = useCallback(() => {
+  const handleExitWithoutSaving = () => {
     closeCancelConfirmation();
-    navigate(cancelModalConfirmLink);
-  }, [closeCancelConfirmation, navigate, cancelModalConfirmLink]);
+    navigate(cancelModalConfirmLink || '/');
+  };
 
-  const handleSaveDraft = useCallback(async () => {
+  const handleSaveDraft = async () => {
     closeCancelConfirmation();
     await saveAsDraft();
-  }, [closeCancelConfirmation, saveAsDraft]);
+  };
 
   return (
     <ConfirmationModal
