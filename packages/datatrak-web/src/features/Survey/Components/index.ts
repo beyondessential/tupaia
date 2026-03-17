@@ -1,4 +1,4 @@
-export { CancelSurveyConfirmationToken } from './CancelSurveyConfirmationToken';
+export { CancelSurveyConfirmationModal } from './CancelSurveyConfirmationModal';
 export { DesktopSurveyHeader } from './DesktopSurveyHeader';
 export { MobileSurveyHeader } from './MobileSurveyHeader';
 export { MobileSurveyMenu } from './MobileSurveyMenu.tsx';

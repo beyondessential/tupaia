@@ -6,7 +6,7 @@ interface UseConfirmationModalOptions {
   bypass?: boolean;
   confirmationModalProps?: Pick<
     ConfirmationModalProps,
-    'heading' | 'description' | 'confirmLabel' | 'cancelLabel'
+    'heading' | 'description' | 'confirmLabel' | 'cancelLabel' | 'onCancel' | 'cancelDisabled'
   >;
 }
 

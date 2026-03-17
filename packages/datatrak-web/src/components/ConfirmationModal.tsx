@@ -17,7 +17,7 @@ const ButtonWrapper = styled.div`
   gap: 1rem;
   inline-size: 100%;
   margin: 1.5rem auto 0;
-  max-inline-size: 20rem;
+  max-inline-size: 21rem;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
     flex-direction: row;
@@ -43,20 +43,24 @@ export interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: React.MouseEventHandler<HTMLElement>;
+  onCancel?: React.MouseEventHandler<HTMLElement> | (() => void | Promise<void>);
   heading?: NonNullable<React.ReactNode>;
   description?: React.ReactNode;
   confirmLabel?: React.ReactNode;
   cancelLabel?: React.ReactNode;
+  cancelDisabled?: boolean;
 }
 
 export const ConfirmationModal = ({
   isOpen,
   onClose,
   onConfirm,
+  onCancel,
   heading = 'Survey in progress',
   description = 'If you exit, you will lose the progress you’ve made on the current survey',
   confirmLabel = 'Exit survey',
   cancelLabel = 'Continue survey',
+  cancelDisabled = false,
 }: ConfirmationModalProps) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -64,7 +68,7 @@ export const ConfirmationModal = ({
         <Heading>{heading}</Heading>
         <Typography align="center">{description}</Typography>
         <ButtonWrapper>
-          <ModalButton onClick={onClose} variant="outlined">
+          <ModalButton onClick={onCancel ?? onClose} variant="outlined" disabled={cancelDisabled}>
             {cancelLabel}
           </ModalButton>
           <ModalButton onClick={onConfirm}>{confirmLabel}</ModalButton>
