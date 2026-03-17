@@ -15,8 +15,6 @@ export const DeleteDraftModal = ({
   onDelete,
   isLoading,
 }: DeleteDraftModalProps) => {
-  if (!isOpen) return null;
-
   return (
     <SmallModal
       open
