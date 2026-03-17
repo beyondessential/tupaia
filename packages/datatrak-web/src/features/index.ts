@@ -5,7 +5,7 @@ export { MobileSelectList } from './MobileSelectList';
 export { Reports } from './Reports';
 export { RequestProjectAccess } from './RequestProjectAccess';
 export {
-  CancelSurveyConfirmationToken,
+  CancelSurveyConfirmationModal,
   DesktopSurveyHeader,
   getAllSurveyComponents,
   SurveyContext,

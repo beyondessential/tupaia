@@ -7,7 +7,7 @@ import { useBeforeUnload } from '../../../utils';
 import { useSurveyForm } from '../SurveyContext';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
 
-export const CancelSurveyConfirmationToken = () => {
+export const CancelSurveyConfirmationModal = () => {
   const { cancelModalConfirmLink, cancelModalOpen, closeCancelConfirmation, isSuccessScreen } =
     useSurveyForm();
 
