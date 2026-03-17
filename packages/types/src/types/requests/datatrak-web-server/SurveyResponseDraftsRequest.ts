@@ -13,7 +13,14 @@ export type DraftSurveyResponse = {
   updatedAt: Date;
 };
 
-export type ResBody = DraftSurveyResponse[];
-export type ReqQuery = Record<string, never>;
+export type ResBody = {
+  items: DraftSurveyResponse[];
+  hasMorePages: boolean;
+  pageNumber: number;
+};
+export type ReqQuery = {
+  page?: string;
+  pageLimit?: string;
+};
 export type Params = Record<string, never>;
 export type ReqBody = Record<string, never>;

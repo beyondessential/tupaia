@@ -30,13 +30,14 @@ const getIsAtEndOfList = (container?: HTMLDivElement, loader?: HTMLDivElement) =
 
 interface InfiniteScrollProps {
   children: ReactNode;
+  className?: string;
   onScroll: () => void;
   hasNextPage?: boolean;
   isFetchingNextPage?: boolean;
 }
 
 export const InfiniteScroll = React.forwardRef<HTMLDivElement, InfiniteScrollProps>(
-  ({ children, onScroll, hasNextPage, isFetchingNextPage }: InfiniteScrollProps, containerRef) => {
+  ({ children, className, onScroll, hasNextPage, isFetchingNextPage }: InfiniteScrollProps, containerRef) => {
     const loader = useRef<HTMLDivElement | null>(null);
 
     const handleScroll = useCallback(() => {
@@ -50,6 +51,9 @@ export const InfiniteScroll = React.forwardRef<HTMLDivElement, InfiniteScrollPro
       const refElement = (containerRef as React.MutableRefObject<HTMLDivElement | null>)?.current;
       if (!refElement || !loader.current) return;
 
+      // Check if the loader is already visible on mount (content doesn't overflow)
+      handleScroll();
+
       refElement.addEventListener('scroll', handleScroll);
       return () => {
         refElement.removeEventListener('scroll', handleScroll);
@@ -57,7 +61,7 @@ export const InfiniteScroll = React.forwardRef<HTMLDivElement, InfiniteScrollPro
     }, [containerRef, handleScroll]);
 
     return (
-      <ScrollBody ref={containerRef}>
+      <ScrollBody ref={containerRef} className={className}>
         {children}
         {hasNextPage && <Loading ref={loader}>Loading more items…</Loading>}
       </ScrollBody>

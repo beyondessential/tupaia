@@ -10,21 +10,22 @@ import { DeleteDraftModal } from './DeleteDraftModal';
 
 type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
 
-const Wrapper = styled.div`
+const Wrapper = styled.li`
   display: flex;
   align-items: stretch;
   width: 100%;
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
+  > span {
     flex: 1;
 
-    > span {
-      flex: 1;
-
-      > a.MuiButtonBase-root {
-        width: 100%;
-      }
+    > a.MuiButtonBase-root {
+      width: 100%;
     }
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex: none;
+    inline-size: 14.75rem;
   }
 `;
 
