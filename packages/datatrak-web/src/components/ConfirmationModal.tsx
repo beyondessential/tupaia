@@ -43,20 +43,24 @@ export interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: React.MouseEventHandler<HTMLElement>;
+  onCancel?: React.MouseEventHandler<HTMLElement>;
   heading?: NonNullable<React.ReactNode>;
   description?: React.ReactNode;
   confirmLabel?: React.ReactNode;
   cancelLabel?: React.ReactNode;
+  cancelDisabled?: boolean;
 }
 
 export const ConfirmationModal = ({
   isOpen,
   onClose,
   onConfirm,
-  heading = 'Survey in progress',
-  description = 'If you exit, you will lose the progress you’ve made on the current survey',
-  confirmLabel = 'Exit survey',
-  cancelLabel = 'Continue survey',
+  onCancel,
+  heading = ‘Survey in progress’,
+  description = ‘If you exit, you will lose the progress you’ve made on the current survey’,
+  confirmLabel = ‘Exit survey’,
+  cancelLabel = ‘Continue survey’,
+  cancelDisabled = false,
 }: ConfirmationModalProps) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -64,7 +68,7 @@ export const ConfirmationModal = ({
         <Heading>{heading}</Heading>
         <Typography align="center">{description}</Typography>
         <ButtonWrapper>
-          <ModalButton onClick={onClose} variant="outlined">
+          <ModalButton onClick={onCancel ?? onClose} variant="outlined" disabled={cancelDisabled}>
             {cancelLabel}
           </ModalButton>
           <ModalButton onClick={onConfirm}>{confirmLabel}</ModalButton>
