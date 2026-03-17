@@ -55,7 +55,7 @@ export const DraftSurveysSection = ({
       <SectionHeading>My drafts</SectionHeading>
       {isMobile ? (
         <InlineScroll>
-          {drafts.map(draft => (
+          {drafts.slice(0, 6).map(draft => (
             <DraftSurveyTile {...draft} key={draft.id} />
           ))}
         </InlineScroll>

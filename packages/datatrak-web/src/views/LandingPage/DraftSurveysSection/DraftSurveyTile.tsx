@@ -24,7 +24,8 @@ const Wrapper = styled.li`
   }
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    flex: 1;
+    flex: none;
+    inline-size: 14.75rem;
   }
 `;
 
