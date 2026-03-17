@@ -17,7 +17,7 @@ export const DeleteDraftModal = ({
 }: DeleteDraftModalProps) => {
   return (
     <SmallModal
-      open
+      open={isOpen}
       onClose={onClose}
       title="Delete draft"
       primaryButton={{
