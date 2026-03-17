@@ -3,13 +3,13 @@ import log from 'winston';
 import { render as renderReactApp } from 'react-dom';
 
 import { App } from './App';
-import { setWaitingWorker } from './components/UpdateConfirmation';
+import { setUpdateReady } from './components/UpdateConfirmation';
 import { useIsOfflineFirst } from './api/offlineFirst';
 
 renderReactApp(<App />, document.getElementById('root'));
 
-const promptUserToUpdate = (worker: ServiceWorker) => {
-  setWaitingWorker(worker);
+const promptUserToUpdate = (registration: ServiceWorkerRegistration) => {
+  setUpdateReady(registration);
 };
 
 if (useIsOfflineFirst()) {
@@ -27,39 +27,33 @@ if (useIsOfflineFirst()) {
         // handler runs. Fall back to checking the waiting worker.
         if (!newWorker) {
           if (registration.waiting && registration.active) {
-            promptUserToUpdate(registration.waiting);
+            promptUserToUpdate(registration);
           }
           return;
         }
 
         newWorker.addEventListener('statechange', () => {
           if (newWorker.state === 'installed' && registration.active) {
-            promptUserToUpdate(newWorker);
+            promptUserToUpdate(registration);
           }
         });
 
         // The worker may have reached 'installed' before the statechange listener
         // was attached above, so check its current state as well.
         if (newWorker.state === 'installed' && registration.active) {
-          promptUserToUpdate(newWorker);
+          promptUserToUpdate(registration);
         }
       });
 
       // Check if there's already a waiting worker
       // in case if update found, but user closes the pwa
       if (registration.waiting) {
-        promptUserToUpdate(registration.waiting);
+        promptUserToUpdate(registration);
       }
 
       // Check for updates immediately after loading the app
       log.info('Checking for updates...');
       await registration.update();
-
-      // After the user confirms the update, the waiting SW calls skipWaiting(),
-      // becomes active, and 'controllerchange' fires — reload to use the new version.
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
-      });
     }
   });
 
@@ -75,7 +69,7 @@ if (useIsOfflineFirst()) {
 
         // Catch any waiting worker that the updatefound handler may have missed
         if (registration.waiting && registration.active) {
-          promptUserToUpdate(registration.waiting);
+          promptUserToUpdate(registration);
         }
       }
     }
