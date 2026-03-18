@@ -335,12 +335,14 @@ export const DesktopMapOverlaySelector = ({
 
   const onExportMapOverlay = () => {
     handleCloseExportMenu();
-    exportMapOverlay(getExportParams());
+    const params = getExportParams();
+    if (params) exportMapOverlay(params);
   };
 
   const onExportMapOverlayImage = () => {
     handleCloseExportMenu();
-    exportMapOverlayImage(getExportParams());
+    const params = getExportParams();
+    if (params) exportMapOverlayImage(params);
   };
 
   const friendlyEntityType = getFriendlyEntityType(entity?.type);
