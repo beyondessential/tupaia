@@ -1,23 +1,20 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import { useNavigate } from 'react-router';
 import { SmallModal } from '../../components';
 
 interface DraftExistsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onStartNew: () => void;
-  resumePath: string;
+  onResume: () => void;
 }
 
 export const DraftExistsModal = ({
   isOpen,
   onClose,
   onStartNew,
-  resumePath,
+  onResume,
 }: DraftExistsModalProps) => {
-  const navigate = useNavigate();
-
   return (
     <SmallModal
       open={isOpen}
@@ -29,7 +26,7 @@ export const DraftExistsModal = ({
       }}
       secondaryButton={{
         label: 'Continue existing draft',
-        onClick: () => navigate(resumePath),
+        onClick: onResume,
       }}
     >
       <Typography align="center">
