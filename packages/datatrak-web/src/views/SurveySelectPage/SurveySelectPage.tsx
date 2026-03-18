@@ -87,34 +87,29 @@ export const SurveySelectPage = () => {
     />
   );
 
-  if (isMobile) {
-    return (
-      <>
+  return (
+    <>
+      {isMobile ? (
         <MobileTemplate
           {...sharedProps}
           countrySelector={countrySelector}
           handleSelectSurvey={handleSelectSurvey}
         />
-        <DraftExistsModal {...draftModalProps} />
-      </>
-    );
-  }
-
-  return (
-    <>
-      <DesktopTemplate
-        {...sharedProps}
-        countrySelector={countrySelector}
-        submitButton={
-          <Button
-            onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
-            disabled={!selectedSurvey || isUpdatingUser}
-            tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
-          >
-            Next
-          </Button>
-        }
-      />
+      ) : (
+        <DesktopTemplate
+          {...sharedProps}
+          countrySelector={countrySelector}
+          submitButton={
+            <Button
+              onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
+              disabled={!selectedSurvey || isUpdatingUser}
+              tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
+            >
+              Next
+            </Button>
+          }
+        />
+      )}
       <DraftExistsModal {...draftModalProps} />
     </>
   );
