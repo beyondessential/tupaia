@@ -20,6 +20,7 @@ export const DraftExistsModal = ({
       open={isOpen}
       onClose={onClose}
       title="This survey is existing in a draft"
+      width="32rem"
       primaryButton={{
         label: 'Start new survey',
         onClick: onStartNew,

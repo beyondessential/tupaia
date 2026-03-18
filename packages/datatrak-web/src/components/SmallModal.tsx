@@ -4,8 +4,8 @@ import { To } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { Button, Modal } from '.';
 
-const Wrapper = styled.div`
-  width: 25rem;
+const Wrapper = styled.div<{ $width: string }>`
+  width: ${({ $width }) => $width};
   max-width: 100%;
 
   .MuiTypography-root.MuiTypography-body1 {
@@ -58,6 +58,7 @@ interface ModalProps {
   secondaryButton?: ButtonProps | null;
   children?: ReactNode;
   isLoading?: boolean;
+  width?: string;
 }
 
 export const SmallModal = ({
@@ -68,10 +69,11 @@ export const SmallModal = ({
   secondaryButton,
   children,
   isLoading = false,
+  width = '24rem',
 }: ModalProps) => {
   return (
     <Modal open={open} onClose={onClose}>
-      <Wrapper>
+      <Wrapper $width={width}>
         {title && <Heading>{title}</Heading>}
         {children}
         <ButtonWrapper>
