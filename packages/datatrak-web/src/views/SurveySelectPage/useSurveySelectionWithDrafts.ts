@@ -58,8 +58,12 @@ export const useSurveySelectionWithDrafts = (
       navigateToSurvey(selectedCountry, selectedSurvey);
     },
     onResume: () => {
-      setIsOpen(false);
-      navigate(resumePath);
+      if (resumePath) {
+        setIsOpen(false);
+        navigate(resumePath);
+      } else {
+        setIsOpen(false);
+      }
     },
   };
 
