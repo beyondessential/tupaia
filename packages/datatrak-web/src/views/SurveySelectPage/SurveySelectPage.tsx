@@ -78,19 +78,21 @@ export const SurveySelectPage = () => {
     showLoader,
   };
 
+  const countrySelector = (
+    <CountrySelector
+      countries={countries}
+      key={user.projectId}
+      onChange={e => updateSelectedCountry(e.target.value)}
+      selectedCountry={selectedCountry}
+    />
+  );
+
   if (isMobile) {
     return (
       <>
         <MobileTemplate
           {...sharedProps}
-          countrySelector={
-            <CountrySelector
-              countries={countries}
-              key={user.projectId}
-              onChange={e => updateSelectedCountry(e.target.value)}
-              selectedCountry={selectedCountry}
-            />
-          }
+          countrySelector={countrySelector}
           handleSelectSurvey={handleSelectSurvey}
         />
         <DraftExistsModal {...draftModalProps} />
@@ -102,14 +104,7 @@ export const SurveySelectPage = () => {
     <>
       <DesktopTemplate
         {...sharedProps}
-        countrySelector={
-          <CountrySelector
-            countries={countries}
-            key={user.projectId}
-            onChange={e => updateSelectedCountry(e.target.value)}
-            selectedCountry={selectedCountry}
-          />
-        }
+        countrySelector={countrySelector}
         submitButton={
           <Button
             onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
