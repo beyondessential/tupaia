@@ -122,7 +122,6 @@ export const SurveySelectPage = () => {
         setShowDraftModal(false);
         navigateToSurvey(selectedCountry, selectedSurvey);
       }}
-      draftCount={matchingDrafts.length}
       resumePath={resumePath}
     />
   );
