@@ -20,6 +20,10 @@ const supportedImageTypes = {
   'image/webp': { extension: 'webp', humanReadableName: 'WebP' },
 } as const;
 
+const humanReadableSupportedImageTypes = new Intl.ListFormat('en-AU', {
+  type: 'disjunction',
+}).format(Object.values(supportedImageTypes).map(t => t.humanReadableName));
+
 function isBase64DataUri(val: string): val is `data:${string};base64,${string}` {
   return val.startsWith('data:') && val.includes(';base64,');
 }
@@ -185,11 +189,8 @@ export class S3Client {
     }
 
     if (!isSupportedImageMediaTypeString(contentType)) {
-      const humanReadableList = Object.values(supportedImageTypes)
-        .map(type => type.humanReadableName)
-        .join(', ');
       throw new UnsupportedMediaTypeError(
-        `${contentType} images aren’t supported. Please provide one of: ${humanReadableList}`,
+        `${contentType} images aren’t supported. Please provide one of: ${humanReadableSupportedImageTypes}`,
       );
     }
 

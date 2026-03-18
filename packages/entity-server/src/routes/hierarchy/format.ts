@@ -1,7 +1,6 @@
 import { EntityRecord } from '@tupaia/server-boilerplate';
-import { isNotNullish } from '@tupaia/tsutils';
+import { isNotNullish, ResponseObjectBuilder } from '@tupaia/tsutils';
 import { EntityServerModelRegistry } from '../../types';
-import { ResponseObjectBuilder } from '../utils';
 import {
   ExtendedEntityFieldName,
   FlattableEntityFieldName,

@@ -1,6 +1,6 @@
-import { respond, ObjectValidator, DatabaseError } from '@tupaia/utils';
-import { constructNewRecordValidationRules } from '../utilities';
+import { DatabaseError, NotImplementedError, ObjectValidator, respond } from '@tupaia/utils';
 import { CRUDHandler } from '../CRUDHandler';
+import { constructNewRecordValidationRules } from '../utilities';
 
 /**
  * Responds to POST requests for a resource
@@ -47,9 +47,9 @@ export class BulkCreateHandler extends CRUDHandler {
     return this.validateNewRecord();
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async createRecords(transactingModels, newRecordData) {
-    throw new Error('Any BulkCreateHandler must implement createRecords()');
+  /** @abstract */
+  async createRecords(_transactingModels, _newRecordData) {
+    throw new NotImplementedError('Any BulkCreateHandler must implement createRecords()');
   }
 
   async insertRecords(transactingModels, newRecordData) {

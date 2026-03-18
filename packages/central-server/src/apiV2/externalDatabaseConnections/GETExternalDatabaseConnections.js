@@ -21,7 +21,7 @@ export async function hasExternalDatabaseConnectionPermissions(
 }
 
 export class GETExternalDatabaseConnections extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(externalDatabaseConnectionId, options) {
     await this.assertPermissions(assertBESAdminAccess);

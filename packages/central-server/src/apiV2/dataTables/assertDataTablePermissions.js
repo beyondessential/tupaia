@@ -15,7 +15,7 @@ export const hasDataTablePermissions = async (accessPolicy, models, dataTableId)
   );
 };
 
-export const createDataTableDBFilter = async (accessPolicy, models, criteria) => {
+export const createDataTableDBFilter = async (accessPolicy, _models, criteria) => {
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
