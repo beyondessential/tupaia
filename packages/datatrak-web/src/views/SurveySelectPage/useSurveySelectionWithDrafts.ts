@@ -26,7 +26,7 @@ export const useSurveySelectionWithDrafts = (
 ) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { data: allDrafts = [] } = useSurveyResponseDrafts();
+  const { data: allDrafts = [], isLoading: isDraftsLoading } = useSurveyResponseDrafts();
 
   const matchingDrafts = getDraftsForSurvey(allDrafts, selectedCountry?.code, selectedSurvey);
   const firstDraft = matchingDrafts[0];
@@ -35,6 +35,10 @@ export const useSurveySelectionWithDrafts = (
     : '';
 
   const handleSelectSurvey: NavigateToSurveyType = (country, surveyCode) => {
+    // Don't navigate until drafts have loaded — otherwise we'd skip the
+    // draft-exists modal because allDrafts defaults to [].
+    if (isDraftsLoading) return;
+
     const draftsForSurvey = getDraftsForSurvey(allDrafts, country?.code, surveyCode);
 
     if (draftsForSurvey.length > 0) {
@@ -59,5 +63,5 @@ export const useSurveySelectionWithDrafts = (
     },
   };
 
-  return { draftModalProps, handleSelectSurvey };
+  return { draftModalProps, handleSelectSurvey, isDraftsLoading };
 };

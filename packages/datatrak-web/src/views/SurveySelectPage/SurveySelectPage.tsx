@@ -52,7 +52,7 @@ export const SurveySelectPage = () => {
   } = useUserCountries();
   const navigateToSurvey = useNavigateToSurvey();
   const { isUpdatingUser, isSyncingProject } = useSyncProjectFromUrl();
-  const { draftModalProps, handleSelectSurvey } = useSurveySelectionWithDrafts(
+  const { draftModalProps, handleSelectSurvey, isDraftsLoading } = useSurveySelectionWithDrafts(
     selectedCountry,
     selectedSurvey,
     setSelectedSurvey,
@@ -69,7 +69,7 @@ export const SurveySelectPage = () => {
     setSelectedSurvey(null);
   }
 
-  const showLoader = isFetchingSurveys || isFetchingCountries || isUpdatingUser || isSyncingProject;
+  const showLoader = isFetchingSurveys || isFetchingCountries || isUpdatingUser || isSyncingProject || isDraftsLoading;
 
   const sharedProps = {
     selectedCountry,
@@ -102,7 +102,7 @@ export const SurveySelectPage = () => {
           submitButton={
             <Button
               onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
-              disabled={!selectedSurvey || isUpdatingUser}
+              disabled={!selectedSurvey || isUpdatingUser || isDraftsLoading}
               tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
             >
               Next
