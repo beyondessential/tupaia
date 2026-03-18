@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Country, KeysToCamelCase } from '@tupaia/types';
 import { useCurrentUserContext } from '../../api';
 import { useEditUser } from '../../api/mutations';
+import { useSurveyResponseDrafts } from '../../api/queries/useSurveyResponseDrafts';
 import { useSurveysQuery } from '../../api/queries/useSurveysQuery';
 import { Button } from '../../components';
 import { CountrySelector } from '../../features';
@@ -12,6 +13,7 @@ import { useUserCountries } from '../../features/CountrySelector/useUserCountrie
 import { Survey } from '../../types';
 import { useIsMobile } from '../../utils';
 import { DesktopTemplate } from './DesktopTemplate';
+import { DraftExistsModal } from './DraftExistsModal';
 import { MobileTemplate } from './MobileTemplate';
 
 const useNavigateToSurvey = () => {
@@ -43,15 +45,17 @@ export type NavigateToSurveyType = ReturnType<typeof useNavigateToSurvey>;
 
 export const SurveySelectPage = () => {
   const [selectedSurvey, setSelectedSurvey] = useState<Survey['code'] | null>(null);
+  const [showDraftModal, setShowDraftModal] = useState(false);
   const [urlSearchParams] = useSearchParams();
   const urlProjectId = urlSearchParams.get('projectId');
   const {
     queryResult: { data: countries, isFetching: isFetchingCountries },
     state: [selectedCountry, updateSelectedCountry],
   } = useUserCountries();
-  const handleSelectSurvey = useNavigateToSurvey();
+  const navigateToSurvey = useNavigateToSurvey();
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
+  const { data: allDrafts } = useSurveyResponseDrafts();
 
   const { isFetching: isFetchingSurveys, data: surveys } = useSurveysQuery({
     countryCode: selectedCountry?.code,
@@ -78,6 +82,29 @@ export const SurveySelectPage = () => {
     isUpdatingUser ||
     (urlProjectId !== null && urlProjectId !== user?.projectId); // in this case the user will be updating and all surveys etc will be reloaded, so showing a loader when this is the case means a more seamless experience
 
+  const matchingDrafts = allDrafts.filter(
+    draft => draft.surveyCode === selectedSurvey && draft.countryCode === selectedCountry?.code,
+  );
+
+  const firstDraft = matchingDrafts[0];
+  const resumePath = firstDraft
+    ? `/survey/${firstDraft.countryCode}/${firstDraft.surveyCode}/${firstDraft.screenNumber ?? 0}?draftId=${firstDraft.id}`
+    : '';
+
+  const handleSelectSurvey: NavigateToSurveyType = (country, surveyCode) => {
+    const draftsForSurvey = allDrafts.filter(
+      draft => draft.surveyCode === surveyCode && draft.countryCode === country?.code,
+    );
+
+    if (draftsForSurvey.length > 0) {
+      setSelectedSurvey(surveyCode);
+      setShowDraftModal(true);
+      return;
+    }
+
+    navigateToSurvey(country, surveyCode);
+  };
+
   const countrySelector = (
     <CountrySelector
       countries={countries}
@@ -87,34 +114,53 @@ export const SurveySelectPage = () => {
     />
   );
 
+  const draftExistsModal = (
+    <DraftExistsModal
+      isOpen={showDraftModal}
+      onClose={() => setShowDraftModal(false)}
+      onStartNew={() => {
+        setShowDraftModal(false);
+        navigateToSurvey(selectedCountry, selectedSurvey);
+      }}
+      draftCount={matchingDrafts.length}
+      resumePath={resumePath}
+    />
+  );
+
   if (useIsMobile()) {
     return (
-      <MobileTemplate
-        countrySelector={countrySelector}
-        selectedCountry={selectedCountry}
-        selectedSurvey={selectedSurvey}
-        setSelectedSurvey={setSelectedSurvey}
-        handleSelectSurvey={handleSelectSurvey}
-        showLoader={showLoader}
-      />
+      <>
+        <MobileTemplate
+          countrySelector={countrySelector}
+          selectedCountry={selectedCountry}
+          selectedSurvey={selectedSurvey}
+          setSelectedSurvey={setSelectedSurvey}
+          handleSelectSurvey={handleSelectSurvey}
+          showLoader={showLoader}
+        />
+        {draftExistsModal}
+      </>
     );
   }
   return (
-    <DesktopTemplate
-      selectedCountry={selectedCountry}
-      countrySelector={countrySelector}
-      selectedSurvey={selectedSurvey}
-      setSelectedSurvey={setSelectedSurvey}
-      showLoader={showLoader}
-      submitButton={
-        <Button
-          onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
-          disabled={!selectedSurvey || isUpdatingUser}
-          tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
-        >
-          Next
-        </Button>
-      }
-    />
+    <>
+      <DesktopTemplate
+        selectedCountry={selectedCountry}
+        countrySelector={countrySelector}
+        selectedSurvey={selectedSurvey}
+        setSelectedSurvey={setSelectedSurvey}
+        showLoader={showLoader}
+        submitButton={
+          <Button
+            onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
+            disabled={!selectedSurvey || isUpdatingUser}
+            tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
+          >
+            Next
+          </Button>
+        }
+      />
+      {draftExistsModal}
+    </>
   );
 };
