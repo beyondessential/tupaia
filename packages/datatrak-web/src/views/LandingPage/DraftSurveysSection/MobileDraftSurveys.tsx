@@ -39,15 +39,7 @@ const ListItemContainer = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
-
-  > span {
-    flex: 1;
-
-    > a {
-      width: 100%;
-    }
-  }
+  gap: 0.625rem;
 `;
 
 const DraftList = styled.ul`
@@ -81,7 +73,7 @@ const ListItem = ({ draft }) => {
 
   return (
     <ListItemContainer>
-      <DraftSurveyTile key={draft.id} {...draft} />
+      <DraftSurveyTile {...draft} variant="mobile-list" />
       <DeleteButton
         aria-label="Delete draft"
         onClick={e => {

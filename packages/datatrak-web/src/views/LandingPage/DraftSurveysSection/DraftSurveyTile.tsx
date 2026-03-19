@@ -10,7 +10,13 @@ import { DeleteDraftModal } from './DeleteDraftModal';
 
 type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
 
-const Wrapper = styled.li`
+type Variant = 'desktop' | 'mobile-scroll' | 'mobile-list';
+
+interface WrapperProps {
+  $variant: Variant;
+}
+
+const Wrapper = styled.div<WrapperProps>`
   display: flex;
   align-items: stretch;
   width: 100%;
@@ -23,20 +29,16 @@ const Wrapper = styled.li`
     }
   }
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    flex: none;
-    inline-size: 14.75rem;
-  }
+  ${({ $variant }) => $variant === 'mobile-scroll' && `
+    flex: 0 0 auto;
+    width: 14.75rem;
+  `}
 `;
 
-const StyledTile = styled(Tile)`
+const StyledTile = styled(Tile)<WrapperProps>`
   flex: 1;
   min-width: 0;
-  border-radius: 0.625rem 0 0 0.625rem;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    border-radius: 0.625rem;
-  }
+  border-radius: ${({ $variant }) => $variant === 'desktop' ? '0.625rem 0 0 0.625rem' : '0.625rem'};
 `;
 
 const MenuContainer = styled.div`
@@ -44,10 +46,6 @@ const MenuContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0 0.625rem 0.625rem 0;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 const StyledActionsMenu = styled(ActionsMenu)``;
@@ -98,6 +96,10 @@ const Menu = ({ draftId }: { draftId: string }) => {
   );
 };
 
+interface DraftSurveyTileProps extends DraftSurvey {
+  variant?: Variant;
+}
+
 export const DraftSurveyTile = ({
   id,
   surveyName,
@@ -105,7 +107,8 @@ export const DraftSurveyTile = ({
   countryCode,
   entityName,
   screenNumber,
-}: DraftSurvey) => {
+  variant = 'desktop',
+}: DraftSurveyTileProps) => {
   const entityText = entityName ?? countryCode;
   const tooltip = (
     <>
@@ -113,9 +116,13 @@ export const DraftSurveyTile = ({
       <TooltipText>{entityText}</TooltipText>
     </>
   );
+
+  const showMenu = variant === 'desktop';
+
   return (
-    <Wrapper>
+    <Wrapper $variant={variant}>
       <StyledTile
+        $variant={variant}
         heading={surveyName ? `[draft] ${surveyName}` : 'Draft survey'}
         leadingIcons={<StyledSurveyIcon />}
         tooltip={tooltip}
@@ -123,9 +130,11 @@ export const DraftSurveyTile = ({
       >
         <Typography>{entityText}</Typography>
       </StyledTile>
-      <MenuContainer>
-        <Menu draftId={id} />
-      </MenuContainer>
+      {showMenu && (
+        <MenuContainer>
+          <Menu draftId={id} />
+        </MenuContainer>
+      )}
     </Wrapper>
   );
 };

@@ -56,7 +56,7 @@ export const DraftSurveysSection = ({
       {isMobile ? (
         <InlineScroll>
           {drafts.slice(0, 6).map(draft => (
-            <DraftSurveyTile {...draft} key={draft.id} />
+            <DraftSurveyTile {...draft} key={draft.id} variant="mobile-scroll" />
           ))}
         </InlineScroll>
       ) : (
@@ -68,7 +68,9 @@ export const DraftSurveysSection = ({
         >
           <GridScroll>
             {drafts.map(draft => (
-              <DraftSurveyTile {...draft} key={draft.id} />
+              <li key={draft.id}>
+                <DraftSurveyTile {...draft} variant="desktop" />
+              </li>
             ))}
           </GridScroll>
         </ScrollContainer>
