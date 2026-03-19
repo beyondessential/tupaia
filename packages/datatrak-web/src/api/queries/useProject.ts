@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+
+import { ensure } from '@tupaia/tsutils';
 import { WebServerProjectRequest } from '@tupaia/types';
 import { get } from '../api';
-import { ensure } from '@tupaia/tsutils';
 
 export const useProject = (projectCode?: string) => {
   return useQuery<WebServerProjectRequest.ResBody>(
