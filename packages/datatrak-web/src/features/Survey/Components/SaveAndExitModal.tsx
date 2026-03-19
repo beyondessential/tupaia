@@ -9,12 +9,7 @@ interface SaveAndExitModalProps {
   isLoading: boolean;
 }
 
-export const SaveAndExitModal = ({
-  isOpen,
-  onClose,
-  onSave,
-  isLoading,
-}: SaveAndExitModalProps) => {
+export const SaveAndExitModal = ({ isOpen, onClose, onSave, isLoading }: SaveAndExitModalProps) => {
   return (
     <SmallModal
       open={isOpen}
@@ -32,7 +27,7 @@ export const SaveAndExitModal = ({
       isLoading={isLoading}
     >
       <Typography align="center">
-        You can continue completing this survey at anytime by accessing it on the dashboard
+        You can continue completing this survey at any time by accessing it on the dashboard
       </Typography>
     </SmallModal>
   );
