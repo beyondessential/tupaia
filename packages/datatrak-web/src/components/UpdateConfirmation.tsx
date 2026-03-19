@@ -13,27 +13,27 @@ const StyledLink = styled(Link)`
   }
 `;
 
-let pendingWorker: ServiceWorker | null = null;
+let pendingRegistration: ServiceWorkerRegistration | null = null;
 let notifyComponent: (() => void) | null = null;
 
-export function setWaitingWorker(worker: ServiceWorker) {
-  pendingWorker = worker;
+export function setUpdateReady(registration: ServiceWorkerRegistration) {
+  pendingRegistration = registration;
   notifyComponent?.();
 }
 
 export const UpdateNotification = () => {
-  const [updateAvailable, setUpdateAvailable] = useState(!!pendingWorker);
+  const [updateAvailable, setUpdateAvailable] = useState(!!pendingRegistration);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
 
   useEffect(() => {
     notifyComponent = () => setUpdateAvailable(true);
-    if (pendingWorker) {
+    if (pendingRegistration) {
       setUpdateAvailable(true);
     }
 
     return () => {
       notifyComponent = null;
-      pendingWorker = null;
+      pendingRegistration = null;
     };
   }, []);
 
@@ -45,8 +45,25 @@ export const UpdateNotification = () => {
       return;
     }
     setShowOfflineModal(false);
-    pendingWorker?.postMessage({ type: 'SKIP_WAITING' });
-    window.location.reload();
+
+    const waiting = pendingRegistration?.waiting;
+    if (!waiting) {
+      // The waiting worker already activated (e.g. all tabs were briefly closed).
+      // A plain reload will pick up the new assets from the now-active SW.
+      window.location.reload();
+      return;
+    }
+
+    // Following the workbox-window recipe: register controllerchange listener
+    // *before* messaging the worker, so it's guaranteed to be in place.
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+
+    waiting.postMessage({ type: 'SKIP_WAITING' });
+
+    // Fallback: if controllerchange never fires, reload after 3 seconds
+    setTimeout(() => window.location.reload(), 3000);
   };
 
   return (
