@@ -20,6 +20,7 @@ export const SaveAndExitModal = ({
       open={isOpen}
       onClose={onClose}
       title="Save & exit"
+      width="28rem"
       primaryButton={{
         label: 'Save and exit',
         onClick: onSave,

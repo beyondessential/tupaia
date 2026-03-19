@@ -245,8 +245,8 @@ export const useSurveyForm = () => {
     return surveyFormContext.formData[questionId];
   };
 
-  const openCancelConfirmation = ({ confirmPath }: { confirmPath?: To | number }) => {
-    dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION, payload: confirmPath });
+  const openCancelConfirmation = (options?: { confirmPath?: To | number }) => {
+    dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION, payload: options?.confirmPath ?? '/' });
   };
 
   const closeCancelConfirmation = () => {
