@@ -4,6 +4,10 @@ import { Entity, PermissionGroup, Question, Survey } from '../../models';
 export type CodeGeneratorQuestionConfig = {
   type: 'shortid' | 'mongoid';
   prefix?: string;
+  dynamicPrefix?: {
+    questionId: string;
+    entityAttribute?: string;
+  };
   length?: number;
   chunkLength?: number;
   alphabet?: string;

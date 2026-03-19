@@ -11,5 +11,7 @@ export class CodeGeneratorConfigValidator extends JsonFieldValidator {
     length: [constructIsNotPresentOr(isNumber)],
     chunkLength: [constructIsNotPresentOr(isNumber)],
     prefix: [() => true],
+    dynamicPrefix: [() => true],
+    'dynamicPrefix.entityAttribute': [() => true],
   });
 }

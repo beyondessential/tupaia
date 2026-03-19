@@ -53,6 +53,7 @@ export const getIsDependentQuestion = (
       const { formula } = config?.arithmetic;
       return formula.includes(questionId!);
     }
+    if (config?.codeGenerator?.dynamicPrefix?.questionId === questionId) return true;
     return false;
   });
 };
@@ -248,6 +249,8 @@ const generateCodeAnswer = (question: SurveyScreenComponent, formData: Record<st
   const { codeGenerator } = config as {
     codeGenerator: CodeGeneratorQuestionConfig;
   };
+  // Skip questions with dynamicPrefix — they are handled reactively by DynamicCodeGeneratorWatcher
+  if (codeGenerator?.dynamicPrefix) return formData[questionId];
   if (hasCodeGeneratorConfig(question) && !formData[questionId]) {
     return codeGenerator.type === 'shortid' ? generateShortId(codeGenerator) : generateMongoId();
   }

@@ -3,7 +3,7 @@ import { KeysToCamelCase } from '../../../utils/casing';
 
 export interface EntitiesResponseItem
   extends KeysToCamelCase<
-    Pick<Entity, 'id' | 'name' | 'code' | 'type' | 'parent_id' | 'updated_at_sync_tick'>
+    Pick<Entity, 'id' | 'name' | 'code' | 'type' | 'parent_id' | 'updated_at_sync_tick' | 'attributes'>
   > {}
 
 export type Params = Record<string, never>;

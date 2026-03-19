@@ -1,7 +1,7 @@
 import React, { createContext, Dispatch, useContext, useMemo, useReducer, useState } from 'react';
 import { To, useParams, useSearchParams } from 'react-router-dom';
 
-import { Country, QuestionType, Survey } from '@tupaia/types';
+import { CodeGeneratorQuestionConfig, Country, QuestionType, Survey } from '@tupaia/types';
 import { useSurvey } from '../../../api';
 import { PRIMARY_ENTITY_CODE_PARAM } from '../../../constants';
 import { SurveyParams } from '../../../types';
@@ -10,6 +10,7 @@ import { getAllSurveyComponents, getPrimaryEntityParentQuestionIds } from '../ut
 import { usePrimaryEntityQuestionAutoFill } from '../utils/usePrimaryEntityQuestionAutoFill';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 import { SurveyFormContextType, surveyReducer } from './reducer';
+import { DynamicCodeGeneratorWatcher } from './DynamicCodeGeneratorWatcher';
 import {
   generateCodeForCodeGeneratorQuestions,
   getDisplayQuestions,
@@ -149,6 +150,16 @@ export const SurveyContext = ({
     initialiseFormData();
   }
 
+  const dynamicCodeGenQuestions = useMemo(
+    () =>
+      flattenedScreenComponents.filter(
+        q =>
+          q.type === QuestionType.CodeGenerator &&
+          (q.config?.codeGenerator as CodeGeneratorQuestionConfig | undefined)?.dynamicPrefix,
+      ),
+    [flattenedScreenComponents],
+  );
+
   const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
   const screenHeader = activeScreen?.[0]?.text;
   const screenDetail = activeScreen?.[0]?.detail;
@@ -176,6 +187,14 @@ export const SurveyContext = ({
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
+        {dynamicCodeGenQuestions.map(q => (
+          <DynamicCodeGeneratorWatcher
+            key={q.questionId}
+            question={q}
+            formData={formData}
+            dispatch={dispatch}
+          />
+        ))}
         {children}
       </SurveyFormDispatchContext.Provider>
     </SurveyFormContext.Provider>
