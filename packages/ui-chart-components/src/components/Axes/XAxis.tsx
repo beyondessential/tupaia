@@ -50,10 +50,11 @@ const renderXAxisLabel = (
 };
 
 const BASE_H = 40;
+const EXPORT_TIME_SERIES_AXIS_HEIGHT = 80;
 
 const calculateXAxisHeight = (data: ChartData[], isExporting: boolean) => {
   if (getIsTimeSeries(data)) {
-    return BASE_H;
+    return isExporting ? EXPORT_TIME_SERIES_AXIS_HEIGHT : BASE_H;
   }
 
   if (isExporting) {
@@ -78,6 +79,8 @@ export const XAxis = ({ config, report, isExporting = false, isEnlarged = false 
   const axisHeight = calculateXAxisHeight(data, isExporting);
   const isTimeSeries = getIsTimeSeries(data);
 
+  const MAX_EXPORT_TICKS = 20;
+
   /*
     If set 0, all the ticks will be shown.
     If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
@@ -86,6 +89,9 @@ export const XAxis = ({ config, report, isExporting = false, isEnlarged = false 
   const getXAxisTickInterval = () => {
     if (chartType === Bar || chartType === Composed) {
       if (isTimeSeries) {
+        if (isExporting && data.length > MAX_EXPORT_TICKS) {
+          return Math.ceil(data.length / MAX_EXPORT_TICKS);
+        }
         return 'preserveStartEnd';
       }
 
