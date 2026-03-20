@@ -1,4 +1,4 @@
-export { downloadPageAsPdf } from './downloadPageAsPdf';
+export { downloadPageAsPdf, downloadPageAsImage } from './downloadPageAsPdf';
 export * from './s3';
 export { sendEmail } from './email';
 export { generateUnsubscribeToken, verifyUnsubscribeToken } from './unsubscribeToken';
