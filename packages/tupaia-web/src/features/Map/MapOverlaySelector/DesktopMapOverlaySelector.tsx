@@ -7,10 +7,10 @@ import { Tooltip, IconButton, SmallAlert } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';
 import { ArrowDropDown, Layers, Assignment, Close } from '@material-ui/icons';
 import { ChevronDown } from 'lucide-react';
-import Skeleton from '@material-ui/lab/Skeleton';
 import {
   Accordion,
   Box,
+  CircularProgress,
   Typography,
   AccordionSummary,
   AccordionDetails,
@@ -87,6 +87,10 @@ const ExportMenuItem = styled(MenuItem)`
   min-width: 4.1rem;
   padding-block: 0.1rem;
   padding-inline: 0.3rem;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
 `;
 
 const MaxHeightContainer = styled.div`
@@ -215,6 +219,13 @@ const LatestDataContainer = styled.div`
 const LatestDataText = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1.3;
+`;
+
+const LoadingSpinner = styled(CircularProgress).attrs({
+  size: 16,
+})`
+  color: ${({ theme }) => theme.palette.text.primary};
+  margin-right: 0.5rem;
 `;
 
 const ErrorAlert = styled(SmallAlert)`
@@ -357,7 +368,7 @@ export const DesktopMapOverlaySelector = ({
             <Box alignItems="center" display="flex">
               {isLoggedIn &&
                 (isExportingAny ? (
-                  <Skeleton animation="wave" width="70px" />
+                  <LoadingSpinner />
                 ) : (
                   <>
                     <ExportButton
