@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSurveyResponseDraftsRequest } from '@tupaia/types';
+import { DatatrakWebSurveyResponseDraftsRequest, EntityTypeEnum } from '@tupaia/types';
 
 export type GetSurveyResponseDraftsRequest = Request<
   DatatrakWebSurveyResponseDraftsRequest.Params,
@@ -14,19 +14,32 @@ const DEFAULT_PAGE_LIMIT = 20;
 export class GetSurveyResponseDraftsRoute extends Route<GetSurveyResponseDraftsRequest> {
   public async buildResponse() {
     const { ctx, models, query } = this.req;
-    const { page: queryPage, pageLimit: queryPageLimit } = query;
+    const { page: queryPage, pageLimit: queryPageLimit, projectId } = query;
 
     const page = queryPage ? parseInt(queryPage, 10) : 0;
     const pageLimit = queryPageLimit ? parseInt(queryPageLimit, 10) : DEFAULT_PAGE_LIMIT;
 
     const { id: userId } = await ctx.services.central.getUser();
 
+    const findConditions: Record<string, any> = { user_id: userId };
+
+    // Filter by project if specified: join through survey table
+    if (projectId) {
+      findConditions['survey.project_id'] = projectId;
+    }
+
     const drafts = await models.surveyResponseDraft.find(
-      { user_id: userId },
+      findConditions as any,
       {
-        sort: ['updated_at DESC'],
+        sort: ['survey_response_draft.updated_at DESC'],
         limit: pageLimit + 1, // Fetch one extra to check if there are more pages
         offset: page * pageLimit,
+        ...(projectId
+          ? {
+              joinWith: 'survey',
+              joinCondition: ['survey.id', 'survey_response_draft.survey_id'],
+            }
+          : {}),
       },
     );
 
@@ -50,16 +63,32 @@ export class GetSurveyResponseDraftsRoute extends Route<GetSurveyResponseDraftsR
     const surveyMap = new Map(surveys.map(s => [s.id, s]));
     const entityMap = new Map(entities.map(e => [e.id, e]));
 
+    // Batch fetch country entities by country_code for country name lookup
+    const countryCodes = [
+      ...new Set(
+        paginatedDrafts
+          .map(d => (d.country_code as string) ?? entityMap.get(d.entity_id as string)?.country_code)
+          .filter(Boolean),
+      ),
+    ] as string[];
+    const countryEntities =
+      countryCodes.length > 0
+        ? await models.entity.find({ code: countryCodes, type: EntityTypeEnum.country })
+        : [];
+    const countryMap = new Map(countryEntities.map(c => [c.code, c.name]));
+
     const items = paginatedDrafts.map(draft => {
       const survey = draft.survey_id ? surveyMap.get(draft.survey_id as string) : null;
       const entity = draft.entity_id ? entityMap.get(draft.entity_id as string) : null;
+      const countryCode = (draft.country_code as string) ?? entity?.country_code ?? null;
 
       return {
         id: draft.id,
         surveyId: draft.survey_id,
         surveyCode: survey?.code ?? null,
         surveyName: survey?.name ?? null,
-        countryCode: (draft.country_code as string) ?? entity?.country_code ?? null,
+        countryCode,
+        countryName: countryCode ? countryMap.get(countryCode) ?? null : null,
         entityId: draft.entity_id ?? null,
         entityName: entity?.name ?? null,
         startTime: draft.start_time ?? null,

@@ -34,6 +34,8 @@ const Heading = styled(Typography).attrs({
 })`
   &.MuiTypography-root {
     margin-bottom: 1rem;
+    padding-inline-end: 2rem;
+    padding-inline-start: 2rem;
   }
 `;
 

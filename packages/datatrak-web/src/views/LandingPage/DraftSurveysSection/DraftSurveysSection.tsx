@@ -11,7 +11,14 @@ const DraftSurveys = styled.section`
   display: grid;
   grid-area: --draftSurveys;
   grid-template-columns: subgrid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
+`;
+
+const HeadingRow = styled.div`
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  grid-column: 1 / -1;
 `;
 
 const InlineScroll = styled(InlineScrollView).attrs({
@@ -31,7 +38,7 @@ const GridScroll = styled.ul.attrs({
 
 const ScrollContainer = styled(InfiniteScroll)`
   grid-column: 1 / -1;
-  max-block-size: 9rem;
+  max-block-size: 13.5rem;
 `;
 
 interface DraftSurveysSectionProps {
@@ -52,30 +59,41 @@ export const DraftSurveysSection = ({
 
   return (
     <DraftSurveys>
-      <SectionHeading>My drafts</SectionHeading>
       {isMobile ? (
-        <InlineScroll>
-          {drafts.slice(0, 6).map(draft => (
-            <DraftSurveyTile {...draft} key={draft.id} variant="mobile-scroll" />
-          ))}
-        </InlineScroll>
-      ) : (
-        <ScrollContainer
-          ref={scrollRef}
-          onScroll={fetchNextPage}
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetching}
-        >
-          <GridScroll>
-            {drafts.map(draft => (
-              <li key={draft.id}>
-                <DraftSurveyTile {...draft} variant="desktop" />
-              </li>
+        <>
+          <HeadingRow>
+            <SectionHeading>My drafts</SectionHeading>
+            <MobileDraftSurveys
+              drafts={drafts}
+              fetchNextPage={fetchNextPage}
+              hasNextPage={hasNextPage}
+            />
+          </HeadingRow>
+          <InlineScroll>
+            {drafts.slice(0, 6).map(draft => (
+              <DraftSurveyTile {...draft} key={draft.id} variant="mobile-scroll" />
             ))}
-          </GridScroll>
-        </ScrollContainer>
+          </InlineScroll>
+        </>
+      ) : (
+        <>
+          <SectionHeading>My drafts</SectionHeading>
+          <ScrollContainer
+            ref={scrollRef}
+            onScroll={fetchNextPage}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetching}
+          >
+            <GridScroll>
+              {drafts.map(draft => (
+                <li key={draft.id}>
+                  <DraftSurveyTile {...draft} variant="desktop" />
+                </li>
+              ))}
+            </GridScroll>
+          </ScrollContainer>
+        </>
       )}
-      {isMobile && <MobileDraftSurveys drafts={drafts} />}
     </DraftSurveys>
   );
 };

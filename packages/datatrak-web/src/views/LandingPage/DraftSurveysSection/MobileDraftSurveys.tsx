@@ -18,8 +18,9 @@ const Wrapper = styled.div`
 `;
 
 const ViewMoreButton = styled(Button).attrs({ variant: 'text', color: 'default' })`
-  float: right;
-  padding-block-start: 1rem;
+  font-size: 0.75rem;
+  padding: 0;
+  min-width: auto;
 `;
 
 const ExpandedWrapper = styled.div`
@@ -100,11 +101,22 @@ const ExpandedList = ({
   expanded,
   onClose,
   drafts,
+  fetchNextPage,
+  hasNextPage,
 }: {
   expanded: boolean;
   onClose: () => void;
   drafts: DraftSurvey[];
+  fetchNextPage: () => void;
+  hasNextPage: boolean;
 }) => {
+  // Load all remaining pages when the dialog opens
+  React.useEffect(() => {
+    if (expanded && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [expanded, hasNextPage, fetchNextPage]);
+
   return (
     <Dialog
       open={expanded}
@@ -129,17 +141,29 @@ const ExpandedList = ({
 
 interface MobileDraftSurveysProps {
   drafts: DraftSurvey[];
+  fetchNextPage: () => void;
+  hasNextPage: boolean;
 }
 
-export const MobileDraftSurveys = ({ drafts }: MobileDraftSurveysProps) => {
+export const MobileDraftSurveys = ({
+  drafts,
+  fetchNextPage,
+  hasNextPage,
+}: MobileDraftSurveysProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   if (drafts.length === 0) return null;
 
   return (
     <Wrapper>
-      <ViewMoreButton onClick={() => setIsOpen(true)}>View all drafts…</ViewMoreButton>
-      <ExpandedList expanded={isOpen} onClose={() => setIsOpen(false)} drafts={drafts} />
+      <ViewMoreButton onClick={() => setIsOpen(true)}>View all / edit</ViewMoreButton>
+      <ExpandedList
+        expanded={isOpen}
+        onClose={() => setIsOpen(false)}
+        drafts={drafts}
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
+      />
     </Wrapper>
   );
 };

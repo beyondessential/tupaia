@@ -6,6 +6,7 @@ import { DatatrakWebSurveyResponseDraftsRequest } from '@tupaia/types';
 import { useDeleteSurveyResponseDraft } from '../../../api';
 import { Tile } from '../../../components';
 import { Typography } from '@material-ui/core';
+import { displayDate } from '../../../utils';
 import { DeleteDraftModal } from './DeleteDraftModal';
 
 type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
@@ -29,7 +30,9 @@ const Wrapper = styled.div<WrapperProps>`
     }
   }
 
-  ${({ $variant }) => $variant === 'mobile-scroll' && `
+  ${({ $variant }) =>
+    $variant === 'mobile-scroll' &&
+    `
     flex: 0 0 auto;
     width: 14.75rem;
   `}
@@ -38,7 +41,8 @@ const Wrapper = styled.div<WrapperProps>`
 const StyledTile = styled(Tile)<WrapperProps>`
   flex: 1;
   min-width: 0;
-  border-radius: ${({ $variant }) => $variant === 'desktop' ? '0.625rem 0 0 0.625rem' : '0.625rem'};
+  border-radius: ${({ $variant }) =>
+    $variant === 'desktop' ? '0.625rem 0 0 0.625rem' : '0.625rem'};
 `;
 
 const MenuContainer = styled.div`
@@ -100,16 +104,25 @@ interface DraftSurveyTileProps extends DraftSurvey {
   variant?: Variant;
 }
 
+const MetadataText = styled(Typography)`
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
+`;
+
 export const DraftSurveyTile = ({
   id,
   surveyName,
   surveyCode,
   countryCode,
+  countryName,
   entityName,
   screenNumber,
+  updatedAt,
   variant = 'desktop',
 }: DraftSurveyTileProps) => {
-  const entityText = entityName ?? countryCode;
+  const entityText = entityName ?? countryName ?? countryCode;
+  const formattedDate = displayDate(updatedAt);
+  const metadataText = [formattedDate, countryName, entityName].filter(Boolean).join(' | ');
   const tooltip = (
     <>
       <TooltipText>{surveyName}</TooltipText>
@@ -128,7 +141,7 @@ export const DraftSurveyTile = ({
         tooltip={tooltip}
         to={`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`}
       >
-        <Typography>{entityText}</Typography>
+        {metadataText && <MetadataText>{metadataText}</MetadataText>}
       </StyledTile>
       {showMenu && (
         <MenuContainer>

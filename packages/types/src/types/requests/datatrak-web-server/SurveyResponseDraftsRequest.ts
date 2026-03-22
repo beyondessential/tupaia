@@ -4,6 +4,7 @@ export type DraftSurveyResponse = {
   surveyCode: string | null;
   surveyName: string | null;
   countryCode: string | null;
+  countryName: string | null;
   entityId: string | null;
   entityName: string | null;
   startTime: Date | null;
@@ -21,6 +22,7 @@ export type ResBody = {
 export type ReqQuery = {
   page?: string;
   pageLimit?: string;
+  projectId?: string;
 };
 export type Params = Record<string, never>;
 export type ReqBody = Record<string, never>;
