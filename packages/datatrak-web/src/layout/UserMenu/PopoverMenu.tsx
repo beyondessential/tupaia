@@ -11,20 +11,27 @@ const Paper = styled(MuiPaper)`
 `;
 
 interface PopoverMenuProps {
+  anchorId?: string;
   menuOpen: boolean;
   onCloseMenu: () => void;
+  surveyGuard?: (onConfirm: () => void) => void;
 }
 /**
  * This is the desktop popover user menu
  */
-export const PopoverMenu = ({ menuOpen, onCloseMenu }: PopoverMenuProps) => {
+export const PopoverMenu = ({
+  anchorId = 'user-menu-button',
+  menuOpen,
+  onCloseMenu,
+  surveyGuard,
+}: PopoverMenuProps) => {
   return (
     <Popover
       open={menuOpen}
       PaperProps={{
         component: Paper,
       }}
-      anchorEl={() => document.getElementById('user-menu-button') as HTMLElement}
+      anchorEl={() => document.getElementById(anchorId) as HTMLElement}
       onClose={onCloseMenu}
       anchorOrigin={{
         vertical: 'bottom',
@@ -35,7 +42,7 @@ export const PopoverMenu = ({ menuOpen, onCloseMenu }: PopoverMenuProps) => {
         horizontal: 'right',
       }}
     >
-      <MenuList onCloseMenu={onCloseMenu} />
+      <MenuList onCloseMenu={onCloseMenu} surveyGuard={surveyGuard} />
     </Popover>
   );
 };

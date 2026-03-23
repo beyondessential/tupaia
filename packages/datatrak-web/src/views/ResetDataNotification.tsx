@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { SyncFact } from '@tupaia/constants';
 import { useDatabaseQuery, useSyncContext } from '../api';
 import { useIsOfflineFirst } from '../api/offlineFirst';
-import { useLogoutGuard } from '../hooks/useGuardedLogout';
+import { useGuardedLogout } from '../hooks/useGuardedLogout';
 import { BannerNotification } from './BannerNotification';
 
 const StyledLink = styled(Link)`
@@ -47,7 +47,7 @@ function usePermissionsDidChange() {
 export const ResetDataNotification = () => {
   const permissionsChanged = usePermissionsDidChange();
 
-  const { guardedLogout, confirmationModal } = useLogoutGuard();
+  const { triggerGuardedLogout, confirmationModal } = useGuardedLogout();
 
   if (!permissionsChanged) {
     return null;
@@ -57,7 +57,7 @@ export const ResetDataNotification = () => {
     <>
       <BannerNotification>
         <strong>Permissions changed.</strong> Your permissions were updated while you were offline.{' '}
-        <StyledLink onClick={guardedLogout}>Log out</StyledLink> and back in to get the latest data.
+        <StyledLink onClick={triggerGuardedLogout}>Log out</StyledLink> and back in to get the latest data.
       </BannerNotification>
       {confirmationModal}
     </>

@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ROUTES } from '../../../constants';
@@ -50,6 +50,7 @@ interface SurveyLayoutContext {
 const MobileHeader = () => {
   const { openCancelConfirmation } = useSurveyForm();
   const { onStepPrevious } = useOutletContext<SurveyLayoutContext>();
+  const navigate = useNavigate();
 
   const handleBack = () => {
     onStepPrevious();
@@ -58,7 +59,7 @@ const MobileHeader = () => {
   return (
     <StickyHeader
       onBack={handleBack}
-      onClose={() => openCancelConfirmation({ confirmPath: ROUTES.HOME })}
+      onClose={() => openCancelConfirmation(() => navigate(ROUTES.HOME))}
     >
       Review & submit
     </StickyHeader>

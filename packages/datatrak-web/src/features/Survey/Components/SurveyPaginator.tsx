@@ -74,7 +74,7 @@ export const SurveyPaginator = () => {
         </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button onClick={openCancelConfirmation} variant="outlined" disabled={isDisabled}>
+        <Button onClick={() => openCancelConfirmation()} variant="outlined" disabled={isDisabled}>
           Cancel
         </Button>
         <Button type="submit" disabled={isDisabled}>

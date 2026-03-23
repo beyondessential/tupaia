@@ -1,6 +1,6 @@
 import { Link, ListItem, Typography } from '@material-ui/core';
 import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
-import React, { type ComponentType, type ReactNode, useRef } from 'react';
+import React, { type ComponentType, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
@@ -9,8 +9,7 @@ import { Button } from '@tupaia/ui-components';
 import { useCurrentUserContext } from '../../api';
 import { useIsOfflineFirst } from '../../api/offlineFirst';
 import { type RoutePath, ROUTES } from '../../constants';
-import { useAbandonSurveyGuard } from '../../hooks/useAbandonSurveyGuard';
-import { useLogoutGuard } from '../../hooks/useGuardedLogout';
+import { useGuardedLogout } from '../../hooks/useGuardedLogout';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
@@ -116,9 +115,11 @@ const appVersionText = process.env.REACT_APP_VERSION ? (
 export const MenuList = ({
   children,
   onCloseMenu,
+  surveyGuard,
 }: {
   children?: ReactNode;
   onCloseMenu?: () => void;
+  surveyGuard?: (onConfirm: () => void) => void;
 }) => {
   const { isLoggedIn, projectId, accessPolicy } = useCurrentUserContext();
   const hasAdminPanelAccess =
@@ -127,32 +128,38 @@ export const MenuList = ({
   const isOfflineFirst = useIsOfflineFirst();
   const navigate = useNavigate();
 
-  const navigateRef = useRef<() => void>(() => {});
-  const { guardedCallback, confirmationModal: abandonSurveyConfirmationModal } =
-    useAbandonSurveyGuard(() => navigateRef.current());
-  const guardedNavigate = (
-    mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>,
-    path: RoutePath,
-  ) => {
-    navigateRef.current = () => {
+  const { triggerGuardedLogout, confirmationModal: logoutConfirmationModal } = useGuardedLogout();
+
+  const guardedNavigate = (path: RoutePath) => {
+    const doNavigate = () => {
       navigate(path);
       onCloseMenu?.();
     };
-    guardedCallback(mouseEvent);
+    if (surveyGuard) {
+      surveyGuard(doNavigate);
+    } else {
+      doNavigate();
+    }
   };
 
-  const { guardedLogout, confirmationModal: logoutConfirmationModal } = useLogoutGuard();
+  const handleLogout = () => {
+    if (surveyGuard) {
+      surveyGuard(() => triggerGuardedLogout());
+    } else {
+      triggerGuardedLogout();
+    }
+  };
 
   const allItems: MenuItem[] = [
     {
       label: 'Account settings',
-      onClick: mouseEvent => guardedNavigate(mouseEvent, ROUTES.ACCOUNT_SETTINGS),
+      onClick: () => guardedNavigate(ROUTES.ACCOUNT_SETTINGS),
       hidden: !isLoggedIn || !hasProjectSelected,
       icon: chevronRight,
     },
     {
       label: 'Reports',
-      onClick: mouseEvent => guardedNavigate(mouseEvent, ROUTES.REPORTS),
+      onClick: () => guardedNavigate(ROUTES.REPORTS),
       hidden: !isLoggedIn || !hasAdminPanelAccess,
       icon: chevronRight,
     },
@@ -172,7 +179,7 @@ export const MenuList = ({
     },
     {
       label: 'Log out',
-      onClick: guardedLogout,
+      onClick: handleLogout,
       hidden: !isLoggedIn,
       icon: logoutIcon,
     },
@@ -202,7 +209,6 @@ export const MenuList = ({
         {isOfflineFirst && appVersionText}
       </Menu>
       {logoutConfirmationModal}
-      {abandonSurveyConfirmationModal}
     </>
   );
 };

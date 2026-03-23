@@ -9,5 +9,5 @@ export enum ACTION_TYPES {
 
 export interface SurveyFormAction {
   type: ACTION_TYPES;
-  payload?: Record<string, any> | string | number | null;
+  payload?: Record<string, any> | string | number | (() => void) | null;
 }

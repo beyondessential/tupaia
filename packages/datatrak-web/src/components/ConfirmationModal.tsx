@@ -54,7 +54,7 @@ export const ConfirmationModal = ({
   onClose,
   onConfirm,
   heading = 'Survey in progress',
-  description = 'If you exit, you will lose the progress you’ve made on the current survey',
+  description = 'If you exit, you will lose the progress you’ve made on the current survey. Would you like to save as a draft or exit without saving?',
   confirmLabel = 'Exit survey',
   cancelLabel = 'Continue survey',
 }: ConfirmationModalProps) => {

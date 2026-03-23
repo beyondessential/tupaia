@@ -7,7 +7,7 @@ import { useBeforeUnload } from '../../../utils';
 import { useSurveyForm } from '../SurveyContext';
 
 export const CancelSurveyConfirmationToken = () => {
-  const { cancelModalConfirmLink, cancelModalOpen, closeCancelConfirmation, isSuccessScreen } =
+  const { cancelModalOnConfirm, cancelModalOpen, closeCancelConfirmation, isSuccessScreen } =
     useSurveyForm();
 
   const navigate = useNavigate();
@@ -17,8 +17,12 @@ export const CancelSurveyConfirmationToken = () => {
 
   const handleConfirm = useCallback(() => {
     closeCancelConfirmation();
-    navigate(cancelModalConfirmLink);
-  }, [closeCancelConfirmation, navigate, cancelModalConfirmLink]);
+    if (cancelModalOnConfirm) {
+      cancelModalOnConfirm();
+    } else {
+      navigate('/');
+    }
+  }, [closeCancelConfirmation, navigate, cancelModalOnConfirm]);
 
   return (
     <ConfirmationModal

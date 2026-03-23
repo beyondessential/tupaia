@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router';
+import { matchPath } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiMenuIcon from '@material-ui/icons/Menu';
 
@@ -37,11 +38,14 @@ export const UserMenu = () => {
   const { isLoggedIn } = useCurrentUserContext();
   const isSyncPage = location.pathname === ROUTES.SYNC;
 
+  const isSurveyPage = !!matchPath(`${ROUTES.SURVEY}/*`, location.pathname);
+  const showHamburger = isDesktop && !isSurveyPage;
+
   return (
     <Wrapper>
       <UserInfo />
       {!isSyncPage && isOfflineFirst && isLoggedIn && <SyncButton />}
-      {isDesktop && (
+      {showHamburger && (
         <>
           <IconButton
             onClick={toggleUserMenu}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import { TopProgressBar } from '../../../components';
 import { ROUTES } from '../../../constants';
@@ -17,10 +17,11 @@ export const MobileSurveyHeader = () => {
   const { screenNumber: screenNumberParam } = useParams();
   const { numberOfScreens, openCancelConfirmation, screenNumber } = useSurveyForm();
   const { onStepPrevious } = useOutletContext<SurveyLayoutContextT>();
+  const navigate = useNavigate();
 
   const handleBack = () => {
     if (screenNumber === 1) {
-      openCancelConfirmation({ confirmPath: -1 });
+      openCancelConfirmation(() => navigate(-1));
     } else {
       onStepPrevious();
     }
@@ -30,7 +31,7 @@ export const MobileSurveyHeader = () => {
     <>
       <StickyMobileHeader
         onBack={handleBack}
-        onClose={() => openCancelConfirmation({ confirmPath: ROUTES.HOME })}
+        onClose={() => openCancelConfirmation(() => navigate(ROUTES.HOME))}
       >
         <SurveyDisplayName />
       </StickyMobileHeader>
