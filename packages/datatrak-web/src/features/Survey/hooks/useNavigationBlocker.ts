@@ -43,6 +43,9 @@ export function useNavigationBlocker({ active, onBlock, shouldBlock }: Navigatio
   const activeRef = useRef(active);
   activeRef.current = active;
 
+  // Separate ref so that disable() survives re-renders (activeRef gets overwritten above)
+  const disabledRef = useRef(false);
+
   const shouldBlockRef = useRef(shouldBlock);
   shouldBlockRef.current = shouldBlock;
 
@@ -59,7 +62,7 @@ export function useNavigationBlocker({ active, onBlock, shouldBlock }: Navigatio
     const interceptPushOrReplace =
       (original: Navigator['push'] | Navigator['replace']) =>
       (...args: Parameters<Navigator['push']>) => {
-        if (!activeRef.current) {
+        if (!activeRef.current || disabledRef.current) {
           original.apply(navigator, args);
           return;
         }
@@ -78,7 +81,7 @@ export function useNavigationBlocker({ active, onBlock, shouldBlock }: Navigatio
     navigator.replace = interceptPushOrReplace(originalReplace);
 
     navigator.go = (...args: Parameters<Navigator['go']>) => {
-      if (activeRef.current) {
+      if (activeRef.current && !disabledRef.current) {
         blockedNavigation.current = () => originalGo.apply(navigator, args);
         onBlockRef.current();
       } else {
@@ -105,9 +108,10 @@ export function useNavigationBlocker({ active, onBlock, shouldBlock }: Navigatio
     blockedNavigation.current = null;
   }, []);
 
-  /** Temporarily disable blocking so the next navigation passes through unimpeded. */
+  /** Durably disable blocking so the next navigation passes through even across re-renders. */
   const disable = useCallback(() => {
     activeRef.current = false;
+    disabledRef.current = true;
   }, []);
 
   return { proceed, reset, disable };
