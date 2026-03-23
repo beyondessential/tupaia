@@ -14,6 +14,7 @@ export const CancelSurveyConfirmationToken = () => {
   const { saveAsDraft } = useSaveAsDraft();
 
   const shouldBlock = formState.isDirty && !isSuccessScreen;
+  console.log('shouldBlock', shouldBlock);
 
   useBeforeUnload(shouldBlock);
 

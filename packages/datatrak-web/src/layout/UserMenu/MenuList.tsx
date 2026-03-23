@@ -1,6 +1,6 @@
 import { Link, ListItem, Typography } from '@material-ui/core';
 import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
-import React, { type ComponentType, type ReactNode, useRef } from 'react';
+import React, { type ComponentType, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
@@ -9,7 +9,6 @@ import { Button } from '@tupaia/ui-components';
 import { useCurrentUserContext } from '../../api';
 import { useIsOfflineFirst } from '../../api/offlineFirst';
 import { type RoutePath, ROUTES } from '../../constants';
-import { useAbandonSurveyGuard } from '../../hooks/useAbandonSurveyGuard';
 import { useLogoutGuard } from '../../hooks/useGuardedLogout';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 
@@ -127,18 +126,9 @@ export const MenuList = ({
   const isOfflineFirst = useIsOfflineFirst();
   const navigate = useNavigate();
 
-  const navigateRef = useRef<() => void>(() => {});
-  const { guardedCallback, confirmationModal: abandonSurveyConfirmationModal } =
-    useAbandonSurveyGuard(() => navigateRef.current());
-  const guardedNavigate = (
-    mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>,
-    path: RoutePath,
-  ) => {
-    navigateRef.current = () => {
-      navigate(path);
-      onCloseMenu?.();
-    };
-    guardedCallback(mouseEvent);
+  const handleNavigate = (path: RoutePath) => {
+    navigate(path);
+    onCloseMenu?.();
   };
 
   const { guardedLogout, confirmationModal: logoutConfirmationModal } = useLogoutGuard();
@@ -146,13 +136,13 @@ export const MenuList = ({
   const allItems: MenuItem[] = [
     {
       label: 'Account settings',
-      onClick: mouseEvent => guardedNavigate(mouseEvent, ROUTES.ACCOUNT_SETTINGS),
+      onClick: () => handleNavigate(ROUTES.ACCOUNT_SETTINGS),
       hidden: !isLoggedIn || !hasProjectSelected,
       icon: chevronRight,
     },
     {
       label: 'Reports',
-      onClick: mouseEvent => guardedNavigate(mouseEvent, ROUTES.REPORTS),
+      onClick: () => handleNavigate(ROUTES.REPORTS),
       hidden: !isLoggedIn || !hasAdminPanelAccess,
       icon: chevronRight,
     },
@@ -202,7 +192,6 @@ export const MenuList = ({
         {isOfflineFirst && appVersionText}
       </Menu>
       {logoutConfirmationModal}
-      {abandonSurveyConfirmationModal}
     </>
   );
 };
