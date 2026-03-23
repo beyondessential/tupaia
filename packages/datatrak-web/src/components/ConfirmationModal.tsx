@@ -36,6 +36,7 @@ const ModalButton = styled(Button)`
   &.MuiButtonBase-root.MuiButton-root {
     flex: 1;
     margin: 0;
+    white-space: nowrap;
   }
 `;
 
@@ -43,6 +44,7 @@ export interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: React.MouseEventHandler<HTMLElement>;
+  onCancel?: React.MouseEventHandler<HTMLElement>;
   heading?: NonNullable<React.ReactNode>;
   description?: React.ReactNode;
   confirmLabel?: React.ReactNode;
@@ -53,9 +55,10 @@ export const ConfirmationModal = ({
   isOpen,
   onClose,
   onConfirm,
+  onCancel,
   heading = 'Survey in progress',
-  description = 'If you exit, you will lose the progress you’ve made on the current survey',
-  confirmLabel = 'Exit survey',
+  description = "If you exit, you will lose the progress you've made on the current survey. Would you like to save as a draft or exit without saving?",
+  confirmLabel = 'Save draft',
   cancelLabel = 'Continue survey',
 }: ConfirmationModalProps) => {
   return (
@@ -64,7 +67,7 @@ export const ConfirmationModal = ({
         <Heading>{heading}</Heading>
         <Typography align="center">{description}</Typography>
         <ButtonWrapper>
-          <ModalButton onClick={onClose} variant="outlined">
+          <ModalButton onClick={onCancel ?? onClose} variant="outlined">
             {cancelLabel}
           </ModalButton>
           <ModalButton onClick={onConfirm}>{confirmLabel}</ModalButton>

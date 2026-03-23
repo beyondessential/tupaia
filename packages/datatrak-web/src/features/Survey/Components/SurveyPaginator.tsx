@@ -1,9 +1,10 @@
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import React, { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Button } from '../../../components';
+import { ROUTES } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
 import { SaveAndExitModal } from './SaveAndExitModal';
@@ -48,8 +49,9 @@ type SurveyLayoutContextT = {
 };
 
 export const SurveyPaginator = () => {
-  const { isLast, isResubmit, isReviewScreen, openCancelConfirmation } = useSurveyForm();
+  const { isLast, isResubmit, isReviewScreen } = useSurveyForm();
   const { isLoading, onStepPrevious, hasBackButton } = useOutletContext<SurveyLayoutContextT>();
+  const navigate = useNavigate();
   const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft();
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
@@ -74,7 +76,7 @@ export const SurveyPaginator = () => {
         </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button onClick={openCancelConfirmation} variant="outlined" disabled={isDisabled}>
+        <Button onClick={() => navigate(ROUTES.HOME)} variant="outlined" disabled={isDisabled}>
           Cancel
         </Button>
         <Button type="submit" disabled={isDisabled}>
