@@ -1,31 +1,43 @@
 import React, { useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 
 import { ConfirmationModal } from '../../../components';
 import { useBeforeUnload } from '../../../utils';
+import { SurveyParams } from '../../../types';
 import { useSurveyForm } from '../SurveyContext';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
 import { useNavigationBlocker } from '../hooks/useNavigationBlocker';
 
 export const CancelSurveyConfirmationToken = () => {
   const { isSuccessScreen } = useSurveyForm();
+  const { countryCode, surveyCode } = useParams<SurveyParams>();
 
   const { formState } = useFormContext();
   const { saveAsDraft } = useSaveAsDraft();
 
-  const shouldBlock = formState.isDirty && !isSuccessScreen;
-  console.log('shouldBlock', shouldBlock);
+  const isActive = formState.isDirty && !isSuccessScreen;
 
-  useBeforeUnload(shouldBlock);
+  useBeforeUnload(isActive);
 
   const [isOpen, setIsOpen] = useState(false);
 
   const handleBlock = () => {
-    console.log('handle block');
     setIsOpen(true);
   };
 
-  const { proceed, reset, disable } = useNavigationBlocker(shouldBlock, handleBlock);
+  // Allow navigation within the current survey (e.g. next/back between screens)
+  const surveyBasePath = `/survey/${countryCode}/${surveyCode}`;
+  const shouldBlock = useCallback(
+    (pathname: string) => !pathname.startsWith(surveyBasePath),
+    [surveyBasePath],
+  );
+
+  const { proceed, reset, disable } = useNavigationBlocker({
+    active: isActive,
+    onBlock: handleBlock,
+    shouldBlock,
+  });
 
   const handleClose = () => {
     setIsOpen(false);

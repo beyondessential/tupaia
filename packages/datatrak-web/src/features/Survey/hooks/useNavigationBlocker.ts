@@ -1,17 +1,38 @@
 import { useContext, useEffect, useCallback, useRef } from 'react';
 import { UNSAFE_NavigationContext } from 'react-router-dom';
-import type { History } from 'history';
+import type { History, To } from 'history';
 
 type Navigator = Pick<History, 'go' | 'push' | 'replace' | 'createHref'>;
 
 /**
+ * Extract the pathname string from a history `To` value (string or partial Path object).
+ */
+function getPathname(to: To): string | undefined {
+  if (typeof to === 'string') return to;
+  return to.pathname ?? undefined;
+}
+
+export interface NavigationBlockerOptions {
+  /** Whether the blocker is active at all. */
+  active: boolean;
+  /** Called when a navigation is blocked. */
+  onBlock: () => void;
+  /**
+   * Optional predicate called with the destination pathname.
+   * Return `true` to block, `false` to allow. Defaults to blocking everything.
+   * Not called for `go()` (browser back/forward) — those are always blocked when active.
+   */
+  shouldBlock?: (pathname: string) => boolean;
+}
+
+/**
  * Intercepts in-app navigation (push, replace, go) via UNSAFE_NavigationContext.
- * When `active` is true and a navigation attempt occurs, it calls `onBlock` instead
- * of navigating. Call the returned `proceed` function to perform the blocked navigation.
+ * When active and `shouldBlock` returns true, calls `onBlock` instead of navigating.
+ * Call the returned `proceed` function to perform the blocked navigation.
  *
  * This is a workaround for react-router v6.3 which doesn't expose useBlocker.
  */
-export function useNavigationBlocker(active: boolean, onBlock: () => void) {
+export function useNavigationBlocker({ active, onBlock, shouldBlock }: NavigationBlockerOptions) {
   const { navigator } = useContext(UNSAFE_NavigationContext);
 
   const blockedNavigation = useRef<(() => void) | null>(null);
@@ -21,6 +42,9 @@ export function useNavigationBlocker(active: boolean, onBlock: () => void) {
 
   const activeRef = useRef(active);
   activeRef.current = active;
+
+  const shouldBlockRef = useRef(shouldBlock);
+  shouldBlockRef.current = shouldBlock;
 
   useEffect(() => {
     if (!active) {
@@ -32,23 +56,26 @@ export function useNavigationBlocker(active: boolean, onBlock: () => void) {
     const originalReplace = navigator.replace;
     const originalGo = navigator.go;
 
-    navigator.push = (...args: Parameters<Navigator['push']>) => {
-      if (activeRef.current) {
-        blockedNavigation.current = () => originalPush.apply(navigator, args);
-        onBlockRef.current();
-      } else {
-        originalPush.apply(navigator, args);
-      }
-    };
+    const interceptPushOrReplace =
+      (original: Navigator['push'] | Navigator['replace']) =>
+      (...args: Parameters<Navigator['push']>) => {
+        if (!activeRef.current) {
+          original.apply(navigator, args);
+          return;
+        }
 
-    navigator.replace = (...args: Parameters<Navigator['replace']>) => {
-      if (activeRef.current) {
-        blockedNavigation.current = () => originalReplace.apply(navigator, args);
+        const pathname = getPathname(args[0]);
+        if (pathname && shouldBlockRef.current && !shouldBlockRef.current(pathname)) {
+          original.apply(navigator, args);
+          return;
+        }
+
+        blockedNavigation.current = () => original.apply(navigator, args);
         onBlockRef.current();
-      } else {
-        originalReplace.apply(navigator, args);
-      }
-    };
+      };
+
+    navigator.push = interceptPushOrReplace(originalPush);
+    navigator.replace = interceptPushOrReplace(originalReplace);
 
     navigator.go = (...args: Parameters<Navigator['go']>) => {
       if (activeRef.current) {
