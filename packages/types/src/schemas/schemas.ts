@@ -103089,6 +103089,9 @@ export const DraftSurveyResponseSchema = {
 		"countryCode": {
 			"type": "string"
 		},
+		"countryName": {
+			"type": "string"
+		},
 		"entityId": {
 			"type": "string"
 		},
@@ -103114,6 +103117,7 @@ export const DraftSurveyResponseSchema = {
 	"additionalProperties": false,
 	"required": [
 		"countryCode",
+		"countryName",
 		"entityId",
 		"entityName",
 		"formData",
