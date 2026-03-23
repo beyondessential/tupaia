@@ -9,7 +9,6 @@ import { Button } from '@tupaia/ui-components';
 import { useCurrentUserContext } from '../../api';
 import { useIsOfflineFirst } from '../../api/offlineFirst';
 import { type RoutePath, ROUTES } from '../../constants';
-import { useLogoutGuard } from '../../hooks/useGuardedLogout';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
@@ -131,8 +130,6 @@ export const MenuList = ({
     onCloseMenu?.();
   };
 
-  const { guardedLogout, confirmationModal: logoutConfirmationModal } = useLogoutGuard();
-
   const allItems: MenuItem[] = [
     {
       label: 'Account settings',
@@ -162,7 +159,10 @@ export const MenuList = ({
     },
     {
       label: 'Log out',
-      onClick: guardedLogout,
+      // Navigate to the /logout route rather than calling the logout API
+      // directly, so the survey navigation blocker can intercept and confirm
+      // before any auth state is cleared.
+      onClick: () => handleNavigate(ROUTES.LOGOUT),
       hidden: !isLoggedIn,
       icon: logoutIcon,
     },
@@ -191,7 +191,6 @@ export const MenuList = ({
           ))}
         {isOfflineFirst && appVersionText}
       </Menu>
-      {logoutConfirmationModal}
     </>
   );
 };

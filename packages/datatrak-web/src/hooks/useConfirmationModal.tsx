@@ -8,6 +8,8 @@ interface UseConfirmationModalOptions {
     ConfirmationModalProps,
     'heading' | 'description' | 'confirmLabel' | 'cancelLabel'
   >;
+  /** Called when the modal is dismissed without confirming (close or cancel). */
+  onClose?: () => void;
 }
 
 interface UseConfirmationModalResult {
@@ -21,7 +23,7 @@ export function useConfirmationModal(
   callback: React.MouseEventHandler<HTMLElement>,
   options: UseConfirmationModalOptions = {},
 ): UseConfirmationModalResult {
-  const { bypass = false, confirmationModalProps } = options;
+  const { bypass = false, confirmationModalProps, onClose: onCloseOption } = options;
 
   const callbackRef = useRef(callback);
   callbackRef.current = callback;
@@ -45,11 +47,16 @@ export function useConfirmationModal(
     callbackRef.current(mouseEvent);
   }, []);
 
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+    onCloseOption?.();
+  }, [onCloseOption]);
+
   const confirmationModal = (
     <ConfirmationModal
       {...confirmationModalProps}
       isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
+      onClose={handleClose}
       onConfirm={onConfirm}
     />
   );
