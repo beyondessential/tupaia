@@ -35,16 +35,22 @@ const createOptions = async (models, optionsCreated) => {
   /** @type {OptionRecord[]} */
   const options = [];
   for (const optionObject of optionsCreated) {
-    const { value, option_set_id: optionSetId } = optionObject;
+    const { value, option_set_id: optionSetId, id: _id, ...restOptionFields } = optionObject;
 
     /** @type {number} */
     const maxSortOrder = (await models.option.getLargestSortOrder(optionSetId)) ?? 0;
 
+    // Exclude `id` from the fields passed to updateOrCreate. The conflict target is
+    // (option_set_id, value), so when a matching option already exists the ON CONFLICT
+    // DO UPDATE fires. Including `id` in the update data would change the existing
+    // option's primary key via UPDATE (not DELETE+INSERT), which means the BEFORE DELETE
+    // trigger on the option table never fires and the old sync_lookup entry is orphaned
+    // with is_deleted = FALSE, causing duplicates.
     /** @type {OptionRecord} */
     const optionRecord = await models.option.updateOrCreate(
       { option_set_id: optionSetId, value },
       {
-        ...optionObject,
+        ...restOptionFields,
         sort_order: maxSortOrder + 1,
         attributes: {},
       },
