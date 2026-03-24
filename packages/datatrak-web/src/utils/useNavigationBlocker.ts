@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigationBlockerContext } from './NavigationBlockerProvider';
 
 export interface NavigationBlockerOptions {
@@ -9,7 +9,8 @@ export interface NavigationBlockerOptions {
   /**
    * Optional predicate called with the destination pathname.
    * Return `true` to block, `false` to allow. Defaults to blocking everything.
-   * Not called for `go()` (browser back/forward) — those are always blocked when active.
+   * For `go()` (browser back/forward), blockers with a `shouldBlock` predicate are
+   * skipped since the target pathname can't be resolved from a numeric delta.
    */
   shouldBlock?: (pathname: string) => boolean;
 }
@@ -58,18 +59,18 @@ export function useNavigationBlocker({ active, onBlock, shouldBlock }: Navigatio
     };
   }, [active, registerBlocker]);
 
-  const proceed = useCallback(() => {
+  const proceed = () => {
     blockerRef.current?.proceed();
-  }, []);
+  };
 
-  const reset = useCallback(() => {
+  const reset = () => {
     blockerRef.current?.reset();
-  }, []);
+  };
 
   /** Durably disable blocking so the next navigation passes through. */
-  const disable = useCallback(() => {
+  const disable = () => {
     disableAll();
-  }, [disableAll]);
+  };
 
   return { proceed, reset, disable };
 }

@@ -84,14 +84,17 @@ export const NavigationBlockerProvider = ({ children }: { children: React.ReactN
     navigator.replace = interceptPushOrReplace(originalReplace);
 
     navigator.go = (...args: Parameters<Navigator['go']>) => {
-      // go() (browser back/forward) is always blocked if any blocker is active
+      // go() receives a numeric delta so we can't resolve the target pathname.
+      // Only blockers without a shouldBlock predicate (i.e. block-everything) apply here.
+      // Blockers with a shouldBlock predicate are skipped since we can't evaluate them.
       const blockers = Array.from(blockersRef.current.values());
       for (const blocker of blockers) {
-        if (blocker.active) {
-          blocker.blockedNavigation = () => originalGo.apply(navigator, args);
-          blocker.onBlock();
-          return;
-        }
+        if (!blocker.active) continue;
+        if (blocker.shouldBlock) continue; // Can't evaluate without a pathname — skip
+
+        blocker.blockedNavigation = () => originalGo.apply(navigator, args);
+        blocker.onBlock();
+        return;
       }
 
       originalGo.apply(navigator, args);
