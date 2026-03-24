@@ -5,7 +5,7 @@ import { Button } from './Button';
 import { Modal } from './Modal';
 
 const Wrapper = styled.div`
-  max-inline-size: 28rem;
+  max-inline-size: 27rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 1rem 2rem;
   }

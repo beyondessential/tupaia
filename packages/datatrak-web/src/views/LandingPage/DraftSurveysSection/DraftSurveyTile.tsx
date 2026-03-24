@@ -20,6 +20,7 @@ const Wrapper = styled.div<WrapperProps>`
   display: flex;
   align-items: stretch;
   width: 100%;
+  border-radius: 0.625rem;
 
   > span {
     flex: 1;
@@ -27,6 +28,11 @@ const Wrapper = styled.div<WrapperProps>`
     > a.MuiButtonBase-root {
       width: 100%;
     }
+  }
+  background-color: ${({ theme }) => theme.palette.background.paper};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.primaryHover};
   }
 
   ${({ $variant }) =>
@@ -40,14 +46,13 @@ const Wrapper = styled.div<WrapperProps>`
 const StyledTile = styled(Tile)<WrapperProps>`
   flex: 1;
   min-width: 0;
-  border-radius: ${({ $variant }) =>
-    $variant === 'desktop' ? '0.625rem 0 0 0.625rem' : '0.625rem'};
+  background: none;
+  transition: none;
 `;
 
 const MenuContainer = styled.div`
   display: flex;
   align-items: center;
-  background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0 0.625rem 0.625rem 0;
 `;
 
