@@ -38,7 +38,7 @@ const GridScroll = styled.ul.attrs({
 
 const ScrollContainer = styled(InfiniteScroll)`
   grid-column: 1 / -1;
-  max-block-size: 13.5rem;
+  max-block-size: 9.5rem;
 `;
 
 interface DraftSurveysSectionProps {

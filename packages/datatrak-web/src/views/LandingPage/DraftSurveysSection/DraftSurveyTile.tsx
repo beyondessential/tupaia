@@ -6,7 +6,6 @@ import { DatatrakWebSurveyResponseDraftsRequest } from '@tupaia/types';
 import { useDeleteSurveyResponseDraft } from '../../../api';
 import { Tile } from '../../../components';
 import { Typography } from '@material-ui/core';
-import { displayDate } from '../../../utils';
 import { DeleteDraftModal } from './DeleteDraftModal';
 
 type DraftSurvey = DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse;
@@ -107,7 +106,20 @@ interface DraftSurveyTileProps extends DraftSurvey {
 const MetadataText = styled(Typography)`
   font-size: 0.75rem;
   color: ${({ theme }) => theme.palette.text.secondary};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
+
+const formatDraftDate = (date?: Date | string | null) => {
+  if (!date) return '';
+  const d = new Date(date);
+  return d.toLocaleDateString(undefined, {
+    day: 'numeric',
+    month: 'numeric',
+    year: '2-digit',
+  });
+};
 
 export const DraftSurveyTile = ({
   id,
@@ -120,23 +132,24 @@ export const DraftSurveyTile = ({
   updatedAt,
   variant = 'desktop',
 }: DraftSurveyTileProps) => {
-  const entityText = entityName ?? countryName ?? countryCode;
-  const formattedDate = displayDate(updatedAt);
-  const metadataText = [formattedDate, countryName, entityName].filter(Boolean).join(' | ');
+  const formattedDate = formatDraftDate(updatedAt);
+  const metadataText = [formattedDate, entityName, countryName].filter(Boolean).join(' | ');
+
+  const headingText = surveyName ? `[draft] ${surveyName}` : 'Draft survey';
+  const showMenu = variant === 'desktop';
+
   const tooltip = (
     <>
       <TooltipText>{surveyName}</TooltipText>
-      <TooltipText>{entityText}</TooltipText>
+      <TooltipText>{entityName ?? countryName}</TooltipText>
     </>
   );
-
-  const showMenu = variant === 'desktop';
 
   return (
     <Wrapper $variant={variant}>
       <StyledTile
         $variant={variant}
-        heading={surveyName ? `[draft] ${surveyName}` : 'Draft survey'}
+        heading={headingText}
         leadingIcons={<StyledSurveyIcon />}
         tooltip={tooltip}
         to={`/survey/${countryCode}/${surveyCode}/${screenNumber}?draftId=${id}`}
