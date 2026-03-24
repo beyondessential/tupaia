@@ -17,6 +17,7 @@ import {
   ContextualMutationFunctionContext,
   useDatabaseMutation,
 } from '../queries/useDatabaseMutation';
+import { DatatrakWebModelRegistry } from '../../types';
 
 type Answer = string | number | boolean | null | undefined;
 
@@ -55,7 +56,22 @@ export const useSurveyResponseData = (): ResponseData => {
 interface SurveyResponseMutationFunctionContext
   extends ContextualMutationFunctionContext<{
     answers?: AnswersT;
-  }> {}
+  }> { }
+
+const createEntityParentChildRelation = async (transactingModels: DatatrakWebModelRegistry, entityHierarchyId: string, entitiesUpserted: Entity[]) => {
+  const relations = entitiesUpserted
+    .filter(entity => Boolean(entity.parent_id))
+    .map(entity => ({
+      entity_hierarchy_id: entityHierarchyId,
+      parent_id: entity.parent_id as string,
+      child_id: entity.id,
+    }));
+  if (relations.length > 0) {
+    await transactingModels.entityParentChildRelation.createMany(relations, {
+      onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
+    });
+  }
+}
 
 export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
@@ -100,18 +116,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         const entityHierarchyId = user.project?.entityHierarchyId;
         const entitiesUpserted = processedResponse.entities_upserted ?? [];
         if (entityHierarchyId && entitiesUpserted.length > 0) {
-          const relations = entitiesUpserted
-            .filter(entity => Boolean(entity.parent_id))
-            .map(entity => ({
-              entity_hierarchy_id: entityHierarchyId,
-              parent_id: entity.parent_id as string,
-              child_id: entity.id,
-            }));
-          if (relations.length > 0) {
-            await transactingModels.entityParentChildRelation.createMany(relations, {
-              onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
-            });
-          }
+          await createEntityParentChildRelation(transactingModels, entityHierarchyId, entitiesUpserted);
         }
 
         await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
