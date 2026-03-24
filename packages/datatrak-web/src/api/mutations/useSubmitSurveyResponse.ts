@@ -93,6 +93,27 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
         // Mirroring central-server logic
         await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
+
+        // On central, EntityHierarchyCacher rebuilds entity_parent_child_relation when an entity
+        // changes. That change handler doesn't run locally, so insert the parent-child link here
+        // so the new entity is immediately visible in descendant queries.
+        const entityHierarchyId = user.project?.entityHierarchyId;
+        const entitiesUpserted = processedResponse.entities_upserted ?? [];
+        if (entityHierarchyId && entitiesUpserted.length > 0) {
+          const relations = entitiesUpserted
+            .filter(entity => Boolean(entity.parent_id))
+            .map(entity => ({
+              entity_hierarchy_id: entityHierarchyId,
+              parent_id: entity.parent_id as string,
+              child_id: entity.id,
+            }));
+          if (relations.length > 0) {
+            await transactingModels.entityParentChildRelation.createMany(relations, {
+              onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
+            });
+          }
+        }
+
         await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
         const idsCreated = await SurveyResponseModel.saveResponsesToDatabase(
           transactingModels,
