@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useLogout } from '../api/mutations/useLogout';
 import { useHasUnsyncedDataQuery } from '../api/queries';
 import { ConfirmationModal, ConfirmationModalProps } from '../components/ConfirmationModal';
@@ -20,23 +20,20 @@ export function useLogoutGuard({ onClose }: UseLogoutGuardOptions = {}) {
   const { data: hasUnsyncedData } = useHasUnsyncedDataQuery();
   const { mutate: logOut } = useLogout();
 
-  const callbackRef = useRef(() => void logOut());
-  callbackRef.current = () => void logOut();
-
   const [isOpen, setIsOpen] = useState(false);
 
-  const guardedLogout = async (mouseEvent: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const guardedLogout = (e?: React.MouseEvent<HTMLElement>) => {
     if (!hasUnsyncedData) {
-      await callbackRef.current();
+      logOut();
       return;
     }
-    mouseEvent.preventDefault();
+    e?.preventDefault();
     setIsOpen(true);
   };
 
   const onConfirm = () => {
     setIsOpen(false);
-    callbackRef.current();
+    logOut();
   };
 
   const handleClose = () => {
