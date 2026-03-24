@@ -63,6 +63,7 @@ export const CancelSurveyConfirmationToken = () => {
       onCancel={handleCancel}
       onConfirm={handleSaveDraft}
       heading="Survey in progress"
+      description="If you exit, you will lose the progress you've made on the current survey. Would you like to save as a draft or exit without saving?"
       confirmLabel="Save draft"
       cancelLabel="Exit without saving"
     />
