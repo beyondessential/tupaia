@@ -7,7 +7,7 @@ import { useBeforeUnload } from '../../../utils';
 import { SurveyParams } from '../../../types';
 import { useSurveyForm } from '../SurveyContext';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
-import { useNavigationBlocker } from '../hooks/useNavigationBlocker';
+import { useNavigationBlocker } from '../../../utils';
 
 export const CancelSurveyConfirmationToken = () => {
   const { isSuccessScreen } = useSurveyForm();
