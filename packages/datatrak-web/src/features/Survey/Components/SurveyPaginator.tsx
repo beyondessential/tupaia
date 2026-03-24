@@ -2,10 +2,10 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import React, { useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
-
 import { Button } from '../../../components';
 import { ROUTES } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
+import { useNavigationBlockerContext } from '../../../utils';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
 import { SaveAndExitModal } from './SaveAndExitModal';
 
@@ -52,8 +52,14 @@ export const SurveyPaginator = () => {
   const { isLast, isResubmit, isReviewScreen } = useSurveyForm();
   const { isLoading, onStepPrevious, hasBackButton } = useOutletContext<SurveyLayoutContextT>();
   const navigate = useNavigate();
-  const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft();
+  const { disableAll: disableNavigationBlockers } = useNavigationBlockerContext();
+  const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft(() => navigate('/'));
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+
+  const handleSaveAndExit = async () => {
+    disableNavigationBlockers();
+    await saveAsDraft();
+  };
 
   const getNextButtonText = () => {
     if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
@@ -86,7 +92,7 @@ export const SurveyPaginator = () => {
       <SaveAndExitModal
         isOpen={isSaveModalOpen}
         onClose={() => setIsSaveModalOpen(false)}
-        onSave={saveAsDraft}
+        onSave={handleSaveAndExit}
         isLoading={isSavingDraft}
       />
     </FormActions>

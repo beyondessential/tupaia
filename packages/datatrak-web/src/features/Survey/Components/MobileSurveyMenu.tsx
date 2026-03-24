@@ -1,5 +1,6 @@
 import { IconButton } from '@material-ui/core';
 import React, { HTMLAttributes, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FormatListBulleted, KeyboardArrowRight } from '@material-ui/icons';
 
@@ -7,6 +8,7 @@ import { ShareIcon, Button as UIButton } from '../../../components';
 import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useShare } from '../utils/useShare';
+import { useNavigationBlockerContext } from '../../../utils';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
 import { SaveAndExitModal } from './SaveAndExitModal';
 
@@ -60,9 +62,16 @@ const SaveButton = styled(SubmitButton).attrs({
 
 export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
   const { toggleSideMenu, isLast, isResubmit, isReviewScreen } = useSurveyForm();
+  const navigate = useNavigate();
   const share = useShare();
-  const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft();
+  const { disableAll: disableNavigationBlockers } = useNavigationBlockerContext();
+  const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft(() => navigate('/'));
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+
+  const handleSaveAndExit = async () => {
+    disableNavigationBlockers();
+    await saveAsDraft();
+  };
 
   const getNextButtonText = () => {
     if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
@@ -87,7 +96,7 @@ export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
       <SaveAndExitModal
         isOpen={isSaveModalOpen}
         onClose={() => setIsSaveModalOpen(false)}
-        onSave={saveAsDraft}
+        onSave={handleSaveAndExit}
         isLoading={isSavingDraft}
       />
     </Container>

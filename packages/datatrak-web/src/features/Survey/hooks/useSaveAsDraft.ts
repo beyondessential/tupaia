@@ -1,15 +1,14 @@
 import { useFormContext } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSaveSurveyResponseDraft, useUpdateSurveyResponseDraft, useSurvey } from '../../../api';
 import { useSurveyForm } from '../SurveyContext';
 
-export const useSaveAsDraft = () => {
+export const useSaveAsDraft = (onSuccess?: () => void) => {
   const { formData, surveyStartTime, screenNumber, draftId, primaryEntityQuestion } =
     useSurveyForm();
   const { getValues } = useFormContext();
   const { surveyCode, countryCode } = useParams();
   const { data: survey } = useSurvey(surveyCode);
-  const navigate = useNavigate();
 
   const saveDraft = useSaveSurveyResponseDraft();
   const updateDraft = useUpdateSurveyResponseDraft(draftId);
@@ -46,7 +45,9 @@ export const useSaveAsDraft = () => {
         startTime: surveyStartTime,
       });
     }
-    navigate('/');
+    if (onSuccess) {
+      onSuccess();
+    }
   };
 
   return { saveAsDraft, isLoading };

@@ -11,6 +11,7 @@ export {
 export { errorToast, infoToast, successToast } from './toast';
 export { useBeforeUnload } from './useBeforeUnload';
 export { useNavigationBlocker } from './useNavigationBlocker';
+export { NavigationBlockerProvider, useNavigationBlockerContext } from './NavigationBlockerProvider';
 export { useHasVideoInput } from './useHasVideoInput';
 export { useFromLocation } from './useLocationState';
 export { formatEntityForResponse, formatEntitiesForResponse } from './formatEntity';

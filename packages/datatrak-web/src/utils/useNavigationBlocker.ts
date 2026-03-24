@@ -1,6 +1,7 @@
 import { useContext, useEffect, useCallback, useRef } from 'react';
 import { UNSAFE_NavigationContext } from 'react-router-dom';
 import type { History, To } from 'history';
+import { useNavigationBlockerContext } from './NavigationBlockerProvider';
 
 type Navigator = Pick<History, 'go' | 'push' | 'replace' | 'createHref'>;
 
@@ -113,6 +114,13 @@ export function useNavigationBlocker({ active, onBlock, shouldBlock }: Navigatio
     activeRef.current = false;
     disabledRef.current = true;
   }, []);
+
+  // Auto-register with the app-level NavigationBlockerContext
+  const { register } = useNavigationBlockerContext();
+  useEffect(() => {
+    if (!active) return;
+    return register(disable);
+  }, [active, register, disable]);
 
   return { proceed, reset, disable };
 }

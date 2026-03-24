@@ -33,7 +33,7 @@ export const CancelSurveyConfirmationToken = () => {
     [surveyBasePath],
   );
 
-  const { proceed, reset, disable } = useNavigationBlocker({
+  const { proceed, reset } = useNavigationBlocker({
     active: isActive,
     onBlock: handleBlock,
     shouldBlock,
@@ -51,10 +51,10 @@ export const CancelSurveyConfirmationToken = () => {
 
   const handleSaveDraft = useCallback(async () => {
     setIsOpen(false);
-    // Disable the blocker so saveAsDraft's internal navigate('/') passes through
-    disable();
     await saveAsDraft();
-  }, [disable, saveAsDraft]);
+    // Navigate to the originally blocked destination (e.g. account settings, logout)
+    proceed();
+  }, [saveAsDraft, proceed]);
 
   return (
     <ConfirmationModal
