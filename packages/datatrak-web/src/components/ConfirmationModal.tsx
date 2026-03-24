@@ -45,8 +45,8 @@ export interface ConfirmationModalProps {
   onClose: () => void;
   onConfirm: React.MouseEventHandler<HTMLElement>;
   onCancel?: React.MouseEventHandler<HTMLElement>;
-  heading?: NonNullable<React.ReactNode>;
-  description?: React.ReactNode;
+  heading: NonNullable<React.ReactNode>;
+  description: React.ReactNode;
   confirmLabel?: React.ReactNode;
   cancelLabel?: React.ReactNode;
 }

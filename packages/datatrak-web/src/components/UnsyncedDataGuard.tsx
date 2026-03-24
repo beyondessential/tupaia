@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
 import { useHasUnsyncedDataQuery } from '../api/queries';
 import { ROUTES } from '../constants';
 import { useNavigationBlocker } from '../utils';
@@ -13,7 +11,6 @@ import { ConfirmationModal } from './ConfirmationModal';
  */
 export const UnsyncedDataGuard = () => {
   const { data: hasUnsyncedData } = useHasUnsyncedDataQuery();
-  const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,7 +23,6 @@ export const UnsyncedDataGuard = () => {
   const handleClose = () => {
     setIsOpen(false);
     reset();
-    navigate(ROUTES.HOME);
   };
 
   const handleConfirm = () => {

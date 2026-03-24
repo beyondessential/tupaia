@@ -1,17 +1,5 @@
-import { useContext, useEffect, useCallback, useRef } from 'react';
-import { UNSAFE_NavigationContext } from 'react-router-dom';
-import type { History, To } from 'history';
+import { useEffect, useCallback, useRef } from 'react';
 import { useNavigationBlockerContext } from './NavigationBlockerProvider';
-
-type Navigator = Pick<History, 'go' | 'push' | 'replace' | 'createHref'>;
-
-/**
- * Extract the pathname string from a history `To` value (string or partial Path object).
- */
-function getPathname(to: To): string | undefined {
-  if (typeof to === 'string') return to;
-  return to.pathname ?? undefined;
-}
 
 export interface NavigationBlockerOptions {
   /** Whether the blocker is active at all. */
@@ -27,100 +15,61 @@ export interface NavigationBlockerOptions {
 }
 
 /**
- * Intercepts in-app navigation (push, replace, go) via UNSAFE_NavigationContext.
+ * Intercepts in-app navigation (push, replace, go) via centralized NavigationBlockerProvider.
  * When active and `shouldBlock` returns true, calls `onBlock` instead of navigating.
  * Call the returned `proceed` function to perform the blocked navigation.
  *
  * This is a workaround for react-router v6.3 which doesn't expose useBlocker.
+ * TODO: replace with useBlocker() on react-router upgrade
  */
 export function useNavigationBlocker({ active, onBlock, shouldBlock }: NavigationBlockerOptions) {
-  const { navigator } = useContext(UNSAFE_NavigationContext);
-
-  const blockedNavigation = useRef<(() => void) | null>(null);
+  const { registerBlocker, disableAll } = useNavigationBlockerContext();
 
   const onBlockRef = useRef(onBlock);
   onBlockRef.current = onBlock;
 
-  const activeRef = useRef(active);
-  activeRef.current = active;
-
-  // Separate ref so that disable() survives re-renders (activeRef gets overwritten above)
-  const disabledRef = useRef(false);
-
   const shouldBlockRef = useRef(shouldBlock);
   shouldBlockRef.current = shouldBlock;
 
+  const blockerRef = useRef<{
+    unregister: () => void;
+    proceed: () => void;
+    reset: () => void;
+  } | null>(null);
+
   useEffect(() => {
     if (!active) {
-      blockedNavigation.current = null;
+      blockerRef.current?.unregister();
+      blockerRef.current = null;
       return;
     }
 
-    const originalPush = navigator.push;
-    const originalReplace = navigator.replace;
-    const originalGo = navigator.go;
+    // Register with centralized provider
+    const blocker = registerBlocker({
+      active: true,
+      onBlock: () => onBlockRef.current(),
+      shouldBlock: shouldBlockRef.current,
+    });
 
-    const interceptPushOrReplace =
-      (original: Navigator['push'] | Navigator['replace']) =>
-      (...args: Parameters<Navigator['push']>) => {
-        if (!activeRef.current || disabledRef.current) {
-          original.apply(navigator, args);
-          return;
-        }
-
-        const pathname = getPathname(args[0]);
-        if (pathname && shouldBlockRef.current && !shouldBlockRef.current(pathname)) {
-          original.apply(navigator, args);
-          return;
-        }
-
-        blockedNavigation.current = () => original.apply(navigator, args);
-        onBlockRef.current();
-      };
-
-    navigator.push = interceptPushOrReplace(originalPush);
-    navigator.replace = interceptPushOrReplace(originalReplace);
-
-    navigator.go = (...args: Parameters<Navigator['go']>) => {
-      if (activeRef.current && !disabledRef.current) {
-        blockedNavigation.current = () => originalGo.apply(navigator, args);
-        onBlockRef.current();
-      } else {
-        originalGo.apply(navigator, args);
-      }
-    };
+    blockerRef.current = blocker;
 
     return () => {
-      navigator.push = originalPush;
-      navigator.replace = originalReplace;
-      navigator.go = originalGo;
+      blocker.unregister();
     };
-  }, [active, navigator]);
+  }, [active, registerBlocker]);
 
   const proceed = useCallback(() => {
-    const nav = blockedNavigation.current;
-    blockedNavigation.current = null;
-    activeRef.current = false;
-    nav?.();
-    activeRef.current = active;
-  }, [active]);
+    blockerRef.current?.proceed();
+  }, []);
 
   const reset = useCallback(() => {
-    blockedNavigation.current = null;
+    blockerRef.current?.reset();
   }, []);
 
-  /** Durably disable blocking so the next navigation passes through even across re-renders. */
+  /** Durably disable blocking so the next navigation passes through. */
   const disable = useCallback(() => {
-    activeRef.current = false;
-    disabledRef.current = true;
-  }, []);
-
-  // Auto-register with the app-level NavigationBlockerContext
-  const { register } = useNavigationBlockerContext();
-  useEffect(() => {
-    if (!active) return;
-    return register(disable);
-  }, [active, register, disable]);
+    disableAll();
+  }, [disableAll]);
 
   return { proceed, reset, disable };
 }
