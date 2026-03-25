@@ -36,7 +36,7 @@ export const UnsyncedDataGuard = () => {
       onClose={handleClose}
       onConfirm={handleConfirm}
       heading="Unsynced data"
-      description="You are about to log out with unsynced data! Go back to your home page and sync using the top right sync button and sync before logging out"
+      description="You are about to log out with unsynced data! Go back to the home page and sync using the top right sync button and sync before logging out"
       confirmLabel="Log out anyway"
       cancelLabel="Stay logged in"
     />
