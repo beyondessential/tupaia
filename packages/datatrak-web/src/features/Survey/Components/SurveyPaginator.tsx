@@ -1,10 +1,11 @@
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import React, { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
-
 import { Button } from '../../../components';
+import { ROUTES } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
+import { useNavigationBlockerContext } from '../../../utils';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
 import { SaveAndExitModal } from './SaveAndExitModal';
 
@@ -48,10 +49,17 @@ type SurveyLayoutContextT = {
 };
 
 export const SurveyPaginator = () => {
-  const { isLast, isResubmit, isReviewScreen, openCancelConfirmation } = useSurveyForm();
+  const { isLast, isResubmit, isReviewScreen } = useSurveyForm();
   const { isLoading, onStepPrevious, hasBackButton } = useOutletContext<SurveyLayoutContextT>();
-  const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft();
+  const navigate = useNavigate();
+  const { disableAll: disableNavigationBlockers } = useNavigationBlockerContext();
+  const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft(() => navigate('/'));
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+
+  const handleSaveAndExit = async () => {
+    disableNavigationBlockers();
+    await saveAsDraft();
+  };
 
   const getNextButtonText = () => {
     if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
@@ -74,7 +82,7 @@ export const SurveyPaginator = () => {
         </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button onClick={openCancelConfirmation} variant="outlined" disabled={isDisabled}>
+        <Button onClick={() => navigate(ROUTES.HOME)} variant="outlined" disabled={isDisabled}>
           Cancel
         </Button>
         <Button type="submit" disabled={isDisabled}>
@@ -84,7 +92,7 @@ export const SurveyPaginator = () => {
       <SaveAndExitModal
         isOpen={isSaveModalOpen}
         onClose={() => setIsSaveModalOpen(false)}
-        onSave={saveAsDraft}
+        onSave={handleSaveAndExit}
         isLoading={isSavingDraft}
       />
     </FormActions>

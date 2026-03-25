@@ -3,8 +3,6 @@ import { ACTION_TYPES, SurveyFormAction } from './actions';
 
 export interface SurveyFormContextType {
   activeScreen: SurveyScreenComponent[];
-  cancelModalConfirmLink: string;
-  cancelModalOpen: boolean;
   countryCode: string | undefined;
   displayQuestions: SurveyScreenComponent[];
   draftId?: string;
@@ -56,17 +54,6 @@ export const surveyReducer = (
       return {
         ...state,
         surveyStartTime: action.payload as string,
-      };
-    case ACTION_TYPES.OPEN_CANCEL_CONFIRMATION:
-      return {
-        ...state,
-        cancelModalOpen: true,
-        cancelModalConfirmLink: action.payload as string,
-      };
-    case ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION:
-      return {
-        ...state,
-        cancelModalOpen: false,
       };
     default:
       return state;

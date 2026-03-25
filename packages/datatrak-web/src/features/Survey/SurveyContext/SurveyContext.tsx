@@ -7,7 +7,7 @@ import React, {
   useReducer,
   useState,
 } from 'react';
-import { To, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 import {
   Country,
@@ -32,8 +32,6 @@ import {
 
 const defaultContext = {
   activeScreen: [],
-  cancelModalConfirmLink: '/',
-  cancelModalOpen: false,
   countryCode: '',
   displayQuestions: [],
   draftId: undefined,
@@ -245,14 +243,6 @@ export const useSurveyForm = () => {
     return surveyFormContext.formData[questionId];
   };
 
-  const openCancelConfirmation = (options?: { confirmPath?: To | number }) => {
-    dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION, payload: options?.confirmPath ?? '/' });
-  };
-
-  const closeCancelConfirmation = () => {
-    dispatch({ type: ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION });
-  };
-
   return {
     ...surveyFormContext,
     isLast,
@@ -262,7 +252,5 @@ export const useSurveyForm = () => {
     setFormData,
     resetForm,
     getAnswerByQuestionId,
-    openCancelConfirmation,
-    closeCancelConfirmation,
   };
 };
