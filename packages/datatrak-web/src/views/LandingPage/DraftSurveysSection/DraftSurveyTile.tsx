@@ -48,6 +48,15 @@ const StyledTile = styled(Tile)<WrapperProps>`
   min-width: 0;
   background: none;
   transition: none;
+  padding-block: 0.5rem;
+
+  h3.MuiTypography-root {
+    margin-block-end: 0.2rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    min-height: 4.8rem;
+    padding-block: 0;
+  }
 `;
 
 const MenuContainer = styled.div`
@@ -109,11 +118,19 @@ interface DraftSurveyTileProps extends DraftSurvey {
 }
 
 const MetadataText = styled(Typography)`
-  font-size: 0.75rem;
-  color: ${({ theme }) => theme.palette.text.secondary};
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  &.MuiTypography-root {
+    font-size: 0.75rem;
+    line-height: 1.1;
+    color: ${({ theme }) => theme.palette.text.secondary};
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      min-height: calc(0.75rem * 1.1 * 2);
+    }
+  }
 `;
 
 const formatDraftDate = (date?: Date | string | null) => {
@@ -138,7 +155,7 @@ export const DraftSurveyTile = ({
   variant = 'desktop',
 }: DraftSurveyTileProps) => {
   const formattedDate = formatDraftDate(updatedAt);
-  const metadataText = [formattedDate, entityName, countryName].filter(Boolean).join(' | ');
+  const metadataText = [formattedDate, entityName, countryName].filter(Boolean).join('\u00a0| ');
 
   const headingText = surveyName ? `[draft] ${surveyName}` : 'Draft survey';
   const showMenu = variant === 'desktop';
