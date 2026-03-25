@@ -2019,6 +2019,7 @@ export enum EntityTypeEnum {
   'ird_district' = 'ird_district',
   'ird_tehsil' = 'ird_tehsil',
   'ird_village' = 'ird_village',
+  'tamanu_country' = 'tamanu_country',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
