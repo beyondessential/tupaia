@@ -61,6 +61,7 @@ interface ModalProps {
   children?: ReactNode;
   isLoading?: boolean;
   width?: string;
+  disablePortal?: boolean;
 }
 
 export const SmallModal = ({
@@ -72,9 +73,10 @@ export const SmallModal = ({
   children,
   isLoading = false,
   width = '24rem',
+  disablePortal,
 }: ModalProps) => {
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} disablePortal={disablePortal}>
       <Wrapper $width={width}>
         {title && <Heading>{title}</Heading>}
         {children}
