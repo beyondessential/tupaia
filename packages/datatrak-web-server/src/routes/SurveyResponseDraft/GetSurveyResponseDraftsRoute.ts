@@ -21,7 +21,7 @@ export class GetSurveyResponseDraftsRoute extends Route<GetSurveyResponseDraftsR
 
     const { id: userId } = await ctx.services.central.getUser();
 
-    const findConditions: Record<string, any> = { user_id: userId };
+    const findConditions: Record<string, any> = { user_id: userId, is_deleted: false };
 
     // Filter by project if specified: join through survey table
     if (projectId) {

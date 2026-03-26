@@ -1533,6 +1533,7 @@ export interface SurveyResponseDraft {
   'entity_id'?: string | null;
   'form_data': {};
   'id': string;
+  'is_deleted': boolean;
   'screen_number': number;
   'start_time': Date;
   'survey_id': string;
@@ -1544,6 +1545,7 @@ export interface SurveyResponseDraftCreate {
   'country_code'?: string | null;
   'entity_id'?: string | null;
   'form_data'?: {};
+  'is_deleted'?: boolean;
   'screen_number'?: number;
   'start_time': Date;
   'survey_id': string;
@@ -1555,6 +1557,7 @@ export interface SurveyResponseDraftUpdate {
   'entity_id'?: string | null;
   'form_data'?: {};
   'id'?: string;
+  'is_deleted'?: boolean;
   'screen_number'?: number;
   'start_time'?: Date;
   'survey_id'?: string;

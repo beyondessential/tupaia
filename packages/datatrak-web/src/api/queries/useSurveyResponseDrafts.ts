@@ -20,7 +20,7 @@ const localQueryFunction = async ({
   projectId,
 }: DraftsQueryContext): Promise<PageResponse> => {
   const drafts = await models.surveyResponseDraft.find(
-    { user_id: ensure(userId) },
+    { user_id: ensure(userId), is_deleted: false },
     { sort: ['updated_at DESC'] },
   );
 
