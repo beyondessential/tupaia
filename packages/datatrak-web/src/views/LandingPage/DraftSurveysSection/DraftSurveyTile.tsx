@@ -160,12 +160,13 @@ export const DraftSurveyTile = ({
   const headingText = surveyName ? `[draft] ${surveyName}` : 'Draft survey';
   const showMenu = variant === 'desktop';
 
-  const tooltip = (
-    <>
-      <TooltipText>{surveyName}</TooltipText>
-      <TooltipText>{entityName ?? countryName}</TooltipText>
-    </>
-  );
+  const tooltip =
+    variant === 'desktop' ? (
+      <>
+        <TooltipText>{surveyName}</TooltipText>
+        <TooltipText>{entityName ?? countryName}</TooltipText>
+      </>
+    ) : undefined;
 
   return (
     <Wrapper $variant={variant}>
