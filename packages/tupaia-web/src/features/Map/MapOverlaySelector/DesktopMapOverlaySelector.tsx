@@ -5,17 +5,22 @@ import styled from 'styled-components';
 import { GRANULARITY_CONFIG, periodToMoment } from '@tupaia/utils';
 import { Tooltip, IconButton, SmallAlert } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';
-import { ArrowDropDown, Layers, Assignment, GetApp, Close } from '@material-ui/icons';
+import { ArrowDropDown, Layers, Assignment, Close } from '@material-ui/icons';
+import { ChevronDown } from 'lucide-react';
 import {
   Accordion,
+  Box,
+  CircularProgress,
   Typography,
   AccordionSummary,
   AccordionDetails,
-  CircularProgress,
+  Button,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 import { useMapOverlayMapData, useMapContext } from '../utils';
 import { Entity } from '../../../types';
-import { useExportMapOverlay } from '../../../api/mutations';
+import { useExportMapOverlay, useExportMapOverlayImage } from '../../../api/mutations';
 import { useEntity, useMapOverlays, useProject, useUser } from '../../../api/queries';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import {
@@ -37,6 +42,54 @@ const MapButton = styled(IconButton)`
   }
   .MuiSvgIcon-root {
     font-size: 1.3rem;
+  }
+`;
+
+const ExportButton = styled(Button).attrs({ variant: 'outlined' })`
+  font-size: 0.75rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  color: ${({ theme }) => theme.palette.text.primary};
+  border-color: ${({ theme }) => theme.palette.text.primary};
+  text-transform: none;
+  padding-block: 0.1rem;
+  padding-inline: 0.4rem;
+  min-width: unset;
+  margin-inline-end: 0.5rem;
+
+  &.Mui-disabled {
+    color: ${({ theme }) => theme.palette.text.primary};
+    border-color: ${({ theme }) => theme.palette.text.primary};
+  }
+
+  .MuiButton-endIcon {
+    margin-inline-start: 0.2rem;
+    margin-inline-end: -0.2rem;
+    svg {
+      font-size: 1rem;
+    }
+  }
+`;
+
+const ExportMenu = styled(Menu)`
+  .MuiPaper-root {
+    background-color: ${({ theme }) => theme.palette.secondary.main};
+    border: 1px solid ${({ theme }) => theme.palette.text.primary};
+    min-width: 0;
+  }
+  .MuiList-root {
+    padding: 0;
+  }
+`;
+
+const ExportMenuItem = styled(MenuItem)`
+  text-align: left;
+  font-size: 0.75rem;
+  min-width: 4.1rem;
+  padding-block: 0.1rem;
+  padding-inline: 0.3rem;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.4);
   }
 `;
 
@@ -65,6 +118,7 @@ const Header = styled.div`
   padding-inline: 1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   pointer-events: auto;
+  min-height: 3.25rem;
 `;
 
 const Heading = styled(Typography).attrs({
@@ -171,6 +225,7 @@ const LoadingSpinner = styled(CircularProgress).attrs({
   size: 16,
 })`
   color: ${({ theme }) => theme.palette.text.primary};
+  margin-right: 0.5rem;
 `;
 
 const ErrorAlert = styled(SmallAlert)`
@@ -225,12 +280,26 @@ export const DesktopMapOverlaySelector = ({
     error,
     reset,
   } = useExportMapOverlay(exportFileName);
+  const {
+    mutate: exportMapOverlayImage,
+    isLoading: isExportingImage,
+    error: imageError,
+    reset: resetImageError,
+  } = useExportMapOverlayImage(exportFileName);
   const { startDate, endDate } = useDateRanges(
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
     selectedOverlay,
   );
 
+  const isExportingAny = isExporting || isExportingImage;
+  const exportError = error || imageError;
+  const resetExportError = () => {
+    reset();
+    resetImageError();
+  };
+
   const [mapModalOpen, setMapModalOpen] = useState(false);
+  const [exportMenuAnchor, setExportMenuAnchor] = useState<HTMLElement | null>(null);
   // This only fires when the selected overlay changes. Because this is always rendered, as is the mobile overlay selector, we only need this in one place
   useGAEffect('MapOverlays', 'Change', selectedOverlay?.name);
   const toggleMapTableModal = () => {
@@ -253,10 +322,9 @@ export const DesktopMapOverlaySelector = ({
     return urlPeriodString;
   };
 
-  const onExportMapOverlay = () => {
-    if (!map) throw new Error('Map is not ready');
-    const urlPeriodString = getMapOverlayPeriodForExport();
-    exportMapOverlay({
+  const getExportParams = () => {
+    if (!map) return; // Guard against race condition where map becomes null
+    return {
       projectCode,
       entityCode,
       mapOverlayCode: selectedOverlay?.code,
@@ -264,8 +332,28 @@ export const DesktopMapOverlaySelector = ({
       zoom: map.getZoom(),
       hiddenValues,
       tileset: activeTileSet.url,
-      mapOverlayPeriod: urlPeriodString,
-    });
+      mapOverlayPeriod: getMapOverlayPeriodForExport(),
+    };
+  };
+
+  const handleOpenExportMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setExportMenuAnchor(event.currentTarget);
+  };
+
+  const handleCloseExportMenu = () => {
+    setExportMenuAnchor(null);
+  };
+
+  const onExportMapOverlay = () => {
+    handleCloseExportMenu();
+    const params = getExportParams();
+    if (params) exportMapOverlay(params);
+  };
+
+  const onExportMapOverlayImage = () => {
+    handleCloseExportMenu();
+    const params = getExportParams();
+    if (params) exportMapOverlayImage(params);
   };
 
   const friendlyEntityType = getFriendlyEntityType(entity?.type);
@@ -277,36 +365,46 @@ export const DesktopMapOverlaySelector = ({
         <Header>
           <Heading>Map overlays{friendlyEntityType && ` (${friendlyEntityType})`}</Heading>
           {selectedOverlay && (
-            <div>
-              {isLoggedIn && (
-                <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map}>
-                  {isExporting ? (
-                    <LoadingSpinner />
-                  ) : (
-                    <Tooltip
-                      arrow
-                      placement="top"
-                      title={isExporting ? '' : 'Export map overlay as PDF'}
+            <Box alignItems="center" display="flex">
+              {isLoggedIn &&
+                (isExportingAny ? (
+                  <LoadingSpinner />
+                ) : (
+                  <>
+                    <ExportButton
+                      onClick={handleOpenExportMenu}
+                      disabled={!map}
+                      endIcon={<ChevronDown />}
                     >
-                      <GetApp />
-                    </Tooltip>
-                  )}
-                </MapButton>
-              )}
+                      Export
+                    </ExportButton>
+                    <ExportMenu
+                      anchorEl={exportMenuAnchor}
+                      open={Boolean(exportMenuAnchor)}
+                      onClose={handleCloseExportMenu}
+                      getContentAnchorEl={null}
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                      transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                    >
+                      <ExportMenuItem onClick={onExportMapOverlay}>PDF</ExportMenuItem>
+                      <ExportMenuItem onClick={onExportMapOverlayImage}>PNG</ExportMenuItem>
+                    </ExportMenu>
+                  </>
+                ))}
               <Tooltip arrow interactive placement="top" title="Generate report">
                 <MapButton onClick={toggleMapTableModal}>
                   <Assignment />
                 </MapButton>
               </Tooltip>
-            </div>
+            </Box>
           )}
         </Header>
         <Container>
           <TitleWrapper>
-            {error && (
+            {exportError && (
               <ErrorAlert severity="error">
-                <span>{error.message}</span>
-                <ErrorCloseButton onClick={reset} title="Clear error">
+                <span>{exportError.message}</span>
+                <ErrorCloseButton onClick={resetExportError} title="Clear error">
                   <Close />
                 </ErrorCloseButton>
               </ErrorAlert>
