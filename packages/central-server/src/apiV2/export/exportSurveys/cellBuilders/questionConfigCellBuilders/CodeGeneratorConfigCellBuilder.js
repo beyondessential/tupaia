@@ -1,19 +1,7 @@
 import { KeyValueCellBuilder } from '../KeyValueCellBuilder';
 
-const fetchQuestionCode = async (questionId, models) => {
-  const question = await models.question.findById(questionId);
-  if (!question) {
-    throw new Error(`Could not find a question with id matching ${questionId}`);
-  }
-  return question.code;
-};
-
 const FIELD_TRANSLATION = {
   'dynamicPrefix.questionId': 'dynamicPrefix',
-};
-
-const VALUE_TRANSLATION = {
-  dynamicPrefix: fetchQuestionCode,
 };
 
 const flattenObject = (value, field, flattenedObject = {}) => {
@@ -30,7 +18,10 @@ const flattenObject = (value, field, flattenedObject = {}) => {
 
 export class CodeGeneratorConfigCellBuilder extends KeyValueCellBuilder {
   async processValue(value, field) {
-    return VALUE_TRANSLATION[field] ? VALUE_TRANSLATION[field](value, this.models) : value;
+    if (field === 'dynamicPrefix') {
+      return this.fetchQuestionCode({ questionId: value });
+    }
+    return value;
   }
 
   extractRelevantObject({ codeGenerator }) {
