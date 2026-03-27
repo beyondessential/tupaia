@@ -59,9 +59,9 @@ export const DynamicCodeGeneratorWatcher = ({
 
     dispatch({
       type: ACTION_TYPES.SET_FORM_DATA,
-      payload: { ...formData, [questionId]: newCode },
+      payload: { [questionId]: newCode },
     });
-  }, [resolvedPrefix]);
+  }, [resolvedPrefix, codeGenerator, dispatch, questionId]);
 
   return null;
 };

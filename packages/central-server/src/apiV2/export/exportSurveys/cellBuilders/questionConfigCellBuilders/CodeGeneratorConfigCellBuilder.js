@@ -60,19 +60,15 @@ export class CodeGeneratorConfigCellBuilder extends KeyValueCellBuilder {
       typeof jsonStringOrObject === 'string' ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
     const object = this.extractRelevantObject(fullObject) || {};
 
-    const processedFields = [];
+    const processedFieldsPromises = Object.entries(object).map(async ([field, value]) => {
+      if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
+        return this.processField(value, field);
+      }
+      const processedValue = await this.processValue(value, field);
+      return `${field}: ${processedValue}`;
+    });
 
-    await Promise.all(
-      Object.entries(object).map(async ([field, value]) => {
-        if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
-          const processedFieldsAndValues = await this.processField(value, field);
-          processedFields.push(...processedFieldsAndValues);
-        } else {
-          const processedValue = await this.processValue(value, field);
-          processedFields.push(`${field}: ${processedValue}`);
-        }
-      }),
-    );
+    const processedFields = (await Promise.all(processedFieldsPromises)).flat();
     return processedFields.join('\r\n');
   }
 }
