@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { CodeGeneratorQuestionConfig } from '@tupaia/types';
 import { useEntityById } from '../../../api/queries/useEntity';
-import { generateMongoId, generateShortId } from './generateId';
+import { generateShortId } from './generateId';
 import { SurveyScreenComponent } from '../../../types';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 
@@ -52,10 +52,13 @@ export const DynamicCodeGeneratorWatcher = ({
 
     prevPrefixRef.current = resolvedPrefix;
 
-    const newCode =
-      codeGenerator.type === 'shortid'
-        ? generateShortId({ ...codeGenerator, prefix: resolvedPrefix })
-        : generateMongoId();
+    if (codeGenerator.type !== 'shortid') {
+      throw new Error(
+        `dynamicPrefix is only supported with shortid code generators, got: ${codeGenerator.type}`,
+      );
+    }
+
+    const newCode = generateShortId({ ...codeGenerator, prefix: resolvedPrefix });
 
     dispatch({
       type: ACTION_TYPES.SET_FORM_DATA,
