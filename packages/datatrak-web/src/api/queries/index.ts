@@ -27,3 +27,4 @@ export { useProjectUsersQuery } from './useProjectUsersQuery';
 export { useDatabaseQuery } from './useDatabaseQuery';
 export { useDatabaseMutation } from './useDatabaseMutation';
 export { useHasUnsyncedDataQuery } from './useHasUnsyncedDataQuery';
+export { useOnlineQuery } from './useOnlineQuery';
