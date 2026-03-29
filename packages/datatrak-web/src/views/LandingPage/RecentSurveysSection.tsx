@@ -59,12 +59,7 @@ const RecentSurveyTile = ({
   countryCode,
   ...props
 }: RecentSurveyTileProps) => {
-  const tooltip = (
-    <>
-      <TooltipText>{surveyName}</TooltipText>
-      <TooltipText>{countryName}</TooltipText>
-    </>
-  );
+  const tooltip = <TooltipText>{surveyName}</TooltipText>;
 
   return (
     <Tile
