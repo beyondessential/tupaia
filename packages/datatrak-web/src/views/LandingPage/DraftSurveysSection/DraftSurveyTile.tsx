@@ -52,6 +52,11 @@ const StyledTile = styled(Tile)<WrapperProps>`
 
   h3.MuiTypography-root {
     margin-block-end: 0.2rem;
+    ${({ $variant }) =>
+      $variant === 'mobile-list' &&
+      `
+      white-space: normal;
+    `}
   }
   ${({ theme }) => theme.breakpoints.up('md')} {
     min-height: 4.8rem;
