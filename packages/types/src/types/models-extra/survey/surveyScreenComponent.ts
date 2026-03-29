@@ -5,7 +5,7 @@ export type CodeGeneratorQuestionConfig = {
   type: 'shortid' | 'mongoid';
   prefix?: string;
   dynamicPrefix?: {
-    questionId: string;
+    questionId: Question['id'];
     entityAttribute?: string;
   };
   length?: number;

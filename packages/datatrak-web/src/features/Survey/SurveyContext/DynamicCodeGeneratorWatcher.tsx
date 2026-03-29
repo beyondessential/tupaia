@@ -5,13 +5,13 @@ import { generateShortId } from './generateId';
 import { SurveyScreenComponent } from '../../../types';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 
-const TOP_LEVEL_ENTITY_FIELDS = ['code', 'name', 'type'];
+const TOP_LEVEL_ENTITY_FIELDS = new Set(['code', 'name', 'type']);
 
 const resolveEntityAttribute = (
   entity: Record<string, any>,
   entityAttribute: string,
 ): string | undefined => {
-  if (TOP_LEVEL_ENTITY_FIELDS.includes(entityAttribute)) {
+  if (TOP_LEVEL_ENTITY_FIELDS.has(entityAttribute)) {
     return entity[entityAttribute];
   }
   return entity.attributes?.[entityAttribute];
