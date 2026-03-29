@@ -2052,6 +2052,9 @@ export enum EntityTypeEnum {
   'ird_district' = 'ird_district',
   'ird_tehsil' = 'ird_tehsil',
   'ird_village' = 'ird_village',
+  'tamanu_country' = 'tamanu_country',
+  'srh_district' = 'srh_district',
+  'srh_sub_district' = 'srh_sub_district',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
