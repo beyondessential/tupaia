@@ -201,6 +201,9 @@ const overrides = {
       html: {
         textWrap: 'pretty',
       },
+      'button, input, textarea, select': {
+        touchAction: 'manipulation',
+      },
       label: {
         fontWeight: 500,
       },
