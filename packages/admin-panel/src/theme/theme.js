@@ -198,6 +198,9 @@ const overrides = {
       '*': {
         textDecorationThickness: 'from-font',
       },
+      html: {
+        textWrap: 'pretty',
+      },
       label: {
         fontWeight: 500,
       },
