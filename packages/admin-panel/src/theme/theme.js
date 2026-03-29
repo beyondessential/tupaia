@@ -195,6 +195,9 @@ const overrides = {
   },
   MuiCssBaseline: {
     '@global': {
+      '*': {
+        textDecorationThickness: 'from-font',
+      },
       label: {
         fontWeight: 500,
       },
@@ -211,6 +214,9 @@ const overrides = {
     root: {
       fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
     },
+  },
+  MuiLink: {
+    underlineAlways: { textDecorationThickness: 'from-font' },
   },
   MuiSvgIcon: {
     root: {
