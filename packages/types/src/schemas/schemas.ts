@@ -99484,6 +99484,9 @@ export const SurveyResponseDraftSchema = {
 		"id": {
 			"type": "string"
 		},
+		"is_deleted": {
+			"type": "boolean"
+		},
 		"screen_number": {
 			"type": "number"
 		},
@@ -99509,6 +99512,7 @@ export const SurveyResponseDraftSchema = {
 	"required": [
 		"form_data",
 		"id",
+		"is_deleted",
 		"screen_number",
 		"start_time",
 		"survey_id",
@@ -99529,6 +99533,9 @@ export const SurveyResponseDraftCreateSchema = {
 		"form_data": {
 			"type": "object",
 			"properties": {}
+		},
+		"is_deleted": {
+			"type": "boolean"
 		},
 		"screen_number": {
 			"type": "number"
@@ -99570,6 +99577,9 @@ export const SurveyResponseDraftUpdateSchema = {
 		},
 		"id": {
 			"type": "string"
+		},
+		"is_deleted": {
+			"type": "boolean"
 		},
 		"screen_number": {
 			"type": "number"
