@@ -10,6 +10,7 @@ set -x
 NODE_ENV=production \
     yarn workspaces foreach \
     --parallel \
+    --worktree \
     --topological \
     --verbose --verbose \
     --jobs unlimited \
