@@ -24,7 +24,7 @@ import {
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
-import { READ_ONLY_QUESTION_TYPES } from '../utils';
+import { isReadOnlyQuestionType } from '../utils';
 
 const QuestionPlaceholder = styled.div`
   margin-bottom: 0.625rem;
@@ -82,7 +82,7 @@ export const SurveyQuestion = ({
   }
 
   // Because the readOnly questions are not actually inputs, they won't get re-rendered on each associated question update, because they're not really controlled by react-hook-form. So instead of using a controller, we can just render the component and the component can take care of grabbing the value and displaying it.
-  if (READ_ONLY_QUESTION_TYPES.includes(type)) {
+  if (isReadOnlyQuestionType(type)) {
     return <FieldComponent {...props} name={name} type={type} />;
   }
 

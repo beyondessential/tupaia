@@ -10,6 +10,9 @@ echo "Building deployable packages"
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
 source "$HOME/.nvm/nvm.sh"
 
+# Use Yarn version declared in package.json
+corepack enable yarn
+
 # Install external dependencies
 cd "$root_dir"
 yarn install --immutable
@@ -32,6 +35,7 @@ BW_CLIENTID="$BW_CLIENTID" \
 package_names_glob=$("$root_dir/scripts/bash/getDeployablePackages.sh" --as-glob)
 
 set -x
-REACT_APP_DEPLOYMENT_NAME="$deployment_name" \
+NODE_OPTIONS='--max-old-space-size=4096' \
+    REACT_APP_DEPLOYMENT_NAME="$deployment_name" \
     yarn run build:from "$package_names_glob"
 set +x

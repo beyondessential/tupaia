@@ -1,5 +1,8 @@
-import { findOrCreateDummyRecord } from '@tupaia/database';
 import { expect } from 'chai';
+
+import { findOrCreateDummyRecord } from '@tupaia/database';
+import { stripUpdatedAtSyncTickFromObject } from '@tupaia/utils';
+
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -169,7 +172,7 @@ describe('Get permission groups', async () => {
     it('Should return a single permission group record', async () => {
       await app.grantAccess(ADMIN_PANEL_ACCESS_POLICY);
       const response = await app.get(`permissionGroups/${permissionGroups.dlUserGroup.id}`);
-      expect(response.body).to.deep.equal({
+      expect(stripUpdatedAtSyncTickFromObject(response.body)).to.deep.equal({
         id: permissionGroups.dlUserGroup.id,
         name: DL_USER_PERMISSION_GROUP,
         parent_id: permissionGroups.dlAdminGroup.id,

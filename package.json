@@ -18,9 +18,10 @@
     ]
   },
   "scripts": {
-    "build": "yarn workspaces foreach -ptv --jobs unlimited --exclude tupaia run build",
+    "build": "yarn workspaces foreach -Wptvv --jobs unlimited --exclude tupaia run build",
     "build:from": "./scripts/bash/buildPackagesByGlob.sh --from",
     "build:only": "./scripts/bash/buildPackagesByGlob.sh --only",
+    "build:nonlegacy": "yarn run build:from \"{admin-panel*,datatrak*,tupaia*,{central,data-table,entity,report,sync,web-config}-server}\"",
     "build:internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
     "build:non-internal-dependencies": "./scripts/bash/buildNonInternalDependencies.sh",
     "build:admin-panel": "yarn workspace @tupaia/admin-panel build",
@@ -49,7 +50,8 @@
     "package:start:vite": "cd \"$INIT_CWD\" && vite --config \"../../vite.config.js\"",
     "package:start-stack": "scripts/bash/pm2startInline.sh",
     "package:storybook:start": "cd \"$INIT_CWD\" && storybook dev -p 6006 -c ../../.storybook",
-    "package:storybook:build": "cd \"$INIT_CWD\" && storybook build -c .storybook"
+    "package:storybook:build": "cd \"$INIT_CWD\" && storybook build -c .storybook",
+    "preinstall": "npx only-allow yarn"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
@@ -105,5 +107,5 @@
   "engines": {
     "node": "20.20.0"
   },
-  "packageManager": "yarn@3.2.1"
+  "packageManager": "yarn@4.13.0+sha256.730e0619753d39754c9e7613c7e57f084ea18b3244f5ba9a5a60bd3da048450b"
 }

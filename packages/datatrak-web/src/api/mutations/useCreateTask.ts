@@ -1,24 +1,31 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
+
+import { createTask } from '../../database/task';
+import { gaEvent, successToast } from '../../utils';
 import { post } from '../api';
-import { successToast, gaEvent } from '../../utils';
 import { useCurrentUserContext } from '../CurrentUserContext';
+import { useIsOfflineFirst } from '../offlineFirst';
+import { useDatabaseMutation } from '../queries';
 
 type Data = DatatrakWebTaskChangeRequest.ReqBody & {
   country_code: string;
+};
+const createRemote = async ({ data }: { data: Data }) => {
+  const { country_code: _, ...rest } = data;
+  return await post('tasks', {
+    data: rest,
+  });
 };
 
 export const useCreateTask = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
   const { projectId, project } = useCurrentUserContext();
-  return useMutation<any, Error, Data, unknown>(
-    (data: Data) => {
-      // Country code is not part of the task data, it's used for GA events
-      const { country_code, ...rest } = data;
-      return post('tasks', {
-        data: rest,
-      });
-    },
+
+  const isOfflineFirst = useIsOfflineFirst();
+
+  return useDatabaseMutation<any, Error, Data, unknown>(
+    isOfflineFirst ? createTask : createRemote,
     {
       onSuccess: (_, variables) => {
         queryClient.invalidateQueries(['tasks']);

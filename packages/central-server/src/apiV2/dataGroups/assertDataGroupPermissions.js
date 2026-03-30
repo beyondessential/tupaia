@@ -38,7 +38,7 @@ const assertDataGroupPermissions = async (accessPolicy, models, dataGroupId, tes
   return true;
 };
 
-export const createDataGroupDBFilter = async (accessPolicy, models, criteria) => {
+export const createDataGroupDBFilter = async (accessPolicy, _models, criteria) => {
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }

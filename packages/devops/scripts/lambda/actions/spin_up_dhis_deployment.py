@@ -24,6 +24,7 @@ Example configs
 }
 """
 
+import asyncio
 from helpers.clone import clone_instance
 
 
@@ -53,9 +54,8 @@ def spin_up_dhis_deployment(event):
         )
     instance_type = event["InstanceType"]
 
-    security_group_code = event.get(
-        "SecurityGroupCode", "tupaia-dev-sg"
-    )  # Use security group tagged with code
+    # Use security group tagged with code
+    security_group_code = event.get("SecurityGroupCode", "tupaia-dev-sg")
 
     extra_tags = [{"Key": "DeployedBy", "Value": event["User"]}]
 
@@ -65,13 +65,15 @@ def spin_up_dhis_deployment(event):
     if "StopAtUTC" in event:
         extra_tags.append({"Key": "StopAtUTC", "Value": event["StopAtUTC"]})
 
-    clone_instance(
-        deployment_type,
-        from_deployment,
-        deployment_name,
-        instance_type,
-        extra_tags=extra_tags,
-        security_group_code=security_group_code,
+    _ = asyncio.run(
+        clone_instance(
+            deployment_type,
+            from_deployment,
+            deployment_name,
+            instance_type,
+            extra_tags=extra_tags,
+            security_group_code=security_group_code,
+        )
     )
 
     print("Deployment cloned")

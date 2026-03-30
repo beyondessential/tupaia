@@ -60,22 +60,31 @@ const SurveyPageInner = () => {
   const { mutateAsync: editUser } = useEditUser();
   const user = useCurrentUserContext();
   const { data: survey } = useSurvey(surveyCode);
-  const { data: surveyCountry } = useEntityByCode(countryCode!);
+  const { data: surveyCountry } = useEntityByCode(countryCode);
 
   // Update the user's preferred country if they start a survey in a different country
   useEffect(() => {
-    if (!surveyCountry?.code || !user.isLoggedIn || isResubmit) {
+    if (
+      !surveyCountry?.code ||
+      !user.isLoggedIn ||
+      isResubmit ||
+      user.country?.code === countryCode // Don’t bother updating if no change
+    ) {
       return;
     }
-    if (user.country?.code !== countryCode) {
-      editUser(
-        {
-          countryId: surveyCountry?.id,
-        },
-        { onSuccess: () => successToast(`Preferred country updated to ${surveyCountry?.name}`) },
-      );
-    }
-  }, [surveyCountry?.code]);
+
+    editUser(
+      { countryId: surveyCountry?.id },
+      { onSuccess: () => successToast(`Preferred country updated to ${surveyCountry?.name}`) },
+    );
+  }, [
+    countryCode,
+    isResubmit,
+    surveyCountry?.code,
+    surveyCountry?.id,
+    user.country?.code,
+    user.isLoggedIn,
+  ]);
 
   // Update the user's preferred project if they start a survey in a different project to the saved project
   useEffect(() => {

@@ -1,30 +1,29 @@
 import { cloneDeep } from 'lodash';
+
 import { AnalyticsRefresher } from '@tupaia/database';
 import {
-  respond,
-  ValidationError,
-  ObjectValidator,
-  hasContent,
-  isPresent,
-  constructRecordExistsWithId,
-  constructIsEmptyOr,
   constructEveryItem,
-  takesIdForm,
-  takesDateForm,
-  isNumber,
+  constructIsEmptyOr,
   constructIsValidEntityType,
+  constructRecordExistsWithId,
+  hasContent,
+  isNumber,
+  isPresent,
+  ObjectValidator,
+  respond,
+  takesDateForm,
+  takesIdForm,
+  ValidationError,
 } from '@tupaia/utils';
-import { updateOrCreateSurveyResponse, addSurveyImage, addSurveyFile } from './utilities';
-import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
-  translateObjectFields,
   translateEntityCodeToId,
+  translateObjectFields,
+  translateQuestionCodeToId,
   translateSurveyCodeToId,
   translateUserEmailToIdAndAssessorName,
-  translateQuestionCodeToId,
 } from '../utilities';
-import winston from '../../log';
+import { addSurveyFile, addSurveyImage, updateOrCreateSurveyResponse } from './utilities';
 
 const ACTIONS = {
   SubmitSurveyResponse: 'SubmitSurveyResponse',
@@ -60,7 +59,11 @@ export async function postChanges(req, res) {
       .filter(c => c.action === ACTIONS.SubmitSurveyResponse)
       .map(c => c.translatedPayload.survey_response || c.translatedPayload);
     const surveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, surveyResponsePayloads);
+      await transactingModels.surveyResponse.assertCanSubmit(
+        transactingModels,
+        accessPolicy,
+        surveyResponsePayloads,
+      );
     };
     await req.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
@@ -109,24 +112,6 @@ const ACTION_HANDLERS = {
 };
 
 /**
- * TEMPORARY: Hotfix to unblock sync from a particular client. Revert to `hasContent` once RN-1788
- * is closed.
- */
-const hasContentPermissive = value => {
-  try {
-    return hasContent(value);
-  } catch (error) {
-    if (!(error instanceof ValidationError)) throw error;
-
-    winston.error(
-      `hasContentPermissive validation failed, but swallowing the following ValidationError:\n${error.stack}`,
-      { error },
-    );
-    return true;
-  }
-};
-
-/**
  * Contains functions that accept the payload, and validate that it contains the requisite content
  * for the relevant change action, returning true if successful and throwing an error if not
  */
@@ -136,9 +121,7 @@ const PAYLOAD_VALIDATORS = {
   [ACTIONS.AddSurveyImage]: async (models, payload) => {
     const validator = new ObjectValidator({
       id: [hasContent],
-      // TEMPORARY: Hotfix to unblock sync from a particular client. Revert to `hasContent` once
-      // RN-1788 is closed.
-      data: [hasContentPermissive],
+      data: [hasContent],
     });
     await validator.validate(payload);
   },
