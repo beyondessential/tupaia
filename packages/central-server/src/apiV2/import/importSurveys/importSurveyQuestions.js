@@ -300,15 +300,15 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
       const {
         code,
         type,
-        name,
+        name = null,
         text,
-        detail,
+        detail = null,
         options,
         optionLabels,
         optionColors,
         newScreen,
         optionSet,
-        hook,
+        hook = null,
       } = questionObject;
 
       let dataElement;

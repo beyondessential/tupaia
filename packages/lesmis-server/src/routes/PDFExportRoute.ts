@@ -15,11 +15,11 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
   protected type = 'download' as const;
 
   public async buildResponse() {
-    const { pdfPageUrl } = this.req.body;
+    const { pdfPageUrl: pageUrl } = this.req.body;
     const { cookie, host: cookieDomain } = this.req.headers;
 
     const buffer = await downloadPageAsPdf({
-      pdfPageUrl,
+      pageUrl,
       userCookie: cookie,
       cookieDomain,
     });
