@@ -1,7 +1,7 @@
 import { groupBy, keyBy, uniq } from 'es-toolkit';
 
 import { haveSameFields } from '@tupaia/utils';
-import { isMarkedChange } from '../../utilities';
+import { isMarkedChange } from '../../../core/utilities';
 import { ChangeHandler } from '../ChangeHandler';
 import { OutdatedResponseFlagger } from './OutdatedResponseFlagger';
 
