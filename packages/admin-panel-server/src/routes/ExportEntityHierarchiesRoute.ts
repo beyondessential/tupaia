@@ -1,24 +1,30 @@
-import { Request } from 'express';
-import xlsx from 'xlsx';
 import { keyBy } from 'es-toolkit';
+import type { Request } from 'express';
+import xlsx from 'xlsx';
+
 import { Route } from '@tupaia/server-boilerplate';
-import type { Entity } from '@tupaia/types';
 
-export type ExportEntityHierarchiesRequest = Request<
-  { hierarchies: string },
-  { contents: Buffer; filePath: string; type: string },
-  Record<string, never>,
-  Record<string, any>
->;
+export interface ExportEntityHierarchiesRequest
+  extends Request<
+    { hierarchies: string },
+    { contents: Buffer; filePath: string; type: string },
+    Record<string, never>,
+    Record<string, any>
+  > {}
 
-type ExportEntityHierarchiesData = {
+interface ExportEntityHierarchiesData {
   parent_name: string;
   parent_code: string;
   name: string;
   code: string;
   type: string;
-  attributes: Record<string, any>;
-};
+  attributes: Record<string, any> | string;
+}
+
+/** @see `@tupaia/packages/entity-server/src/routes/hierarchy/MultiEntityDescendantsRoute` */
+interface MultiEntityDescendantsRequest {
+  ResBody: any[];
+}
 
 export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesRequest> {
   protected readonly type = 'download';
@@ -32,17 +38,18 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
     const workbook = xlsx.utils.book_new();
 
     for (const hierarchy of hierarchiesArray) {
-      const descendants = await entityApi.getDescendantsOfEntity(
-        hierarchy,
-        hierarchy,
-        {
-          fields: ['parent_code', 'name', 'code', 'type', 'attributes'],
-        },
-        true,
-        false,
-      );
+      const descendants: MultiEntityDescendantsRequest['ResBody'] =
+        await entityApi.getDescendantsOfEntity(
+          hierarchy,
+          hierarchy,
+          {
+            fields: ['parent_code', 'name', 'code', 'type', 'attributes'],
+          },
+          true,
+          false,
+        );
 
-      const descendantsByCode = keyBy(descendants, (d: { code: Entity['code'] }) => d.code);
+      const descendantsByCode = keyBy(descendants, d => d.code);
 
       const data = descendants.map((row: ExportEntityHierarchiesData) => {
         const record = {

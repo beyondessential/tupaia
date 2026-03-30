@@ -107,14 +107,12 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
       `mapOverlays/${mapOverlay.id}/mapOverlayGroupRelations`,
     );
     const mapOverlayGroupIds = relationRecords.map(mogr => mogr.map_overlay_group_id);
-    const mapOverlayGroupRecords: MapOverlayGroupRecord[] = await centralApi.fetchResources(
-      'mapOverlayGroups',
-      {
+    const mapOverlayGroupRecords: Required<MapOverlayGroupRecord>[] =
+      await centralApi.fetchResources('mapOverlayGroups', {
         filter: {
           id: mapOverlayGroupIds,
         },
-      },
-    );
+      });
     const mapOverlayGroupsById = keyBy(mapOverlayGroupRecords, mogr => mogr.id);
 
     const mapOverlayGroups = mapOverlayGroupRecords.map(({ id, ...mapOverlayGroup }) =>
