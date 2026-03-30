@@ -2,6 +2,8 @@ import { Typography } from '@material-ui/core';
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
+
+import { ROUTES } from '../../../constants';
 import { StickyMobileHeader } from '../../../layout';
 import { useIsMobile } from '../../../utils';
 import { MobileSurveyMenu, SurveyPaginator, SurveyReviewSection } from '../Components';
@@ -54,7 +56,10 @@ const MobileHeader = () => {
   };
 
   return (
-    <StickyHeader onBack={handleBack} onClose={openCancelConfirmation}>
+    <StickyHeader
+      onBack={handleBack}
+      onClose={() => openCancelConfirmation({ confirmPath: ROUTES.HOME })}
+    >
       Review & submit
     </StickyHeader>
   );

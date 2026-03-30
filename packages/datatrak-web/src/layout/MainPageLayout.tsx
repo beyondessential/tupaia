@@ -8,6 +8,7 @@ import { SurveyResponseModal } from '../features';
 import { useIsMobile } from '../utils';
 import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
+import { BannerNotifications } from '../components/BannerNotifications';
 
 const PageWrapper = styled.div`
   background-color: ${props => props.theme.palette.background.default};
@@ -66,6 +67,9 @@ export const MainPageLayout = () => {
   return (
     <PageWrapper>
       {showHeader && <Header />}
+      {/* Header includes BannerNotifications, so if header is not showing, 
+      BannerNotifications needs to be shown separately below*/}
+      <BannerNotifications />
       <Outlet />
       {showBottomNavigation && <Nav />}
       <SurveyResponseModal />

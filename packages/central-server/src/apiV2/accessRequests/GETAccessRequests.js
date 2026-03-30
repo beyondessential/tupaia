@@ -19,7 +19,7 @@ import {
 export class GETAccessRequests extends GETHandler {
   defaultJoinType = JOIN_TYPES.LEFT_OUTER;
 
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async assertUserHasAccess() {
     await this.assertPermissions(

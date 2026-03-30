@@ -1,12 +1,11 @@
 import { AnalyticsRefresher } from '@tupaia/database';
-import { DeleteHandler } from '../DeleteHandler';
 import {
+  assertAdminPanelAccess,
   assertAllPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
 } from '../../permissions';
-import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
+import { DeleteHandler } from '../DeleteHandler';
 
 /**
  * Handles DELETE endpoints:
@@ -18,8 +17,8 @@ export class DeleteSurveyResponses extends DeleteHandler {
     // Check the user has either:
     // - BES admin access
     // - Permission to view the surveyResponse AND Tupaia Admin Panel access anywhere
-    const surveyResponsePermissionChecker = accessPolicy =>
-      assertSurveyResponsePermissions(accessPolicy, this.models, this.recordId);
+    const surveyResponsePermissionChecker = async accessPolicy =>
+      await this.models.surveyResponse.assertCanRead(this.models, accessPolicy, this.recordId);
 
     await this.assertPermissions(
       assertAnyPermissions([
