@@ -204,7 +204,7 @@ export class EntityApi extends BaseApi {
     entityCode: string,
     queryOptions?: {
       field?: string;
-      fields?: string[];
+      fields?: readonly string[];
       filter?: any;
     },
     includeRootEntity = false,

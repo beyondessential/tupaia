@@ -10,6 +10,7 @@ import {
   Button as UIButton,
   ButtonProps as UIButtonProps,
 } from '../components';
+import { OfflineErrorMessage } from '../components/OfflineErrorMessage';
 
 const Button = styled(UIButton)`
   font-size: 0.875rem;
@@ -44,6 +45,10 @@ const ListWrapper = styled.div<{
   ${({ theme }) => theme.breakpoints.up('sm')} {
     max-block-size: 35rem;
   }
+`;
+
+const OfflineErrorMessageContainer = styled.div`
+  margin-top: 2rem;
 `;
 
 const CancelButton = (props: UIButtonProps) => {
@@ -88,6 +93,19 @@ export const ProjectSelectForm = ({
   isConfirming,
 }: ProjectSelectFormProps) => {
   const [selectedProjectId, setSelectedProjectId] = useState(projectId);
+
+  const isOnline = window.navigator.onLine;
+
+  if (!isOnline) {
+    return (
+      <OfflineErrorMessageContainer>
+        <OfflineErrorMessage offlineMessage="You’ll need an internet connection to select a project. Come back when you’re connected and try again." />
+        <DialogActions>
+          <Button onClick={onClose}>Back</Button>
+        </DialogActions>
+      </OfflineErrorMessageContainer>
+    );
+  }
 
   const onSelect = (project: any) => {
     if (project.hasAccess) {

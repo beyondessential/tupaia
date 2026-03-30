@@ -6,7 +6,7 @@ import {
 } from './assertEntityRelationPermissions';
 
 export class GETEntityRelations extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(entityRelationId, options) {
     const entityRelationPermissionChecker = accessPolicy =>

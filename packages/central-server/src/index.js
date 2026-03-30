@@ -3,6 +3,7 @@ import nodeSchedule from 'node-schedule';
 
 import {
   AnalyticsRefresher,
+  buildEntityParentChildRelationIfEmpty,
   EntityHierarchyCacher,
   getDbMigrator,
   ModelRegistry,
@@ -15,7 +16,6 @@ import {
 } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
 import { isFeatureEnabled } from '@tupaia/utils';
-
 import { configureEnv } from './configureEnv';
 import { createApp } from './createApp';
 import { createPermissionsBasedMeditrakSyncQueue, MeditrakSyncQueue } from './database';
@@ -125,6 +125,8 @@ configureEnv();
       const dbMigrator = getDbMigrator();
       await dbMigrator.up();
       winston.info('Database migrations complete');
+
+      await buildEntityParentChildRelationIfEmpty(models);
 
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
         winston.info('Creating permissions based meditrak sync queue');

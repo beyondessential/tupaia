@@ -1,12 +1,12 @@
-import { TaskCompletionHandler } from '../../changeHandlers';
+import { TaskCompletionHandler } from '../../server/changeHandlers';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,
   getTestModels,
   populateTestData,
   upsertDummyRecord,
-} from '../../testUtilities';
-import { generateId } from '../../utilities';
+} from '../../server/testUtilities';
+import { generateId } from '../../core/utilities';
 
 const buildSurvey = () => {
   const code = 'Test_survey';

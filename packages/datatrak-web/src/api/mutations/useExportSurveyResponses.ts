@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import downloadJs from 'downloadjs';
-import { API_URL, timeout } from '../api';
+import { API_URL } from '../api';
 import FetchError from '../fetchError';
 
 const EMAIL_TIMEOUT = 1000 * 30; // 30 seconds
@@ -42,7 +42,6 @@ export const useExportSurveyResponses = () => {
         // this is a one off case where the response can be either a blob or a json object, so we need to handle this independently from the other endpoints
         const { headers, data } = await axios(`${API_URL}/export/surveyResponses`, {
           responseType: 'blob',
-          timeout,
           params: {
             respondWithEmailTimeout: EMAIL_TIMEOUT,
             surveyCodes,

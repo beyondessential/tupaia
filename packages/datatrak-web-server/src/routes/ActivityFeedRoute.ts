@@ -38,7 +38,7 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
     );
     // if there is a markdown item, return it
     if (firstAvailableMarkdownItem) {
-      return firstAvailableMarkdownItem.getData() as Promise<
+      return firstAvailableMarkdownItem.getData() as unknown as Promise<
         DatatrakWebActivityFeedRequest.ResBody['pinned']
       >;
     }
