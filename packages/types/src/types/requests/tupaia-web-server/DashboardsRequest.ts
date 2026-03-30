@@ -12,9 +12,9 @@ interface MailingList {
   isAdmin: boolean;
 }
 
-interface DashboardWithMetadata extends Dashboard {
-  items: DashboardItem[];
-  mailingLists: MailingList[];
+interface DashboardWithMetadata extends Omit<Dashboard, 'updated_at_sync_tick'> {
+  items: Omit<DashboardItem, 'updated_at_sync_tick'>[];
+  mailingLists: Omit<MailingList, 'updated_at_sync_tick'>[];
 }
 export type ResBody = KeysToCamelCase<DashboardWithMetadata>[];
 export type ReqBody = Record<string, never>;

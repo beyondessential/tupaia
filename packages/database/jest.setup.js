@@ -1,5 +1,5 @@
-import { configureEnv } from './src/configureEnv';
-import { clearTestData, getTestDatabase } from './src/testUtilities';
+import { configureEnv } from './src/server/configureEnv';
+import { clearTestData, getTestDatabase } from './src/server/testUtilities';
 
 configureEnv();
 

@@ -32,6 +32,7 @@ BW_CLIENTID="$BW_CLIENTID" \
 package_names_glob=$("$root_dir/scripts/bash/getDeployablePackages.sh" --as-glob)
 
 set -x
-REACT_APP_DEPLOYMENT_NAME="$deployment_name" \
+NODE_OPTIONS='--max-old-space-size=4096' \
+    REACT_APP_DEPLOYMENT_NAME="$deployment_name" \
     yarn run build:from "$package_names_glob"
 set +x

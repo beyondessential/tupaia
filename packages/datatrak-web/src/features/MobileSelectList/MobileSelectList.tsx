@@ -2,11 +2,14 @@ import { List as MuiList, Typography } from '@material-ui/core';
 import React, { ReactElement } from 'react';
 import styled from 'styled-components';
 
-import { CountrySelectWrapper, CountrySelector } from '../CountrySelector';
-import { CountrySelectorProps } from '../CountrySelector/CountrySelector';
+import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../constants';
+import {
+  CountrySelectWrapper,
+  CountrySelector,
+  CountrySelectorProps,
+} from '../CountrySelector/CountrySelector';
 import { ListItemType } from '../useGroupedSurveyList';
 import { ListItem, ListItemSkeleton } from './ListItem';
-import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../constants';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.default};

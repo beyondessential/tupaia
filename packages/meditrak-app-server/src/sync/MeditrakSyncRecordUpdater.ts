@@ -57,7 +57,7 @@ export class MeditrakSyncRecordUpdater {
 
     // Permissions have changed, enqueue changes for all related records
     // to ensure devices sync down those records if they now have permissions
-    const survey = await this.models.survey.findById(surveyChange.record_id);
+    const survey = await this.models.survey.findByIdOrThrow(surveyChange.record_id);
     const surveyScreenChanges: Change[] = (await survey.surveyScreens()).map(record => ({
       record_type: 'survey_screen',
       record_id: record.id,
