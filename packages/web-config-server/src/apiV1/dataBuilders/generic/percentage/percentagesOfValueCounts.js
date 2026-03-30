@@ -10,15 +10,13 @@ import {
 } from '/apiV1/dataBuilders/helpers';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
-const COMPARISON_TYPES = {
-  COUNT: '$count',
-};
-const OPERATION_TYPES = {
+const COMPARISON_TYPES = /** @type {const} */ ({ COUNT: '$count' });
+const OPERATION_TYPES = /** @type {const} */ ({
   GT: (leftOperand, rightOperand) => leftOperand > rightOperand,
   // eslint-disable-next-line eqeqeq
   EQ: (leftOperand, rightOperand) => leftOperand == rightOperand,
   IN: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
-};
+});
 
 const buildFilterAnalyticsFunction = fraction => {
   if (fraction.compare === COMPARISON_TYPES.COUNT) {
