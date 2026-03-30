@@ -33,19 +33,20 @@ const buildFilterAnalyticsFunction = fraction => {
 
     return results => {
       const set1 = results.filter(r => valuesSet.has(r.dataElement));
-      const set2 = results.filter(r => valuesToCompareSet.has(r.dataElement));
-
       const set1Count = countAnalyticsThatSatisfyConditions(set1, {
         dataValues: values,
         valueOfInterest: fraction.valueOfInterest,
       });
 
-      const count2Count = countAnalyticsThatSatisfyConditions(set2, {
+      if (set1Count === 0) return false;
+
+      const set2 = results.filter(r => valuesToCompareSet.has(r.dataElement));
+      const set2Count = countAnalyticsThatSatisfyConditions(set2, {
         dataValues: valuesToCompare,
         valueOfInterest: fraction.valueOfInterest,
       });
 
-      return set1Count > 0 && set1Count === count2Count;
+      return set1Count === set2Count;
     };
   }
 
