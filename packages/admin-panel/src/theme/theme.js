@@ -225,7 +225,7 @@ const overrides = {
     },
   },
   MuiLink: {
-    underlineAlways: { textDecorationThickness: 'from-font' },
+    root: { textDecorationThickness: 'from-font' },
   },
   MuiSvgIcon: {
     root: {
