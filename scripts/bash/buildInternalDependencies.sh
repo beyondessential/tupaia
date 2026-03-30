@@ -10,9 +10,10 @@ set -x
 NODE_ENV=production \
     yarn workspaces foreach \
     --parallel \
+    --worktree \
     --topological \
-    --verbose \
-    --jobs unlimited \
+    --verbose --verbose \
+    --jobs 5 \
     --include "@tupaia/$package_names_glob" \
     run build-dev \
     "$@" # Forward arguments (mostly for --watch flag)
