@@ -28,10 +28,12 @@ const buildFilterAnalyticsFunction = fraction => {
       );
     }
 
-    const [values, valuesToCompare] = fraction.dataValues.map(arr => new Set(arr));
+    const [values, valuesToCompare] = fraction.dataValues;
+    const [valuesSet, valuesToCompareSet] = fraction.dataValues.map(arr => new Set(arr));
+
     return results => {
-      const set1 = results.filter(r => values.has(r.dataElement));
-      const set2 = results.filter(r => valuesToCompare.has(r.dataElement));
+      const set1 = results.filter(r => valuesSet.has(r.dataElement));
+      const set2 = results.filter(r => valuesToCompareSet.has(r.dataElement));
 
       const set1Count = countAnalyticsThatSatisfyConditions(set1, {
         dataValues: values,
