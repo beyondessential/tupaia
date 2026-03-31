@@ -121,7 +121,7 @@ exports.up = async function up(db) {
       E'${district.id}',
       E'${district.code}',
       E'${parentId}',
-      E'${district.name.replace("'", "\\'")}',
+      E'${district.name.replaceAll("'", "\\'")}',
       E'district',
       NULL,
       ${regionGeometry ? `ST_GeomFromGeoJSON('${JSON.stringify(regionGeometry)}')` : 'NULL'},
@@ -173,8 +173,8 @@ exports.up = async function up(db) {
     }
     if (!parentId) {
       const parentRows = await db.runSql(`
-          SELECT e.id AS entity_id, * FROM clinic c 
-            INNER JOIN geographical_area ga ON c.geographical_area_id = ga.id 
+          SELECT e.id AS entity_id, * FROM clinic c
+            INNER JOIN geographical_area ga ON c.geographical_area_id = ga.id
             INNER JOIN entity e ON ga.code = e.code
             WHERE c.id = '${id}';`);
       if (parentRows.rowCount > 0) parentId = parentRows.rows[0].entity_id;
@@ -200,7 +200,7 @@ exports.up = async function up(db) {
             E'${generateId()}',
             E'${clinic.code}',
             E'${parentId}',
-            E'${clinic.name.replace("'", "\\'")}',
+            E'${clinic.name.replaceAll("'", "\\'")}',
             E'facility',
             ${geometry ? `ST_GeomFromGeoJSON('${JSON.stringify(geometry)}')` : 'NULL'},
             NULL,
