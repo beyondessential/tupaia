@@ -16,10 +16,10 @@ const ScrollableBody = styled.div`
   flex: 1;
   height: calc(100% - ${BOTTOM_NAVIGATION_HEIGHT_SMALL}); // Padding accounts for safe area inset
   overflow-y: auto;
-  padding-block: 1rem calc(env(safe-area-inset-bottom, 0) + 4rem);
+  padding-block: 2rem calc(env(safe-area-inset-bottom, 0) + 4rem);
   padding-inline: 1rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-block: 1rem;
+    padding-block: 2rem;
     padding-inline: 2.5rem;
   }
 `;
