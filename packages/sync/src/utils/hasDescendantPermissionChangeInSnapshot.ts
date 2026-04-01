@@ -7,7 +7,7 @@ import { getSnapshotTableName } from './manageSnapshotTable';
  * permission_group the user already has access to. Does not detect new `permission_group`s granted
  * to the user via `user_entity_permission`.
  */
-export const hasPermissionGroupHierarchyChangeInSyncSnapshot = async (
+export const hasDescendantPermissionChangeInSnapshot = async (
   database: BaseDatabase,
   sessionId: string,
   userId: UserAccount['id'],

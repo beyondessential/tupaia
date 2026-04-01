@@ -9,7 +9,7 @@ import {
   dropSnapshotTable,
   getModelsForPull,
   getModelsForPush,
-  hasPermissionGroupHierarchyChangeInSyncSnapshot,
+  hasDescendantPermissionChangeInSnapshot,
   hasSyncSnapshotRecords,
   saveChangesFromMemory,
   saveIncomingSnapshotChanges,
@@ -367,11 +367,7 @@ export class ClientSyncManager {
         { userId: currentUserId },
       );
     const hasPermissionHierarchyChange = async () =>
-      await hasPermissionGroupHierarchyChangeInSyncSnapshot(
-        this.database,
-        sessionId,
-        currentUserId,
-      );
+      await hasDescendantPermissionChangeInSnapshot(this.database, sessionId, currentUserId);
 
     if ((await hasUserEntityPermissionChange()) || (await hasPermissionHierarchyChange())) {
       await this.updatePermissionsChanged(true);
