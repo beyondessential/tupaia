@@ -9,6 +9,7 @@ import {
   dropSnapshotTable,
   getModelsForPull,
   getModelsForPush,
+  hasPermissionGroupHierarchyChangeInSyncSnapshot,
   hasSyncSnapshotRecords,
   saveChangesFromMemory,
   saveIncomingSnapshotChanges,
@@ -351,7 +352,7 @@ export class ClientSyncManager {
       'Couldn’t check for permission changes. No one is logged in.',
     );
 
-    const hasPermissionChange = await hasSyncSnapshotRecords(
+    const hasUserEntityPermissionChange = await hasSyncSnapshotRecords(
       this.database,
       sessionId,
       undefined,
@@ -359,7 +360,14 @@ export class ClientSyncManager {
       "data->>'user_id' = :userId",
       { userId: currentUserId },
     );
-    if (hasPermissionChange) {
+    const hasPermissionHierarchyChange =
+      await hasPermissionGroupHierarchyChangeInSyncSnapshot(
+        this.database,
+        sessionId,
+        currentUserId,
+      );
+
+    if (hasUserEntityPermissionChange || hasPermissionHierarchyChange) {
       await this.updatePermissionsChanged(true);
     }
   }
