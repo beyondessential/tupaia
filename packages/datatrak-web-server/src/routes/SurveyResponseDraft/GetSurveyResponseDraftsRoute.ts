@@ -50,23 +50,32 @@ export class GetSurveyResponseDraftsRoute extends Route<GetSurveyResponseDraftsR
       return { items: [], hasMorePages: false, pageNumber: page };
     }
 
-    // Batch fetch surveys and entities to avoid N+1 queries
+    // Batch fetch surveys (permission-filtered) and entities to avoid N+1 queries
     const surveyIds = [...new Set(paginatedDrafts.map(d => d.survey_id).filter(Boolean))] as string[];
     const entityIds = [...new Set(paginatedDrafts.map(d => d.entity_id).filter(Boolean))] as string[];
 
     const [surveys, entities] = await Promise.all([
-      surveyIds.length > 0 ? models.survey.findManyById(surveyIds) : [],
+      surveyIds.length > 0
+        ? ctx.services.central.fetchResources('surveys', {
+            filter: { id: surveyIds },
+            columns: ['id', 'code', 'name'],
+            pageSize: 'ALL',
+          })
+        : [],
       entityIds.length > 0 ? models.entity.findManyById(entityIds) : [],
     ]);
 
     // Create lookup maps for O(1) access
-    const surveyMap = new Map(surveys.map(s => [s.id, s]));
+    const surveyMap = new Map(surveys.map((s: any) => [s.id, s]));
     const entityMap = new Map(entities.map(e => [e.id, e]));
+
+    // Filter out drafts for surveys the user no longer has permission to access
+    const permittedDrafts = paginatedDrafts.filter(d => surveyMap.has(d.survey_id as string));
 
     // Batch fetch country entities by country_code for country name lookup
     const countryCodes = [
       ...new Set(
-        paginatedDrafts
+        permittedDrafts
           .map(d => (d.country_code as string) ?? entityMap.get(d.entity_id as string)?.country_code)
           .filter(Boolean),
       ),
@@ -77,7 +86,7 @@ export class GetSurveyResponseDraftsRoute extends Route<GetSurveyResponseDraftsR
         : [];
     const countryMap = new Map(countryEntities.map(c => [c.code, c.name]));
 
-    const items = paginatedDrafts.map(draft => {
+    const items = permittedDrafts.map(draft => {
       const survey = draft.survey_id ? surveyMap.get(draft.survey_id as string) : null;
       const entity = draft.entity_id ? entityMap.get(draft.entity_id as string) : null;
       const countryCode = (draft.country_code as string) ?? entity?.country_code ?? null;
