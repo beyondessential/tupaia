@@ -1,4 +1,4 @@
-import { BaseDatabase, RECORDS } from '@tupaia/database';
+import { type BaseDatabase, RECORDS } from '@tupaia/database';
 import type { UserAccount } from '@tupaia/types';
 import { getSnapshotTableName } from './manageSnapshotTable';
 
