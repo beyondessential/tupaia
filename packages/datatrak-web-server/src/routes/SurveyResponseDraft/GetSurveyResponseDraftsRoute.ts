@@ -66,7 +66,9 @@ export class GetSurveyResponseDraftsRoute extends Route<GetSurveyResponseDraftsR
     ]);
 
     // Create lookup maps for O(1) access
-    const surveyMap = new Map(surveys.map((s: any) => [s.id, s]));
+    const surveyMap = new Map<string, { id: string; code: string; name: string }>(
+      surveys.map((s: any) => [s.id, s]),
+    );
     const entityMap = new Map(entities.map(e => [e.id, e]));
 
     // Filter out drafts for surveys the user no longer has permission to access
