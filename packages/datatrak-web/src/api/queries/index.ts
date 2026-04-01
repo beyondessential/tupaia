@@ -29,3 +29,4 @@ export { useDatabaseMutation } from './useDatabaseMutation';
 export type { ContextualMutationFunctionContext } from './useDatabaseMutation';
 export { useHasUnsyncedDataQuery } from './useHasUnsyncedDataQuery';
 export { useSurveyResponseDrafts } from './useSurveyResponseDrafts';
+export { useOnlineQuery } from './useOnlineQuery';

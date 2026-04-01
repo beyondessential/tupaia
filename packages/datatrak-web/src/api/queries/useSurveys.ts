@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { DatatrakWebSurveyRequest } from '@tupaia/types';
+import { useOnlineQuery } from './useOnlineQuery';
 import { get } from '../api';
 
 type ProjectedSurveysResponse = Required<
@@ -10,7 +10,7 @@ type ProjectedSurveysResponse = Required<
 >[];
 
 export const useSurveys = () => {
-  return useQuery<ProjectedSurveysResponse>(
+  return useOnlineQuery<ProjectedSurveysResponse>(
     ['surveys'],
     async () =>
       await get('surveys', {
