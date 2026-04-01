@@ -3,8 +3,9 @@ import type { UserAccount } from '@tupaia/types';
 import { getSnapshotTableName } from './manageSnapshotTable';
 
 /**
- * Returns `true` if the sync snapshot for `sessionId` encodes a change to the user’s permission
- * group hierarchy (access policy).
+ * Returns `true` if the sync snapshot for `sessionId` includes a change to a descendant of a
+ * permission_group the user already has access to. Does not detect new `permission_group`s granted
+ * to the user via `user_entity_permission`.
  */
 export const hasPermissionGroupHierarchyChangeInSyncSnapshot = async (
   database: BaseDatabase,
@@ -39,7 +40,7 @@ export const hasPermissionGroupHierarchyChangeInSyncSnapshot = async (
   const [{ matches }] = await database.executeSql<[{ matches: boolean }]>(
     `
       WITH RECURSIVE user_perm AS (
-        SELECT DISTINCT permission_group_id AS pg_id
+        SELECT DISTINCT permission_group_id
         FROM user_entity_permission
         WHERE user_id = :userId
       ),
@@ -55,7 +56,7 @@ export const hasPermissionGroupHierarchyChangeInSyncSnapshot = async (
         INNER JOIN LATERAL (
           SELECT
             coalesce(
-              (SELECT pg.parent_id::text FROM permission_group pg WHERE pg.id = w.current_id),
+              (SELECT pg.parent_id FROM permission_group pg WHERE pg.id = w.current_id),
               (
                 SELECT NULLIF (s2.data ->> 'parent_id', '')
                 FROM ${snapshotTable} s2
@@ -66,13 +67,18 @@ export const hasPermissionGroupHierarchyChangeInSyncSnapshot = async (
           ) pl ON pl.parent_id IS NOT NULL
         WHERE w.depth < :maxDepth
       )
+
       SELECT EXISTS (
         SELECT 1
         FROM walk w
-        INNER JOIN user_perm u ON u.pg_id::text = w.current_id
+        INNER JOIN user_perm u ON u.permission_group_id = w.current_id
       ) AS matches
     `,
-    { userId, recordType: RECORDS.PERMISSION_GROUP, maxDepth },
+    {
+      userId,
+      recordType: RECORDS.PERMISSION_GROUP,
+      maxDepth,
+    },
   );
 
   return matches;
