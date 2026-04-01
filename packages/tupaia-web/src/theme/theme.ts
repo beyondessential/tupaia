@@ -79,10 +79,7 @@ theme.overrides = {
   },
   MuiCssBaseline: {
     '@global': {
-      '*': {
-        textDecorationThickness: 'from-font',
-      },
-      html: {
+      ':root': {
         '--ease-in-quad': 'cubic-bezier(0.11, 0, 0.5, 0)',
         '--ease-out-quad': 'cubic-bezier(0.5, 1, 0.89, 1)',
         '--ease-in-out-quad': 'cubic-bezier(0.45, 0, 0.55, 1)',

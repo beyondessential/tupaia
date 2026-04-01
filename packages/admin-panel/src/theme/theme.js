@@ -195,18 +195,6 @@ const overrides = {
   },
   MuiCssBaseline: {
     '@global': {
-      '*': {
-        textDecorationThickness: 'from-font',
-      },
-      html: {
-        textWrap: 'pretty',
-      },
-      'button, figcaption, h1, h2, h3, h4, h5, h6, input, label': {
-        textWrap: 'balance',
-      },
-      'button, input, textarea, select': {
-        touchAction: 'manipulation',
-      },
       label: {
         fontWeight: 500,
       },
@@ -223,9 +211,6 @@ const overrides = {
     root: {
       fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
     },
-  },
-  MuiLink: {
-    root: { textDecorationThickness: 'from-font' },
   },
   MuiSvgIcon: {
     root: {
