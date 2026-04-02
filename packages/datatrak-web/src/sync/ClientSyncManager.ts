@@ -349,7 +349,7 @@ export class ClientSyncManager {
   /**
    * User’s access policy changes when:
    * - a `user_entity_permission` linked to them is added/updated/deleted; or
-   * - a descendant `permission_group` the user has access to is added/updated/deleted.
+   * - a descendant `permission_group` they has access to is added/updated/deleted.
    */
   async checkForPermissionChanges(sessionId: string) {
     const currentUserId = ensure(
