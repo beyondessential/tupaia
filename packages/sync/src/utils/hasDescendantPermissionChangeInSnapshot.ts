@@ -49,7 +49,7 @@ export const hasDescendantPermissionChangeInSnapshot = async (
         FROM ${snapshotTable} s
         WHERE s.record_type = :recordType
 
-        UNION ALL
+        UNION
 
         SELECT pl.parent_id, w.depth + 1
         FROM walk w
