@@ -15,7 +15,7 @@ export class UserRewardsRoute extends Route<UserRewardsRequest> {
     const { id: userId } = user;
 
     const [{ coconuts, pigs }] = await models.database.executeSql<
-      [{ coconuts: number; pigs: number }]
+      { coconuts: number; pigs: number }[]
     >(
       // The COUNT(*)::int is required here, since pg serializes count to string
       // (https://stackoverflow.com/questions/47843370/postgres-sequelize-raw-query-to-get-count-returns-string-value)

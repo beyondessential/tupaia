@@ -1,3 +1,7 @@
+/**
+ * @typedef {import('@tupaia/types').ValueOf} ValueOf
+ */
+
 import { UserRecord as CommonUserRecord, UserModel as CommonUserModel } from '@tupaia/database';
 
 // Internal users who should be flagged in the meditrak app to exclude from user lists
@@ -20,23 +24,22 @@ const INTERNAL_EMAIL_REGEXP = /((@bes.au)|(@tupaia.org)|(@beyondessential.com.au
 // in the generic database package, this is a quick and dirty way to get
 // context for them into central-server
 // TODO: Move sessions into database and clean this up
-const SERVICES = {
+const SERVICES = /** @type {const} */ ({
   // admin_panel: 'admin_panel_session',
   // datatrak_web: 'datatrak_web_session',
   tupaia_web: 'tupaia_web_session',
-};
+});
 
 class UserRecord extends CommonUserRecord {
+  /** @param {ValueOf<typeof SERVICES>} service  */
   async expireSessionToken(service) {
     if (!SERVICES[service]) {
       throw new Error(`${service} is not a support service for session expiry`);
     }
-    await this.database.executeSql(
-      `
-        UPDATE ?? SET access_token_expiry = 0 WHERE email = ?
-      `,
-      [SERVICES[service], this.email],
-    );
+    await this.database.executeSql('UPDATE ?? SET access_token_expiry = 0 WHERE email = ?', [
+      SERVICES[service],
+      this.email,
+    ]);
   }
 }
 

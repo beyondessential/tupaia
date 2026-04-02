@@ -1,7 +1,7 @@
 import React from 'react';
 import { generatePath, Navigate, Route, useParams } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
-import { ROUTES } from '../constants';
+import { RoutePath, ROUTES } from '../constants';
 import {
   ErrorPage,
   SurveyPage,
@@ -15,18 +15,24 @@ import { useCurrentUserContext, useSurvey } from '../api';
 import { SurveyResubmitRoute } from './SurveyResponseRoute';
 
 // Redirect to the start of the survey if no screen number is provided
-const SurveyStartRedirect = ({ baseRoute = ROUTES.SURVEY_SCREEN }) => {
+const SurveyStartRedirect = ({ baseRoute = ROUTES.SURVEY_SCREEN }: { baseRoute?: RoutePath }) => {
   const params = useParams();
   const path = generatePath(baseRoute, { ...params, screenNumber: '1' });
   return <Navigate to={path} replace={true} />;
 };
 
 // Redirect to the start of the survey if they try to access a screen that is not visible on the survey
-const SurveyPageRedirect = ({ children, baseRoute = ROUTES.SURVEY_SCREEN }) => {
+const SurveyPageRedirect = ({
+  baseRoute = ROUTES.SURVEY_SCREEN,
+  children,
+}: {
+  baseRoute?: RoutePath;
+  children: JSX.Element;
+}) => {
   const { screenNumber } = useParams();
   const { visibleScreens } = useSurveyForm();
 
-  if (visibleScreens && visibleScreens.length && visibleScreens.length < Number(screenNumber)) {
+  if (visibleScreens?.length && visibleScreens.length < Number(screenNumber)) {
     return <SurveyStartRedirect baseRoute={baseRoute} />;
   }
   return children;

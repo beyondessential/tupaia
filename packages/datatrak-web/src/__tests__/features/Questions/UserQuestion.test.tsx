@@ -70,12 +70,12 @@ describe('User Question', () => {
     },
   };
 
-  it('renders the user question component without crashing', () => {
-    renderComponent(<UserQuestion {...props} />);
+  it('renders the user question component without crashing', async () => {
+    await renderComponent(<UserQuestion {...props} />);
   });
 
   it('renders all the options', async () => {
-    renderComponent(<UserQuestion {...props} />);
+    await renderComponent(<UserQuestion {...props} />);
 
     const openButton = screen.getByTitle('Open');
     openButton.click();
@@ -89,7 +89,7 @@ describe('User Question', () => {
   });
 
   it('Calls the onChange method with the option value', async () => {
-    renderComponent(<UserQuestion {...props} />);
+    await renderComponent(<UserQuestion {...props} />);
 
     const openButton = screen.getByTitle('Open');
     openButton.click();

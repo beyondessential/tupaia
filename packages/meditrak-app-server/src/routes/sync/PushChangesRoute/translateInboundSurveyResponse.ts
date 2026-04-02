@@ -10,7 +10,7 @@ import { RawSurveyResponseObject } from './types';
  * { user_email: "user@beyondessential.com.au" } => { user_id: "5fbb27d061f76a22920130a1" }
  */
 const translateUserEmailToId = async (userModel: UserModel, email: string) => {
-  const user = await userModel.findOne({ email });
+  const user = await userModel.findOneOrThrow({ email });
   return { user_id: user.id };
 };
 
@@ -18,7 +18,7 @@ const translateUserEmailToId = async (userModel: UserModel, email: string) => {
  * { entity_code: "TO" } => { entity_id: "5d3f884471bb2e31bfacae23" }
  */
 const translateEntityCodeToId = async (entityModel: EntityModel, code: string) => {
-  const entity = await entityModel.findOne({ code });
+  const entity = await entityModel.findOneOrThrow({ code });
   return { entity_id: entity.id };
 };
 

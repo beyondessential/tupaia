@@ -13,6 +13,15 @@ jobs:
     env:
       PR_TITLE: ${{ github.event.pull_request.title }}
     steps:
+      # This step is redundant, but provides clearer error message
+      - name: Assert no leading or trailing whitespace
+        shell: bash
+        run: |
+          if grep -qP '^\s|\s$' <<<"$PR_TITLE"; then
+            echo "::warning::PR title has leading and/or trailing whitespace"
+            exit 1
+          fi
+
       - id: release
         name: Check for release PR format
         if: startsWith(github.event.pull_request.title, 'Release')

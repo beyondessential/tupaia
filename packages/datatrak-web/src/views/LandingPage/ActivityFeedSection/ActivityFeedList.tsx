@@ -2,10 +2,9 @@ import { Link } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
 
+import { isNotNullish } from '@tupaia/tsutils';
 import { DatatrakWebActivityFeedRequest, FeedItemTypes } from '@tupaia/types';
-
 import { MarkdownFeedItem, SurveyResponseFeedItem } from '../../../types';
-import { isNotNullish } from '../../../utils';
 import { ActivityFeedItem } from './ActivityFeedItem';
 import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
 import { ActivityFeedSurveyItem } from './ActivityFeedSurveyItem';
