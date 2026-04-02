@@ -15,6 +15,8 @@ const StyledLink = styled(Link)`
 
 let pendingRegistration: ServiceWorkerRegistration | null = null;
 let notifyComponent: (() => void) | null = null;
+/** Prevents double reload if controllerchange fires more than once (see workbox-window recipe). */
+let controllerChangeReloadScheduled = false;
 
 export function setUpdateReady(registration: ServiceWorkerRegistration) {
   pendingRegistration = registration;
@@ -56,14 +58,18 @@ export const UpdateNotification = () => {
 
     // Following the workbox-window recipe: register controllerchange listener
     // *before* messaging the worker, so it's guaranteed to be in place.
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
+    // Do not use a timed fallback reload: if skipWaiting never takes effect, a blind
+    // reload still runs under the old controller and serves the same cached bundle.
+    const onControllerChange = () => {
+      if (controllerChangeReloadScheduled) {
+        return;
+      }
+      controllerChangeReloadScheduled = true;
       window.location.reload();
-    });
+    };
+    navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
 
     waiting.postMessage({ type: 'SKIP_WAITING' });
-
-    // Fallback: if controllerchange never fires, reload after 3 seconds
-    setTimeout(() => window.location.reload(), 3000);
   };
 
   return (
