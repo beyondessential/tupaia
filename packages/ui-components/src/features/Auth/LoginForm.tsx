@@ -95,6 +95,7 @@ export const LoginForm = ({
           Input={AuthFormTextField}
           label={email}
           disabled={isLoading}
+          spellCheck={false}
         />
         <FormInput
           autoComplete="current-password"
