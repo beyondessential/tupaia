@@ -81,13 +81,18 @@ export const LoginForm = ({
   } = labels || {};
   return (
     <Wrapper title={title} subtitle={subtitle} className={className}>
-      {error && <Typography color="error" align="center">{error.message}</Typography>}
+      {error && (
+        <Typography color="error" align="center">
+          {error.message}
+        </Typography>
+      )}
       {message && <EmailVerificationDisplay message={message} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
         <FormInput
           autoComplete="email"
           autoFocus
           id="email"
+          inputProps={{ enterKeyHint: 'next', spellCheck: false }}
           name="email"
           type="email"
           options={FORM_FIELD_VALIDATION.EMAIL}
@@ -95,11 +100,11 @@ export const LoginForm = ({
           Input={AuthFormTextField}
           label={email}
           disabled={isLoading}
-          spellCheck={false}
         />
         <FormInput
           autoComplete="current-password"
           id="password"
+          inputProps={{ enterKeyHint: 'go' }}
           name="password"
           type="password"
           required
