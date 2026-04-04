@@ -1,4 +1,8 @@
 import { QueryConjunctions, EntityFilter, EntityFilterFields } from '@tupaia/server-boilerplate';
+import {
+  OPERATORS_THAT_TREAT_COMMA_AS_LITERAL,
+  type EntityFilterOperator,
+} from '@tupaia/tsmodels';
 import { NumericKeys, Writable } from '@tupaia/types';
 import { getSortByKey } from '@tupaia/utils';
 
@@ -75,11 +79,13 @@ const convertValueToAdvancedCriteria = (
   operator: Operator,
   value: string,
 ) => {
-  const formattedValue = value.includes(MULTIPLE_VALUES_DELIMITER)
-    ? (value
-        .split(MULTIPLE_VALUES_DELIMITER)
-        .map(val => formatValue(field, val)) as ExtractArrays<Value>)
-    : formatValue(field, value);
+  const formattedValue =
+    value.includes(MULTIPLE_VALUES_DELIMITER) &&
+    !OPERATORS_THAT_TREAT_COMMA_AS_LITERAL.has(operator as EntityFilterOperator)
+      ? (value
+          .split(MULTIPLE_VALUES_DELIMITER)
+          .map(val => formatValue(field, val)) as ExtractArrays<Value>)
+      : formatValue(field, value);
 
   // For equal operator, we do not need to specify comparison object.
   if (operator === '==') {
