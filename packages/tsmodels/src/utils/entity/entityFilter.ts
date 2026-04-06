@@ -87,6 +87,17 @@ const operatorToSqlArrayComparator = {
 } as const;
 type Operator = keyof typeof operatorToSqlComparator;
 
+export type EntityFilterOperator = Operator;
+
+/**
+ * For `==` and `!=`, a comma in the filter value separates multiple alternatives (IN / NOT IN).
+ * For these operators the whole string is one comparison term—commas stay literal (e.g. substring
+ * match on a name like "Town, Region").
+ */
+export const OPERATORS_THAT_TREAT_COMMA_AS_LITERAL: ReadonlySet<EntityFilterOperator> = new Set([
+  '=@',
+]);
+
 const filterOperators = Object.keys(operatorToSqlComparator) as Operator[];
 
 type Value = RawValue | RawValue[];
@@ -117,7 +128,9 @@ const convertValueToAdvancedCriteria = (
     formattedValue = value.map(val => formatValue(field, val));
   } else {
     formattedValue =
-      typeof value === 'string' && value.includes(MULTIPLE_VALUES_DELIMITER)
+      typeof value === 'string' &&
+      value.includes(MULTIPLE_VALUES_DELIMITER) &&
+      !OPERATORS_THAT_TREAT_COMMA_AS_LITERAL.has(operator)
         ? (value
             .split(MULTIPLE_VALUES_DELIMITER)
             .map(val => formatValue(field, val)) as ExtractArrays<Value>)

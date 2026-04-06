@@ -321,6 +321,14 @@ describe('fieldsAndFilters', () => {
       ]);
     });
 
+    it('=@ filter treats a comma in the search string as literal text (not multiple alternatives)', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'name=@City,Nonexistent' },
+      });
+
+      expect(entities).toEqual([]);
+    });
+
     it('array filtering uses IN logic for ==', async () => {
       const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
         query: { field: 'code', filter: 'type==individual,country' },
