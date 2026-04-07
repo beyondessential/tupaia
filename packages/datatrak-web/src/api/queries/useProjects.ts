@@ -1,9 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
-import { DatatrakWebProjectsRequest } from '@tupaia/types';
+import type { DatatrakWebProjectsRequest } from '@tupaia/types';
+import { useOnlineQuery } from './useOnlineQuery';
 import { get } from '../api';
 
 const useProjectQuery = () =>
-  useQuery<DatatrakWebProjectsRequest.ResBody>(['projects'], () => get('projects'));
+  useOnlineQuery<DatatrakWebProjectsRequest.ResBody>(
+    ['projects'],
+    async () => await get('projects'),
+  );
 
 export const useProjects = (sortByAccess = true) => {
   const useQueryResult = useProjectQuery();
@@ -40,7 +43,7 @@ export const useAccessibleProjects = () => {
   if (!useQueryResult.data) return useQueryResult;
 
   const { data, ...query } = useQueryResult;
-  
+
   return {
     ...query,
     data: data?.filter(project => project.hasAccess),
