@@ -58,20 +58,35 @@ interface SurveyResponseMutationFunctionContext
     answers?: AnswersT;
   }> { }
 
-const createEntityParentChildRelation = async (transactingModels: DatatrakWebModelRegistry, entityHierarchyId: string, entitiesUpserted: Entity[]) => {
-  const relations = entitiesUpserted
-    .filter(entity => Boolean(entity.parent_id))
-    .map(entity => ({
-      entity_hierarchy_id: entityHierarchyId,
-      parent_id: entity.parent_id as string,
-      child_id: entity.id,
-    }));
-  if (relations.length > 0) {
-    await transactingModels.entityParentChildRelation.createMany(relations, {
-      onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
-    });
+const createEntityParentChildRelation = async (
+  transactingModels: DatatrakWebModelRegistry,
+  entityHierarchyId: string,
+  entitiesUpserted: Entity[],
+) => {
+  const entitiesWithParent = entitiesUpserted.filter(
+    (entity): entity is Entity & { parent_id: string } => typeof entity.parent_id === 'string',
+  );
+  const relations = entitiesWithParent.map(entity => ({
+    entity_hierarchy_id: entityHierarchyId,
+    parent_id: entity.parent_id,
+    child_id: entity.id,
+  }));
+  if (relations.length === 0) { 
+    return; 
   }
-}
+
+  // Re-parenting should replace existing links for each child in this hierarchy.
+  // Without this, stale rows can leave the same child under both old and new parents.
+  const childIds = [...new Set(relations.map(({ child_id }) => child_id))];
+  await transactingModels.entityParentChildRelation.delete({
+    entity_hierarchy_id: entityHierarchyId,
+    child_id: childIds,
+  });
+
+  await transactingModels.entityParentChildRelation.createMany(relations, {
+    onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
+  });
+};
 
 export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
