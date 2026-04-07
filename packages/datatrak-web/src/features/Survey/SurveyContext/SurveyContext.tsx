@@ -31,8 +31,6 @@ const defaultContext = {
   isSuccessScreen: false,
   numberOfScreens: 0,
   primaryEntityQuestion: null,
-  screenDetail: undefined,
-  screenHeader: undefined,
   screenNumber: 1,
   sideMenuOpen: false,
   startTime: new Date().toISOString(),
@@ -150,8 +148,6 @@ export const SurveyContext = ({
   }
 
   const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
-  const screenHeader = activeScreen?.[0]?.text;
-  const screenDetail = activeScreen?.[0]?.detail;
 
   return (
     <SurveyFormContext.Provider
@@ -165,8 +161,6 @@ export const SurveyContext = ({
         isResponseScreen,
         displayQuestions,
         surveyScreens,
-        screenHeader,
-        screenDetail,
         visibleScreens,
         countryCode,
         surveyCode,
