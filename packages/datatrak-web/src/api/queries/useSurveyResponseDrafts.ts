@@ -1,4 +1,5 @@
 import { useInfiniteQuery, UseQueryOptions } from '@tanstack/react-query';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { ensure } from '@tupaia/tsutils';
 import { DatatrakWebSurveyResponseDraftsRequest, EntityTypeEnum } from '@tupaia/types';
 import { useCurrentUserContext } from '../CurrentUserContext';
@@ -12,12 +13,14 @@ type PageResponse = DatatrakWebSurveyResponseDraftsRequest.ResBody;
 interface DraftsQueryContext extends ContextualQueryFunctionContext {
   userId?: string;
   projectId?: string;
+  accessPolicy: AccessPolicy;
 }
 
 const localQueryFunction = async ({
   models,
   userId,
   projectId,
+  accessPolicy,
 }: DraftsQueryContext): Promise<PageResponse> => {
   const drafts = await models.surveyResponseDraft.find(
     { user_id: ensure(userId), is_deleted: false },
@@ -32,21 +35,28 @@ const localQueryFunction = async ({
     ...new Set(drafts.map(d => d.entity_id).filter((id): id is string => Boolean(id))),
   ];
 
+  // Apply permission filtering to surveys so drafts for revoked permissions are hidden
+  const surveyFilter = await models.survey.createRecordsPermissionFilter(accessPolicy, {
+    id: surveyIds,
+  });
+
   const [surveys, entities] = await Promise.all([
-    surveyIds.length > 0 ? models.survey.find({ id: surveyIds }) : Promise.resolve([]),
+    surveyIds.length > 0 ? models.survey.find(surveyFilter) : Promise.resolve([]),
     entityIds.length > 0 ? models.entity.find({ id: entityIds }) : Promise.resolve([]),
   ]);
 
   const surveyMap = new Map(surveys.map(s => [s.id, s]));
   const entityMap = new Map(entities.map(e => [e.id, e]));
 
-  // Filter by project if specified
-  const filteredDrafts = projectId
-    ? drafts.filter(draft => {
-        const survey = draft.survey_id ? surveyMap.get(draft.survey_id) : null;
-        return survey?.project_id === projectId;
-      })
-    : drafts;
+  // Filter out drafts for surveys the user no longer has permission to access, and by project
+  const filteredDrafts = drafts.filter(draft => {
+    if (!draft.survey_id || !surveyMap.has(draft.survey_id)) return false;
+    if (projectId) {
+      const survey = surveyMap.get(draft.survey_id);
+      return survey?.project_id === projectId;
+    }
+    return true;
+  });
 
   // Batch fetch country entities by country_code
   const countryCodes = [
