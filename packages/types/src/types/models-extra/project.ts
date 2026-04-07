@@ -15,4 +15,5 @@ export type ProjectConfig = {
   tileSets?: string;
   includeDefaultTileSets?: boolean;
   projectDashboardHeader?: string;
+  hideCoconutsPigs?: boolean;
 };

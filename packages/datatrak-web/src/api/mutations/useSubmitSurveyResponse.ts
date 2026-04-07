@@ -7,6 +7,7 @@ import { DatatrakWebSubmitSurveyResponseRequest, Entity, Survey, UserAccount } f
 import { getBrowserTimeZone } from '@tupaia/utils';
 
 import { post, useCurrentUserContext, useEntityByCode } from '..';
+import { useShowCoconutsPigs } from '../queries';
 import { Coconut } from '../../components';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
@@ -97,6 +98,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
   const { data: survey } = useSurvey(params.surveyCode);
   const surveyResponseData = useSurveyResponseData();
   const isOfflineFirst = useIsOfflineFirst();
+  const { showCoconutsPigs } = useShowCoconutsPigs();
 
   const mutationFunctions = {
     local: async ({ data: answers, models, user }: SurveyResponseMutationFunctionContext) => {
@@ -194,7 +196,11 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         }
 
         resetForm();
-        successToast('Congratulations! You’ve earned a coconut', Coconut);
+        if (showCoconutsPigs) {
+          successToast('Congratulations! You\'ve earned a coconut', Coconut);
+        } else {
+          successToast('Survey submitted successfully');
+        }
         // include the survey response data in the location state, so that we can use it to generate QR codes
         navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
           state: {

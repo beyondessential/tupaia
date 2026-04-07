@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { useCurrentUserContext, useUserRewards } from '../../../api';
+import { Skeleton } from '@material-ui/lab';
+
+import { useCurrentUserContext, useShowCoconutsPigs, useUserRewards } from '../../../api';
 import { Coconut, Pig } from '../../../components';
 
 const UserContent = styled.div<{
@@ -56,12 +58,19 @@ const UserRewardsItem = styled(Typography)`
 export const UserDetails = () => {
   const user = useCurrentUserContext();
   const { data: userRewards } = useUserRewards();
-  return (
-    <UserContent $appearsDisabled={user.deleteAccountRequested}>
-      <div>
-        <UserName>{user.fullName}</UserName>
-        <Typography>{user.email}</Typography>
-      </div>
+  const { showCoconutsPigs, isConfigLoaded } = useShowCoconutsPigs();
+
+  const renderRewards = () => {
+    if (!isConfigLoaded) {
+      return (
+        <UserRewards>
+          <Skeleton width={100} height={20} />
+          <Skeleton width={80} height={20} />
+        </UserRewards>
+      );
+    }
+    if (!showCoconutsPigs) return null;
+    return (
       <UserRewards>
         <UserRewardsItem>
           <Coconut /> {userRewards?.coconuts}&nbsp;coconuts
@@ -70,6 +79,16 @@ export const UserDetails = () => {
           <Pig /> {userRewards?.pigs}&nbsp;pigs
         </UserRewardsItem>
       </UserRewards>
+    );
+  };
+
+  return (
+    <UserContent $appearsDisabled={user.deleteAccountRequested}>
+      <div>
+        <UserName>{user.fullName}</UserName>
+        <Typography>{user.email}</Typography>
+      </div>
+      {renderRewards()}
     </UserContent>
   );
 };
