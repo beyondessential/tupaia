@@ -19,6 +19,7 @@ import {
   NotAuthorisedPage,
   ExportSurveyResponsePage,
   OfflinePage,
+  DownloadPage,
 } from '../views';
 import { WelcomeScreens } from '../views/WelcomeScreens';
 import { useCurrentUserContext } from '../api';
@@ -57,6 +58,8 @@ export const Routes = () => {
     <RouterRoutes>
       <Route path={ROUTES.OFFLINE} element={<OfflinePage />} />
       <Route path={ROUTES.EXPORT_SURVEY_RESPONSE} element={<ExportSurveyResponsePage />} />
+
+      <Route path={ROUTES.DOWNLOAD} element={<DownloadPage />} />
 
       <Route path="/" element={<MainPageLayout />}>
         <Route path={ROUTES.MOBILE_USER_MENU} element={<MobileUserMenu />} />

@@ -1,3 +1,5 @@
+export { AndroidIcon } from './AndroidIcon';
+export { AppleIcon } from './AppleIcon';
 export { Coconut } from './Coconut';
 export { CommentIcon } from './CommentIcon';
 export { CopyIcon } from './CopyIcon';

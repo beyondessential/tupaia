@@ -34,6 +34,7 @@ export const ROUTES = {
   NOT_AUTHORISED: '/not-authorised',
   WELCOME: '/welcome',
   EXPORT_SURVEY_RESPONSE: 'export/:surveyResponseId',
+  DOWNLOAD: '/download',
   MOBILE_USER_MENU: '/more',
 } as const;
 

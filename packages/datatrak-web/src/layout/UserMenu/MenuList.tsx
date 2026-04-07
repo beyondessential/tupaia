@@ -9,6 +9,7 @@ import { Button } from '@tupaia/ui-components';
 import { useCurrentUserContext } from '../../api';
 import { useIsOfflineFirst } from '../../api/offlineFirst';
 import { type RoutePath, ROUTES } from '../../constants';
+import { getIsMobileDevice } from '../../utils/detectDevice';
 import { useAbandonSurveyGuard } from '../../hooks/useAbandonSurveyGuard';
 import { useLogoutGuard } from '../../hooks/useGuardedLogout';
 import { MobileUserMenuRoot } from './MobileUserMenu';
@@ -155,6 +156,13 @@ export const MenuList = ({
       onClick: mouseEvent => guardedNavigate(mouseEvent, ROUTES.REPORTS),
       hidden: !isLoggedIn || !hasAdminPanelAccess,
       icon: chevronRight,
+    },
+    {
+      label: 'Download desktop app',
+      component: Link,
+      href: ROUTES.DOWNLOAD,
+      hidden: getIsMobileDevice(),
+      icon: externalIcon,
     },
     {
       label: 'Support centre',
