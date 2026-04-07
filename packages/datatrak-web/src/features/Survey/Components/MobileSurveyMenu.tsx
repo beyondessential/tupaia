@@ -6,20 +6,21 @@ import { FormatListBulleted, KeyboardArrowRight } from '@material-ui/icons';
 import { ShareIcon, Button as UIButton } from '../../../components';
 import { ROUTES, BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
+import { useCurrentUserContext } from '../../../api';
 import { useShare } from '../utils/useShare';
 import { useNavigationBlockerContext } from '../../../utils';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
 import { SaveAndExitModal } from './SaveAndExitModal';
 
-const Container = styled.nav`
+const Container = styled.nav<{ $columnCount: number }>`
   align-items: stretch;
   background: white;
   border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   display: grid;
-  grid-template-columns: minmax(min-content, 1.5fr) repeat(2, minmax(3.5rem, 1fr)) minmax(
-      min-content,
-      1.5fr
-    );
+  grid-template-columns: ${({ $columnCount }) =>
+    $columnCount === 4
+      ? 'minmax(min-content, 1.5fr) repeat(2, minmax(3.5rem, 1fr)) minmax(min-content, 1.5fr)'
+      : 'repeat(2, minmax(3.5rem, 1fr)) minmax(min-content, 1.5fr)'};
   inline-size: 100%;
   inset-block-end: 0;
   justify-content: space-between;
@@ -62,6 +63,7 @@ const SaveButton = styled(SubmitButton).attrs({
 export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
   const { toggleSideMenu, isLast, isResubmit, isReviewScreen } = useSurveyForm();
   const navigate = useNavigate();
+  const { isLoggedIn } = useCurrentUserContext();
   const share = useShare();
   const { disableAll: disableNavigationBlockers } = useNavigationBlockerContext();
   const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft(() => navigate(ROUTES.HOME));
@@ -79,10 +81,12 @@ export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
   };
 
   return (
-    <Container {...props}>
-      <SaveButton onClick={() => setIsSaveModalOpen(true)} disabled={isSavingDraft}>
-        Save & exit
-      </SaveButton>
+    <Container {...props} $columnCount={isLoggedIn ? 4 : 3}>
+      {isLoggedIn && (
+        <SaveButton onClick={() => setIsSaveModalOpen(true)} disabled={isSavingDraft}>
+          Save & exit
+        </SaveButton>
+      )}
       <IconButton onClick={toggleSideMenu}>
         <FormatListBulleted />
       </IconButton>
@@ -92,12 +96,14 @@ export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
       <SubmitButton type="submit" endIcon={<KeyboardArrowRight />}>
         {getNextButtonText()}
       </SubmitButton>
-      <SaveAndExitModal
-        isOpen={isSaveModalOpen}
-        onClose={() => setIsSaveModalOpen(false)}
-        onSave={handleSaveAndExit}
-        isLoading={isSavingDraft}
-      />
+      {isLoggedIn && (
+        <SaveAndExitModal
+          isOpen={isSaveModalOpen}
+          onClose={() => setIsSaveModalOpen(false)}
+          onSave={handleSaveAndExit}
+          isLoading={isSavingDraft}
+        />
+      )}
     </Container>
   );
 };

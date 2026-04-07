@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Button } from '../../../components';
 import { ROUTES } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
+import { useCurrentUserContext } from '../../../api';
 import { useNavigationBlockerContext } from '../../../utils';
 import { useSaveAsDraft } from '../hooks/useSaveAsDraft';
 import { SaveAndExitModal } from './SaveAndExitModal';
@@ -52,6 +53,7 @@ export const SurveyPaginator = () => {
   const { isLast, isResubmit, isReviewScreen } = useSurveyForm();
   const { isLoading, onStepPrevious, hasBackButton } = useOutletContext<SurveyLayoutContextT>();
   const navigate = useNavigate();
+  const { isLoggedIn } = useCurrentUserContext();
   const { disableAll: disableNavigationBlockers } = useNavigationBlockerContext();
   const { saveAsDraft, isLoading: isSavingDraft } = useSaveAsDraft(() => navigate('/'));
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -77,9 +79,11 @@ export const SurveyPaginator = () => {
             Back
           </BackButton>
         )}
-        <Button onClick={() => setIsSaveModalOpen(true)} variant="outlined" disabled={isDisabled}>
-          Save &amp; exit
-        </Button>
+        {isLoggedIn && (
+          <Button onClick={() => setIsSaveModalOpen(true)} variant="outlined" disabled={isDisabled}>
+            Save &amp; exit
+          </Button>
+        )}
       </ButtonGroup>
       <ButtonGroup>
         <Button onClick={() => navigate(ROUTES.HOME)} variant="outlined" disabled={isDisabled}>
@@ -89,12 +93,14 @@ export const SurveyPaginator = () => {
           {getNextButtonText()}
         </Button>
       </ButtonGroup>
-      <SaveAndExitModal
-        isOpen={isSaveModalOpen}
-        onClose={() => setIsSaveModalOpen(false)}
-        onSave={handleSaveAndExit}
-        isLoading={isSavingDraft}
-      />
+      {isLoggedIn && (
+        <SaveAndExitModal
+          isOpen={isSaveModalOpen}
+          onClose={() => setIsSaveModalOpen(false)}
+          onSave={handleSaveAndExit}
+          isLoading={isSavingDraft}
+        />
+      )}
     </FormActions>
   );
 };
