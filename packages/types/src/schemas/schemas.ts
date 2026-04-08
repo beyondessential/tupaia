@@ -48279,7 +48279,7 @@ export const ProjectConfigSchema = {
 		},
 		"hideCoconutsPigs": {
 			"type": "boolean"
- 		}
+		}
 	},
 	"additionalProperties": false
 }
