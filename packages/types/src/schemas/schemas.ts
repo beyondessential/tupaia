@@ -48276,7 +48276,10 @@ export const ProjectConfigSchema = {
 		},
 		"projectDashboardHeader": {
 			"type": "string"
-		}
+		},
+		"hideCoconutsPigs": {
+			"type": "boolean"
+ 		}
 	},
 	"additionalProperties": false
 }
@@ -97539,6 +97542,9 @@ export const ProjectSchema = {
 				},
 				"projectDashboardHeader": {
 					"type": "string"
+				},
+				"hideCoconutsPigs": {
+					"type": "boolean"
 				}
 			},
 			"additionalProperties": false
@@ -97642,6 +97648,9 @@ export const ProjectCreateSchema = {
 				},
 				"projectDashboardHeader": {
 					"type": "string"
+				},
+				"hideCoconutsPigs": {
+					"type": "boolean"
 				}
 			},
 			"additionalProperties": false
@@ -97735,6 +97744,9 @@ export const ProjectUpdateSchema = {
 				},
 				"projectDashboardHeader": {
 					"type": "string"
+				},
+				"hideCoconutsPigs": {
+					"type": "boolean"
 				}
 			},
 			"additionalProperties": false
@@ -101497,6 +101509,9 @@ export const ProjectResponseSchema = {
 				},
 				"projectDashboardHeader": {
 					"type": "string"
+				},
+				"hideCoconutsPigs": {
+					"type": "boolean"
 				}
 			},
 			"additionalProperties": false
