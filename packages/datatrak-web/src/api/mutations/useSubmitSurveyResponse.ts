@@ -197,7 +197,7 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
         resetForm();
         if (showCoconutsPigs) {
-          successToast('Congratulations! You\'ve earned a coconut', Coconut);
+          successToast('Congratulations! You’ve earned a coconut', Coconut);
         } else {
           successToast('Survey submitted successfully');
         }
