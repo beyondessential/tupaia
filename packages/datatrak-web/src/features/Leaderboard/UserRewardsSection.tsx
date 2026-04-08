@@ -84,7 +84,7 @@ export const UserRewardsSection = ({ pigs: pigCount, coconuts: coconutCount }: U
     <Wrapper>
       <UserRewardItem>
         {isLoading ? (
-          <Skeleton variant="rounded">
+          <Skeleton variant="rect">
             <Coconut />
           </Skeleton>
         ) : (
@@ -106,7 +106,7 @@ export const UserRewardsSection = ({ pigs: pigCount, coconuts: coconutCount }: U
       </UserRewardItem>
       <UserRewardItem>
         {isLoading ? (
-          <Skeleton variant="rounded">
+          <Skeleton variant="rect">
             <AnimatedPig />
           </Skeleton>
         ) : (

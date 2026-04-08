@@ -67,7 +67,7 @@ export const UserDetails = () => {
       <UserRewards>
         <UserRewardsItem>
           {isLoading ? (
-            <Skeleton variant="rounded">
+            <Skeleton variant="rect">
               <Coconut />
             </Skeleton>
           ) : (
@@ -85,7 +85,7 @@ export const UserDetails = () => {
         </UserRewardsItem>
         <UserRewardsItem>
           {isLoading ? (
-            <Skeleton variant="rounded">
+            <Skeleton variant="rect">
               <Pig />
             </Skeleton>
           ) : (
