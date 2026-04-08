@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
+import { useShowCoconutsPigs } from '../../api';
 import { Coconut, Pig } from '../../components';
 import { UserRewards } from '../../types';
 
@@ -71,20 +73,57 @@ const AnimatedPig = styled(Pig)`
 `;
 
 export const UserRewardsSection = ({ pigs: pigCount, coconuts: coconutCount }: UserRewards) => {
+  const { showCoconutsPigs, isLoading } = useShowCoconutsPigs();
+
+  if (!isLoading && !showCoconutsPigs) return null;
+
   const pigUnit = pigCount === 1 ? 'pig' : 'pigs';
   const coconutUnit = coconutCount === 1 ? 'coconut' : 'coconuts';
+
   return (
     <Wrapper>
       <UserRewardItem>
-        <Coconut />
+        {isLoading ? (
+          <Skeleton variant="rounded">
+            <Coconut />
+          </Skeleton>
+        ) : (
+          <Coconut />
+        )}
         <UserRewardCount>
-          {coconutCount}&nbsp;{coconutUnit}
+          {isLoading ? (
+            <Skeleton>
+              <span>
+                {coconutCount}&nbsp;{coconutUnit}
+              </span>
+            </Skeleton>
+          ) : (
+            <>
+              {coconutCount}&nbsp;{coconutUnit}
+            </>
+          )}
         </UserRewardCount>
       </UserRewardItem>
       <UserRewardItem>
-        <AnimatedPig />
+        {isLoading ? (
+          <Skeleton variant="rounded">
+            <AnimatedPig />
+          </Skeleton>
+        ) : (
+          <AnimatedPig />
+        )}
         <UserRewardCount>
-          {pigCount}&nbsp;{pigUnit}
+          {isLoading ? (
+            <Skeleton>
+              <span>
+                {pigCount}&nbsp;{pigUnit}
+              </span>
+            </Skeleton>
+          ) : (
+            <>
+              {pigCount}&nbsp;{pigUnit}
+            </>
+          )}
         </UserRewardCount>
       </UserRewardItem>
     </Wrapper>

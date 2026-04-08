@@ -5,49 +5,50 @@ import styled from 'styled-components';
 
 import { Button as UIButton, SafeAreaColumn } from '@tupaia/ui-components';
 
-import { useCurrentUserContext, useEditUser } from '../../api';
+import { useCurrentUserContext, useEditUser, useShowCoconutsPigs } from '../../api';
 import { ROUTES } from '../../constants';
 import { Carousel } from './Carousel';
 
-const steps = [
-  {
-    title: 'Welcome to Tupaia DataTrak!',
-    text: 'If you’re here from MediTrak, welcome! Rest assured that you have all the same functionality as MediTrak, only better. Come for a quick tour of what’s new.',
-    imgPath: 'images/data-collection-woman.svg',
-    imgIntrinsicWidth: 336,
-    imgIntrinsicHeight: 470,
-    imgMediaType: 'image/svg+xml',
-  },
-  {
-    title: 'Sync status',
-    text: 'See your last sync and which surveys are pending sync on your home page. Use the sync button on the top right to manually sync your device.',
-    imgPath: 'images/pig-on-beach.svg',
-    imgIntrinsicWidth: 336,
-    imgIntrinsicHeight: 336,
-    imgMediaType: 'image/svg+xml',
-  },
-  {
-    title: 'Submission history',
-    text: (
-      <>
-        Quickly see and access your recently submitted surveys under the{' '}
-        <strong>Submission history</strong> section on the dashboard.
-      </>
-    ),
-    imgPath: 'images/digital-update.svg',
-    imgIntrinsicWidth: 336,
-    imgIntrinsicHeight: 336,
-    imgMediaType: 'image/svg+xml',
-  },
-  {
-    title: 'Projects',
-    text: 'From the home screen you can see which project you’re in. Click on the project to swap to a different project.',
-    imgPath: 'images/data-collection-man.svg',
-    imgIntrinsicWidth: 336,
-    imgIntrinsicHeight: 336,
-    imgMediaType: 'image/svg+xml',
-  },
-] as const;
+const getSteps = (showCoconutsPigs: boolean) =>
+  [
+    {
+      title: 'Welcome to Tupaia DataTrak!',
+      text: "If you're here from MediTrak, welcome! Rest assured that you have all the same functionality as MediTrak, only better. Come for a quick tour of what's new.",
+      imgPath: 'images/data-collection-woman.svg',
+      imgIntrinsicWidth: 336,
+      imgIntrinsicHeight: 470,
+      imgMediaType: 'image/svg+xml',
+    },
+    {
+      title: 'Sync status',
+      text: 'See your last sync and which surveys are pending sync on your home page. Use the sync button on the top right to manually sync your device.',
+      imgPath: showCoconutsPigs ? 'images/pig-on-beach.svg' : 'images/data-collection-woman.svg',
+      imgIntrinsicWidth: 336,
+      imgIntrinsicHeight: showCoconutsPigs ? 336 : 470,
+      imgMediaType: 'image/svg+xml',
+    },
+    {
+      title: 'Submission history',
+      text: (
+        <>
+          Quickly see and access your recently submitted surveys under the{' '}
+          <strong>Submission history</strong> section on the dashboard.
+        </>
+      ),
+      imgPath: 'images/digital-update.svg',
+      imgIntrinsicWidth: 336,
+      imgIntrinsicHeight: 336,
+      imgMediaType: 'image/svg+xml',
+    },
+    {
+      title: 'Projects',
+      text: "From the home screen you can see which project you're in. Click on the project to swap to a different project.",
+      imgPath: 'images/data-collection-man.svg',
+      imgIntrinsicWidth: 336,
+      imgIntrinsicHeight: 336,
+      imgMediaType: 'image/svg+xml',
+    },
+  ] as const;
 
 const Container = styled.div`
   block-size: 100dvb;
@@ -111,6 +112,8 @@ export const WelcomeScreens = () => {
   const navigate = useNavigate();
   const user = useCurrentUserContext();
   const { mutate: updateUser } = useEditUser();
+  const { showCoconutsPigs } = useShowCoconutsPigs();
+  const steps = getSteps(showCoconutsPigs);
 
   useEffect(() => {
     updateUser({ hideWelcomeScreen: true });

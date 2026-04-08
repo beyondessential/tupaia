@@ -58,25 +58,48 @@ const UserRewardsItem = styled(Typography)`
 export const UserDetails = () => {
   const user = useCurrentUserContext();
   const { data: userRewards } = useUserRewards();
-  const { showCoconutsPigs, isConfigLoaded } = useShowCoconutsPigs();
+  const { showCoconutsPigs, isLoading } = useShowCoconutsPigs();
 
   const renderRewards = () => {
-    if (!isConfigLoaded) {
-      return (
-        <UserRewards>
-          <Skeleton width={100} height={20} />
-          <Skeleton width={80} height={20} />
-        </UserRewards>
-      );
-    }
-    if (!showCoconutsPigs) return null;
+    if (!isLoading && !showCoconutsPigs) return null;
+
     return (
       <UserRewards>
         <UserRewardsItem>
-          <Coconut /> {userRewards?.coconuts}&nbsp;coconuts
+          {isLoading ? (
+            <Skeleton variant="rounded">
+              <Coconut />
+            </Skeleton>
+          ) : (
+            <Coconut />
+          )}{' '}
+          {isLoading ? (
+            <Skeleton>
+              <span>{userRewards?.coconuts}&nbsp;coconuts</span>
+            </Skeleton>
+          ) : (
+            <>
+              {userRewards?.coconuts}&nbsp;coconuts
+            </>
+          )}
         </UserRewardsItem>
         <UserRewardsItem>
-          <Pig /> {userRewards?.pigs}&nbsp;pigs
+          {isLoading ? (
+            <Skeleton variant="rounded">
+              <Pig />
+            </Skeleton>
+          ) : (
+            <Pig />
+          )}{' '}
+          {isLoading ? (
+            <Skeleton>
+              <span>{userRewards?.pigs}&nbsp;pigs</span>
+            </Skeleton>
+          ) : (
+            <>
+              {userRewards?.pigs}&nbsp;pigs
+            </>
+          )}
         </UserRewardsItem>
       </UserRewards>
     );
