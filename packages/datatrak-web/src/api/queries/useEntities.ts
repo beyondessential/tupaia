@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-import { DatatrakWebEntitiesRequest } from '@tupaia/types';
+import type { DatatrakWebEntitiesRequest } from '@tupaia/types';
+import { useOnlineQuery } from './useOnlineQuery';
 import { get } from '../api';
 
 export const useEntities = params => {
-  return useQuery(
+  return useOnlineQuery<DatatrakWebEntitiesRequest.ResBody>(
     ['entities', params],
-    (): Promise<DatatrakWebEntitiesRequest.ResBody> => get(`entities`, { params }),
+    async () => await get('entities', { params }),
   );
 };

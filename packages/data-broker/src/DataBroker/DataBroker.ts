@@ -4,25 +4,24 @@ import type { AccessPolicy } from '@tupaia/access-policy';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { toArray } from '@tupaia/utils';
 import { createService } from '../services';
+import { DataServiceMapping } from '../services/DataServiceMapping';
 import { DataServiceResolver } from '../services/DataServiceResolver';
-import {
-  RawAnalyticResults,
+import type {
   DataBrokerModelRegistry,
-  DataSourceTypeInstance,
   DataSourceType,
+  DataSourceTypeInstance,
   EventResults,
   ServiceType,
   SyncGroupResults,
 } from '../types';
 import { DATA_SOURCE_TYPES, EMPTY_ANALYTICS_RESULTS } from '../utils';
-import { DataServiceMapping } from '../services/DataServiceMapping';
-import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchDataSources';
-import { AnalyticResults, mergeAnalytics } from './mergeAnalytics';
-import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
 import {
   fetchAllowedOrgUnitsForDataElements,
   fetchAllowedOrgUnitsForDataGroups,
 } from './fetchAllowedOrgUnits';
+import { fetchDataElements, fetchDataGroups, fetchSyncGroups } from './fetchDataSources';
+import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';
+import { mergeAnalytics, type AnalyticResults } from './mergeAnalytics';
 
 export const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
@@ -91,11 +90,7 @@ export class DataBroker {
   }
 
   public getDataSourceTypes() {
-    return DATA_SOURCE_TYPES as {
-      DATA_ELEMENT: 'dataElement';
-      DATA_GROUP: 'dataGroup';
-      SYNC_GROUP: 'syncGroup';
-    };
+    return DATA_SOURCE_TYPES;
   }
 
   private fetchFromDataElementTable = async (dataSourceSpec: FetchConditions) => {
@@ -199,9 +194,9 @@ export class DataBroker {
       }),
     );
 
-    return (nestedResults as RawAnalyticResults[]).reduce(
+    return nestedResults.reduce<AnalyticResults>(
       (results, resultsForService) => mergeAnalytics(results, resultsForService),
-      EMPTY_ANALYTICS_RESULTS as AnalyticResults,
+      EMPTY_ANALYTICS_RESULTS,
     );
   }
 

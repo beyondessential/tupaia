@@ -22,6 +22,7 @@
     "datatrak-web",
     "entity-server",
     "report-server",
+    "sync-server",
     "web-config-server"
   ],
   "lesmis": [

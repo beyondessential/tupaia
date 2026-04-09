@@ -73,7 +73,7 @@ export const TasksSection = () => {
   const isMobile = useIsMobile();
   const {
     data = { tasks: [], numberOfPages: 0 },
-    isFetching,
+    isLoading,
     isSuccess,
   } = useTasks({
     projectId,
@@ -88,7 +88,7 @@ export const TasksSection = () => {
   if (isMobile && !hasTasks) return null;
 
   const renderContents = () => {
-    if (isFetching) {
+    if (isLoading) {
       return <TileSkeletons count={4} tileSkeletonProps={{ lineCount: 1 }} />;
     }
     if (!hasTasks) {

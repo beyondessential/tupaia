@@ -27,7 +27,7 @@ export const assertProjectPermissions = async (accessPolicy, models, projectId) 
 };
 
 export class GETProjects extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   customJoinConditions = {
     entity: {

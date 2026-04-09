@@ -46,21 +46,19 @@ const getLocationName = (templateVariables: SurveyResponseFeedItem['templateVari
 const DesktopTemplate = ({ templateVariables, formattedDate }) => {
   const { surveyName, authorName, countryName } = templateVariables;
   return (
-    <>
-      <DesktopContainer>
-        <Image aria-hidden />
-        {/** set aria-hidden on the image because the image isn't of any informational value */}
-        <div>
-          <Typography>{authorName}</Typography>
-          <Typography color="textSecondary">
-            {formattedDate} | {countryName}
-          </Typography>
-          <Content>
-            Completed <b>{surveyName}</b> survey for <b>{getLocationName(templateVariables)}</b>
-          </Content>
-        </div>
-      </DesktopContainer>
-    </>
+    <DesktopContainer>
+      <Image aria-hidden />
+      {/** set aria-hidden on the image because the image isn't of any informational value */}
+      <div>
+        <Typography>{authorName}</Typography>
+        <Typography color="textSecondary">
+          {formattedDate} | {countryName}
+        </Typography>
+        <Content>
+          Completed <b>{surveyName}</b> survey for <b>{getLocationName(templateVariables)}</b>
+        </Content>
+      </div>
+    </DesktopContainer>
   );
 };
 

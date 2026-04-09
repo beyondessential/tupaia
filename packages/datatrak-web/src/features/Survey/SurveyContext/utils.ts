@@ -61,13 +61,7 @@ export const getDisplayQuestions = (
   activeScreen: SurveyScreenComponent[] = [],
   screenComponents: SurveyScreenComponent[],
 ) => {
-  // If the first question is an instruction, don't render it since we always just
-  // show the text of first questions as the heading. Format the questions with a question number to display
-  const displayQuestions = (
-    activeScreen?.length && activeScreen?.[0].type === 'Instruction'
-      ? activeScreen?.slice(1)
-      : activeScreen
-  ).map(question => {
+  const displayQuestions = activeScreen.map(question => {
     const { questionId } = question;
     if (getIsDependentQuestion(screenComponents, questionId)) {
       // if the question dictates the visibility of any other questions, we need to update the formData when the value changes so the visibility of other questions can be updated in real time
@@ -274,10 +268,8 @@ const removeTimezoneFromDateAnswers = (updates, screenComponents: SurveyScreenCo
   const updatedAnswers = { ...updates };
   screenComponents?.forEach(question => {
     const { questionId, type } = question;
-    if (type.includes('Date')) {
-      if (updates[questionId]) {
-        updatedAnswers[questionId] = stripTimezoneFromDate(updates[questionId]);
-      }
+    if (type.includes(QuestionType.Date) && updates[questionId]) {
+      updatedAnswers[questionId] = stripTimezoneFromDate(updates[questionId]);
     }
   });
   return updatedAnswers;
