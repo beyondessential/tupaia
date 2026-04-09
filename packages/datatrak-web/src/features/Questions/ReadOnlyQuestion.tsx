@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Tooltip } from '@tupaia/ui-components';
+import { CodeGeneratorQuestionConfig } from '@tupaia/types';
 
 import { useSurveyForm } from '..';
 import { SurveyQuestionInputProps } from '../../types';
@@ -102,7 +103,7 @@ export const ArithmeticQuestion = ({
   );
 };
 
-export const CodeGeneratorQuestion = styled(ReadOnlyQuestion)`
+const CodeGeneratorWrapper = styled(Wrapper)`
   ${({ theme }) => theme.breakpoints.down('sm')} {
     border-block-start: none;
   }
@@ -115,3 +116,64 @@ export const CodeGeneratorQuestion = styled(ReadOnlyQuestion)`
     font-weight: 500;
   }
 `;
+
+const WarningHelperText = styled(InputHelperText)`
+  color: ${({ theme }) => theme.palette.error.main};
+`;
+
+const useDynamicPrefixHelperText = (
+  config: SurveyQuestionInputProps['config'],
+  hasValue: boolean,
+) => {
+  const { formData } = useSurveyForm();
+
+  const dynamicPrefix = (config?.codeGenerator as CodeGeneratorQuestionConfig | undefined)
+    ?.dynamicPrefix;
+  if (!dynamicPrefix) return null;
+
+  const sourceAnswer = formData[dynamicPrefix.questionId];
+  if (!sourceAnswer) {
+    return {
+      text: 'Answer the prerequisite question to generate a code',
+      isWarning: false,
+    };
+  }
+
+  if (!hasValue) {
+    return {
+      text: 'Could not generate a code. The selected answer may be missing a required attribute.',
+      isWarning: true,
+    };
+  }
+
+  return null;
+};
+
+export const CodeGeneratorQuestion = ({
+  label,
+  name,
+  detailLabel,
+  config,
+}: SurveyQuestionInputProps) => {
+  const { formData } = useSurveyForm();
+  const value = name ? formData[name] : null;
+  const helperInfo = useDynamicPrefixHelperText(config, Boolean(value));
+
+  const helperText = helperInfo?.text ?? detailLabel;
+  const HelperTextComponent = helperInfo?.isWarning ? WarningHelperText : InputHelperText;
+
+  return (
+    <CodeGeneratorWrapper>
+      <TextInput
+        disabled
+        label={label}
+        name={name ?? undefined}
+        textInputProps={{
+          helperText,
+          FormHelperTextProps: { component: HelperTextComponent },
+        }}
+        value={value}
+      />
+    </CodeGeneratorWrapper>
+  );
+};
