@@ -9,27 +9,22 @@ interface UseActivityFeedProps {
 }
 
 export const useActivityFeed = ({ projectId, pageLimit }: UseActivityFeedProps) => {
-  return useInfiniteQuery(
+  return useInfiniteQuery<DatatrakWebActivityFeedRequest.ResBody>(
     ['activityFeed', projectId, pageLimit],
-    ({ pageParam = 0 }): Promise<DatatrakWebActivityFeedRequest.ResBody> => {
+    async ({ pageParam = 0 }) => {
       const params = {
         page: pageParam,
         projectId,
         pageLimit,
       };
-      if (pageLimit) {
-        params.pageLimit = pageLimit;
-      }
-      return get('activityFeed', {
-        params,
-      });
+      return await get('activityFeed', { params });
     },
     {
       getNextPageParam: (data, pages) => {
         if (!data) return 0;
         return data?.hasMorePages ? pages.length : undefined;
       },
-      enabled: !!projectId,
+      enabled: window.navigator.onLine && Boolean(projectId),
     },
   );
 };

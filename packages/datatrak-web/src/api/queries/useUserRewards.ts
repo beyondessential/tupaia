@@ -1,11 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import { Project } from '@tupaia/types';
-import { get } from '../api';
-import { UserRewards } from '../../types';
+import type { Project } from '@tupaia/types';
+import { useOnlineQuery } from './useOnlineQuery';
+import type { UserRewards } from '../../types';
 import { useCurrentUserContext } from '../CurrentUserContext';
+import { get } from '../api';
 
 const useRewards = (projectId?: Project['id']) => {
-  return useQuery<UserRewards>(
+  return useOnlineQuery<UserRewards>(
     ['rewards', projectId],
     () =>
       get('me/rewards', {

@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { DatatrakWebUserRequest } from '@tupaia/types';
 import { ensure } from '@tupaia/tsutils';
+import { DatatrakWebUserRequest } from '@tupaia/types';
 
+import { getUser } from '../../database';
+import { useDatabaseContext } from '../../hooks/database';
+import { DatatrakWebModelRegistry } from '../../types';
 import { get } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
-import { getUser } from '../../database';
-import { DatatrakWebModelRegistry } from '../../types';
-import { useDatabaseContext } from '../../hooks/database';
 
 export type GetUserLocalContext = {
   models: DatatrakWebModelRegistry;

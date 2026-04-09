@@ -1,21 +1,23 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query';
-import { Project, DatatrakWebUsersRequest } from '@tupaia/types';
+import type { UseQueryOptions } from '@tanstack/react-query';
+import type { DatatrakWebUsersRequest, Project } from '@tupaia/types';
+import { useOnlineQuery } from './useOnlineQuery';
 import { get } from '../api';
 
 export const useProjectUsersQuery = (
   projectCode?: Project['code'],
   searchTerm?: string,
-  useQueryOptions?: UseQueryOptions<DatatrakWebUsersRequest.ResBody>,
+  useQueryOptions: UseQueryOptions<DatatrakWebUsersRequest.ResBody> = {},
 ) => {
-  return useQuery<DatatrakWebUsersRequest.ResBody>(
+  const { enabled = true, ...rest } = useQueryOptions;
+  return useOnlineQuery<DatatrakWebUsersRequest.ResBody>(
     ['projectUsers', projectCode, searchTerm],
-    () =>
-      get(`project/${projectCode}/users`, {
+    async () =>
+      await get(`project/${projectCode}/users`, {
         params: { searchTerm },
       }),
     {
-      ...useQueryOptions,
-      enabled: !!projectCode && useQueryOptions?.enabled,
+      ...rest,
+      enabled: enabled && !!projectCode,
     },
   );
 };
