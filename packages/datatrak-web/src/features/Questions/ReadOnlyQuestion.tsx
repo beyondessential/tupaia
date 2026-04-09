@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { FormHelperText } from '@material-ui/core';
 import { Tooltip } from '@tupaia/ui-components';
 import { CodeGeneratorQuestionConfig } from '@tupaia/types';
 
@@ -149,8 +150,9 @@ const useDynamicPrefixHelperText = (
   return null;
 };
 
-const WarningHelperText = styled(InputHelperText)`
+const WarningHelperText = styled(FormHelperText)`
   &.MuiFormHelperText-root {
+    font-size: 0.875rem;
     color: ${({ theme }) => theme.palette.error.main};
   }
 `;
