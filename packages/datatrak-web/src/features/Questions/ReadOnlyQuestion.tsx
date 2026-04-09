@@ -7,7 +7,7 @@ import { CodeGeneratorQuestionConfig } from '@tupaia/types';
 import { useSurveyForm } from '..';
 import { SurveyQuestionInputProps } from '../../types';
 import { InputHelperText, TextInput } from '../../components';
-import { getArithmeticDisplayAnswer } from '../Survey';
+import { getArithmeticDisplayAnswer, getAllSurveyComponents } from '../Survey';
 
 const Wrapper = styled.div`
   border-block-start: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
@@ -121,7 +121,7 @@ const useDynamicPrefixHelperText = (
   config: SurveyQuestionInputProps['config'],
   hasValue: boolean,
 ) => {
-  const { formData } = useSurveyForm();
+  const { formData, surveyScreens } = useSurveyForm();
 
   const dynamicPrefix = (config?.codeGenerator as CodeGeneratorQuestionConfig | undefined)
     ?.dynamicPrefix;
@@ -129,8 +129,11 @@ const useDynamicPrefixHelperText = (
 
   const sourceAnswer = formData[dynamicPrefix.questionId];
   if (!sourceAnswer) {
+    const allComponents = getAllSurveyComponents(surveyScreens ?? []);
+    const sourceQuestion = allComponents.find(q => q.questionId === dynamicPrefix.questionId);
+    const questionLabel = sourceQuestion?.text ?? 'the prerequisite question';
     return {
-      text: 'Answer the prerequisite question to generate a code',
+      text: `Answer "${questionLabel}" to generate a code`,
       isWarning: false,
     };
   }
