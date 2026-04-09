@@ -191,8 +191,10 @@ export const SurveyContext = ({
           <DynamicCodeGeneratorWatcher
             key={q.questionId}
             question={q}
+            allComponents={flattenedScreenComponents}
             formData={formData}
             dispatch={dispatch}
+            isResponseScreen={isResponseScreen}
           />
         ))}
         {children}
