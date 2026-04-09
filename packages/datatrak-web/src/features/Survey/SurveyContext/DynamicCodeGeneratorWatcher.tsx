@@ -1,11 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { CodeGeneratorQuestionConfig, QuestionType } from '@tupaia/types';
+import { CodeGeneratorQuestionConfig } from '@tupaia/types';
 import { useEntityById } from '../../../api/queries/useEntity';
 import { generateShortId } from './generateId';
 import { SurveyScreenComponent } from '../../../types';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
-
-const ENTITY_QUESTION_TYPES = new Set<string>([QuestionType.Entity, QuestionType.PrimaryEntity]);
 
 const resolvePrefix = (
   entity: Record<string, any>,
@@ -30,7 +28,7 @@ const extractTrailingCode = (code: string, prefix: string): string => {
 
 interface DynamicCodeGeneratorWatcherProps {
   question: SurveyScreenComponent;
-  allComponents: SurveyScreenComponent[];
+  isEntitySource: boolean;
   formData: Record<string, any>;
   dispatch: React.Dispatch<SurveyFormAction>;
   isResponseScreen: boolean;
@@ -38,7 +36,7 @@ interface DynamicCodeGeneratorWatcherProps {
 
 export const DynamicCodeGeneratorWatcher = ({
   question,
-  allComponents,
+  isEntitySource,
   formData,
   dispatch,
   isResponseScreen,
@@ -47,9 +45,6 @@ export const DynamicCodeGeneratorWatcher = ({
   const codeGenerator = config!.codeGenerator as CodeGeneratorQuestionConfig;
   const { dynamicPrefix } = codeGenerator;
   const sourceAnswer = formData[dynamicPrefix!.questionId];
-
-  const sourceQuestion = allComponents.find(q => q.questionId === dynamicPrefix!.questionId);
-  const isEntitySource = sourceQuestion ? ENTITY_QUESTION_TYPES.has(sourceQuestion.type) : false;
 
   // Fetch entity if the source question is an entity question and has an answer
   const shouldFetchEntity = Boolean(isEntitySource && sourceAnswer);
