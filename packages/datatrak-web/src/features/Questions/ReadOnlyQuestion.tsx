@@ -117,10 +117,6 @@ const CodeGeneratorWrapper = styled(Wrapper)`
   }
 `;
 
-const WarningHelperText = styled(InputHelperText)`
-  color: ${({ theme }) => theme.palette.error.main};
-`;
-
 const useDynamicPrefixHelperText = (
   config: SurveyQuestionInputProps['config'],
   hasValue: boolean,
@@ -149,6 +145,12 @@ const useDynamicPrefixHelperText = (
   return null;
 };
 
+const WarningHelperText = styled(InputHelperText)`
+  &.MuiFormHelperText-root {
+    color: ${({ theme }) => theme.palette.error.main};
+  }
+`;
+
 export const CodeGeneratorQuestion = ({
   label,
   name,
@@ -160,7 +162,6 @@ export const CodeGeneratorQuestion = ({
   const helperInfo = useDynamicPrefixHelperText(config, Boolean(value));
 
   const helperText = helperInfo?.text ?? detailLabel;
-  const HelperTextComponent = helperInfo?.isWarning ? WarningHelperText : InputHelperText;
 
   return (
     <CodeGeneratorWrapper>
@@ -170,7 +171,7 @@ export const CodeGeneratorQuestion = ({
         name={name ?? undefined}
         textInputProps={{
           helperText,
-          FormHelperTextProps: { component: HelperTextComponent },
+          FormHelperTextProps: { component: WarningHelperText },
         }}
         value={value}
       />
