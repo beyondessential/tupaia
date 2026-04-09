@@ -74,7 +74,6 @@ export const DynamicCodeGeneratorWatcher = ({
       // changed to one without the required attribute), clear the code
       if (prevPrefixRef.current !== undefined) {
         prevPrefixRef.current = undefined;
-        trailingCodeRef.current = undefined;
         dispatch({
           type: ACTION_TYPES.SET_FORM_DATA,
           payload: { [questionId]: undefined },
