@@ -181,14 +181,28 @@ export const SurveyContext = ({
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
-        {dynamicCodeGenQuestions.map(q => (
-          <DynamicCodeGeneratorWatcher
-            key={q.questionId}
-            question={q}
-            formData={formData}
-            dispatch={dispatch}
-          />
-        ))}
+        {dynamicCodeGenQuestions.map(q => {
+          const sourceQuestionId = (
+            q.config!.codeGenerator as CodeGeneratorQuestionConfig
+          ).dynamicPrefix!.questionId;
+          const sourceQuestion = flattenedScreenComponents.find(
+            c => c.questionId === sourceQuestionId,
+          );
+          const isEntitySource =
+            sourceQuestion?.type === QuestionType.Entity ||
+            sourceQuestion?.type === QuestionType.PrimaryEntity;
+
+          return (
+            <DynamicCodeGeneratorWatcher
+              key={q.questionId}
+              question={q}
+              isEntitySource={isEntitySource}
+              formData={formData}
+              dispatch={dispatch}
+              isResponseScreen={isResponseScreen}
+            />
+          );
+        })}
         {children}
       </SurveyFormDispatchContext.Provider>
     </SurveyFormContext.Provider>

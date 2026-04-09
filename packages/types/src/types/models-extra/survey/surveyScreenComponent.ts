@@ -6,6 +6,7 @@ export type CodeGeneratorQuestionConfig = {
   prefix?: string;
   dynamicPrefix?: {
     questionId: Question['id'];
+    entityField?: 'name' | 'code' | 'type';
     entityAttribute?: string;
   };
   length?: number;

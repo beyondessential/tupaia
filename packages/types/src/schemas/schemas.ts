@@ -45445,6 +45445,14 @@ export const CodeGeneratorQuestionConfigSchema = {
 				"questionId": {
 					"type": "string"
 				},
+				"entityField": {
+					"enum": [
+						"code",
+						"name",
+						"type"
+					],
+					"type": "string"
+				},
 				"entityAttribute": {
 					"type": "string"
 				}
@@ -46690,6 +46698,14 @@ export const SurveyScreenComponentConfigSchema = {
 					"type": "object",
 					"properties": {
 						"questionId": {
+							"type": "string"
+						},
+						"entityField": {
+							"enum": [
+								"code",
+								"name",
+								"type"
+							],
 							"type": "string"
 						},
 						"entityAttribute": {
