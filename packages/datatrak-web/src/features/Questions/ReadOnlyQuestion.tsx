@@ -128,19 +128,20 @@ const useDynamicPrefixHelperText = (
   if (!dynamicPrefix) return null;
 
   const sourceAnswer = formData[dynamicPrefix.questionId];
+  const allComponents = getAllSurveyComponents(surveyScreens ?? []);
+  const sourceQuestion = allComponents.find(q => q.questionId === dynamicPrefix.questionId);
+  const questionLabel = sourceQuestion?.text ?? 'the prerequisite question';
+
   if (!sourceAnswer) {
-    const allComponents = getAllSurveyComponents(surveyScreens ?? []);
-    const sourceQuestion = allComponents.find(q => q.questionId === dynamicPrefix.questionId);
-    const questionLabel = sourceQuestion?.text ?? 'the prerequisite question';
     return {
-      text: `Answer "${questionLabel}" to generate a code`,
+      text: `Answer the ${questionLabel} question to generate a code`,
       isWarning: false,
     };
   }
 
   if (!hasValue) {
     return {
-      text: 'Could not generate a code. The selected answer may be missing a required attribute.',
+      text: `Could not generate a code. The selected answer to the ${questionLabel} question is missing a required attribute.`,
       isWarning: true,
     };
   }
