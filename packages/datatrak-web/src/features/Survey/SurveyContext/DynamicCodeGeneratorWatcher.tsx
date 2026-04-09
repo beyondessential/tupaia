@@ -20,10 +20,13 @@ const resolvePrefix = (
  * e.g. "EBN-HM8-Z1N-CJV0" → "HM8-Z1N-CJV0"
  */
 const extractTrailingCode = (code: string, prefix: string): string => {
-  if (code.startsWith(`${prefix}-`)) {
-    return code.slice(prefix.length + 1);
+  const expectedPrefix = `${prefix}-`;
+  if (!code.startsWith(expectedPrefix)) {
+    throw new Error(
+      `Generated code "${code}" does not start with expected prefix "${expectedPrefix}"`,
+    );
   }
-  return code;
+  return code.slice(expectedPrefix.length);
 };
 
 interface DynamicCodeGeneratorWatcherProps {
