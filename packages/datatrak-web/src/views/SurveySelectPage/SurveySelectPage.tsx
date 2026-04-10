@@ -10,7 +10,7 @@ import { useUserCountries } from '../../features/CountrySelector/useUserCountrie
 import { Survey } from '../../types';
 import { useIsMobile } from '../../utils';
 import { DesktopTemplate } from './DesktopTemplate';
-import { DraftExistsModal } from './DraftExistsModal';
+import { DraftExistsModal } from '../../features/Survey';
 import { MobileTemplate } from './MobileTemplate';
 import { useSurveySelectionWithDrafts } from './useSurveySelectionWithDrafts';
 import { useSyncProjectFromUrl } from './useSyncProjectFromUrl';
@@ -53,8 +53,6 @@ export const SurveySelectPage = () => {
   const navigateToSurvey = useNavigateToSurvey();
   const { isUpdatingUser, isSyncingProject } = useSyncProjectFromUrl();
   const { draftModalProps, handleSelectSurvey, isDraftsLoading } = useSurveySelectionWithDrafts(
-    selectedCountry,
-    selectedSurvey,
     setSelectedSurvey,
     navigateToSurvey,
   );
