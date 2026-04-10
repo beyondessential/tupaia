@@ -22,6 +22,10 @@ const RecentSurveys = styled.section`
   .MuiSvgIcon-root {
     color: ${props => props.theme.palette.primary.main};
   }
+
+  .MuiButtonBase-root {
+    text-align: left;
+  }
 `;
 
 const InlineScroll = styled(InlineScrollView).attrs({
@@ -84,8 +88,8 @@ const RecentSurveyTile = ({
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isLoading } = useCurrentUserRecentSurveys();
   const navigate = useNavigate();
-  const { checkForDrafts, draftModalProps } = useDraftExistsModal(
-    (countryCode, surveyCode) => navigate(`/survey/${countryCode}/${surveyCode}/1`),
+  const { checkForDrafts, draftModalProps } = useDraftExistsModal((countryCode, surveyCode) =>
+    navigate(`/survey/${countryCode}/${surveyCode}/1`),
   );
 
   const handleSurveyClick = (countryCode: string, surveyCode: string) => {
