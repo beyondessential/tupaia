@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import { SmallModal } from '../../components';
+import { SmallModal } from '../../../components';
 
 interface DraftExistsModalProps {
   isOpen: boolean;

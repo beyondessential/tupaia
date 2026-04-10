@@ -1,7 +1,7 @@
 import { Country, KeysToCamelCase } from '@tupaia/types';
 import { Survey } from '../../types';
 import { NavigateToSurveyType } from './SurveySelectPage';
-import { useDraftExistsModal } from './useDraftExistsModal';
+import { useDraftExistsModal } from '../../features/Survey/hooks/useDraftExistsModal';
 
 /**
  * Manages draft-detection when selecting a survey on the SurveySelectPage.
