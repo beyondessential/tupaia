@@ -53,7 +53,6 @@ export const SurveySelectPage = () => {
   const navigateToSurvey = useNavigateToSurvey();
   const { isUpdatingUser, isSyncingProject } = useSyncProjectFromUrl();
   const { draftModalProps, handleSelectSurvey, isDraftsLoading } = useSurveySelectionWithDrafts(
-    selectedCountry,
     setSelectedSurvey,
     navigateToSurvey,
   );

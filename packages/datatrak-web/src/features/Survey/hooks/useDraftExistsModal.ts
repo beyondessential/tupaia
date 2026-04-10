@@ -1,20 +1,20 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useSurveyResponseDrafts } from '../../../api/queries/useSurveyResponseDrafts';
+
+interface DraftExistsHandlers {
+  /** Called when the user chooses "Start new survey". Receives the countryCode and surveyCode that triggered the modal. */
+  onStartNew: (countryCode: string, surveyCode: string) => void;
+  /** Called when the user chooses "Continue existing draft". Receives the resume path including draftId. */
+  onResume: (resumePath: string) => void;
+}
 
 /**
  * Core hook for draft-exists modal logic.
  * Call `checkForDrafts(countryCode, surveyCode)` before navigating to a survey.
  * Returns `true` if a draft was found (modal shown) or drafts are still loading, `false` otherwise.
- *
- * @param onStartNew Called when the user chooses "Start new survey" in the modal.
- *                   Receives the countryCode and surveyCode that triggered the modal.
  */
-export const useDraftExistsModal = (
-  onStartNew: (countryCode: string, surveyCode: string) => void,
-) => {
+export const useDraftExistsModal = ({ onStartNew, onResume }: DraftExistsHandlers) => {
   const { data: allDrafts = [], isLoading: isDraftsLoading } = useSurveyResponseDrafts();
-  const navigate = useNavigate();
   const [state, setState] = useState<{
     isOpen: boolean;
     countryCode?: string;
@@ -34,7 +34,7 @@ export const useDraftExistsModal = (
       isOpen: true,
       countryCode,
       surveyCode: surveyCode ?? undefined,
-      resumePath: `/survey/${firstDraft.countryCode}/${firstDraft.surveyCode}/${firstDraft.screenNumber ?? 0}?draftId=${firstDraft.id}`,
+      resumePath: `/survey/${firstDraft.countryCode}/${firstDraft.surveyCode}/${firstDraft.screenNumber ?? 1}?draftId=${firstDraft.id}`,
     });
     return true;
   };
@@ -52,7 +52,7 @@ export const useDraftExistsModal = (
     },
     onResume: () => {
       close();
-      if (state.resumePath) navigate(state.resumePath);
+      if (state.resumePath) onResume(state.resumePath);
     },
   };
 

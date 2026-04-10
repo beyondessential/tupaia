@@ -88,9 +88,10 @@ const RecentSurveyTile = ({
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isLoading } = useCurrentUserRecentSurveys();
   const navigate = useNavigate();
-  const { checkForDrafts, draftModalProps } = useDraftExistsModal((countryCode, surveyCode) =>
-    navigate(`/survey/${countryCode}/${surveyCode}/1`),
-  );
+  const { checkForDrafts, draftModalProps } = useDraftExistsModal({
+    onStartNew: (countryCode, surveyCode) => navigate(`/survey/${countryCode}/${surveyCode}/1`),
+    onResume: resumePath => navigate(resumePath),
+  });
 
   const handleSurveyClick = (countryCode: string, surveyCode: string) => {
     if (!checkForDrafts(countryCode, surveyCode)) {
