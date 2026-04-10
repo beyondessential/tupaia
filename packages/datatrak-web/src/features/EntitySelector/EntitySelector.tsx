@@ -51,6 +51,7 @@ interface EntitySelectorProps {
   id: string;
   name?: string | null;
   label?: string | null;
+  detailLabel?: string | null;
   required?: boolean;
   controllerProps: {
     onChange: (value: string) => void;
@@ -79,6 +80,7 @@ export const EntitySelector = ({
   id,
   name,
   label,
+  detailLabel,
   required,
   controllerProps: { onChange, value, ref, invalid },
   projectCode,
@@ -167,6 +169,8 @@ export const EntitySelector = ({
           {showSearchInput && (
             <SearchField
               id={id}
+              label={label}
+              detailLabel={detailLabel}
               isDirty={isDirty}
               name={name!}
               ref={ref}

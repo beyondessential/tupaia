@@ -15,8 +15,6 @@ export interface SurveyFormContextType {
   isSuccessScreen?: boolean;
   numberOfScreens: number;
   primaryEntityQuestion?: SurveyScreenComponent | null;
-  screenDetail?: string | null;
-  screenHeader?: string;
   screenNumber: number | null;
   sideMenuOpen?: boolean;
   startTime: string;
