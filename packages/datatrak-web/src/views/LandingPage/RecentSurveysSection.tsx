@@ -1,5 +1,6 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { DatatrakWebSurveyResponsesRequest } from '@tupaia/types';
@@ -8,6 +9,8 @@ import { useCurrentUserRecentSurveys } from '../../api';
 import { InlineScrollView, SurveyIcon, Tile, TileSkeleton } from '../../components';
 import { TileProps } from '../../components/Tile';
 import { useIsMobile } from '../../utils';
+import { DraftExistsModal } from '../SurveySelectPage/DraftExistsModal';
+import { useDraftExistsModal } from '../SurveySelectPage/useDraftExistsModal';
 import { SectionHeading } from './SectionHeading';
 
 const RecentSurveys = styled.section`
@@ -50,13 +53,16 @@ interface RecentSurveyTileProps
     Pick<
       DatatrakWebSurveyResponsesRequest.SurveyResponse,
       'surveyName' | 'surveyCode' | 'countryName' | 'countryCode'
-    > {}
+    > {
+  onClick: () => void;
+}
 
 const RecentSurveyTile = ({
   surveyName,
   surveyCode,
   countryName,
   countryCode,
+  onClick,
   ...props
 }: RecentSurveyTileProps) => {
   const isMobile = useIsMobile();
@@ -66,7 +72,7 @@ const RecentSurveyTile = ({
     <Tile
       heading={surveyName}
       leadingIcons={<SurveyIcon />}
-      to={`/survey/${countryCode}/${surveyCode}/1`}
+      onClick={onClick}
       tooltip={tooltip}
       {...props}
     >
@@ -77,6 +83,16 @@ const RecentSurveyTile = ({
 
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isLoading } = useCurrentUserRecentSurveys();
+  const navigate = useNavigate();
+  const { checkForDrafts, draftModalProps } = useDraftExistsModal(
+    (countryCode, surveyCode) => navigate(`/survey/${countryCode}/${surveyCode}/1`),
+  );
+
+  const handleSurveyClick = (countryCode: string, surveyCode: string) => {
+    if (!checkForDrafts(countryCode, surveyCode)) {
+      navigate(`/survey/${countryCode}/${surveyCode}/1`);
+    }
+  };
 
   const ScrollableList = useIsMobile() ? InlineScroll : GridScroll;
 
@@ -86,7 +102,10 @@ export const RecentSurveysSection = () => {
     if (recentSurveys.length > 0)
       return recentSurveys.map(({ countryId: _, ...props }) => (
         <li key={`${props.surveyCode}-${props.countryName}`}>
-          <RecentSurveyTile {...props} />
+          <RecentSurveyTile
+            {...props}
+            onClick={() => handleSurveyClick(props.countryCode, props.surveyCode)}
+          />
         </li>
       ));
 
@@ -101,6 +120,7 @@ export const RecentSurveysSection = () => {
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
       <ScrollableList>{renderContents()}</ScrollableList>
+      <DraftExistsModal {...draftModalProps} />
     </RecentSurveys>
   );
 };
