@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Country, KeysToCamelCase } from '@tupaia/types';
 import { Survey } from '../../types';
-import { useDraftExistsModal } from '../../features/Survey/hooks/useDraftExistsModal';
+import { useDraftExistsModal } from '../../features/Survey';
 import { NavigateToSurveyType } from './SurveySelectPage';
 
 /**

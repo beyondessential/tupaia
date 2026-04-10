@@ -9,8 +9,7 @@ import { useCurrentUserRecentSurveys } from '../../api';
 import { InlineScrollView, SurveyIcon, Tile, TileSkeleton } from '../../components';
 import { TileProps } from '../../components/Tile';
 import { useIsMobile } from '../../utils';
-import { DraftExistsModal } from '../../features/Survey/hooks/DraftExistsModal';
-import { useDraftExistsModal } from '../../features/Survey/hooks/useDraftExistsModal';
+import { DraftExistsModal, useDraftExistsModal } from '../../features/Survey';
 import { SectionHeading } from './SectionHeading';
 
 const RecentSurveys = styled.section`
