@@ -48277,7 +48277,7 @@ export const ProjectConfigSchema = {
 		"projectDashboardHeader": {
 			"type": "string"
 		},
-		"hideCoconutsPigs": {
+		"hideCoconutsAndPigs": {
 			"type": "boolean"
 		}
 	},
@@ -97543,7 +97543,7 @@ export const ProjectSchema = {
 				"projectDashboardHeader": {
 					"type": "string"
 				},
-				"hideCoconutsPigs": {
+				"hideCoconutsAndPigs": {
 					"type": "boolean"
 				}
 			},
@@ -97649,7 +97649,7 @@ export const ProjectCreateSchema = {
 				"projectDashboardHeader": {
 					"type": "string"
 				},
-				"hideCoconutsPigs": {
+				"hideCoconutsAndPigs": {
 					"type": "boolean"
 				}
 			},
@@ -97745,7 +97745,7 @@ export const ProjectUpdateSchema = {
 				"projectDashboardHeader": {
 					"type": "string"
 				},
-				"hideCoconutsPigs": {
+				"hideCoconutsAndPigs": {
 					"type": "boolean"
 				}
 			},
@@ -101510,7 +101510,7 @@ export const ProjectResponseSchema = {
 				"projectDashboardHeader": {
 					"type": "string"
 				},
-				"hideCoconutsPigs": {
+				"hideCoconutsAndPigs": {
 					"type": "boolean"
 				}
 			},

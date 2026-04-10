@@ -6,7 +6,7 @@ import { useCurrentUserContext } from '../CurrentUserContext';
  * - `isLoading: true` means the project config hasn't synced yet — callers should show a
  *   skeleton placeholder.
  * - `showCoconutsPigs: true` (default) means the project doesn't opt out.
- * - `showCoconutsPigs: false` means the project has `hideCoconutsPigs: true` in its config.
+ * - `showCoconutsPigs: false` means the project has `hideCoconutsAndPigs: true` in its config.
  */
 export const useShowCoconutsPigs = () => {
   const { project } = useCurrentUserContext();
@@ -17,7 +17,7 @@ export const useShowCoconutsPigs = () => {
   }
 
   return {
-    showCoconutsPigs: !project.config?.hideCoconutsPigs,
+    showCoconutsPigs: !project.config?.hideCoconutsAndPigs,
     isLoading: false,
   };
 };
