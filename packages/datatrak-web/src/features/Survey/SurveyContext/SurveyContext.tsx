@@ -8,14 +8,12 @@ import React, {
   useState,
 } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-
-import { CodeGeneratorQuestionConfig, Country, QuestionType, Survey } from '@tupaia/types';
-import { useSurvey } from '../../../api';
 import {
   Country,
   DatatrakWebSurveyResponseDraftsRequest,
   QuestionType,
   Survey,
+  CodeGeneratorQuestionConfig,
 } from '@tupaia/types';
 import { useSurvey, useSurveyResponseDrafts } from '../../../api';
 import { PRIMARY_ENTITY_CODE_PARAM } from '../../../constants';
@@ -215,9 +213,8 @@ export const SurveyContext = ({
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
         {dynamicCodeGenQuestions.map(q => {
-          const sourceQuestionId = (
-            q.config!.codeGenerator as CodeGeneratorQuestionConfig
-          ).dynamicPrefix!.questionId;
+          const sourceQuestionId = (q.config!.codeGenerator as CodeGeneratorQuestionConfig)
+            .dynamicPrefix!.questionId;
           const sourceQuestion = flattenedScreenComponents.find(
             c => c.questionId === sourceQuestionId,
           );
