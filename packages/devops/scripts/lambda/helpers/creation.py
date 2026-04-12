@@ -81,12 +81,10 @@ def get_instance_creation_config(
         security_group_code, security_group_id
     )
 
-    instance_name = deployment_type + ": " + deployment_name
-
     image_id = image_id if image_id != None else get_latest_image_id(image_code)
 
     tags = [
-        {"Key": "Name", "Value": instance_name},
+        {"Key": "Name", "Value": f"{deployment_type}: {deployment_name}"},
         {"Key": "DeploymentName", "Value": deployment_name},
         {"Key": "DeploymentType", "Value": deployment_type},
     ]
