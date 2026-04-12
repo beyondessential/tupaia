@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { FormHelperText } from '@material-ui/core';
 import { Tooltip } from '@tupaia/ui-components';
+import { CodeGeneratorQuestionConfig } from '@tupaia/types';
 
 import { useSurveyForm } from '..';
 import { SurveyQuestionInputProps } from '../../types';
 import { InputHelperText, TextInput } from '../../components';
-import { getArithmeticDisplayAnswer } from '../Survey';
+import { getArithmeticDisplayAnswer, getAllSurveyComponents } from '../Survey';
 
 const Wrapper = styled.div`
   border-block-start: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
@@ -102,7 +104,7 @@ export const ArithmeticQuestion = ({
   );
 };
 
-export const CodeGeneratorQuestion = styled(ReadOnlyQuestion)`
+const CodeGeneratorWrapper = styled(Wrapper)`
   ${({ theme }) => theme.breakpoints.down('sm')} {
     border-block-start: none;
   }
@@ -115,3 +117,70 @@ export const CodeGeneratorQuestion = styled(ReadOnlyQuestion)`
     font-weight: 500;
   }
 `;
+
+const useDynamicPrefixHelperText = (
+  config: SurveyQuestionInputProps['config'],
+  hasValue: boolean,
+) => {
+  const { formData, surveyScreens } = useSurveyForm();
+
+  const dynamicPrefix = (config?.codeGenerator as CodeGeneratorQuestionConfig | undefined)
+    ?.dynamicPrefix;
+  if (!dynamicPrefix) return null;
+
+  const sourceAnswer = formData[dynamicPrefix.questionId];
+  const allComponents = getAllSurveyComponents(surveyScreens ?? []);
+  const sourceQuestion = allComponents.find(q => q.questionId === dynamicPrefix.questionId);
+  const questionLabel = sourceQuestion?.text ?? 'the prerequisite question';
+
+  if (!sourceAnswer) {
+    return {
+      text: `Answer the ${questionLabel} question to generate a code`,
+      isWarning: false,
+    };
+  }
+
+  if (!hasValue) {
+    return {
+      text: `Could not generate a code. The selected answer to the ${questionLabel} question is missing a required attribute.`,
+      isWarning: true,
+    };
+  }
+
+  return null;
+};
+
+const WarningHelperText = styled(FormHelperText)`
+  &.MuiFormHelperText-root {
+    font-size: 0.875rem;
+    color: ${({ theme }) => theme.palette.error.main};
+  }
+`;
+
+export const CodeGeneratorQuestion = ({
+  label,
+  name,
+  detailLabel,
+  config,
+}: SurveyQuestionInputProps) => {
+  const { formData } = useSurveyForm();
+  const value = name ? formData[name] : null;
+  const helperInfo = useDynamicPrefixHelperText(config, Boolean(value));
+
+  const helperText = helperInfo?.text ?? detailLabel;
+
+  return (
+    <CodeGeneratorWrapper>
+      <TextInput
+        disabled
+        label={label}
+        name={name ?? undefined}
+        textInputProps={{
+          helperText,
+          FormHelperTextProps: { component: WarningHelperText },
+        }}
+        value={value}
+      />
+    </CodeGeneratorWrapper>
+  );
+};

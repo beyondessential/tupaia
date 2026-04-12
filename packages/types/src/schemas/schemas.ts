@@ -45439,6 +45439,29 @@ export const CodeGeneratorQuestionConfigSchema = {
 		"prefix": {
 			"type": "string"
 		},
+		"dynamicPrefix": {
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				},
+				"entityField": {
+					"enum": [
+						"code",
+						"name",
+						"type"
+					],
+					"type": "string"
+				},
+				"entityAttribute": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		},
 		"length": {
 			"type": "number"
 		},
@@ -46670,6 +46693,29 @@ export const SurveyScreenComponentConfigSchema = {
 				},
 				"prefix": {
 					"type": "string"
+				},
+				"dynamicPrefix": {
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						},
+						"entityField": {
+							"enum": [
+								"code",
+								"name",
+								"type"
+							],
+							"type": "string"
+						},
+						"entityAttribute": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
 				},
 				"length": {
 					"type": "number"
@@ -102253,6 +102299,15 @@ export const EntitiesResponseItemSchema = {
 		"code": {
 			"type": "string"
 		},
+		"attributes": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
 		"name": {
 			"type": "string"
 		},
@@ -102356,6 +102411,7 @@ export const EntitiesResponseItemSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"attributes",
 		"code",
 		"id",
 		"name",

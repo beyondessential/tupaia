@@ -9,6 +9,8 @@ import React, {
 } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 
+import { CodeGeneratorQuestionConfig, Country, QuestionType, Survey } from '@tupaia/types';
+import { useSurvey } from '../../../api';
 import {
   Country,
   DatatrakWebSurveyResponseDraftsRequest,
@@ -23,6 +25,7 @@ import { getAllSurveyComponents, getPrimaryEntityParentQuestionIds } from '../ut
 import { usePrimaryEntityQuestionAutoFill } from '../utils/usePrimaryEntityQuestionAutoFill';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 import { SurveyFormContextType, surveyReducer } from './reducer';
+import { DynamicCodeGeneratorWatcher } from './DynamicCodeGeneratorWatcher';
 import {
   generateCodeForCodeGeneratorQuestions,
   getDisplayQuestions,
@@ -176,6 +179,16 @@ export const SurveyContext = ({
     }
   }, [draft?.formData, draft?.id, draft?.startTime]);
 
+  const dynamicCodeGenQuestions = useMemo(
+    () =>
+      flattenedScreenComponents.filter(
+        q =>
+          q.type === QuestionType.CodeGenerator &&
+          (q.config?.codeGenerator as CodeGeneratorQuestionConfig | undefined)?.dynamicPrefix,
+      ),
+    [flattenedScreenComponents],
+  );
+
   const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
 
   return (
@@ -201,6 +214,28 @@ export const SurveyContext = ({
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
+        {dynamicCodeGenQuestions.map(q => {
+          const sourceQuestionId = (
+            q.config!.codeGenerator as CodeGeneratorQuestionConfig
+          ).dynamicPrefix!.questionId;
+          const sourceQuestion = flattenedScreenComponents.find(
+            c => c.questionId === sourceQuestionId,
+          );
+          const isEntitySource =
+            sourceQuestion?.type === QuestionType.Entity ||
+            sourceQuestion?.type === QuestionType.PrimaryEntity;
+
+          return (
+            <DynamicCodeGeneratorWatcher
+              key={q.questionId}
+              question={q}
+              isEntitySource={isEntitySource}
+              formData={formData}
+              dispatch={dispatch}
+              isResponseScreen={isResponseScreen}
+            />
+          );
+        })}
         {children}
       </SurveyFormDispatchContext.Provider>
     </SurveyFormContext.Provider>

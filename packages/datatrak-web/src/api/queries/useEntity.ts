@@ -25,8 +25,9 @@ const entityByCodeQueryFunctions = {
     );
     const entityRecord = await models.entity.findOne({ code: entityCode });
     if (isNullish(entityRecord)) return null;
-    const entity = await entityRecord.getData();
-    return camelcaseKeys(entity, { deep: true });
+    const entity = (await entityRecord.getData()) as Record<string, any>;
+    const { attributes, ...rest } = entity;
+    return { ...camelcaseKeys(rest), attributes };
   },
 };
 
@@ -67,8 +68,9 @@ const entityByIdQueryFunctions = {
   local: async ({ entityId, models }: EntityByIdQueryFunctionContext) => {
     assertIsNotNullish(entityId, `useEntityById query function called with ${entityId} entityId`);
     const entityRecord = await models.entity.findByIdOrThrow(entityId);
-    const entity = await entityRecord.getData();
-    return camelcaseKeys(entity, { deep: true });
+    const entity = (await entityRecord.getData()) as Record<string, any>;
+    const { attributes, ...rest } = entity;
+    return { ...camelcaseKeys(rest), attributes };
   },
 };
 
