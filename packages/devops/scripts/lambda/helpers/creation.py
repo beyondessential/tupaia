@@ -181,7 +181,7 @@ def create_instance(
     print(f"New instance {new_instance.id} is up")
 
     # attach elastic ip
-    allocate_elastic_ip(new_instance.id, deployment_name)
+    allocate_elastic_ip(new_instance.id, f"{deployment_type}: {deployment_name}")
 
     # return instance object
     new_instance_object = get_instance_by_id(new_instance.id)
