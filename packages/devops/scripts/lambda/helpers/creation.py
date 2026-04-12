@@ -29,11 +29,14 @@ def get_latest_image_id(image_code):
     return image_id
 
 
-def allocate_elastic_ip(instance_id):
+def allocate_elastic_ip(instance_id, resource_name):
     elastic_ip = ec.allocate_address(Domain="Vpc")
-    ec.associate_address(
-        AllocationId=elastic_ip["AllocationId"], InstanceId=instance_id
+    allocation_id = elastic_ip["AllocationId"]
+    ec.create_tags(
+        Resources=[allocation_id],
+        Tags=[{"Key": "Name", "Value": resource_name}],
     )
+    ec.associate_address(AllocationId=allocation_id, InstanceId=instance_id)
     return elastic_ip["PublicIp"]
 
 
@@ -178,7 +181,7 @@ def create_instance(
     print(f"New instance {new_instance.id} is up")
 
     # attach elastic ip
-    allocate_elastic_ip(new_instance.id)
+    allocate_elastic_ip(new_instance.id, deployment_name)
 
     # return instance object
     new_instance_object = get_instance_by_id(new_instance.id)
