@@ -99514,6 +99514,139 @@ export const SurveyResponseCommentUpdateSchema = {
 	},
 	"additionalProperties": false
 }
+export const SurveyResponseDraftSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"form_data": {
+			"type": "object",
+			"properties": {}
+		},
+		"id": {
+			"type": "string"
+		},
+		"is_deleted": {
+			"type": "boolean"
+		},
+		"screen_number": {
+			"type": "number"
+		},
+		"start_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"survey_id": {
+			"type": "string"
+		},
+		"updated_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"form_data",
+		"id",
+		"is_deleted",
+		"screen_number",
+		"start_time",
+		"survey_id",
+		"updated_at",
+		"updated_at_sync_tick",
+		"user_id"
+	]
+}
+export const SurveyResponseDraftCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"form_data": {
+			"type": "object",
+			"properties": {}
+		},
+		"is_deleted": {
+			"type": "boolean"
+		},
+		"screen_number": {
+			"type": "number"
+		},
+		"start_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"survey_id": {
+			"type": "string"
+		},
+		"updated_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"start_time",
+		"survey_id",
+		"user_id"
+	]
+}
+export const SurveyResponseDraftUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"form_data": {
+			"type": "object",
+			"properties": {}
+		},
+		"id": {
+			"type": "string"
+		},
+		"is_deleted": {
+			"type": "boolean"
+		},
+		"screen_number": {
+			"type": "number"
+		},
+		"start_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"survey_id": {
+			"type": "string"
+		},
+		"updated_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+}
 export const SurveyScreenSchema = {
 	"type": "object",
 	"properties": {
@@ -103554,6 +103687,65 @@ export const UserResponseSchema = {
 	"required": [
 		"id",
 		"name"
+	]
+}
+export const DraftSurveyResponseSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"surveyId": {
+			"type": "string"
+		},
+		"surveyCode": {
+			"type": "string"
+		},
+		"surveyName": {
+			"type": "string"
+		},
+		"countryCode": {
+			"type": "string"
+		},
+		"countryName": {
+			"type": "string"
+		},
+		"entityId": {
+			"type": "string"
+		},
+		"entityName": {
+			"type": "string"
+		},
+		"startTime": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"formData": {
+			"additionalProperties": true,
+			"type": "object"
+		},
+		"screenNumber": {
+			"type": "number"
+		},
+		"updatedAt": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"countryCode",
+		"countryName",
+		"entityId",
+		"entityName",
+		"formData",
+		"id",
+		"screenNumber",
+		"startTime",
+		"surveyCode",
+		"surveyId",
+		"surveyName",
+		"updatedAt"
 	]
 }
 export const QueueStatusSchema = {

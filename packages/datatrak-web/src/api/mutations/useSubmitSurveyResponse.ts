@@ -17,6 +17,7 @@ import {
   ContextualMutationFunctionContext,
   useDatabaseMutation,
 } from '../queries/useDatabaseMutation';
+import { useDeleteSurveyResponseDraft } from './useDeleteSurveyResponseDraft';
 
 type Answer = string | number | boolean | null | undefined;
 
@@ -61,11 +62,12 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
-  const { resetForm } = useSurveyForm();
+  const { resetForm, draftId } = useSurveyForm();
   const user = useCurrentUserContext();
   const { data: survey } = useSurvey(params.surveyCode);
   const surveyResponseData = useSurveyResponseData();
   const isOfflineFirst = useIsOfflineFirst();
+  const deleteDraft = useDeleteSurveyResponseDraft(draftId);
 
   const mutationFunctions = {
     local: async ({ data: answers, models, user }: SurveyResponseMutationFunctionContext) => {
@@ -140,6 +142,10 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         queryClient.invalidateQueries(['surveyResponses']);
         queryClient.invalidateQueries(['taskMetric', user.projectId]);
         queryClient.invalidateQueries(['tasks']);
+        // Delete the draft if one was being resumed
+        if (draftId) {
+          deleteDraft.mutate();
+        }
 
         // Invalidate optionSet queries for questions that have createNew enabled so that the new
         // options are fetched

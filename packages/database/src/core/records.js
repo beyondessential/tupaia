@@ -56,6 +56,7 @@ export const RECORDS = /** @type {const} */ ({
   SURVEY_GROUP: 'survey_group',
   SURVEY_RESPONSE: 'survey_response',
   SURVEY_RESPONSE_COMMENT: 'survey_response_comment',
+  SURVEY_RESPONSE_DRAFT: 'survey_response_draft',
   SURVEY_SCREEN_COMPONENT: 'survey_screen_component',
   SURVEY_SCREEN: 'survey_screen',
   SURVEY: 'survey',
