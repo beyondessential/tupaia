@@ -29,6 +29,56 @@ const extractTrailingCode = (code: string, prefix: string): string => {
   return code.slice(expectedPrefix.length);
 };
 
+/**
+ * Determine the code to use given the current prefix and state.
+ * Returns the code string and the trailing (random) portion for reuse across prefix changes.
+ */
+const resolveCode = ({
+  resolvedPrefix,
+  existingCode,
+  trailingCode,
+  codeGenerator,
+}: {
+  resolvedPrefix: string;
+  existingCode: string | undefined;
+  trailingCode: string | undefined;
+  codeGenerator: CodeGeneratorQuestionConfig;
+}): { code: string; trailingCode: string } => {
+  if (codeGenerator.type !== 'shortid') {
+    throw new Error(
+      `dynamicPrefix is only supported with shortid code generators, got: ${codeGenerator.type}`,
+    );
+  }
+
+  // Draft/existing code matches the current prefix — preserve it
+  if (existingCode && existingCode.startsWith(`${resolvedPrefix}-`)) {
+    return { code: existingCode, trailingCode: extractTrailingCode(existingCode, resolvedPrefix) };
+  }
+
+  // Prefix changed but trailing code already exists — swap the prefix
+  if (trailingCode) {
+    return { code: `${resolvedPrefix}-${trailingCode}`, trailingCode };
+  }
+
+  // First generation — create a full new code
+  const newCode = generateShortId({ ...codeGenerator, prefix: resolvedPrefix });
+  return { code: newCode, trailingCode: extractTrailingCode(newCode, resolvedPrefix) };
+};
+
+const useResolvedPrefix = (
+  dynamicPrefix: NonNullable<CodeGeneratorQuestionConfig['dynamicPrefix']>,
+  isEntitySource: boolean,
+  sourceAnswer: string | undefined,
+): string | undefined => {
+  const shouldFetchEntity = Boolean(isEntitySource && sourceAnswer);
+  const { data: entity } = useEntityById(shouldFetchEntity ? sourceAnswer : undefined);
+
+  if (isEntitySource) {
+    return entity ? resolvePrefix(entity, dynamicPrefix) : undefined;
+  }
+  return sourceAnswer;
+};
+
 interface DynamicCodeGeneratorWatcherProps {
   question: SurveyScreenComponent;
   isEntitySource: boolean;
@@ -48,30 +98,15 @@ export const DynamicCodeGeneratorWatcher = ({
   const codeGenerator = config!.codeGenerator as CodeGeneratorQuestionConfig;
   const { dynamicPrefix } = codeGenerator;
   const sourceAnswer = formData[dynamicPrefix!.questionId];
-
-  // Fetch entity if the source question is an entity question and has an answer
-  const shouldFetchEntity = Boolean(isEntitySource && sourceAnswer);
-  const { data: entity } = useEntityById(shouldFetchEntity ? sourceAnswer : undefined);
+  const resolvedPrefix = useResolvedPrefix(dynamicPrefix!, isEntitySource, sourceAnswer);
 
   const prevPrefixRef = useRef<string | undefined>(undefined);
   const trailingCodeRef = useRef<string | undefined>(undefined);
 
-  let resolvedPrefix: string | undefined;
-  if (isEntitySource) {
-    if (entity) {
-      resolvedPrefix = resolvePrefix(entity, dynamicPrefix!);
-    }
-  } else {
-    resolvedPrefix = sourceAnswer;
-  }
-
   useEffect(() => {
-    // Don't overwrite saved answers when viewing a submitted response
     if (isResponseScreen) return;
 
     if (resolvedPrefix === undefined) {
-      // If a code was previously generated and the prefix is now undefined (e.g. entity
-      // changed to one without the required attribute), clear the code
       if (prevPrefixRef.current !== undefined) {
         prevPrefixRef.current = undefined;
         dispatch({
@@ -84,28 +119,23 @@ export const DynamicCodeGeneratorWatcher = ({
 
     if (resolvedPrefix === prevPrefixRef.current) return;
 
-    if (codeGenerator.type !== 'shortid') {
-      throw new Error(
-        `dynamicPrefix is only supported with shortid code generators, got: ${codeGenerator.type}`,
-      );
-    }
-
     prevPrefixRef.current = resolvedPrefix;
 
-    let newCode: string;
-    if (trailingCodeRef.current) {
-      // Prefix changed but trailing code already exists — just swap the prefix
-      newCode = `${resolvedPrefix}-${trailingCodeRef.current}`;
-    } else {
-      // First generation — create a full new code
-      newCode = generateShortId({ ...codeGenerator, prefix: resolvedPrefix });
-      trailingCodeRef.current = extractTrailingCode(newCode, resolvedPrefix);
-    }
-
-    dispatch({
-      type: ACTION_TYPES.SET_FORM_DATA,
-      payload: { [questionId]: newCode },
+    const result = resolveCode({
+      resolvedPrefix,
+      existingCode: formData[questionId],
+      trailingCode: trailingCodeRef.current,
+      codeGenerator,
     });
+
+    trailingCodeRef.current = result.trailingCode;
+
+    if (result.code !== formData[questionId]) {
+      dispatch({
+        type: ACTION_TYPES.SET_FORM_DATA,
+        payload: { [questionId]: result.code },
+      });
+    }
   }, [resolvedPrefix, codeGenerator, dispatch, questionId, isResponseScreen]);
 
   return null;
