@@ -1,4 +1,5 @@
 import boto3
+from botocore.exceptions import ClientError
 from helpers.networking import (
     add_subdomains_to_route53,
     setup_subdomains_via_dns,
@@ -32,11 +33,25 @@ def get_latest_image_id(image_code):
 def allocate_elastic_ip(instance_id, resource_name):
     elastic_ip = ec.allocate_address(Domain="Vpc")
     allocation_id = elastic_ip["AllocationId"]
-    ec.create_tags(
-        Resources=[allocation_id],
-        Tags=[{"Key": "Name", "Value": resource_name}],
-    )
-    ec.associate_address(AllocationId=allocation_id, InstanceId=instance_id)
+    try:
+        ec.create_tags(
+            Resources=[allocation_id],
+            Tags=[{"Key": "Name", "Value": resource_name}],
+        )
+        ec.associate_address(AllocationId=allocation_id, InstanceId=instance_id)
+    except ClientError as err:
+        print(
+            f"Failed to associate Elastic IP {allocation_id} to {instance_id}. Releasing it…"
+        )
+        try:
+            ec.release_address(AllocationId=allocation_id)
+            print(f"Released Elastic IP {allocation_id}")
+        except ClientError:
+            print(
+                f"Failed to release orphaned Elastic IP {allocation_id} ({elastic_ip["PublicIp"]}). Please release it manually."
+            )
+        raise err
+
     return elastic_ip["PublicIp"]
 
 
