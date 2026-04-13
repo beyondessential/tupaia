@@ -48,7 +48,7 @@ def allocate_elastic_ip(instance_id, resource_name):
             print(f"Released Elastic IP {allocation_id}")
         except ClientError:
             print(
-                f"Failed to release orphaned Elastic IP {allocation_id} ({elastic_ip["PublicIp"]}). Please release it manually."
+                f"Failed to release orphaned Elastic IP {allocation_id} ({elastic_ip['PublicIp']}). Please release it manually."
             )
         raise err
 
