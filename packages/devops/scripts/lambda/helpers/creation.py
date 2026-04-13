@@ -39,7 +39,7 @@ def allocate_elastic_ip(instance_id, resource_name):
             Tags=[{"Key": "Name", "Value": resource_name}],
         )
         ec.associate_address(AllocationId=allocation_id, InstanceId=instance_id)
-    except ClientError as err:
+    except ClientError:
         print(
             f"Failed to associate Elastic IP {allocation_id} to {instance_id}. Releasing it…"
         )
@@ -50,7 +50,7 @@ def allocate_elastic_ip(instance_id, resource_name):
             print(
                 f"Failed to release orphaned Elastic IP {allocation_id} ({elastic_ip['PublicIp']}). Please release it manually."
             )
-        raise err
+        raise
 
     return elastic_ip["PublicIp"]
 
