@@ -17,6 +17,7 @@ import {
   ContextualMutationFunctionContext,
   useDatabaseMutation,
 } from '../queries/useDatabaseMutation';
+import { DatatrakWebModelRegistry } from '../../types';
 import { useDeleteSurveyResponseDraft } from './useDeleteSurveyResponseDraft';
 
 type Answer = string | number | boolean | null | undefined;
@@ -56,7 +57,37 @@ export const useSurveyResponseData = (): ResponseData => {
 interface SurveyResponseMutationFunctionContext
   extends ContextualMutationFunctionContext<{
     answers?: AnswersT;
-  }> {}
+  }> { }
+
+const createEntityParentChildRelation = async (
+  transactingModels: DatatrakWebModelRegistry,
+  entityHierarchyId: string,
+  entitiesUpserted: Entity[],
+) => {
+  const entitiesWithParent = entitiesUpserted.filter(
+    (entity): entity is Entity & { parent_id: string } => typeof entity.parent_id === 'string',
+  );
+  const relations = entitiesWithParent.map(entity => ({
+    entity_hierarchy_id: entityHierarchyId,
+    parent_id: entity.parent_id,
+    child_id: entity.id,
+  }));
+  if (relations.length === 0) { 
+    return; 
+  }
+
+  // Re-parenting should replace existing links for each child in this hierarchy.
+  // Without this, stale rows can leave the same child under both old and new parents.
+  const childIds = [...new Set(relations.map(({ child_id }) => child_id))];
+  await transactingModels.entityParentChildRelation.delete({
+    entity_hierarchy_id: entityHierarchyId,
+    child_id: childIds,
+  });
+
+  await transactingModels.entityParentChildRelation.createMany(relations, {
+    onConflictIgnore: ['entity_hierarchy_id', 'parent_id', 'child_id'],
+  });
+};
 
 export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
@@ -95,6 +126,16 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
         // Mirroring central-server logic
         await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
+
+        // On central, EntityHierarchyCacher rebuilds entity_parent_child_relation when an entity
+        // changes. That change handler doesn't run locally, so insert the parent-child link here
+        // so the new entity is immediately visible in descendant queries.
+        const entityHierarchyId = user.project?.entityHierarchyId;
+        const entitiesUpserted = processedResponse.entities_upserted ?? [];
+        if (entityHierarchyId && entitiesUpserted.length > 0) {
+          await createEntityParentChildRelation(transactingModels, entityHierarchyId, entitiesUpserted);
+        }
+
         await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
         const idsCreated = await SurveyResponseModel.saveResponsesToDatabase(
           transactingModels,
