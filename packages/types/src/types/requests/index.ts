@@ -3,6 +3,7 @@ export { MeditrakSurveyResponseRequest, ProjectCountryAccessListRequest } from '
 export { DataTablePreviewRequest } from './data-table-server/DataTablePreviewRequest';
 export {
   DatatrakWebActivityFeedRequest,
+  DatatrakWebDeleteSurveyResponseDraftRequest,
   DatatrakWebEntitiesRequest,
   DatatrakWebEntityDescendantsRequest,
   DatatrakWebGenerateLoginTokenRequest,
@@ -10,9 +11,11 @@ export {
   DatatrakWebProjectsRequest,
   DatatrakWebRecentSurveysRequest,
   DatatrakWebResubmitSurveyResponseRequest,
+  DatatrakWebSaveSurveyResponseDraftRequest,
   DatatrakWebSingleSurveyResponseRequest,
   DatatrakWebSubmitSurveyResponseRequest,
   DatatrakWebSurveyRequest,
+  DatatrakWebSurveyResponseDraftsRequest,
   DatatrakWebSurveyResponsesRequest,
   DatatrakWebSurveysRequest,
   DatatrakWebSyncEndSessionRequest,
@@ -25,6 +28,7 @@ export {
   DatatrakWebTaskMetricsRequest,
   DatatrakWebTaskRequest,
   DatatrakWebTasksRequest,
+  DatatrakWebUpdateSurveyResponseDraftRequest,
   DatatrakWebUserRequest,
   DatatrakWebUsersRequest,
 } from './datatrak-web-server';
