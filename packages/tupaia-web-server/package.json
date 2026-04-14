@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/tupaia-web-server",
-  "version": "0.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Orchestration server for tupaia web application",
   "homepage": "https://github.com/beyondessential/tupaia",
