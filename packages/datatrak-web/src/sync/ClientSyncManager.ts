@@ -443,6 +443,12 @@ export class ClientSyncManager {
       currentSyncClockTime.toString(),
     );
     log.debug('ClientSyncManager.updatedLastSuccessfulPush', { currentSyncClockTime });
+
+    // Clean up soft-deleted records that have been successfully pushed
+    await this.models.surveyResponseDraft.delete({
+      is_deleted: true,
+      updated_at_sync_tick: { comparator: '<=', comparisonValue: currentSyncClockTime },
+    });
   }
 
   async pullChanges(sessionId: string, projectIds: Project['id'][]): Promise<number> {
