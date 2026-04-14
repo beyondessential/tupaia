@@ -18,6 +18,7 @@ jest.mock('../../../api/queries', () => {
     useUser: jest.fn().mockReturnValue({}),
     useSurvey: jest.fn().mockReturnValue({}),
     useEntityByCode: jest.fn().mockReturnValue({}),
+    useShowCoconutsPigs: jest.fn().mockReturnValue({ showCoconutsPigs: true, isLoading: false }),
   };
 });
 
