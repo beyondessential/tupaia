@@ -1,6 +1,7 @@
 import { SyncFact } from '@tupaia/constants';
 import { RECORDS } from '@tupaia/database';
 import { EntityRecord, ProjectRecord } from '@tupaia/tsmodels';
+import { camelcaseKeys } from '@tupaia/tsutils';
 import { GetUserLocalContext } from '../../api/queries/useUser';
 
 export const getUser = async ({ models }: GetUserLocalContext) => {
@@ -18,24 +19,23 @@ export const getUser = async ({ models }: GetUserLocalContext) => {
     const { preferences = {} } = userRecord;
     const { project_id: projectId, country_id: countryId } = preferences;
 
-    let project: ProjectRecord | null = null;
-    if (projectId) {
-      project = await transactingModels.database.findOne(
-        RECORDS.PROJECT,
-        { [`${RECORDS.PROJECT}.id`]: projectId },
-        {
-          joinWith: RECORDS.ENTITY,
-          joinCondition: ['entity.id', 'project.entity_id'],
-        },
-      );
-    }
+    const projectRecord: ProjectRecord | null = projectId
+      ? await transactingModels.database.findOne(
+          RECORDS.PROJECT,
+          { [`${RECORDS.PROJECT}.id`]: projectId },
+          {
+            joinWith: RECORDS.ENTITY,
+            joinCondition: ['entity.id', 'project.entity_id'],
+          },
+        )
+      : null;
+    const project = projectRecord ? camelcaseKeys(projectRecord, { deep: true }) : null;
 
-    let country: EntityRecord | null = null;
-    if (countryId) {
-      country = await transactingModels.entity.findById(countryId, {
-        columns: ['code', 'id', 'name'],
-      });
-    }
+    const country: EntityRecord | null = countryId
+      ? await transactingModels.entity.findById(countryId, {
+          columns: ['code', 'id', 'name'],
+        })
+      : null;
 
     return await transactingModels.user.transformUserData(userRecord, project, country);
   });

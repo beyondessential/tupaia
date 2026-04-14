@@ -1,11 +1,12 @@
 import { Link } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { SyncFact } from '@tupaia/constants';
 import { useDatabaseQuery, useSyncContext } from '../api';
 import { useIsOfflineFirst } from '../api/offlineFirst';
-import { useLogoutGuard } from '../hooks/useGuardedLogout';
+import { ROUTES } from '../constants';
 import { BannerNotification } from './BannerNotification';
 
 const StyledLink = styled(Link)`
@@ -18,8 +19,8 @@ const StyledLink = styled(Link)`
 
 /**
  * @returns
- * - `true` if the current user’s permissions have changed since last sync;
- * - `false` if `they haven’t changed since last sync;
+ * - `true` if the current user's permissions have changed since last sync;
+ * - `false` if `they haven't changed since last sync;
  * - `undefined` if result is pending;
  * - `null` if not using sync.
  */
@@ -46,20 +47,17 @@ function usePermissionsDidChange() {
 
 export const ResetDataNotification = () => {
   const permissionsChanged = usePermissionsDidChange();
-
-  const { guardedLogout, confirmationModal } = useLogoutGuard();
+  const navigate = useNavigate();
 
   if (!permissionsChanged) {
     return null;
   }
 
   return (
-    <>
-      <BannerNotification>
-        <strong>Permissions changed.</strong> Your permissions were updated while you were offline.{' '}
-        <StyledLink onClick={guardedLogout}>Log out</StyledLink> and back in to get the latest data.
-      </BannerNotification>
-      {confirmationModal}
-    </>
+    <BannerNotification>
+      <strong>Permissions changed.</strong> Your permissions were updated while you were offline.{' '}
+      <StyledLink onClick={() => navigate(ROUTES.LOGOUT)}>Log out</StyledLink> and back in to get
+      the latest data.
+    </BannerNotification>
   );
 };
