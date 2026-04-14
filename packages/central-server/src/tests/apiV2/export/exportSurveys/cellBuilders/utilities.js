@@ -27,11 +27,21 @@ export const cellBuilderModelsStub = questions => {
     .withArgs(sinon.match(sinon.match.any))
     .callsFake(({ code: searchCode }) => questions.find(({ code }) => searchCode === code));
 
+  const findOneOrThrowStub = sinon.stub().returns(null);
+  findOneOrThrowStub
+    .withArgs(sinon.match(sinon.match.any))
+    .callsFake(({ code: searchCode }) => {
+      const result = questions.find(({ code }) => searchCode === code);
+      if (!result) throw new Error(`No question found with code ${searchCode}`);
+      return result;
+    });
+
   return {
     question: {
       findById: findByIdStub,
       findIdByCode: findIdByCodeStub,
       findOne: findOneStub,
+      findOneOrThrow: findOneOrThrowStub,
     },
     entity: {
       getEntityTypes: () => ['school', 'facility'],

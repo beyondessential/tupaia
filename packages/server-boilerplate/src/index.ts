@@ -104,6 +104,8 @@ export {
   SurveyGroupRecord,
   SurveyResponseModel,
   SurveyResponseRecord,
+  SurveyResponseDraftModel,
+  SurveyResponseDraftRecord,
   SurveyScreenComponentModel,
   SurveyScreenComponentRecord,
   SurveyScreenModel,

@@ -5,7 +5,7 @@ import { Button } from './Button';
 import { Modal } from './Modal';
 
 const Wrapper = styled.div`
-  max-inline-size: 28rem;
+  max-inline-size: 27rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 1rem 2rem;
   }
@@ -36,6 +36,7 @@ const ModalButton = styled(Button)`
   &.MuiButtonBase-root.MuiButton-root {
     flex: 1;
     margin: 0;
+    white-space: nowrap;
   }
 `;
 
@@ -43,8 +44,9 @@ export interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: React.MouseEventHandler<HTMLElement>;
-  heading?: NonNullable<React.ReactNode>;
-  description?: React.ReactNode;
+  onCancel?: React.MouseEventHandler<HTMLElement>;
+  heading: NonNullable<React.ReactNode>;
+  description: React.ReactNode;
   confirmLabel?: React.ReactNode;
   cancelLabel?: React.ReactNode;
 }
@@ -53,10 +55,11 @@ export const ConfirmationModal = ({
   isOpen,
   onClose,
   onConfirm,
-  heading = 'Survey in progress',
-  description = 'If you exit, you will lose the progress you’ve made on the current survey',
-  confirmLabel = 'Exit survey',
-  cancelLabel = 'Continue survey',
+  onCancel,
+  heading,
+  description,
+  confirmLabel = 'Confirm',
+  cancelLabel = 'Cancel',
 }: ConfirmationModalProps) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -64,7 +67,7 @@ export const ConfirmationModal = ({
         <Heading>{heading}</Heading>
         <Typography align="center">{description}</Typography>
         <ButtonWrapper>
-          <ModalButton onClick={onClose} variant="outlined">
+          <ModalButton onClick={onCancel ?? onClose} variant="outlined">
             {cancelLabel}
           </ModalButton>
           <ModalButton onClick={onConfirm}>{confirmLabel}</ModalButton>
