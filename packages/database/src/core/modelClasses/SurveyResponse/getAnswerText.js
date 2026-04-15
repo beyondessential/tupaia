@@ -1,5 +1,6 @@
 import { isPlainObject } from 'es-toolkit';
 
+import { getS3ImageFilePath, S3_BUCKET_PATH } from '@tupaia/server-utils';
 import { isObjectId, isValidHttpUrl } from '@tupaia/tsutils';
 import { QuestionType } from '@tupaia/types';
 
@@ -52,14 +53,9 @@ async function getPhotoAnswerText(answer) {
   if (isValidHttpUrl(answer.body)) return answer.body;
 
   if (isObjectId(answer.body)) {
-    // TODO: Figure out why importing these from @tupaia/server-utils breaks @tupaia/datatrak-web
-    const isProduction = () =>
-      (process.env.IS_PRODUCTION_ENVIRONMENT === 'true' || process.env.NODE_ENV === 'production') &&
-      !process.env.CI_BUILD_ID;
-    const S3_BUCKET_PATH = 'https://tupaia.s3.ap-southeast-2.amazonaws.com/';
-    const s3ImagePath = isProduction() ? 'uploads/images/' : 'dev_uploads/images/';
-
-    return `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.jpg`;
+    // Photo uploaded from MediTrak, which always uploads JPEG data, which is converted to WebP
+    const s3ImagePath = getS3ImageFilePath();
+    return `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.webp`;
   }
 
   return answer.body;
