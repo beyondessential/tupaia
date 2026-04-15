@@ -150,13 +150,6 @@ const useDynamicPrefixHelperText = (
   return null;
 };
 
-const WarningHelperText = styled(FormHelperText)`
-  &.MuiFormHelperText-root {
-    font-size: 0.875rem;
-    color: ${({ theme }) => theme.palette.error.main};
-  }
-`;
-
 export const CodeGeneratorQuestion = ({
   label,
   name,
@@ -166,6 +159,7 @@ export const CodeGeneratorQuestion = ({
   const { formData } = useSurveyForm();
   const value = name ? formData[name] : null;
   const helperInfo = useDynamicPrefixHelperText(config, Boolean(value));
+  const isDynamic = Boolean(helperInfo);
 
   const helperText = helperInfo?.text ?? detailLabel;
 
@@ -177,7 +171,7 @@ export const CodeGeneratorQuestion = ({
         name={name ?? undefined}
         textInputProps={{
           helperText,
-          FormHelperTextProps: { component: WarningHelperText },
+          FormHelperTextProps: { error: isDynamic },
         }}
         value={value}
       />
