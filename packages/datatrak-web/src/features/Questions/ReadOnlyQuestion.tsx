@@ -1,14 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { FormHelperText } from '@material-ui/core';
-import { Tooltip } from '@tupaia/ui-components';
 import { CodeGeneratorQuestionConfig } from '@tupaia/types';
-
+import { Tooltip } from '@tupaia/ui-components';
 import { useSurveyForm } from '..';
-import { SurveyQuestionInputProps } from '../../types';
 import { InputHelperText, TextInput } from '../../components';
-import { getArithmeticDisplayAnswer, getAllSurveyComponents } from '../Survey';
+import { SurveyQuestionInputProps } from '../../types';
+import { getAllSurveyComponents, getArithmeticDisplayAnswer } from '../Survey';
 
 const Wrapper = styled.div`
   border-block-start: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
