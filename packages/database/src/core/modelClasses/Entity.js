@@ -874,6 +874,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       `,
       where: `
         entity.updated_at_sync_tick > :since
+        -- When an entity_parent_child_relation is updated, we need to rebuild the child and parent entities
+        -- in case they haven't got the project_ids updated to the right ones yet
         OR entity.id IN (
           SELECT child_id FROM entity_parent_child_relation WHERE updated_at_sync_tick > :since
           UNION
