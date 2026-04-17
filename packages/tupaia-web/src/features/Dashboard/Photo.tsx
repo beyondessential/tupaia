@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
 import { ButtonBase, Dialog } from '@material-ui/core';
-import { Media } from './Media';
+import React, { useState } from 'react';
+import { Image } from './Image';
 
 const getOrgUnitPhotoUrl = (photoUrl?: string) => {
   if (!photoUrl) {
@@ -24,16 +24,17 @@ export const Photo = ({ title, photoUrl }: PhotoProps) => {
     <>
       {isEnlarged && (
         <Dialog open={isEnlarged} onClose={() => setIsEnlarged(false)}>
-          <img src={imageSrc} alt={title} />
+          <img crossOrigin="" src={imageSrc} alt={title} />
         </Dialog>
       )}
-      <Media
-        $backgroundImage={imageSrc}
+      <ButtonBase
+        aria-label="Expand image"
         onClick={() => setIsEnlarged(true)}
-        as={ButtonBase}
         title="Expand image"
-        aria-label={title}
-      />
+        style={{ inlineSize: '100%' }}
+      >
+        <Image alt={title} src={imageSrc} />
+      </ButtonBase>
     </>
   );
 };
