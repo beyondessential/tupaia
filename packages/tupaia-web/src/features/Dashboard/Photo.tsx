@@ -1,11 +1,6 @@
 import { ButtonBase, Dialog } from '@material-ui/core';
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { Image } from './Image';
-
-const Button = styled(ButtonBase)`
-  inline-size: 100%;
-`;
 
 const getOrgUnitPhotoUrl = (photoUrl?: string) => {
   if (!photoUrl) {
