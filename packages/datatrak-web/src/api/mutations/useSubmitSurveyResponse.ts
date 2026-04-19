@@ -11,7 +11,7 @@ import { useShowCoconutsPigs } from '../queries';
 import { Coconut } from '../../components';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
-import { gaEvent, successToast } from '../../utils';
+import { GA_EVENT, gaEvent, successToast } from '../../utils';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { useSurvey } from '../queries';
 import {
@@ -172,10 +172,10 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
     {
       onMutate: () => {
         // Send off survey submissions by survey, project, country, and userId
-        gaEvent('submit_survey', params.surveyCode!, survey?.name);
-        gaEvent('submit_survey_by_project', user.project?.code!);
-        gaEvent('submit_survey_by_country', params.countryCode!);
-        gaEvent('submit_survey_by_user', user.id!);
+        gaEvent(GA_EVENT.SUBMIT_SURVEY, params.surveyCode!, survey?.name);
+        gaEvent(GA_EVENT.SUBMIT_SURVEY_BY_PROJECT, user.project?.code!);
+        gaEvent(GA_EVENT.SUBMIT_SURVEY_BY_COUNTRY, params.countryCode!);
+        gaEvent(GA_EVENT.SUBMIT_SURVEY_BY_USER, user.id!);
       },
       onSuccess: data => {
         queryClient.invalidateQueries(['entityDescendants']); // Refresh recent entities

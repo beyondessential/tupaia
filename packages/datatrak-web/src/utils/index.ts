@@ -2,7 +2,7 @@ export * from './date';
 export * from './detectDevice';
 export { isWebApp } from './displayMode';
 export { formatNumberWithTrueMinus, formatFraction } from './formatNumbers';
-export { gaEvent } from './ga';
+export { GA_CATEGORY, GA_EVENT, gaEvent, gaSetUserProperties } from './ga';
 export { innerText } from './innerText';
 export {
   useIsDesktopSizeClass as useIsDesktop,
