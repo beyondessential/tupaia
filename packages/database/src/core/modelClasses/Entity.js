@@ -834,10 +834,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           entities_to_sync AS (
             -- root project entities
             SELECT entity.id AS entity_id, project.entity_hierarchy_id
-            FROM entity join project on entity.id = project.entity_id
+            FROM entity JOIN project on entity.id = project.entity_id
             UNION
 
-            -- all child entities of root project entities
+            -- all child entities at all levels
             SELECT child_id AS entity_id, entity_hierarchy_id
             FROM entity_parent_child_relation
             UNION
