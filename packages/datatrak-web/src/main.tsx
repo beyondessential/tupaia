@@ -6,14 +6,14 @@ import { App } from './App';
 import { setUpdateReady } from './components/UpdateConfirmation';
 import { useIsOfflineFirst } from './api/offlineFirst';
 import { GA_CATEGORY, GA_EVENT, gaEvent, gaSetUserProperties } from './utils';
+import { getDisplayMode } from './utils/displayMode';
 
 renderReactApp(<App />, document.getElementById('root'));
 
 // Set GA user properties on every session
 gaSetUserProperties({
-  mode: useIsOfflineFirst() ? 'offline' : 'online',
+  displayMode: getDisplayMode(),
   app_version: process.env.REACT_APP_VERSION || 'unknown',
-  deployment_name: process.env.REACT_APP_DEPLOYMENT_NAME || 'unknown',
 });
 
 const promptUserToUpdate = (registration: ServiceWorkerRegistration) => {
