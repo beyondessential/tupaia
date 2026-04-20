@@ -49,11 +49,14 @@ interface UnavailableResponseModalProps {
 export const UnavailableResponseModal = ({ isOpen, onClose }: UnavailableResponseModalProps) => (
   <Modal open={isOpen} onClose={onClose}>
     <Wrapper>
-      <Heading>Survey response unavailable</Heading>
-      <Typography align="center">This survey response is not available on this device</Typography>
+      <Heading>Unavailable to view submission</Heading>
+      <Typography align="center">
+        This submission was completed on a different device and cannot be viewed while on this
+        device. Please use the web app version to view the submission.
+      </Typography>
       <ButtonWrapper>
         <ModalButton onClick={onClose} variant="outlined">
-          Cancel
+          Close
         </ModalButton>
       </ButtonWrapper>
     </Wrapper>
