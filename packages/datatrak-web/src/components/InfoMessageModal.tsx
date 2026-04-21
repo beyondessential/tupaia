@@ -9,13 +9,14 @@ const Heading = styled(Typography).attrs({
   variant: 'h2',
   align: 'center',
 })`
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
 `;
 
 const Wrapper = styled.div`
   max-inline-size: 27rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 2rem;
+    padding-block: 1rem;
+    padding-inline: 2rem;
   }
 `;
 
@@ -32,7 +33,8 @@ const ButtonWrapper = styled.div`
   flex-direction: column-reverse;
   gap: 1rem;
   inline-size: 100%;
-  margin: 1.5rem auto 0;
+  margin-block-start: 1.5rem;
+  margin-inline: auto;
   max-inline-size: 20rem;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
