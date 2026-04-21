@@ -55,9 +55,7 @@ export const PwaInstallPromptProvider = ({ children }: { children: React.ReactNo
     if (!deferredPrompt) return null;
 
     const result = await deferredPrompt.prompt();
-    if (result.outcome === 'accepted') {
-      setDeferredPrompt(null);
-    }
+    setDeferredPrompt(null);
     return result.outcome;
   }, [deferredPrompt]);
 
