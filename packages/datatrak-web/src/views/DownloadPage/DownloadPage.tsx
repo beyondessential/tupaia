@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
-import { Typography } from '@material-ui/core';
+import React from 'react';
+import { Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import styled, { css } from 'styled-components';
-import PWAPrompt from 'react-ios-pwa-prompt';
-import { Button as UIButton, QrCodeImage, SafeArea } from '@tupaia/ui-components';
+import { SafeArea } from '@tupaia/ui-components';
 import { HomeLink } from '../../components';
-import { AndroidIcon, AppleIcon } from '../../components/Icons';
-import { usePwaInstallPrompt } from '../../hooks/usePwaInstallPrompt';
-import { isAndroidDevice, isIosDevice } from '../../utils/detectDevice';
-import { ROUTES } from '../../constants';
-
-const getDownloadUrl = () => `${window.location.origin}${ROUTES.DOWNLOAD}`;
+import { InstallSection } from './InstallSection';
+import { QrCodeSection } from './QrCodeSection';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -86,24 +81,6 @@ const LeftColumn = styled.div`
   }
 `;
 
-const RightColumn = styled.div<{ $visibility?: Visibility }>`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  flex: 2;
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    /* Break out of Container's padding/max-width so the mockup reaches the viewport's right edge */
-    margin-inline-end: calc((100% - 100vw) / 2);
-
-    img {
-      inline-size: 100%;
-    }
-  }
-
-  ${({ $visibility }) => visibilityCss($visibility)}
-`;
-
 const Description = styled(Typography)`
   font-size: 1rem;
   line-height: 1.4;
@@ -115,164 +92,36 @@ const Description = styled(Typography)`
   }
 `;
 
-type Visibility = 'mobile' | 'desktop';
+const MobileMockup = styled.img`
+  max-inline-size: 80%;
+  block-size: auto;
+`;
 
-const visibilityCss = ($visibility?: Visibility) => {
-  if (!$visibility) return '';
-  if ($visibility === 'mobile')
-    return css`
-      ${({ theme }) => theme.breakpoints.up('md')} {
-        display: none;
-      }
-    `;
-  return css`
-    display: none;
-    ${({ theme }) => theme.breakpoints.up('md')} {
-      display: flex;
-    }
-  `;
-};
-
-const SectionLabel = styled(Typography)``;
-
-const Section = styled.section<{ $visibility?: Visibility }>`
+const DesktopMockupWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  gap: 0.75rem;
+  flex: 2;
+  /* Break out of Container's padding/max-width so the mockup reaches the viewport's right edge */
+  margin-inline-end: calc((100% - 100vw) / 2);
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    align-items: flex-start;
+  img {
+    inline-size: 100%;
   }
-
-  ${({ $visibility }) => visibilityCss($visibility)}
 `;
 
-const DownloadButton = styled(UIButton)`
-  inline-size: 100%;
-  gap: 0.5rem;
-  background-color: ${props => props.theme.palette.primary.main};
-`;
-
-const StyledQrCode = styled(QrCodeImage)`
-  inline-size: 180px;
-  outline: none;
-`;
-
-const QRCodeBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 40px;
-  border-radius: 10px;
-  border: 1px solid ${props => props.theme.palette.primary.dark};
-  background: rgba(255, 255, 255, 0.5);
-`;
-
-const QRCodeIcons = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: ${props => props.theme.palette.primary.dark};
-`;
-
-const HelpText = styled(Typography).attrs({ variant: 'body2' })`
-  color: ${({ theme }) => theme.palette.text.secondary};
-  max-inline-size: 18rem;
-  margin-block-start: 0.25rem;
-`;
-
-const InstalledMessage = styled(Typography)`
-  color: ${({ theme }) => theme.palette.success.dark};
-  font-weight: 600;
-  margin-block-end: 1rem;
-`;
-
-const MockupImage = styled.img<{ $visibility?: Visibility }>`
+const DesktopMockup = styled.img.attrs({
+  src: '/images/download-page-desktop-mockup.png',
+  alt: 'Tupaia DataTrak app',
+})`
   max-inline-size: 100%;
   block-size: auto;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    max-inline-size: 80%;
-  }
-
-  ${({ $visibility }) => visibilityCss($visibility)}
 `;
 
-const MobileSection = () => {
-  const { isAppInstalled, canPromptInstall, promptInstall } = usePwaInstallPrompt();
-  const [showIosPrompt, setShowIosPrompt] = useState(false);
-
-  if (isAppInstalled) {
-    return (
-      <Section $visibility="mobile">
-        <InstalledMessage>Tupaia DataTrak is already installed</InstalledMessage>
-        <DownloadButton component="a" href="/">
-          Open DataTrak
-        </DownloadButton>
-      </Section>
-    );
-  }
-
-  const iosDevice = isIosDevice();
-  const canInstall = canPromptInstall || iosDevice;
-
-  const handleInstallClick = () => {
-    if (canPromptInstall) {
-      promptInstall();
-      return;
-    }
-    if (iosDevice) {
-      setShowIosPrompt(true);
-    }
-  };
-
-  return (
-    <Section $visibility="mobile">
-      <DownloadButton
-        onClick={canInstall ? handleInstallClick : undefined}
-        startIcon={
-          <>
-            <AppleIcon fontSize="small" />
-            <AndroidIcon fontSize="small" />
-          </>
-        }
-      >
-        Install for iOS or Android
-      </DownloadButton>
-      {isAndroidDevice() && !canPromptInstall && (
-        <HelpText>
-          On Android, tap the menu button in Chrome, then select &ldquo;Add to Home Screen&rdquo; or
-          &ldquo;Install App&rdquo;.
-        </HelpText>
-      )}
-      <PWAPrompt
-        isShown={showIosPrompt}
-        onClose={() => setShowIosPrompt(false)}
-        copyTitle="Install Tupaia DataTrak"
-        copyDescription="DataTrak works fully offline once installed. Add it to your home screen to launch it like a native app."
-        copyShareStep="Tap the Share button in Safari's menu bar."
-        copyAddToHomeScreenStep="Tap 'Add to Home Screen' to install."
-      />
-    </Section>
-  );
-};
-
-const QRCodeSection = () => (
-  <Section $visibility="desktop">
-    <QRCodeBox>
-      <QRCodeIcons>
-        <AppleIcon />
-        <AndroidIcon />
-      </QRCodeIcons>
-      <SectionLabel>Scan to install for iOS or Android</SectionLabel>
-      <StyledQrCode qrCodeContents={getDownloadUrl()} />
-    </QRCodeBox>
-  </Section>
-);
-
 export const DownloadPage = () => {
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
   return (
     <>
       <HeaderBar>
@@ -288,20 +137,18 @@ export const DownloadPage = () => {
                 managing tasking and generating reports. It works fully offline and is easy to get
                 started. Download it to your mobile device using the QR code below.
               </Description>
-              <MobileSection />
-              <QRCodeSection />
+              {isDesktop ? <QrCodeSection /> : <InstallSection />}
             </LeftColumn>
-            <MockupImage
-              $visibility="mobile"
-              src="/images/download-page-mobile-mockup.png"
-              alt="Tupaia DataTrak mobile app"
-            />
-            <RightColumn $visibility="desktop">
-              <MockupImage
-                src="/images/download-page-desktop-mockup.png"
-                alt="Tupaia DataTrak app"
+            {isDesktop ? (
+              <DesktopMockupWrapper>
+                <DesktopMockup />
+              </DesktopMockupWrapper>
+            ) : (
+              <MobileMockup
+                src="/images/download-page-mobile-mockup.png"
+                alt="Tupaia DataTrak mobile app"
               />
-            </RightColumn>
+            )}
           </ContentColumns>
         </Container>
       </PageWrapper>
