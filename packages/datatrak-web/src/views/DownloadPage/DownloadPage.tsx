@@ -86,9 +86,18 @@ const LeftColumn = styled.div`
 
 const RightColumn = styled.div<{ $visibility?: Visibility }>`
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  flex: 1;
+  flex: 2;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    /* Break out of Container's padding/max-width so the mockup reaches the viewport's right edge */
+    margin-inline-end: calc((100% - 100vw) / 2);
+
+    img {
+      inline-size: 100%;
+    }
+  }
 
   ${({ $visibility }) => visibilityCss($visibility)}
 `;
@@ -122,11 +131,7 @@ const visibilityCss = ($visibility?: Visibility) => {
   `;
 };
 
-const SectionLabel = styled(Typography)`
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.palette.text.secondary};
-  margin-block-end: 1rem;
-`;
+const SectionLabel = styled(Typography)``;
 
 const Section = styled.section<{ $visibility?: Visibility }>`
   display: flex;
@@ -144,12 +149,30 @@ const Section = styled.section<{ $visibility?: Visibility }>`
 const DownloadButton = styled(UIButton)`
   inline-size: 100%;
   gap: 0.5rem;
-  background-color: #004975;
+  background-color: ${props => props.theme.palette.primary.main};
 `;
 
 const StyledQrCode = styled(QrCodeImage)`
   inline-size: 180px;
   outline: none;
+`;
+
+const QRCodeBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 40px;
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme.palette.primary.dark};
+  background: rgba(255, 255, 255, 0.5);
+`;
+
+const QRCodeIcons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: ${props => props.theme.palette.primary.dark};
 `;
 
 const HelpText = styled(Typography).attrs({ variant: 'body2' })`
@@ -159,7 +182,7 @@ const HelpText = styled(Typography).attrs({ variant: 'body2' })`
 `;
 
 const InstalledMessage = styled(Typography)`
-  color: ${({ theme }) => theme.palette.success.main};
+  color: ${({ theme }) => theme.palette.success.dark};
   font-weight: 600;
   margin-block-end: 1rem;
 `;
@@ -221,8 +244,14 @@ const MobileSection = () => {
 
 const QRCodeSection = () => (
   <Section $visibility="desktop">
-    <SectionLabel>Scan to download on your phone</SectionLabel>
-    <StyledQrCode qrCodeContents={DOWNLOAD_URL} />
+    <QRCodeBox>
+      <QRCodeIcons>
+        <AppleIcon />
+        <AndroidIcon />
+      </QRCodeIcons>
+      <SectionLabel>Scan to install for iOS or Android</SectionLabel>
+      <StyledQrCode qrCodeContents={DOWNLOAD_URL} />
+    </QRCodeBox>
   </Section>
 );
 
