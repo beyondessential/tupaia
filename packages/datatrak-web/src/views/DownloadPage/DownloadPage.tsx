@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Typography } from '@material-ui/core';
 import styled, { css } from 'styled-components';
+import PWAPrompt from 'react-ios-pwa-prompt';
 import { Button as UIButton, QrCodeImage, SafeArea } from '@tupaia/ui-components';
 import { HomeLink } from '../../components';
 import { AndroidIcon, AppleIcon } from '../../components/Icons';
@@ -17,6 +18,7 @@ const PageWrapper = styled.div`
   background-image: url('/images/download-background.png');
   background-position: top center;
   background-size: cover;
+  background-color: ${props => props.theme.palette.background.paper};
 
   ${({ theme }) => css`
     ${theme.breakpoints.down('sm')} {
@@ -202,6 +204,7 @@ const isIosDevice = () => /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 const MobileSection = () => {
   const { isAppInstalled, canPromptInstall, promptInstall } = usePwaInstallPrompt();
+  const [showIosPrompt, setShowIosPrompt] = useState(false);
 
   if (isAppInstalled) {
     return (
@@ -214,10 +217,23 @@ const MobileSection = () => {
     );
   }
 
+  const iosDevice = isIosDevice();
+  const canInstall = canPromptInstall || iosDevice;
+
+  const handleInstallClick = () => {
+    if (canPromptInstall) {
+      promptInstall();
+      return;
+    }
+    if (iosDevice) {
+      setShowIosPrompt(true);
+    }
+  };
+
   return (
     <Section $visibility="mobile">
       <DownloadButton
-        onClick={canPromptInstall ? promptInstall : undefined}
+        onClick={canInstall ? handleInstallClick : undefined}
         startIcon={
           <>
             <AppleIcon fontSize="small" />
@@ -227,17 +243,20 @@ const MobileSection = () => {
       >
         Install for iOS or Android
       </DownloadButton>
-      {isIosDevice() && (
-        <HelpText>
-          On iOS, tap the Share button in Safari, then select &ldquo;Add to Home Screen&rdquo;.
-        </HelpText>
-      )}
       {isAndroidDevice() && !canPromptInstall && (
         <HelpText>
           On Android, tap the menu button in Chrome, then select &ldquo;Add to Home Screen&rdquo; or
           &ldquo;Install App&rdquo;.
         </HelpText>
       )}
+      <PWAPrompt
+        isShown={showIosPrompt}
+        onClose={() => setShowIosPrompt(false)}
+        copyTitle="Install Tupaia DataTrak"
+        copyDescription="DataTrak works fully offline once installed. Add it to your home screen to launch it like a native app."
+        copyShareStep="Tap the Share button in Safari's menu bar."
+        copyAddToHomeScreenStep="Tap 'Add to Home Screen' to install."
+      />
     </Section>
   );
 };
