@@ -9,7 +9,7 @@ import { usePwaInstallPrompt } from '../../hooks/usePwaInstallPrompt';
 import { isAndroidDevice } from '../../utils/detectDevice';
 import { ROUTES } from '../../constants';
 
-const DOWNLOAD_URL = `${window.location.origin}${ROUTES.DOWNLOAD}`;
+const getDownloadUrl = () => `${window.location.origin}${ROUTES.DOWNLOAD}`;
 
 const PageWrapper = styled.div`
   display: flex;
@@ -269,7 +269,7 @@ const QRCodeSection = () => (
         <AndroidIcon />
       </QRCodeIcons>
       <SectionLabel>Scan to install for iOS or Android</SectionLabel>
-      <StyledQrCode qrCodeContents={DOWNLOAD_URL} />
+      <StyledQrCode qrCodeContents={getDownloadUrl()} />
     </QRCodeBox>
   </Section>
 );
