@@ -6,7 +6,7 @@ import { Button as UIButton, QrCodeImage, SafeArea } from '@tupaia/ui-components
 import { HomeLink } from '../../components';
 import { AndroidIcon, AppleIcon } from '../../components/Icons';
 import { usePwaInstallPrompt } from '../../hooks/usePwaInstallPrompt';
-import { isAndroidDevice } from '../../utils/detectDevice';
+import { isAndroidDevice, isIosDevice } from '../../utils/detectDevice';
 import { ROUTES } from '../../constants';
 
 const getDownloadUrl = () => `${window.location.origin}${ROUTES.DOWNLOAD}`;
@@ -199,8 +199,6 @@ const MockupImage = styled.img<{ $visibility?: Visibility }>`
 
   ${({ $visibility }) => visibilityCss($visibility)}
 `;
-
-const isIosDevice = () => /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 const MobileSection = () => {
   const { isAppInstalled, canPromptInstall, promptInstall } = usePwaInstallPrompt();
