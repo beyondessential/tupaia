@@ -12703,6 +12703,7 @@ __metadata:
     react-confirm: "npm:^0.1.27"
     react-dom: "npm:^16.13.1"
     react-hook-form: "npm:^6.15.1"
+    react-ios-pwa-prompt: "npm:^2.0.6"
     react-is: "npm:^16.13.1"
     react-leaflet: "npm:^3.2.1"
     react-qr-reader: "npm:^3.0.0-beta-1"
@@ -34158,6 +34159,16 @@ __metadata:
   peerDependencies:
     react: ^16.8.0
   checksum: 10c0/6599301f0ee8d03a4fb06f8f7d6448b20c17c222c556b830c6398fb03e848aae6e8f6489b70b8d23313a137994d1e1adc2946cede0a9e2ad760ce576cd92ce2c
+  languageName: node
+  linkType: hard
+
+"react-ios-pwa-prompt@npm:^2.0.6":
+  version: 2.0.6
+  resolution: "react-ios-pwa-prompt@npm:2.0.6"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 10c0/f693ddf7c7e7aa66fb3bdef34e2b3b6dba559384eba23cd8b4d8d050e04b5e83b631ee34e52d9a32ebc7615bb0ef26348ed5c971a913bb9514df6018b3a19473
   languageName: node
   linkType: hard
 
