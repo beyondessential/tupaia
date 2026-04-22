@@ -84,20 +84,31 @@ def teardown_instance(instance):
 
     # Delete gateway subdomains
     subdomains_via_gateway = get_tag(instance, "SubdomainsViaGateway")
+    gateway_elb = None
     if subdomains_via_gateway != "":
-        gateway_elb = get_gateway_elb(deployment_type, deployment_name)
-        record_set_deletions = record_set_deletions + [
-            build_record_set_deletion(
-                "tupaia.org", subdomain, deployment_name, gateway=gateway_elb
+        try:
+            gateway_elb = get_gateway_elb(deployment_type, deployment_name)
+            record_set_deletions = record_set_deletions + [
+                build_record_set_deletion(
+                    "tupaia.org", subdomain, deployment_name, gateway=gateway_elb
+                )
+                for subdomain in subdomains_via_gateway.split(",")
+            ]
+        except Exception as e:
+            # Gateway may have failed to spin up (e.g. invalid ELB name) or already been
+            # cleaned up. Skip gateway-related cleanup so we still terminate the EC2.
+            print(
+                f"Skipping gateway record-set cleanup for {deployment_name}: {e}"
             )
-            for subdomain in subdomains_via_gateway.split(",")
-        ]
 
     delete_route53_record_sets(deployment_name, record_set_deletions)
 
     # Delete gateway
-    if subdomains_via_gateway != "":
-        delete_gateway(deployment_type, deployment_name)
+    if gateway_elb is not None:
+        try:
+            delete_gateway(deployment_type, deployment_name)
+        except Exception as e:
+            print(f"Skipping gateway deletion for {deployment_name}: {e}")
 
     terminate_instance(instance)
 

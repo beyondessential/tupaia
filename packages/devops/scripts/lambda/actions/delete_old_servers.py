@@ -23,4 +23,10 @@ def delete_old_servers(event):
             get_tag(instance, "DeleteAfter"), "%Y-%m-%d %H:%M"
         )
         if current_datetime > delete_instance_after:
-            teardown_instance(instance)
+            try:
+                teardown_instance(instance)
+            except Exception as e:
+                # Don't let one failed teardown block the rest of the cron run
+                print(
+                    f"Failed to tear down {get_tag(instance, 'Name')}: {e}"
+                )
