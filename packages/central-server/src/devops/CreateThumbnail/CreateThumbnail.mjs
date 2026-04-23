@@ -89,5 +89,11 @@ export async function handler(event, _context) {
   } finally {
     performance.measure('total', 'handler-start');
     logWithTiming('🏁 Done', 'total');
+
+    // In case of warm start, reset performance timeline
+    // @see https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html
+    performance.clearMarks();
+    performance.clearMeasures();
+    performance.clearResourceTimings();
   }
 }
