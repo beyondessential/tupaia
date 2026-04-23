@@ -7,7 +7,12 @@ import { Upload } from '@aws-sdk/lib-storage';
 import sharp from 'sharp';
 
 import { ConflictError, UnprocessableContentError, UnsupportedMediaTypeError } from '@tupaia/utils';
-import { getS3ImageFilePath, getS3UploadFilePath, S3_BUCKET_NAME } from './constants';
+import {
+  getS3ImageFilePath,
+  getS3ThumbnailFilePath,
+  getS3UploadFilePath,
+  S3_BUCKET_NAME,
+} from './constants';
 import { getUniqueFileName } from './getUniqueFileName';
 import { S3 } from './S3';
 
@@ -97,7 +102,11 @@ export class S3Client {
     return response.Body;
   }
 
-  private async uploadPublicImage(fileName: string, buffer: Buffer, contentType: string) {
+  private async uploadPublicImage(
+    fileName: string,
+    buffer: Buffer,
+    contentType: string,
+  ): Promise<CompleteMultipartUploadOutput['Location']> {
     return await this.upload(fileName, {
       Body: buffer,
       ACL: 'public-read',
@@ -145,6 +154,28 @@ export class S3Client {
     }
   }
 
+  async #createThumbnail(
+    stem: string,
+    originalImage: Buffer,
+  ): Promise<CompleteMultipartUploadOutput['Location']> {
+    const path: `thumbnails/${string}.webp` = `${getS3ThumbnailFilePath()}${stem}.webp`;
+
+    console.time('🦺 conversion')
+    const buffer = await sharp(originalImage)
+    .autoOrient()
+    .keepIccProfile()
+    .resize({ width: 500, withoutEnlargement: true })
+    .webp({ quality: 90 })
+    .toBuffer();
+    console.timeEnd('🦺 conversion')
+
+    console.time('🦺 upload')
+    const rv =  await this.uploadPublicImage(path, buffer, 'image/webp');
+    console.timeEnd('🦺 upload')
+
+    return rv;
+  }
+
   public async uploadFile(fileName: string, readable: Buffer | string) {
     const s3UploadFolder = getS3UploadFilePath();
     const s3FilePath = `${s3UploadFolder}${fileName}`;
@@ -189,6 +220,8 @@ export class S3Client {
   }
 
   public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
+    console.time('🎈 S3Client.uploadImage')
+
     const sourceContentType = this.getContentTypeFromBase64(base64EncodedImage);
 
     if (!isImageMediaTypeString(sourceContentType)) {
@@ -208,23 +241,27 @@ export class S3Client {
       ? 'image/webp'
       : (sourceContentType as NonconvertedImageType);
 
-    let buffer: Buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
-    if (shouldConvert) {
-      buffer = await sharp(buffer)
-        .autoOrient()
-        .keepIccProfile()
-        .resize(MAX_IMAGE_SIZE, MAX_IMAGE_SIZE, {
-          fit: 'inside',
-          withoutEnlargement: true,
-        })
-        .webp({ quality: 90 })
-        .toBuffer();
-    }
+    const original: Buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
+
+    const canonical = shouldConvert
+      ? await sharp(original)
+          .autoOrient()
+          .keepIccProfile()
+          .resize({
+            width: MAX_IMAGE_SIZE,
+            height: MAX_IMAGE_SIZE,
+            fit: 'inside',
+            withoutEnlargement: true,
+          })
+          .webp({ quality: 90 })
+          .toBuffer()
+      : await sharp(original).toBuffer();
 
     const dirname = getS3ImageFilePath();
     const { extension } = supportedImageTypes[destinationContentType];
     // If a fileId is provided, use it as the file name, otherwise generate a unique file name
-    const basename: `${string}.${typeof extension}` = `${fileId || getUniqueFileName()}.${extension}`;
+    const stem = fileId || getUniqueFileName();
+    const basename: `${string}.${typeof extension}` = `${stem}.${extension}`;
     const filePath: `${string}.${typeof extension}` = `${dirname}${basename}`;
 
     // In some cases we want to allow overwriting of existing files
@@ -232,7 +269,14 @@ export class S3Client {
       throw new ConflictError(`File ${filePath} already exists on S3, overwrite is not allowed`);
     }
 
-    return this.uploadPublicImage(filePath, buffer, destinationContentType);
+    console.time('🦺 UPLOADS')
+    const [objectUrl /* discard thumbnail URL */] = await Promise.all([
+      this.uploadPublicImage(filePath, canonical, destinationContentType),
+      this.#createThumbnail(stem, original),
+    ]);
+    console.timeEnd('🦺 UPLOADS')
+    console.timeEnd('🎈 S3Client.uploadImage')
+    return objectUrl;
   }
 
   public async downloadFile(fileName: string) {
