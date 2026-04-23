@@ -86,6 +86,7 @@ export interface QueryOptions {
   joins?: readonly MultiJoinItem[];
   // Passed to BaseDatabase#find options param TODO: Consolidate these two
   multiJoin?: readonly MultiJoinItem[];
+  onConflictIgnore?: readonly string[];
 }
 
 interface BaseModelOverrides<
@@ -94,7 +95,7 @@ interface BaseModelOverrides<
 > {
   all: () => Promise<RecordT[]>;
   create: (fields: Partial<Fields>) => Promise<RecordT>;
-  createMany: (fields: Partial<Fields>[]) => Promise<RecordT[]>;
+  createMany: (fields: Partial<Fields>[], customQueryOptions?: QueryOptions) => Promise<RecordT[]>;
   find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<RecordT[]>;
 
   findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<RecordT | null>;

@@ -50,6 +50,7 @@ interface ActionMenuProps {
     horizontal?: 'left' | 'right';
   };
   IconButton?: typeof MuiIconButton;
+  className?: string;
 }
 
 export const ActionsMenu = ({
@@ -58,11 +59,19 @@ export const ActionsMenu = ({
   anchorOrigin = {},
   transformOrigin = {},
   IconButton = MuiIconButton,
+  className,
 }: ActionMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
+
+  const onOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+
   return (
     <>
-      <IconButton onClick={event => setAnchorEl(event.currentTarget)}>
+      <IconButton onClick={onOpen} className={className}>
         <StyledMenuIcon aria-hidden />
         <VisuallyHidden>Open menu</VisuallyHidden>
       </IconButton>
@@ -72,7 +81,11 @@ export const ActionsMenu = ({
         getContentAnchorEl={null}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={() => setAnchorEl(null)}
+        onClose={(event: React.MouseEvent) => {
+          event.preventDefault();
+          event.stopPropagation();
+          setAnchorEl(null);
+        }}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'right',
@@ -93,7 +106,9 @@ export const ActionsMenu = ({
               role="button"
               key={label}
               style={style}
-              onClick={() => {
+              onClick={(event: React.MouseEvent) => {
+                event.preventDefault();
+                event.stopPropagation();
                 action();
                 setAnchorEl(null);
               }}

@@ -1528,6 +1528,42 @@ export interface SurveyResponseCommentUpdate {
   'id'?: string;
   'survey_response_id'?: string;
 }
+export interface SurveyResponseDraft {
+  'country_code'?: string | null;
+  'entity_id'?: string | null;
+  'form_data': {};
+  'id': string;
+  'is_deleted': boolean;
+  'screen_number': number;
+  'start_time': Date;
+  'survey_id': string;
+  'updated_at': Date;
+  'updated_at_sync_tick': string;
+  'user_id': string;
+}
+export interface SurveyResponseDraftCreate {
+  'country_code'?: string | null;
+  'entity_id'?: string | null;
+  'form_data'?: {};
+  'is_deleted'?: boolean;
+  'screen_number'?: number;
+  'start_time': Date;
+  'survey_id': string;
+  'updated_at'?: Date;
+  'user_id': string;
+}
+export interface SurveyResponseDraftUpdate {
+  'country_code'?: string | null;
+  'entity_id'?: string | null;
+  'form_data'?: {};
+  'id'?: string;
+  'is_deleted'?: boolean;
+  'screen_number'?: number;
+  'start_time'?: Date;
+  'survey_id'?: string;
+  'updated_at'?: Date;
+  'user_id'?: string;
+}
 export interface SurveyScreen {
   'id': string;
   'screen_number': number;
@@ -2019,6 +2055,9 @@ export enum EntityTypeEnum {
   'ird_district' = 'ird_district',
   'ird_tehsil' = 'ird_tehsil',
   'ird_village' = 'ird_village',
+  'tamanu_country' = 'tamanu_country',
+  'srh_district' = 'srh_district',
+  'srh_sub_district' = 'srh_sub_district',
 }
 export enum DataTableType {
   'analytics' = 'analytics',

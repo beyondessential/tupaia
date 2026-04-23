@@ -78,13 +78,10 @@ const typography = {
 const overrides = {
   MuiCssBaseline: {
     '@global': {
-      fieldset: {
-        border: 0,
-        margin: 0,
-        minWidth: 0,
-        padding: 0,
+      '*': {
+        textDecorationThickness: 'from-font',
       },
-      ':root': {
+      html: {
         '--ease-in-quad': 'cubic-bezier(0.11, 0, 0.5, 0)',
         '--ease-out-quad': 'cubic-bezier(0.5, 1, 0.89, 1)',
         '--ease-in-out-quad': 'cubic-bezier(0.45, 0, 0.55, 1)',
@@ -94,6 +91,12 @@ const overrides = {
         accentColor: palette.primary.main,
         interpolateSize: 'allow-keywords',
         textWrap: 'pretty',
+      },
+      fieldset: {
+        border: 0,
+        margin: 0,
+        minWidth: 0,
+        padding: 0,
       },
       'button, figcaption, h1, h2, h3, h4, h5, h6, input, label': {
         textWrap: 'balance',
