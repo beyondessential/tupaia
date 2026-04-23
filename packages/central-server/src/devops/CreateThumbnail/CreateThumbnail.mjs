@@ -55,12 +55,13 @@ export async function handler(event, _context) {
     logWithTiming(`📥 Fetched ${srcBucket}/${srcKey}`, 'fetch');
 
     performance.mark('decode-start');
-    const decoded = sharp(response.Body);
+    const sharpInstance = sharp(response.Body);
+    const metadata = await sharpInstance.metadata();
     performance.measure('decode', 'decode-start');
-    logWithTiming(`🧩 Decoded as ${formatMetadata(await decoded.metadata())}`, 'decode');
+    logWithTiming(`🧩 Decoded as ${formatMetadata(metadata)}`, 'decode');
 
     performance.mark('compression-start');
-    const { data: outputBuffer, info } = await decoded
+    const { data: outputBuffer, info } = await sharpInstance
       .autoOrient()
       .keepIccProfile()
       .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
