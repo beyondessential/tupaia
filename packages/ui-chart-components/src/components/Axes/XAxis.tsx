@@ -36,7 +36,7 @@ const renderXAxisLabel = (
   label: string | undefined,
   fillColor: string | undefined,
   isEnlarged: boolean,
-  isExporting: boolean
+  isExporting: boolean,
 ): LabelProps | undefined => {
   if (label && isEnlarged) {
     return {
@@ -88,11 +88,8 @@ export const XAxis = ({ config, report, isExporting = false, isEnlarged = false 
   */
   const getXAxisTickInterval = () => {
     if (chartType === Bar || chartType === Composed) {
-      if (isTimeSeries) {
-        if (isExporting && data.length > MAX_EXPORT_TICKS) {
-          return Math.max(1, Math.ceil(data.length / MAX_EXPORT_TICKS) - 1);
-        }
-        return 'preserveStartEnd';
+      if (isExporting && data.length > MAX_EXPORT_TICKS) {
+        return Math.max(1, Math.ceil(data.length / MAX_EXPORT_TICKS) - 1);
       }
 
       return isExporting ? 0 : 'preserveStartEnd';
@@ -155,7 +152,6 @@ export const XAxis = ({ config, report, isExporting = false, isEnlarged = false 
 
     return { left: 0, right: 10 };
   };
-
 
   const renderVerticalTick = (tickProps: TickProps & { x: number; y: number }) => {
     const { payload, x, y } = tickProps;
