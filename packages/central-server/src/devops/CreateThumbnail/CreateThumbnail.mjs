@@ -1,4 +1,3 @@
-import async from 'async';
 import AWS from 'aws-sdk';
 import fileType from 'file-type';
 import sharp from 'sharp';
@@ -19,10 +18,9 @@ const SUPPORTED_IMAGE_MIMES = new Set([
 
 const outputFormat = /** @type {const} */ ({ mediaType: 'image/webp', extension: 'webp' });
 
-// get reference to S3 client
 const s3 = new AWS.S3();
 
-export function handler(event, _context, callback) {
+export async function handler(event, _context) {
   // Read options from the event.
   console.log('Reading options from event:\n', util.inspect(event, { depth: 5 }));
   const srcBucket = event.Records[0].s3.bucket.name;
@@ -41,59 +39,39 @@ export function handler(event, _context, callback) {
    */
   const dstKey = `thumbnails/${srcKey.replace(/\.[^.]+$/, '')}.${outputFormat.extension}`;
 
-  // Download the image from S3, transform, and upload to a different S3 bucket.
-  async.waterfall(
-    [
-      /** Download the image from S3 into a buffer. */
-      function download(next) {
-        s3.getObject({ Bucket: srcBucket, Key: srcKey }, next);
-      },
-      function validateAndPassBuffer(response, next) {
-        const detected = fileType(new Uint8Array(response.Body));
-        if (!detected) {
-          next(new Error('Could not determine the image type.'));
-          return;
-        }
-        if (!SUPPORTED_IMAGE_MIMES.has(detected.mime)) {
-          next(new Error(`Unsupported image content: ${detected.mime}`));
-          return;
-        }
-        next(null, response.Body);
-      },
-      function resizeAndConvert(buffer, next) {
-        sharp(buffer)
-          .autoOrient()
-          .keepIccProfile()
-          .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
-          .webp({ quality: 90 })
-          .toBuffer()
-          .then(output => next(null, output))
-          .catch(err => next(err));
-      },
-      function upload(data, next) {
-        // Stream the transformed image back into bucket with different prefix
-        s3.putObject(
-          {
-            ACL: 'public-read',
-            Body: data,
-            Bucket: dstBucket,
-            ContentType: outputFormat.mediaType,
-            Key: dstKey,
-          },
-          next,
-        );
-      },
-    ],
-    function (err) {
-      if (err) {
-        console.error(
-          `Unable to resize ${srcBucket}/${srcKey} and upload to ${dstBucket}/${dstKey} due to an error: ${err}`,
-        );
-      } else {
-        console.log(`Resized ${srcBucket}/${srcKey} and uploaded to ${dstBucket}/${dstKey}`);
-      }
+  try {
+    /** Download the image from S3 into a buffer. */
+    const response = await s3.getObject({ Bucket: srcBucket, Key: srcKey }).promise();
 
-      callback(null, 'message');
-    },
-  );
+    const detected = fileType(new Uint8Array(response.Body));
+    if (!detected) throw new Error('Could not determine the image type.');
+    if (!SUPPORTED_IMAGE_MIMES.has(detected.mime)) {
+      throw new Error(`Unsupported image content: ${detected.mime}`);
+    }
+
+    const outputBuffer = await sharp(response.Body)
+      .autoOrient()
+      .keepIccProfile()
+      .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
+      .webp({ quality: 90 })
+      .toBuffer();
+
+    // Stream the transformed image back into bucket with different prefix
+    await s3
+      .putObject({
+        ACL: 'public-read',
+        Body: outputBuffer,
+        Bucket: dstBucket,
+        ContentType: outputFormat.mediaType,
+        Key: dstKey,
+      })
+      .promise();
+
+    const message = `Resized ${srcBucket}/${srcKey} and uploaded to ${dstBucket}/${dstKey}`;
+    console.log(message);
+    return message;
+  } catch (err) {
+    console.error(`Failed to resize ${srcBucket}/${srcKey} and upload to ${dstBucket}/${dstKey}`);
+    throw err;
+  }
 }
