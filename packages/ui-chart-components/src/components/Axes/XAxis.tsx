@@ -90,7 +90,7 @@ export const XAxis = ({ config, report, isExporting = false, isEnlarged = false 
     if (chartType === Bar || chartType === Composed) {
       if (isTimeSeries) {
         if (isExporting && data.length > MAX_EXPORT_TICKS) {
-          return Math.ceil(data.length / MAX_EXPORT_TICKS);
+          return Math.max(1, Math.ceil(data.length / MAX_EXPORT_TICKS) - 1);
         }
         return 'preserveStartEnd';
       }
