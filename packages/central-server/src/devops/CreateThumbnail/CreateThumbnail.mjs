@@ -17,6 +17,7 @@ function logWithTiming(message, performanceEntryName) {
   console.log(`${message} in ${duration}`);
 }
 
+/** @param {Pick<import('sharp').Metadata, 'format' | 'width' | 'height' | 'size'>} metadata */
 function formatMetadata({ format, width, height, size }) {
   return `${width.toLocaleString()} × ${height.toLocaleString()} ${format} (${size?.toLocaleString()} B)`;
 }
