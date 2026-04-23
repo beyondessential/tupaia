@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk';
 import fileType from 'file-type';
 import sharp from 'sharp';
-import util from 'util';
+import util from 'node:util';
 
 const THUMB_WIDTH = 500;
 
@@ -21,8 +21,8 @@ const outputFormat = /** @type {const} */ ({ mediaType: 'image/webp', extension:
 const s3 = new AWS.S3();
 
 export async function handler(event, _context) {
-  // Read options from the event.
   console.log('Reading options from event:\n', util.inspect(event, { depth: 5 }));
+
   const srcBucket = event.Records[0].s3.bucket.name;
   /**
    * - Object key may have spaces or unicode non-ASCII characters.
