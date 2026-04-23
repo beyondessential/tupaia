@@ -8,7 +8,7 @@ const getOrgUnitPhotoUrl = (photoUrl?: string) => {
 
   const dir = photoUrl.includes('dev_uploads') ? 'dev_uploads' : 'uploads';
 
-  return photoUrl.replace(`/${dir}/`, `/thumbnails/${dir}/`).replace('.png', '.jpg');
+  return photoUrl.replace(`/${dir}/`, `/thumbnails/${dir}/`).replace(/\.png$/, '.jpg');
 };
 
 interface PhotoProps {
