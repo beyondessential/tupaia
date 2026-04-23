@@ -44,7 +44,7 @@ export async function handler(event, _context) {
     const response = await s3.getObject({ Bucket: srcBucket, Key: srcKey }).promise();
 
     const detected = fileType(new Uint8Array(response.Body));
-    if (!detected) throw new Error('Could not determine the image type.');
+    if (!detected) throw new Error('Could not determine the image type');
     if (!SUPPORTED_IMAGE_MIMES.has(detected.mime)) {
       throw new Error(`Unsupported image content: ${detected.mime}`);
     }
