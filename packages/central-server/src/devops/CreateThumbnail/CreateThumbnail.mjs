@@ -1,26 +1,22 @@
 import AWS from 'aws-sdk';
-import fileType from 'file-type';
 import sharp from 'sharp';
 import util from 'node:util';
 
 const THUMB_WIDTH = 500;
 
-/** Same formats as @tupaia/server-utils S3Client.supportedImageTypes */
-const SUPPORTED_IMAGE_MIMES = new Set([
-  'image/avif',
-  'image/gif',
-  'image/jpeg',
-  'image/png',
-  'image/svg+xml',
-  'image/tiff',
-  'image/webp',
-]);
-
 const outputFormat = /** @type {const} */ ({ mediaType: 'image/webp', extension: 'webp' });
 
 const s3 = new AWS.S3();
 
+const formatter = new Intl.DurationFormat('en-AU');
+function logWithTiming(message, performanceEntryName) {
+  const [entry] = performance.getEntriesByName(performanceEntryName);
+  const duration = formatter.format({ milliseconds: Math.round(entry.duration) }) || '0';
+  console.log(`${message} in ${duration}`);
+}
+
 export async function handler(event, _context) {
+  performance.mark('handler-start');
   console.log('Reading options from event:\n', util.inspect(event, { depth: 5 }));
 
   const srcBucket = event.Records[0].s3.bucket.name;
@@ -31,6 +27,12 @@ export async function handler(event, _context) {
    */
   const srcKey = decodeURIComponent(event.Records[0].s3.object.key.replaceAll('+', ' '));
 
+  if (srcKey.endsWith('.svg')) {
+    const message = `⏭️ Skipped SVG ${srcBucket}/${srcKey}`;
+    console.log(message);
+    return message;
+  }
+
   const dstBucket = srcBucket;
   /**
    * Must not have prefix that will cause recursive trigger of this Lambda. (Don’t create thumbnail
@@ -40,23 +42,34 @@ export async function handler(event, _context) {
   const dstKey = `thumbnails/${srcKey.replace(/\.[^.]+$/, '')}.${outputFormat.extension}`;
 
   try {
-    /** Download the image from S3 into a buffer. */
+    performance.mark('fetch-start');
     const response = await s3.getObject({ Bucket: srcBucket, Key: srcKey }).promise();
+    performance.measure('fetch', 'fetch-start');
+    logWithTiming(`📥 Fetched ${srcBucket}/${srcKey}`, 'fetch');
 
-    const detected = fileType(new Uint8Array(response.Body));
-    if (!detected) throw new Error('Could not determine the image type');
-    if (!SUPPORTED_IMAGE_MIMES.has(detected.mime)) {
-      throw new Error(`Unsupported image content: ${detected.mime}`);
-    }
+    performance.mark('decode-start');
+    const decoded = sharp(response.Body);
+    const { format, width, height, size } = await decoded.metadata();
+    performance.measure('decode', 'decode-start');
+    logWithTiming(
+      `🧩 Decoded as ${width.toLocaleString()} × ${height.toLocaleString()} ${format} (${size?.toLocaleString()} B)`,
+      'decode',
+    );
 
-    const outputBuffer = await sharp(response.Body)
+    performance.mark('compression-start');
+    const outputBuffer = await decoded
       .autoOrient()
       .keepIccProfile()
       .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
       .webp({ quality: 90 })
       .toBuffer();
+    performance.measure('compression', 'compression-start');
+    logWithTiming(
+      `🗜️ Compressed to ${THUMB_WIDTH}w WebP (${outputBuffer.length.toLocaleString()} B)`,
+      'compression',
+    );
 
-    // Stream the transformed image back into bucket with different prefix
+    performance.mark('upload-start');
     await s3
       .putObject({
         ACL: 'public-read',
@@ -66,12 +79,15 @@ export async function handler(event, _context) {
         Key: dstKey,
       })
       .promise();
+    performance.measure('upload', 'upload-start');
+    logWithTiming(`📤 Uploaded to ${dstBucket}/${dstKey}`, 'upload');
 
-    const message = `Resized ${srcBucket}/${srcKey} and uploaded to ${dstBucket}/${dstKey}`;
-    console.log(message);
-    return message;
+    return `Resized ${srcBucket}/${srcKey} and uploaded to ${dstBucket}/${dstKey}`;
   } catch (err) {
     console.error(`Failed to resize ${srcBucket}/${srcKey} and upload to ${dstBucket}/${dstKey}`);
     throw err;
+  } finally {
+    performance.measure('total', 'handler-start');
+    logWithTiming('🏁 Done', 'total');
   }
 }
