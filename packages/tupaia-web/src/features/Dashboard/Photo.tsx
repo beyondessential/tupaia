@@ -2,6 +2,15 @@ import { ButtonBase, Dialog } from '@material-ui/core';
 import React, { useState } from 'react';
 import { Image } from './Image';
 
+/**
+ * @privateRemarks .png → .jpg accounts for legacy behaviour (v2026-10 and earlier) where S3Client
+ * did no conversion before uploading to S3. CreateThumbnail Lambda converted only PNGs to JPEG.
+ * Since v2026-16, S3Client converts all but SVG to WebP before uploading to S3. CreateThumbnail
+ * resizes and keeps .webp extension.
+ *
+ * ≤ v2026-10: (.jpeg, .jpg, .png) → (.jpg, .jpg, .jpg)
+ * ≥ v2026-16: (.svg, .webp)       → (.svg, .webp)
+ */
 const getOrgUnitPhotoUrl = (photoUrl?: string) => {
   if (!photoUrl) return undefined;
   if (photoUrl.endsWith('.svg')) return photoUrl; // CreateThumbnail Lambda skips SVGs
