@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 import { Image } from './Image';
 
 const getOrgUnitPhotoUrl = (photoUrl?: string) => {
-  if (!photoUrl) {
-    return undefined;
-  }
+  if (!photoUrl) return undefined;
+  if (photoUrl.endsWith('.svg')) return photoUrl; // CreateThumbnail Lambda skips SVGs
 
   const dir = photoUrl.includes('dev_uploads') ? 'dev_uploads' : 'uploads';
 
