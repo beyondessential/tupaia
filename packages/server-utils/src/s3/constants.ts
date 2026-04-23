@@ -6,4 +6,3 @@ export const getS3ImageFilePath = () =>
   getIsProductionEnvironment() ? 'uploads/images/' : 'dev_uploads/images/';
 export const getS3UploadFilePath = () =>
   getIsProductionEnvironment() ? 'uploads/files/' : 'dev_uploads/files/';
-export const getS3ThumbnailFilePath = (): `thumbnails/${ReturnType<typeof getS3ImageFilePath>}` => `thumbnails/${getS3ImageFilePath()}`;
