@@ -10,7 +10,9 @@ const s3 = new AWS.S3();
 
 const formatter = new Intl.DurationFormat('en-AU');
 function logWithTiming(message, performanceEntryName) {
-  const [entry] = performance.getEntriesByName(performanceEntryName);
+  const entry = performance.getEntriesByName(performanceEntryName).at(-1);
+  if (!entry) return void console.log(message);
+
   const duration = formatter.format({ milliseconds: Math.round(entry.duration) }) || '0';
   console.log(`${message} in ${duration}`);
 }
