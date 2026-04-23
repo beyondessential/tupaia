@@ -3,6 +3,6 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src/**/*.js", "src/devops/CreateThumbnail/CreateThumbnail.mjs"],
+  "include": ["src/**/*.js"],
   "exclude": ["src/tests"]
 }
