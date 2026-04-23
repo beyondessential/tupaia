@@ -18,13 +18,13 @@ interface PhotoProps {
 }
 export const Photo = ({ title, photoUrl }: PhotoProps) => {
   const [isEnlarged, setIsEnlarged] = useState(false);
-  const imageSrc = getOrgUnitPhotoUrl(photoUrl);
+  const thumbUrl = getOrgUnitPhotoUrl(photoUrl);
 
   return (
     <>
       {isEnlarged && (
         <Dialog open={isEnlarged} onClose={() => setIsEnlarged(false)}>
-          <img crossOrigin="" src={imageSrc} alt={title} />
+          <img crossOrigin="" src={thumbUrl} alt={title} />
         </Dialog>
       )}
       <ButtonBase
@@ -33,7 +33,7 @@ export const Photo = ({ title, photoUrl }: PhotoProps) => {
         title="Expand image"
         style={{ inlineSize: '100%' }}
       >
-        <Image alt={title} src={imageSrc} />
+        <Image alt={title} src={photoUrl} />
       </ButtonBase>
     </>
   );
