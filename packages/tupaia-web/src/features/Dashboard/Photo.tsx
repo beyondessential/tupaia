@@ -24,7 +24,7 @@ export const Photo = ({ title, photoUrl }: PhotoProps) => {
     <>
       {isEnlarged && (
         <Dialog open={isEnlarged} onClose={() => setIsEnlarged(false)}>
-          <img crossOrigin="" src={thumbUrl} alt={title} />
+          <img crossOrigin="" src={photoUrl} alt={title} />
         </Dialog>
       )}
       <ButtonBase
@@ -33,7 +33,7 @@ export const Photo = ({ title, photoUrl }: PhotoProps) => {
         title="Expand image"
         style={{ inlineSize: '100%' }}
       >
-        <Image alt={title} src={photoUrl} />
+        <Image alt={title} src={thumbUrl} />
       </ButtonBase>
     </>
   );
