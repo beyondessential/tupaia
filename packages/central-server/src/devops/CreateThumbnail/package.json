@@ -19,7 +19,7 @@
     "aws-sdk": "^2.1693.0",
     "sharp": "^0.34.5"
   },
-  "optionalDependencies": {
+  "devDependencies": {
     "lambda-local": "^2.2.0"
   }
 }
