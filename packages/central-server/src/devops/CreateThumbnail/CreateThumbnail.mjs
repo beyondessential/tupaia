@@ -17,6 +17,10 @@ function logWithTiming(message, performanceEntryName) {
   console.log(`${message} in ${duration}`);
 }
 
+function formatMetadata({ format, width, height, size }) {
+  return `${width.toLocaleString()} × ${height.toLocaleString()} ${format} (${size?.toLocaleString()} B)`;
+}
+
 export async function handler(event, _context) {
   performance.mark('handler-start');
   console.log('Reading options from event:\n', util.inspect(event, { depth: 5 }));
@@ -51,25 +55,18 @@ export async function handler(event, _context) {
 
     performance.mark('decode-start');
     const decoded = sharp(response.Body);
-    const { format, width, height, size } = await decoded.metadata();
     performance.measure('decode', 'decode-start');
-    logWithTiming(
-      `🧩 Decoded as ${width.toLocaleString()} × ${height.toLocaleString()} ${format} (${size?.toLocaleString()} B)`,
-      'decode',
-    );
+    logWithTiming(`🧩 Decoded as ${formatMetadata(await decoded.metadata())}`, 'decode');
 
     performance.mark('compression-start');
-    const outputBuffer = await decoded
+    const { data: outputBuffer, info } = await decoded
       .autoOrient()
       .keepIccProfile()
       .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
       .webp({ quality: 90 })
-      .toBuffer();
+      .toBuffer({ resolveWithObject: true });
     performance.measure('compression', 'compression-start');
-    logWithTiming(
-      `🗜️ Compressed to ${THUMB_WIDTH}w WebP (${outputBuffer.length.toLocaleString()} B)`,
-      'compression',
-    );
+    logWithTiming(`🗜️ Compressed to ${formatMetadata(info)}`, 'compression');
 
     performance.mark('upload-start');
     await s3
