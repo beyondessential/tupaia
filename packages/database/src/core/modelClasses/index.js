@@ -57,6 +57,7 @@ import { DataServiceEntityModel } from './DataServiceEntity';
 import { DhisInstanceModel } from './DhisInstance';
 import { DataElementDataServiceModel } from './DataElementDataService';
 import { SupersetInstanceModel } from './SupersetInstance';
+import { SurveyResponseDraftModel } from './SurveyResponseDraft';
 import { TaskModel } from './Task';
 import { UserCountryAccessAttemptModel } from './UserCountryAccessAttempt';
 import { TaskCommentModel } from './TaskComment';
@@ -118,6 +119,7 @@ export const modelClasses = {
   SurveyGroup: SurveyGroupModel,
   SurveyResponse: SurveyResponseModel,
   SurveyResponseComment: SurveyResponseCommentModel,
+  SurveyResponseDraft: SurveyResponseDraftModel,
   SurveyScreen: SurveyScreenModel,
   SurveyScreenComponent: SurveyScreenComponentModel,
   SyncGroupLog: SyncGroupLogModel,
@@ -185,6 +187,7 @@ export { SurveyModel, SurveyRecord } from './Survey';
 export { SurveyGroupModel, SurveyGroupRecord } from './SurveyGroup';
 export { SurveyScreenComponentModel, SurveyScreenComponentRecord } from './SurveyScreenComponent';
 export { SurveyResponseModel, SurveyResponseRecord } from './SurveyResponse';
+export { SurveyResponseDraftModel, SurveyResponseDraftRecord } from './SurveyResponseDraft';
 export { SurveyScreenModel, SurveyScreenRecord } from './SurveyScreen';
 export { UserEntityPermissionModel, UserEntityPermissionRecord } from './UserEntityPermission';
 export { UserModel, UserRecord } from './User';

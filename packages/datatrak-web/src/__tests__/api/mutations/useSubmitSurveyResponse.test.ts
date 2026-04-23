@@ -12,10 +12,13 @@ import { successToast } from '../../../utils';
 import { renderMutation } from '../../helpers/render';
 
 jest.mock('../../../api/queries', () => {
+  const actual = jest.requireActual('../../../api/queries');
   return {
+    ...actual,
     useUser: jest.fn().mockReturnValue({}),
     useSurvey: jest.fn().mockReturnValue({}),
     useEntityByCode: jest.fn().mockReturnValue({}),
+    useShowCoconutsPigs: jest.fn().mockReturnValue({ showCoconutsPigs: true, isLoading: false }),
   };
 });
 
