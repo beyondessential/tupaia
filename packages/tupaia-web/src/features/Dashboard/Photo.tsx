@@ -8,8 +8,11 @@ import { Image } from './Image';
  * Since v2026-16, S3Client converts all but SVG to WebP before uploading to S3. CreateThumbnail
  * resizes and keeps .webp extension.
  *
- * ≤ v2026-10: (.jpeg, .jpg, .png) → (.jpg, .jpg, .jpg)
- * ≥ v2026-16: (.svg, .webp)       → (.svg, .webp)
+ * Summary of CreateThumbnail behaviours
+ * | Version    | Input image               | Output thumbnail           |
+ * | ---------- | ------------------------- | -------------------------- |
+ * | ≤ v2026-10 | (.jpeg, .jpg, .png, .svg) | (.jpeg, .jpg, .jpg, Error) |
+ * | ≥ v2026-16 | (.svg, .webp)             | (.svg, .webp)              |
  */
 const getOrgUnitPhotoUrl = (photoUrl?: string) => {
   if (!photoUrl) return undefined;
