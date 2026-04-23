@@ -20,7 +20,7 @@
     "file-type": "^7.2.0",
     "sharp": "^0.34.5"
   },
-  "devDependencies": {
+  "optionalDependencies": {
     "lambda-local": "^2.2.0"
   }
 }
