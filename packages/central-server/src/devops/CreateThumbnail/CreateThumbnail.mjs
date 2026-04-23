@@ -23,6 +23,12 @@ function formatMetadata({ format, width, height, size }) {
 }
 
 export async function handler(event, _context) {
+  // In case of warm start, reset performance timeline
+  // @see https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html
+  performance.clearMarks();
+  performance.clearMeasures();
+  performance.clearResourceTimings();
+
   performance.mark('handler-start');
   console.log('Reading options from event:\n', util.inspect(event, { depth: 5 }));
 
@@ -90,11 +96,5 @@ export async function handler(event, _context) {
   } finally {
     performance.measure('total', 'handler-start');
     logWithTiming('🏁 Done', 'total');
-
-    // In case of warm start, reset performance timeline
-    // @see https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html
-    performance.clearMarks();
-    performance.clearMeasures();
-    performance.clearResourceTimings();
   }
 }
