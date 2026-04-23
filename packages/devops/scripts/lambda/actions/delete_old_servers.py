@@ -6,9 +6,19 @@ from helpers.teardown import teardown_instance
 from helpers.utilities import find_instances, get_tag
 
 # IAM/auth failures we want to surface (via Lambda error metric) rather than
-# silently log and skip — otherwise a missing permission means the cron does
-# nothing forever with no alarm.
-AUTH_ERROR_CODES = {"AccessDenied", "UnauthorizedOperation"}
+# silently log and skip — covers both IAM policy denials and credential-level
+# failures (revoked keys, expired STS tokens). Without this, a missing
+# permission or an expired token means the cron does nothing forever with no
+# alarm.
+AUTH_ERROR_CODES = {
+    "AccessDenied",
+    "UnauthorizedOperation",
+    "AuthFailure",
+    "InvalidClientTokenId",
+    "ExpiredToken",
+    "ExpiredTokenException",
+    "SignatureDoesNotMatch",
+}
 
 
 def delete_old_servers(event):
