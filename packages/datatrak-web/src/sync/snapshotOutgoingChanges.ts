@@ -16,6 +16,7 @@ const snapshotChangesForModel = async (model: DatabaseModel, since: number) => {
     direction: SYNC_SESSION_DIRECTION.OUTGOING,
     recordType: model.databaseRecord,
     recordId: r.id,
+    isDeleted: Boolean(r.is_deleted),
     data: sanitizeRecord(r),
   })) as SyncSnapshotAttributes[];
 };
