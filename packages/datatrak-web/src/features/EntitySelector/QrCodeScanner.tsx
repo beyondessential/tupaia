@@ -149,6 +149,7 @@ export const QrCodeScanner = ({ disabled, onSuccess, findEntity }: QrCodeScanner
   const onModalClose = () => {
     setFeedback(null);
     closeScanner();
+    isFindingEntityRef.current = false;
   };
 
   const onResult: OnResultFunction = async (result, error) => {
