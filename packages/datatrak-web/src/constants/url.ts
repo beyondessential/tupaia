@@ -7,6 +7,7 @@ const SURVEY_RESUBMIT_BASE_URL = `${SURVEY_URL}/resubmit/:surveyResponseId`;
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
+  LOGOUT: '/logout',
   OFFLINE: '/offline',
   REGISTER: '/register',
   REQUEST_ACCESS: '/request-access',

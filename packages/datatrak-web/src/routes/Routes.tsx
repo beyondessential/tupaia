@@ -4,6 +4,7 @@ import {
   LandingPage,
   SurveySelectPage,
   LoginPage,
+  LogoutPage,
   VerifyEmailPage,
   ErrorPage,
   RegisterPage,
@@ -90,6 +91,7 @@ export const Routes = () => {
           </Route>
           <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
           <Route path={ROUTES.SYNC} element={<SyncPage />} />
+          <Route path={ROUTES.LOGOUT} element={<LogoutPage />} />
         </Route>
         {/** Reports route is admin only so needs to be inside it's own PrivateRoute instance */}
 

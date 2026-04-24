@@ -40,6 +40,6 @@ const nestFieldRecursively = (keys, value, depth = 0) => {
 };
 
 export const translateQuestionCodeToId = async (questionModel, code) => {
-  const question = await questionModel.findOne({ code });
+  const question = await questionModel.findOneOrThrow({ code });
   return { questionId: question.id };
 };

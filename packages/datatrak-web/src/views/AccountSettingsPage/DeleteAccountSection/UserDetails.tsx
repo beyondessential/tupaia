@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { useCurrentUserContext, useUserRewards } from '../../../api';
+import { Skeleton } from '@material-ui/lab';
+
+import { useCurrentUserContext, useShowCoconutsPigs, useUserRewards } from '../../../api';
 import { Coconut, Pig } from '../../../components';
 
 const UserContent = styled.div<{
@@ -56,20 +58,60 @@ const UserRewardsItem = styled(Typography)`
 export const UserDetails = () => {
   const user = useCurrentUserContext();
   const { data: userRewards } = useUserRewards();
+  const { showCoconutsPigs, isLoading } = useShowCoconutsPigs();
+
+  const renderRewards = () => {
+    if (!isLoading && !showCoconutsPigs) return null;
+
+    return (
+      <UserRewards>
+        <UserRewardsItem>
+          {isLoading ? (
+            <Skeleton variant="rect">
+              <Coconut />
+            </Skeleton>
+          ) : (
+            <Coconut />
+          )}{' '}
+          {isLoading ? (
+            <Skeleton>
+              <span>{userRewards?.coconuts}&nbsp;coconuts</span>
+            </Skeleton>
+          ) : (
+            <>
+              {userRewards?.coconuts}&nbsp;coconuts
+            </>
+          )}
+        </UserRewardsItem>
+        <UserRewardsItem>
+          {isLoading ? (
+            <Skeleton variant="rect">
+              <Pig />
+            </Skeleton>
+          ) : (
+            <Pig />
+          )}{' '}
+          {isLoading ? (
+            <Skeleton>
+              <span>{userRewards?.pigs}&nbsp;pigs</span>
+            </Skeleton>
+          ) : (
+            <>
+              {userRewards?.pigs}&nbsp;pigs
+            </>
+          )}
+        </UserRewardsItem>
+      </UserRewards>
+    );
+  };
+
   return (
     <UserContent $appearsDisabled={user.deleteAccountRequested}>
       <div>
         <UserName>{user.fullName}</UserName>
         <Typography>{user.email}</Typography>
       </div>
-      <UserRewards>
-        <UserRewardsItem>
-          <Coconut /> {userRewards?.coconuts}&nbsp;coconuts
-        </UserRewardsItem>
-        <UserRewardsItem>
-          <Pig /> {userRewards?.pigs}&nbsp;pigs
-        </UserRewardsItem>
-      </UserRewards>
+      {renderRewards()}
     </UserContent>
   );
 };
