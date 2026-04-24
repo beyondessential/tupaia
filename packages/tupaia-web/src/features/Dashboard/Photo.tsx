@@ -34,8 +34,18 @@ export const Photo = ({ title, photoUrl }: PhotoProps) => {
   return (
     <>
       {isEnlarged && (
-        <Dialog open={isEnlarged} onClose={() => setIsEnlarged(false)}>
-          <img crossOrigin="" src={photoUrl} alt={title} />
+        <Dialog open={isEnlarged} onClose={() => setIsEnlarged(false)} fullWidth>
+          <img
+            alt={title}
+            crossOrigin=""
+            src={photoUrl}
+            style={{
+              blockSize: '100%',
+              inlineSize: '100%',
+              objectFit: 'contain',
+              objectPosition: 'center',
+            }}
+          />
         </Dialog>
       )}
       <ButtonBase
