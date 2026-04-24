@@ -1,24 +1,29 @@
 import { expect } from 'chai';
-import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
+
 import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  findOrCreateDummyCountryEntity,
+  findOrCreateDummyRecord,
+  generateId,
+} from '@tupaia/database';
+import {
   BES_ADMIN_PERMISSION_GROUP,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
 describe('Permissions checker for EditUserAccounts', async () => {
-  const DEFAULT_POLICY = {
+  const DEFAULT_POLICY = /** @type {const} */ ({
     DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
     VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     LA: ['Admin', 'Public'],
     TO: ['Admin', 'Public'],
-  };
+  });
 
-  const BES_ADMIN_POLICY = {
+  const BES_ADMIN_POLICY = /** @type {const} */ ({
     SB: [BES_ADMIN_PERMISSION_GROUP],
-  };
+  });
 
   const app = new TestableApp();
   const { models } = app;
@@ -118,6 +123,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
         });
         const result = await models.user.findById(userAccount1.id);
 
+        expect(result).not.to.be.null;
         expect(result.email).to.deep.equal('barry.allen@ccpd.gov');
       });
 
@@ -128,32 +134,36 @@ describe('Permissions checker for EditUserAccounts', async () => {
         });
         const result = await models.user.findById(userAccount2.id);
 
+        expect(result).not.to.be.null;
         expect(result.email).to.deep.equal('hal.jordan@lantern.corp');
       });
 
       it('Allow editing of user preferences by key', async () => {
+        const project_id = generateId();
+        const country_id = generateId();
+
         await app.grantAccess(DEFAULT_POLICY);
         await app.put(`users/${userAccount1.id}`, {
-          body: { project_id: '123456' },
+          body: { project_id },
         });
         const result = await models.user.findById(userAccount1.id);
-        expect(result.preferences).to.deep.equal({ project_id: '123456', recentEntities: {} });
+        expect(result).not.to.be.null;
+        expect(result.preferences).to.deep.equal({ project_id });
 
         await app.put(`users/${userAccount1.id}`, {
-          body: { country_id: '987654' },
+          body: { country_id },
         });
         const newResult = await models.user.findById(userAccount1.id);
-        expect(newResult.preferences).to.deep.equal({
-          project_id: '123456',
-          country_id: '987654',
-          recentEntities: {},
-        });
+        expect(newResult).not.to.be.null;
+        expect(newResult.preferences).to.deep.equal({ project_id, country_id });
       });
 
       it('Throw an exception if preferences request is incorrectly formatted', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.put(`users/${userAccount1.id}`, {
-          body: { preferences: { project_id: '123456' } },
+          body: {
+            preferences: { project_id: generateId() },
+          },
         });
         expect(result).to.have.keys('error');
       });
