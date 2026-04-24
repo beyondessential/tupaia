@@ -129,14 +129,9 @@ jobs:
 
   build:
     name: Build
-    needs: package_list
     runs-on: ubuntu-latest
     env:
       CI: false # react-scripts build treats warnings as errors if this is true
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJSON(needs.package_list.outputs.PACKAGES) }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Yarn
@@ -147,8 +142,8 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
-      - run: yarn workspaces foreach -Rptvv --jobs unlimited --from ${{ matrix.package }} run build
+      - run: yarn install
+      - run: yarn run build
 
   run_tests:
     name: Test
