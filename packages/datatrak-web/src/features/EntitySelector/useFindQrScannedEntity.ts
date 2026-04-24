@@ -20,7 +20,7 @@ export const useFindQrScannedEntity = (
 ) => {
   const isOfflineFirst = useIsOfflineFirst();
   const databaseContext = useDatabaseContext();
-  const { accessPolicy, ...user } = useCurrentUserContext();
+  const currentUserContext = useCurrentUserContext();
 
   return useCallback(
     async (
@@ -28,6 +28,7 @@ export const useFindQrScannedEntity = (
     ): Promise<DatatrakWebEntityDescendantsRequest.EntityResponse | undefined> => {
       if (!projectCode) return undefined;
 
+      const { accessPolicy, ...user } = currentUserContext;
       const filter = { ...filters, id: entityId };
 
       let results: DatatrakWebEntityDescendantsRequest.ResBody;
@@ -47,6 +48,6 @@ export const useFindQrScannedEntity = (
 
       return results?.[0];
     },
-    [projectCode, filters, isOfflineFirst, databaseContext, user, accessPolicy],
+    [projectCode, filters, isOfflineFirst, databaseContext, currentUserContext],
   );
 };
