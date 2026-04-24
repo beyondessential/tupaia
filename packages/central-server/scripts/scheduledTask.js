@@ -1,4 +1,3 @@
-import '@babel/polyfill';
 import { configureEnv } from '../src/configureEnv';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import winston from '../src/log';
