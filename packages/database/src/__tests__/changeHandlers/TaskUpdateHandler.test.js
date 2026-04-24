@@ -1,12 +1,12 @@
-import { TaskUpdateHandler } from '../../changeHandlers';
+import { TaskUpdateHandler } from '../../server/changeHandlers';
 import {
   buildAndInsertSurvey,
   buildAndInsertSurveyResponses,
   findOrCreateDummyRecord,
   getTestModels,
   upsertDummyRecord,
-} from '../../testUtilities';
-import { generateId } from '../../utilities';
+} from '../../server/testUtilities';
+import { generateId } from '../../core/utilities';
 
 const userId = generateId();
 const initialEntityId = generateId();

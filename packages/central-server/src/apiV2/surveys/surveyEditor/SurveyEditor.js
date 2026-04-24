@@ -1,13 +1,13 @@
 import { DatabaseError, ImportValidationError } from '@tupaia/utils';
 import { validateSurveyFields } from '../../../dataAccessors';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
-import { getArrayQueryParameter } from '../../utilities';
 import { importSurveysQuestions } from '../../import/importSurveys';
+import { getArrayQueryParameter } from '../../utilities';
 import { assertCanImportSurvey } from '../assertCanImportSurvey';
-import { updateOrCreateDataGroup } from './updateOrCreateDataGroup';
-import { validateSurveyServiceType } from './validateSurveyServiceType';
 import { updateDataElementsConfig } from './updateDataElementsConfig';
+import { updateOrCreateDataGroup } from './updateOrCreateDataGroup';
 import { validateSurveyCountries } from './validateSurveyCountries';
+import { validateSurveyServiceType } from './validateSurveyServiceType';
 
 export class SurveyEditor {
   constructor(models, assertPermissions) {
@@ -89,10 +89,6 @@ export class SurveyEditor {
       }
     }
 
-    const defaultPermissionGroup = await transactingModels.permissionGroup.findOne({
-      name: 'Public',
-    });
-
     let permissionGroup;
     if (permissionGroupId) {
       permissionGroup = await transactingModels.permissionGroup.findById(permissionGroupId);
@@ -100,9 +96,9 @@ export class SurveyEditor {
       permissionGroup = await transactingModels.permissionGroup.findById(
         existingSurvey.permission_group_id,
       );
-    } else if (!existingSurvey) {
+    } else {
       // Must be a create, and no permission group specified, use Public
-      permissionGroup = defaultPermissionGroup;
+      permissionGroup = await transactingModels.permissionGroup.findOne({ name: 'Public' });
     }
     if (!permissionGroup) {
       throw new DatabaseError('finding permission group');

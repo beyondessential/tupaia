@@ -1,5 +1,6 @@
 import boto3
 from helpers.networking import (
+    GatewayNotFoundError,
     build_record_set_deletion,
     delete_gateway,
     get_gateway_elb,
@@ -82,10 +83,20 @@ def teardown_instance(instance):
             for subdomain in subdomains_via_dns.split(",")
         ]
 
-    # Delete gateway subdomains
+    # Delete gateway subdomains. Looking up the gateway ELB up-front doubles as
+    # the existence check: if it's missing the deployment never finished spinning
+    # up (e.g. branch name rejected by AWS as an ELB name) and there's nothing to
+    # clean up. Any failure inside delete_gateway after this point — including a
+    # missing target group, which would indicate partial state — must surface.
     subdomains_via_gateway = get_tag(instance, "SubdomainsViaGateway")
+    gateway_elb = None
     if subdomains_via_gateway != "":
-        gateway_elb = get_gateway_elb(deployment_type, deployment_name)
+        try:
+            gateway_elb = get_gateway_elb(deployment_type, deployment_name)
+        except GatewayNotFoundError as e:
+            print(f"No gateway to clean up for {deployment_name}: {e}")
+
+    if gateway_elb is not None:
         record_set_deletions = record_set_deletions + [
             build_record_set_deletion(
                 "tupaia.org", subdomain, deployment_name, gateway=gateway_elb
@@ -95,8 +106,7 @@ def teardown_instance(instance):
 
     delete_route53_record_sets(deployment_name, record_set_deletions)
 
-    # Delete gateway
-    if subdomains_via_gateway != "":
+    if gateway_elb is not None:
         delete_gateway(deployment_type, deployment_name)
 
     terminate_instance(instance)

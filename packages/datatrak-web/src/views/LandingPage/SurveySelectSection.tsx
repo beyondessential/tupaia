@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { VisuallyHidden } from '@tupaia/ui-components';
 
+import { useShowCoconutsPigs } from '../../api';
 import { ButtonLink as BaseButtonLink, ButtonAnchor } from '../../components';
 import { ROUTES } from '../../constants';
 import { useIsMobile } from '../../utils';
@@ -103,6 +104,7 @@ export const SurveySelectSection = () => {
   const isMobile = useIsMobile();
   const verbose = useMediaQuery(useTheme().breakpoints.up('lg'));
   const SupplementalText = verbose ? Fragment : VisuallyHidden;
+  const { showCoconutsPigs } = useShowCoconutsPigs();
 
   return (
     <SectionContainer>
@@ -124,9 +126,9 @@ export const SurveySelectSection = () => {
         Tupaia DataTrak makes data collection easy!
         <SupplementalText>
           {' '}
-          You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
-          stories and information with the Tupaia community. To collect data offline, please
-          download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
+          You can use Tupaia DataTrak to complete surveys
+          {showCoconutsPigs && ' (and collect coconuts!)'}, share news, stories and information with
+          the Tupaia community.
         </SupplementalText>
       </Text>
       <ImageWrapper>

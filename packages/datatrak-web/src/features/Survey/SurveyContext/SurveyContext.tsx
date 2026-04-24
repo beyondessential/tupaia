@@ -1,15 +1,29 @@
-import React, { createContext, Dispatch, useContext, useMemo, useReducer, useState } from 'react';
-import { To, useMatch, useParams, useSearchParams } from 'react-router-dom';
-
-import { Country, QuestionType, Survey } from '@tupaia/types';
-
-import { useSurvey } from '../../../api';
-import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../../constants';
+import React, {
+  createContext,
+  Dispatch,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
+import {
+  Country,
+  DatatrakWebSurveyResponseDraftsRequest,
+  QuestionType,
+  Survey,
+  CodeGeneratorQuestionConfig,
+} from '@tupaia/types';
+import { useSurvey, useSurveyResponseDrafts } from '../../../api';
+import { PRIMARY_ENTITY_CODE_PARAM } from '../../../constants';
 import { SurveyParams } from '../../../types';
+import { useIsResubmit, useIsReviewScreen, useIsSuccessScreen } from '../routes';
 import { getAllSurveyComponents, getPrimaryEntityParentQuestionIds } from '../utils';
 import { usePrimaryEntityQuestionAutoFill } from '../utils/usePrimaryEntityQuestionAutoFill';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 import { SurveyFormContextType, surveyReducer } from './reducer';
+import { DynamicCodeGeneratorWatcher } from './DynamicCodeGeneratorWatcher';
 import {
   generateCodeForCodeGeneratorQuestions,
   getDisplayQuestions,
@@ -19,10 +33,9 @@ import {
 
 const defaultContext = {
   activeScreen: [],
-  cancelModalConfirmLink: '/',
-  cancelModalOpen: false,
   countryCode: '',
   displayQuestions: [],
+  draftId: undefined,
   formData: {},
   isLast: false,
   isResponseScreen: false,
@@ -31,8 +44,6 @@ const defaultContext = {
   isSuccessScreen: false,
   numberOfScreens: 0,
   primaryEntityQuestion: null,
-  screenDetail: undefined,
-  screenHeader: undefined,
   screenNumber: 1,
   sideMenuOpen: false,
   startTime: new Date().toISOString(),
@@ -45,7 +56,7 @@ const defaultContext = {
 
 const SurveyFormContext = createContext(defaultContext);
 
-export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
+const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
 export const SurveyContext = ({
   children,
@@ -57,98 +68,126 @@ export const SurveyContext = ({
   surveyCode: Survey['code'] | undefined;
 }) => {
   const [urlSearchParams] = useSearchParams();
-  const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
+  const [prevSurvey, setPrevSurvey] = useState<ReturnType<typeof useSurvey>['data'] | null>(null);
   const primaryEntityCodeParam = urlSearchParams.get(PRIMARY_ENTITY_CODE_PARAM) || undefined;
   const [primaryEntityCode] = useState(primaryEntityCodeParam);
+  const draftId = urlSearchParams.get('draftId') || undefined;
+  const { data: drafts = [] } = useSurveyResponseDrafts({ enabled: Boolean(draftId) });
+  const draft = draftId
+    ? drafts.find(
+        (d: DatatrakWebSurveyResponseDraftsRequest.DraftSurveyResponse) => d.id === draftId,
+      )
+    : undefined;
+  const isDraft = Boolean(draftId);
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const params = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? Number.parseInt(params.screenNumber, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
 
-  const _isInitialSubmitReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const _isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
-  const isReviewScreen = _isInitialSubmitReviewScreen || _isResubmitReviewScreen;
-
-  const _isInitialSubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const _isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
-  const isSuccessScreen = _isInitialSubmitSuccessScreen || _isResubmitSuccessScreen;
-
-  const isResubmit = !!useMatch(`${ROUTES.SURVEY_RESUBMIT}/*`);
+  const isReviewScreen = useIsReviewScreen();
+  const isSuccessScreen = useIsSuccessScreen();
+  const isResubmit = useIsResubmit();
   const isResponseScreen = !!urlSearchParams.get('responseId');
 
-  let { formData } = state;
-
   const surveyScreens = survey?.screens || [];
-  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
+  const flattenedScreenComponents = useMemo(
+    () => getAllSurveyComponents(surveyScreens),
+    [surveyScreens],
+  );
+
   const primaryEntityQuestion = flattenedScreenComponents.find(
     question => question.type === QuestionType.PrimaryEntity,
   );
+
   const { data: autoFillAnswers } = usePrimaryEntityQuestionAutoFill(
     primaryEntityQuestion,
     flattenedScreenComponents,
     primaryEntityCode,
   );
 
-  if (primaryEntityCode) {
-    formData = { ...formData, ...autoFillAnswers };
-  }
+  const formData = useMemo(
+    () => (primaryEntityCode ? { ...state.formData, ...autoFillAnswers } : state.formData),
+    [autoFillAnswers, primaryEntityCode, state.formData],
+  );
 
   // Get the list of parent question ids for the primary entity question
   const primaryEntityParentQuestionIds = useMemo(
-    () => getPrimaryEntityParentQuestionIds(primaryEntityQuestion, flattenedScreenComponents),
+    () =>
+      new Set(getPrimaryEntityParentQuestionIds(primaryEntityQuestion, flattenedScreenComponents)),
     [primaryEntityQuestion, flattenedScreenComponents],
   );
 
   // filter out screens that have no visible questions, and the components that are not visible. This is so that the titles of the screens are not using questions that are not visible
-  const visibleScreens = surveyScreens
-    .map(screen => {
-      return {
-        ...screen,
-        surveyScreenComponents: screen.surveyScreenComponents.filter(question => {
-          // If a primary entity code is pre-set for the survey, hide the primary entity question and its ancestor questions
-          if (primaryEntityCode && !isReviewScreen) {
-            if (
-              question.type === QuestionType.PrimaryEntity ||
-              primaryEntityParentQuestionIds.includes(question.id)
-            ) {
-              return false;
-            }
-          }
-          return getIsQuestionVisible(question, formData);
-        }),
-      };
-    })
-    .filter(screen => screen.surveyScreenComponents.length > 0);
-
-  const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
-
-  const initialiseFormData = () => {
-    if (!surveyCode || isResponseScreen || isResubmit) return;
-    // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
-    const initialFormData = generateCodeForCodeGeneratorQuestions(
-      flattenedScreenComponents,
+  const visibleScreens = useMemo(
+    () =>
+      surveyScreens
+        .map(screen => ({
+          ...screen,
+          surveyScreenComponents: screen.surveyScreenComponents.filter(question =>
+            primaryEntityCode &&
+            !isReviewScreen &&
+            (question.type === QuestionType.PrimaryEntity ||
+              primaryEntityParentQuestionIds.has(question.id))
+              ? // If a primary entity code is preset for the survey, hide the primary entity
+                // question and its ancestor questions
+                false
+              : getIsQuestionVisible(question, formData),
+          ),
+        }))
+        .filter(screen => screen.surveyScreenComponents.length > 0),
+    [
       formData,
-    );
+      isReviewScreen,
+      surveyScreens,
+      primaryEntityCode,
+      primaryEntityParentQuestionIds.has,
+    ],
+  );
 
-    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
-    // update the start time when a survey is started, so that it can be passed on when submitting the survey
-
-    const currentDate = new Date();
-    dispatch({
-      type: ACTION_TYPES.SET_SURVEY_START_TIME,
-      payload: currentDate.toISOString(),
-    });
-  };
+  const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents ?? [];
 
   // @see https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
-  if (surveyCode !== prevSurveyCode) {
-    setPrevSurveyCode(surveyCode as string);
+  if (survey !== prevSurvey) {
+    const initialiseFormData = () => {
+      if (!surveyCode || isResponseScreen || isResubmit || isDraft) return;
+      // If we are on the response screen, we don’t want to initialise the form data, because we
+      // want to show the user’s saved answers
+      const initialFormData = generateCodeForCodeGeneratorQuestions(
+        flattenedScreenComponents,
+        formData,
+      );
+      dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
+      // Update the start time when a survey is started, so that it can be passed on when submitting
+      dispatch({
+        type: ACTION_TYPES.SET_SURVEY_START_TIME,
+        payload: new Date().toISOString(),
+      });
+    };
+
+    setPrevSurvey(survey);
     initialiseFormData();
   }
 
+  // Load draft data when the draft is available
+  useEffect(() => {
+    if (!draft) return;
+    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: draft.formData as Record<string, any> });
+    if (draft.startTime) {
+      dispatch({ type: ACTION_TYPES.SET_SURVEY_START_TIME, payload: draft.startTime });
+    }
+  }, [draft?.formData, draft?.id, draft?.startTime]);
+
+  const dynamicCodeGenQuestions = useMemo(
+    () =>
+      flattenedScreenComponents.filter(
+        q =>
+          q.type === QuestionType.CodeGenerator &&
+          (q.config?.codeGenerator as CodeGeneratorQuestionConfig | undefined)?.dynamicPrefix,
+      ),
+    [flattenedScreenComponents],
+  );
+
   const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
-  const screenHeader = activeScreen?.[0]?.text;
-  const screenDetail = activeScreen?.[0]?.detail;
 
   return (
     <SurveyFormContext.Provider
@@ -162,17 +201,38 @@ export const SurveyContext = ({
         isResponseScreen,
         displayQuestions,
         surveyScreens,
-        screenHeader,
-        screenDetail,
         visibleScreens,
         countryCode,
         surveyCode,
         primaryEntityQuestion,
         isResubmit,
         isSuccessScreen,
+        isDraft,
+        draftId,
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
+        {dynamicCodeGenQuestions.map(q => {
+          const sourceQuestionId = (q.config!.codeGenerator as CodeGeneratorQuestionConfig)
+            .dynamicPrefix!.questionId;
+          const sourceQuestion = flattenedScreenComponents.find(
+            c => c.questionId === sourceQuestionId,
+          );
+          const isEntitySource =
+            sourceQuestion?.type === QuestionType.Entity ||
+            sourceQuestion?.type === QuestionType.PrimaryEntity;
+
+          return (
+            <DynamicCodeGeneratorWatcher
+              key={q.questionId}
+              question={q}
+              isEntitySource={isEntitySource}
+              formData={formData}
+              dispatch={dispatch}
+              isResponseScreen={isResponseScreen}
+            />
+          );
+        })}
         {children}
       </SurveyFormDispatchContext.Provider>
     </SurveyFormContext.Provider>
@@ -188,19 +248,6 @@ export const useSurveyForm = () => {
   const numberOfScreens = visibleScreens?.length ?? 0;
   const isLast = screenNumber === numberOfScreens;
 
-  const _isInitialSubmitReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const _isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
-  const isReviewScreen = _isInitialSubmitReviewScreen || _isResubmitReviewScreen;
-
-  const _isInitialSubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const _isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
-  const isSuccessScreen = _isInitialSubmitSuccessScreen || _isResubmitSuccessScreen;
-
-  const isResubmit = !!useMatch(`${ROUTES.SURVEY_RESUBMIT}/*`);
-
-  const [urlSearchParams] = useSearchParams();
-  const isResponseScreen = !!urlSearchParams.get('responseId');
-
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
   };
@@ -211,7 +258,6 @@ export const useSurveyForm = () => {
 
   const updateFormData = (newFormData: Record<string, any>) => {
     const updatedFormData = getUpdatedFormData(newFormData, formData, flattenedScreenComponents);
-
     setFormData(updatedFormData);
   };
 
@@ -223,28 +269,14 @@ export const useSurveyForm = () => {
     return surveyFormContext.formData[questionId];
   };
 
-  const openCancelConfirmation = ({ confirmPath }: { confirmPath?: To | number }) => {
-    dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION, payload: confirmPath });
-  };
-
-  const closeCancelConfirmation = () => {
-    dispatch({ type: ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION });
-  };
-
   return {
     ...surveyFormContext,
     isLast,
-    isResponseScreen,
-    isResubmit,
-    isReviewScreen,
-    isSuccessScreen,
     numberOfScreens,
     toggleSideMenu,
     updateFormData,
     setFormData,
     resetForm,
     getAnswerByQuestionId,
-    openCancelConfirmation,
-    closeCancelConfirmation,
   };
 };

@@ -4,6 +4,7 @@ import {
   LandingPage,
   SurveySelectPage,
   LoginPage,
+  LogoutPage,
   VerifyEmailPage,
   ErrorPage,
   RegisterPage,
@@ -31,7 +32,7 @@ import { SurveyRoutes } from './SurveyRoutes';
 import { MobileUserMenu } from '../layout/UserMenu/MobileUserMenu';
 
 /**
- * If the user is logged in and tries to access the auth pages, redirect to the home page or project select pages
+ * If the user is logged in and tries to access the auth pages, redirect them away.
  */
 const AuthViewLoggedInRedirect = ({ children }) => {
   const { isLoggedIn, ...user } = useCurrentUserContext();
@@ -40,15 +41,12 @@ const AuthViewLoggedInRedirect = ({ children }) => {
   if (!isLoggedIn) {
     return children;
   }
-  return (
-    <Navigate
-      to={user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT}
-      replace={true}
-      state={{
-        from,
-      }}
-    />
-  );
+
+  const defaultRedirect = user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
+
+  // When `from` is set in location state (e.g. the user was redirected here from a protected page),
+  // redirect back there so they end up where they originally intended.
+  return <Navigate to={from || defaultRedirect} replace={true} state={null} />;
 };
 
 /**
@@ -93,6 +91,7 @@ export const Routes = () => {
           </Route>
           <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
           <Route path={ROUTES.SYNC} element={<SyncPage />} />
+          <Route path={ROUTES.LOGOUT} element={<LogoutPage />} />
         </Route>
         {/** Reports route is admin only so needs to be inside it's own PrivateRoute instance */}
 

@@ -9,6 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  AWS_REGION: ap-southeast-2
   NODE_OPTIONS: '--max-old-space-size=6144'
   NODE_ENV: test
 
@@ -34,15 +35,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
       - name: Set up Yarn
         run: |
           corepack enable yarn
           corepack install
-          echo "Using Yarn $(yarn --version)"
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
       - run: yarn install
       - run: yarn workspace @tupaia/utils run build # /scripts/node/validateTests.js uses utils package
       - name: Validate unit tests
@@ -76,15 +76,14 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
       - name: Set up Yarn
         run: |
           corepack enable yarn
           corepack install
-          echo "Using Yarn $(yarn --version)"
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
       - name: Install dependencies
         run: yarn workspaces focus tupaia @tupaia/types
       - run: yarn run build:from types
@@ -96,15 +95,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
       - name: Set up Yarn
         run: |
           corepack enable yarn
           corepack install
-          echo "Using Yarn $(yarn --version)"
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
       - run: yarn install --immutable
 
   package_list:
@@ -114,6 +112,10 @@ jobs:
       PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Yarn
+        run: |
+          corepack enable yarn
+          corepack install
       - id: set-matrix
         run: |
           echo PACKAGES=$(
@@ -134,17 +136,16 @@ jobs:
         package: ${{ fromJSON(needs.package_list.outputs.PACKAGES) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
       - name: Set up Yarn
         run: |
           corepack enable yarn
           corepack install
-          echo "Using Yarn $(yarn --version)"
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
       - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
-      - run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
+      - run: yarn workspaces foreach -Rptvv --jobs unlimited --from ${{ matrix.package }} run build
 
   run_tests:
     name: Test
@@ -207,22 +208,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
       - name: Set up Yarn
         run: |
           corepack enable yarn
           corepack install
-          echo "Using Yarn $(yarn --version)"
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
       - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
       - name: Build subtree
-        run: yarn workspaces foreach -Rptv --jobs unlimited --from ${{ matrix.package }} run build
+        run: yarn workspaces foreach -Rpt --jobs unlimited --from ${{ matrix.package }} run build
       - name: Set up tests (if script exists)
-        run: yarn workspaces foreach --include ${{ matrix.package }} run setup-test
+        run: yarn workspaces foreach -W --include ${{ matrix.package }} run setup-test
       - name: Run tests (if script exists)
-        run: yarn workspaces foreach --include ${{ matrix.package }} run test
+        run: yarn workspaces foreach -W --include ${{ matrix.package }} run test
 
   allgreen:
     name: All Green

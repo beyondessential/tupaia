@@ -1,11 +1,12 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
+
+import { ROUTES } from '../../../constants';
 import { StickyMobileHeader } from '../../../layout';
 import { useIsMobile } from '../../../utils';
 import { MobileSurveyMenu, SurveyPaginator, SurveyReviewSection } from '../Components';
-import { useSurveyForm } from '../SurveyContext';
 
 const Header = styled.div`
   padding: 1rem;
@@ -46,15 +47,14 @@ interface SurveyLayoutContext {
 }
 
 const MobileHeader = () => {
-  const { openCancelConfirmation } = useSurveyForm();
   const { onStepPrevious } = useOutletContext<SurveyLayoutContext>();
-
-  const handleBack = () => {
-    onStepPrevious();
-  };
+  const navigate = useNavigate();
 
   return (
-    <StickyHeader onBack={handleBack} onClose={openCancelConfirmation}>
+    <StickyHeader
+      onBack={onStepPrevious}
+      onClose={() => navigate(ROUTES.HOME)}
+    >
       Review & submit
     </StickyHeader>
   );
