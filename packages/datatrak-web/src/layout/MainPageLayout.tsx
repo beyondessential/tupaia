@@ -9,6 +9,7 @@ import { useIsMobile } from '../utils';
 import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
 import { BannerNotifications } from '../components/BannerNotifications';
+import { UnsyncedDataGuard } from '../components/UnsyncedDataGuard';
 
 const PageWrapper = styled.div`
   background-color: ${props => props.theme.palette.background.default};
@@ -70,6 +71,7 @@ export const MainPageLayout = () => {
       {/* Header includes BannerNotifications, so if header is not showing, 
       BannerNotifications needs to be shown separately below*/}
       <BannerNotifications />
+      <UnsyncedDataGuard />
       <Outlet />
       {showBottomNavigation && <Nav />}
       <SurveyResponseModal />

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { SafeArea, Button as UIButton } from '@tupaia/ui-components';
 
+import { useShowCoconutsPigs } from '../api';
 import { HomeLink } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
@@ -84,13 +85,17 @@ const ImageContainer = styled.div`
 const refreshPage = () => location.reload();
 
 export const OfflinePage = () => {
+  const { showCoconutsPigs } = useShowCoconutsPigs();
+
   return (
     <Container>
       <Header />
       <Body>
-        <ImageContainer>
-          <img src="images/pig-on-beach-holiday.svg" alt="Pig on a beach on holiday" />
-        </ImageContainer>
+        {showCoconutsPigs && (
+          <ImageContainer>
+            <img src="images/pig-on-beach-holiday.svg" alt="Pig on a beach on holiday" />
+          </ImageContainer>
+        )}
         <Heading>You are currently offline</Heading>
         <Text>
           We are trying to reconnect you now. Please check you are connected to the internet.
