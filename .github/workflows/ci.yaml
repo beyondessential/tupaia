@@ -127,26 +127,9 @@ jobs:
                 '[.[] | .name] | map(select(. != "tupaia" and . != "@tupaia/devops" and . != "@tupaia/e2e"))'
           ) >>"$GITHUB_OUTPUT"
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    env:
-      CI: false # react-scripts build treats warnings as errors if this is true
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn install
-      - run: yarn run build
 
   run_tests:
-    name: Test
+    name: Build & test
     needs: package_list
     timeout-minutes: 15 # Sometimes Jest doesn’t exit properly for meditrak-app-server tests
     runs-on: ubuntu-latest
