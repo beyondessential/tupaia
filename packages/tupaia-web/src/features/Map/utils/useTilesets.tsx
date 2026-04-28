@@ -11,7 +11,7 @@ const defaultTileSets = [DEFAULT_TILESETS.osm, DEFAULT_TILESETS.satellite];
 export const useTilesets = () => {
   const { projectCode } = useParams();
   const { data: project } = useProject(projectCode);
-  const initialTileSet = getAutoTileSet();
+  const [initialTileSet] = useState(getAutoTileSet());
   const [activeTileSet, setActiveTileSet] = useState<TileSet>(initialTileSet);
 
   const availableTileSets = useMemo(() => {
