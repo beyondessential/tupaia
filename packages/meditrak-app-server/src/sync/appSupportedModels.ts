@@ -6,7 +6,7 @@ const appSupportedModels = {
   country: { minVersion: '0.0.1' },
   entity: {
     minVersion: '1.7.102',
-    unsupportedFields: ['bounds'],
+    unsupportedFields: ['bounds', 'entity_polygon_id'],
   },
   facility: { minVersion: '0.0.1' },
   geographicalArea: { minVersion: '0.0.23' },

@@ -439,7 +439,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get excludedFieldsFromSync() {
-    return ['point', 'bounds', 'parent_id'];
+    return ['point', 'bounds', 'entity_polygon_id', 'parent_id'];
   }
 
   get DatabaseRecordClass() {
@@ -523,40 +523,40 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {string} geojson
    */
   async updatePolygonCoordinates(code, geojson) {
-    const entity = await this.findOne({ code });
-    if (!entity) return;
-
-    const shouldSetBounds = !entity.bounds;
-
-    if (!entity.entity_polygon_id) {
-      const polygonId = generateId();
-      await this.database.executeSql(
-        `
-            INSERT INTO entity_polygon (id, polygon, name, code)
-            VALUES (?, ST_GeomFromGeoJSON(?), ?, ?);
-          `,
-        [polygonId, geojson, entity.name, entity.code],
-      );
-      await this.database.executeSql(
-        shouldSetBounds
-          ? `UPDATE entity SET entity_polygon_id = ?, bounds = ST_Envelope(ST_GeomFromGeoJSON(?)::geometry) WHERE id = ?;`
-          : `UPDATE entity SET entity_polygon_id = ? WHERE id = ?;`,
-        shouldSetBounds ? [polygonId, geojson, entity.id] : [polygonId, entity.id],
-      );
-      return;
-    }
-
+    // Single atomic statement: SELECT FOR UPDATE locks the entity row, so
+    // concurrent callers serialize and the second one observes the first's
+    // INSERT instead of creating an orphaned entity_polygon row.
+    const polygonId = generateId();
     await this.database.executeSql(
-      `UPDATE entity_polygon SET polygon = ST_GeomFromGeoJSON(?) WHERE id = ?;`,
-      [geojson, entity.entity_polygon_id],
+      `
+        WITH locked AS (
+          SELECT id, entity_polygon_id, name, code
+          FROM entity
+          WHERE code = ?
+          FOR UPDATE
+        ),
+        new_polygon AS (
+          INSERT INTO entity_polygon (id, polygon, name, code)
+          SELECT ?, ST_GeomFromGeoJSON(?), locked.name, locked.code
+          FROM locked
+          WHERE locked.entity_polygon_id IS NULL
+          RETURNING id
+        ),
+        existing_polygon_update AS (
+          UPDATE entity_polygon ep
+          SET polygon = ST_GeomFromGeoJSON(?)
+          FROM locked
+          WHERE ep.id = locked.entity_polygon_id
+          RETURNING ep.id
+        )
+        UPDATE entity
+        SET entity_polygon_id = COALESCE(entity.entity_polygon_id, (SELECT id FROM new_polygon)),
+            bounds = COALESCE(entity.bounds, ST_Envelope(ST_GeomFromGeoJSON(?)::geometry))
+        FROM locked
+        WHERE entity.id = locked.id;
+      `,
+      [code, polygonId, geojson, geojson, geojson],
     );
-
-    if (shouldSetBounds) {
-      await this.database.executeSql(
-        `UPDATE entity SET bounds = ST_Envelope(ST_GeomFromGeoJSON(?)::geometry) WHERE id = ?;`,
-        [geojson, entity.id],
-      );
-    }
   }
 
   /**
