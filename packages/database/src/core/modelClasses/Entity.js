@@ -521,47 +521,46 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {string} geojson
    */
   async updatePolygonCoordinates(code, geojson) {
-    // Single atomic statement:
-    //  - SELECT FOR UPDATE locks the entity row so concurrent callers serialize
-    //    and the second one observes the first's INSERT instead of creating an
-    //    orphaned entity_polygon row.
-    //  - The geojson is parsed once into a `parsed` CTE and reused, avoiding
-    //    redundant ST_GeomFromGeoJSON calls for the polygon write and the
-    //    bounds envelope.
-    const polygonId = generateId();
-    await this.database.executeSql(
-      `
-        WITH parsed AS (
-          SELECT ST_GeomFromGeoJSON(?) AS geom
-        ),
-        locked AS (
-          SELECT id, entity_polygon_id, name, code, bounds
-          FROM entity
-          WHERE code = ?
-          FOR UPDATE
-        ),
-        new_polygon AS (
-          INSERT INTO entity_polygon (id, polygon, name, code)
-          SELECT ?, parsed.geom, locked.name, locked.code
-          FROM locked, parsed
-          WHERE locked.entity_polygon_id IS NULL
-          RETURNING id
-        ),
-        existing_polygon_update AS (
-          UPDATE entity_polygon ep
-          SET polygon = parsed.geom
-          FROM locked, parsed
-          WHERE ep.id = locked.entity_polygon_id
-          RETURNING ep.id
-        )
-        UPDATE entity
-        SET entity_polygon_id = COALESCE(entity.entity_polygon_id, (SELECT id FROM new_polygon)),
-            bounds = COALESCE(entity.bounds, ST_Envelope((SELECT geom FROM parsed)::geometry))
-        FROM locked
-        WHERE entity.id = locked.id;
-      `,
-      [geojson, code, polygonId],
-    );
+    return this.database.wrapInTransaction(async transactingDatabase => {
+      // FOR UPDATE serializes concurrent callers so we don't create orphan
+      // entity_polygon rows when two updates race for the same entity.
+      const [entity] = await transactingDatabase.executeSql(
+        `SELECT id, entity_polygon_id, name FROM entity WHERE code = ? FOR UPDATE;`,
+        [code],
+      );
+      if (!entity) return;
+
+      if (entity.entity_polygon_id) {
+        await transactingDatabase.executeSql(
+          `UPDATE entity_polygon SET polygon = ST_GeomFromGeoJSON(?) WHERE id = ?;`,
+          [geojson, entity.entity_polygon_id],
+        );
+      } else {
+        const polygonId = generateId();
+        await transactingDatabase.executeSql(
+          `
+            INSERT INTO entity_polygon (id, polygon, name, code)
+            VALUES (?, ST_GeomFromGeoJSON(?), ?, ?);
+          `,
+          [polygonId, geojson, entity.name, code],
+        );
+        await transactingDatabase.executeSql(
+          `UPDATE entity SET entity_polygon_id = ? WHERE id = ?;`,
+          [polygonId, entity.id],
+        );
+      }
+
+      // Match the original updateRegionCoordinates semantics: only set bounds
+      // when it is currently null.
+      await transactingDatabase.executeSql(
+        `
+          UPDATE entity
+          SET bounds = ST_Envelope(ST_GeomFromGeoJSON(?)::geometry)
+          WHERE id = ? AND bounds IS NULL;
+        `,
+        [geojson, entity.id],
+      );
+    });
   }
 
   /**
