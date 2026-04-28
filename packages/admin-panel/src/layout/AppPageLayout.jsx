@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { IconButton } from '@material-ui/core';
 import { Outlet } from 'react-router-dom';
@@ -7,6 +7,13 @@ import { labelToId } from '../utilities';
 import { NavPanel } from './navigation';
 import { CaretLeftIcon } from '../icons';
 import { NAV_PANEL_CLOSED_WIDTH, NAV_PANEL_OPEN_WIDTH } from './navigation/NavPanel';
+import { ProjectSelector } from '../projects';
+import {
+  ALL_PROJECTS_SCOPE,
+  SINGLE_PROJECT_SCOPE,
+  appendScopeToPath,
+  buildSectionsFromRoutes,
+} from '../routes/scopes';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -54,20 +61,48 @@ const NavWrapper = styled.div`
       : NAV_PANEL_CLOSED_WIDTH}; // this is set so that the button can be positioned correctly
 `;
 
+const buildItem = (route, basePath, scope) => {
+  const firstChild = route.childViews?.[0];
+  const firstChildPath = firstChild?.exact ? firstChild.path : `${route.path}${firstChild?.path ?? ''}`;
+  return {
+    id: `app-tab-${scope}-${labelToId(route.label)}`,
+    label: route.label,
+    icon: route.icon,
+    to: appendScopeToPath(`${basePath}${firstChildPath}`, scope),
+  };
+};
+
 export const AppPageLayout = ({ routes, logo, homeLink, profileLink, basePath }) => {
   const [navOpen, setNavOpen] = useState(true);
   const toggleOpen = () => {
     setNavOpen(!navOpen);
   };
+
+  const sections = useMemo(() => {
+    const { allProjectsRoutes, singleProjectRoutes } = buildSectionsFromRoutes(routes);
+    return [
+      {
+        id: 'all-projects',
+        label: 'All projects',
+        items: allProjectsRoutes.map(route => buildItem(route, basePath, ALL_PROJECTS_SCOPE)),
+      },
+      {
+        id: 'single-project',
+        label: 'Single project',
+        headerContent: <ProjectSelector collapsed={!navOpen} />,
+        items: singleProjectRoutes.map(route => buildItem(route, basePath, SINGLE_PROJECT_SCOPE)),
+      },
+    ];
+  }, [routes, basePath, navOpen]);
+
   return (
     <PageWrapper>
       <NavWrapper $navOpen={navOpen}>
         <NavPanel
-          links={routes.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
+          sections={sections}
           profileLink={profileLink}
           logo={logo}
           homeLink={homeLink}
-          basePath={basePath}
           isOpen={navOpen}
           setOpen={setNavOpen}
         />

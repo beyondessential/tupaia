@@ -11,22 +11,25 @@ import { indicators } from './indicators';
 import { dataTables } from './dataTables';
 import { socialFeed } from './socialFeed';
 import { VizIcon } from '../../icons';
+import { ALL_PROJECTS_SCOPE, SINGLE_PROJECT_SCOPE } from '../scopes';
 
 export const visualisationsTabRoutes = {
   label: 'Visualisations',
   path: '/visualisations',
   icon: <VizIcon />,
   childViews: [
-    dashboardItems,
-    dashboards,
-    dashboardRelations,
-    dashboardMailingLists,
-    dataTables,
-    legacyReports,
-    mapOverlays,
-    mapOverlayGroups,
-    mapOverlayGroupRelations,
-    indicators,
-    socialFeed,
+    { ...dashboardItems, scope: SINGLE_PROJECT_SCOPE },
+    { ...dashboards, scope: SINGLE_PROJECT_SCOPE },
+    { ...dashboardRelations, scope: SINGLE_PROJECT_SCOPE },
+    { ...dashboardMailingLists, scope: SINGLE_PROJECT_SCOPE },
+    { ...legacyReports, scope: SINGLE_PROJECT_SCOPE },
+    { ...mapOverlays, scope: SINGLE_PROJECT_SCOPE },
+    { ...mapOverlayGroups, scope: SINGLE_PROJECT_SCOPE },
+    { ...mapOverlayGroupRelations, scope: SINGLE_PROJECT_SCOPE },
+    // RN-1855: matrix excludes these from the Single Project section.
+    // No new home defined yet — keeping in All Projects for now.
+    { ...dataTables, scope: ALL_PROJECTS_SCOPE },
+    { ...indicators, scope: ALL_PROJECTS_SCOPE },
+    { ...socialFeed, scope: ALL_PROJECTS_SCOPE },
   ],
 };

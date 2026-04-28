@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useSearchParams } from 'react-router-dom';
 
 import { PrivateRoute } from './authentication';
 import { AppPageLayout, AuthLayout, Footer } from './layout';
@@ -9,7 +9,29 @@ import { LoginPage } from './pages/LoginPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { AUTH_ROUTES, ROUTES } from './routes';
+import {
+  ALL_PROJECTS_SCOPE,
+  SCOPE_QUERY_PARAM,
+  SINGLE_PROJECT_SCOPE,
+  appendScopeToPath,
+  isInScope,
+} from './routes/scopes';
 import { useHasBesAdminAccess, useUserPermissionGroups } from './utilities';
+
+const VALID_SCOPES = [ALL_PROJECTS_SCOPE, SINGLE_PROJECT_SCOPE];
+
+const FirstChildRedirect = ({ childViews }) => {
+  const [searchParams] = useSearchParams();
+  const scope = searchParams.get(SCOPE_QUERY_PARAM);
+  const inScope =
+    scope && VALID_SCOPES.includes(scope)
+      ? childViews.find(child => isInScope(child, scope))
+      : null;
+  const target = inScope ?? childViews[0];
+  if (!target) return null;
+  const path = scope ? appendScopeToPath(target.path, scope) : target.path;
+  return <Navigate to={path} replace />;
+};
 
 export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
@@ -125,7 +147,7 @@ const App = () => {
                   }
                 />
               ))}
-              <Route path="*" element={<Navigate to={route.childViews[0].path} replace />} />
+              <Route path="*" element={<FirstChildRedirect childViews={route.childViews} />} />
             </Route>
           ))}
         </Route>

@@ -1,12 +1,22 @@
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import FetchError from './fetchError';
+import { getCurrentProjectCode, PROJECT_CODE_HEADER } from '../../projects/context';
 
 const baseUrl = import.meta.env.REACT_APP_VIZ_BUILDER_API_URL || 'http://localhost:8070/v1';
 const timeout = 45 * 1000; // 45 seconds
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
+
+axios.interceptors.request.use(config => {
+  const projectCode = getCurrentProjectCode();
+  if (projectCode) {
+    config.headers = config.headers || {};
+    config.headers[PROJECT_CODE_HEADER] = projectCode;
+  }
+  return config;
+});
 
 /**
  * Abstraction for making api requests

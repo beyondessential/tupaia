@@ -2,6 +2,7 @@ import { saveAs } from 'file-saver';
 import { parse } from 'content-disposition-header';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
+import { getCurrentProjectCode, PROJECT_CODE_HEADER } from '../projects/context';
 
 const FETCH_TIMEOUT = 120 * 1000; // 120 seconds in milliseconds
 
@@ -150,6 +151,10 @@ export class TupaiaApi {
     };
     if (isJson) {
       fetchConfig.headers['Content-Type'] = 'application/json';
+    }
+    const projectCode = getCurrentProjectCode();
+    if (projectCode) {
+      fetchConfig.headers[PROJECT_CODE_HEADER] = projectCode;
     }
     if (body) {
       fetchConfig.body =

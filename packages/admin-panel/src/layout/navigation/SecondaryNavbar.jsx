@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import { Link, matchPath, useLocation } from 'react-router-dom';
+import { Link, matchPath, useLocation, useSearchParams } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { labelToId } from '../../utilities';
 import { generateTitle } from '../../pages/resources/resourceName';
+import { SCOPE_QUERY_PARAM, appendScopeToPath } from '../../routes/scopes';
 
 const Wrapper = styled.div`
   max-width: 100%;
@@ -194,13 +195,15 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
 export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
   const containerRef = useRef(null);
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const scope = searchParams.get(SCOPE_QUERY_PARAM);
   const navLinkRefs = useRef(linkInput.map(React.createRef));
 
   const getIsActive = link => {
-    const matchResult = matchPath(link.target, location.pathname);
+    const matchResult = matchPath(link.basePath, location.pathname);
     const nestedViewMatch = link.nestedViews
       ? link.nestedViews.find(nestedView =>
-          matchPath(`${link.target}${nestedView.path}`, location.pathname),
+          matchPath(`${link.basePath}${nestedView.path}`, location.pathname),
         )
       : false;
     return !!matchResult || !!nestedViewMatch;
@@ -208,16 +211,18 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
 
   const links = linkInput?.map(({ exact, path, resourceName, label, ...rest }) => {
     const linkTitle = label ?? generateTitle(resourceName);
-    const target = exact ? path : `${basePath}${path}`;
+    const targetBasePath = exact ? path : `${basePath}${path}`;
+    const target = scope ? appendScopeToPath(targetBasePath, scope) : targetBasePath;
 
     return {
       ...rest,
       title: linkTitle,
       target,
+      basePath: targetBasePath,
       id: `app-sub-view-${labelToId(linkTitle)}`,
       active: getIsActive({
         ...rest,
-        target,
+        basePath: targetBasePath,
       }),
     };
   });

@@ -6,6 +6,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import thunk from 'redux-thunk';
 import { rootReducer } from '../rootReducer';
+import {
+  selectSelectedProject,
+  writePersistedProject,
+  setCurrentProjectCode,
+} from '../projects';
 
 const initialState = {};
 const enhancers = [];
@@ -21,6 +26,17 @@ export const StoreProvider = React.memo(({ children, api }) => {
   const middleware = [thunk.withExtraArgument({ api })];
   const composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers);
   const store = createStore(rootReducer, initialState, composedEnhancers);
+
+  let lastPersistedProject = selectSelectedProject(store.getState());
+  setCurrentProjectCode(lastPersistedProject?.code ?? null);
+  store.subscribe(() => {
+    const project = selectSelectedProject(store.getState());
+    if (project !== lastPersistedProject) {
+      lastPersistedProject = project;
+      writePersistedProject(project);
+      setCurrentProjectCode(project?.code ?? null);
+    }
+  });
 
   const queryClient = new QueryClient();
 

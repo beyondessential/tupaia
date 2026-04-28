@@ -13,6 +13,7 @@ import { Footer } from './widgets';
 import { TupaiaApi } from './api';
 import { theme } from './theme';
 import { VizBuilderPrivateRoute } from './authentication';
+import { ProjectQueryInvalidator } from './projects';
 
 const Wrapper = styled.div`
   display: flex;
@@ -63,6 +64,7 @@ renderReactApp(
         {/* Store provider applied above routes so that it always persists auth state */}
         <StoreProvider api={api} persist>
           <QueryClientProvider client={queryClient}>
+            <ProjectQueryInvalidator />
             <EnvBanner />
             <StylesProvider injectFirst>
               <MuiThemeProvider theme={theme}>
