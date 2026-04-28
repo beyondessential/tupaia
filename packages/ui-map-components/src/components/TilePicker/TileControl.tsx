@@ -1,10 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import RightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { TileSet } from './TileButton';
+import React from 'react';
+import styled from 'styled-components';
+import type { TileSet } from '../../types';
 
 const StyledButton = styled(Button)<{
   active: string;
