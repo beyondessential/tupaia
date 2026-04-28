@@ -197,11 +197,6 @@ export class EntityRecord extends DatabaseRecord {
     return this.model.findOne({ code: this.country_code });
   }
 
-  async getEntityPolygon() {
-    if (!this.entity_polygon_id) return null;
-    return this.otherModels.entityPolygon.findById(this.entity_polygon_id);
-  }
-
   getBounds() {
     return translateBounds(this.bounds);
   }
@@ -210,9 +205,8 @@ export class EntityRecord extends DatabaseRecord {
     return translatePoint(this.point);
   }
 
-  async getPolygon() {
-    const polygon = await this.getEntityPolygon();
-    return polygon ? translateRegion(polygon.polygon) : null;
+  getPolygon() {
+    return translateRegion(this.polygon);
   }
 
   /** @returns {Promise<EntityRecord | undefined>} */
@@ -458,6 +452,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   customColumnSelectors = {
     point: fieldName => `ST_AsGeoJSON(${fieldName})`,
     bounds: fieldName => `ST_AsGeoJSON(${fieldName})`,
+    // Virtual column: pulls the linked polygon GeoJSON via a correlated subquery
+    // so callers can read entity.polygon without an extra round-trip per entity.
+    polygon: () =>
+      `(SELECT ST_AsGeoJSON(entity_polygon.polygon) FROM entity_polygon WHERE entity_polygon.id = entity.entity_polygon_id)`,
   };
 
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
@@ -523,39 +521,46 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {string} geojson
    */
   async updatePolygonCoordinates(code, geojson) {
-    // Single atomic statement: SELECT FOR UPDATE locks the entity row, so
-    // concurrent callers serialize and the second one observes the first's
-    // INSERT instead of creating an orphaned entity_polygon row.
+    // Single atomic statement:
+    //  - SELECT FOR UPDATE locks the entity row so concurrent callers serialize
+    //    and the second one observes the first's INSERT instead of creating an
+    //    orphaned entity_polygon row.
+    //  - The geojson is parsed once into a `parsed` CTE and reused, avoiding
+    //    redundant ST_GeomFromGeoJSON calls for the polygon write and the
+    //    bounds envelope.
     const polygonId = generateId();
     await this.database.executeSql(
       `
-        WITH locked AS (
-          SELECT id, entity_polygon_id, name, code
+        WITH parsed AS (
+          SELECT ST_GeomFromGeoJSON(?) AS geom
+        ),
+        locked AS (
+          SELECT id, entity_polygon_id, name, code, bounds
           FROM entity
           WHERE code = ?
           FOR UPDATE
         ),
         new_polygon AS (
           INSERT INTO entity_polygon (id, polygon, name, code)
-          SELECT ?, ST_GeomFromGeoJSON(?), locked.name, locked.code
-          FROM locked
+          SELECT ?, parsed.geom, locked.name, locked.code
+          FROM locked, parsed
           WHERE locked.entity_polygon_id IS NULL
           RETURNING id
         ),
         existing_polygon_update AS (
           UPDATE entity_polygon ep
-          SET polygon = ST_GeomFromGeoJSON(?)
-          FROM locked
+          SET polygon = parsed.geom
+          FROM locked, parsed
           WHERE ep.id = locked.entity_polygon_id
           RETURNING ep.id
         )
         UPDATE entity
         SET entity_polygon_id = COALESCE(entity.entity_polygon_id, (SELECT id FROM new_polygon)),
-            bounds = COALESCE(entity.bounds, ST_Envelope(ST_GeomFromGeoJSON(?)::geometry))
+            bounds = COALESCE(entity.bounds, ST_Envelope((SELECT geom FROM parsed)::geometry))
         FROM locked
         WHERE entity.id = locked.id;
       `,
-      [code, polygonId, geojson, geojson, geojson],
+      [geojson, code, polygonId],
     );
   }
 
