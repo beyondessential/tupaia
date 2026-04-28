@@ -9,9 +9,12 @@ declare global {
     export interface Request {
       accessPolicy: AccessPolicy;
       session: AdminPanelSessionRecord;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      models: any;
       ctx: {
         services: TupaiaApiClient;
         promptManager: PromptManager;
+        project?: { id: string; code: string };
       };
     }
   }

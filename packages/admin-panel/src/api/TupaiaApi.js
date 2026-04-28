@@ -153,6 +153,7 @@ export class TupaiaApi {
       fetchConfig.headers['Content-Type'] = 'application/json';
     }
     const projectCode = getCurrentProjectCode();
+    console.log('projectCode', projectCode);
     if (projectCode) {
       fetchConfig.headers[PROJECT_CODE_HEADER] = projectCode;
     }

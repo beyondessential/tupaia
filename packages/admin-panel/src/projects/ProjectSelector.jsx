@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { MenuItem, Select, FormControl, CircularProgress } from '@material-ui/core';
 import { useProjects } from '../api/queries';
@@ -14,7 +15,7 @@ const Wrapper = styled.div`
   padding: 0.25rem 0.25rem 0.75rem;
 `;
 
-const Label = styled.div`
+const Label = styled.div` 
   font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -56,22 +57,20 @@ const Loading = styled.div`
   padding-block: 0.5rem;
 `;
 
-export const ProjectSelector = ({ collapsed = false }) => {
-  const dispatch = useDispatch();
-  const selectedProject = useSelector(selectSelectedProject);
+const ProjectSelectorComponent = ({ collapsed, selectedProject, onSelectProject }) => {
   const { data: projects, isLoading } = useProjects();
 
   useEffect(() => {
     if (!selectedProject && projects && projects.length > 0) {
-      dispatch(setSelectedProject(projects[0]));
+      onSelectProject(projects[0]);
     }
-  }, [selectedProject, projects, dispatch]);
+  }, [selectedProject, projects, onSelectProject]);
 
   const handleChange = event => {
     const code = event.target.value;
     const project = projects?.find(p => p.code === code);
     if (project) {
-      dispatch(setSelectedProject(project));
+      onSelectProject(project);
     }
   };
 
@@ -119,3 +118,27 @@ export const ProjectSelector = ({ collapsed = false }) => {
     </Wrapper>
   );
 };
+
+ProjectSelectorComponent.propTypes = {
+  collapsed: PropTypes.bool,
+  selectedProject: PropTypes.shape({
+    code: PropTypes.string,
+    name: PropTypes.string,
+  }),
+  onSelectProject: PropTypes.func.isRequired,
+};
+
+ProjectSelectorComponent.defaultProps = {
+  collapsed: false,
+  selectedProject: null,
+};
+
+const mapStateToProps = state => ({
+  selectedProject: selectSelectedProject(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSelectProject: project => dispatch(setSelectedProject(project)),
+});
+
+export const ProjectSelector = connect(mapStateToProps, mapDispatchToProps)(ProjectSelectorComponent);

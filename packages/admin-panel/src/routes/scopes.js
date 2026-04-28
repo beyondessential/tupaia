@@ -1,32 +1,16 @@
 export const ALL_PROJECTS_SCOPE = 'all-projects';
 export const SINGLE_PROJECT_SCOPE = 'single-project';
 
-export const SCOPE_QUERY_PARAM = 'scope';
-
 export const isInScope = (item, scope) => item?.scope === scope;
 
-export const filterChildViewsByScope = (childViews, scope) =>
-  childViews?.filter(childView => isInScope(childView, scope)) ?? [];
+const hasAnyChildInScope = (route, scope) =>
+  route.childViews?.some(childView => isInScope(childView, scope)) ?? false;
 
-export const buildSectionsFromRoutes = routes => {
-  const allProjectsRoutes = routes
-    .map(route => ({
-      ...route,
-      childViews: filterChildViewsByScope(route.childViews, ALL_PROJECTS_SCOPE),
-    }))
-    .filter(route => route.childViews.length > 0);
-
-  const singleProjectRoutes = routes
-    .map(route => ({
-      ...route,
-      childViews: filterChildViewsByScope(route.childViews, SINGLE_PROJECT_SCOPE),
-    }))
-    .filter(route => route.childViews.length > 0);
-
-  return { allProjectsRoutes, singleProjectRoutes };
-};
-
-export const appendScopeToPath = (path, scope) => {
-  const separator = path.includes('?') ? '&' : '?';
-  return `${path}${separator}${SCOPE_QUERY_PARAM}=${scope}`;
-};
+// Builds two grouped lists of top-level routes for the sidebar. A route appears
+// in a section if it has at least one childView tagged with that scope. The same
+// route may appear in both sections — clicking either link goes to the same
+// page; data filtering is the server's job.
+export const buildSectionsFromRoutes = routes => ({
+  allProjectsRoutes: routes.filter(route => hasAnyChildInScope(route, ALL_PROJECTS_SCOPE)),
+  singleProjectRoutes: routes.filter(route => hasAnyChildInScope(route, SINGLE_PROJECT_SCOPE)),
+});
