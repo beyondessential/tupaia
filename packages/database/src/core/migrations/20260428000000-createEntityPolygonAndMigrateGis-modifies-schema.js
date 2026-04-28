@@ -39,22 +39,30 @@ exports.up = async function (db) {
   await db.runSql(`CREATE INDEX entity_entity_polygon_id_idx ON entity(entity_polygon_id);`);
 
   const entitiesWithGis = await db.runSql(
-    `SELECT id, name, code FROM entity WHERE region IS NOT NULL;`,
+    `SELECT id FROM entity WHERE region IS NOT NULL;`,
   );
 
-  for (const entity of entitiesWithGis.rows) {
-    const polygonId = generateId();
-    await db.runSql(
-      `
-        INSERT INTO entity_polygon (id, polygon, name, code)
-        SELECT $1, region, $2, $3 FROM entity WHERE id = $4;
-      `,
-      [polygonId, entity.name, entity.code, entity.id],
-    );
-    await db.runSql(`UPDATE entity SET entity_polygon_id = $1 WHERE id = $2;`, [
-      polygonId,
-      entity.id,
-    ]);
+  if (entitiesWithGis.rows.length > 0) {
+    // Generate polygon IDs in JS upfront to keep ObjectID format consistent
+    // with generateId(), then apply both inserts and the FK update as bulk SQL
+    // (two round-trips total instead of one per entity).
+    const valuesList = entitiesWithGis.rows
+      .map(({ id }) => `('${id}','${generateId()}')`)
+      .join(',');
+
+    await db.runSql(`
+      INSERT INTO entity_polygon (id, polygon, name, code)
+      SELECT m.polygon_id, e.region, e.name, e.code
+      FROM entity e
+      JOIN (VALUES ${valuesList}) AS m(entity_id, polygon_id) ON e.id = m.entity_id;
+    `);
+
+    await db.runSql(`
+      UPDATE entity
+      SET entity_polygon_id = m.polygon_id
+      FROM (VALUES ${valuesList}) AS m(entity_id, polygon_id)
+      WHERE entity.id = m.entity_id;
+    `);
   }
 
   await db.runSql(`ALTER TABLE entity DROP COLUMN region;`);
