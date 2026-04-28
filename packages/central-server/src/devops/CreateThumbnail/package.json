@@ -13,12 +13,13 @@
   "scripts": {
     "package-for-lambda": "rm -f CreateThumbnail.zip && zip -r CreateThumbnail.zip ./ && echo \"Uploading to AWS...\" && aws lambda update-function-code --function-name CreateThumbnail --zip-file fileb://CreateThumbnail.zip",
     "test": "echo \"No tests specified\" && exit 0",
-    "test-lambda": "lambda-local -l CreateThumbnail.js -h handler -e ./testEvent.json -t 20"
+    "test-lambda": "lambda-local -l CreateThumbnail.mjs -h handler -e ./testEvent.json -t 20"
   },
   "dependencies": {
-    "async": "^2.5.0",
-    "file-type": "^7.2.0",
-    "jimp": "^0.2.28",
-    "png-to-jpeg": "^1.0.1"
+    "aws-sdk": "^2.1693.0",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "lambda-local": "^2.2.0"
   }
 }
