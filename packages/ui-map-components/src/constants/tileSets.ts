@@ -12,7 +12,7 @@ export const DEFAULT_TILESETS = {
       'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/satellite-tile-thumbnail.png',
     url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${encodeURIComponent(process.env.REACT_APP_MAPBOX_TOKEN ?? '')}`,
   },
-};
+} as const;
 
 /** Utility function to determine whether tileSet should default to satellite
  * or to osm, based on page load time. This will only run when determining the
