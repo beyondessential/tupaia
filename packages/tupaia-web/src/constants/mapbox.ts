@@ -3,7 +3,7 @@ const makeMapboxStyleUrl = ({
   accessKey = import.meta.env.REACT_APP_MAPBOX_TOKEN,
   username = 'sussol',
 }) =>
-  `https://api.mapbox.com/styles/v1/${username}/${styleId}/tiles/256/{z}/{x}/{y}@2x?access_token=${accessKey}`;
+  `https://api.mapbox.com/styles/v1/${encodeURIComponent(username)}/${encodeURIComponent(styleId)}/tiles/256/{z}/{x}/{y}@2x?access_token=${encodeURIComponent(accessKey)}`;
 
 const urls = {
   waterways: makeMapboxStyleUrl({ styleId: 'ckglkjbtq02t919nytx6yaopk' }),
