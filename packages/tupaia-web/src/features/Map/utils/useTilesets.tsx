@@ -1,6 +1,6 @@
 import type { TileSet } from '@tupaia/ui-map-components';
 import { DEFAULT_TILESETS, getAutoTileSet } from '@tupaia/ui-map-components';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useProject } from '../../../api/queries';
 import { CUSTOM_TILE_SETS } from '../../../constants';
@@ -25,10 +25,13 @@ export const useTilesets = () => {
 
   useGAEffect('Map', 'Change Tile Set', activeTileSet?.label);
 
-  const onTileSetChange = (tileSetKey: string) => {
-    const newActiveTileSet = availableTileSets.find(({ key }) => key === tileSetKey);
-    setActiveTileSet(newActiveTileSet);
-  };
+  const onTileSetChange = useCallback(
+    (tileSetKey: string) => {
+      const newActiveTileSet = availableTileSets.find(({ key }) => key === tileSetKey);
+      setActiveTileSet(newActiveTileSet);
+    },
+    [availableTileSets],
+  );
 
   useEffect(() => {
     if (
@@ -38,7 +41,7 @@ export const useTilesets = () => {
     ) {
       setActiveTileSet(initialTileSet);
     }
-  }, [availableTileSets]);
+  }, [activeTileSet, availableTileSets, initialTileSet]);
 
   return {
     availableTileSets,
