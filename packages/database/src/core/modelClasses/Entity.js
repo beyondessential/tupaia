@@ -16,6 +16,7 @@ import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
+import { generateId } from '../utilities';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -196,6 +197,11 @@ export class EntityRecord extends DatabaseRecord {
     return this.model.findOne({ code: this.country_code });
   }
 
+  async getEntityPolygon() {
+    if (!this.entity_polygon_id) return null;
+    return this.otherModels.entityPolygon.findById(this.entity_polygon_id);
+  }
+
   getBounds() {
     return translateBounds(this.bounds);
   }
@@ -204,8 +210,9 @@ export class EntityRecord extends DatabaseRecord {
     return translatePoint(this.point);
   }
 
-  getRegion() {
-    return translateRegion(this.region);
+  async getPolygon() {
+    const polygon = await this.getEntityPolygon();
+    return polygon ? translateRegion(polygon.polygon) : null;
   }
 
   /** @returns {Promise<EntityRecord | undefined>} */
@@ -404,7 +411,7 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   async pointLatLon() {
-    const { point, region } = this;
+    const { point } = this;
     if (point) {
       const pointJson = JSON.parse(point);
       return {
@@ -412,13 +419,14 @@ export class EntityRecord extends DatabaseRecord {
         lon: pointJson.coordinates[0],
       };
     }
-    if (!region) return null;
+    if (!this.entity_polygon_id) return null;
 
-    // calculate the centroid of the region
+    // calculate the centroid of the polygon
     const result = await this.database.executeSql(
-      `SELECT ST_AsGeoJSON(ST_Centroid(ST_AsGeoJSON(region))) as centroid from entity where id = ?;`,
-      [this.id],
+      `SELECT ST_AsGeoJSON(ST_Centroid(polygon)) AS centroid FROM entity_polygon WHERE id = ?;`,
+      [this.entity_polygon_id],
     );
+    if (!result[0]?.centroid) return null;
     const parsedPoint = JSON.parse(result[0].centroid);
     return {
       lat: parsedPoint.coordinates[1],
@@ -431,7 +439,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get excludedFieldsFromSync() {
-    return ['point', 'bounds', 'region', 'parent_id'];
+    return ['point', 'bounds', 'parent_id'];
   }
 
   get DatabaseRecordClass() {
@@ -448,7 +456,6 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   customColumnSelectors = {
-    region: fieldName => `ST_AsGeoJSON(${fieldName})`,
     point: fieldName => `ST_AsGeoJSON(${fieldName})`,
     bounds: fieldName => `ST_AsGeoJSON(${fieldName})`,
   };
@@ -515,26 +522,41 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {Entity['code']} code
    * @param {string} geojson
    */
-  async updateRegionCoordinates(code, geojson) {
-    const shouldSetBounds =
-      (
-        await this.find({
-          code,
-          bounds: null,
-        })
-      ).length > 0;
-    const boundsString = shouldSetBounds
-      ? ', "bounds" =  ST_Envelope(ST_GeomFromGeoJSON(?)::geometry)'
-      : '';
+  async updatePolygonCoordinates(code, geojson) {
+    const entity = await this.findOne({ code });
+    if (!entity) return;
 
-    return this.database.executeSql(
-      `
-          UPDATE "entity"
-          SET "region" = ST_GeomFromGeoJSON(?) ${boundsString}
-          WHERE "code" = ?;
-        `,
-      shouldSetBounds ? [geojson, geojson, code] : [geojson, code],
+    const shouldSetBounds = !entity.bounds;
+
+    if (!entity.entity_polygon_id) {
+      const polygonId = generateId();
+      await this.database.executeSql(
+        `
+            INSERT INTO entity_polygon (id, polygon, name, code)
+            VALUES (?, ST_GeomFromGeoJSON(?), ?, ?);
+          `,
+        [polygonId, geojson, entity.name, entity.code],
+      );
+      await this.database.executeSql(
+        shouldSetBounds
+          ? `UPDATE entity SET entity_polygon_id = ?, bounds = ST_Envelope(ST_GeomFromGeoJSON(?)::geometry) WHERE id = ?;`
+          : `UPDATE entity SET entity_polygon_id = ? WHERE id = ?;`,
+        shouldSetBounds ? [polygonId, geojson, entity.id] : [polygonId, entity.id],
+      );
+      return;
+    }
+
+    await this.database.executeSql(
+      `UPDATE entity_polygon SET polygon = ST_GeomFromGeoJSON(?) WHERE id = ?;`,
+      [geojson, entity.entity_polygon_id],
     );
+
+    if (shouldSetBounds) {
+      await this.database.executeSql(
+        `UPDATE entity SET bounds = ST_Envelope(ST_GeomFromGeoJSON(?)::geometry) WHERE id = ?;`,
+        [geojson, entity.id],
+      );
+    }
   }
 
   /**
