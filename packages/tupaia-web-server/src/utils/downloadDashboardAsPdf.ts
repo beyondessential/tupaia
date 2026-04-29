@@ -18,7 +18,7 @@ export const downloadDashboardAsPdf = async (
   },
 ): Promise<Uint8Array> => {
   const endpoint = `${projectCode}/${entityCode}/${dashboardName}/dashboard-pdf-export`;
-  const pdfPageUrl = stringifyQuery(baseUrl, endpoint, {
+  const pageUrl = stringifyQuery(baseUrl, endpoint, {
     selectedDashboardItems: selectedDashboardItems?.join(','),
     settings: JSON.stringify(settings),
   });
@@ -26,7 +26,7 @@ export const downloadDashboardAsPdf = async (
   return await downloadPageAsPdf({
     cookieDomain,
     includePageNumber: true,
-    pdfPageUrl,
+    pageUrl,
     userCookie: cookie,
   });
 };

@@ -27,20 +27,23 @@ describe('Reset Password', () => {
 
   const headers = { authorization: getAuthorizationHeader() };
 
+  let userId;
+
+  before(async () => {
+    const userResponse = await app.post('user', {
+      headers,
+      body: {
+        emailAddress,
+        ...dummyFields,
+      },
+    });
+    userId = userResponse.body.userId;
+    expect(userId).to.exist;
+    await models.user.updateById(userId, { verified_email: VERIFIED });
+  });
+
   describe('Reset password using One Time Login', () => {
     it('should be able to reset a password, end-to-end using one-time login from email', async () => {
-      const userResponse = await app.post('user', {
-        headers,
-        body: {
-          emailAddress,
-          ...dummyFields,
-        },
-      });
-      const { userId } = userResponse.body;
-      expect(userId).to.exist;
-
-      await models.user.updateById(userId, { verified_email: VERIFIED });
-
       const result = await app.post('auth/resetPassword', {
         headers,
         body: {
@@ -107,6 +110,26 @@ describe('Reset Password', () => {
       });
 
       expect(passwordAuthResponse.status).to.equal(200);
+    });
+
+    it('should find user with different case email', async () => {
+      const result = await app.post('auth/resetPassword', {
+        headers,
+        body: {
+          emailAddress: emailAddress.toUpperCase(),
+        },
+      });
+      expect(result.body.success).to.equal(true);
+    });
+
+    it('should find user when email has leading/trailing whitespace', async () => {
+      const result = await app.post('auth/resetPassword', {
+        headers,
+        body: {
+          emailAddress: `  ${emailAddress}  `,
+        },
+      });
+      expect(result.body.success).to.equal(true);
     });
   });
 });

@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import RightIcon from '@material-ui/icons/KeyboardArrowRight';
+import React from 'react';
+import styled from 'styled-components';
 import { TileSet } from './TileButton';
 
 const StyledButton = styled(Button)<{
@@ -17,7 +17,8 @@ const StyledButton = styled(Button)<{
   margin-top: 0.6rem;
   margin-bottom: 1rem;
   border-radius: 3px;
-  padding: 0.3125rem 0.9rem 0.3125rem 0.3125rem;
+  padding-block: 0.3125rem;
+  padding-inline: 0.3125rem 0.9rem;
   font-weight: 500;
   font-size: 0.75rem;
   line-height: 0.85rem;
@@ -42,18 +43,13 @@ const StyledButton = styled(Button)<{
       theme.palette.type === 'light' ? 'white' : 'rgba(43, 45, 56, 0.7)'};
     color: ${({ theme }) =>
       theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
-
-    .MuiSvgIcon-root {
-      color: ${({ theme }) =>
-        theme.palette.type === 'light' ? theme.palette.primary.main : 'white'};
-    }
   }
 `;
 
 const Label = styled.span`
-  width: 4.65rem;
-  text-align: left;
   letter-spacing: 0;
+  text-align: start;
+  width: 4.65rem;
 `;
 
 const Divider = styled.span`
@@ -95,7 +91,7 @@ export const TileControl = React.memo(
   ({ tileSet, isActive = false, ...props }: TileControlProps) => (
     <StyledButton variant="contained" active={isActive.toString()} {...props}>
       <Box display="flex" alignItems="center">
-        <img src={tileSet.thumbnail} alt="tile" />
+        <img crossOrigin="" src={tileSet.thumbnail} alt="tile" />
         <Label>{tileSet.label}</Label>
         <Divider />
         <RightIcon />

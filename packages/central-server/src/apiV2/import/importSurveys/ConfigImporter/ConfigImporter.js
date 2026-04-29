@@ -62,7 +62,7 @@ export class ConfigImporter {
   process = async (config, questionType) => {
     switch (questionType) {
       case CODE_GENERATOR: {
-        const codeGeneratorConfig = processCodeGeneratorConfig(config);
+        const codeGeneratorConfig = await processCodeGeneratorConfig(this.models, config);
         return { codeGenerator: codeGeneratorConfig };
       }
       case ARITHMETIC: {
