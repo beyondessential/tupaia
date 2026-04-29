@@ -1,6 +1,6 @@
 import { clearTestData, getTestModels, findOrCreateDummyRecord } from '@tupaia/database';
-import { FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
 import { SYNC_SESSION_DIRECTION, SyncSnapshotAttributes } from '@tupaia/sync';
+import { SyncFact } from '@tupaia/constants';
 
 import { CentralSyncManager } from '../sync';
 import { waitForPushComplete, waitForSession } from '../testUtilities/waitForSync';
@@ -14,8 +14,8 @@ describe('CentralSyncManager.push', () => {
   });
 
   beforeEach(async () => {
-    await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
-    await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
     await models.syncLookup.delete({});
     await models.syncDeviceTick.delete({});
     await models.syncSession.delete({});

@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
 
 import { clearTestData, getTestModels } from '@tupaia/database';
-import { FACT_CURRENT_SYNC_TICK, FACT_LOOKUP_UP_TO_TICK } from '@tupaia/constants';
+import { SyncFact } from '@tupaia/constants';
 
 import { CentralSyncManager } from '../sync';
 import { waitForSession } from '../testUtilities/waitForSync';
@@ -29,8 +29,8 @@ describe('CentralSyncManager.session', () => {
 
   beforeEach(async () => {
     await models.syncLookup.delete({});
-    await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
-    await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+    await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
+    await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
     await models.syncDeviceTick.delete({});
     await models.syncSession.delete({});
     await models.syncQueuedDevice.delete({});
@@ -55,7 +55,7 @@ describe('CentralSyncManager.session', () => {
 
       await waitForSession(centralSyncManager, sessionId);
 
-      const currentSyncTick = await models.localSystemFact.get(FACT_CURRENT_SYNC_TICK);
+      const currentSyncTick = await models.localSystemFact.get(SyncFact.CURRENT_SYNC_TICK);
       expect(parseInt(currentSyncTick, 10)).toBe(DEFAULT_CURRENT_SYNC_TIME_VALUE + 2);
     });
 
@@ -133,8 +133,8 @@ describe('CentralSyncManager.session', () => {
     beforeEach(async () => {
       await clearTestData(models.database);
       await models.syncLookup.delete({});
-      await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
-      await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+      await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
+      await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
       await models.syncDeviceTick.delete({});
       await models.syncSession.delete({});
       await models.syncQueuedDevice.delete({});
@@ -206,8 +206,8 @@ describe('CentralSyncManager.session', () => {
     beforeEach(async () => {
       await clearTestData(models.database);
       await models.syncLookup.delete({});
-      await models.localSystemFact.set(FACT_CURRENT_SYNC_TICK, 4);
-      await models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, -1);
+      await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
+      await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
       await models.syncDeviceTick.delete({});
       await models.syncSession.delete({});
       await models.syncQueuedDevice.delete({});
