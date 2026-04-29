@@ -24,7 +24,7 @@
     "health-check": "ts-node src/index.ts health-check"
   },
   "dependencies": {
-    "@slack/web-api": "^7.0.3",
+    "@slack/web-api": "^7.15.1",
     "@tupaia/api-client": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/types": "workspace:*",
