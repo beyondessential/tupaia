@@ -34,7 +34,7 @@ const TILE_SETS = [
     label: 'Satellite',
     thumbnail:
       'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/satellite-tile-thumbnail.png',
-    url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`,
+    url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${encodeURIComponent(MAPBOX_TOKEN)}`,
   },
 ];
 

@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import RightIcon from '@material-ui/icons/KeyboardArrowRight';
 import React from 'react';
 import styled from 'styled-components';
-import { TileSet } from './TileButton';
+import type { TileSet } from '../../types';
 
 const StyledButton = styled(Button)<{
   active: string;

@@ -1,8 +1,10 @@
+import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
 import { ReactNode } from 'react';
 import { CircleMarkerProps, PolygonProps } from 'react-leaflet';
-import { LatLngExpression, LatLngBoundsExpression } from 'leaflet';
-import { Entity as TupaiaEntity, CssColor, IconKey, InlineValue } from '@tupaia/types';
+
+import { CssColor, IconKey, InlineValue, ReferenceProps, Entity as TupaiaEntity } from '@tupaia/types';
 import { BREWER_PALETTE } from '../constants';
+import { SeriesValue } from './series';
 
 export type ColorKey = keyof typeof BREWER_PALETTE;
 export type Color = ColorKey | 'transparent' | CssColor;
@@ -49,5 +51,14 @@ export type MeasureData = Omit<PolygonProps, 'positions'> &
     value?: number | string;
     positions?: PolygonProps['positions']; //allow this to be optional because of the loose types of measure data
   };
+
+export interface TileSet {
+  key: string;
+  label: string;
+  thumbnail: string;
+  reference?: ReferenceProps;
+  legendItems?: SeriesValue[];
+  url: string;
+}
 
 export type Value = InlineValue['value'];
