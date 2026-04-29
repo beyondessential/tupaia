@@ -10,18 +10,18 @@ class EntityRecord extends CommonEntityRecord {
     return pascal(this.type); // sub_district -> SubDistrict
   }
 
-  translateForFrontend() {
+  async translateForFrontend() {
     return {
       type: pascal(this.type),
       organisationUnitCode: this.code,
       countryCode: this.country_code,
       name: this.name,
-      location: this.translateLocationForFrontend(),
+      location: await this.translateLocationForFrontend(),
       photoUrl: this.image_url,
     };
   }
 
-  translateLocationForFrontend() {
+  async translateLocationForFrontend() {
     const { point, entity_polygon_id } = this;
 
     const type = (() => {
@@ -38,7 +38,7 @@ class EntityRecord extends CommonEntityRecord {
       bounds: this.entitiesWithAccess
         ? calculateOuterBounds(this.entitiesWithAccess.map(entity => entity.bounds))
         : this.getBounds(),
-      region: this.getPolygon(),
+      region: await this.getPolygon(),
     };
   }
 }

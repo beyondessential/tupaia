@@ -197,6 +197,11 @@ export class EntityRecord extends DatabaseRecord {
     return this.model.findOne({ code: this.country_code });
   }
 
+  async getEntityPolygon() {
+    if (!this.entity_polygon_id) return null;
+    return this.otherModels.entityPolygon.findById(this.entity_polygon_id);
+  }
+
   getBounds() {
     return translateBounds(this.bounds);
   }
@@ -205,8 +210,9 @@ export class EntityRecord extends DatabaseRecord {
     return translatePoint(this.point);
   }
 
-  getPolygon() {
-    return translateRegion(this.polygon);
+  async getPolygon() {
+    const entityPolygon = await this.getEntityPolygon();
+    return entityPolygon ? translateRegion(entityPolygon.polygon) : null;
   }
 
   /** @returns {Promise<EntityRecord | undefined>} */
@@ -452,10 +458,6 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   customColumnSelectors = {
     point: fieldName => `ST_AsGeoJSON(${fieldName})`,
     bounds: fieldName => `ST_AsGeoJSON(${fieldName})`,
-    // Virtual column: pulls the linked polygon GeoJSON via a correlated subquery
-    // so callers can read entity.polygon without an extra round-trip per entity.
-    polygon: () =>
-      `(SELECT ST_AsGeoJSON(entity_polygon.polygon) FROM entity_polygon WHERE entity_polygon.id = entity.entity_polygon_id)`,
   };
 
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
