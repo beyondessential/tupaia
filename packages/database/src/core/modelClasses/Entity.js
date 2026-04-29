@@ -16,7 +16,6 @@ import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
-import { generateId } from '../utilities';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -547,13 +546,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           [geojson, entity.entity_polygon_id],
         );
       } else {
-        const polygonId = generateId();
-        await transactingDatabase.executeSql(
+        const [{ id: polygonId }] = await transactingDatabase.executeSql(
           `
-            INSERT INTO entity_polygon (id, polygon, name, code, data_source)
-            VALUES (?, ST_GeomFromGeoJSON(?), ?, ?, ?);
+            INSERT INTO entity_polygon (polygon, name, code, data_source)
+            VALUES (ST_GeomFromGeoJSON(?), ?, ?, ?)
+            RETURNING id;
           `,
-          [polygonId, geojson, entity.name, code, dataSource],
+          [geojson, entity.name, code, dataSource],
         );
         await transactingDatabase.executeSql(
           `UPDATE entity SET entity_polygon_id = ? WHERE id = ?;`,
