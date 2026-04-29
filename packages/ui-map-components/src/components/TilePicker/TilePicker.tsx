@@ -30,20 +30,12 @@ const TileList = styled.ul.attrs({ role: 'list' })`
 
   ${createScaleKeyFrameAnimation({})};
 
-  > button {
-    transition: transform 0.5s ease-out;
-  }
-
   // animations
   &.expanded {
     width: 12rem;
     animation-name: openAnimation;
     animation-duration: 0.4s;
     animation-timing-function: linear;
-
-    > button {
-      transform: translate(0, 0);
-    }
   }
 
   &.closed {
@@ -52,10 +44,6 @@ const TileList = styled.ul.attrs({ role: 'list' })`
     transform: scale(0, 0);
     animation-duration: 0.6s;
     animation-timing-function: linear;
-
-    > button {
-      transform: translate(0.6rem, 6.25rem);
-    }
   }
 `;
 
