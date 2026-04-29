@@ -98,7 +98,7 @@ async function addCoordinatesToEntity(
   // faster if repeated, and b) it allows us to manually tweak the geojson, get it from a
   // different source, or compress it by reducing the number of nodes
   const geojson = JSON.parse(readFileSync(filePath));
-  return transactingModels.entity.updateRegionCoordinates(code, geojson);
+  return transactingModels.entity.updatePolygonCoordinates(code, geojson, 'openstreetmap');
 }
 
 // Go through country and all district/subdistricts, and if any are missing coordinates,
@@ -109,13 +109,13 @@ export async function populateCoordinatesForCountry(transactingModels, countryCo
   const entitiesWithoutCoordinates = await transactingModels.entity.find({
     country_code: countryCode,
     type: [transactingModels.entity.types.DISTRICT, transactingModels.entity.types.SUB_DISTRICT],
-    region: null, // Only bother with entities that don't already have their region coordinates set
+    entity_polygon_id: null, // Only bother with entities that don't already have their polygon coordinates set
   });
   for (const { name, code, metadata } of entitiesWithoutCoordinates) {
     const openStreetMapsId = get(metadata, 'openStreetMaps.id');
     await addCoordinatesToEntity(transactingModels, countryName, name, code, openStreetMapsId);
   }
-  if (!countryEntity.region) {
+  if (!countryEntity.entity_polygon_id) {
     await addCoordinatesToEntity(transactingModels, countryName, countryName, countryEntity.code);
   }
 }

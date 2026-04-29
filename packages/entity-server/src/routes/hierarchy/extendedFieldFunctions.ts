@@ -26,7 +26,7 @@ const getChildrenCodes = async (
 };
 
 const getLocationType = (entity: EntityRecord) => {
-  if (entity.region) return 'area';
+  if (entity.entity_polygon_id) return 'area';
   if (entity.point) return 'point';
   return 'no-coordinates';
 };
@@ -46,7 +46,7 @@ const getPoint = (entity: EntityRecord) => {
 };
 
 const getRegion = (entity: EntityRecord) => {
-  return entity.getRegion();
+  return entity.getPolygon();
 };
 
 const getBounds = async (

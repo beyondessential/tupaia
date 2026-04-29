@@ -19,6 +19,7 @@ import { DataTableModel } from './DataTable';
 import { DebugLogModel } from './DebugLog';
 import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
+import { EntityPolygonModel } from './EntityPolygon';
 import { EntityRelationModel } from './EntityRelation';
 import { ExternalDatabaseConnectionModel } from './ExternalDatabaseConnection';
 import { FacilityModel } from './Facility';
@@ -91,6 +92,7 @@ export const modelClasses = {
   DhisInstance: DhisInstanceModel,
   Entity: EntityModel,
   EntityHierarchy: EntityHierarchyModel,
+  EntityPolygon: EntityPolygonModel,
   EntityRelation: EntityRelationModel,
   ExternalDatabaseConnection: ExternalDatabaseConnectionModel,
   Facility: FacilityModel,
@@ -157,6 +159,7 @@ export { DataTableModel, DataTableRecord } from './DataTable';
 export { DebugLogModel, DebugLogRecord } from './DebugLog';
 export { EntityModel, EntityRecord } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyRecord } from './EntityHierarchy';
+export { EntityPolygonModel, EntityPolygonRecord } from './EntityPolygon';
 export { EntityRelationModel, EntityRelationRecord } from './EntityRelation';
 export {
   ExternalDatabaseConnectionModel,
