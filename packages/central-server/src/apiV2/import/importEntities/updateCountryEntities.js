@@ -191,7 +191,7 @@ export async function updateCountryEntities(
           : geojson;
 
       try {
-        await transactingModels.entity.updatePolygonCoordinates(code, translatedGeojson);
+        await transactingModels.entity.updatePolygonCoordinates(code, translatedGeojson, 'admin_import');
       } catch (error) {
         if (error.message.includes('payload string too long')) {
           const largeGeoEntities = entityObjects.filter(entityObject => {

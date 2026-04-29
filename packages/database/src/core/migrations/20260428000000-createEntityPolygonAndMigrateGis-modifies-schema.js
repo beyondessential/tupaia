@@ -21,13 +21,20 @@ exports.up = async function (db) {
       polygon      geography(MultiPolygon,4326) NOT NULL,
       name         TEXT NOT NULL,
       code         TEXT,
-      data_source  TEXT,
+      data_source  TEXT NOT NULL,
       created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
       updated_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
     );
   `);
 
   await db.runSql(`CREATE INDEX entity_polygon_code_idx ON entity_polygon(code);`);
+
+  // code is non-unique on its own (e.g. Laos and PNG enumerated areas may both
+  // use "101"), but a (code, data_source) pair must be unique.
+  await db.runSql(`
+    CREATE UNIQUE INDEX entity_polygon_code_data_source_idx
+      ON entity_polygon(code, data_source);
+  `);
 
   await db.runSql(`
     ALTER TABLE entity ADD COLUMN entity_polygon_id TEXT
@@ -42,8 +49,8 @@ exports.up = async function (db) {
   // server-side: no JS materialisation of ID maps, no large VALUES clause,
   // bounded memory regardless of dataset size.
   await db.runSql(`
-    INSERT INTO entity_polygon (id, polygon, name, code)
-    SELECT id, region, name, code
+    INSERT INTO entity_polygon (id, polygon, name, code, data_source)
+    SELECT id, region, name, code, 'legacy'
     FROM entity
     WHERE region IS NOT NULL;
   `);

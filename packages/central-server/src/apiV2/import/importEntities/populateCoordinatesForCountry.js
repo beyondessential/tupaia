@@ -98,7 +98,7 @@ async function addCoordinatesToEntity(
   // faster if repeated, and b) it allows us to manually tweak the geojson, get it from a
   // different source, or compress it by reducing the number of nodes
   const geojson = JSON.parse(readFileSync(filePath));
-  return transactingModels.entity.updatePolygonCoordinates(code, geojson);
+  return transactingModels.entity.updatePolygonCoordinates(code, geojson, 'openstreetmap');
 }
 
 // Go through country and all district/subdistricts, and if any are missing coordinates,

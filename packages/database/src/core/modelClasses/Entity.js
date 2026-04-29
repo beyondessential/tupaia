@@ -519,8 +519,15 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   /**
    * @param {Entity['code']} code
    * @param {string} geojson
+   * @param {string} dataSource Source identifier for the polygon (e.g. 'openstreetmap',
+   *   'admin_import'). Required because (code, data_source) is the natural key on
+   *   entity_polygon — distinct sources can share a code but the same source can't
+   *   reuse one.
    */
-  async updatePolygonCoordinates(code, geojson) {
+  async updatePolygonCoordinates(code, geojson, dataSource) {
+    if (!dataSource) {
+      throw new Error('updatePolygonCoordinates requires a dataSource');
+    }
     return this.database.wrapInTransaction(async transactingDatabase => {
       // FOR UPDATE serializes concurrent callers so we don't create orphan
       // entity_polygon rows when two updates race for the same entity.
@@ -541,10 +548,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         const polygonId = generateId();
         await transactingDatabase.executeSql(
           `
-            INSERT INTO entity_polygon (id, polygon, name, code)
-            VALUES (?, ST_GeomFromGeoJSON(?), ?, ?);
+            INSERT INTO entity_polygon (id, polygon, name, code, data_source)
+            VALUES (?, ST_GeomFromGeoJSON(?), ?, ?, ?);
           `,
-          [polygonId, geojson, entity.name, code],
+          [polygonId, geojson, entity.name, code, dataSource],
         );
         await transactingDatabase.executeSql(
           `UPDATE entity SET entity_polygon_id = ? WHERE id = ?;`,
