@@ -78641,6 +78641,9 @@ export const EntitySchema = {
 		"country_code": {
 			"type": "string"
 		},
+		"entity_polygon_id": {
+			"type": "string"
+		},
 		"id": {
 			"type": "string"
 		},
@@ -78696,9 +78699,6 @@ export const EntitySchema = {
 			"type": "string"
 		},
 		"point": {
-			"type": "string"
-		},
-		"region": {
 			"type": "string"
 		},
 		"type": {
@@ -78825,6 +78825,9 @@ export const EntityCreateSchema = {
 		"country_code": {
 			"type": "string"
 		},
+		"entity_polygon_id": {
+			"type": "string"
+		},
 		"image_url": {
 			"type": "string"
 		},
@@ -78877,9 +78880,6 @@ export const EntityCreateSchema = {
 			"type": "string"
 		},
 		"point": {
-			"type": "string"
-		},
-		"region": {
 			"type": "string"
 		},
 		"type": {
@@ -78999,6 +78999,9 @@ export const EntityUpdateSchema = {
 		"country_code": {
 			"type": "string"
 		},
+		"entity_polygon_id": {
+			"type": "string"
+		},
 		"id": {
 			"type": "string"
 		},
@@ -79054,9 +79057,6 @@ export const EntityUpdateSchema = {
 			"type": "string"
 		},
 		"point": {
-			"type": "string"
-		},
-		"region": {
 			"type": "string"
 		},
 		"type": {
@@ -79274,6 +79274,103 @@ export const EntityParentChildRelationUpdateSchema = {
 		},
 		"parent_id": {
 			"type": "string"
+		}
+	},
+	"additionalProperties": false
+}
+export const EntityPolygonSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_source": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"polygon": {
+			"type": "string"
+		},
+		"updated_at": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"created_at",
+		"data_source",
+		"id",
+		"name",
+		"polygon",
+		"updated_at"
+	]
+}
+export const EntityPolygonCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_source": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"polygon": {
+			"type": "string"
+		},
+		"updated_at": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"data_source",
+		"name",
+		"polygon"
+	]
+}
+export const EntityPolygonUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"data_source": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"polygon": {
+			"type": "string"
+		},
+		"updated_at": {
+			"type": "string",
+			"format": "date-time"
 		}
 	},
 	"additionalProperties": false
@@ -101934,6 +102031,9 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"country_code": {
 						"type": "string"
 					},
+					"entity_polygon_id": {
+						"type": "string"
+					},
 					"id": {
 						"type": "string"
 					},
@@ -101989,9 +102089,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"point": {
-						"type": "string"
-					},
-					"region": {
 						"type": "string"
 					},
 					"type": {
@@ -102960,6 +103057,9 @@ export const EntityResponseSchema = {
 		"countryCode": {
 			"type": "string"
 		},
+		"entityPolygonId": {
+			"type": "string"
+		},
 		"id": {
 			"type": "string"
 		},
@@ -103015,9 +103115,6 @@ export const EntityResponseSchema = {
 			"type": "string"
 		},
 		"point": {
-			"type": "string"
-		},
-		"region": {
 			"type": "string"
 		},
 		"type": {
