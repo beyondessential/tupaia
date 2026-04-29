@@ -528,7 +528,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         `SELECT id, entity_polygon_id, name FROM entity WHERE code = ? FOR UPDATE;`,
         [code],
       );
-      if (!entity) return;
+      if (!entity) {
+        throw new Error(`No entity found with code: ${code}`);
+      }
 
       if (entity.entity_polygon_id) {
         await transactingDatabase.executeSql(

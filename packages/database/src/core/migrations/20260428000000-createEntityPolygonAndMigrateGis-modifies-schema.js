@@ -1,7 +1,5 @@
 'use strict';
 
-import { generateId } from '../utilities';
-
 var dbm;
 var type;
 var seed;
@@ -38,32 +36,21 @@ exports.up = async function (db) {
 
   await db.runSql(`CREATE INDEX entity_entity_polygon_id_idx ON entity(entity_polygon_id);`);
 
-  const entitiesWithGis = await db.runSql(
-    `SELECT id FROM entity WHERE region IS NOT NULL;`,
-  );
+  // Re-use entity.id as the new polygon row's id. The codebase generates IDs
+  // with `generateId()` (24-char hex ObjectID format) so entity.id is already
+  // in the right format and is unique. This keeps the migration entirely
+  // server-side: no JS materialisation of ID maps, no large VALUES clause,
+  // bounded memory regardless of dataset size.
+  await db.runSql(`
+    INSERT INTO entity_polygon (id, polygon, name, code)
+    SELECT id, region, name, code
+    FROM entity
+    WHERE region IS NOT NULL;
+  `);
 
-  if (entitiesWithGis.rows.length > 0) {
-    // Generate polygon IDs in JS upfront to keep ObjectID format consistent
-    // with generateId(), then apply both inserts and the FK update as bulk SQL
-    // (two round-trips total instead of one per entity).
-    const valuesList = entitiesWithGis.rows
-      .map(({ id }) => `('${id}','${generateId()}')`)
-      .join(',');
-
-    await db.runSql(`
-      INSERT INTO entity_polygon (id, polygon, name, code)
-      SELECT m.polygon_id, e.region, e.name, e.code
-      FROM entity e
-      JOIN (VALUES ${valuesList}) AS m(entity_id, polygon_id) ON e.id = m.entity_id;
-    `);
-
-    await db.runSql(`
-      UPDATE entity
-      SET entity_polygon_id = m.polygon_id
-      FROM (VALUES ${valuesList}) AS m(entity_id, polygon_id)
-      WHERE entity.id = m.entity_id;
-    `);
-  }
+  await db.runSql(`
+    UPDATE entity SET entity_polygon_id = id WHERE region IS NOT NULL;
+  `);
 
   await db.runSql(`ALTER TABLE entity DROP COLUMN region;`);
 };
