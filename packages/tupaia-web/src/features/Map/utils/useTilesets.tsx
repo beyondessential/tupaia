@@ -37,7 +37,7 @@ export const useTilesets = (): {
       const newActiveTileSet = availableTileSets.find(({ key }) => key === tileSetKey);
       setActiveTileSet(newActiveTileSet ?? initialTileSet);
     },
-    [availableTileSets],
+    [availableTileSets, initialTileSet],
   );
 
   useEffect(() => {
