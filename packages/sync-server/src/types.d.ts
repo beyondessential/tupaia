@@ -125,6 +125,7 @@ export interface TestSyncServerModelRegistry extends ModelRegistry {
   readonly surveyScreenComponent: SurveyScreenComponentModel;
   readonly question: QuestionModel;
   readonly surveyResponse: SurveyResponseModel;
+  readonly surveyResponseDraft: SurveyResponseDraftModel;
   readonly answer: AnswerModel;
   readonly task: TaskModel;
   readonly taskComment: TaskCommentModel;

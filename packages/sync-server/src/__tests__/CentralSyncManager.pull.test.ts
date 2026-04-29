@@ -95,6 +95,11 @@ describe('CentralSyncManager.pull', () => {
       await models.syncSession.delete({});
       await models.syncQueuedDevice.delete({});
 
+      await models.user.delete({});
+      await models.country.delete({});
+      await models.entityHierarchy.delete({});
+      await models.project.delete({});
+
       jest.resetModules();
       jest.clearAllMocks();
     });

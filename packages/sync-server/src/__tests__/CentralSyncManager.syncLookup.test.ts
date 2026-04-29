@@ -95,6 +95,16 @@ describe('Sync Lookup data', () => {
       project_id: project.id,
       survey_group_id: surveyGroup.id,
     });
+      
+    await findOrCreateDummyRecord(models.surveyResponseDraft, {
+      survey_id: survey.id,
+      user_id: userAccount.id,
+      country_code: 'test_country',
+      entity_id: entity1.id,
+      start_time: new Date(),
+      form_data: {},
+      screen_number: 1,
+    });
 
     surveyResponse = await findOrCreateDummyRecord(models.surveyResponse, {
       survey_id: survey.id,
