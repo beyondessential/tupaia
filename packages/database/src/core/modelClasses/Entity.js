@@ -1,11 +1,11 @@
 /**
  * @typedef {import('@tupaia/types').Entity} Entity
  * @typedef {import('@tupaia/types').EntityHierarchy} EntityHierarchy
+ * @typedef {import('@tupaia/types').EntityPolygon} EntityPolygon
  * @typedef {import('@tupaia/types').Project} Project
  */
 
 import { uniqBy } from 'es-toolkit';
-
 import { SyncDirections } from '@tupaia/constants';
 import { assertIsNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
@@ -196,9 +196,10 @@ export class EntityRecord extends DatabaseRecord {
     return this.model.findOne({ code: this.country_code });
   }
 
+  /** @returns {Promise<EntityPolygon>} */
   async getEntityPolygon() {
     if (!this.entity_polygon_id) return null;
-    return this.otherModels.entityPolygon.findById(this.entity_polygon_id);
+    return await this.otherModels.entityPolygon.findByIdOrThrow(this.entity_polygon_id);
   }
 
   getBounds() {
@@ -422,7 +423,7 @@ export class EntityRecord extends DatabaseRecord {
 
     // calculate the centroid of the polygon
     const result = await this.database.executeSql(
-      `SELECT ST_AsGeoJSON(ST_Centroid(polygon)) AS centroid FROM entity_polygon WHERE id = ?;`,
+      'SELECT ST_AsGeoJSON(ST_Centroid(polygon)) AS centroid FROM entity_polygon WHERE id = ?;',
       [this.entity_polygon_id],
     );
     if (!result[0]?.centroid) return null;
@@ -533,7 +534,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       // FOR UPDATE serializes concurrent callers so we don't create orphan
       // entity_polygon rows when two updates race for the same entity.
       const [entity] = await transactingDatabase.executeSql(
-        `SELECT id, entity_polygon_id, name FROM entity WHERE code = ? FOR UPDATE;`,
+        'SELECT id, entity_polygon_id, name FROM entity WHERE code = ? FOR UPDATE;',
         [code],
       );
       if (!entity) {
@@ -542,7 +543,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
       if (entity.entity_polygon_id) {
         await transactingDatabase.executeSql(
-          `UPDATE entity_polygon SET polygon = ST_GeomFromGeoJSON(?) WHERE id = ?;`,
+          'UPDATE entity_polygon SET polygon = ST_GeomFromGeoJSON(?) WHERE id = ?;',
           [geojson, entity.entity_polygon_id],
         );
       } else {
@@ -555,7 +556,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           [geojson, entity.name, code, dataSource],
         );
         await transactingDatabase.executeSql(
-          `UPDATE entity SET entity_polygon_id = ? WHERE id = ?;`,
+          'UPDATE entity SET entity_polygon_id = ? WHERE id = ?;',
           [polygonId, entity.id],
         );
       }
