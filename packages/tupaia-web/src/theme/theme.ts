@@ -110,6 +110,11 @@ theme.overrides = {
         height: 'auto', // Use width to set both dimensions
         width: '1em', // Sensible default, mirrors MUI Icon behaviour
       },
+      "[role='list']": {
+        listStyleType: 'none',
+        marginBlock: 0,
+        paddingInline: 0,
+      },
     },
   },
   MuiCardHeader: {

@@ -18,7 +18,7 @@ const Controls = styled.div`
   padding-right: 0.75rem;
 `;
 
-const TileList = styled.div`
+const TileList = styled.ul.attrs({ role: 'list' })`
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => (theme.palette.type === 'light' ? '#f9f9f9' : '#16161c')};
@@ -66,6 +66,8 @@ interface TilePickerProps {
   className?: string;
 }
 
+const listId = 'tile-list';
+
 export const TilePicker = ({ tileSets, activeTileSet, onChange, className }: TilePickerProps) => {
   const [open, setOpen] = useState(false);
   return (
@@ -73,19 +75,21 @@ export const TilePicker = ({ tileSets, activeTileSet, onChange, className }: Til
       <Container className={className}>
         <Controls>
           <TileControl
-            isActive={open}
+            aria-expanded={open}
+            aria-controls={listId}
             tileSet={activeTileSet}
             onClick={() => setOpen(current => !current)}
           />
         </Controls>
-        <TileList className={open ? 'expanded' : 'closed'}>
+        <TileList className={open ? 'expanded' : 'closed'} id={listId}>
           {tileSets.map(tileSet => (
-            <TileButton
-              key={tileSet.key}
-              tileSet={tileSet}
-              onChange={onChange}
-              isActive={activeTileSet.key === tileSet.key}
-            />
+            <li key={tileSet.key}>
+              <TileButton
+                aria-pressed={activeTileSet.key === tileSet.key}
+                onChange={onChange}
+                tileSet={tileSet}
+              />
+            </li>
           ))}
         </TileList>
       </Container>
