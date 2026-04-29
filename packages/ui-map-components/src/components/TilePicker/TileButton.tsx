@@ -57,13 +57,14 @@ const TileLabel = styled(Typography)`
   text-align: start;
 `;
 
-interface TileButtonProps extends React.ComponentPropsWithRef<typeof StyledButton> {
+interface TileButtonProps
+  extends Omit<React.ComponentPropsWithRef<typeof StyledButton>, 'onClick'> {
   tileSet: TileSet;
   onChange: (tileSetKey: string) => void;
 }
 
 export const TileButton = ({ tileSet, onChange, ...props }: TileButtonProps) => (
-  <StyledButton onClick={() => onChange(tileSet.key)} {...props}>
+  <StyledButton {...props} onClick={() => onChange(tileSet.key)}>
     <Thumbnail src={tileSet.thumbnail} />
     <TileLabel>
       {tileSet.label}
