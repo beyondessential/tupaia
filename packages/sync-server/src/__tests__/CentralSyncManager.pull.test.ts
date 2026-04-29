@@ -84,21 +84,10 @@ describe('CentralSyncManager.pull', () => {
 
     beforeAll(async () => {
       models = getTestModels();
-      await clearTestData(models.database);
     });
 
     beforeEach(async () => {
-      await models.localSystemFact.set(SyncFact.CURRENT_SYNC_TICK, 4);
-      await models.localSystemFact.set(SyncFact.LOOKUP_UP_TO_TICK, -1);
-      await models.syncLookup.delete({});
-      await models.syncDeviceTick.delete({});
-      await models.syncSession.delete({});
-      await models.syncQueuedDevice.delete({});
-
-      await models.user.delete({});
-      await models.country.delete({});
-      await models.project.delete({});
-      await models.entityHierarchy.delete({});
+      await clearTestData(models.database);
 
       jest.resetModules();
       jest.clearAllMocks();
