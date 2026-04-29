@@ -33,14 +33,14 @@ const TileList = styled.ul.attrs({ role: 'list' })`
   // animations
   &.expanded {
     width: 12rem;
-    animation-name: openAnimation;
+    animation-name: --open-animation;
     animation-duration: 0.4s;
     animation-timing-function: linear;
   }
 
   &.closed {
     width: 0;
-    animation-name: closeAnimation;
+    animation-name: --close-animation;
     transform: scale(0, 0);
     animation-duration: 0.6s;
     animation-timing-function: linear;

@@ -30,11 +30,11 @@ export const createScaleKeyFrameAnimation = ({ x = 0.5, y = 0, easeFn = ease }) 
   }
 
   return css`
-    @keyframes openAnimation {
+    @keyframes --open-animation {
       ${animation}
     }
 
-    @keyframes closeAnimation {
+    @keyframes --close-animation {
       ${inverseAnimation}
     }
   `;
