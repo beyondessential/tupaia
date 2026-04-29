@@ -14,6 +14,7 @@ export const snapshotOutgoingChanges = async (
   database: TupaiaDatabase,
   models: DatabaseModel[],
   since: number,
+  until: number,
   sessionId: string,
   deviceId: string,
   config: SyncServerConfig,
@@ -62,6 +63,10 @@ export const snapshotOutgoingChanges = async (
         FROM
           sync_lookup
         WHERE updated_at_sync_tick > ?
+        -- Bound snapshots by the lookup visible watermark. sync_lookup can contain rows newer than
+        -- the latest completed lookup refresh (eg tombstones written directly by delete triggers);
+        -- those rows are intentionally hidden until their matching copied rows are also present.
+        AND updated_at_sync_tick <= ?
         ${fromId ? `AND id > ?` : ''}
         AND (
           ${shouldSyncNonProjectData ? 'project_ids IS NULL OR' : ''}
@@ -100,6 +105,7 @@ export const snapshotOutgoingChanges = async (
     `,
       [
         since,
+        until,
         ...(fromId ? [fromId] : []),
         ...includeProjectIds,
         ...(excludeProjectIds.length > 0 ? excludeProjectIds : []),
@@ -118,6 +124,7 @@ export const snapshotOutgoingChanges = async (
   log.info('snapshotOutgoingChangesFromSyncLookup.countedAll', {
     count: totalCount,
     since,
+    until,
     sessionId,
     deviceId,
   });
