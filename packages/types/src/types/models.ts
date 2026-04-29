@@ -713,7 +713,7 @@ export interface EntityParentChildRelationUpdate {
 export interface EntityPolygon {
   'code'?: string | null;
   'created_at': Date;
-  'data_source'?: string | null;
+  'data_source': string;
   'id': string;
   'name': string;
   'polygon': string;
@@ -722,7 +722,7 @@ export interface EntityPolygon {
 export interface EntityPolygonCreate {
   'code'?: string | null;
   'created_at'?: Date;
-  'data_source'?: string | null;
+  'data_source': string;
   'name': string;
   'polygon': string;
   'updated_at'?: Date;
@@ -730,7 +730,7 @@ export interface EntityPolygonCreate {
 export interface EntityPolygonUpdate {
   'code'?: string | null;
   'created_at'?: Date;
-  'data_source'?: string | null;
+  'data_source'?: string;
   'id'?: string;
   'name'?: string;
   'polygon'?: string;

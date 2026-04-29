@@ -79308,6 +79308,7 @@ export const EntityPolygonSchema = {
 	"additionalProperties": false,
 	"required": [
 		"created_at",
+		"data_source",
 		"id",
 		"name",
 		"polygon",
@@ -79340,6 +79341,7 @@ export const EntityPolygonCreateSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"data_source",
 		"name",
 		"polygon"
 	]
