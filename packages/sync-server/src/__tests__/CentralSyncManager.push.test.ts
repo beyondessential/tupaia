@@ -58,9 +58,8 @@ describe('CentralSyncManager.push', () => {
 
     const syncLookupTable = await models.syncLookup.find({ record_type: 'user_account' });
     expect(syncLookupTable.length).toEqual(2);
-    expect(syncLookupTable.map((r: any) => r.record_id)).toEqual([
-      userAccount1.id,
-      userAccount2.id,
-    ]);
+    expect(syncLookupTable.map((r: any) => r.record_id).sort()).toEqual(
+      [userAccount1.id, userAccount2.id].sort(),
+    );
   });
 });
