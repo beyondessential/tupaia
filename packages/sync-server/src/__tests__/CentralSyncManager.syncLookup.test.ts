@@ -391,11 +391,13 @@ describe('Sync Lookup data', () => {
 
     expect(userAccountLookupData.length).toEqual(2);
 
-    userAccountLookupData.forEach(() => {
-      expect.objectContaining({
-        record_type: 'user_account',
-        updated_at_sync_tick: expectedTick.toString(),
-      });
+    userAccountLookupData.forEach((record: any) => {
+      expect(record).toEqual(
+        expect.objectContaining({
+          record_type: 'user_account',
+          updated_at_sync_tick: expectedTick.toString(),
+        }),
+      );
     });
 
     spy.mockRestore();
