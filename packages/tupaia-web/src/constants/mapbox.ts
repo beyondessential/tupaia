@@ -18,19 +18,19 @@ const urls = {
 const waterways = {
   key: 'waterways',
   label: 'Waterways',
-  thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/waterways-tile-thumbnail.png',
+  thumbnail: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/waterways-tile-thumbnail.png',
   url: urls.waterways,
 };
 const roads = {
   key: 'roads',
   label: 'Roads',
-  thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/roads-tile-thumbnail.png',
+  thumbnail: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/roads-tile-thumbnail.png',
   url: urls.roads,
 };
 const ethnicity = {
   key: 'ethnicity',
   label: 'Ethnicity',
-  thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/ethnicity-tile-thumbnail.png',
+  thumbnail: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/ethnicity-tile-thumbnail.png',
   url: urls.ethnicity,
   legendItems: [
     {
@@ -118,13 +118,13 @@ const ethnicity = {
 const terrain = {
   key: 'terrain',
   label: 'Terrain',
-  thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/terrain-tile-thumbnail.png',
+  thumbnail: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/terrain-tile-thumbnail.png',
   url: urls.terrain,
 };
 const population = {
   key: 'population',
   label: 'Population',
-  thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/population-tile-thumbnail.png',
+  thumbnail: 'https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/population-tile-thumbnail.png',
   url: urls.population,
   reference: {
     name: 'worldpop',
@@ -135,7 +135,7 @@ const unfpaPopulation = {
   key: 'unfpaPopulation',
   label: 'Population per 1km',
   thumbnail:
-    'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/unfpa-population-tile-thumbnail.png',
+    'https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/unfpa-population-tile-thumbnail.png',
   url: urls.unfpaPopulation,
 };
 
