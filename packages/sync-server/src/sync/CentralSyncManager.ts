@@ -263,9 +263,9 @@ export class CentralSyncManager {
 
   async prepareSession(sessionId: string): Promise<PrepareSessionResult | void> {
     try {
-      // if the sync_lookup table is enabled, don't allow syncs until it has finished its first update run
-      const syncLookupVisibleUntilTick = await this.getSyncLookupVisibleUntilTick();
-      if (syncLookupVisibleUntilTick < 0) {
+      const syncLookupUpToTick =
+        await this.models.localSystemFact.get(SyncFact.LOOKUP_UP_TO_TICK);
+      if (isNullish(syncLookupUpToTick)) {
         throw new Error(`Sync lookup table has not yet built. Cannot initiate sync.`);
       }
 
