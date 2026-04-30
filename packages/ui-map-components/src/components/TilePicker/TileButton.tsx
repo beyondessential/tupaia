@@ -1,10 +1,9 @@
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import { ICON_STYLES, ReferenceTooltip } from '@tupaia/ui-components';
 import React from 'react';
 import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { ICON_STYLES, ReferenceTooltip } from '@tupaia/ui-components';
-import { ReferenceProps } from '@tupaia/types';
-import { SeriesValue } from '../../types';
+import type { TileSet } from '../../types';
 
 const StyledButton = styled(Button)`
   position: relative;
@@ -55,15 +54,6 @@ const TileLabel = styled(Typography)`
     theme.palette.type === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(43, 45, 56, 0.9)'};
   padding: 0.5rem 0.75rem;
 `;
-
-// Types for a tileset
-export type TileSet = {
-  key: string;
-  label: string;
-  thumbnail: string;
-  reference?: ReferenceProps;
-  legendItems?: SeriesValue[];
-};
 
 interface TileButtonProps {
   tileSet: TileSet;
