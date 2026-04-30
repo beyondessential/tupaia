@@ -3,8 +3,9 @@ import { TestableServer } from '@tupaia/server-boilerplate';
 import { createBasicHeader } from '@tupaia/utils';
 import { encryptPassword } from '@tupaia/auth';
 
-// @ts-expect-error - central-server createApp is a JS file without types
-import { createApp } from '../../../central-server/src/createApp';
+import { createApp } from '../app';
+import { CentralSyncManager } from '../sync';
+import { SyncServerModelRegistry } from '../types';
 
 const models = getTestModels() as ModelRegistry & { user: any };
 
@@ -26,7 +27,8 @@ export const setupTestApp = async () => {
       verified_email: VERIFIED,
     },
   );
-  const app = new TestableServer(createApp(getTestDatabase(), models), 2);
+  const syncManager = new CentralSyncManager(models as SyncServerModelRegistry);
+  const app = new TestableServer(await createApp(getTestDatabase(), syncManager), 2);
   app.setDefaultHeader('Authorization', createBasicHeader(userAccountEmail, userAccountPassword));
   return app;
 };
