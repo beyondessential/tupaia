@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { LatLngLiteral } from 'leaflet';
 import { MapContainer as BaseMapContainer, ZoomControl } from 'react-leaflet';
-import { TilePicker, DEFAULT_TILESETS } from '@tupaia/ui-map-components';
+import { TilePicker, DEFAULT_TILESETS, type TileSet } from '@tupaia/ui-map-components';
 import { DEFAULT_BOUNDS, DEFAULT_ZOOM_LEVEL, UNSET_LOCATION_ZOOM_LEVEL } from './constants';
 import { UserLocationMap } from './UserLocationMap';
 import { PinDrop } from './PinDrop';
@@ -66,7 +66,7 @@ interface MapProps {
   lng?: number;
   setCoordinates: (coordinates: LatLngLiteral) => void;
   onChangeTileSet: (tileSetKey: string) => void;
-  tileSet: typeof DEFAULT_TILESETS.osm;
+  tileSet: TileSet;
 }
 
 export const Map = ({ lat, lng, setCoordinates, tileSet, onChangeTileSet }: MapProps) => {

@@ -57,12 +57,8 @@ const SurveyResponseTile = ({
   entityName,
   countryName,
 }: SurveyResponseTileProps) => {
-  const tooltip = (
-    <>
-      <TooltipText>{surveyName}</TooltipText>
-      <TooltipText>{entityName}</TooltipText>
-    </>
-  );
+  const isMobile = useIsMobile();
+  const tooltip = isMobile ? undefined : <TooltipText>{surveyName}</TooltipText>;
 
   return (
     <Tile

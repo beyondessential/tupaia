@@ -9,6 +9,7 @@ import {
   ProjectModel,
   SurveyModel,
   SurveyResponseModel,
+  SurveyResponseDraftModel,
   TaskCommentModel,
   TaskModel,
   UserEntityPermissionModel,
@@ -24,6 +25,7 @@ export interface DatatrakWebServerModelRegistry extends ModelRegistry {
   readonly feedItem: FeedItemModel;
   readonly survey: SurveyModel;
   readonly surveyResponse: SurveyResponseModel;
+  readonly surveyResponseDraft: SurveyResponseDraftModel;
   readonly oneTimeLogin: OneTimeLoginModel;
   readonly option: OptionModel;
   readonly task: TaskModel;

@@ -10,7 +10,7 @@ export class EntityParentChildRelationRecord extends DatabaseRecord {
 }
 
 export class EntityParentChildRelationModel extends DatabaseModel {
-  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
+  static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get DatabaseRecordClass() {
     return EntityParentChildRelationRecord;

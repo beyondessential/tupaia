@@ -16,14 +16,14 @@ export class SingleEntityRoute extends Route<SingleEntityRequest> {
     const { entityCode } = params;
     const entity = await models.entity.findOne(
       { code: entityCode },
-      { columns: ['id', 'type', 'name', 'code', 'parent_id'] },
+      { columns: ['id', 'type', 'name', 'code', 'parent_id', 'attributes'] },
     );
 
     if (!entity) {
       throw new NotFoundError(`No entity exists with code ${entityCode}`);
     }
 
-    const { id, type, name, code, parent_id: parentId } = entity;
-    return { id, name, type, code, parentId };
+    const { id, type, name, code, parent_id: parentId, attributes } = entity;
+    return { id, name, type, code, parentId, attributes } as WebServerEntityRequest.ResBody;
   }
 }

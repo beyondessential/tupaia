@@ -62,6 +62,7 @@ const getLocal = async ({
       { survey_response_id: surveyResponseId },
       { columns: ['text', 'question_id', 'type'] },
     );
+    if (answerList.length === 0) return null;
 
     const answers = await SurveyResponseModel.formatAnswersForClient(transactingModels, answerList);
 
