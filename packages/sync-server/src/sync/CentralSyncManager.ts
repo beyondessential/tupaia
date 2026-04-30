@@ -109,12 +109,10 @@ export class CentralSyncManager {
       return Number.parseInt(visibleUntilTick, 10);
     }
 
-    // Backwards-compatible fallback for databases created before this watermark existed.
-    // LOOKUP_UP_TO_TICK is the source-table scan watermark. It is conservative as an initial visible
-    // bound because direct sync_lookup writes after that point (eg tombstones) stay hidden until the
-    // next lookup refresh advances LOOKUP_VISIBLE_UNTIL_TICK.
-    const lookupUpToTick = await this.models.localSystemFact.get(SyncFact.LOOKUP_UP_TO_TICK);
-    return Number.parseInt(lookupUpToTick ?? '-1', 10);
+    // If this has not been set yet, allow an unbounded pull. This can only happen before
+    // updateLookupTable has written the new watermark; after that, all pulls are capped by the
+    // coherent sync_lookup visible tick.
+    return Number.MAX_SAFE_INTEGER;
   }
 
   async getIsSyncCapacityFull(): Promise<boolean> {
