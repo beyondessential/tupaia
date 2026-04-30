@@ -108,6 +108,31 @@ Anomalies (44 total) get re-pointed to the **explore-project** copy of the entit
 
 ---
 
+## Open questions
+
+**Q17. FK on-delete behaviour for `entity.project_id`.**
+When a project is deleted, what happens to its entities?
+- `CASCADE` — delete all sub-country entities owned by the project
+- `RESTRICT` — block project deletion if it has entities (likely safest)
+- `SET NULL` is not an option (Q1's CHECK constraint requires NOT NULL for sub-country types)
+
+**Q18. Composite uniqueness on `(code, project_id)`.**
+Post-migration `entity.code` is no longer globally unique. Should we add `UNIQUE (code, project_id)` so each code is unique within a project? Catches accidental double-duplication at the DB level. Note: Postgres treats NULL as distinct in unique constraints, so country/project/world rows would not be uniqueness-checked — likely fine since codes are already unique among those, or use a partial index `WHERE project_id IS NOT NULL`.
+
+**Q19. Identity tracking across copies.**
+After duplication, the original row and its N-1 copies all represent "the same entity in different projects". Do we need to record that lineage explicitly (e.g. `entity.canonical_id` or similar) for cross-project audit/linking? Or is `code` good enough as the implicit identity?
+
+**Q20. Cleanup of erroneous project-pointing rows.**
+2 rows in `user_entity_permission` and 1 row in `access_request` point at project-type entities (likely admin-panel mis-clicks — confirmed during refinement). Delete during migration as data hygiene, or leave as-is?
+
+**Q21. The "explore" project specifics.**
+Q1 and Q16 both refer to "the explore project" as the destination for orphans. Is there a guaranteed single project with code `'explore'`? Should the migration look it up by code, hard-code its ID, or fail-fast if it's not present?
+
+**Q22. Hierarchy walks (recursive CTEs).**
+A few places walk `entity.parent_id` recursively today (e.g. `EntityHierarchyCacher`). Post-migration, walking down from `Fiji` returns ALL projects' districts. Does any current consumer rely on "give me everything under Fiji" returning unique geographic results? If yes, those callsites need a `project_id` filter — confirm whether that's RN-1853 or RN-1854 scope.
+
+---
+
 ## Out of scope
 
 - **Removing project entities entirely.** Discussed and deferred. Project entities serve real purposes today (88 dashboards rooted at them + 226 project↔country relations in `entity_parent_child_relation`). Deferring until we're ready to handle dashboard rooting differently and lift the 226 relations into a `project_country` junction.
