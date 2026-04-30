@@ -386,7 +386,7 @@ export class CentralSyncManager {
       // set the snapshot_started_at timestamp before we proceed with the heavy work below
       await startSnapshotWhenCapacityAvailable(this.models.database, sessionId);
 
-      // get a sync tick that safely excludes concurrent writes from the snapshot (because we use the
+      // get a sync tick that we can safely consider the snapshot to be up to (because we use the
       // "tick" of the tick-tock, so we know any more changes on the server, even while the snapshot
       // process is ongoing, will have a later updated_at_sync_tick, i.e. the "tock")
       const { tick } = await this.tickTockGlobalClock(this.models);
