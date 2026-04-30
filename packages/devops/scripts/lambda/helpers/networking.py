@@ -24,6 +24,10 @@ def get_cert(type_tag):
 elbv2 = boto3.client("elbv2")
 
 
+class GatewayNotFoundError(Exception):
+    """Raised when no gateway ELB or target group matches the given deployment tags."""
+
+
 def get_gateway_name(deployment_type, deployment_name):
     name = deployment_type + "-" + deployment_name
     name = name[0:32]  # max 32 chars in an ELB or gateway name
@@ -52,7 +56,7 @@ def get_gateway_elb(deployment_type, deployment_name):
             )
         if len(matching_arns) == 1:
             return elb
-    raise Exception(
+    raise GatewayNotFoundError(
         "No "
         + deployment_type
         + " gateway elb found tagged with deployment name: "
@@ -83,7 +87,7 @@ def get_gateway_target_group(deployment_type, deployment_name):
         if len(matching_arns) == 1:
             return target_group
 
-    raise Exception(
+    raise GatewayNotFoundError(
         "No "
         + deployment_type
         + " gateway target group found tagged with deployment name: "
@@ -218,10 +222,11 @@ def build_record_set_deletion(
 def build_record_set(
     action, domain, subdomain, deployment_name, gateway=None, dns_url=None
 ):
-    if subdomain == "":
-        url = deployment_name + "." + domain + "."
-    else:
-        url = deployment_name + "-" + subdomain + "." + domain + "."
+    url = (
+        f"{deployment_name}-{subdomain}.{domain}."
+        if subdomain
+        else f"{deployment_name}.{domain}."
+    )
 
     # e.g. db subdomain uses CNAME to AWS DNS so that it can be internally resolved within the VPC
     if dns_url:
@@ -266,7 +271,7 @@ def add_subdomains_to_route53(
         )
         for subdomain in subdomains
     ]
-    print("Generated {} record set changes".format(len(record_set_changes)))
+    print(f"Generated {len(record_set_changes)} record set changes")
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)["HostedZones"][
         0
     ]["Id"]
@@ -277,7 +282,7 @@ def add_subdomains_to_route53(
             "Changes": record_set_changes,
         },
     )
-    print("Submitted changes to hosted zone")
+    print(f"Submitted {len(record_set_changes)} changes to hosted zone")
 
 
 def get_instance_behind_gateway(deployment_type, deployment_name):
@@ -287,18 +292,13 @@ def get_instance_behind_gateway(deployment_type, deployment_name):
         TargetGroupArn=gateway_target_group["TargetGroupArn"]
     )["TargetHealthDescriptions"]
 
-    if not targets or len(targets) == 0:
+    if not targets:
         raise Exception(
-            "Could not find any targets behind the "
-            + deployment_type
-            + " gateway for "
-            + deployment_name
+            f"Could not find any targets behind the {deployment_type} gateway for {deployment_name}"
         )
 
     if len(targets) > 1:
-        raise Exception(
-            "Too many targets for " + deployment_type + ": " + deployment_name
-        )
+        raise Exception(f"Too many targets for {deployment_type}: {deployment_name}")
 
     instance_id = targets[0]["Target"]["Id"]
 
@@ -353,13 +353,16 @@ def delete_gateway(deployment_type, deployment_name):
     # 1. Delete listeners
     listeners = get_gateway_listeners(deployment_type, deployment_name)
     for listener in listeners:
+        print(f"Deleting listener {listener['ListenerArn']}")
         elbv2.delete_listener(ListenerArn=listener["ListenerArn"])
 
     # 2. Delete ELB
+    print(f"Deleting ELB {gateway_elb['LoadBalancerArn']}")
     elbv2.delete_load_balancer(LoadBalancerArn=gateway_elb["LoadBalancerArn"])
 
     # 3. Delete Target Group
     gateway_target_group = get_gateway_target_group(deployment_type, deployment_name)
+    print(f"Deleting target group {gateway_target_group['TargetGroupArn']}")
     elbv2.delete_target_group(TargetGroupArn=gateway_target_group["TargetGroupArn"])
 
 

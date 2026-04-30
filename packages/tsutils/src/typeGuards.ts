@@ -1,5 +1,9 @@
 export const isDefined = <T>(value: T): value is Exclude<T, undefined> => value !== undefined;
 
+export function isEmpty(val: unknown): val is null | undefined | '' {
+  return val === '' || val === undefined || val === null;
+}
+
 export function isNullish(val: unknown): val is null | undefined {
   return val === null || val === undefined;
 }
@@ -28,21 +32,7 @@ export function isNonEmptyArray<T = unknown>(val: unknown): val is [T, ...T[]] {
   return Array.isArray(val) && val.length > 0;
 }
 
-type Primitive = null | undefined | boolean | number | string | bigint | symbol;
-
-export function isPrimitive(val: unknown): val is Primitive {
-  return (
-    val === null ||
-    val === undefined ||
-    typeof val === 'boolean' ||
-    typeof val === 'number' ||
-    typeof val === 'string' ||
-    typeof val === 'bigint' ||
-    typeof val === 'symbol'
-  );
-}
-
-class UnexpectedNullishValueError extends Error {
+export class UnexpectedNullishValueError extends Error {
   constructor(message?: string) {
     super(message);
     this.name = 'UnexpectedNullishValueError';

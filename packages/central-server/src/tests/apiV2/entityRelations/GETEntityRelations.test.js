@@ -1,8 +1,10 @@
 import { expect } from 'chai';
 
 import { findOrCreateDummyRecord } from '@tupaia/database';
+
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
+import { stripUpdatedAtSyncTickFromArray, stripUpdatedAtSyncTickFromObject } from '@tupaia/utils';
 
 describe('GET entity relations', () => {
   const FIJI_POLICY = {
@@ -72,7 +74,7 @@ describe('GET entity relations', () => {
         child_id: exploreToFiji.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
       };
-      expect(result).to.deep.equal(expected);
+      expect(stripUpdatedAtSyncTickFromObject(result)).to.deep.equal(expected);
     });
 
     it('Returns a record if relation id exists and user has permissions: country -> sub-country relation', async () => {
@@ -85,7 +87,7 @@ describe('GET entity relations', () => {
         child_id: fijiToDistrict.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
       };
-      expect(result).to.deep.equal(expected);
+      expect(stripUpdatedAtSyncTickFromObject(result)).to.deep.equal(expected);
     });
 
     it('Always returns a record for a BES Admin', async () => {
@@ -98,7 +100,7 @@ describe('GET entity relations', () => {
         child_id: fijiToDistrict.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
       };
-      expect(result).to.deep.equal(expected);
+      expect(stripUpdatedAtSyncTickFromObject(result)).to.deep.equal(expected);
     });
 
     it('Returns an error if resource id is invalid', async () => {
@@ -148,7 +150,7 @@ describe('GET entity relations', () => {
           entity_hierarchy_id: exploreHierarchy.id,
         },
       ];
-      expect(result).to.deep.equalInAnyOrder(expected);
+      expect(stripUpdatedAtSyncTickFromArray(result)).to.deep.equalInAnyOrder(expected);
     });
 
     it('Returns an empty list if user has no permissions to the requested relations', async () => {
@@ -185,7 +187,7 @@ describe('GET entity relations', () => {
           entity_hierarchy_id: exploreHierarchy.id,
         },
       ];
-      expect(result).to.deep.equalInAnyOrder(expected);
+      expect(stripUpdatedAtSyncTickFromArray(result)).to.deep.equalInAnyOrder(expected);
     });
   });
 });

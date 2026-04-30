@@ -189,7 +189,7 @@ describe('fieldsAndFilters', () => {
         query: { filter: 'fake_field==fake_value' },
       });
 
-      expect(error.error).toContain('Unknown filter key: fake_field');
+      expect(error.error).toContain('Unknown filter key ‘fake_field’');
     });
 
     it('it can filter on equality', async () => {
@@ -319,6 +319,14 @@ describe('fieldsAndFilters', () => {
         'PEWTER',
         'VIRIDIAN',
       ]);
+    });
+
+    it('=@ filter treats a comma in the search string as literal text (not multiple alternatives)', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'name=@City,Nonexistent' },
+      });
+
+      expect(entities).toEqual([]);
     });
 
     it('array filtering uses IN logic for ==', async () => {

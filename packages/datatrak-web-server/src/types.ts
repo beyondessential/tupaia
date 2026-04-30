@@ -1,4 +1,4 @@
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   CountryModel,
   EntityModel,
@@ -9,6 +9,7 @@ import {
   ProjectModel,
   SurveyModel,
   SurveyResponseModel,
+  SurveyResponseDraftModel,
   TaskCommentModel,
   TaskModel,
   UserEntityPermissionModel,
@@ -16,12 +17,15 @@ import {
 } from '@tupaia/server-boilerplate';
 
 export interface DatatrakWebServerModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly user: UserModel;
   readonly entity: EntityModel;
   readonly country: CountryModel;
   readonly feedItem: FeedItemModel;
   readonly survey: SurveyModel;
   readonly surveyResponse: SurveyResponseModel;
+  readonly surveyResponseDraft: SurveyResponseDraftModel;
   readonly oneTimeLogin: OneTimeLoginModel;
   readonly option: OptionModel;
   readonly task: TaskModel;

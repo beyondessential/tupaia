@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import type { ApiConnectionOptions } from '@tupaia/api-client';
 
 import { TupaiaDatabase } from '@tupaia/database';
 import {
@@ -57,6 +58,18 @@ import {
   SurveysRoute,
   SurveyUsersRequest,
   SurveyUsersRoute,
+  SyncStartSessionRequest,
+  SyncStartSessionRoute,
+  SyncInitiatePullRequest,
+  SyncInitiatePullRoute,
+  SyncPullRequest,
+  SyncPullRoute,
+  SyncPushRequest,
+  SyncPushRoute,
+  SyncPushCompleteRequest,
+  SyncPushCompleteRoute,
+  SyncEndSessionRequest,
+  SyncEndSessionRoute,
   TaskMetricsRequest,
   TaskMetricsRoute,
   TaskRequest,
@@ -65,10 +78,29 @@ import {
   TasksRoute,
   UserRequest,
   UserRoute,
+  GetSurveyResponseDraftsRequest,
+  GetSurveyResponseDraftsRoute,
+  SaveSurveyResponseDraftRequest,
+  SaveSurveyResponseDraftRoute,
+  UpdateSurveyResponseDraftRequest,
+  UpdateSurveyResponseDraftRoute,
+  DeleteSurveyResponseDraftRequest,
+  DeleteSurveyResponseDraftRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
+import { LoginRoute } from '../routes/LoginRoute';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
+
+/** Forward client version to sync-server for version compatibility check */
+const apiConnectionOptionsProvider = (req: Request): ApiConnectionOptions => {
+  const clientVersionHeader = req.get('X-Client-Version');
+  return clientVersionHeader
+    ? {
+        headers: { 'X-Client-Version': clientVersionHeader },
+      }
+    : {};
+};
 
 export async function createApp() {
   const WEB_CONFIG_API_URL = getEnvVarOrDefault(
@@ -80,7 +112,8 @@ export async function createApp() {
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .use('*', attachAccessPolicy)
-    .attachApiClientToContext(authHandlerProvider)
+    .attachApiClientToContext({ authHandlerProvider, apiConnectionOptionsProvider })
+    .attachLoginRoute(LoginRoute)
     // Get Routes
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SingleEntityRequest>('entity/:entityCode', handleWith(SingleEntityRoute))
@@ -98,6 +131,7 @@ export async function createApp() {
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<ProjectUsersRequest>('project/:projectCode/users', handleWith(ProjectUsersRoute))
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
+    .get<GetSurveyResponseDraftsRequest>('surveyResponseDrafts', handleWith(GetSurveyResponseDraftsRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TaskMetricsRequest>('taskMetrics/:projectId', handleWith(TaskMetricsRoute))
     .get<TasksRequest>('tasks', handleWith(TasksRoute))
@@ -106,6 +140,9 @@ export async function createApp() {
     .get<SurveyUsersRequest>('users/:surveyCode/:countryCode', handleWith(SurveyUsersRoute))
     .get<PermissionGroupUsersRequest>('users/:countryCode', handleWith(PermissionGroupUsersRoute))
     // Post Routes
+    .post<SaveSurveyResponseDraftRequest>('surveyResponseDrafts', handleWith(SaveSurveyResponseDraftRoute))
+    .put<UpdateSurveyResponseDraftRequest>('surveyResponseDrafts/:draftId', handleWith(UpdateSurveyResponseDraftRoute))
+    .delete<DeleteSurveyResponseDraftRequest>('surveyResponseDrafts/:draftId', handleWith(DeleteSurveyResponseDraftRoute))
     .post<CreateTaskRequest>('tasks', handleWith(CreateTaskRoute))
     .put<EditTaskRequest>('tasks/:taskId', handleWith(EditTaskRoute))
     .post<SubmitSurveyResponseRequest>(
@@ -121,6 +158,18 @@ export async function createApp() {
       'export/:surveyResponseId',
       handleWith(ExportSurveyResponseRoute),
     )
+
+    // Sync routes
+    .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
+    .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
+    .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
+    .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
+    .put<SyncPushCompleteRequest>(
+      'sync/:sessionId/push/complete',
+      handleWith(SyncPushCompleteRoute),
+    )
+    .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
+
     // Forward auth requests to web-config
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('verifyEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
@@ -130,6 +179,5 @@ export async function createApp() {
   await builder.initialiseApiClient(API_CLIENT_PERMISSIONS);
 
   const app = builder.build();
-
   return app;
 }

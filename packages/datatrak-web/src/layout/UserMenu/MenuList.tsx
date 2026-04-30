@@ -1,22 +1,21 @@
-import { Link, ListItem } from '@material-ui/core';
+import { Link, ListItem, Typography } from '@material-ui/core';
 import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
-import React, { ComponentType, ReactNode, useState } from 'react';
-import { useMatch } from 'react-router';
+import React, { type ComponentType, type ReactNode } from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { Button, RouterLink } from '@tupaia/ui-components';
-
-import { useCurrentUserContext, useLogout } from '../../api';
-import { CancelConfirmModal } from '../../components';
-import { ROUTES } from '../../constants';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '@tupaia/constants';
+import { Button } from '@tupaia/ui-components';
+import { useCurrentUserContext } from '../../api';
+import { useIsOfflineFirst } from '../../api/offlineFirst';
+import { type RoutePath, ROUTES } from '../../constants';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
   label: string;
-  to?: string | null;
   href?: string;
   isExternal?: boolean;
-  onClick?: (e: Event) => void;
+  onClick?: React.MouseEventHandler<HTMLElement>;
   component?: ComponentType<any> | string;
   hidden?: boolean;
   icon?: React.ReactNode;
@@ -84,6 +83,30 @@ const chevronRight = <ChevronRight />;
 const externalIcon = <SquareArrowOutUpRight />;
 const logoutIcon = <LogOut />;
 
+const AppVersionParagraph = styled(Typography).attrs({
+  component: 'footer',
+  color: 'textSecondary',
+  variant: 'body2',
+})`
+  font-variant-numeric: lining-nums slashed-zero tabular-nums;
+
+  /* Desktop-only styles */
+  margin-block: 0.8rem;
+  padding-inline: 0.5rem;
+  ${MobileUserMenuRoot} & {
+    /* Unset desktop styles defined immediately above */
+    margin-block-end: unset;
+    padding-inline: unset;
+    /* Define mobile-only styles */
+    margin-block-start: 1rem;
+    padding-block-start: 0.8rem;
+  }
+`;
+
+const appVersionText = process.env.REACT_APP_VERSION ? (
+  <AppVersionParagraph>{`Tupaia DataTrak v${process.env.REACT_APP_VERSION}`}</AppVersionParagraph>
+) : null;
+
 /**
  * The menu list that appears in both the drawer and popover menus. It shows different options depending on whether the
  * user is logged in or not.
@@ -95,40 +118,28 @@ export const MenuList = ({
   children?: ReactNode;
   onCloseMenu?: () => void;
 }) => {
-  const [confirmModalLink, setConfirmModalLink] = useState('');
-  const { isLoggedIn, projectId, hasAdminPanelAccess } = useCurrentUserContext();
+  const { isLoggedIn, projectId, accessPolicy } = useCurrentUserContext();
+  const hasAdminPanelAccess =
+    accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
   const hasProjectSelected = !!projectId;
-  const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
-  const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
-  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const { mutate: logout } = useLogout();
+  const isOfflineFirst = useIsOfflineFirst();
+  const navigate = useNavigate();
 
-  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
-
-  const onClickInternalLink = (e: any, confirmLink: string) => {
-    if (shouldShowCancelModal) {
-      e.preventDefault();
-      setIsOpen(true);
-      setConfirmModalLink(confirmLink);
-    } else {
-      onCloseMenu?.();
-    }
+  const handleNavigate = (path: RoutePath) => {
+    navigate(path);
+    onCloseMenu?.();
   };
 
   const allItems: MenuItem[] = [
     {
       label: 'Account settings',
-      component: shouldShowCancelModal ? 'button' : RouterLink,
-      onClick: e => onClickInternalLink(e, ROUTES.ACCOUNT_SETTINGS),
-      to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
+      onClick: () => handleNavigate(ROUTES.ACCOUNT_SETTINGS),
       hidden: !isLoggedIn || !hasProjectSelected,
       icon: chevronRight,
     },
     {
       label: 'Reports',
-      component: shouldShowCancelModal ? 'button' : RouterLink,
-      onClick: e => onClickInternalLink(e, ROUTES.REPORTS),
-      to: shouldShowCancelModal ? null : ROUTES.REPORTS,
+      onClick: () => handleNavigate(ROUTES.REPORTS),
       hidden: !isLoggedIn || !hasAdminPanelAccess,
       icon: chevronRight,
     },
@@ -148,10 +159,10 @@ export const MenuList = ({
     },
     {
       label: 'Log out',
-      onClick: () => {
-        logout();
-        onCloseMenu?.();
-      },
+      // Navigate to the /logout route rather than calling the logout API
+      // directly, so the survey navigation blocker can intercept and confirm
+      // before any auth state is cleared.
+      onClick: () => handleNavigate(ROUTES.LOGOUT),
       hidden: !isLoggedIn,
       icon: logoutIcon,
     },
@@ -163,7 +174,7 @@ export const MenuList = ({
         {children}
         {allItems
           .filter(item => !item.hidden)
-          .map(({ label, to, href, isExternal, onClick, component, icon }) => (
+          .map(({ label, href, isExternal, onClick, component, icon }) => (
             <MenuListItem key={label} button>
               <MenuButton
                 component={component || 'button'}
@@ -171,20 +182,15 @@ export const MenuList = ({
                 underline="none"
                 rel={isExternal ? 'external' : null}
                 target={isExternal ? '_blank' : null}
-                onClick={onClick || onCloseMenu}
-                to={to}
+                onClick={onClick ?? onCloseMenu}
                 href={href}
               >
                 {label}
               </MenuButton>
             </MenuListItem>
           ))}
+        {isOfflineFirst && appVersionText}
       </Menu>
-      <CancelConfirmModal
-        isOpen={surveyCancelModalIsOpen}
-        onClose={() => setIsOpen(false)}
-        confirmPath={confirmModalLink}
-      />
     </>
   );
 };

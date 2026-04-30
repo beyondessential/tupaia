@@ -1,27 +1,27 @@
 import React from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import { TopProgressBar } from '../../../components';
+import { ROUTES } from '../../../constants';
 import { StickyMobileHeader } from '../../../layout';
 import { useSurveyForm } from '../SurveyContext';
 import { SurveyDisplayName } from './SurveyDisplayName';
 
-type SurveyLayoutContextT = {
+interface SurveyLayoutContextT {
   isLoading: boolean;
   onStepPrevious: () => void;
   hasBackButton: boolean;
-};
+}
 
 export const MobileSurveyHeader = () => {
   const { screenNumber: screenNumberParam } = useParams();
-  const { numberOfScreens, openCancelConfirmation, screenNumber } = useSurveyForm();
+  const { numberOfScreens, screenNumber } = useSurveyForm();
   const { onStepPrevious } = useOutletContext<SurveyLayoutContextT>();
+  const navigate = useNavigate();
 
   const handleBack = () => {
     if (screenNumber === 1) {
-      openCancelConfirmation({
-        confirmPath: -1,
-      });
+      navigate(-1);
     } else {
       onStepPrevious();
     }
@@ -29,7 +29,10 @@ export const MobileSurveyHeader = () => {
 
   return (
     <>
-      <StickyMobileHeader onBack={handleBack} onClose={openCancelConfirmation}>
+      <StickyMobileHeader
+        onBack={handleBack}
+        onClose={() => navigate(ROUTES.HOME)}
+      >
         <SurveyDisplayName />
       </StickyMobileHeader>
       {screenNumberParam && (

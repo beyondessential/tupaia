@@ -4,9 +4,13 @@ import { To } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { Button, Modal } from '.';
 
-const Wrapper = styled.div`
-  width: 25rem;
+const Wrapper = styled.div<{ $width: string }>`
+  width: ${({ $width }) => $width};
   max-width: 100%;
+
+  .MuiTypography-root.MuiTypography-body1 {
+    font-size: 0.875rem;
+  }
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 0 2rem 1rem;
   }
@@ -28,7 +32,11 @@ const Heading = styled(Typography).attrs({
   variant: 'h2',
   align: 'center',
 })`
-  margin-bottom: 1rem;
+  &.MuiTypography-root {
+    margin-bottom: 1rem;
+    padding-inline-end: 2rem;
+    padding-inline-start: 2rem;
+  }
 `;
 
 const ModalButton = styled(Button).attrs({
@@ -52,6 +60,8 @@ interface ModalProps {
   secondaryButton?: ButtonProps | null;
   children?: ReactNode;
   isLoading?: boolean;
+  width?: string;
+  disablePortal?: boolean;
 }
 
 export const SmallModal = ({
@@ -62,10 +72,12 @@ export const SmallModal = ({
   secondaryButton,
   children,
   isLoading = false,
+  width = '24rem',
+  disablePortal,
 }: ModalProps) => {
   return (
-    <Modal open={open} onClose={onClose}>
-      <Wrapper>
+    <Modal open={open} onClose={onClose} disablePortal={disablePortal}>
+      <Wrapper $width={width}>
         {title && <Heading>{title}</Heading>}
         {children}
         <ButtonWrapper>

@@ -40,7 +40,7 @@ def tear_down_tupaia_deployment(event):
     ]
     instances = find_instances(instance_filters)
 
-    if len(instances) == 0:
+    if not instances:
         raise Exception("No matching instances found")
 
     print(

@@ -37,3 +37,25 @@ export {
   ExportSurveyResponseRequest,
   ExportSurveyResponseRoute,
 } from './ExportSurveyResponseRoute';
+export { SyncStartSessionRequest, SyncStartSessionRoute } from './SyncStartSessionRoute';
+export { SyncInitiatePullRequest, SyncInitiatePullRoute } from './SyncInitiatePullRoute';
+export { SyncPullRequest, SyncPullRoute } from './SyncPullRoute';
+export { SyncPushRequest, SyncPushRoute } from './SyncPushRoute';
+export { SyncPushCompleteRequest, SyncPushCompleteRoute } from './SyncPushCompleteRoute';
+export { SyncEndSessionRequest, SyncEndSessionRoute } from './SyncEndSessionRoute';
+export {
+  GetSurveyResponseDraftsRequest,
+  GetSurveyResponseDraftsRoute,
+} from './SurveyResponseDraft/GetSurveyResponseDraftsRoute';
+export {
+  SaveSurveyResponseDraftRequest,
+  SaveSurveyResponseDraftRoute,
+} from './SurveyResponseDraft/SaveSurveyResponseDraftRoute';
+export {
+  UpdateSurveyResponseDraftRequest,
+  UpdateSurveyResponseDraftRoute,
+} from './SurveyResponseDraft/UpdateSurveyResponseDraftRoute';
+export {
+  DeleteSurveyResponseDraftRequest,
+  DeleteSurveyResponseDraftRoute,
+} from './SurveyResponseDraft/DeleteSurveyResponseDraftRoute';

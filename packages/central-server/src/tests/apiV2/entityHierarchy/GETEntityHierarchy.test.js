@@ -1,11 +1,13 @@
 import { expect } from 'chai';
 
 import { findOrCreateDummyCountryEntity, findOrCreateRecords, generateId } from '@tupaia/database';
+
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp, resetTestData } from '../../testUtilities';
+import { stripUpdatedAtSyncTickFromArray, stripUpdatedAtSyncTickFromObject } from '@tupaia/utils';
 
 describe('GET entity hierarchy', () => {
   const ALT_PERMISSION_GROUP = 'Alternative';
@@ -79,20 +81,26 @@ describe('GET entity hierarchy', () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`entityHierarchy/${PROJECT_ENTITY_HIERARCHIES[0].id}`);
 
-      expect(result).to.deep.equal({
+      const expected = {
         ...PROJECT_ENTITY_HIERARCHIES[0],
         canonical_types: ['country'],
-      });
+      };
+      expect(stripUpdatedAtSyncTickFromObject(result)).to.deep.equal(
+        stripUpdatedAtSyncTickFromObject(expected),
+      );
     });
 
     it('Successfully fetches single entity hierarchy when has Tupaia Admin Panel access to the project', async () => {
       await app.grantAccess(TUPAIA_ADMIN_POLICY);
       const { body: result } = await app.get(`entityHierarchy/${PROJECT_ENTITY_HIERARCHIES[0].id}`);
 
-      expect(result).to.deep.equal({
+      const expected = {
         ...PROJECT_ENTITY_HIERARCHIES[0],
         canonical_types: ['country'],
-      });
+      };
+      expect(stripUpdatedAtSyncTickFromObject(result)).to.deep.equal(
+        stripUpdatedAtSyncTickFromObject(expected),
+      );
     });
 
     it('Throws an exception if the user has admin panel access but not access to the project', async () => {
@@ -134,11 +142,12 @@ describe('GET entity hierarchy', () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get('entityHierarchy');
 
-      expect(result).to.deep.equal(
-        PROJECT_ENTITY_HIERARCHIES.map(entityHierarchy => ({
-          ...entityHierarchy,
-          canonical_types: ['country'],
-        })),
+      const expected = PROJECT_ENTITY_HIERARCHIES.map(entityHierarchy => ({
+        ...entityHierarchy,
+        canonical_types: ['country'],
+      }));
+      expect(stripUpdatedAtSyncTickFromArray(result)).to.deep.equal(
+        stripUpdatedAtSyncTickFromArray(expected),
       );
     });
 
@@ -146,12 +155,15 @@ describe('GET entity hierarchy', () => {
       await app.grantAccess(TUPAIA_ADMIN_POLICY);
       const { body: result } = await app.get('entityHierarchy');
 
-      expect(result).to.deep.equal([
+      const expected = [
         {
           ...PROJECT_ENTITY_HIERARCHIES[0],
           canonical_types: ['country'],
         },
-      ]);
+      ];
+      expect(stripUpdatedAtSyncTickFromArray(result)).to.deep.equal(
+        stripUpdatedAtSyncTickFromArray(expected),
+      );
     });
 
     it('Throws an exception if the user does not have admin panel or BES admin access', async () => {
