@@ -27,11 +27,8 @@ export const snapshotOutgoingChanges = async (
   const avoidRepull = config.lookupTable.avoidRepull;
   const recordTypes = models.map(m => m.databaseRecord);
 
-  if (process.env.NODE_ENV === 'test') {
-    const { pauseSnapshotProcess } = config;
-    if (pauseSnapshotProcess) {
-      await pauseSnapshotProcess();
-    }
+  if (config.pauseSnapshotProcess) {
+    await config.pauseSnapshotProcess();
   }
 
   // If there are excluded project ids, it means this is not an initial sync and just a new selected project
