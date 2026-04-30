@@ -5,9 +5,9 @@ import { Typography } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { useNavigate } from 'react-router';
 import { Modal, ModalCenteredContent, SpinningLoader } from '@tupaia/ui-components';
-import { Button } from '../../components';
+import { Button, UnavailableResponseModal } from '../../components';
 import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
-import { useTask } from '../../api';
+import { useIsOfflineFirst, useSurveyResponse, useTask } from '../../api';
 import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../constants';
 import { useFromLocation, useIsMobile } from '../../utils';
 import { SingleTaskResponse } from '../../types';
@@ -47,14 +47,13 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const ButtonComponent = ({
-  task,
-  openErrorModal,
-}: {
-  task?: SingleTaskResponse;
-  openErrorModal: () => void;
-}) => {
+const ButtonComponent = ({ task }: { task?: SingleTaskResponse }) => {
   const from = useFromLocation();
+  const isOfflineFirst = useIsOfflineFirst();
+  const { data: surveyResponse } = useSurveyResponse(task?.surveyResponseId, {
+    meta: { applyCustomErrorHandling: true },
+  });
+  const [modalOpen, setModalOpen] = useState(false);
 
   if (!task) return null;
 
@@ -70,11 +69,19 @@ const ButtonComponent = ({
   const surveyLink = `${surveyUrl}?${PRIMARY_ENTITY_CODE_PARAM}=${entity?.code}`;
 
   if (taskStatus === TaskStatus.completed) {
-    if (!surveyResponseId)
+    const responseUnavailable = isOfflineFirst ? !surveyResponse : !surveyResponseId;
+    if (responseUnavailable)
       return (
-        <StyledButton onClick={openErrorModal} variant="outlined">
-          View completed survey
-        </StyledButton>
+        <>
+          <StyledButton onClick={() => setModalOpen(true)} variant="outlined">
+            View completed survey
+          </StyledButton>
+          {isOfflineFirst ? (
+            <UnavailableResponseModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+          ) : (
+            <ErrorModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+          )}
+        </>
       );
     return (
       <StyledButton to={`?responseId=${surveyResponseId}`} variant="outlined">
@@ -90,7 +97,6 @@ const ButtonComponent = ({
 };
 
 export const TaskDetailsPage = () => {
-  const [errorModalOpen, setErrorModalOpen] = useState(false);
   const { taskId } = useParams();
   const { data: task, isLoading } = useTask(taskId);
   const navigate = useNavigate();
@@ -107,13 +113,12 @@ export const TaskDetailsPage = () => {
         </StickyMobileHeader>
       )}
       <TaskPageHeader title="Task details" backTo={ROUTES.TASKS}>
-        <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
+        <ButtonComponent task={task} />
         {task && <TaskActionsMenu task={task} />}
       </TaskPageHeader>
       <ContentWrapper>
         {isLoading && <SpinningLoader />}
         {task && <TaskDetails task={task} />}
-        <ErrorModal isOpen={errorModalOpen} onClose={() => setErrorModalOpen(false)} />
       </ContentWrapper>
     </>
   );
