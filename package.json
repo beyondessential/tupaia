@@ -74,12 +74,12 @@
     "@beyondessential/eslint-config-jest": "^1.0.0",
     "@beyondessential/eslint-config-js": "^1.1.1",
     "@beyondessential/eslint-config-ts": "^2.0.0",
-    "@bitwarden/cli": "2025.4.0",
+    "@bitwarden/cli": "2026.2.0",
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/builder-vite": "^8.2.9",
     "@storybook/react": "^8.2.9",
     "@storybook/react-vite": "^8.2.9",
-    "@types/node": "^20.11.1",
+    "@types/node": "20.19.33",
     "@vitejs/plugin-react": "^4.0.4",
     "babel-jest": "^29.7.0",
     "babel-preset-react-app": "^10.0.0",
@@ -105,7 +105,7 @@
     "vite-plugin-ejs": "^1.6.4"
   },
   "engines": {
-    "node": "^20.11.1"
+    "node": "20.20.0"
   },
   "packageManager": "yarn@4.13.0+sha256.730e0619753d39754c9e7613c7e57f084ea18b3244f5ba9a5a60bd3da048450b"
 }
