@@ -109,10 +109,7 @@ export class CentralSyncManager {
       return Number.parseInt(visibleUntilTick, 10);
     }
 
-    // If this has not been set yet, allow an unbounded pull. This can only happen before
-    // updateLookupTable has written the new watermark; after that, all pulls are capped by the
-    // coherent sync_lookup visible tick.
-    return Number.MAX_SAFE_INTEGER;
+    return null;
   }
 
   async getIsSyncCapacityFull(): Promise<boolean> {
@@ -402,7 +399,7 @@ export class CentralSyncManager {
 
       await this.models.syncSession.updateById(sessionId, {
         pull_since: since,
-        pull_until: syncLookupVisibleUntilTick,
+        pull_until: syncLookupVisibleUntilTick || tick,
       });
 
       // snapshot inside a "repeatable read" transaction, so that other changes made while this
