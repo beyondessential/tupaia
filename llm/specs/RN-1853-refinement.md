@@ -105,3 +105,24 @@ Validation against prod data — out of 397,584 responses pointing at sub-countr
 - **20 responses** — entity has no project mapping at all (orphan entity)
 
 Anomalies (44 total) get re-pointed to the **explore-project** copy of the entity, marked with `metadata.migrated_from_orphan_response = true` for later audit.
+
+---
+
+## Out of scope
+
+- **Removing project entities entirely.** Discussed and deferred. Project entities serve real purposes today (88 dashboards rooted at them + 226 project↔country relations in `entity_parent_child_relation`). Deferring until we're ready to handle dashboard rooting differently and lift the 226 relations into a `project_country` junction.
+- **`project_country` junction table.** Only needed once `entity_parent_child_relation` is removed. Belongs with [RN-1864](https://linear.app/bes/issue/RN-1864/remove-entity-relation-and-entity-hierarchy-tables).
+- **Unbundling `map_overlay.country_codes` triple-role** (scoping vs permission vs project indirection). Juliana flagged this; not required under marker-based.
+- **Removing `entity_parent_child_relation`** — [RN-1862](https://linear.app/bes/issue/RN-1862/consolidate-hierarchy-to-parent-id-on-project-specific-entities).
+- **Removing `entity_hierarchy` and `entity_relation` tables** — [RN-1864](https://linear.app/bes/issue/RN-1864/remove-entity-relation-and-entity-hierarchy-tables).
+- **Project-scoping all entity queries** — [RN-1854](https://linear.app/bes/issue/RN-1854/ensure-all-entity-access-is-project-scoped). Bleeds into RN-1853 only where callsites break; the bulk is its own ticket.
+
+---
+
+## Risks / things to watch
+
+- **`entity.code` is no longer unique post-migration.** Many callsites assume `findOne({ code })` returns at most one row. Will need a codebase audit (mostly RN-1854 territory).
+- **Sync surface change.** `project_id` flows through to MediTrak / Datatrak clients (Q10). New column on entity records.
+- **Cache invalidation.** `EntityHierarchyCacher` and other materialised views may need rebuilding after the migration.
+- **Production deploy ordering.** This lands shortly after RN-1851 (entity_polygon split) — second large schema migration on `entity` in quick succession. Coordinate deploy and rollback plans.
+- **Heavy data migration.** Roughly ~104k entity inserts plus ~397k survey_response updates. Rehearse on a staging clone before prod.
