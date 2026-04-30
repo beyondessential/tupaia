@@ -22,3 +22,4 @@ export { TextInput } from './TextInput';
 export { Tile, TileSkeleton, TileSkeletons } from './Tile';
 export { Toast } from './Toast';
 export { TopProgressBar } from './TopProgressBar';
+export { UnavailableResponseModal } from './UnavailableResponseModal';

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { TileButton, TileSet } from './TileButton';
+import { TileButton } from './TileButton';
 import { TileControl } from './TileControl';
 import { createScaleKeyFrameAnimation } from './keyFrames';
+import type { TileSet } from '../../types';
 
 const Container = styled.div`
   height: 100%;
@@ -65,31 +66,29 @@ interface TilePickerProps {
   className?: string;
 }
 
-export const TilePicker = React.memo(
-  ({ tileSets, activeTileSet, onChange, className }: TilePickerProps) => {
-    const [open, setOpen] = useState(false);
-    return (
-      <ClickAwayListener onClickAway={() => setOpen(false)}>
-        <Container className={className}>
-          <Controls>
-            <TileControl
-              isActive={open}
-              tileSet={activeTileSet}
-              onClick={() => setOpen(current => !current)}
+export const TilePicker = ({ tileSets, activeTileSet, onChange, className }: TilePickerProps) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <ClickAwayListener onClickAway={() => setOpen(false)}>
+      <Container className={className}>
+        <Controls>
+          <TileControl
+            isActive={open}
+            tileSet={activeTileSet}
+            onClick={() => setOpen(current => !current)}
+          />
+        </Controls>
+        <TileList className={open ? 'expanded' : 'closed'}>
+          {tileSets.map(tileSet => (
+            <TileButton
+              key={tileSet.key}
+              tileSet={tileSet}
+              onChange={onChange}
+              isActive={activeTileSet.key === tileSet.key}
             />
-          </Controls>
-          <TileList className={open ? 'expanded' : 'closed'}>
-            {tileSets.map(tileSet => (
-              <TileButton
-                key={tileSet.key}
-                tileSet={tileSet}
-                onChange={onChange}
-                isActive={activeTileSet.key === tileSet.key}
-              />
-            ))}
-          </TileList>
-        </Container>
-      </ClickAwayListener>
-    );
-  },
-);
+          ))}
+        </TileList>
+      </Container>
+    </ClickAwayListener>
+  );
+};
