@@ -181,6 +181,7 @@ describe('Sync Lookup data', () => {
       models.database,
       outgoingModels,
       since,
+      Number.MAX_SAFE_INTEGER,
       sessionId,
       deviceId,
       SYNC_CONFIG,
@@ -260,6 +261,7 @@ describe('Sync Lookup data', () => {
       models.database,
       outgoingModels,
       since,
+      Number.MAX_SAFE_INTEGER,
       sessionId,
       deviceId,
       SYNC_CONFIG,
@@ -358,6 +360,7 @@ describe('Sync Lookup data', () => {
       record_type: 'user_account',
       updated_at_sync_tick: newUserAccount.updated_at_sync_tick.toString(),
     });
+    expect(await models.localSystemFact.get(SyncFact.LOOKUP_VISIBLE_UNTIL_TICK)).toBe('5');
   });
 
   it('Populates updated_at_sync_tick with the current tick when incrementally update the sync_lookup table', async () => {
@@ -400,7 +403,71 @@ describe('Sync Lookup data', () => {
       );
     });
 
+    expect(await models.localSystemFact.get(SyncFact.LOOKUP_VISIBLE_UNTIL_TICK)).toBe(
+      expectedTick.toString(),
+    );
+
     spy.mockRestore();
+  });
+
+  it('does not snapshot tombstones above the visible watermark', async () => {
+    // Start from a real lookup refresh, then create two real entity_parent_child_relation rows and
+    // refresh again. Both relation rows are now visible at the watermark returned by
+    // getSyncLookupVisibleUntilTick().
+    await centralSyncManager.updateLookupTable();
+
+    const visibleChildEntity = await findOrCreateDummyRecord(models.entity, {
+      code: `visible_child_entity_${generateId()}`,
+      name: 'Visible Child Entity',
+      type: 'village',
+    });
+    const hiddenChildEntity = await findOrCreateDummyRecord(models.entity, {
+      code: `hidden_child_entity_${generateId()}`,
+      name: 'Hidden Child Entity',
+      type: 'village',
+    });
+    const visibleRelation = await findOrCreateDummyRecord(models.entityParentChildRelation, {
+      entity_hierarchy_id: entityHierarchy.id,
+      parent_id: entity1.id,
+      child_id: visibleChildEntity.id,
+    });
+    const hiddenRelation = await findOrCreateDummyRecord(models.entityParentChildRelation, {
+      entity_hierarchy_id: entityHierarchy.id,
+      parent_id: entity1.id,
+      child_id: hiddenChildEntity.id,
+    });
+
+    await centralSyncManager.updateLookupTable();
+
+    const visibleUntilTick = await centralSyncManager.getSyncLookupVisibleUntilTick();
+
+    // This mirrors the real failure case: deletes are written to sync_lookup immediately by the
+    // delete trigger, so this tombstone is newer than the last completed lookup refresh. It should
+    // not be snapshotted until the next updateLookupTable() call advances the visible watermark.
+    await models.entityParentChildRelation.delete({ id: hiddenRelation.id });
+
+    await snapshotOutgoingChanges(
+      models.database,
+      getModelsForPull(models.getModels()),
+      visibleUntilTick - 1,
+      visibleUntilTick,
+      sessionId,
+      deviceId,
+      SYNC_CONFIG,
+      [project.id],
+    );
+
+    const outgoingSnapshotRecords = await findSyncSnapshotRecords(
+      models.database,
+      sessionId,
+      undefined,
+      undefined,
+      undefined,
+      SYNC_SESSION_DIRECTION.OUTGOING,
+    );
+
+    expect(outgoingSnapshotRecords.find(r => r.recordId === visibleRelation.id)).toBeDefined();
+    expect(outgoingSnapshotRecords.find(r => r.recordId === hiddenRelation.id)).not.toBeDefined();
   });
 
   describe('avoidRepull', () => {
@@ -448,6 +515,7 @@ describe('Sync Lookup data', () => {
         models.database,
         models.getModels(),
         -1,
+        Number.MAX_SAFE_INTEGER,
         sessionId,
         deviceId,
         { ...SYNC_CONFIG, lookupTable: { ...SYNC_CONFIG.lookupTable, avoidRepull } },

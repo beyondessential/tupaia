@@ -97,6 +97,21 @@ export class CentralSyncManager {
     return { tick: tock - 1, tock };
   }
 
+  async getSyncLookupVisibleUntilTick(): Promise<number> {
+    // Pull snapshots are built from sync_lookup, not directly from the source tables. Some changes
+    // reach sync_lookup immediately (eg delete tombstones via triggers), while creates/updates are
+    // copied in by updateLookupTable. This watermark is the highest sync_lookup tick we know is
+    // coherent enough to expose to clients.
+    const visibleUntilTick = await this.models.localSystemFact.get(
+      SyncFact.LOOKUP_VISIBLE_UNTIL_TICK,
+    );
+    if (!isNullish(visibleUntilTick)) {
+      return Number.parseInt(visibleUntilTick, 10);
+    }
+
+    return null;
+  }
+
   async getIsSyncCapacityFull(): Promise<boolean> {
     const { maxConcurrentSessions } = this.config;
     const activeSyncCount = await this.models.syncSession.count({
@@ -245,7 +260,6 @@ export class CentralSyncManager {
 
   async prepareSession(sessionId: string): Promise<PrepareSessionResult | void> {
     try {
-      // if the sync_lookup table is enabled, don't allow syncs until it has finished its first update run
       const syncLookupUpToTick =
         await this.models.localSystemFact.get(SyncFact.LOOKUP_UP_TO_TICK);
       if (isNullish(syncLookupUpToTick)) {
@@ -376,7 +390,17 @@ export class CentralSyncManager {
 
       await this.waitForPendingEdits(tick);
 
-      await this.models.syncSession.updateById(sessionId, { pull_since: since, pull_until: tick });
+      // Use the sync_lookup visible watermark as pull_until. Do not use the global clock tick here:
+      // a source-table change can be newer than the latest completed updateLookupTable pass. If we
+      // exposed rows beyond the watermark, a client could pull a direct tombstone before the
+      // matching replacement row has been copied into sync_lookup, then advance its cursor to a
+      // state where the replacement is missed until a later sync.
+      const syncLookupVisibleUntilTick = await this.getSyncLookupVisibleUntilTick();
+
+      await this.models.syncSession.updateById(sessionId, {
+        pull_since: since,
+        pull_until: syncLookupVisibleUntilTick || tick,
+      });
 
       // snapshot inside a "repeatable read" transaction, so that other changes made while this
       // snapshot is underway aren't included (as this could lead to a pair of foreign records with
@@ -412,6 +436,7 @@ export class CentralSyncManager {
               transactingModels.database,
               getModelsForPull(transactingModels.getModels()),
               since,
+              syncLookupVisibleUntilTick,
               sessionId,
               deviceId,
               this.config,
@@ -428,6 +453,7 @@ export class CentralSyncManager {
               transactingModels.database,
               getModelsForPull(transactingModels.getModels()),
               -1,
+              syncLookupVisibleUntilTick,
               sessionId,
               deviceId,
               this.config,
@@ -559,6 +585,15 @@ export class CentralSyncManager {
             SyncFact.LOOKUP_UP_TO_TICK,
             currentTick.toString(),
           );
+          if (isInitialBuildOfLookupTable) {
+            // Initial build writes source-table ticks directly into sync_lookup rather than using
+            // LOOKUP_PENDING_UPDATE. Once the build transaction commits, sync_lookup is coherent up
+            // to the source-table tick we waited for at the start of this method.
+            await transactingModels.localSystemFact.set(
+              SyncFact.LOOKUP_VISIBLE_UNTIL_TICK,
+              currentTick.toString(),
+            );
+          }
 
           return updatedCount;
         },
@@ -589,6 +624,13 @@ export class CentralSyncManager {
             // will have to wait until this transaction is committed
             const { tick: currentTick } = await this.tickTockGlobalClock(transactingModels);
             await updateSyncLookupPendingRecords(transactingModels.database, currentTick);
+            // Only advance the visible watermark after the pending lookup rows have been assigned a
+            // real tick. This makes direct sync_lookup rows (eg delete tombstones) and the
+            // batch-copied creates/updates visible to pull snapshots together.
+            await transactingModels.localSystemFact.set(
+              SyncFact.LOOKUP_VISIBLE_UNTIL_TICK,
+              currentTick.toString(),
+            );
           },
         );
       }
