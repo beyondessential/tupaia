@@ -63,6 +63,7 @@ const cliCallback = async (migrator, _internals, originalError, migrationError) 
   } finally {
     resetMigrationFolder();
   }
+  process.exit(0);
 };
 
 const appCallback = async (migrator, internals, callback, error) => {
