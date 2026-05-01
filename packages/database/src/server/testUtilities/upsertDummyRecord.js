@@ -80,7 +80,7 @@ export const upsertDummyRecord = async (model, data) => {
  *
  * @param {*} model
  * @param {*} findCriteria
- * @param {*?} data
+ * @param {*?} [data]
  * @returns
  */
 export const findOrCreateDummyRecord = async (model, findCriteria, data) => {
