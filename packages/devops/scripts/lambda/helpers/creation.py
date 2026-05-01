@@ -11,6 +11,8 @@ ec2 = boto3.resource("ec2")
 ec = boto3.client("ec2")
 rds = boto3.client("rds")
 
+RDS_EXTENDED_SUPPORT_DISABLED = "open-source-rds-extended-support-disabled"
+
 
 def get_latest_image_id(image_code):
     filters = [
@@ -239,6 +241,7 @@ def clone_db_from_snapshot(
         VpcSecurityGroupIds=security_group_ids,
         Tags=all_tags,
         DeletionProtection=deletion_protection,
+        EngineLifecycleSupport=RDS_EXTENDED_SUPPORT_DISABLED,
     )
 
     print("Successfully cloned new db (" + db_instance_id + ") from snapshot")
