@@ -65,6 +65,13 @@ DB_NAME="$DB_NAME" yarn migrate
 cp -r ./src/core/migrations-backup/* ./src/core/migrations/
 rm -rf ./src/core/migrations-backup
 
+# RN-1853: drop the CHECK constraint that forces sub-country entities to have a non-null
+# project_id. The constraint is verified by running the migration above (which adds it);
+# we drop it afterwards so the wider test suite — which creates dummy entities of any
+# type without setting up a project — can keep working. Per-project canonical-walk
+# scoping has dedicated regression coverage in EntityParentChildRelationBuilderProjectScoping.test.js.
+PGPASSWORD=$DB_PASSWORD psql -h "$DB_URL" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER TABLE entity DROP CONSTRAINT IF EXISTS entity_project_id_check;"
+
 if [[ $CI = true ]]; then
   echo '::endgroup::'
 fi

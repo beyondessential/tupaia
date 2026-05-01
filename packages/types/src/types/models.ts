@@ -89,7 +89,7 @@ export interface Analytics {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: string | null;
+  'type'?: QuestionType | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -103,7 +103,7 @@ export interface AnalyticsCreate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: string | null;
+  'type'?: QuestionType | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -117,7 +117,7 @@ export interface AnalyticsUpdate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: string | null;
+  'type'?: QuestionType | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -2057,8 +2057,8 @@ export enum EntityTypeEnum {
   'pacmossi_village' = 'pacmossi_village',
   'pacmossi_spraying_site' = 'pacmossi_spraying_site',
   'pacmossi_insecticide_test' = 'pacmossi_insecticide_test',
-  'document' = 'document',
   'document_group' = 'document_group',
+  'document' = 'document',
   'vehicle' = 'vehicle',
   'pacmossi_asset_facility' = 'pacmossi_asset_facility',
   'pacmossi_asset_sub_facility' = 'pacmossi_asset_sub_facility',
@@ -2084,9 +2084,9 @@ export enum EntityTypeEnum {
   'ird_district' = 'ird_district',
   'ird_tehsil' = 'ird_tehsil',
   'ird_village' = 'ird_village',
+  'tamanu_country' = 'tamanu_country',
   'srh_district' = 'srh_district',
   'srh_sub_district' = 'srh_sub_district',
-  'tamanu_country' = 'tamanu_country',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
