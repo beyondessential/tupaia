@@ -229,11 +229,15 @@ export class EntityParentChildRelationBuilder {
     const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
     // Scope by project: structural entities (NULL project_id) and this project's own
     // sub-country entities are valid; sibling projects' duplicates are not.
+    // SQL `IN (?, NULL)` does not match NULL rows, so use a raw `IS NULL OR =` clause.
     /** @type {EntityRecord[]} */
     const entities = await this.models.entity.find({
       parent_id: parentIds,
       type: canonicalTypes,
-      project_id: [project.id, null],
+      _raw_: {
+        sql: 'project_id IS NULL OR project_id = ?',
+        parameters: [project.id],
+      },
     });
     return (
       entities

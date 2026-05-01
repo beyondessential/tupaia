@@ -74,19 +74,21 @@ exports.up = async function (db) {
   await db.runSql(`ALTER TABLE entity DROP CONSTRAINT IF EXISTS entity_code_key;`);
   log('Step 1b: dropped entity_code_key UNIQUE and dashboard FK', t0);
 
-  // ---------- 2. Look up explore project (fail-fast if missing) ----------
+  // ---------- 2. Look up explore project (lazy — required only if there are orphans) ----------
 
   const exploreResult = await db.runSql(
     `SELECT id FROM project WHERE code = $1;`,
     [ORPHAN_PROJECT_CODE],
   );
-  if (exploreResult.rows.length === 0) {
-    throw new Error(
-      `RN-1853 migration aborted: required '${ORPHAN_PROJECT_CODE}' project not found.`,
+  const exploreProjectId = exploreResult.rows[0]?.id ?? null;
+  if (exploreProjectId) {
+    log(`Step 2: explore project found (id=${exploreProjectId})`, t0);
+  } else {
+    log(
+      `Step 2: explore project NOT found — OK on empty DB (e.g. test setup); will fail-fast later if orphan entities or anomaly survey_responses need it`,
+      t0,
     );
   }
-  const exploreProjectId = exploreResult.rows[0].id;
-  log(`Step 2: explore project found (id=${exploreProjectId})`, t0);
 
   // ---------- 3. Backfill project_id for single-project sub-country entities ----------
 
@@ -193,17 +195,32 @@ exports.up = async function (db) {
 
   // ---------- 6. Backfill orphans (sub-country entities with no project mapping) ----------
 
-  const orphanResult = await db.runSql(
-    `
-      UPDATE entity
-      SET project_id = $1,
-          metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), $2, 'true'::jsonb)
-      WHERE type NOT IN ('world', 'project', 'country')
-        AND project_id IS NULL;
-    `,
-    [exploreProjectId, `{${ORPHAN_FLAG}}`],
-  );
-  log(`Step 6: assigned ${orphanResult.rowCount ?? '?'} orphans to explore project`, t0);
+  const orphanCount = await db.runSql(`
+    SELECT count(*)::int AS n FROM entity
+    WHERE type NOT IN ('world', 'project', 'country') AND project_id IS NULL;
+  `);
+  const orphansToAssign = orphanCount.rows[0]?.n ?? 0;
+
+  if (orphansToAssign > 0) {
+    if (!exploreProjectId) {
+      throw new Error(
+        `RN-1853 migration aborted: ${orphansToAssign} orphan sub-country entities need a home but '${ORPHAN_PROJECT_CODE}' project is missing.`,
+      );
+    }
+    const orphanResult = await db.runSql(
+      `
+        UPDATE entity
+        SET project_id = $1,
+            metadata = jsonb_set(COALESCE(metadata, '{}'::jsonb), $2, 'true'::jsonb)
+        WHERE type NOT IN ('world', 'project', 'country')
+          AND project_id IS NULL;
+      `,
+      [exploreProjectId, `{${ORPHAN_FLAG}}`],
+    );
+    log(`Step 6: assigned ${orphanResult.rowCount ?? '?'} orphans to explore project`, t0);
+  } else {
+    log('Step 6: no orphan entities to assign', t0);
+  }
 
   // ---------- 7. Apply UNIQUE (code, project_id) ----------
   //
@@ -245,22 +262,26 @@ exports.up = async function (db) {
   // They can be identified post-migration by joining survey_response to entity to project where
   // entity.project_id = explore but survey.project_id is something else.
 
-  const anomalyResult = await db.runSql(
-    `
-      UPDATE survey_response sr
-      SET entity_id = explore_copy.id
-      FROM survey s, entity original, entity explore_copy
-      WHERE sr.survey_id = s.id
-        AND original.id = sr.entity_id
-        AND explore_copy.code = original.code
-        AND explore_copy.project_id = $1
-        AND original.type NOT IN ('world', 'project', 'country')
-        AND original.project_id IS DISTINCT FROM s.project_id
-        AND explore_copy.id <> original.id;
-    `,
-    [exploreProjectId],
-  );
-  log(`Step 9: repointed ${anomalyResult.rowCount ?? '?'} anomaly survey_responses to explore`, t0);
+  if (exploreProjectId) {
+    const anomalyResult = await db.runSql(
+      `
+        UPDATE survey_response sr
+        SET entity_id = explore_copy.id
+        FROM survey s, entity original, entity explore_copy
+        WHERE sr.survey_id = s.id
+          AND original.id = sr.entity_id
+          AND explore_copy.code = original.code
+          AND explore_copy.project_id = $1
+          AND original.type NOT IN ('world', 'project', 'country')
+          AND original.project_id IS DISTINCT FROM s.project_id
+          AND explore_copy.id <> original.id;
+      `,
+      [exploreProjectId],
+    );
+    log(`Step 9: repointed ${anomalyResult.rowCount ?? '?'} anomaly survey_responses to explore`, t0);
+  } else {
+    log('Step 9: skipped (no explore project — no anomalies to redirect)', t0);
+  }
 
   // ---------- 10. Repoint survey_response_draft.entity_id ----------
 
