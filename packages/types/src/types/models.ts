@@ -89,7 +89,7 @@ export interface Analytics {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -103,7 +103,7 @@ export interface AnalyticsCreate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -117,7 +117,7 @@ export interface AnalyticsUpdate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -647,6 +647,7 @@ export interface Entity {
   'name': string;
   'parent_id'?: string | null;
   'point'?: string | null;
+  'project_id'?: string | null;
   'type': EntityType;
   'updated_at_sync_tick': string;
 }
@@ -661,6 +662,7 @@ export interface EntityCreate {
   'name': string;
   'parent_id'?: string | null;
   'point'?: string | null;
+  'project_id'?: string | null;
   'type': EntityType;
 }
 export interface EntityUpdate {
@@ -675,6 +677,7 @@ export interface EntityUpdate {
   'name'?: string;
   'parent_id'?: string | null;
   'point'?: string | null;
+  'project_id'?: string | null;
   'type'?: EntityType;
 }
 export interface EntityHierarchy {
@@ -2054,8 +2057,8 @@ export enum EntityTypeEnum {
   'pacmossi_village' = 'pacmossi_village',
   'pacmossi_spraying_site' = 'pacmossi_spraying_site',
   'pacmossi_insecticide_test' = 'pacmossi_insecticide_test',
-  'document_group' = 'document_group',
   'document' = 'document',
+  'document_group' = 'document_group',
   'vehicle' = 'vehicle',
   'pacmossi_asset_facility' = 'pacmossi_asset_facility',
   'pacmossi_asset_sub_facility' = 'pacmossi_asset_sub_facility',
@@ -2081,9 +2084,9 @@ export enum EntityTypeEnum {
   'ird_district' = 'ird_district',
   'ird_tehsil' = 'ird_tehsil',
   'ird_village' = 'ird_village',
-  'tamanu_country' = 'tamanu_country',
   'srh_district' = 'srh_district',
   'srh_sub_district' = 'srh_sub_district',
+  'tamanu_country' = 'tamanu_country',
 }
 export enum DataTableType {
   'analytics' = 'analytics',

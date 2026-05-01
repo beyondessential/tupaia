@@ -14,11 +14,6 @@ const SERVER_MIGRATION_DIR = path.resolve(
   `../core/server-migrations-${Date.now()}`,
 );
 
-const exitWithError = error => {
-  console.error(error.message);
-  process.exit(1);
-};
-
 const resetMigrationFolder = () => {
   removeDirectoryIfExists(SERVER_MIGRATION_DIR);
 };
@@ -48,22 +43,24 @@ export const removeNonServerMigrations = () => {
 };
 
 const cliCallback = async (migrator, _internals, originalError, migrationError) => {
+  let exitCode = 0;
   try {
     if (originalError) {
-      exitWithError(new Error(`db-migrate error: ${originalError.message}`));
+      throw new Error(`db-migrate error: ${originalError.message}`);
     }
     if (migrationError) {
-      exitWithError(new Error(`Migration error: ${migrationError.message}`));
+      throw new Error(`Migration error: ${migrationError.message}`);
     }
 
     const { driver } = migrator;
     await runPostMigration(driver);
   } catch (error) {
-    exitWithError(new Error(`Post migration error: ${error.message}`));
+    console.error(error.message);
+    exitCode = 1;
   } finally {
     resetMigrationFolder();
   }
-  process.exit(0);
+  process.exit(exitCode);
 };
 
 const appCallback = async (migrator, internals, callback, error) => {

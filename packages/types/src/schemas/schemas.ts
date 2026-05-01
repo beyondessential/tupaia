@@ -45538,6 +45538,7 @@ export const EntityQuestionConfigFieldsSchema = {
 		"image_url",
 		"metadata",
 		"name",
+		"project_id",
 		"type",
 		"updated_at_sync_tick"
 	],
@@ -45566,6 +45567,7 @@ export const EntityQuestionConfigFieldKeySchema = {
 		"metadata",
 		"name",
 		"parentId",
+		"project_id",
 		"type",
 		"updated_at_sync_tick"
 	],
@@ -46142,6 +46144,76 @@ export const EntityQuestionConfigSchema = {
 					]
 				},
 				"image_url": {
+					"anyOf": [
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"project_id": {
 					"anyOf": [
 						{
 							"additionalProperties": false,
@@ -47326,6 +47398,76 @@ export const SurveyScreenComponentConfigSchema = {
 								}
 							]
 						},
+						"project_id": {
+							"anyOf": [
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
 						"updated_at_sync_tick": {
 							"anyOf": [
 								{
@@ -48268,13 +48410,13 @@ export const RecentEntitiesForCountrySchema = {
 				"type": "string"
 			}
 		},
-		"document_group": {
+		"document": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"document": {
+		"document_group": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -48430,12 +48572,6 @@ export const RecentEntitiesForCountrySchema = {
 				"type": "string"
 			}
 		},
-		"tamanu_country": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
 		"srh_district": {
 			"type": "array",
 			"items": {
@@ -48443,6 +48579,12 @@ export const RecentEntitiesForCountrySchema = {
 			}
 		},
 		"srh_sub_district": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"tamanu_country": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -49034,29 +49176,6 @@ export const AnalyticsSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -49100,29 +49219,6 @@ export const AnalyticsCreateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -49166,29 +49262,6 @@ export const AnalyticsUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -78701,6 +78774,9 @@ export const EntitySchema = {
 		"point": {
 			"type": "string"
 		},
+		"project_id": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"asset",
@@ -78882,6 +78958,9 @@ export const EntityCreateSchema = {
 		"point": {
 			"type": "string"
 		},
+		"project_id": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"asset",
@@ -79057,6 +79136,9 @@ export const EntityUpdateSchema = {
 			"type": "string"
 		},
 		"point": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		},
 		"type": {
@@ -102091,6 +102173,9 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"point": {
 						"type": "string"
 					},
+					"project_id": {
+						"type": "string"
+					},
 					"type": {
 						"enum": [
 							"asset",
@@ -103115,6 +103200,9 @@ export const EntityResponseSchema = {
 			"type": "string"
 		},
 		"point": {
+			"type": "string"
+		},
+		"projectId": {
 			"type": "string"
 		},
 		"type": {
