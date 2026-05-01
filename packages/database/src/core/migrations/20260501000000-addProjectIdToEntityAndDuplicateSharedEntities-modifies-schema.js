@@ -35,6 +35,23 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+// Kept as one file/transaction so the schema, data backfill, and constraints are atomic — partial application would leave the DB in an invalid intermediate state.
+/**
+ * Migration steps:
+ *   1.  Add nullable project_id column + index, drop entity_code_key UNIQUE and dashboard FK
+ *   2.  Look up explore project (fail-fast if missing)
+ *   3.  Backfill project_id for single-project sub-country entities (UPDATE)
+ *   4.  Duplicate multi-project sub-country entities (bulk INSERT)
+ *   5.  Fix parent_id chains so children point at same-project parent copies
+ *   6.  Backfill orphans (sub-country entities with no project mapping → explore)
+ *   7.  Apply UNIQUE(code, project_id) — early so its index speeds up steps 8–11
+ *   8.  Repoint survey_response.entity_id to per-project copy
+ *   9.  Repoint anomalous survey_responses to explore-project copy
+ *   10. Repoint survey_response_draft.entity_id
+ *   11. Repoint task.entity_id
+ *   12. Cleanup 3 erroneous project-pointing rows (admin-panel mis-clicks)
+ *   13. Apply CHECK constraint on entity.project_id
+ */
 exports.up = async function (db) {
   const t0 = Date.now();
   log('Starting up migration', t0);
