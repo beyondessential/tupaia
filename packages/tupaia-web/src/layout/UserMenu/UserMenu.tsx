@@ -1,8 +1,9 @@
 import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
 import MuiMenuIcon from '@material-ui/icons/Menu';
-import { ErrorBoundary, useId } from '@tupaia/ui-components';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+
+import { ErrorBoundary, VisuallyHidden, useId } from '@tupaia/ui-components';
 import { useLogout } from '../../api/mutations';
 import { useLandingPage, useUser } from '../../api/queries';
 import { MODAL_ROUTES } from '../../constants';
@@ -10,7 +11,6 @@ import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
 import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
-import { VisuallyHidden } from '@tupaia/ui-components';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;
