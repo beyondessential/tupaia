@@ -98,8 +98,8 @@ export const DashboardMenu = () => {
       {activeDashboard && (
         <MenuButtonWrapper>
           <MenuButton
-            aria-controls={menuId}
-            aria-expanded={anchorEl !== null}
+            aria-controls={hasMultipleDashboards ? menuId : undefined}
+            aria-expanded={hasMultipleDashboards ? anchorEl !== null : undefined}
             onClick={handleClickListItem}
             disabled={!hasMultipleDashboards}
           >
