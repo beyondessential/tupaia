@@ -1,12 +1,12 @@
-import React, { ReactNode } from 'react';
-import styled from 'styled-components';
 import { Drawer as MuiDrawer } from '@material-ui/core';
-import { IconButton } from '@tupaia/ui-components';
 import CloseIcon from '@material-ui/icons/Close';
-import { MenuItem, MenuList } from './MenuList';
+import { IconButton } from '@tupaia/ui-components';
+import React from 'react';
+import styled from 'styled-components';
+import { RouterButton } from '../../components';
 import { MOBILE_BREAKPOINT, MODAL_ROUTES } from '../../constants';
 import { User } from '../../types';
-import { RouterButton } from '../../components';
+import { MenuItem, MenuList } from './MenuList';
 
 /**
  * DrawerMenu is a drawer menu used when the user is on a mobile device
@@ -94,8 +94,8 @@ const ProjectButton = styled(RouterButton).attrs({
   }
 `;
 
-interface DrawerMenuProps {
-  children: ReactNode;
+interface DrawerMenuProps
+  extends Omit<React.ComponentProps<typeof Drawer>, 'open' | 'onClose' | 'anchor' | 'PaperProps'> {
   menuOpen: boolean;
   onCloseMenu: () => void;
   primaryColor?: string;
@@ -112,11 +112,13 @@ export const DrawerMenu = ({
   secondaryColor,
   isLoggedIn,
   currentUser,
+  ...props
 }: DrawerMenuProps) => {
   const currentUserUsername = currentUser?.userName;
   const userProjectName = currentUser?.project?.name || 'Explore';
   return (
     <Drawer
+      {...props}
       anchor="right"
       open={menuOpen}
       onClose={onCloseMenu}
@@ -129,12 +131,7 @@ export const DrawerMenu = ({
               <Username $secondaryColor={secondaryColor}>{currentUserUsername}</Username>
             )}
             {userProjectName && (
-              <ProjectButton
-                modal={MODAL_ROUTES.PROJECT_SELECT}
-                onClick={() => {
-                  onCloseMenu();
-                }}
-              >
+              <ProjectButton modal={MODAL_ROUTES.PROJECT_SELECT} onClick={() => void onCloseMenu()}>
                 {userProjectName}
               </ProjectButton>
             )}

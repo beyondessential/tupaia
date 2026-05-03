@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import MuiMenuIcon from '@material-ui/icons/Menu';
 import { IconButton, useTheme } from '@material-ui/core';
+import MuiMenuIcon from '@material-ui/icons/Menu';
+import { ErrorBoundary, useId } from '@tupaia/ui-components';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { ErrorBoundary } from '@tupaia/ui-components';
-import { useLandingPage, useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
+import { useLandingPage, useUser } from '../../api/queries';
 import { MODAL_ROUTES } from '../../constants';
-import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
+import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
+import { VisuallyHidden } from '@tupaia/ui-components';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;
@@ -113,6 +114,9 @@ export const UserMenu = () => {
   const menuPrimaryColor = primaryHexcode || theme.palette.background.default;
   const menuSecondaryColor = secondaryHexcode || theme.palette.text.primary;
 
+  const buttonId = useId();
+  const menuId = useId();
+
   return (
     <ErrorBoundary>
       <UserMenuContainer>
@@ -123,15 +127,19 @@ export const UserMenu = () => {
           secondaryColor={menuSecondaryColor}
         />
         <MenuButton
+          aria-controls={menuId}
+          aria-expanded={menuOpen}
           onClick={toggleUserMenu}
           disableRipple
-          id="user-menu-button"
-          title="Toggle menu"
+          id={buttonId}
         >
           <MenuIcon />
+          <VisuallyHidden>Toggle menu</VisuallyHidden>
         </MenuButton>
         {/** PopoverMenu is for larger (desktop size) screens, and DrawerMenu is for mobile screens. Each component takes care of the hiding and showing at different screen sizes. Eventually all the props will come from a context */}
         <PopoverMenu
+          controlledById={buttonId}
+          id={menuId}
           menuOpen={menuOpen}
           onCloseMenu={onCloseMenu}
           primaryColor={menuPrimaryColor}
@@ -140,6 +148,7 @@ export const UserMenu = () => {
           {menuItems}
         </PopoverMenu>
         <DrawerMenu
+          id={menuId}
           menuOpen={menuOpen}
           onCloseMenu={onCloseMenu}
           isLoggedIn={isLoggedIn}
