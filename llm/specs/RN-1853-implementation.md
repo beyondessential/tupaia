@@ -16,7 +16,8 @@ This document is a self-contained implementation plan. Read the spec for *what* 
 
 ### New
 
-- `packages/database/src/core/migrations/<timestamp>-addProjectIdToEntityAndDuplicateSharedEntities-modifies-schema.js`
+- `packages/database/src/core/migrations/<timestamp>-addProjectIdToEntity-modifies-schema.js` — DDL only: add column + index, drop dashboard FK + entity_code_key, add UNIQUE(code, project_id).
+- `packages/database/src/core/migrations/<timestamp+1>-backfillProjectIdsAndDuplicateSharedEntities-modifies-data.js` — DML and the data-dependent CHECK constraint (refactored into per-step helper functions). Suffix `-modifies-data.js` means it is skipped by `setupNewDatabase.sh`, so test DBs never get the CHECK and dummy-entity fixtures keep working.
 
 ### Modified
 
@@ -36,7 +37,7 @@ This document is a self-contained implementation plan. Read the spec for *what* 
 
 ## Phase 1: Schema migration scaffold
 
-Create the migration file with `yarn migrate-create addProjectIdToEntityAndDuplicateSharedEntities`. File name will be `<timestamp>-addProjectIdToEntityAndDuplicateSharedEntities-modifies-schema.js`.
+Create two migration files: `yarn migrate-create addProjectIdToEntity` (schema, ends `-modifies-schema.js`) followed by `yarn migrate-create backfillProjectIdsAndDuplicateSharedEntities --type data` (data, ends `-modifies-data.js`). The schema file runs first; the data file runs after and applies the CHECK constraint at the end.
 
 Migration structure (high level — concrete SQL fleshed out in the file itself):
 
