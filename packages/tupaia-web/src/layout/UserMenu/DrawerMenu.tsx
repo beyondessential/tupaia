@@ -1,22 +1,18 @@
-import { Drawer as MuiDrawer } from '@material-ui/core';
+import { Drawer } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { IconButton } from '@tupaia/ui-components';
 import React from 'react';
 import styled from 'styled-components';
+
+import { IconButton } from '@tupaia/ui-components';
 import { RouterButton } from '../../components';
-import { MOBILE_BREAKPOINT, MODAL_ROUTES } from '../../constants';
+import { MODAL_ROUTES } from '../../constants';
 import { User } from '../../types';
 import { MenuItem, MenuList } from './MenuList';
 
 /**
  * DrawerMenu is a drawer menu used when the user is on a mobile device
+ * (mounted only at or below the mobile breakpoint — see UserMenu).
  */
-
-const Drawer = styled(MuiDrawer)`
-  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
-  }
-`;
 
 const MenuWrapper = styled.div`
   padding: 0 1rem;

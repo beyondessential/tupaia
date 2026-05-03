@@ -1,18 +1,11 @@
-import { Popover as MuiPopover } from '@material-ui/core';
+import { Popover } from '@material-ui/core';
 import React from 'react';
-import styled from 'styled-components';
-import { MOBILE_BREAKPOINT } from '../../constants';
 import { MenuList } from './MenuList';
 
 /**
  * PopoverMenu is a popover menu used when the user is on a desktop device
+ * (mounted only above the mobile breakpoint — see UserMenu).
  */
-
-const Popover = styled(MuiPopover)`
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
-  }
-`;
 
 interface PopoverMenuProps
   extends Omit<

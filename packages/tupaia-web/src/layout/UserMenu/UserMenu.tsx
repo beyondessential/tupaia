@@ -1,4 +1,4 @@
-import { IconButton, useTheme } from '@material-ui/core';
+import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
 import MuiMenuIcon from '@material-ui/icons/Menu';
 import { ErrorBoundary, useId } from '@tupaia/ui-components';
 import React, { useState } from 'react';
@@ -43,6 +43,8 @@ export const UserMenu = () => {
   };
 
   const theme = useTheme();
+  const isLargerSizeClass = useMediaQuery(theme.breakpoints.up('md'));
+
   const {
     isLandingPage,
     landingPage: { primaryHexcode, secondaryHexcode },
@@ -136,28 +138,30 @@ export const UserMenu = () => {
           <MenuIcon />
           <VisuallyHidden>Toggle menu</VisuallyHidden>
         </MenuButton>
-        {/** PopoverMenu is for larger (desktop size) screens, and DrawerMenu is for mobile screens. Each component takes care of the hiding and showing at different screen sizes. Eventually all the props will come from a context */}
-        <PopoverMenu
-          controlledById={buttonId}
-          id={menuId}
-          menuOpen={menuOpen}
-          onCloseMenu={onCloseMenu}
-          primaryColor={menuPrimaryColor}
-          secondaryColor={menuSecondaryColor}
-        >
-          {menuItems}
-        </PopoverMenu>
-        <DrawerMenu
-          id={menuId}
-          menuOpen={menuOpen}
-          onCloseMenu={onCloseMenu}
-          isLoggedIn={isLoggedIn}
-          primaryColor={menuPrimaryColor}
-          secondaryColor={menuSecondaryColor}
-          currentUser={user}
-        >
-          {menuItems}
-        </DrawerMenu>
+        {isLargerSizeClass ? (
+          <PopoverMenu
+            controlledById={buttonId}
+            id={menuId}
+            menuOpen={menuOpen}
+            onCloseMenu={onCloseMenu}
+            primaryColor={menuPrimaryColor}
+            secondaryColor={menuSecondaryColor}
+          >
+            {menuItems}
+          </PopoverMenu>
+        ) : (
+          <DrawerMenu
+            id={menuId}
+            menuOpen={menuOpen}
+            onCloseMenu={onCloseMenu}
+            isLoggedIn={isLoggedIn}
+            primaryColor={menuPrimaryColor}
+            secondaryColor={menuSecondaryColor}
+            currentUser={user}
+          >
+            {menuItems}
+          </DrawerMenu>
+        )}
       </UserMenuContainer>
     </ErrorBoundary>
   );
