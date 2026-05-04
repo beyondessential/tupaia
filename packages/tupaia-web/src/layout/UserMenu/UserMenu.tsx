@@ -1,6 +1,6 @@
 import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
 import MuiMenuIcon from '@material-ui/icons/Menu';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { ErrorBoundary, VisuallyHidden, useId } from '@tupaia/ui-components';
@@ -117,6 +117,7 @@ export const UserMenu = () => {
   const menuSecondaryColor = secondaryHexcode || theme.palette.text.primary;
 
   const buttonId = useId();
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const menuId = useId();
 
   return (
@@ -134,13 +135,14 @@ export const UserMenu = () => {
           onClick={toggleUserMenu}
           disableRipple
           id={buttonId}
+          ref={buttonRef}
         >
           <MenuIcon />
           <VisuallyHidden>Toggle menu</VisuallyHidden>
         </MenuButton>
         {isLargerSizeClass ? (
           <PopoverMenu
-            controlledById={buttonId}
+            anchorElRef={buttonRef}
             id={menuId}
             menuOpen={menuOpen}
             onCloseMenu={onCloseMenu}

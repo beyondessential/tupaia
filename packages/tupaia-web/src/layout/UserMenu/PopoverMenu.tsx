@@ -12,7 +12,7 @@ interface PopoverMenuProps
     React.ComponentPropsWithoutRef<typeof Popover>,
     'open' | 'onClose' | 'anchorEl' | 'anchorOrigin' | 'transformOrigin' | 'PaperProps'
   > {
-  controlledById: string;
+  anchorElRef: React.RefObject<HTMLElement>;
   primaryColor?: string;
   secondaryColor?: string;
   menuOpen: boolean;
@@ -20,7 +20,7 @@ interface PopoverMenuProps
 }
 
 export const PopoverMenu = ({
-  controlledById,
+  anchorElRef,
   children,
   primaryColor,
   menuOpen,
@@ -37,7 +37,7 @@ export const PopoverMenu = ({
         },
       }}
       open={menuOpen}
-      anchorEl={() => document.getElementById(controlledById) as HTMLElement}
+      anchorEl={anchorElRef.current}
       onClose={onCloseMenu}
       anchorOrigin={{
         vertical: 'bottom',
