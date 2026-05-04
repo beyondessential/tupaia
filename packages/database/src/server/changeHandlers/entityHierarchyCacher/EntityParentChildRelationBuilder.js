@@ -8,8 +8,7 @@
  * @typedef {import('../../../core/modelClasses/Project').ProjectRecord} ProjectRecord
  * @typedef {[Entity['id'], Entity['id']]} ParentChildIdPair
  */
-
-import { generateId } from '../../../core';
+import { QUERY_CONJUNCTIONS, generateId } from '../../../core';
 import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
 
 const RECURSIVE_CONNECTED_NODES_CTE = `
@@ -112,7 +111,7 @@ export class EntityParentChildRelationBuilder {
       return new Set();
     }
 
-    const relatedEntityIds = await this.fetchAndCacheChildren(hierarchyId, [rootEntityId]);
+    const relatedEntityIds = await this.fetchAndCacheChildren(hierarchyId, [rootEntityId], project);
     await this.deleteOrphanedRelations(hierarchyId, projectEntityId);
 
     return relatedEntityIds;
@@ -121,6 +120,7 @@ export class EntityParentChildRelationBuilder {
   /**
    * @param {EntityHierarchy['id']} hierarchyId
    * @param {Entity['id'][]} parentIds
+   * @param {ProjectRecord} project
    * @param {Set<Entity['id']>} childrenAlreadyCached
    * @param {Set<Entity['id']>} relatedEntityIds
    * @returns {Promise<Set<Entity['id']>>}
@@ -128,6 +128,7 @@ export class EntityParentChildRelationBuilder {
   async fetchAndCacheChildren(
     hierarchyId,
     parentIds,
+    project,
     childrenAlreadyCached = new Set(),
     relatedEntityIds = new Set(),
   ) {
@@ -137,7 +138,7 @@ export class EntityParentChildRelationBuilder {
     // Generate the new relations for this level
     const entityParentChildRelations = hasEntityRelationLinks
       ? await this.getRelationsViaEntityRelation(hierarchyId, parentIds, childrenAlreadyCached)
-      : await this.getRelationsViaCanonical(hierarchyId, parentIds, childrenAlreadyCached);
+      : await this.getRelationsViaCanonical(hierarchyId, parentIds, project, childrenAlreadyCached);
 
     let latestRelatedEntityIds = relatedEntityIds;
     if (entityParentChildRelations.length) {
@@ -172,6 +173,7 @@ export class EntityParentChildRelationBuilder {
     return this.fetchAndCacheChildren(
       hierarchyId,
       validChildIds,
+      project,
       latestChildrenAlreadyCached,
       latestRelatedEntityIds,
     );
@@ -211,6 +213,9 @@ export class EntityParentChildRelationBuilder {
    * Cache the current level via canonical types
    * @param {EntityHierarchy['id']} hierarchyId hierarchy to generate canonical relations for
    * @param {Entity['id'][]} parentIds parent ids of a single level to generate canonical relations for
+   * @param {ProjectRecord} project the project being rebuilt — used to scope the canonical
+   *   parent_id walk to entities owned by this project (post-RN-1853, sub-country entities
+   *   are duplicated per project so an unfiltered parent_id walk would return cross-project copies)
    * @param {Set<Entity['id']>} childrenAlreadyCached children already cached to avoid duplicates
    * @returns {Promise<
    *   Pick<
@@ -219,12 +224,22 @@ export class EntityParentChildRelationBuilder {
    *   >[]
    * >}
    */
-  async getRelationsViaCanonical(hierarchyId, parentIds, childrenAlreadyCached = new Set()) {
+  async getRelationsViaCanonical(
+    hierarchyId,
+    parentIds,
+    project,
+    childrenAlreadyCached = new Set(),
+  ) {
     const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
+
     /** @type {EntityRecord[]} */
     const entities = await this.models.entity.find({
       parent_id: parentIds,
       type: canonicalTypes,
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: '(project_id IS NULL OR project_id = ?)',
+        parameters: [project.id],
+      },
     });
     return (
       entities
