@@ -9,7 +9,10 @@ import { runPostMigration } from './runPostMigration';
 import { getConnectionConfig } from './getConnectionConfig';
 
 const MIGRATIONS_DIR = path.resolve(__dirname, '../core/migrations');
-const SERVER_MIGRATION_DIR = path.resolve(__dirname, `../core/server-migrations-${Date.now()}`);
+const SERVER_MIGRATION_DIR = path.resolve(
+  __dirname,
+  `../core/server-migrations-${Date.now()}`,
+);
 
 const exitWithError = error => {
   console.error(error.message);
