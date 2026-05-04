@@ -38,7 +38,7 @@ def get_db_instance_parameter_group_name(db_id):
 
     parameter_group_name = groups[0]["DBParameterGroupName"]
     print(
-        f"DB instance {db_id} is configured with parameter group {parameter_group_name}."
+        f"DB instance {db_id} is configured with parameter group {parameter_group_name}"
     )
     return parameter_group_name
 
