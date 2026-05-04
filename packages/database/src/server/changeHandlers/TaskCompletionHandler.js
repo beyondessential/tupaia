@@ -1,4 +1,3 @@
-import { uniq } from 'es-toolkit';
 import { ChangeHandler } from './ChangeHandler';
 import { QUERY_CONJUNCTIONS } from '../../core/BaseDatabase';
 
@@ -29,13 +28,11 @@ export class TaskCompletionHandler extends ChangeHandler {
    * @private Fetches all tasks that have the same survey_id and entity_id as the survey responses, and have a created_at date that is less than or equal to the data_time of the survey response
    */
   async fetchTasksForSurveyResponses(surveyResponses) {
-    const surveyIdAndEntityIdPairs = uniq(
-      surveyResponses.map(surveyResponse => ({
-        surveyId: surveyResponse.survey_id,
-        entityId: surveyResponse.entity_id,
-        endTime: surveyResponse.end_time,
-      })),
-    );
+    const surveyIdAndEntityIdPairs = surveyResponses.map(surveyResponse => ({
+      surveyId: surveyResponse.survey_id,
+      entityId: surveyResponse.entity_id,
+      endTime: surveyResponse.end_time,
+    }));
     return this.models.task.find({
       [QUERY_CONJUNCTIONS.AND]: {
         status: 'to_do',
