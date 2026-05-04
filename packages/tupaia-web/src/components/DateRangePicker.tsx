@@ -40,7 +40,7 @@ const ResetButton = styled(TextButton)`
   text-transform: none;
   padding: 0 0.3rem;
   &:hover,
-  &:focus {
+  &:focus-visible {
     background-color: transparent;
     text-decoration: underline;
     opacity: 1;
@@ -54,7 +54,7 @@ const DialogPaperComponent = styled.div`
   }
   .MuiSelect-root {
     color: ${({ theme }) => theme.palette.text.primary};
-    &:focus {
+    &:focus-visible {
       background-color: transparent;
     }
   }

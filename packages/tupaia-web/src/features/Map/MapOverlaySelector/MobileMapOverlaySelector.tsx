@@ -31,7 +31,7 @@ const ExpandButton = styled(Button)`
   background-color: ${({ theme }) => theme.palette.overlaySelector.menuBackground};
   position: relative;
   &:hover,
-  &:focus {
+  &:focus-visible {
     background-color: ${({ theme }) => theme.palette.overlaySelector.menuBackground};
   }
 `;

@@ -17,7 +17,7 @@ const TooltipWrapper = styled.span`
     width: 100%;
   }
   &:hover,
-  &:focus {
+  &:focus-visible {
     ${({ theme }) => theme.breakpoints.up('md')} {
       svg {
         fill: ${props => props.theme.palette.primary.main};

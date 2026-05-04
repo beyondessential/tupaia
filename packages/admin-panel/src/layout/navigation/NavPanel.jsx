@@ -50,7 +50,7 @@ const NavLink = styled(BaseNavLink)`
   &:hover {
     background-color: ${WHITE}18; //  18 is 10% opacity
   }
-  &:focus,
+  &:focus-visible,
   &:focus-visible {
     border-color: ${WHITE};
   }

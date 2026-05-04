@@ -36,7 +36,7 @@ const ButtonGroup = styled(LightOutlinedButton)`
 
   .MuiButton-label {
     &:hover,
-    &:focus {
+    &:focus-visible {
       background-color: white;
 
       > span {

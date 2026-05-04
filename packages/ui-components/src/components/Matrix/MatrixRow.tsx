@@ -56,7 +56,7 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
       word-break: break-word;
     }
   }
-  &:focus,
+  &:focus-visible,
   &:hover {
     background-color: initial;
   }

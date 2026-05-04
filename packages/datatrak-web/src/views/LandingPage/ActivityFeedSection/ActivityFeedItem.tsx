@@ -25,7 +25,7 @@ export const ActivityFeedItem = styled(ListItem)<ListItemProps>`
   }
 
   &:hover,
-  &:focus {
+  &:focus-visible {
     text-decoration: none;
   }
 
