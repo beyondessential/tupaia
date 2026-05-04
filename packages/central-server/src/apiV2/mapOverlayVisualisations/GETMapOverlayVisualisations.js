@@ -1,4 +1,4 @@
-import { keyBy } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { RECORDS } from '@tupaia/database';
 import { camelKeys } from '@tupaia/utils';
@@ -107,9 +107,9 @@ export class GETMapOverlayVisualisations extends GETHandler {
     await assertPermissionGroupsAccess(this.accessPolicy, permissionGroupNames);
 
     return {
-      reportsByCode: keyBy(reports, r => r.code),
-      legacyReportsByCode: keyBy(legacyReports, r => r.code),
-      permissionGroupsById: keyBy(permissionGroups, pg => pg.id),
+      reportsByCode: keyBy(reports, 'code'),
+      legacyReportsByCode: keyBy(legacyReports, 'code'),
+      permissionGroupsById: keyBy(permissionGroups, 'id'),
     };
   }
 

@@ -1,4 +1,4 @@
-import { keyBy } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { DataBroker } from '@tupaia/data-broker';
 import { generateId } from '@tupaia/database';
@@ -78,7 +78,7 @@ const writeKoboDataToTupaia = async (transactingModels, koboData, syncGroupCode)
       const questions = await transactingModels.question.find({
         code: Object.keys(responseData.dataValues),
       });
-      const questionByCode = keyBy(questions, q => q.code);
+      const questionByCode = keyBy(questions, 'code');
 
       await transactingModels.answer.createMany(
         Object.entries(responseData.dataValues).map(([questionCode, answer]) => ({

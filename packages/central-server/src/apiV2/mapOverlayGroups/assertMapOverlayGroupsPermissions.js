@@ -1,4 +1,5 @@
-import { groupBy, keyBy, uniq } from 'es-toolkit';
+import { uniq } from 'es-toolkit';
+import { keyBy, groupBy } from 'es-toolkit/compat';
 
 import { JOIN_TYPES, QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
@@ -25,7 +26,7 @@ export const hasMapOverlayGroupGetPermissions = async (accessPolicy, models, map
     };
   }
 
-  const childMapOverlayRelationsByType = groupBy(childMapOverlayRelations, mogr => mogr.child_type);
+  const childMapOverlayRelationsByType = groupBy(childMapOverlayRelations, 'child_type');
   const mapOverlayRelations =
     childMapOverlayRelationsByType[models.mapOverlayGroupRelation.RelationChildTypes.MAP_OVERLAY];
   const mapOverlayGroupRelations =
@@ -207,7 +208,7 @@ const getMapOverlayGroupsWithNoRelation = async models => {
 
 export const getPermittedMapOverlayGroupIds = async (accessPolicy, models) => {
   const allMapOverlayGroupRelations = await models.mapOverlayGroupRelation.find();
-  const relationByChildId = keyBy(allMapOverlayGroupRelations, mogr => mogr.child_id);
+  const relationByChildId = keyBy(allMapOverlayGroupRelations, 'child_id');
 
   const mapOverlayGroupsWithNoRelation = await getMapOverlayGroupsWithNoRelation(models);
 

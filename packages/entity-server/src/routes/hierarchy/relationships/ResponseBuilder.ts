@@ -1,4 +1,5 @@
-import { keyBy, uniq } from 'es-toolkit';
+import { uniq } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { QueryConjunctions, EntityFilter, EntityRecord } from '@tupaia/server-boilerplate';
@@ -176,7 +177,7 @@ export class ResponseBuilder {
     }
 
     const ancestors = await this.getAncestorTypeRelatives(ancestorCodes);
-    const ancestorsByCode = keyBy(ancestors, a => a.code);
+    const ancestorsByCode = keyBy(ancestors, 'code');
     const formattedEntitiesByCode = await this.getFormattedEntitiesByCode(ancestors, descendants);
     const formattedPairs = pairs
       .filter(pair => ancestorsByCode[pair.ancestor])

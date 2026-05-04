@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { keyBy } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
@@ -113,7 +113,7 @@ export class ExportDashboardVisualisationRoute extends Route<ExportDashboardVisu
         id: dashboardIds,
       },
     });
-    const dashboardsById = keyBy(dashboardRecords, d => d.id);
+    const dashboardsById = keyBy(dashboardRecords, 'id');
 
     const dashboards = dashboardRecords.map(({ id, ...dashboard }) => camelKeys(dashboard));
     const dashboardRelations = relationRecords.map(

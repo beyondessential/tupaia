@@ -1,6 +1,6 @@
 import { getCategoryPresentationOption } from '/apiV1/dataBuilders/helpers';
 import { CONDITION, AVERAGE } from '/apiV1/dataBuilders/constants';
-import { groupBy } from 'es-toolkit';
+import { groupBy } from 'es-toolkit/compat';
 
 const CATEGORY_AGGREGATION_TYPES = [AVERAGE, CONDITION];
 
@@ -41,7 +41,7 @@ const average = rows => {
 
 const condition = (rows, columns, config) => {
   const categoryList = {};
-  const rowsWithDataByCategoryId = groupBy(rows, row => row.categoryId);
+  const rowsWithDataByCategoryId = groupBy(rows, 'categoryId');
   Object.entries(rowsWithDataByCategoryId).forEach(([categoryId, datas]) => {
     for (const { key: columnId } of columns) {
       const values = datas.map(data => data[columnId] ?? null);

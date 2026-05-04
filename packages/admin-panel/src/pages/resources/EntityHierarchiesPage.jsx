@@ -1,4 +1,4 @@
-import { groupBy } from 'es-toolkit';
+import { groupBy } from 'es-toolkit/compat';
 import React from 'react';
 
 import { getSortByKey } from '@tupaia/utils';
@@ -21,7 +21,7 @@ const fetchBranch = async (rootNode, node) => {
   });
 
   descendants.sort(getSortByKey('name'));
-  const descendantsByParent = groupBy(descendants, d => d.parent_code);
+  const descendantsByParent = groupBy(descendants, 'parent_code');
   const children = descendantsByParent[entityCode] || [];
 
   return children.map(({ id, code, name }) => ({

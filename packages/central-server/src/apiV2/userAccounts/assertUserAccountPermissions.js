@@ -1,4 +1,4 @@
-import { keyBy } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
@@ -15,9 +15,9 @@ export const assertUserAccountPermissions = async (accessPolicy, models, userAcc
   const permissions = await models.permissionGroup.findManyById(
     entityPermissions.map(ep => ep.permission_group_id),
   );
-  const permissionsById = keyBy(permissions, p => p.id);
+  const permissionsById = keyBy(permissions, 'id');
   const entities = await models.entity.findManyById(entityPermissions.map(ep => ep.entity_id));
-  const entitiesById = keyBy(entities, e => e.id);
+  const entitiesById = keyBy(entities, 'id');
   const countryCodes = entities.map(e => e.country_code);
   if (countryCodes.length === 0) {
     // User has no permissions, so anyone can view/edit their account

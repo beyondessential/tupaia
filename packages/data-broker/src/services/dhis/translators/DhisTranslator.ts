@@ -1,4 +1,5 @@
-import { keyBy, uniq } from 'es-toolkit';
+import { uniq } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { DhisApi, translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
 import { mapKeys, reduceToDictionary } from '@tupaia/utils';
@@ -100,7 +101,7 @@ export class DhisTranslator {
         ...restOfDataElement,
       }),
     );
-    return keyBy(dataElementsWithTranslatedOptions, de => de.code);
+    return keyBy(dataElementsWithTranslatedOptions, 'code');
   };
 
   private translateOutboundDataValue = (
@@ -131,7 +132,7 @@ export class DhisTranslator {
     dataSources: DataElement[],
   ) => {
     // prefetch options and types for unique data element codes so that DHIS2 doesn't get overwhelmed
-    const dataSourcesByCode = keyBy(dataSources, ds => ds.code);
+    const dataSourcesByCode = keyBy(dataSources, 'code');
     const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
     return dataValues.map(dataValue => {
       const dataSource = dataSourcesByCode[dataValue.code];

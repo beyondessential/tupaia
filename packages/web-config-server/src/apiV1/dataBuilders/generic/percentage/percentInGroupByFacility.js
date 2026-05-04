@@ -1,4 +1,4 @@
-import { keyBy } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 import { getSortByKey } from '@tupaia/utils';
 import {
   aggregateOperationalFacilityValues,
@@ -70,7 +70,7 @@ class PercentInGroupByFacilityBuilder extends DataBuilder {
   async buildData(results, period, range) {
     const averagedValues = [];
     const facilities = await this.fetchDescendantsOfType(this.models.entity.types.FACILITY);
-    const facilitiesByCode = keyBy(facilities, f => f.code);
+    const facilitiesByCode = keyBy(facilities, 'code');
     const addToAveragedValues = ({ facilityId: facilityCode, value }) => {
       averagedValues.push({
         name: facilitiesByCode[facilityCode].name,

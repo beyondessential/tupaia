@@ -1,5 +1,4 @@
-import { keyBy } from 'es-toolkit';
-import { flatten } from 'es-toolkit/compat';
+import { flatten, keyBy } from 'es-toolkit/compat';
 import moment from 'moment';
 
 import { reduceToDictionary } from '@tupaia/utils';
@@ -26,7 +25,7 @@ class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const { surveyCodes } = this.query;
     const { transformations: tranformationConfigs = [] } = this.config;
-    const transformations = keyBy(tranformationConfigs, t => t.type);
+    const transformations = keyBy(tranformationConfigs, 'type');
 
     const ancestorMappingConfig = transformations.ancestorMapping;
 

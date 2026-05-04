@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'es-toolkit/compat';
 
 import { clearTestData, getTestModels } from '@tupaia/database';
 import { SyncFact } from '@tupaia/constants';

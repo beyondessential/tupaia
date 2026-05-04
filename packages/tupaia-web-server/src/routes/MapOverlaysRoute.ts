@@ -1,5 +1,5 @@
-import { groupBy, keyBy, uniq } from 'es-toolkit';
-import { isEqual } from 'es-toolkit/compat';
+import { uniq } from 'es-toolkit';
+import { groupBy, isEqual, keyBy } from 'es-toolkit/compat';
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
@@ -91,7 +91,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
 
     // Do the initial overlay fetch from the central server, since that enforces permissions
     const mapOverlays = (
-      (await ctx.services.central.fetchResources('mapOverlays', {
+      await ctx.services.central.fetchResources('mapOverlays', {
         filter: {
           country_codes: {
             comparator: '@>',
@@ -104,7 +104,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           },
         },
         pageSize: pageSize || DEFAULT_PAGE_SIZE,
-      })) as MapOverlay[]
+      })
     ).filter(
       // Central returns overlays you can view in at least one of its countries
       // We run an additional filter here to narrow down to the specific country we're requesting for
@@ -198,9 +198,9 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       };
     };
 
-    const relationsByParentId = groupBy(mapOverlayRelations, mor => mor.map_overlay_group_id);
-    const groupsById = keyBy(mapOverlayGroups, mog => mog.id);
-    const overlaysById = keyBy(mapOverlays, mo => mo.id);
+    const relationsByParentId = groupBy(mapOverlayRelations, 'map_overlay_group_id');
+    const groupsById = keyBy(mapOverlayGroups, 'id');
+    const overlaysById = keyBy(mapOverlays, 'id');
     const rootOverlayGroup = mapOverlayGroups.find(
       (group: MapOverlayGroup) => group.code === ROOT_MAP_OVERLAY_CODE,
     );

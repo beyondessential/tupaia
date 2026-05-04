@@ -1,4 +1,5 @@
-import { groupBy, uniq } from 'es-toolkit';
+import { uniq } from 'es-toolkit';
+import { groupBy } from 'es-toolkit/compat';
 import moment from 'moment';
 
 import { TupaiaDatabase, SqlQuery } from '@tupaia/database';
@@ -53,7 +54,7 @@ export class TupaiaDataApi {
     const validatedOptions = eventOptionsValidator.validateSync(optionsInput);
     const sanitizedOptions = sanitiseFetchDataOptions(validatedOptions);
     const results = await new EventsFetchQuery(this.database, sanitizedOptions).fetch();
-    const answersByEventId = groupBy(results, result => result.eventId);
+    const answersByEventId = groupBy(results, 'eventId');
     const hasElements = sanitizedOptions.dataElementCodes.length > 0;
     return Object.values(answersByEventId)
       .map(resultsForEvent => {
@@ -225,7 +226,7 @@ export class TupaiaDataApi {
       optionSetIds,
     ).executeOnDatabase(this.database);
 
-    return groupBy(options, o => o.option_set_id);
+    return groupBy(options, 'option_set_id');
   }
 
   private buildOptionsMetadata = (

@@ -1,5 +1,5 @@
-import { groupBy, uniq } from 'es-toolkit';
-import { chunk, keyBy } from 'es-toolkit/compat';
+import { uniq } from 'es-toolkit';
+import { chunk, groupBy, keyBy } from 'es-toolkit/compat';
 import moment from 'moment';
 import xlsx from 'xlsx';
 
@@ -307,7 +307,7 @@ export async function exportResponsesToFile(
   );
   const { true: surveysWithAccess = [], false: surveysWithoutAccess = [] } = groupBy(
     surveysWithAccessStatus,
-    s => s.accessible,
+    'accessible',
   );
   surveysWithoutAccess.forEach(survey => {
     const exportData = [[`You do not have export access to ${survey.name}`]];

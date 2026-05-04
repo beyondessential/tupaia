@@ -1,5 +1,4 @@
-import { groupBy } from 'es-toolkit';
-import { keyBy } from 'es-toolkit/compat';
+import { groupBy, keyBy } from 'es-toolkit/compat';
 import { Request } from 'express';
 
 import { RECORDS } from '@tupaia/database';
@@ -113,7 +112,7 @@ export class PullChangesRoute extends Route<PullChangesRequest> {
         changes = await query.executeOnDatabase(models.database);
       }
 
-      const changesByRecordType = groupBy(changes, c => c.record_type);
+      const changesByRecordType = groupBy(changes, 'record_type');
       const recordTypesToSync = Object.keys(changesByRecordType);
       const columnNamesByRecordType = Object.fromEntries(
         await Promise.all(

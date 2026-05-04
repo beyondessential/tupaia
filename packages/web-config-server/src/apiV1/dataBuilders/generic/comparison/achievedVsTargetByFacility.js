@@ -1,4 +1,4 @@
-import { keyBy } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
 
 export const achievedVsTargetByFacility = async (
@@ -22,7 +22,7 @@ export const achievedVsTargetByFacility = async (
 
   const hierarchyId = await fetchHierarchyId();
   const facilities = await entity.getDescendantsOfType(hierarchyId, models.entity.types.FACILITY);
-  const facilitiesByCode = keyBy(facilities, f => f.code);
+  const facilitiesByCode = keyBy(facilities, 'code');
 
   // Set up achieved to be aggregated (potentially acrosss multiple facilities)
   const achievedByFacility = {};

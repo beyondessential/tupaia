@@ -1,4 +1,4 @@
-import { groupBy } from 'es-toolkit';
+import { groupBy } from 'es-toolkit/compat';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
@@ -12,7 +12,7 @@ class CountCalculatedValuesPerOrgUnit extends DataBuilder {
     const { operation, dataClasses, convertToPercentage } = this.config;
     const dataElementCodes = getDataElementsFromCalculateOperationConfig(operation);
     const { results } = await this.fetchAnalytics(dataElementCodes);
-    const analyticsByOrgUnit = groupBy(results, a => a.organisationUnit);
+    const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
     const calculatedValues = await Promise.all(
       Object.values(analyticsByOrgUnit).map(async analytics =>
         calculateOperationForAnalytics(this.models, analytics, operation),

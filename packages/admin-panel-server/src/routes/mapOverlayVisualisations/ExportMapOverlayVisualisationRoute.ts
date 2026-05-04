@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { keyBy } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
@@ -113,7 +113,7 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
           id: mapOverlayGroupIds,
         },
       });
-    const mapOverlayGroupsById = keyBy(mapOverlayGroupRecords, mogr => mogr.id);
+    const mapOverlayGroupsById = keyBy(mapOverlayGroupRecords, 'id');
 
     const mapOverlayGroups = mapOverlayGroupRecords.map(({ id, ...mapOverlayGroup }) =>
       camelKeys(mapOverlayGroup),

@@ -1,4 +1,4 @@
-import { groupBy } from 'es-toolkit';
+import { groupBy } from 'es-toolkit/compat';
 
 import moment from 'moment';
 import { getSortByKey } from '@tupaia/utils';
@@ -37,7 +37,7 @@ export class DataLakeApi {
       getDatabase(),
       sanitizedOptions,
     ).fetch();
-    const resultsByEventId: { [key: string]: Event[] } = groupBy(results, result => result.eventId);
+    const resultsByEventId: { [key: string]: Event[] } = groupBy(results, 'eventId');
     const hasElements = sanitizedOptions.dataElementCodes.length > 0;
     return Object.values(resultsByEventId)
       .map(resultsForEvent => {

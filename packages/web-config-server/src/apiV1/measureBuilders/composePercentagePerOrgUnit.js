@@ -1,4 +1,4 @@
-import { keyBy } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
@@ -44,8 +44,8 @@ export const composePercentagePerOrgUnit = async (
 
   const responses = await fetchComposedData(models, aggregator, dhisApi, query, config, entity);
   const { numerator, denominator } = responses;
-  const numeratorsByOrgUnit = keyBy(numerator.data, n => n.organisationUnitCode);
-  const denominatorsByOrgUnit = keyBy(denominator.data, d => d.organisationUnitCode);
+  const numeratorsByOrgUnit = await keyBy(numerator.data, 'organisationUnitCode');
+  const denominatorsByOrgUnit = await keyBy(denominator.data, 'organisationUnitCode');
 
   const fractionsByOrgUnit = {};
   Object.keys(numeratorsByOrgUnit).forEach(orgUnit => {
