@@ -76,9 +76,6 @@ const backfillSingleProjectEntities = async (db, t0) => {
 // Multi-project sub-country entities: keep the original row (assigned to the lowest-id
 // project) and insert N-1 duplicates, one per remaining project. Duplicates carry the
 // duplicate flag in metadata so down() can identify and remove them.
-//
-// Two bulk SQL statements via JS-built VALUES tables — far faster than per-row INSERTs
-// over a remote connection.
 const duplicateMultiProjectEntities = async (db, t0) => {
   const multiProjectEntities = await db.runSql(`
     SELECT entity.id, array_agg(DISTINCT p.id ORDER BY p.id) AS project_ids
@@ -230,6 +227,35 @@ const repointAnomalySurveyResponses = async (db, t0, exploreProjectId) => {
   log(`Repointed ${result.rowCount ?? '?'} anomaly survey_responses to explore`, t0);
 };
 
+// Audit: count survey_responses that still point at an entity in a different project
+// than the survey, after both repoint passes have run. Reasons this can happen:
+//   - the entity's hierarchy doesn't include `explore`, so step 9 had no copy to
+//     redirect to (e.g. survey is in project D, entity exists in A/B/C but not in
+//     explore)
+//   - the survey points at a structural entity (world/project/country) that is
+//     intentionally shared and not repointed
+// Non-zero count for the sub-country case is operator-actionable: the rows need
+// manual triage post-migration. Logged loudly so it isn't missed.
+const auditUnrepointedSurveyResponses = async (db, t0) => {
+  const result = await db.runSql(`
+    SELECT count(*)::int AS n
+    FROM survey_response sr
+    JOIN survey s ON sr.survey_id = s.id
+    JOIN entity e ON sr.entity_id = e.id
+    WHERE e.type NOT IN ('world', 'project', 'country')
+      AND e.project_id IS DISTINCT FROM s.project_id;
+  `);
+  const remaining = result.rows[0]?.n ?? 0;
+  if (remaining > 0) {
+    log(
+      `WARNING: ${remaining} survey_responses still reference an entity outside their survey's project — manual review required`,
+      t0,
+    );
+  } else {
+    log('All survey_responses now reference entities in their survey project', t0);
+  }
+};
+
 const repointSurveyResponseDrafts = async (db, t0) => {
   const result = await db.runSql(`
     UPDATE survey_response_draft srd
@@ -299,6 +325,7 @@ exports.up = async function (db) {
   await backfillOrphans(db, t0, exploreProjectId);
   await repointSurveyResponses(db, t0);
   await repointAnomalySurveyResponses(db, t0, exploreProjectId);
+  await auditUnrepointedSurveyResponses(db, t0);
   await repointSurveyResponseDrafts(db, t0);
   await repointTasks(db, t0);
   await cleanupErroneousHygieneRows(db, t0);

@@ -235,7 +235,10 @@ export class EntityParentChildRelationBuilder {
       parent_id: parentIds,
       type: canonicalTypes,
       _raw_: {
-        sql: 'project_id IS NULL OR project_id = ?',
+        // Parens are critical: AND binds tighter than OR, so without them the WHERE
+        // collapses to `(... AND project_id IS NULL) OR project_id = ?`, returning
+        // every entity in `project.id` regardless of parent_id or type.
+        sql: '(project_id IS NULL OR project_id = ?)',
         parameters: [project.id],
       },
     });
