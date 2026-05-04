@@ -1,4 +1,4 @@
-const OPTIONS = {
+const OPTIONS = /** @type {const} */ ({
   1: 'One',
   2: 'Two',
   3: 'Three',
@@ -7,9 +7,9 @@ const OPTIONS = {
   6: 'Six',
   7: 'Seven',
   8: 'Eight',
-};
+});
 
-export const DATA_ELEMENTS = {
+export const DATA_ELEMENTS = /** @type {const} */ ({
   CD1: { code: 'CD1', name: 'Risk Factor: Smokers Female' },
   CD2: { code: 'CD2', name: 'Risk Factor: Smokers Male' },
   CD3: { code: 'CD3', name: 'Risk Factor: Overweight Female' },
@@ -26,9 +26,9 @@ export const DATA_ELEMENTS = {
   HP6: { code: 'HP6', name: 'Fitness: 40-59 years - male', options: OPTIONS },
   HP7: { code: 'HP7', name: 'Fitness: 60+ years - female', options: OPTIONS },
   HP8: { code: 'HP8', name: 'Fitness: 60+ years - male', options: OPTIONS },
-};
+});
 
-export const DATA_VALUES = [
+export const DATA_VALUES = /** @type {const} */ ([
   // Nukunuku
   { dataElement: 'CD1', value: 1, organisationUnit: 'TO_Nukuhc' },
   { dataElement: 'CD2', value: 2, organisationUnit: 'TO_Nukuhc' },
@@ -61,10 +61,10 @@ export const DATA_VALUES = [
   { dataElement: 'HP6', value: 6, organisationUnit: 'TO_HvlMCH' },
   { dataElement: 'HP7', value: 7, organisationUnit: 'TO_HvlMCH' },
   { dataElement: 'HP8', value: 8, organisationUnit: 'TO_HvlMCH' },
-];
+]);
 
-export const ORG_UNITS = [
+export const ORG_UNITS = /** @type {const} */ ([
   { code: 'TO_Nukuhc', name: 'Nukunuku' },
   { code: 'TO_Vainihc', name: 'Vaini' },
   { code: 'TO_HvlMCH', name: 'Haveluloto' },
-];
+]);
