@@ -3,14 +3,10 @@
 
 import { SqlQuery, TupaiaDatabase } from '@tupaia/database';
 
-const groupToArrayOrNull = <Field extends string>(
-  field: Field,
-): `NULLIF(array(select distinct unnest(array_agg(${Field}))), '{NULL}')` =>
+const groupToArrayOrNull = (field: string) =>
   `NULLIF(array(select distinct unnest(array_agg(${field}))), '{NULL}')`;
 
-const groupToFlatArrayOrNull = <Field extends string>(
-  field: Field,
-): `NULLIF(array(select distinct unnest(array_concat_agg(${Field}))), '{}')` =>
+const groupToFlatArrayOrNull = (field: string) =>
   `NULLIF(array(select distinct unnest(array_concat_agg(${field}))), '{}')`;
 
 /**

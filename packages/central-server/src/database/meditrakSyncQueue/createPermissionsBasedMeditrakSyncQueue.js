@@ -3,19 +3,9 @@
 
 import { SqlQuery } from '@tupaia/database';
 
-/**
- * @template {string} Field
- * @param {Field} field
- * @returns {`NULLIF(array(select distinct unnest(array_agg(${Field}))), '{NULL}')`}
- */
 const groupToArrayOrNull = field =>
   `NULLIF(array(select distinct unnest(array_agg(${field}))), '{NULL}')`;
 
-/**
- * @template {string} Field
- * @param {Field} field
- * @returns {`NULLIF(array(select distinct unnest(array_concat_agg(${Field}))), '{}')`}
- */
 const groupToFlatArrayOrNull = field =>
   `NULLIF(array(select distinct unnest(array_concat_agg(${field}))), '{}')`;
 
