@@ -49,11 +49,7 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
           false,
         );
 
-<<<<<<< HEAD
-      const descendantsByCode = keyBy(descendants, d => d.code);
-=======
       const descendantsByCode = keyBy(descendants, 'code');
->>>>>>> parent of 9de6eca94 (migrate (some) `groupBy`, `keyBy` to non-compat)
 
       const data = descendants.map((row: ExportEntityHierarchiesData) => {
         const record = {
