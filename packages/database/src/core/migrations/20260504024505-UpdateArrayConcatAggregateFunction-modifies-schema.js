@@ -15,8 +15,11 @@ exports.setup = function (options, seedLink) {
 };
 
 /**
- * PostgreSQL 14+
+ * PostgreSQL 14 updated `array_cat()` to take `anycompatiblearray` (previously `anyarray`).
  * @see https://www.postgresql.org/docs/release/14.0
+ *
+ * @privateRemarks `array_concat_agg` was added in
+ * 20220622064208-AddArrayConcatAggregationFunction-modifies-schema.js
  */
 exports.up = async function (db) {
   await db.runSql('DROP AGGREGATE IF EXISTS array_concat_agg(anyarray);');
@@ -28,15 +31,13 @@ exports.up = async function (db) {
   `);
 };
 
-/** PostgreSQL ≤13 */
-exports.down = async function (db) {
-  await db.runSql('DROP AGGREGATE IF EXISTS array_concat_agg(anycompatiblearray);');
-  await db.runSql(`
-    CREATE OR REPLACE AGGREGATE array_concat_agg(anyarray) (
-      SFUNC = array_cat,
-      STYPE = anyarray
-    );
-  `);
+/**
+ * This migration was added when we upgraded Tupaia’s RDS engine from 13 to 18.  Attempting to
+ * recreate it with `anyarray` will fail in modern PostgreSQL versions.
+ * @see https://www.postgresql.org/docs/release/14.0
+ */
+exports.down = function (db) {
+  return null;
 };
 
 exports._meta = {
