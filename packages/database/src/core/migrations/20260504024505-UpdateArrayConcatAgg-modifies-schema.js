@@ -15,16 +15,23 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
+  await db.runSql('DROP AGGREGATE IF EXISTS array_concat_agg(anyarray);');
+  await db.runSql(`
+    CREATE OR REPLACE AGGREGATE array_concat_agg(anycompatiblearray) (
+      SFUNC = array_cat,
+      STYPE = anycompatiblearray
+    );
+  `);
+};
+
+exports.down = async function (db) {
+  await db.runSql('DROP AGGREGATE IF EXISTS array_concat_agg(anycompatiblearray);');
   await db.runSql(`
     CREATE OR REPLACE AGGREGATE array_concat_agg(anyarray) (
       SFUNC = array_cat,
       STYPE = anyarray
     );
   `);
-};
-
-exports.down = async function (db) {
-  await db.runSql('DROP AGGREGATE IF EXISTS array_concat_agg(anyarray);');
 };
 
 exports._meta = {

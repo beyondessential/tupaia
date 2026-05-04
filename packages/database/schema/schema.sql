@@ -744,9 +744,9 @@ CREATE FUNCTION public.scrub_geo_data(current_record jsonb DEFAULT NULL::jsonb, 
 -- Name: array_concat_agg(anyarray); Type: AGGREGATE; Schema: public; Owner: -
 --
 
-CREATE AGGREGATE public.array_concat_agg(anyarray) (
+CREATE AGGREGATE public.array_concat_agg(anycompatiblearray) (
     SFUNC = array_cat,
-    STYPE = anyarray
+    STYPE = anycompatiblearray
 );
 
 
