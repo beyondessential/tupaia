@@ -14,6 +14,10 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+/**
+ * PostgreSQL 14+
+ * @see https://www.postgresql.org/docs/release/14.0
+ */
 exports.up = async function (db) {
   await db.runSql('DROP AGGREGATE IF EXISTS array_concat_agg(anyarray);');
   await db.runSql(`
@@ -24,6 +28,7 @@ exports.up = async function (db) {
   `);
 };
 
+/** PostgreSQL ≤13 */
 exports.down = async function (db) {
   await db.runSql('DROP AGGREGATE IF EXISTS array_concat_agg(anycompatiblearray);');
   await db.runSql(`
@@ -36,6 +41,6 @@ exports.down = async function (db) {
 
 exports._meta = {
   version: 1,
-  /* `array_concat_agg()` is used only by createPermissionsBasedMeditrakSyncQueue */
+  /* `array_concat_agg()` is used only by `createPermissionsBasedMeditrakSyncQueue` */
   targets: ['server'],
 };

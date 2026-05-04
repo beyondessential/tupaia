@@ -29,6 +29,6 @@ exports.down = async function (db) {
 
 exports._meta = {
   version: 1,
-  /* `array_concat_agg()` is used only by createPermissionsBasedMeditrakSyncQueue */
+  /* `array_concat_agg()` is used only by `createPermissionsBasedMeditrakSyncQueue` */
   targets: ['server'],
 };
