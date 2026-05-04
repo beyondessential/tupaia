@@ -9,17 +9,21 @@ import { AUTH_ROUTES } from '../routes';
 export const LoginPage = ({ labels, homeLink }) => {
   const formContext = useForm();
   const { mutate: onLogin, isLoading, error } = useLogin(homeLink);
+  console.log('login page');
 
   return (
-    <LoginForm
-      onSubmit={onLogin}
-      isLoading={isLoading}
-      error={error}
-      formContext={formContext}
-      forgotPasswordLink={AUTH_ROUTES.FORGOT_PASSWORD}
-      RegisterLinkComponent={<RegisterLink text={labels?.register} />}
-      labels={labels}
-    />
+    <div>
+      test12
+      <LoginForm
+        onSubmit={onLogin}
+        isLoading={isLoading}
+        error={error}
+        formContext={formContext}
+        forgotPasswordLink={AUTH_ROUTES.FORGOT_PASSWORD}
+        RegisterLinkComponent={<RegisterLink text={labels?.register} />}
+        labels={labels}
+      />
+    </div>
   );
 };
 
