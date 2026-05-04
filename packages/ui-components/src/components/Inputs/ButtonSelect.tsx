@@ -26,7 +26,7 @@ const StyledTextField = styled(TextField)`
   .MuiSelect-root {
     padding-left: 3.5rem;
 
-    &:focus {
+    &:focus-visible {
       background: none;
     }
   }

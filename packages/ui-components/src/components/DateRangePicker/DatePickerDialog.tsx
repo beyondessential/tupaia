@@ -51,7 +51,7 @@ const Container = styled.fieldset`
   .MuiSelect-root {
     color: ${props => props.theme.palette.text.primary};
     font-size: 0.875rem;
-    &:focus {
+    &:focus-visible {
       background-color: transparent;
     }
   }

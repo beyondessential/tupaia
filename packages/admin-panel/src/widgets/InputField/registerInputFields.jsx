@@ -32,7 +32,7 @@ import { CheckboxCheckedIcon } from '../Checkbox/CheckboxCheckedIcon';
 
 const StyledLink = styled(Link)`
   text-decoration: none;
-  &:focus,
+  &:focus-visible,
   &:hover,
   &:visited,
   &:link,

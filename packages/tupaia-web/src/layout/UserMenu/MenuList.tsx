@@ -32,7 +32,7 @@ const MenuItemStyles = css`
   width: 100%;
   text-decoration: none;
   &:hover,
-  &:focus {
+  &:focus-visible {
     text-decoration: none;
     background-color: rgba(255, 255, 255, 0.08);
   }

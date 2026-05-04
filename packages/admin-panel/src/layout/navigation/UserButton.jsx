@@ -13,7 +13,7 @@ export const UserButton = styled(Button).attrs({
   padding: 0;
   justify-content: flex-start;
   &:hover,
-  &:focus {
+  &:focus-visible {
     text-decoration: underline;
   }
   .MuiButton-label {

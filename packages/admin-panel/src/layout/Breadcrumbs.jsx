@@ -20,12 +20,8 @@ const BackButton = styled(IconButton)`
 
 const Breadcrumb = styled(Typography)`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  &:is(a) {
-    &:hover,
-    &:focus,
-    &:focus-visible {
-      color: ${({ theme }) => theme.palette.primary.main};
-    }
+  &:is(a:hover, a:focus-visible) {
+    color: ${({ theme }) => theme.palette.primary.main};
   }
 `;
 
@@ -39,7 +35,7 @@ export const Breadcrumbs = ({
 }) => {
   const itemDisplayValue = getDisplayValue ? getDisplayValue(details) : details?.[displayProperty];
 
-  const parentTitle = parent ? parent.title ?? generateTitle(parent.resourceName) : null;
+  const parentTitle = parent ? (parent.title ?? generateTitle(parent.resourceName)) : null;
 
   const pathname = parent?.to || '/';
 

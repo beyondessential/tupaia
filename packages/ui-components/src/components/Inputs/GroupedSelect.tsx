@@ -17,7 +17,7 @@ const StyledTextField = styled(TextField)`
     padding-right: 1.8rem;
     color: ${props => props.theme.palette.text.primary};
 
-    &:focus {
+    &:focus-visible {
       background: white;
     }
   }

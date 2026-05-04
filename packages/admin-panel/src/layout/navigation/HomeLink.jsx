@@ -16,7 +16,6 @@ const Link = styled(BaseLink)`
     max-height: 100%;
     max-width: 100%;
   }
-  &:focus,
   &:focus-visible {
     border-color: ${WHITE};
   }
