@@ -5,7 +5,11 @@ from helpers.networking import (
     setup_subdomains_via_dns,
     setup_subdomains_via_gateway,
 )
-from helpers.rds import get_latest_db_snapshot, wait_for_db_instance
+from helpers.rds import (
+    get_db_instance_parameter_group_name,
+    get_latest_db_snapshot,
+    wait_for_db_instance,
+)
 from helpers.utilities import get_account_ids, get_instance_by_id
 
 ec2 = boto3.resource("ec2")
@@ -223,8 +227,8 @@ def clone_db_from_snapshot(
     security_group_code=None,
     security_group_id=None,
 ):
-    db_instance_id = deployment_type + "-" + deployment_name
-    snapshot_db_instance_id = deployment_type + "-" + snapshot_name
+    db_instance_id = f"{deployment_type}-{deployment_name}"
+    snapshot_db_instance_id = f"{deployment_type}-{snapshot_name}"
     security_group_ids = get_security_group_ids_config(
         security_group_code, security_group_id
     )
@@ -241,23 +245,30 @@ def clone_db_from_snapshot(
         filter(lambda item: item["Key"] not in required_tags_keys, extra_tags)
     )
     all_tags = required_tags + non_repeating_extra_tags
-    deletion_protection = (
-        deployment_name == "production"
-    )  # ensure prod database cannot be deleted
-
+    # ensure prod database cannot be deleted
+    deletion_protection = deployment_name == "production"
     snapshot_id = get_latest_db_snapshot(snapshot_db_instance_id)
-    rds.restore_db_instance_from_db_snapshot(
-        DBInstanceIdentifier=db_instance_id,
-        DBSnapshotIdentifier=snapshot_id,
-        DBInstanceClass=instance_type,
-        Port=5432,
-        PubliclyAccessible=True,
-        VpcSecurityGroupIds=security_group_ids,
-        Tags=all_tags,
-        DeletionProtection=deletion_protection,
-    )
 
-    print("Successfully cloned new db (" + db_instance_id + ") from snapshot")
+    restore_kwargs = {
+        "DBInstanceIdentifier": db_instance_id,
+        "DBSnapshotIdentifier": snapshot_id,
+        "DBInstanceClass": instance_type,
+        "Port": 5432,
+        "PubliclyAccessible": True,
+        "VpcSecurityGroupIds": security_group_ids,
+        "Tags": all_tags,
+        "DeletionProtection": deletion_protection,
+    }
+    parameter_group_name = get_db_instance_parameter_group_name(snapshot_db_instance_id)
+    if parameter_group_name:
+        restore_kwargs["DBParameterGroupName"] = parameter_group_name
+        print(f"Applying parameter group {parameter_group_name}")
+    else:
+        print("Using default parameter group")
+
+    rds.restore_db_instance_from_db_snapshot(**restore_kwargs)
+
+    print(f"Successfully cloned new DB ({db_instance_id}) from snapshot {snapshot_id}")
 
     return db_instance_id
 
