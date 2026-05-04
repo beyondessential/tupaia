@@ -6,9 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import type { TileSet } from '../../types';
 
-const StyledButton = styled(Button)<{
-  active: string;
-}>`
+const StyledButton = styled(Button)`
   display: block;
   pointer-events: auto;
   box-shadow: none;
@@ -17,18 +15,12 @@ const StyledButton = styled(Button)<{
   margin-top: 0.6rem;
   margin-bottom: 1rem;
   border-radius: 3px;
-  padding-block: 0.3125rem;
-  padding-inline: 0.3125rem 0.9rem;
+  padding: 0.3125rem 0.9rem 0.3125rem 0.3125rem;
   font-weight: 500;
   font-size: 0.75rem;
   line-height: 0.85rem;
   border: none;
   text-transform: none;
-
-  img {
-    height: 1.5rem;
-    margin-right: 0.5rem;
-  }
 
   .MuiSvgIcon-root {
     margin-right: -0.9rem;
@@ -43,13 +35,18 @@ const StyledButton = styled(Button)<{
       theme.palette.type === 'light' ? 'white' : 'rgba(43, 45, 56, 0.7)'};
     color: ${({ theme }) =>
       theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
+
+    .MuiSvgIcon-root {
+      color: ${({ theme }) =>
+        theme.palette.type === 'light' ? theme.palette.primary.main : 'white'};
+    }
   }
 `;
 
 const Label = styled.span`
-  letter-spacing: 0;
-  text-align: start;
   width: 4.65rem;
+  text-align: left;
+  letter-spacing: 0;
 `;
 
 const Divider = styled.span`
@@ -81,32 +78,41 @@ const LegendLabel = styled(Typography)`
   margin-bottom: 0.3rem;
 `;
 
-interface TileControlProps {
+const Thumbnail = styled.img.attrs({
+  'aria-hidden': true,
+  crossOrigin: '',
+  width: 24,
+  height: 24,
+})`
+  aspect-ratio: 1;
+  block-size: 1.5rem;
+  margin-inline-end: 8px;
+  object-fit: cover;
+  object-position: center;
+`;
+
+interface TileControlProps extends React.ComponentPropsWithRef<typeof StyledButton> {
   tileSet: TileSet;
-  isActive?: boolean;
-  [key: string]: any;
 }
 
-export const TileControl = React.memo(
-  ({ tileSet, isActive = false, ...props }: TileControlProps) => (
-    <StyledButton variant="contained" active={isActive.toString()} {...props}>
-      <Box display="flex" alignItems="center">
-        <img crossOrigin="" src={tileSet.thumbnail} alt="tile" />
-        <Label>{tileSet.label}</Label>
-        <Divider />
-        <RightIcon />
-        <RightIcon />
+export const TileControl = ({ tileSet, ...props }: TileControlProps) => (
+  <StyledButton variant="contained" {...props}>
+    <Box display="flex" alignItems="center">
+      <Thumbnail src={tileSet.thumbnail} />
+      <Label>{tileSet.label}</Label>
+      <Divider aria-hidden />
+      <RightIcon aria-hidden />
+      <RightIcon aria-hidden />
+    </Box>
+    {tileSet.legendItems && (
+      <Box pt={1}>
+        {tileSet.legendItems.map(item => (
+          <Legend key={item.color}>
+            <LegendColor color={item.color} />
+            <LegendLabel>{item.label}</LegendLabel>
+          </Legend>
+        ))}
       </Box>
-      {tileSet.legendItems && (
-        <Box pt={1}>
-          {tileSet.legendItems.map(item => (
-            <Legend key={item.color}>
-              <LegendColor color={item.color} />
-              <LegendLabel>{item.label}</LegendLabel>
-            </Legend>
-          ))}
-        </Box>
-      )}
-    </StyledButton>
-  ),
+    )}
+  </StyledButton>
 );

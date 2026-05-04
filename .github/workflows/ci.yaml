@@ -4,6 +4,9 @@ on:
     branches-ignore:
       - '**-e2e'
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
