@@ -22,6 +22,9 @@ const ORPHAN_PROJECT_CODE = 'explore';
 const ORPHAN_FLAG = 'orphaned';
 const DUPLICATE_FLAG = 'duplicated_for_rn_1853';
 
+// Batch size for the bulk VALUES-table
+const BULK_VALUES_BATCH_SIZE = 5000;
+
 const log = (msg, startTime) => {
   const elapsed = startTime ? ` (+${((Date.now() - startTime) / 1000).toFixed(1)}s)` : '';
   // eslint-disable-next-line no-console
@@ -90,16 +93,27 @@ const duplicateMultiProjectEntities = async (db, t0) => {
 
   if (multiProjectEntities.rows.length === 0) return;
 
-  // Original row gets its lowest-id project.
-  const firstProjectAssignments = multiProjectEntities.rows
-    .map(({ id, project_ids }) => `('${id}','${project_ids[0]}')`)
-    .join(',');
-  await db.runSql(`
-    UPDATE entity
-    SET project_id = m.project_id
-    FROM (VALUES ${firstProjectAssignments}) AS m(entity_id, project_id)
-    WHERE entity.id = m.entity_id;
-  `);
+  // Original row gets its lowest-id project. Batched so neither the JS heap nor the
+  // Postgres parser has to chew through one ~12MB statement. Per-batch logging gives
+  // operators visibility on a step that runs for tens of seconds at prod scale.
+  const totalFirstAssignmentBatches = Math.ceil(
+    multiProjectEntities.rows.length / BULK_VALUES_BATCH_SIZE,
+  );
+  for (let i = 0; i < multiProjectEntities.rows.length; i += BULK_VALUES_BATCH_SIZE) {
+    const batch = multiProjectEntities.rows.slice(i, i + BULK_VALUES_BATCH_SIZE);
+    const values = batch.map(({ id, project_ids }) => `('${id}','${project_ids[0]}')`).join(',');
+    await db.runSql(`
+      UPDATE entity
+      SET project_id = m.project_id
+      FROM (VALUES ${values}) AS m(entity_id, project_id)
+      WHERE entity.id = m.entity_id;
+    `);
+    const batchNum = Math.floor(i / BULK_VALUES_BATCH_SIZE) + 1;
+    log(
+      `  first-project assignment batch ${batchNum}/${totalFirstAssignmentBatches} (${batch.length} rows)`,
+      t0,
+    );
+  }
   log(`Assigned first project to ${multiProjectEntities.rows.length} originals`, t0);
 
   // (entity_id, project_id, new_id) triples for the N-1 copies per multi-project entity.
@@ -111,22 +125,25 @@ const duplicateMultiProjectEntities = async (db, t0) => {
   }
   if (copyTriples.length === 0) return;
 
-  const copyValues = copyTriples
-    .map(({ entity_id, project_id, new_id }) => `('${entity_id}','${project_id}','${new_id}')`)
-    .join(',');
-  await db.runSql(`
-    INSERT INTO entity (
-      id, code, parent_id, name, type, image_url, country_code,
-      point, bounds, metadata, attributes, entity_polygon_id, project_id
-    )
-    SELECT
-      m.new_id, e.code, e.parent_id, e.name, e.type, e.image_url, e.country_code,
-      e.point, e.bounds,
-      jsonb_set(COALESCE(e.metadata, '{}'::jsonb), '{${DUPLICATE_FLAG}}', 'true'::jsonb),
-      e.attributes, e.entity_polygon_id, m.project_id
-    FROM entity e
-    JOIN (VALUES ${copyValues}) AS m(entity_id, project_id, new_id) ON e.id = m.entity_id;
-  `);
+  for (let i = 0; i < copyTriples.length; i += BULK_VALUES_BATCH_SIZE) {
+    const batch = copyTriples.slice(i, i + BULK_VALUES_BATCH_SIZE);
+    const values = batch
+      .map(({ entity_id, project_id, new_id }) => `('${entity_id}','${project_id}','${new_id}')`)
+      .join(',');
+    await db.runSql(`
+      INSERT INTO entity (
+        id, code, parent_id, name, type, image_url, country_code,
+        point, bounds, metadata, attributes, entity_polygon_id, project_id
+      )
+      SELECT
+        m.new_id, e.code, e.parent_id, e.name, e.type, e.image_url, e.country_code,
+        e.point, e.bounds,
+        jsonb_set(COALESCE(e.metadata, '{}'::jsonb), '{${DUPLICATE_FLAG}}', 'true'::jsonb),
+        e.attributes, e.entity_polygon_id, m.project_id
+      FROM entity e
+      JOIN (VALUES ${values}) AS m(entity_id, project_id, new_id) ON e.id = m.entity_id;
+    `);
+  }
   log(`Inserted ${copyTriples.length} duplicate rows`, t0);
 };
 
