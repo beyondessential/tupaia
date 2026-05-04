@@ -36,6 +36,10 @@ const StyledButton = styled(Button)`
       theme.palette.type === 'light' ? 'white' : 'rgba(43, 45, 56, 0.7)'};
     color: ${({ theme }) =>
       theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
+
+    .MuiSvgIcon-root {
+      color: inherit;
+    }
   }
 `;
 
