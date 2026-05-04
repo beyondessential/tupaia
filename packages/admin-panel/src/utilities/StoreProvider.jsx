@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import thunk from 'redux-thunk';
 import { rootReducer } from '../rootReducer';
 import {
@@ -38,18 +36,9 @@ export const StoreProvider = React.memo(({ children, api }) => {
     }
   });
 
-  const queryClient = new QueryClient();
-
   api.injectReduxStore(store);
 
-  return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools />
-        {children}
-      </QueryClientProvider>
-    </Provider>
-  );
+  return <Provider store={store}>{children}</Provider>;
 });
 
 StoreProvider.propTypes = {
