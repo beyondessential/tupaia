@@ -32,13 +32,13 @@ def get_db_instance_parameter_group_name(db_id):
         return None
 
     groups = instance.get("DBParameterGroups")
-    if not groups or not groups[0].get("DBParameterGroupName"):
+    parameter_group_name = groups and groups[0].get("DBParameterGroupName")
+    if not parameter_group_name:
         print(
             f"DB instance {db_id} doesn’t have a DBParameterGroupName. Returning `None`."
         )
         return None
 
-    parameter_group_name = groups[0]["DBParameterGroupName"]
     print(
         f"DB instance {db_id} is configured with parameter group {parameter_group_name}"
     )
