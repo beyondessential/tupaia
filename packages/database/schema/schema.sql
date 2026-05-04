@@ -750,14 +750,14 @@ DO $do$
 BEGIN
   IF current_setting('server_version_num')::int < 140000 THEN
     EXECUTE $sql$
-      CREATE OR REPLACE AGGREGATE public.array_concat_agg(anyarray) (
+      CREATE AGGREGATE public.array_concat_agg(anyarray) (
         SFUNC = array_cat,
         STYPE = anyarray
       );
     $sql$;
   ELSE
     EXECUTE $sql$
-      CREATE OR REPLACE AGGREGATE public.array_concat_agg(anycompatiblearray) (
+      CREATE AGGREGATE public.array_concat_agg(anycompatiblearray) (
         SFUNC = array_cat,
         STYPE = anycompatiblearray
       );
