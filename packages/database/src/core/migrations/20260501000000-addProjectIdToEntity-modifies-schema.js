@@ -12,8 +12,6 @@ var seed;
  * The matching CHECK constraint (sub-country rows must have project_id NOT NULL,
  * structural rows must have it NULL) is applied at the end of the data migration —
  * it is data-dependent and would fail here, before the backfill runs.
- *
- * See llm/specs/RN-1853-refinement.md and RN-1853-implementation.md.
  */
 
 const log = (msg, startTime) => {
@@ -44,7 +42,9 @@ exports.up = async function (db) {
   // it's superseded by UNIQUE(code, project_id) below. The dashboard FK that depends
   // on entity_code_key has to go first; after this migration dashboard.root_entity_code
   // is a soft text reference (no longer enforced).
-  await db.runSql(`ALTER TABLE dashboard DROP CONSTRAINT IF EXISTS dashboard_root_entity_code_fkey;`);
+  await db.runSql(
+    `ALTER TABLE dashboard DROP CONSTRAINT IF EXISTS dashboard_root_entity_code_fkey;`,
+  );
   await db.runSql(`ALTER TABLE entity DROP CONSTRAINT IF EXISTS entity_code_key;`);
   log('Dropped entity_code_key UNIQUE and dashboard FK', t0);
 

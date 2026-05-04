@@ -14,13 +14,6 @@ var seed;
  * duplicates rows that belong to multiple projects, repoints downstream FKs to the
  * per-project copies, and finally applies the CHECK constraint that locks in the
  * NULL/NOT-NULL invariant by entity type.
- *
- * Filename suffix `-modifies-data.js` is recognised by setupNewDatabase.sh and skipped
- * for fresh test DBs (which have no data to migrate). That has the side effect of
- * keeping the CHECK constraint out of test DBs, which lets dummy-entity fixtures
- * across the monorepo continue to work without per-test workarounds.
- *
- * See llm/specs/RN-1853-refinement.md and RN-1853-implementation.md.
  */
 
 const ORPHAN_PROJECT_CODE = 'explore';
@@ -47,15 +40,15 @@ exports.setup = function (options, seedLink) {
 // it, and that's fine unless we encounter orphan entities or anomaly survey_responses
 // that need somewhere to land — those steps fail-fast if the project is missing.
 const lookupExploreProject = async (db, t0) => {
-  const result = await db.runSql(
-    `SELECT id FROM project WHERE code = $1;`,
-    [ORPHAN_PROJECT_CODE],
-  );
+  const result = await db.runSql(`SELECT id FROM project WHERE code = $1;`, [ORPHAN_PROJECT_CODE]);
   const exploreProjectId = result.rows[0]?.id ?? null;
   if (exploreProjectId) {
     log(`Explore project found (id=${exploreProjectId})`, t0);
   } else {
-    log(`Explore project NOT found — OK on empty DB; orphan/anomaly steps will fail-fast if needed`, t0);
+    log(
+      `Explore project NOT found — OK on empty DB; orphan/anomaly steps will fail-fast if needed`,
+      t0,
+    );
   }
   return exploreProjectId;
 };
