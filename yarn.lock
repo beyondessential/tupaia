@@ -12610,7 +12610,6 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/jest": "npm:^29.5.14"
     camelcase-keys: "npm:^6.2.2"
-    date-fns: "npm:^2.29.2"
     es-toolkit: "npm:^1.46.0"
     express: "npm:^4.21.2"
     jest: "npm:^29.7.0"
@@ -12663,6 +12662,7 @@ __metadata:
     jest: "npm:^29.7.0"
     knex: "npm:^3.1.0"
     knex-pglite: "npm:^0.13.0"
+    leaflet: "npm:^1.7.1"
     lucide-react: "npm:^0.525.0"
     markdown-to-jsx: "npm:^7.7.13"
     memfs: "npm:^4.17.0"
@@ -19590,7 +19590,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^2.29.2, date-fns@npm:^2.30.0":
+"date-fns@npm:^2.30.0":
   version: 2.30.0
   resolution: "date-fns@npm:2.30.0"
   dependencies:

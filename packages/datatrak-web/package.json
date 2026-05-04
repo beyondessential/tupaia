@@ -37,6 +37,7 @@
     "es-toolkit": "^1.46.0",
     "hash-wasm": "^4.12.0",
     "knex-pglite": "^0.13.0",
+    "leaflet": "^1.7.1",
     "lucide-react": "^0.525.0",
     "markdown-to-jsx": "^7.7.13",
     "memfs": "^4.17.0",
