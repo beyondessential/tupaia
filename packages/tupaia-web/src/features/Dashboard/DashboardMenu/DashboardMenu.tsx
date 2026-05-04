@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { useId } from '@tupaia/ui-components';
 import { useDashboards } from '../../../api/queries';
 import { TOP_BAR_HEIGHT } from '../../../constants';
 import { Dashboard } from '../../../types';
@@ -18,6 +19,7 @@ const MenuButton = styled(ButtonBase)`
   font-size: 1.125rem;
   font-weight: 500;
   line-height: 1.4;
+  text-align: start;
 `;
 
 const DisclosureIcon = styled(ChevronDown)`
@@ -89,11 +91,18 @@ export const DashboardMenu = () => {
 
   const hasMultipleDashboards = dashboards.length > 1;
 
+  const menuId = useId();
+
   return (
     <>
       {activeDashboard && (
         <MenuButtonWrapper>
-          <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
+          <MenuButton
+            aria-controls={hasMultipleDashboards ? menuId : undefined}
+            aria-expanded={hasMultipleDashboards ? anchorEl !== null : undefined}
+            onClick={handleClickListItem}
+            disabled={!hasMultipleDashboards}
+          >
             {activeDashboard?.name}
             {hasMultipleDashboards && <DisclosureIcon />}
           </MenuButton>
@@ -101,7 +110,7 @@ export const DashboardMenu = () => {
         </MenuButtonWrapper>
       )}
       <StyledMenu
-        id="dashboards-menu"
+        id={menuId}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}

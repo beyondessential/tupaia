@@ -1,35 +1,27 @@
 import { uniq } from 'es-toolkit';
 import { FieldValue } from '../../../types';
 
-export const value = (valueGiven: FieldValue): FieldValue => {
+export const value = <T extends FieldValue>(valueGiven: T): T => {
   return valueGiven;
 };
 
-export const first = (values: FieldValue[]): FieldValue => {
+export const first = <T extends readonly FieldValue[]>(values: T): T[0] => {
   if (!Array.isArray(values)) {
     throw new Error(`Function 'first' expected an array, but got: ${values}`);
-  }
-
-  if (values.length < 1) {
-    return undefined;
   }
 
   return values[0];
 };
 
-export const last = (values: FieldValue[]): FieldValue => {
+export const last = (values: readonly FieldValue[]): FieldValue => {
   if (!Array.isArray(values)) {
     throw new Error(`Function 'last' expected an array, but got: ${values}`);
   }
 
-  if (values.length < 1) {
-    return undefined;
-  }
-
-  return values[values.length - 1];
+  return values.at(-1);
 };
 
-export const unique = (values: FieldValue[]): FieldValue[] => {
+export const unique = (values: readonly FieldValue[]): FieldValue[] => {
   if (!Array.isArray(values)) {
     throw new Error(`Function 'unique' expected an array, but got: ${values}`);
   }

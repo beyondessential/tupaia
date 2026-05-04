@@ -164,7 +164,7 @@ export class AnalyticsPuller {
     query: Record<string, unknown>,
   ): Promise<DhisEventAnalytics> => {
     const allHeaders: DhisEventAnalytics['headers'] = [];
-    let metaData = { items: {}, dimensions: {} } as DhisEventAnalytics['metaData'];
+    let metaData: DhisEventAnalytics['metaData'] = { items: {}, dimensions: {} };
     let width = 0;
     let height = 0;
     const rows: DhisEventAnalytics['rows'] = [];
