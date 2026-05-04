@@ -1,9 +1,9 @@
-let currentProjectCode = null;
+let currentProjectId = null;
 
-export const setCurrentProjectCode = code => {
-  currentProjectCode = code || null;
+export const setCurrentProjectId = id => {
+  currentProjectId = id || null;
 };
 
-export const getCurrentProjectCode = () => currentProjectCode;
+export const getCurrentProjectId = () => currentProjectId;
 
-export const PROJECT_CODE_HEADER = 'X-Project-Code';
+export const PROJECT_ID_PARAM = 'projectId';

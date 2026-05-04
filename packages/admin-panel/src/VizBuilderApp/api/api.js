@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import FetchError from './fetchError';
-import { getCurrentProjectCode, PROJECT_CODE_HEADER } from '../../projects/context';
+import { getCurrentProjectId, PROJECT_ID_PARAM } from '../../projects/context';
 
 const baseUrl = import.meta.env.REACT_APP_VIZ_BUILDER_API_URL || 'http://localhost:8070/v1';
 const timeout = 45 * 1000; // 45 seconds
@@ -10,10 +10,12 @@ const timeout = 45 * 1000; // 45 seconds
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(config => {
-  const projectCode = getCurrentProjectCode();
-  if (projectCode) {
-    config.headers = config.headers || {};
-    config.headers[PROJECT_CODE_HEADER] = projectCode;
+  const projectId = getCurrentProjectId();
+  if (projectId) {
+    config.params = config.params || {};
+    if (!(PROJECT_ID_PARAM in config.params)) {
+      config.params[PROJECT_ID_PARAM] = projectId;
+    }
   }
   return config;
 });

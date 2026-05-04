@@ -7,7 +7,7 @@ import { rootReducer } from '../rootReducer';
 import {
   selectSelectedProject,
   writePersistedProject,
-  setCurrentProjectCode,
+  setCurrentProjectId,
 } from '../projects';
 
 const initialState = {};
@@ -26,13 +26,13 @@ export const StoreProvider = React.memo(({ children, api }) => {
   const store = createStore(rootReducer, initialState, composedEnhancers);
 
   let lastPersistedProject = selectSelectedProject(store.getState());
-  setCurrentProjectCode(lastPersistedProject?.code ?? null);
+  setCurrentProjectId(lastPersistedProject?.id ?? null);
   store.subscribe(() => {
     const project = selectSelectedProject(store.getState());
     if (project !== lastPersistedProject) {
       lastPersistedProject = project;
       writePersistedProject(project);
-      setCurrentProjectCode(project?.code ?? null);
+      setCurrentProjectId(project?.id ?? null);
     }
   });
 

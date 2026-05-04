@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 
 import { PrivateRoute } from './authentication';
 import { AppPageLayout, AuthLayout, Footer } from './layout';
@@ -10,11 +10,14 @@ import { ResourcePage } from './pages/resources/ResourcePage';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { AUTH_ROUTES, ROUTES } from './routes';
 import {
+  ALL_DATA_BASE_PATH,
   ALL_PROJECTS_SCOPE,
-  SECTIONS,
+  SINGLE_PROJECT_PATH_PARAM,
+  SINGLE_PROJECT_ROUTE_BASE,
   SINGLE_PROJECT_SCOPE,
   filterRoutesByScope,
 } from './routes/scopes';
+import { DefaultRedirect, ProjectRouteScope } from './projects';
 import { useHasBesAdminAccess, useUserPermissionGroups } from './utilities';
 
 export const getFlattenedChildViews = (route, pathPrefix = '', basePath = '') => {
@@ -50,6 +53,18 @@ export const getFlattenedChildViews = (route, pathPrefix = '', basePath = '') =>
   }, []);
 };
 
+// Replaces React Router param tokens (e.g. `:projectCode`) in a target URL
+// with their live values from `useParams()`. Used by route catch-alls whose
+// target is a parameterised path string.
+const ParamAwareNavigate = ({ to }) => {
+  const params = useParams();
+  const resolved = Object.entries(params).reduce(
+    (url, [key, value]) => (value ? url.replaceAll(`:${key}`, value) : url),
+    to,
+  );
+  return <Navigate to={resolved} replace />;
+};
+
 const renderSectionRoutes = (sectionRoutes, pathPrefix, hasBESAdminAccess) =>
   sectionRoutes.map(route => {
     const sectionRoutePath = `${pathPrefix}${route.path}`;
@@ -80,18 +95,10 @@ const renderSectionRoutes = (sectionRoutes, pathPrefix, hasBESAdminAccess) =>
             }
           />
         ))}
-        <Route path="*" element={<Navigate to={firstChildPath} replace />} />
+        <Route path="*" element={<ParamAwareNavigate to={firstChildPath} />} />
       </Route>
     );
   });
-
-const getDefaultRedirect = (allDataRoutes, singleProjectRoutes) => {
-  const fallback = allDataRoutes[0] ?? singleProjectRoutes[0];
-  if (!fallback) return '/login';
-  const section = allDataRoutes.length > 0 ? SECTIONS[0] : SECTIONS[1];
-  const firstChild = fallback.childViews[0];
-  return `${section.basePath}${fallback.path}${firstChild?.path ?? ''}`;
-};
 
 const App = () => {
   const hasBESAdminAccess = useHasBesAdminAccess();
@@ -142,7 +149,6 @@ const App = () => {
     () => filterRoutesByScope(accessibleRoutes, SINGLE_PROJECT_SCOPE),
     [accessibleRoutes],
   );
-  const defaultRedirect = getDefaultRedirect(allDataRoutes, singleProjectRoutes);
 
   return (
     <Routes>
@@ -161,9 +167,24 @@ const App = () => {
             />
           }
         >
-          <Route index element={<Navigate to={defaultRedirect} replace />} />
-          {renderSectionRoutes(allDataRoutes, SECTIONS[0].basePath, hasBESAdminAccess)}
-          {renderSectionRoutes(singleProjectRoutes, SECTIONS[1].basePath, hasBESAdminAccess)}
+          <Route
+            index
+            element={
+              <DefaultRedirect
+                allDataRoutes={allDataRoutes}
+                singleProjectRoutes={singleProjectRoutes}
+              />
+            }
+          />
+          {renderSectionRoutes(allDataRoutes, ALL_DATA_BASE_PATH, hasBESAdminAccess)}
+          <Route path={`:${SINGLE_PROJECT_PATH_PARAM}`} element={<ProjectRouteScope />}>
+            {renderSectionRoutes(
+              singleProjectRoutes,
+              SINGLE_PROJECT_ROUTE_BASE,
+              hasBESAdminAccess,
+            )}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
           {PROFILE_ROUTES.map(route => (
             <Route
               key={route.path || route.label}
@@ -195,7 +216,15 @@ const App = () => {
               />
             </Route>
           ))}
-          <Route path="*" element={<Navigate to={defaultRedirect} replace />} />
+          <Route
+            path="*"
+            element={
+              <DefaultRedirect
+                allDataRoutes={allDataRoutes}
+                singleProjectRoutes={singleProjectRoutes}
+              />
+            }
+          />
         </Route>
       </Route>
     </Routes>
