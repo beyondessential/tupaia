@@ -45,10 +45,12 @@ const NavLink = styled(BaseNavLink)`
     font-size: 1.2rem;
   }
   &.active {
-    background-color: ${WHITE}33; // 33 is 20% opacity
+    background-color: ${WHITE}33;
+    background-color: oklch(from ${WHITE} l c h / 20%);
   }
   &:hover {
-    background-color: ${WHITE}18; //  18 is 10% opacity
+    background-color: ${WHITE}18;
+    background-color: oklch(from ${WHITE} l c h / 10%);
   }
   &:focus-visible {
     border-color: ${WHITE};
