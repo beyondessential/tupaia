@@ -340,18 +340,18 @@ end $_X$;
 
 CREATE FUNCTION public.create_analytics_table_indexes() RETURNS void
     LANGUAGE plpgsql
-    AS $_$ 
+    AS $_$
       declare
         tStartTime TIMESTAMP;
         tAnalyticsIndexName TEXT := 'analytics_data_element_entity_date_idx';
         tEventsIndexName TEXT := 'analytics_data_group_entity_event_date_idx';
-      
+
       begin
         RAISE NOTICE 'Creating analytics table indexes...';
-        
+
         IF (SELECT count(*) = 0
           FROM pg_class c
-          WHERE c.relname = tAnalyticsIndexName 
+          WHERE c.relname = tAnalyticsIndexName
           AND c.relkind = 'i')
         THEN
           tStartTime := clock_timestamp();
@@ -360,10 +360,10 @@ CREATE FUNCTION public.create_analytics_table_indexes() RETURNS void
         ELSE
           RAISE NOTICE 'Analytics index already exists, skipping';
         END IF;
-      
+
         IF (SELECT count(*) = 0
           FROM pg_class c
-          WHERE c.relname = tEventsIndexName 
+          WHERE c.relname = tEventsIndexName
           AND c.relkind = 'i')
         THEN
           tStartTime := clock_timestamp();
@@ -372,7 +372,7 @@ CREATE FUNCTION public.create_analytics_table_indexes() RETURNS void
         ELSE
           RAISE NOTICE 'Events index already exists, skipping';
         END IF;
-      
+
       end $_$;
 
 
@@ -396,7 +396,7 @@ BEGIN
       SELECT
       FROM   pg_user
       WHERE  usename = pis_moduleowner) THEN
-	  
+
 	  ls_sql := 'CREATE USER '||ls_moduleowner||' WITH
 					LOGIN
 					NOSUPERUSER
@@ -406,16 +406,16 @@ BEGIN
 					NOREPLICATION
 					CONNECTION LIMIT -1
 					PASSWORD '''||pis_password||''';';
-				
+
 	  EXECUTE ls_sql;
-	  
+
    END IF;
-   
+
    IF NOT EXISTS (
       SELECT
       FROM   pg_roles
       WHERE  rolname = 'pgmv$_role') THEN
-	  
+
 	  ls_sql := 'CREATE ROLE pgmv$_role WITH
 				  NOLOGIN
 				  NOSUPERUSER
@@ -423,26 +423,26 @@ BEGIN
 				  NOCREATEDB
 				  NOCREATEROLE
 				  NOREPLICATION;';
-				
+
 	  EXECUTE ls_sql;
-	  
+
    END IF;
-   
+
    IF NOT EXISTS (
       SELECT
       FROM   pg_roles
       WHERE  rolname = 'rds_superuser') THEN
-	  
+
 	  ls_sql := 'ALTER USER '||pis_moduleowner||' with superuser;';
-				
+
 	  EXECUTE ls_sql;
-	  
+
    ELSE
-	
+
 	  ls_sql := 'GRANT rds_superuser TO '||pis_moduleowner||';';
-	  
+
 	  EXECUTE ls_sql;
-	  
+
    END IF;
 
 END;
@@ -500,7 +500,7 @@ CREATE FUNCTION public.drop_analytics_table() RETURNS void
     AS $_$
     declare
       tStartTime TIMESTAMP;
-    
+
     begin
       RAISE NOTICE 'Dropping analytics materialized view...';
       IF (SELECT EXISTS (
@@ -529,13 +529,13 @@ CREATE FUNCTION public.drop_analytics_table_indexes() RETURNS void
         tStartTime TIMESTAMP;
         tAnalyticsIndexName TEXT := 'analytics_data_element_entity_date_idx';
         tEventsIndexName TEXT := 'analytics_data_group_entity_event_date_idx';
-      
+
       begin
         RAISE NOTICE 'Dropping analytics table indexes...';
-      
+
         IF (SELECT count(*) > 0
           FROM pg_class c
-          WHERE c.relname = tAnalyticsIndexName 
+          WHERE c.relname = tAnalyticsIndexName
           AND c.relkind = 'i')
         THEN
           tStartTime := clock_timestamp();
@@ -544,10 +544,10 @@ CREATE FUNCTION public.drop_analytics_table_indexes() RETURNS void
         ELSE
           RAISE NOTICE 'Analytics index doesn''t exist, skipping';
         END IF;
-      
+
         IF (SELECT count(*) > 0
           FROM pg_class c
-          WHERE c.relname = tEventsIndexName 
+          WHERE c.relname = tEventsIndexName
           AND c.relkind = 'i')
         THEN
           tStartTime := clock_timestamp();
@@ -556,7 +556,7 @@ CREATE FUNCTION public.drop_analytics_table_indexes() RETURNS void
         ELSE
           RAISE NOTICE 'Events index doesn''t exist, skipping';
         END IF;
-      
+
       end $_$;
 
 
@@ -619,9 +619,9 @@ CREATE FUNCTION public.most_recent_final_fn(public.value_and_date) RETURNS text
 CREATE FUNCTION public.most_recent_fn(public.value_and_date, text, timestamp without time zone) RETURNS public.value_and_date
     LANGUAGE sql
     AS $_$
-    SELECT 
+    SELECT
       case
-        when $3 > $1.date then ($2, $3)::value_and_date 
+        when $3 > $1.date then ($2, $3)::value_and_date
         else $1
       end
   $_$;
@@ -741,14 +741,30 @@ CREATE FUNCTION public.scrub_geo_data(current_record jsonb DEFAULT NULL::jsonb, 
 
 
 --
--- Name: array_concat_agg(anyarray); Type: AGGREGATE; Schema: public; Owner: -
+-- Name: array_concat_agg(anycompatiblearray); Type: AGGREGATE; Schema: public; Owner: -
 --
 
-CREATE AGGREGATE public.array_concat_agg(anyarray) (
-    SFUNC = array_cat,
-    STYPE = anyarray
-);
-
+-- v14 updated `array_cat()` to take `anycompatiblearray` argument (previously `anyarray`)
+-- See https://www.postgresql.org/docs/release/14.0
+DO $do$
+BEGIN
+  IF current_setting('server_version_num')::int < 140000 THEN
+    EXECUTE $sql$
+      CREATE OR REPLACE AGGREGATE array_concat_agg(anyarray) (
+        SFUNC = array_cat,
+        STYPE = anyarray
+      );
+    $sql$;
+  ELSE
+    EXECUTE $sql$
+      CREATE OR REPLACE AGGREGATE array_concat_agg(anycompatiblearray) (
+        SFUNC = array_cat,
+        STYPE = anycompatiblearray
+      );
+    $sql$;
+  END IF;
+END
+$do$;
 
 --
 -- Name: most_recent(text, timestamp without time zone); Type: AGGREGATE; Schema: public; Owner: -
@@ -6137,4 +6153,3 @@ GRANT SELECT ON TABLE public.migrations TO tupaia_read;
 --
 -- PostgreSQL database dump complete
 --
-
