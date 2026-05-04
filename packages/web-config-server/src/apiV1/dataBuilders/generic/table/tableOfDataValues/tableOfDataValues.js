@@ -1,5 +1,5 @@
-import { keyBy, uniq } from 'es-toolkit';
-import { flatten } from 'es-toolkit/compat';
+import { uniq } from 'es-toolkit';
+import { flatten, keyBy } from 'es-toolkit/compat';
 
 import { getSortByKey, reduceToDictionary, reduceToSet } from '@tupaia/utils';
 
