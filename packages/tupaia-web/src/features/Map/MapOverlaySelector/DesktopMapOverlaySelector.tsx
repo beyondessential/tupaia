@@ -4,7 +4,7 @@ import moment from 'moment';
 import styled from 'styled-components';
 import { GRANULARITY_CONFIG, periodToMoment } from '@tupaia/utils';
 import { Tooltip, IconButton, SmallAlert } from '@tupaia/ui-components';
-import { LegendProps } from '@tupaia/ui-map-components';
+import type { LegendProps, TileSet } from '@tupaia/ui-map-components';
 import { ArrowDropDown, Layers, Assignment, Close } from '@material-ui/icons';
 import { ChevronDown } from 'lucide-react';
 import {
@@ -19,7 +19,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import { useMapOverlayMapData, useMapContext } from '../utils';
-import { Entity } from '../../../types';
+import type { Entity } from '../../../types';
 import { useExportMapOverlay, useExportMapOverlayImage } from '../../../api/mutations';
 import { useEntity, useMapOverlays, useProject, useUser } from '../../../api/queries';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
@@ -252,12 +252,7 @@ interface DesktopMapOverlaySelectorProps {
   overlayLibraryOpen: boolean;
   toggleOverlayLibrary: () => void;
   hiddenValues: LegendProps['hiddenValues'];
-  activeTileSet: {
-    key: string;
-    label: string;
-    thumbnail: string;
-    url: string;
-  };
+  activeTileSet: TileSet;
 }
 
 export const DesktopMapOverlaySelector = ({

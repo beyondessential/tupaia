@@ -1,4 +1,5 @@
 import boto3
+from botocore.exceptions import ClientError
 from helpers.networking import (
     add_subdomains_to_route53,
     setup_subdomains_via_dns,
@@ -29,11 +30,28 @@ def get_latest_image_id(image_code):
     return image_id
 
 
-def allocate_elastic_ip(instance_id):
+def allocate_elastic_ip(instance_id, resource_name):
     elastic_ip = ec.allocate_address(Domain="Vpc")
-    ec.associate_address(
-        AllocationId=elastic_ip["AllocationId"], InstanceId=instance_id
-    )
+    allocation_id = elastic_ip["AllocationId"]
+    try:
+        ec.create_tags(
+            Resources=[allocation_id],
+            Tags=[{"Key": "Name", "Value": resource_name}],
+        )
+        ec.associate_address(AllocationId=allocation_id, InstanceId=instance_id)
+    except ClientError:
+        print(
+            f"Failed to associate Elastic IP {allocation_id} to {instance_id}. Releasing it…"
+        )
+        try:
+            ec.release_address(AllocationId=allocation_id)
+            print(f"Released Elastic IP {allocation_id}")
+        except ClientError:
+            print(
+                f"Failed to release orphaned Elastic IP {allocation_id} ({elastic_ip['PublicIp']}). Please release it manually."
+            )
+        raise
+
     return elastic_ip["PublicIp"]
 
 
@@ -78,12 +96,10 @@ def get_instance_creation_config(
         security_group_code, security_group_id
     )
 
-    instance_name = deployment_type + ": " + deployment_name
-
     image_id = image_id if image_id != None else get_latest_image_id(image_code)
 
     tags = [
-        {"Key": "Name", "Value": instance_name},
+        {"Key": "Name", "Value": f"{deployment_type}: {deployment_name}"},
         {"Key": "DeploymentName", "Value": deployment_name},
         {"Key": "DeploymentType", "Value": deployment_type},
     ]
@@ -178,7 +194,7 @@ def create_instance(
     print(f"New instance {new_instance.id} is up")
 
     # attach elastic ip
-    allocate_elastic_ip(new_instance.id)
+    allocate_elastic_ip(new_instance.id, f"{deployment_type}: {deployment_name}")
 
     # return instance object
     new_instance_object = get_instance_by_id(new_instance.id)

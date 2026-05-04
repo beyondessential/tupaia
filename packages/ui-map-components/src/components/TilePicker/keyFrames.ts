@@ -1,3 +1,5 @@
+import { css } from 'styled-components';
+
 function ease(v: number, pow = 3) {
   return 1 - Math.pow(1 - v, pow);
 }
@@ -27,12 +29,13 @@ export const createScaleKeyFrameAnimation = ({ x = 0.5, y = 0, easeFn = ease }) 
     }`;
   }
 
-  return `
-  @keyframes openAnimation {
-    ${animation}
-  }
+  return css`
+    @keyframes --open-animation {
+      ${animation}
+    }
 
-  @keyframes closeAnimation {
-    ${inverseAnimation}
-  }`;
+    @keyframes --close-animation {
+      ${inverseAnimation}
+    }
+  `;
 };
