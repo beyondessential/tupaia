@@ -741,30 +741,14 @@ CREATE FUNCTION public.scrub_geo_data(current_record jsonb DEFAULT NULL::jsonb, 
 
 
 --
--- Name: array_concat_agg(anycompatiblearray); Type: AGGREGATE; Schema: public; Owner: -
+-- Name: array_concat_agg(anyarray); Type: AGGREGATE; Schema: public; Owner: -
 --
 
--- v14 updated `array_cat()` to take `anycompatiblearray` argument (previously `anyarray`)
--- See https://www.postgresql.org/docs/release/14.0
-DO $do$
-BEGIN
-  IF current_setting('server_version_num')::int < 140000 THEN
-    EXECUTE $sql$
-      CREATE AGGREGATE public.array_concat_agg(anyarray) (
-        SFUNC = array_cat,
-        STYPE = anyarray
-      );
-    $sql$;
-  ELSE
-    EXECUTE $sql$
-      CREATE AGGREGATE public.array_concat_agg(anycompatiblearray) (
-        SFUNC = array_cat,
-        STYPE = anycompatiblearray
-      );
-    $sql$;
-  END IF;
-END
-$do$;
+CREATE AGGREGATE public.array_concat_agg(anyarray) (
+    SFUNC = array_cat,
+    STYPE = anyarray
+);
+
 
 --
 -- Name: most_recent(text, timestamp without time zone); Type: AGGREGATE; Schema: public; Owner: -
