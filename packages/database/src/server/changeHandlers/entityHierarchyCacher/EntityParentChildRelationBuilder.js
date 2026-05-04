@@ -8,8 +8,7 @@
  * @typedef {import('../../../core/modelClasses/Project').ProjectRecord} ProjectRecord
  * @typedef {[Entity['id'], Entity['id']]} ParentChildIdPair
  */
-
-import { generateId } from '../../../core';
+import { QUERY_CONJUNCTIONS, generateId } from '../../../core';
 import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
 
 const RECURSIVE_CONNECTED_NODES_CTE = `
@@ -225,19 +224,19 @@ export class EntityParentChildRelationBuilder {
    *   >[]
    * >}
    */
-  async getRelationsViaCanonical(hierarchyId, parentIds, project, childrenAlreadyCached = new Set()) {
+  async getRelationsViaCanonical(
+    hierarchyId,
+    parentIds,
+    project,
+    childrenAlreadyCached = new Set(),
+  ) {
     const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
-    // Scope by project: structural entities (NULL project_id) and this project's own
-    // sub-country entities are valid; sibling projects' duplicates are not.
-    // SQL `IN (?, NULL)` does not match NULL rows, so use a raw `IS NULL OR =` clause.
+
     /** @type {EntityRecord[]} */
     const entities = await this.models.entity.find({
       parent_id: parentIds,
       type: canonicalTypes,
-      _raw_: {
-        // Parens are critical: AND binds tighter than OR, so without them the WHERE
-        // collapses to `(... AND project_id IS NULL) OR project_id = ?`, returning
-        // every entity in `project.id` regardless of parent_id or type.
+      [QUERY_CONJUNCTIONS.RAW]: {
         sql: '(project_id IS NULL OR project_id = ?)',
         parameters: [project.id],
       },

@@ -24,8 +24,6 @@ const TABLES_TO_CLEAR = [
   'legacy_report',
   'ancestor_descendant_relation',
   'entity_relation',
-  // entity must be deleted before project because of the
-  // entity.project_id → project.id FK with ON DELETE RESTRICT (RN-1853).
   'entity',
   'project',
   'data_group',
