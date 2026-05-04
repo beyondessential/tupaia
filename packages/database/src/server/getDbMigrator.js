@@ -9,10 +9,12 @@ import { runPostMigration } from './runPostMigration';
 import { getConnectionConfig } from './getConnectionConfig';
 
 const MIGRATIONS_DIR = path.resolve(__dirname, '../core/migrations');
-const SERVER_MIGRATION_DIR = path.resolve(
-  __dirname,
-  `../core/server-migrations-${Date.now()}`,
-);
+const SERVER_MIGRATION_DIR = path.resolve(__dirname, `../core/server-migrations-${Date.now()}`);
+
+const exitWithError = error => {
+  console.error(error.message);
+  process.exit(1);
+};
 
 const resetMigrationFolder = () => {
   removeDirectoryIfExists(SERVER_MIGRATION_DIR);
@@ -43,24 +45,21 @@ export const removeNonServerMigrations = () => {
 };
 
 const cliCallback = async (migrator, _internals, originalError, migrationError) => {
-  let exitCode = 0;
   try {
     if (originalError) {
-      throw new Error(`db-migrate error: ${originalError.message}`);
+      exitWithError(new Error(`db-migrate error: ${originalError.message}`));
     }
     if (migrationError) {
-      throw new Error(`Migration error: ${migrationError.message}`);
+      exitWithError(new Error(`Migration error: ${migrationError.message}`));
     }
 
     const { driver } = migrator;
     await runPostMigration(driver);
   } catch (error) {
-    console.error(error.message);
-    exitCode = 1;
+    exitWithError(new Error(`Post migration error: ${error.message}`));
   } finally {
     resetMigrationFolder();
   }
-  process.exit(exitCode);
 };
 
 const appCallback = async (migrator, internals, callback, error) => {
