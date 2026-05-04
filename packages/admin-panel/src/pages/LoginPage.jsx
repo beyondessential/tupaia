@@ -9,11 +9,9 @@ import { AUTH_ROUTES } from '../routes';
 export const LoginPage = ({ labels, homeLink }) => {
   const formContext = useForm();
   const { mutate: onLogin, isLoading, error } = useLogin(homeLink);
-  console.log('login page');
 
   return (
     <div>
-      test12
       <LoginForm
         onSubmit={onLogin}
         isLoading={isLoading}

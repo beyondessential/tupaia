@@ -9,7 +9,7 @@ import {
 } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
 
-import { attachProjectContext, upload } from '../middleware';
+import { applyProjectFilter, attachProjectContext, upload } from '../middleware';
 import { AdminPanelSessionModel } from '../models';
 import {
   ExportDashboardVisualisationRequest,
@@ -74,6 +74,7 @@ export async function createApp(promptManager: PromptManager) {
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .useMiddleware(addPromptManagerToContext(promptManager))
     .useMiddleware(attachProjectContext)
+    .useMiddleware(applyProjectFilter)
     .get('user', handleWith(UserRoute))
     .get<FetchHierarchyEntitiesRequest>(
       'hierarchy/:hierarchyName/:entityCode',

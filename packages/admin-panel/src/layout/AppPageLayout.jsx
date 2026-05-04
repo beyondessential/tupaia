@@ -8,7 +8,7 @@ import { NavPanel } from './navigation';
 import { CaretLeftIcon } from '../icons';
 import { NAV_PANEL_CLOSED_WIDTH, NAV_PANEL_OPEN_WIDTH } from './navigation/NavPanel';
 import { ProjectSelector } from '../projects';
-import { buildSectionsFromRoutes } from '../routes/scopes';
+import { SECTIONS } from '../routes/scopes';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -56,35 +56,49 @@ const NavWrapper = styled.div`
       : NAV_PANEL_CLOSED_WIDTH}; // this is set so that the button can be positioned correctly
 `;
 
-const buildItem = (route, basePath, sectionId) => ({
-  id: `app-tab-${sectionId}-${labelToId(route.label)}`,
-  label: route.label,
-  icon: route.icon,
-  to: `${basePath}${route.path}`,
-});
+const buildItem = (route, sectionBasePath, sectionId) => {
+  const firstChild = route.childViews?.[0];
+  const target = `${sectionBasePath}${route.path}${firstChild?.path ?? ''}`;
+  return {
+    id: `app-tab-${sectionId}-${labelToId(route.label)}`,
+    label: route.label,
+    icon: route.icon,
+    to: target,
+  };
+};
 
-export const AppPageLayout = ({ routes, logo, homeLink, profileLink, basePath }) => {
+export const AppPageLayout = ({
+  allDataRoutes,
+  singleProjectRoutes,
+  logo,
+  homeLink,
+  profileLink,
+}) => {
   const [navOpen, setNavOpen] = useState(true);
   const toggleOpen = () => {
     setNavOpen(!navOpen);
   };
 
   const sections = useMemo(() => {
-    const { allProjectsRoutes, singleProjectRoutes } = buildSectionsFromRoutes(routes);
+    const [allDataSection, singleProjectSection] = SECTIONS;
     return [
       {
-        id: 'all-projects',
-        label: 'All projects',
-        items: allProjectsRoutes.map(route => buildItem(route, basePath, 'all-projects')),
+        id: allDataSection.id,
+        label: allDataSection.label,
+        items: allDataRoutes.map(route =>
+          buildItem(route, allDataSection.basePath, allDataSection.id),
+        ),
       },
       {
-        id: 'single-project',
-        label: 'Single project',
+        id: singleProjectSection.id,
+        label: singleProjectSection.label,
         headerContent: <ProjectSelector collapsed={!navOpen} />,
-        items: singleProjectRoutes.map(route => buildItem(route, basePath, 'single-project')),
+        items: singleProjectRoutes.map(route =>
+          buildItem(route, singleProjectSection.basePath, singleProjectSection.id),
+        ),
       },
     ];
-  }, [routes, basePath, navOpen]);
+  }, [allDataRoutes, singleProjectRoutes, navOpen]);
 
   return (
     <PageWrapper>
@@ -109,12 +123,18 @@ export const AppPageLayout = ({ routes, logo, homeLink, profileLink, basePath })
 };
 
 AppPageLayout.propTypes = {
-  routes: PropTypes.arrayOf(
+  allDataRoutes: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       path: PropTypes.string.isRequired,
     }),
-  ).isRequired,
+  ),
+  singleProjectRoutes: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+    }),
+  ),
   logo: PropTypes.shape({
     url: PropTypes.string.isRequired,
     alt: PropTypes.string.isRequired,
@@ -124,15 +144,15 @@ AppPageLayout.propTypes = {
     label: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
   }),
-  basePath: PropTypes.string,
 };
 
 AppPageLayout.defaultProps = {
+  allDataRoutes: [],
+  singleProjectRoutes: [],
   logo: {
     url: '/admin-panel-logo-white.svg',
     alt: 'Tupaia Admin Panel Logo',
   },
   homeLink: '/',
   profileLink: null,
-  basePath: '',
 };

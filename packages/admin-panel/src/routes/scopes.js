@@ -1,16 +1,33 @@
 export const ALL_PROJECTS_SCOPE = 'all-projects';
 export const SINGLE_PROJECT_SCOPE = 'single-project';
 
+export const ALL_DATA_BASE_PATH = '/all-data';
+export const SINGLE_PROJECT_BASE_PATH = '/project';
+
+export const SECTIONS = [
+  {
+    id: 'all-data',
+    label: 'All data',
+    scope: ALL_PROJECTS_SCOPE,
+    basePath: ALL_DATA_BASE_PATH,
+  },
+  {
+    id: 'single-project',
+    label: 'Single project',
+    scope: SINGLE_PROJECT_SCOPE,
+    basePath: SINGLE_PROJECT_BASE_PATH,
+  },
+];
+
 export const isInScope = (item, scope) => item?.scope === scope;
 
-const hasAnyChildInScope = (route, scope) =>
-  route.childViews?.some(childView => isInScope(childView, scope)) ?? false;
-
-// Builds two grouped lists of top-level routes for the sidebar. A route appears
-// in a section if it has at least one childView tagged with that scope. The same
-// route may appear in both sections — clicking either link goes to the same
-// page; data filtering is the server's job.
-export const buildSectionsFromRoutes = routes => ({
-  allProjectsRoutes: routes.filter(route => hasAnyChildInScope(route, ALL_PROJECTS_SCOPE)),
-  singleProjectRoutes: routes.filter(route => hasAnyChildInScope(route, SINGLE_PROJECT_SCOPE)),
-});
+// Returns top-level routes whose childViews include items in the given scope,
+// with childViews filtered to that scope only. Top-level routes that end up
+// with no childViews in scope are dropped.
+export const filterRoutesByScope = (routes, scope) =>
+  routes
+    .map(route => ({
+      ...route,
+      childViews: route.childViews?.filter(c => isInScope(c, scope)) ?? [],
+    }))
+    .filter(route => route.childViews.length > 0);

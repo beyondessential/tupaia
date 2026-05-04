@@ -7,12 +7,11 @@ import { legacyReports } from './legacyReports';
 import { mapOverlays } from './mapOverlays';
 import { mapOverlayGroups } from './mapOverlayGroups';
 import { mapOverlayGroupRelations } from './mapOverlayGroupRelations';
-import { indicators } from './indicators';
-import { dataTables } from './dataTables';
-import { socialFeed } from './socialFeed';
 import { VizIcon } from '../../icons';
-import { ALL_PROJECTS_SCOPE, SINGLE_PROJECT_SCOPE } from '../scopes';
+import { SINGLE_PROJECT_SCOPE } from '../scopes';
 
+// TUP-3055: Social Feed Posts, Indicators, Data Tables removed from sidebar
+// per refinement matrix. They are not registered here.
 export const visualisationsTabRoutes = {
   label: 'Visualisations',
   path: '/visualisations',
@@ -26,10 +25,5 @@ export const visualisationsTabRoutes = {
     { ...mapOverlays, scope: SINGLE_PROJECT_SCOPE },
     { ...mapOverlayGroups, scope: SINGLE_PROJECT_SCOPE },
     { ...mapOverlayGroupRelations, scope: SINGLE_PROJECT_SCOPE },
-    // RN-1855: matrix excludes these from the Single Project section.
-    // No new home defined yet — keeping in All Projects for now.
-    { ...dataTables, scope: ALL_PROJECTS_SCOPE },
-    { ...indicators, scope: ALL_PROJECTS_SCOPE },
-    { ...socialFeed, scope: ALL_PROJECTS_SCOPE },
   ],
 };
