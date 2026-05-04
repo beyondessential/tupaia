@@ -120,7 +120,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   /**
-   * @returns {{ dataElement: string, categoryId: (string:undefined) }}
+   * @returns {Promise<{ dataElement: string, categoryId: (string:undefined) }>}
    */
   async buildBaseRows() {
     // Build orgUnit base rows
