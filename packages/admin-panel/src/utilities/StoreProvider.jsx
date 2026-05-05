@@ -2,10 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import thunk from 'redux-thunk';
 import { rootReducer } from '../rootReducer';
+import {
+  selectSelectedProject,
+  writePersistedProject,
+  setCurrentProjectId,
+} from '../projects';
 
 const initialState = {};
 const enhancers = [];
@@ -22,18 +25,20 @@ export const StoreProvider = React.memo(({ children, api }) => {
   const composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers);
   const store = createStore(rootReducer, initialState, composedEnhancers);
 
-  const queryClient = new QueryClient();
+  let lastPersistedProject = selectSelectedProject(store.getState());
+  setCurrentProjectId(lastPersistedProject?.id ?? null);
+  store.subscribe(() => {
+    const project = selectSelectedProject(store.getState());
+    if (project !== lastPersistedProject) {
+      lastPersistedProject = project;
+      writePersistedProject(project);
+      setCurrentProjectId(project?.id ?? null);
+    }
+  });
 
   api.injectReduxStore(store);
 
-  return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools />
-        {children}
-      </QueryClientProvider>
-    </Provider>
-  );
+  return <Provider store={store}>{children}</Provider>;
 });
 
 StoreProvider.propTypes = {

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { IconButton } from '@material-ui/core';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
@@ -7,6 +8,8 @@ import { labelToId } from '../utilities';
 import { NavPanel } from './navigation';
 import { CaretLeftIcon } from '../icons';
 import { NAV_PANEL_CLOSED_WIDTH, NAV_PANEL_OPEN_WIDTH } from './navigation/NavPanel';
+import { ProjectSelector, selectSelectedProjectCode } from '../projects';
+import { ALL_DATA_BASE_PATH, SECTIONS, buildSingleProjectBasePath } from '../routes/scopes';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -34,7 +37,9 @@ const ArrowButton = styled(IconButton)`
   background-color: ${props => props.theme.palette.secondary.main};
   color: ${props => props.theme.palette.common.white};
   z-index: 1201; // above the drawer
-  transition: right 0.2s ease, transform 0.2s ease;
+  transition:
+    right 0.2s ease,
+    transform 0.2s ease;
   .MuiSvgIcon-root {
     font-size: 1rem;
     transform: ${props => (props.$navOpen ? 'rotate(0)' : 'rotate(180deg)')};
@@ -54,20 +59,63 @@ const NavWrapper = styled.div`
       : NAV_PANEL_CLOSED_WIDTH}; // this is set so that the button can be positioned correctly
 `;
 
-export const AppPageLayout = ({ routes, logo, homeLink, profileLink, basePath }) => {
+const buildItem = (route, sectionBasePath, sectionId) => {
+  const firstChild = route.childViews?.[0];
+  const target = `${sectionBasePath}${route.path}${firstChild?.path ?? ''}`;
+  return {
+    id: `app-tab-${sectionId}-${labelToId(route.label)}`,
+    label: route.label,
+    icon: route.icon,
+    to: target,
+  };
+};
+
+const AppPageLayoutComponent = ({
+  allDataRoutes,
+  singleProjectRoutes,
+  selectedProjectCode,
+  logo,
+  homeLink,
+  profileLink,
+}) => {
   const [navOpen, setNavOpen] = useState(true);
   const toggleOpen = () => {
     setNavOpen(!navOpen);
   };
+
+  const sections = useMemo(() => {
+    const [singleProjectSection, allDataSection] = SECTIONS;
+    const singleProjectBasePath = buildSingleProjectBasePath(selectedProjectCode);
+    const singleProjectItems = singleProjectBasePath
+      ? singleProjectRoutes.map(route =>
+          buildItem(route, singleProjectBasePath, singleProjectSection.id),
+        )
+      : [];
+    return [
+      {
+        id: singleProjectSection.id,
+        headerContent: <ProjectSelector collapsed={!navOpen} />,
+        items: singleProjectItems,
+        indented: true,
+        hideIcons: true,
+      },
+      {
+        id: allDataSection.id,
+        items: allDataRoutes.map(route => buildItem(route, ALL_DATA_BASE_PATH, allDataSection.id)),
+        pinToBottom: true,
+        bordered: true,
+      },
+    ];
+  }, [allDataRoutes, singleProjectRoutes, selectedProjectCode, navOpen]);
+
   return (
     <PageWrapper>
       <NavWrapper $navOpen={navOpen}>
         <NavPanel
-          links={routes.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
+          sections={sections}
           profileLink={profileLink}
           logo={logo}
           homeLink={homeLink}
-          basePath={basePath}
           isOpen={navOpen}
           setOpen={setNavOpen}
         />
@@ -82,13 +130,20 @@ export const AppPageLayout = ({ routes, logo, homeLink, profileLink, basePath })
   );
 };
 
-AppPageLayout.propTypes = {
-  routes: PropTypes.arrayOf(
+AppPageLayoutComponent.propTypes = {
+  allDataRoutes: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       path: PropTypes.string.isRequired,
     }),
-  ).isRequired,
+  ),
+  singleProjectRoutes: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+    }),
+  ),
+  selectedProjectCode: PropTypes.string,
   logo: PropTypes.shape({
     url: PropTypes.string.isRequired,
     alt: PropTypes.string.isRequired,
@@ -98,15 +153,22 @@ AppPageLayout.propTypes = {
     label: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
   }),
-  basePath: PropTypes.string,
 };
 
-AppPageLayout.defaultProps = {
+AppPageLayoutComponent.defaultProps = {
+  allDataRoutes: [],
+  singleProjectRoutes: [],
+  selectedProjectCode: null,
   logo: {
     url: '/admin-panel-logo-white.svg',
     alt: 'Tupaia Admin Panel Logo',
   },
   homeLink: '/',
   profileLink: null,
-  basePath: '',
 };
+
+const mapStateToProps = state => ({
+  selectedProjectCode: selectSelectedProjectCode(state),
+});
+
+export const AppPageLayout = connect(mapStateToProps)(AppPageLayoutComponent);

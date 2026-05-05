@@ -2,6 +2,7 @@ import { saveAs } from 'file-saver';
 import { parse } from 'content-disposition-header';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
+import { getCurrentProjectId, PROJECT_ID_PARAM } from '../projects/context';
 
 const FETCH_TIMEOUT = 120 * 1000; // 120 seconds in milliseconds
 
@@ -133,7 +134,12 @@ export class TupaiaApi {
   }
 
   async request(endpoint, queryParameters, fetchConfig) {
-    const queryUrl = stringifyQuery(this.apiUrl, endpoint, queryParameters);
+    const projectId = getCurrentProjectId();
+    const queryWithProject =
+      projectId && !queryParameters?.[PROJECT_ID_PARAM]
+        ? { ...(queryParameters ?? {}), [PROJECT_ID_PARAM]: projectId }
+        : queryParameters;
+    const queryUrl = stringifyQuery(this.apiUrl, endpoint, queryWithProject);
     const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
 
     await verifyResponseStatus(response);

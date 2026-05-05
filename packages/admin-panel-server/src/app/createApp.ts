@@ -9,7 +9,7 @@ import {
 } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
 
-import { upload } from '../middleware';
+import { applyProjectScope, upload } from '../middleware';
 import { AdminPanelSessionModel } from '../models';
 import {
   ExportDashboardVisualisationRequest,
@@ -73,6 +73,7 @@ export async function createApp(promptManager: PromptManager) {
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .useMiddleware(addPromptManagerToContext(promptManager))
+    .useMiddleware(applyProjectScope)
     .get('user', handleWith(UserRoute))
     .get<FetchHierarchyEntitiesRequest>(
       'hierarchy/:hierarchyName/:entityCode',
@@ -169,7 +170,10 @@ export async function createApp(promptManager: PromptManager) {
     .use('hierarchies', forwardToEntityApi)
     .use('dataTableTypes', forwardToCentralApi)
     .use('surveyResponses', forwardToCentralApi)
-    .use('*', forwardToCentralApi);
+    .use('*', (one, two, three) => {
+      console.log('forwarding to central api');
+      return forwardToCentralApi(one, two, three);
+    });
 
   await builder.initialiseApiClient();
 

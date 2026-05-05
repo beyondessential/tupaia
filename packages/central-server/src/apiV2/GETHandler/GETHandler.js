@@ -100,6 +100,8 @@ export class GETHandler extends CRUDHandler {
   getDbQueryCriteria() {
     const { filter: filterString } = this.req.query;
     const filter = filterString ? JSON.parse(filterString) : {};
+    console.log('---> filterString', filter);
+    console.log('getDbQueryCriteria filter', filter);
     return processColumnSelectorKeys(this.models, filter, this.recordType);
   }
 

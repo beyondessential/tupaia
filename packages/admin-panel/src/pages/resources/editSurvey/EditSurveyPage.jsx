@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import keyBy from 'lodash.keyby';
 import { connect } from 'react-redux';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, SpinningLoader, Modal } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';

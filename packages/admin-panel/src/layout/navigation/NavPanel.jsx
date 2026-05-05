@@ -24,9 +24,39 @@ const Wrapper = styled.div`
   }
 `;
 
-const Nav = styled.nav`
+const SectionsArea = styled.div`
   margin-block-start: 1.4rem;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  overflow: hidden auto;
+  flex: 1;
+`;
+
+const Section = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-block-end: 1rem;
+  ${props => props.$pinToBottom && 'margin-block-start: auto;'}
+  ${props =>
+    props.$bordered &&
+    `border-block: 1px solid ${WHITE};
+     padding-block: 0.75rem;`}
+`;
+
+const ItemList = styled(List)`
+  /* Indented sections shift their links inward to visually nest them under
+     a section header (e.g. the project selector). */
+  ${props => props.$indented && 'padding-inline-start: 0.75rem;'}
+`;
+
+const SectionLabel = styled.div`
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: ${WHITE}99; /* ~60% opacity */
+  padding-inline: 0.5rem;
 `;
 
 const NavLink = styled(BaseNavLink)`
@@ -67,7 +97,7 @@ const Container = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  overflow: hidden;
 `;
 
 const Drawer = styled(BaseDrawer)`
@@ -89,15 +119,16 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const NavListItem = ({ link, basePath, navPanelOpen }) => {
+const NavListItem = ({ link, navPanelOpen, hideIcon }) => {
   const ItemWrapper = navPanelOpen
     ? React.Fragment
     : ({ children }) => <Tooltip title={link.label}>{children}</Tooltip>;
+
   return (
-    <ListItem key={link.label} disableGutters>
+    <ListItem key={link.id} disableGutters>
       <ItemWrapper>
-        <NavLink to={`${basePath}${link.path}`}>
-          {link.icon}
+        <NavLink to={link.to}>
+          {!hideIcon && link.icon}
           {link.label}
         </NavLink>
       </ItemWrapper>
@@ -107,37 +138,61 @@ const NavListItem = ({ link, basePath, navPanelOpen }) => {
 
 NavListItem.propTypes = {
   link: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired,
-    icon: PropTypes.node.isRequired,
+    to: PropTypes.string.isRequired,
+    icon: PropTypes.node,
   }).isRequired,
-  basePath: PropTypes.string.isRequired,
   navPanelOpen: PropTypes.bool.isRequired,
+  hideIcon: PropTypes.bool,
 };
 
-export const NavPanel = ({ links, logo, homeLink, profileLink, basePath, isOpen }) => {
+NavListItem.defaultProps = {
+  hideIcon: false,
+};
+
+const NavSection = ({ section, isOpen }) => {
+  const { items, headerContent, pinToBottom, indented, bordered, hideIcons } = section;
+  if (items.length === 0 && !headerContent) return null;
+  return (
+    <Section $pinToBottom={pinToBottom} $bordered={bordered}>
+      {headerContent}
+      {items.length > 0 && (
+        <ItemList disablePadding $indented={indented}>
+          {items.map(item => (
+            <NavListItem link={item} navPanelOpen={isOpen} hideIcon={hideIcons} key={item.id} />
+          ))}
+        </ItemList>
+      )}
+    </Section>
+  );
+};
+
+NavSection.propTypes = {
+  section: PropTypes.shape({
+    items: PropTypes.array.isRequired,
+    headerContent: PropTypes.node,
+    pinToBottom: PropTypes.bool,
+    indented: PropTypes.bool,
+    bordered: PropTypes.bool,
+    hideIcons: PropTypes.bool,
+  }).isRequired,
+  isOpen: PropTypes.bool.isRequired,
+};
+
+export const NavPanel = ({ sections, logo, homeLink, profileLink, isOpen }) => {
   return (
     <Drawer variant="permanent" anchor="left" open={isOpen}>
       <Wrapper>
         <HeaderContainer>
           <HomeLink logo={logo} homeLink={homeLink} style={{ width: '100%' }} />
         </HeaderContainer>
-
         <Container>
-          {links.length > 0 && (
-            <Nav>
-              <List>
-                {links.map(link => (
-                  <NavListItem
-                    link={link}
-                    basePath={basePath}
-                    navPanelOpen={isOpen}
-                    key={link.id}
-                  />
-                ))}
-              </List>
-            </Nav>
-          )}
+          <SectionsArea>
+            {sections.map(section => (
+              <NavSection section={section} isOpen={isOpen} key={section.id} />
+            ))}
+          </SectionsArea>
           <UserProfileInfo profileLink={profileLink} isFullWidth={isOpen} />
         </Container>
       </Wrapper>
@@ -146,7 +201,13 @@ export const NavPanel = ({ links, logo, homeLink, profileLink, basePath, isOpen 
 };
 
 NavPanel.propTypes = {
-  links: PropTypes.arrayOf(PropTypes.shape({})),
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      items: PropTypes.array.isRequired,
+      headerContent: PropTypes.node,
+    }),
+  ),
   logo: PropTypes.shape({
     url: PropTypes.string.isRequired,
     alt: PropTypes.string.isRequired,
@@ -156,17 +217,15 @@ NavPanel.propTypes = {
     label: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
   }),
-  basePath: PropTypes.string,
   isOpen: PropTypes.bool.isRequired,
 };
 
 NavPanel.defaultProps = {
-  links: [],
+  sections: [],
   logo: {
     url: '/admin-panel-logo-white.svg',
     alt: 'Tupaia Admin Panel Logo',
   },
   homeLink: '/',
   profileLink: null,
-  basePath: '',
 };
