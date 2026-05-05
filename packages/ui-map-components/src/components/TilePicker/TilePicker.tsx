@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { TileButton, TileSet } from './TileButton';
+import { TileButton } from './TileButton';
 import { TileControl } from './TileControl';
 import { createScaleKeyFrameAnimation } from './keyFrames';
+import type { TileSet } from '../../types';
 
 const Container = styled.div`
   height: 100%;
@@ -17,7 +18,7 @@ const Controls = styled.div`
   padding-right: 0.75rem;
 `;
 
-const TileList = styled.div`
+const TileList = styled.ul.attrs({ role: 'list' })`
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => (theme.palette.type === 'light' ? '#f9f9f9' : '#16161c')};
@@ -29,32 +30,20 @@ const TileList = styled.div`
 
   ${createScaleKeyFrameAnimation({})};
 
-  > button {
-    transition: transform 0.5s ease-out;
-  }
-
   // animations
   &.expanded {
     width: 12rem;
-    animation-name: openAnimation;
+    animation-name: --open-animation;
     animation-duration: 0.4s;
     animation-timing-function: linear;
-
-    > button {
-      transform: translate(0, 0);
-    }
   }
 
   &.closed {
     width: 0;
-    animation-name: closeAnimation;
+    animation-name: --close-animation;
     transform: scale(0, 0);
     animation-duration: 0.6s;
     animation-timing-function: linear;
-
-    > button {
-      transform: translate(0.6rem, 6.25rem);
-    }
   }
 `;
 
@@ -65,31 +54,33 @@ interface TilePickerProps {
   className?: string;
 }
 
-export const TilePicker = React.memo(
-  ({ tileSets, activeTileSet, onChange, className }: TilePickerProps) => {
-    const [open, setOpen] = useState(false);
-    return (
-      <ClickAwayListener onClickAway={() => setOpen(false)}>
-        <Container className={className}>
-          <Controls>
-            <TileControl
-              isActive={open}
-              tileSet={activeTileSet}
-              onClick={() => setOpen(current => !current)}
-            />
-          </Controls>
-          <TileList className={open ? 'expanded' : 'closed'}>
-            {tileSets.map(tileSet => (
+const listId = 'tile-list';
+
+export const TilePicker = ({ tileSets, activeTileSet, onChange, className }: TilePickerProps) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <ClickAwayListener onClickAway={() => setOpen(false)}>
+      <Container className={className}>
+        <Controls>
+          <TileControl
+            aria-expanded={open}
+            aria-controls={listId}
+            tileSet={activeTileSet}
+            onClick={() => setOpen(current => !current)}
+          />
+        </Controls>
+        <TileList className={open ? 'expanded' : 'closed'} id={listId}>
+          {tileSets.map(tileSet => (
+            <li key={tileSet.key}>
               <TileButton
-                key={tileSet.key}
-                tileSet={tileSet}
+                aria-pressed={activeTileSet.key === tileSet.key}
                 onChange={onChange}
-                isActive={activeTileSet.key === tileSet.key}
+                tileSet={tileSet}
               />
-            ))}
-          </TileList>
-        </Container>
-      </ClickAwayListener>
-    );
-  },
-);
+            </li>
+          ))}
+        </TileList>
+      </Container>
+    </ClickAwayListener>
+  );
+};

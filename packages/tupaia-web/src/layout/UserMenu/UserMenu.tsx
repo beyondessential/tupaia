@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
 import MuiMenuIcon from '@material-ui/icons/Menu';
-import { IconButton, useTheme } from '@material-ui/core';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { ErrorBoundary } from '@tupaia/ui-components';
-import { useLandingPage, useUser } from '../../api/queries';
+
+import { ErrorBoundary, VisuallyHidden, useId } from '@tupaia/ui-components';
 import { useLogout } from '../../api/mutations';
+import { useLandingPage, useUser } from '../../api/queries';
 import { MODAL_ROUTES } from '../../constants';
-import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
+import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
 
 const UserMenuContainer = styled.div<{
@@ -42,6 +43,8 @@ export const UserMenu = () => {
   };
 
   const theme = useTheme();
+  const isLargerSizeClass = useMediaQuery(theme.breakpoints.up('md'));
+
   const {
     isLandingPage,
     landingPage: { primaryHexcode, secondaryHexcode },
@@ -113,6 +116,10 @@ export const UserMenu = () => {
   const menuPrimaryColor = primaryHexcode || theme.palette.background.default;
   const menuSecondaryColor = secondaryHexcode || theme.palette.text.primary;
 
+  const buttonId = useId();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuId = useId();
+
   return (
     <ErrorBoundary>
       <UserMenuContainer>
@@ -123,32 +130,40 @@ export const UserMenu = () => {
           secondaryColor={menuSecondaryColor}
         />
         <MenuButton
+          aria-controls={menuId}
+          aria-expanded={menuOpen}
           onClick={toggleUserMenu}
           disableRipple
-          id="user-menu-button"
-          title="Toggle menu"
+          id={buttonId}
+          ref={buttonRef}
         >
           <MenuIcon />
+          <VisuallyHidden>Toggle menu</VisuallyHidden>
         </MenuButton>
-        {/** PopoverMenu is for larger (desktop size) screens, and DrawerMenu is for mobile screens. Each component takes care of the hiding and showing at different screen sizes. Eventually all the props will come from a context */}
-        <PopoverMenu
-          menuOpen={menuOpen}
-          onCloseMenu={onCloseMenu}
-          primaryColor={menuPrimaryColor}
-          secondaryColor={menuSecondaryColor}
-        >
-          {menuItems}
-        </PopoverMenu>
-        <DrawerMenu
-          menuOpen={menuOpen}
-          onCloseMenu={onCloseMenu}
-          isLoggedIn={isLoggedIn}
-          primaryColor={menuPrimaryColor}
-          secondaryColor={menuSecondaryColor}
-          currentUser={user}
-        >
-          {menuItems}
-        </DrawerMenu>
+        {isLargerSizeClass ? (
+          <PopoverMenu
+            anchorElRef={buttonRef}
+            id={menuId}
+            menuOpen={menuOpen}
+            onCloseMenu={onCloseMenu}
+            primaryColor={menuPrimaryColor}
+            secondaryColor={menuSecondaryColor}
+          >
+            {menuItems}
+          </PopoverMenu>
+        ) : (
+          <DrawerMenu
+            id={menuId}
+            menuOpen={menuOpen}
+            onCloseMenu={onCloseMenu}
+            isLoggedIn={isLoggedIn}
+            primaryColor={menuPrimaryColor}
+            secondaryColor={menuSecondaryColor}
+            currentUser={user}
+          >
+            {menuItems}
+          </DrawerMenu>
+        )}
       </UserMenuContainer>
     </ErrorBoundary>
   );

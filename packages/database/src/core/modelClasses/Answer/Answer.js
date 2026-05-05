@@ -14,7 +14,7 @@ export class AnswerRecord extends DatabaseRecord {
 }
 
 export class AnswerModel extends MaterializedViewLogDatabaseModel {
-  static syncDirection = SyncDirections.BIDIRECTIONAL;
+  static syncDirection = SyncDirections.PUSH_TO_CENTRAL;
 
   /**
    * @privateRemarks Used only by central-server. I think these are only relevant to MediTrak.

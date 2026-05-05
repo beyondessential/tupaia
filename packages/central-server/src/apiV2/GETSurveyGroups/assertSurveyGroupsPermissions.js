@@ -1,5 +1,5 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { groupBy, flattenDeep } from 'lodash';
+import { groupBy, flattenDeep } from 'es-toolkit/compat';
 import { hasBESAdminAccess } from '../../permissions';
 
 const { RAW } = QUERY_CONJUNCTIONS;

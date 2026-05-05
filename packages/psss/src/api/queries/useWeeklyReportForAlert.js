@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
 import { getPeriodByDate } from '../../utils';
 import { combineQueries, useData, useReport } from './helpers';

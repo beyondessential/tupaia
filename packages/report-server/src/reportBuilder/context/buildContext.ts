@@ -1,6 +1,7 @@
-import { getUniqueEntries } from '@tupaia/utils';
+import { uniq } from 'es-toolkit';
 import { Row } from '../types';
 
+import { Transform } from '@tupaia/types';
 import { detectDependencies } from './detectDependencies';
 import { Context, ContextDependency, ReqContext } from './types';
 
@@ -12,9 +13,9 @@ type ContextBuilder<K extends ContextDependency> = (
 const isEventResponse = (data: Row[]) => data.some(result => 'event' in result);
 
 const getOrgUnitCodesFromData = (data: Row[]) => {
-  return getUniqueEntries(
+  return uniq(
     isEventResponse(data) ? data.map(d => d.orgUnit) : data.map(d => d.organisationUnit),
-  );
+  ) as string[];
 };
 
 const buildOrgUnits = async (reqContext: ReqContext, data: Row[]) => {
@@ -55,7 +56,7 @@ export const updateContext = async (context: Context, data: Row[]): Promise<Cont
 };
 
 export const buildContext = async (
-  transform: unknown,
+  transform: Transform[],
   reqContext: ReqContext,
 ): Promise<Context> => {
   const dependencies = detectDependencies(transform);

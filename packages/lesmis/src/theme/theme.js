@@ -115,6 +115,21 @@ export const typography = {
 export const shape = { borderRadius: 3 };
 
 export const overrides = {
+  MuiCssBaseline: {
+    '@global': {
+      /**
+       * WebKit doesn’t apply implicit ‘list’ role from <ol>s and <ul>s when list-style-type is
+       * ‘none’ unless nested in a <nav>. Intentional on WebKit’s part, but usually undesirable for
+       * us.
+       * @see https://bugs.webkit.org/show_bug.cgi?id=170179#c1
+       */
+      "ol[role='list'], ul[role='list']": {
+        listStyleType: 'none',
+        marginBlock: 0,
+        paddingInline: 0,
+      },
+    },
+  },
   MuiCard: {
     root: {
       borderColor: COLORS.GREY_DE,

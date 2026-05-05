@@ -24,6 +24,10 @@ def get_cert(type_tag):
 elbv2 = boto3.client("elbv2")
 
 
+class GatewayNotFoundError(Exception):
+    """Raised when no gateway ELB or target group matches the given deployment tags."""
+
+
 def get_gateway_name(deployment_type, deployment_name):
     name = deployment_type + "-" + deployment_name
     name = name[0:32]  # max 32 chars in an ELB or gateway name
@@ -52,7 +56,7 @@ def get_gateway_elb(deployment_type, deployment_name):
             )
         if len(matching_arns) == 1:
             return elb
-    raise Exception(
+    raise GatewayNotFoundError(
         "No "
         + deployment_type
         + " gateway elb found tagged with deployment name: "
@@ -83,7 +87,7 @@ def get_gateway_target_group(deployment_type, deployment_name):
         if len(matching_arns) == 1:
             return target_group
 
-    raise Exception(
+    raise GatewayNotFoundError(
         "No "
         + deployment_type
         + " gateway target group found tagged with deployment name: "
