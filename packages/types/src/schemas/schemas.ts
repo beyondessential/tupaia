@@ -45538,6 +45538,7 @@ export const EntityQuestionConfigFieldsSchema = {
 		"image_url",
 		"metadata",
 		"name",
+		"project_id",
 		"type",
 		"updated_at_sync_tick"
 	],
@@ -45566,6 +45567,7 @@ export const EntityQuestionConfigFieldKeySchema = {
 		"metadata",
 		"name",
 		"parentId",
+		"project_id",
 		"type",
 		"updated_at_sync_tick"
 	],
@@ -46142,6 +46144,76 @@ export const EntityQuestionConfigSchema = {
 					]
 				},
 				"image_url": {
+					"anyOf": [
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"dhis": {
+									"type": "object",
+									"properties": {
+										"dhisInstanceCode": {
+											"type": "string"
+										},
+										"isDataRegional": {
+											"type": "boolean"
+										},
+										"push": {
+											"type": "boolean"
+										},
+										"trackedEntityId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"ms1": {
+									"type": "object",
+									"properties": {
+										"distributionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								},
+								"openStreetMaps": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"project_id": {
 					"anyOf": [
 						{
 							"additionalProperties": false,
@@ -47257,6 +47329,76 @@ export const SurveyScreenComponentConfigSchema = {
 							]
 						},
 						"image_url": {
+							"anyOf": [
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"dhis": {
+											"type": "object",
+											"properties": {
+												"dhisInstanceCode": {
+													"type": "string"
+												},
+												"isDataRegional": {
+													"type": "boolean"
+												},
+												"push": {
+													"type": "boolean"
+												},
+												"trackedEntityId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"ms1": {
+											"type": "object",
+											"properties": {
+												"distributionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										},
+										"openStreetMaps": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"project_id": {
 							"anyOf": [
 								{
 									"additionalProperties": false,
@@ -78701,6 +78843,9 @@ export const EntitySchema = {
 		"point": {
 			"type": "string"
 		},
+		"project_id": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"asset",
@@ -78882,6 +79027,9 @@ export const EntityCreateSchema = {
 		"point": {
 			"type": "string"
 		},
+		"project_id": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"asset",
@@ -79057,6 +79205,9 @@ export const EntityUpdateSchema = {
 			"type": "string"
 		},
 		"point": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		},
 		"type": {
@@ -102091,6 +102242,9 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"point": {
 						"type": "string"
 					},
+					"project_id": {
+						"type": "string"
+					},
 					"type": {
 						"enum": [
 							"asset",
@@ -103115,6 +103269,9 @@ export const EntityResponseSchema = {
 			"type": "string"
 		},
 		"point": {
+			"type": "string"
+		},
+		"projectId": {
 			"type": "string"
 		},
 		"type": {

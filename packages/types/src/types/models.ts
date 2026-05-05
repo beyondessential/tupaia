@@ -647,6 +647,7 @@ export interface Entity {
   'name': string;
   'parent_id'?: string | null;
   'point'?: string | null;
+  'project_id'?: string | null;
   'type': EntityType;
   'updated_at_sync_tick': string;
 }
@@ -661,6 +662,7 @@ export interface EntityCreate {
   'name': string;
   'parent_id'?: string | null;
   'point'?: string | null;
+  'project_id'?: string | null;
   'type': EntityType;
 }
 export interface EntityUpdate {
@@ -675,6 +677,7 @@ export interface EntityUpdate {
   'name'?: string;
   'parent_id'?: string | null;
   'point'?: string | null;
+  'project_id'?: string | null;
   'type'?: EntityType;
 }
 export interface EntityHierarchy {
