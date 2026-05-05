@@ -10,40 +10,41 @@ import {
 } from '/apiV1/dataBuilders/helpers';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
-const COMPARISON_TYPES = {
-  COUNT: '$count',
-};
-const OPERATION_TYPES = {
+const COMPARISON_TYPES = /** @type {const} */ ({ COUNT: '$count' });
+const OPERATION_TYPES = /** @type {const} */ ({
   GT: (leftOperand, rightOperand) => leftOperand > rightOperand,
   // eslint-disable-next-line eqeqeq
   EQ: (leftOperand, rightOperand) => leftOperand == rightOperand,
   IN: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
-};
+});
 
 const buildFilterAnalyticsFunction = fraction => {
   if (fraction.compare === COMPARISON_TYPES.COUNT) {
-    if (fraction.dataValues.length !== 2) {
+    if (fraction.dataValues.length !== 2 || !fraction.dataValues.every(Array.isArray)) {
       throw new Error(
         'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
       );
     }
 
     const [values, valuesToCompare] = fraction.dataValues;
-    return results => {
-      const set1 = results.filter(r => values.includes(r.dataElement));
-      const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
+    const [valuesSet, valuesToCompareSet] = fraction.dataValues.map(arr => new Set(arr));
 
+    return results => {
+      const set1 = results.filter(r => valuesSet.has(r.dataElement));
       const set1Count = countAnalyticsThatSatisfyConditions(set1, {
         dataValues: values,
         valueOfInterest: fraction.valueOfInterest,
       });
 
-      const count2Count = countAnalyticsThatSatisfyConditions(set2, {
+      if (set1Count === 0) return false;
+
+      const set2 = results.filter(r => valuesToCompareSet.has(r.dataElement));
+      const set2Count = countAnalyticsThatSatisfyConditions(set2, {
         dataValues: valuesToCompare,
         valueOfInterest: fraction.valueOfInterest,
       });
 
-      return set1Count > 0 && set1Count === count2Count;
+      return set1Count === set2Count;
     };
   }
 
@@ -194,8 +195,9 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   calculateFractionPart = (fraction, analytics) => {
     if (fraction.compare || fraction.operation) {
       const filterAnalyticsFunction = buildFilterAnalyticsFunction(fraction);
+      const dataValuesSet = new Set(flatten(fraction.dataValues));
       const filteredAnalytics = analytics.filter(analytic =>
-        flatten(fraction.dataValues).includes(analytic.dataElement),
+        dataValuesSet.has(analytic.dataElement),
       );
 
       return this.countAnalyticsUsingFilterFunction(
