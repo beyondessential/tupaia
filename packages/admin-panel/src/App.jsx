@@ -20,7 +20,11 @@ import {
   filterRoutesByScope,
 } from './routes/scopes';
 import { DefaultRedirect, ProjectRouteScope, selectSelectedProjectCode } from './projects';
-import { useHasBesAdminAccess, useUserPermissionGroups } from './utilities';
+import {
+  substituteRouteParams,
+  useHasBesAdminAccess,
+  useUserPermissionGroups,
+} from './utilities';
 
 export const getFlattenedChildViews = (route, pathPrefix = '', basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
@@ -55,16 +59,12 @@ export const getFlattenedChildViews = (route, pathPrefix = '', basePath = '') =>
   }, []);
 };
 
-// Replaces React Router param tokens (e.g. `:projectCode`) in a target URL
-// with their live values from `useParams()`. Used by route catch-alls whose
-// target is a parameterised path string.
+// Substitutes live `useParams()` values into a parameterised target URL
+// before navigating. Used by route catch-alls where the target carries
+// React Router param tokens (e.g. `/:projectCode/...`).
 const ParamAwareNavigate = ({ to }) => {
   const params = useParams();
-  const resolved = Object.entries(params).reduce(
-    (url, [key, value]) => (value ? url.replaceAll(`:${key}`, value) : url),
-    to,
-  );
-  return <Navigate to={resolved} replace />;
+  return <Navigate to={substituteRouteParams(to, params)} replace />;
 };
 
 const renderSectionRoutes = (sectionRoutes, pathPrefix, hasBESAdminAccess) =>
