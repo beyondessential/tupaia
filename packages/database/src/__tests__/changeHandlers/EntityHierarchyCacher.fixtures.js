@@ -4,6 +4,15 @@
 // aaa  aab   aba  abb
 // there are an additional two children below aaa that are not of a canonical type, so aren't included
 // in the default canonical hierarchy, but are included in hierarchy wind
+//
+// RN-1853: post-migration, sub-country entities (district, sub_district, facility, case)
+// must have project_id set, and the cacher's canonical fallback filters by
+// `project_id IN [project.id, null]`. NULL project_id means "visible to all projects",
+// which matches what these fixtures need — the same `entity_aaa_test` row is consumed
+// by ocean, storm, and wind tests. The `entity_project_id_check` CHECK constraint is
+// dropped in EntityHierarchyCacher.test.js's beforeAll so this fixture can keep its
+// shared-entity shape; the canonical project-scoping logic still has dedicated
+// regression coverage in EntityParentChildRelationBuilderProjectScoping.test.js.
 const ENTITIES = [
   { id: 'entity_a_test', name: 'Entity A', parent_id: null, type: 'project' },
   { id: 'entity_aa_test', name: 'Entity AA', parent_id: 'entity_a_test', type: 'country' },
@@ -26,19 +35,23 @@ const ENTITY_HIERARCHIES = [
   },
 ];
 
-// a project for each of the two hierarchies
+// a project for each of the two hierarchies. Explicit IDs so the entity fixtures above
+// can reference them.
 const PROJECTS = [
   {
+    id: 'project_ocean_id_test',
     code: 'project_ocean_test',
     entity_id: 'entity_a_test',
     entity_hierarchy_id: 'hierarchy_ocean_test',
   },
   {
+    id: 'project_storm_id_test',
     code: 'project_storm_test',
     entity_id: 'entity_a_test',
     entity_hierarchy_id: 'hierarchy_storm_test',
   },
   {
+    id: 'project_wind_id_test',
     code: 'project_wind_test',
     entity_id: 'entity_a_test',
     entity_hierarchy_id: 'hierarchy_wind_test',
@@ -76,10 +89,13 @@ const ENTITY_RELATIONS = [
   },
 ];
 
+// Order matters: populateTestData inserts in key order, and entity.project_id has an
+// FK to project (RN-1853), so projects must exist before sub-country entities are
+// inserted. project also FKs entity_hierarchy → place hierarchies first.
 export const TEST_DATA = {
-  entity: ENTITIES,
   entityHierarchy: ENTITY_HIERARCHIES,
   project: PROJECTS,
+  entity: ENTITIES,
   entityRelation: ENTITY_RELATIONS,
 };
 
