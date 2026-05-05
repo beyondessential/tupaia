@@ -711,6 +711,76 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       const { filter = {}, fields, pageSize } = params;
       const { generational_distance, ...restOfFilter } = filter;
 
+      const isDescendants = direction === ENTITY_RELATION_TYPE.DESCENDANTS;
+
+      // Post-RN-1853 (TUP-3065): walk entity.parent_id directly. The
+      // entity_parent_child_relation cache is now 1:1 with the parent_id chain — the
+      // chain is project-scoped because each project has its own copy of sub-country
+      // entities, and the duplicates carry the parent_id of their same-project parent
+      // (set up by the migration's fixParentIdChains step).
+      //
+      // Ancestor walks are naturally project-scoped: each entity has exactly one
+      // parent_id, so walking up never crosses into a sibling project. Descendant
+      // walks need an explicit project_id filter when starting from a structural
+      // entity (world/project/country with NULL project_id) — otherwise we'd visit
+      // every project's sub-country children. Resolve the project from the legacy
+      // hierarchyId argument so callers don't need to change.
+      const project = hierarchyId
+        ? await this.otherModels.project.findOne({ entity_hierarchy_id: hierarchyId })
+        : null;
+      const projectId = project?.id ?? null;
+
+      const projectScopeClause = projectId
+        ? '(project_id IS NULL OR project_id = ?)'
+        : 'TRUE';
+      const projectScopeParam = projectId ? [projectId] : [];
+
+      const recursiveQuery = isDescendants
+        ? `
+          -- Base case: direct children of entityIds
+          SELECT id, parent_id, 1 AS generational_distance
+          FROM entity
+          WHERE parent_id IN ${SqlQuery.record(entityIds)}
+            AND ${projectScopeClause}
+
+          UNION ALL
+
+          -- Recursive case: walk down the parent_id chain
+          SELECT e.id, e.parent_id, h.generational_distance + 1 AS generational_distance
+          FROM entity e
+          INNER JOIN hierarchy h ON e.parent_id = h.id
+          WHERE ${projectScopeClause}
+            ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
+        `
+        : `
+          -- Base case: direct parents of entityIds
+          SELECT id, parent_id, 1 AS generational_distance
+          FROM entity
+          WHERE id IN (
+            SELECT parent_id FROM entity WHERE id IN ${SqlQuery.record(entityIds)}
+          )
+
+          UNION ALL
+
+          -- Recursive case: walk up the parent_id chain
+          SELECT e.id, e.parent_id, h.generational_distance + 1 AS generational_distance
+          FROM entity e
+          INNER JOIN hierarchy h ON e.id = h.parent_id
+          ${generational_distance !== undefined ? 'WHERE h.generational_distance <= ?' : ''}
+        `;
+
+      const parameters = isDescendants
+        ? [
+            ...entityIds,
+            ...projectScopeParam, // base case scope
+            ...projectScopeParam, // recursive case scope
+            ...(generational_distance !== undefined ? [generational_distance] : []),
+          ]
+        : [
+            ...entityIds,
+            ...(generational_distance !== undefined ? [generational_distance] : []),
+          ];
+
       const results = await this.find(
         {
           'hierarchy.generational_distance': generational_distance,
@@ -719,42 +789,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         {
           withRecursive: {
             alias: 'hierarchy',
-            query: `
-          -- Base case: start from specific entity IDs
-          SELECT
-            child_id as child_id,
-            parent_id as parent_id,
-            entity_hierarchy_id as entity_hierarchy_id,
-            1 as generational_distance
-          FROM entity_parent_child_relation
-          WHERE ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'child_id' : 'parent_id'} IN ${SqlQuery.record(entityIds)}
-          AND entity_hierarchy_id = ?
-
-          UNION ALL
-
-          -- Recursive case: get related entities
-          SELECT
-            e.child_id as child_id,
-            e.parent_id as parent_id,
-            e.entity_hierarchy_id as entity_hierarchy_id,
-            h.generational_distance + 1 as generational_distance
-          FROM entity_parent_child_relation e
-          INNER JOIN hierarchy h ON ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'e.child_id = h.parent_id' : 'e.parent_id = h.child_id'}
-          WHERE e.entity_hierarchy_id = ?
-          ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
-        `,
-            parameters: [
-              ...entityIds,
-              hierarchyId,
-              hierarchyId,
-              ...(generational_distance !== undefined ? [generational_distance] : []),
-            ],
+            query: recursiveQuery,
+            parameters,
           },
           joinWith: 'hierarchy',
-          joinCondition: [
-            'entity.id',
-            `hierarchy.${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'parent_id' : 'child_id'}`,
-          ],
+          joinCondition: ['entity.id', 'hierarchy.id'],
           columns: fields,
           limit: pageSize,
         },
