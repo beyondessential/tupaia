@@ -1,5 +1,5 @@
-import { CircularProgress, Paper, Typography } from '@material-ui/core';
-import React, { useState } from 'react';
+import { Paper, Typography } from '@material-ui/core';
+import React, { useRef, useState } from 'react';
 import { OnResultFunction, QrReader } from 'react-qr-reader';
 import styled from 'styled-components';
 
@@ -127,23 +127,15 @@ const Overlay = styled.div.attrs({ 'aria-hidden': true })`
   pointer-events: none;
 `;
 
-const loadingText = (
-  <>
-    <CircularProgress color="inherit" size="1em" style={{ marginInlineEnd: '0.5em' }} />
-    Loading scanner…
-  </>
-);
-
 export interface QrCodeScannerProps {
   disabled?: boolean;
   onSuccess?: (entity: DatatrakWebEntityDescendantsRequest.EntityResponse) => void;
-  /** Pass `undefined` when data is pending */
-  validEntities: DatatrakWebEntityDescendantsRequest.ResBody | undefined;
+  findEntity: (
+    entityId: string,
+  ) => Promise<DatatrakWebEntityDescendantsRequest.EntityResponse | undefined>;
 }
 
-export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScannerProps) => {
-  const isFetchingEntities = validEntities === undefined;
-
+export const QrCodeScanner = ({ disabled, onSuccess, findEntity }: QrCodeScannerProps) => {
   const hasVideoInput = useHasVideoInput();
   const isMobile = useIsMobile();
 
@@ -152,14 +144,16 @@ export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScan
   const closeScanner = () => setIsScannerOpen(false);
 
   const [feedback, setFeedback] = useState<React.ReactNode>(null);
+  const isFindingEntityRef = useRef(false);
 
   const onModalClose = () => {
     setFeedback(null);
     closeScanner();
+    isFindingEntityRef.current = false;
   };
 
   const onResult: OnResultFunction = async (result, error) => {
-    if (isFetchingEntities) return;
+    if (isFindingEntityRef.current) return;
 
     if (error?.message) {
       if (error instanceof DOMException && error.name === 'NotAllowedError') {
@@ -183,15 +177,23 @@ export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScan
       return;
     }
 
-    const entity = validEntities?.find(entity => entity.id === entityId);
-    if (entity === undefined) {
-      setFeedback('No matching entity found. Is this entity a valid answer to this question?');
-      return;
-    }
+    isFindingEntityRef.current = true;
+    setFeedback('Looking up entity\u2026');
 
-    onSuccess?.(entity);
-    closeScanner();
-    setFeedback(null);
+    try {
+      const entity = await findEntity(entityId);
+      if (entity) {
+        onSuccess?.(entity);
+        closeScanner();
+        setFeedback(null);
+      } else {
+        setFeedback('No matching entity found. Is this entity a valid answer to this question?');
+      }
+    } catch {
+      setFeedback('Error looking up entity. Please try again.');
+    } finally {
+      isFindingEntityRef.current = false;
+    }
   };
 
   return (
@@ -209,7 +211,7 @@ export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScan
         onClose={onModalClose}
         PaperComponent={ModalRoot}
       >
-        <Heading>{isFetchingEntities ? loadingText : <>Scan entity QR&nbsp;code</>}</Heading>
+        <Heading>Scan entity QR&nbsp;code</Heading>
         <StyledQrReader onResult={onResult} />
         <Feedback>{feedback}</Feedback>
         <Overlay />
