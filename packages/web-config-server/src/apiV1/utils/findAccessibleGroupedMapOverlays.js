@@ -1,7 +1,4 @@
-import keyBy from 'lodash.keyby';
-import groupBy from 'lodash.groupby';
-import isEqual from 'lodash.isequal';
-import orderBy from 'lodash.orderby';
+import { groupBy, isEqual, keyBy, orderBy } from 'es-toolkit/compat';
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';

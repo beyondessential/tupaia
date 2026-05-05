@@ -1,7 +1,7 @@
 import { camel, snake } from 'case';
+import { uniq } from 'es-toolkit';
 
 import { compareAsc, compareDesc } from './compare';
-import { getUniqueEntries } from './getUniqueEntries';
 
 /**
  * @typedef {Object<string, any>[] | Object<string, Object<string, any>>} ObjectCollection
@@ -241,7 +241,7 @@ export const sortFields = object => {
 
 export const getUniqueObjects = objects => {
   const jsonStrings = objects.map(o => JSON.stringify(sortFields(o)));
-  return getUniqueEntries(jsonStrings).map(JSON.parse);
+  return uniq(jsonStrings).map(JSON.parse);
 };
 
 /**

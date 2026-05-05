@@ -10,12 +10,11 @@ import { SyncDirections } from '@tupaia/constants';
 import { assertIsNotNullish } from '@tupaia/tsutils';
 import { EntityTypeEnum } from '@tupaia/types';
 import { fetchPatiently, translateBounds, translatePoint, translateRegion } from '@tupaia/utils';
-
-import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { DatabaseRecord } from '../DatabaseRecord';
-import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
+import { MaterializedViewLogDatabaseModel } from '../analytics';
+import { RECORDS } from '../records';
 import { buildSyncLookupSelect } from '../sync';
 
 // NOTE: These hard coded entity types are now a legacy pattern
@@ -615,7 +614,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         },
       );
       const relationData = await Promise.all(relations.map(async r => r.getData()));
-      return uniqBy(relationData, relation => relation.id);
+      return uniqBy(relationData, r => r.id);
     });
 
     return await Promise.all(entityRecords.map(async r => this.generateInstance(r)));
@@ -861,15 +860,15 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         // Sync all world, country and project entities as they are needed for entity hierarchy
         projectIds: `
           CASE WHEN entity.type IN ('country', 'world', 'project')
-            THEN NULL 
-          ELSE 
-            array_remove(array_agg(DISTINCT project.id), NULL) 
+            THEN NULL
+          ELSE
+            array_remove(array_agg(DISTINCT project.id), NULL)
           END`,
       }),
       joins: `
-        LEFT JOIN entities_to_sync 
-          ON entities_to_sync.entity_id = entity.id 
-        LEFT JOIN project 
+        LEFT JOIN entities_to_sync
+          ON entities_to_sync.entity_id = entity.id
+        LEFT JOIN project
           ON project.entity_hierarchy_id = entities_to_sync.entity_hierarchy_id
       `,
       where: `

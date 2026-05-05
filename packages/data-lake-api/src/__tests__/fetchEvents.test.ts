@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 import { DataLakeApi } from '../DataLakeApi';
 import {
   Analytic,
