@@ -101,6 +101,7 @@ theme.overrides = {
         textWrap: 'balance',
       },
       'button, input, textarea, select': {
+        fontFamily: 'inherit',
         touchAction: 'manipulation',
       },
       'table, time': {
