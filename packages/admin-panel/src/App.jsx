@@ -1,4 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 
 import { PrivateRoute } from './authentication';
@@ -17,7 +19,7 @@ import {
   SINGLE_PROJECT_SCOPE,
   filterRoutesByScope,
 } from './routes/scopes';
-import { DefaultRedirect, ProjectRouteScope } from './projects';
+import { DefaultRedirect, ProjectRouteScope, selectSelectedProjectCode } from './projects';
 import { useHasBesAdminAccess, useUserPermissionGroups } from './utilities';
 
 export const getFlattenedChildViews = (route, pathPrefix = '', basePath = '') => {
@@ -100,7 +102,7 @@ const renderSectionRoutes = (sectionRoutes, pathPrefix, hasBESAdminAccess) =>
     );
   });
 
-const App = () => {
+const AppComponent = ({ selectedProjectCode }) => {
   const hasBESAdminAccess = useHasBesAdminAccess();
 
   const userPermissionGroups = useUserPermissionGroups();
@@ -115,11 +117,14 @@ const App = () => {
         Array.isArray(tab.requiresSomePermissionGroup) &&
         tab.requiresSomePermissionGroup.length > 0
       ) {
-        return tab.requiresSomePermissionGroup.some(userHasPermissionGroup);
+        if (!tab.requiresSomePermissionGroup.some(userHasPermissionGroup)) return false;
+      }
+      if (tab.requiresProjectCode && tab.requiresProjectCode !== selectedProjectCode) {
+        return false;
       }
       return true;
     },
-    [userHasPermissionGroup],
+    [userHasPermissionGroup, selectedProjectCode],
   );
 
   // Filter out tabs that the user does not have access to, and hide top-level
@@ -223,5 +228,19 @@ const App = () => {
     </Routes>
   );
 };
+
+AppComponent.propTypes = {
+  selectedProjectCode: PropTypes.string,
+};
+
+AppComponent.defaultProps = {
+  selectedProjectCode: null,
+};
+
+const mapStateToProps = state => ({
+  selectedProjectCode: selectSelectedProjectCode(state),
+});
+
+const App = connect(mapStateToProps)(AppComponent);
 
 export default App;

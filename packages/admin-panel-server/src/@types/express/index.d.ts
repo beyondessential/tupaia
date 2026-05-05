@@ -14,7 +14,6 @@ declare global {
       ctx: {
         services: TupaiaApiClient;
         promptManager: PromptManager;
-        project?: { id: string; code: string };
       };
     }
   }
