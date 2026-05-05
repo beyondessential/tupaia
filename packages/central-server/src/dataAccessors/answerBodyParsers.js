@@ -55,8 +55,9 @@ async function getPhotoAnswerText(answer) {
   if (isValidHttpUrl(answer.body)) return answer.body;
 
   if (isValidFileId(answer.body)) {
+    // Photo uploaded from MediTrak, which always uploads JPEG data, which is converted to WebP
     const s3ImagePath = getS3ImageFilePath();
-    return `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.jpg`;
+    return `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.webp`;
   }
 
   // Included for backward compatibility passing base64 strings for images, and for datatrak-web to

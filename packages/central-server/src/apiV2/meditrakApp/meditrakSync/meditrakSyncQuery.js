@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get } from 'es-toolkit/compat';
 import { compare } from 'compare-versions';
 import { getHighestPossibleIdForGivenTime, SqlQuery } from '@tupaia/database';
 import { ValidationError } from '@tupaia/utils';

@@ -3,6 +3,7 @@ const baseConfig = require('../../jest.config-ts.json');
 module.exports = {
   ...baseConfig,
   rootDir: '.',
+  setupFiles: ['<rootDir>/jest.setup.js'],
   moduleDirectories: ['node_modules'],
   collectCoverageFrom: ['**/src/components/**/**'],
   testMatch: ['<rootDir>/src/__tests__/**/**.test.**'],

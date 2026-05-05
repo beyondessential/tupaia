@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/aggregator",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Aggregates and disaggregates data from various sources, via data-broker",
   "repository": {
@@ -24,7 +24,7 @@
   "dependencies": {
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "lodash.groupby": "^4.6.0"
+    "es-toolkit": "^1.46.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",

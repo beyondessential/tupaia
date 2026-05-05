@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/viz-test-tool",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Tupaia viz test tool repository",
   "repository": {
@@ -30,7 +30,7 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "cli-progress": "^3.12.0",
-    "lodash.isequal": "^4.5.0"
+    "es-toolkit": "^1.46.0"
   },
   "devDependencies": {
     "@types/cli-progress": "^3.11.5",

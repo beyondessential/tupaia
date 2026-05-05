@@ -4,6 +4,9 @@ on:
     branches-ignore:
       - '**-e2e'
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
@@ -62,7 +65,7 @@ jobs:
       DB_MV_PASSWORD: opensesame3
     services:
       postgres:
-        image: postgis/postgis:13-3.2-alpine
+        image: postgis/postgis:18-3.6-alpine
         env:
           POSTGRES_PASSWORD: opensesame2
         # Set health checks to wait until postgres has started
@@ -193,7 +196,7 @@ jobs:
 
     services:
       postgres:
-        image: postgis/postgis:13-3.2-alpine
+        image: postgis/postgis:18-3.6-alpine
         env:
           POSTGRES_PASSWORD: opensesame2
         # Set health checks to wait until postgres has started
