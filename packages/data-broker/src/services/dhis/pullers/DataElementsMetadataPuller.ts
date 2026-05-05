@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 
 import type { DhisApi } from '@tupaia/dhis-api';
 import { isNotNullish } from '@tupaia/tsutils';

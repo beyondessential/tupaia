@@ -1,42 +1,43 @@
-import React, { ReactNode } from 'react';
-import { Popover as MuiPopover } from '@material-ui/core';
+import { Popover } from '@material-ui/core';
+import React from 'react';
 import { MenuList } from './MenuList';
-import styled from 'styled-components';
-import { MOBILE_BREAKPOINT } from '../../constants';
 
 /**
  * PopoverMenu is a popover menu used when the user is on a desktop device
+ * (mounted only above the mobile breakpoint — see UserMenu).
  */
 
-const Popover = styled(MuiPopover)`
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
-  }
-`;
-
-interface PopoverMenuProps {
-  children: ReactNode;
+interface PopoverMenuProps
+  extends Omit<
+    React.ComponentPropsWithoutRef<typeof Popover>,
+    'open' | 'onClose' | 'anchorEl' | 'anchorOrigin' | 'transformOrigin' | 'PaperProps'
+  > {
+  anchorElRef: React.RefObject<HTMLElement>;
   primaryColor?: string;
   secondaryColor?: string;
   menuOpen: boolean;
   onCloseMenu: () => void;
 }
+
 export const PopoverMenu = ({
+  anchorElRef,
   children,
   primaryColor,
   menuOpen,
   onCloseMenu,
   secondaryColor,
+  ...props
 }: PopoverMenuProps) => {
   return (
     <Popover
+      {...props}
       PaperProps={{
         style: {
           backgroundColor: primaryColor,
         },
       }}
       open={menuOpen}
-      anchorEl={() => document.getElementById('user-menu-button') as HTMLElement}
+      anchorEl={anchorElRef.current}
       onClose={onCloseMenu}
       anchorOrigin={{
         vertical: 'bottom',

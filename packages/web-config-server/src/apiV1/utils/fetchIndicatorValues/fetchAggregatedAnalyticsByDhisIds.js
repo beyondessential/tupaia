@@ -3,6 +3,8 @@
 // Will have to implement this properly with #tupaia-backlog/issues/2412
 // After that remove this file and anything related to it
 
+import { uniq } from 'es-toolkit';
+
 import { periodFromAnalytics, aggregateAnalytics } from '@tupaia/aggregator';
 import { convertDateRangeToPeriodQueryString } from '@tupaia/utils';
 import { getDefaultPeriod } from '../../../utils';
@@ -80,11 +82,9 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
 };
 
 const performEntityAggregation = async (models, analytics, entityAggregation, hierarchyId) => {
-  const {
-    aggregationType = 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
-    aggregationEntityType,
-  } = entityAggregation;
-  const dataSourceEntityCodes = [...new Set(analytics.map(data => data.organisationUnit))];
+  const { aggregationType = 'REPLACE_ORG_UNIT_WITH_ORG_GROUP', aggregationEntityType } =
+    entityAggregation;
+  const dataSourceEntityCodes = uniq(analytics.map(data => data.organisationUnit));
   const entityToAncestorMap = await models.entity.fetchAncestorDetailsByDescendantCode(
     dataSourceEntityCodes,
     hierarchyId,

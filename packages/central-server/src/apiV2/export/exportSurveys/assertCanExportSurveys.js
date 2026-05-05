@@ -1,4 +1,4 @@
-import { flattenDeep } from 'lodash';
+import { flattenDeep } from 'es-toolkit/compat';
 
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 
@@ -15,9 +15,8 @@ export const assertCanExportSurveys = async (accessPolicy, models, surveys) => {
   const surveyCountryIds = flattenDeep(surveys.map(s => s.country_ids));
   const surveyPermissionGroupIds = flattenDeep(surveys.map(s => s.permission_group_id));
   const countryCodeById = await models.country.getCountryCodeById(surveyCountryIds);
-  const permissionGroupNameById = await models.permissionGroup.getPermissionGroupNameById(
-    surveyPermissionGroupIds,
-  );
+  const permissionGroupNameById =
+    await models.permissionGroup.getPermissionGroupNameById(surveyPermissionGroupIds);
 
   for (const survey of surveys) {
     const surveyPermissionGroupName = permissionGroupNameById[survey.permission_group_id];
