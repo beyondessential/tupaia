@@ -11,21 +11,26 @@ import { mapOverlayGroups } from './mapOverlayGroups';
 import { mapOverlayGroupRelations } from './mapOverlayGroupRelations';
 import { socialFeed } from './socialFeed';
 import { VizIcon } from '../../icons';
-import { ALL_PROJECTS_SCOPE, SINGLE_PROJECT_SCOPE } from '../scopes';
+import { ALL_PROJECTS_SCOPE } from '../scopes';
 
+// TUP-3055 Phase 2: dashboards / mapOverlays / legacyReports family will move
+// to SINGLE_PROJECT_SCOPE once central-server supports the indirect project
+// filters (project_codes TEXT[] arrays + transitive joins). Until then they
+// live under All data so the data isn't silently project-scoped without a
+// working filter.
 export const visualisationsTabRoutes = {
   label: 'Visualisations',
   path: '/visualisations',
   icon: <VizIcon />,
   childViews: [
-    { ...dashboardItems, scope: SINGLE_PROJECT_SCOPE },
-    { ...dashboards, scope: SINGLE_PROJECT_SCOPE },
-    { ...dashboardRelations, scope: SINGLE_PROJECT_SCOPE },
-    { ...dashboardMailingLists, scope: SINGLE_PROJECT_SCOPE },
-    { ...legacyReports, scope: SINGLE_PROJECT_SCOPE },
-    { ...mapOverlays, scope: SINGLE_PROJECT_SCOPE },
-    { ...mapOverlayGroups, scope: SINGLE_PROJECT_SCOPE },
-    { ...mapOverlayGroupRelations, scope: SINGLE_PROJECT_SCOPE },
+    { ...dashboardItems, scope: ALL_PROJECTS_SCOPE },
+    { ...dashboards, scope: ALL_PROJECTS_SCOPE },
+    { ...dashboardRelations, scope: ALL_PROJECTS_SCOPE },
+    { ...dashboardMailingLists, scope: ALL_PROJECTS_SCOPE },
+    { ...legacyReports, scope: ALL_PROJECTS_SCOPE },
+    { ...mapOverlays, scope: ALL_PROJECTS_SCOPE },
+    { ...mapOverlayGroups, scope: ALL_PROJECTS_SCOPE },
+    { ...mapOverlayGroupRelations, scope: ALL_PROJECTS_SCOPE },
     { ...socialFeed, scope: ALL_PROJECTS_SCOPE },
     { ...indicators, scope: ALL_PROJECTS_SCOPE },
     { ...dataTables, scope: ALL_PROJECTS_SCOPE },
