@@ -25,10 +25,10 @@ const AceEditor = styled(BaseAceEditor).attrs({
   // font-size set by fontSize prop
   line-height: 1.5;
 
-  /* 
+  /*
    * Prevent caret drift in some browsers, including Safari.
-   * 
-   * Ace uses CSS properties to calculate the width of characters and lines, which determines where 
+   *
+   * Ace uses CSS properties to calculate the width of characters and lines, which determines where
    * the caret should appear. However, when a font style isn’t provided by the font files, and the
    * browser attempts to synthesize it, this can cause the caret to lag behind or lead ahead of the
    * actual insertion point.
@@ -73,6 +73,13 @@ type SqlEditorProps = {
   wrapEnabled?: boolean;
 };
 
+const stubAnnotation = {
+  row: NaN,
+  column: NaN,
+  text: '',
+  type: '',
+} as const satisfies Ace.Annotation;
+
 export const SqlEditor = ({
   customKeywords = [],
   fontSize = 14,
@@ -84,7 +91,7 @@ export const SqlEditor = ({
   wrapEnabled = true,
 }: SqlEditorProps) => {
   const [originalHighlightList, setOriginalHighlightList] = useState([]);
-  const [annotations, setAnnotations] = useState<Ace.Annotation>({ text: '', type: '' });
+  const [annotations, setAnnotations] = useState<Ace.Annotation>(stubAnnotation);
   const validateQuery = (query: string) => {
     // need to do this to add nextline \n
     let cleanedQuery = query;
@@ -93,7 +100,7 @@ export const SqlEditor = ({
     const sqlQuery = queryArray.join('\n');
     try {
       parser.parse(sqlQuery);
-      setAnnotations({ text: '', type: '' });
+      setAnnotations(stubAnnotation);
     } catch (e) {
       // Errors will be:
       // [
