@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/sync-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Server for syncing data between browser and server in Tupaia",
   "homepage": "https://github.com/beyondessential/tupaia",

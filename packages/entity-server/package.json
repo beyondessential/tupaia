@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/entity-server",
-  "version": "0.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Server for fetching entities and entity hierarchies",
   "homepage": "https://github.com/beyondessential/tupaia",

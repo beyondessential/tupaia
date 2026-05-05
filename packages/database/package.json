@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/database",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Common database code for use across other packages within this monorepo",
   "repository": {

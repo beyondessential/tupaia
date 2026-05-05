@@ -34,7 +34,7 @@ const QuestionPlaceholder = styled.div`
 `;
 
 const QuestionWrapper = styled.div`
-  width: 100%;
+  inline-size: 100%;
   .MuiFormHelperText-root.Mui-error {
     color: ${props => props.theme.palette.error.dark};
   }
