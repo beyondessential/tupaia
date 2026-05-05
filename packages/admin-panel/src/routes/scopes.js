@@ -10,19 +10,16 @@ export const ALL_DATA_BASE_PATH = '';
 export const SINGLE_PROJECT_PATH_PARAM = 'projectCode';
 export const SINGLE_PROJECT_ROUTE_BASE = `/:${SINGLE_PROJECT_PATH_PARAM}`;
 
-export const buildSingleProjectBasePath = projectCode =>
-  projectCode ? `/${projectCode}` : '';
+export const buildSingleProjectBasePath = projectCode => (projectCode ? `/${projectCode}` : '');
 
 // Sidebar order: Single project on top, All data on bottom (per design).
 export const SECTIONS = [
   {
     id: 'single-project',
-    label: 'Single project',
     scope: SINGLE_PROJECT_SCOPE,
   },
   {
     id: 'all-data',
-    label: 'All data',
     scope: ALL_PROJECTS_SCOPE,
   },
 ];

@@ -3,15 +3,16 @@ import { dashboardItems } from './dashboardItems';
 import { dashboards } from './dashboards';
 import { dashboardRelations } from './dashboardRelations';
 import { dashboardMailingLists } from './dashboardMailingLists';
+import { dataTables } from './dataTables';
+import { indicators } from './indicators';
 import { legacyReports } from './legacyReports';
 import { mapOverlays } from './mapOverlays';
 import { mapOverlayGroups } from './mapOverlayGroups';
 import { mapOverlayGroupRelations } from './mapOverlayGroupRelations';
+import { socialFeed } from './socialFeed';
 import { VizIcon } from '../../icons';
-import { SINGLE_PROJECT_SCOPE } from '../scopes';
+import { ALL_PROJECTS_SCOPE, SINGLE_PROJECT_SCOPE } from '../scopes';
 
-// TUP-3055: Social Feed Posts, Indicators, Data Tables removed from sidebar
-// per refinement matrix. They are not registered here.
 export const visualisationsTabRoutes = {
   label: 'Visualisations',
   path: '/visualisations',
@@ -25,5 +26,8 @@ export const visualisationsTabRoutes = {
     { ...mapOverlays, scope: SINGLE_PROJECT_SCOPE },
     { ...mapOverlayGroups, scope: SINGLE_PROJECT_SCOPE },
     { ...mapOverlayGroupRelations, scope: SINGLE_PROJECT_SCOPE },
+    { ...socialFeed, scope: ALL_PROJECTS_SCOPE },
+    { ...indicators, scope: ALL_PROJECTS_SCOPE },
+    { ...dataTables, scope: ALL_PROJECTS_SCOPE },
   ],
 };

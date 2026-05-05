@@ -9,11 +9,7 @@ import { NavPanel } from './navigation';
 import { CaretLeftIcon } from '../icons';
 import { NAV_PANEL_CLOSED_WIDTH, NAV_PANEL_OPEN_WIDTH } from './navigation/NavPanel';
 import { ProjectSelector, selectSelectedProjectCode } from '../projects';
-import {
-  ALL_DATA_BASE_PATH,
-  SECTIONS,
-  buildSingleProjectBasePath,
-} from '../routes/scopes';
+import { ALL_DATA_BASE_PATH, SECTIONS, buildSingleProjectBasePath } from '../routes/scopes';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -41,7 +37,9 @@ const ArrowButton = styled(IconButton)`
   background-color: ${props => props.theme.palette.secondary.main};
   color: ${props => props.theme.palette.common.white};
   z-index: 1201; // above the drawer
-  transition: right 0.2s ease, transform 0.2s ease;
+  transition:
+    right 0.2s ease,
+    transform 0.2s ease;
   .MuiSvgIcon-root {
     font-size: 1rem;
     transform: ${props => (props.$navOpen ? 'rotate(0)' : 'rotate(180deg)')};
@@ -96,16 +94,16 @@ const AppPageLayoutComponent = ({
     return [
       {
         id: singleProjectSection.id,
-        label: singleProjectSection.label,
         headerContent: <ProjectSelector collapsed={!navOpen} />,
         items: singleProjectItems,
+        indented: true,
+        hideIcons: true,
       },
       {
         id: allDataSection.id,
-        label: allDataSection.label,
-        items: allDataRoutes.map(route =>
-          buildItem(route, ALL_DATA_BASE_PATH, allDataSection.id),
-        ),
+        items: allDataRoutes.map(route => buildItem(route, ALL_DATA_BASE_PATH, allDataSection.id)),
+        pinToBottom: true,
+        bordered: true,
       },
     ];
   }, [allDataRoutes, singleProjectRoutes, selectedProjectCode, navOpen]);

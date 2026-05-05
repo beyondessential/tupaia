@@ -163,7 +163,7 @@ const App = () => {
             <AppPageLayout
               allDataRoutes={allDataRoutes}
               singleProjectRoutes={singleProjectRoutes}
-              profileLink={{ label: 'Profile', to: '/profile' }}
+              profileLink={{ label: 'Edit profile', to: '/profile' }}
             />
           }
         >
@@ -178,11 +178,7 @@ const App = () => {
           />
           {renderSectionRoutes(allDataRoutes, ALL_DATA_BASE_PATH, hasBESAdminAccess)}
           <Route path={`:${SINGLE_PROJECT_PATH_PARAM}`} element={<ProjectRouteScope />}>
-            {renderSectionRoutes(
-              singleProjectRoutes,
-              SINGLE_PROJECT_ROUTE_BASE,
-              hasBESAdminAccess,
-            )}
+            {renderSectionRoutes(singleProjectRoutes, SINGLE_PROJECT_ROUTE_BASE, hasBESAdminAccess)}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
           {PROFILE_ROUTES.map(route => (
@@ -210,10 +206,7 @@ const App = () => {
                   }
                 />
               ))}
-              <Route
-                path="*"
-                element={<Navigate to={route.childViews[0].path} replace />}
-              />
+              <Route path="*" element={<Navigate to={route.childViews[0].path} replace />} />
             </Route>
           ))}
           <Route

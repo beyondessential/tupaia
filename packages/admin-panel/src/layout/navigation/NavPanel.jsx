@@ -30,12 +30,25 @@ const SectionsArea = styled.div`
   flex-direction: column;
   gap: 1.25rem;
   overflow: hidden auto;
+  flex: 1;
 `;
 
 const Section = styled.section`
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  margin-block-end: 1rem;
+  ${props => props.$pinToBottom && 'margin-block-start: auto;'}
+  ${props =>
+    props.$bordered &&
+    `border-block: 1px solid ${WHITE};
+     padding-block: 0.75rem;`}
+`;
+
+const ItemList = styled(List)`
+  /* Indented sections shift their links inward to visually nest them under
+     a section header (e.g. the project selector). */
+  ${props => props.$indented && 'padding-inline-start: 0.75rem;'}
 `;
 
 const SectionLabel = styled.div`
@@ -84,7 +97,6 @@ const Container = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   overflow: hidden;
 `;
 
@@ -107,15 +119,16 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const NavListItem = ({ link, navPanelOpen }) => {
+const NavListItem = ({ link, navPanelOpen, hideIcon }) => {
   const ItemWrapper = navPanelOpen
     ? React.Fragment
     : ({ children }) => <Tooltip title={link.label}>{children}</Tooltip>;
+
   return (
     <ListItem key={link.id} disableGutters>
       <ItemWrapper>
         <NavLink to={link.to}>
-          {link.icon}
+          {!hideIcon && link.icon}
           {link.label}
         </NavLink>
       </ItemWrapper>
@@ -128,24 +141,28 @@ NavListItem.propTypes = {
     id: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
-    icon: PropTypes.node.isRequired,
+    icon: PropTypes.node,
   }).isRequired,
   navPanelOpen: PropTypes.bool.isRequired,
+  hideIcon: PropTypes.bool,
+};
+
+NavListItem.defaultProps = {
+  hideIcon: false,
 };
 
 const NavSection = ({ section, isOpen }) => {
-  const { label, items, headerContent } = section;
+  const { items, headerContent, pinToBottom, indented, bordered, hideIcons } = section;
   if (items.length === 0 && !headerContent) return null;
   return (
-    <Section>
-      {isOpen && label && <SectionLabel>{label}</SectionLabel>}
+    <Section $pinToBottom={pinToBottom} $bordered={bordered}>
       {headerContent}
       {items.length > 0 && (
-        <List disablePadding>
+        <ItemList disablePadding $indented={indented}>
           {items.map(item => (
-            <NavListItem link={item} navPanelOpen={isOpen} key={item.id} />
+            <NavListItem link={item} navPanelOpen={isOpen} hideIcon={hideIcons} key={item.id} />
           ))}
-        </List>
+        </ItemList>
       )}
     </Section>
   );
@@ -153,9 +170,12 @@ const NavSection = ({ section, isOpen }) => {
 
 NavSection.propTypes = {
   section: PropTypes.shape({
-    label: PropTypes.string,
     items: PropTypes.array.isRequired,
     headerContent: PropTypes.node,
+    pinToBottom: PropTypes.bool,
+    indented: PropTypes.bool,
+    bordered: PropTypes.bool,
+    hideIcons: PropTypes.bool,
   }).isRequired,
   isOpen: PropTypes.bool.isRequired,
 };
@@ -167,7 +187,6 @@ export const NavPanel = ({ sections, logo, homeLink, profileLink, isOpen }) => {
         <HeaderContainer>
           <HomeLink logo={logo} homeLink={homeLink} style={{ width: '100%' }} />
         </HeaderContainer>
-
         <Container>
           <SectionsArea>
             {sections.map(section => (
@@ -185,7 +204,6 @@ NavPanel.propTypes = {
   sections: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
-      label: PropTypes.string,
       items: PropTypes.array.isRequired,
       headerContent: PropTypes.node,
     }),
