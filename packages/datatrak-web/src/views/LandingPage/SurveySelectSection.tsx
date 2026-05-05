@@ -123,7 +123,7 @@ export const SurveySelectSection = () => {
         </ButtonWrapper>
       )}
       <Text>
-        andrew second edit
+        update 6 may 1
         <SupplementalText>
           {' '}
           You can use Tupaia DataTrak to complete surveys
