@@ -40,6 +40,7 @@ import { OptionModel } from './Option';
 import { OptionSetModel } from './OptionSet';
 import { PermissionGroupModel } from './PermissionGroup';
 import { ProjectModel } from './Project';
+import { ProjectCountryModel } from './ProjectCountry';
 import { QuestionModel } from './Question';
 import { ReportModel } from './Report';
 import { EntityParentChildRelationModel } from './EntityParentChildRelation';
@@ -113,6 +114,7 @@ export const modelClasses = {
   OptionSet: OptionSetModel,
   PermissionGroup: PermissionGroupModel,
   Project: ProjectModel,
+  ProjectCountry: ProjectCountryModel,
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
   EntityParentChildRelation: EntityParentChildRelationModel,
@@ -182,6 +184,7 @@ export { OptionModel, OptionRecord } from './Option';
 export { OptionSetModel, OptionSetRecord } from './OptionSet';
 export { PermissionGroupModel, PermissionGroupRecord } from './PermissionGroup';
 export { ProjectModel, ProjectRecord } from './Project';
+export { ProjectCountryModel, ProjectCountryRecord } from './ProjectCountry';
 export { QuestionModel, QuestionRecord } from './Question';
 export { ReportModel, ReportRecord } from './Report';
 export {

@@ -1317,6 +1317,20 @@ export interface ProjectUpdate {
   'permission_groups'?: string[];
   'sort_order'?: number | null;
 }
+export interface ProjectCountry {
+  'country_id': string;
+  'id': string;
+  'project_id': string;
+}
+export interface ProjectCountryCreate {
+  'country_id': string;
+  'project_id': string;
+}
+export interface ProjectCountryUpdate {
+  'country_id'?: string;
+  'id'?: string;
+  'project_id'?: string;
+}
 export interface PsssSession {
   'access_policy': {};
   'access_token': string;

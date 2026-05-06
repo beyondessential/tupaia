@@ -5,7 +5,7 @@
  * @typedef {import('@tupaia/types').PermissionGroup} PermissionGroup
  * @typedef {import('@tupaia/types').Project} Project
  * @typedef {import('./Entity').EntityRecord} EntityRecord
- * @typedef {import('./EntityRelation').EntityRelationRecord} EntityRelationRecord
+ * @typedef {import('./ProjectCountry').ProjectCountryRecord} ProjectCountryRecord
  */
 
 import { SyncDirections } from '@tupaia/constants';
@@ -23,23 +23,21 @@ export class ProjectRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.PROJECT;
 
   /**
-   * The countries which apply to this project.
+   * The countries which apply to this project. TUP-3065: read from the declarative
+   * `project_country` join table that replaces the old entity_relation-based lookup.
    * @returns {Promise<EntityRecord[]>}
    */
   async countries() {
-    /** @type {EntityRelationRecord[]} */
-    const entityRelations = await this.otherModels.entityRelation.find(
-      { parent_id: this.entity_id },
-      { columns: ['child_id'] },
+    /** @type {ProjectCountryRecord[]} */
+    const projectCountries = await this.otherModels.projectCountry.find(
+      { project_id: this.id },
+      { columns: ['country_id'] },
     );
-    return await Promise.all(
-      entityRelations.map(async entityRelation =>
-        this.otherModels.entity.findOne({
-          id: entityRelation.child_id,
-          type: EntityTypeEnum.country,
-        }),
-      ),
-    );
+    if (projectCountries.length === 0) return [];
+    return this.otherModels.entity.find({
+      id: projectCountries.map(({ country_id }) => country_id),
+      type: EntityTypeEnum.country,
+    });
   }
 
   async permissionGroups() {
@@ -52,12 +50,12 @@ export class ProjectRecord extends DatabaseRecord {
 
   async hasAccess(accessPolicy) {
     if (accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP)) return true;
-    const entity = await this.entity();
-    const projectChildren = await entity.getChildrenViaHierarchy(this.entity_hierarchy_id);
-
-    return projectChildren.some(child =>
+    // TUP-3065: project's countries come from project_country now. Their `code`
+    // doubles as the country_code used by the access policy.
+    const countries = await this.countries();
+    return countries.some(country =>
       this.permission_groups.some(permissionGroup =>
-        accessPolicy.allows(child.country_code, permissionGroup),
+        accessPolicy.allows(country.code, permissionGroup),
       ),
     );
   }
@@ -65,10 +63,9 @@ export class ProjectRecord extends DatabaseRecord {
   async hasAdminAccess(accessPolicy) {
     if (accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP)) return true;
     if (!(await this.hasAccess(accessPolicy))) return false;
-    const entity = await this.entity();
-    const projectChildren = await entity.getChildrenViaHierarchy(this.entity_hierarchy_id);
+    const countries = await this.countries();
     return accessPolicy.allowsSome(
-      projectChildren.map(c => c.country_code),
+      countries.map(c => c.code),
       TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
     );
   }
@@ -114,7 +111,7 @@ export class ProjectModel extends DatabaseModel {
         SELECT
           p.id,
           p.code,
-          to_json(sub.child_id) AS entity_ids,
+          to_json(sub.country_id) AS entity_ids,
           e."name",
           e."code" AS entity_code,
           p.description,
@@ -131,13 +128,16 @@ export class ProjectModel extends DatabaseModel {
           project p
           LEFT JOIN entity e ON p.entity_id = e.id
           LEFT JOIN (
+            -- TUP-3065: project's entities are now its countries (via project_country),
+            -- not all hierarchy descendants. Sub-country entities live under
+            -- entity.project_id = p.id and are looked up separately when needed.
             SELECT
-              parent_id,
-              json_agg(child_id) AS child_id
+              project_id,
+              json_agg(country_id) AS country_id
             FROM
-              entity_relation er
+              project_country
             GROUP BY
-              parent_id) sub ON p.entity_id = sub.parent_id
+              project_id) sub ON p.id = sub.project_id
         WHERE ?;
       `,
       whereClause,
@@ -161,19 +161,20 @@ export class ProjectModel extends DatabaseModel {
       {
         [QUERY_CONJUNCTIONS.RAW]: {
           // Pulls permission_group/country_code pairs from the project
-          // Returns any project where we have access to at least one of those pairs
+          // Returns any project where we have access to at least one of those pairs.
+          // TUP-3065: country list now comes from project_country instead of
+          // entity_relation; the country code lives on the country entity itself.
           sql: `(
 	          EXISTS (
 	            SELECT 1
 	            FROM (
 	              SELECT
 								  unnest(project.permission_groups) AS permission_group,
-									child_entity.country_code
-	              FROM entity AS child_entity
-	              INNER JOIN entity_relation
-	                ON entity_relation.child_id = child_entity.id
-	                AND entity_relation.parent_id = project.entity_id
-	                AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
+									country_entity.code AS country_code
+	              FROM project_country
+	              INNER JOIN entity AS country_entity
+	                ON country_entity.id = project_country.country_id
+	              WHERE project_country.project_id = project.id
 	            ) AS permission_group_entity_pairs
 	            WHERE country_code IN (
 	              SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->permission_group)::TEXT)
