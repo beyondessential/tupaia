@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import debounce from 'lodash.debounce';
+import { debounce } from 'es-toolkit/compat';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Chart, ListVisual } from './Visuals';

@@ -1,6 +1,6 @@
 'use strict';
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'es-toolkit/compat';
 import { insertObject } from '../utilities';
 
 var dbm;
@@ -84,15 +84,12 @@ const HISTORIC_DASHBOARD_REPORT = {
 
 const FORECAST_DASHBOARD_REPORT = cloneDeep(HISTORIC_DASHBOARD_REPORT);
 FORECAST_DASHBOARD_REPORT.id = 'LA_EOC_Forecast_Daily_Rainfall_And_Temperature';
-FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.precip.dataBuilderConfig.dataClasses.value.codes = [
-  'WTHR_FORECAST_PRECIP',
-];
-FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.max_temp.dataBuilderConfig.dataClasses.value.codes = [
-  'WTHR_FORECAST_MAX_TEMP',
-];
-FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.min_temp.dataBuilderConfig.dataClasses.value.codes = [
-  'WTHR_FORECAST_MIN_TEMP',
-];
+FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.precip.dataBuilderConfig.dataClasses.value.codes =
+  ['WTHR_FORECAST_PRECIP'];
+FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.max_temp.dataBuilderConfig.dataClasses.value.codes =
+  ['WTHR_FORECAST_MAX_TEMP'];
+FORECAST_DASHBOARD_REPORT.dataBuilderConfig.dataBuilders.min_temp.dataBuilderConfig.dataClasses.value.codes =
+  ['WTHR_FORECAST_MIN_TEMP'];
 FORECAST_DASHBOARD_REPORT.viewJson.name = 'Forecast Daily Rainfall (mm) and Temperature (°C)';
 FORECAST_DASHBOARD_REPORT.viewJson.chartConfig.precip.label = 'Forecast rainfall (mm)';
 FORECAST_DASHBOARD_REPORT.viewJson.chartConfig.max_temp.label = 'Forecast maximum temperature (°C)';

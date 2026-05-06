@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { getSortByKey } from '@tupaia/utils';
 import {
   aggregateOperationalFacilityValues,

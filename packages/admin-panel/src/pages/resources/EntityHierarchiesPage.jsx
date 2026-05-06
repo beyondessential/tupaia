@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 import React from 'react';
 
 import { getSortByKey } from '@tupaia/utils';
