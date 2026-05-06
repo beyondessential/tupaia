@@ -24,6 +24,10 @@ const TABLES_TO_CLEAR = [
   'legacy_report',
   'ancestor_descendant_relation',
   'entity_relation',
+  // project_country must be cleared before entity (country_id FK is ON DELETE RESTRICT)
+  // and before project (project_id FK is ON DELETE CASCADE — cascade would work, but
+  // explicit is clearer).
+  'project_country',
   'entity',
   'project',
   'data_group',
