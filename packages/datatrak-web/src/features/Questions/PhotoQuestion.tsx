@@ -19,7 +19,7 @@ const Wrapper = styled.div`
     flex: 1;
   }
   .MuiFormHelperText-root {
-    margin-bottom: 0.2rem;
+    margin-block-end: 0.2rem;
   }
   .MuiButtonBase-root {
     max-width: 20rem;

@@ -1,13 +1,12 @@
-import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
+import { groupBy, uniqBy } from 'es-toolkit';
 
 import type { DhisApi } from '@tupaia/dhis-api';
-import { RawAnalyticResults, DataBrokerModelRegistry } from '../../../types';
-import { buildAnalyticsFromDhisAnalytics, buildAnalyticsFromDhisEventAnalytics } from '../builders';
+import { DataBrokerModelRegistry, RawAnalyticResults } from '../../../types';
 import { DataServiceMapping } from '../../DataServiceMapping';
+import { buildAnalyticsFromDhisAnalytics, buildAnalyticsFromDhisEventAnalytics } from '../builders';
+import { DhisTranslator } from '../translators';
 import { DataElement, DataType, DhisAnalytics, DhisEventAnalytics } from '../types';
 import { DataElementsMetadataPuller } from './DataElementsMetadataPuller';
-import { DhisTranslator } from '../translators';
 
 export type PullAnalyticsOptions = {
   dataServiceMapping: DataServiceMapping;
@@ -112,9 +111,8 @@ export class AnalyticsPuller {
       if (dhisDataType === this.models.dataElement.getDhisDataTypes().INDICATOR) {
         // Multiple DHIS Indicators may have different period types,
         // so we have to group them by their period types and fetch them separately
-        const groupedDataSourcesByPeriodType = this.groupIndicatorDataSourcesByPeriodType(
-          dataSources,
-        );
+        const groupedDataSourcesByPeriodType =
+          this.groupIndicatorDataSourcesByPeriodType(dataSources);
         return Promise.all(
           Object.entries(groupedDataSourcesByPeriodType).map(
             ([dataPeriodType, groupedDataSources]) => {
@@ -166,7 +164,7 @@ export class AnalyticsPuller {
     query: Record<string, unknown>,
   ): Promise<DhisEventAnalytics> => {
     const allHeaders: DhisEventAnalytics['headers'] = [];
-    let metaData = { items: {}, dimensions: {} } as DhisEventAnalytics['metaData'];
+    let metaData: DhisEventAnalytics['metaData'] = { items: {}, dimensions: {} };
     let width = 0;
     let height = 0;
     const rows: DhisEventAnalytics['rows'] = [];
@@ -186,7 +184,7 @@ export class AnalyticsPuller {
 
     await Promise.all(programCodes.map(fetchAnalyticsForProgram));
     return {
-      headers: Object.values(keyBy(allHeaders, 'name')),
+      headers: uniqBy(allHeaders, h => h.name),
       metaData,
       width,
       height,
@@ -239,10 +237,8 @@ export class AnalyticsPuller {
       dhisDataType?: DataType;
     },
   ) => {
-    const {
-      programCodes,
-      dhisDataType = this.models.dataElement.getDhisDataTypes().DATA_ELEMENT,
-    } = options;
+    const { programCodes, dhisDataType = this.models.dataElement.getDhisDataTypes().DATA_ELEMENT } =
+      options;
 
     if (programCodes) {
       return this.pullAnalyticsFromEventsForApi;

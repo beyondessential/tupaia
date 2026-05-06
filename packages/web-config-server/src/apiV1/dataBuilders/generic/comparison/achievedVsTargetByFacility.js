@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
 
 export const achievedVsTargetByFacility = async (

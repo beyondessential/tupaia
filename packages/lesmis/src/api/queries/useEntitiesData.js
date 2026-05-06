@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { get } from '../api';
 import { PROJECT_CODE } from '../../constants';
 

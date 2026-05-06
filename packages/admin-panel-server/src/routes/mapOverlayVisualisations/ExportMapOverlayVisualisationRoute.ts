@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { keyBy } from 'lodash';
+import { keyBy } from 'es-toolkit/compat';
 
 import { camelKeys } from '@tupaia/utils';
 import { Route } from '@tupaia/server-boilerplate';
@@ -35,9 +35,8 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
     const fileBaseName = visualisation.code || 'new_map_overlay_visualisation';
 
     const { id, ...visualisationWithoutId } = visualisation;
-    const { mapOverlayGroups, mapOverlayGroupRelations } = await this.buildMapOverlaysAndRelations(
-      mapOverlay,
-    );
+    const { mapOverlayGroups, mapOverlayGroupRelations } =
+      await this.buildMapOverlaysAndRelations(mapOverlay);
 
     return {
       contents: {
@@ -108,14 +107,12 @@ export class ExportMapOverlayVisualisationRoute extends Route<ExportMapOverlayVi
       `mapOverlays/${mapOverlay.id}/mapOverlayGroupRelations`,
     );
     const mapOverlayGroupIds = relationRecords.map(mogr => mogr.map_overlay_group_id);
-    const mapOverlayGroupRecords: MapOverlayGroupRecord[] = await centralApi.fetchResources(
-      'mapOverlayGroups',
-      {
+    const mapOverlayGroupRecords: Required<MapOverlayGroupRecord>[] =
+      await centralApi.fetchResources('mapOverlayGroups', {
         filter: {
           id: mapOverlayGroupIds,
         },
-      },
-    );
+      });
     const mapOverlayGroupsById = keyBy(mapOverlayGroupRecords, 'id');
 
     const mapOverlayGroups = mapOverlayGroupRecords.map(({ id, ...mapOverlayGroup }) =>

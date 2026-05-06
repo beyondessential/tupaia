@@ -1,4 +1,4 @@
-import { create, all } from 'mathjs';
+import { all, create } from 'mathjs';
 
 import { customFunctions } from './customFunctions';
 import { customNamespaces } from './customNamespaces';

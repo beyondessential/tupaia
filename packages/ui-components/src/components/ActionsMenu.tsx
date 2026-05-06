@@ -6,9 +6,11 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
+
 import { EllipsisVertical } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
+import { useId } from '../hooks';
 import { ActionsMenuOptionType } from '../types';
 import { VisuallyHidden } from './VisuallyHidden';
 
@@ -61,7 +63,9 @@ export const ActionsMenu = ({
   IconButton = MuiIconButton,
   className,
 }: ActionMenuProps) => {
+  const id = useId();
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
+  const isExpanded = anchorEl !== null;
 
   const onOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -71,16 +75,22 @@ export const ActionsMenu = ({
 
   return (
     <>
-      <IconButton onClick={onOpen} className={className}>
+      <IconButton
+        aria-controls={id}
+        aria-expanded={isExpanded}
+        className={className}
+        onClick={onOpen}
+      >
         <StyledMenuIcon aria-hidden />
         <VisuallyHidden>Open menu</VisuallyHidden>
       </IconButton>
       <StyledMenu
+        id={id}
         keepMounted
         disablePortal
         getContentAnchorEl={null}
         anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
+        open={isExpanded}
         onClose={(event: React.MouseEvent) => {
           event.preventDefault();
           event.stopPropagation();

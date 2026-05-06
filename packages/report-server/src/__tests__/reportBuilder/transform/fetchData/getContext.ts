@@ -1,5 +1,6 @@
 import { AccessPolicy } from '@tupaia/access-policy';
-import { MockTupaiaApiClient, MockDataTableApi, MockEntityApi } from '@tupaia/api-client';
+import { MockDataTableApi, MockEntityApi, MockTupaiaApiClient } from '@tupaia/api-client';
+import { RecursivePartial } from '@tupaia/types';
 import { ReportServerAggregator } from '../../../../aggregator';
 import { Context, ReqContext } from '../../../../reportBuilder/context';
 import { FetchReportQuery } from '../../../../types';
@@ -29,7 +30,7 @@ export const getContext = (queryOverrides?: Partial<FetchReportQuery>) => {
     },
   };
 
-  const context: Context = {
+  const context: RecursivePartial<Context> = {
     request: reqContext,
     dependencies: [],
   };
