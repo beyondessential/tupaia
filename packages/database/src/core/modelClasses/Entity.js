@@ -393,22 +393,9 @@ export class EntityRecord extends DatabaseRecord {
     return this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
   }
 
-  /**
-   * @param {EntityHierarchy['id']} hierarchyId
-   * @returns {Promise<Entity[]>}
-   */
-  async getChildrenViaHierarchy(hierarchyId) {
-    return this.database.executeSql(
-      `
-          SELECT entity.*
-          FROM entity
-          INNER JOIN entity_relation on entity.id = entity_relation.child_id
-          WHERE entity_relation.parent_id = ?
-          AND entity_relation.entity_hierarchy_id = ?;
-        `,
-      [this.id, hierarchyId],
-    );
-  }
+  // TUP-3065: getChildrenViaHierarchy (which read from entity_relation) was removed.
+  // For project → countries use ProjectRecord.countries(); for sub-country children
+  // use getDescendants(...{ generational_distance: 1 }).
 
   async pointLatLon() {
     const { point } = this;
@@ -623,7 +610,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * Returns relations (either ancestors or descendants) of entity
+   * Returns relations (either ancestors or descendants) of entity, traversing
+   * entity.parent_id directly. TUP-3065: previously read from the
+   * ancestor_descendant_relation closure cache; that table has been retired along
+   * with the EntityHierarchyCacher subsystem (see also TUP-3068).
+   *
    * @param {(typeof ENTITY_RELATION_TYPE)[keyof typeof ENTITY_RELATION_TYPE]} ancestorsOrDescendants
    * @param {Entity['id'][]} entityIds
    * @param {*} criteria
@@ -631,22 +622,82 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @returns {Promise<EntityRecord[]>}
    */
   async getRelationsOfEntities(ancestorsOrDescendants, entityIds, criteria, options) {
+    if (!entityIds || entityIds.length === 0) return [];
+
     const cacheKey = this.getCacheKey(this.getRelationsOfEntities.name, arguments);
-    const [joinTablesOn, filterByEntityId] =
-      ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
-        ? ['ancestor_id', 'descendant_id']
-        : ['descendant_id', 'ancestor_id'];
+    const isDescendants = ancestorsOrDescendants === ENTITY_RELATION_TYPE.DESCENDANTS;
+
+    // Pull out the bits of `criteria` that drove the closure cache; the rest is
+    // entity-column filters that get applied to the outer `find` (e.g. `type`).
+    const {
+      entity_hierarchy_id: hierarchyId,
+      generational_distance: generationalDistance,
+      ...entityCriteria
+    } = criteria || {};
+
+    // Resolve the project from the legacy hierarchyId so descendant walks stay
+    // project-scoped. Ancestor walks are naturally project-scoped (parent_id is
+    // single-valued so we can't drift into a sibling project).
+    const project = hierarchyId
+      ? await this.otherModels.project.findOne({ entity_hierarchy_id: hierarchyId })
+      : null;
+    const projectId = project?.id ?? null;
+    const projectScopeClause = projectId ? '(project_id IS NULL OR project_id = ?)' : 'TRUE';
+    const projectScopeParam = projectId ? [projectId] : [];
+
+    const recursiveQuery = isDescendants
+      ? `
+          SELECT id, parent_id, 1 AS generational_distance
+          FROM entity
+          WHERE parent_id IN ${SqlQuery.record(entityIds)}
+            AND ${projectScopeClause}
+
+          UNION ALL
+
+          SELECT e.id, e.parent_id, h.generational_distance + 1 AS generational_distance
+          FROM entity e
+          INNER JOIN hierarchy h ON e.parent_id = h.id
+          WHERE ${projectScopeClause}
+            ${generationalDistance !== undefined ? 'AND h.generational_distance <= ?' : ''}
+        `
+      : `
+          SELECT id, parent_id, 1 AS generational_distance
+          FROM entity
+          WHERE id IN (
+            SELECT parent_id FROM entity WHERE id IN ${SqlQuery.record(entityIds)}
+          )
+
+          UNION ALL
+
+          SELECT e.id, e.parent_id, h.generational_distance + 1 AS generational_distance
+          FROM entity e
+          INNER JOIN hierarchy h ON e.id = h.parent_id
+          ${generationalDistance !== undefined ? 'WHERE h.generational_distance <= ?' : ''}
+        `;
+
+    const parameters = isDescendants
+      ? [
+          ...entityIds,
+          ...projectScopeParam,
+          ...projectScopeParam,
+          ...(generationalDistance !== undefined ? [generationalDistance] : []),
+        ]
+      : [
+          ...entityIds,
+          ...(generationalDistance !== undefined ? [generationalDistance] : []),
+        ];
 
     const entityRecords = await this.runCachedFunction(cacheKey, async () => {
       const relations = await this.find(
         {
-          ...criteria,
-          [filterByEntityId]: entityIds,
+          ...entityCriteria,
+          'hierarchy.generational_distance': generationalDistance,
         },
         {
-          joinWith: RECORDS.ANCESTOR_DESCENDANT_RELATION,
-          joinCondition: ['entity.id', joinTablesOn],
-          sort: ['generational_distance ASC'],
+          withRecursive: { alias: 'hierarchy', query: recursiveQuery, parameters },
+          joinWith: 'hierarchy',
+          joinCondition: ['entity.id', 'hierarchy.id'],
+          sort: ['hierarchy.generational_distance ASC'],
           ...options,
         },
       );

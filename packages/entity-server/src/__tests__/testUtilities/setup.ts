@@ -1,7 +1,6 @@
 import { encryptPassword } from '@tupaia/auth';
 import {
   buildAndInsertProjectsAndHierarchies,
-  EntityHierarchyCacher,
   findOrCreateDummyRecord,
   getTestDatabase,
   getTestModels,
@@ -14,8 +13,6 @@ import { ENTITIES, ENTITY_RELATIONS, PROJECTS } from '../__integration__/fixture
 import { TestModelRegistry } from '../types';
 
 const models = getTestModels() as TestModelRegistry;
-const hierarchyCacher = new EntityHierarchyCacher(models);
-hierarchyCacher.setDebounceTime(50); // short debounce time so tests run more quickly
 
 const userAccountEmail = 'ash-ketchum@pokemon.org';
 const userAccountPassword = 'test';
@@ -32,10 +29,10 @@ export const setupTestData = async () => {
     return { ...project, entities: entitiesInProject, relations: relationsInProject };
   });
 
-  hierarchyCacher.listenForChanges();
+  // TUP-3065: EntityHierarchyCacher removed — entity.parent_id is now read directly,
+  // so there's nothing to "warm" before assertions run.
   await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
   await models.database.waitForAllChangeHandlers();
-  hierarchyCacher.stopListeningForChanges();
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;
 

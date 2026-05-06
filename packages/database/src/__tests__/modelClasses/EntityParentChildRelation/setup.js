@@ -1,5 +1,4 @@
 import { buildAndInsertProjectsAndHierarchies, clearTestData } from '../../../server/testUtilities';
-import { EntityHierarchySubtreeRebuilder } from '../../../server/changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
 import { entityHierarchyFixtures } from '../../../server/testFixtures';
 
 const { PROJECTS, ENTITIES, ENTITY_RELATIONS } = entityHierarchyFixtures;
@@ -18,13 +17,7 @@ export const setupTestData = async models => {
     return { ...project, entities: entitiesInProject, relations: relationsInProject };
   });
 
+  // TUP-3065: parent_id is now set up directly by buildAndInsertProjectsAndHierarchies
+  // (no closure-table warm-up step needed).
   await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
-  const projects = await Promise.all(
-    projectsForInserting.map(project => models.project.findOne({ code: project.code })),
-  );
-
-  const hierarchyCacher = new EntityHierarchySubtreeRebuilder(models);
-  for (const project of projects) {
-    await hierarchyCacher.buildAndCacheProject(project);
-  }
 };

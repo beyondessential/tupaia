@@ -1,5 +1,15 @@
 import { VIZ_BUILDER_PERMISSION_GROUP } from '../../permissions';
 
+// TUP-3065: a project's countries used to be derived by walking the project entity's
+// hierarchy via entity_relation. They now come from project_country directly. The
+// `code` of the country entity is what the access policy treats as the country_code.
+const getProjectCountryCodes = async (models, projectEntityCode) => {
+  const project = await models.project.findOne({ code: projectEntityCode });
+  if (!project) return [];
+  const countries = await project.countries();
+  return countries.map(country => country.code);
+};
+
 export const hasAccessToEntityForVisualisation = async (
   accessPolicy,
   models,
@@ -7,12 +17,8 @@ export const hasAccessToEntityForVisualisation = async (
   permissionGroup,
 ) => {
   if (entity.isProject()) {
-    const project = await models.project.findOne({ code: entity.code });
-    const projectChildren = await entity.getChildrenViaHierarchy(project.entity_hierarchy_id);
-    return accessPolicy.allowsSome(
-      projectChildren.map(c => c.country_code),
-      permissionGroup,
-    );
+    const countryCodes = await getProjectCountryCodes(models, entity.code);
+    return accessPolicy.allowsSome(countryCodes, permissionGroup);
   }
 
   return accessPolicy.allows(entity.country_code, permissionGroup);
@@ -24,9 +30,7 @@ export const hasAccessToEntityForVisualisation = async (
 export const hasVizBuilderAccessToEntity = async (accessPolicy, models, entity) => {
   // If entity is a project, check if user has access to all countries in the project
   if (entity.isProject()) {
-    const project = await models.project.findOne({ code: entity.code });
-    const projectChildren = await entity.getChildrenViaHierarchy(project.entity_hierarchy_id);
-    const countryCodes = projectChildren.map(c => c.country_code);
+    const countryCodes = await getProjectCountryCodes(models, entity.code);
     return accessPolicy.allowsAll(countryCodes, VIZ_BUILDER_PERMISSION_GROUP);
   }
 

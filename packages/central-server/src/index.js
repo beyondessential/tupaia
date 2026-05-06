@@ -4,8 +4,6 @@ import nodeSchedule from 'node-schedule';
 
 import {
   AnalyticsRefresher,
-  buildEntityParentChildRelationIfEmpty,
-  EntityHierarchyCacher,
   getDbMigrator,
   ModelRegistry,
   SurveyResponseOutdater,
@@ -46,9 +44,8 @@ configureEnv();
     meditrakSyncQueue.listenForChanges();
   }
 
-  // Pre-cache entity hierarchy details
-  const entityHierarchyCacher = new EntityHierarchyCacher(models);
-  entityHierarchyCacher.listenForChanges();
+  // TUP-3065: EntityHierarchyCacher (pre-cached entity_parent_child_relation rows) was
+  // removed when reads were switched to direct entity.parent_id walks.
 
   // Add listener to refresh analytics table
   const analyticsRefresher = new AnalyticsRefresher(models);
@@ -127,7 +124,8 @@ configureEnv();
       await dbMigrator.up();
       winston.info('Database migrations complete');
 
-      await buildEntityParentChildRelationIfEmpty(models);
+      // TUP-3065: removed buildEntityParentChildRelationIfEmpty bootstrap — the
+      // entity_parent_child_relation cache is no longer read.
 
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
         winston.info('Creating permissions based meditrak sync queue');

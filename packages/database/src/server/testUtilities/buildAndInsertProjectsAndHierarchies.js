@@ -1,10 +1,14 @@
 import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
+// TUP-3065: hierarchy edges are now stored on `entity.parent_id` directly. Project ↔
+// country edges live in the `project_country` join table. The legacy `entity_relation`
+// rows aren't written by this helper anymore — but the return shape still includes a
+// (now empty) `entityRelations` array to keep callers happy until they migrate.
 const buildAndInsertProjectAndHierarchy = async (
   models,
   { entities: entitiesProps = [], relations: relationProps, code, ...projectProps },
 ) => {
-  const entityCodeToId = {};
+  const entityByCode = {};
   const projectEntity = await findOrCreateDummyRecord(
     models.entity,
     { code },
@@ -14,7 +18,7 @@ const buildAndInsertProjectAndHierarchy = async (
       attributes: projectProps.projectEntityAttributes || {},
     },
   );
-  entityCodeToId[projectEntity.code] = projectEntity.id;
+  entityByCode[projectEntity.code] = projectEntity;
 
   const entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, { name: code });
   const project = await findOrCreateDummyRecord(
@@ -24,33 +28,37 @@ const buildAndInsertProjectAndHierarchy = async (
   );
 
   const entities = [];
-  const entityRelations = [];
   const processEntity = async entityProps => {
     const { code: entityCode, ...restOfEntity } = entityProps;
     const entity = await findOrCreateDummyRecord(models.entity, { code: entityCode }, restOfEntity);
 
     entities.push(entity);
-    entityCodeToId[entity.code] = entity.id;
-  };
-
-  const processEntityRelation = async entityRelationProps => {
-    const { parent, child } = entityRelationProps;
-    const relation = await findOrCreateDummyRecord(models.entityRelation, {
-      parent_id: entityCodeToId[parent],
-      child_id: entityCodeToId[child],
-      entity_hierarchy_id: entityHierarchy.id,
-    });
-
-    entityRelations.push(relation);
+    entityByCode[entity.code] = entity;
   };
 
   await Promise.all(entitiesProps.map(processEntity));
 
   const relations =
     relationProps || entities.map(entity => ({ parent: projectEntity.code, child: entity.code }));
-  await Promise.all(relations.map(processEntityRelation));
 
-  return { project, projectEntity, entityHierarchy, entityRelations, entities };
+  // Apply each relation as either a project_country row (project → country) or a
+  // parent_id update on the child entity (canonical hierarchy edge).
+  for (const { parent, child } of relations) {
+    const parentEntity = entityByCode[parent];
+    const childEntity = entityByCode[child];
+    if (!parentEntity || !childEntity) continue;
+
+    if (parentEntity.type === 'project' && childEntity.type === 'country') {
+      await findOrCreateDummyRecord(models.projectCountry, {
+        project_id: project.id,
+        country_id: childEntity.id,
+      });
+    } else {
+      await models.entity.updateById(childEntity.id, { parent_id: parentEntity.id });
+    }
+  }
+
+  return { project, projectEntity, entityHierarchy, entityRelations: [], entities };
 };
 
 /**
