@@ -1,6 +1,6 @@
 # TUP-3056 — Add project_id to entities and duplicate shared entities per project
 
-[Linear ticket](https://linear.app/bes/issue/TUP-3056/add-project-id-to-entities-and-duplicate-shared-entities-per-project)
+[Linear ticket](TUP-3056/add-project-id-to-entities-and-duplicate-shared-entities-per-project)
 
 > Originally tracked as RN-1853; renumbered to TUP-3056 after a Linear workspace
 > reorganisation. The implementation PR (#6749) and earlier commit messages still
@@ -153,18 +153,18 @@ All other recursive walks of the hierarchy use `entity_parent_child_relation` fi
 ## Hierarchy / relations table futures
 
 - **`entity_hierarchy` table**: kept as-is for TUP-3056. `entity_hierarchy_id` on project still maps a project to its hierarchy ID. Removing it is TUP-3066's scope.
-- **Hierarchy semantics across the NULL/NOT-NULL `project_id` boundary**: not a long-term concern. [TUP-3065](https://linear.app/bes/issue/TUP-3065/consolidate-hierarchy-to-parent-id-on-project-specific-entities) will remove `entity_parent_child_relation` entirely and consolidate hierarchy onto `entity.parent_id`. For TUP-3056, the existing relation rows continue to work as-is during the transition; the NULL / NOT-NULL distinction lives on `entity` rows, not on the relation rows themselves.
+- **Hierarchy semantics across the NULL/NOT-NULL `project_id` boundary**: not a long-term concern. [TUP-3065](TUP-3065/consolidate-hierarchy-to-parent-id-on-project-specific-entities) will remove `entity_parent_child_relation` entirely and consolidate hierarchy onto `entity.parent_id`. For TUP-3056, the existing relation rows continue to work as-is during the transition; the NULL / NOT-NULL distinction lives on `entity` rows, not on the relation rows themselves.
 
 ---
 
 ## Out of scope
 
 - **Removing project entities entirely.** Discussed and deferred. Project entities serve real purposes today (88 dashboards rooted at them + 226 project↔country relations in `entity_parent_child_relation`). Deferring until we're ready to handle dashboard rooting differently and lift the 226 relations into a `project_country` junction.
-- **`project_country` junction table.** Only needed once `entity_parent_child_relation` is removed. Belongs with [TUP-3066](https://linear.app/bes/issue/TUP-3066/remove-entity-relation-and-entity-hierarchy-tables).
+- **`project_country` junction table.** Only needed once `entity_parent_child_relation` is removed. Belongs with [TUP-3066](TUP-3066/remove-entity-relation-and-entity-hierarchy-tables).
 - **Unbundling `map_overlay.country_codes` triple-role** (scoping vs permission vs project indirection). Juliana flagged this; not required under this approach.
-- **Removing `entity_parent_child_relation`** — [TUP-3065](https://linear.app/bes/issue/TUP-3065/consolidate-hierarchy-to-parent-id-on-project-specific-entities).
-- **Removing `entity_hierarchy` and `entity_relation` tables** — [TUP-3066](https://linear.app/bes/issue/TUP-3066/remove-entity-relation-and-entity-hierarchy-tables).
-- **Project-scoping all entity queries** — [TUP-3060](https://linear.app/bes/issue/TUP-3060/ensure-all-entity-access-is-project-scoped). Bleeds into TUP-3056 only where callsites break; the bulk is its own ticket.
+- **Removing `entity_parent_child_relation`** — [TUP-3065](TUP-3065/consolidate-hierarchy-to-parent-id-on-project-specific-entities).
+- **Removing `entity_hierarchy` and `entity_relation` tables** — [TUP-3066](TUP-3066/remove-entity-relation-and-entity-hierarchy-tables).
+- **Project-scoping all entity queries** — [TUP-3060](TUP-3060/ensure-all-entity-access-is-project-scoped). Bleeds into TUP-3056 only where callsites break; the bulk is its own ticket.
 
 ---
 
@@ -182,39 +182,39 @@ All other recursive walks of the hierarchy use `entity_parent_child_relation` fi
 
 **C1: GIS Split & Entity Migration**
 
-| ID                                   | Title                                                        | Status   |
-| ------------------------------------ | ------------------------------------------------------------ | -------- |
-| https://linear.app/bes/issue/TUP-3053 | Schema migration: Create entity_geolocations table           | Dev done |
-| https://linear.app/bes/issue/TUP-3056 | Add project_id to entities and duplicate shared entities per project | Dev done |
-| https://linear.app/bes/issue/TUP-3060 | Ensure all entity access is project-scoped                   | Refined  |
+| ID       | Title                                                                | Status   |
+| -------- | -------------------------------------------------------------------- | -------- |
+| TUP-3053 | Schema migration: Create entity_geolocations table                   | Dev done |
+| TUP-3056 | Add project_id to entities and duplicate shared entities per project | Dev done |
+| TUP-3060 | Ensure all entity access is project-scoped                           | Refined  |
 
 **C2: Hierarchy Remodel**
 
-| ID                                   | Title                                                        |             |
-| ------------------------------------ | ------------------------------------------------------------ | ----------- |
-| https://linear.app/bes/issue/TUP-3065 | Consolidate hierarchy to parent_id on project-specific entities | In progress |
-| https://linear.app/bes/issue/TUP-3068 | Simplify ancestor_descendant_relations rebuild algorithm     | Refined     |
-| https://linear.app/bes/issue/TUP-3066 | Remove entity_relation and entity_hierarchy tables           | Refined     |
-| https://linear.app/bes/issue/TUP-3067 | MediTrak compatibility layer                                 | Refined     |
+| ID       | Title                                                           | Status      |
+| -------- | --------------------------------------------------------------- | ----------- |
+| TUP-3065 | Consolidate hierarchy to parent_id on project-specific entities | In progress |
+| TUP-3068 | Simplify ancestor_descendant_relations rebuild algorithm        | Refined     |
+| TUP-3066 | Remove entity_relation and entity_hierarchy tables              | Refined     |
+| TUP-3067 | MediTrak compatibility layer                                    | Refined     |
 
 **C3: Admin Panel Project Scoping**
 
-| ID      | Title                                                        |             |
-| ------- | ------------------------------------------------------------ | ----------- |
-| TUP-3055 | Add global project filter to admin panel (frontend)          | In progress |
+| ID       | Title                                                           | Status      |
+| -------- | --------------------------------------------------------------- | ----------- |
+| TUP-3055 | Add global project filter to admin panel (frontend)             | In progress |
 | TUP-3054 | Support project scope in admin-panel-server endpoints (backend) | In progress |
 
 **C4: Import/Export**
 
-| ID                                   | Title                                           |         |
-| ------------------------------------ | ----------------------------------------------- | ------- |
-| https://linear.app/bes/issue/TUP-3062 | Export entities in import-compatible format     | Refined |
-| https://linear.app/bes/issue/TUP-3064 | Update entity import                            | Refined |
-| https://linear.app/bes/issue/TUP-3061 | Update entity import for project-specific model | Refined |
-| https://linear.app/bes/issue/TUP-3063 | GIS Data Import & Export                        | Refined |
+| ID       | Title                                           | Status  |
+| -------- | ----------------------------------------------- | ------- |
+| TUP-3062 | Export entities in import-compatible format     | Refined |
+| TUP-3064 | Update entity import                            | Refined |
+| TUP-3061 | Update entity import for project-specific model | Refined |
+| TUP-3063 | GIS Data Import & Export                        | Refined |
 
 **C5: Onboarding**
 
-| ID                                   | Title                                             |      |
-| ------------------------------------ | ------------------------------------------------- | ---- |
-| https://linear.app/bes/issue/TUP-1582 | Project setup: copy entities from another project |      |
+| ID       | Title                                             | Status |
+| -------- | ------------------------------------------------- | ------ |
+| TUP-1582 | Project setup: copy entities from another project |        |
