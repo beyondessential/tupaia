@@ -1,6 +1,10 @@
-# RN-1853 — Add project_id to entities and duplicate shared entities per project
+# TUP-3056 — Add project_id to entities and duplicate shared entities per project
 
-[Linear ticket](https://linear.app/bes/issue/RN-1853/add-project-id-to-entities-and-duplicate-shared-entities-per-project)
+[Linear ticket](https://linear.app/bes/issue/TUP-3056/add-project-id-to-entities-and-duplicate-shared-entities-per-project)
+
+> Originally tracked as RN-1853; renumbered to TUP-3056 after a Linear workspace
+> reorganisation. The implementation PR (#6749) and earlier commit messages still
+> reference the RN-1853 identifier.
 
 ## Context
 
@@ -130,7 +134,7 @@ Map overlays and dashboards do not need duplication — they keep their existing
 
 Audited the codebase. Exactly one site walks `entity.parent_id` recursively: `EntityParentChildRelationBuilder.getRelationsViaCanonical` in `packages/database/src/server/changeHandlers/entityHierarchyCacher/`. Used as the canonical fallback when no `entity_relation` exists at a hierarchy level.
 
-Post-migration this would return children across all projects. Fix is small: thread `project.id` through `rebuildRelationsForEntity → fetchAndCacheChildren → getRelationsViaCanonical` and add `project_id: project.id` to the `entity.find` criteria. **In scope for RN-1853.**
+Post-migration this would return children across all projects. Fix is small: thread `project.id` through `rebuildRelationsForEntity → fetchAndCacheChildren → getRelationsViaCanonical` and add `project_id: project.id` to the `entity.find` criteria. **In scope for TUP-3056.**
 
 All other recursive walks of the hierarchy use `entity_parent_child_relation` filtered by `entity_hierarchy_id`, which is already project-scoped — unaffected:
 
@@ -148,26 +152,69 @@ All other recursive walks of the hierarchy use `entity_parent_child_relation` fi
 
 ## Hierarchy / relations table futures
 
-- **`entity_hierarchy` table**: kept as-is for RN-1853. `entity_hierarchy_id` on project still maps a project to its hierarchy ID. Removing it is RN-1864's scope.
-- **Hierarchy semantics across the NULL/NOT-NULL `project_id` boundary**: not a long-term concern. [RN-1862](https://linear.app/bes/issue/RN-1862/consolidate-hierarchy-to-parent-id-on-project-specific-entities) will remove `entity_parent_child_relation` entirely and consolidate hierarchy onto `entity.parent_id`. For RN-1853, the existing relation rows continue to work as-is during the transition; the NULL / NOT-NULL distinction lives on `entity` rows, not on the relation rows themselves.
+- **`entity_hierarchy` table**: kept as-is for TUP-3056. `entity_hierarchy_id` on project still maps a project to its hierarchy ID. Removing it is TUP-3066's scope.
+- **Hierarchy semantics across the NULL/NOT-NULL `project_id` boundary**: not a long-term concern. [TUP-3065](https://linear.app/bes/issue/TUP-3065/consolidate-hierarchy-to-parent-id-on-project-specific-entities) will remove `entity_parent_child_relation` entirely and consolidate hierarchy onto `entity.parent_id`. For TUP-3056, the existing relation rows continue to work as-is during the transition; the NULL / NOT-NULL distinction lives on `entity` rows, not on the relation rows themselves.
 
 ---
 
 ## Out of scope
 
 - **Removing project entities entirely.** Discussed and deferred. Project entities serve real purposes today (88 dashboards rooted at them + 226 project↔country relations in `entity_parent_child_relation`). Deferring until we're ready to handle dashboard rooting differently and lift the 226 relations into a `project_country` junction.
-- **`project_country` junction table.** Only needed once `entity_parent_child_relation` is removed. Belongs with [RN-1864](https://linear.app/bes/issue/RN-1864/remove-entity-relation-and-entity-hierarchy-tables).
+- **`project_country` junction table.** Only needed once `entity_parent_child_relation` is removed. Belongs with [TUP-3066](https://linear.app/bes/issue/TUP-3066/remove-entity-relation-and-entity-hierarchy-tables).
 - **Unbundling `map_overlay.country_codes` triple-role** (scoping vs permission vs project indirection). Juliana flagged this; not required under this approach.
-- **Removing `entity_parent_child_relation`** — [RN-1862](https://linear.app/bes/issue/RN-1862/consolidate-hierarchy-to-parent-id-on-project-specific-entities).
-- **Removing `entity_hierarchy` and `entity_relation` tables** — [RN-1864](https://linear.app/bes/issue/RN-1864/remove-entity-relation-and-entity-hierarchy-tables).
-- **Project-scoping all entity queries** — [RN-1854](https://linear.app/bes/issue/RN-1854/ensure-all-entity-access-is-project-scoped). Bleeds into RN-1853 only where callsites break; the bulk is its own ticket.
+- **Removing `entity_parent_child_relation`** — [TUP-3065](https://linear.app/bes/issue/TUP-3065/consolidate-hierarchy-to-parent-id-on-project-specific-entities).
+- **Removing `entity_hierarchy` and `entity_relation` tables** — [TUP-3066](https://linear.app/bes/issue/TUP-3066/remove-entity-relation-and-entity-hierarchy-tables).
+- **Project-scoping all entity queries** — [TUP-3060](https://linear.app/bes/issue/TUP-3060/ensure-all-entity-access-is-project-scoped). Bleeds into TUP-3056 only where callsites break; the bulk is its own ticket.
 
 ---
 
 ## Risks / things to watch
 
-- **`entity.code` is no longer unique post-migration.** Many callsites assume `findOne({ code })` returns at most one row. Will need a codebase audit (mostly RN-1854 territory).
+- **`entity.code` is no longer unique post-migration.** Many callsites assume `findOne({ code })` returns at most one row. Will need a codebase audit (mostly TUP-3060 territory).
 - **Sync surface change.** `project_id` flows through to MediTrak / Datatrak clients. New column on entity records.
 - **Cache invalidation.** `EntityHierarchyCacher` and other materialised views may need rebuilding after the migration.
-- **Production deploy ordering.** This lands shortly after RN-1851 (entity_polygon split) — second large schema migration on `entity` in quick succession. Coordinate deploy and rollback plans.
+- **Production deploy ordering.** This lands shortly after TUP-3053 (entity_polygon split) — second large schema migration on `entity` in quick succession. Coordinate deploy and rollback plans.
 - **Heavy data migration.** Roughly ~104k entity inserts plus ~397k survey_response updates. Rehearse on a staging clone before prod.
+
+
+
+**Ticket Summary**
+
+**C1: GIS Split & Entity Migration**
+
+| ID                                   | Title                                                        | Status   |
+| ------------------------------------ | ------------------------------------------------------------ | -------- |
+| https://linear.app/bes/issue/TUP-3053 | Schema migration: Create entity_geolocations table           | Dev done |
+| https://linear.app/bes/issue/TUP-3056 | Add project_id to entities and duplicate shared entities per project | Dev done |
+| https://linear.app/bes/issue/TUP-3060 | Ensure all entity access is project-scoped                   | Refined  |
+
+**C2: Hierarchy Remodel**
+
+| ID                                   | Title                                                        |             |
+| ------------------------------------ | ------------------------------------------------------------ | ----------- |
+| https://linear.app/bes/issue/TUP-3065 | Consolidate hierarchy to parent_id on project-specific entities | In progress |
+| https://linear.app/bes/issue/TUP-3068 | Simplify ancestor_descendant_relations rebuild algorithm     | Refined     |
+| https://linear.app/bes/issue/TUP-3066 | Remove entity_relation and entity_hierarchy tables           | Refined     |
+| https://linear.app/bes/issue/TUP-3067 | MediTrak compatibility layer                                 | Refined     |
+
+**C3: Admin Panel Project Scoping**
+
+| ID      | Title                                                        |             |
+| ------- | ------------------------------------------------------------ | ----------- |
+| TUP-3055 | Add global project filter to admin panel (frontend)          | In progress |
+| TUP-3054 | Support project scope in admin-panel-server endpoints (backend) | In progress |
+
+**C4: Import/Export**
+
+| ID                                   | Title                                           |         |
+| ------------------------------------ | ----------------------------------------------- | ------- |
+| https://linear.app/bes/issue/TUP-3062 | Export entities in import-compatible format     | Refined |
+| https://linear.app/bes/issue/TUP-3064 | Update entity import                            | Refined |
+| https://linear.app/bes/issue/TUP-3061 | Update entity import for project-specific model | Refined |
+| https://linear.app/bes/issue/TUP-3063 | GIS Data Import & Export                        | Refined |
+
+**C5: Onboarding**
+
+| ID                                   | Title                                             |      |
+| ------------------------------------ | ------------------------------------------------- | ---- |
+| https://linear.app/bes/issue/TUP-1582 | Project setup: copy entities from another project |      |
