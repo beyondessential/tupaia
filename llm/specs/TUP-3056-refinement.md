@@ -218,3 +218,41 @@ All other recursive walks of the hierarchy use `entity_parent_child_relation` fi
 | ID       | Title                                             | Status |
 | -------- | ------------------------------------------------- | ------ |
 | TUP-1582 | Project setup: copy entities from another project |        |
+
+---
+
+## Release path for C1 + C2
+
+C1 + C2 together is the right release unit for the project-specific entity model. Tickets land on the load-bearing path **3053 → 3056 → 3060 → 3065**, then the destructive cleanup **3067 → 3066** trails afterwards. Staging the rollout as three deployable milestones is safer than a single big-bang.
+
+### Milestone 1 — server-side correct (test-ready)
+
+- **TUP-3060** — audit and project-scope every entity query across central-server, entity-server, report-server, data-table-server, orchestration servers, and admin-panel-server. Includes codebase-wide audit of `findOne({ code })` callsites that assume `entity.code` uniqueness (broken by 3056).
+- Land **TUP-3056 (#6749)** and **TUP-3065 (#6761)** through review and merge.
+
+After this, internal QA can validate project-scoped behaviour end-to-end. Entities are duplicated by 3056 but consumer queries may leak across projects without 3060.
+
+### Milestone 2 — safe for mobile (deploy-ready)
+
+- **TUP-3067** — MediTrak compatibility layer. Mobile sync still pulls `entity_parent_child_relation` and `entity_relation` rows; after 3065 those are dead writes server-side. Either translate parent_id walks into the legacy shapes at the sync API boundary, or ship a mobile build that knows the new shape. Currently estimated at 13 points — biggest remaining effort.
+
+Until 3067 is in production, **do not** drop the legacy tables — mobile sync would silently drift.
+
+### Milestone 3 — schema clean (cleanup)
+
+- **TUP-3066** — schema migration to drop `entity_relation`, `entity_parent_child_relation`, `entity_hierarchy`; remove the model classes; drop `project.entity_hierarchy_id`. Mostly mechanical once 3067 has been verified in production.
+
+### Cross-cutting tasks
+
+- **Refresh `packages/database/schema/schema.sql`** — currently 71 migrations behind. Bites new dev environments and local validation. Worth doing once the migrations have stabilised.
+- **Production data-migration rehearsal** of 3056 on a dev clone, then prod with a monitored runbook (~5:24 on dev clone, prod is similar order of magnitude). Coordinate with the GIS-split (3053) deploy so we're not changing `entity` schema twice in quick succession.
+- **Sync surface coordination** — explicitly remove `entity_parent_child_relation` from `initSyncComponents.js` / `runPostMigration` once 3067 is ready (currently deferred with a TODO pointing to 3067).
+
+### Adjacent tracks (separate releases)
+
+- **C3** (admin-panel project scoping) — TUP-3054, TUP-3055 — depends on C1 + C2 server changes but ships independently.
+- **C4** (import/export) — TUP-3061, TUP-3062, TUP-3063, TUP-3064 — also depends on the new project-specific model.
+
+### TL;DR
+
+Remaining work is essentially **3060 + 3067 + 3066**, plus shepherding **3056 and 3065** through review, plus the **schema.sql refresh**.
