@@ -9,10 +9,13 @@ import {
 const getFilterString = filter => `filter=${JSON.stringify(filter)}`;
 // remove test data after the test is finished
 const removeTestData = async (models, projectCode) => {
+  const project = await models.project.findOne({ code: projectCode });
+  if (project) {
+    await models.projectCountry.delete({ project_id: project.id });
+  }
   await models.project.delete({ code: projectCode });
   const projectEntity = await models.entity.findOne({ code: projectCode, type: 'project' });
   if (projectEntity !== null) {
-    await models.entityRelation.delete({ parent_id: projectEntity.id });
     await models.entity.delete({ id: projectEntity.id });
   }
   await models.entityHierarchy.delete({ name: projectCode });
@@ -28,12 +31,7 @@ const createTestData = async (models, projectCode, permissionGroup, countryEntit
     name: projectCode,
     canonical_types: '{country}',
   });
-  await findOrCreateDummyRecord(models.entityRelation, {
-    parent_id: projectEntityId,
-    child_id: countryEntityId,
-    entity_hierarchy_id: entityHierarchyId,
-  });
-  return findOrCreateDummyRecord(
+  const project = await findOrCreateDummyRecord(
     models.project,
     {
       id: generateId(),
@@ -45,6 +43,12 @@ const createTestData = async (models, projectCode, permissionGroup, countryEntit
       permission_groups: [permissionGroup],
     },
   );
+  // TUP-3065: project↔country mapping lives in project_country, not entity_relation.
+  await findOrCreateDummyRecord(models.projectCountry, {
+    project_id: project.id,
+    country_id: countryEntityId,
+  });
+  return project;
 };
 
 describe('Permissions checker for GETProjects', async () => {

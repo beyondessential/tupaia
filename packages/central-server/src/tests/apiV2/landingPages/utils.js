@@ -28,15 +28,15 @@ export const setupProject = async models => {
     entity_hierarchy_id: PROJECT_ENTITY_HIERARCHIES[index].id,
   }));
   const DL = await findOrCreateDummyCountryEntity(models, { code: 'DL' });
-  const ENTITY_RELATIONS = TEST_PROJECTS.map(project => ({
-    parent_id: project.entity_id,
-    child_id: DL.entity.id,
-    entity_hierarchy_id: project.entity_hierarchy_id,
+  // TUP-3065: project↔country links via project_country, keyed on project.id.
+  const PROJECT_COUNTRIES = TEST_PROJECTS.map(project => ({
+    project_id: project.id,
+    country_id: DL.entity.id,
   }));
   await findOrCreateRecords(models, {
     entity: PROJECT_ENTITIES,
     entityHierarchy: PROJECT_ENTITY_HIERARCHIES,
     project: TEST_PROJECTS,
-    entityRelation: ENTITY_RELATIONS,
+    projectCountry: PROJECT_COUNTRIES,
   });
 };
