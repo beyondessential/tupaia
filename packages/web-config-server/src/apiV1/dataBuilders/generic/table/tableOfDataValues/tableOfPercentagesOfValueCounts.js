@@ -1,5 +1,6 @@
-import { getPercentageCountOfValuesByCell } from './helpers/getValuesByCell';
+import { uniq } from 'es-toolkit';
 
+import { getPercentageCountOfValuesByCell } from './helpers/getValuesByCell';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 class TableOfPercentagesOfValueCountsBuilder extends TableOfDataValuesBuilder {
@@ -7,7 +8,7 @@ class TableOfPercentagesOfValueCountsBuilder extends TableOfDataValuesBuilder {
     const dataElementCodes = this.config.cells
       .flat()
       .flatMap(cell => cell.numerator.dataValues.concat(cell.denominator.dataValues));
-    return [...new Set(dataElementCodes)];
+    return uniq(dataElementCodes);
   }
 
   getCellKey(rowIndex, columnIndex) {

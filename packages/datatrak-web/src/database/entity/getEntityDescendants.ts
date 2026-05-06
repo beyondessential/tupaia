@@ -2,7 +2,7 @@
 // Eventually we are going to remove the route from datatrak-web-server
 // and use this function only. So keeping it here for now.
 import { clone } from 'es-toolkit';
-import omitBy from 'lodash.omitby';
+import { omitBy } from 'es-toolkit/compat';
 
 import type { AccessPolicy } from '@tupaia/access-policy';
 import { extractEntityFilterFromObject, type ProjectRecord } from '@tupaia/tsmodels';

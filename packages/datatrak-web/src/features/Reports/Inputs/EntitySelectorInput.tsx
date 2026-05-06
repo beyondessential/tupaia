@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import throttle from 'lodash.throttle';
+import { throttle } from 'es-toolkit/compat';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useEntities } from '../../../api';
 import { InputHelperText } from '../../../components';

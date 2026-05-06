@@ -1,4 +1,4 @@
-import debounce from 'lodash.debounce';
+import { debounce } from 'es-toolkit/compat';
 import parseLinkHeader from 'parse-link-header';
 import generateId from 'uuid/v1';
 
