@@ -4,23 +4,11 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
+// TUP-3065: closure cache retired. The Record class is kept only because the model is
+// still registered (table is dropped in TUP-3066). No live caller queries the table —
+// the live methods on the Model below compute from entity.parent_id + project_country.
 export class AncestorDescendantRelationRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ANCESTOR_DESCENDANT_RELATION;
-
-  static joins = /** @type {const} */ ([
-    {
-      joinWith: RECORDS.ENTITY,
-      joinAs: 'descendant',
-      joinCondition: ['descendant_id', 'descendant.id'],
-      fields: { code: 'descendant_code' },
-    },
-    {
-      joinWith: RECORDS.ENTITY,
-      joinAs: 'ancestor',
-      joinCondition: ['ancestor_id', 'ancestor.id'],
-      fields: { code: 'ancestor_code' },
-    },
-  ]);
 }
 
 export class AncestorDescendantRelationModel extends DatabaseModel {
@@ -39,14 +27,6 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
     // tracks any direct writes to the table (e.g. a manual rebuild during a one-off
     // migration). Entity-level cache tracking is what most callers care about now.
     return [RECORDS.ANCESTOR_DESCENDANT_RELATION, RECORDS.ENTITY];
-  }
-
-  async getImmediateRelations(hierarchyId, criteria) {
-    return this.find({
-      ...criteria,
-      entity_hierarchy_id: hierarchyId,
-      generational_distance: 1,
-    });
   }
 
   // TUP-3065/TUP-3060: pre-3065 these methods read from the ancestor_descendant_relation
