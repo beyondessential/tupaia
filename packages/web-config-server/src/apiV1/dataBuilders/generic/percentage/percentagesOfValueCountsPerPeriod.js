@@ -1,5 +1,4 @@
-import keyBy from 'lodash.keyby';
-import groupBy from 'lodash.groupby';
+import { groupBy, keyBy } from 'es-toolkit/compat';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { PERIOD_TYPES } from '@tupaia/tsutils';

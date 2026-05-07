@@ -2,6 +2,7 @@ export * from './bumpSyncTickForRepull';
 export * from './completeSyncSession';
 export * from './countSyncSnapshotRecords';
 export * from './findLastSuccessfulSyncedProjects';
+export * from './findSyncSnapshotRecords';
 export * from './getDependencyOrder';
 export * from './getModelsForDirection';
 export * from './getSyncTicksOfPendingEdits';

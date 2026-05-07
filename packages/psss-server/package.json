@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/psss-server",
-  "version": "0.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Backend server for PSSS application",
   "homepage": "https://github.com/beyondessential/tupaia",
@@ -34,8 +34,8 @@
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "es-toolkit": "^1.46.0",
     "express": "^4.21.2",
-    "lodash.groupby": "^4.6.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {

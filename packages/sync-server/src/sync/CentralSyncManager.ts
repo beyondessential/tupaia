@@ -48,7 +48,7 @@ const DEFAULT_CONFIG: SyncServerConfig = {
   maxRecordsPerSnapshotChunk: 10_000,
   lookupTable: {
     perModelUpdateTimeoutMs: 1_000_000,
-    avoidRepull: false,
+    avoidRepull: true,
   },
   // snapshotTransactionTimeoutMs: 60 * 60 * 1000, // 1 hour
   // syncSessionTimeoutMs: 2 * 60 * 60 * 1000, // 2 hours
@@ -57,6 +57,14 @@ const DEFAULT_CONFIG: SyncServerConfig = {
 
 const errorMessageFromSession = (session: SyncSession) =>
   `Sync session '${session.id}' encountered an error: ${session.errors?.at(-1)}`;
+
+const errorMessageFromSessionId = async (models: SyncServerModelRegistry, sessionId: string) => {
+  const session = await models.syncSession.findById(sessionId);
+  if (!session) {
+    throw new Error(`Sync session '${sessionId}' not found`);
+  }
+  return errorMessageFromSession(session);
+};
 
 export class CentralSyncManager {
   models: SyncServerModelRegistry;
@@ -246,7 +254,7 @@ export class CentralSyncManager {
 
       await createSnapshotTable(this.models.database, sessionId);
       const { tick } = await this.tickTockGlobalClock(this.models);
-      await this.models.syncSession.updateById(sessionId, { started_at_tick: tick });
+      await this.models.syncSession.markAsStartedAt(sessionId, tick);
 
       return { sessionId, tick };
     } catch (error: any) {
@@ -297,7 +305,8 @@ export class CentralSyncManager {
         sessionId,
         'Session initiation incomplete, likely because the central server restarted during the process',
       );
-      throw new Error(errorMessageFromSession(session));
+
+      throw new Error(await errorMessageFromSessionId(this.models, sessionId));
     }
 
     // session ready!
@@ -320,7 +329,7 @@ export class CentralSyncManager {
         sessionId,
         'Snapshot processing incomplete, likely because the central server restarted during the snapshot',
       );
-      throw new Error(errorMessageFromSession(session));
+      throw new Error(await errorMessageFromSessionId(this.models, sessionId));
     }
 
     // snapshot processing complete!
@@ -720,7 +729,7 @@ export class CentralSyncManager {
         sessionId,
         'Push persist incomplete, likely because the central server restarted during the process',
       );
-      throw new Error(errorMessageFromSession(session));
+      throw new Error(await errorMessageFromSessionId(this.models, sessionId));
     }
 
     // push complete!

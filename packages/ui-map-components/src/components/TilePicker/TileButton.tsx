@@ -1,16 +1,17 @@
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import { ICON_STYLES, ReferenceTooltip } from '@tupaia/ui-components';
 import React from 'react';
 import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { ICON_STYLES, ReferenceTooltip } from '@tupaia/ui-components';
-import { ReferenceProps } from '@tupaia/types';
-import { SeriesValue } from '../../types';
+import type { TileSet } from '../../types';
 
 const StyledButton = styled(Button)`
+  border-color: transparent;
+  border-style: solid;
+  border-width: 2px;
   position: relative;
   border-radius: 3px;
   margin: 1rem;
-  font-size: 0;
   overflow: hidden;
   padding: 0;
   text-transform: none;
@@ -19,12 +20,12 @@ const StyledButton = styled(Button)`
   background-size: cover;
   transition: none;
 
-  &.active {
-    border: 2px solid
-      ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.primary.main : '#2196f3')};
+  &[aria-pressed='true'] {
+    border-color: ${({ theme }) =>
+      theme.palette.type === 'light' ? theme.palette.primary.main : '#2196f3'};
 
     p {
-      background: ${({ theme }) =>
+      background-color: ${({ theme }) =>
         theme.palette.type === 'light' ? theme.palette.primary.main : '#2196f3'};
       color: white;
     }
@@ -35,44 +36,35 @@ const Thumbnail = styled.img.attrs({
   'aria-hidden': true,
   crossOrigin: '',
 })`
+  height: 100%;
   object-fit: cover;
   width: 100%;
 `;
 
 const TileLabel = styled(Typography)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: absolute;
-  font-weight: normal;
-  font-size: 1rem;
-  line-height: 1.2;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  color: ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.text.primary : 'white')};
   background: ${({ theme }) =>
     theme.palette.type === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(43, 45, 56, 0.9)'};
-  padding: 0.5rem 0.75rem;
+  color: ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.text.primary : 'white')};
+  font-size: 1rem;
+  font-weight: normal;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  line-height: 1.2;
+  padding-block: 0.5rem;
+  padding-inline: 0.75rem;
+  position: absolute;
+  text-align: start;
 `;
 
-// Types for a tileset
-export type TileSet = {
-  key: string;
-  label: string;
-  thumbnail: string;
-  reference?: ReferenceProps;
-  legendItems?: SeriesValue[];
-};
-
-interface TileButtonProps {
+interface TileButtonProps
+  extends Omit<React.ComponentPropsWithRef<typeof StyledButton>, 'onClick'> {
   tileSet: TileSet;
-  isActive?: boolean;
   onChange: (tileSetKey: string) => void;
 }
 
-export const TileButton = React.memo(({ tileSet, isActive = false, onChange }: TileButtonProps) => (
-  <StyledButton onClick={() => onChange(tileSet.key)} className={isActive ? 'active' : ''}>
+export const TileButton = ({ tileSet, onChange, ...props }: TileButtonProps) => (
+  <StyledButton {...props} onClick={() => onChange(tileSet.key)}>
     <Thumbnail src={tileSet.thumbnail} />
     <TileLabel>
       {tileSet.label}
@@ -81,4 +73,4 @@ export const TileButton = React.memo(({ tileSet, isActive = false, onChange }: T
       )}
     </TileLabel>
   </StyledButton>
-));
+);

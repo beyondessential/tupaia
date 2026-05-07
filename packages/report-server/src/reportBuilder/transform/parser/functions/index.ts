@@ -45,15 +45,15 @@ export const customFunctions = {
   formatAsFractionAndPercentage,
   any,
   all,
-};
+} as const;
 
 export const contextFunctions = {
   orgUnitCodeToName: orgUnitCodeToName.func,
-};
+} as const;
 
 export const contextFunctionDependencies = {
   orgUnitCodeToName: orgUnitCodeToName.dependencies,
-};
+} as const;
 
 /**
  * Functions to extend existing mathjs functions
@@ -61,7 +61,7 @@ export const contextFunctionDependencies = {
 export const functionExtensions = {
   add,
   divide,
-};
+} as const;
 
 /**
  * Functions to override existing mathjs functions
@@ -71,4 +71,4 @@ export const functionOverrides = {
   mean,
   min,
   max,
-};
+} as const;

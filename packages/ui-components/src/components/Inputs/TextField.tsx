@@ -13,16 +13,14 @@ const StyledTextField = styled(MuiTextField)<{ $focusColor?: Property.Color }>`
     background: ${props => props.theme.palette.common.white};
   }
 
-  // The actual input field
   .MuiInputBase-input {
     color: ${props => props.theme.palette.text.primary};
     font-weight: 400;
     border-radius: 0.1875rem;
   }
 
-  // helper text
   .MuiFormHelperText-root {
-    margin-left: 0;
+    margin-inline-start: 0;
   }
 
   // The border

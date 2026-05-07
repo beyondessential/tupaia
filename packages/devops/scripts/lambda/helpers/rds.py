@@ -19,6 +19,32 @@ def get_db_instance(db_id):
     return instances_response["DBInstances"][0]
 
 
+def get_db_instance_parameter_group_name(db_id):
+    """
+    Returns parameter group name for an instance, or `None` if it can’t be resolved.
+    """
+    try:
+        instance = get_db_instance(db_id)
+    except Exception as err:
+        print(
+            f"Couldn’t describe DB instance {db_id} to determine its parameter group ({err!s}). Returning `None`."
+        )
+        return None
+
+    groups = instance.get("DBParameterGroups")
+    parameter_group_name = groups and groups[0].get("DBParameterGroupName")
+    if not parameter_group_name:
+        print(
+            f"DB instance {db_id} doesn’t have a DBParameterGroupName. Returning `None`."
+        )
+        return None
+
+    print(
+        f"DB instance {db_id} is configured with parameter group {parameter_group_name}"
+    )
+    return parameter_group_name
+
+
 def get_all_db_instances():
     instances_response = rds.describe_db_instances()
     return instances_response["DBInstances"]

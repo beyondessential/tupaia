@@ -5,7 +5,7 @@ import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import styled from 'styled-components';
 import MuiChip from '@material-ui/core/Chip';
 import { Autocomplete as UIAutocomplete } from '@tupaia/ui-components';
-import debounce from 'lodash.debounce';
+import { debounce } from 'es-toolkit/compat';
 
 const Chip = styled(MuiChip)`
   &:first-child {
