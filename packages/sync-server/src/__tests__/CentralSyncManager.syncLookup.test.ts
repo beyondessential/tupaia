@@ -146,6 +146,20 @@ describe('Sync Lookup data', () => {
       entity_id: entity1.id,
       permission_group_id: permissionGroup.id,
     });
+    // TUP-3060: project_country syncs PULL_FROM_CENTRAL alongside project. The
+    // sync-lookup outgoing-snapshot test asserts every PULL_FROM_CENTRAL model has
+    // at least one record snapshotted for a newly-selected project, so we seed a
+    // project_country row here. The country entity needs `type: 'country'` so the
+    // FK to entity is satisfied.
+    const countryEntity = await findOrCreateDummyRecord(models.entity, {
+      code: 'test_country_entity',
+      name: 'Test Country Entity',
+      type: 'country',
+    });
+    await findOrCreateDummyRecord(models.projectCountry, {
+      project_id: project.id,
+      country_id: countryEntity.id,
+    });
   };
 
   beforeAll(async () => {

@@ -570,41 +570,48 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    */
   async fetchAncestorDetailsByDescendantCode(descendantCodes, hierarchyId, ancestorType) {
     const cacheKey = this.getCacheKey(this.fetchAncestorDetailsByDescendantCode.name, arguments);
-    // in testing this function, there was no issue with many bound parameters, and reducing the
-    // number of batches greatly improved performance - so here we use a higher max bindings number
-    const maxBoundParameters = 20000;
     return this.runCachedFunction(cacheKey, async () => {
-      const ancestorDescendantRelations = await this.database.executeSqlInBatches(
-        descendantCodes,
-        batchOfDescendantCodes => [
-          `
-            SELECT descendant.code as descendant_code, ancestor.code as ancestor_code, ancestor.name as ancestor_name
-            FROM
-              ancestor_descendant_relation
-            JOIN
-              entity as ancestor on ancestor.id = ancestor_descendant_relation.ancestor_id
-            JOIN
-              entity as descendant ON descendant.id = ancestor_descendant_relation.descendant_id
-            WHERE
-              descendant.code IN (${batchOfDescendantCodes.map(() => '?').join(',')})
-            AND
-              ancestor_descendant_relation.entity_hierarchy_id = ?
-            AND
-              ancestor.type = ?
-            ORDER BY
-              generational_distance ASC
-          `,
-          [...batchOfDescendantCodes, hierarchyId, ancestorType],
-        ],
-        maxBoundParameters,
-      );
-      const ancestorDetailsByDescendantCode = {};
-      ancestorDescendantRelations.forEach(r => {
-        ancestorDetailsByDescendantCode[r.descendant_code] = {
-          code: r.ancestor_code,
-          name: r.ancestor_name,
-        };
+      // TUP-3065: previously read from the ancestor_descendant_relation closure cache;
+      // that table is retired. Walk for each descendant via the unified parent_id +
+      // project_country edges CTE (in getRelationsOfEntities) and pick the closest
+      // ancestor of the requested type.
+      //
+      // Project scope: scope the descendant lookup to (NULL or project) so that
+      // cross-project codes don't bleed in. Each descendant's ancestor walk inherits
+      // the same scope via getAncestorsOfEntities.
+      const project = hierarchyId
+        ? await this.otherModels.project.findOne({ entity_hierarchy_id: hierarchyId })
+        : null;
+      const projectId = project?.id ?? null;
+
+      const descendantEntities = await this.find({
+        code: descendantCodes,
+        ...(projectId
+          ? {
+              [QUERY_CONJUNCTIONS.RAW]: {
+                sql: '(project_id IS NULL OR project_id = ?)',
+                parameters: [projectId],
+              },
+            }
+          : {}),
       });
+
+      const ancestorDetailsByDescendantCode = {};
+      // Walk each descendant's ancestors in parallel; each call hits one recursive CTE.
+      await Promise.all(
+        descendantEntities.map(async descendant => {
+          const ancestors = await this.getAncestorsOfEntities(hierarchyId, [descendant.id], {
+            type: ancestorType,
+          });
+          // ancestors come back ordered by generational_distance ASC, so [0] is closest.
+          if (ancestors.length > 0) {
+            ancestorDetailsByDescendantCode[descendant.code] = {
+              code: ancestors[0].code,
+              name: ancestors[0].name,
+            };
+          }
+        }),
+      );
       return ancestorDetailsByDescendantCode;
     });
   }
