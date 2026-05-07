@@ -182,11 +182,11 @@ All other recursive walks of the hierarchy use `entity_parent_child_relation` fi
 
 **C1: GIS Split & Entity Migration**
 
-| ID       | Title                                                                | Status   |
-| -------- | -------------------------------------------------------------------- | -------- |
-| TUP-3053 | Schema migration: Create entity_geolocations table                   | Dev done |
-| TUP-3056 | Add project_id to entities and duplicate shared entities per project | Dev done |
-| TUP-3060 | Ensure all entity access is project-scoped                           | Refined  |
+| ID       | Title                                                        | Status         |
+| -------- | ------------------------------------------------------------ | -------------- |
+| TUP-3053 | Schema migration: Create entity_geolocations table           | Merged to epic |
+| TUP-3056 | Add project_id to entities and duplicate shared entities per project | Merged to epic |
+| TUP-3060 | Ensure all entity access is project-scoped                   | Refined        |
 
 **C2: Hierarchy Remodel**
 

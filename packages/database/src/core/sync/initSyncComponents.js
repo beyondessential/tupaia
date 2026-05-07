@@ -10,6 +10,7 @@ export const SYNCING_TABLES = [
   'option_set',
   'permission_group',
   'project',
+  'project_country',
   'question',
   'survey',
   'survey_group',

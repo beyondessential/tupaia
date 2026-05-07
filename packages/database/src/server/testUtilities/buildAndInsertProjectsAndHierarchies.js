@@ -30,7 +30,21 @@ const buildAndInsertProjectAndHierarchy = async (
   const entities = [];
   const processEntity = async entityProps => {
     const { code: entityCode, ...restOfEntity } = entityProps;
-    const entity = await findOrCreateDummyRecord(models.entity, { code: entityCode }, restOfEntity);
+    // TUP-3065: many existing fixtures use the shorthand `{ code: 'KI', country_code: 'KI' }`
+    // to mean "the Kiribati country entity" without setting `type: 'country'` explicitly.
+    // Pre-3065 the type didn't matter (hierarchy was via entity_relation); now it does
+    // (project relations route into project_country only when child.type === 'country').
+    // Infer the country type from the country_code = code shorthand to keep those
+    // fixtures working without a wholesale rewrite.
+    const inferredType =
+      restOfEntity.type === undefined && restOfEntity.country_code === entityCode
+        ? 'country'
+        : restOfEntity.type;
+    const entity = await findOrCreateDummyRecord(
+      models.entity,
+      { code: entityCode },
+      { ...restOfEntity, ...(inferredType !== undefined ? { type: inferredType } : {}) },
+    );
 
     entities.push(entity);
     entityByCode[entity.code] = entity;
