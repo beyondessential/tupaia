@@ -49,20 +49,25 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
     });
   }
 
-  // TUP-3065: pre-3065 these methods read from the ancestor_descendant_relation closure
-  // cache. With the cacher retired, walk entity.parent_id directly. The hierarchyId is
-  // still accepted for back-compat — we resolve it to a project to scope the walk so
-  // that returning dictionaries don't include sibling projects' duplicates.
+  // TUP-3065/TUP-3060: pre-3065 these methods read from the ancestor_descendant_relation
+  // closure cache. With the cacher retired, walk entity.parent_id directly — plus the
+  // project_country bridge (a project entity → country edge that doesn't exist in
+  // entity.parent_id since country.parent_id points at world rather than at any
+  // particular project). The hierarchyId is still accepted for back-compat — we
+  // resolve it to a project to scope both edge sources.
   async getParentIdRelationsForHierarchy(hierarchyId) {
     const project = hierarchyId
       ? await this.otherModels.project.findOne({ entity_hierarchy_id: hierarchyId })
       : null;
     const projectId = project?.id ?? null;
-    const projectScopeClause = projectId ? '(project_id IS NULL OR project_id = ?)' : 'TRUE';
-    const projectScopeParam = projectId ? [projectId] : [];
+    const entityScopeClause = projectId ? '(child.project_id IS NULL OR child.project_id = ?)' : 'TRUE';
+    const entityScopeParam = projectId ? [projectId] : [];
+    const projectCountryScopeClause = projectId ? 'pc.project_id = ?' : 'TRUE';
+    const projectCountryScopeParam = projectId ? [projectId] : [];
 
     const result = await this.database.executeSql(
       `
+        -- entity.parent_id edges
         SELECT child.id AS descendant_id,
                child.code AS descendant_code,
                parent.id AS ancestor_id,
@@ -70,9 +75,22 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
         FROM entity child
         INNER JOIN entity parent ON parent.id = child.parent_id
         WHERE child.parent_id IS NOT NULL
-          AND ${projectScopeClause}
+          AND ${entityScopeClause}
+
+        UNION ALL
+
+        -- project_country bridge: project entity → country
+        SELECT country_entity.id AS descendant_id,
+               country_entity.code AS descendant_code,
+               project_entity.id AS ancestor_id,
+               project_entity.code AS ancestor_code
+        FROM project_country pc
+        INNER JOIN project p ON p.id = pc.project_id
+        INNER JOIN entity project_entity ON project_entity.id = p.entity_id
+        INNER JOIN entity country_entity ON country_entity.id = pc.country_id
+        WHERE ${projectCountryScopeClause}
       `,
-      projectScopeParam,
+      [...entityScopeParam, ...projectCountryScopeParam],
     );
     return result;
   }
