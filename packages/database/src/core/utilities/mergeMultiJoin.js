@@ -4,7 +4,8 @@
  *   joinWith: string;
  *   joinAs?: string;
  *   joinType?: JoinType;
- *   joinCondition: [string, string];
+ *   joinCondition?: [string, string];
+ *   joinConditions?: [string, string][];
  *   fields?: Record<string, string | undefined>;
  * }} MultiJoinItem
  */
