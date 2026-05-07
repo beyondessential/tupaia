@@ -197,6 +197,14 @@ const backfillOrphans = async (db, t0, exploreProjectId) => {
   log(`Assigned ${result.rowCount ?? '?'} orphans to explore project`, t0);
 };
 
+// Refresh planner statistics before the repoint phase. Steps above insert ~100k+
+// entity rows and update parent_id chains; without ANALYZE the planner picks a bad
+// plan for the four-table joins below (observed: 15 min on 400k survey_response).
+const refreshStatistics = async (db, t0) => {
+  await db.runSql(`ANALYZE entity, survey, survey_response, survey_response_draft, task;`);
+  log('Refreshed planner statistics', t0);
+};
+
 // Standard repoint: each survey's project IS in the entity's hierarchy, so the
 // per-project copy of the entity exists — point at it.
 const repointSurveyResponses = async (db, t0) => {
@@ -340,6 +348,7 @@ exports.up = async function (db) {
   await duplicateMultiProjectEntities(db, t0);
   await fixParentIdChains(db, t0);
   await backfillOrphans(db, t0, exploreProjectId);
+  await refreshStatistics(db, t0);
   await repointSurveyResponses(db, t0);
   await repointAnomalySurveyResponses(db, t0, exploreProjectId);
   await auditUnrepointedSurveyResponses(db, t0);
