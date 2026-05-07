@@ -2,12 +2,10 @@ import {
   AncestorDescendantRelationModel as BaseAncestorDescendantRelationModel,
   AncestorDescendantRelationRecord as BaseAncestorDescendantRelationRecord,
 } from '@tupaia/database';
-import { AncestorDescendantRelation, Entity } from '@tupaia/types';
-import { Model, DbFilter, Joined } from './types';
+import { AncestorDescendantRelation } from '@tupaia/types';
+import { Model } from './types';
 
-type AncestorDescendantRelationFields = AncestorDescendantRelation &
-  Joined<Entity, 'ancestor'> &
-  Joined<Entity, 'descendant'>;
+type AncestorDescendantRelationFields = AncestorDescendantRelation;
 
 export interface AncestorDescendantRelationRecord
   extends AncestorDescendantRelationFields,
@@ -18,9 +16,4 @@ export interface AncestorDescendantRelationModel
     BaseAncestorDescendantRelationModel,
     AncestorDescendantRelationFields,
     AncestorDescendantRelationRecord
-  > {
-  getImmediateRelations: (
-    hierarchyId: string,
-    criteria?: DbFilter<AncestorDescendantRelationFields>,
-  ) => Promise<AncestorDescendantRelationRecord[]>;
-}
+  > {}

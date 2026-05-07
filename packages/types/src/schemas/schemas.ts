@@ -98656,9 +98656,6 @@ export const ProjectCountryCreateSchema = {
 		},
 		"project_id": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -98677,9 +98674,6 @@ export const ProjectCountryUpdateSchema = {
 			"type": "string"
 		},
 		"project_id": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},

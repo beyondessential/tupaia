@@ -1,111 +1,170 @@
 import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
-// TUP-3065: hierarchy edges are now stored on `entity.parent_id` directly. Project ↔
-// country edges live in the `project_country` join table. The legacy `entity_relation`
-// rows aren't written by this helper anymore — but the return shape still includes a
-// (now empty) `entityRelations` array to keep callers happy until they migrate.
-const buildAndInsertProjectAndHierarchy = async (
-  models,
-  { entities: entitiesProps = [], relations: relationProps, code, ...projectProps },
-) => {
-  const entityByCode = {};
-  const projectEntity = await findOrCreateDummyRecord(
-    models.entity,
-    { code },
-    {
-      type: 'project',
-      name: projectProps.projectEntityName,
-      attributes: projectProps.projectEntityAttributes || {},
-    },
-  );
-  entityByCode[projectEntity.code] = projectEntity;
+// Type-inference shorthand for fixtures that don't set `type` explicitly. Pre-3065
+// the type was incidental (hierarchy was via entity_relation); now it determines
+// whether a project relation routes into project_country or parent_id.
+//
+//   { code: 'KI', country_code: 'KI' }       -> 'country' (country_code = code)
+//   { code: 'KI' } as direct child of a      -> 'country' (project entities only have
+//     project entity                              country children pre-3065 reality)
+const inferType = (entityProps, isDirectChildOfProject) => {
+  if (entityProps.type !== undefined) return entityProps.type;
+  if (entityProps.country_code === entityProps.code) return 'country';
+  if (isDirectChildOfProject) return 'country';
+  return undefined;
+};
 
-  const entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, { name: code });
-  const project = await findOrCreateDummyRecord(
-    models.project,
-    { code },
-    { entity_id: projectEntity.id, entity_hierarchy_id: entityHierarchy.id, ...projectProps },
-  );
+const STRUCTURAL_TYPES = new Set(['world', 'project', 'country']);
 
-  const entities = [];
-  const processEntity = async entityProps => {
-    const { code: entityCode, ...restOfEntity } = entityProps;
-    // TUP-3065: many existing fixtures use the shorthand `{ code: 'KI', country_code: 'KI' }`
-    // to mean "the Kiribati country entity" without setting `type: 'country'` explicitly.
-    // Pre-3065 the type didn't matter (hierarchy was via entity_relation); now it does
-    // (project relations route into project_country only when child.type === 'country').
-    // Infer the country type from the country_code = code shorthand to keep those
-    // fixtures working without a wholesale rewrite.
-    const inferredType =
-      restOfEntity.type === undefined && restOfEntity.country_code === entityCode
-        ? 'country'
-        : restOfEntity.type;
-    const entity = await findOrCreateDummyRecord(
+/**
+ * TUP-3065 / TUP-3060:
+ *
+ * Hierarchy edges live on `entity.parent_id`. Project ↔ country edges live in the
+ * `project_country` join table. Sub-country entities (district, facility, individual,
+ * etc.) belong to exactly one project, so when a fixture lists the same sub-country
+ * entity under multiple projects, this helper inserts one row per project with the
+ * same code but distinct ids — mirroring the production duplication done by
+ * RN-1853's data migration.
+ *
+ * Structural entities (world / project / country) are shared: a single row with
+ * NULL project_id is reused across every project that references them. The
+ * project↔country mapping for those is recorded in `project_country`.
+ *
+ * The legacy `entity_relation` rows are not written. The returned `entityRelations`
+ * array is left empty for back-compat.
+ */
+export const buildAndInsertProjectsAndHierarchies = async (models, projects) => {
+  // Pass 1 — projects + project entities + entity hierarchies. These are 1:1 with the
+  // input list and don't depend on each other.
+  const createdProjects = projects.map(() => ({}));
+  for (let i = 0; i < projects.length; i++) {
+    const { code, ...projectProps } = projects[i];
+
+    const projectEntity = await findOrCreateDummyRecord(
       models.entity,
-      { code: entityCode },
-      { ...restOfEntity, ...(inferredType !== undefined ? { type: inferredType } : {}) },
+      { code },
+      {
+        type: 'project',
+        name: projectProps.projectEntityName,
+        attributes: projectProps.projectEntityAttributes || {},
+      },
     );
 
-    entities.push(entity);
-    entityByCode[entity.code] = entity;
-  };
+    const entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, { name: code });
 
-  await Promise.all(entitiesProps.map(processEntity));
+    const project = await findOrCreateDummyRecord(
+      models.project,
+      { code },
+      { entity_id: projectEntity.id, entity_hierarchy_id: entityHierarchy.id, ...projectProps },
+    );
 
-  const relations =
-    relationProps || entities.map(entity => ({ parent: projectEntity.code, child: entity.code }));
+    createdProjects[i] = { project, projectEntity, entityHierarchy };
+  }
 
-  // Apply each relation as either a project_country row (project → country) or a
-  // parent_id update on the child entity (canonical hierarchy edge).
-  for (const { parent, child } of relations) {
-    const parentEntity = entityByCode[parent];
-    const childEntity = entityByCode[child];
-    if (!parentEntity || !childEntity) continue;
-
-    if (parentEntity.type === 'project' && childEntity.type === 'country') {
-      await findOrCreateDummyRecord(models.projectCountry, {
-        project_id: project.id,
-        country_id: childEntity.id,
-      });
+  // Pass 2 — entities. Tabulate which projects use each entity code so we can decide
+  // shared-vs-duplicated upfront. Also pre-compute "is this entity a direct child of
+  // its project's entity" so type inference can default such children to 'country'
+  // (matches the pre-3065 reality that project entities only had country children).
+  const projectsByEntityCode = new Map(); // code -> Set of project indices
+  const directChildOfProject = new Set(); // codes that appear as a project's direct child
+  for (let i = 0; i < projects.length; i++) {
+    const projectCode = projects[i].code;
+    for (const entityProps of projects[i].entities ?? []) {
+      const code = entityProps.code;
+      if (!projectsByEntityCode.has(code)) projectsByEntityCode.set(code, new Set());
+      projectsByEntityCode.get(code).add(i);
+    }
+    const explicitRelations = projects[i].relations;
+    if (explicitRelations) {
+      for (const { parent, child } of explicitRelations) {
+        if (parent === projectCode) directChildOfProject.add(child);
+      }
     } else {
-      await models.entity.updateById(childEntity.id, { parent_id: parentEntity.id });
+      // No relations supplied — buildAndInsertProjectAndHierarchy defaults all
+      // entities to direct children of the project entity.
+      for (const entityProps of projects[i].entities ?? []) {
+        directChildOfProject.add(entityProps.code);
+      }
     }
   }
 
-  return { project, projectEntity, entityHierarchy, entityRelations: [], entities };
-};
+  // entityByProjectAndCode[projectIndex][code] -> the EntityRecord that this project's
+  // relations should resolve to. For structural entities the same row is returned for
+  // every project; for sub-country entities each project gets its own row.
+  const entityByProjectAndCode = projects.map(() => ({}));
+  const allEntities = [];
 
-/**
- * Will create a project with the provided properties, along with the project entity, entity hierarchy and any child entities
- * Usage example:
- * ```js
- * await buildAndInsertProjectsAndHierarchies([
- *   {
- *     id: 'id',
- *     code: 'code',
- *     name: 'Project',
- *     entities: [
- *      { code: 'KI', type: 'country', country_code: 'Kiribati' },
- *      { code: 'VU', type: 'country', country_code: 'Vanuatu' },
- *      { code: 'VU_Malampa', type: 'district', country_code: 'Vanuatu' },
- *     ],
- *     relations: [
- *      {parent: 'code', child: 'KI' }
- *      {parent: 'code', child: 'VU' }
- *      {parent: 'VU', child: 'VU_Malampa' }
- *     ] (optional, if omitted all entities will be child of the project)
- *   },
- *   ..., // can handle more than one project
- * ]);
- * ```
- */
-export const buildAndInsertProjectsAndHierarchies = async (models, projects) => {
-  const createdProjects = [];
+  for (const [code, projectIndices] of projectsByEntityCode.entries()) {
+    // Find the entity definition (any project's copy of `entities` will do — they
+    // share the same fixture object).
+    let entityProps;
+    for (const i of projectIndices) {
+      entityProps = (projects[i].entities ?? []).find(e => e.code === code);
+      if (entityProps) break;
+    }
+    if (!entityProps) continue;
 
+    const { code: entityCode, ...restOfEntity } = entityProps;
+    const type = inferType(entityProps, directChildOfProject.has(entityCode));
+
+    if (type !== undefined && STRUCTURAL_TYPES.has(type)) {
+      // Shared structural row. project_id stays NULL.
+      const entity = await findOrCreateDummyRecord(
+        models.entity,
+        { code: entityCode },
+        { ...restOfEntity, type, project_id: null },
+      );
+      allEntities.push(entity);
+      for (const i of projectIndices) entityByProjectAndCode[i][entityCode] = entity;
+    } else {
+      // Sub-country: one row per project. Find-by `(code, project_id)` so re-running
+      // setup on the same fixture is idempotent.
+      for (const i of projectIndices) {
+        const project = createdProjects[i].project;
+        const entity = await findOrCreateDummyRecord(
+          models.entity,
+          { code: entityCode, project_id: project.id },
+          { ...restOfEntity, ...(type !== undefined ? { type } : {}), project_id: project.id },
+        );
+        allEntities.push(entity);
+        entityByProjectAndCode[i][entityCode] = entity;
+      }
+    }
+  }
+
+  // Pass 3 — relations. Each project's relations reference entities by code; resolve
+  // through this project's entityByCode map so duplicates land in the right project.
   for (let i = 0; i < projects.length; i++) {
-    const project = projects[i];
-    const newCreatedProjects = await buildAndInsertProjectAndHierarchy(models, project);
-    createdProjects.push(newCreatedProjects);
+    const { entities: entitiesProps = [], relations: relationProps } = projects[i];
+    const { project, projectEntity } = createdProjects[i];
+    const byCode = entityByProjectAndCode[i];
+    byCode[projectEntity.code] = projectEntity;
+
+    const projectScopedEntities = entitiesProps
+      .map(({ code }) => byCode[code])
+      .filter(Boolean);
+
+    const relations =
+      relationProps ||
+      projectScopedEntities.map(entity => ({ parent: projectEntity.code, child: entity.code }));
+
+    for (const { parent, child } of relations) {
+      const parentEntity = byCode[parent];
+      const childEntity = byCode[child];
+      if (!parentEntity || !childEntity) continue;
+
+      if (parentEntity.type === 'project' && childEntity.type === 'country') {
+        await findOrCreateDummyRecord(models.projectCountry, {
+          project_id: project.id,
+          country_id: childEntity.id,
+        });
+      } else {
+        await models.entity.updateById(childEntity.id, { parent_id: parentEntity.id });
+      }
+    }
+
+    createdProjects[i].entities = projectScopedEntities;
+    createdProjects[i].entityRelations = [];
   }
 
   return createdProjects;

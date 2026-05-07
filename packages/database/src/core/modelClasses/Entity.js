@@ -433,6 +433,39 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return EntityRecord;
   }
 
+  /**
+   * TUP-3060: canonical lookup for an entity by code within a project's scope.
+   *
+   * Post-RN-1853 `entity.code` is no longer globally unique — sub-country entities are
+   * duplicated per project. Bare `findOne({ code })` returns an arbitrary copy, which
+   * silently corrupts behaviour. This helper restricts the lookup to the requested
+   * project (plus structural entities with NULL project_id, which are shared).
+   *
+   * Pass `null` (or omit) for `projectId` if the caller has no project context — in
+   * that case the lookup is unscoped and the call is no safer than `findOne({ code })`,
+   * but documented as such. Prefer threading project context through callers.
+   *
+   * @param {string} code
+   * @param {string | null} [projectId]
+   * @param {*} [otherCriteria]
+   * @returns {Promise<EntityRecord | null>}
+   */
+  async findOneByCodeInProject(code, projectId = null, otherCriteria = {}) {
+    if (!projectId) {
+      return this.findOne({ code, ...otherCriteria });
+    }
+    const matches = await this.find({
+      code,
+      ...otherCriteria,
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: '(project_id IS NULL OR project_id = ?)',
+        parameters: [projectId],
+      },
+    });
+    if (matches.length === 0) return null;
+    return matches[0];
+  }
+
   get cacheEnabled() {
     return true;
   }
@@ -570,41 +603,48 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    */
   async fetchAncestorDetailsByDescendantCode(descendantCodes, hierarchyId, ancestorType) {
     const cacheKey = this.getCacheKey(this.fetchAncestorDetailsByDescendantCode.name, arguments);
-    // in testing this function, there was no issue with many bound parameters, and reducing the
-    // number of batches greatly improved performance - so here we use a higher max bindings number
-    const maxBoundParameters = 20000;
     return this.runCachedFunction(cacheKey, async () => {
-      const ancestorDescendantRelations = await this.database.executeSqlInBatches(
-        descendantCodes,
-        batchOfDescendantCodes => [
-          `
-            SELECT descendant.code as descendant_code, ancestor.code as ancestor_code, ancestor.name as ancestor_name
-            FROM
-              ancestor_descendant_relation
-            JOIN
-              entity as ancestor on ancestor.id = ancestor_descendant_relation.ancestor_id
-            JOIN
-              entity as descendant ON descendant.id = ancestor_descendant_relation.descendant_id
-            WHERE
-              descendant.code IN (${batchOfDescendantCodes.map(() => '?').join(',')})
-            AND
-              ancestor_descendant_relation.entity_hierarchy_id = ?
-            AND
-              ancestor.type = ?
-            ORDER BY
-              generational_distance ASC
-          `,
-          [...batchOfDescendantCodes, hierarchyId, ancestorType],
-        ],
-        maxBoundParameters,
-      );
-      const ancestorDetailsByDescendantCode = {};
-      ancestorDescendantRelations.forEach(r => {
-        ancestorDetailsByDescendantCode[r.descendant_code] = {
-          code: r.ancestor_code,
-          name: r.ancestor_name,
-        };
+      // TUP-3065: previously read from the ancestor_descendant_relation closure cache;
+      // that table is retired. Walk for each descendant via the unified parent_id +
+      // project_country edges CTE (in getRelationsOfEntities) and pick the closest
+      // ancestor of the requested type.
+      //
+      // Project scope: scope the descendant lookup to (NULL or project) so that
+      // cross-project codes don't bleed in. Each descendant's ancestor walk inherits
+      // the same scope via getAncestorsOfEntities.
+      const project = hierarchyId
+        ? await this.otherModels.project.findOne({ entity_hierarchy_id: hierarchyId })
+        : null;
+      const projectId = project?.id ?? null;
+
+      const descendantEntities = await this.find({
+        code: descendantCodes,
+        ...(projectId
+          ? {
+              [QUERY_CONJUNCTIONS.RAW]: {
+                sql: '(project_id IS NULL OR project_id = ?)',
+                parameters: [projectId],
+              },
+            }
+          : {}),
       });
+
+      const ancestorDetailsByDescendantCode = {};
+      // Walk each descendant's ancestors in parallel; each call hits one recursive CTE.
+      await Promise.all(
+        descendantEntities.map(async descendant => {
+          const ancestors = await this.getAncestorsOfEntities(hierarchyId, [descendant.id], {
+            type: ancestorType,
+          });
+          // ancestors come back ordered by generational_distance ASC, so [0] is closest.
+          if (ancestors.length > 0) {
+            ancestorDetailsByDescendantCode[descendant.code] = {
+              code: ancestors[0].code,
+              name: ancestors[0].name,
+            };
+          }
+        }),
+      );
       return ancestorDetailsByDescendantCode;
     });
   }
@@ -635,57 +675,94 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       ...entityCriteria
     } = criteria || {};
 
-    // Resolve the project from the legacy hierarchyId so descendant walks stay
-    // project-scoped. Ancestor walks are naturally project-scoped (parent_id is
-    // single-valued so we can't drift into a sibling project).
+    // The recursive CTE uses generational_distance as an integer bound on walk depth.
+    // Callers may pass the value directly OR as a comparator object like
+    // `{ comparator: '<', comparisonValue: 2 }`. Extract the numeric upper bound either
+    // way; the final find applies the precise comparator.
+    const generationalDistanceBound =
+      generationalDistance && typeof generationalDistance === 'object'
+        ? generationalDistance.comparisonValue
+        : generationalDistance;
+
+    // Resolve the project from the legacy hierarchyId so the walk stays project-
+    // scoped — both for the entity.parent_id chain and for the project_country bridge
+    // (the latter is the only path between a project entity and its countries
+    // post-RN-1853, since country.parent_id points at world rather than at any
+    // particular project).
     const project = hierarchyId
       ? await this.otherModels.project.findOne({ entity_hierarchy_id: hierarchyId })
       : null;
     const projectId = project?.id ?? null;
-    const projectScopeClause = projectId ? '(project_id IS NULL OR project_id = ?)' : 'TRUE';
-    const projectScopeParam = projectId ? [projectId] : [];
+    const entityScopeClause = projectId ? '(e.project_id IS NULL OR e.project_id = ?)' : 'TRUE';
+    const entityScopeParam = projectId ? [projectId] : [];
+    // project_country edges are tied to a specific project; if we don't have one we
+    // include them all (rare — only happens if hierarchyId wasn't supplied).
+    const projectCountryScopeClause = projectId ? 'pc.project_id = ?' : 'TRUE';
+    const projectCountryScopeParam = projectId ? [projectId] : [];
+
+    // Unified edges subquery: `parent_id` chain + project_country bridge. Each row is
+    // (source, target) where source → target is a parent → child link. project_country
+    // is treated as a project-entity → country edge so a descendant walk from a
+    // project hits its countries even though country.parent_id doesn't point back.
+    //
+    // Inlined twice (base case + recursive case) because Knex's withRecursive helper
+    // only accepts a single CTE body — Postgres allows multiple CTEs but we don't have
+    // ergonomic plumbing for that here.
+    // Drop child.type IN ('project', 'country') from the parent_id leg: project.parent_id
+    // and country.parent_id both point at the world entity, but in the project-hierarchy
+    // model world is meta — project is the hierarchy root, and project↔country edges
+    // come through project_country below. Keeping those parent_id rows would surface
+    // World as parent_code of every project (and ancestor of every country), which the
+    // frontend then walks up and entity-server 403s on.
+    const edgesSubquery = `
+      SELECT e.parent_id AS source, e.id AS target
+      FROM entity e
+      WHERE e.parent_id IS NOT NULL
+        AND e.type NOT IN ('project', 'country')
+        AND ${entityScopeClause}
+      UNION ALL
+      SELECT p.entity_id AS source, pc.country_id AS target
+      FROM project_country pc
+      INNER JOIN project p ON p.id = pc.project_id
+      WHERE ${projectCountryScopeClause}
+    `;
 
     const recursiveQuery = isDescendants
       ? `
-          SELECT id, parent_id, 1 AS generational_distance
-          FROM entity
-          WHERE parent_id IN ${SqlQuery.record(entityIds)}
-            AND ${projectScopeClause}
+          SELECT target AS id, 1 AS generational_distance
+          FROM (${edgesSubquery}) base_edges
+          WHERE source IN ${SqlQuery.record(entityIds)}
 
           UNION ALL
 
-          SELECT e.id, e.parent_id, h.generational_distance + 1 AS generational_distance
-          FROM entity e
-          INNER JOIN hierarchy h ON e.parent_id = h.id
-          WHERE ${projectScopeClause}
-            ${generationalDistance !== undefined ? 'AND h.generational_distance <= ?' : ''}
+          SELECT step_edges.target AS id, h.generational_distance + 1 AS generational_distance
+          FROM (${edgesSubquery}) step_edges
+          INNER JOIN hierarchy h ON step_edges.source = h.id
+          ${generationalDistanceBound !== undefined ? 'WHERE h.generational_distance <= ?' : ''}
         `
       : `
-          SELECT id, parent_id, 1 AS generational_distance
-          FROM entity
-          WHERE id IN (
-            SELECT parent_id FROM entity WHERE id IN ${SqlQuery.record(entityIds)}
-          )
+          SELECT source AS id, 1 AS generational_distance
+          FROM (${edgesSubquery}) base_edges
+          WHERE target IN ${SqlQuery.record(entityIds)}
 
           UNION ALL
 
-          SELECT e.id, e.parent_id, h.generational_distance + 1 AS generational_distance
-          FROM entity e
-          INNER JOIN hierarchy h ON e.id = h.parent_id
-          ${generationalDistance !== undefined ? 'WHERE h.generational_distance <= ?' : ''}
+          SELECT step_edges.source AS id, h.generational_distance + 1 AS generational_distance
+          FROM (${edgesSubquery}) step_edges
+          INNER JOIN hierarchy h ON step_edges.target = h.id
+          ${generationalDistanceBound !== undefined ? 'WHERE h.generational_distance <= ?' : ''}
         `;
 
-    const parameters = isDescendants
-      ? [
-          ...entityIds,
-          ...projectScopeParam,
-          ...projectScopeParam,
-          ...(generationalDistance !== undefined ? [generationalDistance] : []),
-        ]
-      : [
-          ...entityIds,
-          ...(generationalDistance !== undefined ? [generationalDistance] : []),
-        ];
+    const parameters = [
+      // Base case: edges subquery scope + entityIds
+      ...entityScopeParam,
+      ...projectCountryScopeParam,
+      ...entityIds,
+      // Recursive case: edges subquery scope + (optional) generational_distance bound
+      ...entityScopeParam,
+      ...projectCountryScopeParam,
+      ...(generationalDistanceBound !== undefined ? [generationalDistanceBound] : []),
+    ];
 
     const entityRecords = await this.runCachedFunction(cacheKey, async () => {
       const relations = await this.find(
@@ -764,26 +841,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
       const isDescendants = direction === ENTITY_RELATION_TYPE.DESCENDANTS;
 
-      // Post-RN-1853 (TUP-3065): walk entity.parent_id directly. The
-      // entity_parent_child_relation cache is now 1:1 with the parent_id chain — the
-      // chain is project-scoped because each project has its own copy of sub-country
-      // entities, and the duplicates carry the parent_id of their same-project parent
-      // (set up by the migration's fixParentIdChains step).
-      //
-      // Ancestor walks are naturally project-scoped: each entity has exactly one
-      // parent_id, so walking up never crosses into a sibling project. Descendant
-      // walks need an explicit project_id filter when starting from a structural
-      // entity (world/project/country with NULL project_id) — otherwise we'd visit
-      // every project's sub-country children. Resolve the project from the legacy
-      // hierarchyId argument so callers don't need to change.
+      // Walk the hierarchy using entity.parent_id directly
       const project = hierarchyId
         ? await this.otherModels.project.findOne({ entity_hierarchy_id: hierarchyId })
         : null;
       const projectId = project?.id ?? null;
 
-      const projectScopeClause = projectId
-        ? '(project_id IS NULL OR project_id = ?)'
-        : 'TRUE';
+      const projectScopeClause = projectId ? '(project_id IS NULL OR project_id = ?)' : 'TRUE';
       const projectScopeParam = projectId ? [projectId] : [];
 
       const recursiveQuery = isDescendants
@@ -827,10 +891,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             ...projectScopeParam, // recursive case scope
             ...(generational_distance !== undefined ? [generational_distance] : []),
           ]
-        : [
-            ...entityIds,
-            ...(generational_distance !== undefined ? [generational_distance] : []),
-          ];
+        : [...entityIds, ...(generational_distance !== undefined ? [generational_distance] : [])];
 
       const results = await this.find(
         {
