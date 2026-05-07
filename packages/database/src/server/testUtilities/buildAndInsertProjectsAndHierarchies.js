@@ -1,12 +1,16 @@
 import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
-// Type-inference shorthand for fixtures that say `{ code: 'KI', country_code: 'KI' }`
-// without an explicit `type`. Pre-3065 the type was incidental (hierarchy was via
-// entity_relation); now it determines whether a project relation routes into
-// project_country or parent_id.
-const inferType = entityProps => {
+// Type-inference shorthand for fixtures that don't set `type` explicitly. Pre-3065
+// the type was incidental (hierarchy was via entity_relation); now it determines
+// whether a project relation routes into project_country or parent_id.
+//
+//   { code: 'KI', country_code: 'KI' }       -> 'country' (country_code = code)
+//   { code: 'KI' } as direct child of a      -> 'country' (project entities only have
+//     project entity                              country children pre-3065 reality)
+const inferType = (entityProps, isDirectChildOfProject) => {
   if (entityProps.type !== undefined) return entityProps.type;
   if (entityProps.country_code === entityProps.code) return 'country';
+  if (isDirectChildOfProject) return 'country';
   return undefined;
 };
 
@@ -58,13 +62,29 @@ export const buildAndInsertProjectsAndHierarchies = async (models, projects) => 
   }
 
   // Pass 2 — entities. Tabulate which projects use each entity code so we can decide
-  // shared-vs-duplicated upfront.
+  // shared-vs-duplicated upfront. Also pre-compute "is this entity a direct child of
+  // its project's entity" so type inference can default such children to 'country'
+  // (matches the pre-3065 reality that project entities only had country children).
   const projectsByEntityCode = new Map(); // code -> Set of project indices
+  const directChildOfProject = new Set(); // codes that appear as a project's direct child
   for (let i = 0; i < projects.length; i++) {
+    const projectCode = projects[i].code;
     for (const entityProps of projects[i].entities ?? []) {
       const code = entityProps.code;
       if (!projectsByEntityCode.has(code)) projectsByEntityCode.set(code, new Set());
       projectsByEntityCode.get(code).add(i);
+    }
+    const explicitRelations = projects[i].relations;
+    if (explicitRelations) {
+      for (const { parent, child } of explicitRelations) {
+        if (parent === projectCode) directChildOfProject.add(child);
+      }
+    } else {
+      // No relations supplied — buildAndInsertProjectAndHierarchy defaults all
+      // entities to direct children of the project entity.
+      for (const entityProps of projects[i].entities ?? []) {
+        directChildOfProject.add(entityProps.code);
+      }
     }
   }
 
@@ -85,7 +105,7 @@ export const buildAndInsertProjectsAndHierarchies = async (models, projects) => 
     if (!entityProps) continue;
 
     const { code: entityCode, ...restOfEntity } = entityProps;
-    const type = inferType(entityProps);
+    const type = inferType(entityProps, directChildOfProject.has(entityCode));
 
     if (type !== undefined && STRUCTURAL_TYPES.has(type)) {
       // Shared structural row. project_id stays NULL.
