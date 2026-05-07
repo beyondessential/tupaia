@@ -1,9 +1,14 @@
 /**
- * TUP-3065 regression: Entity.getDescendants / getAncestors must walk entity.parent_id
- * directly and stay scoped to the requested project. Post-RN-1853 every project has
- * its own copy of sub-country entities (different ids, possibly identical codes); a
- * descendant walk from a shared structural root (world / project / country) must not
- * leak duplicates from sibling projects.
+ * TUP-3065/TUP-3068 regression: Entity.getDescendants / getAncestors must serve
+ * project-scoped results for projects whose hierarchies share structural entities
+ * (world / project / country). Post-RN-1853 every project has its own copy of
+ * sub-country entities (different ids, possibly identical codes); the closure cache
+ * for project A must not leak project B's copies.
+ *
+ * The closure cache (ancestor_descendant_relation) is rebuilt by ClosureCacheBuilder
+ * walking entity.parent_id + project_country. This test populates fixtures, runs the
+ * builder, then asserts on cache contents via the public getDescendants/getAncestors
+ * API.
  */
 
 import {
@@ -12,8 +17,9 @@ import {
   clearTestData,
   upsertDummyRecord,
 } from '../../../server/testUtilities';
+import { ClosureCacheBuilder } from '../../../server/changeHandlers/entityHierarchyCacher/ClosureCacheBuilder';
 
-describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065)', () => {
+describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP-3068)', () => {
   const models = getTestModels();
 
   // Shared structural entities (project_id = NULL).
@@ -96,6 +102,12 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065)', 
       project_id: PROJECT_B.id,
       country_id: COUNTRY.id,
     });
+
+    // Build the closure cache. In production the EntityHierarchyCacher change
+    // listener would do this incrementally; in tests we run the builder directly.
+    const builder = new ClosureCacheBuilder(models);
+    await builder.rebuildForProject(PROJECT_A.id);
+    await builder.rebuildForProject(PROJECT_B.id);
   });
 
   afterEach(async () => {
@@ -120,7 +132,7 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065)', 
     expect(ids).not.toContain(DISTRICT_A.id);
   });
 
-  it('ancestors of a sub-country entity walk the parent_id chain up to the country', async () => {
+  it('ancestors of a sub-country entity walk up to the country', async () => {
     const districtA = await models.entity.findById(DISTRICT_A.id);
     const ancestors = await districtA.getAncestors(HIERARCHY_A.id);
 
@@ -128,7 +140,7 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065)', 
     expect(ids).toContain(COUNTRY.id);
     // World is meta — above the project root — and must not surface as an ancestor in
     // a project hierarchy. The world→country and world→project entity.parent_id edges
-    // are intentionally filtered from the edges-CTE.
+    // are intentionally filtered from the builder's edges-CTE.
     expect(ids).not.toContain(WORLD.id);
     // Sibling project's district must not leak through, even though their codes match.
     expect(ids).not.toContain(DISTRICT_B.id);
@@ -169,11 +181,11 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065)', 
   });
 
   // Regression: every project entity has parent_id = world.id (RN-1853 left this as a
-  // breadcrumb to the structural root). If the edges-CTE returns world as the project
-  // entity's ancestor, entity-server emits parent_code = 'World' for the project, which
-  // tupaia-web's useNavigationEntities then walks up — triggering a 403 request to
-  // /entities/<projectCode>/World. The fix filters world→project (and world→country)
-  // edges out of the parent_id leg of the CTE.
+  // breadcrumb to the structural root). If the builder's edges-CTE included that edge,
+  // entity-server would emit parent_code = 'World' for the project, which tupaia-web's
+  // useNavigationEntities then walks up — triggering a 403 request to
+  // /entities/<projectCode>/World. The builder filters out child.type IN
+  // ('project', 'country') from the parent_id leg.
   it('the project entity has no ancestors in its own hierarchy', async () => {
     const projectAEntity = await models.entity.findById(PROJECT_A_ENTITY.id);
     const ancestors = await projectAEntity.getAncestors(HIERARCHY_A.id);
@@ -186,8 +198,7 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065)', 
     const descendants = await world.getDescendants(HIERARCHY_A.id);
 
     // World is meta — projects are roots, not descendants of world inside any project
-    // hierarchy. (World may itself yield zero descendants when scoped to a project; the
-    // assertion is specifically that the project entity is absent.)
+    // hierarchy.
     expect(descendants.map(d => d.id)).not.toContain(PROJECT_A_ENTITY.id);
   });
 

@@ -1,5 +1,9 @@
 export { AnalyticsRefresher } from './AnalyticsRefresher';
 export { ChangeHandler } from './ChangeHandler';
+export {
+  EntityHierarchyCacher,
+  buildEntityParentChildRelationIfEmpty,
+} from './entityHierarchyCacher';
 export { SurveyResponseOutdater } from './surveyResponseOutdater';
 export { TaskCompletionHandler } from './TaskCompletionHandler';
 export { TaskCreationHandler } from './TaskCreationHandler';
