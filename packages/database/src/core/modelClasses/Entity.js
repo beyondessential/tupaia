@@ -675,6 +675,15 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       ...entityCriteria
     } = criteria || {};
 
+    // The recursive CTE uses generational_distance as an integer bound on walk depth.
+    // Callers may pass the value directly OR as a comparator object like
+    // `{ comparator: '<', comparisonValue: 2 }`. Extract the numeric upper bound either
+    // way; the final find applies the precise comparator.
+    const generationalDistanceBound =
+      generationalDistance && typeof generationalDistance === 'object'
+        ? generationalDistance.comparisonValue
+        : generationalDistance;
+
     // Resolve the project from the legacy hierarchyId so the walk stays project-
     // scoped — both for the entity.parent_id chain and for the project_country bridge
     // (the latter is the only path between a project entity and its countries
@@ -722,7 +731,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           SELECT step_edges.target AS id, h.generational_distance + 1 AS generational_distance
           FROM (${edgesSubquery}) step_edges
           INNER JOIN hierarchy h ON step_edges.source = h.id
-          ${generationalDistance !== undefined ? 'WHERE h.generational_distance <= ?' : ''}
+          ${generationalDistanceBound !== undefined ? 'WHERE h.generational_distance <= ?' : ''}
         `
       : `
           SELECT source AS id, 1 AS generational_distance
@@ -734,7 +743,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           SELECT step_edges.source AS id, h.generational_distance + 1 AS generational_distance
           FROM (${edgesSubquery}) step_edges
           INNER JOIN hierarchy h ON step_edges.target = h.id
-          ${generationalDistance !== undefined ? 'WHERE h.generational_distance <= ?' : ''}
+          ${generationalDistanceBound !== undefined ? 'WHERE h.generational_distance <= ?' : ''}
         `;
 
     const parameters = [
@@ -745,7 +754,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       // Recursive case: edges subquery scope + (optional) generational_distance bound
       ...entityScopeParam,
       ...projectCountryScopeParam,
-      ...(generationalDistance !== undefined ? [generationalDistance] : []),
+      ...(generationalDistanceBound !== undefined ? [generationalDistanceBound] : []),
     ];
 
     const entityRecords = await this.runCachedFunction(cacheKey, async () => {

@@ -11,6 +11,7 @@ import {
   EntityModel,
   LocalSystemFactModel,
   ProjectModel,
+  ProjectCountryModel,
   SurveyResponseModel,
 } from '@tupaia/server-boilerplate';
 import {
@@ -134,6 +135,7 @@ export interface TestSyncServerModelRegistry extends ModelRegistry {
   readonly userEntityPermission: UserEntityPermissionModel;
   readonly user: UserModel;
   readonly project: ProjectModel;
+  readonly projectCountry: ProjectCountryModel;
   readonly entity: EntityModel;
   readonly syncSession: SyncSessionModel;
   readonly syncDeviceTick: SyncDeviceTickModel;
