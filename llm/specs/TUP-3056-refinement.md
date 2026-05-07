@@ -176,6 +176,70 @@ All other recursive walks of the hierarchy use `entity_parent_child_relation` fi
 - **Production deploy ordering.** This lands shortly after TUP-3053 (entity_polygon split) — second large schema migration on `entity` in quick succession. Coordinate deploy and rollback plans.
 - **Heavy data migration.** Roughly ~104k entity inserts plus ~397k survey_response updates. Rehearse on a staging clone before prod.
 
+---
+
+## Bare `entity.findOne({ code })` audit
+
+Post-migration, sub-country entity codes are duplicated per project. A bare `findOne({ code })` returns an arbitrary copy. The fix pattern is `Entity.findOneByCodeInProject(code, projectId)` (added in TUP-3060) where project context is available.
+
+Below is the live audit at the time TUP-3060 went into review. The bug is silent — it manifests only when a code is shared across projects, so a clean test env may not expose it. Real prod has heavy sharing (Fiji in 20 projects).
+
+### Already safe — structural lookups
+
+`code` is unique among `world` / `country` / `project` entities (they keep NULL `project_id`). No fix needed.
+
+| File | Line | Looking up |
+|---|---|---|
+| `central-server/apiV2/projects/CreateProject.js` | 109 | `worldCode` |
+| `central-server/apiV2/dashboardRelations/assertDashboardRelationsPermissions.js` | 113 | `dashboard.root_entity_code` (project/country in practice) |
+| `central-server/apiV2/dashboards/assertDashboardsPermissions.js` | 34 | dashboard root |
+| `central-server/apiV2/utilities/getAdminPanelAllowedCountries.js` | 49 | `countryCode` |
+| `central-server/apiV2/import/importEntities/populateCoordinatesForCountry.js` | 107 | `countryCode` |
+
+### TUP-3156 — external sync flows
+
+Run outside any request context. Per-integration scoping decision needed; deferred behind product input.
+
+| File | Line |
+|---|---|
+| `central-server/database/utilities/getEntityIdFromClinicId.js` | 8 |
+| `central-server/ms1/startSyncWithMs1.js` | 80 |
+| `central-server/dhis/pushers/entity/OrganisationUnitPusher.js` | 54, 87 |
+| `central-server/dhis/pushers/data/aggregate/AggregateDataPusher.js` | 110, 376 |
+| `central-server/kobo/startSyncWithKoBo.js` | 59 |
+
+### Fix as part of QA — sub-country lookups, project context available
+
+These are the user-facing flows manual QA is most likely to exercise. Each has a clear path to the right project from surrounding context (a survey, a dashboard, a request, the current user's preferences).
+
+| File | Line | Surrounding context | Fix |
+|---|---|---|---|
+| `central-server/apiV2/utilities/SurveyResponseVariablesExtractor.js` | 25 | called by exportSurveyResponses; can take surveyId | thread `survey.project_id` |
+| `central-server/apiV2/utilities/hasAccessToEntityForVisualisation.js` | 41 | dashboard root context | resolve project from dashboard |
+| `central-server/apiV2/dashboardRelations/assertDashboardRelationsPermissions.js` | 13, 28 | has dashboard | resolve project from dashboard |
+| `central-server/apiV2/import/importUserPermissions.js` | 24, 53 | admin-panel import (TUP-3054 attaches project to req) | thread `req.ctx.project.id` |
+| `central-server/apiV2/import/importEntities/getEntityMetadata.js` | 11 | admin-panel import | thread `req.ctx.project.id` |
+| `central-server/apiV2/import/importEntities/getOrCreateParentEntity.js` | 125 | admin-panel import | thread `req.ctx.project.id` |
+| `central-server/apiV2/import/importSurveyResponses/importSurveyResponses.js` | 36, 185, 423 | survey response import | thread `survey.project_id` |
+| `central-server/hooks/entityCreate.js` | 52, 67 | new entity has `project_id` | filter `(project_id = NEW.project_id OR NULL)` |
+| `datatrak-web/src/api/queries/useEntity.ts` | 26 | frontend; `user.preferences.project_id` available | thread project from session |
+
+### Legacy web-config-server apiV1
+
+Old analytics paths still in use for some reports. Defer until apiV1 is touched.
+
+| File | Line |
+|---|---|
+| `web-config-server/src/apiV1/DataAggregatingRouteHandler.js` | 44 |
+| `web-config-server/src/apiV1/measureData.js` | 341 |
+| `web-config-server/src/apiV1/RouteHandler.js` | 47 |
+| `web-config-server/src/apiV1/measureBuilders/helpers.js` | 48 |
+| `web-config-server/src/apiV1/utils/fetchIndicatorValues/fetchAggregatedAnalyticsByDhisIds.js` | 29 |
+| `web-config-server/src/apiV1/dataBuilders/generic/compose/composePercentagesPerPeriodByOrgUnit.js` | 17 |
+| `web-config-server/src/apiV1/dataBuilders/helpers/calculateOperationForAnalytics.js` | 208 |
+| `web-config-server/src/apiV1/dataBuilders/helpers/mapAnalyticsToCountries.js` | 5 |
+| `web-config-server/src/apiV1/dataBuilders/helpers/groupEvents.js` | 4 |
+
 
 
 **Ticket Summary**
