@@ -11,8 +11,8 @@
 
 /**
  * @template {readonly MultiJoinItem[]} Base
- * @param {readonly Base} base
- * @param {readonly MultiJoinItem[]} source
+ * @param {Base} base
+ * @param {readonly MultiJoinItem[]} [source]
  * @returns {[...Base, ...MultiJoinItem[]]}
  */
 export function mergeMultiJoin(base, source) {
