@@ -708,10 +708,17 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     // Inlined twice (base case + recursive case) because Knex's withRecursive helper
     // only accepts a single CTE body — Postgres allows multiple CTEs but we don't have
     // ergonomic plumbing for that here.
+    // Drop child.type IN ('project', 'country') from the parent_id leg: project.parent_id
+    // and country.parent_id both point at the world entity, but in the project-hierarchy
+    // model world is meta — project is the hierarchy root, and project↔country edges
+    // come through project_country below. Keeping those parent_id rows would surface
+    // World as parent_code of every project (and ancestor of every country), which the
+    // frontend then walks up and entity-server 403s on.
     const edgesSubquery = `
       SELECT e.parent_id AS source, e.id AS target
       FROM entity e
       WHERE e.parent_id IS NOT NULL
+        AND e.type NOT IN ('project', 'country')
         AND ${entityScopeClause}
       UNION ALL
       SELECT p.entity_id AS source, pc.country_id AS target
@@ -834,26 +841,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
       const isDescendants = direction === ENTITY_RELATION_TYPE.DESCENDANTS;
 
-      // Post-RN-1853 (TUP-3065): walk entity.parent_id directly. The
-      // entity_parent_child_relation cache is now 1:1 with the parent_id chain — the
-      // chain is project-scoped because each project has its own copy of sub-country
-      // entities, and the duplicates carry the parent_id of their same-project parent
-      // (set up by the migration's fixParentIdChains step).
-      //
-      // Ancestor walks are naturally project-scoped: each entity has exactly one
-      // parent_id, so walking up never crosses into a sibling project. Descendant
-      // walks need an explicit project_id filter when starting from a structural
-      // entity (world/project/country with NULL project_id) — otherwise we'd visit
-      // every project's sub-country children. Resolve the project from the legacy
-      // hierarchyId argument so callers don't need to change.
+      // Walk the hierarchy using entity.parent_id directly
       const project = hierarchyId
         ? await this.otherModels.project.findOne({ entity_hierarchy_id: hierarchyId })
         : null;
       const projectId = project?.id ?? null;
 
-      const projectScopeClause = projectId
-        ? '(project_id IS NULL OR project_id = ?)'
-        : 'TRUE';
+      const projectScopeClause = projectId ? '(project_id IS NULL OR project_id = ?)' : 'TRUE';
       const projectScopeParam = projectId ? [projectId] : [];
 
       const recursiveQuery = isDescendants
@@ -897,10 +891,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             ...projectScopeParam, // recursive case scope
             ...(generational_distance !== undefined ? [generational_distance] : []),
           ]
-        : [
-            ...entityIds,
-            ...(generational_distance !== undefined ? [generational_distance] : []),
-          ];
+        : [...entityIds, ...(generational_distance !== undefined ? [generational_distance] : [])];
 
       const results = await this.find(
         {

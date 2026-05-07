@@ -120,14 +120,17 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065)', 
     expect(ids).not.toContain(DISTRICT_A.id);
   });
 
-  it('ancestors of a sub-country entity walk the parent_id chain to the structural roof', async () => {
+  it('ancestors of a sub-country entity walk the parent_id chain up to the country', async () => {
     const districtA = await models.entity.findById(DISTRICT_A.id);
     const ancestors = await districtA.getAncestors(HIERARCHY_A.id);
 
     const ids = ancestors.map(a => a.id);
-    expect(ids).toEqual(expect.arrayContaining([COUNTRY.id, WORLD.id]));
-    // Ancestors must not include the sibling project's district even though their
-    // codes match — different ids.
+    expect(ids).toContain(COUNTRY.id);
+    // World is meta — above the project root — and must not surface as an ancestor in
+    // a project hierarchy. The world→country and world→project entity.parent_id edges
+    // are intentionally filtered from the edges-CTE.
+    expect(ids).not.toContain(WORLD.id);
+    // Sibling project's district must not leak through, even though their codes match.
     expect(ids).not.toContain(DISTRICT_B.id);
   });
 
@@ -163,5 +166,41 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065)', 
     });
 
     expect(directChildren.map(d => d.id)).toEqual([DISTRICT_A.id]);
+  });
+
+  // Regression: every project entity has parent_id = world.id (RN-1853 left this as a
+  // breadcrumb to the structural root). If the edges-CTE returns world as the project
+  // entity's ancestor, entity-server emits parent_code = 'World' for the project, which
+  // tupaia-web's useNavigationEntities then walks up — triggering a 403 request to
+  // /entities/<projectCode>/World. The fix filters world→project (and world→country)
+  // edges out of the parent_id leg of the CTE.
+  it('the project entity has no ancestors in its own hierarchy', async () => {
+    const projectAEntity = await models.entity.findById(PROJECT_A_ENTITY.id);
+    const ancestors = await projectAEntity.getAncestors(HIERARCHY_A.id);
+
+    expect(ancestors).toHaveLength(0);
+  });
+
+  it('the project entity is not a descendant of world in its hierarchy', async () => {
+    const world = await models.entity.findById(WORLD.id);
+    const descendants = await world.getDescendants(HIERARCHY_A.id);
+
+    // World is meta — projects are roots, not descendants of world inside any project
+    // hierarchy. (World may itself yield zero descendants when scoped to a project; the
+    // assertion is specifically that the project entity is absent.)
+    expect(descendants.map(d => d.id)).not.toContain(PROJECT_A_ENTITY.id);
+  });
+
+  it('child_code → parent_code map omits the project entity (no World ancestor)', async () => {
+    // This is the map that feeds entity-server's parent_code field. If the project
+    // entity has an entry here, parent_code on the project surfaces as 'World' in the
+    // API response.
+    const childToParent = await models.ancestorDescendantRelation.getChildCodeToParentCode(
+      HIERARCHY_A.id,
+    );
+
+    expect(childToParent[PROJECT_A_ENTITY.code]).toBeUndefined();
+    // Sanity: a sub-country code DOES have an entry pointing to its country.
+    expect(childToParent[DISTRICT_A.code]).toBe(COUNTRY.code);
   });
 });

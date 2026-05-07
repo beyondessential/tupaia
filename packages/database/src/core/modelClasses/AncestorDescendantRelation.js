@@ -67,7 +67,10 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
 
     const result = await this.database.executeSql(
       `
-        -- entity.parent_id edges
+        -- entity.parent_id edges. Skip child.type IN ('project', 'country'): both point
+        -- their parent_id at the world entity, but in the project-hierarchy model world
+        -- is meta and project↔country edges come through project_country below. Keeping
+        -- those rows would make World an ancestor of every project/country.
         SELECT child.id AS descendant_id,
                child.code AS descendant_code,
                parent.id AS ancestor_id,
@@ -75,6 +78,7 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
         FROM entity child
         INNER JOIN entity parent ON parent.id = child.parent_id
         WHERE child.parent_id IS NOT NULL
+          AND child.type NOT IN ('project', 'country')
           AND ${entityScopeClause}
 
         UNION ALL
