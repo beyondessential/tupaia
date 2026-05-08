@@ -179,21 +179,7 @@ All other recursive walks of the hierarchy use `entity_parent_child_relation` fi
 
 ## Bare `entity.findOne({ code })` audit
 
-Post-migration, sub-country entity codes are duplicated per project. A bare `findOne({ code })` returns an arbitrary copy. The fix pattern is `Entity.findOneByCodeInProject(code, projectId)` (added in TUP-3060) where project context is available.
-
-Below is the live audit at the time TUP-3060 went into review. The bug is silent — it manifests only when a code is shared across projects, so a clean test env may not expose it. Real prod has heavy sharing (Fiji in 20 projects).
-
-### Already safe — structural lookups
-
-`code` is unique among `world` / `country` / `project` entities (they keep NULL `project_id`). No fix needed.
-
-| File | Line | Looking up |
-|---|---|---|
-| `central-server/apiV2/projects/CreateProject.js` | 109 | `worldCode` |
-| `central-server/apiV2/dashboardRelations/assertDashboardRelationsPermissions.js` | 113 | `dashboard.root_entity_code` (project/country in practice) |
-| `central-server/apiV2/dashboards/assertDashboardsPermissions.js` | 34 | dashboard root |
-| `central-server/apiV2/utilities/getAdminPanelAllowedCountries.js` | 49 | `countryCode` |
-| `central-server/apiV2/import/importEntities/populateCoordinatesForCountry.js` | 107 | `countryCode` |
+Post-migration, sub-country entity codes are duplicated per project. A bare `findOne({ code })` returns an arbitrary copy. The fix pattern is `Entity.findOneByCodeInProject(code, projectId)` where project context is available.
 
 ### TUP-3156 — external sync flows
 
@@ -206,25 +192,6 @@ Run outside any request context. Per-integration scoping decision needed; deferr
 | `central-server/dhis/pushers/entity/OrganisationUnitPusher.js` | 54, 87 |
 | `central-server/dhis/pushers/data/aggregate/AggregateDataPusher.js` | 110, 376 |
 | `central-server/kobo/startSyncWithKoBo.js` | 59 |
-
-### Sub-country lookups — fixed pro-actively in TUP-3060 (verified against prod-clone)
-
-| File | Line | Status | Fix applied |
-|---|---|---|---|
-| `central-server/apiV2/utilities/SurveyResponseVariablesExtractor.js` | 25 | ✓ fixed | Threaded `surveyId` through `getParametersFromInput` → `getVariablesByEntityCode` → `findOneByCodeInProject` |
-| `central-server/apiV2/import/importSurveyResponses/importSurveyResponses.js` | 36, 185, 423 | ✓ fixed | All three callsites use `findOneByCodeInProject(code, survey.project_id)`. ANSWER_TRANSFORMERS signature gained a `projectId` parameter passed at call site |
-| `datatrak-web/src/api/queries/useEntity.ts` | 26 | ✓ fixed | `useEntityByCode` reads `projectId` from `useCurrentUserContext` and passes it through `localContext` to `findOneByCodeInProject` |
-
-### Sub-country lookups — known-safe by attribute access pattern (no fix needed)
-
-These bare `findOne({ code })` calls were on the original "fix list" but only read `entity.country_code` and `entity.isProject()` from the result. Both attributes are stable across all per-project copies (the migration duplicates entities preserving `country_code`), so the function returns the same answer regardless of which copy `findOne` resolves to.
-
-| File | Line | Why it's safe |
-|---|---|---|
-| `central-server/apiV2/utilities/hasAccessToEntityForVisualisation.js` | 41 | Only reads `entity.country_code` for the access-policy check |
-| `central-server/apiV2/dashboardRelations/assertDashboardRelationsPermissions.js` | 13, 28 | Same — passes entity to `hasAccessToEntityForVisualisation` |
-
-If any caller adds further attribute reads (e.g. `metadata`, `attributes`) the safety guarantee breaks. Worth revisiting then.
 
 ### Sub-country lookups — deferred (depends on TUP-3054 / SQL trigger work)
 
@@ -253,7 +220,7 @@ Old analytics paths still in use for some reports. Defer until apiV1 is touched.
 
 
 
-**Ticket Summary**
+# Ticket Summary
 
 **C1: GIS Split & Entity Migration**
 
@@ -295,7 +262,7 @@ Old analytics paths still in use for some reports. Defer until apiV1 is touched.
 | -------- | ------------------------------------------------- | ------ |
 | TUP-1582 | Project setup: copy entities from another project |        |
 
----
+
 
 ## Project Plan
 
@@ -304,12 +271,8 @@ Old analytics paths still in use for some reports. Defer until apiV1 is touched.
  **This is the QA-able milestone.** Internal QA can run the new project-specific entity model end-to-end against the stacked PRs.
 
 - **TUP-3056 (#6749)** — in review.
-- **TUP-3065 (#6761, depends on 3056)** — in review. Absorbs **TUP-3068** (cacher subsystem retired in this PR).
-- **TUP-3060 (#6767, depends on 3065)** — in review. Hierarchy walks use the unified parent_id + project_country edges CTE; entity-server endpoints (relationships, descendants, ancestors, search) are restored end-to-end.
-
-What's *not* in TUP-3060 yet: ~20 specific call-sites that do bare `entity.findOne({ code })` for sub-country entities and don't have project context already at hand (mostly in central-server's analytics/export/import flows). They're queued for per-touched-file remediation as those routes are revisited; flagged in the PR description. The canonical fix pattern (`Entity.findOneByCodeInProject(code, projectId)`) is in place.
-
-External sync flows are a separate concern — see Milestone 2 + TUP-3156.
+- **TUP-3065 (#6761, depends on 3056)** — in review. Bundles **TUP-3068** (closure-cache rebuild simplified to walk `entity.parent_id` + `project_country`; cache itself is kept as the read source).
+- **TUP-3060 (#6767, depends on 3065)** — in review; merged into the TUP-3065 branch for consolidated testing. `findOneByCodeInProject` helper, `project_country` bridge, EntitySearch rewrite, sync-server type plumbing.
 
 ### Milestone 2 — safe for mobile + external sync (deploy-ready)
 
@@ -324,7 +287,7 @@ External sync flows are a separate concern — see Milestone 2 + TUP-3156.
 
 - **Refresh `packages/database/schema/schema.sql`** — currently 71 migrations behind. Bites new dev environments and local validation (caused real grief while developing 3060). Worth doing once the migrations have stabilised, before the prod rehearsal.
 - **Production data-migration rehearsal** of 3056 on a dev clone, then prod with a monitored runbook (~5:24 on dev clone, prod is similar order of magnitude). Coordinate with the GIS-split (3053) deploy so we're not changing `entity` schema twice in quick succession.
-- **Closure cache invalidation** — the TUP-3068 data migration (`20260507000001-backfillProjectCountry`) ends with `TRUNCATE ancestor_descendant_relation`, so on next central-server boot the bootstrap (`buildEntityParentChildRelationIfEmpty`) sees an empty cache and runs `ClosureCacheBuilder.rebuildAll()` (~2–3 min on prod data). No separate runbook step needed.
+- **Closure cache invalidation** — the TUP-3056 data migration (`20260501000001-backfillProjectIdsAndDuplicateSharedEntities-modifies-data.js`) ends with `DELETE FROM ancestor_descendant_relation; DELETE FROM entity_parent_child_relation;` so on next central-server boot the bootstrap (`buildEntityParentChildRelationIfEmpty`) sees an empty cache and runs `ClosureCacheBuilder.rebuildAll()` (~2–3 min on prod data). Without this clear step, a clone-of-prod keeps the pre-migration closure rows referencing entity ids that have been repointed — bootstrap short-circuits on "rows already exist," and entity-server's `getDescendants` returns wrong-project copies. Discovered during prod-clone QA on TUP-3065. No separate runbook step needed.
 - **Sync surface coordination** — explicitly remove `entity_parent_child_relation` from `initSyncComponents.js` / `runPostMigration` once 3067 is ready (currently deferred with a TODO pointing to 3067).
 
 ### Adjacent tracks (separate releases)
