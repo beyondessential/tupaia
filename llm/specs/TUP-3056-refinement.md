@@ -207,21 +207,33 @@ Run outside any request context. Per-integration scoping decision needed; deferr
 | `central-server/dhis/pushers/data/aggregate/AggregateDataPusher.js` | 110, 376 |
 | `central-server/kobo/startSyncWithKoBo.js` | 59 |
 
-### Fix as part of QA — sub-country lookups, project context available
+### Sub-country lookups — fixed pro-actively in TUP-3060 (verified against prod-clone)
 
-These are the user-facing flows manual QA is most likely to exercise. Each has a clear path to the right project from surrounding context (a survey, a dashboard, a request, the current user's preferences).
-
-| File | Line | Surrounding context | Fix |
+| File | Line | Status | Fix applied |
 |---|---|---|---|
-| `central-server/apiV2/utilities/SurveyResponseVariablesExtractor.js` | 25 | called by exportSurveyResponses; can take surveyId | thread `survey.project_id` |
-| `central-server/apiV2/utilities/hasAccessToEntityForVisualisation.js` | 41 | dashboard root context | resolve project from dashboard |
-| `central-server/apiV2/dashboardRelations/assertDashboardRelationsPermissions.js` | 13, 28 | has dashboard | resolve project from dashboard |
-| `central-server/apiV2/import/importUserPermissions.js` | 24, 53 | admin-panel import (TUP-3054 attaches project to req) | thread `req.ctx.project.id` |
-| `central-server/apiV2/import/importEntities/getEntityMetadata.js` | 11 | admin-panel import | thread `req.ctx.project.id` |
-| `central-server/apiV2/import/importEntities/getOrCreateParentEntity.js` | 125 | admin-panel import | thread `req.ctx.project.id` |
-| `central-server/apiV2/import/importSurveyResponses/importSurveyResponses.js` | 36, 185, 423 | survey response import | thread `survey.project_id` |
-| `central-server/hooks/entityCreate.js` | 52, 67 | new entity has `project_id` | filter `(project_id = NEW.project_id OR NULL)` |
-| `datatrak-web/src/api/queries/useEntity.ts` | 26 | frontend; `user.preferences.project_id` available | thread project from session |
+| `central-server/apiV2/utilities/SurveyResponseVariablesExtractor.js` | 25 | ✓ fixed | Threaded `surveyId` through `getParametersFromInput` → `getVariablesByEntityCode` → `findOneByCodeInProject` |
+| `central-server/apiV2/import/importSurveyResponses/importSurveyResponses.js` | 36, 185, 423 | ✓ fixed | All three callsites use `findOneByCodeInProject(code, survey.project_id)`. ANSWER_TRANSFORMERS signature gained a `projectId` parameter passed at call site |
+| `datatrak-web/src/api/queries/useEntity.ts` | 26 | ✓ fixed | `useEntityByCode` reads `projectId` from `useCurrentUserContext` and passes it through `localContext` to `findOneByCodeInProject` |
+
+### Sub-country lookups — known-safe by attribute access pattern (no fix needed)
+
+These bare `findOne({ code })` calls were on the original "fix list" but only read `entity.country_code` and `entity.isProject()` from the result. Both attributes are stable across all per-project copies (the migration duplicates entities preserving `country_code`), so the function returns the same answer regardless of which copy `findOne` resolves to.
+
+| File | Line | Why it's safe |
+|---|---|---|
+| `central-server/apiV2/utilities/hasAccessToEntityForVisualisation.js` | 41 | Only reads `entity.country_code` for the access-policy check |
+| `central-server/apiV2/dashboardRelations/assertDashboardRelationsPermissions.js` | 13, 28 | Same — passes entity to `hasAccessToEntityForVisualisation` |
+
+If any caller adds further attribute reads (e.g. `metadata`, `attributes`) the safety guarantee breaks. Worth revisiting then.
+
+### Sub-country lookups — deferred (depends on TUP-3054 / SQL trigger work)
+
+| File | Line | Why deferred |
+|---|---|---|
+| `central-server/apiV2/import/importUserPermissions.js` | 24, 53 | Wants `req.ctx.project.id` from the admin-panel global project filter (TUP-3054, in progress). Fixing now means a temporary fallback that has to be unwound. |
+| `central-server/apiV2/import/importEntities/getEntityMetadata.js` | 11 | Same blocker. |
+| `central-server/apiV2/import/importEntities/getOrCreateParentEntity.js` | 125 | Same blocker. |
+| `central-server/hooks/entityCreate.js` | 52, 67 | SQL trigger function — fix is `(project_id = NEW.project_id OR project_id IS NULL)`, not a function swap. Worth verifying behaviour against the prod clone before changing trigger logic. |
 
 ### Legacy web-config-server apiV1
 

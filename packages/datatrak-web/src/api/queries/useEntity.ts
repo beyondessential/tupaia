@@ -1,13 +1,15 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
 import { assertIsNotNullish, camelcaseKeys, ensure, isNullish } from '@tupaia/tsutils';
-import { DatatrakWebEntitiesRequest, Entity } from '@tupaia/types';
+import { DatatrakWebEntitiesRequest, Entity, Project } from '@tupaia/types';
 import { get } from '../api';
+import { useCurrentUserContext } from '../CurrentUserContext';
 import { useIsOfflineFirst } from '../offlineFirst';
 import { ContextualQueryFunctionContext, useDatabaseQuery } from './useDatabaseQuery';
 
 interface EntityByCodeQueryFunctionContext extends ContextualQueryFunctionContext {
   entityCode?: Entity['code'];
+  projectId?: Project['id'];
 }
 
 const entityByCodeQueryFunctions = {
@@ -18,12 +20,19 @@ const entityByCodeQueryFunctions = {
     );
     return await get(`entity/${encodeURIComponent(entityCode)}`);
   },
-  local: async ({ entityCode, models }: EntityByCodeQueryFunctionContext) => {
+  local: async ({ entityCode, projectId, models }: EntityByCodeQueryFunctionContext) => {
     assertIsNotNullish(
       entityCode,
       `useEntityByCode query function called with ${entityCode} entityCode`,
     );
-    const entityRecord = await models.entity.findOne({ code: entityCode });
+    // TUP-3060: scope to the current project so post-RN-1853 sub-country
+    // duplicates resolve to the user's project's copy. projectId may be null
+    // for structural lookups (world / project / country) — findOneByCodeInProject
+    // falls back to bare findOne in that case.
+    const entityRecord = await models.entity.findOneByCodeInProject(
+      entityCode,
+      projectId ?? null,
+    );
     if (isNullish(entityRecord)) return null;
     const entity = (await entityRecord.getData()) as Record<string, any>;
     const { attributes, ...rest } = entity;
@@ -36,17 +45,18 @@ export const useEntityByCode = (
   useQueryOptions?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
 ) => {
   const isOfflineFirst = useIsOfflineFirst();
+  const { projectId } = useCurrentUserContext();
 
   const options = Object.assign(
     {
       enabled: Boolean(entityCode),
-      localContext: { entityCode },
+      localContext: { entityCode, projectId },
     },
     useQueryOptions,
   );
 
   return useDatabaseQuery(
-    ['entity', { entityCode }],
+    ['entity', { entityCode, projectId }],
     isOfflineFirst ? entityByCodeQueryFunctions.local : entityByCodeQueryFunctions.remote,
     options,
   );
