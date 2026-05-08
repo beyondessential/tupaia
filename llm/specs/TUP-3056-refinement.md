@@ -324,7 +324,7 @@ External sync flows are a separate concern — see Milestone 2 + TUP-3156.
 
 - **Refresh `packages/database/schema/schema.sql`** — currently 71 migrations behind. Bites new dev environments and local validation (caused real grief while developing 3060). Worth doing once the migrations have stabilised, before the prod rehearsal.
 - **Production data-migration rehearsal** of 3056 on a dev clone, then prod with a monitored runbook (~5:24 on dev clone, prod is similar order of magnitude). Coordinate with the GIS-split (3053) deploy so we're not changing `entity` schema twice in quick succession.
-- **Closure cache invalidation** — the TUP-3068 data migration (`20260507000001-backfillProjectCountry`) ends with `TRUNCATE ancestor_descendant_relation`, so on next central-server boot the bootstrap (`buildEntityParentChildRelationIfEmpty`) sees an empty cache and runs `ClosureCacheBuilder.rebuildAll()` (~2–3 min on prod data). No separate runbook step needed for clean prod deploys. For dbs where the migration has already run (e.g. tom-db rehearsal), the manual fallback is `yarn workspace @tupaia/database rebuild-hierarchy-cache`.
+- **Closure cache invalidation** — the TUP-3068 data migration (`20260507000001-backfillProjectCountry`) ends with `TRUNCATE ancestor_descendant_relation`, so on next central-server boot the bootstrap (`buildEntityParentChildRelationIfEmpty`) sees an empty cache and runs `ClosureCacheBuilder.rebuildAll()` (~2–3 min on prod data). No separate runbook step needed.
 - **Sync surface coordination** — explicitly remove `entity_parent_child_relation` from `initSyncComponents.js` / `runPostMigration` once 3067 is ready (currently deferred with a TODO pointing to 3067).
 
 ### Adjacent tracks (separate releases)

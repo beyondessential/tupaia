@@ -29,7 +29,6 @@
     "migrate": "babel-node ./src/server/migrate.js up -v --config-file ../../babel.config.json",
     "migrate-create": "scripts/migrateCreate.sh",
     "migrate-down": "babel-node ./src/server/migrate.js  down -v --config-file ../../babel.config.json",
-    "rebuild-hierarchy-cache": "babel-node ./src/server/rebuildHierarchyCache.js --config-file ../../babel.config.json",
     "refresh-database": "node ./scripts/refreshDatabase.js",
     "setup-test": "yarn setup-test-database",
     "test": "yarn package:test:withdb",
