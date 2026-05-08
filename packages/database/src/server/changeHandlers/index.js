@@ -1,6 +1,7 @@
 export { AnalyticsRefresher } from './AnalyticsRefresher';
 export { ChangeHandler } from './ChangeHandler';
 export {
+  ClosureCacheBuilder,
   EntityHierarchyCacher,
   buildEntityParentChildRelationIfEmpty,
 } from './entityHierarchyCacher';
