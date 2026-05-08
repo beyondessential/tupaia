@@ -27,7 +27,8 @@ const buildFilterAnalyticsFunction = fraction => {
     }
 
     const [values, valuesToCompare] = fraction.dataValues;
-    const [valuesSet, valuesToCompareSet] = fraction.dataValues.map(arr => new Set(arr));
+    const valuesSet = new Set(values);
+    const valuesToCompareSet = new Set(valuesToCompare);
 
     return results => {
       const set1 = results.filter(r => valuesSet.has(r.dataElement));
