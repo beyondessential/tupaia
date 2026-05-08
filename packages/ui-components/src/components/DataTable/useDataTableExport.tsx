@@ -57,12 +57,7 @@ export const useDataTableExport = (
     utils.sheet_add_aoa(sheet, body, { origin: -1 });
 
     // spacer before footer
-    utils.sheet_add_aoa(sheet, [[]], {
-      origin: -1,
-    });
-    utils.sheet_add_aoa(sheet, [[]], {
-      origin: -1,
-    });
+    utils.sheet_add_aoa(sheet, [[''], ['']], { origin: -1 });
 
     // footer
     if (startDate && endDate) {
