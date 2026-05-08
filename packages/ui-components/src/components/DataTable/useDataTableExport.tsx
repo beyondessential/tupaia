@@ -1,7 +1,8 @@
-import { toFilename } from '@tupaia/utils';
-import { useTable } from 'react-table';
 import moment, { Moment } from 'moment';
+import { useTable } from 'react-table';
 import { utils, writeFile } from 'xlsx';
+
+import { toFilename } from '@tupaia/utils';
 
 export const useDataTableExport = (
   columns: any[],
@@ -10,14 +11,7 @@ export const useDataTableExport = (
   startDate: Moment | string | Date | undefined,
   endDate: Moment | string | Date | undefined,
 ) => {
-  const {
-    headerGroups,
-    rows: tableData,
-    columns: tableColumns,
-  } = useTable({
-    columns,
-    data,
-  });
+  const { columns: tableColumns, headerGroups, rows: tableData } = useTable({ columns, data });
 
   const doExport = () => {
     const date = moment().format('Do MMM YY');
@@ -50,13 +44,11 @@ export const useDataTableExport = (
     const sheet = utils.aoa_to_sheet([[title]]);
     sheet['!cols'] = [{ wch: 20 }];
 
-    // add header
+    // header
     utils.sheet_add_aoa(sheet, header, { origin: 'A3' });
-
-    // add body
+    // body
     utils.sheet_add_aoa(sheet, body, { origin: -1 });
-
-    // spacer before footer
+    // spacer
     utils.sheet_add_aoa(sheet, [[''], ['']], { origin: -1 });
 
     // footer
