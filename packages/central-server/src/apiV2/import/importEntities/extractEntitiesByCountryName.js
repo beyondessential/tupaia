@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { groupBy } from 'lodash';
+import { groupBy } from 'es-toolkit/compat';
 import path from 'path';
 import xlsx from 'xlsx';
 

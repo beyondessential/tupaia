@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/auth",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Back-end authentication used internally by web-config-server and central-server to authenticate a user's credentials against the database, and build their access policy.",
   "repository": {

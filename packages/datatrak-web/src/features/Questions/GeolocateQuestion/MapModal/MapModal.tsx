@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { OutlinedButton } from '@tupaia/ui-components';
-import { DEFAULT_TILESETS, getAutoTileSet } from '@tupaia/ui-map-components';
-
+import { DEFAULT_TILESETS, getAutoTileSet, type TileSet } from '@tupaia/ui-map-components';
 import { Button, Modal } from '../../../../components';
 import { Map } from './Map';
 
@@ -53,7 +52,7 @@ export const MapModal = ({
 }: MapModalProps) => {
   const initialTileSet = getAutoTileSet();
   // set this in this component instead of in the Map component so that the selected tileset remains if the modal is closed and reopened without changing pages
-  const [selectedTileSet, setSelectedTileSet] = useState(initialTileSet);
+  const [selectedTileSet, setSelectedTileSet] = useState<TileSet>(initialTileSet);
   const [{ lat: currentLatitude, lng: currentLongitude }, setCoordinates] = useState({
     lat: geolocation?.latitude,
     lng: geolocation?.longitude,

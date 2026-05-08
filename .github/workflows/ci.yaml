@@ -4,6 +4,9 @@ on:
     branches-ignore:
       - '**-e2e'
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
@@ -62,7 +65,7 @@ jobs:
       DB_MV_PASSWORD: opensesame3
     services:
       postgres:
-        image: postgis/postgis:13-3.2-alpine
+        image: postgis/postgis:18-3.6-alpine
         env:
           POSTGRES_PASSWORD: opensesame2
         # Set health checks to wait until postgres has started
@@ -124,31 +127,9 @@ jobs:
                 '[.[] | .name] | map(select(. != "tupaia" and . != "@tupaia/devops" and . != "@tupaia/e2e"))'
           ) >>"$GITHUB_OUTPUT"
 
-  build:
-    name: Build
-    needs: package_list
-    runs-on: ubuntu-latest
-    env:
-      CI: false # react-scripts build treats warnings as errors if this is true
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJSON(needs.package_list.outputs.PACKAGES) }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
-      - run: yarn workspaces foreach -Rptvv --jobs unlimited --from ${{ matrix.package }} run build
 
   run_tests:
-    name: Test
+    name: Build & test
     needs: package_list
     timeout-minutes: 15 # Sometimes Jest doesn’t exit properly for meditrak-app-server tests
     runs-on: ubuntu-latest
@@ -193,7 +174,7 @@ jobs:
 
     services:
       postgres:
-        image: postgis/postgis:13-3.2-alpine
+        image: postgis/postgis:18-3.6-alpine
         env:
           POSTGRES_PASSWORD: opensesame2
         # Set health checks to wait until postgres has started
@@ -234,7 +215,6 @@ jobs:
       - validate_tests
       - validate_types
       - run_tests
-      - build
     runs-on: ubuntu-latest
     steps:
       - name: Green if all jobs are green

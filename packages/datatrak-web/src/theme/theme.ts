@@ -169,6 +169,11 @@ const overrides = {
       },
     },
   },
+  MuiFormHelperText: {
+    root: {
+      fontSize: '0.875rem',
+    },
+  },
   MuiFormLabel: {
     root: {
       fontSize: '0.875rem',

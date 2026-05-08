@@ -1,4 +1,4 @@
-import flatten from 'lodash.flatten';
+import { flatten } from 'es-toolkit/compat';
 
 import { dateStringToPeriod } from '@tupaia/utils';
 import { buildEventsFromDhisEventAnalytics } from './buildEventsFromDhisEventAnalytics';

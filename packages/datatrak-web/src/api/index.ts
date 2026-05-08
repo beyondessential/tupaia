@@ -1,4 +1,5 @@
 export * from './api';
+export * from './offlineFirst';
 export * from './stream';
 export * from './queries';
 export * from './mutations';

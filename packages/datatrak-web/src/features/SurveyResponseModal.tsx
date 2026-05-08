@@ -9,9 +9,15 @@ import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { ModalContentProvider, ModalFooter, SpinningLoader } from '@tupaia/ui-components';
 
 import { SurveyContext } from '.';
-import { useExportSurveyResponse } from '../api';
+import { useExportSurveyResponse, useIsOfflineFirst } from '../api';
 import { useSurveyResponse } from '../api/queries';
-import { Button, DateTimeDisplay, DownloadIcon, SurveyTickIcon } from '../components';
+import {
+  Button,
+  DateTimeDisplay,
+  DownloadIcon,
+  SurveyTickIcon,
+  UnavailableResponseModal,
+} from '../components';
 import { useIsMobile } from '../utils';
 import { SurveyReviewSection, useSurveyResponseWithForm } from './Survey';
 
@@ -147,6 +153,7 @@ const SurveyResponseModalContent = ({
 export const SurveyResponseModal = () => {
   const formContext = useForm();
   const isMobile = useIsMobile();
+  const isOfflineFirst = useIsOfflineFirst();
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
   const surveyResponseId = urlSearchParams.get('responseId');
@@ -165,6 +172,13 @@ export const SurveyResponseModal = () => {
   };
 
   if (!surveyResponseId) return null;
+
+  const responseUnavailable =
+    isOfflineFirst && !isLoadingSurveyResponse && !surveyResponse && !error;
+
+  if (responseUnavailable) {
+    return <UnavailableResponseModal isOpen onClose={onClose} />;
+  }
 
   return (
     <Dialog open onClose={onClose} maxWidth="md" fullScreen={isMobile}>

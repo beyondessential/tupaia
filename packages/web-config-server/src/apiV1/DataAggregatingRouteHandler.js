@@ -1,3 +1,5 @@
+import { uniq } from 'es-toolkit';
+
 import { filterEntities } from '@tupaia/utils';
 import { DataBroker } from '@tupaia/data-broker';
 import { RouteHandler } from './RouteHandler';
@@ -88,7 +90,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
   };
 
   filterOutNonPermittedEntities = async entities => {
-    const countryCodes = [...new Set(entities.map(e => e.country_code))];
+    const countryCodes = uniq(entities.map(e => e.country_code));
     const countryAccessList = await Promise.all(
       countryCodes.map(countryCode => this.permissionsChecker.checkHasEntityAccess(countryCode)),
     );
