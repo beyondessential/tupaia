@@ -51,9 +51,7 @@ export const useDataTableExport = (
     sheet['!cols'] = [{ wch: 20 }];
 
     // add header
-    utils.sheet_add_aoa(sheet, header, {
-      origin: 'A3',
-    });
+    utils.sheet_add_aoa(sheet, header, { origin: 'A3' });
 
     // add body
     utils.sheet_add_aoa(sheet, body, { origin: -1 });
@@ -73,17 +71,13 @@ export const useDataTableExport = (
       utils.sheet_add_aoa(
         sheet,
         [[`Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}.`]],
-        {
-          origin: -1,
-        },
+        { origin: -1 },
       );
     }
     utils.sheet_add_aoa(
       sheet,
       [[`Exported on ${String(moment())} from ${window.location.hostname}`]],
-      {
-        origin: -1,
-      },
+      { origin: -1 },
     );
 
     // Make  xlsx workbook
