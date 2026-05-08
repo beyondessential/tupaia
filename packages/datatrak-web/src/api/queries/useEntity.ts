@@ -25,14 +25,7 @@ const entityByCodeQueryFunctions = {
       entityCode,
       `useEntityByCode query function called with ${entityCode} entityCode`,
     );
-    // TUP-3060: scope to the current project so post-RN-1853 sub-country
-    // duplicates resolve to the user's project's copy. projectId may be null
-    // for structural lookups (world / project / country) — findOneByCodeInProject
-    // falls back to bare findOne in that case.
-    const entityRecord = await models.entity.findOneByCodeInProject(
-      entityCode,
-      projectId ?? null,
-    );
+    const entityRecord = await models.entity.findOneByCodeInProject(entityCode, projectId ?? null);
     if (isNullish(entityRecord)) return null;
     const entity = (await entityRecord.getData()) as Record<string, any>;
     const { attributes, ...rest } = entity;
