@@ -7503,7 +7503,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/jest": "npm:^29.5.14"
     "@types/node": "npm:^20.11.1"
-    db-migrate: "npm:^0.11.5"
+    db-migrate: "npm:^0.11.14"
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
     moment: "npm:^2.24.0"
@@ -7603,7 +7603,7 @@ __metadata:
     case: "npm:^1.6.3"
     date-fns: "npm:^2.30.0"
     date-fns-tz: "npm:^2.0.1"
-    db-migrate: "npm:^0.11.5"
+    db-migrate: "npm:^0.11.14"
     db-migrate-pg: "npm:^1.2.2"
     dotenv: "npm:^16.4.5"
     es-toolkit: "npm:^1.46.0"
@@ -13750,9 +13750,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"db-migrate@npm:^0.11.5":
-  version: 0.11.6
-  resolution: "db-migrate@npm:0.11.6"
+"db-migrate@npm:^0.11.14":
+  version: 0.11.14
+  resolution: "db-migrate@npm:0.11.14"
   dependencies:
     balanced-match: "npm:^1.0.0"
     bluebird: "npm:^3.1.1"
@@ -13762,17 +13762,16 @@ __metadata:
     final-fs: "npm:^1.6.0"
     inflection: "npm:^1.10.0"
     mkdirp: "npm:~0.5.0"
-    optimist: "npm:~0.6.1"
     parse-database-url: "npm:~0.3.0"
-    pkginfo: "npm:^0.4.0"
     prompt: "npm:^1.0.0"
     rc: "npm:^1.2.8"
     resolve: "npm:^1.1.6"
     semver: "npm:^5.3.0"
     tunnel-ssh: "npm:^4.0.0"
+    yargs: "npm:^15.3.1"
   bin:
-    db-migrate: ./bin/db-migrate
-  checksum: 10c0/41e93c8381d5d9c4dfbc36206b31d4a7abe3d9084cc4e52e840c3515529f4d76b00cb9d139c613254294323038aeecdf528246ed7c54a17b38b1894f75f872d3
+    db-migrate: bin/db-migrate
+  checksum: 10c0/753a8c931767fc93f1b2eb7bf305e8460cd660fcd35068da1d785769d516c84ce0b30d7f0db7051c0f01cec83f693a38c5a9f2bc8fcadd709181c85208654d3f
   languageName: node
   linkType: hard
 
@@ -22487,13 +22486,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:~0.0.1":
-  version: 0.0.10
-  resolution: "minimist@npm:0.0.10"
-  checksum: 10c0/c505a020144b6e49f2b1c7d1e378f3692b7102e989b4a49338fc171eb4229ddddb430e779ff803dcb11854050e3fe3c2298962a7d73c20df7c2044c92b2ba1da
-  languageName: node
-  linkType: hard
-
 "minipass-collect@npm:^1.0.2":
   version: 1.0.2
   resolution: "minipass-collect@npm:1.0.2"
@@ -23803,16 +23795,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"optimist@npm:~0.6.1":
-  version: 0.6.1
-  resolution: "optimist@npm:0.6.1"
-  dependencies:
-    minimist: "npm:~0.0.1"
-    wordwrap: "npm:~0.0.2"
-  checksum: 10c0/8cb417328121e732dbfb4d94d53bb39b1406446b55323ed4ce787decc52394927e051ba879eb3ffa3171fe22a35ce13b460114b60effcead77443ee87c2f9b0f
-  languageName: node
-  linkType: hard
-
 "optionator@npm:^0.9.1":
   version: 0.9.4
   resolution: "optionator@npm:0.9.4"
@@ -24686,7 +24668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pkginfo@npm:0.x.x, pkginfo@npm:^0.4.0":
+"pkginfo@npm:0.x.x":
   version: 0.4.1
   resolution: "pkginfo@npm:0.4.1"
   checksum: 10c0/487ace8df0dc7d5669cc2cb61af5c418cc4082bd246dc7fa4008b52d693dca4adc3563e427794c532ac70c9c287e6bb5fe5393465a0927765e6d85a12ddd6539
@@ -31345,13 +31327,6 @@ __metadata:
   version: 1.0.0
   resolution: "wordwrap@npm:1.0.0"
   checksum: 10c0/7ed2e44f3c33c5c3e3771134d2b0aee4314c9e49c749e37f464bf69f2bcdf0cbf9419ca638098e2717cff4875c47f56a007532f6111c3319f557a2ca91278e92
-  languageName: node
-  linkType: hard
-
-"wordwrap@npm:~0.0.2":
-  version: 0.0.3
-  resolution: "wordwrap@npm:0.0.3"
-  checksum: 10c0/b3b212f8b2167091f59bc60929ada2166eb157abb6c8c82e2a705fe5aa5876440c3966ab39eb6c7bcb2ff0ac0c8d9fba726a9c2057b83bd65cdc1858f9d816ce
   languageName: node
   linkType: hard
 
