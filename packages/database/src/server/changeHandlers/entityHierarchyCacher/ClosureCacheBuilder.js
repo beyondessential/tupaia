@@ -5,9 +5,6 @@
  * @typedef {import('../../../core').ModelRegistry} ModelRegistry
  */
 
-import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
-import { SqlQuery } from '../../../core/SqlQuery';
-
 /**
  * Rebuilds `ancestor_descendant_relation` for a single project in one recursive CTE.
  *
@@ -40,15 +37,6 @@ export class ClosureCacheBuilder {
 
     const { entity_hierarchy_id: hierarchyId } = project;
 
-    const canonicalTypes = await this.getCanonicalTypes(hierarchyId);
-    // The parent_id leg must NOT cross the world entity. project.parent_id and
-    // country.parent_id both point at world; if those edges leaked into the closure
-    // the world entity would surface as an ancestor of every project/country (and
-    // entity-server would 403 the resulting `parent_code: 'World'` walk). Both
-    // relationships are expressed elsewhere — country↔project comes through
-    // project_country, project↔world is meta and not modelled in the cache.
-    const parentIdLegTypes = canonicalTypes.filter(t => t !== 'project' && t !== 'country');
-
     // Wipe-and-rebuild rather than diff. The closure for one project's hierarchy is
     // typically tens to hundreds of thousands of rows — small enough that DELETE +
     // INSERT-from-SELECT is faster and simpler than computing the symmetric
@@ -60,23 +48,35 @@ export class ClosureCacheBuilder {
         [hierarchyId],
       );
 
-      // ancestor_descendant_relation.id is TEXT with no SQL default, so we generate a
-      // deterministic-ish id from (hierarchy, ancestor, descendant, distance). MD5 is
+      // The parent_id leg must NOT cross the world entity. project.parent_id and
+      // country.parent_id both point at world; if those edges leaked into the closure
+      // the world entity would surface as an ancestor of every project/country (and
+      // entity-server would 403 the resulting `parent_code: 'World'` walk). Both
+      // relationships are expressed elsewhere — country↔project comes through
+      // project_country, project↔world is meta and not modelled in the cache.
+      //
+      // We do NOT filter by canonical_types: the closure is meant to mirror every
+      // entity-id-linked relation, including non-org-unit types like individual /
+      // case / household. Pre-3068 the cacher walked entity_relation rows for those
+      // (which were inserted without type-filter), so the equivalent here is to
+      // include any sub-country entity reachable via parent_id.
+      //
+      // ancestor_descendant_relation.id is TEXT with no SQL default. Generate a
+      // deterministic id from (hierarchy, ancestor, descendant, distance). MD5 is
       // fast and gives 32 hex chars — well within the column's TEXT bounds. Using a
-      // deterministic value (not random) means re-runs produce stable ids, which keeps
-      // change-detection noise low for any future sync of this table.
+      // deterministic value means re-runs produce stable ids.
       await transactingModels.database.executeSql(
         `
         WITH RECURSIVE
           edges AS (
-            -- entity.parent_id direct edges, project-scoped, sub-country only.
-            -- Excludes child.type IN ('project','country') because those rows'
-            -- parent_id is the world entity; their hierarchy ancestry comes through
+            -- entity.parent_id direct edges, project-scoped. Excludes
+            -- child.type IN ('project','country') because those rows' parent_id is
+            -- the world entity; their hierarchy ancestry comes through
             -- project_country instead.
             SELECT e.parent_id AS ancestor_id, e.id AS descendant_id
             FROM entity e
             WHERE e.parent_id IS NOT NULL
-              AND e.type IN ${SqlQuery.record(parentIdLegTypes)}
+              AND e.type NOT IN ('project', 'country')
               AND (e.project_id IS NULL OR e.project_id = ?)
             UNION ALL
             -- project_country bridge: project_entity → country
@@ -105,7 +105,7 @@ export class ClosureCacheBuilder {
           generational_distance
         FROM closure;
         `,
-        [...parentIdLegTypes, projectId, projectId, hierarchyId, hierarchyId],
+        [projectId, projectId, hierarchyId, hierarchyId],
       );
     });
   }
@@ -119,17 +119,5 @@ export class ClosureCacheBuilder {
     for (const project of projects) {
       await this.rebuildForProject(project.id);
     }
-  }
-
-  /**
-   * @private
-   * @param {EntityHierarchy['id']} hierarchyId
-   */
-  async getCanonicalTypes(hierarchyId) {
-    const hierarchy = await this.models.entityHierarchy.findById(hierarchyId);
-    const customCanonicalTypes = hierarchy?.canonical_types;
-    return customCanonicalTypes?.length > 0
-      ? customCanonicalTypes
-      : Object.values(ORG_UNIT_ENTITY_TYPES);
   }
 }
