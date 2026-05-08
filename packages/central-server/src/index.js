@@ -46,9 +46,7 @@ configureEnv();
     meditrakSyncQueue.listenForChanges();
   }
 
-  // EntityHierarchyCacher rebuilds the ancestor_descendant_relation closure cache
-  // when entities or project_country edges change. TUP-3068 simplified the rebuild
-  // to walk entity.parent_id + project_country directly (was: entity_parent_child_relation).
+  // Pre-cache entity hierarchy details
   const entityHierarchyCacher = new EntityHierarchyCacher(models);
   entityHierarchyCacher.listenForChanges();
 
@@ -129,7 +127,6 @@ configureEnv();
       await dbMigrator.up();
       winston.info('Database migrations complete');
 
-      // Bootstrap the closure cache on first start (or after a fresh setup-test).
       await buildEntityParentChildRelationIfEmpty(models);
 
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {

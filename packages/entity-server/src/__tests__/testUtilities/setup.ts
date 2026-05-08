@@ -33,9 +33,6 @@ export const setupTestData = async () => {
   await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
   await models.database.waitForAllChangeHandlers();
 
-  // TUP-3068: read paths read ancestor_descendant_relation. The change-handler-driven
-  // EntityHierarchyCacher doesn't run in test setup (no listener wired), so populate
-  // the closure cache explicitly before assertions.
   const closureCacheBuilder = new ClosureCacheBuilder(models);
   await closureCacheBuilder.rebuildAll();
 

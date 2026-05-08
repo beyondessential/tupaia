@@ -57,7 +57,7 @@ export const useSurveyResponseData = (): ResponseData => {
 interface SurveyResponseMutationFunctionContext
   extends ContextualMutationFunctionContext<{
     answers?: AnswersT;
-  }> { }
+  }> {}
 
 export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
@@ -97,14 +97,6 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
 
         // Mirroring central-server logic
         await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [processedResponse]);
-
-        // TUP-3065: descendant queries now walk entity.parent_id directly, so newly
-        // upserted entities are visible to readers as soon as they're inserted —
-        // no entity_parent_child_relation cache to keep in sync. Sync surface
-        // (the table being part of meditrak/datatrak sync) is intentionally left
-        // alone in this PR; that change is coordinated with mobile clients via
-        // TUP-3067 (https://linear.app/bes/issue/TUP-3067).
-
         await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
         const idsCreated = await SurveyResponseModel.saveResponsesToDatabase(
           transactingModels,

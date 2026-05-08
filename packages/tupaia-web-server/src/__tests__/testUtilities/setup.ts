@@ -32,7 +32,6 @@ export const setupTestData = async () => {
     return { ...project, entities: entitiesInProject, relations: relationsInProject };
   });
 
-  // TUP-3065: EntityHierarchyCacher removed — entity.parent_id is now read directly.
   await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
   await models.database.waitForAllChangeHandlers();
 

@@ -37,10 +37,6 @@ export class DeleteEntity extends BESAdminDeleteHandler {
       );
     }
 
-    // TUP-3065: removed the entity_relation cleanup — `entity_relation` is no longer
-    // load-bearing and is being dropped in TUP-3066. parent_id chain is the only
-    // canonical link now and was already validated above via getChildren.
-
     await super.deleteRecord();
   }
 }
