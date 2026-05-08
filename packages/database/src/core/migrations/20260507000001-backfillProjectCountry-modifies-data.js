@@ -47,22 +47,28 @@ exports.up = async function (db) {
   `);
   log(`Found ${sourceRows.rows.length} project↔country pairs to backfill`, t0);
 
-  if (sourceRows.rows.length === 0) {
-    log('No rows to backfill — finishing', t0);
-    return;
+  if (sourceRows.rows.length > 0) {
+    // Single bulk INSERT — the row count here is small (one per project per country, low
+    // hundreds at prod scale), so a single VALUES clause is fine.
+    const values = sourceRows.rows
+      .map(({ project_id, country_id }) => `('${generateId()}','${project_id}','${country_id}')`)
+      .join(',');
+    await db.runSql(`
+      INSERT INTO project_country (id, project_id, country_id)
+      VALUES ${values}
+      ON CONFLICT (project_id, country_id) DO NOTHING;
+    `);
+    log(`Inserted ${sourceRows.rows.length} project_country rows`, t0);
   }
 
-  // Single bulk INSERT — the row count here is small (one per project per country, low
-  // hundreds at prod scale), so a single VALUES clause is fine.
-  const values = sourceRows.rows
-    .map(({ project_id, country_id }) => `('${generateId()}','${project_id}','${country_id}')`)
-    .join(',');
-  await db.runSql(`
-    INSERT INTO project_country (id, project_id, country_id)
-    VALUES ${values}
-    ON CONFLICT (project_id, country_id) DO NOTHING;
-  `);
-  log(`Inserted ${sourceRows.rows.length} project_country rows`, t0);
+  // Invalidate the closure cache. Pre-3068 rows reference entity ids that RN-1853
+  // duplicated/replaced, so they're stale by the time this migration runs. Wiping
+  // here lets central-server's bootstrap (buildEntityParentChildRelationIfEmpty) see
+  // an empty cache on next boot and trigger ClosureCacheBuilder.rebuildAll, which
+  // walks entity.parent_id + project_country to repopulate from the current state.
+  // No-op on an empty test DB.
+  await db.runSql(`TRUNCATE ancestor_descendant_relation;`);
+  log('Truncated ancestor_descendant_relation — bootstrap will rebuild', t0);
 
   log('Data migration complete', t0);
 };
