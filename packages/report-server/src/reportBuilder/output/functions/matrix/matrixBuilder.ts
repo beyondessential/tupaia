@@ -57,19 +57,12 @@ export class MatrixBuilder {
       includeFields: (string | MatrixEntityCell)[],
       excludeFields: string[],
     ) => {
-      const fieldNames = new Set(
-        includeFields.filter(isMatrixEntityCell).map(field => field.entityLabel),
-      );
-      const exclusions = new Set(excludeFields);
-      const inclusions = new Set(includeFields);
+      const fields = new Set(excludeFields);
+      for (const field of includeFields) {
+        fields.add(isMatrixEntityCell(field) ? field.entityLabel : field);
+      }
 
-      return this.table.getColumns().filter((columnName: string) => {
-        return !(
-          fieldNames.has(columnName) ||
-          exclusions.has(columnName) ||
-          inclusions.has(columnName)
-        );
-      });
+      return this.table.getColumns().filter(columnName => !fields.has(columnName));
     };
 
     const { includeFields: originalIncludeFields, excludeFields } = this.params.columns;
