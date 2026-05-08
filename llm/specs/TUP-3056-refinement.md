@@ -3,8 +3,7 @@
 [Linear ticket](TUP-3056/add-project-id-to-entities-and-duplicate-shared-entities-per-project)
 
 > Originally tracked as RN-1853; renumbered to TUP-3056 after a Linear workspace
-> reorganisation. The implementation PR (#6749) and earlier commit messages still
-> reference the RN-1853 identifier.
+> reorganisation. 
 
 ## Context
 
@@ -286,13 +285,11 @@ Old analytics paths still in use for some reports. Defer until apiV1 is touched.
 
 ---
 
-## Release path for C1 + C2
+## Project Plan
 
-C1 + C2 together is the right release unit for the project-specific entity model. Tickets land on the load-bearing path **3053 → 3056 → 3060 → 3065**, then the destructive cleanup **3067 → 3066** trails afterwards. Staging the rollout as three deployable milestones is safer than a single big-bang.
+### Milestone 1 — server-side correct (test-ready)
 
-### Milestone 1 — server-side correct (test-ready) — **NOW**
-
-C1 + C2 PRs are open with green CI. **This is the QA-able milestone.** Internal QA can run the new project-specific entity model end-to-end against the stacked PRs.
+ **This is the QA-able milestone.** Internal QA can run the new project-specific entity model end-to-end against the stacked PRs.
 
 - **TUP-3056 (#6749)** — in review.
 - **TUP-3065 (#6761, depends on 3056)** — in review. Absorbs **TUP-3068** (cacher subsystem retired in this PR).
@@ -306,8 +303,6 @@ External sync flows are a separate concern — see Milestone 2 + TUP-3156.
 
 - **TUP-3067** — MediTrak compatibility layer. Mobile sync still pulls `entity_parent_child_relation` and `entity_relation` rows; after 3065 those are dead writes server-side. Either translate parent_id walks into the legacy shapes at the sync API boundary, or ship a mobile build that knows the new shape. Currently estimated at 13 points — biggest remaining effort.
 - **TUP-3156** — external sync flows (DHIS2 push, MS1, data-broker, KoBo) doing bare entity-code lookups outside any request context. Needs product input on per-integration scoping (designated project? iterate per project? drop multi-project support?). DHIS2 is being phased out and LESMIS unsupported, so some of these may not need a real fix.
-
-Until 3067 is in production, **do not** drop the legacy tables — mobile sync would silently drift.
 
 ### Milestone 3 — schema clean (cleanup)
 
