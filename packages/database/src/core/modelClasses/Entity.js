@@ -446,6 +446,39 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return EntityRecord;
   }
 
+  /**
+   * TUP-3060: canonical lookup for an entity by code within a project's scope.
+   *
+   * Post-RN-1853 `entity.code` is no longer globally unique — sub-country entities are
+   * duplicated per project. Bare `findOne({ code })` returns an arbitrary copy, which
+   * silently corrupts behaviour. This helper restricts the lookup to the requested
+   * project (plus structural entities with NULL project_id, which are shared).
+   *
+   * Pass `null` (or omit) for `projectId` if the caller has no project context — in
+   * that case the lookup is unscoped and the call is no safer than `findOne({ code })`,
+   * but documented as such. Prefer threading project context through callers.
+   *
+   * @param {string} code
+   * @param {string | null} [projectId]
+   * @param {*} [otherCriteria]
+   * @returns {Promise<EntityRecord | null>}
+   */
+  async findOneByCodeInProject(code, projectId = null, otherCriteria = {}) {
+    if (!projectId) {
+      return this.findOne({ code, ...otherCriteria });
+    }
+    const matches = await this.find({
+      code,
+      ...otherCriteria,
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: '(project_id IS NULL OR project_id = ?)',
+        parameters: [projectId],
+      },
+    });
+    if (matches.length === 0) return null;
+    return matches[0];
+  }
+
   get cacheEnabled() {
     return true;
   }

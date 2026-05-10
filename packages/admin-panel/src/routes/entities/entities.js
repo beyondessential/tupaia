@@ -49,6 +49,10 @@ export const COLUMNS = [
     source: 'country_code',
   },
   {
+    Header: 'Project',
+    source: 'project.code',
+  },
+  {
     Header: 'Edit',
     type: 'edit',
     actionConfig: {

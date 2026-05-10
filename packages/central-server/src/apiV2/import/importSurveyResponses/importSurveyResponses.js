@@ -28,12 +28,14 @@ import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
 import { getFailureMessage } from './getFailureMessage';
 
 const ANSWER_TRANSFORMERS = {
-  [ANSWER_TYPES.ENTITY]: async (models, answerValue) => {
+  // TUP-3060: scope the entity-code lookup by the importing survey's project so
+  // post-RN-1853 sub-country duplicates resolve to the correct copy.
+  [ANSWER_TYPES.ENTITY]: async (models, answerValue, projectId) => {
     if (!answerValue) {
       return answerValue;
     }
     // entity answers are stored as codes in the spreadsheet, but ids in the db
-    const entity = await models.entity.findOne({ code: answerValue });
+    const entity = await models.entity.findOneByCodeInProject(answerValue, projectId);
     if (!entity) {
       throw new Error(`Could not find entity with code ${answerValue}`);
     }
@@ -182,7 +184,9 @@ export async function importSurveyResponses(req, res) {
         const importMode = getImportMode(columnHeader);
         const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
         const entityName = getInfoForColumn(sheet, columnIndex, 'Entity Name');
-        const entity = await models.entity.findOne({ code: entityCode });
+        // TUP-3060: scope to the survey's project so duplicated sub-country codes
+        // resolve to the correct per-project copy.
+        const entity = await models.entity.findOneByCodeInProject(entityCode, survey.project_id);
 
         if (entityCode && entityName) {
           if (!entity) {
@@ -298,7 +302,7 @@ export async function importSurveyResponses(req, res) {
           const importMode = getImportMode(columnHeader);
           const answerValue = getCellContents(sheet, columnIndex, rowIndex);
           const transformedAnswerValue = answerTransformer
-            ? await answerTransformer(models, answerValue)
+            ? await answerTransformer(models, answerValue, survey.project_id)
             : answerValue;
           // If we already deleted this survey response wholesale, no need to check specific rows
           if (surveyResponseId && !deletedResponseIds.has(surveyResponseId)) {
@@ -420,7 +424,9 @@ const getDataTimeCondition = (date, periodGranularity) => {
 const constructNewSurveyResponseDetails = async (models, sheet, columnIndex, config) => {
   const { id, survey, userId, timeZone } = config;
   const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
-  const entity = await models.entity.findOne({ code: entityCode });
+  // TUP-3060: scope to the survey's project so duplicated sub-country codes
+  // resolve to the correct per-project copy.
+  const entity = await models.entity.findOneByCodeInProject(entityCode, survey.project_id);
   if (!entity) {
     throw new Error(`No entity with code ${entityCode}`);
   }

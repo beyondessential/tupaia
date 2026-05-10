@@ -37,6 +37,7 @@ export async function exportSurveyResponses(req, res) {
     countryId,
     entityIds,
     surveyResponseId,
+    surveyId,
   );
   const { country, entities, surveyResponse } = variables;
   countryId = variables.countryId || country.id || countryId;

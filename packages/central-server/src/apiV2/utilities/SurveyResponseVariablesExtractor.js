@@ -21,8 +21,16 @@ export class SurveyResponseVariablesExtractor {
     return country.id;
   }
 
-  async getVariablesByEntityCode(entityCode) {
-    const entity = await this.models.entity.findOne({ code: entityCode });
+  // TUP-3060: post-RN-1853 sub-country codes are duplicated per project. Resolve
+  // project context from `surveyId` so the entity lookup hits the right copy.
+  // Falls back to bare findOne when no surveyId is provided (in practice the
+  // export endpoint requires a survey context, but defensive fallback for any
+  // legacy callers).
+  async getVariablesByEntityCode(entityCode, surveyId) {
+    const projectId = surveyId
+      ? (await this.models.survey.findById(surveyId))?.project_id
+      : null;
+    const entity = await this.models.entity.findOneByCodeInProject(entityCode, projectId);
     const country = await this.models.country.findOne({ code: entity.country_code });
     return { country, entities: [entity] };
   }
@@ -104,10 +112,17 @@ export class SurveyResponseVariablesExtractor {
     return surveys;
   }
 
-  async getParametersFromInput(countryCode, entityCode, countryId, entityIds, surveyResponseId) {
+  async getParametersFromInput(
+    countryCode,
+    entityCode,
+    countryId,
+    entityIds,
+    surveyResponseId,
+    surveyId,
+  ) {
     const newCountryId =
       (countryCode && (await this.getCountryIdByCountryCode(countryCode))) || countryId;
-    if (entityCode) return this.getVariablesByEntityCode(entityCode);
+    if (entityCode) return this.getVariablesByEntityCode(entityCode, surveyId);
     if (newCountryId) return this.getVariablesByCountryId(newCountryId);
     if (entityIds) return this.getVariablesByEntityIds(entityIds, newCountryId);
     if (surveyResponseId) return this.getVariablesBySurveyResponseId(surveyResponseId);
