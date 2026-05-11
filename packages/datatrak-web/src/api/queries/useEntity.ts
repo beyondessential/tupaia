@@ -13,12 +13,14 @@ interface EntityByCodeQueryFunctionContext extends ContextualQueryFunctionContex
 }
 
 const entityByCodeQueryFunctions = {
-  remote: async ({ entityCode }: EntityByCodeQueryFunctionContext) => {
+  remote: async ({ entityCode, projectId }: EntityByCodeQueryFunctionContext) => {
     assertIsNotNullish(
       entityCode,
       `useEntityByCode query function called with ${entityCode} entityCode`,
     );
-    return await get(`entity/${encodeURIComponent(entityCode)}`);
+    return await get(`entity/${encodeURIComponent(entityCode)}`, {
+      params: { projectId },
+    });
   },
   local: async ({ entityCode, projectId, models }: EntityByCodeQueryFunctionContext) => {
     assertIsNotNullish(

@@ -30,19 +30,6 @@ export class AncestorDescendantCacheBuilder {
         [hierarchyId],
       );
 
-      // The parent_id leg must NOT cross the world entity. project.parent_id and
-      // country.parent_id both point at world; if those edges leaked into the closure
-      // the world entity would surface as an ancestor of every project/country (and
-      // entity-server would 403 the resulting `parent_code: 'World'` walk). Both
-      // relationships are expressed elsewhere — country↔project comes through
-      // project_country, project↔world is meta and not modelled in the cache.
-      //
-      // We do NOT filter by canonical_types: the closure is meant to mirror every
-      // entity-id-linked relation, including non-org-unit types like individual /
-      // case / household. Pre-3068 the cacher walked entity_relation rows for those
-      // (which were inserted without type-filter), so the equivalent here is to
-      // include any sub-country entity reachable via parent_id.
-      //
       // ancestor_descendant_relation.id is TEXT with no SQL default. Generate a
       // deterministic id from (hierarchy, ancestor, descendant, distance). MD5 is
       // fast and gives 32 hex chars — well within the column's TEXT bounds. Using a

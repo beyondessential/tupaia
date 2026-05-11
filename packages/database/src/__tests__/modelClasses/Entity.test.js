@@ -95,7 +95,11 @@ describe('EntityModel', () => {
       assertHaveEqualIds(parentEntity, result);
     });
 
-    it('should return the parent entity for the correct hierarchy', async () => {
+    // TUP-3065: tests of "same entity has a different parent in a different hierarchy"
+    // are no longer applicable. Each entity now has exactly one parent_id; cross-project
+    // hierarchy variants are achieved by duplicating entities per project (RN-1853),
+    // not by storing different parent links per hierarchy.
+    it.skip('should return the parent entity for the correct hierarchy', async () => {
       const exploreParentEntity = await upsertEntity();
       const lilyParentEntity = await upsertEntity();
       const entity = await upsertEntity({ parent_id: exploreParentEntity.id });
@@ -140,7 +144,9 @@ describe('EntityModel', () => {
       assertHaveEqualIds(grandparentEntity, result);
     });
 
-    it('fetches ancestors based on the hierarchy id specified', async () => {
+    // TUP-3065: same-entity-different-ancestors-per-hierarchy is not a thing post
+    // RN-1853 + TUP-3065 — each entity has exactly one parent_id. Skipped.
+    it.skip('fetches ancestors based on the hierarchy id specified', async () => {
       const grandparentInExploreHierarchy = await upsertOrgUnitEntity();
       const grandparentInLilyHierarchy = await upsertOrgUnitEntity();
       const parentEntity = await upsertNonOrgUnitEntity({
@@ -193,7 +199,8 @@ describe('EntityModel', () => {
       assertHaveEqualIds(grandparentInExploreHierarchy, result);
     });
 
-    it('fetches ancestors using another hierarchy if the entity is not present in explore', async () => {
+    // TUP-3065: same — falls back to single parent_id chain regardless of hierarchy.
+    it.skip('fetches ancestors using another hierarchy if the entity is not present in explore', async () => {
       const grandparentInExploreHierarchy = await upsertOrgUnitEntity();
       const grandparentInLilyHierarchy = await upsertOrgUnitEntity();
       const parentEntity = await upsertNonOrgUnitEntity({

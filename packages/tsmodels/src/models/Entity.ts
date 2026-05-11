@@ -28,6 +28,12 @@ export interface EntityRecord extends Entity, BaseEntityRecord {
 }
 
 export interface EntityModel extends Model<BaseEntityModel, Entity, EntityRecord> {
+  findOneByCodeInProject: (
+    code: string,
+    projectId?: string | null,
+    otherCriteria?: EntityFilter,
+    options?: Record<string, unknown>,
+  ) => Promise<EntityRecord | null>;
   getDescendantsOfEntities: (
     hierarchyId: string,
     entityIds: string[],
