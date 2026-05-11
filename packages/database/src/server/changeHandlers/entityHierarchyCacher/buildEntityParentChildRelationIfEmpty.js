@@ -1,24 +1,16 @@
 import winston from 'winston';
-import { EntityParentChildRelationBuilder } from './EntityParentChildRelationBuilder';
+import { AncestorDescendantCacheBuilder } from './AncestorDescendantCacheBuilder';
 
 export const buildEntityParentChildRelationIfEmpty = async models => {
-  const entityParentChildRelationCount = await models.entityParentChildRelation.count({});
+  const closureCount = await models.ancestorDescendantRelation.count({});
 
-  if (entityParentChildRelationCount === 0) {
-    winston.info(
-      'No existing entity parent-child relations found. Building initial hierarchy...',
-      entityParentChildRelationCount,
-    );
-    await models.wrapInTransaction(async transactingModels => {
-      const entityParentChildRelationBuilder = new EntityParentChildRelationBuilder(
-        transactingModels,
-      );
-      await entityParentChildRelationBuilder.buildAndCacheHierarchies();
-    });
-    winston.info('Entity parent-child relations built');
-
+  if (closureCount === 0) {
+    winston.info('No existing ancestor_descendant_relation rows found. Building initial cache...');
+    const builder = new AncestorDescendantCacheBuilder(models);
+    await builder.rebuildAll();
+    winston.info('Closure cache built');
     return;
   }
 
-  winston.info('Existing entity parent-child relations found. Skipping hierarchy build.');
+  winston.info('Existing ancestor_descendant_relation rows found. Skipping initial cache build.');
 };

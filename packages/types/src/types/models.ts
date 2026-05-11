@@ -1321,6 +1321,7 @@ export interface ProjectCountry {
   'country_id': string;
   'id': string;
   'project_id': string;
+  'updated_at_sync_tick': string;
 }
 export interface ProjectCountryCreate {
   'country_id': string;

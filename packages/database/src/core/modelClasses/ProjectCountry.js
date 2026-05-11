@@ -9,7 +9,7 @@ export class ProjectCountryRecord extends DatabaseRecord {
 }
 
 export class ProjectCountryModel extends DatabaseModel {
-  static syncDirection = SyncDirections.DO_NOT_SYNC;
+  static syncDirection = SyncDirections.PULL_FROM_CENTRAL;
 
   get DatabaseRecordClass() {
     return ProjectCountryRecord;
