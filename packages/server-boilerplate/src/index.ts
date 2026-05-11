@@ -96,6 +96,8 @@ export {
   PermissionGroupRecord,
   ProjectModel,
   ProjectRecord,
+  ProjectCountryModel,
+  ProjectCountryRecord,
   QuestionModel,
   QuestionRecord,
   ReportModel,

@@ -48,6 +48,7 @@ export const RECORDS = /** @type {const} */ ({
   OPTION: 'option',
   PERMISSION_GROUP: 'permission_group',
   PROJECT: 'project',
+  PROJECT_COUNTRY: 'project_country',
   QUESTION: 'question',
   REFRESH_TOKEN: 'refresh_token',
   REPORT: 'report',

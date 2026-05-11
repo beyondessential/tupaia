@@ -54,6 +54,7 @@ export { OptionModel, OptionRecord } from './Option';
 export { OptionSetModel, OptionSetRecord } from './OptionSet';
 export { PermissionGroupModel, PermissionGroupRecord } from './PermissionGroup';
 export { ProjectModel, ProjectRecord } from './Project';
+export { ProjectCountryModel, ProjectCountryRecord } from './ProjectCountry';
 export { QuestionModel, QuestionRecord } from './Question';
 export { ReportModel, ReportRecord } from './Report';
 export { SurveyModel, SurveyRecord } from './Survey';

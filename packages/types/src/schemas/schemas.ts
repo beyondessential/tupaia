@@ -98624,6 +98624,57 @@ export const ProjectUpdateSchema = {
 	},
 	"additionalProperties": false
 }
+export const ProjectCountrySchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_id",
+		"id",
+		"project_id"
+	]
+}
+export const ProjectCountryCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_id",
+		"project_id"
+	]
+}
+export const ProjectCountryUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+}
 export const PsssSessionSchema = {
 	"type": "object",
 	"properties": {
