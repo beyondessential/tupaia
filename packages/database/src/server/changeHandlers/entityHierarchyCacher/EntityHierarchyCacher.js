@@ -53,30 +53,34 @@ export class EntityHierarchyCacher extends ChangeHandler {
       return [];
     }
 
-    // Collect every project_id that may need a rebuild. project_id is the canonical
-    // scope for the closure: the cache is rebuilt one project at a time.
-    const candidateProjectIds = [oldRecord?.project_id, newRecord?.project_id].filter(Boolean);
+    // Sub-country entities have a non-null project_id, which IS the scope to rebuild —
+    // no need to walk outward via project_country or project.entity_id.
+    const subCountryProjectIds = [oldRecord?.project_id, newRecord?.project_id].filter(Boolean);
+    if (subCountryProjectIds.length > 0) {
+      return [...new Set(subCountryProjectIds)];
+    }
+
+    // Structural entities (project, country, world) have project_id NULL. Derive
+    // owning project(s) by walking outward: a project entity's project record, or a
+    // country's project_country rows.
     const candidateEntityIds = [
       oldRecord?.id,
       newRecord?.id,
       oldRecord?.parent_id,
       newRecord?.parent_id,
     ].filter(Boolean);
-
-    // Structural entities (project, country, world) have project_id NULL, so derive
-    // their owning project(s) by walking outward: a project entity's project record,
-    // or a country's project_country rows.
-    const projectIds = new Set(candidateProjectIds);
-
-    if (candidateEntityIds.length > 0) {
-      const projectsByEntity = await this.models.project.find({ entity_id: candidateEntityIds });
-      projectsByEntity.forEach(p => projectIds.add(p.id));
-
-      const projectCountryRows = await this.models.projectCountry.find({
-        country_id: candidateEntityIds,
-      });
-      projectCountryRows.forEach(pc => projectIds.add(pc.project_id));
+    if (candidateEntityIds.length === 0) {
+      return [];
     }
+
+    const projectIds = new Set();
+    const projectsByEntity = await this.models.project.find({ entity_id: candidateEntityIds });
+    projectsByEntity.forEach(p => projectIds.add(p.id));
+
+    const projectCountryRows = await this.models.projectCountry.find({
+      country_id: candidateEntityIds,
+    });
+    projectCountryRows.forEach(pc => projectIds.add(pc.project_id));
 
     return Array.from(projectIds);
   }
