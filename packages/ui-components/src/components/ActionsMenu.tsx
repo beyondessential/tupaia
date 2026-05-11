@@ -10,7 +10,7 @@ import {
 import { EllipsisVertical } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
-import { useId } from '../hooks';
+import { useAriaId } from '../hooks';
 import { ActionsMenuOptionType } from '../types';
 import { VisuallyHidden } from './VisuallyHidden';
 
@@ -63,7 +63,7 @@ export const ActionsMenu = ({
   IconButton = MuiIconButton,
   className,
 }: ActionMenuProps) => {
-  const id = useId();
+  const id = useAriaId();
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
   const isExpanded = anchorEl !== null;
 
