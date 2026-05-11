@@ -7,22 +7,12 @@ var type;
 var seed;
 
 /**
- * TUP-3065 data migration: backfill `project_country` from existing
- * `entity_relation` rows, then mark this work done.
- *
- * Pre-existing project↔country mapping lives in `entity_relation` rows where the
- * parent is a `project`-type entity and the child is a `country`-type entity. We
- * mirror those into `project_country`, joining via `project.entity_id` to find the
- * matching project row.
- *
- * Filename suffix `-modifies-data.js` is recognised by setupNewDatabase.sh and
- * skipped on empty test DBs (no entity_relation rows to migrate).
+ * backfill `project_country` from existing `entity_relation` rows
  */
-
 const log = (msg, startTime) => {
   const elapsed = startTime ? ` (+${((Date.now() - startTime) / 1000).toFixed(1)}s)` : '';
   // eslint-disable-next-line no-console
-  console.log(`[TUP-3065 project_country]${elapsed} ${msg}`);
+  console.log(`[project_country migration: ]${elapsed} ${msg}`);
 };
 
 exports.setup = function (options, seedLink) {
@@ -35,9 +25,6 @@ exports.up = async function (db) {
   const t0 = Date.now();
   log('Starting up data migration', t0);
 
-  // Source rows: project↔country pairs derived from entity_relation, keyed by
-  // (project.id, country.id). DISTINCT collapses any duplicates from custom hierarchies
-  // (different entity_hierarchy_id pointing at the same project).
   const sourceRows = await db.runSql(`
     SELECT DISTINCT p.id AS project_id, c.id AS country_id
     FROM entity_relation er
@@ -52,8 +39,6 @@ exports.up = async function (db) {
     return;
   }
 
-  // Single bulk INSERT — the row count here is small (one per project per country, low
-  // hundreds at prod scale), so a single VALUES clause is fine.
   const values = sourceRows.rows
     .map(({ project_id, country_id }) => `('${generateId()}','${project_id}','${country_id}')`)
     .join(',');

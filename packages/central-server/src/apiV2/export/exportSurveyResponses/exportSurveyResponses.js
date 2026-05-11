@@ -31,13 +31,16 @@ export async function exportSurveyResponses(req, res) {
   req.assertPermissions(allowNoPermissions);
 
   const variablesExtractor = new SurveyResponseVariablesExtractor(models);
+  // Resolve project_id up front (so the entity lookup inside the extractor doesn't
+  // re-fetch the survey). getSurveys below still uses surveyId directly.
+  const survey = surveyId ? await models.survey.findById(surveyId) : null;
   const variables = await variablesExtractor.getParametersFromInput(
     countryCode,
     entityCode,
     countryId,
     entityIds,
     surveyResponseId,
-    surveyId,
+    survey?.project_id ?? null,
   );
   const { country, entities, surveyResponse } = variables;
   countryId = variables.countryId || country.id || countryId;

@@ -4,15 +4,6 @@ var dbm;
 var type;
 var seed;
 
-/**
- * TUP-3065: declarative project ↔ country mapping.
- *
- * Pre-RN-1853 the project's countries were derived from `entity_relation` rows whose
- * parent was the project entity. With `entity_relation` being retired, this table
- * becomes the source of truth. The data migration that runs next backfills it from the
- * existing `entity_relation` rows.
- */
-
 exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;

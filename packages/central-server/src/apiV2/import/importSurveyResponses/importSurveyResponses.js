@@ -28,8 +28,6 @@ import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
 import { getFailureMessage } from './getFailureMessage';
 
 const ANSWER_TRANSFORMERS = {
-  // TUP-3060: scope the entity-code lookup by the importing survey's project so
-  // post-RN-1853 sub-country duplicates resolve to the correct copy.
   [ANSWER_TYPES.ENTITY]: async (models, answerValue, projectId) => {
     if (!answerValue) {
       return answerValue;
@@ -184,8 +182,6 @@ export async function importSurveyResponses(req, res) {
         const importMode = getImportMode(columnHeader);
         const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
         const entityName = getInfoForColumn(sheet, columnIndex, 'Entity Name');
-        // TUP-3060: scope to the survey's project so duplicated sub-country codes
-        // resolve to the correct per-project copy.
         const entity = await models.entity.findOneByCodeInProject(entityCode, survey.project_id);
 
         if (entityCode && entityName) {
@@ -424,8 +420,6 @@ const getDataTimeCondition = (date, periodGranularity) => {
 const constructNewSurveyResponseDetails = async (models, sheet, columnIndex, config) => {
   const { id, survey, userId, timeZone } = config;
   const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
-  // TUP-3060: scope to the survey's project so duplicated sub-country codes
-  // resolve to the correct per-project copy.
   const entity = await models.entity.findOneByCodeInProject(entityCode, survey.project_id);
   if (!entity) {
     throw new Error(`No entity with code ${entityCode}`);
