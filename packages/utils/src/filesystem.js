@@ -48,6 +48,23 @@ export const toFilename = (string, stripSpecialAndLowercase = false) => {
   return sanitized.length <= maxLength ? sanitized : sanitized.slice(0, maxLength);
 };
 
+/**
+ * SheetJS worksheet name cannot:
+ * - contain : \ / ? * [ ]
+ * - exceed 31 characters
+ * - start or end with apostrophe (')
+ * @param {string} name
+ * @see /vendor/xlsx-0.20.3/package/xlsx.js:27672-27687
+ */
+export const sanitizeWorksheetName = name => {
+  const withoutInvalidChars = String(name)
+    .replace(/[:\\/?*\[\]]/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' '); // collapse consecutive whitespaces
+  const withApostrophesTrimmed = withoutInvalidChars.replace(/^'+|'+$/g, '').trim();
+  return withApostrophesTrimmed.slice(0, 31).trim() || 'Sheet 1';
+};
+
 export const writeStreamToFile = async (filePath, stream) =>
   new Promise((resolve, reject) => {
     const fileStream = fs.createWriteStream(filePath);

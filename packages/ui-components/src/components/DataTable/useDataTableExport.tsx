@@ -1,8 +1,8 @@
-import moment, { Moment } from 'moment';
+import moment, { type Moment } from 'moment';
 import { useTable } from 'react-table';
 import { utils, writeFile } from 'xlsx';
 
-import { toFilename } from '@tupaia/utils';
+import { sanitizeWorksheetName, toFilename } from '@tupaia/utils';
 
 export const useDataTableExport = (
   columns: any[],
@@ -68,7 +68,7 @@ export const useDataTableExport = (
     );
 
     // Make  xlsx workbook
-    const sheetName = `Export on ${date}`;
+    const sheetName = sanitizeWorksheetName(`Export on ${date}`);
     const workbook = { SheetNames: [sheetName], Sheets: { [sheetName]: sheet } };
 
     // Make filename

@@ -1,5 +1,5 @@
 import xlsx from 'xlsx';
-import { respondWithDownload, toFilename } from '@tupaia/utils';
+import { respondWithDownload, sanitizeWorksheetName, toFilename } from '@tupaia/utils';
 import { getExportPathForUser } from '@tupaia/server-utils';
 
 const objectToHumanReadableKeyValuePairs = obj => {
@@ -26,7 +26,7 @@ export async function exportOptionSet(req, res) {
   });
 
   const worksheet = xlsx.utils.json_to_sheet(options);
-  const sheetName = optionSetRecord.name.substring(0, 31); // Sheet name max. length is hard-coded in Excel
+  const sheetName = sanitizeWorksheetName(optionSetRecord.name);
 
   // Upgrade xlsx to v0.20 or newer to do next two lines in one go
   const workbook = xlsx.utils.book_new();
