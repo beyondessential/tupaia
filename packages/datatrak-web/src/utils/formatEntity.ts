@@ -1,6 +1,5 @@
 // This file is duplicated from entity-server, but reduced to only the functions we need in datatrak-web
-import { SqlQuery } from '@tupaia/database';
-import { EntityRecord } from '@tupaia/tsmodels';
+import { EntityModel, EntityRecord, ParentFieldsByChildId } from '@tupaia/tsmodels';
 import { camelcaseKeys, ResponseObjectBuilder } from '@tupaia/tsutils';
 import { Entity, Resolved } from '@tupaia/types';
 
@@ -31,20 +30,6 @@ const BATCHED_PARENT_FIELDS = ['parent_name', 'parent_code'] as const;
 
 type BatchedParentField = (typeof BATCHED_PARENT_FIELDS)[number];
 
-type ParentFieldRow = {
-  child_id: Entity['id'];
-  parent_name?: Entity['name'];
-  parent_code?: Entity['code'];
-};
-
-type ParentFieldsByChildId = Record<Entity['id'], Partial<Record<BatchedParentField, string>>>;
-
-type EntityRecordModel = {
-  database: {
-    executeSql: <T>(sqlString: string, parametersToBind?: readonly unknown[]) => Promise<T>;
-  };
-};
-
 const isBatchedParentField = (field: ExtendedEntityFieldName): field is BatchedParentField =>
   BATCHED_PARENT_FIELDS.includes(field as BatchedParentField);
 
@@ -57,30 +42,8 @@ const getParentFieldsByChildId = async (
   }
 
   const childIds = [...new Set(entities.map(entity => entity.id))];
-  const { model } = entities[0] as unknown as { model: EntityRecordModel };
-  const rows = (await model.database.executeSql(
-    `
-      SELECT
-        relation.child_id,
-        parent.name AS parent_name,
-        parent.code AS parent_code
-      FROM entity_parent_child_relation relation
-      JOIN entity parent ON parent.id = relation.parent_id
-      WHERE relation.entity_hierarchy_id = ?
-      AND relation.child_id IN ${SqlQuery.record(childIds)}
-    `,
-    [ctx.hierarchyId, ...childIds],
-  )) as ParentFieldRow[];
-
-  return Object.fromEntries(
-    rows.map(({ child_id: childId, parent_name: parentName, parent_code: parentCode }) => [
-      childId,
-      {
-        parent_name: parentName,
-        parent_code: parentCode,
-      },
-    ]),
-  );
+  const { model } = entities[0] as unknown as { model: EntityModel };
+  return model.getParentFieldsByChildIdFromParentChildRelation(ctx.hierarchyId, childIds);
 };
 
 export async function formatEntityForResponse(
