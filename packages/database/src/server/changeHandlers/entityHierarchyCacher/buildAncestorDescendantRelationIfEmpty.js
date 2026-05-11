@@ -1,7 +1,7 @@
 import winston from 'winston';
 import { AncestorDescendantCacheBuilder } from './AncestorDescendantCacheBuilder';
 
-export const buildEntityParentChildRelationIfEmpty = async models => {
+export const buildAncestorDescendantRelationIfEmpty = async models => {
   const closureCount = await models.ancestorDescendantRelation.count({});
 
   if (closureCount === 0) {

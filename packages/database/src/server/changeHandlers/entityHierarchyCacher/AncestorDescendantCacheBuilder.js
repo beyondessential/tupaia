@@ -72,10 +72,14 @@ export class AncestorDescendantCacheBuilder {
             SELECT ancestor_id, descendant_id, 1 AS generational_distance
             FROM edges
             UNION ALL
-            -- recursive case: extend each closure row by one more descendant edge
+            -- recursive case: extend each closure row by one more descendant edge.
+            -- Depth cap is a safety belt against cyclic entity.parent_id data —
+            -- real Tupaia hierarchies are 5-6 levels max; 50 is a comfortable
+            -- ceiling that bounds the damage if parent_id ever becomes circular.
             SELECT c.ancestor_id, e.descendant_id, c.generational_distance + 1
             FROM closure c
             INNER JOIN edges e ON e.ancestor_id = c.descendant_id
+            WHERE c.generational_distance < 50
           )
         INSERT INTO ancestor_descendant_relation
           (id, entity_hierarchy_id, ancestor_id, descendant_id, generational_distance)
@@ -95,11 +99,21 @@ export class AncestorDescendantCacheBuilder {
   /**
    * @public
    * Rebuild the closure for every project — used at boot when the cache is empty.
+   * Bounded-parallel: each project's rebuild owns its hierarchy_id rows so there's
+   * no cross-project DB contention, but we cap concurrency to avoid saturating the
+   * connection pool on prod (60 projects × N pool connections).
    */
   async rebuildAll() {
+    const CONCURRENCY = 5;
     const projects = await this.models.project.all();
-    for (const project of projects) {
-      await this.rebuildForProject(project.id);
-    }
+    const queue = [...projects];
+    const worker = async () => {
+      while (queue.length > 0) {
+        const project = queue.shift();
+        if (!project) return;
+        await this.rebuildForProject(project.id);
+      }
+    };
+    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
   }
 }
