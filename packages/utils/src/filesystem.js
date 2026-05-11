@@ -59,7 +59,7 @@ export const toFilename = (string, stripSpecialAndLowercase = false) => {
 export function sanitizeWorksheetName(name) {
   return (
     name
-      .replace(/[:\\/?*[\]]|\s+/g, ' ') // remove illegal chars, collapse consecutive whitespaces
+      .replace(/[:\\/?*[\]\s]+/g, ' ') // remove illegal chars, collapse consecutive whitespaces
       .trim()
       .slice(0, 31)
       .trim()
