@@ -446,6 +446,33 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return EntityRecord;
   }
 
+  /**
+   * @param {string} code
+   * @param {string | null} [projectId]
+   * @param {*} [otherCriteria]
+   * @returns {Promise<EntityRecord | null>}
+   */
+  async findOneByCodeInProject(code, projectId = null, otherCriteria = {}) {
+    if (!projectId) {
+      return this.findOne({ code, ...otherCriteria });
+    }
+    // Sort `NULLS LAST` so a project-specific match (project_id = projectId) always
+    // wins over the structural fallback (project_id IS NULL). Without this, when the
+    // same code exists as both a shared structural row and a per-project copy, Postgres
+    // returns them in planner-dependent order and the result is non-deterministic.
+    return this.findOne(
+      {
+        code,
+        ...otherCriteria,
+        [QUERY_CONJUNCTIONS.RAW]: {
+          sql: '(project_id IS NULL OR project_id = ?)',
+          parameters: [projectId],
+        },
+      },
+      { sort: ['project_id ASC NULLS LAST'] },
+    );
+  }
+
   get cacheEnabled() {
     return true;
   }
