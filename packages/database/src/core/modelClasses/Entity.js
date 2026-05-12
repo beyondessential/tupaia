@@ -393,6 +393,23 @@ export class EntityRecord extends DatabaseRecord {
     return this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @returns {Promise<Entity[]>}
+   */
+  async getChildrenViaHierarchy(hierarchyId) {
+    return this.database.executeSql(
+      `
+          SELECT entity.*
+          FROM entity
+          INNER JOIN entity_relation on entity.id = entity_relation.child_id
+          WHERE entity_relation.parent_id = ?
+          AND entity_relation.entity_hierarchy_id = ?;
+        `,
+      [this.id, hierarchyId],
+    );
+  }
+
   async pointLatLon() {
     const { point } = this;
     if (point) {
@@ -722,57 +739,77 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
       const isDescendants = direction === ENTITY_RELATION_TYPE.DESCENDANTS;
 
-      // Walk the hierarchy using entity.parent_id directly
-      const project = hierarchyId
-        ? await this.otherModels.project.findOne({ entity_hierarchy_id: hierarchyId })
-        : null;
-      const projectId = project?.id ?? null;
+      // Resolve the project from hierarchyId — the walk is always project-scoped, so
+      // every caller must hit a project that exists. hierarchyId itself is on its way
+      // out: future PRs replace this signature with a direct projectId.
+      const project = await this.otherModels.project.findOneOrThrow(
+        { entity_hierarchy_id: hierarchyId },
+        undefined,
+        `getEntitiesFromParentChildRelation: no project found for hierarchyId ${hierarchyId}`,
+      );
+      const projectId = project.id;
 
-      const projectScopeClause = projectId ? '(project_id IS NULL OR project_id = ?)' : 'TRUE';
-      const projectScopeParam = projectId ? [projectId] : [];
+      const edgesSubquery = `
+        SELECT e.parent_id AS ancestor_id, e.id AS descendant_id
+        FROM entity e
+        WHERE e.parent_id IS NOT NULL
+          AND e.type NOT IN ('project', 'country')
+          AND (e.project_id IS NULL OR e.project_id = ?)
+        UNION ALL
+        SELECT p.entity_id AS ancestor_id, pc.country_id AS descendant_id
+        FROM project_country pc
+        INNER JOIN project p ON p.id = pc.project_id
+        WHERE pc.project_id = ?
+      `;
+      const edgesParams = [projectId, projectId];
+
+      const DEPTH_CAP = 50;
+      const generationalDistanceClause =
+        generational_distance !== undefined
+          ? `AND h.generational_distance < ? AND h.generational_distance < ${DEPTH_CAP}`
+          : `AND h.generational_distance < ${DEPTH_CAP}`;
 
       const recursiveQuery = isDescendants
         ? `
-          -- Base case: direct children of entityIds
-          SELECT id, parent_id, 1 AS generational_distance
-          FROM entity
-          WHERE parent_id IN ${SqlQuery.record(entityIds)}
-            AND ${projectScopeClause}
+          -- Base case: direct descendants of entityIds via either edge source.
+          SELECT descendant_id AS id, ancestor_id AS parent_id, 1 AS generational_distance
+          FROM (${edgesSubquery}) base_edges
+          WHERE ancestor_id IN ${SqlQuery.record(entityIds)}
 
           UNION ALL
 
-          -- Recursive case: walk down the parent_id chain
-          SELECT e.id, e.parent_id, h.generational_distance + 1 AS generational_distance
-          FROM entity e
-          INNER JOIN hierarchy h ON e.parent_id = h.id
-          WHERE ${projectScopeClause}
-            ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
+          -- Recursive case: extend by one descendant edge.
+          SELECT step_edges.descendant_id AS id, step_edges.ancestor_id AS parent_id,
+                 h.generational_distance + 1 AS generational_distance
+          FROM (${edgesSubquery}) step_edges
+          INNER JOIN hierarchy h ON step_edges.ancestor_id = h.id
+          WHERE 1 = 1 ${generationalDistanceClause}
         `
         : `
-          -- Base case: direct parents of entityIds
-          SELECT id, parent_id, 1 AS generational_distance
-          FROM entity
-          WHERE id IN (
-            SELECT parent_id FROM entity WHERE id IN ${SqlQuery.record(entityIds)}
-          )
+          -- Base case: direct ancestors of entityIds via either edge source.
+          SELECT ancestor_id AS id, ancestor_id AS parent_id, 1 AS generational_distance
+          FROM (${edgesSubquery}) base_edges
+          WHERE descendant_id IN ${SqlQuery.record(entityIds)}
 
           UNION ALL
 
-          -- Recursive case: walk up the parent_id chain
-          SELECT e.id, e.parent_id, h.generational_distance + 1 AS generational_distance
-          FROM entity e
-          INNER JOIN hierarchy h ON e.id = h.parent_id
-          ${generational_distance !== undefined ? 'WHERE h.generational_distance <= ?' : ''}
+          -- Recursive case: extend by one ancestor edge.
+          SELECT step_edges.ancestor_id AS id, step_edges.ancestor_id AS parent_id,
+                 h.generational_distance + 1 AS generational_distance
+          FROM (${edgesSubquery}) step_edges
+          INNER JOIN hierarchy h ON step_edges.descendant_id = h.id
+          WHERE 1 = 1 ${generationalDistanceClause}
         `;
 
-      const parameters = isDescendants
-        ? [
-            ...entityIds,
-            ...projectScopeParam, // base case scope
-            ...projectScopeParam, // recursive case scope
-            ...(generational_distance !== undefined ? [generational_distance] : []),
-          ]
-        : [...entityIds, ...(generational_distance !== undefined ? [generational_distance] : [])];
+      const recursiveStepParams = [
+        ...edgesParams,
+        ...(generational_distance !== undefined ? [generational_distance] : []),
+      ];
+      const parameters = [
+        ...edgesParams, // base case edges scope
+        ...entityIds, // base case entity ids
+        ...recursiveStepParams, // recursive case edges scope + (optional) gd
+      ];
 
       const results = await this.find(
         {

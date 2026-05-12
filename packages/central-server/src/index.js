@@ -4,7 +4,7 @@ import nodeSchedule from 'node-schedule';
 
 import {
   AnalyticsRefresher,
-  buildEntityParentChildRelationIfEmpty,
+  buildAncestorDescendantRelationIfEmpty,
   EntityHierarchyCacher,
   getDbMigrator,
   ModelRegistry,
@@ -127,7 +127,7 @@ configureEnv();
       await dbMigrator.up();
       winston.info('Database migrations complete');
 
-      await buildEntityParentChildRelationIfEmpty(models);
+      await buildAncestorDescendantRelationIfEmpty(models);
 
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
         winston.info('Creating permissions based meditrak sync queue');

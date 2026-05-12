@@ -3,7 +3,7 @@ export { ChangeHandler } from './ChangeHandler';
 export {
   AncestorDescendantCacheBuilder,
   EntityHierarchyCacher,
-  buildEntityParentChildRelationIfEmpty,
+  buildAncestorDescendantRelationIfEmpty,
 } from './entityHierarchyCacher';
 export { SurveyResponseOutdater } from './surveyResponseOutdater';
 export { TaskCompletionHandler } from './TaskCompletionHandler';
