@@ -1,5 +1,7 @@
 import winston from 'winston';
 
+import { SyncFact } from '@tupaia/constants';
+
 const MAX_RETRY_ATTEMPTS = 3;
 
 /**
@@ -140,6 +142,18 @@ export class ChangeHandler {
           profiler.done({
             message: `Acquired advisory lock for ${this.lockKey} change handler`,
           });
+
+          // Advance the global sync tick so records created/updated by this handler land at a
+          // tick that no `sync_device_tick` row owns. Without this bump, side-effect records
+          // (e.g. a task created by TaskCreationHandler from a just-pushed survey response)
+          // inherit the pushing device's sync tick via the `set_updated_at_sync_tick` trigger
+          // — `updateLookupTable` then tags them with `pushed_by_device_id = <pushing device>`
+          // and the `avoidRepull` filter in `snapshotOutgoingChanges` hides them from the
+          // originating device's next pull.
+          await transactingModels.database.executeSql(
+            `UPDATE local_system_fact SET value = value::INTEGER + 1 WHERE key = ?`,
+            [SyncFact.CURRENT_SYNC_TICK],
+          );
 
           winston.info(
             `Running ${this.lockKey} change handler (${currentQueue.length} ${
