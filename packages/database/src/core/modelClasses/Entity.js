@@ -393,6 +393,23 @@ export class EntityRecord extends DatabaseRecord {
     return this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
   }
 
+  /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @returns {Promise<Entity[]>}
+   */
+  async getChildrenViaHierarchy(hierarchyId) {
+    return this.database.executeSql(
+      `
+          SELECT entity.*
+          FROM entity
+          INNER JOIN entity_relation on entity.id = entity_relation.child_id
+          WHERE entity_relation.parent_id = ?
+          AND entity_relation.entity_hierarchy_id = ?;
+        `,
+      [this.id, hierarchyId],
+    );
+  }
+
   async pointLatLon() {
     const { point } = this;
     if (point) {
