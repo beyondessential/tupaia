@@ -5,6 +5,11 @@
  * @typedef {import('../../../core').ModelRegistry} ModelRegistry
  */
 
+import {
+  PROJECT_HIERARCHY_EDGES_SUBQUERY,
+  projectHierarchyEdgesParams,
+} from '../../../core/modelClasses/projectHierarchyEdges';
+
 /**
  * Rebuilds `ancestor_descendant_relation` for a single project in one recursive CTE.
  */
@@ -37,23 +42,7 @@ export class AncestorDescendantCacheBuilder {
       await transactingModels.database.executeSql(
         `
         WITH RECURSIVE
-          edges AS (
-            -- entity.parent_id direct edges, project-scoped. Excludes
-            -- child.type IN ('project','country') because those rows' parent_id is
-            -- the world entity; their hierarchy ancestry comes through
-            -- project_country instead.
-            SELECT e.parent_id AS ancestor_id, e.id AS descendant_id
-            FROM entity e
-            WHERE e.parent_id IS NOT NULL
-              AND e.type NOT IN ('project', 'country')
-              AND (e.project_id IS NULL OR e.project_id = ?)
-            UNION ALL
-            -- project_country bridge: project_entity → country
-            SELECT p.entity_id, pc.country_id
-            FROM project_country pc
-            INNER JOIN project p ON p.id = pc.project_id
-            WHERE pc.project_id = ?
-          ),
+          edges AS (${PROJECT_HIERARCHY_EDGES_SUBQUERY}),
           closure AS (
             -- base case: each direct edge becomes a (ancestor, descendant, 1) row
             SELECT ancestor_id, descendant_id, 1 AS generational_distance
@@ -78,7 +67,7 @@ export class AncestorDescendantCacheBuilder {
           generational_distance
         FROM closure;
         `,
-        [projectId, projectId, hierarchyId, hierarchyId],
+        [...projectHierarchyEdgesParams(projectId), hierarchyId, hierarchyId],
       );
     });
   }
