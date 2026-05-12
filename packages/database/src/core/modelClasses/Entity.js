@@ -16,6 +16,10 @@ import { SqlQuery } from '../SqlQuery';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { RECORDS } from '../records';
 import { buildSyncLookupSelect } from '../sync';
+import {
+  PROJECT_HIERARCHY_EDGES_SUBQUERY,
+  projectHierarchyEdgesParams,
+} from './projectHierarchyEdges';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -721,7 +725,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {(typeof ENTITY_RELATION_TYPE)[keyof typeof ENTITY_RELATION_TYPE]} direction
    * @param {*} params
    */
-  async getEntitiesFromParentChildRelation(hierarchyId, entityIds, direction, params = {}) {
+  async getEntitiesFromParentChildRelagetEntitiesFromParentChildRelationtion(
+    hierarchyId,
+    entityIds,
+    direction,
+    params = {},
+  ) {
     if (!entityIds || entityIds.length === 0) {
       return [];
     }
@@ -748,20 +757,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         `getEntitiesFromParentChildRelation: no project found for hierarchyId ${hierarchyId}`,
       );
       const projectId = project.id;
-
-      const edgesSubquery = `
-        SELECT e.parent_id AS ancestor_id, e.id AS descendant_id
-        FROM entity e
-        WHERE e.parent_id IS NOT NULL
-          AND e.type NOT IN ('project', 'country')
-          AND (e.project_id IS NULL OR e.project_id = ?)
-        UNION ALL
-        SELECT p.entity_id AS ancestor_id, pc.country_id AS descendant_id
-        FROM project_country pc
-        INNER JOIN project p ON p.id = pc.project_id
-        WHERE pc.project_id = ?
-      `;
-      const edgesParams = [projectId, projectId];
+      const edgesSubquery = PROJECT_HIERARCHY_EDGES_SUBQUERY;
+      const edgesParams = projectHierarchyEdgesParams(projectId);
 
       const DEPTH_CAP = 50;
       const generationalDistanceClause =
