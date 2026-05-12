@@ -150,10 +150,7 @@ export class ChangeHandler {
           // — `updateLookupTable` then tags them with `pushed_by_device_id = <pushing device>`
           // and the `avoidRepull` filter in `snapshotOutgoingChanges` hides them from the
           // originating device's next pull.
-          await transactingModels.database.executeSql(
-            `UPDATE local_system_fact SET value = value::INTEGER + 1 WHERE key = ?`,
-            [SyncFact.CURRENT_SYNC_TICK],
-          );
+          await transactingModels.localSystemFact.incrementValue(SyncFact.CURRENT_SYNC_TICK);
 
           winston.info(
             `Running ${this.lockKey} change handler (${currentQueue.length} ${
