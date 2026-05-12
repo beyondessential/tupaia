@@ -34,10 +34,6 @@ export class GETProjects extends GETHandler {
       nearTableKey: 'project.entity_id',
       farTableKey: 'entity.id',
     },
-    entity_hierarchy: {
-      nearTableKey: 'project.entity_hierarchy_id',
-      farTableKey: 'entity_hierarchy.id',
-    },
   };
 
   async findSingleRecord(projectId, options) {

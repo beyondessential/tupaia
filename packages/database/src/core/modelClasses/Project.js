@@ -122,8 +122,7 @@ export class ProjectModel extends DatabaseModel {
           p.logo_url,
           p.dashboard_group_name,
           p.default_measure,
-          p.config,
-          p.entity_hierarchy_id
+          p.config
         FROM
           project p
           LEFT JOIN entity e ON p.entity_id = e.id

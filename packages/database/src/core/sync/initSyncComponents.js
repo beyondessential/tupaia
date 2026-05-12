@@ -4,8 +4,6 @@ export const SYNCING_TABLES = [
   'answer',
   'country',
   'entity',
-  'entity_hierarchy',
-  'entity_parent_child_relation',
   'option',
   'option_set',
   'permission_group',

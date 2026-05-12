@@ -1,5 +1,4 @@
 /**
- * @typedef {import('@tupaia/types').EntityHierarchy} EntityHierarchy
  * @typedef {import('@tupaia/types').Entity} Entity
  * @typedef {import('@tupaia/types').Project} Project
  * @typedef {import('../../../core').ModelRegistry} ModelRegistry
@@ -26,7 +25,6 @@ import { AncestorDescendantCacheBuilder } from './AncestorDescendantCacheBuilder
  * Triggered by:
  *   - entity changes (parent_id, type, or project_id moves)
  *   - project_country changes (project ↔ country edge add/remove)
- *   - entity_hierarchy changes (canonical_types changes)
  */
 export class EntityHierarchyCacher extends ChangeHandler {
   constructor(models) {
@@ -36,7 +34,6 @@ export class EntityHierarchyCacher extends ChangeHandler {
     this.changeTranslators = /** @type {const} */ ({
       entity: change => this.translateEntityChange(change),
       projectCountry: change => this.translateProjectCountryChange(change),
-      entityHierarchy: change => this.translateEntityHierarchyChange(change),
     });
   }
 
@@ -88,22 +85,6 @@ export class EntityHierarchyCacher extends ChangeHandler {
   /** @type {ChangeTranslator} */
   translateProjectCountryChange({ old_record: oldRecord, new_record: newRecord }) {
     return [oldRecord?.project_id, newRecord?.project_id].filter(Boolean);
-  }
-
-  /** @type {ChangeTranslator} */
-  async translateEntityHierarchyChange({
-    record_id: hierarchyId,
-    old_record: oldRecord,
-    new_record: newRecord,
-  }) {
-    if (oldRecord && newRecord && oldRecord.canonical_types === newRecord.canonical_types) {
-      return null;
-    }
-    /** @type {ProjectRecord[]} */
-    const projectsUsingHierarchy = await this.models.project.find({
-      entity_hierarchy_id: hierarchyId,
-    });
-    return projectsUsingHierarchy.map(p => p.id);
   }
 
   /**

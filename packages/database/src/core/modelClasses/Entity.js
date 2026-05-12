@@ -891,34 +891,44 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async buildSyncLookupQueryDetails() {
+    // TUP-3066b: rewritten to compute project_ids without entity_parent_child_relation
+    // joins. Sub-country entities carry a direct project_id; structural entities
+    // (world/country/project) are sync'd unconditionally because every project
+    // needs them for hierarchy walks. Country-level rows reach their owning projects
+    // via project_country.
+    //
+    // TODO (MAUI-5722): Remove survey response / task entity unions once mobile no
+    // longer pulls those entities through entity sync.
     return {
-      // TODO: Remove survey response entities and task entities
-      // when MAUI-5722 is complete
       ctes: [
         `
           entities_to_sync AS (
-            -- root project entities
-            SELECT entity.id AS entity_id, project.entity_hierarchy_id
-            FROM entity JOIN project on entity.id = project.entity_id
+            -- root project entities → owning project
+            SELECT entity.id AS entity_id, project.id AS project_id
+            FROM entity JOIN project ON entity.id = project.entity_id
             UNION
 
-            -- all child entities at all levels
-            SELECT child_id AS entity_id, entity_hierarchy_id
-            FROM entity_parent_child_relation
+            -- country entities → projects that include them via project_country
+            SELECT pc.country_id AS entity_id, pc.project_id
+            FROM project_country pc
+            UNION
+
+            -- sub-country entities carry their owning project directly
+            SELECT entity.id AS entity_id, entity.project_id
+            FROM entity
+            WHERE entity.project_id IS NOT NULL
             UNION
 
             -- survey response entities
-            SELECT survey_response.entity_id, project.entity_hierarchy_id
+            SELECT survey_response.entity_id, survey.project_id
             FROM survey_response
             JOIN survey ON survey.id = survey_response.survey_id
-            JOIN project ON project.id = survey.project_id
             UNION
 
             -- task entities
-            SELECT task.entity_id, project.entity_hierarchy_id
+            SELECT task.entity_id, survey.project_id
             FROM task
             JOIN survey ON survey.id = task.survey_id
-            JOIN project ON project.id = survey.project_id
           )
         `,
       ],
@@ -928,25 +938,14 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           CASE WHEN entity.type IN ('country', 'world', 'project')
             THEN NULL
           ELSE
-            array_remove(array_agg(DISTINCT project.id), NULL)
+            array_remove(array_agg(DISTINCT entities_to_sync.project_id), NULL)
           END`,
       }),
       joins: `
         LEFT JOIN entities_to_sync
           ON entities_to_sync.entity_id = entity.id
-        LEFT JOIN project
-          ON project.entity_hierarchy_id = entities_to_sync.entity_hierarchy_id
       `,
-      where: `
-        entity.updated_at_sync_tick > :since
-        -- When an entity_parent_child_relation is updated, we need to rebuild the child and parent entities
-        -- in case they haven't got the project_ids updated to the right ones yet
-        OR entity.id IN (
-          SELECT child_id FROM entity_parent_child_relation WHERE updated_at_sync_tick > :since
-          UNION
-          SELECT parent_id FROM entity_parent_child_relation WHERE updated_at_sync_tick > :since
-        )
-      `,
+      where: `entity.updated_at_sync_tick > :since`,
       groupBy: ['entity.id'],
     };
   }
