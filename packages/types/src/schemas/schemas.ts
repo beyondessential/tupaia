@@ -48413,13 +48413,13 @@ export const RecentEntitiesForCountrySchema = {
 				"type": "string"
 			}
 		},
-		"document_group": {
+		"document": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"document": {
+		"document_group": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -48575,12 +48575,6 @@ export const RecentEntitiesForCountrySchema = {
 				"type": "string"
 			}
 		},
-		"tamanu_country": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
 		"srh_district": {
 			"type": "array",
 			"items": {
@@ -48588,6 +48582,12 @@ export const RecentEntitiesForCountrySchema = {
 			}
 		},
 		"srh_sub_district": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"tamanu_country": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -49179,29 +49179,6 @@ export const AnalyticsSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -49245,29 +49222,6 @@ export const AnalyticsCreateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -49311,29 +49265,6 @@ export const AnalyticsUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -49357,13 +49288,13 @@ export const AncestorDescendantRelationSchema = {
 		"descendant_id": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"generational_distance": {
 			"type": "number"
 		},
 		"id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		}
 	},
@@ -49371,9 +49302,9 @@ export const AncestorDescendantRelationSchema = {
 	"required": [
 		"ancestor_id",
 		"descendant_id",
-		"entity_hierarchy_id",
 		"generational_distance",
-		"id"
+		"id",
+		"project_id"
 	]
 }
 export const AncestorDescendantRelationCreateSchema = {
@@ -49385,19 +49316,19 @@ export const AncestorDescendantRelationCreateSchema = {
 		"descendant_id": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"generational_distance": {
 			"type": "number"
+		},
+		"project_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"ancestor_id",
 		"descendant_id",
-		"entity_hierarchy_id",
-		"generational_distance"
+		"generational_distance",
+		"project_id"
 	]
 }
 export const AncestorDescendantRelationUpdateSchema = {
@@ -49409,13 +49340,13 @@ export const AncestorDescendantRelationUpdateSchema = {
 		"descendant_id": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"generational_distance": {
 			"type": "number"
 		},
 		"id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		}
 	},

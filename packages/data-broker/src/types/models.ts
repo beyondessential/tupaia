@@ -178,10 +178,12 @@ type SupersetInstanceModel = DatabaseModel<SupersetInstance>;
 type DataElementDataServiceModel = DatabaseModel<DataElementDataService>;
 type DhisInstanceModel = DatabaseModel<DhisInstance>;
 type EntityHierarchyModel = DatabaseModel<EntityHierarchy>;
+type ProjectModel = DatabaseModel<{ id: string; code: string }>;
 
 export interface DataBrokerModelRegistry extends ModelRegistry {
   readonly database: TupaiaDatabase;
 
+  readonly project: ProjectModel;
   readonly dataElementDataService: DataElementDataServiceModel;
   readonly supersetInstance: SupersetInstanceModel;
   readonly dataElement: DataElementModel;

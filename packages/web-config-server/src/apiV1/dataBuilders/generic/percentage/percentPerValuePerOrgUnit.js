@@ -5,7 +5,7 @@ import {
 } from '/apiV1/utils';
 
 export const percentPerValuePerOrgUnit = async (
-  { models, dataBuilderConfig, query, entity, fetchHierarchyId },
+  { models, dataBuilderConfig, query, entity, fetchProjectId },
   aggregator,
   dhisApi,
 ) => {
@@ -20,8 +20,8 @@ export const percentPerValuePerOrgUnit = async (
 
   const dataElementCodes = await getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
-  const hierarchyId = await fetchHierarchyId();
-  const entities = await entity.getDescendantsOfType(hierarchyId, dataSourceEntityType);
+  const projectId = await fetchProjectId();
+  const entities = await entity.getDescendantsOfType(projectId, dataSourceEntityType);
   const countsByOrganisationUnit = countByOrganisationUnitByValue(
     results,
     entities,
