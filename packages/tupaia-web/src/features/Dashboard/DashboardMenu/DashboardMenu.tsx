@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { useId } from '@tupaia/ui-components';
+import { useAriaId } from '@tupaia/ui-components';
 import { useDashboards } from '../../../api/queries';
 import { TOP_BAR_HEIGHT } from '../../../constants';
 import { Dashboard } from '../../../types';
@@ -91,7 +91,7 @@ export const DashboardMenu = () => {
 
   const hasMultipleDashboards = dashboards.length > 1;
 
-  const menuId = useId();
+  const menuId = useAriaId();
 
   return (
     <>
