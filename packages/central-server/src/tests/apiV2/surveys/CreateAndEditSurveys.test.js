@@ -90,17 +90,12 @@ describe('Create and Edit Surveys', () => {
       name: 'Tonga',
     }));
 
-    const entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
-      name: 'Project 1',
-    });
-
     const projectEntity = await findOrCreateDummyRecord(models.entity, {
       code: 'project1',
     });
 
     project1 = await findOrCreateDummyRecord(models.project, {
       code: 'project1',
-      entity_hierarchy_id: entityHierarchy.id,
       entity_id: projectEntity.id,
     });
 

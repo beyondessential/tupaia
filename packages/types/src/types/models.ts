@@ -80,48 +80,6 @@ export interface AdminPanelSessionUpdate {
   'id'?: string;
   'refresh_token'?: string;
 }
-export interface Analytics {
-  'data_element_code'?: string | null;
-  'data_group_code'?: string | null;
-  'date'?: Date | null;
-  'day_period'?: string | null;
-  'entity_code'?: string | null;
-  'entity_name'?: string | null;
-  'event_id'?: string | null;
-  'month_period'?: string | null;
-  'type'?: string | null;
-  'value'?: string | null;
-  'week_period'?: string | null;
-  'year_period'?: string | null;
-}
-export interface AnalyticsCreate {
-  'data_element_code'?: string | null;
-  'data_group_code'?: string | null;
-  'date'?: Date | null;
-  'day_period'?: string | null;
-  'entity_code'?: string | null;
-  'entity_name'?: string | null;
-  'event_id'?: string | null;
-  'month_period'?: string | null;
-  'type'?: string | null;
-  'value'?: string | null;
-  'week_period'?: string | null;
-  'year_period'?: string | null;
-}
-export interface AnalyticsUpdate {
-  'data_element_code'?: string | null;
-  'data_group_code'?: string | null;
-  'date'?: Date | null;
-  'day_period'?: string | null;
-  'entity_code'?: string | null;
-  'entity_name'?: string | null;
-  'event_id'?: string | null;
-  'month_period'?: string | null;
-  'type'?: string | null;
-  'value'?: string | null;
-  'week_period'?: string | null;
-  'year_period'?: string | null;
-}
 export interface AncestorDescendantRelation {
   'ancestor_id': string;
   'descendant_id': string;
@@ -680,39 +638,6 @@ export interface EntityUpdate {
   'project_id'?: string | null;
   'type'?: EntityType;
 }
-export interface EntityHierarchy {
-  'canonical_types'?: string[] | null;
-  'id': string;
-  'name': string;
-  'updated_at_sync_tick': string;
-}
-export interface EntityHierarchyCreate {
-  'canonical_types'?: string[] | null;
-  'name': string;
-}
-export interface EntityHierarchyUpdate {
-  'canonical_types'?: string[] | null;
-  'id'?: string;
-  'name'?: string;
-}
-export interface EntityParentChildRelation {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'id': string;
-  'parent_id': string;
-  'updated_at_sync_tick': string;
-}
-export interface EntityParentChildRelationCreate {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'parent_id': string;
-}
-export interface EntityParentChildRelationUpdate {
-  'child_id'?: string;
-  'entity_hierarchy_id'?: string;
-  'id'?: string;
-  'parent_id'?: string;
-}
 export interface EntityPolygon {
   'code'?: string | null;
   'created_at': Date;
@@ -738,23 +663,6 @@ export interface EntityPolygonUpdate {
   'name'?: string;
   'polygon'?: string;
   'updated_at'?: Date;
-}
-export interface EntityRelation {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'id': string;
-  'parent_id': string;
-}
-export interface EntityRelationCreate {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'parent_id': string;
-}
-export interface EntityRelationUpdate {
-  'child_id'?: string;
-  'entity_hierarchy_id'?: string;
-  'id'?: string;
-  'parent_id'?: string;
 }
 export interface ErrorLog {
   'api_request_log_id'?: string | null;
@@ -1281,7 +1189,6 @@ export interface Project {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
   'entity_id'?: string | null;
   'id': string;
   'image_url'?: string | null;
@@ -1296,7 +1203,6 @@ export interface ProjectCreate {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
   'entity_id'?: string | null;
   'image_url'?: string | null;
   'logo_url'?: string | null;
@@ -1309,7 +1215,6 @@ export interface ProjectUpdate {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
   'entity_id'?: string | null;
   'id'?: string;
   'image_url'?: string | null;
@@ -2072,8 +1977,8 @@ export enum EntityTypeEnum {
   'pacmossi_village' = 'pacmossi_village',
   'pacmossi_spraying_site' = 'pacmossi_spraying_site',
   'pacmossi_insecticide_test' = 'pacmossi_insecticide_test',
-  'document' = 'document',
   'document_group' = 'document_group',
+  'document' = 'document',
   'vehicle' = 'vehicle',
   'pacmossi_asset_facility' = 'pacmossi_asset_facility',
   'pacmossi_asset_sub_facility' = 'pacmossi_asset_sub_facility',
@@ -2099,9 +2004,9 @@ export enum EntityTypeEnum {
   'ird_district' = 'ird_district',
   'ird_tehsil' = 'ird_tehsil',
   'ird_village' = 'ird_village',
+  'tamanu_country' = 'tamanu_country',
   'srh_district' = 'srh_district',
   'srh_sub_district' = 'srh_sub_district',
-  'tamanu_country' = 'tamanu_country',
 }
 export enum DataTableType {
   'analytics' = 'analytics',

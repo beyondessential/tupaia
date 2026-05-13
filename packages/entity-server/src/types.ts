@@ -3,7 +3,6 @@ import { Knex } from 'knex';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   AncestorDescendantRelationModel,
-  EntityHierarchyModel,
   EntityModel,
   ProjectModel,
   ProjectCountryModel,
@@ -14,7 +13,6 @@ export interface EntityServerModelRegistry extends ModelRegistry {
 
   readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
   readonly entity: EntityModel;
-  readonly entityHierarchy: EntityHierarchyModel;
   readonly project: ProjectModel;
   readonly projectCountry: ProjectCountryModel;
 

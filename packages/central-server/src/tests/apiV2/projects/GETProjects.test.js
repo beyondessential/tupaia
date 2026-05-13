@@ -18,7 +18,6 @@ const removeTestData = async (models, projectCode) => {
   if (projectEntity !== null) {
     await models.entity.delete({ id: projectEntity.id });
   }
-  await models.entityHierarchy.delete({ name: projectCode });
 };
 
 // generate the test data for the provided project code
@@ -27,17 +26,12 @@ const createTestData = async (models, projectCode, permissionGroup, countryEntit
     code: projectCode,
     type: 'project',
   });
-  const { id: entityHierarchyId } = await findOrCreateDummyRecord(models.entityHierarchy, {
-    name: projectCode,
-    canonical_types: '{country}',
-  });
   const project = await findOrCreateDummyRecord(
     models.project,
     {
       id: generateId(),
       code: projectCode,
       entity_id: projectEntityId,
-      entity_hierarchy_id: entityHierarchyId,
     },
     {
       permission_groups: [permissionGroup],

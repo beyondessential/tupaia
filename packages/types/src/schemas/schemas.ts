@@ -48413,13 +48413,13 @@ export const RecentEntitiesForCountrySchema = {
 				"type": "string"
 			}
 		},
-		"document": {
+		"document_group": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"document_group": {
+		"document": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -48575,6 +48575,12 @@ export const RecentEntitiesForCountrySchema = {
 				"type": "string"
 			}
 		},
+		"tamanu_country": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"srh_district": {
 			"type": "array",
 			"items": {
@@ -48582,12 +48588,6 @@ export const RecentEntitiesForCountrySchema = {
 			}
 		},
 		"srh_sub_district": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"tamanu_country": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -49145,135 +49145,6 @@ export const AdminPanelSessionUpdateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const AnalyticsSchema = {
-	"type": "object",
-	"properties": {
-		"data_element_code": {
-			"type": "string"
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"day_period": {
-			"type": "string"
-		},
-		"entity_code": {
-			"type": "string"
-		},
-		"entity_name": {
-			"type": "string"
-		},
-		"event_id": {
-			"type": "string"
-		},
-		"month_period": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		},
-		"week_period": {
-			"type": "string"
-		},
-		"year_period": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const AnalyticsCreateSchema = {
-	"type": "object",
-	"properties": {
-		"data_element_code": {
-			"type": "string"
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"day_period": {
-			"type": "string"
-		},
-		"entity_code": {
-			"type": "string"
-		},
-		"entity_name": {
-			"type": "string"
-		},
-		"event_id": {
-			"type": "string"
-		},
-		"month_period": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		},
-		"week_period": {
-			"type": "string"
-		},
-		"year_period": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const AnalyticsUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"data_element_code": {
-			"type": "string"
-		},
-		"data_group_code": {
-			"type": "string"
-		},
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"day_period": {
-			"type": "string"
-		},
-		"entity_code": {
-			"type": "string"
-		},
-		"entity_name": {
-			"type": "string"
-		},
-		"event_id": {
-			"type": "string"
-		},
-		"month_period": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		},
-		"week_period": {
-			"type": "string"
-		},
-		"year_period": {
 			"type": "string"
 		}
 	},
@@ -79235,134 +79106,6 @@ export const EntityUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const EntityHierarchySchema = {
-	"type": "object",
-	"properties": {
-		"canonical_types": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"name",
-		"updated_at_sync_tick"
-	]
-}
-export const EntityHierarchyCreateSchema = {
-	"type": "object",
-	"properties": {
-		"canonical_types": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"name": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"name"
-	]
-}
-export const EntityHierarchyUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"canonical_types": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const EntityParentChildRelationSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"id",
-		"parent_id",
-		"updated_at_sync_tick"
-	]
-}
-export const EntityParentChildRelationCreateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"parent_id"
-	]
-}
-export const EntityParentChildRelationUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const EntityPolygonSchema = {
 	"type": "object",
 	"properties": {
@@ -79456,68 +79199,6 @@ export const EntityPolygonUpdateSchema = {
 		"updated_at": {
 			"type": "string",
 			"format": "date-time"
-		}
-	},
-	"additionalProperties": false
-}
-export const EntityRelationSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"id",
-		"parent_id"
-	]
-}
-export const EntityRelationCreateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"parent_id"
-	]
-}
-export const EntityRelationUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -98326,9 +98007,6 @@ export const ProjectSchema = {
 		"description": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"entity_id": {
 			"type": "string"
 		},
@@ -98432,9 +98110,6 @@ export const ProjectCreateSchema = {
 		"description": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"entity_id": {
 			"type": "string"
 		},
@@ -98526,9 +98201,6 @@ export const ProjectUpdateSchema = {
 			"type": "string"
 		},
 		"description": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
 			"type": "string"
 		},
 		"entity_id": {
@@ -102488,9 +102160,6 @@ export const ProjectResponseSchema = {
 			"type": "string"
 		},
 		"description": {
-			"type": "string"
-		},
-		"entityHierarchyId": {
 			"type": "string"
 		},
 		"entityId": {
