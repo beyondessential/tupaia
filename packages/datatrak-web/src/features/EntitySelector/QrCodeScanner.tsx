@@ -70,6 +70,12 @@ const Heading = styled(Typography).attrs({ variant: 'h1' })`
   z-index: 1;
 `;
 
+const QR_READER_CONSTRAINTS: MediaTrackConstraints = {
+  facingMode: { ideal: 'environment' },
+  width: { ideal: 1920 },
+  height: { ideal: 1080 },
+};
+
 const Feedback = styled(Typography)`
   align-self: start;
   grid-area: --feedback;
@@ -81,12 +87,12 @@ const Feedback = styled(Typography)`
 const StyledQrReader = (styled(QrReader)<{
   /* qr-code-reader declares these as `any`s */
   containerStyle?: React.CSSProperties;
+  scanDelay?: number;
   videoContainerStyle?: React.CSSProperties;
   videoStyle?: React.CSSProperties;
 }>).attrs({
-  constraints: {
-    facingMode: 'environment',
-  },
+  constraints: QR_READER_CONSTRAINTS,
+  scanDelay: 100,
   videoContainerStyle: {
     gridColumn: '1 / -1',
     gridRow: '1 / -1',
