@@ -153,7 +153,7 @@ describe('CentralSyncManager.pull', () => {
         SYNC_SESSION_DIRECTION.OUTGOING,
       );
 
-      expect(snapshotRecords.length).toBe(4);
+      expect(snapshotRecords.length).toBe(3);
       expect(snapshotRecords.map(r => r.recordId).sort()).toEqual(
         [country, userAccount, project].map(r => r.id).sort(),
       );
@@ -262,7 +262,7 @@ describe('CentralSyncManager.pull', () => {
         SYNC_SESSION_DIRECTION.OUTGOING,
       );
 
-      expect(snapshotRecords.length).toBe(4);
+      expect(snapshotRecords.length).toBe(3);
       expect(snapshotRecords.map(r => r.recordId).sort()).toEqual(
         [country, userAccount, project].map(r => r.id).sort(),
       );

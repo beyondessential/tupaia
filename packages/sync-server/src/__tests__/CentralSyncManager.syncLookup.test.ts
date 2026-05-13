@@ -34,7 +34,6 @@ describe('Sync Lookup data', () => {
   let sessionId: string;
   let project: any;
   let entity1: any;
-  let entity2: any;
   let optionSet: any;
   let permissionGroup: any;
   let survey: any;
@@ -62,7 +61,7 @@ describe('Sync Lookup data', () => {
       name: 'Test Entity',
       type: 'village',
     });
-    entity2 = await findOrCreateDummyRecord(models.entity, {
+    await findOrCreateDummyRecord(models.entity, {
       code: 'test_entity2',
       name: 'Test Entity 2',
       type: 'facility',

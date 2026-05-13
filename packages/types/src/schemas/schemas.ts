@@ -48413,13 +48413,13 @@ export const RecentEntitiesForCountrySchema = {
 				"type": "string"
 			}
 		},
-		"document_group": {
+		"document": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
 		},
-		"document": {
+		"document_group": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -48575,12 +48575,6 @@ export const RecentEntitiesForCountrySchema = {
 				"type": "string"
 			}
 		},
-		"tamanu_country": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
 		"srh_district": {
 			"type": "array",
 			"items": {
@@ -48588,6 +48582,12 @@ export const RecentEntitiesForCountrySchema = {
 			}
 		},
 		"srh_sub_district": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"tamanu_country": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -49145,6 +49145,135 @@ export const AdminPanelSessionUpdateSchema = {
 			"type": "string"
 		},
 		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+}
+export const AnalyticsSchema = {
+	"type": "object",
+	"properties": {
+		"data_element_code": {
+			"type": "string"
+		},
+		"data_group_code": {
+			"type": "string"
+		},
+		"date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"day_period": {
+			"type": "string"
+		},
+		"entity_code": {
+			"type": "string"
+		},
+		"entity_name": {
+			"type": "string"
+		},
+		"event_id": {
+			"type": "string"
+		},
+		"month_period": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		},
+		"week_period": {
+			"type": "string"
+		},
+		"year_period": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+}
+export const AnalyticsCreateSchema = {
+	"type": "object",
+	"properties": {
+		"data_element_code": {
+			"type": "string"
+		},
+		"data_group_code": {
+			"type": "string"
+		},
+		"date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"day_period": {
+			"type": "string"
+		},
+		"entity_code": {
+			"type": "string"
+		},
+		"entity_name": {
+			"type": "string"
+		},
+		"event_id": {
+			"type": "string"
+		},
+		"month_period": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		},
+		"week_period": {
+			"type": "string"
+		},
+		"year_period": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+}
+export const AnalyticsUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"data_element_code": {
+			"type": "string"
+		},
+		"data_group_code": {
+			"type": "string"
+		},
+		"date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"day_period": {
+			"type": "string"
+		},
+		"entity_code": {
+			"type": "string"
+		},
+		"entity_name": {
+			"type": "string"
+		},
+		"event_id": {
+			"type": "string"
+		},
+		"month_period": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		},
+		"week_period": {
+			"type": "string"
+		},
+		"year_period": {
 			"type": "string"
 		}
 	},
