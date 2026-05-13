@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
 import { ErrorBoundary } from '@tupaia/ui-components';
-import { LegendProps } from '@tupaia/ui-map-components';
+import type { LegendProps, TileSet } from '@tupaia/ui-map-components';
+import React, { useState } from 'react';
 import { DesktopMapOverlaySelector } from './DesktopMapOverlaySelector';
 import { MobileMapOverlaySelector } from './MobileMapOverlaySelector';
 
@@ -9,12 +9,7 @@ export const MapOverlaySelector = ({
   activeTileSet,
 }: {
   hiddenValues: LegendProps['hiddenValues'];
-  activeTileSet: {
-    key: string;
-    label: string;
-    thumbnail: string;
-    url: string;
-  };
+  activeTileSet: TileSet;
 }) => {
   const [overlayLibraryOpen, setOverlayLibraryOpen] = useState(false);
 

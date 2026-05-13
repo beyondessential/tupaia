@@ -23,4 +23,4 @@ export const aliases = {
   insertSummaryRowAndColumn,
 } as const;
 
-export const contextAliasDependencies = {};
+export const contextAliasDependencies = {} as const;

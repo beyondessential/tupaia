@@ -13,3 +13,4 @@ export * from './findLastSuccessfulSyncedProjects';
 export * from './incomingSyncHook';
 export * from './bumpSyncTickForRepull';
 export * from './logMemory';
+export * from './findSyncSnapshotRecords';
