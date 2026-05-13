@@ -53,19 +53,11 @@ export const ResetDataNotification = () => {
     return null;
   }
 
-  // We pass `resetDatabase: true` in route state as a workaround for an
-  // intermittent bug (seen on some devices) where the
-  // local DB wasn't being wiped on logout even though the banner was shown.
-  // We haven't pinned down the root cause, so we signal the intent explicitly
-  // here rather than relying on the logout mutation re-deriving it from the
-  // persisted sync fact. See LogoutPage for the full note.
   return (
     <BannerNotification>
       <strong>Permissions changed.</strong> Your permissions were updated while you were offline.{' '}
-      <StyledLink onClick={() => navigate(ROUTES.LOGOUT, { state: { resetDatabase: true } })}>
-        Log out
-      </StyledLink>{' '}
-      and back in to get the latest data.
+      <StyledLink onClick={() => navigate(ROUTES.LOGOUT)}>Log out</StyledLink> and back in to get
+      the latest data.
     </BannerNotification>
   );
 };

@@ -5,30 +5,17 @@ import { SyncFact } from '@tupaia/constants';
 
 import { ROUTES } from '../../constants';
 import { clearDatabase } from '../../database';
+import { DatatrakWebModelRegistry } from '../../types';
 import { useSyncContext } from '../SyncContext';
 import { post } from '../api';
 import { useIsOfflineFirst } from '../offlineFirst';
-import { ContextualMutationFunctionContext, useDatabaseMutation } from '../queries';
+import { useDatabaseMutation } from '../queries';
 
-export interface LogoutParams {
-  /**
-   * If true, the local database is wiped on logout regardless of the persisted
-   * `PERMISSIONS_CHANGED` fact. Used when the caller already knows the user
-   * needs a fresh DB (e.g. the permissions-changed banner) to avoid relying
-   * solely on a sync-fact read that may have diverged from the in-memory state
-   * the banner is showing.
-   */
-  resetDatabase?: boolean;
-}
-
-const logoutOnline = async (_args: ContextualMutationFunctionContext<LogoutParams>) => {
+const logoutOnline = async () => {
   return await post('logout');
 };
 
-const logoutOffline = async ({
-  data,
-  models,
-}: ContextualMutationFunctionContext<LogoutParams>) => {
+const logoutOffline = async ({ models }: { models: DatatrakWebModelRegistry }) => {
   try {
     return await models.wrapInTransaction(async transactingModels => {
       const currentUserId = await transactingModels.localSystemFact.get(SyncFact.CURRENT_USER_ID);
@@ -45,7 +32,7 @@ const logoutOffline = async ({
       const permissionsDidChange =
         (await transactingModels.localSystemFact.get(SyncFact.PERMISSIONS_CHANGED)) === 'true';
 
-      if (permissionsDidChange || data?.resetDatabase === true) {
+      if (permissionsDidChange) {
         await clearDatabase(transactingModels);
       }
 
@@ -67,31 +54,39 @@ export const useLogout = () => {
   const { clientSyncManager } = useSyncContext() || {};
   const navigate = useNavigate();
 
-  return useDatabaseMutation<unknown, Error, LogoutParams>(
-    isOfflineFirst ? logoutOffline : logoutOnline,
-    {
-      mutationKey: ['logout'],
-      onSuccess: async () => {
-        // Immediately refetch user rather than waiting for cache invalidation to trigger refetch in
-        // its own time. Having a user cached in the query client will make the ROUTES.LOGIN page
-        // redirect back to ROUTES.HOME.
-        // @see AuthViewLoggedInRedirect in src/routes/Routes.tsx
-        await Promise.all([
-          queryClient.refetchQueries({ queryKey: ['getUser'] }),
-          queryClient.refetchQueries({ queryKey: ['isLoggedIn'] }),
-        ]);
-        navigate(ROUTES.LOGIN);
-
-        await Promise.all([
-          clientSyncManager?.stopSyncService(),
-          queryClient.invalidateQueries({
-            predicate: q => {
-              const queryKeyHead = q.queryKey?.[0];
-              return queryKeyHead !== 'getUser' && queryKeyHead !== 'isLoggedIn';
-            },
-          }),
-        ]);
-      },
+  return useDatabaseMutation(isOfflineFirst ? logoutOffline : logoutOnline, {
+    mutationKey: ['logout'],
+    onMutate: async () => {
+      // Drain any in-flight sync (and prevent new ones from starting) before
+      // the logout transaction runs. Otherwise a sync that's mid-pull can
+      // commit its persist step *after* clearDatabase TRUNCATEs the public
+      // tables, silently re-populating them from the snapshot table that
+      // lives in a separate schema and isn't touched by the wipe.
+      // See TUP-3157.
+      await clientSyncManager?.stopSyncService();
     },
-  );
+    onSuccess: async () => {
+      // Immediately refetch user rather than waiting for cache invalidation to trigger refetch in
+      // its own time. Having a user cached in the query client will make the ROUTES.LOGIN page
+      // redirect back to ROUTES.HOME.
+      // @see AuthViewLoggedInRedirect in src/routes/Routes.tsx
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ['getUser'] }),
+        queryClient.refetchQueries({ queryKey: ['isLoggedIn'] }),
+      ]);
+      navigate(ROUTES.LOGIN);
+
+      await queryClient.invalidateQueries({
+        predicate: q => {
+          const queryKeyHead = q.queryKey?.[0];
+          return queryKeyHead !== 'getUser' && queryKeyHead !== 'isLoggedIn';
+        },
+      });
+    },
+    onError: async () => {
+      // Logout failed → the user is still signed in. Bring sync back up so
+      // they can keep working; startSyncService is a no-op if already running.
+      await clientSyncManager?.startSyncService(queryClient);
+    },
+  });
 };
