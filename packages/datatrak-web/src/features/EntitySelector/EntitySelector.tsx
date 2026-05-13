@@ -12,6 +12,7 @@ import { QrCodeScanner, QrCodeScannerProps } from './QrCodeScanner';
 import { ResultsList, ResultsListProps } from './ResultsList';
 import { SearchField } from './SearchField';
 import { useEntityBaseFilters } from './useEntityBaseFilters';
+import { useFindQrScannedEntity } from './useFindQrScannedEntity';
 import { OrDivider } from '../../components';
 
 const Container = styled.div`
@@ -128,10 +129,7 @@ export const EntitySelector = ({
   };
 
   const filters = useEntityBaseFilters(config, data, countryCode);
-  const { data: validEntities } = useProjectEntities(projectCode, {
-    fields: ['id', 'name'], // Only these are used by `onQrCodeScannerResult`
-    filter: filters,
-  });
+  const findEntity = useFindQrScannedEntity(projectCode, filters);
   const {
     data: searchResults,
     isFetching: isFetchingSearchResults,
@@ -161,7 +159,7 @@ export const EntitySelector = ({
         <div className="entity-selector-content">
           {showQrCodeScanner && (
             <>
-              <QrCodeScanner onSuccess={onQrCodeScannerResult} validEntities={validEntities} />
+              <QrCodeScanner onSuccess={onQrCodeScannerResult} findEntity={findEntity} />
               <OrDivider />
             </>
           )}
