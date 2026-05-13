@@ -346,7 +346,7 @@ export class EntityRecord extends DatabaseRecord {
         });
         if (relations.length === 0) return [];
         const projectIds = [...new Set(relations.map(r => r.project_id))];
-        return this.otherModels.project.find({ id: projectIds }, { sort: ['name ASC'] });
+        return this.otherModels.project.find({ id: projectIds }, { sort: ['code ASC'] });
       },
       v => v.length > 0,
     );
