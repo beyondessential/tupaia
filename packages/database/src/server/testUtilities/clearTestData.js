@@ -24,6 +24,7 @@ const TABLES_TO_CLEAR = [
   'legacy_report',
   'ancestor_descendant_relation',
   'entity_relation',
+  'project_country',
   'entity',
   'project',
   'data_group',
