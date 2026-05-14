@@ -116,6 +116,12 @@ configureEnv();
    */
   startFeedScraper(models);
 
+  try {
+    await buildAncestorDescendantRelationIfEmpty(models);
+  } catch (error) {
+    winston.error(error.message);
+  }
+
   /**
    * If running via PM2, run migrations then notify that we are ready
    */
@@ -126,8 +132,6 @@ configureEnv();
       const dbMigrator = getDbMigrator();
       await dbMigrator.up();
       winston.info('Database migrations complete');
-
-      await buildAncestorDescendantRelationIfEmpty(models);
 
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
         winston.info('Creating permissions based meditrak sync queue');
