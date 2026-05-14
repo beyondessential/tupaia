@@ -95,7 +95,7 @@ describe('Sync Lookup data', () => {
       project_id: project.id,
       survey_group_id: surveyGroup.id,
     });
-      
+
     await findOrCreateDummyRecord(models.surveyResponseDraft, {
       survey_id: survey.id,
       user_id: userAccount.id,
@@ -145,6 +145,15 @@ describe('Sync Lookup data', () => {
       user_id: userAccount.id,
       entity_id: entity1.id,
       permission_group_id: permissionGroup.id,
+    });
+    const countryEntity = await findOrCreateDummyRecord(models.entity, {
+      code: 'test_country_entity',
+      name: 'Test Country Entity',
+      type: 'country',
+    });
+    await findOrCreateDummyRecord(models.projectCountry, {
+      project_id: project.id,
+      country_id: countryEntity.id,
     });
   };
 

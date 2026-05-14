@@ -98635,13 +98635,17 @@ export const ProjectCountrySchema = {
 		},
 		"project_id": {
 			"type": "string"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"country_id",
 		"id",
-		"project_id"
+		"project_id",
+		"updated_at_sync_tick"
 	]
 }
 export const ProjectCountryCreateSchema = {

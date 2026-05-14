@@ -16,6 +16,10 @@ import { SqlQuery } from '../SqlQuery';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { RECORDS } from '../records';
 import { buildSyncLookupSelect } from '../sync';
+import {
+  PROJECT_HIERARCHY_EDGES_SUBQUERY,
+  projectHierarchyEdgesParams,
+} from './projectHierarchyEdges';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
@@ -650,7 +654,6 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * Returns relations (either ancestors or descendants) of entity
    * @param {(typeof ENTITY_RELATION_TYPE)[keyof typeof ENTITY_RELATION_TYPE]} ancestorsOrDescendants
    * @param {Entity['id'][]} entityIds
    * @param {*} criteria
@@ -722,7 +725,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {(typeof ENTITY_RELATION_TYPE)[keyof typeof ENTITY_RELATION_TYPE]} direction
    * @param {*} params
    */
-  async getEntitiesFromParentChildRelation(hierarchyId, entityIds, direction, params = {}) {
+  async getEntitiesFromParentChildRelagetEntitiesFromParentChildRelationtion(
+    hierarchyId,
+    entityIds,
+    direction,
+    params = {},
+  ) {
     if (!entityIds || entityIds.length === 0) {
       return [];
     }
@@ -738,6 +746,68 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       const { filter = {}, fields, pageSize } = params;
       const { generational_distance, ...restOfFilter } = filter;
 
+      const isDescendants = direction === ENTITY_RELATION_TYPE.DESCENDANTS;
+
+      // Resolve the project from hierarchyId — the walk is always project-scoped, so
+      // every caller must hit a project that exists. hierarchyId itself is on its way
+      // out: future PRs replace this signature with a direct projectId.
+      const project = await this.otherModels.project.findOneOrThrow(
+        { entity_hierarchy_id: hierarchyId },
+        undefined,
+        `getEntitiesFromParentChildRelation: no project found for hierarchyId ${hierarchyId}`,
+      );
+      const projectId = project.id;
+      const edgesSubquery = PROJECT_HIERARCHY_EDGES_SUBQUERY;
+      const edgesParams = projectHierarchyEdgesParams(projectId);
+
+      const DEPTH_CAP = 50;
+      const generationalDistanceClause =
+        generational_distance !== undefined
+          ? `AND h.generational_distance < ? AND h.generational_distance < ${DEPTH_CAP}`
+          : `AND h.generational_distance < ${DEPTH_CAP}`;
+
+      const recursiveQuery = isDescendants
+        ? `
+          -- Base case: direct descendants of entityIds via either edge source.
+          SELECT descendant_id AS id, ancestor_id AS parent_id, 1 AS generational_distance
+          FROM (${edgesSubquery}) base_edges
+          WHERE ancestor_id IN ${SqlQuery.record(entityIds)}
+
+          UNION ALL
+
+          -- Recursive case: extend by one descendant edge.
+          SELECT step_edges.descendant_id AS id, step_edges.ancestor_id AS parent_id,
+                 h.generational_distance + 1 AS generational_distance
+          FROM (${edgesSubquery}) step_edges
+          INNER JOIN hierarchy h ON step_edges.ancestor_id = h.id
+          WHERE 1 = 1 ${generationalDistanceClause}
+        `
+        : `
+          -- Base case: direct ancestors of entityIds via either edge source.
+          SELECT ancestor_id AS id, ancestor_id AS parent_id, 1 AS generational_distance
+          FROM (${edgesSubquery}) base_edges
+          WHERE descendant_id IN ${SqlQuery.record(entityIds)}
+
+          UNION ALL
+
+          -- Recursive case: extend by one ancestor edge.
+          SELECT step_edges.ancestor_id AS id, step_edges.ancestor_id AS parent_id,
+                 h.generational_distance + 1 AS generational_distance
+          FROM (${edgesSubquery}) step_edges
+          INNER JOIN hierarchy h ON step_edges.descendant_id = h.id
+          WHERE 1 = 1 ${generationalDistanceClause}
+        `;
+
+      const recursiveStepParams = [
+        ...edgesParams,
+        ...(generational_distance !== undefined ? [generational_distance] : []),
+      ];
+      const parameters = [
+        ...edgesParams, // base case edges scope
+        ...entityIds, // base case entity ids
+        ...recursiveStepParams, // recursive case edges scope + (optional) gd
+      ];
+
       const results = await this.find(
         {
           'hierarchy.generational_distance': generational_distance,
@@ -746,42 +816,11 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         {
           withRecursive: {
             alias: 'hierarchy',
-            query: `
-          -- Base case: start from specific entity IDs
-          SELECT
-            child_id as child_id,
-            parent_id as parent_id,
-            entity_hierarchy_id as entity_hierarchy_id,
-            1 as generational_distance
-          FROM entity_parent_child_relation
-          WHERE ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'child_id' : 'parent_id'} IN ${SqlQuery.record(entityIds)}
-          AND entity_hierarchy_id = ?
-
-          UNION ALL
-
-          -- Recursive case: get related entities
-          SELECT
-            e.child_id as child_id,
-            e.parent_id as parent_id,
-            e.entity_hierarchy_id as entity_hierarchy_id,
-            h.generational_distance + 1 as generational_distance
-          FROM entity_parent_child_relation e
-          INNER JOIN hierarchy h ON ${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'e.child_id = h.parent_id' : 'e.parent_id = h.child_id'}
-          WHERE e.entity_hierarchy_id = ?
-          ${generational_distance !== undefined ? 'AND h.generational_distance <= ?' : ''}
-        `,
-            parameters: [
-              ...entityIds,
-              hierarchyId,
-              hierarchyId,
-              ...(generational_distance !== undefined ? [generational_distance] : []),
-            ],
+            query: recursiveQuery,
+            parameters,
           },
           joinWith: 'hierarchy',
-          joinCondition: [
-            'entity.id',
-            `hierarchy.${ENTITY_RELATION_TYPE.ANCESTORS === direction ? 'parent_id' : 'child_id'}`,
-          ],
+          joinCondition: ['entity.id', 'hierarchy.id'],
           columns: fields,
           limit: pageSize,
         },
