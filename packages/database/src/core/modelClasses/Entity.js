@@ -433,11 +433,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {string} code
    * @param {string | null} [projectId]
    * @param {*} [otherCriteria]
+   * @param {*} [options]
    * @returns {Promise<EntityRecord | null>}
    */
-  async findOneByCodeInProject(code, projectId = null, otherCriteria = {}) {
+  async findOneByCodeInProject(code, projectId = null, otherCriteria = {}, options = {}) {
     if (!projectId) {
-      return this.findOne({ code, ...otherCriteria });
+      return this.findOne({ code, ...otherCriteria }, options);
     }
     // Sort `NULLS LAST` so a project-specific match (project_id = projectId) always
     // wins over the structural fallback (project_id IS NULL). Without this, when the
@@ -452,7 +453,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           parameters: [projectId],
         },
       },
-      { sort: ['project_id ASC NULLS LAST'] },
+      { ...options, sort: ['project_id ASC NULLS LAST'] },
     );
   }
 
