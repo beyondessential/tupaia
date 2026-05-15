@@ -125,22 +125,22 @@ export interface AnalyticsUpdate {
 export interface AncestorDescendantRelation {
   'ancestor_id': string;
   'descendant_id': string;
-  'entity_hierarchy_id': string;
   'generational_distance': number;
   'id': string;
+  'project_id': string;
 }
 export interface AncestorDescendantRelationCreate {
   'ancestor_id': string;
   'descendant_id': string;
-  'entity_hierarchy_id': string;
   'generational_distance': number;
+  'project_id': string;
 }
 export interface AncestorDescendantRelationUpdate {
   'ancestor_id'?: string;
   'descendant_id'?: string;
-  'entity_hierarchy_id'?: string;
   'generational_distance'?: number;
   'id'?: string;
+  'project_id'?: string;
 }
 export interface Answer {
   'id': string;

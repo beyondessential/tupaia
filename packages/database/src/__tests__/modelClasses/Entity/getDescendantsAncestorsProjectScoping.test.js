@@ -97,7 +97,7 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP
 
   it('descendants of a shared country are scoped to the requested project (A)', async () => {
     const country = await models.entity.findById(COUNTRY.id);
-    const descendants = await country.getDescendants(HIERARCHY_A.id);
+    const descendants = await country.getDescendants(PROJECT_A.id);
 
     const ids = descendants.map(d => d.id);
     expect(ids).toContain(DISTRICT_A.id);
@@ -106,7 +106,7 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP
 
   it('descendants of a shared country are scoped to the requested project (B)', async () => {
     const country = await models.entity.findById(COUNTRY.id);
-    const descendants = await country.getDescendants(HIERARCHY_B.id);
+    const descendants = await country.getDescendants(PROJECT_B.id);
 
     const ids = descendants.map(d => d.id);
     expect(ids).toContain(DISTRICT_B.id);
@@ -115,7 +115,7 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP
 
   it('ancestors of a sub-country entity walk up to the country', async () => {
     const districtA = await models.entity.findById(DISTRICT_A.id);
-    const ancestors = await districtA.getAncestors(HIERARCHY_A.id);
+    const ancestors = await districtA.getAncestors(PROJECT_A.id);
 
     const ids = ancestors.map(a => a.id);
     expect(ids).toContain(COUNTRY.id);
@@ -129,7 +129,7 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP
 
   it('descendants of a project entity include its countries via project_country', async () => {
     const projectAEntity = await models.entity.findById(PROJECT_A_ENTITY.id);
-    const descendants = await projectAEntity.getDescendants(HIERARCHY_A.id);
+    const descendants = await projectAEntity.getDescendants(PROJECT_A.id);
 
     const ids = descendants.map(d => d.id);
     expect(ids).toContain(COUNTRY.id);
@@ -140,7 +140,7 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP
 
   it('ancestors of a sub-country entity reach the project entity via project_country', async () => {
     const districtA = await models.entity.findById(DISTRICT_A.id);
-    const ancestors = await districtA.getAncestors(HIERARCHY_A.id);
+    const ancestors = await districtA.getAncestors(PROJECT_A.id);
 
     const ids = ancestors.map(a => a.id);
     expect(ids).toContain(PROJECT_A_ENTITY.id);
@@ -151,7 +151,7 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP
 
   it('getDescendants honours generational_distance', async () => {
     const country = await models.entity.findById(COUNTRY.id);
-    const directChildren = await country.getDescendants(HIERARCHY_A.id, {
+    const directChildren = await country.getDescendants(PROJECT_A.id, {
       generational_distance: 1,
     });
 
@@ -160,14 +160,14 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP
 
   it('the project entity has no ancestors in its own hierarchy', async () => {
     const projectAEntity = await models.entity.findById(PROJECT_A_ENTITY.id);
-    const ancestors = await projectAEntity.getAncestors(HIERARCHY_A.id);
+    const ancestors = await projectAEntity.getAncestors(PROJECT_A.id);
 
     expect(ancestors).toHaveLength(0);
   });
 
   it('the project entity is not a descendant of world in its hierarchy', async () => {
     const world = await models.entity.findById(WORLD.id);
-    const descendants = await world.getDescendants(HIERARCHY_A.id);
+    const descendants = await world.getDescendants(PROJECT_A.id);
 
     expect(descendants.map(d => d.id)).not.toContain(PROJECT_A_ENTITY.id);
   });
@@ -177,7 +177,7 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP
     // entity has an entry here, parent_code on the project surfaces as 'World' in the
     // API response.
     const childToParent = await models.ancestorDescendantRelation.getChildCodeToParentCode(
-      HIERARCHY_A.id,
+      PROJECT_A.id,
     );
 
     expect(childToParent[PROJECT_A_ENTITY.code]).toBeUndefined();

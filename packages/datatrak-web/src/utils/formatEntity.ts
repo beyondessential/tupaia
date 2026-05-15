@@ -24,7 +24,7 @@ export type EntityResponseObject = {
   [field in ExtendedEntityFieldName]: ExtendedEntityFields[field];
 };
 
-type FormatContext = { hierarchyId: string };
+type FormatContext = { projectId: string };
 
 export async function formatEntityForResponse(
   ctx: FormatContext,

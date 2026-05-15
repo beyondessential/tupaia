@@ -59,12 +59,12 @@ export class DataAggregatingRouteHandler extends RouteHandler {
 
   fetchDataSourceEntitiesOfType = async (entity, entityType, options) => {
     const { includeSiblingData, aggregationEntityType } = options;
-    const hierarchyId = await this.fetchHierarchyId();
+    const projectId = await this.fetchProjectId();
 
     // if no entity type is specified, we should just use the closest "canonical org unit" descendants
     // this is the "old way", and exists to support older dashboard reports fetching from DHIS2
     if (!entityType) {
-      return entity.getNearestOrgUnitDescendants(hierarchyId);
+      return entity.getNearestOrgUnitDescendants(projectId);
     }
 
     // fetch siblings via the common ancestor if includeSiblingData is true
@@ -74,8 +74,8 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // this is when we are at B and want to fetch data for both B and C
     //
     if (includeSiblingData) {
-      const ancestor = await entity.getAncestorOfType(hierarchyId, aggregationEntityType);
-      return ancestor.getDescendantsOfType(hierarchyId, entityType);
+      const ancestor = await entity.getAncestorOfType(projectId, aggregationEntityType);
+      return ancestor.getDescendantsOfType(projectId, entityType);
     }
 
     // if the entity we're building for is of the correct type already, just use that
@@ -85,8 +85,8 @@ export class DataAggregatingRouteHandler extends RouteHandler {
 
     // check both directions for related entities of the correct type, starting with ancestors
     // as it's a narrower/faster path to follow than spreading out to descendants
-    const ancestor = await entity.getAncestorOfType(hierarchyId, entityType);
-    return ancestor ? [ancestor] : entity.getDescendantsOfType(hierarchyId, entityType);
+    const ancestor = await entity.getAncestorOfType(projectId, entityType);
+    return ancestor ? [ancestor] : entity.getDescendantsOfType(projectId, entityType);
   };
 
   filterOutNonPermittedEntities = async entities => {

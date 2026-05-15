@@ -20,7 +20,7 @@ export interface AncestorDescendantRelationModel
     AncestorDescendantRelationRecord
   > {
   getImmediateRelations: (
-    hierarchyId: string,
+    projectId: string,
     criteria?: DbFilter<AncestorDescendantRelationFields>,
   ) => Promise<AncestorDescendantRelationRecord[]>;
 }
