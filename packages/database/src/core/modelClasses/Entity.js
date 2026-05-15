@@ -340,13 +340,18 @@ export class EntityRecord extends DatabaseRecord {
   async fetchDefaultProjectIdPatiently() {
     const projectsIncludingEntity = await fetchPatiently(
       async () => {
-        const relations = await this.otherModels.ancestorDescendantRelation.find({
-          ancestor_id: this.id,
-          [QUERY_CONJUNCTIONS.OR]: { descendant_id: this.id },
-        });
-        if (relations.length === 0) return [];
-        const projectIds = [...new Set(relations.map(r => r.project_id))];
-        return this.otherModels.project.find({ id: projectIds }, { sort: ['code ASC'] });
+        // Dedupe project_ids in SQL — a high-up entity (country, world) can be
+        // ancestor of thousands of rows that collapse to a handful of projects.
+        const rows = await this.database.executeSql(
+          `SELECT DISTINCT project_id FROM ancestor_descendant_relation
+           WHERE ancestor_id = ? OR descendant_id = ?;`,
+          [this.id, this.id],
+        );
+        if (rows.length === 0) return [];
+        return this.otherModels.project.find(
+          { id: rows.map(r => r.project_id) },
+          { sort: ['code ASC'] },
+        );
       },
       v => v.length > 0,
     );
@@ -433,11 +438,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {string} code
    * @param {string | null} [projectId]
    * @param {*} [otherCriteria]
+   * @param {*} [options]
    * @returns {Promise<EntityRecord | null>}
    */
-  async findOneByCodeInProject(code, projectId = null, otherCriteria = {}) {
+  async findOneByCodeInProject(code, projectId = null, otherCriteria = {}, options = {}) {
     if (!projectId) {
-      return this.findOne({ code, ...otherCriteria });
+      return this.findOne({ code, ...otherCriteria }, options);
     }
     // Sort `NULLS LAST` so a project-specific match (project_id = projectId) always
     // wins over the structural fallback (project_id IS NULL). Without this, when the
@@ -452,7 +458,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           parameters: [projectId],
         },
       },
-      { sort: ['project_id ASC NULLS LAST'] },
+      { ...options, sort: ['project_id ASC NULLS LAST'] },
     );
   }
 

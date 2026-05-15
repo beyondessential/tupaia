@@ -72,7 +72,7 @@ class SurveyDataExportBuilder extends DataBuilder {
     });
   };
 
-  fetchProjectId = async () => (await this.fetchAndCacheProject()).entity_hierarchy_id;
+  fetchProjectId = async () => (await this.fetchAndCacheProject()).id;
 
   buildReportData = async () => {
     const { surveys } = this.config;
