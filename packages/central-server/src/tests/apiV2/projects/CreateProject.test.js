@@ -7,8 +7,6 @@ import * as UploadImage from '../../../apiV2/utilities/uploadImage';
 
 const rollbackRecords = async (models, projectCode, projectName) => {
   const permissionGroup = await models.permissionGroup.findOne({ name: `${projectName} Admin` });
-  // TUP-3065: project_country has FK to project (CASCADE) and to country entity
-  // (RESTRICT) — clear it before deleting either side.
   const project = await models.project.findOne({ code: projectCode });
   if (project) {
     await models.projectCountry.delete({ project_id: project.id });

@@ -28,7 +28,6 @@ export const setupProject = async models => {
     entity_hierarchy_id: PROJECT_ENTITY_HIERARCHIES[index].id,
   }));
   const DL = await findOrCreateDummyCountryEntity(models, { code: 'DL' });
-  // TUP-3065: project↔country links via project_country, keyed on project.id.
   const PROJECT_COUNTRIES = TEST_PROJECTS.map(project => ({
     project_id: project.id,
     country_id: DL.entity.id,

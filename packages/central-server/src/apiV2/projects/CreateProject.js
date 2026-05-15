@@ -116,10 +116,6 @@ export class CreateProject extends BESAdminCreateHandler {
     });
   }
 
-  // TUP-3065: project↔country mapping now lives in the dedicated `project_country`
-  // table. Pre-3065 this method wrote `entity_relation` rows from project entity to
-  // country entity; the new table is keyed on the project row's id, so this runs
-  // after the project record itself is created.
   async createProjectCountries(models, projectId, countries) {
     for (const countryId of countries) {
       const entityId = await getCountryEntityId(models, countryId);
