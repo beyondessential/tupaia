@@ -94,25 +94,6 @@ describe('EntityModel', () => {
       const result = await entity.getParent(exploreHierarchy.id);
       assertHaveEqualIds(parentEntity, result);
     });
-
-    // TUP-3065: tests of "same entity has a different parent in a different hierarchy"
-    // are no longer applicable. Each entity now has exactly one parent_id; cross-project
-    // hierarchy variants are achieved by duplicating entities per project (RN-1853),
-    // not by storing different parent links per hierarchy.
-    it.skip('should return the parent entity for the correct hierarchy', async () => {
-      const exploreParentEntity = await upsertEntity();
-      const lilyParentEntity = await upsertEntity();
-      const entity = await upsertEntity({ parent_id: exploreParentEntity.id });
-      await setupAncestorDescendantRelations(models, entity, exploreParentEntity);
-      await setupAncestorDescendantRelations(models, entity, lilyParentEntity, undefined, 'lily');
-      const exploreHierarchy = await models.entityHierarchy.findOne({ name: 'explore' });
-      const lilyHierarchy = await models.entityHierarchy.findOne({ name: 'lily' });
-
-      const exploreParentResult = await entity.getParent(exploreHierarchy.id);
-      const lilyParentResult = await entity.getParent(lilyHierarchy.id);
-      assertHaveEqualIds(exploreParentEntity, exploreParentResult);
-      assertHaveEqualIds(lilyParentEntity, lilyParentResult);
-    });
   });
 
   describe('fetchNearestOrgUnitAncestor()', () => {
@@ -144,35 +125,6 @@ describe('EntityModel', () => {
       assertHaveEqualIds(grandparentEntity, result);
     });
 
-    // TUP-3065: same-entity-different-ancestors-per-hierarchy is not a thing post
-    // RN-1853 + TUP-3065 — each entity has exactly one parent_id. Skipped.
-    it.skip('fetches ancestors based on the hierarchy id specified', async () => {
-      const grandparentInExploreHierarchy = await upsertOrgUnitEntity();
-      const grandparentInLilyHierarchy = await upsertOrgUnitEntity();
-      const parentEntity = await upsertNonOrgUnitEntity({
-        parent_id: grandparentInExploreHierarchy.id,
-      });
-      const entity = await upsertNonOrgUnitEntity({ parent_id: parentEntity.id });
-      await setupAncestorDescendantRelations(
-        models,
-        entity,
-        parentEntity,
-        grandparentInExploreHierarchy,
-        'explore',
-      );
-      await setupAncestorDescendantRelations(
-        models,
-        entity,
-        parentEntity,
-        grandparentInLilyHierarchy,
-        'lily',
-      );
-
-      const lilyHierarchy = await models.entityHierarchy.findOne({ name: 'lily' });
-      const result = await entity.fetchNearestOrgUnitAncestor(lilyHierarchy.id);
-      assertHaveEqualIds(grandparentInLilyHierarchy, result);
-    });
-
     it('fetches ancestors using the explore hierarchy by default', async () => {
       const grandparentInExploreHierarchy = await upsertOrgUnitEntity();
       const grandparentInLilyHierarchy = await upsertOrgUnitEntity();
@@ -197,26 +149,6 @@ describe('EntityModel', () => {
 
       const result = await entity.fetchNearestOrgUnitAncestor();
       assertHaveEqualIds(grandparentInExploreHierarchy, result);
-    });
-
-    // TUP-3065: same — falls back to single parent_id chain regardless of hierarchy.
-    it.skip('fetches ancestors using another hierarchy if the entity is not present in explore', async () => {
-      const grandparentInExploreHierarchy = await upsertOrgUnitEntity();
-      const grandparentInLilyHierarchy = await upsertOrgUnitEntity();
-      const parentEntity = await upsertNonOrgUnitEntity({
-        parent_id: grandparentInExploreHierarchy.id,
-      });
-      const entity = await upsertNonOrgUnitEntity({ parent_id: parentEntity.id });
-      await setupAncestorDescendantRelations(
-        models,
-        entity,
-        parentEntity,
-        grandparentInLilyHierarchy,
-        'lily',
-      );
-
-      const result = await entity.fetchNearestOrgUnitAncestor();
-      assertHaveEqualIds(grandparentInLilyHierarchy, result);
     });
   });
 });
