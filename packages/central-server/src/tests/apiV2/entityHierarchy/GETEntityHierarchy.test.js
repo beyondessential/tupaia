@@ -54,17 +54,16 @@ describe('GET entity hierarchy', () => {
     const TO = await findOrCreateDummyCountryEntity(models, { code: 'TO' });
     const DL = await findOrCreateDummyCountryEntity(models, { code: 'DL' });
 
-    const ENTITY_RELATIONS = PROJECT_ENTITIES.map((entity, i) => ({
-      parent_id: entity.id,
-      child_id: i === 0 ? TO.entity.id : DL.entity.id,
-      entity_hierarchy_id: PROJECT_ENTITY_HIERARCHIES[i].id,
+    const PROJECT_COUNTRIES = PROJECTS.map((project, i) => ({
+      project_id: project.id,
+      country_id: i === 0 ? TO.entity.id : DL.entity.id,
     }));
 
     await findOrCreateRecords(models, {
       entity: PROJECT_ENTITIES,
       entityHierarchy: PROJECT_ENTITY_HIERARCHIES,
       project: PROJECTS,
-      entityRelation: ENTITY_RELATIONS,
+      projectCountry: PROJECT_COUNTRIES,
     });
   });
 

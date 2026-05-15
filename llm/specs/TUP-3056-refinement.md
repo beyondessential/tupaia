@@ -151,7 +151,7 @@ All other recursive walks of the hierarchy use `entity_parent_child_relation` fi
 
 ## Hierarchy / relations table futures
 
-- **`entity_hierarchy` table**: kept as-is for TUP-3056. `entity_hierarchy_id` on project still maps a project to its hierarchy ID. Removing it is TUP-3066's scope.
+- **`entity_hierarchy` table**: kept as-is for TUP-3056. `entity_hierarchy_id` on project still maps a project to its hierarchy ID. Removing it is TUP-3066b's scope; the upstream code rename to `projectId` is TUP-3066a.
 - **Hierarchy semantics across the NULL/NOT-NULL `project_id` boundary**: not a long-term concern. [TUP-3065](TUP-3065/consolidate-hierarchy-to-parent-id-on-project-specific-entities) will remove `entity_parent_child_relation` entirely and consolidate hierarchy onto `entity.parent_id`. For TUP-3056, the existing relation rows continue to work as-is during the transition; the NULL / NOT-NULL distinction lives on `entity` rows, not on the relation rows themselves.
 
 ---
@@ -232,13 +232,16 @@ Old analytics paths still in use for some reports. Defer until apiV1 is touched.
 
 **C2: Hierarchy Remodel**
 
-| ID       | Title                                                           | Status            |
-| -------- | --------------------------------------------------------------- | ----------------- |
-| TUP-3065 | Consolidate hierarchy to parent_id on project-specific entities | In review (#6761) |
-| TUP-3068 | Simplify ancestor_descendant_relations rebuild algorithm        | Done (absorbed into TUP-3065) |
-| TUP-3066 | Remove entity_relation and entity_hierarchy tables              | Refined           |
-| TUP-3067 | MediTrak compatibility layer                                    | Refined           |
-| TUP-3156 | External sync flows: project-scoping for entity code lookups    | Backlog (needs product input) |
+| ID        | Title                                                                | Status            |
+| --------- | -------------------------------------------------------------------- | ----------------- |
+| TUP-3068  | Simplify ancestor_descendant_relations rebuild algorithm             | In review (#6777) |
+| TUP-3065  | Consolidate hierarchy to parent_id on project-specific entities      | In review (#6778, stacks on #6777) |
+| TUP-3066a | Rename hierarchyId → projectId (code + ancestor_descendant_relation schema) | Drafting (stacks on #6778) |
+| TUP-3066b | Drop entity_relation / entity_parent_child_relation / entity_hierarchy | Drafting (gated on TUP-3067) |
+| TUP-3067  | MediTrak compatibility layer                                         | Refined           |
+| TUP-3156  | External sync flows: project-scoping for entity code lookups         | Backlog (needs product input) |
+
+See [TUP-3066-refinement.md](./TUP-3066-refinement.md) for the 3066a/b split detail.
 
 **C3: Admin Panel Project Scoping**
 
@@ -281,7 +284,10 @@ Old analytics paths still in use for some reports. Defer until apiV1 is touched.
 
 ### Milestone 3 — schema clean (cleanup)
 
-- **TUP-3066** — schema migration to drop `entity_relation`, `entity_parent_child_relation`, `entity_hierarchy`; remove the model classes; drop `project.entity_hierarchy_id`. Mostly mechanical once 3067 has been verified in production.
+- **TUP-3066a** — `hierarchyId` → `projectId` rename across all hierarchy walk code; schema migration to rename `ancestor_descendant_relation.entity_hierarchy_id` → `project_id`. Can ship anytime after TUP-3065. Eliminates the per-traversal `findOneOrThrow({ entity_hierarchy_id })` lookup.
+- **TUP-3066b** — schema migration to drop `entity_relation`, `entity_parent_child_relation`, `entity_hierarchy`; remove the model classes; drop `project.entity_hierarchy_id`. Retire `/entityHierarchy/:id` admin routes. **Gated on TUP-3067** — mobile sync still pulls from `entity_parent_child_relation`. Mostly mechanical once 3067 has been verified in production.
+
+See [TUP-3066-refinement.md](./TUP-3066-refinement.md) for full detail.
 
 ### Cross-cutting tasks
 
