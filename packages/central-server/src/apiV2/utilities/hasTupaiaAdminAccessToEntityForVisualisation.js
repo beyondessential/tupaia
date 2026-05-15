@@ -1,6 +1,4 @@
-import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-} from '../../permissions';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
 export const hasTupaiaAdminAccessToEntityForVisualisation = async (
   accessPolicy,

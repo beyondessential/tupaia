@@ -1,8 +1,5 @@
 import { VIZ_BUILDER_PERMISSION_GROUP } from '../../permissions';
 
-// TUP-3065: a project's countries used to be derived by walking the project entity's
-// hierarchy via entity_relation. They now come from project_country directly. The
-// `code` of the country entity is what the access policy treats as the country_code.
 const getProjectCountryCodes = async (models, projectEntityCode) => {
   const project = await models.project.findOne({ code: projectEntityCode });
   if (!project) return [];
