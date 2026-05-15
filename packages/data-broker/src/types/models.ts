@@ -138,6 +138,11 @@ export type EntityHierarchy = {
   canonical_types: string[];
 };
 
+export type Project = {
+  id: string;
+  code: string;
+};
+
 export type DataSourceTypeInstance = DataSource & {
   databaseRecord:
     | typeof RECORDS.DATA_ELEMENT
@@ -178,7 +183,7 @@ type SupersetInstanceModel = DatabaseModel<SupersetInstance>;
 type DataElementDataServiceModel = DatabaseModel<DataElementDataService>;
 type DhisInstanceModel = DatabaseModel<DhisInstance>;
 type EntityHierarchyModel = DatabaseModel<EntityHierarchy>;
-type ProjectModel = DatabaseModel<{ id: string; code: string }>;
+type ProjectModel = DatabaseModel<Project>;
 
 export interface DataBrokerModelRegistry extends ModelRegistry {
   readonly database: TupaiaDatabase;

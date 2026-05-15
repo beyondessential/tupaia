@@ -35,6 +35,10 @@ exports.up = async function (db) {
       WHERE a.entity_hierarchy_id = p.entity_hierarchy_id;
   `);
 
+  // Drop any orphan closure rows whose entity_hierarchy_id has no matching project.
+  // The cache is rebuilt on next boot, so deleting stale rows is safe.
+  await db.runSql(`DELETE FROM ancestor_descendant_relation WHERE project_id IS NULL;`);
+
   await db.runSql(`
     ALTER TABLE ancestor_descendant_relation
       ALTER COLUMN project_id SET NOT NULL,
