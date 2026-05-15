@@ -16,9 +16,9 @@ export type RelativesRequest = SingleEntityRequest<
 >;
 export class EntityRelativesRoute extends Route<RelativesRequest> {
   public async buildResponse() {
-    const { hierarchyId, entity, fields, field, filter } = this.req.ctx;
+    const { projectId, entity, fields, field, filter } = this.req.ctx;
 
-    const responseEntities = await entity.getRelatives(hierarchyId, filter);
+    const responseEntities = await entity.getRelatives(projectId, filter);
 
     return formatEntitiesForResponse(
       this.req.models,

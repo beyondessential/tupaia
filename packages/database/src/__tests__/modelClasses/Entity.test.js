@@ -19,31 +19,36 @@ const setupAncestorDescendantRelations = async (
   childEntity,
   parentEntity,
   grandparentEntity,
-  hierarchyName = 'explore',
+  projectCode = 'explore',
 ) => {
   const { id: hierarchyId } = await findOrCreateDummyRecord(models.entityHierarchy, {
-    name: hierarchyName,
+    name: projectCode,
+  });
+  const { id: projectId } = await findOrCreateDummyRecord(models.project, {
+    code: projectCode,
+    entity_hierarchy_id: hierarchyId,
   });
   await upsertDummyRecord(models.ancestorDescendantRelation, {
     ancestor_id: parentEntity.id,
     descendant_id: childEntity.id,
-    entity_hierarchy_id: hierarchyId,
+    project_id: projectId,
     generational_distance: 1,
   });
   if (grandparentEntity) {
     await upsertDummyRecord(models.ancestorDescendantRelation, {
       ancestor_id: grandparentEntity.id,
       descendant_id: childEntity.id,
-      entity_hierarchy_id: hierarchyId,
+      project_id: projectId,
       generational_distance: 2,
     });
     await upsertDummyRecord(models.ancestorDescendantRelation, {
       ancestor_id: grandparentEntity.id,
       descendant_id: parentEntity.id,
-      entity_hierarchy_id: hierarchyId,
+      project_id: projectId,
       generational_distance: 1,
     });
   }
+  return projectId;
 };
 
 describe('EntityModel', () => {
@@ -84,14 +89,13 @@ describe('EntityModel', () => {
     });
   });
 
-  describe('getParent(hierarchyId)', () => {
+  describe('getParent(projectId)', () => {
     it('should return the parent entity', async () => {
       const parentEntity = await upsertEntity();
       const entity = await upsertEntity({ parent_id: parentEntity.id });
-      await setupAncestorDescendantRelations(models, entity, parentEntity);
-      const exploreHierarchy = await models.entityHierarchy.findOne({ name: 'explore' });
+      const projectId = await setupAncestorDescendantRelations(models, entity, parentEntity);
 
-      const result = await entity.getParent(exploreHierarchy.id);
+      const result = await entity.getParent(projectId);
       assertHaveEqualIds(parentEntity, result);
     });
   });

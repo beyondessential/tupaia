@@ -1,8 +1,8 @@
 import { getEventsThatSatisfyConditions } from './checkAgainstConditions';
 
-const getOrgUnits = async (models, { parentCode, type, hierarchyId }) => {
+const getOrgUnits = async (models, { parentCode, type, projectId }) => {
   const parentOrgUnit = await models.entity.findOne({ code: parentCode });
-  return parentOrgUnit.getDescendantsOfType(hierarchyId, type);
+  return parentOrgUnit.getDescendantsOfType(projectId, type);
 };
 
 /**
@@ -42,8 +42,8 @@ const mapOrgUnitCodeToUniqueOrgUnitName = (allOrgUnits, eventsByOrgUnitCode) => 
   return eventsByUniqueOrgUnitName;
 };
 
-const groupByAllOrgUnitNames = async (models, events, options, hierarchyId) => {
-  const orgUnits = await getOrgUnits(models, { ...options, hierarchyId });
+const groupByAllOrgUnitNames = async (models, events, options, projectId) => {
+  const orgUnits = await getOrgUnits(models, { ...options, projectId });
 
   const eventsByOrgUnitCode = orgUnits.reduce(
     (results, { code }) => ({ ...results, [code]: [] }),
@@ -60,9 +60,9 @@ const groupByAllOrgUnitNames = async (models, events, options, hierarchyId) => {
   return mapOrgUnitCodeToUniqueOrgUnitName(orgUnits, eventsByOrgUnitCode);
 };
 
-const groupByAllOrgUnitParentNames = async (models, events, options, hierarchyId) => {
+const groupByAllOrgUnitParentNames = async (models, events, options, projectId) => {
   const { aggregationLevel } = options;
-  const orgUnits = await getOrgUnits(models, { ...options, hierarchyId });
+  const orgUnits = await getOrgUnits(models, { ...options, projectId });
 
   const eventsByOrgUnitCode = orgUnits.reduce(
     (results, { code }) => ({ ...results, [code]: [] }),
@@ -81,7 +81,7 @@ const groupByAllOrgUnitParentNames = async (models, events, options, hierarchyId
     orgUnits.map(async parentOrgUnit => {
       const { code } = parentOrgUnit;
       const childrenAndSelf = await parentOrgUnit.getDescendantsOfType(
-        hierarchyId,
+        projectId,
         aggregationLevel,
       );
       childrenAndSelf.forEach(orgUnit => {
@@ -123,13 +123,13 @@ const GROUP_BY_VALUE_TO_METHOD = {
  * @returns {Promise<object>} object of groupName => eventsForGroup
  */
 export const groupEvents = async (models, events, groupBySpecs = {}) => {
-  const { type, options, hierarchyId } = groupBySpecs;
+  const { type, options, projectId } = groupBySpecs;
   const groupByMethod = GROUP_BY_VALUE_TO_METHOD[type];
   if (!groupByMethod) {
     throw new Error(`'${type}' is not a supported groupBy type`);
   }
 
-  return groupByMethod(models, events, options, hierarchyId);
+  return groupByMethod(models, events, options, projectId);
 };
 
 /**

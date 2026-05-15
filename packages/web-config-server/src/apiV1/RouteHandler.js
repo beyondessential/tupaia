@@ -71,7 +71,7 @@ export class RouteHandler {
     return this.project;
   };
 
-  fetchHierarchyId = async () => (await this.fetchAndCacheProject()).entity_hierarchy_id;
+  fetchProjectId = async () => (await this.fetchAndCacheProject()).id;
 
   fetchTypesExcludedFromWebFrontend = async (project, allCountryCodes) => {
     const { frontendExcluded } = project?.config;

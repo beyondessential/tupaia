@@ -27,16 +27,14 @@ export class AncestorDescendantCacheBuilder {
     const project = await this.models.project.findById(projectId);
     if (!project) return;
 
-    const { entity_hierarchy_id: hierarchyId } = project;
-
     await this.models.wrapInTransaction(async transactingModels => {
       await transactingModels.database.executeSql(
-        `DELETE FROM ancestor_descendant_relation WHERE entity_hierarchy_id = ?;`,
-        [hierarchyId],
+        `DELETE FROM ancestor_descendant_relation WHERE project_id = ?;`,
+        [projectId],
       );
 
       // ancestor_descendant_relation.id is TEXT with no SQL default. Generate a
-      // deterministic id from (hierarchy, ancestor, descendant, distance). MD5 is
+      // deterministic id from (project, ancestor, descendant, distance). MD5 is
       // fast and gives 32 hex chars — well within the column's TEXT bounds. Using a
       // deterministic value means re-runs produce stable ids.
       await transactingModels.database.executeSql(
@@ -58,7 +56,7 @@ export class AncestorDescendantCacheBuilder {
             WHERE c.generational_distance < 50
           )
         INSERT INTO ancestor_descendant_relation
-          (id, entity_hierarchy_id, ancestor_id, descendant_id, generational_distance)
+          (id, project_id, ancestor_id, descendant_id, generational_distance)
         SELECT
           MD5(? || '|' || ancestor_id || '|' || descendant_id || '|' || generational_distance::text),
           ?,
@@ -67,7 +65,7 @@ export class AncestorDescendantCacheBuilder {
           generational_distance
         FROM closure;
         `,
-        [...projectHierarchyEdgesParams(projectId), hierarchyId, hierarchyId],
+        [...projectHierarchyEdgesParams(projectId), projectId, projectId],
       );
     });
   }
@@ -75,7 +73,7 @@ export class AncestorDescendantCacheBuilder {
   /**
    * @public
    * Rebuild the closure for every project — used at boot when the cache is empty.
-   * Bounded-parallel: each project's rebuild owns its hierarchy_id rows so there's
+   * Bounded-parallel: each project's rebuild owns its project_id rows so there's
    * no cross-project DB contention, but we cap concurrency to avoid saturating the
    * connection pool on prod (60 projects × N pool connections).
    */

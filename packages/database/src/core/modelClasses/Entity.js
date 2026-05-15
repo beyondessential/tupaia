@@ -220,33 +220,33 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   /** @returns {Promise<EntityRecord | undefined>} */
-  async getParent(hierarchyId) {
-    const ancestors = await this.getAncestors(hierarchyId, { generational_distance: 1 });
+  async getParent(projectId) {
+    const ancestors = await this.getAncestors(projectId, { generational_distance: 1 });
     return ancestors && ancestors.length > 0 ? ancestors[0] : undefined;
   }
 
   /** @returns {Promise<EntityRecord[]>} */
-  async getAncestors(hierarchyId, criteria) {
-    return this.model.getAncestorsOfEntities(hierarchyId, [this.id], criteria);
+  async getAncestors(projectId, criteria) {
+    return this.model.getAncestorsOfEntities(projectId, [this.id], criteria);
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {*} criteria
    * @param {*} options
    * @returns {Promise<EntityRecord[]>}
    */
-  async getDescendants(hierarchyId, criteria, options) {
-    return this.model.getDescendantsOfEntities(hierarchyId, [this.id], criteria, options);
+  async getDescendants(projectId, criteria, options) {
+    return this.model.getDescendantsOfEntities(projectId, [this.id], criteria, options);
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {*} params
    * @returns {Promise<EntityRecord | undefined>}
    */
-  async getParentFromParentChildRelation(hierarchyId, params = { filter: {} }) {
-    const [parent] = await this.getAncestorsFromParentChildRelation(hierarchyId, {
+  async getParentFromParentChildRelation(projectId, params = { filter: {} }) {
+    const [parent] = await this.getAncestorsFromParentChildRelation(projectId, {
       ...params,
       filter: { ...params.filter, generational_distance: 1 },
     });
@@ -254,76 +254,76 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {*} params
    * @returns {Promise<EntityRecord[]>}
    */
-  async getAncestorsFromParentChildRelation(hierarchyId, params) {
-    return await this.model.getAncestorsFromParentChildRelation(hierarchyId, [this.id], params);
+  async getAncestorsFromParentChildRelation(projectId, params) {
+    return await this.model.getAncestorsFromParentChildRelation(projectId, [this.id], params);
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {*} params
    * @returns {Promise<EntityRecord[]>}
    */
-  async getChildrenFromParentChildRelation(hierarchyId, params = { filter: {} }) {
-    return await this.getDescendantsFromParentChildRelation(hierarchyId, {
+  async getChildrenFromParentChildRelation(projectId, params = { filter: {} }) {
+    return await this.getDescendantsFromParentChildRelation(projectId, {
       ...params,
       filter: { ...params.filter, generational_distance: 1 },
     });
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {*} params
    * @returns {Promise<EntityRecord[]>}
    */
-  async getDescendantsFromParentChildRelation(hierarchyId, params) {
-    return await this.model.getDescendantsFromParentChildRelation(hierarchyId, [this.id], params);
+  async getDescendantsFromParentChildRelation(projectId, params) {
+    return await this.model.getDescendantsFromParentChildRelation(projectId, [this.id], params);
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {*} criteria
    * @returns {Promise<EntityRecord[]>}
    */
-  async getRelatives(hierarchyId, criteria) {
-    return this.model.getRelativesOfEntities(hierarchyId, [this.id], criteria);
+  async getRelatives(projectId, criteria) {
+    return this.model.getRelativesOfEntities(projectId, [this.id], criteria);
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {EntityTypeEnum} entityType
    * @returns {Promise<EntityRecord | undefined>}
    */
-  async getAncestorOfType(hierarchyId, entityType) {
+  async getAncestorOfType(projectId, entityType) {
     if (this.type === entityType) return this;
-    const [ancestor] = await this.getAncestors(hierarchyId, { type: entityType });
+    const [ancestor] = await this.getAncestors(projectId, { type: entityType });
     return ancestor;
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {EntityTypeEnum} entityType
    * @returns {Promise<EntityRecord[]>}
    */
-  async getDescendantsOfType(hierarchyId, entityType) {
+  async getDescendantsOfType(projectId, entityType) {
     if (this.type === entityType) return [this];
-    return this.getDescendants(hierarchyId, { type: entityType });
+    return this.getDescendants(projectId, { type: entityType });
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @returns {Promise<EntityRecord[]>}
    */
-  async getNearestOrgUnitDescendants(hierarchyId) {
+  async getNearestOrgUnitDescendants(projectId) {
     const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
     // if this is an org unit, don't worry about going deeper
     if (orgUnitEntityTypes.has(this.type)) return [this];
     // get descendants and return all of the first type that is an org unit type
     // we rely on descendants being returned in order, with those higher in the hierarchy first
-    const descendants = await this.getDescendants(hierarchyId);
+    const descendants = await this.getDescendants(projectId);
     const nearestOrgUnitDescendant = descendants.find(d => orgUnitEntityTypes.has(d.type));
     if (!nearestOrgUnitDescendant) {
       return [];
@@ -332,86 +332,70 @@ export class EntityRecord extends DatabaseRecord {
   }
 
   /**
-   * Returns the id of the entity hierarchy to use by default for this entity, if none is specified.
-   * Will prefer the "explore" hierarchy, but if the entity isn't a member of that, will choose
-   * the first hierarchy it is a member of, alphabetically
-   * @returns {EntityHierarchy['id']}
+   * Returns the id of the project to use by default for this entity, if none is specified.
+   * Prefers the "explore" project; otherwise the first project containing this entity,
+   * alphabetically by project name.
+   * @returns {Promise<Project['id']>}
    */
-  async fetchDefaultEntityHierarchyIdPatiently() {
-    const hierarchiesIncludingEntity = await fetchPatiently(
-      async () =>
-        this.otherModels.entityHierarchy.find(
-          {
-            ancestor_id: this.id,
-            [QUERY_CONJUNCTIONS.OR]: {
-              descendant_id: this.id,
-            },
-          },
-          {
-            joinWith: RECORDS.ANCESTOR_DESCENDANT_RELATION,
-            sort: ['entity_hierarchy.name ASC'],
-          },
-        ),
+  async fetchDefaultProjectIdPatiently() {
+    const projectsIncludingEntity = await fetchPatiently(
+      async () => {
+        // Dedupe project_ids in SQL — a high-up entity (country, world) can be
+        // ancestor of thousands of rows that collapse to a handful of projects.
+        const rows = await this.database.executeSql(
+          `SELECT DISTINCT project_id FROM ancestor_descendant_relation
+           WHERE ancestor_id = ? OR descendant_id = ?;`,
+          [this.id, this.id],
+        );
+        if (rows.length === 0) return [];
+        return this.otherModels.project.find(
+          { id: rows.map(r => r.project_id) },
+          { sort: ['code ASC'] },
+        );
+      },
       v => v.length > 0,
     );
-    if (hierarchiesIncludingEntity.length === 0) {
-      throw new Error(`The entity with id ${this.id} is not included in any hierarchy`);
+    if (projectsIncludingEntity.length === 0) {
+      throw new Error(`The entity with id ${this.id} is not included in any project hierarchy`);
     }
-    const exploreHierarchy = hierarchiesIncludingEntity.find(h => h.name === 'explore');
-    return exploreHierarchy ? exploreHierarchy.id : hierarchiesIncludingEntity[0].id;
+    const exploreProject = projectsIncludingEntity.find(p => p.code === 'explore');
+    return exploreProject ? exploreProject.id : projectsIncludingEntity[0].id;
   }
 
   /**
    * Fetches the closest node in the entity hierarchy that is an organisation unit,
    * starting from the entity itself and traversing the hierarchy up
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} [projectId]
    * @returns {EntityRecord}
    */
-  async fetchNearestOrgUnitAncestor(hierarchyId) {
+  async fetchNearestOrgUnitAncestor(projectId) {
     const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
     // if this is an org unit, don't worry about going deeper
     if (orgUnitEntityTypes.has(this.type)) return this;
-    // if no hierarchy id was passed in, default to a hierarchy this entity is a part of
-    const entityHierarchyId = hierarchyId || (await this.fetchDefaultEntityHierarchyIdPatiently());
+    // if no project id was passed in, default to a project this entity is a part of
+    const resolvedProjectId = projectId || (await this.fetchDefaultProjectIdPatiently());
     // get ancestors and return the first that is an org unit type
     // we rely on ancestors being returned in order of proximity to this entity
-    const ancestors = await this.getAncestors(entityHierarchyId);
+    const ancestors = await this.getAncestors(resolvedProjectId);
     return ancestors.find(d => orgUnitEntityTypes.has(d.type));
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @returns {Promise<Entity['code'][]>}
    */
-  async getAncestorCodes(hierarchyId) {
-    const ancestors = await this.getAncestors(hierarchyId);
+  async getAncestorCodes(projectId) {
+    const ancestors = await this.getAncestors(projectId);
     return ancestors.map(a => a.code);
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {*} criteria
    * @returns {Promise<EntityRecord[]>}
    */
-  async getChildren(hierarchyId, criteria) {
-    return this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
-  }
-
-  /**
-   * @param {EntityHierarchy['id']} hierarchyId
-   * @returns {Promise<Entity[]>}
-   */
-  async getChildrenViaHierarchy(hierarchyId) {
-    return this.database.executeSql(
-      `
-          SELECT entity.*
-          FROM entity
-          INNER JOIN entity_relation on entity.id = entity_relation.child_id
-          WHERE entity_relation.parent_id = ?
-          AND entity_relation.entity_hierarchy_id = ?;
-        `,
-      [this.id, hierarchyId],
-    );
+  async getChildren(projectId, criteria) {
+    return this.getDescendants(projectId, { ...criteria, generational_distance: 1 });
   }
 
   async pointLatLon() {
@@ -454,11 +438,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {string} code
    * @param {string | null} [projectId]
    * @param {*} [otherCriteria]
+   * @param {*} [options]
    * @returns {Promise<EntityRecord | null>}
    */
-  async findOneByCodeInProject(code, projectId = null, otherCriteria = {}) {
+  async findOneByCodeInProject(code, projectId = null, otherCriteria = {}, options = {}) {
     if (!projectId) {
-      return this.findOne({ code, ...otherCriteria });
+      return this.findOne({ code, ...otherCriteria }, options);
     }
     // Sort `NULLS LAST` so a project-specific match (project_id = projectId) always
     // wins over the structural fallback (project_id IS NULL). Without this, when the
@@ -473,7 +458,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           parameters: [projectId],
         },
       },
-      { sort: ['project_id ASC NULLS LAST'] },
+      { ...options, sort: ['project_id ASC NULLS LAST'] },
     );
   }
 
@@ -606,13 +591,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * Fetches descendant => ancestor map in given hierarchy
+   * Fetches descendant => ancestor map in given project's hierarchy
    * @param {string[]} descendantCodes
-   * @param {string} hierarchyId
+   * @param {Project['id']} projectId
    * @param {string} ancestorType
    * @returns {Promise<Record<string, { code: string, name: string }>>} Map of descendant code to ancestor (code, name)
    */
-  async fetchAncestorDetailsByDescendantCode(descendantCodes, hierarchyId, ancestorType) {
+  async fetchAncestorDetailsByDescendantCode(descendantCodes, projectId, ancestorType) {
     const cacheKey = this.getCacheKey(this.fetchAncestorDetailsByDescendantCode.name, arguments);
     // in testing this function, there was no issue with many bound parameters, and reducing the
     // number of batches greatly improved performance - so here we use a higher max bindings number
@@ -632,13 +617,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
             WHERE
               descendant.code IN (${batchOfDescendantCodes.map(() => '?').join(',')})
             AND
-              ancestor_descendant_relation.entity_hierarchy_id = ?
+              ancestor_descendant_relation.project_id = ?
             AND
               ancestor.type = ?
             ORDER BY
               generational_distance ASC
           `,
-          [...batchOfDescendantCodes, hierarchyId, ancestorType],
+          [...batchOfDescendantCodes, projectId, ancestorType],
         ],
         maxBoundParameters,
       );
@@ -688,31 +673,32 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {Entity['id'][]} entityIds
    * @param {*} criteria
    * @returns {Promise<EntityRecord[]>}
    */
-  async getAncestorsOfEntities(hierarchyId, entityIds, criteria) {
+  async getAncestorsOfEntities(projectId, entityIds, criteria) {
     return this.getRelationsOfEntities(ENTITY_RELATION_TYPE.ANCESTORS, entityIds, {
-      entity_hierarchy_id: hierarchyId,
+      // Qualified — entity also has a project_id column post-TUP-3056.
+      'ancestor_descendant_relation.project_id': projectId,
       ...criteria,
     });
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {Entity['id'][]} entityIds
    * @param {*} criteria
    * @param {*} options
    * @returns {Promise<EntityRecord[]>}
    */
-  async getDescendantsOfEntities(hierarchyId, entityIds, criteria, options) {
+  async getDescendantsOfEntities(projectId, entityIds, criteria, options) {
     return this.getRelationsOfEntities(
       ENTITY_RELATION_TYPE.DESCENDANTS,
       entityIds,
       {
-        entity_hierarchy_id: hierarchyId,
+        'ancestor_descendant_relation.project_id': projectId,
         ...criteria,
       },
       options,
@@ -720,17 +706,12 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {Entity['id'][]} entityIds
    * @param {(typeof ENTITY_RELATION_TYPE)[keyof typeof ENTITY_RELATION_TYPE]} direction
    * @param {*} params
    */
-  async getEntitiesFromParentChildRelagetEntitiesFromParentChildRelationtion(
-    hierarchyId,
-    entityIds,
-    direction,
-    params = {},
-  ) {
+  async getEntitiesFromParentChildRelation(projectId, entityIds, direction, params = {}) {
     if (!entityIds || entityIds.length === 0) {
       return [];
     }
@@ -740,7 +721,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         ? this.getDescendantsFromParentChildRelation.name
         : this.getAncestorsFromParentChildRelation.name;
 
-    const cacheKey = this.getCacheKey(methodName, [hierarchyId, entityIds, direction, params]);
+    const cacheKey = this.getCacheKey(methodName, [projectId, entityIds, direction, params]);
 
     return await this.runCachedFunction(cacheKey, async () => {
       const { filter = {}, fields, pageSize } = params;
@@ -748,15 +729,6 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
       const isDescendants = direction === ENTITY_RELATION_TYPE.DESCENDANTS;
 
-      // Resolve the project from hierarchyId — the walk is always project-scoped, so
-      // every caller must hit a project that exists. hierarchyId itself is on its way
-      // out: future PRs replace this signature with a direct projectId.
-      const project = await this.otherModels.project.findOneOrThrow(
-        { entity_hierarchy_id: hierarchyId },
-        undefined,
-        `getEntitiesFromParentChildRelation: no project found for hierarchyId ${hierarchyId}`,
-      );
-      const projectId = project.id;
       const edgesSubquery = PROJECT_HIERARCHY_EDGES_SUBQUERY;
       const edgesParams = projectHierarchyEdgesParams(projectId);
 
@@ -831,13 +803,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {Entity['id'][]} parentIds
    * @param {*} params
    */
-  async getDescendantsFromParentChildRelation(hierarchyId, parentIds, params = {}) {
+  async getDescendantsFromParentChildRelation(projectId, parentIds, params = {}) {
     return await this.getEntitiesFromParentChildRelation(
-      hierarchyId,
+      projectId,
       parentIds,
       ENTITY_RELATION_TYPE.DESCENDANTS,
       params,
@@ -845,13 +817,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {Entity['id'][]} childIds
    * @param {*} params
    */
-  async getAncestorsFromParentChildRelation(hierarchyId, childIds, params = {}) {
+  async getAncestorsFromParentChildRelation(projectId, childIds, params = {}) {
     return await this.getEntitiesFromParentChildRelation(
-      hierarchyId,
+      projectId,
       childIds,
       ENTITY_RELATION_TYPE.ANCESTORS,
       params,
@@ -871,24 +843,21 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     assertIsNotNullish(entity, `No entity exists with ID ${entityId}`);
     assertIsNotNullish(project, `No project exists with ID ${projectId}`);
 
-    const entityIsNotCountry =
-      project.entity_hierarchy_id && entity.type !== EntityTypeEnum.country;
-    const parentEntity = entityIsNotCountry
-      ? await entity.getParentFromParentChildRelation(project.entity_hierarchy_id)
-      : null;
+    if (entity.type === EntityTypeEnum.country) return undefined;
+    const parentEntity = await entity.getParentFromParentChildRelation(project.id);
     return parentEntity?.name;
   }
 
   /**
-   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Project['id']} projectId
    * @param {Entity['id'][]} entityIds
    * @param {*} criteria
    * @returns {Promise<EntityRecord[]>}
    */
-  async getRelativesOfEntities(hierarchyId, entityIds, criteria) {
+  async getRelativesOfEntities(projectId, entityIds, criteria) {
     // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
     const ancestors = (
-      await this.getAncestorsOfEntities(hierarchyId, entityIds, criteria)
+      await this.getAncestorsOfEntities(projectId, entityIds, criteria)
     ).toReversed();
 
     const self = await this.find({
@@ -896,7 +865,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       id: entityIds, // Find an entity that matches the criteria AND themselves
     });
 
-    const descendants = await this.getDescendantsOfEntities(hierarchyId, entityIds, criteria);
+    const descendants = await this.getDescendantsOfEntities(projectId, entityIds, criteria);
 
     return [...ancestors, ...self, ...descendants];
   }
