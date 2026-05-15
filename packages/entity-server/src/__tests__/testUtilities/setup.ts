@@ -33,8 +33,8 @@ export const setupTestData = async () => {
   await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
   await models.database.waitForAllChangeHandlers();
 
-  const closureCacheBuilder = new AncestorDescendantCacheBuilder(models);
-  await closureCacheBuilder.rebuildAll();
+  const ancestorDescendantCacheBuilder = new AncestorDescendantCacheBuilder(models);
+  await ancestorDescendantCacheBuilder.rebuildAll();
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;
 

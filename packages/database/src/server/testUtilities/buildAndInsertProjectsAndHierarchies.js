@@ -124,7 +124,6 @@ export const buildAndInsertProjectsAndHierarchies = async (models, projects) => 
       relationProps ||
       projectScopedEntities.map(entity => ({ parent: projectEntity.code, child: entity.code }));
 
-    const entityRelations = [];
     for (const { parent, child } of relations) {
       const parentEntity = byCode[parent];
       const childEntity = byCode[child];
@@ -138,22 +137,10 @@ export const buildAndInsertProjectsAndHierarchies = async (models, projects) => 
       } else {
         await models.entity.updateById(childEntity.id, { parent_id: parentEntity.id });
       }
-
-      // Also write the legacy entity_relation row. Central-server permission
-      // consumers (createDashboardRelationsDBFilter, assertMapOverlaysPermissions,
-      // GETProjects, viz-builder utilities) still read `entity_relation` until
-      // PR3 (#6778) switches them to `project_country`. Until then, fixtures need
-      // both. PR3 will drop this write.
-      const entityRelation = await findOrCreateDummyRecord(models.entityRelation, {
-        parent_id: parentEntity.id,
-        child_id: childEntity.id,
-        entity_hierarchy_id: createdProjects[i].entityHierarchy.id,
-      });
-      entityRelations.push(entityRelation);
     }
 
     createdProjects[i].entities = projectScopedEntities;
-    createdProjects[i].entityRelations = entityRelations;
+    createdProjects[i].entityRelations = [];
   }
 
   return createdProjects;
