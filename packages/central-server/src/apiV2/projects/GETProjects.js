@@ -63,8 +63,6 @@ export class GETProjects extends GETHandler {
 
       // Pulls permission_group/country_code pairs from the project
       // Returns any project where we have access to at least one of those pairs.
-      // TUP-3065: country list now comes from project_country; the country code lives
-      // on the country entity itself.
       dbConditions[RAW] = {
         sql: `(
           SELECT COUNT(*) > 0 FROM

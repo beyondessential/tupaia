@@ -108,7 +108,6 @@ describe('Create and Edit Surveys', () => {
       code: 'project2',
     });
 
-    // TUP-3065: project↔country mapping lives in project_country.
     const addProjectCountry = async entity =>
       findOrCreateDummyRecord(models.projectCountry, {
         project_id: project1.id,
