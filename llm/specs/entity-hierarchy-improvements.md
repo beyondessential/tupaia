@@ -202,24 +202,22 @@ Old analytics paths still in use for some reports. Defer until apiV1 is touched.
 
 **C1: GIS Split & Entity Migration**
 
-| ID       | Title                                                                | Status         |
-| -------- | -------------------------------------------------------------------- | -------------- |
-| TUP-3053 | Schema migration: Create entity_geolocations table                   | Merged         |
-| TUP-3056 | Add project_id to entities and duplicate shared entities per project | Merged (#6749) |
-| TUP-3060 | Ensure all entity access is project-scoped                           | Merged (#6776) |
+| ID       | Title                                                        | Status |
+| -------- | ------------------------------------------------------------ | ------ |
+| TUP-3053 | Schema migration: Create entity_geolocations table           | Merged |
+| TUP-3056 | Add project_id to entities and duplicate shared entities per project | Merged |
+| TUP-3060 | Ensure all entity access is project-scoped                   | Merged |
 
 **C2: Hierarchy Remodel**
 
-| ID        | Title                                                                       | Status                              |
-| --------- | --------------------------------------------------------------------------- | ----------------------------------- |
-| TUP-3068  | Simplify ancestor_descendant_relations rebuild algorithm                    | In review (#6777)                   |
-| TUP-3065  | Consolidate hierarchy to parent_id on project-specific entities             | In review (#6778, stacks on #6777)  |
-| TUP-3066a | Rename hierarchyId → projectId (code + ancestor_descendant_relation schema) | Open (#6786, stacks on #6778)       |
-| TUP-3066b | Drop entity_relation / entity_parent_child_relation / entity_hierarchy      | Draft (#6787, stacks on TUP-3066a; gated on TUP-3067) |
-| TUP-3067  | MediTrak compatibility layer                                                | Refined (not started)               |
-| TUP-3156  | External sync flows: project-scoping for entity code lookups                | Backlog (needs product input)       |
-
-See [TUP-3066-refinement.md](./TUP-3066-refinement.md) for the 3066a/b split detail.
+| ID        | Title                                                        | Status                        |
+| --------- | ------------------------------------------------------------ | ----------------------------- |
+| TUP-3068  | Simplify ancestor_descendant_relations rebuild algorithm     | Merged                        |
+| TUP-3065  | Consolidate hierarchy to parent_id on project-specific entities | Merged                        |
+| TUP-3066a | Rename hierarchyId → projectId (code + ancestor_descendant_relation schema) | Merged                        |
+| TUP-3066b | Drop entity_relation / entity_parent_child_relation / entity_hierarchy | Done & Testing                |
+| TUP-3067  | MediTrak compatibility layer                                 | Refined (not started)         |
+| TUP-3156  | External sync flows: project-scoping for entity code lookups | Backlog (needs product input) |
 
 **C3: Admin Panel Project Scoping**
 
@@ -237,48 +235,19 @@ See [TUP-3066-refinement.md](./TUP-3066-refinement.md) for the 3066a/b split det
 | TUP-3061 | Update entity import for project-specific model | Refined |
 | TUP-3063 | GIS Data Import & Export                        | Refined |
 
-**C5: Onboarding**
-
-| ID       | Title                                             | Status |
-| -------- | ------------------------------------------------- | ------ |
-| TUP-1582 | Project setup: copy entities from another project |        |
-
-
-
 ## Project Plan
 
-### Milestone 1 — server-side correct (test-ready) — **DONE**
+### Milestone 1 — server-side correct (test-ready)
 
-Server-side correctness against the new per-project entity model. All three landed on dev:
-
-- **TUP-3056 (#6749)** — merged. Per-project entity duplication, `entity.project_id`, data migration.
-- **TUP-3060 (#6776)** — merged. `findOneByCodeInProject` helper, `project_country` bridge, EntitySearch rewrite, sync-server type plumbing.
-- **TUP-3065 (#6778)** — in review. Entity-relation consumer retirement; `project.countries()` replaces `getChildrenViaHierarchy`. Stacks on **TUP-3068 (#6777)** which simplifies the closure-cache rebuild to walk `entity.parent_id` + `project_country` directly.
+Server-side correctness against the new per-project entity model.
 
 ### Milestone 2 — safe for mobile + external sync (deploy-ready)
 
 - **TUP-3067** — MediTrak compatibility layer. Mobile sync still pulls `entity_parent_child_relation` and `entity_relation` rows; after 3065 those are dead writes server-side. Either translate parent_id walks into the legacy shapes at the sync API boundary, or ship a mobile build that knows the new shape. Currently estimated at 13 points — biggest remaining effort.
 - **TUP-3156** — external sync flows (DHIS2 push, MS1, data-broker, KoBo) doing bare entity-code lookups outside any request context. Needs product input on per-integration scoping (designated project? iterate per project? drop multi-project support?). DHIS2 is being phased out and LESMIS unsupported, so some of these may not need a real fix.
 
-### Milestone 3 — schema clean (cleanup)
-
-- **TUP-3066a (#6786)** — open. `hierarchyId` → `projectId` rename across all hierarchy walk code; schema migration to rename `ancestor_descendant_relation.entity_hierarchy_id` → `project_id`. Can ship anytime after TUP-3065. Eliminates the per-traversal `findOneOrThrow({ entity_hierarchy_id })` lookup.
-- **TUP-3066b (#6787, draft)** — schema migration to drop `entity_relation`, `entity_parent_child_relation`, `entity_hierarchy`; remove the model classes; drop `project.entity_hierarchy_id`. Retire `/entityHierarchy/:id` admin routes. Rewrites `Entity.buildSyncLookupQueryDetails` to compute project_ids without `entity_parent_child_relation` joins. **Gated on TUP-3067** — mobile sync still pulls from `entity_parent_child_relation`. Mostly mechanical once 3067 has been verified in production.
-
-See [TUP-3066-refinement.md](./TUP-3066-refinement.md) for full detail.
-
-### Cross-cutting tasks
-
-- **Refresh `packages/database/schema/schema.sql`** — bites new dev environments and local validation (caused real grief while developing 3060 and again on 3066b CI). Worth doing once the migrations have stabilised, before the prod rehearsal.
-- **Production data-migration rehearsal** of 3056 on a dev clone, then prod with a monitored runbook (~5:24 on dev clone, prod is similar order of magnitude). Coordinate with the GIS-split (3053) deploy so we're not changing `entity` schema twice in quick succession.
-- **Closure cache invalidation** — the TUP-3056 data migration (`20260501000001-backfillProjectIdsAndDuplicateSharedEntities-modifies-data.js`) ends with `DELETE FROM ancestor_descendant_relation; DELETE FROM entity_parent_child_relation;` so on next central-server boot the bootstrap (`buildAncestorDescendantRelationIfEmpty`) sees an empty cache and runs `AncestorDescendantCacheBuilder.rebuildAll()` (~2–3 min on prod data). The bootstrap was previously gated behind `if (process.send)` (PM2-only), which left local dev with an empty cache after migrating — now lifted out so `start-dev` self-heals too. Discovered during prod-clone QA on TUP-3065 and again during local QA on TUP-3066b.
-- **Sync surface coordination** — explicit removal of `entity_parent_child_relation` from `initSyncComponents.js` / `runPostMigration` ships with TUP-3066b once 3067 has verified the new sync lookup.
-
 ### Adjacent tracks (separate releases)
 
 - **C3** (admin-panel project scoping) — TUP-3054, TUP-3055 — depends on C1 + C2 server changes but ships independently.
 - **C4** (import/export) — TUP-3061, TUP-3062, TUP-3063, TUP-3064 — also depends on the new project-specific model.
 
-### TL;DR
-
-**C1 + part of C2 are merged** (TUP-3053, 3056, 3060). Remaining: **3068 + 3065** (in review, #6777 / #6778) to close Milestone 1, then **3067 + 3156** for Milestone 2 (mobile-safe), then **3066a + 3066b** for Milestone 3 (schema cleanup). Plus the **schema.sql refresh** and prod rehearsal as cross-cutting work.
