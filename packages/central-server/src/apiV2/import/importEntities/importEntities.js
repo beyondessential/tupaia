@@ -42,14 +42,11 @@ export async function importEntities(req, res) {
       ? query?.automaticallyFetchGeojson === 'true'
       : true;
 
-    // TUP-3156 + TUP-3054: temporary fallback — once TUP-3054 plumbs the
+    // temporary fallback — once TUP-3054 plumbs the
     // admin-panel global project filter into import requests, this becomes
     // load-bearing for project-scoped entity lookups in the helpers below.
-    // Today it's a no-op (projectCode unset → projectId null → bare lookups).
     const projectCode = query?.projectCode;
-    const project = projectCode
-      ? await models.project.findOne({ code: projectCode })
-      : null;
+    const project = projectCode ? await models.project.findOne({ code: projectCode }) : null;
     if (projectCode && !project) {
       throw new ValidationError(`Unknown projectCode: ${projectCode}`);
     }
