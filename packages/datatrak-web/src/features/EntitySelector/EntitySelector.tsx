@@ -129,15 +129,14 @@ export const EntitySelector = ({
   };
 
   const filters = useEntityBaseFilters(config, data, countryCode);
+  const { isResponseScreen, isReviewScreen } = useSurveyForm();
+  const showQrCodeScanner = config?.entity?.allowScanQrCode && !isResponseScreen && !isReviewScreen;
   const findEntity = useFindQrScannedEntity(projectCode, filters);
   const {
     data: searchResults,
     isFetching: isFetchingSearchResults,
     isFetched,
   } = useSearchResults(searchValue, filters, projectCode, disableSearch);
-
-  const { isResponseScreen, isReviewScreen } = useSurveyForm();
-  const showQrCodeScanner = config?.entity?.allowScanQrCode && !isResponseScreen && !isReviewScreen;
 
   const displayResults = searchResults?.filter(({ name: entityName }) => {
     if (isDirty || !value) {
