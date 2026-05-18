@@ -6,8 +6,6 @@ import { TestableApp } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';
 
 const rollbackRecords = async (models, projectCode) => {
-  // TUP-3065: clear project_country before deleting the project (CASCADE FK on
-  // project_id) or the country entity (RESTRICT FK on country_id).
   const project = await models.project.findOne({ code: projectCode });
   if (project) {
     await models.projectCountry.delete({ project_id: project.id });

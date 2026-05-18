@@ -680,7 +680,6 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    */
   async getAncestorsOfEntities(projectId, entityIds, criteria) {
     return this.getRelationsOfEntities(ENTITY_RELATION_TYPE.ANCESTORS, entityIds, {
-      // Qualified — entity also has a project_id column post-TUP-3056.
       'ancestor_descendant_relation.project_id': projectId,
       ...criteria,
     });
@@ -897,9 +896,8 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async buildSyncLookupQueryDetails() {
-    // TUP-3066b: rewritten to compute project_ids without entity_parent_child_relation
-    // joins. Sub-country entities carry a direct project_id; structural entities
-    // (world/country/project) are sync'd unconditionally because every project
+    //Sub-country entities carry a direct project_id; structural entities
+    // (world/country/project) are synced unconditionally because every project
     // needs them for hierarchy walks. Country-level rows reach their owning projects
     // via project_country.
     //
