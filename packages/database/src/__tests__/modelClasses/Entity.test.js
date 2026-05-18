@@ -1,4 +1,8 @@
-import { upsertDummyRecord, getTestModels, findOrCreateDummyRecord } from '../../server/testUtilities';
+import {
+  upsertDummyRecord,
+  getTestModels,
+  findOrCreateDummyRecord,
+} from '../../server/testUtilities';
 
 const assertHaveEqualIds = (expectedObject, actualObject) => {
   expect(actualObject).toHaveProperty('id', expectedObject.id);
@@ -21,12 +25,8 @@ const setupAncestorDescendantRelations = async (
   grandparentEntity,
   projectCode = 'explore',
 ) => {
-  const { id: hierarchyId } = await findOrCreateDummyRecord(models.entityHierarchy, {
-    name: projectCode,
-  });
   const { id: projectId } = await findOrCreateDummyRecord(models.project, {
     code: projectCode,
-    entity_hierarchy_id: hierarchyId,
   });
   await upsertDummyRecord(models.ancestorDescendantRelation, {
     ancestor_id: parentEntity.id,

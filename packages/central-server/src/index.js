@@ -24,7 +24,6 @@ import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithKoBo } from './kobo';
 import winston from './log';
-import { startSyncWithMs1 } from './ms1';
 import { RepeatingTaskDueDateHandler, TaskOverdueChecker } from './scheduledTasks';
 import { startFeedScraper } from './social';
 
@@ -102,11 +101,6 @@ configureEnv();
   startSyncWithDhis(models);
 
   /**
-   * Regularly sync data to MS1
-   */
-  startSyncWithMs1(models);
-
-  /**
    * Regularly sync data from KoBoToolbox
    */
   startSyncWithKoBo(models);
@@ -119,24 +113,26 @@ configureEnv();
   /**
    * If running via PM2, run migrations then notify that we are ready
    */
-  if (process.send) {
-    try {
+  try {
+    if (process.send) {
       await database.waitForChangeChannel();
       winston.info('Successfully connected to pubsub service');
       const dbMigrator = getDbMigrator();
       await dbMigrator.up();
       winston.info('Database migrations complete');
 
-      await buildAncestorDescendantRelationIfEmpty(models);
+      await buildEntityParentChildRelationIfEmpty(models);
 
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
         winston.info('Creating permissions based meditrak sync queue');
         // don't await this as it's not critical, and will hold up the process if it fails
         createPermissionsBasedMeditrakSyncQueue(database);
       }
-    } catch (error) {
-      winston.error(error.message);
+    } else {
+      await buildEntityParentChildRelationIfEmpty(models);
     }
+  } catch (error) {
+    winston.error(error.message);
   }
 
   /**

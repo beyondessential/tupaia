@@ -34,20 +34,15 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP
     parent_id: 'world_tup3065_test',
   };
 
-  const HIERARCHY_A = { id: 'hierarchy_a_tup3065', name: 'hierarchy_a_tup3065' };
-  const HIERARCHY_B = { id: 'hierarchy_b_tup3065', name: 'hierarchy_b_tup3065' };
-
   const PROJECT_A = {
     id: 'proj_a_tup3065',
     code: 'project_a_tup3065',
     entity_id: PROJECT_A_ENTITY.id,
-    entity_hierarchy_id: HIERARCHY_A.id,
   };
   const PROJECT_B = {
     id: 'proj_b_tup3065',
     code: 'project_b_tup3065',
     entity_id: PROJECT_B_ENTITY.id,
-    entity_hierarchy_id: HIERARCHY_B.id,
   };
 
   const DISTRICT_A = {
@@ -69,7 +64,6 @@ describe('Entity.getDescendants / getAncestors — project scoping (TUP-3065/TUP
 
   beforeEach(async () => {
     await populateTestData(models, {
-      entityHierarchy: [HIERARCHY_A, HIERARCHY_B],
       entity: [WORLD, PROJECT_A_ENTITY, PROJECT_B_ENTITY, COUNTRY],
       project: [PROJECT_A, PROJECT_B],
     });

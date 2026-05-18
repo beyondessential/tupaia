@@ -34,8 +34,6 @@ describe('Sync Lookup data', () => {
   let sessionId: string;
   let project: any;
   let entity1: any;
-  let entity2: any;
-  let entityHierarchy: any;
   let optionSet: any;
   let permissionGroup: any;
   let survey: any;
@@ -54,29 +52,20 @@ describe('Sync Lookup data', () => {
       last_name: 'User Account',
     });
     await findOrCreateDummyRecord(models.country, { code: 'test_country' });
-    entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
-      name: 'test_entity_hierarchy',
-      canonical_types: '{country}',
-    });
     project = await findOrCreateDummyRecord(models.project, {
       code: 'test_project',
       description: 'Test Project',
-      entity_hierarchy_id: entityHierarchy.id,
     });
     entity1 = await findOrCreateDummyRecord(models.entity, {
       code: 'test_entity',
       name: 'Test Entity',
       type: 'village',
     });
-    entity2 = await findOrCreateDummyRecord(models.entity, {
+    await findOrCreateDummyRecord(models.entity, {
       code: 'test_entity2',
       name: 'Test Entity 2',
       type: 'facility',
-    });
-    await findOrCreateDummyRecord(models.entityParentChildRelation, {
-      entity_hierarchy_id: entityHierarchy.id,
       parent_id: entity1.id,
-      child_id: entity2.id,
     });
     optionSet = await findOrCreateDummyRecord(models.optionSet, { name: 'test_option_set' });
     await findOrCreateDummyRecord(models.option, {

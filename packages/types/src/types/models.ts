@@ -680,39 +680,6 @@ export interface EntityUpdate {
   'project_id'?: string | null;
   'type'?: EntityType;
 }
-export interface EntityHierarchy {
-  'canonical_types'?: string[] | null;
-  'id': string;
-  'name': string;
-  'updated_at_sync_tick': string;
-}
-export interface EntityHierarchyCreate {
-  'canonical_types'?: string[] | null;
-  'name': string;
-}
-export interface EntityHierarchyUpdate {
-  'canonical_types'?: string[] | null;
-  'id'?: string;
-  'name'?: string;
-}
-export interface EntityParentChildRelation {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'id': string;
-  'parent_id': string;
-  'updated_at_sync_tick': string;
-}
-export interface EntityParentChildRelationCreate {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'parent_id': string;
-}
-export interface EntityParentChildRelationUpdate {
-  'child_id'?: string;
-  'entity_hierarchy_id'?: string;
-  'id'?: string;
-  'parent_id'?: string;
-}
 export interface EntityPolygon {
   'code'?: string | null;
   'created_at': Date;
@@ -738,23 +705,6 @@ export interface EntityPolygonUpdate {
   'name'?: string;
   'polygon'?: string;
   'updated_at'?: Date;
-}
-export interface EntityRelation {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'id': string;
-  'parent_id': string;
-}
-export interface EntityRelationCreate {
-  'child_id': string;
-  'entity_hierarchy_id': string;
-  'parent_id': string;
-}
-export interface EntityRelationUpdate {
-  'child_id'?: string;
-  'entity_hierarchy_id'?: string;
-  'id'?: string;
-  'parent_id'?: string;
 }
 export interface ErrorLog {
   'api_request_log_id'?: string | null;
@@ -1281,7 +1231,6 @@ export interface Project {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
   'entity_id'?: string | null;
   'id': string;
   'image_url'?: string | null;
@@ -1296,7 +1245,6 @@ export interface ProjectCreate {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
   'entity_id'?: string | null;
   'image_url'?: string | null;
   'logo_url'?: string | null;
@@ -1309,7 +1257,6 @@ export interface ProjectUpdate {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_hierarchy_id'?: string | null;
   'entity_id'?: string | null;
   'id'?: string;
   'image_url'?: string | null;

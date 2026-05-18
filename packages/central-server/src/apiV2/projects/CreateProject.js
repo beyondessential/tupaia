@@ -48,12 +48,6 @@ export class CreateProject extends BESAdminCreateHandler {
         name,
       );
 
-      const { id: projectEntityHierarchyId } = await this.createEntityHierarchy(
-        transactingModels,
-        projectCode,
-        entityTypes,
-      );
-
       const { name: projectDashboardGroupName } = await this.createProjectDashboard(
         transactingModels,
         dashboardGroupName,
@@ -76,7 +70,6 @@ export class CreateProject extends BESAdminCreateHandler {
         default_measure: defaultMeasure,
         dashboard_group_name: projectDashboardGroupName,
         entity_id: projectEntityId,
-        entity_hierarchy_id: projectEntityHierarchyId,
       });
 
       await this.createProjectCountries(transactingModels, newProject.id, countries);
@@ -131,13 +124,6 @@ export class CreateProject extends BESAdminCreateHandler {
       code: `${projectCode}_project`,
       name: dashboardGroupName,
       root_entity_code: projectCode,
-    });
-  }
-
-  async createEntityHierarchy(models, projectCode, entityTypes) {
-    return models.entityHierarchy.create({
-      name: projectCode,
-      canonical_types: entityTypes ? `{${entityTypes.join(',')}}` : '{}',
     });
   }
 

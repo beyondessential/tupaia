@@ -23,7 +23,8 @@ export class ProjectRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.PROJECT;
 
   /**
-   * The countries which apply to this project
+   * The countries which apply to this project. TUP-3065: read from the declarative
+   * `project_country` join table that replaces the old entity_relation-based lookup.
    * @returns {Promise<EntityRecord[]>}
    */
   async countries() {
@@ -49,6 +50,8 @@ export class ProjectRecord extends DatabaseRecord {
 
   async hasAccess(accessPolicy) {
     if (accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP)) return true;
+    // TUP-3065: project's countries come from project_country now. Their `code`
+    // doubles as the country_code used by the access policy.
     const countries = await this.countries();
     return countries.some(country =>
       this.permission_groups.some(permissionGroup =>
@@ -119,12 +122,14 @@ export class ProjectModel extends DatabaseModel {
           p.logo_url,
           p.dashboard_group_name,
           p.default_measure,
-          p.config,
-          p.entity_hierarchy_id
+          p.config
         FROM
           project p
           LEFT JOIN entity e ON p.entity_id = e.id
           LEFT JOIN (
+            -- TUP-3065: project's entities are now its countries (via project_country),
+            -- not all hierarchy descendants. Sub-country entities live under
+            -- entity.project_id = p.id and are looked up separately when needed.
             SELECT
               project_id,
               json_agg(country_id) AS country_id
@@ -154,6 +159,8 @@ export class ProjectModel extends DatabaseModel {
     return await this.find(
       {
         [QUERY_CONJUNCTIONS.RAW]: {
+          // Pulls permission_group/country_code pairs from the project
+          // Returns any project where we have access to at least one of those pairs.
           sql: `(
 	          EXISTS (
 	            SELECT 1

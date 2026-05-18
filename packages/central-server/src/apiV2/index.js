@@ -138,7 +138,6 @@ import {
   EditDashboardMailingListEntry,
   GETDashboardMailingListEntries,
 } from './dashboardMailingListEntries';
-import { EditEntityHierarchy, GETEntityHierarchy } from './entityHierarchy';
 import { CreateTask, EditTask, GETTasks } from './tasks';
 import { CreateTaskComment, GETTaskComments } from './taskComments';
 import { GetDataTableTypes } from './dataTableTypes';
@@ -262,7 +261,6 @@ apiV2.get(
   '/externalDatabaseConnections/:recordId/test',
   useRouteHandler(TestExternalDatabaseConnection),
 );
-apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(GETEntityHierarchy));
 apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
 apiV2.get('/tasks/:recordId?', useRouteHandler(GETTasks));
@@ -354,7 +352,6 @@ apiV2.put('/me', useRouteHandler(EditUserForMe));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/entityHierarchy/:recordId', useRouteHandler(EditEntityHierarchy));
 apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
 apiV2.put('/surveys/:recordId', multipartJson(), useRouteHandler(EditSurvey));
 apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
