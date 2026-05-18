@@ -41,10 +41,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
 
   fetchAndFilterDataSourceEntitiesOfType = async (entityCode, entityType, options) => {
     const { dataSourceEntityFilter, ...restOfOptions } = options;
-    const entity = await this.models.entity.findOneByCodeInProject(
-      entityCode,
-      this.project?.id ?? null,
-    );
+    const entity = await this.models.entity.findOneByCodeInProject(entityCode, this.projectId);
 
     const allDataSourceEntities = await this.fetchDataSourceEntitiesOfType(
       entity,
