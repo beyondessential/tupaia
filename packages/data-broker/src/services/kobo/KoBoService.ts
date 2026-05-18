@@ -9,9 +9,6 @@ type PullSyncGroupResultsOptions = {
   dataServiceMapping: DataServiceMapping;
   organisationUnitCodes?: string[];
   startSubmissionTime?: string;
-  // TUP-3156: sub-country entity codes are duplicated per project; the caller
-  // (central-server kobo sync) passes the survey's project_id so we can scope
-  // the entity lookup in the translator.
   projectId?: string;
 };
 

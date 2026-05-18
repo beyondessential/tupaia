@@ -161,8 +161,6 @@ export class ProjectModel extends DatabaseModel {
         [QUERY_CONJUNCTIONS.RAW]: {
           // Pulls permission_group/country_code pairs from the project
           // Returns any project where we have access to at least one of those pairs.
-          // TUP-3065: country list now comes from project_country instead of
-          // entity_relation; the country code lives on the country entity itself.
           sql: `(
 	          EXISTS (
 	            SELECT 1
