@@ -169,9 +169,12 @@ Originally deferred behind product input; the ticket has now been refined with p
 | `central-server/kobo/startSyncWithKoBo.js` | 59 | ✅ Project-scoped via survey.project_id (PR #6790) |
 | `data-broker/src/services/kobo/KoBoTranslator.ts` | 18 | ✅ Project context threaded through DataServiceResolver (PR #6790) |
 | Superset (data-broker + central-server) | — | ✅ Audited — no entity-code lookups anywhere |
-| `central-server/database/utilities/getEntityIdFromClinicId.js` | 8 | ⏳ Blocked — pending decision on how DHIS2 instances associate with projects (will likely become `dhis_instance.project_id`) |
-| `central-server/dhis/pushers/entity/OrganisationUnitPusher.js` | 54, 87 | ⏳ Blocked — same |
-| `central-server/dhis/pushers/data/aggregate/AggregateDataPusher.js` | 110, 376 | ⏳ Blocked — same |
+| `central-server/database/utilities/getEntityIdFromClinicId.js` | 8 | ✅ Project-scoped via survey.project_id from caller (PR `f` — DHIS2 stack) |
+| `central-server/dhis/pushers/entity/OrganisationUnitPusher.js` | 54 | ✅ Documented safe — country code lookup, not duplicated (PR `f`) |
+| `central-server/dhis/pushers/entity/OrganisationUnitPusher.js` | 87 | ✅ Project-scoped via the facility's `entity.project_id` (PR `f`) |
+| `central-server/dhis/pushers/data/aggregate/AggregateDataPusher.js` | 110 | ⚠️ Residual risk — delete-flow path, `dhis_sync_log` doesn't carry project_id, survey response already deleted. Fix requires adding project_id to dhis_sync_log writes (separate ticket). |
+| `central-server/dhis/pushers/data/aggregate/AggregateDataPusher.js` | 376 | ⚠️ Residual risk — only fires for legacy sync log entries pre-dating entityId persistence. Same fix path as above. |
+| DHIS2 instance ↔ project association | — | 🆕 Scaffolded — `dhis_instance.project_id` column added (nullable, PR `f`). Admin panel UI + pusher routing wiring is a separate follow-up. |
 | Weather API | — | ⏳ Blocked — Tom to follow up on entity ID vs code |
 | Indicator | — | ⏳ Blocked — Tom to follow up on entity ID vs code |
 | Data Lake | — | ⏳ Blocked — Juliana to check |
