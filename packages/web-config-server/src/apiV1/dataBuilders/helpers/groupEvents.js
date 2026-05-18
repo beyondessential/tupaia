@@ -1,8 +1,6 @@
 import { getEventsThatSatisfyConditions } from './checkAgainstConditions';
 
 const getOrgUnits = async (models, { parentCode, type, projectId }) => {
-  // TUP-3156: project-scope the parent lookup — sub-country entity codes are
-  // duplicated per project, and the descendant walk that follows is project-scoped.
   const parentOrgUnit = await models.entity.findOneByCodeInProject(parentCode, projectId ?? null);
   return parentOrgUnit.getDescendantsOfType(projectId, type);
 };
@@ -82,10 +80,7 @@ const groupByAllOrgUnitParentNames = async (models, events, options, projectId) 
   await Promise.all(
     orgUnits.map(async parentOrgUnit => {
       const { code } = parentOrgUnit;
-      const childrenAndSelf = await parentOrgUnit.getDescendantsOfType(
-        projectId,
-        aggregationLevel,
-      );
+      const childrenAndSelf = await parentOrgUnit.getDescendantsOfType(projectId, aggregationLevel);
       childrenAndSelf.forEach(orgUnit => {
         allOrgUnitCodesByParentOrgUnitCode[orgUnit.code] = code;
       });

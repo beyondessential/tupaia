@@ -338,8 +338,6 @@ export default class extends DataAggregatingRouteHandler {
       return { [code]: [] };
     }
 
-    // TUP-3156: scope to the request's project — sub-country entity codes are
-    // duplicated per project.
     const entity = await this.models.entity.findOneByCodeInProject(
       entityCode,
       this.project?.id ?? null,
