@@ -1,4 +1,4 @@
-import { DataBrokerModelRegistry, Event } from '../../types';
+import { DataBrokerModelRegistry, Entity as EntityRecordFields, Event } from '../../types';
 import { KoboSubmission, QuestionMapping } from './types';
 
 export class KoBoTranslator {
@@ -8,14 +8,24 @@ export class KoBoTranslator {
     this.models = models;
   }
 
-  private async fetchEntityInfoFromKoBoAnswer(koboEntityCode: string) {
+  private async fetchEntityInfoFromKoBoAnswer(koboEntityCode: string, projectId?: string) {
     const entityMapping = await this.models.dataServiceEntity.findOne({
       'config->>kobo_id': koboEntityCode,
     });
     if (!entityMapping) {
       return { orgUnit: koboEntityCode, orgUnitName: koboEntityCode };
     }
-    const entity = await this.models.entity.findOne({ code: entityMapping.entity_code });
+    // TUP-3156: sub-country entity codes are duplicated per project, so look up
+    // scoped to the sync's project. Falls back to a bare lookup if the caller
+    // hasn't threaded projectId (no current callers, but keeps the signature safe).
+    // Cast because findOneByCodeInProject inherits its return type from
+    // BaseEntityModel (tsmodels), which loses the data-broker's Entity fields.
+    const entity = projectId
+      ? ((await this.models.entity.findOneByCodeInProject(
+          entityMapping.entity_code,
+          projectId,
+        )) as EntityRecordFields | null)
+      : await this.models.entity.findOne({ code: entityMapping.entity_code });
     if (!entity) {
       return { orgUnit: koboEntityCode, orgUnitName: koboEntityCode };
     }
@@ -26,6 +36,7 @@ export class KoBoTranslator {
     result: KoboSubmission,
     questionMapping: QuestionMapping,
     entityQuestion: string,
+    projectId?: string,
   ): Promise<Event & { assessor: string }> {
     const {
       _id: event,
@@ -41,7 +52,10 @@ export class KoBoTranslator {
       );
     }
 
-    const { orgUnit, orgUnitName } = await this.fetchEntityInfoFromKoBoAnswer(koboEntityCode);
+    const { orgUnit, orgUnitName } = await this.fetchEntityInfoFromKoBoAnswer(
+      koboEntityCode,
+      projectId,
+    );
     // Map kobo questions to tupaia question codes
     const dataValues: Event['dataValues'] = {};
     for (const [tupaiaQuestionCode, { koboQuestionCode, answerMap }] of Object.entries(
@@ -68,10 +82,11 @@ export class KoBoTranslator {
     results: KoboSubmission[],
     questionMapping: QuestionMapping,
     entityQuestion: string,
+    projectId?: string,
   ) {
     return Promise.all(
       results.map(result =>
-        this.translateSingleKoBoResult(result, questionMapping, entityQuestion),
+        this.translateSingleKoBoResult(result, questionMapping, entityQuestion, projectId),
       ),
     );
   }
