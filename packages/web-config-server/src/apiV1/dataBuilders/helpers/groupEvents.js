@@ -2,6 +2,7 @@ import { getEventsThatSatisfyConditions } from './checkAgainstConditions';
 
 const getOrgUnits = async (models, { parentCode, type, projectId }) => {
   const parentOrgUnit = await models.entity.findOneByCodeInProject(parentCode, projectId ?? null);
+  if (!parentOrgUnit) return [];
   return parentOrgUnit.getDescendantsOfType(projectId, type);
 };
 
