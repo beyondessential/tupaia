@@ -44,9 +44,6 @@ export class RouteHandler {
   async handleRequest() {
     // Fetch permissions
     const entityCode = this.query?.entityCode || this.query?.organisationUnitCode;
-    // TUP-3156: fetch project first so the entity lookup can be scoped — sub-country
-    // entity codes are duplicated per project. The project is also needed for
-    // permission checks below, so this just reorders existing work.
     this.project = await this.fetchAndCacheProject();
     this.entity = await this.models.entity.findOneByCodeInProject(
       entityCode,
@@ -101,9 +98,8 @@ export class RouteHandler {
           );
         }
 
-        const userPermissionGroups = await this.req.accessPolicy.getPermissionGroups(
-          allCountryCodes,
-        );
+        const userPermissionGroups =
+          await this.req.accessPolicy.getPermissionGroups(allCountryCodes);
         const userHasAccessToExcludedTypes = permissionGroups.some(permissionGroup =>
           userPermissionGroups.includes(permissionGroup),
         );
