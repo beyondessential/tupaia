@@ -205,7 +205,7 @@ const combineTextIndicators = (analytics, config) => {
 
 const getMetaDataFromOrgUnit = async (_, config, models) => {
   const { orgUnitCode, ancestorType, projectId } = config;
-  const baseEntity = await models.entity.findOne({ code: orgUnitCode });
+  const baseEntity = await models.entity.findOneByCodeInProject(orgUnitCode, projectId ?? null);
   if (!baseEntity) return 'Entity not found';
   const entity = ancestorType
     ? await baseEntity.getAncestorOfType(projectId, ancestorType)
