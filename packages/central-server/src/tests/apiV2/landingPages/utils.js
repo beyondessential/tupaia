@@ -14,18 +14,11 @@ export const setupProject = async models => {
     },
   ];
 
-  const PROJECT_ENTITY_HIERARCHIES = PROJECT_ENTITIES.map(project => ({
-    id: generateId(),
-    name: project.code,
-    canonical_types: '{country}',
-  }));
-
-  const TEST_PROJECTS = PROJECT_ENTITIES.map((project, index) => ({
+  const TEST_PROJECTS = PROJECT_ENTITIES.map(project => ({
     id: generateId(),
     permission_groups: '{Public}',
     code: project.code,
     entity_id: project.id,
-    entity_hierarchy_id: PROJECT_ENTITY_HIERARCHIES[index].id,
   }));
   const DL = await findOrCreateDummyCountryEntity(models, { code: 'DL' });
   const PROJECT_COUNTRIES = TEST_PROJECTS.map(project => ({
@@ -34,7 +27,6 @@ export const setupProject = async models => {
   }));
   await findOrCreateRecords(models, {
     entity: PROJECT_ENTITIES,
-    entityHierarchy: PROJECT_ENTITY_HIERARCHIES,
     project: TEST_PROJECTS,
     projectCountry: PROJECT_COUNTRIES,
   });

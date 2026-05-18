@@ -16,7 +16,6 @@ const rollbackRecords = async (models, projectCode) => {
   if (projectEntity !== null) {
     await models.entity.delete({ id: projectEntity.id });
   }
-  await models.entityHierarchy.delete({ name: projectCode });
 };
 
 describe('Editing a project', async () => {

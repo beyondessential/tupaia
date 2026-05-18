@@ -15,7 +15,6 @@ import {
   SurveyResponseModel,
 } from '@tupaia/server-boilerplate';
 import {
-  EntityParentChildRelationModel,
   QuestionModel,
   SurveyScreenComponentModel,
   SurveyScreenModel,
@@ -114,9 +113,6 @@ export interface TestSyncServerModelRegistry extends ModelRegistry {
 
   readonly syncLookup: SyncLookupModel;
   readonly country: CountryModel;
-  readonly entityHierarchy: EntityHierarchyModel;
-  readonly entityRelation: EntityRelationModel;
-  readonly entityParentChildRelation: EntityParentChildRelationModel;
   readonly optionSet: OptionSetModel;
   readonly option: OptionModel;
   readonly permissionGroup: PermissionGroupModel;

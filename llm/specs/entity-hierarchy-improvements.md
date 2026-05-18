@@ -1,13 +1,10 @@
-# TUP-3056 — Add project_id to entities and duplicate shared entities per project
+# Entity hierarchy improvements
 
-[Linear ticket](TUP-3056/add-project-id-to-entities-and-duplicate-shared-entities-per-project)
-
-> Originally tracked as RN-1853; renumbered to TUP-3056 after a Linear workspace
-> reorganisation. 
+Project-level spec covering the multi-ticket refactor from "shared entities + per-hierarchy joins" to "per-project entity copies + `entity.parent_id` + `project_country` bridge". Individual tickets in [Ticket Summary](#ticket-summary).
 
 ## Context
 
-Currently entities are shared across projects. Projects reference entities via `entity_id` (root entity) and `entity_hierarchy_id`. After this change, every entity row belongs to exactly one project. This accepts more data duplication in exchange for a much simpler and safer mental model.
+Entities used to be shared across projects, joined into hierarchies via `entity_relation` and `entity_parent_child_relation`. Projects pointed at an `entity_hierarchy_id` to scope walks. After this project lands, every sub-country entity row belongs to exactly one project (`entity.project_id` NOT NULL), hierarchy edges live on `entity.parent_id` for sub-country and on a new `project_country` junction for the project ↔ country bridge, and the three legacy tables (`entity_relation`, `entity_parent_child_relation`, `entity_hierarchy`) go away. We accept more data duplication in exchange for a much simpler and safer mental model: one project = one set of entities = one set of edges = one closure cache.
 
 ### Summary of prod data (60 projects, ~180k entities)
 
@@ -131,15 +128,7 @@ Map overlays and dashboards do not need duplication — they keep their existing
 
 ### Hierarchy walks (recursive CTEs)
 
-Audited the codebase. Exactly one site walks `entity.parent_id` recursively: `EntityParentChildRelationBuilder.getRelationsViaCanonical` in `packages/database/src/server/changeHandlers/entityHierarchyCacher/`. Used as the canonical fallback when no `entity_relation` exists at a hierarchy level.
-
-Post-migration this would return children across all projects. Fix is small: thread `project.id` through `rebuildRelationsForEntity → fetchAndCacheChildren → getRelationsViaCanonical` and add `project_id: project.id` to the `entity.find` criteria. **In scope for TUP-3056.**
-
-All other recursive walks of the hierarchy use `entity_parent_child_relation` filtered by `entity_hierarchy_id`, which is already project-scoped — unaffected:
-
-- `Entity.getEntitiesFromParentChildRelation` — recursive CTE on `entity_parent_child_relation`
-- `EntityHierarchySubtreeRebuilder.fetchAndCacheDescendants` — uses `entity_parent_child_relation`
-- `Project.countries()` — uses `entity_relation`
+Hierarchy walks are project-scoped recursive CTEs over a single edges subquery that unions sub-country `entity.parent_id` edges (filtered by the requested `project_id`) with `project_country` rows for the project↔country bridge — see `packages/database/src/core/modelClasses/projectHierarchyEdges.js`. The closure cache (`ancestor_descendant_relation`, keyed by `project_id` after TUP-3066a) is rebuilt per project from this same edges definition and used as the fast read path for `Entity.getAncestors/getDescendants/getChildren`.
 
 ---
 
@@ -147,33 +136,22 @@ All other recursive walks of the hierarchy use `entity_parent_child_relation` fi
 
 `project_id` is synced through to MediTrak / Datatrak clients. It is **not** added to `excludedFieldsFromSync`. Clients see a new column on entity records.
 
----
-
-## Hierarchy / relations table futures
-
-- **`entity_hierarchy` table**: kept as-is for TUP-3056. `entity_hierarchy_id` on project still maps a project to its hierarchy ID. Removing it is TUP-3066b's scope; the upstream code rename to `projectId` is TUP-3066a.
-- **Hierarchy semantics across the NULL/NOT-NULL `project_id` boundary**: not a long-term concern. [TUP-3065](TUP-3065/consolidate-hierarchy-to-parent-id-on-project-specific-entities) will remove `entity_parent_child_relation` entirely and consolidate hierarchy onto `entity.parent_id`. For TUP-3056, the existing relation rows continue to work as-is during the transition; the NULL / NOT-NULL distinction lives on `entity` rows, not on the relation rows themselves.
+Mobile sync (`Entity.buildSyncLookupQueryDetails`) currently still joins `entity_parent_child_relation` to compute the per-entity project list for the sync lookup. TUP-3067 owns swapping that to `entity.parent_id` + `project_country` + the direct `entity.project_id`; until 3067 lands, the legacy table writes are dead but the reads remain. TUP-3066b's rewrite of `buildSyncLookupQueryDetails` is staged on the 3066b branch and gated on 3067.
 
 ---
 
 ## Out of scope
 
 - **Removing project entities entirely.** Discussed and deferred. Project entities serve real purposes today (88 dashboards rooted at them + 226 project↔country relations in `entity_parent_child_relation`). Deferring until we're ready to handle dashboard rooting differently and lift the 226 relations into a `project_country` junction.
-- **`project_country` junction table.** Only needed once `entity_parent_child_relation` is removed. Belongs with [TUP-3066](TUP-3066/remove-entity-relation-and-entity-hierarchy-tables).
 - **Unbundling `map_overlay.country_codes` triple-role** (scoping vs permission vs project indirection). Juliana flagged this; not required under this approach.
-- **Removing `entity_parent_child_relation`** — [TUP-3065](TUP-3065/consolidate-hierarchy-to-parent-id-on-project-specific-entities).
-- **Removing `entity_hierarchy` and `entity_relation` tables** — [TUP-3066](TUP-3066/remove-entity-relation-and-entity-hierarchy-tables).
-- **Project-scoping all entity queries** — [TUP-3060](TUP-3060/ensure-all-entity-access-is-project-scoped). Bleeds into TUP-3056 only where callsites break; the bulk is its own ticket.
-
----
 
 ## Risks / things to watch
 
-- **`entity.code` is no longer unique post-migration.** Many callsites assume `findOne({ code })` returns at most one row. Will need a codebase audit (mostly TUP-3060 territory).
+- **`entity.code` is no longer unique post-migration.** Many callsites assume `findOne({ code })` returns at most one row. The hot paths were swept under TUP-3060; remaining callsites are catalogued in the [audit](#bare-entityfindone-code--audit) below and tracked by TUP-3156.
 - **Sync surface change.** `project_id` flows through to MediTrak / Datatrak clients. New column on entity records.
-- **Cache invalidation.** `EntityHierarchyCacher` and other materialised views may need rebuilding after the migration.
-- **Production deploy ordering.** This lands shortly after TUP-3053 (entity_polygon split) — second large schema migration on `entity` in quick succession. Coordinate deploy and rollback plans.
-- **Heavy data migration.** Roughly ~104k entity inserts plus ~397k survey_response updates. Rehearse on a staging clone before prod.
+- **Cache invalidation.** `ancestor_descendant_relation` is truncated by the TUP-3056 data migration; the bootstrap rebuilds it on next central-server start. See the [closure cache invalidation](#cross-cutting-tasks) note for the local-dev edge case.
+- **Production deploy ordering.** TUP-3056 landed shortly after TUP-3053 (entity_polygon split) — two large schema migrations on `entity` in quick succession. Watch for the same pattern when 3066b ships.
+- **Heavy data migration.** Roughly ~104k entity inserts plus ~397k survey_response updates. Rehearsed on a staging clone before prod (~5:24 dev run, similar order of magnitude on prod).
 
 ---
 
@@ -224,24 +202,22 @@ Old analytics paths still in use for some reports. Defer until apiV1 is touched.
 
 **C1: GIS Split & Entity Migration**
 
-| ID       | Title                                                                | Status         |
-| -------- | -------------------------------------------------------------------- | -------------- |
-| TUP-3053 | Schema migration: Create entity_geolocations table                   | Merged to epic |
-| TUP-3056 | Add project_id to entities and duplicate shared entities per project | In review (#6749) |
-| TUP-3060 | Ensure all entity access is project-scoped                           | In review (#6767) |
+| ID       | Title                                                        | Status |
+| -------- | ------------------------------------------------------------ | ------ |
+| TUP-3053 | Schema migration: Create entity_geolocations table           | Merged |
+| TUP-3056 | Add project_id to entities and duplicate shared entities per project | Merged |
+| TUP-3060 | Ensure all entity access is project-scoped                   | Merged |
 
 **C2: Hierarchy Remodel**
 
-| ID        | Title                                                                | Status            |
-| --------- | -------------------------------------------------------------------- | ----------------- |
-| TUP-3068  | Simplify ancestor_descendant_relations rebuild algorithm             | In review (#6777) |
-| TUP-3065  | Consolidate hierarchy to parent_id on project-specific entities      | In review (#6778, stacks on #6777) |
-| TUP-3066a | Rename hierarchyId → projectId (code + ancestor_descendant_relation schema) | Drafting (stacks on #6778) |
-| TUP-3066b | Drop entity_relation / entity_parent_child_relation / entity_hierarchy | Drafting (gated on TUP-3067) |
-| TUP-3067  | MediTrak compatibility layer                                         | Refined           |
-| TUP-3156  | External sync flows: project-scoping for entity code lookups         | Backlog (needs product input) |
-
-See [TUP-3066-refinement.md](./TUP-3066-refinement.md) for the 3066a/b split detail.
+| ID        | Title                                                        | Status                        |
+| --------- | ------------------------------------------------------------ | ----------------------------- |
+| TUP-3068  | Simplify ancestor_descendant_relations rebuild algorithm     | Merged                        |
+| TUP-3065  | Consolidate hierarchy to parent_id on project-specific entities | Merged                        |
+| TUP-3066a | Rename hierarchyId → projectId (code + ancestor_descendant_relation schema) | Merged                        |
+| TUP-3066b | Drop entity_relation / entity_parent_child_relation / entity_hierarchy | Done & Testing                |
+| TUP-3067  | MediTrak compatibility layer                                 | Refined (not started)         |
+| TUP-3156  | External sync flows: project-scoping for entity code lookups | Backlog (needs product input) |
 
 **C3: Admin Panel Project Scoping**
 
@@ -259,48 +235,19 @@ See [TUP-3066-refinement.md](./TUP-3066-refinement.md) for the 3066a/b split det
 | TUP-3061 | Update entity import for project-specific model | Refined |
 | TUP-3063 | GIS Data Import & Export                        | Refined |
 
-**C5: Onboarding**
-
-| ID       | Title                                             | Status |
-| -------- | ------------------------------------------------- | ------ |
-| TUP-1582 | Project setup: copy entities from another project |        |
-
-
-
 ## Project Plan
 
 ### Milestone 1 — server-side correct (test-ready)
 
- **This is the QA-able milestone.** Internal QA can run the new project-specific entity model end-to-end against the stacked PRs.
-
-- **TUP-3056 (#6749)** — in review.
-- **TUP-3065 (#6761, depends on 3056)** — in review. Bundles **TUP-3068** (closure-cache rebuild simplified to walk `entity.parent_id` + `project_country`; cache itself is kept as the read source).
-- **TUP-3060 (#6767, depends on 3065)** — in review; merged into the TUP-3065 branch for consolidated testing. `findOneByCodeInProject` helper, `project_country` bridge, EntitySearch rewrite, sync-server type plumbing.
+Server-side correctness against the new per-project entity model.
 
 ### Milestone 2 — safe for mobile + external sync (deploy-ready)
 
 - **TUP-3067** — MediTrak compatibility layer. Mobile sync still pulls `entity_parent_child_relation` and `entity_relation` rows; after 3065 those are dead writes server-side. Either translate parent_id walks into the legacy shapes at the sync API boundary, or ship a mobile build that knows the new shape. Currently estimated at 13 points — biggest remaining effort.
 - **TUP-3156** — external sync flows (DHIS2 push, MS1, data-broker, KoBo) doing bare entity-code lookups outside any request context. Needs product input on per-integration scoping (designated project? iterate per project? drop multi-project support?). DHIS2 is being phased out and LESMIS unsupported, so some of these may not need a real fix.
 
-### Milestone 3 — schema clean (cleanup)
-
-- **TUP-3066a** — `hierarchyId` → `projectId` rename across all hierarchy walk code; schema migration to rename `ancestor_descendant_relation.entity_hierarchy_id` → `project_id`. Can ship anytime after TUP-3065. Eliminates the per-traversal `findOneOrThrow({ entity_hierarchy_id })` lookup.
-- **TUP-3066b** — schema migration to drop `entity_relation`, `entity_parent_child_relation`, `entity_hierarchy`; remove the model classes; drop `project.entity_hierarchy_id`. Retire `/entityHierarchy/:id` admin routes. **Gated on TUP-3067** — mobile sync still pulls from `entity_parent_child_relation`. Mostly mechanical once 3067 has been verified in production.
-
-See [TUP-3066-refinement.md](./TUP-3066-refinement.md) for full detail.
-
-### Cross-cutting tasks
-
-- **Refresh `packages/database/schema/schema.sql`** — currently 71 migrations behind. Bites new dev environments and local validation (caused real grief while developing 3060). Worth doing once the migrations have stabilised, before the prod rehearsal.
-- **Production data-migration rehearsal** of 3056 on a dev clone, then prod with a monitored runbook (~5:24 on dev clone, prod is similar order of magnitude). Coordinate with the GIS-split (3053) deploy so we're not changing `entity` schema twice in quick succession.
-- **Closure cache invalidation** — the TUP-3056 data migration (`20260501000001-backfillProjectIdsAndDuplicateSharedEntities-modifies-data.js`) ends with `DELETE FROM ancestor_descendant_relation; DELETE FROM entity_parent_child_relation;` so on next central-server boot the bootstrap (`buildAncestorDescendantRelationIfEmpty`) sees an empty cache and runs `AncestorDescendantCacheBuilder.rebuildAll()` (~2–3 min on prod data). Without this clear step, a clone-of-prod keeps the pre-migration closure rows referencing entity ids that have been repointed — bootstrap short-circuits on "rows already exist," and entity-server's `getDescendants` returns wrong-project copies. Discovered during prod-clone QA on TUP-3065. No separate runbook step needed.
-- **Sync surface coordination** — explicitly remove `entity_parent_child_relation` from `initSyncComponents.js` / `runPostMigration` once 3067 is ready (currently deferred with a TODO pointing to 3067).
-
 ### Adjacent tracks (separate releases)
 
 - **C3** (admin-panel project scoping) — TUP-3054, TUP-3055 — depends on C1 + C2 server changes but ships independently.
 - **C4** (import/export) — TUP-3061, TUP-3062, TUP-3063, TUP-3064 — also depends on the new project-specific model.
 
-### TL;DR
-
-C1 + C2 are **at the test-ready milestone now** with three open PRs (#6749, #6761, #6767). Remaining engineering after that: **3067 + 3156 + 3066**, plus the **schema.sql refresh** and prod rehearsal.

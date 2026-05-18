@@ -17,7 +17,6 @@ const rollbackRecords = async (models, projectCode, projectName) => {
   if (projectEntity !== null) {
     await models.entity.delete({ id: projectEntity.id });
   }
-  await models.entityHierarchy.delete({ name: projectCode });
   if (permissionGroup) {
     await models.permissionGroup.delete({ name: `${projectName} Admin` });
     await models.userEntityPermission.delete({ permission_group_id: permissionGroup.id });
@@ -173,20 +172,6 @@ describe('Creating a project', async () => {
         const result = await models.entity.find({ name: TEST_PROJECT_INPUT.name, type: 'project' });
         expect(result.length).to.equal(1);
         expect(result[0].code).to.equal(TEST_PROJECT_INPUT.code);
-      });
-
-      it('creates a valid entity hierarchy record', async () => {
-        await app.grantAccess(BES_ADMIN_POLICY);
-
-        await app.post('projects', {
-          body: {
-            ...TEST_PROJECT_INPUT,
-          },
-        });
-
-        const result = await models.entityHierarchy.find({ name: TEST_PROJECT_INPUT.code });
-        expect(result.length).to.equal(1);
-        expect(result[0].name).to.equal(TEST_PROJECT_INPUT.code);
       });
 
       it('creates a new admin permission group for the project', async () => {

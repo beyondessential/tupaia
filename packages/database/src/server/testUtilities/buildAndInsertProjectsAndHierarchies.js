@@ -26,15 +26,13 @@ export const buildAndInsertProjectsAndHierarchies = async (models, projects) => 
       },
     );
 
-    const entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, { name: code });
-
     const project = await findOrCreateDummyRecord(
       models.project,
       { code },
-      { entity_id: projectEntity.id, entity_hierarchy_id: entityHierarchy.id, ...projectProps },
+      { entity_id: projectEntity.id, ...projectProps },
     );
 
-    createdProjects[i] = { project, projectEntity, entityHierarchy };
+    createdProjects[i] = { project, projectEntity };
   }
 
   // Pass 2 — entities. Tabulate which projects use each entity code so we can decide

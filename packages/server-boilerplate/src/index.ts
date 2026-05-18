@@ -64,8 +64,6 @@ export {
   DataElementRecord,
   DataTableModel,
   DataTableRecord,
-  EntityHierarchyModel,
-  EntityHierarchyRecord,
   EntityModel,
   EntityRecord,
   EntityFilter,

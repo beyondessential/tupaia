@@ -23,8 +23,6 @@ export const RECORDS = /** @type {const} */ ({
   DHIS_INSTANCE: 'dhis_instance',
   DHIS_SYNC_LOG: 'dhis_sync_log',
   DHIS_SYNC_QUEUE: 'dhis_sync_queue',
-  ENTITY_HIERARCHY: 'entity_hierarchy',
-  ENTITY_RELATION: 'entity_relation',
   ENTITY: 'entity',
   ERROR_LOG: 'error_log',
   EXTERNAL_DATABASE_CONNECTION: 'external_database_connection',
@@ -73,7 +71,6 @@ export const RECORDS = /** @type {const} */ ({
   SYNC_SESSION: 'sync_session',
   SYNC_DEVICE_TICK: 'sync_device_tick',
   SYNC_QUEUED_DEVICE: 'sync_queued_device',
-  ENTITY_PARENT_CHILD_RELATION: 'entity_parent_child_relation',
   ENTITY_POLYGON: 'entity_polygon',
 });
 
