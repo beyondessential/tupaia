@@ -69,6 +69,7 @@ export async function updateCountryEntities(
   countryName,
   entityObjects,
   pushToDhis = true,
+  projectId = null,
 ) {
   const countryCode = getCountryCode(countryName);
   const country = await transactingModels.country.findOrCreate(
@@ -86,6 +87,7 @@ export async function updateCountryEntities(
     defaultMetadata,
     countryCode,
     pushToDhis,
+    projectId,
   );
 
   await transactingModels.entity.findOrCreate(
@@ -132,7 +134,13 @@ export async function updateCountryEntities(
     }
     codes.push(code);
     const { parentGeographicalArea, parentEntity } =
-      (await getOrCreateParentEntity(transactingModels, entityObject, country, pushToDhis)) || {};
+      (await getOrCreateParentEntity(
+        transactingModels,
+        entityObject,
+        country,
+        pushToDhis,
+        projectId,
+      )) || {};
     if (entityType === transactingModels.entity.types.FACILITY) {
       await attemptFacilityUpsert(transactingModels, {
         parentEntity,

@@ -31,6 +31,7 @@ export async function getOrCreateParentEntity(
   entityObject,
   country,
   pushToDhis,
+  projectId = null,
 ) {
   const {
     district: districtName,
@@ -67,6 +68,7 @@ export async function getOrCreateParentEntity(
       defaultMetadata,
       code,
       pushToDhis,
+      projectId,
     );
     districtEntity = await transactingModels.entity.updateOrCreate(
       {
@@ -99,6 +101,7 @@ export async function getOrCreateParentEntity(
       defaultMetadata,
       code,
       pushToDhis,
+      projectId,
     );
     const subDistrictEntityObject = {
       name: subDistrictName,
@@ -122,7 +125,12 @@ export async function getOrCreateParentEntity(
   }
 
   if (parentCode) {
-    const parentEntity = await transactingModels.entity.findOne({ code: parentCode });
+    // TUP-3156 + TUP-3054: project-scoped when TUP-3054 plumbs projectId through;
+    // today projectId is null and findOneByCodeInProject falls back to bare findOne.
+    const parentEntity = await transactingModels.entity.findOneByCodeInProject(
+      parentCode,
+      projectId,
+    );
     if (!parentEntity) throw new Error(`No entity matching parent code ${parentCode}`);
     const parentGeographicalArea = await getGeographicalAreaFromEntity(
       parentEntity,
