@@ -24,6 +24,8 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
   });
   // Need to find all the data source org unit levels for the aggregated analytics endpoint,
   // otherwise all the data will be aggregated to the org unit
+  // TUP-3156: bare findOne on a duplicated-per-project code is safe here —
+  // downstream code only consumes entity.code (= the input code).
   const dataSourceEntities = entityAggregation
     ? await dhisApi.fetchDataSourceEntities(query.organisationUnitCode, entityAggregation)
     : [await models.entity.findOne({ code: query.organisationUnitCode })];

@@ -338,7 +338,12 @@ export default class extends DataAggregatingRouteHandler {
       return { [code]: [] };
     }
 
-    const entity = await this.models.entity.findOne({ code: entityCode });
+    // TUP-3156: scope to the request's project — sub-country entity codes are
+    // duplicated per project.
+    const entity = await this.models.entity.findOneByCodeInProject(
+      entityCode,
+      this.project?.id ?? null,
+    );
     const dhisApi = getDhisApiInstance({
       entityCode: this.entity.code,
       isDataRegional: dataServices?.[0]?.isDataRegional,

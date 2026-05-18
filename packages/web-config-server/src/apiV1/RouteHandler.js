@@ -44,12 +44,17 @@ export class RouteHandler {
   async handleRequest() {
     // Fetch permissions
     const entityCode = this.query?.entityCode || this.query?.organisationUnitCode;
-    this.entity = await this.models.entity.findOne({ code: entityCode });
+    // TUP-3156: fetch project first so the entity lookup can be scoped — sub-country
+    // entity codes are duplicated per project. The project is also needed for
+    // permission checks below, so this just reorders existing work.
+    this.project = await this.fetchAndCacheProject();
+    this.entity = await this.models.entity.findOneByCodeInProject(
+      entityCode,
+      this.project?.id ?? null,
+    );
     if (!this.entity) {
       throw new ValidationError(`Entity ${entityCode} could not be found`);
     }
-
-    this.project = await this.fetchAndCacheProject();
 
     await this.checkPermissions();
     // if a 'buildResponse' is defined by the subclass, run it and respond, otherwise assume the
