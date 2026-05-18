@@ -1,7 +1,8 @@
 import { getEventsThatSatisfyConditions } from './checkAgainstConditions';
 
 const getOrgUnits = async (models, { parentCode, type, projectId }) => {
-  const parentOrgUnit = await models.entity.findOne({ code: parentCode });
+  const parentOrgUnit = await models.entity.findOneByCodeInProject(parentCode, projectId ?? null);
+  if (!parentOrgUnit) return [];
   return parentOrgUnit.getDescendantsOfType(projectId, type);
 };
 
@@ -80,10 +81,7 @@ const groupByAllOrgUnitParentNames = async (models, events, options, projectId) 
   await Promise.all(
     orgUnits.map(async parentOrgUnit => {
       const { code } = parentOrgUnit;
-      const childrenAndSelf = await parentOrgUnit.getDescendantsOfType(
-        projectId,
-        aggregationLevel,
-      );
+      const childrenAndSelf = await parentOrgUnit.getDescendantsOfType(projectId, aggregationLevel);
       childrenAndSelf.forEach(orgUnit => {
         allOrgUnitCodesByParentOrgUnitCode[orgUnit.code] = code;
       });

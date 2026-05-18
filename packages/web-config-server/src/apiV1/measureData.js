@@ -338,7 +338,7 @@ export default class extends DataAggregatingRouteHandler {
       return { [code]: [] };
     }
 
-    const entity = await this.models.entity.findOne({ code: entityCode });
+    const entity = await this.models.entity.findOneByCodeInProject(entityCode, this.projectId);
     const dhisApi = getDhisApiInstance({
       entityCode: this.entity.code,
       isDataRegional: dataServices?.[0]?.isDataRegional,
