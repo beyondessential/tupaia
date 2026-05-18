@@ -161,40 +161,47 @@ Post-migration, sub-country entity codes are duplicated per project. A bare `fin
 
 ### TUP-3156 — external sync flows
 
-Run outside any request context. Per-integration scoping decision needed; deferred behind product input.
+Originally deferred behind product input; the ticket has now been refined with per-integration decisions.
 
-| File | Line |
-|---|---|
-| `central-server/database/utilities/getEntityIdFromClinicId.js` | 8 |
-| `central-server/ms1/startSyncWithMs1.js` | 80 |
-| `central-server/dhis/pushers/entity/OrganisationUnitPusher.js` | 54, 87 |
-| `central-server/dhis/pushers/data/aggregate/AggregateDataPusher.js` | 110, 376 |
-| `central-server/kobo/startSyncWithKoBo.js` | 59 |
-
-### Sub-country lookups — deferred (depends on TUP-3054 / SQL trigger work)
-
-| File | Line | Why deferred |
+| File | Line | Status |
 |---|---|---|
-| `central-server/apiV2/import/importUserPermissions.js` | 24, 53 | Wants `req.ctx.project.id` from the admin-panel global project filter (TUP-3054, in progress). Fixing now means a temporary fallback that has to be unwound. |
-| `central-server/apiV2/import/importEntities/getEntityMetadata.js` | 11 | Same blocker. |
-| `central-server/apiV2/import/importEntities/getOrCreateParentEntity.js` | 125 | Same blocker. |
-| `central-server/hooks/entityCreate.js` | 52, 67 | SQL trigger function — fix is `(project_id = NEW.project_id OR project_id IS NULL)`, not a function swap. Worth verifying behaviour against the prod clone before changing trigger logic. |
+| `central-server/ms1/startSyncWithMs1.js` | — | ✅ Deleted (PR #6789) — andrew confirmed no responses since 2023 |
+| `central-server/kobo/startSyncWithKoBo.js` | 59 | ✅ Project-scoped via survey.project_id (PR #6790) |
+| `data-broker/src/services/kobo/KoBoTranslator.ts` | 18 | ✅ Project context threaded through DataServiceResolver (PR #6790) |
+| Superset (data-broker + central-server) | — | ✅ Audited — no entity-code lookups anywhere |
+| `central-server/database/utilities/getEntityIdFromClinicId.js` | 8 | ⏳ Blocked — pending decision on how DHIS2 instances associate with projects (will likely become `dhis_instance.project_id`) |
+| `central-server/dhis/pushers/entity/OrganisationUnitPusher.js` | 54, 87 | ⏳ Blocked — same |
+| `central-server/dhis/pushers/data/aggregate/AggregateDataPusher.js` | 110, 376 | ⏳ Blocked — same |
+| Weather API | — | ⏳ Blocked — Tom to follow up on entity ID vs code |
+| Indicator | — | ⏳ Blocked — Tom to follow up on entity ID vs code |
+| Data Lake | — | ⏳ Blocked — Juliana to check |
+
+### Sub-country lookups — fallback in place, awaiting TUP-3054
+
+Temporary fallback wired in PR #6792: import endpoints read `req.query.projectCode` (currently always unset), resolve to `projectId`, and pass through to `findOneByCodeInProject`. Today the lookups remain bare (projectId null → findOneByCodeInProject falls back to bare findOne); they auto-scope once TUP-3054 plumbs `projectCode` through the admin-panel import requests.
+
+| File | Status |
+|---|---|
+| `central-server/apiV2/import/importUserPermissions.js` | ✅ Safe — validator restricts to `type='country'`, country codes are not duplicated. Documented inline. |
+| `central-server/apiV2/import/importEntities/getEntityMetadata.js` | ✅ Fallback in place |
+| `central-server/apiV2/import/importEntities/getOrCreateParentEntity.js` | ✅ Fallback in place |
+| `central-server/hooks/entityCreate.js` | ⏳ Out of scope — SQL trigger function, needs prod-clone behaviour check before changing. Separate PR. |
 
 ### Legacy web-config-server apiV1
 
-Old analytics paths still in use for some reports. Defer until apiV1 is touched.
+Old analytics paths still in use for some reports. Addressed in PR #6791.
 
-| File | Line |
+| File | Status |
 |---|---|
-| `web-config-server/src/apiV1/DataAggregatingRouteHandler.js` | 44 |
-| `web-config-server/src/apiV1/measureData.js` | 341 |
-| `web-config-server/src/apiV1/RouteHandler.js` | 47 |
-| `web-config-server/src/apiV1/measureBuilders/helpers.js` | 48 |
-| `web-config-server/src/apiV1/utils/fetchIndicatorValues/fetchAggregatedAnalyticsByDhisIds.js` | 29 |
-| `web-config-server/src/apiV1/dataBuilders/generic/compose/composePercentagesPerPeriodByOrgUnit.js` | 17 |
-| `web-config-server/src/apiV1/dataBuilders/helpers/calculateOperationForAnalytics.js` | 208 |
-| `web-config-server/src/apiV1/dataBuilders/helpers/mapAnalyticsToCountries.js` | 5 |
-| `web-config-server/src/apiV1/dataBuilders/helpers/groupEvents.js` | 4 |
+| `web-config-server/src/apiV1/RouteHandler.js` | ✅ Fixed — base class now project-scopes its entity lookup |
+| `web-config-server/src/apiV1/DataAggregatingRouteHandler.js` | ✅ Fixed — uses `this.project` from RouteHandler |
+| `web-config-server/src/apiV1/measureData.js` | ✅ Fixed — subclass of DataAggregatingRouteHandler, has `this.project` |
+| `web-config-server/src/apiV1/dataBuilders/helpers/groupEvents.js` | ✅ Fixed — projectId already in scope |
+| `web-config-server/src/apiV1/dataBuilders/helpers/calculateOperationForAnalytics.js` | ✅ Fixed — projectId already in scope |
+| `web-config-server/src/apiV1/measureBuilders/helpers.js` | ✅ Safe — consumes only `country_code`, identical across duplicates. Documented inline. |
+| `web-config-server/src/apiV1/dataBuilders/helpers/mapAnalyticsToCountries.js` | ✅ Safe — same |
+| `web-config-server/src/apiV1/utils/fetchIndicatorValues/fetchAggregatedAnalyticsByDhisIds.js` | ✅ Safe — consumes only `.code` (= input). Documented inline. |
+| `web-config-server/src/apiV1/dataBuilders/generic/compose/composePercentagesPerPeriodByOrgUnit.js` | ⏳ Residual risk — consumes `entity.name`, no project context on its call path. RN-1853 preserves names across duplicates so safe today; revisit if entity-rename workflows start producing per-project name drift. |
 
 
 
