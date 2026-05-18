@@ -26,7 +26,12 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
   // otherwise all the data will be aggregated to the org unit
   const dataSourceEntities = entityAggregation
     ? await dhisApi.fetchDataSourceEntities(query.organisationUnitCode, entityAggregation)
-    : [await models.entity.findOne({ code: query.organisationUnitCode })];
+    : [
+        await models.entity.findOneByCodeInProject(
+          query.organisationUnitCode,
+          projectId ?? null,
+        ),
+      ];
   const entityCodes = dataSourceEntities.map(({ code }) => code);
   const mappings = await models.dataServiceEntity.find({ entity_code: entityCodes });
   const entityIdToCode = {};
