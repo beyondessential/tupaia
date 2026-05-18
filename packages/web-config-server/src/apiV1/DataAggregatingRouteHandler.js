@@ -41,8 +41,6 @@ export class DataAggregatingRouteHandler extends RouteHandler {
 
   fetchAndFilterDataSourceEntitiesOfType = async (entityCode, entityType, options) => {
     const { dataSourceEntityFilter, ...restOfOptions } = options;
-    // TUP-3156: project-scope the entity lookup. `this.project` was populated by
-    // RouteHandler.handleRequest before any subclass buildResponse runs.
     const entity = await this.models.entity.findOneByCodeInProject(
       entityCode,
       this.project?.id ?? null,

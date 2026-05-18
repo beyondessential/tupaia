@@ -205,7 +205,6 @@ const combineTextIndicators = (analytics, config) => {
 
 const getMetaDataFromOrgUnit = async (_, config, models) => {
   const { orgUnitCode, ancestorType, projectId } = config;
-  // TUP-3156: project-scope the lookup — sub-country entity codes are duplicated per project.
   const baseEntity = await models.entity.findOneByCodeInProject(orgUnitCode, projectId ?? null);
   if (!baseEntity) return 'Entity not found';
   const entity = ancestorType
