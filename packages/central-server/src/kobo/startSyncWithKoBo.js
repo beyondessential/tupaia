@@ -56,8 +56,6 @@ const writeKoboDataToTupaia = async (transactingModels, koboData, syncGroupCode)
       if (responseData.eventDate > newSyncTime) {
         newSyncTime = responseData.eventDate;
       }
-      // TUP-3156: scope to the survey's project — sub-country entity codes are
-      // duplicated per project, so a bare findOne returns an arbitrary copy.
       const entity = await transactingModels.entity.findOneByCodeInProject(
         responseData.orgUnit,
         survey.project_id,
@@ -122,8 +120,6 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
 
     await validateSyncGroup(models, dataServiceSyncGroup);
 
-    // TUP-3156: pass the survey's project so the translator's entity lookups are
-    // project-scoped (sub-country entity codes are duplicated per project).
     const survey = await models.survey.findOne({ code: dataServiceSyncGroup.data_group_code });
 
     // Pull data from KoBo

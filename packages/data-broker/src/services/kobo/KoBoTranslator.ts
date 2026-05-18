@@ -15,11 +15,7 @@ export class KoBoTranslator {
     if (!entityMapping) {
       return { orgUnit: koboEntityCode, orgUnitName: koboEntityCode };
     }
-    // TUP-3156: sub-country entity codes are duplicated per project, so look up
-    // scoped to the sync's project. Falls back to a bare lookup if the caller
-    // hasn't threaded projectId (no current callers, but keeps the signature safe).
-    // Cast because findOneByCodeInProject inherits its return type from
-    // BaseEntityModel (tsmodels), which loses the data-broker's Entity fields.
+
     const entity = projectId
       ? ((await this.models.entity.findOneByCodeInProject(
           entityMapping.entity_code,

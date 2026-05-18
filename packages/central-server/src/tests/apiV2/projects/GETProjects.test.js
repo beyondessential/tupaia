@@ -37,7 +37,6 @@ const createTestData = async (models, projectCode, permissionGroup, countryEntit
       permission_groups: [permissionGroup],
     },
   );
-  // TUP-3065: project↔country mapping lives in project_country, not entity_relation.
   await findOrCreateDummyRecord(models.projectCountry, {
     project_id: project.id,
     country_id: countryEntityId,
