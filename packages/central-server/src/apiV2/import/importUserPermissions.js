@@ -64,9 +64,8 @@ async function create(req, transactingModels, items) {
       permission_group_id: permissionGroup.id,
     };
 
-    const existingRecord = await transactingModels.userEntityPermission.findOne(
-      userEntityPermissionData,
-    );
+    const existingRecord =
+      await transactingModels.userEntityPermission.findOne(userEntityPermissionData);
     if (existingRecord) {
       // Already added
       console.info(

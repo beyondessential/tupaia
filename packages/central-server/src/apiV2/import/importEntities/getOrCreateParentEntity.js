@@ -125,8 +125,6 @@ export async function getOrCreateParentEntity(
   }
 
   if (parentCode) {
-    // TUP-3156 + TUP-3054: project-scoped when TUP-3054 plumbs projectId through;
-    // today projectId is null and findOneByCodeInProject falls back to bare findOne.
     const parentEntity = await transactingModels.entity.findOneByCodeInProject(
       parentCode,
       projectId,
