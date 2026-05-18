@@ -170,6 +170,7 @@ export async function updateCountryEntities(
       defaultMetadata,
       code,
       pushToDhis,
+      projectId,
     );
     await transactingModels.entity.updateOrCreate(
       { code },

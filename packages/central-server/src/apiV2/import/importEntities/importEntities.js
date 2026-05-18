@@ -1,4 +1,4 @@
-import { respond, DatabaseError, UploadError } from '@tupaia/utils';
+import { respond, DatabaseError, UploadError, ValidationError } from '@tupaia/utils';
 import { populateCoordinatesForCountry } from './populateCoordinatesForCountry';
 import { updateCountryEntities } from './updateCountryEntities';
 import { extractEntitiesByCountryName } from './extractEntitiesByCountryName';
@@ -50,6 +50,9 @@ export async function importEntities(req, res) {
     const project = projectCode
       ? await models.project.findOne({ code: projectCode })
       : null;
+    if (projectCode && !project) {
+      throw new ValidationError(`Unknown projectCode: ${projectCode}`);
+    }
     const projectId = project?.id ?? null;
 
     try {
