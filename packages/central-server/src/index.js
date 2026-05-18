@@ -110,31 +110,29 @@ configureEnv();
    */
   startFeedScraper(models);
 
-  try {
-    await buildAncestorDescendantRelationIfEmpty(models);
-  } catch (error) {
-    winston.error(error.message);
-  }
-
   /**
    * If running via PM2, run migrations then notify that we are ready
    */
-  if (process.send) {
-    try {
+  try {
+    if (process.send) {
       await database.waitForChangeChannel();
       winston.info('Successfully connected to pubsub service');
       const dbMigrator = getDbMigrator();
       await dbMigrator.up();
       winston.info('Database migrations complete');
 
+      await buildEntityParentChildRelationIfEmpty(models);
+
       if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
         winston.info('Creating permissions based meditrak sync queue');
         // don't await this as it's not critical, and will hold up the process if it fails
         createPermissionsBasedMeditrakSyncQueue(database);
       }
-    } catch (error) {
-      winston.error(error.message);
+    } else {
+      await buildEntityParentChildRelationIfEmpty(models);
     }
+  } catch (error) {
+    winston.error(error.message);
   }
 
   /**
