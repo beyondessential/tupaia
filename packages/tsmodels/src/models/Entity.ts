@@ -58,7 +58,7 @@ export interface EntityModel extends Model<BaseEntityModel, Entity, EntityRecord
     criteria?: EntityFilter,
   ) => Promise<EntityRecord[]>;
   getParentFieldsByChildIdFromParentChildRelation: (
-    hierarchyId: string,
+    projectId: string,
     childIds: string[],
   ) => Promise<ParentFieldsByChildId>;
 }
