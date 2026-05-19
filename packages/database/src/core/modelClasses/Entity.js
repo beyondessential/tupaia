@@ -830,6 +830,41 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
+   * @param {EntityHierarchy['id']} hierarchyId
+   * @param {Entity['id'][]} childIds
+   * @returns {Promise<Record<Entity['id'], { parent_name?: Entity['name'], parent_code?: Entity['code'] }>>}
+   */
+  async getParentFieldsByChildIdFromParentChildRelation(hierarchyId, childIds) {
+    if (!childIds || childIds.length === 0) {
+      return {};
+    }
+
+    const rows = await this.database.executeSql(
+      `
+        SELECT
+          relation.child_id,
+          parent.name AS parent_name,
+          parent.code AS parent_code
+        FROM entity_parent_child_relation relation
+        JOIN entity parent ON parent.id = relation.parent_id
+        WHERE relation.entity_hierarchy_id = ?
+        AND relation.child_id IN ${SqlQuery.record(childIds)}
+      `,
+      [hierarchyId, ...childIds],
+    );
+
+    return Object.fromEntries(
+      rows.map(({ child_id: childId, parent_name: parentName, parent_code: parentCode }) => [
+        childId,
+        {
+          parent_name: parentName,
+          parent_code: parentCode,
+        },
+      ]),
+    );
+  }
+
+  /**
    * @param {Project['id']} projectId
    * @param {Entity['id']} entityId
    * @returns {Promise<Entity['name'] | undefined>}
