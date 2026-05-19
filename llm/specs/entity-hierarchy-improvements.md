@@ -155,53 +155,20 @@ Mobile sync (`Entity.buildSyncLookupQueryDetails`) currently still joins `entity
 
 ---
 
-## Bare `entity.findOne({ code })` audit
-
-Post-migration, sub-country entity codes are duplicated per project. A bare `findOne({ code })` returns an arbitrary copy. The fix pattern is `Entity.findOneByCodeInProject(code, projectId)` where project context is available.
-
 ### TUP-3156 — external sync flows
 
 Originally deferred behind product input; the ticket has now been refined with per-integration decisions.
 
-| File | Line | Status |
-|---|---|---|
-| `central-server/ms1/startSyncWithMs1.js` | — | ✅ Deleted (PR #6789) — andrew confirmed no responses since 2023 |
-| `central-server/kobo/startSyncWithKoBo.js` | 59 | ✅ Project-scoped via survey.project_id (PR #6790) |
-| `data-broker/src/services/kobo/KoBoTranslator.ts` | 18 | ✅ Project context threaded through DataServiceResolver (PR #6790) |
-| Superset (data-broker + central-server) | — | ✅ Audited — no entity-code lookups anywhere |
-| `central-server/database/utilities/getEntityIdFromClinicId.js` | 8 | ⏳ Blocked — pending decision on how DHIS2 instances associate with projects (will likely become `dhis_instance.project_id`) |
-| `central-server/dhis/pushers/entity/OrganisationUnitPusher.js` | 54, 87 | ⏳ Blocked — same |
-| `central-server/dhis/pushers/data/aggregate/AggregateDataPusher.js` | 110, 376 | ⏳ Blocked — same |
-| Weather API | — | ⏳ Blocked — Tom to follow up on entity ID vs code |
-| Indicator | — | ⏳ Blocked — Tom to follow up on entity ID vs code |
-| Data Lake | — | ⏳ Blocked — Juliana to check |
+| File                                                         | Line     | Status                                                       |
+| ------------------------------------------------------------ | -------- | ------------------------------------------------------------ |
+| `central-server/database/utilities/getEntityIdFromClinicId.js` | 8        | ⏳ Blocked — pending decision on how DHIS2 instances associate with projects (will likely become `dhis_instance.project_id`) |
+| `central-server/dhis/pushers/entity/OrganisationUnitPusher.js` | 54, 87   | ⏳ Blocked — same                                             |
+| `central-server/dhis/pushers/data/aggregate/AggregateDataPusher.js` | 110, 376 | ⏳ Blocked — same                                             |
+| Weather API                                                  | —        | ⏳ Blocked — Tom to follow up on entity ID vs code            |
+| Indicator                                                    | —        | ⏳ Blocked — Tom to follow up on entity ID vs code            |
+| Data Lake                                                    | —        | ⏳ Blocked — Juliana to check                                 |
 
-### Sub-country lookups — fallback in place, awaiting TUP-3054
 
-Temporary fallback wired in PR #6792: import endpoints read `req.query.projectCode` (currently always unset), resolve to `projectId`, and pass through to `findOneByCodeInProject`. Today the lookups remain bare (projectId null → findOneByCodeInProject falls back to bare findOne); they auto-scope once TUP-3054 plumbs `projectCode` through the admin-panel import requests.
-
-| File | Status |
-|---|---|
-| `central-server/apiV2/import/importUserPermissions.js` | ✅ Safe — validator restricts to `type='country'`, country codes are not duplicated. Documented inline. |
-| `central-server/apiV2/import/importEntities/getEntityMetadata.js` | ✅ Fallback in place |
-| `central-server/apiV2/import/importEntities/getOrCreateParentEntity.js` | ✅ Fallback in place |
-| `central-server/hooks/entityCreate.js` | ⏳ Out of scope — SQL trigger function, needs prod-clone behaviour check before changing. Separate PR. |
-
-### Legacy web-config-server apiV1
-
-Old analytics paths still in use for some reports. Addressed in PR #6791.
-
-| File | Status |
-|---|---|
-| `web-config-server/src/apiV1/RouteHandler.js` | ✅ Fixed — base class now project-scopes its entity lookup |
-| `web-config-server/src/apiV1/DataAggregatingRouteHandler.js` | ✅ Fixed — uses `this.project` from RouteHandler |
-| `web-config-server/src/apiV1/measureData.js` | ✅ Fixed — subclass of DataAggregatingRouteHandler, has `this.project` |
-| `web-config-server/src/apiV1/dataBuilders/helpers/groupEvents.js` | ✅ Fixed — projectId already in scope |
-| `web-config-server/src/apiV1/dataBuilders/helpers/calculateOperationForAnalytics.js` | ✅ Fixed — projectId already in scope |
-| `web-config-server/src/apiV1/measureBuilders/helpers.js` | ✅ Safe — consumes only `country_code`, identical across duplicates. Documented inline. |
-| `web-config-server/src/apiV1/dataBuilders/helpers/mapAnalyticsToCountries.js` | ✅ Safe — same |
-| `web-config-server/src/apiV1/utils/fetchIndicatorValues/fetchAggregatedAnalyticsByDhisIds.js` | ✅ Safe — consumes only `.code` (= input). Documented inline. |
-| `web-config-server/src/apiV1/dataBuilders/generic/compose/composePercentagesPerPeriodByOrgUnit.js` | ⏳ Residual risk — consumes `entity.name`, no project context on its call path. RN-1853 preserves names across duplicates so safe today; revisit if entity-rename workflows start producing per-project name drift. |
 
 
 
@@ -260,19 +227,15 @@ Server-side correctness against the new per-project entity model.
 
 ---
 
+
+
 ## Manual test plan — Milestone 1
 
 Two-phase manual test plan for verifying Milestone 1 (server-side correctness against the new per-project entity model). External integrations (KoBo, Meditrak, DHIS2) are out of scope — those belong to Milestone 2 and are tested separately.
 
 ### Phase 1 — Smoke test
 
-Goal: ~90 minutes, hit the riskiest paths, catch crashes and silent regressions before deep regression testing.
-
-**Pre-req**: epic merged + deployed to a staging env on a recent prod-clone DB.
-
 #### What "server-side correct" means for Milestone 1
-
-Tickets in scope: TUP-3053, TUP-3056, TUP-3060, TUP-3068, TUP-3065, TUP-3066a, TUP-3066b. The user-facing assertions:
 
 - Every sub-country entity belongs to exactly one project (`entity.project_id NOT NULL`).
 - `world` / `project` / `country` entities are shared (NULL `project_id`).
