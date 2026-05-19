@@ -28,7 +28,13 @@ export { DashboardRelationModel, DashboardRelationRecord } from './DashboardRela
 export { DataElementModel, DataElementRecord } from './DataElement';
 export { DataTableModel, DataTableRecord } from './DataTable';
 export { DebugLogModel, DebugLogRecord } from './DebugLog';
-export { EntityFilter, EntityFilterFields, EntityModel, EntityRecord } from './Entity';
+export {
+  EntityFilter,
+  EntityFilterFields,
+  EntityModel,
+  EntityRecord,
+  ParentFieldsByChildId,
+} from './Entity';
 export {
   ExternalDatabaseConnectionModel,
   ExternalDatabaseConnectionRecord,
