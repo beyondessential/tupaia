@@ -282,13 +282,8 @@ SELECT COUNT(*) FROM entity
  WHERE (metadata->>'orphaned')::boolean = true;
 -- expect: ~26,532 (matches pre-migration validation in this spec)
 
--- 1g. Anomalous repointed responses tagged
-SELECT COUNT(*) FROM survey_response
- WHERE (metadata->>'migrated_from_orphan_response')::boolean = true;
--- expect: ~44
-
--- 1h. entity_geolocations split (TUP-3053)
-SELECT COUNT(*) FROM entity_geolocations;
+-- 1h. entity_polygon split (TUP-3053)
+SELECT COUNT(*) FROM entity_polygon;
 -- expect: matches old entity.region count (no orphans)
 ```
 
