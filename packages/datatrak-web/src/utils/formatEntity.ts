@@ -43,7 +43,7 @@ const getParentFieldsByChildId = async (
 
   const childIds = [...new Set(entities.map(entity => entity.id))];
   const { model } = entities[0] as unknown as { model: EntityModel };
-  return model.getParentFieldsByChildIdFromParentChildRelation(ctx.hierarchyId, childIds);
+  return model.getParentFieldsByChildIdFromParentChildRelation(ctx.projectId, childIds);
 };
 
 export async function formatEntityForResponse(
