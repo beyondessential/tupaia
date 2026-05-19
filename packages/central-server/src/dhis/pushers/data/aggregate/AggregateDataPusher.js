@@ -107,7 +107,7 @@ export class AggregateDataPusher extends DataPusher {
     return this.wrapFetchInCache('organisationUnit', async () => {
       if (this.changeType === 'delete') {
         const { orgUnit } = await this.fetchDataFromSyncLog();
-        // TUP-3156: residual risk — dhis_sync_log doesn't carry project_id, and the
+        // dhis_sync_log doesn't carry project_id, and the
         // survey response that originally produced this entry has been deleted, so
         // there's no clean way to scope this lookup. For sub-country duplicated
         // entities this returns an arbitrary copy; downstream consumers use the
@@ -378,10 +378,6 @@ export class AggregateDataPusher extends DataPusher {
    */
   async addMatchingRecordsToSyncQueue(syncLogData) {
     const { orgUnit, period, questionId, surveyId } = syncLogData;
-    // TUP-3156: the bare lookup only fires for legacy sync log entries that
-    // pre-date entityId being stored. New writes always set entityId. Residual
-    // risk: legacy sub-country entries with duplicated codes may resolve to the
-    // wrong copy. See fetchOrganisationUnit above for the same caveat.
     const entityId =
       syncLogData.entityId || (await this.models.entity.findOne({ code: orgUnit })).id;
     const periodBounds = await this.fetchPeriodBounds(period);

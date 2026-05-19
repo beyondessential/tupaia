@@ -21,8 +21,6 @@ async function create(req, transactingModels, items) {
     entity_code: [
       constructRecordExistsWithCode(transactingModels.entity),
       async entityCode => {
-        // TUP-3156: bare findOne is safe here — the next line enforces
-        // type='country', and country codes are not duplicated per project.
         const entity = await transactingModels.entity.findOne({ code: entityCode });
         if (entity.type !== 'country') {
           throw new Error(
@@ -52,8 +50,6 @@ async function create(req, transactingModels, items) {
     } = item;
 
     const user = await transactingModels.user.findOne({ email });
-    // TUP-3156: bare findOne is safe — the validator above restricts entity_code
-    // to type='country', and country codes are not duplicated per project.
     const entity = await transactingModels.entity.findOne({ code: entityCode });
     const permissionGroup = await transactingModels.permissionGroup.findOne({
       name: permissionGroupName,
