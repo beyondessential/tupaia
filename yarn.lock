@@ -11549,19 +11549,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@slack/types@npm:^2.20.1":
-  version: 2.20.1
-  resolution: "@slack/types@npm:2.20.1"
-  checksum: 10c0/62f1ff4d387cf511316f45c18ce9beaa1d0989a063ede5b40458fa776d460417f49faafb6cf7312fe2a9a5c8dfeb5c39ab685b911332f117a8222708da6468d7
+"@slack/types@npm:^2.21.0":
+  version: 2.21.1
+  resolution: "@slack/types@npm:2.21.1"
+  checksum: 10c0/d18c6e0029b651a3f788a0751c3949b34c66caebf16d3d836b632d51f2e0f812d885a540485c25c314783ba5fbf690616476ec316a46d81be485301fe745df74
   languageName: node
   linkType: hard
 
-"@slack/web-api@npm:^7.15.1":
-  version: 7.15.1
-  resolution: "@slack/web-api@npm:7.15.1"
+"@slack/web-api@npm:^7.15.2":
+  version: 7.15.2
+  resolution: "@slack/web-api@npm:7.15.2"
   dependencies:
     "@slack/logger": "npm:^4.0.1"
-    "@slack/types": "npm:^2.20.1"
+    "@slack/types": "npm:^2.21.0"
     "@types/node": "npm:>=18"
     "@types/retry": "npm:0.12.0"
     axios: "npm:^1.15.0"
@@ -11572,7 +11572,7 @@ __metadata:
     p-queue: "npm:^6"
     p-retry: "npm:^4"
     retry: "npm:^0.13.1"
-  checksum: 10c0/69abd28f60805a90fa57851b20f856a4f2bc929b2863f1e434d9cec8a844a4dc0574720c8d5543aa860cd627013d5ccac969391580dbc4f05c95a21d77c2116f
+  checksum: 10c0/47976215aa31b89597443969966117c1a8579c76d682f92f68bd3243dc432a408162f9cc9c881e6cdf703334f944393e8e4f7ab6571ff0b3d0a65b752740e484
   languageName: node
   linkType: hard
 
@@ -13454,7 +13454,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/viz-test-tool@workspace:packages/viz-test-tool"
   dependencies:
-    "@slack/web-api": "npm:^7.15.1"
+    "@slack/web-api": "npm:^7.15.2"
     "@tupaia/api-client": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/types": "workspace:*"
@@ -16072,25 +16072,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.15.0":
-  version: 1.15.0
-  resolution: "axios@npm:1.15.0"
+"axios@npm:^1.15.0, axios@npm:^1.15.2":
+  version: 1.16.1
+  resolution: "axios@npm:1.16.1"
   dependencies:
-    follow-redirects: "npm:^1.15.11"
+    follow-redirects: "npm:^1.16.0"
     form-data: "npm:^4.0.5"
+    https-proxy-agent: "npm:^5.0.1"
     proxy-from-env: "npm:^2.1.0"
-  checksum: 10c0/47e0f860e98d4d7aa145e89ce0cae00e1fb0f1d2485f065c21fce955ddb1dba4103a46bd0e47acd18a27208a7f62c96249e620db575521b92a968619ab133409
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.15.2":
-  version: 1.15.2
-  resolution: "axios@npm:1.15.2"
-  dependencies:
-    follow-redirects: "npm:^1.15.11"
-    form-data: "npm:^4.0.5"
-    proxy-from-env: "npm:^2.1.0"
-  checksum: 10c0/4eeae0feeaa7fdc1ef24f81f8b378fdadedf4aebdd6bf224484675160f8744cf17b9b0d1c215279979940f7e8ce463beffa2f713099612e428eac238515c81d5
+  checksum: 10c0/2f77e37e6552bbff8a772d058fb09500198e9188c6b20dc799d82dbe12a8cb506f6eed4e4e62a9ba612a35cbab496faa26d68f9bff14a53af6d15c3e136391a7
   languageName: node
   linkType: hard
 
@@ -22978,7 +22968,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.15.11":
+"follow-redirects@npm:^1.16.0":
   version: 1.16.0
   resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
