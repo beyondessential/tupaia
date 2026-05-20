@@ -3,7 +3,7 @@ import MuiMenuIcon from '@material-ui/icons/Menu';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import { ErrorBoundary, VisuallyHidden, useId } from '@tupaia/ui-components';
+import { ErrorBoundary, VisuallyHidden, useAriaId } from '@tupaia/ui-components';
 import { useLogout } from '../../api/mutations';
 import { useLandingPage, useUser } from '../../api/queries';
 import { MODAL_ROUTES } from '../../constants';
@@ -116,9 +116,9 @@ export const UserMenu = () => {
   const menuPrimaryColor = primaryHexcode || theme.palette.background.default;
   const menuSecondaryColor = secondaryHexcode || theme.palette.text.primary;
 
-  const buttonId = useId();
+  const buttonId = useAriaId();
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const menuId = useId();
+  const menuId = useAriaId();
 
   return (
     <ErrorBoundary>

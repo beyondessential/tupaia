@@ -8,6 +8,14 @@ export interface EntityFilterFields extends Entity {
 
 export type EntityFilter = DbFilter<EntityFilterFields>;
 
+export type ParentFieldsByChildId = Record<
+  Entity['id'],
+  {
+    parent_name?: Entity['name'];
+    parent_code?: Entity['code'];
+  }
+>;
+
 // allow the possibility of passing in own fields
 export interface EntityRecord extends Entity, BaseEntityRecord {
   getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
@@ -43,4 +51,8 @@ export interface EntityModel extends Model<BaseEntityModel, Entity, EntityRecord
     entityIds: string[],
     criteria?: EntityFilter,
   ) => Promise<EntityRecord[]>;
+  getParentFieldsByChildIdFromParentChildRelation: (
+    hierarchyId: string,
+    childIds: string[],
+  ) => Promise<ParentFieldsByChildId>;
 }

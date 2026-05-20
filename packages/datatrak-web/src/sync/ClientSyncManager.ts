@@ -9,6 +9,7 @@ import {
   dropSnapshotTable,
   getModelsForPull,
   getModelsForPush,
+  hasDescendantPermissionChangeInSnapshot,
   hasSyncSnapshotRecords,
   saveChangesFromMemory,
   saveIncomingSnapshotChanges,
@@ -345,21 +346,30 @@ export class ClientSyncManager {
     return { pulledChangesCount };
   }
 
+  /**
+   * User’s access policy changes when:
+   * - a `user_entity_permission` linked to them is added/updated/deleted; or
+   * - a descendant `permission_group` they has access to is added/updated/deleted.
+   */
   async checkForPermissionChanges(sessionId: string) {
     const currentUserId = ensure(
       await this.models.localSystemFact.get(SyncFact.CURRENT_USER_ID),
       'Couldn’t check for permission changes. No one is logged in.',
     );
 
-    const hasPermissionChange = await hasSyncSnapshotRecords(
-      this.database,
-      sessionId,
-      undefined,
-      this.models.userEntityPermission.databaseRecord,
-      "data->>'user_id' = :userId",
-      { userId: currentUserId },
-    );
-    if (hasPermissionChange) {
+    const hasUserEntityPermissionChange = async () =>
+      await hasSyncSnapshotRecords(
+        this.database,
+        sessionId,
+        undefined,
+        this.models.userEntityPermission.databaseRecord,
+        "data->>'user_id' = :userId",
+        { userId: currentUserId },
+      );
+    const hasPermissionHierarchyChange = async () =>
+      await hasDescendantPermissionChangeInSnapshot(this.database, sessionId, currentUserId);
+
+    if ((await hasUserEntityPermissionChange()) || (await hasPermissionHierarchyChange())) {
       await this.updatePermissionsChanged(true);
     }
   }
