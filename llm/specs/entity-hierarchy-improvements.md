@@ -243,167 +243,18 @@ Two-phase manual test plan for verifying Milestone 1 (server-side correctness ag
 - Legacy tables `entity_relation`, `entity_parent_child_relation`, `entity_hierarchy` are gone.
 - Closure cache (`ancestor_descendant_relation`) is keyed by `project_id` and contains correct walks.
 
-#### Test 1 — Database invariants (~10 min)
-
-Run these as raw SQL against the staging DB. Each should return 0 rows or the expected count.
-
-```sql
--- 1a. Structural types have NULL project_id
-SELECT type, COUNT(*) FROM entity
- WHERE type IN ('world','project','country') AND project_id IS NOT NULL
- GROUP BY type;
--- expect: 0 rows
-
--- 1b. Sub-country types have NOT NULL project_id
-SELECT type, COUNT(*) FROM entity
- WHERE type NOT IN ('world','project','country') AND project_id IS NULL
- GROUP BY type;
--- expect: 0 rows
-
--- 1c. CHECK constraint exists
-SELECT conname FROM pg_constraint
- WHERE conrelid = 'entity'::regclass AND contype = 'c'
-   AND conname LIKE '%project_id%';
--- expect: at least one row
-
--- 1d. Composite uniqueness
-SELECT code, project_id, COUNT(*) FROM entity
- WHERE project_id IS NOT NULL
- GROUP BY code, project_id HAVING COUNT(*) > 1;
--- expect: 0 rows
-
--- 1e. Legacy tables dropped (TUP-3066b)
-SELECT table_name FROM information_schema.tables
- WHERE table_name IN ('entity_relation','entity_parent_child_relation','entity_hierarchy');
--- expect: 0 rows
-
--- 1f. Orphan entities tagged
-SELECT COUNT(*) FROM entity
- WHERE (metadata->>'orphaned')::boolean = true;
--- expect: ~26,532 (matches pre-migration validation in this spec)
-
--- 1h. entity_polygon split (TUP-3053)
-SELECT COUNT(*) FROM entity_polygon;
--- expect: matches old entity.region count (no orphans)
-```
-
-**Failure signal**: any row count not matching the spec's prod-data figures (±a small margin for staging-vs-prod drift).
-
-#### Test 2 — Closure cache integrity (~10 min)
-
-```sql
--- 2a. Cache populated for every active project
-SELECT p.code, p.id,
-       (SELECT COUNT(*) FROM ancestor_descendant_relation adr
-         WHERE adr.project_id = p.id) AS cache_rows
- FROM project p
- ORDER BY cache_rows;
--- expect: every project has nonzero rows; smallest projects have at least country-level rows
-
--- 2b. No orphaned cache rows
-SELECT COUNT(*) FROM ancestor_descendant_relation adr
- LEFT JOIN entity a ON a.id = adr.ancestor_id
- LEFT JOIN entity d ON d.id = adr.descendant_id
- WHERE a.id IS NULL OR d.id IS NULL;
--- expect: 0
-
--- 2c. Cache entries scope correctly — pick a Fiji-using project, verify Fiji districts in cache
-WITH p AS (SELECT id FROM project WHERE code = 'fanafana')  -- or any Fiji project
-SELECT COUNT(DISTINCT adr.descendant_id) FROM ancestor_descendant_relation adr
- JOIN entity e ON e.id = adr.descendant_id
- WHERE adr.project_id = (SELECT id FROM p) AND e.type = 'district';
--- expect: > 0
-
--- 2d. Heavy-shared country sanity check
-SELECT COUNT(DISTINCT adr.project_id) FROM ancestor_descendant_relation adr
- JOIN entity e ON e.id = adr.descendant_id
- WHERE e.code = 'FJ';
--- expect: 20 (Fiji appears in 20 projects)
-```
-
-**Failure signal**: empty caches, FK-orphaned rows, Fiji not in 20 projects.
-
-#### Test 3 — tupaia-web (modern app) (~20 min)
-
-The user-facing data viz app on `tupaia.org`. Hits `tupaia-web-server` → micro-servers (`entity-server`, `report-server`, `data-table-server`).
-
-For 2 projects that share at least one country (e.g. **Fanafana** + **Strive PNG**):
-
-1. Land on project home; drill country → district → facility.
-2. At each level open all dashboards in the side panel; check they render with data.
-3. Map view: load default overlay, switch to two more overlays.
-4. **Cross-project bleed check**: in URL bar, change the projectCode while keeping the same district code. Verify dashboards reload with the OTHER project's data, not a stale mix.
-5. Reports: open one tabular report and one chart report; verify they aren't empty.
-
-**Failure signal**: empty dashboards, 4xx/5xx from `entity-server` or `report-server`, data from one project visible while viewing another.
-
 #### Test 4 — Legacy tupaia.org via web-config-server (~15 min)
 
-Some old reports still resolve via `web-config-server` apiV1. The TUP-3156 stack rewrote the base classes — high-touch surface.
-
-1. Find a dashboard known to use a legacy `data_builder` (search admin-panel for builder names starting with `compose` / `analytics` / `mapAnalytics`).
-2. Load that dashboard from 2 different projects; verify both render.
-3. Check group-by-org-unit reports (uses `groupEvents.js` — newly added null guard): pick a report with `groupBy: allOrgUnitNames`. Load from one project, verify it returns data not an empty array.
-4. Map overlay using `measureData.js`: load any map overlay, switch overlay, verify it doesn't 500.
-
-**Failure signal**: "Entity X could not be found" toasts, empty arrays in network response, 500s from `/api/v1/measureData` or `/api/v1/report`.
-
-#### Test 5 — datatrak-web (~15 min)
-
-Internal-only flow (no external sync — that's Meditrak/KoBo territory and excluded).
-
-1. Login as a user with access to one project's entities; navigate the entity tree.
-2. Submit a survey response against a facility in **Project A**.
-3. In DB: `SELECT entity_id, project_id FROM survey_response WHERE id = '<just-created>';` joined to `entity` — confirm the response's entity is the project-A copy (not another project's copy of the same facility code).
-4. Repeat as a user with access to **Project B**, against a facility in B with the same `code` as one in A.
-5. Verify the two responses point at different `entity_id`s (different project copies).
-
-**Failure signal**: both responses end up on the same `entity_id`, or `entity_id` is null.
-
-#### Test 6 — admin-panel entity CRUD (~10 min)
-
-Excluding the project-filter UI (C3 / TUP-3054 — separate track).
-
-1. Find a sub-country entity duplicated across 2 projects (same `code`, different `project_id`).
-2. In admin-panel, edit the **name** of one copy. Save.
-3. In DB: verify only the one row's name changed; the other project's copy is untouched.
-4. Create a new sub-country entity through admin-panel — verify it has the correct `project_id` set (must be the project the admin is operating in).
-5. Try to create a sub-country entity with the same `code` + `project_id` as an existing one — composite unique constraint should reject it cleanly (not crash).
-
-**Failure signal**: cross-project name bleed, new entity with NULL `project_id`, unhandled 500 on duplicate insert.
+Found issue with country level visual
 
 #### Test 7 — Cross-project hierarchy isolation (~10 min)
-
-Sanity check the core invariant of Milestone 1: walks don't bleed.
-
-```sql
--- 7a. Pick any project. Its descendants should not include other projects' entities.
-WITH p AS (SELECT id FROM project WHERE code = 'fanafana')
-SELECT DISTINCT e.project_id, COUNT(*) FROM ancestor_descendant_relation adr
- JOIN entity e ON e.id = adr.descendant_id
- WHERE adr.project_id = (SELECT id FROM p)
-   AND e.type NOT IN ('world','project','country')
- GROUP BY e.project_id;
--- expect: exactly one row — descendants all share the project_id, or NULL for structural
-```
 
 Then via the API:
 
 1. `GET /entities/:projectCodeA/:entityCode/descendants` and `:projectCodeB/:entityCode/descendants` for the same entity code present in both projects.
 2. Verify the returned IDs do not overlap.
 
-**Failure signal**: descendants of project A include entity rows whose `project_id` ≠ A.
 
-#### Exit criteria for phase 1
 
-- All SQL invariants in Tests 1, 2, 7 pass.
-- All UI smoke flows in Tests 3–6 render without errors.
-- No "wrong project" data bleed observed anywhere.
-- Server logs (central-server, web-config-server, entity-server, report-server, datatrak-web-server) show no new error patterns in the test window.
 
-If green → proceed to phase 2 (detailed regression). If red → triage by which ticket introduced the regression (the per-PR commit boundary makes bisecting cheap).
-
-### Phase 2 — Detailed regression test
-
-_To be written._
 
