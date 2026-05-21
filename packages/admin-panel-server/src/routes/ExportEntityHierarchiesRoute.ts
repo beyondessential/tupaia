@@ -3,6 +3,7 @@ import type { Request } from 'express';
 import xlsx from 'xlsx';
 
 import { Route } from '@tupaia/server-boilerplate';
+import { sanitizeWorksheetName } from '@tupaia/utils';
 
 export interface ExportEntityHierarchiesRequest
   extends Request<
@@ -83,7 +84,7 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
         fields: ['name'],
       });
 
-      const sheetName = projectEntity?.name || hierarchy;
+      const sheetName = sanitizeWorksheetName(projectEntity?.name || hierarchy);
       const sheet = xlsx.utils.json_to_sheet(data, {
         header: [
           'grandparent name',
