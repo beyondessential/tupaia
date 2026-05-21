@@ -5,7 +5,7 @@ var type;
 var seed;
 
 /**
- * TUP-3066a. Renames `ancestor_descendant_relation.entity_hierarchy_id` to `project_id`.
+ * Renames `ancestor_descendant_relation.entity_hierarchy_id` to `project_id`.
  *
  * Each project has exactly one hierarchy, so the indirection through
  * `entity_hierarchy_id` is dead weight. After this migration the closure cache
@@ -75,5 +75,5 @@ exports.down = async function (db) {
 
 exports._meta = {
   version: 1,
-  targets: ['server', 'browser'],
+  targets: ['server'],
 };

@@ -5,7 +5,7 @@ var type;
 var seed;
 
 /**
- * RN-1853 schema migration. Adds `entity.project_id` and the supporting
+ *  Adds `entity.project_id` and the supporting
  * UNIQUE(code, project_id) constraint so the data migration that follows can repoint
  * rows and bulk-insert per-project duplicates.
  *
@@ -31,10 +31,17 @@ exports.up = async function (db) {
   // Drop the global UNIQUE(code) — sub-country codes will repeat across projects, so
   // it's superseded by UNIQUE(code, project_id) below. The dashboard FK that depends
   // on entity_code_key has to go first; after this migration dashboard.root_entity_code
-  // is a soft text reference (no longer enforced).
-  await db.runSql(
-    `ALTER TABLE dashboard DROP CONSTRAINT IF EXISTS dashboard_root_entity_code_fkey;`,
-  );
+  // is a soft text reference (no longer enforced). The DataTrak PWA's PGlite schema has
+  // no `dashboard` table, so guard the FK drop on the table's existence to keep this
+  // migration runnable on both the server and browser targets.
+  await db.runSql(`
+    DO $$
+    BEGIN
+      IF to_regclass('dashboard') IS NOT NULL THEN
+        ALTER TABLE dashboard DROP CONSTRAINT IF EXISTS dashboard_root_entity_code_fkey;
+      END IF;
+    END $$;
+  `);
   await db.runSql(`ALTER TABLE entity DROP CONSTRAINT IF EXISTS entity_code_key;`);
 
   // Apply UNIQUE(code, project_id) before the data migration runs. Postgres treats NULL
@@ -53,9 +60,14 @@ exports.down = async function (db) {
   await db.runSql(`ALTER TABLE entity DROP COLUMN IF EXISTS project_id;`);
   await db.runSql(`ALTER TABLE entity ADD CONSTRAINT entity_code_key UNIQUE (code);`);
   await db.runSql(`
-    ALTER TABLE dashboard
-      ADD CONSTRAINT dashboard_root_entity_code_fkey
-      FOREIGN KEY (root_entity_code) REFERENCES entity(code) ON UPDATE CASCADE ON DELETE RESTRICT;
+    DO $$
+    BEGIN
+      IF to_regclass('dashboard') IS NOT NULL THEN
+        ALTER TABLE dashboard
+          ADD CONSTRAINT dashboard_root_entity_code_fkey
+          FOREIGN KEY (root_entity_code) REFERENCES entity(code) ON UPDATE CASCADE ON DELETE RESTRICT;
+      END IF;
+    END $$;
   `);
 };
 

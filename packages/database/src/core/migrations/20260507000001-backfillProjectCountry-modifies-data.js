@@ -88,5 +88,5 @@ exports.down = async function (db) {
 
 exports._meta = {
   version: 1,
-  targets: ['server', 'browser'],
+  targets: ['server'],
 };
