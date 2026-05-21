@@ -39,18 +39,64 @@ const lookupExploreProject = async (db, t0) => {
   return exploreProjectId;
 };
 
+// Build a temp table mapping each sub-country entity to every project it
+// belongs to. Seeded from entity_parent_child_relation (the source of truth
+// pre-migration for "which project does an entity appear in") and expanded
+// by walking entity.parent_id upward, so that every sub-country ancestor of
+// an in-project entity also belongs to that project. Without this expansion,
+// projects that had EPCR shortcut entries (e.g. country → facility directly,
+// skipping sub_district) end up with descendants but no ancestors, leaving
+// per-project parent_id chains broken after duplication.
+const buildEntityProjectMap = async (db, t0) => {
+  await db.runSql(`
+    CREATE TEMP TABLE entity_in_project (
+      entity_id  TEXT NOT NULL,
+      project_id TEXT NOT NULL,
+      PRIMARY KEY (entity_id, project_id)
+    ) ON COMMIT DROP;
+
+    INSERT INTO entity_in_project (entity_id, project_id)
+    WITH RECURSIVE expanded AS (
+      -- Seed: every sub-country entity directly in a project's EPCR
+      SELECT DISTINCT entity.id AS entity_id, p.id AS project_id, 0 AS depth
+      FROM entity
+      JOIN entity_parent_child_relation epcr ON entity.id = epcr.child_id
+      JOIN project p ON p.entity_hierarchy_id = epcr.entity_hierarchy_id
+      WHERE entity.type NOT IN ('world', 'project', 'country')
+
+      UNION
+
+      -- Recursive: walk entity.parent_id upward, keeping each sub-country
+      -- ancestor in the same project's set
+      SELECT parent.id, e.project_id, e.depth + 1
+      FROM expanded e
+      JOIN entity child  ON child.id  = e.entity_id
+      JOIN entity parent ON parent.id = child.parent_id
+      WHERE parent.type NOT IN ('world', 'project', 'country')
+        AND e.depth < 20  -- safety cap; real depth is ~5
+    )
+    SELECT DISTINCT entity_id, project_id FROM expanded;
+
+    CREATE INDEX ON entity_in_project (entity_id);
+    CREATE INDEX ON entity_in_project (project_id);
+    ANALYZE entity_in_project;
+  `);
+  const countResult = await db.runSql(`SELECT count(*)::int AS n FROM entity_in_project;`);
+  log(
+    `Built entity_in_project map (${countResult.rows[0]?.n ?? '?'} (entity, project) rows)`,
+    t0,
+  );
+};
+
 const backfillSingleProjectEntities = async (db, t0) => {
   const result = await db.runSql(`
     UPDATE entity
     SET project_id = sub.project_id
       FROM (
-      SELECT entity.id AS entity_id, MIN(p.id) AS project_id
-      FROM entity
-      JOIN entity_parent_child_relation epcr ON entity.id = epcr.child_id
-      JOIN project p ON p.entity_hierarchy_id = epcr.entity_hierarchy_id
-      WHERE entity.type NOT IN ('world', 'project', 'country')
-      GROUP BY entity.id
-      HAVING count(DISTINCT p.id) = 1
+      SELECT entity_id, MIN(project_id) AS project_id
+      FROM entity_in_project
+      GROUP BY entity_id
+      HAVING count(DISTINCT project_id) = 1
     ) sub
     WHERE entity.id = sub.entity_id;
   `);
@@ -59,13 +105,10 @@ const backfillSingleProjectEntities = async (db, t0) => {
 
 const duplicateMultiProjectEntities = async (db, t0) => {
   const multiProjectEntities = await db.runSql(`
-    SELECT entity.id, array_agg(DISTINCT p.id ORDER BY p.id) AS project_ids
-    FROM entity
-           JOIN entity_parent_child_relation epcr ON entity.id = epcr.child_id
-           JOIN project p ON p.entity_hierarchy_id = epcr.entity_hierarchy_id
-    WHERE entity.type NOT IN ('world', 'project', 'country')
-    GROUP BY entity.id
-    HAVING count(DISTINCT p.id) > 1;
+    SELECT entity_id AS id, array_agg(DISTINCT project_id ORDER BY project_id) AS project_ids
+    FROM entity_in_project
+    GROUP BY entity_id
+    HAVING count(DISTINCT project_id) > 1;
   `);
   log(`Found ${multiProjectEntities.rows.length} multi-project entities`, t0);
 
@@ -135,6 +178,33 @@ const fixParentIdChains = async (db, t0) => {
       AND same_project_parent.id <> orig_parent.id;
   `);
   log(`Fixed parent_id chains (${result.rowCount ?? '?'} rows)`, t0);
+};
+
+// Sanity check: after fixParentIdChains, every sub-country entity should
+// either have a parent in the same project, or a structural (world/project/
+// country) parent. Any remaining cross-project parent_id is a migration bug
+// — fail loudly rather than silently produce broken closure caches.
+const assertNoCrossProjectParents = async (db, t0) => {
+  const result = await db.runSql(`
+    SELECT count(*)::int AS n
+    FROM entity child
+    JOIN entity parent ON parent.id = child.parent_id
+    WHERE child.project_id IS NOT NULL
+      AND parent.project_id IS NOT NULL
+      AND child.project_id <> parent.project_id;
+  `);
+  const n = result.rows[0]?.n ?? 0;
+  if (n > 0) {
+    throw new Error(
+      `RN-1853 migration aborted: ${n} entities still have cross-project parent_id after fixParentIdChains. ` +
+        `This means buildEntityProjectMap missed some required ancestors. ` +
+        `Inspect with: SELECT child.code, parent.code, child.project_id, parent.project_id ` +
+        `FROM entity child JOIN entity parent ON parent.id = child.parent_id ` +
+        `WHERE child.project_id IS NOT NULL AND parent.project_id IS NOT NULL ` +
+        `AND child.project_id <> parent.project_id LIMIT 20;`,
+    );
+  }
+  log(`Verified no cross-project parent_id remains`, t0);
 };
 
 const backfillOrphans = async (db, t0, exploreProjectId) => {
@@ -295,9 +365,11 @@ exports.up = async function (db) {
   log('Starting up data migration', t0);
 
   const exploreProjectId = await lookupExploreProject(db, t0);
+  await buildEntityProjectMap(db, t0);
   await backfillSingleProjectEntities(db, t0);
   await duplicateMultiProjectEntities(db, t0);
   await fixParentIdChains(db, t0);
+  await assertNoCrossProjectParents(db, t0);
   await backfillOrphans(db, t0, exploreProjectId);
   await refreshStatistics(db, t0);
   await repointSurveyResponses(db, t0);
