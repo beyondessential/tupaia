@@ -21,6 +21,7 @@ const UserName = styled(Typography)`
 `;
 
 const UserEmail = styled(Typography)`
+  color: ${props => props.theme.palette.text.hint};
   font-size: 0.6875rem;
   margin-block-start: 0.25rem;
   margin-block-end: 0.4rem;

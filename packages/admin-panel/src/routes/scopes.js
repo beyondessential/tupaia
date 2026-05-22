@@ -12,7 +12,6 @@ export const SINGLE_PROJECT_ROUTE_BASE = `/:${SINGLE_PROJECT_PATH_PARAM}`;
 
 export const buildSingleProjectBasePath = projectCode => (projectCode ? `/${projectCode}` : '');
 
-// Sidebar order: Single project on top, All data on bottom (per design).
 export const SECTIONS = [
   {
     id: 'single-project',
@@ -26,9 +25,6 @@ export const SECTIONS = [
 
 export const isInScope = (item, scope) => item?.scope === scope;
 
-// Returns top-level routes whose childViews include items in the given scope,
-// with childViews filtered to that scope only. Top-level routes that end up
-// with no childViews in scope are dropped.
 export const filterRoutesByScope = (routes, scope) =>
   routes
     .map(route => ({

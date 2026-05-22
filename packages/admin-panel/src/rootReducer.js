@@ -8,7 +8,6 @@ import { reducer as dataChangeListener } from './dataChangeListener';
 import { reducer as usedBy } from './usedBy';
 import { reducer as qrCode } from './qrCode';
 import { reducer as surveyResponse } from './surveyResponse';
-import { reducer as project } from './projects';
 
 const appReducer = combineReducers({
   tables,
@@ -19,7 +18,6 @@ const appReducer = combineReducers({
   usedBy,
   qrCode,
   surveyResponse,
-  project,
 });
 
 export const rootReducer = (state, action) => {

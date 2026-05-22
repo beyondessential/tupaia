@@ -36,13 +36,12 @@ const SectionsArea = styled.div`
 const Section = styled.section`
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  margin-block-end: 1rem;
+  margin-block-end: 0.8rem;
   ${props => props.$pinToBottom && 'margin-block-start: auto;'}
   ${props =>
     props.$bordered &&
     `border-block: 1px solid ${WHITE};
-     padding-block: 0.75rem;`}
+     padding-block: 0.5rem;`}
 `;
 
 const ItemList = styled(List)`
@@ -51,23 +50,15 @@ const ItemList = styled(List)`
   ${props => props.$indented && 'padding-inline-start: 0.75rem;'}
 `;
 
-const SectionLabel = styled.div`
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: ${WHITE}99; /* ~60% opacity */
-  padding-inline: 0.5rem;
-`;
-
 const NavLink = styled(BaseNavLink)`
   font-weight: ${props => props.theme.typography.fontWeightMedium};
   width: 100%;
-  height: 2.5rem;
   text-decoration: none;
   display: flex;
   align-items: center;
   border-radius: 4px;
-  padding: 0.625rem;
+  padding-block: 0.4rem;
+  padding-inline: 0.8rem;
   border: 1px solid transparent;
   white-space: nowrap;
   .MuiSvgIcon-root {

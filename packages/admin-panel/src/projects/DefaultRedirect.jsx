@@ -1,10 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
 
+import { useProjects } from '../api/queries';
 import { buildSingleProjectBasePath } from '../routes/scopes';
-import { selectSelectedProjectCode } from './selectors';
 
 const buildAllDataTarget = allDataRoutes => {
   if (allDataRoutes.length === 0) return null;
@@ -21,18 +20,19 @@ const buildSingleProjectTarget = (singleProjectRoutes, projectCode) => {
 };
 
 /**
- * Picks where to land the user when they hit `/`. Single project is the top
- * section in the sidebar, so prefer it if a project is selected; otherwise
- * fall back to all-data, then login. Renders nothing while waiting for the
- * project list to populate the selector.
+ * Picks where to land the user when they hit `/`. The selected project lives
+ * in the URL, so on a cold load there's nothing to remember — pick the first
+ * project for the single-project section, falling back to all-data, then
+ * login.
  */
-const DefaultRedirectComponent = ({ allDataRoutes, singleProjectRoutes, projectCode }) => {
-  const singleProjectTarget = buildSingleProjectTarget(singleProjectRoutes, projectCode);
-  if (singleProjectTarget) return <Navigate to={singleProjectTarget} replace />;
+export const DefaultRedirect = ({ allDataRoutes, singleProjectRoutes }) => {
+  const { data: projects, isLoading } = useProjects();
+  if (isLoading) return null;
 
-  // Single-project section exists but no project picked yet — wait for the
-  // selector to default-pick rather than dumping the user into all-data.
-  if (singleProjectRoutes.length > 0 && !projectCode) return null;
+  const firstProjectCode = projects?.[0]?.code ?? null;
+
+  const singleProjectTarget = buildSingleProjectTarget(singleProjectRoutes, firstProjectCode);
+  if (singleProjectTarget) return <Navigate to={singleProjectTarget} replace />;
 
   const allDataTarget = buildAllDataTarget(allDataRoutes);
   if (allDataTarget) return <Navigate to={allDataTarget} replace />;
@@ -40,18 +40,7 @@ const DefaultRedirectComponent = ({ allDataRoutes, singleProjectRoutes, projectC
   return <Navigate to="/login" replace />;
 };
 
-DefaultRedirectComponent.propTypes = {
+DefaultRedirect.propTypes = {
   allDataRoutes: PropTypes.array.isRequired,
   singleProjectRoutes: PropTypes.array.isRequired,
-  projectCode: PropTypes.string,
 };
-
-DefaultRedirectComponent.defaultProps = {
-  projectCode: null,
-};
-
-const mapStateToProps = state => ({
-  projectCode: selectSelectedProjectCode(state),
-});
-
-export const DefaultRedirect = connect(mapStateToProps)(DefaultRedirectComponent);

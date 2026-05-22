@@ -1,7 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Navigate, Route, Routes, useParams } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useParams } from 'react-router-dom';
 
 import { PrivateRoute } from './authentication';
 import { AppPageLayout, AuthLayout, Footer } from './layout';
@@ -19,7 +17,7 @@ import {
   SINGLE_PROJECT_SCOPE,
   filterRoutesByScope,
 } from './routes/scopes';
-import { DefaultRedirect, ProjectRouteScope, selectSelectedProjectCode } from './projects';
+import { DefaultRedirect, useSelectedProjectCode } from './projects';
 import {
   substituteRouteParams,
   useHasBesAdminAccess,
@@ -102,8 +100,9 @@ const renderSectionRoutes = (sectionRoutes, pathPrefix, hasBESAdminAccess) =>
     );
   });
 
-const AppComponent = ({ selectedProjectCode }) => {
+const App = () => {
   const hasBESAdminAccess = useHasBesAdminAccess();
+  const selectedProjectCode = useSelectedProjectCode();
 
   const userPermissionGroups = useUserPermissionGroups();
   const userHasPermissionGroup = useCallback(
@@ -182,7 +181,7 @@ const AppComponent = ({ selectedProjectCode }) => {
             }
           />
           {renderSectionRoutes(allDataRoutes, ALL_DATA_BASE_PATH, hasBESAdminAccess)}
-          <Route path={`:${SINGLE_PROJECT_PATH_PARAM}`} element={<ProjectRouteScope />}>
+          <Route path={`:${SINGLE_PROJECT_PATH_PARAM}`} element={<Outlet />}>
             {renderSectionRoutes(singleProjectRoutes, SINGLE_PROJECT_ROUTE_BASE, hasBESAdminAccess)}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
@@ -228,19 +227,5 @@ const AppComponent = ({ selectedProjectCode }) => {
     </Routes>
   );
 };
-
-AppComponent.propTypes = {
-  selectedProjectCode: PropTypes.string,
-};
-
-AppComponent.defaultProps = {
-  selectedProjectCode: null,
-};
-
-const mapStateToProps = state => ({
-  selectedProjectCode: selectSelectedProjectCode(state),
-});
-
-const App = connect(mapStateToProps)(AppComponent);
 
 export default App;

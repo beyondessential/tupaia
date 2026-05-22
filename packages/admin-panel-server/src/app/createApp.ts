@@ -170,10 +170,7 @@ export async function createApp(promptManager: PromptManager) {
     .use('hierarchies', forwardToEntityApi)
     .use('dataTableTypes', forwardToCentralApi)
     .use('surveyResponses', forwardToCentralApi)
-    .use('*', (one, two, three) => {
-      console.log('forwarding to central api');
-      return forwardToCentralApi(one, two, three);
-    });
+    .use('*', forwardToCentralApi);
 
   await builder.initialiseApiClient();
 

@@ -1,58 +1,74 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { MenuItem, Select, FormControl, CircularProgress } from '@material-ui/core';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 import { useProjects } from '../api/queries';
-import { setSelectedProject } from './actions';
-import { selectSelectedProject } from './selectors';
-import {
-  buildSingleProjectBasePath,
-  SINGLE_PROJECT_PATH_PARAM,
-} from '../routes/scopes';
-import { WHITE } from '../theme/colors';
+import { useSelectedProjectCode } from './useSelectedProject';
+import { SINGLE_PROJECT_PATH_PARAM } from '../routes/scopes';
+import { BLUE, LIGHT_BLACK, WHITE } from '../theme/colors';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.25rem 0.25rem 0.75rem;
+  margin-block-start: 0.5rem;
+  padding: 0.25rem 1rem 0.75rem;
 `;
 
 const Label = styled.div`
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: ${WHITE}cc; // 80% opacity
+  font-size: 0.875rem;
+  color: ${props => props.theme.palette.text.hint};
+  margin-block-end: 0.2rem;
 `;
 
 const StyledSelect = styled(Select)`
-  color: ${WHITE};
   font-size: 0.875rem;
-  background-color: ${WHITE}14; // ~8% opacity
-  border-radius: 4px;
-  padding-inline: 0.5rem;
 
   &::before,
-  &::after {
-    display: none;
+  &:hover:not(.Mui-disabled)::before {
+    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
   }
 
-  .MuiSelect-icon {
-    color: ${WHITE};
+  &::after {
+    border-bottom: 1px solid ${BLUE};
+  }
+
+  .MuiSelect-select:focus {
+    background-color: transparent;
   }
 
   .MuiSelect-select {
-    padding-block: 0.5rem;
-    padding-inline-end: 1.5rem;
-
-    &:focus {
-      background-color: transparent;
-    }
+    padding-block: 1rem;
   }
 `;
+
+const StyledMenuItem = styled(MenuItem)`
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  color: ${WHITE};
+
+  &:hover,
+  &.Mui-selected,
+  &.Mui-selected:hover {
+    background-color: transparent;
+  }
+`;
+
+const menuProps = {
+  anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+  transformOrigin: { vertical: 'top', horizontal: 'left' },
+  getContentAnchorEl: null,
+  PaperProps: {
+    style: {
+      backgroundColor: LIGHT_BLACK,
+      border: `1px solid ${BLUE}`,
+      borderRadius: 3,
+      marginTop: 2,
+    },
+  },
+};
 
 const Loading = styled.div`
   display: flex;
@@ -63,45 +79,30 @@ const Loading = styled.div`
   padding-block: 0.5rem;
 `;
 
-// If currently inside the single-project section (URL begins with the active
-// project code), swap that segment for the new code. Otherwise leave the URL
-// alone — selecting a project from an all-data screen just primes the
-// selection without navigating away.
-const buildProjectSwapUrl = (pathname, search, hash, fromCode, toCode) => {
-  if (!fromCode || !toCode) return null;
+// Swap the project-code segment when already on a project URL; otherwise enter
+// the new project's section by navigating to /:code.
+const buildTargetUrl = (pathname, search, hash, fromCode, toCode) => {
   const segments = pathname.split('/');
-  if (segments[1] !== fromCode) return null;
-  segments[1] = toCode;
-  return `${segments.join('/')}${search}${hash}`;
+  if (fromCode && segments[1] === fromCode) {
+    segments[1] = toCode;
+    return `${segments.join('/')}${search}${hash}`;
+  }
+  return `/${toCode}`;
 };
 
-const ProjectSelectorComponent = ({ collapsed, selectedProject, onSelectProject }) => {
+export const ProjectSelector = ({ collapsed }) => {
   const { data: projects, isLoading } = useProjects();
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    if (!selectedProject && projects && projects.length > 0) {
-      onSelectProject(projects[0]);
-    }
-  }, [selectedProject, projects, onSelectProject]);
+  const selectedProjectCode = useSelectedProjectCode();
 
   const handleChange = event => {
     const code = event.target.value;
-    const project = projects?.find(p => p.code === code);
-    if (!project) return;
-    const previousCode = selectedProject?.code;
-    onSelectProject(project);
-    const swapUrl = buildProjectSwapUrl(
-      location.pathname,
-      location.search,
-      location.hash,
-      previousCode,
-      project.code,
+    if (!code || code === selectedProjectCode) return;
+    navigate(
+      buildTargetUrl(location.pathname, location.search, location.hash, selectedProjectCode, code),
+      { replace: true },
     );
-    if (swapUrl) {
-      navigate(swapUrl, { replace: true });
-    }
   };
 
   if (collapsed) {
@@ -129,19 +130,16 @@ const ProjectSelectorComponent = ({ collapsed, selectedProject, onSelectProject 
       <Label>Project</Label>
       <FormControl fullWidth>
         <StyledSelect
-          value={selectedProject?.code ?? ''}
+          value={selectedProjectCode ?? ''}
           onChange={handleChange}
-          MenuProps={{
-            anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
-            transformOrigin: { vertical: 'top', horizontal: 'left' },
-            getContentAnchorEl: null,
-          }}
+          MenuProps={menuProps}
+          IconComponent={ExpandMore}
           inputProps={{ 'aria-label': 'Select project' }}
         >
           {projects.map(project => (
-            <MenuItem key={project.code} value={project.code}>
+            <StyledMenuItem key={project.code} value={project.code}>
               {project.name || project.code}
-            </MenuItem>
+            </StyledMenuItem>
           ))}
         </StyledSelect>
       </FormControl>
@@ -149,30 +147,12 @@ const ProjectSelectorComponent = ({ collapsed, selectedProject, onSelectProject 
   );
 };
 
-ProjectSelectorComponent.propTypes = {
+ProjectSelector.propTypes = {
   collapsed: PropTypes.bool,
-  selectedProject: PropTypes.shape({
-    code: PropTypes.string,
-    name: PropTypes.string,
-  }),
-  onSelectProject: PropTypes.func.isRequired,
 };
 
-ProjectSelectorComponent.defaultProps = {
+ProjectSelector.defaultProps = {
   collapsed: false,
-  selectedProject: null,
 };
 
-const mapStateToProps = state => ({
-  selectedProject: selectSelectedProject(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  onSelectProject: project => dispatch(setSelectedProject(project)),
-});
-
-export const ProjectSelector = connect(mapStateToProps, mapDispatchToProps)(ProjectSelectorComponent);
-
-// Route param name kept here so consumers don't need to import scopes directly
-// when forwarding to navigation logic.
 export { SINGLE_PROJECT_PATH_PARAM };

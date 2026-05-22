@@ -10,6 +10,7 @@ import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurvey
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
 import { ArchiveSurveyResponseModal } from '../../surveyResponse';
+import { useSelectedProjectCode } from '../../projects';
 import { getExplodedFields, useHasBesAdminAccess, useHasVizBuilderAccess } from '../../utilities';
 
 const useEndpoint = (endpoint, details, params) => {
@@ -59,6 +60,7 @@ export const ResourcePage = ({
   const hasVizBuilderAccess = useHasVizBuilderAccess();
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
+  const selectedProjectCode = useSelectedProjectCode();
 
   // assume the first nested view is the one we want to link to and any others would be direct linked to
   const { path, getHasNestedView } = nestedViews?.[0] || {};
@@ -118,7 +120,7 @@ export const ResourcePage = ({
         getNestedViewLink={getNestedViewLink}
         basePath={basePath}
         actionLabel={actionLabel}
-        key={updatedEndpoint}
+        key={`${updatedEndpoint}-${selectedProjectCode ?? ''}`}
       />
       <EditModal
         onProcessDataForSave={onProcessDataForSave}

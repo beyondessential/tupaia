@@ -1,7 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-
 import { stringifyQuery } from '@tupaia/utils';
-
 import { get } from '../../VizBuilderApp/api';
 
 const PROJECT_LIST_COLUMNS = ['project.code', 'project.id', 'entity.name'];

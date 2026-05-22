@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { IconButton } from '@material-ui/core';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
@@ -8,7 +7,7 @@ import { labelToId } from '../utilities';
 import { NavPanel } from './navigation';
 import { CaretLeftIcon } from '../icons';
 import { NAV_PANEL_CLOSED_WIDTH, NAV_PANEL_OPEN_WIDTH } from './navigation/NavPanel';
-import { ProjectSelector, selectSelectedProjectCode } from '../projects';
+import { ProjectSelector, useSelectedProjectCode } from '../projects';
 import { ALL_DATA_BASE_PATH, SECTIONS, buildSingleProjectBasePath } from '../routes/scopes';
 
 const PageWrapper = styled.div`
@@ -70,14 +69,14 @@ const buildItem = (route, sectionBasePath, sectionId) => {
   };
 };
 
-const AppPageLayoutComponent = ({
+export const AppPageLayout = ({
   allDataRoutes,
   singleProjectRoutes,
-  selectedProjectCode,
   logo,
   homeLink,
   profileLink,
 }) => {
+  const selectedProjectCode = useSelectedProjectCode();
   const [navOpen, setNavOpen] = useState(true);
   const toggleOpen = () => {
     setNavOpen(!navOpen);
@@ -130,7 +129,7 @@ const AppPageLayoutComponent = ({
   );
 };
 
-AppPageLayoutComponent.propTypes = {
+AppPageLayout.propTypes = {
   allDataRoutes: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
@@ -143,7 +142,6 @@ AppPageLayoutComponent.propTypes = {
       path: PropTypes.string.isRequired,
     }),
   ),
-  selectedProjectCode: PropTypes.string,
   logo: PropTypes.shape({
     url: PropTypes.string.isRequired,
     alt: PropTypes.string.isRequired,
@@ -155,10 +153,9 @@ AppPageLayoutComponent.propTypes = {
   }),
 };
 
-AppPageLayoutComponent.defaultProps = {
+AppPageLayout.defaultProps = {
   allDataRoutes: [],
   singleProjectRoutes: [],
-  selectedProjectCode: null,
   logo: {
     url: '/admin-panel-logo-white.svg',
     alt: 'Tupaia Admin Panel Logo',
@@ -166,9 +163,3 @@ AppPageLayoutComponent.defaultProps = {
   homeLink: '/',
   profileLink: null,
 };
-
-const mapStateToProps = state => ({
-  selectedProjectCode: selectSelectedProjectCode(state),
-});
-
-export const AppPageLayout = connect(mapStateToProps)(AppPageLayoutComponent);

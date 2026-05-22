@@ -1,10 +1,9 @@
 import { useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { useQueryClient } from '@tanstack/react-query';
-import { selectSelectedProjectCode } from './selectors';
+import { useSelectedProjectCode } from './useSelectedProject';
 
-const ProjectQueryInvalidatorComponent = ({ projectCode }) => {
+export const ProjectQueryInvalidator = () => {
+  const projectCode = useSelectedProjectCode();
   const queryClient = useQueryClient();
   const isFirstRun = useRef(true);
 
@@ -18,17 +17,3 @@ const ProjectQueryInvalidatorComponent = ({ projectCode }) => {
 
   return null;
 };
-
-ProjectQueryInvalidatorComponent.propTypes = {
-  projectCode: PropTypes.string,
-};
-
-ProjectQueryInvalidatorComponent.defaultProps = {
-  projectCode: null,
-};
-
-const mapStateToProps = state => ({
-  projectCode: selectSelectedProjectCode(state),
-});
-
-export const ProjectQueryInvalidator = connect(mapStateToProps)(ProjectQueryInvalidatorComponent);

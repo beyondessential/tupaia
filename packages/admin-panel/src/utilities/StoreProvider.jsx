@@ -4,11 +4,6 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { rootReducer } from '../rootReducer';
-import {
-  selectSelectedProject,
-  writePersistedProject,
-  setCurrentProjectId,
-} from '../projects';
 
 const initialState = {};
 const enhancers = [];
@@ -24,17 +19,6 @@ export const StoreProvider = React.memo(({ children, api }) => {
   const middleware = [thunk.withExtraArgument({ api })];
   const composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers);
   const store = createStore(rootReducer, initialState, composedEnhancers);
-
-  let lastPersistedProject = selectSelectedProject(store.getState());
-  setCurrentProjectId(lastPersistedProject?.id ?? null);
-  store.subscribe(() => {
-    const project = selectSelectedProject(store.getState());
-    if (project !== lastPersistedProject) {
-      lastPersistedProject = project;
-      writePersistedProject(project);
-      setCurrentProjectId(project?.id ?? null);
-    }
-  });
 
   api.injectReduxStore(store);
 

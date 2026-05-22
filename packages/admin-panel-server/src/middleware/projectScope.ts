@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-export const PROJECT_ID_PARAM = 'projectId';
+export const PROJECT_CODE_PARAM = 'projectCode';
 
 type Project = { id: string; code: string };
 type ProjectRef = { id: string };
@@ -35,13 +35,6 @@ const RULES: Record<string, ProjectScopeRule> = {
       return projectId ? { id: projectId } : null;
     },
     bodyOwnership: async body => projectIdFromBody(body),
-  },
-  projects: {
-    // The single-project view shows only the active project as a single row.
-    filter: project => ({ 'project.id': project.id }),
-    // A project record's own id IS its project id.
-    ownership: async id => ({ id }),
-    // POST creates a new project — no parent project to validate against.
   },
   surveyResponses: {
     filter: project => ({ 'survey.project_id': project.id }),
@@ -78,28 +71,25 @@ const isMutationOnId = (method: string, segments: string[]) =>
 export const applyProjectScope = async (req: Request, res: Response, next: NextFunction) => {
   const host = req.headers.host ?? 'localhost';
   const url = new URL(req.originalUrl, `http://${host}`);
-  const projectId = url.searchParams.get(PROJECT_ID_PARAM);
+  const projectCode = url.searchParams.get(PROJECT_CODE_PARAM);
   const segments = splitPath(url.pathname);
   const resourceKey = segments[0] ?? '';
   const rule = RULES[resourceKey];
 
-  // Always strip projectId before forwarding — central-server has no concept of it.
-  url.searchParams.delete(PROJECT_ID_PARAM);
+  // Always strip projectCode before forwarding — central-server has no concept of it.
+  url.searchParams.delete(PROJECT_CODE_PARAM);
 
-  if (!rule) {
+  // No rule or no project context → forward unchanged. Absent projectCode is
+  // an explicit "all-data" view; scoped resources see cross-project data.
+  if (!rule || !projectCode) {
     rewriteRequestUrl(req, url);
     return next();
   }
 
-  if (!projectId) {
-    res.status(400).json({ error: `Missing required query param: ${PROJECT_ID_PARAM}` });
-    return undefined;
-  }
-
   try {
-    const project = await req.models.project.findOne({ id: projectId });
+    const project = await req.models.project.findOne({ code: projectCode });
     if (!project) {
-      res.status(400).json({ error: `Unknown project id: ${projectId}` });
+      res.status(400).json({ error: `Unknown project code: ${projectCode}` });
       return undefined;
     }
     const projectCtx: Project = { id: project.id, code: project.code };

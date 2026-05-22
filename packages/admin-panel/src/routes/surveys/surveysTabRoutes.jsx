@@ -8,7 +8,6 @@ import { dataGroups } from './dataGroups';
 import { surveyResponses } from './surveyResponses';
 import { ALL_PROJECTS_SCOPE, SINGLE_PROJECT_SCOPE } from '../scopes';
 
-// TUP-3055: Sync Groups and Mappings dropped per refinement.
 export const surveysTabRoutes = {
   label: 'Surveys',
   path: '/surveys',
