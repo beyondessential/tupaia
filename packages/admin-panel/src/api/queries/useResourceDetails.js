@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { get } from '../../VizBuilderApp/api/api';
+import { useSelectedProjectCode } from '../../projects';
 
 export const useItemDetails = (params, parent) => {
+  const projectCode = useSelectedProjectCode();
   return useQuery(
-    ['itemDetails', parent?.endpoint, params],
+    ['itemDetails', parent?.endpoint, params, projectCode],
     async () => {
       return get(parent?.endpoint, {
         params: {
