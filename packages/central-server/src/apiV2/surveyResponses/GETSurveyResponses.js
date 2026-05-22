@@ -21,6 +21,10 @@ export class GETSurveyResponses extends GETHandler {
       nearTableKey: 'survey_response.entity_id',
       farTableKey: 'entity.id',
     },
+    survey: {
+      nearTableKey: 'survey_response.survey_id',
+      farTableKey: 'survey.id',
+    },
   });
 
   async findSingleRecord(surveyResponseId, options) {
