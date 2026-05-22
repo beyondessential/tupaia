@@ -9,7 +9,9 @@ type Models = Request['models'];
 type ProjectScopeRule = {
   filter: (project: Project) => Record<string, unknown>;
   ownership: (id: string, models: Models) => Promise<ProjectRef | null>;
-  bodyOwnership?: (body: unknown, models: Models) => Promise<ProjectRef | null>;
+  // Required so a new rule can't silently bypass POST scope enforcement by
+  // forgetting to define one.
+  bodyOwnership: (body: unknown, models: Models) => Promise<ProjectRef | null>;
 };
 
 const projectIdFromBody = (body: unknown): ProjectRef | null => {
@@ -60,17 +62,20 @@ const splitPath = (path: string): string[] => {
 };
 
 const rewriteRequestUrl = (req: Request, url: URL) => {
-  const rewritten = `${url.pathname}${url.search}`;
-  req.url = rewritten;
-  req.originalUrl = rewritten;
+  // Only mutate req.url — http-proxy-middleware reads this for the forwarded
+  // path. req.originalUrl is preserved so downstream logging/audit middleware
+  // (e.g. server-boilerplate's forwardRequest winston log) sees the URL the
+  // client actually sent.
+  req.url = `${url.pathname}${url.search}`;
 };
 
 const isMutationOnId = (method: string, segments: string[]) =>
-  segments.length >= 2 && (method === 'PUT' || method === 'DELETE');
+  segments.length >= 2 && (method === 'PUT' || method === 'PATCH' || method === 'DELETE');
 
 export const applyProjectScope = async (req: Request, res: Response, next: NextFunction) => {
-  const host = req.headers.host ?? 'localhost';
-  const url = new URL(req.originalUrl, `http://${host}`);
+  // Use a fixed base — we only read pathname/searchParams from the result, so
+  // a client-supplied Host header has no role here.
+  const url = new URL(req.originalUrl, 'http://localhost');
   const projectCode = url.searchParams.get(PROJECT_CODE_PARAM);
   const segments = splitPath(url.pathname);
   const resourceKey = segments[0] ?? '';
@@ -96,9 +101,18 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
 
     if (req.method === 'GET') {
       const existingRaw = url.searchParams.get('filter');
-      const existing = existingRaw ? JSON.parse(existingRaw) : {};
-      // Caller-supplied filter wins on conflict so they can opt out per-request.
-      const merged = { ...rule.filter(projectCtx), ...existing };
+      let existing: Record<string, unknown> = {};
+      if (existingRaw) {
+        try {
+          existing = JSON.parse(existingRaw);
+        } catch {
+          res.status(400).json({ error: 'Invalid filter JSON' });
+          return undefined;
+        }
+      }
+      // Scope filter wins on conflict — must be a hard boundary, not an
+      // opt-out the caller can override by supplying their own project_id.
+      const merged = { ...existing, ...rule.filter(projectCtx) };
       url.searchParams.set('filter', JSON.stringify(merged));
     } else if (isMutationOnId(req.method, segments)) {
       const id = segments[1];
@@ -113,9 +127,15 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
         });
         return undefined;
       }
-    } else if (req.method === 'POST' && rule.bodyOwnership) {
+    } else if (req.method === 'POST') {
       const owner = await rule.bodyOwnership(req.body, req.models);
-      if (owner && owner.id !== projectCtx.id) {
+      if (!owner) {
+        res.status(400).json({
+          error: `${resourceKey} body must reference a project in the active scope`,
+        });
+        return undefined;
+      }
+      if (owner.id !== projectCtx.id) {
         res.status(403).json({ error: `${resourceKey} body references a different project` });
         return undefined;
       }

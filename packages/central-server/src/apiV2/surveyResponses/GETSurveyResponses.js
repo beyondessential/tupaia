@@ -57,6 +57,32 @@ export class GETSurveyResponses extends GETHandler {
     return this.getPermissionsFilter(dbConditions, options);
   }
 
+  async findRecords(criteria, options) {
+    // The base GETHandler builds joins from requested *columns* only, so any
+    // join needed to satisfy a *criteria* key (e.g. survey.project_id added by
+    // admin-panel-server's applyProjectScope middleware) must be merged in
+    // here. For BES Admins, createRecordsPermissionFilter is a no-op and never
+    // adds the survey/entity joins, so without this merge the SQL fails with
+    // "missing FROM-clause entry for table survey".
+    const criteriaColumns = Object.keys(criteria).filter(column => !column.startsWith('_'));
+    const { multiJoin: criteriaJoins } = getQueryOptionsForColumns(
+      criteriaColumns,
+      this.recordType,
+      this.customJoinConditions,
+      this.defaultJoinType,
+    );
+    const existing = options?.multiJoin ?? [];
+    const seen = new Set(existing.map(join => join.joinWith));
+    const mergedJoins = [...existing];
+    for (const join of criteriaJoins) {
+      if (!seen.has(join.joinWith)) {
+        mergedJoins.push(join);
+        seen.add(join.joinWith);
+      }
+    }
+    return super.findRecords(criteria, { ...options, multiJoin: mergedJoins });
+  }
+
   async countRecords(criteria) {
     // remove conjunction criteria
     const columnsInCountQuery = Object.keys(criteria).filter(column => !column.startsWith('_'));
