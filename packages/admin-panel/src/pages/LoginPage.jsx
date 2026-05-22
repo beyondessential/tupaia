@@ -11,17 +11,15 @@ export const LoginPage = ({ labels, homeLink }) => {
   const { mutate: onLogin, isLoading, error } = useLogin(homeLink);
 
   return (
-    <div>
-      <LoginForm
-        onSubmit={onLogin}
-        isLoading={isLoading}
-        error={error}
-        formContext={formContext}
-        forgotPasswordLink={AUTH_ROUTES.FORGOT_PASSWORD}
-        RegisterLinkComponent={<RegisterLink text={labels?.register} />}
-        labels={labels}
-      />
-    </div>
+    <LoginForm
+      onSubmit={onLogin}
+      isLoading={isLoading}
+      error={error}
+      formContext={formContext}
+      forgotPasswordLink={AUTH_ROUTES.FORGOT_PASSWORD}
+      RegisterLinkComponent={<RegisterLink text={labels?.register} />}
+      labels={labels}
+    />
   );
 };
 
