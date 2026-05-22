@@ -3,7 +3,7 @@
  * @typedef {(answer: Answer) => Promise<Answer["text"]>} AnswerBodyParser
  */
 
-import { keyBy } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 import momentTimezone from 'moment-timezone';
 
 import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
@@ -13,7 +13,7 @@ import { upsertAnswers } from './upsertAnswers';
 
 async function getRecordsByCode(model, codes) {
   const records = await model.find({ code: Array.from(codes) });
-  return keyBy(records, r => r.code);
+  return keyBy(records, 'code');
 }
 
 async function getEntitiesByCode(models, responses) {

@@ -1,5 +1,6 @@
-import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
+import { uniq } from 'es-toolkit';
 
+import { getSortByKey, getSortByExtractedValue } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { transformValue } from '/apiV1/dataBuilders/transform';
 import { translateEventEntityIdsToNames } from '/apiV1/dataBuilders/helpers/translateEventEntityIdsToNames';
@@ -119,28 +120,29 @@ export class DataBuilder {
     });
   }
 
-  async fetchEntityHierarchyId() {
+  async fetchProjectId() {
     const { projectCode } = this.query;
     const project = await this.models.project.findOne({ code: projectCode });
-    return project.entity_hierarchy_id;
+    return project.id;
   }
 
   async fetchDescendantsOfType(type) {
-    const entityHierarchyId = await this.fetchEntityHierarchyId();
-    return this.entity.getDescendantsOfType(entityHierarchyId, type);
+    const projectId = await this.fetchProjectId();
+    return this.entity.getDescendantsOfType(projectId, type);
   }
 
   /**
    * Fetch ancestor of type for each organisationUnit in event
    */
   async addAncestorsToEvents(events, ancestorType) {
-    const hierarchyId = await this.fetchEntityHierarchyId();
-    const allEntityCodes = getUniqueEntries(events.map(e => e.orgUnit));
-    const ancestorDetailsByDescendantCode = await this.models.entity.fetchAncestorDetailsByDescendantCode(
-      allEntityCodes,
-      hierarchyId,
-      ancestorType,
-    );
+    const projectId = await this.fetchProjectId();
+    const allEntityCodes = uniq(events.map(e => e.orgUnit));
+    const ancestorDetailsByDescendantCode =
+      await this.models.entity.fetchAncestorDetailsByDescendantCode(
+        allEntityCodes,
+        projectId,
+        ancestorType,
+      );
     return events.map(event => {
       const { name: ancestorName } = ancestorDetailsByDescendantCode[event.orgUnit];
       return {

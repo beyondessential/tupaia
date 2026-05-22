@@ -8,39 +8,57 @@ export interface EntityFilterFields extends Entity {
 
 export type EntityFilter = DbFilter<EntityFilterFields>;
 
+export type ParentFieldsByChildId = Record<
+  Entity['id'],
+  {
+    parent_name?: Entity['name'];
+    parent_code?: Entity['code'];
+  }
+>;
+
 // allow the possibility of passing in own fields
 export interface EntityRecord extends Entity, BaseEntityRecord {
-  getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
-  getParentFromParentChildRelation: (hierarchyId: string) => Promise<EntityRecord | undefined>;
+  getChildren: (projectId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
+  getParentFromParentChildRelation: (projectId: string) => Promise<EntityRecord | undefined>;
   getChildrenFromParentChildRelation: (
-    hierarchyId: string,
+    projectId: string,
     criteria?: EntityFilter,
   ) => Promise<EntityRecord[]>;
-  getParent: (hierarchyId: string) => Promise<EntityRecord | undefined>;
+  getParent: (projectId: string) => Promise<EntityRecord | undefined>;
   getDescendants: (
-    hierarchyId: string,
+    projectId: string,
     criteria?: EntityFilter,
     options?: Record<string, unknown>,
   ) => Promise<EntityRecord[]>;
-  getAncestors: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
-  getAncestorOfType: (hierarchyId: string, type: string) => Promise<EntityRecord | undefined>;
-  getRelatives: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
+  getAncestors: (projectId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
+  getAncestorOfType: (projectId: string, type: string) => Promise<EntityRecord | undefined>;
+  getRelatives: (projectId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
 }
 
 export interface EntityModel extends Model<BaseEntityModel, Entity, EntityRecord> {
+  findOneByCodeInProject: (
+    code: string,
+    projectId?: string | null,
+    otherCriteria?: EntityFilter,
+    options?: Record<string, unknown>,
+  ) => Promise<EntityRecord | null>;
   getDescendantsOfEntities: (
-    hierarchyId: string,
+    projectId: string,
     entityIds: string[],
     criteria?: EntityFilter,
   ) => Promise<EntityRecord[]>;
   getRelativesOfEntities: (
-    hierarchyId: string,
+    projectId: string,
     entityIds: string[],
     criteria?: EntityFilter,
   ) => Promise<EntityRecord[]>;
   getAncestorsOfEntities: (
-    hierarchyId: string,
+    projectId: string,
     entityIds: string[],
     criteria?: EntityFilter,
   ) => Promise<EntityRecord[]>;
+  getParentFieldsByChildIdFromParentChildRelation: (
+    projectId: string,
+    childIds: string[],
+  ) => Promise<ParentFieldsByChildId>;
 }

@@ -31840,6 +31840,9 @@ export const PresentationOptionsSchema = {
 		}
 	]
 }
+export const AliasTransformSchema = {
+	"type": "string"
+}
 export const TransformSchema = {
 	"anyOf": [
 		{
@@ -49354,13 +49357,13 @@ export const AncestorDescendantRelationSchema = {
 		"descendant_id": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"generational_distance": {
 			"type": "number"
 		},
 		"id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		}
 	},
@@ -49368,9 +49371,9 @@ export const AncestorDescendantRelationSchema = {
 	"required": [
 		"ancestor_id",
 		"descendant_id",
-		"entity_hierarchy_id",
 		"generational_distance",
-		"id"
+		"id",
+		"project_id"
 	]
 }
 export const AncestorDescendantRelationCreateSchema = {
@@ -49382,19 +49385,19 @@ export const AncestorDescendantRelationCreateSchema = {
 		"descendant_id": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"generational_distance": {
 			"type": "number"
+		},
+		"project_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"ancestor_id",
 		"descendant_id",
-		"entity_hierarchy_id",
-		"generational_distance"
+		"generational_distance",
+		"project_id"
 	]
 }
 export const AncestorDescendantRelationUpdateSchema = {
@@ -49406,13 +49409,13 @@ export const AncestorDescendantRelationUpdateSchema = {
 		"descendant_id": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"generational_distance": {
 			"type": "number"
 		},
 		"id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		}
 	},
@@ -79301,134 +79304,6 @@ export const EntityUpdateSchema = {
 	},
 	"additionalProperties": false
 }
-export const EntityHierarchySchema = {
-	"type": "object",
-	"properties": {
-		"canonical_types": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"id",
-		"name",
-		"updated_at_sync_tick"
-	]
-}
-export const EntityHierarchyCreateSchema = {
-	"type": "object",
-	"properties": {
-		"canonical_types": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"name": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"name"
-	]
-}
-export const EntityHierarchyUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"canonical_types": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
-export const EntityParentChildRelationSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"id",
-		"parent_id",
-		"updated_at_sync_tick"
-	]
-}
-export const EntityParentChildRelationCreateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"parent_id"
-	]
-}
-export const EntityParentChildRelationUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-}
 export const EntityPolygonSchema = {
 	"type": "object",
 	"properties": {
@@ -79522,68 +79397,6 @@ export const EntityPolygonUpdateSchema = {
 		"updated_at": {
 			"type": "string",
 			"format": "date-time"
-		}
-	},
-	"additionalProperties": false
-}
-export const EntityRelationSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"id",
-		"parent_id"
-	]
-}
-export const EntityRelationCreateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"child_id",
-		"entity_hierarchy_id",
-		"parent_id"
-	]
-}
-export const EntityRelationUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"child_id": {
-			"type": "string"
-		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -98392,9 +98205,6 @@ export const ProjectSchema = {
 		"description": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"entity_id": {
 			"type": "string"
 		},
@@ -98498,9 +98308,6 @@ export const ProjectCreateSchema = {
 		"description": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"entity_id": {
 			"type": "string"
 		},
@@ -98594,9 +98401,6 @@ export const ProjectUpdateSchema = {
 		"description": {
 			"type": "string"
 		},
-		"entity_hierarchy_id": {
-			"type": "string"
-		},
 		"entity_id": {
 			"type": "string"
 		},
@@ -98617,6 +98421,61 @@ export const ProjectUpdateSchema = {
 		},
 		"sort_order": {
 			"type": "number"
+		}
+	},
+	"additionalProperties": false
+}
+export const ProjectCountrySchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		},
+		"updated_at_sync_tick": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_id",
+		"id",
+		"project_id",
+		"updated_at_sync_tick"
+	]
+}
+export const ProjectCountryCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_id",
+		"project_id"
+	]
+}
+export const ProjectCountryUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -102499,9 +102358,6 @@ export const ProjectResponseSchema = {
 			"type": "string"
 		},
 		"description": {
-			"type": "string"
-		},
-		"entityHierarchyId": {
 			"type": "string"
 		},
 		"entityId": {

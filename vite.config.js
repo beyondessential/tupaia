@@ -25,13 +25,20 @@ export default defineConfig(({ command, mode }) => {
 
 
   const isDatatrakWeb = packageName === DATATRAK_WEB_NAME;
+  // psss intentionally pulls in BOTH react-router v5 (its own routes) and v6
+  // (transitively, via @tupaia/ui-components → react-router-dom-v6). Deduping
+  // `react-router` would force a single resolution and break the rollup build
+  // (rollup picks v5, then react-router-dom-v6's `useHref` import has no source).
+  // Every other app declares v6 directly, so deduping there is safe — and required
+  // to avoid the v5/v6 split-context bug in tupaia-web (`useNavigate() may be
+  // used only in the context of a <Router> component`).
+  const isPsss = packageName === '@tupaia/psss';
 
   const baseConfig = {
     build: {
       rollupOptions: {
         output: {
           manualChunks: function manualChunks(id) {
-            if (id.includes('lodash')) return 'lodash';
             if (id.includes('ace-builds')) return 'ace';
             if (id.includes('react-ace')) return 'reactAce';
             if (id.includes('jsoneditor')) return 'jsonEditor';
@@ -93,7 +100,23 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       ...(isDatatrakWeb && { conditions: ['browser'] }),
       preserveSymlinks: true, // use the yarn workspace symlinks
-      dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components', 'react-router-dom'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
+      dedupe: [
+        '@material-ui/core',
+        'react',
+        'react-dom',
+        'styled-components',
+        'react-router-dom',
+        // @tanstack/react-query and its devtools must share a single instance: the
+        // devtools panel calls useQueryClient(), which reads the React context that
+        // QueryClientProvider populated. With two pre-bundled copies in the same app
+        // (one for the app's import, one transitive via the devtools), the contexts
+        // are distinct and the devtools throws "No QueryClient set". All workspace
+        // apps pin 4.36.1, so deduping is safe.
+        '@tanstack/react-query',
+        '@tanstack/react-query-devtools',
+        // See `isPsss` comment above for why react-router is conditional.
+        ...(isPsss ? [] : ['react-router']),
+      ], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
       alias: {
         http: path.resolve(__dirname, 'mock/moduleMock.js'),
         winston: path.resolve(__dirname, 'mock/winston.js'),

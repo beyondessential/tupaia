@@ -18,9 +18,7 @@ import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DataTableModel } from './DataTable';
 import { DebugLogModel } from './DebugLog';
 import { EntityModel } from './Entity';
-import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityPolygonModel } from './EntityPolygon';
-import { EntityRelationModel } from './EntityRelation';
 import { ExternalDatabaseConnectionModel } from './ExternalDatabaseConnection';
 import { FacilityModel } from './Facility';
 import { FeedItemModel } from './FeedItem';
@@ -40,9 +38,9 @@ import { OptionModel } from './Option';
 import { OptionSetModel } from './OptionSet';
 import { PermissionGroupModel } from './PermissionGroup';
 import { ProjectModel } from './Project';
+import { ProjectCountryModel } from './ProjectCountry';
 import { QuestionModel } from './Question';
 import { ReportModel } from './Report';
-import { EntityParentChildRelationModel } from './EntityParentChildRelation';
 import { RefreshTokenModel } from './RefreshToken';
 import { SurveyModel } from './Survey';
 import { SurveyGroupModel } from './SurveyGroup';
@@ -62,6 +60,7 @@ import { SurveyResponseDraftModel } from './SurveyResponseDraft';
 import { TaskModel } from './Task';
 import { UserCountryAccessAttemptModel } from './UserCountryAccessAttempt';
 import { TaskCommentModel } from './TaskComment';
+import { SyncLookupModel } from './SyncLookup';
 import { SyncSessionModel } from './SyncSession';
 import { SyncDeviceTickModel } from './SyncDeviceTick';
 import { SyncQueuedDeviceModel } from './SyncQueuedDevice';
@@ -91,9 +90,7 @@ export const modelClasses = {
   DebugLog: DebugLogModel,
   DhisInstance: DhisInstanceModel,
   Entity: EntityModel,
-  EntityHierarchy: EntityHierarchyModel,
   EntityPolygon: EntityPolygonModel,
-  EntityRelation: EntityRelationModel,
   ExternalDatabaseConnection: ExternalDatabaseConnectionModel,
   Facility: FacilityModel,
   FeedItem: FeedItemModel,
@@ -112,9 +109,9 @@ export const modelClasses = {
   OptionSet: OptionSetModel,
   PermissionGroup: PermissionGroupModel,
   Project: ProjectModel,
+  ProjectCountry: ProjectCountryModel,
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
-  EntityParentChildRelation: EntityParentChildRelationModel,
   Report: ReportModel,
   SupersetInstance: SupersetInstanceModel,
   Survey: SurveyModel,
@@ -132,6 +129,7 @@ export const modelClasses = {
   UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
   UserSession: UserSessionModel,
   UserCountryAccessAttempt: UserCountryAccessAttemptModel,
+  SyncLookup: SyncLookupModel,
   SyncSession: SyncSessionModel,
   SyncDeviceTick: SyncDeviceTickModel,
   SyncQueuedDevice: SyncQueuedDeviceModel,
@@ -158,9 +156,7 @@ export { DataServiceSyncGroupModel, DataServiceSyncGroupRecord } from './DataSer
 export { DataTableModel, DataTableRecord } from './DataTable';
 export { DebugLogModel, DebugLogRecord } from './DebugLog';
 export { EntityModel, EntityRecord } from './Entity';
-export { EntityHierarchyModel, EntityHierarchyRecord } from './EntityHierarchy';
 export { EntityPolygonModel, EntityPolygonRecord } from './EntityPolygon';
-export { EntityRelationModel, EntityRelationRecord } from './EntityRelation';
 export {
   ExternalDatabaseConnectionModel,
   ExternalDatabaseConnectionRecord,
@@ -180,12 +176,9 @@ export { OptionModel, OptionRecord } from './Option';
 export { OptionSetModel, OptionSetRecord } from './OptionSet';
 export { PermissionGroupModel, PermissionGroupRecord } from './PermissionGroup';
 export { ProjectModel, ProjectRecord } from './Project';
+export { ProjectCountryModel, ProjectCountryRecord } from './ProjectCountry';
 export { QuestionModel, QuestionRecord } from './Question';
 export { ReportModel, ReportRecord } from './Report';
-export {
-  EntityParentChildRelationModel,
-  EntityParentChildRelationRecord,
-} from './EntityParentChildRelation';
 export { SurveyModel, SurveyRecord } from './Survey';
 export { SurveyGroupModel, SurveyGroupRecord } from './SurveyGroup';
 export { SurveyScreenComponentModel, SurveyScreenComponentRecord } from './SurveyScreenComponent';
@@ -212,6 +205,7 @@ export {
 } from './UserCountryAccessAttempt';
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
 export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';
+export { SyncLookupModel, SyncLookupRecord } from './SyncLookup';
 export { SyncSessionModel, SyncSessionRecord } from './SyncSession';
 export { SyncDeviceTickModel, SyncDeviceTickRecord } from './SyncDeviceTick';
 export { SyncQueuedDeviceModel, SyncQueuedDeviceRecord } from './SyncQueuedDevice';

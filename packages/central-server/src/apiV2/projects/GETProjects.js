@@ -34,10 +34,6 @@ export class GETProjects extends GETHandler {
       nearTableKey: 'project.entity_id',
       farTableKey: 'entity.id',
     },
-    entity_hierarchy: {
-      nearTableKey: 'project.entity_hierarchy_id',
-      farTableKey: 'entity_hierarchy.id',
-    },
   };
 
   async findSingleRecord(projectId, options) {
@@ -62,17 +58,16 @@ export class GETProjects extends GETHandler {
       });
 
       // Pulls permission_group/country_code pairs from the project
-      // Returns any project where we have access to at least one of those pairs
+      // Returns any project where we have access to at least one of those pairs.
       dbConditions[RAW] = {
         sql: `(
           SELECT COUNT(*) > 0 FROM
           (
-            SELECT UNNEST(project.permission_groups) as permission_group, entity.country_code
-            FROM entity
-            INNER JOIN entity_relation
-              ON entity_relation.child_id = entity.id
-              AND entity_relation.parent_id = project.entity_id
-              AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
+            SELECT UNNEST(project.permission_groups) as permission_group, entity.code AS country_code
+            FROM project_country
+            INNER JOIN entity
+              ON entity.id = project_country.country_id
+            WHERE project_country.project_id = project.id
           ) AS count
           WHERE country_code IN
           (

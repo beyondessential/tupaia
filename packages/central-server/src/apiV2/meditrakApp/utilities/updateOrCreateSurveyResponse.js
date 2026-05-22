@@ -29,7 +29,11 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
 
       // Ensure entity_id is populated, supporting legacy versions of MediTrak
       if (clinicId) {
-        const entityId = await getEntityIdFromClinicId(transactingModels, clinicId);
+        const entityId = await getEntityIdFromClinicId(
+          transactingModels,
+          clinicId,
+          survey?.project_id ?? null,
+        );
         surveyResponseProperties.entity_id = entityId;
       }
 

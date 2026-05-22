@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/e2e",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": true,
   "description": "e2e runner",
   "repository": {
@@ -14,7 +14,7 @@
     "cypress:format-config": "yarn run:babel cypress/scripts/formatConfig",
     "cypress:open": "cross-env NODE_ENV=test yarn cypress open",
     "cypress:run": "cross-env NODE_ENV=test yarn cypress run",
-    "run:babel": "babel-node --config-file \"../../babel.config.json\"",
+    "run:babel": "babel-node --config-file ../../babel.config.json",
     "test-e2e": "yarn run:babel cypress/scripts/testE2e"
   },
   "devDependencies": {
@@ -31,9 +31,9 @@
     "cypress": "^6.9.1",
     "cypress-dotenv": "^1.2.2",
     "dotenv": "16.4.5",
+    "es-toolkit": "^1.46.0",
     "eslint-plugin-cypress": "^2.11.1",
     "js-beautify": "^1.13.0",
-    "lodash": "^4.17.4",
     "moment": "^2.24.0",
     "node-fetch": "^1.7.3",
     "react": "^16.14.0"

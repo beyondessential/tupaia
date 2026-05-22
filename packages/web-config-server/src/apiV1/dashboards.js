@@ -1,4 +1,4 @@
-import orderBy from 'lodash.orderby';
+import { orderBy } from 'es-toolkit/compat';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
 
@@ -10,9 +10,9 @@ export default class extends RouteHandler {
 
   buildResponse = async () => {
     const { entity, query } = this;
-    const hierarchyId = await this.fetchHierarchyId();
+    const projectId = await this.fetchProjectId();
     // Fetch dashboards
-    const dashboards = await this.models.dashboard.getDashboards(entity, hierarchyId);
+    const dashboards = await this.models.dashboard.getDashboards(entity, projectId);
     if (!dashboards.length) {
       return this.getStaticDashboard(entity, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
     }

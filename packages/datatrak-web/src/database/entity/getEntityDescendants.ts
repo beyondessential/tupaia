@@ -2,7 +2,7 @@
 // Eventually we are going to remove the route from datatrak-web-server
 // and use this function only. So keeping it here for now.
 import { clone } from 'es-toolkit';
-import omitBy from 'lodash.omitby';
+import { omitBy } from 'es-toolkit/compat';
 
 import type { AccessPolicy } from '@tupaia/access-policy';
 import { extractEntityFilterFromObject, type ProjectRecord } from '@tupaia/tsmodels';
@@ -80,13 +80,7 @@ const getAllowedCountries = async (
 ): Promise<Entity['code'][]> => {
   const rootEntity = await models.entity.findByIdOrThrow(rootEntityId);
 
-  if (!project.entity_hierarchy_id) {
-    throw new Error('Project entity hierarchy ID is not set');
-  }
-
-  const countryEntities = await rootEntity.getChildrenFromParentChildRelation(
-    project.entity_hierarchy_id,
-  );
+  const countryEntities = await rootEntity.getChildrenFromParentChildRelation(project.id);
   const childCodes = countryEntities.map(child => child.country_code).filter(isNotNullish);
   let allowedCountries = [...new Set(childCodes)];
 
@@ -156,9 +150,6 @@ export const getEntityDescendants = async ({
   const formattedEntities = await models.wrapInReadOnlyTransaction(async transactingModels => {
     const project = await transactingModels.project.findOneOrThrow({ code: projectCode });
 
-    // This should never happen, but just in case
-    if (!project.entity_hierarchy_id) throw new Error('Project entity hierarchy ID is not set');
-
     const rootEntityId = parentId || grandparentId || project.entity_id;
     if (!rootEntityId) throw new Error('No valid rootEntity found');
 
@@ -181,7 +172,7 @@ export const getEntityDescendants = async ({
 
     const entities: AugmentedEntityRecord[] =
       await transactingModels.entity.getDescendantsFromParentChildRelation(
-        project.entity_hierarchy_id,
+        project.id,
         [rootEntityId],
         {
           filter: dbEntityFilter,
@@ -219,7 +210,7 @@ export const getEntityDescendants = async ({
         ];
 
     return await formatEntitiesForResponse(
-      { hierarchyId: project.entity_hierarchy_id },
+      { projectId: project.id },
       sortedEntities,
       [...fields, 'is_recent'],
     );

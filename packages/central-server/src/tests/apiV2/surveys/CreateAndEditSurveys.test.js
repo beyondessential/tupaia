@@ -90,17 +90,12 @@ describe('Create and Edit Surveys', () => {
       name: 'Tonga',
     }));
 
-    const entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
-      name: 'Project 1',
-    });
-
     const projectEntity = await findOrCreateDummyRecord(models.entity, {
       code: 'project1',
     });
 
     project1 = await findOrCreateDummyRecord(models.project, {
       code: 'project1',
-      entity_hierarchy_id: entityHierarchy.id,
       entity_id: projectEntity.id,
     });
 
@@ -108,15 +103,13 @@ describe('Create and Edit Surveys', () => {
       code: 'project2',
     });
 
-    const addProjectCountryEntityRelations = async entity => {
-      await findOrCreateDummyRecord(models.entityRelation, {
-        parent_id: project1.entity_id,
-        child_id: entity.id,
-        entity_hierarchy_id: entityHierarchy.id,
+    const addProjectCountry = async entity =>
+      findOrCreateDummyRecord(models.projectCountry, {
+        project_id: project1.id,
+        country_id: entity.id,
       });
-    };
 
-    await Promise.all([kiribatiEntity, vanuatuEntity].map(addProjectCountryEntityRelations));
+    await Promise.all([kiribatiEntity, vanuatuEntity].map(addProjectCountry));
 
     const addQuestion = (id, type) =>
       upsertQuestion(

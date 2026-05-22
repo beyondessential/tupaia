@@ -19,7 +19,7 @@ export type EntitySearchRequest = MultiEntityRequest<
 >;
 export class EntitySearchRoute extends Route<EntitySearchRequest> {
   public async buildResponse() {
-    const { hierarchyId, fields, field, filter } = this.req.ctx;
+    const { projectId, fields, field, filter } = this.req.ctx;
     const { searchString: rawString } = this.req.params;
     const { pageSize, page } = this.req.query;
     const searchString = rawString.toLowerCase();
@@ -35,20 +35,20 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
           sql: `id IN (
               SELECT descendant_id
               FROM ancestor_descendant_relation
-              WHERE entity_hierarchy_id = :hierarchyId
+              WHERE project_id = :projectId
             )
             AND name ILIKE :searchFilter
             ORDER BY
               STARTS_WITH(LOWER(name), :searchString) DESC,
               (
                 SELECT MAX(generational_distance) FROM ancestor_descendant_relation
-                WHERE entity_hierarchy_id = :hierarchyId
+                WHERE project_id = :projectId
                 AND descendant_id = entity.id
                 GROUP BY descendant_id
               ) ASC,
               name ASC`,
           parameters: {
-            hierarchyId,
+            projectId,
             searchFilter: `%${searchString}%`,
             searchString,
           },

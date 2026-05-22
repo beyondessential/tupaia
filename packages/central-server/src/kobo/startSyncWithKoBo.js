@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 
 import { DataBroker } from '@tupaia/data-broker';
 import { generateId } from '@tupaia/database';
@@ -56,7 +56,10 @@ const writeKoboDataToTupaia = async (transactingModels, koboData, syncGroupCode)
       if (responseData.eventDate > newSyncTime) {
         newSyncTime = responseData.eventDate;
       }
-      const entity = await transactingModels.entity.findOne({ code: responseData.orgUnit });
+      const entity = await transactingModels.entity.findOneByCodeInProject(
+        responseData.orgUnit,
+        survey.project_id,
+      );
       if (!entity) {
         await dataServiceSyncGroup.log(
           `Skipping KoBo sync for record id ${responseData.event}: unknown entity ${responseData.orgUnit}`,
@@ -117,10 +120,13 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
 
     await validateSyncGroup(models, dataServiceSyncGroup);
 
+    const survey = await models.survey.findOne({ code: dataServiceSyncGroup.data_group_code });
+
     // Pull data from KoBo
     const koboData =
       (await dataBroker.pullSyncGroupResults([syncGroupCode], {
         startSubmissionTime: dataServiceSyncGroup.sync_cursor,
+        projectId: survey?.project_id,
       })) || {};
 
     await models.wrapInTransaction(async transactingModels => {

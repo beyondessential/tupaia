@@ -3,6 +3,8 @@
 // Will have to implement this properly with #tupaia-backlog/issues/2412
 // After that remove this file and anything related to it
 
+import { uniq } from 'es-toolkit';
+
 import { periodFromAnalytics, aggregateAnalytics } from '@tupaia/aggregator';
 import { convertDateRangeToPeriodQueryString } from '@tupaia/utils';
 import { getDefaultPeriod } from '../../../utils';
@@ -15,7 +17,7 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
   dataElementCodes,
   query,
   entityAggregation,
-  hierarchyId,
+  projectId,
 ) => {
   const dataElements = await models.dataElement.find({
     code: dataElementCodes,
@@ -24,7 +26,12 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
   // otherwise all the data will be aggregated to the org unit
   const dataSourceEntities = entityAggregation
     ? await dhisApi.fetchDataSourceEntities(query.organisationUnitCode, entityAggregation)
-    : [await models.entity.findOne({ code: query.organisationUnitCode })];
+    : [
+        await models.entity.findOneByCodeInProject(
+          query.organisationUnitCode,
+          projectId ?? null,
+        ),
+      ];
   const entityCodes = dataSourceEntities.map(({ code }) => code);
   const mappings = await models.dataServiceEntity.find({ entity_code: entityCodes });
   const entityIdToCode = {};
@@ -56,8 +63,8 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
   );
 
   if (entityAggregation && entityAggregation.aggregationEntityType) {
-    if (!hierarchyId) {
-      throw new Error('Cannot perform entity aggregation without hierarchyId');
+    if (!projectId) {
+      throw new Error('Cannot perform entity aggregation without projectId');
     }
 
     // TODO: Another hacky block of code here to perform entity aggregation manually
@@ -68,7 +75,7 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
       models,
       analyticResults.results,
       entityAggregation,
-      hierarchyId,
+      projectId,
     );
     return {
       ...analyticResults,
@@ -79,15 +86,13 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
   return analyticResults;
 };
 
-const performEntityAggregation = async (models, analytics, entityAggregation, hierarchyId) => {
-  const {
-    aggregationType = 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
-    aggregationEntityType,
-  } = entityAggregation;
-  const dataSourceEntityCodes = [...new Set(analytics.map(data => data.organisationUnit))];
+const performEntityAggregation = async (models, analytics, entityAggregation, projectId) => {
+  const { aggregationType = 'REPLACE_ORG_UNIT_WITH_ORG_GROUP', aggregationEntityType } =
+    entityAggregation;
+  const dataSourceEntityCodes = uniq(analytics.map(data => data.organisationUnit));
   const entityToAncestorMap = await models.entity.fetchAncestorDetailsByDescendantCode(
     dataSourceEntityCodes,
-    hierarchyId,
+    projectId,
     aggregationEntityType,
   );
   // Remove any analytic that does not have orgUnit in the entityToAncestorMap,

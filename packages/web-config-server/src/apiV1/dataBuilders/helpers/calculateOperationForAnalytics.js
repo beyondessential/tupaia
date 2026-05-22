@@ -1,17 +1,17 @@
-import groupBy from 'lodash.groupby';
+import { uniq } from 'es-toolkit';
+import { groupBy, keyBy, some } from 'es-toolkit/compat';
+
 import {
+  asyncEvery,
+  asyncFilter,
   checkValueSatisfiesCondition,
   comparePeriods,
   replaceValues,
-  asyncFilter,
-  asyncEvery,
 } from '@tupaia/utils';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
-import some from 'lodash.some';
-import keyBy from 'lodash.keyby';
 import { divideValues, fractionAndPercentage } from './divideValues';
 import { subtractValues } from './subtractValues';
+import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 const checkCondition = (value, config) =>
   valueToGroup(value, { groups: { Yes: config.condition }, defaultValue: 'No' });
@@ -100,10 +100,10 @@ const countDataValues = async (analytics, dataValues, filter, config, models) =>
 
 const buildOrgUnitParentMapForAnalytics = async (analytics, models) => {
   const orgUnits = await models.entity.find({
-    code: [...new Set(analytics.map(a => a.organisationUnit))],
+    code: uniq(analytics.map(a => a.organisationUnit)),
   });
   const orgUnitParents = await models.entity.find({
-    id: [...new Set(orgUnits.map(o => o.parent_id))],
+    id: uniq(orgUnits.map(o => o.parent_id)),
   });
   const parentIdMap = keyBy(orgUnitParents, 'id');
   const orgUnitParentMap = {};
@@ -204,18 +204,18 @@ const combineTextIndicators = (analytics, config) => {
 };
 
 const getMetaDataFromOrgUnit = async (_, config, models) => {
-  const { orgUnitCode, ancestorType, hierarchyId } = config;
-  const baseEntity = await models.entity.findOne({ code: orgUnitCode });
+  const { orgUnitCode, ancestorType, projectId } = config;
+  const baseEntity = await models.entity.findOneByCodeInProject(orgUnitCode, projectId ?? null);
   if (!baseEntity) return 'Entity not found';
   const entity = ancestorType
-    ? await baseEntity.getAncestorOfType(hierarchyId, ancestorType)
+    ? await baseEntity.getAncestorOfType(projectId, ancestorType)
     : baseEntity;
 
   return getValueFromEntity(entity, config);
 };
 
 const getValueFromEntity = async (entity, config) => {
-  const { field, conditions, hierarchyId } = config;
+  const { field, conditions, projectId } = config;
 
   switch (field) {
     case 'subType':
@@ -225,7 +225,7 @@ const getValueFromEntity = async (entity, config) => {
       return `${lat}, ${long}`;
     }
     case '$countDescendantsMatchingConditions': {
-      const allDescendants = await entity.getDescendants(hierarchyId);
+      const allDescendants = await entity.getDescendants(projectId);
       const descendantsMatchingConditions = await asyncFilter(allDescendants, descendant =>
         asyncEvery(
           conditions,

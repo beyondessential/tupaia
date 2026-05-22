@@ -48,14 +48,6 @@ export class CreateProject extends BESAdminCreateHandler {
         name,
       );
 
-      const { id: projectEntityHierarchyId } = await this.createEntityHierarchy(
-        transactingModels,
-        projectCode,
-        entityTypes,
-      );
-
-      await this.createProjectEntityRelations(transactingModels, projectCode, countries);
-
       const { name: projectDashboardGroupName } = await this.createProjectDashboard(
         transactingModels,
         dashboardGroupName,
@@ -78,8 +70,9 @@ export class CreateProject extends BESAdminCreateHandler {
         default_measure: defaultMeasure,
         dashboard_group_name: projectDashboardGroupName,
         entity_id: projectEntityId,
-        entity_hierarchy_id: projectEntityHierarchyId,
       });
+
+      await this.createProjectCountries(transactingModels, newProject.id, countries);
 
       await this.insertImagePaths(transactingModels, newProject.id, projectCode, imageUrl, logoUrl);
 
@@ -116,20 +109,12 @@ export class CreateProject extends BESAdminCreateHandler {
     });
   }
 
-  async createProjectEntityRelations(models, projectCode, countries) {
-    const { id: projectEntityId } = await models.entity.findOne({
-      code: projectCode,
-    });
-    const { id: entityHierarchyId } = await models.entityHierarchy.findOne({
-      name: projectCode,
-    });
-
+  async createProjectCountries(models, projectId, countries) {
     for (const countryId of countries) {
       const entityId = await getCountryEntityId(models, countryId);
-      await models.entityRelation.create({
-        parent_id: projectEntityId,
-        child_id: entityId,
-        entity_hierarchy_id: entityHierarchyId,
+      await models.projectCountry.create({
+        project_id: projectId,
+        country_id: entityId,
       });
     }
   }
@@ -139,13 +124,6 @@ export class CreateProject extends BESAdminCreateHandler {
       code: `${projectCode}_project`,
       name: dashboardGroupName,
       root_entity_code: projectCode,
-    });
-  }
-
-  async createEntityHierarchy(models, projectCode, entityTypes) {
-    return models.entityHierarchy.create({
-      name: projectCode,
-      canonical_types: entityTypes ? `{${entityTypes.join(',')}}` : '{}',
     });
   }
 
