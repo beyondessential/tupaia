@@ -12298,7 +12298,6 @@ __metadata:
     "@mui/icons-material": "npm:^7.1.1"
     "@mui/material": "npm:^7.1.1"
     "@tanstack/react-query": "npm:4.36.1"
-    "@tanstack/react-query-devtools": "npm:4.36.1"
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-chart-components": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
