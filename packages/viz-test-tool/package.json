@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/viz-test-tool",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "description": "Tupaia viz test tool repository",
   "repository": {
@@ -24,7 +24,7 @@
     "health-check": "ts-node src/index.ts health-check"
   },
   "dependencies": {
-    "@slack/web-api": "^7.15.1",
+    "@slack/web-api": "^7.15.2",
     "@tupaia/api-client": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/types": "workspace:*",
