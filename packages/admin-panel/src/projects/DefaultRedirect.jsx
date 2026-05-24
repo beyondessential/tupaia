@@ -27,18 +27,21 @@ const buildSingleProjectTarget = (singleProjectRoutes, projectCode) => {
  */
 export const DefaultRedirect = ({ allDataRoutes, singleProjectRoutes }) => {
   const { data: projects, isLoading } = useProjects();
+
+  // Wait for projects before deciding — otherwise we'd redirect to all-data
+  // and unmount before the single-project landing path is reachable. The
+  // surrounding AppPageLayout (sidebar + main) still renders, so this is a
+  // brief gap in the Main area, not a fully blank page.
+  if (isLoading) return null;
+
   const firstProjectCode = projects?.[0]?.code ?? null;
 
   const singleProjectTarget = buildSingleProjectTarget(singleProjectRoutes, firstProjectCode);
   if (singleProjectTarget) return <Navigate to={singleProjectTarget} replace />;
 
-  // Land on all-data immediately while the project list loads (and as the
-  // permanent fallback when no project is available) — better than rendering
-  // an empty layout for the catch-all `*` route on a cold load.
   const allDataTarget = buildAllDataTarget(allDataRoutes);
   if (allDataTarget) return <Navigate to={allDataTarget} replace />;
 
-  if (isLoading) return null;
   return <Navigate to="/login" replace />;
 };
 

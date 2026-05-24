@@ -24,7 +24,7 @@ import {
   useUserPermissionGroups,
 } from './utilities';
 
-export const getFlattenedChildViews = (route, pathPrefix = '', basePath = '') => {
+export const getFlattenedChildViews = (route, basePath = '', pathPrefix = '') => {
   return route.childViews.reduce((acc, childView) => {
     const { nestedViews } = childView;
 
@@ -82,7 +82,7 @@ const renderSectionRoutes = (sectionRoutes, pathPrefix, hasBESAdminAccess) =>
           />
         }
       >
-        {getFlattenedChildViews(route, pathPrefix).map(childRoute => (
+        {getFlattenedChildViews(route, '', pathPrefix).map(childRoute => (
           <Route
             key={childRoute.path || childRoute.title}
             path={childRoute.path}
