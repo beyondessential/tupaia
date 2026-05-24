@@ -62,11 +62,14 @@ const splitPath = (path: string): string[] => {
 };
 
 const rewriteRequestUrl = (req: Request, url: URL) => {
-  // Only mutate req.url — http-proxy-middleware reads this for the forwarded
-  // path. req.originalUrl is preserved so downstream logging/audit middleware
-  // (e.g. server-boilerplate's forwardRequest winston log) sees the URL the
-  // client actually sent.
-  req.url = `${url.pathname}${url.search}`;
+  // Mutate BOTH — http-proxy-middleware prefers req.originalUrl and even
+  // resets req.url = req.originalUrl before forwarding (see
+  // node_modules/http-proxy-middleware/dist/http-proxy-middleware.js lines
+  // 76+90). Without mutating originalUrl the merged project filter and
+  // stripped projectCode param never reach central-server.
+  const rewritten = `${url.pathname}${url.search}`;
+  req.url = rewritten;
+  req.originalUrl = rewritten;
 };
 
 const isMutationOnId = (method: string, segments: string[]) =>
