@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
 
-import { useProjects } from '../api/queries';
+import { useProjects, useUser } from '../api/queries';
 import { buildSingleProjectBasePath } from '../routes/scopes';
 
 const buildAllDataTarget = allDataRoutes => {
@@ -20,23 +20,27 @@ const buildSingleProjectTarget = (singleProjectRoutes, projectCode) => {
 };
 
 /**
- * Picks where to land the user when they hit `/`. The selected project lives
- * in the URL, so on a cold load there's nothing to remember — pick the first
- * project for the single-project section, falling back to all-data, then
- * login.
+ * Picks where to land the user when they hit `/`. Prefer the user's saved
+ * project (user_account.preferences.project_id) if it's still in the
+ * accessible project list; otherwise fall back to the first project (useProjects
+ * sorts alphabetically by name). Final fallbacks are the all-data section,
+ * then the login page.
  */
 export const DefaultRedirect = ({ allDataRoutes, singleProjectRoutes }) => {
-  const { data: projects, isLoading } = useProjects();
+  const { data: projects, isLoading: projectsLoading } = useProjects();
+  const { data: user, isLoading: userLoading } = useUser();
 
-  // Wait for projects before deciding — otherwise we'd redirect to all-data
-  // and unmount before the single-project landing path is reachable. The
-  // surrounding AppPageLayout (sidebar + main) still renders, so this is a
-  // brief gap in the Main area, not a fully blank page.
-  if (isLoading) return null;
+  // Wait for both — the surrounding AppPageLayout (sidebar + main) still
+  // renders, so this is a brief gap in the Main area, not a blank page.
+  if (projectsLoading || userLoading) return null;
 
-  const firstProjectCode = projects?.[0]?.code ?? null;
+  const preferredProjectId = user?.preferences?.project_id ?? null;
+  const preferred = preferredProjectId
+    ? projects?.find(p => p.id === preferredProjectId)
+    : null;
+  const projectCode = preferred?.code ?? projects?.[0]?.code ?? null;
 
-  const singleProjectTarget = buildSingleProjectTarget(singleProjectRoutes, firstProjectCode);
+  const singleProjectTarget = buildSingleProjectTarget(singleProjectRoutes, projectCode);
   if (singleProjectTarget) return <Navigate to={singleProjectTarget} replace />;
 
   const allDataTarget = buildAllDataTarget(allDataRoutes);
