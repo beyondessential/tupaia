@@ -1,7 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
-
 import { useProjects, useUser } from '../api/queries';
 import { buildSingleProjectBasePath } from '../routes/scopes';
 
@@ -30,14 +28,10 @@ export const DefaultRedirect = ({ allDataRoutes, singleProjectRoutes }) => {
   const { data: projects, isLoading: projectsLoading } = useProjects();
   const { data: user, isLoading: userLoading } = useUser();
 
-  // Wait for both — the surrounding AppPageLayout (sidebar + main) still
-  // renders, so this is a brief gap in the Main area, not a blank page.
   if (projectsLoading || userLoading) return null;
 
   const preferredProjectId = user?.preferences?.project_id ?? null;
-  const preferred = preferredProjectId
-    ? projects?.find(p => p.id === preferredProjectId)
-    : null;
+  const preferred = preferredProjectId ? projects?.find(p => p.id === preferredProjectId) : null;
   const projectCode = preferred?.code ?? projects?.[0]?.code ?? null;
 
   const singleProjectTarget = buildSingleProjectTarget(singleProjectRoutes, projectCode);
@@ -47,9 +41,4 @@ export const DefaultRedirect = ({ allDataRoutes, singleProjectRoutes }) => {
   if (allDataTarget) return <Navigate to={allDataTarget} replace />;
 
   return <Navigate to="/login" replace />;
-};
-
-DefaultRedirect.propTypes = {
-  allDataRoutes: PropTypes.array.isRequired,
-  singleProjectRoutes: PropTypes.array.isRequired,
 };

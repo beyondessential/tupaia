@@ -62,10 +62,7 @@ const splitPath = (path: string): string[] => {
 };
 
 const rewriteRequestUrl = (req: Request, url: URL) => {
-  // Mutate BOTH — http-proxy-middleware prefers req.originalUrl and even
-  // resets req.url = req.originalUrl before forwarding (see
-  // node_modules/http-proxy-middleware/dist/http-proxy-middleware.js lines
-  // 76+90). Without mutating originalUrl the merged project filter and
+  // Mutate req.url and req.originalUrl before forwarding. Without mutating originalUrl the merged project filter and
   // stripped projectCode param never reach central-server.
   const rewritten = `${url.pathname}${url.search}`;
   req.url = rewritten;

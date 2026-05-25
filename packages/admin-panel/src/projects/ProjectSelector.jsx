@@ -31,7 +31,7 @@ const StyledSelect = styled(Select)`
   }
 
   &::after {
-    border-bottom: 1px solid ${BLUE};
+    border-bottom: 1px solid ${props => props.theme.palette.primary.main};
   }
 
   .MuiSelect-select:focus {
