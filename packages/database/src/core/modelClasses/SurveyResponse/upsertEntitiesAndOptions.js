@@ -3,11 +3,41 @@
 import { toMerged } from 'es-toolkit';
 import winston from 'winston';
 
-const upsertEntities = async (models, entitiesUpserted) => {
+/**
+ * @typedef ResolveEntityId
+ * @type {(args: { canonicalEntityId: string, projectId: string }) => Promise<string>}
+ *
+ * Optional id resolver for legacy clients (MediTrak) that hold canonical ids
+ * and need them mapped to project-specific row ids. Datatrak and other callers
+ * pass entity ids that already match project-specific rows, so they omit this.
+ */
+
+const upsertEntities = async (models, entitiesUpserted, { resolveEntityId, projectId } = {}) => {
   return await Promise.all(
     entitiesUpserted.map(async entity => {
+      // For MediTrak-style payloads (canonical id), translate both the entity
+      // id and its parent_id into project-specific rows via the resolver.
+      // Datatrak skips this — its ids are already project-specific.
+      let resolvedId = entity.id;
+      let resolvedParentId = entity.parent_id;
+      if (resolveEntityId && projectId) {
+        resolvedId = await resolveEntityId({ canonicalEntityId: entity.id, projectId });
+        if (entity.parent_id) {
+          resolvedParentId = await resolveEntityId({
+            canonicalEntityId: entity.parent_id,
+            projectId,
+          });
+        }
+      }
+
+      const entityWithResolvedIds = {
+        ...entity,
+        id: resolvedId,
+        ...(entity.parent_id ? { parent_id: resolvedParentId } : {}),
+      };
+
       /** @type {EntityRecord | null} */
-      const existingEntity = await models.entity.findById(entity.id, {
+      const existingEntity = await models.entity.findById(resolvedId, {
         columns: [
           // Non-nullable attributes with no DEFAULT, needed for `INSERT ... ON CONFLICT` query
           // (MediTrak provides all attributes; DataTrak only provides those that need updating)
@@ -20,8 +50,10 @@ const upsertEntities = async (models, entitiesUpserted) => {
         ],
       });
 
-      const entityToUpsert = existingEntity ? toMerged(existingEntity, entity) : entity;
-      return await models.entity.updateOrCreate({ id: entity.id }, entityToUpsert);
+      const entityToUpsert = existingEntity
+        ? toMerged(existingEntity, entityWithResolvedIds)
+        : entityWithResolvedIds;
+      return await models.entity.updateOrCreate({ id: resolvedId }, entityToUpsert);
     }),
   );
 };
@@ -64,18 +96,28 @@ const createOptions = async (models, optionsCreated) => {
 };
 
 /**
- * Upsert entities and options that were created in user's local database
+ * Upsert entities and options that were created in user's local database.
+ *
  * @param {ModelRegistry} models
  * @param {SurveyResponse[]} surveyResponses
+ * @param {{ resolveEntityId?: ResolveEntityId, projectId?: string }} [options]
+ *   `resolveEntityId` is used by the MediTrak sync path to translate canonical
+ *   entity ids into project-specific row ids (lazy-duplicating where needed).
+ *   `projectId` is the survey's project — passed to the resolver. Both must
+ *   be supplied together or both omitted.
  */
-export const upsertEntitiesAndOptions = async (models, surveyResponses) => {
+export const upsertEntitiesAndOptions = async (
+  models,
+  surveyResponses,
+  { resolveEntityId, projectId } = {},
+) => {
   for (const surveyResponse of surveyResponses) {
     const entitiesUpserted = surveyResponse.entities_upserted || [];
     const optionsCreated = surveyResponse.options_created || [];
 
     try {
       if (entitiesUpserted.length > 0) {
-        await upsertEntities(models, entitiesUpserted);
+        await upsertEntities(models, entitiesUpserted, { resolveEntityId, projectId });
       }
     } catch (error) {
       winston.error(

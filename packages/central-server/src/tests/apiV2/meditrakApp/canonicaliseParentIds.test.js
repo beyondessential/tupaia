@@ -1,0 +1,132 @@
+import { expect } from 'chai';
+import { RECORDS } from '@tupaia/database';
+import { canonicaliseEntityParentIds } from '../../../apiV2/meditrakApp/meditrakSync/canonicaliseParentIds';
+import { TestableApp, resetTestData } from '../../testUtilities';
+
+const CHILD_CODE = 'mc_canon_child';
+const PARENT_CODE = 'mc_canon_parent';
+
+const insertEntity = async (database, { code, projectId, parentId = null }) => {
+  const [{ id }] = await database.executeSql(
+    `
+      INSERT INTO entity (code, name, type, country_code, project_id, parent_id)
+      VALUES (?, ?, 'village', 'DL', ?, ?)
+      RETURNING id;
+    `,
+    [code, `Name for ${code}`, projectId, parentId],
+  );
+  return id;
+};
+
+describe('canonicaliseEntityParentIds', () => {
+  const app = new TestableApp();
+  const { models } = app;
+  let projectA;
+  let projectB;
+
+  before(async () => {
+    await resetTestData();
+    projectA = await models.project.findOne({});
+    projectB = await models.project.create({
+      code: 'mc_canon_test_project_b',
+      description: 'B',
+      sort_order: null,
+      image_url: '',
+      logo_url: '',
+      permission_groups: [],
+      default_measure: '',
+      dashboard_group_name: 'test',
+      entity_id: projectA.entity_id,
+    });
+  });
+
+  afterEach(async () => {
+    await models.database.executeSql(`DELETE FROM entity WHERE code IN (?, ?);`, [
+      CHILD_CODE,
+      PARENT_CODE,
+    ]);
+  });
+
+  after(async () => {
+    await models.database.executeSql(`DELETE FROM project WHERE code = ?;`, [
+      'mc_canon_test_project_b',
+    ]);
+  });
+
+  it('rewrites parent_id from project-specific to canonical', async () => {
+    // Canonical parent (lower id) in project A
+    const canonicalParentId = await insertEntity(models.database, {
+      code: PARENT_CODE,
+      projectId: projectA.id,
+    });
+    // Non-canonical parent (higher id) in project B
+    const nonCanonicalParentId = await insertEntity(models.database, {
+      code: PARENT_CODE,
+      projectId: projectB.id,
+    });
+    // Child whose parent_id points at the non-canonical parent
+    const childId = await insertEntity(models.database, {
+      code: CHILD_CODE,
+      projectId: projectB.id,
+      parentId: nonCanonicalParentId,
+    });
+
+    const changesToSend = [
+      {
+        recordType: RECORDS.ENTITY,
+        record: { id: childId, code: CHILD_CODE, parent_id: nonCanonicalParentId },
+      },
+    ];
+
+    await canonicaliseEntityParentIds(models, changesToSend);
+
+    expect(changesToSend[0].record.parent_id).to.equal(canonicalParentId);
+  });
+
+  it('leaves parent_id unchanged when it already points at the canonical row', async () => {
+    const canonicalParentId = await insertEntity(models.database, {
+      code: PARENT_CODE,
+      projectId: projectA.id,
+    });
+    const childId = await insertEntity(models.database, {
+      code: CHILD_CODE,
+      projectId: projectA.id,
+      parentId: canonicalParentId,
+    });
+
+    const changesToSend = [
+      {
+        recordType: RECORDS.ENTITY,
+        record: { id: childId, code: CHILD_CODE, parent_id: canonicalParentId },
+      },
+    ];
+
+    await canonicaliseEntityParentIds(models, changesToSend);
+
+    expect(changesToSend[0].record.parent_id).to.equal(canonicalParentId);
+  });
+
+  it('skips records that are not entities', async () => {
+    const changesToSend = [
+      {
+        recordType: 'survey',
+        record: { id: 'mc_survey_id', parent_id: 'mc_some_id' },
+      },
+    ];
+
+    await canonicaliseEntityParentIds(models, changesToSend);
+
+    // parent_id untouched because non-entity records pass through unchanged.
+    expect(changesToSend[0].record.parent_id).to.equal('mc_some_id');
+  });
+
+  it('is a no-op when no entity records have a parent_id', async () => {
+    const changesToSend = [
+      { recordType: RECORDS.ENTITY, record: { id: 'mc_no_parent', code: 'mc_no_parent' } },
+    ];
+
+    await canonicaliseEntityParentIds(models, changesToSend);
+
+    expect(changesToSend[0].record.parent_id).to.equal(undefined);
+  });
+});

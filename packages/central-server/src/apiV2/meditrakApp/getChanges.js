@@ -7,6 +7,7 @@ import { allowNoPermissions } from '../../permissions';
 import {
   buildMeditrakSyncQuery,
   buildPermissionsBasedMeditrakSyncQuery,
+  canonicaliseEntityParentIds,
   supportsPermissionsBasedSync,
 } from './meditrakSync';
 import { getColumnsForMeditrakApp } from './utilities';
@@ -107,6 +108,13 @@ export async function getChanges(req, res) {
       }
       return changeObject;
     });
+
+    // Entity rows on the server reference project-specific parent rows that
+    // MediTrak doesn't know about. Rewrite each synced entity's parent_id to
+    // the canonical parent id (MIN(id) of rows sharing the parent's code) so
+    // the local hierarchy hangs together using canonical ids only.
+    await canonicaliseEntityParentIds(models, changesToSend);
+
     respond(res, changesToSend);
     return;
   } catch (error) {

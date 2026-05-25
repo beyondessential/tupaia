@@ -66,6 +66,26 @@ export const selectFromClause = select => `
   SELECT ${select} FROM permissions_based_meditrak_sync_queue
 `;
 
+/**
+ * Post-epic, `entity` can have multiple rows per code (one per project).
+ * MediTrak models entities as canonical (one row per code), so this filter
+ * limits entity-row changes to the canonical row only:
+ *
+ *   canonical = MIN(id) GROUP BY code
+ *
+ * Non-entity records pass through unchanged. See TUP-3067 for the rationale —
+ * pre-epic rows kept their original id through the migration, and any newer
+ * duplicate inserts get fresh timestamp-prefixed ids (always higher), so
+ * MIN(id) deterministically picks the pre-epic original row.
+ */
+export const canonicalEntityFilter = () => ({
+  query: `(
+      record_type != 'entity'
+      OR record_id IN (SELECT MIN(id) FROM entity GROUP BY code)
+    )`,
+  params: [],
+});
+
 export const extractSinceValue = req => {
   const { since = 0 } = req.query;
   if (isNaN(since)) {
@@ -121,6 +141,10 @@ export const buildMeditrakSyncQuery = async (req, { select, sort, limit, offset 
       AND `);
     query.append(filter);
   }
+
+  query.append(`
+      AND `);
+  query.append(canonicalEntityFilter());
 
   query.append(getModifiers(sort, limit, offset));
 
