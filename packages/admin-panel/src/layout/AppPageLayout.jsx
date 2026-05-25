@@ -76,9 +76,6 @@ export const AppPageLayout = ({
   homeLink,
   profileLink,
 }) => {
-  // Sidebar-only project code: falls back to user preferences when the URL has
-  // no project segment (e.g. All Data routes), so Single-Project nav stays
-  // populated. Request scoping still uses the URL-only readSelectedProjectCode.
   const selectedProjectCode = useSidebarProjectCode();
   const [navOpen, setNavOpen] = useState(true);
   const toggleOpen = () => {
@@ -96,9 +93,7 @@ export const AppPageLayout = ({
             buildItem(route, singleProjectBasePath, singleProjectSection.id),
           )
         : [],
-      allData: allDataRoutes.map(route =>
-        buildItem(route, ALL_DATA_BASE_PATH, allDataSection.id),
-      ),
+      allData: allDataRoutes.map(route => buildItem(route, ALL_DATA_BASE_PATH, allDataSection.id)),
     };
   }, [allDataRoutes, singleProjectRoutes, selectedProjectCode]);
 

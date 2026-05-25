@@ -48,9 +48,6 @@ export const useSelectedProject = () => {
  *   1. URL segment (matches request-scoping behaviour)
  *   2. user.preferences.project_id (last project the user explicitly picked)
  *   3. First project alphabetically (useProjects sorts by name)
- * This keeps the Single-Project nav populated on All Data routes where the URL
- * has no project segment, without changing request scoping (the axios
- * interceptor still parses the URL only — All Data routes stay unscoped).
  */
 export const useSidebarProjectCode = () => {
   const urlCode = useSelectedProjectCode();

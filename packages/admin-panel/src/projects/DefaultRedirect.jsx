@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useProjects, useUser } from '../api/queries';
+import { useSidebarProjectCode } from './useSelectedProject';
 import { buildSingleProjectBasePath } from '../routes/scopes';
 
 const buildAllDataTarget = allDataRoutes => {
@@ -18,21 +19,17 @@ const buildSingleProjectTarget = (singleProjectRoutes, projectCode) => {
 };
 
 /**
- * Picks where to land the user when they hit `/`. Prefer the user's saved
- * project (user_account.preferences.project_id) if it's still in the
- * accessible project list; otherwise fall back to the first project (useProjects
- * sorts alphabetically by name). Final fallbacks are the all-data section,
- * then the login page.
+ * Picks where to land the user when they hit `/`. Reuses useSidebarProjectCode
+ * so the preferred → first-alphabetical fallback chain stays in one place
+ * (the URL check inside it is a no-op on `/`). Final fallbacks if no projects
+ * are available are the all-data section, then the login page.
  */
 export const DefaultRedirect = ({ allDataRoutes, singleProjectRoutes }) => {
-  const { data: projects, isLoading: projectsLoading } = useProjects();
-  const { data: user, isLoading: userLoading } = useUser();
+  const { isLoading: projectsLoading } = useProjects();
+  const { isLoading: userLoading } = useUser();
+  const projectCode = useSidebarProjectCode();
 
   if (projectsLoading || userLoading) return null;
-
-  const preferredProjectId = user?.preferences?.project_id ?? null;
-  const preferred = preferredProjectId ? projects?.find(p => p.id === preferredProjectId) : null;
-  const projectCode = preferred?.code ?? projects?.[0]?.code ?? null;
 
   const singleProjectTarget = buildSingleProjectTarget(singleProjectRoutes, projectCode);
   if (singleProjectTarget) return <Navigate to={singleProjectTarget} replace />;

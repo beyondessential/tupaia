@@ -104,8 +104,7 @@ export const ProjectSelector = ({ collapsed }) => {
 
     const project = projects?.find(p => p.code === code);
     if (project?.id) {
-      // Fire-and-forget — the new project is reflected immediately via the
-      // controlled select; the persisted preference catches up async.
+      // the new project is reflected immediately via the controlled select
       saveSelectedProject(project.id);
     }
 
