@@ -7,6 +7,7 @@ import { DownloadHandler } from './DownloadHandler';
 import { exportOptionSet } from './exportOptionSet';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
+import { exportEntityPolygons } from './exportEntityPolygons';
 
 const exportRoutes = express.Router();
 
@@ -19,5 +20,6 @@ exportRoutes.get('/surveyResponses', catchAsyncErrors(exportSurveyResponses));
 exportRoutes.get('/surveyResponses/:surveyResponseId', catchAsyncErrors(exportSurveyResponses));
 exportRoutes.get('/surveys', catchAsyncErrors(exportSurveys));
 exportRoutes.get('/surveys/:surveyId', catchAsyncErrors(exportSurveys));
+exportRoutes.get('/entityPolygons/:entityPolygonId', catchAsyncErrors(exportEntityPolygons));
 
 export { exportRoutes };
