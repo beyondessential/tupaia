@@ -117,6 +117,7 @@ export async function updateCountryEntities(
       longitude,
       latitude,
       geojson,
+      entity_polygon_id: entityPolygonId,
       data_service_entity: dataServiceEntity,
       type_name: typeName,
       screen_bounds: screenBounds,
@@ -124,6 +125,26 @@ export async function updateCountryEntities(
       facility_type: facilityType,
       attributes,
     } = entityObject;
+
+    if (entityPolygonId && geojson) {
+      throw new ImportValidationError(
+        'Provide either entity_polygon_id or geojson, not both.',
+        excelRowNumber,
+        'entity_polygon_id',
+        countryName,
+      );
+    }
+    if (entityPolygonId) {
+      const polygon = await transactingModels.entityPolygon.findOne({ id: entityPolygonId });
+      if (!polygon) {
+        throw new ImportValidationError(
+          `Unknown entity_polygon_id "${entityPolygonId}". Upload the polygon via the GIS Data page first, or remove the id to link by inline geojson.`,
+          excelRowNumber,
+          'entity_polygon_id',
+          countryName,
+        );
+      }
+    }
     if (codes.includes(code)) {
       throw new ImportValidationError(
         `Entity code '${code}' is not unique`,
@@ -181,6 +202,8 @@ export async function updateCountryEntities(
         country_code: country.code,
         image_url: imageUrl,
         metadata: entityMetadata,
+        project_id: projectId,
+        ...(entityPolygonId ? { entity_polygon_id: entityPolygonId } : {}),
       },
     );
 

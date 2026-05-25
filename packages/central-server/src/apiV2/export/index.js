@@ -8,6 +8,7 @@ import { exportOptionSet } from './exportOptionSet';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 import { exportEntityPolygons } from './exportEntityPolygons';
+import { exportEntities } from './exportEntities';
 
 const exportRoutes = express.Router();
 
@@ -21,5 +22,6 @@ exportRoutes.get('/surveyResponses/:surveyResponseId', catchAsyncErrors(exportSu
 exportRoutes.get('/surveys', catchAsyncErrors(exportSurveys));
 exportRoutes.get('/surveys/:surveyId', catchAsyncErrors(exportSurveys));
 exportRoutes.get('/entityPolygons/:entityPolygonId', catchAsyncErrors(exportEntityPolygons));
+exportRoutes.get('/entities/:projectCode', catchAsyncErrors(exportEntities));
 
 export { exportRoutes };

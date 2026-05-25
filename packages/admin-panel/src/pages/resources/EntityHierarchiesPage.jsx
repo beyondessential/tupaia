@@ -4,7 +4,6 @@ import React from 'react';
 import { getSortByKey } from '@tupaia/utils';
 import { get } from '../../VizBuilderApp/api';
 import { TreeResourcePage } from './TreeResourcePage';
-import { EntityHierarchyExportModal } from '../../importExport';
 import { RESOURCE_NAME } from '../../routes/projects/entityHierarchy';
 
 const fetchRoot = async () => get('hierarchies');
@@ -39,7 +38,6 @@ export const EntityHierarchiesPage = props => (
     resourceName={RESOURCE_NAME}
     fetchRoot={fetchRoot}
     fetchBranch={fetchBranch}
-    ExportModalComponent={EntityHierarchyExportModal}
     {...props}
   />
 );

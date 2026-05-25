@@ -1,5 +1,6 @@
 import { SURVEY_RESPONSE_COLUMNS } from '../surveys/surveyResponses';
 import { getPluralForm } from '../../pages/resources/resourceName';
+import { EntitiesExportModal } from '../../importExport';
 
 const RESOURCE_NAME = { singular: 'entity', plural: 'entities' };
 
@@ -91,14 +92,6 @@ const IMPORT_CONFIG = {
         type: 'boolean',
       },
     },
-    {
-      label: 'Automatically fetch GeoJSON (defaults to ‘Yes’)',
-      parameterKey: 'automaticallyFetchGeojson',
-      type: 'boolean',
-      editConfig: {
-        type: 'boolean',
-      },
-    },
   ],
 };
 
@@ -109,6 +102,7 @@ export const entities = {
   endpoint: ENTITIES_ENDPOINT,
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
+  ExportModalComponent: EntitiesExportModal,
   nestedViews: [
     {
       title: 'Survey responses',
