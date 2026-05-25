@@ -31,6 +31,19 @@ export const FIELDS = {
       type: 'jsonEditor',
     },
   },
+  entity_polygon_id: {
+    Header: 'GIS polygon',
+    source: 'entity_polygon_id',
+    editConfig: {
+      optionsEndpoint: 'entityPolygons',
+      optionLabelKey: 'name',
+      optionValueKey: 'id',
+      sourceKey: 'entity_polygon_id',
+      // Polygons aren't project-scoped (reference data), so the picker shows
+      // all polygons regardless of the active project. Use the GIS Data page
+      // to create a new polygon before linking it here.
+    },
+  },
 };
 
 export const QRCodeColumn = {
@@ -59,7 +72,7 @@ export const COLUMNS = [
     actionConfig: {
       editEndpoint: ENTITIES_ENDPOINT,
       title: `Edit ${RESOURCE_NAME.singular}`,
-      fields: [FIELDS.name, FIELDS.attributes],
+      fields: [FIELDS.name, FIELDS.attributes, FIELDS.entity_polygon_id],
     },
   },
   {

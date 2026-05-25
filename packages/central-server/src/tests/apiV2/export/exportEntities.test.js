@@ -55,21 +55,27 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
     expect(response.statusCode).to.equal(400);
   });
 
-  it('emits one sheet per country, sheet name = country_code', async () => {
+  it('emits a single sheet containing all project entities', async () => {
     await app.grantAccess(BES_ADMIN_POLICY);
     const response = await app.get('export/entities/export_entities_test').buffer();
     expect(response.statusCode).to.equal(200);
 
     const workbook = downloadXlsx(response);
-    expect(workbook.SheetNames).to.include.members(['KI', 'VU']);
+    expect(workbook.SheetNames).to.have.lengthOf(1);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = xlsx.utils.sheet_to_json(sheet);
+    const countryCodes = new Set(rows.map(r => r.country_code));
+    // Both KI and VU entities should appear in the single sheet.
+    expect(countryCodes.has('KI')).to.equal(true);
+    expect(countryCodes.has('VU')).to.equal(true);
   });
 
-  it('emits the round-trip column set', async () => {
+  it('emits the round-trip column set including all three polygon-ref columns', async () => {
     await app.grantAccess(BES_ADMIN_POLICY);
     const response = await app.get('export/entities/export_entities_test').buffer();
     const workbook = downloadXlsx(response);
 
-    const sheet = workbook.Sheets['KI'];
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = xlsx.utils.sheet_to_json(sheet, { defval: '' });
     expect(rows.length).to.be.greaterThan(0);
 
@@ -83,16 +89,18 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
       'attributes',
       'image_url',
       'entity_polygon_id',
+      'entity_polygon_code',
+      'entity_polygon_data_source',
       'data_service_entity',
     );
   });
 
-  it('omits country, world, and project entities (they are sheet-implicit / out of scope)', async () => {
+  it('omits country, world, and project entities (out of scope for entity import)', async () => {
     await app.grantAccess(BES_ADMIN_POLICY);
     const response = await app.get('export/entities/export_entities_test').buffer();
     const workbook = downloadXlsx(response);
 
-    const sheet = workbook.Sheets['KI'];
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = xlsx.utils.sheet_to_json(sheet);
     const types = new Set(rows.map(r => r.type));
     expect(types.has('country')).to.equal(false);

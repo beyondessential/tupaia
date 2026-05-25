@@ -1,3 +1,4 @@
+import { groupBy } from 'es-toolkit/compat';
 import {
   respond,
   DatabaseError,
@@ -6,8 +7,7 @@ import {
   ImportValidationError,
 } from '@tupaia/utils';
 import { updateCountryEntities } from './updateCountryEntities';
-import { extractEntitiesByCountryName } from './extractEntitiesByCountryName';
-import * as ResolveSheetCountry from './resolveSheetCountry';
+import { extractEntitiesFromUpload } from './extractEntitiesFromUpload';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import { assertCanImportEntities } from './assertCanImportEntities';
 
@@ -29,9 +29,14 @@ export const loadProjectCountryCodes = async (models, projectId) => {
 /**
  * Responds to POST requests to the /import/entities endpoint.
  *
- * Project context is now required (TUP-3061). The admin panel only renders the
+ * Project context is required (TUP-3061). The admin panel only renders the
  * Entities tab inside a single-project route, so the axios interceptor always
  * supplies `projectCode`. Missing it is a 400.
+ *
+ * File format (TUP-3061 / TUP-3062): single xlsx sheet, one row per entity,
+ * each row carries its own `country_code`. Per-country sheets and inline
+ * `geojson` are no longer accepted — upload polygons via the GIS Data page
+ * and reference them by id or natural key.
  */
 export async function importEntities(req, res) {
   try {
@@ -49,41 +54,57 @@ export async function importEntities(req, res) {
       throw new ValidationError(`Unknown projectCode: ${projectCode}`);
     }
 
-    let entitiesByCountryName;
+    let rows;
     try {
-      entitiesByCountryName = extractEntitiesByCountryName(req.file.path);
+      rows = extractEntitiesFromUpload(req.file.path);
     } catch (error) {
       throw new UploadError(error);
     }
 
-    // Resolve every sheet name (which may be either a country_code or a legacy
-    // country_name) to a canonical country_code, and reject any sheet whose
-    // country isn't in the active project's country list.
-    const projectCountryCodes = await loadProjectCountryCodes(models, project.id);
-    const sheetsByCountryCode = {};
-    for (const [sheetName, entities] of Object.entries(entitiesByCountryName)) {
-      const countryCode = await ResolveSheetCountry.resolveSheetCountry(models, sheetName);
-      if (!projectCountryCodes.has(countryCode)) {
-        throw new ImportValidationError(
-          `Sheet "${sheetName}" maps to country ${countryCode}, which is not in project ${projectCode}.`,
-        );
-      }
-      sheetsByCountryCode[countryCode] = { sheetName, entities };
+    if (rows.length === 0) {
+      throw new ImportValidationError('Upload contains no entity rows.');
     }
 
+    // Validate every row carries a country_code (load-bearing now that sheet
+    // names no longer define the country) and that the country is in this
+    // project. Row-level errors point at the spreadsheet row number.
+    const projectCountryCodes = await loadProjectCountryCodes(models, project.id);
+    rows.forEach((row, index) => {
+      const excelRowNumber = index + 2;
+      if (!row.country_code) {
+        throw new ImportValidationError(
+          'Missing country_code',
+          excelRowNumber,
+          'country_code',
+        );
+      }
+      if (!projectCountryCodes.has(row.country_code)) {
+        throw new ImportValidationError(
+          `country_code "${row.country_code}" is not in project ${projectCode}.`,
+          excelRowNumber,
+          'country_code',
+        );
+      }
+    });
+
+    const rowsByCountryCode = groupBy(rows, 'country_code');
+
     const importEntitiesPermissionsChecker = async accessPolicy =>
-      assertCanImportEntities(
-        accessPolicy,
-        Object.values(sheetsByCountryCode).map(s => s.sheetName),
-      );
+      assertCanImportEntities(accessPolicy, Object.keys(rowsByCountryCode));
 
     await req.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, importEntitiesPermissionsChecker]),
     );
 
     await models.wrapInTransaction(async transactingModels => {
-      for (const { sheetName, entities } of Object.values(sheetsByCountryCode)) {
-        await updateCountryEntities(transactingModels, sheetName, entities, pushToDhis, project.id);
+      for (const [countryCode, countryRows] of Object.entries(rowsByCountryCode)) {
+        await updateCountryEntities(
+          transactingModels,
+          countryCode,
+          countryRows,
+          pushToDhis,
+          project.id,
+        );
       }
     });
     respond(res, { message: 'Imported entities' });

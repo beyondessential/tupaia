@@ -3,9 +3,14 @@ import { respondWithDownload, toFilename } from '@tupaia/utils';
 import { getExportPathForUser } from '@tupaia/server-utils';
 import { assertBESAdminAccess } from '../../../permissions';
 
-// Columns the importer reads (see updateCountryEntities.js). Exporting in this
-// exact order makes the .xlsx self-describing and round-trippable: a user can
-// download, edit, and re-upload without remapping anything.
+// Columns the importer reads (see updateCountryEntities.js + resolvePolygonId.js).
+// Exporting in this exact order makes the .xlsx self-describing and
+// round-trippable: a user can download, edit, and re-upload without remapping.
+//
+// All three polygon-reference columns are emitted. The importer prefers
+// `entity_polygon_id` (rename-stable), falling back to the natural-key pair
+// `entity_polygon_code` + `entity_polygon_data_source` (human-readable, useful
+// when authoring net-new files where the id isn't known yet).
 const COLUMN_ORDER = [
   'name',
   'code',
@@ -15,6 +20,8 @@ const COLUMN_ORDER = [
   'attributes',
   'image_url',
   'entity_polygon_id',
+  'entity_polygon_code',
+  'entity_polygon_data_source',
   'data_service_entity',
 ];
 
@@ -33,27 +40,39 @@ const buildRow = (entity, parentCodeById) => ({
   attributes: serialiseJsonField(entity.attributes),
   image_url: entity.image_url ?? '',
   entity_polygon_id: entity.entity_polygon_id ?? '',
+  entity_polygon_code: entity.entity_polygon_code ?? '',
+  entity_polygon_data_source: entity.entity_polygon_data_source ?? '',
   data_service_entity: serialiseJsonField(entity.data_service_entity_config ?? null),
 });
 
-const fetchCountryEntitiesForProject = async (models, projectId, countryCode) => {
-  // Country and World rows are structural; the import sheet for country X
-  // already implies the country itself, so we skip both.
-  return models.database.executeSql(
+const fetchProjectEntities = async (models, projectId) =>
+  models.database.executeSql(
     `
       SELECT e.id, e.code, e.name, e.type, e.country_code, e.parent_id,
              e.attributes, e.image_url, e.entity_polygon_id,
+             ep.code AS entity_polygon_code,
+             ep.data_source AS entity_polygon_data_source,
              dse.config AS data_service_entity_config
       FROM entity e
+      LEFT JOIN entity_polygon ep ON ep.id = e.entity_polygon_id
       LEFT JOIN data_service_entity dse ON dse.entity_code = e.code
       WHERE e.project_id = ?
-        AND e.country_code = ?
         AND e.type NOT IN ('world', 'country', 'project')
-      ORDER BY e.code ASC;
+      ORDER BY e.country_code ASC, e.code ASC;
     `,
-    [projectId, countryCode],
+    [projectId],
   );
-};
+
+const fetchCountryParentLookup = async (models, projectId) =>
+  models.database.executeSql(
+    `
+      SELECT e.id, e.code
+      FROM entity e
+      JOIN project_country pc ON pc.country_id = e.id
+      WHERE pc.project_id = ? AND e.type = 'country';
+    `,
+    [projectId],
+  );
 
 export async function exportEntities(req, res) {
   await req.assertPermissions(assertBESAdminAccess);
@@ -67,43 +86,24 @@ export async function exportEntities(req, res) {
     return;
   }
 
-  const projectCountries = await models.database.executeSql(
-    `
-      SELECT e.code, e.name
-      FROM project_country pc
-      JOIN entity e ON e.id = pc.country_id
-      WHERE pc.project_id = ?
-      ORDER BY e.code ASC;
-    `,
-    [project.id],
-  );
+  const entities = await fetchProjectEntities(models, project.id);
 
-  if (projectCountries.length === 0) {
-    res.status(400).json({ error: `Project ${projectCode} has no countries to export` });
-    return;
+  // Build a parent_id → code lookup that covers both in-sheet entities and
+  // the project's country rows (which the import sheet doesn't contain, but
+  // are valid parents for the first level of sub-national entities).
+  const parentCodeById = new Map(entities.map(e => [e.id, e.code]));
+  const countryEntities = await fetchCountryParentLookup(models, project.id);
+  for (const country of countryEntities) {
+    parentCodeById.set(country.id, country.code);
   }
+
+  const rows = entities.map(entity => buildRow(entity, parentCodeById));
+  const sheet = xlsx.utils.json_to_sheet(rows, { header: COLUMN_ORDER });
 
   const workbook = xlsx.utils.book_new();
-
-  for (const country of projectCountries) {
-    const entities = await fetchCountryEntitiesForProject(models, project.id, country.code);
-
-    // Build a parent_id → code lookup for in-sheet references. Parents may be
-    // the country itself (not in `entities`) or another in-sheet entity, so
-    // include all known parents from this country plus the country row.
-    const parentCodeById = new Map(entities.map(e => [e.id, e.code]));
-    const [countryEntity] = await models.database.executeSql(
-      'SELECT id, code FROM entity WHERE code = ? AND type = ?;',
-      [country.code, 'country'],
-    );
-    if (countryEntity) parentCodeById.set(countryEntity.id, countryEntity.code);
-
-    const rows = entities.map(entity => buildRow(entity, parentCodeById));
-    // Always include the header row, even on empty sheets, so the importer
-    // sees a valid schema.
-    const sheet = xlsx.utils.json_to_sheet(rows, { header: COLUMN_ORDER });
-    xlsx.utils.book_append_sheet(workbook, sheet, country.code);
-  }
+  // Single sheet per project (TUP-3061). Sheet name is informational; the
+  // importer doesn't read it.
+  xlsx.utils.book_append_sheet(workbook, sheet, 'Entities');
 
   const dirname = getExportPathForUser(userId);
   const basename = toFilename(`Entities - ${project.code}.xlsx`);
