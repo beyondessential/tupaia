@@ -1,6 +1,7 @@
 export {
   useSelectedProject,
   useSelectedProjectCode,
+  useSidebarProjectCode,
   readSelectedProjectCode,
   PROJECT_CODE_PARAM,
 } from './useSelectedProject';

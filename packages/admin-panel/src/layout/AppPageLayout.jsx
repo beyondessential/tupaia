@@ -7,7 +7,7 @@ import { labelToId } from '../utilities';
 import { NavPanel } from './navigation';
 import { CaretLeftIcon } from '../icons';
 import { NAV_PANEL_CLOSED_WIDTH, NAV_PANEL_OPEN_WIDTH } from './navigation/NavPanel';
-import { ProjectSelector, useSelectedProjectCode } from '../projects';
+import { ProjectSelector, useSidebarProjectCode } from '../projects';
 import { ALL_DATA_BASE_PATH, SECTIONS, buildSingleProjectBasePath } from '../routes/scopes';
 
 const PageWrapper = styled.div`
@@ -76,7 +76,7 @@ export const AppPageLayout = ({
   homeLink,
   profileLink,
 }) => {
-  const selectedProjectCode = useSelectedProjectCode();
+  const selectedProjectCode = useSidebarProjectCode();
   const [navOpen, setNavOpen] = useState(true);
   const toggleOpen = () => {
     setNavOpen(!navOpen);
@@ -93,9 +93,7 @@ export const AppPageLayout = ({
             buildItem(route, singleProjectBasePath, singleProjectSection.id),
           )
         : [],
-      allData: allDataRoutes.map(route =>
-        buildItem(route, ALL_DATA_BASE_PATH, allDataSection.id),
-      ),
+      allData: allDataRoutes.map(route => buildItem(route, ALL_DATA_BASE_PATH, allDataSection.id)),
     };
   }, [allDataRoutes, singleProjectRoutes, selectedProjectCode]);
 

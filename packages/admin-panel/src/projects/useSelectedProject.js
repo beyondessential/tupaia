@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { useProjects } from '../api/queries';
+import { useProjects, useUser } from '../api/queries';
 
 export const PROJECT_CODE_PARAM = 'projectCode';
 
@@ -40,4 +40,24 @@ export const useSelectedProject = () => {
   const { data: projects } = useProjects();
   if (!code || !projects) return null;
   return projects.find(p => p.code === code) ?? null;
+};
+
+/**
+ * Resolves the project code the sidebar should treat as "active". Differs from
+ * useSelectedProjectCode() in that it falls back beyond the URL:
+ *   1. URL segment (matches request-scoping behaviour)
+ *   2. user.preferences.project_id (last project the user explicitly picked)
+ *   3. First project alphabetically (useProjects sorts by name)
+ */
+export const useSidebarProjectCode = () => {
+  const urlCode = useSelectedProjectCode();
+  const { data: user } = useUser();
+  const { data: projects } = useProjects();
+
+  if (urlCode) return urlCode;
+  if (!projects || projects.length === 0) return null;
+
+  const preferredId = user?.preferences?.project_id ?? null;
+  const preferred = preferredId ? projects.find(p => p.id === preferredId) : null;
+  return preferred?.code ?? projects[0]?.code ?? null;
 };
