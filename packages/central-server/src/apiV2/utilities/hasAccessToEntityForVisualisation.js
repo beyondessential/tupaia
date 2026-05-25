@@ -35,6 +35,6 @@ export const hasVizBuilderAccessToEntity = async (accessPolicy, models, entity) 
 };
 
 export const hasVizBuilderAccessToEntityCode = async (accessPolicy, models, entityCode) => {
-  const entity = await models.entity.findOne({ code: entityCode });
+  const entity = await models.entity.findOneByCodeInProject(entityCode, null);
   return hasVizBuilderAccessToEntity(accessPolicy, models, entity);
 };

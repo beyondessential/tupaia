@@ -443,7 +443,18 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    */
   async findOneByCodeInProject(code, projectId = null, otherCriteria = {}, options = {}) {
     if (!projectId) {
-      return this.findOne({ code, ...otherCriteria }, options);
+      // Deterministic resolution when no project context is available
+      // (read-only permission lookups, structural entity lookups, etc.):
+      //   1. Prefer the shared/structural row (`project_id IS NULL`).
+      //   2. Otherwise return the lowest-id project-specific row — the same
+      //      "canonical row" tiebreaker MediTrak compatibility uses
+      //      (see TUP-3067).
+      // Without this sort, Postgres' planner picks an arbitrary row when
+      // duplicates exist and the result becomes non-deterministic.
+      return this.findOne(
+        { code, ...otherCriteria },
+        { ...options, sort: ['project_id ASC NULLS FIRST', 'id ASC'] },
+      );
     }
     // Sort `NULLS LAST` so a project-specific match (project_id = projectId) always
     // wins over the structural fallback (project_id IS NULL). Without this, when the

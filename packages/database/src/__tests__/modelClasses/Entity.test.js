@@ -155,4 +155,81 @@ describe('EntityModel', () => {
       assertHaveEqualIds(grandparentInExploreHierarchy, result);
     });
   });
+
+  describe('findOneByCodeInProject(code, projectId)', () => {
+    // Each scenario uses a fresh unique code so parallel test runs don't
+    // collide on the (code, project_id) unique constraint.
+    const uniqueCode = () => `findOneByCodeInProject_test_${Math.random().toString(36).slice(2)}`;
+
+    const createProject = async () =>
+      findOrCreateDummyRecord(models.project, { code: uniqueCode() });
+
+    describe('null projectId (deterministic fallback)', () => {
+      it('returns the shared row when only a project_id IS NULL row exists', async () => {
+        const code = uniqueCode();
+        const shared = await upsertEntity({ code, project_id: null });
+
+        const result = await models.entity.findOneByCodeInProject(code, null);
+        assertHaveEqualIds(shared, result);
+      });
+
+      it('returns the project-specific row when no shared row exists', async () => {
+        const code = uniqueCode();
+        const project = await createProject();
+        const projectRow = await upsertEntity({ code, project_id: project.id });
+
+        const result = await models.entity.findOneByCodeInProject(code, null);
+        assertHaveEqualIds(projectRow, result);
+      });
+
+      it('prefers the shared row over any project-specific row', async () => {
+        const code = uniqueCode();
+        const projectA = await createProject();
+        const projectB = await createProject();
+        const shared = await upsertEntity({ code, project_id: null });
+        await upsertEntity({ code, project_id: projectA.id });
+        await upsertEntity({ code, project_id: projectB.id });
+
+        const result = await models.entity.findOneByCodeInProject(code, null);
+        assertHaveEqualIds(shared, result);
+      });
+
+      it('returns the lowest-id project row when only project-specific rows exist', async () => {
+        const code = uniqueCode();
+        const projectA = await createProject();
+        const projectB = await createProject();
+        const firstInserted = await upsertEntity({ code, project_id: projectA.id });
+        const secondInserted = await upsertEntity({ code, project_id: projectB.id });
+
+        // Sanity check: `id` is timestamp-prefixed, so the earlier insert has
+        // the lower id and is therefore the canonical row.
+        expect(firstInserted.id < secondInserted.id).toBe(true);
+
+        const result = await models.entity.findOneByCodeInProject(code, null);
+        assertHaveEqualIds(firstInserted, result);
+      });
+    });
+
+    describe('explicit projectId', () => {
+      it("returns the project's own row when one exists alongside another project's row", async () => {
+        const code = uniqueCode();
+        const projectA = await createProject();
+        const projectB = await createProject();
+        await upsertEntity({ code, project_id: projectA.id });
+        const inProjectB = await upsertEntity({ code, project_id: projectB.id });
+
+        const result = await models.entity.findOneByCodeInProject(code, projectB.id);
+        assertHaveEqualIds(inProjectB, result);
+      });
+
+      it('falls back to the shared row when no project-specific row exists', async () => {
+        const code = uniqueCode();
+        const project = await createProject();
+        const shared = await upsertEntity({ code, project_id: null });
+
+        const result = await models.entity.findOneByCodeInProject(code, project.id);
+        assertHaveEqualIds(shared, result);
+      });
+    });
+  });
 });

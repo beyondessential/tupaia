@@ -199,8 +199,12 @@ export async function updateCountryEntities(
       pushToDhis,
       projectId,
     );
+    // Match by (code, project_id) so importing into project A doesn't
+    // mutate a row that belongs to project B. Post-epic the natural key is
+    // (code, project_id) — single code matching would silently steal another
+    // project's row. See TUP-3167.
     await transactingModels.entity.updateOrCreate(
-      { code },
+      { code, project_id: projectId },
       {
         name,
         parent_id: parentEntity ? parentEntity.id : null,
