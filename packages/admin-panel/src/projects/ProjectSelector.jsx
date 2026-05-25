@@ -5,7 +5,8 @@ import { MenuItem, Select, FormControl, CircularProgress } from '@material-ui/co
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useProjects } from '../api/queries';
-import { useSelectedProjectCode } from './useSelectedProject';
+import { useSaveSelectedProject } from '../api/mutations';
+import { useSelectedProjectCode, useSidebarProjectCode } from './useSelectedProject';
 import { SINGLE_PROJECT_PATH_PARAM } from '../routes/scopes';
 import { BLUE, LIGHT_BLACK, WHITE } from '../theme/colors';
 
@@ -79,30 +80,44 @@ const Loading = styled.div`
   padding-block: 0.5rem;
 `;
 
-// Swap the project-code segment when already on a project URL; otherwise enter
-// the new project's section by navigating to /:code.
-const buildTargetUrl = (pathname, search, hash, fromCode, toCode) => {
+// Swap the project-code segment when already on a single-project URL.
+// Returns null when the user isn't on a project URL — caller stays put.
+const buildSingleProjectTargetUrl = (pathname, search, hash, fromUrlCode, toCode) => {
+  if (!fromUrlCode) return null;
   const segments = pathname.split('/');
-  if (fromCode && segments[1] === fromCode) {
-    segments[1] = toCode;
-    return `${segments.join('/')}${search}${hash}`;
-  }
-  return `/${toCode}`;
+  if (segments[1] !== fromUrlCode) return null;
+  segments[1] = toCode;
+  return `${segments.join('/')}${search}${hash}`;
 };
 
 export const ProjectSelector = ({ collapsed }) => {
   const { data: projects, isLoading } = useProjects();
   const navigate = useNavigate();
   const location = useLocation();
-  const selectedProjectCode = useSelectedProjectCode();
+  const urlProjectCode = useSelectedProjectCode();
+  const sidebarProjectCode = useSidebarProjectCode();
+  const { mutate: saveSelectedProject } = useSaveSelectedProject();
 
   const handleChange = event => {
     const code = event.target.value;
-    if (!code || code === selectedProjectCode) return;
-    navigate(
-      buildTargetUrl(location.pathname, location.search, location.hash, selectedProjectCode, code),
-      { replace: true },
+    if (!code || code === sidebarProjectCode) return;
+
+    const project = projects?.find(p => p.code === code);
+    if (project?.id) {
+      // the new project is reflected immediately via the controlled select
+      saveSelectedProject(project.id);
+    }
+
+    // Single-project URL → swap the code segment.
+    // All Data URL → stay put; sidebar updates from the saved preference.
+    const target = buildSingleProjectTargetUrl(
+      location.pathname,
+      location.search,
+      location.hash,
+      urlProjectCode,
+      code,
     );
+    if (target) navigate(target, { replace: true });
   };
 
   if (collapsed) {
@@ -130,7 +145,7 @@ export const ProjectSelector = ({ collapsed }) => {
       <Label>Project</Label>
       <FormControl fullWidth>
         <StyledSelect
-          value={selectedProjectCode ?? ''}
+          value={sidebarProjectCode ?? ''}
           onChange={handleChange}
           MenuProps={menuProps}
           IconComponent={ExpandMore}
