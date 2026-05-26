@@ -199,8 +199,9 @@ export async function updateCountryEntities(
       pushToDhis,
       projectId,
     );
+
     await transactingModels.entity.updateOrCreate(
-      { code },
+      { code, project_id: projectId },
       {
         name,
         parent_id: parentEntity ? parentEntity.id : null,

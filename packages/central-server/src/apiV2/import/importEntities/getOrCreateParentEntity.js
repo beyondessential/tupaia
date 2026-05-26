@@ -73,6 +73,7 @@ export async function getOrCreateParentEntity(
     districtEntity = await transactingModels.entity.updateOrCreate(
       {
         code,
+        project_id: projectId,
       },
       {
         name: districtName,
@@ -80,6 +81,7 @@ export async function getOrCreateParentEntity(
         parent_id: countryEntity.id,
         country_code: country.code,
         metadata: districtEntityMetadata,
+        project_id: projectId,
       },
     );
   }
@@ -109,6 +111,7 @@ export async function getOrCreateParentEntity(
       parent_id: countryEntity.id,
       country_code: country.code,
       metadata: subDistrictEntityMetadata,
+      project_id: projectId,
     };
     // If a district is also being added, use as the parent of the sub_district
     if (district.id) {
@@ -119,6 +122,7 @@ export async function getOrCreateParentEntity(
     subDistrictEntity = await transactingModels.entity.updateOrCreate(
       {
         code,
+        project_id: projectId,
       },
       subDistrictEntityObject,
     );
