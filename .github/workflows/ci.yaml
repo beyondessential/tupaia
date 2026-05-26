@@ -38,6 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - name: Install Corepack
+        run: npm install -g corepack
       - name: Set up Yarn
         run: |
           corepack enable yarn
@@ -79,6 +81,8 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v5
+      - name: Install Corepack
+        run: npm install -g corepack
       - name: Set up Yarn
         run: |
           corepack enable yarn
@@ -98,6 +102,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - name: Install Corepack
+        run: npm install -g corepack
       - name: Set up Yarn
         run: |
           corepack enable yarn
@@ -115,6 +121,8 @@ jobs:
       PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
     steps:
       - uses: actions/checkout@v5
+      - name: Install Corepack
+        run: npm install -g corepack
       - name: Set up Yarn
         run: |
           corepack enable yarn
@@ -188,6 +196,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      - name: Install Corepack
+        run: npm install -g corepack
       - name: Set up Yarn
         run: |
           corepack enable yarn
