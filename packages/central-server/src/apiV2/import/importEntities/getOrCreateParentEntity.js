@@ -71,8 +71,6 @@ export async function getOrCreateParentEntity(
       projectId,
     );
     districtEntity = await transactingModels.entity.updateOrCreate(
-      // Match by (code, project_id) — districts are project-scoped post-epic.
-      // See TUP-3167.
       {
         code,
         project_id: projectId,
@@ -122,8 +120,6 @@ export async function getOrCreateParentEntity(
     }
     subDistrict = await transactingModels.geographicalArea.findOrCreate(subDistrictObject);
     subDistrictEntity = await transactingModels.entity.updateOrCreate(
-      // Match by (code, project_id) — sub-districts are project-scoped post-epic.
-      // See TUP-3167.
       {
         code,
         project_id: projectId,

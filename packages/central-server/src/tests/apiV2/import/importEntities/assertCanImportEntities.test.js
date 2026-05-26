@@ -11,9 +11,6 @@ const DEFAULT_POLICY = {
   LA: ['Admin'],
 };
 
-// Post-TUP-3061, assertCanImportEntities takes country codes directly (the
-// importer pulls them from each row's country_code column rather than
-// deriving them from sheet names). Tests pass codes accordingly.
 describe('assertCanImportEntities(): Permissions checker for Importing Entities', async () => {
   const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
 

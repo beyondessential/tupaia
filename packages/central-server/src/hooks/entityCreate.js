@@ -18,9 +18,6 @@ async function getEntityInfoFromSurveyResponse(surveyResponse) {
 async function createNewEntity(answerValues, parent, models) {
   const { id, code, name, type, image_url, location } = answerValues;
 
-  // create the entity, inheriting project_id from the parent so the new row
-  // lands in the same project context as where the survey was submitted.
-  // See TUP-3167.
   const entity = await models.entity.create({
     id,
     code,
@@ -50,9 +47,6 @@ export async function entityCreate({ surveyResponse, models }) {
   const answerValues = await getEntityInfoFromSurveyResponse(surveyResponse);
   const parentEntity = await surveyResponse.entity();
 
-  // Look up the existing entity in the parent's project — pre-TUP-3167 this
-  // was a code-only match which silently resolved to another project's row
-  // when duplicates existed.
   const { code } = answerValues;
   const existingEntity = await models.entity.findOneByCodeInProject(
     code,

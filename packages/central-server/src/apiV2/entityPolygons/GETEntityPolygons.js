@@ -2,10 +2,6 @@ import { BESAdminGETHandler } from '../GETHandler';
 
 const fetchLinkedCodesByPolygonId = async (database, ids) => {
   if (!ids.length) return new Map();
-  // Use an `IN (...)` clause with one placeholder per id — executeSql's `?`
-  // binding doesn't coerce a JS array to a PG array for `ANY(?)`, but binds
-  // each placeholder positionally for `IN (?, ?, ...)` cleanly.
-  const placeholders = ids.map(() => '?').join(', ');
   const linked = await database.executeSql(
     `
       SELECT entity_polygon_id AS id, STRING_AGG(code, ', ' ORDER BY code) AS linked_entity_codes
@@ -42,7 +38,10 @@ export class GETEntityPolygons extends BESAdminGETHandler {
   async findRecords(criteria, options) {
     const rows = await super.findRecords(criteria, options);
     if (!rows?.length) return rows;
-    const lookup = await fetchLinkedCodesByPolygonId(this.database, rows.map(r => r.id));
+    const lookup = await fetchLinkedCodesByPolygonId(
+      this.database,
+      rows.map(r => r.id),
+    );
     return rows.map(row => {
       const linkedCode = lookup.get(row.id) ?? null;
       if (this.idColumnRequested) {
