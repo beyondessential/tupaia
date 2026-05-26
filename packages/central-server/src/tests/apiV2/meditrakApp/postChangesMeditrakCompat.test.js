@@ -108,6 +108,11 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
           code,
           type: 'village',
           country_code: COUNTRY_CODE,
+          // parent_id is required by `constructEntitiesUpsertedValidators` —
+          // the [takesIdForm] validator runs on the raw value with no
+          // hasContent guard, so a missing field crashes the validator with
+          // TypeError → 400 (not the most helpful error message).
+          parent_id: projectA.entity_id,
           attributes: {},
         },
       ],
@@ -153,6 +158,7 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
           code,
           type: 'village',
           country_code: COUNTRY_CODE,
+          parent_id: projectA.entity_id,
           attributes: {},
         },
       ],
