@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
 import {
   buildAndInsertSurvey,
@@ -8,6 +8,8 @@ import {
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { getModels } from '../../testUtilities';
 import { assertCanImportSurvey } from '../../../apiV2/surveys/assertCanImportSurvey';
+
+const { expect } = chai;
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

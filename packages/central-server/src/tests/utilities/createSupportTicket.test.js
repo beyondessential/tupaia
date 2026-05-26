@@ -1,6 +1,8 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
+
+const { expect } = chai;
 
 const fetchWithTimeoutStub = sinon.stub().resolves();
 const requireEnvStub = sinon.stub().returns('test_value');
