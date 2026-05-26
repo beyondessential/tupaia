@@ -17,7 +17,7 @@ import {
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
-import { TestableApp, resetTestData } from '../../testUtilities';
+import { TEST_USER_EMAIL, TestableApp, resetTestData } from '../../testUtilities';
 
 const COUNTRY_CODE = 'DL';
 
@@ -73,7 +73,11 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     ]);
     survey = createdSurvey;
 
-    userId = app.user?.id ?? null;
+    // Query the user account directly — app.user can be undefined if /auth
+    // returned a partial response, which manifests as a 400 from the changes
+    // endpoint (user_id fails the hasContent validator).
+    const user = await models.user.findOne({ email: TEST_USER_EMAIL });
+    userId = user.id;
   });
 
   after(async () => {
@@ -90,6 +94,7 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
       id: generateId(),
       survey_id: survey.id,
       user_id: userId,
+      assessor_name: 'MediTrak Compat Tester',
       start_time: generateValueOfType('date'),
       end_time: generateValueOfType('date'),
       timestamp: generateValueOfType('date'),
@@ -134,6 +139,7 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
       id: generateId(),
       survey_id: survey.id,
       user_id: userId,
+      assessor_name: 'MediTrak Compat Tester',
       start_time: generateValueOfType('date'),
       end_time: generateValueOfType('date'),
       timestamp: generateValueOfType('date'),
