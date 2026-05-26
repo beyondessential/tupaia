@@ -13,22 +13,24 @@ import { expect } from 'chai';
 import {
   generateId,
   generateValueOfType,
+  buildAndInsertProjectsAndHierarchies,
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
-import { setupDummySyncQueue, TestableApp, upsertQuestion } from '../../testUtilities';
+import { TestableApp, resetTestData } from '../../testUtilities';
 
 const COUNTRY_CODE = 'DL';
-const TEST_PROJECT_CODE = 'meditrak_compat_test';
 
 const insertEntity = async (database, { code, projectId, parentId = null }) => {
-  const [{ id }] = await database.executeSql(
+  // `id` is provided explicitly because the test schema doesn't have a
+  // DEFAULT generate_object_id() on entity.id.
+  const id = generateId();
+  await database.executeSql(
     `
-      INSERT INTO entity (code, name, type, country_code, project_id, parent_id)
-      VALUES (?, ?, 'village', ?, ?, ?)
-      RETURNING id;
+      INSERT INTO entity (id, code, name, type, country_code, project_id, parent_id)
+      VALUES (?, ?, ?, 'village', ?, ?, ?);
     `,
-    [code, `Name ${code}`, COUNTRY_CODE, projectId, parentId],
+    [id, code, `Name ${code}`, COUNTRY_CODE, projectId, parentId],
   );
   return id;
 };
@@ -36,7 +38,6 @@ const insertEntity = async (database, { code, projectId, parentId = null }) => {
 describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
   const app = new TestableApp();
   const { models } = app;
-  setupDummySyncQueue(models);
 
   let projectA;
   let projectB;
@@ -44,6 +45,7 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
   let userId;
 
   before(async () => {
+    await resetTestData();
     await app.grantAccess({ [COUNTRY_CODE]: ['TEST_PERMISSION_GROUP'] });
 
     await findOrCreateDummyCountryEntity(models, {
@@ -51,18 +53,12 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
       name: 'Demo Land',
     });
 
-    projectA = await models.project.findOne({}); // any existing project
-    projectB = await models.project.create({
-      code: TEST_PROJECT_CODE,
-      description: 'compat',
-      sort_order: null,
-      image_url: '',
-      logo_url: '',
-      permission_groups: [],
-      default_measure: '',
-      dashboard_group_name: 'compat',
-      entity_id: projectA.entity_id,
-    });
+    const createdProjects = await buildAndInsertProjectsAndHierarchies(models, [
+      { code: 'meditrak_compat_project_a', name: 'MediTrak Compat A', entities: [] },
+      { code: 'meditrak_compat_project_b', name: 'MediTrak Compat B', entities: [] },
+    ]);
+    projectA = createdProjects[0].project;
+    projectB = createdProjects[1].project;
 
     // Survey lives in project B — sync-up edits should land in project B rows.
     const [createdSurvey] = await buildAndInsertSurveys(models, [
@@ -77,11 +73,13 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     ]);
     survey = createdSurvey;
 
-    userId = (await models.user.findOne({ email: app.user?.email ?? undefined }))?.id;
+    userId = app.user?.id ?? null;
   });
 
   after(async () => {
-    await models.database.executeSql(`DELETE FROM project WHERE code = ?;`, [TEST_PROJECT_CODE]);
+    // Restore the sinon stub *first*. If cleanup later throws, leaking the
+    // stub onto the prototype breaks every subsequent test file's
+    // grantAccess with "already wrapped".
     app.revokeAccess();
   });
 
@@ -122,8 +120,6 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     const rowInProjectB = await models.entity.findOne({ code, project_id: projectB.id });
     expect(rowInProjectB).to.exist;
     expect(rowInProjectB.name).to.equal('Brand new village');
-
-    await models.database.executeSql(`DELETE FROM entity WHERE code = ?;`, [code]);
   });
 
   it('routes an edit of an existing canonical entity into the survey project', async () => {
@@ -170,7 +166,5 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     const projectBRow = await models.entity.findOne({ code, project_id: projectB.id });
     expect(projectBRow).to.exist;
     expect(projectBRow.name).to.equal('Edited name from MediTrak');
-
-    await models.database.executeSql(`DELETE FROM entity WHERE code = ?;`, [code]);
   });
 });

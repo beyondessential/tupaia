@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { RECORDS } from '@tupaia/database';
+import { RECORDS, buildAndInsertProjectsAndHierarchies, generateId } from '@tupaia/database';
 import { canonicaliseEntityParentIds } from '../../../apiV2/meditrakApp/meditrakSync/canonicaliseParentIds';
 import { TestableApp, resetTestData } from '../../testUtilities';
 
@@ -7,13 +7,17 @@ const CHILD_CODE = 'mc_canon_child';
 const PARENT_CODE = 'mc_canon_parent';
 
 const insertEntity = async (database, { code, projectId, parentId = null }) => {
-  const [{ id }] = await database.executeSql(
+  // `id` is provided explicitly because the test schema doesn't have a
+  // DEFAULT generate_object_id() on entity.id. We rely on `generateId()`'s
+  // timestamp-ordered output so the canonical (MIN(id)) row is the first
+  // one inserted — same invariant the production migration sets up.
+  const id = generateId();
+  await database.executeSql(
     `
-      INSERT INTO entity (code, name, type, country_code, project_id, parent_id)
-      VALUES (?, ?, 'village', 'DL', ?, ?)
-      RETURNING id;
+      INSERT INTO entity (id, code, name, type, country_code, project_id, parent_id)
+      VALUES (?, ?, ?, 'village', 'DL', ?, ?);
     `,
-    [code, `Name for ${code}`, projectId, parentId],
+    [id, code, `Name for ${code}`, projectId, parentId],
   );
   return id;
 };
@@ -26,30 +30,18 @@ describe('canonicaliseEntityParentIds', () => {
 
   before(async () => {
     await resetTestData();
-    projectA = await models.project.findOne({});
-    projectB = await models.project.create({
-      code: 'mc_canon_test_project_b',
-      description: 'B',
-      sort_order: null,
-      image_url: '',
-      logo_url: '',
-      permission_groups: [],
-      default_measure: '',
-      dashboard_group_name: 'test',
-      entity_id: projectA.entity_id,
-    });
+    const created = await buildAndInsertProjectsAndHierarchies(models, [
+      { code: 'mc_canon_project_a', name: 'mc canon A', entities: [] },
+      { code: 'mc_canon_project_b', name: 'mc canon B', entities: [] },
+    ]);
+    projectA = created[0].project;
+    projectB = created[1].project;
   });
 
   afterEach(async () => {
     await models.database.executeSql(`DELETE FROM entity WHERE code IN (?, ?);`, [
       CHILD_CODE,
       PARENT_CODE,
-    ]);
-  });
-
-  after(async () => {
-    await models.database.executeSql(`DELETE FROM project WHERE code = ?;`, [
-      'mc_canon_test_project_b',
     ]);
   });
 

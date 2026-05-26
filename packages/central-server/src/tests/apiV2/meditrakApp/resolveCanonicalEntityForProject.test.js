@@ -1,17 +1,20 @@
 import { expect } from 'chai';
+import { buildAndInsertProjectsAndHierarchies, generateId } from '@tupaia/database';
 import { resolveCanonicalEntityForProject } from '../../../apiV2/meditrakApp/utilities/resolveCanonicalEntityForProject';
 import { TestableApp, resetTestData } from '../../testUtilities';
 
 const SAMPLE_CODE = 'mc_resolve_test';
 
 const insertEntity = async (database, { code = SAMPLE_CODE, name = 'Test', projectId }) => {
-  const [{ id }] = await database.executeSql(
+  // `id` is provided explicitly because the test schema doesn't have a
+  // DEFAULT generate_object_id() on entity.id.
+  const id = generateId();
+  await database.executeSql(
     `
-      INSERT INTO entity (code, name, type, country_code, project_id)
-      VALUES (?, ?, 'village', 'DL', ?)
-      RETURNING id;
+      INSERT INTO entity (id, code, name, type, country_code, project_id)
+      VALUES (?, ?, ?, 'village', 'DL', ?);
     `,
-    [code, name, projectId],
+    [id, code, name, projectId],
   );
   return id;
 };
@@ -24,28 +27,16 @@ describe('resolveCanonicalEntityForProject', () => {
 
   before(async () => {
     await resetTestData();
-    projectA = await models.project.findOne({});
-    if (!projectA) throw new Error('Need at least one project in test data');
-    // Create a second project to test cross-project resolution.
-    projectB = await models.project.create({
-      code: 'mc_test_project_b',
-      description: 'Test project B for compat layer',
-      sort_order: null,
-      image_url: '',
-      logo_url: '',
-      permission_groups: [],
-      default_measure: '',
-      dashboard_group_name: 'test',
-      entity_id: projectA.entity_id,
-    });
+    const created = await buildAndInsertProjectsAndHierarchies(models, [
+      { code: 'mc_resolve_project_a', name: 'mc resolve A', entities: [] },
+      { code: 'mc_resolve_project_b', name: 'mc resolve B', entities: [] },
+    ]);
+    projectA = created[0].project;
+    projectB = created[1].project;
   });
 
   afterEach(async () => {
     await models.database.executeSql('DELETE FROM entity WHERE code = ?;', [SAMPLE_CODE]);
-  });
-
-  after(async () => {
-    await models.database.executeSql('DELETE FROM project WHERE code = ?;', ['mc_test_project_b']);
   });
 
   it('returns the existing project-specific row when one exists', async () => {
