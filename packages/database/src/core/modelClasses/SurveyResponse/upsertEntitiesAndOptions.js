@@ -20,8 +20,18 @@ const upsertEntities = async (models, entitiesUpserted, { resolveEntityId, proje
       // Datatrak skips this — its ids are already project-specific.
       let resolvedId = entity.id;
       let resolvedParentId = entity.parent_id;
+      let resolvedProjectId;
       if (resolveEntityId && projectId) {
-        resolvedId = await resolveEntityId({ canonicalEntityId: entity.id, projectId });
+        // Skip resolution when the entity row doesn't exist yet — this is the
+        // first time MediTrak has synced it. The canonical id becomes the
+        // project-specific id and we set project_id to the survey's project.
+        const existingCanonical = await models.entity.findById(entity.id);
+        if (existingCanonical) {
+          resolvedId = await resolveEntityId({ canonicalEntityId: entity.id, projectId });
+        } else {
+          resolvedProjectId = projectId;
+        }
+        // parent_id always resolves (the parent must already exist).
         if (entity.parent_id) {
           resolvedParentId = await resolveEntityId({
             canonicalEntityId: entity.parent_id,
@@ -34,6 +44,7 @@ const upsertEntities = async (models, entitiesUpserted, { resolveEntityId, proje
         ...entity,
         id: resolvedId,
         ...(entity.parent_id ? { parent_id: resolvedParentId } : {}),
+        ...(resolvedProjectId ? { project_id: resolvedProjectId } : {}),
       };
 
       /** @type {EntityRecord | null} */
