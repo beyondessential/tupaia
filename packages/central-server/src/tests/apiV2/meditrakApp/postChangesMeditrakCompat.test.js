@@ -61,7 +61,10 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     projectB = createdProjects[1].project;
 
     // Survey lives in project B — sync-up edits should land in project B rows.
-    const [createdSurvey] = await buildAndInsertSurveys(models, [
+    // buildAndInsertSurveys returns one wrapper per input survey of shape
+    // { survey, surveyScreen, surveyScreenComponents, questions, ... } —
+    // unwrap to get the survey record itself.
+    const [created] = await buildAndInsertSurveys(models, [
       {
         code: 'meditrak_compat_survey',
         name: 'MediTrak Compat Survey',
@@ -71,7 +74,7 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
         questions: [],
       },
     ]);
-    survey = createdSurvey;
+    survey = created.survey;
 
     // Query the user account directly — app.user can be undefined if /auth
     // returned a partial response, which manifests as a 400 from the changes
@@ -122,14 +125,6 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     const response = await app.post('changes', {
       body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
     });
-    if (response.statusCode !== 200) {
-      // eslint-disable-next-line no-console
-      console.error(
-        'POST /changes failed:',
-        response.statusCode,
-        JSON.stringify(response.body, null, 2),
-      );
-    }
     expect(response.statusCode).to.equal(200);
 
     // Because the canonical id didn't already exist, the resolver lazy-
@@ -176,14 +171,6 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     const response = await app.post('changes', {
       body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
     });
-    if (response.statusCode !== 200) {
-      // eslint-disable-next-line no-console
-      console.error(
-        'POST /changes failed:',
-        response.statusCode,
-        JSON.stringify(response.body, null, 2),
-      );
-    }
     expect(response.statusCode).to.equal(200);
 
     // The canonical row in project A keeps its original name.
