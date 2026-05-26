@@ -3,14 +3,18 @@ import { BESAdminGETHandler } from '../GETHandler';
 const attachLinkedEntityCodes = async (database, rows) => {
   if (!rows?.length) return rows;
   const ids = rows.map(r => r.id);
+  // Use an `IN (...)` clause with one placeholder per id — executeSql's `?`
+  // binding doesn't coerce a JS array to a PG array for `ANY(?)`, but binds
+  // each placeholder positionally for `IN (?, ?, ...)` cleanly.
+  const placeholders = ids.map(() => '?').join(', ');
   const linked = await database.executeSql(
     `
       SELECT entity_polygon_id AS id, STRING_AGG(code, ', ' ORDER BY code) AS linked_entity_codes
       FROM entity
-      WHERE entity_polygon_id = ANY(?)
+      WHERE entity_polygon_id IN (${placeholders})
       GROUP BY entity_polygon_id;
     `,
-    [ids],
+    ids,
   );
   const lookup = new Map(linked.map(({ id, linked_entity_codes }) => [id, linked_entity_codes]));
   return rows.map(row => ({ ...row, linked_entity_codes: lookup.get(row.id) ?? null }));

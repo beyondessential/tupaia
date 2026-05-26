@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import xlsx from 'xlsx';
 import { expect } from 'chai';
 import { buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
@@ -11,12 +10,18 @@ import {
 const BES_ADMIN_POLICY = { DL: [BES_ADMIN_PERMISSION_GROUP] };
 const NON_BES_ADMIN_POLICY = { DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP] };
 
-const downloadXlsx = response => {
-  const tmp = `/tmp/exportEntities-test-${Date.now()}.xlsx`;
-  fs.writeFileSync(tmp, response.body);
-  const workbook = xlsx.readFile(tmp);
-  fs.unlinkSync(tmp);
-  return workbook;
+// Helper that issues a buffered GET and parses the response body as raw xlsx
+// bytes. Without the custom parser, supertest tries to JSON-decode the binary
+// body and `response.body` ends up as `{}` — writing that to disk fails.
+const downloadXlsx = async getRequest => {
+  const response = await getRequest
+    .buffer(true)
+    .parse((res, callback) => {
+      const chunks = [];
+      res.on('data', chunk => chunks.push(chunk));
+      res.on('end', () => callback(null, Buffer.concat(chunks)));
+    });
+  return { response, workbook: xlsx.read(response.body, { type: 'buffer' }) };
 };
 
 describe('exportEntities: GET /export/entities/:projectCode', () => {
@@ -57,10 +62,11 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
 
   it('emits a single sheet containing all project entities', async () => {
     await app.grantAccess(BES_ADMIN_POLICY);
-    const response = await app.get('export/entities/export_entities_test').buffer();
+    const { response, workbook } = await downloadXlsx(
+      app.get('export/entities/export_entities_test'),
+    );
     expect(response.statusCode).to.equal(200);
 
-    const workbook = downloadXlsx(response);
     expect(workbook.SheetNames).to.have.lengthOf(1);
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = xlsx.utils.sheet_to_json(sheet);
@@ -72,8 +78,7 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
 
   it('emits the round-trip column set including all three polygon-ref columns', async () => {
     await app.grantAccess(BES_ADMIN_POLICY);
-    const response = await app.get('export/entities/export_entities_test').buffer();
-    const workbook = downloadXlsx(response);
+    const { workbook } = await downloadXlsx(app.get('export/entities/export_entities_test'));
 
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = xlsx.utils.sheet_to_json(sheet, { defval: '' });
@@ -97,8 +102,7 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
 
   it('omits country, world, and project entities (out of scope for entity import)', async () => {
     await app.grantAccess(BES_ADMIN_POLICY);
-    const response = await app.get('export/entities/export_entities_test').buffer();
-    const workbook = downloadXlsx(response);
+    const { workbook } = await downloadXlsx(app.get('export/entities/export_entities_test'));
 
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = xlsx.utils.sheet_to_json(sheet);
