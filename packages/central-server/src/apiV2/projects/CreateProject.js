@@ -99,7 +99,7 @@ export class CreateProject extends BESAdminCreateHandler {
 
   async createProjectEntity(models, projectCode, name) {
     const worldCode = 'World';
-    const { id: worldId } = await models.entity.findOne({ code: worldCode });
+    const { id: worldId } = await models.entity.findOneByCodeInProject(worldCode, null);
 
     return models.entity.create({
       name,
