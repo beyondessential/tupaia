@@ -122,6 +122,14 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     const response = await app.post('changes', {
       body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
     });
+    if (response.statusCode !== 200) {
+      // eslint-disable-next-line no-console
+      console.error(
+        'POST /changes failed:',
+        response.statusCode,
+        JSON.stringify(response.body, null, 2),
+      );
+    }
     expect(response.statusCode).to.equal(200);
 
     // Because the canonical id didn't already exist, the resolver lazy-
@@ -168,6 +176,14 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     const response = await app.post('changes', {
       body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
     });
+    if (response.statusCode !== 200) {
+      // eslint-disable-next-line no-console
+      console.error(
+        'POST /changes failed:',
+        response.statusCode,
+        JSON.stringify(response.body, null, 2),
+      );
+    }
     expect(response.statusCode).to.equal(200);
 
     // The canonical row in project A keeps its original name.
