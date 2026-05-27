@@ -2,6 +2,7 @@ import { BESAdminGETHandler } from '../GETHandler';
 
 const fetchLinkedCodesByPolygonId = async (database, ids) => {
   if (!ids.length) return new Map();
+  const placeholders = ids.map(() => '?').join(', ');
   const linked = await database.executeSql(
     `
       SELECT entity_polygon_id AS id, STRING_AGG(code, ', ' ORDER BY code) AS linked_entity_codes

@@ -2,15 +2,25 @@ import { ValidationError } from '@tupaia/utils';
 import { BESAdminCreateHandler } from '../CreateHandler';
 
 const toMultiPolygonGeoJson = polygon => {
-  if (!polygon || typeof polygon !== 'object') {
+  // The admin-panel JsonEditor widget posts the value as a JSON string
+  // (stringify defaults to true), so accept either a string or an object.
+  let geometry = polygon;
+  if (typeof geometry === 'string') {
+    try {
+      geometry = JSON.parse(geometry);
+    } catch (error) {
+      throw new ValidationError('polygon must be valid GeoJSON (could not parse JSON string)');
+    }
+  }
+  if (!geometry || typeof geometry !== 'object') {
     throw new ValidationError('polygon must be a GeoJSON geometry object');
   }
-  if (polygon.type === 'MultiPolygon') return polygon;
-  if (polygon.type === 'Polygon') {
-    return { type: 'MultiPolygon', coordinates: [polygon.coordinates] };
+  if (geometry.type === 'MultiPolygon') return geometry;
+  if (geometry.type === 'Polygon') {
+    return { type: 'MultiPolygon', coordinates: [geometry.coordinates] };
   }
   throw new ValidationError(
-    `polygon must be type Polygon or MultiPolygon (got: ${polygon.type ?? typeof polygon})`,
+    `polygon must be type Polygon or MultiPolygon (got: ${geometry.type ?? typeof geometry})`,
   );
 };
 
