@@ -442,10 +442,21 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @returns {Promise<EntityRecord | null>}
    */
   async findOneByCodeInProject(code, projectId = null, otherCriteria = {}, options = {}) {
+    // Use `rawSort` rather than `sort` for the NULLS FIRST/LAST modifiers —
+    // BaseDatabase's `sort` parser does `sortKey.split(' ')` and only keeps
+    // the first two tokens (column + direction), silently dropping the NULLS
+    // clause. `rawSort` is forwarded straight to knex's `orderByRaw`.
     if (!projectId) {
-      return this.findOne({ code, ...otherCriteria }, options);
+      // Deterministic resolution when no project context is available
+      //   1. Prefer the shared/structural row (`project_id IS NULL`).
+      //   2. Otherwise return the lowest-id project-specific row — the same
+      //      "canonical row" tiebreaker MediTrak compatibility uses
+      return this.findOne(
+        { code, ...otherCriteria },
+        { ...options, rawSort: 'project_id ASC NULLS FIRST, id ASC' },
+      );
     }
-    // Sort `NULLS LAST` so a project-specific match (project_id = projectId) always
+    // `NULLS LAST` so a project-specific match (project_id = projectId) always
     // wins over the structural fallback (project_id IS NULL). Without this, when the
     // same code exists as both a shared structural row and a per-project copy, Postgres
     // returns them in planner-dependent order and the result is non-deterministic.
@@ -458,7 +469,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           parameters: [projectId],
         },
       },
-      { ...options, sort: ['project_id ASC NULLS LAST'] },
+      { ...options, rawSort: 'project_id ASC NULLS LAST' },
     );
   }
 
