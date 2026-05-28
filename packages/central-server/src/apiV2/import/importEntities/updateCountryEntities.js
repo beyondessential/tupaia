@@ -218,7 +218,17 @@ export async function updateCountryEntities(
       await transactingModels.entity.updateEntityAttributes(code, attributes);
     }
     if (longitude && latitude) {
-      await transactingModels.entity.updatePointCoordinates(code, { longitude, latitude });
+      // xlsx cells arrive as strings (raw:false), but ST_GeomFromGeoJSON needs
+      // numeric GeoJSON coordinates — coerce, and skip silently if either is
+      // non-numeric rather than writing a broken point.
+      const lon = Number(longitude);
+      const lat = Number(latitude);
+      if (Number.isFinite(lon) && Number.isFinite(lat)) {
+        await transactingModels.entity.updatePointCoordinates(code, {
+          longitude: lon,
+          latitude: lat,
+        });
+      }
     }
     if (screenBounds) {
       await transactingModels.entity.updateBoundsCoordinates(code, screenBounds);

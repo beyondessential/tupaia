@@ -20,6 +20,8 @@ const projectIdFromBody = (body: unknown): ProjectRef | null => {
   return typeof projectId === 'string' ? { id: projectId } : null;
 };
 
+const PROJECT_CODE_PASSTHROUGH_PATHS = new Set(['import/entities']);
+
 const RULES: Record<string, ProjectScopeRule> = {
   surveys: {
     filter: project => ({ project_id: project.id }),
@@ -81,8 +83,10 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
   const resourceKey = segments[0] ?? '';
   const rule = RULES[resourceKey];
 
-  // Always strip projectCode before forwarding — central-server has no concept of it.
-  url.searchParams.delete(PROJECT_CODE_PARAM);
+  // Strip projectCode before forwarding unless this is an endpoint that consumes it
+  if (!PROJECT_CODE_PASSTHROUGH_PATHS.has(segments.join('/'))) {
+    url.searchParams.delete(PROJECT_CODE_PARAM);
+  }
 
   // No rule or no project context → forward unchanged. Absent projectCode is
   // an explicit "all-data" view; scoped resources see cross-project data.

@@ -63,6 +63,14 @@ export const COLUMNS = [
     source: 'country_code',
   },
   {
+    Header: 'Parent code',
+    source: 'parent_code',
+    // Virtual column resolved server-side in GETEntities — not a real DB
+    // field, so it can't be used for filter/sort.
+    filterable: false,
+    sortable: false,
+  },
+  {
     Header: 'Project',
     source: 'project.code',
   },

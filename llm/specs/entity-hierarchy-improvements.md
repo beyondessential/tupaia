@@ -211,44 +211,6 @@ TUP-3067 & TUP-3156
 
 ### Import Export Test Plan
 
-
-
-1. Hand-authored upload: edit the downloaded file, change the name, remove the id from properties, keep code + data_source.
-   Re-upload. The same row updates (matched by natural key).
-2. Unknown-id rejection: edit the file to set properties.id = "does_not_exist". Re-upload. Row-level error.
-3. Delete: link a polygon to an entity first (see step 4 below), then delete the polygon. Confirm dialog → entities'
-   entity_polygon_id becomes NULL (FK ON DELETE SET NULL).
-
-4. Entity edit modal — polygon link
-
-5. From any project view, edit an entity. The new "GIS polygon" picker is visible.
-6. Pick the polygon you created in step 1. Save. Spot-check in DB: entity.entity_polygon_id set.
-7. Edit the entity again. Clear the polygon (empty selection). Save. DB: entity.entity_polygon_id is NULL.
-
-8. Entity Export (TUP-3062)
-
-9. From /:projectCode/entities, click the page-header Download button.
-10. Confirm in the modal. xlsx file downloads.
-11. Open in Excel:
-    - Single sheet named Entities (not per-country)
-    - Columns in order: name, code, type, country_code, parent_code, attributes, image_url, entity_polygon_id,
-    entity_polygon_code, entity_polygon_data_source, data_service_entity
-    - Every row has country_code populated
-    - attributes is a JSON string, not the legacy human-readable form
-    - No geojson column anywhere
-    - Country / world / project rows are absent
-
-12. Entity Import — round-trip (TUP-3061)
-
-13. From the same project, click Import. Upload the unchanged file you just downloaded. Expect 200, "Imported entities".
-14. DB spot-check: pick one entity, updated_at_sync_tick advanced but name, code, parent_id, entity_polygon_id unchanged.
-
-15. Entity Import — edit-and-reimport
-
-16. In Excel, change one entity's name. Re-upload. That entity's name updates, nothing else does.
-
-17. Entity Import — validation cases
-
 For each, expect a non-200 response with a clear error message:
 
 | Scenario | How to provoke | Expected error |
@@ -262,40 +224,4 @@ For each, expect a non-200 response with a clear error message:
 | Natural-key only — unknown | Same as above with a code/data_source pair that doesn't exist | `"No entity_polygon found for code …"` |
 | ID + natural-key mismatch | Set `entity_polygon_id` to polygon A's id, set `code`+`data_source` to polygon B. Re-upload | `"does not match the polygon found by code …"` |
 | Parent in another project | Edit a row's `parent_code` to reference an entity in a different project's hierarchy | Row-level error from `getOrCreateParentEntity` (`"No entity matching parent code …"`) |
-
-7. New-country net-new upload (the workflow these flips were designed for)
-
-1. Step 1: author a GeoJSON FeatureCollection of polygons. Each feature's properties has name, code like KH_district_01,
-   data_source like kh_setup_2026. Upload via GIS Data page.
-2. Step 2: author an xlsx with the new column shape. For each row that needs a polygon, fill entity_polygon_code +
-   entity_polygon_data_source with the values you used in step 1. No entity_polygon_id needed.
-3. Upload via Entity Import. Spot-check DB: those entities now have entity_polygon_id pointing at the right rows. No id
-   hunt required.
-
-8. Hierarchy export removed (TUP-3064)
-
-1. Navigate to the Hierarchies page (under Visualisations or wherever it lives in your nav).
-2. Tree view still renders.
-3. No "Export" button in the header.
-4. Direct GET /v1/export/hierarchies?hierarchies=foo → 404.
-
-9. OSM auto-fetch removed
-
-1. Open the Entity Import modal. The "Automatically fetch GeoJSON" checkbox is gone.
-2. Upload a file with no polygon references. Confirm no outbound HTTP calls to nominatim.openstreetmap.org or
-   polygons.openstreetmap.fr (network tab or central-server logs).
-
-10. All Data view — import disabled
-
-1. Navigate to /entities/countries or any All Data view. The Entities tab is not in the nav there (it's
-   SINGLE_PROJECT_SCOPE only).
-2. Hit POST /v1/import/entities without projectCode directly — expect 400.
-
----
-Things to watch for as you go:
-- Browser console errors / unhandled rejections in the admin panel
-- Central-server log warnings about the country_code mismatches or sync ticks
-- Any 500s — those usually point at SQL the new code missed
-
-
 

@@ -1,6 +1,6 @@
 import xlsx from 'xlsx';
 import { expect } from 'chai';
-import { buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
+import { buildAndInsertProjectsAndHierarchies, findOrCreateDummyRecord } from '@tupaia/database';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import {
   BES_ADMIN_PERMISSION_GROUP,
@@ -88,9 +88,14 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
     expect(firstRow).to.have.all.keys(
       'name',
       'code',
-      'type',
+      'entity_type',
       'country_code',
       'parent_code',
+      'longitude',
+      'latitude',
+      'facility_type',
+      'type_name',
+      'category_code',
       'attributes',
       'image_url',
       'entity_polygon_id',
@@ -100,13 +105,40 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
     );
   });
 
+  it('excludes entities whose country is not in the project (orphans parked via project_id)', async () => {
+    await app.grantAccess(BES_ADMIN_POLICY);
+
+    // Mimic the orphans RN-1853 parked in a project by entity.project_id (e.g.
+    // the ~26k entities assigned to `explore` when their own projects were
+    // deleted): a sub-country entity scoped to this project but in a country
+    // (FJ) that has no project_country row. The export must drop it — it can't
+    // round-trip, because the importer validates country_code against
+    // project_country, which is the authority the export now follows too.
+    const project = await models.project.findOne({ code: 'export_entities_test' });
+    await findOrCreateDummyRecord(
+      models.entity,
+      { code: 'FJ_orphan_village', project_id: project.id },
+      { name: 'Orphan Village', type: 'village', country_code: 'FJ', project_id: project.id },
+    );
+
+    const { workbook } = await downloadXlsx(app.get('export/entities/export_entities_test'));
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = xlsx.utils.sheet_to_json(sheet);
+    const codes = new Set(rows.map(r => r.code));
+
+    // Orphan dropped, but the project's in-scope entities still present.
+    expect(codes.has('FJ_orphan_village')).to.equal(false);
+    expect(codes.has('KI_village_1')).to.equal(true);
+    expect(codes.has('VU_village_1')).to.equal(true);
+  });
+
   it('omits country, world, and project entities (out of scope for entity import)', async () => {
     await app.grantAccess(BES_ADMIN_POLICY);
     const { workbook } = await downloadXlsx(app.get('export/entities/export_entities_test'));
 
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = xlsx.utils.sheet_to_json(sheet);
-    const types = new Set(rows.map(r => r.type));
+    const types = new Set(rows.map(r => r.entity_type));
     expect(types.has('country')).to.equal(false);
     expect(types.has('world')).to.equal(false);
     expect(types.has('project')).to.equal(false);
