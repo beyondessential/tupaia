@@ -20,6 +20,23 @@ const projectIdFromBody = (body: unknown): ProjectRef | null => {
   return typeof projectId === 'string' ? { id: projectId } : null;
 };
 
+// Admin-panel forms post related records by code using dotted keys
+// (e.g. `'project.code'`) — same convention `convertFieldsToIds` consumes
+// on the central side. Resolve those to a project_id so the active-scope
+// check can still run on the POST body.
+const projectRefFromBody = async (
+  body: unknown,
+  models: Models,
+): Promise<ProjectRef | null> => {
+  const direct = projectIdFromBody(body);
+  if (direct) return direct;
+  if (!body || typeof body !== 'object') return null;
+  const projectCode = (body as Record<string, unknown>)['project.code'];
+  if (typeof projectCode !== 'string') return null;
+  const project = await models.project.findOne({ code: projectCode });
+  return project ? { id: project.id } : null;
+};
+
 const PROJECT_CODE_PASSTHROUGH_PATHS = new Set(['import/entities']);
 
 const RULES: Record<string, ProjectScopeRule> = {
@@ -29,7 +46,7 @@ const RULES: Record<string, ProjectScopeRule> = {
       const survey = await models.survey.findById(id);
       return survey?.project_id ? { id: survey.project_id } : null;
     },
-    bodyOwnership: async body => projectIdFromBody(body),
+    bodyOwnership: projectRefFromBody,
   },
   entities: {
     filter: project => ({ project_id: project.id }),
@@ -38,7 +55,7 @@ const RULES: Record<string, ProjectScopeRule> = {
       const projectId = (entity as { project_id?: string } | undefined)?.project_id;
       return projectId ? { id: projectId } : null;
     },
-    bodyOwnership: async body => projectIdFromBody(body),
+    bodyOwnership: projectRefFromBody,
   },
   surveyResponses: {
     filter: project => ({ 'survey.project_id': project.id }),
