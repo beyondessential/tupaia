@@ -20,6 +20,8 @@ const projectIdFromBody = (body: unknown): ProjectRef | null => {
   return typeof projectId === 'string' ? { id: projectId } : null;
 };
 
+const PROJECT_CODE_PASSTHROUGH_PATHS = new Set(['import/entities']);
+
 const RULES: Record<string, ProjectScopeRule> = {
   surveys: {
     filter: project => ({ project_id: project.id }),
@@ -62,11 +64,11 @@ const splitPath = (path: string): string[] => {
 };
 
 const rewriteRequestUrl = (req: Request, url: URL) => {
-  // Only mutate req.url — http-proxy-middleware reads this for the forwarded
-  // path. req.originalUrl is preserved so downstream logging/audit middleware
-  // (e.g. server-boilerplate's forwardRequest winston log) sees the URL the
-  // client actually sent.
-  req.url = `${url.pathname}${url.search}`;
+  // Mutate req.url and req.originalUrl before forwarding. Without mutating originalUrl the merged project filter and
+  // stripped projectCode param never reach central-server.
+  const rewritten = `${url.pathname}${url.search}`;
+  req.url = rewritten;
+  req.originalUrl = rewritten;
 };
 
 const isMutationOnId = (method: string, segments: string[]) =>
@@ -81,8 +83,10 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
   const resourceKey = segments[0] ?? '';
   const rule = RULES[resourceKey];
 
-  // Always strip projectCode before forwarding — central-server has no concept of it.
-  url.searchParams.delete(PROJECT_CODE_PARAM);
+  // Strip projectCode before forwarding unless this is an endpoint that consumes it
+  if (!PROJECT_CODE_PASSTHROUGH_PATHS.has(segments.join('/'))) {
+    url.searchParams.delete(PROJECT_CODE_PARAM);
+  }
 
   // No rule or no project context → forward unchanged. Absent projectCode is
   // an explicit "all-data" view; scoped resources see cross-project data.

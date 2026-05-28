@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import { Link, matchPath, useLocation } from 'react-router-dom';
+import { Link, matchPath, useLocation, useParams } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
-import { labelToId } from '../../utilities';
+import { labelToId, substituteRouteParams } from '../../utilities';
 import { generateTitle } from '../../pages/resources/resourceName';
 
 const Wrapper = styled.div`
@@ -194,6 +194,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
 export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
   const containerRef = useRef(null);
   const location = useLocation();
+  const params = useParams();
   const navLinkRefs = useRef(linkInput.map(React.createRef));
 
   const getIsActive = link => {
@@ -214,6 +215,7 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
       ...rest,
       title: linkTitle,
       target,
+      to: substituteRouteParams(target, params),
       id: `app-sub-view-${labelToId(linkTitle)}`,
       active: getIsActive({
         ...rest,
@@ -236,10 +238,10 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
       )}
       <Container ref={containerRef}>
         <NavBar>
-          {links.map(({ title, target, active }, i) => (
+          {links.map(({ title, to, active }, i) => (
             <RouteLink
               key={title}
-              to={target}
+              to={to}
               data-text={title}
               ref={navLinkRefs.current[i]}
               $active={active}

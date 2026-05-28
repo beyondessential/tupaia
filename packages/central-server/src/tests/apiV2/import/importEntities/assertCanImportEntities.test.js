@@ -15,22 +15,22 @@ describe('assertCanImportEntities(): Permissions checker for Importing Entities'
   const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
 
   it('Sufficient permissions: Should allow importing entities within 1 country if users have access to the country that the entities are within', async () => {
-    const countryNames = ['Kiribati'];
+    const countryCodes = ['KI'];
 
-    const result = await assertCanImportEntities(accessPolicy, countryNames);
+    const result = await assertCanImportEntities(accessPolicy, countryCodes);
     expect(result).to.true;
   });
 
   it('Sufficient permissions: Should allow importing entities within multiple country if users have access to all the countries that the entities are within', async () => {
-    const countryNames = ['Kiribati', 'Solomon Islands'];
+    const countryCodes = ['KI', 'SB'];
 
-    const result = await assertCanImportEntities(accessPolicy, countryNames);
+    const result = await assertCanImportEntities(accessPolicy, countryCodes);
     expect(result).to.true;
   });
 
   it('Insufficient permissions: Should not allow import entities within 1 country if users do not have access to the country that the entities are within', async () => {
-    const countryNames = ['Laos', 'Vanuatu'];
+    const countryCodes = ['LA', 'VU'];
 
-    expect(() => assertCanImportEntities(accessPolicy, countryNames)).to.throw;
+    expect(() => assertCanImportEntities(accessPolicy, countryCodes)).to.throw;
   });
 });
