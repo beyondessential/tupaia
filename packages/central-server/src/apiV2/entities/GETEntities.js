@@ -1,3 +1,4 @@
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
 import { mergeFilter } from '../utilities';
@@ -5,7 +6,16 @@ import { assertCountryPermissions } from '../GETCountries';
 import { assertEntityPermissions } from './assertEntityPermissions';
 
 const PARENT_CODE_KEY = 'parent_code';
+const QUALIFIED_PARENT_CODE_KEY = 'entity.parent_code';
 const PARENT_ID_KEY = 'parent_id';
+
+const extractFilterPattern = value => {
+  if (typeof value === 'string') return value;
+  if (value && typeof value === 'object' && typeof value.comparisonValue === 'string') {
+    return value.comparisonValue;
+  }
+  return null;
+};
 
 // Resolve parent_code via a single batched follow-up query keyed on the rows
 // we already have. Can't do this in SQL: BaseDatabase's column-selector
@@ -25,6 +35,33 @@ const fetchParentCodesByParentId = async (database, parentIds) => {
 
 export class GETEntities extends GETHandler {
   permissionsFilteredInternally = /** @type {const} */ (true);
+
+  getDbQueryCriteria() {
+    const criteria = super.getDbQueryCriteria();
+    const rawValue =
+      criteria[QUALIFIED_PARENT_CODE_KEY] !== undefined
+        ? criteria[QUALIFIED_PARENT_CODE_KEY]
+        : criteria[PARENT_CODE_KEY];
+    if (rawValue === undefined) return criteria;
+
+    const pattern = extractFilterPattern(rawValue);
+    if (pattern === null) return criteria;
+
+    const {
+      [QUALIFIED_PARENT_CODE_KEY]: _qualified,
+      [PARENT_CODE_KEY]: _unqualified,
+      ...rest
+    } = criteria;
+    // Use the pattern as-is — the admin panel already wraps text filters
+    // with `%` wildcards, so re-wrapping would produce `%%X%%`.
+    return {
+      ...rest,
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: 'entity.parent_id IN (SELECT id FROM entity WHERE code ILIKE ?)',
+        parameters: [pattern],
+      },
+    };
+  }
 
   // parent_code is a virtual column — strip it from the SQL select list, but
   // force parent_id into the select if the caller didn't already ask for it,
