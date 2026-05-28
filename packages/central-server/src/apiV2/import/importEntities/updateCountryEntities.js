@@ -1,7 +1,8 @@
-import { ImportValidationError, getCountryCode } from '@tupaia/utils';
+import { ImportValidationError } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
 import { getEntityMetadata } from './getEntityMetadata';
+import { resolvePolygonId } from './resolvePolygonId';
 
 const DEFAULT_TYPE_NAMES = {
   1: 'Hospital',
@@ -64,18 +65,30 @@ async function attemptFacilityUpsert(
   await newFacility.save();
 }
 
+/**
+ * Apply a batch of entity rows that all share the same `country_code`.
+ *
+ * Caller (importEntities.js) is responsible for validating that the country
+ * is in the active project's `project_country` list, so by the time we get
+ * here the country exists in the `country` table.
+ */
 export async function updateCountryEntities(
   transactingModels,
-  countryName,
+  countryCode,
   entityObjects,
   pushToDhis = true,
   projectId = null,
 ) {
-  const countryCode = getCountryCode(countryName);
-  const country = await transactingModels.country.findOrCreate(
-    { name: countryName },
-    { code: countryCode },
-  );
+  const country = await transactingModels.country.findOne({ code: countryCode });
+  if (!country) {
+    // Defensive: caller should have rejected this row earlier, but if a
+    // country row is missing from the `country` table the importer can't
+    // create one without a name. Surface a clear error rather than silently
+    // creating an unnamed country.
+    throw new ImportValidationError(
+      `Country with code "${countryCode}" not found in country table. Add it via the Countries admin page first.`,
+    );
+  }
   const { id: worldId } = await transactingModels.entity.findOne({
     type: transactingModels.entity.types.WORLD,
   });
@@ -93,7 +106,7 @@ export async function updateCountryEntities(
   await transactingModels.entity.findOrCreate(
     { code: countryCode },
     {
-      name: countryName,
+      name: country.name,
       country_code: countryCode,
       type: transactingModels.entity.types.COUNTRY,
       parent_id: worldId,
@@ -108,7 +121,7 @@ export async function updateCountryEntities(
     const validator = getEntityObjectValidator(entityType, transactingModels);
     const excelRowNumber = i + 2;
     const constructImportValidationError = (message, field) =>
-      new ImportValidationError(message, excelRowNumber, field, countryName);
+      new ImportValidationError(message, excelRowNumber, field, countryCode);
     await validator.validate(entityObject, constructImportValidationError);
     const {
       code,
@@ -116,7 +129,9 @@ export async function updateCountryEntities(
       image_url: imageUrl,
       longitude,
       latitude,
-      geojson,
+      entity_polygon_id: rawEntityPolygonId,
+      entity_polygon_code: polygonCode,
+      entity_polygon_data_source: polygonDataSource,
       data_service_entity: dataServiceEntity,
       type_name: typeName,
       screen_bounds: screenBounds,
@@ -124,12 +139,24 @@ export async function updateCountryEntities(
       facility_type: facilityType,
       attributes,
     } = entityObject;
+
+    // Resolve the polygon link via id (rename-stable) or natural key
+    // (human-readable). Inline geojson is no longer accepted — polygons live
+    // in entity_polygon and must be uploaded via the GIS Data page first.
+    const entityPolygonId = await resolvePolygonId(transactingModels, {
+      entityPolygonId: rawEntityPolygonId,
+      polygonCode,
+      polygonDataSource,
+      excelRowNumber,
+      countryCode,
+    });
+
     if (codes.includes(code)) {
       throw new ImportValidationError(
         `Entity code '${code}' is not unique`,
         excelRowNumber,
         'code',
-        countryName,
+        countryCode,
       );
     }
     codes.push(code);
@@ -141,7 +168,11 @@ export async function updateCountryEntities(
         pushToDhis,
         projectId,
       )) || {};
-    if (entityType === transactingModels.entity.types.FACILITY) {
+    // A blank facility_type means this facility has no clinic-table
+    // classification (e.g. it was created via a survey response, which never
+    // writes a clinic row). Skip the upsert so the entity round-trips
+    // unchanged instead of inventing a clinic row.
+    if (entityType === transactingModels.entity.types.FACILITY && facilityType) {
       await attemptFacilityUpsert(transactingModels, {
         parentEntity,
         parentGeographicalArea,
@@ -172,8 +203,9 @@ export async function updateCountryEntities(
       pushToDhis,
       projectId,
     );
+
     await transactingModels.entity.updateOrCreate(
-      { code },
+      { code, project_id: projectId },
       {
         name,
         parent_id: parentEntity ? parentEntity.id : null,
@@ -181,6 +213,8 @@ export async function updateCountryEntities(
         country_code: country.code,
         image_url: imageUrl,
         metadata: entityMetadata,
+        project_id: projectId,
+        ...(entityPolygonId ? { entity_polygon_id: entityPolygonId } : {}),
       },
     );
 
@@ -188,37 +222,17 @@ export async function updateCountryEntities(
       await transactingModels.entity.updateEntityAttributes(code, attributes);
     }
     if (longitude && latitude) {
-      await transactingModels.entity.updatePointCoordinates(code, { longitude, latitude });
+      const lon = Number(longitude);
+      const lat = Number(latitude);
+      if (Number.isFinite(lon) && Number.isFinite(lat)) {
+        await transactingModels.entity.updatePointCoordinates(code, {
+          longitude: lon,
+          latitude: lat,
+        });
+      }
     }
     if (screenBounds) {
       await transactingModels.entity.updateBoundsCoordinates(code, screenBounds);
-    }
-    if (geojson) {
-      const translatedGeojson =
-        geojson.type === 'Polygon'
-          ? { type: 'MultiPolygon', coordinates: [geojson.coordinates] }
-          : geojson;
-
-      try {
-        await transactingModels.entity.updatePolygonCoordinates(code, translatedGeojson, 'admin_import');
-      } catch (error) {
-        if (error.message.includes('payload string too long')) {
-          const largeGeoEntities = entityObjects.filter(entityObject => {
-            if (!entityObject?.geojson) return false;
-            const geoJsonString = JSON.stringify(entityObject.geojson);
-            // If the geo json is too large, we will hit the max payload size limit.
-            // Hard postgres max is 8000 characters, but we need to account for other data in the query payload
-            const maxGeoJsonPayload = 5200;
-            if (geoJsonString.length > maxGeoJsonPayload) {
-              return true;
-            }
-          });
-          const text = largeGeoEntities.map(entity => entity.code).join(', ');
-          error.message = `Error updating region coordinates for entities: ${text} ${error.message}`;
-        }
-
-        throw error;
-      }
     }
   }
   return country;

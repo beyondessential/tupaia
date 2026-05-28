@@ -18,7 +18,6 @@ async function getEntityInfoFromSurveyResponse(surveyResponse) {
 async function createNewEntity(answerValues, parent, models) {
   const { id, code, name, type, image_url, location } = answerValues;
 
-  // create the entity
   const entity = await models.entity.create({
     id,
     code,
@@ -27,6 +26,7 @@ async function createNewEntity(answerValues, parent, models) {
     image_url,
     parent_id: parent.id,
     country_code: parent.country_code,
+    project_id: parent.project_id,
   });
 
   // update location/bounds in a separate pass
@@ -47,9 +47,11 @@ export async function entityCreate({ surveyResponse, models }) {
   const answerValues = await getEntityInfoFromSurveyResponse(surveyResponse);
   const parentEntity = await surveyResponse.entity();
 
-  // check if we're creating or updating
   const { code } = answerValues;
-  const existingEntity = await models.entity.findOne({ code });
+  const existingEntity = await models.entity.findOneByCodeInProject(
+    code,
+    parentEntity?.project_id ?? null,
+  );
 
   if (existingEntity) {
     // individual hooks will trigger entityUpdate
@@ -64,7 +66,11 @@ function entityUpdater(func) {
   return async ({ answer, surveyResponse, models }) => {
     const answerValues = await getEntityInfoFromSurveyResponse(surveyResponse);
     const { code } = answerValues;
-    const existingEntity = await models.entity.findOne({ code });
+    const parentEntity = await surveyResponse.entity();
+    const existingEntity = await models.entity.findOneByCodeInProject(
+      code,
+      parentEntity?.project_id ?? null,
+    );
 
     // no entity exists - it will be created when the `code` survey answer
     // is processed (and this answer will be processed along with it)

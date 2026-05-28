@@ -16,8 +16,6 @@ import {
   ExportDashboardVisualisationRoute,
   ExportDataTableRequest,
   ExportDataTableRoute,
-  ExportEntityHierarchiesRequest,
-  ExportEntityHierarchiesRoute,
   ExportMapOverlayVisualisationRequest,
   ExportMapOverlayVisualisationRoute,
   FetchDashboardVisualisationRequest,
@@ -119,10 +117,6 @@ export async function createApp(promptManager: PromptManager) {
     .get(
       'export/mapOverlayVisualisation/:mapOverlayVisualisationId',
       handleWith(ExportMapOverlayVisualisationRoute),
-    )
-    .get<ExportEntityHierarchiesRequest>(
-      'export/hierarchies',
-      handleWith(ExportEntityHierarchiesRoute),
     )
     .post<ExportDashboardVisualisationRequest>(
       'export/dashboardVisualisation',
