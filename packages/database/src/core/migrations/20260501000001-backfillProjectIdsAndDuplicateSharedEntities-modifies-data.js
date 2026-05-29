@@ -82,10 +82,7 @@ const buildEntityProjectMap = async (db, t0) => {
     ANALYZE entity_in_project;
   `);
   const countResult = await db.runSql(`SELECT count(*)::int AS n FROM entity_in_project;`);
-  log(
-    `Built entity_in_project map (${countResult.rows[0]?.n ?? '?'} (entity, project) rows)`,
-    t0,
-  );
+  log(`Built entity_in_project map (${countResult.rows[0]?.n ?? '?'} (entity, project) rows)`, t0);
 };
 
 const backfillSingleProjectEntities = async (db, t0) => {
@@ -178,6 +175,47 @@ const fixParentIdChains = async (db, t0) => {
       AND same_project_parent.id <> orig_parent.id;
   `);
   log(`Fixed parent_id chains (${result.rowCount ?? '?'} rows)`, t0);
+};
+
+// Fill in parent_id for sub-country entities whose non-canonical hierarchy
+// lived only in entity_relation
+const fillOrphanParentIdsFromEpcr = async (db, t0) => {
+  const result = await db.runSql(`
+    WITH affected AS (
+      SELECT DISTINCT
+        child.id        AS child_id,
+        proj.id         AS project_id,
+        epcr.parent_id  AS source_parent_id,
+        epcr_parent.code AS parent_code,
+        epcr_parent.type AS parent_type
+      FROM entity child
+      JOIN entity_parent_child_relation epcr ON epcr.child_id = child.id
+      JOIN project proj
+        ON proj.entity_hierarchy_id = epcr.entity_hierarchy_id
+       AND proj.id = child.project_id
+      JOIN entity epcr_parent ON epcr_parent.id = epcr.parent_id
+      WHERE child.parent_id IS NULL
+        AND child.type NOT IN ('world', 'project', 'country')
+    )
+    UPDATE entity child
+    SET parent_id = CASE
+      -- Structural parents (world/project/country) are shared across projects,
+      -- so we can point at the source row directly. Sub-country parents need
+      -- the same-project copy (created by duplicateMultiProjectEntities).
+      WHEN a.parent_type IN ('world', 'project', 'country') THEN a.source_parent_id
+      ELSE same_project_parent.id
+    END
+    FROM affected a
+    LEFT JOIN entity same_project_parent
+      ON same_project_parent.code = a.parent_code
+     AND same_project_parent.project_id = a.project_id
+    WHERE child.id = a.child_id
+      AND (
+        a.parent_type IN ('world', 'project', 'country')
+        OR same_project_parent.id IS NOT NULL
+      );
+  `);
+  log(`Filled parent_id from EPCR for ${result.rowCount ?? '?'} orphaned entities`, t0);
 };
 
 // Sanity check: after fixParentIdChains, every sub-country entity should
@@ -369,6 +407,7 @@ exports.up = async function (db) {
   await backfillSingleProjectEntities(db, t0);
   await duplicateMultiProjectEntities(db, t0);
   await fixParentIdChains(db, t0);
+  await fillOrphanParentIdsFromEpcr(db, t0);
   await assertNoCrossProjectParents(db, t0);
   await backfillOrphans(db, t0, exploreProjectId);
   await refreshStatistics(db, t0);
