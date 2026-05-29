@@ -161,61 +161,57 @@ const duplicateMultiProjectEntities = async (db, t0) => {
   log(`Inserted ${copyTriples.length} duplicate rows`, t0);
 };
 
-const fixParentIdChains = async (db, t0) => {
+// Set entity.parent_id from EPCR for every sub-country entity. EPCR is the
+// authoritative per-project hierarchy view (built from BOTH canonical
+// entity.parent_id and entity_relation overlays), so any divergence between
+// the canonical column and EPCR is wrong post-migration. This single pass
+// replaces what previously needed two steps:
+//   - Cross-project parent_id (where a duplicate's parent_id still pointed
+//     at the source project's parent) gets rewritten to the same-project copy.
+//   - NULL parent_id (where the canonical column was empty because the
+//     entity only existed in entity_relation overlays — e.g. Samoa eHealth
+//     sub_districts) gets filled in.
+//   - Within-project type mismatches (e.g. ehealth_samoa villages with a
+//     canonical facility parent but an EPCR sub_district parent) get
+//     rewritten to match EPCR.
+// Match canonical_child by id (the original entity ID in EPCR) and then
+// resolve all same-code rows so we update both originals and duplicates.
+const setParentIdsFromEpcr = async (db, t0) => {
   const result = await db.runSql(`
-    UPDATE entity child
-    SET parent_id = same_project_parent.id
-      FROM entity orig_parent, entity same_project_parent
-    WHERE child.parent_id = orig_parent.id
-      AND same_project_parent.code = orig_parent.code
-      AND same_project_parent.project_id = child.project_id
-      AND orig_parent.type NOT IN ('world', 'project', 'country')
-      AND child.project_id IS NOT NULL
-      AND orig_parent.project_id IS DISTINCT FROM child.project_id
-      AND same_project_parent.id <> orig_parent.id;
-  `);
-  log(`Fixed parent_id chains (${result.rowCount ?? '?'} rows)`, t0);
-};
-
-// Fill in parent_id for sub-country entities whose non-canonical hierarchy
-// lived only in entity_relation
-const fillOrphanParentIdsFromEpcr = async (db, t0) => {
-  const result = await db.runSql(`
-    WITH affected AS (
-      SELECT DISTINCT
-        child.id        AS child_id,
-        proj.id         AS project_id,
-        epcr.parent_id  AS source_parent_id,
-        epcr_parent.code AS parent_code,
-        epcr_parent.type AS parent_type
+    WITH desired AS (
+      SELECT
+        child.id  AS child_id,
+        CASE
+          -- Structural parents are shared (project_id IS NULL); point at the source row.
+          WHEN epcr_parent.type IN ('world', 'project', 'country') THEN structural_parent.id
+          -- Sub-country parents need the same-project copy.
+          ELSE same_project_parent.id
+        END AS new_parent_id
       FROM entity child
-      JOIN entity_parent_child_relation epcr ON epcr.child_id = child.id
-      JOIN project proj
-        ON proj.entity_hierarchy_id = epcr.entity_hierarchy_id
-       AND proj.id = child.project_id
+      JOIN project proj ON proj.id = child.project_id
+      JOIN entity_parent_child_relation epcr
+        ON epcr.entity_hierarchy_id = proj.entity_hierarchy_id
+      JOIN entity canonical_child
+        ON canonical_child.id = epcr.child_id
+       AND canonical_child.code = child.code
       JOIN entity epcr_parent ON epcr_parent.id = epcr.parent_id
-      WHERE child.parent_id IS NULL
-        AND child.type NOT IN ('world', 'project', 'country')
+      LEFT JOIN entity structural_parent
+        ON structural_parent.code = epcr_parent.code
+       AND structural_parent.project_id IS NULL
+       AND structural_parent.type IN ('world', 'project', 'country')
+      LEFT JOIN entity same_project_parent
+        ON same_project_parent.code = epcr_parent.code
+       AND same_project_parent.project_id = proj.id
+      WHERE child.type NOT IN ('world', 'project', 'country')
     )
-    UPDATE entity child
-    SET parent_id = CASE
-      -- Structural parents (world/project/country) are shared across projects,
-      -- so we can point at the source row directly. Sub-country parents need
-      -- the same-project copy (created by duplicateMultiProjectEntities).
-      WHEN a.parent_type IN ('world', 'project', 'country') THEN a.source_parent_id
-      ELSE same_project_parent.id
-    END
-    FROM affected a
-    LEFT JOIN entity same_project_parent
-      ON same_project_parent.code = a.parent_code
-     AND same_project_parent.project_id = a.project_id
-    WHERE child.id = a.child_id
-      AND (
-        a.parent_type IN ('world', 'project', 'country')
-        OR same_project_parent.id IS NOT NULL
-      );
+    UPDATE entity
+    SET parent_id = d.new_parent_id
+    FROM desired d
+    WHERE entity.id = d.child_id
+      AND d.new_parent_id IS NOT NULL
+      AND entity.parent_id IS DISTINCT FROM d.new_parent_id;
   `);
-  log(`Filled parent_id from EPCR for ${result.rowCount ?? '?'} orphaned entities`, t0);
+  log(`Aligned parent_id with EPCR for ${result.rowCount ?? '?'} entities`, t0);
 };
 
 // Sanity check: after fixParentIdChains, every sub-country entity should
@@ -406,8 +402,7 @@ exports.up = async function (db) {
   await buildEntityProjectMap(db, t0);
   await backfillSingleProjectEntities(db, t0);
   await duplicateMultiProjectEntities(db, t0);
-  await fixParentIdChains(db, t0);
-  await fillOrphanParentIdsFromEpcr(db, t0);
+  await setParentIdsFromEpcr(db, t0);
   await assertNoCrossProjectParents(db, t0);
   await backfillOrphans(db, t0, exploreProjectId);
   await refreshStatistics(db, t0);
