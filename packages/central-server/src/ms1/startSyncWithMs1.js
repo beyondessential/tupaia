@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get } from 'es-toolkit/compat';
 
 import { SurveyModel } from '@tupaia/database';
 import { HttpError } from '@tupaia/utils';

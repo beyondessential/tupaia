@@ -176,14 +176,12 @@ export const Dashboard = () => {
           <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
           <ScrollBody>
             <Breadcrumbs />
-            <div>
-              {entity?.imageUrl ? (
-                <Photo title={title} photoUrl={entity?.imageUrl} />
-              ) : (
-                // Don’t pass `null` bounds so that StaticMap uses its internal default
-                <StaticMap bounds={entity?.bounds ?? undefined} title={title} />
-              )}
-            </div>
+            {entity?.imageUrl ? (
+              <Photo title={title} photoUrl={entity?.imageUrl} />
+            ) : (
+              // Don’t pass `null` bounds so that StaticMap uses its internal default
+              <StaticMap bounds={entity?.bounds ?? undefined} title={title} />
+            )}
             <StickyBar $isExpanded={isExpanded}>
               <TitleBar>
                 <Title variant="h3">{title}</Title>

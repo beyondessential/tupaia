@@ -1,6 +1,5 @@
-import chunk from 'lodash.chunk';
-import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
+import { uniq } from 'es-toolkit';
+import { chunk, groupBy, keyBy } from 'es-toolkit/compat';
 import moment from 'moment';
 import xlsx from 'xlsx';
 
@@ -9,7 +8,6 @@ import { getExportPathForUser } from '@tupaia/server-utils';
 import {
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,
-  getUniqueEntries,
   toFilename,
   truncateString,
 } from '@tupaia/utils';
@@ -244,7 +242,7 @@ export async function exportResponsesToFile(
     );
 
     // Add any questions that are in survey responses but no longer in the survey
-    const allQuestionIds = getUniqueEntries(answers.flatMap(a => a['question.id']));
+    const allQuestionIds = uniq(answers.flatMap(a => a['question.id']));
     const validQuestionIds = questions.map(q => q.id);
     const outdatedQuestionIds = allQuestionIds.filter(id => !validQuestionIds.includes(id));
     const outdatedQuestions = await models.question.find({ id: outdatedQuestionIds });

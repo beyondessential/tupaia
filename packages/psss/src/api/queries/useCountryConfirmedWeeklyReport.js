@@ -1,4 +1,4 @@
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'es-toolkit/compat';
 import { subtractWeeksFromPeriod } from '../../utils';
 import { usePaginatedReport } from './helpers';
 

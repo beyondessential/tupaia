@@ -31840,6 +31840,9 @@ export const PresentationOptionsSchema = {
 		}
 	]
 }
+export const AliasTransformSchema = {
+	"type": "string"
+}
 export const TransformSchema = {
 	"anyOf": [
 		{

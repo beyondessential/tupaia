@@ -16,9 +16,8 @@ const Checkbox = styled(BaseCheckbox)`
     color: ${props => props.theme.palette.error.main};
   }
   .MuiFormHelperText-root {
-    margin-left: -0.5rem;
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
+    margin-block-start: 0.25rem;
+    margin-inline-start: -0.5rem;
   }
 `;
 export const CheckboxQuestion = ({

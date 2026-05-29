@@ -1,5 +1,5 @@
 // This file is duplicated from entity-server, but reduced to only the functions we need in datatrak-web
-import { EntityRecord } from '@tupaia/tsmodels';
+import { EntityModel, EntityRecord, ParentFieldsByChildId } from '@tupaia/tsmodels';
 import { camelcaseKeys, ResponseObjectBuilder } from '@tupaia/tsutils';
 import { Entity, Resolved } from '@tupaia/types';
 
@@ -26,6 +26,26 @@ export type EntityResponseObject = {
 
 type FormatContext = { hierarchyId: string };
 
+const BATCHED_PARENT_FIELDS = ['parent_name', 'parent_code'] as const;
+
+type BatchedParentField = (typeof BATCHED_PARENT_FIELDS)[number];
+
+const isBatchedParentField = (field: ExtendedEntityFieldName): field is BatchedParentField =>
+  BATCHED_PARENT_FIELDS.includes(field as BatchedParentField);
+
+const getParentFieldsByChildId = async (
+  ctx: FormatContext,
+  entities: readonly AugmentedEntityRecord[],
+): Promise<ParentFieldsByChildId> => {
+  if (entities.length === 0) {
+    return {};
+  }
+
+  const childIds = [...new Set(entities.map(entity => entity.id))];
+  const { model } = entities[0] as unknown as { model: EntityModel };
+  return model.getParentFieldsByChildIdFromParentChildRelation(ctx.hierarchyId, childIds);
+};
+
 export async function formatEntityForResponse(
   ctx: FormatContext,
   entity: AugmentedEntityRecord,
@@ -47,18 +67,30 @@ export async function formatEntitiesForResponse(
   entities: readonly AugmentedEntityRecord[],
   fields: readonly ExtendedEntityFieldName[],
 ) {
+  const parentFieldsByChildId = fields.some(isBatchedParentField)
+    ? await getParentFieldsByChildId(ctx, entities)
+    : {};
   const responseBuilders = new Array(entities.length)
     .fill(0)
     .map(() => new ResponseObjectBuilder<EntityResponseObject>()); // fill array with empty objects
   for (const field of fields) {
-    if (isExtendedField(field)) {
-      await Promise.all(
-        entities.map(async (entity, index) => {
-          responseBuilders[index].set(field, await extendedFieldFunctions[field](entity, ctx));
-        }),
+    if (isBatchedParentField(field)) {
+      entities.forEach((entity, index) =>
+        responseBuilders[index].set(field, parentFieldsByChildId[entity.id]?.[field]),
       );
     } else {
-      entities.forEach((entity, index) => responseBuilders[index].set(field, entity[field]));
+      const extendedFieldFunction =
+        extendedFieldFunctions[field as keyof typeof extendedFieldFunctions];
+      if (!extendedFieldFunction) {
+        entities.forEach((entity, index) => responseBuilders[index].set(field, entity[field]));
+        continue;
+      }
+
+      await Promise.all(
+        entities.map(async (entity, index) => {
+          responseBuilders[index].set(field, await extendedFieldFunction(entity, ctx));
+        }),
+      );
     }
   }
   const response = responseBuilders.map(builder => builder.build());

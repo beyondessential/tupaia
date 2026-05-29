@@ -1,10 +1,15 @@
 import boto3
+from botocore.exceptions import ClientError
 from helpers.networking import (
     add_subdomains_to_route53,
     setup_subdomains_via_dns,
     setup_subdomains_via_gateway,
 )
-from helpers.rds import get_latest_db_snapshot, wait_for_db_instance
+from helpers.rds import (
+    get_db_instance_parameter_group_name,
+    get_latest_db_snapshot,
+    wait_for_db_instance,
+)
 from helpers.utilities import get_account_ids, get_instance_by_id
 
 ec2 = boto3.resource("ec2")
@@ -29,11 +34,28 @@ def get_latest_image_id(image_code):
     return image_id
 
 
-def allocate_elastic_ip(instance_id):
+def allocate_elastic_ip(instance_id, resource_name):
     elastic_ip = ec.allocate_address(Domain="Vpc")
-    ec.associate_address(
-        AllocationId=elastic_ip["AllocationId"], InstanceId=instance_id
-    )
+    allocation_id = elastic_ip["AllocationId"]
+    try:
+        ec.create_tags(
+            Resources=[allocation_id],
+            Tags=[{"Key": "Name", "Value": resource_name}],
+        )
+        ec.associate_address(AllocationId=allocation_id, InstanceId=instance_id)
+    except ClientError:
+        print(
+            f"Failed to associate Elastic IP {allocation_id} to {instance_id}. Releasing it…"
+        )
+        try:
+            ec.release_address(AllocationId=allocation_id)
+            print(f"Released Elastic IP {allocation_id}")
+        except ClientError:
+            print(
+                f"Failed to release orphaned Elastic IP {allocation_id} ({elastic_ip['PublicIp']}). Please release it manually."
+            )
+        raise
+
     return elastic_ip["PublicIp"]
 
 
@@ -78,12 +100,10 @@ def get_instance_creation_config(
         security_group_code, security_group_id
     )
 
-    instance_name = deployment_type + ": " + deployment_name
-
     image_id = image_id if image_id != None else get_latest_image_id(image_code)
 
     tags = [
-        {"Key": "Name", "Value": instance_name},
+        {"Key": "Name", "Value": f"{deployment_type}: {deployment_name}"},
         {"Key": "DeploymentName", "Value": deployment_name},
         {"Key": "DeploymentType", "Value": deployment_type},
     ]
@@ -178,7 +198,7 @@ def create_instance(
     print(f"New instance {new_instance.id} is up")
 
     # attach elastic ip
-    allocate_elastic_ip(new_instance.id)
+    allocate_elastic_ip(new_instance.id, f"{deployment_type}: {deployment_name}")
 
     # return instance object
     new_instance_object = get_instance_by_id(new_instance.id)
@@ -207,8 +227,8 @@ def clone_db_from_snapshot(
     security_group_code=None,
     security_group_id=None,
 ):
-    db_instance_id = deployment_type + "-" + deployment_name
-    snapshot_db_instance_id = deployment_type + "-" + snapshot_name
+    db_instance_id = f"{deployment_type}-{deployment_name}"
+    snapshot_db_instance_id = f"{deployment_type}-{snapshot_name}"
     security_group_ids = get_security_group_ids_config(
         security_group_code, security_group_id
     )
@@ -225,23 +245,30 @@ def clone_db_from_snapshot(
         filter(lambda item: item["Key"] not in required_tags_keys, extra_tags)
     )
     all_tags = required_tags + non_repeating_extra_tags
-    deletion_protection = (
-        deployment_name == "production"
-    )  # ensure prod database cannot be deleted
-
+    # ensure prod database cannot be deleted
+    deletion_protection = deployment_name == "production"
     snapshot_id = get_latest_db_snapshot(snapshot_db_instance_id)
-    rds.restore_db_instance_from_db_snapshot(
-        DBInstanceIdentifier=db_instance_id,
-        DBSnapshotIdentifier=snapshot_id,
-        DBInstanceClass=instance_type,
-        Port=5432,
-        PubliclyAccessible=True,
-        VpcSecurityGroupIds=security_group_ids,
-        Tags=all_tags,
-        DeletionProtection=deletion_protection,
-    )
 
-    print("Successfully cloned new db (" + db_instance_id + ") from snapshot")
+    restore_kwargs = {
+        "DBInstanceIdentifier": db_instance_id,
+        "DBSnapshotIdentifier": snapshot_id,
+        "DBInstanceClass": instance_type,
+        "Port": 5432,
+        "PubliclyAccessible": True,
+        "VpcSecurityGroupIds": security_group_ids,
+        "Tags": all_tags,
+        "DeletionProtection": deletion_protection,
+    }
+    parameter_group_name = get_db_instance_parameter_group_name(snapshot_db_instance_id)
+    if parameter_group_name:
+        restore_kwargs["DBParameterGroupName"] = parameter_group_name
+        print(f"Applying parameter group {parameter_group_name}")
+    else:
+        print("Using default parameter group")
+
+    rds.restore_db_instance_from_db_snapshot(**restore_kwargs)
+
+    print(f"Successfully cloned new DB ({db_instance_id}) from snapshot {snapshot_id}")
 
     return db_instance_id
 
