@@ -127,7 +127,6 @@ jobs:
                 '[.[] | .name] | map(select(. != "tupaia" and . != "@tupaia/devops" and . != "@tupaia/e2e"))'
           ) >>"$GITHUB_OUTPUT"
 
-
   run_tests:
     name: Build & test
     needs: package_list
@@ -199,11 +198,11 @@ jobs:
           cache: yarn
       - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
       - name: Build subtree
-        run: yarn workspaces foreach -Rpt --jobs unlimited --from ${{ matrix.package }} run build
+        run: yarn workspaces foreach -Rptvv --jobs unlimited --from ${{ matrix.package }} run build
       - name: Set up tests (if script exists)
-        run: yarn workspaces foreach -W --include ${{ matrix.package }} run setup-test
+        run: yarn workspaces foreach -Wvv --include ${{ matrix.package }} run setup-test
       - name: Run tests (if script exists)
-        run: yarn workspaces foreach -W --include ${{ matrix.package }} run test
+        run: yarn workspaces foreach -Wvv --include ${{ matrix.package }} run test
 
   allgreen:
     name: All Green
