@@ -37,6 +37,10 @@ export const isAndroidDevice = () => {
   return /Android/i.test(navigator.userAgent);
 };
 
+export const isIosDevice = () => {
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+};
+
 /**
  * Returns the major and minor Android version if applicable and present as a single number.
  *
