@@ -22,8 +22,8 @@ export const EntitiesExportModal = () => {
       fileName={`Entities - ${projectCode}.xlsx`}
     >
       <p>
-        Download a spreadsheet of every entity in this project, one sheet per country.
-        The file is in the same format the import accepts, so you can edit it and re-upload.
+        Download a spreadsheet of every entity in this project. The file is in the same
+        format the import accepts, so you can edit it and re-upload.
       </p>
     </ExportModal>
   );
