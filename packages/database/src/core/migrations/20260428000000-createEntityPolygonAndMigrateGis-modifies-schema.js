@@ -79,5 +79,10 @@ exports.down = async function (db) {
 
 exports._meta = {
   version: 1,
-  targets: ['server', 'browser'],
+  // Server-only: entity_polygon uses the PostGIS `geography` type, which PGlite
+  // (the DataTrak PWA's in-browser Postgres) does not provide, so the CREATE
+  // TABLE fails on install. The PWA's entity table has no geometry columns
+  // (no region/point/bounds) and never renders polygons locally, so none of
+  // this migration's GIS schema is needed in the browser.
+  targets: ['server'],
 };

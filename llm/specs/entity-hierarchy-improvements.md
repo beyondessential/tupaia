@@ -106,6 +106,15 @@ The 26,532 orphaned sub-country entities (no project mapping) get assigned to th
 
 The migration looks the explore project up by code (`SELECT id FROM project WHERE code = 'explore'`) and uses that ID for orphan / anomaly reassignment. Fail-fast if it's not present (sanity check) — a single `code = 'explore'` project is guaranteed to exist.
 
+#### Decision: drop / disconnect orphans (TUP-3165 issue 9)
+
+Parking orphans in **explore** was a holding step, not the end state. Regression testing surfaced that the orphans still polluted the explore hierarchy — they showed up in the searchbar and produced broken/cross-project closure-cache edges via their stale `parent_id`. The agreed end state, implemented in a **standalone follow-up migration** `20260604000000-dropAndDisconnectOrphanedEntities-modifies-data.js` (kept separate from the backfill so it doesn't slow that migration down and is easy to test in isolation):
+
+- **Laos + Cambodia orphans → hard delete.** These two countries account for the overwhelming bulk (~26,005 of the orphans: LA 25,623, KH 382) and are dead imports with no legitimate place in any project hierarchy. Delete the entity rows outright (closure-cache rows first for the FK, then the entities — they form closed subtrees nothing outside references).
+- **All other orphans (~533, e.g. ML, PG, AU, FJ, DL, TL, KI, SB, WS) → keep, but disconnect.** Set `parent_id = NULL` and drop their closure-cache edges, so they no longer surface in the searchbar or generate cross-project edges, while the rows themselves are retained in explore for later triage.
+- **Irreversible.** `down()` is a deliberate no-op — the hard-deleted rows are unrecoverable and the original `parent_id`s aren't recorded anywhere, so there is nothing to restore.
+- **Server-only** (`targets: ['server']`) — orphaned entities only exist in the central database, never in the DataTrak PWA.
+
 ### Cleanup of erroneous project-pointing rows
 
 Three known data-hygiene rows to delete during migration:
@@ -188,40 +197,6 @@ All merged
 
 **C4: Import/Export**
 
-| ID       | Title                                           | Status      |
-| -------- | ----------------------------------------------- | ----------- |
-| TUP-3062 | Export entities in import-compatible format     | In progress |
-| TUP-3064 | Update entity import                            | In progress |
-| TUP-3061 | Update entity import for project-specific model | In progress |
-| TUP-3063 | GIS Data Import & Export                        | In progress |
+All merged
 
-## Project Plan
-
-### Milestone 1 — server-side correct (test-ready)
-
-Server-side correctness against the new per-project entity model.
-
-### Milestone 2 — safe for mobile + external sync (deploy-ready)
-
-TUP-3067 & TUP-3156
-
----
-
-
-
-### Import Export Test Plan
-
-For each, expect a non-200 response with a clear error message:
-
-| Scenario | How to provoke | Expected error |
-| --- | --- | --- |
-| Missing `projectCode` | Hit `POST /v1/import/entities` directly (curl / browser devtools) with no query param | `"projectCode … required"` |
-| Wrong project | Switch to a project that does NOT have country X, then upload a file containing rows with `country_code = X` | `"country_code … is not in project …"` |
-| Missing `country_code` on a row | Blank the `country_code` cell in one row, re-upload | `"Missing country_code … row N"` |
-| Inline geojson rejected | Add a `geojson` column with a Polygon JSON in one row, re-upload | Row-level error (geojson is silently ignored or rejected, depending on validator wiring — confirm behaviour) |
-| Unknown `entity_polygon_id` | Edit a row to set `entity_polygon_id` to a junk string, re-upload | `"Unknown entity_polygon_id …"` |
-| Natural-key only — known | Clear `entity_polygon_id`, fill `entity_polygon_code` + `entity_polygon_data_source` pointing at a real polygon. Re-upload | 200, polygon link preserved (DB: `entity.entity_polygon_id` = that polygon's id) |
-| Natural-key only — unknown | Same as above with a code/data_source pair that doesn't exist | `"No entity_polygon found for code …"` |
-| ID + natural-key mismatch | Set `entity_polygon_id` to polygon A's id, set `code`+`data_source` to polygon B. Re-upload | `"does not match the polygon found by code …"` |
-| Parent in another project | Edit a row's `parent_code` to reference an entity in a different project's hierarchy | Row-level error from `getOrCreateParentEntity` (`"No entity matching parent code …"`) |
 

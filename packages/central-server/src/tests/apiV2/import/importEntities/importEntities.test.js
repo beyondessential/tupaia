@@ -212,4 +212,81 @@ describe('importEntities(): POST import/entities', () => {
       expect(response.body.error).to.match(/country_code/i);
     });
   });
+
+  describe('Facility classification round-trip (TUP-3181)', () => {
+    // No updateCountryEntities stub — these exercise the real import path.
+    // facility_type is optional: facilities created outside the importer (e.g.
+    // via survey responses) have no clinic row, so exports leave the column
+    // blank and re-import must not reject them or invent a clinic row.
+    const importRows = rows => {
+      const filepath = writeXlsx(rows);
+      return app
+        .post('import/entities')
+        .query({ projectCode: TEST_PROJECT_CODE, pushToDhis: 'false' })
+        .attach('entities', filepath)
+        .then(response => {
+          unlinkXlsx(filepath);
+          return response;
+        });
+    };
+
+    before(async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+    });
+
+    after(() => {
+      app.revokeAccess();
+    });
+
+    it('accepts a facility with blank facility_type and skips the clinic upsert', async () => {
+      const response = await importRows([
+        {
+          code: 'KI_clinicless_facility',
+          name: 'Clinicless facility',
+          entity_type: 'facility',
+          country_code: 'KI',
+          facility_type: '',
+        },
+      ]);
+      expect(response.statusCode).to.equal(200);
+
+      const entity = await models.entity.findOne({ code: 'KI_clinicless_facility' });
+      expect(entity).to.exist;
+      const clinic = await models.facility.findOne({ code: 'KI_clinicless_facility' });
+      expect(clinic).to.not.exist;
+    });
+
+    it('still writes the clinic row when facility_type is provided', async () => {
+      const response = await importRows([
+        {
+          code: 'KI_typed_facility',
+          name: 'Typed facility',
+          entity_type: 'facility',
+          country_code: 'KI',
+          district: 'KI Facility Test District',
+          facility_type: '1',
+        },
+      ]);
+      expect(response.statusCode).to.equal(200);
+
+      const clinic = await models.facility.findOne({ code: 'KI_typed_facility' });
+      expect(clinic).to.exist;
+      expect(clinic.type).to.equal('1');
+      expect(clinic.type_name).to.equal('Hospital');
+      expect(clinic.category_code).to.equal('1');
+    });
+
+    it('still rejects an invalid facility_type', async () => {
+      const response = await importRows([
+        {
+          code: 'KI_invalid_type_facility',
+          name: 'Invalid type facility',
+          entity_type: 'facility',
+          country_code: 'KI',
+          facility_type: '9',
+        },
+      ]);
+      expect(response.statusCode).to.not.equal(200);
+    });
+  });
 });

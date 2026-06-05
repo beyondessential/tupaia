@@ -23,11 +23,10 @@ const constructSpecificEntityTypeValidators = (entityType, models) => {
     case models.entity.types.FACILITY:
       return {
         facility_type: [
-          hasContent,
-          cellValue => {
+          constructIsEmptyOr(cellValue => {
             const checkIsOneOf = constructIsOneOf(['1', '2', '3', '4']);
             checkIsOneOf(cellValue.substring(0, 1));
-          },
+          }),
         ],
       };
     default:

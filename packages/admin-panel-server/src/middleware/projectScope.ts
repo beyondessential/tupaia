@@ -20,6 +20,23 @@ const projectIdFromBody = (body: unknown): ProjectRef | null => {
   return typeof projectId === 'string' ? { id: projectId } : null;
 };
 
+// Admin-panel forms post related records by code using dotted keys
+// (e.g. `'project.code'`) — same convention `convertFieldsToIds` consumes
+// on the central side. Resolve those to a project_id so the active-scope
+// check can still run on the POST body.
+const projectRefFromBody = async (
+  body: unknown,
+  models: Models,
+): Promise<ProjectRef | null> => {
+  const direct = projectIdFromBody(body);
+  if (direct) return direct;
+  if (!body || typeof body !== 'object') return null;
+  const projectCode = (body as Record<string, unknown>)['project.code'];
+  if (typeof projectCode !== 'string') return null;
+  const project = await models.project.findOne({ code: projectCode });
+  return project ? { id: project.id } : null;
+};
+
 const PROJECT_CODE_PASSTHROUGH_PATHS = new Set(['import/entities']);
 
 const RULES: Record<string, ProjectScopeRule> = {
@@ -29,7 +46,7 @@ const RULES: Record<string, ProjectScopeRule> = {
       const survey = await models.survey.findById(id);
       return survey?.project_id ? { id: survey.project_id } : null;
     },
-    bodyOwnership: async body => projectIdFromBody(body),
+    bodyOwnership: projectRefFromBody,
   },
   entities: {
     filter: project => ({ project_id: project.id }),
@@ -38,7 +55,7 @@ const RULES: Record<string, ProjectScopeRule> = {
       const projectId = (entity as { project_id?: string } | undefined)?.project_id;
       return projectId ? { id: projectId } : null;
     },
-    bodyOwnership: async body => projectIdFromBody(body),
+    bodyOwnership: projectRefFromBody,
   },
   surveyResponses: {
     filter: project => ({ 'survey.project_id': project.id }),
@@ -103,7 +120,12 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
     }
     const projectCtx: Project = { id: project.id, code: project.code };
 
-    if (req.method === 'GET') {
+    // Only inject the list filter on the bare list endpoint (e.g. `surveys`).
+    // Deeper GETs are detail or nested sub-resource fetches (`surveys/{id}`,
+    // `surveys/{id}/surveyScreenComponents`) scoped by the {id} in the path —
+    // the list filter doesn't belong there, and its column (e.g. project_id)
+    // often doesn't exist on the sub-resource's base table.
+    if (req.method === 'GET' && segments.length === 1) {
       const existingRaw = url.searchParams.get('filter');
       let existing: Record<string, unknown> = {};
       if (existingRaw) {
@@ -132,16 +154,28 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
         return undefined;
       }
     } else if (req.method === 'POST') {
-      const owner = await rule.bodyOwnership(req.body, req.models);
-      if (!owner) {
-        res.status(400).json({
-          error: `${resourceKey} body must reference a project in the active scope`,
-        });
-        return undefined;
-      }
-      if (owner.id !== projectCtx.id) {
-        res.status(403).json({ error: `${resourceKey} body references a different project` });
-        return undefined;
+      // Multipart POSTs (e.g. survey import, which carries the questions .xlsx)
+      // aren't body-parsed at this global-middleware layer — no multer has run
+      // yet — so req.body is empty and we can't introspect the project. Skip the
+      // body-ownership check and forward; the form's project.code still reaches
+      // central-server, which creates the record under it, and central enforces
+      // permissions. The check remains for JSON POSTs we can actually read.
+      // req.is returns the matched type string on a positive match, `false` on
+      // mismatch, and `null` when the request has no body — so coerce to a bool:
+      // only a genuine multipart match skips; bodyless POSTs still hit the check.
+      const isMultipart = Boolean(req.is('multipart/form-data'));
+      if (!isMultipart) {
+        const owner = await rule.bodyOwnership(req.body, req.models);
+        if (!owner) {
+          res.status(400).json({
+            error: `${resourceKey} body must reference a project in the active scope`,
+          });
+          return undefined;
+        }
+        if (owner.id !== projectCtx.id) {
+          res.status(403).json({ error: `${resourceKey} body references a different project` });
+          return undefined;
+        }
       }
     }
 

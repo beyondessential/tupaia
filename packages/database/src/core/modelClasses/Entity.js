@@ -409,9 +409,9 @@ export class EntityRecord extends DatabaseRecord {
     }
     if (!this.entity_polygon_id) return null;
 
-    // calculate the centroid of the polygon
+    // Calculate the centroid of the polygon.
     const result = await this.database.executeSql(
-      'SELECT ST_AsGeoJSON(ST_Centroid(polygon)) AS centroid FROM entity_polygon WHERE id = ?;',
+      'SELECT ST_AsGeoJSON(ST_Centroid(ST_AsGeoJSON(polygon))) AS centroid FROM entity_polygon WHERE id = ?;',
       [this.entity_polygon_id],
     );
     if (!result[0]?.centroid) return null;
@@ -427,7 +427,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   static syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get excludedFieldsFromSync() {
-    return ['point', 'bounds', 'entity_polygon_id', 'parent_id'];
+    return ['point', 'bounds', 'entity_polygon_id'];
   }
 
   get DatabaseRecordClass() {
@@ -790,6 +790,14 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
         ...recursiveStepParams, // recursive case edges scope + (optional) gd
       ];
 
+      // Qualify the requested columns with the `entity` table. The query joins
+      // the `hierarchy` CTE, which also exposes an `id` column, so an unqualified
+      // `id` in the SELECT list is ambiguous ("column reference \"id\" is
+      // ambiguous"). Callers strip extended fields, so everything here is a bare
+      // entity column and prefixing with `entity.` is always correct.
+      const qualifiedFields =
+        fields && fields.map(field => (field.includes('.') ? field : `entity.${field}`));
+
       const results = await this.find(
         {
           'hierarchy.generational_distance': generational_distance,
@@ -803,7 +811,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           },
           joinWith: 'hierarchy',
           joinCondition: ['entity.id', 'hierarchy.id'],
-          columns: fields,
+          columns: qualifiedFields,
           limit: pageSize,
         },
       );
@@ -850,19 +858,21 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       return {};
     }
 
+    // Query the project hierarchy edges (entity.parent_id + project_country)
+    // directly rather than the ancestor_descendant_relation closure cache: the
+    // cache is server-only (the DataTrak client doesn't have the table), and
+    // this method is called from the client.
     const rows = await this.database.executeSql(
       `
         SELECT
-          adr.descendant_id AS child_id,
+          edges.descendant_id AS child_id,
           parent.name AS parent_name,
           parent.code AS parent_code
-        FROM ancestor_descendant_relation adr
-        JOIN entity parent ON parent.id = adr.ancestor_id
-        WHERE adr.project_id = ?
-        AND adr.generational_distance = 1
-        AND adr.descendant_id IN ${SqlQuery.record(childIds)}
+        FROM (${PROJECT_HIERARCHY_EDGES_SUBQUERY}) edges
+        JOIN entity parent ON parent.id = edges.ancestor_id
+        WHERE edges.descendant_id IN ${SqlQuery.record(childIds)}
       `,
-      [projectId, ...childIds],
+      [...projectHierarchyEdgesParams(projectId), ...childIds],
     );
 
     return Object.fromEntries(

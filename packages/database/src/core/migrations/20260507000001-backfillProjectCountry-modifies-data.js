@@ -59,6 +59,15 @@ exports.up = async function (db) {
       ON CONFLICT (project_id, country_id) DO NOTHING;
     `);
     log(`Inserted ${sourceRows.rows.length} project_country rows`, t0);
+
+    const ticked = await db.runSql(`
+      UPDATE project_country
+      SET updated_at_sync_tick = COALESCE(
+        (SELECT value::bigint FROM local_system_fact WHERE key = 'currentSyncTick'),
+        0
+      );
+    `);
+    log(`Stamped ${ticked.rowCount ?? '?'} rows with the current sync tick`, t0);
   }
 
   // Invalidate the closure cache. Pre-3068 rows reference entity ids that RN-1853
@@ -79,5 +88,5 @@ exports.down = async function (db) {
 
 exports._meta = {
   version: 1,
-  targets: ['server', 'browser'],
+  targets: ['server'],
 };

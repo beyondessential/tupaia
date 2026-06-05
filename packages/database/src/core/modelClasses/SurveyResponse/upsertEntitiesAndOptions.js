@@ -56,6 +56,7 @@ const upsertEntities = async (models, entitiesUpserted, { resolveEntityId, proje
           'id',
           'name',
           'type',
+          'project_id',
           // updateOrCreate doesn’t deeply merge JSONB attributes, so do it here
           'metadata',
         ],

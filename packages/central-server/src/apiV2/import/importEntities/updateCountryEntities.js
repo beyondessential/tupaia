@@ -168,7 +168,11 @@ export async function updateCountryEntities(
         pushToDhis,
         projectId,
       )) || {};
-    if (entityType === transactingModels.entity.types.FACILITY) {
+    // A blank facility_type means this facility has no clinic-table
+    // classification (e.g. it was created via a survey response, which never
+    // writes a clinic row). Skip the upsert so the entity round-trips
+    // unchanged instead of inventing a clinic row.
+    if (entityType === transactingModels.entity.types.FACILITY && facilityType) {
       await attemptFacilityUpsert(transactingModels, {
         parentEntity,
         parentGeographicalArea,
@@ -218,9 +222,6 @@ export async function updateCountryEntities(
       await transactingModels.entity.updateEntityAttributes(code, attributes);
     }
     if (longitude && latitude) {
-      // xlsx cells arrive as strings (raw:false), but ST_GeomFromGeoJSON needs
-      // numeric GeoJSON coordinates — coerce, and skip silently if either is
-      // non-numeric rather than writing a broken point.
       const lon = Number(longitude);
       const lat = Number(latitude);
       if (Number.isFinite(lon) && Number.isFinite(lat)) {
