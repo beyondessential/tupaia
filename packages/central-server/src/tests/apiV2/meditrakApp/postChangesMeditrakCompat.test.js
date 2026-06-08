@@ -135,6 +135,41 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     expect(rowInProjectB.name).to.equal('Brand new village');
   });
 
+  it("translates the response's own entity_id from canonical to the project row", async () => {
+    // The response references a canonical entity living in project A by its raw
+    // (canonical) id; the survey is in project B. The saved response should
+    // point at project B's row, not the canonical one.
+    const code = `meditrak_respentity_${Date.now()}`;
+    const canonicalId = await insertEntity(models.database, { code, projectId: projectA.id });
+    const responseId = generateId();
+
+    const surveyResponseObject = {
+      id: responseId,
+      survey_id: survey.id,
+      user_id: userId,
+      assessor_name: 'MediTrak Compat Tester',
+      start_time: generateValueOfType('date'),
+      end_time: generateValueOfType('date'),
+      timestamp: generateValueOfType('date'),
+      timezone: 'Pacific/Auckland',
+      approval_status: 'not_required',
+      entity_id: canonicalId,
+      entities_upserted: [],
+      answers: [],
+    };
+
+    const response = await app.post('changes', {
+      body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
+    });
+    expect(response.statusCode).to.equal(200);
+
+    const projectBRow = await models.entity.findOne({ code, project_id: projectB.id });
+    expect(projectBRow).to.exist;
+    const saved = await models.surveyResponse.findById(responseId);
+    expect(saved.entity_id).to.not.equal(canonicalId);
+    expect(saved.entity_id).to.equal(projectBRow.id);
+  });
+
   it('routes an edit of an existing canonical entity into the survey project', async () => {
     const code = `meditrak_existing_${Date.now()}`;
     // Canonical row lives in project A; survey is in project B.
