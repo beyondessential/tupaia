@@ -4,6 +4,7 @@ import { resolveCanonicalEntityForProject } from '../../../apiV2/meditrakApp/uti
 import { TestableApp, resetTestData } from '../../testUtilities';
 
 const SAMPLE_CODE = 'mc_resolve_test';
+const PARENT_CODE = 'mc_resolve_parent';
 
 const insertEntity = async (database, { code = SAMPLE_CODE, name = 'Test', projectId }) => {
   // `id` is provided explicitly because the test schema doesn't have a
@@ -36,7 +37,9 @@ describe('resolveCanonicalEntityForProject', () => {
   });
 
   afterEach(async () => {
+    // Children (SAMPLE_CODE) first, then any parent rows they reference.
     await models.database.executeSql('DELETE FROM entity WHERE code = ?;', [SAMPLE_CODE]);
+    await models.database.executeSql('DELETE FROM entity WHERE code = ?;', [PARENT_CODE]);
   });
 
   it('returns the existing project-specific row when one exists', async () => {
@@ -67,6 +70,38 @@ describe('resolveCanonicalEntityForProject', () => {
     expect(duplicate).to.exist;
     expect(duplicate.code).to.equal(SAMPLE_CODE);
     expect(duplicate.project_id).to.equal(projectB.id);
+  });
+
+  it('resolves parent_id into the target project when lazy-duplicating', async () => {
+    // Parent exists both as the canonical row (project A) and as a copy in
+    // project B. The child exists only in project A, parented to the canonical.
+    const parentCanonicalId = await insertEntity(models.database, {
+      code: PARENT_CODE,
+      projectId: projectA.id,
+    });
+    const parentBId = await insertEntity(models.database, {
+      code: PARENT_CODE,
+      name: 'Parent B',
+      projectId: projectB.id,
+    });
+    const childCanonicalId = generateId();
+    await models.database.executeSql(
+      `
+        INSERT INTO entity (id, code, name, type, country_code, project_id, parent_id)
+        VALUES (?, ?, 'Child', 'village', 'DL', ?, ?);
+      `,
+      [childCanonicalId, SAMPLE_CODE, projectA.id, parentCanonicalId],
+    );
+
+    const resolved = await resolveCanonicalEntityForProject(models, {
+      canonicalEntityId: childCanonicalId,
+      projectId: projectB.id,
+    });
+
+    const duplicate = await models.entity.findById(resolved);
+    expect(duplicate.project_id).to.equal(projectB.id);
+    // parent_id points at project B's parent copy, not project A's canonical row.
+    expect(duplicate.parent_id).to.equal(parentBId);
   });
 
   it('throws when the canonical entity id does not exist', async () => {

@@ -40,11 +40,22 @@ export const resolveCanonicalEntityForProject = async (
   const existing = await models.entity.findOneByCodeInProject(canonical.code, projectId);
   if (existing) return existing.id;
 
-  // Lazy-duplicate. Strip the id (so the model issues a fresh one) and the
-  // canonical row's project_id (we're moving into a different project).
-  const { id: _ignored, project_id: _alsoIgnored, ...fields } = canonical;
+  // Lazy-duplicate the canonical row into the project.
+  const {
+    id: _ignored,
+    project_id: _alsoIgnored,
+    parent_id: canonicalParentId,
+    ...fields
+  } = await canonical.getData();
+  const parentId = canonicalParentId
+    ? await resolveCanonicalEntityForProject(models, {
+        canonicalEntityId: canonicalParentId,
+        projectId,
+      })
+    : null;
   const duplicate = await models.entity.create({
     ...fields,
+    parent_id: parentId,
     project_id: projectId,
   });
   return duplicate.id;

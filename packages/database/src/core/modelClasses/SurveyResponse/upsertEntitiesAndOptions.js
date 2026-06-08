@@ -31,12 +31,20 @@ const upsertEntities = async (models, entitiesUpserted, { resolveEntityId, proje
         } else {
           resolvedProjectId = projectId;
         }
-        // parent_id always resolves (the parent must already exist).
+        // Resolve parent_id too — unless the parent is itself brand-new in this
+        // same batch (not yet in the DB). For a new parent the canonical id
+        // becomes its project-specific id (same skip path as the entity above),
+        // so the child's canonical parent_id already points at the right row.
+        // Resolving it here would instead throw 'No entity found', and would
+        // make correctness depend on insert ordering within the Promise.all.
         if (entity.parent_id) {
-          resolvedParentId = await resolveEntityId({
-            canonicalEntityId: entity.parent_id,
-            projectId,
-          });
+          const existingParent = await models.entity.findById(entity.parent_id);
+          if (existingParent) {
+            resolvedParentId = await resolveEntityId({
+              canonicalEntityId: entity.parent_id,
+              projectId,
+            });
+          }
         }
       }
 
