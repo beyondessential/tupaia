@@ -35,7 +35,7 @@ const assertDataElementPermissions = async (accessPolicy, models, dataElementId,
   return false;
 };
 
-export const createDataElementDBFilter = async (accessPolicy, models, criteria) => {
+export const createDataElementDBFilter = async (accessPolicy, _models, criteria) => {
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }

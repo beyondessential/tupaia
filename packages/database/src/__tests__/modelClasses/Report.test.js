@@ -1,4 +1,4 @@
-import { upsertDummyRecord, getTestModels, findOrCreateDummyRecord } from '../../testUtilities';
+import { upsertDummyRecord, getTestModels, findOrCreateDummyRecord } from '../../server/testUtilities';
 
 describe('ReportModel', () => {
   const models = getTestModels();

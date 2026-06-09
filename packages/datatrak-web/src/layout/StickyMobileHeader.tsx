@@ -69,14 +69,14 @@ export const StickyMobileHeader = ({
       {...props}
     >
       {onBack && (
-        <LeadingIconButton onClick={onBack}>
-          <ChevronLeft />
+        <LeadingIconButton aria-label="Back" onClick={onBack}>
+          <ChevronLeft aria-hidden />
         </LeadingIconButton>
       )}
       <Title>{children}</Title>
       {onClose && (
         <TrailingIconButton aria-label="Close" onClick={onClose}>
-          <Close />
+          <Close aria-hidden />
         </TrailingIconButton>
       )}
     </MobileHeaderRoot>

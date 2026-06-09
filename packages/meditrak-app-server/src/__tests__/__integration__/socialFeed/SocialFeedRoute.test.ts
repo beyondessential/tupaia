@@ -56,7 +56,10 @@ describe('socialFeed', () => {
 
     const timezoneConvertedFeedItems = FEED_ITEMS.map(feedItem => ({
       ...feedItem,
-      creation_date: new Date(feedItem.creation_date).toLocaleString(databaseTimezone), // Adjust for timezone so tests work regardless of db timezone
+      creation_date: new Date(feedItem.creation_date).toLocaleString(
+        undefined,
+        { timeZone: databaseTimezone }, // Adjust for timezone so tests work regardless of db timezone
+      ),
     }));
 
     const feedItemsToInsert = replaceItemsCountryWithCountryId(

@@ -16,7 +16,6 @@ export { getCountryNameFromCode } from './getCountryNameFromCode';
 export { getCountryCode } from './getCountryCode';
 export { getIsProductionEnvironment } from './getIsProductionEnvironment';
 export { requireEnv, getEnvVarOrDefault } from './requireEnv';
-export { getUniqueEntries } from './getUniqueEntries';
 export { getLoggerInstance } from './getLoggerInstance';
 export { getTokenExpiry } from './getTokenExpiry';
 export * from './object';
@@ -39,3 +38,7 @@ export { oneSecondSleep, sleep } from './sleep';
 export { getUniqueSurveyQuestionFileName } from './getUniqueSurveyQuestionFileName';
 export * from './rrule';
 export { formatDateInTimezone, getOffsetForTimezone } from './timezone';
+export {
+  stripUpdatedAtSyncTickFromObject,
+  stripUpdatedAtSyncTickFromArray,
+} from './stripUpdatedAtSyncTick';

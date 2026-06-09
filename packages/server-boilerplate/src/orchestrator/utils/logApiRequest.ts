@@ -6,7 +6,7 @@ export const logApiRequest =
   async (req, _res, next) => {
     const { session } = req;
     const refreshToken = session?.refresh_token;
-    const userId = session ? (await models.user.findOne({ email: session.email })).id : undefined;
+    const userId = session ? (await models.user.findOne({ email: session.email }))?.id : undefined;
     const { id: apiRequestLogId } = await models.apiRequestLog.create({
       version,
       api: apiName,

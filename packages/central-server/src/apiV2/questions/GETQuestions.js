@@ -3,7 +3,7 @@ import { assertAdminPanelAccess } from '../../permissions';
 import { createQuestionDBFilter } from './assertQuestionPermissions';
 
 export class GETQuestions extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async assertUserHasAccess() {
     await this.assertPermissions(assertAdminPanelAccess);

@@ -1,4 +1,6 @@
-import { ModelRegistry } from '@tupaia/database';
+import { Knex } from 'knex';
+
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import {
   CountryModel,
   DashboardItemModel,
@@ -13,6 +15,8 @@ import {
 } from '@tupaia/server-boilerplate';
 
 export interface TupaiaWebServerModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly country: CountryModel;
   readonly dashboard: DashboardModel;
   readonly dashboardItem: DashboardItemModel;
@@ -23,4 +27,17 @@ export interface TupaiaWebServerModelRegistry extends ModelRegistry {
   readonly mapOverlayGroupRelation: MapOverlayGroupRelationModel;
   readonly user: UserModel;
   readonly project: ProjectModel;
+
+  wrapInTransaction<T = unknown>(
+    wrappedFunction: (models: TupaiaWebServerModelRegistry) => Promise<T>,
+    transactionConfig?: Knex.TransactionConfig,
+  ): Promise<T>;
+  wrapInReadOnlyTransaction<T = unknown>(
+    wrappedFunction: (models: TupaiaWebServerModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'readOnly'>,
+  ): Promise<T>;
+  wrapInRepeatableReadTransaction<T = unknown>(
+    wrappedFunction: (models: TupaiaWebServerModelRegistry) => Promise<T>,
+    transactionConfig?: Omit<Knex.TransactionConfig, 'isolationLevel'>,
+  ): Promise<T>;
 }

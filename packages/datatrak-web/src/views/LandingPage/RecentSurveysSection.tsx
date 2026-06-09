@@ -1,5 +1,6 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { DatatrakWebSurveyResponsesRequest } from '@tupaia/types';
@@ -8,6 +9,7 @@ import { useCurrentUserRecentSurveys } from '../../api';
 import { InlineScrollView, SurveyIcon, Tile, TileSkeleton } from '../../components';
 import { TileProps } from '../../components/Tile';
 import { useIsMobile } from '../../utils';
+import { DraftExistsModal, useDraftExistsModal } from '../../features/Survey';
 import { SectionHeading } from './SectionHeading';
 
 const RecentSurveys = styled.section`
@@ -15,6 +17,14 @@ const RecentSurveys = styled.section`
   grid-area: --recentSurveys;
   grid-template-columns: subgrid;
   grid-template-rows: auto 1fr;
+
+  .MuiSvgIcon-root {
+    color: ${props => props.theme.palette.primary.main};
+  }
+
+  .MuiButtonBase-root {
+    text-align: left;
+  }
 `;
 
 const InlineScroll = styled(InlineScrollView).attrs({
@@ -41,41 +51,52 @@ const TooltipText = styled.p`
   text-wrap: balance;
 `;
 
-type RecentSurveyTileProps = TileProps &
-  Pick<
-    DatatrakWebSurveyResponsesRequest.SurveyResponse,
-    'surveyName' | 'surveyCode' | 'countryName' | 'countryCode'
-  >;
+interface RecentSurveyTileProps
+  extends TileProps,
+    Pick<
+      DatatrakWebSurveyResponsesRequest.SurveyResponse,
+      'surveyName' | 'surveyCode' | 'countryName' | 'countryCode'
+    > {
+  onClick: () => void;
+}
 
 const RecentSurveyTile = ({
   surveyName,
   surveyCode,
   countryName,
   countryCode,
+  onClick,
   ...props
 }: RecentSurveyTileProps) => {
-  const tooltip = (
-    <>
-      <TooltipText>{surveyName}</TooltipText>
-      <TooltipText>{countryName}</TooltipText>
-    </>
-  );
+  const isMobile = useIsMobile();
+  const tooltip = isMobile ? undefined : <TooltipText>{surveyName}</TooltipText>;
 
   return (
     <Tile
       heading={surveyName}
       leadingIcons={<SurveyIcon />}
-      to={`/survey/${countryCode}/${surveyCode}/1`}
+      onClick={onClick}
       tooltip={tooltip}
       {...props}
     >
-      {countryName}
+      <Typography>{countryName}</Typography>
     </Tile>
   );
 };
 
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isLoading } = useCurrentUserRecentSurveys();
+  const navigate = useNavigate();
+  const { checkForDrafts, draftModalProps } = useDraftExistsModal({
+    onStartNew: (countryCode, surveyCode) => navigate(`/survey/${countryCode}/${surveyCode}/1`),
+    onResume: resumePath => navigate(resumePath),
+  });
+
+  const handleSurveyClick = (countryCode: string, surveyCode: string) => {
+    if (!checkForDrafts(countryCode, surveyCode)) {
+      navigate(`/survey/${countryCode}/${surveyCode}/1`);
+    }
+  };
 
   const ScrollableList = useIsMobile() ? InlineScroll : GridScroll;
 
@@ -83,9 +104,12 @@ export const RecentSurveysSection = () => {
     if (isLoading) return <TileSkeleton lineCount={1} />;
 
     if (recentSurveys.length > 0)
-      return recentSurveys.map(props => (
+      return recentSurveys.map(({ countryId: _, ...props }) => (
         <li key={`${props.surveyCode}-${props.countryName}`}>
-          <RecentSurveyTile {...props} />
+          <RecentSurveyTile
+            {...props}
+            onClick={() => handleSurveyClick(props.countryCode, props.surveyCode)}
+          />
         </li>
       ));
 
@@ -100,6 +124,7 @@ export const RecentSurveysSection = () => {
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
       <ScrollableList>{renderContents()}</ScrollableList>
+      <DraftExistsModal {...draftModalProps} />
     </RecentSurveys>
   );
 };

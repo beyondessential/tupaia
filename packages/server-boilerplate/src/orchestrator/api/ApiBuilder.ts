@@ -3,12 +3,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 import publicIp from 'public-ip';
-import {
-  AuthHandler,
-  getBaseUrlsForHost,
-  LOCALHOST_BASE_URLS,
-  TupaiaApiClient,
-} from '@tupaia/api-client';
+import { getBaseUrlsForHost, LOCALHOST_BASE_URLS, TupaiaApiClient } from '@tupaia/api-client';
+import type { AuthHandler, ApiConnectionOptions } from '@tupaia/api-client';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
@@ -42,6 +38,7 @@ export class ApiBuilder {
   private attachVerifyLogin: (req: Request, res: Response, next: NextFunction) => void;
   private verifyAuthMiddleware: RequestHandler;
   private attachAccessPolicy: RequestHandler;
+  private loginRoute: typeof LoginRoute;
   private version: number;
 
   private translatorConfigured = false;
@@ -55,6 +52,7 @@ export class ApiBuilder {
     this.apiName = apiName;
     this.version = 1; // Default version
     this.app = express();
+    this.loginRoute = LoginRoute;
     this.attachSession = defaultAttachSession;
     this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
     this.attachVerifyLogin = emptyMiddleware;
@@ -80,13 +78,14 @@ export class ApiBuilder {
       cors({
         origin: true,
         credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
-        exposedHeaders: ['Content-Disposition'], // needed for getting download filename
-      }),
+        exposedHeaders: ['Content-Disposition'], // download filename
+      }) as RequestHandler,
     );
     // @ts-ignore
     // We were previously missing a dev dependency so this TS error never cropped up. This should be
     // tidied up eventually, but leaving for now. (It hasn’t been an issue, yet, for 4+ years)
     this.app.use(bodyParser.json({ limit: '50mb' }));
+    // @ts-ignore Same as above
     this.app.use(errorHandler());
     this.app.use(sessionCookie());
 
@@ -124,6 +123,11 @@ export class ApiBuilder {
 
   public useAttachSession(attachSession: RequestHandler) {
     this.attachSession = attachSession;
+    return this;
+  }
+
+  public attachLoginRoute(loginRoute: typeof LoginRoute) {
+    this.loginRoute = loginRoute;
     return this;
   }
 
@@ -184,12 +188,22 @@ export class ApiBuilder {
     return this;
   }
 
-  public attachApiClientToContext(authHandlerProvider: (req: Request) => AuthHandler) {
+  public attachApiClientToContext({
+    authHandlerProvider,
+    apiConnectionOptionsProvider,
+  }: {
+    authHandlerProvider: (req: Request) => AuthHandler;
+    apiConnectionOptionsProvider?: (req: Request) => ApiConnectionOptions;
+  }) {
     this.app.use((req, res, next) => {
       try {
         const baseUrls =
           process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
-        const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+        const apiClient = new TupaiaApiClient(
+          authHandlerProvider(req),
+          baseUrls,
+          apiConnectionOptionsProvider?.(req),
+        );
         req.ctx.services = apiClient;
         res.ctx.services = apiClient;
         next();
@@ -311,7 +325,8 @@ export class ApiBuilder {
       this.formatPath('login'),
       this.attachVerifyLogin,
       this.logApiRequestMiddleware,
-      handleWith(LoginRoute),
+      this.attachAccessPolicy,
+      handleWith(this.loginRoute),
     );
     this.app.post(this.formatPath('logout'), this.logApiRequestMiddleware, handleWith(LogoutRoute));
     this.app.post(

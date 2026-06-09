@@ -10,7 +10,7 @@ import {
  * - /surveyGroups/:surveyGroupId
  */
 export class GETSurveyGroups extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(surveyGroupId, options) {
     const surveyGroup = await super.findSingleRecord(surveyGroupId, options);

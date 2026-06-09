@@ -11,4 +11,6 @@ export * from './constants';
 
 export { MockTupaiaApiClient } from './MockTupaiaApiClient';
 
+export type { ApiConnectionOptions } from './connections';
+
 export * from './connections/mocks';

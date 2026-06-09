@@ -31,7 +31,7 @@ export class GetEntityTypes extends GETHandler {
     return { id: entityType, type: entityType };
   }
 
-  async findRecords(criteria, options) {
+  async findRecords(_criteria, options) {
     const { limit, offset } = options;
     const entityTypes = await this.getEntityTypes();
     if (offset) {

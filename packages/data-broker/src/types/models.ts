@@ -11,6 +11,7 @@ import type {
   EntityRecord as BaseEntityRecord,
   ModelRegistry,
   RECORDS,
+  TupaiaDatabase,
 } from '@tupaia/database';
 import { Join, Override, Values } from './utils';
 
@@ -23,8 +24,8 @@ type FlatFieldConditions<T> = {
   [K in keyof T as T[K] extends Record<string, unknown>
     ? never
     : T[K] extends unknown[]
-    ? never
-    : K]: T[K] | T[K][];
+      ? never
+      : K]: T[K] | T[K][];
 };
 
 type JsonFieldConditions<T> = Values<{
@@ -179,13 +180,15 @@ type DhisInstanceModel = DatabaseModel<DhisInstance>;
 type EntityHierarchyModel = DatabaseModel<EntityHierarchy>;
 
 export interface DataBrokerModelRegistry extends ModelRegistry {
-  dataElementDataService: DataElementDataServiceModel;
-  supersetInstance: SupersetInstanceModel;
-  dataElement: DataElementModel;
-  dataGroup: DataGroupModel;
-  dataServiceEntity: DataServiceEntityModel;
-  dataServiceSyncGroup: DataServiceSyncGroupModel;
-  entity: EntityModel;
-  dhisInstance: DhisInstanceModel;
-  entityHierarchy: EntityHierarchyModel;
+  readonly database: TupaiaDatabase;
+
+  readonly dataElementDataService: DataElementDataServiceModel;
+  readonly supersetInstance: SupersetInstanceModel;
+  readonly dataElement: DataElementModel;
+  readonly dataGroup: DataGroupModel;
+  readonly dataServiceEntity: DataServiceEntityModel;
+  readonly dataServiceSyncGroup: DataServiceSyncGroupModel;
+  readonly entity: EntityModel;
+  readonly dhisInstance: DhisInstanceModel;
+  readonly entityHierarchy: EntityHierarchyModel;
 }

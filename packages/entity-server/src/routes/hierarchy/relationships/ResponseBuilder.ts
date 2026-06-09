@@ -1,10 +1,12 @@
-import keyBy from 'lodash.keyby';
+import { uniq } from 'es-toolkit';
+import { keyBy } from 'es-toolkit/compat';
 
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { QueryConjunctions, EntityFilter, EntityRecord } from '@tupaia/server-boilerplate';
 import { EntityServerModelRegistry } from '../../../types';
 import { formatEntitiesForResponse } from '../format';
 import { MultiEntityRelationshipsContext } from './types';
+import { FlattenedEntity } from '../../../type-exports';
 
 type Pair = {
   descendant: string;
@@ -75,10 +77,9 @@ export class ResponseBuilder {
       }
     });
 
-    const ancestorCodes = [
-      ...new Set(Object.values(descendantAncestorMapping).map(ancestor => ancestor.code)),
-    ];
-
+    const ancestorCodes = uniq(
+      Object.values(descendantAncestorMapping).map(ancestor => ancestor.code),
+    );
     const ancestorDescendantPairs = Object.entries(descendantAncestorMapping).map(
       ([descendant, { code: ancestor }]) => ({
         descendant,
@@ -134,7 +135,7 @@ export class ResponseBuilder {
               descendantField,
             )),
           ];
-    const formattedEntitiesByCode: Record<string, string> = {};
+    const formattedEntitiesByCode: Record<string, FlattenedEntity | undefined> = {};
     [...ancestors, ...descendants].forEach((entity, index) => {
       formattedEntitiesByCode[entity.code] = formattedEntities[index];
     });
@@ -183,7 +184,7 @@ export class ResponseBuilder {
       .map(pair => ({
         ancestor: formattedEntitiesByCode[pair.ancestor],
         descendant: formattedEntitiesByCode[pair.descendant],
-      }));
+      })) as Pair[];
 
     return this.buildMap(formattedPairs);
   }

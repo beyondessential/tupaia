@@ -1,6 +1,6 @@
 import { CreateHandler } from '../CreateHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { assertUserHasPermissionToCreateTask } from './assertTaskPermissions';
+
 /**
  * Handles POST endpoints:
  * - /tasks
@@ -8,8 +8,12 @@ import { assertUserHasPermissionToCreateTask } from './assertTaskPermissions';
 
 export class CreateTask extends CreateHandler {
   async assertUserHasAccess() {
-    const createPermissionChecker = accessPolicy =>
-      assertUserHasPermissionToCreateTask(accessPolicy, this.models, this.newRecordData);
+    const createPermissionChecker = async accessPolicy => {
+      return await this.models.task.assertUserHasPermissionToCreateTask(
+        accessPolicy,
+        this.newRecordData,
+      );
+    };
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, createPermissionChecker]),

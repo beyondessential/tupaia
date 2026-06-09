@@ -1,3 +1,4 @@
+import { EntityTypeEnum } from '@tupaia/types';
 import { snake } from 'case';
 import { BESAdminCreateHandler } from '../CreateHandler';
 import { uploadImage } from '../utilities';
@@ -111,7 +112,7 @@ export class CreateProject extends BESAdminCreateHandler {
       name,
       code: projectCode,
       parent_id: worldId,
-      type: 'project',
+      type: EntityTypeEnum.project,
     });
   }
 

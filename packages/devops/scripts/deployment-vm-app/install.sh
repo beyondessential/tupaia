@@ -44,7 +44,8 @@ set -x
 # Build packages and their dependencies
 package_names_glob=$("$TUPAIA_DIR/scripts/bash/getDeployablePackages.sh" --as-glob)
 
-REACT_APP_DEPLOYMENT_NAME="$DEPLOYMENT_NAME" \
+NODE_OPTIONS='--max-old-space-size=4096' \
+    REACT_APP_DEPLOYMENT_NAME="$DEPLOYMENT_NAME" \
     yarn run build:from "$package_names_glob"
 
 echo "Tupaia installed successfully"

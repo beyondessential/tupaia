@@ -21,7 +21,7 @@ export class DeleteHandler extends CRUDHandler {
     try {
       await this.resourceModel.deleteById(this.recordId);
     } catch (error) {
-      if (error.constraint && error.constraint.endsWith('fkey')) {
+      if (error.constraint?.endsWith('fkey')) {
         throw new DatabaseError(
           `Cannot delete ${this.resource} while there are still records in the ${error.table} table`,
         );

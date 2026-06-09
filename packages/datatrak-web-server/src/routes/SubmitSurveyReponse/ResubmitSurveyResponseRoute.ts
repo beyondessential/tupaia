@@ -1,8 +1,8 @@
 import { Request } from 'express';
+
+import { SurveyResponseModel, UserModel } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebResubmitSurveyResponseRequest as RequestT } from '@tupaia/types';
-import { processSurveyResponse } from './processSurveyResponse';
-import { addRecentEntities } from '../../utils';
 
 export type ResubmitSurveyResponseRequest = Request<
   RequestT.Params,
@@ -19,7 +19,7 @@ export class ResubmitSurveyResponseRoute extends Route<ResubmitSurveyResponseReq
     const { originalSurveyResponseId } = params;
 
     const { qr_codes_to_create, recent_entities, ...processedResponse } =
-      await processSurveyResponse(models, surveyResponseData);
+      await SurveyResponseModel.processSurveyResponse(models, surveyResponseData);
 
     await centralApi.resubmitSurveyResponse(originalSurveyResponseId, processedResponse);
 
@@ -27,7 +27,7 @@ export class ResubmitSurveyResponseRoute extends Route<ResubmitSurveyResponseReq
     if (!!session && processedResponse.user_id) {
       const { user_id: userId } = processedResponse;
       // add these after the survey response has been submitted because we want to be able to add newly created entities to the recent entities list
-      await addRecentEntities(models, userId, recent_entities);
+      await UserModel.addRecentEntities(models, userId, recent_entities);
     }
 
     return {

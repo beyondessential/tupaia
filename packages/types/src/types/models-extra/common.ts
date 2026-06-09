@@ -1,3 +1,5 @@
+import { DataElement, DhisInstance } from '../models';
+
 export enum VizPeriodGranularity {
   'DAY' = 'day',
   'SINGLE_DAY' = 'one_day_at_a_time',
@@ -93,3 +95,41 @@ export enum DashboardItemType {
 export type EntityAttributes = Record<string, unknown> & {
   type?: string;
 };
+
+export interface DataElementConfig {
+  categoryOptionCombo?: string;
+  dataElementCode?: DataElement['code'];
+  dhisDataType?: 'DataElement' | 'Indicator' | 'ProgramIndicator';
+  dhisId?: string;
+  dhisInstanceCode?: DhisInstance['code'];
+  indicator?: {
+    dataPeriodType: 'DAY' | 'WEEK' | 'MONTH' | 'QUARTER' | 'YEAR';
+  };
+}
+
+export interface DataServiceEntityConfig {
+  dhis_id?: string;
+  kobo_id?: string;
+}
+
+export interface EntityMetadata {
+  dhis?: {
+    dhisInstanceCode?: string;
+    isDataRegional?: boolean;
+    push?: boolean;
+    trackedEntityId?: string;
+  };
+  ms1?: { distributionId?: string };
+  openStreetMaps?: { id?: string };
+}
+
+export interface OptionAttributes {
+  parent_category?: string;
+  grandparent_category?: string;
+}
+
+export interface SupersetInstanceConfig {
+  serverName?: string;
+  baseUrl: string;
+  insecure?: boolean;
+}

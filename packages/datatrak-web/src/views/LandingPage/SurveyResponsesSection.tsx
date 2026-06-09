@@ -3,6 +3,7 @@ import { parseISO } from 'date-fns';
 import React from 'react';
 import styled from 'styled-components';
 
+import type { Entity, Survey, SurveyResponse } from '@tupaia/types';
 import { useCurrentUserContext, useCurrentUserSurveyResponses } from '../../api';
 import {
   BlockScrollView,
@@ -43,10 +44,10 @@ const TooltipText = styled.p`
 `;
 
 interface SurveyResponseTileProps extends TileProps {
-  id: string;
-  surveyName: string;
+  id: SurveyResponse['id'];
+  surveyName: Survey['name'];
   dataTime: string;
-  entityName: string;
+  entityName: Entity['name'];
   countryName: string;
 }
 const SurveyResponseTile = ({
@@ -56,12 +57,8 @@ const SurveyResponseTile = ({
   entityName,
   countryName,
 }: SurveyResponseTileProps) => {
-  const tooltip = (
-    <>
-      <TooltipText>{surveyName}</TooltipText>
-      <TooltipText>{entityName}</TooltipText>
-    </>
-  );
+  const isMobile = useIsMobile();
+  const tooltip = isMobile ? undefined : <TooltipText>{surveyName}</TooltipText>;
 
   return (
     <Tile

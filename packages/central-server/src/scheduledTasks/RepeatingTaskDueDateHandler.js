@@ -1,6 +1,6 @@
 import winston from 'winston';
 import { getNextOccurrence } from '@tupaia/utils';
-import { ScheduledTask } from './ScheduledTask';
+import { ScheduledTask } from '@tupaia/server-utils';
 
 export class RepeatingTaskDueDateHandler extends ScheduledTask {
   constructor(models) {
@@ -14,7 +14,7 @@ export class RepeatingTaskDueDateHandler extends ScheduledTask {
     const repeatingTasks = await task.find(
       {
         task_status: 'repeating',
-        due_date: { comparator: '<', comparisonValue: new Date().getTime() },
+        due_date: { comparator: '<', comparisonValue: Date.now() },
       },
       {
         columns: ['task.id', 'repeat_schedule'],

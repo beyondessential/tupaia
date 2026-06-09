@@ -38,7 +38,7 @@ export const VerifyEmailPage = () => {
       onSuccess: () => {
         setMessage({
           status: EMAIL_VERIFICATION_STATUS.SUCCESS,
-          text: 'Your e-mail was successfully verified',
+          text: 'Your email was successfully verified',
         });
       },
       onSettled: () => {

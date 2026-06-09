@@ -1,9 +1,17 @@
+/**
+ * @typedef {import('@tupaia/database').ComparisonType} ComparisonType
+ * @typedef {import('@tupaia/database').UserRecord} UserRecord
+ * @typedef {import('@tupaia/types').UserAccount} UserAccount
+ * @typedef {import('@tupaia/types').VerifiedEmail} VerifiedEmail
+ */
+
 import { encryptPassword, sha256EncryptPassword as sha256, verifyPassword } from '@tupaia/auth';
 import { sendEmail } from '@tupaia/server-utils';
+import { PrimaryPlatform } from '@tupaia/types';
 import { requireEnv } from '@tupaia/utils';
 import winston from '../../log';
 
-const EMAILS = {
+const EMAILS = /** @type {const} */ ({
   tupaia: {
     subject: 'Tupaia email verification',
     platformName: 'tupaia.org',
@@ -17,21 +25,25 @@ const EMAILS = {
     signOff: 'Best regards,\nThe LESMIS Team',
     platformName: 'lesmis.la',
   },
-};
+});
 
+/** @type {Record<PrimaryPlatform, string>} */
 const ORIGINS = {
   tupaia: requireEnv('TUPAIA_FRONT_END_URL'),
   lesmis: requireEnv('LESMIS_FRONT_END_URL'),
   datatrak: requireEnv('DATATRAK_FRONT_END_URL'),
 };
 
-const PATHNAMES = {
+/** @satisfies {Partial<Record<PrimaryPlatform, `/${string}`>> & { default: `/${string}` }} */
+const PATHNAMES = /** @type {const} */ ({
   default: '/verify-email',
   lesmis: '/en/verify-email',
-};
+});
 
+/** @param {Pick<UserAccount, 'email' | 'password_hash'>} user */
 const getEmailVerificationToken = user => `${user.email}${user.password_hash}`;
 
+/** @param {UserAccount} user */
 const generateVerificationLink = async user => {
   const token = await encryptPassword(getEmailVerificationToken(user));
 
@@ -48,12 +60,13 @@ const generateVerificationLink = async user => {
   }
 };
 
+/** @param {UserAccount} */
 export const sendEmailVerification = async user => {
   const platform = user.primary_platform || 'tupaia';
   const { subject, signOff, platformName } = EMAILS[platform];
   const url = await generateVerificationLink(user);
 
-  return sendEmail(user.email, {
+  return await sendEmail(user.email, {
     subject,
     signOff,
     templateName: 'verifyEmail',
@@ -71,9 +84,22 @@ export const sendEmailVerification = async user => {
 /**
  * Verification tokens prior to our adoption of Argon2 were generated with
  * {@link sha256}.
+ * @param {string} token
  */
 const isLegacyToken = token => /^[0-9a-f]{64}$/.test(token);
 
+/**
+ * @param {*} models
+ * @param {VerifiedEmail | VerifiedEmail[] | {
+ *   comparisonType?: ComparisonType;
+ *   comparator: string;
+ *   comparisonValue: VerifiedEmail | VerifiedEmail[];
+ * }} searchCondition
+ * @param {string} token
+ * @returns {Promise<?UserAccount['id']>}
+ * @throws {VerificationTokenExpiredError}
+ * @throws {VerificationTokenInvalidError}
+ */
 export const verifyEmailHelper = async (models, searchCondition, token) => {
   if (isLegacyToken(token)) {
     // Token generated prior to adoption of Argon2. Report to end user as “expired”.
@@ -84,12 +110,21 @@ export const verifyEmailHelper = async (models, searchCondition, token) => {
 
   if (!token.startsWith('$argon2id$')) throw new VerificationTokenInvalidError();
 
-  const users = await models.user.find({ verified_email: searchCondition });
+  /** @type {UserRecord[]} */
+  const users = await models.user.find(
+    { verified_email: searchCondition },
+    {
+      columns: ['email', 'id', 'password_hash'],
+      // Demote stale unverified accounts. (Hacky heuristic to deal with the performance of
+      // iterating through every user from this query.)
+      sort: ['creation_date DESC'],
+    },
+  );
 
   try {
     for (const user of users) {
       const verified = await verifyPassword(getEmailVerificationToken(user), token);
-      if (verified) return user;
+      if (verified) return user.id;
     }
   } catch (e) {
     if (e.code === 'InvalidArg') throw new VerificationTokenInvalidError();
@@ -100,6 +135,7 @@ export const verifyEmailHelper = async (models, searchCondition, token) => {
 };
 
 export class VerificationTokenExpiredError extends Error {
+  /** @param {string} [message] */
   constructor(message) {
     super(message);
     this.name = 'VerificationTokenExpiredError';
@@ -107,6 +143,7 @@ export class VerificationTokenExpiredError extends Error {
 }
 
 export class VerificationTokenInvalidError extends Error {
+  /** @param {string} [message] */
   constructor(message) {
     super(message);
     this.name = 'VerificationTokenInvalidError';

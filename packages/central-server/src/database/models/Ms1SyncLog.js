@@ -1,3 +1,4 @@
+import { SyncDirections } from '@tupaia/constants';
 import { DatabaseModel, DatabaseRecord, RECORDS } from '@tupaia/database';
 
 class Ms1SyncLogRecord extends DatabaseRecord {
@@ -5,6 +6,8 @@ class Ms1SyncLogRecord extends DatabaseRecord {
 }
 
 export class Ms1SyncLogModel extends DatabaseModel {
+  static syncDirection = SyncDirections.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return Ms1SyncLogRecord;
   }

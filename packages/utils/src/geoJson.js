@@ -77,7 +77,10 @@ export const calculateOuterBounds = listOfBounds => {
     return null;
   }
 
-  const points = bounds.reduce((values, bound) => [...values, ...bound], []);
+  const points = bounds.reduce((values, bound) => {
+    values.push(...bound);
+    return values;
+  }, []);
 
   return [
     [Math.min(...points.map(point => point[0])), Math.min(...points.map(point => point[1]))],

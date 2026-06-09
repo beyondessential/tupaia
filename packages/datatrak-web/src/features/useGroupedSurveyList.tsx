@@ -1,11 +1,12 @@
 import { FormLabelProps } from '@material-ui/core';
 import React, { ReactNode, useEffect } from 'react';
 
-import { useCurrentUserContext, useProjectSurveys } from '../api';
+import { DatatrakWebEntitiesRequest } from '@tupaia/types';
+import { useCurrentUserContext } from '../api';
+import { useSurveysQuery } from '../api/queries/useSurveysQuery';
 import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
 import { innerText } from '../utils';
-import { UserCountriesType } from './CountrySelector/useUserCountries';
 
 export interface ListItemType extends Record<string, unknown> {
   children?: ListItemType[];
@@ -21,7 +22,7 @@ export interface ListItemType extends Record<string, unknown> {
   };
 }
 
-const alphanumericCompare = (a: ListItemType, b: ListItemType) => {
+const alphanumericCompare = <T extends { content: React.ReactNode }>(a: T, b: T): number => {
   const aText = innerText(a.content).trim();
   const bText = innerText(b.content).trim();
   return aText.localeCompare(bText, 'en', {
@@ -30,7 +31,7 @@ const alphanumericCompare = (a: ListItemType, b: ListItemType) => {
 };
 
 export interface UseGroupedSurveyListParams {
-  selectedCountry: UserCountriesType['selectedCountry'];
+  selectedCountry: DatatrakWebEntitiesRequest.EntitiesResponseItem | null;
   selectedSurvey: Survey['code'] | null;
   setSelectedSurvey: React.Dispatch<React.SetStateAction<Survey['code'] | null>>;
 }
@@ -41,12 +42,14 @@ export const useGroupedSurveyList = ({
   setSelectedSurvey,
 }: UseGroupedSurveyListParams) => {
   const user = useCurrentUserContext();
-  const { data: surveys } = useProjectSurveys(user?.projectId, {
+  const { data: surveys } = useSurveysQuery({
     countryCode: selectedCountry?.code,
+    includeSurveyGroupNames: true,
+    projectId: user?.projectId,
   });
   const groupedSurveys =
     surveys
-      ?.reduce((acc: ListItemType[], survey: Survey) => {
+      ?.reduce<ListItemType[]>((acc, survey) => {
         const { surveyGroupName, name, code } = survey;
         const formattedSurvey = {
           content: name,
@@ -89,7 +92,7 @@ export const useGroupedSurveyList = ({
     if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey)) {
       setSelectedSurvey(null);
     }
-  }, [JSON.stringify(surveys)]);
+  }, [selectedSurvey, setSelectedSurvey, surveys]);
 
   const onSelectSurvey = (listItem: ListItemType | null) => {
     if (!listItem) return setSelectedSurvey(null);

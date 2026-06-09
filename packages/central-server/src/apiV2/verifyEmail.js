@@ -19,21 +19,19 @@ export const verifyEmail = async (req, res) => {
   try {
     // Search unverified emails first. If we don’t find any try for emails already verified so we
     // don’t pass an error back if the user clicks the link twice
-    const verifiedUser =
+    const verifiedUserId =
       (await verifyEmailHelper(models, [UNVERIFIED, NEW_USER], token)) ??
       (await verifyEmailHelper(models, VERIFIED, token));
 
-    if (verifiedUser) {
-      verifiedUser.verified_email = VERIFIED;
-      await models.user.updateById(verifiedUser.id, verifiedUser);
-
-      respond(res, { emailVerified: 'true' });
-    } else {
+    if (verifiedUserId === null) {
       // Our tokens don’t actually have expiry, but are invalidated if their password changes
       throw new UnverifiedError(
         'Couldn’t verify your email. Your link may have expired; please request a new one.',
       );
     }
+
+    await models.user.updateById(verifiedUserId, { verified_email: VERIFIED });
+    respond(res, { emailVerified: 'true' });
   } catch (e) {
     if (e instanceof VerificationTokenInvalidError) {
       throw new UnverifiedError('Verification link is invalid. Please request a new one.');

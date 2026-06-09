@@ -78,7 +78,7 @@ def redeploy_tupaia_server(event):
     # find current instances
     existing_instances = find_instances(instance_filters)
 
-    if len(existing_instances) == 0:
+    if not existing_instances:
         raise Exception(
             "No existing instances found to redeploy, perhaps you want to spin up a new deployment?"
         )
@@ -127,7 +127,9 @@ def redeploy_tupaia_server(event):
 
         deployment_name = get_tag(new_instance, "DeploymentName")
 
-        print("Successfully deployed " + deployment_name)
+        print(
+            f"Successfully deployed {deployment_name} to {new_instance["InstanceId"]}"
+        )
         response.append(
             {
                 "DeploymentName": deployment_name,

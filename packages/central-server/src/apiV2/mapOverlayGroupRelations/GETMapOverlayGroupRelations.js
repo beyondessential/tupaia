@@ -18,7 +18,7 @@ import { assertMapOverlaysGetPermissions } from '../mapOverlays';
  * - /mapOverlays/:parentRecordId/mapOverlayGroupRelations
  */
 export class GETMapOverlayGroupRelations extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   customJoinConditions = {
     map_overlay_group: {

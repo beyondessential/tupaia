@@ -14,11 +14,10 @@ import time
 
 from helpers.utilities import find_instances, start_instance
 
-try:
-    loop = asyncio.get_event_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+
+async def _start_instances(instances):
+    tasks = [start_instance(instance) for instance in instances]
+    return await asyncio.gather(*tasks)
 
 
 def start_tagged_servers(event):
@@ -36,7 +35,5 @@ def start_tagged_servers(event):
         print("No stopped instances to start")
         return
 
-    tasks = [asyncio.ensure_future(start_instance(instance)) for instance in instances]
-    loop.run_until_complete(asyncio.wait(tasks))
-
+    asyncio.run(_start_instances(instances))
     print(f"Started {len(instances)} previously stopped instances")

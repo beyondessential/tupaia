@@ -7,6 +7,7 @@ import { EntitySelector } from '../EntitySelector';
 export const EntityQuestion = ({
   id,
   label,
+  detailLabel,
   name,
   required,
   controllerProps: { onChange, value, ref, invalid },
@@ -29,6 +30,7 @@ export const EntityQuestion = ({
         ref,
         invalid,
       }}
+      detailLabel={detailLabel}
       showLegend={isReadOnly}
       disableSearch={isReadOnly && !value}
       projectCode={surveyProjectCode}

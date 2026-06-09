@@ -5,7 +5,7 @@ import { assertCountryPermissions } from '../GETCountries';
 import { assertEntityPermissions } from './assertEntityPermissions';
 
 export class GETEntities extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(entityId, options) {
     const entityPermissionChecker = accessPolicy =>

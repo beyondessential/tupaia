@@ -72,7 +72,7 @@ export const populateData = async (
     ...surveyResponseProperties
   } = surveyResponse;
   try {
-    const survey = await models.survey.findById(surveyId);
+    const survey = await models.survey.findByIdOrThrow(surveyId);
 
     // Ensure entity_id is populated, supporting legacy versions of MediTrak
     if (clinicId) {

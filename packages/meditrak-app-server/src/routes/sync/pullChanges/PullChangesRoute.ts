@@ -1,15 +1,14 @@
-import keyBy from 'lodash.keyby';
-import groupBy from 'lodash.groupby';
-
+import { groupBy, keyBy } from 'es-toolkit/compat';
 import { Request } from 'express';
 
 import { RECORDS } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatabaseError } from '@tupaia/utils';
 import { MeditrakSyncQueue } from '@tupaia/types';
+import { DatabaseError } from '@tupaia/utils';
+
 import { getSupportedModels, getUnsupportedModelFields } from '../../../sync';
-import { MeditrakAppServerModelRegistry } from '../../../types';
 import { getSyncRecordTranslator } from '../../../sync/appSupportedModels';
+import { MeditrakAppServerModelRegistry } from '../../../types';
 import { buildMeditrakSyncQuery } from './meditrakSyncQuery';
 import { buildPermissionsBasedMeditrakSyncQuery } from './permissionsBasedMeditrakSyncQuery';
 import { supportsPermissionsBasedSync } from './supportsPermissionsBasedSync';
@@ -154,7 +153,12 @@ export class PullChangesRoute extends Route<PullChangesRequest> {
             const errorMessage = `Couldn't find record type ${recordType} with id ${recordId}`;
             changeObject.error = { error: errorMessage };
           } else {
-            changeObject.record = translateRecordForSync(models, recordType, appVersion, record);
+            changeObject.record = translateRecordForSync(
+              models,
+              recordType,
+              appVersion,
+              record as unknown as Record<string, unknown>, // TODO: Sort out this band-aid
+            );
           }
         }
         return changeObject;

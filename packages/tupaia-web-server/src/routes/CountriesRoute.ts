@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebCountriesRequest } from '@tupaia/types';
+import { EntityTypeEnum, TupaiaWebCountriesRequest } from '@tupaia/types';
 
 export interface CountriesRequest
   extends Request<
@@ -21,7 +21,7 @@ export class CountriesRoute extends Route<CountriesRequest> {
           // Exclude UNFPA Warehouse from search results
           comparisonValue: 'UW',
         },
-        type: 'country',
+        type: EntityTypeEnum.country,
       },
       {
         columns: ['code', 'name'],

@@ -1,10 +1,11 @@
 import { RequestHandler } from 'express';
-import { UnauthenticatedError } from '@tupaia/utils';
+
 import { AccessPolicy } from '@tupaia/access-policy';
-import { Authenticator, getUserAndPassFromBasicAuth, getJwtToken } from '@tupaia/auth';
+import { Authenticator, getJwtToken, getUserAndPassFromBasicAuth } from '@tupaia/auth';
+import { UserRecord } from '@tupaia/tsmodels';
+import { UnauthenticatedError } from '@tupaia/utils';
 
 import { AccessPolicyObject, ServerBoilerplateModelRegistry } from '../../types';
-import { UserRecord } from '../../models';
 
 const getBearerAccessPolicy = async (authenticator: Authenticator, authHeader: string) => {
   // Use the user account provided in the auth header if present

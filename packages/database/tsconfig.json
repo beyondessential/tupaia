@@ -8,6 +8,6 @@
   ],
   "exclude": [
     "src/__tests__",
-    "src/migrations"
+    "src/core/migrations"
   ]
 }

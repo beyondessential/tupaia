@@ -15,6 +15,7 @@ deployable_packages=(
     psss-server
     psss
     report-server
+    sync-server
     tupaia-web-server
     tupaia-web
     web-config-server

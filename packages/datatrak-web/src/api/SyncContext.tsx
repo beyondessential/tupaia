@@ -1,0 +1,58 @@
+import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+
+import { FullPageLoader } from '@tupaia/ui-components';
+
+import { useDatabaseContext } from '../hooks/database';
+import { ClientSyncManager } from '../sync/ClientSyncManager';
+import { useIsOfflineFirst } from './offlineFirst';
+import { useIsLoggedIn } from './queries/isLoggedIn';
+
+export interface SyncContextType {
+  clientSyncManager: ClientSyncManager | null;
+}
+
+const SyncContext = createContext<SyncContextType | null>(null);
+
+export const SyncProvider = ({ children }: { children: ReactNode }) => {
+  const [clientSyncManager, setClientSyncManager] = useState<ClientSyncManager | null>(null);
+  const queryClient = useQueryClient();
+  const { models } = useDatabaseContext() || {};
+  const isOfflineFirst = useIsOfflineFirst();
+  const { data: isLoggedIn } = useIsLoggedIn();
+
+  useEffect(() => {
+    if (models) {
+      ClientSyncManager.getInstance(models).then(setClientSyncManager);
+    }
+  }, [models]);
+
+  useEffect(() => {
+    if (isLoggedIn && isOfflineFirst && clientSyncManager) {
+      clientSyncManager.startSyncService(queryClient);
+
+      return () => {
+        clientSyncManager.stopSyncService();
+      };
+    }
+  }, [isLoggedIn, isOfflineFirst, clientSyncManager]);
+
+  const value = useMemo(() => ({ clientSyncManager }), [clientSyncManager]);
+
+  if (!value.clientSyncManager && isLoggedIn) {
+    return <FullPageLoader message="Setting up sync…" />;
+  }
+
+  return <SyncContext.Provider value={value}>{children}</SyncContext.Provider>;
+};
+
+export const useSyncContext = (): SyncContextType | null => {
+  const context = useContext(SyncContext);
+  const isOfflineFirst = useIsOfflineFirst();
+
+  if (!context && isOfflineFirst) {
+    throw new Error('useSyncContext must be used within a SyncProvider');
+  }
+
+  return context;
+};

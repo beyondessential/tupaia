@@ -1,62 +1,45 @@
-import { Typography } from '@material-ui/core';
-import { formatRelative } from 'date-fns';
-import { enAU } from 'date-fns/locale';
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import { formatDistance } from 'date-fns';
+import React, { useEffect, useState } from 'react';
+import { useLastSyncTime } from '../../sync/syncStatus';
+import { SyncHeading } from './SyncHeading';
+import { SyncParagraph } from './SyncParagraph';
 
-const Heading = styled(Typography).attrs({ variant: 'h2' })`
-  font-size: inherit;
-  letter-spacing: initial;
-`;
+export function formatLastSuccessfulSyncTime(lastSuccessfulSyncTime: Date | null): React.ReactNode {
+  const formattedTimeString = lastSuccessfulSyncTime
+    ? formatDistance(lastSuccessfulSyncTime, new Date(), { addSuffix: true })
+    : '';
 
-const Paragraph = styled.p`
-  margin-block: 0;
-`;
-
-/**
- * Customising {@link formatRelative} is done on a locale-by-locale basis. Hard-coding a locale
- * isn’t ideal, and the choice of {@link enAU} is arbitrary; but this saves us from trying to
- * figure out what locale date-fns is currently defaulting to.
- *
- * @see https://github.com/search?q=repo%3Adate-fns%2Fdate-fns%20formatrelativelocale&type=code
- */
-const customFormatRelative = (date: Date, baseDate: Date = new Date()): string => {
-  const customMap = {
-    lastWeek: "'last' eeee 'at' p",
-    yesterday: "'yesterday at' p",
-    today: "'today at' p",
-    tomorrow: "'tomorrow at' p",
-    nextWeek: "eeee 'at' p",
-    other: "PPP 'at' p",
-  };
-  const locale = {
-    ...enAU,
-    formatRelative: (token: keyof typeof customMap) => customMap[token],
-  };
-
-  return formatRelative(date, baseDate, {
-    locale,
-    weekStartsOn: 1,
-  });
-};
-
-interface LastSyncDateProps extends HTMLAttributes<HTMLDivElement> {
-  date: Date | null;
+  // Capitalize the first letter
+  return formattedTimeString.length > 0
+    ? formattedTimeString.charAt(0).toUpperCase() + formattedTimeString.slice(1)
+    : formattedTimeString;
 }
 
-export const LastSyncDate = ({ date, ...props }: LastSyncDateProps) => {
+export const LastSyncDate = (props: React.ComponentPropsWithRef<'div'>) => {
+  const lastSyncTime = useLastSyncTime();
+  const [formattedDate, setFormattedDate] = useState<React.ReactNode>(
+    formatLastSuccessfulSyncTime(lastSyncTime),
+  );
+
+  useEffect(() => {
+    // Refresh relatively formatted date
+    const interval = setInterval(
+      () => void setFormattedDate(formatLastSuccessfulSyncTime(lastSyncTime)),
+      1_000,
+    );
+    return () => void clearInterval(interval);
+  }, [lastSyncTime]);
+
   return (
     <div {...props}>
-      <Heading>Last successful sync</Heading>
-      <Paragraph>
-        {date === null ? (
-          'Never'
+      <SyncHeading>Last successful sync</SyncHeading>
+      <SyncParagraph>
+        {lastSyncTime ? (
+          <time dateTime={lastSyncTime.toISOString()}>{formattedDate}</time>
         ) : (
-          <time dateTime={date.toISOString()} title={date.toLocaleString()}>
-            {customFormatRelative(date)}
-          </time>
+          'Never'
         )}
-      </Paragraph>
+      </SyncParagraph>
     </div>
   );
 };

@@ -1,3 +1,5 @@
+import { ValueOf } from '@tupaia/types';
+
 const SURVEY_URL = '/survey/:countryCode/:surveyCode';
 
 const SURVEY_RESUBMIT_BASE_URL = `${SURVEY_URL}/resubmit/:surveyResponseId`;
@@ -5,6 +7,7 @@ const SURVEY_RESUBMIT_BASE_URL = `${SURVEY_URL}/resubmit/:surveyResponseId`;
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
+  LOGOUT: '/logout',
   OFFLINE: '/offline',
   REGISTER: '/register',
   REQUEST_ACCESS: '/request-access',
@@ -33,15 +36,21 @@ export const ROUTES = {
   WELCOME: '/welcome',
   EXPORT_SURVEY_RESPONSE: 'export/:surveyResponseId',
   MOBILE_USER_MENU: '/more',
-};
+} as const;
+
+export type RoutePath = ValueOf<typeof ROUTES>;
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
 export const PRIMARY_ENTITY_CODE_PARAM = 'primaryEntityCode';
 
-export const ADMIN_ONLY_ROUTES = [
+const ADMIN_ONLY_ROUTES = new Set<string>([
   ROUTES.REPORTS,
   ROUTES.SURVEY_RESUBMIT_SCREEN,
   ROUTES.SURVEY_RESUBMIT_REVIEW,
   ROUTES.SURVEY_RESUBMIT_SUCCESS,
   ROUTES.SURVEY_RESUBMIT,
-];
+]);
+
+export function isAdminOnlyRoute(pathname: string) {
+  return ADMIN_ONLY_ROUTES.has(pathname);
+}

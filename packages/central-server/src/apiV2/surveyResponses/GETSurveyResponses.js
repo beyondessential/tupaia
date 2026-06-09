@@ -2,10 +2,6 @@ import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '.
 import { GETHandler } from '../GETHandler';
 import { getQueryOptionsForColumns } from '../GETHandler/helpers';
 import { assertEntityPermissions } from '../entities';
-import {
-  assertSurveyResponsePermissions,
-  createSurveyResponseDBFilter,
-} from './assertSurveyResponsePermissions';
 
 /**
  * Handles endpoints:
@@ -13,9 +9,9 @@ import {
  * - /surveyResponses/:surveyResponseId
  */
 export class GETSurveyResponses extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
-  customJoinConditions = {
+  customJoinConditions = /** @type {const} */ ({
     country: {
       through: 'entity',
       nearTableKey: 'entity.country_code',
@@ -25,22 +21,23 @@ export class GETSurveyResponses extends GETHandler {
       nearTableKey: 'survey_response.entity_id',
       farTableKey: 'entity.id',
     },
-  };
+  });
 
   async findSingleRecord(surveyResponseId, options) {
-    const surveyResponse = await super.findSingleRecord(surveyResponseId, options);
-
-    const surveyResponseChecker = accessPolicy =>
-      assertSurveyResponsePermissions(accessPolicy, this.models, surveyResponseId);
-
+    const surveyResponseChecker = async accessPolicy =>
+      await this.models.surveyResponse.assertCanRead(this.models, accessPolicy, surveyResponseId);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponseChecker]),
     );
-    return surveyResponse;
+    return await super.findSingleRecord(surveyResponseId, options);
   }
 
   async getPermissionsFilter(criteria, options) {
-    return createSurveyResponseDBFilter(this.accessPolicy, this.models, criteria, options);
+    return await this.models.surveyResponse.createRecordsPermissionFilter(
+      this.accessPolicy,
+      criteria,
+      options,
+    );
   }
 
   async getPermissionsViaParentFilter(criteria, options) {
@@ -61,7 +58,7 @@ export class GETSurveyResponses extends GETHandler {
     const columnsInCountQuery = Object.keys(criteria).filter(column => !column.startsWith('_'));
 
     // Always filter by survey permissions and entity permissions for non BES Admin users
-    // See: createSurveyResponseDBFilter
+    // See: surveyResponse.createRecordsPermissionFilter
     if (!hasBESAdminAccess(this.accessPolicy)) {
       columnsInCountQuery.push('entity.id', 'survey.id');
     }

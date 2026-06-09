@@ -19,5 +19,6 @@ export type ReqBody = {
   hiddenValues: string;
   mapOverlayPeriod?: string;
   locale?: string;
+  format?: 'pdf' | 'png';
 };
 export type ReqQuery = Record<string, string>;

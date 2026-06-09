@@ -43,7 +43,7 @@ export class UserRoute extends Route<UserRequest> {
     const projectId = preferences?.project_id;
 
     if (projectId) {
-      userResponse.project = await getProjectById(ctx, projectId);
+      userResponse.project = await getProjectById(this.req, projectId);
     }
 
     return userResponse;

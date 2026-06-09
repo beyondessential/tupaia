@@ -1,0 +1,14 @@
+name: Review Hero Auto-Fix
+on:
+  pull_request:
+    types: [opened, reopened, edited]
+
+permissions:
+  actions: read
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-fix:
+    uses: beyondessential/review-hero/.github/workflows/auto-fix.yml@v1
+    secrets: inherit

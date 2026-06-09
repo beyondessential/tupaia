@@ -1,32 +1,43 @@
+import type { Response as ExpressResponse } from 'express';
 import type { HeadersInit, RequestInit, Response } from 'node-fetch';
 import nodeFetch from 'node-fetch';
 import { stringify } from 'qs';
 
 import { CustomError } from '@tupaia/utils';
-
 import { AuthHandler, QueryParameters } from '../types';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
-type FetchHeaders = HeadersInit & {
-  Authorization: string;
-  'Content-Type'?: string;
-};
+interface FetchConfig extends RequestInit {
+  headers: HeadersInit & {
+    Authorization: string;
+    'Content-Type'?: string;
+    'X-Client-Version'?: string;
+  };
+}
 
-type FetchConfig = RequestInit & {
-  headers: FetchHeaders;
-};
+const DEFAULT_MAX_WAIT_TIME = 120_000; // 120 seconds
 
-const DEFAULT_MAX_WAIT_TIME = 120 * 1000; // 120 seconds in milliseconds
+export interface ApiConnectionOptions {
+  /** Optional headers to send with every API request */
+  headers?: { 'X-Client-Version'?: string };
+}
 
 export class ApiConnection {
   private readonly authHandler: AuthHandler;
 
   private readonly baseUrl: string;
 
-  public constructor(authHandler: AuthHandler, baseUrl: string) {
+  private readonly headerOverrides?: ApiConnectionOptions['headers'];
+
+  public constructor(
+    authHandler: AuthHandler,
+    baseUrl: string,
+    options: ApiConnectionOptions = {},
+  ) {
     this.authHandler = authHandler;
     this.baseUrl = baseUrl;
+    this.headerOverrides = options.headers;
   }
 
   public async get(endpoint: string, queryParameters?: QueryParameters | null) {
@@ -53,7 +64,16 @@ export class ApiConnection {
     return this.request('DELETE', endpoint, queryParameters);
   }
 
-  private async request(
+  public async pipeStream(
+    response: ExpressResponse,
+    endpoint: string,
+    queryParameters?: QueryParameters | null,
+  ) {
+    const fetchedResponse = await this.fetchResponse('GET', endpoint, queryParameters);
+    return fetchedResponse.body.pipe(response);
+  }
+
+  private async fetchResponse(
     requestMethod: string,
     endpoint: string,
     queryParameters?: QueryParameters | null,
@@ -65,13 +85,23 @@ export class ApiConnection {
       headers: {
         Authorization: await this.authHandler.getAuthHeader(),
         'Content-Type': 'application/json',
+        ...this.headerOverrides,
       },
     };
     if (body) {
       fetchConfig.body = JSON.stringify(body);
     }
 
-    const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
+    return this.fetchWithTimeout(queryUrl, fetchConfig);
+  }
+
+  private async request(
+    requestMethod: string,
+    endpoint: string,
+    queryParameters?: QueryParameters | null,
+    body?: RequestBody | null,
+  ) {
+    const response = await this.fetchResponse(requestMethod, endpoint, queryParameters, body);
 
     await this.verifyResponse(response);
 

@@ -12,10 +12,13 @@ import { successToast } from '../../../utils';
 import { renderMutation } from '../../helpers/render';
 
 jest.mock('../../../api/queries', () => {
+  const actual = jest.requireActual('../../../api/queries');
   return {
+    ...actual,
     useUser: jest.fn().mockReturnValue({}),
     useSurvey: jest.fn().mockReturnValue({}),
     useEntityByCode: jest.fn().mockReturnValue({}),
+    useShowCoconutsPigs: jest.fn().mockReturnValue({ showCoconutsPigs: true, isLoading: false }),
   };
 });
 
@@ -93,7 +96,7 @@ afterAll(() => server.close());
 
 describe('useSubmitSurvey', () => {
   it('should call successToast and navigate to the success screen on successful submission of survey', async () => {
-    const { result, waitFor } = renderMutation(useSubmitSurveyResponse);
+    const { result, waitFor } = await renderMutation(useSubmitSurveyResponse);
     act(() => {
       result.current.mutate({
         question1: 'answer1',

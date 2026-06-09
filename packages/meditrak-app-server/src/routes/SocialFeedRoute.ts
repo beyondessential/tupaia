@@ -1,21 +1,27 @@
-import { Request } from 'express';
+import type { Request } from 'express';
+
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
-import { NullableKeysToOptional, FeedItem } from '@tupaia/types';
+import type { FeedItem, FeedItemTypes, NullableKeysToOptional } from '@tupaia/types';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
 
 type ResponseFeedItem = NullableKeysToOptional<
-  Omit<FeedItem, 'creation_date'> & {
-    creation_date?: string;
-  }
->;
+  Omit<FeedItem, 'creation_date' | 'type' | 'updated_at_sync_tick'>
+> & {
+  creation_date?: string;
+  /**
+   * @privateRemarks No feed_item records have type 'leaderboard'. This route returns a
+   * quasi-feed_item that never exists in the database.
+   */
+  type?: FeedItemTypes | 'leaderboard';
+};
 
-type SocialFeedResponse = {
+interface SocialFeedResponse {
   pageNumber: number;
   hasMorePages: boolean;
   items: ResponseFeedItem[];
-};
+}
 
 type SocialFeedQuery = {
   countryId?: string;
@@ -24,12 +30,13 @@ type SocialFeedQuery = {
   numberPerPage?: string;
 };
 
-export type SocialFeedRequest = Request<
-  Record<string, never>,
-  SocialFeedResponse,
-  Record<string, never>,
-  SocialFeedQuery
->;
+export interface SocialFeedRequest
+  extends Request<
+    Record<string, never>,
+    SocialFeedResponse,
+    Record<string, never>,
+    SocialFeedQuery
+  > {}
 
 export class SocialFeedRoute extends Route<SocialFeedRequest> {
   private async getLeaderboardFeedItem() {
@@ -46,7 +53,7 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
         hasPigs: false, // this can be set to true if the meditrak-app table is fixed
         leaderboard,
       },
-    };
+    } as const;
   }
 
   /**

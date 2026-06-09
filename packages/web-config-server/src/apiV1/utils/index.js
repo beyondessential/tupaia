@@ -9,7 +9,7 @@ export {
   translateCategoryCodeToFacilityType,
 } from './facilityTypeTranslation';
 export { getPacificFacilityStatuses } from './getPacificFacilityStatuses';
-export getChildOrganisationUnits from './getChildOrganisationUnits';
+export { default as getChildOrganisationUnits } from './getChildOrganisationUnits';
 export {
   getFacilityStatusCounts,
   getFacilityStatuses,

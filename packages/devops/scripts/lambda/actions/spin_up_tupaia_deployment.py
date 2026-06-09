@@ -70,7 +70,7 @@ def spin_up_tupaia_deployment(event):
         ]
     )
 
-    if len(existing_instances) != 0:
+    if existing_instances:
         raise Exception(
             "A deployment already exists, perhaps you want to redeploy and swap out the existing one? The easiest way is to push a new commit."
         )

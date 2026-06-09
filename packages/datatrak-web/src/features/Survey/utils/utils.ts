@@ -3,18 +3,21 @@ import { SurveyScreen, SurveyScreenComponent } from '../../../types';
 
 const validateSurveyComponent = component => {
   if (component.type === QuestionType.PrimaryEntity && !component.config?.entity?.createNew) {
-    component.validationCriteria = component.validationCriteria ?? {};
-    component.validationCriteria.mandatory = true;
+    (component.validationCriteria ??= {}).mandatory = true;
   }
   return component;
 };
 
-export const READ_ONLY_QUESTION_TYPES = [
-  QuestionType.Condition,
+const READ_ONLY_QUESTION_TYPES = new Set<QuestionType>([
   QuestionType.Arithmetic,
-  QuestionType.Instruction,
   QuestionType.CodeGenerator,
-];
+  QuestionType.Condition,
+  QuestionType.Instruction,
+]);
+
+export function isReadOnlyQuestionType(type: QuestionType): boolean {
+  return READ_ONLY_QUESTION_TYPES.has(type);
+}
 
 export const getSurveyScreenNumber = (screens, screen) => {
   if (!screen) return null;
@@ -35,9 +38,9 @@ export const getSurveyScreenNumber = (screens, screen) => {
 
 export const getAllSurveyComponents = (surveyScreens?: SurveyScreen[]) => {
   return (
-    surveyScreens
-      ?.flatMap(({ surveyScreenComponents }) => surveyScreenComponents)
-      .map(validateSurveyComponent) ?? []
+    surveyScreens?.flatMap(({ surveyScreenComponents }) =>
+      validateSurveyComponent(surveyScreenComponents),
+    ) ?? []
   );
 };
 

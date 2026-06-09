@@ -1,4 +1,4 @@
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'es-toolkit/compat';
 
 import { utcMoment } from '@tupaia/tsutils';
 import { momentToPeriod, convertToPeriod } from '@tupaia/utils';

@@ -6,7 +6,8 @@ const TUPAIA_FRONT_END_URL = requireEnv('TUPAIA_FRONT_END_URL');
 
 export const requestPasswordReset = async (req, res) => {
   const { body, models } = req;
-  const { emailAddress, resetPasswordUrl } = body;
+  const { emailAddress: rawEmailAddress, resetPasswordUrl } = body;
+  const emailAddress = rawEmailAddress?.trim();
 
   await req.assertPermissions(allowNoPermissions);
 
@@ -15,7 +16,7 @@ export const requestPasswordReset = async (req, res) => {
   }
 
   const user = await models.user.findOne({
-    email: emailAddress,
+    email: { comparisonValue: emailAddress, comparator: 'ilike' },
   });
 
   if (!user) {

@@ -54,6 +54,10 @@ const expectMatchingChangeRecords = (
         return obj;
       }
 
+      if (fieldName === 'record' && typeof fieldValue === 'object') {
+        const { updated_at_sync_tick, ...newFieldValue } = fieldValue;
+        return { ...obj, [fieldName]: newFieldValue };
+      }
       return { ...obj, [fieldName]: fieldValue };
     }, {}),
   );
@@ -92,13 +96,13 @@ describe('changes (GET)', () => {
     }
 
     const fields = await (record.model as DatabaseModel).fetchFieldNames();
-    const unsupportedFields = getUnsupportedModelFields(modelName);
+    const ignoredFields = [...getUnsupportedModelFields(modelName), 'updated_at_sync_tick'];
 
     // Supported fields with non-null values
     const cleanedRecordForSync = Object.fromEntries(
       Object.entries(record).filter(
         ([field, value]) =>
-          fields.includes(field) && !unsupportedFields.includes(field) && value !== null,
+          fields.includes(field) && !ignoredFields.includes(field) && value !== null,
       ),
     );
 

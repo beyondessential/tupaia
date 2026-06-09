@@ -25,17 +25,16 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
 
+      - name: Set up Yarn
+        run: |
+          corepack enable yarn
+          corepack install
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-          echo "Using Yarn $(yarn --version)"
 
       - name: Install dependencies
         run: yarn workspaces focus tupaia @tupaia/meditrak-app

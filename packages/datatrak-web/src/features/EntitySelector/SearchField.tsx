@@ -75,6 +75,7 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((p
     invalid,
     required,
     inputProps,
+    label,
     detailLabel,
   } = props;
 
@@ -93,6 +94,7 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((p
       id={id}
       name={name}
       inputRef={ref}
+      label={label}
       required={required}
       onChange={handleChange}
       value={displayValue}

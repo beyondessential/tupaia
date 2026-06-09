@@ -1,7 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { Project, ProjectCountryAccessListRequest } from '@tupaia/types';
+import type { Project, ProjectCountryAccessListRequest } from '@tupaia/types';
+import { useCurrentUserContext, useOnlineQuery } from '..';
 import { get } from '../api';
-import { useCurrentUserContext } from '..';
 
 /**
  * Returns the `UseQueryResult` for the countries the currently logged-in user has access to for the
@@ -11,10 +10,10 @@ export const useCountryAccessList = (projectCode?: Project['code']) => {
   const user = useCurrentUserContext();
   const code = projectCode ?? user?.project?.code;
 
-  return useQuery<ProjectCountryAccessListRequest.ResBody>(
+  return useOnlineQuery<ProjectCountryAccessListRequest.ResBody>(
     ['me/countries', code],
-    () =>
-      get('me/countries', {
+    async () =>
+      await get('me/countries', {
         params: { projectCode: code },
       }),
     {

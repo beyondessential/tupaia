@@ -27,15 +27,14 @@ def stop_tagged_databases(event):
         filter(lambda x: x["DBInstanceStatus"] == "available", tagged_instances)
     )
 
-    if len(available_instances) > 0:
-        instance_ids = list(
-            map(lambda x: x["DBInstanceIdentifier"], available_instances)
-        )
-        for instance_id in instance_ids:
-            stop_db_instance(instance_id)
-
-        print(
-            str(len(available_instances)) + " previously available instances stopping"
-        )
-    else:
+    if not available_instances:
         print("No available instances required stopping")
+        return
+
+    print(
+        f"Stopping {len(available_instances)} previously available database instances"
+    )
+
+    instance_ids = list(map(lambda x: x["DBInstanceIdentifier"], available_instances))
+    for instance_id in instance_ids:
+        stop_db_instance(instance_id)

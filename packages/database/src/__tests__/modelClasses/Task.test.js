@@ -3,9 +3,9 @@ import {
   getTestModels,
   findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
-} from '../../testUtilities';
-import { QUERY_CONJUNCTIONS } from '../../TupaiaDatabase';
-import { generateId } from '../../utilities';
+} from '../../server/testUtilities';
+import { QUERY_CONJUNCTIONS } from '../../core/BaseDatabase';
+import { generateId } from '../../core/utilities';
 
 const resetTestData = async (models, tasks) => {
   await models.task.delete({ id: tasks.map(task => task.id) });

@@ -73,7 +73,7 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions)
 
   const fullHtml = compileHtml({ templateName, templateContext, signOff });
 
-  return transporter.sendMail({
+  return await transporter.sendMail({
     from: `Tupaia <${SITE_EMAIL_ADDRESS}>`,
     sender: SITE_EMAIL_ADDRESS,
     to: sendTo,

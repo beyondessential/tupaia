@@ -2,13 +2,13 @@ import React, { useCallback, useMemo } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { isNotNullish, isNullish } from '@tupaia/tsutils';
 import { DatatrakWebTasksRequest } from '@tupaia/types';
 import { FilterableTableProps } from '@tupaia/ui-components';
-
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { UseTasksQueryParams } from '../../../api/queries/useTasks';
 import { TaskStatusType } from '../../../types';
-import { displayDate, isNotNullish, isNullish, useIsMobile } from '../../../utils';
+import { displayDate, useIsMobile } from '../../../utils';
 import { CommentsCount } from '../CommentsCount';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusDot, StatusPill } from '../StatusPill';

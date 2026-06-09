@@ -23,7 +23,7 @@ export const assertGeographicalAreaPermissions = async (
 };
 
 export class GETGeographicalAreas extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(geographicalAreaId, options) {
     const geographicalAreaPermissionChecker = accessPolicy =>

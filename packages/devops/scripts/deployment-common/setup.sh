@@ -123,16 +123,26 @@ install_tailscale() {
 }
 install_tailscale
 
-# install node and yarn
-if ! command -v node &>/dev/null; then
+# Install nvm
+if ! command -v nvm &>/dev/null; then
   echo 'nvm not installed. Installing...'
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-  nvm install $(sudo cat "$TUPAIA_DIR/.nvmrc")
-  npm install --global yarn
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 fi
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 echo "nvm $(nvm --version) is installed"
+
+# Install Node using nvm
+if ! command -v node &>/dev/null; then
+  echo 'Node.js not installed. Installing...'
+  nvm install $(sudo cat "$TUPAIA_DIR/.nvmrc")
+fi
+echo "Node.js $(node --version) is installed"
+echo "Using Node.js $(nvm current) ($(nvm which current))"
+
+# Enable Yarn
+corepack enable yarn
+echo "Using Yarn $(yarn --version) ($(which yarn))"
 
 # Install PM2, ensuring same version as root package.json
 if ! command -v pm2 &>/dev/null; then

@@ -1,5 +1,5 @@
 import { endOfToday } from 'date-fns';
-import React from 'react';
+import React, { ChangeEventHandler } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
@@ -118,16 +118,15 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   } = formContext;
 
   const handleCountriesError = async (error: any) => {
+    // TODO: No longer work for offline
     if (error?.code !== 403) return;
     // in this case it is a permissions error, so the user needs to be redirected to the project screen after the user's project is updated
     editUser({ projectId: null });
   };
 
   const {
-    countries,
-    selectedCountry,
-    updateSelectedCountry,
-    isLoading: isLoadingCountries,
+    queryResult: { data: countries, isLoading: isLoadingCountries },
+    state: [selectedCountry, updateSelectedCountry],
   } = useUserCountries({ onError: handleCountriesError });
   const { isLoading: isLoadingUser, isFetching: isFetchingUser } = useUser();
 
@@ -157,8 +156,8 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     },
   ];
 
-  const onChangeCountry = event => {
-    updateSelectedCountry(event);
+  const onChangeCountry: ChangeEventHandler<HTMLSelectElement> = event => {
+    updateSelectedCountry(event.target.value);
 
     if (dirtyFields.survey_code) {
       setValue('survey_code', null, { shouldValidate: true });

@@ -7,10 +7,9 @@ import {
   ListItemText,
   SelectProps,
   Slide,
-  useTheme,
 } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
-import { ChevronRight, Check } from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
 import React, {
   ChangeEventHandler,
   ComponentPropsWithoutRef,
@@ -116,6 +115,10 @@ const StyledListItem = styled(ListItem).attrs({
   &.MuiListItem-root.Mui-selected:hover {
     background-color: revert;
   }
+
+  .lucide {
+    color: ${props => props.theme.palette.primary.main};
+  }
 `;
 const StyledListItemText = styled(ListItemText).attrs({ disableTypography: true })`
   display: contents;
@@ -124,12 +127,11 @@ const StyledListItemText = styled(ListItemText).attrs({ disableTypography: true 
 interface SelectItemProps
   extends Required<SelectOption>,
     ComponentPropsWithoutRef<typeof StyledListItem> {}
+
 const SelectItem = ({ label, value, ...listItemProps }: SelectItemProps) => (
   <StyledListItem {...listItemProps}>
     <StyledListItemText primary={label} />
-    {listItemProps.selected && (
-      <Check color={useTheme().palette.primary.main} width={24} height={24} />
-    )}
+    {listItemProps.selected && <Check width={24} height={24} />}
   </StyledListItem>
 );
 
@@ -167,6 +169,7 @@ export const FullScreenSelect = ({
     return (
       <SelectItem
         aria-selected={isSelected}
+        component="li"
         key={optionValue}
         label={option.label}
         onClick={e => {

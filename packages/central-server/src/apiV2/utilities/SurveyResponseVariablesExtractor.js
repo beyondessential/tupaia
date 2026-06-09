@@ -1,4 +1,7 @@
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { ValidationError } from '@tupaia/utils';
+
+const { AND, OR } = QUERY_CONJUNCTIONS;
 
 /**
  * A function that extracts `country`, `countryId`, 'entities', 'surveyResponse' and 'surveys' from a database
@@ -64,6 +67,15 @@ export class SurveyResponseVariablesExtractor {
   }
 
   async getSurveys(surveyId, surveyCodes, countryId) {
+    const isEnabledInCountryFilter = countryId
+      ? {
+          country_ids: '{}', // empty country_ids means enabled in all countries
+          [OR]: {
+            country_ids: { comparator: '@>', comparisonValue: [countryId] },
+          },
+        }
+      : { country_ids: '{}' };
+
     let surveys;
     if (surveyId) {
       // A surveyId of interest passed in, only export that
@@ -78,22 +90,12 @@ export class SurveyResponseVariablesExtractor {
         },
       };
       if (countryId) {
-        // Fetch surveys where country_ids is empty (enabled in all countries) or contains countryId
-        // eslint-disable-next-line no-underscore-dangle
-        surveyFindConditions._and_ = {
-          country_ids: '{}',
-          _or_: {
-            country_ids: { comparator: '@>', comparisonValue: [countryId] },
-          },
-        };
+        surveyFindConditions[AND] = isEnabledInCountryFilter;
       }
       surveys = await this.models.survey.find(surveyFindConditions);
     } else {
       // No specific surveyId passed in, so export all surveys that apply to this country
-      const allSurveys = await this.models.survey.all();
-      surveys = allSurveys.filter(
-        survey => survey.country_ids.length === 0 || survey.country_ids.includes(countryId),
-      );
+      surveys = await this.models.survey.find(isEnabledInCountryFilter);
     }
     if (!surveys || surveys.length < 1) {
       throw new ValidationError('Survey not found. Please check permissions');

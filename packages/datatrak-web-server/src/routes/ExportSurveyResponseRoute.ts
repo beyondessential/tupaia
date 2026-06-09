@@ -30,12 +30,12 @@ export class ExportSurveyResponseRoute extends Route<ExportSurveyResponseRequest
       throw new Error('Must have a valid session to export a dashboard');
     }
 
-    const pdfPageUrl = `${baseUrl}/export/${surveyResponseId}?locale=${locale}`;
+    const pageUrl = `${baseUrl}/export/${surveyResponseId}?locale=${locale}`;
 
     const buffer = await downloadPageAsPdf({
       cookieDomain,
       includePageNumber: true,
-      pdfPageUrl,
+      pageUrl,
       timezone,
       userCookie: cookie,
     });

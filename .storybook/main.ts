@@ -48,12 +48,14 @@ const config: StorybookConfig = {
       resolve: {
         preserveSymlinks: true, // use the yarn workspace symlinks
         alias: {
-          http: path.resolve(__dirname, '../moduleMock.js'),
-          winston: path.resolve(__dirname, '../moduleMock.js'),
-          jsonwebtoken: path.resolve(__dirname, '../moduleMock.js'),
-          'node-fetch': path.resolve(__dirname, '../moduleMock.js'),
+          http: path.resolve(__dirname, '../mock/moduleMock.js'),
+          winston: path.resolve(__dirname, '../mock/moduleMock.js'),
+          jsonwebtoken: path.resolve(__dirname, '../mock/moduleMock.js'),
+          'node-fetch': path.resolve(__dirname, '../mock/moduleMock.js'),
           // This is a workaround for us using react-16 in the monorepo
           '@storybook/react-dom-shim': '@storybook/react-dom-shim/dist/react-16',
+          'pg-pubsub': path.resolve(__dirname, '../mock/moduleMock.js'),
+          '@node-rs/argon2': path.resolve(__dirname, '../mock/argon2ModuleMock.js'),
         },
       },
     });

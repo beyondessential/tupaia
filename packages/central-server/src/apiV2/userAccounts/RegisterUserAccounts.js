@@ -1,15 +1,15 @@
 import {
+  ConflictError,
   FormValidationError,
-  UnauthenticatedError,
   ObjectValidator,
-  hasNoAlphaLetters,
   fieldHasContent,
+  hasNoAlphaLetters,
   isEmail,
   isValidPassword,
 } from '@tupaia/utils';
-import { CreateUserAccounts } from './CreateUserAccounts';
-import { sendEmailVerification } from '../utilities/emailVerification';
 import { allowNoPermissions } from '../../permissions';
+import { sendEmailVerification } from '../utilities/emailVerification';
+import { CreateUserAccounts } from './CreateUserAccounts';
 
 /**
  * Handles POST endpoint for registering user:
@@ -50,11 +50,11 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       throw new FormValidationError(error.message, ['password', 'passwordConfirm']);
     }
 
-    const existingUsers = await this.models.user.find({
+    const exists = await this.models.user.exists({
       email: { comparisonValue: emailAddress, comparator: 'ilike' },
     });
-    if (existingUsers.length > 0) {
-      throw new UnauthenticatedError(
+    if (exists) {
+      throw new ConflictError(
         'An account already exists with this email. Please log in or click ’Forgot password?‘ if you have forgotten your password',
       );
     }
@@ -87,7 +87,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
 
     const { id: userId } = await this.createUserRecord(this.models, userData);
 
-    const user = await this.models.user.findById(userId);
+    const user = await this.models.user.findByIdOrThrow(userId);
     await sendEmailVerification(user);
 
     return { userId };

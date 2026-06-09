@@ -33,7 +33,7 @@ export class AuthConnection extends ApiConnection {
   public async login(
     { emailAddress, password, deviceName, timezone }: Credentials,
     serverName: string = DEFAULT_NAME,
-    ip: string,
+    ip?: string,
   ) {
     const response = await this.post(
       'auth',

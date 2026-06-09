@@ -1,10 +1,9 @@
 import xlsx from 'xlsx';
 
-import { mapKeys, respond, WorkBookParser, UploadError } from '@tupaia/utils';
+import { mapKeys, respond, UploadError, WorkBookParser } from '@tupaia/utils';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import { SurveyResponseImporter } from '../../utilities';
 import SURVEYS from './surveys.json';
-import { assertCanImportSurveyResponses } from '../importSurveyResponses/assertCanImportSurveyResponses';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 
 const ENTITY_CODE_KEY = 'entityCode';
 const SURVEY_NAMES = Object.keys(SURVEYS);
@@ -87,7 +86,7 @@ export const importStriveLabResults = async (req, res) => {
   const entitiesGroupedBySurveyCode = await getEntitiesGroupedBySurveyCode(models, inputsPerSurvey);
 
   const importSurveyResponsePermissionsChecker = async accessPolicy => {
-    await assertCanImportSurveyResponses(accessPolicy, models, entitiesGroupedBySurveyCode);
+    await models.surveyResponse.assertCanImport(models, accessPolicy, entitiesGroupedBySurveyCode);
   };
 
   await req.assertPermissions(

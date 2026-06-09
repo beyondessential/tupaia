@@ -54,7 +54,7 @@ export const EmailVerificationModal = () => {
     },
   );
 
-  if (status === STATUS.SUCCESS) return <Success>Your e-mail was successfully verified</Success>;
+  if (status === STATUS.SUCCESS) return <Success>Your email was successfully verified</Success>;
   if (status === STATUS.ERROR) return <Error>Your email address could not be verified</Error>;
   return null;
 };

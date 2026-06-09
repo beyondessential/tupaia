@@ -1,23 +1,21 @@
-import express, { Express, NextFunction, Request, Response, RequestHandler } from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import type { Express, NextFunction, Request, RequestHandler, Response } from 'express';
+import express from 'express';
 // @ts-expect-error no types
 import morgan from 'morgan';
-import {
-  AuthHandler,
-  getBaseUrlsForHost,
-  LOCALHOST_BASE_URLS,
-  TupaiaApiClient,
-} from '@tupaia/api-client';
+
+import type { ApiConnectionOptions, AuthHandler } from '@tupaia/api-client';
+import { getBaseUrlsForHost, LOCALHOST_BASE_URLS, TupaiaApiClient } from '@tupaia/api-client';
 import { Authenticator } from '@tupaia/auth';
-import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import { handleWith, handleError, initialiseApiClient } from '../../utils';
-import { buildBasicBearerAuthMiddleware } from '../auth';
+import { ModelRegistry, type TupaiaDatabase } from '@tupaia/database';
 import { TestRoute } from '../../routes';
-import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
+import type { ExpressRequest, Params, Query, ReqBody, ResBody } from '../../routes/Route';
+import type { ServerBoilerplateModelRegistry } from '../../types';
+import { handleError, handleWith, initialiseApiClient } from '../../utils';
+import { buildBasicBearerAuthMiddleware } from '../auth';
 import { logApiRequest } from '../utils';
-import { ServerBoilerplateModelRegistry } from '../../types';
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -49,12 +47,13 @@ export class ApiBuilder {
       cors({
         origin: true,
         credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
-      }),
+      }) as RequestHandler,
     );
     // @ts-ignore
     // We were previously missing a dev dependency so this TS error never cropped up. This should be
     // tidied up eventually, but leaving for now. (It hasn’t been an issue, yet, for 4+ years)
     this.app.use(bodyParser.json({ limit: '50mb' }));
+    // @ts-ignore Same as above
     this.app.use(errorHandler());
 
     /**
@@ -83,12 +82,22 @@ export class ApiBuilder {
     return this;
   }
 
-  public attachApiClientToContext(authHandlerProvider: (req: Request) => AuthHandler) {
+  public attachApiClientToContext({
+    authHandlerProvider,
+    apiConnectionOptionsProvider,
+  }: {
+    authHandlerProvider: (req: Request) => AuthHandler;
+    apiConnectionOptionsProvider?: (req: Request) => ApiConnectionOptions;
+  }) {
     return this.use('*', (req, res, next) => {
       try {
         const baseUrls =
           process.env.NODE_ENV === 'test' ? LOCALHOST_BASE_URLS : getBaseUrlsForHost(req.hostname);
-        const apiClient = new TupaiaApiClient(authHandlerProvider(req), baseUrls);
+        const apiClient = new TupaiaApiClient(
+          authHandlerProvider(req),
+          baseUrls,
+          apiConnectionOptionsProvider?.(req),
+        );
         req.ctx.services = apiClient;
         res.ctx.services = apiClient;
         next();
@@ -113,6 +122,12 @@ export class ApiBuilder {
     return this;
   }
 
+  // To add a custom middleware without a path
+  public useMiddleware<T extends ExpressRequest<T> = Request>(middleware: RequestHandler) {
+    this.app.use(middleware);
+    return this;
+  }
+
   public get<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
@@ -125,6 +140,20 @@ export class ApiBuilder {
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     return this.addRoute('post', path, ...handlers);
+  }
+
+  public put<T extends ExpressRequest<T> = Request>(
+    path: string,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
+  ) {
+    return this.addRoute('put', path, ...handlers);
+  }
+
+  public delete<T extends ExpressRequest<T> = Request>(
+    path: string,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
+  ) {
+    return this.addRoute('delete', path, ...handlers);
   }
 
   private addRoute<T extends ExpressRequest<T> = Request>(

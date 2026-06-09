@@ -10,7 +10,7 @@ import {
  * - /legacyReports/:legacyReportId
  */
 export class GETLegacyReports extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(dashboardItemId, options) {
     const dashboardItem = await super.findSingleRecord(dashboardItemId, options);

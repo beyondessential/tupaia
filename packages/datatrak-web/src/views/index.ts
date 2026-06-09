@@ -2,6 +2,7 @@ export { LandingPage } from './LandingPage';
 export { SurveyPage } from './SurveyPage';
 export { SurveySelectPage } from './SurveySelectPage/SurveySelectPage.tsx';
 export { LoginPage } from './LoginPage';
+export { LogoutPage } from './LogoutPage';
 export { RegisterPage } from './RegisterPage';
 export { VerifyEmailResendPage } from './VerifyEmailResendPage';
 export { VerifyEmailPage } from './VerifyEmailPage';

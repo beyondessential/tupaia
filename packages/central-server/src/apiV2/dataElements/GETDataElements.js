@@ -8,7 +8,7 @@ import {
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 export class GETDataElements extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async findSingleRecord(dataElementId, options) {
     const dataElementPermissionChecker = accessPolicy =>

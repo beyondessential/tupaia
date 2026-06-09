@@ -9,7 +9,7 @@ import { mergeFilter } from '../utilities';
 import { assertEntityHierarchyAdminPermissions } from './assertEntityHierarchyPermissions';
 
 export class GETEntityHierarchy extends GETHandler {
-  permissionsFilteredInternally = true;
+  permissionsFilteredInternally = /** @type {const} */ (true);
 
   async assertUserHasAccess() {
     // If this is a single record request, check the user has access to the entity hierarchy

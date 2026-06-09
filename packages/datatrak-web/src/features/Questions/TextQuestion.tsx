@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { SurveyQuestionInputProps } from '../../types';
-import { TextInput, InputHelperText } from '../../components';
+
+import { InputHelperText, TextInput } from '../../components';
 import { DESKTOP_BREAKPOINT } from '../../constants';
-import { useSurveyForm } from '..';
+import { SurveyQuestionInputProps } from '../../types';
+import { useIsReviewScreen } from '../Survey';
 
 const Wrapper = styled.div<{
   $type?: string;
@@ -45,7 +46,7 @@ export const TextQuestion = ({
   max,
   controllerProps: { onChange, value = '', ref, invalid },
 }: SurveyQuestionInputProps) => {
-  const { isReviewScreen } = useSurveyForm();
+  const isReviewScreen = useIsReviewScreen();
   const placeholder = isReviewScreen ? '' : 'Enter your answer here';
   return (
     <Wrapper $type={type}>

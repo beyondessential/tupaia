@@ -17,7 +17,9 @@ import {
  */
 export function createApp(database = new TupaiaDatabase()) {
   const app = new MicroServiceApiBuilder(database, 'data-table')
-    .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
+    .attachApiClientToContext({
+      authHandlerProvider: req => new ForwardingAuthHandler(req.headers.authorization),
+    })
     .useBasicBearerAuth()
     // Use POST for this route as we often need to pass long query arguments
     .post<FetchDataRequest>(

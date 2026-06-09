@@ -1,4 +1,4 @@
-export { downloadPageAsPdf } from './downloadPageAsPdf';
+export { downloadPageAsPdf, downloadPageAsImage } from './downloadPageAsPdf';
 export * from './s3';
 export { sendEmail } from './email';
 export { generateUnsubscribeToken, verifyUnsubscribeToken } from './unsubscribeToken';
@@ -6,3 +6,7 @@ export { configureDotEnv } from './configureDotEnv';
 export { constructExportEmail } from './constructExportEmail';
 export { getTempDirectory } from './getTempDirectory';
 export { getExportPathForUser } from './getExportPathForUser';
+export * from './files';
+export * from './ScheduledTask';
+export { objectIdToTimestamp } from './objectIdToTimestamp';
+export * from './StreamMessage';

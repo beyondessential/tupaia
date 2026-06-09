@@ -29,7 +29,7 @@ import { checkAppVersion } from '../middleware';
 export function createApp(database = new TupaiaDatabase()) {
   const authMiddleware = buildAuthMiddleware(database);
   const builder = new MicroServiceApiBuilder(database, 'meditrak')
-    .attachApiClientToContext(authHandlerProvider)
+    .attachApiClientToContext({ authHandlerProvider })
     .use('*', checkAppVersion)
     .post<AuthRequest>('auth', handleWith(AuthRoute))
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))

@@ -6,7 +6,7 @@ import { checkIsImportResponse } from './responseUtils';
 import { stringifyDhisQuery } from './stringifyDhisQuery';
 import { DHIS2_RESOURCE_TYPES } from './types';
 
-const CACHEABLE_ENDPOINTS = [
+const CACHEABLE_ENDPOINTS = new Set([
   DHIS2_RESOURCE_TYPES.PROGRAM,
   DHIS2_RESOURCE_TYPES.ORGANISATION_UNIT,
   DHIS2_RESOURCE_TYPES.ORGANISATION_UNIT_GROUP,
@@ -18,11 +18,11 @@ const CACHEABLE_ENDPOINTS = [
   DHIS2_RESOURCE_TYPES.TRACKED_ENTITY_ATTRIBUTE,
   DHIS2_RESOURCE_TYPES.TRACKED_ENTITY_INSTANCE,
   DHIS2_RESOURCE_TYPES.TRACKED_ENTITY_TYPE,
-];
+]);
 // Don't cache data if endpoint not listed as cacheable (e.g. /analytics, /events, etc.) or if it is
 // for a modifying http method, e.g. POST
 const getIsCacheable = (endpoint, httpMethod) =>
-  CACHEABLE_ENDPOINTS.includes(endpoint) && httpMethod === 'GET';
+  CACHEABLE_ENDPOINTS.has(endpoint) && httpMethod === 'GET';
 
 const MAX_FETCH_WAIT_TIME = 120 * 1000; // 120 seconds allows longer running DHIS fetches to succeed
 

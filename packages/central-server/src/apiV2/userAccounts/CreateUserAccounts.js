@@ -1,5 +1,5 @@
 import { encryptPassword, generateSecretKey } from '@tupaia/auth';
-import { PermissionsError, ValidationError } from '@tupaia/utils';
+import { PermissionsError } from '@tupaia/utils';
 
 import {
   assertAdminPanelAccess,
@@ -20,7 +20,7 @@ export class CreateUserAccounts extends CreateHandler {
   }
 
   async createRecord() {
-    return this.models.wrapInTransaction(async transactingModels => {
+    return await this.models.wrapInTransaction(async transactingModels => {
       const {
         countryName,
         permissionGroupName,
@@ -51,16 +51,9 @@ export class CreateUserAccounts extends CreateHandler {
 
   async createUserPermission(transactingModels, { userId, countryName, permissionGroupName }) {
     const [permissionGroup, country] = await Promise.all([
-      transactingModels.permissionGroup.findOne({ name: permissionGroupName }),
-      transactingModels.entity.findOne({ name: countryName, type: 'country' }),
+      transactingModels.permissionGroup.findOneOrThrow({ name: permissionGroupName }),
+      transactingModels.entity.findOneOrThrow({ name: countryName, type: 'country' }),
     ]);
-
-    if (!permissionGroup) {
-      throw new ValidationError(`No such permission group: ${permissionGroupName}`);
-    }
-    if (!country) {
-      throw new ValidationError(`No such country: ${countryName}`);
-    }
 
     const countryPermissionChecker = async accessPolicy => {
       await assertAdminPanelAccessToCountry(accessPolicy, transactingModels, country.id);
@@ -73,7 +66,7 @@ export class CreateUserAccounts extends CreateHandler {
       assertAnyPermissions([assertBESAdminAccess, countryPermissionChecker]),
     );
 
-    return transactingModels.userEntityPermission.findOrCreate({
+    return await transactingModels.userEntityPermission.findOrCreate({
       user_id: userId,
       entity_id: country.id,
       permission_group_id: permissionGroup.id,
@@ -95,7 +88,7 @@ export class CreateUserAccounts extends CreateHandler {
   ) {
     const passwordHash = await encryptPassword(password);
 
-    return transactingModels.user.create({
+    return await transactingModels.user.create({
       first_name: firstName,
       last_name: lastName,
       email: emailAddress,

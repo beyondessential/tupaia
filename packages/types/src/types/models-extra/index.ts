@@ -3,11 +3,17 @@ export {
   PlaintextReferenceProps,
   LinkReferenceProps,
   EntityAttributes,
+  EntityMetadata,
   DateOffsetSpec,
   VizPeriodGranularity,
   DashboardItemType,
+  DataElementConfig,
+  DataServiceEntityConfig,
+  OptionAttributes,
+  SupersetInstanceConfig,
 } from './common';
 export type {
+  AliasTransform,
   ReportConfig,
   StandardReportConfig,
   CustomReportConfig,
@@ -20,6 +26,7 @@ export type {
   ChartReport,
   DashboardItemReport,
   ChartData,
+  Transform,
 } from './report';
 export {
   isBarChartConfig,
@@ -112,3 +119,4 @@ export { UserAccountPreferences } from './user';
 export { ProjectConfig } from './project';
 export { RepeatSchedule, TaskCommentTemplateVariables, SystemCommentSubType } from './task';
 export { EntityType } from './entityType';
+export { SyncSessionInfo } from './sync';

@@ -11,9 +11,9 @@ import {
   CurrentUserContextType,
   useCurrentUserContext,
   useProjectEntities,
-  useProjectSurveys,
   useProjectUsersQuery,
 } from '../../../api';
+import { useSurveysQuery } from '../../../api/queries/useSurveysQuery';
 import { Button } from '../../../components';
 import { Modal, ModalBody, ModalCloseButton } from '../../../components/Modal';
 import { MobileAutocomplete, MobileAutocompleteProps } from './MobileAutocomplete';
@@ -290,7 +290,7 @@ export const MobileTaskFilters = ({
         {tabValue === 0 && (
           <Filter
             fetchFunction={(user, search) =>
-              useProjectSurveys(user.projectId, { searchTerm: search })
+              useSurveysQuery({ projectId: user.projectId, searchTerm: search })
             }
             filterKey="survey.id"
             onChange={handleChangeFilters}

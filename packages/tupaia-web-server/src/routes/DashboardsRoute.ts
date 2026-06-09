@@ -33,7 +33,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     staticDashboardItemCode: string,
   ) => {
     const { models } = this.req;
-    const noDataItem = await models.dashboardItem.findOne({
+    const noDataItem = await models.dashboardItem.findOneOrThrow({
       code: staticDashboardItemCode,
     });
 

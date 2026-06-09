@@ -1,7 +1,10 @@
 import { QueryConjunctions, EntityFilter, EntityFilterFields } from '@tupaia/server-boilerplate';
-import { NumericKeys } from '@tupaia/types';
+import {
+  OPERATORS_THAT_TREAT_COMMA_AS_LITERAL,
+  type EntityFilterOperator,
+} from '@tupaia/tsmodels';
+import { NumericKeys, Writable } from '@tupaia/types';
 import { getSortByKey } from '@tupaia/utils';
-import { Writable } from '../../../types';
 
 const CLAUSE_DELIMITER = ';';
 const JSONB_FIELD_DELIMITER = '->>';
@@ -17,7 +20,7 @@ type NotNullValues<T> = {
 
 type ExtractArrays<T> = T extends unknown[] ? T : never;
 
-const filterableFields: (keyof EntityFilterQuery)[] = [
+const filterableFields = new Set([
   'id',
   'code',
   'country_code',
@@ -26,11 +29,12 @@ const filterableFields: (keyof EntityFilterQuery)[] = [
   'type',
   'generational_distance',
   'attributes',
-];
-const isFilterableField = (field: string): field is keyof EntityFilterQuery =>
-  (filterableFields as string[]).includes(field);
+] satisfies (keyof EntityFilterQuery)[]);
 
-const numericFields: (keyof NumericFilterQueryFields)[] = ['generational_distance'];
+const isFilterableField = (field: string): field is keyof EntityFilterQuery =>
+  (filterableFields as Set<string>).has(field);
+
+const numericFields = ['generational_distance'] satisfies (keyof NumericFilterQueryFields)[];
 const isNumericField = (field: keyof EntityFilterQuery): field is keyof NumericFilterQueryFields =>
   (numericFields as (keyof EntityFilterQuery)[]).includes(field);
 
@@ -75,11 +79,13 @@ const convertValueToAdvancedCriteria = (
   operator: Operator,
   value: string,
 ) => {
-  const formattedValue = value.includes(MULTIPLE_VALUES_DELIMITER)
-    ? (value
-        .split(MULTIPLE_VALUES_DELIMITER)
-        .map(val => formatValue(field, val)) as ExtractArrays<Value>)
-    : formatValue(field, value);
+  const formattedValue =
+    value.includes(MULTIPLE_VALUES_DELIMITER) &&
+    !OPERATORS_THAT_TREAT_COMMA_AS_LITERAL.has(operator as EntityFilterOperator)
+      ? (value
+          .split(MULTIPLE_VALUES_DELIMITER)
+          .map(val => formatValue(field, val)) as ExtractArrays<Value>)
+      : formatValue(field, value);
 
   // For equal operator, we do not need to specify comparison object.
   if (operator === '==') {

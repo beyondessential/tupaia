@@ -2,7 +2,7 @@
  * Remove 'id' field and empty fields
  */
 export const filterItemFields = (items: Record<string, any>[]) =>
-  items.map(({ id, template_variables, ...restOfItem }) => {
+  items.map(({ id, template_variables, updated_at_sync_tick, ...restOfItem }) => {
     const fieldsWithValues = Object.fromEntries(
       Object.entries(restOfItem).filter(([, value]) => value !== null),
     );

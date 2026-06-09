@@ -1,11 +1,7 @@
 import { RECORDS } from '@tupaia/database';
 import { ensure } from '@tupaia/tsutils';
 import { hasBESAdminAccess } from '../../permissions';
-import {
-  assertSurveyEditPermissions,
-  assertSurveyGetPermissions,
-  createSurveyDBFilter,
-} from '../surveys/assertSurveyPermissions';
+import { assertSurveyEditPermissions } from '../surveys/assertSurveyPermissions';
 import { mergeFilter, mergeMultiJoin } from '../utilities';
 
 export const assertSurveyScreenComponentGetPermissions = async (
@@ -18,7 +14,7 @@ export const assertSurveyScreenComponentGetPermissions = async (
     `No survey screen component exists with ID ${surveyScreenComponentId}`,
   );
   const surveyId = await surveyScreenComponent.surveyId();
-  return assertSurveyGetPermissions(accessPolicy, models, surveyId);
+  return await models.survey.assertCanRead(accessPolicy, surveyId);
 };
 
 export const assertSurveyScreenComponentEditPermissions = async (
@@ -48,7 +44,7 @@ export const createSurveyScreenComponentDBFilter = async (
     dbConditions['survey_screen.survey_id'] = surveyId;
   } else if (!hasBESAdminAccess(accessPolicy)) {
     // If we have BES admin, don't bother filtering by survey
-    const surveyConditions = await createSurveyDBFilter(accessPolicy, models);
+    const surveyConditions = await models.survey.createRecordsPermissionFilter(accessPolicy);
     const permittedSurveys = await models.survey.find(surveyConditions);
     const permittedSurveyIds = permittedSurveys.map(s => s.id);
     dbConditions['survey_screen.survey_id'] = mergeFilter(

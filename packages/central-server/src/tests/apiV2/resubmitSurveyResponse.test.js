@@ -1,6 +1,8 @@
 import { expect } from 'chai';
-import { buildAndInsertSurveys, generateId, buildAndInsertSurveyResponses } from '@tupaia/database';
-import { expectSuccess, TestableApp, upsertEntity } from '../testUtilities';
+
+import { buildAndInsertSurveyResponses, buildAndInsertSurveys, generateId } from '@tupaia/database';
+import { EntityTypeEnum, QuestionType } from '@tupaia/types';
+import { TestableApp, expectSuccess, upsertEntity } from '../testUtilities';
 
 const ENTITY_ID = generateId();
 
@@ -18,7 +20,7 @@ describe('resubmit surveyResponse endpoint', () => {
     await upsertEntity({
       id: ENTITY_ID,
       code: ENTITY_ID,
-      type: 'facility',
+      type: EntityTypeEnum.facility,
     });
 
     const [{ survey }] = await buildAndInsertSurveys(models, [
@@ -26,20 +28,20 @@ describe('resubmit surveyResponse endpoint', () => {
         id: surveyId,
         code: 'TEST_SURVEY_RESP_CRUD',
         questions: [
-          { code: questionCode(1), type: 'FreeText' },
-          { code: questionCode(2), type: 'FreeText' },
-          { code: questionCode(3), type: 'FreeText' },
-          { code: questionCode('Autocomplete'), type: 'Autocomplete' },
-          { code: questionCode('Binary'), type: 'Binary' },
-          { code: questionCode('Date'), type: 'Date' },
-          { code: questionCode('FreeText'), type: 'FreeText' },
-          { code: questionCode('Geolocate'), type: 'Geolocate' },
-          { code: questionCode('Instruction'), type: 'Instruction' },
-          { code: questionCode('Number'), type: 'Number' },
-          { code: questionCode('Photo'), type: 'Photo' },
-          { code: questionCode('Radio'), type: 'Radio', options: ['RadioA', 'RadioB'] },
-          { code: questionCode('SubmissionDate'), type: 'SubmissionDate' },
-          { code: questionCode('DateOfData'), type: 'DateOfData' },
+          { code: questionCode(1), type: QuestionType.FreeText },
+          { code: questionCode(2), type: QuestionType.FreeText },
+          { code: questionCode(3), type: QuestionType.FreeText },
+          { code: questionCode('Autocomplete'), type: QuestionType.Autocomplete },
+          { code: questionCode('Binary'), type: QuestionType.Binary },
+          { code: questionCode('Date'), type: QuestionType.Date },
+          { code: questionCode('FreeText'), type: QuestionType.FreeText },
+          { code: questionCode('Geolocate'), type: QuestionType.Geolocate },
+          { code: questionCode('Instruction'), type: QuestionType.Instruction },
+          { code: questionCode('Number'), type: QuestionType.Number },
+          { code: questionCode('Photo'), type: QuestionType.Photo },
+          { code: questionCode('Radio'), type: QuestionType.Radio, options: ['RadioA', 'RadioB'] },
+          { code: questionCode('SubmissionDate'), type: QuestionType.SubmissionDate },
+          { code: questionCode('DateOfData'), type: QuestionType.DateOfData },
         ],
       },
     ]);

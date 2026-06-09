@@ -1,5 +1,6 @@
 import boto3
 from helpers.networking import (
+    GatewayNotFoundError,
     build_record_set_deletion,
     delete_gateway,
     get_gateway_elb,
@@ -27,36 +28,41 @@ def delete_route53_record_sets(deployment_name, record_set_deletions):
         for deletion in record_set_deletions
         if deletion["ResourceRecordSet"]["Name"] in all_record_set_names
     ]
-    print("Generated {} record set changes".format(len(record_set_deletions)))
-    if len(valid_record_set_deletions) > 0:
-        route53.change_resource_record_sets(
-            HostedZoneId=hosted_zone_id,
-            ChangeBatch={
-                "Comment": "Deleting subdomains for " + deployment_name,
-                "Changes": valid_record_set_deletions,
-            },
-        )
-        print("Submitted {} deletions to hosted zone".format(len(record_set_deletions)))
+
+    if not valid_record_set_deletions:
+        print("No record set deletions required")
+        return
+
+    route53.change_resource_record_sets(
+        HostedZoneId=hosted_zone_id,
+        ChangeBatch={
+            "Comment": f"Deleting subdomains for {deployment_name}",
+            "Changes": valid_record_set_deletions,
+        },
+    )
+    print(
+        f"Submitted {len(valid_record_set_deletions)} record set deletions to hosted zone"
+    )
 
 
 def terminate_instance(instance):
     # Release elastic ip
     public_ip_address = instance["PublicIpAddress"]
     elastic_ip = ec.describe_addresses(PublicIps=[public_ip_address])["Addresses"][0]
+    print(f"Releasing elastic IP {elastic_ip['PublicIp']}")
     ec.release_address(AllocationId=elastic_ip["AllocationId"])
 
     # Terminate ec2 instance (taking with it ebs)
+    print(f"Terminating instance {instance['InstanceId']}")
     ec.terminate_instances(InstanceIds=[instance["InstanceId"]])
 
 
 def teardown_instance(instance):
     # Check it's not protected
-    protected = get_tag(instance, "Protected")
-    if protected == "true":
+    is_protected = get_tag(instance, "Protected") == "true"
+    if is_protected:
         raise Exception(
-            "The instance "
-            + get_tag(instance, "Name")
-            + " is protected and cannot be deleted"
+            f"The instance {get_tag(instance, 'Name')} is protected and cannot be deleted"
         )
 
     # Get tagged details of instance
@@ -77,10 +83,20 @@ def teardown_instance(instance):
             for subdomain in subdomains_via_dns.split(",")
         ]
 
-    # Delete gateway subdomains
+    # Delete gateway subdomains. Looking up the gateway ELB up-front doubles as
+    # the existence check: if it's missing the deployment never finished spinning
+    # up (e.g. branch name rejected by AWS as an ELB name) and there's nothing to
+    # clean up. Any failure inside delete_gateway after this point — including a
+    # missing target group, which would indicate partial state — must surface.
     subdomains_via_gateway = get_tag(instance, "SubdomainsViaGateway")
+    gateway_elb = None
     if subdomains_via_gateway != "":
-        gateway_elb = get_gateway_elb(deployment_type, deployment_name)
+        try:
+            gateway_elb = get_gateway_elb(deployment_type, deployment_name)
+        except GatewayNotFoundError as e:
+            print(f"No gateway to clean up for {deployment_name}: {e}")
+
+    if gateway_elb is not None:
         record_set_deletions = record_set_deletions + [
             build_record_set_deletion(
                 "tupaia.org", subdomain, deployment_name, gateway=gateway_elb
@@ -90,18 +106,15 @@ def teardown_instance(instance):
 
     delete_route53_record_sets(deployment_name, record_set_deletions)
 
-    # Delete gateway
-    if subdomains_via_gateway != "":
+    if gateway_elb is not None:
         delete_gateway(deployment_type, deployment_name)
 
     terminate_instance(instance)
 
 
 def teardown_db_instance(deployment_name=None, deployment_type=None, db_id=None):
-    if db_id:
-        db_instance_id = db_id
-    else:
-        db_instance_id = deployment_type + "-" + deployment_name
+    db_instance_id = db_id if db_id else f"{deployment_type}-{deployment_name}"
+    print(f"Tearing down database instance {db_instance_id}")
 
     db_instance = rds.describe_db_instances(DBInstanceIdentifier=db_instance_id)
     db_instance_public_dns_url = db_instance["DBInstances"][0]["Endpoint"]["Address"]
@@ -111,7 +124,7 @@ def teardown_db_instance(deployment_name=None, deployment_type=None, db_id=None)
         SkipFinalSnapshot=True,
         DeleteAutomatedBackups=True,
     )
-    print("Successfully deleted db instance: " + db_instance_id)
+    print(f"Deleted database instance {db_instance_id}")
 
     record_set_deletions = [
         build_record_set_deletion(

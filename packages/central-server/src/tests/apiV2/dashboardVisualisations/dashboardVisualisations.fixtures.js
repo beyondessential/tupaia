@@ -1,4 +1,5 @@
 import { generateId } from '@tupaia/database';
+
 import { VIZ_BUILDER_PERMISSION_GROUP } from '../../../permissions';
 
 const permissionGroupId = generateId();

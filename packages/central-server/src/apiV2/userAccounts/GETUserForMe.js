@@ -1,5 +1,5 @@
+import { resourceToRecordType } from '@tupaia/database';
 import { allowNoPermissions } from '../../permissions';
-import { resourceToRecordType } from '../../utilities';
 import { GETUserAccounts } from './GETUserAccounts';
 
 export class GETUserForMe extends GETUserAccounts {

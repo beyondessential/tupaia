@@ -7,7 +7,7 @@ import { S3Client, S3 } from '@tupaia/server-utils';
  *    "action": "AddSurveyFile",
  *    "payload": {
  *         "uniqueFileName": "5da02ed278d10e8695530688_report.pdf",
- *         "data": "ASDFJASD..." // etc very long base64 data
+ *         "data": "data:application/pdf;base64,..." // etc very long base64 data
  *    }
  *  }
  * */

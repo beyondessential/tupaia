@@ -3,14 +3,17 @@ import { BrowserRouter } from 'react-router-dom';
 import { AppProviders } from './AppProviders';
 import { Routes } from './routes';
 import { RedirectErrorHandler } from './api';
+import { NavigationBlockerProvider } from './utils';
 
 export const App = () => {
   return (
     <AppProviders>
       <BrowserRouter>
-        <RedirectErrorHandler>
-          <Routes />
-        </RedirectErrorHandler>
+        <NavigationBlockerProvider>
+          <RedirectErrorHandler>
+            <Routes />
+          </RedirectErrorHandler>
+        </NavigationBlockerProvider>
       </BrowserRouter>
     </AppProviders>
   );

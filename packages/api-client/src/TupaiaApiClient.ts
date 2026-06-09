@@ -13,8 +13,10 @@ import {
   EntityApiInterface,
   ReportApiInterface,
   WebConfigApiInterface,
+  ApiConnectionOptions,
 } from './connections';
 import { PRODUCTION_BASE_URLS, ServiceBaseUrlSet } from './constants';
+import { SyncApi, SyncApiInterface } from './connections/SyncApi';
 
 export class TupaiaApiClient {
   public readonly entity: EntityApiInterface;
@@ -23,13 +25,19 @@ export class TupaiaApiClient {
   public readonly auth: AuthApiInterface;
   public readonly report: ReportApiInterface;
   public readonly webConfig: WebConfigApiInterface;
+  public readonly sync: SyncApiInterface;
 
-  public constructor(authHandler: AuthHandler, baseUrls: ServiceBaseUrlSet = PRODUCTION_BASE_URLS) {
-    this.auth = new AuthApi(new ApiConnection(authHandler, baseUrls.auth));
-    this.entity = new EntityApi(new ApiConnection(authHandler, baseUrls.entity));
-    this.central = new CentralApi(new ApiConnection(authHandler, baseUrls.central));
-    this.report = new ReportApi(new ApiConnection(authHandler, baseUrls.report));
-    this.dataTable = new DataTableApi(new ApiConnection(authHandler, baseUrls.dataTable));
-    this.webConfig = new WebConfigApi(new ApiConnection(authHandler, baseUrls.webConfig));
+  public constructor(
+    authHandler: AuthHandler,
+    baseUrls: ServiceBaseUrlSet = PRODUCTION_BASE_URLS,
+    options?: ApiConnectionOptions,
+  ) {
+    this.auth = new AuthApi(new ApiConnection(authHandler, baseUrls.auth, options));
+    this.entity = new EntityApi(new ApiConnection(authHandler, baseUrls.entity, options));
+    this.central = new CentralApi(new ApiConnection(authHandler, baseUrls.central, options));
+    this.report = new ReportApi(new ApiConnection(authHandler, baseUrls.report, options));
+    this.dataTable = new DataTableApi(new ApiConnection(authHandler, baseUrls.dataTable, options));
+    this.webConfig = new WebConfigApi(new ApiConnection(authHandler, baseUrls.webConfig, options));
+    this.sync = new SyncApi(new ApiConnection(authHandler, baseUrls.sync, options));
   }
 }

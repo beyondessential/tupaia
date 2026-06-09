@@ -16,3 +16,6 @@ export { useTupaiaRedirect } from './useTupaiaRedirect';
 export { useCreateTask } from './useCreateTask';
 export { useCreateTaskComment } from './useCreateTaskComment';
 export { useExportSurveyResponse } from './useExportSurveyResponse';
+export { useSaveSurveyResponseDraft } from './useSaveSurveyResponseDraft';
+export { useUpdateSurveyResponseDraft } from './useUpdateSurveyResponseDraft';
+export { useDeleteSurveyResponseDraft } from './useDeleteSurveyResponseDraft';

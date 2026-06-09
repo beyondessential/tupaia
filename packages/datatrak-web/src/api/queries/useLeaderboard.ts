@@ -1,15 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
-import { DatatrakWebLeaderboardRequest, Project } from '@tupaia/types';
+import type { DatatrakWebLeaderboardRequest, Project } from '@tupaia/types';
+import { useOnlineQuery } from './useOnlineQuery';
 import { get } from '../api';
 
 export const useLeaderboard = (projectId?: Project['id']) => {
-  return useQuery(
+  return useOnlineQuery<DatatrakWebLeaderboardRequest.ResBody>(
     ['leaderboard', projectId],
-    (): Promise<DatatrakWebLeaderboardRequest.ResBody> =>
-      get('leaderboard', {
-        params: {
-          projectId,
-        },
+    async () =>
+      await get('leaderboard', {
+        params: { projectId },
       }),
+    { enabled: Boolean(projectId) },
   );
 };

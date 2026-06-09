@@ -6,9 +6,12 @@ import {
   UserEntityPermissionModel,
   UserModel,
   ProjectModel,
+  TupaiaDatabase,
 } from '@tupaia/database';
 
 export interface TestModelRegistry extends ModelRegistry {
+  readonly database: TupaiaDatabase;
+
   readonly entity: EntityModel;
   readonly entityHierarchy: EntityHierarchyModel;
   readonly entityRelation: EntityRelationModel;

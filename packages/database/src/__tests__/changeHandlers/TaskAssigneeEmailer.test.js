@@ -1,11 +1,11 @@
-import { TaskAssigneeEmailer } from '../../changeHandlers';
+import { TaskAssigneeEmailer } from '../../server/changeHandlers';
 import {
   buildAndInsertSurvey,
   findOrCreateDummyRecord,
   getTestModels,
   upsertDummyRecord,
-} from '../../testUtilities';
-import { generateId } from '../../utilities';
+} from '../../server/testUtilities';
+import { generateId } from '../../core/utilities';
 
 const USER = {
   first_name: 'Test',

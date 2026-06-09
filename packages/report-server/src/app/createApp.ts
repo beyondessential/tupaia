@@ -16,7 +16,9 @@ import { FetchTransformSchemaRequest } from '../routes/FetchTransformSchemaRoute
 export async function createApp(db = new TupaiaDatabase()) {
   const builder = new MicroServiceApiBuilder(db, 'report')
     .useBasicBearerAuth()
-    .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
+    .attachApiClientToContext({
+      authHandlerProvider: req => new ForwardingAuthHandler(req.headers.authorization),
+    })
     .get<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
     .get<FetchTransformSchemaRequest>(
       'fetchTransformSchemas',

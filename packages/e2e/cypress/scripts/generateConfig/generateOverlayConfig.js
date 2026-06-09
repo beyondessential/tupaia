@@ -1,4 +1,4 @@
-import { groupBy } from 'lodash';
+import { groupBy } from 'es-toolkit/compat';
 
 import { stringifyQuery, toArray, yup, yupUtils } from '@tupaia/utils';
 import config from '../../config.json';

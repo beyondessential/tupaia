@@ -55,6 +55,12 @@ const removeIdColumn = (tables: Table[]) =>
     columns: columns.filter(({ name }) => name !== 'id'),
   }));
 
+const removeUpdatedAtSyncTickColumn = (tables: Table[]) =>
+  tables.map(({ columns, ...restOfTable }) => ({
+    ...restOfTable,
+    columns: columns.filter(({ name }) => name !== 'updated_at_sync_tick'),
+  }));
+
 const makeColumnsOptional = (tables: Table[]): Table[] =>
   tables.map(({ columns, ...restOfTable }) => ({
     ...restOfTable,
@@ -90,6 +96,19 @@ const renameEntityTypeEnumDefinition = (enums: any) => {
     return enumDef;
   });
 };
+
+const generateCreateTables = (tables: Table[]) => {
+  const renamedTables = renameTables(tables, 'Create');
+  const createTables = removeIdColumn(renamedTables);
+  return removeUpdatedAtSyncTickColumn(createTables);
+};
+
+const generateUpdateTables = (tables: Table[]) => {
+  const renamedTables = renameTables(tables, 'Update');
+  const updateTables = makeColumnsOptional(renamedTables);
+  return removeUpdatedAtSyncTickColumn(updateTables);
+};
+
 const run = async () => {
   const failOnChanges = process.argv[2] === '--failOnChanges';
 
@@ -102,10 +121,10 @@ const run = async () => {
   const baseTables = makeDefaultColumnsRequired(definitions.tables);
 
   // ModelCreate tables don't require an id column as one will be generated at create time
-  const createTables = removeIdColumn(renameTables(definitions.tables, 'Create'));
+  const createTables = generateCreateTables(definitions.tables);
 
   // ModelUpdate tables have all fields as optional since we are just updating an existing record
-  const updateTables = makeColumnsOptional(renameTables(definitions.tables, 'Update'));
+  const updateTables = generateUpdateTables(definitions.tables);
 
   const allTables = removeUnwantedColumns(combineTables(baseTables, createTables, updateTables));
 

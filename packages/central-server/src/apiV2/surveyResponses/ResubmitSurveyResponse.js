@@ -1,17 +1,14 @@
 /* eslint-disable camelcase */
+import { SurveyResponseModel } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
+import { ANSWER_BODY_PARSERS } from '../../dataAccessors';
 import {
+  assertAdminPanelAccess,
   assertAllPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
 } from '../../permissions';
-import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
 import { RouteHandler } from '../RouteHandler';
-import { validateSurveyResponse } from './validateSurveyResponses';
-import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';
-import { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
-import { saveResponsesToDatabase } from './saveResponsesToDatabase';
 
 /**
  * Handles POST endpoint:
@@ -32,15 +29,15 @@ export class ResubmitSurveyResponse extends RouteHandler {
       // Check the user has either:
       // - BES admin access
       // - Tupaia Admin Panel access AND permission to view the surveyResponse AND permission to submit the new survey response
-      const originalSurveyResponsePermissionChecker = accessPolicy =>
-        assertSurveyResponsePermissions(
-          accessPolicy,
+      const originalSurveyResponsePermissionChecker = async accessPolicy =>
+        await transactingModels.surveyResponse.assertCanRead(
           transactingModels,
+          accessPolicy,
           this.originalSurveyResponseId,
         );
 
       const newSurveyResponsePermissionsChecker = async accessPolicy => {
-        await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, [
+        await transactingModels.surveyResponse.assertCanSubmit(transactingModels, accessPolicy, [
           this.newSurveyResponse,
         ]);
       };
@@ -70,12 +67,17 @@ export class ResubmitSurveyResponse extends RouteHandler {
     }
 
     await this.models.wrapInTransaction(async transactingModels => {
-      await upsertEntitiesAndOptions(transactingModels, [this.newSurveyResponse]);
-      await validateSurveyResponse(transactingModels, this.newSurveyResponse);
-      await this.assertUserHasAccess();
-      await saveResponsesToDatabase(transactingModels, originalSurveyResponse.user_id, [
+      await SurveyResponseModel.upsertEntitiesAndOptions(transactingModels, [
         this.newSurveyResponse,
       ]);
+      await SurveyResponseModel.validateSurveyResponse(transactingModels, this.newSurveyResponse);
+      await this.assertUserHasAccess();
+      await SurveyResponseModel.saveResponsesToDatabase(
+        transactingModels,
+        originalSurveyResponse.user_id,
+        [this.newSurveyResponse],
+        ANSWER_BODY_PARSERS,
+      );
       await transactingModels.surveyResponse.updateById(this.originalSurveyResponseId, {
         outdated: true,
       });
