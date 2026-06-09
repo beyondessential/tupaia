@@ -91,19 +91,21 @@ export async function getChanges(req, res) {
         change_time: timestamp,
       } = change;
       const changeObject = { action, recordType, timestamp };
-      if (action === 'delete') {
+      const record = action === 'delete' ? null : changeRecordsById[recordId];
+      if (action !== 'delete' && record) {
+        changeObject.record = getRecordForSync(models, record, recordType, appVersion);
+      } else {
+        // Either a genuine delete, or an "update" whose row no longer exists —
+        // e.g. rows deleted by a migration/cascade (the epic's orphan-entity
+        // cleanup cascaded to user_entity_permission etc.) without enqueuing a
+        // delete tombstone. Send a delete so the client drops any local copy,
+        // rather than a record-less update which the app rejects with
+        // "No sync record for <type>".
+        changeObject.action = 'delete';
         changeObject.record = { id: recordId };
         if (recordType === RECORDS.GEOGRAPHICAL_AREA) {
           // TODO LEGACY Deal with this bug on app end for v3 api
           changeObject.recordType = 'area';
-        }
-      } else {
-        const record = changeRecordsById[recordId];
-        if (!record) {
-          const errorMessage = `Couldn't find record type ${recordType} with id ${recordId}`;
-          changeObject.error = { error: errorMessage };
-        } else {
-          changeObject.record = getRecordForSync(models, record, recordType, appVersion);
         }
       }
       return changeObject;
