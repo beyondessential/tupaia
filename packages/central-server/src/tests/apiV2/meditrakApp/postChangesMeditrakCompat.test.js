@@ -17,7 +17,7 @@ import {
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
-import { TEST_USER_EMAIL, TestableApp, resetTestData } from '../../testUtilities';
+import { TEST_USER_EMAIL, TestableApp, resetTestData, upsertQuestion } from '../../testUtilities';
 
 const COUNTRY_CODE = 'DL';
 
@@ -216,5 +216,105 @@ describe('TUP-3067 MediTrak compat: POST /v1/changes', async () => {
     const projectBRow = await models.entity.findOne({ code, project_id: projectB.id });
     expect(projectBRow).to.exist;
     expect(projectBRow.name).to.equal('Edited name from MediTrak');
+  });
+
+  it('lazy-duplicates a shared parent only once for two children in one payload', async () => {
+    // Two new children in the same payload both reference the same canonical
+    // parent that has no project-B copy yet. The cached resolver must coalesce
+    // the concurrent lookups so the parent is lazy-duplicated exactly once
+    // (no UNIQUE(code, project_id) collision), and both children point at it.
+    const parentCode = `meditrak_shared_parent_${Date.now()}`;
+    const canonicalParentId = await insertEntity(models.database, {
+      code: parentCode,
+      projectId: projectA.id,
+    });
+    const childAId = generateId();
+    const childBId = generateId();
+    const childCode = `meditrak_child_${Date.now()}`;
+
+    const surveyResponseObject = {
+      id: generateId(),
+      survey_id: survey.id,
+      user_id: userId,
+      assessor_name: 'MediTrak Compat Tester',
+      start_time: generateValueOfType('date'),
+      end_time: generateValueOfType('date'),
+      timestamp: generateValueOfType('date'),
+      timezone: 'Pacific/Auckland',
+      approval_status: 'not_required',
+      entity_id: projectA.entity_id,
+      entities_upserted: [
+        {
+          id: childAId,
+          name: 'Child A',
+          code: `${childCode}_a`,
+          type: 'village',
+          country_code: COUNTRY_CODE,
+          parent_id: canonicalParentId,
+          attributes: {},
+        },
+        {
+          id: childBId,
+          name: 'Child B',
+          code: `${childCode}_b`,
+          type: 'village',
+          country_code: COUNTRY_CODE,
+          parent_id: canonicalParentId,
+          attributes: {},
+        },
+      ],
+      answers: [],
+    };
+
+    const response = await app.post('changes', {
+      body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
+    });
+    expect(response.statusCode).to.equal(200);
+
+    // Parent lazy-duplicated into project B exactly once.
+    const parentCopies = await models.entity.find({ code: parentCode, project_id: projectB.id });
+    expect(parentCopies).to.have.lengthOf(1);
+    const childA = await models.entity.findById(childAId);
+    const childB = await models.entity.findById(childBId);
+    expect(childA.project_id).to.equal(projectB.id);
+    expect(childB.project_id).to.equal(projectB.id);
+    expect(childA.parent_id).to.equal(parentCopies[0].id);
+    expect(childB.parent_id).to.equal(parentCopies[0].id);
+  });
+
+  it('translates an Entity-question answer body to the project-specific row', async () => {
+    const code = `meditrak_answer_${Date.now()}`;
+    // Canonical entity lives in project A; the answer references it by canonical id.
+    const canonicalId = await insertEntity(models.database, { code, projectId: projectA.id });
+    const question = await upsertQuestion({ type: 'PrimaryEntity' });
+    const responseId = generateId();
+
+    const surveyResponseObject = {
+      id: responseId,
+      survey_id: survey.id,
+      user_id: userId,
+      assessor_name: 'MediTrak Compat Tester',
+      start_time: generateValueOfType('date'),
+      end_time: generateValueOfType('date'),
+      timestamp: generateValueOfType('date'),
+      timezone: 'Pacific/Auckland',
+      approval_status: 'not_required',
+      entity_id: projectA.entity_id,
+      entities_upserted: [],
+      answers: [
+        { id: generateId(), type: 'PrimaryEntity', question_id: question.id, body: canonicalId },
+      ],
+    };
+
+    const response = await app.post('changes', {
+      body: [{ action: 'SubmitSurveyResponse', payload: surveyResponseObject }],
+    });
+    expect(response.statusCode).to.equal(200);
+
+    const projectBRow = await models.entity.findOne({ code, project_id: projectB.id });
+    expect(projectBRow).to.exist;
+    const [savedAnswer] = await models.answer.find({ survey_response_id: responseId });
+    expect(savedAnswer.text).to.not.equal(canonicalId);
+    expect(savedAnswer.text).to.equal(projectBRow.id);
   });
 });
