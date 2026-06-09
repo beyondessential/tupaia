@@ -204,7 +204,7 @@ describe('GET /changes/*', async () => {
       const { id: countryId } = await upsertCountry({ code: 'DL' });
       const survey = await upsertSurvey({ country_ids: [countryId] });
       const screen = await upsertSurveyScreen({ survey_id: survey.id });
-      await upsertSurveyScreenComponent({
+      const component = await upsertSurveyScreenComponent({
         question_id: questionId,
         config: JSON.stringify(nonLegacyConfig),
         screen_id: screen.id,
@@ -215,7 +215,10 @@ describe('GET /changes/*', async () => {
       await models.database.waitForAllChangeHandlers();
       const responseForLegacyVersion = await app.get(`changes?since=${since}&appVersion=1.12.124`);
 
-      expect(JSON.parse(responseForLegacyVersion.body[5].record.config)).to.deep.equal({
+      // Find the component's change by id rather than a fixed array index — the
+      // number/order of preceding changes is not stable.
+      const change = responseForLegacyVersion.body.find(c => c.record?.id === component.id);
+      expect(JSON.parse(change.record.config)).to.deep.equal({
         entity: {
           createNew: true,
           name: {
@@ -234,7 +237,7 @@ describe('GET /changes/*', async () => {
       const { id: countryId } = await models.country.findOne({ code: 'DL' });
       const survey = await upsertSurvey({ country_ids: [countryId] });
       const screen = await upsertSurveyScreen({ survey_id: survey.id });
-      await upsertSurveyScreenComponent({
+      const component = await upsertSurveyScreenComponent({
         question_id: questionId,
         config: JSON.stringify(nonLegacyConfig),
         screen_id: screen.id,
@@ -244,9 +247,10 @@ describe('GET /changes/*', async () => {
       // Wait for the triggers to have properly added the changes to the queue
       await models.database.waitForAllChangeHandlers();
       const responseForLegacyVersion = await app.get(`changes?since=${since}&appVersion=1.13.129`);
-      expect(JSON.parse(responseForLegacyVersion.body[4].record.config)).to.deep.equal(
-        nonLegacyConfig,
-      );
+      // Find the component's change by id rather than a fixed array index — the
+      // number/order of preceding changes is not stable.
+      const change = responseForLegacyVersion.body.find(c => c.record?.id === component.id);
+      expect(JSON.parse(change.record.config)).to.deep.equal(nonLegacyConfig);
     });
   });
 });
