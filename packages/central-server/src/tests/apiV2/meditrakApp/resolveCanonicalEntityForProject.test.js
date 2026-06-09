@@ -82,6 +82,37 @@ describe('resolveCanonicalEntityForProject', () => {
     expect(duplicate.project_id).to.equal(projectB.id);
   });
 
+  it('preserves geometry (point/bounds) when lazy-duplicating', async () => {
+    // Insert a canonical row with a real geometry point — getData() reads it
+    // back as GeoJSON, which must be re-inserted via ST_GeomFromGeoJSON.
+    const canonicalId = generateId();
+    await models.database.executeSql(
+      `
+        INSERT INTO entity (id, code, name, type, country_code, project_id, point)
+        VALUES (?, ?, 'Geo', 'village', 'DL', ?, ST_GeomFromGeoJSON(?));
+      `,
+      [
+        canonicalId,
+        SAMPLE_CODE,
+        projectA.id,
+        JSON.stringify({ type: 'Point', coordinates: [178.4, -18.1] }),
+      ],
+    );
+
+    const resolved = await resolveCanonicalEntityForProject(models, {
+      canonicalEntityId: canonicalId,
+      projectId: projectB.id,
+    });
+
+    expect(resolved).to.not.equal(canonicalId);
+    const [row] = await models.database.executeSql(
+      'SELECT ST_AsGeoJSON(point) AS point FROM entity WHERE id = ?;',
+      [resolved],
+    );
+    expect(row.point).to.exist;
+    expect(JSON.parse(row.point).coordinates).to.deep.equal([178.4, -18.1]);
+  });
+
   it('resolves parent_id into the target project when lazy-duplicating', async () => {
     // Parent exists both as the canonical row (project A) and as a copy in
     // project B. The child exists only in project A, parented to the canonical.

@@ -59,11 +59,16 @@ export const resolveCanonicalEntityForProject = (
     const existing = await models.entity.findOneByCodeInProject(canonical.code, projectId);
     if (existing) return existing.id;
 
-    // Lazy-duplicate the canonical row into the project.
+    // Lazy-duplicate the canonical row into the project. point/bounds are
+    // geometry columns the model reads back as GeoJSON (ST_AsGeoJSON), which
+    // can't be inserted into a geometry column as-is — pull them out of the
+    // create() payload and set them in a follow-up UPDATE via ST_GeomFromGeoJSON.
     const {
       id: _ignored,
       project_id: _alsoIgnored,
       parent_id: canonicalParentId,
+      point,
+      bounds,
       ...fields
     } = await canonical.getData();
     const parentId = canonicalParentId
@@ -78,6 +83,15 @@ export const resolveCanonicalEntityForProject = (
       parent_id: parentId,
       project_id: projectId,
     });
+    if (point || bounds) {
+      await models.database.executeSql(
+        `UPDATE entity
+         SET point = COALESCE(ST_GeomFromGeoJSON(?), point),
+             bounds = COALESCE(ST_GeomFromGeoJSON(?), bounds)
+         WHERE id = ?;`,
+        [point ?? null, bounds ?? null, duplicate.id],
+      );
+    }
     return duplicate.id;
   })();
 
