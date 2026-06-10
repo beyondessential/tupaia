@@ -4,67 +4,6 @@ import { getOrCreateParentEntity } from './getOrCreateParentEntity';
 import { getEntityMetadata } from './getEntityMetadata';
 import { resolvePolygonId } from './resolvePolygonId';
 
-const DEFAULT_TYPE_NAMES = {
-  1: 'Hospital',
-  2: 'Community health centre',
-  3: 'Clinic',
-  4: 'Aid post',
-};
-
-function getDefaultTypeDetails(type) {
-  const categoryCode = type.substring(0, 1);
-  const typeName = DEFAULT_TYPE_NAMES[categoryCode];
-  if (!typeName) {
-    throw new Error(
-      `${type} is not a valid facility type, must be one of ${Object.keys(DEFAULT_TYPE_NAMES).join(
-        ', ',
-      )}`,
-    );
-  }
-  return { categoryCode, typeName };
-}
-
-async function attemptFacilityUpsert(
-  transactingModels,
-  {
-    parentEntity,
-    parentGeographicalArea,
-    facilityType,
-    typeName,
-    categoryCode,
-    code,
-    name,
-    country,
-  },
-) {
-  if (!parentGeographicalArea) {
-    console.warn(
-      `Parent entity of facility has no geographical area, skipping facility creation for ${code}, parent entity code: ${parentEntity.code}`,
-    );
-    return;
-  }
-  const defaultTypeDetails = getDefaultTypeDetails(facilityType);
-  const facilityToUpsert = {
-    type: facilityType,
-    type_name: typeName || undefined, // Ensure empty string is treated as undefined
-    category_code: categoryCode || undefined, // Ensure empty string is treated as undefined
-    code,
-    name,
-    geographical_area_id: parentGeographicalArea.id,
-  };
-  const newFacility = await transactingModels.facility.updateOrCreate(
-    { code },
-    { country_id: country.id, ...facilityToUpsert },
-  );
-  if (!newFacility.type_name) {
-    newFacility.type_name = defaultTypeDetails.typeName;
-  }
-  if (!newFacility.category_code) {
-    newFacility.category_code = defaultTypeDetails.categoryCode;
-  }
-  await newFacility.save();
-}
-
 /**
  * Apply a batch of entity rows that all share the same `country_code`.
  *
@@ -133,10 +72,7 @@ export async function updateCountryEntities(
       entity_polygon_code: polygonCode,
       entity_polygon_data_source: polygonDataSource,
       data_service_entity: dataServiceEntity,
-      type_name: typeName,
       screen_bounds: screenBounds,
-      category_code: categoryCode,
-      facility_type: facilityType,
       attributes,
     } = entityObject;
 
@@ -160,7 +96,7 @@ export async function updateCountryEntities(
       );
     }
     codes.push(code);
-    const { parentGeographicalArea, parentEntity } =
+    const { parentEntity } =
       (await getOrCreateParentEntity(
         transactingModels,
         entityObject,
@@ -168,22 +104,9 @@ export async function updateCountryEntities(
         pushToDhis,
         projectId,
       )) || {};
-    // A blank facility_type means this facility has no clinic-table
-    // classification (e.g. it was created via a survey response, which never
-    // writes a clinic row). Skip the upsert so the entity round-trips
-    // unchanged instead of inventing a clinic row.
-    if (entityType === transactingModels.entity.types.FACILITY && facilityType) {
-      await attemptFacilityUpsert(transactingModels, {
-        parentEntity,
-        parentGeographicalArea,
-        facilityType,
-        typeName,
-        categoryCode,
-        code,
-        name,
-        country,
-      });
-    }
+    // Note: facility classification (facility_type / type_name / category_code)
+    // is no longer imported — it only wrote to the legacy `clinic` table, which
+    // is deprecated (visuals read facility_type from entity.attributes now).
     if (dataServiceEntity) {
       const dataServiceEntityToUpsert = {
         entity_code: code,
