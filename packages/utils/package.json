@@ -33,7 +33,7 @@
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.45",
-    "node-fetch": "^1.7.3",
+    "node-fetch": "^2.6.7",
     "numeral": "^2.0.6",
     "omit-deep": "^0.3.0",
     "prop-types": "^15.6.2",
