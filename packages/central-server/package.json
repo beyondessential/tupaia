@@ -55,7 +55,7 @@
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.45",
     "morgan": "^1.9.0",
-    "multer": "^2.0.2",
+    "multer": "^2.1.1",
     "node-schedule": "^2.1.1",
     "public-ip": "4.0.4",
     "rate-limiter-flexible": "^5.0.3",
