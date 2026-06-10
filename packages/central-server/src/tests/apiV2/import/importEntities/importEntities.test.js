@@ -216,8 +216,8 @@ describe('importEntities(): POST import/entities', () => {
   describe('Facility classification round-trip (TUP-3181)', () => {
     // No updateCountryEntities stub — these exercise the real import path.
     // Facility classification (facility_type / type_name / category_code) is no
-    // longer imported: it only wrote to the deprecated `clinic` table, so the
-    // importer never writes a clinic row and ignores those columns entirely.
+    // longer imported: those columns only ever wrote to the deprecated `clinic`
+    // table, so the importer never writes a clinic row and ignores them entirely.
     const importRows = rows => {
       const filepath = writeXlsx(rows);
       return app
