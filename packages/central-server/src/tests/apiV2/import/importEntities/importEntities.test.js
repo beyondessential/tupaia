@@ -275,4 +275,53 @@ describe('importEntities(): POST import/entities', () => {
       expect(clinic).to.not.exist;
     });
   });
+
+  describe('Country rows on import (TUP-3181)', () => {
+    const importRows = rows => {
+      const filepath = writeXlsx(rows);
+      return app
+        .post('import/entities')
+        .query({ projectCode: TEST_PROJECT_CODE, pushToDhis: 'false' })
+        .attach('entities', filepath)
+        .then(response => {
+          unlinkXlsx(filepath);
+          return response;
+        });
+    };
+
+    before(async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+    });
+
+    after(() => {
+      app.revokeAccess();
+    });
+
+    it('skips country rows (the export includes them; they stay shared, not project-scoped)', async () => {
+      const project = await models.project.findOne({ code: TEST_PROJECT_CODE });
+      const response = await importRows([
+        { code: 'KI', name: 'Kiribati', entity_type: 'country', country_code: 'KI' },
+        {
+          code: 'KI_country_skip_child',
+          name: 'Child village',
+          entity_type: 'village',
+          country_code: 'KI',
+        },
+      ]);
+      expect(response.statusCode).to.equal(200);
+
+      // The sub-country row imported into the project...
+      const child = await models.entity.findOne({
+        code: 'KI_country_skip_child',
+        project_id: project.id,
+      });
+      expect(child).to.exist;
+      // ...but no project-scoped copy of the country entity was created.
+      const projectScopedCountry = await models.entity.findOne({
+        code: 'KI',
+        project_id: project.id,
+      });
+      expect(projectScopedCountry).to.not.exist;
+    });
+  });
 });
