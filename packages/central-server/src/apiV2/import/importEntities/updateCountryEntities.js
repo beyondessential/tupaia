@@ -57,6 +57,13 @@ export async function updateCountryEntities(
   for (let i = 0; i < entityObjects.length; i++) {
     const entityObject = entityObjects[i];
     const { entity_type: entityType } = entityObject;
+    // Country entities are shared (project_id NULL) and already ensured above
+    // per country_code. The export includes them for completeness, but they
+    // must not be re-created as project-scoped rows here — skip them. (Country
+    // creation/editing is handled via the Countries tab, not entity import.)
+    if (entityType === transactingModels.entity.types.COUNTRY) {
+      continue;
+    }
     const validator = getEntityObjectValidator(entityType, transactingModels);
     const excelRowNumber = i + 2;
     const constructImportValidationError = (message, field) =>
