@@ -1,4 +1,4 @@
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, JOIN_TYPES } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
 import { mergeFilter } from '../utilities';
@@ -35,6 +35,11 @@ const fetchParentCodesByParentId = async (database, parentIds) => {
 
 export class GETEntities extends GETHandler {
   permissionsFilteredInternally = /** @type {const} */ (true);
+
+  // Join related tables (e.g. `project` for a `project.code` column) with a LEFT
+  // join like the other list handlers, so shared entities with a null
+  // project_id (countries, world) aren't dropped from the result set.
+  defaultJoinType = JOIN_TYPES.LEFT_OUTER;
 
   getDbQueryCriteria() {
     const criteria = super.getDbQueryCriteria();
