@@ -114,20 +114,19 @@ const fetchProjectEntities = async (models, projectId, allowedCountryCodes) =>
     [projectId, allowedCountryCodes, projectId, allowedCountryCodes],
   );
 
-const fetchCountryParentLookup = async (models, projectId) =>
-  models.database.executeSql(
-    `
-      SELECT e.id, e.code
-      FROM entity e
-      JOIN project_country pc ON pc.country_id = e.id
-      WHERE pc.project_id = ? AND e.type = 'country';
-    `,
-    [projectId],
-  );
-
 export async function exportEntities(req, res) {
   const { models, userId, accessPolicy } = req;
   const { projectCode } = req.params;
+
+  // Match baseline: a user can export without BES Admin, scoped to the countries
+  // they have Tupaia Admin Panel access to (throws if they have none). BES
+  // admins aren't enumerated against that permission group, so they're scoped
+  // to every country in the project instead (below). assertPermissions also
+  // flags the permission check for the ensurePermissionCheck sentinel.
+  const isBESAdmin = accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
+  await req.assertPermissions(policy => {
+    if (!isBESAdmin) getAdminPanelAllowedCountryCodes(policy);
+  });
 
   const project = await models.project.findOne({ code: projectCode });
   if (!project) {
@@ -135,25 +134,17 @@ export async function exportEntities(req, res) {
     return;
   }
 
-  // Match baseline: a user can export without BES Admin, scoped to the countries
-  // they have Tupaia Admin Panel access to (throws if they have none). BES
-  // admins aren't enumerated against that permission group, so scope them to
-  // every country in the project instead.
-  const isBESAdmin = accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
   const allowedCountryCodes = isBESAdmin
     ? (await project.countries()).map(country => country.code)
     : getAdminPanelAllowedCountryCodes(accessPolicy);
 
   const entities = await fetchProjectEntities(models, project.id, allowedCountryCodes);
 
-  // Build a parent_id → code lookup that covers both in-sheet entities and
-  // the project's country rows (which the import sheet doesn't contain, but
-  // are valid parents for the first level of sub-national entities).
+  // The UNION in fetchProjectEntities already returns the project's country
+  // entities, so a code lookup built from `entities` covers every parent_id a
+  // sub-national row can reference (its country, or an ancestor in the same
+  // in-scope country).
   const parentCodeById = new Map(entities.map(e => [e.id, e.code]));
-  const countryEntities = await fetchCountryParentLookup(models, project.id);
-  for (const country of countryEntities) {
-    parentCodeById.set(country.id, country.code);
-  }
 
   const rows = entities.map(entity => buildRow(entity, parentCodeById));
   const sheet = xlsx.utils.json_to_sheet(rows, { header: COLUMN_ORDER });
