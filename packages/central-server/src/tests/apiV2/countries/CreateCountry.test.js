@@ -80,4 +80,16 @@ describe('CreateCountry: POST /countries', () => {
     const link = await models.projectCountry.findOne({ country_id: entity.id });
     expect(link).to.not.exist;
   });
+
+  it('rejects (and creates nothing) when an unknown projectCode is supplied', async () => {
+    await app.grantAccess(BES_ADMIN_POLICY);
+    const response = await app
+      .post('countries', { body: NEW_COUNTRY })
+      .query({ projectCode: 'does_not_exist_xyz' });
+    expect(response.statusCode).to.not.equal(200);
+
+    // The whole create is transactional, so nothing should persist.
+    const country = await models.country.findOne({ code: NEW_COUNTRY.code });
+    expect(country).to.not.exist;
+  });
 });

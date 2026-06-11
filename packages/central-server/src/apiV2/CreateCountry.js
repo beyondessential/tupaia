@@ -22,6 +22,11 @@ export class CreateCountry extends BESAdminCreateHandler {
       const world = await transactingModels.entity.findOne({
         type: transactingModels.entity.types.WORLD,
       });
+      if (!world) {
+        throw new Error(
+          'World entity not found — run entity hierarchy setup before creating countries',
+        );
+      }
       const countryEntity = await transactingModels.entity.findOrCreate(
         { code, project_id: null },
         {
@@ -37,12 +42,15 @@ export class CreateCountry extends BESAdminCreateHandler {
 
       if (projectCode) {
         const project = await transactingModels.project.findOne({ code: projectCode });
-        if (project) {
-          await transactingModels.projectCountry.findOrCreate(
-            { project_id: project.id, country_id: countryEntity.id },
-            { project_id: project.id, country_id: countryEntity.id },
-          );
+        if (!project) {
+          // projectCode was explicitly supplied, so a missing project is a
+          // caller error, not a reason to silently create an unlinked country.
+          throw new Error(`Cannot link country to unknown project: ${projectCode}`);
         }
+        await transactingModels.projectCountry.findOrCreate({
+          project_id: project.id,
+          country_id: countryEntity.id,
+        });
       }
     });
   }
