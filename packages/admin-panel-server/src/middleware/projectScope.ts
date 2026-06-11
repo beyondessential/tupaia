@@ -42,7 +42,10 @@ const projectRefFromBody = async (
   return project ? { id: project.id } : null;
 };
 
-const PROJECT_CODE_PASSTHROUGH_PATHS = new Set(['import/entities']);
+// Endpoints that consume projectCode themselves rather than having it stripped
+// before forwarding: the entity importer reads it for project-scoping, and
+// country creation reads it to link the new country to the active project.
+const PROJECT_CODE_PASSTHROUGH_PATHS = new Set(['import/entities', 'countries']);
 
 const RULES: Record<string, ProjectScopeRule> = {
   surveys: {

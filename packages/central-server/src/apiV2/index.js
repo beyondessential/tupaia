@@ -21,6 +21,7 @@ import { BESAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler } from './EditHandler';
 import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
+import { CreateCountry } from './CreateCountry';
 import { GETClinics } from './GETClinics';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
@@ -295,7 +296,7 @@ apiV2.post(
   multipartJson(false),
   useRouteHandler(ResubmitSurveyResponse),
 );
-apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/countries', useRouteHandler(CreateCountry));
 apiV2.post('/dataElements', useRouteHandler(TupaiaAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataTables', useRouteHandler(CreateDataTables));
