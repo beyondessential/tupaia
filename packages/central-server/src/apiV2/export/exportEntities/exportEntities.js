@@ -2,6 +2,7 @@ import xlsx from 'xlsx';
 import { respondWithDownload, toFilename } from '@tupaia/utils';
 import { getExportPathForUser } from '@tupaia/server-utils';
 import { getAdminPanelAllowedCountryCodes } from '../../utilities';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 
 // Columns the importer reads (see updateCountryEntities.js + resolvePolygonId.js).
 // Exporting in this exact order makes the .xlsx self-describing and
@@ -128,15 +129,20 @@ export async function exportEntities(req, res) {
   const { models, userId, accessPolicy } = req;
   const { projectCode } = req.params;
 
-  // Match baseline: a user can export without BES Admin, scoped to the
-  // countries they have Tupaia Admin Panel access to (throws if they have none).
-  const allowedCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
-
   const project = await models.project.findOne({ code: projectCode });
   if (!project) {
     res.status(400).json({ error: `Unknown projectCode: ${projectCode}` });
     return;
   }
+
+  // Match baseline: a user can export without BES Admin, scoped to the countries
+  // they have Tupaia Admin Panel access to (throws if they have none). BES
+  // admins aren't enumerated against that permission group, so scope them to
+  // every country in the project instead.
+  const isBESAdmin = accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
+  const allowedCountryCodes = isBESAdmin
+    ? (await project.countries()).map(country => country.code)
+    : getAdminPanelAllowedCountryCodes(accessPolicy);
 
   const entities = await fetchProjectEntities(models, project.id, allowedCountryCodes);
 
