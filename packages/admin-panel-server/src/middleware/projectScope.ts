@@ -5,12 +5,13 @@ export const PROJECT_CODE_PARAM = 'projectCode';
 type Project = { id: string; code: string };
 type ProjectRef = { id: string };
 type Models = Request['models'];
+// The full project model record the middleware already fetched — passed to
+// `filter` so a rule can use record methods (e.g. `countries()`) without a
+// second round-trip.
+type ProjectRecord = NonNullable<Awaited<ReturnType<Models['project']['findOne']>>>;
 
 type ProjectScopeRule = {
-  filter: (
-    project: Project,
-    models: Models,
-  ) => Record<string, unknown> | Promise<Record<string, unknown>>;
+  filter: (project: ProjectRecord) => Record<string, unknown> | Promise<Record<string, unknown>>;
   ownership: (id: string, models: Models) => Promise<ProjectRef | null>;
   // Required so a new rule can't silently bypass POST scope enforcement by
   // forgetting to define one. Receives the active project so a rule whose
@@ -64,9 +65,8 @@ const RULES: Record<string, ProjectScopeRule> = {
     // entities stay hidden. Wrapped in _and_ so it's a single bracketed group:
     // merging with a caller's filter ANDs it in as a hard boundary rather than
     // letting the OR widen the result set.
-    filter: async (project, models) => {
-      const projectRecord = await models.project.findById(project.id);
-      const countries = projectRecord ? await projectRecord.countries() : [];
+    filter: async project => {
+      const countries = await project.countries();
       const countryCodes = countries.map(country => (country as unknown as { code: string }).code);
       return {
         _and_: {
@@ -173,7 +173,7 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
       }
       // Scope filter wins on conflict — must be a hard boundary, not an
       // opt-out the caller can override by supplying their own project_id.
-      const merged = { ...existing, ...(await rule.filter(projectCtx, req.models)) };
+      const merged = { ...existing, ...(await rule.filter(project)) };
       url.searchParams.set('filter', JSON.stringify(merged));
     } else if (isMutationOnId(req.method, segments)) {
       const id = segments[1];
