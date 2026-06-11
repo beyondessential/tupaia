@@ -1,7 +1,8 @@
 import xlsx from 'xlsx';
 import { respondWithDownload, toFilename } from '@tupaia/utils';
 import { getExportPathForUser } from '@tupaia/server-utils';
-import { assertBESAdminAccess } from '../../../permissions';
+import { getAdminPanelAllowedCountryCodes } from '../../utilities';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 
 // Columns the importer reads (see updateCountryEntities.js + resolvePolygonId.js).
 // Exporting in this exact order makes the .xlsx self-describing and
@@ -20,18 +21,12 @@ const COLUMN_ORDER = [
   'entity_type',
   'country_code',
   'parent_code',
-  // Point location. The importer rebuilds entity.point (and derives bounds)
-  // from longitude + latitude; entities located only via a polygon link leave
-  // these blank and round-trip through entity_polygon_id instead.
-  'longitude',
+  // Point location, latitude-first per the usual lat/long convention. The
+  // importer reads them by header name (order-independent) and rebuilds
+  // entity.point (and derives bounds); entities located only via a polygon link
+  // leave these blank and round-trip through entity_polygon_id instead.
   'latitude',
-  // Facility metadata. For entity_type === 'facility' the importer requires
-  // facility_type (validated), and writes type_name + category_code to the
-  // facility table; emitting all three keeps a facility's classification from
-  // being reset to its default on re-import. Blank for non-facility rows.
-  'facility_type',
-  'type_name',
-  'category_code',
+  'longitude',
   'attributes',
   'image_url',
   'entity_polygon_id',
@@ -54,9 +49,6 @@ const buildRow = (entity, parentCodeById) => ({
   parent_code: entity.parent_id ? parentCodeById.get(entity.parent_id) ?? '' : '',
   longitude: entity.longitude ?? '',
   latitude: entity.latitude ?? '',
-  facility_type: entity.facility_type ?? '',
-  type_name: entity.type_name ?? '',
-  category_code: entity.category_code ?? '',
   attributes: serialiseJsonField(entity.attributes),
   image_url: entity.image_url ?? '',
   entity_polygon_id: entity.entity_polygon_id ?? '',
@@ -65,26 +57,33 @@ const buildRow = (entity, parentCodeById) => ({
   data_service_entity: serialiseJsonField(entity.data_service_entity_config ?? null),
 });
 
-const fetchProjectEntities = async (models, projectId) =>
+// Columns selected for each export row. Shared between the two branches of the
+// UNION below so they line up.
+const ENTITY_COLUMNS = `
+  e.id, e.code, e.name, e.type, e.country_code, e.parent_id,
+  e.attributes, e.image_url, e.entity_polygon_id,
+  ST_X(e.point::geometry) AS longitude,
+  ST_Y(e.point::geometry) AS latitude,
+  ep.code AS entity_polygon_code,
+  ep.data_source AS entity_polygon_data_source,
+  dse.config AS data_service_entity_config
+`;
+const ENTITY_JOINS = `
+  LEFT JOIN entity_polygon ep ON ep.id = e.entity_polygon_id
+  LEFT JOIN data_service_entity dse ON dse.entity_code = e.code
+`;
+
+const fetchProjectEntities = async (models, projectId, allowedCountryCodes) =>
   models.database.executeSql(
     `
-      SELECT e.id, e.code, e.name, e.type, e.country_code, e.parent_id,
-             e.attributes, e.image_url, e.entity_polygon_id,
-             ST_X(e.point::geometry) AS longitude,
-             ST_Y(e.point::geometry) AS latitude,
-             f.type AS facility_type,
-             f.type_name AS type_name,
-             f.category_code AS category_code,
-             ep.code AS entity_polygon_code,
-             ep.data_source AS entity_polygon_data_source,
-             dse.config AS data_service_entity_config
+      -- Sub-country entities scoped to this project.
+      SELECT ${ENTITY_COLUMNS}
       FROM entity e
-      LEFT JOIN entity_polygon ep ON ep.id = e.entity_polygon_id
-      LEFT JOIN data_service_entity dse ON dse.entity_code = e.code
-      -- Facility metadata lives in the legacy-named 'clinic' table
-      -- (RECORDS.FACILITY = 'clinic') — joined on entity.code.
-      LEFT JOIN clinic f ON f.code = e.code
+      ${ENTITY_JOINS}
       WHERE e.project_id = ?
+        -- Scope to the countries the requesting user has Tupaia Admin Panel
+        -- access to — matches the baseline export's permission behaviour.
+        AND e.country_code = ANY(?)
         AND e.type NOT IN ('world', 'country', 'project')
         -- Only export entities whose country is actually part of the project
         -- (project_country). entity.project_id alone over-includes the orphaned
@@ -99,27 +98,35 @@ const fetchProjectEntities = async (models, projectId) =>
           WHERE pc.project_id = e.project_id
             AND c.code = e.country_code
         )
-      ORDER BY e.country_code ASC, e.code ASC;
-    `,
-    [projectId],
-  );
-
-const fetchCountryParentLookup = async (models, projectId) =>
-  models.database.executeSql(
-    `
-      SELECT e.id, e.code
+      UNION ALL
+      -- The project's shared country entities (project_id IS NULL), via the
+      -- project_country bridge, so a multi-country project's export is complete.
+      -- On re-import these are skipped — countries are shared and managed via
+      -- the Countries tab, not created per-project.
+      SELECT ${ENTITY_COLUMNS}
       FROM entity e
-      JOIN project_country pc ON pc.country_id = e.id
-      WHERE pc.project_id = ? AND e.type = 'country';
+      ${ENTITY_JOINS}
+      JOIN project_country pc ON pc.country_id = e.id AND pc.project_id = ?
+      WHERE e.type = 'country'
+        AND e.code = ANY(?)
+      ORDER BY country_code ASC, code ASC;
     `,
-    [projectId],
+    [projectId, allowedCountryCodes, projectId, allowedCountryCodes],
   );
 
 export async function exportEntities(req, res) {
-  await req.assertPermissions(assertBESAdminAccess);
-
-  const { models, userId } = req;
+  const { models, userId, accessPolicy } = req;
   const { projectCode } = req.params;
+
+  // Match baseline: a user can export without BES Admin, scoped to the countries
+  // they have Tupaia Admin Panel access to (throws if they have none). BES
+  // admins aren't enumerated against that permission group, so they're scoped
+  // to every country in the project instead (below). assertPermissions also
+  // flags the permission check for the ensurePermissionCheck sentinel.
+  const isBESAdmin = accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
+  await req.assertPermissions(policy => {
+    if (!isBESAdmin) getAdminPanelAllowedCountryCodes(policy);
+  });
 
   const project = await models.project.findOne({ code: projectCode });
   if (!project) {
@@ -127,16 +134,17 @@ export async function exportEntities(req, res) {
     return;
   }
 
-  const entities = await fetchProjectEntities(models, project.id);
+  const allowedCountryCodes = isBESAdmin
+    ? (await project.countries()).map(country => country.code)
+    : getAdminPanelAllowedCountryCodes(accessPolicy);
 
-  // Build a parent_id → code lookup that covers both in-sheet entities and
-  // the project's country rows (which the import sheet doesn't contain, but
-  // are valid parents for the first level of sub-national entities).
+  const entities = await fetchProjectEntities(models, project.id, allowedCountryCodes);
+
+  // The UNION in fetchProjectEntities already returns the project's country
+  // entities, so a code lookup built from `entities` covers every parent_id a
+  // sub-national row can reference (its country, or an ancestor in the same
+  // in-scope country).
   const parentCodeById = new Map(entities.map(e => [e.id, e.code]));
-  const countryEntities = await fetchCountryParentLookup(models, project.id);
-  for (const country of countryEntities) {
-    parentCodeById.set(country.id, country.code);
-  }
 
   const rows = entities.map(entity => buildRow(entity, parentCodeById));
   const sheet = xlsx.utils.json_to_sheet(rows, { header: COLUMN_ORDER });
