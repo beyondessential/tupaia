@@ -135,19 +135,6 @@ const NEW_PROJECT_COLUMNS = [
       type: 'checkboxList',
     },
   },
-  {
-    Header: 'Canonical types (leave blank for default)',
-    source: 'entityTypes',
-    Filter: ArrayFilter,
-    Cell: ({ value }) => prettyArray(value),
-    editConfig: {
-      optionsEndpoint: 'entityTypes',
-      optionLabelKey: 'type',
-      optionValueKey: 'type',
-      pageSize: 1000, // entityTypes endpoint doesn't support filtering, so fetch all values
-      allowMultipleValues: true,
-    },
-  },
 ];
 
 const COLUMNS = [
