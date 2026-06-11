@@ -1,7 +1,7 @@
 import xlsx from 'xlsx';
 import { respondWithDownload, toFilename } from '@tupaia/utils';
 import { getExportPathForUser } from '@tupaia/server-utils';
-import { assertBESAdminAccess } from '../../../permissions';
+import { getAdminPanelAllowedCountryCodes } from '../../utilities';
 
 // Columns the importer reads (see updateCountryEntities.js + resolvePolygonId.js).
 // Exporting in this exact order makes the .xlsx self-describing and
@@ -20,11 +20,12 @@ const COLUMN_ORDER = [
   'entity_type',
   'country_code',
   'parent_code',
-  // Point location. The importer rebuilds entity.point (and derives bounds)
-  // from longitude + latitude; entities located only via a polygon link leave
-  // these blank and round-trip through entity_polygon_id instead.
-  'longitude',
+  // Point location, latitude-first per the usual lat/long convention. The
+  // importer reads them by header name (order-independent) and rebuilds
+  // entity.point (and derives bounds); entities located only via a polygon link
+  // leave these blank and round-trip through entity_polygon_id instead.
   'latitude',
+  'longitude',
   'attributes',
   'image_url',
   'entity_polygon_id',
@@ -55,7 +56,7 @@ const buildRow = (entity, parentCodeById) => ({
   data_service_entity: serialiseJsonField(entity.data_service_entity_config ?? null),
 });
 
-const fetchProjectEntities = async (models, projectId) =>
+const fetchProjectEntities = async (models, projectId, allowedCountryCodes) =>
   models.database.executeSql(
     `
       SELECT e.id, e.code, e.name, e.type, e.country_code, e.parent_id,
@@ -69,6 +70,9 @@ const fetchProjectEntities = async (models, projectId) =>
       LEFT JOIN entity_polygon ep ON ep.id = e.entity_polygon_id
       LEFT JOIN data_service_entity dse ON dse.entity_code = e.code
       WHERE e.project_id = ?
+        -- Scope to the countries the requesting user has Tupaia Admin Panel
+        -- access to — matches the baseline export's permission behaviour.
+        AND e.country_code = ANY(?)
         AND e.type NOT IN ('world', 'country', 'project')
         -- Only export entities whose country is actually part of the project
         -- (project_country). entity.project_id alone over-includes the orphaned
@@ -100,10 +104,12 @@ const fetchCountryParentLookup = async (models, projectId) =>
   );
 
 export async function exportEntities(req, res) {
-  await req.assertPermissions(assertBESAdminAccess);
-
-  const { models, userId } = req;
+  const { models, userId, accessPolicy } = req;
   const { projectCode } = req.params;
+
+  // Match baseline: a user can export without BES Admin, scoped to the
+  // countries they have Tupaia Admin Panel access to (throws if they have none).
+  const allowedCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
 
   const project = await models.project.findOne({ code: projectCode });
   if (!project) {
@@ -111,7 +117,7 @@ export async function exportEntities(req, res) {
     return;
   }
 
-  const entities = await fetchProjectEntities(models, project.id);
+  const entities = await fetchProjectEntities(models, project.id, allowedCountryCodes);
 
   // Build a parent_id → code lookup that covers both in-sheet entities and
   // the project's country rows (which the import sheet doesn't contain, but

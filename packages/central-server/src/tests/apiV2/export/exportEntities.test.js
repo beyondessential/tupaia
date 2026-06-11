@@ -7,8 +7,17 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 
-const BES_ADMIN_POLICY = { DL: [BES_ADMIN_PERMISSION_GROUP] };
-const NON_BES_ADMIN_POLICY = { DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP] };
+// Export scopes to the countries the user has Tupaia Admin Panel access to
+// (matches baseline). These policies cover the test project's countries (KI,
+// VU); FJ is included for BES admin so the orphan test exercises the
+// project_country exclusion rather than the country-permission scope.
+const BES_ADMIN_POLICY = {
+  KI: [BES_ADMIN_PERMISSION_GROUP],
+  VU: [BES_ADMIN_PERMISSION_GROUP],
+  FJ: [BES_ADMIN_PERMISSION_GROUP],
+};
+const ADMIN_PANEL_KI_ONLY = { KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP] };
+const NO_ADMIN_PANEL_ACCESS = { KI: ['Public'] };
 
 // Helper that issues a buffered GET and parses the response body as raw xlsx
 // bytes. Without the custom parser, supertest tries to JSON-decode the binary
@@ -48,10 +57,24 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
     app.revokeAccess();
   });
 
-  it('rejects non-BES-Admin', async () => {
-    await app.grantAccess(NON_BES_ADMIN_POLICY);
+  it('rejects a user with no Tupaia Admin Panel access', async () => {
+    await app.grantAccess(NO_ADMIN_PANEL_ACCESS);
     const response = await app.get('export/entities/export_entities_test');
     expect(response.statusCode).to.not.equal(200);
+  });
+
+  it('allows a non-BES-Admin, scoped to the countries they can access', async () => {
+    // Matches baseline: a Tupaia Admin Panel user (no BES Admin) can export, but
+    // only entities in countries they have that access for.
+    await app.grantAccess(ADMIN_PANEL_KI_ONLY);
+    const { response, workbook } = await downloadXlsx(
+      app.get('export/entities/export_entities_test'),
+    );
+    expect(response.statusCode).to.equal(200);
+    const rows = xlsx.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+    const countryCodes = new Set(rows.map(r => r.country_code));
+    expect(countryCodes.has('KI')).to.equal(true); // has access
+    expect(countryCodes.has('VU')).to.equal(false); // no access → scoped out
   });
 
   it('returns 400 for unknown projectCode', async () => {
