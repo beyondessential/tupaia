@@ -25,13 +25,6 @@ const COLUMN_ORDER = [
   // these blank and round-trip through entity_polygon_id instead.
   'longitude',
   'latitude',
-  // Facility metadata. For entity_type === 'facility' the importer requires
-  // facility_type (validated), and writes type_name + category_code to the
-  // facility table; emitting all three keeps a facility's classification from
-  // being reset to its default on re-import. Blank for non-facility rows.
-  'facility_type',
-  'type_name',
-  'category_code',
   'attributes',
   'image_url',
   'entity_polygon_id',
@@ -54,9 +47,6 @@ const buildRow = (entity, parentCodeById) => ({
   parent_code: entity.parent_id ? parentCodeById.get(entity.parent_id) ?? '' : '',
   longitude: entity.longitude ?? '',
   latitude: entity.latitude ?? '',
-  facility_type: entity.facility_type ?? '',
-  type_name: entity.type_name ?? '',
-  category_code: entity.category_code ?? '',
   attributes: serialiseJsonField(entity.attributes),
   image_url: entity.image_url ?? '',
   entity_polygon_id: entity.entity_polygon_id ?? '',
@@ -72,18 +62,12 @@ const fetchProjectEntities = async (models, projectId) =>
              e.attributes, e.image_url, e.entity_polygon_id,
              ST_X(e.point::geometry) AS longitude,
              ST_Y(e.point::geometry) AS latitude,
-             f.type AS facility_type,
-             f.type_name AS type_name,
-             f.category_code AS category_code,
              ep.code AS entity_polygon_code,
              ep.data_source AS entity_polygon_data_source,
              dse.config AS data_service_entity_config
       FROM entity e
       LEFT JOIN entity_polygon ep ON ep.id = e.entity_polygon_id
       LEFT JOIN data_service_entity dse ON dse.entity_code = e.code
-      -- Facility metadata lives in the legacy-named 'clinic' table
-      -- (RECORDS.FACILITY = 'clinic') — joined on entity.code.
-      LEFT JOIN clinic f ON f.code = e.code
       WHERE e.project_id = ?
         AND e.type NOT IN ('world', 'country', 'project')
         -- Only export entities whose country is actually part of the project

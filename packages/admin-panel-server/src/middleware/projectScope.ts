@@ -10,8 +10,10 @@ type ProjectScopeRule = {
   filter: (project: Project) => Record<string, unknown>;
   ownership: (id: string, models: Models) => Promise<ProjectRef | null>;
   // Required so a new rule can't silently bypass POST scope enforcement by
-  // forgetting to define one.
-  bodyOwnership: (body: unknown, models: Models) => Promise<ProjectRef | null>;
+  // forgetting to define one. Receives the active project so a rule whose
+  // create isn't scope-bound (e.g. creating a brand-new project) can opt in by
+  // returning it.
+  bodyOwnership: (body: unknown, models: Models, project: Project) => Promise<ProjectRef | null>;
 };
 
 const projectIdFromBody = (body: unknown): ProjectRef | null => {
@@ -72,6 +74,16 @@ const RULES: Record<string, ProjectScopeRule> = {
       const survey = await models.survey.findById(surveyId);
       return survey?.project_id ? { id: survey.project_id } : null;
     },
+  },
+  projects: {
+    // Single-project section shows just the selected project's editable row.
+    filter: project => ({ id: project.id }),
+    // A project's "owning project" is itself, so edits/deletes are allowed only
+    // on the active project's row.
+    ownership: async id => ({ id }),
+    // Creating a project is a global action, not constrained to the active
+    // scope — allow it by treating the active project as the owner.
+    bodyOwnership: async (_body, _models, project) => project,
   },
 };
 
@@ -165,7 +177,7 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
       // only a genuine multipart match skips; bodyless POSTs still hit the check.
       const isMultipart = Boolean(req.is('multipart/form-data'));
       if (!isMultipart) {
-        const owner = await rule.bodyOwnership(req.body, req.models);
+        const owner = await rule.bodyOwnership(req.body, req.models, projectCtx);
         if (!owner) {
           res.status(400).json({
             error: `${resourceKey} body must reference a project in the active scope`,

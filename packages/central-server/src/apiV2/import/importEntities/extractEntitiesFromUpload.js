@@ -1,7 +1,26 @@
 import path from 'node:path';
 import xlsx from 'xlsx';
 
-import { convertCellToJson } from '../importSurveys/utilities';
+/**
+ * Parse a JSON-object cell (`attributes`, `data_service_entity`). The exporter
+ * writes these with `JSON.stringify`, so the importer must `JSON.parse` them to
+ * round-trip cleanly. (The legacy `key:value`-per-line `convertCellToJson`
+ * parser mangled the JSON — e.g. `{"x":"y"}` became `{'{"x"':'"y"}'}`.)
+ */
+const parseJsonObjectCell = (value, field) => {
+  if (value === null || value === undefined || value === '') return undefined;
+  if (typeof value === 'object') return value; // already an object (defensive)
+  let parsed;
+  try {
+    parsed = JSON.parse(value);
+  } catch (error) {
+    throw new Error(`Invalid JSON in the "${field}" column: ${value}`);
+  }
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    throw new Error(`The "${field}" column must be a JSON object, got: ${value}`);
+  }
+  return parsed;
+};
 
 /**
  * Extract entity rows from a single-sheet xlsx upload. The file format
@@ -17,10 +36,10 @@ import { convertCellToJson } from '../importSurveys/utilities';
 const processXlsxRow = row => {
   const entity = { ...row };
   if (row.attributes) {
-    entity.attributes = convertCellToJson(row.attributes);
+    entity.attributes = parseJsonObjectCell(row.attributes, 'attributes');
   }
   if (row.data_service_entity) {
-    entity.data_service_entity = convertCellToJson(row.data_service_entity);
+    entity.data_service_entity = parseJsonObjectCell(row.data_service_entity, 'data_service_entity');
   }
   return entity;
 };

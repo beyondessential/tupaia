@@ -107,8 +107,12 @@ const EditSurveyPageComponent = withConnectedEditor(
 
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
 
-    // need to explicity state the path here because using '../../' doesn't apply the search state
-    const { to, newState } = useLinkToPreviousSearchState('/surveys');
+    // need to explicity state the path here because using '../../' doesn't apply the search state.
+    // Surveys is project-scoped, so return to the scoped list under the active
+    // project rather than the all-data root (which lands on Data Elements).
+    const { to, newState } = useLinkToPreviousSearchState(
+      params.projectCode ? `/${params.projectCode}/surveys` : '/surveys',
+    );
 
     const openErrorModal = () => setErrorModalOpen(true);
 
