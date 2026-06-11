@@ -152,15 +152,22 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
     expect(codes.has('VU_village_1')).to.equal(true);
   });
 
-  it('omits country, world, and project entities (out of scope for entity import)', async () => {
+  it("includes the project's country entities but omits world and project entities", async () => {
     await app.grantAccess(BES_ADMIN_POLICY);
     const { workbook } = await downloadXlsx(app.get('export/entities/export_entities_test'));
 
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = xlsx.utils.sheet_to_json(sheet);
     const types = new Set(rows.map(r => r.entity_type));
-    expect(types.has('country')).to.equal(false);
+    // Country entities are now included (via project_country) so a multi-country
+    // project's export is complete; world/project remain out of scope.
+    expect(types.has('country')).to.equal(true);
     expect(types.has('world')).to.equal(false);
     expect(types.has('project')).to.equal(false);
+
+    // The project's countries appear as country rows.
+    const countryRowCodes = new Set(rows.filter(r => r.entity_type === 'country').map(r => r.code));
+    expect(countryRowCodes.has('KI')).to.equal(true);
+    expect(countryRowCodes.has('VU')).to.equal(true);
   });
 });

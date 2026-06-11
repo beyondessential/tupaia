@@ -56,19 +56,29 @@ const buildRow = (entity, parentCodeById) => ({
   data_service_entity: serialiseJsonField(entity.data_service_entity_config ?? null),
 });
 
+// Columns selected for each export row. Shared between the two branches of the
+// UNION below so they line up.
+const ENTITY_COLUMNS = `
+  e.id, e.code, e.name, e.type, e.country_code, e.parent_id,
+  e.attributes, e.image_url, e.entity_polygon_id,
+  ST_X(e.point::geometry) AS longitude,
+  ST_Y(e.point::geometry) AS latitude,
+  ep.code AS entity_polygon_code,
+  ep.data_source AS entity_polygon_data_source,
+  dse.config AS data_service_entity_config
+`;
+const ENTITY_JOINS = `
+  LEFT JOIN entity_polygon ep ON ep.id = e.entity_polygon_id
+  LEFT JOIN data_service_entity dse ON dse.entity_code = e.code
+`;
+
 const fetchProjectEntities = async (models, projectId, allowedCountryCodes) =>
   models.database.executeSql(
     `
-      SELECT e.id, e.code, e.name, e.type, e.country_code, e.parent_id,
-             e.attributes, e.image_url, e.entity_polygon_id,
-             ST_X(e.point::geometry) AS longitude,
-             ST_Y(e.point::geometry) AS latitude,
-             ep.code AS entity_polygon_code,
-             ep.data_source AS entity_polygon_data_source,
-             dse.config AS data_service_entity_config
+      -- Sub-country entities scoped to this project.
+      SELECT ${ENTITY_COLUMNS}
       FROM entity e
-      LEFT JOIN entity_polygon ep ON ep.id = e.entity_polygon_id
-      LEFT JOIN data_service_entity dse ON dse.entity_code = e.code
+      ${ENTITY_JOINS}
       WHERE e.project_id = ?
         -- Scope to the countries the requesting user has Tupaia Admin Panel
         -- access to — matches the baseline export's permission behaviour.
@@ -87,9 +97,20 @@ const fetchProjectEntities = async (models, projectId, allowedCountryCodes) =>
           WHERE pc.project_id = e.project_id
             AND c.code = e.country_code
         )
-      ORDER BY e.country_code ASC, e.code ASC;
+      UNION ALL
+      -- The project's shared country entities (project_id IS NULL), via the
+      -- project_country bridge, so a multi-country project's export is complete.
+      -- On re-import these are skipped — countries are shared and managed via
+      -- the Countries tab, not created per-project.
+      SELECT ${ENTITY_COLUMNS}
+      FROM entity e
+      ${ENTITY_JOINS}
+      JOIN project_country pc ON pc.country_id = e.id AND pc.project_id = ?
+      WHERE e.type = 'country'
+        AND e.code = ANY(?)
+      ORDER BY country_code ASC, code ASC;
     `,
-    [projectId],
+    [projectId, allowedCountryCodes, projectId, allowedCountryCodes],
   );
 
 const fetchCountryParentLookup = async (models, projectId) =>
