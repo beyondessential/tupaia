@@ -7,7 +7,10 @@ type ProjectRef = { id: string };
 type Models = Request['models'];
 
 type ProjectScopeRule = {
-  filter: (project: Project) => Record<string, unknown>;
+  filter: (
+    project: Project,
+    models: Models,
+  ) => Record<string, unknown> | Promise<Record<string, unknown>>;
   ownership: (id: string, models: Models) => Promise<ProjectRef | null>;
   // Required so a new rule can't silently bypass POST scope enforcement by
   // forgetting to define one. Receives the active project so a rule whose
@@ -51,7 +54,24 @@ const RULES: Record<string, ProjectScopeRule> = {
     bodyOwnership: projectRefFromBody,
   },
   entities: {
-    filter: project => ({ project_id: project.id }),
+    // Show the project's own (sub-country) entities plus the shared country
+    // entities the project spans. Country entities are structural
+    // (project_id IS NULL), so project_id alone would hide them — match them by
+    // code instead, scoped to the project's project_country set. World/project
+    // entities stay hidden. Wrapped in _and_ so it's a single bracketed group:
+    // merging with a caller's filter ANDs it in as a hard boundary rather than
+    // letting the OR widen the result set.
+    filter: async (project, models) => {
+      const projectRecord = await models.project.findById(project.id);
+      const countries = projectRecord ? await projectRecord.countries() : [];
+      const countryCodes = countries.map(country => (country as unknown as { code: string }).code);
+      return {
+        _and_: {
+          project_id: project.id,
+          _or_: { type: 'country', code: countryCodes },
+        },
+      };
+    },
     ownership: async (id, models) => {
       const entity = await models.entity.findById(id);
       const projectId = (entity as { project_id?: string } | undefined)?.project_id;
@@ -150,7 +170,7 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
       }
       // Scope filter wins on conflict — must be a hard boundary, not an
       // opt-out the caller can override by supplying their own project_id.
-      const merged = { ...existing, ...rule.filter(projectCtx) };
+      const merged = { ...existing, ...(await rule.filter(projectCtx, req.models)) };
       url.searchParams.set('filter', JSON.stringify(merged));
     } else if (isMutationOnId(req.method, segments)) {
       const id = segments[1];
