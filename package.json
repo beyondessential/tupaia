@@ -38,16 +38,16 @@
     "validate": "./scripts/bash/validate.sh",
     "package:build:ts": "cd \"$INIT_CWD\" && tsc -p tsconfig-build.json",
     "package:build:ts-watch": "cd \"$INIT_CWD\" && tsc -p tsconfig-build.json --watch",
-    "package:build:js": "cd \"$INIT_CWD\" && babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\"",
-    "package:build:js-watch": "cd \"$INIT_CWD\" && babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\" --watch",
+    "package:build:js": "cd \"$INIT_CWD\" && babel src --out-dir dist --source-maps --config-file ../../babel.config.json --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\"",
+    "package:build:js-watch": "cd \"$INIT_CWD\" && babel src --out-dir dist --source-maps --config-file ../../babel.config.json --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\" --watch",
     "package:build:types": "cd \"$INIT_CWD\" && tsc",
-    "package:build:vite": "cd \"$INIT_CWD\" && vite build --config \"../../vite.config.js\"",
-    "package:build:lib": "cd \"$INIT_CWD\" && babel src --out-dir lib --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\"",
+    "package:build:vite": "cd \"$INIT_CWD\" && vite build --config ../../vite.config.js",
+    "package:build:lib": "cd \"$INIT_CWD\" && babel src --out-dir lib --source-maps --config-file ../../babel.config.json --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\"",
     "package:lint": "cd \"$INIT_CWD\" && eslint .",
     "package:test": "cd \"$INIT_CWD\" && jest",
     "package:test:withdb": "cd \"$INIT_CWD\" && yarn workspace @tupaia/database check-test-database-exists && jest --runInBand",
     "package:start:backend-start-dev": "cd \"$INIT_CWD\" && LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh",
-    "package:start:vite": "cd \"$INIT_CWD\" && vite --config \"../../vite.config.js\"",
+    "package:start:vite": "cd \"$INIT_CWD\" && vite --config ../../vite.config.js",
     "package:start-stack": "scripts/bash/pm2startInline.sh",
     "package:storybook:start": "cd \"$INIT_CWD\" && storybook dev -p 6006 -c ../../.storybook",
     "package:storybook:build": "cd \"$INIT_CWD\" && storybook build -c .storybook",
@@ -56,7 +56,10 @@
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@babel/types": "7.25.6",
-    "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0"
+    "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0",
+    "@types/react@*": "16.9.17",
+    "on-headers": "1.1.0",
+    "react-smooth/lodash": "^4.18.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.25.6",

@@ -1,7 +1,8 @@
-import { toFilename } from '@tupaia/utils';
+import moment, { type Moment } from 'moment';
 import { useTable } from 'react-table';
-import moment, { Moment } from 'moment';
 import { utils, writeFile } from 'xlsx';
+
+import { sanitizeWorksheetName, toFilename } from '@tupaia/utils';
 
 export const useDataTableExport = (
   columns: any[],
@@ -10,14 +11,7 @@ export const useDataTableExport = (
   startDate: Moment | string | Date | undefined,
   endDate: Moment | string | Date | undefined,
 ) => {
-  const {
-    headerGroups,
-    rows: tableData,
-    columns: tableColumns,
-  } = useTable({
-    columns,
-    data,
-  });
+  const { columns: tableColumns, headerGroups, rows: tableData } = useTable({ columns, data });
 
   const doExport = () => {
     const date = moment().format('Do MMM YY');
@@ -50,21 +44,12 @@ export const useDataTableExport = (
     const sheet = utils.aoa_to_sheet([[title]]);
     sheet['!cols'] = [{ wch: 20 }];
 
-    // add header
-    utils.sheet_add_aoa(sheet, header, {
-      origin: 'A3',
-    });
-
-    // add body
+    // header
+    utils.sheet_add_aoa(sheet, header, { origin: 'A3' });
+    // body
     utils.sheet_add_aoa(sheet, body, { origin: -1 });
-
-    // spacer before footer
-    utils.sheet_add_aoa(sheet, [[]], {
-      origin: -1,
-    });
-    utils.sheet_add_aoa(sheet, [[]], {
-      origin: -1,
-    });
+    // spacer
+    utils.sheet_add_aoa(sheet, [[''], ['']], { origin: -1 });
 
     // footer
     if (startDate && endDate) {
@@ -73,21 +58,17 @@ export const useDataTableExport = (
       utils.sheet_add_aoa(
         sheet,
         [[`Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}.`]],
-        {
-          origin: -1,
-        },
+        { origin: -1 },
       );
     }
     utils.sheet_add_aoa(
       sheet,
       [[`Exported on ${String(moment())} from ${window.location.hostname}`]],
-      {
-        origin: -1,
-      },
+      { origin: -1 },
     );
 
     // Make  xlsx workbook
-    const sheetName = `Export on ${date}`;
+    const sheetName = sanitizeWorksheetName(`Export on ${date}`);
     const workbook = { SheetNames: [sheetName], Sheets: { [sheetName]: sheet } };
 
     // Make filename
