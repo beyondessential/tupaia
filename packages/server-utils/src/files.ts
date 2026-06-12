@@ -2,17 +2,6 @@ import fs from 'node:fs';
 import fse from 'fs-extra';
 import winston from 'winston';
 
-export function removeDirectoryIfExists(directoryPath: string) {
-  try {
-    // Check if directory exists before attempting to remove
-    if (fs.existsSync(directoryPath)) {
-      fs.rmSync(directoryPath, { recursive: true, force: true });
-      winston.info(`Successfully removed directory: ${directoryPath}`);
-    }
-  } catch (error) {
-    winston.error(`Error removing directory ${directoryPath}:`, error);
-  }
-}
 
 export function createDirectory(directoryPath: string) {
   try {

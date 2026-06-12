@@ -1,18 +1,14 @@
 import DBMigrate from 'db-migrate';
-import path from 'path';
-import fs from 'fs';
+import fs from 'node:fs';
+import path from 'node:path';
 import winston from 'winston';
 
-import { copyDirectory, removeDirectoryIfExists, createDirectory } from '@tupaia/server-utils';
-
-import { runPostMigration } from './runPostMigration';
+import { copyDirectory, createDirectory } from '@tupaia/server-utils';
 import { getConnectionConfig } from './getConnectionConfig';
+import { runPostMigration } from './runPostMigration';
 
 const MIGRATIONS_DIR = path.resolve(__dirname, '../core/migrations');
-const SERVER_MIGRATION_DIR = path.resolve(
-  __dirname,
-  `../core/server-migrations-${Date.now()}`,
-);
+const SERVER_MIGRATION_DIR = path.resolve(__dirname, `../core/server-migrations-${Date.now()}`);
 
 const exitWithError = error => {
   console.error(error.message);
@@ -20,7 +16,8 @@ const exitWithError = error => {
 };
 
 const resetMigrationFolder = () => {
-  removeDirectoryIfExists(SERVER_MIGRATION_DIR);
+  fs.rmSync(SERVER_MIGRATION_DIR, { recursive: true, force: true });
+  winston.info(`Reset migration directory: ${SERVER_MIGRATION_DIR}`);
 };
 
 /**
@@ -112,7 +109,7 @@ export const getDbMigrator = (forCli = false) => {
     // This hook is called BEFORE the migrations are run,
     // so we temporarily remove non-server migrations before they are run
     instance.registerAPIHook(() => {
-      removeDirectoryIfExists(SERVER_MIGRATION_DIR);
+      fs.rmSync(SERVER_MIGRATION_DIR, { recursive: true, force: true });
       createDirectory(SERVER_MIGRATION_DIR);
       copyDirectory(MIGRATIONS_DIR, SERVER_MIGRATION_DIR);
       removeNonServerMigrations();
