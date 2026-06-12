@@ -52,23 +52,33 @@ export class GETProjects extends GETHandler {
     );
 
     const record = await super.findSingleRecord(projectId, options);
-    const [withCountries] = await this.attachCountries([record]);
-    return withCountries;
+    if (!record) return record;
+    // Key off the known projectId, not record.id — the single-record fetch
+    // doesn't request the id column, so record.id is usually absent.
+    const byProject = await this.fetchCountriesByProject([projectId]);
+    const { countries = [], countryCodes = [] } = byProject.get(projectId) ?? {};
+    return { ...record, countries, countryCodes };
   }
 
   async findRecords(criteria, options) {
     const records = await super.findRecords(criteria, options);
-    return this.attachCountries(records);
+    const projectIds = records.map(record => record?.id).filter(Boolean);
+    const byProject = await this.fetchCountriesByProject(projectIds);
+    return records.map(record => {
+      if (!record) return record;
+      const { countries = [], countryCodes = [] } = byProject.get(record.id) ?? {};
+      return { ...record, countries, countryCodes };
+    });
   }
 
-  // Attach each project's countries. `countries` is the array of `country` table
-  // ids the edit form's checkbox list pre-fills and submits (matching the create
-  // field's optionValueKey); `countryCodes` is the human-readable list display.
-  // project_country stores country *entity* ids, so map back to the country table
-  // via the shared entity code.
-  async attachCountries(records) {
-    const projectIds = records.map(record => record?.id).filter(Boolean);
-    if (projectIds.length === 0) return records;
+  // Map each project id to its countries: `countries` is the array of `country`
+  // table ids the edit form's checkbox list pre-fills and submits (matching the
+  // create field's optionValueKey); `countryCodes` is the human-readable list
+  // display. project_country stores country *entity* ids, so map back to the
+  // country table via the shared entity code.
+  async fetchCountriesByProject(projectIds) {
+    const byProject = new Map();
+    if (projectIds.length === 0) return byProject;
 
     const rows = await this.database.executeSql(
       `
@@ -82,18 +92,13 @@ export class GETProjects extends GETHandler {
       projectIds,
     );
 
-    const byProject = new Map();
     for (const { project_id: projectId, country_id: countryId, country_code: code } of rows) {
       if (!byProject.has(projectId)) byProject.set(projectId, { countries: [], countryCodes: [] });
       byProject.get(projectId).countries.push(countryId);
       byProject.get(projectId).countryCodes.push(code);
     }
 
-    return records.map(record => {
-      if (!record) return record;
-      const { countries = [], countryCodes = [] } = byProject.get(record.id) ?? {};
-      return { ...record, countries, countryCodes };
-    });
+    return byProject;
   }
 
   async getPermissionsFilter(criteria, options) {
