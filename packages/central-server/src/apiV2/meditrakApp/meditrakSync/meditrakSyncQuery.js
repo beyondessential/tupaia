@@ -62,9 +62,41 @@ export const deletesSinceLastSync = since => {
   return { query, params };
 };
 
+// LEFT JOIN the set of canonical entity ids (MIN(id) per code) so the canonical
+// filter below can test membership with a hash join instead of a per-row
+// IN-subquery. On a ~1M-row sync queue the IN-subquery form was planned as a
+// non-hashed Materialized subplan probed per row (cost ~1.4 billion → sync
+// timed out); the hash join is ~12,000x cheaper. The subquery yields one row
+// per code, so the LEFT JOIN never multiplies sync-queue rows.
 export const selectFromClause = select => `
   SELECT ${select} FROM permissions_based_meditrak_sync_queue
+  LEFT JOIN (
+    SELECT MIN(id) AS canonical_entity_id FROM entity GROUP BY code
+  ) canonical_entities ON canonical_entities.canonical_entity_id = record_id
 `;
+
+/**
+ * Post-epic, `entity` can have multiple rows per code (one per project).
+ * MediTrak models entities as canonical (one row per code), so this filter
+ * limits entity-row changes to the canonical row only:
+ *
+ *   canonical = MIN(id) GROUP BY code
+ *
+ * Non-entity records pass through unchanged. Membership is resolved via the
+ * `canonical_entities` LEFT JOIN added in `selectFromClause` (an entity record
+ * is canonical iff it matched that join) rather than an inline IN-subquery,
+ * which the planner couldn't hash and ran per-row. See TUP-3067 for the
+ * rationale — pre-epic rows kept their original id through the migration, and
+ * any newer duplicate inserts get fresh timestamp-prefixed ids (always higher),
+ * so MIN(id) deterministically picks the pre-epic original row.
+ */
+export const canonicalEntityFilter = () => ({
+  query: `(
+      record_type != 'entity'
+      OR canonical_entities.canonical_entity_id IS NOT NULL
+    )`,
+  params: [],
+});
 
 export const extractSinceValue = req => {
   const { since = 0 } = req.query;
@@ -121,6 +153,10 @@ export const buildMeditrakSyncQuery = async (req, { select, sort, limit, offset 
       AND `);
     query.append(filter);
   }
+
+  query.append(`
+      AND `);
+  query.append(canonicalEntityFilter());
 
   query.append(getModifiers(sort, limit, offset));
 
