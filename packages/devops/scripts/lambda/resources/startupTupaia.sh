@@ -67,7 +67,6 @@ set_prompt
 mkdir -m 777 -p "$logs_dir"
 
 schedule_preaggregation_job() {
-  \. "$home_dir/.nvm/nvm.sh" # Load nvm so node is available on $PATH
   sudo -u ubuntu echo "10 13 * * * PATH=$PATH $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date --iso-8601=seconds) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
   sudo -u ubuntu crontab -l >>tmp.cron || echo >>tmp.cron
   sudo -u ubuntu crontab tmp.cron
@@ -101,11 +100,16 @@ main() {
   #   $deployment_scripts/startCloudwatchAgent.sh
   # fi
 
+  \. "$home_dir/.nvm/nvm.sh" # Load nvm so node is available on $PATH
+
   if [[ $deployment_name = production ]]; then
     schedule_preaggregation_job
   fi
 
   fetch_latest_code
+
+  # In case .nvmrc has changed in current branch (normally redundant)
+  nvm install --default
 
   # central-server and data-table-server need Tailnet access for external database connections
   sudo -Hu ubuntu DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/connectTailscale.sh
