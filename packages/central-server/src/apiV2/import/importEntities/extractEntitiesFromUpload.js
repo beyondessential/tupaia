@@ -1,33 +1,6 @@
 import path from 'node:path';
 import xlsx from 'xlsx';
-
-/**
- * Parse an attribute cell (`attributes`, `data_service_entity`) written as
- * newline-separated `key: value` lines — the human-friendly reference-data
- * format the exporter emits (see exportEntities.js). These columns are flat
- * scalar objects; `true`/`false` round-trip back to booleans, everything else
- * stays a string (so ids like a kobo_id aren't coerced to numbers).
- */
-const parseKeyValueCell = (value, field) => {
-  if (value === null || value === undefined || value === '') return undefined;
-  if (typeof value === 'object') return value; // already an object (defensive)
-
-  const result = {};
-  for (const line of String(value).split('\n')) {
-    const trimmed = line.trim();
-    if (trimmed === '') continue;
-    const separatorIndex = trimmed.indexOf(':');
-    if (separatorIndex === -1) {
-      throw new Error(`The "${field}" column must be "key: value" lines, got: ${line}`);
-    }
-    const key = trimmed.slice(0, separatorIndex).trim();
-    const rawValue = trimmed.slice(separatorIndex + 1).trim();
-    if (rawValue === 'true') result[key] = true;
-    else if (rawValue === 'false') result[key] = false;
-    else result[key] = rawValue;
-  }
-  return Object.keys(result).length > 0 ? result : undefined;
-};
+import { convertCellToJson } from '../importSurveys/utilities';
 
 /**
  * Extract entity rows from a single-sheet xlsx upload. The file format
@@ -42,11 +15,14 @@ const parseKeyValueCell = (value, field) => {
  */
 const processXlsxRow = row => {
   const entity = { ...row };
+  // attributes / data_service_entity are newline-separated `key: value` cells.
+  // Parse them with the same helper the rest of the importer uses, so the format
+  // stays identical to the reference-data import: all values are strings.
   if (row.attributes) {
-    entity.attributes = parseKeyValueCell(row.attributes, 'attributes');
+    entity.attributes = convertCellToJson(row.attributes);
   }
   if (row.data_service_entity) {
-    entity.data_service_entity = parseKeyValueCell(row.data_service_entity, 'data_service_entity');
+    entity.data_service_entity = convertCellToJson(row.data_service_entity);
   }
   return entity;
 };

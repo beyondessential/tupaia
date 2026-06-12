@@ -346,7 +346,7 @@ describe('importEntities(): POST import/entities', () => {
       app.revokeAccess();
     });
 
-    it('parses newline-separated key: value attributes and data_service_entity, coercing booleans', async () => {
+    it('parses newline-separated key: value attributes and data_service_entity (values stay strings)', async () => {
       const response = await importRows([
         {
           code: 'KI_attr_facility',
@@ -360,13 +360,13 @@ describe('importEntities(): POST import/entities', () => {
       expect(response.statusCode).to.equal(200);
 
       const entity = await models.entity.findOne({ code: 'KI_attr_facility' });
-      // strings stay strings; true/false round-trip back to booleans.
-      expect(entity.attributes).to.deep.equal({ area_type: 'island', is_active: true });
+      // Matches the reference-data import (convertCellToJson): every value is a
+      // string, so `true` stays the string "true" rather than becoming a boolean.
+      expect(entity.attributes).to.deep.equal({ area_type: 'island', is_active: 'true' });
 
       const dataServiceEntity = await models.dataServiceEntity.findOne({
         entity_code: 'KI_attr_facility',
       });
-      // numeric-looking ids must stay strings, not be coerced to numbers.
       expect(dataServiceEntity.config).to.deep.equal({ kobo_id: '10302070' });
     });
   });
