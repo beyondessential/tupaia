@@ -46,8 +46,17 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
         entities: [
           { code: 'KI', country_code: 'KI' },
           { code: 'VU', country_code: 'VU' },
-          { code: 'KI_village_1', country_code: 'KI', type: 'village', parent_code: 'KI' },
-          { code: 'VU_village_1', country_code: 'VU', type: 'village', parent_code: 'VU' },
+          { code: 'KI_village_1', country_code: 'KI', type: 'village' },
+          { code: 'VU_village_1', country_code: 'VU', type: 'village' },
+        ],
+        // Explicit relations so the villages sit under their countries (the
+        // helper otherwise parents every entity directly to the project entity,
+        // and ignores the fixture's parent_code).
+        relations: [
+          { parent: 'export_entities_test', child: 'KI' },
+          { parent: 'export_entities_test', child: 'VU' },
+          { parent: 'KI', child: 'KI_village_1' },
+          { parent: 'VU', child: 'VU_village_1' },
         ],
       },
     ]);

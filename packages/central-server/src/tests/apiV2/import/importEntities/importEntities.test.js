@@ -373,6 +373,7 @@ describe('importEntities(): POST import/entities', () => {
           name: 'Attr facility',
           entity_type: 'facility',
           country_code: 'KI',
+          parent_code: 'KI',
           attributes: 'area_type: island\nis_active: true',
           data_service_entity: 'kobo_id: 10302070',
         },
