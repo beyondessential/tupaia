@@ -4,17 +4,15 @@ import { BESAdminCreateHandler } from './CreateHandler';
 /**
  * Handles POST /countries.
  *
- * Creating a country is no longer just a `country` table row: a country needs a
- * matching shared entity (type `country`, parented to World, `project_id` NULL)
- * for the hierarchy, and — when created from within a project scope — a
- * `project_country` row so the new country belongs to the active project. This
- * keeps the three in step so a freshly added country is immediately usable for
- * entity import/export and visualisation within that project.
+ * Creating a country is no longer just a `country` table row: a country also
+ * needs a matching shared entity (type `country`, parented to World,
+ * `project_id` NULL) for the hierarchy. The Countries tab is an all-projects
+ * view, so the country isn't tied to any project here — associating it with a
+ * project is a separate step (project_country).
  */
 export class CreateCountry extends BESAdminCreateHandler {
   async createRecord() {
     const { code, name } = this.newRecordData;
-    const { projectCode } = this.req.query;
 
     await this.models.wrapInTransaction(async transactingModels => {
       await transactingModels.country.create({ code, name });
@@ -27,7 +25,7 @@ export class CreateCountry extends BESAdminCreateHandler {
           'World entity not found — run entity hierarchy setup before creating countries',
         );
       }
-      const countryEntity = await transactingModels.entity.findOrCreate(
+      await transactingModels.entity.findOrCreate(
         { code, project_id: null },
         {
           name,
@@ -39,19 +37,6 @@ export class CreateCountry extends BESAdminCreateHandler {
           metadata: { dhis: { dhisInstanceCode: 'regional' } },
         },
       );
-
-      if (projectCode) {
-        const project = await transactingModels.project.findOne({ code: projectCode });
-        if (!project) {
-          // projectCode was explicitly supplied, so a missing project is a
-          // caller error, not a reason to silently create an unlinked country.
-          throw new Error(`Cannot link country to unknown project: ${projectCode}`);
-        }
-        await transactingModels.projectCountry.findOrCreate({
-          project_id: project.id,
-          country_id: countryEntity.id,
-        });
-      }
     });
   }
 }
