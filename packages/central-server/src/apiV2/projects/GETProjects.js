@@ -43,7 +43,49 @@ export class GETProjects extends GETHandler {
       assertAnyPermissions([assertBESAdminAccess, projectPermissionChecker]),
     );
 
-    return super.findSingleRecord(projectId, options);
+    const record = await super.findSingleRecord(projectId, options);
+    const [withCountries] = await this.attachCountries([record]);
+    return withCountries;
+  }
+
+  async findRecords(criteria, options) {
+    const records = await super.findRecords(criteria, options);
+    return this.attachCountries(records);
+  }
+
+  // Attach each project's countries. `countries` is the array of `country` table
+  // ids the edit form's checkbox list pre-fills and submits (matching the create
+  // field's optionValueKey); `countryCodes` is the human-readable list display.
+  // project_country stores country *entity* ids, so map back to the country table
+  // via the shared entity code.
+  async attachCountries(records) {
+    const projectIds = records.map(record => record?.id).filter(Boolean);
+    if (projectIds.length === 0) return records;
+
+    const rows = await this.database.executeSql(
+      `
+        SELECT pc.project_id, c.id AS country_id, c.code AS country_code
+        FROM project_country pc
+        JOIN entity e ON e.id = pc.country_id
+        JOIN country c ON c.code = e.code
+        WHERE pc.project_id IN (${projectIds.map(() => '?').join(', ')})
+        ORDER BY c.code ASC;
+      `,
+      projectIds,
+    );
+
+    const byProject = new Map();
+    for (const { project_id: projectId, country_id: countryId, country_code: code } of rows) {
+      if (!byProject.has(projectId)) byProject.set(projectId, { countries: [], countryCodes: [] });
+      byProject.get(projectId).countries.push(countryId);
+      byProject.get(projectId).countryCodes.push(code);
+    }
+
+    return records.map(record => {
+      if (!record) return record;
+      const { countries = [], countryCodes = [] } = byProject.get(record.id) ?? {};
+      return { ...record, countries, countryCodes };
+    });
   }
 
   async getPermissionsFilter(criteria, options) {

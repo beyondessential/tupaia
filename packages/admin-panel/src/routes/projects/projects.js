@@ -98,6 +98,22 @@ const EDIT_FIELDS = [
   },
   ...DEFAULT_FIELDS,
   {
+    // List shows the country codes; the modal edits the project_country links.
+    // Pre-fills and submits `countries` (country ids) like the Add project modal.
+    Header: 'Countries',
+    source: 'countryCodes',
+    Filter: ArrayFilter,
+    Cell: ({ value }) => prettyArray(value),
+    editConfig: {
+      type: 'checkboxList',
+      optionsEndpoint: 'countries',
+      optionLabelKey: 'country.name',
+      optionValueKey: 'country.id',
+      sourceKey: 'countries',
+      pageSize: 'ALL',
+    },
+  },
+  {
     Header: 'Config',
     source: 'config',
     type: 'jsonTooltip',
