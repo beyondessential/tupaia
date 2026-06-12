@@ -16,13 +16,11 @@ const writeXlsx = rows => {
 };
 
 describe('extractEntitiesFromUpload', () => {
-  it('parses a JSON attributes cell into an object (round-trips the exporter format)', () => {
-    // The exporter writes attributes with JSON.stringify; the importer must
-    // JSON.parse them. Previously it used convertCellToJson (key:value lines),
-    // which mangled {"andrewtest":"true"} into {'{"andrewtest"':'"true"}'}.
-    const filePath = writeXlsx([
-      { code: 'TEST_X', attributes: JSON.stringify({ andrewtest: 'true', count: '5' }) },
-    ]);
+  it('parses a key: value attributes cell into an object (round-trips the exporter format)', () => {
+    // The exporter writes attributes as newline-separated `key: value` lines;
+    // the importer reads them back with convertCellToJson (matching dev). Every
+    // value stays a string.
+    const filePath = writeXlsx([{ code: 'TEST_X', attributes: 'andrewtest: true\ncount: 5' }]);
     try {
       const [entity] = extractEntitiesFromUpload(filePath);
       expect(entity.attributes).to.deep.equal({ andrewtest: 'true', count: '5' });
@@ -31,29 +29,14 @@ describe('extractEntitiesFromUpload', () => {
     }
   });
 
-  it('also parses a JSON data_service_entity cell', () => {
-    const filePath = writeXlsx([
-      { code: 'TEST_X', data_service_entity: JSON.stringify({ dhisId: 'abc' }) },
-    ]);
+  it('also parses a key: value data_service_entity cell', () => {
+    const filePath = writeXlsx([{ code: 'TEST_X', data_service_entity: 'dhisId: abc' }]);
     try {
       const [entity] = extractEntitiesFromUpload(filePath);
       expect(entity.data_service_entity).to.deep.equal({ dhisId: 'abc' });
     } finally {
       fs.unlinkSync(filePath);
     }
-  });
-
-  it('throws a clear error on a non-JSON attributes cell', () => {
-    const filePath = writeXlsx([{ code: 'TEST_X', attributes: 'andrewtest:true' }]);
-    let caught;
-    try {
-      extractEntitiesFromUpload(filePath);
-    } catch (error) {
-      caught = error;
-    } finally {
-      fs.unlinkSync(filePath);
-    }
-    expect(caught?.message).to.match(/Invalid JSON in the "attributes" column/);
   });
 
   it('leaves a blank attributes cell untouched', () => {
