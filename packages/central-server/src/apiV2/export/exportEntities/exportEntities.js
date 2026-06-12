@@ -114,11 +114,41 @@ const fetchProjectEntities = async (models, projectId, allowedCountryCodes) =>
       ${ENTITY_JOINS}
       JOIN project_country pc ON pc.country_id = e.id AND pc.project_id = ?
       WHERE e.type = 'country'
-        AND e.code = ANY(?)
-      ORDER BY country_code ASC, code ASC;
+        AND e.code = ANY(?);
     `,
     [projectId, allowedCountryCodes, projectId, allowedCountryCodes],
   );
+
+// Order entities by generational distance from their country (countries first,
+// then each level down the tree), with an alphabetical-by-code secondary sort
+// within a level. Mirrors the baseline hierarchy export's breadth-first order.
+// Depth is walked up the parent_id chain within the result set, which always
+// contains every ancestor up to the country.
+const orderByGeneration = entities => {
+  const byId = new Map(entities.map(entity => [entity.id, entity]));
+  const depthOf = entity => {
+    let depth = 0;
+    let current = entity;
+    const visited = new Set();
+    while (
+      current &&
+      current.type !== 'country' &&
+      current.parent_id &&
+      byId.has(current.parent_id) &&
+      !visited.has(current.id)
+    ) {
+      visited.add(current.id);
+      depth += 1;
+      current = byId.get(current.parent_id);
+    }
+    return depth;
+  };
+
+  return entities
+    .map(entity => ({ entity, depth: depthOf(entity) }))
+    .sort((a, b) => a.depth - b.depth || (a.entity.code ?? '').localeCompare(b.entity.code ?? ''))
+    .map(({ entity }) => entity);
+};
 
 export async function exportEntities(req, res) {
   const { models, userId, accessPolicy } = req;
@@ -152,7 +182,7 @@ export async function exportEntities(req, res) {
   // in-scope country).
   const parentCodeById = new Map(entities.map(e => [e.id, e.code]));
 
-  const rows = entities.map(entity => buildRow(entity, parentCodeById));
+  const rows = orderByGeneration(entities).map(entity => buildRow(entity, parentCodeById));
   const sheet = xlsx.utils.json_to_sheet(rows, { header: COLUMN_ORDER });
 
   const workbook = xlsx.utils.book_new();

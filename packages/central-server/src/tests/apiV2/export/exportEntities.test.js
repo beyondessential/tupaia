@@ -77,6 +77,17 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
     expect(countryCodes.has('VU')).to.equal(false); // no access → scoped out
   });
 
+  it('orders rows by generation (countries first), alphabetical within a level', async () => {
+    await app.grantAccess(BES_ADMIN_POLICY);
+    const { workbook } = await downloadXlsx(app.get('export/entities/export_entities_test'));
+    const codes = xlsx.utils
+      .sheet_to_json(workbook.Sheets[workbook.SheetNames[0]])
+      .map(row => row.code);
+    // Countries (depth 0) before their villages (depth 1); alphabetical by code
+    // within each level.
+    expect(codes).to.deep.equal(['KI', 'VU', 'KI_village_1', 'VU_village_1']);
+  });
+
   it('returns 400 for unknown projectCode', async () => {
     await app.grantAccess(BES_ADMIN_POLICY);
     const response = await app.get('export/entities/does_not_exist');
