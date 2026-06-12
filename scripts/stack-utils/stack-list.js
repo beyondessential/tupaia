@@ -1,4 +1,4 @@
-const parseArgs = require('minimist');
+const { parseArgs } = require('node:util');
 const stacks = require('../../packages/devops/configs/server-stacks.json');
 
 /**
@@ -18,10 +18,6 @@ function mergeStacks(stackNames) {
  * Silently ignores invalid stack names.
  *
  * `--pretty` implies `--json`. Both take precedence over `--as-glob`.
- *
- * @privateRemarks
- * Not using our custom `Script` or `yargs` as it more than doubles the run time
- * of this script.
  */
 function main() {
   const args = process.argv.slice(2);
@@ -31,13 +27,18 @@ function main() {
   }
 
   const {
-    _: stackNames,
-    pretty,
-    json,
-    'as-glob': glob,
-  } = parseArgs(args, {
-    alias: { h: 'help' },
-    boolean: ['as-glob', 'help', 'join', 'json', 'pretty'],
+    values: { pretty, json, 'as-glob': glob },
+    positionals: stackNames,
+  } = parseArgs({
+    args,
+    options: {
+      'as-glob': { type: 'boolean' },
+      help: { type: 'boolean', short: 'h' },
+      join: { type: 'boolean' },
+      json: { type: 'boolean' },
+      pretty: { type: 'boolean' },
+    },
+    allowPositionals: true,
   });
 
   const packages = mergeStacks(stackNames);
