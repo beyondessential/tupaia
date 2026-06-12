@@ -111,6 +111,17 @@ export async function updateCountryEntities(
         pushToDhis,
         projectId,
       )) || {};
+    // Every sub-country entity must have a parent. Without this guard a row with
+    // no parent_code (and no district/sub_district) would create an orphan or,
+    // worse, wipe an existing entity's parent on update.
+    if (!parentEntity) {
+      throw new ImportValidationError(
+        'Missing parent_code — every entity must have a parent',
+        excelRowNumber,
+        'parent_code',
+        countryCode,
+      );
+    }
     // Note: facility classification (facility_type / type_name / category_code)
     // is no longer imported — it only wrote to the legacy `clinic` table, which
     // is deprecated (visuals read facility_type from entity.attributes now).
@@ -138,7 +149,7 @@ export async function updateCountryEntities(
       { code, project_id: projectId },
       {
         name,
-        parent_id: parentEntity ? parentEntity.id : null,
+        parent_id: parentEntity.id,
         type: entityType,
         country_code: country.code,
         image_url: imageUrl,
