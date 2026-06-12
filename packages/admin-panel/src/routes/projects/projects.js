@@ -98,13 +98,14 @@ const EDIT_FIELDS = [
   },
   ...DEFAULT_FIELDS,
   {
-    // List shows the country codes; the modal edits the project_country links.
-    // Pre-fills and submits `countries` (country ids) like the Add project modal.
-    // countryCodes is a virtual (post-query) column, so it can't be sorted or
-    // filtered at the SQL level.
+    // The modal edits the project_country links. `source` is the `countries`
+    // (country id) array so it survives the editor's record processing and
+    // pre-fills/submits like the Add project modal; the list cell shows the
+    // human-readable codes from the same record. Both are virtual (post-query)
+    // columns, so the list column can't be sorted or filtered at the SQL level.
     Header: 'Countries',
-    source: 'countryCodes',
-    Cell: ({ value }) => prettyArray(value),
+    source: 'countries',
+    Cell: ({ row }) => prettyArray(row?.original?.countryCodes ?? []),
     filterable: false,
     disableSortBy: true,
     editConfig: {
