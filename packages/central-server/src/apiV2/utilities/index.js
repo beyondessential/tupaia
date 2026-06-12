@@ -11,6 +11,7 @@ export {
   hasAccessToEntityForVisualisation,
   hasVizBuilderAccessToEntity,
   hasVizBuilderAccessToEntityCode,
+  resolveEntityOrProjectRoot,
 } from './hasAccessToEntityForVisualisation';
 export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
 export { mergeFilter } from './mergeFilter';

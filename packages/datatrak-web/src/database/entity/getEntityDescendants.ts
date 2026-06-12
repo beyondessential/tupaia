@@ -78,7 +78,12 @@ const getAllowedCountries = async (
   isPublic: boolean,
   accessPolicy: AccessPolicy,
 ): Promise<Entity['code'][]> => {
-  const rootEntity = await models.entity.findByIdOrThrow(rootEntityId);
+  // The project root has no entity row (its id is the project id), so synthesize it
+  // from the project record; other roots resolve to a real entity.
+  const rootEntity =
+    rootEntityId === project.id
+      ? await project.getRootEntity()
+      : await models.entity.findByIdOrThrow(rootEntityId);
 
   const countryEntities = await rootEntity.getChildrenFromParentChildRelation(project.id);
   const childCodes = countryEntities.map(child => child.country_code).filter(isNotNullish);
@@ -150,7 +155,7 @@ export const getEntityDescendants = async ({
   const formattedEntities = await models.wrapInReadOnlyTransaction(async transactingModels => {
     const project = await transactingModels.project.findOneOrThrow({ code: projectCode });
 
-    const rootEntityId = parentId || grandparentId || project.entity_id;
+    const rootEntityId = parentId || grandparentId || project.id;
     if (!rootEntityId) throw new Error('No valid rootEntity found');
 
     const allowedCountries = await getAllowedCountries(

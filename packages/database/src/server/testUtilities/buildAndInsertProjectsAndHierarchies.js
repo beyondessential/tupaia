@@ -10,29 +10,20 @@ const inferType = (entityProps, isDirectChildOfProject) => {
 const STRUCTURAL_TYPES = new Set(['world', 'project', 'country']);
 
 export const buildAndInsertProjectsAndHierarchies = async (models, projects) => {
-  // Pass 1 — projects + project entities + entity hierarchies. These are 1:1 with the
-  // input list and don't depend on each other.
+  // Pass 1 — projects + entity hierarchies. These are 1:1 with the input list and
+  // don't depend on each other. There is no longer a `type = 'project'` entity; a
+  // project's root is the project record itself (its countries come from project_country).
   const createdProjects = projects.map(() => ({}));
   for (let i = 0; i < projects.length; i++) {
     const { code, ...projectProps } = projects[i];
 
-    const projectEntity = await findOrCreateDummyRecord(
-      models.entity,
-      { code },
-      {
-        type: 'project',
-        name: projectProps.projectEntityName,
-        attributes: projectProps.projectEntityAttributes || {},
-      },
-    );
-
     const project = await findOrCreateDummyRecord(
       models.project,
       { code },
-      { entity_id: projectEntity.id, ...projectProps },
+      { name: projectProps.projectEntityName ?? code, ...projectProps },
     );
 
-    createdProjects[i] = { project, projectEntity };
+    createdProjects[i] = { project };
   }
 
   // Pass 2 — entities. Tabulate which projects use each entity code so we can decide
@@ -110,9 +101,12 @@ export const buildAndInsertProjectsAndHierarchies = async (models, projects) => 
   // through this project's entityByCode map so duplicates land in the right project.
   for (let i = 0; i < projects.length; i++) {
     const { entities: entitiesProps = [], relations: relationProps } = projects[i];
-    const { project, projectEntity } = createdProjects[i];
+    const { project } = createdProjects[i];
     const byCode = entityByProjectAndCode[i];
-    byCode[projectEntity.code] = projectEntity;
+    // The project root is the project record, keyed by its code so relations that
+    // name the project as a parent resolve to a project_country link below.
+    const projectRoot = { id: project.id, code: project.code, type: 'project' };
+    byCode[project.code] = projectRoot;
 
     const projectScopedEntities = entitiesProps
       .map(({ code }) => byCode[code])
@@ -120,7 +114,7 @@ export const buildAndInsertProjectsAndHierarchies = async (models, projects) => 
 
     const relations =
       relationProps ||
-      projectScopedEntities.map(entity => ({ parent: projectEntity.code, child: entity.code }));
+      projectScopedEntities.map(entity => ({ parent: project.code, child: entity.code }));
 
     for (const { parent, child } of relations) {
       const parentEntity = byCode[parent];

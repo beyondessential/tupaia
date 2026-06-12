@@ -2,7 +2,11 @@ import {
   hasDashboardRelationGetPermissions,
   hasDashboardRelationEditPermissions,
 } from '../dashboardRelations';
-import { hasVizBuilderAccessToEntity, hasVizBuilderAccessToEntityCode } from '../utilities';
+import {
+  hasVizBuilderAccessToEntity,
+  hasVizBuilderAccessToEntityCode,
+  resolveEntityOrProjectRoot,
+} from '../utilities';
 
 export const assertDashboardGetPermissions = async (accessPolicy, models, dashboardId) => {
   const dashboard = await models.dashboard.findById(dashboardId);
@@ -31,9 +35,9 @@ export const assertDashboardCreatePermissions = async (
   models,
   { root_entity_code: rootEntityCode },
 ) => {
-  const entity = await models.entity.findOneByCodeInProject(rootEntityCode, null);
+  const entity = await resolveEntityOrProjectRoot(models, rootEntityCode);
 
-  if (!(await hasVizBuilderAccessToEntity(accessPolicy, models, entity))) {
+  if (!entity || !(await hasVizBuilderAccessToEntity(accessPolicy, models, entity))) {
     throw new Error(`Requires Viz Builder access to the entity code: '${rootEntityCode}'`);
   }
 

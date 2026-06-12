@@ -7,6 +7,16 @@ const getProjectCountryCodes = async (models, projectEntityCode) => {
   return countries.map(country => country.code);
 };
 
+// A project code no longer resolves to a stored entity. Fall back to the project's
+// synthesized root so visualisation/dashboard permission checks keyed on a code
+// (e.g. a dashboard's root_entity_code) keep working for project-level roots.
+export const resolveEntityOrProjectRoot = async (models, code) => {
+  const entity = await models.entity.findOneByCodeInProject(code, null);
+  if (entity) return entity;
+  const project = await models.project.findOne({ code });
+  return project ? project.getRootEntity() : undefined;
+};
+
 export const hasAccessToEntityForVisualisation = async (
   accessPolicy,
   models,
@@ -35,6 +45,7 @@ export const hasVizBuilderAccessToEntity = async (accessPolicy, models, entity) 
 };
 
 export const hasVizBuilderAccessToEntityCode = async (accessPolicy, models, entityCode) => {
-  const entity = await models.entity.findOneByCodeInProject(entityCode, null);
+  const entity = await resolveEntityOrProjectRoot(models, entityCode);
+  if (!entity) return false;
   return hasVizBuilderAccessToEntity(accessPolicy, models, entity);
 };

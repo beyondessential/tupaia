@@ -14,26 +14,18 @@ const removeTestData = async (models, projectCode) => {
     await models.projectCountry.delete({ project_id: project.id });
   }
   await models.project.delete({ code: projectCode });
-  const projectEntity = await models.entity.findOne({ code: projectCode, type: 'project' });
-  if (projectEntity !== null) {
-    await models.entity.delete({ id: projectEntity.id });
-  }
 };
 
 // generate the test data for the provided project code
 const createTestData = async (models, projectCode, permissionGroup, countryEntityId) => {
-  const { id: projectEntityId } = await findOrCreateDummyRecord(models.entity, {
-    code: projectCode,
-    type: 'project',
-  });
   const project = await findOrCreateDummyRecord(
     models.project,
     {
       id: generateId(),
       code: projectCode,
-      entity_id: projectEntityId,
     },
     {
+      name: projectCode,
       permission_groups: [permissionGroup],
     },
   );

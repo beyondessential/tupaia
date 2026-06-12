@@ -23,10 +23,7 @@ export const getUser = async ({ models }: GetUserLocalContext) => {
       ? await transactingModels.database.findOne(
           RECORDS.PROJECT,
           { [`${RECORDS.PROJECT}.id`]: projectId },
-          {
-            joinWith: RECORDS.ENTITY,
-            joinCondition: ['entity.id', 'project.entity_id'],
-          },
+          {},
         )
       : null;
     const project = projectRecord ? camelcaseKeys(projectRecord, { deep: true }) : null;

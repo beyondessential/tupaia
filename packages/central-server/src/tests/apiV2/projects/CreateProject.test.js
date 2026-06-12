@@ -13,10 +13,6 @@ const rollbackRecords = async (models, projectCode, projectName) => {
   }
   await models.project.delete({ code: projectCode });
   await models.dashboard.delete({ root_entity_code: projectCode });
-  const projectEntity = await models.entity.findOne({ code: projectCode, type: 'project' });
-  if (projectEntity !== null) {
-    await models.entity.delete({ id: projectEntity.id });
-  }
   if (permissionGroup) {
     await models.permissionGroup.delete({ name: `${projectName} Admin` });
     await models.userEntityPermission.delete({ permission_group_id: permissionGroup.id });
@@ -160,7 +156,7 @@ describe('Creating a project', async () => {
         expect(result[0].description).to.equal(TEST_PROJECT_INPUT.description);
       });
 
-      it('creates a valid entity record', async () => {
+      it('stores the name on the project record and creates no project entity', async () => {
         await app.grantAccess(BES_ADMIN_POLICY);
 
         await app.post('projects', {
@@ -169,9 +165,14 @@ describe('Creating a project', async () => {
           },
         });
 
-        const result = await models.entity.find({ name: TEST_PROJECT_INPUT.name, type: 'project' });
-        expect(result.length).to.equal(1);
-        expect(result[0].code).to.equal(TEST_PROJECT_INPUT.code);
+        const project = await models.project.findOne({ code: TEST_PROJECT_INPUT.code });
+        expect(project.name).to.equal(TEST_PROJECT_INPUT.name);
+
+        const projectEntity = await models.entity.findOne({
+          code: TEST_PROJECT_INPUT.code,
+          type: 'project',
+        });
+        expect(projectEntity).to.be.null;
       });
 
       it('creates a new admin permission group for the project', async () => {

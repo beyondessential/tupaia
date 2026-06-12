@@ -2,12 +2,27 @@ import { NextFunction, Request, Response } from 'express';
 
 import { EntityFilter, EntityRecord, extractEntityFilterFromQuery } from '@tupaia/tsmodels';
 import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
-import { Entity, EntityTypeEnum } from '@tupaia/types';
+import { Entity } from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
+import { EntityServerModelRegistry } from '../../../types';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
 const throwNoAccessError = (entityCodes: string[]) => {
   throw new PermissionsError(`No access to requested entities: ${entityCodes}`);
+};
+
+// A project's hierarchy root is no longer a stored `type = 'project'` entity — it is
+// synthesized from the project record. Its id is the project id, which the hierarchy
+// edges/closure use as the ancestor of the project's countries.
+const getProjectRootEntity = async (
+  models: EntityServerModelRegistry,
+  hierarchyName: string,
+): Promise<EntityRecord> => {
+  const project = await models.project.findOne({ code: hierarchyName });
+  if (!project) {
+    throw new PermissionsError(`Cannot find root entity for hierarchy: ${hierarchyName}`);
+  }
+  return project.getRootEntity();
 };
 
 const userCanAccessEntity = (
@@ -29,15 +44,7 @@ const validateEntitiesAndBuildContext = async (
 
   const { projectId } = req.ctx;
   const { hierarchyName } = req.params;
-  // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
-  const rootEntity = await req.models.entity.findOneOrThrow(
-    {
-      type: EntityTypeEnum.project,
-      code: hierarchyName,
-    },
-    undefined,
-    `Cannot find root entity for hierarchy: ${req.params.hierarchyName}`,
-  );
+  const rootEntity = await getProjectRootEntity(req.models, hierarchyName);
 
   const entities = await rootEntity.getDescendants(projectId, {
     code: entityCodes,
@@ -155,10 +162,7 @@ export const attachEntityFilterContext = async (
   _res: Response,
   next: NextFunction,
 ) => {
-  const rootEntity = await req.models.entity.findOneOrThrow({
-    type: EntityTypeEnum.project,
-    code: req.params.hierarchyName,
-  });
+  const rootEntity = await getProjectRootEntity(req.models, req.params.hierarchyName);
 
   const context = await getFilterInfo(req, rootEntity);
 

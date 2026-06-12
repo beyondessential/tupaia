@@ -9,9 +9,8 @@ export const PROJECT_HIERARCHY_EDGES_SUBQUERY = `
     AND e.type NOT IN ('project', 'country')
     AND (e.project_id IS NULL OR e.project_id = ?)
   UNION ALL
-  SELECT p.entity_id AS ancestor_id, pc.country_id AS descendant_id
+  SELECT pc.project_id AS ancestor_id, pc.country_id AS descendant_id
   FROM project_country pc
-  INNER JOIN project p ON p.id = pc.project_id
   WHERE pc.project_id = ?
 `;
 

@@ -954,9 +954,9 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   async buildSyncLookupQueryDetails() {
     //Sub-country entities carry a direct project_id; structural entities
-    // (world/country/project) are synced unconditionally because every project
-    // needs them for hierarchy walks. Country-level rows reach their owning projects
-    // via project_country.
+    // (world/country) are synced unconditionally because every project needs them
+    // for hierarchy walks. Country-level rows reach their owning projects via
+    // project_country.
     //
     // TODO (MAUI-5722): Remove survey response / task entity unions once mobile no
     // longer pulls those entities through entity sync.
@@ -964,11 +964,6 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
       ctes: [
         `
           entities_to_sync AS (
-            -- root project entities → owning project
-            SELECT entity.id AS entity_id, project.id AS project_id
-            FROM entity JOIN project ON entity.id = project.entity_id
-            UNION
-
             -- country entities → projects that include them via project_country
             SELECT pc.country_id AS entity_id, pc.project_id
             FROM project_country pc

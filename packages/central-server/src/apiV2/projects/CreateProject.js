@@ -1,4 +1,3 @@
-import { EntityTypeEnum } from '@tupaia/types';
 import { snake } from 'case';
 import { BESAdminCreateHandler } from '../CreateHandler';
 import { uploadImage } from '../utilities';
@@ -26,12 +25,6 @@ export class CreateProject extends BESAdminCreateHandler {
 
     const projectCode = snake(rawProjectCode);
     await this.models.wrapInTransaction(async transactingModels => {
-      const { id: projectEntityId } = await this.createProjectEntity(
-        transactingModels,
-        projectCode,
-        name,
-      );
-
       const { name: projectDashboardGroupName } = await this.createProjectDashboard(
         transactingModels,
         dashboardGroupName,
@@ -46,6 +39,7 @@ export class CreateProject extends BESAdminCreateHandler {
       // Add the project, and then upload the images afterward, so that if an error is caught when creating the record, the images aren't uploaded unnecessarily
       const newProject = await transactingModels.project.create({
         code: projectCode,
+        name,
         description,
         sort_order: sortOrder === '' ? null : sortOrder,
         image_url: '',
@@ -53,7 +47,6 @@ export class CreateProject extends BESAdminCreateHandler {
         permission_groups: [projectPermissionGroup.name, ...permissionGroups],
         default_measure: defaultMeasure,
         dashboard_group_name: projectDashboardGroupName,
-        entity_id: projectEntityId,
       });
 
       await this.createProjectCountries(transactingModels, newProject.id, countries);
@@ -79,18 +72,6 @@ export class CreateProject extends BESAdminCreateHandler {
     };
     // The record has already been updated, so update the existing record with the new fields
     return models.project.updateById(projectId, updates);
-  }
-
-  async createProjectEntity(models, projectCode, name) {
-    const worldCode = 'World';
-    const { id: worldId } = await models.entity.findOneByCodeInProject(worldCode, null);
-
-    return models.entity.create({
-      name,
-      code: projectCode,
-      parent_id: worldId,
-      type: EntityTypeEnum.project,
-    });
   }
 
   async createProjectCountries(models, projectId, countries) {

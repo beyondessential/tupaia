@@ -15,6 +15,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { SqlQuery } from '../SqlQuery';
 import { RECORDS } from '../records';
+import { buildProjectRootEntityFields } from './projectRootEntity';
 
 const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
@@ -44,8 +45,15 @@ export class ProjectRecord extends DatabaseRecord {
     return this.otherModels.permissionGroup.find({ name: this.permission_groups });
   }
 
-  async entity() {
-    return this.otherModels.entity.findById(this.entity_id);
+  /**
+   * The project's hierarchy root. There is no longer a stored `type = 'project'`
+   * entity, so this is synthesized from the project record. Its id is the project
+   * id, matching the ancestor the hierarchy edges/closure use for the project's
+   * countries.
+   * @returns {Promise<EntityRecord>}
+   */
+  async getRootEntity() {
+    return this.otherModels.entity.generateInstance(buildProjectRootEntityFields(this));
   }
 
   async hasAccess(accessPolicy) {
@@ -112,12 +120,11 @@ export class ProjectModel extends DatabaseModel {
           p.id,
           p.code,
           to_json(sub.country_id) AS entity_ids,
-          e."name",
-          e."code" AS entity_code,
+          p."name",
+          p."code" AS entity_code,
           p.description,
           p.sort_order,
           p.permission_groups,
-          p.entity_id,
           p.image_url,
           p.logo_url,
           p.dashboard_group_name,
@@ -125,7 +132,6 @@ export class ProjectModel extends DatabaseModel {
           p.config
         FROM
           project p
-          LEFT JOIN entity e ON p.entity_id = e.id
           LEFT JOIN (
             -- TUP-3065: project's entities are now its countries (via project_country),
             -- not all hierarchy descendants. Sub-country entities live under
@@ -180,10 +186,6 @@ export class ProjectModel extends DatabaseModel {
           )`,
           parameters: [JSON.stringify(countryCodesByPermissionGroup)],
         },
-      },
-      {
-        joinWith: RECORDS.ENTITY,
-        joinCondition: ['entity.id', 'project.entity_id'],
       },
     );
   }

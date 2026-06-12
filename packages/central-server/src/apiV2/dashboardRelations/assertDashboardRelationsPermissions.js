@@ -2,6 +2,7 @@ import {
   hasAccessToEntityForVisualisation,
   hasVizBuilderAccessToEntity,
   hasVizBuilderAccessToEntityCode,
+  resolveEntityOrProjectRoot,
 } from '../utilities';
 
 export const hasDashboardRelationGetPermissions = async (
@@ -10,7 +11,8 @@ export const hasDashboardRelationGetPermissions = async (
   permissionGroups,
   entityCode,
 ) => {
-  const entity = await models.entity.findOneByCodeInProject(entityCode, null);
+  const entity = await resolveEntityOrProjectRoot(models, entityCode);
+  if (!entity) return false;
   const permissionGroupAccessResults = await Promise.all(
     permissionGroups.map(async pg =>
       hasAccessToEntityForVisualisation(accessPolicy, models, entity, pg),
@@ -25,7 +27,8 @@ export const hasDashboardRelationEditPermissions = async (
   permissionGroups,
   entityCode,
 ) => {
-  const entity = await models.entity.findOneByCodeInProject(entityCode, null);
+  const entity = await resolveEntityOrProjectRoot(models, entityCode);
+  if (!entity) return false;
 
   // users should all the permission group access (that's why using every() below)
   const permissionGroupAccessResults = await Promise.all(
@@ -110,9 +113,9 @@ export const assertDashboardRelationCreatePermissions = async (
     throw new Error(`Cannot find dashboard with id ${dashboardId}`);
   }
 
-  const entity = await models.entity.findOneByCodeInProject(dashboard.root_entity_code, null);
+  const entity = await resolveEntityOrProjectRoot(models, dashboard.root_entity_code);
 
-  if (!(await hasVizBuilderAccessToEntity(accessPolicy, models, entity))) {
+  if (!entity || !(await hasVizBuilderAccessToEntity(accessPolicy, models, entity))) {
     throw new Error(
       `Requires Viz Builder access to the dashboard root entity code '${dashboard.root_entity_code}'`,
     );

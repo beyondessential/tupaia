@@ -57,9 +57,8 @@ export class EntityHierarchyCacher extends ChangeHandler {
       return [...new Set(subCountryProjectIds)];
     }
 
-    // Structural entities (project, country, world) have project_id NULL. Derive
-    // owning project(s) by walking outward: a project entity's project record, or a
-    // country's project_country rows.
+    // Structural entities (country, world) have project_id NULL. Derive owning
+    // project(s) by walking outward from a country via its project_country rows.
     const candidateEntityIds = [
       oldRecord?.id,
       newRecord?.id,
@@ -71,9 +70,6 @@ export class EntityHierarchyCacher extends ChangeHandler {
     }
 
     const projectIds = new Set();
-    const projectsByEntity = await this.models.project.find({ entity_id: candidateEntityIds });
-    projectsByEntity.forEach(p => projectIds.add(p.id));
-
     const projectCountryRows = await this.models.projectCountry.find({
       country_id: candidateEntityIds,
     });

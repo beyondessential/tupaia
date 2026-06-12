@@ -10,13 +10,13 @@ export const assertProjectPermissions = async (accessPolicy, models, projectId) 
   if (!project) {
     throw new Error(`No project exists with id ${projectId}`);
   }
-  const entity = await models.entity.findById(project.entity_id);
+  const rootEntity = await project.getRootEntity();
   for (let i = 0; i < project.permission_groups.length; ++i) {
     if (
       await hasAccessToEntityForVisualisation(
         accessPolicy,
         models,
-        entity,
+        rootEntity,
         project.permission_groups[i],
       )
     ) {
@@ -28,13 +28,6 @@ export const assertProjectPermissions = async (accessPolicy, models, projectId) 
 
 export class GETProjects extends GETHandler {
   permissionsFilteredInternally = /** @type {const} */ (true);
-
-  customJoinConditions = {
-    entity: {
-      nearTableKey: 'project.entity_id',
-      farTableKey: 'entity.id',
-    },
-  };
 
   // `countries` and `countryCodes` are virtual columns attached post-query by
   // attachCountries, not real project columns — strip them from the SQL select

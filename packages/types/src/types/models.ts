@@ -1231,10 +1231,10 @@ export interface Project {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_id'?: string | null;
   'id': string;
   'image_url'?: string | null;
   'logo_url'?: string | null;
+  'name': string;
   'permission_groups': string[];
   'sort_order'?: number | null;
   'updated_at_sync_tick': string;
@@ -1245,9 +1245,9 @@ export interface ProjectCreate {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_id'?: string | null;
   'image_url'?: string | null;
   'logo_url'?: string | null;
+  'name': string;
   'permission_groups'?: string[];
   'sort_order'?: number | null;
 }
@@ -1257,10 +1257,10 @@ export interface ProjectUpdate {
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
-  'entity_id'?: string | null;
   'id'?: string;
   'image_url'?: string | null;
   'logo_url'?: string | null;
+  'name'?: string;
   'permission_groups'?: string[];
   'sort_order'?: number | null;
 }
