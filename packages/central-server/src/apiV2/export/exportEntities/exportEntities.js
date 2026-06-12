@@ -35,10 +35,16 @@ const COLUMN_ORDER = [
   'data_service_entity',
 ];
 
-const serialiseJsonField = value => {
+// Serialise a flat attribute object to newline-separated `key: value` lines —
+// the human-friendly reference-data format the importer reads back (see
+// extractEntitiesFromUpload.js). attributes/data_service_entity are flat scalar
+// objects; an empty object exports as a blank cell.
+const serialiseKeyValueField = value => {
   if (value === null || value === undefined) return '';
-  if (typeof value === 'string') return value;
-  return JSON.stringify(value);
+  if (typeof value === 'string') return value; // defensive: already serialised
+  return Object.entries(value)
+    .map(([key, val]) => `${key}: ${val}`)
+    .join('\n');
 };
 
 const buildRow = (entity, parentCodeById) => ({
@@ -49,12 +55,12 @@ const buildRow = (entity, parentCodeById) => ({
   parent_code: entity.parent_id ? parentCodeById.get(entity.parent_id) ?? '' : '',
   longitude: entity.longitude ?? '',
   latitude: entity.latitude ?? '',
-  attributes: serialiseJsonField(entity.attributes),
+  attributes: serialiseKeyValueField(entity.attributes),
   image_url: entity.image_url ?? '',
   entity_polygon_id: entity.entity_polygon_id ?? '',
   entity_polygon_code: entity.entity_polygon_code ?? '',
   entity_polygon_data_source: entity.entity_polygon_data_source ?? '',
-  data_service_entity: serialiseJsonField(entity.data_service_entity_config ?? null),
+  data_service_entity: serialiseKeyValueField(entity.data_service_entity_config ?? null),
 });
 
 // Columns selected for each export row. Shared between the two branches of the
