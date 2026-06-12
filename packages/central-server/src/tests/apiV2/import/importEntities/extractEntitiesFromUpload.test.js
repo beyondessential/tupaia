@@ -48,4 +48,22 @@ describe('extractEntitiesFromUpload', () => {
       fs.unlinkSync(filePath);
     }
   });
+
+  it('normalises an empty attributes cell to undefined, not an empty string', () => {
+    // The exporter writes empty/`{}` attributes as a blank cell. When other rows
+    // populate the column, the blank cell reads as "" — which must become
+    // undefined (skipped) rather than reaching the jsonb column as an empty
+    // string (invalid JSON).
+    const filePath = writeXlsx([
+      { code: 'HAS_ATTRS', attributes: 'x: 1' },
+      { code: 'EMPTY_ATTRS', attributes: '' },
+    ]);
+    try {
+      const entities = extractEntitiesFromUpload(filePath);
+      const empty = entities.find(e => e.code === 'EMPTY_ATTRS');
+      expect(empty.attributes).to.be.undefined;
+    } finally {
+      fs.unlinkSync(filePath);
+    }
+  });
 });

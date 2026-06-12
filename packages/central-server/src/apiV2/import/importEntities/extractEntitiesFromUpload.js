@@ -17,13 +17,13 @@ const processXlsxRow = row => {
   const entity = { ...row };
   // attributes / data_service_entity are newline-separated `key: value` cells.
   // Parse them with the same helper the rest of the importer uses, so the format
-  // stays identical to the reference-data import: all values are strings.
-  if (row.attributes) {
-    entity.attributes = convertCellToJson(row.attributes);
-  }
-  if (row.data_service_entity) {
-    entity.data_service_entity = convertCellToJson(row.data_service_entity);
-  }
+  // stays identical to the reference-data import: all values are strings. A blank
+  // cell means "no attributes" — normalise to undefined so the importer skips the
+  // update rather than writing an empty string to the jsonb column.
+  entity.attributes = row.attributes ? convertCellToJson(row.attributes) : undefined;
+  entity.data_service_entity = row.data_service_entity
+    ? convertCellToJson(row.data_service_entity)
+    : undefined;
   return entity;
 };
 
