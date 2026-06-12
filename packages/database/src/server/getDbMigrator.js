@@ -109,7 +109,7 @@ export const getDbMigrator = (forCli = false) => {
     // This hook is called BEFORE the migrations are run,
     // so we temporarily remove non-server migrations before they are run
     instance.registerAPIHook(() => {
-      fs.rmSync(SERVER_MIGRATION_DIR, { recursive: true, force: true });
+      resetMigrationFolder();
       createDirectory(SERVER_MIGRATION_DIR);
       copyDirectory(MIGRATIONS_DIR, SERVER_MIGRATION_DIR);
       removeNonServerMigrations();
