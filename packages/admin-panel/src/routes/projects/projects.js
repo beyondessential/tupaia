@@ -98,6 +98,26 @@ const EDIT_FIELDS = [
   },
   ...DEFAULT_FIELDS,
   {
+    // The modal edits the project_country links. `source` is the `countries`
+    // (country id) array so it survives the editor's record processing and
+    // pre-fills/submits like the Add project modal; the list cell shows the
+    // human-readable codes from the same record. Both are virtual (post-query)
+    // columns, so the list column can't be sorted or filtered at the SQL level.
+    Header: 'Countries',
+    source: 'countries',
+    Cell: ({ row }) => prettyArray(row?.original?.countryCodes ?? []),
+    filterable: false,
+    disableSortBy: true,
+    editConfig: {
+      type: 'checkboxList',
+      optionsEndpoint: 'countries',
+      optionLabelKey: 'country.name',
+      optionValueKey: 'country.id',
+      sourceKey: 'countries',
+      pageSize: 'ALL',
+    },
+  },
+  {
     Header: 'Config',
     source: 'config',
     type: 'jsonTooltip',
