@@ -344,4 +344,50 @@ describe('importEntities(): POST import/entities', () => {
       expect(projectScopedCountry).to.not.exist;
     });
   });
+
+  describe('Attribute cells (TUP-3181)', () => {
+    const importRows = rows => {
+      const filepath = writeXlsx(rows);
+      return app
+        .post('import/entities')
+        .query({ projectCode: TEST_PROJECT_CODE, pushToDhis: 'false' })
+        .attach('entities', filepath)
+        .then(response => {
+          unlinkXlsx(filepath);
+          return response;
+        });
+    };
+
+    before(async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+    });
+
+    after(() => {
+      app.revokeAccess();
+    });
+
+    it('parses newline-separated key: value attributes and data_service_entity (values stay strings)', async () => {
+      const response = await importRows([
+        {
+          code: 'KI_attr_facility',
+          name: 'Attr facility',
+          entity_type: 'facility',
+          country_code: 'KI',
+          attributes: 'area_type: island\nis_active: true',
+          data_service_entity: 'kobo_id: 10302070',
+        },
+      ]);
+      expect(response.statusCode).to.equal(200);
+
+      const entity = await models.entity.findOne({ code: 'KI_attr_facility' });
+      // Matches the reference-data import (convertCellToJson): every value is a
+      // string, so `true` stays the string "true" rather than becoming a boolean.
+      expect(entity.attributes).to.deep.equal({ area_type: 'island', is_active: 'true' });
+
+      const dataServiceEntity = await models.dataServiceEntity.findOne({
+        entity_code: 'KI_attr_facility',
+      });
+      expect(dataServiceEntity.config).to.deep.equal({ kobo_id: '10302070' });
+    });
+  });
 });
