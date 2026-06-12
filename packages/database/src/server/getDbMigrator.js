@@ -16,8 +16,12 @@ const exitWithError = error => {
 };
 
 const resetMigrationFolder = () => {
-  fs.rmSync(SERVER_MIGRATION_DIR, { recursive: true, force: true });
-  winston.info(`Reset migration directory: ${SERVER_MIGRATION_DIR}`);
+  try {
+    fs.rmSync(SERVER_MIGRATION_DIR, { recursive: true, force: true });
+    winston.info(`Reset migration directory: ${SERVER_MIGRATION_DIR}`);
+  } catch (error) {
+    winston.error(`Error removing directory ${SERVER_MIGRATION_DIR}:`, error);
+  }
 };
 
 /**
