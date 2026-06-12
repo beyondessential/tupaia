@@ -148,4 +148,48 @@ describe('Editing a project', async () => {
       expect(result[0].logo_url).to.equal(TEST_PROJECT_INPUT.logo_url);
     });
   });
+
+  describe('PUT /projects — country reconciliation (TUP-3181)', () => {
+    let kiCountryId;
+    let vuCountryId;
+
+    const countryEntityId = async code =>
+      (await models.entity.findOne({ code, type: 'country' })).id;
+
+    before(async () => {
+      const ki = await findOrCreateDummyRecord(models.country, { code: 'KI', name: 'Kiribati' });
+      const vu = await findOrCreateDummyRecord(models.country, { code: 'VU', name: 'Vanuatu' });
+      kiCountryId = ki.id;
+      vuCountryId = vu.id;
+      await findOrCreateDummyRecord(models.entity, { code: 'KI', type: 'country', country_code: 'KI' });
+      await findOrCreateDummyRecord(models.entity, { code: 'VU', type: 'country', country_code: 'VU' });
+    });
+
+    it('adds project_country links for newly selected countries', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      await app.put(`projects/${TEST_PROJECT_INPUT.id}`, {
+        body: { description: 'with countries', countries: [kiCountryId, vuCountryId] },
+      });
+
+      const links = await models.projectCountry.find({ project_id: TEST_PROJECT_INPUT.id });
+      const linkedEntityIds = links.map(link => link.country_id);
+      expect(linkedEntityIds).to.include(await countryEntityId('KI'));
+      expect(linkedEntityIds).to.include(await countryEntityId('VU'));
+    });
+
+    it('removes deselected countries', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      await app.put(`projects/${TEST_PROJECT_INPUT.id}`, {
+        body: { description: 'both', countries: [kiCountryId, vuCountryId] },
+      });
+      await app.put(`projects/${TEST_PROJECT_INPUT.id}`, {
+        body: { description: 'just KI', countries: [kiCountryId] },
+      });
+
+      const links = await models.projectCountry.find({ project_id: TEST_PROJECT_INPUT.id });
+      const linkedEntityIds = links.map(link => link.country_id);
+      expect(linkedEntityIds).to.include(await countryEntityId('KI'));
+      expect(linkedEntityIds).to.not.include(await countryEntityId('VU'));
+    });
+  });
 });

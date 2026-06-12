@@ -245,6 +245,7 @@ describe('importEntities(): POST import/entities', () => {
           name: 'Clinicless facility',
           entity_type: 'facility',
           country_code: 'KI',
+          parent_code: 'KI',
         },
       ]);
       expect(response.statusCode).to.equal(200);
@@ -264,6 +265,7 @@ describe('importEntities(): POST import/entities', () => {
           name: 'Typed facility',
           entity_type: 'facility',
           country_code: 'KI',
+          parent_code: 'KI',
           facility_type: '9',
           type_name: 'Hospital',
           category_code: '1',
@@ -273,6 +275,23 @@ describe('importEntities(): POST import/entities', () => {
 
       const clinic = await models.facility.findOne({ code: 'KI_typed_facility' });
       expect(clinic).to.not.exist;
+    });
+
+    it('rejects a row with no parent_code rather than creating an orphan (Issue 9)', async () => {
+      const response = await importRows([
+        {
+          code: 'KI_parentless',
+          name: 'Parentless',
+          entity_type: 'village',
+          country_code: 'KI',
+          // parent_code intentionally omitted
+        },
+      ]);
+      expect(response.statusCode).to.not.equal(200);
+      expect(response.body.error).to.match(/parent_code/i);
+
+      const entity = await models.entity.findOne({ code: 'KI_parentless' });
+      expect(entity).to.not.exist;
     });
   });
 
@@ -306,6 +325,7 @@ describe('importEntities(): POST import/entities', () => {
           name: 'Child village',
           entity_type: 'village',
           country_code: 'KI',
+          parent_code: 'KI',
         },
       ]);
       expect(response.statusCode).to.equal(200);
@@ -322,6 +342,53 @@ describe('importEntities(): POST import/entities', () => {
         project_id: project.id,
       });
       expect(projectScopedCountry).to.not.exist;
+    });
+  });
+
+  describe('Attribute cells (TUP-3181)', () => {
+    const importRows = rows => {
+      const filepath = writeXlsx(rows);
+      return app
+        .post('import/entities')
+        .query({ projectCode: TEST_PROJECT_CODE, pushToDhis: 'false' })
+        .attach('entities', filepath)
+        .then(response => {
+          unlinkXlsx(filepath);
+          return response;
+        });
+    };
+
+    before(async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+    });
+
+    after(() => {
+      app.revokeAccess();
+    });
+
+    it('parses newline-separated key: value attributes and data_service_entity (values stay strings)', async () => {
+      const response = await importRows([
+        {
+          code: 'KI_attr_facility',
+          name: 'Attr facility',
+          entity_type: 'facility',
+          country_code: 'KI',
+          parent_code: 'KI',
+          attributes: 'area_type: island\nis_active: true',
+          data_service_entity: 'kobo_id: 10302070',
+        },
+      ]);
+      expect(response.statusCode).to.equal(200);
+
+      const entity = await models.entity.findOne({ code: 'KI_attr_facility' });
+      // Matches the reference-data import (convertCellToJson): every value is a
+      // string, so `true` stays the string "true" rather than becoming a boolean.
+      expect(entity.attributes).to.deep.equal({ area_type: 'island', is_active: 'true' });
+
+      const dataServiceEntity = await models.dataServiceEntity.findOne({
+        entity_code: 'KI_attr_facility',
+      });
+      expect(dataServiceEntity.config).to.deep.equal({ kobo_id: '10302070' });
     });
   });
 });

@@ -46,8 +46,17 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
         entities: [
           { code: 'KI', country_code: 'KI' },
           { code: 'VU', country_code: 'VU' },
-          { code: 'KI_village_1', country_code: 'KI', type: 'village', parent_code: 'KI' },
-          { code: 'VU_village_1', country_code: 'VU', type: 'village', parent_code: 'VU' },
+          { code: 'KI_village_1', country_code: 'KI', type: 'village' },
+          { code: 'VU_village_1', country_code: 'VU', type: 'village' },
+        ],
+        // Explicit relations so the villages sit under their countries (the
+        // helper otherwise parents every entity directly to the project entity,
+        // and ignores the fixture's parent_code).
+        relations: [
+          { parent: 'export_entities_test', child: 'KI' },
+          { parent: 'export_entities_test', child: 'VU' },
+          { parent: 'KI', child: 'KI_village_1' },
+          { parent: 'VU', child: 'VU_village_1' },
         ],
       },
     ]);
@@ -75,6 +84,17 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
     const countryCodes = new Set(rows.map(r => r.country_code));
     expect(countryCodes.has('KI')).to.equal(true); // has access
     expect(countryCodes.has('VU')).to.equal(false); // no access → scoped out
+  });
+
+  it('orders rows by generation (countries first), alphabetical within a level', async () => {
+    await app.grantAccess(BES_ADMIN_POLICY);
+    const { workbook } = await downloadXlsx(app.get('export/entities/export_entities_test'));
+    const codes = xlsx.utils
+      .sheet_to_json(workbook.Sheets[workbook.SheetNames[0]])
+      .map(row => row.code);
+    // Countries (depth 0) before their villages (depth 1); alphabetical by code
+    // within each level.
+    expect(codes).to.deep.equal(['KI', 'VU', 'KI_village_1', 'VU_village_1']);
   });
 
   it('returns 400 for unknown projectCode', async () => {

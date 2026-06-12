@@ -35,10 +35,16 @@ const COLUMN_ORDER = [
   'data_service_entity',
 ];
 
-const serialiseJsonField = value => {
+// Serialise a flat attribute object to newline-separated `key: value` lines —
+// the human-friendly reference-data format the importer reads back (see
+// extractEntitiesFromUpload.js). attributes/data_service_entity are flat scalar
+// objects; an empty object exports as a blank cell.
+const serialiseKeyValueField = value => {
   if (value === null || value === undefined) return '';
-  if (typeof value === 'string') return value;
-  return JSON.stringify(value);
+  if (typeof value === 'string') return value; // defensive: already serialised
+  return Object.entries(value)
+    .map(([key, val]) => `${key}: ${val}`)
+    .join('\n');
 };
 
 const buildRow = (entity, parentCodeById) => ({
@@ -49,12 +55,12 @@ const buildRow = (entity, parentCodeById) => ({
   parent_code: entity.parent_id ? parentCodeById.get(entity.parent_id) ?? '' : '',
   longitude: entity.longitude ?? '',
   latitude: entity.latitude ?? '',
-  attributes: serialiseJsonField(entity.attributes),
+  attributes: serialiseKeyValueField(entity.attributes),
   image_url: entity.image_url ?? '',
   entity_polygon_id: entity.entity_polygon_id ?? '',
   entity_polygon_code: entity.entity_polygon_code ?? '',
   entity_polygon_data_source: entity.entity_polygon_data_source ?? '',
-  data_service_entity: serialiseJsonField(entity.data_service_entity_config ?? null),
+  data_service_entity: serialiseKeyValueField(entity.data_service_entity_config ?? null),
 });
 
 // Columns selected for each export row. Shared between the two branches of the
@@ -108,11 +114,41 @@ const fetchProjectEntities = async (models, projectId, allowedCountryCodes) =>
       ${ENTITY_JOINS}
       JOIN project_country pc ON pc.country_id = e.id AND pc.project_id = ?
       WHERE e.type = 'country'
-        AND e.code = ANY(?)
-      ORDER BY country_code ASC, code ASC;
+        AND e.code = ANY(?);
     `,
     [projectId, allowedCountryCodes, projectId, allowedCountryCodes],
   );
+
+// Order entities by generational distance from their country (countries first,
+// then each level down the tree), with an alphabetical-by-code secondary sort
+// within a level. Mirrors the baseline hierarchy export's breadth-first order.
+// Depth is walked up the parent_id chain within the result set, which always
+// contains every ancestor up to the country.
+const orderByGeneration = entities => {
+  const byId = new Map(entities.map(entity => [entity.id, entity]));
+  const depthOf = entity => {
+    let depth = 0;
+    let current = entity;
+    const visited = new Set();
+    while (
+      current &&
+      current.type !== 'country' &&
+      current.parent_id &&
+      byId.has(current.parent_id) &&
+      !visited.has(current.id)
+    ) {
+      visited.add(current.id);
+      depth += 1;
+      current = byId.get(current.parent_id);
+    }
+    return depth;
+  };
+
+  return entities
+    .map(entity => ({ entity, depth: depthOf(entity) }))
+    .sort((a, b) => a.depth - b.depth || (a.entity.code ?? '').localeCompare(b.entity.code ?? ''))
+    .map(({ entity }) => entity);
+};
 
 export async function exportEntities(req, res) {
   const { models, userId, accessPolicy } = req;
@@ -146,7 +182,7 @@ export async function exportEntities(req, res) {
   // in-scope country).
   const parentCodeById = new Map(entities.map(e => [e.id, e.code]));
 
-  const rows = entities.map(entity => buildRow(entity, parentCodeById));
+  const rows = orderByGeneration(entities).map(entity => buildRow(entity, parentCodeById));
   const sheet = xlsx.utils.json_to_sheet(rows, { header: COLUMN_ORDER });
 
   const workbook = xlsx.utils.book_new();
