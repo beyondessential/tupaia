@@ -100,10 +100,13 @@ const EDIT_FIELDS = [
   {
     // List shows the country codes; the modal edits the project_country links.
     // Pre-fills and submits `countries` (country ids) like the Add project modal.
+    // countryCodes is a virtual (post-query) column, so it can't be sorted or
+    // filtered at the SQL level.
     Header: 'Countries',
     source: 'countryCodes',
-    Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
+    filterable: false,
+    disableSortBy: true,
     editConfig: {
       type: 'checkboxList',
       optionsEndpoint: 'countries',

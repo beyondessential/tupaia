@@ -36,6 +36,14 @@ export class GETProjects extends GETHandler {
     },
   };
 
+  // `countries` and `countryCodes` are virtual columns attached post-query by
+  // attachCountries, not real project columns — strip them from the SQL select
+  // so a request for them doesn't try to select project.countryCodes.
+  async getProcessedColumns() {
+    const columns = await super.getProcessedColumns();
+    return columns.filter(spec => !('countries' in spec) && !('countryCodes' in spec));
+  }
+
   async findSingleRecord(projectId, options) {
     const projectPermissionChecker = accessPolicy =>
       assertProjectPermissions(accessPolicy, this.models, projectId);
