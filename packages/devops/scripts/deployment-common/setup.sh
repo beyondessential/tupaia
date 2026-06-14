@@ -61,7 +61,7 @@ sudo apt-get --no-install-recommends -yqq install \
   jq
 
 # Install base dependencies
-# Note: Many of these are for puppeteer: https://pptr.dev/15.3.0/troubleshooting#chrome-headless-doesnt-launch-on-unix
+# Note: Many of these are for puppeteer: https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux
 sudo apt-get -yqq install \
   fonts-liberation \
   libappindicator3-1 \
@@ -100,47 +100,50 @@ sudo apt-get -yqq install \
   wget \
   xdg-utils
 
-install_tailscale() {
-  if ! command -v tailscale &>/dev/null; then
-    echo 'Tailscale not installed. Installing...'
+# Install Tailscale
+if ! command -v tailscale &>/dev/null; then
+  echo 'Tailscale not installed. Installing...'
 
-    # See https://docs.aws.amazon.com/linux/al2023/ug/ident-os-release.html
-    local os_id=$(source /etc/os-release && echo "$ID")
-    local os_codename=$(source /etc/os-release && echo "$VERSION_CODENAME")
+  # See https://docs.aws.amazon.com/linux/al2023/ug/ident-os-release.html
+  local os_id=$(source /etc/os-release && echo "$ID")
+  local os_codename=$(source /etc/os-release && echo "$VERSION_CODENAME")
 
-    sudo cp "$TUPAIA_DIR"/packages/devops/keyrings/tailscale.gpg /usr/share/keyrings/tailscale.gpg
-    echo "deb [signed-by=/usr/share/keyrings/tailscale.gpg] https://pkgs.tailscale.com/stable/$os_id $os_codename main" |
-      sudo tee /etc/apt/sources.list.d/tailscale.list
-    sudo apt-get update
-    sudo apt-get -qq install tailscale
-  else
-    echo 'Updating Tailscale...'
-    sudo tailscale update
-  fi
+  sudo cp "$TUPAIA_DIR"/packages/devops/keyrings/tailscale.gpg /usr/share/keyrings/tailscale.gpg
+  echo "deb [signed-by=/usr/share/keyrings/tailscale.gpg] https://pkgs.tailscale.com/stable/$os_id $os_codename main" |
+    sudo tee /etc/apt/sources.list.d/tailscale.list
+  sudo apt-get update
+  sudo apt-get -qq install tailscale
+else
+  echo 'Updating Tailscale...'
+  sudo tailscale update
+fi
 
-  echo 'Tailscale version:'
-  tailscale version
-}
-install_tailscale
+echo 'Tailscale version:'
+tailscale version
 
 # Install nvm
 if ! command -v nvm &>/dev/null; then
   echo 'nvm not installed. Installing...'
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 echo "nvm $(nvm --version) is installed"
 
-# Install Node using nvm
-if ! command -v node &>/dev/null; then
-  echo 'Node.js not installed. Installing...'
-  nvm install $(sudo cat "$TUPAIA_DIR/.nvmrc")
-fi
+# Install Corepack
+echo "Installing Node.js $(sudo cat "$TUPAIA_DIR/.nvmrc")"
+nvm install --default $(sudo cat "$TUPAIA_DIR/.nvmrc")
 echo "Node.js $(node --version) is installed"
 echo "Using Node.js $(nvm current) ($(nvm which current))"
 
-# Enable Yarn
+# Install Corepack
+if ! command -v corepack &>/dev/null; then
+  echo 'Corepack not installed. Installing...'
+  npm install -g corepack
+fi
+echo "Corepack $(corepack --version) is installed"
+
+# Set up Yarn
 corepack enable yarn
 echo "Using Yarn $(yarn --version) ($(which yarn))"
 
