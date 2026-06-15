@@ -96,6 +96,13 @@ const IMPORT_CONFIG = {
     'Please note that if this is the first time a country is being imported, you will need to restart central-server post-import for it to sync to DHIS2.', // hope to fix one day in https://github.com/beyondessential/central-server/issues/481
   actionConfig: {
     importEndpoint: ENTITIES_ENDPOINT,
+    extraQueryParameters: {
+      // If a large import doesn't finish in 30s, respond and email the result
+      // rather than holding the request open until it times out. 30s gives a
+      // big project's skip-unchanged pass (parse + snapshot) room to finish
+      // synchronously.
+      respondWithEmailTimeout: 30 * 1000,
+    },
     accept: {
       'application/geo+json': ['.geojson'],
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],

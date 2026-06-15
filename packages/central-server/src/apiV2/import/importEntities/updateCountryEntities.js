@@ -3,6 +3,7 @@ import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
 import { getEntityMetadata } from './getEntityMetadata';
 import { resolvePolygonId } from './resolvePolygonId';
+import { isEntityUnchanged } from './isEntityUnchanged';
 
 /**
  * Apply a batch of entity rows that all share the same `country_code`.
@@ -17,6 +18,7 @@ export async function updateCountryEntities(
   entityObjects,
   pushToDhis = true,
   projectId = null,
+  existingEntitiesByCode = new Map(),
 ) {
   const country = await transactingModels.country.findOne({ code: countryCode });
   if (!country) {
@@ -52,7 +54,7 @@ export async function updateCountryEntities(
       metadata: countryEntityMetadata,
     },
   );
-  const codes = []; // An array to hold all facility codes, allowing duplicate checking
+  const codes = new Set(); // Track seen codes for O(1) duplicate checking
 
   for (let i = 0; i < entityObjects.length; i++) {
     const entityObject = entityObjects[i];
@@ -64,8 +66,25 @@ export async function updateCountryEntities(
     if (entityType === transactingModels.entity.types.COUNTRY) {
       continue;
     }
-    const validator = getEntityObjectValidator(entityType, transactingModels);
     const excelRowNumber = i + 2;
+    // Catch duplicate codes within the upload up front, so an accidental
+    // duplicate line still errors even when a row would otherwise be skipped.
+    if (codes.has(entityObject.code)) {
+      throw new ImportValidationError(
+        `Entity code '${entityObject.code}' is not unique`,
+        excelRowNumber,
+        'code',
+        countryCode,
+      );
+    }
+    codes.add(entityObject.code);
+    // Skip rows that would change nothing — the common case is re-importing a
+    // whole exported sheet after editing only a few rows. Unchanged rows cost no
+    // per-row queries (resolution + writes below are all skipped).
+    if (isEntityUnchanged(entityObject, existingEntitiesByCode.get(entityObject.code))) {
+      continue;
+    }
+    const validator = getEntityObjectValidator(entityType, transactingModels);
     const constructImportValidationError = (message, field) =>
       new ImportValidationError(message, excelRowNumber, field, countryCode);
     await validator.validate(entityObject, constructImportValidationError);
@@ -94,15 +113,6 @@ export async function updateCountryEntities(
       countryCode,
     });
 
-    if (codes.includes(code)) {
-      throw new ImportValidationError(
-        `Entity code '${code}' is not unique`,
-        excelRowNumber,
-        'code',
-        countryCode,
-      );
-    }
-    codes.push(code);
     const { parentEntity } =
       (await getOrCreateParentEntity(
         transactingModels,
