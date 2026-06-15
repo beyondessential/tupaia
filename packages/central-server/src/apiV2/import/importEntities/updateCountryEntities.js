@@ -54,7 +54,7 @@ export async function updateCountryEntities(
       metadata: countryEntityMetadata,
     },
   );
-  const codes = []; // An array to hold all facility codes, allowing duplicate checking
+  const codes = new Set(); // Track seen codes for O(1) duplicate checking
 
   for (let i = 0; i < entityObjects.length; i++) {
     const entityObject = entityObjects[i];
@@ -69,7 +69,7 @@ export async function updateCountryEntities(
     const excelRowNumber = i + 2;
     // Catch duplicate codes within the upload up front, so an accidental
     // duplicate line still errors even when a row would otherwise be skipped.
-    if (codes.includes(entityObject.code)) {
+    if (codes.has(entityObject.code)) {
       throw new ImportValidationError(
         `Entity code '${entityObject.code}' is not unique`,
         excelRowNumber,
@@ -77,7 +77,7 @@ export async function updateCountryEntities(
         countryCode,
       );
     }
-    codes.push(entityObject.code);
+    codes.add(entityObject.code);
     // Skip rows that would change nothing — the common case is re-importing a
     // whole exported sheet after editing only a few rows. Unchanged rows cost no
     // per-row queries (resolution + writes below are all skipped).

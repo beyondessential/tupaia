@@ -56,6 +56,14 @@ describe('isEntityUnchanged', () => {
     expect(
       isEntityUnchanged({ ...matchingRow, longitude: null, latitude: null }, existing),
     ).to.equal(true);
+    // Full-precision stored coords vs xlsx-rounded re-import values still match,
+    // so located entities aren't all flagged as changed on round-trip.
+    expect(
+      isEntityUnchanged(
+        { ...matchingRow, longitude: '160.5', latitude: '-9.4' },
+        { ...existing, longitude: 160.50000000001, latitude: -9.40000000002 },
+      ),
+    ).to.equal(true);
   });
 
   it('compares attributes only when supplied, and treats true/"true" as equal', () => {

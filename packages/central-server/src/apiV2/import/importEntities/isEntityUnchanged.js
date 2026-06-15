@@ -35,9 +35,16 @@ export const isEntityUnchanged = (row, existing) => {
   if (normaliseString(row.parent_code) !== normaliseString(existing.parent_code)) return false;
   if (normaliseString(row.image_url) !== normaliseString(existing.image_url)) return false;
 
-  // Point coordinates — only written when the row supplies both, so only diffed then.
+  // Point coordinates — only written when the row supplies both, so only diffed
+  // then. Compare rounded to ~6 decimal places (~0.1m): the exporter writes full
+  // ST_X/ST_Y precision but xlsx reads cells back rounded (raw:false), so exact
+  // equality would flag every located entity as changed and defeat the skip.
   if (!isBlank(row.longitude) && !isBlank(row.latitude)) {
-    if (Number(row.longitude) !== existing.longitude || Number(row.latitude) !== existing.latitude) {
+    const round = value => Math.round(Number(value) * 1e6) / 1e6;
+    if (
+      round(row.longitude) !== round(existing.longitude) ||
+      round(row.latitude) !== round(existing.latitude)
+    ) {
       return false;
     }
   }
