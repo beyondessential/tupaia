@@ -149,7 +149,7 @@ install_node
 install_corepack() {
   if ! command -v corepack &>/dev/null; then
     echo 'Corepack not installed. Installing...'
-    npm install -g corepack
+    npm install --global --min-release-age=7 corepack
   fi
   echo "Corepack $(corepack --version) is installed"
 }
