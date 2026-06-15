@@ -1,5 +1,9 @@
 const normaliseString = value => (value === null || value === undefined ? '' : String(value));
 
+// xlsx parsing emits null for blank cells (defval: null), so treat null like a
+// missing value everywhere.
+const isBlank = value => value === undefined || value === null || value === '';
+
 // Canonical form of a flat attribute object for comparison: sorted keys, values
 // stringified. Stringifying means a stored boolean `true` and an imported string
 // `"true"` compare equal, so a round-trip doesn't churn those rows. An empty or
@@ -32,26 +36,26 @@ export const isEntityUnchanged = (row, existing) => {
   if (normaliseString(row.image_url) !== normaliseString(existing.image_url)) return false;
 
   // Point coordinates — only written when the row supplies both, so only diffed then.
-  const hasCoordinates =
-    row.longitude !== undefined &&
-    row.longitude !== '' &&
-    row.latitude !== undefined &&
-    row.latitude !== '';
-  if (hasCoordinates) {
+  if (!isBlank(row.longitude) && !isBlank(row.latitude)) {
     if (Number(row.longitude) !== existing.longitude || Number(row.latitude) !== existing.latitude) {
       return false;
     }
   }
 
-  // attributes / data_service_entity — only written (and so only diffed) when supplied.
+  // attributes — the importer writes whenever the column is present (a blank cell
+  // clears them to {}), so a blank here is a real change. Match that: compare
+  // unless the column is entirely absent (undefined). canonicalObject treats
+  // null/{}/empty alike, so a blank cell vs an empty stored value still matches.
   if (
     row.attributes !== undefined &&
     canonicalObject(row.attributes) !== canonicalObject(existing.attributes)
   ) {
     return false;
   }
+  // data_service_entity — the importer only writes when the cell is truthy, so a
+  // blank leaves it untouched: skip the comparison for blanks.
   if (
-    row.data_service_entity !== undefined &&
+    !isBlank(row.data_service_entity) &&
     canonicalObject(row.data_service_entity) !== canonicalObject(existing.data_service_config)
   ) {
     return false;

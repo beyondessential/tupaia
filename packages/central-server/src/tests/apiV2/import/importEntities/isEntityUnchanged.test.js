@@ -51,15 +51,26 @@ describe('isEntityUnchanged', () => {
     // No coordinates in the row → importer leaves the point untouched → unchanged.
     const { longitude, latitude, ...noCoords } = matchingRow;
     expect(isEntityUnchanged(noCoords, existing)).to.equal(true);
+    // Blank cells arrive as null (xlsx defval) — must be treated as "no
+    // coordinates", not as 0,0, or skip never fires for coordinate-less rows.
+    expect(
+      isEntityUnchanged({ ...matchingRow, longitude: null, latitude: null }, existing),
+    ).to.equal(true);
   });
 
   it('compares attributes only when supplied, and treats true/"true" as equal', () => {
     expect(
       isEntityUnchanged({ ...matchingRow, attributes: { area_type: 'maritime' } }, existing),
     ).to.equal(false);
-    // Row omits attributes → importer leaves them untouched → unchanged.
+    // Row omits the attributes column entirely (undefined) → untouched → unchanged.
     const { attributes, ...noAttributes } = matchingRow;
     expect(isEntityUnchanged(noAttributes, existing)).to.equal(true);
+    // A blank attributes cell (null) clears existing attributes — that's a change.
+    expect(isEntityUnchanged({ ...matchingRow, attributes: null }, existing)).to.equal(false);
+    // ...but blanking already-empty attributes is not a change.
+    expect(
+      isEntityUnchanged({ ...matchingRow, attributes: null }, { ...existing, attributes: {} }),
+    ).to.equal(true);
     // Stored boolean vs imported string "true" — equal, so no churn on round-trip.
     expect(
       isEntityUnchanged(

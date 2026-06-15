@@ -30,7 +30,8 @@ export const loadProjectCountryCodes = async (models, projectId) => {
 // skip rows that wouldn't change anything (see isEntityUnchanged). This makes
 // re-importing a whole exported sheet with only a few edits fast — the unchanged
 // rows cost no per-row queries. Read once, before the write transaction.
-export const loadExistingEntities = async (models, projectId) => {
+export const loadExistingEntities = async (models, projectId, countryCodes) => {
+  if (countryCodes.length === 0) return new Map();
   const rows = await models.database.executeSql(
     `
       SELECT e.code, e.name, e.type, e.country_code, e.image_url, e.attributes,
@@ -42,9 +43,12 @@ export const loadExistingEntities = async (models, projectId) => {
       FROM entity e
       LEFT JOIN entity parent ON parent.id = e.parent_id
       LEFT JOIN data_service_entity dse ON dse.entity_code = e.code
-      WHERE e.project_id = ?;
+      WHERE e.project_id = ?
+        -- Only the countries actually being imported, so a small single-country
+        -- import doesn't load the whole (potentially huge) project into memory.
+        AND e.country_code = ANY(?);
     `,
-    [projectId],
+    [projectId, countryCodes],
   );
   return new Map(rows.map(row => [row.code, row]));
 };
@@ -119,7 +123,11 @@ export async function importEntities(req, res) {
       assertAnyPermissions([assertBESAdminAccess, importEntitiesPermissionsChecker]),
     );
 
-    const existingEntitiesByCode = await loadExistingEntities(models, project.id);
+    const existingEntitiesByCode = await loadExistingEntities(
+      models,
+      project.id,
+      Object.keys(rowsByCountryCode),
+    );
 
     await models.wrapInTransaction(async transactingModels => {
       for (const [countryCode, countryRows] of Object.entries(rowsByCountryCode)) {

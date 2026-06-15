@@ -66,6 +66,18 @@ export async function updateCountryEntities(
     if (entityType === transactingModels.entity.types.COUNTRY) {
       continue;
     }
+    const excelRowNumber = i + 2;
+    // Catch duplicate codes within the upload up front, so an accidental
+    // duplicate line still errors even when a row would otherwise be skipped.
+    if (codes.includes(entityObject.code)) {
+      throw new ImportValidationError(
+        `Entity code '${entityObject.code}' is not unique`,
+        excelRowNumber,
+        'code',
+        countryCode,
+      );
+    }
+    codes.push(entityObject.code);
     // Skip rows that would change nothing — the common case is re-importing a
     // whole exported sheet after editing only a few rows. Unchanged rows cost no
     // per-row queries (resolution + writes below are all skipped).
@@ -73,7 +85,6 @@ export async function updateCountryEntities(
       continue;
     }
     const validator = getEntityObjectValidator(entityType, transactingModels);
-    const excelRowNumber = i + 2;
     const constructImportValidationError = (message, field) =>
       new ImportValidationError(message, excelRowNumber, field, countryCode);
     await validator.validate(entityObject, constructImportValidationError);
@@ -102,15 +113,6 @@ export async function updateCountryEntities(
       countryCode,
     });
 
-    if (codes.includes(code)) {
-      throw new ImportValidationError(
-        `Entity code '${code}' is not unique`,
-        excelRowNumber,
-        'code',
-        countryCode,
-      );
-    }
-    codes.push(code);
     const { parentEntity } =
       (await getOrCreateParentEntity(
         transactingModels,

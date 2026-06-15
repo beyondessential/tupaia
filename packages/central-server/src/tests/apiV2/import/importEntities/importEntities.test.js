@@ -409,7 +409,9 @@ describe('importEntities(): POST import/entities', () => {
       await app.grantAccess(BES_ADMIN_POLICY);
     });
 
-    after(() => {
+    after(async () => {
+      // Clean up so the "create" assertion holds on repeat runs against the real DB.
+      await models.entity.delete({ code: 'KI_skip_test' });
       app.revokeAccess();
     });
 
