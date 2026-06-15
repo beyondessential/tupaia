@@ -27,19 +27,22 @@ cd $HOME_DIR
 
 sudo apt-get update
 
-# install nginx and add h5bp config
-if ! command -v nginx &>/dev/null; then
-  echo 'nginx not installed. Installing...'
-  sudo apt-get install -yqq nginx
+install_nginx() {
+  if ! command -v nginx &>/dev/null; then
+    echo 'nginx not installed. Installing...'
+    sudo apt-get install -yqq nginx
 
-  git clone --branch 2.0.0 --depth 1 https://github.com/h5bp/server-configs-nginx.git
-  sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
-  rm -rf server-configs-nginx
+    # add h5bp config
+    git clone --branch 2.0.0 --depth 1 https://github.com/h5bp/server-configs-nginx.git
+    sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
+    rm -rf server-configs-nginx
 
-  # Add the nginx user (www-data) to the ubuntu group to give it access to the tupaia code
-  sudo usermod -a -G ubuntu www-data
-fi
-nginx -v
+    # Add the nginx user (www-data) to the ubuntu group to give it access to the tupaia code
+    sudo usermod -a -G ubuntu www-data
+  fi
+  nginx -v
+}
+install_nginx
 
 # install psql for use when installing mv refresh in the db
 sudo apt-get install -yqq postgresql-client
@@ -100,68 +103,86 @@ sudo apt-get -yqq install \
   wget \
   xdg-utils
 
-# Install Tailscale
-if ! command -v tailscale &>/dev/null; then
-  echo 'Tailscale not installed. Installing...'
+install_tailscale() {
+  if ! command -v tailscale &>/dev/null; then
+    echo 'Tailscale not installed. Installing...'
 
-  # See https://docs.aws.amazon.com/linux/al2023/ug/ident-os-release.html
-  local os_id=$(source /etc/os-release && echo "$ID")
-  local os_codename=$(source /etc/os-release && echo "$VERSION_CODENAME")
+    # See https://docs.aws.amazon.com/linux/al2023/ug/ident-os-release.html
+    local os_id=$(source /etc/os-release && echo "$ID")
+    local os_codename=$(source /etc/os-release && echo "$VERSION_CODENAME")
 
-  sudo cp "$TUPAIA_DIR"/packages/devops/keyrings/tailscale.gpg /usr/share/keyrings/tailscale.gpg
-  echo "deb [signed-by=/usr/share/keyrings/tailscale.gpg] https://pkgs.tailscale.com/stable/$os_id $os_codename main" |
-    sudo tee /etc/apt/sources.list.d/tailscale.list
-  sudo apt-get update
-  sudo apt-get -qq install tailscale
-else
-  echo 'Updating Tailscale...'
-  sudo tailscale update
-fi
+    sudo cp "$TUPAIA_DIR"/packages/devops/keyrings/tailscale.gpg /usr/share/keyrings/tailscale.gpg
+    echo "deb [signed-by=/usr/share/keyrings/tailscale.gpg] https://pkgs.tailscale.com/stable/$os_id $os_codename main" |
+      sudo tee /etc/apt/sources.list.d/tailscale.list
+    sudo apt-get update
+    sudo apt-get -qq install tailscale
+  else
+    echo 'Updating Tailscale...'
+    sudo tailscale update
+  fi
 
-echo 'Tailscale version:'
-tailscale version
+  echo 'Tailscale version:'
+  tailscale version
+}
+install_tailscale
 
-# Install nvm
-if ! command -v nvm &>/dev/null; then
-  echo 'nvm not installed. Installing...'
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
-fi
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-echo "nvm $(nvm --version) is installed"
+install_nvm() {
+  if ! command -v nvm &>/dev/null; then
+    echo 'nvm not installed. Installing...'
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+  fi
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  echo "nvm $(nvm --version) is installed"
+}
+install_nvm
 
-# Install Corepack
-echo "Installing Node.js $(sudo cat "$TUPAIA_DIR/.nvmrc")"
-nvm install --default $(sudo cat "$TUPAIA_DIR/.nvmrc")
-echo "Node.js $(node --version) is installed"
-echo "Using Node.js $(nvm current) ($(nvm which current))"
+install_node() {
+  echo "Installing Node.js $(sudo cat "$TUPAIA_DIR/.nvmrc")"
+  nvm install --default $(sudo cat "$TUPAIA_DIR/.nvmrc")
+  echo "Node.js $(node --version) is installed"
+  echo "Using Node.js $(nvm current) ($(nvm which current))"
+}
+install_node
 
-# Install Corepack
-if ! command -v corepack &>/dev/null; then
-  echo 'Corepack not installed. Installing...'
-  npm install -g corepack
-fi
-echo "Corepack $(corepack --version) is installed"
+install_corepack() {
+  if ! command -v corepack &>/dev/null; then
+    echo 'Corepack not installed. Installing...'
+    npm install -g corepack
+  fi
+  echo "Corepack $(corepack --version) is installed"
+}
+install_corepack
 
-# Set up Yarn
-corepack enable yarn
-echo "Using Yarn $(yarn --version) ($(which yarn))"
+set_up_yarn() {
+  corepack enable yarn
+  echo "Using Yarn $(yarn --version) ($(which yarn))"
+}
+set_up_yarn
 
-# Install PM2, ensuring same version as root package.json
-if ! command -v pm2 &>/dev/null; then
-  echo 'PM2 not installed. Installing...'
-  npm install --global pm2@^6.0.8
-elif (($(yarn pm2 --version | cut -d . -f 1) != 6)); then
-  echo "PM2 $(pm2 --version) is installed. Replacing with ^6.0.8..."
-  npm install --global pm2@^6.0.8
-fi
-echo "PM2 $(pm2 --version) is installed"
+install_pm2() {
+  # Ideally match version in root package.json, which devs use locally
+  if ! command -v pm2 &>/dev/null; then
+    echo 'PM2 not installed. Installing...'
+    npm install --global pm2@^6.0.8
+  elif (($(yarn pm2 --version | cut -d . -f 1) != 6)); then
+    echo "PM2 $(pm2 --version) is installed. Replacing with ^6.0.8..."
+    npm install --global pm2@^6.0.8
+  fi
+  echo "PM2 $(pm2 --version) is installed"
 
-pm2 install pm2-logrotate
+  pm2 install pm2-logrotate
+}
+install_pm2
 
-LOGS_DIR=$HOME_DIR/logs
-# Create a directory for logs to go
-mkdir -m 777 -p $LOGS_DIR
+create_logs_dir() {
+  local logs_dir=$HOME_DIR/logs
+  mkdir -m 777 -p $logs_dir
+}
+create_logs_dir
 
-cd $TUPAIA_DIR
-yarn install # pre install to save time spinning up new ec2 instances
+install_npm_dependencies() {
+  cd "$TUPAIA_DIR"
+  yarn install # pre install to save time spinning up new ec2 instances
+}
+install_npm_dependencies
