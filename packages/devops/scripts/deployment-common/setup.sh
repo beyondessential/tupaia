@@ -167,7 +167,7 @@ install_pm2() {
   if ! command -v pm2 &>/dev/null; then
     echo 'PM2 not installed. Installing...'
     npm install --global pm2@^6.0.8
-  elif (($(yarn pm2 --version | cut -d . -f 1) != 6)); then
+  elif (($(pm2 --version | cut -d . -f 1) != 6)); then
     echo "PM2 $(pm2 --version) is installed. Replacing with ^6.0.8..."
     npm install --global pm2@^6.0.8
   fi
