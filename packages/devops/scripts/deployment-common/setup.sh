@@ -130,7 +130,7 @@ install_nvm() {
   local nvm_path="$HOME/.nvm/nvm.sh"
   if [ ! -s "$nvm_path" ]; then
     echo 'nvm not installed. Installing...'
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh | bash
   fi
   export NVM_DIR="$HOME/.nvm"
   [ -s "$nvm_path" ] && \. "$nvm_path"
