@@ -18,6 +18,7 @@ import {
   filterRoutesByScope,
 } from './routes/scopes';
 import { DefaultRedirect, useSelectedProjectCode } from './projects';
+import { useProjects } from './api/queries';
 import {
   substituteRouteParams,
   useHasBesAdminAccess,
@@ -63,6 +64,21 @@ export const getFlattenedChildViews = (route, basePath = '', pathPrefix = '') =>
 const ParamAwareNavigate = ({ to }) => {
   const params = useParams();
   return <Navigate to={substituteRouteParams(to, params)} replace />;
+};
+
+// Guards the `/:projectCode/...` routes: if the code in the URL isn't a project
+// the current user can access (a stale URL after switching accounts, or a
+// non-project first segment that fell through to this catch-all route), send
+// them back to `/` so DefaultRedirect lands them on an accessible page rather
+// than rendering a blank, permission-denied view.
+const SingleProjectRouteGuard = () => {
+  const { [SINGLE_PROJECT_PATH_PARAM]: projectCode } = useParams();
+  const { data: projects, isLoading } = useProjects();
+  if (isLoading) return null;
+  if (!projects?.some(project => project.code === projectCode)) {
+    return <Navigate to="/" replace />;
+  }
+  return <Outlet />;
 };
 
 const renderSectionRoutes = (sectionRoutes, pathPrefix, hasBESAdminAccess) =>
@@ -181,7 +197,7 @@ const App = () => {
             }
           />
           {renderSectionRoutes(allDataRoutes, ALL_DATA_BASE_PATH, hasBESAdminAccess)}
-          <Route path={`:${SINGLE_PROJECT_PATH_PARAM}`} element={<Outlet />}>
+          <Route path={`:${SINGLE_PROJECT_PATH_PARAM}`} element={<SingleProjectRouteGuard />}>
             {renderSectionRoutes(singleProjectRoutes, SINGLE_PROJECT_ROUTE_BASE, hasBESAdminAccess)}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>

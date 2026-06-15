@@ -54,8 +54,12 @@ export const useSidebarProjectCode = () => {
   const { data: user } = useUser();
   const { data: projects } = useProjects();
 
-  if (urlCode) return urlCode;
   if (!projects || projects.length === 0) return null;
+
+  // Only trust the URL code if it's a project the user can actually access.
+  // Otherwise a stale URL (e.g. a previous user's project after switching
+  // accounts) would leave the sidebar selecting a project that isn't theirs.
+  if (urlCode && projects.some(p => p.code === urlCode)) return urlCode;
 
   const preferredId = user?.preferences?.project_id ?? null;
   const preferred = preferredId ? projects.find(p => p.id === preferredId) : null;
