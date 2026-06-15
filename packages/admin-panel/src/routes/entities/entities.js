@@ -97,9 +97,11 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: ENTITIES_ENDPOINT,
     extraQueryParameters: {
-      // If a large import doesn't finish in 10s, respond and email the result
-      // rather than holding the request open until it times out.
-      respondWithEmailTimeout: 10 * 1000,
+      // If a large import doesn't finish in 30s, respond and email the result
+      // rather than holding the request open until it times out. 30s gives a
+      // big project's skip-unchanged pass (parse + snapshot) room to finish
+      // synchronously.
+      respondWithEmailTimeout: 30 * 1000,
     },
     accept: {
       'application/geo+json': ['.geojson'],
