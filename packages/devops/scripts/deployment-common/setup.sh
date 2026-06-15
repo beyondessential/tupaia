@@ -138,8 +138,9 @@ install_nvm() {
 install_nvm
 
 install_node() {
-  echo "Installing Node.js $(sudo cat "$TUPAIA_DIR/.nvmrc")"
-  nvm install --default $(sudo cat "$TUPAIA_DIR/.nvmrc")
+  local target_version=$(sudo cat "$TUPAIA_DIR/.nvmrc")
+  echo "Installing Node.js $target_version"
+  nvm install --default "$target_version"
   echo "Node.js $(node --version) is installed"
   echo "Using Node.js $(nvm current) ($(nvm which current))"
 }
