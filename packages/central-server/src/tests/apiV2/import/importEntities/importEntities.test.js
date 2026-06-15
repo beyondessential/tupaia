@@ -391,4 +391,48 @@ describe('importEntities(): POST import/entities', () => {
       expect(dataServiceEntity.config).to.deep.equal({ kobo_id: '10302070' });
     });
   });
+
+  describe('Skip unchanged rows (TUP-3181)', () => {
+    const importRows = rows => {
+      const filepath = writeXlsx(rows);
+      return app
+        .post('import/entities')
+        .query({ projectCode: TEST_PROJECT_CODE, pushToDhis: 'false' })
+        .attach('entities', filepath)
+        .then(response => {
+          unlinkXlsx(filepath);
+          return response;
+        });
+    };
+
+    before(async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+    });
+
+    after(() => {
+      app.revokeAccess();
+    });
+
+    it('re-importing unchanged rows is a no-op, and edits still apply', async () => {
+      const row = {
+        code: 'KI_skip_test',
+        name: 'Original',
+        entity_type: 'village',
+        country_code: 'KI',
+        parent_code: 'KI',
+      };
+
+      expect((await importRows([row])).statusCode).to.equal(200);
+      expect((await models.entity.findOne({ code: 'KI_skip_test' })).name).to.equal('Original');
+
+      // Identical re-import — skipped, leaves the entity as-is.
+      const reimport = await importRows([row]);
+      expect(reimport.statusCode).to.equal(200);
+      expect((await models.entity.findOne({ code: 'KI_skip_test' })).name).to.equal('Original');
+
+      // An actual edit still applies.
+      expect((await importRows([{ ...row, name: 'Renamed' }])).statusCode).to.equal(200);
+      expect((await models.entity.findOne({ code: 'KI_skip_test' })).name).to.equal('Renamed');
+    });
+  });
 });

@@ -3,6 +3,7 @@ import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
 import { getEntityMetadata } from './getEntityMetadata';
 import { resolvePolygonId } from './resolvePolygonId';
+import { isEntityUnchanged } from './isEntityUnchanged';
 
 /**
  * Apply a batch of entity rows that all share the same `country_code`.
@@ -17,6 +18,7 @@ export async function updateCountryEntities(
   entityObjects,
   pushToDhis = true,
   projectId = null,
+  existingEntitiesByCode = new Map(),
 ) {
   const country = await transactingModels.country.findOne({ code: countryCode });
   if (!country) {
@@ -62,6 +64,12 @@ export async function updateCountryEntities(
     // must not be re-created as project-scoped rows here — skip them. (Country
     // creation/editing is handled via the Countries tab, not entity import.)
     if (entityType === transactingModels.entity.types.COUNTRY) {
+      continue;
+    }
+    // Skip rows that would change nothing — the common case is re-importing a
+    // whole exported sheet after editing only a few rows. Unchanged rows cost no
+    // per-row queries (resolution + writes below are all skipped).
+    if (isEntityUnchanged(entityObject, existingEntitiesByCode.get(entityObject.code))) {
       continue;
     }
     const validator = getEntityObjectValidator(entityType, transactingModels);
