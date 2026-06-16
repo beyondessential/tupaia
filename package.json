@@ -110,5 +110,5 @@
   "engines": {
     "node": "^20.11.1"
   },
-  "packageManager": "yarn@4.13.0+sha256.730e0619753d39754c9e7613c7e57f084ea18b3244f5ba9a5a60bd3da048450b"
+  "packageManager": "yarn@4.16.0+sha256.ba05224324578801b9cc98170d64aa50b9a36733b440fb0942306da3fbbdc7d1"
 }
