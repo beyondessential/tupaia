@@ -3,6 +3,9 @@
 !*.env.*.example*
 !*.env.encrypted*
 .DS_Store
+
+# local scratch / throwaway analysis artifacts
+/scratch/
 **/node_modules
 **/coverage
 **/builds
