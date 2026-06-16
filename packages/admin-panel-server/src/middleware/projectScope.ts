@@ -12,7 +12,11 @@ type ProjectRecord = NonNullable<Awaited<ReturnType<Models['project']['findOne']
 
 type ProjectScopeRule = {
   filter: (project: ProjectRecord) => Record<string, unknown> | Promise<Record<string, unknown>>;
-  ownership: (id: string, models: Models) => Promise<ProjectRef | null>;
+  ownership: (
+    id: string,
+    models: Models,
+    project: ProjectRecord,
+  ) => Promise<ProjectRef | null>;
   // Required so a new rule can't silently bypass POST scope enforcement by
   // forgetting to define one. Receives the active project so a rule whose
   // create isn't scope-bound (e.g. creating a brand-new project) can opt in by
@@ -74,10 +78,26 @@ const RULES: Record<string, ProjectScopeRule> = {
         },
       };
     },
-    ownership: async (id, models) => {
+    ownership: async (id, models, project) => {
       const entity = await models.entity.findById(id);
-      const projectId = (entity as { project_id?: string } | undefined)?.project_id;
-      return projectId ? { id: projectId } : null;
+      if (!entity) return null;
+      const { project_id: projectId, type, code } = entity as {
+        project_id?: string;
+        type?: string;
+        code?: string;
+      };
+      if (projectId) return { id: projectId };
+      // Country entities are shared (project_id IS NULL) but editable from any
+      // project whose project_country set spans them — mirror the list filter
+      // and treat the active project as owner so the edit is allowed.
+      if (type === 'country') {
+        const countries = await project.countries();
+        const inScope = countries.some(
+          country => (country as unknown as { code: string }).code === code,
+        );
+        return inScope ? { id: project.id } : null;
+      }
+      return null;
     },
     bodyOwnership: projectRefFromBody,
   },
@@ -176,7 +196,7 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
       url.searchParams.set('filter', JSON.stringify(merged));
     } else if (isMutationOnId(req.method, segments)) {
       const id = segments[1];
-      const owner = await rule.ownership(id, req.models);
+      const owner = await rule.ownership(id, req.models, project);
       if (!owner) {
         res.status(404).json({ error: `${resourceKey}/${id} not found` });
         return undefined;
