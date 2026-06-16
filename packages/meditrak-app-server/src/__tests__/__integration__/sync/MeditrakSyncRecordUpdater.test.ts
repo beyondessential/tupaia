@@ -1,5 +1,6 @@
 import { clearTestData, getTestModels, generateId } from '@tupaia/database';
 import { TestModelRegistry } from '../../types';
+import { MeditrakAppServerModelRegistry } from '../../../types';
 import { MeditrakSyncRecordUpdater } from '../../../sync/MeditrakSyncRecordUpdater';
 import { upsertEntity } from '../../utilities/database';
 
@@ -10,7 +11,9 @@ import { upsertEntity } from '../../utilities/database';
  */
 describe('MeditrakSyncRecordUpdater - entity delete canonicalisation', () => {
   const models = getTestModels() as unknown as TestModelRegistry;
-  const updater = new MeditrakSyncRecordUpdater(models);
+  const updater = new MeditrakSyncRecordUpdater(
+    models as unknown as MeditrakAppServerModelRegistry,
+  );
 
   const entityDeleteChange = (recordId: string, code: string) => [
     { record_type: 'entity', record_id: recordId, type: 'delete' as const, old_record: { code } },
