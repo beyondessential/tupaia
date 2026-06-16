@@ -80,6 +80,77 @@ describe('upsertEntitiesAndOptions', () => {
       expect(updated.parent_id).toBe(newParent.id);
       expect(updated.project_id).toBe(project.id);
     });
+
+    it('upserts a new parent and new child in one batch even when the child is listed first', async () => {
+      const parentId = generateId();
+      const childId = generateId();
+
+      // Child listed before its parent — must still succeed (parent upserted first to satisfy the FK).
+      await expect(
+        upsertEntitiesAndOptions(models, [
+          {
+            entities_upserted: [
+              {
+                id: childId,
+                code: `TEST_NEW_CHILD_${childId}`,
+                name: 'New Child',
+                type: 'asset',
+                country_code: country.code,
+                parent_id: parentId,
+                project_id: project.id,
+              },
+              {
+                id: parentId,
+                code: `TEST_NEW_PARENT_${parentId}`,
+                name: 'New Parent',
+                type: 'facility',
+                country_code: country.code,
+                parent_id: country.id,
+                project_id: project.id,
+              },
+            ],
+          },
+        ]),
+      ).resolves.not.toThrow();
+
+      const child = await models.entity.findById(childId);
+      expect(child.parent_id).toBe(parentId);
+
+      await models.entity.delete({ id: childId });
+      await models.entity.delete({ id: parentId });
+    });
+
+    it('throws on a cycle among the submitted entities', async () => {
+      const aId = generateId();
+      const bId = generateId();
+
+      await expect(
+        upsertEntitiesAndOptions(models, [
+          {
+            entities_upserted: [
+              {
+                id: aId,
+                code: `TEST_CYCLE_A_${aId}`,
+                name: 'Cycle A',
+                type: 'asset',
+                country_code: country.code,
+                parent_id: bId,
+                project_id: project.id,
+              },
+              {
+                id: bId,
+                code: `TEST_CYCLE_B_${bId}`,
+                name: 'Cycle B',
+                type: 'asset',
+                country_code: country.code,
+                parent_id: aId,
+                project_id: project.id,
+              },
+            ],
+          },
+        ]),
+      ).rejects.toThrow(/cycle detected/i);
+    });
   });
 
   describe('createOptions', () => {

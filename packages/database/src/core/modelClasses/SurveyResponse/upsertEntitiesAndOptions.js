@@ -12,8 +12,41 @@ import winston from 'winston';
  * pass entity ids that already match project-specific rows, so they omit this.
  */
 
+/**
+ * Order entities so each parent is upserted before any child that references it within the same
+ * batch. A new parent + new child in one submission would otherwise fail: the upserts can't run
+ * concurrently (the child's parent_id FK is checked before the parent row exists). Throws on a
+ * cycle in the batch's parent references — which also covers mutually-referential submissions the
+ * lazy-duplication cycle guard never sees.
+ */
+const orderEntitiesParentFirst = resolvedEntities => {
+  const byId = new Map(resolvedEntities.map(resolved => [resolved.resolvedId, resolved]));
+  const ordered = [];
+  const state = new Map(); // resolvedId -> 'visiting' | 'done'
+  const visit = resolved => {
+    const status = state.get(resolved.resolvedId);
+    if (status === 'done') return;
+    if (status === 'visiting') {
+      throw new Error(
+        `Entity hierarchy cycle detected among submitted entities (code ${resolved.entityToUpsert.code})`,
+      );
+    }
+    state.set(resolved.resolvedId, 'visiting');
+    const { parent_id: parentId } = resolved.entityToUpsert;
+    const parent = parentId ? byId.get(parentId) : undefined;
+    if (parent && parent.resolvedId !== resolved.resolvedId) visit(parent);
+    state.set(resolved.resolvedId, 'done');
+    ordered.push(resolved);
+  };
+  for (const resolved of resolvedEntities) visit(resolved);
+  return ordered;
+};
+
 const upsertEntities = async (models, entitiesUpserted, { resolveEntityId, projectId } = {}) => {
-  return await Promise.all(
+  // Phase 1 — resolve every entity against the PRE-BATCH db state (in parallel). Resolution must
+  // not depend on rows inserted earlier in the same batch, so it happens up front before any of
+  // the batch entities are written.
+  const resolvedEntities = await Promise.all(
     entitiesUpserted.map(async entity => {
       // For MediTrak-style payloads (canonical id), translate both the entity
       // id and its parent_id into project-specific rows via the resolver.
@@ -35,8 +68,6 @@ const upsertEntities = async (models, entitiesUpserted, { resolveEntityId, proje
         // same batch (not yet in the DB). For a new parent the canonical id
         // becomes its project-specific id (same skip path as the entity above),
         // so the child's canonical parent_id already points at the right row.
-        // Resolving it here would instead throw 'No entity found', and would
-        // make correctness depend on insert ordering within the Promise.all.
         if (entity.parent_id) {
           const existingParent = await models.entity.findById(entity.parent_id);
           if (existingParent) {
@@ -73,9 +104,16 @@ const upsertEntities = async (models, entitiesUpserted, { resolveEntityId, proje
       const entityToUpsert = existingEntity
         ? toMerged(existingEntity, entityWithResolvedIds)
         : entityWithResolvedIds;
-      return await models.entity.updateOrCreate({ id: resolvedId }, entityToUpsert);
+      return { resolvedId, entityToUpsert };
     }),
   );
+
+  // Phase 2 — upsert parent-before-child (sequentially) so each child's parent_id FK is satisfied.
+  const results = [];
+  for (const { resolvedId, entityToUpsert } of orderEntitiesParentFirst(resolvedEntities)) {
+    results.push(await models.entity.updateOrCreate({ id: resolvedId }, entityToUpsert));
+  }
+  return results;
 };
 
 /**
