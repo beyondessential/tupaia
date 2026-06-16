@@ -89,11 +89,19 @@ export const selectFromClause = select => `
  * rationale — pre-epic rows kept their original id through the migration, and
  * any newer duplicate inserts get fresh timestamp-prefixed ids (always higher),
  * so MIN(id) deterministically picks the pre-epic original row.
+ *
+ * Delete tombstones are always passed through: a deleted row is gone from `entity`
+ * so it can never match the canonical join, but MediTrak still needs to be told to
+ * remove a fully-deleted entity. The enqueuer (MeditrakSyncRecordUpdater) only writes
+ * an entity delete to the queue when no rows remain for that code (a true full
+ * deletion), never for a duplicate-only deletion — so passing all entity deletes here
+ * is safe.
  */
 export const canonicalEntityFilter = () => ({
   query: `(
       record_type != 'entity'
       OR canonical_entities.canonical_entity_id IS NOT NULL
+      OR "type" = 'delete'
     )`,
   params: [],
 });
