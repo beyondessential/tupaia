@@ -1,9 +1,14 @@
 import { expect } from 'chai';
 import { buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
 import { TestableApp, resetTestData } from '../../testUtilities';
-import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
+import {
+  BES_ADMIN_PERMISSION_GROUP,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+} from '../../../permissions';
 
 const BES_ADMIN_POLICY = { KI: [BES_ADMIN_PERMISSION_GROUP], VU: [BES_ADMIN_PERMISSION_GROUP] };
+// Admin Panel access to KI only; view-only Public access to VU.
+const ADMIN_PANEL_KI_ONLY = { KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP], VU: ['Public'] };
 
 // Reproduces the request the admin-panel Entities tab makes once the
 // projectScope middleware has injected its scope filter: a project.code column
@@ -86,5 +91,19 @@ describe('Entities tab project-scope filter (TUP-3180)', () => {
     // Not another project's entities, nor a country outside this project.
     expect(codes.has('FJ')).to.equal(false);
     expect(codes.has('FJ_scope_v1')).to.equal(false);
+  });
+
+  it('scopes a non-BES user to countries they have Tupaia Admin Panel access to, matching export', async () => {
+    await app.grantAccess(ADMIN_PANEL_KI_ONLY);
+    const response = await app.get(buildQuery(project.id, ['KI', 'VU']));
+    expect(response.statusCode).to.equal(200);
+
+    const codes = new Set(response.body.map(row => row.code));
+    // Admin access to KI → its entities are listed.
+    expect(codes.has('KI')).to.equal(true);
+    expect(codes.has('KI_scope_v1')).to.equal(true);
+    // Only Public (view) access to VU → hidden, matching the export scope.
+    expect(codes.has('VU')).to.equal(false);
+    expect(codes.has('VU_scope_v1')).to.equal(false);
   });
 });

@@ -1,6 +1,11 @@
 import { QUERY_CONJUNCTIONS, JOIN_TYPES } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
-import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
+import {
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  hasBESAdminAccess,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+} from '../../permissions';
 import { mergeFilter } from '../utilities';
 import { assertCountryPermissions } from '../GETCountries';
 import { assertEntityPermissions } from './assertEntityPermissions';
@@ -117,7 +122,7 @@ export class GETEntities extends GETHandler {
 
     if (!hasBESAdminAccess(this.accessPolicy)) {
       dbConditions['entity.country_code'] = mergeFilter(
-        this.accessPolicy.getEntitiesAllowed(),
+        this.accessPolicy.getEntitiesAllowed(TUPAIA_ADMIN_PANEL_PERMISSION_GROUP),
         dbConditions['entity.country_code'],
       );
     }
