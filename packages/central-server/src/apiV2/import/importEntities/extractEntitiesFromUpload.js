@@ -13,6 +13,48 @@ import { convertCellToJson } from '../importSurveys/utilities';
  * `entity_polygon_code` + `entity_polygon_data_source` (human-readable, what
  * you wrote when authoring the polygon GeoJSON).
  */
+// Columns the importer reads, plus legacy columns it deliberately ignores
+// (facility_type/type_name/category_code — facility classification is no longer
+// imported). Anything outside this set is almost always a header typo, so we
+// surface it as a non-fatal warning rather than silently dropping it.
+const KNOWN_COLUMNS = new Set([
+  'code',
+  'name',
+  'entity_type',
+  'country_code',
+  'parent_code',
+  'latitude',
+  'longitude',
+  'screen_bounds',
+  'image_url',
+  'attributes',
+  'data_service_entity',
+  'entity_polygon_id',
+  'entity_polygon_code',
+  'entity_polygon_data_source',
+  'district',
+  'sub_district',
+  'district_osm_id',
+  'sub_district_osm_id',
+  // Legacy facility columns, accepted but ignored
+  'facility_type',
+  'type_name',
+  'category_code',
+]);
+
+// Unrecognised header columns across the upload, sorted and de-duplicated. A
+// blank cell still carries its header key (sheet_to_json uses defval), so a
+// column with a misspelt header is caught even when its values are empty.
+export const findUnknownColumns = rows => {
+  const seen = new Set();
+  for (const row of rows) {
+    for (const column of Object.keys(row)) {
+      if (!KNOWN_COLUMNS.has(column)) seen.add(column);
+    }
+  }
+  return [...seen].sort();
+};
+
 const processXlsxRow = row => {
   const entity = { ...row };
   // attributes / data_service_entity are newline-separated `key: value` cells.

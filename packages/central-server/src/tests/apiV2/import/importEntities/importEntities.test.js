@@ -277,6 +277,43 @@ describe('importEntities(): POST import/entities', () => {
       expect(clinic).to.not.exist;
     });
 
+    it('warns about unrecognised columns without failing the import (Issue 10)', async () => {
+      const response = await importRows([
+        {
+          code: 'KI_typo_facility',
+          name: 'Typo facility',
+          entity_type: 'facility',
+          country_code: 'KI',
+          parent_code: 'KI',
+          // misspelt "attributes" — silently dropped before, now surfaced
+          attribeauts: 'foo: bar',
+        },
+      ]);
+      expect(response.statusCode).to.equal(200);
+      expect(response.body.warnings).to.be.an('array').that.is.not.empty;
+      expect(response.body.warnings.join(' ')).to.match(/attribeauts/);
+
+      const entity = await models.entity.findOne({ code: 'KI_typo_facility' });
+      expect(entity).to.exist;
+      // the misspelt column was dropped, so no attribute landed on the entity
+      expect(entity.attributes || {}).to.not.have.property('foo');
+    });
+
+    it('does not warn when every column is recognised', async () => {
+      const response = await importRows([
+        {
+          code: 'KI_clean_facility',
+          name: 'Clean facility',
+          entity_type: 'facility',
+          country_code: 'KI',
+          parent_code: 'KI',
+          attributes: 'foo: bar',
+        },
+      ]);
+      expect(response.statusCode).to.equal(200);
+      expect(response.body.warnings).to.be.an('array').that.is.empty;
+    });
+
     it('rejects a row with no parent_code rather than creating an orphan (Issue 9)', async () => {
       const response = await importRows([
         {
@@ -342,6 +379,12 @@ describe('importEntities(): POST import/entities', () => {
         project_id: project.id,
       });
       expect(projectScopedCountry).to.not.exist;
+
+      // ...and the user is warned that the country row was skipped, rather than
+      // the import silently doing nothing to it.
+      expect(response.body.warnings).to.satisfy(warnings =>
+        warnings.some(warning => warning.includes('Skipped 1 country row')),
+      );
     });
   });
 

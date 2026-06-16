@@ -118,6 +118,12 @@ const IMPORT_CONFIG = {
       },
     },
   ],
+  getFinishedMessage: response => {
+    const warnings = response.warnings ?? [];
+    return warnings.length
+      ? `Your import has been successfully processed. ${warnings.join(' ')}`
+      : 'Your import has been successfully processed';
+  },
 };
 
 export const entities = {

@@ -7,7 +7,7 @@ import {
   ImportValidationError,
 } from '@tupaia/utils';
 import { updateCountryEntities } from './updateCountryEntities';
-import { extractEntitiesFromUpload } from './extractEntitiesFromUpload';
+import { extractEntitiesFromUpload, findUnknownColumns } from './extractEntitiesFromUpload';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import { assertCanImportEntities } from './assertCanImportEntities';
 
@@ -92,6 +92,34 @@ export async function importEntities(req, res) {
       throw new ImportValidationError('Upload contains no entity rows.');
     }
 
+    // Unrecognised header columns are ignored (not all importers write every
+    // column), but warn so a typo like "attribeauts" doesn't silently drop data.
+    const unknownColumns = findUnknownColumns(rows);
+    const warnings = unknownColumns.length
+      ? [
+          `Ignored unrecognised column${
+            unknownColumns.length > 1 ? 's' : ''
+          }: ${unknownColumns.join(', ')}. Check the header row for typos — data in ${
+            unknownColumns.length > 1 ? 'these columns was' : 'this column was'
+          } not imported.`,
+        ]
+      : [];
+
+    // Country rows are skipped on import (see updateCountryEntities): countries
+    // are shared entities, not project-scoped, and are managed via the Countries
+    // admin page. Warn so a user editing a country's name/attributes/GIS isn't
+    // misled by a silent no-op.
+    const skippedCountryCount = rows.filter(
+      row => row.entity_type === models.entity.types.COUNTRY,
+    ).length;
+    if (skippedCountryCount > 0) {
+      warnings.push(
+        `Skipped ${skippedCountryCount} country row${
+          skippedCountryCount > 1 ? 's' : ''
+        }. Country entities are shared and can't be created or edited via project import — manage them on the Countries admin page.`,
+      );
+    }
+
     // Validate every row carries a country_code (load-bearing now that sheet
     // names no longer define the country) and that the country is in this
     // project. Row-level errors point at the spreadsheet row number.
@@ -141,7 +169,7 @@ export async function importEntities(req, res) {
         );
       }
     });
-    respond(res, { message: 'Imported entities' });
+    respond(res, { message: 'Imported entities', warnings });
   } catch (error) {
     if (error.respond) {
       throw error; // Already a custom error with a responder
