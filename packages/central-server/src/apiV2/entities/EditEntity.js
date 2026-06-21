@@ -29,5 +29,10 @@ export class EditEntity extends TupaiaAdminEditHandler {
       this.updatedFields.entity_polygon_id = null;
     }
     await this.models.entity.updateById(this.recordId, this.updatedFields);
+    // Keep the cached bounds (used for map zoom) in sync with the linked
+    // polygon, otherwise the map keeps zooming to the old location.
+    if ('entity_polygon_id' in this.updatedFields) {
+      await this.models.entity.updateBoundsFromPolygon(this.recordId);
+    }
   }
 }

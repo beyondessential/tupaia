@@ -141,8 +141,15 @@ export async function importEntityPolygons(req, res) {
     await req.models.wrapInTransaction(async transactingModels => {
       for (let index = 0; index < features.length; index++) {
         const result = await upsertFeature(transactingModels.database, features[index], index);
-        if (result.action === 'created') created += 1;
-        else updated += 1;
+        if (result.action === 'created') {
+          created += 1;
+        } else {
+          updated += 1;
+          // Geometry may have changed, so refresh the cached bounds of any
+          // entities linked to this polygon, otherwise the map keeps zooming
+          // to the old location.
+          await transactingModels.entity.updateLinkedBoundsForPolygon(result.id);
+        }
       }
     });
   } catch (error) {

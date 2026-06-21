@@ -155,7 +155,7 @@ export async function updateCountryEntities(
       projectId,
     );
 
-    await transactingModels.entity.updateOrCreate(
+    const entity = await transactingModels.entity.updateOrCreate(
       { code, project_id: projectId },
       {
         name,
@@ -181,6 +181,12 @@ export async function updateCountryEntities(
           latitude: lat,
         });
       }
+    }
+    // Sync the cached bounds with the linked polygon (so the map zooms to it).
+    // Runs after point handling so a polygon wins over a point, but before
+    // screenBounds so an explicit screen_bounds column still takes precedence.
+    if (entityPolygonId) {
+      await transactingModels.entity.updateBoundsFromPolygon(entity.id);
     }
     if (screenBounds) {
       await transactingModels.entity.updateBoundsCoordinates(code, screenBounds);

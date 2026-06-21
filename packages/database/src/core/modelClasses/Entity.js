@@ -530,6 +530,46 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
+   * Recompute an entity's cached `bounds` (the box the map zooms to) from its
+   * linked GIS polygon, or clear it when no polygon is linked. Call whenever an
+   * entity's entity_polygon_id is set, changed, or cleared, otherwise the map
+   * keeps zooming to the previously cached bounds.
+   * @param {Entity['id']} entityId
+   */
+  async updateBoundsFromPolygon(entityId) {
+    return this.database.executeSql(
+      `
+          UPDATE entity
+          SET bounds = (
+            SELECT ST_Envelope(entity_polygon.polygon::geometry)
+            FROM entity_polygon
+            WHERE entity_polygon.id = entity.entity_polygon_id
+          )
+          WHERE entity.id = ?;
+        `,
+      [entityId],
+    );
+  }
+
+  /**
+   * Recompute cached `bounds` for every entity linked to a given polygon. Call
+   * when a polygon's geometry changes so linked entities keep zooming correctly.
+   * @param {EntityPolygon['id']} entityPolygonId
+   */
+  async updateLinkedBoundsForPolygon(entityPolygonId) {
+    return this.database.executeSql(
+      `
+          UPDATE entity
+          SET bounds = ST_Envelope(entity_polygon.polygon::geometry)
+          FROM entity_polygon
+          WHERE entity.entity_polygon_id = entity_polygon.id
+            AND entity_polygon.id = ?;
+        `,
+      [entityPolygonId],
+    );
+  }
+
+  /**
    * @param {Entity['code']} code
    * @param {Entity['attributes']} attributes
    */
