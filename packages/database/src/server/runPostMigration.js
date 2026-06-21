@@ -17,6 +17,7 @@ const TABLES_REQUIRING_TRIGGER_CREATION = [
   'option',
   'option_set',
   'permission_group',
+  'project_country',
   'question',
   'survey',
   'survey_group',
