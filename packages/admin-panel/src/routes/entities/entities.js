@@ -6,6 +6,20 @@ const RESOURCE_NAME = { singular: 'entity', plural: 'entities' };
 
 const ENTITIES_ENDPOINT = 'entities';
 
+// Polygons can share a code across data sources, so show all three parts for a
+// readable, unambiguous label. Code is optional, so fall back to name + source.
+const formatPolygonLabel = polygon => {
+  if (!polygon?.name) return '';
+  const { name, code, data_source: dataSource } = polygon;
+  return code ? `${name} — ${code} (${dataSource})` : `${name} (${dataSource})`;
+};
+
+const getRowPolygon = row => ({
+  name: row['entity_polygon.name'],
+  code: row['entity_polygon.code'],
+  data_source: row['entity_polygon.data_source'],
+});
+
 export const FIELDS = {
   id: { source: 'id', show: false },
   code: {
@@ -34,17 +48,30 @@ export const FIELDS = {
   entity_polygon_id: {
     Header: 'GIS polygon',
     source: 'entity_polygon_id',
+    accessor: row => formatPolygonLabel(getRowPolygon(row)),
     editConfig: {
       optionsEndpoint: 'entityPolygons',
       optionLabelKey: 'name',
       optionValueKey: 'id',
+      optionFields: ['id', 'name', 'code', 'data_source'],
+      renderOption: formatPolygonLabel,
       sourceKey: 'entity_polygon_id',
+      // Show the linked polygon's readable label rather than its id. The picker
+      // still submits the polygon id; this only affects what's displayed.
+      accessor: record => formatPolygonLabel(getRowPolygon(record)),
       // Polygons aren't project-scoped (reference data), so the picker shows
       // all polygons regardless of the active project. Use the GIS Data page
       // to create a new polygon before linking it here.
     },
   },
 };
+
+// Hidden columns so the joined polygon fields are fetched for the label above.
+const GIS_POLYGON_FIELDS = [
+  { source: 'entity_polygon.name', show: false },
+  { source: 'entity_polygon.code', show: false },
+  { source: 'entity_polygon.data_source', show: false },
+];
 
 export const QRCodeColumn = {
   Header: 'QR',
@@ -58,6 +85,7 @@ export const QRCodeColumn = {
 
 export const COLUMNS = [
   ...Object.values(FIELDS),
+  ...GIS_POLYGON_FIELDS,
   {
     Header: 'Country',
     source: 'country_code',
@@ -77,7 +105,9 @@ export const COLUMNS = [
     actionConfig: {
       editEndpoint: ENTITIES_ENDPOINT,
       title: `Edit ${RESOURCE_NAME.singular}`,
-      fields: [FIELDS.name, FIELDS.attributes, FIELDS.entity_polygon_id],
+      // GIS_POLYGON_FIELDS are hidden; they're only fetched so the polygon
+      // picker can show the linked polygon's readable label.
+      fields: [FIELDS.name, FIELDS.attributes, FIELDS.entity_polygon_id, ...GIS_POLYGON_FIELDS],
     },
   },
   {
