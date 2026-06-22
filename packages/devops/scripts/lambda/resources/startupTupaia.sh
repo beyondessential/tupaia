@@ -102,14 +102,14 @@ main() {
 
   \. "$home_dir/.nvm/nvm.sh" # Load nvm so node is available on $PATH
 
-  if [[ $deployment_name = production ]]; then
-    schedule_preaggregation_job
-  fi
-
   fetch_latest_code
 
   # In case .nvmrc has changed in current branch (normally redundant)
   nvm install --default
+
+  if [[ $deployment_name = production ]]; then
+    schedule_preaggregation_job
+  fi
 
   # central-server and data-table-server need Tailnet access for external database connections
   sudo -Hu ubuntu DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/connectTailscale.sh
