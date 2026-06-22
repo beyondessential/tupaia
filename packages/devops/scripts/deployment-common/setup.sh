@@ -23,10 +23,6 @@ set -e
 HOME_DIR=/home/ubuntu
 TUPAIA_DIR=$HOME_DIR/tupaia
 
-cd $HOME_DIR
-
-sudo apt-get update
-
 install_nginx() {
   if ! command -v nginx &>/dev/null; then
     echo 'nginx not installed. Installing...'
@@ -42,66 +38,69 @@ install_nginx() {
   fi
   nginx -v
 }
-install_nginx
 
-# install psql for use when installing mv refresh in the db
-sudo apt-get install -yqq postgresql-client
+install_psql() {
+  # install psql for use when installing mv refresh in the db
+  sudo apt-get install -yqq postgresql-client
+}
 
-# install base dependencies
-sudo apt-get --no-install-recommends -yqq install \
-  bash-completion \
-  build-essential \
-  cmake \
-  libcurl4 \
-  libcurl4-openssl-dev \
-  libssl-dev \
-  libxml2 \
-  libxml2-dev \
-  libssl3 \
-  pkg-config \
-  ca-certificates \
-  xclip \
-  jq
+install_base_dependencies() {
+  # install base dependencies
+  sudo apt-get --no-install-recommends -yqq install \
+    bash-completion \
+    build-essential \
+    cmake \
+    libcurl4 \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2 \
+    libxml2-dev \
+    libssl3 \
+    pkg-config \
+    ca-certificates \
+    xclip \
+    jq
 
-# Install base dependencies
-# Note: Many of these are for puppeteer: https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux
-sudo apt-get -yqq install \
-  fonts-liberation \
-  libappindicator3-1 \
-  libasound2 \
-  libatk-bridge2.0-0 \
-  libatk1.0-0 \
-  libc6 \
-  libcairo2 \
-  libcups2 \
-  libdbus-1-3 \
-  libexpat1 \
-  libfontconfig1 \
-  libgbm1 \
-  libgcc1 \
-  libglib2.0-0 \
-  libgtk-3-0 \
-  libnspr4 \
-  libnss3 \
-  libpango-1.0-0 \
-  libpangocairo-1.0-0 \
-  libstdc++6 \
-  libx11-6 \
-  libx11-xcb1 \
-  libxcb1 \
-  libxcomposite1 \
-  libxcursor1 \
-  libxdamage1 \
-  libxext6 \
-  libxfixes3 \
-  libxi6 \
-  libxrandr2 \
-  libxrender1 \
-  libxss1 \
-  libxtst6 \
-  lsb-release \
-  wget \
-  xdg-utils
+  # Install base dependencies
+  # Note: Many of these are for puppeteer: https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux
+  sudo apt-get -yqq install \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libc6 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libfontconfig1 \
+    libgbm1 \
+    libgcc1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libstdc++6 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxtst6 \
+    lsb-release \
+    wget \
+    xdg-utils
+}
 
 install_tailscale() {
   if ! command -v tailscale &>/dev/null; then
@@ -124,7 +123,6 @@ install_tailscale() {
   echo 'Tailscale version:'
   tailscale version
 }
-install_tailscale
 
 install_nvm() {
   local nvm_path="$HOME/.nvm/nvm.sh"
@@ -136,16 +134,13 @@ install_nvm() {
   [ -s "$nvm_path" ] && \. "$nvm_path"
   echo "nvm $(nvm --version) is installed"
 }
-install_nvm
 
 install_node() {
   local target_version=$(sudo cat "$TUPAIA_DIR/.nvmrc")
   echo "Installing Node.js $target_version"
   nvm install --default "$target_version"
-  echo "Node.js $(node --version) is installed"
   echo "Using Node.js $(nvm current) ($(nvm which current))"
 }
-install_node
 
 install_corepack() {
   if ! command -v corepack &>/dev/null; then
@@ -154,13 +149,6 @@ install_corepack() {
   fi
   echo "Corepack $(corepack --version) is installed"
 }
-install_corepack
-
-set_up_yarn() {
-  corepack enable yarn
-  echo "Using Yarn $(yarn --version) ($(which yarn))"
-}
-set_up_yarn
 
 install_pm2() {
   # Ideally match version in root package.json, which devs use locally
@@ -175,16 +163,35 @@ install_pm2() {
 
   pm2 install pm2-logrotate
 }
-install_pm2
 
 create_logs_dir() {
   local logs_dir=$HOME_DIR/logs
-  mkdir -m 777 -p $logs_dir
+  mkdir -m 777 -p "$logs_dir"
 }
-create_logs_dir
 
-install_npm_dependencies() {
+set_up_yarn() {
+  corepack enable yarn
+  echo "Using Yarn $(yarn --version) ($(which yarn))"
+}
+
+main() {
+  cd $HOME_DIR
+
+  sudo apt-get update
+  install_nginx
+  install_psql
+  install_base_dependencies
+  install_tailscale
+  install_nvm
+  install_node
+  install_corepack
+  install_pm2
+
+  create_logs_dir
+
   cd "$TUPAIA_DIR"
+  set_up_yarn
   yarn install # pre install to save time spinning up new ec2 instances
 }
-install_npm_dependencies
+
+main
