@@ -129,7 +129,7 @@ describe("Syncing an entity's bounds with its GIS polygon", async () => {
   const boundsMatchesPolygonEnvelope = async () => {
     const [row] = await models.database.executeSql(
       `
-        SELECT ST_Equals(e.bounds, ST_Envelope(ep.polygon::geometry)) AS matches
+        SELECT ST_Equals(e.bounds::geometry, ST_Envelope(ep.polygon::geometry)) AS matches
         FROM entity e
         CROSS JOIN entity_polygon ep
         WHERE e.id = ? AND ep.id = ?;
