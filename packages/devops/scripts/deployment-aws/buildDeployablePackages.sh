@@ -11,7 +11,7 @@ echo "Building deployable packages"
 source "$HOME/.nvm/nvm.sh"
 
 # Use Yarn version declared in package.json
-npm install --global --min-release-age=7 corepack
+sudo npm install --global --min-release-age=7 corepack
 corepack enable yarn
 
 # Install external dependencies
