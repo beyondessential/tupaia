@@ -10,12 +10,15 @@ echo "Building deployable packages"
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
 source "$HOME/.nvm/nvm.sh"
 
+cd "$root_dir"
+
+# In case .nvmrc has changed in current branch (normally redundant)
+nvm install --default
+
 # Use Yarn version declared in package.json
 npm install --global --min-release-age=7 corepack
 corepack enable yarn
 
-# Install external dependencies
-cd "$root_dir"
 yarn install --immutable
 chmod 755 node_modules/@babel/cli/bin/babel.js
 

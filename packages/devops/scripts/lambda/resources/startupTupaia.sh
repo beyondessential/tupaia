@@ -100,11 +100,9 @@ main() {
   #   $deployment_scripts/startCloudwatchAgent.sh
   # fi
 
-  fetch_latest_code
+  \. "$home_dir/.nvm/nvm.sh" # Load nvm so node is available on $PATH
 
-  # In case .nvmrc has changed in current branch (normally redundant)
-  \. "$home_dir/.nvm/nvm.sh"
-  nvm install --default "$(sudo cat "$TUPAIA_DIR/.nvmrc")"
+  fetch_latest_code
 
   if [[ $deployment_name = production ]]; then
     schedule_preaggregation_job
