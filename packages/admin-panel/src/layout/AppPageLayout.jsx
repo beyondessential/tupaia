@@ -58,12 +58,13 @@ const NavWrapper = styled.div`
       : NAV_PANEL_CLOSED_WIDTH}; // this is set so that the button can be positioned correctly
 `;
 
-const buildItem = (route, sectionBasePath, sectionId) => {
+const buildItem = (route, sectionBasePath, sectionId, isSingleProject = false) => {
   const firstChild = route.childViews?.[0];
   const target = `${sectionBasePath}${route.path}${firstChild?.path ?? ''}`;
+  const label = isSingleProject && route.singleProjectLabel ? route.singleProjectLabel : route.label;
   return {
-    id: `app-tab-${sectionId}-${labelToId(route.label)}`,
-    label: route.label,
+    id: `app-tab-${sectionId}-${labelToId(label)}`,
+    label,
     icon: route.icon,
     to: target,
   };
@@ -90,7 +91,7 @@ export const AppPageLayout = ({
     return {
       single: singleProjectBasePath
         ? singleProjectRoutes.map(route =>
-            buildItem(route, singleProjectBasePath, singleProjectSection.id),
+            buildItem(route, singleProjectBasePath, singleProjectSection.id, true),
           )
         : [],
       allData: allDataRoutes.map(route => buildItem(route, ALL_DATA_BASE_PATH, allDataSection.id)),

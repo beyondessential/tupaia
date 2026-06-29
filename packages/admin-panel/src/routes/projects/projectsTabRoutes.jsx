@@ -7,6 +7,9 @@ import { ALL_PROJECTS_SCOPE, SINGLE_PROJECT_SCOPE } from '../scopes';
 
 export const projectsTabRoutes = {
   label: 'Projects',
+  // In the single-project section this tab only shows the selected project, so
+  // it reads as singular there. The all-data section keeps the plural label.
+  singleProjectLabel: 'Project',
   path: '/projects',
   icon: <ProjectsIcon />,
   childViews: [

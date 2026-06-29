@@ -180,6 +180,9 @@ const CREATE_CONFIG = {
 
 export const projects = {
   resourceName: RESOURCE_NAME,
+  // Singular: this single-project-scoped tab only ever shows the one selected
+  // project (the all-data "Projects" tab is separate).
+  label: 'Project',
   path: '',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
