@@ -9,6 +9,7 @@ export function useIsOnline(): boolean {
 
   useEffect(() => {
     const update = () => setIsOnline(window.navigator.onLine);
+    update(); // re-sync in case connectivity changed before the listeners were attached
     window.addEventListener('online', update);
     window.addEventListener('offline', update);
     return () => {
