@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
+import { hasBESAdminAccess } from '@tupaia/access-policy';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../constants';
 
 export const PROJECT_CODE_PARAM = 'projectCode';
 
@@ -172,6 +174,27 @@ export const applyProjectScope = async (req: Request, res: Response, next: NextF
       res.status(400).json({ error: `Unknown project code: ${projectCode}` });
       return undefined;
     }
+
+    // A non-BES-admin may only operate within a project they administer: one
+    // with a country they hold Tupaia Admin Panel access to. Mirrors the
+    // selector's project-list filter so a stale or hand-typed projectCode can't
+    // reach a project the user can't administer.
+    if (!hasBESAdminAccess(req.accessPolicy)) {
+      const adminCountryCodes = req.accessPolicy.getEntitiesAllowed(
+        TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+      );
+      const countries = await project.countries();
+      const hasAdminCountry = countries.some(country =>
+        adminCountryCodes.includes((country as unknown as { code: string }).code),
+      );
+      if (!hasAdminCountry) {
+        res.status(403).json({
+          error: `You do not have Tupaia Admin Panel access to a country in project ${projectCode}`,
+        });
+        return undefined;
+      }
+    }
+
     const projectCtx: Project = { id: project.id, code: project.code };
 
     // Only inject the list filter on the bare list endpoint (e.g. `surveys`).

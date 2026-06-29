@@ -10,6 +10,10 @@ export const useProjects = () =>
       columns: JSON.stringify(PROJECT_LIST_COLUMNS),
       pageSize: 'ALL',
       sort: JSON.stringify(['entity.name ASC']),
+      // Only list projects the user can administer (Tupaia Admin Panel access to
+      // a country in the project). Scopes the sidebar selector; other consumers
+      // of the projects endpoint are unaffected.
+      requireAdminPanelCountryAccess: 'true',
     });
     const projects = await get(endpoint);
     return Array.isArray(projects)
