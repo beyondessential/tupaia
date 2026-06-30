@@ -27,7 +27,7 @@ echo "  Auth key:  $auth_key_param_name (from Parameter Store)"
 echo "  Hostname:  $hostname"
 echo "  Tags:      $tags"
 
-sudo tailscale up \
+tailscale up \
   --auth-key="$("$deployment_aws_scripts"/fetchParameterStoreValue.sh "$auth_key_param_name")" \
   --hostname="$hostname" \
   --ssh \
