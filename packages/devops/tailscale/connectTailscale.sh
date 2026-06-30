@@ -3,8 +3,9 @@ set -e +x
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 tupaia_dir=$(realpath -- "$script_dir"/../../../..)
+deployment_aws_scripts=$(realpath -- "$script_dir"/../scripts/deployment-aws)
 
-if ! "$tupaia_dir"/scripts/bash/requireCommands.sh "$script_dir"/fetchParameterStoreValue.sh tailscale; then
+if ! "$tupaia_dir"/scripts/bash/requireCommands.sh "$deployment_aws_scripts"/fetchParameterStoreValue.sh tailscale; then
   exit 1
 fi
 
@@ -27,7 +28,7 @@ echo "  Hostname:  $hostname"
 echo "  Tags:      $tags"
 
 sudo tailscale up \
-  --auth-key="$("$script_dir"/fetchParameterStoreValue.sh "$auth_key_param_name")" \
+  --auth-key="$("$deployment_aws_scripts"/fetchParameterStoreValue.sh "$auth_key_param_name")" \
   --hostname="$hostname" \
   --ssh \
   --advertise-tags="$tags"
