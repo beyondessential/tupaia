@@ -62,18 +62,22 @@ const RULES: Record<string, ProjectScopeRule> = {
   },
   entities: {
     // Show the project's own (sub-country) entities plus the shared country
-    // entities the project spans. Country entities are structural
-    // (project_id IS NULL), so project_id alone would hide them — match them by
-    // code instead, scoped to the project's project_country set. World/project
-    // entities stay hidden. Wrapped in _and_ so it's a single bracketed group:
-    // merging with a caller's filter ANDs it in as a hard boundary rather than
-    // letting the OR widen the result set.
+    // entities the project spans. Both branches require the entity's country to
+    // still be in the project's project_country set (`countryCodes`): a
+    // sub-country entity keeps its `project_id` even after its country is
+    // removed from the project, so without the `country_code` check those
+    // orphans would linger here (the export already excludes them the same
+    // way). Country entities are structural (project_id IS NULL), matched by
+    // code; world/project entities stay hidden. Wrapped in _and_ so it's a
+    // single bracketed group: merging with a caller's filter ANDs it in as a
+    // hard boundary rather than letting the OR widen the result set.
     filter: async project => {
       const countries = await project.countries();
       const countryCodes = countries.map(country => (country as unknown as { code: string }).code);
       return {
         _and_: {
           project_id: project.id,
+          country_code: countryCodes,
           _or_: { type: 'country', code: countryCodes },
         },
       };
