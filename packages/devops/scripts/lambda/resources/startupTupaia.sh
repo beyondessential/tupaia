@@ -109,8 +109,7 @@ main() {
   fetch_latest_code
 
   # central-server and data-table-server need Tailnet access for external database connections
-  sudo -Hu ubuntu "$devops_dir"/connectTailscale.sh
-  sudo -Hu ubuntu "$devops_dir"/initTailscaleSystemd.sh
+  sudo -Hu ubuntu "$devops_dir"/tailscale/initTailscaleSystemd.sh
   # Build each package, including injecting environment variables from Bitwarden
   sudo -Hu ubuntu "$deployment_scripts"/buildDeployablePackages.sh "$deployment_name"
   # Deploy each package

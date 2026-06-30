@@ -1,8 +1,12 @@
 [Unit]
 Description=Connect Tailscale
+Wants=network-online.target tailscaled.service
+After=network-online.target tailscaled.service
 
 [Service]
+Type=oneshot
 ExecStart=/home/ubuntu/tupaia/packages/devops/tailscale/connectTailscale.sh
+RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target
