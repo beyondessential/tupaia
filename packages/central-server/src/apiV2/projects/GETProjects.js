@@ -1,6 +1,11 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
-import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
+import {
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  hasBESAdminAccess,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+} from '../../permissions';
 import { hasAccessToEntityForVisualisation } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
@@ -104,33 +109,54 @@ export class GETProjects extends GETHandler {
   async getPermissionsFilter(criteria, options) {
     const dbConditions = { ...criteria };
     if (!hasBESAdminAccess(this.accessPolicy)) {
-      const allPermissionGroups = this.accessPolicy.getPermissionGroups();
-      const countryCodesByPermissionGroup = {};
-
-      // Generate lists of country codes we have access to per permission group
-      allPermissionGroups.forEach(pg => {
-        countryCodesByPermissionGroup[pg] = this.accessPolicy.getEntitiesAllowed(pg);
-      });
-
-      // Pulls permission_group/country_code pairs from the project
-      // Returns any project where we have access to at least one of those pairs.
-      dbConditions[RAW] = {
-        sql: `(
-          SELECT COUNT(*) > 0 FROM
-          (
-            SELECT UNNEST(project.permission_groups) as permission_group, entity.code AS country_code
+      if (this.req.query.requireAdminPanelCountryAccess === 'true') {
+        // The admin panel project selector only offers projects the user can
+        // administer: those spanning a country they hold Tupaia Admin Panel
+        // access to. Other consumers of the project list keep the broader
+        // any-permission visibility below.
+        const adminPanelCountryCodes = this.accessPolicy.getEntitiesAllowed(
+          TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+        );
+        dbConditions[RAW] = {
+          sql: `(
+            SELECT COUNT(*) > 0
             FROM project_country
             INNER JOIN entity
               ON entity.id = project_country.country_id
             WHERE project_country.project_id = project.id
-          ) AS count
-          WHERE country_code IN
-          (
-            SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->permission_group)::TEXT)
-          )
-        )`,
-        parameters: [JSON.stringify(countryCodesByPermissionGroup)],
-      };
+              AND entity.code IN (${adminPanelCountryCodes.map(() => '?').join(', ') || 'NULL'})
+          )`,
+          parameters: [...adminPanelCountryCodes],
+        };
+      } else {
+        const allPermissionGroups = this.accessPolicy.getPermissionGroups();
+        const countryCodesByPermissionGroup = {};
+
+        // Generate lists of country codes we have access to per permission group
+        allPermissionGroups.forEach(pg => {
+          countryCodesByPermissionGroup[pg] = this.accessPolicy.getEntitiesAllowed(pg);
+        });
+
+        // Pulls permission_group/country_code pairs from the project
+        // Returns any project where we have access to at least one of those pairs.
+        dbConditions[RAW] = {
+          sql: `(
+            SELECT COUNT(*) > 0 FROM
+            (
+              SELECT UNNEST(project.permission_groups) as permission_group, entity.code AS country_code
+              FROM project_country
+              INNER JOIN entity
+                ON entity.id = project_country.country_id
+              WHERE project_country.project_id = project.id
+            ) AS count
+            WHERE country_code IN
+            (
+              SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->permission_group)::TEXT)
+            )
+          )`,
+          parameters: [JSON.stringify(countryCodesByPermissionGroup)],
+        };
+      }
     }
 
     return { dbConditions, dbOptions: options };
