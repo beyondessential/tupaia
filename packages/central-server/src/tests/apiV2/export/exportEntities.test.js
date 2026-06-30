@@ -190,4 +190,23 @@ describe('exportEntities: GET /export/entities/:projectCode', () => {
     expect(countryRowCodes.has('KI')).to.equal(true);
     expect(countryRowCodes.has('VU')).to.equal(true);
   });
+
+  it('shows the World parent code on country rows', async () => {
+    await app.grantAccess(BES_ADMIN_POLICY);
+    // Production country entities hang off World (which the export set omits);
+    // the fixture helper leaves their parent unset, so wire it up here to mirror
+    // production and exercise the parent-code lookup.
+    const world = await findOrCreateDummyRecord(
+      models.entity,
+      { code: 'World' },
+      { type: 'world', project_id: null },
+    );
+    const ki = await models.entity.findOne({ code: 'KI', type: 'country' });
+    await models.entity.updateById(ki.id, { parent_id: world.id });
+
+    const { workbook } = await downloadXlsx(app.get('export/entities/export_entities_test'));
+    const rows = xlsx.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+    const kiRow = rows.find(r => r.code === 'KI');
+    expect(kiRow.parent_code).to.equal('World');
+  });
 });

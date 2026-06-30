@@ -182,6 +182,11 @@ export async function exportEntities(req, res) {
   // in-scope country).
   const parentCodeById = new Map(entities.map(e => [e.id, e.code]));
 
+  // Countries hang off World, which the export set omits — add it so country
+  // rows show their parent code (matching the entities tab) rather than blank.
+  const world = await models.entity.findOne({ type: models.entity.types.WORLD });
+  if (world) parentCodeById.set(world.id, world.code);
+
   const rows = orderByGeneration(entities).map(entity => buildRow(entity, parentCodeById));
   const sheet = xlsx.utils.json_to_sheet(rows, { header: COLUMN_ORDER });
 
