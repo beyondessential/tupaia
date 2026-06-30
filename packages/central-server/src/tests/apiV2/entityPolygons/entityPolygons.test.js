@@ -210,5 +210,22 @@ describe('entityPolygons CRUD', () => {
         ['gettest_e1', 'gettest_e2'],
       );
     });
+
+    it('allows a non-BES-Admin with Tupaia Admin Panel access to read', async () => {
+      // The entity edit modal's GIS-polygon picker reads this endpoint; non-BES
+      // admin-panel users are allowed to set an entity's polygon link, so they
+      // must be able to list polygons. (Create/edit/delete remain BES-only.)
+      await app.grantAccess(NON_BES_ADMIN_POLICY);
+      const id = await insertPolygon(models.database, {
+        name: 'Readable',
+        code: 'rd',
+        dataSource: 's',
+      });
+      const response = await app.get(`entityPolygons/${id}`, {
+        query: { columns: '["name","code"]' },
+      });
+      expect(response.statusCode).to.equal(200);
+      expect(response.body.name).to.equal('Readable');
+    });
   });
 });

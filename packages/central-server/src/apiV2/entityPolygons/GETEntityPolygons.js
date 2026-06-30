@@ -1,4 +1,5 @@
-import { BESAdminGETHandler } from '../GETHandler';
+import { GETHandler } from '../GETHandler';
+import { assertAdminPanelAccess, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 const fetchLinkedCodesByPolygonId = async (database, ids) => {
   if (!ids.length) return new Map();
@@ -18,7 +19,16 @@ const fetchLinkedCodesByPolygonId = async (database, ids) => {
 const LINKED_CODES_KEY = 'linked_entity_codes';
 const ID_KEY = 'id';
 
-export class GETEntityPolygons extends BESAdminGETHandler {
+export class GETEntityPolygons extends GETHandler {
+  // Polygons are shared reference geometry (not country-scoped). Creating,
+  // editing, deleting and importing them stays BES-admin-only, but any admin
+  // panel user can read the list — the entity edit modal's GIS-polygon picker
+  // needs it, and those users are already allowed to set an entity's polygon
+  // link.
+  async assertUserHasAccess() {
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, assertAdminPanelAccess]));
+  }
+
   // linked_entity_codes can't be a customColumnSelector — the framework only
   // passes ^CASE / ^to_timestamp through as raw SQL; a subquery selector gets
   // quoted as an identifier and the query fails. Instead we strip
