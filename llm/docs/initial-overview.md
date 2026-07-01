@@ -2,7 +2,7 @@
 
 ## Project Purpose
 
-Tupaia is an open-source health data platform focused on mapping and analysing health data across the Pacific region. Developed by Beyond Essential Systems (BES), Tupaia's mission is to bridge cultural differences and empower decision-making within health systems worldwide, particularly in remote and underserved areas.
+Tupaia is an open-source health data platform focused on mapping and analysing health data across the Pacific region. Developed by BES International (BES), Tupaia's mission is to bridge cultural differences and empower decision-making within health systems worldwide, particularly in remote and underserved areas.
 
 **Key Focus Areas:**
 

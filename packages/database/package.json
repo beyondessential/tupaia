@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/database"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "exports": {
     ".": {
       "node": "./dist/server/index.js",
