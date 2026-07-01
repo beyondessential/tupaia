@@ -67,15 +67,15 @@ set_prompt
 mkdir -m 777 -p "$logs_dir"
 
 schedule_preaggregation_job() {
-  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date --iso-8601=seconds) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
-  sudo -u ubuntu crontab -l >>tmp.cron || echo >>tmp.cron
-  sudo -u ubuntu crontab tmp.cron
+  echo "10 13 * * * PATH=$PATH $home_dir/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do echo \"\$(date --iso-8601=seconds) │ \$line\"; done > $logs_dir/preaggregation.txt" >tmp.cron
+  crontab -l >>tmp.cron || echo >>tmp.cron
+  crontab tmp.cron
   rm tmp.cron
 }
 
 fetch_latest_code() {
   cd "$tupaia_dir"
-  if sudo -Hu ubuntu git ls-remote --exit-code --heads origin "$branch" &>/dev/null; then
+  if git ls-remote --exit-code --heads origin "$branch" &>/dev/null; then
     echo "Fetching latest code from branch $branch..."
     local branch_to_use=$branch
   else
@@ -83,11 +83,11 @@ fetch_latest_code() {
     local branch_to_use=dev
   fi
   set -x
-  sudo -Hu ubuntu git remote set-branches --add origin "$branch_to_use"
-  sudo -Hu ubuntu git fetch --all --prune
-  sudo -Hu ubuntu git reset --hard # clear out any manual changes that have been made, which would cause checkout to fail
-  sudo -Hu ubuntu git switch "$branch_to_use"
-  sudo -Hu ubuntu git reset --hard origin/"$branch_to_use"
+  git remote set-branches --add origin "$branch_to_use"
+  git fetch --all --prune
+  git reset --hard # clear out any manual changes that have been made, which would cause checkout to fail
+  git switch "$branch_to_use"
+  git reset --hard origin/"$branch_to_use"
   set +x
 }
 
@@ -97,15 +97,15 @@ main() {
   # Turn on cloudwatch agent for prod and dev (can be turned on manually if needed on feature instances)
   # TODO currently broken
   # if [[ $deployment_name = production || $deployment_name = dev ]]; then
-  #   $deployment_scripts/startCloudwatchAgent.sh
+  #   sudo -Hu ubuntu $deployment_scripts/startCloudwatchAgent.sh
   # fi
 
   \. "$home_dir/.nvm/nvm.sh" # Load nvm so node is available on $PATH
 
-  fetch_latest_code
+  sudo -Hu ubuntu fetch_latest_code
 
   if [[ $deployment_name = production ]]; then
-    schedule_preaggregation_job
+    sudo -u ubuntu schedule_preaggregation_job
   fi
 
   # central-server and data-table-server need Tailnet access for external database connections
