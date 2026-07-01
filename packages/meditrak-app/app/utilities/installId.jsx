@@ -1,3 +1,5 @@
+/** @typedef {`${string}-${string}-${string}-${string}-${string}`} UuidV4 */
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { customAlphabet } from 'nanoid/non-secure';
 
@@ -13,6 +15,7 @@ const generateHex = customAlphabet(HEX_ALPHABET, 32);
  * Using `nanoid` because:
  * - already a dependency (avoids `uuid` and/or `crypto` polyfill);
  * - no need to be cryptographically secure.
+ * @returns {UuidV4}
  */
 function uuidV4() {
   const hex = generateHex().split('');
@@ -22,13 +25,15 @@ function uuidV4() {
   return `${id.slice(0, 8)}-${id.slice(8, 12)}-${id.slice(12, 16)}-${id.slice(16, 20)}-${id.slice(
     20,
   )}`;
-};
+}
 
-// Cache the in-flight lookup so concurrent callers share a single read/generate/write.
-// Without this, two calls could both read an empty value before either writes, generate
-// different ids, and end up with the id sent to the server not matching the one persisted.
+/**
+ * Cache the in-flight lookup to avoid race condition between concurrent callers.
+ * @type {Promise<UuidV4> | null}
+ */
 let installIdPromise = null;
 
+/** @returns {Promise<UuidV4>} */
 const resolveInstallId = async () => {
   const existingInstallId = await AsyncStorage.getItem(INSTALL_ID_KEY);
   if (existingInstallId) return existingInstallId;
@@ -44,6 +49,8 @@ const resolveInstallId = async () => {
  * This replaces App Center's getInstallId() (App Center has been retired). On first
  * call after upgrade, a new id is generated, so existing installs will be recorded as
  * a new meditrak_device on the server.
+ *
+ * @returns {Promise<UuidV4>}
  */
 export const getInstallId = () => {
   if (!installIdPromise) {
