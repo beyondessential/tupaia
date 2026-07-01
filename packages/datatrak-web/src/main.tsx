@@ -1,6 +1,7 @@
 import React from 'react';
 import log from 'winston';
 import { render as renderReactApp } from 'react-dom';
+import { Workbox } from 'workbox-window';
 
 import { App } from './App';
 import { setUpdateReady } from './components/UpdateConfirmation';
@@ -8,52 +9,48 @@ import { useIsOfflineFirst } from './api/offlineFirst';
 
 renderReactApp(<App />, document.getElementById('root'));
 
+/**
+ * Only treat this as an app update when a worker is *waiting* behind an *active*
+ * controller. Otherwise we can flash a false "new version" banner (e.g. first
+ * install or transient install states). workbox-window's `waiting` event applies
+ * the same idea, including a short delay to avoid skipWaiting-in-install races.
+ */
 const promptUserToUpdate = (registration: ServiceWorkerRegistration) => {
+  if (!registration.waiting || !registration.active) {
+    return;
+  }
   setUpdateReady(registration);
 };
 
+let workboxInstance: Workbox | null = null;
+
 if (useIsOfflineFirst()) {
   window.addEventListener('load', async () => {
-    if ('serviceWorker' in navigator) {
-      const registration = await navigator.serviceWorker.register('/sw.js', {
-        updateViaCache: 'none',
-      });
-      // When the browser detects a new service worker version, it fires 'updatefound'.
-      registration.addEventListener('updatefound', () => {
-        log.info('Update found.');
-        const newWorker = registration.installing;
+    if (!('serviceWorker' in navigator)) {
+      return;
+    }
 
-        // The worker may have already passed the 'installing' state by the time this
-        // handler runs. Fall back to checking the waiting worker.
-        if (!newWorker) {
-          if (registration.waiting && registration.active) {
-            promptUserToUpdate(registration);
-          }
-          return;
-        }
+    const wb = new Workbox('/sw.js', { updateViaCache: 'none' });
+    workboxInstance = wb;
 
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && registration.active) {
-            promptUserToUpdate(registration);
-          }
-        });
-
-        // The worker may have reached 'installed' before the statechange listener
-        // was attached above, so check its current state as well.
-        if (newWorker.state === 'installed' && registration.active) {
+    wb.addEventListener('waiting', () => {
+      void navigator.serviceWorker.getRegistration().then(registration => {
+        if (registration) {
           promptUserToUpdate(registration);
         }
       });
+    });
 
-      // Check if there's already a waiting worker
-      // in case if update found, but user closes the pwa
-      if (registration.waiting) {
-        promptUserToUpdate(registration);
-      }
+    const registration = await wb.register();
+    if (!registration) {
+      return;
+    }
 
-      // Check for updates immediately after loading the app
-      log.info('Checking for updates...');
-      await registration.update();
+    log.info('Checking for updates...');
+    await wb.update();
+
+    if (registration.waiting && registration.active) {
+      promptUserToUpdate(registration);
     }
   });
 
@@ -61,17 +58,18 @@ if (useIsOfflineFirst()) {
   const UPDATE_CHECK_INTERVAL = 60 * 1000;
 
   setInterval(async () => {
-    if ('serviceWorker' in navigator) {
-      const registration = await navigator.serviceWorker.getRegistration();
-      if (registration) {
-        log.info('Periodic update check...');
-        await registration.update();
+    if (!('serviceWorker' in navigator) || !workboxInstance) {
+      return;
+    }
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (!registration) {
+      return;
+    }
+    log.info('Periodic update check...');
+    await workboxInstance.update();
 
-        // Catch any waiting worker that the updatefound handler may have missed
-        if (registration.waiting && registration.active) {
-          promptUserToUpdate(registration);
-        }
-      }
+    if (registration.waiting && registration.active) {
+      promptUserToUpdate(registration);
     }
   }, UPDATE_CHECK_INTERVAL);
 }
