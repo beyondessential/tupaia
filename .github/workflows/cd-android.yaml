@@ -45,7 +45,7 @@ jobs:
       - name: Fetch environment variables
         # Just using @3 doesn’t resolve 🙄 - pinning to @3.0.0 as workaround
         # See https://github.com/bitwarden/sm-action/issues/264
-        uses: bitwarden/sm-action@v3.0
+        uses: bitwarden/sm-action@v3.0.0
         with:
           access_token: ${{ secrets.BW_ACCESS_TOKEN }}
           # ID for ‘meditrak-app.production.env’ secret in Bitwarden Secrets Manager
