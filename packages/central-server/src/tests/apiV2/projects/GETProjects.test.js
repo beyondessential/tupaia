@@ -80,6 +80,15 @@ describe('Permissions checker for GETProjects', async () => {
       permissionGroupName: 'Admin',
       countryCode: 'TO',
     },
+    // In DL (where DEFAULT_POLICY does have Tupaia Admin Panel), but its
+    // permission group isn't one DEFAULT_POLICY holds — so the user has no
+    // project access. Must be hidden both with and without the flag (admin-panel
+    // access to a country isn't enough without project access).
+    {
+      code: 'test_project_4',
+      permissionGroupName: 'UNFPA',
+      countryCode: 'DL',
+    },
   ];
 
   const app = new TestableApp();
@@ -156,14 +165,17 @@ describe('Permissions checker for GETProjects', async () => {
       });
     });
 
-    it('Sufficient permissions: returns projects when user has permissions', async () => {
+    it('Sufficient permissions: returns projects the user has project access to', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`projects?${filterString}`);
-      expect(results.length).to.equal(projects.length);
       const resultIds = results.map(r => r.id);
-      projects.forEach(project => {
-        expect(resultIds.includes(project.id)).to.equal(true);
-      });
+      // Access via a held permission group on a member country.
+      expect(resultIds).to.include(projects[0].id);
+      expect(resultIds).to.include(projects[1].id);
+      expect(resultIds).to.include(projects[2].id);
+      // test_project_4's permission group (UNFPA) isn't held by this user, so no
+      // project access — excluded even without the admin-panel flag.
+      expect(resultIds).to.not.include(projects[3].id);
     });
 
     it('Insufficient permissions: returns an empty array if users do not have access to any project', async () => {
@@ -175,17 +187,19 @@ describe('Permissions checker for GETProjects', async () => {
   });
 
   describe('GET /projects?requireAdminPanelCountryAccess=true', async () => {
-    it('only returns projects the user has Tupaia Admin Panel access to a country in', async () => {
+    it('requires both project access AND Tupaia Admin Panel access to a member country', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(
         `projects?${filterString}&requireAdminPanelCountryAccess=true`,
       );
       const resultIds = results.map(r => r.id);
-      // projects 1 & 2 are in DL (Tupaia Admin Panel granted); project 3 is in TO
-      // (no Tupaia Admin Panel access) so it's filtered out.
+      // 1 & 2: in DL, where the user has both project access and Tupaia Admin Panel.
       expect(resultIds).to.include(projects[0].id);
       expect(resultIds).to.include(projects[1].id);
+      // 3: project access via Admin@TO, but no Tupaia Admin Panel on TO → excluded.
       expect(resultIds).to.not.include(projects[2].id);
+      // 4: Tupaia Admin Panel on DL, but no project access (UNFPA not held) → excluded.
+      expect(resultIds).to.not.include(projects[3].id);
     });
 
     it('returns all accessible projects for a BES admin', async () => {
