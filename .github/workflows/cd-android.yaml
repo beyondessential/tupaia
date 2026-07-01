@@ -43,7 +43,7 @@ jobs:
         run: yarn run build:from meditrak-app
 
       - name: Fetch environment variables
-        # Just using @3 doesn’t resolve; pinning as workaround 🙄
+        # Just using @3 doesn’t resolve 🙄 - pinning to @3.0.0 as workaround
         # See https://github.com/bitwarden/sm-action/issues/264
         uses: bitwarden/sm-action@v3.0
         with:
