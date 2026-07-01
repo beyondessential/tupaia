@@ -43,7 +43,7 @@ jobs:
         run: yarn run build:from meditrak-app
 
       - name: Fetch environment variables
-        uses: bitwarden/sm-action@v3
+        uses: bitwarden/sm-action@v2
         with:
           access_token: ${{ secrets.BW_ACCESS_TOKEN }}
           # ID for ‘meditrak-app.production.env’ secret in Bitwarden Secrets Manager
