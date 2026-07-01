@@ -11,7 +11,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git"
   },
   "license": "GPL-3.0-or-later",
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "workspaces": {
     "packages": [
       "packages/*"
