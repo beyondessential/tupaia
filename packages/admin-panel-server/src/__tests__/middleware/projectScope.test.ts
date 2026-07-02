@@ -30,13 +30,21 @@ describe('applyProjectScope — entities list filter', () => {
 
     expect(next).toHaveBeenCalled();
     const filter = parseForwardedFilter(req);
-    expect(filter._and_.project_id).toBe('project-1');
-    // The country_code membership is the key part: a sub-country entity keeps
-    // its project_id after its country is removed from the project, so without
-    // this it would still show. Requiring country_code ∈ project countries
-    // excludes those orphans (matching the export).
+    // country_code ∈ project countries is the orphan boundary: a sub-country
+    // entity keeps its project_id after its country leaves the project, so
+    // without this it would still show. Matching the export.
     expect(filter._and_.country_code).toEqual(['TO', 'VU']);
-    // Shared country entities are matched by code on the OR branch.
-    expect(filter._and_._or_).toEqual({ type: 'country', code: ['TO', 'VU'] });
+    // ...AND (belongs to this project OR is a shared country entity).
+    expect(filter._and_._and_).toEqual({
+      project_id: 'project-1',
+      _or_: { type: 'country' },
+    });
+
+    // The country list must appear ONLY ONCE in the forwarded query string —
+    // duplicating it (once as country_code, once as a code array) previously
+    // bloated the pagination Link header past the reverse proxy's buffer and
+    // 502'd many-country projects like Explore.
+    const rawFilter = new URL(req.url, 'http://localhost').searchParams.get('filter') as string;
+    expect(rawFilter.split('"VU"').length - 1).toBe(1);
   });
 });
