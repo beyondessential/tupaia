@@ -11,6 +11,7 @@ const fetchPermissionGroupChildren = async (models, permissionGroupName) => {
  * { entityCode1: ['permissionGroup1', 'permissionGroup2'], entityCode2: ['permissionGroup1'] }
  */
 export const buildAccessPolicy = async (models, userId) => {
+  console.time('buildAccessPolicy');
   const permissionsByEntity = {};
   const userEntityPermissions = await models.userEntityPermission.find({ user_id: userId });
 
@@ -43,5 +44,6 @@ export const buildAccessPolicy = async (models, userId) => {
   Object.entries(permissionsByEntity).forEach(([entityCode, permissionGroups]) => {
     policy[entityCode] = uniq(permissionGroups);
   });
+  console.timeEnd('buildAccessPolicy');
   return policy;
 };
