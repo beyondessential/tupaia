@@ -45,5 +45,6 @@ export const buildAccessPolicy = async (models, userId) => {
     policy[entityCode] = uniq(permissionGroups);
   });
   console.timeEnd('buildAccessPolicy');
+  console.log(policy);
   return policy;
 };
