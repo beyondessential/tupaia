@@ -1,10 +1,13 @@
-import { expect } from 'chai';
-import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
+import chai from 'chai';
+
+import { findOrCreateDummyCountryEntity, findOrCreateDummyRecord } from '@tupaia/database';
 import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
-import { resetTestData, TestableApp } from '../../testUtilities';
+import { TestableApp, resetTestData } from '../../testUtilities';
+
+const { expect } = chai;
 
 describe('Permissions checker for GETAccessRequests', async () => {
   const DEFAULT_POLICY = {
