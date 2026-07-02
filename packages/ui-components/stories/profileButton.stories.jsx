@@ -25,7 +25,7 @@ export default {
 const exampleUser = {
   name: 'Catherine Bell',
   firstName: 'Catherine',
-  email: 'catherine@beyondessential.com.au',
+  email: 'catherine@bes.au',
 };
 
 const ProfileLinks = () => (

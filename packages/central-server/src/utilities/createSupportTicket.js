@@ -13,6 +13,31 @@ const emailInternally = async (subject, message) => {
   });
 };
 
+export const buildZendeskTicketRequest = ({ zendeskApi, apiToken, email, subject, message }) => {
+  const url = `${zendeskApi}/tickets`;
+
+  const ticket = {
+    subject,
+    comment: {
+      body: message,
+    },
+  };
+
+  const base64Credentials = Buffer.from(`${email}/token:${apiToken}`).toString('base64');
+
+  return {
+    url,
+    requestInit: {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${base64Credentials}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ticket }),
+    },
+  };
+};
+
 export const createSupportTicket = async (subject, message) => {
   // If we are not in a production environment, send an email to the dev team instead of creating a support ticket
   if (!getIsProductionEnvironment()) {
@@ -23,31 +48,15 @@ export const createSupportTicket = async (subject, message) => {
   if (process.env.ZENDESK_NOTIFICATIONS_DISABLE === 'true') return;
 
   try {
-    const zendeskApi = requireEnv('ZENDESK_API_URL');
-    const apiToken = requireEnv('ZENDESK_API_TOKEN');
-    const email = requireEnv('ZENDESK_EMAIL');
-
-    const url = `${zendeskApi}/tickets`;
-
-    const ticketData = {
+    const { url, requestInit } = buildZendeskTicketRequest({
+      zendeskApi: requireEnv('ZENDESK_API_URL'),
+      apiToken: requireEnv('ZENDESK_API_TOKEN'),
+      email: requireEnv('ZENDESK_EMAIL'),
       subject,
-      comment: {
-        body: message,
-      },
-    };
+      message,
+    });
 
-    const base64Credentials = Buffer.from(`${email}/token:${apiToken}`).toString('base64');
-
-    const requestConfig = {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${base64Credentials}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ticket: ticketData }),
-    };
-
-    await fetchWithTimeout(url, requestConfig);
+    await fetchWithTimeout(url, requestInit);
   } catch (error) {
     console.error('Error creating support ticket:', error);
   }

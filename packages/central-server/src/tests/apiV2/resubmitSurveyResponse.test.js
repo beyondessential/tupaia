@@ -1,8 +1,10 @@
-import { expect } from 'chai';
+import chai from 'chai';
 
 import { buildAndInsertSurveyResponses, buildAndInsertSurveys, generateId } from '@tupaia/database';
 import { EntityTypeEnum, QuestionType } from '@tupaia/types';
 import { TestableApp, expectSuccess, upsertEntity } from '../testUtilities';
+
+const { expect } = chai;
 
 const ENTITY_ID = generateId();
 

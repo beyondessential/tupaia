@@ -52,7 +52,7 @@ Arguments:      IN      pOldViewName        The existing name of the materialize
                 IN      pOwner              Optional, the owner of the materialized view, defaults to user
 Returns:                VOID
 ************************************************************************************************************************************
-Copyright 2021 Beyond Essential Systems Pty Ltd
+Copyright 2021 BES International Limited
 ***********************************************************************************************************************************/
 DECLARE
 

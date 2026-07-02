@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 
 import {
   buildAndInsertSurveys,
@@ -6,6 +6,8 @@ import {
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 import { TestableApp, upsertEntity } from '../../../testUtilities';
+
+const { expect } = chai;
 
 const DEFAULT_POLICY = {
   PG: ['Public'],

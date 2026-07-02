@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import sinon from 'sinon';
 import sinonTest from 'sinon-test';
 import winston from 'winston';
@@ -7,6 +7,8 @@ import { pushChange } from '../../dhis/pushChange';
 import { AggregateDataPusher, EventPusher } from '../../dhis/pushers';
 import * as GetPusherForEntity from '../../dhis/pushers/entity/getPusherForEntity';
 import { TestableApp } from '../testUtilities';
+
+const { expect } = chai;
 
 const test = sinonTest(sinon);
 
