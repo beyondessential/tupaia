@@ -15,6 +15,14 @@ cd "$root_dir"
 # In case .nvmrc has changed in current branch (normally redundant)
 nvm install --default
 
+# PM2 is installed per Node version; reinstall if nvm switched versions
+if ! command -v pm2 &>/dev/null; then
+  echo 'PM2 not found (likely because Node version changed from AMI). Installing...'
+  npm install --global pm2@^6.0.8
+fi
+echo "PM2 $(pm2 --version) is installed"
+pm2 install pm2-logrotate
+
 # Use Yarn version declared in package.json
 npm install --global --min-release-age=7 corepack
 corepack enable yarn
