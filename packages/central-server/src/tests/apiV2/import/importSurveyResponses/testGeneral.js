@@ -3,12 +3,10 @@ import {
   findOrCreateDummyCountryEntity,
   findOrCreateRecords,
 } from '@tupaia/database';
-import chai from 'chai';
+import { expect } from 'chai';
 import { expectError, TestableApp } from '../../../testUtilities';
 import { importFile } from './helpers';
 import { BASIC_SURVEY_A, BASIC_SURVEY_B } from './importSurveyResponses.fixtures';
-
-const { expect } = chai;
 
 const expectNumResponses = async (models, surveyId, expectedNumResponses) => {
   const surveyResponses = await models.surveyResponse.find({ survey_id: surveyId });

@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
@@ -8,8 +8,6 @@ import {
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { RRULE_FREQUENCIES } from '@tupaia/utils';
-
-const { expect } = chai;
 
 describe('Permissions checker for CreateTaskComment', async () => {
   const BES_ADMIN_POLICY = {

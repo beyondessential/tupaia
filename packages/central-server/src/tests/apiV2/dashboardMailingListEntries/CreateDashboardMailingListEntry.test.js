@@ -1,18 +1,18 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import {
   buildAndInsertProjectsAndHierarchies,
   clearTestData,
   findOrCreateDummyRecord,
 } from '@tupaia/database';
-import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
+import {
+  BES_ADMIN_PERMISSION_GROUP,
+} from '../../../permissions';
 import {
   TEST_USER_EMAIL,
   TestableApp,
   resetTestData,
   setupDashboardTestData,
 } from '../../testUtilities';
-
-const { expect } = chai;
 
 describe('Permissions checker for CreateDashboardMailingListEntry', async () => {
   const DEFAULT_POLICY = {

@@ -3,7 +3,7 @@
  * @typedef {import('@tupaia/types').Entity} Entity
  */
 
-import chai from 'chai';
+import { expect } from 'chai';
 import moment from 'moment';
 
 import { buildAndInsertSurveys, generateId, upsertDummyRecord } from '@tupaia/database';
@@ -18,8 +18,6 @@ import {
   upsertFacility,
   upsertQuestion,
 } from '../testUtilities';
-
-const { expect } = chai;
 
 /** @returns {Promise<SurveyResponseRecord | null>} */
 const getRandomSurveyResponse = async models => {

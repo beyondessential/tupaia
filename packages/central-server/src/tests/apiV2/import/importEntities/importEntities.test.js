@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import xlsx from 'xlsx';
-import chai from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 import {
   findOrCreateDummyRecord,
@@ -15,8 +15,6 @@ import {
 } from '../../../../permissions';
 import * as UpdateCountryEntities from '../../../../apiV2/import/importEntities/updateCountryEntities';
 import { expectPermissionError, TestableApp } from '../../../testUtilities';
-
-const { expect } = chai;
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

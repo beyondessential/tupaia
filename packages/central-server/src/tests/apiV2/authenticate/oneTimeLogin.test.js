@@ -1,11 +1,9 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import moment from 'moment';
 
 import { randomEmail } from '@tupaia/utils';
-import { configureEnv } from '../../../configureEnv';
 import { getAuthorizationHeader, TestableApp } from '../../testUtilities';
-
-const { expect } = chai;
+import { configureEnv } from '../../../configureEnv';
 
 configureEnv();
 

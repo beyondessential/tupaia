@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import Chance from 'chance';
 import sinon from 'sinon';
 
@@ -10,12 +10,11 @@ import {
 } from '@tupaia/auth';
 import { findOrCreateDummyCountryEntity, findOrCreateDummyRecord } from '@tupaia/database';
 import { createBasicHeader, randomEmail, randomString } from '@tupaia/utils';
+
 import { BruteForceRateLimiter } from '../../../apiV2/authenticate/BruteForceRateLimiter';
 import { ConsecutiveFailsRateLimiter } from '../../../apiV2/authenticate/ConsecutiveFailsRateLimiter';
 import { configureEnv } from '../../../configureEnv';
 import { TestableApp, resetTestData } from '../../testUtilities';
-
-const { expect } = chai;
 
 /**
  * Standard Argon2 hash prefix

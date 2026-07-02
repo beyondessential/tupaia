@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import chai from 'chai';
+import { expect } from 'chai';
 
 import {
   buildAndInsertSurveys,
@@ -10,8 +10,6 @@ import {
 } from '@tupaia/database';
 import { TestableApp } from '../../../testUtilities';
 import { importFile } from './helpers';
-
-const { expect } = chai;
 
 const SURVEYS = {
   // Survey details match the import spreadsheet

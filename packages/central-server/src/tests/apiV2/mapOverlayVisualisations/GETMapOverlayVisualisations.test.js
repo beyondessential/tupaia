@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 
 import { setupTest } from '@tupaia/database';
 import { stripUpdatedAtSyncTickFromArray } from '@tupaia/utils';
@@ -9,8 +9,6 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
-
-const { expect } = chai;
 
 describe('GET map overlay visualisations', () => {
   const app = new TestableApp();
@@ -90,10 +88,7 @@ describe('GET map overlay visualisations', () => {
           },
         },
       ];
-      expectSuccess(
-        { ...response, body: stripUpdatedAtSyncTickFromArray(response.body) },
-        expected,
-      );
+      expectSuccess({ ...response, body: stripUpdatedAtSyncTickFromArray(response.body) }, expected);
     });
   });
 });

@@ -1,12 +1,10 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { TrackedEntityPusher } from '../../../../dhis/pushers/entity/TrackedEntityPusher';
 import { Pusher } from '../../../../dhis/pushers/Pusher';
 import { createDhisApiStub, createEntityStub, createModelsStub } from './helpers';
-
-const { expect } = chai;
 
 const { TRACKED_ENTITY_INSTANCE } = DHIS2_RESOURCE_TYPES;
 

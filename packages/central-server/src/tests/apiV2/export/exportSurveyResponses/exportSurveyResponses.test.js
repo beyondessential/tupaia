@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 import xlsx from 'xlsx';
 import {
@@ -10,8 +10,6 @@ import {
 import { resetTestData, TestableApp } from '../../../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../../permissions';
 import { INFO_COLUMN_HEADERS } from '../../../../apiV2/export/exportSurveyResponses';
-
-const { expect } = chai;
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

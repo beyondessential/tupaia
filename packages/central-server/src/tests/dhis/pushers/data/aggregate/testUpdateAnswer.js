@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 
 import { populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
@@ -10,8 +10,6 @@ import {
   getSyncLog,
   SERVER_NAME,
 } from './AggregateDataPusher.fixtures';
-
-const { expect } = chai;
 
 export const testUpdateAnswer = (dhisApi, models, dataBroker) => {
   it('should update the value of the previously synced data value if only the value has changed', async () => {

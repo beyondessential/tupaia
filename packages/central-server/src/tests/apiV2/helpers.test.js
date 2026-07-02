@@ -1,7 +1,5 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import { getQueryOptionsForColumns } from '../../apiV2/GETHandler/helpers';
-
-const { expect } = chai;
 
 describe('Request record types with standard joins', () => {
   it('returns one join', () => {

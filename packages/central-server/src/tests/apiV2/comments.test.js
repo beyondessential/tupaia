@@ -1,18 +1,15 @@
-import chai from 'chai';
-
+import { expect } from 'chai';
 import { generateId } from '@tupaia/database';
 import {
-  TestableApp,
   resetTestData,
-  upsertComment,
-  upsertDataGroup,
+  TestableApp,
   upsertEntity,
+  upsertDataGroup,
   upsertSurvey,
   upsertSurveyResponse,
+  upsertComment,
   upsertSurveyResponseComment,
 } from '../testUtilities';
-
-const { expect } = chai;
 
 const createSurveyResponse = async () => {
   const SURVEY_CODE = 'BASIC_SURVEY';

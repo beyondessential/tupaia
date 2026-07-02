@@ -1,11 +1,9 @@
 import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
-import chai from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';
-
-const { expect } = chai;
 
 const rollbackRecords = async (models, projectCode) => {
   const project = await models.project.findOne({ code: projectCode });

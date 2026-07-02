@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import { generateId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import { setupDummySyncQueue } from '../../../../testUtilities';
@@ -11,8 +11,6 @@ import {
   getSyncLog,
   SERVER_NAME,
 } from './AggregateDataPusher.fixtures';
-
-const { expect } = chai;
 
 export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
   afterEach(async () => {
