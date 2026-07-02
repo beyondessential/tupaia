@@ -165,14 +165,16 @@ export default class extends DataAggregatingRouteHandler {
   static PermissionsChecker = MapOverlayPermissionsChecker;
 
   buildResponse = async () => {
-    const { code } = this.entity;
     const { mapOverlayCode } = this.query;
     const measures = await this.models.mapOverlay.findMeasuresByCode(mapOverlayCode);
 
     // check permission
+    // check each distinct permission group once, and pass the already-fetched entity object so
+    // that userHasAccess doesn't refetch it for every measure
+    const permissionGroups = uniq(measures.map(({ permission_group: pg }) => pg));
     await Promise.all(
-      measures.map(async ({ permission_group: permissionGroup }) => {
-        const isUserAllowedMeasure = await this.req.userHasAccess(code, permissionGroup);
+      permissionGroups.map(async permissionGroup => {
+        const isUserAllowedMeasure = await this.req.userHasAccess(this.entity, permissionGroup);
         if (!isUserAllowedMeasure) {
           throw new CustomError(accessDeniedForMeasure);
         }
