@@ -1,12 +1,10 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import { findOrCreateDummyRecord, generateId } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
-
-const { expect } = chai;
 
 describe("Editing an entity's name", async () => {
   const BES_ADMIN_POLICY = {

@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 import { generateId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
@@ -14,8 +14,6 @@ import {
   SURVEY,
   SERVER_NAME,
 } from './AggregateDataPusher.fixtures';
-
-const { expect } = chai;
 
 export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should mark as successful if the survey response never attempted to sync', async () => {

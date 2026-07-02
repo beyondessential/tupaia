@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import { buildAndInsertProjectsAndHierarchies, findOrCreateDummyRecord } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -6,8 +6,6 @@ import {
   VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp, resetTestData } from '../../testUtilities';
-
-const { expect } = chai;
 
 describe('Permissions checker for CreateDashboards', async () => {
   const DEFAULT_POLICY = {

@@ -1,14 +1,11 @@
-import chai from 'chai';
-
+import { expect } from 'chai';
 import {
-  buildAndInsertSurveyResponses,
   buildAndInsertSurveys,
+  buildAndInsertSurveyResponses,
   findOrCreateDummyRecord,
 } from '@tupaia/database';
-import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
-import { TestableApp, resetTestData } from '../testUtilities';
-
-const { expect } = chai;
+import { resetTestData, TestableApp } from '../testUtilities';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 
 describe('Permissions checker for GETAnswers', async () => {
   const DEFAULT_POLICY = {

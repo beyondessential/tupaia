@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import {
   findOrCreateDummyRecord,
   buildAndInsertProjectsAndHierarchies,
@@ -14,8 +14,6 @@ import {
   resetTestData,
   setupDashboardTestData,
 } from '../../testUtilities';
-
-const { expect } = chai;
 
 describe('Permissions checker for GETDashboardMailingListEntries', async () => {
   const DEFAULT_POLICY = {

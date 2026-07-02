@@ -1,12 +1,10 @@
-import chai from 'chai';
+import { expect } from 'chai';
 
 import { encryptPassword } from '@tupaia/auth';
 import { randomEmail } from '@tupaia/utils';
 
 import { configureEnv } from '../../configureEnv';
 import { getAuthorizationHeader, TestableApp } from '../testUtilities';
-
-const { expect } = chai;
 
 configureEnv();
 describe('Verify Email', () => {

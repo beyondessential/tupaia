@@ -1,11 +1,9 @@
-import chai from 'chai';
+import { expect } from 'chai';
 
 import { processArithmeticConfig } from '../../../../../apiV2/import/importSurveys/ConfigImporter/processArithmeticConfig';
 import { convertCellToJson } from '../../../../../apiV2/import/importSurveys/utilities';
 import { assertCanProcessAndBuild, cellBuilderModelsStub } from './utilities';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
-
-const { expect } = chai;
 
 const QUESTIONS = [
   {

@@ -1,12 +1,10 @@
-import chai from 'chai';
+import { expect } from 'chai';
 
 import { findOrCreateDummyRecord } from '@tupaia/database';
 
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 import { stripUpdatedAtSyncTickFromArray, stripUpdatedAtSyncTickFromObject } from '@tupaia/utils';
-
-const { expect } = chai;
 
 describe('GET entity relations', () => {
   const FIJI_POLICY = {

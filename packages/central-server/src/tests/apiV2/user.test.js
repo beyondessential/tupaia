@@ -1,8 +1,6 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import { randomEmail } from '@tupaia/utils';
 import { getAuthorizationHeader, TestableApp } from '../testUtilities';
-
-const { expect } = chai;
 
 describe('/user', () => {
   const app = new TestableApp();

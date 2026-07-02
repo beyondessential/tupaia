@@ -1,11 +1,9 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { ModelRegistry } from '@tupaia/database';
 import { getUniversalTypes } from '../../database/utilities/getUniversalTypes';
 import { translateEntityConfig } from '../../database/utilities/translateEntityConfig';
-
-const { expect } = chai;
 
 const NEW_FORMAT_CONFIG_EXAMPLE_1 = {
   config: JSON.stringify({

@@ -1,5 +1,5 @@
 import { setupTest } from '@tupaia/database';
-import chai from 'chai';
+import { expect } from 'chai';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
 import { TEST_SETUP } from './dashboardVisualisations.fixtures';
 import {
@@ -7,8 +7,6 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
-
-const { expect } = chai;
 
 const clearRecords = async models => {
   await models.report.delete({ code: 'test_visualisation' });
