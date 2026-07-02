@@ -15,10 +15,18 @@ export const buildAccessPolicy = async (models, userId) => {
   const userEntityPermissions = await models.userEntityPermission.find({ user_id: userId });
 
   // set up permission group children fetching, for flattening the permission hierarchy
+  // cache the promise (rather than the resolved value) so that concurrent lookups for the same
+  // permission group share a single db fetch
   const permissionGroupToChildren = {};
-  const getOrFetchPermissionGroupChildren = async permissionGroupName =>
-    permissionGroupToChildren[permissionGroupName] || // get from cache
-    fetchPermissionGroupChildren(models, permissionGroupName); // or fetch from db
+  const getOrFetchPermissionGroupChildren = permissionGroupName => {
+    if (!permissionGroupToChildren[permissionGroupName]) {
+      permissionGroupToChildren[permissionGroupName] = fetchPermissionGroupChildren(
+        models,
+        permissionGroupName,
+      );
+    }
+    return permissionGroupToChildren[permissionGroupName];
+  };
 
   // iterate through the user's permissions and build the permission groups per entity
   await Promise.all(
