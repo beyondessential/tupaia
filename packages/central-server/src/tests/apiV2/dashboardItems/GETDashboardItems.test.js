@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import {
   findOrCreateDummyRecord,
   addBaselineTestCountries,
@@ -9,6 +9,8 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp, setupDashboardTestData } from '../../testUtilities';
+
+const { expect } = chai;
 
 describe('Permissions checker for GETDashboardItems', async () => {
   const DEFAULT_POLICY = {

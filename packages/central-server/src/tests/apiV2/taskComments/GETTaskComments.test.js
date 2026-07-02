@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import {
   buildAndInsertSurvey,
   findOrCreateDummyCountryEntity,
@@ -7,6 +7,8 @@ import {
 } from '@tupaia/database';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
+
+const { expect } = chai;
 
 describe('Permissions checker for GETTaskComments', async () => {
   const BES_ADMIN_POLICY = {
