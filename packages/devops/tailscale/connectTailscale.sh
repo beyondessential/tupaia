@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -e +x
+
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+tupaia_dir=$(realpath -- "$script_dir"/../../../..)
+deployment_aws_scripts=$(realpath -- "$script_dir"/../scripts/deployment-aws)
+
+if ! "$tupaia_dir"/scripts/bash/requireCommands.sh "$deployment_aws_scripts"/fetchParameterStoreValue.sh tailscale; then
+  exit 1
+fi
+
+deployment_name=$("$tupaia_dir"/packages/devops/scripts/utility/getDeploymentName.sh)
+
+if [[ $deployment_name = production ]]; then
+  auth_key_param_name=TAILSCALE_AUTH_KEY_PROD
+  tags=tag:server,tag:server-tupaia,tag:server-tupaia-prod
+  hostname=tupaia-prod-$deployment_name
+else
+  auth_key_param_name=TAILSCALE_AUTH_KEY_STAGING
+  tags=tag:server,tag:server-tupaia,tag:server-tupaia-staging
+  hostname=tupaia-staging-$deployment_name
+fi
+
+echo
+echo 'Connecting to bes.au Tailnet...'
+echo "  Auth key:  $auth_key_param_name (from Parameter Store)"
+echo "  Hostname:  $hostname"
+echo "  Tags:      $tags"
+
+tailscale up \
+  --auth-key="$("$deployment_aws_scripts"/fetchParameterStoreValue.sh "$auth_key_param_name")" \
+  --hostname="$hostname" \
+  --ssh \
+  --advertise-tags="$tags"
+
+echo
+echo 'Connected to bes.au Tailnet'

@@ -118,7 +118,7 @@ main() {
   fi
 
   # central-server and data-table-server need Tailnet access for external database connections
-  DEPLOYMENT_NAME="$deployment_name" "$deployment_scripts"/connectTailscale.sh
+  "$devops_dir"/tailscale/initTailscaleSystemd.sh
   # Build each package, including injecting environment variables from Bitwarden
   "$deployment_scripts"/buildDeployablePackages.sh "$deployment_name"
   # Deploy each package
