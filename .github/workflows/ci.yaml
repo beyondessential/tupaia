@@ -38,10 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
+      - uses: ./.github/actions/setup-yarn
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
@@ -79,10 +76,7 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v5
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
+      - uses: ./.github/actions/setup-yarn
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
@@ -98,10 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
+      - uses: ./.github/actions/setup-yarn
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
@@ -115,10 +106,7 @@ jobs:
       PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
     steps:
       - uses: actions/checkout@v5
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
+      - uses: ./.github/actions/setup-yarn
       - id: set-matrix
         run: |
           echo PACKAGES=$(
@@ -188,10 +176,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
+      - uses: ./.github/actions/setup-yarn
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
