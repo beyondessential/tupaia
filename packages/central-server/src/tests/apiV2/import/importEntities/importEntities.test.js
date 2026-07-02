@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 import { findOrCreateDummyRecord, addBaselineTestCountries } from '@tupaia/database';
 import {
@@ -8,8 +8,6 @@ import {
 import * as PopulateCoordinatesForCountry from '../../../../apiV2/import/importEntities/populateCoordinatesForCountry';
 import * as UpdateCountryEntities from '../../../../apiV2/import/importEntities/updateCountryEntities';
 import { expectPermissionError, TestableApp } from '../../../testUtilities';
-
-const { expect } = chai;
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

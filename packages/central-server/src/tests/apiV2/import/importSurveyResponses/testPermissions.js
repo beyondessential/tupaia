@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,
@@ -6,8 +6,6 @@ import {
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../../permissions';
 import { expectPermissionError, TestableApp } from '../../../testUtilities';
-
-const { expect } = chai;
 
 const DEFAULT_POLICY = {
   DL: ['Admin'],

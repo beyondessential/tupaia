@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
 import {
   findOrCreateDummyRecord,
@@ -8,8 +8,6 @@ import {
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../../permissions';
 import { getModels } from '../../../testUtilities';
 import { assertCanExportSurveys } from '../../../../apiV2/export/exportSurveys/assertCanExportSurveys';
-
-const { expect } = chai;
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

@@ -1,12 +1,10 @@
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import chai from 'chai';
+import { expect } from 'chai';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp, resetTestData } from '../../testUtilities';
-
-const { expect } = chai;
 
 const DL_ADMIN_PERMISSION_GROUP = 'DL_Test_Admin';
 

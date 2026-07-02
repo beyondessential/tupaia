@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import {
   buildAndInsertSurvey,
   findOrCreateDummyRecord,
@@ -16,8 +16,6 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
 import { expectPermissionError } from '../../testUtilities/expectResponseError';
-
-const { expect } = chai;
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

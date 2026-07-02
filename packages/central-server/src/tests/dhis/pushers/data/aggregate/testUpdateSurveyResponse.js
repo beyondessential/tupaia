@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import { populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
@@ -8,8 +8,6 @@ import {
   getSyncLog,
   SERVER_NAME,
 } from './AggregateDataPusher.fixtures';
-
-const { expect } = chai;
 
 export const testUpdateSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should delete the previously synced data values, and post new values if the period has changed', async () => {

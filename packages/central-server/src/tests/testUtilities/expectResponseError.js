@@ -1,6 +1,4 @@
-import chai from 'chai';
-
-const { expect } = chai;
+import { expect } from 'chai';
 
 export const expectResponseError = (response, match, expectedStatusCode) => {
   const { body, statusCode } = response;

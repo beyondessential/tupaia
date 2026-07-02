@@ -1,6 +1,6 @@
 import moment from 'moment';
 import sinon from 'sinon';
-import chai from 'chai';
+import { expect } from 'chai';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
   ANSWER_CHANGE,
@@ -11,8 +11,6 @@ import {
   MONTHLY_DATA_SET,
   YEARLY_DATA_SET,
 } from './AggregateDataPusher.fixtures';
-
-const { expect } = chai;
 
 export const testPeriodsBasedOnDataSet = (dhisApi, models, dataBroker) => {
   const testPeriodType = async (dataSet, format) => {

@@ -1,13 +1,11 @@
 import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
-import chai from 'chai';
+import { expect } from 'chai';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { setupProject } from './utils';
-
-const { expect } = chai;
 
 describe('Deleting a landing page', async () => {
   const BES_ADMIN_POLICY = {
