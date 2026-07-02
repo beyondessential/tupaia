@@ -1,8 +1,10 @@
-import { expect } from 'chai';
+import chai from 'chai';
 
 import { buildAndInsertSurveys, generateId, upsertDummyRecord } from '@tupaia/database';
 import { TestableApp } from '../testUtilities';
 import { registerHook } from '../../hooks';
+
+const { expect } = chai;
 
 const ENTITY_ID = generateId();
 const ENTITY2_ID = generateId();

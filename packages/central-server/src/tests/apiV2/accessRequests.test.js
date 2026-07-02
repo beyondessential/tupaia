@@ -1,4 +1,5 @@
 import chai from 'chai';
+
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { TEST_USER_EMAIL, TestableApp } from '../testUtilities';
 

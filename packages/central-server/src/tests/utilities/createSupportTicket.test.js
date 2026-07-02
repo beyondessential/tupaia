@@ -1,36 +1,24 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
-import proxyquire from 'proxyquire';
+import chai from 'chai';
 
-const fetchWithTimeoutStub = sinon.stub().resolves();
-const requireEnvStub = sinon.stub().returns('test_value');
+import {
+  buildZendeskTicketRequest,
+  createSupportTicket,
+} from '../../utilities/createSupportTicket';
 
-// Use proxyquire to replace 'fetchWithTimeout' with the stub - See [here](https://stackoverflow.com/a/52591287) for an explanation about why destructured imports can't be stubbed
-const { createSupportTicket } = proxyquire('../../utilities/createSupportTicket', {
-  '@tupaia/utils': {
-    fetchWithTimeout: fetchWithTimeoutStub,
-    requireEnv: requireEnvStub,
-    getIsProductionEnvironment: () => true,
-  },
-});
+const { expect } = chai;
 
-describe('Create support ticket', () => {
-  after(() => {
-    // Reset the stub after each test
-    fetchWithTimeoutStub.reset();
-    requireEnvStub.reset();
-  });
-  it("should not create a support ticket if ZENDESK_NOTIFICATIONS_DISABLE is set to 'true'", async () => {
-    process.env.ZENDESK_NOTIFICATIONS_DISABLE = 'true';
-    await createSupportTicket('test_subject', 'test_message');
-    sinon.assert.notCalled(fetchWithTimeoutStub);
-  });
+describe('buildZendeskTicketRequest', () => {
+  it('builds the Zendesk API request from ticket details and credentials', () => {
+    const { url, requestInit } = buildZendeskTicketRequest({
+      zendeskApi: 'test_value',
+      apiToken: 'test_value',
+      email: 'test_value',
+      subject: 'test_subject',
+      message: 'test_message',
+    });
 
-  it('should create a support ticket if ZENDESK_NOTIFICATIONS_DISABLE is not set to true', async () => {
-    process.env.ZENDESK_NOTIFICATIONS_DISABLE = 'false';
-    await createSupportTicket('test_subject', 'test_message');
-    expect(fetchWithTimeoutStub).to.have.been.calledOnce;
-    expect(fetchWithTimeoutStub).to.have.been.calledWith('test_value/tickets', {
+    expect(url).to.equal('test_value/tickets');
+    expect(requestInit).to.deep.equal({
       method: 'POST',
       headers: {
         Authorization: `Basic ${Buffer.from('test_value/token:test_value').toString('base64')}`,
@@ -40,5 +28,38 @@ describe('Create support ticket', () => {
         ticket: { subject: 'test_subject', comment: { body: 'test_message' } },
       }),
     });
+  });
+});
+
+describe('createSupportTicket', () => {
+  const envKeys = [
+    'IS_PRODUCTION_ENVIRONMENT',
+    'CI_BUILD_ID',
+    'ZENDESK_NOTIFICATIONS_DISABLE',
+    'ZENDESK_API_URL',
+    'ZENDESK_API_TOKEN',
+    'ZENDESK_EMAIL',
+  ];
+  const originalEnv = Object.fromEntries(envKeys.map(key => [key, process.env[key]]));
+
+  afterEach(() => {
+    envKeys.forEach(key => {
+      if (originalEnv[key] === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = originalEnv[key];
+      }
+    });
+  });
+
+  it("should not create a support ticket if ZENDESK_NOTIFICATIONS_DISABLE is set to 'true'", async () => {
+    process.env.IS_PRODUCTION_ENVIRONMENT = 'true';
+    delete process.env.CI_BUILD_ID;
+    process.env.ZENDESK_NOTIFICATIONS_DISABLE = 'true';
+    delete process.env.ZENDESK_API_URL;
+    delete process.env.ZENDESK_API_TOKEN;
+    delete process.env.ZENDESK_EMAIL;
+
+    await createSupportTicket('test_subject', 'test_message');
   });
 });

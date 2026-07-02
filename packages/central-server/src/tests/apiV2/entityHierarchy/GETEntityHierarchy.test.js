@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import { findOrCreateDummyCountryEntity, findOrCreateRecords, generateId } from '@tupaia/database';
 
 import {
