@@ -1,1 +1,0 @@
-export { attachAccessPolicy } from './attachAccessPolicy';
