@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install Corepack
-        run: npm install -g corepack
+        run: npm install --global --min-release-age=7 corepack
       - name: Set up Yarn
         run: |
           corepack enable yarn
@@ -82,7 +82,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install Corepack
-        run: npm install -g corepack
+        run: npm install --global --min-release-age=7 corepack
       - name: Set up Yarn
         run: |
           corepack enable yarn
@@ -103,7 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install Corepack
-        run: npm install -g corepack
+        run: npm install --global --min-release-age=7 corepack
       - name: Set up Yarn
         run: |
           corepack enable yarn
@@ -122,7 +122,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install Corepack
-        run: npm install -g corepack
+        run: npm install --global --min-release-age=7 corepack
       - name: Set up Yarn
         run: |
           corepack enable yarn
@@ -197,7 +197,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install Corepack
-        run: npm install -g corepack
+        run: npm install --global --min-release-age=7 corepack
       - name: Set up Yarn
         run: |
           corepack enable yarn
