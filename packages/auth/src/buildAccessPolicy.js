@@ -16,6 +16,8 @@ const fetchPermissionGroupChildren = async (models, permissionGroupName) => {
  * @example { entityCode1: ['permissionGroup1', 'permissionGroup2'], entityCode2: ['permissionGroup1'] }
  */
 export const buildAccessPolicy = async (models, userId) => {
+  const tag = Date.now();
+  console.time(`${tag} buildAccessPolicy`);
   /** @type {Map<string, Set<string>>} */
   const permissionsByEntity = new Map();
   const userEntityPermissions = await models.userEntityPermission.find({ user_id: userId });
@@ -60,5 +62,6 @@ export const buildAccessPolicy = async (models, userId) => {
   for (const [entityCode, permissionGroups] of permissionsByEntity) {
     policy[entityCode] = Array.from(permissionGroups);
   }
+  console.timeEnd(`${tag} buildAccessPolicy`);
   return policy;
 };
