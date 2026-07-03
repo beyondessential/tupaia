@@ -1,6 +1,11 @@
 /**
- * Builds a user's access policy in the format
- * { entityCode1: ['permissionGroup1', 'permissionGroup2'], entityCode2: ['permissionGroup1'] }
+ * @returns {Promise<Record<string, string[]>>}
+ * @example
+ * {
+ *   entityCode1: ['leaf'],
+ *   entityCode2: ['leaf', 'parent', 'grandparent']
+ *   entityCode3: ['leaf', 'parent']
+ * }
  */
 export const buildAccessPolicy = async (models, userId) => {
   const [{ policy }] = await models.database.executeSql(
