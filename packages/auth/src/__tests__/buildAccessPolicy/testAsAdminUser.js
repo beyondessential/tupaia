@@ -1,6 +1,5 @@
 import { upsertDummyRecord, findOrCreateDummyRecord } from '@tupaia/database';
-import { buildAccessPolicy } from '../../buildAccessPolicy';
-import { setUp } from './helpers';
+import { buildAndCompareAccessPolicies, setUp } from './helpers';
 
 export const testAsAdminUser = () => {
   let accessPolicy;
@@ -20,7 +19,7 @@ export const testAsAdminUser = () => {
       permission_group_id: permissionGroups.admin.id,
     });
 
-    accessPolicy = await buildAccessPolicy(models, user.id);
+    accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
   });
 
   it('should have Demo Land public access', () => {

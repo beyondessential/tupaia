@@ -1,6 +1,5 @@
 import { upsertDummyRecord } from '@tupaia/database';
-import { buildAccessPolicy } from '../../buildAccessPolicy';
-import { setUp } from './helpers';
+import { buildAndCompareAccessPolicies, setUp } from './helpers';
 
 export const testAsPublicUser = () => {
   let accessPolicy;
@@ -13,7 +12,7 @@ export const testAsPublicUser = () => {
       user_id: user.id,
       permission_group_id: permissionGroups.public.id,
     });
-    accessPolicy = await buildAccessPolicy(models, user.id);
+    accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
   });
 
   it('should only have access to demo land', () => {
