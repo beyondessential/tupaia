@@ -1,5 +1,6 @@
 import { findOrCreateDummyRecord, upsertDummyRecord } from '@tupaia/database';
-import { buildAndCompareAccessPolicies, setUp } from './helpers';
+import { buildAccessPolicy } from '../../buildAccessPolicy';
+import { setUp } from './helpers';
 
 const setUpBranchingHierarchy = async models => {
   const orgAdmin = await findOrCreateDummyRecord(models.permissionGroup, {
@@ -93,7 +94,7 @@ export const testComplexPermissionHierarchies = () => {
         permission_group_id: countryAdmin.id,
       });
 
-      const accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
+      const accessPolicy = await buildAccessPolicy(models, user.id);
 
       expect(accessPolicy.FJ).toEqual(
         expect.arrayContaining(['CountryAdmin', 'DistrictViewer', 'DistrictEditor']),
@@ -118,7 +119,7 @@ export const testComplexPermissionHierarchies = () => {
         permission_group_id: orgAdmin.id,
       });
 
-      const accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
+      const accessPolicy = await buildAccessPolicy(models, user.id);
 
       expect(accessPolicy.WS).toEqual(
         expect.arrayContaining([
@@ -153,7 +154,7 @@ export const testComplexPermissionHierarchies = () => {
         permission_group_id: externalPartner.id,
       });
 
-      const accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
+      const accessPolicy = await buildAccessPolicy(models, user.id);
 
       expect(accessPolicy.VU).toEqual(
         expect.arrayContaining(['DistrictViewer', 'ExternalPartner', 'ExternalViewer']),
@@ -188,7 +189,7 @@ export const testComplexPermissionHierarchies = () => {
         permission_group_id: externalViewer.id,
       });
 
-      const accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
+      const accessPolicy = await buildAccessPolicy(models, user.id);
 
       expect(accessPolicy.KI).toEqual(['DistrictEditor']);
       expect(accessPolicy.SB).toEqual(['ExternalViewer']);
@@ -211,7 +212,7 @@ export const testComplexPermissionHierarchies = () => {
         permission_group_id: level1.id,
       });
 
-      const accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
+      const accessPolicy = await buildAccessPolicy(models, user.id);
 
       expect(accessPolicy.DEEP).toEqual(
         expect.arrayContaining(['Level1', 'Level2', 'Level3', 'Level4', 'Level5']),
@@ -234,7 +235,7 @@ export const testComplexPermissionHierarchies = () => {
         permission_group_id: level5.id,
       });
 
-      const accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
+      const accessPolicy = await buildAccessPolicy(models, user.id);
 
       expect(accessPolicy.LEAF).toEqual(['Level5']);
     });
@@ -254,7 +255,7 @@ export const testComplexPermissionHierarchies = () => {
         permission_group_id: level3.id,
       });
 
-      const accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
+      const accessPolicy = await buildAccessPolicy(models, user.id);
 
       expect(accessPolicy.MID).toEqual(expect.arrayContaining(['Level3', 'Level4', 'Level5']));
       expect(accessPolicy.MID).toHaveLength(3);
@@ -283,7 +284,7 @@ export const testComplexPermissionHierarchies = () => {
         permission_group_id: permissionGroups.public.id,
       });
 
-      const accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
+      const accessPolicy = await buildAccessPolicy(models, user.id);
 
       expect(accessPolicy.OVERLAP).toEqual(
         expect.arrayContaining(['Admin', 'Donor', 'Public']),
@@ -311,7 +312,7 @@ export const testComplexPermissionHierarchies = () => {
         permission_group_id: externalPartner.id,
       });
 
-      const accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
+      const accessPolicy = await buildAccessPolicy(models, user.id);
 
       expect(accessPolicy.UNION).toEqual(
         expect.arrayContaining(['Donor', 'Public', 'ExternalPartner', 'ExternalViewer']),

@@ -1,6 +1,7 @@
 import { AccessPolicy as AccessPolicyParser } from '@tupaia/access-policy';
 import { upsertDummyRecord, findOrCreateDummyRecord } from '@tupaia/database';
-import { buildAndCompareAccessPolicies, setUp } from './helpers';
+import { buildAccessPolicy } from '../../buildAccessPolicy';
+import { setUp } from './helpers';
 
 export const testAccessPolicyHandler = () => {
   let accessPolicy;
@@ -84,7 +85,7 @@ export const testAccessPolicyHandler = () => {
       permission_group_id: permissionGroups.public.id,
     });
 
-    accessPolicy = await buildAndCompareAccessPolicies(models, user.id);
+    accessPolicy = await buildAccessPolicy(models, user.id);
   });
 
   describe('check permissions', () => {
