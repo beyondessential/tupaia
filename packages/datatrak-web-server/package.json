@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/datatrak-web-server",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "description": "Orchestration server for datatrak web application",
   "homepage": "https://github.com/beyondessential/tupaia",
