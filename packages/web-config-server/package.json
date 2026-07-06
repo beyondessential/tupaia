@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/web-config-server",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "description": "Config server for tupaia.org",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/web-config-server"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && yarn run package:build:js",

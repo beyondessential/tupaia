@@ -21,7 +21,7 @@ jobs:
     name: Validate branch name
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Validate branch name
         run: packages/devops/scripts/ci/validateBranchName.sh
 
@@ -29,7 +29,7 @@ jobs:
     name: Validate new migrations
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Validate new migration
         run: packages/devops/scripts/ci/validateNewMigrations.sh
 
@@ -37,12 +37,9 @@ jobs:
     name: Validate tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-yarn
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: yarn
@@ -78,12 +75,9 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-yarn
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: yarn
@@ -97,12 +91,9 @@ jobs:
     name: Validate lockfile
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-yarn
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: yarn
@@ -114,11 +105,8 @@ jobs:
     outputs:
       PACKAGES: ${{ steps.set-matrix.outputs.PACKAGES }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-yarn
       - id: set-matrix
         run: |
           echo PACKAGES=$(
@@ -126,7 +114,6 @@ jobs:
               jq --compact-output --raw-output --slurp \
                 '[.[] | .name] | map(select(. != "tupaia" and . != "@tupaia/devops" and . != "@tupaia/e2e"))'
           ) >>"$GITHUB_OUTPUT"
-
 
   run_tests:
     name: Build & test
@@ -188,22 +175,19 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Yarn
-        run: |
-          corepack enable yarn
-          corepack install
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-yarn
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn install # TODO: Resolve dependency issues and replace with `yarn workspaces focus`
       - name: Build subtree
-        run: yarn workspaces foreach -Rpt --jobs unlimited --from ${{ matrix.package }} run build
+        run: yarn workspaces foreach -Rptvv --jobs unlimited --from ${{ matrix.package }} run build
       - name: Set up tests (if script exists)
-        run: yarn workspaces foreach -W --include ${{ matrix.package }} run setup-test
+        run: yarn workspaces foreach -Wvv --include ${{ matrix.package }} run setup-test
       - name: Run tests (if script exists)
-        run: yarn workspaces foreach -W --include ${{ matrix.package }} run test
+        run: yarn workspaces foreach -Wvv --include ${{ matrix.package }} run test
 
   allgreen:
     name: All Green

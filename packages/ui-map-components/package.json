@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/ui-map-components",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "description": "A library of map components for the tupaia monorepo",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/ui-map-components"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "source": "src/index.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

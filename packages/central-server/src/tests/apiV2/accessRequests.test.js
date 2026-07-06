@@ -1,6 +1,8 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { TEST_USER_EMAIL, TestableApp } from '../testUtilities';
+
+const { expect } = chai;
 
 describe('Access Requests', () => {
   const app = new TestableApp();

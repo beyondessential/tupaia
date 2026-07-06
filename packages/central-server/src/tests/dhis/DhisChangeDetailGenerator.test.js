@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import { generateId } from '@tupaia/database';
 import { DhisChangeDetailGenerator } from '../../dhis/DhisChangeDetailGenerator';
 
@@ -7,6 +7,8 @@ import {
   REGIONAL_SURVEY_RESPONSE,
   TONGA_SURVEY_RESPONSE,
 } from './DhisChangeDetailGenerator.fixtures';
+
+const { expect } = chai;
 
 const buildChange = (type, { id, ...record }) => {
   const recordId = id || generateId();

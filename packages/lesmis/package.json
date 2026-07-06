@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/lesmis",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "description": "Lao PDR Education and Sports Management Information System",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/lesmis"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "scripts": {
     "build": "yarn run package:build:vite",

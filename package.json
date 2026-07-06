@@ -11,7 +11,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git"
   },
   "license": "GPL-3.0-or-later",
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "workspaces": {
     "packages": [
       "packages/*"
@@ -56,7 +56,10 @@
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@babel/types": "7.25.6",
-    "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0"
+    "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0",
+    "@types/react@*": "16.9.17",
+    "on-headers": "1.1.0",
+    "react-smooth/lodash": "^4.18.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.25.6",
@@ -107,5 +110,5 @@
   "engines": {
     "node": "^20.11.1"
   },
-  "packageManager": "yarn@4.13.0+sha256.730e0619753d39754c9e7613c7e57f084ea18b3244f5ba9a5a60bd3da048450b"
+  "packageManager": "yarn@4.17.0+sha512.c2957de2f9025ab14d63b24d0d8be1f1655810e22c341042c27f7ecd017b180ec12db73d69ac366d71b304ef9f069349ce462de96f04f8f1da317f4f762c95ae"
 }
