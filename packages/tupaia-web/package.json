@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/tupaia-web",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "description": "Web app that integrates with and displays data from the Tupaia project",
   "repository": {
