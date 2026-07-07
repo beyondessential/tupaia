@@ -61,6 +61,11 @@
     "on-headers": "1.1.0",
     "react-smooth/lodash": "^4.18.0"
   },
+  "dependenciesMeta": {
+    "puppeteer": {
+      "built": true
+    }
+  },
   "devDependencies": {
     "@babel/cli": "^7.25.6",
     "@babel/core": "^7.25.2",

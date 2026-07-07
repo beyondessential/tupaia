@@ -33,10 +33,6 @@ nvm use
 corepack enable yarn
 yarn install --immutable
 
-# Yarn Berry does not run Puppeteer's postinstall, so download the pinned Chrome
-# build it needs for server-side PDF rendering (e.g. survey response export).
-yarn workspace @tupaia/server-utils exec puppeteer browsers install chrome
-
 # Fetch env vars
 set +x # Suppress output of Bitwarden secrets
 BW_CLIENTID="$BW_CLIENTID" \
