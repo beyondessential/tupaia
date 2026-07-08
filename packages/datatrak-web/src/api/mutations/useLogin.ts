@@ -8,7 +8,7 @@ import { login } from '../../auth/login';
 import { ROUTES } from '../../constants';
 import { clearDatabase } from '../../database';
 import { useDatabaseContext } from '../../hooks/database';
-import { gaEvent, useFromLocation } from '../../utils';
+import { GA_CATEGORY, GA_EVENT, gaEvent, useFromLocation } from '../../utils';
 import { useSyncContext } from '../SyncContext';
 import { useIsOfflineFirst } from '../offlineFirst';
 
@@ -42,7 +42,7 @@ export const useLogin = () => {
     },
     {
       onMutate: () => {
-        gaEvent('login', 'Login', 'Attempt');
+        gaEvent(GA_EVENT.LOGIN, GA_CATEGORY.LOGIN, 'Attempt');
       },
       onSuccess: async ({ user }) => {
         if (isOfflineFirst) {

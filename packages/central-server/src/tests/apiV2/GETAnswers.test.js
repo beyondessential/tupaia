@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import {
   buildAndInsertSurveys,
   buildAndInsertSurveyResponses,
@@ -6,6 +6,8 @@ import {
 } from '@tupaia/database';
 import { resetTestData, TestableApp } from '../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+
+const { expect } = chai;
 
 describe('Permissions checker for GETAnswers', async () => {
   const DEFAULT_POLICY = {

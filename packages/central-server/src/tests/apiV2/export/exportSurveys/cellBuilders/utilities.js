@@ -1,8 +1,10 @@
 import sinon from 'sinon';
-import { expect } from 'chai';
+import chai from 'chai';
 import { ConfigImporter } from '../../../../../apiV2/import/importSurveys/ConfigImporter';
 import { ConfigValidator } from '../../../../../apiV2/import/importSurveys/Validator/ConfigValidator';
 import { QuestionConfigCellBuilder } from '../../../../../apiV2/export/exportSurveys/cellBuilders';
+
+const { expect } = chai;
 
 const addConfigToQuestion = (questions, questionCode, config) =>
   questions.map(question => (question.code === questionCode ? { ...question, config } : question));

@@ -1,7 +1,9 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
 import { resetTestData, TestableApp } from '../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+
+const { expect } = chai;
 
 describe('Permissions checker for GETSurveys', async () => {
   const DEFAULT_POLICY = {

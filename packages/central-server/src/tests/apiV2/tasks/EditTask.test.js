@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
@@ -8,6 +8,8 @@ import {
 import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
+
+const { expect } = chai;
 
 const rollbackRecordChange = async (models, records) => {
   await Promise.all(records.map(record => models.task.delete({ id: record.id })));
