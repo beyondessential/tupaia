@@ -58,7 +58,7 @@ export const useSurveyResponseData = (): ResponseData => {
 interface SurveyResponseMutationFunctionContext
   extends ContextualMutationFunctionContext<{
     answers?: AnswersT;
-  }> { }
+  }> {}
 
 const createEntityParentChildRelation = async (
   transactingModels: DatatrakWebModelRegistry,
@@ -73,8 +73,8 @@ const createEntityParentChildRelation = async (
     parent_id: entity.parent_id,
     child_id: entity.id,
   }));
-  if (relations.length === 0) { 
-    return; 
+  if (relations.length === 0) {
+    return;
   }
 
   // Re-parenting should replace existing links for each child in this hierarchy.
@@ -135,7 +135,11 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         const entityHierarchyId = user.project?.entityHierarchyId;
         const entitiesUpserted = processedResponse.entities_upserted ?? [];
         if (entityHierarchyId && entitiesUpserted.length > 0) {
-          await createEntityParentChildRelation(transactingModels, entityHierarchyId, entitiesUpserted);
+          await createEntityParentChildRelation(
+            transactingModels,
+            entityHierarchyId,
+            entitiesUpserted,
+          );
         }
 
         await SurveyResponseModel.validateSurveyResponses(transactingModels, [processedResponse]);
@@ -150,12 +154,18 @@ export const useSubmitSurveyResponse = (from: string | undefined) => {
         }
 
         const [{ surveyResponseId }] = idsCreated;
-        await transactingModels.task.completeTaskForSurveyResponse({
-          ...processedResponse,
-          id: surveyResponseId,
-        });
+        const persistedResponse = { ...processedResponse, id: surveyResponseId };
 
-        // Marking any corresponding task as complete is delegated to central-server
+        // Create any task this response declares (Task-type question with shouldCreateTask).
+        // On central, this normally runs ~1s later via TaskCreationHandler — but that puts the
+        // new task at the same sync tick as the just-pushed response, which `sync_device_tick`
+        // owns for this device. avoidRepull then hides the task from this device's next pull,
+        // so the user who created the task never sees it. Creating it here in the same push
+        // transaction sidesteps the collision; the server-side handler is idempotent on
+        // initial_request_id (see TUP-3160).
+        await transactingModels.task.createTasksForSurveyResponse(persistedResponse);
+
+        await transactingModels.task.completeTaskForSurveyResponse(persistedResponse);
 
         return { qrCodeEntitiesCreated: qr_codes_to_create };
       });
