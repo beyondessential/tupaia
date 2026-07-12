@@ -29891,6 +29891,9 @@ __metadata:
     vite: "npm:^4.5.14"
     vite-plugin-compression: "npm:^0.5.1"
     vite-plugin-ejs: "npm:^1.6.4"
+  dependenciesMeta:
+    puppeteer:
+      built: true
   languageName: unknown
   linkType: soft
 
