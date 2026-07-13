@@ -52,7 +52,7 @@
     "case": "^1.6.3",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.1",
-    "db-migrate": "^0.11.5",
+    "db-migrate": "^0.11.14",
     "db-migrate-pg": "^1.2.2",
     "dotenv": "^16.4.5",
     "es-toolkit": "^1.46.0",
