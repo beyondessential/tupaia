@@ -2,7 +2,6 @@ import { NotFoundError, respond } from '@tupaia/utils';
 
 const FRONTEND_EXCLUDED_PROJECTS = /** @type {const} */ ([
   'ehealth_cook_islands',
-  'ehealth_tokelau',
   'ehealth_timor_leste',
   'ehealth_vanuatu',
 ]);
