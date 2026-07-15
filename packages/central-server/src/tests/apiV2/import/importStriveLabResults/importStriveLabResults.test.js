@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import {
   buildAndInsertSurveys,
   generateId,

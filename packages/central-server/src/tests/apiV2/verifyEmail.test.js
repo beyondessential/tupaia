@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import { encryptPassword } from '@tupaia/auth';
 import { randomEmail } from '@tupaia/utils';
 

@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import { setupTest } from '@tupaia/database';
 import { stripUpdatedAtSyncTickFromArray } from '@tupaia/utils';
 
@@ -91,7 +90,10 @@ describe('GET map overlay visualisations', () => {
           },
         },
       ];
-      expectSuccess({ ...response, body: stripUpdatedAtSyncTickFromArray(response.body) }, expected);
+      expectSuccess(
+        { ...response, body: stripUpdatedAtSyncTickFromArray(response.body) },
+        expected,
+      );
     });
   });
 });

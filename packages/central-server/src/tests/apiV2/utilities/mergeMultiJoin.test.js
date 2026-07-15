@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import { mergeMultiJoin } from '../../../apiV2/utilities/mergeMultiJoin';
 
 const { expect } = chai;

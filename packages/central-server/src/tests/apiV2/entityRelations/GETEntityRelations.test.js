@@ -1,6 +1,5 @@
 import chai from 'chai';
 
-
 import { findOrCreateDummyRecord } from '@tupaia/database';
 
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
