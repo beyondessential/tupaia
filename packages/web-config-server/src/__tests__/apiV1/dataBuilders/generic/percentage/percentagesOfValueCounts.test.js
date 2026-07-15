@@ -1,9 +1,8 @@
 import { createJestMockInstance } from '@tupaia/utils';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import {
   PercentagesOfValueCountsBuilder,
-  percentagesOfValueCounts,
   percentagesOfAllValueCounts,
+  percentagesOfValueCounts,
 } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
 
 const models = {};
@@ -84,10 +83,7 @@ describe('PercentagesOfValueCountsBuilder', () => {
       const builder = getBuilder({ dataClasses: {} });
 
       expect(
-        builder.calculateFractionPart(
-          { dataValues: ['DE_A'], valueOfInterest: 'Yes' },
-          ANALYTICS,
-        ),
+        builder.calculateFractionPart({ dataValues: ['DE_A'], valueOfInterest: 'Yes' }, ANALYTICS),
       ).toBe(1);
     });
 
@@ -231,9 +227,9 @@ describe('PercentagesOfValueCountsBuilder', () => {
     it('throws when compare and operation are both absent', () => {
       const builder = getBuilder({ dataClasses: {} });
 
-      expect(() =>
-        builder.calculateFractionPart({ dataValues: ['DE_A'] }, ANALYTICS),
-      ).toThrow('Could not parse calculation for: [object Object]');
+      expect(() => builder.calculateFractionPart({ dataValues: ['DE_A'] }, ANALYTICS)).toThrow(
+        'Could not parse calculation for: [object Object]',
+      );
     });
   });
 
@@ -248,10 +244,7 @@ describe('PercentagesOfValueCountsBuilder', () => {
         },
       });
 
-      await expect(builder.fetchResults()).resolves.toEqual([
-        ANALYTICS[0],
-        ANALYTICS[1],
-      ]);
+      await expect(builder.fetchResults()).resolves.toEqual([ANALYTICS[0], ANALYTICS[1]]);
       expect(fetchAnalytics).toHaveBeenCalledTimes(1);
     });
 
