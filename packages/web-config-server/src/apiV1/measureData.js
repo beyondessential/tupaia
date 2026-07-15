@@ -203,8 +203,7 @@ export default class extends DataAggregatingRouteHandler {
   async fetchMeasureOptions(mapOverlays, measureData, mapOverlayCode) {
     const measureOptions = await Promise.all(mapOverlays.map(o => this.fetchMeasureOption(o)));
     measureOptions
-      .filter(mo => mo.displayedValueKey)
-      .filter(mo => !mo.disableRenameLegend)
+      .filter(mo => mo.displayedValueKey && !mo.disableRenameLegend)
       .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
 
     const getOtherMeasureOptionKeys = mainMapOverlayCode => {
