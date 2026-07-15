@@ -1,4 +1,4 @@
-function getDisplayMode() {
+export function getDisplayMode() {
   if (document.referrer.startsWith('android-app://')) return 'twa';
   if (window.matchMedia('(display-mode: browser)').matches) return 'browser';
   if (window.matchMedia('(display-mode: standalone)').matches) return 'standalone';
