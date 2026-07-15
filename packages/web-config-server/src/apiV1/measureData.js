@@ -171,7 +171,7 @@ export default class extends DataAggregatingRouteHandler {
     // check permission
     // check each distinct permission group once, and pass the already-fetched entity object so
     // that userHasAccess doesn't refetch it for every measure
-    const permissionGroups = uniq(measures.map(({ permission_group: pg }) => pg));
+    const permissionGroups = uniq(measures.map(measure => measure.permission_group));
     await Promise.all(
       permissionGroups.map(async permissionGroup => {
         const isUserAllowedMeasure = await this.req.userHasAccess(this.entity, permissionGroup);
