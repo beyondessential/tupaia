@@ -15,12 +15,12 @@ const ADD_TO_ALL_KEY = '$all';
 
 // NOTE: does not allow for actual number value measure, will be added when
 // all binary are added as optionSet
-const binaryOptionSet = [
+const binaryOptionSet = /** @type {const} */ ([
   { name: 'Yes', value: 1 },
   { name: 'No', value: 0 },
-];
+]);
 
-const accessDeniedForMeasure = {
+const accessDeniedForMeasure = /** @type {const} */ ({
   type: 'Permission Error',
   responseStatus: 403,
   responseText: {
@@ -28,7 +28,7 @@ const accessDeniedForMeasure = {
     details:
       'Measure data requested is restricted to a permission group the requesting user does not belong to.',
   },
-};
+});
 
 /* Data arrives as an array of responses (one for each measure) containing an array of org
  * units. We need to rearrange it so that it's a 1D array of objects with the values
