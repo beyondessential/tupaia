@@ -39,14 +39,10 @@ const REPORT_SERVER_RESPONSES = {
   },
 };
 
+// The "hierarchy" name passed through to report-server is now the project code itself.
 const PROJECTS = [
-  { code: 'ps', entity_hierarchy_id: '1' },
-  { code: 'str', entity_hierarchy_id: '2' },
-];
-
-const ENTITY_HIERARCHIES = [
-  { id: '1', name: 'psss' },
-  { id: '2', name: 'strive' },
+  { id: '1', code: 'psss' },
+  { id: '2', code: 'strive' },
 ];
 
 const req = { session: { userJson: { userName: 'test' } } };
@@ -54,20 +50,26 @@ const req = { session: { userJson: { userName: 'test' } } };
 const fetchReport = (reportCode, query, body) =>
   REPORT_SERVER_RESPONSES[reportRequestKey(reportCode, query, body)];
 
-const findProject = ({ code }) => PROJECTS.find(project => project.code === code);
-
-const findEntityHierarchyById = id => ENTITY_HIERARCHIES.find(hierarchy => hierarchy.id === id);
+const findProject = filter => {
+  if ('code' in filter) {
+    // Real query.projectCode looks up the report's owning project; tests use the
+    // project code that matches REPORT_SERVER_RESPONSES["hierarchy"], so just match
+    // either side.
+    return PROJECTS.find(p => p.code === filter.code || p.id === filter.code);
+  }
+  return undefined;
+};
+const findProjectById = id => PROJECTS.find(p => p.id === id);
 
 const reportConnection = { fetchReport };
 const models = {
-  project: { findOne: findProject },
-  entityHierarchy: { findById: findEntityHierarchyById },
+  project: { findOne: findProject, findById: findProjectById },
 };
 
 describe('ReportServerDataBuilder', () => {
   it('should request correct report', async () => {
     const config = { reportCode: '1' };
-    const query = { projectCode: 'ps' };
+    const query = { projectCode: 'psss' };
     const entity = { code: 'TO' };
     const dataBuilder = new ReportServerBuilder(req, models, config, query, entity);
     dataBuilder.reportConnection = reportConnection;
@@ -86,7 +88,7 @@ describe('ReportServerDataBuilder', () => {
   it('should request for correct start/end date', async () => {
     const config = { reportCode: '1' };
     const query = {
-      projectCode: 'ps',
+      projectCode: 'psss',
       startDate: '2020-01-01',
       endDate: '2021-01-01',
     };
@@ -106,7 +108,7 @@ describe('ReportServerDataBuilder', () => {
   it('should request for correct entity hierarchy', async () => {
     const config = { reportCode: '2' };
     const query = {
-      projectCode: 'str',
+      projectCode: 'strive',
       startDate: '2020-01-01',
     };
     const entity = { code: 'PG' };

@@ -19,26 +19,27 @@ export class DeleteEntity extends BESAdminDeleteHandler {
       );
     }
 
-    // Check for children (they should be given a new parent first)
-    const hierarchies = await this.models.entityHierarchy.all();
-    const hierarchiesWhereEntityHasChildren = [];
-    for (const hierarchy of hierarchies) {
-      const children = await entity.getChildren(hierarchy.id);
+    // Check for children (they should be given a new parent first). A sub-country
+    // entity belongs to exactly one project (entity.project_id); structural entities
+    // can show up across projects, so walk every project containing this entity.
+    const projects = entity.project_id
+      ? [await this.models.project.findById(entity.project_id)].filter(Boolean)
+      : await this.models.project.all();
+    const projectsWhereEntityHasChildren = [];
+    for (const project of projects) {
+      const children = await entity.getChildren(project.id);
       if (children.length > 0) {
-        hierarchiesWhereEntityHasChildren.push(hierarchy);
+        projectsWhereEntityHasChildren.push(project);
       }
     }
 
-    if (hierarchiesWhereEntityHasChildren.length > 0) {
+    if (projectsWhereEntityHasChildren.length > 0) {
       throw new Error(
-        `This entity still has children in the following hierarchies [${hierarchiesWhereEntityHasChildren.map(
-          hierarchy => hierarchy.name,
+        `This entity still has children in the following projects [${projectsWhereEntityHasChildren.map(
+          project => project.code,
         )}], please delete them or re-import them with a new parent before deleting this entity`,
       );
     }
-
-    // Delete any entity_relations where this entity is the leaf node, as they prevent deleting the entity otherwise
-    await this.models.entityRelation.delete({ child_id: this.recordId });
 
     await super.deleteRecord();
   }

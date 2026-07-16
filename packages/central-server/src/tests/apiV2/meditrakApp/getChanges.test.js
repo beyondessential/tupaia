@@ -13,6 +13,7 @@ import {
   upsertSurveyScreenComponent,
   upsertSurvey,
   upsertCountry,
+  upsertProject,
 } from '../../testUtilities';
 
 const { expect } = chai;
@@ -207,7 +208,7 @@ describe('GET /changes/*', async () => {
       const { id: countryId } = await upsertCountry({ code: 'DL' });
       const survey = await upsertSurvey({ country_ids: [countryId] });
       const screen = await upsertSurveyScreen({ survey_id: survey.id });
-      await upsertSurveyScreenComponent({
+      const component = await upsertSurveyScreenComponent({
         question_id: questionId,
         config: JSON.stringify(nonLegacyConfig),
         screen_id: screen.id,
@@ -218,7 +219,10 @@ describe('GET /changes/*', async () => {
       await models.database.waitForAllChangeHandlers();
       const responseForLegacyVersion = await app.get(`changes?since=${since}&appVersion=1.12.124`);
 
-      expect(JSON.parse(responseForLegacyVersion.body[5].record.config)).to.deep.equal({
+      // Find the component's change by id rather than a fixed array index — the
+      // number/order of preceding changes is not stable.
+      const change = responseForLegacyVersion.body.find(c => c.record?.id === component.id);
+      expect(JSON.parse(change.record.config)).to.deep.equal({
         entity: {
           createNew: true,
           name: {
@@ -237,7 +241,7 @@ describe('GET /changes/*', async () => {
       const { id: countryId } = await models.country.findOne({ code: 'DL' });
       const survey = await upsertSurvey({ country_ids: [countryId] });
       const screen = await upsertSurveyScreen({ survey_id: survey.id });
-      await upsertSurveyScreenComponent({
+      const component = await upsertSurveyScreenComponent({
         question_id: questionId,
         config: JSON.stringify(nonLegacyConfig),
         screen_id: screen.id,
@@ -247,9 +251,75 @@ describe('GET /changes/*', async () => {
       // Wait for the triggers to have properly added the changes to the queue
       await models.database.waitForAllChangeHandlers();
       const responseForLegacyVersion = await app.get(`changes?since=${since}&appVersion=1.13.129`);
-      expect(JSON.parse(responseForLegacyVersion.body[4].record.config)).to.deep.equal(
-        nonLegacyConfig,
+      // Find the component's change by id rather than a fixed array index — the
+      // number/order of preceding changes is not stable.
+      const change = responseForLegacyVersion.body.find(c => c.record?.id === component.id);
+      expect(JSON.parse(change.record.config)).to.deep.equal(nonLegacyConfig);
+    });
+  });
+
+  describe('GET /changes/ - TUP-3067 entity hierarchy (canonical filter + robustness)', async () => {
+    it('syncs only the canonical row per code, with project_id/bounds stripped and point kept', async () => {
+      // Two entities share a code across projects. MediTrak must receive only
+      // the canonical (lowest-id) row, with project_id & bounds stripped (per
+      // ignorableFields) and point retained.
+      const since = Date.now();
+      await oneSecondSleep();
+      await models.country.findOrCreate({ code: 'DL' }, { name: 'Demo Land' });
+      const projectA = await upsertProject({ code: `cf_a_${Date.now()}` });
+      const projectB = await upsertProject({ code: `cf_b_${Date.now()}` });
+      const code = `cf_entity_${Date.now()}`;
+      const point = JSON.stringify({ type: 'Point', coordinates: [178.4, -18.1] });
+      const idA = generateId();
+      const idB = generateId();
+      // Same code in two projects, both with a point and a non-null project_id.
+      await models.database.executeSql(
+        `INSERT INTO entity (id, code, name, type, country_code, project_id, point)
+         VALUES (?, ?, 'A', 'facility', 'DL', ?, ST_GeomFromGeoJSON(?));`,
+        [idA, code, projectA.id, point],
       );
+      await models.database.executeSql(
+        `INSERT INTO entity (id, code, name, type, country_code, project_id, point)
+         VALUES (?, ?, 'B', 'facility', 'DL', ?, ST_GeomFromGeoJSON(?));`,
+        [idB, code, projectB.id, point],
+      );
+      await oneSecondSleep();
+      await models.database.waitForAllChangeHandlers();
+
+      const response = await app.get(`changes?since=${since}&recordTypes=entity&appVersion=1.11.0`);
+      const forCode = response.body.filter(c => c.record?.code === code);
+      const canonicalId = [idA, idB].sort()[0]; // MIN(id) is a lexicographic min on the text column
+
+      expect(forCode, 'exactly one row per code').to.have.lengthOf(1);
+      expect(forCode[0].record.id).to.equal(canonicalId);
+      expect(forCode[0].record.project_id, 'project_id stripped').to.be.undefined;
+      expect(forCode[0].record.bounds, 'bounds stripped').to.be.undefined;
+      expect(forCode[0].record.point, 'point retained').to.exist;
+    });
+
+    it('sends a delete when a synced record no longer exists', async () => {
+      // Simulate an orphaned "update" entry: a sync-queue row whose record was
+      // deleted without a delete tombstone (as the epic's cascading deletes
+      // left for survey / user_entity_permission). getChanges must emit it as a
+      // delete, not a record-less update (which crashes the app).
+      const since = Date.now();
+      await oneSecondSleep();
+      const goneId = generateId();
+      await models.database.executeSql(
+        `INSERT INTO meditrak_sync_queue (id, type, record_type, record_id, change_time)
+         VALUES (?, 'update', 'survey', ?, ?);`,
+        [generateId(), goneId, Date.now()],
+      );
+      // Raw queue insert doesn't fire the change handler, so refresh the view directly.
+      await models.database.executeSql(
+        'REFRESH MATERIALIZED VIEW permissions_based_meditrak_sync_queue;',
+      );
+
+      const response = await app.get(`changes?since=${since}&recordTypes=survey&appVersion=1.11.0`);
+      const change = response.body.find(c => c.record?.id === goneId);
+      expect(change, 'orphaned update is returned').to.exist;
+      expect(change.action, 'sent as a delete').to.equal('delete');
+      expect(change.error, 'no record-less error change').to.be.undefined;
     });
   });
 });
