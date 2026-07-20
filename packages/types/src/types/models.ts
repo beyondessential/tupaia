@@ -2049,6 +2049,7 @@ export enum EntityTypeEnum {
   'tamanu_country' = 'tamanu_country',
   'srh_district' = 'srh_district',
   'srh_sub_district' = 'srh_sub_district',
+  'pacmossi_consumable_batch' = 'pacmossi_consumable_batch',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
