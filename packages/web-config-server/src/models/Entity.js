@@ -10,22 +10,22 @@ class EntityRecord extends CommonEntityRecord {
     return pascal(this.type); // sub_district -> SubDistrict
   }
 
-  translateForFrontend() {
+  async translateForFrontend() {
     return {
       type: pascal(this.type),
       organisationUnitCode: this.code,
       countryCode: this.country_code,
       name: this.name,
-      location: this.translateLocationForFrontend(),
+      location: await this.translateLocationForFrontend(),
       photoUrl: this.image_url,
     };
   }
 
-  translateLocationForFrontend() {
-    const { point, region } = this;
+  async translateLocationForFrontend() {
+    const { point, entity_polygon_id } = this;
 
     const type = (() => {
-      if (region) return 'area';
+      if (entity_polygon_id) return 'area';
       if (point) return 'point';
       return 'no-coordinates';
     })();
@@ -38,7 +38,7 @@ class EntityRecord extends CommonEntityRecord {
       bounds: this.entitiesWithAccess
         ? calculateOuterBounds(this.entitiesWithAccess.map(entity => entity.bounds))
         : this.getBounds(),
-      region: this.getRegion(),
+      region: await this.getPolygon(),
     };
   }
 }

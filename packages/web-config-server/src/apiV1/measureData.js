@@ -316,8 +316,8 @@ export default class extends DataAggregatingRouteHandler {
 
   async getDisplayOnLevelOrgUnitCode(mapOverlay) {
     const level = snake(mapOverlay.config?.displayOnLevel || 'country'); // Display at country level by default
-    const hierarchyId = await this.fetchHierarchyId();
-    const displayOnLevelEntity = await this.entity.getAncestorOfType(hierarchyId, level);
+    const projectId = await this.fetchProjectId();
+    const displayOnLevelEntity = await this.entity.getAncestorOfType(projectId, level);
 
     if (!displayOnLevelEntity) {
       return null;
@@ -338,7 +338,7 @@ export default class extends DataAggregatingRouteHandler {
       return { [code]: [] };
     }
 
-    const entity = await this.models.entity.findOne({ code: entityCode });
+    const entity = await this.models.entity.findOneByCodeInProject(entityCode, this.projectId);
     const dhisApi = getDhisApiInstance({
       entityCode: this.entity.code,
       isDataRegional: dataServices?.[0]?.isDataRegional,
