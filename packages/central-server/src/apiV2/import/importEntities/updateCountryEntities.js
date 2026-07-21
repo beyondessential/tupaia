@@ -170,13 +170,13 @@ export async function updateCountryEntities(
     );
 
     if (attributes !== undefined) {
-      await transactingModels.entity.updateEntityAttributes(code, attributes);
+      await transactingModels.entity.updateEntityAttributes(entity.id, attributes);
     }
     if (longitude && latitude) {
       const lon = Number(longitude);
       const lat = Number(latitude);
       if (Number.isFinite(lon) && Number.isFinite(lat)) {
-        await transactingModels.entity.updatePointCoordinates(code, {
+        await transactingModels.entity.updatePointCoordinates(entity.id, {
           longitude: lon,
           latitude: lat,
         });
@@ -189,7 +189,7 @@ export async function updateCountryEntities(
       await transactingModels.entity.updateBoundsFromPolygon(entity.id);
     }
     if (screenBounds) {
-      await transactingModels.entity.updateBoundsCoordinates(code, screenBounds);
+      await transactingModels.entity.updateBoundsCoordinates(entity.id, screenBounds);
     }
   }
   return country;

@@ -33,7 +33,7 @@ async function createNewEntity(answerValues, parent, models) {
   if (location) {
     try {
       const coordinates = parseCoordinates(location);
-      await models.entity.updatePointCoordinates(code, coordinates);
+      await models.entity.updatePointCoordinates(entity.id, coordinates);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(e);
@@ -105,5 +105,5 @@ export const entityCreate_image_url = entityUpdater((entity, answer) => {
 
 export const entityCreate_location = entityUpdater(async (entity, answer, models) => {
   const coordinates = parseCoordinates(answer.text);
-  await models.entity.updatePointCoordinates(entity.code, coordinates);
+  await models.entity.updatePointCoordinates(entity.id, coordinates);
 });

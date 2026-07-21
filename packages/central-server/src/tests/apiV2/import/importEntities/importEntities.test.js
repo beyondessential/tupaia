@@ -482,4 +482,103 @@ describe('importEntities(): POST import/entities', () => {
       expect((await models.entity.findOne({ code: 'KI_skip_test' })).name).to.equal('Renamed');
     });
   });
+
+  describe('Project isolation on update (TUP-3181 Issue 14)', () => {
+    const PROJECT_A = 'leak_test_a';
+    const PROJECT_B = 'leak_test_b';
+    const VILLAGE = 'leak_village';
+    let projectA;
+    let bVillage;
+
+    const importRows = (rows, projectCode) => {
+      const filepath = writeXlsx(rows);
+      return app
+        .post('import/entities')
+        .query({ projectCode, pushToDhis: 'false' })
+        .attach('entities', filepath)
+        .then(response => {
+          unlinkXlsx(filepath);
+          return response;
+        });
+    };
+
+    const readPoint = async id => {
+      const [row] = await models.database.executeSql(
+        'SELECT ST_X(point::geometry) AS lon, ST_Y(point::geometry) AS lat FROM entity WHERE id = ?;',
+        [id],
+      );
+      return row;
+    };
+
+    before(async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      // Two projects sharing country KI. Only project B has the village, so the
+      // import into A must create A's own copy and leave B's copy untouched.
+      const [createdA] = await buildAndInsertProjectsAndHierarchies(models, [
+        {
+          code: PROJECT_A,
+          name: 'Leak Test A',
+          entities: [{ code: 'KI', country_code: 'KI' }],
+        },
+        {
+          code: PROJECT_B,
+          name: 'Leak Test B',
+          entities: [
+            { code: 'KI', country_code: 'KI' },
+            { code: VILLAGE, country_code: 'KI', type: 'village' },
+          ],
+          relations: [
+            { parent: PROJECT_B, child: 'KI' },
+            { parent: 'KI', child: VILLAGE },
+          ],
+        },
+      ]);
+      projectA = createdA.project;
+      bVillage = await models.entity.findOne({
+        code: VILLAGE,
+        project_id: (await models.project.findOne({ code: PROJECT_B })).id,
+      });
+      // Seed project B's copy with distinct point + attributes so a leak would show.
+      await models.entity.updatePointCoordinates(bVillage.id, { longitude: 10, latitude: 20 });
+      await models.entity.updateById(bVillage.id, { attributes: { source: 'B' } });
+    });
+
+    after(async () => {
+      await models.entity.delete({ code: VILLAGE });
+      app.revokeAccess();
+    });
+
+    it('updates point/bounds/attributes only for the imported project, not same-code copies elsewhere', async () => {
+      const response = await importRows(
+        [
+          {
+            code: VILLAGE,
+            name: 'Leak Village A',
+            entity_type: 'village',
+            country_code: 'KI',
+            parent_code: 'KI',
+            latitude: 1,
+            longitude: 2,
+            attributes: 'source: A',
+          },
+        ],
+        PROJECT_A,
+      );
+      expect(response.statusCode).to.equal(200);
+
+      const aVillage = await models.entity.findOne({ code: VILLAGE, project_id: projectA.id });
+      expect(aVillage.attributes).to.deep.equal({ source: 'A' });
+      const aPoint = await readPoint(aVillage.id);
+      expect(aPoint.lon).to.equal(2);
+      expect(aPoint.lat).to.equal(1);
+
+      // Project B's copy must be untouched — the pre-fix code updated by `code`
+      // alone, leaking point/bounds/attributes into every project's copy.
+      const bAfter = await models.entity.findOne({ code: VILLAGE, project_id: bVillage.project_id });
+      expect(bAfter.attributes).to.deep.equal({ source: 'B' });
+      const bPoint = await readPoint(bVillage.id);
+      expect(bPoint.lon).to.equal(10);
+      expect(bPoint.lat).to.equal(20);
+    });
+  });
 });

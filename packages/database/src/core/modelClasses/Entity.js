@@ -493,39 +493,41 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
 
-  async updatePointCoordinates(code, { longitude, latitude }) {
+  // Keyed by id, not code: a code is shared across a project's duplicated entity
+  // copies, so a code-scoped write would leak point/bounds into every project.
+  async updatePointCoordinates(entityId, { longitude, latitude }) {
     const point = JSON.stringify({
       coordinates: [longitude, latitude],
       type: 'Point',
     });
-    await this.updatePointCoordinatesFormatted(code, point);
+    await this.updatePointCoordinatesFormatted(entityId, point);
   }
 
-  async updatePointCoordinatesFormatted(code, point) {
+  async updatePointCoordinatesFormatted(entityId, point) {
     return this.database.executeSql(
       `
           UPDATE "entity"
           SET
             point = ST_GeomFromGeoJSON(?),
             bounds = ST_Expand(ST_Envelope(ST_GeomFromGeoJSON(?)::geometry), 1)
-          WHERE code = ?;
+          WHERE id = ?;
         `,
-      [point, point, code],
+      [point, point, entityId],
     );
   }
 
   /**
-   * @param {Entity['code']} code
+   * @param {Entity['id']} entityId
    * @param {Entity['bounds']} bounds
    */
-  async updateBoundsCoordinates(code, bounds) {
+  async updateBoundsCoordinates(entityId, bounds) {
     return this.database.executeSql(
       `
           UPDATE "entity"
           SET "bounds" = ?
-          WHERE "code" = ?;
+          WHERE "id" = ?;
         `,
-      [bounds, code],
+      [bounds, entityId],
     );
   }
 
@@ -570,18 +572,18 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   /**
-   * @param {Entity['code']} code
+   * @param {Entity['id']} entityId
    * @param {Entity['attributes']} attributes
    */
-  async updateEntityAttributes(code, attributes) {
+  async updateEntityAttributes(entityId, attributes) {
     attributes = attributes ?? {};
     return this.database.executeSql(
       `
           UPDATE "entity"
           SET "attributes" = ?
-          WHERE "code" = ?;
+          WHERE "id" = ?;
         `,
-      [attributes, code],
+      [attributes, entityId],
     );
   }
 
