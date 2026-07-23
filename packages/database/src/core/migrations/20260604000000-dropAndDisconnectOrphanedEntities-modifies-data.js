@@ -15,32 +15,18 @@ const log = msg => {
   console.log(`[Orphan entity cleanup] ${msg}`);
 };
 
-// (country, type, project) keep-mapping confirmed by Juliana's data audit on
-// TUP-3165. A NULL type matches every entity type in that country. Orphans
-// outside this mapping (and not claimed by data, below) are confirmed safe to
-// delete.
-const AUDIT_KEEP_MAPPING = `
-  VALUES ('FJ', NULL, 'asset_management_fj'),
-         ('ML', NULL, 'tmf_internal'),
-         ('TL', NULL, 'tmf_internal'),
-         ('PG', 'hospital_ward', 'png_health_audit')
-`;
-
 exports.up = async function (db) {
-  // 1. Rescue orphans into their real project. Orphans are entities the RN-1853
-  //    backfill found no entity_parent_child_relation rows for — mostly dead
-  //    imports, but some were created on the fly by DataTrak survey submissions
-  //    and never entered the cache (trigger gap; some types also aren't in the
-  //    hierarchy's canonical_types). Two sources decide the target project:
-  //      a. Data claim: a survey_response / task / survey_response_draft points
-  //         at the orphan — its survey's project wins. Computed dynamically so
-  //         orphans claimed after this snapshot are still rescued when this
-  //         runs on prod (deleting them would abort on the survey_response FK).
-  //         The WS/DL test entities this rescues are slated for manual deletion
-  //         via the Admin Panel (PM confirmed), responses and all.
-  //      b. Audit mapping: Juliana's confirmed (country, type) → project
-  //         assignments.
-  //    Data claims take priority — they are direct evidence.
+  // 1. Rescue orphans that live data still points at. Orphans are entities the
+  //    RN-1853 backfill found no entity_parent_child_relation rows for — mostly
+  //    dead imports, but some were created on the fly by DataTrak survey
+  //    submissions and never entered the cache (trigger gap; some types also
+  //    aren't in the hierarchy's canonical_types). If a survey_response / task /
+  //    survey_response_draft points at the orphan, its survey's project wins —
+  //    computed dynamically so orphans claimed after this snapshot are still
+  //    rescued on prod (deleting them would abort on the survey_response FK).
+  //    The project-belonging orphans previously repatriated via a hand-audited
+  //    (country, type) → project mapping are now cleaned up directly on prod, so
+  //    on a fresh clone they're no longer orphaned and don't need that mapping.
   const rescued = await db.runSql(`
     WITH claiming_project AS (
       SELECT DISTINCT ON (r.entity_id) r.entity_id, s.project_id
@@ -54,33 +40,17 @@ exports.up = async function (db) {
       JOIN survey s ON s.id = r.survey_id
       JOIN project p ON p.id = s.project_id AND p.code <> 'explore'
       ORDER BY r.entity_id, s.project_id
-    ),
-    audit_mapping AS (
-      SELECT m.country_code, m.type, p.id AS project_id
-      FROM (${AUDIT_KEEP_MAPPING}) m(country_code, type, project_code)
-      JOIN project p ON p.code = m.project_code
-    ),
-    target AS (
-      SELECT e.id, COALESCE(c.project_id, m.project_id) AS project_id,
-             c.project_id IS NOT NULL AS is_claimed
-      FROM entity e
-      LEFT JOIN claiming_project c ON c.entity_id = e.id
-      LEFT JOIN audit_mapping m
-        ON m.country_code = e.country_code
-       AND (m.type IS NULL OR m.type = e.type::text)
-      WHERE e.metadata->>'orphaned' = 'true'
-        AND COALESCE(c.project_id, m.project_id) IS NOT NULL
     )
     UPDATE entity e
-    SET project_id = t.project_id,
+    SET project_id = c.project_id,
         metadata = jsonb_set(
           e.metadata - 'orphaned',
-          CASE WHEN t.is_claimed THEN '{repatriated_from_orphan}'::text[]
-               ELSE '{reassigned_from_orphan}'::text[] END,
+          '{repatriated_from_orphan}'::text[],
           'true'::jsonb
         )
-    FROM target t
-    WHERE e.id = t.id;
+    FROM claiming_project c
+    WHERE e.id = c.entity_id
+      AND e.metadata->>'orphaned' = 'true';
   `);
   log(`Rescued ${rescued.rowCount ?? '?'} orphans into their projects`);
 
@@ -94,8 +64,7 @@ exports.up = async function (db) {
     UPDATE entity e
     SET parent_id = copy.id
     FROM entity parent, entity copy
-    WHERE (e.metadata->>'repatriated_from_orphan' = 'true'
-           OR e.metadata->>'reassigned_from_orphan' = 'true')
+    WHERE e.metadata->>'repatriated_from_orphan' = 'true'
       AND parent.id = e.parent_id
       AND parent.project_id IS NOT NULL
       AND parent.project_id <> e.project_id
@@ -115,8 +84,7 @@ exports.up = async function (db) {
     UPDATE entity e
     SET parent_id = country.id
     FROM entity country
-    WHERE (e.metadata->>'repatriated_from_orphan' = 'true'
-           OR e.metadata->>'reassigned_from_orphan' = 'true')
+    WHERE e.metadata->>'repatriated_from_orphan' = 'true'
       AND country.code = e.country_code
       AND country.type = 'country'
       AND country.project_id IS NULL
@@ -138,8 +106,7 @@ exports.up = async function (db) {
     USING entity e
     WHERE (adr.descendant_id = e.id OR adr.ancestor_id = e.id)
       AND (e.metadata->>'orphaned' = 'true'
-           OR e.metadata->>'repatriated_from_orphan' = 'true'
-           OR e.metadata->>'reassigned_from_orphan' = 'true');
+           OR e.metadata->>'repatriated_from_orphan' = 'true');
   `);
   log(`Purged ${cachePurged.rowCount ?? '?'} stale closure-cache rows`);
 
