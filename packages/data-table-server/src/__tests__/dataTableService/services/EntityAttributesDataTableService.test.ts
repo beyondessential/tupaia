@@ -67,6 +67,14 @@ describe('EntityAttributesDataTableService', () => {
       ]);
     });
 
+    it('returns one row per code even when the entity table has per-project duplicates', async () => {
+      const result = await service.fetchData({
+        entityCodes: ['WS_Facility'],
+        attributes: ['x'],
+      });
+      expect(result).toEqual([{ entityCode: 'WS_Facility', x: 7 }]);
+    });
+
     it('returns all attributes if none specified', async () => {
       const result = await service.fetchData({
         entityCodes: ['VU_Facility1'],

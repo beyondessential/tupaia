@@ -12,10 +12,13 @@ export type SingleEntityRequest = Request<
 
 export class SingleEntityRoute extends Route<SingleEntityRequest> {
   public async buildResponse() {
-    const { params, models } = this.req;
+    const { params, query, models } = this.req;
     const { entityCode } = params;
-    const entity = await models.entity.findOne(
-      { code: entityCode },
+    const { projectId } = query;
+    const entity = await models.entity.findOneByCodeInProject(
+      entityCode,
+      projectId ?? null,
+      {},
       { columns: ['id', 'type', 'name', 'code', 'parent_id', 'attributes'] },
     );
 

@@ -104,6 +104,45 @@ describe('WeatherService', () => {
       ]);
     });
 
+    it('de-duplicates entities sharing a code (project copies) so values are not multiplied', async () => {
+      // Since the entity-hierarchy epic, entity.find({ code }) returns one row per
+      // project for the same code, all sharing the same point. The service must
+      // collapse these to one entity per code, otherwise the translator appends each
+      // code's weather data once per copy and multiplies the overlay values (issue 5).
+      const point = JSON.stringify({ type: 'Point', coordinates: [144.986, -37.915] });
+      const fanafanaCopy = await createMockEntity({ code: 'MELB', name: 'Melbourne', point });
+      const exploreCopy = await createMockEntity({ code: 'MELB', name: 'Melbourne', point });
+
+      const mockModels = createMockModelsStub({
+        entity: { find: [fanafanaCopy, exploreCopy] },
+        dataElement: {
+          find: [
+            {
+              code: 'WTHR_PRECIP',
+              dataElementCode: 'WTHR_PRECIP',
+              service_type: 'weather',
+              config: {},
+              permission_groups: ['*'],
+            },
+          ],
+        },
+      });
+      const mockApi = createWeatherApiStub(mockHistoricDailyApiResponse);
+      const service = new WeatherService(mockModels, mockApi);
+
+      const actual = await service.pullAnalytics(
+        getMockDataElementsArg(),
+        getMockOptionsArg({ startDate: '2019-01-01', endDate: '2019-01-02' }),
+      );
+
+      // One entity → one API call, and exactly two analytics (not doubled to four).
+      expect(mockApi.historicDaily).toHaveBeenCalledTimes(1);
+      expect(actual.results).toStrictEqual([
+        { dataElement: 'WTHR_PRECIP', value: 23.6, organisationUnit: 'MELB', period: '20190120' },
+        { dataElement: 'WTHR_PRECIP', value: 5, organisationUnit: 'MELB', period: '20190121' },
+      ]);
+    });
+
     it('throws when no dates are provided', async () => {
       const mockModels = await createMockModelsStubWithMockEntity();
 

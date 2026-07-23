@@ -132,18 +132,18 @@ export const createMapOverlayDBFilter = (accessPolicy, criteria) => {
           SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"map_overlay"."permission_group")::TEXT)
         )
       )
-      -- For project level overlays, pull the country codes from the child entities and check that there is
-      -- overlap with the user's list of countries for the appropriate permission group (i.e., they have
-      -- access to at least one country within the project)
+      -- For project level overlays, pull the country codes from the project's countries
+      -- (TUP-3065: via project_country instead of entity_relation) and check that there
+      -- is overlap with the user's list of countries for the appropriate permission
+      -- group (i.e., they have access to at least one country within the project)
       OR (
         ARRAY(
-          SELECT entity.country_code
+          SELECT entity.code
             FROM entity
-            INNER JOIN entity_relation
-              ON entity.id = entity_relation.child_id
+            INNER JOIN project_country
+              ON entity.id = project_country.country_id
             INNER JOIN project
-              ON  entity_relation.parent_id = project.entity_id
-              AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
+              ON project_country.project_id = project.id
             WHERE ARRAY[project.code] <@ "map_overlay"."country_codes"
         )::TEXT[]
         &&
