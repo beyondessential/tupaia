@@ -1,11 +1,11 @@
 import camelcaseKeys from 'camelcase-keys';
 import { Request } from 'express';
 
-import { TupaiaApiClient } from '@tupaia/api-client';
 import { Route } from '@tupaia/server-boilerplate';
 import { ensure, isNotNullish } from '@tupaia/tsutils';
 import { DatatrakWebEntityDescendantsRequest, Entity } from '@tupaia/types';
 
+import { DatatrakWebServerModelRegistry } from '../types';
 import { sortSearchResults } from '../utils';
 
 export type EntityDescendantsRequest = Request<
@@ -19,13 +19,13 @@ const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'];
 
 const DEFAULT_PAGE_SIZE = 100;
 
-async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
-  const response = await services.central.fetchResources('entities', {
-    filter: { id },
-    columns: ['code'],
-  });
-  const { code } = response[0];
-  return code;
+// Resolve directly against the DB, not central's entities list endpoint: that
+// endpoint scopes non-BES-admin users to their Tupaia Admin Panel countries,
+// which a DataTrak data-entry user doesn't have — so it returned nothing and the
+// parent/grandparent filter 500'd. The id uniquely identifies the project's row.
+async function getEntityCodeFromId(models: DatatrakWebServerModelRegistry, id: string) {
+  const entity = ensure(await models.entity.findById(id), `No entity found with id ${id}`);
+  return entity.code;
 }
 
 export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
@@ -68,14 +68,14 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
 
     if (parentId) {
       // If parentId is provided, we just want to get the children of that entity
-      entityCode = await getEntityCodeFromId(services, parentId);
+      entityCode = await getEntityCodeFromId(models, parentId);
       filter.generational_distance = {
         comparator: '=',
         comparisonValue: 1,
       };
     } else if (grandparentId) {
       // If grandparentId is provided, we just want to get the grandchildren of that entity
-      entityCode = await getEntityCodeFromId(services, grandparentId);
+      entityCode = await getEntityCodeFromId(models, grandparentId);
       filter.generational_distance = {
         comparator: '=',
         comparisonValue: 2,
