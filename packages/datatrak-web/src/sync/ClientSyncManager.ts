@@ -1,4 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
+import { groupBy } from 'es-toolkit';
 import mitt from 'mitt';
 import log from 'winston';
 
@@ -11,8 +12,8 @@ import {
   getModelsForPush,
   hasDescendantPermissionChangeInSnapshot,
   hasSyncSnapshotRecords,
-  saveChangesFromMemory,
   saveIncomingSnapshotChanges,
+  type SyncSnapshotAttributes,
   waitForPendingEditsUsingSyncTick,
   withDeferredSyncSafeguards,
 } from '@tupaia/sync';
@@ -41,14 +42,10 @@ const SYNC_STAGES = {
 
 type StageMaxProgress = Record<number, number>;
 
-const STAGE_MAX_PROGRESS_INCREMENTAL = {
+const STAGE_MAX_PROGRESS = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 66,
   [SYNC_STAGES.PERSIST]: 100,
-} as const satisfies StageMaxProgress;
-const STAGE_MAX_PROGRESS_INITIAL = {
-  [SYNC_STAGES.PUSH]: 33,
-  [SYNC_STAGES.PULL]: 100,
 } as const satisfies StageMaxProgress;
 
 export interface SyncResult {
@@ -70,8 +67,7 @@ export class ClientSyncManager {
 
   private syncInterval: ReturnType<typeof setInterval> | null = null;
 
-  progressMaxByStage: typeof STAGE_MAX_PROGRESS_INCREMENTAL | typeof STAGE_MAX_PROGRESS_INITIAL =
-    STAGE_MAX_PROGRESS_INCREMENTAL;
+  progressMaxByStage: typeof STAGE_MAX_PROGRESS = STAGE_MAX_PROGRESS;
 
   isRequestingSync: boolean = false;
   isSyncing: boolean = false;
@@ -301,9 +297,7 @@ export class ClientSyncManager {
 
     this.isInitialSync = pullSince === -1;
 
-    this.progressMaxByStage = this.isInitialSync
-      ? STAGE_MAX_PROGRESS_INITIAL
-      : STAGE_MAX_PROGRESS_INCREMENTAL;
+    this.progressMaxByStage = STAGE_MAX_PROGRESS;
 
     gaEvent(GA_EVENT.SYNC_STARTED, GA_CATEGORY.SYNC, this.isInitialSync ? 'initial' : 'incremental', {
       ...(timeSinceLastSync !== undefined && { time_since_last_sync: timeSinceLastSync }),
@@ -557,31 +551,59 @@ export class ClientSyncManager {
   }
 
   async pullInitialSync(sessionId: string, totalToPull: number, pullUntil: number) {
+    let pullTotal = 0;
+    const pullProgressCallback = (incrementalPulled: number) => {
+      pullTotal += incrementalPulled;
+      this.updateProgress(
+        totalToPull,
+        pullTotal,
+        `Pulling changes (${formatFraction(pullTotal, totalToPull)})`,
+      );
+    };
+    const processStreamedDataFunction = async ({
+      models,
+      sessionId,
+      records,
+    }: ProcessStreamDataParams) => {
+      // mirror saveChangesFromMemory's per-model filtering so that filterSyncForClient still runs
+      // before records reach the snapshot table - on initial sync this drops the current user's own
+      // user_account record, which the snapshot-apply path would otherwise never exclude
+      const groupedChanges = groupBy(records, record => record.recordType);
+      const filteredRecords: SyncSnapshotAttributes[] = [];
+      for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
+        const model = models.getModelForDatabaseRecord(recordType);
+        filteredRecords.push(...(await model.filterSyncForClient(modelChanges)));
+      }
+
+      await insertSnapshotRecords(models.database, sessionId, filteredRecords);
+      pullProgressCallback(records.length);
+    };
+
+    const batchSize = 10000;
+    await pullIncomingChanges(this.models, sessionId, batchSize, processStreamedDataFunction);
+
+    this.setProgress(this.progressMaxByStage[SYNC_STAGES.PERSIST - 1], 'Saving changes…');
+    this.setSyncStage(SYNC_STAGES.PERSIST);
     let totalSaved = 0;
-    const progressCallback = (incrementalSaved: number) => {
-      totalSaved += Number(incrementalSaved);
+    const saveProgressCallback = (incrementalSaved: number) => {
+      totalSaved += incrementalSaved;
       this.updateProgress(
         totalToPull,
         totalSaved,
         `Saving changes (${formatFraction(totalSaved, totalToPull)})`,
       );
     };
-
     await this.models.wrapInTransaction(async transactingModels => {
-      const processStreamedDataFunction = async ({ models, records }: ProcessStreamDataParams) => {
-        await saveChangesFromMemory(models, records, false, progressCallback);
-      };
-
-      const batchSize = 10000;
+      const incomingModels = getModelsForPull(transactingModels.getModels());
       await withDeferredSyncSafeguards(transactingModels.database, () =>
-        pullIncomingChanges(transactingModels, sessionId, batchSize, processStreamedDataFunction),
+        saveIncomingSnapshotChanges(incomingModels, sessionId, false, saveProgressCallback),
       );
 
       // update the last successful sync in the same save transaction - if updating the cursor fails,
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      await transactingModels.localSystemFact.set(
+      return await transactingModels.localSystemFact.set(
         SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
         pullUntil.toString(),
       );
@@ -591,7 +613,7 @@ export class ClientSyncManager {
   async pullIncrementalSync(sessionId: string, totalToPull: number, pullUntil: number) {
     let pullTotal = 0;
     const pullProgressCallback = (incrementalPulled: number) => {
-      pullTotal += Number(incrementalPulled);
+      pullTotal += incrementalPulled;
       this.updateProgress(
         totalToPull,
         pullTotal,
@@ -614,7 +636,7 @@ export class ClientSyncManager {
     this.setSyncStage(SYNC_STAGES.PERSIST);
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
-      totalSaved += Number(incrementalSaved);
+      totalSaved += incrementalSaved;
       this.updateProgress(
         totalToPull,
         totalSaved,
