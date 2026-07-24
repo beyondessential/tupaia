@@ -42,12 +42,7 @@ const SYNC_STAGES = {
 
 type StageMaxProgress = Record<number, number>;
 
-const STAGE_MAX_PROGRESS_INCREMENTAL = {
-  [SYNC_STAGES.PUSH]: 33,
-  [SYNC_STAGES.PULL]: 66,
-  [SYNC_STAGES.PERSIST]: 100,
-} as const satisfies StageMaxProgress;
-const STAGE_MAX_PROGRESS_INITIAL = {
+const STAGE_MAX_PROGRESS = {
   [SYNC_STAGES.PUSH]: 33,
   [SYNC_STAGES.PULL]: 66,
   [SYNC_STAGES.PERSIST]: 100,
@@ -72,8 +67,7 @@ export class ClientSyncManager {
 
   private syncInterval: ReturnType<typeof setInterval> | null = null;
 
-  progressMaxByStage: typeof STAGE_MAX_PROGRESS_INCREMENTAL | typeof STAGE_MAX_PROGRESS_INITIAL =
-    STAGE_MAX_PROGRESS_INCREMENTAL;
+  progressMaxByStage: typeof STAGE_MAX_PROGRESS = STAGE_MAX_PROGRESS;
 
   isRequestingSync: boolean = false;
   isSyncing: boolean = false;
@@ -303,9 +297,7 @@ export class ClientSyncManager {
 
     this.isInitialSync = pullSince === -1;
 
-    this.progressMaxByStage = this.isInitialSync
-      ? STAGE_MAX_PROGRESS_INITIAL
-      : STAGE_MAX_PROGRESS_INCREMENTAL;
+    this.progressMaxByStage = STAGE_MAX_PROGRESS;
 
     gaEvent(GA_EVENT.SYNC_STARTED, GA_CATEGORY.SYNC, this.isInitialSync ? 'initial' : 'incremental', {
       ...(timeSinceLastSync !== undefined && { time_since_last_sync: timeSinceLastSync }),
@@ -561,7 +553,7 @@ export class ClientSyncManager {
   async pullInitialSync(sessionId: string, totalToPull: number, pullUntil: number) {
     let pullTotal = 0;
     const pullProgressCallback = (incrementalPulled: number) => {
-      pullTotal += Number(incrementalPulled);
+      pullTotal += incrementalPulled;
       this.updateProgress(
         totalToPull,
         pullTotal,
@@ -594,7 +586,7 @@ export class ClientSyncManager {
     this.setSyncStage(SYNC_STAGES.PERSIST);
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
-      totalSaved += Number(incrementalSaved);
+      totalSaved += incrementalSaved;
       this.updateProgress(
         totalToPull,
         totalSaved,
@@ -611,7 +603,7 @@ export class ClientSyncManager {
       // we want to roll back the rest of the saves so that we don't end up detecting them as
       // needing a sync up to the central server when we attempt to resync from the same old cursor
       log.debug('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-      return transactingModels.localSystemFact.set(
+      return await transactingModels.localSystemFact.set(
         SyncFact.LAST_SUCCESSFUL_SYNC_PULL,
         pullUntil.toString(),
       );
@@ -621,7 +613,7 @@ export class ClientSyncManager {
   async pullIncrementalSync(sessionId: string, totalToPull: number, pullUntil: number) {
     let pullTotal = 0;
     const pullProgressCallback = (incrementalPulled: number) => {
-      pullTotal += Number(incrementalPulled);
+      pullTotal += incrementalPulled;
       this.updateProgress(
         totalToPull,
         pullTotal,
@@ -644,7 +636,7 @@ export class ClientSyncManager {
     this.setSyncStage(SYNC_STAGES.PERSIST);
     let totalSaved = 0;
     const saveProgressCallback = (incrementalSaved: number) => {
-      totalSaved += Number(incrementalSaved);
+      totalSaved += incrementalSaved;
       this.updateProgress(
         totalToPull,
         totalSaved,
