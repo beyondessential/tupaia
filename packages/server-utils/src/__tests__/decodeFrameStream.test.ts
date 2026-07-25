@@ -1,7 +1,7 @@
 import { Readable } from 'stream';
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 
-import { decodeFrameStream } from '../decodeFrameStream';
+import { decodeFrameStream, MAX_FRAME_LENGTH } from '../decodeFrameStream';
 import { StreamMessage } from '../StreamMessage';
 
 const collect = async (source: AsyncIterable<Buffer | Uint8Array>) => {
@@ -99,5 +99,35 @@ describe('decodeFrameStream', () => {
     const frames = await collect(source);
 
     expect(frames[0]).toEqual({ kind: SYNC_STREAM_MESSAGE_KIND.PUSH_CHANGE, message: {} });
+  });
+
+  it('reassembles a large frame fragmented across many small chunks', async () => {
+    // A multi-MB payload (e.g. a base64 photo) split into ~1.4 KB TCP-sized chunks: the exact
+    // workload the array-of-chunks accumulator exists to keep linear rather than O(n²).
+    const change = {
+      recordType: 'survey_response',
+      recordId: 'big',
+      data: { photo: 'A'.repeat(3 * 1024 * 1024) },
+    };
+    const whole = Buffer.concat([StreamMessage.pushChange(change), StreamMessage.end()]);
+    const source = Readable.from(rechunk(whole, 1400));
+
+    const frames = await collect(source);
+
+    expect(frames).toHaveLength(2);
+    expect(frames[0]).toEqual({ kind: SYNC_STREAM_MESSAGE_KIND.PUSH_CHANGE, message: change });
+    expect(frames[1].kind).toBe(SYNC_STREAM_MESSAGE_KIND.END);
+  });
+
+  it('throws when a frame header declares a length beyond MAX_FRAME_LENGTH', async () => {
+    // Craft a header claiming a payload larger than the cap without ever sending the bytes, which
+    // is how a malicious client would try to make the decoder buffer gigabytes.
+    const header = Buffer.alloc(8);
+    header.write('\r\n', 0);
+    header.writeUInt16BE(SYNC_STREAM_MESSAGE_KIND.PUSH_CHANGE, 2);
+    header.writeUInt32BE(MAX_FRAME_LENGTH + 1, 4);
+    const source = Readable.from([header]);
+
+    await expect(collect(source)).rejects.toThrow(/exceeds the maximum/);
   });
 });

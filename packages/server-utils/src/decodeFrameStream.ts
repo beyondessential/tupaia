@@ -20,6 +20,13 @@ interface DecodeFrameStreamOptions {
   decodeMessage?: boolean;
 }
 
+// Upper bound on a single frame's declared payload length. The 4-byte length field can express up
+// to ~4 GB, so without a cap a crafted header (e.g. length = 0xFFFFFFFF) would make the decoder
+// buffer gigabytes waiting for bytes that never arrive, exhausting server memory. 100 MB is far
+// larger than any legitimate single change (including a base64 photo) while bounding the blast
+// radius of a malicious client.
+export const MAX_FRAME_LENGTH = 100 * 1024 * 1024; // 100 MB
+
 /**
  * Decode a framed request body incrementally, without buffering the whole body in memory.
  *
@@ -31,24 +38,68 @@ export async function* decodeFrameStream(
   source: AsyncIterable<Buffer | Uint8Array>,
   { decodeMessage = true }: DecodeFrameStreamOptions = {},
 ): AsyncGenerator<DecodedFrame, void, unknown> {
-  let buffer = Buffer.alloc(0);
+  // Accumulate arriving chunks in a list rather than `Buffer.concat`-ing onto a single growing
+  // buffer on every chunk (which is O(n²) in the stream length — for a multi-MB frame fragmented
+  // into ~1.4 KB TCP chunks that means thousands of full-buffer copies). Instead we track the total
+  // buffered length and only flatten the chunks that span a boundary, once, when a frame is ready.
+  let chunks: Buffer[] = [];
+  let bufferedLength = 0;
+
+  // Return a contiguous Buffer whose first `n` bytes are available, merging as few leading chunks
+  // as necessary. Callers must only read the first `n` bytes of the result. Requires `n` bytes to
+  // already be buffered.
+  const merge = (n: number): Buffer => {
+    if (chunks[0].length >= n) {
+      return chunks[0];
+    }
+    const parts: Buffer[] = [];
+    let accumulated = 0;
+    let consumed = 0;
+    while (accumulated < n) {
+      parts.push(chunks[consumed]);
+      accumulated += chunks[consumed].length;
+      consumed += 1;
+    }
+    const merged = Buffer.concat(parts);
+    chunks = [merged, ...chunks.slice(consumed)];
+    return merged;
+  };
+
+  // Remove and return the first `n` buffered bytes as a contiguous Buffer, flattening only the
+  // chunks that span the requested range. Requires `n` bytes to already be buffered.
+  const take = (n: number): Buffer => {
+    const merged = merge(n);
+    const result = merged.subarray(0, n);
+    const leftover = merged.subarray(n);
+    chunks = leftover.length > 0 ? [leftover, ...chunks.slice(1)] : chunks.slice(1);
+    bufferedLength -= n;
+    return result;
+  };
 
   const decodeOne = (): DecodedFrame | undefined => {
-    if (buffer.length < 8) {
+    if (bufferedLength < 8) {
       return undefined;
     }
 
-    // skip the first two bytes (CR+LF); they are reserved and not checked on decode
-    const kind = buffer.readUInt16BE(2);
-    const length = buffer.readUInt32BE(4);
+    // read the 8-byte header (may span chunks); skip the first two bytes (CR+LF): they are
+    // reserved and not checked on decode
+    const header = merge(8);
+    const kind = header.readUInt16BE(2);
+    const length = header.readUInt32BE(4);
 
-    if (buffer.length < 8 + length) {
+    if (length > MAX_FRAME_LENGTH) {
+      throw new Error(
+        `Sync push frame length ${length} exceeds the maximum of ${MAX_FRAME_LENGTH} bytes`,
+      );
+    }
+
+    if (bufferedLength < 8 + length) {
       // the full payload has not arrived yet, wait for more bytes
       return undefined;
     }
 
-    const data = buffer.subarray(8, 8 + length);
-    buffer = buffer.subarray(8 + length);
+    const frame = take(8 + length);
+    const data = frame.subarray(8, 8 + length);
 
     if (decodeMessage) {
       // an empty payload is treated as an empty object, matching the browser decoder
@@ -60,7 +111,12 @@ export async function* decodeFrameStream(
   };
 
   for await (const chunk of source) {
-    buffer = Buffer.concat([buffer, Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)]);
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    if (buffer.length === 0) {
+      continue;
+    }
+    chunks.push(buffer);
+    bufferedLength += buffer.length;
 
     while (true) {
       const frame = decodeOne();
