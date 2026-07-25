@@ -57,10 +57,20 @@ describe('SyncPushStreamRoute', () => {
   });
 
   it('throws when the stream ends without an END frame (truncated push)', async () => {
-    const { req, addIncomingChanges } = buildRequest([{ recordId: 'a' }], { withEnd: false });
+    const change = { recordType: 'user_account', recordId: 'a', data: { first_name: 'Ada' } };
+    const { req, addIncomingChanges } = buildRequest([change], { withEnd: false });
 
     await expect(runRoute(req)).rejects.toThrow('END frame');
-    // the partial batch is still flushed, but the caller learns the push was incomplete
-    expect(addIncomingChanges).toHaveBeenCalledTimes(1);
+    // The trailing batch must NOT be staged for an incomplete stream, so a truncated push is never
+    // half-persisted; the caller retries from a fresh session.
+    expect(addIncomingChanges).not.toHaveBeenCalled();
+  });
+
+  it('throws on a malformed PUSH_CHANGE frame rather than staging it', async () => {
+    // Missing recordType/data: not a valid change shape, so it must be rejected before casting.
+    const { req, addIncomingChanges } = buildRequest([{ recordId: 'a' }]);
+
+    await expect(runRoute(req)).rejects.toThrow('malformed PUSH_CHANGE');
+    expect(addIncomingChanges).not.toHaveBeenCalled();
   });
 });
