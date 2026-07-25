@@ -18,6 +18,11 @@ interface FetchConfig extends RequestInit {
 
 const DEFAULT_MAX_WAIT_TIME = 120_000; // 120 seconds
 
+// A streamed push is only answered once the whole body has been consumed server-side, so a
+// photo-heavy submission can legitimately take far longer than the default. Match the 3600s nginx
+// proxy timeout so this hop doesn't abort before the server responds.
+const STREAM_MAX_WAIT_TIME = 3600_000; // 1 hour, matching the nginx proxy_send_timeout
+
 export interface ApiConnectionOptions {
   /** Optional headers to send with every API request */
   headers?: { 'X-Client-Version'?: string };
@@ -95,7 +100,7 @@ export class ApiConnection {
       body: body as unknown as RequestInit['body'],
     };
 
-    const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
+    const response = await this.fetchWithTimeout(queryUrl, fetchConfig, STREAM_MAX_WAIT_TIME);
 
     await this.verifyResponse(response);
 
