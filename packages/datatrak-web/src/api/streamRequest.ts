@@ -1,5 +1,11 @@
 import { SYNC_STREAM_MESSAGE_KIND } from '@tupaia/constants';
 import { API_URL } from './api';
+import FetchError from './fetchError';
+
+// Match the nginx proxy_send_timeout for the stream location (3600s): a photo-heavy push can
+// legitimately take far longer than the buffered path's 180s axios default, but we still want an
+// upper bound so a stalled connection doesn't hang the browser indefinitely.
+const STREAM_TIMEOUT = 3600_000; // 1 hour
 
 // +---------+---------+---------+----------------+
 // |  CR+LF  |   kind  |  length |     data...    |
@@ -92,27 +98,47 @@ export async function pushChangesAsStream<T>(
     },
   });
 
-  const response = await fetch(`${API_URL}/${endpoint}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json+frame',
-      'X-Client-Version': process.env.REACT_APP_VERSION || '',
-    },
-    body,
-    credentials: 'include',
-    // `duplex` is required by the fetch spec whenever the body is a stream; it is not yet in the
-    // TypeScript DOM lib, hence the cast.
-    duplex: 'half',
-  } as RequestInit);
+  // Auth here matches the buffered `post()` path exactly: that path is axios with
+  // `withCredentials: true` plus the `X-Client-Version` header (see api.ts) and no bearer token, so
+  // the session cookie sent via `credentials: 'include'` is the whole auth mechanism. Keep both in
+  // sync if the buffered path ever attaches an explicit token.
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), STREAM_TIMEOUT);
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json+frame',
+        'X-Client-Version': process.env.REACT_APP_VERSION || '',
+      },
+      body,
+      credentials: 'include',
+      signal: controller.signal,
+      // `duplex` is required by the fetch spec whenever the body is a stream; it is not yet in the
+      // TypeScript DOM lib, hence the cast.
+      duplex: 'half',
+    } as RequestInit);
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     let message = response.statusText;
+    let data: Record<string, unknown> | undefined;
     try {
-      const data = await response.json();
-      message = data?.error || data?.message || message;
+      data = await response.json();
+      message = (data?.error as string) || (data?.message as string) || message;
     } catch {
       // response was not JSON, keep the status text
     }
-    throw new Error(message || 'Streaming push failed');
+    // Throw FetchError (matching the buffered axios path) so upstream handlers see a consistent
+    // shape carrying the HTTP status code and response data.
+    throw new FetchError(message || 'Streaming push failed', response.status, data);
   }
+
+  // Drain the (empty) success body so the underlying TCP connection is released back to the pool
+  // rather than left occupied by an unconsumed body.
+  await response.arrayBuffer();
 }
