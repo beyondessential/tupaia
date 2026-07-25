@@ -66,6 +66,8 @@ import {
   SyncPullRoute,
   SyncPushRequest,
   SyncPushRoute,
+  SyncPushStreamRequest,
+  SyncPushStreamRoute,
   SyncPushCompleteRequest,
   SyncPushCompleteRoute,
   SyncEndSessionRequest,
@@ -164,6 +166,7 @@ export async function createApp() {
     .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
     .post<SyncPushRequest>('sync/:sessionId/push', handleWith(SyncPushRoute))
+    .post<SyncPushStreamRequest>('sync/:sessionId/push/stream', handleWith(SyncPushStreamRoute))
     .put<SyncPushCompleteRequest>(
       'sync/:sessionId/push/complete',
       handleWith(SyncPushCompleteRoute),

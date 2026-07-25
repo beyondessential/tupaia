@@ -73,6 +73,40 @@ export class ApiConnection {
     return fetchedResponse.body.pipe(response);
   }
 
+  /**
+   * Forward a readable stream as the request body (the inverse of pipeStream). Used to forward a
+   * framed streaming sync push from an orchestration server to a micro server without buffering or
+   * re-serialising the whole body. The body is sent with `Content-Type: application/json+frame` so
+   * the receiving server's JSON body parser leaves the request body as an unconsumed stream.
+   */
+  public async postStream(
+    endpoint: string,
+    body: NodeJS.ReadableStream,
+    queryParameters?: QueryParameters | null,
+  ) {
+    const queryUrl = this.stringifyQuery(this.baseUrl, endpoint, queryParameters || {});
+    const fetchConfig: FetchConfig = {
+      method: 'POST',
+      headers: {
+        Authorization: await this.authHandler.getAuthHeader(),
+        'Content-Type': 'application/json+frame',
+        ...this.headerOverrides,
+      },
+      body: body as unknown as RequestInit['body'],
+    };
+
+    const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
+
+    await this.verifyResponse(response);
+
+    const contentType = response.headers.get('content-type');
+    if (contentType?.startsWith('application/json')) {
+      return response.json();
+    }
+
+    return response;
+  }
+
   private async fetchResponse(
     requestMethod: string,
     endpoint: string,

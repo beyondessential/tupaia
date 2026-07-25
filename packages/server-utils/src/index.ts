@@ -10,3 +10,4 @@ export * from './files';
 export * from './ScheduledTask';
 export { objectIdToTimestamp } from './objectIdToTimestamp';
 export * from './StreamMessage';
+export * from './decodeFrameStream';
