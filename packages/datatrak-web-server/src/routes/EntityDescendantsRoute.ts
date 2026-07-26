@@ -43,6 +43,10 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       pageSize = DEFAULT_PAGE_SIZE,
     } = query;
 
+    // A bare single-id lookup is a QR scan. Capture it so we can fall back to a
+    // code lookup if the id doesn't resolve within the project (see below).
+    const scannedId = typeof restOfFilter.id === 'string' ? restOfFilter.id : undefined;
+
     if (isLoggedIn) {
       const currentUser = ensure(
         await models.user.findOne({ email: session.email }),
@@ -82,7 +86,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       };
     }
 
-    const entities = await services.entity.getDescendantsOfEntity(
+    let entities = await services.entity.getDescendantsOfEntity(
       projectCode,
       entityCode,
       {
@@ -93,6 +97,39 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       false,
       !isLoggedIn,
     );
+
+    // Printed QR codes encode an entity's pre-epic id. Sub-country entities are now
+    // duplicated per project, and each project's copy has a new id sharing the old
+    // `code`, so scanning finds nothing in projects where the entity was duplicated.
+    // Resolve the scanned id → code (the canonical row is still on central) and
+    // re-query by code to pick up the project's copy. Gated on an empty result so
+    // in-project scans stay zero-behaviour-change with no extra DB call.
+    if (
+      entities.length === 0 &&
+      scannedId &&
+      !parentId &&
+      !grandparentId &&
+      !('code' in restOfFilter)
+    ) {
+      // Non-throwing lookup: a genuinely-invalid scan should surface as an empty
+      // result ("No matching entity found"), not a 500.
+      const entity = await models.entity.findById(scannedId);
+      const code = entity?.code;
+      if (code) {
+        const { id: _omit, ...filterWithoutId } = filter as typeof filter & { id?: string };
+        entities = await services.entity.getDescendantsOfEntity(
+          projectCode,
+          entityCode,
+          {
+            fields,
+            filter: { ...filterWithoutId, code },
+            pageSize,
+          },
+          false,
+          !isLoggedIn,
+        );
+      }
+    }
 
     const sortedEntities = searchString
       ? sortSearchResults(searchString, entities)
