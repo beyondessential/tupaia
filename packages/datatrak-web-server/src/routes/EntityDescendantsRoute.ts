@@ -102,15 +102,12 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
     // duplicated per project, and each project's copy has a new id sharing the old
     // `code`, so scanning finds nothing in projects where the entity was duplicated.
     // Resolve the scanned id → code (the canonical row is still on central) and
-    // re-query by code to pick up the project's copy. Gated on an empty result so
-    // in-project scans stay zero-behaviour-change with no extra DB call.
-    if (
-      entities.length === 0 &&
-      scannedId &&
-      !parentId &&
-      !grandparentId &&
-      !('code' in restOfFilter)
-    ) {
+    // re-query by code to pick up the project's copy. `scannedId` is only set by a QR
+    // scan, so this never fires on plain parent/grandparent browsing; it must still fire
+    // for scans on parent/grandparent-constrained questions (entityCode is already the
+    // parent's code there). Gated on an empty result so in-project scans stay
+    // zero-behaviour-change with no extra DB call.
+    if (entities.length === 0 && scannedId && !('code' in restOfFilter)) {
       // Non-throwing lookup: a genuinely-invalid scan should surface as an empty
       // result ("No matching entity found"), not a 500.
       const entity = await models.entity.findById(scannedId);

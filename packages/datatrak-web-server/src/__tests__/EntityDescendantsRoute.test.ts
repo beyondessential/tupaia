@@ -161,4 +161,42 @@ describe('EntityDescendantsRoute', () => {
     expect(findById).toHaveBeenCalledTimes(1);
     expect(getDescendantsOfEntity).toHaveBeenCalledTimes(1);
   });
+
+  it('falls back to code for a scan on a parent-constrained question, preserving generational_distance', async () => {
+    // parentId resolves first, then the scanned id resolves during the fallback.
+    findById
+      .mockResolvedValueOnce({ id: 'parent-id', code: 'PARENT_CODE' })
+      .mockResolvedValueOnce({ id: 'old-canonical-id', code: 'SHARED' });
+    getDescendantsOfEntity
+      .mockResolvedValueOnce([]) // children-of-parent filtered by the stale scanned id misses
+      .mockResolvedValueOnce([{ id: 'project-copy-id', code: 'SHARED', name: 'Household' }]);
+    const route = new TestableEntityDescendantsRoute({
+      query: {
+        filter: {
+          projectCode: 'explore',
+          countryCode: 'DL',
+          parentId: 'parent-id',
+          id: 'old-canonical-id',
+        },
+      },
+    });
+
+    const result = await route.buildResponse();
+
+    expect(findById).toHaveBeenNthCalledWith(1, 'parent-id');
+    expect(findById).toHaveBeenNthCalledWith(2, 'old-canonical-id');
+    expect(getDescendantsOfEntity).toHaveBeenCalledTimes(2);
+
+    // fallback still scopes to children of the parent (entityCode = PARENT_CODE) and swaps id → code
+    const [, secondEntityCode, secondOptions] = getDescendantsOfEntity.mock.calls[1];
+    expect(secondEntityCode).toBe('PARENT_CODE');
+    expect(secondOptions.filter).toEqual(
+      expect.objectContaining({
+        code: 'SHARED',
+        generational_distance: { comparator: '=', comparisonValue: 1 },
+      }),
+    );
+    expect(secondOptions.filter).not.toHaveProperty('id');
+    expect(result).toEqual([expect.objectContaining({ id: 'project-copy-id' })]);
+  });
 });
