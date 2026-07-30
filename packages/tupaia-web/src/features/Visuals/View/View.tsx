@@ -67,6 +67,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
     report: originalReport,
     isEnlarged,
     isExport,
+    reportCode,
   } = useContext(DashboardItemContext);
   const report = customReport || originalReport;
   const config = customConfig || originalConfig;
@@ -115,6 +116,8 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
   return (
     <>
       <Component
+        // Ensure stale rows don’t persist when navigating date ranges
+        key={`${reportCode}\u{200D}${report.startDate}:${report.endDate}`}
         report={
           {
             ...report,
