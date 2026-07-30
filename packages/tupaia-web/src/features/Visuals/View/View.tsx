@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { ViewConfig, ViewReport, isViewReport } from '@tupaia/types';
+
+import { type ViewConfig, type ViewReport, isViewReport } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
-import { DashboardItemContext, DashboardInfoHover } from '../../DashboardItem';
-import { SingleDownloadLink } from './SingleDownloadLink';
-import { SingleDate } from './SingleDate';
-import { SingleValue } from './SingleValue';
+import { DashboardInfoHover, DashboardItemContext } from '../../DashboardItem';
+import { DataDownload, DownloadFiles } from './Download';
+import { MultiPhotograph } from './MultiPhotograph';
 import { MultiValue } from './MultiValue';
 import { MultiValueRow } from './MultiValueRow';
-import { DataDownload, DownloadFiles } from './Download';
 import { QRCode } from './QRCode';
-import { MultiPhotograph } from './MultiPhotograph';
+import { SingleDate } from './SingleDate';
+import { SingleDownloadLink } from './SingleDownloadLink';
+import { SingleValue } from './SingleValue';
 
 const MultiSingleValueWrapper = styled.div`
   & + & {
