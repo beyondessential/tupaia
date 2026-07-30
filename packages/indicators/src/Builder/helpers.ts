@@ -2,6 +2,7 @@ import { Aggregator } from '@tupaia/aggregator';
 import { ObjectValidator } from '@tupaia/utils';
 import { ExpressionParser } from '@tupaia/expression-parser';
 import { groupBy } from 'es-toolkit/compat';
+import { mapWithConcurrency } from '../concurrency';
 import { Aggregation, Analytic, DataValues, FetchOptions } from '../types';
 
 export function validateConfig<T extends Record<string, unknown>>(
@@ -27,16 +28,16 @@ export const fetchAnalytics = async (
   // Group data elements per aggregationList to minimise aggregator calls
   const aggregationJsonToElements = groupKeysByValueJson(aggregationLisByElement);
 
-  let analytics: Analytic[] = [];
-  await Promise.all(
-    Object.entries(aggregationJsonToElements).map(async ([aggregationJson, elements]) => {
+  const resultsPerAggregationGroup = await mapWithConcurrency(
+    Object.entries(aggregationJsonToElements),
+    async ([aggregationJson, elements]) => {
       const aggregations = JSON.parse(aggregationJson);
       const { results } = await aggregator.fetchAnalytics(elements, fetchOptions, { aggregations });
-      analytics = analytics.concat(results);
-    }),
+      return results;
+    },
   );
 
-  return analytics;
+  return resultsPerAggregationGroup.flat();
 };
 
 export const convertBooleanToNumber = (

@@ -1,6 +1,7 @@
 import { Aggregator } from '@tupaia/aggregator';
 import { getSortByKey } from '@tupaia/utils';
 import { Builder, createBuilder } from './Builder';
+import { mapWithConcurrency } from './concurrency';
 import { Analytic, DataBroker, FetchOptions, ModelRegistry } from './types';
 
 export class IndicatorApi {
@@ -27,8 +28,8 @@ export class IndicatorApi {
     builders: Builder[],
     fetchOptions: FetchOptions,
   ): Promise<Analytic[]> {
-    const nestedAnalytics = await Promise.all(
-      builders.map(async builder => builder.buildAnalytics(fetchOptions)),
+    const nestedAnalytics = await mapWithConcurrency(builders, builder =>
+      builder.buildAnalytics(fetchOptions),
     );
     return nestedAnalytics.flat().sort(getSortByKey('period'));
   }

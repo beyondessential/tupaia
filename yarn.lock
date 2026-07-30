@@ -7830,6 +7830,7 @@ __metadata:
     es-toolkit: "npm:^1.46.0"
     jest: "npm:^29.7.0"
     jest-extended: "npm:^0.11.5"
+    p-limit: "npm:^3.1.0"
     rimraf: "npm:^6.0.1"
   languageName: unknown
   linkType: soft
