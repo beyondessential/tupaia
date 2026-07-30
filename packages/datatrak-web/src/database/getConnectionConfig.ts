@@ -9,8 +9,11 @@ export const getConnectionConfig = () => {
 
   // IMPORTANT: Reuse the same PGlite instance to avoid data isolation issues
   if (!sharedPGliteInstance) {
-    sharedPGliteInstance = new PGlite(connectionString);
-  } 
+    // relaxedDurability: flush to IndexedDB asynchronously after a query returns, rather than
+    // blocking every commit on the flush. Writes remain atomic; at worst a crash immediately
+    // after a write loses that write, which matches the durability meditrak accepts with Realm.
+    sharedPGliteInstance = new PGlite(connectionString, { relaxedDurability: true });
+  }
 
   return {
     pglite: sharedPGliteInstance,
