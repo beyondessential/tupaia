@@ -8,9 +8,9 @@ export const getConnectionConfig = () => {
   const connectionString = getEnvVarOrDefault('PG_LITE_CONNECTION_STRING', 'idb://datatrak-db');
 
   // IMPORTANT: Reuse the same PGlite instance to avoid data isolation issues
-if (!sharedPGliteInstance) {
+  if (!sharedPGliteInstance) {
     sharedPGliteInstance = new PGlite(connectionString);
-  } 
+  }
 
   return {
     pglite: sharedPGliteInstance,
