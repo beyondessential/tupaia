@@ -38,7 +38,7 @@ const VIEWS = {
   filesDownload: DownloadFiles,
   qrCodeVisual: QRCode,
   multiPhotograph: MultiPhotograph,
-};
+} as const;
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
   const { valueType } = config;
@@ -104,7 +104,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
     );
   }
 
-  const Component = VIEWS[viewType as keyof typeof VIEWS];
+  const Component = VIEWS[viewType];
 
   // if the view type is not supported, return null
   if (!Component) return null;
