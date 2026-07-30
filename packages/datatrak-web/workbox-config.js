@@ -3,7 +3,7 @@ module.exports = {
   /**
    * `.wasm` and `.data` are PGlite, the local Postgres the app reads and writes offline. Without
    * them cached the app cannot start offline at all.
-   * `.gz` is deliberately absent: vite-plugin-compression emits gzipped siblings of the files
+   * `.br` is deliberately absent: vite-plugin-compression emits brotli siblings of the files
    * already listed here, served via Content-Encoding negotiation. Caching both would store every
    * asset twice.
    */
