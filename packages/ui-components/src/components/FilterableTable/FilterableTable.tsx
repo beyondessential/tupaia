@@ -6,7 +6,7 @@ import {
   TableRow,
   TableSortLabel,
 } from '@material-ui/core';
-import { ChevronUp } from 'lucide-react';
+import ChevronUp from 'lucide-react/dist/esm/icons/chevron-up';
 import React, { useMemo } from 'react';
 import { Column, SortingRule, useFlexLayout, useResizeColumns, useTable } from 'react-table';
 import styled from 'styled-components';

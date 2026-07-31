@@ -1,5 +1,5 @@
 import { Paper } from '@material-ui/core';
-import { Check as CheckIcon } from '@material-ui/icons';
+import CheckIcon from '@material-ui/icons/Check';
 import React from 'react';
 import styled from 'styled-components';
 

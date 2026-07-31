@@ -5,7 +5,7 @@ import {
   Select as MuiSelect,
   SelectProps as MuiSelectProps,
 } from '@material-ui/core';
-import { KeyboardArrowDown } from '@material-ui/icons';
+import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import { TaskFilterType } from '../../../types';
 
 const PlaceholderText = styled.span`

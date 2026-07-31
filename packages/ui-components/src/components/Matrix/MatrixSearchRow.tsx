@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { IconButton, TableRow } from '@material-ui/core';
-import { Clear, Search as SearchIcon } from '@material-ui/icons';
+import Clear from '@material-ui/icons/Clear';
+import SearchIcon from '@material-ui/icons/Search';
 import styled from 'styled-components';
 import { TextField } from '../Inputs';
 import { MatrixContext, SearchFilter } from './MatrixContext';

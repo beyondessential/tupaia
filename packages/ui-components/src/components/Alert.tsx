@@ -1,7 +1,8 @@
 import React, { forwardRef } from 'react';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import styled from 'styled-components';
-import { CheckCircle, Warning } from '@material-ui/icons';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import Warning from '@material-ui/icons/Warning';
 import { Error } from './Icons';
 
 const StyledAlert = styled(MuiAlert)`

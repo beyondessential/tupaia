@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { Close } from '@material-ui/icons';
+import Close from '@material-ui/icons/Close';
 import { FlexStart } from '../Layout';
 import { IconButton } from '../IconButton';
 

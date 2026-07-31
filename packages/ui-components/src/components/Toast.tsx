@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { CheckCircle, Warning } from '@material-ui/icons';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import Warning from '@material-ui/icons/Warning';
 import Fade from '@material-ui/core/Fade';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 

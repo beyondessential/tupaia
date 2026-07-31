@@ -3,7 +3,8 @@ import {
   ListItem as MuiListItem,
   ListItemProps as MuiListItemProps,
 } from '@material-ui/core';
-import { Check, KeyboardArrowRight } from '@material-ui/icons';
+import Check from '@material-ui/icons/Check';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { Skeleton } from '@material-ui/lab';
 import React, { ReactElement, ReactNode, useState } from 'react';
 import styled, { css } from 'styled-components';

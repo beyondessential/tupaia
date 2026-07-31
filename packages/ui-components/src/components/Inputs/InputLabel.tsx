@@ -1,5 +1,5 @@
 import React, { ComponentType } from 'react';
-import { HelpOutline } from '@material-ui/icons';
+import HelpOutline from '@material-ui/icons/HelpOutline';
 import { FormLabel } from '@material-ui/core';
 import styled from 'styled-components';
 import { Tooltip as BaseTooltip } from '../Tooltip';

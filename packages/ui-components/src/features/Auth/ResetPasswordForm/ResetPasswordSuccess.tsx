@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { LinkProps } from 'react-router-dom-v6';
 import { Typography } from '@material-ui/core';
-import { CheckCircle } from '@material-ui/icons';
+import CheckCircle from '@material-ui/icons/CheckCircle';
 import { AuthViewWrapper } from '../AuthViewWrapper';
 import { AuthSubmitButton } from '../AuthSubmitButton';
 import { RouterLink } from '../../RouterLink';

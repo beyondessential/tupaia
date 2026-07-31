@@ -2,7 +2,7 @@ import React from 'react';
 import { SnackbarContent, CustomContentProps, closeSnackbar, OptionsObject } from 'notistack';
 import styled from 'styled-components';
 import { IconButton, Typography } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import Close from '@material-ui/icons/Close';
 
 const Wrapper = styled(SnackbarContent).withConfig({
   shouldForwardProp: prop => !['anchorOrigin', 'iconVariant'].includes(prop),

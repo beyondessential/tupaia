@@ -1,7 +1,8 @@
 import React from 'react';
 import { TextField } from '@tupaia/ui-components';
 import styled from 'styled-components';
-import { Search, Clear } from '@material-ui/icons';
+import Clear from '@material-ui/icons/Clear';
+import Search from '@material-ui/icons/Search';
 import { InputAdornment, IconButton, TextFieldProps } from '@material-ui/core';
 import { InputHelperText } from '../../components';
 

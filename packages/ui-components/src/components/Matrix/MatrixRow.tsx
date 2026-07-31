@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { ButtonProps, TableRow as MuiTableRow } from '@material-ui/core';
-import { KeyboardArrowRight } from '@material-ui/icons';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom-v6';
 import { MatrixRowType } from '../../types';

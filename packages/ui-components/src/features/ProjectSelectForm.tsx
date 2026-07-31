@@ -1,5 +1,6 @@
 import { DialogActions, useTheme } from '@material-ui/core';
-import { WatchLater as ClockIcon, Lock as LockIcon } from '@material-ui/icons';
+import ClockIcon from '@material-ui/icons/WatchLater';
+import LockIcon from '@material-ui/icons/Lock';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 

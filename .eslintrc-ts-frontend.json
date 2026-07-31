@@ -9,6 +9,17 @@
     "react/no-unescaped-entities": "off",
     "import/extensions": "off",
     "react/prop-types": "off",
-    "react/display-name": "off"
+    "react/display-name": "off",
+    "no-restricted-imports": [
+      "warn",
+      {
+        "paths": [
+          {
+            "name": "@material-ui/icons",
+            "message": "Import icons individually, e.g. import Close from '@material-ui/icons/Close', so bundlers don't retain the whole icon set."
+          }
+        ]
+      }
+    ]
   }
 }
