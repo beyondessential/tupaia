@@ -1,26 +1,25 @@
-import {
-  BarChartConfigSchema,
-  ColorMapOverlayConfigSchema,
-  ComposedChartConfigSchema,
-  DataDownloadViewVizBuilderConfigSchema,
-  DownloadFilesViewConfigSchema,
-  GaugeChartConfigSchema,
-  IconMapOverlayConfigSchema,
-  LineChartConfigSchema,
-  MatrixVizBuilderConfigSchema,
-  MultiPhotographViewConfigSchema,
-  MultiSingleValueViewConfigSchema,
-  MultiValueRowViewConfigSchema,
-  MultiValueViewConfigSchema,
-  PieChartConfigSchema,
-  QRCodeViewConfigSchema,
-  RadiusMapOverlayConfigSchema,
-  ShadingMapOverlayConfigSchema,
-  SingleDateViewConfigSchema,
-  SingleDownloadLinkViewConfigSchema,
-  SingleValueViewConfigSchema,
-  SpectrumMapOverlayConfigSchema,
-} from '@tupaia/types';
+// Per-schema deep imports so the bundle only retains the schemas actually used
+import { BarChartConfigSchema } from '@tupaia/types/dist/schemas/BarChartConfigSchema';
+import { ColorMapOverlayConfigSchema } from '@tupaia/types/dist/schemas/ColorMapOverlayConfigSchema';
+import { ComposedChartConfigSchema } from '@tupaia/types/dist/schemas/ComposedChartConfigSchema';
+import { DataDownloadViewVizBuilderConfigSchema } from '@tupaia/types/dist/schemas/DataDownloadViewVizBuilderConfigSchema';
+import { DownloadFilesViewConfigSchema } from '@tupaia/types/dist/schemas/DownloadFilesViewConfigSchema';
+import { GaugeChartConfigSchema } from '@tupaia/types/dist/schemas/GaugeChartConfigSchema';
+import { IconMapOverlayConfigSchema } from '@tupaia/types/dist/schemas/IconMapOverlayConfigSchema';
+import { LineChartConfigSchema } from '@tupaia/types/dist/schemas/LineChartConfigSchema';
+import { MatrixVizBuilderConfigSchema } from '@tupaia/types/dist/schemas/MatrixVizBuilderConfigSchema';
+import { MultiPhotographViewConfigSchema } from '@tupaia/types/dist/schemas/MultiPhotographViewConfigSchema';
+import { MultiSingleValueViewConfigSchema } from '@tupaia/types/dist/schemas/MultiSingleValueViewConfigSchema';
+import { MultiValueRowViewConfigSchema } from '@tupaia/types/dist/schemas/MultiValueRowViewConfigSchema';
+import { MultiValueViewConfigSchema } from '@tupaia/types/dist/schemas/MultiValueViewConfigSchema';
+import { PieChartConfigSchema } from '@tupaia/types/dist/schemas/PieChartConfigSchema';
+import { QRCodeViewConfigSchema } from '@tupaia/types/dist/schemas/QRCodeViewConfigSchema';
+import { RadiusMapOverlayConfigSchema } from '@tupaia/types/dist/schemas/RadiusMapOverlayConfigSchema';
+import { ShadingMapOverlayConfigSchema } from '@tupaia/types/dist/schemas/ShadingMapOverlayConfigSchema';
+import { SingleDateViewConfigSchema } from '@tupaia/types/dist/schemas/SingleDateViewConfigSchema';
+import { SingleDownloadLinkViewConfigSchema } from '@tupaia/types/dist/schemas/SingleDownloadLinkViewConfigSchema';
+import { SingleValueViewConfigSchema } from '@tupaia/types/dist/schemas/SingleValueViewConfigSchema';
+import { SpectrumMapOverlayConfigSchema } from '@tupaia/types/dist/schemas/SpectrumMapOverlayConfigSchema';
 
 export const MODAL_STATUS = {
   INITIAL: 'initial',

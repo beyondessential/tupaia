@@ -1,4 +1,5 @@
-import { MeditrakSurveyResponseRequestSchema, MeditrakSurveyResponseRequest } from '@tupaia/types';
+import { MeditrakSurveyResponseRequest } from '@tupaia/types';
+import { MeditrakSurveyResponseRequestSchema } from '@tupaia/types/dist/schemas/MeditrakSurveyResponseRequestSchema';
 import { ajvValidate } from '@tupaia/tsutils';
 import { ValidationError } from '@tupaia/utils';
 import { RawSurveyResponseObject } from './types';
