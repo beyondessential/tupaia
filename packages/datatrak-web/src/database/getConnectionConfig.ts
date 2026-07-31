@@ -9,7 +9,7 @@ export const getConnectionConfig = () => {
 
   // IMPORTANT: Reuse the same PGlite instance to avoid data isolation issues
   if (!sharedPGliteInstance) {
-    sharedPGliteInstance = new PGlite(connectionString);
+    sharedPGliteInstance = new PGlite(connectionString, { relaxedDurability: true });
   }
 
   return {
