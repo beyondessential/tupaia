@@ -26,7 +26,6 @@ export * from './runScript';
 export * from './Script';
 export * from './string';
 export * from './validation';
-export { WorkBookParser } from './WorkBookParser';
 export { checkValueSatisfiesCondition } from './checkValueSatisfiesCondition';
 export { addExportedDateAndOriginAtTheSheetBottom } from './addExportDateAndOriginInExcelExportData';
 export { getBrowserTimeZone } from './getBrowserTimeZone';

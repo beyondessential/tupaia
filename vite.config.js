@@ -128,10 +128,17 @@ export default defineConfig(({ command, mode }) => {
             __dirname,
             './packages/ui-chart-components/src/index.ts',
           ),
+          '@tupaia/ui-map-components/dist': path.resolve(
+            __dirname,
+            './packages/ui-map-components/src',
+          ),
           '@tupaia/ui-map-components': path.resolve(
             __dirname,
             './packages/ui-map-components/src/index.ts',
           ),
+          // Deep imports into the built output (e.g. '@tupaia/ui-components/dist/components/DataTable')
+          // need mapping back to src, and must be listed before the bare alias so they match first
+          '@tupaia/ui-components/dist': path.resolve(__dirname, './packages/ui-components/src'),
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
           ...(isDatatrakWeb && {
             '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),

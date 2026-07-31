@@ -14,6 +14,8 @@ export * from './Legend';
 export * from './LeafletMap';
 export * from './Markers';
 export * from './PopupDataItemList';
-export * from './Table';
+// Table (MapTable) is deliberately not re-exported here: it depends on xlsx (~2 MB) via
+// DataTable, which would be retained in every consumer's bundle. Import it from
+// '@tupaia/ui-map-components/dist/components/Table'.
 export * from './TileLayer';
 export * from './TilePicker';

@@ -5,7 +5,7 @@ import DownloadIcon from '@material-ui/icons/GetApp';
 import MuiIconButton from '@material-ui/core/IconButton';
 import { FlexColumn, SpinningLoader, NoData } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
-import { MapTable, useMapDataExport } from '@tupaia/ui-map-components';
+import { MapTable, useMapDataExport } from '@tupaia/ui-map-components/dist/components/Table';
 import { useMapOverlayTableData } from '../utils';
 import { Modal } from '../../../components';
 import { useEntity, useEntityAncestors, useMapOverlays, useProject } from '../../../api/queries';

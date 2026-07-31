@@ -1,4 +1,4 @@
-import { useDataTableExport } from '@tupaia/ui-components';
+import { useDataTableExport } from '@tupaia/ui-components/dist/components/DataTable';
 import { DashboardItemConfig, DashboardItemReport } from '@tupaia/types';
 import { getChartTableData } from './getChartTableData';
 

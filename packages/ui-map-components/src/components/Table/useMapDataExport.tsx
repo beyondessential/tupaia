@@ -1,4 +1,4 @@
-import { useDataTableExport } from '@tupaia/ui-components';
+import { useDataTableExport } from '@tupaia/ui-components/dist/components/DataTable';
 import { getMapTableData } from './getMapTableData';
 import { Series, MeasureData } from '../../types';
 

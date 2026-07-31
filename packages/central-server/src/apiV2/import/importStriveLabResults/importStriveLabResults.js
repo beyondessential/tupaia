@@ -1,6 +1,8 @@
 import xlsx from 'xlsx';
 
-import { mapKeys, respond, UploadError, WorkBookParser } from '@tupaia/utils';
+import { mapKeys, respond, UploadError } from '@tupaia/utils';
+// Deep import so the xlsx dependency stays out of the @tupaia/utils barrel (and browser bundles)
+import { WorkBookParser } from '@tupaia/utils/dist/WorkBookParser';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
 import { SurveyResponseImporter } from '../../utilities';
 import SURVEYS from './surveys.json';

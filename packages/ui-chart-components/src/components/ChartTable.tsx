@@ -1,5 +1,6 @@
 import React from 'react';
-import { DataTable, NoData } from '@tupaia/ui-components';
+import { NoData } from '@tupaia/ui-components';
+import { DataTable } from '@tupaia/ui-components/dist/components/DataTable';
 import { ChartConfig, ChartReport } from '@tupaia/types';
 import { getChartTableData, getIsChartData } from '../utils';
 

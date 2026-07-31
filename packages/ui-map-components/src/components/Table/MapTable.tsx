@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataTable } from '@tupaia/ui-components';
+import { DataTable } from '@tupaia/ui-components/dist/components/DataTable';
 import { getMapTableData } from './getMapTableData';
 import { MeasureData, Series } from '../../types';
 

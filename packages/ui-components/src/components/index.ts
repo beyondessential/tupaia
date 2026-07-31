@@ -8,7 +8,8 @@ export * from './CardTabs';
 export * from './CheckboxList';
 export * from './CircleMeter';
 export * from './DataGrid';
-export * from './DataTable';
+// DataTable is deliberately not re-exported here: it depends on xlsx (~2 MB), which would be
+// retained in every consumer's bundle. Import it from '@tupaia/ui-components/dist/components/DataTable'.
 export * from './DateRangePicker';
 export * from './Dialog';
 export * from './Editor';
