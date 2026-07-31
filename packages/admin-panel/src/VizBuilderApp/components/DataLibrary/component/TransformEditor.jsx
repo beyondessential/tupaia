@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { SqlEditor } from '@tupaia/ui-components';
+import { SqlEditor } from '@tupaia/ui-components/dist/components/Editor';
 import { SelectedOptionWithEditor } from './SelectedOptionWithEditor';
 import { JsonEditor } from '../../../../widgets';
 

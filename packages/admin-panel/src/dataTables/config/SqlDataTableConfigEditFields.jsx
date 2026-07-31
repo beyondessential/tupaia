@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@material-ui/core';
-import { SqlEditor } from '@tupaia/ui-components';
+import { SqlEditor } from '@tupaia/ui-components/dist/components/Editor';
 import { ParameterList, ParameterItem } from '../components/editing';
 import { useSqlEditor } from '../useSqlEditor';
 
