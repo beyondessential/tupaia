@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormatListBulleted, KeyboardArrowLeft } from '@material-ui/icons';
+import FormatListBulleted from '@material-ui/icons/FormatListBulleted';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import { useSurveyForm } from '../../SurveyContext';
 import { Button } from '../../../../components';
 

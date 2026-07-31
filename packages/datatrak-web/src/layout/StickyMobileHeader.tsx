@@ -1,5 +1,5 @@
 import { IconButton, Typography } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import Close from '@material-ui/icons/Close';
 import { ChevronLeft } from 'lucide-react';
 import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';

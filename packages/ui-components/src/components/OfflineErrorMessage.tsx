@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core';
-import { Info } from 'lucide-react';
+import Info from 'lucide-react/dist/esm/icons/info';
 import React from 'react';
 import styled from 'styled-components';
 

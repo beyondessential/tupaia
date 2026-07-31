@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { useNavigate } from 'react-router';
-import { Settings } from '@material-ui/icons';
+import Settings from '@material-ui/icons/Settings';
 import { PersonalDetailsSection } from './PersonalDetailsSection';
 import { ChangePasswordSection } from './ChangePasswordSection';
 import { RequestCountryAccessSection } from './RequestCountryAccessSection';

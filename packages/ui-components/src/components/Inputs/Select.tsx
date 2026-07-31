@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
+import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import { SvgIconProps, TextFieldProps, MenuItem as MuiMenuItem } from '@material-ui/core';
 import styled from 'styled-components';
 import { TextField } from './TextField';

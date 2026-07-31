@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import { EllipsisVertical } from 'lucide-react';
+import EllipsisVertical from 'lucide-react/dist/esm/icons/ellipsis-vertical';
 import React from 'react';
 import styled from 'styled-components';
 import { useAriaId } from '../hooks';

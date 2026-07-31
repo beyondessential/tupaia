@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled, { css } from 'styled-components';
-import { CheckCircle } from '@material-ui/icons';
+import CheckCircle from '@material-ui/icons/CheckCircle';
 
 const SuccessWrapper = styled.div<{ $position?: string }>`
   display: flex;

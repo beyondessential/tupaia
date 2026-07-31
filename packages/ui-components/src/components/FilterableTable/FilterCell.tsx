@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Search } from '@material-ui/icons';
+import Search from '@material-ui/icons/Search';
 import { StandardTextFieldProps } from '@material-ui/core';
 import { ColumnInstance } from 'react-table';
 import { TextField } from '../Inputs';

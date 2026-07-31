@@ -1,4 +1,4 @@
-import { KeyboardArrowRight } from '@material-ui/icons';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 

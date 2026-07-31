@@ -1,5 +1,5 @@
 import { AvatarProps, Box, Fab, FormHelperText, FormLabel } from '@material-ui/core';
-import { Trash2 as DeleteIcon } from 'lucide-react';
+import DeleteIcon from 'lucide-react/dist/esm/icons/trash-2';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 

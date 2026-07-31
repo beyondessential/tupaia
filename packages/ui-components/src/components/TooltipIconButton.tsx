@@ -1,5 +1,5 @@
 import React, { ComponentType } from 'react';
-import { InfoOutlined } from '@material-ui/icons';
+import InfoOutlined from '@material-ui/icons/InfoOutlined';
 import styled from 'styled-components';
 import { Tooltip as BaseTooltip } from './Tooltip';
 

@@ -9,7 +9,9 @@ import {
   ButtonGroup as MuiButtonGroup,
   IconButton as MuiIconButton,
 } from '@material-ui/core';
-import { DateRange, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import DateRange from '@material-ui/icons/DateRange';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { DatePickerOffsetSpec } from '@tupaia/types';
 import { GRANULARITIES, GRANULARITY_SHAPE } from '@tupaia/utils';
 import { FlexStart } from '../Layout';

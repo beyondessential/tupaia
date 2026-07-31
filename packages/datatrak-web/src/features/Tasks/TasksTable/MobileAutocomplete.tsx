@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Search as SearchIcon } from '@material-ui/icons';
+import SearchIcon from '@material-ui/icons/Search';
 import { InputAdornment } from '@material-ui/core';
 import { AutocompleteInputChangeReason } from '@material-ui/lab/useAutocomplete';
 
