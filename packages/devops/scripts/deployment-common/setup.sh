@@ -36,6 +36,10 @@ install_nginx() {
     # Add the nginx user (www-data) to the ubuntu group to give it access to the tupaia code
     sudo usermod -a -G ubuntu www-data
   fi
+
+  # Our Vite builds are precompressed with brotli
+  sudo apt-get install -yqq libnginx-mod-http-brotli-static
+
   nginx -v
 }
 
