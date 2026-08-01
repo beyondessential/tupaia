@@ -7,10 +7,13 @@
  * @typedef {import('@tupaia/types').UserAccount} UserAccount
  */
 
+import { formatInTimeZone } from 'date-fns-tz';
+import { keyBy } from 'es-toolkit/compat';
+
 import { SyncDirections } from '@tupaia/constants';
 import { ensure, camelcaseKeys, isNotNullish, isNullish } from '@tupaia/tsutils';
 import { generateRRule } from '@tupaia/utils';
-import { TaskCommentType, TaskStatus } from '@tupaia/types';
+import { QuestionType, TaskCommentType, TaskStatus } from '@tupaia/types';
 import { hasBESAdminAccess } from '@tupaia/access-policy';
 import { getOffsetForTimezone } from '@tupaia/utils';
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
@@ -42,6 +45,40 @@ const formatValue = async (field, value, models) => {
     return value?.freq ?? null;
   }
   return value;
+};
+
+const getTaskAnswerLookup = (taskConfig, answers) => {
+  const answersByQuestionId = keyBy(answers, 'question_id');
+  return configKey => {
+    const questionId = taskConfig[configKey]?.questionId;
+    if (!questionId) return null;
+    return answersByQuestionId[questionId]?.text;
+  };
+};
+
+const isPrimaryEntityQuestion = (taskConfig, questions) => {
+  const primaryEntityQuestion = questions.find(q => q.type === QuestionType.PrimaryEntity);
+  return primaryEntityQuestion?.id === taskConfig.entityId?.questionId;
+};
+
+const fetchSurveyQuestions = (models, surveyId) =>
+  models.database.executeSql(
+    `
+      SELECT q.*, ssc.config::json AS config
+      FROM question q
+      JOIN survey_screen_component ssc ON ssc.question_id = q.id
+      JOIN survey_screen ss ON ss.id = ssc.screen_id
+      WHERE ss.survey_id = ?;
+    `,
+    [surveyId],
+  );
+
+const dateAnswerToTaskDueDate = (dateStr, tz) => {
+  if (!dateStr) return null;
+  // End-of-day in the response's timezone, so the task is due on the chosen date wherever the
+  // surveyor was.
+  const dateInTimezone = formatInTimeZone(dateStr, tz, "yyyy-MM-dd'T23:59:59'XXX");
+  return new Date(dateInTimezone).getTime();
 };
 
 /**
@@ -755,6 +792,64 @@ export class TaskModel extends DatabaseModel {
     dbOptions.multiJoin = mergeMultiJoin(this.joins, dbOptions.multiJoin);
 
     return { dbConditions, dbOptions };
+  }
+
+  /**
+   * Create the tasks declared by a survey response — one per Task-type question with
+   * `shouldCreateTask = 'Yes'`. Idempotent on `initial_request_id`: if any task already
+   * exists for the response, returns `[]` without creating anything.
+   *
+   * Called from both `TaskCreationHandler` (central) and the datatrak-web local submission
+   * flow. Creating the task on the originating device in the same transaction as the survey
+   * response avoids a sync-tick collision in `sync_device_tick` that would otherwise hide the
+   * task from that device's next pull. See TUP-3160.
+   *
+   * @param {{ id: string, survey_id: string, entity_id?: string, user_id?: string, timezone?: string }} surveyResponse
+   * @returns {Promise<TaskRecord[]>}
+   */
+  async createTasksForSurveyResponse(surveyResponse) {
+    const existing = await this.findOne({ initial_request_id: surveyResponse.id });
+    if (existing) return [];
+
+    const questions = await fetchSurveyQuestions(this, surveyResponse.survey_id);
+    const taskQuestions = questions.filter(q => q.type === QuestionType.Task);
+    if (taskQuestions.length === 0) return [];
+
+    const answers = await this.otherModels.answer.find({
+      survey_response_id: surveyResponse.id,
+    });
+
+    const createdTasks = [];
+    for (const taskQuestion of taskQuestions) {
+      const taskConfig = taskQuestion.config?.task;
+      if (!taskConfig) continue;
+
+      const getAnswer = getTaskAnswerLookup(taskConfig, answers);
+
+      const shouldCreateTask = getAnswer('shouldCreateTask');
+      if (!shouldCreateTask || shouldCreateTask === 'No') continue;
+
+      // PrimaryEntity question is a special case: its value is stored on the survey response,
+      // not in answers.
+      const entityId = isPrimaryEntityQuestion(taskConfig, questions)
+        ? surveyResponse.entity_id
+        : getAnswer('entityId');
+      const taskSurvey = await this.otherModels.survey.findOne({ code: taskConfig.surveyCode });
+
+      const task = await this.create(
+        {
+          initial_request_id: surveyResponse.id,
+          survey_id: taskSurvey.id,
+          entity_id: entityId,
+          assignee_id: getAnswer('assignee'),
+          due_date: dateAnswerToTaskDueDate(getAnswer('dueDate'), surveyResponse.timezone),
+          status: TaskStatus.to_do,
+        },
+        surveyResponse.user_id,
+      );
+      createdTasks.push(task);
+    }
+    return createdTasks;
   }
 
   async completeTaskForSurveyResponse(surveyResponse) {
