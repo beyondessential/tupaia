@@ -3611,10 +3611,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electric-sql/pglite@npm:^0.5.4":
-  version: 0.5.4
-  resolution: "@electric-sql/pglite@npm:0.5.4"
-  checksum: 10c0/056118aae82f3446520564b96b50d961bbb54a9df6d00105860c60ad1c1e0048e579fa80c6c9f8e40fb859c0204c9a3c066f3eba4722747f4879c6a7452783ff
+"@electric-sql/pglite@npm:^0.3.15":
+  version: 0.3.15
+  resolution: "@electric-sql/pglite@npm:0.3.15"
+  checksum: 10c0/a3f853c242755ce5837a37b8930701ad92d5e73497f6493d5dd3984ddff832e177405fa2817e27e4de1c306f7dba30dc3edf7816ea9c35311c91eee3eb25544f
   languageName: node
   linkType: hard
 
@@ -7651,7 +7651,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/datatrak-web@workspace:packages/datatrak-web"
   dependencies:
-    "@electric-sql/pglite": "npm:^0.5.4"
+    "@electric-sql/pglite": "npm:^0.3.15"
     "@material-ui/core": "npm:^4.12.0"
     "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:^4.0.0-alpha.57"
