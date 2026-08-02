@@ -5,6 +5,11 @@ import { FullPageLoader } from '@tupaia/ui-components';
 
 import { ErrorDisplay } from '../components';
 import { createDatabase, DatabaseStartupStage } from '../database/createDatabase';
+import {
+  getStartupLog,
+  startCapturingStartupLog,
+  stopCapturingStartupLog,
+} from '../database/startupLog';
 import { DatatrakWebModelRegistry } from '../types';
 
 export interface DatabaseContextType {
@@ -18,15 +23,34 @@ const STAGE_MESSAGES: Record<DatabaseStartupStage, string> = {
   migrating: 'Setting up your device’s database…',
 };
 
-const Details = styled.pre`
-  overflow-x: auto;
+const Monospace = styled.pre`
+  overflow: auto;
   max-height: 15rem;
+  margin-block: 0.5rem;
   padding: 0.75rem;
   border-radius: 0.25rem;
   background: ${({ theme }) => theme.palette.grey['100']};
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  line-height: 1.4;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+`;
+
+const Summary = styled.summary`
+  cursor: pointer;
+  margin-block-start: 1rem;
+  font-size: 0.9rem;
+`;
+
+const CopyButton = styled.button`
+  margin-block-start: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid ${({ theme }) => theme.palette.divider};
+  border-radius: 0.25rem;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
 `;
 
 /**
@@ -51,6 +75,33 @@ const ElapsedSeconds = () => {
   return <> ({seconds}s)</>;
 };
 
+const StartupFailure = ({ error }: { error: Error }) => {
+  const [copied, setCopied] = useState(false);
+  const report = `${error.stack ?? error.message}\n\n--- startup log ---\n${getStartupLog()}`;
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(report);
+      setCopied(true);
+    } catch {
+      // Clipboard can be unavailable or refused; the log is on screen to read either way
+      setCopied(false);
+    }
+  };
+
+  return (
+    <ErrorDisplay title="DataTrak couldn’t start" errorMessage={error.message}>
+      <details>
+        <Summary>Show details</Summary>
+        <Monospace>{report}</Monospace>
+        <CopyButton type="button" onClick={copy}>
+          {copied ? 'Copied' : 'Copy details'}
+        </CopyButton>
+      </details>
+    </ErrorDisplay>
+  );
+};
+
 export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [models, setModels] = useState<DatatrakWebModelRegistry | null>(null);
   const [stage, setStage] = useState<DatabaseStartupStage>('connecting');
@@ -61,6 +112,7 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
     let cancelled = false;
 
     const init = async () => {
+      startCapturingStartupLog();
       try {
         const { models } = await createDatabase(nextStage => {
           if (!cancelled) setStage(nextStage);
@@ -78,6 +130,9 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
         // Without this the rejection goes unhandled and the loader spins forever, which on a
         // low-spec device is indistinguishable from a start that is merely slow
         if (!cancelled) setError(caught instanceof Error ? caught : new Error(String(caught)));
+      } finally {
+        // Whatever happened, startup is over; anything already captured stays readable
+        stopCapturingStartupLog();
       }
     };
 
@@ -85,17 +140,12 @@ export const DatabaseProvider = ({ children }: { children: Readonly<React.ReactN
 
     return () => {
       cancelled = true;
+      stopCapturingStartupLog();
       void modelsInstance?.closeDatabaseConnections();
     };
   }, []);
 
-  if (error) {
-    return (
-      <ErrorDisplay title="DataTrak couldn’t start" errorMessage={error.message}>
-        <Details>{error.stack ?? error.message}</Details>
-      </ErrorDisplay>
-    );
-  }
+  if (error) return <StartupFailure error={error} />;
 
   if (!models) {
     return (

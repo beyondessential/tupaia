@@ -7,20 +7,6 @@ let sharedPGliteInstance: PGlite | null = null;
 export const getConnectionConfig = () => {
   const connectionString = getEnvVarOrDefault('PG_LITE_CONNECTION_STRING', 'idb://datatrak-db');
 
-  /**
-   * PGlite’s own logging, controlled by `PG_LITE_DEBUG_LEVEL` (1–5, increasingly verbose).
-   *
-   * Level 1 reports whether it found an existing database and resumed, or found none and ran
-   * `initdb`. That distinction is otherwise invisible, and it is the difference between a genuinely
-   * first run and a resume onto a data directory left incomplete by an earlier attempt.
-   *
-   * TODO: default back to '0' before merging. Temporarily defaulted to the most verbose level to
-   * diagnose startup failures on low-spec devices, where there is no practical way to set a
-   * build-time environment variable. Note that level 5 logs every protocol message, so it is slow
-   * in its own right and will skew any timings taken while it is on.
-   */
-  const debugLevel = Number(getEnvVarOrDefault('PG_LITE_DEBUG_LEVEL', '5'));
-
   /*
    * Note on `relaxedDurability`: it makes every write to IndexedDB fire-and-forget, which is a
    * large speed-up, but it is unsafe during first-run setup. PGlite creates the database cluster,
@@ -41,7 +27,12 @@ export const getConnectionConfig = () => {
   // IMPORTANT: Reuse the same PGlite instance to avoid data isolation issues
   if (!sharedPGliteInstance) {
     sharedPGliteInstance = new PGlite(connectionString, {
-      ...(debugLevel > 0 && { debug: debugLevel as 1 | 2 | 3 | 4 | 5 }),
+      // TEMPORARY — REMOVE BEFORE MERGING.
+      // Maximum PGlite logging, to diagnose startup failures on low-spec devices. Everything it
+      // emits goes through `console`, so it is picked up by the startup log shown on the failure
+      // screen. Level 5 logs every protocol message, so it is slow enough to distort any timings
+      // taken while it is on.
+      debug: 5,
     });
   }
 
