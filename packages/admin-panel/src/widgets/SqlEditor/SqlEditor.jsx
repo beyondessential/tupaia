@@ -4,7 +4,6 @@ import BaseAceEditor from 'react-ace';
 import styled from 'styled-components';
 import 'ace-builds/src-noconflict/mode-pgsql';
 import 'ace-builds/src-noconflict/ext-language_tools';
-import type { Ace } from 'ace-builds';
 
 const editorName = 'sqlEditor';
 
@@ -20,7 +19,7 @@ const AceEditor = styled(BaseAceEditor).attrs({
     enableBasicAutocompletion: true,
   },
 })`
-  border: 1px solid #dedee0; // GREY_DE from admin-panel
+  border: 1px solid #dedee0;
   border-radius: 3px;
   // font-size set by fontSize prop
   line-height: 1.5;
@@ -57,22 +56,21 @@ const AceEditor = styled(BaseAceEditor).attrs({
   }
 `;
 
-type SqlEditorProps = {
-  customKeywords?: string[];
-  enableBasicAutocompletion?: boolean;
-  enableLiveAutocompletion?: boolean;
-  /**
-   * Pixel value for `font-size`
-   */
-  fontSize?: number;
-  mode?: 'mysql' | 'pgsql' | 'sql';
-  onChange: (newValue: string) => unknown;
-  placeholder?: string;
-  tables?: string[];
-  value?: string;
-  wrapEnabled?: boolean;
-};
+/**
+ * @typedef {object} SqlEditorProps
+ * @property {string[]} [customKeywords]
+ * @property {number} [fontSize] Pixel value for `font-size`
+ * @property {'mysql' | 'pgsql' | 'sql'} [mode]
+ * @property {(newValue: string) => unknown} onChange
+ * @property {string} [placeholder]
+ * @property {string[]} [tables]
+ * @property {string} [value]
+ * @property {boolean} [wrapEnabled]
+ */
 
+/**
+ * @param {SqlEditorProps} props
+ */
 export const SqlEditor = ({
   customKeywords = [],
   fontSize = 14,
@@ -82,10 +80,15 @@ export const SqlEditor = ({
   tables = [],
   value = '',
   wrapEnabled = true,
-}: SqlEditorProps) => {
+}) => {
   const [originalHighlightList, setOriginalHighlightList] = useState([]);
-  const [annotations, setAnnotations] = useState<Ace.Annotation>({ text: '', type: '' });
-  const validateQuery = (query: string) => {
+  /** @type {[import('ace-builds').Ace.Annotation, Function]} */
+  const [annotations, setAnnotations] = useState({ text: '', type: '' });
+
+  /**
+   * @param {string} query
+   */
+  const validateQuery = query => {
     // need to do this to add nextline \n
     let cleanedQuery = query;
     while (cleanedQuery.includes(':')) cleanedQuery = cleanedQuery.replace(':', '-');
@@ -102,7 +105,7 @@ export const SqlEditor = ({
       //   "-----------------------^"
       //   "Expecting '(', 'NUMERIC', 'IDENTIFIER', 'STRING', 'EXPONENT_NU...",
       // ];
-      const errors = (e as Error).message.split('\n');
+      const errors = e.message.split('\n');
       const rowNum = parseInt(errors[0].split(' ')[4].replace(':', ''));
       if (errors[1].startsWith('...')) {
         errors[1] = errors[1].substring(3);
@@ -121,7 +124,8 @@ export const SqlEditor = ({
       });
     }
   };
-  const onFocus = (editor: any) => {
+
+  const onFocus = editor => {
     const customKeywordList = customKeywords.map(key => ({
       caption: `:${key}`,
       value: `:${key}`,
@@ -139,7 +143,7 @@ export const SqlEditor = ({
     }));
     const wordCompleter = {
       identifierRegexps: [/[a-zA-Z_0-9:$\-\u00A2-\uFFFF]/],
-      getCompletions: (_editor: any, _session: any, _pos: any, _prefix: any, callback: any) => {
+      getCompletions: (_editor, _session, _pos, _prefix, callback) => {
         callback(null, [...sqlKeywordList, ...customKeywordList, ...tableList]);
       },
     };
@@ -147,15 +151,16 @@ export const SqlEditor = ({
     // eslint-disable-next-line no-param-reassign
     editor.view.ace.edit(editorName).completers = [wordCompleter];
   };
-  const configureSyntaxHighlighting = (editor: any) => {
-    // @ts-ignore We're looking under the hood here
+
+  const configureSyntaxHighlighting = editor => {
+    // We're looking under the hood here
     const { $keywordList: sqlKeywordList } = editor.session.$mode.$highlightRules;
     setOriginalHighlightList(sqlKeywordList);
   };
 
   const markers = [
     {
-      type: 'text' as const,
+      type: 'text',
       startRow: annotations.row || 0,
       endRow: annotations.row || 0,
       startCol: annotations.column || 0,

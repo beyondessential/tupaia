@@ -11,9 +11,6 @@ export * from './DataGrid';
 export * from './DataTable';
 export * from './DateRangePicker';
 export * from './Dialog';
-// Editor (SqlEditor) is deliberately not re-exported here: ace-builds registers modes and themes
-// as import side effects (~600 KB) which can never be tree-shaken out of a barrel. Import it from
-// '@tupaia/ui-components/dist/components/Editor'.
 export * from './EnvBanner';
 export * from './ErrorBoundary';
 export * from './FavouriteButton';
