@@ -52,7 +52,7 @@ export const ProjectSelectModal = () => {
   const location = useLocation();
   const projectId = userData?.project?.id;
   const { data: projects = [], isFetching } = useProjects({
-    select: data => data?.sort(projectSort) ?? [],
+    select: data => [...data].sort(projectSort),
   });
   const { closeModal } = useModal();
   const navigate = useNavigate();

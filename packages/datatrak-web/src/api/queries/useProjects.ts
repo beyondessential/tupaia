@@ -29,7 +29,7 @@ const projectSort = (a: Project, b: Project) => {
 
 export const useProjects = (sortByAccess = true) =>
   useProjectsQuery({
-    select: sortByAccess ? data => data.sort(projectSort) : undefined,
+    select: sortByAccess ? data => [...data].sort(projectSort) : undefined,
   });
 
 const accessibleProjectsUseQueryOptions = {
