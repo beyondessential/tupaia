@@ -155,7 +155,6 @@ export const SqlEditor = ({
   };
 
   const configureSyntaxHighlighting = editor => {
-    // We're looking under the hood here
     const { $keywordList: sqlKeywordList } = editor.session.$mode.$highlightRules;
     setOriginalHighlightList(sqlKeywordList);
   };
