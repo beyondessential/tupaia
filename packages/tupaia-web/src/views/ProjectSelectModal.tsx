@@ -60,6 +60,7 @@ export const ProjectSelectModal = () => {
   const onSelectProject = data => {
     const { projectId } = data;
     const project = projects.find(p => p.id === projectId);
+    if (project === undefined) return; // Should never happen
     const { code, homeEntityCode } = project;
     const dashboardGroupName = project.dashboardGroupName
       ? encodeURIComponent(project.dashboardGroupName)
