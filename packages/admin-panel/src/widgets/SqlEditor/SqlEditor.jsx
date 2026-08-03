@@ -1,3 +1,7 @@
+/**
+ * @typedef {import('ace-builds').Ace.Annotation} Annotation
+ */
+
 import React, { useState } from 'react';
 import parser from 'js-sql-parser';
 import BaseAceEditor from 'react-ace';
@@ -24,10 +28,10 @@ const AceEditor = styled(BaseAceEditor).attrs({
   // font-size set by fontSize prop
   line-height: 1.5;
 
-  /* 
+  /*
    * Prevent caret drift in some browsers, including Safari.
-   * 
-   * Ace uses CSS properties to calculate the width of characters and lines, which determines where 
+   *
+   * Ace uses CSS properties to calculate the width of characters and lines, which determines where
    * the caret should appear. However, when a font style isn’t provided by the font files, and the
    * browser attempts to synthesize it, this can cause the caret to lag behind or lead ahead of the
    * actual insertion point.
@@ -82,12 +86,10 @@ export const SqlEditor = ({
   wrapEnabled = true,
 }) => {
   const [originalHighlightList, setOriginalHighlightList] = useState([]);
-  /** @type {[import('ace-builds').Ace.Annotation, Function]} */
+  /** @type {[Annotation, import('react').Dispatch<import('react').SetStateAction<Annotation>>]} */
   const [annotations, setAnnotations] = useState({ text: '', type: '' });
 
-  /**
-   * @param {string} query
-   */
+  /**  @param {string} query */
   const validateQuery = query => {
     // need to do this to add nextline \n
     let cleanedQuery = query;
