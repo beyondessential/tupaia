@@ -1,4 +1,4 @@
-import { getAggregatePeriod } from '/apiV1/utils/getAggregatePeriod';
+import { getAggregatePeriod } from '../../../apiV1/utils/getAggregatePeriod';
 
 const periods = [
   {

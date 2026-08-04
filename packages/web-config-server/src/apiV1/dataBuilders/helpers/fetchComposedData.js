@@ -1,4 +1,4 @@
-import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
+import { getDataBuilder } from '../getDataBuilder';
 
 export const fetchComposedData = async (config, aggregator, dhisApi) => {
   const { dataBuilderConfig, ...otherConfig } = config;

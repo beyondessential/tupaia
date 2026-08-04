@@ -1,4 +1,4 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 
 export class BooleanValueByDataElementsBuilder extends DataBuilder {
   async build() {

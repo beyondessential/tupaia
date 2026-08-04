@@ -1,9 +1,9 @@
 import { uniq } from 'es-toolkit';
 
 import { getSortByKey, getSortByExtractedValue } from '@tupaia/utils';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
-import { transformValue } from '/apiV1/dataBuilders/transform';
-import { translateEventEntityIdsToNames } from '/apiV1/dataBuilders/helpers/translateEventEntityIdsToNames';
+import { NO_DATA_AVAILABLE } from './constants';
+import { transformValue } from './transform';
+import { translateEventEntityIdsToNames } from './helpers/translateEventEntityIdsToNames';
 
 export class DataBuilder {
   static NO_DATA_AVAILABLE = NO_DATA_AVAILABLE;

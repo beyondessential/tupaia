@@ -5,7 +5,7 @@ import {
   convertToPeriod,
   periodToDisplayString,
 } from '@tupaia/utils';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 
 export class AnalyticsPerPeriodBuilder extends DataBuilder {
   async build() {

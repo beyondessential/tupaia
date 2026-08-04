@@ -1,4 +1,4 @@
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { NO_DATA_AVAILABLE } from '../constants';
 
 export const subtractValues = (minuend, subtrahend) => {
   const isMinuendValid = minuend || minuend === 0;

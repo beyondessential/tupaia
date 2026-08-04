@@ -1,8 +1,8 @@
 import { when } from 'jest-when';
 
 import { createJestMockInstance } from '@tupaia/utils';
-import { composePercentagePerOrgUnit } from '/apiV1/measureBuilders/composePercentagePerOrgUnit';
-import * as FetchComposedData from '/apiV1/measureBuilders/helpers';
+import { composePercentagePerOrgUnit } from '../../../apiV1/measureBuilders/composePercentagePerOrgUnit';
+import * as FetchComposedData from '../../../apiV1/measureBuilders/helpers';
 
 const models = createJestMockInstance('@tupaia/database', 'ModelRegistry');
 const aggregator = createJestMockInstance('@tupaia/aggregator', 'Aggregator');

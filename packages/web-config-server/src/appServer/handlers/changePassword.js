@@ -1,4 +1,4 @@
-import { fetchFromCentralServerUsingTokens } from '/appServer/requestHelpers';
+import { fetchFromCentralServerUsingTokens } from '../requestHelpers';
 
 /*
  * Function will attempt to change a user's password on the TupaiaApp server.

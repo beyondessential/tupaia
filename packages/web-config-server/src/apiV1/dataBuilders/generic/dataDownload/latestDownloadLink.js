@@ -1,4 +1,4 @@
-import { buildExportUrl } from '/export';
+import { buildExportUrl } from '../../../../export';
 
 export const latestDownloadLink = async ({ req, query, dataBuilderConfig }) => {
   const { surveyCodes, name } = dataBuilderConfig;

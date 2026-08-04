@@ -1,4 +1,4 @@
-import { mapOrgUnitIdsToGroupIds } from '/apiV1/utils/mapOrgUnitIdsToGroupIds';
+import { mapOrgUnitIdsToGroupIds } from '../../../apiV1/utils/mapOrgUnitIdsToGroupIds';
 
 const organisationUnits = [
   {

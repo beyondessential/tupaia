@@ -1,7 +1,7 @@
 import { get, has, setWith } from 'es-toolkit/compat';
 
-import { getDhisApiInstance } from '/dhis';
-import { pushAggregateData } from '/preaggregation/pushAggregateData';
+import { getDhisApiInstance } from '../../dhis';
+import { pushAggregateData } from '../pushAggregateData';
 
 /**
  * Map of POP01 to POP04 survey element codes for data elements that overlap each other

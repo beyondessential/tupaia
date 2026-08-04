@@ -1,4 +1,4 @@
-import { multiDataValuesLatestSurvey } from '/apiV1/dataBuilders/generic/latestData/multiDataValuesLatestSurvey';
+import { multiDataValuesLatestSurvey } from '../../../../../apiV1/dataBuilders/generic/latestData/multiDataValuesLatestSurvey';
 
 const query = {};
 const getDataValues = [

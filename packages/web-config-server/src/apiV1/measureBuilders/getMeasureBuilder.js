@@ -1,4 +1,4 @@
-import * as measureBuilders from '/apiV1/measureBuilders';
+import * as measureBuilders from './';
 
 const DEFAULT_NAME = 'valueForOrgGroup';
 

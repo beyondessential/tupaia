@@ -1,7 +1,7 @@
-import { getDhisApiInstance } from '/dhis';
-import { getDataElementsInGroupSet } from '/apiV1/utils/getDataElementsInGroupSet';
-import { preaggregateDataElement } from '/preaggregation/preaggregateDataElement';
-import { preaggregateTransactionalDataElement } from '/preaggregation/preaggregateTransactionalDataElement';
+import { getDhisApiInstance } from '../../dhis';
+import { getDataElementsInGroupSet } from '../../apiV1/utils/getDataElementsInGroupSet';
+import { preaggregateDataElement } from '../preaggregateDataElement';
+import { preaggregateTransactionalDataElement } from '../preaggregateTransactionalDataElement';
 
 const OPERATORS_FOR_CHANGE_TYPES = {
   FP_Change_Counts_1_New_Acceptors: '+', // New acceptors

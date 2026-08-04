@@ -1,5 +1,5 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { ReportConnection } from '/connections';
+import { DataBuilder } from '../../DataBuilder';
+import { ReportConnection } from '../../../../connections';
 
 export class ReportServerBuilder extends DataBuilder {
   /**

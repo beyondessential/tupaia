@@ -1,5 +1,5 @@
-import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { fetchComposedData } from '../../helpers';
+import { NO_DATA_AVAILABLE } from '../../constants';
 /**
  * Configuration schema
  * @typedef {Object} ComposeDataConfig

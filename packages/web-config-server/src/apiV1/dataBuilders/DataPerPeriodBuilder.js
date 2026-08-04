@@ -4,7 +4,7 @@ import {
   periodToDisplayString,
   periodToTimestamp,
 } from '@tupaia/utils';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from './DataBuilder';
 
 /**
  * @abstract

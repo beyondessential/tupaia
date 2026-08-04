@@ -1,6 +1,6 @@
 import { flattenDeep, sumBy } from 'es-toolkit/compat';
 
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 
 /**
  * Configuration schema

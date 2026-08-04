@@ -2,12 +2,12 @@
 
 ##
 # usage:
-# $1 - port to run babel inspector on
+# $1 - port to run the node inspector on
 # Optionally provide '-i' or '--include-internal' to include build and watching internal dependencies
 # Optionally provide '-ts' or '--typescript' to start typescript server
 
 ##
-USAGE="Usage: backendStartDev babel_port_inspector [-i --include-internal] [-ts --typescript]"
+USAGE="Usage: backendStartDev inspector_port [-i --include-internal] [-ts --typescript]"
 DIR=$(dirname "$0")
 watch_flags=""
 include_internal=false
@@ -15,7 +15,7 @@ type_script=false
 inspect_port=${1}
 
 # Start server command for JS
-start_server="nodemon -w src --exec \"babel-node src --inspect=${inspect_port} --config-file '../../babel.config.json'\""
+start_server="nodemon -w src --exec \"node -r ts-node/register/transpile-only --inspect=${inspect_port} src\""
 
 while [ "$2" != "" ]; do
     case $2 in

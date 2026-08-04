@@ -1,5 +1,5 @@
 import { createJestMockInstance } from '@tupaia/utils';
-import { analyticsPerPeriod } from '/apiV1/dataBuilders/generic/analytics/analyticsPerPeriod';
+import { analyticsPerPeriod } from '../../../../../apiV1/dataBuilders/generic/analytics/analyticsPerPeriod';
 
 describe('analyticsPerPeriod', () => {
   // Define the results in non-ascending period order to assert that they are sorted correctly

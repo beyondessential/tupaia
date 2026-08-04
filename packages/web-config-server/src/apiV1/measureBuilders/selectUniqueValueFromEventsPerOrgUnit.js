@@ -1,5 +1,5 @@
 import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
-import { SelectUniqueValueFromEventsBuilder } from '/apiV1/dataBuilders/generic/unique/selectUniqueValueFromEvents';
+import { SelectUniqueValueFromEventsBuilder } from '../dataBuilders/generic/unique/selectUniqueValueFromEvents';
 
 export class SelectUniqueValueFromEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => SelectUniqueValueFromEventsBuilder;

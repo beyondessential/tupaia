@@ -1,5 +1,5 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { uniqueValueFromEvents } from '/apiV1/dataBuilders/helpers';
+import { DataBuilder } from '../../DataBuilder';
+import { uniqueValueFromEvents } from '../../helpers';
 
 export class SelectUniqueValueFromEventsBuilder extends DataBuilder {
   async build() {
