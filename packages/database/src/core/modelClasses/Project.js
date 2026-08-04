@@ -136,6 +136,8 @@ export class ProjectModel extends DatabaseModel {
               json_agg(child_id) AS child_id
             FROM
               entity_relation er
+            WHERE
+              er.parent_id IN (SELECT entity_id FROM project)
             GROUP BY
               parent_id) sub ON p.entity_id = sub.parent_id
         WHERE ?;
