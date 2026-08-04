@@ -1,6 +1,6 @@
 import { createPatch } from 'diff';
 import * as fs from 'node:fs';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import * as TJS from 'typescript-json-schema';
 
 // @ts-ignore
@@ -37,25 +37,63 @@ const HEADER = `/*
 const rootDir = 'src/types';
 const filesToBuildSchemasFor = getTsFiles(rootDir);
 
-const { filename, typesPath } = config as any;
+const { outDir, typesPath } = config as any;
 
 const program = TJS.getProgramFromFiles([resolve(typesPath)]);
 const schemas = TJS.generateSchema(program, '*', settings, filesToBuildSchemasFor);
 
 if (schemas?.definitions) {
-  let fileContents = HEADER;
+  // One module per schema, so that consumers (and bundlers) can pick up a single schema without
+  // retaining all of them. The index re-exports every schema for convenience on the server side.
+  const newFiles = new Map<string, string>();
+  const indexLines: string[] = [];
 
   const definitions = Object.entries(schemas.definitions || {});
   for (const [typeName, schema] of definitions) {
     if (typeof schema === 'boolean') continue;
-    fileContents += `export const ${typeName}Schema = ${JSON.stringify(schema, null, '\t')}\n`;
+    newFiles.set(
+      `${typeName}Schema.ts`,
+      `${HEADER}export const ${typeName}Schema = ${JSON.stringify(schema, null, '\t')}\n`,
+    );
+    indexLines.push(`export { ${typeName}Schema } from './${typeName}Schema';`);
   }
+  newFiles.set('index.ts', `${HEADER}${indexLines.join('\n')}\n`);
   console.log(`ℹ️ Generated ${definitions.length} schema definitions`);
 
+  // Guard against schema names that differ only by case, which would silently overwrite each
+  // other on case-insensitive file systems (macOS, Windows)
+  const seenLowercaseNames = new Map<string, string>();
+  for (const fileName of newFiles.keys()) {
+    const lowercaseName = fileName.toLowerCase();
+    const clash = seenLowercaseNames.get(lowercaseName);
+    if (clash) {
+      throw new Error(`Schema file name collision on case-insensitive file systems: ${clash} vs ${fileName}`);
+    }
+    seenLowercaseNames.set(lowercaseName, fileName);
+  }
+
+  const existingFiles = fs.existsSync(outDir)
+    ? fs.readdirSync(outDir).filter(fileName => fileName.endsWith('.ts'))
+    : [];
+  const staleFiles = existingFiles.filter(fileName => !newFiles.has(fileName));
+
   if (failOnChanges) {
-    const currentFileContents = fs.readFileSync(filename, { encoding: 'utf8' });
-    if (currentFileContents !== fileContents) {
-      const patch = createPatch(filename, currentFileContents, fileContents);
+    let patch = '';
+    for (const [fileName, fileContents] of newFiles) {
+      const filePath = join(outDir, fileName);
+      const currentFileContents = fs.existsSync(filePath)
+        ? fs.readFileSync(filePath, { encoding: 'utf8' })
+        : '';
+      if (currentFileContents !== fileContents) {
+        patch += createPatch(filePath, currentFileContents, fileContents);
+      }
+    }
+    for (const fileName of staleFiles) {
+      const filePath = join(outDir, fileName);
+      patch += createPatch(filePath, fs.readFileSync(filePath, { encoding: 'utf8' }), '');
+    }
+
+    if (patch) {
       console.log(
         `${process.env.CI ? '::error::' : '❌ '}There are changes in the types which are not reflected in the JSON schema. Run \`yarn workspace @tupaia/types run generate\` to fix. Alternatively, apply the patch in the job summary.`,
       );
@@ -74,8 +112,14 @@ if (schemas?.definitions) {
     }
   }
 
-  fs.writeFileSync(filename, fileContents);
-  console.log(`💾 Wrote ${filename}`);
+  fs.mkdirSync(outDir, { recursive: true });
+  for (const [fileName, fileContents] of newFiles) {
+    fs.writeFileSync(join(outDir, fileName), fileContents);
+  }
+  for (const fileName of staleFiles) {
+    fs.rmSync(join(outDir, fileName));
+  }
+  console.log(`💾 Wrote ${newFiles.size} files to ${outDir}`);
 
   const duration = performance.now() - tic;
   console.log(`✅ Done in ${Math.round(duration)} ms`);

@@ -1,5 +1,6 @@
 import { ajvValidate } from '@tupaia/tsutils';
-import { EntityType, SurveyScreenComponent, SurveyScreenComponentSchema } from '@tupaia/types';
+import { EntityType, SurveyScreenComponent } from '@tupaia/types';
+import { SurveyScreenComponentSchema } from '@tupaia/types/dist/schemas/SurveyScreenComponentSchema';
 import semverCompare from 'semver-compare';
 
 export const SURVEY_SCREEN_COMPONENT_SCHEMA_CHANGE_ENTITY_UPSERT_VERSION = '1.13.129';

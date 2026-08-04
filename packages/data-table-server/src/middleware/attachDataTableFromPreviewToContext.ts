@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ajvValidate } from '@tupaia/tsutils';
-import { DataTablePreviewRequestSchema } from '@tupaia/types';
+import { DataTablePreviewRequestSchema } from '@tupaia/types/dist/schemas/DataTablePreviewRequestSchema';
 import type { DataTablePreviewRequest } from '@tupaia/types';
 
 import { getDataTableService } from '../dataTableService';

@@ -1,5 +1,7 @@
 import { ajvValidate, ensure, isNullish } from '@tupaia/tsutils';
-import { EntityUpdateSchema, QuestionType } from '@tupaia/types';
+import { QuestionType } from '@tupaia/types';
+// Deep import so browser bundles only retain this one schema, not all of the generated schemas
+import { EntityUpdateSchema } from '@tupaia/types/dist/schemas/EntityUpdateSchema';
 import { getOffsetForTimezone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '../../utilities';
 import { SurveyScreenComponentModel } from '../SurveyScreenComponent';
