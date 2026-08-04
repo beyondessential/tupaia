@@ -45,11 +45,14 @@ async function userHasSomePermissionGroupAccess(req, entity, permissionGroups) {
  */
 const fetchProjectIdsWithPendingAccess = async (projectIds, userId, req) => {
   if (!userId || projectIds.length === 0) return new Set();
-  const accessRequests = await req.models.accessRequest.find({
-    user_id: userId,
-    project_id: projectIds,
-    processed_date: null,
-  });
+  const accessRequests = await req.models.accessRequest.find(
+    {
+      user_id: userId,
+      project_id: projectIds,
+      approved: null,
+    },
+    { columns: ['project_id'] },
+  );
   return new Set(accessRequests.map(accessRequest => accessRequest.project_id));
 };
 // work out the entity to zoom to and open the dashboard of when this project is selected
