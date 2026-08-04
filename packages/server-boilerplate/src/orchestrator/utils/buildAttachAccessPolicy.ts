@@ -17,14 +17,13 @@ const fetchApiClientUserId = async (models: ServerBoilerplateModelRegistry) => {
 export const buildAttachAccessPolicy = (
   accessPolicyBuilder: AccessPolicyBuilder,
 ): RequestHandler => {
-  // The api client user is static per deployment, so look it up once and share the result across
-  // requests rather than querying the db on every request
+  // API client user is static per deployment; fetch once rather than querying every request
   let apiClientUserIdPromise: Promise<string> | null = null;
   const getApiClientUserId = (models: ServerBoilerplateModelRegistry) => {
-    if (!apiClientUserIdPromise) {
+    if (apiClientUserIdPromise === null) {
       apiClientUserIdPromise = fetchApiClientUserId(models);
       apiClientUserIdPromise.catch(() => {
-        apiClientUserIdPromise = null; // don't cache failures
+        apiClientUserIdPromise = null; // Don’t cache failures
       });
     }
     return apiClientUserIdPromise;
