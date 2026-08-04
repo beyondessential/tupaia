@@ -23,9 +23,6 @@ internal_deps=(
   tsmodels
   tsutils
   types
-  ui-chart-components
-  ui-components
-  ui-map-components
   utils
   weather-api
 )

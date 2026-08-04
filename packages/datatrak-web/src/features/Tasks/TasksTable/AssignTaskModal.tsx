@@ -48,7 +48,7 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
       type: 'submit',
       disabled: isLoading || !isValid,
     },
-  ];
+  ] as const;
 
   return (
     <>
