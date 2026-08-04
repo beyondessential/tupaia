@@ -1,6 +1,6 @@
 import { createAssertTableResults, createAssertErrorIsThrown } from './helpers';
 import { DATA_VALUES } from './tableOfDataValues.fixtures';
-import { tableOfDataValues } from '/apiV1/dataBuilders';
+import { tableOfDataValues } from '../../../../../../apiV1/dataBuilders';
 
 const dataValues = DATA_VALUES.filter(({ organisationUnit }) => organisationUnit === 'TO_Nukuhc');
 

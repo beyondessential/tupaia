@@ -1,7 +1,7 @@
 import { when } from 'jest-when';
 
 import { createJestMockInstance } from '@tupaia/utils';
-import { simpleTableOfEvents } from '/apiV1/dataBuilders/generic/table/simpleTableOfEvents';
+import { simpleTableOfEvents } from '../../../../../apiV1/dataBuilders/generic/table/simpleTableOfEvents';
 
 const dataServices = [{ isDataRegional: true }];
 const dataBuilderConfig = {

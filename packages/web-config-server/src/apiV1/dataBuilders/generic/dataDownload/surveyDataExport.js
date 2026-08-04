@@ -1,9 +1,9 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 
-import { buildExportUrl } from '/export';
+import { buildExportUrl } from '../../../../export';
 
-import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
-import { ReportConnection } from '/connections';
+import { getDataBuilder } from '../../getDataBuilder';
+import { ReportConnection } from '../../../../connections';
 
 class SurveyDataExportBuilder extends DataBuilder {
   constructor(req, ...superClassArgs) {

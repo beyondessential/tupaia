@@ -1,6 +1,6 @@
-import '@babel/polyfill';
-import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { parseArgs } from 'node:util';
+
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { configureEnv } from '../src/configureEnv';
 import * as modelClasses from '../src/database/models';
 import winston from '../src/log';

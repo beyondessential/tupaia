@@ -3,7 +3,7 @@ import {
   TupaiaAppCommunicationError,
   getTokenExpiry,
 } from '@tupaia/utils';
-import { fetchFromCentralServer } from '/appServer/requestHelpers';
+import { fetchFromCentralServer } from './';
 
 export const refreshAndSaveAccessToken = async (models, refreshToken, userName) => {
   try {

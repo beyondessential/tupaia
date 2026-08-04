@@ -2,13 +2,13 @@ import { groupBy, keyBy, pick } from 'es-toolkit/compat';
 
 import { utcMoment } from '@tupaia/tsutils';
 import { getSortByKey, stripFromString } from '@tupaia/utils';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 import {
   addMetadataToEvents,
   isMetadataKey,
   metadataKeysToDataElementMap,
-} from '/apiV1/dataBuilders/helpers';
-import { transformObject } from '/apiV1/dataBuilders/transform';
+} from '../../helpers';
+import { transformObject } from '../../transform';
 
 const DATE_FORMAT = 'DD-MM-YYYY';
 const TOTAL_KEY = 'Total';

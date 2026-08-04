@@ -1,6 +1,6 @@
 import { groupBy } from 'es-toolkit/compat';
 
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../dataBuilders/DataBuilder';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
 const CONDITION_TYPE = {

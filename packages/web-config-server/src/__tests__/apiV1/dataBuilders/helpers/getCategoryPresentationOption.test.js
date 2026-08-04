@@ -1,4 +1,4 @@
-import { getCategoryPresentationOption } from '/apiV1/dataBuilders/helpers/getCategoryPresentationOption';
+import { getCategoryPresentationOption } from '../../../../apiV1/dataBuilders/helpers/getCategoryPresentationOption';
 
 describe('getCategoryPresentationOption()', () => {
   const config = {

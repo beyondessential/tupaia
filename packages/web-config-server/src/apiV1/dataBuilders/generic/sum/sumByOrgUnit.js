@@ -1,4 +1,4 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 
 class SumByOrgUnitBuilder extends DataBuilder {
   /**

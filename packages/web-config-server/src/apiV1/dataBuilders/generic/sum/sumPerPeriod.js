@@ -4,12 +4,12 @@ import {
   parsePeriodType,
   convertToPeriod,
 } from '@tupaia/utils';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../DataBuilder';
 import { flattenDeep } from 'es-toolkit/compat';
 import {
   fetchAggregatedAnalyticsByDhisIds,
   checkAllDataElementsAreDhisIndicators,
-} from '/apiV1/utils';
+} from '../../../utils';
 
 /**
  * Sample dataBuilderConfig:

@@ -1,5 +1,5 @@
-import { getFacilityStatusCounts } from '/apiV1/utils';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { getFacilityStatusCounts } from '../../../utils';
+import { DataBuilder } from '../../DataBuilder';
 
 const POPULATION = 'POPULATION';
 const NUMBER_OF_DOCTORS = 'BCD46';

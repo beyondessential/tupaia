@@ -1,5 +1,5 @@
 import { convertPeriodStringToDateRange, convertDateRangeToPeriodString } from '@tupaia/utils';
-import { getDefaultPeriod, EARLIEST_DATA_DATE } from '/utils';
+import { getDefaultPeriod, EARLIEST_DATA_DATE } from '../../utils';
 
 // Request to calculate number of operational facilities with new query
 const getFacilitiesData = async (aggregator, parentCode, period, shouldOnlyReturnCurrentStatus) => {
