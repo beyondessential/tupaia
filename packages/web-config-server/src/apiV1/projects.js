@@ -51,7 +51,7 @@ const fetchProjectIdsWithPendingAccess = async (projectIds, userId, req) => {
       project_id: projectIds,
       approved: null,
     },
-    { columns: ['project_id'] },
+    { columns: ['project_id'], distinct: true },
   );
   return new Set(accessRequests.map(accessRequest => accessRequest.project_id));
 };
