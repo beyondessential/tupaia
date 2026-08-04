@@ -6,6 +6,7 @@ import Bugsnag from '@bugsnag/react-native';
 import { database } from '../database';
 import { QuestionScreen } from './QuestionScreen';
 import { SubmitScreen } from './SubmitScreen';
+import { DynamicCodeGeneratorWatchers } from './DynamicCodeGeneratorWatchers';
 import {
   Button,
   KeyboardSpacer,
@@ -159,6 +160,7 @@ export class DumbSurveyScreen extends React.Component {
 
     return (
       <TupaiaBackground style={localStyles.container}>
+        <DynamicCodeGeneratorWatchers />
         {[0, 1].map(index => {
           // Even screens will use the first component, odd will use the second
           const isCurrentContent = screenIndex % 2 === index;
