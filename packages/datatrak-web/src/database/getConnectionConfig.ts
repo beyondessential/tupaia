@@ -1,32 +1,43 @@
-import { PGlite } from '@electric-sql/pglite';
+import { PGliteWorker } from '@electric-sql/pglite/worker';
 
 import { getEnvVarOrDefault } from '@tupaia/utils';
 
-let sharedPGliteInstance: PGlite | null = null;
+let sharedPGliteInstance: PGliteWorker | null = null;
+
+const LEVELS = ['log', 'info', 'warn', 'error', 'debug'] as const;
+
+type Level = (typeof LEVELS)[number];
+
+const isLevel = (level: unknown): level is Level => LEVELS.includes(level as Level);
+
+/**
+ * Re-emit log lines forwarded from the PGlite worker (see pglite.worker.ts) through this thread's
+ * `console`, so the startup log capture (startupLog.ts) sees them. PGlite's own protocol messages
+ * on this channel have different `type` values and are left alone.
+ */
+const forwardWorkerLogs = (workerInstance: Worker) => {
+  workerInstance.addEventListener('message', event => {
+    const { data } = event;
+    if (data?.type !== 'datatrak-worker-log') return;
+    const level: Level = isLevel(data.level) ? data.level : 'log';
+    console[level]('[pglite worker]', ...data.args);
+  });
+};
 
 export const getConnectionConfig = () => {
   const connectionString = getEnvVarOrDefault('PG_LITE_CONNECTION_STRING', 'idb://datatrak-db');
 
-  /*
-   * Note on `relaxedDurability`: it makes every write to IndexedDB fire-and-forget, which is a
-   * large speed-up, but it is unsafe during first-run setup. PGlite creates the database cluster,
-   * then persists the whole data directory with `await syncToFs()` — and under relaxed durability
-   * that await returns before the write lands. Setup reports success, the app carries on, and if
-   * anything closes or reloads the page before the background write finishes, IndexedDB is left
-   * holding a partial data directory. PGlite then finds it on the next launch, takes its "found
-   * DB, resuming" path instead of running initdb again, and the database comes up missing pieces
-   * (which surfaces as errors like `language "plpgsql" does not exist`). That state is permanent
-   * until storage is cleared.
-   *
-   * Note also that with the flag on there is no way to force a durable flush: `syncToFs()` never
-   * awaits the real write, so an explicit call at a safe point doesn’t help.
-   *
-   * If reinstating it, gate it so it is only enabled once a first startup has completed.
-   */
-
   // IMPORTANT: Reuse the same PGlite instance to avoid data isolation issues
   if (!sharedPGliteInstance) {
-    sharedPGliteInstance = new PGlite(connectionString, {
+    // PGlite must run in a worker, not on this thread — see pglite.worker.ts for why
+    const workerInstance = new Worker(new URL('./pglite.worker.ts', import.meta.url), {
+      type: 'module',
+      name: 'pglite',
+    });
+    forwardWorkerLogs(workerInstance);
+
+    sharedPGliteInstance = new PGliteWorker(workerInstance, {
+      dataDir: connectionString,
       // TEMPORARY — REMOVE BEFORE MERGING.
       // Maximum PGlite logging, to diagnose startup failures on low-spec devices. Everything it
       // emits goes through `console`, so it is picked up by the startup log shown on the failure
