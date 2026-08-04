@@ -23,6 +23,8 @@ export const createDatabase = async (
   // Connect as its own step, so that booting PGlite is reported separately from running migrations
   await database.waitUntilConnected();
 
+  await database.executeSql('CREATE EXTENSION IF NOT EXISTS plpgsql;');
+
   onStage?.('migrating');
   await migrate(database);
 
