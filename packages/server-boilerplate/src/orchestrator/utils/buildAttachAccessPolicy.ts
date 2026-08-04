@@ -6,11 +6,11 @@ import { ServerBoilerplateModelRegistry } from '../../types';
 
 const fetchApiClientUserId = async (models: ServerBoilerplateModelRegistry) => {
   const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
-
-  const apiUser = await models.user.findOne({ email: API_CLIENT_NAME });
-  if (!apiUser) {
-    throw new Error('API Client not found');
-  }
+  const apiUser = await models.user.findOneOrThrow(
+    { email: API_CLIENT_NAME },
+    { columns: ['id'] },
+    'API Client not found',
+  );
   return apiUser.id;
 };
 
