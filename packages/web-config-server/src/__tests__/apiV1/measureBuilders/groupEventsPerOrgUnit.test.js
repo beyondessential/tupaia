@@ -1,6 +1,6 @@
 import { when } from 'jest-when';
 
-import { groupEventsPerOrgUnit } from '/apiV1/measureBuilders/groupEventsPerOrgUnit';
+import { groupEventsPerOrgUnit } from '../../../apiV1/measureBuilders/groupEventsPerOrgUnit';
 
 const models = {};
 const organisationUnitCode = 'PG';

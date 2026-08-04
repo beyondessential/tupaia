@@ -1,7 +1,7 @@
 import { AccessPolicy } from '@tupaia/access-policy';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { getDhisApiInstance } from '/dhis';
+import { getDhisApiInstance } from '../dhis';
 import winston from 'winston';
 import * as preaggregators from './preaggregators';
 

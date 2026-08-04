@@ -1,6 +1,6 @@
-import { fetchFromCentralServerUsingTokens } from '/appServer/requestHelpers';
-import { RouteHandler } from '/apiV1/RouteHandler';
-import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
+import { fetchFromCentralServerUsingTokens } from '../appServer/requestHelpers';
+import { RouteHandler } from '../apiV1/RouteHandler';
+import { ExportSurveyResponsesPermissionsChecker } from '../apiV1/permissions';
 
 export class ExportSurveyResponsesHandler extends RouteHandler {
   static PermissionsChecker = ExportSurveyResponsesPermissionsChecker;

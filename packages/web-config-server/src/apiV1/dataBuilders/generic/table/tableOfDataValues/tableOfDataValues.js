@@ -5,7 +5,7 @@ import { getSortByKey, reduceToDictionary, reduceToSet } from '@tupaia/utils';
 
 import { TableConfig } from './TableConfig';
 import { TotalCalculator } from './TotalCalculator';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { DataBuilder } from '../../../DataBuilder';
 
 import {
   buildBaseRowsForOrgUnit,
@@ -19,7 +19,7 @@ import {
   ORG_UNIT_COL_KEY,
   ORG_UNIT_COLUMNS_KEYS_SET,
   ORG_UNIT_WITH_TYPE_COL_KEY,
-} from '/apiV1/dataBuilders/constants';
+} from '../../../constants';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 

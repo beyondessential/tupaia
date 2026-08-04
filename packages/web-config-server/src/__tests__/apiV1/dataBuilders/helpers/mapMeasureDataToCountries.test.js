@@ -1,5 +1,5 @@
 import { getTestModels, upsertDummyRecord } from '@tupaia/database';
-import { mapMeasureDataToCountries } from '/apiV1/measureBuilders/helpers';
+import { mapMeasureDataToCountries } from '../../../../apiV1/measureBuilders/helpers';
 
 const ANALYTICS = [
   {

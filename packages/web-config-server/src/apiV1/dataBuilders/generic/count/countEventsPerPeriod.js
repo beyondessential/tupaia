@@ -1,6 +1,6 @@
 import { groupEventsByPeriod } from '@tupaia/dhis-api';
-import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
-import { CountEventsBuilder } from '/apiV1/dataBuilders/generic/count/countEvents';
+import { DataPerPeriodBuilder } from '../../DataPerPeriodBuilder';
+import { CountEventsBuilder } from './countEvents';
 
 /**
  * Configuration schema

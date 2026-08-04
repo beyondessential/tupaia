@@ -2,7 +2,7 @@ import { when } from 'jest-when';
 
 import { Aggregator } from '@tupaia/aggregator';
 
-import { buildAggregationOptions } from '/aggregator/buildAggregationOptions';
+import { buildAggregationOptions } from '../../aggregator/buildAggregationOptions';
 
 const HIERARCHY_ID = '5e9d06e261f76a30c400001b';
 const BASIC_AGGREGATION_OPTIONS = { aggregationType: 'SUM_MOST_RECENT_PER_FACILITY', filter: {} };

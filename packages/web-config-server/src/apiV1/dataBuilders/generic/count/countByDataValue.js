@@ -1,6 +1,6 @@
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues } from '/apiV1/dataBuilders/helpers';
-import { getDataElementCodesInGroup } from '/apiV1/utils';
+import { DataBuilder } from '../../DataBuilder';
+import { divideValues } from '../../helpers';
+import { getDataElementCodesInGroup } from '../../../utils';
 
 class CountByDataValueBuilder extends DataBuilder {
   async build() {

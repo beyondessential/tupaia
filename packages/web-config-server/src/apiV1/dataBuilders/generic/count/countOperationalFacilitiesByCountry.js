@@ -1,7 +1,7 @@
 import { reduceToDictionary } from '@tupaia/utils';
 
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { fetchOperationalFacilityCodes } from '/apiV1/utils';
+import { DataBuilder } from '../../DataBuilder';
+import { fetchOperationalFacilityCodes } from '../../../utils';
 
 class CountOperationalFacilitiesByCountryBuilder extends DataBuilder {
   async build() {

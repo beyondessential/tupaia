@@ -1,7 +1,7 @@
 import {
   countEventsThatSatisfyConditions,
   countAnalyticsThatSatisfyConditions,
-} from '/apiV1/dataBuilders/helpers';
+} from '../../../../apiV1/dataBuilders/helpers';
 
 describe('checkAgainstConditions', () => {
   describe('countEventsThatSatisfyConditions()', () => {

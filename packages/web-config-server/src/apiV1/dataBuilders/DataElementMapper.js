@@ -1,6 +1,6 @@
 import { CustomError } from '@tupaia/utils';
 
-import { getDataElementGroups } from '/apiV1/utils';
+import { getDataElementGroups } from '../utils';
 import { DATA_SOURCE_TYPES } from './dataSourceTypes';
 
 const { GROUP, SINGLE } = DATA_SOURCE_TYPES;

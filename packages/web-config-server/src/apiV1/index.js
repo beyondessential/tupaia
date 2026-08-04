@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { emailAfterTimeout } from '@tupaia/server-boilerplate';
 import { constructExportEmail } from '@tupaia/server-utils';
-import { appRequestCountryAccess, appResendEmail, appVerifyEmail } from '/appServer';
-import { oneTimeLogin } from '/authSession';
-import { exportChartHandler, ExportSurveyDataHandler, ExportSurveyResponsesHandler } from '/export';
+import { appRequestCountryAccess, appResendEmail, appVerifyEmail } from '../appServer';
+import { oneTimeLogin } from '../authSession';
+import { exportChartHandler, ExportSurveyDataHandler, ExportSurveyResponsesHandler } from '../export';
 import { getUser } from './getUser';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';

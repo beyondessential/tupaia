@@ -1,5 +1,5 @@
 import { keyBy } from 'es-toolkit/compat';
-import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
+import { aggregateOperationalFacilityValues, getFacilityStatuses } from '../../../utils';
 
 export const achievedVsTargetByFacility = async (
   { models, dataBuilderConfig, query, entity, fetchHierarchyId },

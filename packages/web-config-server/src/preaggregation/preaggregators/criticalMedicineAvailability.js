@@ -1,6 +1,6 @@
 import winston from 'winston';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
-import { pushAggregateData } from '/preaggregation/pushAggregateData';
+import { pushAggregateData } from '../pushAggregateData';
 
 const DATA_ELEMENT_GROUP_CODE_PREFIX = 'CriticalMedicines';
 const ORGANISATION_UNIT_GROUP_CODE_PREFIX = 'FacilityType';

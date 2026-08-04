@@ -5,7 +5,7 @@ import {
   getEnvVarOrDefault,
   requireEnv,
 } from '@tupaia/utils';
-import { refreshAndSaveAccessToken } from '/appServer/requestHelpers/refreshAndSaveAccessToken';
+import { refreshAndSaveAccessToken } from '../appServer/requestHelpers/refreshAndSaveAccessToken';
 
 const PUBLIC_USER_NAME = 'public';
 

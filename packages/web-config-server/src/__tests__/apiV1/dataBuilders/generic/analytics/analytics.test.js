@@ -1,5 +1,5 @@
 import { createJestMockInstance } from '@tupaia/utils';
-import { analytics } from '/apiV1/dataBuilders/generic/analytics/analytics';
+import { analytics } from '../../../../../apiV1/dataBuilders/generic/analytics/analytics';
 
 describe('analytics', () => {
   const ANALYTICS = [

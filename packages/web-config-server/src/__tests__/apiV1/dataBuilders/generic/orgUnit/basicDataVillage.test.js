@@ -1,5 +1,5 @@
 import { createJestMockInstance } from '@tupaia/utils';
-import { basicDataVillage } from '/apiV1/dataBuilders/generic/orgUnit/basicDataVillage';
+import { basicDataVillage } from '../../../../../apiV1/dataBuilders/generic/orgUnit/basicDataVillage';
 
 const createEntity = parents =>
   createJestMockInstance('@tupaia/database', 'EntityRecord', {

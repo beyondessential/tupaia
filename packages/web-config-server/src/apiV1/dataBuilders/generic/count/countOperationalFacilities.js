@@ -1,4 +1,4 @@
-import { getFacilityStatusCounts } from '/apiV1/utils';
+import { getFacilityStatusCounts } from '../../../utils';
 
 export const countOperationalFacilities = async ({ query }, aggregator) => {
   const { numberOperational, total } = await getFacilityStatusCounts(

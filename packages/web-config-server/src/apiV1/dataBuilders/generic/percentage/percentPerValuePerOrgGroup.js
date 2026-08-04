@@ -4,7 +4,7 @@ import {
   mapOrgUnitCodeToGroup,
   countByOrganisationUnitByValue,
   calculatePercentagesWithinRange,
-} from '/apiV1/utils';
+} from '../../../utils';
 
 export const percentPerValuePerOrgGroup = async (
   { models, dataBuilderConfig, query, entity },

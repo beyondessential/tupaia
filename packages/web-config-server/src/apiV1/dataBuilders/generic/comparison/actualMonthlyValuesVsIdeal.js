@@ -1,6 +1,6 @@
 import { utcMoment } from '@tupaia/tsutils';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
-import { regexLabel } from '/apiV1/utils';
+import { NO_DATA_AVAILABLE } from '../../constants';
+import { regexLabel } from '../../../utils';
 
 /* historical data within a matrix format compared to an 'Ideal' Value */
 export const actualMonthlyValuesVsIdeal = async ({ dataBuilderConfig, query }, aggregator) => {
