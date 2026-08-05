@@ -119,9 +119,9 @@ export const RequestProjectAccessModal = () => {
     return {
       ...location,
       pathname: generatePath(ROUTE_STRUCTURE, {
-        projectCode: requestingProject?.code,
-        entityCode: requestingProject?.homeEntityCode,
-        dashboardName: requestingProject?.dashboardGroupName as string | undefined,
+        projectCode: requestingProject?.code ?? null,
+        entityCode: requestingProject?.homeEntityCode ?? null,
+        dashboardName: requestingProject?.dashboardGroupName ?? null,
       }),
     };
   };
