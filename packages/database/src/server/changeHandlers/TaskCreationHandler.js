@@ -2,7 +2,6 @@ import { formatInTimeZone } from 'date-fns-tz';
 import { keyBy } from 'es-toolkit/compat';
 
 import { QuestionType } from '@tupaia/types';
-
 import { ChangeHandler } from './ChangeHandler';
 
 const getAnswerWrapper = (config, answers) => {

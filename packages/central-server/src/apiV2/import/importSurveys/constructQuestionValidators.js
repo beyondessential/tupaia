@@ -1,14 +1,16 @@
+import { QuestionType } from '@tupaia/types';
 import { constructIsOneOf, hasContent, isNumber } from '@tupaia/utils';
+
 import { ANSWER_TYPES } from '../../../database/models/Answer';
-import { splitStringOnComma, splitOnNewLinesOrCommas } from '../../utilities';
+import { splitOnNewLinesOrCommas, splitStringOnComma } from '../../utilities';
 import { convertCellToJson, isEmpty, isYesOrNo } from './utilities';
 
 const DHIS_MAX_NAME_LENGTH = 230; // In DHIS2, the field is capped at 230 characters
 const QUESTION_TYPES_WITH_OPTIONS = [
-  ANSWER_TYPES.RADIO,
-  ANSWER_TYPES.BINARY,
-  ANSWER_TYPES.ENTITY,
-  ANSWER_TYPES.PRIMARY_ENTITY,
+  QuestionType.Radio,
+  QuestionType.Binary,
+  QuestionType.Entity,
+  QuestionType.PrimaryEntity,
 ];
 
 const optionsValidators = [
@@ -34,7 +36,7 @@ export const constructQuestionValidators = models => ({
   code: [
     (cell, row) => {
       // Not required for Instruction lines
-      if (row.type === 'Instruction') {
+      if (row.type === QuestionType.Instruction) {
         return true;
       }
       if (cell.includes('.')) {
@@ -47,7 +49,7 @@ export const constructQuestionValidators = models => ({
   name: [
     (cell, questionObject) => {
       // Not required for Instruction lines
-      if (questionObject.type === 'Instruction') {
+      if (questionObject.type === QuestionType.Instruction) {
         return true;
       }
       return hasContent(cell);
@@ -63,10 +65,10 @@ export const constructQuestionValidators = models => ({
   detail: [],
   optionSet: [
     (cell, row) => {
-      if (row.type === 'Autocomplete' && isEmpty(cell)) {
+      if (row.type === QuestionType.Autocomplete && isEmpty(cell)) {
         throw new Error('Autocomplete question types must have an Option Set');
       }
-      if (row.type !== 'Autocomplete' && !isEmpty(cell)) {
+      if (row.type !== QuestionType.Autocomplete && !isEmpty(cell)) {
         throw new Error('Option Set can only exist on Autocomplete question types');
       }
       return true;
@@ -84,7 +86,7 @@ export const constructQuestionValidators = models => ({
   options: [
     ...optionsValidators,
     (cell, row) => {
-      if (row.type === 'Radio' && isEmpty(cell)) {
+      if (row.type === QuestionType.Radio && isEmpty(cell)) {
         throw new Error('All radio questions should have a defined list of options');
       }
       return true;
@@ -99,7 +101,7 @@ export const constructQuestionValidators = models => ({
   optionLabels: [
     ...optionsValidators,
     (cell, row) => {
-      if (row.type === 'Binary') {
+      if (row.type === QuestionType.Binary) {
         if (splitOnNewLinesOrCommas(cell).length > 2) {
           throw new Error('Only 2 labels are allowed for a Binary question');
         }
@@ -208,7 +210,7 @@ export const constructQuestionValidators = models => ({
           if (!['true', 'false'].includes(value)) {
             throw new Error('The validation criteria "mandatory" must be either true or false');
           }
-          if (value === 'true' && row.type === 'Instruction') {
+          if (value === 'true' && row.type === QuestionType.Instruction) {
             throw new Error('Instructions cannot have mandatory set to true');
           }
         },
@@ -232,7 +234,7 @@ export const constructQuestionValidators = models => ({
   ],
   config: [
     (cell, row) => {
-      if (row.type === ANSWER_TYPES.CODE_GENERATOR && isEmpty(cell)) {
+      if (row.type === QuestionType.CodeGenerator && isEmpty(cell)) {
         throw new Error(
           'CodeGenerator questions must have a configuration defined in the config column',
         );
