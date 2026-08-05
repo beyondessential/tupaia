@@ -7306,7 +7306,7 @@ __metadata:
     express: "npm:^4.21.2"
     jest: "npm:^29.7.0"
     langchain: "npm:^0.3.37"
-    multer: "npm:^2.1.1"
+    multer: "npm:^2.2.0"
     rimraf: "npm:^6.0.1"
     winston: "npm:^3.17.0"
     xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
@@ -7465,7 +7465,7 @@ __metadata:
     moment: "npm:^2.24.0"
     moment-timezone: "npm:^0.5.45"
     morgan: "npm:^1.9.0"
-    multer: "npm:^2.1.1"
+    multer: "npm:^2.2.0"
     node-schedule: "npm:^2.1.1"
     npm-run-all: "npm:^4.1.5"
     nyc: "npm:^15.1.0"
@@ -22792,15 +22792,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multer@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "multer@npm:2.1.1"
+"multer@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "multer@npm:2.2.0"
   dependencies:
     append-field: "npm:^1.0.0"
     busboy: "npm:^1.6.0"
     concat-stream: "npm:^2.0.0"
     type-is: "npm:^1.6.18"
-  checksum: 10c0/2ec4e02833b20f403cfb879d4b64d2a9070d902b9deae7aef18a6faadb707d7665385456cf540aa8a6dadfe3d4c5fc8e0e7b0675b94e1077048b1125426deee6
+  checksum: 10c0/7aa366d89042427347b6ab8e4a203405d7fe942e4a3095648a14526fcf3691d98ffc2da62abf85d8aca0a341f828168eb197b33cfdcfcce29d6ef593a5625591
   languageName: node
   linkType: hard
 
