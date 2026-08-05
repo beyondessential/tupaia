@@ -1,10 +1,12 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import {
   findOrCreateDummyRecord,
   buildAndInsertProjectsAndHierarchies,
   clearTestData,
 } from '@tupaia/database';
 import { TestableApp, resetTestData, setupDashboardTestData } from '../../testUtilities';
+
+const { expect } = chai;
 
 describe('Permissions checker for GETDashboardMailingLists', async () => {
   const NO_ACCESS_POLICY = {

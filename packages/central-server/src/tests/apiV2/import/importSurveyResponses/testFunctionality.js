@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import { groupBy, pick } from 'es-toolkit/compat';
 import moment from 'moment';
 
@@ -19,6 +19,8 @@ import {
   WEEKLY_SURVEY,
   YEARLY_SURVEY,
 } from './importSurveyResponses.fixtures';
+
+const { expect } = chai;
 
 const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 

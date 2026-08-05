@@ -1,11 +1,13 @@
 import { setupTest } from '@tupaia/database';
-import { expect } from 'chai';
+import chai from 'chai';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TEST_SETUP, findTestRecordByCode } from './mapOverlayVisualisations.fixtures';
+
+const { expect } = chai;
 
 describe('PUT map overlay visualisations', async () => {
   const app = new TestableApp();

@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chai from 'chai';
+
 
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
@@ -13,6 +14,8 @@ import {
   upsertSurvey,
   upsertCountry,
 } from '../../testUtilities';
+
+const { expect } = chai;
 
 describe('GET /changes/*', async () => {
   const app = new TestableApp();

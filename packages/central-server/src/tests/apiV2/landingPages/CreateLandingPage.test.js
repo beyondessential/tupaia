@@ -1,5 +1,5 @@
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { expect } from 'chai';
+import chai from 'chai';
 import sinon from 'sinon';
 import {
   BES_ADMIN_PERMISSION_GROUP,
@@ -7,6 +7,8 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';
+
+const { expect } = chai;
 
 describe('Creating a landing page', async () => {
   let uploadImageStub;

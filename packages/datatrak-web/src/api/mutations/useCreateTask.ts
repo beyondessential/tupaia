@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
 
 import { createTask } from '../../database/task';
-import { gaEvent, successToast } from '../../utils';
+import { GA_CATEGORY, GA_EVENT, gaEvent, successToast } from '../../utils';
 import { post } from '../api';
 import { useCurrentUserContext } from '../CurrentUserContext';
 import { useIsOfflineFirst } from '../offlineFirst';
@@ -32,10 +32,10 @@ export const useCreateTask = (onSuccess?: () => void) => {
         queryClient.invalidateQueries(['taskMetric', projectId]);
         successToast('Task successfully created');
         // Send off GA events
-        gaEvent('task_created_by_project', project?.code!);
-        gaEvent('task_created_by_country', variables.country_code);
-        gaEvent('task_created_by_survey', variables.survey_code);
-        gaEvent('task_created', 'Task created');
+        gaEvent(GA_EVENT.TASK_CREATED_BY_PROJECT, project?.code!);
+        gaEvent(GA_EVENT.TASK_CREATED_BY_COUNTRY, variables.country_code);
+        gaEvent(GA_EVENT.TASK_CREATED_BY_SURVEY, variables.survey_code);
+        gaEvent(GA_EVENT.TASK_CREATED, GA_CATEGORY.TASK);
 
         if (onSuccess) onSuccess();
       },

@@ -23,82 +23,84 @@ set -e
 HOME_DIR=/home/ubuntu
 TUPAIA_DIR=$HOME_DIR/tupaia
 
-cd $HOME_DIR
+install_nginx() {
+  if ! command -v nginx &>/dev/null; then
+    echo 'nginx not installed. Installing...'
+    sudo apt-get install -yqq nginx
 
-sudo apt-get update
+    # add h5bp config
+    git clone --branch 2.0.0 --depth 1 https://github.com/h5bp/server-configs-nginx.git
+    sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
+    rm -rf server-configs-nginx
 
-# install nginx and add h5bp config
-if ! command -v nginx &>/dev/null; then
-  echo 'nginx not installed. Installing...'
-  sudo apt-get install -yqq nginx
+    # Add the nginx user (www-data) to the ubuntu group to give it access to the tupaia code
+    sudo usermod -a -G ubuntu www-data
+  fi
+  nginx -v
+}
 
-  git clone --branch 2.0.0 --depth 1 https://github.com/h5bp/server-configs-nginx.git
-  sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
-  rm -rf server-configs-nginx
+install_psql() {
+  # install psql for use when installing mv refresh in the db
+  sudo apt-get install -yqq postgresql-client
+}
 
-  # Add the nginx user (www-data) to the ubuntu group to give it access to the tupaia code
-  sudo usermod -a -G ubuntu www-data
-fi
-nginx -v
+install_base_dependencies() {
+  # install base dependencies
+  sudo apt-get --no-install-recommends -yqq install \
+    bash-completion \
+    build-essential \
+    cmake \
+    libcurl4 \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2 \
+    libxml2-dev \
+    libssl3 \
+    pkg-config \
+    ca-certificates \
+    xclip \
+    jq
 
-# install psql for use when installing mv refresh in the db
-sudo apt-get install -yqq postgresql-client
-
-# install base dependencies
-sudo apt-get --no-install-recommends -yqq install \
-  bash-completion \
-  build-essential \
-  cmake \
-  libcurl4 \
-  libcurl4-openssl-dev \
-  libssl-dev \
-  libxml2 \
-  libxml2-dev \
-  libssl3 \
-  pkg-config \
-  ca-certificates \
-  xclip \
-  jq
-
-# Install base dependencies
-# Note: Many of these are for puppeteer: https://pptr.dev/15.3.0/troubleshooting#chrome-headless-doesnt-launch-on-unix
-sudo apt-get -yqq install \
-  fonts-liberation \
-  libappindicator3-1 \
-  libasound2 \
-  libatk-bridge2.0-0 \
-  libatk1.0-0 \
-  libc6 \
-  libcairo2 \
-  libcups2 \
-  libdbus-1-3 \
-  libexpat1 \
-  libfontconfig1 \
-  libgbm1 \
-  libgcc1 \
-  libglib2.0-0 \
-  libgtk-3-0 \
-  libnspr4 \
-  libnss3 \
-  libpango-1.0-0 \
-  libpangocairo-1.0-0 \
-  libstdc++6 \
-  libx11-6 \
-  libx11-xcb1 \
-  libxcb1 \
-  libxcomposite1 \
-  libxcursor1 \
-  libxdamage1 \
-  libxext6 \
-  libxfixes3 \
-  libxi6 \
-  libxrandr2 \
-  libxrender1 \
-  libxss1 \
-  libxtst6 \
-  lsb-release \
-  wget \
-  xdg-utils
+  # Install base dependencies
+  # Note: Many of these are for puppeteer: https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux
+  sudo apt-get -yqq install \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libc6 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libfontconfig1 \
+    libgbm1 \
+    libgcc1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libstdc++6 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxtst6 \
+    lsb-release \
+    wget \
+    xdg-utils
+}
 
 install_tailscale() {
   if ! command -v tailscale &>/dev/null; then
@@ -121,44 +123,75 @@ install_tailscale() {
   echo 'Tailscale version:'
   tailscale version
 }
-install_tailscale
 
-# Install nvm
-if ! command -v nvm &>/dev/null; then
-  echo 'nvm not installed. Installing...'
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-fi
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-echo "nvm $(nvm --version) is installed"
+install_nvm() {
+  local nvm_path="$HOME/.nvm/nvm.sh"
+  if [ ! -s "$nvm_path" ]; then
+    echo 'nvm not installed. Installing...'
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh | bash
+  fi
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$nvm_path" ] && \. "$nvm_path"
+  echo "nvm $(nvm --version) is installed"
+}
 
-# Install Node using nvm
-if ! command -v node &>/dev/null; then
-  echo 'Node.js not installed. Installing...'
-  nvm install $(sudo cat "$TUPAIA_DIR/.nvmrc")
-fi
-echo "Node.js $(node --version) is installed"
-echo "Using Node.js $(nvm current) ($(nvm which current))"
+install_node() {
+  local target_version=$(sudo cat "$TUPAIA_DIR/.nvmrc")
+  echo "Installing Node.js $target_version"
+  nvm install --default "$target_version"
+  echo "Using Node.js $(nvm current) ($(nvm which current))"
+}
 
-# Enable Yarn
-corepack enable yarn
-echo "Using Yarn $(yarn --version) ($(which yarn))"
+install_corepack() {
+  if ! command -v corepack &>/dev/null; then
+    echo 'Corepack not installed. Installing...'
+    npm install --global --min-release-age=7 corepack
+  fi
+  echo "Corepack $(corepack --version) is installed"
+}
 
-# Install PM2, ensuring same version as root package.json
-if ! command -v pm2 &>/dev/null; then
-  echo 'PM2 not installed. Installing...'
-  npm install --global pm2@^6.0.8
-elif (($(yarn pm2 --version | cut -d . -f 1) != 6)); then
-  echo "PM2 $(pm2 --version) is installed. Replacing with ^6.0.8..."
-  npm install --global pm2@^6.0.8
-fi
-echo "PM2 $(pm2 --version) is installed"
+install_pm2() {
+  # Ideally match version in root package.json, which devs use locally
+  if ! command -v pm2 &>/dev/null; then
+    echo 'PM2 not installed. Installing...'
+    npm install --global pm2@^6.0.8
+  elif (($(pm2 --version | cut -d . -f 1) != 6)); then
+    echo "PM2 $(pm2 --version) is installed. Replacing with ^6.0.8..."
+    npm install --global pm2@^6.0.8
+  fi
+  echo "PM2 $(pm2 --version) is installed"
 
-pm2 install pm2-logrotate
+  pm2 install pm2-logrotate
+}
 
-LOGS_DIR=$HOME_DIR/logs
-# Create a directory for logs to go
-mkdir -m 777 -p $LOGS_DIR
+create_logs_dir() {
+  local logs_dir=$HOME_DIR/logs
+  mkdir -m 777 -p "$logs_dir"
+}
 
-cd $TUPAIA_DIR
-yarn install # pre install to save time spinning up new ec2 instances
+set_up_yarn() {
+  corepack enable yarn
+  echo "Using Yarn $(yarn --version) ($(which yarn))"
+}
+
+main() {
+  cd $HOME_DIR
+
+  sudo apt-get update
+  install_nginx
+  install_psql
+  install_base_dependencies
+  install_tailscale
+  install_nvm
+  install_node
+  install_corepack
+  install_pm2
+
+  create_logs_dir
+
+  cd "$TUPAIA_DIR"
+  set_up_yarn
+  yarn install # pre install to save time spinning up new ec2 instances
+}
+
+main

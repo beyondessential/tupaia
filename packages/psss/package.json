@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/psss",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "description": "Pacific Syndromic Surveillance System client application",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/psss"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "scripts": {
     "preview": "vite preview",
     "build": "yarn run package:build:vite",

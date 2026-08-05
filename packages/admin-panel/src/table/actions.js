@@ -1,6 +1,6 @@
 import { debounce } from 'es-toolkit/compat';
 import parseLinkHeader from 'parse-link-header';
-import generateId from 'uuid/v1';
+import { v1 as uuidv1 } from 'uuid';
 
 import { convertSearchTermToFilter } from '../utilities';
 import {
@@ -86,7 +86,7 @@ const refreshDataWithDebounce = debounce(
     const columnsString = JSON.stringify(columnSources);
 
     // Prepare for request
-    const fetchId = generateId();
+    const fetchId = uuidv1();
     dispatch({
       type: DATA_FETCH_REQUEST,
       reduxId,
@@ -179,7 +179,7 @@ export const requestArchiveSurveyResponse = (reduxId, endpoint, id, confirmMessa
 export const deleteRecordFromTable =
   (reduxId, endpoint, id) =>
   async (dispatch, getState, { api }) => {
-    const fetchId = generateId();
+    const fetchId = uuidv1();
     dispatch({
       type: DATA_CHANGE_REQUEST,
       fetchId,
@@ -210,7 +210,7 @@ export const clearError = () => ({
 export const archiveSurveyResponse =
   (reduxId, endpoint, id) =>
   async (dispatch, getState, { api }) => {
-    const fetchId = generateId();
+    const fetchId = uuidv1();
     dispatch({
       type: DATA_CHANGE_REQUEST,
       fetchId,

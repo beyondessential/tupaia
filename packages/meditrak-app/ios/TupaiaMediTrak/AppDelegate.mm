@@ -2,9 +2,6 @@
 
 #import <React/RCTBundleURLProvider.h>
 
-#import <AppCenterReactNative.h>
-#import <AppCenterReactNativeAnalytics.h>
-
 #import <Bugsnag/Bugsnag.h>
 
 @implementation AppDelegate
@@ -16,9 +13,6 @@
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
 
-  [AppCenterReactNative register];
-  [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
-  
   [Bugsnag start];
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];

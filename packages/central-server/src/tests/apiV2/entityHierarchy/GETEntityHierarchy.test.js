@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chai from 'chai';
+
 
 import { findOrCreateDummyCountryEntity, findOrCreateRecords, generateId } from '@tupaia/database';
 
@@ -8,6 +9,8 @@ import {
 } from '../../../permissions';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { stripUpdatedAtSyncTickFromArray, stripUpdatedAtSyncTickFromObject } from '@tupaia/utils';
+
+const { expect } = chai;
 
 describe('GET entity hierarchy', () => {
   const ALT_PERMISSION_GROUP = 'Alternative';

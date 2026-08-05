@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chai from 'chai';
+
 
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { stripUpdatedAtSyncTickFromObject } from '@tupaia/utils';
@@ -8,6 +9,8 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp, resetTestData } from '../../testUtilities';
+
+const { expect } = chai;
 
 const DL_ADMIN_PERMISSION_GROUP = 'DL_Test_Admin';
 const DL_USER_PERMISSION_GROUP = 'DL_Test_User';

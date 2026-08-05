@@ -1,5 +1,6 @@
 require('@babel/register')({
   configFile: '../../babel.config.json', // relative to the package tests are running on
+  ignore: [/node_modules/],
 });
 
 module.exports = {

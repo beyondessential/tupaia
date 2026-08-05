@@ -1,4 +1,4 @@
-# BES Contributor Code of Conduct
+# BES International Contributor Code of Conduct
 
 ## Our Pledge
 

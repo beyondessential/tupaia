@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/indicators",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "description": "Shareable computations of derived data",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/indicators"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "author": "BES International Limited <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import Chance from 'chance';
 import sinon from 'sinon';
 
@@ -15,6 +15,8 @@ import { BruteForceRateLimiter } from '../../../apiV2/authenticate/BruteForceRat
 import { ConsecutiveFailsRateLimiter } from '../../../apiV2/authenticate/ConsecutiveFailsRateLimiter';
 import { configureEnv } from '../../../configureEnv';
 import { TestableApp, resetTestData } from '../../testUtilities';
+
+const { expect } = chai;
 
 /**
  * Standard Argon2 hash prefix

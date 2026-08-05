@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import chai from 'chai';
+
 
 import { oneSecondSleep } from '@tupaia/utils';
 import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
@@ -11,6 +12,8 @@ import {
   PERM_SYNC_PG_ADMIN,
   PERM_SYNC_PG_PUBLIC,
 } from './permissionsBasedSync.fixtures';
+
+const { expect } = chai;
 
 describe('GET /changes/metadata', async () => {
   const app = new TestableApp();

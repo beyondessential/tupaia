@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import chai from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -6,6 +6,8 @@ import {
   VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
+
+const { expect } = chai;
 
 describe('EditDashboardItems', async () => {
   const DEFAULT_POLICY = {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import generateId from 'uuid/v1';
+import { v1 as uuidv1 } from 'uuid';
 
 import { useFetchDataTableBuiltInParams } from './query/useFetchDataTableBuiltInParams';
 import { useRuntimeParams } from './useRuntimeParams';
@@ -7,7 +7,7 @@ import { useRuntimeParams } from './useRuntimeParams';
 const convertRecordDataToFrontendConfig = (additionalParams = []) => {
   return additionalParams.map(p => ({
     ...p,
-    id: generateId(),
+    id: uuidv1(),
   }));
 };
 
@@ -41,10 +41,7 @@ export const useParams = ({ recordData, onEditField }) => {
   };
 
   const onParamsAdd = useCallback(() => {
-    const defaultNewParam = {
-      id: generateId(),
-    };
-
+    const defaultNewParam = { id: uuidv1() };
     onEditAdditionalParams([...additionalParams, defaultNewParam]);
   });
 
