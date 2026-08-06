@@ -51,6 +51,9 @@ const DynamicCodeGeneratorWatcherComponent = ({
     if (resolvedPrefix === undefined) {
       if (prevPrefixRef.current !== undefined) {
         prevPrefixRef.current = undefined;
+        // Reset the tail too: the source clearing marks a response boundary (e.g. "submit and
+        // repeat"), so the next code must be freshly generated rather than reusing this tail.
+        trailingCodeRef.current = undefined;
         dispatch(changeAnswer(questionId, undefined));
       }
       return;
