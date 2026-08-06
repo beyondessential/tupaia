@@ -1,3 +1,4 @@
+import { uniq } from 'es-toolkit';
 import { NotFoundError, respond } from '@tupaia/utils';
 
 const FRONTEND_EXCLUDED_PROJECTS = /** @type {const} */ ([
@@ -6,24 +7,50 @@ const FRONTEND_EXCLUDED_PROJECTS = /** @type {const} */ ([
   'ehealth_vanuatu',
 ]);
 
-async function fetchEntitiesWithProjectAccess(req, entities, permissionGroups) {
-  return Promise.all(
-    entities.map(async ({ id, name, code }) => ({
-      id,
-      name,
-      code,
-      hasAccess: await Promise.all(permissionGroups.map(p => req.userHasAccess(code, p))),
-    })),
-  );
+/**
+ * In-memory equivalent of `req.userHasAccess` for an already-fetched entity, so checking access
+ * for every (entity, permission group) pair doesn't cost a DB query each.
+ */
+async function userHasEntityAccess(req, entity, permissionGroup) {
+  const { accessPolicy } = req;
+  if (!accessPolicy) {
+    return false;
+  }
+
+  // Assume user always has access to all world items
+  if (entity.code === 'World') {
+    return true;
+  }
+
+  // Project access rights are determined by their children. Passing the entity record (rather
+  // than its code) avoids a redundant fetch. Rare for a project member entity to itself be a
+  // project, so the extra queries in this branch are acceptable.
+  if (entity.isProject()) {
+    return req.userHasAccess(entity, permissionGroup);
+  }
+
+  return accessPolicy.allows(entity.country_code, permissionGroup);
 }
 
-const fetchHasPendingProjectAccess = async (projectId, userId, req) => {
-  if (!projectId || !userId) return false;
-  return await req.models.accessRequest.exists({
+async function userHasSomePermissionGroupAccess(req, entity, permissionGroups) {
+  for (const permissionGroup of permissionGroups) {
+    if (await userHasEntityAccess(req, entity, permissionGroup)) return true;
+  }
+  return false;
+}
+
+/**
+ * @returns {Promise<Set<string>>} ids of the given projects for which the user has an unprocessed
+ * access request
+ */
+const fetchProjectIdsWithPendingAccess = async (projectIds, userId, req) => {
+  if (!userId || projectIds.length === 0) return new Set();
+  const accessRequests = await req.models.accessRequest.find({
     user_id: userId,
-    project_id: projectId,
+    project_id: projectIds,
     processed_date: null,
   });
+  return new Set(accessRequests.map(accessRequest => accessRequest.project_id));
 };
 // work out the entity to zoom to and open the dashboard of when this project is selected
 function getHomeEntityCode(project, entitiesWithAccess) {
@@ -36,57 +63,86 @@ function getHomeEntityCode(project, entitiesWithAccess) {
   return project.entity_code;
 }
 
-export async function buildProjectDataForFrontend(project, req) {
-  const {
-    id: projectId,
-    name,
-    code,
-    description,
-    entity_code: entityCode,
-    sort_order: sortOrder,
-    image_url: imageUrl,
-    logo_url: logoUrl,
-    permission_groups: permissionGroups,
-    entity_ids: entityIds,
-    dashboard_group_name: dashboardGroupName,
-    default_measure: defaultMeasure,
-    config,
-  } = project;
+export async function buildProjectsDataForFrontend(projects, req) {
+  // Fetch the member entities of all projects in a single query
+  const allEntityIds = uniq(projects.flatMap(project => project.entity_ids ?? []));
+  const allEntities =
+    allEntityIds.length > 0 ? await req.models.entity.find({ id: allEntityIds }) : [];
+  const entitiesById = new Map(allEntities.map(entity => [entity.id, entity]));
 
-  const entities = await Promise.all(entityIds.map(id => req.models.entity.findById(id))); // the return value of these is different to entitiesWithAccess
-  const accessByEntity = await fetchEntitiesWithProjectAccess(req, entities, permissionGroups);
-  const entitiesWithAccess = accessByEntity.filter(e => e.hasAccess.some(Boolean));
-  const names = entities.map(e => e.name);
+  // Work out which member entities the user has access to; in-memory against the access policy
+  const accessInfoByProjectId = new Map();
+  for (const project of projects) {
+    const entities = (project.entity_ids ?? [])
+      .map(id => entitiesById.get(id))
+      .filter(entity => entity !== undefined);
+    const entitiesWithAccess = [];
+    for (const entity of entities) {
+      if (await userHasSomePermissionGroupAccess(req, entity, project.permission_groups)) {
+        entitiesWithAccess.push(entity);
+      }
+    }
+    accessInfoByProjectId.set(project.id, { entities, entitiesWithAccess });
+  }
 
-  // This controls which entity the project zooms to and what level dashboards are shown on the front-end.
-  // If a single entity is available, zoom to that, otherwise show the project entity
-  const hasAccess = entitiesWithAccess.length > 0;
-  const homeEntityCode = getHomeEntityCode(project, entitiesWithAccess);
-
-  // Only want to check pending if no access
+  // Only want to check pending access for projects with no access; single query for all of them
   const { userId } = req.userJson;
-  const hasPendingAccess = hasAccess
-    ? false
-    : await fetchHasPendingProjectAccess(projectId, userId, req);
+  const noAccessProjectIds = projects
+    .filter(project => accessInfoByProjectId.get(project.id).entitiesWithAccess.length === 0)
+    .map(project => project.id);
+  const projectIdsWithPendingAccess = await fetchProjectIdsWithPendingAccess(
+    noAccessProjectIds,
+    userId,
+    req,
+  );
 
-  return {
-    id: projectId,
-    name,
-    code,
-    permissionGroups,
-    description,
-    entityCode,
-    sortOrder,
-    imageUrl,
-    logoUrl,
-    names,
-    hasAccess,
-    hasPendingAccess,
-    homeEntityCode,
-    dashboardGroupName,
-    defaultMeasure,
-    config,
-  };
+  return projects.map(project => {
+    const {
+      id: projectId,
+      name,
+      code,
+      description,
+      entity_code: entityCode,
+      sort_order: sortOrder,
+      image_url: imageUrl,
+      logo_url: logoUrl,
+      permission_groups: permissionGroups,
+      dashboard_group_name: dashboardGroupName,
+      default_measure: defaultMeasure,
+      config,
+    } = project;
+
+    const { entities, entitiesWithAccess } = accessInfoByProjectId.get(projectId);
+
+    // This controls which entity the project zooms to and what level dashboards are shown on the front-end.
+    // If a single entity is available, zoom to that, otherwise show the project entity
+    const hasAccess = entitiesWithAccess.length > 0;
+    const homeEntityCode = getHomeEntityCode(project, entitiesWithAccess);
+
+    return {
+      id: projectId,
+      name,
+      code,
+      permissionGroups,
+      description,
+      entityCode,
+      sortOrder,
+      imageUrl,
+      logoUrl,
+      names: entities.map(e => e.name),
+      hasAccess,
+      hasPendingAccess: projectIdsWithPendingAccess.has(projectId),
+      homeEntityCode,
+      dashboardGroupName,
+      defaultMeasure,
+      config,
+    };
+  });
+}
+
+export async function buildProjectDataForFrontend(project, req) {
+  const [projectData] = await buildProjectsDataForFrontend([project], req);
+  return projectData;
 }
 
 export async function getProjects(req, res) {
@@ -106,8 +162,7 @@ export async function getProjects(req, res) {
       };
   const _projects = await req.models.project.getAllProjectDetails(where);
 
-  const promises = _projects.map(project => buildProjectDataForFrontend(project, req));
-  const projects = await Promise.all(promises);
+  const projects = await buildProjectsDataForFrontend(_projects, req);
 
   return respond(res, { projects });
 }
