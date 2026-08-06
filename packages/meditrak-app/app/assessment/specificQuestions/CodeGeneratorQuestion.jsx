@@ -11,7 +11,8 @@ export class CodeGeneratorQuestionComponent extends PureComponent {
   componentDidMount() {
     const { answer, config, onChangeAnswer } = this.props;
     // Dynamic-prefix codes are generated reactively by DynamicCodeGeneratorWatcher, not here.
-    if (config.codeGenerator.dynamicPrefix) return;
+    // (config.codeGenerator can be absent when this is reused by an Entity `createNew` question.)
+    if (config?.codeGenerator?.dynamicPrefix) return;
     if (!answer) {
       onChangeAnswer(this.generateCode());
     }
@@ -19,7 +20,7 @@ export class CodeGeneratorQuestionComponent extends PureComponent {
 
   generateCode() {
     const { config } = this.props;
-    return config.codeGenerator.type === SHORT_ID ? generateShortId(config) : generateMongoId();
+    return config?.codeGenerator?.type === SHORT_ID ? generateShortId(config) : generateMongoId();
   }
 
   render() {
@@ -63,7 +64,7 @@ CodeGeneratorQuestionComponent.defaultProps = {
 
 // Provide helper/warning text for dynamic-prefix questions when no code has been generated yet.
 const mapStateToProps = (state, { id: questionId, config, answer }) => {
-  const dynamicPrefix = config.codeGenerator && config.codeGenerator.dynamicPrefix;
+  const dynamicPrefix = config?.codeGenerator?.dynamicPrefix;
   if (!dynamicPrefix || answer) return {};
 
   const sourceQuestion = getQuestion(state, dynamicPrefix.questionId);
