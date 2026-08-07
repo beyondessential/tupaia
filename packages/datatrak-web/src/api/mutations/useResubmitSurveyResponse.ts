@@ -1,10 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router';
+import { generatePath, useNavigate, useParams } from 'react-router';
 import { post } from '../api';
 import { useSurveyResponse } from '../queries';
 import { useSurveyForm } from '../../features';
 import { ROUTES } from '../../constants';
-import { generatePath } from '../../utils';
 import { AnswersT, useSurveyResponseData } from './useSubmitSurveyResponse';
 
 export const useResubmitSurveyResponse = () => {
@@ -36,7 +35,13 @@ export const useResubmitSurveyResponse = () => {
     {
       onSuccess: () => {
         resetForm();
-        navigate(generatePath(ROUTES.SURVEY_RESUBMIT_SUCCESS, params));
+        navigate(
+          generatePath(ROUTES.SURVEY_RESUBMIT_SUCCESS, {
+            countryCode: params.countryCode ?? null,
+            surveyCode: params.surveyCode ?? null,
+            surveyResponseId: params.surveyResponseId ?? null,
+          }),
+        );
       },
     },
   );
