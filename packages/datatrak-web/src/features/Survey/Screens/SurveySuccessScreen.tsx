@@ -1,10 +1,9 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button as BaseButton } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { ROUTES } from '../../../constants';
-import { generatePath } from '../../../utils';
 import { useSurvey } from '../../../api/queries';
 import { SurveySuccess } from '../Components';
 
@@ -42,7 +41,8 @@ export const SurveySuccessScreen = () => {
   const repeatSurvey = () => {
     resetForm();
     const path = generatePath(ROUTES.SURVEY_SCREEN, {
-      ...params,
+      countryCode: params.countryCode ?? null,
+      surveyCode: params.surveyCode ?? null,
       screenNumber: '1',
     });
     navigate(path);

@@ -2,14 +2,14 @@ import { useTheme } from '@material-ui/core';
 import IconButton, { IconButtonProps } from '@material-ui/core/IconButton';
 import DoneIcon from '@material-ui/icons/Done';
 import React, { Fragment, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { generatePath, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { Tooltip } from '@tupaia/ui-components';
 
 import { CopyIcon } from '../../../components';
 import { ROUTES } from '../../../constants';
-import { generatePath, getAndroidVersion, infoToast } from '../../../utils';
+import { getAndroidVersion, infoToast } from '../../../utils';
 
 const StyledTooltip = styled(Tooltip).attrs({
   arrow: true,
@@ -40,7 +40,10 @@ const StyledCopyIcon = styled(CopyIcon)`
 
 const useCopyUrl = () => {
   const params = useParams();
-  const path = generatePath(ROUTES.SURVEY, params);
+  const path = generatePath(ROUTES.SURVEY, {
+    countryCode: params.countryCode ?? null,
+    surveyCode: params.surveyCode ?? null,
+  });
   const link = `${window.location.origin}${path}`;
 
   const [didJustCopy, setDidJustCopy] = useState(false);
