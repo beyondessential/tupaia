@@ -7497,7 +7497,7 @@ __metadata:
     mocha: "npm:^11.7.6"
     moment: "npm:^2.24.0"
     moment-timezone: "npm:^0.5.45"
-    morgan: "npm:^1.9.0"
+    morgan: "npm:^1.11.0"
     multer: "npm:^2.2.0"
     node-schedule: "npm:^2.1.1"
     npm-run-all: "npm:^4.1.5"
@@ -8156,7 +8156,7 @@ __metadata:
     i18n: "npm:^0.13.3"
     jest: "npm:^29.7.0"
     knex: "npm:^3.1.0"
-    morgan: "npm:^1.9.0"
+    morgan: "npm:^1.11.0"
     public-ip: "npm:4.0.4"
     rimraf: "npm:^6.0.1"
     supertest: "npm:^3.1.0"
@@ -8564,7 +8564,7 @@ __metadata:
     jest-when: "npm:^3.6.0"
     moment: "npm:^2.24.0"
     moment-timezone: "npm:^0.5.45"
-    morgan: "npm:^1.9.0"
+    morgan: "npm:^1.11.0"
     rimraf: "npm:^6.0.1"
     winston: "npm:^3.17.0"
     xlsx: "file:../../vendor/xlsx-0.20.3.tgz"
@@ -11262,7 +11262,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"basic-auth@npm:~2.0.0":
+"basic-auth@npm:~2.0.1":
   version: 2.0.1
   resolution: "basic-auth@npm:2.0.1"
   dependencies:
@@ -22664,16 +22664,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"morgan@npm:^1.9.0":
-  version: 1.9.1
-  resolution: "morgan@npm:1.9.1"
+"morgan@npm:^1.11.0":
+  version: 1.11.0
+  resolution: "morgan@npm:1.11.0"
   dependencies:
-    basic-auth: "npm:~2.0.0"
+    basic-auth: "npm:~2.0.1"
     debug: "npm:2.6.9"
-    depd: "npm:~1.1.2"
-    on-finished: "npm:~2.3.0"
-    on-headers: "npm:~1.0.1"
-  checksum: 10c0/c242d0be8297cd0c02276af76b79c274e434d738d8346b2bb20e48342c2c51ae9c4ea250b499949de89232e1247c0018e175a4df256bda06ed22a6891da0a392
+    depd: "npm:~2.0.0"
+    on-finished: "npm:~2.4.1"
+    on-headers: "npm:~1.1.0"
+  checksum: 10c0/1d8c67bdeb34dc4112f5b6cbff0d5b4ef14bfdcb9f67a7ae67fc7a77282c18dd493a11dc8dff1ff2e285c1846947cfdc3698fdceb1fa7bea2a09fe6cb754455d
   languageName: node
   linkType: hard
 
@@ -23625,7 +23625,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"on-finished@npm:2.4.1, on-finished@npm:^2.3.0":
+"on-finished@npm:2.4.1, on-finished@npm:^2.3.0, on-finished@npm:~2.4.1":
   version: 2.4.1
   resolution: "on-finished@npm:2.4.1"
   dependencies:
