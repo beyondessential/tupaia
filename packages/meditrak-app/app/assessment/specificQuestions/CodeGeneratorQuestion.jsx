@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { Text, StatusMessage, STATUS_MESSAGE_ERROR } from '../../widgets';
 import { generateShortId, generateMongoId, SHORT_ID } from '../../utilities';
-import { getLineHeight, THEME_FONT_SIZE_ONE, THEME_TEXT_COLOR_FOUR } from '../../globalStyles';
+import { getLineHeight, THEME_FONT_SIZE_ONE, THEME_TEXT_COLOR_ONE } from '../../globalStyles';
 import { getAnswerForQuestion, getQuestion } from '../selectors';
 
 export class CodeGeneratorQuestionComponent extends PureComponent {
@@ -91,6 +91,6 @@ const localStyles = StyleSheet.create({
   helperText: {
     fontSize: THEME_FONT_SIZE_ONE,
     lineHeight: getLineHeight(THEME_FONT_SIZE_ONE, 1.2),
-    color: THEME_TEXT_COLOR_FOUR,
+    color: THEME_TEXT_COLOR_ONE,
   },
 });
