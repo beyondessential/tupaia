@@ -33,10 +33,10 @@ export const resolveCode = ({ resolvedPrefix, existingCode, trailingCode, codeGe
     return { code: existingCode, trailingCode: extractTrailingCode(existingCode, resolvedPrefix) };
   }
 
-  // Prefix changed on an existing code — swap the prefix but keep the random tail.
-  // Requires a current code: a stale ref tail must not be grafted onto a fresh response (e.g. after
-  // "submit and repeat"), or the repeat reuses the previous response's code.
-  if (trailingCode && existingCode) {
+  // Prefix changed but we still have the random tail — just swap the prefix, keeping the tail
+  // (DataTrak parity: the tail is preserved across any in-response source change). Refs are reset
+  // per response (the watchers remount on a new startTime), so a repeat starts fresh.
+  if (trailingCode) {
     return { code: `${resolvedPrefix}-${trailingCode}`, trailingCode };
   }
 
