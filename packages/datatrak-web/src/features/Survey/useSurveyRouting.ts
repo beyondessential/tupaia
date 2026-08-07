@@ -1,5 +1,6 @@
-import { generatePath, useParams, useMatch, useLocation } from 'react-router';
+import { useParams, useMatch, useLocation } from 'react-router';
 import { ROUTES } from '../../constants';
+import { generatePath } from '../../utils';
 
 export const useSurveyRouting = numberOfScreens => {
   const location = useLocation();
