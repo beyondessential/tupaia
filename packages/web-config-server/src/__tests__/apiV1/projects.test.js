@@ -55,7 +55,10 @@ const buildProject = ({ id, code, entityIds, permissionGroups }) => ({
 // User has 'Admin' access to Tonga only
 const ACCESS_POLICY_BY_COUNTRY = { TO: ['Admin'] };
 
-const PENDING_ACCESS_REQUESTS = [{ user_id: 'user1', project_id: 'project_pending' }];
+const ACCESS_REQUESTS = [
+  { user_id: 'user1', project_id: 'project_pending', approved: null },
+  { user_id: 'user1', project_id: 'project_inaccessible', approved: false },
+];
 
 const createMockReq = ({ userJson = { userId: 'user1' } } = {}) => ({
   userJson,
@@ -69,10 +72,12 @@ const createMockReq = ({ userJson = { userId: 'user1' } } = {}) => ({
       find: jest.fn(async ({ id: ids }) => ENTITIES.filter(entity => ids.includes(entity.id))),
     },
     accessRequest: {
-      find: jest.fn(async ({ user_id: userId, project_id: projectIds }) =>
-        PENDING_ACCESS_REQUESTS.filter(
+      find: jest.fn(async ({ user_id: userId, project_id: projectIds, approved }) =>
+        ACCESS_REQUESTS.filter(
           accessRequest =>
-            accessRequest.user_id === userId && projectIds.includes(accessRequest.project_id),
+            accessRequest.user_id === userId &&
+            projectIds.includes(accessRequest.project_id) &&
+            accessRequest.approved === approved,
         ),
       ),
     },
@@ -170,11 +175,14 @@ describe('buildProjectsDataForFrontend()', () => {
 
     // Pending access is only checked for the projects without access
     expect(req.models.accessRequest.find).toHaveBeenCalledTimes(1);
-    expect(req.models.accessRequest.find).toHaveBeenCalledWith({
-      user_id: 'user1',
-      project_id: ['project_pending', 'project_inaccessible'],
-      processed_date: null,
-    });
+    expect(req.models.accessRequest.find).toHaveBeenCalledWith(
+      {
+        user_id: 'user1',
+        project_id: ['project_pending', 'project_inaccessible'],
+        approved: null,
+      },
+      { columns: ['project_id'], distinct: true },
+    );
   });
 
   it('skips the pending access check for users without an id (public user)', async () => {
